@@ -1,0 +1,9 @@
+name: redis-standalone
+home: http://github.com/deis/helm
+version: 0.0.1
+description: Standalone Redis Master
+maintainers:
+  - Gabe Monroy <gabe@deis.com>
+details:
+  This package provides a standalone Redis master useful for prototyping.
+  Note this does not include any high availability.
