@@ -1,6 +1,7 @@
 # Helm Chart Repository
 
 This repository contains Charts for Helm, the Kubernetes Package Manager.
+
 Visit the [Helm repository](https://github.com/deis/helm) to learn more.
 
 ## Work in Progress
