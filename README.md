@@ -3,8 +3,6 @@
 This repository contains Charts for Helm, the Kubernetes Package Manager.
 Visit the [Helm repository](https://github.com/deis/helm) to learn more.
 
-[![Build Status](https://travis-ci.org/deis/charts.svg?branch=master)](https://travis-ci.org/deis/charts)
-
 ## Work in Progress
 
 ![Deis Graphic](https://s3-us-west-2.amazonaws.com/get-deis/deis-graphic-small.png)
