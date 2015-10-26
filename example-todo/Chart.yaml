@@ -1,0 +1,9 @@
+name: example-todo
+home: http://github.com/deis/example-todo
+version: 0.0.6
+description: Example Todo application backed by Redis
+maintainers:
+  - Gabe Monroy <gabe@deis.com>
+details:
+  This chart contains an Example Todo application backed by Redis.
+  It supports standalone and clustered (sentinel) Redis backends.
