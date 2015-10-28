@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: redis-sentinel
+  labels:
+    heritage: deis
+spec:
+  replicas: 3
+  selector:
+    redis-sentinel: "true"
+  template:
+    metadata:
+      labels:
+        name: redis-sentinel
+        redis-sentinel: "true"
+        role: sentinel
+        heritage: deis
+        provider: redis
+    spec:
+      containers:
+      - name: sentinel
+        image: "deis/redis:v0.0.5"
+        env:
+          - name: SENTINEL
+            value: "true"
+        ports:
+          - containerPort: 26379
