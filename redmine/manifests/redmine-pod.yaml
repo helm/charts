@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: redmine
+  labels:
+    heritage: helm
+spec:
+  containers:
+  - name: redmine
+    image: redmine:3.0.5
+    ports:
+      - containerPort: 3000
