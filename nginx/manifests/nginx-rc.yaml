@@ -1,13 +1,13 @@
 apiVersion: v1
 kind: ReplicationController
 metadata:
-  name: my-nginx
+  name: nginx
 spec:
-  replicas: 2
+  replicas: 1
   template:
     metadata:
       labels:
-        run: my-nginx
+        heritage: helm
     spec:
       containers:
       - name: nginxhttp
