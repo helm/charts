@@ -1,6 +1,6 @@
 name: nginx
 home: https://www.nginx.com
-version: 0.0.1
+version: 0.1.0
 description: Nginx http service
 maintainers:
   - Rimas Mocevicius <rimas@deis.com>
