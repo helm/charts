@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: owncloud
+  labels:
+    heritage: helm
+spec:
+  containers:
+  - name: owncloud
+    image: owncloud:8.2.0
+    ports:
+      - containerPort: 80
