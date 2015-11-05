@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: riak
+  labels:
+    provider: riak
+    heritage: helm
+spec:
+  containers:
+    - name: riak
+      image: deis/riak
+      env:
+        - name:  RIAK_MASTER
+          value: "1"
+      ports:
+        - containerPort: 8087
+        - containerPort: 8098
