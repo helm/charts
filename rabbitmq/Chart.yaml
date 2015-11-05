@@ -1,0 +1,8 @@
+name: rabbitmq
+home: https://www.rabbitmq.com/
+version: 0.1.0
+description: Simple pod running RabbitMQ.
+maintainers:
+  - Matt Fisher <mfisher@deis.com>
+details:
+  This package provides RabbitMQ (a message broker) for development purposes.
