@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: elasticsearch
+  labels:
+    heritage: helm
+spec:
+  containers:
+  - name: elasticsearch
+    image: elasticsearch
+    env:
+    ports:
+    - containerPort: 9200
+    - containerPort: 9300
