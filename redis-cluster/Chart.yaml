@@ -1,7 +1,7 @@
 name: redis-cluster
 home: http://github.com/deis/redis-cluster
 version: 0.0.5
-description: Highly available Redis cluster with multiple sentinels and standbys. 
+description: Highly available Redis cluster with multiple sentinels and standbys.
 maintainers:
   - Gabe Monroy <gabe@deis.com>
 details:
