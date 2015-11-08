@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: nginx
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        heritage: helm
+    spec:
+      containers:
+      - name: nginxhttp
+        image: nginx
+        ports:
+        - containerPort: 80
