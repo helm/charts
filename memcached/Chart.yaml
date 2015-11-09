@@ -1,0 +1,9 @@
+name: memcached
+home: http://https://hub.docker.com/_/memcached/
+version: 0.1.0
+description: A simple Memcached cluster
+maintainers:
+- Matt Butcher <mbutcher@deis.com>
+details: |-
+  Memcached is a simple cache server. This chart provides multiple replication
+  controllers that can be grouped together into a cluster.
