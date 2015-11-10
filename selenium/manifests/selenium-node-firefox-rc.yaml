@@ -5,14 +5,17 @@ metadata:
   name: selenium-node-firefox 
   labels:
     app: selenium-node-firefox
+    heritage: helm
 spec:
   replicas: 2
   selector:
     app: selenium-node-firefox
+    heritage: helm
   template:
     metadata:
       labels:
         app: selenium-node-firefox
+        heritage: helm
     spec:
       containers:
       - name: selenium-node-firefox

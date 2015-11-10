@@ -5,6 +5,7 @@ metadata:
   name: selenium-hub
   labels:
     app: selenium-hub
+    heritage: helm
 spec:
   ports:
   - port: 4444 
@@ -12,5 +13,6 @@ spec:
     name: port0
   selector:
     app: selenium-hub
+    heritage: helm
   type: NodePort
   sessionAffinity: None
