@@ -5,14 +5,17 @@ metadata:
   name: selenium-node-chrome 
   labels:
     app: selenium-node-chrome
+    heritage: helm
 spec:
   replicas: 2
   selector:
     app: selenium-node-chrome
+    heritage: helm
   template:
     metadata:
       labels:
         app: selenium-node-chrome
+        heritage: helm
     spec:
       containers:
       - name: selenium-node-chrome

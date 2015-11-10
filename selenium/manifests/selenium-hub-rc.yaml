@@ -5,14 +5,17 @@ metadata:
   name: selenium-hub 
   labels:
     app: selenium-hub
+    heritage: helm
 spec:
   replicas: 1
   selector:
     app: selenium-hub
+    heritage: helm
   template:
     metadata:
       labels:
         app: selenium-hub
+        heritage: helm
     spec:
       containers:
       - name: selenium-hub
