@@ -20,6 +20,10 @@ Helm charts are developed as part of a community effort.  To contribute:
 4. `git add foo && git commit && git push`
 5. Submit a Pull Request
 
+Check out the [guide to writing awesome
+charts](https://github.com/deis/helm/blob/master/docs/awsome.md)
+for more information.
+
 ## License
 
 Copyright 2015 Engine Yard, Inc.
