@@ -1,6 +1,6 @@
 name: alpine
-home: http://github.com/deis/helm
-version: 0.0.1
+home: http://www.alpinelinux.org/
+version: 0.1.0
 description: Simple pod running Alpine Linux.
 maintainers:
   - Matt Butcher <mbutcher@deis.com>
