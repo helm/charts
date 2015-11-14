@@ -1,3 +1,3 @@
 # Cassandra
 
-This Chart provides a Pod running Cassandra.
+This Chart deploys Cassandra to kubernetes.
