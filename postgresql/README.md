@@ -1,3 +1,3 @@
 # PostgreSQL
 
-This package provides a basic PostgreSQL database pod for development purposes.
+This package provides a basic PostgreSQL database for development purposes.
