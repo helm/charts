@@ -1,3 +1,3 @@
 # Riak
 
-This Chart provides a pod manifest to help deploy a standalone Riak node in kubernetes.
+This Chart provides a standalone Riak node in kubernetes.
