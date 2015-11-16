@@ -1,6 +1,6 @@
 name: jenkins
 home: https://jenkins-ci.org/
-version: 0.1.0
+version: 0.2.0
 description: The leading open-source continuous integration server.
 maintainers:
   - Matt Fisher <mfisher@deis.com>
