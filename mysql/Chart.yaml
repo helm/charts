@@ -1,8 +1,8 @@
 name: mysql
 home: https://www.mysql.com/
-version: 0.1.0
-description: Simple pod running MySQL.
+version: 0.2.0
+description: Chart running MySQL.
 maintainers:
   - Matt Fisher <mfisher@deis.com>
 details:
-  This package provides a basic MySQL database pod for development purposes.
+  This package provides a basic MySQL database for development purposes.
