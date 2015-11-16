@@ -1,7 +1,7 @@
 name: rabbitmq
 home: https://www.rabbitmq.com/
-version: 0.1.0
-description: Simple pod running RabbitMQ.
+version: 0.2.0
+description: Chart running RabbitMQ.
 maintainers:
   - Matt Fisher <mfisher@deis.com>
 details:
