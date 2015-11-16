@@ -1,9 +1,8 @@
 name: riak
 home: http://github.com/deis/riak
-version: 0.1.0
-description: Riak standalone pod.
+version: 0.2.0
+description: A distributed NoSQL database.
 maintainers:
   - Matt Fisher <mfisher@deis.com>
 details:
-  This package provides a basic Riak pod. It will start up a single pod for development
-  purposes.
+  This Chart provides a standalone Riak node in kubernetes for development purposes.
