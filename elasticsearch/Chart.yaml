@@ -1,6 +1,6 @@
 name: elasticsearch
 home: https://github.com/elastic/elasticsearch
-version: 0.1.0
+version: 0.2.0
 description: Elasticsearch Restful Search Engine
 maintainers:
   -  <icoffey@deis.com>
