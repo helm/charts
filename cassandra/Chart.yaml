@@ -1,8 +1,8 @@
 name: cassandra
 home: http://cassandra.apache.org/
-version: 0.1.0
-description: Simple pod running Cassandra.
+version: 0.2.0
+description: The Apache Cassandra Project.
 maintainers:
   - Matt Fisher <mfisher@deis.com>
 details:
-  This package provides a basic cassandra pod that can be used for dev purposes.
+  This package deploys Cassandra to kubernetes.
