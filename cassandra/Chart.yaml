@@ -1,6 +1,6 @@
 name: cassandra
 home: http://cassandra.apache.org/
-version: 0.2.0
+version: 0.2.1
 description: The Apache Cassandra Project.
 maintainers:
   - Matt Fisher <mfisher@deis.com>
