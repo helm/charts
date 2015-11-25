@@ -7,7 +7,13 @@ metadata:
     heritage: helm
 spec:
   replicas: 1
+  selector:
+    provider: cassandra
   template:
+    metadata:
+      name: cassandra
+      labels:
+        provider: cassandra
     spec:
       containers:
       - name: cassandra
