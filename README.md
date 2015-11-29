@@ -7,7 +7,7 @@ Welcome to the Kubernetes Template Registry.
 
 This registry holds Deployment Manager
 [templates](https://github.com/kubernetes/deployment-manager/tree/master/docs/design/design.md#templates)
-that you can use to create, delete and update Kubernetes applications.
+that you can use to create, describe, update and delete Kubernetes applications.
 
 For more information about installing and using Deployment Manager, see its
 [README.md](https://github.com/kubernetes/deployment-manager/tree/master/README.md).
