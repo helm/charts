@@ -1,0 +1,2 @@
+- name: nfs
+  type: github.com/kubernetes/application-dm-templates/storage/nfs:v1
