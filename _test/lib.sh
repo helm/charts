@@ -15,7 +15,7 @@ function install-helm {
   mkdir -p .bin
   (
     cd .bin
-    curl -s https://get.helm.sh | sh
+    curl -s https://get.helm.sh | bash
   )
   export PATH="$(pwd)/.bin:${PATH}"
 
