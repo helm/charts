@@ -3,6 +3,6 @@ home: https://github.com/elastic/elasticsearch
 version: 0.2.0
 description: Elasticsearch Restful Search Engine
 maintainers:
-  -  <icoffey@deis.com>
+  - Ian Coffey <icoffey@deis.com>
 details:
   This Chart provides a basic Elasticsearch search service.

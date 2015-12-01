@@ -7,8 +7,11 @@ metadata:
     heritage: helm
 spec:
   replicas: 1
+  selector:
+    provider: elasticsearch
   template:
     metadata:
+      name: elasticsearch
       labels:
         provider: elasticsearch
     spec:
@@ -18,3 +21,4 @@ spec:
         ports:
         - containerPort: 9200
         - containerPort: 9300
+
