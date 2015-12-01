@@ -1,5 +1,7 @@
 # Helm Chart Repository
 
+[![Build Status](https://travis-ci.org/helm/charts.svg?branch=master)](https://travis-ci.org/helm/charts)
+
 This repository contains Charts for Helm, the Kubernetes Package Manager.
 
 Visit the [Helm repository](https://github.com/deis/helm) to learn more.
