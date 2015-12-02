@@ -1,9 +1,8 @@
 function jigger-files-for-travis {
-  helm update # need ~/.helm/config.yml
+  helm doctor # need proper ~/.helm directory structure and config.yml
 
   if [ "${TRAVIS}" == true ]; then
-    mkdir -p ${TRAVIS_HOME}/.helm/cache
-    cp -r . ${TRAVIS_HOME}/.helm/cache
+    cp -r . ${TRAVIS_HOME}/.helm/cache/charts
   fi
 }
 
