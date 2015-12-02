@@ -24,8 +24,8 @@ fi
 
 trap gke-destroy EXIT ERR
 
-install-helm
-
 setup-gke
+
+install-helm
 
 run-test-plan
