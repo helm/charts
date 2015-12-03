@@ -4,7 +4,7 @@ function gke-install {
     curl https://sdk.cloud.google.com | bash
   fi
 
-  export PATH="{GOOGLE_SDK_DIR}/bin:$PATH"
+  export PATH="${GOOGLE_SDK_DIR}/bin:$PATH"
   gcloud -q components update kubectl
 }
 
