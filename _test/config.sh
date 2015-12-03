@@ -1,6 +1,6 @@
 export TEST_ROOT_DIR="$(cd "$(dirname $(dirname $0))"; pwd)"
 export HELM_ARTIFACT_REPO="${HELM_ARTIFACT_REPO:-helm-ci}"
-CLUSTER_NAME="${CLUSTER_NAME:-helm-test-travis}"
+CLUSTER_NAME="${CLUSTER_NAME:-helm-testing}"
 GOOGLE_SDK_DIR="${HOME}/google-cloud-sdk"
 export HELM_BIN="${TEST_ROOT_DIR}/helm.bin"
 export TEST_DIR="${TEST_ROOT_DIR}/_test"
