@@ -36,6 +36,7 @@ function gke-destroy {
     if command -v gcloud &>/dev/null; then
       gcloud -q container clusters delete "${K8S_CLUSTER_NAME}" --no-wait
       log-info "Cluster ${K8S_CLUSTER_NAME} scheduled for destruction. Muahaha."
+      log-info "Set SKIP_DESTROY=true if you don't want cluster destruction-on-exit behavior"
     fi
   else
     log-warn "Skipping destruction of ${K8S_CLUSTER_NAME} (SKIP_DESTROY=${SKIP_DESTROY})"
