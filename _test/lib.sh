@@ -1,9 +1,8 @@
-function jigger-files-for-travis {
+function move-files {
   helm doctor # need proper ~/.helm directory structure and config.yml
 
-  if [ "${TRAVIS}" == true ]; then
-    cp -r . ${TRAVIS_HOME}/.helm/cache/charts
-  fi
+  log-info "Staging chart directory"
+  rsync -av . ${HOME}/.helm/cache/charts/
 }
 
 function install-helm {
@@ -18,7 +17,7 @@ function install-helm {
   )
   export PATH="$(pwd)/.bin:${PATH}"
 
-  jigger-files-for-travis
+  move-files
 }
 
 function get-changed-charts {
@@ -60,9 +59,10 @@ function get-all-charts {
 
 function helm-test {
   log-warn "Start: ${1}"
-  .bin/helm install ${1}
-  healthcheck ${1}
-  .bin/helm uninstall -y ${1}
+  .bin/helm fetch "${1}"
+  .bin/helm install "${1}"
+  healthcheck "${1}"
+  .bin/helm uninstall -y "${1}"
   log-warn "Done: ${1}"
 }
 
@@ -108,12 +108,16 @@ function is-pod-running {
     kubectl get pods ${name} -o json | jq -r "${jq_name_query}" | grep -q "Running" && return 0
   fi
 
-  log-info "Couldn't find pod named ${name}, looking for label: app=${name}"
+  log-info "Looking for label: app=${name}"
   local jq_app_label_query=".items[] | select(.metadata.labels.app == \"${name}\") | .status.phase"
   kubectl get pods -o json | jq -r "${jq_app_label_query}" | grep -q "Running" && return 0
 
-  log-info "Couldn't find label: app=${name}, looking for label: provider=${name}"
+  log-info "Looking for label: provider=${name}"
   local jq_provider_label_query=".items[] | select(.metadata.labels.provider == \"${name}\") | .status.phase"
+  kubectl get pods -o json | jq -r "${jq_provider_label_query}" | grep -q "Running" && return 0
+
+  log-info "Looking for label: name=${name}"
+  local jq_provider_label_query=".items[] | select(.metadata.labels.name == \"${name}\") | .status.phase"
   kubectl get pods -o json | jq -r "${jq_provider_label_query}" | grep -q "Running" && return 0
 }
 

@@ -11,6 +11,7 @@ spec:
   template:
     metadata:
       labels:
+        app: redis-cluster
         name: redis
     spec:
       containers:

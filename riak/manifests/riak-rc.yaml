@@ -8,6 +8,9 @@ metadata:
 spec:
   replicas: 1
   template:
+    metadata:
+      labels:
+        provider: riak
     spec:
       containers:
       - name: riak
