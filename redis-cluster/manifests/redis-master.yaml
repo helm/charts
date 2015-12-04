@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Pod
 metadata:
   labels:
-    heritage: deis
+    heritage: helm
     name: redis
     redis-sentinel: "true"
     role: master

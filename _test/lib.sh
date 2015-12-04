@@ -5,7 +5,7 @@ function move-files {
   rsync -av . ${HOME}/.helm/cache/charts/
 }
 
-function install-helm {
+function helm::setup {
   # Uses HELM_ARTIFACT_REPO to determine which repository to grab helm from
 
   log-lifecycle "Installing helm into $(pwd)/.bin"
@@ -20,7 +20,7 @@ function install-helm {
   move-files
 }
 
-function get-changed-charts {
+function helm::get-changed-charts {
   git diff --name-only HEAD origin/HEAD -- charts \
     | cut -d/ -f 1-2 \
     | sort \
@@ -42,41 +42,41 @@ function ensure-dirs-exist {
 }
 
 function generate-test-plan {
-  ensure-dirs-exist "$(get-changed-charts)"
+  ensure-dirs-exist "$(helm::get-changed-charts)"
 }
 
 function get-all-charts {
   local chartlist="$(find . -name Chart.yaml)"
   local cleanedlist
 
-  local chart
-  for chart in ${chartlist}; do
-    cleanedlist+="$(basename $(dirname ${chart})) "
-  done
+  if [ -z "${TEST_CHARTS}" ]; then
+    local chart
+    for chart in ${chartlist}; do
+      cleanedlist+="$(basename $(dirname ${chart})) "
+    done
+  else
+    cleanedlist="${TEST_CHARTS}"
+  fi
 
   echo "${cleanedlist}"
 }
 
-function helm-test {
+function helm::test-chart {
   log-warn "Start: ${1}"
   .bin/helm fetch "${1}"
   .bin/helm install "${1}"
-  healthcheck "${1}"
+  helm::healthcheck "${1}"
   .bin/helm uninstall -y "${1}"
   log-warn "Done: ${1}"
 }
 
-function run-test-plan {
+function helm::test {
   local test_plan
 
   if is-pull-request; then
     test_plan="$(generate-test-plan)"
   else
-    if [ -z "${TEST_CHARTS}" ]; then
-      test_plan="$(get-all-charts)"
-    else
-      test_plan="${TEST_CHARTS}"
-    fi
+    test_plan="$(get-all-charts)"
   fi
 
   log-lifecycle "Running test plan"
@@ -85,7 +85,7 @@ function run-test-plan {
 
   local plan
   for plan in ${test_plan}; do
-    helm-test ${plan}
+    helm::test-chart ${plan}
   done
 }
 
@@ -99,7 +99,7 @@ function is-pull-request {
   fi
 }
 
-function is-pod-running {
+function helm::is-pod-running {
   local name="${1}"
 
   if kubectl get pods "${name}" &> /dev/null; then
@@ -121,10 +121,10 @@ function is-pod-running {
   kubectl get pods -o json | jq -r "${jq_provider_label_query}" | grep -q "Running" && return 0
 }
 
-function healthcheck {
+function helm::healthcheck {
   WAIT_TIME=1
   log-lifecycle "Checking: ${1}"
-  until is-pod-running "${1}"; do
+  until helm::is-pod-running "${1}"; do
     sleep 1
      (( WAIT_TIME += 1 ))
      if [ ${WAIT_TIME} -gt ${HEALTHCHECK_TIMEOUT_SEC} ]; then
@@ -132,6 +132,14 @@ function healthcheck {
     fi
   done
   log-lifecycle "Checked!: ${1}"
+}
+
+function helm::lint {
+  local chart
+  for chart in $(get-all-charts); do
+    .bin/helm fetch "${chart}"
+    .bin/helm lint "${chart}"
+  done
 }
 
 function log-lifecycle {
