@@ -1,4 +1,4 @@
 language: bash
 
 script:
-  - make test-charts
+  - make lint test

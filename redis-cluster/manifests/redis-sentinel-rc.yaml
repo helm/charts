@@ -3,7 +3,7 @@ kind: ReplicationController
 metadata:
   name: redis-sentinel
   labels:
-    heritage: deis
+    heritage: helm
 spec:
   replicas: 3
   selector:
@@ -14,7 +14,6 @@ spec:
         name: redis-sentinel
         redis-sentinel: "true"
         role: sentinel
-        heritage: deis
         provider: redis
     spec:
       containers:

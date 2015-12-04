@@ -4,6 +4,7 @@ metadata:
   name: nginx-alpine
   labels:
     app: nginx-alpine
+    heritage: helm
 spec:
   ports:
   - port: 80
