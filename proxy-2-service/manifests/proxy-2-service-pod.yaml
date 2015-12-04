@@ -1,8 +1,9 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: http-proxy
-  heritage: helm
+  name: proxy-2-service
+  labels:
+    heritage: helm
 spec:
   containers:
   - name: http-tcp
