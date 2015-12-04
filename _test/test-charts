@@ -22,10 +22,12 @@ if [ "${TRAVIS}" == true ]; then
           -out _test/secrets/gcloud-credentials.json -d
 fi
 
-trap gke-destroy EXIT ERR
+trap gke::destroy EXIT ERR
 
-setup-gke
+gke::setup
 
-install-helm
+helm::setup
 
-run-test-plan
+gke::create-cluster
+
+helm::test

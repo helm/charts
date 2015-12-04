@@ -4,6 +4,7 @@ metadata:
   name: example-nginx
   labels:
     app: example-nginx
+    heritage: helm
 spec:
   type: NodePort
   ports:

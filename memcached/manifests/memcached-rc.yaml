@@ -3,7 +3,7 @@ kind: ReplicationController
 metadata:
   name: memcached-1
   labels:
-    heritage: deis
+    heritage: helm
 spec:
   replicas: 1
   selector:
@@ -28,7 +28,7 @@ kind: ReplicationController
 metadata:
   name: memcached-2
   labels:
-    heritage: deis
+    heritage: helm
 spec:
   replicas: 1
   selector:

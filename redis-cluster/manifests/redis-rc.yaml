@@ -3,7 +3,7 @@ kind: ReplicationController
 metadata:
   name: redis
   labels:
-    heritage: deis
+    heritage: helm
 spec:
   replicas: 3
   selector:

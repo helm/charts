@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: example-todo
   labels:
-    heritage: deis
+    heritage: helm
 spec:
   type: NodePort
   ports:
