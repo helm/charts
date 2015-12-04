@@ -1,4 +1,4 @@
-function gke-install {
+function gke::install {
   if [ ! -d "${GOOGLE_SDK_DIR}" ]; then
     export CLOUDSDK_CORE_DISABLE_PROMPTS=1
     curl https://sdk.cloud.google.com | bash
@@ -8,7 +8,7 @@ function gke-install {
   gcloud -q components update kubectl
 }
 
-function gke-login {
+function gke::login {
   if [ -f ${GCLOUD_CREDENTIALS_FILE} ]; then
     gcloud -q auth activate-service-account --key-file "${GCLOUD_CREDENTIALS_FILE}"
   else
@@ -18,19 +18,19 @@ function gke-login {
   fi
 }
 
-function gke-config {
+function gke::config {
   gcloud -q config set project "${GCLOUD_PROJECT_ID}"
   gcloud -q config set compute/zone "${K8S_ZONE}"
 }
 
-function gke-create-cluster {
+function gke::create-cluster {
   log-lifecycle "Creating cluster ${K8S_CLUSTER_NAME}"
   gcloud -q container clusters create "${K8S_CLUSTER_NAME}"
   gcloud -q config set container/cluster "${K8S_CLUSTER_NAME}"
   gcloud -q container clusters get-credentials "${K8S_CLUSTER_NAME}"
 }
 
-function gke-destroy {
+function gke::destroy {
   if [ "${SKIP_DESTROY}" == false ]; then
     log-lifecycle "Destroying cluster ${K8S_CLUSTER_NAME}"
     if command -v gcloud &>/dev/null; then
@@ -43,9 +43,8 @@ function gke-destroy {
   fi
 }
 
-function setup-gke {
-  gke-install
-  gke-login
-  gke-config
-  gke-create-cluster
+function gke::setup {
+  gke::install
+  gke::login
+  gke::config
 }

@@ -3,6 +3,7 @@ kind: Service
 metadata:
   name: nginx
   labels:
+    heritage: helm
     app: nginx
 spec:
   ports:

@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: todo-redis-standalone
   labels:
-    heritage: deis
+    heritage: helm
 spec:
   ports:
     - port: 6379

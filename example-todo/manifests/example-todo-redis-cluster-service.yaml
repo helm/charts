@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: todo-redis-cluster
   labels:
-    heritage: deis
+    heritage: helm
 spec:
   ports:
     - port: 26379
