@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ubuntu
+  labels:
+    heritage: helm
+spec:
+  restartPolicy: Never
+  containers:
+  - name: waiter
+    image: "ubuntu-debootstrap:15.10"
+    command: ["/bin/sleep","9000"]
