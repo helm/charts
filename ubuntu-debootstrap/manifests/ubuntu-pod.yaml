@@ -1,8 +1,9 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: ubuntu
+  name: ubuntu-debootstrap
   labels:
+    app: ubuntu-debootstrap
     heritage: helm
 spec:
   restartPolicy: Never
