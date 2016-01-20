@@ -1,5 +1,5 @@
-name: selenium
-home: http://www.seleniumhq.org 
+name: selenium-hub
+home: http://www.seleniumhq.org
 version: 2.47.1
 description: Selenium is a suite of tools to automate web browsers across many platforms.
 maintainers:
