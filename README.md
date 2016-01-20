@@ -23,7 +23,7 @@ Helm charts are developed as part of a community effort.  To contribute:
 5. Submit a Pull Request
 
 Check out the [guide to writing awesome
-charts](https://github.com/deis/helm/blob/master/docs/awsome.md)
+charts](https://github.com/helm/helm/blob/master/docs/awesome.md)
 for more information.
 
 ## License
