@@ -160,7 +160,7 @@ def GenerateServicePorts(context, name):
   Returns:
     A dict containing a port definition
   """
-  container_port = context.properties.get('container_port', None)
+  container_port = context.properties['container_port']
   target_port = context.properties.get('target_port', container_port)
   service_port = context.properties.get('service_port', target_port)
   protocol = context.properties.get('protocol')
