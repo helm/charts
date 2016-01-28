@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: elasticsearch
-        image: elasticsearch
+        image: elasticsearch:2.1.1
         ports:
         - containerPort: 9200
         - containerPort: 9300
