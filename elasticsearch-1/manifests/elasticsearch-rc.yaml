@@ -11,7 +11,7 @@ spec:
     provider: elasticsearch-1
   template:
     metadata:
-      name: elasticsearch-1
+      name: elasticsearch
       labels:
         provider: elasticsearch-1
     spec:
