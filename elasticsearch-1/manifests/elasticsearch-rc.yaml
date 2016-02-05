@@ -3,17 +3,17 @@ kind: ReplicationController
 metadata:
   name: elasticsearch
   labels:
-    provider: elasticsearch
+    provider: elasticsearch-1
     heritage: helm
 spec:
   replicas: 1
   selector:
-    provider: elasticsearch
+    provider: elasticsearch-1
   template:
     metadata:
-      name: elasticsearch-1
+      name: elasticsearch
       labels:
-        provider: elasticsearch
+        provider: elasticsearch-1
     spec:
       containers:
       - name: elasticsearch
