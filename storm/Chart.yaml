@@ -1,0 +1,6 @@
+name: storm
+home: http://storm.apache.org/
+version: 0.1.0
+description: Apache Storm app 
+maintainers:
+- Naga Ravi Chaitanya Elluri <nelluri@engineyard.com>
