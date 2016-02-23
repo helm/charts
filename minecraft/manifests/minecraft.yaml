@@ -14,7 +14,6 @@ spec:
       labels:
         heritage: helm
         app: minecraft
-        scalable: false
     spec:
       containers:
       - name: minecraft
