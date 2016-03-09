@@ -1,0 +1,10 @@
+name: minecraft
+home: https://minecraft.net/
+version: 1.0.0
+description: A minecraft server
+maintainers:
+- Ben Barclay <benbarclay@gmail.com>
+details: |-
+  Minecraft is a moderately popular game involving the collection, moving and
+  re-assembling of raw materials. It may be an elaborate parody of the
+  Australian economy.

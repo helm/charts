@@ -1,0 +1,8 @@
+name: rabbitmq
+home: https://www.rabbitmq.com/
+version: 0.2.0
+description: Chart running RabbitMQ.
+maintainers:
+  - Matt Fisher <mfisher@deis.com>
+details:
+  This package provides RabbitMQ (a message broker) for development purposes.

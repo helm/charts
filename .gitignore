@@ -2,3 +2,5 @@ pkg/*
 *.pyc
 bin/*
 .project
+/.bin
+/_test/secrets/*.json
