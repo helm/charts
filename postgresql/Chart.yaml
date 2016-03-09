@@ -1,0 +1,8 @@
+name: postgresql
+home: http://www.postgresql.org/
+version: 0.2.0
+description: The world's most advanced open source database.
+maintainers:
+  - Matt Fisher <mfisher@deis.com>
+details:
+  This package provides a basic PostgreSQL database for development purposes.
