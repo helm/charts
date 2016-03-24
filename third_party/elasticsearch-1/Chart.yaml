@@ -1,8 +1,13 @@
 name: elasticsearch-1
-home: https://github.com/elastic/elasticsearch
-version: 0.1.0
 description: Elasticsearch Restful Search Engine
-maintainers:
-  - Nick Barrett <nick@edited.com>
-details:
-  This Chart provides a basic Elasticsearch v1 search service.
+version: 0.1.0
+keywords:
+  - chart
+  - provides
+  - basic
+  - elasticsearch
+  - v1
+  - search
+  - service
+source: https://github.com/kubernetes/charts/tree/master/third_party/elasticsearch-1
+home: https://github.com/elastic/elasticsearch

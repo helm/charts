@@ -1,8 +1,13 @@
 name: spark
-home: http://spark.apache.org/
-version: 0.1.0
 description: spark for kubernetes
-maintainers:
-- Naga Ravi Chaitanya Elluri <nelluri@deis.com>
-details:
-  Apache Spark is a fast and general-purpose cluster computing system 
+version: 0.1.0
+keywords:
+  - apache
+  - spark
+  - fast
+  - general-purpose
+  - cluster
+  - computing
+  - system
+source: https://github.com/kubernetes/charts/tree/master/spark
+home: http://spark.apache.org/

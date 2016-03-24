@@ -1,8 +1,10 @@
 name: cassandra
-home: http://cassandra.apache.org/
-version: 0.2.1
 description: The Apache Cassandra Project.
-maintainers:
-  - Matt Fisher <mfisher@deis.com>
-details:
-  This package deploys Cassandra to kubernetes.
+version: 0.2.1
+keywords:
+  - package
+  - deploys
+  - cassandra
+  - kubernetes
+source: https://github.com/kubernetes/charts/tree/master/cassandra
+home: http://cassandra.apache.org/
