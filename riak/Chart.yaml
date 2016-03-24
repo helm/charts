@@ -1,8 +1,14 @@
 name: riak
-home: http://github.com/deis/riak
-version: 0.2.0
 description: A distributed NoSQL database.
-maintainers:
-  - Matt Fisher <mfisher@deis.com>
-details:
-  This Chart provides a standalone Riak node in kubernetes for development purposes.
+version: 0.2.0
+keywords:
+  - chart
+  - provides
+  - standalone
+  - riak
+  - node
+  - kubernetes
+  - development
+  - purposes
+source: https://github.com/kubernetes/charts/tree/master/riak
+home: http://github.com/deis/riak

@@ -1,10 +1,23 @@
 name: alpine
-home: http://www.alpinelinux.org/
-version: 0.1.0
 description: Simple pod running Alpine Linux.
-maintainers:
-  - Matt Butcher <mbutcher@deis.com>
-details:
-  This package provides a basic Alpine Linux image that can be used for basic
-  debugging and troubleshooting. By default, it starts up, sleeps for a long
-  time, and then eventually stops.
+version: 0.1.0
+keywords:
+  - package
+  - provides
+  - basic
+  - alpine
+  - linux
+  - image
+  - used
+  - basic
+  - debugging
+  - troubleshooting
+  - default
+  - starts
+  - sleeps
+  - long
+  - time
+  - eventually
+  - stops
+source: https://github.com/kubernetes/charts/tree/master/alpine
+home: http://www.alpinelinux.org/

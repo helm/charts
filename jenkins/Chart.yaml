@@ -1,8 +1,12 @@
 name: jenkins
-home: https://jenkins-ci.org/
-version: 0.2.0
 description: The leading open-source continuous integration server.
-maintainers:
-  - Matt Fisher <mfisher@deis.com>
-details:
-  Jenkins is the leading open-source continuous integration server.
+version: 0.2.0
+keywords:
+  - jenkins
+  - leading
+  - open-source
+  - continuous
+  - integration
+  - server
+source: https://github.com/kubernetes/charts/tree/master/jenkins
+home: https://jenkins-ci.org/

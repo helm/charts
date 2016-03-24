@@ -1,8 +1,16 @@
 name: nginx-alpine
-home: https://www.nginx.com
-version: 0.1.0
 description: Nginx http service
-maintainers:
-  - Rimas Mocevicius <rimas@deis.com>
-details:
-  This chart contains a basic nginx http service useful in verifying proof of concept.
+version: 0.1.0
+keywords:
+  - chart
+  - contains
+  - basic
+  - nginx
+  - http
+  - service
+  - useful
+  - verifying
+  - proof
+  - concept
+source: https://github.com/kubernetes/charts/tree/master/nginx-alpine
+home: https://www.nginx.com
