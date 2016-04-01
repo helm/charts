@@ -1,8 +1,14 @@
 name: docker-registry
-home: https://github.com/docker/distribution
-version: 0.2.0
 description: The Docker toolset to pack, ship, store, and deliver content.
-maintainers:
-  - Matt Fisher <mfisher@deis.com>
-details:
-  This package provides a Docker Registry that can be used for development purposes.
+version: 0.2.0
+keywords:
+  - package
+  - provides
+  - docker
+  - registry
+  - used
+  - development
+  - purposes
+source: 
+  - https://github.com/kubernetes/charts/tree/master/docker-registry
+home: https://github.com/docker/distribution

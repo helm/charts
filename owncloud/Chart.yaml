@@ -1,8 +1,13 @@
 name: owncloud
-home: https://owncloud.org/
-version: 0.2.0
 description: a self-hosted file sync and share server.
-maintainers:
-  - Matt Fisher <mfisher@deis.com>
-details:
-  OwnCloud is a self-hosted file sync and share server.
+version: 0.2.0
+keywords:
+  - owncloud
+  - self-hosted
+  - file
+  - sync
+  - share
+  - server
+source: 
+  - https://github.com/kubernetes/charts/tree/master/owncloud
+home: https://owncloud.org/
