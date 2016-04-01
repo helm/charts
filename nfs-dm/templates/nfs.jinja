@@ -7,7 +7,7 @@
 
 resources:
 - name: nfs
-  type: github.com/kubernetes/application-dm-templates/common/replicatedservice:v2
+  type: gs://kubernetes-charts-testing/replicatedservice-3.tgz 
   properties:
     service_port: {{ SERVER_PORT }}
     container_port: {{ SERVER_PORT }}
