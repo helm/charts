@@ -1,12 +1,8 @@
 name: elasticsearch
-description: Elasticsearch Restful Search Engine
-version: 0.2.0
-keywords:
-  - chart
-  - provides
-  - basic
-  - elasticsearch
-  - search
-  - service
-source: https://github.com/kubernetes/charts/tree/master/elasticsearch
 home: https://github.com/elastic/elasticsearch
+version: 0.2.0
+description: Elasticsearch Restful Search Engine
+maintainers:
+  - Ian Coffey <icoffey@deis.com>
+details:
+  This Chart provides a basic Elasticsearch search service.
