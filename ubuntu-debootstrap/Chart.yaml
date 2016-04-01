@@ -1,9 +1,14 @@
 name: ubuntu-debootstrap
-home: https://hub.docker.com/_/ubuntu-debootstrap/
-version: 0.0.1
 description: Simple pod running minimal Ubuntu
-maintainers:
-  - Matt Butcher <mbutcher@deis.com>
-details:
-  This package runs a minimal Linux environment based on
-  ubuntu-debootstrap.
+version: 0.0.1
+keywords:
+  - package
+  - runs
+  - minimal
+  - linux
+  - environment
+  - based
+  - ubuntu-debootstrap
+source: 
+  - https://github.com/kubernetes/charts/tree/master/ubuntu-debootstrap
+home: https://hub.docker.com/_/ubuntu-debootstrap/

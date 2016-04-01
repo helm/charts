@@ -1,6 +1,7 @@
 name: storm
-home: http://storm.apache.org/
+description: Apache Storm app
 version: 0.1.0
-description: Apache Storm app 
-maintainers:
-- Naga Ravi Chaitanya Elluri <nelluri@engineyard.com>
+keywords:
+source: 
+  - https://github.com/kubernetes/charts/tree/master/storm
+home: http://storm.apache.org/

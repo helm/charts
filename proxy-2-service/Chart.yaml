@@ -1,8 +1,17 @@
 name: proxy-2-service
-home: https://github.com/kubernetes/contrib/tree/master/for-demos/proxy-to-service
-version: 0.1.0
 description: Proxy a pod port or host port to a kubernetes Service
-maintainers:
-- Rimas Mocevicius
-details: |-
-  Very handy for demos from your laptop to be able to access service via host IP and port
+version: 0.1.0
+keywords:
+  - handy
+  - demos
+  - laptop
+  - able
+  - access
+  - service
+  - via
+  - host
+  - ip
+  - port
+source: 
+  - https://github.com/kubernetes/charts/tree/master/proxy-2-service
+home: https://github.com/kubernetes/contrib/tree/master/for-demos/proxy-to-service
