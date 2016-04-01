@@ -1,17 +1,8 @@
 name: redmine
-description: A flexible project management web application.
-version: 0.2.0
-keywords:
-  - redmine
-  - flexible
-  - project
-  - management
-  - web
-  - application
-  - written
-  - using
-  - ruby
-  - rails
-  - framework
-source: https://github.com/kubernetes/charts/tree/master/redmine
 home: http://www.redmine.org/
+version: 0.2.0
+description: A flexible project management web application.
+maintainers:
+  - Matt Fisher <mfisher@deis.com>
+details:
+  Redmine is a flexible project management web application written using Ruby on Rails framework.
