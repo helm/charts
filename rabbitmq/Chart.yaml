@@ -1,0 +1,14 @@
+name: rabbitmq
+description: Chart running RabbitMQ.
+version: 0.2.0
+keywords:
+  - package
+  - provides
+  - rabbitmq
+  - message
+  - broker
+  - development
+  - purposes
+source: 
+  - https://github.com/kubernetes/charts/tree/master/rabbitmq
+home: https://www.rabbitmq.com/

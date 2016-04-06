@@ -1,0 +1,24 @@
+name: example-nginx
+description: An example nginx + git-sync application
+version: 0.0.2
+keywords:
+  - chart
+  - provides
+  - simple
+  - nginx
+  - website
+  - demonstrates
+  - pod
+  - two
+  - containers
+  - one
+  - container
+  - runs
+  - nginx
+  - constantly
+  - syncs
+  - git
+  - repository
+source: 
+  - https://github.com/kubernetes/charts/tree/master/example-nginx
+home: http://github.com/slack/kubernetes-nginx-example

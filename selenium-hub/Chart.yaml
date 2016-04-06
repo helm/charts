@@ -1,0 +1,24 @@
+name: selenium-hub
+description: Selenium is a suite of tools to automate web browsers across many platforms.
+version: 2.47.1
+keywords:
+  - selenium
+  - browser
+  - automation
+  - tool
+  - used
+  - primarily
+  - testing
+  - web
+  - applications
+  - chart
+  - deploys
+  - selenium
+  - grid
+  - setup
+  - chrome
+  - firefox
+  - workers
+source: 
+  - https://github.com/kubernetes/charts/tree/master/selenium-hub
+home: http://www.seleniumhq.org

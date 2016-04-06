@@ -1,0 +1,14 @@
+name: postgresql
+description: The world's most advanced open source database.
+version: 0.2.0
+keywords:
+  - package
+  - provides
+  - basic
+  - postgresql
+  - database
+  - development
+  - purposes
+source: 
+  - https://github.com/kubernetes/charts/tree/master/postgresql
+home: http://www.postgresql.org/

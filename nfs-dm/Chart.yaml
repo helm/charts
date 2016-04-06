@@ -1,0 +1,7 @@
+name: nfs
+description: NFS
+version: "2"
+home: ""
+expander:
+  name: Expandybird
+  entrypoint: templates/nfs.jinja

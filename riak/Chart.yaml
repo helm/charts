@@ -1,0 +1,15 @@
+name: riak
+description: A distributed NoSQL database.
+version: 0.2.0
+keywords:
+  - chart
+  - provides
+  - standalone
+  - riak
+  - node
+  - kubernetes
+  - development
+  - purposes
+source: 
+  - https://github.com/kubernetes/charts/tree/master/riak
+home: http://github.com/deis/riak
