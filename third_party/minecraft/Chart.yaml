@@ -1,0 +1,22 @@
+name: minecraft
+description: A minecraft server
+version: 1.0.0
+keywords:
+  - minecraft
+  - moderately
+  - popular
+  - game
+  - involving
+  - collection
+  - moving
+  - re-assembling
+  - raw
+  - materials
+  - may
+  - elaborate
+  - parody
+  - australian
+  - economy
+source: 
+  - https://github.com/kubernetes/charts/tree/master/third_party/minecraft
+home: https://minecraft.net/

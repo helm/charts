@@ -1,0 +1,14 @@
+name: mysql
+description: Chart running MySQL.
+version: 0.2.0
+keywords:
+  - package
+  - provides
+  - basic
+  - mysql
+  - database
+  - development
+  - purposes
+source: 
+  - https://github.com/kubernetes/charts/tree/master/mysql
+home: https://www.mysql.com/

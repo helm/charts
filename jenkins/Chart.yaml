@@ -1,0 +1,13 @@
+name: jenkins
+description: The leading open-source continuous integration server.
+version: 0.2.0
+keywords:
+  - jenkins
+  - leading
+  - open-source
+  - continuous
+  - integration
+  - server
+source: 
+  - https://github.com/kubernetes/charts/tree/master/jenkins
+home: https://jenkins-ci.org/

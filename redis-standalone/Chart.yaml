@@ -1,0 +1,18 @@
+name: redis-standalone
+description: Standalone Redis Master
+version: 0.0.1
+keywords:
+  - package
+  - provides
+  - standalone
+  - redis
+  - master
+  - useful
+  - prototyping
+  - note
+  - include
+  - high
+  - availability
+source: 
+  - https://github.com/kubernetes/charts/tree/master/redis-standalone
+home: http://github.com/deis/helm

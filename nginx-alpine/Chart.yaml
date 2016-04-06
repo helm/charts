@@ -1,0 +1,17 @@
+name: nginx-alpine
+description: Nginx http service
+version: 0.1.0
+keywords:
+  - chart
+  - contains
+  - basic
+  - nginx
+  - http
+  - service
+  - useful
+  - verifying
+  - proof
+  - concept
+source: 
+  - https://github.com/kubernetes/charts/tree/master/nginx-alpine
+home: https://www.nginx.com

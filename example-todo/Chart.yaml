@@ -1,0 +1,20 @@
+name: example-todo
+description: Example Todo application backed by Redis
+version: 0.0.6
+keywords:
+  - chart
+  - contains
+  - example
+  - todo
+  - application
+  - backed
+  - redis
+  - supports
+  - standalone
+  - clustered
+  - sentinel
+  - redis
+  - backends
+source: 
+  - https://github.com/kubernetes/charts/tree/master/example-todo
+home: http://github.com/deis/example-todo

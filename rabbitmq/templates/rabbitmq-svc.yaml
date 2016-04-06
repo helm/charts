@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: rabbitmq
+  labels:
+    provider: rabbitmq
+    heritage: helm
+spec:
+  ports:
+  - port: 5672
+  selector:
+    provider: rabbitmq

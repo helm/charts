@@ -1,0 +1,7 @@
+name: storm
+description: Apache Storm app
+version: 0.1.0
+keywords:
+source: 
+  - https://github.com/kubernetes/charts/tree/master/storm
+home: http://storm.apache.org/

@@ -1,0 +1,14 @@
+name: spark
+description: spark for kubernetes
+version: 0.1.0
+keywords:
+  - apache
+  - spark
+  - fast
+  - general-purpose
+  - cluster
+  - computing
+  - system
+source: 
+  - https://github.com/kubernetes/charts/tree/master/spark
+home: http://spark.apache.org/
