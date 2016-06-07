@@ -3,10 +3,10 @@ kind: Service
 metadata:
   name: owncloud
   labels:
-    provider: owncloud
+    app: owncloud
     heritage: helm
 spec:
   ports:
   - port: 80
   selector:
-    provider: owncloud
+    app: owncloud
