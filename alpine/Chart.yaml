@@ -19,6 +19,6 @@ keywords:
   - time
   - eventually
   - stops
-source: 
+sources: 
   - https://github.com/kubernetes/charts/tree/master/alpine
 home: http://www.alpinelinux.org/

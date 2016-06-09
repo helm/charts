@@ -9,6 +9,6 @@ keywords:
   - environment
   - based
   - ubuntu-debootstrap
-source: 
+sources: 
   - https://github.com/kubernetes/charts/tree/master/ubuntu-debootstrap
 home: https://hub.docker.com/_/ubuntu-debootstrap/

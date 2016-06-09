@@ -17,6 +17,6 @@ keywords:
   - parody
   - australian
   - economy
-source: 
+sources: 
   - https://github.com/kubernetes/charts/tree/master/third_party/minecraft
 home: https://minecraft.net/

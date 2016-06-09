@@ -10,6 +10,6 @@ keywords:
   - kubernetes
   - development
   - purposes
-source: 
+sources: 
   - https://github.com/kubernetes/charts/tree/master/riak
 home: http://github.com/deis/riak

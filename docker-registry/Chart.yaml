@@ -9,6 +9,6 @@ keywords:
   - used
   - development
   - purposes
-source: 
+sources: 
   - https://github.com/kubernetes/charts/tree/master/docker-registry
 home: https://github.com/docker/distribution

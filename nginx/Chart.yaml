@@ -12,6 +12,6 @@ keywords:
   - verifying
   - proof
   - concept
-source: 
+sources: 
   - https://github.com/kubernetes/charts/tree/master/nginx
 home: https://www.nginx.com
