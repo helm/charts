@@ -19,6 +19,6 @@ keywords:
   - deleted
   - cluster
   - running
-source: 
+sources: 
   - https://github.com/kubernetes/charts/tree/master/redis-cluster
 home: http://github.com/deis/redis-cluster

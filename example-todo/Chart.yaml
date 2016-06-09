@@ -15,6 +15,6 @@ keywords:
   - sentinel
   - redis
   - backends
-source: 
+sources: 
   - https://github.com/kubernetes/charts/tree/master/example-todo
 home: http://github.com/deis/example-todo

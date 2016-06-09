@@ -13,6 +13,6 @@ keywords:
   - ruby
   - rails
   - framework
-source: 
+sources: 
   - https://github.com/kubernetes/charts/tree/master/redmine
 home: http://www.redmine.org/

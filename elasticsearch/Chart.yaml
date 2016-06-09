@@ -8,6 +8,6 @@ keywords:
   - elasticsearch
   - search
   - service
-source: 
+sources: 
   - https://github.com/kubernetes/charts/tree/master/elasticsearch
 home: https://github.com/elastic/elasticsearch

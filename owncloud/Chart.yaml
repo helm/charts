@@ -8,6 +8,6 @@ keywords:
   - sync
   - share
   - server
-source: 
+sources: 
   - https://github.com/kubernetes/charts/tree/master/owncloud
 home: https://owncloud.org/
