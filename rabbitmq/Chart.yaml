@@ -9,6 +9,6 @@ keywords:
   - broker
   - development
   - purposes
-source: 
+sources: 
   - https://github.com/kubernetes/charts/tree/master/rabbitmq
 home: https://www.rabbitmq.com/

@@ -9,6 +9,6 @@ keywords:
   - cluster
   - computing
   - system
-source: 
+sources: 
   - https://github.com/kubernetes/charts/tree/master/spark
 home: http://spark.apache.org/

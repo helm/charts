@@ -6,6 +6,6 @@ keywords:
   - deploys
   - cassandra
   - kubernetes
-source: 
+sources: 
   - https://github.com/kubernetes/charts/tree/master/cassandra
 home: http://cassandra.apache.org/

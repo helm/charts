@@ -13,6 +13,6 @@ keywords:
   - include
   - high
   - availability
-source: 
+sources: 
   - https://github.com/kubernetes/charts/tree/master/redis-standalone
 home: http://github.com/deis/helm
