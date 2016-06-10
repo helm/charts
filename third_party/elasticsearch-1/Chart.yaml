@@ -9,6 +9,6 @@ keywords:
   - v1
   - search
   - service
-source: 
+sources: 
   - https://github.com/kubernetes/charts/tree/master/third_party/elasticsearch-1
 home: https://github.com/elastic/elasticsearch

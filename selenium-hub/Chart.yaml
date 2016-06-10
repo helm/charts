@@ -19,6 +19,6 @@ keywords:
   - chrome
   - firefox
   - workers
-source: 
+sources: 
   - https://github.com/kubernetes/charts/tree/master/selenium-hub
 home: http://www.seleniumhq.org

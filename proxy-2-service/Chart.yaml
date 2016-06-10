@@ -12,6 +12,6 @@ keywords:
   - host
   - ip
   - port
-source: 
+sources: 
   - https://github.com/kubernetes/charts/tree/master/proxy-2-service
 home: https://github.com/kubernetes/contrib/tree/master/for-demos/proxy-to-service

@@ -9,6 +9,6 @@ keywords:
   - database
   - development
   - purposes
-source: 
+sources: 
   - https://github.com/kubernetes/charts/tree/master/mysql
 home: https://www.mysql.com/

@@ -19,6 +19,6 @@ keywords:
   - syncs
   - git
   - repository
-source: 
+sources: 
   - https://github.com/kubernetes/charts/tree/master/example-nginx
 home: http://github.com/slack/kubernetes-nginx-example
