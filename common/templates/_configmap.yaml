@@ -1,0 +1,13 @@
+{{define "common.configmap" -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{template "common.fullname" .}}
+  labels:
+    {{ block "common.configmap.labels" . -}}
+    {{ template "common.metadata.labels" . }}
+    {{- end -}}
+    {{- block "common.configmap.xlabels" .}}{{end}}
+data:
+  {{block "common.configmap.data" .}}# Data goes here{{end}}
+{{- end}}

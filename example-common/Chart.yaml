@@ -1,0 +1,3 @@
+description: A Helm chart for Kubernetes
+name: example-commons
+version: 0.1.0
