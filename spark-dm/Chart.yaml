@@ -1,7 +1,0 @@
-name: spark
-description: Spark DM template 
-version: "2"
-home: ""
-expander:
-  name: Expandybird
-  entrypoint: templates/spark.jinja
