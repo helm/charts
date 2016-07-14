@@ -5,8 +5,6 @@
 Use this repository to submit official charts for Kubernetes Helm. Charts are curated application definitions for Kubernetes Helm. For more information about installing and using Helm, see its
 [README.md](https://github.com/kubernetes/helm/tree/master/README.md). To get a quick introduction to Charts see this [chart document](https://github.com/kubernetes/helm/blob/master/docs/charts.md).
 
-## Source Repository
-
 This Github repository contains the packaged source of Helm Charts that will become available on `gs://kubernetes-charts`.
 
 Charts are already available for testing at `gs://kubernetes-charts-testing`. You can browse those Charts directly on the Google Cloud Storage [console](https://console.cloud.google.com/storage/browser/kubernetes-charts-testing).
