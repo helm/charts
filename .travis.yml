@@ -1,4 +1,26 @@
-language: bash
+language: go
+
+go: 
+  - 1.6
+
+before_install:
+  - export GLIDE_VERSION="0.10.1"
+  - ls $GOPATH/src/
+  - wget "https://github.com/Masterminds/glide/releases/download/$GLIDE_VERSION/glide-$GLIDE_VERSION-linux-amd64.tar.gz"
+  - mkdir -p $HOME/bin
+  - tar -vxz -C $HOME/bin --strip=1 -f glide-$GLIDE_VERSION-linux-amd64.tar.gz
+  - export PATH="$HOME/bin:$PATH" GLIDE_HOME="$HOME/.glide"
+
+install:
+  - cd $GOPATH/src/
+  - mkdir k8s.io && cd k8s.io
+  - git clone https://github.com/kubernetes/helm
+  - cd helm && make bootstrap build
+  - mv bin/helm $HOME/bin
 
 script:
-  - make lint test
+  - cd $GOPATH/src/github.com/kubernetes/charts
+  - helm lint *.tgz
+
+after_success:
+  # TODO: run sync-repo script with gs://kubernetes-charts on green master build
