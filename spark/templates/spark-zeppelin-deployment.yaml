@@ -1,0 +1,34 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: "{{ printf "%s-%s" .Release.Name .Values.Zeppelin.Name | trunc 24 }}"
+  labels:
+    heritage: {{.Release.Service | quote }}
+    release: {{.Release.Name | quote }}
+    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+    component: "{{.Release.Name}}-{{.Values.Zeppelin.Component}}"
+  annotations:
+    "helm.sh/created": {{.Release.Time.Seconds | quote }}
+spec:
+  replicas: {{default 1 .Values.Zeppelin.Replicas | quote }}
+  strategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      component: "{{.Release.Name}}-{{.Values.Zeppelin.Component}}"
+  template:
+    metadata:
+      labels:
+        heritage: {{.Release.Service | quote }}
+        release: {{.Release.Name | quote }}
+        chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+        component: "{{.Release.Name}}-{{.Values.Zeppelin.Component}}"
+    spec:
+      containers:
+        - name: "{{ printf "%s-%s" .Release.Name .Values.Zeppelin.Name | trunc 24 }}"
+          image: "{{.Values.Zeppelin.Image}}:{{.Values.Zeppelin.Image_tag}}"
+          ports:
+            - containerPort: {{.Values.Zeppelin.ContainerPort}}
+          resources:
+            requests:
+              cpu: "{{.Values.Zeppelin.Cpu}}"

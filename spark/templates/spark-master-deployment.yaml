@@ -1,0 +1,37 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: "{{ printf "%s-%s" .Release.Name .Values.Master.Name | trunc 24 }}"
+  labels:
+    heritage: {{.Release.Service | quote }}
+    release: {{.Release.Name | quote }}
+    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+    component: "{{.Release.Name}}-{{.Values.Master.Name}}"
+  annotations:
+    "helm.sh/created": {{.Release.Time.Seconds | quote }}
+spec:
+  replicas: {{default 1 .Values.Master.Replicas | quote }}
+  strategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      component: "{{.Release.Name}}-{{.Values.Master.Component}}"
+  template:
+    metadata:
+      labels:
+        heritage: {{.Release.Service | quote }}
+        release: {{.Release.Name | quote }}
+        chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+        component: "{{.Release.Name}}-{{.Values.Master.Component}}"
+    spec:
+      containers:
+        - name: "{{ printf "%s-%s" .Release.Name .Values.Master.Name | trunc 24 }}"
+          image: "{{.Values.Master.Image}}:{{.Values.Master.Image_tag}}"
+          command: ["/bin/sh","-c"]
+          args: ["echo $(hostname -i) {{ printf "%s-%s" .Release.Name .Values.Master.Name | trunc 24 }} >> /etc/hosts; /opt/spark/bin/spark-class org.apache.spark.deploy.master.Master --ip {{ printf "%s-%s" .Release.Name .Values.Master.Name | trunc 24 }} --port {{.Values.Master.ServicePort}} --webui-port {{.Values.WebUi.ContainerPort}}"]
+          ports:
+            - containerPort: {{.Values.Master.ContainerPort}}
+            - containerPort: {{.Values.WebUi.ContainerPort}}
+          resources:
+            requests:
+              cpu: "{{.Values.Master.Cpu}}"
