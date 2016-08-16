@@ -14,7 +14,7 @@ spec:
     kind: Deployment
     name: "{{ printf "%s-%s" .Release.Name .Values.Worker.Name | trunc 24 }}"
     subresource: scale
-  minReplicas: 3
-  maxReplicas: 10
+  minReplicas: {{default 1 .Values.Worker.Replicas | quote }}
+  maxReplicas: {{default 1 .Values.Worker.ReplicasMax | quote }}
   cpuUtilization:
-    targetPercentage: 50
+    targetPercentage: {{default 1 .Values.Worker.CpuTargetPercentage | quote }}

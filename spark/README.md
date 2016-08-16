@@ -15,12 +15,22 @@ This chart will do the following:
 * 1 x Zeppelin with port 8080 exposed on an external LoadBalancer
 * All using Kubernetes Deployments
 
-## Chart Installation
+## Get this chart
+
+Download the latest release of the chart from the [releases](../../../releases) page.
+
+Alternatively, clone the repo if you wish to use the development snapshot:
+
+```bash
+$ git clone https://github.com/kubernetes/charts.git
 ```
-helm repo add lachlan-charts http://storage.googleapis.com/lachlan-charts
-helm search spark
-lachlan-charts/spark-0.1.0.tgz
-helm install lachlan-charts/spark-0.1.0.tgz
+
+## Installing the Chart
+
+To install the chart with the release name `my-release`:
+
+```bash
+$ helm install --name my-release spark-x.x.x.tgz
 ```
 
 ## Configuration
@@ -55,10 +65,14 @@ The following tables lists the configurable parameters of the Spark chart and th
 | `Worker.Name`         | Spark worker name                | `spark-worker`                                           |
 | `Worker.Image`        | Container image name             | `gcr.io/google_containers/spark`                         |
 | `Worker.ImageTag`     | Container image tag              | `1.5.1_v3`                                               |
-| `Worker.Replicas`     | k8s deployment replicas          | `3`                                                      |
+| `Worker.Replicas`     | k8s hpa and deployment replicas  | `3`                                                      |
+| `Worker.ReplicasMax`  | k8s hpa max replicas          | `10`                                                      |
 | `Worker.Component`    | k8s selector key                 | `spark-worker`                                           |
 | `Worker.Cpu`          | container requested cpu          | `100m`                                                   |
 | `Worker.ContainerPort`| Container listening port         | `7077`                                                   |
+| `Worker.CpuTargetPercentage`| k8s hpa cpu targetPercentage | `50`                                                   |
+
+
 
 ### Zeppelin
 
