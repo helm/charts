@@ -26,7 +26,7 @@ spec:
     spec:
       containers:
         - name: "{{ printf "%s-%s" .Release.Name .Values.Zeppelin.Name | trunc 24 }}"
-          image: "{{.Values.Zeppelin.Image}}:{{.Values.Zeppelin.Image_tag}}"
+          image: "{{.Values.Zeppelin.Image}}:{{.Values.Zeppelin.ImageTag}}"
           ports:
             - containerPort: {{.Values.Zeppelin.ContainerPort}}
           resources:

@@ -6,7 +6,7 @@
 Master:
   Name: spark-master
   Image: "gcr.io/google_containers/spark"
-  Image_tag: "1.5.1_v3"
+  ImageTag: "1.5.1_v3"
   Replicas: 1
   Component: "spark-master"
   Cpu: "100m"
@@ -21,7 +21,7 @@ WebUi:
 Worker:
   Name: spark-worker
   Image: "gcr.io/google_containers/spark"
-  Image_tag: "1.5.1_v3"
+  ImageTag: "1.5.1_v3"
   Replicas: 3
   Component: "spark-worker"
   Cpu: "100m"
@@ -30,7 +30,7 @@ Worker:
 Zeppelin:
   Name: zeppelin-controller
   Image: "gcr.io/google_containers/zeppelin"
-  Image_tag: "v0.5.5_v2"
+  ImageTag: "v0.5.5_v2"
   Replicas: 1
   Component: "zeppelin"
   Cpu: "100m"
