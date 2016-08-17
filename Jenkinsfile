@@ -12,7 +12,8 @@ node {
   sh './linux-amd64/helm init'
   
   // Get list of changed applications
-  def applications = sh(script: "git diff --name-only ${branch} | grep / | awk -F/ '{print \$1}' | uniq", returnStdout: true).trim().split()
+  def upstreamBranch = "origin/master"
+  def applications = sh(script: "git diff --name-only ${upstreamBranch} | grep / | awk -F/ '{print \$1}' | uniq", returnStdout: true).trim().split()
    
   for (int i = 0; i < applications.size(); i++) {
       def application = applications[i]
