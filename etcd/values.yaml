@@ -1,0 +1,16 @@
+# Default values for etcd.
+# This is a YAML-formatted file.
+# Declare name/value pairs to be passed into your templates.
+# name: value
+
+Name: etcd
+PeerPort: 2380
+ClientPort: 2379
+Component: "etcd"
+Replicas: 3
+Image: "gcr.io/google_containers/etcd-amd64"
+ImageTag: "2.2.5"
+ImagePullPolicy: "Always"
+Cpu: "100m"
+Memory: "512Mi"
+Storage: "1Gi"
