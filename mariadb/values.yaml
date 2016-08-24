@@ -25,3 +25,9 @@ imageTag: 10.1.14-r3
 ## ref: https://github.com/bitnami/bitnami-docker-mariadb/blob/master/README.md#creating-a-database-on-first-run
 ##
 # mariadbDatabase:
+
+## Persist data to a persitent disk
+# dataVolume:
+#   type: gcePersistentDisk
+#   id: mariadb-data
+#   fsType: ext4

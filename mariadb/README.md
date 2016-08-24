@@ -99,24 +99,24 @@ You first need to create a persistent disk in the cloud platform your cluster is
 $ gcloud compute disks create --size=500GB --zone=us-central1-a mariadb-data-disk
 ```
 
-### Step 2: Update `templates/deployment.yaml`
+### Step 2: Update `values.yaml`
 
 Replace:
 
 ```yaml
-      volumes:
-      - name: data
-        emptyDir: {}
+# dataVolume:
+#   type: gcePersistentDisk
+#   id: mariadb-data
+#   fsType: ext4
 ```
 
 with
 
 ```yaml
-      volumes:
-      - name: data
-        gcePersistentDisk:
-          pdName: mariadb-data-disk
-          fsType: ext4
+dataVolume:
+   type: gcePersistentDisk
+   id: mariadb-data
+   fsType: ext4
 ```
 
 [Install](#installing-the-chart) the chart after making these changes.
