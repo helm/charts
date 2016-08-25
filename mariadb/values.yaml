@@ -27,7 +27,8 @@ imageTag: 10.1.14-r3
 # mariadbDatabase:
 
 ## Persist data to a persitent disk
-# dataVolume:
-#   type: gcePersistentDisk
-#   id: mariadb-data
-#   fsType: ext4
+usePersistence: false
+dataVolume:
+  storageClass: generic
+  accessMode: ReadWriteOnce
+  size: 8Gi

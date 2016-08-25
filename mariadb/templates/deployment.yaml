@@ -57,6 +57,9 @@ spec:
           mountPath: /bitnami/mariadb
       volumes:
       - name: data
-        {{ template "volumeType" . }}
-          {{ template "volumeIdentifier" . }}
-          {{ template "volumeFsType" . }}
+      {{- if .Values.dataVolume }}
+        persistentVolumeClaim:
+          claimName: {{ template "fullname" . }}
+      {{- else }}
+        emptyDir: {}
+      {{- end -}}

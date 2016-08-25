@@ -60,6 +60,9 @@ The following tables lists the configurable parameters of the MariaDB chart and 
 | `mariadbUser`         | Username of new user to create.  | `nil`                                                    |
 | `mariadbPassword`     | Password for the new user.       | `nil`                                                    |
 | `mariadbDatabase`     | Name for new database to create. | `nil`                                                    |
+| `usePersistence`      | Create a volume to store data    | false
+|
+|  `dataVolume`         | Details of persistent volume claim | 
 
 The above parameters map to the env variables defined in [bitnami/mariadb](http://github.com/bitnami/bitnami-docker-mariadb). For more information please refer to the [bitnami/mariadb](http://github.com/bitnami/bitnami-docker-mariadb) image documentation.
 
