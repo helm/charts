@@ -31,7 +31,7 @@ Stable Charts:
 1. Provide a secure default configuration
 1. Do not leverage alpha features of Kubernetes
 
-Incubator Charts are those that do not meet these criteria. Having the incubator folder allows charts to be shared and improved on until they are ready to be moved into the stable folder.
+Incubator Charts are those that do not meet these criteria, but still meet the technical and documentation requirements described in CONTRIBUTING.md. Having the incubator folder allows charts to be shared and improved on until they are ready to be moved into the stable folder.
 
 In order to get a Chart from incubator to stable, Chart maintainers should open a pull request that moves the chart folder.
 
