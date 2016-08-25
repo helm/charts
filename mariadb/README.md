@@ -60,6 +60,9 @@ The following tables lists the configurable parameters of the MariaDB chart and 
 | `mariadbUser`         | Username of new user to create.  | `nil`                                                    |
 | `mariadbPassword`     | Password for the new user.       | `nil`                                                    |
 | `mariadbDatabase`     | Name for new database to create. | `nil`                                                    |
+| `usePersistence`      | Create a volume to store data    | false
+|
+|  `dataVolume`         | Details of persistent volume claim | 8Gi RW
 
 The above parameters map to the env variables defined in [bitnami/mariadb](http://github.com/bitnami/bitnami-docker-mariadb). For more information please refer to the [bitnami/mariadb](http://github.com/bitnami/bitnami-docker-mariadb) image documentation.
 
@@ -91,32 +94,25 @@ As a placeholder, the chart mounts an [emptyDir](http://kubernetes.io/docs/user-
 
 For persistence of the data you should replace the `emptyDir` volume with a persistent [storage volume](http://kubernetes.io/docs/user-guide/volumes/), else the data will be lost if the Pod is shutdown.
 
-### Step 1: Create a persistent disk
+### Step 1: Update `values.yaml` to enable persistence
 
-You first need to create a persistent disk in the cloud platform your cluster is running. For example, on GCE you can use the `gcloud` tool to create a [gcePersistentDisk](http://kubernetes.io/docs/user-guide/volumes/#gcepersistentdisk):
-
-```bash
-$ gcloud compute disks create --size=500GB --zone=us-central1-a mariadb-data-disk
-```
-
-### Step 2: Update `templates/deployment.yaml`
-
-Replace:
+Replace :
 
 ```yaml
-      volumes:
-      - name: data
-        emptyDir: {}
+usePersistence: false
 ```
 
 with
 
 ```yaml
-      volumes:
-      - name: data
-        gcePersistentDisk:
-          pdName: mariadb-data-disk
-          fsType: ext4
+usePersistence: true
 ```
+
+### Step 2: Update `values.yaml` to set the volume size
+```yaml
+  size: 8Gi
+```
+
+with your desired volume size.
 
 [Install](#installing-the-chart) the chart after making these changes.
