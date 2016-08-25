@@ -37,7 +37,6 @@ This repository is used by Chart developers for maintaining the official charts 
 * Must include source GitHub repositories for images used in the Chart
 * Images should not have any major security vulnerabilities
 * Must be up-to-date with the latest stable Helm/Kubernetes features
-    * Don't use alpha Kubernetes features
     * Use Deployments in favor of ReplicationControllers
 * Should follow Kubernetes best practices
     * Include Health Checks wherever practical
