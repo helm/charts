@@ -29,36 +29,3 @@ Get the imagePullPolicy.
     {{- end -}}
   {{- end -}}
 {{- end -}}
-
-{{/*
-Get the data volumeType.
-*/}}
-{{- define "volumeType" -}}
-  {{- if .Values.dataVolume -}}
-    {{- printf "%s:" .Values.dataVolume.type -}}
-  {{- else -}}
-    {{- "emptyDir: {}" -}}
-  {{- end -}}
-{{- end -}}
-
-{{/*
-Get the data volumeIdentifier.
-*/}}
-{{- define "volumeIdentifier" -}}
-  {{- if .Values.dataVolume -}}
-    {{- printf "pdName: %s" .Values.dataVolume.id -}}
-  {{- else -}}
-    {{- "" -}}
-  {{- end -}}
-{{- end -}}
-
-{{/*
-Get the data volumeFsType.
-*/}}
-{{- define "volumeFsType" -}}
-  {{- if .Values.dataVolume -}}
-    {{- printf "fsType: %s" .Values.dataVolume.fsType -}}
-  {{- else -}}
-    {{- "" -}}
-  {{- end -}}
-{{- end -}}
