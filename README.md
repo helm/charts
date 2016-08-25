@@ -19,6 +19,22 @@ The Charts in the master branch of this repository match the latest packaged Cha
 
 The purpose of this repository is to provide a place for maintaining and contributing official Charts, with CI processes in place for managing the releasing of Charts into the Chart Repository.
 
+The Charts in this repository are organized into two folders:
+* stable
+* incubator
+
+Stable Charts:
+
+1. Provide a method for data persistence
+1. Support application upgrades
+1. Allow customization of the application configuration
+1. Provide a secure default configuration
+1. Do not leverage alpha features of Kubernetes
+
+Incubator Charts are those that do not meet these criteria. Having the incubator folder allows charts to be shared and improved on until they are ready to be moved into the stable folder.
+
+In order to get a Chart from incubator to stable, Chart maintainers should open a pull request that moves the chart folder.
+
 ## Contributing a Chart
 
 We'd love for you to contribute a Chart that provides a useful application or service for Kubernetes. Please read our [Contribution Guide](CONTRIBUTING.md) for more information on how you can contribute Charts.
