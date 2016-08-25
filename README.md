@@ -25,7 +25,7 @@ The Charts in this repository are organized into two folders:
 
 Stable Charts:
 
-1. Provide a method for data persistence
+1. Provide a method for data persistence (if applicable)
 1. Support application upgrades
 1. Allow customization of the application configuration
 1. Provide a secure default configuration
