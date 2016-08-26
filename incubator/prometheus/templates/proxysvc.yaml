@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{template "proxyname" .}}
+  labels:
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+spec:
+  ports:
+  - port: {{default 443 .Values.httpsPort}}
+    targetPort: 443
+    protocol: TCP
+    name: https
+  - port: {{default 80 .Values.httpPort}}
+    targetPort: 80
+    protocol: TCP
+    name: http
+  selector:
+    app: {{template "fullname" .}}

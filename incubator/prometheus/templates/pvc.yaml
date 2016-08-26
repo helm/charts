@@ -1,0 +1,13 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{template "fullname" .}}
+  annotations:
+    volume.alpha.kubernetes.io/storage-class: "foo"
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{default .Values.storageSize "50Gi"}}
+

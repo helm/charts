@@ -1,0 +1,88 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{template "fullname" .}}
+  labels:
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: {{template "fullname" .}}
+        release: {{.Release.Name | quote }}
+    spec:
+      containers:
+      - name: prometheus
+        image: "gcr.io/{{ .Values.PROJECT }}/prometheus:{{default "v1.0.1" .Values.imageTag}}"
+        imagePullPolicy: {{default "Always" .Values.pullPolicy}}
+        args:
+          - "-config.file=/etc/prometheus/prometheus.yml"
+          - "-alertmanager.url=http://localhost:9093"
+          - "-storage.local.path=/data"
+          - "-web.console.libraries=/etc/prometheus/console_libraries"
+          - "-web.console.templates=/etc/prometheus/consoles"
+        env:
+          - name: PUSHGATEWAY_USER
+            valueFrom:
+              secretKeyRef:
+               name: {{template "fullname" .}}
+               key: pushgateway-user
+          - name: PUSHGATEWAY_PASSWORD
+            valueFrom:
+              secretKeyRef:
+               name: {{template "fullname" .}}
+               key: pushgateway-password
+          - name: PUSHGATEWAY_ENDPOINT
+            valueFrom:
+              secretKeyRef:
+               name: {{template "fullname" .}}
+               key: pushgateway-endpoint
+        ports:
+        - containerPort: 9090
+        volumeMounts:
+        - mountPath: /etc/config
+          name: config-volume
+        - mountPath: /data
+          name: storage-volume
+      - name: proxy
+        image: "gcr.io/{{ .Values.PROJECT }}/nginx-ssl-proxy:{{default "latest" .Values.imageTag}}"
+        imagePullPolicy: {{default "Always" .Values.pullPolicy}}
+        ports:
+        - containerPort: 443
+        - containerPort: 80
+        env:
+        - name: TARGET_SERVICE
+          value: "localhost:9090"
+        volumeMounts:
+        - mountPath: /etc/config
+          name: proxy-config-volume
+        - mountPath: /etc/secrets
+          name: proxy-secrets-volume
+      - name: alertmanager
+        image: "prom/alertmanager"
+        imagePullPolicy: {{default "IfNotPresent" .Values.pullPolicy}}
+        args:
+          - "-config.file=/etc/config/alertmanager.yml"
+        volumeMounts:
+        - mountPath: /etc/config
+          name: proxy-config-volume
+      - name: node-exporter
+        image: "prom/node-exporter"
+        imagePullPolicy: {{default "IfNotPresent" .Values.pullPolicy}}
+      volumes:
+        - name: config-volume
+          configMap:
+            name: {{template "fullname" .}}
+        - name: storage-volume
+          persistentVolumeClaim:
+            claimName: {{template "fullname" .}}
+        - name: proxy-secrets-volume
+          secret:
+            secretName: {{template "proxyname" .}}
+        - name: proxy-config-volume
+          configMap:
+            name: {{template "fullname" .}}
+
