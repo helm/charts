@@ -1,0 +1,15 @@
+name: mariadb
+version: 0.3.0
+description: Chart for MariaDB
+keywords:
+- mariadb
+- mysql
+- database
+- sql
+home: https://mariadb.org
+sources:
+- https://github.com/bitnami/bitnami-docker-mariadb
+maintainers:
+- name: Bitnami
+  email: containers@bitnami.com
+engine: gotpl
