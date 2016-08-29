@@ -23,11 +23,9 @@ Worker:
   Image: "gcr.io/google_containers/spark"
   ImageTag: "1.5.1_v3"
   Replicas: 3
-  ReplicasMax: 10
   Component: "spark-worker"
   Cpu: "100m"
   ContainerPort: 8081
-  CpuTargetPercentage: 50
 
 Zeppelin:
   Name: zeppelin-controller
