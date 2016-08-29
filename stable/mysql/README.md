@@ -54,13 +54,16 @@ The following tables lists the configurable parameters of the MySQL chart and th
 |       Parameter       |           Description            |                         Default                          |
 |-----------------------|----------------------------------|----------------------------------------------------------|
 | `imageTag`            | `mysql` image tag.     | Most recent release                                      |
-| `imagePullPolicy`     | Image pull policy.               | `Always` if `imageTag` is `latest`, else `IfNotPresent`. |
 | `mysqlRootPassword` | Password for the `root` user.    | `nil`                                                    |
 | `mysqlUser`         | Username of new user to create.  | `nil`                                                    |
 | `mysqlPassword`     | Password for the new user.       | `nil`                                                    |
 | `mysqlDatabase`     | Name for new database to create. | `nil`                                                    |
+| `persistence.enabled`      | Create a volume to store data    | true                                              |
+|  `persistence.size`         | Size of persistent volume claim | 8Gi RW                                            |
+|  `persistence.storageClass`         | Type of persistent volume claim | generic                                            |
+|  `persistence.accessMode`         | ReadWriteOnce or ReadOnly | ReadWriteOnce                                             |
 
-The above parameters map to the env variables defined in the [MySQL DockerHub Image](https://hub.docker.com/_/mysql/).
+The above parameters map to the env variables defined in the [MySQL DockerHub image](https://hub.docker.com/_/mysql/).
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
@@ -84,38 +87,7 @@ $ helm install --name my-release -f values.yaml mysql-x.x.x.tgz
 
 The  [MySQL](https://hub.docker.com/_/mysql/) image stores the MySQL data and configurations at the `/var/lib/mysql` path of the container.
 
-As a placeholder, the chart mounts an [emptyDir](http://kubernetes.io/docs/user-guide/volumes/#emptydir) volume at this location.
+By default a PersistentVolumeClaim is created and mounted into that directory. In order to disable this functionality
+you can change the values.yaml to disable persistence and use an emptyDir instead.
 
 > *"An emptyDir volume is first created when a Pod is assigned to a Node, and exists as long as that Pod is running on that node. When a Pod is removed from a node for any reason, the data in the emptyDir is deleted forever."*
-
-For persistence of the data you should replace the `emptyDir` volume with a persistent [storage volume](http://kubernetes.io/docs/user-guide/volumes/), else the data will be lost if the Pod is shutdown.
-
-### Step 1: Create a persistent disk
-
-You first need to create a persistent disk in the cloud platform your cluster is running. For example, on GCE you can use the `gcloud` tool to create a [gcePersistentDisk](http://kubernetes.io/docs/user-guide/volumes/#gcepersistentdisk):
-
-```bash
-$ gcloud compute disks create --size=500GB --zone=us-central1-a MySQL-data-disk
-```
-
-### Step 2: Update `templates/deployment.yaml`
-
-Replace:
-
-```yaml
-      volumes:
-      - name: data
-        emptyDir: {}
-```
-
-with
-
-```yaml
-      volumes:
-      - name: data
-        gcePersistentDisk:
-          pdName: mysql-data-disk
-          fsType: ext4
-```
-
-[Install](#installing-the-chart) the chart after making these changes.

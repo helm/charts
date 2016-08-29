@@ -16,3 +16,10 @@ imageTag: "5.7"
 ## Create a database
 ##
 # mysqlDatabase:
+
+## Persist data to a persitent volume
+persistence:
+    enabled: true
+    storageClass: generic
+    accessMode: ReadWriteOnce
+    size: 8Gi
