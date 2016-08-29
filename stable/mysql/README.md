@@ -4,7 +4,7 @@
 
 ## Introduction
 
-This chart bootstraps a [MySQL](https://MySQL.org) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
+This chart bootstraps a single node MySQL deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
 ## Get this chart
 
@@ -28,6 +28,13 @@ $ helm install --name my-release mysql-x.x.x.tgz
 
 The command deploys MySQL on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
 
+By default a random password will be generated for the root user. If you'd like to set your own password change the mysqlRootPassword
+in the values.yaml.
+
+You can retrieve your root password by running the following command. Make sure to replace [YOUR_RELEASE_NAME]:
+
+    printf $(printf '\%o' `kubectl get secret [YOUR_RELEASE_NAME]-mysql -o jsonpath="{.data.mysql-root-password[*]}"`)
+
 > **Tip**: List all releases using `helm list`
 
 ## Uninstalling the Chart
@@ -46,21 +53,21 @@ The following tables lists the configurable parameters of the MySQL chart and th
 
 |       Parameter       |           Description            |                         Default                          |
 |-----------------------|----------------------------------|----------------------------------------------------------|
-| `imageTag`            | `bitnami/MySQL` image tag.     | Most recent release                                      |
+| `imageTag`            | `mysql` image tag.     | Most recent release                                      |
 | `imagePullPolicy`     | Image pull policy.               | `Always` if `imageTag` is `latest`, else `IfNotPresent`. |
-| `MySQLRootPassword` | Password for the `root` user.    | `nil`                                                    |
-| `MySQLUser`         | Username of new user to create.  | `nil`                                                    |
-| `MySQLPassword`     | Password for the new user.       | `nil`                                                    |
-| `MySQLDatabase`     | Name for new database to create. | `nil`                                                    |
+| `mysqlRootPassword` | Password for the `root` user.    | `nil`                                                    |
+| `mysqlUser`         | Username of new user to create.  | `nil`                                                    |
+| `mysqlPassword`     | Password for the new user.       | `nil`                                                    |
+| `mysqlDatabase`     | Name for new database to create. | `nil`                                                    |
 
-The above parameters map to the env variables defined in [bitnami/MySQL](http://github.com/bitnami/bitnami-docker-MySQL). For more information please refer to the [bitnami/MySQL](http://github.com/bitnami/bitnami-docker-MySQL) image documentation.
+The above parameters map to the env variables defined in the [MySQL DockerHub Image](https://hub.docker.com/_/mysql/).
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```bash
 $ helm install --name my-release \
-  --set MySQLRootPassword=secretpassword,MySQLUser=my-user,MySQLPassword=my-password,MySQLDatabase=my-database \
-    MySQL-x.x.x.tgz
+  --set mysqlLRootPassword=secretpassword,mysqlUser=my-user,mysqlPassword=my-password,mysqlDatabase=my-database \
+    mysql-x.x.x.tgz
 ```
 
 The above command sets the MySQL `root` account password to `secretpassword`. Additionally it creates a standard database user named `my-user`, with the password `my-password`, who has access to a database named `my-database`.
@@ -68,14 +75,14 @@ The above command sets the MySQL `root` account password to `secretpassword`. Ad
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```bash
-$ helm install --name my-release -f values.yaml MySQL-x.x.x.tgz
+$ helm install --name my-release -f values.yaml mysql-x.x.x.tgz
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
 ## Persistence
 
-The [Bitnami MySQL](https://github.com/bitnami/bitnami-docker-MySQL) image stores the MySQL data and configurations at the `/bitnami/MySQL` path of the container.
+The  [MySQL](https://hub.docker.com/_/mysql/) image stores the MySQL data and configurations at the `/var/lib/mysql` path of the container.
 
 As a placeholder, the chart mounts an [emptyDir](http://kubernetes.io/docs/user-guide/volumes/#emptydir) volume at this location.
 
@@ -107,7 +114,7 @@ with
       volumes:
       - name: data
         gcePersistentDisk:
-          pdName: MySQL-data-disk
+          pdName: mysql-data-disk
           fsType: ext4
 ```
 
