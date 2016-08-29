@@ -15,6 +15,10 @@ This chart will do the following:
 * 1 x Zeppelin with port 8080 exposed on an external LoadBalancer
 * All using Kubernetes Deployments
 
+## Prerequisites
+
+* Assumes that serviceAccount tokens are available under hostname metadata. (Works on GKE by default) URL -- http://metadata/computeMetadata/v1/instance/service-accounts/default/token
+
 ## Get this chart
 
 Download the latest release of the chart from the [releases](../../../releases) page.
@@ -65,9 +69,12 @@ The following tables lists the configurable parameters of the Spark chart and th
 | `Worker.Name`         | Spark worker name                | `spark-worker`                                           |
 | `Worker.Image`        | Container image name             | `gcr.io/google_containers/spark`                         |
 | `Worker.ImageTag`     | Container image tag              | `1.5.1_v3`                                               |
+| `Worker.Replicas`     | k8s hpa and deployment replicas  | `3`                                                      |
+| `Worker.ReplicasMax`  | k8s hpa max replicas          | `10`                                                      |
 | `Worker.Component`    | k8s selector key                 | `spark-worker`                                           |
 | `Worker.Cpu`          | container requested cpu          | `100m`                                                   |
 | `Worker.ContainerPort`| Container listening port         | `7077`                                                   |
+| `Worker.CpuTargetPercentage`| k8s hpa cpu targetPercentage | `50`                                                   |
 
 
 
