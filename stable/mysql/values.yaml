@@ -1,0 +1,24 @@
+## Bitnami mysql image version
+## ref: https://hub.docker.com/r/bitnami/mysql/tags/
+##
+## Default: none
+imageTag: "5.7"
+
+## Specify a imagePullPolicy
+## Default to 'Always' if imageTag is 'latest', else set to 'IfNotPresent'
+## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+##
+# imagePullPolicy:
+
+## (Required) Specify password for root user
+##
+# mysqlRootPassword:
+
+## Create a database user
+##
+# mysqlUser:
+# mysqlPassword:
+
+## Create a database
+##
+# mysqlDatabase:
