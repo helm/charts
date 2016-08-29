@@ -3,6 +3,7 @@ home: http://spark.apache.org/
 version: 0.1.0
 description: A Apache Spark Helm chart for Kubernetes. Apache Spark is a fast and general-purpose cluster computing system
 sources:
+  - https://github.com/kubernetes/kubernetes/tree/master/examples/spark
   - https://github.com/apache/spark
 maintainers:
   - name: Lachlan Evenson
