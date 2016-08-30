@@ -28,21 +28,7 @@ spec:
         volumeMounts:
         - mountPath: /data
           name: storage-volume
-      - name: proxy
-        image: "{{.Values.proxyImageName}}:{{default "latest" .Values.proxyImageTag}}"
-        imagePullPolicy: {{default "Always" .Values.pullPolicy}}
-        ports:
-        - containerPort: 443
-        env:
-        - name: TARGET_SERVICE
-          value: "localhost:3000"
-        volumeMounts:
-        - mountPath: /etc/secrets
-          name: proxy-secrets-volume
       volumes:
         - name: storage-volume
           persistentVolumeClaim:
             claimName: {{template "fullname" .}}
-        - name: proxy-secrets-volume
-          secret:
-            secretName: {{template "proxyname" .}}
