@@ -3,12 +3,12 @@ kind: Service
 metadata:
   name: {{template "fullname" .}}
   labels:
-    heritage: {{ .Release.Service | quote }}
-    release: {{ .Release.Name | quote }}
+    heritage: {{.Release.Service | quote}}
+    release: {{.Release.Name | quote}}
     chart: "{{.Chart.Name}}-{{.Chart.Version}}"
 spec:
   ports:
-  - port: {{default 80 .Values.httpPort}}
+  - port: {{default 80 .Values.httpPort | quote}}
     targetPort: 9090
     protocol: TCP
     name: http

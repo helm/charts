@@ -1,3 +1,3 @@
-PROJECT: "your-project-here"
+image: "prom/prometheus"
 imageTag: "latest"
 storageSize: "200Gi"

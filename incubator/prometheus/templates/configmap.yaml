@@ -3,9 +3,9 @@ kind: ConfigMap
 metadata:
   name: {{template "fullname" .}}
   labels:
-    release: {{ .Release.Name | quote }}
+    release: {{.Release.Name | quote}}
     app: {{template "fullname" .}}
-    heritage: {{.Release.Service | quote }}
+    heritage: {{.Release.Service | quote}}
 data:
   prometheus.yml.tmpl: >
 {{.Files.Get "prometheus.yml.tmpl" | indent 4}}
