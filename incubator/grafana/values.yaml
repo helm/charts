@@ -1,0 +1,5 @@
+imageName: "grafana/grafana"
+proxyImageName: "quay.io/tmc/nginx-ssl-proxy"
+storageSize: "1Gi"
+adminUser: "admin"
+adminPassword: "admin"
