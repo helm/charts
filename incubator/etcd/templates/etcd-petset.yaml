@@ -15,9 +15,9 @@ metadata:
 spec:
   ports:
   - port: {{.Values.PeerPort}}
-    name: peer
+    name: etcd-server
   - port: {{.Values.ClientPort}}
-    name: client
+    name: etcd-client
   clusterIP: None
   selector:
     component: "{{.Release.Name}}-{{.Values.Component}}"
