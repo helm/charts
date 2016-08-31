@@ -73,8 +73,8 @@ $ helm install --name my-release -f values.yaml zookeeper-x.x.x.tgz
 
 You can test failover by killing the leader. Insert a key:
 ```console
-$ kubectl exec zoo-0 -- /opt/zookeeper/bin/zkCli.sh create /foo bar;
-$ kubectl exec zoo-2 -- /opt/zookeeper/bin/zkCli.sh get /foo;
+$ kubectl exec $RELEASE-NAME-zoo-0 -- /opt/zookeeper/bin/zkCli.sh create /foo bar;
+$ kubectl exec $RELEASE-NAME-zoo-2 -- /opt/zookeeper/bin/zkCli.sh get /foo;
 
 Watch existing members:
 ```console
