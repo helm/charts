@@ -1,7 +1,7 @@
 #!/bin/bash -xe
-UPSTREAM_BRANCH="origin/master"
-CHANGED_FOLDERS=`git diff --name-only ${UPSTREAM_BRANCH} | grep / | awk -F/ '{print \$1}' | uniq`
+UPSTREAM_BRANCH="upstream/master"
 
+CHANGED_FOLDERS=`git diff --name-only ${UPSTREAM_BRANCH} | grep -v test | grep / | uniq`
 for directory in ${CHANGED_FOLDERS}; do
-  "./linux-amd64/helm lint ${directory}"
+  "helm lint ${directory}"
 done
