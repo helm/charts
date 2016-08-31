@@ -1,2 +1,3 @@
-#!/bin/bash
+#!/bin/bash -xe
+kubectl version
 echo "Done Testing!"
