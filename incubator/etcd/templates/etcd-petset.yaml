@@ -103,7 +103,7 @@ spec:
             # store member id into PVC for later member replacement
             collect_member() {
                 while ! etcdctl member list &>/dev/null; do sleep 1; done
-                etcdctl member list | grep ${HOSTNAME}.etcd | cut -d':' -f1 | cut -d'[' -f1 > /var/run/etcd/member_id
+                etcdctl member list | grep http://${HOSTNAME}.${PETSET_NAME}:2380 | cut -d':' -f1 | cut -d'[' -f1 > /var/run/etcd/member_id
                 exit 0
             }
 
