@@ -71,7 +71,7 @@ $ helm install --name my-release -f values.yaml consul-x.x.x.tgz
 
 ## Testing
 
-Execute /test.sh script on any of the Pods. I still need to get this script onto the pods so that it can be executed remotely.
+Execute test.sh. It will confirm that there are at least 3 consul servers present.
 
 ## Cluster Health
 
