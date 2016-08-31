@@ -13,5 +13,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-docker run -v `pwd`:/src gcr.io/kubernetes-charts-ci/test-image:v1.4 /src/test/changed.sh
-echo "Done Testing!"
+UPSTREAM_BRANCH="upstream/master"
+
+CHANGED_FOLDERS=`git diff --name-only ${UPSTREAM_BRANCH} | grep -v test | grep / | awk -F/ '{print $1"/"$2}' | uniq`
+/opt/linux-amd64/helm init --client-only
+
+for directory in ${CHANGED_FOLDERS}; do
+  /opt/linux-amd64/helm lint ${directory}
+done
