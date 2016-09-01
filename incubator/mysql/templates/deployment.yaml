@@ -57,7 +57,7 @@ spec:
           mountPath: /var/lib/mysql
       volumes:
       - name: data
-      {{- if .Values.usePersistence }}
+      {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
           claimName: {{ template "fullname" . }}
       {{- else }}
