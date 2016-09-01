@@ -1,0 +1,17 @@
+# Default values for zookeeper.
+# This is a YAML-formatted file.
+# Declare name/value pairs to be passed into your templates.
+# name: value
+
+
+Name: zk
+PeerPort: 2888
+LeaderElectionPort: 3888
+Component: "zk"
+Replicas: 3
+Image: "java"
+ImageTag: "openjdk-8-jre"
+ImagePullPolicy: "Always"
+Cpu: "100m"
+Memory: "512Mi"
+Storage: "1Gi"
