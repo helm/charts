@@ -1,0 +1,88 @@
+apiVersion: apps/v1alpha1
+kind: PetSet
+metadata:
+  name: "{{ printf "%s-%s" .Release.Name .Values.Name }}"
+  namespace: {{ .Values.Namespace }}
+  labels:
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    component: "{{.Release.Name}}-{{.Values.Component}}"
+  annotations:
+    "helm.sh/created": {{ .Release.Time.Seconds | quote }}
+spec:
+  serviceName: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 24 }}"
+  replicas: {{default 5 .Values.Replicas | quote }}
+  template:
+    metadata:
+      name: "{{ printf "%s-%s" .Release.Name .Values.Name }}"
+      labels:
+        heritage: {{.Release.Service | quote }}
+        release: {{.Release.Name | quote }}
+        chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+        component: "{{.Release.Name}}-{{.Values.Component}}"
+      annotations:
+        "helm.sh/created": {{.Release.Time.Seconds | quote }}
+        pod.alpha.kubernetes.io/initialized: "true"
+    spec:
+      containers:
+      - name: spilo
+        image: {{ .Values.Spilo.Image }}:{{ .Values.Spilo.Version }}
+        env:
+        - name: PGPASSWORD_SUPERUSER
+          valueFrom:
+            secretKeyRef:
+              name: "{{ printf "%s-%s" .Release.Name .Values.Name }}"
+              key: password.superuser
+        - name: PGPASSWORD_ADMIN
+          valueFrom:
+            secretKeyRef:
+              name: "{{ printf "%s-%s" .Release.Name .Values.Name }}"
+              key: password.admin
+        - name: PGPASSWORD_STANDBY
+          valueFrom:
+            secretKeyRef:
+              name: "{{ printf "%s-%s" .Release.Name .Values.Name }}"
+              key: password.standby
+        - name: ETCD_DISCOVERY_DOMAIN
+          value: {{ .Values.Etcd.Discovery }}
+        - name: SCOPE
+          value: "{{ printf "%s-%s" .Release.Name .Values.Name }}"
+        - name: WAL_GCS_BUCKET
+          value: {{ .Values.GCS.Bucket }}
+        - name: GOOGLE_APPLICATION_CREDENTIALS
+          value: /etc/patroni/gcloud-credentials.json
+        - name: PGROOT
+          value: /home/postgres/pgdata/pgroot
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+        ports:
+        - containerPort: 8008
+        - containerPort: 5432
+        resources:
+          requests:
+            cpu: "{{.Values.Resources.Cpu}}"
+            memory: "{{.Values.Resources.Memory}}"
+        volumeMounts:
+        - name: pgdata
+          mountPath: /home/postgres/pgdata
+        - mountPath: /etc/patroni
+          name: patroni-config
+          readOnly: true
+      volumes:
+      - name: patroni-config
+        secret:
+          secretName: "{{ printf "%s-%s" .Release.Name .Values.Name }}"
+  volumeClaimTemplates:
+  - metadata:
+      name: pgdata
+      annotations:
+        volume.alpha.kubernetes.io/storage-class: anything
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: "{{.Values.Resources.Storage}}"

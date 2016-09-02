@@ -1,0 +1,35 @@
+Name: patroni
+Namespace: default # TODO: make this actually configurable
+
+Component: patroni
+ImagePullPolicy: IfNotPresent
+
+Spilo:
+  # this image was built from https://github.com/zalando/spilo/tree/master/postgres-appliance
+  Image: registry.opensource.zalan.do/acid/spilo-9.5
+  Version: 1.0-p5
+
+Replicas: 5
+
+Resources:
+  Cpu: 100m
+  Memory: 512Mi
+  Storage: 1Gi
+
+Credentials:
+  Superuser: tea
+  Admin: cola
+  Standby: pinacolada
+
+Etcd:
+  Discovery: etcd.default.svc.cluster.local
+
+GCS:
+  Credentials: |
+    {
+      "type": "service_account",
+      "project_id": "...",
+      "private_key_id": "...",
+      ...
+    }
+  Bucket: some-google-bucket
