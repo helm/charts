@@ -1,5 +1,5 @@
 global:
-  slack_api_url: '...'
+  # slack_api_url: '...' # example slack configuration
 
 route:
   receiver: 'default-receiver'
@@ -9,6 +9,6 @@ route:
 
 receivers:
   - name: 'default-receiver'
-    slack_configs:
-    - channel: '@you'
-      send_resolved: true
+    #slack_configs:
+    #  - channel: '@you'
+    #    send_resolved: true
