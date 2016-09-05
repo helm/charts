@@ -9,5 +9,5 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: {{default .Values.storageSize "50Gi"}}
+      storage: {{default "50Gi" .Values.storageSize}}
 
