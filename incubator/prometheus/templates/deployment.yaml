@@ -19,7 +19,7 @@ spec:
         image: "{{.Values.image}}:{{.Values.imageTag}}"
         imagePullPolicy: {{default "Always" .Values.pullPolicy}}
         args:
-          - "-config.file=/etc/prometheus/prometheus.yml"
+          - "-config.file=/etc/config/prometheus.yml"
           - "-alertmanager.url=http://localhost:9093"
           - "-storage.local.path=/data"
           - "-web.console.libraries=/etc/prometheus/console_libraries"

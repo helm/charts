@@ -7,8 +7,8 @@ metadata:
     app: {{template "fullname" .}}
     heritage: {{.Release.Service | quote}}
 data:
-  prometheus.yml.tmpl: >
-{{.Files.Get "prometheus.yml.tmpl" | indent 4}}
+  prometheus.yml: >
+{{.Files.Get "prometheus.yml" | indent 4}}
   alertmanager.yml: >
 {{.Files.Get "alertmanager.yml" | indent 4}}
   rules: >
