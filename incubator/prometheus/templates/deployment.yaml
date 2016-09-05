@@ -32,7 +32,7 @@ spec:
         - mountPath: /data
           name: storage-volume
       - name: alertmanager
-        image: "prom/alertmanager"
+        image: "{{.Values.imageAlertManager}}:{{.Values.imageTagAlertManager}}"
         imagePullPolicy: {{default "IfNotPresent" .Values.pullPolicy}}
         args:
           - "-config.file=/etc/config/alertmanager.yml"

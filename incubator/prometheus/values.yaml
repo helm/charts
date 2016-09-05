@@ -1,3 +1,5 @@
 image: "prom/prometheus"
-imageTag: "latest"
+imageTag: "v1.1.0"
+imageAlertManager: "prom/alertmanager"
+imageTagAlertManager: "v0.4.2"
 storageSize: "200Gi"
