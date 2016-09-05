@@ -45,7 +45,7 @@ spec:
               name: "{{ printf "%s-%s" .Release.Name .Values.Name }}"
               key: password.standby
         - name: ETCD_DISCOVERY_DOMAIN
-          value: {{ .Values.Etcd.Discovery }}
+          value: {{default (printf "%s-etcd.%s.svc.cluster.local" .Release.Name .Values.Namespace) .Values.Etcd.Discovery }}
         - name: SCOPE
           value: "{{ printf "%s-%s" .Release.Name .Values.Name }}"
         - name: WAL_GCS_BUCKET

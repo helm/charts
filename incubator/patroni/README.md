@@ -57,7 +57,7 @@ The following tables lists the configurable parameters of the patroni chart and 
 | `Credentials.Superuser` | password for the superuser          | `tea`                                               |
 | `Credentials.Admin`     | password for the admin user         | `cola`                                              |
 | `Credentials.Standby`   | password for the replication user   | `pinacolada`                                        |
-| `Etcd.Discovery`        | domain name serving DNS records for etcd              | `etcd.default.svc.cluster.local`  |
+| `Etcd.Discovery`        | domain name of etcd cluster         | `<release-name>-etcd.<namespace>.svc.cluster.local` |
 | `GCS.Credentials`       | Google service account key file for authentication    | `<needs to be defined>`           |
 | `GCS.Bucket`            | GCS bucket name to stream WAL files and base backups  | `some-google-bucket`              |
 
@@ -70,3 +70,12 @@ $ helm install --name my-release -f values.yaml patroni-x.x.x.tgz
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
+## Cleanup
+
+In order to remove everything you created a simple `helm delete <release-name>` isn't enough (as of now), but you can do the following:
+
+```bash
+$ helm delete <release-name>
+$ kubectl delete petset,po,pvc,svc,secret -l release=<release-name>
+```

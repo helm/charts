@@ -22,7 +22,7 @@ Credentials:
   Standby: pinacolada
 
 Etcd:
-  Discovery: etcd.default.svc.cluster.local
+  Discovery: # leave blank to use vendored etcd chart
 
 GCS:
   Credentials: |
