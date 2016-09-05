@@ -1,4 +1,4 @@
-image: "prom/prometheus"
+emage: "prom/prometheus"
 imageTag: "v1.1.0"
 imageAlertManager: "prom/alertmanager"
 imageTagAlertManager: "v0.4.2"
