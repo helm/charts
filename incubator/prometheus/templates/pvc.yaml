@@ -1,3 +1,4 @@
+{{- if .Values.persistence.enabled }}
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
@@ -9,5 +10,5 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: {{default "50Gi" .Values.storageSize}}
-
+      storage: {{ .Values.persistence.size | quote }}
+{{- end }}

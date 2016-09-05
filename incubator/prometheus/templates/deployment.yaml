@@ -47,5 +47,9 @@ spec:
           configMap:
             name: {{template "fullname" .}}
         - name: storage-volume
+      {{- if .Values.persistence.enabled }}
           persistentVolumeClaim:
             claimName: {{template "fullname" .}}
+      {{- else }}
+          emptyDir: {}
+      {{- end -}}
