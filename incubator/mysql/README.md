@@ -63,7 +63,7 @@ The following tables lists the configurable parameters of the MySQL chart and th
 |  `persistence.storageClass`         | Type of persistent volume claim | generic                                            |
 |  `persistence.accessMode`         | ReadWriteOnce or ReadOnly | ReadWriteOnce                                             |
 
-The above parameters map to the env variables defined in the [MySQL DockerHub image](https://hub.docker.com/_/mysql/).
+Some of the parameters above map to the env variables defined in the [MySQL DockerHub image](https://hub.docker.com/_/mysql/).
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
