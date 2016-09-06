@@ -10,6 +10,7 @@ Master:
   Replicas: 1
   Component: "spark-master"
   Cpu: "100m"
+  Memory: "512Mi"
   ServicePort: 7077
   ContainerPort: 7077
 
@@ -25,6 +26,7 @@ Worker:
   Replicas: 3
   Component: "spark-worker"
   Cpu: "100m"
+  Memory: "512Mi"
   ContainerPort: 8081
 
 Zeppelin:

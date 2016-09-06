@@ -72,3 +72,4 @@ spec:
           resources:
             requests:
               cpu: "{{.Values.Master.Cpu}}"
+              memory: "{{.Values.Master.Memory}}"

@@ -51,6 +51,7 @@ The following tables lists the configurable parameters of the Spark chart and th
 | `Master.Replicas`     | k8s deployment replicas          | `1`                                                      |
 | `Master.Component`    | k8s selector key                 | `spark-master`                                           |
 | `Master.Cpu`          | container requested cpu          | `100m`                                                   |
+| `Master.Memory`          | container requested memory          | `512Mi`                                                   |
 | `Master.ServicePort`  | k8s service port                 | `7077`                                                   |
 | `Master.ContainerPort`| Container listening port         | `7077`                                                   |
 
@@ -73,6 +74,7 @@ The following tables lists the configurable parameters of the Spark chart and th
 | `Worker.ReplicasMax`  | k8s hpa max replicas          | `10`                                                      |
 | `Worker.Component`    | k8s selector key                 | `spark-worker`                                           |
 | `Worker.Cpu`          | container requested cpu          | `100m`                                                   |
+| `Worker.Memory`          | container requested memory          | `512Mi`                                                   |
 | `Worker.ContainerPort`| Container listening port         | `7077`                                                   |
 | `Worker.CpuTargetPercentage`| k8s hpa cpu targetPercentage | `50`                                                   |
 

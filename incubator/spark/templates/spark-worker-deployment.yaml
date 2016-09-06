@@ -33,3 +33,4 @@ spec:
           resources:
             requests:
               cpu: "{{.Values.Worker.Cpu}}"
+              memory: "{{.Values.Worker.Memory}}"
