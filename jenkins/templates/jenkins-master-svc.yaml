@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: "jenkins"
+  name: {{template "fullname" . }}
   labels:
     heritage: {{.Release.Service | quote }}
     release: {{.Release.Name | quote }}
@@ -19,4 +19,4 @@ spec:
       name: slavelistener
   selector:
     component: "{{.Release.Name}}-{{.Values.Master.Component}}"
-  type: "LoadBalancer"
+  type: {{.Values.Master.ServiceType}}

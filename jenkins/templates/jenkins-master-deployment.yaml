@@ -10,7 +10,7 @@ metadata:
   annotations:
     "helm.sh/created": {{.Release.Time.Seconds | quote }}
 spec:
-  replicas: {{default 1 .Values.Master.Replicas | quote }}
+  replicas: 1
   strategy:
     type: RollingUpdate
   selector:
@@ -23,11 +23,43 @@ spec:
         release: {{.Release.Name | quote }}
         chart: "{{.Chart.Name}}-{{.Chart.Version}}"
         component: "{{.Release.Name}}-{{.Values.Master.Component}}"
+      annotations:
+        pod.alpha.kubernetes.io/init-containers: '[
+              {
+                  "name": "copy-default-config",
+                  "image": "{{.Values.Master.Image}}:{{.Values.Master.ImageTag}}",
+                  "command": ["cp", "-n", "/var/jenkins_config/config.xml", "/var/jenkins_home"],
+                  "volumeMounts": [
+                      {
+                          "name": "jenkins-config",
+                          "mountPath": "/var/jenkins_config"
+                      },
+                      {
+                          "name": "jenkins-home",
+                          "mountPath": "/var/jenkins_home"
+                      }
+                  ]
+              }
+          ]'
     spec:
+      securityContext:
+        runAsUser: 0
       containers:
         - name: "{{ printf "%s-%s" .Release.Name .Values.Master.Name | trunc 24 }}"
           image: "{{.Values.Master.Image}}:{{.Values.Master.ImageTag}}"
           imagePullPolicy: "{{.Values.Master.ImagePullPolicy}}"
+          args: [ "--argumentsRealm.passwd.$(ADMIN_USER)=$(ADMIN_PASSWORD)",  "--argumentsRealm.roles.$(ADMIN_USER)=admin"]
+          env:
+            - name: ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "fullname" . }}
+                  key: jenkins-admin-password
+            - name: ADMIN_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "fullname" . }}
+                  key: jenkins-admin-user
           ports:
             - containerPort: {{.Values.Master.ContainerPort}}
               name: http
@@ -39,19 +71,21 @@ spec:
               memory: "{{.Values.Master.Memory}}"
           volumeMounts:
             -
-              mountPath: /var/run/docker.sock
-              name: docker-socket
-              readOnly: false
-            -
               mountPath: /var/jenkins_home
               name: jenkins-home
               readOnly: false
+            -
+              mountPath: /var/jenkins_config
+              name: jenkins-config
+              readOnly: true
       volumes:
-        -
-          hostPath:
-            path: /var/run/docker.sock
-          name: docker-socket
-        -
-          hostPath:
-          emptyDir: {}
-          name: jenkins-home
+      - name: jenkins-config
+        configMap:
+          name: jenkins-config
+      - name: jenkins-home
+      {{- if .Values.Persistence.Enabled }}
+        persistentVolumeClaim:
+          claimName: {{ template "fullname" . }}
+      {{- else }}
+        emptyDir: {}
+      {{- end -}}

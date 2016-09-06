@@ -5,26 +5,27 @@
 
 Master:
   Name: jenkins-master
-  Image: "csanchez/jenkins-swarm"
-  ImageTag: "latest"
+  Image: "gcr.io/kubernetes-charts-ci/jenkins-master-k8s"
+  ImageTag: "v6"
   ImagePullPolicy: "Always"
-  Replicas: 1
   Component: "jenkins-master"
-  Cpu: "100m"
-  Memory: "512Mi"
+  AdminUser: admin
+# AdminPassword: <defaults to random>
+  Cpu: "200m"
+  Memory: "256Mi"
   ServicePort: 8080
+  ServiceType: NodePort
   ContainerPort: 8080
   SlaveListenerPort: 50000
 
-Slave:
-  Name: jenkins-slave
-  Image: "csanchez/jenkins-swarm-slave"
-  ImageTag: "latest"
-  ImagePullPolicy: "Always"
-  Replicas: 3
-  ReplicasMax: 10
-  Component: "jenkins-slave"
+Agent:
+  Image: jenkinsci/jnlp-slave
+  ImageTag: 2.52
   Cpu: "200m"
   Memory: "256Mi"
-  ContainerPort: 8080
-  CpuTargetPercentage: 50
+
+Persistence:
+  Enabled: true
+  StorageClass: generic
+  AccessMode: ReadWriteOnce
+  Size: 8Gi
