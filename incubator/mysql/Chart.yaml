@@ -8,6 +8,7 @@ keywords:
 home: https://www.mysql.com/
 sources:
 - https://github.com/kubernetes/charts
+- https://github.com/docker-library/mysql
 maintainers:
 - name: Vic Iglesias
   email: viglesias@google.com
