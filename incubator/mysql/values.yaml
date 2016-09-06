@@ -2,6 +2,8 @@
 ## ref: https://hub.docker.com/r/bitnami/mysql/tags/
 ##
 imageTag: "5.7.14"
+cpu: 100m
+memory: 256Mi
 
 ## Specify password for root user
 ##

@@ -20,6 +20,13 @@ spec:
       - name: {{ template "fullname" . }}
         image: "mysql:{{ .Values.imageTag }}"
         imagePullPolicy: Always
+        resources:
+          requests:
+            cpu: "{{.Values.cpu}}"
+            memory: "{{.Values.memory}}"
+          limits:
+            cpu: "{{.Values.cpu}}"
+            memory: "{{.Values.memory}}"
         env:
         - name: MYSQL_ROOT_PASSWORD
           valueFrom:
