@@ -39,22 +39,24 @@ The following tables lists the configurable parameters of the Jenkins chart and 
 |       Parameter       |           Description            |                         Default                          |
 |-----------------------|----------------------------------|----------------------------------------------------------|
 | `Master.Name`         | Jenkins master name                | `jenkins-master`                                           |
-| `Master.Image`        | Container image name             | `csanchez/jenkins-swarm`                         |
-| `Master.ImageTag`     | Container image tag              | `latest`                                               |
-| `Master.ImagePullPolicy`     | Container pull policy     | `Always`                                               |
+| `Master.Image`        | Master image name             | `gcr.io/kubernetes-charts-ci/jenkins-master-k8s`                         |
+| `Master.ImageTag`     | Master image tag              | `v0.1.0`                                               |
+| `Master.ImagePullPolicy`     | Master image pull policy     | `Always`                                               |
 | `Master.Component`    | k8s selector key                 | `jenkins-master`                                           |
-| `Master.Cpu`          | container requested cpu          | `200m`                                                   |
-| `Master.Memory`    |container requested memory                 | `512Mi`                                           |
+| `Master.Cpu`          | Master requested cpu          | `200m`                                                   |
+| `Master.Memory`       | Master requested memory                 | `256Mi`                                           |
 | `Master.ServicePort`  | k8s service port                 | `8080`                                                   |
-| `Master.ContainerPort`| Container listening port         | `8080`                                                   |
-| `Master.SlaveListenerPort`| Container jekins slave listening port         | `50000`                                                   |
+| `Master.ContainerPort`| Master listening port         | `8080`                                                   |
+| `Master.SlaveListenerPort`|  Listening port for agents        | `50000`                                                   |
 
 ### Jenkins Agent
 
 |       Parameter       |           Description            |                         Default                          |
 |-----------------------|----------------------------------|----------------------------------------------------------|
-| `Agent.Image`        | Container image name             | `csanchez/jenkins-swarm-slave`                         |
-| `Agent.ImageTag`     | Container image tag              | `1.5.1_v3`                                               |                                                 |
+| `Agent.Image`        | Agent image name             | `jenkinsci/jnlp-slave`                         |
+| `Agent.ImageTag`     | Agent image tag              | `2.52`                                               |                                                 |
+| `Agent.Cpu`          | Agent requested cpu          | `200m`                                                   |
+| `Agent.Memory`    | Agent requested memory                 | `256Mi`                                           |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
@@ -69,7 +71,7 @@ $ helm install --name my-release -f values.yaml jenkins-x.x.x.tgz
 ## Persistence
 
 The Jenkins image stores persistence under `/var/jenkins_home` path of the container. A Persistent Volume
-Claim is used to keep the data across deployments. This is know to work in GCE, AWS, and minikube. 
+Claim is used to keep the data across deployments. This is known to work in GCE, AWS, and minikube.
 
 # Todo
-* Enable Docker-in-Docker or Docker-on-Docker support on the jenkins-slaves
+* Enable Docker-in-Docker or Docker-on-Docker support on the Jenkins agents
