@@ -13,6 +13,8 @@ Master:
 # AdminPassword: <defaults to random>
   Cpu: "200m"
   Memory: "256Mi"
+# Set min/max heap here if needed with:
+# JavaOpts: "-Xms512m -Xmx512m"
   ServicePort: 8080
   ServiceType: NodePort
   ContainerPort: 8080

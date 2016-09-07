@@ -50,6 +50,8 @@ spec:
           imagePullPolicy: "{{.Values.Master.ImagePullPolicy}}"
           args: [ "--argumentsRealm.passwd.$(ADMIN_USER)=$(ADMIN_PASSWORD)",  "--argumentsRealm.roles.$(ADMIN_USER)=admin"]
           env:
+            - name: JAVA_OPTS
+              value: "{{ default "" .Values.Master.JavaOpts}}"
             - name: ADMIN_PASSWORD
               valueFrom:
                 secretKeyRef:
