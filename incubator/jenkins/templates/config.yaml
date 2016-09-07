@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: jenkins-config
+  name: {{ template "fullname" . }}
 data:
   config.xml: |-
     <?xml version='1.0' encoding='UTF-8'?>

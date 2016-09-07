@@ -81,7 +81,7 @@ spec:
       volumes:
       - name: jenkins-config
         configMap:
-          name: jenkins-config
+          name: {{ template "fullname" . }}
       - name: jenkins-home
       {{- if .Values.Persistence.Enabled }}
         persistentVolumeClaim:
