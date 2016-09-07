@@ -1,0 +1,60 @@
+#
+# Docker usage: https://hub.docker.com/_/solr/
+#
+# A headless service to create DNS records
+apiVersion: v1
+kind: Service
+metadata:
+  name: solr
+  labels:
+    app: solr
+spec:
+  ports:
+  - port: 8983
+    protocol: TCP
+    name: solr
+  # solr-*.solr.default.svc.cluster.local
+  clusterIP: None
+  selector:
+    app: solr
+---
+apiVersion: apps/v1alpha1
+kind: PetSet
+metadata:
+  name: solr
+spec:
+  serviceName: "solr"
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: solr
+      annotations:
+        pod.alpha.kubernetes.io/initialized: "true"
+    spec:
+      terminationGracePeriodSeconds: 0
+      containers:
+      - name: solr
+        image: solr:6.2.0
+        # solr flags: https://cwiki.apache.org/confluence/display/solr/Solr+Start+Script+Reference
+        command:
+         - "/bin/sh"
+         - "-c"
+         - "/opt/solr/bin/solr start -f -z zoo-0.zk.default.svc.cluster.local:2181,zoo-1.zk.default.svc.cluster.local:2181,zoo-2.zk.default.svc.cluster.local:2181"
+        ports:
+        - containerPort: 8983
+          name: solr
+        volumeMounts:
+        - name: datadir
+          mountPath: /opt/solr/server/solr/data
+
+  volumeClaimTemplates:
+  - metadata:
+      name: datadir
+      annotations:
+        volume.alpha.kubernetes.io/storage-class: anything
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 1Gi
