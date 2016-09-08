@@ -1,0 +1,31 @@
+## Bitnami mysql image version
+## ref: https://hub.docker.com/r/bitnami/mysql/tags/
+##
+imageTag: "5.7.14"
+cpu: 100m
+memory: 256Mi
+
+## Specify password for root user
+##
+## Default: random 10 character string
+# mysqlRootPassword: testing
+
+## Create a database user
+##
+# mysqlUser:
+# mysqlPassword:
+
+## Allow unauthenticated access, uncomment to enable
+##
+# mysqlAllowEmptyPassword: true
+
+## Create a database
+##
+# mysqlDatabase:
+
+## Persist data to a persitent volume
+persistence:
+    enabled: true
+    storageClass: generic
+    accessMode: ReadWriteOnce
+    size: 8Gi
