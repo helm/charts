@@ -16,7 +16,8 @@ Master:
 # Set min/max heap here if needed with:
 # JavaOpts: "-Xms512m -Xmx512m"
   ServicePort: 8080
-  ServiceType: NodePort
+# For minikube, set this to NodePort, elsewhere use LoadBalancer
+  ServiceType: LoadBalancer
   ContainerPort: 8080
   SlaveListenerPort: 50000
 
