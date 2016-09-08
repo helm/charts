@@ -15,6 +15,20 @@ spec:
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         release: "{{ .Release.Name }}"
         heritage: "{{ .Release.Service }}"
+      annotations:
+        pod.alpha.kubernetes.io/init-containers: '[
+              {
+                  "name": "remove-lost-found",
+                  "image": "busybox:1.25.0",
+                  "command": ["rmdir", "/var/lib/mysql/lost+found"],
+                  "volumeMounts": [
+                      {
+                          "name": "data",
+                          "mountPath": "/var/lib/mysql"
+                      }
+                  ]
+              }
+          ]'
     spec:
       containers:
       - name: {{ template "fullname" . }}
