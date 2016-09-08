@@ -15,6 +15,10 @@ memory: 256Mi
 # mysqlUser:
 # mysqlPassword:
 
+## Allow unauthenticated access, uncomment to enable
+##
+# mysqlAllowEmptyPassword: true
+
 ## Create a database
 ##
 # mysqlDatabase:
