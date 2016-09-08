@@ -16,7 +16,7 @@ FROM debian:8.5
 
 ENV CLOUDSDK_CORE_DISABLE_PROMPTS 1
 ENV PATH $WORKDIR/google-cloud-sdk/bin:$PATH
-ENV HELM_VERSION=v2.0.0-alpha.3
+ENV HELM_VERSION=v2.0.0-alpha.4
 ENV GOOGLE_CLOUD_SDK_VERSION=123.0.0
 ENV GOOGLE_PROJECT=kubernetes-charts-ci
 
@@ -31,8 +31,8 @@ RUN gcloud components install kubectl
 RUN gcloud config set project ${GOOGLE_PROJECT}
 
 
-RUN wget https://storage.googleapis.com/kubernetes-charts-ci/helm/helm-${HELM_VERSION}-linux-amd64.tar
-RUN tar xfv helm-${HELM_VERSION}-linux-amd64.tar
+RUN wget https://github.com/kubernetes/helm/releases/download/${HELM_VERSION}/helm-${HELM_VERSION}-linux-amd64.tar.gz
+RUN tar xzfv helm-${HELM_VERSION}-linux-amd64.tar.gz
 ENV PATH /opt/linux-amd64/:$PATH
 VOLUME /src
 WORKDIR /src
