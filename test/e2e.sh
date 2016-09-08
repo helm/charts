@@ -18,7 +18,7 @@ set -o nounset
 set -o pipefail
 
 CHART_ROOT=${CHART_ROOT:-$(git rev-parse --show-toplevel)}
-IMAGE_NAME=${IMAGE_NAME:-"gcr.io/kubernetes-charts-ci/test-image:v1.4.1"}
+IMAGE_NAME=${IMAGE_NAME:-"gcr.io/kubernetes-charts-ci/test-image:v1.4"}
 
 docker run -v $CHART_ROOT:/src $IMAGE_NAME
 echo "Done Testing!"
