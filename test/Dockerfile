@@ -15,10 +15,12 @@
 FROM debian:8.5
 
 ENV CLOUDSDK_CORE_DISABLE_PROMPTS=1 \
-  PATH=/opt/google-cloud-sdk/bin:/opt/linux-amd64/:/opt/google-cloud-sdk/bin:$PATH \
+  PATH=/opt/google-cloud-sdk/bin:/opt/linux-amd64/:$PATH \
   HELM_VERSION=v2.0.0-alpha.3 \
   GOOGLE_CLOUD_SDK_VERSION=123.0.0 \
   GOOGLE_PROJECT=kubernetes-charts-ci
+
+COPY changed.sh /
 
 RUN set -x \
   && cd /opt \
@@ -56,5 +58,5 @@ RUN set -x \
      /usr/share/man/ \
      /tmp/*
 
-VOLUME /src
-WORKDIR /src
+VOLUME ["/src"]
+WORKDIR ["/src"]

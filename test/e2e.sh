@@ -1,4 +1,4 @@
-#!/bin/bash -xe
+#!/bin/bash -ex
 # Copyright 2016 The Kubernetes Authors All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,5 +13,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-docker run -v `pwd`:/src gcr.io/kubernetes-charts-ci/test-image:v1.4 /src/test/changed.sh
+set -o errexit
+set -o nounset
+set -o pipefail
+
+CHART_ROOT=${CHART_ROOT:-$(git rev-parse --show-toplevel)}
+IMAGE_NAME=${IMAGE_NAME:-"gcr.io/kubernetes-charts-ci/test-image:v1.4.1"}
+
+docker run -v $CHART_ROOT:/src $IMAGE_NAME
 echo "Done Testing!"
