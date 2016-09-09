@@ -12,7 +12,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-VERSION=v1.4.1
+VERSION=v1.6
 CONTAINER_NAME=test-image
 
 usage() {

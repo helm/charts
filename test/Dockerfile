@@ -16,7 +16,8 @@ FROM debian:8.5
 
 ENV CLOUDSDK_CORE_DISABLE_PROMPTS=1 \
   PATH=/opt/google-cloud-sdk/bin:/opt/linux-amd64/:$PATH \
-  HELM_VERSION=v2.0.0-alpha.4 \
+  HELM_VERSION=canary \
+  HELM_URL=https://storage.googleapis.com/kubernetes-charts-ci/helm/helm-${HELM_VERSION}-linux-amd64.tar.gz \
   GOOGLE_CLOUD_SDK_VERSION=123.0.0 \
   GOOGLE_PROJECT=kubernetes-charts-ci
 
@@ -30,8 +31,8 @@ RUN set -x \
   && ./google-cloud-sdk/install.sh \
   && gcloud components install kubectl \
   && gcloud config set project ${GOOGLE_PROJECT} \
-  && wget -q https://github.com/kubernetes/helm/releases/download/${HELM_VERSION}/helm-${HELM_VERSION}-linux-amd64.tar.gz \
-  && tar xfv helm-${HELM_VERSION}-linux-amd64.tar.gz \
+  && wget -q ${HELM_URL} \
+  && tar xzfv helm-${HELM_VERSION}-linux-amd64.tar.gz \
   && apt-get -y purge wget localepurge \
   && apt-get clean \
   && cd / \
