@@ -14,25 +14,47 @@
 
 FROM debian:8.5
 
-ENV CLOUDSDK_CORE_DISABLE_PROMPTS 1
-ENV PATH $WORKDIR/google-cloud-sdk/bin:$PATH
-ENV HELM_VERSION=v2.0.0-alpha.4
-ENV GOOGLE_CLOUD_SDK_VERSION=123.0.0
-ENV GOOGLE_PROJECT=kubernetes-charts-ci
+ENV CLOUDSDK_CORE_DISABLE_PROMPTS=1 \
+  PATH=/opt/google-cloud-sdk/bin:/opt/linux-amd64/:$PATH \
+  HELM_VERSION=canary \
+  HELM_URL=https://storage.googleapis.com/kubernetes-charts-ci/helm/helm-${HELM_VERSION}-linux-amd64.tar.gz \
+  GOOGLE_CLOUD_SDK_VERSION=123.0.0 \
+  GOOGLE_PROJECT=kubernetes-charts-ci
 
-WORKDIR /opt
-RUN apt-get update -y
-RUN apt-get install -y jq wget python git
-RUN wget -q https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-${GOOGLE_CLOUD_SDK_VERSION}-linux-x86_64.tar.gz
-RUN tar zxfv google-cloud-sdk-${GOOGLE_CLOUD_SDK_VERSION}-linux-x86_64.tar.gz
-RUN ./google-cloud-sdk/install.sh
-ENV PATH /opt/google-cloud-sdk/bin:$PATH
-RUN gcloud components install kubectl
-RUN gcloud config set project ${GOOGLE_PROJECT}
+RUN set -x \
+  && cd /opt \
+  && echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections \
+  && apt-get update -y \
+  && apt-get install --no-install-recommends -y jq wget python git localepurge ca-certificates \
+  && wget -q https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-${GOOGLE_CLOUD_SDK_VERSION}-linux-x86_64.tar.gz \
+  && tar xfv google-cloud-sdk-${GOOGLE_CLOUD_SDK_VERSION}-linux-x86_64.tar.gz \
+  && ./google-cloud-sdk/install.sh \
+  && gcloud components install kubectl \
+  && gcloud config set project ${GOOGLE_PROJECT} \
+  && wget -q ${HELM_URL} \
+  && tar xzfv helm-${HELM_VERSION}-linux-amd64.tar.gz \
+  && apt-get -y purge wget localepurge \
+  && apt-get clean \
+  && cd / \
+  && rm -rf \
+     /opt/google-cloud-sdk-${GOOGLE_CLOUD_SDK_VERSION}-linux-x86_64.tar.gz \
+     /opt/helm-${HELM_VERSION}-linux-amd64.tar.gz \
+     doc \
+     man \
+     info \
+     locale \
+     /var/lib/apt/lists/* \
+     /var/log/* \
+     /var/cache/debconf/* \
+     common-licenses \
+     ~/.bashrc \
+     /etc/systemd \
+     /lib/lsb \
+     /lib/udev \
+     /usr/share/doc/ \
+     /usr/share/doc-base/ \
+     /usr/share/man/ \
+     /tmp/*
 
-
-RUN wget https://github.com/kubernetes/helm/releases/download/${HELM_VERSION}/helm-${HELM_VERSION}-linux-amd64.tar.gz
-RUN tar xzfv helm-${HELM_VERSION}-linux-amd64.tar.gz
-ENV PATH /opt/linux-amd64/:$PATH
-VOLUME /src
-WORKDIR /src
+VOLUME ["/src"]
+WORKDIR ["/src"]

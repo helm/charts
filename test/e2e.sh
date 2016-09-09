@@ -1,4 +1,4 @@
-#!/bin/bash -xe
+#!/bin/bash -ex
 # Copyright 2016 The Kubernetes Authors All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,5 +13,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-docker run -v `pwd`:/src gcr.io/kubernetes-charts-ci/test-image:v1.5 /src/test/changed.sh
+set -o errexit
+set -o nounset
+set -o pipefail
+
+# TODO should we inject this.  This is creating problems bumping the Docker version
+IMAGE_VERSION="test-image:v1.6"
+CHART_ROOT=${CHART_ROOT:-$(git rev-parse --show-toplevel)}
+IMAGE_NAME=${IMAGE_NAME:-"gcr.io/kubernetes-charts-ci/${IMAGE_VERSION}"}
+
+docker run -v ${CHART_ROOT}:/src ${IMAGE_NAME} /src/test/changed.sh
 echo "Done Testing!"
