@@ -50,7 +50,7 @@ data:
           </templates>
           <serverUrl>https://kubernetes.default</serverUrl>
           <skipTlsVerify>false</skipTlsVerify>
-          <namespace>default</namespace>
+          <namespace>{{ .Release.Namespace }}</namespace>
           <jenkinsUrl>http://{{ template "fullname" . }}:8080</jenkinsUrl>
           <jenkinsTunnel>{{ template "fullname" . }}:50000</jenkinsTunnel>
           <containerCap>10</containerCap>
