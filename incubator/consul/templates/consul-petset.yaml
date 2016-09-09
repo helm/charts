@@ -157,6 +157,12 @@ spec:
       - name: gossip-key
         secret:
           secretName: gossip-key
+      readinessProbe:
+        httpGet:
+          path: /v1/health/service/consul
+          port: {{.Values.HttpPort}}
+        initialDelaySeconds: 10
+        timeoutSeconds: 1
   volumeClaimTemplates:
   - metadata:
       name: datadir

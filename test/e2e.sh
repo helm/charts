@@ -17,8 +17,10 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
+# TODO should we inject this.  This is creating problems bumping the Docker version
+IMAGE_VERSION="test-images:v1.5"
 CHART_ROOT=${CHART_ROOT:-$(git rev-parse --show-toplevel)}
-IMAGE_NAME=${IMAGE_NAME:-"gcr.io/kubernetes-charts-ci/test-image:v1.4"}
+IMAGE_NAME=${IMAGE_NAME:-"gcr.io/kubernetes-charts-ci/${IMAGE_VERSION}"}
 
-docker run -v $CHART_ROOT:/src $IMAGE_NAME
+docker run -v ${CHART_ROOT}:/src ${IMAGE_NAME} /src/test/changed.sh
 echo "Done Testing!"

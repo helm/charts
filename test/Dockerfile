@@ -16,11 +16,9 @@ FROM debian:8.5
 
 ENV CLOUDSDK_CORE_DISABLE_PROMPTS=1 \
   PATH=/opt/google-cloud-sdk/bin:/opt/linux-amd64/:$PATH \
-  HELM_VERSION=v2.0.0-alpha.3 \
+  HELM_VERSION=v2.0.0-alpha.4 \
   GOOGLE_CLOUD_SDK_VERSION=123.0.0 \
   GOOGLE_PROJECT=kubernetes-charts-ci
-
-COPY changed.sh /
 
 RUN set -x \
   && cd /opt \
@@ -30,17 +28,16 @@ RUN set -x \
   && wget -q https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-${GOOGLE_CLOUD_SDK_VERSION}-linux-x86_64.tar.gz \
   && tar xfv google-cloud-sdk-${GOOGLE_CLOUD_SDK_VERSION}-linux-x86_64.tar.gz \
   && ./google-cloud-sdk/install.sh \
-  && export PATH=/opt/google-cloud-sdk/bin:$PATH \
   && gcloud components install kubectl \
   && gcloud config set project ${GOOGLE_PROJECT} \
-  && wget -q https://storage.googleapis.com/kubernetes-charts-ci/helm/helm-${HELM_VERSION}-linux-amd64.tar \
-  && tar xfv helm-${HELM_VERSION}-linux-amd64.tar \
+  && wget -q https://github.com/kubernetes/helm/releases/download/${HELM_VERSION}/helm-${HELM_VERSION}-linux-amd64.tar.gz \
+  && tar xfv helm-${HELM_VERSION}-linux-amd64.tar.gz \
   && apt-get -y purge wget localepurge \
   && apt-get clean \
   && cd / \
   && rm -rf \
-     /opt/google-cloud-sdk-* \
-     /opt/helm-${HELM_VERSION}-linux-amd64.tar \
+     /opt/google-cloud-sdk-${GOOGLE_CLOUD_SDK_VERSION}-linux-x86_64.tar.gz \
+     /opt/helm-${HELM_VERSION}-linux-amd64.tar.gz \
      doc \
      man \
      info \
