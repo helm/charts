@@ -25,6 +25,10 @@ spec:
             value: "{{.Values.adminPassword}}"
         ports:
         - containerPort: 3000
+        resources:
+          requests:
+            cpu: {{default "100m" .Values.Cpu}}
+            memory: {{default "100M" .Values.Memory}}
         volumeMounts:
         - mountPath: /data
           name: storage-volume

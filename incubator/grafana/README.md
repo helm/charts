@@ -13,3 +13,5 @@
 | `persistence.size`         | Size of persistent volume claim                   | 1Gi RW                   |
 | `persistence.storageClass` | Type of persistent volume claim                   | generic                  |
 | `persistence.accessMode`   | ReadWriteOnce or ReadOnly                         | ReadWriteOnce            |
+| `cpu`                      | Container requested cpu                           | 100m                     |
+| `memory`                   | Container requested memory                        | 100M                     |
