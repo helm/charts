@@ -1,7 +1,7 @@
-emage: "prom/prometheus"
-imageTag: "v1.1.0"
-imageAlertManager: "prom/alertmanager"
-imageTagAlertManager: "v0.4.2"
+image: prom/prometheus
+imageTag: v1.1.0
+imageAlertManager: prom/alertmanager
+imageTagAlertManager: v0.4.2
 
 # Persist data to a persitent volume
 persistence:

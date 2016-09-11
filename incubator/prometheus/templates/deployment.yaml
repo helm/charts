@@ -26,6 +26,10 @@ spec:
           - "-web.console.templates=/etc/prometheus/consoles"
         ports:
         - containerPort: 9090
+        resources:
+          requests:
+            cpu: {{default "500m" .Values.Cpu}}
+            memory: {{default "500M" .Values.Memory}}
         volumeMounts:
         - mountPath: /etc/config
           name: config-volume
@@ -36,12 +40,20 @@ spec:
         imagePullPolicy: {{default "IfNotPresent" .Values.pullPolicy}}
         args:
           - "-config.file=/etc/config/alertmanager.yml"
+        resources:
+          requests:
+            cpu: {{default "100m" .Values.CpuAlertManager}}
+            memory: {{default "50M" .Values.MemoryAlertManager}}
         volumeMounts:
         - mountPath: /etc/config
           name: config-volume
       - name: node-exporter
         image: "prom/node-exporter"
         imagePullPolicy: {{default "IfNotPresent" .Values.pullPolicy}}
+        resources:
+          requests:
+            cpu: {{default "50m" .Values.CpuNodeExporter}}
+            memory: {{default "50M" .Values.MemoryNodeExporter}}
       volumes:
         - name: config-volume
           configMap:
