@@ -4,7 +4,7 @@
 
 ## Resource utilization
 
-The default cpu and memory settings represent small installation. See https://prometheus.io/docs/operating/storage/#memory-usage for details on estimating your memory utilziation needs.
+The default cpu and memory settings represent small installation. See [this documentation](https://prometheus.io/docs/operating/storage/#memory-usage) for details on estimating your memory utilziation needs.
 
 ## Configuration
 
