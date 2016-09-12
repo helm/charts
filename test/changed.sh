@@ -17,7 +17,6 @@ UPSTREAM_BRANCH="upstream/master"
 
 CHANGED_FOLDERS=`git diff --name-only ${UPSTREAM_BRANCH} | grep -v test | grep / | awk -F/ '{print $1"/"$2}' | uniq`
 helm init --client-only
-curl -H "Metadata-Flavor:Google" http://metadata/computeMetadata/v1/instance/service-accounts/
 gcloud container clusters get-credentials jenkins --project kubernetes-charts-ci --zone us-west1-a
 for directory in ${CHANGED_FOLDERS}; do
   helm lint ${directory}
