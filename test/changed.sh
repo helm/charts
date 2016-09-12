@@ -16,8 +16,8 @@
 UPSTREAM_BRANCH="upstream/master"
 
 CHANGED_FOLDERS=`git diff --name-only ${UPSTREAM_BRANCH} | grep -v test | grep / | awk -F/ '{print $1"/"$2}' | uniq`
-/opt/linux-amd64/helm init --client-only
-
+helm init --client-only
+gcloud container clusters get-credentials jenkins --project kubernetes-charts-ci --zone us-west1-a
 for directory in ${CHANGED_FOLDERS}; do
-  /opt/linux-amd64/helm lint ${directory}
+  helm lint ${directory}
 done
