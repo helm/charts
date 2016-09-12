@@ -17,6 +17,7 @@ UPSTREAM_BRANCH="upstream/master"
 
 CHANGED_FOLDERS=`git diff --name-only ${UPSTREAM_BRANCH} | grep -v test | grep / | awk -F/ '{print $1"/"$2}' | uniq`
 helm init --client-only
+gcloud auth activate-service-account --key-file="${GOOGLE_APPLICATION_CREDENTIALS}"
 gcloud container clusters get-credentials jenkins --project kubernetes-charts-ci --zone us-west1-a
 for directory in ${CHANGED_FOLDERS}; do
   helm lint ${directory}
