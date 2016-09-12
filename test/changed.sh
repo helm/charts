@@ -27,6 +27,6 @@ for directory in ${CHANGED_FOLDERS}; do
   CHART_NAME=`echo $directory | cut -d '/' -f2`
   RELEASE_NAME="pr-$ghprbPullId-$BUILD_NUMBER-$CHART_NAME"
   helm lint ${directory}
-  helm install --name $RELEASE_NAME
-  helm delete --name $RELEASE_NAME
+  helm install --name $RELEASE_NAME ${directory}
+  helm delete $RELEASE_NAME
 done

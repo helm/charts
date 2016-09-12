@@ -25,5 +25,7 @@ IMAGE_NAME=${IMAGE_NAME:-"gcr.io/kubernetes-charts-ci/${IMAGE_VERSION}"}
 docker run -v ${CHART_ROOT}:/src \
            -v "${GOOGLE_APPLICATION_CREDENTIALS}:/service-account.json:ro" \
            -e "GOOGLE_APPLICATION_CREDENTIALS=/service-account.json" \
+           -e "ghprbPullId=$ghprbPullId" \
+           -e "BUILD_NUMBER=$BUILD_NUMBER" \
            ${IMAGE_NAME} /src/test/changed.sh
 echo "Done Testing!"
