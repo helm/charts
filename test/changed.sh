@@ -29,6 +29,7 @@ for directory in ${CHANGED_FOLDERS}; do
   RELEASE_NAME="${CHART_NAME}-${BUILD_NUMBER}"
   helm lint ${directory}
   helm install --name ${RELEASE_NAME} --namespace ${NAMESPACE} ${directory}
+  # TODO run functional validation here
   helm delete ${RELEASE_NAME}
   kubectl delete ns ${NAMESPACE}
 done
