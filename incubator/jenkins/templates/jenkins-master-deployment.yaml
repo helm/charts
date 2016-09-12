@@ -1,0 +1,93 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    heritage: {{.Release.Service | quote }}
+    release: {{.Release.Name | quote }}
+    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+    component: "{{.Release.Name}}-{{.Values.Master.Name}}"
+  annotations:
+    "helm.sh/created": {{.Release.Time.Seconds | quote }}
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      component: "{{.Release.Name}}-{{.Values.Master.Component}}"
+  template:
+    metadata:
+      labels:
+        heritage: {{.Release.Service | quote }}
+        release: {{.Release.Name | quote }}
+        chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+        component: "{{.Release.Name}}-{{.Values.Master.Component}}"
+      annotations:
+        pod.alpha.kubernetes.io/init-containers: '[
+              {
+                  "name": "copy-default-config",
+                  "image": "{{.Values.Master.Image}}:{{.Values.Master.ImageTag}}",
+                  "command": ["cp", "-n", "/var/jenkins_config/config.xml", "/var/jenkins_home"],
+                  "volumeMounts": [
+                      {
+                          "name": "jenkins-config",
+                          "mountPath": "/var/jenkins_config"
+                      },
+                      {
+                          "name": "jenkins-home",
+                          "mountPath": "/var/jenkins_home"
+                      }
+                  ]
+              }
+          ]'
+    spec:
+      securityContext:
+        runAsUser: 0
+      containers:
+        - name: {{ template "fullname" . }}
+          image: "{{.Values.Master.Image}}:{{.Values.Master.ImageTag}}"
+          imagePullPolicy: "{{.Values.Master.ImagePullPolicy}}"
+          args: [ "--argumentsRealm.passwd.$(ADMIN_USER)=$(ADMIN_PASSWORD)",  "--argumentsRealm.roles.$(ADMIN_USER)=admin"]
+          env:
+            - name: JAVA_OPTS
+              value: "{{ default "" .Values.Master.JavaOpts}}"
+            - name: ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "fullname" . }}
+                  key: jenkins-admin-password
+            - name: ADMIN_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "fullname" . }}
+                  key: jenkins-admin-user
+          ports:
+            - containerPort: {{.Values.Master.ContainerPort}}
+              name: http
+            - containerPort: {{.Values.Master.SlaveListenerPort}}
+              name: slavelistener
+          resources:
+            requests:
+              cpu: "{{.Values.Master.Cpu}}"
+              memory: "{{.Values.Master.Memory}}"
+          volumeMounts:
+            -
+              mountPath: /var/jenkins_home
+              name: jenkins-home
+              readOnly: false
+            -
+              mountPath: /var/jenkins_config
+              name: jenkins-config
+              readOnly: true
+      volumes:
+      - name: jenkins-config
+        configMap:
+          name: {{ template "fullname" . }}
+      - name: jenkins-home
+      {{- if .Values.Persistence.Enabled }}
+        persistentVolumeClaim:
+          claimName: {{ template "fullname" . }}
+      {{- else }}
+        emptyDir: {}
+      {{- end -}}
