@@ -24,9 +24,11 @@ gcloud container clusters get-credentials jenkins --project kubernetes-charts-ci
 # Initialize helm/tiller
 helm init --client-only
 for directory in ${CHANGED_FOLDERS}; do
-  CHART_NAME=`echo $directory | cut -d '/' -f2`
-  RELEASE_NAME="pr-$ghprbPullId-$BUILD_NUMBER-$CHART_NAME"
+  CHART_NAME=`echo ${directory} | cut -d '/' -f2`
+  NAMESPACE="pr-${ghprbPullId}-${BUILD_NUMBER}"
+  RELEASE_NAME="${CHART_NAME}-${BUILD_NUMBER}"
   helm lint ${directory}
-  helm install --name $RELEASE_NAME ${directory}
-  helm delete $RELEASE_NAME
+  helm install --name ${RELEASE_NAME} --namespace ${NAMESPACE} ${directory}
+  helm delete ${RELEASE_NAME}
+  kubectl delete ns ${NAMESPACE}
 done
