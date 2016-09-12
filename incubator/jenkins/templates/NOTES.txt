@@ -1,0 +1,36 @@
+Getting Started:
+
+1. Get your '{{ .Values.Master.AdminUser }}' user password by running:
+  printf $(printf '\%o' `kubectl get secret --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath="{.data.jenkins-admin-password[*]}"`);echo
+
+2. Get the Jenkins URL to visit by running these commands in the same shell:
+{{- if contains "NodePort" .Values.Master.ServiceType }}
+  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "fullname" . }})
+  export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+  echo http://$NODE_IP:$NODE_PORT/login
+
+{{- else if contains "LoadBalancer" .Values.Master.ServiceType }}
+**** NOTE: It may take a few minutes for the LoadBalancer IP to be available.                      ****
+****       You can watch the status of by running 'kubectl get svc -w {{ template "fullname" . }}' ****
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+  echo http://$SERVICE_IP:{{ .Values.Master.ServicePort }}/login
+{{- else if contains "ClusterIP"  .Values.Master.ServiceType }}
+  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "component={{ template "fullname" . }}-master" -o jsonpath="{.items[0].metadata.name}")
+  echo http://127.0.0.1:{{ .Values.Master.ServicePort }}
+  kubectl port-forward $POD_NAME {{ .Values.Master.ServicePort }}:{{ .Values.Master.ServicePort }}
+
+{{- end }}
+
+3. Login with the password from step 1 and the username: {{ .Values.Master.AdminUser }}
+
+For more information on running Jenkins on Kubernetes, visit:
+https://cloud.google.com/solutions/jenkins-on-container-engine
+
+{{- if .Values.Persistence.Enabled }}
+{{- else }}
+#################################################################################
+######   WARNING: Persistence is disabled!!! You will lose your data when   #####
+######            the Jenkins pod is terminated.                            #####
+#################################################################################
+{{- end }}
+
