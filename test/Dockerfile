@@ -24,15 +24,15 @@ ENV CLOUDSDK_CORE_DISABLE_PROMPTS=1 \
 RUN set -x \
   && cd /opt \
   && echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections \
-  && apt-get update -y \
+  && apt-get update \
   && apt-get install --no-install-recommends -y jq wget python git localepurge ca-certificates \
   && wget -q https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-${GOOGLE_CLOUD_SDK_VERSION}-linux-x86_64.tar.gz \
-  && tar xfv google-cloud-sdk-${GOOGLE_CLOUD_SDK_VERSION}-linux-x86_64.tar.gz \
+  && tar zxfv google-cloud-sdk-${GOOGLE_CLOUD_SDK_VERSION}-linux-x86_64.tar.gz \
   && ./google-cloud-sdk/install.sh \
   && gcloud components install kubectl \
   && gcloud config set project ${GOOGLE_PROJECT}
 RUN cd /opt && wget -q ${HELM_URL} \
-  && tar xzfv helm-${HELM_VERSION}-linux-amd64.tar.gz \
+  && tar xzfv helm-${HELM_VERSION}-linux-amd64.tar.gz
 RUN apt-get -y purge wget localepurge \
   && apt-get clean \
   && cd / \
