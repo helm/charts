@@ -18,7 +18,7 @@ set -o nounset
 set -o pipefail
 
 # TODO should we inject this.  This is creating problems bumping the Docker version
-IMAGE_VERSION="test-image:v1.9"
+IMAGE_VERSION="test-image:v1.10"
 CHART_ROOT=${CHART_ROOT:-$(git rev-parse --show-toplevel)}
 IMAGE_NAME=${IMAGE_NAME:-"gcr.io/kubernetes-charts-ci/${IMAGE_VERSION}"}
 
