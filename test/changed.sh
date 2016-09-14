@@ -31,7 +31,15 @@ trap cleanup EXIT
 gcloud auth activate-service-account --key-file="${GOOGLE_APPLICATION_CREDENTIALS}"
 gcloud container clusters get-credentials jenkins --project kubernetes-charts-ci --zone us-west1-a
 
-# Initialize helm/tiller
+# Install and initialize helm/tiller
+HELM_URL=https://storage.googleapis.com/kubernetes-helm
+HELM_TARBALL=helm-canary-linux-amd64.tar.gz
+pushd /opt
+  wget -q ${HELM_URL}/${HELM_TARBALL}
+  tar xzfv ${HELM_TARBALL}
+  PATH=/opt/linux-amd64/:$PATH
+popd
+
 helm init --client-only
 
 # Iterate over each of the changed charts
