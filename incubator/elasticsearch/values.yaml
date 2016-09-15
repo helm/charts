@@ -1,0 +1,33 @@
+# Default values for etcd.
+# This is a YAML-formatted file.
+# Declare name/value pairs to be passed into your templates.
+# name: value
+
+Name: es
+PeerPort: 2380
+ClientPort: 2379
+Component: "elasticsearch"
+Image: "jetstack/elasticsearch-pet"
+ImageTag: "2.3.5"
+ImagePullPolicy: "Always"
+ClientReplicas: 2
+ClientCpuRequests: "25m"
+ClientMemoryRequests: "256Mi"
+ClientCpuLimits: "100m"
+ClientMemoryLimits: "512Mi"
+ClientHeapSize: "128m"
+MasterReplicas: 2
+MasterCpuRequests: "25m"
+MasterMemoryRequests: "256Mi"
+MasterCpuLimits: "100m"
+MasterMemoryLimits: "512Mi"
+MasterHeapSize: "128m"
+DataReplicas: 3
+DataCpuRequests: "250m"
+DataMemoryRequests: "2Gi"
+DataCpuLimits: "1"
+DataMemoryLimits: "4Gi"
+DataHeapSize: "1536m"
+DataStorage: "30Gi"
+DataStorageClass: "anything"
+DataStorageClassVersion: "alpha"
