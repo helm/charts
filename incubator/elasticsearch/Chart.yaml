@@ -1,0 +1,10 @@
+name: elasticsearch
+home: https://www.elastic.co/products/elasticsearch
+version: 0.1.0
+description: Elasticsearch chart for Kubernetes
+sources:
+  - https://www.elastic.co/products/elasticsearch
+  - https://github.com/jetstack/elasticsearch-pet
+maintainers:
+  - name: Christian Simon
+    email: christian@jetstack.io
