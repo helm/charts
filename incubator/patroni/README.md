@@ -75,7 +75,11 @@ $ helm install --name my-release -f values.yaml patroni-x.x.x.tgz
 
 In order to remove everything you created a simple `helm delete <release-name>` isn't enough (as of now), but you can do the following:
 
-$ helm delete <release-name>
-$ kubectl delete petset,po,pvc,svc,secret -l release=<release-name>
 ```console
+$ release=<release-name>
+$ helm delete $release
+$ grace=$(kubectl get po $release-patroni-0 --template '{{.spec.terminationGracePeriodSeconds}}')
+$ kubectl delete petset,po -l release=$release
+$ sleep $grace
+$ kubectl delete pvc -l release=$release
 ```
