@@ -26,7 +26,7 @@ Download the latest release of the chart from the [releases](../../../releases) 
 
 Alternatively, clone the repo if you wish to use the development snapshot:
 
-```bash
+```console
 $ git clone https://github.com/kubernetes/charts.git
 ```
 
@@ -34,7 +34,7 @@ $ git clone https://github.com/kubernetes/charts.git
 
 To install the chart with the release name `my-release`:
 
-```bash
+```console
 $ helm install --name my-release patroni-x.x.x.tgz
 ```
 
@@ -65,7 +65,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
-```bash
+```console
 $ helm install --name my-release -f values.yaml patroni-x.x.x.tgz
 ```
 
@@ -75,7 +75,7 @@ $ helm install --name my-release -f values.yaml patroni-x.x.x.tgz
 
 In order to remove everything you created a simple `helm delete <release-name>` isn't enough (as of now), but you can do the following:
 
-```bash
 $ helm delete <release-name>
 $ kubectl delete petset,po,pvc,svc,secret -l release=<release-name>
+```console
 ```
