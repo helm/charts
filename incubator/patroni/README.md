@@ -38,6 +38,23 @@ To install the chart with the release name `my-release`:
 $ helm install --name my-release patroni-x.x.x.tgz
 ```
 
+## Connecting to Postgres
+
+Your access point is a cluster IP. In order to access it spin up another pod:
+
+```console
+$ kubectl run -i --tty ubuntu --image=ubuntu:16.04 --restart=Never -- bash -il
+```
+
+Then, from inside the pod, connect to postgres:
+
+```console
+$ apt-get update && apt-get install postgresql-client -y
+$ psql -U admin -h my-release-patroni.default.svc.cluster.local postgres
+<admin password from values.yaml>
+postgres=>
+```
+
 ## Configuration
 
 The following tables lists the configurable parameters of the patroni chart and their default values.
