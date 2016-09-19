@@ -15,14 +15,33 @@
 FROM debian:jessie
 MAINTAINER Anirudh Ramanathan <foxish@google.com>
 
-RUN apt-get update && apt-get install -y wget
+ADD files/* /
+RUN set -x \
+ && echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections \
+  && apt-get update \
+  && apt-get install --no-install-recommends -y wget localepurge ca-certificates \
+  && wget -qO /peer-finder http://storage.googleapis.com/kubernetes-release/pets/peer-finder \
+  && chmod -c 755 /install.sh /on-start.sh /peer-finder
 
-ADD on-start.sh /
-ADD mongod.conf /
-# See contrib/pets/peer-finder for details
-RUN ["wget", "-qO", "/peer-finder", "http://storage.googleapis.com/kubernetes-release/pets/peer-finder"]
-ADD install.sh /
+RUN apt-get -y purge localepurge wget \
+  && apt-get clean \
+  && cd / \
+  && rm -rf \
+     doc \
+     man \
+     info \
+     locale \
+     /var/lib/apt/lists/* \
+     /var/log/* \
+     /var/cache/debconf/* \
+     common-licenses \
+     ~/.bashrc \
+     /etc/systemd \
+     /lib/lsb \
+     /lib/udev \
+     /usr/share/doc/ \
+     /usr/share/doc-base/ \
+     /usr/share/man/ \
+     /tmp/*
 
-RUN chmod -c 755 /install.sh /on-start.sh /peer-finder
-CMD []
 ENTRYPOINT ["/install.sh"]

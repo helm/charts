@@ -10,7 +10,7 @@ Replicas: 3
 Image: "mongo"
 ImageTag: "3.2"
 InstallImage: "gcr.io/google_containers/mongodb-install"
-InstallImageTag: "0.1"
+InstallImageTag: "0.2"
 ImagePullPolicy: "Always"
 Cpu: "100m"
 Memory: "512Mi"

@@ -14,7 +14,7 @@
 
 all: push
 
-TAG = 0.1
+TAG = 0.2
 PREFIX = gcr.io/google_containers/mongodb-install
 
 container:
