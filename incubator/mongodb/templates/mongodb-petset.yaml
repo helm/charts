@@ -46,7 +46,7 @@ spec:
         pod.alpha.kubernetes.io/init-containers: '[
             {
                 "name": "install",
-                "image": "gcr.io/google_containers/mongodb-install:0.1",
+                "image": "{{.Values.InstallImage}}:{{.Values.InstallImageTag}}",
                 "args": ["--work-dir=/work-dir"],
                 "volumeMounts": [
                     {

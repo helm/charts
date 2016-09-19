@@ -14,6 +14,8 @@
 
 # TODO
 * Set up authorization between replicaset peers.
+* Add a liveliness check.
+* Make the `test.sh` script more robust.
 
 ## Chart Details
 
@@ -66,7 +68,7 @@ $ helm install --name my-release -f values.yaml mongodb-x.x.x.tgz
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
-Once you have all 3 nodes in running, you can run the "test.sh" script in this directory, which will insert a key into the primary and check the secondaries for output.
+Once you have all 3 nodes in running, you can run the "test.sh" script in this directory, which will insert a key into the primary and check the secondaries for output. This script requires that the `$RELEASE_NAME` environment variable be set, in order to access the pods.
 
 # Deep dive
 
