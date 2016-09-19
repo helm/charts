@@ -1,8 +1,10 @@
 # MongoDB Helm Chart
 
 ## Prerequisites Details
-* Kubernetes 1.3 with alpha APIs enable
-* PV support on the underlying infrastructure
+* Kubernetes 1.3 or higher with alpha APIs enabled.
+* Petsets are in alpha in 1.3.
+* Init containers are alpha in 1.3 and are moving to beta in 1.4.
+* PV support on the underlying infrastructure.
 
 ## PetSet Details
 * http://kubernetes.io/docs/user-guide/petset/
@@ -12,12 +14,11 @@
 
 # TODO
 * Set up authorization between replicaset peers.
-* Set up sharding.
 
 ## Chart Details
 
-This chart implements a dynamically scalable mongoDB replicaset 
-using Kubernetes PetSets.
+This chart implements a dynamically scalable [mongoDB replica set](https://docs.mongodb.com/manual/tutorial/deploy-replica-set/) 
+using Kubernetes PetSets and Init Containers.
 
 ## Get this chart
 
@@ -25,7 +26,7 @@ Download the latest release of the chart from the [releases](../../../releases) 
 
 Alternatively, clone the repo if you wish to use the development snapshot:
 
-```bash
+```console
 $ git clone https://github.com/kubernetes/charts.git
 ```
 
@@ -33,17 +34,17 @@ $ git clone https://github.com/kubernetes/charts.git
 
 To install the chart with the release name `my-release`:
 
-```bash
+```console
 $ helm install --name my-release mongodb-x.x.x.tgz
 ```
 
 ## Configuration
 
-The following tables lists the configurable parameters of the etcd chart and their default values.
+The following tables lists the configurable parameters of the mongodb chart and their default values.
 
 |       Parameter       |           Description            |                         Default                          |
 |-----------------------|----------------------------------|----------------------------------------------------------|
-| `Name`         | Name of the chart                | `etcd`                                           |
+| `Name`         | Name of the chart                | `mongodb`                                           |
 | `Image`        | Container image name             | `mongo`                         |
 | `ImageTag`     | Container image tag              | `3.2`                                               |
 | `ImagePullPolicy`     | Container pull policy     | `Always`                                               |
@@ -59,7 +60,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
-```bash
+```console
 $ helm install --name my-release -f values.yaml mongodb-x.x.x.tgz
 ```
 
@@ -69,17 +70,24 @@ Once you have all 3 nodes in running, you can run the "test.sh" script in this d
 
 # Deep dive
 
+Because the pod names are dependent on the name chosen for it, the following examples use the 
+environment variable `RELEASENAME`. For example, if the helm release name is `messy-hydra`, one would need to set the following before proceeding. The example scripts below assume 3 pods only.
+
+```console
+export RELEASE_NAME=messy-hydra
+```
+
 ## Cluster Health
 
-```
-$ for i in <0..n>; do kubectl exec <release-podname-$i> -- sh -c '/usr/bin/mongo --eval="printjson(db.serverStatus())"'; done
+```console
+$ for i in 0 1 2; do kubectl exec $RELEASE_NAME-mongodb-$i -- sh -c '/usr/bin/mongo --eval="printjson(db.serverStatus())"'; done
 ```
 
 ## Failover
 
 One can check the roles being played by each node by using the following:
 ```console
-$ for i in <0..n>; do kubectl exec <release-podname-$i> -- sh -c '/usr/bin/mongo --eval="printjson(rs.isMaster())"'; done
+$ for i in 0 1 2; do kubectl exec $RELEASE_NAME-mongodb-$i -- sh -c '/usr/bin/mongo --eval="printjson(rs.isMaster())"'; done
 
 MongoDB shell version: 3.2.9
 connecting to: test
@@ -111,7 +119,7 @@ This lets us see which member is primary.
 
 Let us now test persistence and failover. First, we insert a key (in the below example, we assume pod 0 is the master):
 ```console
-$ kubectl exec <$release-mongodb-0> -- /usr/bin/mongo --eval="printjson(db.test.insert({key1: 'value1'}))"
+$ kubectl exec $RELEASE_NAME-mongodb-0 -- /usr/bin/mongo --eval="printjson(db.test.insert({key1: 'value1'}))"
 
 MongoDB shell version: 3.2.8
 connecting to: test
@@ -120,7 +128,7 @@ connecting to: test
 
 Watch existing members:
 ```console
-$ kubectl run --attach bbox --image=mongo:3.2 --restart=Never -- sh -c 'while true; do for i in 0 1 2; do echo <$release-podname-$i> $(mongo --host=<$release-mongodb-$i>.<$release-mongodb> --eval="printjson(rs.isMaster())" | grep primary); sleep 1; done; done';
+$ kubectl run --attach bbox --image=mongo:3.2 --restart=Never -- sh -c 'while true; do for i in 0 1 2; do echo <$release-podname-$i> $(mongo --host=$RELEASE_NAME-mongodb-$i.$RELEASE_NAME-mongodb --eval="printjson(rs.isMaster())" | grep primary); sleep 1; done; done';
 
 Waiting for pod default/bbox2 to be running, status is Pending, pod ready: false
 If you don't see a command prompt, try pressing enter.
@@ -134,7 +142,7 @@ messy-hydra-mongodb-0 "primary" : "messy-hydra-mongodb-0.messy-hydra-mongodb.def
 
 Kill the primary and watch as a new master getting elected.
 ```console
-$ kubectl delete pod <release-mongodb-0>
+$ kubectl delete pod $RELEASE_NAME-mongodb-0
 
 pod "messy-hydra-mongodb-0" deleted
 ```
@@ -179,7 +187,7 @@ messy-hydra-mongodb-2 "primary" : "messy-hydra-mongodb-0.messy-hydra-mongodb.def
 
 Check the previously inserted key:
 ```console
-$ kubectl exec $release-mongodb-1 -- /usr/bin/mongo --eval="rs.slaveOk(); db.test.find({key1:{\$exists:true}}).forEach(printjson)"
+$ kubectl exec $RELEASE_NAME-mongodb-1 -- /usr/bin/mongo --eval="rs.slaveOk(); db.test.find({key1:{\$exists:true}}).forEach(printjson)"
 
 MongoDB shell version: 3.2.8
 connecting to: test
@@ -189,4 +197,4 @@ connecting to: test
 ## Scaling
 
 Scaling should be managed by `helm upgrade`, which is the recommended way. 
-You can also scale up by modifying the number of replicas on the PetSet using `kubectl patch` or `kubectl apply`.
+You can also scale up by modifying the number of replicas on the PetSet using `kubectl patch` or `kubectl apply`. Deleting the various pods created and the associated resources needs some care and is described in the [petset documentation](http://kubernetes.io/docs/user-guide/petset/#deleting-a-pet-set).
