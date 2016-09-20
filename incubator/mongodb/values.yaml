@@ -15,3 +15,5 @@ ImagePullPolicy: "Always"
 Cpu: "100m"
 Memory: "512Mi"
 Storage: "10Gi"
+StorageClass: generic
+
