@@ -1,0 +1,38 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{template "fullname" .}}
+  labels:
+    heritage: {{.Release.Service | quote}}
+    release: {{.Release.Name | quote}}
+    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: {{template "fullname" .}}
+        release: {{.Release.Name | quote}}
+    spec:
+      containers:
+      - name: grafana
+        image: "{{.Values.imageName}}:{{default "latest" .Values.imageTag}}"
+        imagePullPolicy: {{default "Always" .Values.pullPolicy}}
+        env:
+          - name: GF_SECURITY_ADMIN_USER
+            value: "{{.Values.adminUser}}"
+          - name: GF_SECURITY_ADMIN_PASSWORD
+            value: "{{.Values.adminPassword}}"
+        ports:
+        - containerPort: 3000
+        resources:
+          requests:
+            cpu: {{default "100m" .Values.Cpu}}
+            memory: {{default "100M" .Values.Memory}}
+        volumeMounts:
+        - mountPath: /data
+          name: storage-volume
+      volumes:
+        - name: storage-volume
+          persistentVolumeClaim:
+            claimName: {{template "fullname" .}}
