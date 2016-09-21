@@ -1,0 +1,11 @@
+imageName: "grafana/grafana"
+adminUser: "admin"
+adminPassword: "admin"
+
+# Persist data to a persitent volume
+persistence:
+  enabled: true
+  storageClass: generic
+  accessMode: ReadWriteOnce
+  size: "1Gi"
+
