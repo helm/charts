@@ -1,0 +1,19 @@
+name: redmine
+version: 0.3.0
+description: A flexible project management web application.
+keywords:
+- redmine
+- project management
+- www
+- http
+- web
+- application
+- ruby
+- rails
+home: http://www.redmine.org/
+sources:
+- https://github.com/bitnami/bitnami-docker-redmine
+maintainers:
+- name: Bitnami
+  email: containers@bitnami.com
+engine: gotpl
