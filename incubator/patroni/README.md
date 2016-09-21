@@ -100,3 +100,20 @@ $ kubectl delete petset,po -l release=$release
 $ sleep $grace
 $ kubectl delete pvc -l release=$release
 ```
+
+## Internals
+
+Patroni is responsible for electing a Postgres master pod by leveraging etcd.
+It then exports this master via a Kubernetes service and a label query that filters for `spilo-role=master`.
+This label is dynamically set on the pod that acts as the master and removed from all other pods.
+Consequently, the service endpoint will point to the current master.
+
+```console
+$ kubectl get pods -l spilo-role -L spilo-role
+NAME                   READY     STATUS    RESTARTS   AGE       SPILO-ROLE
+my-release-patroni-0   1/1       Running   0          9m        replica
+my-release-patroni-1   1/1       Running   0          9m        master
+my-release-patroni-2   1/1       Running   0          8m        replica
+my-release-patroni-3   1/1       Running   0          8m        replica
+my-release-patroni-4   1/1       Running   0          8m        replica
+```
