@@ -54,8 +54,7 @@ The following tables lists the configurable parameters of the mongodb chart and 
 | `Component`    | k8s selector key                 | `mongodb`                                           |
 | `Cpu`          | container requested cpu          | `100m`                                                   |
 | `Memory`    |container requested memory                 | `512Mi`                                           |
-| `ClientPort`  | k8s service port                 | `2379`                                                   |
-| `PeerPorts`| Container listening port         | `27017`                                                   |
+| `PeerPort`| Container listening port         | `27017`                                                   |
 | `Storage`| Persistent volume size         | `10Gi`                                                   |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
