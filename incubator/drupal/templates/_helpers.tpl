@@ -22,3 +22,15 @@ We truncate at 24 chars because some Kubernetes name fields are limited to this 
 {{- define "mariadb.fullname" -}}
 {{- printf "%s-%s" .Release.Name "mariadb" | trunc 24 -}}
 {{- end -}}
+
+{{- define "toYaml" -}}
+  {{- range $key, $value := . -}}
+    {{- $map := kindIs "map" $value -}}
+    {{- if $map }}
+{{ $key }}:
+  {{- include "toYaml" $value | indent 2 }}
+    {{- else }}
+{{ $key }}: {{ $value }}
+    {{- end }}
+  {{- end -}}
+{{- end -}}

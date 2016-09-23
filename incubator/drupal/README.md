@@ -4,7 +4,7 @@
 
 ## TL;DR;
 
-```bash
+```console
 $ helm install drupal-x.x.x.tgz
 ```
 
@@ -25,7 +25,7 @@ Download the latest release of the chart from the [releases](../../../releases) 
 
 Alternatively, clone the repo if you wish to use the development snapshot:
 
-```bash
+```console
 $ git clone https://github.com/kubernetes/charts.git
 ```
 
@@ -33,7 +33,7 @@ $ git clone https://github.com/kubernetes/charts.git
 
 To install the chart with the release name `my-release`:
 
-```bash
+```console
 $ helm install --name my-release drupal-x.x.x.tgz
 ```
 
@@ -47,7 +47,7 @@ The command deploys Drupal on the Kubernetes cluster in the default configuratio
 
 To uninstall/delete the `my-release` deployment:
 
-```bash
+```console
 $ helm delete my-release
 ```
 
@@ -58,7 +58,7 @@ The command removes all the Kubernetes components associated with the chart and 
 The following tables lists the configurable parameters of the Drupal chart and their default values.
 
 | Parameter                         | Description                           | Default                                                   |
-| -------------------------------   | ----------------------------          | --------------------------------------------------------- |
+| --------------------------------- | ------------------------------------- | --------------------------------------------------------- |
 | `image`                           | Drupal image                          | `bitnami/drupal:{VERSION}`                                |
 | `imagePullPolicy`                 | Image pull policy                     | `Always` if `image` tag is `latest`, else `IfNotPresent`  |
 | `drupalUsername`                  | User of the application               | `user`                                                    |
@@ -73,12 +73,13 @@ The following tables lists the configurable parameters of the Drupal chart and t
 | `persistence.drupal.storageClass` | PVC Storage Class for Drupal volume   | `generic`                                                 |
 | `persistence.drupal.accessMode`   | PVC Access Mode for Drupal volume     | `ReadWriteOnce`                                           |
 | `persistence.drupal.size`         | PVC Storage Request for Drupal volume | `8Gi`                                                     |
+| `resources`                       | CPU/Memory resource requests/limits   | Memory: `512Mi`                                           |
 
 The above parameters map to the env variables defined in [bitnami/drupal](http://github.com/bitnami/bitnami-docker-drupal). For more information please refer to the [bitnami/drupal](http://github.com/bitnami/bitnami-docker-drupal) image documentation.
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
-```bash
+```console
 $ helm install --name my-release \
   --set drupalUsername=admin,drupalPassword=password,mariadb.mariadbRootPassword=secretpassword \
     drupal-x.x.x.tgz
@@ -88,7 +89,7 @@ The above command sets the Drupal administrator account username and password to
 
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 
-```bash
+```console
 $ helm install --name my-release -f values.yaml drupal-x.x.x.tgz
 ```
 

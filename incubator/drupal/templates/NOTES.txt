@@ -1,3 +1,7 @@
+*******************************************************************
+*** PLEASE BE PATIENT: Drupal may take a few minutes to install ***
+*******************************************************************
+
 1. Get the Drupal URL by running:
 
 {{- if contains "NodePort" .Values.serviceType }}
