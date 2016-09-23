@@ -29,18 +29,3 @@ Credentials:
 # Patroni depends on etcd, configure it here
 Etcd:
   Discovery: # leave blank to use vendored etcd chart
-
-# Enable backups to Google cloud storage
-# Speeds up the replication process in case of failure
-GCS:
-  # Google credentials for a service account that has
-  # read and write access to the configure GCS bucket
-  Credentials: |
-    {
-      "type": "service_account",
-      "project_id": "...",
-      "private_key_id": "...",
-      ...
-    }
-  # The Google cloud storage bucket to use
-  Bucket: some-google-bucket

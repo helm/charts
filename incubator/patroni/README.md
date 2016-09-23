@@ -75,8 +75,6 @@ The following tables lists the configurable parameters of the patroni chart and 
 | `Credentials.Admin`     | password for the admin user         | `cola`                                              |
 | `Credentials.Standby`   | password for the replication user   | `pinacolada`                                        |
 | `Etcd.Discovery`        | domain name of etcd cluster         | `<release-name>-etcd.<namespace>.svc.cluster.local` |
-| `GCS.Credentials`       | Google service account key file for authentication    | `<needs to be defined>`           |
-| `GCS.Bucket`            | GCS bucket name to stream WAL files and base backups  | `some-google-bucket`              |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 

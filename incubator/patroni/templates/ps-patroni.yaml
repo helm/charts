@@ -48,10 +48,8 @@ spec:
           value: {{default (printf "%s-etcd.%s.svc.cluster.local" .Release.Name .Values.Namespace) .Values.Etcd.Discovery }}
         - name: SCOPE
           value: "{{ printf "%s-%s" .Release.Name .Values.Name }}"
-        - name: WAL_GCS_BUCKET
-          value: {{ .Values.GCS.Bucket }}
-        - name: GOOGLE_APPLICATION_CREDENTIALS
-          value: /etc/patroni/gcloud-credentials.json
+        - name: USE_WALE
+          value: ""
         - name: PGROOT
           value: /home/postgres/pgdata/pgroot
         - name: POD_NAMESPACE
