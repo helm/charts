@@ -73,7 +73,7 @@ The following tables lists the configurable parameters of the Drupal chart and t
 | `persistence.drupal.storageClass` | PVC Storage Class for Drupal volume   | `generic`                                                 |
 | `persistence.drupal.accessMode`   | PVC Access Mode for Drupal volume     | `ReadWriteOnce`                                           |
 | `persistence.drupal.size`         | PVC Storage Request for Drupal volume | `8Gi`                                                     |
-| `resources`                       | CPU/Memory resource requests/limits   | Memory: `512Mi`                                           |
+| `resources`                       | CPU/Memory resource requests/limits   | Memory: `512Mi`, CPU: `300m`                              |
 
 The above parameters map to the env variables defined in [bitnami/drupal](http://github.com/bitnami/bitnami-docker-drupal). For more information please refer to the [bitnami/drupal](http://github.com/bitnami/bitnami-docker-drupal) image documentation.
 
