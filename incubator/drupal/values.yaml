@@ -1,0 +1,70 @@
+## Bitnami Drupal image version
+## ref: https://hub.docker.com/r/bitnami/drupal/tags/
+##
+image: bitnami/drupal:8.1.9-r0
+
+## Specify a imagePullPolicy
+## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
+## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+##
+# imagePullPolicy:
+
+## User of the application
+## ref: https://github.com/bitnami/bitnami-docker-drupal#configuration
+##
+drupalUsername: user
+
+## Application password
+## ref: https://github.com/bitnami/bitnami-docker-drupal#configuration
+##
+drupalPassword: bitnami
+
+## Admin email
+## ref: https://github.com/bitnami/bitnami-docker-drupal#configuration
+##
+drupalEmail: user@example.com
+
+##
+## MariaDB chart configuration
+##
+mariadb:
+  ## MariaDB admin password
+  ## ref: https://github.com/bitnami/bitnami-docker-mariadb/blob/master/README.md#setting-the-root-password-on-first-run
+  ##
+  # mariadbRootPassword:
+
+  ## Enable persistence using Persistent Volume Claims
+  ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+  ##
+  persistence:
+    enabled: true
+    storageClass: generic
+    accessMode: ReadWriteOnce
+    size: 8Gi
+
+## Kubernetes configuration
+## For minikube, set this to NodePort, elsewhere use LoadBalancer
+##
+serviceType: LoadBalancer
+
+## Enable persistence using Persistent Volume Claims
+## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+##
+persistence:
+  enabled: true
+  apache:
+    storageClass: generic
+    accessMode: ReadWriteOnce
+    size: 1Gi
+  drupal:
+    storageClass: generic
+    accessMode: ReadWriteOnce
+    size: 8Gi
+
+## Configure resource requests and limits
+## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+##
+resources:
+  requests:
+    memory: 512Mi
+    cpu: 300m
