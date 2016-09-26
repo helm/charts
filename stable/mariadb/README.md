@@ -52,14 +52,14 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following tables lists the configurable parameters of the MariaDB chart and their default values.
 
-|       Parameter       |           Description            |                         Default                          |
-|-----------------------|----------------------------------|----------------------------------------------------------|
-| `imageTag`            | `bitnami/mariadb` image tag.     | Most recent release                                      |
-| `imagePullPolicy`     | Image pull policy.               | `Always` if `imageTag` is `latest`, else `IfNotPresent`. |
-| `mariadbRootPassword` | Password for the `root` user.    | `nil`                                                    |
-| `mariadbUser`         | Username of new user to create.  | `nil`                                                    |
-| `mariadbPassword`     | Password for the new user.       | `nil`                                                    |
-| `mariadbDatabase`     | Name for new database to create. | `nil`                                                    |
+| Parameter               | Description                        | Default                                                    |
+| ----------------------- | ---------------------------------- | ---------------------------------------------------------- |
+| `image`                 | MariaDB image                      | `bitnami/mariadb:{VERSION}`                                |
+| `imagePullPolicy`       | Image pull policy.                 | `Always` if `imageTag` is `latest`, else `IfNotPresent`.   |
+| `mariadbRootPassword`   | Password for the `root` user.      | `nil`                                                      |
+| `mariadbUser`           | Username of new user to create.    | `nil`                                                      |
+| `mariadbPassword`       | Password for the new user.         | `nil`                                                      |
+| `mariadbDatabase`       | Name for new database to create.   | `nil`                                                      |
 
 The above parameters map to the env variables defined in [bitnami/mariadb](http://github.com/bitnami/bitnami-docker-mariadb). For more information please refer to the [bitnami/mariadb](http://github.com/bitnami/bitnami-docker-mariadb) image documentation.
 
