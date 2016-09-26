@@ -25,3 +25,10 @@ image: bitnami/mariadb:10.1.17-r1
 ## ref: https://github.com/bitnami/bitnami-docker-mariadb/blob/master/README.md#creating-a-database-on-first-run
 ##
 # mariadbDatabase:
+
+## Persist data to a persitent volume
+persistence:
+    enabled: true
+    storageClass: generic
+    accessMode: ReadWriteOnce
+    size: 8Gi
