@@ -1,0 +1,31 @@
+Name: patroni
+Namespace: default # TODO: make this actually configurable
+
+Component: patroni
+ImagePullPolicy: IfNotPresent
+
+# The image to use. Spilo is the dockerized Patroni
+Spilo:
+  # this image was built from https://github.com/zalando/spilo/tree/master/postgres-appliance
+  Image: registry.opensource.zalan.do/acid/spilo-9.5
+  Version: 1.0-p5
+
+# How many postgres containers to spawn
+Replicas: 5
+
+# Resource limits per replica
+Resources:
+  Cpu: 100m
+  Memory: 512Mi
+  Storage: 1Gi
+
+# Credentials used by Patroni
+# * more information: https://github.com/zalando/patroni/blob/master/docs/SETTINGS.rst#postgresql
+Credentials:
+  Superuser: tea
+  Admin: cola
+  Standby: pinacolada
+
+# Patroni depends on etcd, configure it here
+Etcd:
+  Discovery: # leave blank to use vendored etcd chart
