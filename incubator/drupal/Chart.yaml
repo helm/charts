@@ -1,0 +1,18 @@
+name: drupal
+version: 0.3.0
+description: One of the most versatile open source content management systems.
+keywords:
+- drupal
+- cms
+- blog
+- http
+- web
+- application
+- php
+home: http://www.drupal.org/
+sources:
+- https://github.com/bitnami/bitnami-docker-drupal
+maintainers:
+- name: Bitnami
+  email: containers@bitnami.com
+engine: gotpl
