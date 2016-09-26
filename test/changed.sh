@@ -46,7 +46,7 @@ helm init --client-only
 #    Lint, install and delete
 for directory in ${CHANGED_FOLDERS}; do
   CHART_NAME=`echo ${directory} | cut -d '/' -f2`
-  RELEASE_NAME="${CHART_NAME}-${BUILD_NUMBER}"
+  RELEASE_NAME="${CHART_NAME:0:7}-${BUILD_NUMBER}"
   CURRENT_RELEASE=${RELEASE_NAME}
   helm lint ${directory}
   helm install --name ${RELEASE_NAME} --namespace ${NAMESPACE} ${directory}
