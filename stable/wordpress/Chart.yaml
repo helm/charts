@@ -1,0 +1,18 @@
+name: wordpress
+version: 0.3.0
+description: Web publishing platform for building blogs and websites.
+keywords:
+- wordpress
+- cms
+- blog
+- http
+- web
+- application
+- php
+home: http://www.wordpress.com/
+sources:
+- https://github.com/bitnami/bitnami-docker-wordpress
+maintainers:
+- name: Bitnami
+  email: containers@bitnami.com
+engine: gotpl
