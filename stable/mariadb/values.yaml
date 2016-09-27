@@ -28,7 +28,7 @@ imageTag: 10.1.14-r3
 
 ## Persist data to a persitent volume
 persistence:
-    enabled: true
-    storageClass: generic
-    accessMode: ReadWriteOnce
-    size: 8Gi
+  enabled: true
+  storageClass: generic
+  accessMode: ReadWriteOnce
+  size: 8Gi
