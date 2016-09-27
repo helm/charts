@@ -60,6 +60,10 @@ The following tables lists the configurable parameters of the MariaDB chart and 
 | `mariadbUser`           | Username of new user to create.    | `nil`                                                      |
 | `mariadbPassword`       | Password for the new user.         | `nil`                                                      |
 | `mariadbDatabase`       | Name for new database to create.   | `nil`                                                      |
+| `persistence.enabled`          | Use a PVC to persist data           | `true`                                       |
+| `persistence.storageClass`     | Storage class of backing PVC        | `generic`                                    |
+| `persistence.accessMode`       | Use volume as ReadOnly or ReadWrite | `ReadWriteOnce`                              |
+| `persistence.size`             | Size of data volume                 | `8Gi`                                        |
 
 The above parameters map to the env variables defined in [bitnami/mariadb](http://github.com/bitnami/bitnami-docker-mariadb). For more information please refer to the [bitnami/mariadb](http://github.com/bitnami/bitnami-docker-mariadb) image documentation.
 
