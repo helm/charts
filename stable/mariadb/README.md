@@ -89,38 +89,4 @@ $ helm install --name my-release -f values.yaml mariadb-x.x.x.tgz
 
 The [Bitnami MariaDB](https://github.com/bitnami/bitnami-docker-mariadb) image stores the MariaDB data and configurations at the `/bitnami/mariadb` path of the container.
 
-As a placeholder, the chart mounts an [emptyDir](http://kubernetes.io/docs/user-guide/volumes/#emptydir) volume at this location.
-
-> *"An emptyDir volume is first created when a Pod is assigned to a Node, and exists as long as that Pod is running on that node. When a Pod is removed from a node for any reason, the data in the emptyDir is deleted forever."*
-
-For persistence of the data you should replace the `emptyDir` volume with a persistent [storage volume](http://kubernetes.io/docs/user-guide/volumes/), else the data will be lost if the Pod is shutdown.
-
-### Step 1: Create a persistent disk
-
-You first need to create a persistent disk in the cloud platform your cluster is running. For example, on GCE you can use the `gcloud` tool to create a [gcePersistentDisk](http://kubernetes.io/docs/user-guide/volumes/#gcepersistentdisk):
-
-```bash
-$ gcloud compute disks create --size=500GB --zone=us-central1-a mariadb-data-disk
-```
-
-### Step 2: Update `templates/deployment.yaml`
-
-Replace:
-
-```yaml
-      volumes:
-      - name: data
-        emptyDir: {}
-```
-
-with
-
-```yaml
-      volumes:
-      - name: data
-        gcePersistentDisk:
-          pdName: mariadb-data-disk
-          fsType: ext4
-```
-
-[Install](#installing-the-chart) the chart after making these changes.
+The chart mounts a [Persistent Volume](kubernetes.io/docs/user-guide/persistent-volumes/) volume at this location. The volume is created using dynamic volume provisioning.
