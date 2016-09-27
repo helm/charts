@@ -15,7 +15,7 @@
 
 UPSTREAM_BRANCH="upstream/master"
 NAMESPACE="pr-${ghprbPullId}-${BUILD_NUMBER}"
-CHANGED_FOLDERS=`git diff --name-only ${UPSTREAM_BRANCH} | grep -v test | grep / | awk -F/ '{print $1"/"$2}' | uniq`
+CHANGED_FOLDERS=`git diff --find-renames --name-only ${UPSTREAM_BRANCH} | grep -v test | grep / | awk -F/ '{print $1"/"$2}' | uniq`
 CURRENT_RELEASE=""
 
 # Cleanup any releases and namespaces left over from the test
