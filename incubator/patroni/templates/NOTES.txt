@@ -1,0 +1,29 @@
+Getting Started:
+
+Patroni can be accessed via port 5432 on the following DNS name from within your cluster:
+{{ template "fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
+
+To get your password for superuser or admin run:
+
+    # admin user password
+    printf $(printf '\%o' `kubectl get secret --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath="{.data.password-admin[*]}"`);echo
+
+    # superuser password
+    printf $(printf '\%o' `kubectl get secret --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath="{.data.password-superuser[*]}"`);echo
+
+To connect to your database:
+
+1. Run an Ubuntu pod that you can use as a client:
+
+    kubectl run -i --tty ubuntu --image=ubuntu:16.04 --restart=Never -- bash -il
+
+2. Install the postgres client:
+
+    $ apt-get update && apt-get install postgresql-client -y
+
+3. Connect using the psql cli, then provide your password:
+    # login as admin
+    $ psql -U admin -h {{ template "fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local postgres
+
+    # login as superuser
+    $ psql -U superuser -h {{ template "fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local postgres
