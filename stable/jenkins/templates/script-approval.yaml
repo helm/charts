@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "fullname" . }}-script-approval
+data: 
+  scriptapproval.xml: |-
+    <?xml version='1.0' encoding='UTF-8'?>
+    <scriptApproval plugin="script-security@1.23">
+      <approvedScriptHashes/>
+      <approvedSignatures>
+        <string>method groovy.json.JsonSlurperClassic parseText java.lang.String</string>
+        <string>new groovy.json.JsonSlurperClassic</string>
+      </approvedSignatures>
+      <aclApprovedSignatures/>
+      <approvedClasspathEntries/>
+      <pendingScripts/>
+      <pendingSignatures/>
+      <pendingClasspathEntries/>
+    </scriptApproval>
