@@ -89,7 +89,7 @@ $ helm install --name my-release -f values.yaml mariadb-x.x.x.tgz
 ### Custom my.cnf configuration
 
 The Bitnami MariaDB image allows you to provide a custom `my.cnf` file for configuring MariaDB.
-This Chart uses the `config` value to mount a custom `my.cnf` using a ConfigMap.
+This Chart uses the `config` value to mount a custom `my.cnf` using a [ConfigMap](http://kubernetes.io/docs/user-guide/configmap/).
 You can configure this by creating a YAML file that defines the `config` property as a multi-line string in the format of a `my.cnf` file.
 For example:
 
