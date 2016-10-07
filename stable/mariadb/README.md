@@ -52,18 +52,19 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following tables lists the configurable parameters of the MariaDB chart and their default values.
 
-| Parameter               | Description                        | Default                                                    |
-| ----------------------- | ---------------------------------- | ---------------------------------------------------------- |
-| `image`                 | MariaDB image                      | `bitnami/mariadb:{VERSION}`                                |
-| `imagePullPolicy`       | Image pull policy.                 | `Always` if `imageTag` is `latest`, else `IfNotPresent`.   |
-| `mariadbRootPassword`   | Password for the `root` user.      | `nil`                                                      |
-| `mariadbUser`           | Username of new user to create.    | `nil`                                                      |
-| `mariadbPassword`       | Password for the new user.         | `nil`                                                      |
-| `mariadbDatabase`       | Name for new database to create.   | `nil`                                                      |
-| `persistence.enabled`          | Use a PVC to persist data           | `true`                                       |
-| `persistence.storageClass`     | Storage class of backing PVC        | `generic`                                    |
-| `persistence.accessMode`       | Use volume as ReadOnly or ReadWrite | `ReadWriteOnce`                              |
-| `persistence.size`             | Size of data volume                 | `8Gi`                                        |
+| Parameter                  | Description                                | Default                                                    |
+| -----------------------    | ----------------------------------         | ---------------------------------------------------------- |
+| `image`                    | MariaDB image                              | `bitnami/mariadb:{VERSION}`                                |
+| `imagePullPolicy`          | Image pull policy.                         | `Always` if `imageTag` is `latest`, else `IfNotPresent`.   |
+| `mariadbRootPassword`      | Password for the `root` user.              | `nil`                                                      |
+| `mariadbUser`              | Username of new user to create.            | `nil`                                                      |
+| `mariadbPassword`          | Password for the new user.                 | `nil`                                                      |
+| `mariadbDatabase`          | Name for new database to create.           | `nil`                                                      |
+| `persistence.enabled`      | Use a PVC to persist data                  | `true`                                                     |
+| `persistence.storageClass` | Storage class of backing PVC               | `generic`                                                  |
+| `persistence.accessMode`   | Use volume as ReadOnly or ReadWrite        | `ReadWriteOnce`                                            |
+| `persistence.size`         | Size of data volume                        | `8Gi`                                                      |
+| `config`                   | Multi-line string for my.cnf configuration | `nil`                                                      |
 
 The above parameters map to the env variables defined in [bitnami/mariadb](http://github.com/bitnami/bitnami-docker-mariadb). For more information please refer to the [bitnami/mariadb](http://github.com/bitnami/bitnami-docker-mariadb) image documentation.
 
@@ -84,6 +85,28 @@ $ helm install --name my-release -f values.yaml mariadb-x.x.x.tgz
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
+### Custom my.cnf configuration
+
+The Bitnami MariaDB image allows you to provide a custom `my.cnf` file for configuring MariaDB.
+This Chart uses the `config` value to mount a custom `my.cnf` using a [ConfigMap](http://kubernetes.io/docs/user-guide/configmap/).
+You can configure this by creating a YAML file that defines the `config` property as a multi-line string in the format of a `my.cnf` file.
+For example:
+
+```bash
+cat > mariadb-values.yaml <<EOF
+config: |-
+  [mysqld]
+  max_allowed_packet = 64M
+  sql_mode=STRICT_ALL_TABLES
+  ft_stopword_file=/etc/mysql/stopwords.txt
+  ft_min_word_len=3
+  ft_boolean_syntax=' |-><()~*:""&^'
+  innodb_buffer_pool_size=2G
+EOF
+
+helm install --name my-release -f mariadb-values.yaml mariadb-x.x.x.tgz
+```
 
 ## Persistence
 
