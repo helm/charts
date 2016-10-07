@@ -26,9 +26,18 @@ image: bitnami/mariadb:10.1.17-r1
 ##
 # mariadbDatabase:
 
-## Persist data to a persitent volume
+## Enable persistence using Persistent Volume Claims
+## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+##
 persistence:
   enabled: true
   storageClass: generic
   accessMode: ReadWriteOnce
   size: 8Gi
+
+## Configure MariaDB with a custom my.cnf file
+## ref: https://mariadb.com/kb/en/mariadb/configuring-mariadb-with-mycnf/#example-of-configuration-file
+##
+# config: |-
+  # [mysqld]
+  # innodb_buffer_pool_size=2G
