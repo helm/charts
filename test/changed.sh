@@ -21,9 +21,9 @@ CURRENT_RELEASE=""
 # Cleanup any releases and namespaces left over from the test
 function cleanup {
     if [ -n $CURRENT_RELEASE ];then
-      helm delete --purge ${CURRENT_RELEASE} || true
+      helm delete --purge ${CURRENT_RELEASE} > cleanup_log 2>&1 || true
     fi
-    kubectl delete ns ${NAMESPACE} || true
+    kubectl delete ns ${NAMESPACE} >> cleanup_log 2>&1 || true
 }
 trap cleanup EXIT
 
