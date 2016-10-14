@@ -12,7 +12,7 @@ metadata:
     "helm.sh/created": {{ .Release.Time.Seconds | quote }}
 spec:
   serviceName: {{ template "fullname" . }}
-  replicas: {{default 5 .Values.Replicas | quote }}
+  replicas: {{default 5 .Values.Replicas }}
   template:
     metadata:
       name: {{ template "fullname" . }}
@@ -27,7 +27,7 @@ spec:
     spec:
       containers:
       - name: spilo
-        image: {{ .Values.Spilo.Image }}:{{ .Values.Spilo.Version }}
+        image: "{{ .Values.Spilo.Image }}:{{ .Values.Spilo.Version }}"
         env:
         - name: PGPASSWORD_SUPERUSER
           valueFrom:
