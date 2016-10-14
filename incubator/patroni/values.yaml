@@ -1,5 +1,5 @@
 Name: patroni
-Namespace: default # TODO: make this actually configurable
+Namespace: default
 
 Component: patroni
 ImagePullPolicy: IfNotPresent
@@ -8,7 +8,7 @@ ImagePullPolicy: IfNotPresent
 Spilo:
   # this image was built from https://github.com/zalando/spilo/tree/master/postgres-appliance
   Image: registry.opensource.zalan.do/acid/spilo-9.5
-  Version: 1.0-p5
+  Version: 1.1-p5
 
 # How many postgres containers to spawn
 Replicas: 5
