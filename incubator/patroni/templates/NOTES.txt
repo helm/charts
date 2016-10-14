@@ -21,5 +21,5 @@ To connect to your database:
     # login as superuser
     kubectl run -i --tty --rm psql --image=postgres \
       --env "PGPASSWORD=$PGPASSWORD_SUPERUSER" \
-      --command -- psql -U superuser \
+      --command -- psql -U postgres \
       -h {{ template "fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local postgres
