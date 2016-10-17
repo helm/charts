@@ -12,7 +12,7 @@ metadata:
     helm.sh/created: {{.Release.Time.Seconds | quote }}
 spec:
   serviceName: "{{ printf "%s-data-%s" .Release.Name .Values.Name | trunc 24 }}"
-  replicas: {{default 3 .Values.DataReplicas | quote }}
+  replicas: {{default 3 .Values.DataReplicas }}
   template:
     metadata:
       labels:
