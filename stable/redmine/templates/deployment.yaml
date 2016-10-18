@@ -13,9 +13,6 @@ spec:
     metadata:
       labels:
         app: {{ template "fullname" . }}
-        chart: "{{ .Chart.Name }}-{{ .Chart.Name }}"
-        release: "{{ .Release.Name }}"
-        heritage: "{{ .Release.Service }}"
     spec:
       containers:
       - name: {{ template "fullname" . }}
