@@ -1,4 +1,4 @@
-#!/bin/bash -ex
+#!/bin/bash
 # Copyright 2016 The Kubernetes Authors All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,6 +16,7 @@
 set -o errexit
 set -o nounset
 set -o pipefail
+set -o xtrace
 
 # TODO should we inject this.  This is creating problems bumping the Docker version
 IMAGE_VERSION="test-image:v1.10"
