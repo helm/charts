@@ -1,6 +1,6 @@
 name: consul
 home: https://github.com/hashicorp/consul
-version: 0.1.0
+version: 0.1.1
 description: Hashicorp Consul Helm chart for Kubernetes.
 sources:
   - https://github.com/kelseyhightower/consul-on-kubernetes
