@@ -1,6 +1,6 @@
 name: elasticsearch
 home: https://www.elastic.co/products/elasticsearch
-version: 0.1.1
+version: 0.1.2
 description: Elasticsearch chart for Kubernetes
 sources:
   - https://www.elastic.co/products/elasticsearch
