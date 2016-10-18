@@ -1,4 +1,4 @@
-#!/bin/bash -xe
+#!/bin/bash
 # Copyright 2016 The Kubernetes Authors All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,9 +13,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-UPSTREAM_BRANCH="upstream/master"
+set -o errexit
+set -o nounset
+set -o pipefail
+set -o xtrace
+
+git fetch --tags https://github.com/kubernetes/charts master
+
 NAMESPACE="pr-${ghprbPullId}-${BUILD_NUMBER}"
-CHANGED_FOLDERS=`git diff --find-renames --name-only ${UPSTREAM_BRANCH} | grep -v test | grep / | awk -F/ '{print $1"/"$2}' | uniq`
+CHANGED_FOLDERS=`git diff --find-renames --name-only FETCH_HEAD stable/ incubator/ | awk -F/ '{print $1"/"$2}' | uniq`
 CURRENT_RELEASE=""
 
 # Cleanup any releases and namespaces left over from the test
