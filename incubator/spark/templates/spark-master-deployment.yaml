@@ -47,7 +47,7 @@ metadata:
   annotations:
     "helm.sh/created": {{.Release.Time.Seconds | quote }}
 spec:
-  replicas: {{default 1 .Values.Master.Replicas | quote }}
+  replicas: {{default 1 .Values.Master.Replicas}}
   strategy:
     type: RollingUpdate
   selector:
