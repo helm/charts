@@ -21,14 +21,22 @@ tar xzfv ${HELM_TARBALL}
 PATH=`pwd`/linux-amd64/:$PATH
 helm init --client-only
 
+# Authenticate before uploading to Google Cloud Storage
+cat > sa.json <<EOF
+$SERVICE_ACCOUNT_JSON
+EOF
+gcloud auth activate-service-account --key-file sa.json
+
 # Create the stable repository
 STABLE_REPO_DIR=stable-repo
 mkdir -p ${STABLE_REPO_DIR}
 cd ${STABLE_REPO_DIR}
-  for dir in `ls ../stable`;do 
+  gsutil -m rsync gs://kubernetes-charts/ ./
+  for dir in `ls ../stable`;do
     helm package ../stable/$dir
   done
   helm repo index --url http://storage.googleapis.com/kubernetes-charts/ .
+  gsutil -m rsync ./ gs://kubernetes-charts/
 cd ..
 ls -l ${STABLE_REPO_DIR}
 
@@ -36,17 +44,11 @@ ls -l ${STABLE_REPO_DIR}
 INCUBATOR_REPO_DIR=incubator-repo
 mkdir -p ${INCUBATOR_REPO_DIR}
 cd ${INCUBATOR_REPO_DIR}
-  for dir in `ls ../incubator`;do 
+  gsutil -m rsync gs://kubernetes-charts-incubator/ ./
+  for dir in `ls ../incubator`;do
     helm package ../incubator/$dir
   done
   helm repo index --url http://storage.googleapis.com/kubernetes-charts-incubator/ .
+  gsutil -m rsync ./ gs://kubernetes-charts-incubator/
 cd ..
 ls -l ${INCUBATOR_REPO_DIR}
-
-# Sync repository content
-cat > sa.json <<EOF
-$SERVICE_ACCOUNT_JSON
-EOF
-gcloud auth activate-service-account --key-file sa.json
-gsutil -m rsync stable-repo/ gs://kubernetes-charts/
-gsutil -m rsync incubator-repo/ gs://kubernetes-charts-incubator/
