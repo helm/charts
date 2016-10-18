@@ -29,7 +29,7 @@ metadata:
   annotations:
     "helm.sh/created": {{.Release.Time.Seconds | quote }}
 spec:
-  replicas: {{default 1 .Values.Zeppelin.Replicas | quote }}
+  replicas: {{default 1 .Values.Zeppelin.Replicas}}
   strategy:
     type: RollingUpdate
   selector:
