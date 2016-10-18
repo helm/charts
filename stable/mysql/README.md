@@ -6,25 +6,18 @@
 
 This chart bootstraps a single node MySQL deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
-## Get this chart
+## Prerequisites
 
-Download the latest release of the chart from the [releases](../../../releases) page.
-
-Alternatively, clone the repo if you wish to use the development snapshot:
-
-```bash
-$ git clone https://github.com/kubernetes/charts.git
-```
+- Kubernetes 1.4+ with Beta APIs enabled
+- PV provisioner support in the underlying infrastructure
 
 ## Installing the Chart
 
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm install --name my-release mysql-x.x.x.tgz
+$ helm install --name my-release stable/mysql
 ```
-
-*Replace the `x.x.x` placeholder with the chart release version.*
 
 The command deploys MySQL on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
 
@@ -51,17 +44,17 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following tables lists the configurable parameters of the MySQL chart and their default values.
 
-|       Parameter       |           Description            |                         Default                          |
-|-----------------------|----------------------------------|----------------------------------------------------------|
-| `imageTag`            | `mysql` image tag.     | Most recent release                                      |
-| `mysqlRootPassword` | Password for the `root` user.    | `nil`                                                    |
-| `mysqlUser`         | Username of new user to create.  | `nil`                                                    |
-| `mysqlPassword`     | Password for the new user.       | `nil`                                                    |
-| `mysqlDatabase`     | Name for new database to create. | `nil`                                                    |
-| `persistence.enabled`      | Create a volume to store data    | true                                              |
-|  `persistence.size`         | Size of persistent volume claim | 8Gi RW                                            |
-|  `persistence.storageClass`         | Type of persistent volume claim | generic                                            |
-|  `persistence.accessMode`         | ReadWriteOnce or ReadOnly | ReadWriteOnce                                             |
+| Parameter                  | Description                        | Default                                                    |
+| -----------------------    | ---------------------------------- | ---------------------------------------------------------- |
+| `imageTag`                 | `mysql` image tag.                 | Most recent release                                        |
+| `mysqlRootPassword`        | Password for the `root` user.      | `nil`                                                      |
+| `mysqlUser`                | Username of new user to create.    | `nil`                                                      |
+| `mysqlPassword`            | Password for the new user.         | `nil`                                                      |
+| `mysqlDatabase`            | Name for new database to create.   | `nil`                                                      |
+| `persistence.enabled`      | Create a volume to store data      | true                                                       |
+| `persistence.size`         | Size of persistent volume claim    | 8Gi RW                                                     |
+| `persistence.storageClass` | Type of persistent volume claim    | generic                                                    |
+| `persistence.accessMode`   | ReadWriteOnce or ReadOnly          | ReadWriteOnce                                              |
 
 Some of the parameters above map to the env variables defined in the [MySQL DockerHub image](https://hub.docker.com/_/mysql/).
 
@@ -70,7 +63,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 ```bash
 $ helm install --name my-release \
   --set mysqlLRootPassword=secretpassword,mysqlUser=my-user,mysqlPassword=my-password,mysqlDatabase=my-database \
-    mysql-x.x.x.tgz
+    stable/mysql
 ```
 
 The above command sets the MySQL `root` account password to `secretpassword`. Additionally it creates a standard database user named `my-user`, with the password `my-password`, who has access to a database named `my-database`.
@@ -78,7 +71,7 @@ The above command sets the MySQL `root` account password to `secretpassword`. Ad
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```bash
-$ helm install --name my-release -f values.yaml mysql-x.x.x.tgz
+$ helm install --name my-release -f values.yaml stable/mysql
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)

@@ -1,7 +1,7 @@
 # Consul Helm Chart
 
 ## Prerequisites Details
-* Kubernetes 1.3 with alpha APIs enable
+* Kubernetes 1.3 with alpha APIs enabled
 * PV support on the underlying infrastructure
 
 ## PetSet Details
@@ -16,47 +16,38 @@ This chart will do the following:
 
 * Implemented a dynamically scalable consul cluster using Kubernetes PetSets
 
-## Get this chart
-
-Download the latest release of the chart from the [releases](../../../releases) page.
-
-Alternatively, clone the repo if you wish to use the development snapshot:
-
-```bash
-$ git clone https://github.com/kubernetes/charts.git
-```
-
 ## Installing the Chart
 
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm install --name my-release consul-x.x.x.tgz
+$ helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
+$ helm install --name my-release incubator/consul
 ```
 
 ## Configuration
 
 The following tables lists the configurable parameters of the consul chart and their default values.
 
-|       Parameter       |           Description            |                         Default                          |
-|-----------------------|----------------------------------|----------------------------------------------------------|
-| `Name`         | Consul petset name                | `consul`                                           |
-| `Image`        | Container image name             | `consul`                         |
-| `ImageTag`     | Container image tag              | `v0.6.4`                                               |
-| `ImagePullPolicy`     | Container pull policy     | `Always`                                               |
-| `Replicas`     | k8s petset replicas          | `3`                                                      |
-| `Component`    | k8s selector key                 | `consul`                                           |
-| `Cpu`          | container requested cpu          | `100m`                                                   |
-| `Memory`    |container requested memory                 | `512Mi`                                           |
-| `Storage`| Persistent volume size         | `1Gi`                                                   |
-| `HttpPort`  | Consul http listening port                | `8500`                                                   |
-| `RpcPort`| Consul rpc listening port         | `8400`                                                   |
-| `SerflanPort`| Container serf lan listening port         | `8301`                                                   |
-| `SerflanUdpPort`| Container serf lan UDP listening port         | `8301`                                                   |
-| `SerfwanPort`| Container serf wan listening port         | `8302`                                                   |
-| `SerfwanUdpPort`| Container serf wan UDP listening port         | `8302`                                                   |
-| `ServerPort`| Container server listening port         | `8300`                                                   |
-| `ConsulDnsPort`| Container dns listening port         | `8600`                                                   |
+| Parameter               | Description                           | Default                                                    |
+| ----------------------- | ----------------------------------    | ---------------------------------------------------------- |
+| `Name`                  | Consul petset name                    | `consul`                                                   |
+| `Image`                 | Container image name                  | `consul`                                                   |
+| `ImageTag`              | Container image tag                   | `v0.6.4`                                                   |
+| `ImagePullPolicy`       | Container pull policy                 | `Always`                                                   |
+| `Replicas`              | k8s petset replicas                   | `3`                                                        |
+| `Component`             | k8s selector key                      | `consul`                                                   |
+| `Cpu`                   | container requested cpu               | `100m`                                                     |
+| `Memory`                | container requested memory            | `512Mi`                                                    |
+| `Storage`               | Persistent volume size                | `1Gi`                                                      |
+| `HttpPort`              | Consul http listening port            | `8500`                                                     |
+| `RpcPort`               | Consul rpc listening port             | `8400`                                                     |
+| `SerflanPort`           | Container serf lan listening port     | `8301`                                                     |
+| `SerflanUdpPort`        | Container serf lan UDP listening port | `8301`                                                     |
+| `SerfwanPort`           | Container serf wan listening port     | `8302`                                                     |
+| `SerfwanUdpPort`        | Container serf wan UDP listening port | `8302`                                                     |
+| `ServerPort`            | Container server listening port       | `8300`                                                     |
+| `ConsulDnsPort`         | Container dns listening port          | `8600`                                                     |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
@@ -64,7 +55,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```bash
-$ helm install --name my-release -f values.yaml consul-x.x.x.tgz
+$ helm install --name my-release -f values.yaml incubator/consul
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)

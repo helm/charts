@@ -2,6 +2,15 @@
 
 * Installs the web dashboarding system [Grafana](http://grafana.org/)
 
+## Installing the Chart
+
+To install the chart with the release name `my-release`:
+
+```bash
+$ helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
+$ helm install --name my-release incubator/grafana
+```
+
 ## Configuration
 
 | Parameter                  | Description                                       | Default                  |

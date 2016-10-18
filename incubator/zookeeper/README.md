@@ -14,54 +14,44 @@
 ## PetSet Caveats
 * http://kubernetes.io/docs/user-guide/petset/#alpha-limitations
 
-
 ## Chart Details
 This chart will do the following:
 
 * Implemented a dynamically scalable zookeeper cluster using Kubernetes PetSets
-
-## Get this chart
-
-Download the latest release of the chart from the [releases](../../../releases) page.
-
-Alternatively, clone the repo if you wish to use the development snapshot:
-
-```bash
-$ git clone https://github.com/kubernetes/charts.git
-```
 
 ## Installing the Chart
 
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm install --name my-release zookeeper-x.x.x.tgz
+$ helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
+$ helm install --name my-release incubator/zookeeper
 ```
 
 ## Configuration
 
 The following tables lists the configurable parameters of the zookeeper chart and their default values.
 
-|       Parameter       |           Description            |                         Default                          |
-|-----------------------|----------------------------------|----------------------------------------------------------|
-| `Name`         | Spark master name                | `zk`                                           |
-| `Image`        | Container image name             | `java`                         |
-| `ImageTag`     | Container image tag              | `openjdk-8-jre`                                               |
-| `ImagePullPolicy`     | Container pull policy     | `Always`                                               |
-| `Replicas`     | k8s petset replicas          | `3`                                                      |
-| `Component`    | k8s selector key                 | `zk`                                           |
-| `Cpu`          | container requested cpu          | `100m`                                                   |
-| `Memory`    |container requested memory                 | `512Mi`                                           |
-| `PeerPort`  | k8s service port                 | `2888`                                                   |
-| `LeaderElectionPort`| Container listening port         | `3888`                                                   |
-| `Storage`| Persistent volume size         | `1Gi`                                                   |
+| Parameter               | Description                        | Default                                                    |
+| ----------------------- | ---------------------------------- | ---------------------------------------------------------- |
+| `Name`                  | Spark master name                  | `zk`                                                       |
+| `Image`                 | Container image name               | `java`                                                     |
+| `ImageTag`              | Container image tag                | `openjdk-8-jre`                                            |
+| `ImagePullPolicy`       | Container pull policy              | `Always`                                                   |
+| `Replicas`              | k8s petset replicas                | `3`                                                        |
+| `Component`             | k8s selector key                   | `zk`                                                       |
+| `Cpu`                   | container requested cpu            | `100m`                                                     |
+| `Memory`                | container requested memory         | `512Mi`                                                    |
+| `PeerPort`              | k8s service port                   | `2888`                                                     |
+| `LeaderElectionPort`    | Container listening port           | `3888`                                                     |
+| `Storage`               | Persistent volume size             | `1Gi`                                                      |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```bash
-$ helm install --name my-release -f values.yaml zookeeper-x.x.x.tgz
+$ helm install --name my-release -f values.yaml incubator/zookeeper
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
