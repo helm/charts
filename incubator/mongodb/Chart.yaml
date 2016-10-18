@@ -1,6 +1,6 @@
 name: mongodb
 home: https://github.com/mongodb/mongo
-version: 0.1.0
+version: 0.1.1
 description: MongoDB Helm chart for Kubernetes.
 sources:
   - https://github.com/mongodb/mongo
