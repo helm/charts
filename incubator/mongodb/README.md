@@ -12,57 +12,48 @@
 ## PetSet Caveats
 * http://kubernetes.io/docs/user-guide/petset/#alpha-limitations
 
-# TODO
+## TODO
 * Set up authorization between replicaset peers.
 * Add a liveliness check.
 * Make the `test.sh` script more robust.
 
 ## Chart Details
 
-This chart implements a dynamically scalable [mongoDB replica set](https://docs.mongodb.com/manual/tutorial/deploy-replica-set/) 
+This chart implements a dynamically scalable [MongoDB replica set](https://docs.mongodb.com/manual/tutorial/deploy-replica-set/) 
 using Kubernetes PetSets and Init Containers.
-
-## Get this chart
-
-Download the latest release of the chart from the [releases](../../../releases) page.
-
-Alternatively, clone the repo if you wish to use the development snapshot:
-
-```console
-$ git clone https://github.com/kubernetes/charts.git
-```
 
 ## Installing the Chart
 
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm install --name my-release mongodb-x.x.x.tgz
+$ helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
+$ helm install --name my-release incubator/mongodb
 ```
 
 ## Configuration
 
 The following tables lists the configurable parameters of the mongodb chart and their default values.
 
-|       Parameter       |           Description            |                         Default                          |
-|-----------------------|----------------------------------|----------------------------------------------------------|
-| `Name`         | Name of the chart                | `mongodb`                                           |
-| `Image`        | Container image name             | `mongo`                         |
-| `ImageTag`     | Container image tag              | `3.2`                                               |
-| `ImagePullPolicy`     | Container pull policy     | `Always`                                               |
-| `Replicas`     | k8s petset replicas          | `3`                                                      |
-| `Component`    | k8s selector key                 | `mongodb`                                           |
-| `Cpu`          | container requested cpu          | `100m`                                                   |
-| `Memory`    |container requested memory                 | `512Mi`                                           |
-| `PeerPort`| Container listening port         | `27017`                                                   |
-| `Storage`| Persistent volume size         | `10Gi`                                                   |
+| Parameter               | Description                        | Default                                                    |
+| ----------------------- | ---------------------------------- | ---------------------------------------------------------- |
+| `Name`                  | Name of the chart                  | `mongodb`                                                  |
+| `Image`                 | Container image name               | `mongo`                                                    |
+| `ImageTag`              | Container image tag                | `3.2`                                                      |
+| `ImagePullPolicy`       | Container pull policy              | `Always`                                                   |
+| `Replicas`              | k8s petset replicas                | `3`                                                        |
+| `Component`             | k8s selector key                   | `mongodb`                                                  |
+| `Cpu`                   | container requested cpu            | `100m`                                                     |
+| `Memory`                | container requested memory         | `512Mi`                                                    |
+| `PeerPort`              | Container listening port           | `27017`                                                    |
+| `Storage`               | Persistent volume size             | `10Gi`                                                     |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```console
-$ helm install --name my-release -f values.yaml mongodb-x.x.x.tgz
+$ helm install --name my-release -f values.yaml incubator/mongodb
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)

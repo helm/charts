@@ -6,6 +6,15 @@
 
 The default cpu and memory settings represent small installation. See [this documentation](https://prometheus.io/docs/operating/storage/#memory-usage) for details on estimating your memory utilziation needs.
 
+## Installing the Chart
+
+To install the chart with the release name `my-release`:
+
+```bash
+$ helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
+$ helm install --name my-release incubator/prometheus
+```
+
 ## Configuration
 
 ### values.yaml
