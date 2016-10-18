@@ -1,5 +1,5 @@
-## Bitnami mysql image version
-## ref: https://hub.docker.com/r/bitnami/mysql/tags/
+## mysql image version
+## ref: https://hub.docker.com/r/library/mysql/tags/
 ##
 imageTag: "5.7.14"
 cpu: 100m

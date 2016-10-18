@@ -19,22 +19,13 @@ This chart will do the following:
 
 * Assumes that serviceAccount tokens are available under hostname metadata. (Works on GKE by default) URL -- http://metadata/computeMetadata/v1/instance/service-accounts/default/token
 
-## Get this chart
-
-Download the latest release of the chart from the [releases](../../../releases) page.
-
-Alternatively, clone the repo if you wish to use the development snapshot:
-
-```bash
-$ git clone https://github.com/kubernetes/charts.git
-```
-
 ## Installing the Chart
 
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm install --name my-release spark-x.x.x.tgz
+$ helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
+$ helm install --name my-release incubator/spark
 ```
 
 ## Configuration
@@ -43,17 +34,17 @@ The following tables lists the configurable parameters of the Spark chart and th
 
 ### Spark Master
 
-|       Parameter       |           Description            |                         Default                          |
-|-----------------------|----------------------------------|----------------------------------------------------------|
-| `Master.Name`         | Spark master name                | `spark-master`                                           |
-| `Master.Image`        | Container image name             | `gcr.io/google_containers/spark`                         |
-| `Master.ImageTag`     | Container image tag              | `1.5.1_v3`                                               |
-| `Master.Replicas`     | k8s deployment replicas          | `1`                                                      |
-| `Master.Component`    | k8s selector key                 | `spark-master`                                           |
-| `Master.Cpu`          | container requested cpu          | `100m`                                                   |
-| `Master.Memory`          | container requested memory          | `512Mi`                                                   |
-| `Master.ServicePort`  | k8s service port                 | `7077`                                                   |
-| `Master.ContainerPort`| Container listening port         | `7077`                                                   |
+| Parameter               | Description                        | Default                                                    |
+| ----------------------- | ---------------------------------- | ---------------------------------------------------------- |
+| `Master.Name`           | Spark master name                  | `spark-master`                                             |
+| `Master.Image`          | Container image name               | `gcr.io/google_containers/spark`                           |
+| `Master.ImageTag`       | Container image tag                | `1.5.1_v3`                                                 |
+| `Master.Replicas`       | k8s deployment replicas            | `1`                                                        |
+| `Master.Component`      | k8s selector key                   | `spark-master`                                             |
+| `Master.Cpu`            | container requested cpu            | `100m`                                                     |
+| `Master.Memory`         | container requested memory         | `512Mi`                                                    |
+| `Master.ServicePort`    | k8s service port                   | `7077`                                                     |
+| `Master.ContainerPort`  | Container listening port           | `7077`                                                     |
 
 ### Spark WebUi
 
@@ -65,18 +56,18 @@ The following tables lists the configurable parameters of the Spark chart and th
 
 ### Spark Worker
 
-|       Parameter       |           Description            |                         Default                          |
-|-----------------------|----------------------------------|----------------------------------------------------------|
-| `Worker.Name`         | Spark worker name                | `spark-worker`                                           |
-| `Worker.Image`        | Container image name             | `gcr.io/google_containers/spark`                         |
-| `Worker.ImageTag`     | Container image tag              | `1.5.1_v3`                                               |
-| `Worker.Replicas`     | k8s hpa and deployment replicas  | `3`                                                      |
-| `Worker.ReplicasMax`  | k8s hpa max replicas          | `10`                                                      |
-| `Worker.Component`    | k8s selector key                 | `spark-worker`                                           |
-| `Worker.Cpu`          | container requested cpu          | `100m`                                                   |
-| `Worker.Memory`          | container requested memory          | `512Mi`                                                   |
-| `Worker.ContainerPort`| Container listening port         | `7077`                                                   |
-| `Worker.CpuTargetPercentage`| k8s hpa cpu targetPercentage | `50`                                                   |
+| Parameter                    | Description                        | Default                                                    |
+| -----------------------      | ---------------------------------- | ---------------------------------------------------------- |
+| `Worker.Name`                | Spark worker name                  | `spark-worker`                                             |
+| `Worker.Image`               | Container image name               | `gcr.io/google_containers/spark`                           |
+| `Worker.ImageTag`            | Container image tag                | `1.5.1_v3`                                                 |
+| `Worker.Replicas`            | k8s hpa and deployment replicas    | `3`                                                        |
+| `Worker.ReplicasMax`         | k8s hpa max replicas               | `10`                                                       |
+| `Worker.Component`           | k8s selector key                   | `spark-worker`                                             |
+| `Worker.Cpu`                 | container requested cpu            | `100m`                                                     |
+| `Worker.Memory`              | container requested memory         | `512Mi`                                                    |
+| `Worker.ContainerPort`       | Container listening port           | `7077`                                                     |
+| `Worker.CpuTargetPercentage` | k8s hpa cpu targetPercentage       | `50`                                                       |
 
 
 
@@ -99,7 +90,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```bash
-$ helm install --name my-release -f values.yaml spark-x.x.x.tgz
+$ helm install --name my-release -f values.yaml incubator/spark
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)

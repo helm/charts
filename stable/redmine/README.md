@@ -5,7 +5,7 @@
 ## TL;DR;
 
 ```bash
-$ helm install redmine-x.x.x.tgz
+$ helm install stable/redmine
 ```
 
 ## Introduction
@@ -16,28 +16,16 @@ It also packages the Bitnami MariaDB chart which is required for bootstrapping a
 
 ## Prerequisites
 
-- Kubernetes 1.3+ with Alpha APIs enabled
+- Kubernetes 1.4+ with Beta APIs enabled
 - PV provisioner support in the underlying infrastructure
-
-## Get this chart
-
-Download the latest release of the chart from the [releases](../../../releases) page.
-
-Alternatively, clone the repo if you wish to use the development snapshot:
-
-```bash
-$ git clone https://github.com/kubernetes/charts.git
-```
 
 ## Installing the Chart
 
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm install --name my-release redmine-x.x.x.tgz
+$ helm install --name my-release stable/redmine
 ```
-
-*Replace the `x.x.x` placeholder with the chart release version.*
 
 The command deploys Redmine on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
 
@@ -84,7 +72,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 ```bash
 $ helm install --name my-release \
   --set redmineUsername=admin,redminePassword=password,mariadb.mariadbRootPassword=secretpassword \
-    redmine-x.x.x.tgz
+    stable/redmine
 ```
 
 The above command sets the Redmine administrator account username and password to `admin` and `password` respectively. Additionally it sets the MariaDB `root` user password to `secretpassword`.
@@ -92,7 +80,7 @@ The above command sets the Redmine administrator account username and password t
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 
 ```bash
-$ helm install --name my-release -f values.yaml redmine-x.x.x.tgz
+$ helm install --name my-release -f values.yaml stable/redmine
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)

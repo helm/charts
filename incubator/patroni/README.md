@@ -3,7 +3,7 @@
 This directory contains a Kubernetes chart to deploy a five node patroni cluster using a petset.
 
 ## Prerequisites Details
-* Kubernetes 1.3 with alpha APIs enable
+* Kubernetes 1.3 with alpha APIs enabled
 * PV support on the underlying infrastructure
 
 ## PetSet Details
@@ -20,22 +20,13 @@ This chart will do the following:
 
 * Implement a HA scalable PostgreSQL cluster using Kubernetes PetSets
 
-## Get this chart
-
-Download the latest release of the chart from the [releases](../../../releases) page.
-
-Alternatively, clone the repo if you wish to use the development snapshot:
-
-```console
-$ git clone https://github.com/kubernetes/charts.git
-```
-
 ## Installing the Chart
 
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm install --name my-release patroni-x.x.x.tgz
+$ helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
+$ helm install --name my-release incubator/patroni
 ```
 
 ## Connecting to Postgres
@@ -81,7 +72,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```console
-$ helm install --name my-release -f values.yaml patroni-x.x.x.tgz
+$ helm install --name my-release -f values.yaml incubator/patroni
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)

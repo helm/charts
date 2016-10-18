@@ -5,7 +5,7 @@ Credit to https://github.com/ingvagabund. This is an implementation of that work
 * https://github.com/kubernetes/contrib/pull/1295
 
 ## Prerequisites Details
-* Kubernetes 1.3 with alpha APIs enable
+* Kubernetes 1.3 with alpha APIs enabled
 * PV support on the underlying infrastructure
 
 ## PetSet Details
@@ -22,48 +22,39 @@ This chart will do the following:
 
 * Implemented a dynamically scalable etcd cluster using Kubernetes PetSets
 
-## Get this chart
-
-Download the latest release of the chart from the [releases](../../../releases) page.
-
-Alternatively, clone the repo if you wish to use the development snapshot:
-
-```bash
-$ git clone https://github.com/kubernetes/charts.git
-```
-
 ## Installing the Chart
 
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm install --name my-release etcd-x.x.x.tgz
+$ helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
+$ helm install --name my-release incubator/etcd
 ```
 
 ## Configuration
 
 The following tables lists the configurable parameters of the etcd chart and their default values.
 
-|       Parameter       |           Description            |                         Default                          |
-|-----------------------|----------------------------------|----------------------------------------------------------|
-| `Name`         | Spark master name                | `etcd`                                           |
-| `Image`        | Container image name             | `gcr.io/google_containers/etcd-amd64`                         |
-| `ImageTag`     | Container image tag              | `2.2.5`                                               |
-| `ImagePullPolicy`     | Container pull policy     | `Always`                                               |
-| `Replicas`     | k8s petset replicas          | `3`                                                      |
-| `Component`    | k8s selector key                 | `etcd`                                           |
-| `Cpu`          | container requested cpu          | `100m`                                                   |
-| `Memory`    |container requested memory                 | `512Mi`                                           |
-| `ClientPort`  | k8s service port                 | `2379`                                                   |
-| `PeerPorts`| Container listening port         | `2380`                                                   |
-| `Storage`| Persistent volume size         | `1Gi`                                                   |
+| Parameter               | Description                        | Default                                                    |
+| ----------------------- | ---------------------------------- | ---------------------------------------------------------- |
+| `Name`                  | Spark master name                  | `etcd`                                                     |
+| `Image`                 | Container image name               | `gcr.io/google_containers/etcd-amd64`                      |
+| `ImageTag`              | Container image tag                | `2.2.5`                                                    |
+| `ImagePullPolicy`       | Container pull policy              | `Always`                                                   |
+| `Replicas`              | k8s petset replicas                | `3`                                                        |
+| `Component`             | k8s selector key                   | `etcd`                                                     |
+| `Cpu`                   | container requested cpu            | `100m`                                                     |
+| `Memory`                | container requested memory         | `512Mi`                                                    |
+| `ClientPort`            | k8s service port                   | `2379`                                                     |
+| `PeerPorts`             | Container listening port           | `2380`                                                     |
+| `Storage`               | Persistent volume size             | `1Gi`                                                      |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```bash
-$ helm install --name my-release -f values.yaml etcd-x.x.x.tgz
+$ helm install --name my-release -f values.yaml incubator/etcd
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)

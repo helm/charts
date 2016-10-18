@@ -5,7 +5,7 @@
 ## TL;DR;
 
 ```console
-$ helm install drupal-x.x.x.tgz
+$ helm install stable/drupal
 ```
 
 ## Introduction
@@ -16,28 +16,16 @@ It also packages the Bitnami MariaDB chart which is required for bootstrapping a
 
 ## Prerequisites
 
-- Kubernetes 1.3+ with Alpha APIs enabled
+- Kubernetes 1.4+ with Beta APIs enabled
 - PV provisioner support in the underlying infrastructure
-
-## Get this chart
-
-Download the latest release of the chart from the [releases](../../../releases) page.
-
-Alternatively, clone the repo if you wish to use the development snapshot:
-
-```console
-$ git clone https://github.com/kubernetes/charts.git
-```
 
 ## Installing the Chart
 
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm install --name my-release drupal-x.x.x.tgz
+$ helm install --name my-release stable/drupal
 ```
-
-*Replace the `x.x.x` placeholder with the chart release version.*
 
 The command deploys Drupal on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
 
@@ -82,7 +70,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 ```console
 $ helm install --name my-release \
   --set drupalUsername=admin,drupalPassword=password,mariadb.mariadbRootPassword=secretpassword \
-    drupal-x.x.x.tgz
+    stable/drupal
 ```
 
 The above command sets the Drupal administrator account username and password to `admin` and `password` respectively. Additionally it sets the MariaDB `root` user password to `secretpassword`.
@@ -90,7 +78,7 @@ The above command sets the Drupal administrator account username and password to
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 
 ```console
-$ helm install --name my-release -f values.yaml drupal-x.x.x.tgz
+$ helm install --name my-release -f values.yaml stable/drupal
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)

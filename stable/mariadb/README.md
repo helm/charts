@@ -7,32 +7,25 @@ MariaDB is developed as open source software and as a relational database it pro
 ## TL;DR;
 
 ```bash
-$ helm install mariadb-x.x.x.tgz
+$ helm install stable/mariadb
 ```
 
 ## Introduction
 
 This chart bootstraps a [MariaDB](https://github.com/bitnami/bitnami-docker-mariadb) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
-## Get this chart
+## Prerequisites
 
-Download the latest release of the chart from the [releases](../../../releases) page.
-
-Alternatively, clone the repo if you wish to use the development snapshot:
-
-```bash
-$ git clone https://github.com/kubernetes/charts.git
-```
+- Kubernetes 1.4+ with Beta APIs enabled
+- PV provisioner support in the underlying infrastructure
 
 ## Installing the Chart
 
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm install --name my-release mariadb-x.x.x.tgz
+$ helm install --name my-release stable/mariadb
 ```
-
-*Replace the `x.x.x` placeholder with the chart release version.*
 
 The command deploys MariaDB on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
 
@@ -73,7 +66,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 ```bash
 $ helm install --name my-release \
   --set mariadbRootPassword=secretpassword,mariadbUser=my-user,mariadbPassword=my-password,mariadbDatabase=my-database \
-    mariadb-x.x.x.tgz
+    stable/mariadb
 ```
 
 The above command sets the MariaDB `root` account password to `secretpassword`. Additionally it creates a standard database user named `my-user`, with the password `my-password`, who has access to a database named `my-database`.
@@ -81,7 +74,7 @@ The above command sets the MariaDB `root` account password to `secretpassword`. 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```bash
-$ helm install --name my-release -f values.yaml mariadb-x.x.x.tgz
+$ helm install --name my-release -f values.yaml stable/mariadb
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
@@ -105,7 +98,7 @@ config: |-
   innodb_buffer_pool_size=2G
 EOF
 
-helm install --name my-release -f mariadb-values.yaml mariadb-x.x.x.tgz
+helm install --name my-release -f mariadb-values.yaml stable/mariadb
 ```
 
 ## Persistence
