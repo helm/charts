@@ -1,6 +1,6 @@
 # Prometheus Helm Chart
 
-* Installs the [Promethus](https://prometheus.io/docs/introduction/overview/) monitoring system as well as AlertManager.
+* Installs the [Prometheus](https://prometheus.io/docs/introduction/overview/) monitoring system as well as AlertManager.
 
 ## Resource utilization
 
