@@ -24,6 +24,11 @@ NAMESPACE="pr-${ghprbPullId}-${BUILD_NUMBER}"
 CHANGED_FOLDERS=`git diff --find-renames --name-only FETCH_HEAD stable/ incubator/ | awk -F/ '{print $1"/"$2}' | uniq`
 CURRENT_RELEASE=""
 
+# Exit early if no charts have changed
+if [ -z "$CHANGED_FOLDERS" ]; then 
+  exit 0
+fi
+
 # Cleanup any releases and namespaces left over from the test
 function cleanup {
     if [ -n $CURRENT_RELEASE ];then
