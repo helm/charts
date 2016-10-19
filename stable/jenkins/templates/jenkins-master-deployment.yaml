@@ -42,7 +42,7 @@ spec:
               }
           ]'
     spec:
-      securityContext:
+      PodSecurityContext:
         runAsUser: 0
       containers:
         - name: {{ template "fullname" . }}
