@@ -11,7 +11,7 @@ metadata:
   annotations:
     helm.sh/created: {{.Release.Time.Seconds | quote }}
 spec:
-  replicas: {{default 2 .Values.ClientReplicas | quote }}
+  replicas: {{default 2 .Values.ClientReplicas }}
   template:
     metadata:
       labels:

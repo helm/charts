@@ -29,18 +29,13 @@ This chart will do the following:
 * Multi-role deployment: master, client and data nodes
 * PetSet Supports scaling down without degrading the cluster 
 
-## Get this chart
-
-```bash
-$ git clone https://github.com/kubernetes/charts.git
-```
-
 ## Installing the Chart
 
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm install --name my-release charts/incubator/elasticsearch
+$ helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
+$ helm install --name my-release incubator/elasticsearch
 ```
 
 ## Deleting the Charts
@@ -50,7 +45,6 @@ Deletion of the PetSet doesn't cascade to deleting associated Pods and PVCs. To 
 ```
 $ kubectl delete pods -l release=my-release,type=data
 $ kubectl delete pvcs -l release=my-release,type=data
-
 ```
 
 ## Configuration
@@ -126,6 +120,6 @@ EOF
 Create cluster with Storage class `ssd` on Kubernetes 1.4+
 
 ```
-$ helm install . --name my-release --set DataStorageClass=ssd,DataStorageClassVersion=beta
+$ helm install incubator/elasticsearch --name my-release --set DataStorageClass=ssd,DataStorageClassVersion=beta
 
 ```

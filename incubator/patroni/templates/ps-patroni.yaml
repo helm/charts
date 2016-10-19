@@ -1,7 +1,7 @@
 apiVersion: apps/v1alpha1
 kind: PetSet
 metadata:
-  name: "{{ printf "%s-%s" .Release.Name .Values.Name }}"
+  name: {{ template "fullname" . }}
   namespace: {{ .Values.Namespace }}
   labels:
     heritage: {{ .Release.Service | quote }}
@@ -11,11 +11,11 @@ metadata:
   annotations:
     "helm.sh/created": {{ .Release.Time.Seconds | quote }}
 spec:
-  serviceName: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 24 }}"
-  replicas: {{default 5 .Values.Replicas | quote }}
+  serviceName: {{ template "fullname" . }}
+  replicas: {{default 5 .Values.Replicas }}
   template:
     metadata:
-      name: "{{ printf "%s-%s" .Release.Name .Values.Name }}"
+      name: {{ template "fullname" . }}
       labels:
         heritage: {{.Release.Service | quote }}
         release: {{.Release.Name | quote }}
@@ -27,27 +27,27 @@ spec:
     spec:
       containers:
       - name: spilo
-        image: {{ .Values.Spilo.Image }}:{{ .Values.Spilo.Version }}
+        image: "{{ .Values.Spilo.Image }}:{{ .Values.Spilo.Version }}"
         env:
         - name: PGPASSWORD_SUPERUSER
           valueFrom:
             secretKeyRef:
-              name: "{{ printf "%s-%s" .Release.Name .Values.Name }}"
-              key: password.superuser
+              name: {{ template "fullname" . }}
+              key: password-superuser
         - name: PGPASSWORD_ADMIN
           valueFrom:
             secretKeyRef:
-              name: "{{ printf "%s-%s" .Release.Name .Values.Name }}"
-              key: password.admin
+              name: {{ template "fullname" . }}
+              key: password-admin
         - name: PGPASSWORD_STANDBY
           valueFrom:
             secretKeyRef:
-              name: "{{ printf "%s-%s" .Release.Name .Values.Name }}"
-              key: password.standby
+              name: {{ template "fullname" . }}
+              key: password-standby
         - name: ETCD_DISCOVERY_DOMAIN
           value: {{default (printf "%s-etcd.%s.svc.cluster.local" .Release.Name .Values.Namespace) .Values.Etcd.Discovery }}
         - name: SCOPE
-          value: "{{ printf "%s-%s" .Release.Name .Values.Name }}"
+          value: {{ template "fullname" . }}
         - name: USE_WALE
           value: ""
         - name: PGROOT
@@ -73,7 +73,7 @@ spec:
       volumes:
       - name: patroni-config
         secret:
-          secretName: "{{ printf "%s-%s" .Release.Name .Values.Name }}"
+          secretName: {{ template "fullname" . }}
   volumeClaimTemplates:
   - metadata:
       name: pgdata

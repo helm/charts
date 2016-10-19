@@ -35,7 +35,7 @@ metadata:
     "helm.sh/created": {{.Release.Time.Seconds | quote }}
 spec:
   serviceName: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 24 }}"
-  replicas: {{default 3 .Values.Replicas | quote }}
+  replicas: {{default 3 .Values.Replicas }}
   template:
     metadata:
       name: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 24 }}"

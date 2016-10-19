@@ -1,4 +1,4 @@
-#!/bin/bash -xe
+#!/bin/bash
 # Copyright 2016 The Kubernetes Authors All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,17 +13,28 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-UPSTREAM_BRANCH="upstream/master"
+set -o errexit
+set -o nounset
+set -o pipefail
+set -o xtrace
+
+git fetch --tags https://github.com/kubernetes/charts master
+
 NAMESPACE="pr-${ghprbPullId}-${BUILD_NUMBER}"
-CHANGED_FOLDERS=`git diff --find-renames --name-only ${UPSTREAM_BRANCH} | grep -v test | grep / | awk -F/ '{print $1"/"$2}' | uniq`
+CHANGED_FOLDERS=`git diff --find-renames --name-only FETCH_HEAD stable/ incubator/ | awk -F/ '{print $1"/"$2}' | uniq`
 CURRENT_RELEASE=""
+
+# Exit early if no charts have changed
+if [ -z "$CHANGED_FOLDERS" ]; then 
+  exit 0
+fi
 
 # Cleanup any releases and namespaces left over from the test
 function cleanup {
     if [ -n $CURRENT_RELEASE ];then
-      helm delete --purge ${CURRENT_RELEASE} || true
+      helm delete --purge ${CURRENT_RELEASE} > cleanup_log 2>&1 || true
     fi
-    kubectl delete ns ${NAMESPACE} || true
+    kubectl delete ns ${NAMESPACE} >> cleanup_log 2>&1 || true
 }
 trap cleanup EXIT
 
