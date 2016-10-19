@@ -1,0 +1,49 @@
+# Default values for cassandra.
+# This is a YAML-formatted file.
+# Declare name/value pairs to be passed into your templates.
+name: cassandra
+image: 
+  name: gcr.io/google-samples/cassandra
+  tag: v11
+
+imagePullPolicy: always
+
+replicas: 5
+
+cassandra:
+  seedProvider: org.apache.cassandra.locator.SimpleSeedProvider
+  # TODO set this dynamically 
+  seeds: cassandra-0.cassandra.default.svc.cluster.local
+  clusterName: K8Demo
+  dc: DC1-K8Demo
+  rack: Rack1-K8Demo
+  autoBootstrap: false
+  rpcAddress: 0.0.0.0
+  numTokens: 32
+  diskOptimizationStrategy: ssd
+  migrationWait: 1
+  endpointSnitch: SimpleSnitch
+  ringDelay: 30000
+  openJMX: false
+  gcStdout: false
+
+java:
+  maxHeapSize: 512M
+  heapNewsize: 100M
+
+# Resource limits for the container
+resources:
+  limits:
+    cpu: 500m
+    memory: 1Gi
+  requests:
+    cpu: 500m
+    memory: 1Gi
+
+## Enable persistence using Persistent Volume Claims
+### ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+###
+storage:
+  class: generic
+  classVersion: 
+  size: 1Gi

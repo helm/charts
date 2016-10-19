@@ -1,0 +1,96 @@
+apiVersion: "apps/v1alpha1"
+kind: PetSet
+metadata:
+  name: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 24 }}"
+  labels:
+    heritage: {{.Release.Service | quote }}
+    release: {{.Release.Name | quote }}
+    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+    component: "{{.Release.Name}}-{{.Values.Component}}"
+    type: data
+    app: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 24 }}"
+  annotations:
+    helm.sh/created: {{.Release.Time.Seconds | quote }}
+spec:
+  serviceName: "{{ printf "%s-data-%s" .Release.Name .Values.Name | trunc 24 }}"
+  replicas: {{default 3 .Values.replicas }}
+  template:
+    metadata:
+      labels:
+        heritage: {{.Release.Service | quote }}
+        release: {{.Release.Name | quote }}
+        chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+        component: "{{.Release.Name}}-{{.Values.Component}}"
+        type: data
+        app: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 24 }}"
+      annotations:
+        helm.sh/created: {{.Release.Time.Seconds | quote }}
+        pod.alpha.kubernetes.io/initialized: "true"
+    spec:
+      containers:
+      - name: cassandra
+        image: "{{.Values.Image}}:{{.Values.ImageTag}}"
+        imagePullPolicy: "{{.Values.ImagePullPolicy}}"
+        ports:
+        - containerPort: 7000
+          name: intra-node
+        - containerPort: 7001
+          name: tls-intra-node
+        - containerPort: 7199
+          name: jmx
+        - containerPort: 9042
+          name: cql
+        resources:
+          limits:
+            cpu: "500m"
+            memory: 1Gi
+          requests:
+           cpu: "500m"
+           memory: 1Gi
+        securityContext:
+          capabilities:
+            add:
+              - IPC_LOCK
+        env:
+          - name: MAX_HEAP_SIZE
+            value: 512M
+          - name: HEAP_NEWSIZE
+            value: 100M
+          - name: CASSANDRA_SEEDS
+            value: "cassandra-0.cassandra.default.svc.cluster.local"
+          - name: CASSANDRA_CLUSTER_NAME
+            value: "K8Demo"
+          - name: CASSANDRA_DC
+            value: "DC1-K8Demo"
+          - name: CASSANDRA_RACK
+            value: "Rack1-K8Demo"
+          - name: CASSANDRA_AUTO_BOOTSTRAP
+            value: "false"
+          - name: POD_IP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
+        readinessProbe:
+          exec:
+            command:
+            - /bin/bash
+            - -c
+            - /ready-probe.sh
+          initialDelaySeconds: 15
+          timeoutSeconds: 5
+        # These volume mounts are persistent. They are like inline claims,
+        # but not exactly because the names need to match exactly one of
+        # the pet volumes.
+        volumeMounts:
+        - name: cassandra-data
+          mountPath: /cassandra_data
+  volumeClaimTemplates:
+  - metadata:
+      name: casssandra-data
+      annotations:
+        volume.{{ .Values.StorageClassVersion }}.kubernetes.io/storage-class: "{{ .Values.StorageClass }}"
+    spec:
+      accessModes: [ ReadWriteOnce ]
+      resources:
+        requests:
+          storage: "{{.Values.DataStorage}}"
