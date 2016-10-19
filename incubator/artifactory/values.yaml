@@ -1,0 +1,13 @@
+# Default values for etcd.
+# This is a YAML-formatted file.
+# Declare name/value pairs to be passed into your templates.
+# name: value
+
+Name: artifactory
+Component: "Artifactory"
+Image: "docker.bintray.io/jfrog/artifactory-pro"
+ImageTag: "4.13.2"
+ImagePullPolicy: "Always"
+replicaCount: 1
+# For minikube, set this to NodePort, elsewhere use LoadBalancer
+ServiceType: LoadBalancer
