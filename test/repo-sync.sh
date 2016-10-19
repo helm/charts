@@ -31,11 +31,11 @@ gcloud auth activate-service-account --key-file sa.json
 STABLE_REPO_DIR=stable-repo
 mkdir -p ${STABLE_REPO_DIR}
 cd ${STABLE_REPO_DIR}
-  gsutil -m rsync gs://kubernetes-charts/ ./
+  gsutil cp gs://kubernetes-charts/index.yaml .
   for dir in `ls ../stable`;do
     helm package ../stable/$dir
   done
-  helm repo index --url http://storage.googleapis.com/kubernetes-charts/ .
+  helm repo index --url http://storage.googleapis.com/kubernetes-charts/ --merge ./index.yaml .
   gsutil -m rsync ./ gs://kubernetes-charts/
 cd ..
 ls -l ${STABLE_REPO_DIR}
@@ -44,11 +44,11 @@ ls -l ${STABLE_REPO_DIR}
 INCUBATOR_REPO_DIR=incubator-repo
 mkdir -p ${INCUBATOR_REPO_DIR}
 cd ${INCUBATOR_REPO_DIR}
-  gsutil -m rsync gs://kubernetes-charts-incubator/ ./
+  gsutil cp gs://kubernetes-charts-incubator/index.yaml .
   for dir in `ls ../incubator`;do
     helm package ../incubator/$dir
   done
-  helm repo index --url http://storage.googleapis.com/kubernetes-charts-incubator/ .
+  helm repo index --url http://storage.googleapis.com/kubernetes-charts-incubator/ --merge ./index.yaml .
   gsutil -m rsync ./ gs://kubernetes-charts-incubator/
 cd ..
 ls -l ${INCUBATOR_REPO_DIR}
