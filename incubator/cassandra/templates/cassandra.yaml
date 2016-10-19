@@ -1,0 +1,124 @@
+apiVersion: "apps/v1beta1"
+kind: StatefulSet
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    heritage: {{.Release.Service | quote }}
+    release: {{.Release.Name | quote }}
+    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+    type: data
+    app: {{ template "fullname" . }}
+  annotations:
+    helm.sh/created: {{ .Release.Time.Seconds | quote }}
+spec:
+  serviceName: "{{ .Values.service }}"
+  replicas: {{ .Values.replicas }}
+  template:
+    metadata:
+      labels:
+        heritage: {{.Release.Service | quote }}
+        release: {{.Release.Name | quote }}
+        chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+        type: data
+        app: "{{ printf "%s-%s" .Release.Name .Values.name | trunc 24 }}"
+      annotations:
+        helm.sh/created: {{.Release.Time.Seconds | quote }}
+        pod.alpha.kubernetes.io/initialized: "true"
+    spec:
+      containers:
+      - name: cassandra
+        image: "{{.Values.image.name}}:{{.Values.image.tag}}"
+        imagePullPolicy: "{{.Values.imagePullPolicy}}"
+        # these ports are set by the container, and are default for C*
+        # tls is not enabled yet
+        ports:
+        - containerPort: 7000
+          name: intra-node
+        - containerPort: 7001
+          name: tls-intra-node
+        - containerPort: 7199
+          name: jmx
+        - containerPort: 9042
+          name: cql
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+        securityContext:
+          capabilities:
+            add:
+              - IPC_LOCK
+        lifecycle:
+          preStop:
+            exec:
+              command: ["/bin/sh", "-c", "PID=$(pidof java) && kill $PID && while ps -p $PID > /dev/null; do sleep 1; done"]
+        env:
+          - name: MAX_HEAP_SIZE
+            value: "{{.Values.java.maxHeapSize}}"
+          - name: HEAP_NEWSIZE
+            value: "{{.Values.java.heapNewsize}}"
+          - name: CASSANDRA_SEEDS
+            value: "{{.Values.cassandra.seeds}}"
+          - name: CASSANDRA_CLUSTER_NAME
+            value: "{{.Values.cassandra.clusterName}}"
+          - name: CASSANDRA_DC
+            value: "{{.Values.cassandra.dc}}"
+          - name: CASSANDRA_RACK
+            value: "{{.Values.cassandra.rack}}"
+          - name: CASSANDRA_AUTO_BOOTSTRAP
+            value: "{{.Values.cassandra.autoBootstrap}}"
+          - name: POD_IP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
+        readinessProbe:
+          exec:
+            command:
+            - /bin/bash
+            - -c
+            - /ready-probe.sh
+          initialDelaySeconds: 15
+          timeoutSeconds: 5
+        livenessProbe:
+          exec:
+            command:
+            - /bin/bash
+            - -c
+            - /ready-probe.sh
+          initialDelaySeconds: 90
+          timeoutSeconds: 5
+        volumeMounts:
+        - name: cassandra-data
+          mountPath: /cassandra_data
+  {{- if .Values.persistence.dataDir.enabled }}
+  volumeClaimTemplates:
+  - metadata:
+      name: cassandra-data
+      annotations:
+        volume.beta.kubernetes.io/storage-class: {{ .Values.persistence.storageClass | quote }}
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: {{ .Values.persistence.dataDir.size | quote }}
+  {{- else }}
+      volumes:
+        - name: cassandra-data
+          emptyDir: {}
+  {{- end }}
+
+---
+# Headless Service for Cassandra
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.service }}
+  labels:
+    app: {{ template "fullname" . }}
+    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  clusterIP: None
+  ports:
+    - port: 9042
+  selector:
+    app: {{ template "fullname" . }}
