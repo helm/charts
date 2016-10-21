@@ -2,7 +2,6 @@ apiVersion: apps/v1alpha1
 kind: PetSet
 metadata:
   name: {{ template "fullname" . }}
-  namespace: {{ .Values.Namespace }}
   labels:
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
