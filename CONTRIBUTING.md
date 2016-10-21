@@ -47,7 +47,7 @@ This repository is used by Chart developers for maintaining the official charts 
     * Short description of the Chart
     * Any prerequisites or requirements
     * Customization: explaining options in `values.yaml` and their defaults
-* Must include a short `notes.txt`, including:
+* Must include a short `NOTES.txt`, including:
     * Any relevant post-installation information for the Chart
     * Instructions on how to access the application or service provided by the Chart
 
