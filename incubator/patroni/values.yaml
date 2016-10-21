@@ -1,5 +1,4 @@
 Name: patroni
-Namespace: default
 
 Component: patroni
 ImagePullPolicy: IfNotPresent
