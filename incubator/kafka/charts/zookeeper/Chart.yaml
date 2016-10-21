@@ -1,0 +1,10 @@
+name: zookeeper
+home: https://zookeeper.apache.org/
+version: 0.1.1
+description: Zookeeper Helm chart for Kubernetes.
+sources:
+  - https://github.com/apache/zookeeper
+  - https://github.com/kubernetes/contrib/tree/master/pets/zookeeper
+maintainers:
+  - name: Lachlan Evenson
+    email: lachlan@deis.com

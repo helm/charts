@@ -1,0 +1,26 @@
+Name: "kf"
+Replicas: 3
+Image: "solsson/kafka"
+ImageTag: "0.10.0.1"
+ImagePullPolicy: "Always"
+Cpu: "100m"
+Memory: "512Mi"
+Storage: "1Gi"
+DataDirectory: "/opt/kafka/data"
+Component: "kafka"
+
+zookeeper:
+  Name: zk
+  Component: "zk"
+  Replicas: 3
+  Image: "java"
+  ImageTag: "openjdk-8-jre"
+  ImagePullPolicy: "Always"
+  Cpu: "100m"
+  Memory: "512Mi"
+  Storage: "1Gi"
+
+
+global:
+  Namespace: "kafka"
+  ZooKeeperServiceName: "zookeeper"
