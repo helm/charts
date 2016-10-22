@@ -1,9 +1,0 @@
-name: etcd
-home: https://github.com/coreos/etcd
-version: 0.1.0
-description: Etcd Helm chart for Kubernetes.
-sources:
-  - https://github.com/coreos/etcd
-maintainers:
-  - name: Lachlan Evenson
-    email: lachlan@deis.com
