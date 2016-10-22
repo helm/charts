@@ -16,10 +16,13 @@
 # Setup Helm
 HELM_URL=https://storage.googleapis.com/kubernetes-helm
 HELM_TARBALL=helm-canary-linux-amd64.tar.gz
+STABLE_REPO_URL=http://storage.googleapis.com/kubernetes-charts
+INCUBATOR_REPO_URL=http://storage.googleapis.com/kubernetes-charts-incubator
 wget -q ${HELM_URL}/${HELM_TARBALL}
 tar xzfv ${HELM_TARBALL}
 PATH=`pwd`/linux-amd64/:$PATH
 helm init --client-only
+helm repo add incubator ${INCUBATOR_REPO_URL}
 
 # Authenticate before uploading to Google Cloud Storage
 cat > sa.json <<EOF
@@ -33,9 +36,10 @@ mkdir -p ${STABLE_REPO_DIR}
 cd ${STABLE_REPO_DIR}
   gsutil cp gs://kubernetes-charts/index.yaml .
   for dir in `ls ../stable`;do
+    helm dep update ../stable/$dir
     helm package ../stable/$dir
   done
-  helm repo index --url http://storage.googleapis.com/kubernetes-charts/ --merge ./index.yaml .
+  helm repo index --url ${STABLE_REPO_URL} --merge ./index.yaml .
   gsutil -m rsync ./ gs://kubernetes-charts/
 cd ..
 ls -l ${STABLE_REPO_DIR}
@@ -46,9 +50,10 @@ mkdir -p ${INCUBATOR_REPO_DIR}
 cd ${INCUBATOR_REPO_DIR}
   gsutil cp gs://kubernetes-charts-incubator/index.yaml .
   for dir in `ls ../incubator`;do
+    helm dep update ../incubator/$dir
     helm package ../incubator/$dir
   done
-  helm repo index --url http://storage.googleapis.com/kubernetes-charts-incubator/ --merge ./index.yaml .
+  helm repo index --url ${INCUBATOR_REPO_URL} --merge ./index.yaml .
   gsutil -m rsync ./ gs://kubernetes-charts-incubator/
 cd ..
 ls -l ${INCUBATOR_REPO_DIR}
