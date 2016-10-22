@@ -30,3 +30,6 @@ bin/*
 *.un~
 Session.vim
 .netrwhist
+
+# Chart dependencies
+**/charts/*.tgz
