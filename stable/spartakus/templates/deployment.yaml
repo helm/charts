@@ -22,4 +22,4 @@ spec:
             - "volunteer"
             - "--cluster-id={{ uuidv4 | default .Values.uuid }}"
           resources:
-            {{ include "toYaml" .Values.resources | indent 12 }}
+{{ toYaml .Values.resources | indent 12 }}
