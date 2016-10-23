@@ -1,7 +1,7 @@
 apiVersion: v1
 description: A Spartakus Helm chart for Kubernetes. Spartakus aims to collect information about Kubernetes clusters.
 name: spartakus
-version: 0.1.0
+version: 1.0.0
 sources:
   - https://github.com/kubernetes-incubator/spartakus
 maintainers:
