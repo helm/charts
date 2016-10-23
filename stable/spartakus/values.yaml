@@ -14,4 +14,7 @@ resources:
     cpu: 2m
     memory: 8Mi
 
+## A version 4 UUID to uniquely identify the cluster
+## If not provided, Helm will generate automatically at install-time.
+##
 # uuid:

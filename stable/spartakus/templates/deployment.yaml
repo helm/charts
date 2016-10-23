@@ -13,13 +13,14 @@ spec:
     metadata:
       labels:
         app: {{ template "fullname" . }}
+        release: "{{ .Release.Name }}"
     spec:
       containers:
         - name: {{ template "fullname" . }}
           image: "{{ .Values.image }}"
           imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
           args:
-            - "volunteer"
-            - "--cluster-id={{ uuidv4 | default .Values.uuid }}"
+            - volunteer
+            - --cluster-id={{ uuidv4 | default .Values.uuid | quote }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
