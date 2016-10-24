@@ -10,6 +10,9 @@ image: gcr.io/google_containers/spartakus-amd64:v1.0.0
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
 ##
 resources:
+  # limits:
+  #   cpu: 2m
+  #   memory: 8Mi
   requests:
     cpu: 2m
     memory: 8Mi
