@@ -6,7 +6,11 @@ microservices with ease.
 ## Introduction
 
 This chart bootstraps Traefik as a Kubernetes ingress controller with optional support for SSL and
-Let's Encrypt. By default, Traefik will be installed into the `kube-system` namespace.
+Let's Encrypt.
+
+__N.B.__: Operators will typically wish to install this component into the `kube-system` namespace
+where that namespace's default service account will ensure adequate privileges to watch `Ingress`
+resources _cluster-wide_.
 
 ## Prerequisites
 
@@ -24,7 +28,7 @@ external load balancer (e.g. AWS or GKE)
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm install --name my-release stable/traefik
+$ helm install incubator/traefik --name my-release --namespace kube-system
 ```
 
 After installing the chart, create a DNS CNAME record for applicable domains to direct inbound
@@ -34,8 +38,8 @@ traffic the load balancer. You can you the command below to find the load balanc
 $ kubectl describe service traefik-ingress-controller -n kube-system | grep Ingress
 ```
 
-__N.B.__: It is only _after_ this step is complete that Traefik will be able to successfully
-use the ACME protocol to obtain certificates from Let's Encrypt.
+__N.B.__: It is only _after_ this step is complete that Traefik will be able to successfully use
+the ACME protocol to obtain certificates from Let's Encrypt.
 
 ## Uninstalling the Chart
 
@@ -69,7 +73,7 @@ The following tables lists the configurable parameters of the Traefik chart and 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
 
 ```bash
-$ helm install --name my-release --set dashboard.enabled=true,dashboard.domain=traefik.example.com stable/traefik
+$ helm install --name my-release --namespace kube-system --set dashboard.enabled=true,dashboard.domain=traefik.example.com stable/traefik
 ```
 
 The above command enables the Traefik dashboard on the domain `traefik.example.com`.

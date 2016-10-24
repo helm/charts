@@ -2,7 +2,6 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: traefik-ingress-controller
-  namespace: kube-system
   labels:
     k8s-app: traefik-ingress-controller
 spec:
