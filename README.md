@@ -34,6 +34,7 @@ Stable Charts:
 3. Allow customization of the application configuration
 4. Provide a secure default configuration
 5. Do not leverage alpha features of Kubernetes
+6. Include a [NOTES.txt](https://github.com/kubernetes/helm/blob/master/docs/charts.md#chart-license-readme-and-notes) explaining how to use the application after install
 
 Incubator Charts are those that do not meet these criteria, but still meet the technical and documentation requirements described in CONTRIBUTING.md. Having the incubator folder allows charts to be shared and improved on until they are ready to be moved into the stable folder. The charts in the `incubator/` directory can be found in the [`gs://kubernetes-charts-incubator` Google Storage Bucket](https://console.cloud.google.com/storage/browser/kubernetes-charts-incubator).
 
