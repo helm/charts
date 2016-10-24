@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: traefik-config
+  namespace: kube-system
+data:
+  traefik.toml: |
+    # traefik.toml
+    logLevel = "INFO"
+    {{- if .Values.ssl.enabled }}
+    defaultEntryPoints = ["http","https"]
+    {{- else }}
+    defaultEntryPoints = ["http"]
+    {{- end }}
+    [entryPoints]
+      [entryPoints.http]
+      address = ":80"
+        {{- if and .Values.ssl.enabled .Values.ssl.enforced }}
+        [entryPoints.http.redirect]
+          entryPoint = "https"
+        {{- end }}
+      {{- if .Values.ssl.enabled }}
+      [entryPoints.https]
+      address = ":443"
+        [entryPoints.https.tls]
+          [[entryPoints.https.tls.certificates]]
+          CertFile = "/ssl/tls.crt"
+          KeyFile = "/ssl/tls.key"
+      {{- end }}
+    [kubernetes]
+    {{- if .Values.acme.enabled }}
+    [acme]
+    email = "{{ .Values.acme.email }}"
+    storage = "/acme/acme.json"
+    entryPoint = "https"
+    onHostRule = true
+    {{- end }}
+    {{- if .Values.dashboard.enabled }}
+    [web]
+    address = ":8080"
+    {{- end }}

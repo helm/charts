@@ -1,0 +1,11 @@
+{{- if .Values.ssl.enabled }}
+apiVersion: v1
+kind: Secret
+metadata:
+  name: traefik-default-cert
+  namespace: kube-system
+type: Opaque
+data:
+  tls.crt: {{ .Values.ssl.defaultCert }}
+  tls.key: {{ .Values.ssl.defaultKey }}
+{{- end }}

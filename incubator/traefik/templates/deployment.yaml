@@ -1,0 +1,59 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: traefik-ingress-controller
+  namespace: kube-system
+  labels:
+    k8s-app: traefik-ingress-controller
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: traefik-ingress-controller
+  template:
+    metadata:
+      labels:
+        k8s-app: traefik-ingress-controller
+        version: {{ .Chart.Version }}
+    spec:
+      terminationGracePeriodSeconds: 60
+      containers:
+      - image: traefik:{{ .Values.imageTag }}
+        name: traefik-ingress-controller
+        volumeMounts:
+        - mountPath: /config
+          name: config
+        {{- if .Values.ssl.enabled }}
+        - mountPath: /ssl
+          name: ssl
+        {{- end }}
+        {{- if .Values.acme.enabled }}
+        - mountPath: /acme
+          name: acme
+        {{- end }}
+        ports:
+        - containerPort: 80
+        - containerPort: 443
+        {{- if .Values.dashboard.enabled }}
+        - containerPort: 8080
+        {{- end }}
+        args:
+        - --configfile=/config/traefik.toml
+      volumes:
+      - name: config
+        configMap:
+          name: traefik-config
+      {{- if .Values.ssl.enabled }}
+      - name: ssl
+        secret:
+          secretName: traefik-default-cert
+      {{- end }}
+      {{- if .Values.acme.enabled }}
+      - name: acme
+      {{- if .Values.acme.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: traefik-acme-volume-claim
+      {{- else }}
+        emptyDir: {}
+      {{- end }}
+      {{- end }}
