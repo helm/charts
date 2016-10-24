@@ -1,0 +1,68 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    app: {{ template "fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  template:
+    metadata:
+      labels:
+        app: {{ template "fullname" . }}
+    spec:
+      containers:
+      - name: {{ template "fullname" . }}
+        image: "postgres:{{ .Values.imageTag }}"
+        imagePullPolicy: Always
+        resources:
+          requests:
+            cpu: "{{.Values.cpu}}"
+            memory: "{{.Values.memory}}"
+          limits:
+            cpu: "{{.Values.cpu}}"
+            memory: "{{.Values.memory}}"
+        env:
+        - name: POSTGRES_USER
+          value: {{ default "postgres" .Values.postgresUser | quote }}
+        - name: POSTGRES_DB
+          value: {{ default "" .Values.postgresDatabase | quote }}
+        - name: PGDATA
+          value: /var/lib/postgresql/data/pgdata
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "fullname" . }}
+              key: postgres-password
+        ports:
+        - name: postgresql
+          containerPort: 5432
+        livenessProbe:
+          exec:
+            command:
+            - psql
+            - --user $POSTGRES_USER
+            - --command "SELECT 1;"
+          initialDelaySeconds: 30
+          timeoutSeconds: 5
+        readinessProbe:
+          exec:
+            command:
+            - psql
+            - --user $POSTGRES_USER
+            - --command "SELECT 1;"
+          initialDelaySeconds: 5
+          timeoutSeconds: 1
+        volumeMounts:
+        - name: data
+          mountPath: /var/lib/postgresql/data/pgdata
+      volumes:
+      - name: data
+      {{- if .Values.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ template "fullname" . }}
+      {{- else }}
+        emptyDir: {}
+      {{- end -}}
