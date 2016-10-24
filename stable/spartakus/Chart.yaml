@@ -1,0 +1,9 @@
+name: spartakus
+version: 1.0.0
+description: A Spartakus Helm chart for Kubernetes. Spartakus aims to collect information about Kubernetes clusters.
+sources:
+  - https://github.com/kubernetes-incubator/spartakus
+maintainers:
+  - name: Michael Goodness
+    email: mgoodness@gmail.com
+engine: gotpl
