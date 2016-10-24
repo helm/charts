@@ -10,6 +10,7 @@ home: https://kafka.apache.org/
 sources:
   - https://github.com/kubernetes/charts/tree/master/incubator/zookeeper
   - https://github.com/Yolean/kubernetes-kafka
+  - https://github.com/solsson/dockerfiles/tree/master/kafka
 maintainers:
   - name: Faraaz Khan
     email: faraaz@rationalizeit.us

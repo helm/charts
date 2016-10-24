@@ -10,6 +10,9 @@ This is an implementation of Kafka PetSet found here:
 
 * PV support on underlying infrastructure
 
+* Requires at least `v2.0.0-beta.1` version of helm to support
+  dependency management with requirements.yaml
+
 ## PetSet Details
 
 * http://kubernetes.io/docs/user-guide/petset/
@@ -35,14 +38,19 @@ namespace (recommended) called `kafka`
 ```
 helm repo add incubator
 http://storage.googleapis.com/kubernetes-charts-incubator
+helm install --name my-kafka incubator/kafka
+```
 
-kubectl create namespace kafka
+If using a dedicated namespace(recommended) then make sure the namespace
+exists with:
 
-helm install --name my-release incubator/kafka
+```
+kubectl create ns kafka
+helm install --name my-kafka --set global.namespace=kafka incubator/kafka
 ```
 
 This chart includes a ZooKeeper chart as a dependency to the Kafka
-cluster. Both the Kafka and ZooKeeper charts can be customized using the
+cluster in its `requirement.yaml`. The chart can be customized using the
 following configurable parameters:
 
 | Parameter               | Description                        | Default                                                    |
@@ -58,16 +66,6 @@ following configurable parameters:
 | `DataDirectory`         | Kafka data directory               | `/opt/kafka/data`                                          |
 | `Storage`               | Kafka Persistent volume size       | `1Gi`                                                      |
 
-Almost the same parameters are also available for the companion ZooKeeper cluster under the zookeeper namespace. Example: `.zookeeper.Memory`. See `values.yaml` for a full list.
-
-The following global parameters apply to both the Kafka cluster and the ZooKeeper cluster:
-
-
-| Parameter               | Description                        | Default                                                    |
-| ----------------------- | ---------------------------------- | ---------------------------------------------------------- |
-| `Namespace`             | K8s namespace for both clusters    | `kafka`                                                    |
-| `ZooKeeperServiceName`  | The name for the ZooKeeper Service | `zookeeper`                                                |
-
 Specify parameters using `--set key=value[,key=value]` argument to `helm install`
 
 Alternatively a YAML file that specifies the values for the parameters can be provided like this:
@@ -76,8 +74,37 @@ Alternatively a YAML file that specifies the values for the parameters can be pr
 $ helm install --name my-release -f values.yaml incubator/kafka
 ```
 
+### Connecting to Kafka
+
+You can connect to Kafka by running a simple pod in the K8s cluster like this with a configuration like this:
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: testclient
+  namespace: kafka
+spec:
+  containers:
+  - name: kafka
+    image: solsson/kafka:0.10.0.1
+    command:
+      - sh
+      - -c
+      - "exec tail -f /dev/null"
+```
+
+Once you have the testclient pod above running, you can list all kafka
+topics with:
+
+` kubectl exec testclient -- ./bin/kafka-topics.sh --zookeeper
+my-release-zk:2181 --list`
+
+Where `my-release` is the name of your helm release.
+
 ## Known Limitations
 
 * Namespace creation is not automated
 * Topic creation is not automated
 * Only supports storage options that have backends for persistent volume claims (tested mostly on AWS)
+* Kafka cluster is not accessible via an external endpoint
