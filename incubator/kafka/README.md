@@ -32,8 +32,8 @@ This chart will do the following:
 
 ### Installing the Chart
 
-To install the chart with the release name `my-release` in its own
-namespace (recommended) called `kafka`
+To install the chart with the release name `my-release` in the default
+namespace:
 
 ```
 helm repo add incubator
@@ -55,7 +55,7 @@ following configurable parameters:
 
 | Parameter               | Description                        | Default                                                    |
 | ----------------------- | ---------------------------------- | ---------------------------------------------------------- |
-| `Name`                  | Kafka master name                  | `zk`                                                       |
+| `Name`                  | Kafka master name                  | `kf`                                                       |
 | `Image`                 | Kafka Container image name         | `solsson/kafka`                                            |
 | `ImageTag`              | Kafka Container image tag          | `0.10.0.1`                                                 |
 | `ImagePullPolicy`       | Kafka Container pull policy        | `Always`                                                   |
@@ -65,6 +65,7 @@ following configurable parameters:
 | `Memory`                | Kafka container requested memory   | `512Mi`                                                    |
 | `DataDirectory`         | Kafka data directory               | `/opt/kafka/data`                                          |
 | `Storage`               | Kafka Persistent volume size       | `1Gi`                                                      |
+| `zookeeper.Name`        | Name of the Zookeeper Service      | `zk`                                                       |
 
 Specify parameters using `--set key=value[,key=value]` argument to `helm install`
 
