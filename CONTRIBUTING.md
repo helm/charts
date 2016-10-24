@@ -23,7 +23,7 @@ This repository is used by Chart developers for maintaining the official charts 
 
 1. If you haven't already done so, sign a Contributor License Agreement (see details above).
 1. Fork this repository, develop and test your Chart.
-1. Choose the correct folder for your chart based on the information in the [Repository Structure](#repository-structure) section
+1. Choose the correct folder for your chart based on the information in the [Repository Structure](README.md#repository-structure) section
 1. Ensure your Chart follows the [technical](#technical-requirements) and [documentation](#documentation-requirements) guidelines, described below.
 1. Submit a pull request.
 
