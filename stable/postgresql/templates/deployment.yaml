@@ -12,6 +12,20 @@ spec:
     metadata:
       labels:
         app: {{ template "fullname" . }}
+      annotations:
+        pod.beta.kubernetes.io/init-containers: '[
+            {
+                "name": "remove-lost-found",
+                "image": "busybox:1.25.0",
+                "command": ["rm", "-fr", "/var/lib/postgresql/data/pgdata/lost+found"],
+                "volumeMounts": [
+                    {
+                        "name": "data",
+                        "mountPath": "/var/lib/postgresql/data/pgdata"
+                    }
+                ]
+            }
+        ]'
     spec:
       containers:
       - name: {{ template "fullname" . }}
