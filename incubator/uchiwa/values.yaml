@@ -1,0 +1,29 @@
+image: "sstarcher/uchiwa"
+imageTag: "0.19"
+pullPolicy: "IfNotPresent"
+
+replicaCount: 1
+
+httpPort: 80
+
+routable: false
+
+limits_memory: 50Mi
+limits_cpu: 10m
+
+config: |-
+  {
+    "sensu": [
+      {
+        "name": "Sensu",
+        "host": "sensu",
+        "port": 4567
+      }
+    ],
+    "uchiwa": {
+      "host": "0.0.0.0",
+      "port": 3000,
+      "refresh": 10,
+      "loglevel": "info"
+    }
+  }

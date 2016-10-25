@@ -1,0 +1,5 @@
+Getting Started:
+
+1. Uchiwa can be accessed at the following address from within your cluster: http://{{ template "fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.httpPort }}
+
+

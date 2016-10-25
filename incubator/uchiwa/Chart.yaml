@@ -1,0 +1,18 @@
+apiVersion: v1
+name: uchiwa
+version: 0.1.0
+description: Chart for Uchiwa
+keywords:
+- uchiwa
+- sensu
+- monitoring
+home: https://uchiwa.io/
+sources:
+- https://github.com/kubernetes/charts
+- https://github.com/sstarcher/docker-uchiwa
+- https://github.com/sensu/uchiwa
+maintainers:
+- name: Shane Starcher
+  email: shane.starcher@gmail.com
+icon: https://uchiwa.io/img/favicon.png
+engine: gotpl
