@@ -1,0 +1,20 @@
+{{- if .Values.server.persistentVolume.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  annotations:
+{{ toYaml .Values.server.persistentVolume.annotations | indent 4 }}
+  labels:
+    app: {{ template "fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    component: server
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+  name: {{ template "server.fullname" . }}
+spec:
+  accessModes:
+{{ toYaml .Values.server.persistentVolume.accessModes | indent 4 }}
+  resources:
+    requests:
+      storage: {{ .Values.server.persistentVolume.size | quote }}
+{{- end }}

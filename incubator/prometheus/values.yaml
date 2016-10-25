@@ -1,10 +1,102 @@
-image: prom/prometheus
-imageTag: v1.1.0
-imageAlertManager: prom/alertmanager
-imageTagAlertManager: v0.4.2
+alertmanager:
+  # httpPort: 80
+  # httpPortName: http
+  image: prom/alertmanager:v0.4.2
+  ingress:
+    annotations:
+      kubernetes.io/ingress.class: nginx
+      kubernetes.io/tls-acme: 'true'
+    enabled: true
+    hostName: alertmanager.domain.com
+    tls: true
+  ## Configure resource requests and limits
+  ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+  ##
+  resources:
+    # limits:
+    #   cpu: 10m
+    #   memory: 32Mi
+    requests:
+      cpu: 10m
+      memory: 32Mi
+  # storage_path: /data
 
-# Persist data to a persitent volume
-persistence:
-  enabled: true
-  storageClass: generic
-  size: 8Gi
+configmap_reload_image: jimmidyson/configmap-reload:v0.1
+
+## Specify a imagePullPolicy
+## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
+## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+##
+# imagePullPolicy:
+
+server:
+  annotations:
+    iam.amazonaws.com/role: prometheus
+  extra_args:
+    - --storage.local.max-chunks-to-persist=524288
+    - --storage.local.memory-chunks=1048576
+    - --storage.local.retention=360h0m0s
+    - --web.external-url=http://prometheus.domain.com
+  # httpPort: 80
+  # httpPortName: http
+  image: prom/prometheus:v1.2.1
+  ingress:
+    annotations:
+      kubernetes.io/ingress.class: nginx
+      kubernetes.io/tls-acme: 'true'
+    enabled: true
+    hostName: prometheus.domain.com
+    tls: true
+  # Write data to a persistent volume
+  persistentVolume:
+    accessModes:
+      - ReadWriteOnce
+    annotations:
+      volume.beta.kubernetes.io/storage-class: standard
+    enabled: true
+    size: 8Gi
+  ## Configure resource requests and limits
+  ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+  ##
+  resources:
+    # limits:
+    #   cpu: 500m
+    #   memory: 512Mi
+    # requests:
+    #   cpu: 500m
+    #   memory: 512Mi
+
+alertmanager_files:
+  alertmanager.yml: |
+    global:
+      # slack_api_url: ''
+
+    receivers:
+      - name: default-receiver
+        # slack_configs:
+        #  - channel: '@you'
+        #    send_resolved: true
+
+    route:
+      group_wait: 10s
+      group_interval: 5m
+      receiver: default-receiver
+      repeat_interval: 3h
+
+server_files:
+  prometheus.yml: |
+    global:
+      scrape_interval:     15s
+      evaluation_interval: 15s
+
+    rule_files:
+      - /etc/config/rules
+      - /etc/config/alerts
+
+    scrape_configs:
+      - job_name: prometheus
+        static_configs:
+          - targets:
+            - localhost:9090
+  alerts: ""
+  rules: ""
