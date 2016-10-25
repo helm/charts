@@ -1,0 +1,69 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: {{ template "fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    component: server
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+  name: {{ template "server.fullname" . }}
+spec:
+  replicas: 1
+  template:
+    metadata:
+      annotations:
+{{ toYaml .Values.server.annotations | indent 8 }}
+      labels:
+        app: {{ template "fullname" . }}
+        component: server
+        release: "{{ .Release.Name }}"
+    spec:
+      containers:
+        - name: configmap-reload
+          image: "{{ .Values.configmap_reload_image }}"
+          imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
+          args:
+            - --volume-dir=/etc/config
+            - --webhook-url=http://localhost:9090/-/reload
+          volumeMounts:
+            - name: config-volume
+              mountPath: /etc/config
+              readOnly: true
+        - name: prometheus
+          image: "{{ .Values.server.image }}"
+          imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
+          args:
+            - --alertmanager.url=http://{{ template "alertmanager.fullname" . }}:9093
+            - --config.file=/etc/config/prometheus.yml
+            - --storage.local.path={{ default "/data" .Values.server.storage_local_path | quote }}
+            - --web.console.libraries=/etc/prometheus/console_libraries
+            - --web.console.templates=/etc/prometheus/consoles
+{{ toYaml .Values.server.extra_args | indent 12 }}
+          ports:
+            - containerPort: 9090
+          readinessProbe:
+            httpGet:
+              path: /status
+              port: 9090
+            initialDelaySeconds: 30
+            timeoutSeconds: 30
+          resources:
+{{ toYaml .Values.server.resources | indent 12 }}
+          volumeMounts:
+            - name: config-volume
+              mountPath: /etc/config
+            - name: storage-volume
+              mountPath: /data
+      terminationGracePeriodSeconds: {{ default 300 .Values.server.terminationGracePeriodSeconds }}
+      volumes:
+        - name: config-volume
+          configMap:
+            name: {{ template "server.fullname" . }}
+        - name: storage-volume
+      {{- if .Values.server.persistentVolume.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ template "server.fullname" . }}
+      {{- else }}
+          emptyDir: {}
+      {{- end -}}

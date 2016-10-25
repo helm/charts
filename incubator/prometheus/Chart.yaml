@@ -1,3 +1,11 @@
-description: A Helm chart for Kubernetes
 name: prometheus
-version: 0.1.4
+version: 1.2.1
+description: A Prometheus Helm chart for Kubernetes
+home: https://prometheus.io/
+sources:
+  - https://github.com/prometheus/alertmanager
+  - https://github.com/prometheus/prometheus
+maintainers:
+  - name: Michael Goodness
+    email: mgoodness@gmail.com
+engine: gotpl
