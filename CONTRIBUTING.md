@@ -40,6 +40,13 @@ This repository is used by Chart developers for maintaining the official charts 
     * Use Deployments in favor of ReplicationControllers
 * Should follow Kubernetes best practices
     * Include Health Checks wherever practical
+    * Allow configurable [resource requests and limits](http://kubernetes.io/docs/user-guide/compute-resources/#resource-requests-and-limits-of-pod-and-container)
+* Provide a method for data persistence (if applicable)
+* Support application upgrades
+* Allow customization of the application configuration
+* Provide a secure default configuration
+* Do not leverage alpha features of Kubernetes
+* Includes a [NOTES.txt](https://github.com/kubernetes/helm/blob/master/docs/charts.md#chart-license-readme-and-notes) explaining how to use the application after install
 
 #### Documentation requirements
 
