@@ -12,6 +12,7 @@ metadata:
     router.deis.io/domains: uchiwa
   {{end}}
 spec:
+  type: {{.Values.serviceType}}
   ports:
   - port: {{ .Values.httpPort }}
     targetPort: 3000

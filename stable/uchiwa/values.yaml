@@ -9,6 +9,10 @@ pullPolicy: "IfNotPresent"
 # How many uchiwa containers to spawn
 replicaCount: 1
 
+# How to publish the service http://kubernetes.io/docs/user-guide/services/#publishing-services---service-types
+serviceType: ClusterIP
+
+# Service port to expose Uchiwa on
 httpPort: 80
 
 # If set to true, the service will be exposed via the Deis Router if setup https://github.com/deis/router
