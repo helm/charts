@@ -6,7 +6,7 @@
 ## TL;DR;
 
 ```console
-$ helm install incubator/uchiwa
+$ helm install stable/uchiwa
 ```
 
 ## Introduction
@@ -32,7 +32,7 @@ $ git clone https://github.com/kubernetes/charts.git
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm install --name my-release incubator/uchiwa
+$ helm install --name my-release stable/uchiwa
 ```
 
 *Replace the `x.x.x` placeholder with the chart release version.*
@@ -72,7 +72,7 @@ Detailed documentaion for the `config` json can be found at [Uchiwa/Docs](https:
 ```console
 $ helm install --name my-release \
   --set imageTag=0.18.2 \
-    incubator/uchiwa
+    stable/uchiwa
 ```
 
 The above command sets the Uchiwa version to `0.18.2`.
@@ -80,7 +80,7 @@ The above command sets the Uchiwa version to `0.18.2`.
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 
 ```console
-$ helm install --name my-release -f values.yaml incubator/uchiwa
+$ helm install --name my-release -f values.yaml stable/uchiwa
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
