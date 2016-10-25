@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: {{ template "fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    component: alertmanager
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+  name: {{ template "alertmanager.fullname" . }}
+spec:
+  ports:
+    - port: {{ default 80 .Values.alertmanager.httpPort }}
+      name: {{ default "http" .Values.alertmanager.httpPortName | quote }}
+      protocol: TCP
+      targetPort: 9093
+  selector:
+    app: {{ template "fullname" . }}
+    component: alertmanager

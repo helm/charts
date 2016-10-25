@@ -1,0 +1,57 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: {{ template "fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    component: alertmanager
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+  name: {{ template "alertmanager.fullname" . }}
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: {{ template "fullname" . }}
+        component: alertmanager
+        release: "{{ .Release.Name }}"
+    spec:
+      containers:
+        - name: alertmanager
+          image: "{{ .Values.alertmanager.image }}"
+          imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
+          args:
+            - --config.file=/etc/config/alertmanager.yml
+            - --storage.path={{ default "/data" .Values.alertmanager.storage_path | quote }}
+          ports:
+            - containerPort: 9093
+          readinessProbe:
+            httpGet:
+              path: /#/status
+              port: 9093
+            initialDelaySeconds: 30
+            timeoutSeconds: 30
+          resources:
+{{ toYaml .Values.alertmanager.resources | indent 12 }}
+          volumeMounts:
+            - name: config-volume
+              mountPath: /etc/config
+            - name: storage-volume
+              mountPath: /data
+        - name: configmap-reload
+          image: "{{ .Values.configmap_reload_image }}"
+          imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
+          args:
+            - --volume-dir=/etc/config
+            - --webhook-url=http://localhost:9093/-/reload
+          volumeMounts:
+            - name: config-volume
+              mountPath: /etc/config
+              readOnly: true
+      volumes:
+        - name: config-volume
+          configMap:
+            name: {{ template "alertmanager.fullname" . }}
+        - name: storage-volume
+          emptyDir: {}
