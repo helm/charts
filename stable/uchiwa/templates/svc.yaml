@@ -6,10 +6,10 @@ metadata:
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-  {{ if .Values.routable }}
+  {{ if .Values.deis.routable }}
     router.deis.io/routable: "true"
   annotations:
-    router.deis.io/domains: uchiwa
+    router.deis.io/domains: {{ .Values.deis.domains | quote }}
   {{end}}
 spec:
   type: {{.Values.serviceType}}

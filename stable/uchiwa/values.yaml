@@ -16,7 +16,9 @@ serviceType: ClusterIP
 httpPort: 80
 
 # If set to true, the service will be exposed via the Deis Router if setup https://github.com/deis/router
-routable: false
+deis:
+  routable: false
+  domains: uchiwa
 
 # CPU and Memory limtis for the container
 limits_memory: 50Mi
