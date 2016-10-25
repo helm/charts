@@ -27,6 +27,9 @@ spec:
         env:
         - name: POSTGRES_USER
           value: {{ default "postgres" .Values.postgresUser | quote }}
+          # Required for pg_isready in the health probes.
+        - name: PGUSER
+          value: {{ default "postgres" .Values.postgresUser | quote }}
         - name: POSTGRES_DB
           value: {{ default "" .Values.postgresDatabase | quote }}
         - name: PGDATA
@@ -42,19 +45,15 @@ spec:
         livenessProbe:
           exec:
             command:
-            - psql
-            - --user $POSTGRES_USER
-            - --command "SELECT 1;"
-          initialDelaySeconds: 30
-          timeoutSeconds: 5
+            - pg_isready
+          initialDelaySeconds: 60
+          timeoutSeconds: 3
         readinessProbe:
           exec:
             command:
-            - psql
-            - --user $POSTGRES_USER
-            - --command "SELECT 1;"
-          initialDelaySeconds: 5
-          timeoutSeconds: 1
+            - pg_isready
+          initialDelaySeconds: 60
+          timeoutSeconds: 3
         volumeMounts:
         - name: data
           mountPath: /var/lib/postgresql/data/pgdata

@@ -15,7 +15,7 @@ This chart bootstraps a [PostgreSQL](https://github.com/docker-library/postgres)
 ## Prerequisites
 
 - Kubernetes 1.4+ with Beta APIs enabled
-- PV provisioner support in the underlying infrastructure
+- PV provisioner support in the underlying infrastructure (Only when persisting data)
 
 ## Installing the Chart
 
