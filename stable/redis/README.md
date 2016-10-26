@@ -52,7 +52,7 @@ The following tables lists the configurable parameters of the Redis chart and th
 | `persistence.storageClass` | Storage class of backing PVC        | `generic`                                                 |
 | `persistence.accessMode`   | Use volume as ReadOnly or ReadWrite | `ReadWriteOnce`                                           |
 | `persistence.size`         | Size of data volume                 | `8Gi`                                                     |
-| `resources`                | CPU/Memory resource requests/limits | `null`                                                    |
+| `resources`                | CPU/Memory resource requests/limits | Memory: `256Mi`, CPU: `100m`                              |
 
 The above parameters map to the env variables defined in [bitnami/redis](http://github.com/bitnami/bitnami-docker-redis). For more information please refer to the [bitnami/redis](http://github.com/bitnami/bitnami-docker-redis) image documentation.
 
