@@ -18,12 +18,7 @@ spec:
       - name: uchiwa
         image: "{{ .Values.image }}:{{ .Values.imageTag }}"
         imagePullPolicy: {{ .Values.pullPolicy }}
-        requests:
-          memory: {{ .Values.memory | quote }}
-          cpu: {{ .Values.cpu | quote }} 
-        limits:
-          memory: {{ .Values.memory | quote }}
-          cpu: {{ .Values.cpu | quote }} 
+{{ toYaml .Values.resources | indent 8 }}
         livenessProbe:
           httpGet:
             path: /

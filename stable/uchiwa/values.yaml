@@ -21,8 +21,12 @@ deis:
   domains: uchiwa
 
 # CPU and Memory limit and request for Uchiwa
-memory: 50Mi
-cpu: 10m
+resources:
+  limits:
+    memory: 50Mi
+  requests:
+    memory: 50Mi
+    cpu: 10m
 
 # Uchiwa configuration https://docs.uchiwa.io/getting-started/configuration/
 config: |-
