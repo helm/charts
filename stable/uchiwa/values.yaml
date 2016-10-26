@@ -20,9 +20,9 @@ deis:
   routable: false
   domains: uchiwa
 
-# CPU and Memory limtis for the container
-limits_memory: 50Mi
-limits_cpu: 10m
+# CPU and Memory limit and request for Uchiwa
+memory: 50Mi
+cpu: 10m
 
 # Uchiwa configuration https://docs.uchiwa.io/getting-started/configuration/
 config: |-

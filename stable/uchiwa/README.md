@@ -63,8 +63,8 @@ The following tables lists the configurable parameters of the Uchiwa chart and t
 | `replicaCount`         | Number of uchiwa replicas | `1`  |
 | `httpPort` | Service port for kubernetes | `80` |
 | `routable` | Enables routing through the Deis router | `false` |
-| `limits_memory` | Memory limit for uchiwa | `50Mi` |
-| `limits_cpu` | CPU limit for uchiwa | `10m` |
+| `memory` | Memory limit & request for uchiwa | `50Mi` |
+| `cpu` | CPU limit & request for uchiwa | `10m` |
 | `config` | Configuration to pass to Uchiwa | `json defined in values.yaml` |
 
 Detailed documentaion for the `config` json can be found at [Uchiwa/Docs](https://docs.uchiwa.io/getting-started/configuration/)

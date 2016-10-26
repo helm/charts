@@ -19,8 +19,11 @@ spec:
         image: "{{ .Values.image }}:{{ .Values.imageTag }}"
         imagePullPolicy: {{ .Values.pullPolicy }}
         requests:
-          memory: {{ .Values.limits_memory | quote }}
-          cpu: {{ .Values.limits_cpu | quote }} 
+          memory: {{ .Values.memory | quote }}
+          cpu: {{ .Values.cpu | quote }} 
+        limits:
+          memory: {{ .Values.memory | quote }}
+          cpu: {{ .Values.cpu | quote }} 
         livenessProbe:
           httpGet:
             path: /
