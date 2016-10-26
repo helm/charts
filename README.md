@@ -27,15 +27,9 @@ The Charts in this repository are organized into two folders:
 * stable
 * incubator
 
-Stable Charts:
+Stable Charts meet the criteria in the [technical requirements](CONTRIBUTING.md#technical-requirements).
 
-1. Provide a method for data persistence (if applicable)
-2. Support application upgrades
-3. Allow customization of the application configuration
-4. Provide a secure default configuration
-5. Do not leverage alpha features of Kubernetes
-
-Incubator Charts are those that do not meet these criteria, but still meet the technical and documentation requirements described in CONTRIBUTING.md. Having the incubator folder allows charts to be shared and improved on until they are ready to be moved into the stable folder. The charts in the `incubator/` directory can be found in the [`gs://kubernetes-charts-incubator` Google Storage Bucket](https://console.cloud.google.com/storage/browser/kubernetes-charts-incubator).
+Incubator Charts are those that do not meet these criteria. Having the incubator folder allows charts to be shared and improved on until they are ready to be moved into the stable folder. The charts in the `incubator/` directory can be found in the [`gs://kubernetes-charts-incubator` Google Storage Bucket](https://console.cloud.google.com/storage/browser/kubernetes-charts-incubator).
 
 In order to get a Chart from incubator to stable, Chart maintainers should open a pull request that moves the chart folder.
 
