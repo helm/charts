@@ -10,6 +10,7 @@ data:
       <approvedSignatures>
         <string>method groovy.json.JsonSlurperClassic parseText java.lang.String</string>
         <string>new groovy.json.JsonSlurperClassic</string>
+        <string>staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods leftShift java.util.Map java.util.Map</string>
       </approvedSignatures>
       <aclApprovedSignatures/>
       <approvedClasspathEntries/>

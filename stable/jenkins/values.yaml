@@ -6,7 +6,7 @@
 Master:
   Name: jenkins-master
   Image: "quay.io/lachie83/jenkins-master-k8s"
-  ImageTag: "v0.1.2"
+  ImageTag: "v0.1.3"
   ImagePullPolicy: "Always"
   Component: "jenkins-master"
   AdminUser: admin
@@ -23,7 +23,7 @@ Master:
 
 Agent:
   Image: quay.io/lachie83/jnlp-slave
-  ImageTag: latest
+  ImageTag: v4
   Cpu: "200m"
   Memory: "512Mi"
 
