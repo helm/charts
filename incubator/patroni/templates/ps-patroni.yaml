@@ -44,7 +44,7 @@ spec:
               name: {{ template "fullname" . }}
               key: password-standby
         - name: ETCD_DISCOVERY_DOMAIN
-          value: {{default (printf "%s-etcd" .Release.Name) .Values.Etcd.Discovery }}
+          value: {{default (printf "%s-etcd" .Release.Name | trunc 24) .Values.Etcd.Discovery }}
         - name: SCOPE
           value: {{ template "fullname" . }}
         - name: USE_WALE
