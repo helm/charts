@@ -28,7 +28,7 @@ external load balancer (e.g. AWS or GKE)
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm install incubator/traefik --name my-release --namespace kube-system
+$ helm install stable/traefik --name my-release --namespace kube-system
 ```
 
 After installing the chart, create a DNS CNAME record for applicable domains to direct inbound
