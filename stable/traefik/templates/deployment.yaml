@@ -20,12 +20,12 @@ spec:
       - image: traefik:{{ .Values.imageTag }}
         name: traefik-ingress-controller
         resources:
-          limits:
-            cpu: 200m
-            memory: 30Mi
           requests:
-            cpu: 100m
-            memory: 20Mi
+            cpu: "{{.Values.cpuRequest}}"
+            memory: "{{.Values.memoryRequest}}"
+          limits:
+            cpu: "{{.Values.cpuLimit}}"
+            memory: "{{.Values.memoryLimit}}"
         readinessProbe:
           tcpSocket:
             port: 80

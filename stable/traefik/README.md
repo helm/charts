@@ -59,6 +59,10 @@ The following tables lists the configurable parameters of the Traefik chart and 
 | ------------------------------- | -------------------------------------------------------------------- | ----------------------------------------- |
 | `imageTag`                      | The version of the official Traefik image to use                     | `v1.1.0-rc3`                              |
 | `serviceType`                   | A valid Kubernetes service type                                      | `LoadBalancer`                            |
+| `cpuRequest`                    | Initial share of CPU requested per Traefik pod                       | `100m`                                    |
+| `memoryRequest`                 | Initial share of memory requested per Traefik pod                    | `20Mi`                                    |
+| `cpuLimit`                      | CPU limit per Traefik pod                                            | `200m`                                    |
+| `memoryLimit`                   | Memory limit per Traefik pod                                         | `30Mi`                                    |
 | `ssl.enabled`                   | Whether to enable HTTPS                                              | `false`                                   |
 | `ssl.enforced`                  | Whether to redirect HTTP requests to HTTPS                           | `false`                                   |
 | `ssl.defaultCert`               | Base64 encoded default certficate                                    | A self-signed certificate                 |
