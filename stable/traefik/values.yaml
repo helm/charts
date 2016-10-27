@@ -9,6 +9,7 @@ ssl:
 acme:
   enabled: false
   email: admin@example.com
+  staging: true
   # Save ACME certs to a persistent volume. WARNING: If you do not do this, you will re-request
   # certs every time a pod (re-)starts and you WILL be rate limited!
   persistence:

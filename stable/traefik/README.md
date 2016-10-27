@@ -65,6 +65,7 @@ The following tables lists the configurable parameters of the Traefik chart and 
 | `ssl.defaultKey`                | Base64 encoded private key for the certificate above                 | The private key for the certificate above |
 | `acme.enabled`                  | Whether to use Let's Encrypt to obtain certificates                  | `false`                                   |
 | `acme.email`                    | Email address to be used in certificates obtained from Let's Encrypt | `admin@example.com`                       |
+| `acme.staging`                  | Whether to get certs from Let's Encrypt's staging environment        | `true`                                    |
 | `acme.persistence.enabled`      | Create a volume to store ACME certs (if ACME is enabled)             | `true`                                    |
 | `acme.persistence.storageClass` | Type of `StorageClass` to request-- will be cluster-specific         | `generic`                                 |
 | `acme.persistence.accessMode`   | `ReadWriteOnce` or `ReadOnly`                                        | `ReadWriteOnce`                           |
