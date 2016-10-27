@@ -1,4 +1,6 @@
-{{- if .Values.alertmanager.ingress.enabled }}
+{{- if .Values.alertmanager.ingress.enabled -}}
+{{- $releaseName := .Release.Name -}}
+{{- $servicePort := .Values.server.httpPort -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
@@ -13,17 +15,17 @@ metadata:
   name: {{ template "alertmanager.fullname" . }}
 spec:
   rules:
-    - host: {{ .Values.alertmanager.ingress.hostName }}
+  {{- range .Values.alertmanager.ingress.hosts }}
+    - host: {{ .hostName }}
       http:
         paths:
           - path: /
             backend:
-              serviceName: {{ template "alertmanager.fullname" . }}
-              servicePort: {{ default 80 .Values.alertmanager.httpPort }}
+              serviceName: {{ printf "%s-%s" $releaseName "alerts" | trunc 24 }}
+              servicePort: {{ default 80 $servicePort }}
+  {{- end -}}
   {{- if .Values.alertmanager.ingress.tls }}
   tls:
-    - hosts:
-        - {{ .Values.alertmanager.ingress.hostName }}
-      secretName: {{ template "alertmanager.fullname" . }}
+{{ toYaml .Values.alertmanager.ingress.tls | indent 4 }}
   {{- end -}}
 {{- end -}}
