@@ -32,7 +32,7 @@ $ helm install stable/traefik --name my-release --namespace kube-system
 ```
 
 After installing the chart, create a DNS CNAME record for applicable domains to direct inbound
-traffic the load balancer. You can you the command below to find the load balancer's DNS name:
+traffic to the load balancer. You can use the command below to find the load balancer's DNS name:
 
 ```bash
 $ kubectl describe service traefik-ingress-controller -n kube-system | grep Ingress
