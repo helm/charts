@@ -19,6 +19,13 @@ spec:
       containers:
       - image: traefik:{{ .Values.imageTag }}
         name: traefik-ingress-controller
+        resources:
+          limits:
+            cpu: 200m
+            memory: 30Mi
+          requests:
+            cpu: 100m
+            memory: 20Mi
         volumeMounts:
         - mountPath: /config
           name: config
