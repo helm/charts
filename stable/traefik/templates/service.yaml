@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: traefik-ingress-controller
 spec:
-  type: LoadBalancer
+  type: {{ .Values.serviceType }}
   selector:
     k8s-app: traefik-ingress-controller
   ports:

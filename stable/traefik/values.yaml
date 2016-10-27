@@ -1,5 +1,6 @@
 # Default values for Traefik
 imageTag: v1.1.0-rc3
+serviceType: LoadBalancer
 ssl:
   enabled: false
   enforced: false

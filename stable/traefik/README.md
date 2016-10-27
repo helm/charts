@@ -57,6 +57,7 @@ The following tables lists the configurable parameters of the Traefik chart and 
 
 | Parameter                       | Description                                                          | Default                                   |
 | ------------------------------- | -------------------------------------------------------------------- | ----------------------------------------- |
+| `serviceType`                   | A valid Kubernetes service type                                      | `LoadBalancer`                            |
 | `ssl.enabled`                   | Whether to enable HTTPS                                              | `false`                                   |
 | `ssl.enforced`                  | Whether to redirect HTTP requests to HTTPS                           | `false`                                   |
 | `ssl.defaultCert`               | Base64 encoded default certficate                                    | A self-signed certificate                 |
