@@ -3,12 +3,16 @@ alertmanager:
   # httpPortName: http
   image: prom/alertmanager:v0.4.2
   ingress:
-    annotations:
-      kubernetes.io/ingress.class: nginx
-      kubernetes.io/tls-acme: 'true'
-    enabled: true
-    hostName: alertmanager.domain.com
-    tls: true
+    # annotations:
+    #   kubernetes.io/ingress.class: nginx
+    #   kubernetes.io/tls-acme: 'true'
+    enabled: false
+    # hosts:
+    #   - hostName: alertmanager.domain.com
+    # tls:
+    #   - secretName: prometheus-alerts-tls
+    #     hosts:
+    #       - alertmanager.domain.com
   ## Configure resource requests and limits
   ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
   ##
@@ -30,8 +34,8 @@ configmap_reload_image: jimmidyson/configmap-reload:v0.1
 # imagePullPolicy:
 
 server:
-  annotations:
-    iam.amazonaws.com/role: prometheus
+  # annotations:
+  #   iam.amazonaws.com/role: prometheus
   extra_args:
     - --storage.local.max-chunks-to-persist=524288
     - --storage.local.memory-chunks=1048576
@@ -41,20 +45,24 @@ server:
   # httpPortName: http
   image: prom/prometheus:v1.2.1
   ingress:
-    annotations:
-      kubernetes.io/ingress.class: nginx
-      kubernetes.io/tls-acme: 'true'
-    enabled: true
-    hostName: prometheus.domain.com
-    tls: true
+    # annotations:
+    #   kubernetes.io/ingress.class: nginx
+    #   kubernetes.io/tls-acme: 'true'
+    enabled: false
+    # hosts:
+    #   - hostName: prometheus.domain.com
+    # tls:
+    #   - secretName: prometheus-server-tls
+    #     hosts:
+    #       - prometheus.domain.com
   # Write data to a persistent volume
   persistentVolume:
-    accessModes:
-      - ReadWriteOnce
-    annotations:
-      volume.beta.kubernetes.io/storage-class: standard
-    enabled: true
-    size: 8Gi
+    # accessModes:
+    #   - ReadWriteOnce
+    # annotations:
+    #   volume.beta.kubernetes.io/storage-class: standard
+    enabled: false
+    # size: 8Gi
   ## Configure resource requests and limits
   ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
   ##
