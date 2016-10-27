@@ -1,6 +1,6 @@
 name: prometheus
 version: 1.2.1
-description: A Prometheus Helm chart for Kubernetes
+description: A Prometheus Helm chart for Kubernetes. Prometheus is a monitoring system and time series database.
 home: https://prometheus.io/
 sources:
   - https://github.com/prometheus/alertmanager
