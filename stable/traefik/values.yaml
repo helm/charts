@@ -24,3 +24,5 @@ acme:
 dashboard:
   enabled: false
   domain: traefik.example.com
+gzip:
+  enabled: true

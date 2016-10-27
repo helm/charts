@@ -14,6 +14,7 @@ data:
     [entryPoints]
       [entryPoints.http]
       address = ":80"
+      compress = {{ .Values.gzip.enabled }}
         {{- if and .Values.ssl.enabled .Values.ssl.enforced }}
         [entryPoints.http.redirect]
           entryPoint = "https"
@@ -21,6 +22,7 @@ data:
       {{- if .Values.ssl.enabled }}
       [entryPoints.https]
       address = ":443"
+      compress = {{ .Values.gzip.enabled }}
         [entryPoints.https.tls]
           [[entryPoints.https.tls.certificates]]
           CertFile = "/ssl/tls.crt"
