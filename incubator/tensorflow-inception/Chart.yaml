@@ -1,0 +1,10 @@
+name: tensorflow-inception
+home: https://github.com/lachie83/k8s-tensorflow
+version: 0.1.0
+description: A Helm chart for Kubernetes
+sources:
+  - https://github.com/tensorflow/
+  - https://tensorflow.github.io/serving/serving_inception.html
+maintainers:
+  - name: Lachlan Evenson
+    email: lachlan.evenson@gmail.com
