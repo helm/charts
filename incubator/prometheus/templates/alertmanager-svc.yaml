@@ -17,3 +17,4 @@ spec:
   selector:
     app: {{ template "fullname" . }}
     component: alertmanager
+  type: {{ default "ClusterIP" .Values.alertmanager.serviceType | quote }}
