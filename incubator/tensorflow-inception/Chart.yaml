@@ -1,5 +1,5 @@
 name: tensorflow-inception
-home: https://github.com/lachie83/k8s-tensorflow
+home: https://github.com/kubernetes/charts
 version: 0.1.0
 description: A Helm chart for Kubernetes
 sources:
