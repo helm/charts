@@ -1,24 +1,29 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: traefik-ingress-controller
+  name: {{ template "fullname" . }}
   labels:
-    k8s-app: traefik-ingress-controller
+    app: {{ template "fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
 spec:
   replicas: 1
   selector:
     matchLabels:
-      k8s-app: traefik-ingress-controller
+      app: {{ template "fullname" . }}
   template:
     metadata:
       labels:
-        k8s-app: traefik-ingress-controller
-        version: {{ .Chart.Version }}
+        app: {{ template "fullname" . }}
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        release: "{{ .Release.Name }}"
+        heritage: "{{ .Release.Service }}"
     spec:
       terminationGracePeriodSeconds: 60
       containers:
       - image: traefik:{{ .Values.imageTag }}
-        name: traefik-ingress-controller
+        name: {{ template "fullname" . }}
         resources:
           requests:
             cpu: "{{.Values.cpuRequest}}"
@@ -64,17 +69,17 @@ spec:
       volumes:
       - name: config
         configMap:
-          name: traefik-config
+          name: {{ template "fullname" . }}
       {{- if .Values.ssl.enabled }}
       - name: ssl
         secret:
-          secretName: traefik-default-cert
+          secretName: {{ template "fullname" . }}-default-cert
       {{- end }}
       {{- if .Values.acme.enabled }}
       - name: acme
       {{- if .Values.acme.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: traefik-acme-volume-claim
+          claimName: {{ template "fullname" . }}-acme
       {{- else }}
         emptyDir: {}
       {{- end }}

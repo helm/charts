@@ -2,7 +2,12 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: traefik-acme-volume-claim
+  name: {{ template "fullname" . }}-acme
+  labels:
+    app: {{ template "fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
   annotations:
     volume.alpha.kubernetes.io/storage-class: {{ .Values.acme.persistence.storageClass | quote }}
 spec:
