@@ -23,7 +23,7 @@ spec:
           imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
           args:
             - --config.file=/etc/config/alertmanager.yml
-            - --storage.path={{ default "/data" .Values.alertmanager.storage_path | quote }}
+            - --storage.path={{ default "/data" .Values.alertmanager.storagePath | quote }}
           ports:
             - containerPort: 9093
           readinessProbe:
@@ -38,7 +38,7 @@ spec:
             - name: config-volume
               mountPath: /etc/config
             - name: storage-volume
-              mountPath: /data
+              mountPath: {{ default "/data" .Values.alertmanager.storagePath | quote }}
         - name: configmap-reload
           image: "{{ .Values.configmap_reload_image }}"
           imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
@@ -54,4 +54,9 @@ spec:
           configMap:
             name: {{ template "alertmanager.fullname" . }}
         - name: storage-volume
+      {{- if .Values.alertmanager.persistentVolume.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ template "alertmanager.fullname" . }}
+      {{- else }}
           emptyDir: {}
+      {{- end -}}
