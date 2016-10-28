@@ -14,15 +14,15 @@ alertmanager:
   image: prom/alertmanager:v0.4.2
 
   ingress:
+    ## If true, Alertmanager Ingress will be created
+    ##
+    enabled: false
+
     ## Alertmanager Ingress annotations
     ##
     # annotations:
     #   kubernetes.io/ingress.class: nginx
     #   kubernetes.io/tls-acme: 'true'
-
-    ## If true, Alertmanager Ingress will be created
-    ##
-    enabled: false
 
     ## Alertmanager Ingress hostnames
     ## Must be provided if Ingress is enabled
@@ -38,6 +38,28 @@ alertmanager:
     #     hosts:
     #       - alertmanager.domain.com
 
+  persistentVolume:
+    ## If true, AlertManager will create a Persistent Volume Claim
+    ## If false, use emptyDir
+    ##
+    enabled: false
+
+    ## AlertManager data Persistent Volume access modes
+    ## Must match those of existing PV or dynamic provisioner
+    ## Ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+    ##
+    # accessModes:
+    #   - ReadWriteOnce
+
+    ## AlertManager data Persistent Volume annotations
+    ##
+    # annotations:
+    #   volume.beta.kubernetes.io/storage-class: standard
+
+    ## AlertManager data Persistent Volume size
+    ##
+    # size: 2Gi
+
   ## Alertmanager resource requests and limits
   ## Ref: http://kubernetes.io/docs/user-guide/compute-resources/
   ##
@@ -49,12 +71,18 @@ alertmanager:
       cpu: 10m
       memory: 32Mi
 
+  ## Alertmanager service type
+  ## Default: 'ClusterIP'
+  # serviceType: LoadBalancer
+
   ## Alertmanager data storage path
   ## Default: '/data'
   ##
-  # storage_path: /data
+  # storagePath: /data
 
 ## Configmap-reload Docker image
+## Monitors ConfigMap changes and POSTs to a URL
+## Ref: https://github.com/jimmidyson/configmap-reload
 ##
 configmap_reload_image: jimmidyson/configmap-reload:v0.1
 
@@ -93,15 +121,15 @@ server:
   image: prom/prometheus:v1.2.1
 
   ingress:
+    ## If true, Server Ingress will be created
+    ##
+    enabled: false
+
     ## Server Ingress annotations
     ##
     # annotations:
     #   kubernetes.io/ingress.class: nginx
     #   kubernetes.io/tls-acme: 'true'
-
-    ## If true, Server Ingress will be created
-    ##
-    enabled: false
 
     ## Server Ingress hostnames
     ## Must be provided if Ingress is enabled
@@ -118,6 +146,11 @@ server:
     #       - prometheus.domain.com
 
   persistentVolume:
+    ## If true, Server will create a Persistent Volume Claim
+    ## If false, use emptyDir
+    ##
+    enabled: false
+
     ## Server data Persistent Volume access modes
     ## Must match those of existing PV or dynamic provisioner
     ## Ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
@@ -129,11 +162,6 @@ server:
     ##
     # annotations:
     #   volume.beta.kubernetes.io/storage-class: standard
-
-    ## If true, Server will create a Persistent Volume Claim
-    ## If false, use emptyDir
-    ##
-    enabled: false
 
     ## Server data Persistent Volume size
     ##
@@ -153,7 +181,11 @@ server:
   ## Server local data storage path
   ## Default: '/data'
   ##
-  # storage_local_path: /data
+  # storageLocalPath: /data
+
+  ## Server service type
+  ## Default: 'ClusterIP'
+  # serviceType: LoadBalancer
 
   ## Server Pod termination grace period
   ## Default: 300s (5m)
@@ -182,6 +214,9 @@ alertmanager_files:
 ## Server ConfigMap entries
 ##
 server_files:
+  alerts: ""
+  rules: ""
+
   prometheus.yml: |
     global:
       scrape_interval:     15s
@@ -194,7 +229,189 @@ server_files:
     scrape_configs:
       - job_name: prometheus
         static_configs:
-          - targets:
-            - localhost:9090
-  alerts: ""
-  rules: ""
+          - targets: [localhost:9090]
+
+      # Scrape configurations for running Prometheus on a Kubernetes cluster.
+      # This uses separate scrape configs for cluster components (i.e. API server, node)
+      # and services to allow each to use different authentication configs.
+      # Ref: https://prometheus.io/docs/operating/configuration/#<kubernetes_sd_config>
+      #
+      # Kubernetes labels will be added as Prometheus labels on metrics via the
+      # `labelmap` relabeling action.
+
+      # Scrape configs for cluster components.
+      - job_name: 'kubernetes-cluster'
+
+        # Default to scraping over https. If required, just disable this or change to
+        # `http`.
+        scheme: https
+
+        # This TLS & bearer token file config is used to connect to the actual scrape
+        # endpoints for cluster components. This is separate to discovery auth
+        # configuration (`in_cluster` below) because discovery & scraping are two
+        # separate concerns in Prometheus.
+        tls_config:
+          ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+          # If your node certificates are self-signed or use a different CA to the
+          # master CA, then disable certificate verification below. Note that
+          # certificate verification is an integral part of a secure infrastructure
+          # so this should only be disabled in a controlled environment. You can
+          # disable certificate verification by uncommenting the line below.
+          #
+          # insecure_skip_verify: true
+        bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+
+        kubernetes_sd_configs:
+          - api_servers:
+              - 'https://kubernetes.default.svc'
+            in_cluster: true
+            role: apiserver
+
+      - job_name: 'kubernetes-nodes'
+
+        # Default to scraping over https. If required, just disable this or change to
+        # `http`.
+        scheme: https
+
+        # This TLS & bearer token file config is used to connect to the actual scrape
+        # endpoints for cluster components. This is separate to discovery auth
+        # configuration (`in_cluster` below) because discovery & scraping are two
+        # separate concerns in Prometheus.
+        tls_config:
+          ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+          # If your node certificates are self-signed or use a different CA to the
+          # master CA, then disable certificate verification below. Note that
+          # certificate verification is an integral part of a secure infrastructure
+          # so this should only be disabled in a controlled environment. You can
+          # disable certificate verification by uncommenting the line below.
+          #
+          # insecure_skip_verify: true
+        bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+
+        kubernetes_sd_configs:
+          - api_servers:
+              - 'https://kubernetes.default.svc'
+            in_cluster: true
+            role: node
+
+        relabel_configs:
+          - action: labelmap
+            regex: __meta_kubernetes_node_label_(.+)
+
+      # Scrape config for service endpoints.
+      #
+      # The relabeling allows the actual service scrape endpoint to be configured
+      # via the following annotations:
+      #
+      # * `prometheus.io/scrape`: Only scrape services that have a value of `true`
+      # * `prometheus.io/scheme`: If the metrics endpoint is secured then you will need
+      # to set this to `https` & most likely set the `tls_config` of the scrape config.
+      # * `prometheus.io/path`: If the metrics path is not `/metrics` override this.
+      # * `prometheus.io/port`: If the metrics are exposed on a different port to the
+      # service then set this appropriately.
+      - job_name: 'kubernetes-service-endpoints'
+
+        kubernetes_sd_configs:
+          - api_servers:
+              - 'https://kubernetes.default.svc'
+            in_cluster: true
+            role: endpoint
+
+        relabel_configs:
+          - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scrape]
+            action: keep
+            regex: true
+          - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scheme]
+            action: replace
+            target_label: __scheme__
+            regex: (https?)
+          - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
+            action: replace
+            target_label: __metrics_path__
+            regex: (.+)
+          - source_labels: [__address__, __meta_kubernetes_service_annotation_prometheus_io_port]
+            action: replace
+            target_label: __address__
+            regex: (.+)(?::\d+);(\d+)
+            replacement: $1:$2
+          - action: labelmap
+            regex: __meta_kubernetes_service_label_(.+)
+          - source_labels: [__meta_kubernetes_service_namespace]
+            action: replace
+            target_label: kubernetes_namespace
+          - source_labels: [__meta_kubernetes_service_name]
+            action: replace
+            target_label: kubernetes_name
+
+      # Example scrape config for probing services via the Blackbox Exporter.
+      #
+      # The relabeling allows the actual service scrape endpoint to be configured
+      # via the following annotations:
+      #
+      # * `prometheus.io/probe`: Only probe services that have a value of `true`
+      - job_name: 'kubernetes-services'
+
+        metrics_path: /probe
+        params:
+          module: [http_2xx]
+
+        kubernetes_sd_configs:
+          - api_servers:
+              - 'https://kubernetes.default.svc'
+            in_cluster: true
+            role: service
+
+        relabel_configs:
+          - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_probe]
+            action: keep
+            regex: true
+          - source_labels: [__address__]
+            target_label: __param_target
+          - target_label: __address__
+            replacement: blackbox
+          - source_labels: [__param_target]
+            target_label: instance
+          - action: labelmap
+            regex: __meta_kubernetes_service_label_(.+)
+          - source_labels: [__meta_kubernetes_service_namespace]
+            target_label: kubernetes_namespace
+          - source_labels: [__meta_kubernetes_service_name]
+            target_label: kubernetes_name
+
+      # Example scrape config for pods
+      #
+      # The relabeling allows the actual pod scrape endpoint to be configured via the
+      # following annotations:
+      #
+      # * `prometheus.io/scrape`: Only scrape pods that have a value of `true`
+      # * `prometheus.io/path`: If the metrics path is not `/metrics` override this.
+      # * `prometheus.io/port`: Scrape the pod on the indicated port instead of the default of `9102`.
+      - job_name: 'kubernetes-pods'
+
+        kubernetes_sd_configs:
+          - api_servers:
+              - 'https://kubernetes.default.svc'
+            in_cluster: true
+            role: pod
+
+        relabel_configs:
+          - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
+            action: keep
+            regex: true
+          - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_path]
+            action: replace
+            target_label: __metrics_path__
+            regex: (.+)
+          - source_labels: [__address__, __meta_kubernetes_pod_annotation_prometheus_io_port]
+            action: replace
+            regex: (.+):(?:\d+);(\d+)
+            replacement: ${1}:${2}
+            target_label: __address__
+          - action: labelmap
+            regex: __meta_kubernetes_pod_label_(.+)
+          - source_labels: [__meta_kubernetes_pod_namespace]
+            action: replace
+            target_label: kubernetes_namespace
+          - source_labels: [__meta_kubernetes_pod_name]
+            action: replace
+            target_label: kubernetes_pod_name

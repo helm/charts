@@ -17,3 +17,4 @@ spec:
   selector:
     app: {{ template "fullname" . }}
     component: server
+  type: {{ default "ClusterIP" .Values.server.serviceType | quote }}
