@@ -6,7 +6,7 @@ This is an implementation of Kafka PetSet found here:
 
 ## Pre Requisites:
 
-* Kubernetes 1.3 with alpha APIs enable
+* Kubernetes 1.3 with alpha APIs enabled and support for storage classes
 
 * PV support on underlying infrastructure
 
@@ -63,6 +63,8 @@ following configurable parameters:
 | `Component`             | Kafka k8s selector key             | `kafka`                                                    |
 | `Cpu`                   | Kafka container requested cpu      | `100m`                                                     |
 | `Memory`                | Kafka container requested memory   | `512Mi`                                                    |
+| `MaxCpu`                | Kafka container cpu limit          | `200m`                                                     |
+| `MaxMemory`             | Kafka container memory limit       | `1024Mi`                                                   |
 | `DataDirectory`         | Kafka data directory               | `/opt/kafka/data`                                          |
 | `Storage`               | Kafka Persistent volume size       | `1Gi`                                                      |
 | `zookeeper.Name`        | Name of the Zookeeper Service      | `zk`                                                       |

@@ -65,10 +65,23 @@ spec:
       - name: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 24 }}"
         image: "{{.Values.Image}}:{{.Values.ImageTag}}"
         imagePullPolicy: "{{.Values.ImagePullPolicy}}"
+        livenessProbe:
+          exec:
+            command:
+              - bin/kafka-topics.sh
+              - --zookeeper
+              - "{{ printf "%s-%s" .Release.Name .Values.zookeeper.Name | trunc 24 }}:2181"
+              - --list
+          initialDelaySeconds: 30
+          timeoutSeconds: 5
+        name: liveness
         ports:
         - containerPort: 9092
           name: kafka
         resources:
+          limits:
+            cpu: "{{ .Values.MaxCpu }}"
+            memory: "{{ .Values.MaxMemory }}"
           requests:
             cpu: "{{ .Values.Cpu }}"
             memory: "{{ .Values.Memory }}"
@@ -78,7 +91,7 @@ spec:
         - "./bin/kafka-server-start.sh config/server.properties --override zookeeper.connect={{ printf "%s-%s" .Release.Name .Values.zookeeper.Name | trunc 24 }}:2181/ --override broker.id=${HOSTNAME##*-}"
         volumeMounts:
         - name: datadir
-          mountPath: /tmp/zookeeper
+          mountPath: "{{ .Values.DataDirectory }}"
       volumes:
       - name: workdir
         emptyDir: {}
