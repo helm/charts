@@ -75,6 +75,16 @@ spec:
           initialDelaySeconds: 30
           timeoutSeconds: 5
         name: liveness
+        readinessProbe:
+          exec:
+            command:
+              - bin/kafka-topics.sh
+              - --zookeeper
+              - "{{ printf "%s-%s" .Release.Name .Values.zookeeper.Name | trunc 24 }}:2181"
+              - --list
+          initialDelaySeconds: 30
+          timeoutSeconds: 5
+        name: readiness
         ports:
         - containerPort: 9092
           name: kafka
@@ -92,9 +102,6 @@ spec:
         volumeMounts:
         - name: datadir
           mountPath: "{{ .Values.DataDirectory }}"
-      volumes:
-      - name: workdir
-        emptyDir: {}
   volumeClaimTemplates:
   - metadata:
       name: datadir
