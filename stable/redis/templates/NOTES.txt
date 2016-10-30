@@ -1,0 +1,16 @@
+Redis can be accessed via port 3306 on the following DNS name from within your cluster:
+{{ template "fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
+
+To get your password run:
+
+    REDIS_PASSWORD=$(printf $(printf '\%o' `kubectl get secret --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath="{.data.redis-password[*]}"`))
+
+To connect to your Redis server:
+
+1. Run a Redis pod that you can use as a client:
+
+   kubectl run {{ template "fullname" . }}-client --rm --tty -i --env REDIS_PASSWORD=$REDIS_PASSWORD --image {{ .Values.image }} -- bash
+
+2. Connect using the Redis CLI:
+
+  redis-cli -h {{ template "fullname" . }} -a $REDIS_PASSWORD
