@@ -1,13 +1,20 @@
-image: gcr.io/google_containers/spartakus-amd64:v1.0.0
+## Container image
+##
+containerImage: gcr.io/google_containers/spartakus-amd64:v1.0.0
 
-## Specify a imagePullPolicy
-## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
-## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+## Container name
+## If not provided, Helm will template a name based on the chart & release names
+##
+## containerName: spartakus
+
+## Global imagePullPolicy
+## Default: 'Always' if image tag is 'latest', else 'IfNotPresent'
+## Ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
 ##
 # imagePullPolicy:
 
-## Configure resource requests and limits
-## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+## Resource requests and limits
+## Ref: http://kubernetes.io/docs/user-guide/compute-resources/
 ##
 resources:
   # limits:
