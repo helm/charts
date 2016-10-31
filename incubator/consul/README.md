@@ -60,6 +60,16 @@ $ helm install --name my-release -f values.yaml incubator/consul
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
+## Cleanup orphaned Persistent Volumes
+
+Deleting a PetSet will not delete associated Persistent Volumes (Alpha limitation).
+
+Do the following after deleting the chart to clean up orphaned Persistent Volumes.
+
+```bash
+$ kubectl delete pvc -l component=${RELEASE-NAME}-consul
+```
+
 ## Testing
 
 Execute test.sh. It will confirm that there are at least 3 consul servers present.
