@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    release: {{ .Release.Name | quote }}
+    app: {{ template "fullname" . }}
+    heritage: {{ .Release.Service | quote }}  
+data:
+  config.json.tmpl: '{{ .Values.config }}'
