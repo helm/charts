@@ -11,5 +11,10 @@ Replicas: 1
 Image: "quay.io/lachie83/inception_serving"
 ImageTag: "latest"
 ImagePullPolicy: "IfNotPresent"
-Cpu: "100m"
-Memory: "512Mi"
+Resources:
+  limits:
+    cpu: 100m
+    memory: 256Mi
+  requests:
+    cpu: 100m
+    memory: 256Mi

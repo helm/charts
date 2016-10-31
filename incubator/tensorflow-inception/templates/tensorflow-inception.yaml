@@ -55,7 +55,10 @@ spec:
           - "/serving/bazel-bin/tensorflow_serving/model_servers/tensorflow_model_server --port={{.Values.ContainerPort}} --model_name=inception --model_base_path=/serving/inception-export"
           ports:
             - containerPort: {{.Values.ContainerPort}}
+          readinessProbe:
+            tcpSocket:
+              port: {{.Values.ContainerPort}}
+            initialDelaySeconds: 15
+            timeoutSeconds: 1
           resources:
-            requests:
-              cpu: "{{.Values.Cpu}}"
-              memory: "{{.Values.Memory}}"
+{{ toYaml .Values.Resources | indent 12 }}
