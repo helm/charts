@@ -64,7 +64,7 @@ $ helm install --name my-release -f values.yaml incubator/consul
 
 Deleting a PetSet will not delete associated Persistent Volumes (Alpha limitation).
 
-Do the following after deleting the chart to clean up orphaned Persistent Volumes.
+Do the following after deleting the chart release to clean up orphaned Persistent Volumes.
 
 ```bash
 $ kubectl delete pvc -l component=${RELEASE-NAME}-consul
