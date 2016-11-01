@@ -14,7 +14,7 @@ Master:
   ServicePort: 7077
   ContainerPort: 7077
   # Set Master JVM memory. Default 1g
-  #DaemonMemory: 2g
+  #DaemonMemory: 1g
 
 WebUi:
   Name: spark-webui
@@ -31,9 +31,9 @@ Worker:
   Memory: "512Mi"
   ContainerPort: 8081
   # Set Worker JVM memory. Default 1g
-  #DaemonMemory: 2g
+  #DaemonMemory: 1g
   # Set how much total memory workers have to give executors
-  #ExecutorMemory: 2g
+  #ExecutorMemory: 1g
 
 Zeppelin:
   Name: zeppelin-controller
