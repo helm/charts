@@ -45,6 +45,7 @@ The following tables lists the configurable parameters of the Spark chart and th
 | `Master.Memory`         | container requested memory         | `512Mi`                                                    |
 | `Master.ServicePort`    | k8s service port                   | `7077`                                                     |
 | `Master.ContainerPort`  | Container listening port           | `7077`                                                     |
+| `Master.DaemonMemory`   | Master JVM Xms and Xmx option      | `1g`                                                       |
 
 ### Spark WebUi
 
@@ -68,6 +69,8 @@ The following tables lists the configurable parameters of the Spark chart and th
 | `Worker.Memory`              | container requested memory         | `512Mi`                                                    |
 | `Worker.ContainerPort`       | Container listening port           | `7077`                                                     |
 | `Worker.CpuTargetPercentage` | k8s hpa cpu targetPercentage       | `50`                                                       |
+| `Worker.DaemonMemory`        | Worker JVM Xms and Xmx setting     | `1g`                                                       |
+| `Worker.ExecutorMemory`      | Worker memory available for executor | `1g`                                                       |
 
 
 
