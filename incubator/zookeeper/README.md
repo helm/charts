@@ -77,7 +77,7 @@ zoo-2 Mode: follower
 
 Delete pets and wait for the petset controller to bring the back up:
 ```console
-$ kubectl delete po -l app=zk
+$ kubectl delete po -l component=${RELEASE-NAME}-zk
 $ kubectl get po --watch-only
 NAME      READY     STATUS     RESTARTS   AGE
 zoo-0     0/1       Init:0/2   0          16s
