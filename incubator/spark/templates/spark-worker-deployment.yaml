@@ -38,4 +38,4 @@ spec:
           - name: SPARK_DAEMON_MEMORY
             value: {{ default "1g" .Values.Worker.DaemonMemory | quote }}
           - name: SPARK_WORKER_MEMORY
-            value: {{ default "1g" .Values.Worker.WorkerMemory | quote }}
+            value: {{ default "1g" .Values.Worker.ExecutorMemory | quote }}
