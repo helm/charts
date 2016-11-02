@@ -1,0 +1,12 @@
+name: minecraft
+version: 0.1.0
+description: Minecraft server
+keywords:
+- game
+- server
+sources:
+- https://hub.docker.com/r/itzg/minecraft-server/~/dockerfile/
+- https://github.com/itzg/dockerfiles
+maintainers:
+- name: Greg Taylor
+  email: gtaylor@gc-taylor.com
