@@ -23,7 +23,7 @@ Master:
 
 Agent:
   Image: quay.io/lachie83/jnlp-slave
-  ImageTag: v4
+  ImageTag: v5
   Cpu: "200m"
   Memory: "512Mi"
 
