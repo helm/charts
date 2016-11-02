@@ -8,7 +8,7 @@ microservices with ease.
 This chart bootstraps Traefik as a Kubernetes ingress controller with optional support for SSL and
 Let's Encrypt.
 
-__N.B.__: Operators will typically wish to install this component into the `kube-system` namespace
+__NOTE:__ Operators will typically wish to install this component into the `kube-system` namespace
 where that namespace's default service account will ensure adequate privileges to watch `Ingress`
 resources _cluster-wide_.
 
@@ -18,10 +18,7 @@ resources _cluster-wide_.
 - You are deploying the chart to a cluster with a cloud provider capable of provisioning an
 external load balancer (e.g. AWS or GKE)
 - You control DNS for the domain(s) you intend to route through Traefik
-
-### Suggested:
-
-- PV provisioner support in the underlying infrastructure
+- __Suggested:__ PV provisioner support in the underlying infrastructure
 
 ## Installing the Chart
 
@@ -31,15 +28,25 @@ To install the chart with the release name `my-release`:
 $ helm install stable/traefik --name my-release --namespace kube-system
 ```
 
-After installing the chart, create a DNS CNAME record for applicable domains to direct inbound
-traffic to the load balancer. You can use the command below to find the load balancer's DNS name:
+After installing the chart, create DNS records for applicable domains to direct inbound traffic to
+the load balancer. You can use the commands below to find the load balancer's IP/hostname:
+
+__NOTE:__ It may take a few minutes for this to become available.
+
+You can watch the status by running:
 
 ```bash
-$ kubectl describe service traefik-ingress-controller -n kube-system | grep Ingress
+$ kubectl get svc my-release-traefik --namespace kube-system -w
 ```
 
-__N.B.__: It is only _after_ this step is complete that Traefik will be able to successfully use
-the ACME protocol to obtain certificates from Let's Encrypt.
+Once `EXTERNAL-IP` is no longer `<pending>`:
+
+```bash
+$ kubectl describe service my-release-traefik -n kube-system | grep Ingress | awk '{print $3}'
+```
+
+__NOTE:__ If ACME support is enabled, it is only _after_ this step is complete that Traefik will be
+able to successfully use the ACME protocol to obtain certificates from Let's Encrypt.
 
 ## Uninstalling the Chart
 
@@ -49,7 +56,8 @@ To uninstall/delete the `my-release` deployment:
 $ helm delete my-release
 ```
 
-The command removes all the Kubernetes components associated with the chart and deletes the release.
+The command removes all the Kubernetes components associated with the chart and deletes the
+release.
 
 ## Configuration
 
@@ -90,5 +98,5 @@ Alternatively, a YAML file that specifies the values for the parameters can be p
 installing the chart. For example:
 
 ```bash
-$ helm install --name my-release -f values.yaml stable/traefik
+$ helm install --name my-release --namespace kube-system --values values.yaml stable/traefik
 ```
