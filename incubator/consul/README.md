@@ -60,6 +60,16 @@ $ helm install --name my-release -f values.yaml incubator/consul
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
+## Cleanup orphaned Persistent Volumes
+
+Deleting a PetSet will not delete associated Persistent Volumes (Alpha limitation).
+
+Do the following after deleting the chart release to clean up orphaned Persistent Volumes.
+
+```bash
+$ kubectl delete pvc -l component=${RELEASE-NAME}-consul
+```
+
 ## Testing
 
 Execute test.sh. It will confirm that there are at least 3 consul servers present.
@@ -145,7 +155,7 @@ Waiting for consul-2.consul to come up
 The consul cluster can be scaled up by running ``kubectl patch`` or ``kubectl edit``. For example,
 
 ```
-kubectl get pods -l "app=consul" --namespace=consul
+kubectl get pods -l "component=${RELEASE-NAME}-consul" --namespace=consul
 NAME       READY     STATUS    RESTARTS   AGE
 consul-0   1/1       Running   1          4h
 consul-1   1/1       Running   0          4h
@@ -154,7 +164,7 @@ consul-2   1/1       Running   0          4h
 $ kubectl patch petset/consul -p '{"spec":{"replicas": 5}}'
 "consul" patched
 
-kubectl get pods -l "app=consul" --namespace=consul
+kubectl get pods -l "component=${RELEASE-NAME}-consul" --namespace=consul
 NAME       READY     STATUS    RESTARTS   AGE
 consul-0   1/1       Running   1          4h
 consul-1   1/1       Running   0          4h
@@ -199,7 +209,7 @@ Scale down
 ```
 kubectl patch petset/consul -p '{"spec":{"replicas": 3}}' --namespace=consul
 "consul" patched
-lachlanevenson@faux$ kubectl get pods -l "app=consul" --namespace=consul
+lachlanevenson@faux$ kubectl get pods -l "component=${RELEASE-NAME}-consul" --namespace=consul
 NAME       READY     STATUS    RESTARTS   AGE
 consul-0   1/1       Running   1          4h
 consul-1   1/1       Running   0          4h
