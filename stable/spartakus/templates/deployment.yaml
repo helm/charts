@@ -16,8 +16,8 @@ spec:
         release: "{{ .Release.Name }}"
     spec:
       containers:
-        - name: {{ default "spartakus" .Values.containerName | quote }}
-          image: "{{ .Values.containerImage }}"
+        - name: {{ template "name" . }}
+          image: "{{ .Values.image }}"
           imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
           args:
             - volunteer
