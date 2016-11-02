@@ -1,0 +1,16 @@
+name: gitlab-ce
+version: 0.1.0
+description: GitLab Community Edition
+keywords:
+- git
+- ci
+- deploy
+- issue tracker
+- code review
+- wiki
+sources:
+- https://hub.docker.com/r/gitlab/gitlab-ce/
+- https://docs.gitlab.com/omnibus/
+maintainers:
+- name: Greg Taylor
+  email: gtaylor@gc-taylor.com
