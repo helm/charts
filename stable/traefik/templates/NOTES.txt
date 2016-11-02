@@ -1,0 +1,9 @@
+Getting Started:
+
+1. Get the Traefik Controller IP/Hostname by running these commands in the same shell:
+**** NOTE: It may take a few minutes for the LoadBalancer IP/Hostname to be available.                      ****
+****       You can watch the status of by running 'kubectl get svc -w {{ template "fullname" . }} --namespace {{ .Release.Namespace }}' ****
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].hostname}'")
+  echo Traefik Controller available at $SERVICE_IP ports 80,443
+
+2. Configure DNS entries as defined by ingress resources to point to the Service IP/Hostname as found by step 1
