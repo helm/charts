@@ -3,11 +3,11 @@
 containerImage: gcr.io/google_containers/spartakus-amd64:v1.0.0
 
 ## Container name
-## If not provided, Helm will template a name based on the chart & release names
+## Default: 'spartakus'
 ##
-## containerName: spartakus
+## containerName:
 
-## Global imagePullPolicy
+## imagePullPolicy
 ## Default: 'Always' if image tag is 'latest', else 'IfNotPresent'
 ## Ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
 ##
