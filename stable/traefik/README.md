@@ -3,6 +3,9 @@
 [Traefik](http://traefik.io/) is a modern HTTP reverse proxy and load balancer made to deploy
 microservices with ease.
 
+__DISCLAIMER:__ While this chart has been well-tested, testers have encountered occasional issues
+with the Traefik software itself. Be advised that your mileage may vary.
+
 ## Introduction
 
 This chart bootstraps Traefik as a Kubernetes ingress controller with optional support for SSL and
