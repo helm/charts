@@ -1,11 +1,6 @@
 ## Container image
 ##
-containerImage: gcr.io/google_containers/spartakus-amd64:v1.0.0
-
-## Container name
-## Default: 'spartakus'
-##
-## containerName:
+image: gcr.io/google_containers/spartakus-amd64:v1.0.0
 
 ## imagePullPolicy
 ## Default: 'Always' if image tag is 'latest', else 'IfNotPresent'
