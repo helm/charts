@@ -44,11 +44,11 @@ The following tables lists the configurable parameters of the Spartakus chart an
 
 | Parameter                            | Description                              | Default                                                    |
 | -------------------------------      | -------------------------------          | ---------------------------------------------------------- |
-| `image`                              | Spartakus image                          | `gcr.io/google_containers/spartakus-amd64:{VERSION}`                              |
+| `image`                              | Container image                          | `gcr.io/google_containers/spartakus-amd64:{VERSION}`                              |
 | `imagePullPolicy`                    | Image pull policy                        | `Always` if `image` tag is `latest`, else `IfNotPresent`   |
-| `resources.requests.cpu`            | CPU resource request    | `1m`                                                      |
+| `resources.requests.cpu`            | CPU resource request    | `2m`                                                      |
 | `resources.requests.memory` | Memory resource request   | `8Mi`                                                  |
-| `uuid` | Unique cluster ID   | Dynamically-generated using `uuidv4` template function                                                  |
+| `uuid` | Unique cluster ID   | Dynamically generated using `uuidv4` template function                                                  |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
