@@ -1,0 +1,113 @@
+{{- if ne (printf "%s" .Values.minecraftServer.eula) "FALSE" }}
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    app: {{ template "fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  template:
+    metadata:
+      labels:
+        app: {{ template "fullname" . }}
+    spec:
+      containers:
+      - name: {{ template "fullname" . }}
+        image: "{{ .Values.image }}:{{ .Values.imageTag }}"
+        imagePullPolicy: Always
+        resources:
+          {{ include "toYaml" .Values.resources | indent 10 }}
+        env:
+        - name: EULA
+          value: {{ .Values.minecraftServer.eula | quote }}
+        - name: VERSION
+          value: {{ .Values.minecraftServer.version | quote }}
+        - name: DIFFICULTY
+          value: {{ .Values.minecraftServer.difficulty | quote }}
+        - name: WHITELIST
+          value: {{ default "" .Values.minecraftServer.whitelist | quote }}
+        - name: OPS
+          value: {{ default "" .Values.minecraftServer.ops | quote }}
+        - name: ICON
+          value: {{ default "" .Values.minecraftServer.icon | quote }}
+        - name: MAX_PLAYERS
+          value: {{ .Values.minecraftServer.maxPlayers | quote }}
+        - name: MAX_WORLD_SIZE
+          value: {{ .Values.minecraftServer.maxWorldSize | quote }}
+        - name: ALLOW_NETHER
+          value: {{ .Values.minecraftServer.allowNether | quote }}
+        - name: ANNOUNCE_PLAYER_ACHIEVEMENTS
+          value: {{ .Values.minecraftServer.announcePlayerAchievements | quote }}
+        - name: ENABLE_COMMAND_BLOCK
+          value: {{ .Values.minecraftServer.enableCommandBlock | quote }}
+        - name: FORCE_gameMode
+          value: {{ .Values.minecraftServer.forcegameMode | quote }}
+        - name: GENERATE_STRUCTURES
+          value: {{ .Values.minecraftServer.generateStructures | quote }}
+        - name: HARDCORE
+          value: {{ .Values.minecraftServer.hardcore | quote }}
+        - name: MAX_BUILD_HEIGHT
+          value: {{ .Values.minecraftServer.maxBuildHeight | quote }}
+        - name: MAX_TICK_TIME
+          value: {{ .Values.minecraftServer.maxTickTime | quote }}
+        - name: SPAWN_ANIMALS
+          value: {{ .Values.minecraftServer.spawnAnimals | quote }}
+        - name: SPAWN_MONSTERS
+          value: {{ .Values.minecraftServer.spawnMonsters | quote }}
+        - name: SPAWN_NPCS
+          value: {{ .Values.minecraftServer.spawnNPCs | quote }}
+        - name: VIEW_DISTANCE
+          value: {{ .Values.minecraftServer.viewDistance | quote }}
+        - name: SEED
+          value: {{ default "" .Values.minecraftServer.levelSeed | quote }}
+        - name: MODE
+          value: {{ .Values.minecraftServer.gameMode | quote }}
+        - name: MOTD
+          value: {{ .Values.minecraftServer.motd | quote }}
+        - name: PVP
+          value: {{ .Values.minecraftServer.pvp | quote }}
+        - name: LEVEL_TYPE
+          value: {{ .Values.minecraftServer.levelType | quote }}
+        - name: GENERATOR_SETTINGS
+          value: {{ default "" .Values.minecraftServer.generatorSettings | quote }}
+        - name: LEVEL
+          value: {{ .Values.minecraftServer.worldSaveName | quote }}
+        - name: ONLINE_MODE
+          value: {{ .Values.minecraftServer.onlineMode | quote }}
+        - name: JVM_OPTS
+          value: {{ .Values.minecraftServer.jvmOpts | quote }}
+
+        {{- if .Values.minecraftServer.rcon.enabled }}
+        - name: ENABLE_RCON
+          value: "true"
+        - name: RCON_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "fullname" . }}
+              key: rcon-password
+        {{- end }}
+
+        ports:
+        - name: minecraft
+          containerPort: 25565
+          protocol: TCP
+        {{- if .Values.minecraftServer.rcon.enabled }}
+        - name: rcon
+          containerPort: {{ .Values.minecraftServer.rcon.port }}
+          protocol: TCP
+        {{- end}}
+        volumeMounts:
+        - name: datadir
+          mountPath: /data
+      volumes:
+      - name: datadir
+      {{- if .Values.persistence.dataDir.enabled }}
+        persistentVolumeClaim:
+          claimName: {{template "fullname" .}}-datadir
+      {{- else }}
+        emptyDir: {}
+      {{- end }}
+{{ end }}
