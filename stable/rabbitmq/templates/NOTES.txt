@@ -1,0 +1,16 @@
+
+** P.S. RabbitMQ may take a few minutes to become available. Please be patient. **
+
+The RabbitMQ AMQP port {{ default "5672" .Values.rabbitmqNodePort }} can be accessed on the following DNS name from within your cluster: {{ template "fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
+
+1. To Access the RabbitMQ Management interface:
+
+  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "fullname" . }}" -o jsonpath="{.items[0].metadata.name}")
+  kubectl port-forward $POD_NAME {{ default "15672" .Values.rabbitmqManagerPort }}:{{ default "15672" .Values.rabbitmqManagerPort }}
+
+
+2. Login with the following credentials:
+
+  URL: http://127.0.0.1:{{ default "15672" .Values.rabbitmqManagerPort }}
+  Username: {{ .Values.rabbitmqUsername }}
+  Password: {{ .Values.rabbitmqPassword }}
