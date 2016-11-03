@@ -57,6 +57,7 @@ The following tables lists the configurable parameters of the MariaDB chart and 
 | `persistence.storageClass` | Storage class of backing PVC               | `generic`                                                  |
 | `persistence.accessMode`   | Use volume as ReadOnly or ReadWrite        | `ReadWriteOnce`                                            |
 | `persistence.size`         | Size of data volume                        | `8Gi`                                                      |
+| `resources`                | CPU/Memory resource requests/limits        | Memory: `256Mi`, CPU: `250m`                               |
 | `config`                   | Multi-line string for my.cnf configuration | `nil`                                                      |
 
 The above parameters map to the env variables defined in [bitnami/mariadb](http://github.com/bitnami/bitnami-docker-mariadb). For more information please refer to the [bitnami/mariadb](http://github.com/bitnami/bitnami-docker-mariadb) image documentation.
