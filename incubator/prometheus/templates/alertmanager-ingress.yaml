@@ -1,6 +1,6 @@
 {{- if .Values.alertmanager.ingress.enabled -}}
 {{- $releaseName := .Release.Name -}}
-{{- $servicePort := .Values.server.httpPort -}}
+{{- $servicePort := .Values.alertmanager.httpPort -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
@@ -9,7 +9,7 @@ metadata:
   labels:
     app: {{ template "fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    component: alertmanager
+    component: "{{ .Values.alertmanager.name }}"
     heritage: "{{ .Release.Service }}"
     release: "{{ .Release.Name }}"
   name: {{ template "alertmanager.fullname" . }}

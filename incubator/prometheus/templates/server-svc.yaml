@@ -4,7 +4,7 @@ metadata:
   labels:
     app: {{ template "fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    component: server
+    component: "{{ .Values.server.name }}"
     heritage: "{{ .Release.Service }}"
     release: "{{ .Release.Name }}"
   name: {{ template "server.fullname" . }}
@@ -16,5 +16,5 @@ spec:
       targetPort: 9090
   selector:
     app: {{ template "fullname" . }}
-    component: server
+    component: "{{ .Values.server.name }}"
   type: {{ default "ClusterIP" .Values.server.serviceType | quote }}
