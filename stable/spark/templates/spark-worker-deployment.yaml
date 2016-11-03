@@ -1,7 +1,7 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: "{{ printf "%s-%s" .Release.Name .Values.Worker.Name | trunc 24 }}"
+  name: {{ template "worker-fullname" . }}
   labels:
     heritage: {{.Release.Service | quote }}
     release: {{.Release.Name | quote }}
@@ -25,9 +25,9 @@ spec:
         component: "{{.Release.Name}}-{{.Values.Worker.Component}}"
     spec:
       containers:
-        - name: "{{ printf "%s-%s" .Release.Name .Values.Worker.Name | trunc 24 }}"
+        - name: {{ template "worker-fullname" . }}
           image: "{{.Values.Worker.Image}}:{{.Values.Worker.ImageTag}}"
-          command: ["/opt/spark/bin/spark-class", "org.apache.spark.deploy.worker.Worker", "spark://{{ printf "%s-%s" .Release.Name .Values.Master.Name | trunc 24 }}:{{.Values.Master.ServicePort}}", "--webui-port", "{{.Values.Worker.ContainerPort}}"]
+          command: ["/opt/spark/bin/spark-class", "org.apache.spark.deploy.worker.Worker", "spark://{{ template "master-fullname" . }}:{{.Values.Master.ServicePort}}", "--webui-port", "{{.Values.Worker.ContainerPort}}"]
           ports:
             - containerPort: {{.Values.Worker.ContainerPort}}
           resources:
