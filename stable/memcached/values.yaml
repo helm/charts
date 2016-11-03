@@ -1,0 +1,26 @@
+## Memcached image and tag
+## ref: https://hub.docker.com/r/library/memcached/tags/
+##
+image: memcached:1.4.32
+
+## Specify a imagePullPolicy
+## 'Always' if imageTag is 'latest', else set to 'IfNotPresent'
+## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+##
+# imagePullPolicy:
+#
+
+memcached:
+  ## Various values that get set as command-line flags.
+  ## ref: https://github.com/memcached/memcached/wiki/ConfiguringServer#commandline-arguments
+  ##
+  maxItemMemory: 64
+  #verbosity: vvv
+
+## Configure resource requests and limits
+## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+##
+resources:
+  requests:
+    memory: 64Mi
+    cpu: 50m
