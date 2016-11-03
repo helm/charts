@@ -14,7 +14,6 @@ spec:
     metadata:
       labels:
         app: {{ template "fullname" . }}
-        component: {{ template "fullname" . }}-server
     spec:
       containers:
       - name: {{ template "fullname" . }}

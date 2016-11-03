@@ -1,29 +1,13 @@
 ## Bitnami Ghost image version
 ## ref: https://hub.docker.com/r/bitnami/ghost/tags/
 ##
-image: bitnami/ghost:0.11.0-r2
+image: bitnami/ghost:0.11.3-r0
 
 ## Specify a imagePullPolicy
 ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
 ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
 ##
 # imagePullPolicy:
-
-## Ghost host to create application URLs
-## ref: https://github.com/bitnami/bitnami-docker-ghost#configuration
-##
-# ghostHost:
-
-## Ghost port to create application URLs along with host
-## Defaults to 2368 for ClusterIP service types
-## ref: https://github.com/bitnami/bitnami-docker-ghost#configuration
-##
-ghostPort: 80
-
-## loadBalancerIP for the Ghost Service (optional, cloud specific)
-## ref: http://kubernetes.io/docs/user-guide/services/#type-loadbalancer
-##
-# ghostLoadBalancerIP:
 
 ## User of the application
 ## ref: https://github.com/bitnami/bitnami-docker-ghost#configuration
