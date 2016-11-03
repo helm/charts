@@ -55,6 +55,7 @@ The following tables lists the configurable parameters of the MySQL chart and th
 | `persistence.size`         | Size of persistent volume claim    | 8Gi RW                                                     |
 | `persistence.storageClass` | Type of persistent volume claim    | generic                                                    |
 | `persistence.accessMode`   | ReadWriteOnce or ReadOnly          | ReadWriteOnce                                              |
+| `resources`                | CPU/Memory resource requests/limits | Memory: `256Mi`, CPU: `100m`                              |
 
 Some of the parameters above map to the env variables defined in the [MySQL DockerHub image](https://hub.docker.com/_/mysql/).
 

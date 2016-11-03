@@ -2,8 +2,6 @@
 ## ref: https://hub.docker.com/r/library/mysql/tags/
 ##
 imageTag: "5.7.14"
-cpu: 100m
-memory: 256Mi
 
 ## Specify password for root user
 ##
@@ -29,3 +27,11 @@ persistence:
   storageClass: generic
   accessMode: ReadWriteOnce
   size: 8Gi
+
+## Configure resource requests and limits
+## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+##
+resources:
+  requests:
+    memory: 256Mi
+    cpu: 100m
