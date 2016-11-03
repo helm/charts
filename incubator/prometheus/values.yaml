@@ -38,18 +38,22 @@ alertmanager:
     #     hosts:
     #       - alertmanager.domain.com
 
+  ## Alertmanager container name
+  ##
+  name: alertmanager
+
   persistentVolume:
     ## If true, AlertManager will create a Persistent Volume Claim
     ## If false, use emptyDir
     ##
-    enabled: false
+    enabled: true
 
     ## AlertManager data Persistent Volume access modes
     ## Must match those of existing PV or dynamic provisioner
     ## Ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
     ##
-    # accessModes:
-    #   - ReadWriteOnce
+    accessModes:
+      - ReadWriteOnce
 
     ## AlertManager data Persistent Volume annotations
     ##
@@ -58,7 +62,7 @@ alertmanager:
 
     ## AlertManager data Persistent Volume size
     ##
-    # size: 2Gi
+    size: 2Gi
 
   ## Alertmanager resource requests and limits
   ## Ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -80,11 +84,17 @@ alertmanager:
   ##
   # storagePath: /data
 
-## Configmap-reload Docker image
 ## Monitors ConfigMap changes and POSTs to a URL
 ## Ref: https://github.com/jimmidyson/configmap-reload
 ##
-configmap_reload_image: jimmidyson/configmap-reload:v0.1
+configmapReload:
+  ## Configmap-reload Docker image
+  ##
+  image: jimmidyson/configmap-reload:v0.1
+
+  ## Configmap-reload container name
+  ##
+  name: configmap-reload
 
 ## Global imagePullPolicy
 ## Default: 'Always' if image tag is 'latest', else 'IfNotPresent'
@@ -145,18 +155,22 @@ server:
     #     hosts:
     #       - prometheus.domain.com
 
+  ## Server container name
+  ##
+  name: server
+
   persistentVolume:
     ## If true, Server will create a Persistent Volume Claim
     ## If false, use emptyDir
     ##
-    enabled: false
+    enabled: true
 
     ## Server data Persistent Volume access modes
     ## Must match those of existing PV or dynamic provisioner
     ## Ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
     ##
-    # accessModes:
-    #   - ReadWriteOnce
+    accessModes:
+      - ReadWriteOnce
 
     ## Server data Persistent Volume annotations
     ##
@@ -165,7 +179,7 @@ server:
 
     ## Server data Persistent Volume size
     ##
-    # size: 8Gi
+    size: 8Gi
 
   ## Server resource requests and limits
   ## Ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -349,34 +363,34 @@ server_files:
       # via the following annotations:
       #
       # * `prometheus.io/probe`: Only probe services that have a value of `true`
-      - job_name: 'kubernetes-services'
-
-        metrics_path: /probe
-        params:
-          module: [http_2xx]
-
-        kubernetes_sd_configs:
-          - api_servers:
-              - 'https://kubernetes.default.svc'
-            in_cluster: true
-            role: service
-
-        relabel_configs:
-          - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_probe]
-            action: keep
-            regex: true
-          - source_labels: [__address__]
-            target_label: __param_target
-          - target_label: __address__
-            replacement: blackbox
-          - source_labels: [__param_target]
-            target_label: instance
-          - action: labelmap
-            regex: __meta_kubernetes_service_label_(.+)
-          - source_labels: [__meta_kubernetes_service_namespace]
-            target_label: kubernetes_namespace
-          - source_labels: [__meta_kubernetes_service_name]
-            target_label: kubernetes_name
+      # - job_name: 'kubernetes-services'
+      #
+      #   metrics_path: /probe
+      #   params:
+      #     module: [http_2xx]
+      #
+      #   kubernetes_sd_configs:
+      #     - api_servers:
+      #         - 'https://kubernetes.default.svc'
+      #       in_cluster: true
+      #       role: service
+      #
+      #   relabel_configs:
+      #     - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_probe]
+      #       action: keep
+      #       regex: true
+      #     - source_labels: [__address__]
+      #       target_label: __param_target
+      #     - target_label: __address__
+      #       replacement: blackbox
+      #     - source_labels: [__param_target]
+      #       target_label: instance
+      #     - action: labelmap
+      #       regex: __meta_kubernetes_service_label_(.+)
+      #     - source_labels: [__meta_kubernetes_service_namespace]
+      #       target_label: kubernetes_namespace
+      #     - source_labels: [__meta_kubernetes_service_name]
+      #       target_label: kubernetes_name
 
       # Example scrape config for pods
       #

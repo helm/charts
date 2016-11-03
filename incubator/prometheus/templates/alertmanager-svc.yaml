@@ -4,7 +4,7 @@ metadata:
   labels:
     app: {{ template "fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    component: alertmanager
+    component: "{{ .Values.alertmanager.name }}"
     heritage: "{{ .Release.Service }}"
     release: "{{ .Release.Name }}"
   name: {{ template "alertmanager.fullname" . }}
@@ -16,5 +16,5 @@ spec:
       targetPort: 9093
   selector:
     app: {{ template "fullname" . }}
-    component: alertmanager
+    component: "{{ .Values.alertmanager.name }}"
   type: {{ default "ClusterIP" .Values.alertmanager.serviceType | quote }}

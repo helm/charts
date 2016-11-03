@@ -4,7 +4,7 @@ metadata:
   labels:
     app: {{ template "fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    component: alertmanager
+    component: "{{ .Values.alertmanager.name }}"
     heritage: "{{ .Release.Service }}"
     release: "{{ .Release.Name }}"
   name: {{ template "alertmanager.fullname" . }}
@@ -14,11 +14,11 @@ spec:
     metadata:
       labels:
         app: {{ template "fullname" . }}
-        component: alertmanager
+        component: "{{ .Values.alertmanager.name }}"
         release: "{{ .Release.Name }}"
     spec:
       containers:
-        - name: alertmanager
+        - name: {{ template name . }}-{{ .Values.alertmanager.name }}
           image: "{{ .Values.alertmanager.image }}"
           imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
           args:
@@ -39,8 +39,8 @@ spec:
               mountPath: /etc/config
             - name: storage-volume
               mountPath: {{ default "/data" .Values.alertmanager.storagePath | quote }}
-        - name: configmap-reload
-          image: "{{ .Values.configmap_reload_image }}"
+        - name: {{ template name . }}-{{ .Values.alertmanager.name }}-{{ .Values.configmapReload.name }}
+          image: "{{ .Values.configmapReload.image }}"
           imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
           args:
             - --volume-dir=/etc/config

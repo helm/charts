@@ -4,7 +4,7 @@ metadata:
   labels:
     app: {{ template "fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    component: server
+    component: "{{ .Values.server.name }}"
     heritage: "{{ .Release.Service }}"
     release: "{{ .Release.Name }}"
   name: {{ template "server.fullname" . }}
@@ -16,12 +16,12 @@ spec:
 {{ toYaml .Values.server.annotations | indent 8 }}
       labels:
         app: {{ template "fullname" . }}
-        component: server
+        component: "{{ .Values.server.name }}"
         release: "{{ .Release.Name }}"
     spec:
       containers:
-        - name: configmap-reload
-          image: "{{ .Values.configmap_reload_image }}"
+        - name: {{ template name . }}-{{ .Values.server.name }}-{{ .Values.configmapReload.name }}
+          image: "{{ .Values.configmapReload.image }}"
           imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
           args:
             - --volume-dir=/etc/config
@@ -30,11 +30,11 @@ spec:
             - name: config-volume
               mountPath: /etc/config
               readOnly: true
-        - name: prometheus
+        - name: {{ template name . }}-{{ .Values.server.name }}
           image: "{{ .Values.server.image }}"
           imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
           args:
-            - --alertmanager.url=http://{{ template "alertmanager.fullname" . }}:9093
+            - --alertmanager.url=http://{{ template "alertmanager.fullname" . }}:{{ default 80 .Values.alertmanager.httpPort }}
             - --config.file=/etc/config/prometheus.yml
             - --storage.local.path={{ default "/data" .Values.server.storageLocalPath | quote }}
             - --web.console.libraries=/etc/prometheus/console_libraries
