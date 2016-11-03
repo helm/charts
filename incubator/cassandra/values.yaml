@@ -43,7 +43,9 @@ resources:
 ## Enable persistence using Persistent Volume Claims
 ### ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
 ###
-storage:
-  class: generic
-  classVersion: 
-  size: 1Gi
+persistence:
+  storageClass: generic
+  dataDir:
+    # Set this to false if you don't care to persist state between restarts.
+    enabled: true
+    size: 1Gi
