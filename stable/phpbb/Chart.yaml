@@ -1,0 +1,15 @@
+name: phpbb
+version: 0.4.0
+description: Community forum that supports the notion of users and groups, file attachments, full-text search, notifications and more.
+keywords:
+- phpbb
+- forum
+- http
+- php
+home: https://www.phpbb.com/
+sources:
+- https://github.com/bitnami/bitnami-docker-phpbb
+maintainers:
+- name: Bitnami
+  email: containers@bitnami.com
+engine: gotpl
