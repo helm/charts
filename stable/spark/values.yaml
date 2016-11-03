@@ -4,7 +4,7 @@
 # name: value
 
 Master:
-  Name: spark-master
+  Name: master
   Image: "gcr.io/google_containers/spark"
   ImageTag: "1.5.1_v3"
   Replicas: 1
@@ -17,12 +17,12 @@ Master:
   #DaemonMemory: 1g
 
 WebUi:
-  Name: spark-webui
+  Name: webui
   ServicePort: 8080
   ContainerPort: 8080
 
 Worker:
-  Name: spark-worker
+  Name: worker
   Image: "gcr.io/google_containers/spark"
   ImageTag: "1.5.1_v3"
   Replicas: 3
@@ -36,7 +36,7 @@ Worker:
   #ExecutorMemory: 1g
 
 Zeppelin:
-  Name: zeppelin-controller
+  Name: zeppelin
   Image: "gcr.io/google_containers/zeppelin"
   ImageTag: "v0.5.5_v2"
   Replicas: 1
