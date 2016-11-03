@@ -68,6 +68,8 @@ spec:
             - ping
           initialDelaySeconds: 5
           timeoutSeconds: 1
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
         - name: data
           mountPath: /bitnami/mariadb
