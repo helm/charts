@@ -43,7 +43,7 @@ metadata:
     heritage: {{.Release.Service | quote }}
     release: {{.Release.Name | quote }}
     chart: "{{.Chart.Name}}-{{.Chart.Version}}"
-    component: "{{.Release.Name}}-{{.Values.Master.Name}}"
+    component: ""{{.Release.Name}}-{{.Values.Master.Component}}""
   annotations:
     "helm.sh/created": {{.Release.Time.Seconds | quote }}
 spec:
