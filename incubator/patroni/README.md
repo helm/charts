@@ -53,7 +53,6 @@ The following tables lists the configurable parameters of the patroni chart and 
 |       Parameter         |           Description               |                         Default                     |
 |-------------------------|-------------------------------------|-----------------------------------------------------|
 | `Name`                  | Service name                        | `patroni`                                           |
-| `Namespace`             | Service namespace                   | `default`                                           |
 | `Spilo.Image`           | Container image name                | `registry.opensource.zalan.do/acid/spilo-9.5`       |
 | `Spilo.Version`         | Container image tag                 | `1.0-p5`                                            |
 | `ImagePullPolicy`       | Container pull policy               | `IfNotPresent`                                      |

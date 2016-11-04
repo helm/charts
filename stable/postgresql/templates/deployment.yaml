@@ -1,0 +1,81 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    app: {{ template "fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  template:
+    metadata:
+      labels:
+        app: {{ template "fullname" . }}
+      annotations:
+        pod.beta.kubernetes.io/init-containers: '[
+            {
+                "name": "remove-lost-found",
+                "image": "busybox:1.25.0",
+                "command": ["rm", "-fr", "/var/lib/postgresql/data/pgdata/lost+found"],
+                "volumeMounts": [
+                    {
+                        "name": "data",
+                        "mountPath": "/var/lib/postgresql/data/pgdata"
+                    }
+                ]
+            }
+        ]'
+    spec:
+      containers:
+      - name: {{ template "fullname" . }}
+        image: "postgres:{{ .Values.imageTag }}"
+        imagePullPolicy: Always
+        resources:
+          requests:
+            cpu: "{{.Values.cpu}}"
+            memory: "{{.Values.memory}}"
+          limits:
+            cpu: "{{.Values.cpu}}"
+            memory: "{{.Values.memory}}"
+        env:
+        - name: POSTGRES_USER
+          value: {{ default "postgres" .Values.postgresUser | quote }}
+          # Required for pg_isready in the health probes.
+        - name: PGUSER
+          value: {{ default "postgres" .Values.postgresUser | quote }}
+        - name: POSTGRES_DB
+          value: {{ default "" .Values.postgresDatabase | quote }}
+        - name: PGDATA
+          value: /var/lib/postgresql/data/pgdata
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "fullname" . }}
+              key: postgres-password
+        ports:
+        - name: postgresql
+          containerPort: 5432
+        livenessProbe:
+          exec:
+            command:
+            - pg_isready
+          initialDelaySeconds: 60
+          timeoutSeconds: 3
+        readinessProbe:
+          exec:
+            command:
+            - pg_isready
+          initialDelaySeconds: 60
+          timeoutSeconds: 3
+        volumeMounts:
+        - name: data
+          mountPath: /var/lib/postgresql/data/pgdata
+      volumes:
+      - name: data
+      {{- if .Values.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ template "fullname" . }}
+      {{- else }}
+        emptyDir: {}
+      {{- end -}}

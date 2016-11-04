@@ -30,7 +30,7 @@ spec:
             cpu: {{default "100m" .Values.Cpu}}
             memory: {{default "100M" .Values.Memory}}
         volumeMounts:
-        - mountPath: /data
+        - mountPath: /var/lib/grafana
           name: storage-volume
       volumes:
         - name: storage-volume

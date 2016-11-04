@@ -44,7 +44,8 @@ gcloud container clusters get-credentials jenkins --project kubernetes-charts-ci
 
 # Install and initialize helm/tiller
 HELM_URL=https://storage.googleapis.com/kubernetes-helm
-HELM_TARBALL=helm-canary-linux-amd64.tar.gz
+HELM_TARBALL=helm-v2.0.0-rc.1-linux-amd64.tar.gz
+INCUBATOR_REPO_URL=http://storage.googleapis.com/kubernetes-charts-incubator
 pushd /opt
   wget -q ${HELM_URL}/${HELM_TARBALL}
   tar xzfv ${HELM_TARBALL}
@@ -52,6 +53,7 @@ pushd /opt
 popd
 
 helm init --client-only
+helm repo add incubator ${INCUBATOR_REPO_URL}
 
 # Iterate over each of the changed charts
 #    Lint, install and delete
@@ -60,6 +62,7 @@ for directory in ${CHANGED_FOLDERS}; do
   RELEASE_NAME="${CHART_NAME:0:7}-${BUILD_NUMBER}"
   CURRENT_RELEASE=${RELEASE_NAME}
   helm lint ${directory}
+  helm dep update ${directory}
   helm install --name ${RELEASE_NAME} --namespace ${NAMESPACE} ${directory}
   # TODO run functional validation here
   helm delete --purge ${RELEASE_NAME}

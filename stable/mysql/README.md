@@ -55,6 +55,7 @@ The following tables lists the configurable parameters of the MySQL chart and th
 | `persistence.size`         | Size of persistent volume claim    | 8Gi RW                                                     |
 | `persistence.storageClass` | Type of persistent volume claim    | generic                                                    |
 | `persistence.accessMode`   | ReadWriteOnce or ReadOnly          | ReadWriteOnce                                              |
+| `resources`                | CPU/Memory resource requests/limits | Memory: `256Mi`, CPU: `100m`                              |
 
 Some of the parameters above map to the env variables defined in the [MySQL DockerHub image](https://hub.docker.com/_/mysql/).
 
@@ -78,7 +79,7 @@ $ helm install --name my-release -f values.yaml stable/mysql
 
 ## Persistence
 
-The  [MySQL](https://hub.docker.com/_/mysql/) image stores the MySQL data and configurations at the `/var/lib/mysql` path of the container.
+The [MySQL](https://hub.docker.com/_/mysql/) image stores the MySQL data and configurations at the `/var/lib/mysql` path of the container.
 
 By default a PersistentVolumeClaim is created and mounted into that directory. In order to disable this functionality
 you can change the values.yaml to disable persistence and use an emptyDir instead.
