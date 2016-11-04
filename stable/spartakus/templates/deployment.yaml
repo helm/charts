@@ -1,0 +1,26 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: {{ template "fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+  name: {{ template "fullname" . }}
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: {{ template "fullname" . }}
+        release: "{{ .Release.Name }}"
+    spec:
+      containers:
+        - name: {{ template "name" . }}
+          image: "{{ .Values.image }}"
+          imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
+          args:
+            - volunteer
+            - --cluster-id={{ uuidv4 | default .Values.uuid | quote }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}

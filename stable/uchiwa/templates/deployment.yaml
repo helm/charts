@@ -1,0 +1,41 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{template "fullname" .}}
+  labels:
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+spec:
+  replicas: {{ .Values.replicaCount }}  
+  template:
+    metadata:
+      labels:
+        app: {{ template "fullname" . }}
+        release: {{ .Release.Name | quote }}
+    spec:
+      containers:
+      - name: uchiwa
+        image: "{{ .Values.image }}:{{ .Values.imageTag }}"
+        imagePullPolicy: {{ .Values.pullPolicy }}
+{{ toYaml .Values.resources | indent 8 }}
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 3000
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 3000
+        ports:
+        - containerPort: 3000
+        volumeMounts:
+        - name: config
+          mountPath: /config/
+      volumes:
+      - name: config
+        configMap:
+          name: {{ template "fullname" . }}
+          items:
+            - path: config.json.tmpl
+              key: config.json.tmpl

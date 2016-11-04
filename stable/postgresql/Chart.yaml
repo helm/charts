@@ -1,0 +1,15 @@
+name: postgresql
+version: 0.1.1
+description: Chart for PostgreSQL
+keywords:
+- postgresql
+- postgres
+- database
+- sql
+home: https://www.postgresql.org/
+sources:
+- https://github.com/kubernetes/charts
+- https://github.com/docker-library/postgres
+maintainers:
+- name: swordbeta
+engine: gotpl

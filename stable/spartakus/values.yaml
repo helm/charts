@@ -1,0 +1,25 @@
+## Container image
+##
+image: gcr.io/google_containers/spartakus-amd64:v1.0.0
+
+## imagePullPolicy
+## Default: 'Always' if image tag is 'latest', else 'IfNotPresent'
+## Ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+##
+# imagePullPolicy:
+
+## Resource requests and limits
+## Ref: http://kubernetes.io/docs/user-guide/compute-resources/
+##
+resources:
+  # limits:
+  #   cpu: 2m
+  #   memory: 8Mi
+  requests:
+    cpu: 2m
+    memory: 8Mi
+
+## A version 4 UUID to uniquely identify the cluster
+## If not provided, Helm will generate automatically at install-time.
+##
+# uuid:

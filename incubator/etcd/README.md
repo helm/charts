@@ -92,7 +92,7 @@ $ kill -9 ETCD_1_PID
 ```
 
 ```shell
-$ kubectl get pods -l "app=etcd"
+$ kubectl get pods -l "component=${RELEASE-NAME}-etcd"
 NAME                 READY     STATUS        RESTARTS   AGE
 etcd-0               1/1       Running       0          54s
 etcd-2               1/1       Running       0          51s
@@ -101,7 +101,7 @@ etcd-2               1/1       Running       0          51s
 After a while:
 
 ```shell
-$ kubectl get pods -l "app=etcd"
+$ kubectl get pods -l "component=${RELEASE-NAME}-etcd"
 NAME                 READY     STATUS    RESTARTS   AGE
 etcd-0               1/1       Running   0          1m
 etcd-1               1/1       Running   0          20s
@@ -131,7 +131,7 @@ This is for reference. Scaling should be managed by `helm upgrade`
 The etcd cluster can be scale up by running ``kubectl patch`` or ``kubectl edit``. For instance,
 
 ```sh
-$ kubectl get pods -l "app=etcd"
+$ kubectl get pods -l "component=${RELEASE-NAME}-etcd"
 NAME      READY     STATUS    RESTARTS   AGE
 etcd-0    1/1       Running   0          7m
 etcd-1    1/1       Running   0          7m
@@ -140,7 +140,7 @@ etcd-2    1/1       Running   0          6m
 $ kubectl patch petset/etcd -p '{"spec":{"replicas": 5}}'
 "etcd" patched
 
-$ kubectl get pods -l "app=etcd"
+$ kubectl get pods -l "component=${RELEASE-NAME}-etcd"
 NAME      READY     STATUS    RESTARTS   AGE
 etcd-0    1/1       Running   0          8m
 etcd-1    1/1       Running   0          8m
@@ -155,7 +155,7 @@ Scaling-down is similar. For instance, changing the number of pets to ``4``:
 $ kubectl edit petset/etcd
 petset "etcd" edited
 
-$ kubectl get pods -l "app=etcd"
+$ kubectl get pods -l "component=${RELEASE-NAME}-etcd"
 NAME      READY     STATUS    RESTARTS   AGE
 etcd-0    1/1       Running   0          8m
 etcd-1    1/1       Running   0          8m

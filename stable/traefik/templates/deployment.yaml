@@ -1,0 +1,86 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    app: {{ template "fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ template "fullname" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "fullname" . }}
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        release: "{{ .Release.Name }}"
+        heritage: "{{ .Release.Service }}"
+    spec:
+      terminationGracePeriodSeconds: 60
+      containers:
+      - image: traefik:{{ .Values.imageTag }}
+        name: {{ template "fullname" . }}
+        resources:
+          requests:
+            cpu: "{{.Values.cpuRequest}}"
+            memory: "{{.Values.memoryRequest}}"
+          limits:
+            cpu: "{{.Values.cpuLimit}}"
+            memory: "{{.Values.memoryLimit}}"
+        readinessProbe:
+          tcpSocket:
+            port: 80
+          failureThreshold: 1
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 2
+        livenessProbe:
+          tcpSocket:
+            port: 80
+          failureThreshold: 3
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 2
+        volumeMounts:
+        - mountPath: /config
+          name: config
+        {{- if .Values.ssl.enabled }}
+        - mountPath: /ssl
+          name: ssl
+        {{- end }}
+        {{- if .Values.acme.enabled }}
+        - mountPath: /acme
+          name: acme
+        {{- end }}
+        ports:
+        - containerPort: 80
+        - containerPort: 443
+        {{- if .Values.dashboard.enabled }}
+        - containerPort: 8080
+        {{- end }}
+        args:
+        - --configfile=/config/traefik.toml
+      volumes:
+      - name: config
+        configMap:
+          name: {{ template "fullname" . }}
+      {{- if .Values.ssl.enabled }}
+      - name: ssl
+        secret:
+          secretName: {{ template "fullname" . }}-default-cert
+      {{- end }}
+      {{- if .Values.acme.enabled }}
+      - name: acme
+      {{- if .Values.acme.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ template "fullname" . }}-acme
+      {{- else }}
+        emptyDir: {}
+      {{- end }}
+      {{- end }}
