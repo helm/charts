@@ -30,7 +30,7 @@ spec:
       containers:
       - name: {{ template "fullname" . }}
         image: "postgres:{{ .Values.imageTag }}"
-        imagePullPolicy: Always
+        imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
         resources:
           requests:
             cpu: "{{.Values.cpu}}"
