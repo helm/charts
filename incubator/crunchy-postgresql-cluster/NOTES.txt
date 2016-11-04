@@ -1,35 +1,3 @@
-= Helm Examples - Crunchy Containers for PostgreSQL
-Crunchy Data Solutions, Inc.
-v1.2.4, {docdate}
-image::crunchy_logo.png?raw=true[]
-
-== Helm Example for Crunchy Postgres
-
-This is an example of running the Crunchy Postgres containers
-using the link://https://github.com/kubernetes/helm[Helm project]!  More examples of the Crunchy Containers
-for Postgres can be found at the link:https://github.com/crunchydata/crunchy-containers/[github site].   This example will live eventually within the 
-Kubernetes Chart project contributed link:https://github.com/kubernetes/charts/[examples].
-
-This example will create the following in your Kubernetes cluster:
-
- * postgres master service
- * postgres replica service
- * postgres 9.5 master database (pod)
- * postgres 9.5 replica database (replication controller)
-
-This example creates a simple Postgres streaming replication 
-deployment with a master (read-write), and a single asyncronous
-replica (read-only).  You can scale up the number of replicas
-dynamically.
-
-=== Installation
-
-Install helm according to their github documentation
-and then install the examples as follows:
-....
-helm install ./crunchy-postgres-cluster
-....
-
 === Testing
 
 After installing the Helm chart, you will see the following services:
@@ -40,7 +8,6 @@ crunchy-master    10.0.0.171   <none>        5432/TCP   1h
 crunchy-replica   10.0.0.31    <none>        5432/TCP   1h
 kubernetes        10.0.0.1     <none>        443/TCP    1h
 ....
-
 
 It takes about a minute for the replica to begin replicating with the
 master.  To test out replication, see if replication is underway
