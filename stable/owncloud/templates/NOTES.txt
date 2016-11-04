@@ -32,7 +32,7 @@ host. To configure ownCloud with the URL of your service:
 
   export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "fullname" . }}" -o jsonpath="{.items[0].metadata.name}")
   echo http://127.0.0.1:8080/
-  kubectl port-forward $POD_NAME 80:8080
+  kubectl port-forward $POD_NAME 8080:80
 {{- else }}
 
   echo http://{{ include "host" . }}{{ if .Values.owncloudPort }}:{{ .Values.owncloudPort  }}{{ end }}/
