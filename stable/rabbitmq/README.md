@@ -48,7 +48,7 @@ The following tables lists the configurable parameters of the RabbitMQ chart and
 | `image`                    | RabbitMQ image                                          | `bitnami/rabbitmq:{VERSION}`                             |
 | `imagePullPolicy`          | Image pull policy                                       | `Always` if `imageTag` is `latest`, else `IfNotPresent`. |
 | `rabbitmqUsername`         | RabbitMQ application username                           | `user`                                                   |
-| `rabbitmqPassword`         | RabbitMQ application password                           | `bitnami`                                                |
+| `rabbitmqPassword`         | RabbitMQ application password                           | _random 10 character long alphanumeric string_           |
 | `rabbitmqErlangCookie`     | Erlang cookie                                           | `nil`                                                    |
 | `rabbitmqNodePort`         | Node port                                               | `5672`                                                   |
 | `rabbitmqNodeType`         | Node type                                               | `stats`                                                  |

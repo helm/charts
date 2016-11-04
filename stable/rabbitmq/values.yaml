@@ -17,7 +17,7 @@ rabbitmqUsername: user
 ## RabbitMQ application password
 ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq/blob/master/README.md#creating-a-database-user-on-first-run
 ##
-rabbitmqPassword: bitnami
+# rabbitmqPassword:
 
 ## Erlang cookie to determine whether different nodes are allowed to communicate with each other
 ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables

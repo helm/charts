@@ -12,5 +12,5 @@ The RabbitMQ AMQP port {{ default "5672" .Values.rabbitmqNodePort }} can be acce
 2. Login with the following credentials:
 
   URL: http://127.0.0.1:{{ default "15672" .Values.rabbitmqManagerPort }}
-  Username: {{ .Values.rabbitmqUsername }}
-  Password: {{ .Values.rabbitmqPassword }}
+  echo Username: {{ .Values.rabbitmqUsername }}
+  echo Password: $(printf $(printf '\%o' `kubectl get secret --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath="{.data.rabbitmq-password[*]}"`))
