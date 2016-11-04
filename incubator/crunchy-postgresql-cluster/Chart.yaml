@@ -1,0 +1,6 @@
+name: crunchy-postgres
+description: Deploy a basic crunchy master and replica pod
+version: 1.2.4
+home: https://k8s.io/helm
+sources:
+  - https://github.com/kubernetes/helm

@@ -1,0 +1,57 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{.Values.MasterName}}"
+  labels:
+    name: "{{.Values.MasterName}}"
+    # The "heritage" label is used to track which tool deployed a given chart.
+    # It is useful for admins who want to see what releases a particular tool
+    # is responsible for.
+    heritage: {{.Release.Service | quote }}
+    # The "release" convention makes it easy to tie a release to all of the
+    # Kubernetes resources that were created as part of that release.
+    release: {{.Release.Name | quote }}
+    # This makes it easy to audit chart usage.
+    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+  annotations:
+    "helm.sh/created": {{.Release.Time.Seconds | quote }}
+spec:
+  # This shows how to use a simple value. This will look for a passed-in value
+  # called restartPolicy. If it is not found, it will use the default value.
+  # {{default "Never" .restartPolicy}} is a slightly optimized version of the
+  # more conventional syntax: {{.restartPolicy | default "Never"}}
+  restartPolicy: {{default "Never" .Values.restartPolicy}}
+  containers:
+  - name: server
+    image: "crunchydata/crunchy-postgres:centos7-9.5-1.2.4"
+    ports:
+    - containerPort: 5432
+    env:
+    - name: PGHOST
+      value: /tmp
+    - name: PG_MASTER_USER
+      value: master
+    - name: PG_MODE
+      value: master
+    - name: PG_MASTER_PASSWORD
+      value: "{{.Values.MasterPassword}}"
+    - name: PG_USER
+      value: testuser
+    - name: PG_PASSWORD
+      value: "{{.Values.UserPassword}}"
+    - name: PG_DATABASE
+      value: userdb
+    - name: PG_ROOT_PASSWORD
+      value: "{{.Values.RootPassword}}"
+    volumeMounts:
+    - mountPath: /pgdata
+      name: pgdata
+    - mountPath: /backup
+      name: backup
+      readOnly: true
+  volumes:
+  - emptyDir: {}
+    name: pgdata
+  - emptyDir: {}
+    name: backup
+

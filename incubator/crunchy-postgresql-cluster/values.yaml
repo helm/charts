@@ -1,0 +1,7 @@
+# The pod name
+Name: crunchy-pg
+MasterName: crunchy-master
+ReplicaName: crunchy-replica
+MasterPassword: password
+RootPassword: password
+UserPassword: password
