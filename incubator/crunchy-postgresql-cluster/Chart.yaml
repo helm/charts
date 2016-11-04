@@ -1,5 +1,5 @@
 name: crunchy-postgresql-cluster
-description: Deploy a basic crunchy master and replica pod
+description: Deploy a basic crunchy master and replica cluster
 version: 1.2.4
 home: https://k8s.io/helm
 sources:

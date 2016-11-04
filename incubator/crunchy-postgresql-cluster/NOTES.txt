@@ -32,7 +32,7 @@ psql -h crunchy-replica -U postgres postgres -c 'table foo'
 You can scale up the number of read-only replicas by running
 the following kubernetes command:
 ....
-kubectl scale rc crunchy-replica --replicas=2
+kubectl scale deployment crunchy-replica --replicas=2
 ....
 
 It takes 60 seconds for the replica to start and begin replicating
