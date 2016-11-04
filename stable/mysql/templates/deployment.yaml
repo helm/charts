@@ -17,7 +17,7 @@ spec:
               {
                   "name": "remove-lost-found",
                   "image": "busybox:1.25.0",
-                  "command": ["rmdir", "/var/lib/mysql/lost+found"],
+                  "command": ["rm", "-fr", "/var/lib/mysql/lost+found"],
                   "volumeMounts": [
                       {
                           "name": "data",
@@ -30,14 +30,9 @@ spec:
       containers:
       - name: {{ template "fullname" . }}
         image: "mysql:{{ .Values.imageTag }}"
-        imagePullPolicy: Always
+        imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
         resources:
-          requests:
-            cpu: "{{.Values.cpu}}"
-            memory: "{{.Values.memory}}"
-          limits:
-            cpu: "{{.Values.cpu}}"
-            memory: "{{.Values.memory}}"
+{{ toYaml .Values.resources | indent 10 }}
         env:
         {{- if .Values.mysqlAllowEmptyPassword }}
         - name: MYSQL_ALLOW_EMPTY_PASSWORD

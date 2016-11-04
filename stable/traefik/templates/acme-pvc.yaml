@@ -1,0 +1,19 @@
+{{- if and .Values.acme.enabled .Values.acme.persistence.enabled }}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ template "fullname" . }}-acme
+  labels:
+    app: {{ template "fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+  annotations:
+    volume.alpha.kubernetes.io/storage-class: {{ .Values.acme.persistence.storageClass | quote }}
+spec:
+  accessModes:
+    - {{ .Values.acme.persistence.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.acme.persistence.size | quote }}
+{{- end }}

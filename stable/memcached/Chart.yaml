@@ -1,0 +1,13 @@
+name: memcached
+version: 0.4.0
+description: Chart for Memcached
+keywords:
+- memcached
+- cache
+home: http://memcached.org/
+sources:
+- https://github.com/docker-library/memcached
+maintainers:
+- name: Greg Taylor
+  email: gtaylor@gc-taylor.com
+engine: gotpl
