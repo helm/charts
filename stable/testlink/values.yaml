@@ -30,16 +30,6 @@ testlinkEmail: user@example.com
 ##
 testlinkLanguage: en_US
 
-## SMTP mail delivery configuration
-## ref: https://github.com/bitnami/bitnami-docker-testlink#smtp-configuration
-##
-# smtpEnable:
-# smtpHost:
-smtpPort: 25
-# smtpUser:
-# smtpPassword:
-# smtpConnectionMode:
-
 ##
 ## MariaDB chart configuration
 ##

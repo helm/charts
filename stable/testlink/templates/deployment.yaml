@@ -39,21 +39,6 @@ spec:
           value: {{ default "" .Values.testlinkEmail | quote }}
         - name: TESTLINK_LANGUAGE
           value: {{ default "" .Values.testlinkLanguage | quote }}
-        - name: TESTLINK_SMTP_ENABLE
-          value: {{ default "" .Values.testlinkSmtpEnable | quote }}
-        - name: TESTLINK_SMTP_CONNECTION_MODE
-          value: {{ default "" .Values.testlinkSmtpConnectionMode | quote }}
-        - name: SMTP_HOST
-          value: {{ default "" .Values.smtpHost | quote }}
-        - name: SMTP_PORT
-          value: {{ default "" .Values.smtpPort | quote }}
-        - name: SMTP_USER
-          value: {{ default "" .Values.smtpUser | quote }}
-        - name: SMTP_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: {{ template "fullname" . }}
-              key: smtp-password
         ports:
         - name: http
           containerPort: 80
