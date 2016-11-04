@@ -1,0 +1,22 @@
+# Default values for linkerd.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+image:
+  linkerd:
+    repository: buoyantio/linkerd
+    tag: 0.8.2
+  kubectl:
+    repository: buoyantio/kubectl
+    tag: v1.4.0
+  pullPolicy: IfNotPresent
+linkerd:
+  portName: service
+service:
+  type: ClusterIP
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 500m
+    memory: 512Mi

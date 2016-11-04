@@ -1,0 +1,4 @@
+apiVersion: v1
+description: Service mesh for cloud native apps
+name: linkerd
+version: 0.1.0
