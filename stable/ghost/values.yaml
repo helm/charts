@@ -9,6 +9,21 @@ image: bitnami/ghost:0.11.3-r0
 ##
 # imagePullPolicy:
 
+## Ghost host to create application URLs
+## ref: https://github.com/bitnami/bitnami-docker-ghost#configuration
+##
+# ghostHost:
+
+## Ghost port to create application URLs along with host.
+## ref: https://github.com/bitnami/bitnami-docker-ghost#configuration
+##
+ghostPort: 80
+
+## loadBalancerIP for the Ghost Service (optional, cloud specific)
+## ref: http://kubernetes.io/docs/user-guide/services/#type-loadbalancer
+##
+# ghostLoadBalancerIP:
+
 ## User of the application
 ## ref: https://github.com/bitnami/bitnami-docker-ghost#configuration
 ##
