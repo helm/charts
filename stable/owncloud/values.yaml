@@ -1,0 +1,81 @@
+## Bitnami ownCloud image version
+## ref: https://hub.docker.com/r/bitnami/owncloud/tags/
+##
+image: bitnami/owncloud:9.1.1-r1
+
+## Specify a imagePullPolicy
+## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
+## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+##
+# imagePullPolicy:
+
+## ownCloud host to create application URLs
+## ref: https://github.com/bitnami/bitnami-docker-owncloud#configuration
+##
+# owncloudHost:
+
+## loadBalancerIP for the ownCloud Service (optional, cloud specific)
+## ref: http://kubernetes.io/docs/user-guide/services/#type-loadbalancer
+##
+# owncloudLoadBalancerIP:
+
+## User of the application
+## ref: https://github.com/bitnami/bitnami-docker-owncloud#configuration
+##
+owncloudUsername: user
+
+## Application password
+## Defaults to a random 10-character alphanumeric string if not set
+## ref: https://github.com/bitnami/bitnami-docker-owncloud#configuration
+##
+# owncloudPassword:
+
+## Admin email
+## ref: https://github.com/bitnami/bitnami-docker-owncloud#configuration
+##
+owncloudEmail: user@example.com
+
+##
+## MariaDB chart configuration
+##
+mariadb:
+  ## MariaDB admin password
+  ## ref: https://github.com/bitnami/bitnami-docker-mariadb/blob/master/README.md#setting-the-root-password-on-first-run
+  ##
+  # mariadbRootPassword:
+
+  ## Enable persistence using Persistent Volume Claims
+  ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+  ##
+  persistence:
+    enabled: true
+    storageClass: generic
+    accessMode: ReadWriteOnce
+    size: 8Gi
+
+## Kubernetes configuration
+## For minikube, set this to NodePort, elsewhere use LoadBalancer
+##
+serviceType: LoadBalancer
+
+## Enable persistence using Persistent Volume Claims
+## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+##
+persistence:
+  enabled: true
+  apache:
+    storageClass: generic
+    accessMode: ReadWriteOnce
+    size: 1Gi
+  owncloud:
+    storageClass: generic
+    accessMode: ReadWriteOnce
+    size: 8Gi
+
+## Configure resource requests and limits
+## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+##
+resources:
+  requests:
+    memory: 512Mi
+    cpu: 300m
