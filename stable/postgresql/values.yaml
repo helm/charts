@@ -1,0 +1,29 @@
+## postgres image version
+## ref: https://hub.docker.com/r/library/postgres/tags/
+##
+imageTag: "9.5.4"
+cpu: 100m
+memory: 256Mi
+
+## Specify a imagePullPolicy
+## 'Always' if imageTag is 'latest', else set to 'IfNotPresent'
+## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+##
+# imagePullPolicy:
+
+## Create a database user
+## Default: postgres
+# postgresUser:
+## Default: random 10 character string
+# postgresPassword:
+
+## Create a database
+## Default: the postgres user
+# postgresDatabase:
+
+## Persist data to a persitent volume
+persistence:
+  enabled: true
+  storageClass: generic
+  accessMode: ReadWriteOnce
+  size: 8Gi
