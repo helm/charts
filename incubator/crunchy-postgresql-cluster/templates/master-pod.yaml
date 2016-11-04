@@ -26,6 +26,10 @@ spec:
     image: "crunchydata/crunchy-postgres:centos7-9.5-1.2.4"
     ports:
     - containerPort: 5432
+    resources:
+      requests:
+        cpu: {{default "100m" .Values.Cpu}}
+        memory: {{default "100M" .Values.Memory}}
     env:
     - name: PGHOST
       value: /tmp
