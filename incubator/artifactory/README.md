@@ -3,7 +3,7 @@
 ## Prerequisites Details
 
 * Kubernetes 1.3 with alpha APIs enabled
-* Artifactory Pro trial license
+* Artifactory Pro trial license [get one from here](https://www.jfrog.com/artifactory/free-trial/)
 * PV dynamic provisioning support on the underlying infrastructure
 
 ## Todo
