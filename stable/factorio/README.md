@@ -41,7 +41,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-Refer to `values.yaml` for the full run-down on defaults. These are a mixture of Kubernetes and Factorio-related directives that map to environment variables in [docker-factorio](https://github.com/games-on-k8s/docker-factorio).
+Refer to [values.yaml](values.yaml) for the full run-down on defaults. These are a mixture of Kubernetes and Factorio-related directives that map to environment variables in [docker-factorio](https://github.com/games-on-k8s/docker-factorio).
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
