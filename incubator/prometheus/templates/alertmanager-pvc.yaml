@@ -1,0 +1,22 @@
+{{- if .Values.alertmanager.persistentVolume.enabled -}}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  annotations:
+  {{- range $key, $value := .Values.alertmanager.persistentVolume.annotations }}
+    {{ $key }}: {{ $value }}
+  {{- end }}
+  labels:
+    app: {{ template "fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    component: "{{ .Values.alertmanager.name }}"
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+  name: {{ template "alertmanager.fullname" . }}
+spec:
+  accessModes:
+{{ toYaml .Values.alertmanager.persistentVolume.accessModes | indent 4 }}
+  resources:
+    requests:
+      storage: {{ .Values.alertmanager.persistentVolume.size | quote }}
+{{- end -}}
