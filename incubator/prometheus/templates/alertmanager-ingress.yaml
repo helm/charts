@@ -5,7 +5,9 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   annotations:
-{{ toYaml .Values.alertmanager.ingress.annotations | indent 4 }}
+  {{- range $key, $value := .Values.alertmanager.ingress.annotations }}
+    {{ $key }}: {{ $value }}
+  {{- end }}
   labels:
     app: {{ template "fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
