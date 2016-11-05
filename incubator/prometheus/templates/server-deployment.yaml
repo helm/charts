@@ -13,14 +13,16 @@ spec:
   template:
     metadata:
       annotations:
-{{ toYaml .Values.server.annotations | indent 8 }}
+      {{- range $key, $value := .Values.server.annotations }}
+        {{ $key }}: {{ $value }}
+      {{- end }}
       labels:
         app: {{ template "fullname" . }}
         component: "{{ .Values.server.name }}"
         release: "{{ .Release.Name }}"
     spec:
       containers:
-        - name: {{ template name . }}-{{ .Values.server.name }}-{{ .Values.configmapReload.name }}
+        - name: {{ template "name" . }}-{{ .Values.server.name }}-{{ .Values.configmapReload.name }}
           image: "{{ .Values.configmapReload.image }}"
           imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
           args:
@@ -30,7 +32,7 @@ spec:
             - name: config-volume
               mountPath: /etc/config
               readOnly: true
-        - name: {{ template name . }}-{{ .Values.server.name }}
+        - name: {{ template "name" . }}-{{ .Values.server.name }}
           image: "{{ .Values.server.image }}"
           imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
           args:
@@ -39,7 +41,9 @@ spec:
             - --storage.local.path={{ default "/data" .Values.server.storageLocalPath | quote }}
             - --web.console.libraries=/etc/prometheus/console_libraries
             - --web.console.templates=/etc/prometheus/consoles
-{{ toYaml .Values.server.extra_args | indent 12 }}
+          {{- range $key, $value := .Values.server.extraArgs }}
+            - --{{ $key }}={{ $value }}
+          {{- end }}
           ports:
             - containerPort: 9090
           readinessProbe:

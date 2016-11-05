@@ -18,7 +18,7 @@ spec:
         release: "{{ .Release.Name }}"
     spec:
       containers:
-        - name: {{ template name . }}-{{ .Values.alertmanager.name }}
+        - name: {{ template "name" . }}-{{ .Values.alertmanager.name }}
           image: "{{ .Values.alertmanager.image }}"
           imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
           args:
@@ -39,7 +39,7 @@ spec:
               mountPath: /etc/config
             - name: storage-volume
               mountPath: {{ default "/data" .Values.alertmanager.storagePath | quote }}
-        - name: {{ template name . }}-{{ .Values.alertmanager.name }}-{{ .Values.configmapReload.name }}
+        - name: {{ template "name" . }}-{{ .Values.alertmanager.name }}-{{ .Values.configmapReload.name }}
           image: "{{ .Values.configmapReload.image }}"
           imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
           args:
