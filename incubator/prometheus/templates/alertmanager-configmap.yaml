@@ -9,4 +9,4 @@ metadata:
     release: "{{ .Release.Name }}"
   name: {{ template "alertmanager.fullname" . }}
 data:
-{{ toYaml .Values.alertmanager_files | indent 2 }}
+{{ toYaml .Values.alertmanagerFiles | indent 2 }}
