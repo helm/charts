@@ -105,16 +105,16 @@ configmapReload:
 server:
   ## Server Pod annotations:
   ##
-  # annotations
+  # annotations:
   #   iam.amazonaws.com/role: prometheus
 
   ## Additional Server container arguments
   ##
-  extra_args:
-    - --storage.local.max-chunks-to-persist=524288
-    - --storage.local.memory-chunks=1048576
-    - --storage.local.retention=360h0m0s
-    - --web.external-url=http://prometheus.domain.com
+  extraArgs:
+    storage.local.max-chunks-to-persist: 524288
+    storage.local.memory-chunks: 1048576
+    storage.local.retention: 360h0m0s
+    web.external-url: http://prometheus.domain.com
 
   ## Server service port
   ## Default: 80
