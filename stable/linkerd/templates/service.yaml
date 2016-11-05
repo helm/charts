@@ -4,6 +4,11 @@ metadata:
   name: {{ template "fullname" . }}
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+  annotations:
+    prometheus.io/scrape: {{ .Values.prometheus.scrape | quote }}
+    prometheus.io/probe: {{ .Values.prometheus.probe | quote }}
+    prometheus.io/path: {{ .Values.prometheus.path | quote }}
+    prometheus.io/port: "9990"
 spec:
   type: {{ .Values.service.type }}
   ports:

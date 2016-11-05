@@ -11,6 +11,10 @@ image:
   pullPolicy: IfNotPresent
 linkerd:
   portName: service
+prometheus:
+  scrape: true
+  probe: true
+  path: /admin/metrics/prometheus
 service:
   type: ClusterIP
 resources:
