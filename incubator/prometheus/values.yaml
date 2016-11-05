@@ -188,18 +188,18 @@ server:
     # limits:
     #   cpu: 500m
     #   memory: 512Mi
-    # requests:
-    #   cpu: 500m
-    #   memory: 512Mi
+    requests:
+      cpu: 500m
+      memory: 512Mi
+
+  ## Server service type
+  ## Default: 'ClusterIP'
+  # serviceType: LoadBalancer
 
   ## Server local data storage path
   ## Default: '/data'
   ##
   # storageLocalPath: /data
-
-  ## Server service type
-  ## Default: 'ClusterIP'
-  # serviceType: LoadBalancer
 
   ## Server Pod termination grace period
   ## Default: 300s (5m)
@@ -208,7 +208,7 @@ server:
 
 ## Alertmanager ConfigMap entries
 ##
-alertmanager_files:
+alertmanagerFiles:
   alertmanager.yml: |
     global:
       # slack_api_url: ''
@@ -227,7 +227,7 @@ alertmanager_files:
 
 ## Server ConfigMap entries
 ##
-server_files:
+serverFiles:
   alerts: ""
   rules: ""
 
