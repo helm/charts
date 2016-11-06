@@ -1,0 +1,16 @@
+name: fluentd-cloudwatch
+version: 0.1.0
+description: A Fluentd CloudWatch Helm chart for Kubernetes.
+keywords:
+- fluentd
+- cloudwatch
+- logging
+sources:
+- https://github.com/kubernetes/charts
+- https://github.com/18F/cg-deploy-kubernetes
+maintainers:
+- name: Josh Carp
+  email: jm.carp@gmail.com
+- name: Michael Haselton
+  email: michael.haselton@gmail.com
+engine: gotpl
