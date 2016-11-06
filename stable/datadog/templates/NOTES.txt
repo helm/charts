@@ -1,0 +1,22 @@
+{{- if .Values.datadog.apiKey -}}
+DataDog agents are spinning up on each node in your cluster. After a few
+minutes, you should see your agents starting in your event stream:
+
+    https://app.datadoghq.com/event/stream
+
+No further action should be required.
+
+{{- else -}}
+##############################################################################
+####               ERROR: You did not set a datadog.apiKey.               ####
+##############################################################################
+
+This deployment will be incomplete until you get your API key from:
+
+    https://app.datadoghq.com/account/settings#agent/kubernetes
+
+Then run:
+
+    helm upgrade {{ .Release.Name }} \
+        --set datadog.apiKey=YOUR-KEY-HERE stable/datadog
+{{- end }}
