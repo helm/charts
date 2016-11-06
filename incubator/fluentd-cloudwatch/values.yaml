@@ -1,0 +1,23 @@
+image: 18fgsa/fluentd-cloudwatch
+imageTag: 0.1.0
+namespace: kube-system
+
+## Specify a imagePullPolicy
+## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
+## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+##
+# imagePullPolicy:
+
+## Configure resource requests and limits
+## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+##
+resources:
+  # limits:
+  #   cpu: 100m
+  #   memory: 200Mi
+  requests:
+    cpu: 100m
+    memory: 200Mi
+
+awsRegion: us-east-1
+logGroupName: kubernetes
