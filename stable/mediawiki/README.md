@@ -52,7 +52,7 @@ The following tables lists the configurable parameters of the MediaWiki chart an
 | `mediawikiUser`                      | User of the application                  | `user`                                                  |
 | `mediawikiPassword`                  | Application password                     | _random 10 character long alphanumeric string_          |
 | `mediawikiEmail`                     | Admin email                              | `user@example.com`                                      |
-| `mediawikiName`                      | Name for the wiki                        | `Bitnami MediaWiki`                                     |
+| `mediawikiName`                      | Name for the wiki                        | `My Wiki`                                               |
 | `smtpHost`                           | SMTP host                                | `nil`                                                   |
 | `smtpPort`                           | SMTP port                                | `nil`                                                   |
 | `smtpHostID`                         | SMTP host ID                             | `nil`                                                   |
