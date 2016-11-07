@@ -52,6 +52,12 @@ The following tables lists the configurable parameters of the TestLink chart and
 | `testlinkUsername`                  | Admin username                          | `user`                                                  |
 | `testlinkPassword`                  | Admin user password                     | _random 10 character long alphanumeric string_          |
 | `testlinkEmail`                     | Admin user email                        | `user@example.com`                                      |
+| `smtpEnable`                        | Enable SMTP                             | `false`                                                 |
+| `smtpHost`                          | SMTP host                               | `nil`                                                   |
+| `smtpPort`                          | SMTP port                               | `nil`                                                   |
+| `smtpUser`                          | SMTP user                               | `nil`                                                   |
+| `smtpPassword`                      | SMTP password                           | `nil`                                                   |
+| `smtpConnectionMode`                | SMTP connection mode [`ssl`, `tls`]     | `nil`                                                   |
 | `mariadb.mariadbRootPassword`       | MariaDB admin password                  | `nil`                                                   |
 | `serviceType`                       | Kubernetes Service type                 | `LoadBalancer`                                          |
 | `persistence.enabled`               | Enable persistence using PVC            | `true`                                                  |
