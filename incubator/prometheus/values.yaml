@@ -1,8 +1,7 @@
 alertmanager:
   ## Alertmanager service port
-  ## Default: 80
   ##
-  # httpPort: 80
+  httpPort: 80
 
   ## Alertmanager service port name
   ## Default: 'http'
@@ -76,8 +75,8 @@ alertmanager:
       memory: 32Mi
 
   ## Alertmanager service type
-  ## Default: 'ClusterIP'
-  # serviceType: LoadBalancer
+  ##
+  serviceType: ClusterIP
 
   ## Alertmanager data storage path
   ## Default: '/data'
@@ -113,9 +112,8 @@ server:
   # extraArgs:
 
   ## Server service port
-  ## Default: 80
   ##
-  # httpPort: 80
+  httpPort: 80
 
   ## Server service port name
   ## Default: 'http'
@@ -189,8 +187,8 @@ server:
       memory: 512Mi
 
   ## Server service type
-  ## Default: 'ClusterIP'
-  # serviceType: LoadBalancer
+  ##
+  serviceType: ClusterIP
 
   ## Server local data storage path
   ## Default: '/data'
