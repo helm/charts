@@ -31,9 +31,7 @@ spec:
         image: "{{default "docker.bintray.io/jfrog/artifactory-pro" .Values.image}}:{{default "4.13.2" .Values.imageTag}}"
         imagePullPolicy: {{default "IfNotPresent" .Values.pullPolicy}}
         resources:
-          requests:
-            cpu: {{default "200m" .Values.Cpu}}
-            memory: {{default "2048M" .Values.Memory}}
+{{ toYaml .Values.resources | indent 10 }}
         ports:
         - containerPort: 8081
           name: http
