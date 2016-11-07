@@ -19,6 +19,8 @@ spec:
         app: {{ template "fullname" . }}
         release: "{{ .Release.Name }}"
         kubernetes.io/cluster-service: "true"
+      annotations:
+        {{- include "toYaml" .Values.annotations | indent 8 }}
     spec:
       containers:
       - name: fluentd-cloudwatch

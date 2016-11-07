@@ -21,3 +21,6 @@ resources:
 
 awsRegion: us-east-1
 logGroupName: kubernetes
+
+annotations: {}
+  # iam.amazonaws.com/role: k8s-logger
