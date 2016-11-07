@@ -6,7 +6,7 @@ kind: Ingress
 metadata:
   annotations:
   {{- range $key, $value := .Values.alertmanager.ingress.annotations }}
-    {{ $key }}: {{ $value }}
+    {{ $key }}: {{ $value | quote }}
   {{- end }}
   labels:
     app: {{ template "fullname" . }}
@@ -18,7 +18,7 @@ metadata:
 spec:
   rules:
   {{- range .Values.alertmanager.ingress.hosts }}
-    - host: {{ .hostName }}
+    - host: {{ . }}
       http:
         paths:
           - path: /
