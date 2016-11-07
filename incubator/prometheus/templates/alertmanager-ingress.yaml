@@ -24,7 +24,7 @@ spec:
           - path: /
             backend:
               serviceName: {{ printf "%s-%s" $releaseName "alerts" | trunc 24 }}
-              servicePort: {{ default 80 $servicePort }}
+              servicePort: {{ $servicePort }}
   {{- end -}}
   {{- if .Values.alertmanager.ingress.tls }}
   tls:

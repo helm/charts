@@ -10,11 +10,11 @@ metadata:
   name: {{ template "server.fullname" . }}
 spec:
   ports:
-    - port: {{ default 80 .Values.server.httpPort }}
+    - port: {{ .Values.server.httpPort }}
       name: {{ default "http" .Values.server.httpPortName | quote }}
       protocol: TCP
       targetPort: 9090
   selector:
     app: {{ template "fullname" . }}
     component: "{{ .Values.server.name }}"
-  type: {{ default "ClusterIP" .Values.server.serviceType | quote }}
+  type: "{{ .Values.server.serviceType }}"
