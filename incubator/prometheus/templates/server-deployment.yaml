@@ -36,7 +36,7 @@ spec:
           image: "{{ .Values.server.image }}"
           imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
           args:
-            - --alertmanager.url=http://{{ template "alertmanager.fullname" . }}:{{ default 80 .Values.alertmanager.httpPort }}
+            - --alertmanager.url=http://{{ template "alertmanager.fullname" . }}:{{ .Values.alertmanager.httpPort }}
             - --config.file=/etc/config/prometheus.yml
             - --storage.local.path={{ default "/data" .Values.server.storageLocalPath | quote }}
             - --web.console.libraries=/etc/prometheus/console_libraries

@@ -10,11 +10,11 @@ metadata:
   name: {{ template "alertmanager.fullname" . }}
 spec:
   ports:
-    - port: {{ default 80 .Values.alertmanager.httpPort }}
+    - port: {{ .Values.alertmanager.httpPort }}
       name: {{ default "http" .Values.alertmanager.httpPortName | quote }}
       protocol: TCP
       targetPort: 9093
   selector:
     app: {{ template "fullname" . }}
     component: "{{ .Values.alertmanager.name }}"
-  type: {{ default "ClusterIP" .Values.alertmanager.serviceType | quote }}
+  type: "{{ .Values.alertmanager.serviceType }}"
