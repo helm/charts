@@ -15,7 +15,9 @@ metadata:
   name: {{ template "server.fullname" . }}
 spec:
   accessModes:
-{{ toYaml .Values.server.persistentVolume.accessModes | indent 4 }}
+{{- range .Values.server.persistentVolume.accessModes }}
+  - {{ . | quote }}
+{{- end }}
   resources:
     requests:
       storage: {{ .Values.server.persistentVolume.size | quote }}
