@@ -11,3 +11,7 @@ ImagePullPolicy: "Always"
 replicaCount: 1
 # For minikube, set this to NodePort, elsewhere use LoadBalancer
 ServiceType: LoadBalancer
+resources:
+  requests:
+    memory: 2048Mi
+    cpu: 200m
