@@ -30,8 +30,10 @@ $ helm install --name my-release incubator/artifactory
 Deletion of the PetSet doesn't cascade to deleting associated Pods and PVCs. To delete them:
 
 ```
-$ kubectl delete pods -l release=my-release,type=data
-$ kubectl delete pvcs -l release=my-release,type=data
+$ grace=$(kubectl get po artifactory --template '{{.spec.terminationGracePeriodSeconds}}')
+$ kubectl delete petset,po -l app=artifactory
+$ sleep $grace
+$ kubectl delete pvc -l app=artifactory
 ```
 
 ## Configuration
