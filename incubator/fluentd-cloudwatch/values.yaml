@@ -19,8 +19,8 @@ resources:
     cpu: 100m
     memory: 200Mi
 
-awsRegion: us-east-1
-logGroupName: kubernetes
-
 annotations: {}
   # iam.amazonaws.com/role: k8s-logger
+
+awsRegion: us-east-1
+logGroupName: kubernetes
