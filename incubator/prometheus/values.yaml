@@ -11,7 +11,7 @@ alertmanager:
 
   ## Alertmanager Docker image
   ##
-  image: prom/alertmanager:v0.4.2
+  image: prom/alertmanager:v0.5.0
 
   ingress:
     ## If true, Alertmanager Ingress will be created
@@ -28,7 +28,7 @@ alertmanager:
     ## Must be provided if Ingress is enabled
     ##
     # hosts:
-    #   - hostName: alertmanager.domain.com
+    #   - alertmanager.domain.com
 
     ## Alertmanager Ingress TLS configuration
     ## Secrets must be manually created in the namespace
@@ -110,11 +110,7 @@ server:
 
   ## Additional Server container arguments
   ##
-  extraArgs:
-    storage.local.max-chunks-to-persist: 524288
-    storage.local.memory-chunks: 1048576
-    storage.local.retention: 360h0m0s
-    web.external-url: http://prometheus.domain.com
+  # extraArgs:
 
   ## Server service port
   ## Default: 80
@@ -128,7 +124,7 @@ server:
 
   ## Server Docker image
   ##
-  image: prom/prometheus:v1.2.1
+  image: prom/prometheus:v1.2.3
 
   ingress:
     ## If true, Server Ingress will be created
@@ -145,7 +141,7 @@ server:
     ## Must be provided if Ingress is enabled
     ##
     # hosts:
-    #   - hostName: prometheus.domain.com
+    #   - prometheus.domain.com
 
     ## Server Ingress TLS configuration
     ## Secrets must be manually created in the namespace
@@ -243,7 +239,8 @@ serverFiles:
     scrape_configs:
       - job_name: prometheus
         static_configs:
-          - targets: [localhost:9090]
+          - targets:
+            - localhost:9090
 
       # Scrape configurations for running Prometheus on a Kubernetes cluster.
       # This uses separate scrape configs for cluster components (i.e. API server, node)
