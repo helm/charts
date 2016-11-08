@@ -80,11 +80,9 @@ spec:
         - name: cassandra-data
           mountPath: /cassandra_data
   {{- if .Values.persistence.dataDir.enabled }}
-  #
-  #
   # These are converted to volume claims by the controller
   # and mounted at the paths mentioned above.
-  # do not use these in production until ssd GCEPersistentDisk or other ssd pd
+  # you need SSD here with high IOPS
   volumeClaimTemplates:
   - metadata:
       name: cassandra-data
