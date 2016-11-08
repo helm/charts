@@ -1,6 +1,6 @@
 # Minecraft
 
-[Minecraft](https://minecraft.net/en/) Minecraft is a game about placing blocks and going on adventures.
+[Minecraft](https://minecraft.net/en/) is a game about placing blocks and going on adventures.
 
 ## Introduction
 
