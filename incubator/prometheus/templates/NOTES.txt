@@ -1,7 +1,7 @@
 The Prometheus server can be accessed via port {{ .Values.server.httpPort }} on the following DNS name from within your cluster:
 {{ template "server.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
 
-{{- if .Values.server.ingress.enabled }}
+{{ if .Values.server.ingress.enabled -}}
 From outside the cluster, the server URL(s) are:
 {{- range .Values.server.ingress.hosts }}
 http://{{ . }}
@@ -20,8 +20,7 @@ Get the server URL by running these commands in the same shell:
   export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "server.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
   echo http://$SERVICE_IP:{{ .Values.server.httpPort }}
 {{- else if contains "ClusterIP"  .Values.server.serviceType }}
-  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "component={{ .Values.alertmanager.name }}" -o jsonpath="{.items[0].metadata.name}")
-  echo http://127.0.0.1:{{ .Values.server.httpPort }}
+  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "fullname" . }},component={{ .Values.server.name }}" -o jsonpath="{.items[0].metadata.name}")
   kubectl port-forward $POD_NAME {{ .Values.server.httpPort }}:{{ .Values.server.httpPort }}
 
 {{- end }}
@@ -38,7 +37,7 @@ Get the server URL by running these commands in the same shell:
 The Prometheus alertmanager can be accessed via port {{ .Values.alertmanager.httpPort }} on the following DNS name from within your cluster:
 {{ template "alertmanager.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
 
-{{- if .Values.alertmanager.ingress.enabled }}
+{{ if .Values.alertmanager.ingress.enabled -}}
 From outside the cluster, the alertmanager URL(s) are:
 {{- range .Values.alertmanager.ingress.hosts }}
 http://{{ . }}
@@ -57,8 +56,7 @@ Get the server URL by running these commands in the same shell:
   export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "alertmanager.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
   echo http://$SERVICE_IP:{{ .Values.alertmanager.httpPort }}
 {{- else if contains "ClusterIP"  .Values.alertmanager.serviceType }}
-  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "component={{ .Values.alertmanager.name }}" -o jsonpath="{.items[0].metadata.name}")
-  echo http://127.0.0.1:{{ .Values.alertmanager.httpPort }}
+  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "fullname" . }},component={{ .Values.alertmanager.name }}" -o jsonpath="{.items[0].metadata.name}")
   kubectl port-forward $POD_NAME {{ .Values.alertmanager.httpPort }}:{{ .Values.alertmanager.httpPort }}
 
 {{- end }}
