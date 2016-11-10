@@ -2,8 +2,6 @@
 ## ref: https://hub.docker.com/r/library/postgres/tags/
 ##
 imageTag: "9.5.4"
-cpu: 100m
-memory: 256Mi
 
 ## Specify a imagePullPolicy
 ## 'Always' if imageTag is 'latest', else set to 'IfNotPresent'
@@ -27,3 +25,11 @@ persistence:
   storageClass: generic
   accessMode: ReadWriteOnce
   size: 8Gi
+
+## Configure resource requests and limits
+## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+##
+resources:
+  requests:
+    memory: 256Mi
+    cpu: 100m
