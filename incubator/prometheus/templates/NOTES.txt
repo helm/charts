@@ -21,7 +21,7 @@ Get the server URL by running these commands in the same shell:
   echo http://$SERVICE_IP:{{ .Values.server.httpPort }}
 {{- else if contains "ClusterIP"  .Values.server.serviceType }}
   export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "fullname" . }},component={{ .Values.server.name }}" -o jsonpath="{.items[0].metadata.name}")
-  kubectl port-forward $POD_NAME {{ .Values.server.httpPort }}:{{ .Values.server.httpPort }}
+  kubectl port-forward $POD_NAME 9090
 
 {{- end }}
 {{- end }}
