@@ -56,8 +56,8 @@ alertmanager:
 
     ## AlertManager data Persistent Volume annotations
     ##
-    # annotations:
-    #   volume.beta.kubernetes.io/storage-class: standard
+    annotations:
+      volume.beta.kubernetes.io/storage-class: standard
 
     ## AlertManager data Persistent Volume size
     ##
@@ -168,8 +168,8 @@ server:
 
     ## Server data Persistent Volume annotations
     ##
-    # annotations:
-    #   volume.beta.kubernetes.io/storage-class: standard
+    annotations:
+      volume.beta.kubernetes.io/storage-class: standard
 
     ## Server data Persistent Volume size
     ##
