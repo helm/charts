@@ -29,7 +29,7 @@ spec:
         # artifactory where the base distro is determined by the tag. Using :latest
         # is frowned upon, using :stable isn't that great either.
         image: "{{default "docker.bintray.io/jfrog/artifactory-pro" .Values.image}}:{{default "4.13.2" .Values.imageTag}}"
-        imagePullPolicy: {{default "IfNotPresent" .Values.pullPolicy}}
+        imagePullPolicy: {{default "IfNotPresent" .Values.ImagePullPolicy}}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         ports:
