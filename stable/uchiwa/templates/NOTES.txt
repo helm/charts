@@ -1,6 +1,3 @@
-Getting Started:
-
-
 1. Get the Uchiwa URL to visit by running these commands in the same shell:
 {{- if contains "NodePort" .Values.serviceType }}
   export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "fullname" . }})
