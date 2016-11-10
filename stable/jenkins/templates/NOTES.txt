@@ -1,5 +1,3 @@
-Getting Started:
-
 1. Get your '{{ .Values.Master.AdminUser }}' user password by running:
   printf $(printf '\%o' `kubectl get secret --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath="{.data.jenkins-admin-password[*]}"`);echo
 
