@@ -1,8 +1,22 @@
 ---
+# headless service for petset DNS
 apiVersion: v1
 kind: Service
 metadata:
-  name: "{{ printf "%s-%s-broker" .Release.Name .Values.Name | trunc 24 }}"
+  name: "{{ printf "%s-zookeeper-%s" .Release.Name .Values.zookeeper.Name | trunc 63 }}"
+spec:
+  ports:
+  - port: 2181
+    name: client
+  selector:
+    component: "{{.Release.Name}}-{{.Values.zookeeper.Component}}"
+
+# A headless service to create DNS records
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: "{{ printf "%s-broker-%s" .Release.Name .Values.Name | trunc 63 }}"
   labels:
     heritage: {{.Release.Service | quote }}
     release: {{.Release.Name | quote }}
@@ -22,7 +36,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 24 }}"
+  name: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 63 }}"
   labels:
     heritage: {{.Release.Service | quote }}
     release: {{.Release.Name | quote }}
@@ -40,7 +54,7 @@ spec:
 apiVersion: apps/v1alpha1
 kind: PetSet
 metadata:
-  name: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 24 }}"
+  name: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 63 }}"
   labels:
     app: kafka
     heritage: {{.Release.Service | quote }}
@@ -50,19 +64,20 @@ metadata:
   annotations:
     "helm.sh/created": {{.Release.Time.Seconds | quote }}
 spec:
-  serviceName: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 24 }}"
+  serviceName: "{{ printf "%s-broker-%s" .Release.Name .Values.Name | trunc 63 }}"
   replicas: {{ default 3 .Values.Replicas }}
   template:
     metadata:
       labels:
-        component: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 24 }}"
+        app: kafka
+        component: "{{.Release.Name}}-{{.Values.Component}}"
       annotations:
         pod.alpha.kubernetes.io/initialized: "true"
         pod.alpha.kubernetes.io/init-containers: '[
         ]'
     spec:
       containers:
-      - name: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 24 }}"
+      - name: "{{ printf "%s-broker-%s" .Release.Name .Values.Name | trunc 63 }}"
         image: "{{.Values.Image}}:{{.Values.ImageTag}}"
         imagePullPolicy: "{{.Values.ImagePullPolicy}}"
         livenessProbe:
@@ -70,7 +85,7 @@ spec:
             command:
               - bin/kafka-topics.sh
               - --zookeeper
-              - "{{ printf "%s-%s" .Release.Name .Values.zookeeper.Name | trunc 24 }}:2181"
+              - "{{ printf "%s-%s" .Release.Name .Values.zookeeper.Name | trunc 63 }}:2181"
               - --list
           initialDelaySeconds: 30
           timeoutSeconds: 5
@@ -80,7 +95,7 @@ spec:
             command:
               - bin/kafka-topics.sh
               - --zookeeper
-              - "{{ printf "%s-%s" .Release.Name .Values.zookeeper.Name | trunc 24 }}:2181"
+              - "{{ printf "%s-%s" .Release.Name .Values.zookeeper.Name | trunc 63 }}:2181"
               - --list
           initialDelaySeconds: 30
           timeoutSeconds: 5
@@ -98,7 +113,7 @@ spec:
         command:
         - sh
         - -c
-        - "./bin/kafka-server-start.sh config/server.properties --override zookeeper.connect={{ printf "%s-%s" .Release.Name .Values.zookeeper.Name | trunc 24 }}:2181/ --override broker.id=${HOSTNAME##*-}"
+        - "./bin/kafka-server-start.sh config/server.properties --override zookeeper.connect={{ printf "%s-%s" .Release.Name .Values.zookeeper.Name | trunc 63 }}:2181/ --override broker.id=${HOSTNAME##*-}"
         volumeMounts:
         - name: datadir
           mountPath: "{{ .Values.DataDirectory }}"
