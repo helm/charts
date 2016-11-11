@@ -11,8 +11,8 @@ metadata:
 spec:
   size: {{ .Values.cluster.size }}
   version: "{{ .Values.cluster.version }}"
-  {{- if .Values.cluster.pv.enabled }}
+  {{- if .Values.cluster.backup.enabled }}
   backup:
-{{ toYaml .Values.cluster.pv.backup | indent 4 }}
+{{ toYaml .Values.cluster.backup.config | indent 4 }}
   {{- end -}}
 {{- end -}}

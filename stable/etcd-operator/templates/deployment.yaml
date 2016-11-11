@@ -24,7 +24,7 @@ spec:
         command: 
         - "/bin/sh"
         - "-c"
-        - "/usr/local/bin/etcd-operator --pv-provisioner={{ .Values.cluster.pv.provisioner }}"
+        - "/usr/local/bin/etcd-operator --pv-provisioner={{ .Values.cluster.backup.provisioner }}"
         env:
         - name: MY_POD_NAMESPACE
           valueFrom:

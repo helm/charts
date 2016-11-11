@@ -18,11 +18,11 @@ cluster:
   enabled: true
   name: etcd-cluster
   size: 3
-  version: v3.1.0-alpha.1
-  pv:
+  version: v3.1.0-rc.0
+  backup:
     enabled: true
     provisioner: kubernetes.io/gce-pd
-    backup:
+    config:
       # short snapshot interval for testing, do not use this in production!
       snapshotIntervalInSecond: 30
       maxSnapshot: 5
