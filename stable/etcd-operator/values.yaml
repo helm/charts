@@ -15,7 +15,7 @@ resources:
     memory: 128Mi
 # etcd-cluster specific values
 cluster:
-  enabled: true
+  enabled: false
   name: etcd-cluster
   size: 3
   version: v3.1.0-rc.0
