@@ -1,0 +1,32 @@
+# Default values for etcd-operator.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+replicaCount: 1
+image:
+  repository: quay.io/coreos/etcd-operator
+  tag: latest
+  pullPolicy: IfNotPresent
+resources:
+  limits:
+    cpu: 100m
+    memory: 128Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+# etcd-cluster specific values
+cluster:
+  enabled: false
+  name: etcd-cluster
+  size: 3
+  version: v3.1.0-alpha.1
+  pv:
+    enabled: true
+    provisioner: kubernetes.io/gce-pd
+    backup:
+      # short snapshot interval for testing, do not use this in production!
+      snapshotIntervalInSecond: 30
+      maxSnapshot: 5
+      volumeSizeInMB: 512
+      storageType: PersistentVolume
+    # Which PersistentVolume provisioner to use. Currently either kubernetes.io/gce-pd, kubernetes.io/aws-ebs
+

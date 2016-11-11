@@ -1,0 +1,18 @@
+{{- if .Values.cluster.enabled -}}
+apiVersion: "coreos.com/v1"
+kind: "EtcdCluster"
+metadata:
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app: {{ template "fullname" . }}
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+  name: "{{ .Values.cluster.name }}"
+spec:
+  size: {{ .Values.cluster.size }}
+  version: "{{ .Values.cluster.version }}"
+  {{- if .Values.cluster.pv.enabled }}
+  backup:
+{{ toYaml .Values.cluster.pv.backup | indent 4 }}
+  {{- end -}}
+{{- end -}}
