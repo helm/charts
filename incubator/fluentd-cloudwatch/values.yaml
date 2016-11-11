@@ -1,6 +1,5 @@
 image: 18fgsa/fluentd-cloudwatch
 imageTag: 0.1.0
-namespace: kube-system
 
 ## Specify a imagePullPolicy
 ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
