@@ -4,7 +4,7 @@ kind: "EtcdCluster"
 metadata:
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    app: {{ template "fullname" . }}
+    app: "{{ template "fullname" . }}"
     heritage: "{{ .Release.Service }}"
     release: "{{ .Release.Name }}"
   name: "{{ .Values.cluster.name }}"
