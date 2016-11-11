@@ -15,7 +15,7 @@ resources:
     memory: 128Mi
 # etcd-cluster specific values
 cluster:
-  enabled: false
+  enabled: true
   name: etcd-cluster
   size: 3
   version: v3.1.0-alpha.1
@@ -29,4 +29,3 @@ cluster:
       volumeSizeInMB: 512
       storageType: PersistentVolume
     # Which PersistentVolume provisioner to use. Currently either kubernetes.io/gce-pd, kubernetes.io/aws-ebs
-
