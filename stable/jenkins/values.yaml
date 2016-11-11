@@ -6,7 +6,7 @@
 Master:
   Name: jenkins-master
   Image: "quay.io/lachie83/jenkins-master-k8s"
-  ImageTag: "v0.1.4"
+  ImageTag: "v0.1.3"
   ImagePullPolicy: "Always"
   Component: "jenkins-master"
   AdminUser: admin
@@ -17,13 +17,13 @@ Master:
 # JavaOpts: "-Xms512m -Xmx512m"
   ServicePort: 8080
 # For minikube, set this to NodePort, elsewhere use LoadBalancer
-  ServiceType: NodePort
+  ServiceType: LoadBalancer
   ContainerPort: 8080
   SlaveListenerPort: 50000
 
 Agent:
   Image: quay.io/lachie83/jnlp-slave
-  ImageTag: v8
+  ImageTag: v5
   Cpu: "200m"
   Memory: "512Mi"
 
@@ -32,4 +32,3 @@ Persistence:
   StorageClass: generic
   AccessMode: ReadWriteOnce
   Size: 8Gi
-  
