@@ -17,11 +17,11 @@ spec:
         app: {{ template "fullname" . }}
         release: "{{ .Release.Name }}"
     spec:
+      hostNetwork: {{ default true .Values.hostNetwork }}
       containers:
       - name: kube2iam
         image: "{{ .Values.image }}:{{ .Values.imageTag }}"
         imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
-        hostNetwork: {{ default true .Values.hostNetwork }}
         args:
         - "--host-ip=$(HOST_IP)"
         - "--iptables=true"
