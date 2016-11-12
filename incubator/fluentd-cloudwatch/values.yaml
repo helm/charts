@@ -11,15 +11,16 @@ imageTag: 0.1.0
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
 ##
 resources:
-  # limits:
-  #   cpu: 100m
-  #   memory: 200Mi
+  limits:
+    cpu: 100m
+    memory: 200Mi
   requests:
     cpu: 100m
     memory: 200Mi
 
-annotations: {}
-  # iam.amazonaws.com/role: k8s-logger
+# hostNetwork: false
+
+annotations:
 
 awsRegion: us-east-1
 logGroupName: kubernetes
