@@ -1,0 +1,51 @@
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    app: {{ template "fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "fullname" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "fullname" . }}
+        release: "{{ .Release.Name }}"
+    spec:
+      containers:
+      - name: kube2iam
+        image: "{{ .Values.image }}:{{ .Values.imageTag }}"
+        imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
+        hostNetwork: {{ default true .Values.hostNetwork }}
+        args:
+        - "--host-ip=$(HOST_IP)"
+        - "--iptables=true"
+        {{- if .Values.baseRoleArn }}
+        - "--base-role-arn={{ .Values.baseRoleArn }}"
+        {{- end }}
+        {{- if .Values.defaultRole }}
+        - "--default-role={{ .Values.defaultRole }}"
+        {{- end }}
+        {{- if .Values.hostInterface }}
+        - "--host-interface={{ .Values.hostInterface }}"
+        {{- end }}
+        env:
+        - name: AWS_REGION
+          value: {{ .Values.awsRegion }}
+        - name: HOST_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+        ports:
+        - containerPort: 8181
+          hostPort: 8181
+          name: http
+        securityContext:
+          privileged: {{ default true .Values.securityContext.privileged }}
