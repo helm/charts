@@ -41,11 +41,16 @@ The command removes all the Kubernetes components associated with the chart and 
 The following tables lists the configurable parameters of the Fluentd Cloudwatch chart and their default values.
 
 | Parameter                  | Description                                | Default                                                    |
-| -----------------------    | ----------------------------------         | ---------------------------------------------------------- |
-| `image`                    | Image                                      | `18fgsa/fluentd-cloudwatch:{VERSION}`                      |
+| -------------------------- | ------------------------------------------ | ---------------------------------------------------------- |
+| `image`                    | Image                                      | `18fgsa/fluentd-cloudwatch`                                |
 | `imageTag`                 | Image tag                                  | `0.1.0`                                                    |
 | `imagePullPolicy`          | Image pull policy                          | `Always` if `imageTag` is `latest`, else `IfNotPresent`    |
-| `namespace`                | Kubernetes namespace                       | `kube-system`                                              |
+| `resources.limits.cpu`     | CPU limit                                  | `100m`                                                     |
+| `resources.limits.memory`  | Memory limit                               | `200Mi`                                                    |
+| `resources.requests.cpu`   | CPU request                                | `100m`                                                     |
+| `resources.requests.memory`| Memory request                             | `200Mi`                                                    |
+| `hostNetwork`              | Host network                               | `false`                                                    |
+| `annotations`              | Annotations                                | `nil`                                                      |
 | `awsRegion`                | AWS Cloudwatch region                      | `us-east-1`                                                |
 | `logGroupName`             | AWS Cloudwatch log group                   | `kubernetes`                                               |
 
@@ -63,7 +68,7 @@ Alternatively, a YAML file that specifies the values for the above parameters ca
 $ helm install --name my-release -f values.yaml stable/fluentd-cloudwatch
 ```
 
-### Config Map
+### Files
 
 | File name                  | Description                                       |
 |----------------------------|---------------------------------------------------|

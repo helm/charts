@@ -14,15 +14,3 @@ We truncate at 24 chars because some Kubernetes name fields are limited to this 
 {{- $name := default .Chart.Name .Values.nameOverride -}}
 {{- printf "%s-%s" .Release.Name $name | trunc 24 -}}
 {{- end -}}
-
-{{- define "toYaml" -}}
-  {{- range $key, $value := . -}}
-    {{- $map := kindIs "map" $value -}}
-    {{- if $map }}
-{{ $key }}:
-  {{- include "toYaml" $value | indent 2 }}
-    {{- else }}
-{{ $key }}: {{ $value }}
-    {{- end }}
-  {{- end -}}
-{{- end -}}

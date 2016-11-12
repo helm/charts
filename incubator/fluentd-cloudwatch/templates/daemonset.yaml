@@ -7,7 +7,6 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     heritage: "{{ .Release.Service }}"
     release: "{{ .Release.Name }}"
-    kubernetes.io/cluster-service: "true"
 spec:
   selector:
     matchLabels:
@@ -17,21 +16,21 @@ spec:
       labels:
         app: {{ template "fullname" . }}
         release: "{{ .Release.Name }}"
-        kubernetes.io/cluster-service: "true"
       annotations:
-        {{- include "toYaml" .Values.annotations | indent 8 }}
+{{ toYaml .Values.annotations | indent 8 }}
     spec:
       containers:
       - name: fluentd-cloudwatch
         image: "{{ .Values.image }}:{{ .Values.imageTag }}"
         imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
+        hostNetwork: {{ default false .Values.hostNetwork }}
         env:
         - name: AWS_REGION
           value: {{ .Values.awsRegion }}
         - name: LOG_GROUP_NAME
           value: {{ .Values.logGroupName }}
         resources:
-          {{- include "toYaml" .Values.resources | indent 10 }}
+{{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
         - name: config-volume
           mountPath: /etc/td-agent
