@@ -5,3 +5,11 @@ ReplicaName: crunchy-replica
 MasterPassword: password
 RootPassword: password
 UserPassword: password
+ServiceType: ClusterIP
+ContainerName: server
+PostgresImage: crunchydata/crunchy-postgres:centos7-9.5-1.2.5
+NFSServerIP: 192.168.122.210
+NFSPath: /nfsfileshare
+PVStorage: 400M
+PVName: master-nfs-pv
+PVCName: master-nfs-pvc

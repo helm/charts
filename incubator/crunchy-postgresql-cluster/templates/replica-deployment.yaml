@@ -1,0 +1,85 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: "{{.Release.Name}}-{{.Values.ReplicaName}}"
+  labels:
+    name: "{{.Release.Name}}-{{.Values.ReplicaName}}"
+    heritage: {{.Release.Service | quote }}
+    release: {{.Release.Name | quote }}
+    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+  annotations:
+    "helm.sh/created": {{.Release.Time.Seconds | quote }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels: 
+      name: "{{.Values.ReplicaName}}"
+  template:
+    metadata:
+      labels:
+        name: "{{.Values.ReplicaName}}"
+      name: "{{.Values.ReplicaName}}"
+    spec:
+      containers:
+      - env:
+        - name: PGHOST
+          value: /tmp
+        - name: PG_MASTER_HOST
+          value: "{{.Release.Name}}-{{.Values.MasterName}}"
+        - name: PG_MASTER_PORT
+          value: "5432"
+        - name: PG_MODE
+          value: slave
+        - name: PG_MASTER_USER
+          value: master
+        - name: PG_MASTER_PASSWORD
+          value: "{{.Values.MasterPassword}}"
+        - name: PG_USER
+          value: testuser
+        - name: PG_PASSWORD
+          value: "{{.Values.UserPassword}}"
+        - name: PG_DATABASE
+          value: userdb
+        - name: PG_ROOT_PASSWORD
+          value: "{{.Values.RootPassword}}"
+        image: "{{.Values.PostgresImage}}"
+        imagePullPolicy: IfNotPresent
+        name: "{{.Release.Name}}-{{.Values.ReplicaName}}"
+        ports:
+        - containerPort: 5432
+          protocol: TCP
+        resources:
+          requests:
+            cpu: {{default "100m" .Values.Cpu}}
+            memory: {{default "100M" .Values.Memory}}
+        terminationMessagePath: /dev/termination-log
+        volumeMounts:
+        - mountPath: /pgdata
+          name: pgdata
+        - mountPath: /backup
+          name: backup
+          readOnly: true
+        - mountPath: /pguser
+          name: pguser-volume
+        - mountPath: /pgmaster
+          name: pgmaster-volume
+        - mountPath: /pgroot
+          name: pgroot-volume
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - emptyDir: {}
+        name: pgdata
+      - emptyDir: {}
+        name: backup
+      - name: pguser-volume
+        secret:
+         secretName: pguser-secret
+      - name: pgmaster-volume
+        secret:
+         secretName: pgmaster-secret
+      - name: pgroot-volume
+        secret:
+         secretName: pgroot-secret

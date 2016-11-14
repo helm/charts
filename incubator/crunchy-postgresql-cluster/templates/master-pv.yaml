@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{.Values.PVName}}
+spec:
+  capacity:
+    storage: {{.Values.PVStorage}}
+  accessModes:
+  - ReadWriteMany
+  nfs:
+    path: "{{.Values.NFSPath}}"
+    server: "{{.Values.NFSServerIP}}"
+  persistentVolumeReclaimPolicy: Retain

@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: "{{.Values.MasterName}}"
+  name: "{{.Release.Name}}-{{.Values.MasterName}}"
   labels:
-    name: "{{.Values.MasterName}}"
+    name: "{{.Release.Name}}-{{.Values.MasterName}}"
     # The "heritage" label is used to track which tool deployed a given chart.
     # It is useful for admins who want to see what releases a particular tool
     # is responsible for.
@@ -22,8 +22,8 @@ spec:
   # more conventional syntax: {{.restartPolicy | default "Never"}}
   restartPolicy: {{default "Never" .Values.restartPolicy}}
   containers:
-  - name: server
-    image: "crunchydata/crunchy-postgres:centos7-9.5-1.2.4"
+  - name: {{.Values.ContainerName}}
+    image: "{{.Values.PostgresImage}}"
     ports:
     - containerPort: 5432
     resources:
@@ -53,9 +53,28 @@ spec:
     - mountPath: /backup
       name: backup
       readOnly: true
+    - mountPath: /pguser
+      name: pguser-volume
+      readOnly: true
+    - mountPath: /pgmaster
+      name: pgmaster-volume
+      readOnly: true
+    - mountPath: /pgroot
+      name: pgroot-volume
+      readOnly: true
   volumes:
-  - emptyDir: {}
-    name: pgdata
+  - name: pgdata
+    persistentVolumeClaim:
+     claimName: {{.Values.PVCName}}
   - emptyDir: {}
     name: backup
+  - name: pguser-volume
+    secret:
+     secretName: pguser-secret
+  - name: pgmaster-volume
+    secret:
+     secretName: pgmaster-secret
+  - name: pgroot-volume
+    secret:
+     secretName: pgroot-secret
 

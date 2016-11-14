@@ -1,6 +1,6 @@
 = Helm Examples - Crunchy Containers for PostgreSQL
 Crunchy Data Solutions, Inc.
-v1.2.4, {docdate}
+v1.2.5, {docdate}
 image::crunchy_logo.png?raw=true[]
 
 == Helm Example for Crunchy Postgres
