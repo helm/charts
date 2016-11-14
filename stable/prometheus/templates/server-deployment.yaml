@@ -1,0 +1,73 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: {{ template "fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    component: "{{ .Values.server.name }}"
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+  name: {{ template "server.fullname" . }}
+spec:
+  replicas: 1
+  template:
+    metadata:
+      annotations:
+      {{- range $key, $value := .Values.server.annotations }}
+        {{ $key }}: {{ $value }}
+      {{- end }}
+      labels:
+        app: {{ template "fullname" . }}
+        component: "{{ .Values.server.name }}"
+        release: "{{ .Release.Name }}"
+    spec:
+      containers:
+        - name: {{ template "name" . }}-{{ .Values.server.name }}-{{ .Values.configmapReload.name }}
+          image: "{{ .Values.configmapReload.image }}"
+          imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
+          args:
+            - --volume-dir=/etc/config
+            - --webhook-url=http://localhost:9090/-/reload
+          volumeMounts:
+            - name: config-volume
+              mountPath: /etc/config
+              readOnly: true
+        - name: {{ template "name" . }}-{{ .Values.server.name }}
+          image: "{{ .Values.server.image }}"
+          imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
+          args:
+            - --alertmanager.url=http://{{ template "alertmanager.fullname" . }}:{{ .Values.alertmanager.httpPort }}
+            - --config.file=/etc/config/prometheus.yml
+            - --storage.local.path={{ default "/data" .Values.server.storageLocalPath | quote }}
+            - --web.console.libraries=/etc/prometheus/console_libraries
+            - --web.console.templates=/etc/prometheus/consoles
+          {{- range $key, $value := .Values.server.extraArgs }}
+            - --{{ $key }}={{ $value }}
+          {{- end }}
+          ports:
+            - containerPort: 9090
+          readinessProbe:
+            httpGet:
+              path: /status
+              port: 9090
+            initialDelaySeconds: 30
+            timeoutSeconds: 30
+          resources:
+{{ toYaml .Values.server.resources | indent 12 }}
+          volumeMounts:
+            - name: config-volume
+              mountPath: /etc/config
+            - name: storage-volume
+              mountPath: {{ default "/data" .Values.server.storageLocalPath | quote }}
+      terminationGracePeriodSeconds: {{ default 300 .Values.server.terminationGracePeriodSeconds }}
+      volumes:
+        - name: config-volume
+          configMap:
+            name: {{ template "server.fullname" . }}
+        - name: storage-volume
+      {{- if .Values.server.persistentVolume.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ template "server.fullname" . }}
+      {{- else }}
+          emptyDir: {}
+      {{- end -}}
