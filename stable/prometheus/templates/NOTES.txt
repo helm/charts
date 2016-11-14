@@ -1,0 +1,74 @@
+The Prometheus server can be accessed via port {{ .Values.server.httpPort }} on the following DNS name from within your cluster:
+{{ template "server.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
+
+{{ if .Values.server.ingress.enabled -}}
+From outside the cluster, the server URL(s) are:
+{{- range .Values.server.ingress.hosts }}
+http://{{ . }}
+{{- end }}
+
+{{- else }}
+Get the server URL by running these commands in the same shell:
+{{- if contains "NodePort" .Values.server.serviceType }}
+  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "server.fullname" . }})
+  export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+  echo http://$NODE_IP:$NODE_PORT
+
+{{- else if contains "LoadBalancer" .Values.server.serviceType }}
+  NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+        You can watch the status of by running 'kubectl get svc -w {{ template "server.fullname" . }}'
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "server.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+  echo http://$SERVICE_IP:{{ .Values.server.httpPort }}
+{{- else if contains "ClusterIP"  .Values.server.serviceType }}
+  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "fullname" . }},component={{ .Values.server.name }}" -o jsonpath="{.items[0].metadata.name}")
+  kubectl --namespace {{ .Release.Namespace }} port-forward $POD_NAME 9090
+
+{{- end }}
+{{- end }}
+
+{{- if .Values.server.persistentVolume.enabled }}
+{{- else }}
+#################################################################################
+######   WARNING: Persistence is disabled!!! You will lose your data when   #####
+######            the Server pod is terminated.                             #####
+#################################################################################
+{{- end }}
+
+The Prometheus alertmanager can be accessed via port {{ .Values.alertmanager.httpPort }} on the following DNS name from within your cluster:
+{{ template "alertmanager.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
+
+{{ if .Values.alertmanager.ingress.enabled -}}
+From outside the cluster, the alertmanager URL(s) are:
+{{- range .Values.alertmanager.ingress.hosts }}
+http://{{ . }}
+{{- end }}
+
+{{- else }}
+Get the server URL by running these commands in the same shell:
+{{- if contains "NodePort" .Values.alertmanager.serviceType }}
+  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "alertmanager.fullname" . }})
+  export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+  echo http://$NODE_IP:$NODE_PORT
+
+{{- else if contains "LoadBalancer" .Values.alertmanager.serviceType }}
+  NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+        You can watch the status of by running 'kubectl get svc -w {{ template "alertmanager.fullname" . }}'
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "alertmanager.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+  echo http://$SERVICE_IP:{{ .Values.alertmanager.httpPort }}
+{{- else if contains "ClusterIP"  .Values.alertmanager.serviceType }}
+  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "fullname" . }},component={{ .Values.alertmanager.name }}" -o jsonpath="{.items[0].metadata.name}")
+  kubectl --namespace {{ .Release.Namespace }} port-forward $POD_NAME 9093
+
+{{- end }}
+{{- end }}
+
+{{- if .Values.alertmanager.persistentVolume.enabled }}
+{{- else }}
+#################################################################################
+######   WARNING: Persistence is disabled!!! You will lose your data when   #####
+######            the AlertManager pod is terminated.                       #####
+#################################################################################
+{{- end }}
+
+For more information on running Prometheus, visit:
+https://prometheus.io/
