@@ -6,11 +6,13 @@
 Name: mongodb-replicaset
 PeerPort: 27017
 Component: "mongodb"
+ReplicaSet: "rs0"
+ClusterRole: "shardsvr"
 Replicas: 3
 Image: "mongo"
 ImageTag: "3.2"
 InstallImage: "gcr.io/google_containers/mongodb-install"
-InstallImageTag: "0.2"
+InstallImageTag: "0.3"
 ImagePullPolicy: "Always"
 Cpu: "100m"
 Memory: "512Mi"
