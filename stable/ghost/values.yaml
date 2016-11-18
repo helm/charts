@@ -1,0 +1,95 @@
+## Bitnami Ghost image version
+## ref: https://hub.docker.com/r/bitnami/ghost/tags/
+##
+image: bitnami/ghost:0.11.3-r0
+
+## Specify a imagePullPolicy
+## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
+## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+##
+# imagePullPolicy:
+
+## Ghost host to create application URLs
+## ref: https://github.com/bitnami/bitnami-docker-ghost#configuration
+##
+# ghostHost:
+
+## Ghost port to create application URLs along with host.
+## ref: https://github.com/bitnami/bitnami-docker-ghost#configuration
+##
+ghostPort: 80
+
+## loadBalancerIP for the Ghost Service (optional, cloud specific)
+## ref: http://kubernetes.io/docs/user-guide/services/#type-loadbalancer
+##
+# ghostLoadBalancerIP:
+
+## User of the application
+## ref: https://github.com/bitnami/bitnami-docker-ghost#configuration
+##
+ghostUsername: user
+
+## Application password
+## Defaults to a random 10-character alphanumeric string if not set
+## ref: https://github.com/bitnami/bitnami-docker-ghost#configuration
+##
+# ghostPassword:
+
+## Admin email
+## ref: https://github.com/bitnami/bitnami-docker-ghost#configuration
+##
+ghostEmail: user@example.com
+
+## Ghost Blog name
+## ref: https://github.com/bitnami/bitnami-docker-ghost#environment-variables
+##
+ghostBlogTitle: User's Blog
+
+## SMTP mail delivery configuration
+## ref: https://github.com/bitnami/bitnami-docker-redmine/#smtp-configuration
+##
+# smtpHost:
+# smtpPort:
+# smtpUser:
+# smtpPassword:
+# smtpService:
+
+##
+## MariaDB chart configuration
+##
+mariadb:
+  ## MariaDB admin password
+  ## ref: https://github.com/bitnami/bitnami-docker-mariadb/blob/master/README.md#setting-the-root-password-on-first-run
+  ##
+  # mariadbRootPassword:
+
+  ## Enable persistence using Persistent Volume Claims
+  ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+  ##
+  persistence:
+    enabled: true
+    storageClass: generic
+    accessMode: ReadWriteOnce
+    size: 8Gi
+
+## Kubernetes configuration
+## For minikube, set this to NodePort, elsewhere use LoadBalancer
+##
+serviceType: LoadBalancer
+
+## Enable persistence using Persistent Volume Claims
+## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+##
+persistence:
+  enabled: true
+  storageClass: generic
+  accessMode: ReadWriteOnce
+  size: 8Gi
+
+## Configure resource requests and limits
+## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+##
+resources:
+  requests:
+    memory: 512Mi
+    cpu: 300m
