@@ -22,7 +22,7 @@ This chart bootstraps a [PostgreSQL](https://github.com/docker-library/postgres)
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm install --name my-release stable/potgresql
+$ helm install --name my-release stable/postgresql
 ```
 
 The command deploys PostgreSQL on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
