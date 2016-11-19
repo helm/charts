@@ -1,4 +1,4 @@
 dependencies:
 - name: etcd
   version: 0.1.1
-  repository: http://storage.googleapis.com/kubernetes-charts-incubator
+  repository: https://kubernetes-charts-incubator.storage.googleapis.com/
