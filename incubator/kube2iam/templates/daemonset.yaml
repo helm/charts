@@ -17,26 +17,26 @@ spec:
         app: {{ template "fullname" . }}
         release: "{{ .Release.Name }}"
     spec:
-      hostNetwork: {{ default true .Values.hostNetwork }}
+      hostNetwork: true
       containers:
       - name: kube2iam
         image: "{{ .Values.image }}:{{ .Values.imageTag }}"
         imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
         args:
-        - "--host-ip=$(HOST_IP)"
-        - "--iptables=true"
-        {{- if .Values.baseRoleArn }}
-        - "--base-role-arn={{ .Values.baseRoleArn }}"
+        {{- if .Values.host.iptables }}
+        - --host-ip={{ default "$(HOST_IP)" .Values.host.ip }}
         {{- end }}
-        {{- if .Values.defaultRole }}
-        - "--default-role={{ .Values.defaultRole }}"
+        - --iptables={{ default false .Values.host.iptables }}
+        {{- if .Values.host.interface }}
+        - --host-interface={{ default "docker0" .Values.host.interface | quote }}
         {{- end }}
-        {{- if .Values.hostInterface }}
-        - "--host-interface={{ .Values.hostInterface }}"
+        {{- if .Values.containerPort }}
+        - --app-port={{ default 8181 .Values.containerPort }}
+        {{- end }}
+        {{- range $key, $value := .Values.extraArgs }}
+        - --{{ $key }}={{ $value }}
         {{- end }}
         env:
-        - name: AWS_REGION
-          value: {{ .Values.awsRegion }}
         - name: HOST_IP
           valueFrom:
             fieldRef:
@@ -44,8 +44,8 @@ spec:
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         ports:
-        - containerPort: 8181
-          hostPort: 8181
-          name: http
+        - containerPort: {{ default 8181 .Values.containerPort }}
+        {{- if .Values.host.iptables }}
         securityContext:
-          privileged: {{ default true .Values.securityContext.privileged }}
+          privileged: true
+        {{- end }}

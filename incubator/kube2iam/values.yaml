@@ -18,12 +18,15 @@ resources:
     cpu: 100m
     memory: 200Mi
 
-hostNetwork: true
+# containerPort: 8181
 
-securityContext:
-    privileged: true
+# host:
+#   ip: 127.0.0.1
+#   iptables: true
+#   interface: cbr0
 
-awsRegion: us-east-1
-# baseRoleArn: arn:aws:iam::0123456789:role/
-# defaultRole: kube2iam-default
-# hostInterface: cbr0 
+# extraArgs:
+#   base-role-arn: arn:aws:iam::0123456789:role/
+#   default-role: kube2iam-default
+#   api-server: ...
+#   api-token: ...

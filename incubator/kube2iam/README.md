@@ -49,19 +49,19 @@ The following tables lists the configurable parameters of the kube2iam chart and
 | `resources.limits.memory`   | Memory limit                               | `200Mi`                                                    |
 | `resources.requests.cpu`    | CPU request                                | `100m`                                                     |
 | `resources.requests.memory` | Memory request                             | `200Mi`                                                    |
-| `hostNetwork`               | Host network                               | `true`                                                     |
-| `securityContext.privileged`| Security context privileged                | `true`                                                     |
-| `awsRegion`                 | AWS region                                 | `us-east-1`                                                |
-| `baseRoleArn`               | Base role arn                              | `nil`                                                      |
-| `defaultRole`               | Default role                               | `nil`                                                      |
-| `hostInterface`             | Host interface                             | `nil`                                                      |
+| `containerPort`             | Container port                             | `8181`                                                     |
+| `host.ip`                   | IP address of host                         | `$(HOST_IP)`                                               |
+| `host.iptables`             | Add iptables rule                          | `false`                                                    |
+| `host.interface`            | Host interface for proxying AWS metadata   | `docker0`                                                  |
+| `extraArgs`                 | Extra arguments                            | `nil`                                                      |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```console
 $ helm install --name my-release \
-  --set awsRegion=us-east-1,hostInterface=cbr0 \
-    incubator/kube2iam
+  --set=extraArgs.base-role-arn=arn:aws:iam::0123456789:role/, \
+    extraArgs.default-role=kube2iam-default, \
+    host.iptables=true,host.interface=cbr0
 ```
 
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
