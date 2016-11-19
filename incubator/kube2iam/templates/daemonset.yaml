@@ -23,15 +23,11 @@ spec:
         image: "{{ .Values.image }}:{{ .Values.imageTag }}"
         imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
         args:
+        - --app-port={{ default 8181 .Values.containerPort }}
+        - --iptables={{ default false .Values.host.iptables }}
+        - --host-interface={{ default "docker0" .Values.host.interface | quote }}
         {{- if .Values.host.iptables }}
         - --host-ip={{ default "$(HOST_IP)" .Values.host.ip }}
-        {{- end }}
-        - --iptables={{ default false .Values.host.iptables }}
-        {{- if .Values.host.interface }}
-        - --host-interface={{ default "docker0" .Values.host.interface | quote }}
-        {{- end }}
-        {{- if .Values.containerPort }}
-        - --app-port={{ default 8181 .Values.containerPort }}
         {{- end }}
         {{- range $key, $value := .Values.extraArgs }}
         - --{{ $key }}={{ $value }}
