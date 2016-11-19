@@ -17,7 +17,7 @@
 HELM_URL=https://storage.googleapis.com/kubernetes-helm
 HELM_TARBALL=helm-canary-linux-amd64.tar.gz
 STABLE_REPO_URL=http://storage.googleapis.com/kubernetes-charts
-INCUBATOR_REPO_URL=http://storage.googleapis.com/kubernetes-charts-incubator
+INCUBATOR_REPO_URL=https://kubernetes-charts-incubator.storage.googleapis.com/
 wget -q ${HELM_URL}/${HELM_TARBALL}
 tar xzfv ${HELM_TARBALL}
 PATH=`pwd`/linux-amd64/:$PATH
