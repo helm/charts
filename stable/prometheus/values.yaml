@@ -56,12 +56,15 @@ alertmanager:
 
     ## AlertManager data Persistent Volume annotations
     ##
-    annotations:
-      volume.beta.kubernetes.io/storage-class: standard
+    # annotations:
 
     ## AlertManager data Persistent Volume size
     ##
     size: 2Gi
+
+    ## AlertManager data Persistent Volume Storage Class
+    ##
+    # storageClass:
 
   ## Alertmanager resource requests and limits
   ## Ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -168,12 +171,15 @@ server:
 
     ## Server data Persistent Volume annotations
     ##
-    annotations:
-      volume.beta.kubernetes.io/storage-class: standard
+    # annotations:
 
     ## Server data Persistent Volume size
     ##
     size: 8Gi
+
+    ## AlertManager data Persistent Volume Storage Class
+    ##
+    # storageClass:
 
   ## Server resource requests and limits
   ## Ref: http://kubernetes.io/docs/user-guide/compute-resources/
