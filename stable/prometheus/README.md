@@ -55,6 +55,7 @@ The following tables lists the configurable parameters of the Spartakus chart an
 | `alertmanager.persistentVolume.enabled` | If true, AlertManager will create a Persistent Volume Claim | `true` |
 | `alertmanager.persistentVolume.accessModes` | AlertManager data Persistent Volume access modes | `[ReadWriteOnce]` |
 | `alertmanager.persistentVolume.size` | AlertManager data Persistent Volume size | `2Gi` |
+| `server.persistentVolume.storageClass` | AlertManager data Persistent Volume Storage Class | `volume.alpha.kubernetes.io/storage-class: default` |
 | `alertmanager.resources` | Alertmanager resource requests and limits (YAML) |`requests: {cpu: 10m, memory: 32Mi}` |
 | `alertmanager.serviceType` | Alertmanager service type | `ClusterIP` |
 | `alertmanager.storagePath` | Alertmanager data storage path | `/data` |
@@ -75,6 +76,7 @@ The following tables lists the configurable parameters of the Spartakus chart an
 | `server.persistentVolume.accessModes` | Server data Persistent Volume access modes | `[ReadWriteOnce]` |
 | `server.persistentVolume.annotations` | Server data Persistent Volume annotations | `[]` |
 | `server.persistentVolume.size` | Server data Persistent Volume size | `8Gi` |
+| `server.persistentVolume.storageClass` | Server data Persistent Volume Storage Class | `volume.alpha.kubernetes.io/storage-class: default` |
 | `server.resources` | Server resource requests and limits | `requests: {cpu: 500m, memory: 512Mi}` |
 | `server.serviceType` | Server service type | `ClusterIP` |
 | `server.storageLocalPath` | Server local data storage path | `/data` |
