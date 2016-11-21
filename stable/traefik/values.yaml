@@ -1,5 +1,5 @@
 # Default values for Traefik
-imageTag: v1.1.0-rc3
+imageTag: v1.1.0
 serviceType: LoadBalancer
 cpuRequest: 100m
 memoryRequest: 20Mi
