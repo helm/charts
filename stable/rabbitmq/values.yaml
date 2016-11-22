@@ -1,0 +1,69 @@
+## Bitnami RabbitMQ image version
+## ref: https://hub.docker.com/r/bitnami/rabbitmq/tags/
+##
+image: bitnami/rabbitmq:3.6.5-r4
+
+## Specify a imagePullPolicy
+## 'Always' if imageTag is 'latest', else set to 'IfNotPresent'
+## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+##
+# imagePullPolicy:
+
+## RabbitMQ application username
+## ref: https://github.com/bitnami/bitnami-docker-rabbitmq/blob/master/README.md#creating-a-database-user-on-first-run
+##
+rabbitmqUsername: user
+
+## RabbitMQ application password
+## ref: https://github.com/bitnami/bitnami-docker-rabbitmq/blob/master/README.md#creating-a-database-user-on-first-run
+##
+# rabbitmqPassword:
+
+## Erlang cookie to determine whether different nodes are allowed to communicate with each other
+## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables
+##
+# rabbitmqErlangCookie:
+
+## Node port
+## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables
+##
+rabbitmqNodePort: 5672
+
+## Node Type
+## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables
+##
+rabbitmqNodeType: stats
+
+## Node Name
+## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables
+##
+rabbitmqNodeName: rabbit
+
+## Node name to cluster with. e.g.: `clusternode@hostname`
+## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables
+##
+# rabbitmqClusternodename:
+
+## RabbitMQ application vhost
+## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables
+##
+rabbitmqVhost: /
+
+## RabbitMQ Manager port
+## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables
+##
+rabbitmqManagerPort: 15672
+
+persistence:
+  enabled: true
+  storageClass: generic
+  accessMode: ReadWriteOnce
+  size: 8Gi
+
+## Configure resource requests and limits
+## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+##
+resources:
+  requests:
+    memory: 256Mi
+    cpu: 100m
