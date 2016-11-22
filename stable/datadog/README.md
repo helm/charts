@@ -35,7 +35,19 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-Refer to [values.yaml](values.yaml) for the full run-down on defaults.
+The following tables lists the configurable parameters of the Datadog chart and their default values.
+
+|      Parameter              |          Description               |                         Default           |
+|-----------------------------|------------------------------------|-------------------------------------------|
+| `datadog.apiKey`            | Your Datadog API key               |  `Nil` You must provide your own key      |
+| `image.repository`          | The image repository to pull from  | `datadog/docker-dd-agent`                 |
+| `image.tag`                 | The image tag to pull              | `latest`                                  |
+| `imagePullPolicy`           | Image pull policy                  | `IfNotPresent`                            |
+| `resources.requests.cpu`    | CPU resource requests              | 128M                                      |
+| `resources.limits.cpu`      | CPU resource limits                | 512Mi                                     |
+| `resources.requests.memory` | Memory resource requests           | 100m                                      |
+| `resources.limits.memory`   | Memory resource limits             | 256m                                      |
+
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
