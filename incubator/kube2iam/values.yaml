@@ -20,10 +20,10 @@ resources:
 
 # containerPort: 8181
 
-# host:
-#   ip: 127.0.0.1
-#   iptables: true
-#   interface: cbr0
+host:
+  # ip: 127.0.0.1
+  iptables: false
+  interface: docker0
 
 # extraArgs:
 #   base-role-arn: arn:aws:iam::0123456789:role/
