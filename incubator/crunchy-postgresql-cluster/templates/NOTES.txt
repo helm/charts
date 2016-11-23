@@ -1,3 +1,10 @@
+
+=== Setup
+
+The example uses NFS for a Persistent Volume.  To run the example,
+you would need access to an NFS server.  The IP address of the NFS
+server is specified in values.yaml along with the NFS file path.
+
 === Testing
 
 After installing the Helm chart, you will see the following services:
