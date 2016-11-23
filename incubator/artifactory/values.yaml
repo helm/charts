@@ -5,14 +5,24 @@
 
 Name: artifactory
 Component: "Artifactory"
-Image: "docker.bintray.io/jfrog/artifactory-pro"
-ImageTag: "4.13.2"
-ImagePullPolicy: "Always"
+image: "docker.bintray.io/jfrog/artifactory-pro"
+imageTag: "4.13.2"
+imagePullPolicy: "Always"
 replicaCount: 1
 httpPort: 8081
-# For minikube, set this to NodePort, elsewhere use LoadBalancer
+## Kubernetes configuration
+## For minikube, set this to NodePort, elsewhere use LoadBalancer
+##
 ServiceType: LoadBalancer
 resources:
   requests:
     memory: 2048Mi
     cpu: 200m
+
+
+## Persist data to a persitent volume
+persistence:
+  enabled: true
+  storageClass: generic
+  accessMode: ReadWrite
+  size: 8Gi
