@@ -106,6 +106,39 @@ configmapReload:
 ##
 # imagePullPolicy:
 
+kubeStateMetrics:
+  ## Kube-state-metrics service port
+  ##
+  httpPort: 80
+
+  ## Kube-state-metrics service port name
+  ## Default: 'http'
+  ##
+  # httpPortName: http
+
+  ## Kube-state-metrics Docker image
+  ##
+  image: gcr.io/google_containers/kube-state-metrics:v0.3.0
+
+  ## Kube-state-metrics container name
+  ##
+  name: kube-state-metrics
+
+  ## Kube-state-metrics resource requests and limits
+  ## Ref: http://kubernetes.io/docs/user-guide/compute-resources/
+  ##
+  resources:
+    # limits:
+    #   cpu: 10m
+    #   memory: 16Mi
+    requests:
+      cpu: 10m
+      memory: 16Mi
+
+  ## Kube-state-metrics service type
+  ##
+  serviceType: ClusterIP
+
 server:
   ## Server Pod annotations:
   ##
