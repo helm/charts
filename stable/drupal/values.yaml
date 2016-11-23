@@ -1,7 +1,7 @@
 ## Bitnami Drupal image version
 ## ref: https://hub.docker.com/r/bitnami/drupal/tags/
 ##
-image: bitnami/drupal:8.2.2-r0
+image: bitnami/drupal:8.2.3-r0
 
 ## Specify a imagePullPolicy
 ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'

@@ -44,8 +44,8 @@ gcloud container clusters get-credentials jenkins --project kubernetes-charts-ci
 
 # Install and initialize helm/tiller
 HELM_URL=https://storage.googleapis.com/kubernetes-helm
-HELM_TARBALL=helm-v2.0.0-rc.1-linux-amd64.tar.gz
-INCUBATOR_REPO_URL=http://storage.googleapis.com/kubernetes-charts-incubator
+HELM_TARBALL=helm-v2.0.0-linux-amd64.tar.gz
+INCUBATOR_REPO_URL=https://kubernetes-charts-incubator.storage.googleapis.com/
 pushd /opt
   wget -q ${HELM_URL}/${HELM_TARBALL}
   tar xzfv ${HELM_TARBALL}

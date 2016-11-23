@@ -1,0 +1,33 @@
+{{- if .Values.alertmanager.ingress.enabled -}}
+{{- $releaseName := .Release.Name -}}
+{{- $servicePort := .Values.alertmanager.httpPort -}}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+  {{- range $key, $value := .Values.alertmanager.ingress.annotations }}
+    {{ $key }}: {{ $value | quote }}
+  {{- end }}
+  labels:
+    app: {{ template "fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    component: "{{ .Values.alertmanager.name }}"
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+  name: {{ template "alertmanager.fullname" . }}
+spec:
+  rules:
+  {{- range .Values.alertmanager.ingress.hosts }}
+    - host: {{ . }}
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: {{ printf "%s-%s" $releaseName "alerts" | trunc 63 }}
+              servicePort: {{ $servicePort }}
+  {{- end -}}
+  {{- if .Values.alertmanager.ingress.tls }}
+  tls:
+{{ toYaml .Values.alertmanager.ingress.tls | indent 4 }}
+  {{- end -}}
+{{- end -}}
