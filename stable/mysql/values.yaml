@@ -31,7 +31,7 @@ imageTag: "5.7.14"
 persistence:
   enabled: true
   storageClass: generic
-  accessMode: ReadWriteOnce
+  accessMode: ReadWrite
   size: 8Gi
 
 ## Configure resource requests and limits
