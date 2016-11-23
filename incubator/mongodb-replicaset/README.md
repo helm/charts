@@ -19,7 +19,7 @@
 
 ## Chart Details
 
-This chart implements a dynamically scalable [MongoDB replica set](https://docs.mongodb.com/manual/tutorial/deploy-replica-set/) 
+This chart implements a dynamically scalable [MongoDB replica set](https://docs.mongodb.com/manual/tutorial/deploy-replica-set/)
 using Kubernetes PetSets and Init Containers.
 
 ## Installing the Chart
@@ -28,32 +28,32 @@ To install the chart with the release name `my-release`:
 
 ```console
 $ helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
-$ helm install --name my-release incubator/mongodb
+$ helm install --name my-release incubator/mongodb-replicaset
 ```
 
 ## Configuration
 
 The following tables lists the configurable parameters of the mongodb chart and their default values.
 
-| Parameter               | Description                        | Default                                                    |
-| ----------------------- | ---------------------------------- | ---------------------------------------------------------- |
-| `Name`                  | Name of the chart                  | `mongodb`                                                  |
-| `Image`                 | Container image name               | `mongo`                                                    |
-| `ImageTag`              | Container image tag                | `3.2`                                                      |
-| `ImagePullPolicy`       | Container pull policy              | `Always`                                                   |
-| `Replicas`              | k8s petset replicas                | `3`                                                        |
-| `Component`             | k8s selector key                   | `mongodb`                                                  |
-| `Cpu`                   | container requested cpu            | `100m`                                                     |
-| `Memory`                | container requested memory         | `512Mi`                                                    |
-| `PeerPort`              | Container listening port           | `27017`                                                    |
-| `Storage`               | Persistent volume size             | `10Gi`                                                     |
+|     Parameter     |        Description         |       Default        |
+|-------------------|----------------------------|----------------------|
+| `Name`            | Name of the chart          | `mongodb-replicaset` |
+| `Image`           | Container image name       | `mongo`              |
+| `ImageTag`        | Container image tag        | `3.2`                |
+| `ImagePullPolicy` | Container pull policy      | `Always`             |
+| `Replicas`        | k8s petset replicas        | `3`                  |
+| `Component`       | k8s selector key           | `mongodb`            |
+| `Cpu`             | container requested cpu    | `100m`               |
+| `Memory`          | container requested memory | `512Mi`              |
+| `PeerPort`        | Container listening port   | `27017`              |
+| `Storage`         | Persistent volume size     | `10Gi`               |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```console
-$ helm install --name my-release -f values.yaml incubator/mongodb
+$ helm install --name my-release -f values.yaml incubator/mongodb-replicaset
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
@@ -62,7 +62,7 @@ Once you have all 3 nodes in running, you can run the "test.sh" script in this d
 
 # Deep dive
 
-Because the pod names are dependent on the name chosen for it, the following examples use the 
+Because the pod names are dependent on the name chosen for it, the following examples use the
 environment variable `RELEASENAME`. For example, if the helm release name is `messy-hydra`, one would need to set the following before proceeding. The example scripts below assume 3 pods only.
 
 ```console
@@ -188,5 +188,5 @@ connecting to: test
 
 ## Scaling
 
-Scaling should be managed by `helm upgrade`, which is the recommended way. 
+Scaling should be managed by `helm upgrade`, which is the recommended way.
 You can also scale up by modifying the number of replicas on the PetSet using `kubectl patch` or `kubectl apply`. Deleting the various pods created and the associated resources needs some care and is described in the [petset documentation](http://kubernetes.io/docs/user-guide/petset/#deleting-a-pet-set).
