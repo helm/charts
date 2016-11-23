@@ -23,7 +23,7 @@ spec:
         paths:
           - path: /
             backend:
-              serviceName: {{ printf "%s-%s" $releaseName "server" | trunc 24 }}
+              serviceName: {{ printf "%s-%s" $releaseName "server" | trunc 63 }}
               servicePort: {{ $servicePort }}
   {{- end -}}
   {{- if .Values.server.ingress.tls }}
