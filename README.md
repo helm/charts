@@ -9,6 +9,17 @@ Just `helm install stable/<chart>`. This is the default repository for Helm and 
 
 For more information on using Helm, refer to the [Helm's documentation](https://github.com/kubernetes/helm#docs).
 
+## How do I enable the Incubator repository?
+
+To add the Incubator charts for your local client, run `helm repo add`:
+
+```
+$ helm repo add incubator https://kubernetes-charts-incubator.storage.googleapis.com/
+"incubator" has been added to your repositories
+```
+
+You can then run `helm search incubator/` to see the charts.
+
 ## Chart Format
 
 Take a look at the [alpine example chart](https://github.com/kubernetes/helm/tree/master/docs/examples/alpine) and the [nginx example chart](https://github.com/kubernetes/helm/tree/master/docs/examples/nginx) for reference when you're writing your first few charts.

@@ -22,7 +22,7 @@ You need not worry about this on Google Cloud Platform.
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm install --name my-release incubator/factorio
+$ helm install --name my-release stable/factorio
 ```
 
 This command deploys a Factorio dedicated server with sane defaults.
@@ -48,7 +48,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 ```bash
 $ helm install --name my-release \
   --set factorioServer.factorioServer=My Server,ImageTag=0.14.15 \
-    incubator/factorio
+    stable/factorio
 ```
 
 The above command deploys Factorio dedicated with a server name of `My Server` and docker-factorio image version `0.14.15`.
@@ -56,7 +56,7 @@ The above command deploys Factorio dedicated with a server name of `My Server` a
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```bash
-$ helm install --name my-release -f values.yaml incubator/factorio
+$ helm install --name my-release -f values.yaml stable/factorio
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)

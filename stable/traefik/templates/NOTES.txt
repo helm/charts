@@ -1,5 +1,3 @@
-Getting Started:
-
 1. Get Traefik's load balancer IP/hostname:
 
      NOTE: It may take a few minutes for this to become available.

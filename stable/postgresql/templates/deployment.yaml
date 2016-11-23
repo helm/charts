@@ -31,13 +31,6 @@ spec:
       - name: {{ template "fullname" . }}
         image: "postgres:{{ .Values.imageTag }}"
         imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
-        resources:
-          requests:
-            cpu: "{{.Values.cpu}}"
-            memory: "{{.Values.memory}}"
-          limits:
-            cpu: "{{.Values.cpu}}"
-            memory: "{{.Values.memory}}"
         env:
         - name: POSTGRES_USER
           value: {{ default "postgres" .Values.postgresUser | quote }}
@@ -68,6 +61,8 @@ spec:
             - pg_isready
           initialDelaySeconds: 60
           timeoutSeconds: 3
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
         - name: data
           mountPath: /var/lib/postgresql/data/pgdata

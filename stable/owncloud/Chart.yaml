@@ -1,0 +1,16 @@
+name: owncloud
+version: 0.4.0
+description: A file sharing server that puts the control and security of your own data back into your hands.
+keywords:
+- owncloud
+- storage
+- http
+- web
+- php
+home: https://owncloud.org/
+sources:
+- https://github.com/bitnami/bitnami-docker-owncloud
+maintainers:
+- name: Bitnami
+  email: containers@bitnami.com
+engine: gotpl
