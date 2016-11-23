@@ -1,0 +1,14 @@
+name: mongodb
+version: 0.4.0
+description: Chart for MongoDB
+keywords:
+- mongodb
+- database
+- nosql
+home: https://mongodb.org
+sources:
+- https://github.com/bitnami/bitnami-docker-mongodb
+maintainers:
+- name: Bitnami
+  email: containers@bitnami.com
+engine: gotpl

@@ -1,0 +1,7 @@
+MongoDB can be accessed via port 27017 on the following DNS name from within your cluster:
+{{ template "fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
+
+To connect to your database run the following command:
+
+   kubectl run {{ template "fullname" . }}-client --rm --tty -i --image bitnami/mongodb --command -- mongo --host {{ template "fullname" . }} {{- if .Values.mongodbRootPassword }} -p {{ .Values.mongodbRootPassword }}{{- end -}}
+
