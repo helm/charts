@@ -62,7 +62,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 
 ```bash
 $ helm install --name my-release \
-  --set posstgresUser=my-user,postgresPassword=secretpassword,postgresDatabase=my-database \
+  --set postgresUser=my-user,postgresPassword=secretpassword,postgresDatabase=my-database \
     stable/postgresql
 ```
 
