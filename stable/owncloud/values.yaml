@@ -1,7 +1,7 @@
 ## Bitnami ownCloud image version
 ## ref: https://hub.docker.com/r/bitnami/owncloud/tags/
 ##
-image: bitnami/owncloud:9.1.1-r1
+image: bitnami/owncloud:9.1.2-r1
 
 ## Specify a imagePullPolicy
 ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'

@@ -1,7 +1,7 @@
 ## Bitnami phpBB image version
 ## ref: https://hub.docker.com/r/bitnami/phpbb/tags/
 ##
-image: bitnami/phpbb:3.1.10-r0
+image: bitnami/phpbb:3.1.10-r1
 
 ## Specify a imagePullPolicy
 ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
