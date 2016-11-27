@@ -68,8 +68,5 @@ Alternatively, a YAML file that specifies the values for the above parameters ca
 $ helm install --name my-release -f values.yaml stable/fluentd-cloudwatch
 ```
 
-### Files
-
-| File name                  | Description                                       |
-|----------------------------|---------------------------------------------------|
-| `td-agent.conf`             | Fluentd configuration file                        |
+### ConfigMap Files
+FluentD is configured through [td-agent.conf](http://docs.fluentd.org/articles/config-file). This file (and any others listed in `tdAgentFiles`) will be mounted into the `fluentd` pod.

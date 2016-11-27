@@ -8,5 +8,4 @@ metadata:
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
 data:
-  td-agent.conf: |
-{{ .Files.Get "td-agent.conf" | indent 4 }}
+{{ toYaml .Values.tdAgentFiles | indent 2 }}
