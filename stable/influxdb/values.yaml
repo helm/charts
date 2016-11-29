@@ -2,16 +2,18 @@
 ## ref: https://hub.docker.com/r/library/influxdb/tags/
 image:
   repo: "influxdb"
-  tag: "1.1.0-alpine"
+  tag: "1.2-alpine"
   pullPolicy: IfNotPresent
 
 ## Specify a service type
 ## NodePort is default
 ## ref: http://kubernetes.io/docs/user-guide/services/
+##
 service:
   type: ClusterIP
 
 ## Persist data to a persitent volume
+##
 persistence:
   enabled: false
   storageClass: generic

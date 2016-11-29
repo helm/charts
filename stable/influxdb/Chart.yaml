@@ -1,5 +1,5 @@
 name: influxdb
-version: 0.1.0
+version: 0.2.0
 description: Chart for InfluxDB
 keywords:
 - influxdb
