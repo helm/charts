@@ -66,28 +66,28 @@ release.
 
 The following tables lists the configurable parameters of the Traefik chart and their default values.
 
-| Parameter                       | Description                                                          | Default                                   |
-| ------------------------------- | -------------------------------------------------------------------- | ----------------------------------------- |
-| `imageTag`                      | The version of the official Traefik image to use                     | `v1.1.0`                                  |
-| `serviceType`                   | A valid Kubernetes service type                                      | `LoadBalancer`                            |
-| `cpuRequest`                    | Initial share of CPU requested per Traefik pod                       | `100m`                                    |
-| `memoryRequest`                 | Initial share of memory requested per Traefik pod                    | `20Mi`                                    |
-| `cpuLimit`                      | CPU limit per Traefik pod                                            | `200m`                                    |
-| `memoryLimit`                   | Memory limit per Traefik pod                                         | `30Mi`                                    |
-| `ssl.enabled`                   | Whether to enable HTTPS                                              | `false`                                   |
-| `ssl.enforced`                  | Whether to redirect HTTP requests to HTTPS                           | `false`                                   |
-| `ssl.defaultCert`               | Base64 encoded default certficate                                    | A self-signed certificate                 |
-| `ssl.defaultKey`                | Base64 encoded private key for the certificate above                 | The private key for the certificate above |
-| `acme.enabled`                  | Whether to use Let's Encrypt to obtain certificates                  | `false`                                   |
-| `acme.email`                    | Email address to be used in certificates obtained from Let's Encrypt | `admin@example.com`                       |
-| `acme.staging`                  | Whether to get certs from Let's Encrypt's staging environment        | `true`                                    |
-| `acme.persistence.enabled`      | Create a volume to store ACME certs (if ACME is enabled)             | `true`                                    |
-| `acme.persistence.storageClass` | Type of `StorageClass` to request-- will be cluster-specific         | `generic`                                 |
-| `acme.persistence.accessMode`   | `ReadWriteOnce` or `ReadOnly`                                        | `ReadWriteOnce`                           |
-| `acme.persistence.size`         | Minimum size of the volume requested                                 | `1Gi`                                     |
-| `dashboard.enabled`             | Whether to enable the Traefik dashboard                              | `false`                                   |
-| `dashboard.domain`              | Domain for the Traefik dashboard                                     | `traefik.example.com`                     |
-| `gzip.enabled`                  | Whether to use gzip compression                                      | `true`                     |
+| Parameter                       | Description                                                          | Default                                             |
+| ------------------------------- | -------------------------------------------------------------------- | -----------------------------------------           |
+| `imageTag`                      | The version of the official Traefik image to use                     | `v1.1.0`                                            |
+| `serviceType`                   | A valid Kubernetes service type                                      | `LoadBalancer`                                      |
+| `cpuRequest`                    | Initial share of CPU requested per Traefik pod                       | `100m`                                              |
+| `memoryRequest`                 | Initial share of memory requested per Traefik pod                    | `20Mi`                                              |
+| `cpuLimit`                      | CPU limit per Traefik pod                                            | `200m`                                              |
+| `memoryLimit`                   | Memory limit per Traefik pod                                         | `30Mi`                                              |
+| `ssl.enabled`                   | Whether to enable HTTPS                                              | `false`                                             |
+| `ssl.enforced`                  | Whether to redirect HTTP requests to HTTPS                           | `false`                                             |
+| `ssl.defaultCert`               | Base64 encoded default certficate                                    | A self-signed certificate                           |
+| `ssl.defaultKey`                | Base64 encoded private key for the certificate above                 | The private key for the certificate above           |
+| `acme.enabled`                  | Whether to use Let's Encrypt to obtain certificates                  | `false`                                             |
+| `acme.email`                    | Email address to be used in certificates obtained from Let's Encrypt | `admin@example.com`                                 |
+| `acme.staging`                  | Whether to get certs from Let's Encrypt's staging environment        | `true`                                              |
+| `acme.persistence.enabled`      | Create a volume to store ACME certs (if ACME is enabled)             | `true`                                              |
+| `acme.persistence.storageClass` | Type of `StorageClass` to request-- will be cluster-specific         | `volume.alpha.kubernetes.io/storage-class: default` |
+| `acme.persistence.accessMode`   | `ReadWriteOnce` or `ReadOnly`                                        | `ReadWriteOnce`                                     |
+| `acme.persistence.size`         | Minimum size of the volume requested                                 | `1Gi`                                               |
+| `dashboard.enabled`             | Whether to enable the Traefik dashboard                              | `false`                                             |
+| `dashboard.domain`              | Domain for the Traefik dashboard                                     | `traefik.example.com`                               |
+| `gzip.enabled`                  | Whether to use gzip compression                                      | `true`                                              |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
 

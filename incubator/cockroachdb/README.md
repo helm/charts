@@ -35,16 +35,16 @@ The following tables lists the configurable parameters of the CockroachDB chart 
 | ----------------------- | ---------------------------------- | ---------------------------------------------------------- |
 | `Name`                  | Chart name                         | `cockroachdb`                                              |
 | `Image`                 | Container image name               | `cockroachdb/cockroach`                                    |
-| `ImageTag`              | Container image tag                | `latest`                                                    |
+| `ImageTag`              | Container image tag                | `latest`                                                   |
 | `ImagePullPolicy`       | Container pull policy              | `Always`                                                   |
 | `Replicas`              | k8s petset replicas                | `3`                                                        |
 | `Component`             | k8s selector key                   | `cockroachdb`                                              |
-| `GrpcPort`              | CockroachDB primary serving port   | `26257`                                                     |
+| `GrpcPort`              | CockroachDB primary serving port   | `26257`                                                    |
 | `HttpPort`              | CockroachDB HTTP port              | `8080`                                                     |
 | `Cpu`                   | Container requested cpu            | `100m`                                                     |
 | `Memory`                | Container requested memory         | `512Mi`                                                    |
 | `Storage`               | Persistent volume size             | `1Gi`                                                      |
-| `StorageClass`          | Persistent volume class            | `anything`                                                      |
+| `StorageClass`          | Persistent volume class            | `volume.alpha.kubernetes.io/storage-class: default`        |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 

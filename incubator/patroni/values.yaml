@@ -17,6 +17,9 @@ Resources:
   Cpu: 100m
   Memory: 512Mi
   Storage: 1Gi
+  # If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
+  # Default: volume.alpha.kubernetes.io/storage-class: default
+  # StorageClass: "anything"
 
 # Credentials used by Patroni
 # * more information: https://github.com/zalando/patroni/blob/master/docs/SETTINGS.rst#postgresql

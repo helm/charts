@@ -45,29 +45,29 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following tables lists the configurable parameters of the TestLink chart and their default values.
 
-|              Parameter              |               Description               |                         Default                         |
-|-------------------------------------|-----------------------------------------|---------------------------------------------------------|
-| `image`                             | TestLink image                          | `bitnami/testlink:{VERSION}`                            |
-| `imagePullPolicy`                   | Image pull policy                       | `Always` if `imageTag` is `latest`, else `IfNotPresent` |
-| `testlinkUsername`                  | Admin username                          | `user`                                                  |
-| `testlinkPassword`                  | Admin user password                     | _random 10 character long alphanumeric string_          |
-| `testlinkEmail`                     | Admin user email                        | `user@example.com`                                      |
-| `smtpEnable`                        | Enable SMTP                             | `false`                                                 |
-| `smtpHost`                          | SMTP host                               | `nil`                                                   |
-| `smtpPort`                          | SMTP port                               | `nil`                                                   |
-| `smtpUser`                          | SMTP user                               | `nil`                                                   |
-| `smtpPassword`                      | SMTP password                           | `nil`                                                   |
-| `smtpConnectionMode`                | SMTP connection mode [`ssl`, `tls`]     | `nil`                                                   |
-| `mariadb.mariadbRootPassword`       | MariaDB admin password                  | `nil`                                                   |
-| `serviceType`                       | Kubernetes Service type                 | `LoadBalancer`                                          |
-| `persistence.enabled`               | Enable persistence using PVC            | `true`                                                  |
-| `persistence.apache.storageClass`   | PVC Storage Class for Apache volume     | `generic`                                               |
-| `persistence.apache.accessMode`     | PVC Access Mode for Apache volume       | `ReadWriteOnce`                                         |
-| `persistence.apache.size`           | PVC Storage Request for Apache volume   | `1Gi`                                                   |
-| `persistence.testlink.storageClass` | PVC Storage Class for TestLink volume   | `generic`                                               |
-| `persistence.testlink.accessMode`   | PVC Access Mode for TestLink volume     | `ReadWriteOnce`                                         |
-| `persistence.testlink.size`         | PVC Storage Request for TestLink volume | `8Gi`                                                   |
-| `resources`                         | CPU/Memory resource requests/limits     | Memory: `512Mi`, CPU: `300m`                            |
+| Parameter                             | Description                               | Default                                                   |
+| ------------------------------------- | ----------------------------------------- | --------------------------------------------------------- |
+| `image`                               | TestLink image                            | `bitnami/testlink:{VERSION}`                              |
+| `imagePullPolicy`                     | Image pull policy                         | `Always` if `imageTag` is `latest`, else `IfNotPresent`   |
+| `testlinkUsername`                    | Admin username                            | `user`                                                    |
+| `testlinkPassword`                    | Admin user password                       | _random 10 character long alphanumeric string_            |
+| `testlinkEmail`                       | Admin user email                          | `user@example.com`                                        |
+| `smtpEnable`                          | Enable SMTP                               | `false`                                                   |
+| `smtpHost`                            | SMTP host                                 | `nil`                                                     |
+| `smtpPort`                            | SMTP port                                 | `nil`                                                     |
+| `smtpUser`                            | SMTP user                                 | `nil`                                                     |
+| `smtpPassword`                        | SMTP password                             | `nil`                                                     |
+| `smtpConnectionMode`                  | SMTP connection mode [`ssl`, `tls`]       | `nil`                                                     |
+| `mariadb.mariadbRootPassword`         | MariaDB admin password                    | `nil`                                                     |
+| `serviceType`                         | Kubernetes Service type                   | `LoadBalancer`                                            |
+| `persistence.enabled`                 | Enable persistence using PVC              | `true`                                                    |
+| `persistence.apache.storageClass`     | PVC Storage Class for Apache volume       | `volume.alpha.kubernetes.io/storage-class: default`       |
+| `persistence.apache.accessMode`       | PVC Access Mode for Apache volume         | `ReadWriteOnce`                                           |
+| `persistence.apache.size`             | PVC Storage Request for Apache volume     | `1Gi`                                                     |
+| `persistence.testlink.storageClass`   | PVC Storage Class for TestLink volume     | `volume.alpha.kubernetes.io/storage-class: default`       |
+| `persistence.testlink.accessMode`     | PVC Access Mode for TestLink volume       | `ReadWriteOnce`                                           |
+| `persistence.testlink.size`           | PVC Storage Request for TestLink volume   | `8Gi`                                                     |
+| `resources`                           | CPU/Memory resource requests/limits       | Memory: `512Mi`, CPU: `300m`                              |
 
 The above parameters map to the env variables defined in [bitnami/testlink](http://github.com/bitnami/bitnami-docker-testlink). For more information please refer to the [bitnami/testlink](http://github.com/bitnami/bitnami-docker-testlink) image documentation.
 

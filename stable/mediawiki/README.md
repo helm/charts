@@ -45,29 +45,29 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following tables lists the configurable parameters of the MediaWiki chart and their default values.
 
-|              Parameter               |               Description                |                         Default                         |
-|--------------------------------------|------------------------------------------|---------------------------------------------------------|
-| `image`                              | MediaWiki image                          | `bitnami/mediawiki:{VERSION}`                           |
-| `imagePullPolicy`                    | Image pull policy                        | `Always` if `imageTag` is `latest`, else `IfNotPresent` |
-| `mediawikiUser`                      | User of the application                  | `user`                                                  |
-| `mediawikiPassword`                  | Application password                     | _random 10 character long alphanumeric string_          |
-| `mediawikiEmail`                     | Admin email                              | `user@example.com`                                      |
-| `mediawikiName`                      | Name for the wiki                        | `Bitnami MediaWiki`                                     |
-| `smtpHost`                           | SMTP host                                | `nil`                                                   |
-| `smtpPort`                           | SMTP port                                | `nil`                                                   |
-| `smtpHostID`                         | SMTP host ID                             | `nil`                                                   |
-| `smtpUser`                           | SMTP user                                | `nil`                                                   |
-| `smtpPassword`                       | SMTP password                            | `nil`                                                   |
-| `mariadb.mariadbRootPassword`        | MariaDB admin password                   | `nil`                                                   |
-| `serviceType`                        | Kubernetes Service type                  | `LoadBalancer`                                          |
-| `persistence.enabled`                | Enable persistence using PVC             | `true`                                                  |
-| `persistence.apache.storageClass`    | PVC Storage Class for Apache volume      | `generic`                                               |
-| `persistence.apache.accessMode`      | PVC Access Mode for Apache volume        | `ReadWriteOnce`                                         |
-| `persistence.apache.size`            | PVC Storage Request for Apache volume    | `1Gi`                                                   |
-| `persistence.mediawiki.storageClass` | PVC Storage Class for MediaWiki volume   | `generic`                                               |
-| `persistence.mediawiki.accessMode`   | PVC Access Mode for MediaWiki volume     | `ReadWriteOnce`                                         |
-| `persistence.mediawiki.size`         | PVC Storage Request for MediaWiki volume | `8Gi`                                                   |
-| `resources`                          | CPU/Memory resource requests/limits      | Memory: `512Mi`, CPU: `300m`                            |
+| Parameter                              | Description                                | Default                                                   |
+| -------------------------------------- | ------------------------------------------ | --------------------------------------------------------- |
+| `image`                                | MediaWiki image                            | `bitnami/mediawiki:{VERSION}`                             |
+| `imagePullPolicy`                      | Image pull policy                          | `Always` if `imageTag` is `latest`, else `IfNotPresent`   |
+| `mediawikiUser`                        | User of the application                    | `user`                                                    |
+| `mediawikiPassword`                    | Application password                       | _random 10 character long alphanumeric string_            |
+| `mediawikiEmail`                       | Admin email                                | `user@example.com`                                        |
+| `mediawikiName`                        | Name for the wiki                          | `Bitnami MediaWiki`                                       |
+| `smtpHost`                             | SMTP host                                  | `nil`                                                     |
+| `smtpPort`                             | SMTP port                                  | `nil`                                                     |
+| `smtpHostID`                           | SMTP host ID                               | `nil`                                                     |
+| `smtpUser`                             | SMTP user                                  | `nil`                                                     |
+| `smtpPassword`                         | SMTP password                              | `nil`                                                     |
+| `mariadb.mariadbRootPassword`          | MariaDB admin password                     | `nil`                                                     |
+| `serviceType`                          | Kubernetes Service type                    | `LoadBalancer`                                            |
+| `persistence.enabled`                  | Enable persistence using PVC               | `true`                                                    |
+| `persistence.apache.storageClass`      | PVC Storage Class for Apache volume        | `volume.alpha.kubernetes.io/storage-class: default`       |
+| `persistence.apache.accessMode`        | PVC Access Mode for Apache volume          | `ReadWriteOnce`                                           |
+| `persistence.apache.size`              | PVC Storage Request for Apache volume      | `1Gi`                                                     |
+| `persistence.mediawiki.storageClass`   | PVC Storage Class for MediaWiki volume     | `volume.alpha.kubernetes.io/storage-class: default`       |
+| `persistence.mediawiki.accessMode`     | PVC Access Mode for MediaWiki volume       | `ReadWriteOnce`                                           |
+| `persistence.mediawiki.size`           | PVC Storage Request for MediaWiki volume   | `8Gi`                                                     |
+| `resources`                            | CPU/Memory resource requests/limits        | Memory: `512Mi`, CPU: `300m`                              |
 
 The above parameters map to the env variables defined in [bitnami/mediawiki](http://github.com/bitnami/bitnami-docker-mediawiki). For more information please refer to the [bitnami/mediawiki](http://github.com/bitnami/bitnami-docker-mediawiki) image documentation.
 

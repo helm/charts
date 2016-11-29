@@ -43,18 +43,18 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following tables lists the configurable parameters of the PostgresSQL chart and their default values.
 
-| Parameter                  | Description                                | Default                                                    |
-| -----------------------    | ----------------------------------         | ---------------------------------------------------------- |
-| `imageTag`                 | `postgres` image tag                       | `9.5.4`                                           |
-| `imagePullPolicy`          | Image pull policy                          | `Always` if `imageTag` is `latest`, else `IfNotPresent`    |
-| `postgresUser`             | Username of new user to create.            | `postgres`                                                 |
-| `postgresPassword`         | Password for the new user.                 | random 10 characters                                       |
-| `postgresDatabase`         | Name for new database to create.           | `postgres`                                                 |
-| `persistence.enabled`      | Use a PVC to persist data                  | `true`                                                     |
-| `persistence.storageClass` | Storage class of backing PVC               | `generic`                                                  |
-| `persistence.accessMode`   | Use volume as ReadOnly or ReadWrite        | `ReadWriteOnce`                                            |
-| `persistence.size`         | Size of data volume                        | `8Gi`                                                      |
-| `resources`                | CPU/Memory resource requests/limits        | Memory: `256Mi`, CPU: `100m`                               |
+| Parameter                  | Description                         | Default                                                    |
+| -----------------------    | ----------------------------------  | ---------------------------------------------------------- |
+| `imageTag`                 | `postgres` image tag                | `9.5.4`                                                    |
+| `imagePullPolicy`          | Image pull policy                   | `Always` if `imageTag` is `latest`, else `IfNotPresent`    |
+| `postgresUser`             | Username of new user to create.     | `postgres`                                                 |
+| `postgresPassword`         | Password for the new user.          | random 10 characters                                       |
+| `postgresDatabase`         | Name for new database to create.    | `postgres`                                                 |
+| `persistence.enabled`      | Use a PVC to persist data           | `true`                                                     |
+| `persistence.storageClass` | Storage class of backing PVC        | `volume.alpha.kubernetes.io/storage-class: default`        |
+| `persistence.accessMode`   | Use volume as ReadOnly or ReadWrite | `ReadWriteOnce`                                            |
+| `persistence.size`         | Size of data volume                 | `8Gi`                                                      |
+| `resources`                | CPU/Memory resource requests/limits | Memory: `256Mi`, CPU: `100m`                               |
 
 The above parameters map to the env variables defined in [postgres](http://github.com/docker-library/postgres). For more information please refer to the [postgres](http://github.com/docker-library/postgres) image documentation.
 

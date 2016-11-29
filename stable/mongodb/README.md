@@ -43,18 +43,18 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following tables lists the configurable parameters of the MongoDB chart and their default values.
 
-|         Parameter          |             Description             |                         Default                          |
-|----------------------------|-------------------------------------|----------------------------------------------------------|
-| `image`                    | MongoDB image                       | `bitnami/mongodb:{VERSION}`                              |
-| `imagePullPolicy`          | Image pull policy                   | `Always` if `imageTag` is `latest`, else `IfNotPresent`. |
-| `mongodbRootPassword`      | MongoDB admin password              | `nil`                                                    |
-| `mongodbUsername`          | MongoDB custom user                 | `nil`                                                    |
-| `mongodbPassword`          | MongoDB custom user password        | `nil`                                                    |
-| `mongodbDatabase`          | Database to create                  | `nil`                                                    |
-| `persistence.enabled`      | Use a PVC to persist data           | `true`                                                   |
-| `persistence.storageClass` | Storage class of backing PVC        | `generic`                                                |
-| `persistence.accessMode`   | Use volume as ReadOnly or ReadWrite | `ReadWriteOnce`                                          |
-| `persistence.size`         | Size of data volume                 | `8Gi`                                                    |
+| Parameter                    | Description                           | Default                                                    |
+| ---------------------------- | ------------------------------------- | ---------------------------------------------------------- |
+| `image`                      | MongoDB image                         | `bitnami/mongodb:{VERSION}`                                |
+| `imagePullPolicy`            | Image pull policy                     | `Always` if `imageTag` is `latest`, else `IfNotPresent`.   |
+| `mongodbRootPassword`        | MongoDB admin password                | `nil`                                                      |
+| `mongodbUsername`            | MongoDB custom user                   | `nil`                                                      |
+| `mongodbPassword`            | MongoDB custom user password          | `nil`                                                      |
+| `mongodbDatabase`            | Database to create                    | `nil`                                                      |
+| `persistence.enabled`        | Use a PVC to persist data             | `true`                                                     |
+| `persistence.storageClass`   | Storage class of backing PVC          | `volume.alpha.kubernetes.io/storage-class: default`        |
+| `persistence.accessMode`     | Use volume as ReadOnly or ReadWrite   | `ReadWriteOnce`                                            |
+| `persistence.size`           | Size of data volume                   | `8Gi`                                                      |
 
 The above parameters map to the env variables defined in [bitnami/mongodb](http://github.com/bitnami/bitnami-docker-mongodb). For more information please refer to the [bitnami/mongodb](http://github.com/bitnami/bitnami-docker-mongodb) image documentation.
 
