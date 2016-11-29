@@ -28,6 +28,15 @@ persistence:
   accessMode: ReadWriteOnce
   size: 8Gi
 
+metrics:
+  enabled: false
+  image: wrouesnel/postgres_exporter:v0.1.1
+  imagePullPolicy: IfNotPresent
+  resources:
+    requests:
+      memory: 256Mi
+      cpu: 100m
+
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
 ##
