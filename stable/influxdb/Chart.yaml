@@ -8,5 +8,5 @@ keywords:
 home: https://www.influxdata.com/time-series-platform/influxdb/
 maintainers:
 - name: Jack Zampolin
-- email: jack@influxdb.com
+  email: jack@influxdb.com
 engine: gotpl

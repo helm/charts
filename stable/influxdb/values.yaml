@@ -1,6 +1,5 @@
 ## influxdb image version
 ## ref: https://hub.docker.com/r/library/influxdb/tags/
-##
 image:
   repo: "influxdb"
   tag: "1.1.0-alpine"
@@ -21,7 +20,6 @@ persistence:
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
-##
 resources:
   requests:
     memory: 256Mi
@@ -33,7 +31,6 @@ resources:
 ## Change InfluxDB configuration paramaters below:
 ## Defaults are indicated
 ## ref: https://docs.influxdata.com/influxdb/v1.1/administration/config/
-##
 config:
   reporting_disabled: false
   bind_address: 8088
@@ -78,7 +75,7 @@ config:
     enabled: true
     http_timeout: 30s
     insecure_skip_verify: false
-    ca_certs: 
+    ca_certs: ""
     write_concurrency: 40
     write_buffer_size: 1000
   http:
@@ -90,10 +87,10 @@ config:
     pprof_enabled: true
     https_enabled: false
     https_certificate: /etc/ssl/influxdb.pem
-    https_private_key: 
+    https_private_key: ""
     max_row_limit: 10000
     max_connection_limit: 0
-    shared_secret: 
+    shared_secret: "beetlejuicebeetlejuicebeetlejuice"
     realm: InfluxDB
     unix_socket_enabled: false
     bind_socket: /var/run/influxdb.sock
@@ -101,7 +98,7 @@ config:
     enabled: false
     bind_address: 2003
     database: graphite
-    retention_policy: ""
+    retention_policy: autogen
     protocol: tcp
     batch_size: 5000
     batch_pending: 10
@@ -113,7 +110,7 @@ config:
     enabled: false
     bind_address: 25826
     database: collectd
-    retention_policy: ""
+    retention_policy: autogen
     batch_size: 5000
     batch_pending: 10
     batch_timeout: 10s
@@ -125,7 +122,7 @@ config:
     enabled: false
     bind_address: 4242
     database: opentsdb
-    retention_policy: ""
+    retention_policy: autogen
     consistency_level: one
     tls_enabled: false
     certificate: /etc/ssl/influxdb.pem
@@ -137,12 +134,12 @@ config:
     enabled: false
     bind_address: 8089
     database: udp
-    retention_policy: ""
+    retention_policy: autogen
     batch_size: 5000
     batch_pending: 10
     read_buffer: 0
     batch_timeout: 1s
-    precision: 
+    precision: "ns"
   continuous_queries:
     log_enabled: true
     enabled: true
