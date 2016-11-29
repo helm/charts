@@ -1,0 +1,34 @@
+## influxdb image version
+## ref: https://hub.docker.com/r/library/influxdb/tags/
+##
+image:
+  repository: "kapacitor"
+  tag: "1.1.0"
+  pullPolicy: "IfNotPresent"
+
+## Specify a service type
+## NodePort is default
+## ref: http://kubernetes.io/docs/user-guide/services/
+service:
+  type: NodePort
+
+## Persist data to a persitent volume
+persistence:
+  enabled: false
+  storageClass: generic
+  accessMode: ReadWriteOnce
+  size: 8Gi
+
+## Configure resource requests and limits
+## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+##
+resources:
+  requests:
+    memory: 256Mi
+    cpu: 0.1
+  limits:
+    memory: 2Gi
+    cpu: 2
+    
+# Set url for kapacitor to point to 
+InfluxURL: http://influxdb-influxdb.tick:8086
