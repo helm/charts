@@ -34,6 +34,8 @@ spec:
         - name: admin
           containerPort: 9990
           hostPort: 9990
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
         - name: "{{ template "fullname" . }}-config"
           mountPath: "/io.buoyant/linkerd/config"
