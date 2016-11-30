@@ -1,5 +1,18 @@
-Add ports on your services that have the name {{ .Values.linkerd.portName }}
+Add named ports to your services that have the name '{{ .Values.linkerd.portName }}'
 and linkerd will act as a proxy for them.
+
+For example:
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-http-service
+spec:
+  type: ClusterIP
+  ports:
+  - name: {{ .Values.linkerd.portName }}
+    port: 8080
+  selector:
+    app: my-http-service
 
 1. Get the linkerd admin interface URL by running these commands:
 {{- if contains "NodePort" .Values.service.type }}

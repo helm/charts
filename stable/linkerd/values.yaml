@@ -10,7 +10,8 @@ image:
     tag: v1.4.0
   pullPolicy: IfNotPresent
 linkerd:
-  portName: service
+  # Port name that linkerd will use for endpoint discovery
+  portName: http
 prometheus:
   scrape: true
   probe: true
