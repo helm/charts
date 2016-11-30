@@ -17,24 +17,25 @@ spec:
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         ports:
         - containerPort: 8888
+          name: api
         livenessProbe:
           httpGet:
             path: /ping
-            port: 8888
+            port: api
         readinessProbe:
           httpGet:
             path: /ping
-            port: 8888
+            port: api
         volumeMounts:
         - name: data
           mountPath: /var/lib/chronograf
         resources:
-{{ toYaml .Values.resources | indent 12 }}
+{{ toYaml .Values.resources | indent 10 }}
       volumes:
         - name: data
         {{- if .Values.persistence.enabled }}
-        persistentVolumeClaim:
-          claimName: {{ template "fullname" . }}
-          {{- else -}}
+          persistentVolumeClaim:
+            claimName: {{ template "fullname" . }}
+        {{ else }}
           emptyDir: {}
-          {{- end -}}
+        {{ end }}
