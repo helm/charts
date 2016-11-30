@@ -81,7 +81,9 @@ minecraftServer:
     serviceType: LoadBalancer
 
 persistence:
-  storageClass: generic
+  # If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
+  # Default: volume.alpha.kubernetes.io/storage-class: default
+  # storageClass: generic
   dataDir:
     # Set this to false if you don't care to persist state between restarts.
     enabled: true

@@ -18,4 +18,6 @@ Resources:
     cpu: "100m"
     memory: "512Mi"
 Storage: "1Gi"
-StorageClass: "anything"
+# If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
+# Default: volume.alpha.kubernetes.io/storage-class: default
+# StorageClass: "anything"

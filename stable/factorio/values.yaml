@@ -48,7 +48,9 @@ factorio:
     password: your.password
 
 persistence:
-  storageClass: generic
+  # If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
+  # Default: volume.alpha.kubernetes.io/storage-class: default
+  # storageClass: generic
   savedGames:
     # Set this to false if you don't care to persist saved games between restarts.
     enabled: true

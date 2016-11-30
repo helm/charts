@@ -1,6 +1,6 @@
 name: zookeeper
 home: https://zookeeper.apache.org/
-version: 0.1.1
+version: 0.2.0
 description: Zookeeper Helm chart for Kubernetes.
 sources:
   - https://github.com/apache/zookeeper

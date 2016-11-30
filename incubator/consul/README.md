@@ -40,6 +40,7 @@ The following tables lists the configurable parameters of the consul chart and t
 | `Cpu`                   | container requested cpu               | `100m`                                                     |
 | `Memory`                | container requested memory            | `512Mi`                                                    |
 | `Storage`               | Persistent volume size                | `1Gi`                                                      |
+| `StorageClass`          | Persistent volume class               | `volume.alpha.kubernetes.io/storage-class: default`        |
 | `HttpPort`              | Consul http listening port            | `8500`                                                     |
 | `RpcPort`               | Consul rpc listening port             | `8400`                                                     |
 | `SerflanPort`           | Container serf lan listening port     | `8301`                                                     |

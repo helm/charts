@@ -61,7 +61,7 @@ The following tables lists the configurable parameters of the Redmine chart and 
 | `mariadb.mariadbRootPassword`   | MariaDB admin password          | `nil`                                                     |
 | `serviceType`                   | Kubernetes Service type         | `LoadBalancer`                                            |
 | `persistence.enabled`           | Enable persistence using PVC    | `true`                                                    |
-| `persistence.storageClass`      | PVC Storage Class               | `generic`                                                 |
+| `persistence.storageClass`      | PVC Storage Class               | `volume.alpha.kubernetes.io/storage-class: default`       |
 | `persistence.accessMode`        | PVC Access Mode                 | `ReadWriteOnce`                                           |
 | `persistence.size`              | PVC Storage Request             | `8Gi`                                                     |
 

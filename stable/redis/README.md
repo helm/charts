@@ -49,7 +49,7 @@ The following tables lists the configurable parameters of the Redis chart and th
 | `imagePullPolicy`          | Image pull policy                   | `Always` if `imageTag` is `latest`, else `IfNotPresent`   |
 | `redisPassword`            | Redis password                      | Randomly generated                                        |
 | `persistence.enabled`      | Use a PVC to persist data           | `true`                                                    |
-| `persistence.storageClass` | Storage class of backing PVC        | `generic`                                                 |
+| `persistence.storageClass` | Storage class of backing PVC        | `volume.alpha.kubernetes.io/storage-class: default`       |
 | `persistence.accessMode`   | Use volume as ReadOnly or ReadWrite | `ReadWriteOnce`                                           |
 | `persistence.size`         | Size of data volume                 | `8Gi`                                                     |
 | `resources`                | CPU/Memory resource requests/limits | Memory: `256Mi`, CPU: `100m`                              |

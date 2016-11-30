@@ -44,19 +44,19 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following tables lists the configurable parameters of the MySQL chart and their default values.
 
-| Parameter                  | Description                        | Default                                                    |
-| -----------------------    | ---------------------------------- | ---------------------------------------------------------- |
-| `imageTag`                 | `mysql` image tag.                 | Most recent release                                        |
-| `imagePullPolicy`          | Image pull policy                  | `Always` if `imageTag` is `latest`, else `IfNotPresent`    |
-| `mysqlRootPassword`        | Password for the `root` user.      | `nil`                                                      |
-| `mysqlUser`                | Username of new user to create.    | `nil`                                                      |
-| `mysqlPassword`            | Password for the new user.         | `nil`                                                      |
-| `mysqlDatabase`            | Name for new database to create.   | `nil`                                                      |
-| `persistence.enabled`      | Create a volume to store data      | true                                                       |
-| `persistence.size`         | Size of persistent volume claim    | 8Gi RW                                                     |
-| `persistence.storageClass` | Type of persistent volume claim    | generic                                                    |
-| `persistence.accessMode`   | ReadWriteOnce or ReadOnly          | ReadWriteOnce                                              |
-| `resources`                | CPU/Memory resource requests/limits | Memory: `256Mi`, CPU: `100m`                              |
+| Parameter                  | Description                         | Default                                                    |
+| -----------------------    | ----------------------------------  | ---------------------------------------------------------- |
+| `imageTag`                 | `mysql` image tag.                  | Most recent release                                        |
+| `imagePullPolicy`          | Image pull policy                   | `Always` if `imageTag` is `latest`, else `IfNotPresent`    |
+| `mysqlRootPassword`        | Password for the `root` user.       | `nil`                                                      |
+| `mysqlUser`                | Username of new user to create.     | `nil`                                                      |
+| `mysqlPassword`            | Password for the new user.          | `nil`                                                      |
+| `mysqlDatabase`            | Name for new database to create.    | `nil`                                                      |
+| `persistence.enabled`      | Create a volume to store data       | true                                                       |
+| `persistence.size`         | Size of persistent volume claim     | 8Gi RW                                                     |
+| `persistence.storageClass` | Type of persistent volume claim     | `volume.alpha.kubernetes.io/storage-class: default`        |
+| `persistence.accessMode`   | ReadWriteOnce or ReadOnly           | ReadWriteOnce                                              |
+| `resources`                | CPU/Memory resource requests/limits | Memory: `256Mi`, CPU: `100m`                               |
 
 Some of the parameters above map to the env variables defined in the [MySQL DockerHub image](https://hub.docker.com/_/mysql/).
 

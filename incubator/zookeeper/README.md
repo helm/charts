@@ -45,6 +45,7 @@ The following tables lists the configurable parameters of the zookeeper chart an
 | `PeerPort`              | k8s service port                   | `2888`                                                     |
 | `LeaderElectionPort`    | Container listening port           | `3888`                                                     |
 | `Storage`               | Persistent volume size             | `1Gi`                                                      |
+| `StorageClass`          | Persistent volume class            | `volume.alpha.kubernetes.io/storage-class: default`        |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
