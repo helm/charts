@@ -20,4 +20,3 @@ spec:
     port: 9990
   selector:
     app: {{ template "fullname" . }}
-  type: LoadBalancer
