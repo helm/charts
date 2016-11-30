@@ -1,5 +1,3 @@
-# This is a service gateway to the replica set created by the deployment.
-# Take a look at the deployment.yaml for general notes about this chart.
 apiVersion: v1
 kind: Service
 metadata:

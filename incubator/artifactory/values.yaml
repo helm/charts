@@ -6,7 +6,7 @@
 Name: artifactory
 Component: "Artifactory"
 image: "docker.bintray.io/jfrog/artifactory-pro"
-imageTag: "4.13.2"
+imageTag: "4.14.1"
 imagePullPolicy: "Always"
 replicaCount: 1
 httpPort: 8081
@@ -18,7 +18,6 @@ resources:
   requests:
     memory: 2048Mi
     cpu: 200m
-
 
 ## Persist data to a persitent volume
 persistence:
