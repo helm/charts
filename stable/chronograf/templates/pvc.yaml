@@ -1,6 +1,6 @@
-{{- if .Values.persistence.enabled }}
-kind: PersistentVolumeClaim
+{{- if .Values.persistence.enabled -}}
 apiVersion: v1
+kind: PersistentVolumeClaim
 metadata:
   name: {{ template "fullname" . }}
   annotations:
