@@ -1,6 +1,6 @@
 # Chronograf
 
-##  An Open-Source Time Series Database
+##  An Open-Source Time Series Visualization Tool
 
 [Chronograf](https://github.com/influxdata/chronograf) is an open-source web application built by the folks over at [InfluxData](https://influxdata.com) and written in Go and React.js that provides the tools to visualize your monitoring data and easily create alerting and automation rules.
 
