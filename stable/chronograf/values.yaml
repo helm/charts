@@ -11,7 +11,7 @@ service:
 
 ## Persist data to a persitent volume
 persistence:
-  enabled: true
+  enabled: false
   storageClass: generic
   accessMode: ReadWriteOnce
   size: 8Gi
@@ -31,8 +31,8 @@ resources:
 ## ref : http://kubernetes.io/docs/user-guide/ingress/
 ## 
 ingress:
-  enabled: true
-  tls: true
-  hostname: chronograf.influxdata.com
+  enabled: false
+  tls: false
+  hostname: chronograf.foobar.com
   annotations:
-    # kubernetes.io/ingress.class: "nginx"
+    kubernetes.io/ingress.class: "nginx"
