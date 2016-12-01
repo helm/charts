@@ -47,18 +47,18 @@ The following tables lists the configurable parameters of the InfluxDB chart and
 their default values.
 
 ```yaml
-image.repo: "influxdb"
-image.tag: "1.1.0-alpine"
-image.pullPolicy: IfNotPresent
-service.type: NodePort
-persistence.enabled: false
-persistence.storageClass: generic
-persistence.accessMode: ReadWriteOnce
-persistence.size: 8Gi
-resources.requests.memory: 256Mi
-resources.requests.cpu: 0.1
-resources.limits.memory: 16Gi
-resources.limits.cpu: 8
+image.repo: Docker image repo
+image.tag: Docker image tag
+image.pullPolicy: Kubernetes image pull policy
+service.type: InfluxDB service type
+persistence.enabled: Toggle persistent storage, uses PVC
+persistence.storageClass: Storage class for persistent volume
+persistence.accessMode: Access mode for persistent storage
+persistence.size: Disk size for InfluxDB storage in Gi
+resources.requests.memory: Min memory required for this deployment
+resources.requests.cpu: Min cpu required for this deployment
+resources.limits.memory: Max memory required for this deployment
+resources.limits.cpu: Max cpu required for this deployment
 # The configuration paramaters come from the InfluxDB configuration file
 # ref: https://docs.influxdata.com/influxdb/v1.1/administration/config/
 config.{value}
