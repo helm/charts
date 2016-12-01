@@ -44,27 +44,27 @@ The command removes all the Kubernetes components associated with the chart and 
 ## Configuration
 
 The following tables lists the configurable parameters of the Chronograf chart and 
-their default values.
+their descriptions. The default values can be seen in `values.yaml`:
 
 ```yaml
-image.repository: "quay.io/influxdb/chronograf"
-image.tag: "latest"
-image.pullPolicy: "Always"
-service.type: LoadBalancer
-persistence.enabled: false
-persistence.storageClass: generic
-persistence.accessMode: ReadWriteOnce
-persistence.size: 8Gi
-resources.requests.memory: 256Mi
-resources.requests.cpu: 0.1
-resources.limits.memory: 2Gi
-resources.limits.cpu: 2
+image.repository: Docker image repository
+image.tag: Docker image tag
+image.pullPolicy: Kubernetes image pull policy
+service.type: Service type for Chronograf
+persistence.enabled: Enable persistent storage for Chronograf server
+persistence.storageClass: storage class for the persistent volume
+persistence.accessMode: Access mode for persistent volume
+persistence.size: Size of persistent volume
+resources.requests.memory: Min memory used by the deployment
+resources.requests.cpu: Min cpu used by the deployment
+resources.limits.memory: Max memory used by the deployment
+resources.limits.cpu: Max cpu used by the deployment
 
 # Use this ingress with service.type: NodePort
-ingress.enabled: false
-ingress.tls: false
-ingress.hostname: chronograf.foobar.com
-ingress.annotations:
+ingress.enabled: Toggle to enable/disable ingress
+ingress.tls: Enable tls on the ingress resource
+ingress.hostname: fqdn to expose ingess
+ingress.annotations: Use this to add any annotations to the ingress
 ingress.annotations.kubernetes.io/ingress.class: "nginx"
 ```
 
