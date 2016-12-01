@@ -1,0 +1,13 @@
+name: telegraf
+version: 0.1.0
+description: Chart for Telegraf Kubernetes deployments
+keywords:
+- telegraf
+- collector
+- timeseries
+- influxdata
+home: https://www.influxdata.com/time-series-platform/telegraf/
+maintainers:
+- name: Jack Zampolin
+  email: jack@influxdb.com
+engine: gotpl
