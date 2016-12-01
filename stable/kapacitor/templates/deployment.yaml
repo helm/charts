@@ -22,7 +22,7 @@ spec:
         - name: KAPACITOR_HOSTNAME
           value: {{ template "fullname" . }}.{{ .Release.Namespace }}
         - name: KAPACITOR_INFLUXDB_0_URLS_0
-          value: {{ .Values.InfluxURL }}
+          value: {{ .Values.influxURL }}
         ports:
         - containerPort: 9092
         volumeMounts:
