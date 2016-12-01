@@ -1,0 +1,28 @@
+Telegraf's statsd service can be accessed via port {{ .Values.inputs.statsd.bind_address }} on the following DNS name from within your cluster:
+
+- http://{{ template "fullname" . }}.{{ .Release.Namespace }}
+
+You can easily connect to the remote instance from your browser. Forward the webserver port to localhost:8888
+
+- kubectl port-forward --namespace {{ .Release.Namespace }} $(kubectl get pods --namespace {{ .Release.Namespace }} -l app={{ template "fullname" . }} -o jsonpath='{ .items[0].metadata.name }') 8888:80
+
+You can also connect to the container running Telegraf. To open a shell session in the pod run the following:
+
+- kubectl exec -i -t --namespace {{ .Release.Namespace }} $(kubectl get pods --namespace {{ .Release.Namespace }} -l app={{ template "fullname" . }} -o jsonpath='{.items[0].metadata.name}') /bin/sh
+
+To trail the logs for the Telegraf pod run the following:
+
+- kubectl logs -f --namespace {{ .Release.Namespace }} $(kubectl get pods --namespace {{ .Release.Namespace }} -l app={{ template "fullname" . }} -o jsonpath='{ .items[0].metadata.name }')
+
+{{- if eq .Values.service.type "LoadBalancer" }}
+
+To watch for the LoadBalancer IP run the following
+
+- kubectl get svc -w --namespace {{ .Release.Namespace }} -l app={{ template "fullname" . }}
+{{- end }}
+{{- if .Values.ingress.enabled }}
+
+Telegraf will be available at the following IP
+
+- http://{{ .Values.ingress.hostname }}
+{{- end -}}
