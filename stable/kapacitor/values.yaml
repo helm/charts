@@ -6,13 +6,15 @@ image:
   tag: "1.1.0"
   pullPolicy: "IfNotPresent"
 
-## Specify a service type
-## NodePort is default
+## Specify a service type, defaults to NodePort
 ## ref: http://kubernetes.io/docs/user-guide/services/
+##
 service:
   type: NodePort
 
 ## Persist data to a persitent volume
+## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+##
 persistence:
   enabled: false
   storageClass: generic
@@ -30,5 +32,7 @@ resources:
     memory: 2Gi
     cpu: 2
     
-# Set url for kapacitor to point to 
-InfluxURL: http://influxdb-influxdb.tick:8086
+## Set the URL of InfluxDB instance to create subscription on
+## ref: https://docs.influxdata.com/kapacitor/v1.1/introduction/getting_started/
+##
+influxURL: http://influxdb-influxdb.tick:8086
