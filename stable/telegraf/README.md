@@ -40,32 +40,32 @@ The command removes all the Kubernetes components associated with the chart and 
  
 ## Configuration
 
-The following tables lists the configurable parameters of the Telegraf chart and their default values.
+The following tables lists the configurable parameters of the Telegraf chart and includes brief explanation. The defaults are listed in `values.yaml`:
 
 ```yaml
 ## Image
-image.repo: "telegraf"
-image.tag: "1.1.0-alpine"
-image.pullPolicy: IfNotPresent
+image.repo: Docker image repository
+image.tag: Docker image tag
+image.pullPolicy: Kubernetes pull policy for docker image
 ## Daemonset - configuration for telegraf instances running as daemonset
-daemonset.enabled: true
+daemonset.enabled: Toggle daemonset on or off
 # resource requests and limits for the daemonset
-daemonset.resources.requests.memory: 256Mi
-daemonset.resources.requests.cpu: 0.1
-daemonset.resources.limits.memory: 2Gi
-daemonset.resources.limits.cpu: 1
+daemonset.resources.requests.memory: Min memory for this resource
+daemonset.resources.requests.cpu: Min cpu for this pod
+daemonset.resources.limits.memory: Max memory for this resource
+daemonset.resources.limits.cpu: Max cpu for this pod
 ## Exposed telegraf configuration
 ## ref: https://docs.influxdata.com/telegraf/v1.1/administration/configuration/
 daemonset.config: # See Telegraf Configuration
 ## Single - configuration for telegraf instances running as deployment
 single.enabled: true
 # resource requests and limits for the single instance
-single.resources.requests.memory: 256Mi
-single.resources.requests.cpu: 0.1
-single.resources.limits.memory: 2Gi
-single.resources.limits.cpu: 1
-single.service.enabled: true
-single.service.type: NodePort
+single.resources.requests.memory: Min memory for this resource
+single.resources.requests.cpu: Min cpu for this pod
+single.resources.limits.memory: Max memory for this resource
+single.resources.limits.cpu: Max cpu for this pod
+single.service.enabled: This enables the service to expose any listeners from telegraf
+single.service.type: Service type for telegraf service
 ## Exposed telegraf configuration
 ## ref: https://docs.influxdata.com/telegraf/v1.1/administration/configuration/
 single.config: # see Telegraf Configuration
