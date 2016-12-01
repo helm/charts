@@ -10,13 +10,13 @@ You can also connect to the container running Kapacitor. To open a shell session
 
 - kubectl exec -i -t --namespace {{ .Release.Namespace }} $(kubectl get pods --namespace {{ .Release.Namespace }} -l app={{ template "fullname" . }} -o jsonpath='{.items[0].metadata.name}') /bin/sh
 
-To trail the logs for the Kapacitor pod run the following:
+To tail the logs for the Kapacitor pod run the following:
 
 - kubectl logs -f --namespace {{ .Release.Namespace }} $(kubectl get pods --namespace {{ .Release.Namespace }} -l app={{ template "fullname" . }} -o jsonpath='{ .items[0].metadata.name }')
 
 {{- if eq .Values.service.type "LoadBalancer" }}
 
-To watch for the LoadBalancer IP run the following
+To watch for the LoadBalancer IP or Hostname to populate run the following:
 
 - kubectl get svc -w --namespace {{ .Release.Namespace }} -l app={{ template "fullname" . }}
 {{- end }}
