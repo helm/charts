@@ -57,7 +57,8 @@ The following tables lists the configurable parameters of the PostgresSQL chart 
 | `persistence.size`         | Size of data volume                        | `8Gi`                                                      |
 | `resources`                | CPU/Memory resource requests/limits        | Memory: `256Mi`, CPU: `100m`                               |
 | `metrics.enabled`          | Start a side-car prometheus exporter       | `false`                                                    |
-| `metrics.image`            | Exporter image                             | `wrouesnel/postgres_exporter:v0.1.1`                       |
+| `metrics.image`            | Exporter image                             | `wrouesnel/postgres_exporter`                              |
+| `metrics.imageTag`         | Exporter image                             | `v0.1.1`                                                   |
 | `metrics.imagePullPolicy`  | Exporter image pull policy                 | `IfNotPresent`                                             |
 | `metrics.resources`        | Exporter resource requests/limit           | Memory: `256Mi`, CPU: `100m`                               |
 
