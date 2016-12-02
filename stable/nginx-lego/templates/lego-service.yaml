@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "fullname" . }}-lego
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+spec:
+  type: NodePort
+  ports:
+  - port: 80
+    name: "lego"
+  selector:
+    app: {{ template "fullname" . }}-lego
