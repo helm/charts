@@ -22,7 +22,7 @@ To watch for the LoadBalancer IP run the following
 {{- end }}
 {{- if .Values.ingress.enabled }}
 
-Chronograf will be available at the following IP
+Chronograf will be available at the URL:
 
 - http://{{ .Values.ingress.hostname }}
 {{- end -}}
