@@ -12,7 +12,7 @@ $ helm install stable/chronograf --name foo --namespace bar
 
 ## Introduction
 
-This chart bootstraps A Chronograf deployment and service on a Kubernetes cluster using the Helm Package manager.
+This chart bootstraps a Chronograf deployment and service on a Kubernetes cluster using the Helm Package manager.
 
 ## Prerequisites
 
