@@ -13,19 +13,20 @@ resources:
   requests:
     cpu: 100m
     memory: 128Mi
-# etcd-cluster specific values
+## etcd-cluster specific values
 cluster:
   enabled: false
   name: etcd-cluster
   size: 3
   version: v3.1.0-rc.0
   backup:
-    enabled: true
+    enabled: false
+    ## Cloud specific PV provisioner
+    ## Supports either kubernetes.io/gce-pd or kubernetes.io/aws-ebs
     provisioner: kubernetes.io/gce-pd
     config:
-      # short snapshot interval for testing, do not use this in production!
+      ## short snapshot interval for testing, do not use this in production!
       snapshotIntervalInSecond: 30
       maxSnapshot: 5
       volumeSizeInMB: 512
       storageType: PersistentVolume
-    # Which PersistentVolume provisioner to use. Currently either kubernetes.io/gce-pd, kubernetes.io/aws-ebs
