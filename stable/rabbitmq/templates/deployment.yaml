@@ -35,7 +35,7 @@ spec:
         - name: RABBITMQ_NODE_TYPE
           value: {{ default "stats" .Values.rabbitmqNodeType | quote }}
         - name: RABBITMQ_NODE_NAME
-          value: {{ default "rabbit" .Values.rabbitmqNodeName | quote }}
+          value: {{ printf "%s@%s" (default "rabbit" .Values.rabbitmqNodeName) "localhost" | quote }}
         - name: RABBITMQ_CLUSTER_NODE_NAME
           value: {{ default "" .Values.rabbitmqClusterNodeName | quote }}
         - name: RABBITMQ_VHOST
