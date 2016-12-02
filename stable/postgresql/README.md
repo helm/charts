@@ -45,7 +45,8 @@ The following tables lists the configurable parameters of the PostgresSQL chart 
 
 | Parameter                  | Description                                | Default                                                    |
 | -----------------------    | ----------------------------------         | ---------------------------------------------------------- |
-| `imageTag`                 | `postgres` image tag                       | `9.5.4`                                           |
+| `image`                    | `postgres` image repository                | `postgres`                                                 |
+| `imageTag`                 | `postgres` image tag                       | `9.5.4`                                                    |
 | `imagePullPolicy`          | Image pull policy                          | `Always` if `imageTag` is `latest`, else `IfNotPresent`    |
 | `postgresUser`             | Username of new user to create.            | `postgres`                                                 |
 | `postgresPassword`         | Password for the new user.                 | random 10 characters                                       |

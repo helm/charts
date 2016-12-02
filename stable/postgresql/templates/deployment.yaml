@@ -29,7 +29,7 @@ spec:
     spec:
       containers:
       - name: {{ template "fullname" . }}
-        image: "postgres:{{ .Values.imageTag }}"
+        image: "{{ .Values.image }}:{{ .Values.imageTag }}"
         imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
         env:
         - name: POSTGRES_USER
