@@ -40,7 +40,7 @@ spec:
           value: {{ .Values.factorioServer.autosave.slots | quote }}
 
         {{- if .Values.factorioServer.password }}
-        - name: FACTORIO_SERVER_GAME_PASSWORD
+        - name: FACTORIO_GAME_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ template "fullname" . }}
