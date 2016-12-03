@@ -20,7 +20,7 @@ spec:
         resources:
 {{ toYaml .Values.daemonset.resources | indent 10 }}
         env:
-        - name: NODE_IP
+        - name: HOSTNAME
           valueFrom:
             fieldRef:
               fieldPath: spec.nodeName
