@@ -26,6 +26,8 @@ nginx:
     hsts_include_subdomains: "false"
     body_size: "64m"
     server_name_hash_bucket_size: "256"
+    # TODO: figure out how to expose `{nginx_addr}:8080/nginx_status`, on existing service or create new one?
+    enable_vts_status: "false"
 
 ## Default Backend configuration
 ## To run a different 404 page for the managed domains please see the documentation below
