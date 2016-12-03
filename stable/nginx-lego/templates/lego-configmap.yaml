@@ -3,7 +3,7 @@ apiVersion: v1
 metadata:
   name: {{ template "fullname" . }}-lego
 data:
-  lego.email: {{ .Values.lego.lego.email | quote }}
-  lego.url: {{ .Values.lego.lego.url | quote }}
+  lego.email: {{ .Values.lego.configmap.email | quote }}
+  lego.url: {{ .Values.lego.configmap.url | quote }}
 kind: ConfigMap
 {{- end }}

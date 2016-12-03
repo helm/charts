@@ -31,7 +31,7 @@ $ helm install stable/kube-lego
 
 ## Introduction
 
-This chart bootstraps a [nginx-lego](https://github.com/bitnami/bitnami-docker-redis) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
+This chart bootstraps an nginx-lego deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
 ## Prerequisites
 
@@ -43,7 +43,7 @@ This chart bootstraps a [nginx-lego](https://github.com/bitnami/bitnami-docker-r
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm install --name my-release stable/redis
+$ helm install --name my-release stable/nginx-lego
 ```
 
 The command deploys nginx-lego on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
@@ -66,22 +66,16 @@ See `values.yaml` for configuration notes. Specify each parameter using the `--s
 
 ```bash
 $ helm install --name my-release \
-  --set redisPassword=secretpassword \
-    stable/redis
+  --set lego.enabled=false \
+    stable/nginx-lego
 ```
 
-The above command sets the nginx-lego server password to `secretpassword`.
+Installs the chart without kube-lego and the ability to generate certs.
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```bash
-$ helm install --name my-release -f values.yaml stable/redis
+$ helm install --name my-release -f values.yaml stable/nginx-lego
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
-
-## Persistence
-
-The [Bitnami nginx-lego](https://github.com/bitnami/bitnami-docker-redis) image stores the nginx-lego data and configurations at the `/bitnami/redis` path of the container.
-
-The chart mounts a [Persistent Volume](kubernetes.io/docs/user-guide/persistent-volumes/) volume at this location. The volume is created using dynamic volume provisioning.
