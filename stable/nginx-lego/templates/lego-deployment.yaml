@@ -1,3 +1,4 @@
+{{- if .Values.lego.enabled }}
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
@@ -36,3 +37,4 @@ spec:
               fieldPath: status.podIP
         resources:
 {{ toYaml .Values.nginx.resources | indent 10 }}
+{{- end }}

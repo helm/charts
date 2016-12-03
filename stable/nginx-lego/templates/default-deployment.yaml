@@ -9,10 +9,10 @@ spec:
   template:
     metadata:
       labels:
-        app: default-http-backend
+        app: {{ template "fullname" . }}-default
     spec:
       containers:
-      - name: default-http-backend
+      - name: {{ template "fullname" . }}-default
         image: "{{ .Values.default.image.repository }}:{{ .Values.default.image.tag }}"
         imagePullPolicy: {{ .Values.default.image.pullPolicy | quote }}
         ports:

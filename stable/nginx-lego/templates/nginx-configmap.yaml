@@ -1,11 +1,11 @@
 apiVersion: v1
 data:
-  proxy-connect-timeout: "30"
-  proxy-read-timeout: "600"
-  proxy-send-imeout: "600"
-  hsts-include-subdomains: "false"
-  body-size: "64m"
-  server-name-hash-bucket-size: "256"
+  proxy-connect-timeout: {{ .Values.nginx.configmap.proxy_connect_timeout | quote }}
+  proxy-read-timeout: {{ .Values.nginx.configmap.proxy_read_timeout | quote }}
+  proxy-send-imeout: {{ .Values.nginx.configmap.proxy_send_imeout | quote }}
+  hsts-include-subdomains: {{ .Values.nginx.configmap.hsts_include_subdomains | quote }}
+  body-size: {{ .Values.nginx.configmap.body_size | quote }}
+  server-name-hash-bucket-size: {{ .Values.nginx.configmap.server_name_hash_bucket_size | quote }}
 kind: ConfigMap
 metadata:
   name: {{ template "fullname" . }}

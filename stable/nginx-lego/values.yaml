@@ -1,7 +1,9 @@
-# Default values for nginx-lego.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templatess
+## nginx-lego spins up a scalable ingress provider that can also provision SSL certs
+## See https://github.com/jetstack/kube-lego/tree/master/examples/nginx for more information on implementation
 
+## Nginx configuration
+## ref: https://github.com/kubernetes/contrib/tree/master/ingress/controllers/nginx#automated-certificate-management-with-kube-lego
+## 
 nginx:
   replicaCount: 1
   image:
@@ -12,13 +14,23 @@ nginx:
     type: LoadBalancer
   resources:
     limits:
-      cpu: "100m"
-      memory: "128Mi"
+      cpu: 1
+      memory: 2Gi
     requests:
-      cpu: "100m"
-      memory: "128Mi"
-        
+      cpu: 1
+      memory: 128Mi
+  configmap:
+    proxy_connect_timeout: "30"
+    proxy_read_timeout: "600"
+    proxy_send_imeout: "600"
+    hsts_include_subdomains: "false"
+    body_size: "64m"
+    server_name_hash_bucket_size: "256"
 
+## Default Backend configuration
+## To run a different 404 page for the managed domains please see the documentation below
+## ref: https://github.com/kubernetes/contrib/tree/master/404-server
+##
 default:
   replicaCount: 1
   image:
@@ -27,13 +39,16 @@ default:
     pullPolicy: IfNotPresent
   resources:
     limits:
-      cpu: "100m"
-      memory: "128Mi"
+      cpu: 1
+      memory: 2Gi
     requests:
-      cpu: "100m"
-      memory: "128Mi"
+      cpu: 1
+      memory: 128Mi
 
+## kube-lego configuration
+## ref: https://github.com/jetstack/kube-lego
 lego:
+  enabled: true
   replicaCount: 1
   image:
     repository: jetstack/kube-lego
@@ -44,8 +59,9 @@ lego:
     url: "https://acme-v01.api.letsencrypt.org/directory"
   resources:
     limits:
-      cpu: "100m"
-      memory: "128Mi"
+      cpu: 1
+      memory: 2Gi
     requests:
-      cpu: "100m"
-      memory: "128Mi"
+      cpu: 1
+      memory: 128Mi
+  configmap:
