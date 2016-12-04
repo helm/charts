@@ -12,6 +12,7 @@
 ## Chart Details
 This chart will do the following:
 
+* Deploy Artifactory-oss
 * Deploy Artifactory-Pro
 
 ## Installing the Chart
@@ -20,6 +21,11 @@ To install the chart with the release name `my-release`:
 
 ```bash
 $ helm install --name my-release incubator/artifactory
+```
+
+Note: By default it will run Artifactory-oss to run Artifactory-Pro uncomment image in value.yaml or use following command
+```bash
+$ helm install --name my-release --set image=docker.bintray.io/jfrog/artifactory-pro incubator/artifactory
 ```
 
 ## Deleting the Charts
@@ -36,7 +42,7 @@ The following tables lists the configurable parameters of the artifactory chart 
 
 |         Parameter         |           Description             |                         Default                          |
 |---------------------------|-----------------------------------|----------------------------------------------------------|
-| `Image`                   | Container image name              | `docker.bintray.io/jfrog/artifactory-pro`                |
+| `Image`                   | Container image name              | `docker.bintray.io/jfrog/artifactory-oss`                |
 | `ImageTag`                | Container image tag               | `4.14.1`                                                 |
 | `ImagePullPolicy`         | Container pull policy             | `Always`                                                 |
 

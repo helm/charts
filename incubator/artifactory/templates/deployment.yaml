@@ -29,7 +29,7 @@ spec:
         # is a nice option for the user. Especially in the strange cases like
         # artifactory where the base distro is determined by the tag. Using :latest
         # is frowned upon, using :stable isn't that great either.
-        image: "{{default "docker.bintray.io/jfrog/artifactory-pro" .Values.image}}:{{default "4.14.1" .Values.imageTag}}"
+        image: "{{default "docker.bintray.io/jfrog/artifactory-oss" .Values.image}}:{{default "4.14.1" .Values.imageTag}}"
         imagePullPolicy: {{default "IfNotPresent" .Values.ImagePullPolicy}}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
