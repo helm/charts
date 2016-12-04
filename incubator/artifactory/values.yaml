@@ -25,5 +25,5 @@ resources:
 persistence:
   enabled: true
   storageClass: generic
-  accessMode: ReadWrite
+  accessMode: ReadWriteOnce
   size: 8Gi
