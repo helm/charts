@@ -1,3 +1,5 @@
+## postgres image repository
+image: "postgres"
 ## postgres image version
 ## ref: https://hub.docker.com/r/library/postgres/tags/
 ##
