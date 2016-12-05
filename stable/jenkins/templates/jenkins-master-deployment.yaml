@@ -39,6 +39,21 @@ spec:
                           "mountPath": "/var/jenkins_home"
                       }
                   ]
+              },
+              {
+                  "name": "copy-script-approval",
+                  "image": "{{.Values.Master.Image}}:{{.Values.Master.ImageTag}}",
+                  "command": ["cp", "-n", "/var/jenkins_script-approval/scriptapproval.xml", "/var/jenkins_home/scriptApproval.xml"],
+                  "volumeMounts": [
+                      {
+                          "name": "jenkins-script-approval",
+                          "mountPath": "/var/jenkins_script-approval"
+                      },
+                      {
+                          "name": "jenkins-home",
+                          "mountPath": "/var/jenkins_home"
+                      }
+                  ]
               }
           ]'
     spec:
@@ -80,10 +95,17 @@ spec:
               mountPath: /var/jenkins_config
               name: jenkins-config
               readOnly: true
+            -
+              mountPath: /var/jenkins_script-approval
+              name: jenkins-script-approval
+              readOnly: true
       volumes:
       - name: jenkins-config
         configMap:
           name: {{ template "fullname" . }}
+      - name: jenkins-script-approval
+        configMap:
+          name: {{ template "fullname" . }}-script-approval
       - name: jenkins-home
       {{- if .Values.Persistence.Enabled }}
         persistentVolumeClaim:

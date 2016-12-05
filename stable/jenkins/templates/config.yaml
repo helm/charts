@@ -42,7 +42,12 @@ data:
               <resourceRequestMemory>{{.Values.Agent.Memory}}</resourceRequestMemory>
               <resourceLimitCpu>{{.Values.Agent.Cpu}}</resourceLimitCpu>
               <resourceLimitMemory>{{.Values.Agent.Memory}}</resourceLimitMemory>
-              <volumes/>
+              <volumes>
+                <org.csanchez.jenkins.plugins.kubernetes.PodVolumes_-HostPathVolume>
+                  <mountPath>/var/run/docker.sock</mountPath>
+                  <hostPath>/var/run/docker.sock</hostPath>
+                </org.csanchez.jenkins.plugins.kubernetes.PodVolumes_-HostPathVolume>
+              </volumes>
               <envVars/>
               <annotations/>
               <imagePullSecrets/>
