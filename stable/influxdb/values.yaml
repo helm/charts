@@ -9,7 +9,7 @@ image:
 ## NodePort is default
 ## ref: http://kubernetes.io/docs/user-guide/services/
 service:
-  type: NodePort
+  type: ClusterIP
 
 ## Persist data to a persitent volume
 persistence:
