@@ -43,27 +43,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the Kapacitor chart and 
-the meaning of the field. The default values are listed in `values.yaml`.
-
-```yaml
-image.repository: Docker image repo to use
-image.tag: Docker image tag to use
-image.pullPolicy: Image pull policy (IfNotPresent, Always)
-service.type: Type of service (NodePort, LoadBalancer)
-persistence.enabled: Set to true to enable automatic provisioning of a persistent disk
-persistence.storageClass: Sorage class for the persistent disk
-persistence.accessMode: Access mode for the persistent disk
-persistence.size: Size of the persistent disk in Gi or Mi
-resources.requests.memory: Min amount of memory the pod requires
-resources.requests.cpu: Min amount of cpu required by the pod
-resources.limits.memory: Max amount of memory the pod requires
-resources.limits.cpu: Max amount of cpu required by the pod
-
-# This is the location where kapacitor will look for an Influxdb
-# instance to create a subscription on.
-influxURL: An InfluxDB url with port. 
-```
+The configurable parameters of the Kapacitor chart and the default values are listed in `values.yaml`.
 
 The [full image documentation](https://hub.docker.com/_/kapacitor/) contains more information about running Kapacitor in docker.
 
