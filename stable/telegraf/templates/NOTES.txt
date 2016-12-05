@@ -2,9 +2,9 @@ To open a shell session in the container running Telegraf run the following:
 
 - kubectl exec -i -t --namespace {{ .Release.Namespace }} $(kubectl get pods --namespace {{ .Release.Namespace }} -l app={{ template "fullname" . }} -o jsonpath='{.items[0].metadata.name}') /bin/sh
 
-To trail the logs for the Telegraf pod run the following:
+To tail the logs for a Telegraf pod in the Daemonset run the following:
 
-- kubectl logs -f --namespace {{ .Release.Namespace }} $(kubectl get pods --namespace {{ .Release.Namespace }} -l app={{ template "fullname" . }} -o jsonpath='{ .items[0].metadata.name }')
+- kubectl logs -f --namespace {{ .Release.Namespace }} $(kubectl get pods --namespace {{ .Release.Namespace }} -l app={{ template "fullname" . }}-ds -o jsonpath='{ .items[0].metadata.name }')
 
 {{- if eq .Values.single.service.type "LoadBalancer" }}
 
