@@ -1,0 +1,13 @@
+name: datadog
+version: 0.1.0
+description: DataDog Agent
+keywords:
+- monitoring
+- alerting
+- metric
+sources:
+- https://app.datadoghq.com/account/settings#agent/kubernetes
+- https://github.com/DataDog/docker-dd-agent
+maintainers:
+- name: Greg Taylor
+  email: gtaylor@gc-taylor.com
