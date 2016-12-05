@@ -43,32 +43,8 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the Chronograf chart and 
-their descriptions. The default values can be seen in `values.yaml`:
-
-```yaml
-image.repository: Docker image repository
-image.tag: Docker image tag
-image.pullPolicy: Kubernetes image pull policy
-service.type: Service type for Chronograf
-persistence.enabled: Enable persistent storage for Chronograf server
-persistence.storageClass: storage class for the persistent volume
-persistence.accessMode: Access mode for persistent volume
-persistence.size: Size of persistent volume
-resources.requests.memory: Min memory used by the deployment
-resources.requests.cpu: Min cpu used by the deployment
-resources.limits.memory: Max memory used by the deployment
-resources.limits.cpu: Max cpu used by the deployment
-
-# Use this ingress with service.type: NodePort
-ingress.enabled: Toggle to enable/disable ingress
-ingress.tls: Enable tls on the ingress resource
-ingress.hostname: fqdn to expose ingess
-ingress.annotations: Use this to add any annotations to the ingress
-ingress.annotations.kubernetes.io/ingress.class: "nginx"
-```
-
-The [full image documentation](https://quay.io/influxdb/chronograf) contains more information about running Chronograf in docker.
+The configurable parameters of the Chronograf chart and 
+their descriptions can be seen in `values.yaml`. The [full image documentation](https://quay.io/influxdb/chronograf) contains more information about running Chronograf in docker.
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
