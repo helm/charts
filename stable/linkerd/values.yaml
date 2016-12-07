@@ -5,7 +5,7 @@ image:
   linkerd:
     # Image repository and tag to use for linkerd
     repository: buoyantio/linkerd
-    tag: 0.8.3
+    tag: 0.8.4
   kubectl:
     # Image repository and tag to use for kubectl sidecar
     repository: buoyantio/kubectl

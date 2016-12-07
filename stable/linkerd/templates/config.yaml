@@ -10,7 +10,6 @@ data:
 
     namers:
     - kind: io.l5d.k8s
-      experimental: true
       # kubectl proxy forwards localhost:8001 to the Kubernetes master API
       host: localhost
       port: 8001
