@@ -1,0 +1,15 @@
+apiVersion: v1
+description: A Minio Helm chart for Kubernetes
+name: minio
+version: 0.0.1
+keywords:
+- mariadb
+- mysql
+- database
+- sql
+home: https://minio.io
+sources:
+- https://github.com/minio/minio
+maintainers:
+- name: Acaleph
+  email: hello@acale.ph
