@@ -6,8 +6,6 @@ image: sapho/ops-docker-tomcat:8-jre8
 
 mysql:
   mysqlUser: root
-#  mysqlRootPassword: 7iro7Ux6Xl
-#  mysqlPassword: 7iro7Ux6Xl
   persistence:
     enabled: true
     storageClass: generic
@@ -34,4 +32,3 @@ resources:
 saphoDBport: 3306
 saphoDBtype: mysql
 saphoDBuser: root
-saphoDBpass: 7iro7Ux6Xl
