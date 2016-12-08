@@ -1,3 +1,4 @@
+{{- if gt (len .Values.daemonset.config.outputs.influxdb.urls) 0 }}
 {{- if .Values.daemonset.enabled -}}
 apiVersion: extensions/v1beta1
 kind: DaemonSet
@@ -59,4 +60,5 @@ spec:
       - name: config
         configMap:
           name: {{ template "fullname" . }}-ds
+{{- end -}}
 {{- end -}}
