@@ -41,8 +41,8 @@ daemonset:
       omit_hostname: false
     outputs:
       influxdb:
-        urls:
-          - "http://influxdb-influxdb.tick:8086"
+        urls: []
+          # - "http://influxdb-influxdb.tick:8086"
         database: "telegraf"
 ##        retention_policy: ""
 ##        write_consistency: "any"
@@ -175,8 +175,8 @@ single:
       omit_hostname: false
     outputs:
       influxdb:
-        urls:
-          - "http://influxdb-influxdb.tick:8086"
+        urls: []
+          # - "http://influxdb-influxdb.tick:8086"
         database: "telegraf"
 ##        retention_policy: ""
 ##        write_consistency: "any"
