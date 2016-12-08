@@ -36,7 +36,6 @@ This chart bootstraps an nginx-lego deployment on a [Kubernetes](http://kubernet
 ## Prerequisites
 
 - Kubernetes 1.4+ with Beta APIs enabled
-- PV provisioner support in the underlying infrastructure
 
 ## Installing the Chart
 

@@ -5,7 +5,7 @@ metadata:
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
 spec:
-  type: NodePort
+  type: ClusterIP
   ports:
   - port: 80
     targetPort: 8080
