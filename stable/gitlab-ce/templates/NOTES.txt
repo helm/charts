@@ -42,7 +42,7 @@
 
 {{- else -}}
 ##############################################################################
-##  ERROR: You did not specify an externalUrl in your 'helm install' call.  ##
+## WARNING: You did not specify an externalUrl in your 'helm install' call. ##
 ##############################################################################
 
 This deployment will be incomplete until you provide the URL that your
