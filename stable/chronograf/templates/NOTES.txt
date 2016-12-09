@@ -4,7 +4,7 @@ Chronograf can be accessed via port 80 on the following DNS name from within you
 
 You can easily connect to the remote instance from your browser. Forward the webserver port to localhost:8888
 
-- kubectl port-forward --namespace {{ .Release.Namespace }} $(kubectl get pods --namespace {{ .Release.Namespace }} -l app={{ template "fullname" . }} -o jsonpath='{ .items[0].metadata.name }') 8888:80
+- kubectl port-forward --namespace {{ .Release.Namespace }} $(kubectl get pods --namespace {{ .Release.Namespace }} -l app={{ template "fullname" . }} -o jsonpath='{ .items[0].metadata.name }') 8888
 
 You can also connect to the container running Chronograf. To open a shell session in the pod run the following:
 
