@@ -17,7 +17,7 @@ Master:
 # JavaOpts: "-Xms512m -Xmx512m"
   ServicePort: 8080
 # For minikube, set this to NodePort, elsewhere use LoadBalancer
-  ServiceType: LoadBalancer
+  ServiceType: ClusterIP
   ContainerPort: 8080
   SlaveListenerPort: 50000
 
