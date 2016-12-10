@@ -49,12 +49,12 @@ spec:
             - name: MINIO_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
-                  name: minio-user
+                  name: {{ template "fullname" . }}-user
                   key: accesskey
             - name: MINIO_SECRET_KEY
               valueFrom:
                 secretKeyRef:
-                  name: minio-user
+                  name: {{ template "fullname" . }}-user
                   key: secretkey
           livenessProbe:
             tcpSocket:

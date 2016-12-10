@@ -25,7 +25,7 @@ $ helm install --name my-release stable/minio
 
 The command deploys Minio on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
 
-By default a pre-generated Access Key and Secret will be used. If you'd like to set your own password change the AccessKey and SecretKeyt in the values.yaml.
+By default a pre-generated Access Key and Secret will be used. If you'd like to set your own password change the AccessKey and SecretKey in the values.yaml.
 
 Uninstalling the Chart
 ----------------------
