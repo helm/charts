@@ -7,7 +7,7 @@ To connect to minio:
 
   2. export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "fullname" . }}" -o jsonpath="{.items[0].metadata.name}")
 
-  3. kubectl port-forward $POD_NAME 9000
+  3. kubectl port-forward $POD_NAME 9000 --namespace {{ .Release.Namespace }}
 
   4. mc config host add {{ template "fullname" . }}-local http://localhost:9000 {{ .Values.AccessKey }} {{ .Values.SecretKey }} S3v4
 
