@@ -15,7 +15,7 @@ httpPort: 8081
 ## Kubernetes configuration
 ## For minikube, set this to NodePort, elsewhere use LoadBalancer
 ##
-ServiceType: LoadBalancer
+ServiceType: ClusterIP
 resources:
   requests:
     memory: 2048Mi

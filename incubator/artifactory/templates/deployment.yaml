@@ -1,19 +1,11 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  # This uses a "fullname" template (see _helpers)
-  # Basing names on .Release.Name means that the same chart can be installed
-  # multiple times into the same namespace.
   name: {{template "fullname" .}}
   labels:
     app: {{ template "fullname" . }}
-    # The "heritage" label is used to track which tool deployed a given chart.
-    # It is useful for admins who want to see what releases a particular tool
-    # is responsible for.
     heritage: "{{ .Release.Service }}"
-    # This makes it easy to search for all components of a release using kubectl.
     release: "{{ .Release.Name }}"
-    # This makes it easy to audit chart usage.
     chart: "{{.Chart.Name}}-{{.Chart.Version}}"
 spec:
   replicas: {{default 1 .Values.replicaCount}}
@@ -25,10 +17,6 @@ spec:
     spec:
       containers:
       - name: {{ template "fullname" . }}
-        # Making image configurable is not necessary. Making imageTag configurable
-        # is a nice option for the user. Especially in the strange cases like
-        # artifactory where the base distro is determined by the tag. Using :latest
-        # is frowned upon, using :stable isn't that great either.
         image: "{{default "docker.bintray.io/jfrog/artifactory-oss" .Values.image}}:{{default "4.14.1" .Values.imageTag}}"
         imagePullPolicy: {{default "IfNotPresent" .Values.ImagePullPolicy}}
         resources:
@@ -36,7 +24,6 @@ spec:
         ports:
         - containerPort: 8081
           name: http
-        # This (and the volumes section below) mount the config map as a volume.
         volumeMounts:
         - name: etc
           mountPath: /var/opt/jfrog/artifactory/etc
