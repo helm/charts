@@ -7,14 +7,14 @@ image: sapho/ops-docker-tomcat:8-jre8
 mysql:
   mysqlUser: root
   persistence:
-    enabled: true
+    enabled: false
     storageClass: generic
     accessMode: ReadWriteOnce
     size: 8Gi
   resources:
     requests:
       memory: 512Mi
-      cpu: 300m
+      cpu: 250m
 
 service:
   name: sapho
@@ -23,12 +23,12 @@ service:
   internalPort: 8080
 
 resources:
-  limits:
-    cpu: 300m
-    memory: 1010Mi
+#  limits:
+#    cpu: 500m
+#    memory: 2048Mi
   requests:
-    cpu: 300m
-    memory: 1010Mi
+    cpu: 250m
+    memory: 2048Mi
 saphoDBport: 3306
 saphoDBtype: mysql
 saphoDBuser: root
