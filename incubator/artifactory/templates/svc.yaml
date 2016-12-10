@@ -6,6 +6,7 @@ metadata:
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
     chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+    app: {{template "fullname" .}}
 spec:
   ports:
   - port: {{default 8081 .Values.httpPort}}
