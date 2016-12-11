@@ -1,5 +1,5 @@
 apiVersion: v1
-kind: Service
+kind: ConfigMap
 metadata:
   labels:
     app: {{ template "fullname" . }}
@@ -8,14 +8,18 @@ metadata:
     heritage: "{{ .Release.Service }}"
     release: "{{ .Release.Name }}"
   name: {{ template "server.fullname" . }}
-spec:
-  ports:
-    - name: {{ default "http" .Values.server.httpPortName | quote }}
-      port: {{ .Values.server.httpPort }}
-      protocol: TCP
-      targetPort: 3000
-  selector:
+data:
+{{ toYaml .Values.serverConfigFile | indent 2 }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
     app: {{ template "fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     component: "{{ .Values.server.name }}"
-  type: "{{ .Values.server.serviceType }}"
-
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+  name: {{ template "server.fullname" . }}-dashs
+data:
+{{ toYaml .Values.serverDashboardFiles | indent 2 }}
