@@ -1,6 +1,6 @@
 name: jenkins
 home: https://jenkins.io/
-version: 0.1.4
+version: 0.1.5
 description: A Jenkins Helm chart for Kubernetes.
 sources:
   - https://github.com/jenkinsci/jenkins

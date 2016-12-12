@@ -16,7 +16,7 @@ Get the server URL by running these commands in the same shell:
 
 {{- else if contains "LoadBalancer" .Values.server.serviceType }}
   NOTE: It may take a few minutes for the LoadBalancer IP to be available.
-        You can watch the status of by running 'kubectl get svc -w {{ template "server.fullname" . }}'
+        You can watch the status of by running 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "server.fullname" . }}'
   export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "server.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
   echo http://$SERVICE_IP:{{ .Values.server.httpPort }}
 {{- else if contains "ClusterIP"  .Values.server.serviceType }}
@@ -52,7 +52,7 @@ Get the server URL by running these commands in the same shell:
 
 {{- else if contains "LoadBalancer" .Values.alertmanager.serviceType }}
   NOTE: It may take a few minutes for the LoadBalancer IP to be available.
-        You can watch the status of by running 'kubectl get svc -w {{ template "alertmanager.fullname" . }}'
+        You can watch the status of by running 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "alertmanager.fullname" . }}'
   export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "alertmanager.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
   echo http://$SERVICE_IP:{{ .Values.alertmanager.httpPort }}
 {{- else if contains "ClusterIP"  .Values.alertmanager.serviceType }}
