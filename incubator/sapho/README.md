@@ -1,12 +1,6 @@
 # Sapho
 
-[Sapho](https://www.sapho.com/) is awesome.
-
-## TL;DR;
-
-```console
-$ helm install sapho
-```
+The Sapho Micro App Platform is the best way to put actionable business information into your employees’ hands. This micro application development and integration platform enables organizations to create and deliver secure micro apps that tie into existing business systems and track changes to key business data. The result is a work feed that keeps employees up-to-date with important information and their associated actions. Employees benefits from real time data updates and one-click task completion from a single unified app, browser, or messenger client. All of this runs on Azure, connects to your existing infrastructure, and integrates with your existing identity and access control solutions to maintain security. For more information, please visit [Sapho](https://www.sapho.com/).
 
 ## Introduction
 
@@ -19,25 +13,15 @@ It also packages the [MySQL chart](https://github.com/kubernetes/charts/tree/mas
 - Kubernetes 1.4+ with Beta APIs enabled
 - PV provisioner support in the underlying infrastructure
 
-## Get this chart
-
-Download the latest release of the chart from the [releases](../../../releases) page.
-
-Alternatively, clone the repo if you wish to use the development snapshot:
-
-```console
-$ git clone https://github.com/saphoinc/saphoHelmChart.git
-```
-
 ## Installing the Chart
 
 To install the chart:
 
 ```console
-$ helm install https://github.com/saphoinc/saphoHelmChart/archive/sapho-v1.0.tar.gz
+$ helm install --name my-release incubator/sapho
 ```
+> **Tip**: List all releases using `helm list`
 
-*Replace the `x.x.x` placeholder with the chart release version.*
 
 The command deploys Sapho on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
 
