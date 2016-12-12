@@ -56,7 +56,7 @@ server:
     ## If false, use emptyDir
     ##
     enabled: true
-    
+
     ## Grafana data Persistent Volume access modes
     ## Must match those of existing PV or dynamic provisioner
     ## Ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
@@ -76,7 +76,7 @@ server:
     ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
     ## Default: volume.alpha.kubernetes.io/storage-class: default
     ##
-    # storageClass: 
+    # storageClass:
 
   ## Grafana resource requests and limits
   ## Ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -96,15 +96,15 @@ server:
   ##
   # configLocalPath: /etc/grafana
 
-  ## Grafana local dashboards path  
-  ## Default: '/var/lib/grafana-dashboards'
+  ## Grafana local dashboards path
+  ## Default: '/var/lib/grafana/dashboards'
   ##
-  # dashboardLocalPath: /var/lib/grafana-dashboards
+  # dashboardLocalPath: /var/lib/grafana/dashboards
 
   ## Grafana local data storage path
-  ## Default: '/var/lib/grafana'
+  ## Default: '/var/lib/grafana/data'
   ##
-  # storageLocalPath: /var/lib/grafana
+  # storageLocalPath: /var/lib/grafana/data
 
   ## Grafana Pod termination grace period
   ## Default: 300s (5m)
@@ -114,13 +114,13 @@ server:
 ## Grafana config file ConfigMap entry
 ##
 serverConfigFile:
-  grafana.ini: |-
+  grafana.ini: |
     ; instance_name = ${HOSTNAME}
     [paths]
-    ;data = /var/lib/grafana
-    ;logs = /var/log/grafana
-    ;plugins = /var/lib/grafana/plugins
-    
+    data = /var/lib/grafana/data
+    logs = /var/log/grafana
+    plugins = /var/lib/grafana/plugins
+
     [server]
     ;protocol = http
     ;http_addr =
@@ -133,7 +133,7 @@ serverConfigFile:
     ;enable_gzip = false
     ;cert_file =
     ;cert_key =
-    
+
     [database]
     ;type = sqlite3
     ;host = 127.0.0.1:3306
@@ -142,19 +142,19 @@ serverConfigFile:
     ;password =
     ;ssl_mode = disable
     ;path = grafana.db
-    
+
     [session]
     ;provider = file
     ;provider_config = sessions
     ;cookie_name = grafana_sess
     ;cookie_secure = false
     ;session_life_time = 86400
-    
+
     [analytics]
     ;reporting_enabled = true
     check_for_updates = true
     ;google_analytics_ua_id =
-    
+
     [security]
     ;admin_user = admin
     ;admin_password = admin
@@ -164,12 +164,12 @@ serverConfigFile:
     ;cookie_remember_name = grafana_remember
     ;disable_gravatar = false
     ;data_source_proxy_whitelist =
-    
+
     [snapshots]
     ;external_enabled = true
     ;external_snapshot_url = https://snapshots-origin.raintank.io
     ;external_snapshot_name = Publish to snapshot.raintank.io
-    
+
     [users]
     ;allow_sign_up = true
     ;allow_org_create = true
@@ -177,12 +177,12 @@ serverConfigFile:
     ;auto_assign_org_role = Viewer
     ;login_hint = email or username
     ;default_theme = dark
-    
+
     [auth.anonymous]
     ;enabled = false
     ;org_name = Main Org.
     ;org_role = Viewer
-    
+
     [auth.github]
     ;enabled = false
     ;allow_sign_up = false
@@ -194,7 +194,7 @@ serverConfigFile:
     ;api_url = https://api.github.com/user
     ;team_ids =
     ;allowed_organizations =
-    
+
     [auth.google]
     ;enabled = false
     ;allow_sign_up = false
@@ -205,20 +205,20 @@ serverConfigFile:
     ;token_url = https://accounts.google.com/o/oauth2/token
     ;api_url = https://www.googleapis.com/oauth2/v1/userinfo
     ;allowed_domains =
-    
+
     [auth.proxy]
     ;enabled = false
     ;header_name = X-WEBAUTH-USER
     ;header_property = username
     ;auto_sign_up = true
-    
+
     [auth.basic]
     ;enabled = true
-    
+
     [auth.ldap]
     ;enabled = false
     ;config_file = /etc/grafana/ldap.toml
-    
+
     [smtp]
     ;enabled = false
     ;host = localhost:25
@@ -228,582 +228,64 @@ serverConfigFile:
     ;key_file =
     ;skip_verify = false
     ;from_address = admin@grafana.localhost
-    
+
     [emails]
     ;welcome_email_on_sign_up = false
-    
+
     [log]
     mode = console
     level = info
-    
+
     [log.console]
     ;level =
     ;format = console
-    
+
     [event_publisher]
     ;enabled = false
     ;rabbitmq_url = amqp://localhost/
     ;exchange = grafana_events
-    
+
     [dashboards.json]
     enabled = true
-    path = /var/lib/grafana-dashboards
-    
+    path = /var/lib/grafana/dashboards
+
     [metrics]
     ;enabled           = true
     ;interval_seconds  = 10
-    
+
     ; [metrics.graphite]
     ; address = localhost:2003
     ; prefix = prod.grafana.%(instance_name)s.
-    
+
     [grafana_net]
     url = https://grafana.net
+
 
 ## Grafana dashboard files ConfigMap entries
 ##
 serverDashboardFiles:
-  prometheus.json: |-
+  b2b-web-monitoring.json: |
     {
-      "id": 4,
-      "title": "Prometheus Stats",
+      "id": 2,
+      "title": "B2B-web monitoring (via Prometheus)",
       "tags": [
-        "prometheus"
+        "B2B-web"
       ],
       "style": "dark",
       "timezone": "browser",
       "editable": true,
-      "hideControls": true,
+      "hideControls": false,
       "sharedCrosshair": false,
       "rows": [
         {
           "collapse": false,
           "editable": true,
-          "height": 178,
-          "panels": [
-            {
-              "cacheTimeout": null,
-              "colorBackground": false,
-              "colorValue": false,
-              "colors": [
-                "rgba(245, 54, 54, 0.9)",
-                "rgba(237, 129, 40, 0.89)",
-                "rgba(50, 172, 45, 0.97)"
-              ],
-              "datasource": "default",
-              "decimals": 1,
-              "editable": true,
-              "error": false,
-              "format": "s",
-              "gauge": {
-                "maxValue": 100,
-                "minValue": 0,
-                "show": false,
-                "thresholdLabels": false,
-                "thresholdMarkers": true
-              },
-              "id": 5,
-              "interval": null,
-              "links": [],
-              "mappingType": 1,
-              "mappingTypes": [
-                {
-                  "name": "value to text",
-                  "value": 1
-                },
-                {
-                  "name": "range to text",
-                  "value": 2
-                }
-              ],
-              "maxDataPoints": 100,
-              "nullPointMode": "connected",
-              "nullText": null,
-              "postfix": "",
-              "postfixFontSize": "50%",
-              "prefix": "",
-              "prefixFontSize": "50%",
-              "rangeMaps": [
-                {
-                  "from": "null",
-                  "text": "N/A",
-                  "to": "null"
-                }
-              ],
-              "span": 3,
-              "sparkline": {
-                "fillColor": "rgba(31, 118, 189, 0.18)",
-                "full": false,
-                "lineColor": "rgb(31, 120, 193)",
-                "show": false
-              },
-              "targets": [
-                {
-                  "expr": "(time() - process_start_time_seconds{instance=\"$instance\"})",
-                  "intervalFactor": 2,
-                  "legendFormat": "",
-                  "refId": "A",
-                  "step": 240
-                }
-              ],
-              "thresholds": "",
-              "title": "Uptime",
-              "type": "singlestat",
-              "valueFontSize": "80%",
-              "valueMaps": [
-                {
-                  "op": "=",
-                  "text": "N/A",
-                  "value": "null"
-                }
-              ],
-              "valueName": "current"
-            },
-            {
-              "cacheTimeout": null,
-              "colorBackground": false,
-              "colorValue": false,
-              "colors": [
-                "rgba(50, 172, 45, 0.97)",
-                "rgba(237, 129, 40, 0.89)",
-                "rgba(245, 54, 54, 0.9)"
-              ],
-              "datasource": "default",
-              "editable": true,
-              "error": false,
-              "format": "none",
-              "gauge": {
-                "maxValue": 100,
-                "minValue": 0,
-                "show": false,
-                "thresholdLabels": false,
-                "thresholdMarkers": true
-              },
-              "id": 6,
-              "interval": null,
-              "links": [],
-              "mappingType": 1,
-              "mappingTypes": [
-                {
-                  "name": "value to text",
-                  "value": 1
-                },
-                {
-                  "name": "range to text",
-                  "value": 2
-                }
-              ],
-              "maxDataPoints": 100,
-              "nullPointMode": "connected",
-              "nullText": null,
-              "postfix": "",
-              "postfixFontSize": "50%",
-              "prefix": "",
-              "prefixFontSize": "50%",
-              "rangeMaps": [
-                {
-                  "from": "null",
-                  "text": "N/A",
-                  "to": "null"
-                }
-              ],
-              "span": 3,
-              "sparkline": {
-                "fillColor": "rgba(31, 118, 189, 0.18)",
-                "full": false,
-                "lineColor": "rgb(31, 120, 193)",
-                "show": true
-              },
-              "targets": [
-                {
-                  "expr": "prometheus_local_storage_memory_series{instance=\"$instance\"}",
-                  "intervalFactor": 2,
-                  "refId": "A",
-                  "step": 240
-                }
-              ],
-              "thresholds": "1,5",
-              "title": "Local Storage Memory Series",
-              "type": "singlestat",
-              "valueFontSize": "70%",
-              "valueMaps": [],
-              "valueName": "current"
-            },
-            {
-              "cacheTimeout": null,
-              "colorBackground": false,
-              "colorValue": true,
-              "colors": [
-                "rgba(50, 172, 45, 0.97)",
-                "rgba(237, 129, 40, 0.89)",
-                "rgba(245, 54, 54, 0.9)"
-              ],
-              "datasource": "default",
-              "editable": true,
-              "error": false,
-              "format": "none",
-              "gauge": {
-                "maxValue": 100,
-                "minValue": 0,
-                "show": false,
-                "thresholdLabels": false,
-                "thresholdMarkers": true
-              },
-              "id": 7,
-              "interval": null,
-              "links": [],
-              "mappingType": 1,
-              "mappingTypes": [
-                {
-                  "name": "value to text",
-                  "value": 1
-                },
-                {
-                  "name": "range to text",
-                  "value": 2
-                }
-              ],
-              "maxDataPoints": 100,
-              "nullPointMode": "connected",
-              "nullText": null,
-              "postfix": "",
-              "postfixFontSize": "50%",
-              "prefix": "",
-              "prefixFontSize": "50%",
-              "rangeMaps": [
-                {
-                  "from": "null",
-                  "text": "N/A",
-                  "to": "null"
-                }
-              ],
-              "span": 3,
-              "sparkline": {
-                "fillColor": "rgba(31, 118, 189, 0.18)",
-                "full": false,
-                "lineColor": "rgb(31, 120, 193)",
-                "show": true
-              },
-              "targets": [
-                {
-                  "expr": "prometheus_local_storage_indexing_queue_length{instance=\"$instance\"}",
-                  "intervalFactor": 2,
-                  "refId": "A",
-                  "step": 240
-                }
-              ],
-              "thresholds": "500,4000",
-              "title": "Interal Storage Queue Length",
-              "type": "singlestat",
-              "valueFontSize": "70%",
-              "valueMaps": [
-                {
-                  "op": "=",
-                  "text": "Empty",
-                  "value": "0"
-                }
-              ],
-              "valueName": "current"
-            },
-            {
-              "content": "<img src=\"http://prometheus.io/assets/prometheus_logo_grey.svg\" alt=\"Prometheus logo\" style=\"height: 40px;\">\n<span style=\"font-family: 'Open Sans', 'Helvetica Neue', Helvetica; font-size: 25px;vertical-align: text-top;color: #bbbfc2;margin-left: 10px;\">Prometheus</span>\n\n<p style=\"margin-top: 10px;\">You're using Prometheus, an open-source systems monitoring and alerting toolkit originally built at SoundCloud. For more information, check out the <a href=\"http://www.grafana.org/\">Grafana</a> and <a href=\"http://prometheus.io/\">Prometheus</a> projects.</p>",
-              "editable": true,
-              "error": false,
-              "id": 9,
-              "links": [],
-              "mode": "html",
-              "span": 3,
-              "style": {},
-              "title": "",
-              "transparent": true,
-              "type": "text"
-            }
-          ],
-          "title": "New row"
-        },
-        {
-          "collapse": false,
-          "editable": true,
-          "height": 227,
-          "panels": [
-            {
-              "aliasColors": {
-                "prometheus": "#C15C17",
-                "{instance=\"localhost:9090\",job=\"prometheus\"}": "#C15C17"
-              },
-              "bars": false,
-              "datasource": "default",
-              "editable": true,
-              "error": false,
-              "fill": 1,
-              "grid": {
-                "threshold1": null,
-                "threshold1Color": "rgba(216, 200, 27, 0.27)",
-                "threshold2": null,
-                "threshold2Color": "rgba(234, 112, 112, 0.22)"
-              },
-              "id": 3,
-              "legend": {
-                "avg": false,
-                "current": false,
-                "max": false,
-                "min": false,
-                "show": true,
-                "total": false,
-                "values": false
-              },
-              "lines": true,
-              "linewidth": 2,
-              "links": [],
-              "nullPointMode": "connected",
-              "percentage": false,
-              "pointradius": 2,
-              "points": false,
-              "renderer": "flot",
-              "seriesOverrides": [],
-              "span": 9,
-              "stack": false,
-              "steppedLine": false,
-              "targets": [
-                {
-                  "expr": "rate(prometheus_local_storage_ingested_samples_total{instance=\"$instance\"}[5m])",
-                  "interval": "",
-                  "intervalFactor": 2,
-                  "legendFormat": "{{"{{"}}instance{{"}}"}}",
-                  "metric": "",
-                  "refId": "A",
-                  "step": 20
-                }
-              ],
-              "timeFrom": null,
-              "timeShift": null,
-              "title": "Samples ingested (rate-5m)",
-              "tooltip": {
-                "msResolution": false,
-                "shared": true,
-                "sort": 0,
-                "value_type": "cumulative"
-              },
-              "type": "graph",
-              "xaxis": {
-                "show": true
-              },
-              "yaxes": [
-                {
-                  "format": "short",
-                  "logBase": 1,
-                  "max": null,
-                  "min": null,
-                  "show": true
-                },
-                {
-                  "format": "short",
-                  "logBase": 1,
-                  "max": null,
-                  "min": null,
-                  "show": true
-                }
-              ]
-            },
-            {
-              "content": "#### Samples Ingested\nThis graph displays the count of samples ingested by the Prometheus server, as measured over the last 5 minutes, per time series in the range vector. When troubleshooting an issue on IRC or Github, this is often the first stat requested by the Prometheus team. ",
-              "editable": true,
-              "error": false,
-              "id": 8,
-              "links": [],
-              "mode": "markdown",
-              "span": 2.995914043583536,
-              "style": {},
-              "title": "",
-              "transparent": true,
-              "type": "text"
-            }
-          ],
-          "title": "New row"
-        },
-        {
-          "collapse": false,
-          "editable": true,
-          "height": "250px",
-          "panels": [
-            {
-              "aliasColors": {
-                "prometheus": "#F9BA8F",
-                "{instance=\"localhost:9090\",interval=\"5s\",job=\"prometheus\"}": "#F9BA8F"
-              },
-              "bars": false,
-              "datasource": "default",
-              "editable": true,
-              "error": false,
-              "fill": 1,
-              "grid": {
-                "threshold1": null,
-                "threshold1Color": "rgba(216, 200, 27, 0.27)",
-                "threshold2": null,
-                "threshold2Color": "rgba(234, 112, 112, 0.22)"
-              },
-              "id": 2,
-              "legend": {
-                "avg": false,
-                "current": false,
-                "max": false,
-                "min": false,
-                "show": true,
-                "total": false,
-                "values": false
-              },
-              "lines": true,
-              "linewidth": 2,
-              "links": [],
-              "nullPointMode": "connected",
-              "percentage": false,
-              "pointradius": 5,
-              "points": false,
-              "renderer": "flot",
-              "seriesOverrides": [],
-              "span": 5,
-              "stack": false,
-              "steppedLine": false,
-              "targets": [
-                {
-                  "expr": "rate(prometheus_target_interval_length_seconds_count{instance=\"$instance\"}[5m])",
-                  "intervalFactor": 2,
-                  "legendFormat": "{{"{{"}}job{{"}}"}}",
-                  "refId": "A",
-                  "step": 40
-                }
-              ],
-              "timeFrom": null,
-              "timeShift": null,
-              "title": "Target Scrapes (last 5m)",
-              "tooltip": {
-                "msResolution": false,
-                "shared": true,
-                "sort": 0,
-                "value_type": "cumulative"
-              },
-              "type": "graph",
-              "xaxis": {
-                "show": true
-              },
-              "yaxes": [
-                {
-                  "format": "short",
-                  "logBase": 1,
-                  "max": null,
-                  "min": null,
-                  "show": true
-                },
-                {
-                  "format": "short",
-                  "logBase": 1,
-                  "max": null,
-                  "min": null,
-                  "show": true
-                }
-              ]
-            },
-            {
-              "aliasColors": {},
-              "bars": false,
-              "datasource": "default",
-              "editable": true,
-              "error": false,
-              "fill": 1,
-              "grid": {
-                "threshold1": null,
-                "threshold1Color": "rgba(216, 200, 27, 0.27)",
-                "threshold2": null,
-                "threshold2Color": "rgba(234, 112, 112, 0.22)"
-              },
-              "id": 14,
-              "legend": {
-                "avg": false,
-                "current": false,
-                "max": false,
-                "min": false,
-                "show": true,
-                "total": false,
-                "values": false
-              },
-              "lines": true,
-              "linewidth": 2,
-              "links": [],
-              "nullPointMode": "connected",
-              "percentage": false,
-              "pointradius": 5,
-              "points": false,
-              "renderer": "flot",
-              "seriesOverrides": [],
-              "span": 4,
-              "stack": false,
-              "steppedLine": false,
-              "targets": [
-                {
-                  "expr": "prometheus_target_interval_length_seconds{instance=\"$instance\",quantile!=\"0.01\", quantile!=\"0.05\"}",
-                  "interval": "",
-                  "intervalFactor": 2,
-                  "legendFormat": "{{"{{"}}quantile{{"}}"}} ({{"{{"}}interval{{"}}"}})",
-                  "metric": "",
-                  "refId": "A",
-                  "step": 60
-                }
-              ],
-              "timeFrom": null,
-              "timeShift": null,
-              "title": "Scrape Duration",
-              "tooltip": {
-                "msResolution": false,
-                "shared": true,
-                "sort": 0,
-                "value_type": "cumulative"
-              },
-              "type": "graph",
-              "xaxis": {
-                "show": true
-              },
-              "yaxes": [
-                {
-                  "format": "short",
-                  "logBase": 1,
-                  "max": null,
-                  "min": null,
-                  "show": true
-                },
-                {
-                  "format": "short",
-                  "logBase": 1,
-                  "max": null,
-                  "min": null,
-                  "show": true
-                }
-              ]
-            },
-            {
-              "content": "#### Scrapes\nPrometheus scrapes metrics from instrumented jobs, either directly or via an intermediary push gateway for short-lived jobs. Target scrapes will show how frequently targets are scraped, as measured over the last 5 minutes, per time series in the range vector. Scrape Duration will show how long the scrapes are taking, with percentiles available as series. ",
-              "editable": true,
-              "error": false,
-              "id": 11,
-              "links": [],
-              "mode": "markdown",
-              "span": 3,
-              "style": {},
-              "title": "",
-              "transparent": true,
-              "type": "text"
-            }
-          ],
-          "title": "New row"
-        },
-        {
-          "collapse": false,
-          "editable": true,
-          "height": "250px",
+          "height": 259.4375,
           "panels": [
             {
               "aliasColors": {},
               "bars": false,
-              "datasource": "default",
+              "datasource": null,
               "decimals": null,
               "editable": true,
               "error": false,
@@ -814,12 +296,102 @@ serverDashboardFiles:
                 "threshold2": null,
                 "threshold2Color": "rgba(234, 112, 112, 0.22)"
               },
-              "id": 12,
+              "id": 16,
+              "isNew": true,
               "legend": {
-                "alignAsTable": false,
+                "alignAsTable": true,
+                "avg": true,
+                "current": true,
+                "max": false,
+                "min": false,
+                "rightSide": true,
+                "show": true,
+                "sort": "avg",
+                "sortDesc": true,
+                "total": false,
+                "values": true
+              },
+              "lines": true,
+              "linewidth": 2,
+              "links": [],
+              "nullPointMode": "connected",
+              "percentage": false,
+              "pointradius": 5,
+              "points": false,
+              "renderer": "flot",
+              "seriesOverrides": [],
+              "span": 12,
+              "stack": false,
+              "steppedLine": false,
+              "targets": [
+                {
+                  "expr": "sort(probe_duration_seconds{instance=~\"b2b-web.+\"}*1000)",
+                  "interval": "10s",
+                  "intervalFactor": 1,
+                  "legendFormat": "{{\"{{\"}}instance{{\"}}\"}}",
+                  "metric": "",
+                  "refId": "A",
+                  "step": 10
+                }
+              ],
+              "timeFrom": null,
+              "timeShift": null,
+              "title": "HTTP response time 200 by probe",
+              "tooltip": {
+                "msResolution": false,
+                "shared": true,
+                "sort": 0,
+                "value_type": "cumulative"
+              },
+              "type": "graph",
+              "xaxis": {
+                "show": true
+              },
+              "yaxes": [
+                {
+                  "format": "ms",
+                  "label": null,
+                  "logBase": 1,
+                  "max": null,
+                  "min": null,
+                  "show": true
+                },
+                {
+                  "format": "short",
+                  "label": null,
+                  "logBase": 1,
+                  "max": null,
+                  "min": null,
+                  "show": true
+                }
+              ]
+            }
+          ],
+          "title": "New row"
+        },
+        {
+          "collapse": false,
+          "editable": true,
+          "height": "200px",
+          "panels": [
+            {
+              "aliasColors": {},
+              "bars": false,
+              "datasource": null,
+              "editable": true,
+              "error": false,
+              "fill": 1,
+              "grid": {
+                "threshold1": null,
+                "threshold1Color": "rgba(216, 200, 27, 0.27)",
+                "threshold2": null,
+                "threshold2Color": "rgba(234, 112, 112, 0.22)"
+              },
+              "id": 18,
+              "isNew": true,
+              "legend": {
                 "avg": false,
                 "current": false,
-                "hideEmpty": true,
                 "max": false,
                 "min": false,
                 "show": true,
@@ -835,22 +407,22 @@ serverDashboardFiles:
               "points": false,
               "renderer": "flot",
               "seriesOverrides": [],
-              "span": 9,
+              "span": 12,
               "stack": false,
               "steppedLine": false,
               "targets": [
                 {
-                  "expr": "prometheus_evaluator_duration_seconds{instance=\"$instance\",quantile!=\"0.01\", quantile!=\"0.05\"}",
-                  "interval": "",
-                  "intervalFactor": 2,
-                  "legendFormat": "{{"{{"}}quantile{{"}}"}}",
+                  "expr": "sum(http_requests_total{kubernetes_name=\"b2b-web\"})",
+                  "intervalFactor": 1,
+                  "legendFormat": "b2b-web",
+                  "metric": "http_requests_total",
                   "refId": "A",
-                  "step": 20
+                  "step": 1
                 }
               ],
               "timeFrom": null,
               "timeShift": null,
-              "title": "Rule Eval Duration",
+              "title": "HTTP throughput from load balancer",
               "tooltip": {
                 "msResolution": false,
                 "shared": true,
@@ -863,7 +435,7 @@ serverDashboardFiles:
               },
               "yaxes": [
                 {
-                  "format": "percentunit",
+                  "format": "ops",
                   "label": "",
                   "logBase": 1,
                   "max": null,
@@ -872,32 +444,207 @@ serverDashboardFiles:
                 },
                 {
                   "format": "short",
+                  "label": "",
                   "logBase": 1,
                   "max": null,
                   "min": null,
                   "show": true
                 }
               ]
-            },
+            }
+          ],
+          "title": "New row"
+        },
+        {
+          "collapse": false,
+          "editable": true,
+          "height": "250px",
+          "panels": [
             {
-              "content": "#### Rule Evaluation Duration\nThis graph panel plots the duration for all evaluations to execute. The 50th percentile, 90th percentile and 99th percentile are shown as three separate series to help identify outliers that may be skewing the data.",
+              "aliasColors": {},
+              "bars": false,
+              "datasource": null,
+              "decimals": 0,
               "editable": true,
               "error": false,
-              "id": 15,
+              "fill": 1,
+              "grid": {
+                "threshold1": null,
+                "threshold1Color": "rgba(216, 200, 27, 0.27)",
+                "threshold2": null,
+                "threshold2Color": "rgba(234, 112, 112, 0.22)"
+              },
+              "id": 19,
+              "isNew": true,
+              "legend": {
+                "alignAsTable": true,
+                "avg": true,
+                "current": true,
+                "max": false,
+                "min": false,
+                "rightSide": true,
+                "show": true,
+                "sort": "avg",
+                "sortDesc": true,
+                "total": false,
+                "values": true
+              },
+              "lines": true,
+              "linewidth": 2,
               "links": [],
-              "mode": "markdown",
-              "span": 3,
-              "style": {},
-              "title": "",
-              "transparent": true,
-              "type": "text"
+              "nullPointMode": "connected",
+              "percentage": false,
+              "pointradius": 5,
+              "points": false,
+              "renderer": "flot",
+              "seriesOverrides": [],
+              "span": 12,
+              "stack": false,
+              "steppedLine": false,
+              "targets": [
+                {
+                  "expr": "sum(http_request_duration_microseconds_bucket{kubernetes_name=\"b2b-web\"}) by (le)",
+                  "interval": "10s",
+                  "intervalFactor": 1,
+                  "legendFormat": "{{\"{{\"}}le{{\"}}\"}}",
+                  "refId": "A",
+                  "step": 10
+                }
+              ],
+              "timeFrom": null,
+              "timeShift": null,
+              "title": "HTTP latency",
+              "tooltip": {
+                "msResolution": false,
+                "shared": true,
+                "sort": 0,
+                "value_type": "cumulative"
+              },
+              "type": "graph",
+              "xaxis": {
+                "show": true
+              },
+              "yaxes": [
+                {
+                  "format": "short",
+                  "label": "ms",
+                  "logBase": 1,
+                  "max": null,
+                  "min": null,
+                  "show": true
+                },
+                {
+                  "format": "short",
+                  "label": null,
+                  "logBase": 1,
+                  "max": null,
+                  "min": null,
+                  "show": true
+                }
+              ]
+            }
+          ],
+          "title": "New row"
+        },
+        {
+          "collapse": false,
+          "editable": true,
+          "height": "250px",
+          "panels": [
+            {
+              "aliasColors": {},
+              "bars": false,
+              "datasource": null,
+              "editable": true,
+              "error": false,
+              "fill": 1,
+              "grid": {
+                "threshold1": null,
+                "threshold1Color": "rgba(216, 200, 27, 0.27)",
+                "threshold2": null,
+                "threshold2Color": "rgba(234, 112, 112, 0.22)"
+              },
+              "id": 21,
+              "isNew": true,
+              "legend": {
+                "alignAsTable": true,
+                "avg": true,
+                "current": true,
+                "max": false,
+                "min": false,
+                "rightSide": true,
+                "show": true,
+                "sort": "avg",
+                "sortDesc": true,
+                "total": false,
+                "values": true
+              },
+              "lines": true,
+              "linewidth": 2,
+              "links": [],
+              "nullPointMode": "connected",
+              "percentage": false,
+              "pointradius": 5,
+              "points": false,
+              "renderer": "flot",
+              "seriesOverrides": [],
+              "span": 12,
+              "stack": false,
+              "steppedLine": false,
+              "targets": [
+                {
+                  "expr": "sum(erlang_vm_memory_system_bytes_total) by (usage)",
+                  "intervalFactor": 2,
+                  "legendFormat": "{{\"{{\"}}usage{{\"}}\"}}",
+                  "refId": "A",
+                  "step": 2
+                },
+                {
+                  "expr": "sum(sum(erlang_vm_memory_system_bytes_total) by (usage))",
+                  "intervalFactor": 2,
+                  "legendFormat": "total",
+                  "refId": "B",
+                  "step": 2
+                }
+              ],
+              "timeFrom": null,
+              "timeShift": null,
+              "title": "Erlang memory usage",
+              "tooltip": {
+                "msResolution": false,
+                "shared": true,
+                "sort": 0,
+                "value_type": "cumulative"
+              },
+              "type": "graph",
+              "xaxis": {
+                "show": true
+              },
+              "yaxes": [
+                {
+                  "format": "short",
+                  "label": null,
+                  "logBase": 1,
+                  "max": null,
+                  "min": null,
+                  "show": true
+                },
+                {
+                  "format": "short",
+                  "label": null,
+                  "logBase": 1,
+                  "max": null,
+                  "min": null,
+                  "show": true
+                }
+              ]
             }
           ],
           "title": "New row"
         }
       ],
       "time": {
-        "from": "now-3h",
+        "from": "now-5m",
         "to": "now"
       },
       "timepicker": {
@@ -927,38 +674,14 @@ serverDashboardFiles:
         ]
       },
       "templating": {
-        "list": [
-          {
-            "current": {
-              "text": "100.96.11.106:9090",
-              "value": "100.96.11.106:9090"
-            },
-            "datasource": "default",
-            "hide": 0,
-            "includeAll": false,
-            "label": "instance",
-            "multi": false,
-            "name": "instance",
-            "options": [
-              {
-                "text": "100.96.11.106:9090",
-                "value": "100.96.11.106:9090",
-                "selected": true
-              }
-            ],
-            "query": "label_values(prometheus_build_info,instance)",
-            "refresh": 1,
-            "regex": "",
-            "type": "query"
-          }
-        ]
+        "list": []
       },
       "annotations": {
         "list": []
       },
-      "refresh": false,
+      "refresh": "5s",
       "schemaVersion": 12,
-      "version": 0,
+      "version": 6,
       "links": [
         {
           "icon": "info",
@@ -981,7 +704,7 @@ serverDashboardFiles:
       "gnetId": null
     }
 
-  k8s-cluster-monitoring.json: |-
+  k8s-cluster-monitoring.json: |
     {
       "id": 3,
       "title": "Kubernetes cluster monitoring (via Prometheus)",
@@ -1292,7 +1015,7 @@ serverDashboardFiles:
                   "expr": "sum by (pod_name)( rate(container_cpu_usage_seconds_total{image!=\"\"}[2m] ) )",
                   "interval": "10s",
                   "intervalFactor": 1,
-                  "legendFormat": "{{"{{"}} pod_name {{"}}"}}",
+                  "legendFormat": "{{\"{{\"}} pod_name {{\"}}\"}}",
                   "metric": "container_cpu",
                   "refId": "A",
                   "step": 10
@@ -1385,7 +1108,7 @@ serverDashboardFiles:
                   "expr": "sort_desc(sum(container_memory_usage_bytes{image!=\"\"}) by (pod_name, image))",
                   "interval": "10s",
                   "intervalFactor": 1,
-                  "legendFormat": "{{"{{"}} pod_name {{"}}"}}",
+                  "legendFormat": "{{\"{{\"}} pod_name {{\"}}\"}}",
                   "metric": "container_memory_usage:sort_desc",
                   "refId": "A",
                   "step": 10
@@ -1470,7 +1193,7 @@ serverDashboardFiles:
                   "expr": "sort_desc(sum by (pod_name) (rate (container_network_receive_bytes_total{name!=\"\", name=~\"k8s_POD.*\"}[2m]) ))",
                   "interval": "10s",
                   "intervalFactor": 1,
-                  "legendFormat": "{{"{{"}} pod_name {{"}}"}}",
+                  "legendFormat": "{{\"{{\"}} pod_name {{\"}}\"}}",
                   "metric": "network",
                   "refId": "A",
                   "step": 10
@@ -1479,7 +1202,7 @@ serverDashboardFiles:
                   "expr": "sort_desc(sum by (pod_name) (rate (container_network_transmit_bytes_total{name!=\"\", name=~\"k8s_POD.*\"}[2m]) ))",
                   "interval": "10s",
                   "intervalFactor": 1,
-                  "legendFormat": "{{"{{"}} pod_name {{"}}"}}",
+                  "legendFormat": "{{\"{{\"}} pod_name {{\"}}\"}}",
                   "metric": "network",
                   "refId": "B",
                   "step": 10
@@ -1563,7 +1286,7 @@ serverDashboardFiles:
       "gnetId": 162
     }
 
-  k8s-cluster-monitoring-by-namespace.json: |-
+  k8s-cluster-monitoring-by-namespace.json: |
     {
       "id": 1,
       "title": "Kubernetes cluster monitoring (via Prometheus) - by Namespace",
@@ -1874,7 +1597,7 @@ serverDashboardFiles:
                   "expr": "sum by (pod_name)( rate(container_cpu_usage_seconds_total{image!=\"\",namespace=\"$Namespace\"}[2m] ) )",
                   "interval": "10s",
                   "intervalFactor": 1,
-                  "legendFormat": "{{"{{"}} pod_name {{"}}"}}",
+                  "legendFormat": "{{\"{{\"}} pod_name {{\"}}\"}}",
                   "metric": "container_cpu",
                   "refId": "A",
                   "step": 10
@@ -1967,7 +1690,7 @@ serverDashboardFiles:
                   "expr": "sort_desc(sum(container_memory_usage_bytes{image!=\"\",namespace=\"$Namespace\"}) by (pod_name, image))",
                   "interval": "10s",
                   "intervalFactor": 1,
-                  "legendFormat": "{{"{{"}} pod_name {{"}}"}}",
+                  "legendFormat": "{{\"{{\"}} pod_name {{\"}}\"}}",
                   "metric": "container_memory_usage:sort_desc",
                   "refId": "A",
                   "step": 10
@@ -2260,29 +1983,276 @@ serverDashboardFiles:
       "gnetId": 162
     }
 
-  b2b-web-monitoring.json: |-
+  prometheus.json: |
     {
-      "id": 2,
-      "title": "B2B-web monitoring (via Prometheus)",
+      "id": 4,
+      "title": "Prometheus Stats",
       "tags": [
-        "B2B-web"
+        "prometheus"
       ],
       "style": "dark",
       "timezone": "browser",
       "editable": true,
-      "hideControls": false,
+      "hideControls": true,
       "sharedCrosshair": false,
       "rows": [
         {
           "collapse": false,
           "editable": true,
-          "height": 259.4375,
+          "height": 178,
           "panels": [
             {
-              "aliasColors": {},
+              "cacheTimeout": null,
+              "colorBackground": false,
+              "colorValue": false,
+              "colors": [
+                "rgba(245, 54, 54, 0.9)",
+                "rgba(237, 129, 40, 0.89)",
+                "rgba(50, 172, 45, 0.97)"
+              ],
+              "datasource": "default",
+              "decimals": 1,
+              "editable": true,
+              "error": false,
+              "format": "s",
+              "gauge": {
+                "maxValue": 100,
+                "minValue": 0,
+                "show": false,
+                "thresholdLabels": false,
+                "thresholdMarkers": true
+              },
+              "id": 5,
+              "interval": null,
+              "links": [],
+              "mappingType": 1,
+              "mappingTypes": [
+                {
+                  "name": "value to text",
+                  "value": 1
+                },
+                {
+                  "name": "range to text",
+                  "value": 2
+                }
+              ],
+              "maxDataPoints": 100,
+              "nullPointMode": "connected",
+              "nullText": null,
+              "postfix": "",
+              "postfixFontSize": "50%",
+              "prefix": "",
+              "prefixFontSize": "50%",
+              "rangeMaps": [
+                {
+                  "from": "null",
+                  "text": "N/A",
+                  "to": "null"
+                }
+              ],
+              "span": 3,
+              "sparkline": {
+                "fillColor": "rgba(31, 118, 189, 0.18)",
+                "full": false,
+                "lineColor": "rgb(31, 120, 193)",
+                "show": false
+              },
+              "targets": [
+                {
+                  "expr": "(time() - process_start_time_seconds{instance=\"$instance\"})",
+                  "intervalFactor": 2,
+                  "legendFormat": "",
+                  "refId": "A",
+                  "step": 240
+                }
+              ],
+              "thresholds": "",
+              "title": "Uptime",
+              "type": "singlestat",
+              "valueFontSize": "80%",
+              "valueMaps": [
+                {
+                  "op": "=",
+                  "text": "N/A",
+                  "value": "null"
+                }
+              ],
+              "valueName": "current"
+            },
+            {
+              "cacheTimeout": null,
+              "colorBackground": false,
+              "colorValue": false,
+              "colors": [
+                "rgba(50, 172, 45, 0.97)",
+                "rgba(237, 129, 40, 0.89)",
+                "rgba(245, 54, 54, 0.9)"
+              ],
+              "datasource": "default",
+              "editable": true,
+              "error": false,
+              "format": "none",
+              "gauge": {
+                "maxValue": 100,
+                "minValue": 0,
+                "show": false,
+                "thresholdLabels": false,
+                "thresholdMarkers": true
+              },
+              "id": 6,
+              "interval": null,
+              "links": [],
+              "mappingType": 1,
+              "mappingTypes": [
+                {
+                  "name": "value to text",
+                  "value": 1
+                },
+                {
+                  "name": "range to text",
+                  "value": 2
+                }
+              ],
+              "maxDataPoints": 100,
+              "nullPointMode": "connected",
+              "nullText": null,
+              "postfix": "",
+              "postfixFontSize": "50%",
+              "prefix": "",
+              "prefixFontSize": "50%",
+              "rangeMaps": [
+                {
+                  "from": "null",
+                  "text": "N/A",
+                  "to": "null"
+                }
+              ],
+              "span": 3,
+              "sparkline": {
+                "fillColor": "rgba(31, 118, 189, 0.18)",
+                "full": false,
+                "lineColor": "rgb(31, 120, 193)",
+                "show": true
+              },
+              "targets": [
+                {
+                  "expr": "prometheus_local_storage_memory_series{instance=\"$instance\"}",
+                  "intervalFactor": 2,
+                  "refId": "A",
+                  "step": 240
+                }
+              ],
+              "thresholds": "1,5",
+              "title": "Local Storage Memory Series",
+              "type": "singlestat",
+              "valueFontSize": "70%",
+              "valueMaps": [],
+              "valueName": "current"
+            },
+            {
+              "cacheTimeout": null,
+              "colorBackground": false,
+              "colorValue": true,
+              "colors": [
+                "rgba(50, 172, 45, 0.97)",
+                "rgba(237, 129, 40, 0.89)",
+                "rgba(245, 54, 54, 0.9)"
+              ],
+              "datasource": "default",
+              "editable": true,
+              "error": false,
+              "format": "none",
+              "gauge": {
+                "maxValue": 100,
+                "minValue": 0,
+                "show": false,
+                "thresholdLabels": false,
+                "thresholdMarkers": true
+              },
+              "id": 7,
+              "interval": null,
+              "links": [],
+              "mappingType": 1,
+              "mappingTypes": [
+                {
+                  "name": "value to text",
+                  "value": 1
+                },
+                {
+                  "name": "range to text",
+                  "value": 2
+                }
+              ],
+              "maxDataPoints": 100,
+              "nullPointMode": "connected",
+              "nullText": null,
+              "postfix": "",
+              "postfixFontSize": "50%",
+              "prefix": "",
+              "prefixFontSize": "50%",
+              "rangeMaps": [
+                {
+                  "from": "null",
+                  "text": "N/A",
+                  "to": "null"
+                }
+              ],
+              "span": 3,
+              "sparkline": {
+                "fillColor": "rgba(31, 118, 189, 0.18)",
+                "full": false,
+                "lineColor": "rgb(31, 120, 193)",
+                "show": true
+              },
+              "targets": [
+                {
+                  "expr": "prometheus_local_storage_indexing_queue_length{instance=\"$instance\"}",
+                  "intervalFactor": 2,
+                  "refId": "A",
+                  "step": 240
+                }
+              ],
+              "thresholds": "500,4000",
+              "title": "Interal Storage Queue Length",
+              "type": "singlestat",
+              "valueFontSize": "70%",
+              "valueMaps": [
+                {
+                  "op": "=",
+                  "text": "Empty",
+                  "value": "0"
+                }
+              ],
+              "valueName": "current"
+            },
+            {
+              "content": "<img src=\"http://prometheus.io/assets/prometheus_logo_grey.svg\" alt=\"Prometheus logo\" style=\"height: 40px;\">\n<span style=\"font-family: 'Open Sans', 'Helvetica Neue', Helvetica; font-size: 25px;vertical-align: text-top;color: #bbbfc2;margin-left: 10px;\">Prometheus</span>\n\n<p style=\"margin-top: 10px;\">You're using Prometheus, an open-source systems monitoring and alerting toolkit originally built at SoundCloud. For more information, check out the <a href=\"http://www.grafana.org/\">Grafana</a> and <a href=\"http://prometheus.io/\">Prometheus</a> projects.</p>",
+              "editable": true,
+              "error": false,
+              "id": 9,
+              "links": [],
+              "mode": "html",
+              "span": 3,
+              "style": {},
+              "title": "",
+              "transparent": true,
+              "type": "text"
+            }
+          ],
+          "title": "New row"
+        },
+        {
+          "collapse": false,
+          "editable": true,
+          "height": 227,
+          "panels": [
+            {
+              "aliasColors": {
+                "prometheus": "#C15C17",
+                "{instance=\"localhost:9090\",job=\"prometheus\"}": "#C15C17"
+              },
               "bars": false,
-              "datasource": null,
-              "decimals": null,
+              "datasource": "default",
               "editable": true,
               "error": false,
               "fill": 1,
@@ -2292,47 +2262,42 @@ serverDashboardFiles:
                 "threshold2": null,
                 "threshold2Color": "rgba(234, 112, 112, 0.22)"
               },
-              "id": 16,
-              "isNew": true,
+              "id": 3,
               "legend": {
-                "alignAsTable": true,
-                "avg": true,
-                "current": true,
+                "avg": false,
+                "current": false,
                 "max": false,
                 "min": false,
-                "rightSide": true,
                 "show": true,
-                "sort": "avg",
-                "sortDesc": true,
                 "total": false,
-                "values": true
+                "values": false
               },
               "lines": true,
               "linewidth": 2,
               "links": [],
               "nullPointMode": "connected",
               "percentage": false,
-              "pointradius": 5,
+              "pointradius": 2,
               "points": false,
               "renderer": "flot",
               "seriesOverrides": [],
-              "span": 12,
+              "span": 9,
               "stack": false,
               "steppedLine": false,
               "targets": [
                 {
-                  "expr": "sort(probe_duration_seconds{instance=~\"b2b-web.+\"}*1000)",
-                  "interval": "10s",
-                  "intervalFactor": 1,
-                  "legendFormat": "{{"{{"}}instance{{"}}"}}",
+                  "expr": "rate(prometheus_local_storage_ingested_samples_total{instance=\"$instance\"}[5m])",
+                  "interval": "",
+                  "intervalFactor": 2,
+                  "legendFormat": "{{\"{{\"}}instance{{\"}}\"}}",
                   "metric": "",
                   "refId": "A",
-                  "step": 10
+                  "step": 20
                 }
               ],
               "timeFrom": null,
               "timeShift": null,
-              "title": "HTTP response time 200 by probe",
+              "title": "Samples ingested (rate-5m)",
               "tooltip": {
                 "msResolution": false,
                 "shared": true,
@@ -2345,8 +2310,7 @@ serverDashboardFiles:
               },
               "yaxes": [
                 {
-                  "format": "ms",
-                  "label": null,
+                  "format": "short",
                   "logBase": 1,
                   "max": null,
                   "min": null,
@@ -2354,13 +2318,25 @@ serverDashboardFiles:
                 },
                 {
                   "format": "short",
-                  "label": null,
                   "logBase": 1,
                   "max": null,
                   "min": null,
                   "show": true
                 }
               ]
+            },
+            {
+              "content": "#### Samples Ingested\nThis graph displays the count of samples ingested by the Prometheus server, as measured over the last 5 minutes, per time series in the range vector. When troubleshooting an issue on IRC or Github, this is often the first stat requested by the Prometheus team. ",
+              "editable": true,
+              "error": false,
+              "id": 8,
+              "links": [],
+              "mode": "markdown",
+              "span": 2.995914043583536,
+              "style": {},
+              "title": "",
+              "transparent": true,
+              "type": "text"
             }
           ],
           "title": "New row"
@@ -2368,12 +2344,15 @@ serverDashboardFiles:
         {
           "collapse": false,
           "editable": true,
-          "height": "200px",
+          "height": "250px",
           "panels": [
             {
-              "aliasColors": {},
+              "aliasColors": {
+                "prometheus": "#F9BA8F",
+                "{instance=\"localhost:9090\",interval=\"5s\",job=\"prometheus\"}": "#F9BA8F"
+              },
               "bars": false,
-              "datasource": null,
+              "datasource": "default",
               "editable": true,
               "error": false,
               "fill": 1,
@@ -2383,8 +2362,7 @@ serverDashboardFiles:
                 "threshold2": null,
                 "threshold2Color": "rgba(234, 112, 112, 0.22)"
               },
-              "id": 18,
-              "isNew": true,
+              "id": 2,
               "legend": {
                 "avg": false,
                 "current": false,
@@ -2403,22 +2381,21 @@ serverDashboardFiles:
               "points": false,
               "renderer": "flot",
               "seriesOverrides": [],
-              "span": 12,
+              "span": 5,
               "stack": false,
               "steppedLine": false,
               "targets": [
                 {
-                  "expr": "sum(http_requests_total{kubernetes_name=\"b2b-web\"})",
-                  "intervalFactor": 1,
-                  "legendFormat": "b2b-web",
-                  "metric": "http_requests_total",
+                  "expr": "rate(prometheus_target_interval_length_seconds_count{instance=\"$instance\"}[5m])",
+                  "intervalFactor": 2,
+                  "legendFormat": "{{\"{{\"}}job{{\"}}\"}}",
                   "refId": "A",
-                  "step": 1
+                  "step": 40
                 }
               ],
               "timeFrom": null,
               "timeShift": null,
-              "title": "HTTP throughput from load balancer",
+              "title": "Target Scrapes (last 5m)",
               "tooltip": {
                 "msResolution": false,
                 "shared": true,
@@ -2431,8 +2408,7 @@ serverDashboardFiles:
               },
               "yaxes": [
                 {
-                  "format": "ops",
-                  "label": "",
+                  "format": "short",
                   "logBase": 1,
                   "max": null,
                   "min": null,
@@ -2440,13 +2416,101 @@ serverDashboardFiles:
                 },
                 {
                   "format": "short",
-                  "label": "",
                   "logBase": 1,
                   "max": null,
                   "min": null,
                   "show": true
                 }
               ]
+            },
+            {
+              "aliasColors": {},
+              "bars": false,
+              "datasource": "default",
+              "editable": true,
+              "error": false,
+              "fill": 1,
+              "grid": {
+                "threshold1": null,
+                "threshold1Color": "rgba(216, 200, 27, 0.27)",
+                "threshold2": null,
+                "threshold2Color": "rgba(234, 112, 112, 0.22)"
+              },
+              "id": 14,
+              "legend": {
+                "avg": false,
+                "current": false,
+                "max": false,
+                "min": false,
+                "show": true,
+                "total": false,
+                "values": false
+              },
+              "lines": true,
+              "linewidth": 2,
+              "links": [],
+              "nullPointMode": "connected",
+              "percentage": false,
+              "pointradius": 5,
+              "points": false,
+              "renderer": "flot",
+              "seriesOverrides": [],
+              "span": 4,
+              "stack": false,
+              "steppedLine": false,
+              "targets": [
+                {
+                  "expr": "prometheus_target_interval_length_seconds{instance=\"$instance\",quantile!=\"0.01\", quantile!=\"0.05\"}",
+                  "interval": "",
+                  "intervalFactor": 2,
+                  "legendFormat": "{{\"{{\"}}quantile{{\"}}\"}} ({{\"{{\"}}interval{{\"}}\"}})",
+                  "metric": "",
+                  "refId": "A",
+                  "step": 60
+                }
+              ],
+              "timeFrom": null,
+              "timeShift": null,
+              "title": "Scrape Duration",
+              "tooltip": {
+                "msResolution": false,
+                "shared": true,
+                "sort": 0,
+                "value_type": "cumulative"
+              },
+              "type": "graph",
+              "xaxis": {
+                "show": true
+              },
+              "yaxes": [
+                {
+                  "format": "short",
+                  "logBase": 1,
+                  "max": null,
+                  "min": null,
+                  "show": true
+                },
+                {
+                  "format": "short",
+                  "logBase": 1,
+                  "max": null,
+                  "min": null,
+                  "show": true
+                }
+              ]
+            },
+            {
+              "content": "#### Scrapes\nPrometheus scrapes metrics from instrumented jobs, either directly or via an intermediary push gateway for short-lived jobs. Target scrapes will show how frequently targets are scraped, as measured over the last 5 minutes, per time series in the range vector. Scrape Duration will show how long the scrapes are taking, with percentiles available as series. ",
+              "editable": true,
+              "error": false,
+              "id": 11,
+              "links": [],
+              "mode": "markdown",
+              "span": 3,
+              "style": {},
+              "title": "",
+              "transparent": true,
+              "type": "text"
             }
           ],
           "title": "New row"
@@ -2459,8 +2523,8 @@ serverDashboardFiles:
             {
               "aliasColors": {},
               "bars": false,
-              "datasource": null,
-              "decimals": 0,
+              "datasource": "default",
+              "decimals": null,
               "editable": true,
               "error": false,
               "fill": 1,
@@ -2470,20 +2534,17 @@ serverDashboardFiles:
                 "threshold2": null,
                 "threshold2Color": "rgba(234, 112, 112, 0.22)"
               },
-              "id": 19,
-              "isNew": true,
+              "id": 12,
               "legend": {
-                "alignAsTable": true,
-                "avg": true,
-                "current": true,
+                "alignAsTable": false,
+                "avg": false,
+                "current": false,
+                "hideEmpty": true,
                 "max": false,
                 "min": false,
-                "rightSide": true,
                 "show": true,
-                "sort": "avg",
-                "sortDesc": true,
                 "total": false,
-                "values": true
+                "values": false
               },
               "lines": true,
               "linewidth": 2,
@@ -2494,22 +2555,22 @@ serverDashboardFiles:
               "points": false,
               "renderer": "flot",
               "seriesOverrides": [],
-              "span": 12,
+              "span": 9,
               "stack": false,
               "steppedLine": false,
               "targets": [
                 {
-                  "expr": "sum(http_request_duration_microseconds_bucket{kubernetes_name=\"b2b-web\"}) by (le)",
-                  "interval": "10s",
-                  "intervalFactor": 1,
-                  "legendFormat": "{{"{{"}}le{{"}}"}}",
+                  "expr": "prometheus_evaluator_duration_seconds{instance=\"$instance\",quantile!=\"0.01\", quantile!=\"0.05\"}",
+                  "interval": "",
+                  "intervalFactor": 2,
+                  "legendFormat": "{{\"{{\"}}quantile{{\"}}\"}}",
                   "refId": "A",
-                  "step": 10
+                  "step": 20
                 }
               ],
               "timeFrom": null,
               "timeShift": null,
-              "title": "HTTP latency",
+              "title": "Rule Eval Duration",
               "tooltip": {
                 "msResolution": false,
                 "shared": true,
@@ -2522,8 +2583,8 @@ serverDashboardFiles:
               },
               "yaxes": [
                 {
-                  "format": "short",
-                  "label": "ms",
+                  "format": "percentunit",
+                  "label": "",
                   "logBase": 1,
                   "max": null,
                   "min": null,
@@ -2531,116 +2592,32 @@ serverDashboardFiles:
                 },
                 {
                   "format": "short",
-                  "label": null,
                   "logBase": 1,
                   "max": null,
                   "min": null,
                   "show": true
                 }
               ]
-            }
-          ],
-          "title": "New row"
-        },
-        {
-          "collapse": false,
-          "editable": true,
-          "height": "250px",
-          "panels": [
+            },
             {
-              "aliasColors": {},
-              "bars": false,
-              "datasource": null,
+              "content": "#### Rule Evaluation Duration\nThis graph panel plots the duration for all evaluations to execute. The 50th percentile, 90th percentile and 99th percentile are shown as three separate series to help identify outliers that may be skewing the data.",
               "editable": true,
               "error": false,
-              "fill": 1,
-              "grid": {
-                "threshold1": null,
-                "threshold1Color": "rgba(216, 200, 27, 0.27)",
-                "threshold2": null,
-                "threshold2Color": "rgba(234, 112, 112, 0.22)"
-              },
-              "id": 21,
-              "isNew": true,
-              "legend": {
-                "alignAsTable": true,
-                "avg": true,
-                "current": true,
-                "max": false,
-                "min": false,
-                "rightSide": true,
-                "show": true,
-                "sort": "avg",
-                "sortDesc": true,
-                "total": false,
-                "values": true
-              },
-              "lines": true,
-              "linewidth": 2,
+              "id": 15,
               "links": [],
-              "nullPointMode": "connected",
-              "percentage": false,
-              "pointradius": 5,
-              "points": false,
-              "renderer": "flot",
-              "seriesOverrides": [],
-              "span": 12,
-              "stack": false,
-              "steppedLine": false,
-              "targets": [
-                {
-                  "expr": "sum(erlang_vm_memory_system_bytes_total) by (usage)",
-                  "intervalFactor": 2,
-                  "legendFormat": "{{"{{"}}usage{{"}}"}}",
-                  "refId": "A",
-                  "step": 2
-                },
-                {
-                  "expr": "sum(sum(erlang_vm_memory_system_bytes_total) by (usage))",
-                  "intervalFactor": 2,
-                  "legendFormat": "total",
-                  "refId": "B",
-                  "step": 2
-                }
-              ],
-              "timeFrom": null,
-              "timeShift": null,
-              "title": "Erlang memory usage",
-              "tooltip": {
-                "msResolution": false,
-                "shared": true,
-                "sort": 0,
-                "value_type": "cumulative"
-              },
-              "type": "graph",
-              "xaxis": {
-                "show": true
-              },
-              "yaxes": [
-                {
-                  "format": "short",
-                  "label": null,
-                  "logBase": 1,
-                  "max": null,
-                  "min": null,
-                  "show": true
-                },
-                {
-                  "format": "short",
-                  "label": null,
-                  "logBase": 1,
-                  "max": null,
-                  "min": null,
-                  "show": true
-                }
-              ]
+              "mode": "markdown",
+              "span": 3,
+              "style": {},
+              "title": "",
+              "transparent": true,
+              "type": "text"
             }
           ],
           "title": "New row"
         }
       ],
       "time": {
-        "from": "now-5m",
+        "from": "now-3h",
         "to": "now"
       },
       "timepicker": {
@@ -2670,14 +2647,38 @@ serverDashboardFiles:
         ]
       },
       "templating": {
-        "list": []
+        "list": [
+          {
+            "current": {
+              "text": "100.96.11.106:9090",
+              "value": "100.96.11.106:9090"
+            },
+            "datasource": "default",
+            "hide": 0,
+            "includeAll": false,
+            "label": "instance",
+            "multi": false,
+            "name": "instance",
+            "options": [
+              {
+                "text": "100.96.11.106:9090",
+                "value": "100.96.11.106:9090",
+                "selected": true
+              }
+            ],
+            "query": "label_values(prometheus_build_info,instance)",
+            "refresh": 1,
+            "regex": "",
+            "type": "query"
+          }
+        ]
       },
       "annotations": {
         "list": []
       },
-      "refresh": "5s",
+      "refresh": false,
       "schemaVersion": 12,
-      "version": 6,
+      "version": 0,
       "links": [
         {
           "icon": "info",
