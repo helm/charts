@@ -111,6 +111,31 @@ server:
   ##
   # terminationGracePeriodSeconds: 300
 
+  # Set datasource in beginning
+  setDatasource:
+    ## If true, Grafana Datasource will be set
+    ##
+    enabled: true
+
+    ## How long should it take to commit failure
+    ##
+    # activeDeadlineSeconds: 100
+
+    ## Curl Docker image
+    ##
+    image: appropriate/curl:latest
+
+    datasource:
+      name: default
+      type: prometheus
+      url: "http://prometheus:9090"
+      access: proxy
+      isDefault: true
+
+    ## What would call job to restart
+    ##
+    restartPolicy: OnFailure
+
 ## Grafana config file ConfigMap entry
 ##
 serverConfigFile:
