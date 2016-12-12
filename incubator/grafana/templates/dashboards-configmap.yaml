@@ -7,6 +7,6 @@ metadata:
     component: "{{ .Values.server.name }}"
     heritage: "{{ .Release.Service }}"
     release: "{{ .Release.Name }}"
-  name: {{ template "server.fullname" . }}-config
+  name: {{ template "server.fullname" . }}-dashs
 data:
-{{ toYaml .Values.serverConfigFile | indent 2 }}
+{{ toYaml .Values.serverDashboardFiles | indent 2 }}
