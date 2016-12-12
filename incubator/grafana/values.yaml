@@ -119,7 +119,7 @@ server:
 
     ## How long should it take to commit failure
     ##
-    # activeDeadlineSeconds: 100
+    # activeDeadlineSeconds: 300
 
     ## Curl Docker image
     ##
@@ -128,7 +128,7 @@ server:
     datasource:
       name: default
       type: prometheus
-      url: "http://prometheus:9090"
+      url: "http://limping-tiger-server"
       access: proxy
       isDefault: true
 

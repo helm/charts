@@ -10,7 +10,7 @@ metadata:
     release: "{{ .Release.Name }}"
   name: {{ template "server.fullname" . }}-set-datasource
 spec:
-  activeDeadlineSeconds: {{ default 100 .Values.server.setDatasource.activeDeadlineSeconds }}
+  activeDeadlineSeconds: {{ default 300 .Values.server.setDatasource.activeDeadlineSeconds }}
   template:
     metadata:
       labels:
@@ -22,7 +22,7 @@ spec:
       - name: {{ template "server.fullname" . }}-set-datasource
         image: "{{ .Values.server.setDatasource.image }}"
         args:
-          - "http://{{ .Values.server.adminUser }}:{{ .Values.server.adminPassword }}@{{ template "name" . }}:3000/api/datasources"
+          - "http://{{ .Values.server.adminUser }}:{{ .Values.server.adminPassword }}@{{ template "fullname" . }}:{{ .Values.server.httpPort }}/api/datasources"
           - "-X"
           - POST
           - "-H"
