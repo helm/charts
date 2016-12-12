@@ -18,7 +18,7 @@ same shell:
    value for factorioServer.serviceType. See the README.md for more info.
 
 You can watch for EXTERNAL-IP to populate by running:
-  kubectl get svc -w {{ template "fullname" . }}
+  kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "fullname" . }}
 
 {{- else if contains "ClusterIP" .Values.factorioServer.serviceType }}
   export POD_NAME=$(kubectl get pods \

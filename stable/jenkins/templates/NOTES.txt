@@ -8,11 +8,11 @@
   echo http://$NODE_IP:$NODE_PORT/login
 
 {{- else if contains "LoadBalancer" .Values.Master.ServiceType }}
-**** NOTE: It may take a few minutes for the LoadBalancer IP to be available.                      ****
-****       You can watch the status of by running 'kubectl get svc -w {{ template "fullname" . }}' ****
+  NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+        You can watch the status of by running 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "fullname" . }}'
   export SERVICE_IP=$(kubectl get svc {{ template "fullname" . }} --namespace {{ .Release.Namespace }} --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
   echo http://$SERVICE_IP:{{ .Values.Master.ServicePort }}/login
-  
+
 {{- else if contains "ClusterIP"  .Values.Master.ServiceType }}
   export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "component={{ template "fullname" . }}-master" -o jsonpath="{.items[0].metadata.name}")
   echo http://127.0.0.1:{{ .Values.Master.ServicePort }}
