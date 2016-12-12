@@ -5,9 +5,8 @@ replicaCount: 1
 image: sapho/ops-docker-tomcat:8-jre8
 
 mysql:
-  mysqlUser: root
   persistence:
-    enabled: false
+    enabled: true
     storageClass: generic
     accessMode: ReadWriteOnce
     size: 8Gi
