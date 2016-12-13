@@ -13,19 +13,19 @@ spec:
     {{- if eq $key "http_listener" }}
   - port: {{ trimPrefix ":" $value.service_address | int64 }}
     targetPort: {{ trimPrefix ":" $value.service_address | int64 }}
-    name: "http_listener"
+    name: "http-listener"
     {{- end }}
     {{- if eq $key "statsd" }}
   - port: {{ trimPrefix ":" $value.service_address | int64 }}
     targetPort: {{ trimPrefix ":" $value.service_address | int64 }}
     name: "statsd"
     {{- end }}
-    {{- if eq $key "tcp_listener" }}
+    {{- if eq $key "tcp-listener" }}
   - port: {{ trimPrefix ":" $value.service_address | int64 }}
     targetPort: {{ trimPrefix ":" $value.service_address | int64 }}
     name: "tcp_listener"
     {{- end }}
-    {{- if eq $key "udp_listener" }}
+    {{- if eq $key "udp-listener" }}
   - port: {{ trimPrefix ":" $value.service_address | int64 }}
     targetPort: {{ trimPrefix ":" $value.service_address | int64 }}
     name: "udp_listener"
