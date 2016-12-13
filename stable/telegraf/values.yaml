@@ -37,7 +37,7 @@ daemonset:
       debug: false
       quiet: false
       logfile: ""
-      hostname: ""
+      hostname: "$HOSTNAME"
       omit_hostname: false
     outputs:
       influxdb:
