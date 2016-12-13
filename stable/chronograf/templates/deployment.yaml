@@ -8,7 +8,7 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
-  replicas: 1
+  replicas: {{ .Values.service.replicas }}
   template:
     metadata:
       labels:
@@ -18,6 +18,29 @@ spec:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
+{{- if .Values.oauth.enabled }}
+        env:
+        - name: GH_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "fullname" . }}
+              key: client_id
+        - name: GH_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "fullname" . }}
+              key: client_secret
+        - name: TOKEN_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "fullname" . }}
+              key: token_secret
+        - name: GH_ORGS
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "fullname" . }}
+              key: gh_orgs
+{{- end }}
         ports:
         - containerPort: 8888
           name: api

@@ -13,9 +13,14 @@ metadata:
 spec:
 {{- if .Values.ingress.tls }}
   tls:
-  - hosts:
+    hosts:
     - {{ .Values.ingress.hostname }}
+{{- $eval := quote .Values.ingress.secretName }}
+{{- if eq (len $eval) 0 }}
+    secretName: {{ .Values.ingress.secretName }}
+{{- else }}
     secretName: {{ template "fullname" . }}-tls
+{{- end}}
 {{- end }}
   rules:
   - host: {{ .Values.ingress.hostname }}
