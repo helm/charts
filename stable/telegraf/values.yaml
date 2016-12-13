@@ -126,7 +126,7 @@ daemonset:
       swap:
       system:
       kubernetes:
-        url: "http://$NODE_IP:10255"
+        url: "http://$HOSTNAME:10255"
         bearer_token: "/var/run/secrets/kubernetes.io/serviceaccount/token"
         insecure_skip_verify: true
         

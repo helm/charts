@@ -1,4 +1,3 @@
-{{- if gt (len .Values.single.config.outputs.influxdb.urls) 0 }}
 {{- if .Values.single.enabled -}}
 {{- if .Values.single.service.enabled -}}
 apiVersion: v1
@@ -39,6 +38,5 @@ spec:
   {{- end }}
   selector:
     app: {{ template "fullname" . }}-s
-{{- end -}}
 {{- end -}}
 {{- end -}}
