@@ -69,6 +69,7 @@ server:
     # annotations:
 
     ## Grafana data Persistent Volume size
+    ## Default: 1Gi
     ##
     size: 1Gi
 
@@ -142,7 +143,7 @@ server:
       ##
       # type: prometheus
 
-      ## The url of the datasource. To set correctly you need to know 
+      ## The url of the datasource. To set correctly you need to know
       ## the right datasource name and its port ahead. Check kubernetes
       ## dashboard or describe the service should fulfill the requirements.
       ## Synatx like `http://<release name>-<server name>:<port number>
