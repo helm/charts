@@ -1,0 +1,17 @@
+# kube2iam container image
+image: "jtblin/kube2iam"
+
+# kube2iam version
+version: "0.3.0"
+
+# Base ARN to apply to all roles. Something like arn:aws:iam::123456789012
+baseRoleArn: "arn:aws:iam::123456789012"
+
+# The port where kube2iam will be listening.
+exposedPort: 8181
+
+# Resources assigned to kube2iam pod
+cpuRequests: "10m"
+cpuLimits: "100m"
+memoryRequests: "128Mi"
+memoryLimits: "256Mi"

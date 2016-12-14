@@ -1,0 +1,9 @@
+name: kube2iam
+description: Deploy kube2iam to be able to use roles with pods
+version: 0.3.0
+home: https://github.com/jtblin/kube2iam
+sources:
+  - https://github.com/jtblin/kube2iam
+maintainers:
+  - name: Jose Armesto
+    email: jose@armesto.net

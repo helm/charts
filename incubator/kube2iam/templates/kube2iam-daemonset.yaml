@@ -1,0 +1,42 @@
+---
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: kube2iam
+  labels:
+    app: "{{ .Release.Name }}-{{ .Chart.Name }}"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  template:
+    metadata:
+      labels:
+        name: kube2iam
+    spec:
+      hostNetwork: true
+      containers:
+        - image: "{{.Values.image}}:{{.Values.version}}"
+          name: kube2iam
+          args:
+            - "--base-role-arn={{.Values.baseRoleArn}}:role/"
+            - "--iptables=true"
+            - "--host-ip=$(HOST_IP)"
+          env:
+            - name: HOST_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+          ports:
+            - containerPort: 8181
+              hostPort: {{.Values.exposedPort}}
+              name: http
+          securityContext:
+            privileged: true
+          resources:
+            requests:
+              memory: {{.Values.memoryRequests | quote}}
+              cpu: {{.Values.cpuRequests | quote}}
+            limits:
+              memory: {{.Values.memoryLimits | quote}}
+              cpu: {{.Values.cpuLimits | quote}}
