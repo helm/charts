@@ -1,0 +1,35 @@
+{{- if .Values.server.setDatasource.enabled -}}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  labels:
+    app: {{ template "fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    component: "{{ .Values.server.name }}"
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+  name: {{ template "server.fullname" . }}-set-datasource
+spec:
+  activeDeadlineSeconds: {{ default 300 .Values.server.setDatasource.activeDeadlineSeconds }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "fullname" . }}
+        component: "{{ .Values.server.name }}"
+        release: "{{ .Release.Name }}"
+    spec:
+      containers:
+      - name: {{ template "server.fullname" . }}-set-datasource
+        image: "{{ .Values.server.setDatasource.image }}"
+        args:
+          - "http://{{ .Values.server.adminUser }}:{{ .Values.server.adminPassword }}@{{ template "fullname" . }}:{{ .Values.server.httpPort }}/api/datasources"
+          - "-X"
+          - POST
+          - "-H"
+          - "Content-Type: application/json;charset=UTF-8"
+          - "--data-binary"
+          {{- with .Values.server.setDatasource.datasource }}
+          - "{\"name\":\"{{ .name }}\",\"type\":\"{{ .type }}\",\"url\":\"{{ .url }}\",\"access\":\"{{ .access }}\",\"isDefault\":{{ .isDefault }}}"
+          {{- end }}
+      restartPolicy: {{ .Values.server.setDatasource.restartPolicy }}
+{{- end -}}
