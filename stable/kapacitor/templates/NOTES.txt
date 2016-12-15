@@ -1,3 +1,5 @@
+{{- $bl := empty .Values.influxURL }}
+{{- if not $bl }}
 Kapacitor can be accessed via port 9092 on the following DNS name from within your cluster:
 
 - http://{{ template "fullname" . }}.{{ .Release.Namespace }}:9092
@@ -19,4 +21,9 @@ To tail the logs for the Kapacitor pod run the following:
 To watch for the LoadBalancer IP or Hostname to populate run the following:
 
 - kubectl get svc -w --namespace {{ .Release.Namespace }} -l app={{ template "fullname" . }}
+{{- end }}
+{{- end }}
+
+{{- if empty .Values.influxURL }}
+You have not set .Values.influxURL. Kapacitor needs an InfluxDB instance to create a subscription on. Please set that value to deploy kapacitor
 {{- end }}
