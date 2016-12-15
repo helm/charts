@@ -12,3 +12,14 @@ To watch for the LoadBalancer IP run the following
 
 - kubectl get svc -w --namespace {{ .Release.Namespace }} -l app={{ template "fullname" . }}
 {{- end }}
+
+{{- if empty .Values.single.config.outputs.influxdb.urls }}
+{{- if empty .Values.daemonset.config.outputs.influxdb.urls }}
+
+Need to set an InfluxDB url for either single or daemonset to deploy this instance:
+
+.Values.daemonset.config.outputs.influxdb.urls
+.Values.single.config.outputs.influxdb.urls
+
+{{- end }}
+{{- end }}
