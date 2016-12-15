@@ -1,0 +1,28 @@
+
+Image: "minio/minio"
+ImageTag: "latest"
+ImagePullPolicy: "Always"
+
+ServiceType: ClusterIP
+ServicePort: 9000
+
+## Set default access key and secret
+AccessKey: "AKIAIOSFODNN7EXAMPLE"
+SecretKey: "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+
+## Enable persistence using Persistent Volume Claims
+## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+##
+persistence:
+  enabled: true
+  storageClass: generic
+  accessMode: ReadWriteOnce
+  size: 8Gi
+
+## Configure resource requests and limits
+## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+##
+resources:
+  requests:
+    memory: 256Mi
+    cpu: 250m

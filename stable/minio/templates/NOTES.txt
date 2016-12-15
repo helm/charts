@@ -1,0 +1,14 @@
+Minio can be accessed via port {{ .Values.ServicePort }} on the following DNS name from within your cluster:
+{{ template "fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
+
+To connect to minio:
+
+  1. Download the Minio mc client - https://docs.minio.io/docs/minio-client-quickstart-guide
+
+  2. export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "fullname" . }}" -o jsonpath="{.items[0].metadata.name}")
+
+  3. kubectl port-forward $POD_NAME 9000 --namespace {{ .Release.Namespace }}
+
+  4. mc config host add {{ template "fullname" . }}-local http://localhost:9000 {{ .Values.AccessKey }} {{ .Values.SecretKey }} S3v4
+
+  5. mc ls {{ template "fullname" . }}-local
