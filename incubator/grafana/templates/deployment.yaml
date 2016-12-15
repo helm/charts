@@ -27,9 +27,15 @@ spec:
           imagePullPolicy: {{ default "Always" .Values.server.imagePullPolicy }}
           env:
             - name: GF_SECURITY_ADMIN_USER
-              value: "{{ .Values.server.adminUser }}"
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "server.fullname" . }}
+                  key: grafana-admin-user
             - name: GF_SECURITY_ADMIN_PASSWORD
-              value: "{{ .Values.server.adminPassword }}"
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "server.fullname" . }}
+                  key: grafana-admin-password
           ports:
             - containerPort: 3000
           readinessProbe:
