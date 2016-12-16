@@ -28,6 +28,7 @@ spec:
               {
                   "name": "copy-default-config",
                   "image": "{{.Values.Master.Image}}:{{.Values.Master.ImageTag}}",
+                  "imagePullPolicy": "{{.Values.Master.imagePullPolicy}}",
                   "command": ["cp", "-n", "/var/jenkins_config/config.xml", "/var/jenkins_home"],
                   "volumeMounts": [
                       {
