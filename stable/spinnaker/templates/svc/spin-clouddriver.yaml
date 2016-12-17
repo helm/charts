@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "fullname" . }}-clouddriver
+  labels:
+    app: spin
+    stack: clouddriver
+spec:
+  ports:
+    - port: 7002
+  selector:
+    load-balancer-spin-clouddriver: "true"

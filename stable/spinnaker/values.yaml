@@ -1,0 +1,32 @@
+# Default values for spinnaker.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+redis:
+  redisPassword: password
+repository: library/nginx
+replicaCount: 1
+image:
+  repository: quay.io/spinnaker
+  tag: v2.941.0
+  pullPolicy: IfNotPresent
+service:
+  type: ClusterIP
+resources:
+  limits:
+    cpu: 1000m
+    memory: 1280Mi
+  requests:
+    cpu: 1000m
+    memory: 1280Mi
+
+accounts:
+- name: my-docker-account
+  address: https://index.docker.io
+  repositories:
+    - library/nginx
+
+persistence:
+  enabled: false
+  storageClass: generic
+  accessMode: ReadWriteOnce
+  size: 8Gi

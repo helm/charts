@@ -1,0 +1,38 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}-clouddriver
+  labels:
+    app: {{ template "fullname" . }}
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        replication-controller: spin-clouddriver-v000
+        load-balancer-spin-clouddriver: "true"
+    spec:
+      containers:
+        - image: viglesiasce/spinnaker-clouddriver
+          name: clouddriver
+          ports:
+            - containerPort: 7002
+              name: clouddriver
+          volumeMounts:
+            - mountPath: /opt/spinnaker/config
+              name: {{ template "fullname" . }}-spinnaker-config
+            - mountPath: /root/.kube
+              name: {{ template "fullname" . }}-kube-config
+          readinessProbe:
+            httpGet:
+              path: /credentials
+              port: 7002
+            initialDelaySeconds: 20
+            timeoutSeconds: 1
+      volumes:
+        - name: {{ template "fullname" . }}-spinnaker-config
+          configMap:
+            name: {{ template "fullname" . }}-spinnaker-config
+        - name: {{ template "fullname" . }}-kube-config
+          configMap:
+            name: {{ template "fullname" . }}-kube-config

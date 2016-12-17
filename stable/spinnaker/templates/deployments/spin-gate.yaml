@@ -1,0 +1,33 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}-gate
+  labels:
+    app: spin
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        replication-controller: spin-gate-v000
+        load-balancer-spin-gate: "true"
+    spec:
+      containers:
+        - image: quay.io/spinnaker/gate:master
+          name: gate
+          ports:
+            - containerPort: 8084
+              name: gate
+          volumeMounts:
+            - mountPath: /opt/spinnaker/config
+              name: {{ template "fullname" . }}-spinnaker-config
+          readinessProbe:
+            httpGet:
+              path: /env
+              port: 8084
+            initialDelaySeconds: 20
+            timeoutSeconds: 1
+      volumes:
+        - name: {{ template "fullname" . }}-spinnaker-config
+          configMap:
+            name: {{ template "fullname" . }}-spinnaker-config

@@ -1,0 +1,33 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}-igor
+  labels:
+    app: spin
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        replication-controller: spin-igor-v000
+        load-balancer-spin-igor: "true"
+    spec:
+      containers:
+        - image: quay.io/spinnaker/igor:master
+          name: igor
+          ports:
+            - containerPort: 8088
+              name: igor
+          volumeMounts:
+            - mountPath: /opt/spinnaker/config
+              name: {{ template "fullname" . }}-spinnaker-config
+          readinessProbe:
+            httpGet:
+              path: /env
+              port: 8088
+            initialDelaySeconds: 20
+            timeoutSeconds: 1
+      volumes:
+        - name: {{ template "fullname" . }}-spinnaker-config
+          configMap:
+            name: {{ template "fullname" . }}-spinnaker-config

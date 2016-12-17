@@ -1,0 +1,22 @@
+server:
+  port: ${services.front50.port:8080}
+  address: 0.0.0.0
+
+aws:
+  simpleDBEnabled: ${providers.aws.simpleDBEnabled:false}
+  defaultSimpleDBDomain: ${providers.aws.defaultSimpleDBDomain}
+
+cassandra:
+  enabled: ${services.front50.cassandra.enabled}
+
+spinnaker:
+  cassandra:
+    enabled: ${services.front50.cassandra.enabled}
+  redis:
+    enabled: ${services.front50.redis.enabled}
+  gcs:
+    enabled: ${services.front50.gcs.enabled}
+    project: ${services.front50.gcs.project}
+    jsonPath: /root/.kube/account.json
+    rootFolder: ${services.front50.bucket_root}
+    bucket: ${services.front50.storage_bucket}

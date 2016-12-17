@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "fullname" . }}-echo
+  labels:
+    app: spin
+    stack: echo
+spec:
+  ports:
+    - port: 8089
+  selector:
+    load-balancer-spin-echo: "true"

@@ -1,0 +1,43 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}-rosco
+  labels:
+    app: {{ template "fullname" . }}
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        replication-controller: spin-rosco-v000
+        load-balancer-spin-rosco: "true"
+    spec:
+      containers:
+        - image: quay.io/spinnaker/rosco:master
+          name: rosco
+          ports:
+            - containerPort: 8087
+              name: rosco
+          volumeMounts:
+            - mountPath: /opt/spinnaker/config
+              name: {{ template "fullname" . }}-spinnaker-config
+            - mountPath: /usr/bin/docker
+              name: docker-bin
+            - mountPath: /var/run/docker.sock
+              name: docker-sock
+          readinessProbe:
+            httpGet:
+              path: /env
+              port: 8087
+            initialDelaySeconds: 20
+            timeoutSeconds: 1
+      volumes:
+        - name: {{ template "fullname" . }}-spinnaker-config
+          configMap:
+            name: {{ template "fullname" . }}-spinnaker-config
+        - name: docker-bin
+          hostPath:
+            path: /usr/bin/docker
+        - name: docker-sock
+          hostPath:
+            path: /var/run/docker.sock

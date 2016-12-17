@@ -1,0 +1,33 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}-echo
+  labels:
+    app: spin
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        replication-controller: spin-echo-v000
+        load-balancer-spin-echo: "true"
+    spec:
+      containers:
+        - image: quay.io/spinnaker/echo:master
+          name: echo
+          ports:
+            - containerPort: 8089
+              name: echo
+          volumeMounts:
+            - mountPath: /opt/spinnaker/config
+              name: {{ template "fullname" . }}-spinnaker-config
+          readinessProbe:
+            httpGet:
+              path: /env
+              port: 8089
+            initialDelaySeconds: 20
+            timeoutSeconds: 1
+      volumes:
+        - name: {{ template "fullname" . }}-spinnaker-config
+          configMap:
+            name: {{ template "fullname" . }}-spinnaker-config
