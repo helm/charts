@@ -18,6 +18,7 @@ spec:
             {
               "name": "copy-custom-config",
               "image": "{{ .Values.image }}",
+              "imagePullPolicy": {{ .Values.imagePullPolicy | quote }},
               "command": ["sh", "-c", "mkdir -p /bitnami/mariadb/conf && cp -n /bitnami/mariadb_config/my.cnf /bitnami/mariadb/conf/my_custom.cnf"],
               "volumeMounts": [
                 {
@@ -35,7 +36,7 @@ spec:
       containers:
       - name: {{ template "fullname" . }}
         image: "{{ .Values.image }}"
-        imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
+        imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
         env:
         - name: MARIADB_ROOT_PASSWORD
           valueFrom:
