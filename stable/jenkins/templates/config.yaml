@@ -28,7 +28,7 @@ data:
           <name>default</name>
           <templates>
             <org.csanchez.jenkins.plugins.kubernetes.PodTemplate>
-              <name>default</name>
+              <name>jnlp</name>
               <image>{{ .Values.Agent.Image }}:{{ .Values.Agent.ImageTag }}</image>
               <privileged>false</privileged>
               <alwaysPullImage>false</alwaysPullImage>
