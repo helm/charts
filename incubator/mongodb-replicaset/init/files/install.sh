@@ -14,10 +14,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# This volume is assumed to exist and is shared with parent of the init
-# container. It contains the mongodb config.
-CONFIG_VOLUME="/config"
-
 # This volume is assumed to exist and is shared with the peer-finder
 # init container. It contains on-start/change configuration scripts.
 WORKDIR_VOLUME="/work-dir"
@@ -43,9 +39,3 @@ echo installing config scripts into "${WORKDIR_VOLUME}"
 mkdir -p "${WORKDIR_VOLUME}"
 cp /on-start.sh "${WORKDIR_VOLUME}"/
 cp /peer-finder "${WORKDIR_VOLUME}"/
-
-echo installing mongod.conf into "${CONFIG_VOLUME}"
-mkdir -p "${CONFIG_VOLUME}"
-chown -R mongodb:mongodb "${CONFIG_VOLUME}"
-cp /mongod.conf "${CONFIG_VOLUME}"/
-chmod 644 /${CONFIG_VOLUME}/mongod.conf
