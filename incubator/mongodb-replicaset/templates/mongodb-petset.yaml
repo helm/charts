@@ -6,6 +6,8 @@ metadata:
   labels:
     heritage: {{.Release.Service | quote }}
     release: {{.Release.Name | quote }}
+    clusterrole: {{.Values.ClusterRole | quote }}
+    replicaset: {{.Values.ReplicaSet | quote }}
     chart: "{{.Chart.Name}}-{{.Chart.Version}}"
     component: "{{.Release.Name}}-{{.Values.Component}}"
   annotations:
@@ -19,13 +21,37 @@ spec:
   selector:
     component: "{{.Release.Name}}-{{.Values.Component}}"
 ---
-apiVersion: apps/v1alpha1
-kind: PetSet
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "{{.Release.Name}}-mongo-config"
+data:
+  mongod.conf: |
+    # mongod.conf
+    # Where to store the data.
+    storage:
+      dbPath: /data/db
+    net:
+      port: 27017
+
+    # Replication Options
+
+    # in replicated mongo databases, specify the replica set name here
+    sharding:
+      clusterRole: {{.Values.ClusterRole}}
+    replication:
+      replSetName: {{.Values.ReplicaSet}}
+
+---
+apiVersion: apps/v1beta1
+kind: StatefulSet
 metadata:
   name: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 24 }}"
   labels:
     heritage: {{.Release.Service | quote }}
     release: {{.Release.Name | quote }}
+    clusterrole: {{.Values.ClusterRole | quote }}
+    replicaset: {{.Values.ReplicaSet | quote }}
     chart: "{{.Chart.Name}}-{{.Chart.Version}}"
     component: "{{.Release.Name}}-{{.Values.Component}}"
   annotations:
@@ -38,16 +64,18 @@ spec:
       labels:
         heritage: {{.Release.Service | quote }}
         release: {{.Release.Name | quote }}
+        clusterrole: {{.Values.ClusterRole | quote }}
+        replicaset: {{.Values.ReplicaSet | quote }}
         chart: "{{.Chart.Name}}-{{.Chart.Version}}"
-        component: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 24 }}"
+        component: "{{.Release.Name}}-{{.Values.Component}}"
       annotations:
         "helm.sh/created": {{.Release.Time.Seconds | quote }}
-        pod.alpha.kubernetes.io/initialized: "true"
         pod.alpha.kubernetes.io/init-containers: '[
             {
                 "name": "install",
                 "image": "{{.Values.InstallImage}}:{{.Values.InstallImageTag}}",
                 "args": ["--work-dir=/work-dir"],
+                "imagePullPolicy": "{{.Values.ImagePullPolicy}}",
                 "volumeMounts": [
                     {
                         "name": "workdir",
@@ -64,6 +92,7 @@ spec:
                 "image": "{{.Values.Image}}:{{.Values.ImageTag}}",
                 "command": ["/work-dir/peer-finder"],
                 "args": ["-on-start=\"/work-dir/on-start.sh\"", "-service={{ printf "%s-%s" .Release.Name .Values.Name | trunc 24 }}"],
+                "imagePullPolicy": "{{.Values.ImagePullPolicy}}",
                 "env": [
                   {
                       "name": "POD_NAMESPACE",
@@ -73,7 +102,11 @@ spec:
                               "fieldPath": "metadata.namespace"
                           }
                       }
-                   }
+                  },
+                  {
+                      "name": "RS",
+                      "value": "{{.Values.ReplicaSet}}"
+                  }
                 ],
                 "volumeMounts": [
                     {
@@ -121,7 +154,8 @@ spec:
           mountPath: /config
       volumes:
       - name: config
-        emptyDir: {}
+        configMap:
+          name: "{{.Release.Name}}-mongo-config"
       - name: workdir
         emptyDir: {}
   volumeClaimTemplates:

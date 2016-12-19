@@ -35,18 +35,20 @@ $ helm install --name my-release incubator/mongodb-replicaset
 
 The following tables lists the configurable parameters of the mongodb chart and their default values.
 
-|     Parameter     |        Description         |       Default        |
-|-------------------|----------------------------|----------------------|
-| `Name`            | Name of the chart          | `mongodb-replicaset` |
-| `Image`           | Container image name       | `mongo`              |
-| `ImageTag`        | Container image tag        | `3.2`                |
-| `ImagePullPolicy` | Container pull policy      | `Always`             |
-| `Replicas`        | k8s petset replicas        | `3`                  |
-| `Component`       | k8s selector key           | `mongodb`            |
-| `Cpu`             | container requested cpu    | `100m`               |
-| `Memory`          | container requested memory | `512Mi`              |
-| `PeerPort`        | Container listening port   | `27017`              |
-| `Storage`         | Persistent volume size     | `10Gi`               |
+| Parameter               | Description                        | Default                                                    |
+| ----------------------- | ---------------------------------- | ---------------------------------------------------------- |
+| `Name`                  | Name of the chart                  | `mongodb-replicaset`                                       |
+| `Image`                 | Container image name               | `mongo`                                                    |
+| `ImageTag`              | Container image tag                | `3.2`                                                      |
+| `ImagePullPolicy`       | Container pull policy              | `Always`                                                   |
+| `Replicas`              | k8s petset replicas                | `3`                                                        |
+| `Component`             | k8s selector key                   | `mongodb`                                                  |
+| `ReplicaSet`            | MongoDB ReplicaSet name            | `rs0`                                                      |
+| `ClusterRole`           | Role of the cluster (Data/Config)  | `shardsvr`                                                 |
+| `Cpu`                   | container requested cpu            | `100m`                                                     |
+| `Memory`                | container requested memory         | `512Mi`                                                    |
+| `PeerPort`              | Container listening port           | `27017`                                                    |
+| `Storage`               | Persistent volume size             | `10Gi`                                                     |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
