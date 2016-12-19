@@ -1,0 +1,13 @@
+name: kapacitor
+version: 0.1.0
+description: Chart for Chronograf
+keywords:
+- kapacitor
+- stream
+- etl
+- timeseries
+home: https://www.influxdata.com/time-series-platform/kapacitor/
+maintainers:
+- name: Jack Zampolin
+  email: jack@influxdb.com
+engine: gotpl
