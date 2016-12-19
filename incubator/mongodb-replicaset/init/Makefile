@@ -14,14 +14,14 @@
 
 all: push
 
-TAG = 0.2
+TAG = 0.3
 PREFIX = gcr.io/google_containers/mongodb-install
 
 container:
 	docker build -t $(PREFIX):$(TAG) .
 
 push: container
-	gcloud docker push $(PREFIX):$(TAG)
+	gcloud docker -- push $(PREFIX):$(TAG)
 
 clean:
 	docker rmi $(PREFIX):$(TAG)

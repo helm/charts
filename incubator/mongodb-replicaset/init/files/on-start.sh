@@ -54,5 +54,8 @@ done
 # else initiate a replicaset with yourself.
 /usr/bin/mongo --eval="printjson(rs.status())" | grep "no replset config has been received"
 if [ $? -eq 0 ]; then
-  /usr/bin/mongo --eval="printjson(rs.initiate({'_id': 'rs0', 'members': [{'_id': 0, 'host': '${MY_NAME}'}]}))"
+  /usr/bin/mongo --eval="printjson(rs.initiate({'_id': '${RS}', 'members': [{'_id': 0, 'host': '${MY_NAME}'}]}))"
 fi
+
+# Do a clean shutdown of mongod
+/usr/bin/mongo --eval "db.getSiblingDB('admin').shutdownServer({force: true})"
