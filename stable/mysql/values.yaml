@@ -25,7 +25,7 @@ imageTag: "5.7.14"
 ## 'Always' if imageTag is 'latest', else set to 'IfNotPresent'
 ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
 ##
-# imagePullPolicy:
+imagePullPolicy: IfNotPresent
 
 ## Persist data to a persitent volume
 persistence:
