@@ -12,4 +12,5 @@ sources:
 - https://github.com/docker-library/postgres
 maintainers:
 - name: swordbeta
+- name: databus23
 engine: gotpl
