@@ -1,0 +1,5 @@
+name: domoticz
+description: A Helm chart for Kubernetes
+version: 0.1.0
+home: https://www.domoticz.com/
+engine: gotpl
