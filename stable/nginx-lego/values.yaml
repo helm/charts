@@ -51,15 +51,18 @@ default:
 ## ref: https://github.com/jetstack/kube-lego
 ##
 lego:
-  enabled: true
+  enabled: false
   replicaCount: 1
   image:
     repository: jetstack/kube-lego
     tag: "0.1.3"
     pullPolicy: IfNotPresent
   configmap:
-    email: "todd@influxdb.com"
-    url: "https://acme-v01.api.letsencrypt.org/directory"
+    email: "my@email.tld"
+    # Production Let's Encrypt server
+    # url: "https://acme-v01.api.letsencrypt.org/directory"
+    # Test Let's Encrypt server
+    url: "https://acme-staging.api.letsencrypt.org/directory "
   resources:
     limits:
       cpu: 1
