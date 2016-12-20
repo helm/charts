@@ -7,7 +7,7 @@ metadata:
     release: {{ .Release.Name | quote }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
 spec:
-  replicas: {{ .Values.replicaCount }}  
+  replicas: {{ .Values.replicaCount }}
   template:
     metadata:
       labels:
@@ -18,7 +18,8 @@ spec:
       - name: uchiwa
         image: "{{ .Values.image }}:{{ .Values.imageTag }}"
         imagePullPolicy: {{ .Values.pullPolicy }}
-{{ toYaml .Values.resources | indent 8 }}
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
         env:
           - name: UCHIWA_BIND
             value: {{ .Values.host | quote }}
@@ -42,4 +43,3 @@ spec:
             port: {{ .Values.port }}
         ports:
         - containerPort: {{ .Values.port }}
-
