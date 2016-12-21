@@ -42,7 +42,7 @@ jenkins:
   
   Agent:
     Image: viglesiasce/spinnaker-jenkins-agent
-    ImageTag: v.0.1.0
+    ImageTag: v0.1.0
     Cpu: "500m"
     Memory: "512Mi"
 

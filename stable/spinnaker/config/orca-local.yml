@@ -34,4 +34,6 @@ default:
 redis:
   connection: ${services.redis.connection}
 
-
+script:
+  master: default # name of Jenkins master in Spinnaker
+  job: run-script # from Jenkins job configuration

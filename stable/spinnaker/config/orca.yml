@@ -39,3 +39,7 @@ redis:
 tasks:
   executionWindow:
     timezone: ${services.orca.timezone}
+
+script:
+  master: default # name of Jenkins master in Spinnaker
+  job: run-script # from Jenkins job configuration

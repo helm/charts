@@ -35,9 +35,11 @@ spec:
         - "20"
         - --retry-delay
         - "10"
+        - --max-time
+        - "3"
         - --data-binary
-        - "@/jobs/build-image.xml"
-        - "http://{{ template "fullname" . }}-igor:8080/createItem?name=build-image"
+        - "@/jobs/run-script.xml"
+        - "http://{{ template "fullname" . }}-igor:8080/createItem?name=run-script"
         volumeMounts:
         - name: jenkins-jobs
           mountPath: /jobs
