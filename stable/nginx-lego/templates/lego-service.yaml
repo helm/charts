@@ -1,0 +1,15 @@
+{{- if .Values.lego.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "fullname" . }}-lego
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    name: "lego"
+  selector:
+    app: {{ template "fullname" . }}-lego
+{{- end }}
