@@ -4,6 +4,7 @@ metadata:
   name: {{ template "fullname" . }}
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    type: openvpn
 spec:
   ports:
     - name: openvpn

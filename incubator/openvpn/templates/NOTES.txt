@@ -1,27 +1,13 @@
-OpenVPN now Running
+OpenVPN now Running.
 1. Get the client ovpn file as follows:
-{{- if contains "NodePort" .Values.service.type }}
-  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "fullname" . }})
-  export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
-  echo http://$NODE_IP:$NODE_PORT/login
-{{- else if contains "LoadBalancer" .Values.service.type }}
-     NOTE: It may take a few minutes for the LoadBalancer IP to be available.
-           You can watch the status of by running 'kubectl get svc -w {{ template "fullname" . }}'
-  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-{{- else if contains "ClusterIP"  .Values.service.type }}
-  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "fullname" . }}" -o jsonpath="{.items[0].metadata.name}")
-  echo "Visit http://127.0.0.1:8080 to use your application"
-  kubectl port-forward $POD_NAME 8080:{{ .Values.service.externalPort }}
-{{- end }}
-
 Once the IP is available get the client.ovpn file and import into your favorite openvpn tool like tunnelblick as follows:
+
+Generate client certs:
 
 export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
 export POD_NAME=`kubectl get pods -l type=openvpn | awk END'{ print $1 }'`
-kubectl exec -it $POD_NAME cat /usr/share/easy-rsa/pki/client.ovpn | \
-sed -e "s/\$LB_IP_ADDR/"$SERVICE_IP"/" >client.ovpn
+export SERVICE_NAME=`kubectl get svc -l type=openvpn | awk END'{ print $1 }'`
+export KEY_NAME=kubeVPN
+kubectl exec -it $POD_NAME /etc/openvpn/setup/newClientCert.sh $KEY_ NAME $SERVICE_IP > $KEY_NAME.ovpn
 
-To generate additional client certs:
-export CERT_NAME="mycert"
-kubectl exec -it $POD_NAME /etc/openvpn/setup/newClientCert.sh $CERT_ NAME $SERVICE_IP > $CERT_NAME.ovpn
-
+Do this for each user that needs to connect ot the VPN.
