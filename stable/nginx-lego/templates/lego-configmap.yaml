@@ -1,0 +1,9 @@
+{{- if .Values.lego.enabled }}
+apiVersion: v1
+metadata:
+  name: {{ template "fullname" . }}-lego
+data:
+  lego.email: {{ .Values.lego.configmap.email | quote }}
+  lego.url: {{ .Values.lego.configmap.url | quote }}
+kind: ConfigMap
+{{- end }}
