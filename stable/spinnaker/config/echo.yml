@@ -34,11 +34,13 @@ spring:
     properties:
       mail:
         smtp:
-          auth: true
+          auth:  ${services.echo.notifications.mail.auth:true}
           ssl:
-            enable: true
+            enable: ${services.echo.notifications.mail.ssl:true}
           socketFactory:
             port: ${services.echo.notifications.mail.port}
+            class: javax.net.ssl.SSLSocketFactory
+            fallback: false
 mail:
   enabled: ${services.echo.notifications.mail.enabled:false}
   host: ${services.echo.notifications.mail.host}

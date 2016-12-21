@@ -1,0 +1,43 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: "{{.Release.Name}}-upload-job"
+  labels:
+    heritage: {{.Release.Service | quote }}
+    release: {{.Release.Name | quote }}
+    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+  annotations:
+    "helm.sh/hook": post-install
+spec:
+  template:
+    metadata:
+      name: "{{.Release.Name}}"
+      labels:
+        heritage: {{.Release.Service | quote }}
+        release: {{.Release.Name | quote }}
+        chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+    spec:
+      restartPolicy: OnFailure
+      volumes:
+      - name: jenkins-jobs
+        configMap:
+          name: {{ .Release.Name }}-jenkins-jobs
+      containers:
+      - name: post-install-job
+        image: "viglesiasce/minio-client"
+        command:
+        - curl
+        - -X
+        - POST
+        - -H 
+        - "Content-Type: application/xml"
+        - --retry
+        - 20
+        - --retry-delay
+        - 10
+        - --data-binary
+        - "@/jobs/build-image.xml"
+        - "http://{{ template "fullname" . }}-igor:8080/createItem?name=build-image"
+        volumeMounts:
+        - name: jenkins-jobs
+          mountPath: /jobs

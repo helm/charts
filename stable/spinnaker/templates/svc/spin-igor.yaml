@@ -8,5 +8,10 @@ metadata:
 spec:
   ports:
     - port: 8088
+      name: igor
+    - port: 8080
+      name: jenkins-master
+    - port: 50000
+      name: jenkins-agent
   selector:
     load-balancer-spin-igor: "true"

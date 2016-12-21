@@ -1,6 +1,6 @@
 server:
   port: ${services.rosco.port:8087}
-  address: ${services.rosco.host:localhost}
+  address: 0.0.0.0
 
 redis:
   connection: ${services.redis.connection:redis://localhost:6379}

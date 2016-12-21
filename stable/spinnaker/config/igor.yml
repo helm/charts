@@ -1,11 +1,11 @@
 server:
   port: ${services.igor.port:8088}
-  address: ${services.igor.host:localhost}
+  address: 0.0.0.0
 
 jenkins:
   enabled: ${services.jenkins.enabled:false}
   masters:
-    - name: ${services.jenkins.defaultMaster.name}
+    - name: default
       address: ${services.jenkins.defaultMaster.baseUrl}
       username: ${services.jenkins.defaultMaster.username}
       password: ${services.jenkins.defaultMaster.password}
@@ -19,7 +19,7 @@ travis:
       githubToken: ${services.travis.defaultMaster.githubToken}
 
 dockerRegistry:
-  enabled: ${SPINNAKER_KUBERNETES_ENABLED:false}
+  enabled: true
 
 redis:
   connection: ${services.redis.connection:redis://localhost:6379}

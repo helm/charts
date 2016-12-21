@@ -25,7 +25,19 @@ slack:
 
 spring:
   mail:
-    host: ${mail.host}
+    host: ${services.echo.notifications.mail.host}
+    username: ${services.echo.notifications.mail.username}
+    password: ${services.echo.notifications.mail.password}
+    properties:
+      mail:
+        smtp:
+          auth:  ${services.echo.notifications.mail.auth:true}
+          ssl:
+            enable: ${services.echo.notifications.mail.ssl:true}
+          socketFactory:
+            port: ${services.echo.notifications.mail.port}
+            class: javax.net.ssl.SSLSocketFactory
+            fallback: false
 
 mail:
   enabled: ${services.echo.notifications.mail.enabled:false}

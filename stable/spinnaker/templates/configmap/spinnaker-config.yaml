@@ -9,32 +9,34 @@ metadata:
 data:
   clouddriver.yml: |
 {{.Files.Get "config/clouddriver.yml" | indent 4}}
-  echo-local.yml: |
-{{.Files.Get "config/echo-local.yml" | indent 4}}
   echo.yml: |
 {{.Files.Get "config/echo.yml" | indent 4}}
+  echo-local.yml: |
+{{.Files.Get "config/echo-local.yml" | indent 4}}
   fiat.yml: |
 {{.Files.Get "config/fiat.yml" | indent 4}}
-  front50-local.yml: |
-{{.Files.Get "config/front50-local.yml" | indent 4}}
+  fiat.yml-local: |
+{{.Files.Get "config/fiat-local.yml" | indent 4}}
   front50.yml: |
 {{.Files.Get "config/front50.yml" | indent 4}}
-  gate-local.yml: |
-{{.Files.Get "config/gate-local.yml" | indent 4}}
+  front50-local.yml: |
+{{.Files.Get "config/front50-local.yml" | indent 4}}
   gate.yml: |
 {{.Files.Get "config/gate.yml" | indent 4}}
-  igor-local.yml: |
-{{.Files.Get "config/igor-local.yml" | indent 4}}
+  gate-local.yml: |
+{{.Files.Get "config/gate-local.yml" | indent 4}}
   igor.yml: |
 {{.Files.Get "config/igor.yml" | indent 4}}
-  orca-local.yml: |
-{{.Files.Get "config/orca-local.yml" | indent 4}}
+  igor-local.yml: |
+{{.Files.Get "config/igor-local.yml" | indent 4}}
   orca.yml: |
 {{.Files.Get "config/orca.yml" | indent 4}}
-  rosco-local.yml: |
-{{.Files.Get "config/rosco-local.yml" | indent 4}}
+  orca-local.yml: |
+{{.Files.Get "config/orca-local.yml" | indent 4}}
   rosco.yml: |
 {{.Files.Get "config/rosco.yml" | indent 4}}
+  rosco-local.yml: |
+{{.Files.Get "config/rosco-local.yml" | indent 4}}
   settings.js: |
 {{.Files.Get "config/settings.js" | indent 4}}
   spinnaker.yml: |
@@ -110,7 +112,7 @@ data:
             enabled: true
             host: smtp.sendgrid.net
             username: apikey
-            password: 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
+            password: "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"
             fromAddress: spinnaker@vicnastea.io
             port: 2525
           hipchat:
@@ -143,7 +145,7 @@ data:
 
         # If using storage bucket persistence (gcs or s3), specify the bucket here
         # disable cassandra and enable the storage service below.
-        storage_bucket: spinnaker
+        storage_bucket: {{ .Values.storageBucket }}
         bucket_root: front50
 
         cassandra:
@@ -151,10 +153,10 @@ data:
         redis:
           enabled: false
         gcs:
-          enabled: false # Enable me
-          project: # Set me
+          enabled: false
+          project: my-project
         s3:
-          enabled: true # Or me
+          enabled: true
           endpoint: http://{{ .Release.Name }}-minio:9000
       gate:
         host: {{ template "fullname" . }}-gate
@@ -219,10 +221,10 @@ data:
         #
         # Note that jenkins is not installed with Spinnaker so you must obtain this
         # on your own if you are interested.
-        enabled: false
+        enabled: true
         defaultMaster:
-          name: Jenkins
-          baseUrl: http://{{ .Release.Name }}-jenkins:8080
+          name: default
+          baseUrl: http://localhost:8080/
           username: admin
           password: admin
 

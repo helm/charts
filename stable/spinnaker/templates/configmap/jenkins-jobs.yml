@@ -1,0 +1,63 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-jenkins-jobs
+data:
+  build-image.xml: |-
+    <?xml version='1.0' encoding='UTF-8'?>
+    <flow-definition plugin="workflow-job@2.9">
+      <actions/>
+      <description></description>
+      <keepDependencies>false</keepDependencies>
+      <properties>
+        <hudson.model.ParametersDefinitionProperty>
+          <parameterDefinitions>
+            <hudson.model.StringParameterDefinition>
+              <name>REPOSITORY_URL</name>
+              <description></description>
+              <defaultValue></defaultValue>
+            </hudson.model.StringParameterDefinition>
+            <hudson.model.StringParameterDefinition>
+              <name>IMAGE_REPO</name>
+              <description></description>
+              <defaultValue></defaultValue>
+            </hudson.model.StringParameterDefinition>
+            <hudson.model.StringParameterDefinition>
+              <name>IMAGE_TAG</name>
+              <description></description>
+              <defaultValue></defaultValue>
+            </hudson.model.StringParameterDefinition>
+          </parameterDefinitions>
+        </hudson.model.ParametersDefinitionProperty>
+        <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+          <triggers/>
+        </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+      </properties>
+      <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.23">
+        <script>node {
+        checkout([$class: &apos;GitSCM&apos;, 
+              branches: [[name: &apos;*/master&apos;]], 
+              doGenerateSubmoduleConfigurations: false, 
+              extensions: [], 
+              submoduleCfg: [], 
+              userRemoteConfigs: [[url: &apos;$REPOSITORY_URL&apos;]]]
+              )
+    
+        stage(&apos;save-env&apos;) {
+            sh &apos;env &gt; properties&apos;
+        }
+        
+        stage(&apos;build-image&apos;) {
+            sh &apos;docker build -t $IMAGE_REPO:$IMAGE_TAG .&apos;
+        }
+        
+        stage(&apos;push-image&apos;) {
+            sh &apos;gcloud docker -- push $IMAGE_REPO:$IMAGE_TAG&apos;
+        }
+        archiveArtifacts &apos;properties&apos;
+    }
+    </script>
+        <sandbox>true</sandbox>
+      </definition>
+      <triggers/>
+    </flow-definition>

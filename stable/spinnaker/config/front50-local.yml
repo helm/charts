@@ -7,16 +7,21 @@ aws:
   defaultSimpleDBDomain: ${providers.aws.defaultSimpleDBDomain}
 
 cassandra:
-  enabled: ${services.front50.cassandra.enabled}
+  enabled: false
 
 spinnaker:
   cassandra:
-    enabled: ${services.front50.cassandra.enabled}
+    enabled: false
   redis:
-    enabled: ${services.front50.redis.enabled}
+    enabled: false
   gcs:
     enabled: ${services.front50.gcs.enabled}
     project: ${services.front50.gcs.project}
-    jsonPath: /root/.kube/account.json
+    jsonPath: /root/.kube/account.json # Don't change this
     rootFolder: ${services.front50.bucket_root}
     bucket: ${services.front50.storage_bucket}
+  s3:
+    enabled: ${services.front50.s3.enabled}
+    rootFolder: ${services.front50.bucket_root}
+    bucket: ${services.front50.storage_bucket}
+    endpoint: ${services.front50.s3.endpoint}

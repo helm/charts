@@ -1,6 +1,6 @@
 server:
   port: ${services.front50.port:8080}
-  address: 0.0.0.0
+  address: ${services.front50.host:localhost}
 
 cassandra:
   enabled: ${services.front50.cassandra.enabled:true}
@@ -13,7 +13,7 @@ aws:
 
 spinnaker:
   cassandra:
-    enabled: ${services.front50.cassandra.enabled:false}
+    enabled: ${services.front50.cassandra.enabled:true}
     host: ${services.cassandra.host:localhost}
     port: ${services.cassandra.port:9042}
     cluster: ${services.cassandra.cluster:CASS_SPINNAKER}
@@ -28,12 +28,12 @@ spinnaker:
     bucket: ${services.front50.storage_bucket:}
     # See https://cloud.google.com/storage/docs/managing-buckets#manage-class-location
     bucketLocation: ${services.front50.bucket_location:}
-    rootFolder: ${services.front50.bucket_root:}
-    project: ${services.front50.gcs.project}
-    jsonPath: /root/.kube/account.json
+    rootFolder: ${services.front50.bucket_root:front50}
+    project: ${providers.google.primaryCredentials.project}
+    jsonPath: ${providers.google.primaryCredentials.jsonPath}
 
   aws:
     enabled: ${services.front50.s3.enabled:false}
-    endpoint: ${services.front50.s3.endpoint:}
     bucket: ${services.front50.storage_bucket:}
     rootFolder: ${services.front50.bucket_root:front50}
+    endpoint: ${services.front50.s3.endpoint:}

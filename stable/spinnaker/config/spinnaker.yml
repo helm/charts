@@ -95,19 +95,21 @@ services:
 
     # If using storage bucket persistence (gcs or s3), specify the bucket here
     # disable cassandra and enable the storage service below.
-    storage_bucket:
+    storage_bucket: ${services.front50.storage_bucket}
     # (GCS Only) Location for bucket.
     bucket_location:
     bucket_root: front50
 
     cassandra:
-      enabled: true
+      enabled: false
     redis:
       enabled: false
     gcs:
-      enabled: false
+      enabled: ${services.front50.gcs.enabled} # Enable me
+      project: ${services.front50.gcs.project}
     s3:
-      enabled: false
+      enabled: ${services.front50.s3.enabled} # Or me
+      endpoint: ${services.front50.s3.endpoint}
 
   gate:
     host: ${services.default.host}
@@ -163,7 +165,8 @@ services:
   docker:
     # This target repository is used by the bakery to publish baked docker images.
     # Do not include http://.
-    targetRepository: # Optional, but expected in spinnaker-local.yml if specified.
+    enabled: ${services.docker.enabled:false}
+    targetRepository: ${services.docker.targetRepository}
 
   jenkins:
     # The "name" entry is used for the display name when selecting

@@ -1,6 +1,6 @@
 server:
   port: ${services.gate.port:8084}
-  address: ${services.gate.host:localhost}
+  address: 0.0.0.0
 
 # Circular references since we're already using 'services'
 # services:
@@ -22,4 +22,3 @@ server:
 
 redis:
   connection: ${services.redis.connection}
-

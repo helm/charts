@@ -13,7 +13,7 @@ spec:
         load-balancer-spin-front50: "true"
     spec:
       containers:
-        - image: viglesiasce/spinnaker-front50
+        - image: quay.io/spinnaker/front50
           name: front50
           ports:
             - containerPort: 8080

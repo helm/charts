@@ -1,10 +1,10 @@
 # Default values for spinnaker.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
-redis:
-  redisPassword: password
+
 repository: library/nginx
 replicaCount: 1
+storageBucket: spinnaker
 image:
   repository: quay.io/spinnaker
   tag: v2.941.0
@@ -19,11 +19,41 @@ resources:
     cpu: 1000m
     memory: 1280Mi
 
+redis:
+  redisPassword: password
+
+minio:
+  AccessKey: spinnakeradmin
+  SecretKey: spinnakeradmin
+
+jenkins:
+  Master:
+    Name: jenkins-master
+    Image: "gcr.io/kubernetes-charts-ci/jenkins-master-k8s"
+    ImageTag: "v0.5.0"
+    ImagePullPolicy: "Always"
+    Component: "jenkins-master"
+    Cpu: "500m"
+    Memory: "512Mi"
+    ServicePort: 8080
+    ServiceType: ClusterIP
+    ContainerPort: 8080
+    SlaveListenerPort: 50000
+  
+  Agent:
+    Image: viglesiasce/spinnaker-jenkins-agent
+    ImageTag: v.0.1.0
+    Cpu: "500m"
+    Memory: "512Mi"
+
 accounts:
-- name: my-docker-account
+- name: docker-hub
   address: https://index.docker.io
   repositories:
-    - library/nginx
+    - library/alpine
+    - library/ubuntu
+    - library/centos
+    - viglesiasce/sample-app
 
 persistence:
   enabled: false
