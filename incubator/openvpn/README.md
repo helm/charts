@@ -7,7 +7,8 @@ The primary purpose of this chart was to make it easy to access kubernetes servi
 ##Usage
 helm install openvpn
 
-Wait for the external load blancer IP to become available.  Then generate a client key as follows :
+Wait for the external load blancer IP to become available.  Then generate a client key as follows:
+
 		export POD_NAME=`kubectl get pods -l type=openvpn | awk END'{ print $1 }'`
 		export SERVICE_NAME=`kubectl get svc -l type=openvpn | awk END'{ print $1 }'`
 		export SERVICE_IP=`kubectl get svc --namespace {{ .Release.Namespace }} $SERVICE_NAME -o jsonpath='{.status.loadBalancer.ingress[0].ip}'`
