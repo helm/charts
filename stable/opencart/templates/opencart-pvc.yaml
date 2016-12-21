@@ -1,0 +1,14 @@
+{{- if .Values.persistence.enabled -}}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ template "fullname" . }}-opencart
+  annotations:
+    volume.alpha.kubernetes.io/storage-class: {{ .Values.persistence.opencart.storageClass | quote }}
+spec:
+  accessModes:
+    - {{ .Values.persistence.opencart.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.opencart.size | quote }}
+{{- end -}}

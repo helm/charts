@@ -27,6 +27,8 @@ This repository is used by Chart developers for maintaining the official charts 
 1. Ensure your Chart follows the [technical](#technical-requirements) and [documentation](#documentation-requirements) guidelines, described below.
 1. Submit a pull request.
 
+***NOTE***: In order to make testing and merging of PRs easier, please submit changes to multiple charts in separate PRs.
+
 #### Technical requirements
 
 * All Chart dependencies should also be submitted independently

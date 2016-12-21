@@ -1,0 +1,70 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: {{ template "fullname" . }}
+    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+    component: "{{ .Values.server.name }}"
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+  name: {{ template "server.fullname" . }}
+spec:
+  replicas: 1
+  template:
+    metadata:
+      annotations:
+      {{- range $key, $value := .Values.server.annotations }}
+        {{ $key }}: {{ $value }}
+      {{- end }}
+      labels:
+        app: {{ template "fullname" . }}
+        component: "{{ .Values.server.name }}"
+        release: "{{ .Release.Name }}"
+    spec:
+      containers:
+        - name: {{ template "name" . }}
+          image: "{{ .Values.server.image }}"
+          imagePullPolicy: {{ default "Always" .Values.server.imagePullPolicy }}
+          env:
+            - name: GF_SECURITY_ADMIN_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "server.fullname" . }}
+                  key: grafana-admin-user
+            - name: GF_SECURITY_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "server.fullname" . }}
+                  key: grafana-admin-password
+          ports:
+            - containerPort: 3000
+          readinessProbe:
+            httpGet:
+              path: /login
+              port: 3000
+            initialDelaySeconds: 30
+            timeoutSeconds: 30
+          resources:
+{{ toYaml .Values.server.resources | indent 12 }}
+          volumeMounts:
+            - name: config-volume
+              mountPath: {{ default "/etc/grafana" .Values.server.configLocalPath | quote }}
+            - name: dashboard-volume
+              mountPath: {{ default "/var/lib/grafana/dashboards" .Values.server.dashboardLocalPath | quote }}
+            - name: storage-volume
+              mountPath: {{ default "/var/lib/grafana/data" .Values.server.storageLocalPath | quote }}
+      terminationGracePeriodSeconds: {{ default 300 .Values.server.terminationGracePeriodSeconds }}
+      volumes:
+        - name: config-volume
+          configMap:
+            name: {{ template "server.fullname" . }}-config
+        - name: dashboard-volume
+          configMap:
+            name: {{ template "server.fullname" . }}-dashs
+        - name: storage-volume
+      {{- if .Values.server.persistentVolume.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ template "server.fullname" . }}
+      {{- else }}
+          emptyDir: {}
+      {{- end -}}
