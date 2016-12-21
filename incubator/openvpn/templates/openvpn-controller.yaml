@@ -1,0 +1,47 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+spec:
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "fullname" . }}
+        type: openvpn
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        command: ["/etc/openvpn/setup/configure.sh"]
+        ports:
+        - containerPort: {{ .Values.service.internalPort }}
+        securityContext:
+          capabilities:
+            add:
+              - NET_ADMIN
+        env:
+            - name: OVPN_NETWORK
+              value: {{ .Values.openvpn.OVPN_NETWORK }}
+            - name: OVPN_SUBNET
+              value: {{ .Values.openvpn.OVPN_SUBNET }}
+            - name: OVPN_PROTO
+              value: {{ .Values.openvpn.OVPN_PROTO }}
+            - name: OVPN_K8S_SERVICE_NETWORK
+              value: {{ .Values.openvpn.OVPN_K8S_SERVICE_NETWORK }}
+            - name: OVPN_K8S_SERVICE_SUBNET
+              value: {{ .Values.openvpn.OVPN_K8S_SERVICE_SUBNET }}
+            - name: OVPN_K8S_DNS
+              value: {{ .Values.openvpn.OVPN_K8S_DNS }}
+        volumeMounts:
+          - mountPath: /etc/openvpn/setup
+            name: openvpn
+            readOnly: false
+      volumes:
+      - name: openvpn
+        configMap:
+          name: {{ template "fullname" . }}
+          "defaultMode": 0775

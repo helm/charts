@@ -1,0 +1,15 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+spec:
+  ports:
+    - name: openvpn
+      port: {{ .Values.service.externalPort }}
+      targetPort: {{ .Values.service.internalPort }}
+      protocol: {{ .Values.openvpn.OVPN_PROTO | upper }}
+  selector:
+    app: {{ template "fullname" . }}
+  type: {{ .Values.service.type }}
