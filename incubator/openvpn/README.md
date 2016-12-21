@@ -30,11 +30,10 @@ Certificates are generated with each deployment.  This way there is no need to s
 ###Important values
 * service.externalPort: 443 - external LoadBalancer port
 * service.internalPort: 443 - port of openVPN port
- 
 * openvpn.OVPN_NETWORK: 10.240.0.0 - Network allocated for openvpn clients (default: 10.240.0.0).
 * openvpn.OVPN_SUBNET:  255.255.0.0 - Network subnet allocated for openvpn client (default: 255.255.0.0).
 * openvpn.OVPN_PROTO: tcp - Protocol used by openvpn tcp or udp (default: tcp).
 * openvpn.OVPN_K8S_POD_NETWORK: "10.0.0.0" - Kubernetes pod network (optional).
 * openvpn.OVPN_K8S_POD_SUBNET: "255.0.0.0" - Kubernetes pod network subnet (optional).
 
-####Note: As configured the chart will create a route for a large 10.0.0.0/8 network that may cause issues if that is your local network.  If so tweak this value to something more restrictive that doesn't interfere with you network.  We add this because kubernetes get genreate pod IPS in this range.
+####Note: As configured the chart will create a route for a large 10.0.0.0/8 network that may cause issues if that is your local network.  If so tweak this value to something more restrictive.  This route is added, because kubernetes genreate pods with IPs in this range.
