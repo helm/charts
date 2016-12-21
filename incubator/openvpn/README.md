@@ -5,7 +5,9 @@ This chart will install an openvpn server inside a kubernetes cluster.  New cert
 The primary purpose of this chart was to make it easy to access kubernetes services during development.  It could also be used for any service that only needs to be access through a VPN, or as a general prupose VPN.
 
 ##Usage
-helm install openvpn
+
+		helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
+		helm install incubator/openvpn
 
 Wait for the external load blancer IP to become available.  Then generate a client key as follows:
 
