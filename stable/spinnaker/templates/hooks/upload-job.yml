@@ -32,9 +32,9 @@ spec:
         - -H 
         - "Content-Type: application/xml"
         - --retry
-        - 20
+        - "20"
         - --retry-delay
-        - 10
+        - "10"
         - --data-binary
         - "@/jobs/build-image.xml"
         - "http://{{ template "fullname" . }}-igor:8080/createItem?name=build-image"
