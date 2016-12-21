@@ -1,0 +1,48 @@
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  labels:
+    app: {{ template "fullname" . }}
+  name: {{ template "fullname" . }}
+spec:
+  template:
+    metadata:
+      labels:
+        app: {{ template "fullname" . }}
+    spec:
+      volumes:
+      - name: {{ template "fullname" . }}-config
+        configMap:
+          name: "{{ template "fullname" . }}-config"
+      containers:
+      - name: l5d
+        image: {{ .Values.image.linkerd.repository }}:{{ .Values.image.linkerd.tag }}
+        env:
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        args:
+        - /io.buoyant/linkerd/config/config.yaml
+        ports:
+        - name: incoming
+          containerPort: 4141
+          hostPort: 4141
+        - name: outgoing
+          containerPort: 4140
+          hostPort: 4140
+        - name: admin
+          containerPort: 9990
+          hostPort: 9990
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+        volumeMounts:
+        - name: "{{ template "fullname" . }}-config"
+          mountPath: "/io.buoyant/linkerd/config"
+          readOnly: true
+      - name: kubectl
+        image: {{ .Values.image.kubectl.repository }}:{{ .Values.image.kubectl.tag }}
+        args:
+        - "proxy"
+        - "-p"
+        - "8001"
