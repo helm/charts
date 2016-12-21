@@ -67,6 +67,19 @@ spec:
         volumeMounts:
         - name: data
           mountPath: /var/lib/postgresql/data/pgdata
+{{- if .Values.metrics.enabled }}
+      - name: metrics 
+        image: "{{ .Values.metrics.image }}:{{ .Values.metrics.imageTag }}"
+        imagePullPolicy: {{ default "" .Values.metrics.imagePullPolicy | quote }}
+        env:
+        - name: DATA_SOURCE_NAME
+          value: postgresql://postgres@localhost:5432?sslmode=disable
+        ports:
+        - name: metrics
+          containerPort: 9187
+        resources:
+{{ toYaml .Values.metrics.resources | indent 10 }}
+{{- end }}
       volumes:
       - name: data
       {{- if .Values.persistence.enabled }}
