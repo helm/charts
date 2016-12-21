@@ -1,0 +1,34 @@
+# Default values for linkerd.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+image:
+  linkerd:
+    # Image repository and tag to use for linkerd
+    repository: buoyantio/linkerd
+    tag: 0.8.4
+  kubectl:
+    # Image repository and tag to use for kubectl sidecar
+    repository: buoyantio/kubectl
+    tag: v1.4.0
+  pullPolicy: IfNotPresent
+linkerd:
+  # Port name that linkerd will use for endpoint discovery
+  portName: http
+prometheus:
+  # Enable Prometheus service metrics
+  scrape: true
+  # Enable Prometheus endpoint metrics
+  probe: true
+  # Path for Prometheus metrics
+  path: /admin/metrics/prometheus
+service:
+  # Type of service to use for linkerd
+  type: ClusterIP
+resources:
+  # Memory limits and requests for linkerd container
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 500m
+    memory: 512Mi
