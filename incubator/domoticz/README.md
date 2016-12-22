@@ -33,8 +33,4 @@ The command removes all the Kubernetes components associated with the chart and 
 | Parameter                             | Description                         | Default                                           |
 |---------------------------------------|-------------------------------------|---------------------------------------------------|
 | `server.image`                        | Container image to run              | zeiot/rpi-domoticz:3.5877                         |
-| `server.persistentVolume.enabled`     | Create a volume to store data       | true                                              |
-| `server.persistentVolume.size`        | Size of persistent volume claim     | 100Mi RW                                          |
-| `server.persistentVolume.storageClass`| Type of persistent volume claim     | volume.alpha.kubernetes.io/storage-class: default |
-| `server.persistentVolume.accessMode`  | ReadWriteOnce or ReadOnly           | [ReadWriteOnce]                                   |
 | `server.resources`                    | Server resource requests and limits | requests: {cpu: 100m, memory: 100Mi}              |
