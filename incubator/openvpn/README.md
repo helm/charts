@@ -33,7 +33,7 @@ All configuration is in the values.yaml file, and can be overwritten via the hel
 
 ###Certificates
 
-Certificates are generated with each deployment.  This way there is no need to store them, but this may be an issue if the pods are restarted often or if there are many clients.  We may enable a persistent storage of certs if this becomes an issue.
+New certificates are generated with each deployment.  This chart was developed as a way to quickly set up a personal vpn.  Supporting multiple users would require persistent storage of certificates to avoid unncessary regeneration.  This will be added later if there is interest in multi-user support.
 
 ###Important values
 * service.externalPort: 443 - external LoadBalancer port
