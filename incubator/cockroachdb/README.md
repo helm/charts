@@ -38,6 +38,7 @@ The following tables lists the configurable parameters of the CockroachDB chart 
 | `ImageTag`              | Container image tag                | `latest`                                                    |
 | `ImagePullPolicy`       | Container pull policy              | `Always`                                                   |
 | `Replicas`              | k8s statefulset replicas           | `3`                                                        |
+| `MinAvailable`          | k8s PodDisruptionBudget parameter  | `67%`                                                        |
 | `Component`             | k8s selector key                   | `cockroachdb`                                              |
 | `GrpcPort`              | CockroachDB primary serving port   | `26257`                                                     |
 | `HttpPort`              | CockroachDB HTTP port              | `8080`                                                     |
