@@ -13,10 +13,10 @@ service:
   internalPort: 443
 resources:
   limits:
-    cpu: 100m
+    cpu: 300m
     memory: 128Mi
   requests:
-    cpu: 100m
+    cpu: 300m
     memory: 128Mi
 openvpn: 
     #Network allocated for openvpn clients (default: 10.240.0.0).

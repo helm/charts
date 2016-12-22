@@ -1,9 +1,13 @@
-apiVersion: v1
-kind: ReplicationController
+apiVersion: extensions/v1beta1
+kind: Deployment
 metadata:
   name: {{ template "fullname" . }}
   labels:
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    heritage: {{.Release.Service | quote }}
+    release: {{.Release.Name | quote }}
+    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+  annotations:
+    helm.sh/created: {{.Release.Time.Seconds | quote }}
 spec:
   replicas: {{ .Values.replicaCount }}
   template:
@@ -11,6 +15,9 @@ spec:
       labels:
         app: {{ template "fullname" . }}
         type: openvpn
+        heritage: {{.Release.Service | quote }}
+        release: {{.Release.Name | quote }}
+        chart: "{{.Chart.Name}}-{{.Chart.Version}}"
     spec:
       containers:
       - name: {{ .Chart.Name }}
@@ -19,23 +26,18 @@ spec:
         command: ["/etc/openvpn/setup/configure.sh"]
         ports:
         - containerPort: {{ .Values.service.internalPort }}
+          name: openvpn
         securityContext:
           capabilities:
             add:
               - NET_ADMIN
-        env:
-            - name: OVPN_NETWORK
-              value: {{ .Values.openvpn.OVPN_NETWORK }}
-            - name: OVPN_SUBNET
-              value: {{ .Values.openvpn.OVPN_SUBNET }}
-            - name: OVPN_PROTO
-              value: {{ .Values.openvpn.OVPN_PROTO }}
-            - name: OVPN_K8S_SERVICE_NETWORK
-              value: {{ .Values.openvpn.OVPN_K8S_SERVICE_NETWORK }}
-            - name: OVPN_K8S_SERVICE_SUBNET
-              value: {{ .Values.openvpn.OVPN_K8S_SERVICE_SUBNET }}
-            - name: OVPN_K8S_DNS
-              value: {{ .Values.openvpn.OVPN_K8S_DNS }}
+        resources:
+          requests:
+            cpu: "{{.Values.resources.requests.cpu}}"
+            memory: "{{.Values.resources.requests.memory}}"
+          limits:
+            cpu: "{{.Values.resources.limits.cpu}}"
+            memory: "{{.Values.resources.limits.memory}}"
         volumeMounts:
           - mountPath: /etc/openvpn/setup
             name: openvpn

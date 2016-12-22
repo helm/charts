@@ -1,4 +1,4 @@
-apiVersion: v1
+apiVersion: extensions/v1beta1
 description: A Helm chart to install an openvpn server inside a kubernetes cluster.  Certificate generation is also part of the deployment, and this chart will genreate cleint keys as needed.
 name: openvpn
 version: 1.0.0
@@ -6,6 +6,13 @@ maintainers:
   - name: John Felten
     email: john.felten@gmail.com
 icon: https://forums.openvpn.net/styles/openvpn/theme/images/ovpnlogo.png
-keywords: openvpn, vpn, tunnel, network, service, connectivity, encryption
+keywords: 
+  - openvpn 
+  - vpn 
+  - tunnel
+  - network
+  - service
+  - connectivity
+  - encryption
 home: https://openvpn.net/index.php/open-source.html
 
