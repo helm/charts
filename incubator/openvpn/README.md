@@ -11,13 +11,14 @@ The primary purpose of this chart was to make it easy to access kubernetes servi
 
 Wait for the external load balancer IP to become available.  Then generate a client key as follows:
 
-		export POD_NAME=`kubectl get pods -l type=openvpn | awk END'{ print $1 }'`
-		export SERVICE_NAME=`kubectl get svc -l type=openvpn | awk END'{ print $1 }'`
-		export SERVICE_IP=`kubectl get svc --namespace {{ .Release.Namespace }} $SERVICE_NAME -o jsonpath='{.status.loadBalancer.ingress[0].ip}'`
-		export KEY_NAME=mycert
-		kubectl exec -it $POD_NAME /etc/openvpn/setup/newClientCert.sh $KEY_ NAME $SERVICE_IP > $KEY_NAME.ovpn
+		POD_NAME=`kubectl get pods -l type=openvpn | awk END'{ print $1 }'` \
+		&& SERVICE_NAME=`kubectl get svc -l type=openvpn | awk END'{ print $1 }'` \
+		&& SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} $SERVICE_NAME -o jsonpath='{.status.loadBalancer.ingress[0].ip}') \
+		&& KEY_NAME=kubeVPN \
+		&& kubectl exec -it $POD_NAME /etc/openvpn/setup/newClientCert.sh $KEY_NAME $SERVICE_IP \
+		&& kubectl exec -it $POD_NAME cat /usr/share/easy-rsa/pki/$KEY_NAME.ovpn > $KEY_NAME.ovpn
 
-Import the .ovpn file into your favorite openvpn tool like tunnelblick, and verify connectivity.
+Be sure to change KEY_NAME if genreating additional keys.  Import the .ovpn file into your favorite openvpn tool like tunnelblick, and verify connectivity.
 
 ##Configuration
 
