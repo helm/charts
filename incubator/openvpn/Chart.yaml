@@ -6,4 +6,6 @@ maintainers:
   - name: John Felten
     email: john.felten@gmail.com
 icon: https://forums.openvpn.net/styles/openvpn/theme/images/ovpnlogo.png
+keywords: openvpn, vpn, tunnel, network, service, connectivity, encryption
+home: https://openvpn.net/index.php/open-source.html
 
