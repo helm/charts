@@ -6,7 +6,7 @@ POD_NAME=`kubectl get pods -l type=openvpn | awk END'{ print $1 }'` \
 && kubectl log $POD_NAME --follow
 
 LoadBalaner ingress creation can take some time as well.
-check service status via: kubectl get svckubectl get s
+check service status via: kubectl get svckubectl get svc
 
 Once the external IP is available and all the server certificates are generated create client key .ovpn files by pasting the following into a shell:
 
