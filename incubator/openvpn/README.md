@@ -2,7 +2,7 @@
 This chart will install an openvpn server inside a kubernetes cluster.  New certificates are generated on install, and a script is provided to genreate client keys as needed.  The chart will automatically configure dns to use kubeDNS and route all network traffic to kuberentes pods and services through the vpn.  By connecting to this VPN a host is effectively inside a cluster's network.
 
 ###Uses
-The primary purpose of this chart was to make it easy to access kubernetes services during development.  It could also be used for any service that only needs to be access through a VPN, or as a general prupose VPN.
+The primary purpose of this chart was to make it easy to access kubernetes services during development.  It could also be used for any service that only needs to be accessed through a VPN or as a standard VPN.
 
 ##Usage
 
@@ -33,7 +33,7 @@ All configuration is in the values.yaml file, and can be overwritten via the hel
 
 ###Certificates
 
-Certificates are generated with each deployment.  This way there is no need to store them, but this may be an issue if the pods are restarted often or if there are many clients.  We may able a persistent storage of certs if this becomes an issue.
+Certificates are generated with each deployment.  This way there is no need to store them, but this may be an issue if the pods are restarted often or if there are many clients.  We may enable a persistent storage of certs if this becomes an issue.
 
 ###Important values
 * service.externalPort: 443 - external LoadBalancer port
