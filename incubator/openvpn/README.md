@@ -7,25 +7,27 @@ The primary purpose of this chart was to make it easy to access kubernetes servi
 ##Usage
 
 ```bash
-		helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
-		helm install incubator/openvpn
+helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
+helm install incubator/openvpn
 ```
 
 Wait for the external load balancer IP to become available.  Check service status via: kubectl get svckubectl get svc
  
 Please be aware that certificate generation is variable and may take some time (minutes).
-check pod status via:
+Check pod status via:
 POD_NAME=`kubectl get pods -l type=openvpn | awk END'{ print $1 }'` \
 && kubectl log $POD_NAME --follow
 
 When ready generate a client key as follows:
 
-		POD_NAME=`kubectl get pods -l type=openvpn | awk END'{ print $1 }'` \
-		&& SERVICE_NAME=`kubectl get svc -l type=openvpn | awk END'{ print $1 }'` \
-		&& SERVICE_IP=`kubectl get svc --namespace {{ .Release.Namespace }} $SERVICE_NAME -o jsonpath='{.status.loadBalancer.ingress[0].ip}'` \
-		&& KEY_NAME=kubeVPN \
-		&& kubectl exec -it $POD_NAME /etc/openvpn/setup/newClientCert.sh $KEY_NAME $SERVICE_IP \
-		&& kubectl exec -it $POD_NAME cat /usr/share/easy-rsa/pki/$KEY_NAME.ovpn > $KEY_NAME.ovpn
+```bash
+POD_NAME=`kubectl get pods -l type=openvpn | awk END'{ print $1 }'` \
+&& SERVICE_NAME=`kubectl get svc -l type=openvpn | awk END'{ print $1 }'` \
+&& SERVICE_IP=`kubectl get svc --namespace {{ .Release.Namespace }} $SERVICE_NAME -o jsonpath='{.status.loadBalancer.ingress[0].ip}'` \
+&& KEY_NAME=kubeVPN \
+&& kubectl exec -it $POD_NAME /etc/openvpn/setup/newClientCert.sh $KEY_NAME $SERVICE_IP \
+&& kubectl exec -it $POD_NAME cat /usr/share/easy-rsa/pki/$KEY_NAME.ovpn > $KEY_NAME.ovpn
+```
 
 Be sure to change KEY_NAME if generating additional keys.  Import the .ovpn file into your favorite openvpn tool like tunnelblick and verify connectivity.
 
