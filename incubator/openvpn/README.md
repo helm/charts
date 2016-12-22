@@ -9,7 +9,7 @@ The primary purpose of this chart was to make it easy to access kubernetes servi
 		helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
 		helm install incubator/openvpn
 
-Wait for the external load blancer IP to become available.  Then generate a client key as follows:
+Wait for the external load balancer IP to become available.  Then generate a client key as follows:
 
 		export POD_NAME=`kubectl get pods -l type=openvpn | awk END'{ print $1 }'`
 		export SERVICE_NAME=`kubectl get svc -l type=openvpn | awk END'{ print $1 }'`
@@ -36,4 +36,4 @@ Certificates are generated with each deployment.  This way there is no need to s
 * openvpn.OVPN_K8S_POD_NETWORK: "10.0.0.0" - Kubernetes pod network (optional).
 * openvpn.OVPN_K8S_POD_SUBNET: "255.0.0.0" - Kubernetes pod network subnet (optional).
 
-####Note: As configured the chart will create a route for a large 10.0.0.0/8 network that may cause issues if that is your local network.  If so tweak this value to something more restrictive.  This route is added, because kubernetes genreate pods with IPs in this range.
+####Note: As configured the chart will create a route for a large 10.0.0.0/8 network that may cause issues if that is your local network.  If so tweak this value to something more restrictive.  This route is added, because kubernetes generates pods with IPs in this range.

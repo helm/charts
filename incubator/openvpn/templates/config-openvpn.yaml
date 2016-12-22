@@ -5,55 +5,29 @@ metadata:
 data:
   setup-certs.sh: |-
     #!/bin/bash
-    apk update && apk add openssl && apk add easy-rsa
     EASY_RSA_LOC="/usr/share/easy-rsa"
     cd $EASY_RSA_LOC
     ./easyrsa init-pki
     echo "ca\n" | ./easyrsa build-ca nopass
     ./easyrsa build-server-full server nopass
-    ./easyrsa build-client-full client nopass
     ./easyrsa gen-dh
-    
-    MY_IP_ADDR="\$LB_IP_ADDR"
-    cat >${EASY_RSA_LOC}/pki/client.ovpn <<EOF
-    client
-    nobind
-    dev tun
-    redirect-gateway def1
-    <key>
-    `cat ${EASY_RSA_LOC}/pki/private/client.key`
-    </key>
-    <cert>
-    `cat ${EASY_RSA_LOC}/pki/issued/client.crt`
-    </cert>
-    <ca>
-    `cat ${EASY_RSA_LOC}/pki/ca.crt`
-    </ca>
-    <dh>
-    `cat ${EASY_RSA_LOC}/pki/dh.pem`
-    </dh>
-    <connection>
-    remote ${MY_IP_ADDR} {{ .Values.service.externalPort }} {{ .Values.openvpn.OVPN_PROTO }}
-    </connection>
-
-    EOF
     
   newClientCert.sh: |-
       #!/bin/bash
       EASY_RSA_LOC="/usr/share/easy-rsa"
       cd $EASY_RSA_LOC
-      ./easyrsa build-client-full client nopass
       MY_IP_ADDR="$2"
+      ./easyrsa build-client-full $1 nopass
       cat >${EASY_RSA_LOC}/pki/$1.ovpn <<EOF
       client
       nobind
       dev tun
       redirect-gateway def1
       <key>
-      `cat ${EASY_RSA_LOC}/pki/private/client.key`
+      `cat ${EASY_RSA_LOC}/pki/private/$1.key`
       </key>
       <cert>
-      `cat ${EASY_RSA_LOC}/pki/issued/client.crt`
+      `cat ${EASY_RSA_LOC}/pki/issued/$1.crt`
       </cert>
       <ca>
       `cat ${EASY_RSA_LOC}/pki/ca.crt`
@@ -64,15 +38,15 @@ data:
       <connection>
       remote ${MY_IP_ADDR} {{ .Values.service.externalPort }} {{ .Values.openvpn.OVPN_PROTO }}
       </connection>
-
       EOF
-       cat ${EASY_RSA_LOC}/pki/$1.ovpn
+      cat ${EASY_RSA_LOC}/pki/$1.ovpn
+      
   configure.sh: |-
       #!/bin/sh
-      
+      #TODO(jfelten): create an official docker image with these installed 
+      apk update && apk add openssl easy-rsa openvpn iptables bash
       /etc/openvpn/setup/setup-certs.sh
       iptables -t nat -A POSTROUTING -s {{ .Values.openvpn.OVPN_NETWORK }}/{{ .Values.openvpn.OVPN_SUBNET }} -o eth0 -j MASQUERADE
-
       mkdir -p /dev/net
       if [ ! -c /dev/net/tun ]; then
           mknod /dev/net/tun c 10 200
