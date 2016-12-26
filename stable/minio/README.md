@@ -46,7 +46,7 @@ The following tables lists the configurable parameters of the Minio chart and th
 | Parameter                  | Description                         | Default                                                 |
 |----------------------------|-------------------------------------|---------------------------------------------------------|
 | `image`                    | `minio` image.                      | `minio/minio` The official release on Docker Hub        |
-| `imageTag`                 | `minio` image tag.                  | The latest release                                      |
+| `imageTag`                 | `minio` image tag.                  | The `latest` tag. Use other Minio tags listed [here](https://hub.docker.com/r/minio/minio/tags/).|
 | `imagePullPolicy`          | Image pull policy                   | `Always` if `imageTag` is `latest`, else `IfNotPresent` |
 | `ServiceType`              | Kubernetes Service Type             | `ClusterIP`                                             |
 | `ServicePort`              | Kuberntes Service Port              | `9000`                                                  |
