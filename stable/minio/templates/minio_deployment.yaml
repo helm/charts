@@ -8,7 +8,6 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
-  replicas: 1
   selector:
     matchLabels:
       app: {{ template "fullname" . }}
@@ -34,14 +33,13 @@ spec:
             secretName: {{ template "fullname" . }}-user
       containers:
         - name: minio
-          image: {{ .Values.Image }}:{{ .Values.ImageTag }}
-          imagePullPolicy: {{ .Values.ImagePullPolicy }}
-          args:
-            - server
-            - /export
+          image: {{ .Values.image }}:{{ .Values.imageTag }}
+          imagePullPolicy: {{ .Values.imagePullPolicy }}
+          command: ["minio"]
+          args: ["-C", "{{ .Values.configPath }}", "server", "{{ .Values.mountPath }}"]
           volumeMounts:
             - name: export
-              mountPath: /export
+              mountPath: {{ .Values.mountPath }}
           ports:
             - name: service
               containerPort: 9000

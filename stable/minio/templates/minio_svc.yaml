@@ -8,9 +8,11 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
+  type: {{ .Values.serviceType }}
   selector:
     app: {{ template "fullname" . }}
   ports:
     - name: service
       port: 9000
-      targetPort: {{ .Values.ServicePort }}
+      targetPort: {{ .Values.servicePort }}
+      protocol: TCP

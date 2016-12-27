@@ -1,7 +1,7 @@
 apiVersion: v1
 description: A Minio Helm chart for Kubernetes
 name: minio
-version: 0.0.1
+version: 0.0.2
 keywords:
 - storage
 - object-storage
@@ -12,3 +12,5 @@ sources:
 maintainers:
 - name: Acaleph
   email: hello@acale.ph
+- name: Minio
+  email: hello@minio.io

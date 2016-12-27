@@ -1,14 +1,13 @@
 
-Image: "minio/minio"
-ImageTag: "latest"
-ImagePullPolicy: "Always"
+image: "minio/minio"
+imageTag: "latest"
+imagePullPolicy: "Always"
 
-ServiceType: ClusterIP
-ServicePort: 9000
-
-## Set default access key and secret
-AccessKey: "AKIAIOSFODNN7EXAMPLE"
-SecretKey: "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+## Set default accesskey, secretkey, Minio config file path and volume mount path
+accessKey: "AKIAIOSFODNN7EXAMPLE"
+secretKey: "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+configPath: "~/.minio"
+mountPath: "/export"
 
 ## Enable persistence using Persistent Volume Claims
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
@@ -17,7 +16,13 @@ persistence:
   enabled: true
   storageClass: generic
   accessMode: ReadWriteOnce
-  size: 8Gi
+  size: 10Gi
+
+## Access Minio server from within the cluster or expose it to be accessed from outside the cluster.
+## ref: http://kubernetes.io/docs/user-guide/services/
+##
+serviceType: ClusterIP
+servicePort: 9000
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
