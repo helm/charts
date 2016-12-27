@@ -1,0 +1,15 @@
+apiVersion: v1
+name: openldap
+version: 2.4.44-a
+description: Ldap
+keywords:
+- Ldap
+home: http://www.openldap.org
+sources:
+- http://www.openldap.org/devel/gitweb.cgi
+- https://github.com/alpine-library/openldap
+maintainers:
+- name: Ekozan
+  email: m@3ko.fr
+engine: gotpl
+icon: http://www.openldap.org/images/headers/LDAPworm.gif

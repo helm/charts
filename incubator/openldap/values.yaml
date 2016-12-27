@@ -1,0 +1,16 @@
+# Default values for Traefik
+imageTag: latest
+imagePullPolicy: "Always"
+cpuRequest: 100m
+memoryRequest: 20Mi
+cpuLimit: 100m
+memoryLimit: 30Mi
+persistence:
+  enabled: true
+  storageClass: generic
+  accessMode: ReadWriteOnce
+  size: 1Gi
+ssl:
+  enabled: true
+ldap:
+  setpassword: true
