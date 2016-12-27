@@ -1,0 +1,35 @@
+## Gitea image
+## ref: https://hub.docker.com/r/gitea/gitea/tags/
+##
+image: gitea/gitea:1.0.0
+## Specify a imagePullPolicy
+## 'Always' if imageTag is 'latest', else set to 'IfNotPresent'
+## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+##
+# imagePullPolicy:
+
+## For minikube, set this to NodePort, elsewhere use LoadBalancer
+## ref: http://kubernetes.io/docs/user-guide/services/#publishing-services---service-types
+##
+serviceType: LoadBalancer
+
+## Configure resource requests and limits
+## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+##
+resources:
+  requests:
+    memory: 100Mi
+    cpu: 500m
+  limits:
+    memory: 2Gi
+    cpu: 1
+
+## Enable persistence using Persistent Volume Claims
+## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+## ref:
+##
+persistence:
+    enabled: true
+    size: 10Gi
+    storageClass: generic
+    accessMode: ReadWriteOnce

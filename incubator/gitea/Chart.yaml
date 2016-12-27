@@ -1,0 +1,14 @@
+name: gitea
+version: 1.0.0
+description: Git with a cup of tea
+keywords:
+- git
+- issue tracker
+- code review
+- wiki
+sources:
+- https://github.com/go-gitea/gitea
+- https://hub.docker.com/r/gitea/gitea/
+maintainers:
+- name: Maxime FRANCK
+  email: m@3ko.fr
