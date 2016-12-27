@@ -9,6 +9,9 @@ metadata:
     heritage: "{{ .Release.Service }}"
 spec:
   type: {{ .Values.serviceType }}
+  {{- if eq .Values.serviceType "LoadBalancer" }}
+  loadBalancerIP: {{ default "" .Values.ghostLoadBalancerIP }}
+  {{- end }}
   selector:
     app: {{ template "fullname" . }}
   ports:

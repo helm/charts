@@ -1,14 +1,36 @@
-Minio can be accessed via port {{ .Values.ServicePort }} on the following DNS name from within your cluster:
+{{- if eq .Values.serviceType "ClusterIP" }}
+Minio can be accessed via port {{ .Values.servicePort }} on the following DNS name from within your cluster:
 {{ template "fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
 
-To connect to minio:
+To connect to minio via mc client:
+
+  1. SSH into one of the Kubernetes cluster nodes
+
+  2. Download the Minio mc client - https://docs.minio.io/docs/minio-client-quickstart-guide
+
+  3. export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "fullname" . }}" -o jsonpath="{.items[0].metadata.name}")
+
+  4. kubectl port-forward $POD_NAME 9000 --namespace {{ .Release.Namespace }}
+
+  5. mc config host add {{ template "fullname" . }}-local http://localhost:9000 {{ .Values.accessKey }} {{ .Values.secretKey }} S3v4
+
+  6. mc ls {{ template "fullname" . }}-local
+
+Alternately, you can use the Minio SDK to access the server - https://docs.minio.io/categories/17
+{{- end }}
+{{- if eq .Values.serviceType "LoadBalancer" }}
+Minio can be accessed via port {{ .Values.servicePort }} on a public IP address.
+
+To connect to minio via mc client:
 
   1. Download the Minio mc client - https://docs.minio.io/docs/minio-client-quickstart-guide
 
-  2. export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "fullname" . }}" -o jsonpath="{.items[0].metadata.name}")
+  2. Get the public IP address by running - kubectl get svc --namespace {{ .Release.Namespace }} -l app={{ template "fullname" . }}. Note that the public IP may take a couple of minutes to be available.
 
-  3. kubectl port-forward $POD_NAME 9000 --namespace {{ .Release.Namespace }}
+  3. mc config host add {{ template "fullname" . }}-local http://<PublicIP>:9000 {{ .Values.accessKey }} {{ .Values.secretKey }} S3v4
 
-  4. mc config host add {{ template "fullname" . }}-local http://localhost:9000 {{ .Values.AccessKey }} {{ .Values.SecretKey }} S3v4
+  4. mc ls {{ template "fullname" . }}-local
 
-  5. mc ls {{ template "fullname" . }}-local
+Alternately, you can use the Minio SDK to access the server - https://docs.minio.io/categories/17
+{{- end }}
+
