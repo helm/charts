@@ -14,8 +14,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-kubectl exec $RELEASE_NAME-mongodb-0 -- /usr/bin/mongo --eval="printjson(db.test.insert({\"status\": \"success\"}))"
+POD_NAME=$RELEASE_NAME-mongodb-replicaset
+POD_NAME=${POD_NAME:0:24}
+
+kubectl exec "$POD_NAME-0" -- /usr/bin/mongo --eval="printjson(db.test.insert({\"status\": \"success\"}))"
 # TODO: find maximum duration to wait for slaves to be up-to-date with master.
 sleep 2
-kubectl exec $RELEASE_NAME-mongodb-1 -- /usr/bin/mongo --eval="rs.slaveOk(); db.test.find().forEach(printjson)"
-kubectl exec $RELEASE_NAME-mongodb-2 -- /usr/bin/mongo --eval="rs.slaveOk(); db.test.find().forEach(printjson)"
+kubectl exec "$POD_NAME-1" -- /usr/bin/mongo --eval="rs.slaveOk(); db.test.find().forEach(printjson)"
+kubectl exec "$POD_NAME-2" -- /usr/bin/mongo --eval="rs.slaveOk(); db.test.find().forEach(printjson)"
