@@ -6,7 +6,7 @@ imagePullPolicy: "Always"
 ## Set default accesskey, secretkey, Minio config file path and volume mount path
 accessKey: "AKIAIOSFODNN7EXAMPLE"
 secretKey: "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
-configPath: "~/.minio"
+configPath: ""
 mountPath: "/export"
 
 ## loadBalancerIP for the Minio Service (optional, cloud specific)
