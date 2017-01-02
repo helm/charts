@@ -13,7 +13,7 @@ This chart bootstraps Minio deployment on a [Kubernetes](http://kubernetes.io) c
 Prerequisites
 -------------
 
--	Kubernetes 1.4+ with Beta APIs enabled for default standalone mode. (If you plan to run Minio in distributed mode, you need Kubernetes 1.5+ with Beta APIs enabled).
+-	Kubernetes 1.4+ with Beta APIs enabled for default standalone mode. (If you plan to run Minio in [distributed mode](#distributed-minio), you need Kubernetes 1.5+ with Beta APIs enabled).
 -	PV provisioner support in the underlying infrastructure.
 
 Installing the Chart
@@ -111,13 +111,13 @@ This chart provisions a Minio server in standalone mode, by default. To provisio
 $ helm install --set mode=distributed stable/minio
 ```
 
-This creates Minio server in distributed mode with 4 nodes. To change the number of nodes in your distributed Minio server, set the `numberOfNodes` field,
+This provisions Minio server in distributed mode with 4 nodes. To change the number of nodes in your distributed Minio server, set the `numberOfNodes` field,
 
 ```bash
 $ helm install --set mode=distributed,numberOfNodes=8 stable/minio
 ```
 
-This creates Minio server in distributed mode with 8 nodes. Note that the `numberOfNodes` value should be an integer between 4 and 16 (inclusive).
+This provisions Minio server in distributed mode with 8 nodes. Note that the `numberOfNodes` value should be an integer between 4 and 16 (inclusive).
 
 ### StatefulSet [limitations](http://kubernetes.io/docs/concepts/abstractions/controllers/statefulsets/#limitations) applicable to distributed Minio
 
@@ -127,7 +127,7 @@ This creates Minio server in distributed mode with 8 nodes. Note that the `numbe
 Persistence
 -----------
 
-This chart creates a PersistentVolumeClaim and mounts corresponding persistent volume to default location `/export`. You'll need physical storage available in the Kubernetes cluster for this to work. If you'd rather use `emptyDir`, disable PersistentVolumeClaim by:
+This chart provisions a PersistentVolumeClaim and mounts corresponding persistent volume to default location `/export`. You'll need physical storage available in the Kubernetes cluster for this to work. If you'd rather use `emptyDir`, disable PersistentVolumeClaim by:
 
 ```bash
 $ helm install --set persistence.enabled=false stable/minio
