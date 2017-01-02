@@ -1,0 +1,31 @@
+{{- if eq .Values.db_server "x.x.x.x" -}}
+
+You must set the DB server in values.yaml.
+Please, type the following to undoing the changes:
+
+helm delete {{ .Release.Name }}
+
+Then, try again
+
+{{- else if eq .Values.nfs_server "x.x.x.x" -}}
+
+You must set the NFS server address in values.yaml.
+Please, type the following to undoing the changes:
+
+helm delete {{ .Release.Name }}
+
+Then, try again
+
+{{- else -}}
+
+Thanks for using WordPress
+
+You can access your blog by clicking the following URL.
+
+Host: http://{{ .Values.hostname }}
+
+You should update your DNS records to point to the ingress controller node.
+
+{{- end -}}
+
+

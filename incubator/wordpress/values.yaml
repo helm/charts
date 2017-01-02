@@ -1,0 +1,37 @@
+## Values for Wordpress Chart
+
+# Oficial Wordpress image
+# source: https://hub.docker.com/_/wordpress/
+image: wordpress
+
+## Specify a imagePullPolicy
+imagePullPolicy: IfNotPresent
+
+# IP or Hostname of Database
+db_server: x.x.x.x
+
+# MySQL root password
+root_db_password: s3cr3t
+
+# PATH for nfs export
+nfs_path: srvnfs
+
+# IP or Hostname of NFS Server
+nfs_server: x.x.x.x
+
+# PV Storage Request for WP Volume
+pv_size: 20Gi
+
+# PVC Storage Request for WordPress volume
+pvc_size: 2Gi
+
+# Hostname for the ingress controller
+hostname: wordpress
+
+# Resources limits
+resources:
+  requests:
+    memory: 128Mi
+    cpu: 100m
+
+
