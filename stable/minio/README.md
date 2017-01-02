@@ -76,10 +76,11 @@ The following tables lists the configurable parameters of the Minio chart and th
 | `serviceType`              | Kubernetes service type             | `ClusterIP`                                             |
 | `servicePort`              | Kubernetes port where service is exposed| `9000`                                              |
 | `persistence.enabled`      | Use persistent volume to store data | `true`                                                  |
-| `persistence.size`         | Size of persistent volume claim     | `10Gi RW`                                               |
+| `persistence.size`         | Size of persistent volume claim     | `10Gi`                                                  |
 | `persistence.storageClass` | Type of persistent volume claim     | `generic`                                               |
 | `persistence.accessMode`   | ReadWriteOnce or ReadOnly           | `ReadWriteOnce`                                         |
-| `resources`                | CPU/Memory resource requests/limits | Memory: `256Mi`, CPU: `100m`                            |
+| `memory`                   | Memory resource requests            | `256Mi`                                                 |
+| `cpu`                      | CPU resource requests               | `100m`                                                  |
 
 Some of the parameters above map to the env variables defined in the [Minio DockerHub image](https://hub.docker.com/r/minio/minio/).
 
