@@ -1,0 +1,15 @@
+name: drone
+version: 0.1.0
+description: Drone CI
+keywords:
+- continuous-deployment
+- continuous-integration
+- docker
+- drone
+- drone.io
+- go
+sources:
+- http://readme.drone.io/
+maintainers:
+- name: Matthew Fisher
+  email: mfisher@deis.com

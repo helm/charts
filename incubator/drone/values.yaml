@@ -1,0 +1,59 @@
+image:
+  registry: docker.io
+  org: drone
+  name: drone
+  tag: 0.5
+  pullPolicy: IfNotPresent
+
+service:
+  http:
+    externalPort: 80
+    internalPort: 8000
+  type: ClusterIP
+
+ingress:
+  enabled: false
+  # enable TLS via kube-lego
+  tls: false
+  hostname: drone.example.com
+
+server:
+  # Drone server configuration. Values in here get injected as environment variables.
+  # See http://readme.drone.io/admin/installation-reference#server-options for a list of possible values.
+  env:
+    DRONE_DEBUG: "false"
+    DRONE_DATABASE_DRIVER: "sqlite3"
+    DRONE_DATABASE_DATASOURCE: "drone.sqlite"
+    # Drone requires some environment variables to bootstrap the git service or it won't start up.
+    # Uncomment this and add your own custom configuration.
+    #
+    # See http://readme.drone.io/admin/installation-reference/ for more info on these envvars.
+    #DRONE_OPEN: "true"
+    #DRONE_GITHUB: "true"
+    #DRONE_ORGS: "my-github-org,my-other-github-org"
+    #DRONE_GITHUB_CLIENT: "github-oauth2-client-id"
+    #DRONE_GITHUB_SECRET: "github-oauth2-client-secret"
+  resources:
+    requests:
+      memory: 32Mi
+      cpu: 40m
+    limits:
+      memory: 2Gi
+      cpu: 1
+
+agent:
+  # Drone agent configuration. Values in here get injected as environment variables.
+  # See http://readme.drone.io/admin/installation-reference#server-options for a list of possible values.
+  env:
+    DRONE_DEBUG: "false"
+  resources:
+    requests:
+      memory: 32Mi
+      cpu: 40m
+    limits:
+      memory: 2Gi
+      cpu: 1
+
+# Uncomment this if you want to set a specific shared secret between
+# the agents and servers, otherwise this will be auto-generated.
+#shared_secret: supersecret
