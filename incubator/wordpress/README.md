@@ -50,16 +50,18 @@ The following tables lists the configurable parameters of the WordPress chart an
 | Parameter                            | Description                              | Default                                                    |
 | -------------------------------      | -------------------------------          | ---------------------------------------------------------- |
 | `image`                              | WordPress image                          | `wordpress:latest`                                         |
-| `db_server`                          | IP or Hostname of Database               |                                                            |
-| `root_db_password`                   | MySQL root password                      |                                                            |
+| `imagePullPolicy`                    | Image pull policy                        | `IfNotPresent`                                             |
+| `db_server`                          | IP or Hostname of Database               | *                                                          |
+| `root_db_password`                   | MySQL root password                      | s3cr3t                                                     |
 | `nfs_path`                           | PATH for nfs export                      | `svrnfs`                                                   |
-| `nfs_server`                         | IP or Hostname of NFS Server             |                                                            |
+| `nfs_server`                         | IP or Hostname of NFS Server             | *                                                          |
 | `pv_size`                            | PV Storage Request for WP Volume         | `20Gi`                                                     |
 | `pvc_size`                           | PVC Storage Request for WordPress volume | `2Gi`                                                      |
 | `hostname`                           | Hostname for the ingress controller      | `wordpress`                                                |
 | `resources.requests.memory`          | Memory Limit                             | `128Mi`                                                    |
 | `resources.requests.cpu`             | CPU Limit                                | `100m`                                                     |
 
+(*) Please set
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
