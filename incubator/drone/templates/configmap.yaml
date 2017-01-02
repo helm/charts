@@ -1,0 +1,84 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    app: {{ template "fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+data:
+  server.debug.is.enabled: "true"
+
+  # You'll probably want to leave this alone, but you can point to external
+  # DB instances if you'd like: http://readme.drone.io/0.5/manage/database/
+  server.database.driver: {{ .Values.server.database.driver | quote }}
+  server.database.config: {{ .Values.server.database.config | quote }}
+
+
+  server.is.open: {{ .Values.server.open | quote }}
+  server.orgs.list:  {{ .Values.server.orgs | quote }}
+  server.admin.list: {{ .Values.server.admin | quote }}
+  server.admin.everyone.is.admin: "false"
+
+# See http://readme.drone.io/0.5/manage/server/ for possible values here.
+{{ if .Values.server.remote.github.enabled }}
+  server.remote.github.is.enabled: "true"
+  server.remote.github.url: {{ .Values.server.remote.github.url | quote }}
+  server.remote.github.client.id: {{ .Values.server.remote.github.client_id | quote }}
+  server.remote.github.client.secret: {{ .Values.server.remote.github.client_secret | quote }}
+  server.remote.github.scope: {{ .Values.server.remote.github.scope | quote }}
+  server.remote.github.private_mode: {{ .Values.server.remote.github.private_mode | quote }}
+  server.remote.github.context: {{ .Values.server.remote.github.context | quote }}
+  server.remote.github.merge_ref: {{ .Values.server.remote.github.merge_ref | quote }}
+  server.remote.github.skip_verify: {{ .Values.server.remote.github.skip_verify | quote }}
+  {{ if .Values.server.remote.github.git_username }}
+  server.remote.github.git.username: {{ .Values.server.remote.github.git_username | quote }}
+  server.remote.github.git.password: {{ .Values.server.remote.github.git_password | quote }}
+  {{ end }}
+
+{{ else if .Values.server.remote.gogs.enabled }}
+  server.remote.gogs.is.enabled: "true"
+  server.remote.gogs.url: {{ .Values.server.remote.gogs.url | quote }}
+  server.remote.gogs.private_mode: {{ .Values.server.remote.gogs.private_mode | quote }}
+  server.remote.gogs.skip_verify: {{ .Values.server.remote.gogs.skip_verify | quote  }}
+  {{ if .Values.server.remote.gogs.git_username }}
+  server.remote.gogs.git.username: {{ .Values.server.remote.gogs.git_username | quote }}
+  server.remote.gogs.git.password: {{ .Values.server.remote.gogs.git_password | quote }}
+  {{ end }}
+
+{{ else if .Values.server.remote.gitlab.enabled }}
+  server.remote.gitlab.is.enabled: "true"
+  server.remote.gitlab.url: {{ .Values.server.remote.gitlab.url | quote }}
+  server.remote.gitlab.client.id: {{ .Values.server.remote.gitlab.client_id | quote }}
+  server.remote.gitlab.client.secret: {{ .Values.server.remote.gitlab.client_secret | quote }}
+  server.remote.github.private_mode: {{ .Values.server.remote.gitlab.private_mode | quote }}
+  server.remote.github.skip_verify: {{ .Values.server.remote.gitlab.skip_verify | quote }}
+  {{ if .Values.server.remote.gitlab.git_username }}
+  server.remote.github.git.username: {{ .Values.server.remote.gitlab.git_username | quote }}
+  server.remote.github.git.password: {{ .Values.server.remote.gitlab.git_password | quote  }}
+  {{ end }}
+
+{{ else if .Values.server.remote.bitbucket.enabled }}
+  server.remote.bitbucket.is.enabled: "true"
+  server.remote.bitbucket.client.id: {{ .Values.server.remote.bitbucket.client_id | quote }}
+  server.remote.bitbucket.client.secret: {{ .Values.server.remote.bitbucket.client_secret | quote }}
+
+{{ else if .Values.server.remote.stash.enabled }}
+  server.remote.stash.is.enabled: "true"
+  server.remote.stash.url: {{ .Values.server.remote.stash.url | quote }}
+  server.remote.stash.consumer.key: {{ .Values.server.remote.stash.consumer_key | quote }}
+  server.remote.stash.consumer.rsa: {{ .Values.server.remote.stash.consumer_rsa | quote }}
+  server.remote.stash.private_mode: {{ .Values.server.remote.stash.private_mode | quote }}
+  server.remote.stash.skip_verify: {{ .Values.server.remote.stash.skip_verify | quote }}
+  {{ if .Values.server.remote.stash.git_username }}
+  server.remote.stash.git.username: {{ .Values.server.remote.stash.git_username | quote }}
+  server.remote.stash.git.password: {{ .Values.server.remote.stash.git_password | quote }}
+  {{ end }}
+{{ end }}
+
+  ######################
+  # Drone Agent Config #
+  ######################
+
+  agent.debug.is.enabled: "true"

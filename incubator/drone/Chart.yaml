@@ -1,0 +1,14 @@
+name: drone
+version: 0.5-a
+description: Drone CI
+keywords:
+- git
+- ci
+- deploy
+- drone
+- drone.io
+sources:
+- http://drone.io
+maintainers:
+- name: Maxime FRANCK
+  email: m@3ko.fr

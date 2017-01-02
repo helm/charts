@@ -1,0 +1,98 @@
+## Drone
+## ref: https://hub.docker.com/r/drone/drone
+##
+image: drone/drone:0.5
+imagePullPolicy: Always
+
+## For minikube, set this to NodePort, elsewhere use LoadBalancer
+## ref: http://kubernetes.io/docs/user-guide/services/#publishing-services---service-types
+##
+serviceType: LoadBalancer
+
+# if not set autogen
+#shared_secret: ""
+
+# See http://readme.drone.io/0.5/manage/server/ for possible values here.
+server:
+  open: true
+  admin: ""
+  orgs: ""
+
+  ## Configure resource requests and limits
+  ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+  ##
+  resources:
+    requests:
+      memory: 32Mi
+      cpu: 40m
+    limits:
+      memory: 2Gi
+      cpu: 1
+  database:
+    driver: sqlite3
+    config: /var/lib/drone/drone.sqlite
+
+  #See http://readme.drone.io/admin/ for possible values here.
+  remote:
+    github:
+      enabled: false
+      url: "https://github.com"
+      #client_id: ""
+      #client_secret: ""
+      scope: "repo,repo:status,user:email,read:org"
+      private_mode: false
+      context: "continuous-integration/drone"
+      merge_ref: true
+      skip_verify: false
+      #git_username: ""
+      #git_password: ""
+    gogs:
+      enabled: false
+      #url: ""
+      private_mode: false
+      skip_verify: false
+      #git_username: ""
+      #git_password: ""
+    gitlab:
+      enabled: false
+      #url: ""
+      #client_id: ""
+      #client_secret: ""
+      private_mode: false
+      skip_verify: false
+      #git_username: ""
+      #git_password: ""
+    bitbucket:
+      enabled: false
+      #client_id: ""
+      #client_secret: ""
+    stash:
+      enabled: false
+      #url: ""
+      #consumer_key: ""
+      consumer_rsa: "/var/lib/drone/rsa.pem"
+      private_mode: false
+      skip_verify: false
+      #git_username: ""
+      #git_password: ""
+
+
+#See http://readme.drone.io/admin/ for possible values here.
+agent:
+  ## Configure resource requests and limits
+  ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+  ##
+  resources:
+    requests:
+      memory: 32Mi
+      cpu: 40m
+    limits:
+      memory: 2Gi
+      cpu: 1
+
+
+persistence:
+  enabled: true
+  storageClass: generic
+  accessMode: ReadWriteOnce
+  size: 8Gi

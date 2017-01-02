@@ -1,0 +1,298 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}-server
+  labels:
+    app: {{ template "fullname" . }}-server
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: {{ template "fullname" . }}-server
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        release: "{{ .Release.Name }}"
+        heritage: "{{ .Release.Service }}"
+    spec:
+      containers:
+      - name: {{ template "fullname" . }}-server
+        image: {{ .Values.image }}
+        imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
+        env:
+          - name: DRONE_SERVER_ADDR
+            value: ":80"
+          - name: DRONE_DEBUG
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "fullname" . }}
+                key: server.debug.is.enabled
+          - name: DRONE_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "fullname" . }}
+                key: server.secret
+          - name: DRONE_DATABASE_DRIVER
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "fullname" . }}
+                key: server.database.driver
+          - name: DRONE_DATABASE_DATASOURCE
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "fullname" . }}
+                key: server.database.config
+          - name: DRONE_OPEN
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "fullname" . }}
+                key: server.is.open
+          - name: DRONE_ORGS
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "fullname" . }}
+                key: server.orgs.list
+          - name: DRONE_ADMIN
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "fullname" . }}
+                key: server.admin.list
+          - name: DRONE_ADMIN_ALL
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "fullname" . }}
+                key: server.admin.everyone.is.admin
+{{ if .Values.server.remote.github.enabled }}
+          - name: DRONE_GITHUB
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "fullname" . }}
+                key: server.remote.github.is.enabled
+          - name: DRONE_GITHUB_URL
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "fullname" . }}
+                key: server.remote.github.url
+          - name: DRONE_GITHUB_CLIENT
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "fullname" . }}
+                key: server.remote.github.client.id
+          - name: DRONE_GITHUB_SECRET
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "fullname" . }}
+                key: server.remote.github.client.secret
+          - name: DRONE_GITHUB_SCOPE
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "fullname" . }}
+                key: server.remote.github.client.scope
+          - name: DRONE_GITHUB_PRIVATE_MODE
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "fullname" . }}
+                key: server.remote.github.private_mode
+          - name: DRONE_GITHUB_MERGE_REF
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "fullname" . }}
+                key: server.remote.github.merge_ref
+          - name: DRONE_GITHUB_CONTEXT
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "fullname" . }}
+                key: server.remote.github.context
+          - name: DRONE_GITHUB_SKIP_VERIFY
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "fullname" . }}
+                key: server.remote.github.skip_verify
+  {{ if .Values.server.remote.github.git_username }}
+          - name: DRONE_GITHUB_GIT_USERNAME
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "fullname" . }}
+                key: server.remote.github.git_username
+          - name: DRONE_GITHUB_GIT_PASSWORD
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "fullname" . }}
+                key: server.remote.github.git_password
+  {{ end }}
+{{ else if .Values.server.remote.gogs.enabled }}
+          - name: DRONE_GOGS
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "fullname" . }}
+                key: server.remote.gogs.is.enabled
+          - name: DRONE_GOGS_URL
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "fullname" . }}
+                key: server.remote.gogs.url
+          - name: DRONE_GOGS_PRIVATE_MODE
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "fullname" . }}
+                key: server.remote.gogs.private_mode
+          - name: DRONE_GOGS_SKIP_VERIFY
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "fullname" . }}
+                key: server.remote.gogs.skip_verify
+  {{ if .Values.server.remote.gogs.git_username }}
+          - name: DRONE_GOGS_GIT_USERNAME
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "fullname" . }}
+                key: server.remote.gogs.git_username
+          - name: DRONE_GOGS_GIT_PASSWORD
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "fullname" . }}
+                key: server.remote.gogs.git_password
+  {{ end }}
+{{ else if .Values.server.remote.gitlab.enabled }}
+          - name: DRONE_GITLAB
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "fullname" . }}
+                key: server.remote.gitlab.is.enabled
+          - name: DRONE_GITLAB_URL
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "fullname" . }}
+                key: server.remote.gitlab.url
+          - name: DRONE_GITLAB_CLIENT
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "fullname" . }}
+                key: server.remote.gitlab.client.id
+          - name: DRONE_GITLAB_SECRET
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "fullname" . }}
+                key: server.remote.gitlab.client.secret
+          - name: DRONE_GITLAB_PRIVATE_MODE
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "fullname" . }}
+                key: server.remote.gitlab.private_mode
+          - name: DRONE_GITLAB_SKIP_VERIFY
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "fullname" . }}
+                key: server.remote.gitlab.skip_verify
+  {{ if .Values.server.remote.gitlab.git_username }}
+          - name: DRONE_GITLAB_GIT_USERNAME
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "fullname" . }}
+                key: server.remote.gitlab.git_username
+          - name: DRONE_GITLAB_GIT_PASSWORD
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "fullname" . }}
+                key: server.remote.gitlab.git_password
+  {{ end }}
+  server.remote.gitlab.is.enabled: "true"
+  server.remote.gitlab.url: {{ .Values.server.remote.gitlab.url }}
+  server.remote.gitlab.client.id: {{ .Values.server.remote.gitlab.client_id }}
+  server.remote.gitlab.client.secret: {{ .Values.server.remote.gitlab.client_secret }}
+  server.remote.github.private_mode: {{ .Values.server.remote.gitlab.private_mode }}
+  server.remote.github.skip_verify: {{ .Values.server.remote.gitlab.skip_verify }}
+  {{ if .Values.server.remote.gitlab.git_username }}
+  server.remote.github.git.username: {{ .Values.server.remote.gitlab.git_username }}
+  server.remote.github.git.password: {{ .Values.server.remote.gitlab.git_password }}
+  {{ end }}
+{{ else if .Values.server.remote.bitbucket.enabled }}
+          - name: DRONE_BITBUCKET
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "fullname" . }}
+                key: server.remote.bitbucket.is.enabled
+          - name: DRONE_BITBUCKET_CLIENT
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "fullname" . }}
+                key: server.remote.bitbucket.client.id
+          - name: DRONE_BITBUCKET_SECRET
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "fullname" . }}
+                key: server.remote.bitbucket.client.secret
+{{ else if .Values.server.remote.stash.enabled }}
+          - name: DRONE_STASH
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "fullname" . }}
+                key: server.remote.stash.is.enabled
+          - name: DRONE_GITHUB_URL
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "fullname" . }}
+                key: server.remote.stash.url
+          - name: DRONE_STASH_CONSUMER_KEY
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "fullname" . }}
+                key: server.remote.stash.consumer.key
+          - name: DRONE_STASH_CONSUMER_RSA
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "fullname" . }}
+                key: server.remote.stash.consumer.rsa
+  {{ if .Values.server.remote.stash.git_username }}
+          - name: DRONE_STASH_GIT_USERNAME
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "fullname" . }}
+                key: server.remote.stash.git_username
+          - name: DRONE_STASH_GIT_PASSWORD
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "fullname" . }}
+                key: server.remote.stash.git_password
+  {{ end }}
+{{ end }}
+        ports:
+        - name: http
+          containerPort: 80
+        - name: https
+          containerPort: 443
+        livenessProbe:
+          httpGet:
+            path: /
+            port: http
+          # This pod takes a very long time to start up. Be cautious when
+          # lowering this value to avoid Pod death during startup.
+          initialDelaySeconds: 200
+          timeoutSeconds: 1
+          periodSeconds: 30
+          successThreshold: 1
+          failureThreshold: 10
+        readinessProbe:
+          httpGet:
+            path: /
+            port: http
+          initialDelaySeconds: 30
+          timeoutSeconds: 1
+          periodSeconds: 30
+          successThreshold: 1
+          failureThreshold: 3
+        volumeMounts:
+        - mountPath: /var/lib/drone
+          name: data
+        resources:
+{{ toYaml .Values.server.resources | indent 10 }}
+      volumes:
+      - name: data
+      {{- if .Values.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ template "fullname" . }}
+      {{- else }}
+        emptyDir: {}
+      {{- end -}}
