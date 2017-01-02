@@ -44,8 +44,6 @@ $ helm install --set accessKey=myaccesskey,secretKey=mysecretkey \
     stable/minio
 ```
 
-Alternately, you may change the access and secret keys in the [values.yaml](values.yaml) file before installing the Chart.
-
 Uninstalling the Chart
 ----------------------
 
