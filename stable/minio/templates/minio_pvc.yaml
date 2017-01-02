@@ -1,3 +1,4 @@
+{{- if eq .Values.mode "standalone" }}
 {{- if .Values.persistence.enabled }}
 kind: PersistentVolumeClaim
 apiVersion: v1
@@ -11,4 +12,5 @@ spec:
   resources:
     requests:
       storage: {{ .Values.persistence.size | quote }}
+{{- end }}
 {{- end }}

@@ -21,12 +21,12 @@ You can now access Minio server on http://localhost:9000. Follow the below steps
 Alternately, you can use your browser or the Minio SDK to access the server - https://docs.minio.io/categories/17
 {{- end }}
 {{- if eq .Values.serviceType "LoadBalancer" }}
-Minio can be accessed via port {{ .Values.servicePort }} on public IP address. Get the public IP address by:
-kubectl get svc --namespace {{ .Release.Namespace }} -l app={{ template "fullname" . }}.
+Minio can be accessed via port {{ .Values.servicePort }} on a public IP address. Get the service public IP address by:
+kubectl get svc --namespace {{ .Release.Namespace }} -l app={{ template "fullname" . }}
 
 Note that the public IP may take a couple of minutes to be available.
 
-You can now access Minio server on http://<PublicIP>:{{ .Values.servicePort }}. Follow the below steps to connect to Minio server with mc client:
+You can now access Minio server on http://<PublicIP>:9000. Follow the below steps to connect to Minio server with mc client:
 
   1. Download the Minio mc client - https://docs.minio.io/docs/minio-client-quickstart-guide
 
@@ -36,4 +36,3 @@ You can now access Minio server on http://<PublicIP>:{{ .Values.servicePort }}. 
 
 Alternately, you can use your browser or the Minio SDK to access the server - https://docs.minio.io/categories/17
 {{- end }}
-
