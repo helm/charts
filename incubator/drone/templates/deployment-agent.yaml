@@ -30,8 +30,13 @@ spec:
               configMapKeyRef:
                 name: {{ template "fullname" . }}
                 key: agent.debug.is.enabled
+          {{ if .Values.ssl.enabled }}
+          - name: DRONE_SERVER
+            value: wss://{{ template "fullname" . }}-server/ws/broker
+          {{ else }}
           - name: DRONE_SERVER
             value: ws://{{ template "fullname" . }}-server/ws/broker
+          {{ end }}
           - name: DRONE_SECRET
             valueFrom:
               secretKeyRef:
