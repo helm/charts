@@ -22,7 +22,7 @@ spec:
     spec:
       terminationGracePeriodSeconds: 60
       containers:
-      - image: traefik:{{ .Values.imageTag }}
+      - image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
         name: {{ template "fullname" . }}
         resources:
           requests:
