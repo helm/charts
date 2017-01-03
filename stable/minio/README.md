@@ -13,7 +13,8 @@ This chart bootstraps Minio deployment on a [Kubernetes](http://kubernetes.io) c
 Prerequisites
 -------------
 
--	Kubernetes 1.4+ with Beta APIs enabled for default standalone mode. (If you plan to run Minio in [distributed mode](#distributed-minio), you need Kubernetes 1.5+ with Beta APIs enabled).
+-	Kubernetes 1.4+ with Beta APIs enabled for default standalone mode. 
+-   Kubernetes 1.5+ with Beta APIs enabled to run Minio in [distributed mode](#distributed-minio).
 -	PV provisioner support in the underlying infrastructure.
 
 Installing the Chart
