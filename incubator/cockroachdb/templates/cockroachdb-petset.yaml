@@ -97,6 +97,7 @@ spec:
             {
                 "name": "bootstrap",
                 "image": "{{.Values.BootstrapImage}}:{{.Values.BootstrapImageTag}}",
+                "imagePullPolicy": "{{.Values.ImagePullPolicy}}",
                 "args": [
                   "-on-start=/on-start.sh",
                   "-service={{ printf "%s-%s" .Release.Name .Values.Name | trunc 56 }}"
