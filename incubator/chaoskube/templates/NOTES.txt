@@ -1,4 +1,3 @@
-
 chaoskube is running and will kill arbitrary pods every {{ .Values.interval }}.
 
 You can follow the logs to see what chaoskube does:
