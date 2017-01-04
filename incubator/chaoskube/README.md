@@ -29,6 +29,13 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
+By default `chaoskube` runs in dry-run mode so it doesn't actually kill anything.
+If you're sure you want to use it run `helm` with:
+
+```console
+$ helm install incubator/chaoskube --set dryRun=false
+```
+
 | Parameter                 | Description                                         | Default                           |
 |---------------------------|-----------------------------------------------------|-----------------------------------|
 | `name`                    | container name                                      | chaoskube                         |
