@@ -13,7 +13,7 @@ spec:
       labels:
         app: {{ template "fullname" . }}
       annotations:
-        pod.alpha.kubernetes.io/init-containers: '[
+        pod.beta.kubernetes.io/init-containers: '[
               {
                   "name": "remove-lost-found",
                   "image": "busybox:1.25.0",
@@ -23,14 +23,15 @@ spec:
                           "name": "data",
                           "mountPath": "/var/lib/mysql"
                       }
-                  ]
+                  ],
+                  "imagePullPolicy": {{ .Values.imagePullPolicy | quote }}
               }
           ]'
     spec:
       containers:
       - name: {{ template "fullname" . }}
         image: "mysql:{{ .Values.imageTag }}"
-        imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
+        imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         env:

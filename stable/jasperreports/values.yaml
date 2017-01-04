@@ -1,7 +1,7 @@
-## Bitnami Phabricator image version
-## ref: https://hub.docker.com/r/bitnami/phabricator/tags/
+## Bitnami JasperReports image version
+## ref: https://hub.docker.com/r/bitnami/jasperreports/tags/
 ##
-image: bitnami/phabricator:2016.46-r2
+image: bitnami/jasperreports:6.3.0-r7
 
 ## Specify a imagePullPolicy
 ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
@@ -9,47 +9,28 @@ image: bitnami/phabricator:2016.46-r2
 ##
 # imagePullPolicy:
 
-## Phabricator host to create application URLs
-## ref: https://github.com/bitnami/bitnami-docker-phabricator#configuration
-##
-# phabricatorHost:
-
-## loadBalancerIP for the Phabricator Service (optional, cloud specific)
-## ref: http://kubernetes.io/docs/user-guide/services/#type-loadbalancer
-##
-# phabricatorLoadBalancerIP:
-
 ## User of the application
-## ref: https://github.com/bitnami/bitnami-docker-phabricator#configuration
+## ref: https://github.com/bitnami/bitnami-docker-jasperreports#configuration
 ##
-phabricatorUsername: user
+jasperreportsUsername: user
 
 ## Application password
 ## Defaults to a random 10-character alphanumeric string if not set
-## ref: https://github.com/bitnami/bitnami-docker-phabricator#configuration
+## ref: https://github.com/bitnami/bitnami-docker-jasperreports#configuration
 ##
-# phabricatorPassword:
-
-## Admin email
-## ref: https://github.com/bitnami/bitnami-docker-phabricator#configuration
+# jasperreportsPassword:
+#
+## Application mail
+## ref: https://github.com/bitnami/bitnami-docker-jasperreports#configuration
 ##
-phabricatorEmail: user@example.com
-
-## First name
-## ref: https://github.com/bitnami/bitnami-docker-phabricator#environment-variables
-##
-phabricatorFirstName: First Name
-
-## Last name
-## ref: https://github.com/bitnami/bitnami-docker-phabricator#environment-variables
-##
-phabricatorLastName: Last Name
+jasperreportsEmail: user@example.com
 
 ## SMTP mail delivery configuration
-## ref: https://github.com/bitnami/bitnami-docker-phabricator/#smtp-configuration
+## ref: https://github.com/bitnami/bitnami-docker-jasperreports#smtp-configuration
 ##
 # smtpHost:
 # smtpPort:
+# smtpEmail:
 # smtpUser:
 # smtpPassword:
 # smtpProtocol:
@@ -82,14 +63,9 @@ serviceType: LoadBalancer
 ##
 persistence:
   enabled: true
-  apache:
-    storageClass: generic
-    accessMode: ReadWriteOnce
-    size: 1Gi
-  phabricator:
-    storageClass: generic
-    accessMode: ReadWriteOnce
-    size: 8Gi
+  storageClass: generic
+  accessMode: ReadWriteOnce
+  size: 8Gi
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
