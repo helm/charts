@@ -25,7 +25,7 @@ CHANGED_FOLDERS=`git diff --find-renames --name-only FETCH_HEAD stable/ incubato
 CURRENT_RELEASE=""
 
 # Exit early if no charts have changed
-if [ -z "$CHANGED_FOLDERS" ]; then 
+if [ -z "$CHANGED_FOLDERS" ]; then
   exit 0
 fi
 
@@ -64,6 +64,13 @@ for directory in ${CHANGED_FOLDERS}; do
   helm lint ${directory}
   helm dep update ${directory}
   helm install --name ${RELEASE_NAME} --namespace ${NAMESPACE} ${directory}
-  # TODO run functional validation here
+  ./test/verify-release.sh ${NAMESPACE}
+  kubectl get pods --namespace ${NAMESPACE}
+  kubectl get svc --namespace ${NAMESPACE}
+  kubectl get deployments --namespace ${NAMESPACE}
+  kubectl get endpoints --namespace ${NAMESPACE}
+  if [ -n $VERIFICATION_PAUSE ]; then
+    sleep $VERIFICATION_PAUSE
+  fi
   helm delete --purge ${RELEASE_NAME}
 done
