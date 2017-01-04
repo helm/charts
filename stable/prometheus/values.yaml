@@ -10,7 +10,7 @@ alertmanager:
 
   ## Alertmanager Docker image
   ##
-  image: prom/alertmanager:v0.5.0
+  image: prom/alertmanager:v0.5.1
 
   ingress:
     ## If true, Alertmanager Ingress will be created
@@ -160,7 +160,7 @@ server:
 
   ## Server Docker image
   ##
-  image: prom/prometheus:v1.3.1
+  image: prom/prometheus:v1.4.1
 
   ingress:
     ## If true, Server Ingress will be created

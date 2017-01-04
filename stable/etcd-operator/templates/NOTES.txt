@@ -1,0 +1,22 @@
+{{- if .Values.cluster.enabled -}}
+1. Watch etcd cluster start
+  kubectl get pods -l etcd_cluster={{ .Values.cluster.name }} --namespace {{ .Release.Namespace }} -w
+2. Confirm etcd cluster is healthy
+  $ kubectl run --rm -i --tty etcd-test --image quay.io/coreos/etcd --restart=Never -- /bin/sh
+  / # ETCDCTL_API=3 etcdctl --endpoints http://{{ .Values.cluster.name }}-0000:2379 put foo bar
+  / # ETCDCTL_API=3 etcdctl --endpoints http://{{ .Values.cluster.name }}-0000:2379 member list
+  OK
+  (ctrl-D to exit)
+3. Optional
+  Check the etcd-operator logs
+  export POD=$(kubectl get pods -l app={{ template "fullname" . }} --namespace {{ .Release.Namespace }} --output name)
+  kubectl logs $POD --namespace={{ .Release.Namespace }}
+
+{{- else -}}
+1. etcd-operator deployed. 
+  If you would like to deploy an etcd-cluster set cluster.enabled to true in values.yaml
+  Check the etcd-operator logs
+    export POD=$(kubectl get pods -l app={{ template "fullname" . }} --namespace {{ .Release.Namespace }} --output name)
+    kubectl logs $POD --namespace={{ .Release.Namespace }}
+
+{{- end -}}

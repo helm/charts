@@ -1,0 +1,29 @@
+# Default values for datadog.
+image:
+  repository: datadog/docker-dd-agent
+  tag: latest
+  pullPolicy: IfNotPresent
+
+datadog:
+  ## You'll need to set this to your Datadog API key before the agent will run.
+  ## ref: https://app.datadoghq.com/account/settings#agent/kubernetes
+  ##
+  # apiKey:
+
+  ## Set logging verbosity.
+  ## ref: https://github.com/DataDog/docker-dd-agent#environment-variables
+  ##
+  logLevel: WARNING
+
+  ## Un-comment this to make each node accept non-local statsd traffic.
+  ## ref: https://github.com/DataDog/docker-dd-agent#environment-variables
+  ##
+  # nonLocalTraffic: true
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 256m
+    memory: 512Mi

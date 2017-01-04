@@ -48,7 +48,7 @@ The following tables lists the configurable parameters of the MariaDB chart and 
 | Parameter                  | Description                                | Default                                                    |
 | -----------------------    | ----------------------------------         | ---------------------------------------------------------- |
 | `image`                    | MariaDB image                              | `bitnami/mariadb:{VERSION}`                                |
-| `imagePullPolicy`          | Image pull policy.                         | `Always` if `imageTag` is `latest`, else `IfNotPresent`.   |
+| `imagePullPolicy`          | Image pull policy.                         | `IfNotPresent`                                             |
 | `mariadbRootPassword`      | Password for the `root` user.              | `nil`                                                      |
 | `mariadbUser`              | Username of new user to create.            | `nil`                                                      |
 | `mariadbPassword`          | Password for the new user.                 | `nil`                                                      |

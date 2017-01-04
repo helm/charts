@@ -6,12 +6,12 @@ The Kubernetes Charts project accepts contributions via GitHub pull requests. Th
 
 We'd love to accept your patches! Before we can take them, we have to jump a couple of legal hurdles.
 
-Please fill out either the individual or corporate Contributor License Agreement (CLA).
+The Cloud Native Computing Foundation (CNCF) CLA [must be signed](https://github.com/kubernetes/community/blob/master/CLA.md) by all contributors.
+Please fill out either the individual or corporate Contributor License
+Agreement (CLA).
 
-  * If you are an individual writing original source code and you're sure you own the intellectual property, then you'll need to sign an [individual CLA](http://code.google.com/legal/individual-cla-v1.0.html).
-    * If you work for a company that wants to allow you to contribute your work, then you'll need to sign a [corporate CLA](http://code.google.com/legal/corporate-cla-v1.0.html).
-
-Follow either of the two links above to access the appropriate CLA and instructions for how to sign and return it. Once we receive it, we'll be able to accept your pull requests.
+Once you are CLA'ed, we'll be able to accept your pull requests. For any issues that you face during this process,
+please add a comment [here](https://github.com/kubernetes/kubernetes/issues/27796) explaining the issue and we will help get it sorted out.
 
 ***NOTE***: Only original source code from you and other people that have signed the CLA can be accepted into the main repository.
 
@@ -26,6 +26,8 @@ This repository is used by Chart developers for maintaining the official charts 
 1. Choose the correct folder for your chart based on the information in the [Repository Structure](README.md#repository-structure) section
 1. Ensure your Chart follows the [technical](#technical-requirements) and [documentation](#documentation-requirements) guidelines, described below.
 1. Submit a pull request.
+
+***NOTE***: In order to make testing and merging of PRs easier, please submit changes to multiple charts in separate PRs.
 
 #### Technical requirements
 
