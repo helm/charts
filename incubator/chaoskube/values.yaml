@@ -13,7 +13,7 @@ replicas: 1
 # interval between pod terminations
 interval: 10m
 
-# defines whether pods should actually be terminated
+# don't kill pods, only log what would have been done
 dryRun: true
 
 # resource requests and limits
