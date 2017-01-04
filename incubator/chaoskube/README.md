@@ -36,6 +36,6 @@ The command removes all the Kubernetes components associated with the chart and 
 | `imageTag`                | docker image tag                                    | v0.3.1                            |
 | `replicas`                | number of replicas to run                           | 1                                 |
 | `interval`                | interval between pod terminations                   | 10m                               |
-| `dryRun`                  | defines whether pods should actually be terminated  | false                             |
+| `dryRun`                  | defines whether pods should actually be terminated  | true                              |
 | `resources.cpu`           | cpu resource requests and limits                    | 10m                               |
 | `resources.memory`        | memory resource requests and limits                 | 16Mi                              |
