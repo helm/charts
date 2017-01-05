@@ -2,22 +2,22 @@
 apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
-  name: {{ .Release.Name }}
+  name: {{ template "fullname" . }}
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
 spec:
   template:
     metadata:
-      name: {{ .Release.Name }}
+      name: {{ template "fullname" . }}
       labels:
-        app: {{ .Release.Name }}
+        app: {{ template "fullname" . }}
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         release: "{{ .Release.Name }}"
         heritage: "{{ .Release.Service }}"
     spec:
-      serviceAccount: {{ .Release.Name }}
+      serviceAccount: {{ template "fullname" . }}
       containers:
-      - name: {{ .Chart.Name }}
+      - name: {{ template "fullname" . }}
         image: "{{.Values.image.name}}:{{.Values.image.tag}}"
         imagePullPolicy: {{.Values.image.pullPolicy}}
         resources:
@@ -37,17 +37,17 @@ spec:
         - name: SUMO_ACCESS_ID
           valueFrom:
             secretKeyRef:
-              name: "{{ .Release.Name }}-secrets-{{.Release.Time.Seconds }}"
+              name: "{{ template "fullname" . }}-secrets-{{.Release.Time.Seconds }}"
               key: access-id
         - name: SUMO_ACCESS_KEY
           valueFrom:
             secretKeyRef:
-              name: "{{ .Release.Name }}-secrets-{{.Release.Time.Seconds }}"
+              name: "{{ template "fullname" . }}-secrets-{{.Release.Time.Seconds }}"
               key: access-key
         - name: SUMO_COLLECTOR_NAME
           valueFrom:
             secretKeyRef:
-              name: "{{ .Release.Name }}-secrets-{{.Release.Time.Seconds }}"
+              name: "{{ template "fullname" . }}-secrets-{{.Release.Time.Seconds }}"
               key: collector-name
         - name: SUMO_SOURCES_JSON
           value: "/etc/sumologic/sumo-sources.json"
@@ -60,5 +60,5 @@ spec:
           path: /var/lib/docker/containers
       - name: sumo-sources
         configMap:
-          name: "{{ .Release.Name }}-config-{{.Release.Time.Seconds }}"
+          name: "{{ template "fullname" . }}-config-{{.Release.Time.Seconds }}"
 {{ end }}
