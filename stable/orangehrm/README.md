@@ -45,27 +45,27 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following tables lists the configurable parameters of the OrangeHRM chart and their default values.
 
-|              Parameter               |               Description                |                         Default                          |
-|--------------------------------------|------------------------------------------|----------------------------------------------------------|
-| `image`                              | OrangeHRM image                          | `bitnami/orangehrm:{VERSION}`                            |
-| `imagePullPolicy`                    | Image pull policy                        | `Always` if `image` tag is `latest`, else `IfNotPresent` |
-| `orangehrmUsername`                  | User of the application                  | `user`                                                   |
-| `orangehrmPassword`                  | Application password                     | _random 10 character long alphanumeric string_           |
-| `smtpHost`                           | SMTP host                                | `nil`                                                    |
-| `smtpPort`                           | SMTP port                                | `nil`                                                    |
-| `smtpUser`                           | SMTP user                                | `nil`                                                    |
-| `smtpPassword`                       | SMTP password                            | `nil`                                                    |
-| `smtpProtocol`                       | SMTP protocol [`ssl`, `none`]            | `nil`                                                    |
-| `mariadb.mariadbRootPassword`        | MariaDB admin password                   | `nil`                                                    |
-| `serviceType`                        | Kubernetes Service type                  | `LoadBalancer`                                           |
-| `persistence.enabled`                | Enable persistence using PVC             | `true`                                                   |
-| `persistence.apache.storageClass`    | PVC Storage Class for Apache volume      | `generic`                                                |
-| `persistence.apache.accessMode`      | PVC Access Mode for Apache volume        | `ReadWriteOnce`                                          |
-| `persistence.apache.size`            | PVC Storage Request for Apache volume    | `1Gi`                                                    |
-| `persistence.orangehrm.storageClass` | PVC Storage Class for OrangeHRM volume   | `generic`                                                |
-| `persistence.orangehrm.accessMode`   | PVC Access Mode for OrangeHRM volume     | `ReadWriteOnce`                                          |
-| `persistence.orangehrm.size`         | PVC Storage Request for OrangeHRM volume | `8Gi`                                                    |
-| `resources`                          | CPU/Memory resource requests/limits      | Memory: `512Mi`, CPU: `300m`                             |
+|              Parameter               |               Description                |                    Default                     |
+|--------------------------------------|------------------------------------------|------------------------------------------------|
+| `image`                              | OrangeHRM image                          | `bitnami/orangehrm:{VERSION}`                  |
+| `imagePullPolicy`                    | Image pull policy                        | `IfNotPresent`                                 |
+| `orangehrmUsername`                  | User of the application                  | `user`                                         |
+| `orangehrmPassword`                  | Application password                     | _random 10 character long alphanumeric string_ |
+| `smtpHost`                           | SMTP host                                | `nil`                                          |
+| `smtpPort`                           | SMTP port                                | `nil`                                          |
+| `smtpUser`                           | SMTP user                                | `nil`                                          |
+| `smtpPassword`                       | SMTP password                            | `nil`                                          |
+| `smtpProtocol`                       | SMTP protocol [`ssl`, `none`]            | `nil`                                          |
+| `mariadb.mariadbRootPassword`        | MariaDB admin password                   | `nil`                                          |
+| `serviceType`                        | Kubernetes Service type                  | `LoadBalancer`                                 |
+| `persistence.enabled`                | Enable persistence using PVC             | `true`                                         |
+| `persistence.apache.storageClass`    | PVC Storage Class for Apache volume      | `generic`                                      |
+| `persistence.apache.accessMode`      | PVC Access Mode for Apache volume        | `ReadWriteOnce`                                |
+| `persistence.apache.size`            | PVC Storage Request for Apache volume    | `1Gi`                                          |
+| `persistence.orangehrm.storageClass` | PVC Storage Class for OrangeHRM volume   | `generic`                                      |
+| `persistence.orangehrm.accessMode`   | PVC Access Mode for OrangeHRM volume     | `ReadWriteOnce`                                |
+| `persistence.orangehrm.size`         | PVC Storage Request for OrangeHRM volume | `8Gi`                                          |
+| `resources`                          | CPU/Memory resource requests/limits      | Memory: `512Mi`, CPU: `300m`                   |
 
 The above parameters map to the env variables defined in [bitnami/orangehrm](http://github.com/bitnami/bitnami-docker-orangehrm). For more information please refer to the [bitnami/orangehrm](http://github.com/bitnami/bitnami-docker-orangehrm) image documentation.
 
