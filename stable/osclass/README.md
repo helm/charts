@@ -45,24 +45,24 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following tables lists the configurable parameters of the Osclass chart and their default values.
 
-|           Parameter           |               Description                |                         Default                         |
-|-------------------------------|------------------------------------------|---------------------------------------------------------|
-| `imageTag`                    | `bitnami/osclass` image tag.             | Osclass image version                                   |
-| `imagePullPolicy`             | Image pull policy.                       | `Always` if image tag is `latest`, else `IfNotPresent`. |
-| `osclassHost`                 | Osclass host to create application URLs  | `nil`                                                   |
-| `osclassLoadBalancerIP`       | `loadBalancerIP` for the Osclass Service | `nil`                                                   |
-| `osclassUsername`             | User of the application                  | `user`                                                  |
-| `osclassPassword`             | Application password                     | `bitnami`                                               |
-| `osclassEmail`                | Admin email                              | `user@example.com`                                      |
-| `osclassWebTitle`             | Application tittle                       | `Sample Web Page`                                       |
-| `osclassPingEngines`          | Allow site to appear in search engines   | `1`                                                     |
-| `osclassSaveStats`            | Send statistics and reports to Osclass   | `1`                                                     |
-| `smtpHost`                    | SMTP host                                | `nil`                                                   |
-| `smtpPort`                    | SMTP port                                | `nil`                                                   |
-| `smtpUser`                    | SMTP user                                | `nil`                                                   |
-| `smtpPassword`                | SMTP password                            | `nil`                                                   |
-| `smtpProtocol`                | SMTP protocol [`ssl`, `tls`]             | `nil`                                                   |
-| `mariadb.mariadbRootPassword` | MariaDB admin password                   | `nil`                                                   |
+|           Parameter           |               Description                |        Default        |
+|-------------------------------|------------------------------------------|-----------------------|
+| `imageTag`                    | `bitnami/osclass` image tag.             | Osclass image version |
+| `imagePullPolicy`             | Image pull policy.                       | `IfNotPresent`.       |
+| `osclassHost`                 | Osclass host to create application URLs  | `nil`                 |
+| `osclassLoadBalancerIP`       | `loadBalancerIP` for the Osclass Service | `nil`                 |
+| `osclassUsername`             | User of the application                  | `user`                |
+| `osclassPassword`             | Application password                     | `bitnami`             |
+| `osclassEmail`                | Admin email                              | `user@example.com`    |
+| `osclassWebTitle`             | Application tittle                       | `Sample Web Page`     |
+| `osclassPingEngines`          | Allow site to appear in search engines   | `1`                   |
+| `osclassSaveStats`            | Send statistics and reports to Osclass   | `1`                   |
+| `smtpHost`                    | SMTP host                                | `nil`                 |
+| `smtpPort`                    | SMTP port                                | `nil`                 |
+| `smtpUser`                    | SMTP user                                | `nil`                 |
+| `smtpPassword`                | SMTP password                            | `nil`                 |
+| `smtpProtocol`                | SMTP protocol [`ssl`, `tls`]             | `nil`                 |
+| `mariadb.mariadbRootPassword` | MariaDB admin password                   | `nil`                 |
 
 The above parameters map to the env variables defined in [bitnami/osclass](http://github.com/bitnami/bitnami-docker-osclass). For more information please refer to the [bitnami/osclass](http://github.com/bitnami/bitnami-docker-osclass) image documentation.
 
