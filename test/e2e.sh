@@ -23,15 +23,11 @@ IMAGE_VERSION="test-image:v1.10"
 CHART_ROOT=${CHART_ROOT:-$(git rev-parse --show-toplevel)}
 IMAGE_NAME=${IMAGE_NAME:-"gcr.io/kubernetes-charts-ci/${IMAGE_VERSION}"}
 
-if [ -z $VERIFICATION_PAUSE ];then
-  VERIFICATION_PAUSE=0
-fi
-
 docker run -v ${CHART_ROOT}:/src \
            -v "${GOOGLE_APPLICATION_CREDENTIALS}:/service-account.json:ro" \
            -e "GOOGLE_APPLICATION_CREDENTIALS=/service-account.json" \
            -e "PULL_NUMBER=$PULL_NUMBER" \
            -e "BUILD_NUMBER=$BUILD_NUMBER" \
-           -e "VERIFICATION_PAUSE=$VERIFICATION_PAUSE" \
+           -e "VERIFICATION_PAUSE=${VERIFICATION_PAUSE:=0}" \
            ${IMAGE_NAME} /src/test/changed.sh
 echo "Done Testing!"
