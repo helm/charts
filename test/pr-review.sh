@@ -28,6 +28,7 @@ git fetch -f origin pull/${PULL_NUMBER}/head:${BRANCH_NAME}
 git checkout ${BRANCH_NAME}
 git rebase master
 export VERIFICATION_PAUSE=180
+export BUILD_NUMBER=0
 ./test/e2e.sh
 git checkout master
 git branch -D ${BRANCH_NAME}
