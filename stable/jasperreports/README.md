@@ -46,26 +46,26 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following tables lists the configurable parameters of the JasperReports chart and their default values.
 
-|           Parameter           |                 Description                  |                         Default                          |
-|-------------------------------|----------------------------------------------|----------------------------------------------------------|
-| `image`                       | JasperReports image                          | `bitnami/jasperreports:{VERSION}`                        |
-| `imagePullPolicy`             | Image pull policy                            | `Always` if `image` tag is `latest`, else `IfNotPresent` |
-| `jasperreportsUsername`       | User of the application                      | `user`                                                   |
-| `jasperreportsPassword`       | Application password                         | _random 10 character long alphanumeric string_           |
-| `jasperreportsEmail`          | User email                                   | `user@example.com`                                       |
-| `smtpHost`                    | SMTP host                                    | `nil`                                                    |
-| `smtpPort`                    | SMTP port                                    | `nil`                                                    |
-| `smtpEmail`                   | SMTP email                                   | `nil`                                                    |
-| `smtpUser`                    | SMTP user                                    | `nil`                                                    |
-| `smtpPassword`                | SMTP password                                | `nil`                                                    |
-| `smtpProtocol`                | SMTP protocol [`ssl`, `none`]                | `nil`                                                    |
-| `mariadb.mariadbRootPassword` | MariaDB admin password                       | `nil`                                                    |
-| `serviceType`                 | Kubernetes Service type                      | `LoadBalancer`                                           |
-| `persistence.enabled`         | Enable persistence using PVC                 | `true`                                                   |
-| `persistence.storageClass`    | PVC Storage Class for JasperReports volume   | `generic`                                                |
-| `persistence.accessMode`      | PVC Access Mode for JasperReports volume     | `ReadWriteOnce`                                          |
-| `persistence.size`            | PVC Storage Request for JasperReports volume | `8Gi`                                                    |
-| `resources`                   | CPU/Memory resource requests/limits          | Memory: `512Mi`, CPU: `300m`                             |
+|           Parameter           |                 Description                  |                    Default                     |
+|-------------------------------|----------------------------------------------|------------------------------------------------|
+| `image`                       | JasperReports image                          | `bitnami/jasperreports:{VERSION}`              |
+| `imagePullPolicy`             | Image pull policy                            | `IfNotPresent`                                 |
+| `jasperreportsUsername`       | User of the application                      | `user`                                         |
+| `jasperreportsPassword`       | Application password                         | _random 10 character long alphanumeric string_ |
+| `jasperreportsEmail`          | User email                                   | `user@example.com`                             |
+| `smtpHost`                    | SMTP host                                    | `nil`                                          |
+| `smtpPort`                    | SMTP port                                    | `nil`                                          |
+| `smtpEmail`                   | SMTP email                                   | `nil`                                          |
+| `smtpUser`                    | SMTP user                                    | `nil`                                          |
+| `smtpPassword`                | SMTP password                                | `nil`                                          |
+| `smtpProtocol`                | SMTP protocol [`ssl`, `none`]                | `nil`                                          |
+| `mariadb.mariadbRootPassword` | MariaDB admin password                       | `nil`                                          |
+| `serviceType`                 | Kubernetes Service type                      | `LoadBalancer`                                 |
+| `persistence.enabled`         | Enable persistence using PVC                 | `true`                                         |
+| `persistence.storageClass`    | PVC Storage Class for JasperReports volume   | `generic`                                      |
+| `persistence.accessMode`      | PVC Access Mode for JasperReports volume     | `ReadWriteOnce`                                |
+| `persistence.size`            | PVC Storage Request for JasperReports volume | `8Gi`                                          |
+| `resources`                   | CPU/Memory resource requests/limits          | Memory: `512Mi`, CPU: `300m`                   |
 
 The above parameters map to the env variables defined in [bitnami/jasperreports](http://github.com/bitnami/bitnami-docker-jasperreports). For more information please refer to the [bitnami/jasperreports](http://github.com/bitnami/bitnami-docker-jasperreports) image documentation.
 
