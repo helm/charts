@@ -62,7 +62,7 @@ The following tables lists the configurable parameters of the WordPress chart an
 | `image`                              | WordPress image                          | `bitnami/wordpress:{VERSION}`                              |
 | `imagePullPolicy`                    | Image pull policy                        | `Always` if `image` tag is `latest`, else `IfNotPresent`   |
 | `wordpressUsername`                  | User of the application                  | `user`                                                     |
-| `wordpressPassword`                  | Application password                     | `bitnami`                                                  |
+| `wordpressPassword`                  | Application password                     | _random 10 character long alphanumeric string_             |
 | `wordpressEmail`                     | Admin email                              | `user@example.com`                                         |
 | `wordpressFirstName`                 | First name                               | `FirstName`                                                |
 | `wordpressLastName`                  | Last name                                | `LastName`                                                 |
