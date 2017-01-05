@@ -17,6 +17,10 @@ if [ -z "${PULL_NUMBER}" ]; then
   PR_NUMBER=$1
 fi
 
+if [ -z "${VERIFICATION_PAUSE}" ]; then
+  export VERIFICATION_PAUSE=180
+fi
+
 BRANCH_NAME=pr-${PULL_NUMBER}
 CURRENT_BRANCH_NAME=`git rev-parse --abbrev-ref HEAD`
 if [ "${BRANCH_NAME}" = "$CURRENT_BRANCH_NAME" ];then
@@ -27,7 +31,6 @@ fi
 git fetch -f origin pull/${PULL_NUMBER}/head:${BRANCH_NAME}
 git checkout ${BRANCH_NAME}
 git rebase master
-export VERIFICATION_PAUSE=180
 export BUILD_NUMBER=0
 ./test/e2e.sh
 git checkout master
