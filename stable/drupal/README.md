@@ -50,7 +50,7 @@ The following tables lists the configurable parameters of the Drupal chart and t
 | `image`                           | Drupal image                          | `bitnami/drupal:{VERSION}`                                |
 | `imagePullPolicy`                 | Image pull policy                     | `Always` if `image` tag is `latest`, else `IfNotPresent`  |
 | `drupalUsername`                  | User of the application               | `user`                                                    |
-| `drupalPassword`                  | Application password                  | `bitnami`                                                 |
+| `drupalPassword`                  | Application password                  | _random 10 character long alphanumeric string_            |
 | `drupalEmail`                     | Admin email                           | `user@example.com`                                        |
 | `mariadb.mariadbRootPassword`     | MariaDB admin password                | `nil`                                                     |
 | `serviceType`                     | Kubernetes Service type               | `LoadBalancer`                                            |

@@ -15,9 +15,10 @@ image: bitnami/drupal:8.2.4-r0
 drupalUsername: user
 
 ## Application password
+## Defaults to a random 10-character alphanumeric string if not set
 ## ref: https://github.com/bitnami/bitnami-docker-drupal#configuration
 ##
-drupalPassword: bitnami
+# drupalPassword:
 
 ## Admin email
 ## ref: https://github.com/bitnami/bitnami-docker-drupal#configuration
