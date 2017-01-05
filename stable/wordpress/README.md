@@ -76,10 +76,10 @@ The following tables lists the configurable parameters of the WordPress chart an
 | `mariadb.mariadbRootPassword`        | MariaDB admin password                   | `nil`                                                      |
 | `serviceType`                        | Kubernetes Service type                  | `LoadBalancer`                                             |
 | `persistence.enabled`                | Enable persistence using PVC             | `true`                                                     |
-| `persistence.apache.storageClass`    | PVC Storage Class for Apache volume      | `volume.alpha.kubernetes.io/storage-class: default`        |
+| `persistence.apache.storageClass`    | PVC Storage Class for Apache volume      | `nil` (uses alpha storage class annotation)                |
 | `persistence.apache.accessMode`      | PVC Access Mode for Apache volume        | `ReadWriteOnce`                                            |
 | `persistence.apache.size`            | PVC Storage Request for Apache volume    | `1Gi`                                                      |
-| `persistence.wordpress.storageClass` | PVC Storage Class for WordPress volume   | `volume.alpha.kubernetes.io/storage-class: default`        |
+| `persistence.wordpress.storageClass` | PVC Storage Class for WordPress volume   | `nil` (uses alpha storage class annotation)                |
 | `persistence.wordpress.accessMode`   | PVC Access Mode for WordPress volume     | `ReadWriteOnce`                                            |
 | `persistence.wordpress.size`         | PVC Storage Request for WordPress volume | `8Gi`                                                      |
 
