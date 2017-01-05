@@ -1,7 +1,21 @@
+{{ if (and (empty (.Values.remote.github.enabled))  (empty (.Values.remote.gogs.enabled)) (empty (.Values.remote.gitlab.enabled)) (empty (.Values.remote.bitbucket.enabled)) (empty (.Values.remote.stash.enabled))) }}
+
+#########################################################################
+### ERROR: You did not provide any remote in your 'helm install' call ###
+#########################################################################
+
+1. Read the values.yaml file for all available options of remote,
+   you can also read http://readme.drone.io/admin/ for more information
+
+2. Complete your Drone deployment for example by running:
+   helm upgrade {{ .Release.Name }} \
+    --set remote.gogs.enabled=true, \
+    remote.gogs.url=http://drone.url.com incubator/drone
+
+{{ else }}
 1. Get your Drone URL by running:
 
 {{- if contains "NodePort" .Values.serviceType }}
-
   export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
   echo http://$NODE_IP/
 
@@ -17,4 +31,5 @@
   export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "fullname" . }}" -o jsonpath="{.items[0].metadata.name}")
   echo http://127.0.0.1:8080/
   kubectl port-forward $POD_NAME 8080:80
+{{- end }}
 {{- end }}
