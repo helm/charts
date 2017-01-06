@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: {{ template "fullname" . }}-igor
   labels:
-    app: spin
+    app: {{ template "fullname" . }}
 spec:
   replicas: 1
   template:
@@ -17,6 +17,7 @@ spec:
                   "name": "copy-default-config",
                   "image": "{{.Values.jenkins.Master.Image}}:{{.Values.jenkins.Master.ImageTag}}",
                   "command": ["cp", "-n", "/var/jenkins_config/config.xml", "/var/jenkins_home"],
+                  "imagePullPolicy": "IfNotPresent",
                   "volumeMounts": [
                       {
                           "name": "jenkins-config",

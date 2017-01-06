@@ -28,7 +28,7 @@ flex:
 
 default:
   bake:
-    account: local-cluster
+    account: local
   securityGroups:
   vpc:
     securityGroups:

@@ -13,7 +13,7 @@ spec:
         load-balancer-spin-clouddriver: "true"
     spec:
       containers:
-        - image: quay.io/spinnaker/clouddriver
+        - image: viglesiasce/spinnaker-clouddriver
           name: clouddriver
           ports:
             - containerPort: 7002
@@ -21,8 +21,8 @@ spec:
           volumeMounts:
             - mountPath: /opt/spinnaker/config
               name: {{ template "fullname" . }}-spinnaker-config
-            - mountPath: /root/.kube
-              name: {{ template "fullname" . }}-kube-config
+#            - mountPath: /root/.kube
+#              name: {{ template "fullname" . }}-kube-config
           readinessProbe:
             httpGet:
               path: /credentials
@@ -33,6 +33,6 @@ spec:
         - name: {{ template "fullname" . }}-spinnaker-config
           configMap:
             name: {{ template "fullname" . }}-spinnaker-config
-        - name: {{ template "fullname" . }}-kube-config
-          configMap:
-            name: {{ template "fullname" . }}-kube-config
+#        - name: {{ template "fullname" . }}-kube-config
+#          configMap:
+#            name: {{ template "fullname" . }}-kube-config

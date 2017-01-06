@@ -14,7 +14,7 @@ window.spinnakerSettings = {
   providers: {
     kubernetes: {
       defaults: {
-        account: 'local-cluster',
+        account: 'local',
         namespace: 'default'
       },
     }

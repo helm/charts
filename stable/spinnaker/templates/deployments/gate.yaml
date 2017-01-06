@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: {{ template "fullname" . }}-gate
   labels:
-    app: spin
+    app: {{ template "fullname" . }}
 spec:
   replicas: 1
   template:
@@ -21,11 +21,11 @@ spec:
           volumeMounts:
             - mountPath: /opt/spinnaker/config
               name: {{ template "fullname" . }}-spinnaker-config
-          readinessProbe:
+          livenessProbe:
             httpGet:
               path: /env
               port: 8084
-            initialDelaySeconds: 20
+            initialDelaySeconds: 30
             timeoutSeconds: 1
       volumes:
         - name: {{ template "fullname" . }}-spinnaker-config

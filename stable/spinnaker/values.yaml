@@ -1,16 +1,13 @@
-# Default values for spinnaker.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
-
-repository: library/nginx
-replicaCount: 1
-storageBucket: spinnaker
+# Images for each component
 image:
-  repository: quay.io/spinnaker
-  tag: v2.941.0
+  clouddriver: quay.io/spinnaker/clouddriver:v2.941.0
   pullPolicy: IfNotPresent
-service:
-  type: ClusterIP
+
+# Bucket to use when storing config data
+storageBucket: spinnaker
+
+# Resources to provide to each of
+# the Spinnaker components
 resources:
   limits:
     cpu: 1000m
@@ -19,18 +16,44 @@ resources:
     cpu: 1000m
     memory: 1280Mi
 
+# Define which registries and repositories you want available in your
+# Spinnaker pipeline definitions
+accounts:
+- name: DockerHub
+  address: https://index.docker.io
+  repositories:
+    - library/alpine
+    - library/ubuntu
+    - library/centos
+    - library/nginx
+
+# Settings for notifications via email
+mail:
+  enabled: false
+  host: smtp.example.org
+  username: admin
+  password: admin
+  fromAddress: spinnaker@example.org
+  port: 25
+
+# Redis password to use for the in-cluster redis service
+# Redis is not exposed publically
 redis:
   redisPassword: password
 
+# Minio access/secret keys for the in-cluster S3 usage
+# Minio is not exposed publically
 minio:
   AccessKey: spinnakeradmin
   SecretKey: spinnakeradmin
 
+# Configuration for the Jenkins instance that is attached to the
+# igor component of Spinnaker
 jenkins:
   Master:
     Name: jenkins-master
     Image: "gcr.io/kubernetes-charts-ci/jenkins-master-k8s"
-    ImageTag: "v0.5.0"
+    ImageTag: "v0.6.0"
     ImagePullPolicy: "Always"
     Component: "jenkins-master"
     Cpu: "500m"
@@ -42,21 +65,6 @@ jenkins:
   
   Agent:
     Image: viglesiasce/spinnaker-jenkins-agent
-    ImageTag: v0.1.0
+    ImageTag: v0.2.0
     Cpu: "500m"
     Memory: "512Mi"
-
-accounts:
-- name: docker-hub
-  address: https://index.docker.io
-  repositories:
-    - library/alpine
-    - library/ubuntu
-    - library/centos
-    - viglesiasce/sample-app
-
-persistence:
-  enabled: false
-  storageClass: generic
-  accessMode: ReadWriteOnce
-  size: 8Gi

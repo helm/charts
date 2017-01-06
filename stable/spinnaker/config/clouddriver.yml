@@ -64,6 +64,7 @@ kubernetes:
   enabled: ${providers.kubernetes.enabled:false}
   accounts:
     - name: ${providers.kubernetes.primaryCredentials.name}
+      serviceAccount: true
       dockerRegistries:
         - accountName: ${providers.kubernetes.primaryCredentials.dockerRegistryAccount}
 

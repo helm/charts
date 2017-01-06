@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: "{{.Release.Name}}-upload-job"
+  name: "{{.Release.Name}}-upload-build-image"
   labels:
     heritage: {{.Release.Service | quote }}
     release: {{.Release.Name | quote }}
@@ -38,8 +38,8 @@ spec:
         - --max-time
         - "3"
         - --data-binary
-        - "@/jobs/run-script.xml"
-        - "http://{{ template "fullname" . }}-igor:8080/createItem?name=run-script"
+        - "@/jobs/build-image.xml"
+        - "http://{{ template "fullname" . }}-igor:8080/createItem?name=build-image"
         volumeMounts:
         - name: jenkins-jobs
           mountPath: /jobs

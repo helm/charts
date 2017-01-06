@@ -53,7 +53,7 @@ data:
     kubernetes:
       enabled: true
       accounts:
-        - name: local-cluster
+        - name: local
           dockerRegistries:
             {{- range $index, $account := .Values.accounts }}
             - accountName: {{ $account.name }}
@@ -109,12 +109,12 @@ data:
           # allow pipeline triggers to run periodically via cron expressions
           # If you wish for spinnaker to send notifications, configure the following blocks
           mail:
-            enabled: true
-            host: smtp.sendgrid.net
-            username: apikey
-            password: "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"
-            fromAddress: spinnaker@vicnastea.io
-            port: 2525
+            enabled: {{ .Values.mail.enabled }}
+            host: {{ .Values.mail.host }}
+            username: {{ .Values.mail.username }}
+            password: {{ .Values.mail.password }}
+            fromAddress: {{ .Values.mail.fromAddress }}
+            port: {{ .Values.mail.port }}
           hipchat:
             enabled: false
             url: # the hipchat server to connect to
@@ -237,7 +237,7 @@ data:
       kubernetes:
         enabled: true
         primaryCredentials:
-          name: local-cluster
+          name: local
           namespace: default
           dockerRegistryAccount: ${providers.dockerRegistry.primaryCredentials.name}
 

@@ -28,6 +28,11 @@ data:
               <description>git repository url.</description>
               <defaultValue></defaultValue>
             </hudson.model.StringParameterDefinition>
+            <hudson.model.StringParameterDefinition>
+              <name>BRANCH</name>
+              <description>Branch or sha to build</description>
+              <defaultValue></defaultValue>
+            </hudson.model.StringParameterDefinition>
           </parameterDefinitions>
         </hudson.model.ParametersDefinitionProperty>
       </properties>
@@ -100,7 +105,7 @@ data:
       <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.23">
         <script>node {
         checkout([$class: &apos;GitSCM&apos;, 
-              branches: [[name: &apos;*/master&apos;]], 
+              branches: [[name: &apos;$BRANCH&apos;]], 
               doGenerateSubmoduleConfigurations: false, 
               extensions: [], 
               submoduleCfg: [], 

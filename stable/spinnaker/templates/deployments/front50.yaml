@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: {{ template "fullname" . }}-front50
   labels:
-    app: spin
+    app: {{ template "fullname" . }}
 spec:
   replicas: 1
   template:
