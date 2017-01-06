@@ -3,10 +3,11 @@ kind: Service
 metadata:
   name: {{ template "fullname" . }}-front50
   labels:
-    app: spin
-    stack: front50
+    app: {{ template "fullname" . }}
+    component: front50
 spec:
   ports:
     - port: 8080
   selector:
-    load-balancer-spin-front50: "true"
+    app: {{ template "fullname" . }}
+    component: front50

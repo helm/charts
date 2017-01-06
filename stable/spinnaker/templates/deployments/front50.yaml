@@ -4,13 +4,14 @@ metadata:
   name: {{ template "fullname" . }}-front50
   labels:
     app: {{ template "fullname" . }}
+    component: front50
 spec:
   replicas: 1
   template:
     metadata:
       labels:
-        replication-controller: spin-front50-v000
-        load-balancer-spin-front50: "true"
+        app: {{ template "fullname" . }}
+        component: front50
     spec:
       containers:
         - image: quay.io/spinnaker/front50

@@ -3,8 +3,8 @@ kind: Service
 metadata:
   name: {{ template "fullname" . }}-igor
   labels:
-    app: spin
-    stack: igor
+    app: {{ template "fullname" . }}
+    component: igor
 spec:
   ports:
     - port: 8088
@@ -14,4 +14,5 @@ spec:
     - port: 50000
       name: jenkins-agent
   selector:
-    load-balancer-spin-igor: "true"
+    app: {{ template "fullname" . }}
+    component: igor

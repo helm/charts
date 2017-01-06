@@ -3,10 +3,11 @@ kind: Service
 metadata:
   name: {{ template "fullname" . }}-echo
   labels:
-    app: spin
-    stack: echo
+    app: {{ template "fullname" . }}
+    component: echo
 spec:
   ports:
     - port: 8089
   selector:
-    load-balancer-spin-echo: "true"
+    app: {{ template "fullname" . }}
+    component: echo

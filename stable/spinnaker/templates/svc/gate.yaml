@@ -3,10 +3,11 @@ kind: Service
 metadata:
   name: {{ template "fullname" . }}-gate
   labels:
-    app: spin
-    stack: gate
+    app: {{ template "fullname" . }}
+    component: gate
 spec:
   ports:
     - port: 8084
   selector:
-    load-balancer-spin-gate: "true"
+    app: {{ template "fullname" . }}
+    component: gate

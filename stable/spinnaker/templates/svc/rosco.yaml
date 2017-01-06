@@ -3,10 +3,11 @@ kind: Service
 metadata:
   name: {{ template "fullname" . }}-rosco
   labels:
-    app: spin
-    stack: rosco
+    app: {{ template "fullname" . }}
+    component: rosco
 spec:
   ports:
     - port: 8087
   selector:
-    load-balancer-spin-rosco: "true"
+    app: {{ template "fullname" . }}
+    component: rosco

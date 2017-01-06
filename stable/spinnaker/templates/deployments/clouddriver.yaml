@@ -4,13 +4,14 @@ metadata:
   name: {{ template "fullname" . }}-clouddriver
   labels:
     app: {{ template "fullname" . }}
+    component: clouddriver
 spec:
   replicas: 1
   template:
     metadata:
       labels:
-        replication-controller: spin-clouddriver-v000
-        load-balancer-spin-clouddriver: "true"
+        app: {{ template "fullname" . }}
+        component: clouddriver
     spec:
       containers:
         - image: viglesiasce/spinnaker-clouddriver

@@ -4,13 +4,14 @@ metadata:
   name: {{ template "fullname" . }}-rosco
   labels:
     app: {{ template "fullname" . }}
+    component: rosco
 spec:
   replicas: 1
   template:
     metadata:
       labels:
-        replication-controller: spin-rosco-v000
-        load-balancer-spin-rosco: "true"
+        app: {{ template "fullname" . }}
+        component: rosco
     spec:
       containers:
         - image: quay.io/spinnaker/rosco:master

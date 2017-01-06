@@ -3,10 +3,11 @@ kind: Service
 metadata:
   name: {{ template "fullname" . }}-clouddriver
   labels:
-    app: spin
-    stack: clouddriver
+    app: {{ template "fullname" . }}
+    component: clouddriver
 spec:
   ports:
     - port: 7002
   selector:
-    load-balancer-spin-clouddriver: "true"
+    app: {{ template "fullname" . }}
+    component: clouddriver

@@ -4,13 +4,14 @@ metadata:
   name: {{ template "fullname" . }}-deck
   labels:
     app: {{ template "fullname" . }}
+    component: deck
 spec:
   replicas: 1
   template:
     metadata:
       labels:
-        replication-controller: spin-deck-v000
-        load-balancer-spin-deck: "true"
+        app: {{ template "fullname" . }}
+        component: deck
     spec:
       containers:
         - image: quay.io/spinnaker/deck:master

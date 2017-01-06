@@ -4,13 +4,14 @@ metadata:
   name: {{ template "fullname" . }}-echo
   labels:
     app: {{ template "fullname" . }}
+    component: echo
 spec:
   replicas: 1
   template:
     metadata:
       labels:
-        replication-controller: spin-echo-v000
-        load-balancer-spin-echo: "true"
+        app: {{ template "fullname" . }}
+        component: echo
     spec:
       containers:
         - image: quay.io/spinnaker/echo:master

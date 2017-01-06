@@ -4,13 +4,14 @@ metadata:
   name: {{ template "fullname" . }}-gate
   labels:
     app: {{ template "fullname" . }}
+    component: gate
 spec:
   replicas: 1
   template:
     metadata:
       labels:
-        replication-controller: spin-gate-v000
-        load-balancer-spin-gate: "true"
+        app: {{ template "fullname" . }}
+        component: gate
     spec:
       containers:
         - image: quay.io/spinnaker/gate:master

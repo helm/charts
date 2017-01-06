@@ -3,10 +3,11 @@ kind: Service
 metadata:
   name: {{ template "fullname" . }}-deck
   labels:
-    app: spin
-    stack: deck
+    app: {{ template "fullname" . }}
+    component: deck
 spec:
   ports:
     - port: 9000
   selector:
-    load-balancer-spin-deck: "true"
+    app: {{ template "fullname" . }}
+    component: deck

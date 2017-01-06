@@ -4,13 +4,14 @@ metadata:
   name: {{ template "fullname" . }}-igor
   labels:
     app: {{ template "fullname" . }}
+    component: igor
 spec:
   replicas: 1
   template:
     metadata:
       labels:
-        replication-controller: spin-igor-v000
-        load-balancer-spin-igor: "true"
+        app: {{ template "fullname" . }}
+        component: igor
       annotations:
         pod.alpha.kubernetes.io/init-containers: '[
               {

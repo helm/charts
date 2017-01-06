@@ -3,10 +3,11 @@ kind: Service
 metadata:
   name: {{ template "fullname" . }}-orca
   labels:
-    app: spin
-    stack: orca
+    app: {{ template "fullname" . }}
+    component: orca
 spec:
   ports:
     - port: 8083
   selector:
-    load-balancer-spin-orca: "true"
+    app: {{ template "fullname" . }}
+    component: orca
