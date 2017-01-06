@@ -1,4 +1,7 @@
-1. Get the application URL by running these commands:
-  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "fullname" . }}" -o jsonpath="{.items[0].metadata.name}")
-  echo "Visit http://127.0.0.1:8080 to use your application"
-  kubectl port-forward $POD_NAME 9000
+1. You will need to create 2 port forwarding tunnels in order to access the Spinnaker UI:
+  export GATE_POD=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "component=gate,app={{ template "fullname" . }}" -o jsonpath="{.items[0].metadata.name}")
+  export DECK_POD=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "component=deck,app={{ template "fullname" . }}" -o jsonpath="{.items[0].metadata.name}")
+  kubectl port-forward $GATE_POD 8084 &
+  kubectl port-forward $DECK_POD 9000 &
+
+2. Visit the Spinnaker UI by opening your browser to: http://127.0.0.1:9000
