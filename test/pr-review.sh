@@ -17,9 +17,7 @@ if [ -z "${PULL_NUMBER}" ]; then
   PR_NUMBER=$1
 fi
 
-if [ -z "${VERIFICATION_PAUSE}" ]; then
-  export VERIFICATION_PAUSE=180
-fi
+export VERIFICATION_PAUSE=${VERIFICATION_PAUSE:=180}
 
 BRANCH_NAME=pr-${PULL_NUMBER}
 CURRENT_BRANCH_NAME=`git rev-parse --abbrev-ref HEAD`
