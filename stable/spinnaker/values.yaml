@@ -19,7 +19,7 @@ resources:
 # Define which registries and repositories you want available in your
 # Spinnaker pipeline definitions
 accounts:
-- name: DockerHub
+- name: dockerhub
   address: https://index.docker.io
   repositories:
     - library/alpine
