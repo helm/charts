@@ -96,6 +96,11 @@ data:
               <description></description>
               <defaultValue></defaultValue>
             </hudson.model.StringParameterDefinition>
+            <hudson.model.StringParameterDefinition>
+              <name>BRANCH</name>
+              <description></description>
+              <defaultValue></defaultValue>
+            </hudson.model.StringParameterDefinition>
           </parameterDefinitions>
         </hudson.model.ParametersDefinitionProperty>
         <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
@@ -104,22 +109,22 @@ data:
       </properties>
       <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.23">
         <script>node {
-        checkout([$class: &apos;GitSCM&apos;, 
-              branches: [[name: &apos;$BRANCH&apos;]], 
-              doGenerateSubmoduleConfigurations: false, 
-              extensions: [], 
-              submoduleCfg: [], 
+        checkout([$class: &apos;GitSCM&apos;,
+              branches: [[name: &apos;$BRANCH&apos;]],
+              doGenerateSubmoduleConfigurations: false,
+              extensions: [],
+              submoduleCfg: [],
               userRemoteConfigs: [[url: &apos;$REPOSITORY_URL&apos;]]]
               )
-    
+
         stage(&apos;save-env&apos;) {
             sh &apos;env &gt; properties&apos;
         }
-        
+
         stage(&apos;build-image&apos;) {
             sh &apos;docker build -t $IMAGE_REPO:$IMAGE_TAG .&apos;
         }
-        
+
         stage(&apos;push-image&apos;) {
             sh &apos;gcloud docker -- push $IMAGE_REPO:$IMAGE_TAG&apos;
         }
