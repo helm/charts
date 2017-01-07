@@ -1,5 +1,7 @@
 # Define which registries and repositories you want available in your
 # Spinnaker pipeline definitions
+# For more info visit:
+#   http://www.spinnaker.io/v1.0/docs/target-deployment-configuration#section-docker-registry
 accounts:
 - name: dockerhub
   address: https://index.docker.io
@@ -10,6 +12,8 @@ accounts:
     - library/nginx
 
 # Settings for notifications via email
+# For more info visit:
+#   http://www.spinnaker.io/docs/notifications-and-events-guide#section-email
 mail:
   enabled: false
   host: smtp.example.org
@@ -54,7 +58,9 @@ minio:
   SecretKey: spinnakeradmin
 
 # Configuration for the Jenkins instance that is attached to the
-# igor component of Spinnaker
+# igor component of Spinnaker. For more info about the Jenkins integration
+# with Spinnaker, visit:
+#   http://www.spinnaker.io/docs/jenkins-script-execution-stage
 jenkins:
   Master:
     Name: jenkins-master

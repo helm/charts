@@ -5,3 +5,6 @@
   kubectl port-forward $DECK_POD 9000 &
 
 2. Visit the Spinnaker UI by opening your browser to: http://127.0.0.1:9000
+
+For more info on the Kubernetes integration for Spinnaker, visit:
+  http://www.spinnaker.io/docs/kubernetes-source-to-prod
