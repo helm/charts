@@ -14,7 +14,7 @@ spec:
         component: gate
     spec:
       containers:
-        - image: quay.io/spinnaker/gate:master
+        - image: {{ .Values.images.gate }}
           name: gate
           ports:
             - containerPort: 8084

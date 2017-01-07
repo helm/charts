@@ -1,21 +1,3 @@
-# Images for each component
-image:
-  clouddriver: quay.io/spinnaker/clouddriver:v2.941.0
-  pullPolicy: IfNotPresent
-
-# Bucket to use when storing config data
-storageBucket: spinnaker
-
-# Resources to provide to each of
-# the Spinnaker components
-resources:
-  limits:
-    cpu: 1000m
-    memory: 1280Mi
-  requests:
-    cpu: 1000m
-    memory: 1280Mi
-
 # Define which registries and repositories you want available in your
 # Spinnaker pipeline definitions
 accounts:
@@ -35,6 +17,30 @@ mail:
   password: admin
   fromAddress: spinnaker@example.org
   port: 25
+
+# Images for each component
+images:
+  clouddriver: quay.io/spinnaker/clouddriver:v1.489.0
+  echo: quay.io/spinnaker/echo:v1.127.0
+  deck: quay.io/spinnaker/deck:v2.956.0
+  igor: quay.io/spinnaker/igor:v1.61.0
+  orca: quay.io/spinnaker/orca:v1.302.0
+  gate: quay.io/spinnaker/gate:v2.109.0
+  front50: quay.io/spinnaker/front50:v1.69.0
+  rosco: quay.io/spinnaker/rosco:v0.78.0
+
+# Bucket to use when storing config data in S3 compatible storage
+storageBucket: spinnaker
+
+# Resources to provide to each of
+# the Spinnaker components
+resources:
+  limits:
+    cpu: 1000m
+    memory: 1280Mi
+  requests:
+    cpu: 1000m
+    memory: 1280Mi
 
 # Redis password to use for the in-cluster redis service
 # Redis is not exposed publically
@@ -62,7 +68,7 @@ jenkins:
     ServiceType: ClusterIP
     ContainerPort: 8080
     SlaveListenerPort: 50000
-  
+
   Agent:
     Image: viglesiasce/spinnaker-jenkins-agent
     ImageTag: v0.2.0

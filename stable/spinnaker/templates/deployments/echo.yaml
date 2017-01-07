@@ -14,7 +14,7 @@ spec:
         component: echo
     spec:
       containers:
-        - image: quay.io/spinnaker/echo:master
+        - image: {{ .Values.images.echo }}
           name: echo
           ports:
             - containerPort: 8089

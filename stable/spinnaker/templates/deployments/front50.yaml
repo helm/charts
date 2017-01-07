@@ -14,7 +14,7 @@ spec:
         component: front50
     spec:
       containers:
-        - image: quay.io/spinnaker/front50
+        - image: {{ .Values.images.front50 }}
           name: front50
           ports:
             - containerPort: 8080

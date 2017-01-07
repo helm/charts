@@ -33,7 +33,7 @@ spec:
           ]'
     spec:
       containers:
-        - image: quay.io/spinnaker/igor:master
+        - image: {{ .Values.images.igor }}
           name: igor
           ports:
             - containerPort: 8088

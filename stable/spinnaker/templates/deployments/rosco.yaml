@@ -14,7 +14,7 @@ spec:
         component: rosco
     spec:
       containers:
-        - image: quay.io/spinnaker/rosco:master
+        - image: {{ .Values.images.rosco }}
           name: rosco
           ports:
             - containerPort: 8087

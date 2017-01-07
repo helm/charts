@@ -14,7 +14,7 @@ spec:
         component: deck
     spec:
       containers:
-        - image: quay.io/spinnaker/deck:master
+        - image: {{ .Values.images.deck }}
           name: deck
           command:
             - /bin/bash

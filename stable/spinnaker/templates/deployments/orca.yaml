@@ -14,7 +14,7 @@ spec:
         component: orca
     spec:
       containers:
-        - image: quay.io/spinnaker/orca:master
+        - image: {{ .Values.images.orca }}
           name: orca
           ports:
             - containerPort: 8083
