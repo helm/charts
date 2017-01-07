@@ -3,9 +3,7 @@ kind: ConfigMap
 metadata:
   name: {{ template "fullname" . }}-spinnaker-config
   labels:
-    release: {{.Release.Name | quote}}
-    app: {{template "fullname" .}}
-    heritage: {{.Release.Service | quote}}
+    app: {{ template "fullname" . }}
 data:
   clouddriver.yml: |
 {{.Files.Get "config/clouddriver.yml" | indent 4}}
