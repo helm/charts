@@ -24,12 +24,12 @@ spec:
           name: {{ .Release.Name }}-jenkins-jobs
       containers:
       - name: post-install-job
-        image: "viglesiasce/minio-client"
+        image: "viglesiasce/minio-client:v0.4.0"
         command:
         - curl
         - -X
         - POST
-        - -H 
+        - -H
         - "Content-Type: application/xml"
         - --retry
         - "20"
