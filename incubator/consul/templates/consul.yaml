@@ -6,17 +6,35 @@ type: Opaque
 data:
   gossip-key: {{ randAlphaNum 24 | b64enc }}
 ---
+{{- if .Values.uiService.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
-  name: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 24 }}"
+  name: "{{ template "fullname" . }}-ui"
+  labels:
+    heritage: {{.Release.Service | quote }}
+    release: {{.Release.Name | quote }}
+    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+    component: "{{.Release.Name}}-{{.Values.Component}}"
+spec:
+  ports:
+  - name: http
+    port: {{.Values.HttpPort}}
+  selector:
+    component: "{{.Release.Name}}-{{.Values.Component}}"
+  type: "{{.Values.uiService.type}}"
+{{- end }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: "{{ template "fullname" . }}"
   labels:
     heritage: {{.Release.Service | quote }}
     release: {{.Release.Name | quote }}
     chart: "{{.Chart.Name}}-{{.Chart.Version}}"
     component: "{{.Release.Name}}-{{.Values.Component}}"
   annotations:
-    "helm.sh/created": {{.Release.Time.Seconds | quote }}
     service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
 spec:
   ports:
@@ -47,33 +65,30 @@ spec:
 apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
-  name: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 24 }}"
+  name: "{{ template "fullname" . }}"
   labels:
     heritage: {{.Release.Service | quote }}
     release: {{.Release.Name | quote }}
     chart: "{{.Chart.Name}}-{{.Chart.Version}}"
     component: "{{.Release.Name}}-{{.Values.Component}}"
-  annotations:
-    "helm.sh/created": {{.Release.Time.Seconds | quote }}
 spec:
-  serviceName: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 24 }}"
+  serviceName: "{{ template "fullname" . }}"
   replicas: {{default 3 .Values.Replicas}}
   template:
     metadata:
-      name: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 24 }}"
+      name: "{{ template "fullname" . }}"
       labels:
         heritage: {{.Release.Service | quote }}
         release: {{.Release.Name | quote }}
         chart: "{{.Chart.Name}}-{{.Chart.Version}}"
         component: "{{.Release.Name}}-{{.Values.Component}}"
       annotations:
-        "helm.sh/created": {{.Release.Time.Seconds | quote }}
         pod.alpha.kubernetes.io/initialized: "true"
     spec:
       securityContext:
         fsGroup: 1000
       containers:
-      - name: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 24 }}"
+      - name: "{{ template "fullname" . }}"
         image: "{{.Values.Image}}:{{.Values.ImageTag}}"
         imagePullPolicy: "{{.Values.ImagePullPolicy}}"
         ports:
@@ -105,7 +120,7 @@ spec:
         - name: INITIAL_CLUSTER_SIZE
           value: {{ default 3 .Values.Replicas | quote }}
         - name: STATEFULSET_NAME
-          value: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 24 }}"
+          value: "{{ template "fullname" . }}"
         - name: POD_IP
           valueFrom:
             fieldRef:
@@ -145,6 +160,9 @@ spec:
             done
 
             exec /bin/consul agent \
+            {{- if .Values.ui.enabled }}
+              -ui \
+            {{- end }}
               -data-dir=/var/lib/consul \
               -server \
               -bootstrap-expect=${INITIAL_CLUSTER_SIZE} \
@@ -161,7 +179,7 @@ spec:
   - metadata:
       name: datadir
       annotations:
-        volume.beta.kubernetes.io/storage-class: default
+        volume.beta.kubernetes.io/storage-class: "{{.Values.StorageClass}}"
     spec:
       accessModes:
         - "ReadWriteOnce"
