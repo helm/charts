@@ -5,7 +5,7 @@
 ## TL;DR;
 
 ```console
-$ helm install incubator/kube2iam
+$ helm install stable/kube2iam
 ```
 
 ## Introduction
@@ -21,7 +21,7 @@ This chart bootstraps a [kube2iam](https://github.com/jtblin/kube2iam) deploymen
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm install --name my-release incubator/kube2iam
+$ helm install --name my-release stable/kube2iam
 ```
 
 The command deploys kube2iam on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
