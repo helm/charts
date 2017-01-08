@@ -135,6 +135,13 @@ spec:
         - name: gossip-key
           mountPath: /etc/consul/secrets
           readOnly: true
+        livenessProbe:
+          exec:
+            command:
+            - consul
+            - members
+          initialDelaySeconds: 10
+          timeoutSeconds: 1
         command:
           - "/bin/sh"
           - "-ec"
