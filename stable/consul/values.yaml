@@ -29,9 +29,9 @@ StorageClass: default
 ## Enable Consul Web UI
 ##
 ui:
-  enabled: false
+  enabled: true
 ## Create dedicated UI service
 ##
 uiService:
-  enabled: false
+  enabled: true
   type: "NodePort"
