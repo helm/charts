@@ -12,36 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM debian:jessie
+FROM alpine:3.4
 MAINTAINER Anirudh Ramanathan <foxish@google.com>
 
-ADD files/* /
-RUN set -x \
- && echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections \
-  && apt-get update \
-  && apt-get install --no-install-recommends -y wget localepurge ca-certificates \
-  && wget -qO /peer-finder http://storage.googleapis.com/kubernetes-release/pets/peer-finder \
-  && chmod -c 755 /install.sh /on-start.sh /peer-finder
-
-RUN apt-get -y purge localepurge wget \
-  && apt-get clean \
-  && cd / \
-  && rm -rf \
-     doc \
-     man \
-     info \
-     locale \
-     /var/lib/apt/lists/* \
-     /var/log/* \
-     /var/cache/debconf/* \
-     common-licenses \
-     ~/.bashrc \
-     /etc/systemd \
-     /lib/lsb \
-     /lib/udev \
-     /usr/share/doc/ \
-     /usr/share/doc-base/ \
-     /usr/share/man/ \
-     /tmp/*
+RUN apk update && apk add bash && wget -qO /peer-finder http://storage.googleapis.com/kubernetes-release/pets/peer-finder 
 
 ENTRYPOINT ["/install.sh"]
+
+ADD files/* /
+
+RUN chmod -c 755 /install.sh /on-start.sh /peer-finder

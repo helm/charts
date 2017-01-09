@@ -62,7 +62,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 
 ```bash
 $ helm install --name my-release \
-  --set mongodbRootPassword=secretpassword,mongodbUser=my-user,mongodbPassword=my-password,mongodbDatabase=my-database \
+  --set mongodbRootPassword=secretpassword,mongodbUsername=my-user,mongodbPassword=my-password,mongodbDatabase=my-database \
     stable/mongodb
 ```
 

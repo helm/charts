@@ -23,7 +23,7 @@ spec:
           imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
           args:
             - --config.file=/etc/config/alertmanager.yml
-            - --storage.path={{ default "/data" .Values.alertmanager.storagePath | quote }}
+            - --storage.path={{ default "/data" .Values.alertmanager.storagePath }}
           ports:
             - containerPort: 9093
           readinessProbe:
