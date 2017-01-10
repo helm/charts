@@ -21,9 +21,9 @@ POD_NAME=`kubectl get pods -l type=openvpn | awk END'{ print $1 }'` \
 When ready generate a client key as follows:
 
 ```bash
-POD_NAME=`kubectl get pods -l type=openvpn | awk END'{ print $1 }'` \
-&& SERVICE_NAME=`kubectl get svc -l type=openvpn | awk END'{ print $1 }'` \
-&& SERVICE_IP=`kubectl get svc $SERVICE_NAME -o jsonpath='{.status.loadBalancer.ingress[0].ip}'` \
+POD_NAME=`kubectl get pods --namespace {{ .Release.Namespace }} -l type=openvpn | awk END'{ print $1 }'` \
+&& SERVICE_NAME=`kubectl get svc --namespace {{ .Release.Namespace }} -l type=openvpn | awk END'{ print $1 }'` \
+&& SERVICE_IP=`kubectl get svc $SERVICE_NAME --namespace {{ .Release.Namespace }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}'` \
 && KEY_NAME=kubeVPN \
 && kubectl exec -it $POD_NAME /etc/openvpn/setup/newClientCert.sh $KEY_NAME $SERVICE_IP \
 && kubectl exec -it $POD_NAME cat /usr/share/easy-rsa/pki/$KEY_NAME.ovpn > $KEY_NAME.ovpn
