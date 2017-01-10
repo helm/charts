@@ -25,8 +25,10 @@ IMAGE_NAME=${IMAGE_NAME:-"gcr.io/kubernetes-charts-ci/${IMAGE_VERSION}"}
 
 docker run -v ${CHART_ROOT}:/src \
            -v "${GOOGLE_APPLICATION_CREDENTIALS}:/service-account.json:ro" \
+           -v "${KUBECONFIG:=${HOME}/.kube/config}":/.kube/config \
            -e "GOOGLE_APPLICATION_CREDENTIALS=/service-account.json" \
            -e "PULL_NUMBER=$PULL_NUMBER" \
+           -e "KUBECONFIG=/.kube/config" \
            -e "BUILD_NUMBER=$BUILD_NUMBER" \
            -e "VERIFICATION_PAUSE=${VERIFICATION_PAUSE:=0}" \
            ${IMAGE_NAME} /src/test/changed.sh
