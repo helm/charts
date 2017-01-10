@@ -16,6 +16,8 @@ To install the chart with the release name `my-release`:
 $ helm install --name my-release stable/chaoskube
 ```
 
+The command deploys chaoskube on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
+
 ## Uninstalling the Chart
 
 To uninstall/delete the my-release deployment:
