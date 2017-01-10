@@ -56,16 +56,20 @@ The following tables lists the configurable parameters of the OrangeHRM chart an
 | `smtpUser`                           | SMTP user                                | `nil`                                          |
 | `smtpPassword`                       | SMTP password                            | `nil`                                          |
 | `smtpProtocol`                       | SMTP protocol [`ssl`, `none`]            | `nil`                                          |
-| `mariadb.mariadbRootPassword`        | MariaDB admin password                   | `nil`                                          |
 | `serviceType`                        | Kubernetes Service type                  | `LoadBalancer`                                 |
+| `resources`                          | CPU/Memory resource requests/limits      | Memory: `512Mi`, CPU: `300m`                   |
 | `persistence.enabled`                | Enable persistence using PVC             | `true`                                         |
-| `persistence.apache.storageClass`    | PVC Storage Class for Apache volume      | `generic`                                      |
+| `persistence.apache.storageClass`    | PVC Storage Class for Apache volume      | `nil` (uses alpha storage class annotation)    |
 | `persistence.apache.accessMode`      | PVC Access Mode for Apache volume        | `ReadWriteOnce`                                |
 | `persistence.apache.size`            | PVC Storage Request for Apache volume    | `1Gi`                                          |
-| `persistence.orangehrm.storageClass` | PVC Storage Class for OrangeHRM volume   | `generic`                                      |
+| `persistence.orangehrm.storageClass` | PVC Storage Class for OrangeHRM volume   | `nil` (uses alpha storage class annotation)    |
 | `persistence.orangehrm.accessMode`   | PVC Access Mode for OrangeHRM volume     | `ReadWriteOnce`                                |
 | `persistence.orangehrm.size`         | PVC Storage Request for OrangeHRM volume | `8Gi`                                          |
-| `resources`                          | CPU/Memory resource requests/limits      | Memory: `512Mi`, CPU: `300m`                   |
+| `mariadb.mariadbRootPassword`        | MariaDB admin password                   | `nil`                                          |
+| `mariadb.persistence.enabled`        | Enable MariaDB persistence using PVC     | `true`                                         |
+| `mariadb.persistence.storageClass`   | PVC Storage Class for MariaDB volume     | `generic`                                      |
+| `mariadb.persistence.accessMode`     | PVC Access Mode for MariaDB volume       | `ReadWriteOnce`                                |
+| `mariadb.persistence.size`           | PVC Storage Request for MariaDB volume   | `8Gi`                                          |
 
 The above parameters map to the env variables defined in [bitnami/orangehrm](http://github.com/bitnami/bitnami-docker-orangehrm). For more information please refer to the [bitnami/orangehrm](http://github.com/bitnami/bitnami-docker-orangehrm) image documentation.
 
