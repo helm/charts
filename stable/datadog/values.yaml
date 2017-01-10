@@ -20,6 +20,11 @@ datadog:
   ##
   # nonLocalTraffic: true
 
+  ## Set host tags.
+  ## ref: https://github.com/DataDog/docker-dd-agent#environment-variables
+  ##
+  # tags:
+
 resources:
   requests:
     cpu: 100m
