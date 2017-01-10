@@ -17,12 +17,14 @@ spec:
       - name: {{ template "fullname" . }}
         image: "{{ .Values.image }}"
         imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
+        {{ if .Values.redisPassword }}
         env:
         - name: REDIS_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ template "fullname" . }}
               key: redis-password
+        {{ end }}
         ports:
         - name: redis
           containerPort: 6379
