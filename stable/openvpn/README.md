@@ -7,8 +7,8 @@ The primary purpose of this chart was to make it easy to access kubernetes servi
 ##Usage
 
 ```bash
-helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
-helm install incubator/openvpn
+helm repo add stable http://storage.googleapis.com/kubernetes-charts-incubator
+helm install stable/openvpn
 ```
 
 Wait for the external load balancer IP to become available.  Check service status via: kubectl get svckubectl get svc
@@ -23,7 +23,7 @@ When ready generate a client key as follows:
 ```bash
 POD_NAME=`kubectl get pods -l type=openvpn | awk END'{ print $1 }'` \
 && SERVICE_NAME=`kubectl get svc -l type=openvpn | awk END'{ print $1 }'` \
-&& SERVICE_IP=`kubectl get svc --namespace {{ .Release.Namespace }} $SERVICE_NAME -o jsonpath='{.status.loadBalancer.ingress[0].ip}'` \
+&& SERVICE_IP=`kubectl get svc $SERVICE_NAME -o jsonpath='{.status.loadBalancer.ingress[0].ip}'` \
 && KEY_NAME=kubeVPN \
 && kubectl exec -it $POD_NAME /etc/openvpn/setup/newClientCert.sh $KEY_NAME $SERVICE_IP \
 && kubectl exec -it $POD_NAME cat /usr/share/easy-rsa/pki/$KEY_NAME.ovpn > $KEY_NAME.ovpn
@@ -48,4 +48,4 @@ New certificates are generated with each deployment.  This chart was developed a
 * openvpn.OVPN_K8S_POD_NETWORK: "10.0.0.0" - Kubernetes pod network (optional).
 * openvpn.OVPN_K8S_POD_SUBNET: "255.0.0.0" - Kubernetes pod network subnet (optional).
 
-####Note: As configured the chart will create a route for a large 10.0.0.0/8 network that may cause issues if that is your local network.  If so tweak this value to something more restrictive.  This route is added, because kubernetes generates pods with IPs in this range.
+####Note: As configured the chart will create a route for a large 10.0.0.0/8 network that may cause issues if that is your local network.  If so tweak this value to something more restrictive.  This route is added, because GKE generates pods with IPs in this range.
