@@ -55,7 +55,7 @@ spec:
           initialDelaySeconds: 5
           timeoutSeconds: 1
         resources:
-          {{ include "toYaml" .Values.resources | indent 10 }}
+{{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
         - name: drupal-data
           mountPath: /bitnami/drupal
