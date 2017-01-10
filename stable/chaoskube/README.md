@@ -5,7 +5,7 @@
 ## TL;DR;
 
 ```console
-$ helm install incubator/chaoskube
+$ helm install stable/chaoskube
 ```
 
 ## Installing the Chart
@@ -13,8 +13,7 @@ $ helm install incubator/chaoskube
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
-$ helm install --name my-release incubator/chaoskube
+$ helm install --name my-release stable/chaoskube
 ```
 
 ## Uninstalling the Chart
@@ -33,7 +32,7 @@ By default `chaoskube` runs in dry-run mode so it doesn't actually kill anything
 If you're sure you want to use it run `helm` with:
 
 ```console
-$ helm install incubator/chaoskube --set dryRun=false
+$ helm install stable/chaoskube --set dryRun=false
 ```
 
 | Parameter                 | Description                                         | Default                           |
