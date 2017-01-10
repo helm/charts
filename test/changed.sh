@@ -38,9 +38,11 @@ function cleanup {
 }
 trap cleanup EXIT
 
-# Get credentials for test cluster
-gcloud auth activate-service-account --key-file="${GOOGLE_APPLICATION_CREDENTIALS}"
-gcloud container clusters get-credentials jenkins --project kubernetes-charts-ci --zone us-west1-a
+if [ ! -f "${KUBECONFIG}" ];then
+  # Get credentials for test cluster
+  gcloud auth activate-service-account --key-file="${GOOGLE_APPLICATION_CREDENTIALS}"
+  gcloud container clusters get-credentials jenkins --project kubernetes-charts-ci --zone us-west1-a
+fi
 
 # Install and initialize helm/tiller
 HELM_URL=https://storage.googleapis.com/kubernetes-helm
