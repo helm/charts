@@ -1,6 +1,6 @@
-# nginx-lego
+# nginx-ingress
 
-[nginx-lego](https://github.com/jetstack/kube-lego/tree/master/examples/nginx) is a chart for an [`nginx` ingress](https://github.com/kubernetes/contrib/tree/master/ingress/controllers/nginx) with optional support for automatically generating `SSL` cert for the managed routes. 
+[nginx-ingress](https://github.com/jetstack/kube-lego/tree/master/examples/nginx) is a chart for an [`nginx` ingress](https://github.com/kubernetes/contrib/tree/master/ingress/controllers/nginx) with optional support for automatically generating `SSL` cert for the managed routes. 
 
 To use this ingress contoller add the following annotations to the `ingress` resources you would like to route through it:
 
@@ -31,7 +31,7 @@ $ helm install stable/kube-lego
 
 ## Introduction
 
-This chart bootstraps an nginx-lego deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
+This chart bootstraps an nginx-ingress deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
 ## Prerequisites
 
@@ -42,10 +42,10 @@ This chart bootstraps an nginx-lego deployment on a [Kubernetes](http://kubernet
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm install --name my-release stable/nginx-lego
+$ helm install --name my-release stable/nginx-ingress
 ```
 
-The command deploys nginx-lego on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
+The command deploys nginx-ingress on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
 
 > **Tip**: List all releases using `helm list`
 
@@ -66,7 +66,7 @@ See `values.yaml` for configuration notes. Specify each parameter using the `--s
 ```bash
 $ helm install --name my-release \
   --set lego.enabled=false \
-    stable/nginx-lego
+    stable/nginx-ingress
 ```
 
 Installs the chart without kube-lego and the ability to generate certs.
@@ -74,7 +74,7 @@ Installs the chart without kube-lego and the ability to generate certs.
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```bash
-$ helm install --name my-release -f values.yaml stable/nginx-lego
+$ helm install --name my-release -f values.yaml stable/nginx-ingress
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)

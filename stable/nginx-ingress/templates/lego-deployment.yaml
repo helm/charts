@@ -2,31 +2,32 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
+  labels:
+    app: {{ template "fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    component: lego
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
   name: {{ template "fullname" . }}-lego
 spec:
   replicas: {{ .Values.lego.replicaCount }}
   template:
     metadata:
       labels:
-        app: kube-lego
+        app: {{ template "fullname" . }}
+        component: lego
+        release: "{{ .Release.Name }}"
     spec:
       containers:
-      - name: {{ .Chart.Name }}-lego
+      - name: {{ template "name" . }}-lego
         image: "{{ .Values.lego.image.repository }}:{{ .Values.lego.image.tag }}"
-        imagePullPolicy: {{ .Values.lego.image.pullPolicy }}
-        ports:
-        - containerPort: 8080
+        imagePullPolicy: {{ .Values.lego.image.pullPolicy | quote }}
         env:
         - name: LEGO_EMAIL
           valueFrom:
             configMapKeyRef:
               name: {{ template "fullname" . }}-lego
               key: lego.email
-        - name: LEGO_URL
-          valueFrom:
-            configMapKeyRef:
-              name: {{ template "fullname" . }}-lego
-              key: lego.url
         - name: LEGO_NAMESPACE
           valueFrom:
             fieldRef:
@@ -35,6 +36,15 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: status.podIP
+        - name: LEGO_SERVICE_NAME_NGINX
+          value: {{ template "fullname" . }}-lego
+        - name: LEGO_URL
+          valueFrom:
+            configMapKeyRef:
+              name: {{ template "fullname" . }}-lego
+              key: lego.url
+        ports:
+        - containerPort: 8080
         resources:
 {{ toYaml .Values.nginx.resources | indent 10 }}
 {{- end }}

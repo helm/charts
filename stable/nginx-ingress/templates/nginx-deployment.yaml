@@ -1,0 +1,58 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: {{ template "fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    component: controller
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+  name: {{ template "fullname" . }}-controller
+spec:
+  replicas: {{ .Values.nginx.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "fullname" . }}
+        component: controller
+        release: "{{ .Release.Name }}"
+    spec:
+      containers:
+      - name: {{ template "name" . }}-controller
+        image: "{{ .Values.nginx.image.repository }}:{{ .Values.nginx.image.tag }}"
+        imagePullPolicy: {{ .Values.nginx.image.pullPolicy | quote }}
+        args:
+        - /nginx-ingress-controller
+        - --default-backend-service={{ .Release.Namespace }}/{{ template "fullname" . }}-default-backend
+        - --nginx-configmap={{ .Release.Namespace }}/{{ template "fullname" . }}-controller
+        env:
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 10254
+            scheme: HTTP
+          initialDelaySeconds: 10
+          timeoutSeconds: 1
+        ports:
+        - containerPort: 80
+          name: http
+        - containerPort: 443
+          name: https
+        - containerPort: 18080
+          name: stats
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 10254
+            scheme: HTTP
+        resources:
+{{ toYaml .Values.nginx.resources | indent 10 }}
+      terminationGracePeriodSeconds: 60
