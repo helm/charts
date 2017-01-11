@@ -5,8 +5,10 @@
  [Zookeeper StatefulSet](https://github.com/kubernetes/contrib/tree/master/statefulset/zookeeper).
   
 ## Prerequisites
-* Kubernetes 1.5 with alpha APIs enable
-* PV support on the underlying infrastructure
+* Kubernetes 1.5 
+* If you use spreading, the cluster will require alpha features to be enabled.
+* PersistentVolume support on the underlying infrastructure
+* A dynamic provisioner for the PersistentVolumes
 * A familiarity with [Apache ZooKeeper 3.4.x](https://zookeeper.apache.org/doc/current/)
 
 ## Chart Components
@@ -203,5 +205,4 @@ of the release is still alpha, and it is not recommended for production use.
 
 ## Limitations
 * StatefulSet and PodDisruptionBudget are beta resources.
-* PodAntiAffinity and StorageClass are alpha annotations.
 * Only supports storage options that have backends for persistent volume claims
