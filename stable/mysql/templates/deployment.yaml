@@ -1,9 +1,9 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "$name.fullname" . }}
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "$name.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -11,7 +11,7 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "fullname" . }}
+        app: {{ template "$name.fullname" . }}
       annotations:
         pod.beta.kubernetes.io/init-containers: '[
               {
@@ -29,7 +29,7 @@ spec:
           ]'
     spec:
       containers:
-      - name: {{ template "fullname" . }}
+      - name: {{ template "$name.fullname" . }}
         image: "mysql:{{ .Values.imageTag }}"
         imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
         resources:
@@ -42,12 +42,12 @@ spec:
         - name: MYSQL_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "$name.fullname" . }}
               key: mysql-root-password
         - name: MYSQL_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "$name.fullname" . }}
               key: mysql-password
         {{- end }}
         - name: MYSQL_USER
@@ -78,7 +78,7 @@ spec:
       - name: data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ template "fullname" . }}
+          claimName: {{ template "$name.fullname" . }}
       {{- else }}
         emptyDir: {}
       {{- end -}}
