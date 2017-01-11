@@ -34,11 +34,11 @@ persistence:
   accessMode: ReadWriteOnce
   size: 10Gi
 
-## Access Minio server from within the cluster (ClusterIP service) or expose it to be accessed from
-## outside the cluster (LoadBalancer service). Set the service type and the port to serve it.
+## Expose the Minio service to be accessed from outside the cluster (LoadBalancer service).
+## or access it from within the cluster (ClusterIP service). Set the service type and the port to serve it.
 ## ref: http://kubernetes.io/docs/user-guide/services/
 ##
-serviceType: ClusterIP
+serviceType: LoadBalancer
 servicePort: 9000
 
 ## Configure resource requests and limits

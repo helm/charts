@@ -13,7 +13,7 @@ This chart bootstraps Minio deployment on a [Kubernetes](http://kubernetes.io) c
 Prerequisites
 -------------
 
--	Kubernetes 1.4+ with Beta APIs enabled for default standalone mode. 
+-	Kubernetes 1.4+ with Beta APIs enabled for default standalone mode.
 -   Kubernetes 1.5+ with Beta APIs enabled to run Minio in [distributed mode](#distributed-minio).
 -	PV provisioner support in the underlying infrastructure.
 
@@ -72,7 +72,7 @@ The following tables lists the configurable parameters of the Minio chart and th
 | `secretKey`                | Default secret key                  | `wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY`              |
 | `configPath`               | Default config file location        | `~/.minio`                                              |
 | `mountPath`                | Default mount location for persistent drive| `/export`                                        |
-| `serviceType`              | Kubernetes service type             | `ClusterIP`                                             |
+| `serviceType`              | Kubernetes service type             | `LoadBalancer`                                          |
 | `servicePort`              | Kubernetes port where service is exposed| `9000`                                              |
 | `persistence.enabled`      | Use persistent volume to store data | `true`                                                  |
 | `persistence.size`         | Size of persistent volume claim     | `10Gi`                                                  |
