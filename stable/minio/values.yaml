@@ -44,5 +44,7 @@ servicePort: 9000
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
 ##
-memory: 256Mi
-cpu: 250m
+resources:
+  requests:
+    memory: 256Mi
+    cpu: 250m

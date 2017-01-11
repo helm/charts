@@ -76,6 +76,8 @@ spec:
                 secretKeyRef:
                   name: {{ template "fullname" . }}-user
                   key: secretkey
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
   volumeClaimTemplates:
     - metadata:
         name: export
@@ -90,6 +92,4 @@ spec:
         resources:
           requests:
             storage: {{ .Values.persistence.size }}
-            memory: {{ .Values.memory }}
-            cpu: {{ .Values.cpu }}
   {{- end }}

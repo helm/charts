@@ -78,8 +78,7 @@ The following tables lists the configurable parameters of the Minio chart and th
 | `persistence.size`         | Size of persistent volume claim     | `10Gi`                                                  |
 | `persistence.storageClass` | Type of persistent volume claim     | `generic`                                               |
 | `persistence.accessMode`   | ReadWriteOnce or ReadOnly           | `ReadWriteOnce`                                         |
-| `memory`                   | Memory resource requests            | `256Mi`                                                 |
-| `cpu`                      | CPU resource requests               | `100m`                                                  |
+| `resources`                | CPU/Memory resource requests/limits | Memory: `256Mi`, CPU: `100m`                            |
 
 Some of the parameters above map to the env variables defined in the [Minio DockerHub image](https://hub.docker.com/r/minio/minio/).
 
