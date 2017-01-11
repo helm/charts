@@ -18,7 +18,8 @@ spec:
       - name: uchiwa
         image: "{{ .Values.image }}:{{ .Values.imageTag }}"
         imagePullPolicy: {{ .Values.pullPolicy }}
-{{ toYaml .Values.resources | indent 8 }}
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
         livenessProbe:
           httpGet:
             path: /
