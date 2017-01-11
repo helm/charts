@@ -1,0 +1,37 @@
+# Default values for sapho.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+replicaCount: 1
+image: sapho/ops-docker-tomcat:8-jre8
+
+mysql:
+  mysqlUser: root
+#  mysqlRootPassword: 7iro7Ux6Xl
+#  mysqlPassword: 7iro7Ux6Xl
+  persistence:
+    enabled: true
+    storageClass: generic
+    accessMode: ReadWriteOnce
+    size: 8Gi
+  resources:
+    requests:
+      memory: 512Mi
+      cpu: 300m
+
+service:
+  name: sapho
+  type: LoadBalancer
+  externalPort: 80
+  internalPort: 8080
+
+resources:
+  limits:
+    cpu: 300m
+    memory: 1010Mi
+  requests:
+    cpu: 300m
+    memory: 1010Mi
+saphoDBport: 3306
+saphoDBtype: mysql
+saphoDBuser: root
+saphoDBpass: 7iro7Ux6Xl

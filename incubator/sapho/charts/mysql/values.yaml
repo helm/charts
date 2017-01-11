@@ -1,0 +1,43 @@
+## mysql image version
+## ref: https://hub.docker.com/r/library/mysql/tags/
+##
+imageTag: "5.7.14"
+
+## Specify password for root user
+##
+## Default: random 10 character string
+# mysqlRootPassword: 
+
+## Create a database user
+##
+# mysqlUser:
+# mysqlPassword:
+
+## Allow unauthenticated access, uncomment to enable
+##
+# mysqlAllowEmptyPassword: true
+
+## Create a database
+##
+# mysqlDatabase:
+
+## Specify a imagePullPolicy
+## 'Always' if imageTag is 'latest', else set to 'IfNotPresent'
+## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+##
+# imagePullPolicy:
+
+## Persist data to a persitent volume
+persistence:
+  enabled: true
+  storageClass: generic
+  accessMode: ReadWriteOnce
+  size: 8Gi
+
+## Configure resource requests and limits
+## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+##
+resources:
+  requests:
+    memory: 512Mi
+    cpu: 301m
