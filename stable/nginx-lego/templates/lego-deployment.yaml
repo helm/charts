@@ -37,8 +37,4 @@ spec:
               fieldPath: status.podIP
         resources:
 {{ toYaml .Values.nginx.resources | indent 10 }}
-<<<<<<< HEAD
 {{- end }}
-=======
-{{- end }}
->>>>>>> 625dd36... Working
