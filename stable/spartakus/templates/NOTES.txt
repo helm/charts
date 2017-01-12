@@ -1,6 +1,6 @@
 To verify that Spartakus has started, run:
 
-  kubectl --namespace={{ .Release.Namespace }} get pods -l "app={{ template "fullname" . }}"
+  kubectl --namespace={{ .Release.Namespace }} get pods -l "app={{ template "name" . }},release={{ .Release.Name }}"
 
 THIS APPLICATION DOES NOT REPORT ANY PERSONAL INFORMATION. Anything that might be identifying,
 including things like IP addresses, container images, and object names are anonymized. We take
