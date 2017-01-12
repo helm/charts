@@ -23,10 +23,14 @@ IMAGE_VERSION="test-image:v1.10"
 CHART_ROOT=${CHART_ROOT:-$(git rev-parse --show-toplevel)}
 IMAGE_NAME=${IMAGE_NAME:-"gcr.io/kubernetes-charts-ci/${IMAGE_VERSION}"}
 
-docker run -v ${CHART_ROOT}:/src \
-           -v "${GOOGLE_APPLICATION_CREDENTIALS}:/service-account.json:ro" \
-           -v "${KUBECONFIG:=${HOME}/.kube/config}":/.kube/config \
-           -e "GOOGLE_APPLICATION_CREDENTIALS=/service-account.json" \
+VOLUMES="-v ${CHART_ROOT}:/src -v ${KUBECONFIG:=${HOME}/.kube/config}:/.kube/config"
+
+GKE_CREDS=""
+if [ -f $HOME/.config/gcloud/application_default_credentials.json ];then
+  GKE_CREDS="-v $HOME/.config/gcloud/application_default_credentials.json:/service-account.json:ro"
+  GKE_CREDS="${GKE_CREDS} -e GOOGLE_APPLICATION_CREDENTIALS=/service-account.json"
+fi
+docker run ${VOLUMES} ${GKE_CREDS} \
            -e "PULL_NUMBER=$PULL_NUMBER" \
            -e "KUBECONFIG=/.kube/config" \
            -e "BUILD_NUMBER=$BUILD_NUMBER" \

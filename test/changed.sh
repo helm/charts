@@ -65,6 +65,7 @@ for directory in ${CHANGED_FOLDERS}; do
   CURRENT_RELEASE=${RELEASE_NAME}
   helm lint ${directory}
   helm dep update ${directory}
+  env
   helm install --name ${RELEASE_NAME} --namespace ${NAMESPACE} ${directory} | tee install_output
   ./test/verify-release.sh ${NAMESPACE}
   kubectl get pods --namespace ${NAMESPACE}
