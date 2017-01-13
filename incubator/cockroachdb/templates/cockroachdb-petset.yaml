@@ -62,8 +62,8 @@ spec:
   selector:
     component: "{{.Release.Name}}-{{.Values.Component}}"
 ---
-apiVersion: apps/v1alpha1
-kind: PetSet
+apiVersion: apps/v1beta1
+kind: StatefulSet
 metadata:
   name: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 56 }}"
   annotations:
