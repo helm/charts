@@ -1,47 +1,47 @@
 apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
-  name: {{ template "fullname" . }}
   labels:
-    app: {{ template "fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    heritage: "{{ .Release.Service }}"
-    release: "{{ .Release.Name }}"
+    app: {{ template "name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "fullname" . }}
 spec:
-  selector:
-    matchLabels:
-      app: {{ template "fullname" . }}
   template:
     metadata:
       labels:
-        app: {{ template "fullname" . }}
-        release: "{{ .Release.Name }}"
+        app: {{ template "name" . }}
+        release: {{ .Release.Name }}
     spec:
-      hostNetwork: true
       containers:
       - name: kube2iam
-        image: "{{ .Values.image }}:{{ .Values.imageTag }}"
-        imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: "{{ .Values.image.pullPolicy }}"
         args:
         - --app-port={{ default 8181 .Values.containerPort }}
-        - --iptables={{ default false .Values.host.iptables }}
         - --host-interface={{ default "docker0" .Values.host.interface }}
-        {{- if .Values.host.iptables }}
+      {{- if .Values.host.iptables }}
         - --host-ip={{ default "$(HOST_IP)" .Values.host.ip }}
-        {{- end }}
-        {{- range $key, $value := .Values.extraArgs }}
+      {{- end }}
+        - --iptables={{ default false .Values.host.iptables }}
+      {{- range $key, $value := .Values.extraArgs }}
         - --{{ $key }}={{ $value }}
-        {{- end }}
+      {{- end }}
+      {{- if .Values.verbose }}
+        - --verbose
+      {{- end }}
         env:
-        - name: HOST_IP
-          valueFrom:
-            fieldRef:
-              fieldPath: status.podIP
-        resources:
-{{ toYaml .Values.resources | indent 10 }}
+          - name: HOST_IP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
         ports:
-        - containerPort: {{ default 8181 .Values.containerPort }}
-        {{- if .Values.host.iptables }}
+          - containerPort: {{ default 8181 .Values.containerPort }}
+        resources:
+{{ toYaml .Values.resources | indent 12 }}
+      {{- if .Values.host.iptables }}
         securityContext:
           privileged: true
         {{- end }}
+      hostNetwork: true

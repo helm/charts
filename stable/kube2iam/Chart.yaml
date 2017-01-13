@@ -1,6 +1,6 @@
 name: kube2iam
-version: 0.1.1
-description: Provide IAM credentials to containers running inside a kubernetes cluster based on annotations.
+version: 0.1.4
+description: Provide IAM credentials to pods based on annotations.
 keywords:
 - kube2iam
 - aws

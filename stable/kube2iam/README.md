@@ -1,6 +1,6 @@
 # kube2iam
 
-* Installs [kube2iam](https://github.com/jtblin/kube2iam) to provide IAM credentials to containers running inside a kubernetes cluster based on annotations.
+Installs [kube2iam](https://github.com/jtblin/kube2iam) to provide IAM credentials to pods based on annotations.
 
 ## TL;DR;
 
@@ -40,20 +40,21 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following tables lists the configurable parameters of the kube2iam chart and their default values.
 
-| Parameter                   | Description                                | Default                                                    |
-| --------------------------- | ------------------------------------------ | ---------------------------------------------------------- |
-| `image`                     | Image                                      | `jtblin/kube2iam`                                          |
-| `imageTag`                  | Image tag                                  | `0.2.2`                                                    |
-| `imagePullPolicy`           | Image pull policy                          | `Always` if `imageTag` is `latest`, else `IfNotPresent`    |
-| `resources.limits.cpu`      | CPU limit                                  | `100m`                                                     |
-| `resources.limits.memory`   | Memory limit                               | `200Mi`                                                    |
-| `resources.requests.cpu`    | CPU request                                | `100m`                                                     |
-| `resources.requests.memory` | Memory request                             | `200Mi`                                                    |
-| `containerPort`             | Container port                             | `8181`                                                     |
-| `host.ip`                   | IP address of host                         | `$(HOST_IP)`                                               |
-| `host.iptables`             | Add iptables rule                          | `false`                                                    |
-| `host.interface`            | Host interface for proxying AWS metadata   | `docker0`                                                  |
-| `extraArgs`                 | Extra arguments                            | `nil`                                                      |
+Parameter | Description | Default
+--- | --- | ---
+`image.repository` | Image | `jtblin/kube2iam`
+`image.tag` | Image tag | `0.2.2`
+`image.pullPolicy` | Image pull policy | `Always` if `image.tag` is `latest`, else `IfNotPresent`
+`resources.limits.cpu` | CPU limit | `4m`
+`resources.limits.memory` | Memory limit | `16Mi`
+`resources.requests.cpu` | CPU request | `4m`
+`resources.requests.memory` | Memory request | `16Mi`
+`containerPort` | Container port | `8181`
+`host.ip` | IP address of host | `$(HOST_IP)`
+`host.iptables` | Add iptables rule | `false`
+`host.interface` | Host interface for proxying AWS metadata | `docker0`
+`extraArgs` | Extra arguments | `nil`
+`verbose` | Enable verbose output | `false`
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
