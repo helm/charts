@@ -9,7 +9,7 @@ spec:
   type: ClusterIP
   ports:
   - port: 18080
-    name: vts_stats
+    name: vts-stats
   selector:
     app: {{ template "fullname" . }}
 {{- end }}
