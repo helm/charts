@@ -27,7 +27,9 @@ spec:
         ports:
         - containerPort: 80
         - containerPort: 443
+{{- if .Values.nginx.monitoring }}
         - containerPort: 8080
+{{- end }}
         resources:
 {{ toYaml .Values.nginx.resources | indent 10 }}
         args:
