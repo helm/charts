@@ -8,7 +8,7 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "fullname" . }}-lego
+        app: kube-lego
     spec:
       containers:
       - name: {{ .Chart.Name }}-lego
