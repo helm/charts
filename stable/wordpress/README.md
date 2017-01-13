@@ -109,3 +109,4 @@ The [Bitnami WordPress](https://github.com/bitnami/bitnami-docker-wordpress) ima
 
 Persistent Volume Claims are used to keep the data across deployments. This is known to work in GCE, AWS, and minikube.
 See the [Configuration](#configuration) section to configure the PVC or to disable persistence.
+
