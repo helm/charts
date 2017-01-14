@@ -5,7 +5,6 @@ image:
   tag: latest
   pullPolicy: IfNotPresent
 service:
-  name: kube-ops-view
   type: ClusterIP
   externalPort: 80
   internalPort: 8080
