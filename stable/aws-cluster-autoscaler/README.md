@@ -44,6 +44,7 @@ The following tables lists the configurable parameters of the aws-cluster-autosc
 
 Parameter | Description | Default
 --- | --- | ---
+`annotations` | annotations to add to each pod | none
 `autoscalingGroups.maxSize` | maximum autoscaling group size | `2`
 `autoscalingGroups.minSize` | minimum autoscaling group size | `1`
 `autoscalingGroups.name` | autoscaling group name | none

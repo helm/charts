@@ -1,3 +1,5 @@
+# annotations:
+
 autoscalingGroups:
   - name: ""
     maxSize: 2
