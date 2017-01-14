@@ -44,10 +44,10 @@ The following tables lists the configurable parameters of the aws-cluster-autosc
 
 Parameter | Description | Default
 --- | --- | ---
-`asg.maxSize` | maximum autoscaling group size | `2`
-`asg.minSize` | minimum autoscaling group size | `1`
-`asg.name` | autoscaling group name | none
-`awsRegion` | AWS region | `us-east-1`
+`autoscalingGroups.maxSize` | maximum autoscaling group size | `2`
+`autoscalingGroups.minSize` | minimum autoscaling group size | `1`
+`autoscalingGroups.name` | autoscaling group name | none
+`autoscalingGroups.region` | AWS region | `us-east-1`
 `image.repository` | Image | `gcr.io/google_containers/cluster-autoscaler`
 `image.tag` | Image tag | `v0.4.0`
 `image.pullPolicy` | Image pull policy | `IfNotPresent`
