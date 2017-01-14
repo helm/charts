@@ -15,33 +15,33 @@ spec:
         release: {{ .Release.Name }}
     spec:
       containers:
-      - name: kube2iam
-        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-        imagePullPolicy: "{{ .Values.image.pullPolicy }}"
-        args:
-        - --app-port={{ default 8181 .Values.containerPort }}
-        - --host-interface={{ default "docker0" .Values.host.interface }}
-      {{- if .Values.host.iptables }}
-        - --host-ip={{ default "$(HOST_IP)" .Values.host.ip }}
-      {{- end }}
-        - --iptables={{ default false .Values.host.iptables }}
-      {{- range $key, $value := .Values.extraArgs }}
-        - --{{ $key }}={{ $value }}
-      {{- end }}
-      {{- if .Values.verbose }}
-        - --verbose
-      {{- end }}
-        env:
-          - name: HOST_IP
-            valueFrom:
-              fieldRef:
-                fieldPath: status.podIP
-        ports:
-          - containerPort: {{ default 8181 .Values.containerPort }}
-        resources:
+        - name: kube2iam
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: "{{ .Values.image.pullPolicy }}"
+          args:
+            - --app-port={{ default 8181 .Values.containerPort }}
+            - --host-interface={{ default "docker0" .Values.host.interface }}
+          {{- if .Values.host.iptables }}
+            - --host-ip={{ default "$(HOST_IP)" .Values.host.ip }}
+          {{- end }}
+            - --iptables={{ default false .Values.host.iptables }}
+          {{- range $key, $value := .Values.extraArgs }}
+            - --{{ $key }}={{ $value }}
+          {{- end }}
+          {{- if .Values.verbose }}
+            - --verbose
+          {{- end }}
+          env:
+            - name: HOST_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+          ports:
+            - containerPort: {{ default 8181 .Values.containerPort }}
+          resources:
 {{ toYaml .Values.resources | indent 12 }}
-      {{- if .Values.host.iptables }}
-        securityContext:
-          privileged: true
-        {{- end }}
+        {{- if .Values.host.iptables }}
+          securityContext:
+            privileged: true
+          {{- end }}
       hostNetwork: true

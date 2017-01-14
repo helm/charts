@@ -13,8 +13,7 @@ $ helm install stable/kube2iam
 This chart bootstraps a [kube2iam](https://github.com/jtblin/kube2iam) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
 ## Prerequisites
-
-- Kubernetes 1.4+ with Beta APIs enabled
+  - Kubernetes 1.4+ with Beta APIs enabled
 
 ## Installing the Chart
 
@@ -68,3 +67,5 @@ Alternatively, a YAML file that specifies the values for the above parameters ca
 ```console
 $ helm install stable/kube2iam --name my-release -f values.yaml
 ```
+
+> **Tip**: You can use the default [values.yaml](values.yaml)
