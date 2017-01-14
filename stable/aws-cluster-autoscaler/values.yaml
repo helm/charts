@@ -1,0 +1,19 @@
+asg:
+  maxSize: 2
+  minSize: 1
+  name: ""
+
+awsRegion: us-east-1
+
+image:
+  repository: gcr.io/google_containers/cluster-autoscaler
+  tag: v0.4.0
+  pullPolicy: IfNotPresent
+
+resources:
+  limits:
+    cpu: 100m
+    memory: 300Mi
+  requests:
+    cpu: 100m
+    memory: 300Mi
