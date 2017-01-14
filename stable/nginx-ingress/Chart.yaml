@@ -7,8 +7,8 @@ keywords:
 sources:
   - https://github.com/kubernetes/contrib/tree/master/ingress/controllers/nginx
 maintainers:
-- name: Jack Zampolin
-  email: jack.zampolin@gmail.com
-- name: Michael Goodness
-  email: mgoodness@gmail.com
+  - name: Jack Zampolin
+    email: jack.zampolin@gmail.com
+  - name: Michael Goodness
+    email: mgoodness@gmail.com
 engine: gotpl

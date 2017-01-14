@@ -1,32 +1,13 @@
 # nginx-ingress
 
-[nginx-ingress](https://github.com/jetstack/kube-lego/tree/master/examples/nginx) is a chart for an [`nginx` ingress](https://github.com/kubernetes/contrib/tree/master/ingress/controllers/nginx) with optional support for automatically generating `SSL` cert for the managed routes. 
+[nginx-ingress](https://github.com/kubernetes/contrib/tree/master/ingress/controllers/nginx) is an Ingress controller that uses ConfigMap to store the nginx configuration.
 
-To use this ingress contoller add the following annotations to the `ingress` resources you would like to route through it:
-
-```yaml
-apiVersion: extensions/v1beta1
-kind: Ingress
-metadata:
-  namespace: foo
-  annotations:
-    # Add to route through the nginx service
-    kubernetes.io/ingress.class: nginx
-    # Add to generate certificates for this ingress
-    kubernetes.io/tls-acme: "true"
-spec:
-  tls:
-    # With this configuration kube-lego will generate a secret in namespace foo called `example-tls`
-    # for the URL `www.example.com`
-    - hosts:
-      - "www.example.com"
-      secretName: example-tls
-```
+To use, add the `kubernetes.io/ingress.class: nginx` annotation to your Ingress resources.
 
 ## TL;DR;
 
-```bash
-$ helm install stable/kube-lego
+```console
+$ helm install stable/nginx-ingress
 ```
 
 ## Introduction
@@ -34,14 +15,13 @@ $ helm install stable/kube-lego
 This chart bootstraps an nginx-ingress deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
 ## Prerequisites
-
-- Kubernetes 1.4+ with Beta APIs enabled
+  - Kubernetes 1.4+ with Beta APIs enabled
 
 ## Installing the Chart
 
 To install the chart with the release name `my-release`:
 
-```bash
+```console
 $ helm install --name my-release stable/nginx-ingress
 ```
 
@@ -53,7 +33,7 @@ The command deploys nginx-ingress on the Kubernetes cluster in the default confi
 
 To uninstall/delete the `my-release` deployment:
 
-```bash
+```console
 $ helm delete my-release
 ```
 
@@ -61,19 +41,38 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-See `values.yaml` for configuration notes. Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
+The following tables lists the configurable parameters of the aws-cluster-autoscaler chart and their default values.
 
-```bash
+Parameter | Description | Default
+--- | --- | ---
+`controller.name` | name of the controller component | `controller`
+`controller.image.repository` | controller container image repository | `gcr.io/google_containers/nginx-ingress-controller`
+`controller.image.tag` | controller container image tag | `0.8.3`
+`controller.image.pullPolicy` | controller container image pull policy | `IfNotPresent`
+`controller.config` | nginx ConfigMap entries | none
+`controller.enableStats` | enable & expose nginx "vts-status" page | `false`
+`controller.replicaCount` | desired number of controller pods | `1`
+`controller.resources` | controller pod resource requests & limits | `requests: {cpu: 100m, memory: 64Mi}`
+`controller.services[].name` | name of controller service to create | `controller`
+`controllers.services[].annotations` | annotations for controller service | none
+`controllers.services[].type` | type of controller service to create | `LoadBalancer`
+`defaultBackend.name` | name of the default backend component | `default-backend`
+`defaultBackend.image.repository` | default backend container image repository | `gcr.io/google_containers/defaultbackend`
+`defaultBackend.image.tag` | default backend container image tag | `1.2`
+`defaultBackend.image.pullPolicy` | default backend container image pull policy | `IfNotPresent`
+`defaultBackend.replicaCount` | desired number of default backend pods | `1`
+`defaultBackend.resources` | default backend pod resource requests & limits | `limits: {cpu: 10m, memory: 20Mi}, requests: {cpu: 10m, memory: 20Mi}`
+
+
+```console
 $ helm install --name my-release \
-  --set lego.enabled=false \
+  --set controller.enableStats=true \
     stable/nginx-ingress
 ```
 
-Installs the chart without kube-lego and the ability to generate certs.
-
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
-```bash
+```console
 $ helm install --name my-release -f values.yaml stable/nginx-ingress
 ```
 

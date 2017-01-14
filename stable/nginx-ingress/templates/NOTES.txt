@@ -1,3 +1,4 @@
+The nginx-ingress controller has been installed.
 
 An example Ingress that makes use of the controller:
 
