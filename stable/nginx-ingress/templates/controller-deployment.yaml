@@ -1,0 +1,60 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: {{ template "name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: '{{ .Values.controller.name }}'
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "fullname" . }}
+spec:
+  replicas: {{ .Values.controller.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "name" . }}
+        component: '{{ .Values.controller.name }}'
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ template "name" . }}
+          image: '{{ .Values.controller.image.repository }}:{{ .Values.controller.image.tag }}'
+          imagePullPolicy: '{{ .Values.controller.image.pullPolicy }}'
+          args:
+            - /nginx-ingress-controller
+            - --default-backend-service={{ .Release.Namespace }}/{{ template "fullname" . }}-{{ .Values.defaultBackend.name }}
+            - --nginx-configmap={{ .Release.Namespace }}/{{ template "fullname" . }}
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 10254
+              scheme: HTTP
+            initialDelaySeconds: 10
+            timeoutSeconds: 1
+          ports:
+            - containerPort: 80
+              name: http
+            - containerPort: 443
+              name: https
+          {{- if .Values.controller.enableStats }}
+            - containerPort: 18080
+              name: stats
+          {{- end }}
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 10254
+              scheme: HTTP
+          resources:
+{{ toYaml .Values.controller.resources | indent 12 }}
+      terminationGracePeriodSeconds: 60

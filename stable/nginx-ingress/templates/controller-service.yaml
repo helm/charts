@@ -1,0 +1,27 @@
+{{- $root := . -}}
+{{- range .Values.controller.services }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+{{ toYaml .annotations | indent 4}}
+  labels:
+    app: {{ template "name" $root }}
+    chart: {{ $root.Chart.Name }}-{{ $root.Chart.Version }}
+    component: '{{ $root.Values.controller.name }}'
+    heritage: {{ $root.Release.Service }}
+    release: {{ $root.Release.Name }}
+  name: '{{ template "fullname" $root }}-{{ .name }}'
+spec:
+  ports:
+    - port: 80
+      name: http
+    - port: 443
+      name: https
+  selector:
+    app: {{ template "name" $root }}
+    component: '{{ $root.Values.controller.name }}'
+    release: {{ $root.Release.Name }}
+  type: '{{ .type }}'
+{{ end }}

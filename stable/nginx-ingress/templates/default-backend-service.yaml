@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: {{ template "name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: '{{ .Values.defaultBackend.name }}'
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "fullname" . }}-{{ .Values.defaultBackend.name }}
+spec:
+  ports:
+    - port: 80
+      targetPort: 8080
+  selector:
+    app: {{ template "name" . }}
+    component: '{{ .Values.defaultBackend.name }}'
+    release: {{ .Release.Name }}
+  type: ClusterIP

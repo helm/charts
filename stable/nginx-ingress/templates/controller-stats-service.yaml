@@ -1,0 +1,21 @@
+{{- if .Values.controller.enableStats }}
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: {{ template "name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: '{{ .Values.controller.name }}'
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "fullname" . }}-{{ .Values.controller.name }}-stats
+spec:
+  ports:
+    - port: 18080
+      name: stats
+  selector:
+    app: {{ template "name" . }}
+    component: '{{ .Values.controller.name }}'
+    release: {{ .Release.Name }}
+  type: ClusterIP
+{{- end }}
