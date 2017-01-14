@@ -30,7 +30,7 @@ spec:
                   fieldPath: status.podIP
           {{- range $key, $value := .Values.config }}
             - name: {{ $key }}
-              value: {{ $value }}
+              value: "{{ $value }}"
           {{- end }}
           ports:
             - containerPort: {{ .Values.config.LEGO_PORT }}

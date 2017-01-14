@@ -1,6 +1,6 @@
 # kube-lego
 
-[kube-lego](https://github.com/jetstack/kube-lego/tree/master/examples/nginx) automatically requests certificates for Kubernetes Ingress resources from Let's Encrypt.
+[kube-lego](https://github.com/jetstack/kube-lego) automatically requests certificates for Kubernetes Ingress resources from Let's Encrypt.
 
 ## TL;DR;
 
