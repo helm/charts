@@ -11,8 +11,10 @@ spec:
   replicas: 1
   template:
     metadata:
+    {{- if .Values.annotations }}
       annotations:
 {{ toYaml .Values.annotations | indent 8 }}
+    {{- end }}
       labels:
         app: {{ template "name" . }}
         release: {{ .Release.Name }}

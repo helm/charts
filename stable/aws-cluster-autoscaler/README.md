@@ -13,8 +13,7 @@ $ helm install stable/aws-cluster-autoscaler
 This chart bootstraps an aws-cluster-autoscaler deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
 ## Prerequisites
-
-- Kubernetes 1.3+ with Beta APIs enabled
+  - Kubernetes 1.3+ with Beta APIs enabled
 
 ## Installing the Chart
 
@@ -45,9 +44,9 @@ The following tables lists the configurable parameters of the aws-cluster-autosc
 Parameter | Description | Default
 --- | --- | ---
 `annotations` | annotations to add to each pod | none
-`autoscalingGroups.maxSize` | maximum autoscaling group size | `1`
-`autoscalingGroups.minSize` | minimum autoscaling group size | `1`
-`autoscalingGroups.name` | autoscaling group name | none
+`autoscalingGroups[].maxSize` | maximum autoscaling group size | `1`
+`autoscalingGroups[].minSize` | minimum autoscaling group size | `1`
+`autoscalingGroups[].name` | autoscaling group name | none
 `awsRegion` | AWS region | `us-east-1`
 `image.repository` | Image | `gcr.io/google_containers/cluster-autoscaler`
 `image.tag` | Image tag | `v0.4.0`
