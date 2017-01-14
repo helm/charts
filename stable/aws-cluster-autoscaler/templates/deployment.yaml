@@ -1,42 +1,39 @@
-{{- $root := . -}}
-{{- range .Values.autoscalingGroups }}
----
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   labels:
-    app: {{ template "name" $root }}
-    asg: "{{ .name }}"
-    chart: {{ $root.Chart.Name }}-{{ $root.Chart.Version }}
-    heritage: {{ $root.Release.Service }}
-    release: {{ $root.Release.Name }}
-  name: {{ template "fullname" $root }}-{{ .name }}
+    app: {{ template "name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "fullname" . }}
 spec:
   replicas: 1
   template:
     metadata:
       annotations:
-{{ toYaml $root.Values.annotations | indent 8 }}
+{{ toYaml .Values.annotations | indent 8 }}
       labels:
-        app: {{ template "name" $root }}
-        asg: "{{ .name }}"
-        release: {{ $root.Release.Name }}
+        app: {{ template "name" . }}
+        release: {{ .Release.Name }}
     spec:
       containers:
-        - name: {{ template "name" $root }}
-          image: "{{ $root.Values.image.repository }}:{{ $root.Values.image.tag }}"
-          imagePullPolicy: "{{ $root.Values.image.pullPolicy }}"
+        - name: {{ template "name" . }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: "{{ .Values.image.pullPolicy }}"
           command:
             - ./cluster-autoscaler
             - --cloud-provider=aws
+          {{- range .Values.autoscalingGroups }}
             - --nodes={{ .minSize }}:{{ .maxSize }}:{{ .name }}
+          {{- end }}
             - --skip-nodes-with-local-storage=false
             - --v=4
           env:
             - name: AWS_REGION
-              value: "{{ .region }}"
+              value: "{{ .Values.awsRegion }}"
           resources:
-{{ toYaml $root.Values.resources | indent 12 }}
+{{ toYaml .Values.resources | indent 12 }}
           volumeMounts:
             - name: ssl-certs
               mountPath: /etc/ssl/certs/ca-certificates.crt
@@ -45,4 +42,3 @@ spec:
         - name: ssl-certs
           hostPath:
             path: /etc/ssl/certs/ca-certificates.crt
-{{- end }}

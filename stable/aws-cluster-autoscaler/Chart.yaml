@@ -1,7 +1,7 @@
 apiVersion: v1
 description: Scales worker nodes within an autoscaling group.
 name: aws-cluster-autoscaler
-version: 0.1.2
+version: 0.1.4
 sources:
   - https://github.com/kubernetes/contrib/tree/master/cluster-autoscaler/cloudprovider/aws
 maintainers:

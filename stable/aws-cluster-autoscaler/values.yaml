@@ -2,9 +2,10 @@
 
 autoscalingGroups:
   - name: ""
-    maxSize: 2
+    maxSize: 1
     minSize: 1
-    region: us-east-1
+
+awsRegion: us-east-1
 
 image:
   repository: gcr.io/google_containers/cluster-autoscaler

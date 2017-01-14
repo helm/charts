@@ -45,10 +45,10 @@ The following tables lists the configurable parameters of the aws-cluster-autosc
 Parameter | Description | Default
 --- | --- | ---
 `annotations` | annotations to add to each pod | none
-`autoscalingGroups.maxSize` | maximum autoscaling group size | `2`
+`autoscalingGroups.maxSize` | maximum autoscaling group size | `1`
 `autoscalingGroups.minSize` | minimum autoscaling group size | `1`
 `autoscalingGroups.name` | autoscaling group name | none
-`autoscalingGroups.region` | AWS region | `us-east-1`
+`awsRegion` | AWS region | `us-east-1`
 `image.repository` | Image | `gcr.io/google_containers/cluster-autoscaler`
 `image.tag` | Image tag | `v0.4.0`
 `image.pullPolicy` | Image pull policy | `IfNotPresent`
@@ -72,3 +72,24 @@ $ helm install --name my-release -f values.yaml stable/aws-cluster-autoscaler
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
+## IAM Permissions
+The worker running the cluster autoscaler will need access to certain resources and actions:
+```
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "autoscaling:DescribeAutoScalingGroups",
+                "autoscaling:DescribeAutoScalingInstances",
+                "autoscaling:SetDesiredCapacity",
+                "autoscaling:TerminateInstanceInAutoScalingGroup"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
+```
+Unfortunately AWS does not support ARNs for autoscaling groups yet so you must use "*" as the resource. More information [here](http://docs.aws.amazon.com/autoscaling/latest/userguide/IAM.html#UsingWithAutoScaling_Actions).
