@@ -1,0 +1,16 @@
+{{- if .Values.Master.HostName }}
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ template "fullname" . }}
+spec:
+  rules:
+  - host: {{ .Values.Master.HostName | quote }}
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: {{ template "fullname" . }}
+          servicePort: {{ .Values.Master.ServicePort }}
+{{- end }}
