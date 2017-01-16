@@ -46,5 +46,13 @@ data:
     {{- end }}
     {{- if .Values.dashboard.enabled }}
     [web]
-    address = ":8080"
+      {{- if .Values.dashboard.address }}
+      address = "{{ .Values.dashboard.address }}"
+      {{- else }}
+      address = ":8080"
+      {{- end }}
+      {{- if .Values.dashboard.http_auth }}
+      [web.auth.basic]
+        users = {{ .Values.dashboard.http_auth }}
+      {{- end }}
     {{- end }}
