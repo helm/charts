@@ -11,4 +11,4 @@ spec:
     name: hub
     protocol: TCP
   selector:
-    name: hub
+    name: hub-{{ template "fullname" . }}

@@ -1,13 +1,19 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: hub
+  name: hub-{{ template "fullname" . }}
+  labels:
+    app: {{ template "fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
 spec:
   replicas: 1
   template:
     metadata:
       labels:
-        name: hub
+        app: {{ template "fullname" .}}
+        name: hub-{{ template "fullname" .}}
     spec:
       containers:
       - name: hub
@@ -27,11 +33,17 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: node-chrome-{{ template "fullname" . }}
+  labels:
+    app: {{ template "fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
 spec:
   replicas: {{ .Values.nodes.chrome.count }}
   template:
     metadata:
       labels:
+        app: {{ template "fullname" }}
         name: node-firefox-{{ template "fullname" . }}
     spec:
       containers:
@@ -44,11 +56,17 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: node-firefox-{{ template "fullname" . }}
+  labels:
+    app: {{ template "fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
 spec:
   replicas: {{ .Values.nodes.firefox.count }}
   template:
     metadata:
       labels:
+        app: {{ template "fullname" }}
         name: node-chrome-{{ template "fullname" . }}
     spec:
       containers:
