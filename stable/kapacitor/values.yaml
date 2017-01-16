@@ -17,7 +17,7 @@ service:
 ##
 persistence:
   enabled: false
-  storageClass: generic
+  storageClass: ""
   accessMode: ReadWriteOnce
   size: 8Gi
 

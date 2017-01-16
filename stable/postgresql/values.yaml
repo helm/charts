@@ -24,7 +24,7 @@ imageTag: "9.5.4"
 ## Persist data to a persitent volume
 persistence:
   enabled: true
-  storageClass: generic
+  storageClass: ""
   accessMode: ReadWriteOnce
   size: 8Gi
 

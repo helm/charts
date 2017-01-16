@@ -58,7 +58,7 @@ mariadb:
   ##
   persistence:
     enabled: true
-    storageClass: generic
+    storageClass: ""
     accessMode: ReadWriteOnce
     size: 8Gi
 
@@ -73,11 +73,11 @@ serviceType: LoadBalancer
 persistence:
   enabled: true
   apache:
-    storageClass: generic
+    storageClass: ""
     accessMode: ReadWriteOnce
     size: 1Gi
   opencart:
-    storageClass: generic
+    storageClass: ""
     accessMode: ReadWriteOnce
     size: 8Gi
 

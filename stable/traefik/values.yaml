@@ -18,7 +18,7 @@ acme:
   # certs every time a pod (re-)starts and you WILL be rate limited!
   persistence:
     enabled: true
-    storageClass: generic
+    storageClass: ""
     accessMode: ReadWriteOnce
     size: 1Gi
 dashboard:

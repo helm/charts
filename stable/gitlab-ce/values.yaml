@@ -48,7 +48,7 @@ persistence:
   gitlabEtc:
     enabled: true
     size: 1Gi
-    storageClass: generic
+    storageClass: ""
     accessMode: ReadWriteOnce
   ## This volume is used to store git data and other project files.
   ## ref: https://docs.gitlab.com/omnibus/settings/configuration.html#storing-git-data-in-an-alternative-directory
@@ -56,7 +56,7 @@ persistence:
   gitlabData:
     enabled: true
     size: 10Gi
-    storageClass: generic
+    storageClass: ""
     accessMode: ReadWriteOnce
 
 ## Configuration values for the postgresql dependency.

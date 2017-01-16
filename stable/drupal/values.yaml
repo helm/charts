@@ -41,7 +41,7 @@ mariadb:
     ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
     ## Default: volume.alpha.kubernetes.io/storage-class: default
     ##
-    # storageClass: generic
+    storageClass: ""
     accessMode: ReadWriteOnce
     size: 8Gi
 
@@ -59,14 +59,14 @@ persistence:
     ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
     ## Default: volume.alpha.kubernetes.io/storage-class: default
     ##
-    # storageClass: generic
+    storageClass: ""
     accessMode: ReadWriteOnce
     size: 1Gi
   drupal:
     ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
     ## Default: volume.alpha.kubernetes.io/storage-class: default
     ##
-    # storageClass: generic
+    storageClass: ""
     accessMode: ReadWriteOnce
     size: 8Gi
 

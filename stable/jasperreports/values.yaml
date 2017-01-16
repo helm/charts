@@ -49,7 +49,7 @@ mariadb:
   ##
   persistence:
     enabled: true
-    storageClass: generic
+    storageClass: ""
     accessMode: ReadWriteOnce
     size: 8Gi
 
@@ -63,7 +63,7 @@ serviceType: LoadBalancer
 ##
 persistence:
   enabled: true
-  storageClass: generic
+  storageClass: ""
   accessMode: ReadWriteOnce
   size: 8Gi
 

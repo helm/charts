@@ -56,7 +56,7 @@ rabbitmqManagerPort: 15672
 
 persistence:
   enabled: true
-  storageClass: generic
+  storageClass: ""
   accessMode: ReadWriteOnce
   size: 8Gi
 
