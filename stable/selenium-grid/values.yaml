@@ -7,9 +7,6 @@ hub:
     name: selenium/hub
     tag: 3.0.1
   resources:
-    limits:
-      cpu: null
-      memory: null
     requests:
       cpu: 2
       memory: 2Gi
@@ -23,9 +20,6 @@ nodes:
       name: selenium/node-chrome
       tag: 3.0.1
     resources:
-      limits:
-        cpu: null
-        memory: null
       requests:
         cpu: 1
         memory: 2Gi
@@ -37,9 +31,6 @@ nodes:
       name: selenium/node-firefox
       tag: 3.0.1
     resources:
-      limits:
-        cpu: null
-        memory: null
       requests:
         cpu: 1
         memory: 2Gi
