@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: hub
-        image: {{ .Values.hub.image.name }}:{{ .Values.hub.tag }}
+        image: {{ .Values.hub.image.name }}:{{ .Values.hub.image.tag }}
         ports:
         - containerPort: 4444
         livenessProbe:
