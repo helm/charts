@@ -49,7 +49,7 @@ spec:
     spec:
       containers:
       - name: chrome
-        image: {{ .Values.chrome.image.name }}:{{ .Values.chrome.image.tag }}
+        image: {{ .Values.nodes.chrome.image.name }}:{{ .Values.nodes.chrome.image.tag }}
         ports:
         - containerPort: 5900
 {{ toYaml .Values.nodes.chrome.resources | indent 8 }}
@@ -73,7 +73,7 @@ spec:
     spec:
       containers:
       - name: chrome
-        image: {{ .Values.firefox.image.name }}:{{ .Values.firefox.image.tag }}
+        image: {{ .Values.nodes.firefox.image.name }}:{{ .Values.nodes.firefox.image.tag }}
         ports:
         - containerPort: 5900
 {{ toYaml .Values.nodes.chrome.resources | indent 8 }}
