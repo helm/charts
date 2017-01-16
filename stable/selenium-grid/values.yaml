@@ -1,0 +1,17 @@
+hub:
+  expose: true
+  image:
+    name: selenium/hub
+    tag: 3.0.1
+
+nodes:
+  chrome:
+    count: 2
+    image:
+      name: selenium/node-chrome
+      tag: 3.0.1
+  firefox:
+    count: 2
+    image:
+      name: selenium/node-firefox
+      tag: 3.0.1
