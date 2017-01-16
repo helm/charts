@@ -6,7 +6,7 @@ hub:
   image:
     name: selenium/hub
     tag: 3.0.1
-  resource:
+  resources:
     limits:
       cpu: null
       memory: null
@@ -22,7 +22,7 @@ nodes:
     image:
       name: selenium/node-chrome
       tag: 3.0.1
-    resource:
+    resources:
       limits:
         cpu: null
         memory: null
@@ -36,7 +36,7 @@ nodes:
     image:
       name: selenium/node-firefox
       tag: 3.0.1
-    resource:
+    resources:
       limits:
         cpu: null
         memory: null

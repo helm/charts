@@ -28,7 +28,7 @@ spec:
           httpGet:
             path: /grid/console
             port: 4444
-        resource:
+        resources:
 {{ toYaml .Values.hub.resources | indent 10 }}
 ---
 apiVersion: extensions/v1beta1
@@ -53,7 +53,7 @@ spec:
         image: {{ .Values.nodes.chrome.image.name }}:{{ .Values.nodes.chrome.image.tag }}
         ports:
         - containerPort: 5900
-        resource:
+        resources:
 {{ toYaml .Values.nodes.chrome.resources | indent 10 }}
 ---
 apiVersion: extensions/v1beta1
