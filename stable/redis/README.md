@@ -48,6 +48,7 @@ The following tables lists the configurable parameters of the Redis chart and th
 | `image`                    | Redis image                         | `bitnami/redis:{VERSION}`                                 |
 | `imagePullPolicy`          | Image pull policy                   | `Always` if `imageTag` is `latest`, else `IfNotPresent`   |
 | `redisPassword`            | Redis password                      | Randomly generated                                        |
+| `password.enabled`         | Redis password enabled              | `true`                                                    |
 | `persistence.enabled`      | Use a PVC to persist data           | `true`                                                    |
 | `persistence.storageClass` | Storage class of backing PVC        | `generic`                                                 |
 | `persistence.accessMode`   | Use volume as ReadOnly or ReadWrite | `ReadWriteOnce`                                           |
