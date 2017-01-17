@@ -45,25 +45,25 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following tables lists the configurable parameters of the ownCloud chart and their default values.
 
-| Parameter                           | Description                                           | Default                                                   |
-| ---------------------------------   | ----------------------------------------------------- | --------------------------------------------------------- |
-| `image`                             | ownCloud image                                        | `bitnami/owncloud:{VERSION}`                              |
-| `imagePullPolicy`                   | Image pull policy                                     | `Always` if `image` tag is `latest`, else `IfNotPresent`  |
-| `owncloudHost`                      | ownCloud host to create application URLs              | `nil`                                                     |
-| `owncloudLoadBalancerIP`            | `loadBalancerIP` for the owncloud Service             | `nil`                                                     |
-| `owncloudUsername`                  | User of the application                               | `user`                                                    |
-| `owncloudPassword`                  | Application password                                  | Randomly generated                                        |
-| `owncloudEmail`                     | Admin email                                           | `user@example.com`                                        |
-| `mariadb.mariadbRootPassword`       | MariaDB admin password                                | `nil`                                                     |
-| `serviceType`                       | Kubernetes Service type                               | `LoadBalancer`                                            |
-| `persistence.enabled`               | Enable persistence using PVC                          | `true`                                                    |
-| `persistence.apache.storageClass`   | PVC Storage Class for Apache volume                   | `generic`                                                 |
-| `persistence.apache.accessMode`     | PVC Access Mode for Apache volume                     | `ReadWriteOnce`                                           |
-| `persistence.apache.size`           | PVC Storage Request for Apache volume                 | `1Gi`                                                     |
-| `persistence.owncloud.storageClass` | PVC Storage Class for ownCloud volume                 | `generic`                                                 |
-| `persistence.owncloud.accessMode`   | PVC Access Mode for ownCloud volume                   | `ReadWriteOnce`                                           |
-| `persistence.owncloud.size`         | PVC Storage Request for ownCloud volume               | `8Gi`                                                     |
-| `resources`                         | CPU/Memory resource requests/limits                   | Memory: `512Mi`, CPU: `300m`                              |
+|              Parameter              |                Description                |           Default            |
+|-------------------------------------|-------------------------------------------|------------------------------|
+| `image`                             | ownCloud image                            | `bitnami/owncloud:{VERSION}` |
+| `imagePullPolicy`                   | Image pull policy                         | `IfNotPresent`               |
+| `owncloudHost`                      | ownCloud host to create application URLs  | `nil`                        |
+| `owncloudLoadBalancerIP`            | `loadBalancerIP` for the owncloud Service | `nil`                        |
+| `owncloudUsername`                  | User of the application                   | `user`                       |
+| `owncloudPassword`                  | Application password                      | Randomly generated           |
+| `owncloudEmail`                     | Admin email                               | `user@example.com`           |
+| `mariadb.mariadbRootPassword`       | MariaDB admin password                    | `nil`                        |
+| `serviceType`                       | Kubernetes Service type                   | `LoadBalancer`               |
+| `persistence.enabled`               | Enable persistence using PVC              | `true`                       |
+| `persistence.apache.storageClass`   | PVC Storage Class for Apache volume       | `generic`                    |
+| `persistence.apache.accessMode`     | PVC Access Mode for Apache volume         | `ReadWriteOnce`              |
+| `persistence.apache.size`           | PVC Storage Request for Apache volume     | `1Gi`                        |
+| `persistence.owncloud.storageClass` | PVC Storage Class for ownCloud volume     | `generic`                    |
+| `persistence.owncloud.accessMode`   | PVC Access Mode for ownCloud volume       | `ReadWriteOnce`              |
+| `persistence.owncloud.size`         | PVC Storage Request for ownCloud volume   | `8Gi`                        |
+| `resources`                         | CPU/Memory resource requests/limits       | Memory: `512Mi`, CPU: `300m` |
 
 The above parameters map to the env variables defined in [bitnami/owncloud](http://github.com/bitnami/bitnami-docker-owncloud). For more information please refer to the [bitnami/owncloud](http://github.com/bitnami/bitnami-docker-owncloud) image documentation.
 
