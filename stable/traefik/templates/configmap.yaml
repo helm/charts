@@ -51,8 +51,8 @@ data:
       {{- else }}
       address = ":8080"
       {{- end }}
-      {{- if .Values.dashboard.http_auth }}
+      {{- if .Values.dashboard.httpAuth }}
       [web.auth.basic]
-        users = {{ .Values.dashboard.http_auth }}
+        users = {{ .Values.dashboard.httpAuth }}
       {{- end }}
     {{- end }}

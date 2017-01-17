@@ -27,6 +27,6 @@ dashboard:
   address: :8080
   public: true
   # Optional list of authenticated users, refer to the documentation for further details http://docs.traefik.io/toml/
-  # http_auth: ["test:$apr1$H6uskkkW$IgXLP6ewTrSuBkTrqE8wj/", "test2:$apr1$d9hr9HBB$4HxwgUir3HP4EsggP/QNo0"]
+  # httpAuth: ["test:$apr1$H6uskkkW$IgXLP6ewTrSuBkTrqE8wj/", "test2:$apr1$d9hr9HBB$4HxwgUir3HP4EsggP/QNo0"]
 gzip:
   enabled: true

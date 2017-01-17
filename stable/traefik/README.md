@@ -89,7 +89,7 @@ The following tables lists the configurable parameters of the Traefik chart and 
 | `dashboard.domain`              | Domain for the Traefik dashboard                                     | `traefik.example.com`                     |
 | `dashboard.address`             | Address for the Traefik dashboard service                            | `:8080`                                   |
 | `dashboard.public`              | Whether the Traefik dashboard should be exposed via an Ingress       | `true`                                    |
-| `dashboard.http_auth`           | List of user/password combinations to be used via HTTP Auth          | none                                      |
+| `dashboard.httpAuth`            | List of user/password combinations to be used via HTTP Auth          | none                                      |
 | `gzip.enabled`                  | Whether to use gzip compression                                      | `true`                     |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
