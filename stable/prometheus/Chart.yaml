@@ -1,5 +1,5 @@
 name: prometheus
-version: 1.4.3
+version: 2.0.1
 description: A Prometheus Helm chart for Kubernetes. Prometheus is a monitoring system and time series database.
 home: https://prometheus.io/
 sources:

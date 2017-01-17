@@ -1,0 +1,99 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "fullname" . }}
+data:
+  setup-certs.sh: |-
+    #!/bin/bash
+    EASY_RSA_LOC="/usr/share/easy-rsa"
+    cd $EASY_RSA_LOC
+    ./easyrsa init-pki
+    echo "ca\n" | ./easyrsa build-ca nopass
+    ./easyrsa build-server-full server nopass
+    ./easyrsa gen-dh
+    
+  newClientCert.sh: |-
+      #!/bin/bash
+      EASY_RSA_LOC="/usr/share/easy-rsa"
+      cd $EASY_RSA_LOC
+      MY_IP_ADDR="$2"
+      ./easyrsa build-client-full $1 nopass
+      cat >${EASY_RSA_LOC}/pki/$1.ovpn <<EOF
+      client
+      nobind
+      dev tun
+      redirect-gateway def1
+      <key>
+      `cat ${EASY_RSA_LOC}/pki/private/$1.key`
+      </key>
+      <cert>
+      `cat ${EASY_RSA_LOC}/pki/issued/$1.crt`
+      </cert>
+      <ca>
+      `cat ${EASY_RSA_LOC}/pki/ca.crt`
+      </ca>
+      <dh>
+      `cat ${EASY_RSA_LOC}/pki/dh.pem`
+      </dh>
+      <connection>
+      remote ${MY_IP_ADDR} {{ .Values.service.externalPort }} {{ .Values.openvpn.OVPN_PROTO }}
+      </connection>
+      EOF
+      cat ${EASY_RSA_LOC}/pki/$1.ovpn
+      
+  configure.sh: |-
+      #!/bin/sh
+      #TODO(jfelten): create an official docker image with these installed 
+      apk update && apk add openssl easy-rsa openvpn iptables bash
+      /etc/openvpn/setup/setup-certs.sh
+      iptables -t nat -A POSTROUTING -s {{ .Values.openvpn.OVPN_NETWORK }}/{{ .Values.openvpn.OVPN_SUBNET }} -o eth0 -j MASQUERADE
+      mkdir -p /dev/net
+      if [ ! -c /dev/net/tun ]; then
+          mknod /dev/net/tun c 10 200
+      fi
+      
+      if [ "$DEBUG" == "1" ]; then
+          echo ========== ${OVPN_CONFIG} ==========
+          cat "${OVPN_CONFIG}"
+          echo ====================================
+      fi
+      IP=$(ip route get 8.8.8.8 | awk '/8.8.8.8/ {print $NF}')
+      BASEIP=`echo $IP | cut -d"." -f1-3`
+      NETWORK=`echo $BASEIP".0"`
+      DNS=$(cat /etc/resolv.conf | grep -v '^#' | grep nameserver | awk '{print $2}')
+      SEARCH=$(cat /etc/resolv.conf | grep -v '^#' | grep search | awk '{$1=""; print $0}')
+      cp -f /etc/openvpn/setup/openvpn.conf /etc/openvpn/
+      sed 's|OVPN_K8S_SEARCH|'"${SEARCH}"'|' -i /etc/openvpn/openvpn.conf
+      sed 's|OVPN_K8S_DNS|'"${DNS}"'|' -i /etc/openvpn/openvpn.conf
+      sed 's|NETWORK|'"${NETWORK}"'|' -i /etc/openvpn/openvpn.conf
+      
+      openvpn --config /etc/openvpn/openvpn.conf
+  openvpn.conf: |-
+      server {{ .Values.openvpn.OVPN_NETWORK }} {{ .Values.openvpn.OVPN_SUBNET }}
+      verb 3
+      
+      key /usr/share/easy-rsa/pki/private/server.key
+      ca /usr/share/easy-rsa/pki/ca.crt
+      cert /usr/share/easy-rsa/pki/issued/server.crt
+      dh /usr/share/easy-rsa/pki/dh.pem
+      
+      key-direction 0
+      keepalive 10 60
+      persist-key
+      persist-tun
+      
+      proto {{.Values.openvpn.OVPN_PROTO}}
+      port  {{ .Values.service.internalPort }}
+      dev tun0
+      status /tmp/openvpn-status.log
+      
+      user nobody
+      group nogroup
+      
+      push "route NETWORK 255.255.240.0"
+{{ if (.Values.openvpn.OVPN_K8S_POD_NETWORK) (.Values.openvpn.OVPN_K8S_POD_SUBNET) }}
+      push "route {{ .Values.openvpn.OVPN_K8S_POD_NETWORK }} {{.Values.openvpn.OVPN_K8S_POD_SUBNET}}"
+{{end}}
+
+      push "dhcp-option DOMAIN OVPN_K8S_SEARCH"
+      push "dhcp-option DNS OVPN_K8S_DNS"
