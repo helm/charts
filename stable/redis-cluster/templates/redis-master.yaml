@@ -7,7 +7,6 @@ metadata:
     redis-node: "true"
     role: master
   name: redis-master
-  namespace: {{ .Values.namespace }}
 spec:
   containers:
     - name: master

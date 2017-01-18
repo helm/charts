@@ -4,7 +4,6 @@ metadata:
   name: redis
   labels:
     redis-node: "true"
-  namespace: {{ .Values.namespace }}
 spec:
   replicas: 1
   selector:

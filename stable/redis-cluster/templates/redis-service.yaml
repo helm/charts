@@ -5,7 +5,6 @@ metadata:
     name: redis-svc
     role: service
   name: redis-svc
-  namespace: {{ .Values.namespace }}
 spec:
   ports:
     - port: 6379

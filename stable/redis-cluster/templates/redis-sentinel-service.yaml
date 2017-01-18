@@ -5,7 +5,6 @@ metadata:
     name: sentinel
     role: service
   name: redis-sentinel
-  namespace: {{ .Values.namespace }}
 spec:
   ports:
     - port: 26379
