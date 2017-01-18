@@ -20,3 +20,4 @@ spec:
   selector:
     component: "{{.Release.Name}}-{{.Values.Master.Component}}"
   type: {{.Values.Master.ServiceType}}
+  loadBalancerSourceRanges: {{.Values.Master.LoadBalancerSourceRanges}}
