@@ -28,9 +28,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  # This service only exists to create DNS entries for each pet in the petset such that they can resolve
-  # each other's IP addresses. It does not create a load-balanced ClusterIP and should not be used
-  # directly by clients in most circumstances.
+  # This service only exists to create DNS entries for each pod in the stateful
+  # set such that they can resolve each other's IP addresses. It does not
+  # create a load-balanced ClusterIP and should not be used directly by clients
+  # in most circumstances.
   name: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 56 }}"
   labels:
     heritage: {{.Release.Service | quote }}
@@ -62,8 +63,23 @@ spec:
   selector:
     component: "{{.Release.Name}}-{{.Values.Component}}"
 ---
-apiVersion: apps/v1alpha1
-kind: PetSet
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 56 }}-budget"
+  labels:
+    heritage: {{.Release.Service | quote }}
+    release: {{.Release.Name | quote }}
+    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+    component: "{{.Release.Name}}-{{.Values.Component}}"
+spec:
+  selector:
+    matchLabels:
+      component: "{{.Release.Name}}-{{.Values.Component}}"
+  minAvailable: {{.Values.MinAvailable}}
+---
+apiVersion: apps/v1beta1
+kind: StatefulSet
 metadata:
   name: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 56 }}"
   annotations:
@@ -80,13 +96,28 @@ spec:
         component: "{{.Release.Name}}-{{.Values.Component}}"
       annotations:
         helm.sh/created: {{.Release.Time.Seconds | quote }}
-        pod.alpha.kubernetes.io/initialized: "true"
+        scheduler.alpha.kubernetes.io/affinity: >
+            {
+              "podAntiAffinity": {
+                "preferredDuringSchedulingIgnoredDuringExecution": [{
+                  "weight": 100,
+                  "labelSelector": {
+                    "matchExpressions": [{
+                      "key": "component",
+                      "operator": "In",
+                      "values": ["{{.Release.Name}}-{{.Values.Component}}"]
+                    }]
+                  },
+                  "topologyKey": "kubernetes.io/hostname"
+                }]
+              }
+            }
         # Init containers are run only once in the lifetime of a pod, before
         # it's started up for the first time. It has to exit successfully
         # before the pod's main containers are allowed to start.
         # This particular init container does a DNS lookup for other pods in
-        # the petset to help determine whether or not a cluster already exists.
-        # If any other pets exist, it creates a file in the cockroach-data
+        # the set to help determine whether or not a cluster already exists.
+        # If any other pods exist, it creates a file in the cockroach-data
         # directory to pass that information along to the primary container that
         # has to decide what command-line flags to use when starting CockroachDB.
         # This only matters when a pod's persistent volume is empty - if it has
@@ -134,7 +165,7 @@ spec:
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         env:
-        - name: PETSET_NAME
+        - name: STATEFULSET_NAME
           value: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 56 }}"
         livenessProbe:
           httpGet:
@@ -163,10 +194,10 @@ spec:
             # already exists and we should make sure not to create a new one).
             # It's fine to run without --join on a restart if there aren't any
             # other nodes.
-            if [ ! "$(hostname)" == "${PETSET_NAME}-0" ] || \
+            if [ ! "$(hostname)" == "${STATEFULSET_NAME}-0" ] || \
                [ -e "/cockroach/cockroach-data/cluster_exists_marker" ]
             then
-              CRARGS+=("--join" "${PETSET_NAME}-public")
+              CRARGS+=("--join" "${STATEFULSET_NAME}-public")
             fi
             exec /cockroach/cockroach ${CRARGS[*]}
       # No pre-stop hook is required, a SIGTERM plus some time is all that's
