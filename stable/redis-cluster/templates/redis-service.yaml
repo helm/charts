@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    name: redis-svc
+    role: service
+  name: redis-svc
+  namespace: {{ .Values.namespace }}
+spec:
+  ports:
+    - port: 6379
+      targetPort: 6379
+  selector:
+    redis-node: "true"
+  type: "NodePort"
