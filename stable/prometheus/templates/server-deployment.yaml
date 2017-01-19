@@ -59,7 +59,7 @@ spec:
               mountPath: /etc/config
             - name: storage-volume
               mountPath: {{ default "/data" .Values.server.storageLocalPath | quote }}
-              subPath: prometheus-db
+              subPath: {{ .Values.server.persistence.subPath }}
       terminationGracePeriodSeconds: {{ default 300 .Values.server.terminationGracePeriodSeconds }}
       volumes:
         - name: config-volume
