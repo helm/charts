@@ -28,5 +28,6 @@ docker run -v ${CHART_ROOT}:/src \
            -e "GOOGLE_APPLICATION_CREDENTIALS=/service-account.json" \
            -e "PULL_NUMBER=$PULL_NUMBER" \
            -e "BUILD_NUMBER=$BUILD_NUMBER" \
+           -e "VERIFICATION_PAUSE=${VERIFICATION_PAUSE:=0}" \
            ${IMAGE_NAME} /src/test/changed.sh
 echo "Done Testing!"
