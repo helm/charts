@@ -52,7 +52,7 @@ spec:
         volumeMounts:
         - name: data
           mountPath: /var/lib/postgresql/data/pgdata
-          subPath: pgdata
+          subPath: {{ .Values.persistence.subPath }}
 {{- if .Values.metrics.enabled }}
       - name: metrics 
         image: "{{ .Values.metrics.image }}:{{ .Values.metrics.imageTag }}"

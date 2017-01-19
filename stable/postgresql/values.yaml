@@ -27,6 +27,7 @@ persistence:
   storageClass: generic
   accessMode: ReadWriteOnce
   size: 8Gi
+  subPath: "postgresql-db"
 
 metrics:
   enabled: false
