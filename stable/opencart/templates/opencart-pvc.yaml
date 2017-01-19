@@ -9,8 +9,8 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
   annotations:
-  {{- if .Values.persistence.opencart.storageClass }}
-    volume.beta.kubernetes.io/storage-class: {{ .Values.persistence.opencart.storageClass }}
+  {{- if .Values.persistence.opencart.storageClass | quote }}
+    volume.beta.kubernetes.io/storage-class: {{ .Values.persistence.opencart.storageClass | quote }}
   {{ else }}
     volume.alpha.kubernetes.io/storage-class: default
   {{- end }}

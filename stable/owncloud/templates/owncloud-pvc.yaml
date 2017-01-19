@@ -4,8 +4,8 @@ apiVersion: v1
 metadata:
   name: {{ template "fullname" . }}-owncloud
   annotations:
-  {{- if .Values.persistence.owncloud.storageClass }}
-    volume.beta.kubernetes.io/storage-class: {{ .Values.persistence.owncloud.storageClass }}
+  {{- if .Values.persistence.owncloud.storageClass | quote }}
+    volume.beta.kubernetes.io/storage-class: {{ .Values.persistence.owncloud.storageClass | quote }}
   {{ else }}
     volume.alpha.kubernetes.io/storage-class: default
   {{- end }}

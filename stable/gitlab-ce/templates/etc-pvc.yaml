@@ -5,8 +5,8 @@ apiVersion: v1
 metadata:
   name: {{ template "fullname" . }}-etc
   annotations:
-  {{- if .Values.persistence.storageClass }}
-    volume.beta.kubernetes.io/storage-class: {{ .Values.persistence.storageClass }}
+  {{- if .Values.persistence.storageClass | quote }}
+    volume.beta.kubernetes.io/storage-class: {{ .Values.persistence.storageClass | quote }}
   {{ else }}
     volume.alpha.kubernetes.io/storage-class: default
   {{- end }}
