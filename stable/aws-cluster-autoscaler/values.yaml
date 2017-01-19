@@ -6,6 +6,7 @@ autoscalingGroups:
     minSize: 1
 
 awsRegion: us-east-1
+expander: least-waste
 
 image:
   repository: gcr.io/google_containers/cluster-autoscaler
@@ -19,3 +20,9 @@ resources:
   requests:
     cpu: 100m
     memory: 300Mi
+
+scaleDownDelay: 10m
+
+skipNodes:
+  withLocalStorage: false
+  withSystemPods: true

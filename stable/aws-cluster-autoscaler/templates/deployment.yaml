@@ -26,10 +26,13 @@ spec:
           command:
             - ./cluster-autoscaler
             - --cloud-provider=aws
+            - --expander={{ .Values.expander }}
           {{- range .Values.autoscalingGroups }}
             - --nodes={{ .minSize }}:{{ .maxSize }}:{{ .name }}
           {{- end }}
-            - --skip-nodes-with-local-storage=false
+            - --scale-down-delay={{ .Values.scaleDownDelay }}
+            - --skip-nodes-with-local-storage={{ .Values.skipNodes.withLocalStorage }}
+            - --skip-nodes-with-system-pods={{ .Values.skipNodes.withSystemPods }}
             - --v=4
           env:
             - name: AWS_REGION

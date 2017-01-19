@@ -48,6 +48,7 @@ Parameter | Description | Default
 `autoscalingGroups[].minSize` | minimum autoscaling group size | `1`
 `autoscalingGroups[].name` | autoscaling group name | none
 `awsRegion` | AWS region | `us-east-1`
+`expander` | algorithm to use when scaling | `least-waste`
 `image.repository` | Image | `gcr.io/google_containers/cluster-autoscaler`
 `image.tag` | Image tag | `v0.4.0`
 `image.pullPolicy` | Image pull policy | `IfNotPresent`
@@ -55,6 +56,9 @@ Parameter | Description | Default
 `resources.limits.memory` | Memory limit | `300Mi`
 `resources.requests.cpu` | CPU request | `100m`
 `resources.requests.memory` | Memory request | `300Mi`
+`scaleDownDelay` | time to wait between scaling operations | `10m` (10 minutes)
+`skipNodes.withLocalStorage` | don't terminate nodes running pods that use local storage | `false`
+`skipNodes.withSystemPods` | don't terminate nodes running pods in the `kube-system` namespace | `true`
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
@@ -71,6 +75,16 @@ $ helm install --name my-release -f values.yaml stable/aws-cluster-autoscaler
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
+## Expanders
+From the upstream [docs](https://github.com/kubernetes/contrib/blob/master/cluster-autoscaler/expander/EXPANDERS.md):
+> Currently cluster-autoscaler has 3 expanders, but we anticipate more in the future:
+>
+`random` - this is the default expander, and should be used when you don't have a particular need for the node groups to scale differently
+>
+`most-pods` - this selects the node group that would be able to schedule the most pods when scaling up. This is useful when you are using nodeSelector to make sure certain pods land on certain nodes. Note that this won't cause the autoscaler to select bigger nodes vs. smaller, as it can grow multiple smaller nodes at once
+>
+`least-waste` - this selects the node group that will have the least idle CPU (and if tied, unused Memory) node group when scaling up. This is useful when you have different classes of nodes, for example, high CPU or high Memory nodes, and only want to expand those when pods that need those requirements are to be launched.
 
 ## IAM Permissions
 The worker running the cluster autoscaler will need access to certain resources and actions:
