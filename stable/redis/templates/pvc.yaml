@@ -17,7 +17,6 @@ metadata:
   {{- range $key, $value := .Values.persistence.annotations }}
     {{ $key }}: {{ $value }}
   {{- end }}
->>>>>>> 3e83da22ed7657a920eb7985354b8121a3ec507d
 spec:
   accessModes:
     - {{ .Values.persistence.accessMode | quote }}
