@@ -67,7 +67,7 @@ spec:
         - name: storage-volume
       {{- if .Values.server.persistentVolume.enabled }}
           persistentVolumeClaim:
-            claimName: {{ template "server.fullname" . }}
+            claimName: {{ if .Values.server.persistentVolume.existingClaim }}{{ .Values.server.persistentVolume.existingClaim }}{{- else }}{{ template "server.fullname" . }}{{- end }}
       {{- else }}
           emptyDir: {}
       {{- end -}}
