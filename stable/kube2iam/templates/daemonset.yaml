@@ -25,7 +25,7 @@ spec:
         args:
         - --app-port={{ default 8181 .Values.containerPort }}
         - --iptables={{ default false .Values.host.iptables }}
-        - --host-interface={{ default "docker0" .Values.host.interface | quote }}
+        - --host-interface={{ default "docker0" .Values.host.interface }}
         {{- if .Values.host.iptables }}
         - --host-ip={{ default "$(HOST_IP)" .Values.host.ip }}
         {{- end }}
