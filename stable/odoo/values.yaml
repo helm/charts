@@ -1,0 +1,71 @@
+## Bitnami Odoo image version
+## ref: https://hub.docker.com/r/bitnami/odoo/tags/
+##
+image: bitnami/odoo:9.0.20160620-r7
+
+## Specify a imagePullPolicy
+## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+##
+imagePullPolicy: IfNotPresent
+
+## Admin email
+## ref: https://github.com/bitnami/bitnami-docker-odoo#configuration
+##
+odooEmail: user@example.com
+
+## Application password
+## Defaults to a random 10-character alphanumeric string if not set
+## ref: https://github.com/bitnami/bitnami-docker-odoo#configuration
+##
+# odooPassword:
+
+## SMTP mail delivery configuration
+## ref: https://github.com/bitnami/bitnami-docker-odoo/#smtp-configuration
+# smtpHost:
+# smtpPort:
+# smtpUser:
+# smtpPassword:
+# smtpProtocol:
+
+##
+## PostgreSQL chart configuration
+##
+postgresql:
+  ## PostgreSQL password
+  ## ref: https://hub.docker.com/_/postgres/
+  ##
+  # postgresPassword:
+
+  ## Enable persistence using Persistent Volume Claims
+  ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+  ##
+  persistence:
+    enabled: true
+    storageClass: generic
+    accessMode: ReadWriteOnce
+    size: 8Gi
+
+## Kubernetes configuration
+## For minikube, set this to NodePort, elsewhere use LoadBalancer
+##
+serviceType: LoadBalancer
+
+## Enable persistence using Persistent Volume Claims
+## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+##
+persistence:
+  enabled: true
+  ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
+  ## Default: volume.alpha.kubernetes.io/storage-class: default
+  ##
+  # storageClass: generic
+  accessMode: ReadWriteOnce
+  size: 8Gi
+
+## Configure resource requests and limits
+## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+##
+resources:
+  requests:
+    memory: 512Mi
+    cpu: 300m
