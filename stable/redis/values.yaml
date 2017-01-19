@@ -19,7 +19,11 @@ image: bitnami/redis:3.2.5-r0
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
 ##
 persistence:
-  enabled: true 
+  enabled: true
+  ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
+  ## Default: volume.alpha.kubernetes.io/storage-class: default
+  ##
+  # storageClass: generic
   accessMode: ReadWriteOnce
   size: 8Gi
 
