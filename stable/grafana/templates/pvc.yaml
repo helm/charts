@@ -1,0 +1,29 @@
+{{- if .Values.server.persistentVolume.enabled -}}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  annotations:
+  {{- if .Values.server.persistentVolume.storageClass -}}
+    volume.beta.kubernetes.io/storage-class: {{ .Values.server.persistentVolume.storageClass }}
+  {{ else }}
+    volume.alpha.kubernetes.io/storage-class: default
+  {{- end }}
+  {{- range $key, $value := .Values.server.persistentVolume.annotations }}
+    {{ $key }}: {{ $value }}
+  {{- end }}
+  labels:
+    app: {{ template "fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    component: "{{ .Values.server.name }}"
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+  name: {{ template "server.fullname" . }}
+spec:
+  accessModes:
+{{- range .Values.server.persistentVolume.accessModes }}
+    - {{ . | quote }}
+{{- end }}
+  resources:
+    requests:
+      storage: {{ .Values.server.persistentVolume.size | quote }}
+{{- end -}}

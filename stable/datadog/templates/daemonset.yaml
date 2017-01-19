@@ -1,0 +1,60 @@
+{{- if .Values.datadog.apiKey }}
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+spec:
+  template:
+    metadata:
+      labels:
+        app: {{ template "fullname" . }}
+      name: {{ template "fullname" . }}
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        resources:
+{{ toYaml .Values.resources | indent 12 }}
+        ports:
+        - containerPort: 8125
+          name: dogstatsdport
+          protocol: UDP
+        env:
+          - name: API_KEY
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "fullname" . }}
+                key: api-key
+          - name: LOG_LEVEL
+            value: {{ .Values.datadog.logLevel | quote }}
+          - name: SD_BACKEND
+            value: docker
+          - name: NON_LOCAL_TRAFFIC
+            value: {{ default "" .Values.datadog.nonLocalTraffic | quote }}
+          - name: TAGS
+            value: {{ default "" .Values.datadog.tags | quote }}
+          - name: KUBERNETES
+            value: "yes"
+        volumeMounts:
+          - name: dockersocket
+            mountPath: /var/run/docker.sock
+          - name: procdir
+            mountPath: /host/proc
+            readOnly: true
+          - name: cgroups
+            mountPath: /host/sys/fs/cgroup
+            readOnly: true
+      volumes:
+        - hostPath:
+            path: /var/run/docker.sock
+          name: dockersocket
+        - hostPath:
+            path: /proc
+          name: procdir
+        - hostPath:
+            path: /sys/fs/cgroup
+          name: cgroups
+{{ end }}

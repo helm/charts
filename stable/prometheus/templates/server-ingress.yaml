@@ -21,9 +21,8 @@ spec:
     - host: {{ . }}
       http:
         paths:
-          - path: /
-            backend:
-              serviceName: {{ printf "%s-%s" $releaseName "server" | trunc 24 }}
+          - backend:
+              serviceName: {{ printf "%s-%s" $releaseName "server" | trunc 63 }}
               servicePort: {{ $servicePort }}
   {{- end -}}
   {{- if .Values.server.ingress.tls }}

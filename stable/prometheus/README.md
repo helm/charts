@@ -40,7 +40,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the Spartakus chart and their default values.
+The following tables lists the configurable parameters of the Prometheus chart and their default values.
 
 | Parameter | Description | Default |
 | --------- | ----------- | ------- |
@@ -55,12 +55,19 @@ The following tables lists the configurable parameters of the Spartakus chart an
 | `alertmanager.persistentVolume.enabled` | If true, AlertManager will create a Persistent Volume Claim | `true` |
 | `alertmanager.persistentVolume.accessModes` | AlertManager data Persistent Volume access modes | `[ReadWriteOnce]` |
 | `alertmanager.persistentVolume.size` | AlertManager data Persistent Volume size | `2Gi` |
+| `alertmanager.persistentVolume.storageClass` | AlertManager data Persistent Volume Storage Class | `volume.alpha.kubernetes.io/storage-class: default` |
 | `alertmanager.resources` | Alertmanager resource requests and limits (YAML) |`requests: {cpu: 10m, memory: 32Mi}` |
 | `alertmanager.serviceType` | Alertmanager service type | `ClusterIP` |
 | `alertmanager.storagePath` | Alertmanager data storage path | `/data` |
 | `configmapReload.image` | Configmap-reload Docker image | `jimmidyson/configmap-reload:${VERSION}` |
 | `configmapReload.name` | Configmap-reload container name | `configmap-reload` |
 | `imagePullPolicy` | Global image pull policy | `Always` if image tag is latest, else `IfNotPresent` |
+| `kubeStateMetrics.httpPort` | Kube-state-metrics service port | `80` |
+| `kubeStateMetrics.httpPortName` | Kube-state-metrics service port name | `http` |
+| `kubeStateMetrics.image` | Kube-state-metrics Docker image| `gcr.io/google_containers/kube-state-metrics:v0.3.0` |
+| `kubeStateMetrics.name` | Kube-state-metrics container name | `kube-state-metrics` |
+| `kubeStateMetrics.resources` | Kube-state-metrics resource requests and limits (YAML) | `requests: {cpu: 10m, memory:16Mi}` |
+| `kubeStateMetrics.serviceType` | Kube-state-metrics service type | `ClusterIP` |
 | `server.annotations` | Server Pod annotations | `[]` |
 | `server.extraArgs` | Additional Server container arguments | `[]` |
 | `server.httpPort` | Server service port | `80` |
@@ -75,6 +82,7 @@ The following tables lists the configurable parameters of the Spartakus chart an
 | `server.persistentVolume.accessModes` | Server data Persistent Volume access modes | `[ReadWriteOnce]` |
 | `server.persistentVolume.annotations` | Server data Persistent Volume annotations | `[]` |
 | `server.persistentVolume.size` | Server data Persistent Volume size | `8Gi` |
+| `server.persistentVolume.storageClass` | Server data Persistent Volume Storage Class | `volume.alpha.kubernetes.io/storage-class: default` |
 | `server.resources` | Server resource requests and limits | `requests: {cpu: 500m, memory: 512Mi}` |
 | `server.serviceType` | Server service type | `ClusterIP` |
 | `server.storageLocalPath` | Server local data storage path | `/data` |

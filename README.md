@@ -18,7 +18,7 @@ $ helm repo add incubator https://kubernetes-charts-incubator.storage.googleapis
 "incubator" has been added to your repositories
 ```
 
-You can then run `helm search incubator/` to see the charts.
+You can then run `helm search incubator` to see the charts.
 
 ## Chart Format
 

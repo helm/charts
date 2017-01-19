@@ -7,7 +7,7 @@ data:
     <?xml version='1.0' encoding='UTF-8'?>
     <hudson>
       <disabledAdministrativeMonitors/>
-      <version>2.7.3</version>
+      <version>2.19.4</version>
       <numExecutors>0</numExecutors>
       <mode>NORMAL</mode>
       <useSecurity>true</useSecurity>
@@ -24,28 +24,38 @@ data:
       <viewsTabBar class="hudson.views.DefaultViewsTabBar"/>
       <myViewsTabBar class="hudson.views.DefaultMyViewsTabBar"/>
       <clouds>
-        <org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud plugin="kubernetes@0.8">
+        <org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud plugin="kubernetes@0.10">
           <name>default</name>
           <templates>
             <org.csanchez.jenkins.plugins.kubernetes.PodTemplate>
+              <inheritFrom></inheritFrom>
               <name>default</name>
-              <image>{{ .Values.Agent.Image }}:{{ .Values.Agent.ImageTag }}</image>
-              <privileged>false</privileged>
-              <alwaysPullImage>false</alwaysPullImage>
-              <command></command>
-              <args></args>
-              <remoteFs>/home/jenkins</remoteFs>
               <instanceCap>2147483647</instanceCap>
+              <idleMinutes>0</idleMinutes>
               <label></label>
               <nodeSelector></nodeSelector>
-              <resourceRequestCpu>{{.Values.Agent.Cpu}}</resourceRequestCpu>
-              <resourceRequestMemory>{{.Values.Agent.Memory}}</resourceRequestMemory>
-              <resourceLimitCpu>{{.Values.Agent.Cpu}}</resourceLimitCpu>
-              <resourceLimitMemory>{{.Values.Agent.Memory}}</resourceLimitMemory>
               <volumes/>
+              <containers>
+                <org.csanchez.jenkins.plugins.kubernetes.ContainerTemplate>
+                  <name>jnlp</name>
+                  <image>{{ .Values.Agent.Image }}:{{ .Values.Agent.ImageTag }}</image>
+                  <privileged>false</privileged>
+                  <alwaysPullImage>false</alwaysPullImage>
+                  <workingDir>/home/jenkins</workingDir>
+                  <command></command>
+                  <args>${computer.jnlpmac} ${computer.name}</args>
+                  <ttyEnabled>false</ttyEnabled>
+                  <resourceRequestCpu>{{.Values.Agent.Cpu}}</resourceRequestCpu>
+                  <resourceRequestMemory>{{.Values.Agent.Memory}}</resourceRequestMemory>
+                  <resourceLimitCpu>{{.Values.Agent.Cpu}}</resourceLimitCpu>
+                  <resourceLimitMemory>{{.Values.Agent.Memory}}</resourceLimitMemory>
+                  <envVars/>
+                </org.csanchez.jenkins.plugins.kubernetes.ContainerTemplate>
+              </containers>
               <envVars/>
               <annotations/>
               <imagePullSecrets/>
+              <nodeProperties/>
             </org.csanchez.jenkins.plugins.kubernetes.PodTemplate>
           </templates>
           <serverUrl>https://kubernetes.default</serverUrl>
@@ -55,6 +65,8 @@ data:
           <jenkinsTunnel>{{ template "fullname" . }}:50000</jenkinsTunnel>
           <containerCap>10</containerCap>
           <retentionTimeout>5</retentionTimeout>
+          <connectTimeout>0</connectTimeout>
+          <readTimeout>0</readTimeout>
         </org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud>
       </clouds>
       <quietPeriod>5</quietPeriod>
