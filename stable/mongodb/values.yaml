@@ -26,7 +26,7 @@ image: bitnami/mongodb:3.4.1-r2
 ##
 persistence:
   enabled: true
-  storageClass: ""
+  # storageClass: <storage class>
   accessMode: ReadWriteOnce
   size: 8Gi
 

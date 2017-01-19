@@ -48,7 +48,7 @@ factorio:
     password: your.password
 
 persistence:
-  storageClass: ""
+  # storageClass: <storage class>
   savedGames:
     # Set this to false if you don't care to persist saved games between restarts.
     enabled: true

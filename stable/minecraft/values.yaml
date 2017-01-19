@@ -81,7 +81,7 @@ minecraftServer:
     serviceType: LoadBalancer
 
 persistence:
-  storageClass: ""
+  # storageClass: <storage class>
   dataDir:
     # Set this to false if you don't care to persist state between restarts.
     enabled: true

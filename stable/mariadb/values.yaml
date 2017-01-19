@@ -30,7 +30,7 @@ imagePullPolicy: IfNotPresent
 ##
 persistence:
   enabled: true
-  storageClass: ""
+  # storageClass: <storage class>
   accessMode: ReadWriteOnce
   size: 8Gi
 

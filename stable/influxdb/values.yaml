@@ -14,7 +14,7 @@ service:
 ## Persist data to a persitent volume
 persistence:
   enabled: false
-  storageClass: ""
+  # storageClass: <storage class>
   accessMode: ReadWriteOnce
   size: 8Gi
 

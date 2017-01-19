@@ -47,7 +47,7 @@ mariadb:
   ##
   persistence:
     enabled: true
-    storageClass: ""
+    # storageClass: <storage class>
     accessMode: ReadWriteOnce
     size: 8Gi
 
@@ -62,11 +62,11 @@ serviceType: LoadBalancer
 persistence:
   enabled: true
   apache:
-    storageClass: ""
+    # storageClass: <storage class>
     accessMode: ReadWriteOnce
     size: 1Gi
   phpbb:
-    storageClass: ""
+    # storageClass: <storage class>
     accessMode: ReadWriteOnce
     size: 8Gi
 

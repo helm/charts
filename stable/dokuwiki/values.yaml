@@ -45,11 +45,11 @@ serviceType: LoadBalancer
 persistence:
   enabled: true
   apache:
-    storageClass: ""
+    # storageClass: <storage class>
     accessMode: ReadWriteOnce
     size: 1Gi
   dokuwiki:
-    storageClass: ""
+    # storageClass: <storage class>
     accessMode: ReadWriteOnce
     size: 8Gi
 
