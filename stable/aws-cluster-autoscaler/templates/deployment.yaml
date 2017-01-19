@@ -26,7 +26,6 @@ spec:
           command:
             - ./cluster-autoscaler
             - --cloud-provider=aws
-            - --expander={{ .Values.expander }}
           {{- range .Values.autoscalingGroups }}
             - --nodes={{ .minSize }}:{{ .maxSize }}:{{ .name }}
           {{- end }}

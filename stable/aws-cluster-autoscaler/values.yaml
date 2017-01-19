@@ -6,7 +6,6 @@ autoscalingGroups:
     minSize: 1
 
 awsRegion: us-east-1
-expander: least-waste
 
 image:
   repository: gcr.io/google_containers/cluster-autoscaler
