@@ -43,7 +43,7 @@ Parameter | Description | Default
 --- | --- | ---
 `image.repository` | Image | `jtblin/kube2iam`
 `image.tag` | Image tag | `0.2.2`
-`image.pullPolicy` | Image pull policy | `Always` if `image.tag` is `latest`, else `IfNotPresent`
+`image.pullPolicy` | Image pull policy | `IfNotPresent`
 `resources.limits.cpu` | CPU limit | `4m`
 `resources.limits.memory` | Memory limit | `16Mi`
 `resources.requests.cpu` | CPU request | `4m`

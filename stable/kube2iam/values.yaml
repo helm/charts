@@ -1,4 +1,4 @@
-# containerPort: 8181
+containerPort: 8181
 
 # extraArgs:
 #   base-role-arn: arn:aws:iam::0123456789:role/
@@ -7,7 +7,7 @@
 #   api-token: ...
 
 host:
-  # ip: 127.0.0.1
+  ip: $(HOST_IP)
   iptables: false
   interface: docker0
 

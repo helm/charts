@@ -19,12 +19,12 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: "{{ .Values.image.pullPolicy }}"
           args:
-            - --app-port={{ default 8181 .Values.containerPort }}
-            - --host-interface={{ default "docker0" .Values.host.interface }}
+            - --app-port={{ .Values.containerPort }}
+            - --host-interface={{ .Values.host.interface }}
           {{- if .Values.host.iptables }}
-            - --host-ip={{ default "$(HOST_IP)" .Values.host.ip }}
+            - --host-ip={{ .Values.host.ip }}
           {{- end }}
-            - --iptables={{ default false .Values.host.iptables }}
+            - --iptables={{ .Values.host.iptables }}
           {{- range $key, $value := .Values.extraArgs }}
             - --{{ $key }}={{ $value }}
           {{- end }}
@@ -37,7 +37,7 @@ spec:
                 fieldRef:
                   fieldPath: status.podIP
           ports:
-            - containerPort: {{ default 8181 .Values.containerPort }}
+            - containerPort: {{ .Values.containerPort }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
         {{- if .Values.host.iptables }}
