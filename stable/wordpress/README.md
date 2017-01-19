@@ -19,16 +19,6 @@ It also packages the [Bitnami MariaDB chart](https://github.com/kubernetes/chart
 - Kubernetes 1.4+ with Beta APIs enabled
 - PV provisioner support in the underlying infrastructure
 
-## Get this chart
-
-Download the latest release of the chart from the [releases](../../../releases) page.
-
-Alternatively, clone the repo if you wish to use the development snapshot:
-
-```console
-$ git clone https://github.com/kubernetes/charts.git
-```
-
 ## Installing the Chart
 
 To install the chart with the release name `my-release`:
@@ -36,8 +26,6 @@ To install the chart with the release name `my-release`:
 ```console
 $ helm install --name my-release stable/wordpress
 ```
-
-*Replace the `x.x.x` placeholder with the chart release version.*
 
 The command deploys WordPress on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
 
@@ -95,7 +83,7 @@ $ helm install --name my-release \
     stable/wordpress
 ```
 
-The above command sets the WordPress application username and password to `admin` and `password` respectively. Additionally it sets the MariaDB `root` user password to `secretpassword`.
+The above command sets the WordPress administrator account username and password to `admin` and `password` respectively. Additionally it sets the MariaDB `root` user password to `secretpassword`.
 
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 
