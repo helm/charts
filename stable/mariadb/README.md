@@ -54,7 +54,7 @@ The following tables lists the configurable parameters of the MariaDB chart and 
 | `mariadbPassword`          | Password for the new user.                 | `nil`                                                      |
 | `mariadbDatabase`          | Name for new database to create.           | `nil`                                                      |
 | `persistence.enabled`      | Use a PVC to persist data                  | `true`                                                     |
-| `persistence.storageClass` | Storage class of backing PVC               | `generic`                                                  |
+| `persistence.storageClass` | Storage class of backing PVC               | `nil`                                                  |
 | `persistence.accessMode`   | Use volume as ReadOnly or ReadWrite        | `ReadWriteOnce`                                            |
 | `persistence.size`         | Size of data volume                        | `8Gi`                                                      |
 | `resources`                | CPU/Memory resource requests/limits        | Memory: `256Mi`, CPU: `250m`                               |
