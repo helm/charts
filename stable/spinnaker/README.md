@@ -18,6 +18,8 @@ To install the chart with the release name `my-release`:
 $ helm install --name my-release stable/spinnaker
 ```
 
+Note that this chart pulls in many different Docker images so can take a while to fully install. 
+
 ## Configuration
 
 Configurable values are documented in the `values.yaml`.
