@@ -7,7 +7,10 @@ image: sapho/ops-docker-tomcat:8-jre8
 mysql:
   persistence:
     enabled: true
-    # storageClass: <storage class>
+    ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
+    ## Default: volume.alpha.kubernetes.io/storage-class: default
+    ##
+    # storageClass:
     accessMode: ReadWriteOnce
     size: 8Gi
   resources:

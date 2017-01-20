@@ -12,7 +12,10 @@ service:
 ## Persist data to a persitent volume
 persistence:
   enabled: false
-  # storageClass: <storage class>
+  ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
+  ## Default: volume.alpha.kubernetes.io/storage-class: default
+  ##
+  # storageClass:
   accessMode: ReadWriteOnce
   size: 8Gi
 

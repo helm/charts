@@ -9,7 +9,7 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
   annotations:
-  {{- if .Values.persistence.magento.storageClass | quote }}
+  {{- if .Values.persistence.magento.storageClass }}
     volume.beta.kubernetes.io/storage-class: {{ .Values.persistence.magento.storageClass | quote }}
   {{ else }}
     volume.alpha.kubernetes.io/storage-class: default

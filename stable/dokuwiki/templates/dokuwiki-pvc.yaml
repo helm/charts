@@ -9,7 +9,7 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
   annotations:
-  {{- if .Values.persistence.dokuwiki.storageClass | quote }}
+  {{- if .Values.persistence.dokuwiki.storageClass }}
     volume.beta.kubernetes.io/storage-class: {{ .Values.persistence.dokuwiki.storageClass | quote }}
   {{ else }}
     volume.alpha.kubernetes.io/storage-class: default

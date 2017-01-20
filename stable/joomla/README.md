@@ -61,10 +61,10 @@ The following tables lists the configurable parameters of the Joomla! chart and 
 | `mariadb.mariadbRootPassword`     | MariaDB admin password                 | `nil`                                                     |
 | `serviceType`                     | Kubernetes Service type                | `LoadBalancer`                                            |
 | `persistence.enabled`             | Enable persistence using PVC           | `true`                                                    |
-| `persistence.apache.storageClass` | PVC Storage Class for Apache volume    | `generic`                                                 |
+| `persistence.apache.storageClass` | PVC Storage Class for Apache volume    | `nil`                                                 |
 | `persistence.apache.accessMode`   | PVC Access Mode for Apache volume      | `ReadWriteOnce`                                           |
 | `persistence.apache.size`         | PVC Storage Request for Apache volume  | `1Gi`                                                     |
-| `persistence.joomla.storageClass` | PVC Storage Class for Joomla! volume   | `generic`                                                 |
+| `persistence.joomla.storageClass` | PVC Storage Class for Joomla! volume   | `nil`                                                 |
 | `persistence.joomla.accessMode`   | PVC Access Mode for Joomla! volume     | `ReadWriteOnce`                                           |
 | `persistence.joomla.size`         | PVC Storage Request for Joomla! volume | `8Gi`                                                     |
 | `resources`                       | CPU/Memory resource requests/limits    | Memory: `512Mi`, CPU: `300m`                              |
