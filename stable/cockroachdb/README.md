@@ -1,14 +1,14 @@
 # CockroachDB Helm Chart
 
 ## Prerequisites Details
-* Kubernetes 1.4 with alpha APIs enabled
+* Kubernetes 1.5 (for StatefulSet support)
 * PV support on the underlying infrastructure
 
-## PetSet Details
-* http://kubernetes.io/docs/user-guide/petset/
+## StatefulSet Details
+* http://kubernetes.io/docs/concepts/abstractions/controllers/statefulsets/
 
-## PetSet Caveats
-* http://kubernetes.io/docs/user-guide/petset/#alpha-limitations
+## StatefulSet Caveats
+* http://kubernetes.io/docs/concepts/abstractions/controllers/statefulsets/#limitations
 
 ## Todo
 * Support setting up clusters with certificate-based authentication
@@ -16,7 +16,7 @@
 ## Chart Details
 This chart will do the following:
 
-* Set up a dynamically scalable CockroachDB cluster using a Kubernetes PetSet
+* Set up a dynamically scalable CockroachDB cluster using a Kubernetes StatefulSet
 
 ## Installing the Chart
 
@@ -37,7 +37,8 @@ The following tables lists the configurable parameters of the CockroachDB chart 
 | `Image`                 | Container image name               | `cockroachdb/cockroach`                                    |
 | `ImageTag`              | Container image tag                | `latest`                                                    |
 | `ImagePullPolicy`       | Container pull policy              | `Always`                                                   |
-| `Replicas`              | k8s petset replicas                | `3`                                                        |
+| `Replicas`              | k8s statefulset replicas           | `3`                                                        |
+| `MinAvailable`          | k8s PodDisruptionBudget parameter  | `67%`                                                        |
 | `Component`             | k8s selector key                   | `cockroachdb`                                              |
 | `GrpcPort`              | CockroachDB primary serving port   | `26257`                                                     |
 | `HttpPort`              | CockroachDB HTTP port              | `8080`                                                     |
@@ -132,7 +133,7 @@ http://localhost:8080/ in your web browser.
 
 If any CockroachDB member fails it gets restarted or recreated automatically by
 the Kubernetes infrastructure, and will rejoin the cluster automatically when
-it comes back up. You can test this scenario by killing any of the pets:
+it comes back up. You can test this scenario by killing any of the pods:
 
 ```shell
 kubectl delete pod my-release-cockroachdb-1
@@ -178,13 +179,11 @@ nodeID:     2
 
 ## Scaling
 
-Scaling should typically be managed via the `helm upgrade` command, but PetSets
+Scaling should typically be managed via the `helm upgrade` command, but StatefulSets
 don't yet work with `helm upgrade`. In the meantime until `helm upgrade` works,
-if you want to change the number of replicas, you can use the `kubectl patch`
-command with the desired number of replicas, as shown below (or see the
-[PetSet documentation](http://kubernetes.io/docs/user-guide/petset/#scaling-a-petset)
-for more options):
+if you want to change the number of replicas, you can use the `kubectl scale`
+as shown below:
 
 ```shell
-kubectl patch petset my-release-cockroachdb -p '{"spec":{"replicas":4}}'
+kubectl scale statefulset my-release-cockroachdb --replicas=4
 ```

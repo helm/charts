@@ -29,19 +29,7 @@ resources:
     cpu: 10m
 
 # Uchiwa configuration https://docs.uchiwa.io/getting-started/configuration/
-config: |-
-  {
-    "sensu": [
-      {
-        "name": "Sensu",
-        "host": "sensu",
-        "port": 4567
-      }
-    ],
-    "uchiwa": {
-      "host": "0.0.0.0",
-      "port": 3000,
-      "refresh": 10,
-      "loglevel": "info"
-    }
-  }
+host: '0.0.0.0'
+port: 3000
+refresh: 10
+loglevel: info
