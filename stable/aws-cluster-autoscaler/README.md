@@ -56,6 +56,10 @@ Parameter | Description | Default
 `resources.requests.cpu` | CPU request | `100m`
 `resources.requests.memory` | Memory request | `300Mi`
 `scaleDownDelay` | time to wait between scaling operations | `10m` (10 minutes)
+`service.annotations` | annotations to add to service | none
+`service.clusterIP` | IP address to assign to service | `""`
+`service.containerPort` | container port to expose | `8085`
+`service.servicePort` | service port to expose | `8085`
 `skipNodes.withLocalStorage` | don't terminate nodes running pods that use local storage | `false`
 `skipNodes.withSystemPods` | don't terminate nodes running pods in the `kube-system` namespace | `true`
 

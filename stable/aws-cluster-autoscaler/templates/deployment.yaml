@@ -25,6 +25,7 @@ spec:
           imagePullPolicy: "{{ .Values.image.pullPolicy }}"
           command:
             - ./cluster-autoscaler
+            - address={{ .Values.service.containerPort }}
             - --cloud-provider=aws
           {{- range .Values.autoscalingGroups }}
             - --nodes={{ .minSize }}:{{ .maxSize }}:{{ .name }}
@@ -36,6 +37,8 @@ spec:
           env:
             - name: AWS_REGION
               value: "{{ .Values.awsRegion }}"
+          ports:
+            - containerPort: {{ .Values.service.containerPort }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
           volumeMounts:
