@@ -24,5 +24,13 @@ acme:
 dashboard:
   enabled: false
   domain: traefik.example.com
+  ingress:
+    # annotations:
+    #   key: value
+service:
+  # annotations:
+  #   key: value
+  # labels:
+  #   key: value
 gzip:
   enabled: true

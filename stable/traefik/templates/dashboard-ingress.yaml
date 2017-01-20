@@ -8,6 +8,10 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
+  annotations:
+  {{- range $key, $value := .Values.dashboard.ingress.annotations }}
+    {{ $key }}: {{ $value | quote }}
+  {{- end }}
 spec:
   rules:
   - host: {{ .Values.dashboard.domain }}
