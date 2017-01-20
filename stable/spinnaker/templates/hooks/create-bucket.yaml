@@ -24,4 +24,4 @@ spec:
         command:
         - sh
         - -c
-        - "mc config host add {{.Release.Name}}-minio http://{{.Release.Name}}-minio:9000 {{ .Values.minio.AccessKey }} {{ .Values.minio.SecretKey }} S3v4 &&  mc mb {{.Release.Name}}-minio/spinnaker"
+        - "mc config host add {{.Release.Name}}-minio http://{{.Release.Name}}-minio-svc:9000 {{ .Values.minio.AccessKey }} {{ .Values.minio.SecretKey }} S3v4 &&  mc mb {{.Release.Name}}-minio/spinnaker"
