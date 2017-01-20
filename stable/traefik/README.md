@@ -70,6 +70,7 @@ The following tables lists the configurable parameters of the Traefik chart and 
 | ------------------------------- | -------------------------------------------------------------------- | ----------------------------------------- |
 | `imageTag`                      | The version of the official Traefik image to use                     | `v1.1.2`                                  |
 | `serviceType`                   | A valid Kubernetes service type                                      | `LoadBalancer`                            |
+| `replicas`                      | The number of replicas of Traefik to run                             | `1`                                       |
 | `cpuRequest`                    | Initial share of CPU requested per Traefik pod                       | `100m`                                    |
 | `memoryRequest`                 | Initial share of memory requested per Traefik pod                    | `20Mi`                                    |
 | `cpuLimit`                      | CPU limit per Traefik pod                                            | `200m`                                    |
