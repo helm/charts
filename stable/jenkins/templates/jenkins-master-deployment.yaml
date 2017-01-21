@@ -81,7 +81,9 @@ spec:
               mountPath: /var/jenkins_config
               name: jenkins-config
               readOnly: true
+{{ toYaml .Values.Persistence.mounts | indent 12 }}
       volumes:
+{{ toYaml .Values.Persistence.volumes | indent 6 }}
       - name: jenkins-config
         configMap:
           name: {{ template "fullname" . }}

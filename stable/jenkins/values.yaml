@@ -32,3 +32,10 @@ Persistence:
   StorageClass: generic
   AccessMode: ReadWriteOnce
   Size: 8Gi
+  volumes:
+  - name: nothing
+    emptyDir: {}
+  mounts:
+  - mountPath: /var/nothing
+    name: nothing
+    readOnly: true
