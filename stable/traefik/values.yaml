@@ -31,6 +31,9 @@ dashboard:
   ingress:
     # annotations:
     #   key: value
+  auth:
+    # basic:
+    #   username: password
 service:
   # annotations:
   #   key: value
