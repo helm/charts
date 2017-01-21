@@ -60,8 +60,10 @@ data:
     {{- if .Values.dashboard.enabled }}
     [web]
     address = ":8080"
-      {{- if .Values.dashboard.basicAuth }}
+      {{- if .Values.dashboard.auth }}
+      {{- if .Values.dashboard.auth.basic }}
       [web.auth.basic]
-        users = [{{ range $key, $value := .Values.dashboard.basicAuth }}"{{ $key }}:{{ $value }}",{{ end }}]
+        users = [{{ range $key, $value := .Values.dashboard.auth.basic }}"{{ $key }}:{{ $value }}",{{ end }}]
+      {{- end}}
       {{- end}}
     {{- end }}

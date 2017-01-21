@@ -89,13 +89,12 @@ The following tables lists the configurable parameters of the Traefik chart and 
 | `dashboard.enabled`             | Whether to enable the Traefik dashboard                              | `false`                                   |
 | `dashboard.domain`              | Domain for the Traefik dashboard                                     | `traefik.example.com`                     |
 | `dashboard.ingress.annotations` | Annotations for the Traefik dashboard Ingress definition, specified as a map | None                              |
-| `dashboard.basicAuth`           | Basic auth for the Traefik dashboard, see Authentication section     | No auth                                   |
+| `dashboard.auth.basic           | Basic auth for the Traefik dashboard specified as a map, see Authentication section | unset by default; this means basic auth is disabled |
 | `service.annotations`           | Annotations for the Traefik Service definition, specified as a map   | None                                      |
 | `service.labels`                | Additional labels for the Traefik Service definition, specified as a map | None                                  |
 | `gzip.enabled`                  | Whether to use gzip compression                                      | `true`                                    |
 | `kubernetes.namespaces`         | List of Kubernetes namespaces to watch                               | All namespaces                            |
 | `kubernetes.labelSelector`      | Valid Kubernetes ingress label selector to watch (e.g `realm=public`)| No label filter                           |
-| `gzip.enabled`                  | Whether to use gzip compression                                      | `true`                                    |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
 
@@ -122,3 +121,24 @@ Currently it is possible to specify the number of `replicas` but the implementat
 It is heavily advised to not set a value for `replicas` if you also have Let's Encrypt configured. While setting `replicas` will work for many cases, since no leader is elected it has the consequence
 that each node will end up requesting Let's Encrypt certificates if this is also configured.
 This will quickly cut into the very modest rate limit that Let's Encrypt enforces.
+
+[Basic auth](https://docs.traefik.io/toml/#api-backend) can be specified via `dashboard.auth.basic` as a map of usernames to passwords as below.
+See the linked Traefik documentation for accepted passwords encodings.
+It is advised to single quote passwords to avoid issues with special characters:
+
+```bash
+$ helm install --name my-release --namespace kube-system \
+  --set dashboard.enabled=true,dashboard.auth.basic.test='$apr1$H6uskkkW$IgXLP6ewTrSuBkTrqE8wj/' \
+  stable/traefik
+```
+
+Alternatively in YAML form:
+
+```yaml
+dashboard:
+  enabled: true
+  domain: traefik.example.com
+  auth:
+    basic:
+      test: $apr1$H6uskkkW$IgXLP6ewTrSuBkTrqE8wj/
+```
