@@ -9,8 +9,10 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
   annotations:
+  {{- if .Values.dashboard.ingress }}
   {{- range $key, $value := .Values.dashboard.ingress.annotations }}
     {{ $key }}: {{ $value | quote }}
+  {{- end }}
   {{- end }}
 spec:
   rules:
