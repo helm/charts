@@ -34,11 +34,13 @@ data:
           KeyFile = "/ssl/tls.key"
       {{- end }}
     [kubernetes]
-    {{- if .Values.kubernetes.namespaces }}
+    {{- if .Values.kubernetes}}
+      {{- if .Values.kubernetes.namespaces }}
     namespaces = {{ .Values.kubernetes.namespaces }}
-    {{- end}}
-    {{- if .Values.kubernetes.labelSelector }}
+      {{- end}}
+      {{- if .Values.kubernetes.labelSelector }}
     labelselector = {{ .Values.kubernetes.labelSelector | quote }}
+      {{- end}}
     {{- end}}
     {{- if .Values.acme.enabled }}
     [acme]
