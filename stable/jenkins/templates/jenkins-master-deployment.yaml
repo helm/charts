@@ -73,6 +73,9 @@ spec:
               cpu: "{{.Values.Master.Cpu}}"
               memory: "{{.Values.Master.Memory}}"
           volumeMounts:
+{{- if .Values.Persistence.mounts }}
+{{ toYaml .Values.Persistence.mounts | indent 12 }}
+{{- end }}
             -
               mountPath: /var/jenkins_home
               name: jenkins-home
@@ -81,9 +84,10 @@ spec:
               mountPath: /var/jenkins_config
               name: jenkins-config
               readOnly: true
-{{ toYaml .Values.Persistence.mounts | indent 12 }}
       volumes:
+{{- if .Values.Persistence.volumes }}
 {{ toYaml .Values.Persistence.volumes | indent 6 }}
+{{- end }}
       - name: jenkins-config
         configMap:
           name: {{ template "fullname" . }}

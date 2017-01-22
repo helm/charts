@@ -33,9 +33,9 @@ Persistence:
   AccessMode: ReadWriteOnce
   Size: 8Gi
   volumes:
-  - name: nothing
-    emptyDir: {}
+#  - name: nothing
+#    emptyDir: {}
   mounts:
-  - mountPath: /var/nothing
-    name: nothing
-    readOnly: true
+#  - mountPath: /var/nothing
+#    name: nothing
+#    readOnly: true
