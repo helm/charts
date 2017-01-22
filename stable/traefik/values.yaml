@@ -23,6 +23,9 @@ acme:
     size: 1Gi
 dashboard:
   enabled: false
+  port: 8080
   domain: traefik.example.com
+daemonset:
+  enabled: false
 gzip:
   enabled: true

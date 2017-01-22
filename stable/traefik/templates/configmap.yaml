@@ -46,5 +46,5 @@ data:
     {{- end }}
     {{- if .Values.dashboard.enabled }}
     [web]
-    address = ":8080"
+    address = ":{{ .Values.dashboard.port }}"
     {{- end }}

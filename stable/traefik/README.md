@@ -18,8 +18,6 @@ resources _cluster-wide_.
 ## Prerequisites
 
 - Kubernetes 1.4+ with Beta APIs enabled
-- You are deploying the chart to a cluster with a cloud provider capable of provisioning an
-external load balancer (e.g. AWS or GKE)
 - You control DNS for the domain(s) you intend to route through Traefik
 - __Suggested:__ PV provisioner support in the underlying infrastructure
 
@@ -85,8 +83,10 @@ The following tables lists the configurable parameters of the Traefik chart and 
 | `acme.persistence.storageClass` | Type of `StorageClass` to request-- will be cluster-specific         | `generic`                                 |
 | `acme.persistence.accessMode`   | `ReadWriteOnce` or `ReadOnly`                                        | `ReadWriteOnce`                           |
 | `acme.persistence.size`         | Minimum size of the volume requested                                 | `1Gi`                                     |
+| `daemonset.enabled`             | Deploy DaemonSet instead of Deployment                               | `false`                                   |
 | `dashboard.enabled`             | Whether to enable the Traefik dashboard                              | `false`                                   |
 | `dashboard.domain`              | Domain for the Traefik dashboard                                     | `traefik.example.com`                     |
+| `dashboard.port`                | Container port for the Traefik dashboard                             | `8080`                                    |
 | `gzip.enabled`                  | Whether to use gzip compression                                      | `true`                     |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
@@ -103,3 +103,10 @@ installing the chart. For example:
 ```bash
 $ helm install --name my-release --namespace kube-system --values values.yaml stable/traefik
 ```
+
+If you are installing the chart to a cluster that is not capable of provisioning an
+external load balancer (i.e. not using AWS or GKE), use `daemonset.enabled=true`.
+This will schedule a Traefik pod on each node with `hostNetwork` enabled due to
+https://github.com/kubernetes/kubernetes/issues/23920.  You will likely also want
+to change the `dashboard.port` so it doesn't conflict with your master node's
+`kube-apiserver` running on `8080`.

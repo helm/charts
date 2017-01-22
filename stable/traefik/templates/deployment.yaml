@@ -1,5 +1,9 @@
 apiVersion: extensions/v1beta1
+{{- if not .Values.daemonset.enabled }}
 kind: Deployment
+{{- else }}
+kind: DaemonSet
+{{- end }}
 metadata:
   name: {{ template "fullname" . }}
   labels:
@@ -8,10 +12,12 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
+  {{- if not .Values.daemonset.enabled }}
   replicas: 1
   selector:
     matchLabels:
       app: {{ template "fullname" . }}
+  {{- end }}
   template:
     metadata:
       labels:
@@ -21,6 +27,9 @@ spec:
         heritage: "{{ .Release.Service }}"
     spec:
       terminationGracePeriodSeconds: 60
+      {{- if .Values.daemonset.enabled }}
+      hostNetwork: true
+      {{- end }}
       containers:
       - image: traefik:{{ .Values.imageTag }}
         name: {{ template "fullname" . }}
@@ -62,7 +71,7 @@ spec:
         - containerPort: 80
         - containerPort: 443
         {{- if .Values.dashboard.enabled }}
-        - containerPort: 8080
+        - containerPort: {{ .Values.dashboard.port }}
         {{- end }}
         args:
         - --configfile=/config/traefik.toml

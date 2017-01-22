@@ -13,5 +13,5 @@ spec:
     app: {{ template "fullname" . }}
   ports:
   - port: 80
-    targetPort: 8080
+    targetPort: {{ .Values.dashboard.port }}
 {{- end }}
