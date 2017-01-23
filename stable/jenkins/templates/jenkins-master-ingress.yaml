@@ -1,5 +1,4 @@
 {{- if .Values.Master.HostName }}
----
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:

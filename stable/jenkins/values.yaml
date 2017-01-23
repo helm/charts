@@ -20,7 +20,7 @@ Master:
 # Use ClusterIP if your setup includes ingress controller
   ServiceType: LoadBalancer
 # Used to create Ingress record (should used with ServiceType: ClusterIP)
-  HostName: ~
+# HostName: jenkins.cluster.local
   ContainerPort: 8080
   SlaveListenerPort: 50000
 
