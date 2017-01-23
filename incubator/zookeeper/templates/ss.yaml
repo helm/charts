@@ -18,11 +18,11 @@ spec:
         component: "{{.Release.Name}}"
       annotations:
         pod.alpha.kubernetes.io/initialized: "true"
-        {{if eq .Values.AntiAffinity "hard"}}
+        {{- if eq .Values.AntiAffinity "hard"}}
         scheduler.alpha.kubernetes.io/affinity: >
             {
               "podAntiAffinity": {
-                "requiredDuringSchedulingRequiredDuringExecution": [{
+                "requiredDuringSchedulingIgnoredDuringExecution": [{
                   "labelSelector": {
                     "matchExpressions": [{
                       "key": "component",
@@ -34,11 +34,11 @@ spec:
                 }]
               }
             } 
-        {{else if eq .Values.AntiAffinity "soft"}}
+        {{- else if eq .Values.AntiAffinity "soft"}}
         scheduler.alpha.kubernetes.io/affinity: >
             {
               "podAntiAffinity": {
-                "prefferedDuringSchedulingPrefferedDuringExecution": [{
+                "prefferedDuringSchedulingIgnoredDuringExecution": [{
                   "labelSelector": {
                     "matchExpressions": [{
                       "key": "component",
@@ -50,7 +50,7 @@ spec:
                 }]
               }
             }
-        {{end}}
+        {{- end}}
     spec:
       containers:
       - name: k8szk
@@ -142,12 +142,11 @@ spec:
   - metadata:
       name: datadir
       annotations:
-        {{if .Values.StorageClass}}
+        {{- if .Values.StorageClass}}
         volume.beta.kubernetes.io/storage-class: {{.Values.StorageClass | quote}}
-        {{else}}
+        {{- else}}
         volume.alpha.kubernetes.io/storage-class: "default"
-        {{end}}
-       
+        {{- end}} 
     spec:
       accessModes: [ "ReadWriteOnce" ]
       resources:

@@ -52,7 +52,7 @@ The configuration parameters in this section control the resources requested and
 | Parameter | Description | Default |
 | --------- | ----------- | ------- |
 | `Servers` | The number of ZooKeeper servers. This should always be (1,3,5, or 7) | `3` |
-| `MinAvailable` | The minimum number of servers that must be available during evictions. This should in the interval `[(Servers/2) + 1,(Servers - 1)]`. | `2` |
+| `MinAvailable` | The minimum number of servers that must be available during evictions. This should in the interval `[(Servers/2) + 1,(Servers - 1)]`. | `Servers-1` |
 | `Cpu` | The amount of CPU to request. As ZooKeeper is not very CPU intensive, `2` is a good choice to start with for a production deployment. | `1` |
 | `Heap` | The amount of JVM heap that the ZooKeeper servers will use. As ZooKeeper stores all of its data in memory, this value should reflect the size of your working set. The JVM -Xms/-Xmx format is used. |`2G` |
 | `Memory` | The amount of memory to request. This value should be at least 2 GiB larger than `Heap` to avoid swapping. You many want to use `1.5 * Heap` for values larger than 2GiB. The Kubernetes format is used. |`2Gi` |

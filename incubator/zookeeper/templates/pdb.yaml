@@ -13,4 +13,8 @@ spec:
   selector:
     matchLabels:
       component: "{{.Release.Name}}"
+  {{- if .Values.MinAvailable}}
   minAvailable: {{.Values.MinAvailable}}
+  {{- else}}
+  minAvailable: {{sub .Values.Servers 1}}
+  {{- end}}
