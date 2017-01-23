@@ -46,7 +46,7 @@ phabricatorFirstName: First Name
 phabricatorLastName: Last Name
 
 ## SMTP mail delivery configuration
-## ref: https://github.com/bitnami/bitnami-docker-redmine/#smtp-configuration
+## ref: https://github.com/bitnami/bitnami-docker-phabricator/#smtp-configuration
 ##
 # smtpHost:
 # smtpPort:

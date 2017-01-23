@@ -23,7 +23,7 @@ spec:
           imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
           args:
             - --config.file=/etc/config/alertmanager.yml
-            - --storage.path={{ default "/data" .Values.alertmanager.storagePath | quote }}
+            - --storage.path={{ default "/data" .Values.alertmanager.storagePath }}
           ports:
             - containerPort: 9093
           readinessProbe:
@@ -56,7 +56,7 @@ spec:
         - name: storage-volume
       {{- if .Values.alertmanager.persistentVolume.enabled }}
           persistentVolumeClaim:
-            claimName: {{ template "alertmanager.fullname" . }}
+            claimName: {{ if .Values.alertmanager.persistentVolume.existingClaim }}{{ .Values.alertmanager.persistentVolume.existingClaim }}{{- else }}{{ template "alertmanager.fullname" . }}{{- end }}
       {{- else }}
           emptyDir: {}
       {{- end -}}

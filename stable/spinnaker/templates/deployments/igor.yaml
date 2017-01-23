@@ -1,0 +1,76 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}-igor
+  labels:
+    app: {{ template "fullname" . }}
+    component: igor
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: {{ template "fullname" . }}
+        component: igor
+      annotations:
+        pod.alpha.kubernetes.io/init-containers: '[
+              {
+                  "name": "copy-default-config",
+                  "image": "{{.Values.jenkins.Master.Image}}:{{.Values.jenkins.Master.ImageTag}}",
+                  "command": ["cp", "-n", "/var/jenkins_config/config.xml", "/var/jenkins_home"],
+                  "imagePullPolicy": "IfNotPresent",
+                  "volumeMounts": [
+                      {
+                          "name": "jenkins-config",
+                          "mountPath": "/var/jenkins_config"
+                      },
+                      {
+                          "name": "jenkins-home",
+                          "mountPath": "/var/jenkins_home"
+                      }
+                  ]
+              }
+          ]'
+    spec:
+      containers:
+        - image: {{ .Values.images.igor }}
+          name: igor
+          ports:
+            - containerPort: 8088
+              name: igor
+          volumeMounts:
+            - mountPath: /opt/spinnaker/config
+              name: {{ template "fullname" . }}-spinnaker-config
+          readinessProbe:
+            httpGet:
+              path: /env
+              port: 8088
+            initialDelaySeconds: 20
+            timeoutSeconds: 1
+        - name: jenkins-master
+          image: "{{.Values.jenkins.Master.Image}}:{{.Values.jenkins.Master.ImageTag}}"
+          imagePullPolicy: "{{.Values.jenkins.Master.ImagePullPolicy}}"
+          env:
+            - name: JAVA_OPTS
+              value: "{{ default "" .Values.jenkins.Master.JavaOpts}}"
+          ports:
+            - containerPort: {{.Values.jenkins.Master.ContainerPort}}
+              name: http
+            - containerPort: {{.Values.jenkins.Master.SlaveListenerPort}}
+              name: slavelistener
+          resources:
+            requests:
+              cpu: "{{.Values.jenkins.Master.Cpu}}"
+              memory: "{{.Values.jenkins.Master.Memory}}"
+          volumeMounts:
+            - mountPath: /var/jenkins_home
+              name: jenkins-home
+      volumes:
+      - name: jenkins-config
+        configMap:
+          name: {{ .Release.Name }}-jenkins-config
+      - name: jenkins-home
+        emptyDir: {}
+      - name: {{ template "fullname" . }}-spinnaker-config
+        configMap:
+          name: {{ template "fullname" . }}-spinnaker-config

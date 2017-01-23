@@ -1,3 +1,4 @@
+{{- if eq .Values.mode "standalone" }}
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
@@ -8,7 +9,6 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
-  replicas: 1
   selector:
     matchLabels:
       app: {{ template "fullname" . }}
@@ -34,14 +34,17 @@ spec:
             secretName: {{ template "fullname" . }}-user
       containers:
         - name: minio
-          image: {{ .Values.Image }}:{{ .Values.ImageTag }}
-          imagePullPolicy: {{ .Values.ImagePullPolicy }}
-          args:
-            - server
-            - /export
+          image: {{ .Values.image }}:{{ .Values.imageTag }}
+          imagePullPolicy: {{ .Values.imagePullPolicy }}
+          command: ["minio"]
+          {{- if .Values.configPath }}
+          args: ["-C", "{{ .Values.configPath }}", "server", "{{ .Values.mountPath }}"]
+          {{- else }}
+          args: ["server", "{{ .Values.mountPath }}"]
+          {{- end }}
           volumeMounts:
             - name: export
-              mountPath: /export
+              mountPath: {{ .Values.mountPath }}
           ports:
             - name: service
               containerPort: 9000
@@ -62,3 +65,4 @@ spec:
             timeoutSeconds: 1
           resources:
 {{ toYaml .Values.resources | indent 12 }}
+{{- end }}

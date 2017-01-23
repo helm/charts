@@ -67,7 +67,11 @@ The following tables lists the configurable parameters of the Uchiwa chart and t
 | `resources.requests.memory` | Memory request for uchiwa | `50Mi` |
 | `resources.limits.cpu` | CPU limit for uchiwa | `` |
 | `resources.limits.memory` | Memory limit for uchiwa | `50Mi` |
-| `config` | Configuration to pass to Uchiwa | `json defined in values.yaml` |
+| `host` | Address on which Uchiwa will listen | `0.0.0.0` |
+| `port` | Port on which Uchiwa will listen | `3000` |
+| `refresh` | Determines the interval to pull the Sensu APIs, in seconds | `10` |
+| `loglevel` | Level of logging to show after Uchiwa has started | `info` |
+
 
 Detailed documentaion for the `config` json can be found at [Uchiwa/Docs](https://docs.uchiwa.io/getting-started/configuration/)
 

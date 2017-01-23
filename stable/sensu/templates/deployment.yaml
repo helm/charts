@@ -20,7 +20,8 @@ spec:
         imagePullPolicy: {{ .Values.pullPolicy }}
         args:
           - server
-{{ toYaml .Values.server.resources | indent 8 }}
+        resources:
+{{ toYaml .Values.server.resources | indent 10 }}
         env:
         - name: API_HOST
           value: localhost
@@ -46,7 +47,8 @@ spec:
         imagePullPolicy: {{ .Values.pullPolicy }}
         args:
           - api        
-{{ toYaml .Values.api.resources | indent 8 }}          
+        resources:
+{{ toYaml .Values.api.resources | indent 10 }}
         env:
         - name: REDIS_HOST 
           value: {{ template "redis.fullname" . }}
