@@ -11,4 +11,4 @@ spec:
       targetPort: 6379
   selector:
     redis-node: "true"
-  type: "NodePort"
+  

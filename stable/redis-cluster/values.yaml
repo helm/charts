@@ -20,3 +20,16 @@ persistence:
 
 ## Redis image version
 redis_image: gcr.io/google_containers/redis:v1
+
+#Kubernetes creates one PersistentVolume for each VolumeClaimTemplate.
+#When a Pod is (re)scheduled onto a node, its volumeMounts mount the PersistentVolumes associated with its PersistentVolume Claims.
+#Note that, the PersistentVolumes associated with the Pods’ PersistentVolume Claims are not deleted when the Pods, or StatefulSet are deleted.
+# This must be done manually.
+volumeClaimTemplates:
+  - metadata:
+      name: redis-master
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 8Gi
