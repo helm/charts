@@ -50,7 +50,7 @@ ingress:
 oauth:
   enabled: false
   github:
-    client_id: f612alskdfc91cad5ad
-    client_secret: 6ab4d3bbbasdfkldffewalaskdf5a29b3917571f31
-    token_secret: foobarfoobarfoobarfoobar
+    client_id: CHANGE_ME
+    client_secret: CHANGE_ME
+    token_secret: CHANGE_ME
     gh_orgs: myorg
