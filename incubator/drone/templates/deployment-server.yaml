@@ -104,7 +104,7 @@ spec:
             valueFrom:
               configMapKeyRef:
                 name: {{ template "fullname" . }}
-                key: remote.github.client.scope
+                key: remote.github.scope
           - name: DRONE_GITHUB_PRIVATE_MODE
             valueFrom:
               configMapKeyRef:
