@@ -8,16 +8,24 @@ metadata:
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-  name: {{ template "fullname" . }}-delete-service
+  name: {{ template "fullname" . }}-delete
 spec:
   template:
     metadata:
       labels:
         app: {{ template "name" . }}
         release: {{ .Release.Name }}
-      name: {{ template "fullname" . }}-delete-service
+      name: {{ template "fullname" . }}-delete
     spec:
       containers:
+        - name: delete-ingress
+          image: "{{ .Values.global.hyperkube.repository }}:{{ .Values.global.hyperkube.tag }}"
+          imagePullPolicy: "{{ .Values.global.hyperkube.pullPolicy }}"
+          command: ["./kubectl","-n","{{ .Release.Namespace }}","delete","ing/kube-lego-nginx"]
+        - name: delete-secret
+          image: "{{ .Values.global.hyperkube.repository }}:{{ .Values.global.hyperkube.tag }}"
+          imagePullPolicy: "{{ .Values.global.hyperkube.pullPolicy }}"
+          command: ["./kubectl","-n","{{ .Release.Namespace }}","delete","secrets/kube-lego-account"]
         - name: delete-service
           image: "{{ .Values.global.hyperkube.repository }}:{{ .Values.global.hyperkube.tag }}"
           imagePullPolicy: "{{ .Values.global.hyperkube.pullPolicy }}"
