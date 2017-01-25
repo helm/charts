@@ -40,4 +40,5 @@ gzip:
 # Kubernetes ingress filters
 #kubernetes:
 #  namespaces:
+#  - default
 #  labelSelector:
