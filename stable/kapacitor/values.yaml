@@ -3,7 +3,7 @@
 ##
 image:
   repository: "kapacitor"
-  tag: "1.1.0"
+  tag: "1.2"
   pullPolicy: "IfNotPresent"
 
 ## Specify a service type, defaults to NodePort
