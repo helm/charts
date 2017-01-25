@@ -25,7 +25,5 @@ spec:
   ports:
   - port: 80
     name: http
-{{- if .Values.ssl.enabled }}
   - port: 443
     name: https
-{{- end }}

@@ -37,6 +37,7 @@ service:
   #   key: value
 gzip:
   enabled: true
-kubernetes:
-  namespaces: ~
-  labelSelector: ~
+# Kubernetes ingress filters
+#kubernetes:
+#  namespaces:
+#  labelSelector:

@@ -91,8 +91,8 @@ The following tables lists the configurable parameters of the Traefik chart and 
 | `service.annotations`           | Annotations for the Traefik Service definition, specified as a map   | None                                      |
 | `service.labels`                | Additional labels for the Traefik Service definition, specified as a map | None                                  |
 | `gzip.enabled`                  | Whether to use gzip compression                                      | `true`                                    |
-| `kubernetes.namespaces`         | List of Kubernetes namespaces to watch                               | `~`                                       |
-| `kubernetes.labelSelector`      | Valid Kubernetes ingress label selector to watch                     | `~`                                       |
+| `kubernetes.namespaces`         | List of Kubernetes namespaces to watch (e. g. `["default"]`)         |                                           |
+| `kubernetes.labelSelector`      | Valid Kubernetes ingress label selector to watch (e.g `realm=public`)|                                           |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
 
