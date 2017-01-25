@@ -54,6 +54,7 @@ The following tables lists the configurable parameters of the kube2iam chart and
 | `host.iptables`             | Add iptables rule                          | `false`                                                    |
 | `host.interface`            | Host interface for proxying AWS metadata   | `docker0`                                                  |
 | `extraArgs`                 | Extra arguments                            | `nil`                                                      |
+| `namespace`                 | Namespace to run the DaemonSet in          | `default`                                                  |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
