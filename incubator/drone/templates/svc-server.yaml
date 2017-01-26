@@ -11,13 +11,13 @@ spec:
   type: {{ .Values.serviceType }}
   ports:
   {{ if .Values.ssl.enabled }}
-  - name: http
-    port: 80
-    targetPort: http
-  {{ else }}
   - name: https
     port: 443
     targetPort: https
+  {{ else }}
+  - name: http
+    port: 80
+    targetPort: http
   {{ end }}
   selector:
     app: {{ template "fullname" . }}-server
