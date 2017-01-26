@@ -28,6 +28,12 @@ serviceType: LoadBalancer
 ##
 replicas: 1
 
+## Configure external service ports
+## ref: http://kubernetes.io/docs/user-guide/services/
+sshPort: 22
+httpPort: 80
+httpsPort: 443
+
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
 ##
