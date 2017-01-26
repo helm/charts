@@ -1,0 +1,29 @@
+# Default values for registry.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+image:
+  repository: registry
+  tag: "2.6.0"
+  pullPolicy: IfNotPresent
+service:
+  name: registry
+  type: ClusterIP
+  # nodePort: <If service.type is set to NodePort, optionally choose a port between 30000-32767> 
+  externalPort: 5000
+  internalPort: 5000
+resources:
+  limits:
+    cpu: 100m
+    memory: 128Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+persistence:
+  enabled: true
+  ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
+  ## Default: volume.alpha.kubernetes.io/storage-class: default
+  ##
+  # storageClass:
+  accessMode: ReadWriteOnce
+  size: 8Gi
+
