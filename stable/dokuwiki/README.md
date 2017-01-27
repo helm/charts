@@ -54,10 +54,10 @@ The following tables lists the configurable parameters of the DokuWiki chart and
 | `dokuwikiWikiName`                  | Wiki name                               | `My Wiki`                                               |
 | `serviceType`                       | Kubernetes Service type                 | `LoadBalancer`                                          |
 | `persistence.enabled`               | Enable persistence using PVC            | `true`                                                  |
-| `persistence.apache.storageClass`   | PVC Storage Class for apache volume     | `nil`                                               |
+| `persistence.apache.storageClass`   | PVC Storage Class for apache volume     | `nil`  (uses alpha storage class annotation) |
 | `persistence.apache.accessMode`     | PVC Access Mode for apache volume       | `ReadWriteOnce`                                         |
 | `persistence.apache.size`           | PVC Storage Request for apache volume   | `1Gi`                                                   |
-| `persistence.dokuwiki.storageClass` | PVC Storage Class for DokuWiki volume   | `nil`                                               |
+| `persistence.dokuwiki.storageClass` | PVC Storage Class for DokuWiki volume   | `nil`  (uses alpha storage class annotation) |
 | `persistence.dokuwiki.accessMode`   | PVC Access Mode for DokuWiki volume     | `ReadWriteOnce`                                         |
 | `persistence.dokuwiki.size`         | PVC Storage Request for DokuWiki volume | `8Gi`                                                   |
 | `resources`                         | CPU/Memory resource requests/limits     | Memory: `512Mi`, CPU: `300m`                            |
