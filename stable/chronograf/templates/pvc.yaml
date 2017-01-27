@@ -11,7 +11,7 @@ metadata:
   annotations:
   {{- if .Values.persistence.storageClass }}
     volume.beta.kubernetes.io/storage-class: {{ .Values.persistence.storageClass | quote }}
-  {{ else }}
+  {{- else }}
     volume.alpha.kubernetes.io/storage-class: default
   {{- end }}
 spec:
