@@ -52,7 +52,7 @@ The following tables lists the configurable parameters of the PostgresSQL chart 
 | `postgresPassword`         | Password for the new user.                 | random 10 characters                                       |
 | `postgresDatabase`         | Name for new database to create.           | `postgres`                                                 |
 | `persistence.enabled`      | Use a PVC to persist data                  | `true`                                                     |
-| `persistence.storageClass` | Storage class of backing PVC               | `nil`                                                  |
+| `persistence.storageClass` | Storage class of backing PVC               | `nil` (uses alpha storage class annotation)                |
 | `persistence.accessMode`   | Use volume as ReadOnly or ReadWrite        | `ReadWriteOnce`                                            |
 | `persistence.size`         | Size of data volume                        | `8Gi`                                                      |
 | `resources`                | CPU/Memory resource requests/limits        | Memory: `256Mi`, CPU: `100m`                               |
