@@ -11,13 +11,13 @@ spec:
   type: {{ .Values.serviceType }}
   ports:
   - name: ssh
-    port: 22
+    port: {{ .Values.sshPort | int }}
     targetPort: ssh
   - name: http
-    port: 80
+    port: {{ .Values.httpPort | int }}
     targetPort: http
   - name: https
-    port: 443
+    port: {{ .Values.httpsPort | int }}
     targetPort: https
   selector:
     app: {{ template "fullname" . }}
