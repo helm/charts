@@ -7,8 +7,6 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: {{.Release.Name | quote }}
     heritage: {{.Release.Service | quote }}
-  annotations:
-    "helm.sh/created": {{.Release.Time.Seconds | quote }}
 spec:
   replicas: 1
   selector:
