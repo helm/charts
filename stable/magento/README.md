@@ -61,10 +61,10 @@ The following tables lists the configurable parameters of the Magento chart and 
 | `mariadb.mariadbRootPassword`      | MariaDB admin password                   | `nil`                                                    |
 | `serviceType`                      | Kubernetes Service type                  | `LoadBalancer`                                           |
 | `persistence.enabled`              | Enable persistence using PVC             | `true`                                                   |
-| `persistence.apache.storageClass`  | PVC Storage Class for Apache volume      | `nil`                                                |
+| `persistence.apache.storageClass`  | PVC Storage Class for Apache volume      | `nil`  (uses alpha storage annotation)                                              |
 | `persistence.apache.accessMode`    | PVC Access Mode for Apache volume        | `ReadWriteOnce`                                          |
 | `persistence.apache.size`          | PVC Storage Request for Apache volume    | `1Gi`                                                    |
-| `persistence.magento.storageClass` | PVC Storage Class for Magento volume     | `nil`                                                |
+| `persistence.magento.storageClass` | PVC Storage Class for Magento volume     | `nil`  (uses alpha storage annotation)                                                |
 | `persistence.magento.accessMode`   | PVC Access Mode for Magento volume       | `ReadWriteOnce`                                          |
 | `persistence.magento.size`         | PVC Storage Request for Magento volume   | `8Gi`                                                    |
 | `resources`                        | CPU/Memory resource requests/limits      | Memory: `512Mi`, CPU: `300m`                             |
