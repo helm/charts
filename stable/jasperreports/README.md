@@ -62,7 +62,7 @@ The following tables lists the configurable parameters of the JasperReports char
 | `mariadb.mariadbRootPassword` | MariaDB admin password                       | `nil`                                                    |
 | `serviceType`                 | Kubernetes Service type                      | `LoadBalancer`                                           |
 | `persistence.enabled`         | Enable persistence using PVC                 | `true`                                                   |
-| `persistence.storageClass`    | PVC Storage Class for JasperReports volume   | `nil`                                                |
+| `persistence.storageClass`    | PVC Storage Class for JasperReports volume   | `nil` (uses alpha storage annotation)                     |
 | `persistence.accessMode`      | PVC Access Mode for JasperReports volume     | `ReadWriteOnce`                                          |
 | `persistence.size`            | PVC Storage Request for JasperReports volume | `8Gi`                                                    |
 | `resources`                   | CPU/Memory resource requests/limits          | Memory: `512Mi`, CPU: `300m`                             |
