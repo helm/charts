@@ -38,7 +38,7 @@ function cleanup {
 }
 trap cleanup EXIT
 
-if [ ! -f "${KUBECONFIG}" ];then
+if [ ! -f "${KUBECONFIG:=}" ];then
   # Get credentials for test cluster
   gcloud auth activate-service-account --key-file="${GOOGLE_APPLICATION_CREDENTIALS}"
   gcloud container clusters get-credentials jenkins --project kubernetes-charts-ci --zone us-west1-a
