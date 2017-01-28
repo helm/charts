@@ -1,5 +1,4 @@
 {{- if .Values.persistence.gitlabData.enabled }}
----
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
