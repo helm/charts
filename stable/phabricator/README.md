@@ -64,10 +64,10 @@ The following tables lists the configurable parameters of the Phabricator chart 
 | `mariadb.mariadbRootPassword`          | MariaDB admin password                       | `nil`                                                    |
 | `serviceType`                          | Kubernetes Service type                      | `LoadBalancer`                                           |
 | `persistence.enabled`                  | Enable persistence using PVC                 | `true`                                                   |
-| `persistence.apache.storageClass`      | PVC Storage Class for Apache volume          | `nil`                                                |
+| `persistence.apache.storageClass`      | PVC Storage Class for Apache volume          | `nil` (uses alpha storage class annotation)              |
 | `persistence.apache.accessMode`        | PVC Access Mode for Apache volume            | `ReadWriteOnce`                                          |
 | `persistence.apache.size`              | PVC Storage Request for Apache volume        | `1Gi`                                                    |
-| `persistence.phabricator.storageClass` | PVC Storage Class for Phabricator volume     | `nil`                                                |
+| `persistence.phabricator.storageClass` | PVC Storage Class for Phabricator volume     | `nil` (uses alpha storage class annotation)              |
 | `persistence.phabricator.accessMode`   | PVC Access Mode for Phabricator volume       | `ReadWriteOnce`                                          |
 | `persistence.phabricator.size`         | PVC Storage Request for Phabricator volume   | `8Gi`                                                    |
 | `resources`                            | CPU/Memory resource requests/limits          | Memory: `512Mi`, CPU: `300m`                             |
