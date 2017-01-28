@@ -59,10 +59,10 @@ The following tables lists the configurable parameters of the phpBB chart and th
 | `mariadb.mariadbRootPassword`     | MariaDB admin password                | `nil`                                                   |
 | `serviceType`                     | Kubernetes Service type               | `LoadBalancer`                                          |
 | `persistence.enabled`             | Enable persistence using PVC          | `true`                                                  |
-| `persistence.apache.storageClass` | PVC Storage Class for Apache volume   | `nil`                                               |
+| `persistence.apache.storageClass` | PVC Storage Class for Apache volume   | `nil` (uses alpha storage class annotation)             |
 | `persistence.apache.accessMode`   | PVC Access Mode for Apache volume     | `ReadWriteOnce`                                         |
 | `persistence.apache.size`         | PVC Storage Request for Apache volume | `1Gi`                                                   |
-| `persistence.phpbb.storageClass`  | PVC Storage Class for phpBB volume    | `nil`                                               |
+| `persistence.phpbb.storageClass`  | PVC Storage Class for phpBB volume    | `nil` (uses alpha storage class annotation)             |
 | `persistence.phpbb.accessMode`    | PVC Access Mode for phpBB volume      | `ReadWriteOnce`                                         |
 | `persistence.phpbb.size`          | PVC Storage Request for phpBB volume  | `8Gi`                                                   |
 | `resources`                       | CPU/Memory resource requests/limits   | Memory: `512Mi`, CPU: `300m`                            |
