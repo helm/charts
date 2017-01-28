@@ -7,8 +7,6 @@ metadata:
     release: {{.Release.Name | quote }}
     chart: "{{.Chart.Name}}-{{.Chart.Version}}"
     component: "{{.Release.Name}}-{{.Values.Master.Component}}"
-  annotations:
-    "helm.sh/created": {{.Release.Time.Seconds | quote }}
 spec:
   ports:
     - port: {{.Values.Master.ServicePort}}
@@ -25,8 +23,6 @@ metadata:
     release: {{.Release.Name | quote }}
     chart: "{{.Chart.Name}}-{{.Chart.Version}}"
     component: "{{.Release.Name}}-{{.Values.Master.Component}}"
-  annotations:
-    "helm.sh/created": {{.Release.Time.Seconds | quote }}
 spec:
   ports:
     - port: {{.Values.WebUi.ServicePort}}
@@ -44,8 +40,6 @@ metadata:
     release: {{.Release.Name | quote }}
     chart: "{{.Chart.Name}}-{{.Chart.Version}}"
     component: "{{.Release.Name}}-{{.Values.Master.Component}}"
-  annotations:
-    "helm.sh/created": {{.Release.Time.Seconds | quote }}
 spec:
   replicas: {{default 1 .Values.Master.Replicas}}
   strategy:
