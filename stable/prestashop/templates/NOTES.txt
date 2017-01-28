@@ -19,8 +19,8 @@ host. To configure PrestaShop with the URL of your service:
         Watch the status with: 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "fullname" . }}'
 
   export APP_HOST=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "fullname" . }} --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
-  export APP_PASSWORD=$(printf $(printf '\%o' `kubectl get secret --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath="{.data.prestashop-password[*]}"`))
-  export APP_DATABASE_PASSWORD=$(printf $(printf '\%o' `kubectl get secret --namespace {{ .Release.Namespace }} {{ template "mariadb.fullname" . }} -o jsonpath="{.data.mariadb-root-password[*]}"`))
+  export APP_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath="{.data.prestashop-password}" | base64 --decode)
+  export APP_DATABASE_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "mariadb.fullname" . }} -o jsonpath="{.data.mariadb-root-password}" | base64 --decode)
   {{- end }}
 
 2. Complete your PrestaShop deployment by running:
@@ -46,5 +46,5 @@ host. To configure PrestaShop with the URL of your service:
 
   echo Admin Email   : {{ .Values.prestashopEmail }}
   echo Admin Username: {{ .Values.prestashopUsername }}
-  echo Admin Password: $(printf $(printf '\%o' `kubectl get secret --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath="{.data.prestashop-password[*]}"`))
+  echo Admin Password: $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath="{.data.prestashop-password}" | base64 --decode)
 {{- end }}
