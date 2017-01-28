@@ -11,11 +11,8 @@ metadata:
   annotations:
   {{- if .Values.persistence.phabricator.storageClass }}
     volume.beta.kubernetes.io/storage-class: {{ .Values.persistence.phabricator.storageClass | quote }}
-  {{ else }}
+  {{- else }}
     volume.alpha.kubernetes.io/storage-class: default
-  {{- end }}
-  {{- range $key, $value := .Values.persistence.phabricator.annotations }}
-    {{ $key }}: {{ $value }}
   {{- end }}
 spec:
   accessModes:
