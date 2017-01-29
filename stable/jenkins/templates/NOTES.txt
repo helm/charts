@@ -1,5 +1,5 @@
 1. Get your '{{ .Values.Master.AdminUser }}' user password by running:
-  printf $(printf '\%o' `kubectl get secret --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath="{.data.jenkins-admin-password[*]}"`);echo
+  printf $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath="{.data.jenkins-admin-password}" | base64 --decode);echo
 
 2. Get the Jenkins URL to visit by running these commands in the same shell:
 {{- if contains "NodePort" .Values.Master.ServiceType }}
@@ -32,4 +32,3 @@ https://cloud.google.com/solutions/jenkins-on-container-engine
 ######            the Jenkins pod is terminated.                            #####
 #################################################################################
 {{- end }}
-
