@@ -59,7 +59,7 @@ The following tables lists the configurable parameters of the Ghost chart and th
 | `mariadb.mariadbRootPassword`     | MariaDB admin password                                | `nil`                                                     |
 | `serviceType`                     | Kubernetes Service type                               | `LoadBalancer`                                            |
 | `persistence.enabled`             | Enable persistence using PVC                          | `true`                                                    |
-| `persistence.storageClass`        | PVC Storage Class for Ghost volume                    | `generic`                                                 |
+| `persistence.storageClass`        | PVC Storage Class for Ghost volume                    | `nil` (uses alpha storage annotation) |
 | `persistence.accessMode`          | PVC Access Mode for Ghost volume                      | `ReadWriteOnce`                                           |
 | `persistence.size`                | PVC Storage Request for Ghost volume                  | `8Gi`                                                     |
 | `resources`                       | CPU/Memory resource requests/limits                   | Memory: `512Mi`, CPU: `300m`                              |
