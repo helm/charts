@@ -7,8 +7,6 @@ metadata:
     release: {{ .Release.Name | quote }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     component: "{{.Release.Name}}-{{.Values.Component}}"
-  annotations:
-    "helm.sh/created": {{ .Release.Time.Seconds | quote }}
 spec:
   serviceName: {{ template "fullname" . }}
   replicas: {{default 5 .Values.Replicas }}
@@ -21,7 +19,6 @@ spec:
         chart: "{{.Chart.Name}}-{{.Chart.Version}}"
         component: "{{.Release.Name}}-{{.Values.Component}}"
       annotations:
-        "helm.sh/created": {{.Release.Time.Seconds | quote }}
         pod.alpha.kubernetes.io/initialized: "true"
     spec:
       containers:

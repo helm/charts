@@ -1,6 +1,6 @@
 name: chronograf
-version: 0.1.0
-description: Chart for Chronograf
+version: 0.1.2
+description: Open-source web application written in Go and React.js that provides the tools to visualize your monitoring data and easily create alerting and automation rules.
 keywords:
 - chronograf
 - visualizaion
