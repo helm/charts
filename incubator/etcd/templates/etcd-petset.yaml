@@ -10,8 +10,6 @@ metadata:
     release: {{.Release.Name | quote }}
     chart: "{{.Chart.Name}}-{{.Chart.Version}}"
     component: "{{.Release.Name}}-{{.Values.Component}}"
-  annotations:
-    "helm.sh/created": {{.Release.Time.Seconds | quote }}
 spec:
   ports:
   - port: {{.Values.PeerPort}}
@@ -31,8 +29,6 @@ metadata:
     release: {{.Release.Name | quote }}
     chart: "{{.Chart.Name}}-{{.Chart.Version}}"
     component: "{{.Release.Name}}-{{.Values.Component}}"
-  annotations:
-    "helm.sh/created": {{.Release.Time.Seconds | quote }}
 spec:
   serviceName: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 24 }}"
   replicas: {{default 3 .Values.Replicas}}
@@ -45,7 +41,6 @@ spec:
         chart: "{{.Chart.Name}}-{{.Chart.Version}}"
         component: "{{.Release.Name}}-{{.Values.Component}}"
       annotations:
-        "helm.sh/created": {{.Release.Time.Seconds | quote }}
         pod.alpha.kubernetes.io/initialized: "true"
     spec:
       containers:

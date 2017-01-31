@@ -1,0 +1,38 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}-deck
+  labels:
+    app: {{ template "fullname" . }}
+    component: deck
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: {{ template "fullname" . }}
+        component: deck
+    spec:
+      containers:
+        - image: {{ .Values.images.deck }}
+          name: deck
+          command:
+            - /bin/bash
+            - -c
+          args:
+            - "cp /opt/spinnaker/config/settings.js .; npm start"
+          env:
+            - name: DECK_HOST
+              value: "0.0.0.0"
+            - name: DECK_PORT
+              value: "9000"
+          ports:
+            - containerPort: 9000
+              name: deck
+          volumeMounts:
+            - mountPath: /opt/spinnaker/config
+              name: {{ template "fullname" . }}-spinnaker-config
+      volumes:
+        - name: {{ template "fullname" . }}-spinnaker-config
+          configMap:
+            name: {{ template "fullname" . }}-spinnaker-config
