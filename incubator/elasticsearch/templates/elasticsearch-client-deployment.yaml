@@ -8,8 +8,6 @@ metadata:
     chart: "{{.Chart.Name}}-{{.Chart.Version}}"
     component: "{{.Release.Name}}-{{.Values.Component}}"
     type: client
-  annotations:
-    helm.sh/created: {{.Release.Time.Seconds | quote }}
 spec:
   replicas: {{default 2 .Values.ClientReplicas }}
   template:
