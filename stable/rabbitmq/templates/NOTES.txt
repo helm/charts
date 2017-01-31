@@ -4,8 +4,8 @@
 The RabbitMQ AMQP port {{ default "5672" .Values.rabbitmqNodePort }} can be accessed on the following DNS name from within your cluster: {{ template "fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
 
   echo Username      : {{ .Values.rabbitmqUsername }}
-  echo Password      : $(printf $(printf '\%o' `kubectl get secret --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath="{.data.rabbitmq-password[*]}"`))
-  echo ErLang Cookie : $(printf $(printf '\%o' `kubectl get secret --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath="{.data.rabbitmq-erlang-cookie[*]}"`))
+  echo Password      : $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath="{.data.rabbitmq-password}" | base64 --decode)
+  echo ErLang Cookie : $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath="{.data.rabbitmq-erlang-cookie}" | base64 --decode)
 
 To Access the RabbitMQ Management interface:
 
