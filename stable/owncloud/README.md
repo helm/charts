@@ -65,6 +65,7 @@ The following tables lists the configurable parameters of the ownCloud chart and
 | `persistence.owncloud.size`         | PVC Storage Request for ownCloud volume   | `8Gi`                                       |
 | `resources`                         | CPU/Memory resource requests/limits       | Memory: `512Mi`, CPU: `300m`                |
 
+
 The above parameters map to the env variables defined in [bitnami/owncloud](http://github.com/bitnami/bitnami-docker-owncloud). For more information please refer to the [bitnami/owncloud](http://github.com/bitnami/bitnami-docker-owncloud) image documentation.
 
 > **Note**:
