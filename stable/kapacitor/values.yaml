@@ -1,0 +1,41 @@
+## influxdb image version
+## ref: https://hub.docker.com/r/library/influxdb/tags/
+##
+image:
+  repository: "kapacitor"
+  tag: "1.1.0"
+  pullPolicy: "IfNotPresent"
+
+## Specify a service type, defaults to NodePort
+## ref: http://kubernetes.io/docs/user-guide/services/
+##
+service:
+  type: ClusterIP
+
+## Persist data to a persitent volume
+## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+##
+persistence:
+  enabled: false
+  ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
+  ## Default: volume.alpha.kubernetes.io/storage-class: default
+  ##
+  # storageClass:
+  accessMode: ReadWriteOnce
+  size: 8Gi
+
+## Configure resource requests and limits
+## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+##
+resources:
+  requests:
+    memory: 256Mi
+    cpu: 0.1
+  limits:
+    memory: 2Gi
+    cpu: 2
+    
+## Set the URL of InfluxDB instance to create subscription on
+## ref: https://docs.influxdata.com/kapacitor/v1.1/introduction/getting_started/
+##
+# influxURL: http://influxdb-influxdb.tick:8086

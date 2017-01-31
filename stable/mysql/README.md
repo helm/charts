@@ -47,14 +47,14 @@ The following tables lists the configurable parameters of the MySQL chart and th
 | Parameter                  | Description                        | Default                                                    |
 | -----------------------    | ---------------------------------- | ---------------------------------------------------------- |
 | `imageTag`                 | `mysql` image tag.                 | Most recent release                                        |
-| `imagePullPolicy`          | Image pull policy                  | `Always` if `imageTag` is `latest`, else `IfNotPresent`    |
+| `imagePullPolicy`          | Image pull policy                  | `IfNotPresent`                                             |
 | `mysqlRootPassword`        | Password for the `root` user.      | `nil`                                                      |
 | `mysqlUser`                | Username of new user to create.    | `nil`                                                      |
 | `mysqlPassword`            | Password for the new user.         | `nil`                                                      |
 | `mysqlDatabase`            | Name for new database to create.   | `nil`                                                      |
 | `persistence.enabled`      | Create a volume to store data      | true                                                       |
 | `persistence.size`         | Size of persistent volume claim    | 8Gi RW                                                     |
-| `persistence.storageClass` | Type of persistent volume claim    | generic                                                    |
+| `persistence.storageClass` | Type of persistent volume claim    | nil  (uses alpha storage class annotation)                 |
 | `persistence.accessMode`   | ReadWriteOnce or ReadOnly          | ReadWriteOnce                                              |
 | `resources`                | CPU/Memory resource requests/limits | Memory: `256Mi`, CPU: `100m`                              |
 

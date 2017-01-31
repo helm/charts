@@ -1,3 +1,4 @@
+
 *******************************************************************
 *** PLEASE BE PATIENT: Drupal may take a few minutes to install ***
 *******************************************************************
@@ -13,7 +14,7 @@
 {{- else if contains "LoadBalancer" .Values.serviceType }}
 
   NOTE: It may take a few minutes for the LoadBalancer IP to be available.
-        Watch the status with: 'kubectl get svc -w {{ template "fullname" . }}'
+        Watch the status with: 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "fullname" . }}'
 
   export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
   echo http://$SERVICE_IP/
@@ -26,5 +27,5 @@
 
 2. Login with the following credentials
 
-  Username: {{ .Values.drupalUsername }}
-  Password: {{ .Values.drupalPassword }}
+  echo Username: {{ .Values.drupalUsername }}
+  echo Password: $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath="{.data.drupal-password}" | base64 --decode)

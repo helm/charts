@@ -48,13 +48,13 @@ The following tables lists the configurable parameters of the MariaDB chart and 
 | Parameter                  | Description                                | Default                                                    |
 | -----------------------    | ----------------------------------         | ---------------------------------------------------------- |
 | `image`                    | MariaDB image                              | `bitnami/mariadb:{VERSION}`                                |
-| `imagePullPolicy`          | Image pull policy.                         | `Always` if `imageTag` is `latest`, else `IfNotPresent`.   |
+| `imagePullPolicy`          | Image pull policy.                         | `IfNotPresent`                                             |
 | `mariadbRootPassword`      | Password for the `root` user.              | `nil`                                                      |
 | `mariadbUser`              | Username of new user to create.            | `nil`                                                      |
 | `mariadbPassword`          | Password for the new user.                 | `nil`                                                      |
 | `mariadbDatabase`          | Name for new database to create.           | `nil`                                                      |
 | `persistence.enabled`      | Use a PVC to persist data                  | `true`                                                     |
-| `persistence.storageClass` | Storage class of backing PVC               | `generic`                                                  |
+| `persistence.storageClass` | Storage class of backing PVC               | `nil` (uses alpha storage class annotation)                |
 | `persistence.accessMode`   | Use volume as ReadOnly or ReadWrite        | `ReadWriteOnce`                                            |
 | `persistence.size`         | Size of data volume                        | `8Gi`                                                      |
 | `resources`                | CPU/Memory resource requests/limits        | Memory: `256Mi`, CPU: `250m`                               |

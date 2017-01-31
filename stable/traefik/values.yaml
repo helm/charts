@@ -1,5 +1,5 @@
 # Default values for Traefik
-imageTag: v1.1.1
+imageTag: v1.1.2
 serviceType: LoadBalancer
 cpuRequest: 100m
 memoryRequest: 20Mi
@@ -18,7 +18,10 @@ acme:
   # certs every time a pod (re-)starts and you WILL be rate limited!
   persistence:
     enabled: true
-    storageClass: generic
+    ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
+    ## Default: volume.alpha.kubernetes.io/storage-class: default
+    ##
+    # storageClass:
     accessMode: ReadWriteOnce
     size: 1Gi
 dashboard:

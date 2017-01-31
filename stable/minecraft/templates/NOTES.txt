@@ -27,7 +27,7 @@ same shell:
 !! NOTE: It may take a few minutes for the LoadBalancer IP to be available. !!
 
 You can watch for EXTERNAL-IP to populate by running:
-  kubectl get svc -w {{ template "fullname" . }}
+  kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "fullname" . }}
 
 {{- else if contains "ClusterIP" .Values.minecraftServer.serviceType }}
   export POD_NAME=$(kubectl get pods \

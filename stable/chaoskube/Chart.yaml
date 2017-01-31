@@ -1,0 +1,10 @@
+name: chaoskube
+version: 0.3.1
+description: A Helm chart for chaoskube
+home: https://github.com/linki/chaoskube
+sources:
+- https://github.com/linki/chaoskube
+maintainers:
+- name: Martin Linkhorst
+  email: linki+helm.sh@posteo.de
+engine: gotpl

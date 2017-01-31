@@ -1,0 +1,38 @@
+1. Get your '{{ .Values.server.adminUser }}' user password by running:
+
+   printf $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "server.fullname" . }} -o jsonpath="{.data.grafana-admin-password}" | base64 --decode);echo
+
+2. The Grafana server can be accessed via port {{ .Values.server.httpPort }} on the following DNS name from within your cluster:
+
+   {{ template "server.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
+{{ if .Values.server.ingress.enabled }}
+   From outside the cluster, the server URL(s) are:
+{{- range .Values.server.ingress.hosts }}
+     http://{{ . }}
+{{- end }}
+{{ else }}
+   Get the Grafana URL to visit by running these commands in the same shell:
+{{ if contains "NodePort" .Values.server.serviceType -}}
+     export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "server.fullname" . }})
+     export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+     echo http://$NODE_IP:$NODE_PORT
+{{ else if contains "LoadBalancer" .Values.server.serviceType -}}
+   NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+        You can watch the status of by running 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "server.fullname" . }}'
+     export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "server.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+     echo http://$SERVICE_IP:{{ .Values.server.httpPort -}}
+{{ else if contains "ClusterIP"  .Values.server.serviceType }}
+     export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "fullname" . }},component={{ .Values.server.name }}" -o jsonpath="{.items[0].metadata.name}")
+     kubectl --namespace {{ .Release.Namespace }} port-forward $POD_NAME 3000
+{{- end }}
+{{- end }}
+
+3. Login with the password from step 1 and the username: {{ .Values.server.adminUser }}
+
+{{- if .Values.server.persistentVolume.enabled }}
+{{- else }}
+#################################################################################
+######   WARNING: Persistence is disabled!!! You will lose your data when   #####
+######            the Grafana pod is terminated.                            #####
+#################################################################################
+{{- end }}

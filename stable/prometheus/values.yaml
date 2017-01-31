@@ -10,7 +10,7 @@ alertmanager:
 
   ## Alertmanager Docker image
   ##
-  image: prom/alertmanager:v0.5.0
+  image: prom/alertmanager:v0.5.1
 
   ingress:
     ## If true, Alertmanager Ingress will be created
@@ -42,7 +42,7 @@ alertmanager:
   name: alertmanager
 
   persistentVolume:
-    ## If true, AlertManager will create a Persistent Volume Claim
+    ## If true, AlertManager will create/use a Persistent Volume Claim
     ## If false, use emptyDir
     ##
     enabled: true
@@ -57,6 +57,11 @@ alertmanager:
     ## AlertManager data Persistent Volume annotations
     ##
     # annotations:
+
+    ## AlertManager data Persistent Volume existing claim name
+    ## Requires alertmanager.persistentVolume.enabled: true
+    ## If defined, PVC must be created manually before volume will be bound
+    # existingClaim:
 
     ## AlertManager data Persistent Volume size
     ##
@@ -160,7 +165,7 @@ server:
 
   ## Server Docker image
   ##
-  image: prom/prometheus:v1.3.1
+  image: prom/prometheus:v1.4.1
 
   ingress:
     ## If true, Server Ingress will be created
@@ -192,7 +197,7 @@ server:
   name: server
 
   persistentVolume:
-    ## If true, Server will create a Persistent Volume Claim
+    ## If true, Server will create/use a Persistent Volume Claim
     ## If false, use emptyDir
     ##
     enabled: true
@@ -207,6 +212,11 @@ server:
     ## Server data Persistent Volume annotations
     ##
     # annotations:
+
+    ## Server data Persistent Volume existing claim name
+    ## Requires server.persistentVolume.enabled: true
+    ## If defined, PVC must be created manually before volume will be bound
+    # existingClaim:
 
     ## Server data Persistent Volume size
     ##

@@ -52,7 +52,7 @@ The following tables lists the configurable parameters of the MongoDB chart and 
 | `mongodbPassword`          | MongoDB custom user password        | `nil`                                                    |
 | `mongodbDatabase`          | Database to create                  | `nil`                                                    |
 | `persistence.enabled`      | Use a PVC to persist data           | `true`                                                   |
-| `persistence.storageClass` | Storage class of backing PVC        | `generic`                                                |
+| `persistence.storageClass` | Storage class of backing PVC        | `nil` (uses alpha storage class annotation)              |
 | `persistence.accessMode`   | Use volume as ReadOnly or ReadWrite | `ReadWriteOnce`                                          |
 | `persistence.size`         | Size of data volume                 | `8Gi`                                                    |
 
@@ -62,7 +62,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 
 ```bash
 $ helm install --name my-release \
-  --set mongodbRootPassword=secretpassword,mongodbUser=my-user,mongodbPassword=my-password,mongodbDatabase=my-database \
+  --set mongodbRootPassword=secretpassword,mongodbUsername=my-user,mongodbPassword=my-password,mongodbDatabase=my-database \
     stable/mongodb
 ```
 

@@ -7,8 +7,6 @@ metadata:
     release: {{.Release.Name | quote }}
     chart: "{{.Chart.Name}}-{{.Chart.Version}}"
     component: "{{.Release.Name}}-{{.Values.Master.Name}}"
-  annotations:
-    "helm.sh/created": {{.Release.Time.Seconds | quote }}
 spec:
   replicas: 1
   strategy:
@@ -28,6 +26,7 @@ spec:
               {
                   "name": "copy-default-config",
                   "image": "{{.Values.Master.Image}}:{{.Values.Master.ImageTag}}",
+                  "imagePullPolicy": "{{.Values.Master.ImagePullPolicy}}",
                   "command": ["cp", "-n", "/var/jenkins_config/config.xml", "/var/jenkins_home"],
                   "volumeMounts": [
                       {

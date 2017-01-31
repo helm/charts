@@ -1,0 +1,50 @@
+## Set default image, imageTag, and imagePullPolicy. mode is used to indicate the
+## minio server mode, i.e. standalone or distributed.
+## Distributed Minio ref: https://docs.minio.io/docs/distributed-minio-quickstart-guide
+##
+image: "minio/minio"
+imageTag: "latest"
+imagePullPolicy: "Always"
+mode: "standalone"
+
+## Set default accesskey, secretkey, Minio config file path, volume mount path and
+## number of nodes (only used for Minio distributed mode)
+## Distributed Minio ref: https://docs.minio.io/docs/distributed-minio-quickstart-guide
+##
+accessKey: "AKIAIOSFODNN7EXAMPLE"
+secretKey: "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+configPath: ""
+mountPath: "/export"
+replicas: 4
+
+## loadBalancerIP for the Minio Service (optional, cloud specific)
+## ref: http://kubernetes.io/docs/user-guide/services/#type-loadbalancer
+##
+# minioLoadBalancerIP:
+
+## Enable persistence using Persistent Volume Claims
+## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+##
+persistence:
+  enabled: true
+  ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
+  ## Default: volume.alpha.kubernetes.io/storage-class: default
+  ##
+  # storageClass: <storageClass>
+  accessMode: ReadWriteOnce
+  size: 10Gi
+
+## Expose the Minio service to be accessed from outside the cluster (LoadBalancer service).
+## or access it from within the cluster (ClusterIP service). Set the service type and the port to serve it.
+## ref: http://kubernetes.io/docs/user-guide/services/
+##
+serviceType: LoadBalancer
+servicePort: 9000
+
+## Configure resource requests and limits
+## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+##
+resources:
+  requests:
+    memory: 256Mi
+    cpu: 250m
