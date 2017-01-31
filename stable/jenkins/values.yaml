@@ -18,8 +18,11 @@ Master:
   ServicePort: 8080
 # For minikube, set this to NodePort, elsewhere use LoadBalancer
   ServiceType: LoadBalancer
+# NodePort: <to set explicitly, choose port between 30000-32767
   ContainerPort: 8080
   SlaveListenerPort: 50000
+  LoadBalancerSourceRanges:
+  - 0.0.0.0/0
 
 Agent:
   Image: jenkinsci/jnlp-slave
