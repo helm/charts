@@ -20,13 +20,15 @@ host. To configure PrestaShop with the URL of your service:
 
   export APP_HOST=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "fullname" . }} --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
   export APP_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath="{.data.prestashop-password}" | base64 --decode)
+  {{- if .Values.mariadb.mariadbRootPassword }}
   export APP_DATABASE_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "mariadb.fullname" . }} -o jsonpath="{.data.mariadb-root-password}" | base64 --decode)
+  {{- end }}
   {{- end }}
 
 2. Complete your PrestaShop deployment by running:
 
   helm upgrade {{ .Release.Name }} \
-    --set prestashopHost=$APP_HOST,prestashopPassword=$APP_PASSWORD,mariadb.mariadbRootPassword=$APP_DATABASE_PASSWORD stable/prestashop
+    --set prestashopHost=$APP_HOST,prestashopPassword=$APP_PASSWORD{{ if .Values.mariadb.mariadbRootPassword }},mariadb.mariadbRootPassword=$APP_DATABASE_PASSWORD{{ end }} stable/prestashop
 
 {{- else -}}
 1. Get the PrestaShop URL by running:
