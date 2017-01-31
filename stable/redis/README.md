@@ -46,7 +46,7 @@ The following tables lists the configurable parameters of the Redis chart and th
 | Parameter                  | Description                         | Default                                                   |
 | -------------------------- | ----------------------------------- | --------------------------------------------------------- |
 | `image`                    | Redis image                         | `bitnami/redis:{VERSION}`                                 |
-| `imagePullPolicy`          | Image pull policy                   | `Always` if `imageTag` is `latest`, else `IfNotPresent`   |
+| `imagePullPolicy`          | Image pull policy                   | `IfNotPresent`                                            |
 | `redisPassword`            | Redis password                      | Randomly generated                                        |
 | `persistence.enabled`      | Use a PVC to persist data           | `true`                                                    |
 | `persistence.storageClass` | Storage class of backing PVC        | `generic`                                                 |
