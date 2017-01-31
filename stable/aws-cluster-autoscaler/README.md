@@ -43,7 +43,6 @@ The following tables lists the configurable parameters of the aws-cluster-autosc
 
 Parameter | Description | Default
 --- | --- | ---
-`annotations` | annotations to add to each pod | none
 `autoscalingGroups[].maxSize` | maximum autoscaling group size | `1`
 `autoscalingGroups[].minSize` | minimum autoscaling group size | `1`
 `autoscalingGroups[].name` | autoscaling group name | none
@@ -51,6 +50,7 @@ Parameter | Description | Default
 `image.repository` | Image | `gcr.io/google_containers/cluster-autoscaler`
 `image.tag` | Image tag | `v0.4.0`
 `image.pullPolicy` | Image pull policy | `IfNotPresent`
+`podAnnotations` | annotations to add to each pod | none
 `resources.limits.cpu` | CPU limit | `100m`
 `resources.limits.memory` | Memory limit | `300Mi`
 `resources.requests.cpu` | CPU request | `100m`

@@ -11,9 +11,9 @@ spec:
   replicas: 1
   template:
     metadata:
-    {{- if .Values.annotations }}
+    {{- if .Values.podAnnotations }}
       annotations:
-{{ toYaml .Values.annotations | indent 8 }}
+{{ toYaml .Values.podAnnotations | indent 8 }}
     {{- end }}
       labels:
         app: {{ template "name" . }}

@@ -1,5 +1,3 @@
-# annotations:
-
 autoscalingGroups:
   - name: ""
     maxSize: 1
@@ -11,6 +9,8 @@ image:
   repository: gcr.io/google_containers/cluster-autoscaler
   tag: v0.4.0
   pullPolicy: IfNotPresent
+
+podAnnotations: {}
 
 resources:
   limits:
