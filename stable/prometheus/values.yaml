@@ -72,6 +72,11 @@ alertmanager:
     ## Default: volume.alpha.kubernetes.io/storage-class: default
     ##
     # storageClass:
+    
+    ## Subdirectory of the volume to mount at
+    ## Useful if the volume's root directory is not empty
+    ## 
+    subPath: ""
 
   ## Alertmanager resource requests and limits
   ## Ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -227,6 +232,11 @@ server:
     ## Default: volume.alpha.kubernetes.io/storage-class: default
     ##
     # storageClass:
+    
+    ## Subdirectory of the volume to mount at
+    ## Useful if the volume's root directory is not empty
+    ## 
+    subPath: ""
 
   ## Server resource requests and limits
   ## Ref: http://kubernetes.io/docs/user-guide/compute-resources/
