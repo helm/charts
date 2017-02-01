@@ -44,6 +44,7 @@ The following tables lists the configurable parameters of the Prometheus chart a
 
 | Parameter | Description | Default |
 | --------- | ----------- | ------- |
+| `alertmanager.extraArgs` | Additional Alertmanager container arguments | `[]` |
 | `alertmanager.httpPort` | Alertmanager Service port | `80` |
 | `alertmanager.httpPortName` | Alertmanager service port name | `http` |
 | `alertmanager.image` | Alertmanager Docker image | `prom/alertmanager:${VERSION}` |

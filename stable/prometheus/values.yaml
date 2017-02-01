@@ -1,4 +1,8 @@
 alertmanager:
+  ## Additional Alertmanager container arguments
+  ##
+  # extraArgs:
+
   ## Alertmanager service port
   ##
   httpPort: 80
