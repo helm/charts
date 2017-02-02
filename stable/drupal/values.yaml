@@ -1,7 +1,7 @@
 ## Bitnami Drupal image version
 ## ref: https://hub.docker.com/r/bitnami/drupal/tags/
 ##
-image: bitnami/drupal:8.2.4-r0
+image: bitnami/drupal:8.2.5-r3
 
 ## Specify a imagePullPolicy
 ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -41,7 +41,7 @@ mariadb:
     ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
     ## Default: volume.alpha.kubernetes.io/storage-class: default
     ##
-    # storageClass: generic
+    # storageClass:
     accessMode: ReadWriteOnce
     size: 8Gi
 
@@ -59,14 +59,14 @@ persistence:
     ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
     ## Default: volume.alpha.kubernetes.io/storage-class: default
     ##
-    # storageClass: generic
+    # storageClass:
     accessMode: ReadWriteOnce
     size: 1Gi
   drupal:
     ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
     ## Default: volume.alpha.kubernetes.io/storage-class: default
     ##
-    # storageClass: generic
+    # storageClass:
     accessMode: ReadWriteOnce
     size: 8Gi
 

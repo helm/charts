@@ -1,0 +1,82 @@
+# Define which registries and repositories you want available in your
+# Spinnaker pipeline definitions
+# For more info visit:
+#   http://www.spinnaker.io/v1.0/docs/target-deployment-configuration#section-docker-registry
+accounts:
+- name: dockerhub
+  address: https://index.docker.io
+  repositories:
+    - library/alpine
+    - library/ubuntu
+    - library/centos
+    - library/nginx
+
+# Settings for notifications via email
+# For more info visit:
+#   http://www.spinnaker.io/docs/notifications-and-events-guide#section-email
+mail:
+  enabled: false
+  host: smtp.example.org
+  username: admin
+  password: admin
+  fromAddress: spinnaker@example.org
+  port: 25
+
+# Images for each component
+images:
+  clouddriver: quay.io/spinnaker/clouddriver:v1.489.0
+  echo: quay.io/spinnaker/echo:v1.127.0
+  deck: quay.io/spinnaker/deck:v2.956.0
+  igor: quay.io/spinnaker/igor:v1.61.0
+  orca: quay.io/spinnaker/orca:v1.302.0
+  gate: quay.io/spinnaker/gate:v2.109.0
+  front50: quay.io/spinnaker/front50:v1.69.0
+  rosco: quay.io/spinnaker/rosco:v0.78.0
+
+# Bucket to use when storing config data in S3 compatible storage
+storageBucket: spinnaker
+
+# Resources to provide to each of
+# the Spinnaker components
+resources:
+  limits:
+    cpu: 1000m
+    memory: 1280Mi
+  requests:
+    cpu: 1000m
+    memory: 1280Mi
+
+# Redis password to use for the in-cluster redis service
+# Redis is not exposed publically
+redis:
+  redisPassword: password
+
+# Minio access/secret keys for the in-cluster S3 usage
+# Minio is not exposed publically
+minio:
+  AccessKey: spinnakeradmin
+  SecretKey: spinnakeradmin
+
+# Configuration for the Jenkins instance that is attached to the
+# igor component of Spinnaker. For more info about the Jenkins integration
+# with Spinnaker, visit:
+#   http://www.spinnaker.io/docs/jenkins-script-execution-stage
+jenkins:
+  Master:
+    Name: jenkins-master
+    Image: "gcr.io/kubernetes-charts-ci/jenkins-master-k8s"
+    ImageTag: "v0.6.0"
+    ImagePullPolicy: "Always"
+    Component: "jenkins-master"
+    Cpu: "500m"
+    Memory: "512Mi"
+    ServicePort: 8080
+    ServiceType: ClusterIP
+    ContainerPort: 8080
+    SlaveListenerPort: 50000
+
+  Agent:
+    Image: viglesiasce/spinnaker-jenkins-agent
+    ImageTag: v0.2.0
+    Cpu: "500m"
+    Memory: "512Mi"

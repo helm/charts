@@ -1,0 +1,42 @@
+
+1. Concourse can be accessed:
+
+  * Within your cluster, at the following DNS name at port {{ .Values.concourse.atcPort }}:
+
+    {{ template "web.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
+
+  {{- if .Values.web.ingress.enabled }}
+
+  * From outside the cluster, the URL(s) are:
+    {{ range .Values.web.ingress.hosts }}
+    http://{{ . }}
+    {{- end }}
+  {{- else }}
+
+  * From outside the cluster, run these commands in the same shell:
+    {{- if contains "NodePort" .Values.web.service.type }}
+
+    export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "web.fullname" . }})
+    export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+    echo http://$NODE_IP:$NODE_PORT
+    {{- else if contains "LoadBalancer" .Values.web.service.type }}
+
+     NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+           You can watch the status of by running 'kubectl get svc -w {{ template "web.fullname" . }}'
+
+    export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "web.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+    echo http://$SERVICE_IP:{{ .Values.concourse.atcPort }}
+    {{- else if contains "ClusterIP"  .Values.web.service.type }}
+
+    export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "web.fullname" . }}" -o jsonpath="{.items[0].metadata.name}")
+    echo "Visit http://127.0.0.1:8080 to use Concourse"
+    kubectl port-forward --namespace {{ .Release.Namespace }} $POD_NAME 8080:{{ .Values.concourse.atcPort }}
+    {{- end }}
+  {{- end }}
+
+2. Login with the following credentials
+
+  Username: {{ .Values.concourse.username }}
+  Password: {{ .Values.concourse.password }}
+
+3. If this is your first time using Concourse, follow the tutorial at https://concourse.ci/hello-world.html
