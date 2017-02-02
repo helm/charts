@@ -19,14 +19,16 @@ host. To configure Phabricator with the URL of your service:
         Watch the status with: 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "fullname" . }}'
 
   export APP_HOST=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "fullname" . }} --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
-  export APP_PASSWORD=$(printf $(printf '\%o' `kubectl get secret --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath="{.data.phabricator-password[*]}"`))
-  export APP_DATABASE_PASSWORD=$(printf $(printf '\%o' `kubectl get secret --namespace {{ .Release.Namespace }} {{ template "mariadb.fullname" . }} -o jsonpath="{.data.mariadb-root-password[*]}"`))
+  export APP_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath="{.data.phabricator-password}" | base64 --decode)
+  {{- if .Values.mariadb.mariadbRootPassword }}
+  export APP_DATABASE_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "mariadb.fullname" . }} -o jsonpath="{.data.mariadb-root-password}" | base64 --decode)
+  {{- end }}
   {{- end }}
 
 2. Complete your Phabricator deployment by running:
 
   helm upgrade {{ .Release.Name }} \
-    --set phabricatorHost=$APP_HOST,phabricatorPassword=$APP_PASSWORD,mariadb.mariadbRootPassword=$APP_DATABASE_PASSWORD stable/phabricator
+    --set phabricatorHost=$APP_HOST,phabricatorPassword=$APP_PASSWORD{{ if .Values.mariadb.mariadbRootPassword }},mariadb.mariadbRootPassword=$APP_DATABASE_PASSWORD{{ end }} stable/phabricator
 
 {{- else -}}
 1. Get the Phabricator URL by running:
@@ -44,5 +46,5 @@ host. To configure Phabricator with the URL of your service:
 2. Get your Phabricator login credentials by running:
 
   echo Username: {{ .Values.phabricatorUsername }}
-  echo Password: $(printf $(printf '\%o' `kubectl get secret --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath="{.data.phabricator-password[*]}"`))
+  echo Password: $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath="{.data.phabricator-password}" | base64 --decode)
 {{- end }}

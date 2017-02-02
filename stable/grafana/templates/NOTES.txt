@@ -1,6 +1,6 @@
 1. Get your '{{ .Values.server.adminUser }}' user password by running:
 
-   printf $(printf '\%o' `kubectl get secret --namespace {{ .Release.Namespace }} {{ template "server.fullname" . }} -o jsonpath="{.data.grafana-admin-password[*]}"`);echo
+   printf $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "server.fullname" . }} -o jsonpath="{.data.grafana-admin-password}" | base64 --decode);echo
 
 2. The Grafana server can be accessed via port {{ .Values.server.httpPort }} on the following DNS name from within your cluster:
 
@@ -36,4 +36,3 @@
 ######            the Grafana pod is terminated.                            #####
 #################################################################################
 {{- end }}
-
