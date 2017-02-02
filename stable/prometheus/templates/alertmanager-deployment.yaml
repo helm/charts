@@ -39,6 +39,7 @@ spec:
               mountPath: /etc/config
             - name: storage-volume
               mountPath: {{ default "/data" .Values.alertmanager.storagePath | quote }}
+              subPath: {{ .Values.alertmanager.persistentVolume.subPath }}
         - name: {{ template "name" . }}-{{ .Values.alertmanager.name }}-{{ .Values.configmapReload.name }}
           image: "{{ .Values.configmapReload.image }}"
           imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
@@ -56,7 +57,7 @@ spec:
         - name: storage-volume
       {{- if .Values.alertmanager.persistentVolume.enabled }}
           persistentVolumeClaim:
-            claimName: {{ template "alertmanager.fullname" . }}
+            claimName: {{ if .Values.alertmanager.persistentVolume.existingClaim }}{{ .Values.alertmanager.persistentVolume.existingClaim }}{{- else }}{{ template "alertmanager.fullname" . }}{{- end }}
       {{- else }}
           emptyDir: {}
       {{- end -}}

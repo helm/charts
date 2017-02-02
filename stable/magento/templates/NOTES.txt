@@ -45,5 +45,5 @@ host. To configure Magento with the URL of your service:
 2. Get your Magento login credentials by running:
 
   echo Username: {{ .Values.magentoUsername }}
-  echo Password: $(printf $(printf '\%o' `kubectl get secret --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath="{.data.magento-password[*]}"`))
+  echo Password: $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath="{.data.magento-password}" | base64 --decode)
 {{- end }}
