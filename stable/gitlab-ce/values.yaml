@@ -24,10 +24,6 @@ image: gitlab/gitlab-ce:8.16.1-ce.0
 ##
 serviceType: LoadBalancer
 
-## Specify the number of replicas to run
-##
-replicas: 1
-
 ## Configure external service ports
 ## ref: http://kubernetes.io/docs/user-guide/services/
 sshPort: 22
@@ -62,7 +58,7 @@ persistence:
     ## Default: volume.alpha.kubernetes.io/storage-class: default
     ##
     # storageClass:
-    accessMode: ReadWriteMany
+    accessMode: ReadWriteOnce
   ## This volume is used to store git data and other project files.
   ## ref: https://docs.gitlab.com/omnibus/settings/configuration.html#storing-git-data-in-an-alternative-directory
   ##
@@ -73,7 +69,7 @@ persistence:
     ## Default: volume.alpha.kubernetes.io/storage-class: default
     ##
     # storageClass:
-    accessMode: ReadWriteMany
+    accessMode: ReadWriteOnce
 
 ## Configuration values for the postgresql dependency.
 ## ref: https://github.com/kubernetes/charts/blob/master/stable/postgresql/README.md
