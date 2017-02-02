@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: "{{ printf "cm-%s" .Release.Name | trunc 24 }}"
+  name: "{{ printf "cm-zk-%s" .Release.Name | trunc 24 }}"
   annotations:
     helm.sh/created: {{.Release.Time.Seconds | quote }}
   labels:

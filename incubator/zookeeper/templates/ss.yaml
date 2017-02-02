@@ -10,7 +10,7 @@ metadata:
     chart: "{{.Chart.Name}}-{{.Chart.Version}}"
     component: "{{.Release.Name}}"
 spec:
-  serviceName: "{{ printf "hs-%s" .Release.Name | trunc 24 }}"
+  serviceName: "{{ printf "hs-zk-%s" .Release.Name | trunc 24 }}"
   replicas: {{.Values.Servers}}
   template:
     metadata:
@@ -73,42 +73,42 @@ spec:
         - name : ZK_HEAP_SIZE
           valueFrom:
             configMapKeyRef:
-                name: "{{ printf "cm-%s" .Release.Name | trunc 24 }}"
+                name: "{{ printf "cm-zk-%s" .Release.Name | trunc 24 }}"
                 key: jvm.heap
         - name : ZK_TICK_TIME
           valueFrom:
             configMapKeyRef:
-                name: "{{ printf "cm-%s" .Release.Name | trunc 24 }}"
+                name: "{{ printf "cm-zk-%s" .Release.Name | trunc 24 }}"
                 key: tick
         - name : ZK_INIT_LIMIT
           valueFrom:
             configMapKeyRef:
-                name: "{{ printf "cm-%s" .Release.Name | trunc 24 }}"
+                name: "{{ printf "cm-zk-%s" .Release.Name | trunc 24 }}"
                 key: init
         - name : ZK_SYNC_LIMIT
           valueFrom:
             configMapKeyRef:
-                name: "{{ printf "cm-%s" .Release.Name | trunc 24 }}"
+                name: "{{ printf "cm-zk-%s" .Release.Name | trunc 24 }}"
                 key: tick
         - name : ZK_MAX_CLIENT_CNXNS
           valueFrom:
             configMapKeyRef:
-                name: "{{ printf "cm-%s" .Release.Name | trunc 24 }}"
+                name: "{{ printf "cm-zk-%s" .Release.Name | trunc 24 }}"
                 key: client.cnxns
         - name: ZK_SNAP_RETAIN_COUNT
           valueFrom:
             configMapKeyRef:
-                name: "{{ printf "cm-%s" .Release.Name | trunc 24 }}"
+                name: "{{ printf "cm-zk-%s" .Release.Name | trunc 24 }}"
                 key: snap.retain
         - name: ZK_PURGE_INTERVAL
           valueFrom:
             configMapKeyRef:
-                name: "{{ printf "cm-%s" .Release.Name | trunc 24 }}"
+                name: "{{ printf "cm-zk-%s" .Release.Name | trunc 24 }}"
                 key: purge.interval
         - name: ZK_LOG_LEVEL
           valueFrom:
             configMapKeyRef:
-                name: "{{ printf "cm-%s" .Release.Name | trunc 24 }}"
+                name: "{{ printf "cm-zk-%s" .Release.Name | trunc 24 }}"
                 key: log.level
         - name: ZK_CLIENT_PORT
           value: "{{.Values.ClientPort}}"
