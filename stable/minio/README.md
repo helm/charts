@@ -141,7 +141,8 @@ This provisions Minio server in shared mode with 8 nodes.
 
 ### Prerequisites for Minio shared mode deployment
 
-Minio shared mode deployment creates multiple Minio server instances backed by single PV in `ReadWriteMany` mode. Currently few of [Kubernetes volume plugins](https://kubernetes.io/docs/user-guide/persistent-volumes/#access-modes) support `ReadWriteMany` mode. To deploy Minio shared mode you'll need to have a Persistent Volume running on one of the supported volume plugin. 
+Minio shared mode deployment creates multiple Minio server instances backed by single PV in `ReadWriteMany` mode. Currently few [Kubernetes volume plugins](https://kubernetes.io/docs/user-guide/persistent-volumes/#access-modes) support `ReadWriteMany` mode. To deploy Minio shared mode you'll need to have a Persistent Volume running with one of the supported volume plugins. [This document](https://kubernetes.io/docs/user-guide/volumes/#nfs)
+outlines steps to create a NFS PV in Kubernetes cluster.
 
 Persistence
 -----------
