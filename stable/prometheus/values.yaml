@@ -170,7 +170,7 @@ server:
 
   ## Server Docker image
   ##
-  image: prom/prometheus:v1.4.1
+  image: prom/prometheus:v1.5.0
 
   ingress:
     ## If true, Server Ingress will be created
