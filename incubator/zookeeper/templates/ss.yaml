@@ -1,7 +1,7 @@
 apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
-  name: "{{.Release.Name  | trunc 24 }}"
+  name: "{{ printf "zk-%s" .Release.Name  | trunc 24 }}"
   annotations:
     helm.sh/created: {{.Release.Time.Seconds | quote }}
   labels:

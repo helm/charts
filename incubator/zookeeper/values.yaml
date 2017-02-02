@@ -7,7 +7,7 @@ Cpu: "1"
 Memory: "4Gi"
 Heap: "2G"
 Storage: "50Gi"
-StorageClass : "default"
+StorageClass : default
 ServerPort: 2888
 LeaderElectionPort: 3888
 ClientPort: 2181
