@@ -66,7 +66,7 @@ The following tables lists the configurable parameters of the Minio chart and th
 | `image`                    | Minio image name                    | `minio/minio`                                           |
 | `imageTag`                 | Minio image tag. Possible values listed [here](https://hub.docker.com/r/minio/minio/tags/).| `latest`|
 | `imagePullPolicy`          | Image pull policy                   | `Always`                                                |
-| `mode`                     | Minio server mode (`standalone` or `distributed`)| `standalone`                               |
+| `mode`                     | Minio server mode (`standalone`, `shared` or `distributed`)| `standalone`                     |
 | `numberOfNodes`            | Number of nodes (applicable only for Minio distributed mode). Should be 4 <= x <= 16 | `4`    |
 | `accessKey`                | Default access key                  | `AKIAIOSFODNN7EXAMPLE`                                  |
 | `secretKey`                | Default secret key                  | `wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY`              |
@@ -121,6 +121,27 @@ This provisions Minio server in distributed mode with 8 nodes. Note that the `nu
 
 1. StatefulSets need persistent storage, so the `persistence.enabled` flag is ignored when `mode` is set to `distributed`.
 2. When uninstalling a distributed Minio release, you'll need to manually delete volumes associated with the StatefulSet.
+
+Shared Minio
+-----------
+
+To provision Minio servers in [shared mode](https://github.com/minio/minio/blob/master/docs/shared-backend/README.md), set the `mode` field to `shared`,
+
+```bash
+$ helm install --set mode=shared stable/minio
+```
+
+This provisions 4 Minio server nodes backed by single storage. To change the number of nodes in your shared Minio deployment, set the `numberOfNodes` field,
+
+```bash
+$ helm install --set mode=shared,numberOfNodes=8 stable/minio
+```
+
+This provisions Minio server in shared mode with 8 nodes.
+
+### Prerequisites for Minio shared mode deployment
+
+Minio shared mode deployment creates multiple Minio server instances backed by single PV in `ReadWriteMany` mode. Currently few of [Kubernetes volume plugins](https://kubernetes.io/docs/user-guide/persistent-volumes/#access-modes) support `ReadWriteMany` mode. To deploy Minio shared mode you'll need to have a Persistent Volume running on one of the supported volume plugin. 
 
 Persistence
 -----------
