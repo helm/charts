@@ -22,11 +22,9 @@ persistence:
   ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
   ## Default: volume.alpha.kubernetes.io/storage-class: default
   ##
-  # storageClass: generic
+  # storageClass: 
   accessMode: ReadWriteOnce
   size: 8Gi
-
-  # storageClass:
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
