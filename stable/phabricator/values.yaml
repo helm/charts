@@ -1,7 +1,7 @@
 ## Bitnami Phabricator image version
 ## ref: https://hub.docker.com/r/bitnami/phabricator/tags/
 ##
-image: bitnami/phabricator:2016.46-r2
+image: bitnami/phabricator:2017.02-r0
 
 ## Specify a imagePullPolicy
 ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
@@ -46,7 +46,7 @@ phabricatorFirstName: First Name
 phabricatorLastName: Last Name
 
 ## SMTP mail delivery configuration
-## ref: https://github.com/bitnami/bitnami-docker-redmine/#smtp-configuration
+## ref: https://github.com/bitnami/bitnami-docker-phabricator/#smtp-configuration
 ##
 # smtpHost:
 # smtpPort:
@@ -68,7 +68,10 @@ mariadb:
   ##
   persistence:
     enabled: true
-    storageClass: generic
+    ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
+    ## Default: volume.alpha.kubernetes.io/storage-class: default
+    ##
+    # storageClass:
     accessMode: ReadWriteOnce
     size: 8Gi
 
@@ -83,11 +86,17 @@ serviceType: LoadBalancer
 persistence:
   enabled: true
   apache:
-    storageClass: generic
+    ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
+    ## Default: volume.alpha.kubernetes.io/storage-class: default
+    ##
+    # storageClass:
     accessMode: ReadWriteOnce
     size: 1Gi
   phabricator:
-    storageClass: generic
+    ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
+    ## Default: volume.alpha.kubernetes.io/storage-class: default
+    ##
+    # storageClass:
     accessMode: ReadWriteOnce
     size: 8Gi
 

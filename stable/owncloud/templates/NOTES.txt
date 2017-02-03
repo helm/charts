@@ -41,5 +41,5 @@ host. To configure ownCloud with the URL of your service:
 2. Get your ownCloud login credentials by running:
 
   echo Email:    {{ .Values.owncloudUsername }}
-  echo Password: $(printf $(printf '\%o' `kubectl get secret --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath="{.data.owncloud-password[*]}"`))
+  echo Password: $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath="{.data.owncloud-password}" | base64 --decode)
 {{- end }}

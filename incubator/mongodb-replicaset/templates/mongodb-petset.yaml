@@ -11,7 +11,6 @@ metadata:
     chart: "{{.Chart.Name}}-{{.Chart.Version}}"
     component: "{{.Release.Name}}-{{.Values.Component}}"
   annotations:
-    "helm.sh/created": {{.Release.Time.Seconds | quote }}
     service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
 spec:
   ports:
@@ -54,8 +53,6 @@ metadata:
     replicaset: {{.Values.ReplicaSet | quote }}
     chart: "{{.Chart.Name}}-{{.Chart.Version}}"
     component: "{{.Release.Name}}-{{.Values.Component}}"
-  annotations:
-    "helm.sh/created": {{.Release.Time.Seconds | quote }}
 spec:
   serviceName: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 24 }}"
   replicas: {{default 3 .Values.Replicas}}
@@ -69,7 +66,6 @@ spec:
         chart: "{{.Chart.Name}}-{{.Chart.Version}}"
         component: "{{.Release.Name}}-{{.Values.Component}}"
       annotations:
-        "helm.sh/created": {{.Release.Time.Seconds | quote }}
         pod.alpha.kubernetes.io/init-containers: '[
             {
                 "name": "install",

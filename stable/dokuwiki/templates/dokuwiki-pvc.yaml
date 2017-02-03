@@ -1,0 +1,23 @@
+{{- if .Values.persistence.enabled -}}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ template "fullname" . }}-dokuwiki
+  labels:
+    app: {{ template "fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+  annotations:
+  {{- if .Values.persistence.dokuwiki.storageClass }}
+    volume.beta.kubernetes.io/storage-class: {{ .Values.persistence.dokuwiki.storageClass | quote }}
+  {{- else }}
+    volume.alpha.kubernetes.io/storage-class: default
+  {{- end }}
+spec:
+  accessModes:
+    - {{ .Values.persistence.dokuwiki.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.dokuwiki.size | quote }}
+{{- end -}}

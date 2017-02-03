@@ -19,16 +19,6 @@ It also packages the [Bitnami MariaDB chart](https://github.com/kubernetes/chart
 - Kubernetes 1.4+ with Beta APIs enabled
 - PV provisioner support in the underlying infrastructure
 
-## Get this chart
-
-Download the latest release of the chart from the [releases](../../../releases) page.
-
-Alternatively, clone the repo if you wish to use the development snapshot:
-
-```console
-$ git clone https://github.com/kubernetes/charts.git
-```
-
 ## Installing the Chart
 
 To install the chart with the release name `my-release`:
@@ -36,8 +26,6 @@ To install the chart with the release name `my-release`:
 ```console
 $ helm install --name my-release stable/wordpress
 ```
-
-*Replace the `x.x.x` placeholder with the chart release version.*
 
 The command deploys WordPress on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
 
@@ -60,9 +48,9 @@ The following tables lists the configurable parameters of the WordPress chart an
 | Parameter                            | Description                              | Default                                                    |
 | -------------------------------      | -------------------------------          | ---------------------------------------------------------- |
 | `image`                              | WordPress image                          | `bitnami/wordpress:{VERSION}`                              |
-| `imagePullPolicy`                    | Image pull policy                        | `Always` if `image` tag is `latest`, else `IfNotPresent`   |
+| `imagePullPolicy`                    | Image pull policy                        | `IfNotPresent`                                             |
 | `wordpressUsername`                  | User of the application                  | `user`                                                     |
-| `wordpressPassword`                  | Application password                     | `bitnami`                                                  |
+| `wordpressPassword`                  | Application password                     | _random 10 character long alphanumeric string_             |
 | `wordpressEmail`                     | Admin email                              | `user@example.com`                                         |
 | `wordpressFirstName`                 | First name                               | `FirstName`                                                |
 | `wordpressLastName`                  | Last name                                | `LastName`                                                 |
@@ -76,10 +64,10 @@ The following tables lists the configurable parameters of the WordPress chart an
 | `mariadb.mariadbRootPassword`        | MariaDB admin password                   | `nil`                                                      |
 | `serviceType`                        | Kubernetes Service type                  | `LoadBalancer`                                             |
 | `persistence.enabled`                | Enable persistence using PVC             | `true`                                                     |
-| `persistence.apache.storageClass`    | PVC Storage Class for Apache volume      | `generic`                                                  |
+| `persistence.apache.storageClass`    | PVC Storage Class for Apache volume      | `nil` (uses alpha storage class annotation)                |
 | `persistence.apache.accessMode`      | PVC Access Mode for Apache volume        | `ReadWriteOnce`                                            |
 | `persistence.apache.size`            | PVC Storage Request for Apache volume    | `1Gi`                                                      |
-| `persistence.wordpress.storageClass` | PVC Storage Class for WordPress volume   | `generic`                                                  |
+| `persistence.wordpress.storageClass` | PVC Storage Class for WordPress volume   | `nil` (uses alpha storage class annotation)                |
 | `persistence.wordpress.accessMode`   | PVC Access Mode for WordPress volume     | `ReadWriteOnce`                                            |
 | `persistence.wordpress.size`         | PVC Storage Request for WordPress volume | `8Gi`                                                      |
 
@@ -93,7 +81,7 @@ $ helm install --name my-release \
     stable/wordpress
 ```
 
-The above command sets the WordPress application username and password to `admin` and `password` respectively. Additionally it sets the MariaDB `root` user password to `secretpassword`.
+The above command sets the WordPress administrator account username and password to `admin` and `password` respectively. Additionally it sets the MariaDB `root` user password to `secretpassword`.
 
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 

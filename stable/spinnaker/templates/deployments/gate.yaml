@@ -1,0 +1,34 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}-gate
+  labels:
+    app: {{ template "fullname" . }}
+    component: gate
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: {{ template "fullname" . }}
+        component: gate
+    spec:
+      containers:
+        - image: {{ .Values.images.gate }}
+          name: gate
+          ports:
+            - containerPort: 8084
+              name: gate
+          volumeMounts:
+            - mountPath: /opt/spinnaker/config
+              name: {{ template "fullname" . }}-spinnaker-config
+          livenessProbe:
+            httpGet:
+              path: /env
+              port: 8084
+            initialDelaySeconds: 30
+            timeoutSeconds: 1
+      volumes:
+        - name: {{ template "fullname" . }}-spinnaker-config
+          configMap:
+            name: {{ template "fullname" . }}-spinnaker-config
