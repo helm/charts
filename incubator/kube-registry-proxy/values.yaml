@@ -4,5 +4,5 @@ image:
   pullPolicy: IfNotPresent
 
 registry:
-  host: ""
+  host: "gcr.io"
   port: ""
