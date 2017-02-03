@@ -83,6 +83,11 @@ ingress:
     enabled: false
     hostname: wordpress.local
 
+    ## Server Ingress annotations
+    ##
+    # annotations:
+    #   kubernetes.io/ingress.class: traefik
+
 ## Enable persistence using Persistent Volume Claims
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
 ##
