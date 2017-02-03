@@ -1,4 +1,4 @@
-1. Get the WordPress URL by running:
+1. Get the WordPress URL:
 
 {{- if .Values.ingress.enabled }}
 
@@ -22,6 +22,8 @@
 {{- end }}
 
 {{- if contains "NodePort" .Values.serviceType }}
+
+  Or running:
 
   export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "fullname" . }})
   export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
