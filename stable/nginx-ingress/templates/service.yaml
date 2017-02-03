@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    app: {{ template "fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  type: {{ .Values.service.type }}
+  loadBalancerIP: "{{ .Values.service.loadBalancerIP }}"
+{{- if .Values.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+{{- range $ip := .Values.loadBalancerSourceRanges }}
+  - {{ $ip }}
+{{- end }}
+{{- end }}
+  ports:
+  - port: 80
+    targetPort: 80
+    name: http
+  - port: 443
+    targetPort: 443
+    name: https
+{{- range $key, $value := .Values.tcp }}
+  - port: {{ $key }}
+    targetPort: {{ $key }}
+    name: '{{ $key }}-tcp'
+{{- end }}
+{{- range $key, $value := .Values.udp }}
+  - port: {{ $key }}
+    targetPort: {{ $key }}
+    name: '{{ $key }}-udp'
+    protocol: 'UDP'
+{{- end }}
+  selector:
+    app: {{ template "fullname" . }}

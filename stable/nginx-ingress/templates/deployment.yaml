@@ -1,0 +1,61 @@
+apiVersion: extensions/v1beta1
+kind: {{ .Values.kind }}
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    app: {{ template "fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  template:
+    metadata:
+      labels:
+        app: {{ template "fullname" . }}
+    spec:
+      terminationGracePeriodSeconds: 60
+      containers:
+      - image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        name: {{ .Chart.Name }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 10254
+            scheme: HTTP
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 10254
+            scheme: HTTP
+          initialDelaySeconds: 10
+          timeoutSeconds: 1
+        # use downward API
+        env:
+          - name: POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: POD_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+        ports:
+        - containerPort: 80
+        - containerPort: 443
+{{- range $key, $value := .Values.tcp }}
+        - containerPort: {{ $key }}
+          protocol: TCP
+{{- end }}
+{{- range $key, $value := .Values.udp }}
+        - containerPort: {{ $key }}
+          protocol: UDP
+{{- end }}
+        args:
+        - /nginx-ingress-controller
+        - --default-backend-service=$(POD_NAMESPACE)/{{ template "defaultBackend.fullname" . }}
+        - --nginx-configmap=$(POD_NAMESPACE)/{{ template "fullname" . }}
+        - --tcp-services-configmap=$(POD_NAMESPACE)/{{ template "fullname" . }}-tcp
+        - --udp-services-configmap=$(POD_NAMESPACE)/{{ template "fullname" . }}-udp
