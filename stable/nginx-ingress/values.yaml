@@ -10,7 +10,15 @@ controller:
 
   config: {}
   enableStats: false
+
+  ## DaemonSet or Deployment
+  ##
+  kind: Deployment
+
+  ## Required if controller.kind is Deployment
+  ##
   replicaCount: 1
+
   resources:
     limits:
       # cpu: 100m

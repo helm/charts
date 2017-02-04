@@ -1,6 +1,6 @@
-{{- if eq .Values.controller.kind "Deployment" }}
+{{- if eq .Values.controller.kind "DaemonSet" }}
 apiVersion: extensions/v1beta1
-kind: Deployment
+kind: DaemonSet
 metadata:
   labels:
     app: {{ template "name" . }}
@@ -10,7 +10,6 @@ metadata:
     release: {{ .Release.Name }}
   name: {{ template "fullname" . }}-{{ .Values.controller.name }}
 spec:
-  replicas: {{ .Values.controller.replicaCount }}
   template:
     metadata:
       labels:

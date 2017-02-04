@@ -51,6 +51,7 @@ Parameter | Description | Default
 `controller.image.pullPolicy` | controller container image pull policy | `IfNotPresent`
 `controller.config` | nginx ConfigMap entries | none
 `controller.enableStats` | enable & expose nginx "vts-status" page | `false`
+`controller.kind` | install as Deployment or DaemonSet | `Deployment`
 `controller.replicaCount` | desired number of controller pods | `1`
 `controller.resources` | controller pod resource requests & limits | `requests: {cpu: 100m, memory: 64Mi}`
 `controller.service.annotations` | annotations for controller service | none
