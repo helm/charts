@@ -1,7 +1,7 @@
 autoscalingGroups:
-  - name: ""
-    maxSize: 1
-    minSize: 1
+  # - name: asg1
+  #   maxSize: 1
+  #   minSize: 1
 
 awsRegion: us-east-1
 
