@@ -1,3 +1,4 @@
+{{- if .Values.udp }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -7,9 +8,9 @@ metadata:
     component: "{{ .Values.controller.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-  name: {{ template "fullname" . }}-{{ .Values.controller.name }}
+  name: {{ template "fullname" . }}-udp
 data:
-  enable-vts-status: "{{ .Values.controller.enableStats }}"
-{{- if .Values.controller.config }}
-{{ toYaml .Values.controller.config | indent 2 }}
+{{- if .Values.udp }}
+{{ toYaml .Values.udp | indent 2 }}
+{{- end }}
 {{- end }}

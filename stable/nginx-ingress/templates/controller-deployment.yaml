@@ -4,27 +4,29 @@ metadata:
   labels:
     app: {{ template "name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    component: '{{ .Values.controller.name }}'
+    component: "{{ .Values.controller.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-  name: {{ template "fullname" . }}
+  name: {{ template "fullname" . }}-{{ .Values.controller.name }}
 spec:
   replicas: {{ .Values.controller.replicaCount }}
   template:
     metadata:
       labels:
         app: {{ template "name" . }}
-        component: '{{ .Values.controller.name }}'
+        component: "{{ .Values.controller.name }}"
         release: {{ .Release.Name }}
     spec:
       containers:
-        - name: {{ template "name" . }}
-          image: '{{ .Values.controller.image.repository }}:{{ .Values.controller.image.tag }}'
-          imagePullPolicy: '{{ .Values.controller.image.pullPolicy }}'
+        - name: {{ template "name" . }}-{{ .Values.controller.name }}
+          image: "{{ .Values.controller.image.repository }}:{{ .Values.controller.image.tag }}"
+          imagePullPolicy: "{{ .Values.controller.image.pullPolicy }}"
           args:
             - /nginx-ingress-controller
             - --default-backend-service={{ .Release.Namespace }}/{{ template "fullname" . }}-{{ .Values.defaultBackend.name }}
-            - --nginx-configmap={{ .Release.Namespace }}/{{ template "fullname" . }}
+            - --nginx-configmap={{ .Release.Namespace }}/{{ template "fullname" . }}-{{ .Values.controller.name }}
+            - --tcp-services-configmap={{ .Release.Namespace }}/{{ template "fullname" . }}-tcp
+            - --udp-services-configmap={{ .Release.Namespace }}/{{ template "fullname" . }}-udp
           env:
             - name: POD_NAME
               valueFrom:
@@ -42,13 +44,26 @@ spec:
             initialDelaySeconds: 10
             timeoutSeconds: 1
           ports:
-            - containerPort: 80
-              name: http
-            - containerPort: 443
-              name: https
+            - name: http
+              containerPort: 80
+              protocol: TCP
+            - name: https
+              containerPort: 443
+              protocol: TCP
           {{- if .Values.controller.enableStats }}
-            - containerPort: 18080
-              name: stats
+            - name: stats
+              containerPort: 18080
+              protocol: TCP
+          {{- end }}
+          {{- range $key, $value := .Values.tcp }}
+            - name: "{{ $key }}-tcp"
+              containerPort: {{ $key }}
+              protocol: TCP
+          {{- end }}
+          {{- range $key, $value := .Values.udp }}
+            - name: "{{ $key }}-udp"
+              containerPort: {{ $key }}
+              protocol: UDP
           {{- end }}
           readinessProbe:
             httpGet:

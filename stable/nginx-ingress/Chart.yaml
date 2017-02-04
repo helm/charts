@@ -1,5 +1,5 @@
 name: nginx-ingress
-version: 0.2.8
+version: 0.3.0
 description: An nginx Ingress controller that uses ConfigMap to store the nginx configuration.
 keywords:
   - ingress

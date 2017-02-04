@@ -4,7 +4,7 @@ metadata:
   labels:
     app: {{ template "name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    component: '{{ .Values.defaultBackend.name }}'
+    component: "{{ .Values.defaultBackend.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
   name: {{ template "fullname" . }}-{{ .Values.defaultBackend.name }}
@@ -14,13 +14,13 @@ spec:
     metadata:
       labels:
         app: {{ template "name" . }}
-        component: '{{ .Values.defaultBackend.name }}'
+        component: "{{ .Values.defaultBackend.name }}"
         release: {{ .Release.Name }}
     spec:
       containers:
         - name: {{ template "name" . }}-{{ .Values.defaultBackend.name }}
-          image: '{{ .Values.defaultBackend.image.repository }}:{{ .Values.defaultBackend.image.tag }}'
-          imagePullPolicy: '{{ .Values.defaultBackend.image.pullPolicy }}'
+          image: "{{ .Values.defaultBackend.image.repository }}:{{ .Values.defaultBackend.image.tag }}"
+          imagePullPolicy: "{{ .Values.defaultBackend.image.pullPolicy }}"
           livenessProbe:
             httpGet:
               path: /healthz

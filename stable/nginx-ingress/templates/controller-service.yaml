@@ -1,29 +1,46 @@
-{{- $root := . -}}
-{{- range .Values.controller.services }}
----
 apiVersion: v1
 kind: Service
 metadata:
-{{- if .annotations }}
+{{- if .Values.controller.service.annotations }}
   annotations:
-{{ toYaml .annotations | indent 4}}
+{{ toYaml .Values.controller.service.annotations | indent 4}}
 {{- end }}
   labels:
-    app: {{ template "name" $root }}
-    chart: {{ $root.Chart.Name }}-{{ $root.Chart.Version }}
-    component: '{{ $root.Values.controller.name }}'
-    heritage: {{ $root.Release.Service }}
-    release: {{ $root.Release.Name }}
-  name: '{{ template "fullname" $root }}-{{ .name }}'
+    app: {{ template "name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: "{{ .Values.controller.name }}"
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "fullname" . }}-{{ .Values.controller.name }}
 spec:
+{{- if .Values.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.service.loadBalancerIP }}
+{{- end }}
+{{- if .Values.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+  {{- range $cidr := .Values.loadBalancerSourceRanges }}
+    - {{ $cidr }}
+  {{- end }}
+{{- end }}
   ports:
-    - port: 80
-      name: http
-    - port: 443
-      name: https
+    - name: http
+      port: 80
+      protocol: TCP
+    - name: https
+      port: 443
+      protocol: TCP
+  {{- range $key, $value := .Values.tcp }}
+    - name: "{{ $key }}-tcp"
+      port: {{ $key }}
+      protocol: TCP
+  {{- end }}
+  {{- range $key, $value := .Values.udp }}
+    - name: "{{ $key }}-udp"
+      port: {{ $key }}
+      protocol: UDP
+  {{- end }}
   selector:
-    app: {{ template "name" $root }}
-    component: '{{ $root.Values.controller.name }}'
-    release: {{ $root.Release.Name }}
-  type: '{{ .type }}'
-{{ end }}
+    app: {{ template "name" . }}
+    component: "{{ .Values.controller.name }}"
+    release: {{ .Release.Name }}
+  type: "{{ .Values.controller.service.type }}"

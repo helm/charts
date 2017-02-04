@@ -53,16 +53,18 @@ Parameter | Description | Default
 `controller.enableStats` | enable & expose nginx "vts-status" page | `false`
 `controller.replicaCount` | desired number of controller pods | `1`
 `controller.resources` | controller pod resource requests & limits | `requests: {cpu: 100m, memory: 64Mi}`
-`controller.services[].name` | name of controller service to create | `controller`
-`controllers.services[].annotations` | annotations for controller service | none
-`controllers.services[].type` | type of controller service to create | `LoadBalancer`
+`controller.service.annotations` | annotations for controller service | none
+`controller.service.loadBalancerIP` | IP address to assign to load balancer (if supported) | none
+`controller.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | none
+`controller.service.type` | type of controller service to create | `LoadBalancer`
 `defaultBackend.name` | name of the default backend component | `default-backend`
 `defaultBackend.image.repository` | default backend container image repository | `gcr.io/google_containers/defaultbackend`
 `defaultBackend.image.tag` | default backend container image tag | `1.2`
 `defaultBackend.image.pullPolicy` | default backend container image pull policy | `IfNotPresent`
 `defaultBackend.replicaCount` | desired number of default backend pods | `1`
 `defaultBackend.resources` | default backend pod resource requests & limits | `limits: {cpu: 10m, memory: 20Mi}, requests: {cpu: 10m, memory: 20Mi}`
-
+`tcp` | TCP service key:value pairs | none
+`udp` | UDP service key:value pairs | none
 
 ```console
 $ helm install --name my-release \

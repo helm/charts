@@ -5,10 +5,10 @@ controller:
   name: controller
   image:
     repository: gcr.io/google_containers/nginx-ingress-controller
-    tag: '0.8.3'
+    tag: "0.8.3"
     pullPolicy: IfNotPresent
 
-  # config:
+  config: {}
   enableStats: false
   replicaCount: 1
   resources:
@@ -19,10 +19,11 @@ controller:
       cpu: 100m
       memory: 64Mi
 
-  services:
-    - name: controller
-      # annotations:
-      type: LoadBalancer
+  service:
+    annotations: {}
+    # loadBalancerIP:
+    loadBalancerSourceRanges: []
+    type: LoadBalancer
 
 ## Default backend configuration
 ## To run a different 404 page for the managed domains please see the documentation below
@@ -32,7 +33,7 @@ defaultBackend:
   name: default-backend
   image:
     repository: gcr.io/google_containers/defaultbackend
-    tag: '1.2'
+    tag: "1.2"
     pullPolicy: IfNotPresent
 
   replicaCount: 1
@@ -43,3 +44,13 @@ defaultBackend:
     requests:
       cpu: 10m
       memory: 20Mi
+
+# TCP service key:value pairs
+# Ref: https://github.com/kubernetes/contrib/tree/master/ingress/controllers/nginx/examples/tcp
+tcp:
+  # 8080: "default/example-tcp-svc:9000"
+
+# UDP service key:value pairs
+# Ref: https://github.com/kubernetes/contrib/tree/master/ingress/controllers/nginx/examples/udp
+udp:
+  # 53: "kube-system/kube-dns:53"

@@ -1,21 +1,18 @@
 The nginx-ingress controller has been installed.
 
-{{- $root := . -}}
-{{- range .Values.controller.services }}
-{{- if contains "NodePort" .type }}
+{{- if contains "NodePort" .Values.controller.service.type }}
 Get the application URL by running these commands:
-  export NODE_PORT=$(kubectl --namespace {{ $root.Release.Namespace }} get services -o jsonpath="{.spec.ports[0].nodePort}" {{ template "fullname" $root }}-{{ .name }})
-  export NODE_IP=$(kubectl --namespace {{ $root.Release.Namespace }} get nodes -o jsonpath="{.items[0].status.addresses[0].address}")
+  export NODE_PORT=$(kubectl --namespace {{ .Release.Namespace }} get services -o jsonpath="{.spec.ports[0].nodePort}" {{ template "fullname" . }}-{{ .Values.controller.name }})
+  export NODE_IP=$(kubectl --namespace {{ .Release.Namespace }} get nodes -o jsonpath="{.items[0].status.addresses[1].address}")
   echo "Visit http://$NODE_IP:$NODE_PORT to access your application."
-{{- else if contains "LoadBalancer" .type }}
+{{- else if contains "LoadBalancer" .Values.controller.service.type }}
 It may take a few minutes for the LoadBalancer IP to be available.
-You can watch the status by running 'kubectl --namespace {{ $root.Release.Namespace }} get services -o wide -w {{ template "fullname" $root }}-{{ .name }}'
-{{- else if contains "ClusterIP"  .type }}
+You can watch the status by running 'kubectl --namespace {{ .Release.Namespace }} get services -o wide -w {{ template "fullname" . }}-{{ .Values.controller.name }}'
+{{- else if contains "ClusterIP"  .Values.controller.service.type }}
 Get the application URL by running these commands:
-  export POD_NAME=$(kubectl --namespace {{ $root.Release.Namespace }} get pods -o jsonpath="{.items[0].metadata.name}" -l "app={{ template "name" $root }},component={{ $root.Values.controller.name }},release={{ $root.Release.Name }}")
-  kubectl --namespace {{ $root.Release.Namespace }} port-forward $POD_NAME {{ $root.containerPort }}:{{ $root.containerPort }}
-  echo "Visit http://127.0.0.1:{{ $root.containerPort }} to access your application."
-{{- end }}
+  export POD_NAME=$(kubectl --namespace {{ .Release.Namespace }} get pods -o jsonpath="{.items[0].metadata.name}" -l "app={{ template "name" . }},component={{ .Values.controller.name }},release={{ .Release.Name }}")
+  kubectl --namespace {{ .Release.Namespace }} port-forward $POD_NAME 8080:80
+  echo "Visit http://127.0.0.1:8080 to access your application."
 {{- end }}
 
 An example Ingress that makes use of the controller:
