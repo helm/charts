@@ -1,6 +1,6 @@
 name: artifactory
 home: https://www.jfrog.com/artifactory/
-version: 4.14.1
+version: 4.16.0
 description: Artifactory chart for Kubernetes
 keywords:
 - artifactory
