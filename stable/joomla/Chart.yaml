@@ -8,6 +8,7 @@ keywords:
 - http
 - php
 home: http://www.joomla.org/
+icon: https://bitnami.com/assets/stacks/joomla/img/joomla-stack-220x234.png
 sources:
 - https://github.com/bitnami/bitnami-docker-joomla
 maintainers:
