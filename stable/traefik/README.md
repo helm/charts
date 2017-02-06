@@ -83,7 +83,7 @@ The following tables lists the configurable parameters of the Traefik chart and 
 | `acme.persistence.storageClass` | Type of `StorageClass` to request-- will be cluster-specific         | `nil` (uses alpha storage class annotation) |
 | `acme.persistence.accessMode`   | `ReadWriteOnce` or `ReadOnly`                                        | `ReadWriteOnce`                           |
 | `acme.persistence.size`         | Minimum size of the volume requested                                 | `1Gi`                                     |
-| `daemonset.enabled`             | Deploy DaemonSet instead of Deployment                               | `false`                                   |
+| `daemonset.enabled`             | Deploy DaemonSet instead of Deployment.  __NOTE:__ Full Traefik clustering with leader election is not yet supported, which can affect any configured Let's Encrypt setup; see Clustering section | `false` |
 | `dashboard.enabled`             | Whether to enable the Traefik dashboard                              | `false`                                   |
 | `dashboard.domain`              | Domain for the Traefik dashboard                                     | `traefik.example.com`                     |
 | `dashboard.port`                | Container port for the Traefik dashboard                             | `8080`                                    |
@@ -109,9 +109,25 @@ installing the chart. For example:
 $ helm install --name my-release --namespace kube-system --values values.yaml stable/traefik
 ```
 
+### Clustering / High Availability
+
+Currently it is possible to configure this chart to run multiple Traefik instances using
+either the `replicas` option or the `daemonset.enabled` option.  Enabling either results
+in a naive Traefik implementation.
+
+**Full Traefik clustering with leader election is not yet supported.**
+
+Specifically, it is heavily advised to not enable 'daemonset.enabled` or set a value
+for `replicas` if you also have Let's Encrypt configured. While setting multiple 
+Traefik instances will work for many cases, since no leader is elected it has the consequence 
+that each node will end up requesting Let's Encrypt certificates if this is also configured.
+This will quickly cut into the very modest rate limit that Let's Encrypt enforces. 
+
 If you are installing the chart to a cluster that is not capable of provisioning an
-external load balancer (i.e. not using AWS or GKE), use `daemonset.enabled=true`.
-This will schedule a Traefik pod on each node with `hostNetwork` enabled due to
-https://github.com/kubernetes/kubernetes/issues/23920.  You will likely also want
+external load balancer (i.e. not using AWS or GKE), using `daemonset.enabled=true`
+can help make Traefik accessible outside of the cluster on common 80/443 ports.
+Configuring a DaemonSet will schedule a Traefik pod on each node with `hostNetwork` enabled 
+due to https://github.com/kubernetes/kubernetes/issues/23920.  You will likely also want
 to change the `dashboard.port` so it doesn't conflict with your master node's
-`kube-apiserver` running on `8080`.
+`kube-apiserver` running on `8080`.  You can also configure Round-Robin DNS as a rudimentary 
+load-balancing solution.
