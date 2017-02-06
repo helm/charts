@@ -34,6 +34,19 @@ data:
           KeyFile = "/ssl/tls.key"
       {{- end }}
     [kubernetes]
+    {{- if .Values.kubernetes}}
+      {{- if .Values.kubernetes.namespaces }}
+    namespaces = [
+        {{- range $idx, $element := .Values.kubernetes.namespaces }}
+            {{- if $idx }}, {{ end }}
+            {{- $element | quote }}
+        {{- end -}}
+        ]
+      {{- end}}
+      {{- if .Values.kubernetes.labelSelector }}
+    labelselector = {{ .Values.kubernetes.labelSelector | quote }}
+      {{- end}}
+    {{- end}}
     {{- if .Values.acme.enabled }}
     [acme]
     email = "{{ .Values.acme.email }}"

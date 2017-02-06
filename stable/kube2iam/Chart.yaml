@@ -1,5 +1,5 @@
 name: kube2iam
-version: 0.1.0
+version: 0.1.1
 description: Provide IAM credentials to containers running inside a kubernetes cluster based on annotations.
 keywords:
 - kube2iam

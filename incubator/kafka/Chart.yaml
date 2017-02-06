@@ -1,0 +1,17 @@
+apiVersion: v1
+description: A Kafka Helm chart for Kubernetes
+name: kafka
+version: 0.1.0
+keywords:
+  - kafka
+  - zookeeper
+  - kafka petset
+home: https://kafka.apache.org/
+sources:
+  - https://github.com/kubernetes/charts/tree/master/incubator/zookeeper
+  - https://github.com/Yolean/kubernetes-kafka
+  - https://github.com/solsson/dockerfiles/tree/master/kafka
+maintainers:
+  - name: Faraaz Khan
+    email: faraaz@rationalizeit.us
+icon: https://kafka.apache.org/images/logo.png

@@ -80,14 +80,19 @@ The following tables lists the configurable parameters of the Traefik chart and 
 | `acme.email`                    | Email address to be used in certificates obtained from Let's Encrypt | `admin@example.com`                       |
 | `acme.staging`                  | Whether to get certs from Let's Encrypt's staging environment        | `true`                                    |
 | `acme.persistence.enabled`      | Create a volume to store ACME certs (if ACME is enabled)             | `true`                                    |
-| `acme.persistence.storageClass` | Type of `StorageClass` to request-- will be cluster-specific         | `generic`                                 |
+| `acme.persistence.storageClass` | Type of `StorageClass` to request-- will be cluster-specific         | `nil` (uses alpha storage class annotation) |
 | `acme.persistence.accessMode`   | `ReadWriteOnce` or `ReadOnly`                                        | `ReadWriteOnce`                           |
 | `acme.persistence.size`         | Minimum size of the volume requested                                 | `1Gi`                                     |
 | `daemonset.enabled`             | Deploy DaemonSet instead of Deployment                               | `false`                                   |
 | `dashboard.enabled`             | Whether to enable the Traefik dashboard                              | `false`                                   |
 | `dashboard.domain`              | Domain for the Traefik dashboard                                     | `traefik.example.com`                     |
 | `dashboard.port`                | Container port for the Traefik dashboard                             | `8080`                                    |
-| `gzip.enabled`                  | Whether to use gzip compression                                      | `true`                     |
+| `dashboard.ingress.annotations` | Annotations for the Traefik dashboard Ingress definition, specified as a map | None                              |
+| `service.annotations`           | Annotations for the Traefik Service definition, specified as a map   | None                                      |
+| `service.labels`                | Additional labels for the Traefik Service definition, specified as a map | None                                  |
+| `gzip.enabled`                  | Whether to use gzip compression                                      | `true`                                    |
+| `kubernetes.namespaces`         | List of Kubernetes namespaces to watch                               | All namespaces                            |
+| `kubernetes.labelSelector`      | Valid Kubernetes ingress label selector to watch (e.g `realm=public`)| No label filter                           |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
 
