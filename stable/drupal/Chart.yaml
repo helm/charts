@@ -10,6 +10,7 @@ keywords:
 - application
 - php
 home: http://www.drupal.org/
+icon: https://bitnami.com/assets/stacks/drupal/img/drupal-stack-220x234.png
 sources:
 - https://github.com/bitnami/bitnami-docker-drupal
 maintainers:
