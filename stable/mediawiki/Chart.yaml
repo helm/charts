@@ -7,6 +7,7 @@ keywords:
 - http
 - php
 home: http://www.mediawiki.org/
+icon: https://bitnami.com/assets/stacks/mediawiki/img/mediawiki-stack-220x234.png
 sources:
 - https://github.com/bitnami/bitnami-docker-mediawiki
 maintainers:
