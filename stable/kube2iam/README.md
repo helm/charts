@@ -58,10 +58,10 @@ The following tables lists the configurable parameters of the kube2iam chart and
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```console
-$ helm install --name my-release \
-  --set=extraArgs.base-role-arn=arn:aws:iam::0123456789:role/, \
+$ helm install stable/kube2iam --name my-release \
+  --set="extraArgs.base-role-arn=arn:aws:iam::0123456789:role/, \
     extraArgs.default-role=kube2iam-default, \
-    host.iptables=true,host.interface=cbr0
+    host.iptables=true,host.interface=cbr0"
 ```
 
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
