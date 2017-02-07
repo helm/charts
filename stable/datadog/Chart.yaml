@@ -5,6 +5,8 @@ keywords:
 - monitoring
 - alerting
 - metric
+home: https://www.datadoghq.com
+icon: https://datadog-live.imgix.net/img/dd_logo_70x75.png
 sources:
 - https://app.datadoghq.com/account/settings#agent/kubernetes
 - https://github.com/DataDog/docker-dd-agent
