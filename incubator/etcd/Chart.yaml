@@ -1,7 +1,8 @@
 name: etcd
 home: https://github.com/coreos/etcd
 version: 0.1.2
-description: Etcd Helm chart for Kubernetes.
+description: Distributed reliable key-value store for the most critical data of a distributed system.
+icon: https://raw.githubusercontent.com/coreos/etcd/master/logos/etcd-horizontal-color.png
 sources:
   - https://github.com/coreos/etcd
 maintainers:
