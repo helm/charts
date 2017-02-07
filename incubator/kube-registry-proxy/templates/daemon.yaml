@@ -1,0 +1,27 @@
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+spec:
+  template:
+    metadata:
+      name: {{ template "fullname" . }}
+      labels:
+        app: {{ template "fullname" . }}
+    spec:
+      containers:
+      - name: kube-registry-proxy
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        env:
+        - name: REGISTRY_HOST
+          value: {{ .Values.registry.host | quote }}
+        - name: REGISTRY_PORT
+          value: {{ .Values.registry.port | quote }}
+        ports:
+        - containerPort: 80
+          hostPort: {{ default "5555" .Values.hostPort }}
