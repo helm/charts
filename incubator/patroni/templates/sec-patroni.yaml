@@ -7,8 +7,6 @@ metadata:
     release: {{ .Release.Name | quote }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     component: "{{.Release.Name}}-{{.Values.Component}}"
-  annotations:
-    "helm.sh/created": {{.Release.Time.Seconds | quote }}
 type: Opaque
 data:
   password-superuser: {{ .Values.Credentials.Superuser | b64enc }}

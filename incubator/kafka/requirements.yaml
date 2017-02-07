@@ -1,0 +1,4 @@
+dependencies:
+- name: zookeeper
+  version: 0.1.1
+  repository: http://storage.googleapis.com/kubernetes-charts-incubator

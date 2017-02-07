@@ -18,11 +18,27 @@ acme:
   # certs every time a pod (re-)starts and you WILL be rate limited!
   persistence:
     enabled: true
-    storageClass: generic
+    ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
+    ## Default: volume.alpha.kubernetes.io/storage-class: default
+    ##
+    # storageClass:
     accessMode: ReadWriteOnce
     size: 1Gi
 dashboard:
   enabled: false
   domain: traefik.example.com
+  ingress:
+    # annotations:
+    #   key: value
+service:
+  # annotations:
+  #   key: value
+  # labels:
+  #   key: value
 gzip:
   enabled: true
+# Kubernetes ingress filters
+#kubernetes:
+#  namespaces:
+#  - default
+#  labelSelector:
