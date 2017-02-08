@@ -66,15 +66,14 @@ Parameter | Description | Default
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```console
-$ helm install --name my-release \
-  --set asg.name=kubernetes-workers \
-    stable/aws-cluster-autoscaler
+$ helm install stable/aws-cluster-autoscaler --name my-release \
+    --set asg.name=kubernetes-workers    
 ```
 
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 
 ```console
-$ helm install --name my-release -f values.yaml stable/aws-cluster-autoscaler
+$ helm install stable/aws-cluster-autoscaler --name my-release -f values.yaml
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
