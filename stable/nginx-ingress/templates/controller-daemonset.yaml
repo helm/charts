@@ -23,7 +23,7 @@ spec:
           imagePullPolicy: "{{ .Values.controller.image.pullPolicy }}"
           args:
             - /nginx-ingress-controller
-            - --default-backend-service={{ .Release.Namespace }}/{{ template "fullname" . }}-{{ .Values.defaultBackend.name }}
+            - --default-backend-service={{ if .Values.defaultBackend.enabled }}{{ .Release.Namespace }}/{{ template "fullname" . }}-{{ .Values.defaultBackend.name }}{{ else }}{{ .Values.controller.defaultBackendService }}{{ end }}
             - --nginx-configmap={{ .Release.Namespace }}/{{ template "fullname" . }}-{{ .Values.controller.name }}
             - --tcp-services-configmap={{ .Release.Namespace }}/{{ template "fullname" . }}-tcp
             - --udp-services-configmap={{ .Release.Namespace }}/{{ template "fullname" . }}-udp
@@ -72,5 +72,29 @@ spec:
               scheme: HTTP
           resources:
 {{ toYaml .Values.controller.resources | indent 12 }}
+      {{- if .Values.controller.enableStats }}
+        - name: {{ template "name" . }}-{{ .Values.statsExporter.name }}
+          image: "{{ .Values.statsExporter.image.repository }}:{{ .Values.statsExporter.image.tag }}"
+          imagePullPolicy: "{{ .Values.statsExporter.image.pullPolicy }}"
+          env:
+            - name: METRICS_ADDR
+              value: ":{{ .Values.statsExporter.service.containerPort }}"
+            - name: METRICS_ENDPOINT
+              value: "{{ .Values.statsExporter.endpoint }}"
+            - name: METRICS_NS
+              value: "{{ .Values.statsExporter.metricsNamespace }}"
+            - name: NGINX_STATUS
+              value: "{{ .Values.statsExporter.statusPage }}"
+          ports:
+            - name: metrics
+              containerPort: {{ .Values.statsExporter.service.containerPort }}
+              protocol: TCP
+          resources:
+{{ toYaml .Values.statsExporter.resources | indent 12 }}
+      {{- end }}
+    {{- if .Values.controller.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.controller.nodeSelector | indent 8 }}
+    {{- end }}
       terminationGracePeriodSeconds: 60
 {{- end }}

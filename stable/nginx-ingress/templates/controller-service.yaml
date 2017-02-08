@@ -13,12 +13,12 @@ metadata:
     release: {{ .Release.Name }}
   name: {{ template "fullname" . }}-{{ .Values.controller.name }}
 spec:
-{{- if .Values.loadBalancerIP }}
-  loadBalancerIP: {{ .Values.service.loadBalancerIP }}
+{{- if .Values.controller.service.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.controller.service.loadBalancerIP }}
 {{- end }}
-{{- if .Values.loadBalancerSourceRanges }}
+{{- if .Values.controller.service.loadBalancerSourceRanges }}
   loadBalancerSourceRanges:
-  {{- range $cidr := .Values.loadBalancerSourceRanges }}
+  {{- range $cidr := .Values.controller.service.loadBalancerSourceRanges }}
     - {{ $cidr }}
   {{- end }}
 {{- end }}

@@ -1,5 +1,5 @@
 ## nginx configuration
-## Ref: https://github.com/kubernetes/contrib/tree/master/ingress/controllers/nginx
+## Ref: https://github.com/kubernetes/ingress/blob/master/controllers/nginx/configuration.md
 ##
 controller:
   name: controller
@@ -9,11 +9,21 @@ controller:
     pullPolicy: IfNotPresent
 
   config: {}
+
+  ## Only required if defaultBackend.enabled = false
+  ## Must be <namespace>/<service_name>
+  ##
+  defaultBackendService: ""
+
   enableStats: false
 
   ## DaemonSet or Deployment
   ##
   kind: Deployment
+
+  ## Node labels for pod assignment
+  ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+  nodeSelector: {}
 
   ## Required if controller.kind is Deployment
   ##
@@ -33,18 +43,26 @@ controller:
     loadBalancerSourceRanges: []
     type: LoadBalancer
 
-## Default backend configuration
-## To run a different 404 page for the managed domains please see the documentation below
-## Ref: https://github.com/kubernetes/contrib/tree/master/404-server
+## Default 404 backend
 ##
 defaultBackend:
+
+  ## If false, controller.defaultBackendService must be provided
+  ##
+  enabled: true
+
   name: default-backend
   image:
     repository: gcr.io/google_containers/defaultbackend
     tag: "1.2"
     pullPolicy: IfNotPresent
 
+  ## Node labels for pod assignment
+  ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+  nodeSelector: {}
+
   replicaCount: 1
+
   resources:
     limits:
       cpu: 10m
@@ -52,6 +70,34 @@ defaultBackend:
     requests:
       cpu: 10m
       memory: 20Mi
+
+## If controller.enableStats = true, Prometheus metrics will be exported
+## Ref: https://github.com/hnlq715/nginx-vts-exporter
+statsExporter:
+  name: stats-exporter
+  image:
+    repository: quay.io/cy-play/vts-nginx-exporter
+    tag: v0.0.3
+    pullPolicy: IfNotPresent
+
+  endpoint: /metrics
+  metricsNamespace: nginx
+  statusPage: http://localhost:18080/nginx_status/format/json
+
+  resources:
+    # limits:
+    #   cpu: 10m
+    #   memory: 20Mi
+    requests:
+      cpu: 10m
+      memory: 20Mi
+
+  service:
+    annotations: {}
+    clusterIP: ""
+    containerPort: 9913
+    servicePort: 9913
+    type: ClusterIP
 
 # TCP service key:value pairs
 # Ref: https://github.com/kubernetes/contrib/tree/master/ingress/controllers/nginx/examples/tcp

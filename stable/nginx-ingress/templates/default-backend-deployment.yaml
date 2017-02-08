@@ -1,3 +1,4 @@
+{{- if .Values.defaultBackend.enabled }}
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
@@ -32,4 +33,9 @@ spec:
             - containerPort: 8080
           resources:
 {{ toYaml .Values.defaultBackend.resources | indent 12 }}
+    {{- if .Values.defaultBackend.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.defaultBackend.nodeSelector | indent 8 }}
+    {{- end }}
       terminationGracePeriodSeconds: 60
+{{- end }}
