@@ -65,5 +65,5 @@ $ helm install stable/kube2iam --name my-release \
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 
 ```console
-$ helm install --name my-release -f values.yaml stable/kube2iam
+$ helm install stable/kube2iam --name my-release -f values.yaml
 ```
