@@ -13,6 +13,10 @@ spec:
   replicas: {{ .Values.controller.replicaCount }}
   template:
     metadata:
+    {{- if .Values.controller.podAnnotations }}
+      annotations:
+{{ toYaml .Values.controller.podAnnotations | indent 8}}
+    {{- end }}
       labels:
         app: {{ template "name" . }}
         component: "{{ .Values.controller.name }}"
