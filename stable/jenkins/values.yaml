@@ -27,6 +27,16 @@ Master:
   LoadBalancerSourceRanges:
   - 0.0.0.0/0
 
+  Ingress:
+    Annotations:
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+
+    TLS:
+      # - secretName: jenkins.cluster.local
+      #   hosts:
+      #     - jenkins.cluster.local
+
 Agent:
   Image: jenkinsci/jnlp-slave
   ImageTag: 2.52
