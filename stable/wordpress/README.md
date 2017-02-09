@@ -65,6 +65,7 @@ The following tables lists the configurable parameters of the WordPress chart an
 | `serviceType`                        | Kubernetes Service type                    | `LoadBalancer`                                             |
 | `ingress.enabled`                    | Enable ingress controller resource         | `false`                                                    |
 | `ingress.hostname`                   | URL to address your WordPress installation | `wordpress.local`                                          |
+| `ingress.tls`                        | Ingress TLS configuration                  | `[]`                                          |
 | `persistence.enabled`                | Enable persistence using PVC               | `true`                                                     |
 | `persistence.apache.storageClass`    | PVC Storage Class for Apache volume        | `nil` (uses alpha storage class annotation)                |
 | `persistence.apache.accessMode`      | PVC Access Mode for Apache volume          | `ReadWriteOnce`                                            |
@@ -103,4 +104,3 @@ See the [Configuration](#configuration) section to configure the PVC or to disab
 ## Ingress
 
 This chart provides support for Ingress resource. If you have available an Ingress Controller such as Nginx or Traefik you maybe want to set up `ingress.enabled` to true and choose a `ingress.hostname` for the URL. Then, you should be able to access the installation using that address.
-

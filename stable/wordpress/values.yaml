@@ -83,10 +83,18 @@ ingress:
     enabled: false
     hostname: wordpress.local
 
-    ## Server Ingress annotations
+    ## Ingress annotations
     ##
     # annotations:
-    #   kubernetes.io/ingress.class: traefik
+    #   kubernetes.io/ingress.class: nginx
+
+    ## Ingress TLS configuration
+    ## Secrets must be manually created in the namespace
+    ##
+    # tls:
+    #   - secretName: wordpress.local-tls
+    #     hosts:
+    #       - wordpress.local
 
 ## Enable persistence using Persistent Volume Claims
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/

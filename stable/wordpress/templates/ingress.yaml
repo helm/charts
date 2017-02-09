@@ -13,13 +13,16 @@ metadata:
      {{ $key }}: {{ $value | quote }}
    {{- end }}
 spec:
- rules:
-   - host: {{ .Values.ingress.hostname }}
-     http:
-       paths:
-         - path: /
-           backend:
-             serviceName: {{ template "fullname" . }}
-             servicePort: 80
+  rules:
+    - host: {{ .Values.ingress.hostname }}
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: {{ template "fullname" . }}
+              servicePort: 80
+{{- if .Values.ingress.tls }}
+  tls:
+{{ toYaml .Values.ingress.tls | indent 4 }}
 {{- end -}}
-
+{{- end -}}
