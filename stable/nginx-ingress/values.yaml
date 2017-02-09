@@ -21,11 +21,11 @@ controller:
   ##
   kind: Deployment
 
-  ## Node labels for pod assignment
+  ## Node labels for controller pod assignment
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
   nodeSelector: {}
 
-  ## Annotations to be added to pods
+  ## Annotations to be added to controller pods
   ##
   podAnnotations: {}
 
@@ -41,6 +41,12 @@ controller:
 
   service:
     annotations: {}
+
+    ## List of IP addresses at which the controller services are available
+    ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
+    ##
+    externalIPs: []
+
     loadBalancerIP: ""
     loadBalancerSourceRanges: []
     type: LoadBalancer
@@ -59,11 +65,11 @@ defaultBackend:
     tag: "1.2"
     pullPolicy: IfNotPresent
 
-  ## Node labels for pod assignment
+  ## Node labels for default-backend pod assignment
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
   nodeSelector: {}
 
-  ## Annotations to be added to pods
+  ## Annotations to be added to default-backend pods
   ##
   podAnnotations: {}
 
@@ -101,6 +107,12 @@ statsExporter:
   service:
     annotations: {}
     clusterIP: ""
+
+    ## List of IP addresses at which the Prometheus metrics exporter is available
+    ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
+    ##
+    externalIPs: []
+
     containerPort: 9913
     servicePort: 9913
     type: ClusterIP

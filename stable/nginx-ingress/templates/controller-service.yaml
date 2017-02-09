@@ -13,6 +13,10 @@ metadata:
     release: {{ .Release.Name }}
   name: {{ template "fullname" . }}-{{ .Values.controller.name }}
 spec:
+{{- if .Values.controller.service.externalIPs }}
+  externalIPs:
+{{ toYaml .Values.controller.service.externalIPs | indent 4 }}
+{{- end }}
 {{- if .Values.controller.service.loadBalancerIP }}
   loadBalancerIP: {{ .Values.controller.service.loadBalancerIP }}
 {{- end }}

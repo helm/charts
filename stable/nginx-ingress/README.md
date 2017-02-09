@@ -58,6 +58,7 @@ Parameter | Description | Default
 `controller.replicaCount` | desired number of controller pods | `1`
 `controller.resources` | controller pod resource requests & limits | `requests: {cpu: 100m, memory: 64Mi}`
 `controller.service.annotations` | annotations for controller service | `{}`
+`controller.service.externalIPs` | controller service external IP addresses | `[]`
 `controller.service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
 `controller.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
 `controller.service.type` | type of controller service to create | `LoadBalancer`
@@ -80,6 +81,7 @@ Parameter | Description | Default
 `statsExporter.service.annotations` | annotations for Prometheus metrics exporter service | `{}`
 `statsExporter.service.clusterIP` | cluster IP address to assign to service | `""`
 `statsExporter.service.containerPort` | Prometheus metrics exporter container port | `9913`
+`statsExporter.service.externalIPs` | Prometheus metrics exporter service external IP addresses | `[]`
 `statsExporter.service.servicePort` | Prometheus metrics exporter service port | `9913`
 `statsExporter.service.type` | type of Prometheus metrics exporter service to create | `ClusterIP`
 `tcp` | TCP service key:value pairs | none

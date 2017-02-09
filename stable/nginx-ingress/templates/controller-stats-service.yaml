@@ -10,6 +10,10 @@ metadata:
     release: {{ .Release.Name }}
   name: {{ template "fullname" . }}-{{ .Values.controller.name }}-stats
 spec:
+{{- if .Values.controller.service.externalIPs }}
+  externalIPs:
+{{ toYaml .Values.controller.service.externalIPs | indent 4 }}
+{{- end }}
   ports:
     - name: stats
       port: 18080

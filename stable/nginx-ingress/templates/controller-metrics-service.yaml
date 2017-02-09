@@ -15,6 +15,10 @@ metadata:
   name: {{ template "fullname" . }}-{{ .Values.controller.name }}-metrics
 spec:
   clusterIP: "{{ .Values.statsExporter.service.clusterIP }}"
+{{- if .Values.statsExporter.service.externalIPs }}
+  externalIPs:
+{{ toYaml .Values.statsExporter.service.externalIPs | indent 4 }}
+{{- end }}
   ports:
     - name: metrics
       port: {{ .Values.statsExporter.service.servicePort }}
