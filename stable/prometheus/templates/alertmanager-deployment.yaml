@@ -29,6 +29,9 @@ spec:
           args:
             - --config.file=/etc/config/alertmanager.yml
             - --storage.path=/data
+          {{- range $key, $value := .Values.alertmanager.extraArgs }}
+            - --{{ $key }}={{ $value }}
+          {{- end }}
           ports:
             - containerPort: 9093
           readinessProbe:

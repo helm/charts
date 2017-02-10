@@ -15,6 +15,10 @@ alertmanager:
     tag: v0.5.1
     pullPolicy: IfNotPresent
 
+  ## Additional alertmanager container arguments
+  ##
+  extraArgs: {}
+
   ingress:
 
     ## If true, alertmanager Ingress will be created
