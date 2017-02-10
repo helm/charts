@@ -1,20 +1,20 @@
 {{- if .Values.server.ingress.enabled -}}
 {{- $releaseName := .Release.Name -}}
-{{- $servicePort := .Values.server.httpPort -}}
+{{- $servicePort := .Values.server.service.servicePort -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
+{{- if .Values.alertmanager.ingress.annotations }}
   annotations:
-  {{- range $key, $value := .Values.server.ingress.annotations }}
-    {{ $key }}: {{ $value | quote }}
-  {{- end }}
+{{ toYaml .Values.alertmanager.ingress.annotations | indent 4}}
+{{- end }}
   labels:
-    app: {{ template "fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app: {{ template "name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     component: "{{ .Values.server.name }}"
-    heritage: "{{ .Release.Service }}"
-    release: "{{ .Release.Name }}"
-  name: {{ template "server.fullname" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "fullname" . }}-{{ .Values.server.name }}
 spec:
   rules:
   {{- range .Values.server.ingress.hosts }}
@@ -22,10 +22,10 @@ spec:
       http:
         paths:
           - backend:
-              serviceName: {{ printf "%s-%s" $releaseName "server" | trunc 63 }}
+              serviceName: {{ printf "%s-%s" $releaseName .Values.server.name | trunc 63 }}
               servicePort: {{ $servicePort }}
   {{- end -}}
-  {{- if .Values.server.ingress.tls }}
+{{- if .Values.server.ingress.tls }}
   tls:
 {{ toYaml .Values.server.ingress.tls | indent 4 }}
   {{- end -}}

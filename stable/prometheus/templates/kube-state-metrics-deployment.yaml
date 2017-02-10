@@ -1,27 +1,33 @@
+{{- if .Values.kubeStateMetrics.enabled -}}
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   labels:
-    app: {{ template "fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app: {{ template "name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     component: "{{ .Values.kubeStateMetrics.name }}"
-    heritage: "{{ .Release.Service }}"
-    release: "{{ .Release.Name }}"
-  name: {{ template "kubeStateMetrics.fullname" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "fullname" . }}-{{ .Values.kubeStateMetrics.name }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.kubeStateMetrics.replicaCount }}
   template:
     metadata:
+    {{- if .Values.kubeStateMetrics.podAnnotations }}
+      annotations:
+{{ toYaml .Values.kubeStateMetrics.podAnnotations | indent 8 }}
+    {{- end }}
       labels:
-        app: {{ template "fullname" . }}
+        app: {{ template "name" . }}
         component: "{{ .Values.kubeStateMetrics.name }}"
-        release: "{{ .Release.Name }}"
+        release: {{ .Release.Name }}
     spec:
       containers:
         - name: {{ template "name" . }}-{{ .Values.kubeStateMetrics.name }}
-          image: "{{ .Values.kubeStateMetrics.image }}"
-          imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
+          image: "{{ .Values.kubeStateMetrics.image.repository }}.repository }}:{{ .Values.kubeStateMetrics.image.tag }}"
+          imagePullPolicy: "{{ .Values.kubeStateMetrics.image.pullPolicy }}"
           ports:
             - containerPort: 8080
           resources:
-{{ toYaml .Values.alertmanager.resources | indent 12 }}
+{{ toYaml .Values.kubeStateMetrics.resources | indent 12 }}
+{{- end }}

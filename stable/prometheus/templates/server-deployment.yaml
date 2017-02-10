@@ -2,29 +2,29 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   labels:
-    app: {{ template "fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app: {{ template "name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     component: "{{ .Values.server.name }}"
-    heritage: "{{ .Release.Service }}"
-    release: "{{ .Release.Name }}"
-  name: {{ template "server.fullname" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "fullname" . }}-{{ .Values.server.name }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.server.replicaCount }}
   template:
     metadata:
+    {{- if .Values.server.podAnnotations }}
       annotations:
-      {{- range $key, $value := .Values.server.annotations }}
-        {{ $key }}: {{ $value }}
-      {{- end }}
+{{ toYaml .Values.server.podAnnotations | indent 8 }}
+    {{- end }}
       labels:
-        app: {{ template "fullname" . }}
+        app: {{ template "name" . }}
         component: "{{ .Values.server.name }}"
-        release: "{{ .Release.Name }}"
+        release: {{ .Release.Name }}
     spec:
       containers:
         - name: {{ template "name" . }}-{{ .Values.server.name }}-{{ .Values.configmapReload.name }}
-          image: "{{ .Values.configmapReload.image }}"
-          imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
+          image: "{{ .Values.configmapReload.image.repository }}.repository }}:{{ .Values.configmapReload.image.tag }}"
+          imagePullPolicy: "{{ .Values.configmapReload.image.pullPolicy }}"
           args:
             - --volume-dir=/etc/config
             - --webhook-url=http://localhost:9090/-/reload
@@ -32,13 +32,16 @@ spec:
             - name: config-volume
               mountPath: /etc/config
               readOnly: true
+
         - name: {{ template "name" . }}-{{ .Values.server.name }}
-          image: "{{ .Values.server.image }}"
-          imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
+          image: "{{ .Values.server.image.repository }}.repository }}:{{ .Values.server.image.tag }}"
+          imagePullPolicy: "{{ .Values.server.image.pullPolicy }}"
           args:
-            - --alertmanager.url=http://{{ template "alertmanager.fullname" . }}:{{ .Values.alertmanager.httpPort }}
+          {{- if or .Values.alertmanager.enabled .Values.server.alertmanagerURL }}
+            - --alertmanager.url={{- if .Values.alertmanager.enabled }}http://{{ template "fullname" . }}-{{ .Values.alertmanager.name }}:{{ .Values.alertmanager.service.servicePort }}{{- else }}{{ .Values.server.alertmanagerURL }}{{- end }}
+          {{- end }}
             - --config.file=/etc/config/prometheus.yml
-            - --storage.local.path={{ default "/data" .Values.server.storageLocalPath }}
+            - --storage.local.path=/data
             - --web.console.libraries=/etc/prometheus/console_libraries
             - --web.console.templates=/etc/prometheus/consoles
           {{- range $key, $value := .Values.server.extraArgs }}
@@ -58,17 +61,17 @@ spec:
             - name: config-volume
               mountPath: /etc/config
             - name: storage-volume
-              mountPath: {{ default "/data" .Values.server.storageLocalPath | quote }}
-              subPath: {{ .Values.server.persistentVolume.subPath }}
-      terminationGracePeriodSeconds: {{ default 300 .Values.server.terminationGracePeriodSeconds }}
+              mountPath: /data
+              subPath: "{{ .Values.server.persistentVolume.subPath }}"
+      terminationGracePeriodSeconds: {{ .Values.server.terminationGracePeriodSeconds }}
       volumes:
         - name: config-volume
           configMap:
-            name: {{ template "server.fullname" . }}
+            name: {{ template "fullname" . }}-{{ .Values.server.name }}
         - name: storage-volume
-      {{- if .Values.server.persistentVolume.enabled }}
+        {{- if .Values.server.persistentVolume.enabled }}
           persistentVolumeClaim:
-            claimName: {{ if .Values.server.persistentVolume.existingClaim }}{{ .Values.server.persistentVolume.existingClaim }}{{- else }}{{ template "server.fullname" . }}{{- end }}
-      {{- else }}
+            claimName: {{ if .Values.server.persistentVolume.existingClaim }}{{ .Values.server.persistentVolume.existingClaim }}{{- else }}{{ template "fullname" . }}-{{ .Values.server.name }}{{- end }}
+        {{- else }}
           emptyDir: {}
-      {{- end -}}
+        {{- end -}}
