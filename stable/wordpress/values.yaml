@@ -75,6 +75,14 @@ mariadb:
 ##
 serviceType: LoadBalancer
 
+## Configure ingress resource that allow you to access the
+## Wordpress instalation. Set up the URL
+## ref: http://kubernetes.io/docs/user-guide/ingress/
+##
+ingress:
+    enabled: false
+    hostname: wordpress.local
+
 ## Enable persistence using Persistent Volume Claims
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
 ##

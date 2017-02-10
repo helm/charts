@@ -6,6 +6,14 @@
   export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
   echo http://$NODE_IP:$NODE_PORT/admin
 
+{{- if .Values.ingress.enabled }}
+
+  You also can access your installation with:
+
+  http://{{- .Values.ingress.hostname }}
+
+{{- end }}
+
 {{- else if contains "LoadBalancer" .Values.serviceType }}
 
   NOTE: It may take a few minutes for the LoadBalancer IP to be available.
