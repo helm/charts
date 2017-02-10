@@ -1,6 +1,4 @@
-containerPort: 8181
-
-# extraArgs:
+extraArgs: {}
 #   base-role-arn: arn:aws:iam::0123456789:role/
 #   default-role: kube2iam-default
 #   api-server: ...
@@ -15,6 +13,14 @@ image:
   repository: jtblin/kube2iam
   tag: 0.2.2
   pullPolicy: IfNotPresent
+
+## Node labels for pod assignment
+## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+nodeSelector: {}
+
+## Annotations to be added to pods
+##
+podAnnotations: {}
 
 resources:
   limits:
