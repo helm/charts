@@ -1,0 +1,89 @@
+{{- if and (default "" .Values.gitlabUrl) (default "" .Values.runnerRegistrationToken) }}
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    app: {{ template "fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: {{ template "fullname" . }}
+    spec:
+      containers:
+      - name: {{ template "fullname" . }}
+        image: {{ .Values.image }}
+        imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
+        command: ["/bin/bash", "/scripts/entrypoint"]
+        env:
+        - name: GITLAB_URL
+          value: {{ default "" .Values.gitlabUrl | quote }}
+        - name: REGISTRATION_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "fullname" . }}
+              key: runner-registration-token
+        - name: KUBERNETES_IMAGE
+          value: {{ .Values.runners.image | quote }}
+        {{ if .Values.runners.privileged }}
+        - name: KUBERNETES_PRIVILEGED
+          value: true
+        {{ end }}
+        - name: KUBERNETES_NAMESPACE
+          value: {{ default "" .Values.runners.namespace | quote }}
+        - name: KUBERNETES_CPU_LIMIT
+          value: {{ default "" .Values.runners.builds.cpuLimit | quote }}
+        - name: KUBERNETES_MEMORY_LIMIT
+          value: {{ default "" .Values.runners.builds.memoryLimit | quote }}
+        - name: KUBERNETES_CPU_REQUEST
+          value: {{ default "" .Values.runners.builds.cpuRequests | quote }}
+        - name: KUBERNETES_MEMORY_REQUEST
+          value: {{ default "" .Values.runners.builds.memoryRequests| quote }}
+        - name: KUBERNETES_SERVICE_CPU_LIMIT
+          value: {{ default "" .Values.runners.services.cpuLimit | quote }}
+        - name: KUBERNETES_SERVICE_MEMORY_LIMIT
+          value: {{ default "" .Values.runners.services.memoryLimit | quote }}
+        - name: KUBERNETES_SERVICE_CPU_REQUEST
+          value: {{ default "" .Values.runners.services.cpuRequests | quote }}
+        - name: KUBERNETES_SERVICE_MEMORY_REQUEST
+          value: {{ default "" .Values.runners.services.memoryRequests | quote }}
+        - name: KUBERNETES_HELPERS_CPU_LIMIT
+          value: {{ default "" .Values.runners.helpers.cpuLimit | quote }}
+        - name: KUBERNETES_HELPERS_MEMORY_LIMIT
+          value: {{ default "" .Values.runners.helpers.memoryLimit | quote }}
+        - name: KUBERNETES_HELPERS_CPU_REQUEST
+          value: {{ default "" .Values.runners.helpers.cpuRequests | quote }}
+        - name: KUBERNETES_HELPERS_MEMORY_REQUEST
+          value: {{ default "" .Values.runners.helpers.memoryRequests| quote }}
+        livenessProbe:
+          exec:
+            command: ["/usr/bin/pgrep","gitlab-ci-multi"]
+          initialDelaySeconds: 60
+          timeoutSeconds: 1
+          periodSeconds: 10
+          successThreshold: 1
+          failureThreshold: 3
+        readinessProbe:
+          exec:
+            command: ["/usr/bin/pgrep","gitlab-ci-multi"]
+          initialDelaySeconds: 10
+          timeoutSeconds: 1
+          periodSeconds: 10
+          successThreshold: 1
+          failureThreshold: 3
+        volumeMounts:
+        - name: scripts
+          mountPath: /scripts
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+      volumes:
+      - name: scripts
+        configMap:
+          name: {{ template "fullname" . }}
+{{ else }}
+{{ end }}
