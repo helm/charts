@@ -1,7 +1,11 @@
-{{- if .Values.controller.enableStats }}
+{{- if .Values.controller.stats.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
+{{- if .Values.controller.stats.service.annotations }}
+  annotations:
+{{ toYaml .Values.controller.stats.service.annotations | indent 4 }}
+{{- end }}
   labels:
     app: {{ template "name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
@@ -10,16 +14,25 @@ metadata:
     release: {{ .Release.Name }}
   name: {{ template "fullname" . }}-{{ .Values.controller.name }}-stats
 spec:
-{{- if .Values.controller.service.externalIPs }}
+  clusterIP: "{{ .Values.controller.stats.service.clusterIP }}"
+{{- if .Values.controller.stats.service.externalIPs }}
   externalIPs:
-{{ toYaml .Values.controller.service.externalIPs | indent 4 }}
+{{ toYaml .Values.controller.stats.service.externalIPs | indent 4 }}
+{{- end }}
+{{- if .Values.controller.stats.service.loadBalancerIP }}
+  loadBalancerIP: "{{ .Values.controller.stats.service.loadBalancerIP }}"
+{{- end }}
+{{- if .Values.controller.stats.service.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+{{ toYaml .Values.controller.stats.service.loadBalancerSourceRanges | indent 4 }}
 {{- end }}
   ports:
     - name: stats
-      port: 18080
+      port: {{ .Values.controller.stats.service.servicePort }}
+      targetPort: 18080
   selector:
     app: {{ template "name" . }}
     component: "{{ .Values.controller.name }}"
     release: {{ .Release.Name }}
-  type: ClusterIP
+  type: "{{ .Values.controller.stats.service.type }}"
 {{- end }}

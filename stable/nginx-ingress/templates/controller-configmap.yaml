@@ -9,7 +9,7 @@ metadata:
     release: {{ .Release.Name }}
   name: {{ template "fullname" . }}-{{ .Values.controller.name }}
 data:
-  enable-vts-status: "{{ .Values.controller.enableStats }}"
+  enable-vts-status: "{{ .Values.controller.stats.enabled }}"
 {{- if .Values.controller.config }}
 {{ toYaml .Values.controller.config | indent 2 }}
 {{- end }}

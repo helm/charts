@@ -13,6 +13,10 @@ spec:
   replicas: {{ .Values.defaultBackend.replicaCount }}
   template:
     metadata:
+    {{- if .Values.defaultBackend.podAnnotations }}
+      annotations:
+{{ toYaml .Values.defaultBackend.podAnnotations | indent 8}}
+    {{- end }}
       labels:
         app: {{ template "name" . }}
         component: "{{ .Values.defaultBackend.name }}"
@@ -22,6 +26,10 @@ spec:
         - name: {{ template "name" . }}-{{ .Values.defaultBackend.name }}
           image: "{{ .Values.defaultBackend.image.repository }}:{{ .Values.defaultBackend.image.tag }}"
           imagePullPolicy: "{{ .Values.defaultBackend.image.pullPolicy }}"
+          args:
+          {{- range $key, $value := .Values.defaultBackend.extraArgs }}
+            - --{{ $key }}={{ $value }}
+          {{- end }}
           livenessProbe:
             httpGet:
               path: /healthz
@@ -31,6 +39,7 @@ spec:
             timeoutSeconds: 5
           ports:
             - containerPort: 8080
+              protocol: TCP
           resources:
 {{ toYaml .Values.defaultBackend.resources | indent 12 }}
     {{- if .Values.defaultBackend.nodeSelector }}

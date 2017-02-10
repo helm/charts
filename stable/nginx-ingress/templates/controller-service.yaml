@@ -13,35 +13,38 @@ metadata:
     release: {{ .Release.Name }}
   name: {{ template "fullname" . }}-{{ .Values.controller.name }}
 spec:
+  clusterIP: "{{ .Values.controller.service.clusterIP }}"
 {{- if .Values.controller.service.externalIPs }}
   externalIPs:
 {{ toYaml .Values.controller.service.externalIPs | indent 4 }}
 {{- end }}
 {{- if .Values.controller.service.loadBalancerIP }}
-  loadBalancerIP: {{ .Values.controller.service.loadBalancerIP }}
+  loadBalancerIP: "{{ .Values.controller.service.loadBalancerIP }}"
 {{- end }}
 {{- if .Values.controller.service.loadBalancerSourceRanges }}
   loadBalancerSourceRanges:
-  {{- range $cidr := .Values.controller.service.loadBalancerSourceRanges }}
-    - {{ $cidr }}
-  {{- end }}
+{{ toYaml .Values.controller.service.loadBalancerSourceRanges | indent 4 }}
 {{- end }}
   ports:
     - name: http
       port: 80
       protocol: TCP
+      targetPort: 80
     - name: https
       port: 443
       protocol: TCP
+      targetPort: 443
   {{- range $key, $value := .Values.tcp }}
     - name: "{{ $key }}-tcp"
       port: {{ $key }}
       protocol: TCP
+      targetPort: {{ $key }}
   {{- end }}
   {{- range $key, $value := .Values.udp }}
     - name: "{{ $key }}-udp"
       port: {{ $key }}
       protocol: UDP
+      targetPort: {{ $key }}
   {{- end }}
   selector:
     app: {{ template "name" . }}

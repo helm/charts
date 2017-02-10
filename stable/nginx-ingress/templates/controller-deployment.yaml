@@ -32,6 +32,9 @@ spec:
             - --nginx-configmap={{ .Release.Namespace }}/{{ template "fullname" . }}-{{ .Values.controller.name }}
             - --tcp-services-configmap={{ .Release.Namespace }}/{{ template "fullname" . }}-tcp
             - --udp-services-configmap={{ .Release.Namespace }}/{{ template "fullname" . }}-udp
+          {{- range $key, $value := .Values.controller.extraArgs }}
+            - --{{ $key }}={{ $value }}
+          {{- end }}
           env:
             - name: POD_NAME
               valueFrom:
@@ -55,7 +58,7 @@ spec:
             - name: https
               containerPort: 443
               protocol: TCP
-          {{- if .Values.controller.enableStats }}
+          {{- if .Values.controller.stats.enabled }}
             - name: stats
               containerPort: 18080
               protocol: TCP
@@ -77,13 +80,14 @@ spec:
               scheme: HTTP
           resources:
 {{ toYaml .Values.controller.resources | indent 12 }}
+
       {{- if .Values.controller.enableStats }}
         - name: {{ template "name" . }}-{{ .Values.statsExporter.name }}
           image: "{{ .Values.statsExporter.image.repository }}:{{ .Values.statsExporter.image.tag }}"
           imagePullPolicy: "{{ .Values.statsExporter.image.pullPolicy }}"
           env:
             - name: METRICS_ADDR
-              value: ":{{ .Values.statsExporter.service.containerPort }}"
+              value: ":9913"
             - name: METRICS_ENDPOINT
               value: "{{ .Values.statsExporter.endpoint }}"
             - name: METRICS_NS
@@ -92,7 +96,7 @@ spec:
               value: "{{ .Values.statsExporter.statusPage }}"
           ports:
             - name: metrics
-              containerPort: {{ .Values.statsExporter.service.containerPort }}
+              containerPort: 9913
               protocol: TCP
           resources:
 {{ toYaml .Values.statsExporter.resources | indent 12 }}

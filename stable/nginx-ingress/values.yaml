@@ -15,7 +15,7 @@ controller:
   ##
   defaultBackendService: ""
 
-  enableStats: false
+  extraArgs: {}
 
   ## DaemonSet or Deployment
   ##
@@ -41,6 +41,7 @@ controller:
 
   service:
     annotations: {}
+    clusterIP: ""
 
     ## List of IP addresses at which the controller services are available
     ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
@@ -50,6 +51,23 @@ controller:
     loadBalancerIP: ""
     loadBalancerSourceRanges: []
     type: LoadBalancer
+
+  stats:
+    enabled: false
+
+    service:
+      annotations: {}
+      clusterIP: ""
+
+      ## List of IP addresses at which the stats service is available
+      ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
+      ##
+      externalIPs: []
+
+      loadBalancerIP: ""
+      loadBalancerSourceRanges: []
+      servicePort: 18080
+      type: ClusterIP
 
 ## Default 404 backend
 ##
@@ -65,11 +83,13 @@ defaultBackend:
     tag: "1.2"
     pullPolicy: IfNotPresent
 
-  ## Node labels for default-backend pod assignment
+  extraArgs: {}
+
+  ## Node labels for default backend pod assignment
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
   nodeSelector: {}
 
-  ## Annotations to be added to default-backend pods
+  ## Annotations to be added to default backend pods
   ##
   podAnnotations: {}
 
@@ -83,6 +103,20 @@ defaultBackend:
       cpu: 10m
       memory: 20Mi
 
+  service:
+    annotations: {}
+    clusterIP: ""
+
+    ## List of IP addresses at which the default backend service is available
+    ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
+    ##
+    externalIPs: []
+
+    loadBalancerIP: ""
+    loadBalancerSourceRanges: []
+    servicePort: 80
+    type: ClusterIP
+
 ## If controller.enableStats = true, Prometheus metrics will be exported
 ## Ref: https://github.com/hnlq715/nginx-vts-exporter
 statsExporter:
@@ -93,6 +127,7 @@ statsExporter:
     pullPolicy: IfNotPresent
 
   endpoint: /metrics
+  extraArgs: {}
   metricsNamespace: nginx
   statusPage: http://localhost:18080/nginx_status/format/json
 
@@ -108,13 +143,14 @@ statsExporter:
     annotations: {}
     clusterIP: ""
 
-    ## List of IP addresses at which the Prometheus metrics exporter is available
+    ## List of IP addresses at which the stats-exporter service is available
     ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
     ##
     externalIPs: []
 
-    containerPort: 9913
-    servicePort: 9913
+    loadBalancerIP: ""
+    loadBalancerSourceRanges: []
+    servicePort: 18080
     type: ClusterIP
 
 # TCP service key:value pairs

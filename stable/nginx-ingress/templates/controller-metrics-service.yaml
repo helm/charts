@@ -1,4 +1,4 @@
-{{- if .Values.controller.enableStats }}
+{{- if .Values.controller.stats.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -19,9 +19,17 @@ spec:
   externalIPs:
 {{ toYaml .Values.statsExporter.service.externalIPs | indent 4 }}
 {{- end }}
+{{- if .Values.statsExporter.service.loadBalancerIP }}
+  loadBalancerIP: "{{ .Values.statsExporter.service.loadBalancerIP }}"
+{{- end }}
+{{- if .Values.statsExporter.service.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+{{ toYaml .Values.statsExporter.service.loadBalancerSourceRanges | indent 4 }}
+{{- end }}
   ports:
     - name: metrics
       port: {{ .Values.statsExporter.service.servicePort }}
+      targetPort: 9913
   selector:
     app: {{ template "name" . }}
     component: "{{ .Values.controller.name }}"
