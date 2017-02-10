@@ -12,6 +12,8 @@ nginx:
     pullPolicy: IfNotPresent
   service:
     type: LoadBalancer
+    # annotations:
+    #   key: value
   monitoring: false
   resources:
     limits:
