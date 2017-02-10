@@ -52,6 +52,7 @@ The following tables lists the configurable parameters of the PostgresSQL chart 
 | `postgresPassword`         | Password for the new user.                 | random 10 characters                                       |
 | `postgresDatabase`         | Name for new database to create.           | `postgres`                                                 |
 | `persistence.enabled`      | Use a PVC to persist data                  | `true`                                                     |
+| `persistence.existingClaim`| Provide an existing PersistentVolumeClaim  | `nil`                                                      |
 | `persistence.storageClass` | Storage class of backing PVC               | `nil` (uses alpha storage class annotation)                |
 | `persistence.accessMode`   | Use volume as ReadOnly or ReadWrite        | `ReadWriteOnce`                                            |
 | `persistence.size`         | Size of data volume                        | `8Gi`                                                      |
@@ -87,7 +88,58 @@ $ helm install --name my-release -f values.yaml stable/postgresql
 
 The [postgres](https://github.com/docker-library/postgres) image stores the PostgreSQL data and configurations at the `/var/lib/postgresql/data/pgdata` path of the container.
 
-The chart mounts a [Persistent Volume](http://kubernetes.io/docs/user-guide/persistent-volumes/) volume at this location. The volume is created using dynamic volume provisioning.
+The chart mounts a [Persistent Volume](http://kubernetes.io/docs/user-guide/persistent-volumes/) volume at this location. The volume is created using dynamic volume provisioning. Clusters configured with NFS mounts require manually managed volumes and claims.
+
+### Existing PersistentVolumeClaims
+
+1. Create the PersistentVolume
+```bash
+$ cat <<EOT | kubectl create -f -
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: postgresql-test
+  labels:
+    volume_name: postgresql-test
+spec:
+  capacity:
+    storage: 2Gi
+  accessModes:
+    - ReadWriteOnce
+  nfs:
+    server: nfs.example.com
+    path: "/postgresql-test"
+  persistentVolumeReclaimPolicy: Retain
+EOT
+```
+1. Create the PersistentVolumeClaim
+```bash
+$ cat <<EOT | kubectl create -f -
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgresql-test
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+  selector:
+    matchLabels:
+      volume_name: postgresql-test
+EOT
+```
+1. Create the directory, on a worker
+```bash
+# mkdir -m 1777 /NFS_MOUNT/postgresql-test
+```
+1. Install the chart
+```bash
+$ helm install --name test --set persistence.existingClaim=postgresql-test postgresql
+```
 
 The volume defaults to mount at a subdirectory of the volume instead of the volume root to avoid the volume's hidden directories from interfering with `initdb`.  If you are upgrading this chart from before version `0.4.0`, set `persistence.subPath` to `""`.
 
