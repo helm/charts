@@ -1,0 +1,114 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "mongodb-test"
+  annotations:
+    "helm.sh/hook": test-success
+    "pod.beta.kubernetes.io/init-containers": '[
+      {
+        "name": "test-framework",
+        "image": "foxish/bats:0.3",
+        "command": ["bash", "-c", "
+          set -ex\n
+          # copy bats to tools dir\n
+          cp -R /usr/local/libexec/ /tools/bats/\n
+        "],
+        "volumeMounts": [
+          {"name": "tools", "mountPath": "/tools"}
+        ]
+      }
+    ]'
+spec:
+  containers:
+    - name: mongo
+      image: mongo:latest
+      command:
+      - /bin/bash
+      - "-c"
+      - |
+        echo '
+          pod_name() {
+            echo {{ printf "%s-%s" .Release.Name .Values.Name | trunc 24 }}-$1.{{ printf "%s-%s" .Release.Name .Values.Name | trunc 24 }}.default.svc.cluster.local
+          }
+
+          master_pod() {
+            for i in {0..2}
+            do
+              response=$(mongo \
+                  --host=$(pod_name $i) \
+                  --eval="rs.isMaster().ismaster")
+              if [[ $response =~ "true" ]]; then
+                echo $(pod_name $i)
+                break
+              fi
+            done
+          }
+
+          setup() {
+              ready=0
+              until [[ $ready -eq 3 ]];
+              do
+               echo "Waiting for application to become ready" >&2
+               sleep 1
+
+                ready=0
+                for i in {0..2}
+                do
+                  response=$(mongo \
+                      --host=$(pod_name $i) \
+                      --eval="rs.status()") || true
+                  if [[ $response =~ .*ok.* ]]; then
+                    ready=$((ready+1))
+                  fi
+                done
+              done
+          }
+
+          @test "Testing mongodb client is accessible" {
+            mongo -h
+            [ "$?" -eq 0 ]
+          }
+
+          @test "Connect mongodb client to mongodb pods" {
+            for i in {0..2}
+            do
+              response=$(mongo \
+                  --host=$(pod_name $i) \
+                  --eval="rs.status()")
+              if [[ ! $response =~ .*ok.* ]]; then
+                exit 1
+              fi
+            done
+          }
+
+          @test "Write key to master" {
+            response=$(mongo \
+                --host=$(master_pod) \
+                --eval="db.test.insert({\\"abc\\": \\"def\\"}).nInserted")
+            if [[ ! $response =~ "1" ]]; then
+              exit 1
+            fi
+          }
+
+          @test "Read key from slaves" {
+            # wait for slaves to catch up
+            sleep 10
+
+            for i in {0..2}
+            do
+              response=$(mongo \
+                --host=$(pod_name $i) \
+                --eval="rs.slaveOk(); db.test.find({\\"abc\\":\\"def\\"})")
+              if [[ ! $response =~ .*def.* ]]; then
+                exit 1
+              fi
+            done
+          }
+        ' | /tools/bats/bat_wrapper.sh
+      volumeMounts:
+        - name: tools
+          mountPath: /tools
+  volumes:
+  - name: tools
+    emptyDir: {}
+  restartPolicy: Never
