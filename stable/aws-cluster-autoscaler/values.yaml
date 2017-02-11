@@ -1,4 +1,4 @@
-autoscalingGroups:
+autoscalingGroups: []
   # - name: asg1
   #   maxSize: 1
   #   minSize: 1
@@ -10,7 +10,9 @@ image:
   tag: v0.4.0
   pullPolicy: IfNotPresent
 
+extraArgs: []
 podAnnotations: {}
+replicaCount: 1
 
 resources:
   limits:
@@ -23,9 +25,16 @@ resources:
 scaleDownDelay: 10m
 
 service:
-  annotations: ""
+  annotations: {}
   clusterIP: ""
-  containerPort: 8085
+
+  ## List of IP addresses at which the service is available
+  ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
+  ##
+  externalIPs: []
+
+  loadBalancerIP: ""
+  loadBalancerSourceRanges: []
   servicePort: 8085
   type: ClusterIP
 

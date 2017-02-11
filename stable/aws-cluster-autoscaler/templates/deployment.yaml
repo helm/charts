@@ -8,7 +8,7 @@ metadata:
     release: {{ .Release.Name }}
   name: {{ template "fullname" . }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.replicaCount }}
   template:
     metadata:
     {{- if .Values.podAnnotations }}
@@ -25,7 +25,6 @@ spec:
           imagePullPolicy: "{{ .Values.image.pullPolicy }}"
           command:
             - ./cluster-autoscaler
-            - address={{ .Values.service.containerPort }}
             - --cloud-provider=aws
           {{- range .Values.autoscalingGroups }}
             - --nodes={{ .minSize }}:{{ .maxSize }}:{{ .name }}
@@ -34,11 +33,14 @@ spec:
             - --skip-nodes-with-local-storage={{ .Values.skipNodes.withLocalStorage }}
             - --skip-nodes-with-system-pods={{ .Values.skipNodes.withSystemPods }}
             - --v=4
+          {{- range $key, $value := .Values.extraArgs }}
+            - --{{ $key }}={{ $value }}
+          {{- end }}
           env:
             - name: AWS_REGION
               value: "{{ .Values.awsRegion }}"
           ports:
-            - containerPort: {{ .Values.service.containerPort }}
+            - containerPort: 8085
           resources:
 {{ toYaml .Values.resources | indent 12 }}
           volumeMounts:

@@ -20,7 +20,7 @@ This chart bootstraps an aws-cluster-autoscaler deployment on a [Kubernetes](htt
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm install --name my-release stable/aws-cluster-autoscaler
+$ helm install stable/aws-cluster-autoscaler --name my-release
 ```
 
 The command deploys aws-cluster-autoscaler on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
@@ -43,23 +43,25 @@ The following tables lists the configurable parameters of the aws-cluster-autosc
 
 Parameter | Description | Default
 --- | --- | ---
-`autoscalingGroups[].maxSize` | maximum autoscaling group size | `1`
-`autoscalingGroups[].minSize` | minimum autoscaling group size | `1`
 `autoscalingGroups[].name` | autoscaling group name | none
+`autoscalingGroups[].maxSize` | maximum autoscaling group size | none
+`autoscalingGroups[].minSize` | minimum autoscaling group size | none
 `awsRegion` | AWS region | `us-east-1`
 `image.repository` | Image | `gcr.io/google_containers/cluster-autoscaler`
 `image.tag` | Image tag | `v0.4.0`
 `image.pullPolicy` | Image pull policy | `IfNotPresent`
-`podAnnotations` | annotations to add to each pod | none
-`resources.limits.cpu` | CPU limit | `100m`
-`resources.limits.memory` | Memory limit | `300Mi`
-`resources.requests.cpu` | CPU request | `100m`
-`resources.requests.memory` | Memory request | `300Mi`
+`extraArgs` | additional container arguments | `{}`
+`podAnnotations` | annotations to add to each pod | {}
+`replicaCount` | desired number of pods | `1`
+`resources` | pod resource requests & limits | `limits: {cpu: 100m, memory: 300Mi}, requests: {cpu: 100m, memory: 300Mi}`
 `scaleDownDelay` | time to wait between scaling operations | `10m` (10 minutes)
 `service.annotations` | annotations to add to service | none
 `service.clusterIP` | IP address to assign to service | `""`
-`service.containerPort` | container port to expose | `8085`
+`service.externalIPs` | service external IP addresses | `[]`
+`service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
+`service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
 `service.servicePort` | service port to expose | `8085`
+`service.type` | type of service to create | `ClusterIP`
 `skipNodes.withLocalStorage` | don't terminate nodes running pods that use local storage | `false`
 `skipNodes.withSystemPods` | don't terminate nodes running pods in the `kube-system` namespace | `true`
 
@@ -67,7 +69,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 
 ```console
 $ helm install stable/aws-cluster-autoscaler --name my-release \
-    --set asg.name=kubernetes-workers    
+    --set awsRegion=us-west-1
 ```
 
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
