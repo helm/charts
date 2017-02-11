@@ -18,7 +18,7 @@ spec:
       containers:
         - name: {{ template "name" . }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          imagePullPolicy: "{{ .Values.image.pullPolicy }}"
           env:
             - name: LEGO_NAMESPACE
               valueFrom:
@@ -29,7 +29,7 @@ spec:
                 fieldRef:
                   fieldPath: status.podIP
           {{- range $key, $value := .Values.config }}
-            - name: {{ $key }}
+            - name: "{{ $key }}"
               value: "{{ $value }}"
           {{- end }}
           ports:
