@@ -49,6 +49,9 @@ Parameter | Description | Default
 `image.repository` | kube-lego container image repository | `jetstack/kube-lego`
 `image.tag` | kube-lego container image tag | `0.1.3`
 `image.pullPolicy` | kube-lego container image pull policy | `IfNotPresent`
+`nodeSelector` | node labels for pod assignment | `{}`
+`podAnnotations` | annotations to be added to pods | `{}`
+`replicaCount` | desired number of pods | `1`
 `resources` | kube-lego resource requests and limits (YAML) |`requests: {cpu: 20m, memory: 8Mi}`
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
