@@ -5,13 +5,19 @@ name: chaoskube
 image: quay.io/linki/chaoskube
 
 # docker image tag
-imageTag: v0.3.1
+imageTag: v0.4.0
 
 # number of replicas to run
 replicas: 1
 
 # interval between pod terminations
 interval: 10m
+
+# label selector to filter pods by, e.g. app=foo,stage!=prod
+labels:
+
+# namespace selector to filter pods by, e.g. '!kube-system,!production' (use quotes)
+namespaces:
 
 # don't kill pods, only log what would have been done
 dryRun: true
