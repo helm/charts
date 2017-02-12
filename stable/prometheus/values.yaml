@@ -1,7 +1,7 @@
 alertmanager:
   ## Additional Alertmanager container arguments
   ##
-  # extraArgs:
+  extraArgs: {}
 
   ## Alertmanager service port
   ##
@@ -161,7 +161,7 @@ server:
 
   ## Additional Server container arguments
   ##
-  # extraArgs:
+  extraArgs: {}
 
   ## Server service port
   ##
