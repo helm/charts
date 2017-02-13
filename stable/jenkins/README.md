@@ -70,6 +70,8 @@ $ helm install --name my-release -f values.yaml stable/jenkins
 The Jenkins image stores persistence under `/var/jenkins_home` path of the container. A Persistent Volume
 Claim is used to keep the data across deployments. This is known to work in GCE, AWS, and minikube.
 
+It is possible to mount several volumes using `Persistence.volumes` and `Persistence.mounts` parameters.
+
 ## Custom ConfigMap
 
 When creating a new chart with this chart as a dependency, CustomConfigMap can be used to override the default config.xml provided.
