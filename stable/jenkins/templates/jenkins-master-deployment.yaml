@@ -27,7 +27,7 @@ spec:
                   "name": "copy-default-config",
                   "image": "{{.Values.Master.Image}}:{{.Values.Master.ImageTag}}",
                   "imagePullPolicy": "{{.Values.Master.ImagePullPolicy}}",
-                  "command": [ "bash", "/var/jenkins_config/apply_config.sh" ],
+                  "command": [ "sh", "/var/jenkins_config/apply_config.sh" ],
                   "volumeMounts": [
                       {
                           "name": "jenkins-config",
