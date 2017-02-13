@@ -24,6 +24,9 @@ spec:
           args:
             - --config.file=/etc/config/alertmanager.yml
             - --storage.path={{ default "/data" .Values.alertmanager.storagePath }}
+          {{- range $key, $value := .Values.alertmanager.extraArgs }}
+            - --{{ $key }}={{ $value }}
+          {{- end }}
           ports:
             - containerPort: 9093
           readinessProbe:
@@ -39,6 +42,7 @@ spec:
               mountPath: /etc/config
             - name: storage-volume
               mountPath: {{ default "/data" .Values.alertmanager.storagePath | quote }}
+              subPath: {{ .Values.alertmanager.persistentVolume.subPath }}
         - name: {{ template "name" . }}-{{ .Values.alertmanager.name }}-{{ .Values.configmapReload.name }}
           image: "{{ .Values.configmapReload.image }}"
           imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
