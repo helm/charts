@@ -1,5 +1,5 @@
 name: kapacitor
-version: 0.1.2
+version: 0.2.1
 description: InfluxDB's native data processing engine. It can process both stream and batch data from InfluxDB.
 keywords:
 - kapacitor
