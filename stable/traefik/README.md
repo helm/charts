@@ -118,9 +118,7 @@ Currently it is possible to specify the number of `replicas` but the implementat
 
 **Full Traefik clustering with leader election is not yet supported.**
 
-It is heavily advised to not set a value for `replicas` if you also have Let's Encrypt configured. While setting `replicas` will work for many cases, since no leader is elected it has the consequence
-that each node will end up requesting Let's Encrypt certificates if this is also configured.
-This will quickly cut into the very modest rate limit that Let's Encrypt enforces.
+It is heavily advised to not set a value for `replicas` if you also have Let's Encrypt configured. While setting `replicas` will work for many cases, since no leader is elected it has the consequence that each node will end up requesting Let's Encrypt certificates if this is also configured. This will quickly cut into the very modest rate limit that Let's Encrypt enforces.
 
 [Basic auth](https://docs.traefik.io/toml/#api-backend) can be specified via `dashboard.auth.basic` as a map of usernames to passwords as below.
 See the linked Traefik documentation for accepted passwords encodings.
