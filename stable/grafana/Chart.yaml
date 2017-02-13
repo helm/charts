@@ -1,7 +1,8 @@
 name: grafana
-version: 0.2.1
-description: A Helm chart for Kubernetes
+version: 0.2.2
+description: The leading tool for querying and visualizing time series and metrics.
 home: https://grafana.net
+icon: https://raw.githubusercontent.com/grafana/grafana/master/public/img/logo_transparent_400x.png
 sources:
   - https://github.com/grafana/grafana
 maintainers:
