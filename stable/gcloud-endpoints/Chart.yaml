@@ -1,0 +1,19 @@
+name: gcloud-endpoints
+version: 0.1.0
+description: Develop, deploy, protect and monitor your APIs with Google Cloud Endpoints.
+keywords:
+- google
+- endpoints
+- nginx
+- gcloud
+- proxy
+- authentication
+- monitoring
+- api
+- swagger
+- open api
+home: https://cloud.google.com/endpoints/
+maintainers:
+- name: Matt Tucker
+  email: mtucker@deis.com
+engine: gotpl

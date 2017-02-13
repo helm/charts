@@ -1,6 +1,7 @@
 # Default values for Traefik
 imageTag: v1.1.2
 serviceType: LoadBalancer
+replicas: 1
 cpuRequest: 100m
 memoryRequest: 20Mi
 cpuLimit: 100m
@@ -37,3 +38,8 @@ service:
   #   key: value
 gzip:
   enabled: true
+# Kubernetes ingress filters
+#kubernetes:
+#  namespaces:
+#  - default
+#  labelSelector:

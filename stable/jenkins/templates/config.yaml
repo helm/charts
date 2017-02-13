@@ -1,3 +1,5 @@
+{{- if not .Values.Master.CustomConfigMap }}
+
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -25,7 +27,7 @@ data:
       <myViewsTabBar class="hudson.views.DefaultMyViewsTabBar"/>
       <clouds>
         <org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud plugin="kubernetes@0.10">
-          <name>default</name>
+          <name>kubernetes</name>
           <templates>
             <org.csanchez.jenkins.plugins.kubernetes.PodTemplate>
               <inheritFrom></inheritFrom>
@@ -87,3 +89,4 @@ data:
       <globalNodeProperties/>
       <noUsageStatistics>true</noUsageStatistics>
     </hudson>
+{{- end -}}

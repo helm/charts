@@ -23,6 +23,8 @@ spec:
         args:
         - --in-cluster
         - --interval={{ .Values.interval }}
+        - --labels={{ .Values.labels }}
+        - --namespaces={{ .Values.namespaces }}
         {{- if not .Values.dryRun}}
         - --no-dry-run
         {{- end }}

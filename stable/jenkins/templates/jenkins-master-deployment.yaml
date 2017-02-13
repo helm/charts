@@ -27,7 +27,7 @@ spec:
                   "name": "copy-default-config",
                   "image": "{{.Values.Master.Image}}:{{.Values.Master.ImageTag}}",
                   "imagePullPolicy": "{{.Values.Master.ImagePullPolicy}}",
-                  "command": ["cp", "-n", "/var/jenkins_config/config.xml", "/var/jenkins_home"],
+                  "command": ["sh", "-c", "cp -n /var/jenkins_config/*.xml /var/jenkins_home"],
                   "volumeMounts": [
                       {
                           "name": "jenkins-config",
@@ -75,6 +75,9 @@ spec:
               cpu: "{{.Values.Master.Cpu}}"
               memory: "{{.Values.Master.Memory}}"
           volumeMounts:
+{{- if .Values.Persistence.mounts }}
+{{ toYaml .Values.Persistence.mounts | indent 12 }}
+{{- end }}
             -
               mountPath: /var/jenkins_home
               name: jenkins-home
@@ -84,6 +87,9 @@ spec:
               name: jenkins-config
               readOnly: true
       volumes:
+{{- if .Values.Persistence.volumes }}
+{{ toYaml .Values.Persistence.volumes | indent 6 }}
+{{- end }}
       - name: jenkins-config
         configMap:
           name: {{ template "fullname" . }}

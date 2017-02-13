@@ -34,7 +34,7 @@ This repository is used by Chart developers for maintaining the official charts 
 * All Chart dependencies should also be submitted independently
 * Must pass the linter (`helm lint`)
 * Must successfully launch with default values (`helm install .`)
-    * All pods go to the running state
+    * All pods go to the running state (or NOTES.txt provides further instructions if a required value is missing e.g. [minecraft](https://github.com/kubernetes/charts/blob/master/stable/minecraft/templates/NOTES.txt#L3))
     * All services have at least one endpoint
 * Must include source GitHub repositories for images used in the Chart
 * Images should not have any major security vulnerabilities
