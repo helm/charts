@@ -1,0 +1,8 @@
+image:
+  repository: gcr.io/google_containers/kube-registry-proxy
+  tag: 0.4
+  pullPolicy: IfNotPresent
+
+registry:
+  host: "gcr.io"
+  port: ""

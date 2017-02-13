@@ -1,4 +1,8 @@
 alertmanager:
+  ## Additional Alertmanager container arguments
+  ##
+  extraArgs: {}
+
   ## Alertmanager service port
   ##
   httpPort: 80
@@ -72,6 +76,11 @@ alertmanager:
     ## Default: volume.alpha.kubernetes.io/storage-class: default
     ##
     # storageClass:
+
+    ## Subdirectory of the volume to mount at
+    ## Useful if the volume's root directory is not empty
+    ##
+    subPath: ""
 
   ## Alertmanager resource requests and limits
   ## Ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -152,7 +161,7 @@ server:
 
   ## Additional Server container arguments
   ##
-  # extraArgs:
+  extraArgs: {}
 
   ## Server service port
   ##
@@ -165,7 +174,7 @@ server:
 
   ## Server Docker image
   ##
-  image: prom/prometheus:v1.4.1
+  image: prom/prometheus:v1.5.2
 
   ingress:
     ## If true, Server Ingress will be created
@@ -227,6 +236,11 @@ server:
     ## Default: volume.alpha.kubernetes.io/storage-class: default
     ##
     # storageClass:
+
+    ## Subdirectory of the volume to mount at
+    ## Useful if the volume's root directory is not empty
+    ##
+    subPath: ""
 
   ## Server resource requests and limits
   ## Ref: http://kubernetes.io/docs/user-guide/compute-resources/
