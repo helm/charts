@@ -27,7 +27,7 @@ data:
       <myViewsTabBar class="hudson.views.DefaultMyViewsTabBar"/>
       <clouds>
         <org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud plugin="kubernetes@0.10">
-          <name>default</name>
+          <name>kubernetes</name>
           <templates>
             <org.csanchez.jenkins.plugins.kubernetes.PodTemplate>
               <inheritFrom></inheritFrom>
