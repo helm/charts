@@ -1,12 +1,13 @@
 name: postgresql
-version: 0.3.0
-description: Chart for PostgreSQL
+version: 0.3.4
+description: Object-relational database management system (ORDBMS) with an emphasis on extensibility and on standards-compliance.
 keywords:
 - postgresql
 - postgres
 - database
 - sql
 home: https://www.postgresql.org/
+icon: https://www.postgresql.org/media/img/about/press/elephant.png
 sources:
 - https://github.com/kubernetes/charts
 - https://github.com/docker-library/postgres

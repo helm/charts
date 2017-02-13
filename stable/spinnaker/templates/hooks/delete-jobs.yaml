@@ -1,0 +1,35 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: "{{.Release.Name}}-delete-jobs"
+  labels:
+    heritage: {{.Release.Service | quote }}
+    release: {{.Release.Name | quote }}
+    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+  annotations:
+    "helm.sh/hook": post-delete
+spec:
+  template:
+    metadata:
+      name: "{{.Release.Name}}"
+      labels:
+        heritage: {{.Release.Service | quote }}
+        release: {{.Release.Name | quote }}
+        chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+    spec:
+      restartPolicy: OnFailure
+      volumes:
+      - name: kubectl
+        hostPath:
+          path: /usr/bin/kubectl
+
+      containers:
+      - name: post-install-job
+        image: "lachlanevenson/k8s-kubectl:v1.4.7"
+        volumeMounts:
+        - name: kubectl
+          mountPath: /kubectl
+        command:
+        - sh
+        - -c
+        - "kubectl delete job {{.Release.Name}}-create-bucket {{.Release.Name}}-upload-build-image {{.Release.Name}}-delete-jobs {{.Release.Name}}-upload-run-script"

@@ -1,7 +1,7 @@
 ## GitLab CE image
 ## ref: https://hub.docker.com/r/gitlab/gitlab-ce/tags/
 ##
-image: gitlab/gitlab-ce:8.14.4-ce.0
+image: gitlab/gitlab-ce:8.16.1-ce.0
 
 ## Specify a imagePullPolicy
 ## 'Always' if imageTag is 'latest', else set to 'IfNotPresent'
@@ -23,6 +23,12 @@ image: gitlab/gitlab-ce:8.14.4-ce.0
 ## ref: http://kubernetes.io/docs/user-guide/services/#publishing-services---service-types
 ##
 serviceType: LoadBalancer
+
+## Configure external service ports
+## ref: http://kubernetes.io/docs/user-guide/services/
+sshPort: 22
+httpPort: 80
+httpsPort: 443
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -48,7 +54,10 @@ persistence:
   gitlabEtc:
     enabled: true
     size: 1Gi
-    storageClass: generic
+    ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
+    ## Default: volume.alpha.kubernetes.io/storage-class: default
+    ##
+    # storageClass:
     accessMode: ReadWriteOnce
   ## This volume is used to store git data and other project files.
   ## ref: https://docs.gitlab.com/omnibus/settings/configuration.html#storing-git-data-in-an-alternative-directory
@@ -56,15 +65,18 @@ persistence:
   gitlabData:
     enabled: true
     size: 10Gi
-    storageClass: generic
+    ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
+    ## Default: volume.alpha.kubernetes.io/storage-class: default
+    ##
+    # storageClass:
     accessMode: ReadWriteOnce
 
 ## Configuration values for the postgresql dependency.
 ## ref: https://github.com/kubernetes/charts/blob/master/stable/postgresql/README.md
 ##
 postgresql:
-  # 9.4 is currently used in the official OpenShift manifests.
-  imageTag: "9.4"
+  # 9.6 is the newest supported version for the GitLab container
+  imageTag: "9.6"
   cpu: 1000m
   memory: 1Gi
 

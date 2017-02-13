@@ -1,11 +1,12 @@
 name: redis
-version: 0.4.2
-description: Chart for Redis
+version: 0.4.5
+description: Open source, advanced key-value store. It is often referred to as a data structure server since keys can contain strings, hashes, lists, sets and sorted sets.
 keywords:
 - redis
 - keyvalue
 - database
 home: http://redis.io/
+icon: https://bitnami.com/assets/stacks/redis/img/redis-stack-220x234.png
 sources:
 - https://github.com/bitnami/bitnami-docker-redis
 maintainers:
