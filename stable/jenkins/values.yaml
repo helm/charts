@@ -17,12 +17,26 @@ Master:
 # JavaOpts: "-Xms512m -Xmx512m"
   ServicePort: 8080
 # For minikube, set this to NodePort, elsewhere use LoadBalancer
+# Use ClusterIP if your setup includes ingress controller
   ServiceType: LoadBalancer
+# Used to create Ingress record (should used with ServiceType: ClusterIP)
+# HostName: jenkins.cluster.local
 # NodePort: <to set explicitly, choose port between 30000-32767
   ContainerPort: 8080
   SlaveListenerPort: 50000
   LoadBalancerSourceRanges:
   - 0.0.0.0/0
+  CustomConfigMap: false
+
+  Ingress:
+    Annotations:
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+
+    TLS:
+      # - secretName: jenkins.cluster.local
+      #   hosts:
+      #     - jenkins.cluster.local
 
 Agent:
   Image: jenkinsci/jnlp-slave

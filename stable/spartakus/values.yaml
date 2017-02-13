@@ -1,12 +1,21 @@
+extraArgs: {}
+
 ## Container image
 ##
-image: gcr.io/google_containers/spartakus-amd64:v1.0.0
+image:
+  repository: gcr.io/google_containers/spartakus-amd64
+  tag: v1.0.0
+  pullPolicy: IfNotPresent
 
-## imagePullPolicy
-## Default: 'Always' if image tag is 'latest', else 'IfNotPresent'
-## Ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+## Node labels for pod assignment
+## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+nodeSelector: {}
+
+## Annotations to be added to pods
 ##
-# imagePullPolicy:
+podAnnotations: {}
+
+replicaCount: 1
 
 ## Resource requests and limits
 ## Ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -22,4 +31,4 @@ resources:
 ## A version 4 UUID to uniquely identify the cluster
 ## If not provided, Helm will generate automatically at install-time.
 ##
-# uuid:
+uuid: ""
