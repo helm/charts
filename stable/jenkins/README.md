@@ -43,6 +43,8 @@ The following tables lists the configurable parameters of the Jenkins chart and 
 | `Master.SlaveListenerPort` | Listening port for agents          | `50000`                                                    |
 | `Master.LoadBalancerSourceRanges` | Allowed inbound IP addresses       | `0.0.0.0/0`                                                |
 | `Master.CustomConfigMap`          | Use a custom ConfigMap             | `false`                                                    |
+| `Master.Ingress.Annotations` | Ingress annotations       | `{}`                                                |
+| `Master.Ingress.TLS` | Ingress TLS configuration       | `[]`                                                |
 
 ### Jenkins Agent
 
