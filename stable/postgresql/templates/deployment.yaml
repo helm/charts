@@ -12,21 +12,6 @@ spec:
     metadata:
       labels:
         app: {{ template "fullname" . }}
-      annotations:
-        pod.beta.kubernetes.io/init-containers: '[
-            {
-                "name": "remove-lost-found",
-                "image": "busybox:1.25.0",
-                "imagePullPolicy": {{ default "IfNotPresent" .Values.imagePullPolicy | quote }},
-                "command": ["rm", "-fr", "/var/lib/postgresql/data/pgdata/lost+found"],
-                "volumeMounts": [
-                    {
-                        "name": "data",
-                        "mountPath": "/var/lib/postgresql/data/pgdata"
-                    }
-                ]
-            }
-        ]'
     spec:
       containers:
       - name: {{ template "fullname" . }}
@@ -67,13 +52,14 @@ spec:
         volumeMounts:
         - name: data
           mountPath: /var/lib/postgresql/data/pgdata
+          subPath: {{ .Values.persistence.subPath }}
 {{- if .Values.metrics.enabled }}
       - name: metrics 
         image: "{{ .Values.metrics.image }}:{{ .Values.metrics.imageTag }}"
         imagePullPolicy: {{ default "" .Values.metrics.imagePullPolicy | quote }}
         env:
         - name: DATA_SOURCE_NAME
-          value: postgresql://postgres@localhost:5432?sslmode=disable
+          value: postgresql://postgres@127.0.0.1:5432?sslmode=disable
         ports:
         - name: metrics
           containerPort: 9187
