@@ -8,8 +8,6 @@ metadata:
     chart: "{{.Chart.Name}}-{{.Chart.Version}}"
     component: "{{.Release.Name}}-{{.Values.Component}}"
     type: data
-  annotations:
-    helm.sh/created: {{.Release.Time.Seconds | quote }}
 spec:
   serviceName: "{{ printf "%s-data-%s" .Release.Name .Values.Name | trunc 24 }}"
   replicas: {{default 3 .Values.DataReplicas }}
@@ -22,7 +20,6 @@ spec:
         component: "{{.Release.Name}}-{{.Values.Component}}"
         type: data
       annotations:
-        helm.sh/created: {{.Release.Time.Seconds | quote }}
         pod.alpha.kubernetes.io/initialized: "true"
     spec:
       serviceAccountName: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 24 }}"

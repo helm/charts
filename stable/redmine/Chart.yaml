@@ -1,5 +1,5 @@
 name: redmine
-version: 0.3.7
+version: 0.3.9
 description: A flexible project management web application.
 keywords:
 - redmine
@@ -11,6 +11,7 @@ keywords:
 - ruby
 - rails
 home: http://www.redmine.org/
+icon: https://bitnami.com/assets/stacks/redmine/img/redmine-stack-220x234.png
 sources:
 - https://github.com/bitnami/bitnami-docker-redmine
 maintainers:

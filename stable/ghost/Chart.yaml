@@ -1,5 +1,5 @@
 name: ghost
-version: 0.4.1
+version: 0.4.4
 description: A simple, powerful publishing platform that allows you to share your stories with the world
 keywords:
 - ghost
@@ -10,6 +10,7 @@ keywords:
 - nodejs
 - javascript
 home: http://www.ghost.org/
+icon: https://bitnami.com/assets/stacks/ghost/img/ghost-stack-220x234.png
 sources:
 - https://github.com/bitnami/bitnami-docker-ghost
 maintainers:

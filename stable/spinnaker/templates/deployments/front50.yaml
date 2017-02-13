@@ -1,0 +1,39 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}-front50
+  labels:
+    app: {{ template "fullname" . }}
+    component: front50
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: {{ template "fullname" . }}
+        component: front50
+    spec:
+      containers:
+        - image: {{ .Values.images.front50 }}
+          name: front50
+          ports:
+            - containerPort: 8080
+              name: front50
+          volumeMounts:
+            - mountPath: /opt/spinnaker/config
+              name: {{ template "fullname" . }}-spinnaker-config
+            - mountPath: /root/.aws
+              name: {{ template "fullname" . }}-s3-config
+          readinessProbe:
+            httpGet:
+              path: /env
+              port: 8080
+            initialDelaySeconds: 20
+            timeoutSeconds: 1
+      volumes:
+        - name: {{ template "fullname" . }}-spinnaker-config
+          configMap:
+            name: {{ template "fullname" . }}-spinnaker-config
+        - name: {{ template "fullname" . }}-s3-config
+          configMap:
+            name: {{ template "fullname" . }}-s3-config

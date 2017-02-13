@@ -1,16 +1,18 @@
 name: kube2iam
-version: 0.1.0
-description: Provide IAM credentials to containers running inside a kubernetes cluster based on annotations.
+version: 0.2.0
+description: Provide IAM credentials to pods based on annotations.
 keywords:
-- kube2iam
-- aws
-- iam
-- security
+  - kube2iam
+  - aws
+  - iam
+  - security
 sources:
-- https://github.com/jtblin/kube2iam
+  - https://github.com/jtblin/kube2iam
 maintainers:
-- name: Josh Carp
-  email: jm.carp@gmail.com
-- name: Michael Haselton
-  email: michael.haselton@gmail.com
+  - name: Josh Carp
+    email: jm.carp@gmail.com
+  - name: Michael Haselton
+    email: michael.haselton@gmail.com
+  - name: Michael Goodness
+    email: mgoodness@gmail.com
 engine: gotpl
