@@ -44,6 +44,7 @@ The following tables lists the configurable parameters of the Prometheus chart a
 
 | Parameter | Description | Default |
 | --------- | ----------- | ------- |
+| `alertmanager.extraArgs` | Additional Alertmanager container arguments | `{}` |
 | `alertmanager.httpPort` | Alertmanager Service port | `80` |
 | `alertmanager.httpPortName` | Alertmanager service port name | `http` |
 | `alertmanager.image` | Alertmanager Docker image | `prom/alertmanager:${VERSION}` |
@@ -54,8 +55,10 @@ The following tables lists the configurable parameters of the Prometheus chart a
 | `alertmanager.name` | Alertmanager container name | `alertmanager` |
 | `alertmanager.persistentVolume.enabled` | If true, AlertManager will create a Persistent Volume Claim | `true` |
 | `alertmanager.persistentVolume.accessModes` | AlertManager data Persistent Volume access modes | `[ReadWriteOnce]` |
+| `alertmanager.persistentVolume.existingClaim` | AlertManager data Persistent Volume existing claim name | |
 | `alertmanager.persistentVolume.size` | AlertManager data Persistent Volume size | `2Gi` |
 | `alertmanager.persistentVolume.storageClass` | AlertManager data Persistent Volume Storage Class | `volume.alpha.kubernetes.io/storage-class: default` |
+| `alertmanager.persistentVolume.subPath` | Subdirectory of the volume to mount at  | `""` |
 | `alertmanager.resources` | Alertmanager resource requests and limits (YAML) |`requests: {cpu: 10m, memory: 32Mi}` |
 | `alertmanager.serviceType` | Alertmanager service type | `ClusterIP` |
 | `alertmanager.storagePath` | Alertmanager data storage path | `/data` |
@@ -69,7 +72,7 @@ The following tables lists the configurable parameters of the Prometheus chart a
 | `kubeStateMetrics.resources` | Kube-state-metrics resource requests and limits (YAML) | `requests: {cpu: 10m, memory:16Mi}` |
 | `kubeStateMetrics.serviceType` | Kube-state-metrics service type | `ClusterIP` |
 | `server.annotations` | Server Pod annotations | `[]` |
-| `server.extraArgs` | Additional Server container arguments | `[]` |
+| `server.extraArgs` | Additional Server container arguments | `{}` |
 | `server.httpPort` | Server service port | `80` |
 | `server.httpPortName` | Server service port name | `http` |
 | `server.image` | Server Docker image | ` prom/prometheus:${VERSION}` |
@@ -81,8 +84,10 @@ The following tables lists the configurable parameters of the Prometheus chart a
 | `server.persistentVolume.enabled` | If true, Server will create a Persistent Volume Claim | `false` |
 | `server.persistentVolume.accessModes` | Server data Persistent Volume access modes | `[ReadWriteOnce]` |
 | `server.persistentVolume.annotations` | Server data Persistent Volume annotations | `[]` |
+| `server.persistentVolume.existingClaim` | Server data Persistent Volume existing claim name | |
 | `server.persistentVolume.size` | Server data Persistent Volume size | `8Gi` |
 | `server.persistentVolume.storageClass` | Server data Persistent Volume Storage Class | `volume.alpha.kubernetes.io/storage-class: default` |
+| `server.persistentVolume.subPath` | Subdirectory of the volume to mount at  | `""` |
 | `server.resources` | Server resource requests and limits | `requests: {cpu: 500m, memory: 512Mi}` |
 | `server.serviceType` | Server service type | `ClusterIP` |
 | `server.storageLocalPath` | Server local data storage path | `/data` |

@@ -26,6 +26,7 @@ The following tables lists the configurable parameters of the Jenkins chart and 
 
 ### Jenkins Master
 
+
 | Parameter                  | Description                        | Default                                                    |
 | -----------------------    | ---------------------------------- | ---------------------------------------------------------- |
 | `Master.Name`              | Jenkins master name                | `jenkins-master`                                           |
@@ -35,9 +36,14 @@ The following tables lists the configurable parameters of the Jenkins chart and 
 | `Master.Component`         | k8s selector key                   | `jenkins-master`                                           |
 | `Master.Cpu`               | Master requested cpu               | `200m`                                                     |
 | `Master.Memory`            | Master requested memory            | `256Mi`                                                    |
+| `Master.ServiceType`       | k8s service type                   | `LoadBalancer`                                             |
 | `Master.ServicePort`       | k8s service port                   | `8080`                                                     |
+| `Master.NodePort`          | k8s node port                      | Not set                                                    |
 | `Master.ContainerPort`     | Master listening port              | `8080`                                                     |
 | `Master.SlaveListenerPort` | Listening port for agents          | `50000`                                                    |
+| `Master.LoadBalancerSourceRanges` | Allowed inbound IP addresses       | `0.0.0.0/0`                                                |
+| `Master.Ingress.Annotations` | Ingress annotations       | `{}`                                                |
+| `Master.Ingress.TLS` | Ingress TLS configuration       | `[]`                                                |
 
 ### Jenkins Agent
 
