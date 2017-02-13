@@ -1,5 +1,5 @@
 name: concourse
-version: 0.1.0
+version: 0.1.2
 description: Concourse Helm chart for Kubernetes.
 keywords:
   - ci
