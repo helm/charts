@@ -1,5 +1,5 @@
 The Prometheus server can be accessed via port {{ .Values.server.service.servicePort }} on the following DNS name from within your cluster:
-{{ template "fullname" . }}-{{ .Values.server.name }}.{{ .Release.Namespace }}.svc.cluster.local
+{{ template "server.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
 
 {{ if .Values.server.ingress.enabled -}}
 From outside the cluster, the server URL(s) are:
@@ -10,17 +10,18 @@ http://{{ . }}
 {{- else }}
 Get the server URL by running these commands in the same shell:
 {{- if contains "NodePort" .Values.server.service.type }}
-  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "fullname" . }}-{{ .Values.server.name }})
+  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "server.fullname" . }})
   export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
   echo http://$NODE_IP:$NODE_PORT
 
 {{- else if contains "LoadBalancer" .Values.server.service.type }}
   NOTE: It may take a few minutes for the LoadBalancer IP to be available.
-        You can watch the status of by running 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "fullname" . }}-{{ .Values.server.name }}'
-  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "fullname" . }}-{{ .Values.server.name }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+        You can watch the status of by running 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "server.fullname" . }}'
+
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "server.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
   echo http://$SERVICE_IP:{{ .Values.server.service.servicePort }}
 {{- else if contains "ClusterIP"  .Values.server.service.type }}
-  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "fullname" . }},component={{ .Values.server.name }}" -o jsonpath="{.items[0].metadata.name}")
+  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "name" . }},component={{ .Values.server.name }}" -o jsonpath="{.items[0].metadata.name}")
   kubectl --namespace {{ .Release.Namespace }} port-forward $POD_NAME 9090
 
 {{- end }}
@@ -36,7 +37,7 @@ Get the server URL by running these commands in the same shell:
 
 {{- if .Values.alertmanager.enabled }}
 The Prometheus alertmanager can be accessed via port {{ .Values.alertmanager.service.servicePort }} on the following DNS name from within your cluster:
-{{ template "fullname" . }}-{{ .Values.alertmanager.name }}.{{ .Release.Namespace }}.svc.cluster.local
+{{ template "alertmanager.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
 
 {{ if .Values.alertmanager.ingress.enabled -}}
 From outside the cluster, the alertmanager URL(s) are:
@@ -47,17 +48,18 @@ http://{{ . }}
 {{- else }}
 Get the server URL by running these commands in the same shell:
 {{- if contains "NodePort" .Values.alertmanager.service.type }}
-  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "fullname" . }}-{{ .Values.alertmanager.name }})
+  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "alertmanager.fullname" . }})
   export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
   echo http://$NODE_IP:$NODE_PORT
 
 {{- else if contains "LoadBalancer" .Values.alertmanager.service.type }}
   NOTE: It may take a few minutes for the LoadBalancer IP to be available.
-        You can watch the status of by running 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "fullname" . }}-{{ .Values.alertmanager.name }}'
-  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "fullname" . }}-{{ .Values.alertmanager.name }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+        You can watch the status of by running 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "alertmanager.fullname" . }}'
+
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "alertmanager.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
   echo http://$SERVICE_IP:{{ .Values.alertmanager.service.servicePort }}
 {{- else if contains "ClusterIP"  .Values.alertmanager.service.type }}
-  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "fullname" . }},component={{ .Values.alertmanager.name }}" -o jsonpath="{.items[0].metadata.name}")
+  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "name" . }},component={{ .Values.alertmanager.name }}" -o jsonpath="{.items[0].metadata.name}")
   kubectl --namespace {{ .Release.Namespace }} port-forward $POD_NAME 9093
 
 {{- end }}

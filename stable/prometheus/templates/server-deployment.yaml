@@ -7,7 +7,7 @@ metadata:
     component: "{{ .Values.server.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-  name: {{ template "fullname" . }}-{{ .Values.server.name }}
+  name: {{ template "server.fullname" . }}
 spec:
   replicas: {{ .Values.server.replicaCount }}
   template:
@@ -38,7 +38,7 @@ spec:
           imagePullPolicy: "{{ .Values.server.image.pullPolicy }}"
           args:
           {{- if or .Values.alertmanager.enabled .Values.server.alertmanagerURL }}
-            - --alertmanager.url={{- if .Values.alertmanager.enabled }}http://{{ template "fullname" . }}-{{ .Values.alertmanager.name }}:{{ .Values.alertmanager.service.servicePort }}{{- else }}{{ .Values.server.alertmanagerURL }}{{- end }}
+            - --alertmanager.url={{- if .Values.alertmanager.enabled }}http://{{ template "alertmanager.fullname" . }}:{{ .Values.alertmanager.service.servicePort }}{{- else }}{{ .Values.server.alertmanagerURL }}{{- end }}
           {{- end }}
             - --config.file=/etc/config/prometheus.yml
             - --storage.local.path={{ .Values.server.persistentVolume.mountPath }}
@@ -67,11 +67,11 @@ spec:
       volumes:
         - name: config-volume
           configMap:
-            name: {{ template "fullname" . }}-{{ .Values.server.name }}
+            name: {{ template "server.fullname" . }}
         - name: storage-volume
         {{- if .Values.server.persistentVolume.enabled }}
           persistentVolumeClaim:
-            claimName: {{ if .Values.server.persistentVolume.existingClaim }}{{ .Values.server.persistentVolume.existingClaim }}{{- else }}{{ template "fullname" . }}-{{ .Values.server.name }}{{- end }}
+            claimName: {{ if .Values.server.persistentVolume.existingClaim }}{{ .Values.server.persistentVolume.existingClaim }}{{- else }}{{ template "server.fullname" . }}{{- end }}
         {{- else }}
           emptyDir: {}
         {{- end -}}

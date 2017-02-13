@@ -1,5 +1,6 @@
 {{- if .Values.server.ingress.enabled -}}
 {{- $releaseName := .Release.Name -}}
+{{- $serviceName := include "server.fullname" . }}
 {{- $servicePort := .Values.server.service.servicePort -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
@@ -14,7 +15,7 @@ metadata:
     component: "{{ .Values.server.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-  name: {{ template "fullname" . }}-{{ .Values.server.name }}
+  name: {{ template "server.fullname" . }}
 spec:
   rules:
   {{- range .Values.server.ingress.hosts }}
@@ -22,7 +23,7 @@ spec:
       http:
         paths:
           - backend:
-              serviceName: {{ printf "%s-%s" $releaseName .Values.server.name | trunc 63 }}
+              serviceName: {{ $serviceName }}
               servicePort: {{ $servicePort }}
   {{- end -}}
 {{- if .Values.server.ingress.tls }}

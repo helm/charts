@@ -12,7 +12,7 @@ metadata:
     component: "{{ .Values.alertmanager.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-  name: {{ template "fullname" . }}-{{ .Values.alertmanager.name }}
+  name: {{ template "alertmanager.fullname" . }}
 spec:
 {{- if .Values.alertmanager.service.clusterIP }}
   clusterIP: {{ .Values.alertmanager.service.clusterIP }}
@@ -36,7 +36,7 @@ spec:
       protocol: TCP
       targetPort: 9093
   selector:
-    app: {{ template "fullname" . }}
+    app: {{ template "name" . }}
     component: "{{ .Values.alertmanager.name }}"
   type: "{{ .Values.alertmanager.service.type }}"
 {{- end }}

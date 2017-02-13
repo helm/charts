@@ -8,7 +8,7 @@ metadata:
     component: "{{ .Values.kubeStateMetrics.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-  name: {{ template "fullname" . }}-{{ .Values.kubeStateMetrics.name }}
+  name: {{ template "kubeStateMetrics.fullname" . }}
 spec:
   replicas: {{ .Values.kubeStateMetrics.replicaCount }}
   template:

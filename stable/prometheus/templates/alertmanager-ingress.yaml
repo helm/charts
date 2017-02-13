@@ -1,5 +1,6 @@
 {{- if and .Values.alertmanager.enabled .Values.alertmanager.ingress.enabled -}}
 {{- $releaseName := .Release.Name -}}
+{{- $serviceName := include "alertmanager.fullname" . }}
 {{- $servicePort := .Values.alertmanager.service.servicePort -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
@@ -14,7 +15,7 @@ metadata:
     component: "{{ .Values.alertmanager.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-  name: {{ template "fullname" . }}-{{ .Values.alertmanager.name }}
+  name: {{ template "alertmanager.fullname" . }}
 spec:
   rules:
   {{- range .Values.alertmanager.ingress.hosts }}
@@ -22,7 +23,7 @@ spec:
       http:
         paths:
           - backend:
-              serviceName: {{ printf "%s-%s" $releaseName .Values.alertmanager.name | trunc 63 }}
+              serviceName: {{ $serviceName }}
               servicePort: {{ $servicePort }}
   {{- end -}}
 {{- if .Values.alertmanager.ingress.tls }}

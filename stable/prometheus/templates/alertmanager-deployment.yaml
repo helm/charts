@@ -8,7 +8,7 @@ metadata:
     component: "{{ .Values.alertmanager.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-  name: {{ template "fullname" . }}-{{ .Values.alertmanager.name }}
+  name: {{ template "alertmanager.fullname" . }}
 spec:
   replicas: {{ .Values.alertmanager.replicaCount }}
   template:
@@ -66,11 +66,11 @@ spec:
       volumes:
         - name: config-volume
           configMap:
-            name: {{ template "fullname" . }}-{{ .Values.alertmanager.name }}
+            name: {{ template "alertmanager.fullname" . }}
         - name: storage-volume
         {{- if .Values.alertmanager.persistentVolume.enabled }}
           persistentVolumeClaim:
-            claimName: {{ if .Values.alertmanager.persistentVolume.existingClaim }}{{ .Values.alertmanager.persistentVolume.existingClaim }}{{- else }}{{ template "fullname" . }}-{{ .Values.alertmanager.name }}{{- end }}
+            claimName: {{ if .Values.alertmanager.persistentVolume.existingClaim }}{{ .Values.alertmanager.persistentVolume.existingClaim }}{{- else }}{{ template "alertmanager.fullname" . }}{{- end }}
         {{- else }}
           emptyDir: {}
         {{- end -}}

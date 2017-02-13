@@ -12,7 +12,7 @@ metadata:
     component: "{{ .Values.kubeStateMetrics.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-  name: {{ template "fullname" . }}-{{ .Values.kubeStateMetrics.name }}
+  name: {{ template "kubeStateMetrics.fullname" . }}
 spec:
 {{- if .Values.kubeStateMetrics.service.clusterIP }}
   clusterIP: {{ .Values.kubeStateMetrics.service.clusterIP }}
@@ -36,7 +36,7 @@ spec:
       protocol: TCP
       targetPort: 8080
   selector:
-    app: {{ template "fullname" . }}
+    app: {{ template "name" . }}
     component: "{{ .Values.kubeStateMetrics.name }}"
   type: "{{ .Values.kubeStateMetrics.service.type }}"
 {{- end }}

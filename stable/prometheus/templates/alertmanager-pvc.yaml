@@ -18,7 +18,7 @@ metadata:
     component: "{{ .Values.alertmanager.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-  name: {{ template "fullname" . }}-{{ .Values.alertmanager.name }}
+  name: {{ template "alertmanager.fullname" . }}
 spec:
   accessModes:
 {{ toYaml .Values.alertmanager.persistentVolume.accessModes | indent 4 }}

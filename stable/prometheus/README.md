@@ -49,7 +49,7 @@ Parameter | Description | Default
 `alertmanager.image.repository` | alertmanager container image repository | `prom/alertmanager`
 `alertmanager.image.tag` | alertmanager container image tag | `v0.5.1`
 `alertmanager.image.pullPolicy` | alertmanager container image pull policy | `IfNotPresent`
-`alertmanager.extraArgs` | Additional alertmanager container arguments | `[]`
+`alertmanager.extraArgs` | Additional alertmanager container arguments | `{}`
 `alertmanager.ingress.enabled` | If true, alertmanager Ingress will be created | `false`
 `alertmanager.ingress.annotations` | alertmanager Ingress annotations | `{}`
 `alertmanager.ingress.hosts` | alertmanager Ingress hostnames | `[]`
@@ -85,7 +85,7 @@ Parameter | Description | Default
 `kubeStateMetrics.podAnnotations` | annotations to be added to kube-state-metrics pods | `{}`
 `kubeStateMetrics.replicaCount` | desired number of kube-state-metrics pods | `1`
 `kubeStateMetrics.resources` | kube-state-metrics resource requests and limits (YAML) | `requests: {cpu: 10m, memory:16Mi}`
-`kubeStateMetrics.service.annotations` | annotations for kube-state-metrics service | `{}`
+`kubeStateMetrics.service.annotations` | annotations for kube-state-metrics service | `{prometheus.io/scrape: "true"}`
 `kubeStateMetrics.service.clusterIP` | internal kube-state-metrics cluster service IP | `""`
 `kubeStateMetrics.service.externalIPs` | kube-state-metrics service external IP addresses | `[]`
 `kubeStateMetrics.service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
@@ -96,7 +96,7 @@ Parameter | Description | Default
 `server.image.tag` | Prometheus server container image tag | `v1.5.1`
 `server.image.pullPolicy` | Prometheus server container image pull policy | `IfNotPresent`
 `server.alertmanagerURL` | (optional) alertmanager URL; only used if alertmanager.enabled = false | `""`
-`server.extraArgs` | Additional Prometheus server container arguments | `[]`
+`server.extraArgs` | Additional Prometheus server container arguments | `{}`
 `server.ingress.enabled` | If true, Prometheus server Ingress will be created | `false`
 `server.ingress.annotations` | Prometheus server Ingress annotations | `[]`
 `server.ingress.hosts` | Prometheus server Ingress hostnames | `[]`

@@ -18,7 +18,7 @@ metadata:
     component: "{{ .Values.server.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-  name: {{ template "fullname" . }}-{{ .Values.server.name }}
+  name: {{ template "server.fullname" . }}
 spec:
   accessModes:
 {{ toYaml .Values.server.persistentVolume.accessModes | indent 4 }}

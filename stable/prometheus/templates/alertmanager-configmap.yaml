@@ -8,7 +8,7 @@ metadata:
     component: "{{ .Values.alertmanager.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-  name: {{ template "fullname" . }}-{{ .Values.alertmanager.name }}
+  name: {{ template "alertmanager.fullname" . }}
 data:
 {{ toYaml .Values.alertmanagerFiles | indent 2 }}
 {{- end }}

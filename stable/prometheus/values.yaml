@@ -177,10 +177,10 @@ kubeStateMetrics:
       memory: 16Mi
 
   service:
-    annotations: {}
-      # prometheus.io/scrape: "true"
+    annotations:
+      prometheus.io/scrape: "true"
 
-    clusterIP: ""
+    clusterIP: None
 
     ## List of IP addresses at which the kube-state-metrics service is available
     ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
@@ -196,7 +196,7 @@ server:
 
   ## Prometheus server container name
   ##
-  name: server
+  name: prometheus
 
   ## Prometheus server container image
   ##
@@ -305,8 +305,6 @@ server:
 
   service:
     annotations: {}
-      # prometheus.io/scrape: "true"
-
     clusterIP: ""
 
     ## List of IP addresses at which the Prometheus server service is available
@@ -326,7 +324,7 @@ server:
 ## alertmanager ConfigMap entries
 ##
 alertmanagerFiles:
-  alertmanager.yml: |
+  alertmanager.yml: |-
     global:
       # slack_api_url: ''
 
@@ -348,7 +346,7 @@ serverFiles:
   alerts: ""
   rules: ""
 
-  prometheus.yml: |
+  prometheus.yml: |-
     global:
       scrape_interval:     15s
       evaluation_interval: 15s
