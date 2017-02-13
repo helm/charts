@@ -72,6 +72,10 @@ alertmanager:
     ## If defined, PVC must be created manually before volume will be bound
     existingClaim: ""
 
+    ## alertmanager data Persistent Volume mount root path
+    ##
+    mountPath: /data
+
     ## alertmanager data Persistent Volume size
     ##
     size: 2Gi
@@ -82,7 +86,7 @@ alertmanager:
     ##
     storageClass: ""
 
-    ## Subdirectory of the volume to mount at
+    ## Subdirectory of alertmanager data Persistent Volume to mount
     ## Useful if the volume's root directory is not empty
     ##
     subPath: ""
@@ -262,6 +266,10 @@ server:
     ## If defined, PVC must be created manually before volume will be bound
     existingClaim: ""
 
+    ## Prometheus server data Persistent Volume mount root path
+    ##
+    mountPath: /data
+
     ## Prometheus server data Persistent Volume size
     ##
     size: 8Gi
@@ -272,7 +280,7 @@ server:
     ##
     storageClass: ""
 
-    ## Subdirectory of the volume to mount at
+    ## Subdirectory of Prometheus server data Persistent Volume to mount
     ## Useful if the volume's root directory is not empty
     ##
     subPath: ""

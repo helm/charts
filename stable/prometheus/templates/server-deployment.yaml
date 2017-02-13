@@ -41,7 +41,7 @@ spec:
             - --alertmanager.url={{- if .Values.alertmanager.enabled }}http://{{ template "fullname" . }}-{{ .Values.alertmanager.name }}:{{ .Values.alertmanager.service.servicePort }}{{- else }}{{ .Values.server.alertmanagerURL }}{{- end }}
           {{- end }}
             - --config.file=/etc/config/prometheus.yml
-            - --storage.local.path=/data
+            - --storage.local.path={{ .Values.server.persistentVolume.mountPath }}
             - --web.console.libraries=/etc/prometheus/console_libraries
             - --web.console.templates=/etc/prometheus/consoles
           {{- range $key, $value := .Values.server.extraArgs }}
@@ -61,7 +61,7 @@ spec:
             - name: config-volume
               mountPath: /etc/config
             - name: storage-volume
-              mountPath: /data
+              mountPath: {{ .Values.alertmanager.persistentVolume.mountPath }}
               subPath: "{{ .Values.server.persistentVolume.subPath }}"
       terminationGracePeriodSeconds: {{ .Values.server.terminationGracePeriodSeconds }}
       volumes:

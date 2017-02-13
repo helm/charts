@@ -28,7 +28,7 @@ spec:
           imagePullPolicy: "{{ .Values.alertmanager.image.pullPolicy }}"
           args:
             - --config.file=/etc/config/alertmanager.yml
-            - --storage.path=/data
+            - --storage.path={{ .Values.alertmanager.persistentVolume.mountPath }}
           {{- range $key, $value := .Values.alertmanager.extraArgs }}
             - --{{ $key }}={{ $value }}
           {{- end }}
@@ -46,7 +46,7 @@ spec:
             - name: config-volume
               mountPath: /etc/config
             - name: storage-volume
-              mountPath: /data
+              mountPath: "{{ .Values.alertmanager.persistentVolume.mountPath }}"
               subPath: "{{ .Values.alertmanager.persistentVolume.subPath }}"
 
         - name: {{ template "name" . }}-{{ .Values.alertmanager.name }}-{{ .Values.configmapReload.name }}
