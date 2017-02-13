@@ -24,7 +24,7 @@ spec:
     spec:
       containers:
         - name: {{ template "name" . }}-{{ .Values.alertmanager.name }}
-          image: "{{ .Values.alertmanager.image.repository }}.repository }}:{{ .Values.alertmanager.image.tag }}"
+          image: "{{ .Values.alertmanager.image.repository }}:{{ .Values.alertmanager.image.tag }}"
           imagePullPolicy: "{{ .Values.alertmanager.image.pullPolicy }}"
           args:
             - --config.file=/etc/config/alertmanager.yml
@@ -50,7 +50,7 @@ spec:
               subPath: "{{ .Values.alertmanager.persistentVolume.subPath }}"
 
         - name: {{ template "name" . }}-{{ .Values.alertmanager.name }}-{{ .Values.configmapReload.name }}
-          image: "{{ .Values.configmapReload.image.repository }}.repository }}:{{ .Values.configmapReload.image.tag }}"
+          image: "{{ .Values.configmapReload.image.repository }}:{{ .Values.configmapReload.image.tag }}"
           imagePullPolicy: "{{ .Values.configmapReload.image.pullPolicy }}"
           args:
             - --volume-dir=/etc/config

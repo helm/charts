@@ -23,7 +23,7 @@ spec:
     spec:
       containers:
         - name: {{ template "name" . }}-{{ .Values.server.name }}-{{ .Values.configmapReload.name }}
-          image: "{{ .Values.configmapReload.image.repository }}.repository }}:{{ .Values.configmapReload.image.tag }}"
+          image: "{{ .Values.configmapReload.image.repository }}:{{ .Values.configmapReload.image.tag }}"
           imagePullPolicy: "{{ .Values.configmapReload.image.pullPolicy }}"
           args:
             - --volume-dir=/etc/config
@@ -34,7 +34,7 @@ spec:
               readOnly: true
 
         - name: {{ template "name" . }}-{{ .Values.server.name }}
-          image: "{{ .Values.server.image.repository }}.repository }}:{{ .Values.server.image.tag }}"
+          image: "{{ .Values.server.image.repository }}:{{ .Values.server.image.tag }}"
           imagePullPolicy: "{{ .Values.server.image.pullPolicy }}"
           args:
           {{- if or .Values.alertmanager.enabled .Values.server.alertmanagerURL }}
