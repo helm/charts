@@ -42,6 +42,9 @@ The following tables lists the configurable parameters of the Jenkins chart and 
 | `Master.ContainerPort`     | Master listening port              | `8080`                                                     |
 | `Master.SlaveListenerPort` | Listening port for agents          | `50000`                                                    |
 | `Master.LoadBalancerSourceRanges` | Allowed inbound IP addresses       | `0.0.0.0/0`                                                |
+| `Master.CustomConfigMap`          | Use a custom ConfigMap             | `false`                                                    |
+| `Master.Ingress.Annotations` | Ingress annotations       | `{}`                                                |
+| `Master.Ingress.TLS` | Ingress TLS configuration       | `[]`                                                |
 
 ### Jenkins Agent
 
@@ -66,6 +69,19 @@ $ helm install --name my-release -f values.yaml stable/jenkins
 
 The Jenkins image stores persistence under `/var/jenkins_home` path of the container. A Persistent Volume
 Claim is used to keep the data across deployments. This is known to work in GCE, AWS, and minikube.
+
+## Custom ConfigMap
+
+When creating a new chart with this chart as a dependency, CustomConfigMap can be used to override the default config.xml provided.
+It also allows for providing additional xml configuration files that will be copied into `/var/jenkins_home`. In the parent chart's values.yaml,
+set the value to true and provide the file `templates/config.yaml` for your use case. If you start by copying `config.yaml` from this chart and
+want to access values from this chart you must change all references from `.Values` to `.Values.jenkins`.
+
+```
+jenkins:
+  Master:
+    CustomConfigMap: true
+```
 
 # Todo
 * Enable Docker-in-Docker or Docker-on-Docker support on the Jenkins agents

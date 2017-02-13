@@ -1,7 +1,7 @@
 ## GitLab CE image
 ## ref: https://hub.docker.com/r/gitlab/gitlab-ce/tags/
 ##
-image: gitlab/gitlab-ce:8.14.4-ce.0
+image: gitlab/gitlab-ce:8.16.1-ce.0
 
 ## Specify a imagePullPolicy
 ## 'Always' if imageTag is 'latest', else set to 'IfNotPresent'
@@ -75,8 +75,8 @@ persistence:
 ## ref: https://github.com/kubernetes/charts/blob/master/stable/postgresql/README.md
 ##
 postgresql:
-  # 9.4 is currently used in the official OpenShift manifests.
-  imageTag: "9.4"
+  # 9.6 is the newest supported version for the GitLab container
+  imageTag: "9.6"
   cpu: 1000m
   memory: 1Gi
 
