@@ -46,9 +46,9 @@ Agent:
 
 Persistence:
   Enabled: true
-  ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
+  ## If defined, volume.beta.kubernetes.io/storage-class: <StorageClass>
   ## Default: volume.alpha.kubernetes.io/storage-class: default
   ##
-  # storageClass:
+  # StorageClass:
   AccessMode: ReadWriteOnce
   Size: 8Gi
