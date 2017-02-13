@@ -12,6 +12,7 @@ nginx:
     pullPolicy: IfNotPresent
   service:
     type: LoadBalancer
+  monitoring: false
   resources:
     limits:
       cpu: 1

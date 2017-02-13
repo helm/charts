@@ -1,0 +1,22 @@
+# container name
+name: chaoskube
+
+# docker image
+image: quay.io/linki/chaoskube
+
+# docker image tag
+imageTag: v0.3.1
+
+# number of replicas to run
+replicas: 1
+
+# interval between pod terminations
+interval: 10m
+
+# don't kill pods, only log what would have been done
+dryRun: true
+
+# resource requests and limits
+resources:
+  cpu: 10m
+  memory: 16Mi

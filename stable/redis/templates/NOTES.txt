@@ -4,7 +4,7 @@ Redis can be accessed via port 6379 on the following DNS name from within your c
 {{ if .Values.redisPassword }}
 To get your password run:
 
-    REDIS_PASSWORD=$(printf $(printf '\%o' `kubectl get secret --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath="{.data.redis-password[*]}"`))
+    REDIS_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath="{.data.redis-password}" | base64 --decode)
 {{ end }}
 
 To connect to your Redis server:

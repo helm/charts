@@ -1,0 +1,6 @@
+dependencies:
+- name: sensu
+  repository: https://kubernetes-charts.storage.googleapis.com/
+  version: 0.1.1
+digest: sha256:453c29c977541ae42b7278f9e0bff2ae267047b99b68d4fc6f74f7f807e884a5
+generated: 2017-01-04T19:55:33.783316102-05:00
