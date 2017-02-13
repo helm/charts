@@ -12,7 +12,7 @@ data:
       <version>2.19.4</version>
       <numExecutors>0</numExecutors>
       <mode>NORMAL</mode>
-      <useSecurity>true</useSecurity>
+      <useSecurity>{{ .Values.Master.UseSecurity }}</useSecurity>
       <authorizationStrategy class="hudson.security.FullControlOnceLoggedInAuthorizationStrategy">
         <denyAnonymousReadAccess>true</denyAnonymousReadAccess>
       </authorizationStrategy>

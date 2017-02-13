@@ -9,6 +9,7 @@ Master:
   ImageTag: "v0.6.0"
   ImagePullPolicy: "Always"
   Component: "jenkins-master"
+  UseSecurity: true
   AdminUser: admin
 # AdminPassword: <defaults to random>
   Cpu: "200m"
