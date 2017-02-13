@@ -26,6 +26,7 @@ Master:
   SlaveListenerPort: 50000
   LoadBalancerSourceRanges:
   - 0.0.0.0/0
+  CustomConfigMap: false
 
   Ingress:
     Annotations:
