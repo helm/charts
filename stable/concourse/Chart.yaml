@@ -1,6 +1,7 @@
 name: concourse
-version: 0.1.0
-description: Concourse Helm chart for Kubernetes.
+version: 0.1.1
+description: Concourse is a simple and scalable CI system.
+icon: https://avatars1.githubusercontent.com/u/7809479
 keywords:
   - ci
   - concourse

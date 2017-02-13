@@ -57,7 +57,7 @@ The following tables lists the configurable parameters of the RabbitMQ chart and
 | `rabbitmqVhost`            | RabbitMQ application vhost                              | `/`                                                      |
 | `rabbitmqManagerPort`      | RabbitMQ Manager port                                   | `15672`                                                  |
 | `persistence.enabled`      | Use a PVC to persist data                               | `true`                                                   |
-| `persistence.storageClass` | Storage class of backing PVC                            | `generic`                                                |
+| `persistence.storageClass` | Storage class of backing PVC                            | `nil` (uses alpha storage class annotation)              |
 | `persistence.accessMode`   | Use volume as ReadOnly or ReadWrite                     | `ReadWriteOnce`                                          |
 | `persistence.size`         | Size of data volume                                     | `8Gi`                                                    |
 

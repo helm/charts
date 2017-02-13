@@ -23,4 +23,4 @@
 2. Get your Joomla! login credentials by running:
 
     echo Username: {{ .Values.joomlaUsername }}
-    echo Password: $(printf $(printf '\%o' `kubectl get secret --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath="{.data.joomla-password[*]}"`))
+    echo Password: $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath="{.data.joomla-password}" | base64 --decode)
