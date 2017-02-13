@@ -1,6 +1,6 @@
 name: artifactory
 home: https://www.jfrog.com/artifactory/
-version: 4.16.0
+version: 4.16.1
 description: Universal Repository Manager supporting all major packaging formats, build tools and CI servers.
 keywords:
 - artifactory
