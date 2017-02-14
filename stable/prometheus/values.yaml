@@ -196,7 +196,7 @@ server:
 
   ## Prometheus server container name
   ##
-  name: prometheus
+  name: server
 
   ## Prometheus server container image
   ##
