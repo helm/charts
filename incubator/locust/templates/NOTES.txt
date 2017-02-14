@@ -1,0 +1,15 @@
+{{ .Chart.Name }} installed!
+
+Release is named {{ .Release.Name }}.
+
+To learn more about the release, try:
+
+  $ helm status {{ .Release.Name }}
+  $ helm get {{ .Release.Name }}
+
+{{ if eq (int .Values.service.nodePort) 0 }}
+Retrieve Locust master nodePort via:
+kubectl get svc -n {{ .Release.Namespace }} {{ template "locust.master-svc" . }} -o jsonpath='{.spec.ports[?(@.name=="{{ .Values.service.name }}")].nodePort}'
+{{- else }}
+Locust Master nodePort: {{ .Values.service.nodePort }}
+{{- end }}
