@@ -80,7 +80,7 @@ spec:
           resources:
 {{ toYaml .Values.controller.resources | indent 12 }}
 
-      {{- if .Values.controller.enableStats }}
+      {{- if .Values.controller.stats.enabled }}
         - name: {{ template "name" . }}-{{ .Values.statsExporter.name }}
           image: "{{ .Values.statsExporter.image.repository }}:{{ .Values.statsExporter.image.tag }}"
           imagePullPolicy: "{{ .Values.statsExporter.image.pullPolicy }}"

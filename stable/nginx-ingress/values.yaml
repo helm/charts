@@ -119,7 +119,7 @@ defaultBackend:
     servicePort: 80
     type: ClusterIP
 
-## If controller.enableStats = true, Prometheus metrics will be exported
+## If controller.stats.enabled = true, Prometheus metrics will be exported
 ## Ref: https://github.com/hnlq715/nginx-vts-exporter
 ##
 statsExporter:

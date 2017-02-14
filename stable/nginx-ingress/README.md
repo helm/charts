@@ -106,7 +106,7 @@ Parameter | Description | Default
 
 ```console
 $ helm install stable/nginx-ingress --name my-release \
-    --set controller.enableStats=true  
+    --set controller.stats.enabled=true
 ```
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
