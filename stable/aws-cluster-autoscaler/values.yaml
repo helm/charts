@@ -10,7 +10,7 @@ image:
   tag: v0.4.0
   pullPolicy: IfNotPresent
 
-extraArgs: []
+extraArgs: {}
 
 ## Node labels for pod assignment
 ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
