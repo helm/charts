@@ -23,6 +23,7 @@ controller:
 
   ## Node labels for controller pod assignment
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+  ##
   nodeSelector: {}
 
   ## Annotations to be added to controller pods
@@ -87,6 +88,7 @@ defaultBackend:
 
   ## Node labels for default backend pod assignment
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+  ##
   nodeSelector: {}
 
   ## Annotations to be added to default backend pods
@@ -119,6 +121,7 @@ defaultBackend:
 
 ## If controller.enableStats = true, Prometheus metrics will be exported
 ## Ref: https://github.com/hnlq715/nginx-vts-exporter
+##
 statsExporter:
   name: stats-exporter
   image:
@@ -150,15 +153,17 @@ statsExporter:
 
     loadBalancerIP: ""
     loadBalancerSourceRanges: []
-    servicePort: 18080
+    servicePort: 9913
     type: ClusterIP
 
 # TCP service key:value pairs
 # Ref: https://github.com/kubernetes/contrib/tree/master/ingress/controllers/nginx/examples/tcp
-tcp:
+##
+tcp: {}
   # 8080: "default/example-tcp-svc:9000"
 
 # UDP service key:value pairs
 # Ref: https://github.com/kubernetes/contrib/tree/master/ingress/controllers/nginx/examples/udp
-udp:
+##
+udp: {}
   # 53: "kube-system/kube-dns:53"

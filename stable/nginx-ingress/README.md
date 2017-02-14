@@ -51,7 +51,7 @@ Parameter | Description | Default
 `controller.image.pullPolicy` | controller container image pull policy | `IfNotPresent`
 `controller.config` | nginx ConfigMap entries | none
 `controller.defaultBackendService` | default 404 backend service; required only if `defaultBackend.enabled = false` | `""`
-`controller.extraArgs` | Additional controller container arguments | `[]`
+`controller.extraArgs` | Additional controller container arguments | `{}`
 `controller.kind` | install as Deployment or DaemonSet | `Deployment`
 `controller.nodeSelector` | node labels for pod assignment | `{}`
 `controller.podAnnotations` | annotations to be added to pods | `{}`
@@ -74,7 +74,7 @@ Parameter | Description | Default
 `defaultBackend.image.repository` | default backend container image repository | `gcr.io/google_containers/defaultbackend`
 `defaultBackend.image.tag` | default backend container image tag | `1.2`
 `defaultBackend.image.pullPolicy` | default backend container image pull policy | `IfNotPresent`
-`defaultBackend.extraArgs` | Additional default backend container arguments | `[]`
+`defaultBackend.extraArgs` | Additional default backend container arguments | `{}`
 `defaultBackend.nodeSelector` | node labels for pod assignment | `{}`
 `defaultBackend.podAnnotations` | annotations to be added to pods | `{}`
 `defaultBackend.replicaCount` | desired number of default backend pods | `1`
@@ -90,7 +90,7 @@ Parameter | Description | Default
 `statsExporter.image.tag` | Prometheus metrics exporter image tag | `v0.0.3`
 `statsExporter.image.pullPolicy` | Prometheus metrics exporter image pull policy | `IfNotPresent`
 `statsExporter.endpoint` | path at which Prometheus metrics are exposed | `/metrics`
-`statsExporter.extraArgs` | Additional Prometheus metrics exporter container arguments | `[]`
+`statsExporter.extraArgs` | Additional Prometheus metrics exporter container arguments | `{}`
 `statsExporter.metricsNamespace` | namespace used for metrics labeling | `nginx`
 `statsExporter.statusPage` | URL of "vts-stats" page exposed by controller | `http://localhost:18080/nginx_status/format/json`
 `statsExporter.resources` | Prometheus metrics exporter resource requests & limits | `requests: {cpu: 10m, memory: 20Mi}`
@@ -101,8 +101,8 @@ Parameter | Description | Default
 `statsExporter.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
 `statsExporter.service.servicePort` | Prometheus metrics exporter service port | `9913`
 `statsExporter.service.type` | type of Prometheus metrics exporter service to create | `ClusterIP`
-`tcp` | TCP service key:value pairs | none
-`udp` | UDP service key:value pairs | none
+`tcp` | TCP service key:value pairs | `{}`
+`udp` | UDP service key:value pairs | `{}`
 
 ```console
 $ helm install stable/nginx-ingress --name my-release \
