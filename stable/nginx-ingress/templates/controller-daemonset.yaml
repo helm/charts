@@ -8,7 +8,7 @@ metadata:
     component: "{{ .Values.controller.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-  name: {{ template "fullname" . }}-{{ .Values.controller.name }}
+  name: {{ template "controller.fullname" . }}
 spec:
   template:
     metadata:
@@ -27,8 +27,8 @@ spec:
           imagePullPolicy: "{{ .Values.controller.image.pullPolicy }}"
           args:
             - /nginx-ingress-controller
-            - --default-backend-service={{ if .Values.defaultBackend.enabled }}{{ .Release.Namespace }}/{{ template "fullname" . }}-{{ .Values.defaultBackend.name }}{{ else }}{{ .Values.controller.defaultBackendService }}{{ end }}
-            - --nginx-configmap={{ .Release.Namespace }}/{{ template "fullname" . }}-{{ .Values.controller.name }}
+            - --default-backend-service={{ if .Values.defaultBackend.enabled }}{{ .Release.Namespace }}/{{ template "defaultBackend.fullname" . }}{{ else }}{{ .Values.controller.defaultBackendService }}{{ end }}
+            - --nginx-configmap={{ .Release.Namespace }}/{{ template "controller.fullname" . }}
             - --tcp-services-configmap={{ .Release.Namespace }}/{{ template "fullname" . }}-tcp
             - --udp-services-configmap={{ .Release.Namespace }}/{{ template "fullname" . }}-udp
           {{- range $key, $value := .Values.controller.extraArgs }}

@@ -12,7 +12,7 @@ metadata:
     component: "{{ .Values.defaultBackend.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-  name: {{ template "fullname" . }}-{{ .Values.defaultBackend.name }}
+  name: {{ template "defaultBackend.fullname" . }}
 spec:
   clusterIP: "{{ .Values.defaultBackend.service.clusterIP }}"
 {{- if .Values.defaultBackend.service.externalIPs }}

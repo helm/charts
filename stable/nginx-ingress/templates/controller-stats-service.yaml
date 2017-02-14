@@ -12,7 +12,7 @@ metadata:
     component: "{{ .Values.controller.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-  name: {{ template "fullname" . }}-{{ .Values.controller.name }}-stats
+  name: {{ template "controller.fullname" . }}-stats
 spec:
   clusterIP: "{{ .Values.controller.stats.service.clusterIP }}"
 {{- if .Values.controller.stats.service.externalIPs }}

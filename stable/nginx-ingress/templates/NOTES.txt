@@ -2,12 +2,12 @@ The nginx-ingress controller has been installed.
 
 {{- if contains "NodePort" .Values.controller.service.type }}
 Get the application URL by running these commands:
-  export NODE_PORT=$(kubectl --namespace {{ .Release.Namespace }} get services -o jsonpath="{.spec.ports[0].nodePort}" {{ template "fullname" . }}-{{ .Values.controller.name }})
+  export NODE_PORT=$(kubectl --namespace {{ .Release.Namespace }} get services -o jsonpath="{.spec.ports[0].nodePort}" {{ template "controller.fullname" . }})
   export NODE_IP=$(kubectl --namespace {{ .Release.Namespace }} get nodes -o jsonpath="{.items[0].status.addresses[1].address}")
   echo "Visit http://$NODE_IP:$NODE_PORT to access your application."
 {{- else if contains "LoadBalancer" .Values.controller.service.type }}
 It may take a few minutes for the LoadBalancer IP to be available.
-You can watch the status by running 'kubectl --namespace {{ .Release.Namespace }} get services -o wide -w {{ template "fullname" . }}-{{ .Values.controller.name }}'
+You can watch the status by running 'kubectl --namespace {{ .Release.Namespace }} get services -o wide -w {{ template "controller.fullname" . }}'
 {{- else if contains "ClusterIP"  .Values.controller.service.type }}
 Get the application URL by running these commands:
   export POD_NAME=$(kubectl --namespace {{ .Release.Namespace }} get pods -o jsonpath="{.items[0].metadata.name}" -l "app={{ template "name" . }},component={{ .Values.controller.name }},release={{ .Release.Name }}")
