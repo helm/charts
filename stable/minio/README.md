@@ -67,7 +67,7 @@ The following tables lists the configurable parameters of the Minio chart and th
 | `imageTag`                 | Minio image tag. Possible values listed [here](https://hub.docker.com/r/minio/minio/tags/).| `RELEASE.2017-01-25T03-14-52Z`|
 | `imagePullPolicy`          | Image pull policy                   | `Always`                                                |
 | `mode`                     | Minio server mode (`standalone`, `shared` or `distributed`)| `standalone`                     |
-| `numberOfNodes`            | Number of nodes (applicable only for Minio distributed mode). Should be 4 <= x <= 16 | `4`    |
+| `replicas`                 | Number of nodes (applicable only for Minio distributed mode). Should be 4 <= x <= 16 | `4`    |
 | `accessKey`                | Default access key                  | `AKIAIOSFODNN7EXAMPLE`                                  |
 | `secretKey`                | Default secret key                  | `wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY`              |
 | `configPath`               | Default config file location        | `~/.minio`                                              |
@@ -109,13 +109,13 @@ This chart provisions a Minio server in standalone mode, by default. To provisio
 $ helm install --set mode=distributed stable/minio
 ```
 
-This provisions Minio server in distributed mode with 4 nodes. To change the number of nodes in your distributed Minio server, set the `numberOfNodes` field,
+This provisions Minio server in distributed mode with 4 nodes. To change the number of nodes in your distributed Minio server, set the `replicas` field,
 
 ```bash
-$ helm install --set mode=distributed,numberOfNodes=8 stable/minio
+$ helm install --set mode=distributed,replicas=8 stable/minio
 ```
 
-This provisions Minio server in distributed mode with 8 nodes. Note that the `numberOfNodes` value should be an integer between 4 and 16 (inclusive).
+This provisions Minio server in distributed mode with 8 nodes. Note that the `replicas` value should be an integer between 4 and 16 (inclusive).
 
 ### StatefulSet [limitations](http://kubernetes.io/docs/concepts/abstractions/controllers/statefulsets/#limitations) applicable to distributed Minio
 
@@ -131,10 +131,10 @@ To provision Minio servers in [shared mode](https://github.com/minio/minio/blob/
 $ helm install --set mode=shared stable/minio
 ```
 
-This provisions 4 Minio server nodes backed by single storage. To change the number of nodes in your shared Minio deployment, set the `numberOfNodes` field,
+This provisions 4 Minio server nodes backed by single storage. To change the number of nodes in your shared Minio deployment, set the `replicas` field,
 
 ```bash
-$ helm install --set mode=shared,numberOfNodes=8 stable/minio
+$ helm install --set mode=shared,replicas=8 stable/minio
 ```
 
 This provisions Minio server in shared mode with 8 nodes.
