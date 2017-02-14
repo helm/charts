@@ -30,8 +30,8 @@ spec:
   {{- end }}
 {{- end }}
   ports:
-    - port: {{ .Values.server.service.servicePort }}
-      name: http
+    - name: http
+      port: {{ .Values.server.service.servicePort }}
       protocol: TCP
       targetPort: 9090
   selector:

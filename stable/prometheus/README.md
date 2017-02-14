@@ -71,6 +71,7 @@ Parameter | Description | Default
 `alertmanager.service.externalIPs` | alertmanager service external IP addresses | `[]`
 `alertmanager.service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
 `alertmanager.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
+`alertmanager.service.servicePort` | alertmanager service port | `80`
 `alertmanager.service.type` | type of alertmanager service to create | `ClusterIP`
 `configmapReload.name` | configmap-reload container name | `configmap-reload`
 `configmapReload.image.repository` | configmap-reload container image repository | `jimmidyson/configmap-reload`
@@ -84,13 +85,30 @@ Parameter | Description | Default
 `kubeStateMetrics.nodeSelector` | node labels for kube-state-metrics pod assignment | `{}`
 `kubeStateMetrics.podAnnotations` | annotations to be added to kube-state-metrics pods | `{}`
 `kubeStateMetrics.replicaCount` | desired number of kube-state-metrics pods | `1`
-`kubeStateMetrics.resources` | kube-state-metrics resource requests and limits (YAML) | `requests: {cpu: 10m, memory:16Mi}`
+`kubeStateMetrics.resources` | kube-state-metrics resource requests and limits (YAML) | `requests: {cpu: 10m, memory: 16Mi}`
 `kubeStateMetrics.service.annotations` | annotations for kube-state-metrics service | `{prometheus.io/scrape: "true"}`
-`kubeStateMetrics.service.clusterIP` | internal kube-state-metrics cluster service IP | `""`
+`kubeStateMetrics.service.clusterIP` | internal kube-state-metrics cluster service IP | `None`
 `kubeStateMetrics.service.externalIPs` | kube-state-metrics service external IP addresses | `[]`
 `kubeStateMetrics.service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
-`kubeStateMetrics.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (kubeStateMetrics) | `[]`
+`kubeStateMetrics.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
+`kubeStateMetrics.service.servicePort` | kube-state-metrics service port | `80`
 `kubeStateMetrics.service.type` | type of kube-state-metrics service to create | `ClusterIP`
+`nodeExporter.enabled` | If true, create node-exporter | `true`
+`nodeExporter.name` | node-exporter container name | `node-exporter`
+`nodeExporter.image.repository` | node-exporter container image repository| `prom/node-exporter`
+`nodeExporter.image.tag` | node-exporter container image tag | `v0.13.0`
+`nodeExporter.image.pullPolicy` | node-exporter container image pull policy | `IfNotPresent`
+`nodeExporter.extraArgs` | Additional node-exporter container arguments | `{}`
+`nodeExporter.nodeSelector` | node labels for node-exporter pod assignment | `{}`
+`nodeExporter.podAnnotations` | annotations to be added to node-exporter pods | `{}`
+`nodeExporter.resources` | node-exporter resource requests and limits (YAML) | `limits: {cpu: 200m, memory: 50Mi}, requests: {cpu: 100m, memory: 30Mi}`
+`nodeExporter.service.annotations` | annotations for node-exporter service | `{prometheus.io/scrape: "true"}`
+`nodeExporter.service.clusterIP` | internal node-exporter cluster service IP | `None`
+`nodeExporter.service.externalIPs` | node-exporter service external IP addresses | `[]`
+`nodeExporter.service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
+`nodeExporter.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
+`nodeExporter.service.servicePort` | node-exporter service port | `9100`
+`nodeExporter.service.type` | type of node-exporter service to create | `ClusterIP`
 `server.name` | Prometheus server container name | `server`
 `server.image.repository` | Prometheus server container image repository | `prom/prometheus`
 `server.image.tag` | Prometheus server container image tag | `v1.5.1`
@@ -117,7 +135,8 @@ Parameter | Description | Default
 `server.service.clusterIP` | internal Prometheus server cluster service IP | `""`
 `server.service.externalIPs` | Prometheus server service external IP addresses | `[]`
 `server.service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
-`server.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (kubeStateMetrics) | `[]`
+`server.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
+`server.service.servicePort` | Prometheus server service port | `80`
 `server.service.type` | type of Prometheus server service to create | `ClusterIP`
 `server.terminationGracePeriodSeconds` | Prometheus server Pod termination grace period | `300`
 

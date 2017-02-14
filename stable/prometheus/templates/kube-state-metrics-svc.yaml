@@ -31,8 +31,8 @@ spec:
   {{- end }}
 {{- end }}
   ports:
-    - port: {{ .Values.kubeStateMetrics.service.servicePort }}
-      name: http
+    - name: http
+      port: {{ .Values.kubeStateMetrics.service.servicePort }}
       protocol: TCP
       targetPort: 8080
   selector:

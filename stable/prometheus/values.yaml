@@ -1,5 +1,4 @@
 alertmanager:
-
   ## If false, alertmanager will not be installed
   ##
   enabled: true
@@ -20,7 +19,6 @@ alertmanager:
   extraArgs: {}
 
   ingress:
-
     ## If true, alertmanager Ingress will be created
     ##
     enabled: false
@@ -47,10 +45,10 @@ alertmanager:
 
   ## Node labels for alertmanager pod assignment
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+  ##
   nodeSelector: {}
 
   persistentVolume:
-
     ## If true, alertmanager will create/use a Persistent Volume Claim
     ## If false, use emptyDir
     ##
@@ -126,7 +124,6 @@ alertmanager:
 ## Ref: https://github.com/jimmidyson/configmap-reload
 ##
 configmapReload:
-
   ## configmap-reload container name
   ##
   name: configmap-reload
@@ -139,7 +136,6 @@ configmapReload:
     pullPolicy: IfNotPresent
 
 kubeStateMetrics:
-
   ## If false, kube-state-metrics will not be installed
   ##
   enabled: true
@@ -157,6 +153,7 @@ kubeStateMetrics:
 
   ## Node labels for kube-state-metrics pod assignment
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+  ##
   nodeSelector: {}
 
   ## Annotations to be added to kube-state-metrics pods
@@ -192,8 +189,64 @@ kubeStateMetrics:
     servicePort: 80
     type: ClusterIP
 
-server:
+nodeExporter:
+  ## If false, node-exporter will not be installed
+  ##
+  enabled: true
 
+  ## node-exporter container name
+  ##
+  name: node-exporter
+
+  ## node-exporter container image
+  ##
+  image:
+    repository: prom/node-exporter
+    tag: v0.13.0
+    pullPolicy: IfNotPresent
+
+  ## Additional node-exporter container arguments
+  ##
+  extraArgs: {}
+
+  ## Node labels for node-exporter pod assignment
+  ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+  ##
+  nodeSelector: {}
+
+  ## Annotations to be added to node-exporter pods
+  ##
+  podAnnotations: {}
+
+  ## node-exporter resource limits & requests
+  ## Ref: https://kubernetes.io/docs/user-guide/compute-resources/
+  ##
+  resources:
+    limits:
+      cpu: 200m
+      memory: 50Mi
+    requests:
+      cpu: 100m
+      memory: 30Mi
+
+  service:
+    annotations:
+      prometheus.io/scrape: "true"
+
+    clusterIP: None
+
+    ## List of IP addresses at which the node-exporter service is available
+    ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
+    ##
+    externalIPs: []
+
+    hostPort: 9100
+    loadBalancerIP: ""
+    loadBalancerSourceRanges: []
+    servicePort: 9100
+    type: ClusterIP
+
+server:
   ## Prometheus server container name
   ##
   name: server
@@ -214,7 +267,6 @@ server:
   extraArgs: {}
 
   ingress:
-
     ## If true, Prometheus server Ingress will be created
     ##
     enabled: false
@@ -244,7 +296,6 @@ server:
   nodeSelector: {}
 
   persistentVolume:
-
     ## If true, Prometheus server will create/use a Persistent Volume Claim
     ## If false, use emptyDir
     ##
@@ -395,7 +446,7 @@ serverFiles:
         # so this should only be disabled in a controlled environment. You can
         # disable certificate verification by uncommenting the line below.
         #
-        # insecure_skip_verify: true
+        insecure_skip_verify: true
       bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
 
       # Keep only the default/kubernetes service endpoints for the https port. This
@@ -426,7 +477,7 @@ serverFiles:
         # so this should only be disabled in a controlled environment. You can
         # disable certificate verification by uncommenting the line below.
         #
-        # insecure_skip_verify: true
+        insecure_skip_verify: true
       bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
 
       kubernetes_sd_configs:
