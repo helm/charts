@@ -1,10 +1,10 @@
 name: chaoskube
-version: 0.3.1
-description: A Helm chart for chaoskube
+version: 0.4.0
+description: Chaoskube periodically kills random pods in your Kubernetes cluster.
 home: https://github.com/linki/chaoskube
 sources:
 - https://github.com/linki/chaoskube
 maintainers:
 - name: Martin Linkhorst
-  email: linki+helm.sh@posteo.de
+  email: linki+kubernetes.io@posteo.de
 engine: gotpl

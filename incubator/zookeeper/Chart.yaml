@@ -1,10 +1,13 @@
 name: zookeeper
 home: https://zookeeper.apache.org/
-version: 0.1.2
-description: Zookeeper Helm chart for Kubernetes.
+version: 0.2.1
+description: Centralized service for maintaining configuration information, naming, providing distributed synchronization, and providing group services.
+icon: https://zookeeper.apache.org/images/zookeeper_small.gif
 sources:
   - https://github.com/apache/zookeeper
-  - https://github.com/kubernetes/contrib/tree/master/pets/zookeeper
+  - https://github.com/kubernetes/contrib/tree/master/statefulset/zookeeper
 maintainers:
   - name: Lachlan Evenson
     email: lachlan@deis.com
+  - name: Kenneth Owens
+    email: owensk@google.com

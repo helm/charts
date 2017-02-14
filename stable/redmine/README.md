@@ -48,7 +48,7 @@ The following tables lists the configurable parameters of the Redmine chart and 
 | Parameter                       | Description                     | Default                                                   |
 | ------------------------------- | ------------------------------- | --------------------------------------------------------- |
 | `image`                         | Redmine image                   | `bitnami/redmine:{VERSION}`                               |
-| `imagePullPolicy`               | Image pull policy               | `Always` if `image` tag is `latest`, else `IfNotPresent`  |
+| `imagePullPolicy`               | Image pull policy               | `IfNotPresent`                                            |
 | `redmineUsername`               | User of the application         | `user`                                                    |
 | `redminePassword`               | Application password            | `bitnami`                                                 |
 | `redmineEmail`                  | Admin email                     | `user@example.com`                                        |
