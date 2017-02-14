@@ -25,6 +25,7 @@ image:
 
 ## Node labels for pod assignment
 ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+##
 nodeSelector: {}
 
 ## Annotations to be added to pods
