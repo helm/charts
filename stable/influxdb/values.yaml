@@ -23,6 +23,40 @@ persistence:
   accessMode: ReadWriteOnce
   size: 8Gi
 
+## Create default user through Kubernetes job
+## Defaults indicated below
+##
+setDefaultUser:
+  enabled: false
+
+  ## Image of the container used for job
+  ## Default: appropriate/curl:latest
+  ##
+  # image: appropriate/curl:latest
+
+  ## Deadline for job so it does not retry forever.
+  ## Default: activeDeadline: 300
+  ##
+  # activeDeadline: 300
+
+  ## Restart policy for job
+  ## Default: OnFailure
+  # restartPolicy: OnFailure
+
+  # user:
+
+    ## The user name
+    ## Default: "admin"
+    # username: "admin"
+
+    ## User password
+    ## Default: "admin"
+    # password: "admin"
+
+    ## User privileges
+    ## Default: "WITH ALL PRIVILEGES"
+    # privileges: "WITH ALL PRIVILEGES"
+
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
 resources:
