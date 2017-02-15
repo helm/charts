@@ -167,7 +167,7 @@ spec:
             done
 
             exec /bin/consul agent \
-            {{- if .Values.ui.enabled }}
+            {{- if .Values.uiService.enabled }}
               -ui \
             {{- end }}
               -data-dir=/var/lib/consul \
