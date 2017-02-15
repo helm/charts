@@ -1,7 +1,7 @@
 ## Bitnami Odoo image version
 ## ref: https://hub.docker.com/r/bitnami/odoo/tags/
 ##
-image: bitnami/odoo:9.0.20160620-r7
+image: bitnami/odoo:10.0.20170215-r0
 
 ## Specify a imagePullPolicy
 ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
