@@ -1,0 +1,4 @@
+dependencies:
+- name: default-backend
+  version: 0.1.0
+  repository: https://kubernetes-charts.storage.googleapis.com/

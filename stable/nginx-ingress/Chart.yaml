@@ -1,0 +1,4 @@
+apiVersion: v1
+description: A helm chart for the official nginx ingress controller
+name: nginx-ingress
+version: 0.1.0

@@ -1,0 +1,54 @@
+# Default values for nginx-ingress.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+kind: DaemonSet
+
+image:
+  repository: gcr.io/google_containers/nginx-ingress-controller
+  tag: 0.8.3
+  pullPolicy: IfNotPresent
+
+service:
+  type: LoadBalancer
+#  loadBalancerIP: ''
+
+resources:
+  limits:
+    cpu: 200m
+    memory: 256Mi
+  requests:
+    cpu: 100m
+    memory: 256Mi
+
+# Enter a list of TCP backend services here to loadbalance
+# see: https://github.com/kubernetes/contrib/tree/master/ingress/controllers/nginx/examples/tcp
+tcp:
+#  8080: "default/example-tcp-svc:9000"
+
+loadBalancerSourceRanges:
+# - 1.2.3.4/32
+
+config:
+  bodySize: 1m
+  errorLogLevel: info
+  gzipTypes: application/atom+xml application/javascript application/json application/rss+xml application/vnd.ms-fontobject application/x-font-ttf application/x-web-app-manifest+json application/xhtml+xml application/xml font/opentype image/svg+xml image/x-icon text/css text/plain text/x-component
+  htsIncludeSubdomains: "true"
+  htsMaxAge: "15724800"
+  keepAlive: "75"
+  maxWorkerConnections: "16384"
+  proxyConnectTimeout: "30"
+  proxyReadTimeout: "30"
+  proxyRealIpCidr: 0.0.0.0/0
+  proxySendTimeout: "30"
+  serverNameHashBucketSize: "64"
+  serverNameHashMaxSize: "512"
+  sslBufferSize: 4k
+  sslCiphers: ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-DSS-AES128-GCM-SHA256:kEDH+AESGCM:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA:ECDHE-ECDSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-DSS-AES128-SHA256:DHE-RSA-AES256-SHA256:DHE-DSS-AES256-SHA:DHE-RSA-AES256-SHA:AES128-GCM-SHA256:AES256-GCM-SHA384:AES128-SHA256:AES256-SHA256:AES128-SHA:AES256-SHA:AES:CAMELLIA:DES-CBC3-SHA:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!aECDH:!EDH-DSS-DES-CBC3-SHA:!EDH-RSA-DES-CBC3-SHA:!KRB5-DES-CBC3-SHA
+  sslProtocols: TLSv1 TLSv1.1 TLSv1.2
+  sslSessionCache: "true"
+  sslSessionCacheSize: 10m
+  sslSessionTickets: "true"
+  sslSessionTimeout: 10m
+  useGzip: "true"
+  useHts: "true"
+  workerProcesses: "8"

@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    app: {{ template "fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+data:
+  body-size: {{ .Values.config.bodySize | quote }}
+  error-log-level: {{ .Values.config.errorLogLevel | quote }}
+  gzip-types: {{ .Values.config.gzipTypes | quote }}
+  hts-include-subdomains: {{ .Values.config.htsIncludeSubdomains | quote }}
+  hts-max-age: {{ .Values.config.htsMaxAge | quote }}
+  keep-alive: {{ .Values.config.keepAlive | quote }}
+  max-worker-connections: {{ .Values.config.maxWorkerConnections | quote }}
+  proxy-connect-timeout: {{ .Values.config.proxyConnectTimeout | quote }}
+  proxy-read-timeout: {{ .Values.config.proxyReadTimeout | quote }}
+  proxy-real-ip-cidr: {{ .Values.config.proxyRealIpCidr | quote }}
+  proxy-send-timeout: {{ .Values.config.proxySendTimeout | quote }}
+  server-name-hash-bucket-size: {{ .Values.config.serverNameHashBucketSize | quote }}
+  server-name-hash-max-size: {{ .Values.config.serverNameHashMaxSize | quote }}
+  ssl-buffer-size: {{ .Values.config.sslBufferSize | quote }}
+  ssl-ciphers: {{ .Values.config.sslCiphers | quote }}
+  ssl-protocols: {{ .Values.config.sslProtocols | quote }}
+  ssl-session-cache: {{ .Values.config.sslSessionCache | quote }}
+  ssl-session-cache-size: {{ .Values.config.sslSessionCacheSize | quote }}
+  ssl-session-tickets: {{ .Values.config.sslSessionTickets | quote }}
+  ssl-session-timeout: {{ .Values.config.sslSessionTimeout | quote }}
+  use-gzip: {{ .Values.config.useGzip | quote }}
+  use-hts: {{ .Values.config.useHts | quote }}
+  worker-processes: {{ .Values.config.workerProcesses | quote }}
