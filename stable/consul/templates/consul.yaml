@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Secret
 metadata:
-  name: gossip-key
+  name: {{ .Release.Name }}-gossip-key
 type: Opaque
 data:
   gossip-key: {{ randAlphaNum 24 | b64enc }}
@@ -132,7 +132,7 @@ spec:
         volumeMounts:
         - name: datadir
           mountPath: /var/lib/consul
-        - name: gossip-key
+        - name: {{ .Release.name}}-gossip-key
           mountPath: /etc/consul/secrets
           readOnly: true
         livenessProbe:
@@ -181,7 +181,7 @@ spec:
       volumes:
       - name: gossip-key
         secret:
-          secretName: gossip-key
+          secretName: {{ .Release.Name }}-gossip-key
   volumeClaimTemplates:
   - metadata:
       name: datadir
