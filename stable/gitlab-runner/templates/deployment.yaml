@@ -32,10 +32,10 @@ spec:
           value: {{ .Values.runners.image | quote }}
         {{ if .Values.runners.privileged }}
         - name: KUBERNETES_PRIVILEGED
-          value: true
+          value: "true"
         {{ end }}
         - name: KUBERNETES_NAMESPACE
-          value: {{ default "" .Values.runners.namespace | quote }}
+          value: {{ default .Release.Namespace .Values.runners.namespace | quote }}
         - name: KUBERNETES_CPU_LIMIT
           value: {{ default "" .Values.runners.builds.cpuLimit | quote }}
         - name: KUBERNETES_MEMORY_LIMIT
