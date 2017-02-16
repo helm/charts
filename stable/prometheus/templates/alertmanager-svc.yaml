@@ -38,5 +38,6 @@ spec:
   selector:
     app: {{ template "name" . }}
     component: "{{ .Values.alertmanager.name }}"
+    release: {{ .Release.Name }}
   type: "{{ .Values.alertmanager.service.type }}"
 {{- end }}

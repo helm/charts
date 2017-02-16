@@ -38,5 +38,6 @@ spec:
   selector:
     app: {{ template "name" . }}
     component: "{{ .Values.nodeExporter.name }}"
+    release: {{ .Release.Name }}
   type: "{{ .Values.nodeExporter.service.type }}"
 {{- end -}}

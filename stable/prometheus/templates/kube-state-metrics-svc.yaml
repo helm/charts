@@ -38,5 +38,6 @@ spec:
   selector:
     app: {{ template "name" . }}
     component: "{{ .Values.kubeStateMetrics.name }}"
+    release: {{ .Release.Name }}
   type: "{{ .Values.kubeStateMetrics.service.type }}"
 {{- end }}
