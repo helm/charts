@@ -41,6 +41,7 @@ The command removes all the Kubernetes components associated with the chart and 
 The following tables lists the configurable parameters of the Selenium chart and their default values.
 
 | Parameter | Description | Default |
+| --------- | ----------- | ------- |
 | `hub.image` | The selenium hub image | `selenium/hub` |
 | `hub.tag` | The selenium hub image tag | `2.53.1` |
 | `hub.pullPolicy` | The pull policy for the hub image | `IfNotPresent` |
