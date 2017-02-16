@@ -59,7 +59,7 @@ The following tables lists the configurable parameters of the Selenium chart and
 | `hub.gridMaxSession` | | `nil` |
 | `hub.gridUnregisterIfStillDownAfer` | | `nil` |
 | `hub.seleniumOpts` | Command line arguments to pass to hub | `nil` |
-| `hub.timeZone` | The time zone for the container | `nil |
+| `hub.timeZone` | The time zone for the container | `nil` |
 | `chrome.enabled` | Schedule a chrome node pod | `false` |
 | `chrome.image` | The selenium node chrome image | `selenium/node-chrome` |
 | `chrome.tag` | The selenium node chrome tag | `2.53.1` |
