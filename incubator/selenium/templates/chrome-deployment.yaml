@@ -1,0 +1,59 @@
+{{- if eq true .Values.chrome.enabled -}}
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "chrome.fullname" . }}
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+spec:
+  replicas: {{ .Values.chrome.replicas }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "chrome.fullname" . }}
+      annotations: 
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.chrome.image }}:{{ .Values.chrome.tag }}"
+          imagePullPolicy: {{ .Values.chrome.pullPolicy }}
+          env:
+            - name: HUB_PORT_4444_TCP_ADDR
+              value: {{ template "hub.fullname" . }}
+            - name: HUB_PORT_4444_TCP_PORT
+              value: {{ .Values.hub.port | quote }}
+            - name: JAVA_OPTS
+              value: {{ default "" .Values.chrome.javaOpts | quote }}
+            - name: SE_OPTS
+              value: {{ default "" .Values.chrome.seOpts }}
+            {{- if .Values.chrome.screenWidth }}
+            - name: SCREEN_WIDTH
+              value: {{ .Values.chrome.screenWidth | quote }}
+            {{- end }}
+            {{- if .Values.chrome.screenHeight }}
+            - name: SCREEN_HEIGHT
+              value: {{ .Values.chrome.screenHeight | quote }}
+            {{- end }}
+            {{- if .Values.chrome.screenDepth }}
+            - name: SCREEN_DEPTH
+              value: {{ .Values.chrome.screenDepth | quote }}
+            {{- end }}
+            {{- if .Values.chrome.display }}
+            - name: DISPLAY
+              value: {{ .Values.chrome.display | quote }}
+            {{- end }}
+            {{- if .Values.chrome.timeZone }}
+            - name: TZ
+              value: {{ .Values.chrome.timeZone | quote }}
+            {{- end }}
+          volumeMounts:
+{{- if .Values.chrome.volumeMounts -}}
+{{ toYaml .Values.chrome.volumeMounts | indent 12 }}
+{{- end -}}
+          resources:
+{{ toYaml .Values.chrome.resources | indent 12 }}
+      volumes:
+{{- if .Values.chrome.volumes -}}
+{{ toYaml .Values.chrome.volumes | indent 8 }}
+{{- end -}}
+{{- end -}}

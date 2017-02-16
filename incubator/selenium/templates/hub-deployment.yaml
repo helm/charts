@@ -1,0 +1,73 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "hub.fullname" . }}
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: {{ template "hub.fullname" . }}
+      annotations: 
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.hub.image }}:{{ .Values.hub.tag }}"
+          imagePullPolicy: {{ .Values.hub.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.hub.port }}
+          livenessProbe:
+            httpGet:
+              path: /grid/console
+              port: {{ .Values.hub.port }}
+            initialDelaySeconds: 30
+            periodSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /grid/console
+              port: {{ .Values.hub.port }}
+          env:
+            - name: JAVA_OPTS
+              value: {{ default "" .Values.hub.javaOpts | quote }}
+            - name: SE_OPTS
+              value: {{ default "" .Values.hub.seOpts }}
+            {{- if .Values.hub.gridNewSessionWaitTimeout }}
+            - name: GRID_NEW_SESSION_WAIT_TIMEOUT
+              value: {{ .Values.hub.gridNewSessionWaitTimeout | quote }}
+            {{- end }}
+            {{- if .Values.hub.gridJettyMaxThreads }}
+            - name: GRID_JETTY_MAX_THREADS
+              value: {{ .Values.hub.gridNewSessionWaitTimeout | quote }}
+            {{- end }}
+            {{- if .Values.hub.gridNodePolling }}
+            - name: GRID_NODE_POLLING
+              value: {{ .Values.hub.gridNodePolling | quote }}
+            {{- end }}
+            {{- if .Values.hub.gridCleanUpCycle }}
+            - name: GRID_CLEANUP_CYCLE
+              value: {{ .Values.hub.gridCleanUpCycle | quote }}
+            {{- end }}
+            {{- if .Values.hub.gridTimeout }}
+            - name: GRID_TIMEOUT
+              value: {{ .Values.hub.gridTimeout | quote }}
+            {{- end }}
+            {{- if .Values.hub.gridBrowserTimeout }}
+            - name: GRID_BROWSER_TIMEOUT
+              value: {{ .Values.hub.gridBrowserTimeout | quote }}
+            {{- end }}
+            {{- if .Values.hub.gridMaxSession }}
+            - name: GRID_MAX_SESSION
+              value: {{ .Values.hub.gridMaxSession | quote }}
+            {{- end }}
+            {{- if .Values.hub.gridUnregisterIfStillDownAfer }}
+            - name: GRID_UNREGISTER_IF_STILL_DOWN_AFTER
+              value: {{ .Values.hub.gridUnregisterIfStillDownAfer | quote }}
+            {{- end }}
+            {{- if .Values.hub.timeZone }}
+            - name: TZ
+              value: {{ .Values.hub.timeZone | quote }}
+            {{- end }}
+          resources:
+{{ toYaml .Values.hub.resources | indent 12 }}

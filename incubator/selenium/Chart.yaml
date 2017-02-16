@@ -1,0 +1,12 @@
+name: selenium
+version: 0.1.0
+description: Chart for selenium grid
+keywords:
+  - qa
+home: http://www.seleniumhq.org/
+sources:
+  - https://github.com/SeleniumHQ/docker-selenium
+  - https://github.com/Adaptly/k8s-charts
+maintainers:
+  - name: flah00
+engine: gotpl

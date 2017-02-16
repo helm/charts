@@ -1,0 +1,54 @@
+{{- if eq true .Values.firefoxDebug.enabled -}}
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "firefoxDebug.fullname" . }}
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+spec:
+  replicas: {{ .Values.chrome.replicas }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "firefoxDebug.fullname" . }}
+      annotations: 
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.firefoxDebug.image }}:{{ .Values.chrome.tag }}"
+          imagePullPolicy: {{ .Values.firefoxDebug.pullPolicy }}
+          ports:
+            - containerPort: 5900 
+              name: vnc
+          env:
+            - name: HUB_PORT_4444_TCP_ADDR
+              value: {{ template "hub.fullname" . }}
+            - name: HUB_PORT_4444_TCP_PORT
+              value: {{ .Values.hub.port | quote }}
+            - name: JAVA_OPTS
+              value: {{ default "" .Values.chrome.javaOpts | quote }}
+            - name: SE_OPTS
+              value: {{ default "" .Values.firefoxDebug.seOpts }}
+            {{- if .Values.firefoxDebug.screenWidth }}
+            - name: SCREEN_WIDTH
+              value: {{ .Values.firefoxDebug.screenWidth | quote }}
+            {{- end }}
+            {{- if .Values.firefoxDebug.screenHeight }}
+            - name: SCREEN_HEIGHT
+              value: {{ .Values.firefoxDebug.screenHeight | quote }}
+            {{- end }}
+            {{- if .Values.firefoxDebug.screenDepth }}
+            - name: SCREEN_DEPTH
+              value: {{ .Values.firefoxDebug.screenDepth | quote }}
+            {{- end }}
+            {{- if .Values.firefoxDebug.display }}
+            - name: DISPLAY
+              value: {{ .Values.firefoxDebug.display | quote }}
+            {{- end }}
+            {{- if .Values.firefoxDebug.timeZone }}
+            - name: TZ
+              value: {{ .Values.firefoxDebug.timeZone | quote }}
+            {{- end }}
+          resources:
+{{ toYaml .Values.firefoxDebug.resources | indent 12 }}
+{{- end -}}

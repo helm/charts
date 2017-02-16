@@ -1,0 +1,62 @@
+{{- if eq true .Values.chromeDebug.enabled -}}
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "chromeDebug.fullname" . }}
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+spec:
+  replicas: {{ .Values.chrome.replicas }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "chromeDebug.fullname" . }}
+      annotations: 
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.chromeDebug.image }}:{{ .Values.chromeDebug.tag }}"
+          imagePullPolicy: {{ .Values.chromeDebug.pullPolicy }}
+          ports:
+            - containerPort: 5900 
+              name: vnc
+          env:
+            - name: HUB_PORT_4444_TCP_ADDR
+              value: {{ template "hub.fullname" . }}
+            - name: HUB_PORT_4444_TCP_PORT
+              value: {{ .Values.hub.port | quote }}
+            - name: JAVA_OPTS
+              value: {{ default "" .Values.chromeDebug.javaOpts | quote }}
+            - name: SE_OPTS
+              value: {{ default "" .Values.chromeDebug.seOpts }}
+            {{- if .Values.chromeDebug.screenWidth }}
+            - name: SCREEN_WIDTH
+              value: {{ .Values.chromeDebug.screenWidth | quote }}
+            {{- end }}
+            {{- if .Values.chromeDebug.screenHeight }}
+            - name: SCREEN_HEIGHT
+              value: {{ .Values.chromeDebug.screenHeight | quote }}
+            {{- end }}
+            {{- if .Values.chromeDebug.screenDepth }}
+            - name: SCREEN_DEPTH
+              value: {{ .Values.chromeDebug.screenDepth | quote }}
+            {{- end }}
+            {{- if .Values.chromeDebug.display }}
+            - name: DISPLAY
+              value: {{ .Values.chromeDebug.display | quote }}
+            {{- end }}
+            {{- if .Values.chromeDebug.timeZone }}
+            - name: TZ
+              value: {{ .Values.chromeDebug.timeZone | quote }}
+            {{- end }}
+          volumeMounts:
+{{- if .Values.chromeDebug.volumeMounts -}}
+{{ toYaml .Values.chrome.volumeMounts | indent 12 }}
+{{- end -}}
+          resources:
+{{ toYaml .Values.chromeDebug.resources | indent 12 }}
+      volumes:
+{{- if .Values.chromeDebug.volumes -}}
+{{ toYaml .Values.chrome.volumes | indent 8 }}
+{{- end -}}
+{{- end -}}

@@ -1,0 +1,51 @@
+{{- if eq true .Values.firefox.enabled -}}
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "firefox.fullname" . }}
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+spec:
+  replicas: {{ .Values.chrome.replicas }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "firefox.fullname" . }}
+      annotations: 
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.firefox.image }}:{{ .Values.firefox.tag }}"
+          imagePullPolicy: {{ .Values.firefox.pullPolicy }}
+          env:
+            - name: HUB_PORT_4444_TCP_ADDR
+              value: {{ template "hub.fullname" . }}
+            - name: HUB_PORT_4444_TCP_PORT
+              value: {{ .Values.hub.port | quote }}
+            - name: JAVA_OPTS
+              value: {{ default "" .Values.chrome.javaOpts | quote }}
+            - name: SE_OPTS
+              value: {{ default "" .Values.firefox.seOpts }}
+            {{- if .Values.firefox.screenWidth }}
+            - name: SCREEN_WIDTH
+              value: {{ .Values.firefox.screenWidth | quote }}
+            {{- end }}
+            {{- if .Values.firefox.screenHeight }}
+            - name: SCREEN_HEIGHT
+              value: {{ .Values.firefox.screenHeight | quote }}
+            {{- end }}
+            {{- if .Values.firefox.screenDepth }}
+            - name: SCREEN_DEPTH
+              value: {{ .Values.firefox.screenDepth | quote }}
+            {{- end }}
+            {{- if .Values.firefox.display }}
+            - name: DISPLAY
+              value: {{ .Values.firefox.display | quote }}
+            {{- end }}
+            {{- if .Values.firefox.timeZone }}
+            - name: TZ
+              value: {{ .Values.firefox.timeZone | quote }}
+            {{- end }}
+          resources:
+{{ toYaml .Values.firefox.resources | indent 12 }}
+{{- end -}}

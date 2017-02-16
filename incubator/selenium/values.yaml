@@ -1,0 +1,115 @@
+hub:
+  image: "selenium/hub"
+  tag: "2.53.1"
+  pullPolicy: "IfNotPresent"
+  port: 4444
+  javaOpts: "-Xmx1000m"
+  resources:
+    limits:
+      cpu: ".5"
+      memory: "1000Mi"
+  serviceType: "NodePort"
+  serviceSessionAffinity: "None"
+  # serviceAnnotations:
+  #   service.beta.kubernetes.io/...: ...
+  # gridNewSessionWaitTimeout: "-1"
+  # gridJettyMaxThreads: "-1"
+  # gridNodePolling: "5000"
+  # gridCleanUpCycle: "5000"
+  # gridTimeout: "30000"
+  # gridBrowserTimeout: "0"
+  # gridMaxSession: "5"
+  # gridUnregisterIfStillDownAfer: "30000"
+  # seleniumOpts: "-debug"
+  # timeZone: UTC
+
+chrome:
+  enabled: false
+  image: "selenium/node-chrome"
+  tag: "2.53.1"
+  pullPolicy: "IfNotPresent"
+  replicas: 1
+  javaOpts: "-Xmx925m"
+  # https://github.com/kubernetes/kubernetes/pull/34928#issuecomment-277952723
+  # http://stackoverflow.com/questions/39852716/chrome-driver-throwing-org-openqa-selenium-remote-sessionnotfoundexception-whe
+  # Chrome wants more than 64mb of shared memory. Docker/k8s default to 64mb.
+  # That's not enough.
+  volumeMounts:
+    - mountPath: /dev/shm
+      name: dshm
+  volumes:
+    - name: dshm
+      emptyDir:
+        medium: Memory
+  resources:
+    limits:
+      cpu: ".5"
+      memory: "1000Mi"
+  # screenWidth: 1280
+  # screenHeight: 1024
+  # screenDepth: 24
+  # display: :10
+  # timeZone: UTC
+
+chromeDebug:
+  enabled: false
+  image: "selenium/node-chrome-debug"
+  tag: "2.53.1"
+  pullPolicy: "IfNotPresent"
+  replicas: 1
+  javaOpts: "-Xmx925m"
+  # https://github.com/kubernetes/kubernetes/pull/34928#issuecomment-277952723
+  # http://stackoverflow.com/questions/39852716/chrome-driver-throwing-org-openqa-selenium-remote-sessionnotfoundexception-whe
+  # Chrome wants more than 64mb of shared memory. Docker/k8s default to 64mb.
+  # That's not enough.
+  volumeMounts:
+    - mountPath: /dev/shm
+      name: dshm
+  volumes:
+    - name: dshm
+      emptyDir:
+        medium: Memory
+  resources:
+    limits:
+      cpu: ".5"
+      memory: "1000Mi"
+  # screenWidth: 1280
+  # screenHeight: 1024
+  # screenDepth: 24
+  # display: :10
+  # timeZone: UTC
+
+firefox:
+  enabled: false
+  image: "selenium/node-firefox"
+  tag: "2.53.1"
+  pullPolicy: "IfNotPresent"
+  replicas: 1
+  javaOpts: "-Xmx925m"
+  resources:
+    limits:
+      cpu: ".5"
+      memory: "1000Mi"
+  # screenWidth: 1280
+  # screenHeight: 1024
+  # screenDepth: 24
+  # display: :10
+  # timeZone: UTC
+
+firefoxDebug:
+  enabled: false
+  image: "selenium/node-firefox-debug"
+  tag: "2.53.1"
+  pullPolicy: "IfNotPresent"
+  replicas: 1
+  javaOpts: "-Xmx925m"
+  resources:
+    limits:
+      cpu: ".5"
+      memory: "1000Mi"
+  # screenWidth: 1280
+  # screenHeight: 1024
+  # screenDepth: 24
+  # display: :10
+  # timeZone: UTC
+

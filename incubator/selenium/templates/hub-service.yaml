@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "hub.fullname" . }}
+  labels:
+    app: {{ template "hub.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+{{- if .Values.hub.serviceAnnotations }}
+  annotations:
+{{ toYaml .Values.hub.serviceAnnotations | indent 4 }}
+{{- end }}
+spec:
+  type: {{ .Values.hub.serviceType | quote }}
+  sessionAffinity: {{ .Values.hub.serviceSessionAffinity | quote }}
+  ports:
+  - name: hub
+    port: {{ .Values.hub.port }}
+    targetPort: {{ .Values.hub.port }}
+  selector:
+    app: {{ template "hub.fullname" . }}
