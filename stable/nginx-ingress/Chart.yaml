@@ -1,6 +1,7 @@
 name: nginx-ingress
 version: 0.3.0
 description: An nginx Ingress controller that uses ConfigMap to store the nginx configuration.
+icon: https://cdn.wp.nginx.com/wp-content/themes/nginx-theme/assets/img/logo.png
 keywords:
   - ingress
   - nginx
