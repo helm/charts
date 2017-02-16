@@ -22,11 +22,10 @@ persistence:
 resources:
   requests:
     memory: 10Gi
-    cpu: 1000m
+    cpu: 1
   limits:
     memory: 10Gi
-    cpu: 2000m
-      requests:
+    cpu: 2
 
 ## Change cassandra configuration paramaters below:
 ## ref: http://docs.datastax.com/en/cassandra/3.0/cassandra/configuration/configCassandra_yaml.html
