@@ -1,0 +1,45 @@
+## Cassandra image version
+## ref: https://hub.docker.com/r/library/cassandra/
+image:
+  repo: "cassandra"
+  tag: "latest"
+  pullPolicy: IfNotPresent
+
+## Specify a service type
+## ref: http://kubernetes.io/docs/user-guide/services/
+service:
+  type: ClusterIP
+
+## Persist data to a persitent volume
+persistence:
+  enabled: true
+  storageClass: generic
+  accessMode: ReadWriteOnce
+  size: 100Gi
+
+## Configure resource requests and limits
+## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+resources:
+  requests:
+    memory: 10Gi
+    cpu: 1000m
+  limits:
+    memory: 10Gi
+    cpu: 2000m
+      requests:
+
+## Change cassandra configuration paramaters below:
+## ref: http://docs.datastax.com/en/cassandra/3.0/cassandra/configuration/configCassandra_yaml.html
+## ref: http://docs.datastax.com/en/cassandra/3.0/cassandra/operations/opsTuneJVM.html
+config:
+  cluster_name: cassandra
+  cluster_size: 3
+  num_tokens: 256 
+  dc_name: DC1
+  rack_name: RAC1
+  endpoint_snitch: SimpleSnitch
+  max_heap_size: 8192M
+  heap_new_size: 200M
+  ports:
+    cql: 9042
+    thrift: 9160
