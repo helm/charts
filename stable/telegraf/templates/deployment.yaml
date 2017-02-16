@@ -24,9 +24,14 @@ spec:
         volumeMounts:
         - name: config
           mountPath: /etc/telegraf
+        - name: utmp
+          mountPath: /var/run/utmp
       volumes:
       - name: config
         configMap:
           name: {{ template "fullname" . }}-s
+      - name: utpm
+        hostPath:
+          path: /var/run/utmp
 {{- end -}}
 {{- end -}}
