@@ -52,6 +52,6 @@ Create a default fully qualified app name, for firefoxDebug.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 */}}
 {{- define "firefoxDebug.fullname" -}}
-{{- printf "%s-selenium-firefoxDebug" .Release.Name | trunc 63 | trimSuffix "-" -}}
+{{- printf "%s-selenium-firefoxDebug" .Release.Name | trunc 22 | trimSuffix "-" -}}
 {{- end -}}
 

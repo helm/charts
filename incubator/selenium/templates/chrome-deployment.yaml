@@ -47,13 +47,13 @@ spec:
               value: {{ .Values.chrome.timeZone | quote }}
             {{- end }}
           volumeMounts:
-{{- if .Values.chrome.volumeMounts -}}
+{{ if .Values.chrome.volumeMounts -}}
 {{ toYaml .Values.chrome.volumeMounts | indent 12 }}
-{{- end -}}
+{{- end }}
           resources:
 {{ toYaml .Values.chrome.resources | indent 12 }}
       volumes:
-{{- if .Values.chrome.volumes -}}
+{{ if .Values.chrome.volumes -}}
 {{ toYaml .Values.chrome.volumes | indent 8 }}
 {{- end -}}
 {{- end -}}

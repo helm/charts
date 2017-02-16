@@ -53,12 +53,12 @@ WARNING: No nodes enabled, no browsers available via hub
 
 To scale the number of selenium nodes
 
-{{- if eq true .Values.chrome.enabled -}}
+{{- if eq true .Values.chrome.enabled }}
 - Chrome
   helm upgrade --set chrome.replicas=N {{ .Release.Name }} selenium
-{{- end -}}
+{{ end }}
 
-{{- if eq true .Values.chromeDebug.enabled -}}
+{{- if eq true .Values.chromeDebug.enabled }}
 - Chrome Debug
   helm upgrade --set chromeDebug.replicas=N {{ .Release.Name }} selenium
 
@@ -67,22 +67,21 @@ To scale the number of selenium nodes
   $(kubectl get pods --namespace {{ .Release.Namespace }} \
     -l app={{ template "chromeDebug.fullname" . }} \
     -o jsonpath='{ .items[0].metadata.name }') 5900
-{{- end -}}
+{{ end }}
 
-{{- if eq true .Values.firefox.enabled -}}
+{{- if eq true .Values.firefox.enabled }}
 - Firefox
   helm upgrade --set firefox.replicas=N {{ .Release.Name }} selenium
-{{- end -}}
+{{ end }}
 
-{{- if eq true .Values.firefoxDebug.enabled -}}
+{{ if eq true .Values.firefoxDebug.enabled }}
 - Firefox Debug
   helm upgrade --set firefoxDebug.replicas=N {{ .Release.Name }} selenium
-
 - Firefox VNC
   kubectl port-forward --namespace {{ .Release.Namespace }} \
   $(kubectl get pods --namespace {{ .Release.Namespace }} \
     -l app={{ template "firefoxDebug.fullname" . }} \
     -o jsonpath='{ .items[0].metadata.name }') 5900
-{{- end -}}
+{{ end -}}
 
-{{- end }}
+{{ end }}
