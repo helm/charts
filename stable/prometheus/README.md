@@ -65,7 +65,7 @@ Parameter | Description | Default
 `alertmanager.persistentVolume.subPath` | Subdirectory of alertmanager data Persistent Volume to mount | `""`
 `alertmanager.podAnnotations` | annotations to be added to alertmanager pods | `{}`
 `alertmanager.replicaCount` | desired number of alertmanager pods | `1`
-`alertmanager.resources` | alertmanager pod resource requests & limits | `requests: {cpu: 10m, memory: 32Mi}`
+`alertmanager.resources` | alertmanager pod resource requests & limits | `{}`
 `alertmanager.service.annotations` | annotations for alertmanager service | `{}`
 `alertmanager.service.clusterIP` | internal alertmanager cluster service IP | `""`
 `alertmanager.service.externalIPs` | alertmanager service external IP addresses | `[]`
@@ -76,7 +76,8 @@ Parameter | Description | Default
 `configmapReload.name` | configmap-reload container name | `configmap-reload`
 `configmapReload.image.repository` | configmap-reload container image repository | `jimmidyson/configmap-reload`
 `configmapReload.image.tag` | configmap-reload container image tag | `v0.1`
-`alertmanager.image.pullPolicy` | configmap-reload container image pull policy | `IfNotPresent`
+`configmapReload.image.pullPolicy` | configmap-reload container image pull policy | `IfNotPresent`
+`configmapReload.resources` | configmap-reload pod resource requests & limits | `{}`
 `kubeStateMetrics.enabled` | If true, create kube-state-metrics | `true`
 `kubeStateMetrics.name` | kube-state-metrics container name | `kube-state-metrics`
 `kubeStateMetrics.image.repository` | kube-state-metrics container image repository| `gcr.io/google_containers/kube-state-metrics`
@@ -85,7 +86,7 @@ Parameter | Description | Default
 `kubeStateMetrics.nodeSelector` | node labels for kube-state-metrics pod assignment | `{}`
 `kubeStateMetrics.podAnnotations` | annotations to be added to kube-state-metrics pods | `{}`
 `kubeStateMetrics.replicaCount` | desired number of kube-state-metrics pods | `1`
-`kubeStateMetrics.resources` | kube-state-metrics resource requests and limits (YAML) | `requests: {cpu: 10m, memory: 16Mi}`
+`kubeStateMetrics.resources` | kube-state-metrics resource requests and limits (YAML) | `{}`
 `kubeStateMetrics.service.annotations` | annotations for kube-state-metrics service | `{prometheus.io/scrape: "true"}`
 `kubeStateMetrics.service.clusterIP` | internal kube-state-metrics cluster service IP | `None`
 `kubeStateMetrics.service.externalIPs` | kube-state-metrics service external IP addresses | `[]`
@@ -101,7 +102,7 @@ Parameter | Description | Default
 `nodeExporter.extraArgs` | Additional node-exporter container arguments | `{}`
 `nodeExporter.nodeSelector` | node labels for node-exporter pod assignment | `{}`
 `nodeExporter.podAnnotations` | annotations to be added to node-exporter pods | `{}`
-`nodeExporter.resources` | node-exporter resource requests and limits (YAML) | `limits: {cpu: 200m, memory: 50Mi}, requests: {cpu: 100m, memory: 30Mi}`
+`nodeExporter.resources` | node-exporter resource requests and limits (YAML) | `{}`
 `nodeExporter.service.annotations` | annotations for node-exporter service | `{prometheus.io/scrape: "true"}`
 `nodeExporter.service.clusterIP` | internal node-exporter cluster service IP | `None`
 `nodeExporter.service.externalIPs` | node-exporter service external IP addresses | `[]`
@@ -130,7 +131,7 @@ Parameter | Description | Default
 `server.persistentVolume.subPath` | Subdirectory of Prometheus server data Persistent Volume to mount | `""`
 `server.podAnnotations` | annotations to be added to Prometheus server pods | `{}`
 `server.replicaCount` | desired number of Prometheus server pods | `1`
-`server.resources` | Prometheus server resource requests and limits | `requests: {cpu: 500m, memory: 512Mi}`
+`server.resources` | Prometheus server resource requests and limits | `{}`
 `server.service.annotations` | annotations for Prometheus server service | `{}`
 `server.service.clusterIP` | internal Prometheus server cluster service IP | `""`
 `server.service.externalIPs` | Prometheus server service external IP addresses | `[]`

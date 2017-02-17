@@ -55,6 +55,8 @@ spec:
           args:
             - --volume-dir=/etc/config
             - --webhook-url=http://localhost:9093/-/reload
+          resources:
+{{ toYaml .Values.configmapReload.resources | indent 12 }}
           volumeMounts:
             - name: config-volume
               mountPath: /etc/config
