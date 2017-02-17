@@ -21,6 +21,16 @@ spec:
         ports:
         - containerPort: 5601
           name: http
+        livenessProbe:
+          httpGet:
+            path: /status
+            port: http
+          initialDelaySeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /status
+            port: http
+          initialDelaySeconds: 10
         volumeMounts:
         - name: config
           mountPath: /opt/kibana/config
