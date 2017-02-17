@@ -132,7 +132,7 @@ spec:
         volumeMounts:
         - name: datadir
           mountPath: /var/lib/consul
-        - name: {{ .Release.name }}-gossip-key
+        - name: gossip-key
           mountPath: /etc/consul/secrets
           readOnly: true
         livenessProbe:
