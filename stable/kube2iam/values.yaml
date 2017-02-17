@@ -23,12 +23,12 @@ nodeSelector: {}
 ##
 podAnnotations: {}
 
-resources:
-  limits:
-    cpu: 4m
-    memory: 16Mi
-  requests:
-    cpu: 4m
-    memory: 16Mi
+resources: {}
+  # limits:
+  #   cpu: 4m
+  #   memory: 16Mi
+  # requests:
+  #   cpu: 4m
+  #   memory: 16Mi
 
 verbose: false
