@@ -20,13 +20,13 @@ nodeSelector: {}
 podAnnotations: {}
 replicaCount: 1
 
-resources:
-  limits:
-    cpu: 100m
-    memory: 300Mi
-  requests:
-    cpu: 100m
-    memory: 300Mi
+resources: {}
+  # limits:
+  #   cpu: 100m
+  #   memory: 300Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 300Mi
 
 scaleDownDelay: 10m
 
