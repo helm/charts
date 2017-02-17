@@ -21,8 +21,12 @@ spec:
         ports:
         - containerPort: 5601
           name: http
-        env:
-          - name: "ELASTICSEARCH_URL"
-            value: {{ .Values.config.elasticsearch_url | quote }}
+        volumeMounts:
+        - name: config
+          mountPath: /opt/kibana/config
         resources:
 {{ toYaml .Values.resources | indent 10 }}
+      volumes:
+      - name: config
+        configMap:
+          name: {{ template "fullname" . }}-config

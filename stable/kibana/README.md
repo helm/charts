@@ -21,7 +21,7 @@ The [full image documentation](https://www.elastic.co/guide/en/kibana/current/_c
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```bash
-helm install --set config.elasticsearch_url=http://elasticsearch.logs:9200 stable/kibana
+helm install --set config.elasticsearch.url=http://elasticsearch.logs:9200 stable/kibana
 ```
 
 The above command specifies the URL of Elasticsearch.
@@ -31,5 +31,7 @@ Alternatively, a YAML file that specifies the values for the parameters can be p
 ```bash
 helm install -f values.yaml stable/kibana
 ```
+
+The `config` key in `values.yaml` will be serialized as the `kibana.yml` config file in the container.
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
