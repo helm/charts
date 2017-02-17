@@ -42,19 +42,10 @@ peseduo block for the top-level config items.
     {{- template "config" $value }}
 {{- end }}
 {{- if eq $tp "[]interface {}" }}
-{{- $tp_item := typeOf (index $value 0) }}
-{{- if eq $tp_item "string" }}
     {{ $key }} = [
     {{- range $i, $item := $value}}
       {{ $item | quote -}},{{ end }}
     ]
-{{- else }}
-{{- range $i, $item := $value }}
-
-    [[{{ $key }}]]
-    {{- template "config" $item }}
-{{- end }}
-{{- end }}
 {{- end }}
 {{- end }}
 {{- end }}
@@ -83,6 +74,17 @@ they appear at the end too).
     {{- end }}
     {{- if eq $tp "bool"}}
     {{ $key }} = {{ $value }}
+    {{- end }}
+    {{- if eq $tp "map[string]interface {}" }}
+
+    [{{ $key }}]
+    {{- template "config" $value }}
+    {{- end }}
+    {{- if eq $tp "[]interface {}" }}
+    {{ $key }} = [
+    {{- range $i, $item := $value}}
+      {{ $item | quote -}},{{ end }}
+    ]
     {{- end }}
     {{- end }}
     {{- end }}

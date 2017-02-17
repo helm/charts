@@ -417,24 +417,12 @@ config:
     database: "_kapacitor"
     retention-policy: "autogen"
 
-  udf:
-  # Configuration for UDFs (User Defined Functions)
-    functions:
-  #     # Example go UDF.
-  #     # First compile example:
-  #     #   go build -o avg_udf ./udf/agent/examples/moving_avg.go
-  #     #
-  #     # Use in TICKscript like:
-  #     #   stream.goavg()
-  #     #           .field('value')
-  #     #           .size(10)
-  #     #           .as('m_average')
-  #     #
-  #     # uncomment to enable
-  #     #[udf.functions.goavg]
-  #     #   prog = "./avg_udf"
-  #     #   args = []
-  #     #   timeout = "10s"
+  # udf:
+  #   udf.functions:
+  #     udf.functions.goavg:
+  #       prog: "./avg_udf"
+  #       args: []
+  #       timeout: "10s"
   #
   #     # Example python UDF.
   #     # Use in TICKscript like:
@@ -444,18 +432,18 @@ config:
   #     #           .as('m_average')
   #     #
   #     # uncomment to enable
-  #     #[udf.functions.pyavg]
-  #     #   prog = "/usr/bin/python2"
-  #     #   args = ["-u", "./udf/agent/examples/moving_avg.py"]
-  #     #   timeout = "10s"
-  #     #   [udf.functions.pyavg.env]
-  #     #       PYTHONPATH = "./udf/agent/py"
+  #     udf.functions.pyavg:
+  #       prog: "/usr/bin/python2"
+  #       args: ["-u", "./udf/agent/examples/moving_avg.py"]
+  #       timeout: "10s"
+  #       udf.functions.pyavg.env:
+  #         PYTHONPATH: "./udf/agent/py"
   #
   #     # Example UDF over a socket
-  #     #[udf.functions.myCustomUDF]
-  #     #   socket = "/path/to/socket"
-  #     #   timeout = "10s"
-  #
+  #     udf.functions.myCustomUDF:
+  #       socket: "/path/to/socket"
+  #       timeout: "10s"
+
   talk:
     # Configure Talk.
     enabled: false
