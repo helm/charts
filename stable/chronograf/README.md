@@ -43,8 +43,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The configurable parameters of the Chronograf chart and 
-their descriptions can be seen in `values.yaml`. The [full image documentation](https://quay.io/influxdb/chronograf) contains more information about running Chronograf in docker.
+The configurable parameters of the Chronograf chart and their descriptions can be seen in `values.yaml`. The [full image documentation](https://quay.io/influxdb/chronograf) contains more information about running Chronograf in docker.
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
@@ -69,3 +68,7 @@ $ helm install --name my-release -f values.yaml stable/chronograf
 The [Chronograf](https://quay.io/influxdb/chronograf) image stores data in the `/var/lib/chronograf` directory in the container.
 
 The chart optionally mounts a [Persistent Volume](kubernetes.io/docs/user-guide/persistent-volumes/) volume at this location. The volume is created using dynamic volume provisioning.
+
+## Authentication
+
+To enable Github authentication, follow the [Chronograf auth instructions](https://github.com/influxdata/chronograf/blob/master/docs/auth.md) and set the secrets in your `values.yaml` under `auth`, then set `enabled: true`.
