@@ -52,7 +52,7 @@ Parameter | Description | Default
 `nodeSelector` | node labels for pod assignment | `{}`
 `podAnnotations` | annotations to be added to pods | `{}`
 `replicaCount` | desired number of pods | `1`
-`resources` | kube-lego resource requests and limits (YAML) |`requests: {cpu: 20m, memory: 8Mi}`
+`resources` | kube-lego resource requests and limits (YAML) |`{}`
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
