@@ -1,0 +1,19 @@
+image:
+  repo: "kibana"
+  tag: "5.2.0"
+  pullPolicy: IfNotPresent
+
+resources:
+  limits:
+    cpu: 100m
+  requests:
+    cpu: 100m
+
+service:
+  enabled: true
+  type: ClusterIP
+  annotations:
+    # zalando.org/dnsname: kibana.your.cluster
+
+config:
+  elasticsearch_url: http://elasticsearch.logs:9200
