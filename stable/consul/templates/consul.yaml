@@ -140,8 +140,8 @@ spec:
             command:
             - consul
             - members
-          initialDelaySeconds: 10
-          timeoutSeconds: 1
+          initialDelaySeconds: 300
+          timeoutSeconds: 5
         command:
           - "/bin/sh"
           - "-ec"
