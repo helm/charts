@@ -56,7 +56,7 @@ Parameter | Description | Default
 `controller.nodeSelector` | node labels for pod assignment | `{}`
 `controller.podAnnotations` | annotations to be added to pods | `{}`
 `controller.replicaCount` | desired number of controller pods | `1`
-`controller.resources` | controller pod resource requests & limits | `requests: {cpu: 100m, memory: 64Mi}`
+`controller.resources` | controller pod resource requests & limits | `{}`
 `controller.service.annotations` | annotations for controller service | `{}`
 `controller.service.clusterIP` | internal controller cluster service IP | `""`
 `controller.service.externalIPs` | controller service external IP addresses | `[]`
@@ -78,7 +78,7 @@ Parameter | Description | Default
 `defaultBackend.nodeSelector` | node labels for pod assignment | `{}`
 `defaultBackend.podAnnotations` | annotations to be added to pods | `{}`
 `defaultBackend.replicaCount` | desired number of default backend pods | `1`
-`defaultBackend.resources` | default backend pod resource requests & limits | `limits: {cpu: 10m, memory: 20Mi}, requests: {cpu: 10m, memory: 20Mi}`
+`defaultBackend.resources` | default backend pod resource requests & limits | `{}`
 `defaultBackend.service.annotations` | annotations for default backend service | `{}`
 `defaultBackend.service.clusterIP` | internal default backend cluster service IP | `""`
 `defaultBackend.service.externalIPs` | default backend service external IP addresses | `[]`
@@ -93,7 +93,7 @@ Parameter | Description | Default
 `statsExporter.extraArgs` | Additional Prometheus metrics exporter container arguments | `{}`
 `statsExporter.metricsNamespace` | namespace used for metrics labeling | `nginx`
 `statsExporter.statusPage` | URL of "vts-stats" page exposed by controller | `http://localhost:18080/nginx_status/format/json`
-`statsExporter.resources` | Prometheus metrics exporter resource requests & limits | `requests: {cpu: 10m, memory: 20Mi}`
+`statsExporter.resources` | Prometheus metrics exporter resource requests & limits | `{}`
 `statsExporter.service.annotations` | annotations for Prometheus metrics exporter service | `{}`
 `statsExporter.service.clusterIP` | cluster IP address to assign to service | `""`
 `statsExporter.service.externalIPs` | Prometheus metrics exporter service external IP addresses | `[]`
