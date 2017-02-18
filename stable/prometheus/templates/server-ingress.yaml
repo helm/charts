@@ -21,7 +21,8 @@ spec:
     - host: {{ . }}
       http:
         paths:
-          - backend:
+          - path: /
+            backend:
               serviceName: {{ printf "%s-%s" $releaseName "server" | trunc 63 }}
               servicePort: {{ $servicePort }}
   {{- end -}}
