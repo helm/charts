@@ -4,7 +4,7 @@ metadata:
   labels:
     app: {{ template "name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    component: "{{ .Values.alertmanager.name }}"
+    component: "{{ .Values.server.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
   name: {{ template "server.fullname" . }}
