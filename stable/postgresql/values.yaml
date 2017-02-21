@@ -3,7 +3,7 @@ image: "postgres"
 ## postgres image version
 ## ref: https://hub.docker.com/r/library/postgres/tags/
 ##
-imageTag: "9.5.4"
+imageTag: "9.6.2-alpine"
 
 ## Specify a imagePullPolicy
 ## 'Always' if imageTag is 'latest', else set to 'IfNotPresent'
