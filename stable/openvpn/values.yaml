@@ -3,8 +3,8 @@
 # Declare variables to be passed into your templates.
 replicaCount: 1
 image:
-  repository: alpine
-  tag: 3.4
+  repository: jfelten/openvpn-docker
+  tag: latest
   pullPolicy: IfNotPresent
 service:
   name: openvpn
@@ -18,6 +18,11 @@ resources:
   requests:
     cpu: 300m
     memory: 128Mi
+persistence: 
+  Enabled: true
+  StorageClass: generic
+  AccessMode: ReadWriteOnce
+  Size: 2M
 openvpn: 
     # Network allocated for openvpn clients (default: 10.240.0.0).
     OVPN_NETWORK: 10.240.0.0

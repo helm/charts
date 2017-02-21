@@ -26,7 +26,8 @@ POD_NAME=`kubectl get pods --namespace {{ .Release.Namespace }} -l type=openvpn 
 && SERVICE_IP=`kubectl get svc $SERVICE_NAME --namespace {{ .Release.Namespace }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}'` \
 && KEY_NAME=kubeVPN \
 && kubectl exec --namespace {{ .Release.Namespace }} -it $POD_NAME /etc/openvpn/setup/newClientCert.sh $KEY_NAME $SERVICE_IP \
-&& kubectl exec --namespace {{ .Release.Namespace }} -it $POD_NAME cat /usr/share/easy-rsa/pki/$KEY_NAME.ovpn > $KEY_NAME.ovpn
+&& kubectl exec --namespace {{ .Release.Namespace }} -it $POD_NAME cat /etc/openvpn/certs/pki/$KEY_NAME.ovpn > $KEY_NAME.ovpn
+
 ```
 
 Be sure to change KEY_NAME if generating additional keys.  Import the .ovpn file into your favorite openvpn tool like tunnelblick and verify connectivity.
@@ -37,7 +38,7 @@ All configuration is in the values.yaml file, and can be overwritten via the hel
 
 ###Certificates
 
-New certificates are generated with each deployment.  This chart was developed as a way to quickly set up a personal vpn.  Supporting multiple users would require persistent storage of certificates to avoid unncessary regeneration.  This will be added later if there is interest in multi-user support.
+New certificates are generated with each deployment.  If persistence is enabled certificate data will be persisted across pod restarts.  Otherwise new client certs will be needed after each deployment or pod restart.
 
 ###Important values
 * service.externalPort: 443 - external LoadBalancer port
