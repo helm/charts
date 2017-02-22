@@ -3,24 +3,25 @@ hub:
   tag: "2.53.1"
   pullPolicy: "IfNotPresent"
   port: 4444
-  javaOpts: "-Xmx1000m"
+  javaOpts: "-Xmx900m"
   resources:
     limits:
       cpu: ".5"
       memory: "1000Mi"
-  serviceType: "NodePort"
+  serviceType: "LoadBalancer"
   serviceSessionAffinity: "None"
   # serviceAnnotations:
-  #   service.beta.kubernetes.io/...: ...
-  # gridNewSessionWaitTimeout: "-1"
-  # gridJettyMaxThreads: "-1"
-  # gridNodePolling: "5000"
-  # gridCleanUpCycle: "5000"
-  # gridTimeout: "30000"
-  # gridBrowserTimeout: "0"
-  # gridMaxSession: "5"
-  # gridUnregisterIfStillDownAfer: "30000"
-  # seleniumOpts: "-debug"
+  #   # internal AWS ELB
+  #   service.beta.kubernetes.io/aws-load-balancer-internal: "0.0.0.0/0"
+  # gridNewSessionWaitTimeout: -1
+  # gridJettyMaxThreads: -1
+  # gridNodePolling: 5000
+  # gridCleanUpCycle: 5000
+  # gridTimeout: 30000
+  # gridBrowserTimeout: 0
+  # gridMaxSession: 5
+  # gridUnregisterIfStillDownAfer: 30000
+  # seleniumOpts: -debug
   # timeZone: UTC
 
 chrome:
@@ -29,7 +30,7 @@ chrome:
   tag: "2.53.1"
   pullPolicy: "IfNotPresent"
   replicas: 1
-  javaOpts: "-Xmx925m"
+  javaOpts: "-Xmx900m"
   # https://github.com/kubernetes/kubernetes/pull/34928#issuecomment-277952723
   # http://stackoverflow.com/questions/39852716/chrome-driver-throwing-org-openqa-selenium-remote-sessionnotfoundexception-whe
   # Chrome wants more than 64mb of shared memory. Docker/k8s default to 64mb.
@@ -57,7 +58,7 @@ chromeDebug:
   tag: "2.53.1"
   pullPolicy: "IfNotPresent"
   replicas: 1
-  javaOpts: "-Xmx925m"
+  javaOpts: "-Xmx900m"
   # https://github.com/kubernetes/kubernetes/pull/34928#issuecomment-277952723
   # http://stackoverflow.com/questions/39852716/chrome-driver-throwing-org-openqa-selenium-remote-sessionnotfoundexception-whe
   # Chrome wants more than 64mb of shared memory. Docker/k8s default to 64mb.
@@ -72,7 +73,7 @@ chromeDebug:
   resources:
     limits:
       cpu: ".5"
-      memory: "1000Mi"
+      memory: "1500Mi"
   # screenWidth: 1280
   # screenHeight: 1024
   # screenDepth: 24
@@ -85,7 +86,7 @@ firefox:
   tag: "2.53.1"
   pullPolicy: "IfNotPresent"
   replicas: 1
-  javaOpts: "-Xmx925m"
+  javaOpts: "-Xmx900m"
   resources:
     limits:
       cpu: ".5"
@@ -102,11 +103,11 @@ firefoxDebug:
   tag: "2.53.1"
   pullPolicy: "IfNotPresent"
   replicas: 1
-  javaOpts: "-Xmx925m"
+  javaOpts: "-Xmx900m"
   resources:
     limits:
       cpu: ".5"
-      memory: "1000Mi"
+      memory: "1500Mi"
   # screenWidth: 1280
   # screenHeight: 1024
   # screenDepth: 24
