@@ -69,7 +69,7 @@ Parameter | Description | Default
 `controller.stats.service.externalIPs` | controller service stats external IP addresses | `[]`
 `controller.stats.service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
 `controller.stats.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
-`controller.service.type` | type of controller stats service to create | `ClusterIP`
+`controller.stats.service.type` | type of controller stats service to create | `ClusterIP`
 `defaultBackend.name` | name of the default backend component | `default-backend`
 `defaultBackend.image.repository` | default backend container image repository | `gcr.io/google_containers/defaultbackend`
 `defaultBackend.image.tag` | default backend container image tag | `1.2`
@@ -84,7 +84,7 @@ Parameter | Description | Default
 `defaultBackend.service.externalIPs` | default backend service external IP addresses | `[]`
 `defaultBackend.service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
 `defaultBackend.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
-`controller.service.type` | type of default backend service to create | `ClusterIP`
+`defaultBackend.service.type` | type of default backend service to create | `ClusterIP`
 `statsExporter.name` | name of the Prometheus metrics exporter component | `stats-exporter`
 `statsExporter.image.repository` | Prometheus metrics exporter container image repository | `quay.io/cy-play/vts-nginx-exporter`
 `statsExporter.image.tag` | Prometheus metrics exporter image tag | `v0.0.3`
