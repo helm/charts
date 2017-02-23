@@ -8,6 +8,8 @@
 $ helm install stable/redis-cluster
 ```
 
+By default this chart install one master pod containing redis master container and sentinel container, 2 sentinels and 1 redis slave.
+
 ## Introduction
 
 This chart bootstraps a [Redis](https://github.com/bitnami/bitnami-docker-redis) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
