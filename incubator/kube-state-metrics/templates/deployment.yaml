@@ -9,7 +9,7 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ .Chart.Name }}
+        app: {{ template "fullname" . }}
         version: "{{ .Values.image.tag }}"
     spec:
       containers:
