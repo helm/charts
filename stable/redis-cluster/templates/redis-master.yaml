@@ -2,10 +2,13 @@ apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
   labels:
-    name: redis
+    name: {{ template "fullname" . }}-master
     redis-sentinel: "true"
     redis-node: "true"
     role: master
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
   name: redis-master
 spec:
   serviceName: "redis"
@@ -15,6 +18,11 @@ spec:
       labels:
         app: redis
         redis-sentinel: "true"
+        redis-node: "true"
+        role: master
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        release: "{{ .Release.Name }}"
+        heritage: "{{ .Release.Service }}"
     spec:
       terminationGracePeriodSeconds: 10
       containers:

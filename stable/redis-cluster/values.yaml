@@ -6,8 +6,7 @@ resources:
     memory: 100Mi
     cpu: 100m
   limits:
-    memory: 200Mi
-    cpu: 100m
+    memory: 500Mi
 
 ## Enable persistence using Persistent Volume Claims
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
@@ -20,16 +19,3 @@ persistence:
 
 ## Redis image version
 redis_image: gcr.io/google_containers/redis:v1
-
-#Kubernetes creates one PersistentVolume for each VolumeClaimTemplate.
-#When a Pod is (re)scheduled onto a node, its volumeMounts mount the PersistentVolumes associated with its PersistentVolume Claims.
-#Note that, the PersistentVolumes associated with the Pods’ PersistentVolume Claims are not deleted when the Pods, or StatefulSet are deleted.
-# This must be done manually.
-volumeClaimTemplates:
-  - metadata:
-      name: redis-master
-    spec:
-      accessModes: [ "ReadWriteOnce" ]
-      resources:
-        requests:
-          storage: 8Gi
