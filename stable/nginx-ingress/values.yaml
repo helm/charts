@@ -1,0 +1,169 @@
+## nginx configuration
+## Ref: https://github.com/kubernetes/ingress/blob/master/controllers/nginx/configuration.md
+##
+controller:
+  name: controller
+  image:
+    repository: gcr.io/google_containers/nginx-ingress-controller
+    tag: "0.8.3"
+    pullPolicy: IfNotPresent
+
+  config: {}
+
+  ## Required only if defaultBackend.enabled = false
+  ## Must be <namespace>/<service_name>
+  ##
+  defaultBackendService: ""
+
+  extraArgs: {}
+
+  ## DaemonSet or Deployment
+  ##
+  kind: Deployment
+
+  ## Node labels for controller pod assignment
+  ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+  ##
+  nodeSelector: {}
+
+  ## Annotations to be added to controller pods
+  ##
+  podAnnotations: {}
+
+  replicaCount: 1
+
+  resources: {}
+    # limits:
+    #   cpu: 100m
+    #   memory: 64Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 64Mi
+
+  service:
+    annotations: {}
+    clusterIP: ""
+
+    ## List of IP addresses at which the controller services are available
+    ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
+    ##
+    externalIPs: []
+
+    loadBalancerIP: ""
+    loadBalancerSourceRanges: []
+    type: LoadBalancer
+
+  stats:
+    enabled: false
+
+    service:
+      annotations: {}
+      clusterIP: ""
+
+      ## List of IP addresses at which the stats service is available
+      ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
+      ##
+      externalIPs: []
+
+      loadBalancerIP: ""
+      loadBalancerSourceRanges: []
+      servicePort: 18080
+      type: ClusterIP
+
+## Default 404 backend
+##
+defaultBackend:
+
+  ## If false, controller.defaultBackendService must be provided
+  ##
+  enabled: true
+
+  name: default-backend
+  image:
+    repository: gcr.io/google_containers/defaultbackend
+    tag: "1.2"
+    pullPolicy: IfNotPresent
+
+  extraArgs: {}
+
+  ## Node labels for default backend pod assignment
+  ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+  ##
+  nodeSelector: {}
+
+  ## Annotations to be added to default backend pods
+  ##
+  podAnnotations: {}
+
+  replicaCount: 1
+
+  resources: {}
+    # limits:
+    #   cpu: 10m
+    #   memory: 20Mi
+    # requests:
+    #   cpu: 10m
+    #   memory: 20Mi
+
+  service:
+    annotations: {}
+    clusterIP: ""
+
+    ## List of IP addresses at which the default backend service is available
+    ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
+    ##
+    externalIPs: []
+
+    loadBalancerIP: ""
+    loadBalancerSourceRanges: []
+    servicePort: 80
+    type: ClusterIP
+
+## If controller.stats.enabled = true, Prometheus metrics will be exported
+## Ref: https://github.com/hnlq715/nginx-vts-exporter
+##
+statsExporter:
+  name: stats-exporter
+  image:
+    repository: quay.io/cy-play/vts-nginx-exporter
+    tag: v0.0.3
+    pullPolicy: IfNotPresent
+
+  endpoint: /metrics
+  extraArgs: {}
+  metricsNamespace: nginx
+  statusPage: http://localhost:18080/nginx_status/format/json
+
+  resources: {}
+    # limits:
+    #   cpu: 10m
+    #   memory: 20Mi
+    # requests:
+    #   cpu: 10m
+    #   memory: 20Mi
+
+  service:
+    annotations: {}
+    clusterIP: ""
+
+    ## List of IP addresses at which the stats-exporter service is available
+    ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
+    ##
+    externalIPs: []
+
+    loadBalancerIP: ""
+    loadBalancerSourceRanges: []
+    servicePort: 9913
+    type: ClusterIP
+
+# TCP service key:value pairs
+# Ref: https://github.com/kubernetes/contrib/tree/master/ingress/controllers/nginx/examples/tcp
+##
+tcp: {}
+  # 8080: "default/example-tcp-svc:9000"
+
+# UDP service key:value pairs
+# Ref: https://github.com/kubernetes/contrib/tree/master/ingress/controllers/nginx/examples/udp
+##
+udp: {}
+  # 53: "kube-system/kube-dns:53"

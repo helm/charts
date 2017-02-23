@@ -1,0 +1,109 @@
+{{- if eq .Values.controller.kind "Deployment" }}
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: {{ template "name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: "{{ .Values.controller.name }}"
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "controller.fullname" . }}
+spec:
+  replicas: {{ .Values.controller.replicaCount }}
+  template:
+    metadata:
+    {{- if .Values.controller.podAnnotations }}
+      annotations:
+{{ toYaml .Values.controller.podAnnotations | indent 8}}
+    {{- end }}
+      labels:
+        app: {{ template "name" . }}
+        component: "{{ .Values.controller.name }}"
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ template "name" . }}-{{ .Values.controller.name }}
+          image: "{{ .Values.controller.image.repository }}:{{ .Values.controller.image.tag }}"
+          imagePullPolicy: "{{ .Values.controller.image.pullPolicy }}"
+          args:
+            - /nginx-ingress-controller
+            - --default-backend-service={{ if .Values.defaultBackend.enabled }}{{ .Release.Namespace }}/{{ template "defaultBackend.fullname" . }}{{ else }}{{ .Values.controller.defaultBackendService }}{{ end }}
+            - --nginx-configmap={{ .Release.Namespace }}/{{ template "controller.fullname" . }}
+            - --tcp-services-configmap={{ .Release.Namespace }}/{{ template "fullname" . }}-tcp
+            - --udp-services-configmap={{ .Release.Namespace }}/{{ template "fullname" . }}-udp
+          {{- range $key, $value := .Values.controller.extraArgs }}
+            - --{{ $key }}={{ $value }}
+          {{- end }}
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 10254
+              scheme: HTTP
+            initialDelaySeconds: 10
+            timeoutSeconds: 1
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+            - name: https
+              containerPort: 443
+              protocol: TCP
+          {{- if .Values.controller.stats.enabled }}
+            - name: stats
+              containerPort: 18080
+              protocol: TCP
+          {{- end }}
+          {{- range $key, $value := .Values.tcp }}
+            - name: "{{ $key }}-tcp"
+              containerPort: {{ $key }}
+              protocol: TCP
+          {{- end }}
+          {{- range $key, $value := .Values.udp }}
+            - name: "{{ $key }}-udp"
+              containerPort: {{ $key }}
+              protocol: UDP
+          {{- end }}
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 10254
+              scheme: HTTP
+          resources:
+{{ toYaml .Values.controller.resources | indent 12 }}
+
+      {{- if .Values.controller.stats.enabled }}
+        - name: {{ template "name" . }}-{{ .Values.statsExporter.name }}
+          image: "{{ .Values.statsExporter.image.repository }}:{{ .Values.statsExporter.image.tag }}"
+          imagePullPolicy: "{{ .Values.statsExporter.image.pullPolicy }}"
+          env:
+            - name: METRICS_ADDR
+              value: ":9913"
+            - name: METRICS_ENDPOINT
+              value: "{{ .Values.statsExporter.endpoint }}"
+            - name: METRICS_NS
+              value: "{{ .Values.statsExporter.metricsNamespace }}"
+            - name: NGINX_STATUS
+              value: "{{ .Values.statsExporter.statusPage }}"
+          ports:
+            - name: metrics
+              containerPort: 9913
+              protocol: TCP
+          resources:
+{{ toYaml .Values.statsExporter.resources | indent 12 }}
+      {{- end }}
+    {{- if .Values.controller.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.controller.nodeSelector | indent 8 }}
+    {{- end }}
+      terminationGracePeriodSeconds: 60
+{{- end }}
