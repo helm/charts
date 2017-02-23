@@ -25,6 +25,11 @@ datadog:
   ##
   # tags:
 
+  ## Enables event collection from the kubernetes API
+  ## ref: https://github.com/DataDog/docker-dd-agent#environment-variables
+  ##
+  collectEvents: False
+
   ## Un-comment this to enable APM and tracing, on ports 7777 and 8126
   ## ref: https://github.com/DataDog/docker-dd-agent#tracing-from-the-host
   ##
