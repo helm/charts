@@ -4,6 +4,7 @@ hub:
   pullPolicy: "IfNotPresent"
   port: 4444
   javaOpts: "-Xmx900m"
+  # jmxPort: 4000
   resources:
     limits:
       cpu: ".5"
@@ -31,6 +32,7 @@ chrome:
   pullPolicy: "IfNotPresent"
   replicas: 1
   javaOpts: "-Xmx900m"
+  # jmxPort: 4000
   # https://github.com/kubernetes/kubernetes/pull/34928#issuecomment-277952723
   # http://stackoverflow.com/questions/39852716/chrome-driver-throwing-org-openqa-selenium-remote-sessionnotfoundexception-whe
   # Chrome wants more than 64mb of shared memory. Docker/k8s default to 64mb.
@@ -59,6 +61,7 @@ chromeDebug:
   pullPolicy: "IfNotPresent"
   replicas: 1
   javaOpts: "-Xmx900m"
+  # jmxPort: 4000
   # https://github.com/kubernetes/kubernetes/pull/34928#issuecomment-277952723
   # http://stackoverflow.com/questions/39852716/chrome-driver-throwing-org-openqa-selenium-remote-sessionnotfoundexception-whe
   # Chrome wants more than 64mb of shared memory. Docker/k8s default to 64mb.
@@ -87,6 +90,7 @@ firefox:
   pullPolicy: "IfNotPresent"
   replicas: 1
   javaOpts: "-Xmx900m"
+  # jmxPort: 4000
   resources:
     limits:
       cpu: ".5"
@@ -104,6 +108,7 @@ firefoxDebug:
   pullPolicy: "IfNotPresent"
   replicas: 1
   javaOpts: "-Xmx900m"
+  # jmxPort: 4000
   resources:
     limits:
       cpu: ".5"

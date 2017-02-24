@@ -18,6 +18,11 @@ spec:
           image: "{{ .Values.firefoxDebug.image }}:{{ .Values.chrome.tag }}"
           imagePullPolicy: {{ .Values.firefoxDebug.pullPolicy }}
           ports:
+            {{- if .Values.firefoxDebug.jmxPort }}
+            - containerPort: {{ .Values.firefoxDebug.jmxPort }}
+              name: jmx
+              protocol: TCP
+            {{- end }}
             - containerPort: 5900 
               name: vnc
           env:

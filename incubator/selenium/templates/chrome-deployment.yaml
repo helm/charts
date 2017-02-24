@@ -17,6 +17,12 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.chrome.image }}:{{ .Values.chrome.tag }}"
           imagePullPolicy: {{ .Values.chrome.pullPolicy }}
+          ports:
+            {{- if .Values.hub.jmxPort }}
+            - containerPort: {{ .Values.hub.jmxPort }}
+              name: jmx
+              protocol: TCP
+            {{- end }}
           env:
             - name: HUB_PORT_4444_TCP_ADDR
               value: {{ template "hub.fullname" . }}

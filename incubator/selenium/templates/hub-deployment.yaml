@@ -17,7 +17,13 @@ spec:
           image: "{{ .Values.hub.image }}:{{ .Values.hub.tag }}"
           imagePullPolicy: {{ .Values.hub.pullPolicy }}
           ports:
+            {{- if .Values.hub.jmxPort }}
+            - containerPort: {{ .Values.hub.jmxPort }}
+              name: jmx
+              protocol: TCP
+            {{- end }}
             - containerPort: {{ .Values.hub.port }}
+              name: http
           livenessProbe:
             httpGet:
               path: /grid/console
