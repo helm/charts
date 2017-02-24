@@ -66,7 +66,7 @@ The following tables lists the configurable parameters of the Moodle chart and t
 | `persistence.moodle.storageClass`  | PVC Storage Class for Moodle volume    | `nil` (uses alpha storage class annotation) |
 | `persistence.moodle.accessMode`    | PVC Access Mode for Moodle volume      | `ReadWriteOnce`                             |
 | `persistence.moodle.size`          | PVC Storage Request for Moodle volume  | `8Gi`                                       |
-| `mariadb.mariadbRootPassword`      | MariaDB admin password                 | `nil`                                       |
+| `mariadb.mariadbRootPassword`      | MariaDB admin password                 | `nil` (uses alpha storage class annotation) |
 | `mariadb.persistence.enabled`      | Enable MariaDB persistence using PVC   | `true`                                      |
 | `mariadb.persistence.storageClass` | PVC Storage Class for MariaDB volume   | `generic`                                   |
 | `mariadb.persistence.accessMode`   | PVC Access Mode for MariaDB volume     | `ReadWriteOnce`                             |
