@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: {{ template "fullname" . }}
-        image: "{{default "docker.bintray.io/jfrog/artifactory-oss" .Values.image}}:{{default "4.16.0" .Values.imageTag}}"
+        image: "{{default "docker.bintray.io/jfrog/artifactory-oss" .Values.image}}:{{default "5.1.0" .Values.imageTag}}"
         imagePullPolicy: {{default "IfNotPresent" .Values.ImagePullPolicy}}
         resources:
 {{ toYaml .Values.resources | indent 10 }}

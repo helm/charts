@@ -25,7 +25,7 @@ CHANGED_FOLDERS=`git diff --find-renames --name-only FETCH_HEAD stable/ incubato
 CURRENT_RELEASE=""
 
 # Exit early if no charts have changed
-if [ -z "$CHANGED_FOLDERS" ]; then 
+if [ -z "$CHANGED_FOLDERS" ]; then
   exit 0
 fi
 
@@ -38,9 +38,11 @@ function cleanup {
 }
 trap cleanup EXIT
 
-# Get credentials for test cluster
-gcloud auth activate-service-account --key-file="${GOOGLE_APPLICATION_CREDENTIALS}"
-gcloud container clusters get-credentials jenkins --project kubernetes-charts-ci --zone us-west1-a
+if [ ! -f "${KUBECONFIG:=}" ];then
+  # Get credentials for test cluster
+  gcloud auth activate-service-account --key-file="${GOOGLE_APPLICATION_CREDENTIALS}"
+  gcloud container clusters get-credentials jenkins --project kubernetes-charts-ci --zone us-west1-a
+fi
 
 # Install and initialize helm/tiller
 HELM_URL=https://storage.googleapis.com/kubernetes-helm
@@ -58,12 +60,22 @@ helm repo add incubator ${INCUBATOR_REPO_URL}
 # Iterate over each of the changed charts
 #    Lint, install and delete
 for directory in ${CHANGED_FOLDERS}; do
-  CHART_NAME=`echo ${directory} | cut -d '/' -f2`
-  RELEASE_NAME="${CHART_NAME:0:7}-${BUILD_NUMBER}"
-  CURRENT_RELEASE=${RELEASE_NAME}
-  helm lint ${directory}
-  helm dep update ${directory}
-  helm install --name ${RELEASE_NAME} --namespace ${NAMESPACE} ${directory}
-  # TODO run functional validation here
-  helm delete --purge ${RELEASE_NAME}
+  if [ -d $directory ]; then
+    CHART_NAME=`echo ${directory} | cut -d '/' -f2`
+    RELEASE_NAME="${CHART_NAME:0:7}-${BUILD_NUMBER}"
+    CURRENT_RELEASE=${RELEASE_NAME}
+    helm lint ${directory}
+    helm dep update ${directory}
+    helm install --name ${RELEASE_NAME} --namespace ${NAMESPACE} ${directory} | tee install_output
+    ./test/verify-release.sh ${NAMESPACE}
+    kubectl get pods --namespace ${NAMESPACE}
+    kubectl get svc --namespace ${NAMESPACE}
+    kubectl get deployments --namespace ${NAMESPACE}
+    kubectl get endpoints --namespace ${NAMESPACE}
+    if [ -n $VERIFICATION_PAUSE ]; then
+      cat install_output
+      sleep $VERIFICATION_PAUSE
+    fi
+    helm delete --purge ${RELEASE_NAME}
+  fi
 done

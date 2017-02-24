@@ -1,12 +1,14 @@
 name: kapacitor
-version: 0.1.0
-description: Chart for Chronograf
+version: 0.2.1
+description: InfluxDB's native data processing engine. It can process both stream and batch data from InfluxDB.
 keywords:
 - kapacitor
 - stream
 - etl
 - timeseries
 home: https://www.influxdata.com/time-series-platform/kapacitor/
+sources:
+  - https://github.com/influxdata/kapacitor
 maintainers:
 - name: Jack Zampolin
   email: jack@influxdb.com

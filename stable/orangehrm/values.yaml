@@ -1,7 +1,7 @@
 ## Bitnami OrangeHRM image version
 ## ref: https://hub.docker.com/r/bitnami/orangehrm/tags/
 ##
-image: bitnami/orangehrm:3.3.3-r5
+image: bitnami/orangehrm:3.3.3-r8
 
 ## Specify a imagePullPolicy
 ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
