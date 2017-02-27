@@ -44,7 +44,8 @@ spec:
             - -c
             - exec pg_isready --host $POD_IP
           initialDelaySeconds: 60
-          timeoutSeconds: 3
+          timeoutSeconds: 5
+          failureThreshold: 6
         readinessProbe:
           exec:
             command:
@@ -52,7 +53,8 @@ spec:
             - -c
             - exec pg_isready --host $POD_IP
           initialDelaySeconds: 5
-          timeoutSeconds: 1
+          timeoutSeconds: 3
+          periodSeconds: 5
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
