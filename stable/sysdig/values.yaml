@@ -10,4 +10,12 @@ sysdig:
     #AccessKey: ""
 
     # Optional: Key-value agent tags following the format "key:val,key2:val2".
-    #AgentTags: ""
+    AgentTags: ""
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 256m
+    memory: 512Mi
