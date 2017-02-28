@@ -46,7 +46,7 @@ ingress:
   annotations:
     # kubernetes.io/ingress.class: "nginx"
     # secretName: my-tls-cert
-    # kubernetes.io/acme-tls: "true"
+    # kubernetes.io/tls-acme: "true"
 
 ## OAuth Settings for Github OAuth
 ##
