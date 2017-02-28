@@ -1,0 +1,52 @@
+## Default values.yaml for Telegraf
+## This is a YAML-formatted file.
+## ref: https://hub.docker.com/r/library/telegraf/tags/
+image:
+  repo: "telegraf"
+  tag: "1.2.1-alpine"
+  pullPolicy: IfNotPresent
+
+## Configure resource requests and limits
+## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+resources:
+  requests:
+    memory: 256Mi
+    cpu: 0.1
+  limits:
+    memory: 2Gi
+    cpu: 1
+    
+## Exposed telegraf configuration
+## ref: https://docs.influxdata.com/telegraf/v1.1/administration/configuration/
+config:
+  # global_tags:
+  #   cluster: "mycluster"
+  agent:
+    interval: "10s"
+    round_interval: true
+    metric_batch_size: 1000
+    metric_buffer_limit: 10000
+    collection_jitter: "0s"
+    flush_interval: "10s"
+    flush_jitter: "0s"
+  outputs:
+    influxdb:
+      url: ""
+      # url: "http://db-influxdb.prod:8086"
+      database: "telegraf"
+      retention_policy: ""
+      timeout: "5s"
+      username: ""
+      password: ""
+      user_agent: "telegraf"
+      insecure_skip_verify: false
+  inputs:
+    kubernetes:
+      url: "http://$HOSTNAME:10255"
+      bearer_token: "/var/run/secrets/kubernetes.io/serviceaccount/token"
+      insecure_skip_verify: true
+    docker: 
+      endpoint: "unix:///var/run/docker.sock"
+      timeout: "5s"
+      perdevice: true
+      total: false
