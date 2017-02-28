@@ -1,7 +1,8 @@
 name: cockroachdb
 home: https://www.cockroachlabs.com
-version: 0.2.0
-description: CockroachDB Helm chart for Kubernetes.
+version: 0.2.2
+description: CockroachDB is a scalable, survivable, strongly-consistent SQL database.
+icon: https://raw.githubusercontent.com/cockroachdb/cockroach/master/docs/media/cockroach_db.png
 sources:
   - https://github.com/cockroachdb/cockroach
 maintainers:

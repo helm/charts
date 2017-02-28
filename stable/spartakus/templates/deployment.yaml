@@ -2,25 +2,36 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   labels:
-    app: {{ template "fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    heritage: "{{ .Release.Service }}"
-    release: "{{ .Release.Name }}"
+    app: {{ template "name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
   name: {{ template "fullname" . }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.replicaCount }}
   template:
     metadata:
+    {{- if .Values.podAnnotations }}
+      annotations:
+{{ toYaml .Values.podAnnotations | indent 8}}
+    {{- end }}
       labels:
-        app: {{ template "fullname" . }}
-        release: "{{ .Release.Name }}"
+        app: {{ template "name" . }}
+        release: {{ .Release.Name }}
     spec:
       containers:
         - name: {{ template "name" . }}
-          image: "{{ .Values.image }}"
-          imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: "{{ .Values.image.pullPolicy }}"
           args:
             - volunteer
-            - --cluster-id={{ uuidv4 | default .Values.uuid | quote }}
+            - --cluster-id="{{ uuidv4 | default .Values.uuid }}"
+          {{- range $key, $value := .Values.extraArgs }}
+            - --{{ $key }}={{ $value }}
+          {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
+    {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
