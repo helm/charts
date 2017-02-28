@@ -44,9 +44,9 @@ ingress:
   tls: false
   hostname: chronograf.foobar.com
   annotations:
-    kubernetes.io/ingress.class: "nginx"
-    secretName: my-tls-cert
-  # kubernetes.io/acme-tls: "true"
+    # kubernetes.io/ingress.class: "nginx"
+    # secretName: my-tls-cert
+    # kubernetes.io/acme-tls: "true"
 
 ## OAuth Settings for Github OAuth
 ##
