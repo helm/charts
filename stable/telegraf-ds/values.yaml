@@ -32,7 +32,6 @@ config:
   outputs:
     influxdb:
       url: ""
-      # url: "http://db-influxdb.prod:8086"
       database: "telegraf"
       retention_policy: ""
       timeout: "5s"

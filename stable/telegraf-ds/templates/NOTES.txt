@@ -6,10 +6,10 @@ To tail the logs for a Telegraf pod in the Daemonset run the following:
 
 - kubectl logs -f --namespace {{ .Release.Namespace }} $(kubectl get pods --namespace {{ .Release.Namespace }} -l app={{ template "fullname" . }}-ds -o jsonpath='{ .items[0].metadata.name }')
 
-{{- if empty .Values.config.outputs.influxdb.urls }}
+{{- if empty .Values.config.outputs.influxdb.url }}
 
 Need to set an InfluxDB url to deploy this instance:
 
-.Values.config.outputs.influxdb.urls
+.Values.config.outputs.influxdb.url
 
 {{- end }}

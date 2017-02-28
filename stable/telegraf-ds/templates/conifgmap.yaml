@@ -10,56 +10,56 @@ metadata:
     heritage: "{{ .Release.Service }}"
 data:
   telegraf.conf: |+
-{{- if .Values.config.global_tags }}
-[global_tags]
-  {{- range $key, $val := .Values.config.global_tags }}
-  {{ $key }} = {{ $val | quote }}
-  {{- end }}
-{{- end }}
-[agent]
-  interval = {{ .Values.config.agent.interval | quote }}
-  round_interval = {{ .Values.config.agent.round_interval }}
-  metric_batch_size = {{ .Values.config.agent.metric_batch_size }}
-  metric_buffer_limit = {{ .Values.config.agent.metric_buffer_limit }}
-  collection_jitter = {{ .Values.config.agent.collection_jitter | quote }}
-  flush_interval = {{ .Values.config.agent.flush_interval | quote }}
-  flush_jitter = {{ .Values.config.agent.flush_jitter | quote }}
-  precision = ""
-  debug = false
-  quiet = true
-  logfile = ""
-  hostname = "$HOSTNAME"
-  omit_hostname = false
-[[outputs.influxdb]]
-  urls = [{{ .Values.config.outputs.influxdb.url | quote }}]
-  database = {{ .Values.config.outputs.influxdb.database | quote }}
-  retention_policy = {{ .Values.config.outputs.influxdb.retention_policy | quote }}
-  write_consistency = "any"
-  timeout = {{ .Values.config.outputs.influxdb.timeout | quote }}
-  username = {{ .Values.config.outputs.influxdb.username | quote }}
-  password = {{ .Values.config.outputs.influxdb.password | quote }}
-  user_agent = {{ .Values.config.outputs.influxdb.user_agent | quote }}
-  insecure_skip_verify = {{ .Values.config.outputs.influxdb.insecure_skip_verify }}
-[[inputs.cpu]]
-  percpu = true
-  totalcpu = true
-  collect_cpu_time = false
-[[inputs.disk]]
-  ignore_fs = ["tmpfs", "devtmpfs"]
-[[inputs.diskio]]
-[[inputs.docker]]
-  endpoint = {{ .Values.config.inputs.docker.endpoint }}
-  container_names = []
-  timeout = {{ .Values.config.inputs.docker.timeout }}
-  perdevice = {{ .Values.config.inputs.docker.perdevice }}
-  total = {{ .Values.config.inputs.docker.total }}
-[[inputs.kernel]]
-[[inputs.kubernetes]]
-  url = {{ .Values.config.inputs.kubernetes.url }}
-  bearer_token = {{ .Values.config.inputs.kubernetes.bearer_token }}
-  insecure_skip_verify = {{ .Values.config.inputs.kubernetes.insecure_skip_verify }}
-[[inputs.mem]]
-[[inputs.processes]]
-[[inputs.swap]]
-[[inputs.system]]
+    {{- if .Values.config.global_tags }}
+    [global_tags]
+      {{- range $key, $val := .Values.config.global_tags }}
+      {{ $key }} = {{ $val | quote }}
+      {{- end }}
+    {{- end }}
+    [agent]
+      interval = {{ .Values.config.agent.interval | quote }}
+      round_interval = {{ .Values.config.agent.round_interval }}
+      metric_batch_size = {{ .Values.config.agent.metric_batch_size }}
+      metric_buffer_limit = {{ .Values.config.agent.metric_buffer_limit }}
+      collection_jitter = {{ .Values.config.agent.collection_jitter | quote }}
+      flush_interval = {{ .Values.config.agent.flush_interval | quote }}
+      flush_jitter = {{ .Values.config.agent.flush_jitter | quote }}
+      precision = ""
+      debug = false
+      quiet = true
+      logfile = ""
+      hostname = "$HOSTNAME"
+      omit_hostname = false
+    [[outputs.influxdb]]
+      urls = [{{ .Values.config.outputs.influxdb.url | quote }}]
+      database = {{ .Values.config.outputs.influxdb.database | quote }}
+      retention_policy = {{ .Values.config.outputs.influxdb.retention_policy | quote }}
+      write_consistency = "any"
+      timeout = {{ .Values.config.outputs.influxdb.timeout | quote }}
+      username = {{ .Values.config.outputs.influxdb.username | quote }}
+      password = {{ .Values.config.outputs.influxdb.password | quote }}
+      user_agent = {{ .Values.config.outputs.influxdb.user_agent | quote }}
+      insecure_skip_verify = {{ .Values.config.outputs.influxdb.insecure_skip_verify }}
+    [[inputs.cpu]]
+      percpu = true
+      totalcpu = true
+      collect_cpu_time = false
+    [[inputs.disk]]
+      ignore_fs = ["tmpfs", "devtmpfs"]
+    [[inputs.diskio]]
+    [[inputs.docker]]
+      endpoint = {{ .Values.config.inputs.docker.endpoint | quote }}
+      container_names = []
+      timeout = {{ .Values.config.inputs.docker.timeout | quote }}
+      perdevice = {{ .Values.config.inputs.docker.perdevice }}
+      total = {{ .Values.config.inputs.docker.total }}
+    [[inputs.kernel]]
+    [[inputs.kubernetes]]
+      url = {{ .Values.config.inputs.kubernetes.url | quote }}
+      bearer_token = {{ .Values.config.inputs.kubernetes.bearer_token | quote }}
+      insecure_skip_verify = {{ .Values.config.inputs.kubernetes.insecure_skip_verify }}
+    [[inputs.mem]]
+    [[inputs.processes]]
+    [[inputs.swap]]
+    [[inputs.system]]
 {{- end -}}
