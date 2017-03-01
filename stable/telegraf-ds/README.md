@@ -1,6 +1,6 @@
 # Telegraf-DS
 
-[Telegraf](https://github.com/influxdata/telegraf) is a plugin-driven server agent written by the folks over at [InfluxData](https://influxdata.com) for collecting & reporting metrics. This chart runs a DaemonSet of Telegraf instances to collect host level metrics. 
+[Telegraf](https://github.com/influxdata/telegraf) is a plugin-driven server agent written by the folks over at [InfluxData](https://influxdata.com) for collecting & reporting metrics. This chart runs a DaemonSet of Telegraf instances to collect host level metrics for your cluster. If you need to poll individual instances of infrastructure or APIs there is a `stable/telegraf-s` chart that is more suited to that usecase.
 
 ## TL;DR
 
@@ -44,7 +44,7 @@ The default configuration parameters are listed in `values.yaml`. To change the 
 
 ```console
 $ helm install --name my-release \
-  --set config.outputs.influxdb.url=https://foo.bar:8086 \
+  --set config.outputs.influxdb.url=http://foo.bar:8086 \
     stable/telegraf-ds
 ```
 
