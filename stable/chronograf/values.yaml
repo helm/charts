@@ -48,12 +48,30 @@ ingress:
     # secretName: my-tls-cert
     # kubernetes.io/tls-acme: "true"
 
-## OAuth Settings for Github OAuth
+## OAuth Settings for OAuth Providers
+## More information -> https://github.com/influxdata/chronograf/blob/master/docs/auth.md
 ##
 oauth:
+  # Need to set to true to use any of the oauth options
   enabled: false
+  # Used for JWT to support running multiple copies of Chronograf
+  token_secret: CHANGE_ME
   github:
+    enabled: false
     client_id: CHANGE_ME
     client_secret: CHANGE_ME
-    token_secret: CHANGE_ME
-    gh_orgs: myorg
+    # This is a comma seperated list of GH organizations (OPTIONAL)
+    gh_orgs: ""
+  google:
+    enabled: false
+    client_id: CHANGE_ME
+    client_secret: CHANGE_ME
+    public_url: "" # eg. http://chronograf.foobar.com
+    # This is a comma seperated list of Google Apps domains (OPTIONAL)
+    google_domains: ""
+  heroku:
+    enabled: false
+    client_id: CHANGE_ME
+    client_secret: CHANGE_ME
+    # This is a comma seperated list of Heroku organizations (OPTIONAL)
+    he_orgs: ""
