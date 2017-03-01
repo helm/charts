@@ -50,8 +50,8 @@ setDefaultUser:
     # username: "admin"
 
     ## User password
-    ## Default: "admin"
-    # password: "admin"
+    ## Default: (Randomly generated 10 characters of Ascii)
+    # password:
 
     ## User privileges
     ## Default: "WITH ALL PRIVILEGES"
