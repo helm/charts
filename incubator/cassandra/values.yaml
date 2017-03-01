@@ -33,6 +33,7 @@ resources:
 config:
   cluster_name: cassandra
   cluster_size: 3
+  seed_size: 2
   num_tokens: 256 
   dc_name: DC1
   rack_name: RAC1
