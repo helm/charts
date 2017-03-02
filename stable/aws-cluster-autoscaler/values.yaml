@@ -10,17 +10,23 @@ image:
   tag: v0.4.0
   pullPolicy: IfNotPresent
 
-extraArgs: []
+extraArgs: {}
+
+## Node labels for pod assignment
+## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+##
+nodeSelector: {}
+
 podAnnotations: {}
 replicaCount: 1
 
-resources:
-  limits:
-    cpu: 100m
-    memory: 300Mi
-  requests:
-    cpu: 100m
-    memory: 300Mi
+resources: {}
+  # limits:
+  #   cpu: 100m
+  #   memory: 300Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 300Mi
 
 scaleDownDelay: 10m
 
