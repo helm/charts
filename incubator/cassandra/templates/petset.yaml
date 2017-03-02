@@ -57,6 +57,9 @@ spec:
       labels:
         app: {{ template "fullname" . }}
     spec:
+{{- if .Values.nodes.enabled }}
+{{ toYaml .Values.nodes.selector | indent 6 }}
+{{- end }}
       containers:
       - name: {{ template "fullname" . }}
         image: "{{ .Values.image.repo }}:{{ .Values.image.tag }}"
@@ -80,6 +83,15 @@ spec:
           value: {{ default "DC1" .Values.config.dc_name | quote }}
         - name: CASSANDRA_RACK
           value: {{ default "RAC1" .Values.config.rack_name | quote }}
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        livenessProbe:
+          exec:
+            command: [ "/bin/sh", "-c", "nodetool status > status.log; grep -E \"^UN\\s+${POD_IP}\" status.log" ]
+          initialDelaySeconds: 90
+          periodSeconds: 30
         ports:
         - name: intra
           containerPort: 7000
