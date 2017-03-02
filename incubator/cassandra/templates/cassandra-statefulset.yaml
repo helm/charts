@@ -29,17 +29,6 @@ spec:
   selector:
     app: {{ template "fullname" . }}
 ---
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: {{ template "fullname" . }}
-  labels:
-    app: {{ template "fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
-data:
----
 apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
@@ -89,7 +78,7 @@ spec:
               fieldPath: status.podIP
         livenessProbe:
           exec:
-            command: [ "/bin/sh", "-c", "nodetool status > status.log; grep -E \"^UN\\s+${POD_IP}\" status.log" ]
+            command: [ "/bin/sh", "-c", "nodetool status | grep -E \"^UN\\s+${POD_IP}\"" ]
           initialDelaySeconds: 90
           periodSeconds: 30
         ports:
