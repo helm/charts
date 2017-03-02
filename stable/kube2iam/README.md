@@ -50,7 +50,7 @@ Parameter | Description | Default
 `image.pullPolicy` | Image pull policy | `IfNotPresent`
 `nodeSelector` | node labels for pod assignment | `{}`
 `podAnnotations` | annotations to be added to pods | `{}`
-`resources` | pod resource requests & limits | `limits: {cpu: 4m, memory: 16Mi}, requests: {cpu: 4m, memory: 16Mi}`
+`resources` | pod resource requests & limits | `{}`
 `verbose` | Enable verbose output | `false`
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
