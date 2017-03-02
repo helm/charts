@@ -2,7 +2,7 @@
 A Cassandra Chart for Kubernetes
 
 ## Install Chart
-To install the Cassandra Chart into your Kubernetes cluster
+To install the Cassandra Chart into your Kubernetes cluster (This Chart requires persistent volume by default, you may need to create a storage class before install chart. To create storage class, see [Persist data](#persist_data) section)
 
 ```bash
 helm install --namespace "cassandra" -n "cassandra" incubator/cassandra
@@ -19,6 +19,24 @@ If you want to delete your Chart, use this command
 helm delete  --purge "cassandra"
 ```
 
+## Persist data
+You need to create `StorageClass` before able to persist data in persistent volume. 
+To create a `StorageClass` on Google Cloud, run the following
+
+```bash
+kubectl create -f sample/create-storage-gce.yaml
+```
+
+And set the following values in `values.yaml`
+
+```yaml
+persistence:
+  enabled: true
+```
+
+If you want to create a `StorageClass` on other platform, please see documentation here [https://kubernetes.io/docs/user-guide/persistent-volumes/](https://kubernetes.io/docs/user-guide/persistent-volumes/)
+
+
 ## Install Chart with specific cluster size
 By default, this Chart will create a cassandra with 3 nodes. If you want to change the cluster size during installation, you can use `--set config.cluster_size={value}` argument. Or edit `values.yaml`
 
@@ -27,6 +45,25 @@ Set cluster size to 5
 
 ```bash
 helm install --namespace "cassandra" -n "cassandra" --set config.cluster_size=5 incubator/cassandra/
+```
+
+## Install Chart with specific resource size
+By default, this Chart will create a cassandra with CPU 2 vCPU and 4Gi of memery which is suitable for development environment.
+If you want to use this Chart for production, I would recommend to update the CPU to 4 vCPU and 16Gi. Also increase size of `max_heap_size` and `heap_new_size`.
+To update the settings, edit `values.yaml`
+
+## Install Chart with specific node
+Sometime you may need to deploy your cassandra to specific nodes to allocate resources. You can use node selector by edit `nodes.enabled=true` in `values.yaml`
+For example, you have 6 vms in node pools and you want to deploy cassandra to node which labeled as `cloud.google.com/gke-nodepool: pool-db`
+
+Set the following values in `values.yaml`
+
+```yaml
+nodes:
+  enabled: true
+  selector:
+    nodeSelector:
+      cloud.google.com/gke-nodepool: pool-db
 ```
 
 ## Scale cassandra

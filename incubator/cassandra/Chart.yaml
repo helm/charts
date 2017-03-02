@@ -1,6 +1,6 @@
 name: cassandra
 version: 0.1.0
-description: Chart for Cassandra
+description: Chart for Cassandra 3.1 with statefulset
 keywords:
 - cassandra
 - database
