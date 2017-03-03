@@ -1,10 +1,11 @@
 name: memcached
-version: 0.4.0
-description: Chart for Memcached
+version: 0.4.1
+description: Free & open source, high-performance, distributed memory object caching system.
 keywords:
 - memcached
 - cache
 home: http://memcached.org/
+icon: https://upload.wikimedia.org/wikipedia/en/thumb/2/27/Memcached.svg/1024px-Memcached.svg.png
 sources:
 - https://github.com/docker-library/memcached
 maintainers:

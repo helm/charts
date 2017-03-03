@@ -1,0 +1,20 @@
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: "{{ printf "pd-zk-%s" .Release.Name | trunc 24 }}"
+  annotations:
+    helm.sh/created: {{.Release.Time.Seconds | quote }}
+  labels:
+    heritage: {{.Release.Service | quote }}
+    release: {{.Release.Name | quote }}
+    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+    component: "{{.Release.Name}}"
+spec:
+  selector:
+    matchLabels:
+      component: "{{.Release.Name}}"
+  {{- if .Values.MinAvailable}}
+  minAvailable: {{.Values.MinAvailable}}
+  {{- else}}
+  minAvailable: {{sub .Values.Servers 1}}
+  {{- end}}

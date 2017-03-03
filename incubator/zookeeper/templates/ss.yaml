@@ -1,0 +1,154 @@
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  name: "{{ printf "zk-%s" .Release.Name  | trunc 24 }}"
+  annotations:
+    helm.sh/created: {{.Release.Time.Seconds | quote }}
+  labels:
+    heritage: {{.Release.Service | quote }}
+    release: {{.Release.Name | quote }}
+    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+    component: "{{.Release.Name}}"
+spec:
+  serviceName: "{{ printf "hs-zk-%s" .Release.Name | trunc 24 }}"
+  replicas: {{.Values.Servers}}
+  template:
+    metadata:
+      labels:
+        component: "{{.Release.Name}}"
+      annotations:
+        pod.alpha.kubernetes.io/initialized: "true"
+        {{- if eq .Values.AntiAffinity "hard"}}
+        scheduler.alpha.kubernetes.io/affinity: >
+            {
+              "podAntiAffinity": {
+                "requiredDuringSchedulingIgnoredDuringExecution": [{
+                  "labelSelector": {
+                    "matchExpressions": [{
+                      "key": "component",
+                      "operator": "In",
+                      "values": ["{{.Release.Name}}"]
+                    }]
+                  },
+                  "topologyKey": "kubernetes.io/hostname"
+                }]
+              }
+            } 
+        {{- else if eq .Values.AntiAffinity "soft"}}
+        scheduler.alpha.kubernetes.io/affinity: >
+            {
+              "podAntiAffinity": {
+                "prefferedDuringSchedulingIgnoredDuringExecution": [{
+                  "labelSelector": {
+                    "matchExpressions": [{
+                      "key": "component",
+                      "operator": "In",
+                      "values": ["{{.Release.Name}}"]
+                    }]
+                  },
+                  "topologyKey": "kubernetes.io/hostname"
+                }]
+              }
+            }
+        {{- end}}
+    spec:
+      containers:
+      - name: k8szk
+        imagePullPolicy: {{.Values.ImagePullPolicy}}
+        image: gcr.io/google_samples/k8szk:v2
+        resources:
+          requests:
+            memory: {{.Values.Memory}}
+            cpu: {{.Values.Cpu}}
+        ports:
+        - containerPort: {{.Values.ClientPort}}
+          name: client
+        - containerPort: {{.Values.ServerPort}}
+          name: server
+        - containerPort: {{.Values.LeaderElectionPort}}
+          name: leader-election
+        env:
+        - name : ZK_REPLICAS
+          value: "{{.Values.Servers}}"
+        - name : ZK_HEAP_SIZE
+          valueFrom:
+            configMapKeyRef:
+                name: "{{ printf "cm-zk-%s" .Release.Name | trunc 24 }}"
+                key: jvm.heap
+        - name : ZK_TICK_TIME
+          valueFrom:
+            configMapKeyRef:
+                name: "{{ printf "cm-zk-%s" .Release.Name | trunc 24 }}"
+                key: tick
+        - name : ZK_INIT_LIMIT
+          valueFrom:
+            configMapKeyRef:
+                name: "{{ printf "cm-zk-%s" .Release.Name | trunc 24 }}"
+                key: init
+        - name : ZK_SYNC_LIMIT
+          valueFrom:
+            configMapKeyRef:
+                name: "{{ printf "cm-zk-%s" .Release.Name | trunc 24 }}"
+                key: tick
+        - name : ZK_MAX_CLIENT_CNXNS
+          valueFrom:
+            configMapKeyRef:
+                name: "{{ printf "cm-zk-%s" .Release.Name | trunc 24 }}"
+                key: client.cnxns
+        - name: ZK_SNAP_RETAIN_COUNT
+          valueFrom:
+            configMapKeyRef:
+                name: "{{ printf "cm-zk-%s" .Release.Name | trunc 24 }}"
+                key: snap.retain
+        - name: ZK_PURGE_INTERVAL
+          valueFrom:
+            configMapKeyRef:
+                name: "{{ printf "cm-zk-%s" .Release.Name | trunc 24 }}"
+                key: purge.interval
+        - name: ZK_LOG_LEVEL
+          valueFrom:
+            configMapKeyRef:
+                name: "{{ printf "cm-zk-%s" .Release.Name | trunc 24 }}"
+                key: log.level
+        - name: ZK_CLIENT_PORT
+          value: "{{.Values.ClientPort}}"
+        - name: ZK_SERVER_PORT
+          value: "{{.Values.ServerPort}}"
+        - name: ZK_ELECTION_PORT
+          value: "{{.Values.LeaderElectionPort}}"
+        command:
+        - sh
+        - -c
+        - zkGenConfig.sh && exec zkServer.sh start-foreground
+        readinessProbe:
+          exec:
+            command:
+            - "zkOk.sh"
+          initialDelaySeconds: {{.Values.ProbeInitialDelaySeconds}}
+          timeoutSeconds: {{.Values.ProbeTimeoutSeconds}}
+        livenessProbe:
+          exec:
+            command:
+            - "zkOk.sh"
+          initialDelaySeconds: {{.Values.ProbeInitialDelaySeconds}}
+          timeoutSeconds: {{.Values.ProbeTimeoutSeconds}}
+        volumeMounts:
+        - name: datadir
+          mountPath: /var/lib/zookeeper
+      securityContext:
+        runAsUser: 1000
+        fsGroup: 1000
+  volumeClaimTemplates:
+  - metadata:
+      name: datadir
+      annotations:
+        {{- if .Values.StorageClass}}
+        volume.beta.kubernetes.io/storage-class: {{.Values.StorageClass | quote}}
+        {{- else}}
+        volume.alpha.kubernetes.io/storage-class: "default"
+        {{- end}} 
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: {{.Values.Storage}}

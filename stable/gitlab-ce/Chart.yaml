@@ -1,5 +1,5 @@
 name: gitlab-ce
-version: 0.1.3
+version: 0.1.5
 description: GitLab Community Edition
 keywords:
 - git
@@ -8,9 +8,11 @@ keywords:
 - issue tracker
 - code review
 - wiki
+home: https://about.gitlab.com
 sources:
 - https://hub.docker.com/r/gitlab/gitlab-ce/
 - https://docs.gitlab.com/omnibus/
+icon: https://gitlab.com/uploads/group/avatar/6543/gitlab-logo-square.png
 maintainers:
 - name: Greg Taylor
   email: gtaylor@gc-taylor.com

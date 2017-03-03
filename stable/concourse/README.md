@@ -61,13 +61,12 @@ The following tables lists the configurable parameters of the Concourse chart an
 | ----------------------- | ----------------------------------    | ---------------------------------------------------------- |
 | `image` | Concourse image | `concourse/concourse` |
 | `imageTag` | Concourse image version | `2.6.0` |
-| `imagePullPolicy` |Concourse image pull policy | `Always` |
+| `imagePullPolicy` |Concourse image pull policy |  `Always` if `imageTag` is `latest`, else `IfNotPresent` |
 | `concourse.username` | Concourse Basic Authentication Username | `concourse` |
 | `concourse.password` | Concourse Basic Authentication Password | `concourse` |
 | `concourse.hostKey` | Concourse Host Private Key | *See [#ssh-keys](#ssh-keys)* |
 | `concourse.hostKeyPub` | Concourse Host Public Key | *See [#ssh-keys](#ssh-keys)* |
 | `concourse.sessionSigningKey` | Concourse Session Signing Private Key | *See [#ssh-keys](#ssh-keys)* |
-| `concourse.sessionSigningKeyPub` | Concourse Session Signing Public Key | *See [#ssh-keys](#ssh-keys)* |
 | `concourse.workerKey` | Concourse Worker Private Key | *See [#ssh-keys](#ssh-keys)* |
 | `concourse.workerKeyPub` | Concourse Worker Public Key | *See [#ssh-keys](#ssh-keys)* |
 | `concourse.atcPort` | Concourse ATC listen port | `8080` |
@@ -159,9 +158,6 @@ concourse:
   sessionSigningKey: |-
     < Insert the contents of your concourse-keys/session_signing_key file >
 
-  sessionSigningKeyPub: |-
-    < Insert the contents of your concourse-keys/session_signing_key.pub file >
-
   ## Concourse Worker Keys.
   ## ref: https://concourse.ci/binaries.html#generating-keys
   ##
@@ -177,7 +173,7 @@ Alternativelly, you can provide those keys to `helm install` via parameters:
 
 ```console
 $ helm install --name my-release \
-  --set "concourse.hostKey=`cat concourse-keys/host_key`,concourse.hostKeyPub=`cat concourse-keys/host_key.pub`,concourse.sessionSigningKey=`cat concourse-keys/session_signing_key`,concourse.sessionSigningKeyPub=`cat concourse-keys/session_signing_key.pub`,concourse.workerKey=`cat concourse-keys/worker_key`,concourse.workerKeyPub=`cat concourse-keys/worker_key.pub`" \
+  --set "concourse.hostKey=`cat concourse-keys/host_key`,concourse.hostKeyPub=`cat concourse-keys/host_key.pub`,concourse.sessionSigningKey=`cat concourse-keys/session_signing_key`,concourse.workerKey=`cat concourse-keys/worker_key`,concourse.workerKeyPub=`cat concourse-keys/worker_key.pub`" \
   stable/concourse
 ```
 

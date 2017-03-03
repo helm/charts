@@ -1,6 +1,7 @@
 apiVersion: v1
 name: traefik
-version: 1.1.2-d
+# Lock step with the Traefik version, appended with -a, -b, etc. to denote versions of the chart
+version: 1.1.2-g
 description: A Traefik based Kubernetes ingress controller with Let's Encrypt support
 keywords:
 - traefik

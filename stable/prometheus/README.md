@@ -44,6 +44,7 @@ The following tables lists the configurable parameters of the Prometheus chart a
 
 | Parameter | Description | Default |
 | --------- | ----------- | ------- |
+| `alertmanager.extraArgs` | Additional Alertmanager container arguments | `{}` |
 | `alertmanager.httpPort` | Alertmanager Service port | `80` |
 | `alertmanager.httpPortName` | Alertmanager service port name | `http` |
 | `alertmanager.image` | Alertmanager Docker image | `prom/alertmanager:${VERSION}` |
@@ -71,7 +72,7 @@ The following tables lists the configurable parameters of the Prometheus chart a
 | `kubeStateMetrics.resources` | Kube-state-metrics resource requests and limits (YAML) | `requests: {cpu: 10m, memory:16Mi}` |
 | `kubeStateMetrics.serviceType` | Kube-state-metrics service type | `ClusterIP` |
 | `server.annotations` | Server Pod annotations | `[]` |
-| `server.extraArgs` | Additional Server container arguments | `[]` |
+| `server.extraArgs` | Additional Server container arguments | `{}` |
 | `server.httpPort` | Server service port | `80` |
 | `server.httpPortName` | Server service port name | `http` |
 | `server.image` | Server Docker image | ` prom/prometheus:${VERSION}` |
