@@ -81,6 +81,11 @@ spec:
             command: [ "/bin/sh", "-c", "nodetool status | grep -E \"^UN\\s+${POD_IP}\"" ]
           initialDelaySeconds: 90
           periodSeconds: 30
+        readinessProbe:
+          exec:
+            command: [ "/bin/sh", "-c", "nodetool status | grep -E \"^UN\\s+${POD_IP}\"" ]
+          initialDelaySeconds: 90
+          periodSeconds: 30
         ports:
         - name: intra
           containerPort: 7000
