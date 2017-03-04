@@ -58,7 +58,7 @@ The following tables lists the configurable parameters of the etcd-operator char
 | `resources.requests.memory`                       | Memory request per etcd-operator pod                                 | `128Mi`                                        |
 | `cluster.enabled`                                 | Whether to enable provisioning of and etcd-cluster                   | `true`                                         |
 | `cluster.name`                                    | etcd cluster name                                                    | `etcd-cluster`                                 |
-| `cluster.version`                                 | etcd cluster version                                                 | `v3.1.0-rc.0`                               |
+| `cluster.version`                                 | etcd cluster version                                                 | `3.1.2`                               |
 | `cluster.size`                                    | etcd cluster size                                                    | `3`                                            |
 | `cluster.backup.enabled`                          | Whether to create PV for cluster backups                             | `true`                                         |
 | `cluster.backup.provisioner`                      | Which PV provisioner to use                                          | `kubernetes.io/gce-pd` (kubernetes.io/aws-ebs) |

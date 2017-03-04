@@ -18,7 +18,7 @@ cluster:
   enabled: false
   name: etcd-cluster
   size: 3
-  version: v3.1.0-rc.0
+  version: 3.1.2
   backup:
     enabled: false
     ## Cloud specific PV provisioner
