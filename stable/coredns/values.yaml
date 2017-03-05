@@ -1,0 +1,23 @@
+# Default values for coredns.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+clusterCidr: 10.3.0.0/24
+clusterDomain: cluster.local
+clusterIP: 10.3.0.10
+
+replicaCount: 1
+image:
+  repository: coredns/coredns
+  tag: "006"
+  pullPolicy: IfNotPresent
+resources:
+  limits:
+    cpu: 100m
+    memory: 128Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+metrics:
+  enabled: true
+  port: 9153
