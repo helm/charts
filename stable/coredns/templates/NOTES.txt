@@ -1,0 +1,11 @@
+CoreDNS is now running in the cluster.
+
+It can be tested with the following:
+
+1. Launch a Pod with DNS tools:
+
+kubectl run -it --rm --restart=Never --image=infoblox/dnstools:latest dnstools
+
+2. Query the DNS server:
+
+/ # host kubernetes
