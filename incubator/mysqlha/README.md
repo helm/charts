@@ -1,17 +1,22 @@
-# MySQL
+# MySQL - Single Master, Multiple Slaves
 
-[Helm](https://helm.sh/) chart to deploy a multi-pod MySQL master-slave deployment [Kubernetes](http://kubernetes.io) cluster. Work was largely inspired by this [tutorial](https://kubernetes.io/docs/tutorials/stateful-application/run-replicated-stateful-application/).
+[MySQL](https://MySQL.org) is one of the most popular database servers in the world. Notable users include Wikipedia, Facebook and Google.
 
-## Usage
+## Introduction
 
-### Install 
+This chart bootstraps a single master and multiple slave MySQL deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager. Largely inspired by this [tutorial](https://kubernetes.io/docs/tutorials/stateful-application/run-replicated-stateful-application/), further work was made to 'production-ize' the example.
+
+## Prerequisites
+
+- Kubernetes 1.4+ with Beta APIs enabled
+- PV provisioner support in the underlying infrastructure
+
+## Installing the Chart
 
 To install the chart with the release name `my-release`:
 
 ```bash
-$ git@github.com:jpoon/mysql-master-slave.git
-$ cd mysql-master-slave
-$ helm install --name my-release .
+$ helm install --name my-release incubator/mysqlha
 ```
 
 The command deploys MySQL cluster on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
@@ -43,3 +48,25 @@ The following tables lists the configurable parameters of the MySQL chart and th
 | `resources`                | CPU/Memory resource requests/limits | Memory: `128Mi`, CPU: `100m`                              |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
+
+## Persistence
+
+The [MySQL](https://hub.docker.com/_/mysql/) image stores the MySQL data and configurations at the `/var/lib/mysql` path of the container.
+
+By default persistence is enabled, and a PersistentVolumeClaim is created and mounted in that directory. As a result, a persistent volume will need to be defined:
+
+```
+# https://kubernetes.io/docs/user-guide/persistent-volumes/#azure-disk
+apiVersion: storage.k8s.io/v1beta1
+kind: StorageClass
+metadata:
+  name: fast
+  annotations:
+    storageclass.beta.kubernetes.io/is-default-class: "true"
+provisioner: kubernetes.io/azure-disk
+parameters:
+  skuName: Premium_LRS
+  location: westus
+```
+
+In order to disable this functionality you can change the values.yaml to disable persistence and use an emptyDir instead.
