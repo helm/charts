@@ -35,11 +35,12 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the Datadog chart and their default values.
+The following tables lists the configurable parameters of the Sysdig chart and their default values.
 
 |      Parameter              |          Description               |                         Default           |
 |-----------------------------|------------------------------------|-------------------------------------------|
 | `sysdig.AccessKey`          | Your Sysdig Cloud Access Key       | `Nil` You must provide your own key       |
+| `sysdig.AgentTag`           | String with tags for the agent     |  Empty                                    |
 | `image.repository`          | The image repository to pull from  | `sysdig/agent`                            |
 | `image.tag`                 | The image tag to pull              | `latest`                                  |
 | `image.pullPolicy`          | The Image pull policy              | `Always`                                  |
