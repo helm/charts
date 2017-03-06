@@ -40,7 +40,7 @@ The following tables lists the configurable parameters of the Sysdig chart and t
 |      Parameter              |          Description               |                         Default           |
 |-----------------------------|------------------------------------|-------------------------------------------|
 | `sysdig.AccessKey`          | Your Sysdig Cloud Access Key       | `Nil` You must provide your own key       |
-| `sysdig.AgentTag`           | String with tags for the agent     |  Empty                                    |
+| `sysdig.AgentTags`          | String with tags for the agent     |  Empty                                    |
 | `image.repository`          | The image repository to pull from  | `sysdig/agent`                            |
 | `image.tag`                 | The image tag to pull              | `latest`                                  |
 | `image.pullPolicy`          | The Image pull policy              | `Always`                                  |
