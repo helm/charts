@@ -53,7 +53,7 @@ spec:
           - name: HEAP_NEWSIZE
             value: "{{.Values.cassandra.HeapNewSize}}"
           - name: CASSANDRA_SEEDS
-            value: "{{.Values.cassandra.Seeds}}"
+            value: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 24 }}-0.{{ printf "%s-%s" .Release.Name .Values.Name | trunc 24 }}.default.svc.cluster.local"
           - name: CASSANDRA_CLUSTER_NAME
             value: "{{.Values.cassandra.ClusterName}}"
           - name: CASSANDRA_DC

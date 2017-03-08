@@ -11,10 +11,11 @@ ImageTag: "v12"
 ImagePullPolicy: "Always"
 
 # Cassandra configuration options
+# For chart deployment, the value for sending to the Seed Provider is 
+# constructed using a template in the statefulset.yaml template
 cassandra:
   MaxHeapSize: "512M"
   HeapNewSize: "100M"
-  Seeds: "cassandra-0.cassandra.default.svc.cluster.local"
   ClusterName: "K8Demo"
   DC: "DC1-K8Demo"
   Rack: "Rack1-K8Demo"
@@ -22,7 +23,7 @@ cassandra:
 
 # Persistence information
 persistence:
-  storageClass: fast
+  storageClass: slow
   accessMode: ReadWriteOnce
   size: 10Gi
 
