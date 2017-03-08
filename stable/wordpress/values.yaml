@@ -42,12 +42,12 @@ wordpressBlogName: User's Blog!
 ## Database name to create
 ## Sets WORDPRESS_DATABASE_NAME and MYSQL_CLIENT_CREATE_DATABASE_NAME
 ## ref: https://github.com/bitnami/bitnami-docker-wordpress#environment-variables
-## databaseName: 
+databaseName: bitnami_wordpress
 
 ## Database user to create
 ## Sets WORDPRESS_DATABASE_USER and MYSQL_CLIENT_CREATE_DATABASE_USER 
 ## ref: https://github.com/bitnami/bitnami-docker-wordpress#environment-variables
-## databaseUser: 
+databaseUser: bn_wordpress
 
 ## Database password for the new user
 ## Sets WORDPRESS_DATABASE_PASSWORD  and  MYSQL_CLIENT_CREATE_DATABASE_PASSWORD 
