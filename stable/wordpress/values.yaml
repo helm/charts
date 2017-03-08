@@ -1,7 +1,7 @@
 ## Bitnami WordPress image version
 ## ref: https://hub.docker.com/r/bitnami/wordpress/tags/
 ##
-image: bitnami/wordpress:4.7-r0
+image: bitnami/wordpress:4.7.3-r0
 
 ## Specify a imagePullPolicy
 ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -38,6 +38,21 @@ wordpressLastName: LastName
 ## ref: https://github.com/bitnami/bitnami-docker-wordpress#environment-variables
 ##
 wordpressBlogName: User's Blog!
+
+## Database name to create 
+## databaseName: 
+
+## Database user to create
+## databaseUser: 
+
+## Database password for the new user
+## databasePassword: 
+
+## Set the environment variable to `yes` to allow the container to be started with blank passwords
+## Defaults to no
+## allowEmptyPassword: 
+
+
 
 ## SMTP mail delivery configuration
 ## ref: https://github.com/bitnami/bitnami-docker-wordpress/#smtp-configuration
