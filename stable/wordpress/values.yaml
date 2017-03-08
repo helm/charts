@@ -39,16 +39,23 @@ wordpressLastName: LastName
 ##
 wordpressBlogName: User's Blog!
 
-## Database name to create 
+## Database name to create
+## Sets WORDPRESS_DATABASE_NAME and MYSQL_CLIENT_CREATE_DATABASE_NAME
+## ref: https://github.com/bitnami/bitnami-docker-wordpress#environment-variables
 ## databaseName: 
 
 ## Database user to create
+## Sets WORDPRESS_DATABASE_USER and MYSQL_CLIENT_CREATE_DATABASE_USER 
+## ref: https://github.com/bitnami/bitnami-docker-wordpress#environment-variables
 ## databaseUser: 
 
 ## Database password for the new user
+## Sets WORDPRESS_DATABASE_PASSWORD  and  MYSQL_CLIENT_CREATE_DATABASE_PASSWORD 
+## ref: https://github.com/bitnami/bitnami-docker-wordpress#environment-variables
 ## databasePassword: 
 
-## Set the environment variable to `yes` to allow the container to be started with blank passwords
+## Set to `yes` to allow the container to be started with blank passwords
+## ref: https://github.com/bitnami/bitnami-docker-wordpress#environment-variables
 ## Defaults to no
 ## allowEmptyPassword: 
 
