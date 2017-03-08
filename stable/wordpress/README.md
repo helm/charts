@@ -46,7 +46,7 @@ The command removes all the Kubernetes components associated with the chart and 
 The following tables lists the configurable parameters of the WordPress chart and their default values.
 
 | Parameter                            | Description                                | Default                                                    |
-| -------------------------------      | -------------------------------            | ---------------------------------------------------------- |
+| -------------------------------------| -------------------------------------------| ---------------------------------------------------------- |
 | `image`                              | WordPress image                            | `bitnami/wordpress:{VERSION}`                              |
 | `imagePullPolicy`                    | Image pull policy                          | `IfNotPresent`                                             |
 | `wordpressUsername`                  | User of the application                    | `user`                                                     |
@@ -55,6 +55,10 @@ The following tables lists the configurable parameters of the WordPress chart an
 | `wordpressFirstName`                 | First name                                 | `FirstName`                                                |
 | `wordpressLastName`                  | Last name                                  | `LastName`                                                 |
 | `wordpressBlogName`                  | Blog name                                  | `User's Blog!`                                             |
+| `databaseName`                       | Database name to create                    | `nil`                                                      |
+| `databaseUser`                       | Database user to create                    | `nil`                                                      |
+| `databasePassword`                   | Password for the database                  | `nil`                                                      |
+| `allowEmptyPassword`                 | Allow DB blank passwords                   | `no`                                                      |
 | `smtpHost`                           | SMTP host                                  | `nil`                                                      |
 | `smtpPort`                           | SMTP port                                  | `nil`                                                      |
 | `smtpUser`                           | SMTP user                                  | `nil`                                                      |
@@ -65,7 +69,7 @@ The following tables lists the configurable parameters of the WordPress chart an
 | `serviceType`                        | Kubernetes Service type                    | `LoadBalancer`                                             |
 | `ingress.enabled`                    | Enable ingress controller resource         | `false`                                                    |
 | `ingress.hostname`                   | URL to address your WordPress installation | `wordpress.local`                                          |
-| `ingress.tls`                        | Ingress TLS configuration                  | `[]`                                          |
+| `ingress.tls`                        | Ingress TLS configuration                  | `[]`                                                       |
 | `persistence.enabled`                | Enable persistence using PVC               | `true`                                                     |
 | `persistence.apache.storageClass`    | PVC Storage Class for Apache volume        | `nil` (uses alpha storage class annotation)                |
 | `persistence.apache.accessMode`      | PVC Access Mode for Apache volume          | `ReadWriteOnce`                                            |
