@@ -45,7 +45,6 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following tables lists the configurable parameters of the WordPress chart and their default values.
 
-<<<<<<< HEAD
 |              Parameter               |                Description                 |                    Default                     |
 |--------------------------------------|--------------------------------------------|------------------------------------------------|
 | `image`                              | WordPress image                            | `bitnami/wordpress:{VERSION}`                  |
