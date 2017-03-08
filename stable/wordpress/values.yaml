@@ -39,6 +39,21 @@ wordpressLastName: LastName
 ##
 wordpressBlogName: User's Blog!
 
+## Database name to create 
+## databaseName: 
+
+## Database user to create
+## databaseUser: 
+
+## Database password for the new user
+## databasePassword: 
+
+## Set the environment variable to `yes` to allow the container to be started with blank passwords
+## Defaults to no
+## allowEmptyPassword: 
+
+
+
 ## SMTP mail delivery configuration
 ## ref: https://github.com/bitnami/bitnami-docker-wordpress/#smtp-configuration
 ##
