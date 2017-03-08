@@ -55,10 +55,10 @@ The following tables lists the configurable parameters of the WordPress chart an
 | `wordpressFirstName`                 | First name                                 | `FirstName`                                                |
 | `wordpressLastName`                  | Last name                                  | `LastName`                                                 |
 | `wordpressBlogName`                  | Blog name                                  | `User's Blog!`                                             |
-| `databaseName`                       | Database name to create                    | `nil`                                                      |
-| `databaseUser`                       | Database user to create                    | `nil`                                                      |
-| `databasePassword`                   | Password for the database                  | `nil`                                                      |
-| `allowEmptyPassword`                 | Allow DB blank passwords                   | `no`                                                      |
+| `databaseName`                       | Database name to create                    | `bitnami_wordpress`                                        |
+| `databaseUser`                       | Database user to create                    | `bn_wordpress`                                             |
+| `databasePassword`                   | Password for the database                  | _random 10 character long alphanumeric string_             |
+| `allowEmptyPassword`                 | Allow DB blank passwords                   | `no`                                                       |
 | `smtpHost`                           | SMTP host                                  | `nil`                                                      |
 | `smtpPort`                           | SMTP port                                  | `nil`                                                      |
 | `smtpUser`                           | SMTP user                                  | `nil`                                                      |
