@@ -1,0 +1,21 @@
+## Configure resource requests and limits
+## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+##
+resources:
+  requests:
+    memory: 100Mi
+    cpu: 100m
+  limits:
+    memory: 500Mi
+
+## Enable persistence using Persistent Volume Claims
+## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+##
+persistence:
+  enabled: true
+  storageClass: default
+  accessMode: ReadWriteOnce
+  size: 1Gi
+
+## Redis image version
+redis_image: gcr.io/google_containers/redis:v1

@@ -1,0 +1,9 @@
+To connect to your Redis server:
+
+1. Run a Redis pod that you can use as a client:
+
+   $ kubectl exec -it redis-master bash
+
+2. Run Redis CLI:
+
+   # redis-cli
