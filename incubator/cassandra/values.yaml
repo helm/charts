@@ -29,5 +29,8 @@ persistence:
 # Instance resources
 resources:
   requests:
-    cpu: 500m
-    memory: 1Gi
+    cpu: "500m"
+    memory: "1Gi"
+  limits:
+    cpu: "500m"
+    memory: "1Gi"    

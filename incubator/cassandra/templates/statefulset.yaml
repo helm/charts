@@ -34,11 +34,11 @@ spec:
           name: cql
         resources:
           limits:
-            cpu: "{{.Values.resources.cpu}}"
-            memory: "{{.Values.resources.memory}}"
+            cpu: "{{.Values.resources.limits.cpu}}"
+            memory: "{{.Values.resources.limits.memory}}"
           requests:
-           cpu: "{{.Values.resources.cpu}}"
-           memory: "{{.Values.resources.memory}}"
+           cpu: "{{.Values.resources.requests.cpu}}"
+           memory: "{{.Values.resources.requests.memory}}"
         securityContext:
           capabilities:
             add:
