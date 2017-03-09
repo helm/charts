@@ -1,10 +1,10 @@
 # CoreOS etcd-operator
 
-[etcd-operator](https://coreos.com/blog/introducing-the-etcd-operator.html) Simplify etcd cluster 
+[etcd-operator](https://coreos.com/blog/introducing-the-etcd-operator.html) Simplify etcd cluster
 configuration and management.
 
 __DISCLAIMER:__ While this chart has been well-tested, the etcd-operator is still currently in alpha.
-Current project status is available [here](https://github.com/coreos/etcd-operator) 
+Current project status is available [here](https://github.com/coreos/etcd-operator)
 
 ## Introduction
 
@@ -59,7 +59,7 @@ The following tables lists the configurable parameters of the etcd-operator char
 | `resources.limits.memory`                         | Memory limit per etcd-operator pod                                   | `128Mi`                                        |
 | `resources.requests.cpu`                          | CPU request per etcd-operator pod                                    | `100m`                                         |
 | `resources.requests.memory`                       | Memory request per etcd-operator pod                                 | `128Mi`                                        |
-| `cluster.enabled`                                 | Whether to enable provisioning of and etcd-cluster                   | `false`                                        |
+| `cluster.enabled`                                 | Whether to enable provisioning of an etcd-cluster                    | `false`                                        |
 | `cluster.name`                                    | etcd cluster name                                                    | `etcd-cluster`                                 |
 | `cluster.version`                                 | etcd cluster version                                                 | `v3.1.2`                                       |
 | `cluster.size`                                    | etcd cluster size                                                    | `3`                                            |
@@ -67,7 +67,7 @@ The following tables lists the configurable parameters of the etcd-operator char
 | `cluster.backup.provisioner`                      | Which PV provisioner to use                                          | `kubernetes.io/gce-pd` (kubernetes.io/aws-ebs) |
 | `cluster.backup.config.snapshotIntervalInSecond`  | etcd snapshot interval in seconds                                    | `30`                                           |
 | `cluster.backup.config.maxSnapshot`               | maximum number of snapshots to keep                                  | `5`                                            |
-| `cluster.backup.config.storageType`               | Type to storage to provision                                         | `PersistentVolume`                             |
+| `cluster.backup.config.storageType`               | Type of storage to provision                                         | `PersistentVolume`                             |
 | `cluster.backup.config.pv.volumeSizeInMB`         | size of backup PV                                                    | `512MB`                                        |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
