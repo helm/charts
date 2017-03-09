@@ -20,7 +20,7 @@ spec:
         imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
         env:
         - name: ALLOW_EMPTY_PASSWORD
-          value: {{ default "no" .Values.allowEmptyPassword  | quote }}
+          value: {{ default "no" .Values.allowEmptyPassword | quote }}
         - name: MARIADB_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
@@ -35,9 +35,9 @@ spec:
         - name: WORDPRESS_DATABASE_NAME
           value: {{ default "bitnami_wordpress" .Values.databaseName | quote }}
         - name: MYSQL_CLIENT_CREATE_DATABASE_USER
-          value: {{ default "bn_wordpress" .Values.databaseUser| quote }}
+          value: {{ default "bn_wordpress" .Values.databaseUser | quote }}
         - name: WORDPRESS_DATABASE_USER
-          value: {{ default "bn_wordpress" .Values.databaseUser| quote }}
+          value: {{ default "bn_wordpress" .Values.databaseUser | quote }}
         - name: MYSQL_CLIENT_CREATE_DATABASE_PASSWORD
           valueFrom:
             secretKeyRef:
