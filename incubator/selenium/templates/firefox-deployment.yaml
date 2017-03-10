@@ -31,7 +31,7 @@ spec:
             - name: JAVA_OPTS
               value: {{ default "" .Values.chrome.javaOpts | quote }}
             - name: SE_OPTS
-              value: {{ default "" .Values.firefox.seOpts }}
+              value: {{ default "" .Values.firefox.seOpts | quote }}
             {{- if .Values.firefox.screenWidth }}
             - name: SCREEN_WIDTH
               value: {{ .Values.firefox.screenWidth | quote }}

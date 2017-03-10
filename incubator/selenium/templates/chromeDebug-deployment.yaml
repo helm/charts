@@ -33,7 +33,7 @@ spec:
             - name: JAVA_OPTS
               value: {{ default "" .Values.chromeDebug.javaOpts | quote }}
             - name: SE_OPTS
-              value: {{ default "" .Values.chromeDebug.seOpts }}
+              value: {{ default "" .Values.chromeDebug.seOpts | quote }}
             {{- if .Values.chromeDebug.screenWidth }}
             - name: SCREEN_WIDTH
               value: {{ .Values.chromeDebug.screenWidth | quote }}

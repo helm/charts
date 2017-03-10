@@ -31,7 +31,7 @@ spec:
             - name: JAVA_OPTS
               value: {{ default "" .Values.chrome.javaOpts | quote }}
             - name: SE_OPTS
-              value: {{ default "" .Values.chrome.seOpts }}
+              value: {{ default "" .Values.chrome.seOpts | quote }}
             {{- if .Values.chrome.screenWidth }}
             - name: SCREEN_WIDTH
               value: {{ .Values.chrome.screenWidth | quote }}
