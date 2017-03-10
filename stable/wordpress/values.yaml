@@ -39,27 +39,9 @@ wordpressLastName: LastName
 ##
 wordpressBlogName: User's Blog!
 
-## Database name to create
-## Sets WORDPRESS_DATABASE_NAME and MYSQL_CLIENT_CREATE_DATABASE_NAME
-## ref: https://github.com/bitnami/bitnami-docker-wordpress#environment-variables
-databaseName: bitnami_wordpress
-
-## Database user to create
-## Sets WORDPRESS_DATABASE_USER and MYSQL_CLIENT_CREATE_DATABASE_USER 
-## ref: https://github.com/bitnami/bitnami-docker-wordpress#environment-variables
-databaseUser: bn_wordpress
-
-## Database password for the new user
-## Sets WORDPRESS_DATABASE_PASSWORD  and  MYSQL_CLIENT_CREATE_DATABASE_PASSWORD 
-## ref: https://github.com/bitnami/bitnami-docker-wordpress#environment-variables
-## databasePassword: 
-
 ## Set to `yes` to allow the container to be started with blank passwords
 ## ref: https://github.com/bitnami/bitnami-docker-wordpress#environment-variables
-## Defaults to no
-## allowEmptyPassword: 
-
-
+allowEmptyPassword: yes
 
 ## SMTP mail delivery configuration
 ## ref: https://github.com/bitnami/bitnami-docker-wordpress/#smtp-configuration
@@ -79,6 +61,21 @@ mariadb:
   ## ref: https://github.com/bitnami/bitnami-docker-mariadb/blob/master/README.md#setting-the-root-password-on-first-run
   ##
   # mariadbRootPassword:
+
+  ## Create a database
+  ## ref: https://github.com/bitnami/bitnami-docker-mariadb/blob/master/README.md#creating-a-database-on-first-run
+  ##
+  mariadbDatabase: bitnami_wordpress
+
+  ## Create a database user
+  ## ref: https://github.com/bitnami/bitnami-docker-mariadb/blob/master/README.md#creating-a-database-user-on-first-run
+  ##
+  mariadbUser: bn_wordpress
+
+  ## Password for mariadbUser
+  ## ref: https://github.com/bitnami/bitnami-docker-mariadb/blob/master/README.md#creating-a-database-user-on-first-run
+  ##
+  # mariadbPassword:
 
   ## Enable persistence using Persistent Volume Claims
   ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
