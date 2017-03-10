@@ -12,7 +12,7 @@ resources:
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
 ##
 persistence:
-  enabled: true
+  enabled: false
   storageClass: default
   accessMode: ReadWriteOnce
   size: 1Gi
