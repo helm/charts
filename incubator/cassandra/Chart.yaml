@@ -1,0 +1,11 @@
+name: cassandra
+home: http://cassandra.apache.org
+version: 0.1.0
+description: A highly scalable, high-performance distributed database designed to handle large amounts of data across many commodity servers, providing high availability with no single point of failure.
+icon: http://cassandra.apache.org/img/cassandra_logo.png
+sources:
+  - https://github.com/apache/cassandra
+keywords:
+  - cassandra
+  - nosql
+  - database
