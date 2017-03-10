@@ -49,7 +49,7 @@ The following tables lists the configurable parameters of the MySQL chart and th
 | `cassandra.ClusterName`    | Name of the `cassandra` cluster.           | K8Demo                              |
 | `cassandra.DC`             | Name of the DC for `cassandra` cluster.    | DC1-K8Demo                          |
 | `cassandra.Rack`           | Name of the Rack for `cassandra` cluster.  | Rack1-K8Demo                        |
-| `persistence.enabled`      | Create a volume to store data              | default                             |
+| `persistence.enabled`      | Create a volume to store data              | true                                |
 | `persistence.size`         | Size of persistent volume claim            | 10Gi                                |
 | `persistence.storageClass` | Type of persistent volume claim            | default                             |
 | `persistence.accessMode`   | ReadWriteOnce or ReadOnly                  | ReadWriteOnce                       |
