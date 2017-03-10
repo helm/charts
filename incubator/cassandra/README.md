@@ -12,7 +12,7 @@ This chart bootstraps a multi-node Cassandra deployment on a [Kubernetes](http:/
 
 ## Prerequisites
 
-- Kubernetes 1.4+ with Beta APIs enabled
+- Kubernetes 1.4+ with Beta APIs enabled (Kubernetes 1.5.3+ for Azure)
 - PV provisioner support in the underlying infrastructure
 
 ## Installing the Chart
@@ -49,8 +49,9 @@ The following tables lists the configurable parameters of the MySQL chart and th
 | `cassandra.ClusterName`    | Name of the `cassandra` cluster.           | K8Demo                              |
 | `cassandra.DC`             | Name of the DC for `cassandra` cluster.    | DC1-K8Demo                          |
 | `cassandra.Rack`           | Name of the Rack for `cassandra` cluster.  | Rack1-K8Demo                        |
+| `persistence.enabled`      | Create a volume to store data              | default                             |
 | `persistence.size`         | Size of persistent volume claim            | 10Gi                                |
-| `persistence.storageClass` | Type of persistent volume claim            | fast                                |
+| `persistence.storageClass` | Type of persistent volume claim            | default                             |
 | `persistence.accessMode`   | ReadWriteOnce or ReadOnly                  | ReadWriteOnce                       |
 | `resources`                | CPU/Memory resource requests/limits        | Memory: `1Gi`, CPU: `500m`          |
 
@@ -61,7 +62,8 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 
 The deployment of the Cassandra cluster relies on persistent storage.  A PersistentVolumeClaim is created and mounted in the directory `/cassandra-data` on a per Cassandra instance.
 
-In order to do such, a PersistentVolumeClaim needs to be defined.  An example for defining an SSD based volume claim, the yaml file resembles:
+By default, the chart will uses the default StorageClass for the provider where Kubernetes is running.  If `default` isn't supported, or if one wants to use a specifc StorageClass, for instance premium storage on Azure, one would need to define the appropriate StorageClass and update the values.yaml file or use the `--set key=persitence.storageClass=<value>` flag to specify such.  To specify a Premium Storage disk (ssd) on Azure, the yaml file for the StorageClass definition would resemble:
+
 ```
 # https://kubernetes.io/docs/user-guide/persistent-volumes/#azure-disk
 apiVersion: storage.k8s.io/v1beta1
@@ -75,3 +77,5 @@ parameters:
   skuName: Premium_LRS
   location: westus
 ```
+
+In order to disable this functionality you can change the values.yaml to disable persistence and use an emptyDir instead.

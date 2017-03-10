@@ -84,6 +84,7 @@ spec:
   # These are converted to volume claims by the controller
   # and mounted at the paths mentioned above.
   volumeClaimTemplates:
+  {{- if .Values.persistence.enabled }}
   - metadata:
       name: cassandra-data
       annotations:
@@ -98,3 +99,4 @@ spec:
       resources:
         requests:
           storage: {{ .Values.persistence.size | quote }}
+ {{- end }}          
