@@ -1,0 +1,45 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app: {{ template "fullname" . }}
+spec:
+  replicas: {{default 1 .Values.replicaCount}}
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      labels:
+        heritage: {{ .Release.Service | quote }}
+        release: {{ .Release.Name | quote }}
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        app: {{ template "fullname" . }}
+    spec:
+      restartPolicy: Always
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        env:
+        {{- range $key, $value :=  .Values.config }}
+        - name: {{ $key | upper | replace "-" "_" }}
+          value: {{ $value | quote }}
+        {{- end }}
+        {{- $topscope := . -}}
+        {{- range $key, $value :=  .Values.secrets }}
+        - name: {{ $key | upper | replace "-" "_" }}
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "fullname" $topscope }}
+              key: {{ $key }}
+        {{- end }}
+        resources:
+{{ toYaml .Values.resources | indent 12 }}

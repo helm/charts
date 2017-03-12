@@ -1,0 +1,29 @@
+# Default values for cloudflare-datadog.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+replicaCount: 1
+image:
+  repository: quay.io/honestbee/cloudflare-datadog
+  tag: latest
+  pullPolicy: Always
+resources:
+  limits:
+    cpu: 100m
+    memory: 128Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+config:
+  stats-key-prefix: "cloudflare"
+  # Pro & Business plans can only get 15 min. periods (Since: -360)
+  # Enterprise can get up to 1 min. period analytics (Since: -30)
+  since: "-360"
+  tags: ""
+secrets:
+  datadog-api-key: ""
+  datadog-app-key: ""
+  auth-email: ""
+  auth-key: ""
+  zone: ""
+  # for example: using healthchecks.io
+  dead-mans_snitch-url: ""
