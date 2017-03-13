@@ -60,3 +60,25 @@ Alternatively, a YAML file that specifies the values for the parameters can be p
 ```bash
 $ helm install --name my-release -f values.yaml incubator/couchbase
 ```
+
+By default persistence is enabled, and a PersistentVolumeClaim is created and mounted in that directory. 
+
+As a result, a persistent volume will need to be defined:
+
+```
+# https://kubernetes.io/docs/user-guide/persistent-volumes/#azure-disk
+apiVersion: storage.k8s.io/v1beta1
+kind: StorageClass
+metadata:
+  name: fast
+  annotations:
+    storageclass.beta.kubernetes.io/is-default-class: "true"
+provisioner: kubernetes.io/azure-disk
+parameters:
+  skuName: Premium_LRS
+  location: westus
+```
+
+For example, with that configuration you have to deploy a storage account with the Premium LRS sku in the West Us region in the same resource group as your ACS deployment.
+
+In order to disable this functionality you can change the values.yaml to disable persistence and use an emptyDir instead.
