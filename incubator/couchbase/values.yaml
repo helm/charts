@@ -1,0 +1,22 @@
+## couchbase image version
+## ref: https://hub.docker.com/r/library/couchbase/tags/
+##
+
+workerReplicaCount: 3
+
+## User
+##
+# couchbaseUsername:
+# couchbaseRootPassword: ## Default: random 10 character string
+
+## Enable persistence using Persistent Volume Claims
+## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+##
+persistence:
+  enabled: true
+  ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
+  ## Default: volume.alpha.kubernetes.io/storage-class: default
+  ##
+  storageClass: fast 
+  accessMode: ReadWriteOnce
+  size: 10Gi
