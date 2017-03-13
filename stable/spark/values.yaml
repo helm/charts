@@ -27,6 +27,7 @@ Worker:
   ImageTag: "1.5.1_v3"
   Replicas: 3
   Component: "spark-worker"
+  WorkingDirectory: "/opt/spark/work"
   Cpu: "100m"
   Memory: "512Mi"
   ContainerPort: 8081
@@ -44,3 +45,19 @@ Zeppelin:
   Cpu: "100m"
   ServicePort: 8080
   ContainerPort: 8080
+
+Persistence:
+  Enabled: true
+  ## If defined, volume.beta.kubernetes.io/storage-class: <StorageClass>
+  ## Default: volume.alpha.kubernetes.io/storage-class: default
+  ##
+  # StorageClass:
+  AccessMode: ReadWriteOnce
+  Size: 8Gi
+  volumes:
+#  - name: nothing
+#    emptyDir: {}
+  mounts:
+#  - mountPath: /var/nothing
+#    name: nothing
+#    readOnly: true
