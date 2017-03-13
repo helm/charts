@@ -1,29 +1,44 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: coredns
-  namespace: kube-system
+  name: {{ template "fullname" . }}
   labels:
-    k8s-app: coredns
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    {{- if .Values.isClusterService }}
+    k8s-app: {{ .Chart.Name | quote }}
     kubernetes.io/cluster-service: "true"
     kubernetes.io/name: "CoreDNS"
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    {{- else }}
+    app: {{ template "fullname" . }}
+    {{- end }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      k8s-app: coredns
+      {{- if .Values.isClusterService }}
+      k8s-app: {{ .Chart.Name | quote }}
+      {{- else }}
+      app: {{ template "fullname" . }}
+      {{- end }}
   template:
     metadata:
       labels:
-        k8s-app: coredns
-        chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+        {{- if .Values.isClusterService }}
+        k8s-app: {{ .Chart.Name | quote }}
+        {{- else }}
+        app: {{ template "fullname" . }}
+        {{- end }}
+        release: {{ .Release.Name | quote }}
       annotations:
+        {{- if .Values.isClusterService }}
         scheduler.alpha.kubernetes.io/critical-pod: ''
         scheduler.alpha.kubernetes.io/tolerations: '[{"key":"CriticalAddonsOnly", "operator":"Exists"}]'
+        {{- end }}
     spec:
       containers:
-      - name: coredns
+      - name: "coredns"
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         args: [ "-conf", "/etc/coredns/Corefile" ]
@@ -48,11 +63,10 @@ spec:
           timeoutSeconds: 5
           successThreshold: 1
           failureThreshold: 5
-      dnsPolicy: Default
       volumes:
         - name: config-volume
           configMap:
-            name: coredns
+            name: {{ template "fullname" . }}
             items:
             - key: Corefile
               path: Corefile

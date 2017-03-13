@@ -1,21 +1,35 @@
 CoreDNS
 =======
 
-CoreDNS is a DNS server that chains middleware and provides Kubernetes DNS Services
+CoreDNS is a DNS server that chains middleware and provides DNS Services
 
 TL;DR;
 ------
 
 ```console
-$ helm install --name coredns stable/coredns
+$ helm install --name coredns --namespace=kube-system stable/coredns
 ```
 
 Introduction
 ------------
 
-This chart bootstraps a [CoreDNS](https://github.com/coredns/coredns) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
+This chart bootstraps a [CoreDNS](https://github.com/coredns/coredns) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager. This chart will provide DNS Services and can be deployed in multiple configuration to support various scenarios listed below:
 
-This chart will provide DNS Services to a Kubernetes cluster and is a drop-in replacement for Kube/SkyDNS.
+ - CoreDNS as a cluster dns service and a drop-in replacement for Kube/SkyDNS. This is the default mode and CoreDNS is deployed as cluster-service in kube-system namespace. This mode is chosen by setting `isClusterService` to true.
+ - CoreDNS as an external dns service. In this mode CoreDNS is deployed as any kubernetes app in user specified namespace. The CoreDNS service can be exposed outside the cluster by using using either the NodePort or LoadBalancer type of service. This mode is chosen by setting `isClusterService` to false.
+ - CoreDNS as an external dns provider for kubernetes federation. This is a sub case of 'external dns service' which uses etcd middleware for CoreDNS backend. This deployment mode as a dependency on `etcd-operator` chart, which needs to be pre-installed. To use this deployment mode use below configuration file to override default values.
+```
+isClusterService: false
+   serviceType: "NodePort"
+   middleware:
+     kubernetes:
+       enabled: false
+     etcd:
+       enabled: true
+       zones:
+       - "<example.io>"
+       endpoint: "http://<etcd-cluster>:2379"
+```
 
 Prerequisites
 -------------
@@ -25,13 +39,13 @@ Prerequisites
 Installing the Chart
 --------------------
 
-Since there is typically only a single DNS Server per kubernetes cluster, this Chart does not make use of the release name. For convenience the chart can be installed as follows:
+The chart can be installed as follows:
 
 ```console
-$ helm install --name coredns stable/coredns
+$ helm install --name coredns --namespace=kube-system stable/coredns
 ```
 
-The command deploys CoreDNS on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
+The command deploys CoreDNS on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists various ways to override default configuration during deployment.
 
 > **Tip**: List all releases using `helm list`
 
@@ -49,31 +63,15 @@ The command removes all the Kubernetes components associated with the chart and 
 Configuration
 -------------
 
-The following tables lists the configurable parameters of the CoreDNS chart and their default values.
-
-| Parameter          | Description                         | Default                      |
-|--------------------|-------------------------------------|------------------------------|
-| `image.repository` | CoreDNS image                       | `coredns/coredns`            |
-| `image.tag`        | CoreDNS tag                         | `006`                        |
-| `image.pullPolicy` | Image pull policy                   | `IfNotPresent`               |
-| `clusterCidr`      | The CIDR for the Kubernetes Cluster | `10.3.0.0/24`                |
-| `clusterDomain`    | The Domain for the Cluster DNS      | `cluster.local`              |
-| `clusterIP`        | The IP for the DNS Server           | `10.3.0.10`                  |
-| `metrics.enabled`  | Enable Prometheus Metrics           | `true`                       |
-| `metrics.port`     | Prometheus Pot                      | `9153`                       |
-| `resources`        | CPU/Memory resource requests/limits | Memory: `128Mi`, CPU: `100m` |
-
-The above parameters map to the env variables defined in [coredns/coredns](http://github.com/coredns/coredns). For more information please refer to the [coredns/coredns](http://github.com/coredns/coredns) image documentation.
-
-Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
+See `values.yaml` for configuration notes. Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```console
 $ helm install --name coredns \
-  --set metrics.enabled=false \
+  --set middleware.prometheus.enabled=false \
     stable/coredns
 ```
 
-The above command disables the Prometheus metrics.
+The above command disables the Prometheus middleware.
 
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 
