@@ -65,3 +65,5 @@ The following outlines the review procedure used by the Chart repository maintai
 ## Status of the Project
 
 This project is still under active development, so you might run into [issues](https://github.com/kubernetes/charts/issues). If you do, please don't be shy about letting us know, or better yet, contribute a fix or feature.
+
+If you want to know what we are working on, please have a look at the next [milestones](https://github.com/kubernetes/charts/milestones).
