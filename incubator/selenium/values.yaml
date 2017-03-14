@@ -3,12 +3,14 @@ hub:
   tag: "2.53.1"
   pullPolicy: "IfNotPresent"
   port: 4444
-  javaOpts: "-Xmx900m"
+  # If you find your selenium hub is OOMKilled, try adding -XX:+UseSerialGC
+  javaOpts: "-Xmx400m"
+  # seOpts: 
   # jmxPort: 4000
   resources:
     limits:
       cpu: ".5"
-      memory: "1000Mi"
+      memory: "512Mi"
   serviceType: "LoadBalancer"
   serviceSessionAffinity: "None"
   # serviceAnnotations:
@@ -32,6 +34,7 @@ chrome:
   pullPolicy: "IfNotPresent"
   replicas: 1
   javaOpts: "-Xmx900m"
+  # seOpts: 
   # jmxPort: 4000
   # https://github.com/kubernetes/kubernetes/pull/34928#issuecomment-277952723
   # http://stackoverflow.com/questions/39852716/chrome-driver-throwing-org-openqa-selenium-remote-sessionnotfoundexception-whe
@@ -61,6 +64,7 @@ chromeDebug:
   pullPolicy: "IfNotPresent"
   replicas: 1
   javaOpts: "-Xmx900m"
+  # seOpts: 
   # jmxPort: 4000
   # https://github.com/kubernetes/kubernetes/pull/34928#issuecomment-277952723
   # http://stackoverflow.com/questions/39852716/chrome-driver-throwing-org-openqa-selenium-remote-sessionnotfoundexception-whe
@@ -90,6 +94,7 @@ firefox:
   pullPolicy: "IfNotPresent"
   replicas: 1
   javaOpts: "-Xmx900m"
+  # seOpts: 
   # jmxPort: 4000
   resources:
     limits:
@@ -108,6 +113,7 @@ firefoxDebug:
   pullPolicy: "IfNotPresent"
   replicas: 1
   javaOpts: "-Xmx900m"
+  # seOpts: 
   # jmxPort: 4000
   resources:
     limits:

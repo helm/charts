@@ -85,3 +85,5 @@ To scale the number of selenium nodes
 {{ end -}}
 
 {{ end }}
+
+If you find your hub is OOMKilled, try adding -XX:+UseSerialGC to hub.javaOpts.
