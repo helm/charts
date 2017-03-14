@@ -4,9 +4,10 @@ description: Chart for selenium grid
 keywords:
   - qa
 home: http://www.seleniumhq.org/
+icon: http://docs.seleniumhq.org/images/big-logo.png
 sources:
   - https://github.com/SeleniumHQ/docker-selenium
-  - https://github.com/Adaptly/k8s-charts
 maintainers:
-  - name: flah00
+  - name: Philip Champon (flah00)
+    email: techops@adaptly.com
 engine: gotpl
