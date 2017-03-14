@@ -96,7 +96,7 @@ spec:
       - name: jenkins-home
       {{- if .Values.Persistence.Enabled }}
         persistentVolumeClaim:
-          claimName: {{ if .Values.Persistence.ExistingClaim }} {{ .Values.Persistence.ExistingClaim }} {{ else }} {{ template "fullname" . }} {{ end }}
+          claimName: {{ .Values.Persistence.ExistingClaim | default (include "fullname" .) }}
       {{- else }}
         emptyDir: {}
       {{- end -}}
