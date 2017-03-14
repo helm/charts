@@ -1,0 +1,6 @@
+Your ingress will be available at the URL:
+{{- if .Values.ingress.tls }}
+- https://{{ .Values.ingress.hostname }}
+{{- else }}
+- http://{{ .Values.ingress.hostname }}
+{{- end }}
