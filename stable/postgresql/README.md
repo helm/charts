@@ -62,6 +62,7 @@ The following tables lists the configurable parameters of the PostgresSQL chart 
 | `metrics.imageTag`         | Exporter image                             | `v0.1.1`                                                   |
 | `metrics.imagePullPolicy`  | Exporter image pull policy                 | `IfNotPresent`                                             |
 | `metrics.resources`        | Exporter resource requests/limit           | Memory: `256Mi`, CPU: `100m`                               |
+| `metrics.customMetrics`    | Additional custom metrics                  | `nil`                                                      |
 
 The above parameters map to the env variables defined in [postgres](http://github.com/docker-library/postgres). For more information please refer to the [postgres](http://github.com/docker-library/postgres) image documentation.
 
@@ -93,3 +94,5 @@ The volume defaults to mount at a subdirectory of the volume instead of the volu
 
 ## Metrics
 The chart optionally can start a metrics exporter for [prometheus](https://prometheus.io). The metrics endpoint (port 9187) is not exposed and it is expected that the metrics are collected from inside the k8s cluster using something similar as the described in the [example Prometheus scrape configuration](https://github.com/prometheus/prometheus/blob/master/documentation/examples/prometheus-kubernetes.yml).
+
+The exporter allows to create custom metrics from additional SQL queries. See the Chart's `values.yaml` for an example and consult the [exporters documentation](https://github.com/wrouesnel/postgres_exporter#adding-new-metrics-via-a-config-file) for more details.
