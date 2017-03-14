@@ -74,7 +74,7 @@ spec:
       - name: redmine-data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ if .Values.persistence.existingClaim }} {{ .Values.persistence.existingClaim }} {{ else }} {{ template "fullname" . }} {{ end }}
+          claimName: {{ .Values.persistence.existingClaim | default (include "fullname" .) }}
       {{- else }}
         emptyDir: {}
       {{- end -}}
