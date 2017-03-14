@@ -63,6 +63,8 @@ Parameter | Description | Default
 `controller.service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
 `controller.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
 `controller.service.type` | type of controller service to create | `LoadBalancer`
+`controller.service.nodePorts.http` | If `controller.service.type` is `NodePort` and this is non-empty, it sets the nodePort that maps to the Ingress' port 80 | `""`
+`controller.service.nodePorts.https` | If `controller.service.type` is `NodePort` and this is non-empty, it sets the nodePort that maps to the Ingress' port 443 | `""`
 `controller.stats.enabled` | if true, enable "vts-status" page & Prometheus metrics | `false`
 `controller.stats.service.annotations` | annotations for controller stats service | `{}`
 `controller.stats.service.clusterIP` | internal controller stats cluster service IP | `""`

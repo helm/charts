@@ -53,6 +53,14 @@ controller:
     loadBalancerSourceRanges: []
     type: LoadBalancer
 
+    # type: NodePort
+    # nodePorts:
+    #   http: 32080
+    #   https: 32443
+    nodePorts:
+      http: ""
+      https: ""
+
   stats:
     enabled: false
 
