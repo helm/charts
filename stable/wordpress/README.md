@@ -45,34 +45,38 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following tables lists the configurable parameters of the WordPress chart and their default values.
 
-| Parameter                            | Description                                | Default                                                    |
-| -------------------------------      | -------------------------------            | ---------------------------------------------------------- |
-| `image`                              | WordPress image                            | `bitnami/wordpress:{VERSION}`                              |
-| `imagePullPolicy`                    | Image pull policy                          | `IfNotPresent`                                             |
-| `wordpressUsername`                  | User of the application                    | `user`                                                     |
-| `wordpressPassword`                  | Application password                       | _random 10 character long alphanumeric string_             |
-| `wordpressEmail`                     | Admin email                                | `user@example.com`                                         |
-| `wordpressFirstName`                 | First name                                 | `FirstName`                                                |
-| `wordpressLastName`                  | Last name                                  | `LastName`                                                 |
-| `wordpressBlogName`                  | Blog name                                  | `User's Blog!`                                             |
-| `smtpHost`                           | SMTP host                                  | `nil`                                                      |
-| `smtpPort`                           | SMTP port                                  | `nil`                                                      |
-| `smtpUser`                           | SMTP user                                  | `nil`                                                      |
-| `smtpPassword`                       | SMTP password                              | `nil`                                                      |
-| `smtpUsername`                       | User name for SMTP emails                  | `nil`                                                      |
-| `smtpProtocol`                       | SMTP protocol [`tls`, `ssl`]               | `nil`                                                      |
-| `mariadb.mariadbRootPassword`        | MariaDB admin password                     | `nil`                                                      |
-| `serviceType`                        | Kubernetes Service type                    | `LoadBalancer`                                             |
-| `ingress.enabled`                    | Enable ingress controller resource         | `false`                                                    |
-| `ingress.hostname`                   | URL to address your WordPress installation | `wordpress.local`                                          |
-| `ingress.tls`                        | Ingress TLS configuration                  | `[]`                                          |
-| `persistence.enabled`                | Enable persistence using PVC               | `true`                                                     |
-| `persistence.apache.storageClass`    | PVC Storage Class for Apache volume        | `nil` (uses alpha storage class annotation)                |
-| `persistence.apache.accessMode`      | PVC Access Mode for Apache volume          | `ReadWriteOnce`                                            |
-| `persistence.apache.size`            | PVC Storage Request for Apache volume      | `1Gi`                                                      |
-| `persistence.wordpress.storageClass` | PVC Storage Class for WordPress volume     | `nil` (uses alpha storage class annotation)                |
-| `persistence.wordpress.accessMode`   | PVC Access Mode for WordPress volume       | `ReadWriteOnce`                                            |
-| `persistence.wordpress.size`         | PVC Storage Request for WordPress volume   | `8Gi`                                                      |
+|              Parameter               |                Description                 |                    Default                     |
+|--------------------------------------|--------------------------------------------|------------------------------------------------|
+| `image`                              | WordPress image                            | `bitnami/wordpress:{VERSION}`                  |
+| `imagePullPolicy`                    | Image pull policy                          | `IfNotPresent`                                 |
+| `wordpressUsername`                  | User of the application                    | `user`                                         |
+| `wordpressPassword`                  | Application password                       | _random 10 character long alphanumeric string_ |
+| `wordpressEmail`                     | Admin email                                | `user@example.com`                             |
+| `wordpressFirstName`                 | First name                                 | `FirstName`                                    |
+| `wordpressLastName`                  | Last name                                  | `LastName`                                     |
+| `wordpressBlogName`                  | Blog name                                  | `User's Blog!`                                 |
+| `allowEmptyPassword`                 | Allow DB blank passwords                   | `no`                                           |
+| `smtpHost`                           | SMTP host                                  | `nil`                                          |
+| `smtpPort`                           | SMTP port                                  | `nil`                                          |
+| `smtpUser`                           | SMTP user                                  | `nil`                                          |
+| `smtpPassword`                       | SMTP password                              | `nil`                                          |
+| `smtpUsername`                       | User name for SMTP emails                  | `nil`                                          |
+| `smtpProtocol`                       | SMTP protocol [`tls`, `ssl`]               | `nil`                                          |
+| `mariadb.mariadbRootPassword`        | MariaDB admin password                     | `nil`                                          |
+| `mariadb.mariadbDatabase`            | Database name to create                    | `bitnami_wordpress`                            |
+| `mariadb.mariadbUser`                | Database user to create                    | `bn_wordpress`                                 |
+| `mariadb.mariadbPassword`            | Password for the database                  | _random 10 character long alphanumeric string_ |
+| `serviceType`                        | Kubernetes Service type                    | `LoadBalancer`                                 |
+| `ingress.enabled`                    | Enable ingress controller resource         | `false`                                        |
+| `ingress.hostname`                   | URL to address your WordPress installation | `wordpress.local`                              |
+| `ingress.tls`                        | Ingress TLS configuration                  | `[]`                                           |
+| `persistence.enabled`                | Enable persistence using PVC               | `true`                                         |
+| `persistence.apache.storageClass`    | PVC Storage Class for Apache volume        | `nil` (uses alpha storage class annotation)    |
+| `persistence.apache.accessMode`      | PVC Access Mode for Apache volume          | `ReadWriteOnce`                                |
+| `persistence.apache.size`            | PVC Storage Request for Apache volume      | `1Gi`                                          |
+| `persistence.wordpress.storageClass` | PVC Storage Class for WordPress volume     | `nil` (uses alpha storage class annotation)    |
+| `persistence.wordpress.accessMode`   | PVC Access Mode for WordPress volume       | `ReadWriteOnce`                                |
+| `persistence.wordpress.size`         | PVC Storage Request for WordPress volume   | `8Gi`                                          |
 
 The above parameters map to the env variables defined in [bitnami/wordpress](http://github.com/bitnami/bitnami-docker-wordpress). For more information please refer to the [bitnami/wordpress](http://github.com/bitnami/bitnami-docker-wordpress) image documentation.
 
