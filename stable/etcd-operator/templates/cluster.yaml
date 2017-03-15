@@ -1,6 +1,6 @@
-{{- if .Values.cluster.enabled -}}
-apiVersion: "coreos.com/v1"
-kind: "EtcdCluster"
+{{- if and .Values.cluster.enabled (not .Release.IsInstall) -}}
+apiVersion: "etcd.coreos.com/v1beta1"
+kind: "Cluster"
 metadata:
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
