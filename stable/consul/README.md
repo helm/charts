@@ -46,7 +46,7 @@ The following tables lists the configurable parameters of the consul chart and t
 | `ServerPort`            | Container server listening port       | `8300`                                                     |
 | `ConsulDnsPort`         | Container dns listening port          | `8600`                                                     |
 | `ui.enabled`            | Enable Consul Web UI                  | `false`                                                    |
-| `uiSerivce.enable`      | Create dedicated Consul Web UI svc    | `false`                                                    |
+| `uiService.enabled`      | Create dedicated Consul Web UI svc    | `false`                                                    |
 | `uiService.type`        | Dedicate Consul Web UI svc type       | `NodePort`                                                 |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
