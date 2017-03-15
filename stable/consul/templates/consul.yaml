@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Secret
 metadata:
-  name: {{ .Release.Name }}-gossip-key
+  name: {{ template "fullname" . }}-gossip-key
 type: Opaque
 data:
   gossip-key: {{ randAlphaNum 24 | b64enc }}
