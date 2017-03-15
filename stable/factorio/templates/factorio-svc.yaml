@@ -11,7 +11,7 @@ spec:
   type: {{ .Values.factorioServer.serviceType }}
   ports:
   - name: factorio
-    port: {{ .Values.factorioServer.port | quote }}
+    port: {{ .Values.factorioServer.port | int }}
     targetPort: factorio
     protocol: UDP
   selector:
