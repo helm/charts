@@ -46,8 +46,8 @@ spec:
       labels:
         app: {{ template "fullname" . }}
     spec:
-{{- if .Values.nodes.enabled }}
-{{ toYaml .Values.nodes.selector | indent 6 }}
+{{- if .Values.selector }}
+{{ toYaml .Values.selector | indent 6 }}
 {{- end }}
       containers:
       - name: {{ template "fullname" . }}
@@ -114,7 +114,11 @@ spec:
         release: "{{ .Release.Name }}"
         heritage: "{{ .Release.Service }}"
       annotations:
+      {{- if .Values.persistence.storageClass }}
         volume.beta.kubernetes.io/storage-class: {{ .Values.persistence.storageClass | quote }}
+      {{- else }}
+        volume.alpha.kubernetes.io/storage-class: default
+      {{- end }}
     spec:
       accessModes:
         - {{ .Values.persistence.accessMode | quote }}

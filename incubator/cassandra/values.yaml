@@ -13,7 +13,9 @@ service:
 ## Persist data to a persitent volume
 persistence:
   enabled: true
-  storageClass: generic
+  ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
+  ## Default: volume.alpha.kubernetes.io/storage-class: default
+  #  storageClass: generic
   accessMode: ReadWriteOnce
   size: 10Gi
 
@@ -49,10 +51,8 @@ config:
     cql: 9042
     thrift: 9160
 
-## Configure node selector
+## Configure node selector. Edit code below for adding selector to pods
 ## ref: https://kubernetes.io/docs/user-guide/node-selection/
-nodes:
-  enabled: false
-  selector:
-    nodeSelector:
-      cloud.google.com/gke-nodepool: pool-db
+# selector:
+  # nodeSelector:
+    # cloud.google.com/gke-nodepool: pool-db
