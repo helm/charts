@@ -20,7 +20,7 @@ resources:
     memory: 128Mi
 persistence: 
   Enabled: true
-  StorageClass: generic
+  #StorageClass: generic
   AccessMode: ReadWriteOnce
   Size: 2M
 openvpn: 

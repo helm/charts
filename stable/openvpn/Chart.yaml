@@ -15,4 +15,8 @@ keywords:
   - connectivity
   - encryption
 home: https://openvpn.net/index.php/open-source.html
+sources:
+  - https://github.com/jfelten/openvpn-docker
+  - https://github.com/kubernetes/charts/tree/master/stable/openvpn
+  - https://github.com/jfelten/helm-charts
 
