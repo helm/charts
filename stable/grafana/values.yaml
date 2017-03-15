@@ -341,4 +341,4 @@ serverConfigFile:
 ##
 ## and add it below.
 ##
-serverDashboardFiles:
+serverDashboardFiles: {}
