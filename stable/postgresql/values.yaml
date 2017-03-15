@@ -24,12 +24,19 @@ imageTag: "9.5.4"
 ## Persist data to a persitent volume
 persistence:
   enabled: true
+
+  ## A manually managed Persistent Volume and Claim
+  ## Requires persistence.enabled: true
+  ## If defined, PVC must be created manually before volume will be bound
+  # existingClaim:
+
   ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
   ## Default: volume.alpha.kubernetes.io/storage-class: default
   ##
   # storageClass:
   accessMode: ReadWriteOnce
   size: 8Gi
+  subPath: "postgresql-db"
 
 metrics:
   enabled: false

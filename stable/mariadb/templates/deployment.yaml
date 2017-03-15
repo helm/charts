@@ -52,6 +52,8 @@ spec:
               key: mariadb-password
         - name: MARIADB_DATABASE
           value: {{ default "" .Values.mariadbDatabase | quote }}
+        - name: ALLOW_EMPTY_PASSWORD
+          value: "yes"
         ports:
         - name: mysql
           containerPort: 3306

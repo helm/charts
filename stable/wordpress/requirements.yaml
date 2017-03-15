@@ -1,4 +1,4 @@
 dependencies:
 - name: mariadb
-  version: 0.5.7
+  version: 0.5.10
   repository: https://kubernetes-charts.storage.googleapis.com/

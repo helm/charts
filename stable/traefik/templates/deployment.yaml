@@ -13,7 +13,7 @@ metadata:
     heritage: "{{ .Release.Service }}"
 spec:
   {{- if not .Values.daemonset.enabled }}
-  replicas: 1
+  replicas: {{ default 1 .Values.replicas }}
   selector:
     matchLabels:
       app: {{ template "fullname" . }}

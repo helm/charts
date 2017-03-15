@@ -1,11 +1,3 @@
-global:
-  ## hyperkube image to use when deleting kube-lego service
-  ##
-  hyperkube:
-    repository: quay.io/coreos/hyperkube
-    tag: v1.5.2_coreos.1
-    pullPolicy: IfNotPresent
-
 ## kube-lego configuration
 ## Ref: https://github.com/jetstack/kube-lego
 ##
@@ -31,13 +23,24 @@ image:
   tag: 0.1.3
   pullPolicy: IfNotPresent
 
+## Node labels for pod assignment
+## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+##
+nodeSelector: {}
+
+## Annotations to be added to pods
+##
+podAnnotations: {}
+
+replicaCount: 1
+
 ## kube-lego resource limits & requests
 ## Ref: https://kubernetes.io/docs/user-guide/compute-resources/
 ##
-resources:
+resources: {}
   # limits:
   #   cpu: 20m
   #   memory: 8Mi
-  requests:
-    cpu: 20m
-    memory: 8Mi
+  # requests:
+  #   cpu: 20m
+  #   memory: 8Mi
