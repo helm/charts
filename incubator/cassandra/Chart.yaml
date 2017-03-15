@@ -1,6 +1,7 @@
 name: cassandra
 version: 0.1.0
-description: Chart for Cassandra 3.1 with statefulset
+description: Apache Cassandra is a free and open-source distributed database management system designed to handle large amounts of data across many commodity servers, providing high availability with no single point of failure. 
+icon: https://upload.wikimedia.org/wikipedia/commons/5/5e/Cassandra_logo.svg
 keywords:
 - cassandra
 - database
