@@ -12,6 +12,11 @@ spec:
   selector:
     matchLabels:
       app: {{ template "fullname" . }}
+  strategy:
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 1
+    type: RollingUpdate
   template:
     metadata:
       name: {{ template "fullname" . }}
