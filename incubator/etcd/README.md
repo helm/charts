@@ -20,7 +20,7 @@ Credit to https://github.com/ingvagabund. This is an implementation of that work
 ## Chart Details
 This chart will do the following:
 
-* Implemented a dynamically scalable etcd cluster using Kubernetes StatefulSetss
+* Implemented a dynamically scalable etcd cluster using Kubernetes StatefulSets
 
 ## Installing the Chart
 
