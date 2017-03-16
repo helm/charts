@@ -1,0 +1,22 @@
+# Default values for ceph-exporter.
+# This is a YAML-formatted file.
+# Declare name/value pairs to be passed into your templates.
+# name: value
+
+Name: ceph-exporter
+
+imageTag: "1.0.0"
+imagePullPolicy: "IfNotPresent"
+replicaCount: 1
+
+nodeSelector: {}
+
+ServiceType: ClusterIP
+
+configmap: ceph-read-only
+secret: ceph-read-only
+
+resources:
+  requests:
+    memory: 100Mi
+    cpu: 200m

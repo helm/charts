@@ -1,0 +1,47 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{template "fullname" .}}
+  labels:
+    app: {{ template "fullname" . }}
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+spec:
+  replicas: {{default 1 .Values.replicaCount}}
+  template:
+    metadata:
+      labels:
+        app: {{template "fullname" .}}
+        release: {{.Release.Name | quote }}
+      annotations:
+        "prometheus.io/port": "9128"
+        "prometheus.io/scrape": "true"
+    spec:
+      hostNetwork: True
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 10 }}
+      containers:
+      - name: {{ template "fullname" . }}
+        image: "{{default "digitalocean/ceph_exporter" .Values.image}}:{{default "1.0.0" .Values.imageTag}}"
+        imagePullPolicy: {{default "IfNotPresent" .Values.ImagePullPolicy}}
+        args: [-ceph.user, read-only]
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+        ports:
+        - containerPort: 9128
+          name: http
+        volumeMounts:
+        - name: secret
+          mountPath: /etc/ceph/ceph.client.{{default "read-only" .Values.user}}.keyring
+          subPath: key
+        - name: configmap
+          mountPath: /etc/ceph/ceph.conf
+          subPath: conf
+      volumes:
+        - name: secret
+          secret:
+            secretName: {{default "ceph-read-only" .Values.secret}}
+        - name: configmap
+          configMap:
+            name: {{default "ceph-read-only" .Values.configmap}}
