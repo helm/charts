@@ -100,7 +100,7 @@ server:
   ## If not supported by cloud provider, this field is ignored.
   ## Default: nil
   ##
-  # loadBalancerIP:
+  # loadBalancerIP: 130.211.x.x
 
   ## This will restrict traffic through the cloud-provider load-balancer
   ## to the specified client IPs.
@@ -108,7 +108,7 @@ server:
   ## Default: nil
   ##
   # loadBalancerSourceRanges:
-
+  #   - 0.0.0.0/0
 
   ## Grafana local config path
   ## Default '/etc/grafana'
