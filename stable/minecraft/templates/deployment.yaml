@@ -19,9 +19,7 @@ spec:
         image: "{{ .Values.image }}:{{ .Values.imageTag }}"
         imagePullPolicy: Always
         resources:
-          requests:
-            memory: {{ .Values.resources.requests.memory }}
-            cpu: {{ .Values.resources.requests.cpu }}
+{{ toYaml .Values.resources | indent 10 }}
         env:
         - name: EULA
           value: {{ .Values.minecraftServer.eula | quote }}
