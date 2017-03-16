@@ -2,7 +2,7 @@
 ## ref: https://hub.docker.com/r/library/cassandra/
 image:
   repo: "cassandra"
-  tag: "latest"
+  tag: "3"
   pullPolicy: IfNotPresent
 
 ## Specify a service type
