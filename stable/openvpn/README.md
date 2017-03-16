@@ -15,18 +15,20 @@ Wait for the external load balancer IP to become available.  Check service statu
  
 Please be aware that certificate generation is variable and may take some time (minutes).
 Check pod status via:
+```bash
 POD_NAME=`kubectl get pods -l type=openvpn | awk END'{ print $1 }'` \
 && kubectl log $POD_NAME --follow
+```
 
 When ready generate a client key as follows:
 
 ```bash
-POD_NAME=`kubectl get pods --namespace {{ .Release.Namespace }} -l type=openvpn | awk END'{ print $1 }'` \
-&& SERVICE_NAME=`kubectl get svc --namespace {{ .Release.Namespace }} -l type=openvpn | awk END'{ print $1 }'` \
-&& SERVICE_IP=`kubectl get svc $SERVICE_NAME --namespace {{ .Release.Namespace }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}'` \
+POD_NAME=`kubectl get pods --namespace default -l type=openvpn | awk END'{ print $1 }'` \
+&& SERVICE_NAME=`kubectl get svc --namespace default -l type=openvpn | awk END'{ print $1 }'` \
+&& SERVICE_IP=$(kubectl get svc --namespace default $SERVICE_NAME -o jsonpath='{.status.loadBalancer.ingress[0].hostname}') \
 && KEY_NAME=kubeVPN \
-&& kubectl exec --namespace {{ .Release.Namespace }} -it $POD_NAME /etc/openvpn/setup/newClientCert.sh $KEY_NAME $SERVICE_IP \
-&& kubectl exec --namespace {{ .Release.Namespace }} -it $POD_NAME cat /usr/share/easy-rsa/pki/$KEY_NAME.ovpn > $KEY_NAME.ovpn
+&& kubectl --namespace default exec -it $POD_NAME /etc/openvpn/setup/newClientCert.sh $KEY_NAME $SERVICE_IP \
+&& kubectl --namespace default exec -it $POD_NAME cat /usr/share/easy-rsa/pki/$KEY_NAME.ovpn > $KEY_NAME.ovpn
 ```
 
 Be sure to change KEY_NAME if generating additional keys.  Import the .ovpn file into your favorite openvpn tool like tunnelblick and verify connectivity.
