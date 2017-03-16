@@ -1,0 +1,76 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    app: {{ template "fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels:
+      app: {{ template "fullname" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "fullname" . }}
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        release: "{{ .Release.Name }}"
+        heritage: "{{ .Release.Service }}"
+      annotations:
+        # ensure a deployments template section is updated if config changes
+        checksum/config: {{ include (print $.Chart.Name "/templates/configmap.yaml") . | sha256sum }}
+    spec:
+      terminationGracePeriodSeconds: 60
+      containers:
+      - image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        name: {{ template "fullname" . }}
+        resources:
+          requests:
+            cpu: "{{ .Values.cpuRequest }}"
+            memory: "{{ .Values.memoryRequest }}"
+          limits:
+            cpu: "{{ .Values.cpuLimit }}"
+            memory: "{{ .Values.memoryLimit }}"
+        env:
+        {{- if .Values.postgres }}
+        - name: KONG_PG_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "fullname" . }}
+              key: postgres.password
+        {{- end }}
+        {{- if .Values.cassandra }}
+        - name: KONG_CASSANDRA_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "fullname" . }}
+              key: cassandra.password
+        {{- end }}
+        - name: KONG_HOST_IP
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: status.podIP
+        command: [ "/bin/sh", "-c", "KONG_CLUSTER_ADVERTISE=$(KONG_HOST_IP):7946 kong start" ]
+        ports:
+        - name: admin
+          containerPort: 8001
+        - name: proxy
+          containerPort: 8000
+        - name: proxy-ssl
+          containerPort: 8443
+        - name: surf-tcp
+          containerPort: 7946
+        - name: surf-udp
+          containerPort: 7946
+          protocol: UDP
+        volumeMounts:
+        - mountPath: /etc/kong/
+          name: config
+      volumes:
+      - name: config
+        configMap:
+          name: {{ template "fullname" . }}

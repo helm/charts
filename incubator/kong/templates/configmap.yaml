@@ -1,0 +1,172 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    app: {{ template "fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+data:
+  kong.conf: |
+    # -----------------------
+    # Kong configuration file
+    # -----------------------
+    # More details at https://getkong.org/docs/0.10.x/configuration/
+    #
+    # All environment variables prefixed with `KONG_` and capitalized will override
+    # the settings specified in this file.
+    # Example:
+    #   `log_level` setting -> `KONG_LOG_LEVEL` env variable
+    #
+    # Boolean values can be specified as `on`/`off` or `true`/`false`.
+    # Lists must be specified as comma-separated strings.
+
+    #------------------------------------------------------------------------------
+    # GENERAL
+    #------------------------------------------------------------------------------
+
+    # Log level of the Nginx server. Logs are found at <prefix>/logs/error.log
+    # Note: See http://nginx.org/en/docs/ngx_core_module.html#error_log for a list
+    # of accepted values.
+    log_level = {{ default "notice" .Values.logLevel }}
+
+    # Send anonymous usage data such as error stack traces to help improve Kong.
+    anonymous_reports = {{ default "off" .Values.anonymousReports }}
+
+    #------------------------------------------------------------------------------
+    # NGINX
+    #------------------------------------------------------------------------------
+
+    # Determines wether Nginx will run as a daemon or as a foreground process. Mainly useful
+    # for development or when running Kong inside a Docker environment.
+    nginx_daemon = off
+
+    #mem_cache_size = 128m           # Size of the in-memory cache for database
+                                     # entities. The accepted units are `k` and
+                                     # `m`, with a minimum recommended value of
+                                     # a few MBs.
+
+    #------------------------------------------------------------------------------
+    # DATASTORE
+    #------------------------------------------------------------------------------
+
+    # Kong will store all of its data (such as APIs, consumers and plugins) in
+    # either Cassandra or PostgreSQL.
+    #
+    # All Kong nodes belonging to the same cluster must connect themselves to the
+    # same database.
+
+    {{ if .Values.postgres -}}
+    # Determines which of PostgreSQL or Cassandra this node will use as its datastore.
+    # Accepted values are `postgres` and `cassandra`.
+    database = postgres
+
+    {{ if .Values.postgres.host -}}
+    # The PostgreSQL host to connect to.
+    pg_host = {{ .Values.postgres.host }}
+    {{- end }}
+
+    {{ if .Values.postgres.port -}}
+    # The port to connect to.
+    pg_port = {{ .Values.postgres.port }}
+    {{- end }}
+
+    {{ if .Values.postgres.user -}}
+    # The username to authenticate if required.
+    pg_user = {{ .Values.postgres.user }}
+    {{- end }}
+
+    # The password to authenticate if required.
+    # Password stored in Kubernetes Secret and loaded from environment variable `KONG_PG_PASSWORD`
+    # pg_password = DO_NOT_USE
+
+    {{ if .Values.postgres.database -}}
+    # The database name to connect to.
+    pg_database = {{ .Values.postgres.database }}
+    {{- end }}
+
+    {{ if .Values.postgres.ssl -}}
+    # Toggles client-server TLS connections between Kong and PostgreSQL.
+    pg_ssl = {{ .Values.postgres.ssl }}
+    {{- end }}
+
+    {{ if .Values.postgres.sslVerify -}}
+    # Toggles server certificate verification if `pg_ssl` is enabled.
+    # See the `lua_ssl_trusted_certificate` setting to specify a certificate authority.
+    pg_ssl_verify = {{ .Values.postgres.sslVerify }}
+    {{- end }}
+
+    {{- /* else not Postgres so try Cassandra */}}
+    {{ else if .Values.cassandra -}}
+    # Determines which of PostgreSQL or Cassandra this node will use as its datastore.
+    # Accepted values are `postgres` and `cassandra`.
+    database = cassandra
+
+    {{ if .Values.cassandra.contactPoints -}}
+    # A comma-separated list of contact points to your cluster.
+    cassandra_contact_points = {{ .Values.cassandra.contactPoints }}
+    {{- end }}
+
+    {{ if .Values.cassandra.port -}}
+    # The port on which your nodes are listening
+    # on. All your nodes and contact points must
+    # listen on the same port.
+    cassandra_port = {{ .Values.cassandra.port }}
+    {{- end }}
+
+    {{ if .Values.cassandra.keyspace -}}
+    # The keyspace to use in your cluster.
+    cassandra_keyspace = {{ .Values.cassandra.keyspace }}
+    {{- end }}
+
+    {{ if .Values.cassandra.consistency -}}
+    # Consistency setting to use when reading/writing to the Cassandra cluster.
+    cassandra_consistency = {{ .Values.cassandra.consistency }}
+    {{- end }}
+
+    {{ if .Values.cassandra.timeout -}}
+    # Defines the timeout (in ms), for reading and writing.
+    cassandra_timeout = {{ .Values.cassandra.timeout }}
+    {{- end }}
+
+    {{ if .Values.cassandra.ssl -}}
+    # Toggles client-to-node TLS connections between Kong and Cassandra.
+    cassandra_ssl = {{ .Values.cassandra.ssl }}
+    {{- end }}
+
+    {{ if .Values.cassandra.sslVerify -}}
+    # Toggles server certificate verification if `cassandra_ssl` is enabled.
+    # See the `lua_ssl_trusted_certificate` setting to specify a certificate authority.
+    cassandra_ssl_verify = {{ .Values.cassandra.sslVerify }}
+    {{- end }}
+
+    {{ if .Values.cassandra.username -}}
+    # Username when using the `PasswordAuthenticator` scheme.
+    cassandra_username = {{ .Values.cassandra.username }}
+    {{- end }}
+
+    # Password when using the `PasswordAuthenticator` scheme.
+    # Password stored in Kubernetes Secret and loaded from environment variable `KONG_PG_PASSWORD`
+    # cassandra_password = DO_NOT_USE
+
+    {{ if .Values.cassandra.replStrategy -}}
+    # When migrating for the first time, Kong will use this setting to create your keyspace.
+    # Accepted values are `SimpleStrategy` and `NetworkTopologyStrategy`.
+    cassandra_repl_strategy = {{ .Values.cassandra.replStrategy }}
+    {{- end }}
+
+    {{ if .Values.cassandra.replFactor -}}
+    # When migrating for the first time, Kong will create the keyspace with this
+    # replication factor when using the `SimpleStrategy`.
+    cassandra_repl_factor = {{ .Values.cassandra.replFactor }}
+    {{- end }}
+
+    {{ if .Values.cassandra.dataCenters -}}
+    # When migrating for the first time, will use this setting when using the `NetworkTopologyStrategy`.
+    # The format is a comma-separated list made of <dc_name>:<repl_factor>.
+    cassandra_data_centers = {{ .Values.cassandra.dataCenters }}
+    {{- end }}
+
+    {{- /* end datastore options */}}
+    {{- end }}

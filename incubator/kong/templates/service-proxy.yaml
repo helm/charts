@@ -1,0 +1,35 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "fullname" . }}-proxy
+  labels:
+    app: {{ template "fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+  {{- range $key, $value := .Values.proxy.service.labels }}
+    {{ $key }}: {{ $value | quote }}
+  {{- end }}
+  annotations:
+  {{- range $key, $value := .Values.proxy.service.annotations }}
+    {{ $key }}: {{ $value | quote }}
+  {{- end }}
+spec:
+  type: {{ .Values.proxy.service.type }}
+  {{- if .Values.proxy.service.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+  {{- range $value := .Values.proxy.service.loadBalancerSourceRanges }}
+    - {{ $value }}
+  {{- end }}
+  {{- end }}
+  ports:
+  - name: proxy
+    port: {{ .Values.proxy.service.port }}
+    targetPort: proxy
+  {{- if .Values.proxy.service.sslPort }}
+  - name: proxy-ssl
+    port: {{ .Values.proxy.service.sslPort }}
+    targetPort: proxy-ssl
+  {{- end }}
+  selector:
+    app: {{ template "fullname" . }}
