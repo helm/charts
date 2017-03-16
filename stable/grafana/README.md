@@ -5,7 +5,7 @@
 ## TL;DR;
 
 ```console
-$ helm install incubator/grafana
+$ helm install stable/grafana
 ```
 
 ## Installing the Chart
@@ -31,7 +31,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 | Parameter                             | Description                         | Default                                           |
 |---------------------------------------|-------------------------------------|---------------------------------------------------|
-| `server.image`                        | Container image to run              | grafana/grafana                                   |
+| `server.image`                        | Container image to run              | grafana/grafana:latest                            |
 | `server.adminUser`                    | Admin user username                 | admin                                             |
 | `server.adminPassword`                | Admin user password                 | admin                                             |
 | `server.persistentVolume.enabled`     | Create a volume to store data       | true                                              |
@@ -39,3 +39,5 @@ The command removes all the Kubernetes components associated with the chart and 
 | `server.persistentVolume.storageClass`| Type of persistent volume claim     | `nil` (uses alpha storage class annotation)       |
 | `server.persistentVolume.accessMode`  | ReadWriteOnce or ReadOnly           | [ReadWriteOnce]                                   |
 | `server.resources`                    | Server resource requests and limits | requests: {cpu: 100m, memory: 100Mi}              |
+| `server.serviceType`                  | ClusterIP, NodePort, or LoadBalancer| ClusterIP                                         |
+| `server.setDatasource.enabled`        | Creates grafana datasource with job | false                                             |

@@ -18,4 +18,14 @@ spec:
     app: {{ template "fullname" . }}
     component: "{{ .Values.server.name }}"
   type: "{{ .Values.server.serviceType }}"
-
+{{- if contains "LoadBalancer" .Values.server.serviceType }}
+  {{- if .Values.server.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.server.loadBalancerIP }}
+  {{- end -}}
+  {{- if .Values.server.loadBalancerSourceRanges}}
+  loadBalancerSourceRanges:
+  {{- range .Values.server.loadBalancerSourceRanges }}
+  - {{ . }}
+  {{- end }}
+  {{- end -}}
+{{- end -}}
