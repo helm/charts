@@ -21,6 +21,8 @@ spec:
         component: "{{ .Values.server.name }}"
         release: "{{ .Release.Name }}"
     spec:
+      nodeSelector:
+{{ toYaml .Values.server.nodeSelector | indent 12 }}
       containers:
         - name: {{ template "name" . }}
           image: "{{ .Values.server.image }}"

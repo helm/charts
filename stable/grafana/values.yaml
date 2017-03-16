@@ -12,6 +12,8 @@ server:
   ##
   image: "grafana/grafana:latest"
 
+  nodeSelector: {}
+
   ingress:
     ## If true, Grafana Ingress will be created
     ##
