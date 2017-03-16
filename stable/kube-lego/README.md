@@ -39,7 +39,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the Prometheus chart and their default values.
+The following table lists the configurable parameters of the chart and their default values.
 
 Parameter | Description | Default
 --------- | ----------- | -------
@@ -52,7 +52,7 @@ Parameter | Description | Default
 `nodeSelector` | node labels for pod assignment | `{}`
 `podAnnotations` | annotations to be added to pods | `{}`
 `replicaCount` | desired number of pods | `1`
-`resources` | kube-lego resource requests and limits (YAML) |`requests: {cpu: 20m, memory: 8Mi}`
+`resources` | kube-lego resource requests and limits (YAML) |`{}`
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

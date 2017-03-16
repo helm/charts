@@ -47,6 +47,11 @@ Agent:
 
 Persistence:
   Enabled: true
+  ## A manually managed Persistent Volume and Claim
+  ## Requires Persistence.Enabled: true
+  ## If defined, PVC must be created manually before volume will be bound
+  # ExistingClaim:
+
   ## If defined, volume.beta.kubernetes.io/storage-class: <StorageClass>
   ## Default: volume.alpha.kubernetes.io/storage-class: default
   ##
