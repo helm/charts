@@ -22,7 +22,7 @@ spec:
     spec:
       terminationGracePeriodSeconds: 60
       containers:
-      - image: {{ .Values.image}}:{{ .Values.imageTag }}
+      - image: {{ .Values.image }}:{{ .Values.imageTag }}
         name: {{ template "fullname" . }}
         resources:
           requests:
