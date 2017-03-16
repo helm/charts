@@ -3,4 +3,4 @@ description: A Helm chart for cloudflare-datadog service
 name: cloudflare-datadog
 version: 0.1.0
 sources:
-  - https://github.com/honestbee/cloudflare-datadog
+  - https://github.com/mozmar/cloudflare-datadog

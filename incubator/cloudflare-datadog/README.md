@@ -1,6 +1,6 @@
 # Helm chart for Cloudlare to DataDog service
 
-This Helm chart simplifies the deployment of [cloudflare-datadog](https://github.com/honestbee/cloudflare-datadog) on Kubernetes.
+This Helm chart simplifies the deployment of [cloudflare-datadog](https://github.com/mozmar/cloudflare-datadog) on Kubernetes.
 
 ## Pre Requisites:
 
@@ -24,17 +24,16 @@ helm install -n cfdd .
 | --------------------------- | ---------------------------------- | ----------------------------------- |
 | `Name`                      | Name                               | `cfdd`                              |
 | `replicaCount`              | Number of replicas                 | `1`                                 |
-| `image.repository`          | Image and registry name            | `quay.io/honestbee/cloudflare-datadog`|
-| `image.tag`                 | Container image tag                | `master`                            |
+| `image.repository`          | Image and registry name            | `mozmea/cloudflare-datadog`|
+| `image.tag`                 | Container image tag                | `latest`                            |
 | `image.pullPolicy`          | Container image tag                | `Always`                            |
-| `image.pullSecret`          | registry secret                    | `honestbee-registry`                |
 | `config.*`                  | Will be passed in as env vars      | `*`                                 |
 | `secrets.*`                 | Will be stored in a k8s secret     | `*`                                 |
 
 Specify parameters using `--set key=value[,key=value]` argument to `helm install`
 
 ```bash
-helm install -n hb-assets . \
+helm install -n cfdd . \
   -f .secrets.yaml \
   --set nameOverride=cfdd
 ```
