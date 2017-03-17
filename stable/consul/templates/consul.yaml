@@ -181,7 +181,7 @@ spec:
       volumes:
       - name: gossip-key
         secret:
-          secretName: {{ .Release.Name }}-gossip-key
+          secretName: {{ template "fullname" . }}-gossip-key
   volumeClaimTemplates:
   - metadata:
       name: datadir
