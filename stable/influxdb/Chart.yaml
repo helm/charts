@@ -1,5 +1,5 @@
 name: influxdb
-version: 0.2.1
+version: 0.3.0
 description: Scalable datastore for metrics, events, and real-time analytics.
 keywords:
 - influxdb

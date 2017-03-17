@@ -1,6 +1,8 @@
 # nginx-lego
 
-[nginx-lego](https://github.com/jetstack/kube-lego/tree/master/examples/nginx) is a chart for an [`nginx` ingress](https://github.com/kubernetes/contrib/tree/master/ingress/controllers/nginx) with optional support for automatically generating `SSL` cert for the managed routes. 
+**This chart has been deprecated as of version 0.2.1 and will not be updated. Please use the nginx-ingress and (optional) kube-lego charts instead.**
+
+[nginx-lego](https://github.com/jetstack/kube-lego/tree/master/examples/nginx) is a chart for an [`nginx` ingress](https://github.com/kubernetes/contrib/tree/master/ingress/controllers/nginx) with optional support for automatically generating `SSL` cert for the managed routes.
 
 To use this ingress contoller add the following annotations to the `ingress` resources you would like to route through it:
 

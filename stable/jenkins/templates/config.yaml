@@ -63,7 +63,7 @@ data:
           <serverUrl>https://kubernetes.default</serverUrl>
           <skipTlsVerify>false</skipTlsVerify>
           <namespace>{{ .Release.Namespace }}</namespace>
-          <jenkinsUrl>http://{{ template "fullname" . }}:8080</jenkinsUrl>
+          <jenkinsUrl>http://{{ template "fullname" . }}:{{.Values.Master.ServicePort}}</jenkinsUrl>
           <jenkinsTunnel>{{ template "fullname" . }}:50000</jenkinsTunnel>
           <containerCap>10</containerCap>
           <retentionTimeout>5</retentionTimeout>

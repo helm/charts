@@ -16,18 +16,19 @@ image:
 
 ## Node labels for pod assignment
 ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+##
 nodeSelector: {}
 
 ## Annotations to be added to pods
 ##
 podAnnotations: {}
 
-resources:
-  limits:
-    cpu: 4m
-    memory: 16Mi
-  requests:
-    cpu: 4m
-    memory: 16Mi
+resources: {}
+  # limits:
+  #   cpu: 4m
+  #   memory: 16Mi
+  # requests:
+  #   cpu: 4m
+  #   memory: 16Mi
 
 verbose: false

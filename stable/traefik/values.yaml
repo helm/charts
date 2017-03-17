@@ -1,4 +1,5 @@
 # Default values for Traefik
+image: traefik
 imageTag: v1.1.2
 serviceType: LoadBalancer
 replicas: 1

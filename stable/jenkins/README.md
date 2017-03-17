@@ -68,10 +68,32 @@ $ helm install --name my-release -f values.yaml stable/jenkins
 
 ## Persistence
 
-The Jenkins image stores persistence under `/var/jenkins_home` path of the container. A Persistent Volume
-Claim is used to keep the data across deployments. This is known to work in GCE, AWS, and minikube.
+The Jenkins image stores persistence under `/var/jenkins_home` path of the container. A dynamically managed Persistent Volume
+Claim is used to keep the data across deployments, by default. This is known to work in GCE, AWS, and minikube. Alternatively,
+a previously configured Persistent Volume Claim can be used.
 
 It is possible to mount several volumes using `Persistence.volumes` and `Persistence.mounts` parameters.
+
+### Persistence Values
+
+| Parameter | Description | Default |
+| --------- | ----------- | ------- |
+| `Persistence.Enabled` | Enable the use of a Jenkins PVC | `true` |
+| `Persistence.ExistingClaim` | Provide the name of a PVC | `nil` |
+| `Persistence.AccessMode` | The PVC access mode | `ReadWriteOnce` |
+| `Persistence.Size` | The size of the PVC | `8Gi` |
+| `Persistence.volumes` | Additional volumes | `nil` |
+| `Persistence.mounts` | Additional mounts | `nil` |
+
+
+#### Existing PersistentVolumeClaim
+
+1. Create the PersistentVolume
+1. Create the PersistentVolumeClaim
+1. Install the chart
+```bash
+$ helm install --name my-release --set Persistence.ExistingClaim=PVC_NAME stable/jenkins
+```
 
 ## Custom ConfigMap
 
