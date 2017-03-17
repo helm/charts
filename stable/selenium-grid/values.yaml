@@ -1,0 +1,36 @@
+hub:
+  # Set to true if the hub service should be exposed
+  # to the internet with a LoadBalancer
+  expose: false
+  # Image and tag of the selenium hub to use.
+  image:
+    name: selenium/hub
+    tag: 3.0.1
+  resources:
+    requests:
+      cpu: 2
+      memory: 2Gi
+
+nodes:
+  chrome:
+    # Number of chrome nodes to run
+    count: 2
+    # Image and tag of the chrome nodes to use
+    image:
+      name: selenium/node-chrome
+      tag: 3.0.1
+    resources:
+      requests:
+        cpu: 1
+        memory: 2Gi
+  firefox:
+    # Number of firefox nodes to run
+    count: 2
+    # Image and tag of the firefox nodes to use
+    image:
+      name: selenium/node-firefox
+      tag: 3.0.1
+    resources:
+      requests:
+        cpu: 1
+        memory: 2Gi

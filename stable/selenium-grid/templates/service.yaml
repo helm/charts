@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: hub
+spec:
+  {{ if .Values.hub.expose -}}
+  type: LoadBalancer
+  {{- end }}
+  ports:
+  - port: 4444
+    name: hub
+    protocol: TCP
+  selector:
+    name: hub-{{ template "fullname" . }}
