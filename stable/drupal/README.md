@@ -52,6 +52,9 @@ The following tables lists the configurable parameters of the Drupal chart and t
 | `drupalUsername`                  | User of the application               | `user`                                                    |
 | `drupalPassword`                  | Application password                  | _random 10 character long alphanumeric string_            |
 | `drupalEmail`                     | Admin email                           | `user@example.com`                                        |
+| `ingress.enabled`                 | Enable ingress controller resource    | `false`                                                   |
+| `ingress.hostname`                | URL for your Drupal installation      | `drupal.local`                                                   |
+| `ingress.tls`                     | Ingress TLS configuration             | `[]`                                                   |
 | `mariadb.mariadbRootPassword`     | MariaDB admin password                | `nil`                                                     |
 | `serviceType`                     | Kubernetes Service type               | `LoadBalancer`                                            |
 | `persistence.enabled`             | Enable persistence using PVC          | `true`                                                    |
