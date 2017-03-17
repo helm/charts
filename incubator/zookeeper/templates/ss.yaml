@@ -119,7 +119,7 @@ spec:
         command:
         - sh
         - -c
-        - zkGenConfig.sh && zkServer.sh start-foreground
+        - zkGenConfig.sh && exec zkServer.sh start-foreground
         readinessProbe:
           exec:
             command:

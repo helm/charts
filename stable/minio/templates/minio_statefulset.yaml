@@ -49,6 +49,9 @@ spec:
         - name: minio-configmap
           configMap:
             name: {{ template "fullname" . }}-cm
+        - name: minio-server-config
+          configMap:
+            name: {{ template "fullname" . }}-config-cm
       containers:
         - name: minio
           image: {{ .Values.image }}:{{ .Values.imageTag }}
@@ -59,6 +62,8 @@ spec:
           volumeMounts:
             - name: export
               mountPath: {{ .Values.mountPath }}
+            - name: minio-server-config
+              mountPath: {{ default "/root/.minio/" .Values.configPath | quote }}
             - name: minio-configmap
               mountPath: /go/bin/start.sh
               subPath: start.sh
