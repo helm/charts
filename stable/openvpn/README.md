@@ -15,8 +15,11 @@ Wait for the external load balancer IP to become available.  Check service statu
  
 Please be aware that certificate generation is variable and may take some time (minutes).
 Check pod status via:
+
+```bash
 POD_NAME=`kubectl get pods -l type=openvpn | awk END'{ print $1 }'` \
 && kubectl log $POD_NAME --follow
+```
 
 When ready generate a client key as follows:
 
