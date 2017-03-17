@@ -15,6 +15,12 @@ controller:
   ##
   defaultBackendService: ""
 
+  ## Limit the scope of the controller
+  ##
+  scope:
+    enabled: false
+    namespace: "" # defaults to .Release.Namespace
+
   extraArgs: {}
 
   ## DaemonSet or Deployment

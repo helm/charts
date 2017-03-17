@@ -32,6 +32,9 @@ spec:
             - --nginx-configmap={{ .Release.Namespace }}/{{ template "controller.fullname" . }}
             - --tcp-services-configmap={{ .Release.Namespace }}/{{ template "fullname" . }}-tcp
             - --udp-services-configmap={{ .Release.Namespace }}/{{ template "fullname" . }}-udp
+          {{- if .Values.controller.scope.enabled }}
+            - --watch-namespace={{ default .Release.Namespace .Values.controller.scope.namespace }}
+          {{- end }}
           {{- range $key, $value := .Values.controller.extraArgs }}
             - --{{ $key }}={{ $value }}
           {{- end }}
