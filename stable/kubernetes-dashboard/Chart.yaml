@@ -1,0 +1,9 @@
+name: kubernetes-dashboard
+version: 1.6.0
+description: Kubernetes Dashboard
+keywords:
+- kubernetes
+- dashboard
+maintainers:
+  - name: Kevin Fox
+    email: Kevin.Fox@pnnl.gov

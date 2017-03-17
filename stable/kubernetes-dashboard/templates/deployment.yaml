@@ -1,0 +1,50 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{template "fullname" .}}
+  labels:
+    app: {{ template "fullname" . }}
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+    kubernetes.io/cluster-service: "true"
+    release: {{.Release.Name | quote }}
+  namespace: {{ default "kube-system" .Values.namespace }}
+spec:
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: {{ template "fullname" . }}
+        heritage: "{{ .Release.Service }}"
+        release: "{{ .Release.Name }}"
+        chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+        kubernetes.io/cluster-service: "true"
+        release: {{.Release.Name | quote }}
+    spec:
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 10 }}
+      containers:
+      - name: main
+        image: "{{default "gcr.io/google_containers/kubernetes-dashboard-amd64" .Values.image}}:{{default "v1.6.0" .Values.imageTag}}"
+        imagePullPolicy: {{default "IfNotPresent" .Values.ImagePullPolicy}}
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /
+            port: 9090
+            scheme: HTTP
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 30
+        ports:
+        - containerPort: 9090
+          protocol: TCP
