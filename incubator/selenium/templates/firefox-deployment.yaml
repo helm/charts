@@ -6,7 +6,7 @@ metadata:
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
 spec:
-  replicas: {{ .Values.chrome.replicas }}
+  replicas: {{ .Values.firefox.replicas }}
   template:
     metadata:
       labels:
@@ -29,9 +29,29 @@ spec:
             - name: HUB_PORT_4444_TCP_PORT
               value: {{ .Values.hub.port | quote }}
             - name: JAVA_OPTS
-              value: {{ default "" .Values.chrome.javaOpts | quote }}
+              value: {{ default "" .Values.firefox.javaOpts | quote }}
             - name: SE_OPTS
               value: {{ default "" .Values.firefox.seOpts | quote }}
+            {{- if .Values.firefox.firefoxVersion }}
+            - name: FIREFOX_VERSION
+              value: {{ .Values.firefox.firefoxVersion | quote }}
+            {{- end }}
+            {{- if .Values.firefox.nodeMaxInstances }}
+            - name: NODE_MAX_INSTANCES
+              value: {{ .Values.firefox.nodeMaxInstances | quote }}
+            {{- end }}
+            {{- if .Values.firefox.nodeMaxSession }}
+            - name: NODE_MAX_SESSION
+              value: {{ .Values.firefox.nodeMaxSession | quote }}
+            {{- end }}
+            {{- if .Values.firefox.nodeRegisterCycle }}
+            - name: NODE_REGISTER_CYCLE
+              value: {{ .Values.firefox.nodeRegisterCycle | quote }}
+            {{- end }}
+            {{- if .Values.firefox.nodePort }}
+            - name: NODE_PORT
+              value: {{ .Values.firefox.nodePort | quote }}
+            {{- end }}
             {{- if .Values.firefox.screenWidth }}
             - name: SCREEN_WIDTH
               value: {{ .Values.firefox.screenWidth | quote }}

@@ -34,6 +34,26 @@ spec:
               value: {{ default "" .Values.chromeDebug.javaOpts | quote }}
             - name: SE_OPTS
               value: {{ default "" .Values.chromeDebug.seOpts | quote }}
+            {{- if .Values.chromeDebug.chromeVersion }}
+            - name: CHROME_VERSION
+              value: {{ .Values.chromeDebug.chromeVersion | quote }}
+            {{- end }}
+            {{- if .Values.chromeDebug.nodeMaxInstances }}
+            - name: NODE_MAX_INSTANCES
+              value: {{ .Values.chromeDebug.nodeMaxInstances | quote }}
+            {{- end }}
+            {{- if .Values.chromeDebug.nodeMaxSession }}
+            - name: NODE_MAX_SESSION
+              value: {{ .Values.chromeDebug.nodeMaxSession | quote }}
+            {{- end }}
+            {{- if .Values.chromeDebug.nodeRegisterCycle }}
+            - name: NODE_REGISTER_CYCLE
+              value: {{ .Values.chromeDebug.nodeRegisterCycle | quote }}
+            {{- end }}
+            {{- if .Values.chromeDebug.nodePort }}
+            - name: NODE_PORT
+              value: {{ .Values.chromeDebug.nodePort | quote }}
+            {{- end }}
             {{- if .Values.chromeDebug.screenWidth }}
             - name: SCREEN_WIDTH
               value: {{ .Values.chromeDebug.screenWidth | quote }}

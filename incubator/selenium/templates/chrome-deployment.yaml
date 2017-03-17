@@ -32,6 +32,26 @@ spec:
               value: {{ default "" .Values.chrome.javaOpts | quote }}
             - name: SE_OPTS
               value: {{ default "" .Values.chrome.seOpts | quote }}
+            {{- if .Values.chrome.chromeVersion }}
+            - name: CHROME_VERSION
+              value: {{ .Values.chrome.chromeVersion | quote }}
+            {{- end }}
+            {{- if .Values.chrome.nodeMaxInstances }}
+            - name: NODE_MAX_INSTANCES
+              value: {{ .Values.chrome.nodeMaxInstances | quote }}
+            {{- end }}
+            {{- if .Values.chrome.nodeMaxSession }}
+            - name: NODE_MAX_SESSION
+              value: {{ .Values.chrome.nodeMaxSession | quote }}
+            {{- end }}
+            {{- if .Values.chrome.nodeRegisterCycle }}
+            - name: NODE_REGISTER_CYCLE
+              value: {{ .Values.chrome.nodeRegisterCycle | quote }}
+            {{- end }}
+            {{- if .Values.chrome.nodePort }}
+            - name: NODE_PORT
+              value: {{ .Values.chrome.nodePort | quote }}
+            {{- end }}
             {{- if .Values.chrome.screenWidth }}
             - name: SCREEN_WIDTH
               value: {{ .Values.chrome.screenWidth | quote }}
