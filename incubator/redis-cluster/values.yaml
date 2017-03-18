@@ -1,3 +1,16 @@
+# Default values for cassandra.
+# This is a YAML-formatted file.
+# Declare name/value pairs to be passed into your templates.
+# name: value
+
+## Redis image version
+image: gcr.io/google_containers/redis:v1
+imagePullPolicy: IfNotPresent
+
+## Replica count
+slaveReplicaCount: 3
+sentinelReplicaCount: 2
+
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
 ##
@@ -12,10 +25,7 @@ resources:
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
 ##
 persistence:
-  enabled: false
+  enabled: true
   storageClass: default
   accessMode: ReadWriteOnce
   size: 1Gi
-
-## Redis image version
-redis_image: gcr.io/google_containers/redis:v1

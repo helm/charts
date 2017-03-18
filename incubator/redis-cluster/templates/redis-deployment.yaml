@@ -1,9 +1,11 @@
-apiVersion: extensions/v1beta1
-kind: Deployment
+apiVersion: v1
+kind: ReplicationController
 metadata:
   name: {{ template "fullname" . }}-sentinel
 spec:
-  replicas: 2
+  replicas: {{ .Values.sentinelReplicaCount }}
+  selector:
+    redis-sentinel: "true"
   template:
     metadata:
       labels:
@@ -16,7 +18,8 @@ spec:
     spec:
       containers:
       - name: sentinel
-        image: {{ .Values.redis_image }}
+        image: {{ .Values.image }}
+        imagePullPolicy: "{{.Values.imagePullPolicy}}"
         env:
           - name: SENTINEL
             value: "true"
@@ -29,7 +32,7 @@ metadata:
   name: {{ template "fullname" . }}
 spec:
   serviceName: "redis"
-  replicas: 3
+  replicas: {{ .Values.slaveReplicaCount }}
   template:
     metadata:
       labels:
@@ -40,7 +43,8 @@ spec:
     spec:
       containers:
       - name: redis
-        image: {{ .Values.redis_image }}
+        image: {{ .Values.image }}
+        imagePullPolicy: "{{.Values.imagePullPolicy}}"
         ports:
         - containerPort: 6379
         resources:
