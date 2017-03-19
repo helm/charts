@@ -16,7 +16,7 @@ It also packages the [Bitnami MariaDB chart](https://github.com/kubernetes/chart
 
 ## Prerequisites
 
-- Kubernetes 1.4+ with Beta APIs enabled
+- Kubernetes 1.5+ with Beta APIs enabled
 - PV provisioner support in the underlying infrastructure
 
 ## Installing the Chart
