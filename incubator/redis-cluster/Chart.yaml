@@ -6,7 +6,5 @@ keywords:
 - keyvalue
 - database
 version: 0.2.0
+icon: https://redis.io/images/redis-white.png
 description: Highly available Redis cluster with multiple sentinels and standbys.
-details:
-  This package provides a highly available Redis cluster with multiple sentinels and standbys.
-  Note the `redis-master` pod is used for bootstrapping only and can be deleted once the cluster is up and running.

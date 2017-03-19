@@ -40,9 +40,10 @@ The following tables lists the configurable parameters of the Redis chart and th
 | Parameter                  | Description                                | Default                             |
 | -----------------------    | ------------------------------------------ | ----------------------------------- |
 | `image`                    | `redis` image.                             | gcr.io/google_containers/redis:v1   |
+| `imagePullPolicy`          | Image pull policy                          | IfNotPresent                        |
 | `slaveReplicaCount`        | Number of `redis` slave instances to run   | 3                                   |
 | `sentinelReplicaCount`     | Number of `redis` sentinel instances to run| 2                                   |
-| `persistence.enabled`      | Create a volume to store data              | false                               |
+| `persistence.enabled`      | Create a volume to store data              | true                                |
 | `persistence.size`         | Size of persistent volume claim            | 1Gi                                 |
 | `persistence.storageClass` | Type of persistent volume claim            | default                             |
 | `persistence.accessMode`   | ReadWriteOnce or ReadOnly                  | ReadWriteOnce                       |
@@ -129,7 +130,7 @@ If the master/sentinel pod is down:
   1. The redis-sentinel replication controller notices that it's desired state is 3 replicas, but there are currently only 2 replicas, and so it creates a new sentinel to bring the replica count back up to 3
   2. The newly created sentinel pod can use the ```redis-sentinel-service``` to get master information. But since the master is also down, it cannot connect to the master. In this case, the new sentinel will enter a loop to repeatedly get the master information and try to connect...
   3. The existing redis sentinels themselves, realize that the master has disappeared from the cluster, and begin the election procedure for selecting a new master.  They perform this election and selection, and choose one of the existing redis server replicas to be the new master.
-  4. Once the newly master is selected, the new created sentinel pod can get it's information and joins the cluster as a slave/sentinel.
+  4. Once the newly master is selected, the new created sentinel pod can get it's information and joins the cluster as a sentinel.
 
 ## Credit
 

@@ -2,7 +2,9 @@ To connect to your Redis server:
 
 1. Run a Redis pod that you can use as a client:
 
-   $ kubectl exec -it {{ template "fullname" . }}-master bash
+   $ export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l name=redis-master -o jsonpath="{.items[0].metadata.name}")
+
+   $ kubectl exec -it $POD_NAME bash
 
 2. Run Redis CLI:
 
