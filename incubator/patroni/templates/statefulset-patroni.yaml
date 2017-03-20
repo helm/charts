@@ -43,7 +43,7 @@ spec:
           value: {{ .Values.Etcd.Host | quote }}
         {{else}}
         - name: ETCD_DISCOVERY_DOMAIN
-          value: {{default (printf "%s-etcd" .Release.Name | trunc 24) .Values.Etcd.Discovery }}
+          value: {{default (printf "%s-etcd" .Release.Name | trunc 63) .Values.Etcd.Discovery }}
         {{end}}
         - name: SCOPE
           value: {{ template "fullname" . }}
