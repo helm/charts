@@ -27,4 +27,5 @@ Credentials:
 
 # Patroni depends on etcd, configure it here
 Etcd:
+  Host: # fill-in value for etcd host (etcd.default.svc.cluster.local), leave blank to use the discovery parameter
   Discovery: # leave blank to use vendored etcd chart

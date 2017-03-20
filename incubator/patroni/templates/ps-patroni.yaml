@@ -38,8 +38,13 @@ spec:
             secretKeyRef:
               name: {{ template "fullname" . }}
               key: password-standby
+        {{if .Values.Etcd.Host }}
+        - name: ETCD_HOST
+          value: {{ .Values.Etcd.Host | quote }}
+        {{else}}
         - name: ETCD_DISCOVERY_DOMAIN
           value: {{default (printf "%s-etcd" .Release.Name | trunc 24) .Values.Etcd.Discovery }}
+        {{end}}
         - name: SCOPE
           value: {{ template "fullname" . }}
         - name: USE_WALE
