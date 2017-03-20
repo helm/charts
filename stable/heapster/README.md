@@ -1,12 +1,11 @@
 # Heapster
 
-##  Container Cluster Monitoring and Performance Analysis
+[Heapster](https://github.com/kubernetes/heapster) enables Container Cluster Monitoring and Performance Analysis. It collects and interprets various signals like compute resource usage, lifecycle events, etc, and exports cluster metrics via REST endpoints.
 
-[Heapster](https://github.com/kubernetes/heapster) collects and interprets various signals like compute resource usage, lifecycle events, etc, and exports cluster metrics via REST endpoints. 
 ## QuickStart
 
 ```bash
-$ helm install stable/heapster 
+$ helm install stable/heapster
 ```
 
 ## Installing the Chart
@@ -29,8 +28,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The default configuration values for this chart are listed in `values.yaml`. 
-
+The default configuration values for this chart are listed in `values.yaml`.
 
 | Parameter                             | Description                         | Default                                           |
 |---------------------------------------|-------------------------------------|---------------------------------------------------|
@@ -46,7 +44,7 @@ The default configuration values for this chart are listed in `values.yaml`.
 | `command`                             | Commands for heapster pod           | "/heapster --source=kubernetes.summary_api:''     |
 | `resizer.enabled`                     | If enabled, scale resources         | true                                              |
 
-Below table only applicable if `resizer.enabled` is `true`. More information on resizer can be found [here](https://github.com/kubernetes/contrib/blob/master/addon-resizer/README.md).
+The table below is only applicable if `resizer.enabled` is `true`. More information on resizer can be found [here](https://github.com/kubernetes/contrib/blob/master/addon-resizer/README.md).
 
 | Parameter                             | Description                         | Default                                           |
 |---------------------------------------|-------------------------------------|---------------------------------------------------|
