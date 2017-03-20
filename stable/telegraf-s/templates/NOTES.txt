@@ -2,24 +2,14 @@ To open a shell session in the container running Telegraf run the following:
 
 - kubectl exec -i -t --namespace {{ .Release.Namespace }} $(kubectl get pods --namespace {{ .Release.Namespace }} -l app={{ template "fullname" . }} -o jsonpath='{.items[0].metadata.name}') /bin/sh
 
-To tail the logs for a Telegraf pod in the Daemonset run the following:
+To tail the logs for a Telegraf pod run the following:
 
-- kubectl logs -f --namespace {{ .Release.Namespace }} $(kubectl get pods --namespace {{ .Release.Namespace }} -l app={{ template "fullname" . }}-ds -o jsonpath='{ .items[0].metadata.name }')
+- kubectl logs -f --namespace {{ .Release.Namespace }} $(kubectl get pods --namespace {{ .Release.Namespace }} -l app={{ template "fullname" . }} -o jsonpath='{ .items[0].metadata.name }')
 
-{{- if eq .Values.single.service.type "LoadBalancer" }}
+{{- if empty .Values.config.outputs.influxdb.urls }}
 
-To watch for the LoadBalancer IP run the following
+Need to set an InfluxDB url for either s daemonset to deploy this instance:
 
-- kubectl get svc -w --namespace {{ .Release.Namespace }} -l app={{ template "fullname" . }}
-{{- end }}
+.Values.config.outputs.influxdb.urls
 
-{{- if empty .Values.single.config.outputs.influxdb.urls }}
-{{- if empty .Values.daemonset.config.outputs.influxdb.urls }}
-
-Need to set an InfluxDB url for either single or daemonset to deploy this instance:
-
-.Values.daemonset.config.outputs.influxdb.urls
-.Values.single.config.outputs.influxdb.urls
-
-{{- end }}
 {{- end }}

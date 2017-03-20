@@ -1,15 +1,14 @@
-{{- if .Values.single.enabled -}}
-{{- if .Values.single.service.enabled -}}
+{{- if .Values.service.enabled -}}
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "fullname" . }}-s
+  name: {{ template "fullname" . }}
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
 spec:
-  type: {{ .Values.single.service.type }}
+  type: {{ .Values.service.type }}
   ports:
-  {{- range $key, $value := .Values.single.config.inputs }}
+  {{- range $key, $value := .Values.config.inputs }}
     {{- if eq $key "http_listener" }}
   - port: {{ trimPrefix ":" $value.service_address | int64 }}
     targetPort: {{ trimPrefix ":" $value.service_address | int64 }}
@@ -37,6 +36,5 @@ spec:
     {{- end }}
   {{- end }}
   selector:
-    app: {{ template "fullname" . }}-s
-{{- end -}}
+    app: {{ template "fullname" . }}
 {{- end -}}

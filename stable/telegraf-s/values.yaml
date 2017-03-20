@@ -5,179 +5,51 @@ image:
   repo: "telegraf"
   tag: "1.2.0-alpine"
   pullPolicy: IfNotPresent
-
-## Configure the telegraf daemonset here.
-## Resource limits and outputs can be set seperately
-daemonset:
-  enabled: true
-  ## Configure resource requests and limits
-  ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
-  resources:
-    requests:
-      memory: 256Mi
-      cpu: 0.1
-    limits:
-      memory: 2Gi
-      cpu: 1
-  ## Exposed telegraf configuration
-  ## ref: https://docs.influxdata.com/telegraf/v1.1/administration/configuration/
-  config:
-##    global_tags:
-##      dc: "us-east-1"
-##      user: "$USER"
-    agent:
-      interval: "10s"
-      round_interval: true
-      metric_batch_size: 1000
-      metric_buffer_limit: 10000
-      collection_jitter: "0s"
-      flush_interval: "10s"
-      flush_jitter: "0s"
-      precision: ""
-      debug: false
-      quiet: false
-      logfile: ""
-      hostname: "$HOSTNAME"
-      omit_hostname: false
-    outputs:
-      influxdb:
-        urls: []
-          # - "http://influxdb-influxdb.tick:8086"
-        database: "telegraf"
-##        retention_policy: ""
-##        write_consistency: "any"
-##        timeout: "5s"
-##        username: "telegraf"
-##        password: "metricsmetricsmetricsmetrics"
-##        user_agent: "telegraf"
-##        udp_payload: 512
-##        ssl_ca: "/etc/telegraf/ca.pem"
-##        ssl_cert: "/etc/telegraf/cert.pem"
-##        ssl_key: "/etc/telegraf/key.pem"
-##        insecure_skip_verify: false
-##      amqp:
-##        url: "amqp://localhost:5672/influxdb"
-##        exchange: "telegraf"
-##        auth_method: "PLAIN"
-##        routing_tag: "host"
-##        retention_policy: "default"
-##        database: "telegraf"
-##        precision: "s"
-##        ssl_ca: "/etc/telegraf/ca.pem"
-##        ssl_cert: "/etc/telegraf/cert.pem"
-##        ssl_key: "/etc/telegraf/key.pem"
-##        insecure_skip_verify: false
-##        data_format: "influx"
-##      kafka:
-##        brokers: 
-##          - "localhost:9092"
-##        topic: "telegraf"
-##        routing_tag: "host"
-##        compression_codec: 0
-##        required_acks: -1
-##        max_retry: 3
-##        ssl_ca: "/etc/telegraf/ca.pem"
-##        ssl_cert: "/etc/telegraf/cert.pem"
-##        ssl_key: "/etc/telegraf/key.pem"
-##        insecure_skip_verify: false
-##        data_format: "influx"
-##      mqtt:
-##        servers: 
-##          - "localhost:1883"
-##        topic_prefix: "telegraf"
-##        username: "telegraf"
-##        password: "metricsmetricsmetricsmetrics"
-##        ssl_ca: "/etc/telegraf/ca.pem"
-##        ssl_cert: "/etc/telegraf/cert.pem"
-##        ssl_key: "/etc/telegraf/key.pem"
-##        insecure_skip_verify: false
-##        data_format: "influx"
-##      nats:
-##        servers: 
-##          - "nats://localhost:4222"
-##        username: ""
-##        password: ""
-##        subject: "telegraf"
-##        ssl_ca: "/etc/telegraf/ca.pem"
-##        ssl_cert: "/etc/telegraf/cert.pem"
-##        ssl_key: "/etc/telegraf/key.pem"
-##        insecure_skip_verify: false
-##        data_format: "influx"
-##      nsq:
-##        server: "localhost:4150"
-##        topic: "telegraf"
-##        data_format: "influx"
-    inputs:
-      cpu:
-        percpu: true
-        totalcpu: true
-        collect_cpu_time: false
-      disk:
-        ignore_fs: 
-          - "tmpfs" 
-          - "devtmpfs"
-      diskio:
-      docker:
-        endpoint: "unix:///var/run/docker.sock"
-        container_names: []
-      kernel:
-      mem:
-      processes:
-      swap:
-      system:
-      kubernetes:
-        url: "http://$HOSTNAME:10255"
-        bearer_token: "/var/run/secrets/kubernetes.io/serviceaccount/token"
-        insecure_skip_verify: true
-        
-## Configure the telegraf single instance here.
-## Resource limits and outputs can be set seperately
-single:
-  enabled: true
-  ## Configure resource requests and limits
-  ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
-  resources:
-    requests:
-      memory: 256Mi
-      cpu: 0.1
-    limits:
-      memory: 2Gi
-      cpu: 1
-  ## Configure the service for this telegraf instance. If you are running
-  ## Any of the service plugins you will need this enabled
-  ## Service Plugins: http_listener, statsd, tcp_listener, udp_listener
-  ## ref: http://kubernetes.io/docs/user-guide/services/
-  service:
-    enabled: true
-    type: ClusterIP
+          
+## Configure resource requests and limits
+## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+resources:
+  requests:
+    memory: 256Mi
+    cpu: 0.1
+  limits:
+    memory: 2Gi
+    cpu: 1
     
-  ## Exposed telegraf configuration
-  ## For full list of possible values see `/docs/all-config-values.yaml` and `/docs/all-config-values.toml`
-  ## ref: https://docs.influxdata.com/telegraf/v1.1/administration/configuration/
+## Configure the service for this telegraf instance. If you are running
+## Any of the service plugins you will need this enabled
+## Service Plugins: http_listener, statsd, tcp_listener, udp_listener
+## ref: http://kubernetes.io/docs/user-guide/services/
+service:
+  enabled: true
+  type: ClusterIP
   
-  config:
+## Exposed telegraf configuration
+## For full list of possible values see `/docs/all-config-values.yaml` and `/docs/all-config-values.toml`
+## ref: https://docs.influxdata.com/telegraf/v1.1/administration/configuration/
+config:
 ##    global_tags:
 ##      dc: "us-east-1"
 ##      user: "$USER"
-    agent:
-      interval: "10s"
-      round_interval: true
-      metric_batch_size: 1000
-      metric_buffer_limit: 10000
-      collection_jitter: "0s"
-      flush_interval: "10s"
-      flush_jitter: "0s"
-      precision: ""
-      debug: false
-      quiet: false
-      logfile: ""
-      hostname: "telegraf-polling-service"
-      omit_hostname: false
-    outputs:
-      influxdb:
-        urls: []
-          # - "http://influxdb-influxdb.tick:8086"
-        database: "telegraf"
+  agent:
+    interval: "10s"
+    round_interval: true
+    metric_batch_size: 1000
+    metric_buffer_limit: 10000
+    collection_jitter: "0s"
+    flush_interval: "10s"
+    flush_jitter: "0s"
+    precision: ""
+    debug: false
+    quiet: false
+    logfile: ""
+    hostname: "telegraf-polling-service"
+    omit_hostname: false
+  outputs:
+    influxdb:
+      urls: []
+        # - "http://db-influxdb.prod:8086"
+      database: "telegraf"
 ##        retention_policy: ""
 ##        write_consistency: "any"
 ##        timeout: "5s"
@@ -241,11 +113,12 @@ single:
 ##        server: "localhost:4150"
 ##        topic: "telegraf"
 ##        data_format: "influx"
-    inputs:
-      cpu:
-        percpu: false
-        totalcpu: true
-      system:
+# Required for chronograf
+  inputs:
+    cpu:
+      percpu: false
+      totalcpu: true
+    system:
 ##      aerospike:
 ##        servers: 
 ##          - "localhost:3000"
@@ -337,10 +210,10 @@ single:
 ##      haproxy:
 ##        servers: 
 ##          - "http://myhaproxy.com:1936/haproxy?stats"
-      influxdb:
-        urls:
-          - "http://influxdb-influxdb.tick:8086/debug/vars"
-        timeout: "5s"
+##      influxdb:
+##        urls:
+##          - "http://db-influxdb.prod:8086/debug/vars"
+##        timeout: "5s"
 ##      lustre2:
 ##        ost_procfiles:
 ##          - "/proc/fs/lustre/obdfilter/*/stats"
@@ -413,7 +286,7 @@ single:
 ##        read_timeout: "1s"
 ##      nginx:
 ##        urls: 
-##          - "http://nginx.nginx-ingress/nginx_status"
+##          - "http://nginx.kube-system:18080/status"
 ##      nsq:
 ##        endpoints: 
 ##          - "http://localhost:4151"
@@ -434,12 +307,12 @@ single:
 ##        databases: 
 ##          - "app_production"
 ##          - "testing"
-      prometheus:
-        urls: 
-          - "https://kubernetes.default:443/metrics"
-        name_prefix: "prom_"
-        bearer_token: "/var/run/secrets/kubernetes.io/serviceaccount/token"
-        insecure_skip_verify: true
+    prometheus:
+      urls: 
+        - "https://kubernetes.default:443/metrics"
+      name_prefix: "prom_"
+      bearer_token: "/var/run/secrets/kubernetes.io/serviceaccount/token"
+      insecure_skip_verify: true
 ##        ssl_ca: /path/to/cafile
 ##        ssl_cert: /path/to/certfile
 ##        ssl_key: /path/to/keyfile
@@ -484,12 +357,12 @@ single:
 ##        write_timeout: "10s"
 ##        max_body_size: 0
 ##        max_line_size: 0
-      statsd:
-        service_address: ":8125"
-        percentiles: 
-          - 50
-          - 95
-          - 99
-        metric_separator: "_"
-        allowed_pending_messages: 10000
-        percentile_limit: 1000
+    statsd:
+      service_address: ":8125"
+      percentiles: 
+        - 50
+        - 95
+        - 99
+      metric_separator: "_"
+      allowed_pending_messages: 10000
+      percentile_limit: 1000
