@@ -16,8 +16,7 @@ spec:
     port: 4140
   - name: incoming
     port: 4141
-  - name: {{ default "admin" .Values.linkerd.httpPortName | quote }}
-    targetPort: 9990
-    port: {{ .Values.linkerd.httpPort }}
+  - name: admin
+    port: 9990
   selector:
     app: {{ template "fullname" . }}

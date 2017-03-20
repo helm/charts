@@ -1,4 +1,5 @@
 {{- if .Values.linkerd.ingress.enabled -}}
+{{- $globalContext := . -}}
 {{- $servicePort := .Values.linkerd.httpPort -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
@@ -21,7 +22,7 @@ spec:
       http:
         paths:
           - backend:
-              serviceName: {{ template "fullname" . }}
+              serviceName: {{ template "fullname" $globalContext }}
               servicePort: {{ $servicePort }}
   {{- end -}}
   {{- if .Values.linkerd.ingress.tls }}

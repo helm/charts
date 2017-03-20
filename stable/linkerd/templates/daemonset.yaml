@@ -48,7 +48,7 @@ spec:
           httpGet:
             path: /admin
             port: 9990
-          initialDelaySeconds: 5
+          initialDelaySeconds: 10
           periodSeconds: 5
         volumeMounts:
         - name: "{{ template "fullname" . }}-config"
