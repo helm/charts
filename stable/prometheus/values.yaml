@@ -3,6 +3,10 @@ alertmanager:
   ##
   extraArgs: {}
 
+  ## Node Selector
+  ##
+  nodeSelector: {}
+
   ## Alertmanager service port
   ##
   httpPort: 80
@@ -121,6 +125,10 @@ configmapReload:
 # imagePullPolicy:
 
 kubeStateMetrics:
+  ## Node Selector
+  ##
+  nodeSelector: {}
+
   ## Kube-state-metrics service port
   ##
   httpPort: 80
@@ -162,6 +170,10 @@ server:
   ## Additional Server container arguments
   ##
   extraArgs: {}
+
+  ## Node Selector
+  ##
+  nodeSelector: {}
 
   ## Server service port
   ##

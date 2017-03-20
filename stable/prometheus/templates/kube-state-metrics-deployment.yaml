@@ -17,6 +17,8 @@ spec:
         component: "{{ .Values.kubeStateMetrics.name }}"
         release: "{{ .Release.Name }}"
     spec:
+      nodeSelector:
+{{ toYaml .Values.kubeStateMetrics.nodeSelector | indent 12 }}
       containers:
         - name: {{ template "name" . }}-{{ .Values.kubeStateMetrics.name }}
           image: "{{ .Values.kubeStateMetrics.image }}"
