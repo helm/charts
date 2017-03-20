@@ -48,8 +48,8 @@ The table below is only applicable if `resizer.enabled` is `true`. More informat
 
 | Parameter                             | Description                         | Default                                           |
 |---------------------------------------|-------------------------------------|---------------------------------------------------|
-| `resizer.image.repository`            | Repository for container image      | gcr.io/google_containers/heapster                 |
-| `resizer.image.tag`                   | Container image tag                 | v1.3.0                                            |
+| `resizer.image.repository`            | Repository for container image      | gcr.io/google_containers/addon-resizer            |
+| `resizer.image.tag`                   | Container image tag                 | 1.7                                               |
 | `resizer.image.pullPolicy`            | Image pull policy                   | IfNotPresent                                      |
 | `resizer.resources.limits`            | Server resource  limits             | requests: {cpu: 50m, memory: 90Mi}                |
 | `resizer.resources.requests`          | Server resource requests            | requests: {cpu: 50m, memory: 90Mi}                |
