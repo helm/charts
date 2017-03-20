@@ -6,14 +6,12 @@ From outside the cluster, the server URL(s) are:
 {{- range .Values.server.ingress.hosts }}
 http://{{ . }}
 {{- end }}
-
 {{- else }}
-Get the server URL by running these commands in the same shell:
+Get the Prometheus server URL by running these commands in the same shell:
 {{- if contains "NodePort" .Values.server.service.type }}
   export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "server.fullname" . }})
   export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
   echo http://$NODE_IP:$NODE_PORT
-
 {{- else if contains "LoadBalancer" .Values.server.service.type }}
   NOTE: It may take a few minutes for the LoadBalancer IP to be available.
         You can watch the status of by running 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "server.fullname" . }}'
@@ -23,7 +21,6 @@ Get the server URL by running these commands in the same shell:
 {{- else if contains "ClusterIP"  .Values.server.service.type }}
   export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "name" . }},component={{ .Values.server.name }}" -o jsonpath="{.items[0].metadata.name}")
   kubectl --namespace {{ .Release.Namespace }} port-forward $POD_NAME 9090
-
 {{- end }}
 {{- end }}
 
@@ -35,7 +32,7 @@ Get the server URL by running these commands in the same shell:
 #################################################################################
 {{- end }}
 
-{{- if .Values.alertmanager.enabled }}
+{{ if .Values.alertmanager.enabled }}
 The Prometheus alertmanager can be accessed via port {{ .Values.alertmanager.service.servicePort }} on the following DNS name from within your cluster:
 {{ template "alertmanager.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
 
@@ -44,14 +41,12 @@ From outside the cluster, the alertmanager URL(s) are:
 {{- range .Values.alertmanager.ingress.hosts }}
 http://{{ . }}
 {{- end }}
-
 {{- else }}
-Get the server URL by running these commands in the same shell:
+Get the Alertmanager URL by running these commands in the same shell:
 {{- if contains "NodePort" .Values.alertmanager.service.type }}
   export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "alertmanager.fullname" . }})
   export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
   echo http://$NODE_IP:$NODE_PORT
-
 {{- else if contains "LoadBalancer" .Values.alertmanager.service.type }}
   NOTE: It may take a few minutes for the LoadBalancer IP to be available.
         You can watch the status of by running 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "alertmanager.fullname" . }}'
@@ -61,7 +56,6 @@ Get the server URL by running these commands in the same shell:
 {{- else if contains "ClusterIP"  .Values.alertmanager.service.type }}
   export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "name" . }},component={{ .Values.alertmanager.name }}" -o jsonpath="{.items[0].metadata.name}")
   kubectl --namespace {{ .Release.Namespace }} port-forward $POD_NAME 9093
-
 {{- end }}
 {{- end }}
 

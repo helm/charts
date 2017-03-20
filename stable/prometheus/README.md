@@ -73,6 +73,7 @@ Parameter | Description | Default
 `alertmanager.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
 `alertmanager.service.servicePort` | alertmanager service port | `80`
 `alertmanager.service.type` | type of alertmanager service to create | `ClusterIP`
+`alertmanagerFiles` | alertmanager ConfigMap entries | `alertmanager.yml`
 `configmapReload.name` | configmap-reload container name | `configmap-reload`
 `configmapReload.image.repository` | configmap-reload container image repository | `jimmidyson/configmap-reload`
 `configmapReload.image.tag` | configmap-reload container image tag | `v0.1`
@@ -140,6 +141,9 @@ Parameter | Description | Default
 `server.service.servicePort` | Prometheus server service port | `80`
 `server.service.type` | type of Prometheus server service to create | `ClusterIP`
 `server.terminationGracePeriodSeconds` | Prometheus server Pod termination grace period | `300`
+`serverFiles.alerts` | Prometheus server alerts configuration | `""`
+`serverFiles.rules` | Prometheus server rules configuration | `""`
+`serverFiles.prometheus.yml` | Prometheus server scrape configuration | example configuration
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
