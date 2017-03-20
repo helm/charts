@@ -68,8 +68,10 @@ The following tables lists the configurable parameters of the Traefik chart and 
 
 | Parameter                       | Description                                                          | Default                                   |
 | ------------------------------- | -------------------------------------------------------------------- | ----------------------------------------- |
+| `image`                         | Traefik image name                                                   | `traefik`                                 |
 | `imageTag`                      | The version of the official Traefik image to use                     | `v1.1.2`                                  |
 | `serviceType`                   | A valid Kubernetes service type                                      | `LoadBalancer`                            |
+| `replicas`                      | The number of replicas to run; __NOTE:__ Full Traefik clustering with leader election is not yet supported, which can affect any configured Let's Encrypt setup; see Clustering section | `1` |
 | `cpuRequest`                    | Initial share of CPU requested per Traefik pod                       | `100m`                                    |
 | `memoryRequest`                 | Initial share of memory requested per Traefik pod                    | `20Mi`                                    |
 | `cpuLimit`                      | CPU limit per Traefik pod                                            | `200m`                                    |
@@ -82,17 +84,24 @@ The following tables lists the configurable parameters of the Traefik chart and 
 | `acme.email`                    | Email address to be used in certificates obtained from Let's Encrypt | `admin@example.com`                       |
 | `acme.staging`                  | Whether to get certs from Let's Encrypt's staging environment        | `true`                                    |
 | `acme.persistence.enabled`      | Create a volume to store ACME certs (if ACME is enabled)             | `true`                                    |
-| `acme.persistence.storageClass` | Type of `StorageClass` to request-- will be cluster-specific         | `generic`                                 |
+| `acme.persistence.storageClass` | Type of `StorageClass` to request-- will be cluster-specific         | `nil` (uses alpha storage class annotation) |
 | `acme.persistence.accessMode`   | `ReadWriteOnce` or `ReadOnly`                                        | `ReadWriteOnce`                           |
 | `acme.persistence.size`         | Minimum size of the volume requested                                 | `1Gi`                                     |
 | `dashboard.enabled`             | Whether to enable the Traefik dashboard                              | `false`                                   |
 | `dashboard.domain`              | Domain for the Traefik dashboard                                     | `traefik.example.com`                     |
-| `gzip.enabled`                  | Whether to use gzip compression                                      | `true`                     |
+| `dashboard.ingress.annotations` | Annotations for the Traefik dashboard Ingress definition, specified as a map | None                              |
+| `dashboard.auth.basic`          | Basic auth for the Traefik dashboard specified as a map, see Authentication section | unset by default; this means basic auth is disabled |
+| `service.annotations`           | Annotations for the Traefik Service definition, specified as a map   | None                                      |
+| `service.labels`                | Additional labels for the Traefik Service definition, specified as a map | None                                  |
+| `gzip.enabled`                  | Whether to use gzip compression                                      | `true`                                    |
+| `kubernetes.namespaces`         | List of Kubernetes namespaces to watch                               | All namespaces                            |
+| `kubernetes.labelSelector`      | Valid Kubernetes ingress label selector to watch (e.g `realm=public`)| No label filter                           |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
 
 ```bash
-$ helm install --name my-release --namespace kube-system --set dashboard.enabled=true,dashboard.domain=traefik.example.com stable/traefik
+$ helm install --name my-release --namespace kube-system \
+  --set dashboard.enabled=true,dashboard.domain=traefik.example.com stable/traefik
 ```
 
 The above command enables the Traefik dashboard on the domain `traefik.example.com`.
@@ -102,4 +111,33 @@ installing the chart. For example:
 
 ```bash
 $ helm install --name my-release --namespace kube-system --values values.yaml stable/traefik
+```
+
+### Clustering / High Availability
+
+Currently it is possible to specify the number of `replicas` but the implementation is naive.
+
+**Full Traefik clustering with leader election is not yet supported.**
+
+It is heavily advised to not set a value for `replicas` if you also have Let's Encrypt configured. While setting `replicas` will work for many cases, since no leader is elected it has the consequence that each node will end up requesting Let's Encrypt certificates if this is also configured. This will quickly cut into the very modest rate limit that Let's Encrypt enforces.
+
+[Basic auth](https://docs.traefik.io/toml/#api-backend) can be specified via `dashboard.auth.basic` as a map of usernames to passwords as below.
+See the linked Traefik documentation for accepted passwords encodings.
+It is advised to single quote passwords to avoid issues with special characters:
+
+```bash
+$ helm install --name my-release --namespace kube-system \
+  --set dashboard.enabled=true,dashboard.auth.basic.test='$apr1$H6uskkkW$IgXLP6ewTrSuBkTrqE8wj/' \
+  stable/traefik
+```
+
+Alternatively in YAML form:
+
+```yaml
+dashboard:
+  enabled: true
+  domain: traefik.example.com
+  auth:
+    basic:
+      test: $apr1$H6uskkkW$IgXLP6ewTrSuBkTrqE8wj/
 ```

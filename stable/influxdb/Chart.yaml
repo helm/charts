@@ -1,11 +1,13 @@
 name: influxdb
-version: 0.1.0
-description: Chart for InfluxDB
+version: 0.3.0
+description: Scalable datastore for metrics, events, and real-time analytics.
 keywords:
 - influxdb
 - database
 - timeseries
 home: https://www.influxdata.com/time-series-platform/influxdb/
+sources:
+  - https://github.com/influxdata/influxdb
 maintainers:
 - name: Jack Zampolin
   email: jack@influxdb.com

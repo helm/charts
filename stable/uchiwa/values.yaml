@@ -1,7 +1,7 @@
 # Docker image name
 image: "sstarcher/uchiwa"
 # Docker image tag
-imageTag: "0.19"
+imageTag: "0.22"
 
 # Image pull policy for the container
 pullPolicy: "IfNotPresent"
@@ -29,19 +29,7 @@ resources:
     cpu: 10m
 
 # Uchiwa configuration https://docs.uchiwa.io/getting-started/configuration/
-config: |-
-  {
-    "sensu": [
-      {
-        "name": "Sensu",
-        "host": "sensu",
-        "port": 4567
-      }
-    ],
-    "uchiwa": {
-      "host": "0.0.0.0",
-      "port": 3000,
-      "refresh": 10,
-      "loglevel": "info"
-    }
-  }
+host: '0.0.0.0'
+port: 3000
+refresh: 10
+loglevel: info

@@ -2,7 +2,7 @@
 ## ref: https://hub.docker.com/r/bitnami/mariadb/tags/
 ##
 ## Default: none
-image: bitnami/mariadb:10.1.19-r2
+image: bitnami/mariadb:10.1.22-r0
 
 ## Specify an imagePullPolicy (Required)
 ## It's recommended to change this to 'Always' if the image tag is 'latest'
@@ -25,12 +25,19 @@ imagePullPolicy: IfNotPresent
 ##
 # mariadbDatabase:
 
+
+## Kubernetes service type
+serviceType: ClusterIP
+
 ## Enable persistence using Persistent Volume Claims
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
 ##
 persistence:
   enabled: true
-  storageClass: generic
+  ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
+  ## Default: volume.alpha.kubernetes.io/storage-class: default
+  ##
+  # storageClass:
   accessMode: ReadWriteOnce
   size: 8Gi
 

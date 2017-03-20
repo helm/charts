@@ -48,9 +48,9 @@ The following tables lists the configurable parameters of the Redmine chart and 
 | Parameter                       | Description                     | Default                                                   |
 | ------------------------------- | ------------------------------- | --------------------------------------------------------- |
 | `image`                         | Redmine image                   | `bitnami/redmine:{VERSION}`                               |
-| `imagePullPolicy`               | Image pull policy               | `Always` if `image` tag is `latest`, else `IfNotPresent`  |
+| `imagePullPolicy`               | Image pull policy               | `IfNotPresent`                                            |
 | `redmineUsername`               | User of the application         | `user`                                                    |
-| `redminePassword`               | Application password            | `bitnami`                                                 |
+| `redminePassword`               | Application password            | _random 10 character long alphanumeric string_            |
 | `redmineEmail`                  | Admin email                     | `user@example.com`                                        |
 | `redmineLanguage`               | Redmine default data language   | `en`                                                      |
 | `smtpHost`                      | SMTP host                       | `nil`                                                     |
@@ -61,7 +61,7 @@ The following tables lists the configurable parameters of the Redmine chart and 
 | `mariadb.mariadbRootPassword`   | MariaDB admin password          | `nil`                                                     |
 | `serviceType`                   | Kubernetes Service type         | `LoadBalancer`                                            |
 | `persistence.enabled`           | Enable persistence using PVC    | `true`                                                    |
-| `persistence.storageClass`      | PVC Storage Class               | `generic`                                                 |
+| `persistence.storageClass`      | PVC Storage Class               | `nil` (uses alpha storage class annotation)               |
 | `persistence.accessMode`        | PVC Access Mode                 | `ReadWriteOnce`                                           |
 | `persistence.size`              | PVC Storage Request             | `8Gi`                                                     |
 

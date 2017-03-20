@@ -1,7 +1,7 @@
 # Factorio image version
 # ref: https://quay.io/repository/games_on_k8s/factorio?tab=tags
 image: quay.io/games_on_k8s/factorio
-imageTag: "0.14.21"
+imageTag: "0.14.22"
 
 # Configure resource requests and limits
 # ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -15,6 +15,7 @@ resources:
 factorioServer:
   name: Kubernetes Server
   description: Factorio running on Kubernetes
+  port: 34197
   # Lock this server down with a password.
   #password: change.me
   maxPlayers: 255
@@ -48,7 +49,10 @@ factorio:
     password: your.password
 
 persistence:
-  storageClass: generic
+  ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
+  ## Default: volume.alpha.kubernetes.io/storage-class: default
+  ##
+  # storageClass:
   savedGames:
     # Set this to false if you don't care to persist saved games between restarts.
     enabled: true

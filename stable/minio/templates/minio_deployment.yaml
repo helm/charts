@@ -1,4 +1,4 @@
-{{- if eq .Values.mode "standalone" }}
+{{- if eq .Values.mode "standalone" "shared" }}
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
@@ -9,6 +9,9 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
+  {{- if eq .Values.mode "shared" }}
+  replicas: {{ .Values.replicas }}
+  {{- end }}
   selector:
     matchLabels:
       app: {{ template "fullname" . }}
@@ -29,6 +32,9 @@ spec:
         {{- else }}
           emptyDir: {}
         {{- end }}
+        - name: minio-server-config
+          configMap:
+            name: {{ template "fullname" . }}-config-cm
         - name: minio-user
           secret:
             secretName: {{ template "fullname" . }}-user
@@ -45,6 +51,8 @@ spec:
           volumeMounts:
             - name: export
               mountPath: {{ .Values.mountPath }}
+            - name: minio-server-config
+              mountPath: {{ default "/root/.minio/" .Values.configPath | quote }}
           ports:
             - name: service
               containerPort: 9000

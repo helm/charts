@@ -1,6 +1,10 @@
 1. Get your '{{ .Values.Master.AdminUser }}' user password by running:
-  printf $(printf '\%o' `kubectl get secret --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath="{.data.jenkins-admin-password[*]}"`);echo
+  printf $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath="{.data.jenkins-admin-password}" | base64 --decode);echo
 
+{{- if .Values.Master.HostName }}
+
+2. Visit http://{{ .Values.Master.HostName }}
+{{- else }}
 2. Get the Jenkins URL to visit by running these commands in the same shell:
 {{- if contains "NodePort" .Values.Master.ServiceType }}
   export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "fullname" . }})
@@ -19,6 +23,7 @@
   kubectl port-forward $POD_NAME {{ .Values.Master.ServicePort }}:{{ .Values.Master.ServicePort }}
 
 {{- end }}
+{{- end }}
 
 3. Login with the password from step 1 and the username: {{ .Values.Master.AdminUser }}
 
@@ -32,4 +37,3 @@ https://cloud.google.com/solutions/jenkins-on-container-engine
 ######            the Jenkins pod is terminated.                            #####
 #################################################################################
 {{- end }}
-

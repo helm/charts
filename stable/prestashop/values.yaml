@@ -1,7 +1,7 @@
 ## Bitnami PrestaShop image version
 ## ref: https://hub.docker.com/r/bitnami/prestashop/tags/
 ##
-image: bitnami/prestashop:1.6.1.9-r2
+image: bitnami/prestashop:1.7.0.6-r0
 
 ## Specify a imagePullPolicy
 ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
@@ -68,7 +68,10 @@ mariadb:
   ##
   persistence:
     enabled: true
-    storageClass: generic
+    ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
+    ## Default: volume.alpha.kubernetes.io/storage-class: default
+    ##
+    # storageClass:
     accessMode: ReadWriteOnce
     size: 8Gi
 
@@ -83,11 +86,17 @@ serviceType: LoadBalancer
 persistence:
   enabled: true
   apache:
-    storageClass: generic
+    ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
+    ## Default: volume.alpha.kubernetes.io/storage-class: default
+    ##
+    # storageClass:
     accessMode: ReadWriteOnce
     size: 1Gi
   prestashop:
-    storageClass: generic
+    ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
+    ## Default: volume.alpha.kubernetes.io/storage-class: default
+    ##
+    # storageClass:
     accessMode: ReadWriteOnce
     size: 8Gi
 

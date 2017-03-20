@@ -1,0 +1,16 @@
+{{- if .Values.tcp }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app: {{ template "name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: "{{ .Values.controller.name }}"
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "fullname" . }}-tcp
+data:
+{{- if .Values.tcp }}
+{{ toYaml .Values.tcp | indent 2 }}
+{{- end }}
+{{- end }}

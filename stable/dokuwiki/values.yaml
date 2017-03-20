@@ -1,7 +1,7 @@
 ## Bitnami DokuWiki image version
 ## ref: https://hub.docker.com/r/bitnami/dokuwiki/tags/
 ##
-image: bitnami/dokuwiki:20160626a-r3
+image: bitnami/dokuwiki:20160626a-r8
 
 ## Specify a imagePullPolicy
 ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
@@ -45,11 +45,17 @@ serviceType: LoadBalancer
 persistence:
   enabled: true
   apache:
-    storageClass: generic
+    ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
+    ## Default: volume.alpha.kubernetes.io/storage-class: default
+    ##
+    # storageClass:
     accessMode: ReadWriteOnce
     size: 1Gi
   dokuwiki:
-    storageClass: generic
+    ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
+    ## Default: volume.alpha.kubernetes.io/storage-class: default
+    ##
+    # storageClass:
     accessMode: ReadWriteOnce
     size: 8Gi
 

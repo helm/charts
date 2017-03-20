@@ -8,6 +8,7 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
+  type: {{ .Values.serviceType }}
   ports:
   - name: mysql
     port: 3306

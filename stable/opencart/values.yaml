@@ -1,7 +1,7 @@
 ## Bitnami OpenCart image version
 ## ref: https://hub.docker.com/r/bitnami/opencart/tags/
 ##
-image: bitnami/opencart:2.3.0.2-r9
+image: bitnami/opencart:2.3.0.2-r14
 
 ## Specify a imagePullPolicy
 ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
@@ -58,7 +58,10 @@ mariadb:
   ##
   persistence:
     enabled: true
-    storageClass: generic
+    ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
+    ## Default: volume.alpha.kubernetes.io/storage-class: default
+    ##
+    # storageClass:
     accessMode: ReadWriteOnce
     size: 8Gi
 
@@ -73,11 +76,17 @@ serviceType: LoadBalancer
 persistence:
   enabled: true
   apache:
-    storageClass: generic
+    ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
+    ## Default: volume.alpha.kubernetes.io/storage-class: default
+    ##
+    # storageClass:
     accessMode: ReadWriteOnce
     size: 1Gi
   opencart:
-    storageClass: generic
+    ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
+    ## Default: volume.alpha.kubernetes.io/storage-class: default
+    ##
+    # storageClass:
     accessMode: ReadWriteOnce
     size: 8Gi
 

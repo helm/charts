@@ -1,13 +1,12 @@
 ## Bitnami ownCloud image version
 ## ref: https://hub.docker.com/r/bitnami/owncloud/tags/
 ##
-image: bitnami/owncloud:9.1.2-r0
+image: bitnami/owncloud:9.1.4-r1
 
 ## Specify a imagePullPolicy
-## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
 ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
 ##
-# imagePullPolicy:
+imagePullPolicy: IfNotPresent
 
 ## ownCloud host to create application URLs
 ## ref: https://github.com/bitnami/bitnami-docker-owncloud#configuration
@@ -49,7 +48,10 @@ mariadb:
   ##
   persistence:
     enabled: true
-    storageClass: generic
+    ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
+    ## Default: volume.alpha.kubernetes.io/storage-class: default
+    ##
+    # storageClass:
     accessMode: ReadWriteOnce
     size: 8Gi
 
@@ -64,11 +66,17 @@ serviceType: LoadBalancer
 persistence:
   enabled: true
   apache:
-    storageClass: generic
+    ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
+    ## Default: volume.alpha.kubernetes.io/storage-class: default
+    ##
+    # storageClass:
     accessMode: ReadWriteOnce
     size: 1Gi
   owncloud:
-    storageClass: generic
+    ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
+    ## Default: volume.alpha.kubernetes.io/storage-class: default
+    ##
+    # storageClass:
     accessMode: ReadWriteOnce
     size: 8Gi
 

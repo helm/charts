@@ -1,0 +1,18 @@
+{{- if and .Values.cluster.enabled (not .Release.IsInstall) -}}
+apiVersion: "etcd.coreos.com/v1beta1"
+kind: "Cluster"
+metadata:
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app: "{{ template "fullname" . }}"
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+  name: "{{ .Values.cluster.name }}"
+spec:
+  size: {{ .Values.cluster.size }}
+  version: "{{ .Values.cluster.version }}"
+  {{- if .Values.cluster.backup.enabled }}
+  backup:
+{{ toYaml .Values.cluster.backup.config | indent 4 }}
+  {{- end -}}
+{{- end -}}

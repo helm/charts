@@ -1,7 +1,7 @@
 ## Bitnami Magento image version
 ## ref: https://hub.docker.com/r/bitnami/magento/tags/
 ##
-image: bitnami/magento:2.1.2-r6
+image: bitnami/magento:2.1.5-r1
 
 ## Specify a imagePullPolicy
 ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
@@ -69,7 +69,10 @@ mariadb:
   ##
   persistence:
     enabled: true
-    storageClass: generic
+    ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
+    ## Default: volume.alpha.kubernetes.io/storage-class: default
+    ##
+    # storageClass:
     accessMode: ReadWriteOnce
     size: 8Gi
 
@@ -84,11 +87,17 @@ serviceType: LoadBalancer
 persistence:
   enabled: true
   apache:
-    storageClass: generic
+    ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
+    ## Default: volume.alpha.kubernetes.io/storage-class: default
+    ##
+    # storageClass:
     accessMode: ReadWriteOnce
     size: 1Gi
   magento:
-    storageClass: generic
+    ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
+    ## Default: volume.alpha.kubernetes.io/storage-class: default
+    ##
+    # storageClass:
     accessMode: ReadWriteOnce
     size: 8Gi
 

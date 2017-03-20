@@ -3,7 +3,7 @@
 ##
 image:
   repository: "kapacitor"
-  tag: "1.1.0"
+  tag: "1.2"
   pullPolicy: "IfNotPresent"
 
 ## Specify a service type, defaults to NodePort
@@ -17,7 +17,10 @@ service:
 ##
 persistence:
   enabled: false
-  storageClass: generic
+  ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
+  ## Default: volume.alpha.kubernetes.io/storage-class: default
+  ##
+  # storageClass:
   accessMode: ReadWriteOnce
   size: 8Gi
 

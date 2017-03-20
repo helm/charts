@@ -1,7 +1,8 @@
 name: spark
-home: http://spark.apache.org/
-version: 0.1.1
-description: A Apache Spark Helm chart for Kubernetes. Apache Spark is a fast and general-purpose cluster computing system
+version: 0.1.4
+description: Fast and general-purpose cluster computing system.
+home: http://spark.apache.org
+icon: http://spark.apache.org/images/spark-logo-trademark.png
 sources:
   - https://github.com/kubernetes/kubernetes/tree/master/examples/spark
   - https://github.com/apache/spark

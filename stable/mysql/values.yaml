@@ -30,7 +30,10 @@ imagePullPolicy: IfNotPresent
 ## Persist data to a persitent volume
 persistence:
   enabled: true
-  storageClass: generic
+  ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
+  ## Default: volume.alpha.kubernetes.io/storage-class: default
+  ##
+  # storageClass:
   accessMode: ReadWriteOnce
   size: 8Gi
 

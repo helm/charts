@@ -1,5 +1,5 @@
 name: owncloud
-version: 0.4.1
+version: 0.4.5
 description: A file sharing server that puts the control and security of your own data back into your hands.
 keywords:
 - owncloud
@@ -8,6 +8,7 @@ keywords:
 - web
 - php
 home: https://owncloud.org/
+icon: https://bitnami.com/assets/stacks/owncloud/img/owncloud-stack-220x234.png
 sources:
 - https://github.com/bitnami/bitnami-docker-owncloud
 maintainers:

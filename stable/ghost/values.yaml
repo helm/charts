@@ -1,7 +1,7 @@
 ## Bitnami Ghost image version
 ## ref: https://hub.docker.com/r/bitnami/ghost/tags/
 ##
-image: bitnami/ghost:0.11.3-r0
+image: bitnami/ghost:0.11.7-r0
 
 ## Specify a imagePullPolicy
 ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
@@ -68,7 +68,10 @@ mariadb:
   ##
   persistence:
     enabled: true
-    storageClass: generic
+    ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
+    ## Default: volume.alpha.kubernetes.io/storage-class: default
+    ##
+    # storageClass:
     accessMode: ReadWriteOnce
     size: 8Gi
 
@@ -82,7 +85,10 @@ serviceType: LoadBalancer
 ##
 persistence:
   enabled: true
-  storageClass: generic
+  ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
+  ## Default: volume.alpha.kubernetes.io/storage-class: default
+  ##
+  # storageClass:
   accessMode: ReadWriteOnce
   size: 8Gi
 

@@ -1,0 +1,17 @@
+name: odoo
+version: 0.4.2
+description: A suite of web based open source business apps.
+keywords:
+- odoo
+- crm
+- www
+- http
+- web
+home: https://www.odoo.com/
+sources:
+- https://github.com/bitnami/bitnami-docker-odoo
+maintainers:
+- name: Bitnami
+  email: containers@bitnami.com
+engine: gotpl
+icon: https://bitnami.com/assets/stacks/odoo/img/odoo-stack-110x117.png

@@ -1,12 +1,13 @@
 name: mariadb
-version: 0.5.6
-description: Chart for MariaDB
+version: 0.5.13
+description: Fast, reliable, scalable, and easy to use open-source relational database system. MariaDB Server is intended for mission-critical, heavy-load production systems as well as for embedding into mass-deployed software.
 keywords:
 - mariadb
 - mysql
 - database
 - sql
 home: https://mariadb.org
+icon: https://bitnami.com/assets/stacks/mariadb/img/mariadb-stack-220x234.png
 sources:
 - https://github.com/bitnami/bitnami-docker-mariadb
 maintainers:

@@ -54,10 +54,11 @@ The following tables lists the configurable parameters of the MariaDB chart and 
 | `mariadbPassword`          | Password for the new user.                 | `nil`                                                      |
 | `mariadbDatabase`          | Name for new database to create.           | `nil`                                                      |
 | `persistence.enabled`      | Use a PVC to persist data                  | `true`                                                     |
-| `persistence.storageClass` | Storage class of backing PVC               | `generic`                                                  |
+| `persistence.storageClass` | Storage class of backing PVC               | `nil` (uses alpha storage class annotation)                |
 | `persistence.accessMode`   | Use volume as ReadOnly or ReadWrite        | `ReadWriteOnce`                                            |
 | `persistence.size`         | Size of data volume                        | `8Gi`                                                      |
 | `resources`                | CPU/Memory resource requests/limits        | Memory: `256Mi`, CPU: `250m`                               |
+| `serviceType`              | Kubernetes service type                    | `ClusterIP`                                                |
 | `config`                   | Multi-line string for my.cnf configuration | `nil`                                                      |
 
 The above parameters map to the env variables defined in [bitnami/mariadb](http://github.com/bitnami/bitnami-docker-mariadb). For more information please refer to the [bitnami/mariadb](http://github.com/bitnami/bitnami-docker-mariadb) image documentation.
