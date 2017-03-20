@@ -3,7 +3,7 @@
 replicaCount: 1
 image:
   repository: gcr.io/google_containers/heapster
-  tag: v1.3.0-beta.0
+  tag: v1.3.0
   pullPolicy: IfNotPresent
 service:
   name: api
