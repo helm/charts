@@ -1,0 +1,12 @@
+name: cassandra
+version: 0.1.0
+description: Chart for Cassandra
+keywords:
+- cassandra
+- database
+- nosql
+home: http://cassandra.apache.org
+maintainers:
+- name: Siri C
+  email: goonohc@gmail.com
+engine: gotpl
