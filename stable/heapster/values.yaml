@@ -6,10 +6,12 @@ image:
   tag: v1.3.0
   pullPolicy: IfNotPresent
 service:
-  name: api
   type: ClusterIP
   externalPort: 8082
   internalPort: 8082
+  ## This allows an overide of the heapster service name
+  ## Default: {{ template "fullname" . }}
+  # nameOverride:
 resources:
   limits:
     cpu: 100m
