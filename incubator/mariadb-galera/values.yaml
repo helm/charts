@@ -6,7 +6,7 @@ image: adfinissygroup/k8s-mariadb-galera-centos:v002
 
 ## Specify an imagePullPolicy (Required)
 ## It's recommended to change this to 'Always' if the image tag is 'latest'
-## ref: http://kubernetes.io/docs/user-guide/images/#updating-images
+## ref: https://kubernetes.io/docs/user-guide/images/#updating-images
 imagePullPolicy: IfNotPresent
 
 ## Specify password for root user
@@ -23,7 +23,7 @@ imagePullPolicy: IfNotPresent
 replicas: 3
 
 ## Enable persistence using Persistent Volume Claims
-## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+## ref: https://kubernetes.io/docs/user-guide/persistent-volumes/
 ##
 persistence:
   enabled: true
@@ -39,7 +39,7 @@ persistence:
   # innodb_buffer_pool_size=2G
 
 ## Configure resource requests and limits
-## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+## ref: https://kubernetes.io/docs/user-guide/compute-resources/
 ##
 resources:
   requests:

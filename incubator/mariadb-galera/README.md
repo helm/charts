@@ -6,7 +6,7 @@
 
 ## Introduction
 
-This chart bootstraps a [MariaDB Galera Cluster](http://github.com/adfinis-sygroup/openshift-mariadb-galera) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
+This chart bootstraps a [MariaDB Galera Cluster](https://github.com/adfinis-sygroup/openshift-mariadb-galera) deployment on a [Kubernetes](https://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
 ## Prerequisites
 
@@ -55,7 +55,7 @@ The following tables lists the configurable parameters of the MariaDB chart and 
 | `resources`                | CPU/Memory resource requests/limits        | Memory: `256Mi`, CPU: `250m`                               |
 | `config`                   | Multi-line string for my.cnf configuration | `nil`                                                      |
 
-The above parameters map to the env variables defined in the [adfinis-sygroup/openshift-mariadb-galera](http://github.com/adfinis-sygroup/openshift-mariadb-galera).
+The above parameters map to the env variables defined in the [adfinis-sygroup/openshift-mariadb-galera](https://github.com/adfinis-sygroup/openshift-mariadb-galera).
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
@@ -89,7 +89,7 @@ $ kubectl get secret ${release_name}-mariadb-galera  -o jsonpath='{.data.mysql-r
 
 The Adfinis SyGroup MariaDB Galera Cluster image allows you to provide a custom
 `my_extra.cnf` file for configuring MariaDB.
-This Chart uses the `config` value to mount a custom `my_extra.cnf` using a [ConfigMap](http://kubernetes.io/docs/user-guide/configmap/).
+This Chart uses the `config` value to mount a custom `my_extra.cnf` using a [ConfigMap](https://kubernetes.io/docs/user-guide/configmap/).
 You can configure this by creating a YAML file that defines the `config` property as a multi-line string in the format of a `my.cnf` file.
 For example:
 
