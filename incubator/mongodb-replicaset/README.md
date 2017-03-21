@@ -49,6 +49,7 @@ The following tables lists the configurable parameters of the mongodb chart and 
 | `Memory`                | container requested memory         | `512Mi`                                                    |
 | `PeerPort`              | Container listening port           | `27017`                                                    |
 | `Storage`               | Persistent volume size             | `10Gi`                                                     |
+| `StorageClass`          | Persistent volume storage class    | If not specified, `default` is used as value for `volume.alpha.kubernetes.io/storage-class`. Otherwise, `volume.beta.kubernetes.io/storage-class` is used with the specified value |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
