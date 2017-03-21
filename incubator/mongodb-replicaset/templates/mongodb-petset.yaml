@@ -145,7 +145,7 @@ spec:
           timeoutSeconds: 5
         volumeMounts:
         - name: datadir
-          mountPath: /data/db
+          mountPath: {{ .Values.persistentVolume.mountPath }}
         - name: config
           mountPath: /config
       volumes:
@@ -154,13 +154,10 @@ spec:
           name: "{{.Release.Name}}-mongo-config"
       - name: workdir
         emptyDir: {}
-  volumeClaimTemplates:
-  - metadata:
-      name: datadir
-      annotations:
-        volume.alpha.kubernetes.io/storage-class: {{.Values.StorageClass}}
-    spec:
-      accessModes: [ "ReadWriteOnce" ]
-      resources:
-        requests:
-          storage: {{.Values.Storage}}
+      - name: datadir
+      {{- if .Values.persistentVolume.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ if .Values.persistentVolume.existingClaim }}{{ .Values.persistentVolume.existingClaim }}{{- else }}{{ template "fullname" . }}{{- end }}
+      {{- else }}
+        emptyDir: {}
+      {{- end -}}
