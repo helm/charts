@@ -43,7 +43,7 @@ The following tables lists the configurable parameters of the MariaDB chart and 
 | -----------------------    | ----------------------------------         | ---------------------------------------------------------- |
 | `image`                    | MariaDB Galera image                       | `adfinissygroup/k8s-mariadb-galera-centos:v002`            |
 | `imagePullPolicy`          | Image pull policy.                         | `IfNotPresent`                                             |
-| `mysqlRootPassword`        | Password for the `root` user.              | `nil`                                                      |
+| `mysqlRootPassword`        | Password for the `root` user.              | _random 16 character alphanumeric string_                  |
 | `mysqlUser`                | Username of new user to create.            | `nil`                                                      |
 | `mysqlPassword`            | Password for the new user.                 | `nil`                                                      |
 | `mysqlDatabase`            | Name for new database to create.           | `nil`                                                      |
@@ -74,6 +74,16 @@ $ helm install --name my-release -f values.yaml stable/mariadb-galera
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
+### Random MariaDB root password
+
+If you don't configure a password for the MariaDB `root` user, `helm` will
+generate a random one for you. You can get the configured password from the
+created Kubernetes secret:
+
+```bash
+$ kubectl get secret ${release_name}-mariadb-galera  -o jsonpath='{.data.mysql-root-password}' | base64 -d
+```
 
 ### Custom my.cnf configuration
 

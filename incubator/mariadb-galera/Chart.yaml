@@ -1,5 +1,5 @@
 name: mariadb-galera
-version: 0.1.0
+version: 0.1.1
 description: Chart for MariaDB Galera cluster
 keywords:
   - mariadb
@@ -9,7 +9,7 @@ keywords:
   - galera
   - cluster
 sources:
-  - http://github.com/adfinis-sygroup/openshift-mariadb-galera
+  - https://github.com/adfinis-sygroup/openshift-mariadb-galera
 maintainers:
   - name: Adfinis SyGroup AG
     email: support@adfinis-sygroup.ch
