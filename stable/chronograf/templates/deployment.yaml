@@ -34,6 +34,24 @@ spec:
           mountPath: /var/lib/chronograf
         resources:
 {{ toYaml .Values.resources | indent 10 }}
+{{- if .Values.auth.enabled }}
+        env:
+          - name: GH_CLIENT_ID
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "fullname" . }}-secrets
+                key: github_client_id
+          - name: GH_CLIENT_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "fullname" . }}-secrets
+                key: github_client_secret
+          - name: TOKEN_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "fullname" . }}-secrets
+                key: token_secret
+{{- end }}
       volumes:
         - name: data
         {{- if .Values.persistence.enabled }}

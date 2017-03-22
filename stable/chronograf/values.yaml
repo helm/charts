@@ -39,3 +39,10 @@ ingress:
   hostname: chronograf.foobar.com
   annotations:
     kubernetes.io/ingress.class: "nginx"
+
+auth:
+  enabled: false
+  github:
+    client_id: your_client_id
+    client_secret: your_secret
+  token_secret: a_random_token
