@@ -1,6 +1,6 @@
 # Locust Helm Chart
 
-This is a templated deployment of [Locust](locust.io) for Distributed Load 
+This is a templated deployment of [Locust](locust.io) for Distributed Load
 testing using Kubernetes.
 
 ## Pre Requisites:
@@ -14,7 +14,7 @@ This chart will do the following:
 * Convert all files in `tasks/` folder into a configmap
 * Create a Locust master and Locust worker deployment with the Target host
   and Tasks file specified.
- 
+
 
 ### Installing the chart
 
@@ -46,26 +46,26 @@ $ helm install --name my-release -f values.yaml incubator/locust
 
 You can start the swarm from the command line using Port forwarding as follows:
 
+Get the Locust URL following the Post Installation notes.
+
+for example:
 ```bash
-export release=my-release
-master=`kubectl get po -l app=$release-locust,component=master -o name | head -n 1`
-kubectl port-forward ${master:4} 8089 &
+export LOCUST_URL=http://127.0.0.1:8089
 ```
 
-Now start / stop swarm via web panel or command line:
+Start / Monitor & Stop the Locust swarm via the web panel or with following commands:
 
 Start:
 ```bash
-curl -XPOST http://127.0.0.1:8089/swarm -d"locust_count=100&hatch_rate=10"
+curl -XPOST $LOCUST_URL/swarm -d"locust_count=100&hatch_rate=10"
 ```
 
 Monitor:
 ```bash
-watch -n 1 "curl -s http://127.0.0.1:8089/stats/requests | jq -r '[.user_count, .total_rps, .state] | @tsv'"
+watch -n 1 "curl -s $LOCUST_URL/stats/requests | jq -r '[.user_count, .total_rps, .state] | @tsv'"
 ```
 
 Stop:
 ```bash
-curl http://127.0.0.1:8089/stop
+curl $LOCUST_URL/stop
 ```
-
