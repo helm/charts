@@ -102,3 +102,4 @@ spec:
           claimName: {{ template "fullname" . }}
       {{- else }}
         emptyDir: {}
+      {{ end }}
