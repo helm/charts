@@ -1,16 +1,16 @@
 # Patroni Helm Chart
 
-This directory contains a Kubernetes chart to deploy a five node patroni cluster using a petset.
+This directory contains a Kubernetes chart to deploy a five node patroni cluster using a statefulset.
 
 ## Prerequisites Details
-* Kubernetes 1.3 with alpha APIs enabled
+* Kubernetes 1.5
 * PV support on the underlying infrastructure
 
-## PetSet Details
-* http://kubernetes.io/docs/user-guide/petset/
+## Statefulset Details
+* https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/
 
-## PetSet Caveats
-* http://kubernetes.io/docs/user-guide/petset/#alpha-limitations
+## Statefulset Caveats
+* https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#limitations
 
 ## Todo
 * Make namespace configurable
@@ -56,7 +56,7 @@ The following tables lists the configurable parameters of the patroni chart and 
 | `Spilo.Image`           | Container image name                | `registry.opensource.zalan.do/acid/spilo-9.5`       |
 | `Spilo.Version`         | Container image tag                 | `1.0-p5`                                            |
 | `ImagePullPolicy`       | Container pull policy               | `IfNotPresent`                                      |
-| `Replicas`              | k8s petset replicas                 | `5`                                                 |
+| `Replicas`              | k8s statefulset replicas            | `5`                                                 |
 | `Component`             | k8s selector key                    | `patroni`                                           |
 | `Resources.Cpu`         | container requested cpu             | `100m`                                              |
 | `Resources.Memory`      | container requested memory          | `512Mi`                                             |
@@ -85,7 +85,7 @@ In order to remove everything you created a simple `helm delete <release-name>` 
 $ release=<release-name>
 $ helm delete $release
 $ grace=$(kubectl get po $release-patroni-0 --template '{{.spec.terminationGracePeriodSeconds}}')
-$ kubectl delete petset,po -l release=$release
+$ kubectl delete statefulset,po -l release=$release
 $ sleep $grace
 $ kubectl delete pvc -l release=$release
 ```
