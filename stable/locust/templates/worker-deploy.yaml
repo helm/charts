@@ -38,7 +38,7 @@ spec:
         - name: LOCUST_MASTER
           value: {{ template "locust.master-svc" . }}
         - name: LOCUST_MASTER_WEB
-          value: {{ .Values.service.internalPort }}
+          value: "{{ .Values.service.internalPort }}"
         - name: TARGET_HOST
           value: {{ index .Values.master.config "target-host" | quote }}
         resources:
