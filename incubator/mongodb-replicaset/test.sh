@@ -1,6 +1,6 @@
 #! /bin/bash
 
-# Copyright 2016 The Kubernetes Authors All rights reserved.
+# Copyright 2016 The Kubernetes Authors. All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,11 +14,29 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-POD_NAME=$RELEASE_NAME-mongodb-replicaset
-POD_NAME=${POD_NAME:0:24}
+NS="${RELEASE_NAMESPACE:-default}"
+POD_NAME="${RELEASE_NAME:-mongo}-mongodb-replicaset"
 
-kubectl exec "$POD_NAME-0" -- /usr/bin/mongo --eval="printjson(db.test.insert({\"status\": \"success\"}))"
+for i in `seq 0 2`; do
+    pod="${POD_NAME}-$i"
+    kubectl exec --namespace $NS $pod -- sh -c '/usr/bin/mongo --eval="printjson(rs.isMaster())"' | grep '"ismaster" : true'
+
+    if [ $? -eq 0 ]; then
+        echo "Found master: $pod"
+        MASTER=$pod
+        break
+    fi
+done
+
+kubectl exec --namespace $NS $MASTER -- /usr/bin/mongo --eval='printjson(db.test.insert({"status": "success"}))'
+
 # TODO: find maximum duration to wait for slaves to be up-to-date with master.
 sleep 2
-kubectl exec "$POD_NAME-1" -- /usr/bin/mongo --eval="rs.slaveOk(); db.test.find().forEach(printjson)"
-kubectl exec "$POD_NAME-2" -- /usr/bin/mongo --eval="rs.slaveOk(); db.test.find().forEach(printjson)"
+
+for i in `seq 0 2`; do
+    pod="${POD_NAME}-$i"
+    if [[ $pod != $MASTER ]]; then
+        echo "Reading from slave: $pod"
+        kubectl exec --namespace $NS $pod -- /usr/bin/mongo --eval='rs.slaveOk(); db.test.find().forEach(printjson)'
+    fi
+done
