@@ -14,6 +14,9 @@ metadata:
   {{- else }}
     volume.alpha.kubernetes.io/storage-class: default
   {{- end }}
+  {{- if .Values.persistence.keep }}
+    "helm.sh/resource-policy": keep
+  {{- end }}
 spec:
   accessModes:
     - {{ .Values.persistence.accessMode | quote }}
