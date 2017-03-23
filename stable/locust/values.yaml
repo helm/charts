@@ -15,9 +15,9 @@ master:
   config:
     target-host: https://site.example.com
   resources:
-    # limits:
-    #   cpu: 100m
-    #   memory: 128Mi
+    limits:
+      cpu: 100m
+      memory: 128Mi
     requests:
       cpu: 100m
       memory: 128Mi
@@ -28,9 +28,9 @@ worker:
     locust-script: "/locust-tasks/tasks.py"
   replicaCount: 2
   resources:
-    # limits:
-    #   cpu: 100m
-    #   memory: 128Mi
+    limits:
+      cpu: 100m
+      memory: 128Mi
     requests:
       cpu: 100m
       memory: 128Mi
