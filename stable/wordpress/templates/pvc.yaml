@@ -2,22 +2,22 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: {{ template "fullname" . }}-wordpress
+  name: {{ template "fullname" . }}
   labels:
     app: {{ template "fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
   annotations:
-  {{- if .Values.persistence.wordpress.storageClass }}
-    volume.beta.kubernetes.io/storage-class: {{ .Values.persistence.wordpress.storageClass | quote }}
+  {{- if .Values.persistence.storageClass }}
+    volume.beta.kubernetes.io/storage-class: {{ .Values.persistence.storageClass | quote }}
   {{- else }}
     volume.alpha.kubernetes.io/storage-class: default
   {{- end }}
 spec:
   accessModes:
-    - {{ .Values.persistence.wordpress.accessMode | quote }}
+    - {{ .Values.persistence.accessMode | quote }}
   resources:
     requests:
-      storage: {{ .Values.persistence.wordpress.size | quote }}
+      storage: {{ .Values.persistence.size | quote }}
 {{- end -}}
