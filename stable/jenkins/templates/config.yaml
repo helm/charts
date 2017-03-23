@@ -89,4 +89,14 @@ data:
       <globalNodeProperties/>
       <noUsageStatistics>true</noUsageStatistics>
     </hudson>
+  apply_config.sh: |-
+    cp -n /var/jenkins_config/config.xml /var/jenkins_home;
+{{- if .Values.Master.InitScripts }}
+    mkdir -p /var/jenkins_home/init.groovy.d/;
+    cp -n /var/jenkins_config/*.groovy /var/jenkins_home/init.groovy.d/
+{{- end }}
+{{- range $key, $val := .Values.Master.InitScripts }}
+  init{{ $key }}.groovy: |-
+{{ $val | indent 4}}
+{{- end }}
 {{- end -}}

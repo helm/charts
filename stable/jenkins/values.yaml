@@ -27,6 +27,10 @@ Master:
   SlaveListenerPort: 50000
   LoadBalancerSourceRanges:
   - 0.0.0.0/0
+# List of groovy init scripts to be executed during Jenkins master start
+  InitScripts:
+#  - |
+#    print 'adding global pipeline libraries, register properties, bootstrap jobs...'
   CustomConfigMap: false
 
   Ingress:

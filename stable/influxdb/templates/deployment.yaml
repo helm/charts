@@ -63,8 +63,13 @@ spec:
       volumes:
       - name: data
       {{- if .Values.persistence.enabled }}
+        {{- if .Values.persistence.useExisting }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.persistence.name }}
+        {{- else }}
         persistentVolumeClaim:
           claimName: {{ template "fullname" . }}
+        {{- end }}
       {{- else }}
         emptyDir: {}
       {{- end }}

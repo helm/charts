@@ -1,20 +1,16 @@
 # Consul Helm Chart
 
 ## Prerequisites Details
-* Kubernetes 1.3 with alpha APIs enabled
-* PV support on the underlying infrastructure
+* Kubernetes 1.5
+* PV support on underlying infrastructure
 
-## PetSet Details
-* http://kubernetes.io/docs/user-guide/petset/
-
-## PetSet Caveats
-* http://kubernetes.io/docs/user-guide/petset/#alpha-limitations
-
+## StatefulSet Details
+* http://kubernetes.io/docs/concepts/abstractions/controllers/statefulsets/
 
 ## Chart Details
 This chart will do the following:
 
-* Implemented a dynamically scalable consul cluster using Kubernetes PetSets
+* Implemented a dynamically scalable consul cluster using Kubernetes StatefulSet
 
 ## Installing the Chart
 
@@ -31,15 +27,16 @@ The following tables lists the configurable parameters of the consul chart and t
 
 | Parameter               | Description                           | Default                                                    |
 | ----------------------- | ----------------------------------    | ---------------------------------------------------------- |
-| `Name`                  | Consul petset name                    | `consul`                                                   |
+| `Name`                  | Consul statefulset name               | `consul`                                                   |
 | `Image`                 | Container image name                  | `consul`                                                   |
-| `ImageTag`              | Container image tag                   | `v0.6.4`                                                   |
+| `ImageTag`              | Container image tag                   | `v0.7.5`                                                   |
 | `ImagePullPolicy`       | Container pull policy                 | `Always`                                                   |
-| `Replicas`              | k8s petset replicas                   | `3`                                                        |
+| `Replicas`              | k8s statefulset replicas              | `3`                                                        |
 | `Component`             | k8s selector key                      | `consul`                                                   |
 | `Cpu`                   | container requested cpu               | `100m`                                                     |
 | `Memory`                | container requested memory            | `512Mi`                                                    |
 | `Storage`               | Persistent volume size                | `1Gi`                                                      |
+| `StorageClass`          | Persistent volume storage class       | `default`                                                  |
 | `HttpPort`              | Consul http listening port            | `8500`                                                     |
 | `RpcPort`               | Consul rpc listening port             | `8400`                                                     |
 | `SerflanPort`           | Container serf lan listening port     | `8301`                                                     |
@@ -48,7 +45,9 @@ The following tables lists the configurable parameters of the consul chart and t
 | `SerfwanUdpPort`        | Container serf wan UDP listening port | `8302`                                                     |
 | `ServerPort`            | Container server listening port       | `8300`                                                     |
 | `ConsulDnsPort`         | Container dns listening port          | `8600`                                                     |
-
+| `ui.enabled`            | Enable Consul Web UI                  | `false`                                                    |
+| `uiService.enabled`      | Create dedicated Consul Web UI svc    | `false`                                                    |
+| `uiService.type`        | Dedicate Consul Web UI svc type       | `NodePort`                                                 |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
@@ -62,7 +61,7 @@ $ helm install --name my-release -f values.yaml incubator/consul
 
 ## Cleanup orphaned Persistent Volumes
 
-Deleting a PetSet will not delete associated Persistent Volumes (Alpha limitation).
+Deleting a StateFul will not delete associated Persistent Volumes.
 
 Do the following after deleting the chart release to clean up orphaned Persistent Volumes.
 
@@ -100,7 +99,7 @@ cluster is healthy
 ## Failover
 
 If any consul member fails it gets re-joined eventually.
-You can test the scenario by killing process of one of the pets:
+You can test the scenario by killing process of one of the pods:
 
 ```
 shell
@@ -161,7 +160,7 @@ consul-0   1/1       Running   1          4h
 consul-1   1/1       Running   0          4h
 consul-2   1/1       Running   0          4h
 
-$ kubectl patch petset/consul -p '{"spec":{"replicas": 5}}'
+$ kubectl patch statefulset/consul -p '{"spec":{"replicas": 5}}'
 "consul" patched
 
 kubectl get pods -l "component=${RELEASE-NAME}-consul" --namespace=consul
@@ -207,7 +206,7 @@ consul-4  10.244.2.8:8301  alive   server  0.6.4  2         dc1
 
 Scale down
 ```
-kubectl patch petset/consul -p '{"spec":{"replicas": 3}}' --namespace=consul
+kubectl patch statefulset/consul -p '{"spec":{"replicas": 3}}' --namespace=consul
 "consul" patched
 lachlanevenson@faux$ kubectl get pods -l "component=${RELEASE-NAME}-consul" --namespace=consul
 NAME       READY     STATUS    RESTARTS   AGE
