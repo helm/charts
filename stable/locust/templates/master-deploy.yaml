@@ -50,16 +50,16 @@ spec:
         volumeMounts:
           - name: locust-tasks
             mountPath: /locust-tasks/
-        # livenessProbe:
-        #   periodSeconds: 30
-        #   httpGet:
-        #     path: /
-        #     port: {{ .Values.service.internalPort }}
-        # readinessProbe:
-        #   periodSeconds: 30
-        #   httpGet:
-        #     path: /
-        #     port: {{ .Values.service.internalPort }}
+        livenessProbe:
+          periodSeconds: 30
+          httpGet:
+            path: /
+            port: {{ .Values.service.internalPort }}
+        readinessProbe:
+          periodSeconds: 30
+          httpGet:
+            path: /
+            port: {{ .Values.service.internalPort }}
       volumes:
       - name: "locust-tasks"
         configMap:
