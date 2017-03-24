@@ -1,0 +1,74 @@
+apiVersion: "apps/v1beta1"
+kind: StatefulSet
+metadata:
+  name: {{ template "worker-fullname" . }}
+  labels:
+    heritage: {{.Release.Service | quote }}
+    release: {{.Release.Name | quote }}
+    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+    component: "{{.Release.Name}}-{{.Values.Worker.Component}}"
+spec:
+  serviceName: {{ template "worker-fullname" . }}
+  replicas: {{default 1 .Values.Worker.Replicas}}
+  selector:
+    matchLabels:
+      component: "{{.Release.Name}}-{{.Values.Worker.Component}}"
+  template:
+    metadata:
+      labels:
+        app: {{ template "worker-fullname" . }}
+        heritage: {{.Release.Service | quote }}
+        release: {{.Release.Name | quote }}
+        chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+        component: "{{.Release.Name}}-{{.Values.Worker.Component}}"
+    spec:
+      containers:
+        - name: {{ template "worker-fullname" . }}
+          image: "{{.Values.Worker.Image}}:{{.Values.Worker.ImageTag}}"
+          imagePullPolicy: "{{.Values.Worker.ImagePullPolicy}}"
+          command: ["/start-worker"]
+      #    command: ["/opt/spark/bin/spark-class", "org.apache.spark.deploy.worker.Worker", "spark://{{ template "master-fullname" . }}:{{.Values.Master.ServicePort}}", "--webui-port", "{{.Values.Worker.ContainerPort}}", "--work-dir", "{{.Values.Worker.WorkingDirectory}}"]
+          ports:
+            - containerPort: {{.Values.Worker.ContainerPort}}
+          resources:
+            requests:
+              cpu: "{{.Values.Worker.Cpu}}"
+              memory: "{{.Values.Worker.Memory}}"
+          env:
+{{- if .Values.Worker.Environment }}
+{{ toYaml .Values.Worker.Environment | indent 12 }}
+{{- end }}
+            {{- if .Values.Worker.WorkingDirectory }}
+            - name: SPARK_WORKER_DIR
+              value: {{ .Values.Worker.WorkingDirectory | quote }}
+            {{- end -}}
+      {{- if .Values.Persistence.Enabled }}
+          volumeMounts:
+            {{- if .Values.Persistence.Mounts }}
+            {{ toYaml .Values.Persistence.Mounts | indent 12 }}
+            {{- end }}
+            - name: spark-work
+              mountPath: "{{.Values.Worker.WorkingDirectory}}"
+      {{- end -}}
+  # These are converted to volume claims by the controller
+  # and mounted at the paths mentioned above.
+  volumeClaimTemplates:
+  {{- if .Values.Persistence.Enabled }}
+  - metadata:
+    {{- if .Values.Persistence.Volumes }}
+    {{ toYaml .Values.Persistence.Volumes | indent 6 }}
+    {{- end }}
+      name: spark-work
+      annotations:
+        {{- if .Values.Persistence.StorageClass }}
+        volume.beta.kubernetes.io/storage-class: {{ .Values.Persistence.StorageClass }}
+        {{- else }}
+        volume.alpha.kubernetes.io/storage-class: fast
+        {{- end }}
+    spec:
+      accessModes: 
+      - {{ .Values.Persistence.AccessMode | quote }}
+      resources:
+        requests:
+          storage: {{ .Values.Persistence.Size | quote }}
+ {{- end }}

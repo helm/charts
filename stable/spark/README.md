@@ -53,6 +53,8 @@ The following tables lists the configurable parameters of the Spark chart and th
 | `WebUi.Name`          | Spark webui name                 | `spark-webui`                                            |
 | `WebUi.ServicePort`   | k8s service port                 | `8080`                                                   |
 | `WebUi.ContainerPort` | Container listening port         | `8080`                                                   |
+| `WebUi.Image`               | The reverse proxy image to use for spark-ui-proxy         | `elsonrodriguez/spark-ui-proxy:1.0`|
+| `WebUi.ProxyPort` | Reverse proxy port         | `80`                                                   |
 
 ### Persistence
 
@@ -80,8 +82,8 @@ The following tables lists the configurable parameters of the Spark chart and th
 | `Worker.ContainerPort`       | Container listening port           | `7077`                                                     |
 | `Worker.CpuTargetPercentage` | k8s hpa cpu targetPercentage       | `50`                                                       |
 | `Worker.DaemonMemory`        | Worker JVM Xms and Xmx setting     | `1g`                                                       |
-| `Worker.ExecutorMemory`      | Worker memory available for executor | `1g`                                                       |
-
+| `Worker.ExecutorMemory`      | Worker memory available for executor | `1g`                                                     |
+| `Environment`                | The worker environment configuration | `NA`                                                     |
 
 
 ### Zeppelin
@@ -114,4 +116,30 @@ The Spark image stores persistence under `/opt/spark/work` path of the container
 Claim is used to keep the data across deployments. 
 
 It is possible to mount several volumes using `Persistence.volumes` and `Persistence.mounts` parameters.
+
+## Do something with the cluster
+
+Use the kubectl exec to connect to Spark driver
+
+```
+$ kubectl exec !Enter your spark master pod name here! -it bash
+root@your-spark-master:/#
+root@your-spark-master:/# pyspark
+Python 2.7.9 (default, Mar  1 2015, 12:57:24)
+[GCC 4.9.2] on linux2
+Type "help", "copyright", "credits" or "license" for more information.
+15/06/26 14:25:28 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+Welcome to
+      ____              __
+     / __/__  ___ _____/ /__
+    _\ \/ _ \/ _ `/ __/  '_/
+   /__ / .__/\_,_/_/ /_/\_\   version 1.4.0
+      /_/
+Using Python version 2.7.9 (default, Mar  1 2015 12:57:24)
+SparkContext available as sc, HiveContext available as sqlContext.
+>>> import socket
+>>> sc.parallelize(range(1000)).map(lambda x:socket.gethostname()).distinct().collect()
+17/03/24 19:42:44 INFO DAGScheduler: Job 0 finished: collect at <stdin>:1, took 2.260357 s
+['spark15-worker-2', 'spark15-worker-1', 'spark15-worker-0']
+```
 

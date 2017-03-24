@@ -25,6 +25,11 @@ We truncate at 24 chars because some Kubernetes name fields are limited to this 
 {{- printf "%s-%s" .Release.Name $name | trunc 24 -}}
 {{- end -}}
 
+{{- define "proxy-fullname" -}}
+{{- $name := default .Chart.Name .Values.Master.Name -}}
+{{- printf "%s-%s:%s" .Release.Name $name .Values.WebUi.ContainerPort | trunc 24 -}}
+{{- end -}}
+
 {{- define "zeppelin-fullname" -}}
 {{- $name := default .Chart.Name .Values.Zeppelin.Name -}}
 {{- printf "%s-%s" .Release.Name $name | trunc 24 -}}
