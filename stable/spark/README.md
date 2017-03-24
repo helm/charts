@@ -119,7 +119,7 @@ It is possible to mount several volumes using `Persistence.volumes` and `Persist
 
 ## Do something with the cluster
 
-Use the kubectl exec to connect to Spark driver
+Use the kubectl exec to connect to Spark driver.
 
 ```
 $ kubectl exec !Enter your spark master pod name here! -it bash
@@ -143,3 +143,18 @@ SparkContext available as sc, HiveContext available as sqlContext.
 ['spark15-worker-2', 'spark15-worker-1', 'spark15-worker-0']
 ```
 
+## Open the Spark UI to view your cluster
+
+Use the kubectl `get svc` command lookup the external IP of your reverse proxy.
+
+```
+$ kubectl get svc
+NAME               CLUSTER-IP     EXTERNAL-IP     PORT(S)                         AGE
+kubernetes         10.0.0.1       <none>          443/TCP                         8d
+spark-master       10.0.46.27     52.168.36.95    7077:30399/TCP,8080:31312/TCP   2h
+spark-webui        10.0.102.137   **-->40.71.186.201<--**   80:31027/TCP                    2h
+spark14-worker-0   10.0.234.55    52.179.10.132   8081:30408/TCP                  3d
+spark15-zeppelin   10.0.229.183   40.71.190.17    8080:31840/TCP                  2h
+```
+
+Open 40.71.186.201:8080 in your browser.
