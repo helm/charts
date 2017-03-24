@@ -5,7 +5,7 @@
 
 1. Get the Drupal URL:
 
-{{- if .Values.ingress.enabled }}
+{{- if .Values.ingress.hostname }}
 
   You should be able to access your new Drupal installation through
 
