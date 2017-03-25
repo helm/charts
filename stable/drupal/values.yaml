@@ -57,7 +57,8 @@ serviceType: LoadBalancer
 ##
 ingress:
     enabled: false
-    hostname: drupal.local
+    # Used to create Ingress record (should used with ServiceType: ClusterIP).
+    # hostname: drupal.local
 
     ## Ingress annotations
     ##
