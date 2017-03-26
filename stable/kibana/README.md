@@ -14,6 +14,8 @@ The command deploys Kibana with the default configuration. The [configuration](#
 
 ## Configuration
 
+To use Kibana, the `elasticsearch.url` setting will need to be changed; you can specify this using `--set "elasticsearch\.url"="http://..."`.
+
 The configurable parameters of the Kibana chart and the default values are listed in `values.yaml`.
 
 The [full image documentation](https://www.elastic.co/guide/en/kibana/current/_configuring_kibana_on_docker.html) contains more information about running Kibana in Docker.

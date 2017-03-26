@@ -16,3 +16,7 @@ To watch for the LoadBalancer IP or Hostname to populate run the following:
 
 - kubectl get svc -w --namespace {{ .Release.Namespace }} -l app={{ template "fullname" . }}
 {{- end }}
+
+To use this Chart, you should change the "elasticsearch.url" setting to the URL to your ElasticSearch cluster; the URL defaults to "http://elasticsearch.logs:9200", which is unlikely to be correct. Kibana will start without this setting, but won't function correctly until you've updated.
+
+- helm upgrade {{ .Release.Name }} stable/kibana --set "elasticsearch\.url"="http://my.elasticsearch.url:9200"
