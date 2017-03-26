@@ -1,10 +1,10 @@
-# GitLab Community Edition
+# GitLab Enterprise Edition
 
-[GitLab Community Edition](https://about.gitlab.com/) is an application to code, test, and deploy code together. It provides Git repository management with fine grained access controls, code reviews, issue tracking, activity feeds, wikis, and continuous integration. 
+[GitLab Enterprise Edition](https://about.gitlab.com/) is an application to code, test, and deploy code together. It provides Git repository management with fine grained access controls, code reviews, issue tracking, activity feeds, wikis, and continuous integration. 
 
 ## Introduction
 
-This chart stands up a GitLab Community Edition install. This includes:
+This chart stands up a GitLab Enterprise Edition install. This includes:
 
 - A [GitLab Omnibus](https://docs.gitlab.com/omnibus/) Pod
 - Redis
