@@ -23,12 +23,12 @@ spec:
           name: http
         livenessProbe:
           httpGet:
-            path: /status
+            path: /
             port: http
           initialDelaySeconds: 30
         readinessProbe:
           httpGet:
-            path: /status
+            path: /
             port: http
           initialDelaySeconds: 10
         volumeMounts:
