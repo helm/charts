@@ -32,3 +32,5 @@ spec:
             - /dev/null
           initialDelaySeconds: 5
           periodSeconds: 5
+        resources:
+{{ toYaml .Values.resources | indent 12 }}
