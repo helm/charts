@@ -1,0 +1,32 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}-videobridge
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: {{ template "fullname" . }}-videobridge
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}-videobridge
+        image: "{{ .Values.videobridge.image.repository }}:{{ .Values.videobridge.image.tag }}"
+        imagePullPolicy: {{ .Values.videobridge.image.pullPolicy }}
+        ports:
+        - containerPort: 443
+        env:
+          - name: XMPP_HOST
+            value: xmpp
+          - name: DOMAIN
+            value: {{ .Values.host }}
+          - name: SECRET
+            value: {{ .Values.secret1 }}
+          - name: NAT_HARVESTER_PUBLIC_ADDRESS
+            value: {{ .Values.nat_harvester_public_address }}
+          - name: NAT_HARVESTER_LOCAL_ADDRESS
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP

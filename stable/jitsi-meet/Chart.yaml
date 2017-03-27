@@ -1,0 +1,4 @@
+apiVersion: v1
+description: Secure, Simple and Scalable Video Conferences
+name: jitsi-meet
+version: 0.0.1

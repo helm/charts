@@ -1,0 +1,59 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "jitsi-configuration"
+data:
+  cert: |
+    -----BEGIN CERTIFICATE-----
+    -----END CERTIFICATE-----
+  key: |
+    -----BEGIN RSA PRIVATE KEY-----
+    -----END RSA PRIVATE KEY-----
+  prosody.cfg.lua: |
+    component_interface = "0.0.0.0"
+    daemonize = false;
+    modules_enabled = {
+      "roster"; -- Allow users to have a roster. Recommended ;
+      "saslauth"; -- Authentication for clients and servers. Recommended if you want to log in.
+      "tls"; -- Add support for secure TLS on c2s/s2s connections
+      "dialback"; -- s2s dialback support
+      "disco"; -- Service discovery
+      "private"; -- Private XML storage (for room bookmarks, etc.)
+      "vcard"; -- Allow users to set vCards
+      "version"; -- Replies to server version requests
+      "uptime"; -- Report how long server has been running
+      "time"; -- Let others know the time here on this server
+      "ping"; -- Replies to XMPP pings with pongs
+      "pep"; -- Enables users to publish their mood, activity, playing music and more
+      "register"; -- Allow users to register on this server using a client and change passwords
+      "admin_adhoc"; -- Allows administration via an XMPP client that supports ad-hoc commands
+      "bosh"; -- Enable BOSH clients, aka "Jabber over HTTP"
+      "pubsub"
+    }
+    allow_registration = false
+    c2s_require_encryption = true
+    s2s_secure_auth = false
+    pidfile = "/var/run/prosody/prosody.pid"
+    authentication = "internal_plain"
+    log = {
+      {levels = {min = "info"}, to = "console"};
+    }
+    consider_bosh_secure = true
+    VirtualHost "{{ .Values.host }}"
+      ssl = {
+        key = "/etc/prosody/key";
+        certificate = "/etc/prosody/cert";
+      }
+      authentication = "anonymous"
+      modules_enabled = {
+        "bosh";
+        "pubsub";
+      }
+    VirtualHost "auth.{{ .Values.host }}"
+      authentication = "internal_plain"
+    admins = { "focus@auth.{{ .Values.host }}" }
+    Component "conference.{{ .Values.host }}" "muc"
+    Component "jitsi-videobridge.{{ .Values.host }}"
+      component_secret = "{{ .Values.secret1 }}"
+    Component "focus.{{ .Values.host }}"
+      component_secret = "{{ .Values.secret2 }}"
