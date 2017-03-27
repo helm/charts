@@ -26,7 +26,7 @@ spec:
               name: {{ template "fullname" . }}
               key: token_secret
 {{- if .Values.oauth.github.enabled}}
-        - name: GH_CLIENT_IDx
+        - name: GH_CLIENT_ID
           valueFrom:
             secretKeyRef:
               name: {{ template "fullname" . }}
