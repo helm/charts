@@ -15,6 +15,19 @@ service:
   annotations:
     # zalando.org/dnsname: kibana.your.cluster
 
+ingress:
+  enabled: false
+  annotations:
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: 'true'
+    # zalando.org/dnsname: kibana.your.cluster
+
+  hostname: kibana.your.cluster
+  # tls:
+  #   - secretName: kibana-server-tls
+  #     hosts:
+  #       - kibana.your.cluster
+
 ## See: https://github.com/elastic/kibana/blob/master/config/kibana.yml
 ## Please note these config settings may vary depending on which Kibana image
 ## you choose to use. These settings are based on 4.6.4.
