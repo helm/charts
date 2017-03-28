@@ -44,6 +44,17 @@ By default a pre-generated access and secret key will be used. To override the d
 $ helm install --set accessKey=myaccesskey,secretKey=mysecretkey \
     stable/minio
 ```
+### Updating Minio configuration via Helm
+
+[ConfigMap](https://kubernetes.io/docs/user-guide/configmap/) allows injecting containers with configuration data even while a Helm release is deployed.
+
+To update your Minio server configuration while it is deployed in a release, you need to
+
+1. Check all the configurable values in the Minio chart using `helm inspect values stable/minio`.
+2. Override the `minio_server_config` settings in a YAML formatted file, and then pass that file like this `helm upgrade -f config.yaml stable/minio`.
+3. Restart the Minio server(s) for the changes to take effect.
+
+You can also check the history of upgrades to a release using `helm history my-release`. Replace `my-release` with the actual release name.
 
 Uninstalling the Chart
 ----------------------
@@ -64,10 +75,10 @@ The following tables lists the configurable parameters of the Minio chart and th
 | Parameter                  | Description                         | Default                                                 |
 |----------------------------|-------------------------------------|---------------------------------------------------------|
 | `image`                    | Minio image name                    | `minio/minio`                                           |
-| `imageTag`                 | Minio image tag. Possible values listed [here](https://hub.docker.com/r/minio/minio/tags/).| `latest`|
+| `imageTag`                 | Minio image tag. Possible values listed [here](https://hub.docker.com/r/minio/minio/tags/).| `RELEASE.2017-03-16T21-50-32Z`|
 | `imagePullPolicy`          | Image pull policy                   | `Always`                                                |
-| `mode`                     | Minio server mode (`standalone` or `distributed`)| `standalone`                               |
-| `numberOfNodes`            | Number of nodes (applicable only for Minio distributed mode). Should be 4 <= x <= 16 | `4`    |
+| `mode`                     | Minio server mode (`standalone`, `shared` or `distributed`)| `standalone`                     |
+| `replicas`                 | Number of nodes (applicable only for Minio distributed mode). Should be 4 <= x <= 16 | `4`    |
 | `accessKey`                | Default access key                  | `AKIAIOSFODNN7EXAMPLE`                                  |
 | `secretKey`                | Default secret key                  | `wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY`              |
 | `configPath`               | Default config file location        | `~/.minio`                                              |
@@ -109,18 +120,42 @@ This chart provisions a Minio server in standalone mode, by default. To provisio
 $ helm install --set mode=distributed stable/minio
 ```
 
-This provisions Minio server in distributed mode with 4 nodes. To change the number of nodes in your distributed Minio server, set the `numberOfNodes` field,
+This provisions Minio server in distributed mode with 4 nodes. To change the number of nodes in your distributed Minio server, set the `replicas` field,
 
 ```bash
-$ helm install --set mode=distributed,numberOfNodes=8 stable/minio
+$ helm install --set mode=distributed,replicas=8 stable/minio
 ```
 
-This provisions Minio server in distributed mode with 8 nodes. Note that the `numberOfNodes` value should be an integer between 4 and 16 (inclusive).
+This provisions Minio server in distributed mode with 8 nodes. Note that the `replicas` value should be an integer between 4 and 16 (inclusive).
 
 ### StatefulSet [limitations](http://kubernetes.io/docs/concepts/abstractions/controllers/statefulsets/#limitations) applicable to distributed Minio
 
 1. StatefulSets need persistent storage, so the `persistence.enabled` flag is ignored when `mode` is set to `distributed`.
 2. When uninstalling a distributed Minio release, you'll need to manually delete volumes associated with the StatefulSet.
+
+Shared Minio
+-----------
+
+### Prerequisites
+
+Minio shared mode deployment creates multiple Minio server instances backed by single PV in `ReadWriteMany` mode. Currently few [Kubernetes volume plugins](https://kubernetes.io/docs/user-guide/persistent-volumes/#access-modes) support `ReadWriteMany` mode. To deploy Minio shared mode you'll need to have a Persistent Volume running with one of the supported volume plugins. [This document](https://kubernetes.io/docs/user-guide/volumes/#nfs)
+outlines steps to create a NFS PV in Kubernetes cluster.
+
+### Provision Shared Minio instances
+
+To provision Minio servers in [shared mode](https://github.com/minio/minio/blob/master/docs/shared-backend/README.md), set the `mode` field to `shared`,
+
+```bash
+$ helm install --set mode=shared stable/minio
+```
+
+This provisions 4 Minio server nodes backed by single storage. To change the number of nodes in your shared Minio deployment, set the `replicas` field,
+
+```bash
+$ helm install --set mode=shared,replicas=8 stable/minio
+```
+
+This provisions Minio server in shared mode with 8 nodes.
 
 Persistence
 -----------

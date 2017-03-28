@@ -8,7 +8,7 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
-  replicas: 1
+  replicas: {{ default 1 .Values.replicas }}
   selector:
     matchLabels:
       app: {{ template "fullname" . }}
@@ -22,7 +22,7 @@ spec:
     spec:
       terminationGracePeriodSeconds: 60
       containers:
-      - image: traefik:{{ .Values.imageTag }}
+      - image: {{ .Values.image }}:{{ .Values.imageTag }}
         name: {{ template "fullname" . }}
         resources:
           requests:

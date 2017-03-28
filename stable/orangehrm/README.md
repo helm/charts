@@ -67,7 +67,7 @@ The following tables lists the configurable parameters of the OrangeHRM chart an
 | `persistence.orangehrm.size`         | PVC Storage Request for OrangeHRM volume | `8Gi`                                          |
 | `mariadb.mariadbRootPassword`        | MariaDB admin password                   | `nil`                                          |
 | `mariadb.persistence.enabled`        | Enable MariaDB persistence using PVC     | `true`                                         |
-| `mariadb.persistence.storageClass`   | PVC Storage Class for MariaDB volume     | `generic`                                      |
+| `mariadb.persistence.storageClass`   | PVC Storage Class for MariaDB volume     | `nil` (uses alpha storage class annotation)    |
 | `mariadb.persistence.accessMode`     | PVC Access Mode for MariaDB volume       | `ReadWriteOnce`                                |
 | `mariadb.persistence.size`           | PVC Storage Request for MariaDB volume   | `8Gi`                                          |
 
