@@ -7,12 +7,12 @@ metadata:
 {{ toYaml .Values.nodeExporter.service.annotations | indent 4}}
 {{- end }}
   labels:
-    app: {{ template "name" . }}
+    app: {{ template "prometheus.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     component: "{{ .Values.nodeExporter.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-  name: {{ template "nodeExporter.fullname" . }}
+  name: {{ template "prometheus.nodeExporter.fullname" . }}
 spec:
 {{- if .Values.nodeExporter.service.clusterIP }}
   clusterIP: {{ .Values.nodeExporter.service.clusterIP }}
@@ -36,7 +36,7 @@ spec:
       protocol: TCP
       targetPort: 9100
   selector:
-    app: {{ template "name" . }}
+    app: {{ template "prometheus.name" . }}
     component: "{{ .Values.nodeExporter.name }}"
     release: {{ .Release.Name }}
   type: "{{ .Values.nodeExporter.service.type }}"

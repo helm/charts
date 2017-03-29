@@ -7,12 +7,12 @@ metadata:
 {{ toYaml .Values.alertmanager.service.annotations | indent 4}}
 {{- end }}
   labels:
-    app: {{ template "name" . }}
+    app: {{ template "prometheus.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     component: "{{ .Values.alertmanager.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-  name: {{ template "alertmanager.fullname" . }}
+  name: {{ template "prometheus.alertmanager.fullname" . }}
 spec:
 {{- if .Values.alertmanager.service.clusterIP }}
   clusterIP: {{ .Values.alertmanager.service.clusterIP }}
@@ -36,7 +36,7 @@ spec:
       protocol: TCP
       targetPort: 9093
   selector:
-    app: {{ template "name" . }}
+    app: {{ template "prometheus.name" . }}
     component: "{{ .Values.alertmanager.name }}"
     release: {{ .Release.Name }}
   type: "{{ .Values.alertmanager.service.type }}"
