@@ -37,7 +37,7 @@ It should be noted, that the installation of the chart installs a persistent vol
 
 ## Configuration
 
-The following tables lists the configurable parameters of the MySQL chart and their default values.
+The following tables lists the configurable parameters of the Cassandra chart and their default values.
 
 | Parameter                  | Description                                | Default                             |
 | -----------------------    | ------------------------------------------ | ----------------------------------- |
