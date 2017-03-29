@@ -1,40 +1,7 @@
-apiVersion: v1
-kind: Service
-metadata:
-  name: {{ template "master-fullname" . }}
-  labels:
-    heritage: {{.Release.Service | quote }}
-    release: {{.Release.Name | quote }}
-    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
-    component: "{{.Release.Name}}-{{.Values.Master.Component}}"
-spec:
-  ports:
-    - port: {{.Values.Master.ServicePort}}
-      targetPort: {{.Values.Master.ContainerPort}}
-  selector:
-    component: "{{.Release.Name}}-{{.Values.Master.Component}}"
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: {{ template "webui-fullname" . }}
-  labels:
-    heritage: {{.Release.Service | quote }}
-    release: {{.Release.Name | quote }}
-    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
-    component: "{{.Release.Name}}-{{.Values.Master.Component}}"
-spec:
-  ports:
-    - port: {{.Values.WebUi.ServicePort}}
-      targetPort: {{.Values.WebUi.ContainerPort}}
-  selector:
-    component: "{{.Release.Name}}-{{.Values.Master.Component}}"
-  type: "LoadBalancer"
----
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "master-fullname" . }}
+  name: {{.Values.Master.Component}}
   labels:
     heritage: {{.Release.Service | quote }}
     release: {{.Release.Name | quote }}
@@ -46,20 +13,19 @@ spec:
     type: RollingUpdate
   selector:
     matchLabels:
-      component: "{{.Release.Name}}-{{.Values.Master.Component}}"
+      component: {{.Values.Master.Component}}
   template:
     metadata:
       labels:
         heritage: {{.Release.Service | quote }}
         release: {{.Release.Name | quote }}
         chart: "{{.Chart.Name}}-{{.Chart.Version}}"
-        component: "{{.Release.Name}}-{{.Values.Master.Component}}"
+        component: {{.Values.Master.Component}}
     spec:
       containers:
-        - name: {{ template "master-fullname" . }}
+        - name: {{.Values.Master.Component}}
           image: "{{.Values.Master.Image}}:{{.Values.Master.ImageTag}}"
-          command: ["/bin/sh","-c"]
-          args: ["echo $(hostname -i) {{ template "master-fullname" . }} >> /etc/hosts; /opt/spark/bin/spark-class org.apache.spark.deploy.master.Master --ip {{ template "master-fullname" . }} --port {{.Values.Master.ServicePort}} --webui-port {{.Values.WebUi.ContainerPort}}"]
+          command: ["/start-master"]
           ports:
             - containerPort: {{.Values.Master.ContainerPort}}
             - containerPort: {{.Values.WebUi.ContainerPort}}

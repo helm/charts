@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{.Values.WebUi.Component}}
+  labels:
+    heritage: {{.Release.Service | quote }}
+    release: {{.Release.Name | quote }}
+    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+    component: {{.Values.WebUi.Component}}
+spec:
+  ports:
+    - port: {{.Values.WebUi.ProxyPort}}
+      targetPort: {{.Values.WebUi.ProxyPort}}
+  selector:
+    component: {{.Values.WebUi.Component}}
+  type: "LoadBalancer"

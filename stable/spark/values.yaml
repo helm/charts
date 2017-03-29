@@ -6,7 +6,7 @@
 Master:
   Name: master
   Image: "gcr.io/google_containers/spark"
-  ImageTag: "1.5.1_v3"
+  ImageTag: "1.5.2_v1"
   Replicas: 1
   Component: "spark-master"
   Cpu: "100m"
@@ -19,22 +19,27 @@ Master:
 WebUi:
   Name: webui
   ServicePort: 8080
+  Component: "spark-webui"
+  ProxyPort: 80
   ContainerPort: 8080
+  Image: "elsonrodriguez/spark-ui-proxy:1.0"
 
 Worker:
   Name: worker
   Image: "gcr.io/google_containers/spark"
-  ImageTag: "1.5.1_v3"
+  ImageTag: "1.5.2_v1"
+  ImagePullPolicy: "Always"
   Replicas: 3
   Component: "spark-worker"
   WorkingDirectory: "/opt/spark/work"
   Cpu: "100m"
   Memory: "512Mi"
   ContainerPort: 8081
-  # Set Worker JVM memory. Default 1g
-  #DaemonMemory: 1g
-  # Set how much total memory workers have to give executors
-  #ExecutorMemory: 1g
+  Environment:
+  - name: SPARK_DAEMON_MEMORY
+    value: 1g
+  - name: SPARK_WORKER_MEMORY
+    value: 1g
 
 Zeppelin:
   Name: zeppelin
@@ -53,11 +58,15 @@ Persistence:
   ##
   # StorageClass:
   AccessMode: ReadWriteOnce
+  StorageClass: fast
   Size: 8Gi
-  volumes:
+  Sku: Premium_LRS
+  Provisioner: kubernetes.io/azure-disk
+  Location: eastus
+  Volumes:
 #  - name: nothing
 #    emptyDir: {}
-  mounts:
+  Mounts:
 #  - mountPath: /var/nothing
 #    name: nothing
 #    readOnly: true
