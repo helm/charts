@@ -1,0 +1,10 @@
+name: redis-cluster
+home: http://redis.io/
+engine: gotpl
+keywords:
+- redis
+- keyvalue
+- database
+version: 0.2.0
+icon: https://redis.io/images/redis-white.png
+description: Highly available Redis cluster with multiple sentinels and standbys.
