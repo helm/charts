@@ -1,5 +1,5 @@
-apiVersion: apps/v1alpha1
-kind: PetSet
+apiVersion: apps/v1beta1
+kind: StatefulSet
 metadata:
   name: {{ template "fullname" . }}
   labels:
@@ -18,8 +18,6 @@ spec:
         release: {{.Release.Name | quote }}
         chart: "{{.Chart.Name}}-{{.Chart.Version}}"
         component: "{{.Release.Name}}-{{.Values.Component}}"
-      annotations:
-        pod.alpha.kubernetes.io/initialized: "true"
     spec:
       containers:
       - name: spilo
@@ -40,8 +38,13 @@ spec:
             secretKeyRef:
               name: {{ template "fullname" . }}
               key: password-standby
+        {{if .Values.Etcd.Host }}
+        - name: ETCD_HOST
+          value: {{ .Values.Etcd.Host | quote }}
+        {{else}}
         - name: ETCD_DISCOVERY_DOMAIN
-          value: {{default (printf "%s-etcd" .Release.Name | trunc 24) .Values.Etcd.Discovery }}
+          value: {{default (printf "%s-etcd" .Release.Name | trunc 63) .Values.Etcd.Discovery }}
+        {{end}}
         - name: SCOPE
           value: {{ template "fullname" . }}
         - name: USE_WALE
@@ -74,7 +77,7 @@ spec:
   - metadata:
       name: pgdata
       annotations:
-        volume.alpha.kubernetes.io/storage-class: anything
+        volume.alpha.kubernetes.io/storage-class: default
     spec:
       accessModes: [ "ReadWriteOnce" ]
       resources:
