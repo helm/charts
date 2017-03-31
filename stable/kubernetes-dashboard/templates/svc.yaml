@@ -6,10 +6,10 @@ metadata:
     app: {{ template "fullname" . }}
     heritage: "{{ .Release.Service }}"
     release: "{{ .Release.Name }}"
-    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     kubernetes.io/cluster-service: "true"
     release: {{ .Release.Name | quote }}
-  namespace: {{.Values.namespace}}
+  namespace: {{ .Values.namespace }}
 spec:
   type: {{ .Values.serviceType }}
   ports:

@@ -1,15 +1,15 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{template "fullname" .}}
+  name: {{ template "fullname" . }}
   labels:
     app: {{ template "fullname" . }}
     heritage: "{{ .Release.Service }}"
     release: "{{ .Release.Name }}"
-    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     kubernetes.io/cluster-service: "true"
-    release: {{.Release.Name | quote}}
-  namespace: {{.Values.namespace}}
+    release: {{ .Release.Name | quote }}
+  namespace: {{ .Values.namespace }}
 spec:
   replicas: 1
   strategy:
@@ -23,16 +23,16 @@ spec:
         app: {{ template "fullname" . }}
         heritage: "{{ .Release.Service }}"
         release: "{{ .Release.Name }}"
-        chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         kubernetes.io/cluster-service: "true"
-        release: {{.Release.Name | quote}}
+        release: {{ .Release.Name | quote }}
     spec:
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 10 }}
       containers:
       - name: main
-        image: "{{.Values.image}}:{{.Values.imageTag}}"
-        imagePullPolicy: {{.Values.ImagePullPolicy}}
+        image: "{{ .Values.image }}:{{ .Values.imageTag }}"
+        imagePullPolicy: {{ .Values.ImagePullPolicy }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         livenessProbe:
