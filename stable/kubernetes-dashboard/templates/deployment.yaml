@@ -8,8 +8,9 @@ metadata:
     release: "{{ .Release.Name }}"
     chart: "{{.Chart.Name}}-{{.Chart.Version}}"
     kubernetes.io/cluster-service: "true"
-    release: {{.Release.Name | quote }}
-  namespace: {{ default "kube-system" .Values.namespace }}
+    release: {{.Release.Name | quote}}
+    namespace: {{.Values.namespace}}
+  namespace: {{.Values.namespace}}
 spec:
   replicas: 1
   strategy:
@@ -25,14 +26,15 @@ spec:
         release: "{{ .Release.Name }}"
         chart: "{{.Chart.Name}}-{{.Chart.Version}}"
         kubernetes.io/cluster-service: "true"
-        release: {{.Release.Name | quote }}
+        release: {{.Release.Name | quote}}
+        namespace: {{.Values.namespace}}
     spec:
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 10 }}
       containers:
       - name: main
-        image: "{{default "gcr.io/google_containers/kubernetes-dashboard-amd64" .Values.image}}:{{default "v1.6.0" .Values.imageTag}}"
-        imagePullPolicy: {{default "IfNotPresent" .Values.ImagePullPolicy}}
+        image: "{{.Values.image}}:{{.Values.imageTag}}"
+        imagePullPolicy: {{.Values.ImagePullPolicy}}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         livenessProbe:
