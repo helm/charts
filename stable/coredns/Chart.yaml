@@ -1,0 +1,14 @@
+name: coredns
+version: 0.1.0
+description: CoreDNS is a DNS server that chains middleware and provides Kubernetes DNS Services
+keywords:
+- coredns
+- dns
+- kubedns
+home: https://coredns.io
+icon: https://coredns.io/img/coredns-logo.png
+sources:
+- https://github.com/coredns/coredns
+maintainers:
+- name: Acaleph
+  email: hello@acale.ph
