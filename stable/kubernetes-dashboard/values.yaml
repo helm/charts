@@ -14,6 +14,9 @@ nodeSelector: {}
 serviceType: ClusterIP
 
 resources:
+  limits:
+    cpu: 100m
+    memory: 50Mi
   requests:
-    memory: 512Mi
-    cpu: 512m
+    cpu: 100m
+    memory: 50Mi
