@@ -6,7 +6,7 @@
 Master:
   Name: jenkins-master
   Image: "gcr.io/kubernetes-charts-ci/jenkins-master-k8s"
-  ImageTag: "v0.7.0"
+  ImageTag: "v0.8.0"
   ImagePullPolicy: "Always"
   Component: "jenkins-master"
   UseSecurity: true
