@@ -1,0 +1,12 @@
+apiVersion: v1
+name: gluster
+home: https://www.gluster.org
+version: 1.0.0
+description: GlusterFS is a scalable network filesystem. Using common off-the-shelf hardware, you can create large, distributed storage solutions for media streaming, data analysis, and other data- and bandwidth-intensive tasks.
+icon: https://www.gluster.org/images/antmascot.png?1458134976
+sources:
+  - https://github.com/gluster
+  - https://github.com/gluster
+maintainers:
+  - name: Humble Chirammal
+email: hchiramm@redhat.com

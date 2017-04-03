@@ -1,0 +1,14 @@
+Gluster service can be accessed via:
+
+1. export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "fullname" . }}" -o jsonpath="{.items[0].metadata.name}")
+
+2. kubectl port-forward $POD_NAME 24007 --namespace {{ .Release.Namespace }}
+
+Read more about port forwarding here: http://kubernetes.io/docs/user-guide/kubectl/kubectl_port-forward/
+
+Your gluster server is listening on $POD_NAME:24007. 
+
+Gluster server can be accessed via port {{ .Values.servicePort }} on an external IP address. Get the service external IP address by:
+kubectl get svc --namespace {{ .Release.Namespace }} -l app={{ template "fullname" . }}
+
+Note that Public IP and access it's 24007 to connect glusterd service running in this.
