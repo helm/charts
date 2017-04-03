@@ -14,8 +14,8 @@ It can be accessed using the below endpoint
     export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
     echo $SERVICE_IP
 {{- else if contains "ClusterIP"  .Values.serviceType }}
-    echo "{{ template "fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local"
-    echo "from within the cluster"
+    "{{ template "fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local"
+    from within the cluster
 {{- end }}
 {{- end }}
 
