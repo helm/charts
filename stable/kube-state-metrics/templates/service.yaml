@@ -3,7 +3,10 @@ kind: Service
 metadata:
   name: {{ template "fullname" . }}
   labels:
+    app: {{ template "fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
   annotations:
     prometheus.io/scrape: '{{ .Values.prometheusScrape }}'
 spec:
