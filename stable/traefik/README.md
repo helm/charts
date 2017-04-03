@@ -69,7 +69,7 @@ The following tables lists the configurable parameters of the Traefik chart and 
 | Parameter                       | Description                                                          | Default                                   |
 | ------------------------------- | -------------------------------------------------------------------- | ----------------------------------------- |
 | `image`                         | Traefik image name                                                   | `traefik`                                 |
-| `imageTag`                      | The version of the official Traefik image to use                     | `v1.1.2`                                  |
+| `imageTag`                      | The version of the official Traefik image to use                     | `v1.2.1`                                  |
 | `serviceType`                   | A valid Kubernetes service type                                      | `LoadBalancer`                            |
 | `replicas`                      | The number of replicas to run; __NOTE:__ Full Traefik clustering with leader election is not yet supported, which can affect any configured Let's Encrypt setup; see Clustering section | `1` |
 | `cpuRequest`                    | Initial share of CPU requested per Traefik pod                       | `100m`                                    |
