@@ -1,0 +1,11 @@
+name: sumologic-fluentd
+version: 0.1.0
+description: Sumologic Log Collector
+keywords:
+  - monitoring
+  - logging
+sources:
+  - https://github.com/SumoLogic/fluentd-kubernetes-sumologic
+maintainers:
+  - name: Philip Champon
+    email: techops@adaptly.com

@@ -1,0 +1,79 @@
+# Default values for sumologic-fluentd.
+image:
+  name: sumologic/fluentd-kubernetes-sumologic
+  tag: latest
+  pullPolicy: IfNotPresent
+
+sumologic:
+  ## You'll need to set this to sumo collector, before the agent will run.
+  ## ref: https://github.com/SumoLogic/fluentd-kubernetes-sumologic#sumologic
+  # collectorUrl:
+
+  ## How frequently to push logs to SumoLogic (default 5s)
+  ## ref: https://github.com/SumoLogic/fluentd-kubernetes-sumologic#options
+  # flushInterval: 5
+
+  ## Increase number of http threads to Sumo. May be required in heavy logging clusters (default 1)
+  # numThreads: 1
+
+  ## Set the _sourceName metadata field in SumoLogic. (Default "%{namespace}.%{pod}.%{container}")
+  # sourceName: 
+
+  ## Set the _sourceCategory metadata field in SumoLogic. (Default "%{namespace}/%{pod_name}")
+  # sourceCategory: 
+
+  ## Set the prefix, for _sourceCategory metadata. (Defualt nil)
+  # sourceCategoryPrefix:
+
+  ## Used to replace - with another character. (default /)
+  # sourceCategoryReplaceDash:
+
+  ## Format to post logs into Sumo. json, json_merge, or text (default json)
+  # logFormat: json
+
+  ## Include or exclude Kubernetes metadata such as namespace and pod_name if
+  ## using json log format. (default true)
+  # kubernetesMeta: true
+
+  ## Files matching this pattern will be ignored by the in_tail plugin, and will
+  ## not be sent to Kubernetes or Sumo Logic. This can be a comma seperated list.
+  ## ref: http://docs.fluentd.org/v0.12/articles/in_tail#excludepath
+  # excludePath: 
+
+  ## A ruby regex for namespaces. All matching namespaces will be excluded
+  ## from Sumo Logic. The logs will still be sent to FluentD
+  ## ref: http://rubular.com/
+  # excludeNamespaceRegex:
+
+  ## A ruby regex for pods. All matching pods will be excluded from Sumo
+  ## Logic. The logs will still be sent to FluentD
+  ## ref: http://rubular.com/
+  # excludePodRegex:
+
+  ## A ruby regex for containers. All matching containers will be excluded
+  ## from Sumo Logic. The logs will still be sent to FluentD
+  ## ref: http://rubular.com/
+  # excludeContainerRegex: 
+
+  ## A ruby regex for hosts. All matching hosts will be excluded from Sumo
+  ## Logic. The logs will still be sent to FluentD
+  ## ref: http://rubular.com/
+  # excludeHostRegex:
+
+  ## Fluentd command line options
+  ## ref: http://docs.fluentd.org/v0.12/articles/command-line-option
+  # fluentdOpt:
+
+## By default, the daemonset will store position files, for logs tailed, in an
+## emptyDir. If you have a directory, on the host, to store pos files, specify
+## it here.
+persistence:
+  # hostPath: /var/run/fluentd-pos
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 256m
+    memory: 256Mi
