@@ -19,6 +19,12 @@ spec:
         chart: "{{.Chart.Name}}-{{.Chart.Version}}"
         component: "{{.Release.Name}}-{{.Values.Component}}"
     spec:
+      {{if .Values.NodeSelector }}
+      nodeSelector:
+        {{range $key, $value := .Values.NodeSelector}}
+          {{ $key }}: {{ $value | quote }}
+        {{end}}
+      {{end}}
       containers:
       - name: spilo
         image: "{{ .Values.Spilo.Image }}:{{ .Values.Spilo.Version }}"
