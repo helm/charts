@@ -10,6 +10,9 @@ spec:
     metadata:
       labels:
         app: {{ template "hub.fullname" . }}
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        release: "{{ .Release.Name }}"
+        heritage: "{{ .Release.Service }}"
       annotations: 
     spec:
       containers:

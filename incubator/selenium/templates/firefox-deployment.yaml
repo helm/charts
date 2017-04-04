@@ -11,6 +11,9 @@ spec:
     metadata:
       labels:
         app: {{ template "firefox.fullname" . }}
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        release: "{{ .Release.Name }}"
+        heritage: "{{ .Release.Service }}"
       annotations: 
     spec:
       containers:
