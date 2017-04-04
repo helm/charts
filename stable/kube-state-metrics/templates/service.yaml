@@ -7,8 +7,10 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
+  {{- if .Values.prometheusScrape }}
   annotations:
     prometheus.io/scrape: '{{ .Values.prometheusScrape }}'
+  {{- end }}
 spec:
   ports:
   - port: {{ .Values.service.port }}
