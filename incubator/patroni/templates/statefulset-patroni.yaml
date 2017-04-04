@@ -83,7 +83,7 @@ spec:
   - metadata:
       name: pgdata
       annotations:
-        volume.alpha.kubernetes.io/storage-class: default
+        volume.alpha.kubernetes.io/storage-class: {{default "default" .Values.StorageClass }}
     spec:
       accessModes: [ "ReadWriteOnce" ]
       resources:
