@@ -57,10 +57,12 @@ The following tables lists the configurable parameters of the patroni chart and 
 | `Spilo.Version`         | Container image tag                 | `1.0-p5`                                            |
 | `ImagePullPolicy`       | Container pull policy               | `IfNotPresent`                                      |
 | `Replicas`              | k8s statefulset replicas            | `5`                                                 |
+| `NodeSelector`          | nodeSelector map                    | Empty                                               |
 | `Component`             | k8s selector key                    | `patroni`                                           |
 | `Resources.Cpu`         | container requested cpu             | `100m`                                              |
 | `Resources.Memory`      | container requested memory          | `512Mi`                                             |
 | `Resources.Storage`     | Persistent volume size              | `1Gi`                                               |
+| `StorageClass`          | Volume claim storage class          | `default`                                           |
 | `Credentials.Superuser` | password for the superuser          | `tea`                                               |
 | `Credentials.Admin`     | password for the admin user         | `cola`                                              |
 | `Credentials.Standby`   | password for the replication user   | `pinacolada`                                        |
