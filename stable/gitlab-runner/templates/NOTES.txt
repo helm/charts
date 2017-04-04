@@ -1,5 +1,5 @@
-{{- if default "" .Values.gitlabUrl }}
-{{- if default "" .Values.runnerRegistrationToken }}
+{{- if .Values.gitlabUrl }}
+{{- if .Values.runnerRegistrationToken }}
 Your GitLab Runner should now be registered against the GitLab instance reachable at: {{ .Values.gitlabUrl }}
 {{- else -}}
 ##############################################################################
