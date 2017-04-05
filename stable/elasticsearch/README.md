@@ -7,14 +7,14 @@ elasticsearch and their
 
 ## Prerequisites Details
 
-* Kubernetes 1.3 with alpha APIs enabled
+* Kubernetes 1.5
 * PV dynamic provisioning support on the underlying infrastructure
 
-## PetSet Details
-* http://kubernetes.io/docs/user-guide/petset/
+## StatefulSets Details
+* https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/
 
-## PetSet Caveats
-* http://kubernetes.io/docs/user-guide/petset/#alpha-limitations
+## StatefulSets Caveats
+* https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#limitations
 
 ## Todo
 

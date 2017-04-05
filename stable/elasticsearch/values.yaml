@@ -8,7 +8,7 @@ PeerPort: 2380
 ClientPort: 2379
 Component: "elasticsearch"
 Image: "jetstack/elasticsearch-pet"
-ImageTag: "2.3.5"
+ImageTag: "2.4.0"
 ImagePullPolicy: "Always"
 ClientReplicas: 2
 ClientCpuRequests: "25m"
