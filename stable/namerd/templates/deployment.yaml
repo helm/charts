@@ -23,7 +23,7 @@ spec:
         image: "{{ .Values.namerd.image.repository }}"
         imagePullPolicy: {{ default "" .Values.namerd.image.pullPolicy | quote }}
         args:
-        - /io.buoyant/namerd/config/config.yml
+        - /io.buoyant/namerd/config/config.yaml
         ports:
         - name: sync
           containerPort: 4100

@@ -8,10 +8,6 @@ metadata:
     release: "{{ .Release.Name }}"
   name: {{ template "fullname" . }}-config
 data:
-{{ if .Values.config }}
-  config.yaml: |-
-{{ toYaml .Values.config| indent 4 }}
-{{ else }}
   config.yaml: |-
     admin:
       ip: 127.0.0.1
@@ -31,4 +27,3 @@ data:
       - kind: io.l5d.httpController
         ip: 0.0.0.0
         port: 4180
-{{ end}}
