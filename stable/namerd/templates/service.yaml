@@ -11,5 +11,7 @@ spec:
     port: {{ .Values.service.syncPort }}
   - name: api
     port: {{ .Values.service.apiPort }}
+  - name: admin
+    port: {{ .Values.service.adminPort }}
   selector:
     app: {{ template "fullname" . }}

@@ -28,3 +28,4 @@ service:
   type: ClusterIP
   syncPort: 4100
   apiPort: 4180
+  adminPort: 9991

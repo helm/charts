@@ -10,8 +10,8 @@ metadata:
 data:
   config.yaml: |-
     admin:
-      ip: 127.0.0.1
-      port: 9991
+      ip: 0.0.0.0
+      port: {{ .Values.service.adminPort }}
     storage:
       kind: io.l5d.k8s
       experimental: true
