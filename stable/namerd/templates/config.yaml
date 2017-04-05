@@ -17,7 +17,6 @@ data:
       experimental: true
     namers:
       - kind: io.l5d.k8s
-        experimental: true
         host: 127.0.0.1
         port: 8001
     interfaces:
