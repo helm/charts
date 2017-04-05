@@ -15,6 +15,12 @@ controller:
   ##
   defaultBackendService: ""
 
+  ## Limit the scope of the controller
+  ##
+  scope:
+    enabled: false
+    namespace: "" # defaults to .Release.Namespace
+
   extraArgs: {}
 
   ## DaemonSet or Deployment
@@ -52,6 +58,14 @@ controller:
     loadBalancerIP: ""
     loadBalancerSourceRanges: []
     type: LoadBalancer
+
+    # type: NodePort
+    # nodePorts:
+    #   http: 32080
+    #   https: 32443
+    nodePorts:
+      http: ""
+      https: ""
 
   stats:
     enabled: false

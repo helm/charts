@@ -9,7 +9,7 @@ data:
     <?xml version='1.0' encoding='UTF-8'?>
     <hudson>
       <disabledAdministrativeMonitors/>
-      <version>2.19.4</version>
+      <version>2.32.3</version>
       <numExecutors>0</numExecutors>
       <mode>NORMAL</mode>
       <useSecurity>{{ .Values.Master.UseSecurity }}</useSecurity>
@@ -26,7 +26,7 @@ data:
       <viewsTabBar class="hudson.views.DefaultViewsTabBar"/>
       <myViewsTabBar class="hudson.views.DefaultMyViewsTabBar"/>
       <clouds>
-        <org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud plugin="kubernetes@0.10">
+        <org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud plugin="kubernetes@0.11">
           <name>kubernetes</name>
           <templates>
             <org.csanchez.jenkins.plugins.kubernetes.PodTemplate>
@@ -63,7 +63,7 @@ data:
           <serverUrl>https://kubernetes.default</serverUrl>
           <skipTlsVerify>false</skipTlsVerify>
           <namespace>{{ .Release.Namespace }}</namespace>
-          <jenkinsUrl>http://{{ template "fullname" . }}:8080</jenkinsUrl>
+          <jenkinsUrl>http://{{ template "fullname" . }}:{{.Values.Master.ServicePort}}</jenkinsUrl>
           <jenkinsTunnel>{{ template "fullname" . }}:50000</jenkinsTunnel>
           <containerCap>10</containerCap>
           <retentionTimeout>5</retentionTimeout>
@@ -89,4 +89,14 @@ data:
       <globalNodeProperties/>
       <noUsageStatistics>true</noUsageStatistics>
     </hudson>
+  apply_config.sh: |-
+    cp -n /var/jenkins_config/config.xml /var/jenkins_home;
+{{- if .Values.Master.InitScripts }}
+    mkdir -p /var/jenkins_home/init.groovy.d/;
+    cp -n /var/jenkins_config/*.groovy /var/jenkins_home/init.groovy.d/
+{{- end }}
+{{- range $key, $val := .Values.Master.InitScripts }}
+  init{{ $key }}.groovy: |-
+{{ $val | indent 4}}
+{{- end }}
 {{- end -}}

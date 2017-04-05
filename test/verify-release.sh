@@ -38,7 +38,7 @@ while [ "$COUNT" -lt "$RETRY" ]; do
   fi
 done
 
-if [ "$PODS_FOUND" -eq 1 ];then
+if [ "$PODS_FOUND" -eq 0 ];then
   echo "WARN: No pods launched by this chart's default settings"
   exit 0
 else

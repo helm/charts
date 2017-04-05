@@ -27,7 +27,7 @@ spec:
                   "name": "copy-default-config",
                   "image": "{{.Values.Master.Image}}:{{.Values.Master.ImageTag}}",
                   "imagePullPolicy": "{{.Values.Master.ImagePullPolicy}}",
-                  "command": ["sh", "-c", "cp -n /var/jenkins_config/*.xml /var/jenkins_home"],
+                  "command": [ "sh", "/var/jenkins_config/apply_config.sh" ],
                   "volumeMounts": [
                       {
                           "name": "jenkins-config",
@@ -96,7 +96,7 @@ spec:
       - name: jenkins-home
       {{- if .Values.Persistence.Enabled }}
         persistentVolumeClaim:
-          claimName: {{ template "fullname" . }}
+          claimName: {{ .Values.Persistence.ExistingClaim | default (include "fullname" .) }}
       {{- else }}
         emptyDir: {}
       {{- end -}}

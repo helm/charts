@@ -1,21 +1,49 @@
-# Default values for mongodb.
-# This is a YAML-formatted file.
-# Declare name/value pairs to be passed into your templates.
-# name: value
+replicaSet: rs0
+replicas: 3
+port: 27017
 
-Name: mongodb-replicaset
-PeerPort: 27017
-Component: "mongodb"
-ReplicaSet: "rs0"
-ClusterRole: "shardsvr"
-Replicas: 3
-Image: "mongo"
-ImageTag: "3.2"
-InstallImage: "gcr.io/google_containers/mongodb-install"
-InstallImageTag: "0.3"
-ImagePullPolicy: "Always"
-Cpu: "100m"
-Memory: "512Mi"
-Storage: "10Gi"
-StorageClass: generic
+# Specs for the Docker image for the init container that establishes the replica set
+installImage:
+  name: gcr.io/google_containers/mongodb-install
+  tag: 0.3
+  pullPolicy: IfNotPresent
 
+# Specs for the MongoDB image
+image:
+  name: mongo
+  tag: 3.2
+  pullPolicy: IfNotPresent
+
+# Annotations to be added to MongoDB pods
+podAnnotations: {}
+
+resources: {}
+  # limits:
+  #   cpu: 100m
+  #   memory: 512Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 512Mi
+
+persistentVolume:
+  enabled: true
+  ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
+  ## Default: volume.alpha.kubernetes.io/storage-class: default
+  ##
+  # storageClass: fast
+  accessModes:
+    - ReadWriteOnce
+  size: 10Gi
+  annotations: {}
+
+# Annotations to be added to the service
+serviceAnnotations: {}
+
+# Entries for the MongoDB config file
+configmap:
+  storage:
+    dbPath: /data/db
+  net:
+    port: 27017
+  replication:
+    replSetName: rs0
