@@ -27,6 +27,14 @@ controller:
   ##
   kind: Deployment
 
+  ## Port type for DaemonSet
+  ##
+  daemonSet:
+    hostPort:
+      enabled: false
+      http: 80
+      https: 443
+
   ## Node labels for controller pod assignment
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
   ##
