@@ -55,6 +55,7 @@ Parameter | Description | Default
 `controller.scope.namespace` | namespace to watch for ingress | `""` (use the release namespace)
 `controller.extraArgs` | Additional controller container arguments | `{}`
 `controller.kind` | install as Deployment or DaemonSet | `Deployment`
+`controller.daemonSet.hostPort.enabled` | creates a hostPort for controller.kind 'DaemonSet' | `False`
 `controller.nodeSelector` | node labels for pod assignment | `{}`
 `controller.podAnnotations` | annotations to be added to pods | `{}`
 `controller.replicaCount` | desired number of controller pods | `1`
