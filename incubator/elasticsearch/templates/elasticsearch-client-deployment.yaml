@@ -35,6 +35,8 @@ spec:
           value: "false"
         - name: ES_HEAP_SIZE
           value: "{{.Values.ClientHeapSize}}"
+        - name: KUBERNETES_MASTER
+          value: kubernetes.default.svc.cluster.local
         resources:
           requests:
             cpu: "{{.Values.ClientCpuRequests}}"
@@ -46,13 +48,14 @@ spec:
           httpGet:
             path: /
             port: 9200
-          initialDelaySeconds: 30
-          timeoutSeconds: 1
+          initialDelaySeconds: 90
+          timeoutSeconds: 10
         readinessProbe:
           httpGet:
             path: /
             port: 9200
-          timeoutSeconds: 5
+          initialDelaySeconds: 90
+          timeoutSeconds: 10
         image: "{{.Values.Image}}:{{.Values.ImageTag}}"
         imagePullPolicy: "{{.Values.ImagePullPolicy}}"
         ports:
