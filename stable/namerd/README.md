@@ -5,7 +5,7 @@
 ## Chart Details
 This chart will do the following:
 
-* Install a deployment that provisions namerd with a default configuration.
+* Install a deployment that provisions namerd with a default configuration and three replicas for HA.
 
 ## Installing the Chart
 
