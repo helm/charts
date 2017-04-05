@@ -59,13 +59,14 @@ spec:
               path: /healthz
               port: 10254
               scheme: HTTP
-            initialDelaySeconds: 10
+            initialDelaySeconds: 60
             timeoutSeconds: 1
           ports:
             - name: http
           {{- if .Values.controller.daemonSet.hostPort.enabled }}
               hostPort: {{ .Values.controller.daemonSet.hostPort.http }}
           {{- end }}
+              containerPort: 80
               protocol: TCP
             - name: https
           {{- if .Values.controller.daemonSet.hostPort.enabled }}
