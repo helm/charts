@@ -26,9 +26,9 @@ spec:
         - /io.buoyant/namerd/config/config.yaml
         ports:
         - name: sync
-          containerPort: 4100
+          containerPort: {{ .Values.service.syncPort }}
         - name: api
-          containerPort: 4180
+          containerPort: {{ .Values.service.apiPort }}
         volumeMounts:
         - name: "{{ template "fullname" . }}-config"
           mountPath: "/io.buoyant/namerd/config"

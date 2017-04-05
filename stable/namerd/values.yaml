@@ -26,3 +26,5 @@ kubectl:
       memory: 32Mi
 service:
   type: ClusterIP
+  syncPort: 4100
+  apiPort: 4180

@@ -8,8 +8,8 @@ spec:
   type: {{ .Values.service.type }}
   ports:
   - name: sync
-    port: 4100
+    port: {{ .Values.service.syncPort }}
   - name: api
-    port: 4180
+    port: {{ .Values.service.apiPort }}
   selector:
     app: {{ template "fullname" . }}
