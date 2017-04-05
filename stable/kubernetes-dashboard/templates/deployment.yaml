@@ -32,7 +32,7 @@ spec:
       containers:
       - name: main
         image: "{{ .Values.image }}:{{ .Values.imageTag }}"
-        imagePullPolicy: {{ .Values.ImagePullPolicy }}
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         livenessProbe:
