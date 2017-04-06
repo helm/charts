@@ -1,5 +1,11 @@
+apiVersion: v1
 name: locust
-description: A chart for locust distributed load testing
-version: 0.1.0
+description: A modern load testing framework
+version: 0.1.1
+maintainers:
+  - name: Vincent De Smet
+    email: vincent.drl@gmail.com
+home: http://locust.io/
 sources:
   - https://github.com/honestbee/distributed-load-testing
+icon: http://locust.io/static/img/logo.png
