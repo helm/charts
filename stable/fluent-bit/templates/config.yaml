@@ -36,6 +36,7 @@ data:
         Match         *
         Host          {{ .Values.backend.forward.host }}
         Port          {{ .Values.backend.forward.port }}
+        Retry_Limit False
 {{ else if eq .Values.backend.type "es" }}
     [OUTPUT]
         Name  es
