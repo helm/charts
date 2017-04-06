@@ -79,8 +79,8 @@ The following tables lists the configurable parameters of the Minio chart and th
 | `imagePullPolicy`          | Image pull policy                   | `Always`                                                |
 | `mode`                     | Minio server mode (`standalone`, `shared` or `distributed`)| `standalone`                     |
 | `replicas`                 | Number of nodes (applicable only for Minio distributed mode). Should be 4 <= x <= 16 | `4`    |
-| `accessKey`                | Default access key                  | `AKIAIOSFODNN7EXAMPLE`                                  |
-| `secretKey`                | Default secret key                  | `wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY`              |
+| `accessKey`                | Default access key (5 to 20 characters) | `AKIAIOSFODNN7EXAMPLE`                              |
+| `secretKey`                | Default secret key (8 to 40 characters) | `wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY`          |
 | `configPath`               | Default config file location        | `~/.minio`                                              |
 | `mountPath`                | Default mount location for persistent drive| `/export`                                        |
 | `serviceType`              | Kubernetes service type             | `LoadBalancer`                                          |
