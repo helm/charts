@@ -1,0 +1,13 @@
+name: fluent-bit
+version: 0.11.2
+description: Fluent Bit
+keywords:
+- fluent
+- bit
+sources:
+- http://fluentbit.io
+maintainers:
+- name: Eduardo Silva
+  email: eduardo@treasure-data.com
+- name: Kevin Fox
+  email: Kevin.Fox@pnnl.gov
