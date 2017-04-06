@@ -9,4 +9,7 @@ metadata:
     release: "{{ .Release.Name }}"
   name: {{ template "server.fullname" . }}-config
 data:
+  {{- if .Values.server.installPlugins }}
+  grafana-install-plugins: {{ .Values.server.installPlugins | quote }}
+  {{- end }}
 {{ toYaml .Values.serverConfigFile | indent 2 }}

@@ -28,9 +28,17 @@ spec:
           args:
             - /nginx-ingress-controller
             - --default-backend-service={{ if .Values.defaultBackend.enabled }}{{ .Release.Namespace }}/{{ template "defaultBackend.fullname" . }}{{ else }}{{ .Values.controller.defaultBackendService }}{{ end }}
+          {{- if (contains "0.9" .Values.controller.image.tag) }}
+            - --configmap={{ .Release.Namespace }}/{{ template "controller.fullname" . }}
+          {{- else }}
             - --nginx-configmap={{ .Release.Namespace }}/{{ template "controller.fullname" . }}
+          {{- end }}
+          {{- if .Values.tcp }}
             - --tcp-services-configmap={{ .Release.Namespace }}/{{ template "fullname" . }}-tcp
+          {{- end }}
+          {{- if .Values.udp }}
             - --udp-services-configmap={{ .Release.Namespace }}/{{ template "fullname" . }}-udp
+          {{- end }}
           {{- if .Values.controller.scope.enabled }}
             - --watch-namespace={{ default .Release.Namespace .Values.controller.scope.namespace }}
           {{- end }}

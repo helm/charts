@@ -1,7 +1,7 @@
 ## Bitnami Moodle` image version
 ## ref: https://hub.docker.com/r/bitnami/moodle/tags/
 ##
-image: bitnami/moodle:3.2.1-r3
+image: bitnami/moodle:3.2.2-r1
 
 ## Specify a imagePullPolicy
 ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
