@@ -59,7 +59,7 @@ spec:
               path: /healthz
               port: 10254
               scheme: HTTP
-            initialDelaySeconds: 60
+            initialDelaySeconds: 10
             timeoutSeconds: 1
           ports:
             - name: http
