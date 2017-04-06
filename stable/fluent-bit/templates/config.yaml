@@ -29,7 +29,7 @@ data:
     [OUTPUT]
         Name  file
         Match *
-        Path /tmp/fluentd.log
+        Path /tmp/fluent-bit.log
 {{ else if eq .Values.backend.type "forward" }}
     [OUTPUT]
         Name          forward
