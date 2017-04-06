@@ -38,6 +38,13 @@ spec:
                 secretKeyRef:
                   name: {{ template "server.fullname" . }}
                   key: grafana-admin-password
+            {{- if .Values.server.installPlugins }}
+            - name: GF_INSTALL_PLUGINS
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "server.fullname" . }}-config
+                  key: grafana-install-plugins
+            {{- end }}
           ports:
             - containerPort: 3000
           readinessProbe:
