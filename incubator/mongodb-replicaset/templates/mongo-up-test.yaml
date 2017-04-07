@@ -7,7 +7,7 @@ metadata:
     "pod.beta.kubernetes.io/init-containers": '[
       {
         "name": "test-framework",
-        "image": "foxish/bats:0.3",
+        "image": "foxish/bats:0.4",
         "command": ["bash", "-c", "
           set -ex\n
           # copy bats to tools dir\n
@@ -28,7 +28,7 @@ spec:
       - |
         echo '
           pod_name() {
-            echo {{ printf "%s-%s" .Release.Name .Values.Name | trunc 24 }}-$1.{{ printf "%s-%s" .Release.Name .Values.Name | trunc 24 }}.default.svc.cluster.local
+            echo {{ template "fullname" . }}-$1.{{ template "fullname" . }}.default.svc.cluster.local
           }
 
           master_pod() {
@@ -50,9 +50,9 @@ spec:
               do
                echo "Waiting for application to become ready" >&2
                sleep 1
+               ready=0
 
-                ready=0
-                for i in {0..2}
+               for i in {0..2}
                 do
                   response=$(mongo \
                       --host=$(pod_name $i) \
@@ -104,7 +104,7 @@ spec:
               fi
             done
           }
-        ' | /tools/bats/bat_wrapper.sh
+        ' | /tools/bats/bats_wrapper.sh
       volumeMounts:
         - name: tools
           mountPath: /tools
