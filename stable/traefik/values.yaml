@@ -40,6 +40,8 @@ service:
   #   key: value
   # labels:
   #   key: value
+  # https:
+  #   targetPort: 80
 gzip:
   enabled: true
 # Kubernetes ingress filters
