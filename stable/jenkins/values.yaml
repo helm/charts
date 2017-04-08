@@ -5,15 +5,15 @@
 
 Master:
   Name: jenkins-master
-  Image: "gcr.io/kubernetes-charts-ci/jenkins-master-k8s"
-  ImageTag: "v0.7.0"
+  Image: "dtzar/jenkins-master-k8s"
+  ImageTag: "latest"
   ImagePullPolicy: "Always"
   Component: "jenkins-master"
   UseSecurity: true
   AdminUser: admin
 # AdminPassword: <defaults to random>
   Cpu: "200m"
-  Memory: "256Mi"
+  Memory: "512Mi"
 # Set min/max heap here if needed with:
 # JavaOpts: "-Xms512m -Xmx512m"
   ServicePort: 8080
@@ -25,8 +25,8 @@ Master:
 # NodePort: <to set explicitly, choose port between 30000-32767
   ContainerPort: 8080
   SlaveListenerPort: 50000
-  LoadBalancerSourceRanges:
-  - 0.0.0.0/0
+  #LoadBalancerSourceRanges:
+  #- 0.0.0.0/0
 # List of groovy init scripts to be executed during Jenkins master start
   InitScripts:
 #  - |
@@ -44,10 +44,10 @@ Master:
       #     - jenkins.cluster.local
 
 Agent:
-  Image: jenkinsci/jnlp-slave
-  ImageTag: 2.52
+  Image: dtzar/jnlp-slave-helm
+  ImageTag: latest
   Cpu: "200m"
-  Memory: "256Mi"
+  Memory: "512Mi"
 
 Persistence:
   Enabled: true
