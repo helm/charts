@@ -1,0 +1,12 @@
+name: mastodon
+version: 0.0.1
+description: A GNU Social-compatible microblogging server
+keywords:
+  - mastodon
+  - social
+sources:
+  - https://github.com/tootsuite/mastodon
+maintainers:
+  - name: Blake Barnett
+    email: shadoi@indigo.zone
+engine: gotpl
