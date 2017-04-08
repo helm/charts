@@ -1,4 +1,4 @@
 FROM jenkinsci/jenkins:2.46.1
-RUN /usr/local/bin/install-plugins.sh kubernetes:0.11 workflow-aggregator:2.5 credentials-binding:1.10 git:3.2.0 \
+RUN /usr/local/bin/install-plugins.sh kubernetes:0.11 workflow-aggregator:2.5 credentials-binding:1.11 git:3.2.0 \
     && mkdir -p /usr/share/jenkins/ref/secrets/ \
     && echo "false" > /usr/share/jenkins/ref/secrets/slave-to-master-security-kill-switch
