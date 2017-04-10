@@ -2,3 +2,11 @@ apiVersion: v1
 description: A Helm chart for DogStatsD
 name: dogstatsd
 version: 1.0
+keywords:
+  - statsd
+  - datadog
+maintainers:
+  - name: Yuvi Panda
+    email: yuvipanda@gmai.com
+sources:
+  - https://github.com/DataDog/docker-dd-agent#standalone-dogstatsd
