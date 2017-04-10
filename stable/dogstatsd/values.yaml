@@ -1,0 +1,15 @@
+image:
+  repository: datadog/docker-dd-agent
+  tag: 11.0.5123-dogstatsd
+
+datadog:
+  apiKey: "Put your datadog API key here"
+
+resources:
+  limits:
+    cpu: 256m
+    memory: 512Mi
+  requests:
+    cpu: 128m
+    memory: 512Mi
+
