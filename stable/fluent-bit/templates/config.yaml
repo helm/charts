@@ -4,7 +4,6 @@ metadata:
   name: {{ template "fullname" . }}-config
   labels:
     app: {{ template "fullname" . }}
-  namespace: {{ .Values.namespace }}
 data:
   fluent-bit.conf: |-
     [SERVICE]

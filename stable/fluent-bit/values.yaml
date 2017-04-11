@@ -2,8 +2,6 @@
 # enable if started in minikube.
 on_minikube: false
 
-namespace: kube-system
-
 image:
   fluent_bit:
     repository: fluent/fluent-bit
