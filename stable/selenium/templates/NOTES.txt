@@ -38,16 +38,16 @@ To watch for the LoadBalancer IP run the following
 WARNING: No nodes enabled, no browsers available via hub
 
 - Enable Chrome
-  helm upgrade --set chrome.enabled=true {{ .Release.Name }} selenium
+  helm upgrade --set chrome.enabled=true {{ .Release.Name }} stable/selenium
 
 - Enable Chrome Debug
-  helm upgrade --set chromeDebug.enabled=true {{ .Release.Name }} selenium
+  helm upgrade --set chromeDebug.enabled=true {{ .Release.Name }} stable/selenium
 
 - Enable Firefox
-  helm upgrade --set firefox.enabled=true {{ .Release.Name }} selenium
+  helm upgrade --set firefox.enabled=true {{ .Release.Name }} stable/selenium
 
 - Enable Firefox Debug
-  helm upgrade --set firefoxDebug.enabled=true {{ .Release.Name }} selenium
+  helm upgrade --set firefoxDebug.enabled=true {{ .Release.Name }} stable/selenium
 
 {{- else -}}
 
@@ -55,12 +55,12 @@ To scale the number of selenium nodes
 
 {{- if eq true .Values.chrome.enabled }}
 - Chrome
-  helm upgrade --set chrome.replicas=N {{ .Release.Name }} selenium
+  helm upgrade --set chrome.replicas=N {{ .Release.Name }} stable/selenium
 {{ end }}
 
 {{- if eq true .Values.chromeDebug.enabled }}
 - Chrome Debug
-  helm upgrade --set chromeDebug.replicas=N {{ .Release.Name }} selenium
+  helm upgrade --set chromeDebug.replicas=N {{ .Release.Name }} stable/selenium
 
 - Chrome VNC
   kubectl port-forward --namespace {{ .Release.Namespace }} \
@@ -71,12 +71,12 @@ To scale the number of selenium nodes
 
 {{- if eq true .Values.firefox.enabled }}
 - Firefox
-  helm upgrade --set firefox.replicas=N {{ .Release.Name }} selenium
+  helm upgrade --set firefox.replicas=N {{ .Release.Name }} stable/selenium
 {{ end }}
 
 {{ if eq true .Values.firefoxDebug.enabled }}
 - Firefox Debug
-  helm upgrade --set firefoxDebug.replicas=N {{ .Release.Name }} selenium
+  helm upgrade --set firefoxDebug.replicas=N {{ .Release.Name }} stable/selenium
 - Firefox VNC
   kubectl port-forward --namespace {{ .Release.Namespace }} \
   $(kubectl get pods --namespace {{ .Release.Namespace }} \
