@@ -2,13 +2,16 @@
 Sumo Logic agents are spinning up on each node in your cluster. After a few
 minutes, you should see logs available in Sumo Logic.
 
-You can use annotations, to control the format, source category, and source
-names of your various deployments, replication controllers, etc.
+Each pod, deployment, etc. can be optionally
+[configured](https://github.com/SumoLogic/fluentd-kubernetes-sumologic#options)
+to specify its log format, source category, source name, or exclude itself from
+SumoLogic.
 
     annotations:
       sumologic.com/format: "text"
       sumologic.com/sourceCategory: "mywebsite/nginx"
       sumologic.com/sourceName: "mywebsite_nginx"
+      sumologic.com/exclude: true
 
 {{- else -}}
 ###########################################################

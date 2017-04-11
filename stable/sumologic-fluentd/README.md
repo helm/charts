@@ -1,6 +1,6 @@
 # SumoLogicFluentd
 
-![sumologic-fluentd](/incubator/sumologic-fluentd/sumologic-fluentd.jpg)
+![sumologic-fluentd](/stable/sumologic-fluentd/sumologic-fluentd.jpg)
 
 [Sumo Logic](https://www.sumologic.com/) is a hosted logging platform.
 
@@ -10,7 +10,8 @@ This chart adds the Sumo Logic Collector to all nodes in your cluster via a
 DaemonSet. After you have installed the chart, each pod, deployment, etc. can be
 optionally
 [configured](https://github.com/SumoLogic/fluentd-kubernetes-sumologic#options)
-to specify its log format, source category, or source name.
+to specify its log format, source category, source name, or exclude itself from
+SumoLogic.
 
     annotations:
       sumologic.com/format: "text"
@@ -36,7 +37,7 @@ To install the chart with the release name `my-release`, create your Sumo Logic 
 
 ```bash
 $ helm install --name my-release \
-    --set sumologic.collectorUrl=YOUR-URL-HERE incubator/sumologic-fluentd
+    --set sumologic.collectorUrl=YOUR-URL-HERE stable/sumologic-fluentd
 ```
 
 After a few minutes, you should see logs available in Sumo Logic.
@@ -90,13 +91,13 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 ```bash
 $ helm install --name my-release \
     --set sumologic.collectorUrl=YOUR-URL-HERE \
-    incubator/sumologic-fluentd
+    stable/sumologic-fluentd
 ```
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```bash
-$ helm install --name my-release -f values.yaml incubator/sumologic-fluentd
+$ helm install --name my-release -f values.yaml stable/sumologic-fluentd
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
@@ -113,5 +114,5 @@ directory.
 ```bash
 $ helm install --name my-release \
     --set sumologic.collectorUrl=URL,persistence.hostPath=/var/run/fluentd \
-    incubator/sumologic-fluentd
+    stable/sumologic-fluentd
 ```
