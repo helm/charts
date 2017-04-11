@@ -1,4 +1,4 @@
-# Default values for Sysdig Cloud Helm package.
+# Default values for Sysdig Monitor Helm package.
 
 image:
     repository: "sysdig/agent"
@@ -6,7 +6,7 @@ image:
     pullPolicy: "Always"
 
 sysdig:
-    # Required: You need your Sysdig Cloud access key before running agents.
+    # Required: You need your Sysdig Monitor access key before running agents.
     #AccessKey: ""
 
     # Optional: Key-value agent tags following the format "key:val,key2:val2".

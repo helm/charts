@@ -1,10 +1,10 @@
 # Sysdig
 
-[Sysdig Cloud](https://www.sysdig.com/) is a container native monitoring and troubleshooting platform.
+[Sysdig Monitor](https://www.sysdig.com/) is a container native monitoring and troubleshooting platform.
 
 ## Introduction
 
-This chart adds the Sysdig Cloud Agent to all nodes in your cluster via a DaemonSet.
+This chart adds the Sysdig Monitor Agent to all nodes in your cluster via a DaemonSet.
 
 ## Prerequisites
 
@@ -12,14 +12,14 @@ This chart adds the Sysdig Cloud Agent to all nodes in your cluster via a Daemon
 
 ## Installing the Chart
 
-To install the chart with the release name `my-release`, retrieve your Sysdig Cloud Access Key from your [Account Settings](https://app.sysdigcloud.com/#/settings/user) and run:
+To install the chart with the release name `my-release`, retrieve your Sysdig Monitor Access Key from your [Account Settings](https://app.sysdigcloud.com/#/settings/user) and run:
 
 ```bash
 $ helm install --name my-release \
     --set sysdig.AccessKey=YOUR-KEY-HERE stable/sysdig
 ```
 
-After a few minutes, you should see hosts and containers appearing in Sysdig Cloud.
+After a few minutes, you should see hosts and containers appearing in Sysdig Monitor.
 
 > **Tip**: List all releases using `helm list`
 
@@ -39,7 +39,7 @@ The following tables lists the configurable parameters of the Sysdig chart and t
 
 |      Parameter              |          Description               |                         Default           |
 |-----------------------------|------------------------------------|-------------------------------------------|
-| `sysdig.AccessKey`          | Your Sysdig Cloud Access Key       | `Nil` You must provide your own key       |
+| `sysdig.AccessKey`          | Your Sysdig Monitor Access Key       | `Nil` You must provide your own key       |
 | `sysdig.AgentTags`          | String with tags for the agent     |  Empty                                    |
 | `image.repository`          | The image repository to pull from  | `sysdig/agent`                            |
 | `image.tag`                 | The image tag to pull              | `latest`                                  |

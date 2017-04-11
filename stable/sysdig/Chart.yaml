@@ -1,13 +1,13 @@
 name: sysdig
 version: 0.2.0
-description: Sysdig Cloud Agent.
+description: Sysdig Monitor Agent.
 keywords:
   - monitoring
   - alerting
   - metric
   - troubleshooting
 home: https://www.sysdig.com/
-icon: https://app.sysdigcloud.com/images/SysdigCloud_color_rgb.svg
+icon: https://app.sysdigcloud.com/images/changelogs/sysdig_monitor.png
 sources:
   - https://app.sysdigcloud.com/#/settings/user
   - https://github.com/draios/sysdig
