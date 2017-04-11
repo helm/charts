@@ -5,8 +5,8 @@
 
 Master:
   Name: master
-  Image: "gcr.io/google_containers/spark"
-  ImageTag: "1.5.2_v1"
+  Image: "timfpark/spark"
+  ImageTag: "2.1"
   Replicas: 1
   Component: "spark-master"
   Cpu: "100m"
@@ -26,8 +26,8 @@ WebUi:
 
 Worker:
   Name: worker
-  Image: "gcr.io/google_containers/spark"
-  ImageTag: "1.5.2_v1"
+  Image: "timfpark/spark"
+  ImageTag: "2.1"
   ImagePullPolicy: "Always"
   Replicas: 3
   Component: "spark-worker"
