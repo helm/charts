@@ -7,8 +7,6 @@ image: gcr.io/google_containers/kubernetes-dashboard-amd64
 imageTag: "v1.6.0"
 imagePullPolicy: "IfNotPresent"
 
-namespace: kube-system
-
 nodeSelector: {}
 
 serviceType: ClusterIP

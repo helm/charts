@@ -8,8 +8,6 @@ metadata:
     release: "{{ .Release.Name }}"
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     kubernetes.io/cluster-service: "true"
-    release: {{ .Release.Name | quote }}
-  namespace: {{ .Values.namespace }}
 spec:
   replicas: 1
   strategy:
@@ -25,7 +23,6 @@ spec:
         release: "{{ .Release.Name }}"
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         kubernetes.io/cluster-service: "true"
-        release: {{ .Release.Name | quote }}
     spec:
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 10 }}
