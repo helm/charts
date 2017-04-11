@@ -18,6 +18,14 @@ to specify its log format, source category, or source name.
       sumologic.com/sourceName: "mywebsite_nginx"
       sumologic.com/exclude: true
 
+### Systemd
+
+The current docker image, for [fluentd-kubernetes-sumologic](https://github.com/SumoLogic/fluentd-kubernetes-sumologic)
+does not support systemd. The only logs available to SumoLogic are those in
+`/var/log/containers`. Logs generated in the `kube-system` namespace can only be
+excluded using `EXCLUDE_NAMESPACE` and `EXCLUDE_CONTAINER`. The `EXPORT_PATH`
+option is not relevant on a systemd OS.
+
 ## Prerequisites
 
 - Kubernetes 1.2+ with Beta APIs enabled
