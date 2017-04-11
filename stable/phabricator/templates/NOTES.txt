@@ -37,7 +37,7 @@ host. To configure Phabricator with the URL of your service:
 
   export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "fullname" . }}" -o jsonpath="{.items[0].metadata.name}")
   echo http://127.0.0.1:8080/
-  kubectl port-forward $POD_NAME 8080:80
+  kubectl --namespace {{ .Release.Namespace }} port-forward $POD_NAME 8080:80
 {{- else }}
 
   echo URL : http://{{ include "host" . }}/
