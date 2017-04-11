@@ -10,11 +10,13 @@ Accessing your Cloud SQL instance using the Cloud SQL Proxy offers these advanta
 ## Introduction
 
 This chart creates a Google Cloud Endpoints deployment and service on a Kubernetes cluster using the Helm package manager.
+You need to create a service account for the proxy as per these [instructions](https://cloud.google.com/sql/docs/postgres/connect-container-engine).
 
 ## Prerequisites
 
 - Kubernetes cluster on Google Container Engine (GKE)
 - Kubernetes cluster on Google Compute Engine (GCE)
+- GCP Service account for the proxy.
 
 ## Installing the Chart
 
@@ -22,7 +24,7 @@ Install from remote URL with the release name `gcp-sqlproxy` into namespace `sql
 
 ```console
 $ helm upgrade pg-sqlproxy stable/gcloud-sqlproxy --namespace sqlproxy \
-  --set gcpServiceAccountKey="$(cat service-account.json | base64)",cloudsql.instance="PROJECT:REGION:INSTANCE",cloudsql.port="5432" -i
+  --set serviceAccountKey="$(cat service-account.json | base64)",cloudsql.instance="PROJECT:REGION:INSTANCE",cloudsql.port="5432" -i
 ```
 
 Replace Postgres/MySQL host with: if access is from the same namespace with `pg-sqlproxy` or if it is from a different namespace with `pg-sqlproxy.sqlproxy`, the rest database connections settings do not have to be changed.
@@ -45,10 +47,13 @@ The following tables lists the configurable parameters of the Drupal chart and t
 
 | Parameter                         | Description                            | Default                                                   |
 | --------------------------------- | -------------------------------------- | --------------------------------------------------------- |
-| `image`                           | Endpoints image                        | `b.gcr.io/cloudsql-docker/gce-proxy:1.xx`                 |
-| `imagePullPolicy`                 | Image pull policy                      | `Always` if `image` tag is `latest`, else `IfNotPresent`  |
+| `image`                           | SQLProxy image                         | `b.gcr.io/cloudsql-docker/gce-proxy`                      |
+| `imageTag`                        | SQLProxy image tag                     | `1.09`                                                    |
+| `imagePullPolicy`                 | Image pull policy                      | `IfNotPresent`                                            |
 | `replicasCount`                   | Replicas count                         | `1`                                                       |
-| `serviceAccountKey`               | Service account key JSON file          | `Must be provided and base64 encoded`                     |
+| `serviceAccountKey`               | Service account key JSON file          | Must be provided and base64 encoded                       |
+| `cloudsql.instance`               | PostgreSQL/MySQL instance name         | `project:region:instance` must be provided                |
+| `cloudsql.port`                   | PostgreSQL/MySQL instance port         | `5432`                                                    |
 | `resources`                       | CPU/Memory resource requests/limits    | Memory: `100/150Mi`, CPU: `100/150m`                      |
 | `nodeSelector`                    | Node Selector                          |                                                           |
 
