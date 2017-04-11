@@ -3,7 +3,7 @@
 ## TL;DR;
 
 ```console
-$ helm install incubator/selenium
+$ helm install stable/selenium
 ```
 
 ## Introduction
@@ -19,7 +19,7 @@ This chart bootstraps a [Selenium](http://www.seleniumhq.org/) deployment on a [
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm install --name my-release incubator/selenium
+$ helm install --name my-release stable/selenium
 ```
 
 The command deploys Selenium on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
@@ -142,13 +142,13 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 ```console
 $ helm install --name my-release \
   --set chrome.enabled=true \
-    incubator/selenium
+    stable/selenium
 ```
 
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 
 ```console
-$ helm install --name my-release -f values.yaml incubator/selenium
+$ helm install --name my-release -f values.yaml stable/selenium
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
