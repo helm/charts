@@ -1,0 +1,13 @@
+name: domoticz
+home: https://www.domoticz.com/
+version: 0.1.0
+description: Domoticz Helm chart for Kubernetes
+keywords:
+  - domotic
+sources:
+   - https://www.domoticz.com/
+   - https://github.com/kubernetes/charts
+maintainers:
+  - name: Nicolas Lamirault
+    email: nicolas.lamirault@gmail.com
+engine: gotpl
