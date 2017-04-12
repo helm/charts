@@ -44,6 +44,7 @@ Master:
       #     - jenkins.cluster.local
 
 Agent:
+  Enabled: true
   Image: jenkinsci/jnlp-slave
   ImageTag: 2.52
   Cpu: "200m"

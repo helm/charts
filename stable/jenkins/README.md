@@ -51,6 +51,7 @@ The following tables lists the configurable parameters of the Jenkins chart and 
 
 | Parameter               | Description                        | Default                                                    |
 | ----------------------- | ---------------------------------- | ---------------------------------------------------------- |
+| `Agent.Enabled`         | Generate jnlp-agent podTemplate for Kubernetes plugin.  | `true`                                |
 | `Agent.Image`           | Agent image name                   | `jenkinsci/jnlp-slave`                                     |
 | `Agent.ImageTag`        | Agent image tag                    | `2.52`                                                     |
 | `Agent.Cpu`             | Agent requested cpu                | `200m`                                                     |
