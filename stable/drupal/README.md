@@ -54,8 +54,8 @@ The following tables lists the configurable parameters of the Drupal chart and t
 | `drupalEmail`                     | Admin email                           | `user@example.com`                                        |
 | `ingress.annotations`             | Specify ingress class                 | `kubernetes.io/ingress.class: nginx`                      |
 | `ingress.enabled`                 | Enable ingress controller resource    | `false`                                                   |
-| `ingress.hostname`                | URL for your Drupal installation      | `drupal.local`                                                   |
-| `ingress.tls`                     | Ingress TLS configuration             | `[]`                                                   |
+| `ingress.hostname`                | URL for your Drupal installation      | `drupal.local`                                            |
+| `ingress.tls`                     | Ingress TLS configuration             | `[]`                                                      |
 | `mariadb.mariadbRootPassword`     | MariaDB admin password                | `nil`                                                     |
 | `serviceType`                     | Kubernetes Service type               | `LoadBalancer`                                            |
 | `persistence.enabled`             | Enable persistence using PVC          | `true`                                                    |
