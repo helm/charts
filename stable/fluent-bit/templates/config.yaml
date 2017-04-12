@@ -40,8 +40,8 @@ data:
     [OUTPUT]
         Name  es
         Match *
-        Host  ${FLUENT_ELASTICSEARCH_HOST}
-        Port  ${FLUENT_ELASTICSEARCH_PORT}
+        Host  {{ .Values.backend.es.host }}
+        Port  {{ .Values.backend.es.port }}
         Logstash_Format On
         Retry_Limit False
 {{- end }}

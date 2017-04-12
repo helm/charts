@@ -13,12 +13,11 @@ backend:
   forward:
     host: fluentd
     port: 24284
+  es:
+    host: elasticsearch
+    port: 9200
 
-env:
-  - name:  FLUENT_ELASTICSEARCH_HOST
-    value: elasticsearch-logger
-  - name:  FLUENT_ELASTICSEARCH_PORT
-    value: "9200"
+env: {}
 
 resources:
   limits:
