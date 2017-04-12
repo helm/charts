@@ -15,91 +15,91 @@ spec:
         app: {{ template "fullname" . }}
     spec:
       containers:
-      - name: {{ template "fullname" . }}
-        image: "{{ .Values.image }}"
-        imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
-        env:
-        - name: ALLOW_EMPTY_PASSWORD
-        {{- if .Values.allowEmptyPassword }}
-          value: "yes"
-        {{- else }}
-          value: "no"
-        {{- end }}
-        - name: MARIADB_ROOT_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: {{ template "mariadb.fullname" . }}
-              key: mariadb-root-password
-        - name: MARIADB_HOST
-          value: {{ template "mariadb.fullname" . }}
-        - name: MARIADB_PORT
-          value: "3306"
-        - name: WORDPRESS_DATABASE_NAME
-          value: {{ default "" .Values.mariadb.mariadbDatabase | quote }}
-        - name: WORDPRESS_DATABASE_USER
-          value: {{ default "" .Values.mariadb.mariadbUser | quote }}
-        - name: WORDPRESS_DATABASE_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: {{ template "mariadb.fullname" . }}
-              key: mariadb-password
-        - name: WORDPRESS_USERNAME
-          value: {{ default "" .Values.wordpressUsername | quote }}
-        - name: WORDPRESS_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: {{ template "fullname" . }}
-              key: wordpress-password
-        - name: WORDPRESS_EMAIL
-          value: {{ default "" .Values.wordpressEmail | quote }}
-        - name: WORDPRESS_FIRST_NAME
-          value: {{ default "" .Values.wordpressFirstName | quote }}
-        - name: WORDPRESS_LAST_NAME
-          value: {{ default "" .Values.wordpressLastName | quote }}
-        - name: WORDPRESS_BLOG_NAME
-          value: {{ default "" .Values.wordpressBlogName | quote }}
-        - name: SMTP_HOST
-          value: {{ default "" .Values.smtpHost | quote }}
-        - name: SMTP_PORT
-          value: {{ default "" .Values.smtpPort | quote }}
-        - name: SMTP_USER
-          value: {{ default "" .Values.smtpUser | quote }}
-        - name: SMTP_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: {{ template "fullname" . }}
-              key: smtp-password
-        - name: SMTP_USERNAME
-          value: {{ default "" .Values.smtpUsername | quote }}
-        - name: SMTP_PROTOCOL
-          value: {{ default "" .Values.smtpProtocol | quote }}
-        ports:
-        - name: http
-          containerPort: 80
-        - name: https
-          containerPort: 443
-        livenessProbe:
-          httpGet:
-            path: /
-            port: http
-          initialDelaySeconds: 120
-          timeoutSeconds: 5
-        readinessProbe:
-          httpGet:
-            path: /
-            port: http
-          initialDelaySeconds: 5
-          timeoutSeconds: 1
-        volumeMounts:
-        - name: wordpress-data
-          mountPath: /bitnami
-        resources:
+        - name: {{ template "fullname" . }}
+          image: "{{ .Values.image }}"
+          imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
+          env:
+            - name: ALLOW_EMPTY_PASSWORD
+            {{- if .Values.allowEmptyPassword }}
+              value: "yes"
+            {{- else }}
+              value: "no"
+            {{- end }}
+            - name: MARIADB_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "mariadb.fullname" . }}
+                  key: mariadb-root-password
+            - name: MARIADB_HOST
+              value: {{ template "mariadb.fullname" . }}
+            - name: MARIADB_PORT
+              value: "3306"
+            - name: WORDPRESS_DATABASE_NAME
+              value: {{ default "" .Values.mariadb.mariadbDatabase | quote }}
+            - name: WORDPRESS_DATABASE_USER
+              value: {{ default "" .Values.mariadb.mariadbUser | quote }}
+            - name: WORDPRESS_DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "mariadb.fullname" . }}
+                  key: mariadb-password
+            - name: WORDPRESS_USERNAME
+              value: {{ default "" .Values.wordpressUsername | quote }}
+            - name: WORDPRESS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "fullname" . }}
+                  key: wordpress-password
+            - name: WORDPRESS_EMAIL
+              value: {{ default "" .Values.wordpressEmail | quote }}
+            - name: WORDPRESS_FIRST_NAME
+              value: {{ default "" .Values.wordpressFirstName | quote }}
+            - name: WORDPRESS_LAST_NAME
+              value: {{ default "" .Values.wordpressLastName | quote }}
+            - name: WORDPRESS_BLOG_NAME
+              value: {{ default "" .Values.wordpressBlogName | quote }}
+            - name: SMTP_HOST
+              value: {{ default "" .Values.smtpHost | quote }}
+            - name: SMTP_PORT
+              value: {{ default "" .Values.smtpPort | quote }}
+            - name: SMTP_USER
+              value: {{ default "" .Values.smtpUser | quote }}
+            - name: SMTP_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "fullname" . }}
+                  key: smtp-password
+            - name: SMTP_USERNAME
+              value: {{ default "" .Values.smtpUsername | quote }}
+            - name: SMTP_PROTOCOL
+              value: {{ default "" .Values.smtpProtocol | quote }}
+          ports:
+            - name: http
+              containerPort: 80
+            - name: https
+              containerPort: 443
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 120
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 5
+            timeoutSeconds: 1
+          volumeMounts:
+            - name: wordpress-data
+              mountPath: /bitnami
+          resources:
 {{ toYaml .Values.resources | indent 10 }}
       volumes:
-      - name: wordpress-data
-      {{- if .Values.persistence.enabled }}
-        persistentVolumeClaim:
-          claimName: {{ template "fullname" . }}
-      {{- else }}
-        emptyDir: {}
-      {{ end }}
+        - name: wordpress-data
+        {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ template "fullname" . }}
+        {{- else }}
+          emptyDir: {}
+        {{ end }}
