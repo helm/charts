@@ -1,0 +1,81 @@
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  name: "{{ printf "rd-%s" .Release.Name  | trunc 20 }}"
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+spec:
+  serviceName: "{{ printf "rd-%s" .Release.Name  | trunc 20 }}"
+  replicas: {{default 3 .Values.replicaCount}}
+  template:
+    metadata:
+      labels:
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+        app: "{{ printf "rd-%s" .Release.Name  | trunc 20  }}"
+      annotations:
+        pod.alpha.kubernetes.io/initialized: "true"
+        pod.beta.kubernetes.io/init-containers: '[
+           {
+             "name":"sentinel-micro",
+             "image":"dhilipkumars/redis-sentinel-k8s",
+                         "args" : ["-service","{{ printf "rd-%s" .Release.Name  | trunc 20  }}"],
+             "env": [
+               {
+                  "name": "POD_NAMESPACE",
+                  "valueFrom": {
+                     "fieldRef" : {
+                        "apiVersion" : "v1",
+                        "fieldPath" : "metadata.namespace"
+                     }
+                  }
+               }
+
+             ],
+            "volumeMounts": [
+               {
+                  "name": "config",
+                  "mountPath": "/config"
+               }
+            ]
+           }
+        ]'
+    spec:
+      terminationGracePeriodSeconds: 5
+      affinity:
+           {
+              podAntiAffinity: {
+                 preferredDuringSchedulingIgnoredDuringExecution: [{
+                      weight: 5,
+                      podAffinityTerm: {
+                        labelSelector: {
+                           matchExpressions: [{
+                               "key": "app",
+                               "operator": "In",
+                                "values": ["{{ printf "rd-%s" .Release.Name  | trunc 20 }}"]
+                            }]
+                        },
+                        topologyKey: "kubernetes.io/hostname"
+                      }
+                  }]
+               }
+           }
+      containers:
+      - name: redis
+        image: redis:3.0-alpine
+        ports:
+        - containerPort: {{ .Values.service.Port }}
+          name: {{ .Values.service.Name }}
+      - name: make-slave
+        image: dhilipkumars/mk-redis-slave
+        env:
+          - name: POD_NAMESPACE
+            valueFrom:
+              fieldRef:
+                apiVersion: "v1"
+                fieldPath: metadata.namespace
+        volumeMounts:
+        - name: config
+          mountPath: /config
+      volumes:
+      - name: config
+        emptyDir: {}
