@@ -56,7 +56,7 @@ serviceType: LoadBalancer
 ## ref: http://kubernetes.io/docs/user-guide/ingress/
 ##
 ingress:
-    enabled: false
+  enabled: false
     # Used to create Ingress record (should used with ServiceType: ClusterIP).
     # hostname: drupal.local
 
