@@ -57,21 +57,21 @@ serviceType: LoadBalancer
 ##
 ingress:
   enabled: false
-    # Used to create Ingress record (should used with ServiceType: ClusterIP).
-    # hostname: drupal.local
+  # Used to create Ingress record (should used with ServiceType: ClusterIP).
+  # hostname: drupal.local
 
-    ## Ingress annotations
-    ##
-    # annotations:
-    #   kubernetes.io/ingress.class: nginx
+  ## Ingress annotations
+  ##
+  # annotations:
+  #   kubernetes.io/ingress.class: nginx
 
-    ## Ingress TLS configuration
-    ## Secrets must be manually created in the namespace
-    ##
-    # tls:
-    #   - secretName: wordpress.local-tls
-    #     hosts:
-    #       - drupal.local
+  ## Ingress TLS configuration
+  ## Secrets must be manually created in the namespace
+  ##
+  # tls:
+  #   - secretName: wordpress.local-tls
+  #     hosts:
+  #       - drupal.local
 
 ## Enable persistence using Persistent Volume Claims
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
