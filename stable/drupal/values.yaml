@@ -47,8 +47,31 @@ mariadb:
 
 ## Kubernetes configuration
 ## For minikube, set this to NodePort, elsewhere use LoadBalancer
+## Use ClusterIP if your setup includes ingress controller
 ##
 serviceType: LoadBalancer
+
+## Configure Ingress resource that allow you to access the Drupal installation
+## Set up the URL
+## ref: http://kubernetes.io/docs/user-guide/ingress/
+##
+ingress:
+  enabled: false
+  # Used to create Ingress record (should used with ServiceType: ClusterIP).
+  # hostname: drupal.local
+
+  ## Ingress annotations
+  ##
+  # annotations:
+  #   kubernetes.io/ingress.class: nginx
+
+  ## Ingress TLS configuration
+  ## Secrets must be manually created in the namespace
+  ##
+  # tls:
+  #   - secretName: wordpress.local-tls
+  #     hosts:
+  #       - drupal.local
 
 ## Enable persistence using Persistent Volume Claims
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
