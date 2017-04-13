@@ -27,37 +27,37 @@ The following tables lists the configurable parameters of the Jenkins chart and 
 ### Jenkins Master
 
 
-| Parameter                  | Description                        | Default                                                    |
-| -----------------------    | ---------------------------------- | ---------------------------------------------------------- |
-| `Master.Name`              | Jenkins master name                | `jenkins-master`                                           |
-| `Master.Image`             | Master image name                  | `jenkinsci/jenkins`           |
-| `Master.ImageTag`          | Master image tag                   | `2.46.1`                                                   |
-| `Master.ImagePullPolicy`   | Master image pull policy           | `Always`                                                   |
-| `Master.Component`         | k8s selector key                   | `jenkins-master`                                           |
-| `Master.Cpu`               | Master requested cpu               | `200m`                                                     |
-| `Master.Memory`            | Master requested memory            | `256Mi`                                                    |
-| `Master.ServiceType`       | k8s service type                   | `LoadBalancer`                                             |
-| `Master.ServicePort`       | k8s service port                   | `8080`                                                     |
-| `Master.NodePort`          | k8s node port                      | Not set                                                    |
-| `Master.ContainerPort`     | Master listening port              | `8080`                                                     |
-| `Master.SlaveListenerPort` | Listening port for agents          | `50000`                                                    |
-| `Master.LoadBalancerSourceRanges` | Allowed inbound IP addresses| `0.0.0.0/0`                                                |
-| `Master.CustomConfigMap`          | Use a custom ConfigMap             | `false`                                                    |
-| `Master.Ingress.Annotations` | Ingress annotations       | `{}`                                                |
-| `Master.Ingress.TLS` | Ingress TLS configuration       | `[]`                                                |
-| `Master.InitScripts`       | List of Jenkins init scripts       | Not set                                                    |  
-| `Master.InstallPlugins`    | List of Jenkins plugins to install | `kubernetes:0.11 workflow-aggregator:2.5 credentials-binding:1.11 git:3.2.0` |
-| `Master.ScriptApproval`       | List of groovy functions to approve       | Not set                                                    |  
+| Parameter                         | Description                         | Default                                                                      |
+| --------------------------------- | ----------------------------------- | ---------------------------------------------------------------------------- |
+| `Master.Name`                     | Jenkins master name                 | `jenkins-master`                                                             |
+| `Master.Image`                    | Master image name                   | `jenkinsci/jenkins`                                                          |
+| `Master.ImageTag`                 | Master image tag                    | `2.46.1`                                                                     |
+| `Master.ImagePullPolicy`          | Master image pull policy            | `Always`                                                                     |
+| `Master.Component`                | k8s selector key                    | `jenkins-master`                                                             |
+| `Master.Cpu`                      | Master requested cpu                | `200m`                                                                       |
+| `Master.Memory`                   | Master requested memory             | `256Mi`                                                                      |
+| `Master.ServiceType`              | k8s service type                    | `LoadBalancer`                                                               |
+| `Master.ServicePort`              | k8s service port                    | `8080`                                                                       |
+| `Master.NodePort`                 | k8s node port                       | Not set                                                                      |
+| `Master.ContainerPort`            | Master listening port               | `8080`                                                                       |
+| `Master.SlaveListenerPort`        | Listening port for agents           | `50000`                                                                      |
+| `Master.LoadBalancerSourceRanges` | Allowed inbound IP addresses        | `0.0.0.0/0`                                                                  |
+| `Master.CustomConfigMap`          | Use a custom ConfigMap              | `false`                                                                      |
+| `Master.Ingress.Annotations`      | Ingress annotations                 | `{}`                                                                         |
+| `Master.Ingress.TLS`              | Ingress TLS configuration           | `[]`                                                                         |
+| `Master.InitScripts`              | List of Jenkins init scripts        | Not set                                                                      |
+| `Master.InstallPlugins`           | List of Jenkins plugins to install  | `kubernetes:0.11 workflow-aggregator:2.5 credentials-binding:1.11 git:3.2.0` |
+| `Master.ScriptApproval`           | List of groovy functions to approve | Not set                                                                      |
 
 ### Jenkins Agent
 
-| Parameter               | Description                        | Default                                                    |
-| ----------------------- | ---------------------------------- | ---------------------------------------------------------- |
-| `Agent.Enabled`         | Generate jnlp-agent podTemplate for Kubernetes plugin.  | `true`                                |
-| `Agent.Image`           | Agent image name                   | `jenkinsci/jnlp-slave`                                     |
-| `Agent.ImageTag`        | Agent image tag                    | `2.62`                                                     |
-| `Agent.Cpu`             | Agent requested cpu                | `200m`                                                     |
-| `Agent.Memory`          | Agent requested memory             | `256Mi`                                                    |
+| Parameter               | Description                                     | Default                |
+| ----------------------- | ----------------------------------------------- | ---------------------- |
+| `Agent.Enabled`         | Enable Kubernetes plugin jnlp-agent podTemplate | `true`                 |
+| `Agent.Image`           | Agent image name                                | `jenkinsci/jnlp-slave` |
+| `Agent.ImageTag`        | Agent image tag                                 | `2.62`                 |
+| `Agent.Cpu`             | Agent requested cpu                             | `200m`                 |
+| `Agent.Memory`          | Agent requested memory                          | `256Mi`                |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
@@ -79,14 +79,14 @@ It is possible to mount several volumes using `Persistence.volumes` and `Persist
 
 ### Persistence Values
 
-| Parameter | Description | Default |
-| --------- | ----------- | ------- |
-| `Persistence.Enabled` | Enable the use of a Jenkins PVC | `true` |
-| `Persistence.ExistingClaim` | Provide the name of a PVC | `nil` |
-| `Persistence.AccessMode` | The PVC access mode | `ReadWriteOnce` |
-| `Persistence.Size` | The size of the PVC | `8Gi` |
-| `Persistence.volumes` | Additional volumes | `nil` |
-| `Persistence.mounts` | Additional mounts | `nil` |
+| Parameter                   | Description                     | Default         |
+| --------------------------- | ------------------------------- | --------------- |
+| `Persistence.Enabled`       | Enable the use of a Jenkins PVC | `true`          |
+| `Persistence.ExistingClaim` | Provide the name of a PVC       | `nil`           |
+| `Persistence.AccessMode`    | The PVC access mode             | `ReadWriteOnce` |
+| `Persistence.Size`          | The size of the PVC             | `8Gi`           |
+| `Persistence.volumes`       | Additional volumes              | `nil`           |
+| `Persistence.mounts`        | Additional mounts               | `nil`           |
 
 
 #### Existing PersistentVolumeClaim
