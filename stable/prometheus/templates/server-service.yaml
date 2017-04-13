@@ -11,6 +11,9 @@ metadata:
     component: "{{ .Values.server.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
+{{- if .Values.server.service.labels }}
+{{ toYaml .Values.server.service.labels | indent 4}}
+{{- end }}
   name: {{ template "prometheus.server.fullname" . }}
 spec:
 {{- if .Values.server.service.clusterIP }}

@@ -12,6 +12,9 @@ metadata:
     component: "{{ .Values.alertmanager.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
+{{- if .Values.alertmanager.service.labels }}
+{{ toYaml .Values.alertmanager.service.labels | indent 4}}
+{{- end }}
   name: {{ template "prometheus.alertmanager.fullname" . }}
 spec:
 {{- if .Values.alertmanager.service.clusterIP }}

@@ -1,6 +1,6 @@
 # Locust Helm Chart
 
-This is a templated deployment of [Locust](locust.io) for Distributed Load
+This is a templated deployment of [Locust](http://locust.io) for Distributed Load
 testing using Kubernetes.
 
 ## Pre Requisites:

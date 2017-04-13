@@ -12,6 +12,9 @@ metadata:
     component: "{{ .Values.kubeStateMetrics.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
+{{- if .Values.kubeStateMetrics.service.labels }}
+{{ toYaml .Values.kubeStateMetrics.service.labels | indent 4}}
+{{- end }}
   name: {{ template "prometheus.kubeStateMetrics.fullname" . }}
 spec:
 {{- if .Values.kubeStateMetrics.service.clusterIP }}
