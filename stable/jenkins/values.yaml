@@ -5,8 +5,8 @@
 
 Master:
   Name: jenkins-master
-  Image: "gcr.io/kubernetes-charts-ci/jenkins-master-k8s"
-  ImageTag: "v0.7.0"
+  Image: "jenkins"
+  ImageTag: "2.46.1"
   ImagePullPolicy: "Always"
   Component: "jenkins-master"
   UseSecurity: true
@@ -27,6 +27,12 @@ Master:
   SlaveListenerPort: 50000
   LoadBalancerSourceRanges:
   - 0.0.0.0/0
+# List of plugins to be install during Jenkins master start
+  InstallPlugins:
+      - kubernetes:0.11 
+      - workflow-aggregator:2.5
+      - credentials-binding:1.11
+      - git:3.2.0
 # List of groovy init scripts to be executed during Jenkins master start
   InitScripts:
 #  - |
@@ -45,7 +51,7 @@ Master:
 
 Agent:
   Image: jenkinsci/jnlp-slave
-  ImageTag: 2.52
+  ImageTag: 2.62
   Cpu: "200m"
   Memory: "256Mi"
 

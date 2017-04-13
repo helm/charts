@@ -46,6 +46,7 @@ The following tables lists the configurable parameters of the Jenkins chart and 
 | `Master.Ingress.Annotations` | Ingress annotations       | `{}`                                                |
 | `Master.Ingress.TLS` | Ingress TLS configuration       | `[]`                                                |
 | `Master.InitScripts`       | List of Jenkins init scripts       | Not set                                                    |  
+| `Master.InstallPlugins`    | List of Jenkins plugins to install | `kubernetes:0.11 workflow-aggregator:2.5 credentials-binding:1.11 git:3.2.0` |
 
 ### Jenkins Agent
 
