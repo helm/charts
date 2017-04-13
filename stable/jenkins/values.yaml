@@ -5,7 +5,7 @@
 
 Master:
   Name: jenkins-master
-  Image: "jenkins"
+  Image: "jenkinsci/jenkins"
   ImageTag: "2.46.1"
   ImagePullPolicy: "Always"
   Component: "jenkins-master"
