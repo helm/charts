@@ -29,6 +29,7 @@ data:
         <org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud plugin="kubernetes@0.11">
           <name>kubernetes</name>
           <templates>
+{{- if .Values.Agent.Enabled }}
             <org.csanchez.jenkins.plugins.kubernetes.PodTemplate>
               <inheritFrom></inheritFrom>
               <name>default</name>
@@ -59,6 +60,7 @@ data:
               <imagePullSecrets/>
               <nodeProperties/>
             </org.csanchez.jenkins.plugins.kubernetes.PodTemplate>
+{{- end -}}
           </templates>
           <serverUrl>https://kubernetes.default</serverUrl>
           <skipTlsVerify>false</skipTlsVerify>
