@@ -1,6 +1,7 @@
 ## mysql image version
 ## ref: https://hub.docker.com/r/library/mysql/tags/
 ##
+image: "mysql"
 imageTag: "5.7.14"
 
 ## Specify password for root user
