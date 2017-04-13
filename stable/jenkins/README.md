@@ -47,11 +47,13 @@ The following tables lists the configurable parameters of the Jenkins chart and 
 | `Master.Ingress.TLS` | Ingress TLS configuration       | `[]`                                                |
 | `Master.InitScripts`       | List of Jenkins init scripts       | Not set                                                    |  
 | `Master.InstallPlugins`    | List of Jenkins plugins to install | `kubernetes:0.11 workflow-aggregator:2.5 credentials-binding:1.11 git:3.2.0` |
+| `Master.ScriptApproval`       | List of groovy functions to approve       | Not set                                                    |  
 
 ### Jenkins Agent
 
 | Parameter               | Description                        | Default                                                    |
 | ----------------------- | ---------------------------------- | ---------------------------------------------------------- |
+| `Agent.Enabled`         | Generate jnlp-agent podTemplate for Kubernetes plugin.  | `true`                                |
 | `Agent.Image`           | Agent image name                   | `jenkinsci/jnlp-slave`                                     |
 | `Agent.ImageTag`        | Agent image tag                    | `2.62`                                                     |
 | `Agent.Cpu`             | Agent requested cpu                | `200m`                                                     |

@@ -33,6 +33,10 @@ Master:
       - workflow-aggregator:2.5
       - credentials-binding:1.11
       - git:3.2.0
+# Used to approve a list of groovy functions in pipelines used the script-security plugin. Can be viewed under /scriptApproval
+  # ScriptApproval:
+  #   - "method groovy.json.JsonSlurperClassic parseText java.lang.String"
+  #   - "new groovy.json.JsonSlurperClassic"
 # List of groovy init scripts to be executed during Jenkins master start
   InitScripts:
 #  - |
@@ -50,6 +54,7 @@ Master:
       #     - jenkins.cluster.local
 
 Agent:
+  Enabled: true
   Image: jenkinsci/jnlp-slave
   ImageTag: 2.62
   Cpu: "200m"
