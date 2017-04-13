@@ -9,7 +9,7 @@ data:
     <?xml version='1.0' encoding='UTF-8'?>
     <hudson>
       <disabledAdministrativeMonitors/>
-      <version>2.32.3</version>
+      <version>2.46.1</version>
       <numExecutors>0</numExecutors>
       <mode>NORMAL</mode>
       <useSecurity>{{ .Values.Master.UseSecurity }}</useSecurity>
@@ -36,7 +36,12 @@ data:
               <idleMinutes>0</idleMinutes>
               <label></label>
               <nodeSelector></nodeSelector>
-              <volumes/>
+              <volumes>
+                <org.csanchez.jenkins.plugins.kubernetes.PodVolumes_-HostPathVolume>
+                  <mountPath>/var/run/docker.sock</mountPath>
+                  <hostPath>/var/run/docker.sock</hostPath>
+                </org.csanchez.jenkins.plugins.kubernetes.PodVolumes_-HostPathVolume>
+              </volumes>
               <containers>
                 <org.csanchez.jenkins.plugins.kubernetes.ContainerTemplate>
                   <name>jnlp</name>

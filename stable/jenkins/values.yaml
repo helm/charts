@@ -5,8 +5,8 @@
 
 Master:
   Name: jenkins-master
-  Image: "gcr.io/kubernetes-charts-ci/jenkins-master-k8s"
-  ImageTag: "v0.7.0"
+  Image: "dtzar/jenkins-master-k8s"
+  ImageTag: "2.46.1"
   ImagePullPolicy: "Always"
   Component: "jenkins-master"
   UseSecurity: true
@@ -45,7 +45,7 @@ Master:
 
 Agent:
   Image: jenkinsci/jnlp-slave
-  ImageTag: 2.52
+  ImageTag: 2.62
   Cpu: "200m"
   Memory: "256Mi"
 
