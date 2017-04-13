@@ -46,6 +46,7 @@ The following tables lists the configurable parameters of the Jenkins chart and 
 | `Master.Ingress.Annotations` | Ingress annotations       | `{}`                                                |
 | `Master.Ingress.TLS` | Ingress TLS configuration       | `[]`                                                |
 | `Master.InitScripts`       | List of Jenkins init scripts       | Not set                                                    |  
+| `Master.ScriptApproval`       | List of groovy functions to approve       | Not set                                                    |  
 
 ### Jenkins Agent
 
