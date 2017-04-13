@@ -30,8 +30,8 @@ The following tables lists the configurable parameters of the Jenkins chart and 
 | Parameter                  | Description                        | Default                                                    |
 | -----------------------    | ---------------------------------- | ---------------------------------------------------------- |
 | `Master.Name`              | Jenkins master name                | `jenkins-master`                                           |
-| `Master.Image`             | Master image name                  | `gcr.io/kubernetes-charts-ci/jenkins-master-k8s`           |
-| `Master.ImageTag`          | Master image tag                   | `v0.1.0`                                                   |
+| `Master.Image`             | Master image name                  | `jenkinsci/jenkins`           |
+| `Master.ImageTag`          | Master image tag                   | `2.46.1`                                                   |
 | `Master.ImagePullPolicy`   | Master image pull policy           | `Always`                                                   |
 | `Master.Component`         | k8s selector key                   | `jenkins-master`                                           |
 | `Master.Cpu`               | Master requested cpu               | `200m`                                                     |
@@ -53,7 +53,7 @@ The following tables lists the configurable parameters of the Jenkins chart and 
 | Parameter               | Description                        | Default                                                    |
 | ----------------------- | ---------------------------------- | ---------------------------------------------------------- |
 | `Agent.Image`           | Agent image name                   | `jenkinsci/jnlp-slave`                                     |
-| `Agent.ImageTag`        | Agent image tag                    | `2.52`                                                     |
+| `Agent.ImageTag`        | Agent image tag                    | `2.62`                                                     |
 | `Agent.Cpu`             | Agent requested cpu                | `200m`                                                     |
 | `Agent.Memory`          | Agent requested memory             | `256Mi`                                                    |
 
@@ -108,6 +108,3 @@ jenkins:
   Master:
     CustomConfigMap: true
 ```
-
-# Todo
-* Enable Docker-in-Docker or Docker-on-Docker support on the Jenkins agents
