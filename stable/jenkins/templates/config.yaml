@@ -91,8 +91,28 @@ data:
       <globalNodeProperties/>
       <noUsageStatistics>true</noUsageStatistics>
     </hudson>
+{{- if .Values.Master.ScriptApproval }}
+  scriptapproval.xml: |-
+    <?xml version='1.0' encoding='UTF-8'?>
+    <scriptApproval plugin="script-security@1.27">
+      <approvedScriptHashes/>
+      <approvedSignatures>
+{{- range $key, $val := .Values.Master.ScriptApproval }}
+        <string>{{ $val }}</string>
+{{- end }}
+      </approvedSignatures>
+      <aclApprovedSignatures/>
+      <approvedClasspathEntries/>
+      <pendingScripts/>
+      <pendingSignatures/>
+      <pendingClasspathEntries/>
+    </scriptApproval>
+{{- end }}
   apply_config.sh: |-
     cp -n /var/jenkins_config/config.xml /var/jenkins_home;
+{{- if .Values.Master.ScriptApproval }}
+    cp -n /var/jenkins_config/scriptapproval.xml /var/jenkins_home/scriptApproval.xml;
+{{- end }}
 {{- if .Values.Master.InitScripts }}
     mkdir -p /var/jenkins_home/init.groovy.d/;
     cp -n /var/jenkins_config/*.groovy /var/jenkins_home/init.groovy.d/
