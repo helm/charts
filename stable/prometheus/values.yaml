@@ -108,6 +108,7 @@ alertmanager:
 
   service:
     annotations: {}
+    labels: {}
     clusterIP: ""
 
     ## List of IP addresses at which the alertmanager service is available
@@ -181,6 +182,7 @@ kubeStateMetrics:
   service:
     annotations:
       prometheus.io/scrape: "true"
+    labels: {}
 
     clusterIP: None
 
@@ -237,6 +239,7 @@ nodeExporter:
   service:
     annotations:
       prometheus.io/scrape: "true"
+    labels: {}
 
     clusterIP: None
 
@@ -361,6 +364,7 @@ server:
 
   service:
     annotations: {}
+    labels: {}
     clusterIP: ""
 
     ## List of IP addresses at which the Prometheus server service is available
