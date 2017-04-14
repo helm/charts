@@ -1,4 +1,4 @@
-{{- if and .Values.Persistence.Enabled (not .Values.Persistence.ExistingClaim) -}}
+{{- if and .Values.persistence.enabled (not .Values.persistence.existingClaim) -}}
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
@@ -9,15 +9,15 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
   annotations:
-  {{- if .Values.Persistence.StorageClass }}
-    volume.beta.kubernetes.io/storage-class: {{ .Values.Persistence.StorageClass }}
+  {{- if .Values.persistence.storageClass }}
+    volume.beta.kubernetes.io/storage-class: {{ .Values.persistence.storageClass }}
   {{- else }}
     volume.alpha.kubernetes.io/storage-class: default
   {{- end }}
 spec:
   accessModes:
-    - {{ .Values.Persistence.AccessMode | quote }}
+    - {{ .Values.persistence.accessMode | quote }}
   resources:
     requests:
-      storage: {{ .Values.Persistence.Size | quote }}
+      storage: {{ .Values.persistence.size | quote }}
 {{- end }}

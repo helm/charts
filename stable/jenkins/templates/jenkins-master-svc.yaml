@@ -6,21 +6,21 @@ metadata:
     heritage: {{.Release.Service | quote }}
     release: {{.Release.Name | quote }}
     chart: "{{.Chart.Name}}-{{.Chart.Version}}"
-    component: "{{.Release.Name}}-{{.Values.Master.Component}}"
+    component: "{{.Release.Name}}-{{.Values.master.component}}"
 spec:
   ports:
-    - port: {{.Values.Master.ServicePort}}
+    - port: {{.Values.master.servicePort}}
       name: http
-      targetPort: {{.Values.Master.ContainerPort}}
-      {{if (and (eq .Values.Master.ServiceType "NodePort") (not (empty .Values.Master.NodePort)))}}
-      nodePort: {{.Values.Master.NodePort}}
+      targetPort: {{.Values.master.containerPort}}
+      {{if (and (eq .Values.master.serviceType "nodePort") (not (empty .Values.master.nodePort)))}}
+      nodePort: {{.Values.master.nodePort}}
       {{end}}
-    - port: {{.Values.Master.SlaveListenerPort}}
-      targetPort: {{.Values.Master.SlaveListenerPort}}
+    - port: {{.Values.master.agentListenerPort}}
+      targetPort: {{.Values.master.agentListenerPort}}
       name: slavelistener
   selector:
-    component: "{{.Release.Name}}-{{.Values.Master.Component}}"
-  type: {{.Values.Master.ServiceType}}
-  {{if eq .Values.Master.ServiceType "LoadBalancer"}}
-  loadBalancerSourceRanges: {{.Values.Master.LoadBalancerSourceRanges}}
+    component: "{{.Release.Name}}-{{.Values.master.component}}"
+  type: {{.Values.master.serviceType}}
+  {{if eq .Values.master.serviceType "LoadBalancer"}}
+  loadBalancerSourceRanges: {{.Values.master.loadBalancerSourceRanges}}
   {{end}}
