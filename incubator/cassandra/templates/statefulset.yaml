@@ -54,7 +54,7 @@ spec:
           - name: HEAP_NEWSIZE
             value: "{{.Values.cassandra.HeapNewSize}}"
           - name: CASSANDRA_SEEDS
-            value: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 24 }}-0.{{ printf "%s-%s" .Release.Name .Values.Name | trunc 24 }}.default.svc.cluster.local"
+            value: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 24 }}-0.{{ printf "%s-%s" .Release.Name .Values.Name | trunc 24 }}.{{.Release.Namespace}}.svc.cluster.local"
           - name: CASSANDRA_CLUSTER_NAME
             value: "{{.Values.cassandra.ClusterName}}"
           - name: CASSANDRA_DC
@@ -67,6 +67,10 @@ spec:
             valueFrom:
               fieldRef:
                 fieldPath: status.podIP
+          - name: POD_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
         readinessProbe:
           exec:
             command:
