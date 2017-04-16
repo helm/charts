@@ -21,7 +21,7 @@ This chart will do the following:
 To install the chart with the release name `locust-nymph` in the default namespace:
 
 ```bash
-helm install -n locust-nymph --set master.config.target-host=http://site.example.com kubernetes-charts/locust
+helm install -n locust-nymph --set master.config.target-host=http://site.example.com stable/locust
 ```
 
 | Parameter                    | Description                        | Default                                               |
@@ -40,7 +40,7 @@ Specify parameters using `--set key=value[,key=value]` argument to `helm install
 Alternatively a YAML file that specifies the values for the parameters can be provided like this:
 
 ```bash
-$ helm install --name my-release -f values.yaml kubernetes-charts/locust
+$ helm install --name my-release -f values.yaml stable/locust
 ```
 
 You can start the swarm from the command line using Port forwarding as follows:
