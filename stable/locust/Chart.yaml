@@ -1,5 +1,5 @@
 name: locust
-description: A chart for locust distributed load testing
+description: A modern load testing framework
 version: 0.1.2
 home: http://locust.io
 icon: https://pbs.twimg.com/profile_images/1867636195/locust-logo-orignal.png
