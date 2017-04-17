@@ -13,12 +13,12 @@ metadata:
 {{ toYaml .Values.alertmanager.persistentVolume.annotations | indent 4 }}
   {{- end }}
   labels:
-    app: {{ template "name" . }}
+    app: {{ template "prometheus.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     component: "{{ .Values.server.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-  name: {{ template "server.fullname" . }}
+  name: {{ template "prometheus.server.fullname" . }}
 spec:
   accessModes:
 {{ toYaml .Values.server.persistentVolume.accessModes | indent 4 }}
