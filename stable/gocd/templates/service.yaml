@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    app: {{ template "fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+  - name: {{ .Values.service.name }}
+    port: {{ .Values.service.externalPort }}
+    targetPort: 8153
+  selector:
+    app: {{ template "fullname" . }}
+    component: "{{ template "fullname" . }}-server"

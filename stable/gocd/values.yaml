@@ -1,0 +1,34 @@
+# Default values for gocd.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+server:
+  image:
+    repository: gocd/gocd-server
+    tag: "v17.3.0"
+    pullPolicy: IfNotPresent
+  # See minimum server requirements: https://docs.gocd.io/current/installation/system_requirements.html
+  # resources:
+  #   limits:
+  #     cpu: 200m
+  #     memory: 1024Mi
+  #   requests:
+  #     cpu: 200m
+  #     memory: 1024Mi
+agent:
+  replicaCount: 1
+  image:
+    repository: gocd/gocd-agent-ubuntu-16.04
+    tag: "v17.3.0"
+    pullPolicy: IfNotPresent
+  # resources:
+  #   limits:
+  #     cpu: 100m
+  #     memory: 128Mi
+  #   requests:
+  #     cpu: 100m
+  #     memory: 128Mi
+
+service:
+  name: gocd
+  type: ClusterIP
+  externalPort: 8080
