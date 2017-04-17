@@ -2,12 +2,12 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   labels:
-    app: {{ template "name" . }}
+    app: {{ template "prometheus.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     component: "{{ .Values.server.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-  name: {{ template "server.fullname" . }}
+  name: {{ template "prometheus.server.fullname" . }}
 spec:
   replicas: {{ .Values.server.replicaCount }}
   template:
@@ -17,12 +17,12 @@ spec:
 {{ toYaml .Values.server.podAnnotations | indent 8 }}
     {{- end }}
       labels:
-        app: {{ template "name" . }}
+        app: {{ template "prometheus.name" . }}
         component: "{{ .Values.server.name }}"
         release: {{ .Release.Name }}
     spec:
       containers:
-        - name: {{ template "name" . }}-{{ .Values.server.name }}-{{ .Values.configmapReload.name }}
+        - name: {{ template "prometheus.name" . }}-{{ .Values.server.name }}-{{ .Values.configmapReload.name }}
           image: "{{ .Values.configmapReload.image.repository }}:{{ .Values.configmapReload.image.tag }}"
           imagePullPolicy: "{{ .Values.configmapReload.image.pullPolicy }}"
           args:
@@ -35,12 +35,12 @@ spec:
               mountPath: /etc/config
               readOnly: true
 
-        - name: {{ template "name" . }}-{{ .Values.server.name }}
+        - name: {{ template "prometheus.name" . }}-{{ .Values.server.name }}
           image: "{{ .Values.server.image.repository }}:{{ .Values.server.image.tag }}"
           imagePullPolicy: "{{ .Values.server.image.pullPolicy }}"
           args:
           {{- if or .Values.alertmanager.enabled .Values.server.alertmanagerURL }}
-            - --alertmanager.url={{- if .Values.alertmanager.enabled }}http://{{ template "alertmanager.fullname" . }}:{{ .Values.alertmanager.service.servicePort }}{{- else }}{{ .Values.server.alertmanagerURL }}{{- end }}
+            - --alertmanager.url={{- if .Values.alertmanager.enabled }}http://{{ template "prometheus.alertmanager.fullname" . }}:{{ .Values.alertmanager.service.servicePort }}{{- else }}{{ .Values.server.alertmanagerURL }}{{- end }}
           {{- end }}
             - --config.file=/etc/config/prometheus.yml
             - --storage.local.path={{ .Values.server.persistentVolume.mountPath }}
@@ -73,11 +73,11 @@ spec:
       volumes:
         - name: config-volume
           configMap:
-            name: {{ template "server.fullname" . }}
+            name: {{ template "prometheus.server.fullname" . }}
         - name: storage-volume
         {{- if .Values.server.persistentVolume.enabled }}
           persistentVolumeClaim:
-            claimName: {{ if .Values.server.persistentVolume.existingClaim }}{{ .Values.server.persistentVolume.existingClaim }}{{- else }}{{ template "server.fullname" . }}{{- end }}
+            claimName: {{ if .Values.server.persistentVolume.existingClaim }}{{ .Values.server.persistentVolume.existingClaim }}{{- else }}{{ template "prometheus.server.fullname" . }}{{- end }}
         {{- else }}
           emptyDir: {}
         {{- end -}}

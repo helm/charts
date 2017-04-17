@@ -1,6 +1,6 @@
 {{- if and .Values.alertmanager.enabled .Values.alertmanager.ingress.enabled -}}
 {{- $releaseName := .Release.Name -}}
-{{- $serviceName := include "alertmanager.fullname" . }}
+{{- $serviceName := include "prometheus.alertmanager.fullname" . }}
 {{- $servicePort := .Values.alertmanager.service.servicePort -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
@@ -10,12 +10,12 @@ metadata:
 {{ toYaml .Values.alertmanager.ingress.annotations | indent 4}}
 {{- end }}
   labels:
-    app: {{ template "name" . }}
+    app: {{ template "prometheus.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     component: "{{ .Values.alertmanager.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-  name: {{ template "alertmanager.fullname" . }}
+  name: {{ template "prometheus.alertmanager.fullname" . }}
 spec:
   rules:
   {{- range .Values.alertmanager.ingress.hosts }}

@@ -3,12 +3,12 @@ apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
   labels:
-    app: {{ template "name" . }}
+    app: {{ template "prometheus.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     component: "{{ .Values.nodeExporter.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-  name: {{ template "nodeExporter.fullname" . }}
+  name: {{ template "prometheus.nodeExporter.fullname" . }}
 spec:
   template:
     metadata:
@@ -17,12 +17,12 @@ spec:
 {{ toYaml .Values.nodeExporter.podAnnotations | indent 8 }}
     {{- end }}
       labels:
-        app: {{ template "name" . }}
+        app: {{ template "prometheus.name" . }}
         component: "{{ .Values.nodeExporter.name }}"
         release: {{ .Release.Name }}
     spec:
       containers:
-        - name: {{ template "name" . }}-{{ .Values.nodeExporter.name }}
+        - name: {{ template "prometheus.name" . }}-{{ .Values.nodeExporter.name }}
           image: "{{ .Values.nodeExporter.image.repository }}:{{ .Values.nodeExporter.image.tag }}"
           imagePullPolicy: "{{ .Values.nodeExporter.image.pullPolicy }}"
           args:

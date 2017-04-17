@@ -2,12 +2,12 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "grafana.fullname" . }}
     chart: "{{.Chart.Name}}-{{.Chart.Version}}"
     component: "{{ .Values.server.name }}"
     heritage: "{{ .Release.Service }}"
     release: "{{ .Release.Name }}"
-  name: {{ template "server.fullname" . }}
+  name: {{ template "grafana.server.fullname" . }}
 spec:
   replicas: 1
   template:
@@ -17,26 +17,26 @@ spec:
         {{ $key }}: {{ $value }}
       {{- end }}
       labels:
-        app: {{ template "fullname" . }}
+        app: {{ template "grafana.fullname" . }}
         component: "{{ .Values.server.name }}"
         release: "{{ .Release.Name }}"
     spec:
       nodeSelector:
 {{ toYaml .Values.server.nodeSelector | indent 12 }}
       containers:
-        - name: {{ template "name" . }}
+        - name: {{ template "grafana.name" . }}
           image: "{{ .Values.server.image }}"
           imagePullPolicy: {{ default "Always" .Values.server.imagePullPolicy }}
           env:
             - name: GF_SECURITY_ADMIN_USER
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "server.fullname" . }}
+                  name: {{ template "grafana.server.fullname" . }}
                   key: grafana-admin-user
             - name: GF_SECURITY_ADMIN_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "server.fullname" . }}
+                  name: {{ template "grafana.server.fullname" . }}
                   key: grafana-admin-password
             {{- if .Values.server.installPlugins }}
             - name: GF_INSTALL_PLUGINS
@@ -66,14 +66,14 @@ spec:
       volumes:
         - name: config-volume
           configMap:
-            name: {{ template "server.fullname" . }}-config
+            name: {{ template "grafana.server.fullname" . }}-config
         - name: dashboard-volume
           configMap:
-            name: {{ template "server.fullname" . }}-dashs
+            name: {{ template "grafana.server.fullname" . }}-dashs
         - name: storage-volume
       {{- if .Values.server.persistentVolume.enabled }}
           persistentVolumeClaim:
-            claimName: {{ template "server.fullname" . }}
+            claimName: {{ template "grafana.server.fullname" . }}
       {{- else }}
           emptyDir: {}
       {{- end -}}

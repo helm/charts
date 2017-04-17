@@ -3,12 +3,12 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   labels:
-    app: {{ template "name" . }}
+    app: {{ template "prometheus.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     component: "{{ .Values.kubeStateMetrics.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-  name: {{ template "kubeStateMetrics.fullname" . }}
+  name: {{ template "prometheus.kubeStateMetrics.fullname" . }}
 spec:
   replicas: {{ .Values.kubeStateMetrics.replicaCount }}
   template:
@@ -18,12 +18,12 @@ spec:
 {{ toYaml .Values.kubeStateMetrics.podAnnotations | indent 8 }}
     {{- end }}
       labels:
-        app: {{ template "name" . }}
+        app: {{ template "prometheus.name" . }}
         component: "{{ .Values.kubeStateMetrics.name }}"
         release: {{ .Release.Name }}
     spec:
       containers:
-        - name: {{ template "name" . }}-{{ .Values.kubeStateMetrics.name }}
+        - name: {{ template "prometheus.name" . }}-{{ .Values.kubeStateMetrics.name }}
           image: "{{ .Values.kubeStateMetrics.image.repository }}:{{ .Values.kubeStateMetrics.image.tag }}"
           imagePullPolicy: "{{ .Values.kubeStateMetrics.image.pullPolicy }}"
           ports:

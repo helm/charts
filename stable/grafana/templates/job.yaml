@@ -3,26 +3,26 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "grafana.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     component: "{{ .Values.server.name }}"
     heritage: "{{ .Release.Service }}"
     release: "{{ .Release.Name }}"
-  name: {{ template "server.fullname" . }}-set-datasource
+  name: {{ template "grafana.server.fullname" . }}-set-datasource
 spec:
   activeDeadlineSeconds: {{ default 300 .Values.server.setDatasource.activeDeadlineSeconds }}
   template:
     metadata:
       labels:
-        app: {{ template "fullname" . }}
+        app: {{ template "grafana.fullname" . }}
         component: "{{ .Values.server.name }}"
         release: "{{ .Release.Name }}"
     spec:
       containers:
-      - name: {{ template "server.fullname" . }}-set-datasource
+      - name: {{ template "grafana.server.fullname" . }}-set-datasource
         image: "{{ .Values.server.setDatasource.image }}"
         args:
-          - "http://{{ .Values.server.adminUser }}:{{ .Values.server.adminPassword }}@{{ template "fullname" . }}:{{ .Values.server.httpPort }}/api/datasources"
+          - "http://{{ .Values.server.adminUser }}:{{ .Values.server.adminPassword }}@{{ template "grafana.fullname" . }}:{{ .Values.server.httpPort }}/api/datasources"
           - "-X"
           - POST
           - "-H"
