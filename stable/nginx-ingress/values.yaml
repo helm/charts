@@ -57,6 +57,12 @@ controller:
 
     loadBalancerIP: ""
     loadBalancerSourceRanges: []
+
+    ## Used to terminate SSL at the load balancer. Changes the 'https'
+    ## port on the controller service to point to the 'http' port on the
+    ## controller deployment/daemonset
+    loadBalancerTerminateSSL: false
+    
     type: LoadBalancer
 
     # type: NodePort
@@ -65,7 +71,7 @@ controller:
     #   https: 32443
     nodePorts:
       http: ""
-      https: ""
+      https: "" 
 
   stats:
     enabled: false
