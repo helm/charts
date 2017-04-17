@@ -21,8 +21,19 @@ spec:
       containers:
       - name: {{ template "grafana.server.fullname" . }}-set-datasource
         image: "{{ .Values.server.setDatasource.image }}"
+        env:
+        - name: ADMIN_USER
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "server.fullname" . }}
+              key: grafana-admin-user
+        - name: ADMIN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "server.fullname" . }}
+              key: grafana-admin-password
         args:
-          - "http://{{ .Values.server.adminUser }}:{{ .Values.server.adminPassword }}@{{ template "grafana.fullname" . }}:{{ .Values.server.httpPort }}/api/datasources"
+          - "http://$(ADMIN_USER):$(ADMIN_PASSWORD)@{{ template "grafana.fullname" . }}:{{ .Values.server.httpPort }}/api/datasources"
           - "-X"
           - POST
           - "-H"
