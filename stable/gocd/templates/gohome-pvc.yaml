@@ -2,22 +2,22 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: {{ template "fullname" . }}-godata
+  name: {{ template "fullname" . }}-gohome
   labels:
     app: {{ template "fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
   annotations:
-  {{- if .Values.persistence.godata.storageClass }}
-    volume.beta.kubernetes.io/storage-class: {{ .Values.persistence.godata.storageClass | quote }}
+  {{- if .Values.persistence.gohome.storageClass }}
+    volume.beta.kubernetes.io/storage-class: {{ .Values.persistence.gohome.storageClass | quote }}
   {{- else }}
     volume.alpha.kubernetes.io/storage-class: default
   {{- end }}
 spec:
   accessModes:
-    - {{ .Values.persistence.godata.accessMode | quote }}
+    - {{ .Values.persistence.gohome.accessMode | quote }}
   resources:
     requests:
-      storage: {{ .Values.persistence.godata.size | quote }}
+      storage: {{ .Values.persistence.gohome.size | quote }}
 {{- end -}}

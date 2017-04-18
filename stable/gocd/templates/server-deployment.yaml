@@ -30,11 +30,20 @@ spec:
         volumeMounts:
         - name: godata
           mountPath: /godata
+        - name: gohome
+          mountPath: /home/go
       volumes:
       - name: godata
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
           claimName: {{ template "fullname" . }}-godata
+      {{- else }}
+        emptyDir: {}
+      {{- end }}
+      - name: gohome
+      {{- if .Values.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ template "fullname" . }}-gohome
       {{- else }}
         emptyDir: {}
       {{- end }}
