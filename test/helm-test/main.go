@@ -59,7 +59,7 @@ func writeXML(dump string, start time.Time) {
 	if err != nil {
 		log.Fatalf("Could not marshal XML: %s", err)
 	}
-	path := filepath.Join(dump, "junit_runner.xml")
+	path := filepath.Join(dump, "junit_01.xml")
 	f, err := os.Create(path)
 	if err != nil {
 		log.Fatalf("Could not create file: %s", err)
