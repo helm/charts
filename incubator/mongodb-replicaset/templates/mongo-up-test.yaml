@@ -21,7 +21,7 @@ metadata:
 spec:
   containers:
     - name: mongo
-      image: mongo:latest
+      image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
       command: ["/tools/bats/bats", "-t", "/tests/mongo-up-test.sh"]
       volumeMounts:
         - name: tools
