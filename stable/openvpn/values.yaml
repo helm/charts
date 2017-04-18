@@ -4,7 +4,7 @@
 replicaCount: 1
 image:
   repository: jfelten/openvpn-docker
-  tag: latest
+  tag: 1.1.0
   pullPolicy: IfNotPresent
 service:
   name: openvpn
