@@ -7,7 +7,7 @@ metadata:
     "pod.beta.kubernetes.io/init-containers": '[
       {
         "name": "test-framework",
-        "image": "foxish/bats:0.4",
+        "image": "dduportal/bats:0.4.0",
         "command": ["bash", "-c", "
           set -ex\n
           # copy bats to tools dir\n
