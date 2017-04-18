@@ -9,8 +9,8 @@ metadata:
   {{- else }}
     volume.alpha.kubernetes.io/storage-class: default
   {{- end }}
-  {{- if .Values.alertmanager.persistentVolume.annotations }}
-{{ toYaml .Values.alertmanager.persistentVolume.annotations | indent 4 }}
+  {{- if .Values.server.persistentVolume.annotations }}
+{{ toYaml .Values.server.persistentVolume.annotations | indent 4 }}
   {{- end }}
   labels:
     app: {{ template "prometheus.name" . }}
