@@ -33,9 +33,11 @@ agent:
   #     memory: 128Mi
 
 service:
-  name: gocd
   type: ClusterIP
-  externalPort: 8080
+  http:
+    externalPort: 8080
+  https:
+    externalPort: 8081
 
 ## Enable persistence using Persistent Volume Claims
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/

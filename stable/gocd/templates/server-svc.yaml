@@ -10,9 +10,12 @@ metadata:
 spec:
   type: {{ .Values.service.type }}
   ports:
-  - name: {{ .Values.service.name }}
-    port: {{ .Values.service.externalPort }}
+  - name: http
+    port: {{ .Values.service.http.externalPort }}
     targetPort: 8153
+  - name: https
+    port: {{ .Values.service.https.externalPort }}
+    targetPort: 8154
   selector:
     app: {{ template "fullname" . }}
     component: "{{ template "fullname" . }}-server"
