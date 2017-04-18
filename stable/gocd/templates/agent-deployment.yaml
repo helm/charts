@@ -9,7 +9,7 @@ metadata:
     heritage: "{{ .Release.Service }}"
     component: "{{ template "fullname" . }}-agent"
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: {{ .Values.agent.replicaCount }}
   template:
     metadata:
       labels:

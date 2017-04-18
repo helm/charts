@@ -15,7 +15,11 @@ server:
   #     cpu: 200m
   #     memory: 1024Mi
 agent:
-  replicaCount: 1
+  replicaCount: 2
+  ## Minimun number of workers available after an eviction
+  ## ref: https://kubernetes.io/docs/admin/disruptions/
+  ##
+  minAvailable: 1
   image:
     repository: gocd/gocd-agent-ubuntu-16.04
     tag: "v17.3.0"
