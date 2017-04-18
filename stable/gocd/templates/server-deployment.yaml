@@ -27,3 +27,14 @@ spec:
         - containerPort: 8153
         resources:
 {{ toYaml .Values.server.resources | indent 12 }}
+        volumeMounts:
+        - name: godata
+          mountPath: /godata
+      volumes:
+      - name: godata
+      {{- if .Values.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ template "fullname" . }}-godata
+      {{- else }}
+        emptyDir: {}
+      {{- end }}
