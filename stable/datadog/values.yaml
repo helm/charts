@@ -25,6 +25,49 @@ datadog:
   ##
   # tags:
 
+  ## Un-comment this to enable APM and tracing, on ports 7777 and 8126
+  ## ref: https://github.com/DataDog/docker-dd-agent#tracing-from-the-host
+  ##
+  # apmEnabled: true
+
+  ## The dd-agent supports many environment variables
+  ## ref: https://github.com/DataDog/docker-dd-agent#environment-variables
+  ##
+  # env:
+  #   - name: 
+  #     value: 
+
+  ## Provide additonal service definitions
+  ## Each key will become a file in /conf.d/auto_conf
+  ## ref: https://github.com/DataDog/docker-dd-agent#configuration-files
+  ## 
+  # autoconf:
+  #   redisdb.yaml: |-
+  #     docker_images:
+  #       - redis
+  #     init_config:
+  #     instances:
+  #       - host: "%%host%%"
+  #         port: "%%port%%"
+
+  ## Provide additonal service definitions
+  ## Each key will become a file in /conf.d
+  ## ref: https://github.com/DataDog/docker-dd-agent#configuration-files
+  ## 
+  # confd:
+  #   redisdb.yaml: |-
+  #     init_config:
+  #     instances:
+  #       - host: "name"
+  #         port: "6379"
+
+  ## Provide additonal service checks
+  ## Each key will become a file in /checks.d
+  ## ref: https://github.com/DataDog/docker-dd-agent#configuration-files
+  ## 
+  # checksd:
+  #   service.py: |-
+
 resources:
   requests:
     cpu: 100m

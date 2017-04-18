@@ -1,26 +1,23 @@
 # MongoDB Helm Chart
 
 ## Prerequisites Details
-* Kubernetes 1.3 or higher with alpha APIs enabled.
-* Petsets are in alpha in 1.3.
-* Init containers are alpha in 1.3 and are moving to beta in 1.4.
+* Kubernetes 1.5+ with Beta APIs enabled.
 * PV support on the underlying infrastructure.
 
-## PetSet Details
-* http://kubernetes.io/docs/user-guide/petset/
+## StatefulSet Details
+* https://kubernetes.io/docs/concepts/abstractions/controllers/statefulsets/
 
-## PetSet Caveats
-* http://kubernetes.io/docs/user-guide/petset/#alpha-limitations
+## StatefulSet Caveats
+* https://kubernetes.io/docs/concepts/abstractions/controllers/statefulsets/#limitations
 
 ## TODO
-* Set up authorization between replicaset peers.
-* Add a liveliness check.
-* Make the `test.sh` script more robust.
+* Set up authorization between replica set peers.
+* Add liveness and readiness probes
 
 ## Chart Details
 
 This chart implements a dynamically scalable [MongoDB replica set](https://docs.mongodb.com/manual/tutorial/deploy-replica-set/)
-using Kubernetes PetSets and Init Containers.
+using Kubernetes StatefulSets and Init Containers.
 
 ## Installing the Chart
 
@@ -35,20 +32,41 @@ $ helm install --name my-release incubator/mongodb-replicaset
 
 The following tables lists the configurable parameters of the mongodb chart and their default values.
 
-| Parameter               | Description                        | Default                                                    |
-| ----------------------- | ---------------------------------- | ---------------------------------------------------------- |
-| `Name`                  | Name of the chart                  | `mongodb-replicaset`                                       |
-| `Image`                 | Container image name               | `mongo`                                                    |
-| `ImageTag`              | Container image tag                | `3.2`                                                      |
-| `ImagePullPolicy`       | Container pull policy              | `Always`                                                   |
-| `Replicas`              | k8s petset replicas                | `3`                                                        |
-| `Component`             | k8s selector key                   | `mongodb`                                                  |
-| `ReplicaSet`            | MongoDB ReplicaSet name            | `rs0`                                                      |
-| `ClusterRole`           | Role of the cluster (Data/Config)  | `shardsvr`                                                 |
-| `Cpu`                   | container requested cpu            | `100m`                                                     |
-| `Memory`                | container requested memory         | `512Mi`                                                    |
-| `PeerPort`              | Container listening port           | `27017`                                                    |
-| `Storage`               | Persistent volume size             | `10Gi`                                                     |
+| Parameter                       | Description                                                               | Default                                             |
+| ------------------------------- | ------------------------------------------------------------------------- | --------------------------------------------------- |
+| `replicaSet`                    | Name of the replica set                                                   | rs0                                                 |
+| `replicas`                      | Number of replicas in the replica set                                     | 3                                                   |
+| `port`                          | MongoDB port                                                              | 27017                                               |
+| `installImage.name`             | Image name for the init container that establishes the replica set        | gcr.io/google_containers/mongodb-install            |
+| `installImage.tag`              | Image tag for the init container that establishes the replica set         | 0.3                                                 |
+| `installImage.pullPolicy`       | Image pull policy for the init container that establishes the replica set | IfNotPresent                                        |
+| `image.name`                    | MongoDB image name                                                        | mongo                                               |
+| `image.tag`                     | MongoDB image tag                                                         | 3.2                                                 |
+| `image.pullPolicy`              | MongoDB image pull policy                                                 | IfNotPresent                                        |
+| `podAnnotations`                | Annotations to be added to MongoDB pods                                   | {}                                                  |
+| `resources`                     | Pod resource requests and limits                                          | {}                                                  |
+| `persistentVolume.enabled`      | If `true`, persistent volume claims are created                           | `true`                                              |
+| `persistentVolume.storageClass` | Persistent volume storage class                                           | `volume.alpha.kubernetes.io/storage-class: default` |
+| `persistentVolume.accessMode`   | Persistent volume access modes                                            | [ReadWriteOnce]                                     |
+| `persistentVolume.size`         | Persistent volume size                                                    | 10Gi                                                |
+| `persistentVolume.annotations`  | Persistent volume annotations                                             | {}                                                  |
+| `serviceAnnotations`            | Annotations to be added to the service                                    | {}                                                  |
+| `configmap`                     | Content of the MongoDB config file                                        | See below                                           |
+
+*MongoDB config file*
+
+The MongoDB config file `mongod.conf` is configured via the `configmap` configuration value. The defaults from 
+`values.yaml` are the following:
+
+```yaml
+configmap:
+  storage:
+    dbPath: /data/db
+  net:
+    port: 27017
+  replication:
+    replSetName: rs0
+```
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
@@ -141,7 +159,7 @@ $ kubectl delete pod $RELEASE_NAME-mongodb-0
 pod "messy-hydra-mongodb-0" deleted
 ```
 
-Delete all pods and let the petset controller bring it up.
+Delete all pods and let the statefulset controller bring it up.
 ```console
 $ kubectl delete po -l app=mongodb
 $ kubectl get po --watch-only
@@ -191,4 +209,3 @@ connecting to: test
 ## Scaling
 
 Scaling should be managed by `helm upgrade`, which is the recommended way.
-You can also scale up by modifying the number of replicas on the PetSet using `kubectl patch` or `kubectl apply`. Deleting the various pods created and the associated resources needs some care and is described in the [petset documentation](http://kubernetes.io/docs/user-guide/petset/#deleting-a-pet-set).

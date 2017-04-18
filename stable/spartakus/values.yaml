@@ -9,6 +9,7 @@ image:
 
 ## Node labels for pod assignment
 ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+##
 nodeSelector: {}
 
 ## Annotations to be added to pods
@@ -20,13 +21,13 @@ replicaCount: 1
 ## Resource requests and limits
 ## Ref: http://kubernetes.io/docs/user-guide/compute-resources/
 ##
-resources:
+resources: {}
   # limits:
   #   cpu: 2m
   #   memory: 8Mi
-  requests:
-    cpu: 2m
-    memory: 8Mi
+  # requests:
+  #   cpu: 2m
+  #   memory: 8Mi
 
 ## A version 4 UUID to uniquely identify the cluster
 ## If not provided, Helm will generate automatically at install-time.

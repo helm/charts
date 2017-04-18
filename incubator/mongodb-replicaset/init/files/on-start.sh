@@ -19,7 +19,7 @@ function join {
 }
 
 HOSTNAME=$(hostname)
-# Parse out cluster name, formatted as: petset_name-index
+# Parse out cluster name, formatted as: statefulset_name-index
 IFS='-' read -ra ADDR <<< "$(hostname)"
 CLUSTER_NAME="${ADDR[0]}"
 

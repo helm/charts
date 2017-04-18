@@ -49,6 +49,7 @@ The following tables lists the configurable parameters of the Redis chart and th
 | `imagePullPolicy`          | Image pull policy                   | `IfNotPresent`                                            |
 | `redisPassword`            | Redis password                      | Randomly generated                                        |
 | `persistence.enabled`      | Use a PVC to persist data           | `true`                                                    |
+| `persistence.existingClaim`| Use an existing PVC to persist data | `nil`                                                     |
 | `persistence.storageClass` | Storage class of backing PVC        | `generic`                                                 |
 | `persistence.accessMode`   | Use volume as ReadOnly or ReadWrite | `ReadWriteOnce`                                           |
 | `persistence.size`         | Size of data volume                 | `8Gi`                                                     |
@@ -78,4 +79,14 @@ $ helm install --name my-release -f values.yaml stable/redis
 
 The [Bitnami Redis](https://github.com/bitnami/bitnami-docker-redis) image stores the Redis data and configurations at the `/bitnami/redis` path of the container.
 
-The chart mounts a [Persistent Volume](kubernetes.io/docs/user-guide/persistent-volumes/) volume at this location. The volume is created using dynamic volume provisioning.
+By default, the chart mounts a [Persistent Volume](kubernetes.io/docs/user-guide/persistent-volumes/) volume at this location. The volume is created using dynamic volume provisioning. If a Persistent Volume Claim already exists, specify it during installation.
+
+### Existing PersistentVolumeClaim
+
+1. Create the PersistentVolume
+1. Create the PersistentVolumeClaim
+1. Install the chart
+```bash
+$ helm install --set persistence.existingClaim=PVC_NAME redis
+```
+

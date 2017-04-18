@@ -1,10 +1,10 @@
 # CoreOS etcd-operator
 
-[etcd-operator](https://coreos.com/blog/introducing-the-etcd-operator.html) Simplify etcd cluster 
+[etcd-operator](https://coreos.com/blog/introducing-the-etcd-operator.html) Simplify etcd cluster
 configuration and management.
 
 __DISCLAIMER:__ While this chart has been well-tested, the etcd-operator is still currently in alpha.
-Current project status is available [here](https://github.com/coreos/etcd-operator) 
+Current project status is available [here](https://github.com/coreos/etcd-operator)
 
 ## Introduction
 
@@ -26,6 +26,9 @@ To install the chart with the release name `my-release`:
 ```bash
 $ helm install stable/etcd-operator --name my-release
 ```
+
+__Note__: If you set `cluster.enabled` on install, it will have no effect.
+Before you create create an etcd cluster, the TPR must be installed by the operator, so this option is ignored during helm installs, but can be used in upgrades.
 
 ## Uninstalling the Chart
 
@@ -50,27 +53,27 @@ The following tables lists the configurable parameters of the etcd-operator char
 | ------------------------------------------------- | -------------------------------------------------------------------- | ---------------------------------------------- |
 | `replicaCount`                                    | Number of etcd-operator replicas to create (only 1 is supported)     | `1`                                            |
 | `image.repository`                                | etcd-operator container image                                        | `quay.io/coreos/etcd-operator`                 |
-| `image.tag`                                       | etcd-operator container image tag                                    | `latest`                                       |
+| `image.tag`                                       | etcd-operator container image tag                                    | `v0.2.1`                                       |
 | `image.pullPolicy`                                | etcd-operator container image pull policy                            | `IfNotPresent`                                 |
 | `resources.limits.cpu`                            | CPU limit per etcd-operator pod                                      | `100m`                                         |
 | `resources.limits.memory`                         | Memory limit per etcd-operator pod                                   | `128Mi`                                        |
 | `resources.requests.cpu`                          | CPU request per etcd-operator pod                                    | `100m`                                         |
 | `resources.requests.memory`                       | Memory request per etcd-operator pod                                 | `128Mi`                                        |
-| `cluster.enabled`                                 | Whether to enable provisioning of and etcd-cluster                   | `true`                                         |
+| `cluster.enabled`                                 | Whether to enable provisioning of an etcd-cluster                    | `false`                                        |
 | `cluster.name`                                    | etcd cluster name                                                    | `etcd-cluster`                                 |
-| `cluster.version`                                 | etcd cluster version                                                 | `v3.1.0-rc.0`                               |
+| `cluster.version`                                 | etcd cluster version                                                 | `v3.1.2`                                       |
 | `cluster.size`                                    | etcd cluster size                                                    | `3`                                            |
-| `cluster.backup.enabled`                          | Whether to create PV for cluster backups                             | `true`                                         |
+| `cluster.backup.enabled`                          | Whether to create PV for cluster backups                             | `false`                                        |
 | `cluster.backup.provisioner`                      | Which PV provisioner to use                                          | `kubernetes.io/gce-pd` (kubernetes.io/aws-ebs) |
 | `cluster.backup.config.snapshotIntervalInSecond`  | etcd snapshot interval in seconds                                    | `30`                                           |
 | `cluster.backup.config.maxSnapshot`               | maximum number of snapshots to keep                                  | `5`                                            |
-| `cluster.backup.config.volumeSizeInMB`            | size of backup PV                                                    | `512MB`                                        |
-| `cluster.backup.config.storageType`              | Type to storage to provision                                          | `PersistentVolume`                             |
+| `cluster.backup.config.storageType`               | Type of storage to provision                                         | `PersistentVolume`                             |
+| `cluster.backup.config.pv.volumeSizeInMB`         | size of backup PV                                                    | `512MB`                                        |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
 
 ```bash
-$ helm install --name my-release --set cluster.version=v3.1.0-alpha.1  stable/etcd-operator
+$ helm install --name my-release --set image.tag=v0.2.1 stable/etcd-operator
 ```
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while

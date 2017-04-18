@@ -1,5 +1,6 @@
 # Default values for Traefik
-imageTag: v1.1.2
+image: traefik
+imageTag: v1.2.1
 serviceType: LoadBalancer
 replicas: 1
 cpuRequest: 100m

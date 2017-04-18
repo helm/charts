@@ -4,10 +4,10 @@ Patroni can be accessed via port 5432 on the following DNS name from within your
 To get your password for superuser or admin run:
 
     # admin user password
-    PGPASSWORD_ADMIN=$(printf $(printf '\%o' `kubectl get secret --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath="{.data.password-admin[*]}"`);echo)
+    PGPASSWORD_ADMIN=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath="{.data.password-admin}" | base64 --decode)
 
     # superuser password
-    PGPASSWORD_SUPERUSER=$(printf $(printf '\%o' `kubectl get secret --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath="{.data.password-superuser[*]}"`);echo)
+    PGPASSWORD_SUPERUSER=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath="{.data.password-superuser}" | base64 --decode)
 
 To connect to your database:
 

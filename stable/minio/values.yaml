@@ -3,7 +3,7 @@
 ## Distributed Minio ref: https://docs.minio.io/docs/distributed-minio-quickstart-guide
 ##
 image: "minio/minio"
-imageTag: "latest"
+imageTag: "RELEASE.2017-03-16T21-50-32Z"
 imagePullPolicy: "Always"
 mode: "standalone"
 
@@ -27,6 +27,7 @@ replicas: 4
 ##
 persistence:
   enabled: true
+
   ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
   ## Default: volume.alpha.kubernetes.io/storage-class: default
   ##
@@ -48,3 +49,59 @@ resources:
   requests:
     memory: 256Mi
     cpu: 250m
+
+## Below settings can be used to setup event notifications as explained here.
+## https://docs.minio.io/docs/minio-bucket-notification-guide
+##
+minioConfig:
+  aqmp:
+    enable: false
+    url: ""
+    exchange: ""
+    routingKey: ""
+    exchangeType: ""
+    mandatory: false
+    immediate: false
+    durable: false
+    internal: false
+    noWait: false
+    autoDeleted: false
+  nats:
+    enable: false
+    address: ""
+    subject: ""
+    username: ""
+    password: ""
+    token: ""
+    secure: false
+    pingInterval: 0
+    enableStreaming: false
+    clusterID: ""
+    clientID: ""
+    async: false
+    maxPubAcksInflight: 0
+  elasticsearch:
+    enable: false
+    url: ""
+    index: ""
+  redis:
+    enable: false
+    address: ""
+    password: ""
+    key: ""
+  postgresql:
+    enable: false
+    connectionString: ""
+    table: ""
+    host: ""
+    port: ""
+    user: ""
+    password: ""
+    database: ""
+  kafka:
+    enable: false
+    brokers: "null"
+    topic: ""
+  webhook:
+    enable: false
+    endpoint: ""

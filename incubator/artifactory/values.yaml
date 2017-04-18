@@ -8,7 +8,8 @@ Component: "Artifactory"
 
 ## Uncomment following line if you want to run Artifactory-Pro
 #image: "docker.bintray.io/jfrog/artifactory-pro"
-imageTag: "4.16.0"
+image: "docker.bintray.io/jfrog/artifactory-oss"
+imageTag: "5.1.0"
 imagePullPolicy: "Always"
 replicaCount: 1
 httpPort: 8081

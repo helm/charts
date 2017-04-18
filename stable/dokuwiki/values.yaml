@@ -1,7 +1,7 @@
 ## Bitnami DokuWiki image version
 ## ref: https://hub.docker.com/r/bitnami/dokuwiki/tags/
 ##
-image: bitnami/dokuwiki:20160626a-r7
+image: bitnami/dokuwiki:20160626a-r9
 
 ## Specify a imagePullPolicy
 ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'

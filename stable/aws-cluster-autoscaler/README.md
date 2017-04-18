@@ -51,9 +51,10 @@ Parameter | Description | Default
 `image.tag` | Image tag | `v0.4.0`
 `image.pullPolicy` | Image pull policy | `IfNotPresent`
 `extraArgs` | additional container arguments | `{}`
-`podAnnotations` | annotations to add to each pod | {}
+`nodeSelector` | node labels for pod assignment | `{}`
+`podAnnotations` | annotations to add to each pod | `{}`
 `replicaCount` | desired number of pods | `1`
-`resources` | pod resource requests & limits | `limits: {cpu: 100m, memory: 300Mi}, requests: {cpu: 100m, memory: 300Mi}`
+`resources` | pod resource requests & limits | `{}`
 `scaleDownDelay` | time to wait between scaling operations | `10m` (10 minutes)
 `service.annotations` | annotations to add to service | none
 `service.clusterIP` | IP address to assign to service | `""`
