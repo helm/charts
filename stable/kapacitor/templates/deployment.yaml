@@ -34,10 +34,10 @@ spec:
 {{ toYaml .Values.resources | indent 12 }}
       volumes:
         - name: data
-        {{ if .Values.persistence.enabled }}
-        persistentVolumeClaim:
-          claimName: {{ template "fullname" . }}
-          {{ else }}
+        {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ template "fullname" . }}
+        {{- else }}
           emptyDir: {}
-          {{ end }}
+        {{- end }}
 {{- end }}

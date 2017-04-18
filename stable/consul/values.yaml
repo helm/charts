@@ -1,0 +1,37 @@
+# Default values for consul.
+# This is a YAML-formatted file.
+# Declare name/value pairs to be passed into your templates.
+# name: value
+
+## Consul service ports
+HttpPort: 8500
+RpcPort: 8400
+SerflanPort: 8301
+SerflanUdpPort: 8301
+SerfwanPort: 8302
+SerfwanUdpPort: 8302
+ServerPort: 8300
+ConsulDnsPort: 8600
+## Used as selector
+Component: "consul"
+Replicas: 3
+Image: "consul"
+ImageTag: "0.7.5"
+ImagePullPolicy: "Always"
+Cpu: "100m"
+Memory: "256Mi"
+## Persistent volume size
+Storage: "1Gi"
+
+## StorageClass name for use with Persistent Volume Claim (PVC)
+StorageClass: default
+
+## Enable Consul Web UI
+##
+ui:
+  enabled: true
+## Create dedicated UI service
+##
+uiService:
+  enabled: true
+  type: "NodePort"

@@ -12,6 +12,8 @@ server:
   ##
   image: "grafana/grafana:latest"
 
+  nodeSelector: {}
+
   ingress:
     ## If true, Grafana Ingress will be created
     ##
@@ -94,6 +96,22 @@ server:
   ##
   serviceType: ClusterIP
 
+  ## Load balancer IP address
+  ## Is not required, but allows for static address with
+  ## serviceType LoadBalancer.
+  ## If not supported by cloud provider, this field is ignored.
+  ## Default: nil
+  ##
+  # loadBalancerIP: 130.211.x.x
+
+  ## This will restrict traffic through the cloud-provider load-balancer
+  ## to the specified client IPs.
+  ## If not supported by cloud provider, this field is ignored.
+  ## Default: nil
+  ##
+  # loadBalancerSourceRanges:
+  #   - 0.0.0.0/0
+
   ## Grafana local config path
   ## Default '/etc/grafana'
   ##
@@ -113,6 +131,12 @@ server:
   ## Default: 300s (5m)
   ##
   # terminationGracePeriodSeconds: 300
+
+  ## Pass the plugins you want installed as a comma seperated list.
+  ## This will pass each plugin name to `grafana-cli plugins install ${plugin}`.
+  ## Ref: https://github.com/grafana/grafana-docker#installing-plugins-for-grafana-3
+  ##
+  # installPlugins:
 
   # Set datasource in beginning
   setDatasource:

@@ -19,15 +19,30 @@ spec:
         image: "{{ .Values.image }}"
         imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
         env:
-        - name: MARIADB_HOST
-          value: {{ template "mariadb.fullname" . }}
-        - name: MARIADB_PORT
-          value: "3306"
-        - name: MARIADB_PASSWORD
+        - name: ALLOW_EMPTY_PASSWORD
+        {{- if .Values.allowEmptyPassword }}
+          value: "yes"
+        {{- else }}
+          value: "no"
+        {{- end }}
+        - name: MARIADB_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ template "mariadb.fullname" . }}
               key: mariadb-root-password
+        - name: MARIADB_HOST
+          value: {{ template "mariadb.fullname" . }}
+        - name: MARIADB_PORT
+          value: "3306"
+        - name: WORDPRESS_DATABASE_NAME
+          value: {{ default "" .Values.mariadb.mariadbDatabase | quote }}
+        - name: WORDPRESS_DATABASE_USER
+          value: {{ default "" .Values.mariadb.mariadbUser | quote }}
+        - name: WORDPRESS_DATABASE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "mariadb.fullname" . }}
+              key: mariadb-password
         - name: WORDPRESS_USERNAME
           value: {{ default "" .Values.wordpressUsername | quote }}
         - name: WORDPRESS_PASSWORD
@@ -77,23 +92,14 @@ spec:
           timeoutSeconds: 1
         volumeMounts:
         - name: wordpress-data
-          mountPath: /bitnami/wordpress
-        - name: apache-data
-          mountPath: /bitnami/apache
+          mountPath: /bitnami
         resources:
 {{ toYaml .Values.resources | indent 10 }}
       volumes:
       - name: wordpress-data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ template "fullname" . }}-wordpress
+          claimName: {{ template "fullname" . }}
       {{- else }}
         emptyDir: {}
-      {{- end }}
-      - name: apache-data
-      {{- if .Values.persistence.enabled }}
-        persistentVolumeClaim:
-          claimName: {{ template "fullname" . }}-apache
-      {{- else }}
-        emptyDir: {}
-      {{- end }}
+      {{ end }}

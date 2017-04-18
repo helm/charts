@@ -1,0 +1,57 @@
+# Default values for coredns.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: coredns/coredns
+  tag: "006"
+  pullPolicy: IfNotPresent
+
+resources:
+  limits:
+    cpu: 100m
+    memory: 128Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+# isClusterService specifies whether chart should be deployed as cluster-service or normal k8s app.
+isClusterService: true
+
+# serviceType specifies type of service to be created for this chart.
+serviceType: "ClusterIP"
+
+# middleware configuration of CoreDNS refer to https://github.com/coredns/coredns/tree/master/middleware
+# for all specific details. set enabled to true/false to enable/disable a middleware.
+middleware:
+  kubernetes:
+    enabled: true
+    clusterCidr: "10.3.0.0/24"
+    clusterDomain: "cluster.local"
+    clusterIP:
+  prometheus:
+    enabled: true
+    port: "9153"
+  errors:
+    enabled: true
+    file: "stderr"
+  log:
+    enabled: false
+    file: "stdout"
+  health:
+    enabled: true
+  proxy:
+    enabled: true
+  cache:
+    enabled: true
+  loadbalance:
+    enabled: true
+    policy: "round_robin"
+  etcd:
+    enabled: false
+    zones:
+      - "k8s.io"
+    path: "/skydns"
+    endpoint: "http://localhost:2379"
