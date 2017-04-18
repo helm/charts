@@ -19,10 +19,10 @@ resources:
     cpu: 300m
     memory: 128Mi
 persistence: 
-  Enabled: true
+  enabled: true
   #StorageClass: generic
-  AccessMode: ReadWriteOnce
-  Size: 2M
+  accessMode: ReadWriteOnce
+  size: 2M
 openvpn: 
     # Network allocated for openvpn clients (default: 10.240.0.0).
     OVPN_NETWORK: 10.240.0.0

@@ -50,7 +50,7 @@ spec:
           name: {{ template "fullname" . }}
           defaultMode: 0775
       - name: certs
-        {{- if .Values.persistence.Enabled }}
+        {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
           claimName: {{ template "fullname" . }}
         {{- else }}
