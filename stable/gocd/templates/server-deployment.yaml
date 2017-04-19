@@ -32,7 +32,7 @@ spec:
 {{ toYaml .Values.server.resources | indent 12 }}
         volumeMounts:
         - name: godata
-          mountPath: /godata
+          mountPath: /var/lib/go-server
         - name: gohome
           mountPath: /home/go
       volumes:
