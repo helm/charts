@@ -23,11 +23,11 @@ import (
 	"math/rand"
 	"os"
 	"os/exec"
+	"path"
 	"path/filepath"
 	"strings"
 	"syscall"
 	"time"
-	"path"
 )
 
 type testCase struct {
@@ -201,7 +201,7 @@ func doMain() int {
 			return execErr
 		})
 
-		xmlWrap(fmt.Sprintf("Helm Install %s",  path.Base(dir)), func() error {
+		xmlWrap(fmt.Sprintf("Helm Install %s", path.Base(dir)), func() error {
 			o, execErr := output(exec.Command("linux-amd64/helm", "install", dir, "--namespace", ns, "--name", rel, "--wait"))
 			if execErr != nil {
 				return fmt.Errorf("%s Command output: %s", execErr, string(o[:]))
@@ -209,7 +209,7 @@ func doMain() int {
 			return nil
 		})
 
-		xmlWrap(fmt.Sprintf("Helm Test %s",  path.Base(dir)), func() error {
+		xmlWrap(fmt.Sprintf("Helm Test %s", path.Base(dir)), func() error {
 			o, execErr := output(exec.Command("linux-amd64/helm", "test", rel))
 			if execErr != nil {
 				return fmt.Errorf("%s Command output: %s", execErr, string(o[:]))
