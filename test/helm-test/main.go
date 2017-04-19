@@ -27,6 +27,7 @@ import (
 	"strings"
 	"syscall"
 	"time"
+	"path"
 )
 
 type testCase struct {
@@ -195,12 +196,12 @@ func doMain() int {
 		ns := randStringRunes(10)
 		rel := randStringRunes(3)
 
-		xmlWrap(fmt.Sprintf("lint %s", dir), func() error {
+		xmlWrap(fmt.Sprintf("Helm Lint %s", path.Base(dir)), func() error {
 			_, execErr := output(exec.Command("linux-amd64/helm", "lint", dir))
 			return execErr
 		})
 
-		xmlWrap(fmt.Sprintf("install %s", dir), func() error {
+		xmlWrap(fmt.Sprintf("Helm Install %s",  path.Base(dir)), func() error {
 			o, execErr := output(exec.Command("linux-amd64/helm", "install", dir, "--namespace", ns, "--name", rel, "--wait"))
 			if execErr != nil {
 				return fmt.Errorf("%s Command output: %s", execErr, string(o[:]))
@@ -208,7 +209,7 @@ func doMain() int {
 			return nil
 		})
 
-		xmlWrap(fmt.Sprintf("test %s", dir), func() error {
+		xmlWrap(fmt.Sprintf("Helm Test %s",  path.Base(dir)), func() error {
 			o, execErr := output(exec.Command("linux-amd64/helm", "test", rel))
 			if execErr != nil {
 				return fmt.Errorf("%s Command output: %s", execErr, string(o[:]))
@@ -216,7 +217,7 @@ func doMain() int {
 			return nil
 		})
 
-		xmlWrap(fmt.Sprintf("purge %s", dir), func() error {
+		xmlWrap(fmt.Sprintf("Delete & purge %s", path.Base(dir)), func() error {
 			o, execErr := output(exec.Command("linux-amd64/helm", "delete", rel, "--purge"))
 			if execErr != nil {
 				return fmt.Errorf("%s Command output: %s", execErr, string(o[:]))
@@ -224,7 +225,7 @@ func doMain() int {
 			return nil
 		})
 
-		xmlWrap(fmt.Sprintf("deleting namespace %s", ns), func() error {
+		xmlWrap(fmt.Sprintf("Deleting namespace for %s", path.Base(dir)), func() error {
 			o, execErr := output(exec.Command("/workspace/kubernetes/client/bin/kubectl", "delete", "ns", ns))
 			if execErr != nil {
 				return fmt.Errorf("%s Command output: %s", execErr, string(o[:]))
