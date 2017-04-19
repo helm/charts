@@ -19,10 +19,8 @@ function join {
 }
 
 HOSTNAME=$(hostname)
-# Parse out cluster name, formatted as: statefulset_name-index
-IFS='-' read -ra ADDR <<< "$(hostname)"
-CLUSTER_NAME="${ADDR[0]}"
 
+# Read input from peer-finder
 while read -ra LINE; do
     if [[ "${LINE}" == *"${HOSTNAME}"* ]]; then
         MY_NAME=$LINE
@@ -43,10 +41,10 @@ echo "Initialized." >> /work-dir/log.txt
 # try to find a master and add yourself to its replicaset.
 for f in "${PEERS[@]}"
 do
-  /usr/bin/mongo --host=${f} --eval="printjson(rs.isMaster())" | grep "\"ismaster\" : true"
+  /usr/bin/mongo --host="${f}" --eval="printjson(rs.isMaster())" | grep "\"ismaster\" : true"
   if [ $? -eq 0 ]; then
-    echo ${f} MASTER >> /work-dir/log.txt
-    /usr/bin/mongo --host=${f} --eval="printjson(rs.add('${MY_NAME}'))"
+    echo "${f}" MASTER >> /work-dir/log.txt
+    /usr/bin/mongo --host="${f}" --eval="printjson(rs.add('${MY_NAME}'))"
     exit 0
   fi
 done

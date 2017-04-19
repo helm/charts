@@ -11,7 +11,7 @@ installImage:
 # Specs for the MongoDB image
 image:
   name: mongo
-  tag: 3.2
+  tag: 3.4
   pullPolicy: IfNotPresent
 
 # Annotations to be added to MongoDB pods
