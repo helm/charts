@@ -55,3 +55,7 @@ resources:
   requests:
     memory: 256Mi
     cpu: 100m
+
+service:
+  port: 5432
+  externalIPs: []
