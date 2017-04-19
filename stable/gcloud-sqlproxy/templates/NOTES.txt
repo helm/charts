@@ -1,0 +1,18 @@
+{{- if eq (printf "%s" .Values.serviceAccountKey) "" }}
+##############################################################################
+####   ERROR: You did not provide Google Cloud Service Account key.       ####
+##############################################################################
+
+All pods do not go to the running state if the GCP Service Account key was not provided.
+
+{{- end }}
+
+{{- if eq (printf "%s" .Values.cloudsql.instance) "PROJECT:REGION:INSTANCE" }}
+##############################################################################
+####   ERROR: You did not provide Google Cloud PROJECT:REGION:INSTANCE    ####
+##############################################################################
+
+All pods do not go to the running state if the GCP `PROJECT:REGION:INSTANCE`
+settings were not provided.
+
+{{- end }}
