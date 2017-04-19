@@ -71,7 +71,7 @@ controller:
     #   https: 32443
     nodePorts:
       http: ""
-      https: "" 
+      https: ""
 
   stats:
     enabled: false
