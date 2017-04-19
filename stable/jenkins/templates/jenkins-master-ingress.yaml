@@ -1,23 +1,23 @@
-{{- if .Values.Master.HostName }}
+{{- if .Values.master.hostName }}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-{{- if .Values.Master.Ingress.Annotations }}
+{{- if .Values.master.ingress.annotations }}
   annotations:
-{{ toYaml .Values.Master.Ingress.Annotations | indent 4 }}
+{{ toYaml .Values.master.ingress.annotations | indent 4 }}
 {{- end }}
   name: {{ template "fullname" . }}
 spec:
   rules:
-  - host: {{ .Values.Master.HostName | quote }}
+  - host: {{ .Values.master.hostName | quote }}
     http:
       paths:
       - path: /
         backend:
           serviceName: {{ template "fullname" . }}
-          servicePort: {{ .Values.Master.ServicePort }}
-{{- if .Values.Master.Ingress.TLS }}
+          servicePort: {{ .Values.master.servicePort }}
+{{- if .Values.master.ingress.tls }}
   tls:
-{{ toYaml .Values.Master.Ingress.TLS | indent 4 }}
+{{ toYaml .Values.master.ingress.tls | indent 4 }}
 {{- end -}}
 {{- end }}

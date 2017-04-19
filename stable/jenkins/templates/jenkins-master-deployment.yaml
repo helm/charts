@@ -6,27 +6,27 @@ metadata:
     heritage: {{.Release.Service | quote }}
     release: {{.Release.Name | quote }}
     chart: "{{.Chart.Name}}-{{.Chart.Version}}"
-    component: "{{.Release.Name}}-{{.Values.Master.Name}}"
+    component: "{{.Release.Name}}-{{.Values.master.name}}"
 spec:
   replicas: 1
   strategy:
     type: RollingUpdate
   selector:
     matchLabels:
-      component: "{{.Release.Name}}-{{.Values.Master.Component}}"
+      component: "{{.Release.Name}}-{{.Values.master.component}}"
   template:
     metadata:
       labels:
         heritage: {{.Release.Service | quote }}
         release: {{.Release.Name | quote }}
         chart: "{{.Chart.Name}}-{{.Chart.Version}}"
-        component: "{{.Release.Name}}-{{.Values.Master.Component}}"
+        component: "{{.Release.Name}}-{{.Values.master.component}}"
       annotations:
         pod.alpha.kubernetes.io/init-containers: '[
               {
                   "name": "copy-default-config",
-                  "image": "{{.Values.Master.Image}}:{{.Values.Master.ImageTag}}",
-                  "imagePullPolicy": "{{.Values.Master.ImagePullPolicy}}",
+                  "image": "{{.Values.master.image}}:{{.Values.master.imageTag}}",
+                  "imagePullPolicy": "{{.Values.master.imagePullPolicy}}",
                   "command": [ "sh", "/var/jenkins_config/apply_config.sh" ],
                   "volumeMounts": [
                       {
@@ -53,15 +53,15 @@ spec:
         runAsUser: 0
       containers:
         - name: {{ template "fullname" . }}
-          image: "{{.Values.Master.Image}}:{{.Values.Master.ImageTag}}"
-          imagePullPolicy: "{{.Values.Master.ImagePullPolicy}}"
-          {{- if .Values.Master.UseSecurity }}
+          image: "{{.Values.master.image}}:{{.Values.master.imageTag}}"
+          imagePullPolicy: "{{.Values.master.imagePullPolicy}}"
+          {{- if .Values.master.useSecurity }}
           args: [ "--argumentsRealm.passwd.$(ADMIN_USER)=$(ADMIN_PASSWORD)",  "--argumentsRealm.roles.$(ADMIN_USER)=admin"]
           {{- end }}
           env:
             - name: JAVA_OPTS
-              value: "{{ default "" .Values.Master.JavaOpts}}"
-            {{- if .Values.Master.UseSecurity }}
+              value: "{{ default "" .Values.master.javaOpts}}"
+            {{- if .Values.master.useSecurity }}
             - name: ADMIN_PASSWORD
               valueFrom:
                 secretKeyRef:
@@ -74,17 +74,17 @@ spec:
                   key: jenkins-admin-user
             {{- end }}
           ports:
-            - containerPort: {{.Values.Master.ContainerPort}}
+            - containerPort: {{.Values.master.containerPort}}
               name: http
-            - containerPort: {{.Values.Master.SlaveListenerPort}}
+            - containerPort: {{.Values.master.agentListenerPort}}
               name: slavelistener
           resources:
             requests:
-              cpu: "{{.Values.Master.Cpu}}"
-              memory: "{{.Values.Master.Memory}}"
+              cpu: "{{.Values.master.cpu}}"
+              memory: "{{.Values.master.memory}}"
           volumeMounts:
-{{- if .Values.Persistence.mounts }}
-{{ toYaml .Values.Persistence.mounts | indent 12 }}
+{{- if .Values.persistence.mounts }}
+{{ toYaml .Values.persistence.mounts | indent 12 }}
 {{- end }}
             -
               mountPath: /var/jenkins_home
@@ -103,8 +103,8 @@ spec:
               name: secrets-dir
               readOnly: false
       volumes:
-{{- if .Values.Persistence.volumes }}
-{{ toYaml .Values.Persistence.volumes | indent 6 }}
+{{- if .Values.persistence.volumes }}
+{{ toYaml .Values.persistence.volumes | indent 6 }}
 {{- end }}
       - name: jenkins-config
         configMap:
@@ -114,9 +114,9 @@ spec:
       - name: secrets-dir
         emptyDir: {}
       - name: jenkins-home
-      {{- if .Values.Persistence.Enabled }}
+      {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ .Values.Persistence.ExistingClaim | default (include "fullname" .) }}
+          claimName: {{ .Values.persistence.existingClaim | default (include "fullname" .) }}
       {{- else }}
         emptyDir: {}
       {{- end -}}

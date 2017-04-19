@@ -3,76 +3,76 @@
 # Declare name/value pairs to be passed into your templates.
 # name: value
 
-Master:
-  Name: jenkins-master
-  Image: "jenkinsci/jenkins"
-  ImageTag: "2.46.1"
-  ImagePullPolicy: "Always"
-  Component: "jenkins-master"
-  UseSecurity: true
-  AdminUser: admin
-# AdminPassword: <defaults to random>
-  Cpu: "200m"
-  Memory: "256Mi"
+master:
+  name: jenkins-master
+  image: "jenkinsci/jenkins"
+  imageTag: "2.46.1"
+  imagePullPolicy: "Always"
+  component: "jenkins-master"
+  useSecurity: true
+  adminUser: admin
+# adminPassword: <defaults to random>
+  cpu: "200m"
+  memory: "256Mi"
 # Set min/max heap here if needed with:
-# JavaOpts: "-Xms512m -Xmx512m"
-  ServicePort: 8080
-# For minikube, set this to NodePort, elsewhere use LoadBalancer
+# javaOpts: "-Xms512m -Xmx512m"
+  servicePort: 8080
+# For minikube, set this to nodePort, elsewhere use LoadBalancer
 # Use ClusterIP if your setup includes ingress controller
-  ServiceType: LoadBalancer
-# Used to create Ingress record (should used with ServiceType: ClusterIP)
-# HostName: jenkins.cluster.local
-# NodePort: <to set explicitly, choose port between 30000-32767
-  ContainerPort: 8080
-  SlaveListenerPort: 50000
-  LoadBalancerSourceRanges:
+  serviceType: LoadBalancer
+# Used to create ingress record (should used with serviceType: ClusterIP)
+# hostName: jenkins.cluster.local
+# nodePort: <to set explicitly, choose port between 30000-32767
+  containerPort: 8080
+  agentListenerPort: 50000
+  loadBalancerSourceRanges:
   - 0.0.0.0/0
 # List of plugins to be install during Jenkins master start
-  InstallPlugins:
+  installPlugins:
       - kubernetes:0.11 
       - workflow-aggregator:2.5
       - credentials-binding:1.11
       - git:3.2.0
 # Used to approve a list of groovy functions in pipelines used the script-security plugin. Can be viewed under /scriptApproval
-  # ScriptApproval:
+  # scriptApproval:
   #   - "method groovy.json.JsonSlurperClassic parseText java.lang.String"
   #   - "new groovy.json.JsonSlurperClassic"
 # List of groovy init scripts to be executed during Jenkins master start
-  InitScripts:
+  initScripts:
 #  - |
 #    print 'adding global pipeline libraries, register properties, bootstrap jobs...'
-  CustomConfigMap: false
+  customConfigMap: false
 
-  Ingress:
-    Annotations:
+  ingress:
+    annotations:
       # kubernetes.io/ingress.class: nginx
       # kubernetes.io/tls-acme: "true"
 
-    TLS:
+    tls:
       # - secretName: jenkins.cluster.local
       #   hosts:
       #     - jenkins.cluster.local
 
-Agent:
-  Enabled: true
-  Image: jenkinsci/jnlp-slave
-  ImageTag: 2.62
-  Cpu: "200m"
-  Memory: "256Mi"
+agent:
+  enabled: true
+  image: jenkinsci/jnlp-slave
+  imageTag: 2.62
+  cpu: "200m"
+  memory: "256Mi"
 
-Persistence:
-  Enabled: true
+persistence:
+  enabled: true
   ## A manually managed Persistent Volume and Claim
-  ## Requires Persistence.Enabled: true
+  ## Requires persistence.enabled: true
   ## If defined, PVC must be created manually before volume will be bound
-  # ExistingClaim:
+  # existingClaim:
 
   ## If defined, volume.beta.kubernetes.io/storage-class: <StorageClass>
   ## Default: volume.alpha.kubernetes.io/storage-class: default
   ##
-  # StorageClass:
-  AccessMode: ReadWriteOnce
-  Size: 8Gi
+  # storageClass:
+  accessMode: ReadWriteOnce
+  size: 8Gi
   volumes:
 #  - name: nothing
 #    emptyDir: {}
