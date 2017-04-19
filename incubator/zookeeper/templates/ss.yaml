@@ -10,7 +10,7 @@ metadata:
     chart: "{{.Chart.Name}}-{{.Chart.Version}}"
     component: "{{ printf "zk-%s" .Release.Name  | trunc 24 }}"
 spec:
-  serviceName: "{{ printf "hs-zk-%s" .Release.Name | trunc 24 }}"
+  serviceName: "{{ printf "zk-hsvc-%s" .Release.Name | trunc 24 }}"
   replicas: {{.Values.Servers}}
   template:
     metadata:

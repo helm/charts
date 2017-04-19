@@ -18,7 +18,7 @@ This chart will do the following:
 * Create a [PodDisruptionBudget](https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-disruption-budget/) so kubectl drain will respect the Quorum 
 size of the ensemble.
 * Create a [Headless Service](https://kubernetes.io/docs/concepts/services-networking/service/) to control the domain of the ZooKeeper ensemble.
-* Create a Service configured to connect to the avialable ZooKeeper instance on the configured client port.
+* Create a Service configured to connect to the available ZooKeeper instance on the configured client port.
 * Optionally, apply a [Pod Anti-Affinity](https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#inter-pod-affinity-and-anti-affinity-beta-feature) to spread the 
 ZooKeeper ensemble across nodes.
 
@@ -42,7 +42,7 @@ $ kubectl get all -l component=zk-my-zk
 NAME            READY     STATUS              RESTARTS   AGE
 po/zk-my-zk-0   1/1       Running             0          1m
 po/zk-my-zk-1   1/1       Running             0          59s
-po/zk-my-zk-2   0/1       ContainerCreating   0          12s
+po/zk-my-zk-2   1/1       Running             0          12s
 
 NAME                CLUSTER-IP    EXTERNAL-IP   PORT(S)             AGE
 svc/zk-csvc-my-zk   10.0.60.195   <none>        2181/TCP            1m
@@ -174,8 +174,8 @@ $ kubectl exec <RELEASE-NAME>-2 -- /opt/zookeeper/bin/zkCli.sh get /foo;
 
 Watch existing members:
 ```console
-$ 
- 'while true; do for i in 0 1 2; do echo zk-$i $(echo stats | nc <pod-name>.<headless-service-name>:2181 | grep Mode); sleep 1; done; done';
+$  kubectl run --attach bbox --image=busybox --restart=Never -- sh -c 'while true; do for i in 0 1 2; do echo zk-$i $(echo stats | nc <pod-name>.<headless-service-name>:2181 | grep Mode); sleep 1; done; done';
+
 zk-2 Mode: follower
 zk-0 Mode: follower
 zk-1 Mode: leader
