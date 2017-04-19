@@ -45,14 +45,6 @@ type TestSuite struct {
 	Cases    []testCase
 }
 
-// append(errs, err) if err != nil
-func appendError(errs []error, err error) []error {
-	if err != nil {
-		return append(errs, err)
-	}
-	return errs
-}
-
 func writeXML(dump string, start time.Time) {
 	suite.Time = time.Since(start).Seconds()
 	out, err := xml.MarshalIndent(&suite, "", "    ")
@@ -101,6 +93,11 @@ var (
 	terminate = time.NewTimer(time.Duration(0)) // terminate testing at this time.
 
 	suite TestSuite
+
+	// program exit codes.
+	SUCCESS_CODE              = 0
+	INITIALIZATION_ERROR_CODE = 1
+	TEST_FAILURE_CODE         = 2
 )
 
 func init() {
@@ -160,7 +157,14 @@ func randStringRunes(n int) string {
 }
 
 func main() {
-	matches, err := filepath.Glob("stable/*")
+	ret := doMain()
+	os.Exit(ret)
+}
+
+func doMain() int {
+	matches, err := filepath.Glob("/src/k8s.io/charts/stable/*")
+	log.Printf("Matches: %+v", matches)
+
 	defer writeXML("/workspace/_artifacts", time.Now())
 	if !terminate.Stop() {
 		<-terminate.C // Drain the value if necessary.
@@ -172,8 +176,20 @@ func main() {
 
 	if err != nil {
 		fmt.Println(err)
-		return
+		return INITIALIZATION_ERROR_CODE
 	}
+
+	// Ensure helm is completely initialized before starting tests.
+	// TODO: replace with helm init --wait after
+	// https://github.com/kubernetes/helm/issues/2114
+	xmlWrap(fmt.Sprintf("Wait for helm initialization to complete"), func() error {
+		initErr := fmt.Errorf("Not Initialized")
+		for initErr != nil {
+			_, initErr = output(exec.Command("linux-amd64/helm", "version"))
+			time.Sleep(2 * time.Second)
+		}
+		return initErr
+	})
 
 	for _, dir := range matches {
 		ns := randStringRunes(10)
@@ -207,5 +223,18 @@ func main() {
 			}
 			return nil
 		})
+
+		xmlWrap(fmt.Sprintf("deleting namespace %s", ns), func() error {
+			o, execErr := output(exec.Command("/workspace/kubernetes/client/bin/kubectl", "delete", "ns", ns))
+			if execErr != nil {
+				return fmt.Errorf("%s Command output: %s", execErr, string(o[:]))
+			}
+			return nil
+		})
 	}
+
+	if suite.Failures > 0 {
+		return TEST_FAILURE_CODE
+	}
+	return SUCCESS_CODE
 }
