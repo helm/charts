@@ -112,6 +112,12 @@ server:
   # loadBalancerSourceRanges:
   #   - 0.0.0.0/0
 
+  ## nodePort port number
+  ## Is not required, but allows for static port assignment with
+  ## serviceType NodePort.
+  ## Default: nil
+  # nodePort: 30000
+
   ## Grafana local config path
   ## Default '/etc/grafana'
   ##
