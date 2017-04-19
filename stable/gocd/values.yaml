@@ -3,8 +3,8 @@
 # Declare variables to be passed into your templates.
 server:
   image:
-    repository: gocd/gocd-server
-    tag: "v17.3.0"
+    repository: quay.io/knoxville/gocd-server
+    tag: "v2"
     pullPolicy: IfNotPresent
   # See minimum server requirements: https://docs.gocd.io/current/installation/system_requirements.html
   # resources:
@@ -21,8 +21,8 @@ agent:
   ##
   minAvailable: 1
   image:
-    repository: gocd/gocd-agent-ubuntu-16.04
-    tag: "v17.3.0"
+    repository: quay.io/knoxville/gocd-agent
+    tag: "v3"
     pullPolicy: IfNotPresent
   # resources:
   #   limits:
