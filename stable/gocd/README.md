@@ -50,14 +50,15 @@ The following tables lists the configurable parameters of the GoCD chart and the
 | `agent.replicaCount` | Number of GoCD agents to create | `1` |
 | `service.name` | Name of GoCD service in Kubernetes | `gocd` |
 | `service.type` | Type of Kubernetes service for GoCD server | `ClusterIP` |
-| `service.externalPort` | GoCD server service port | `8080` |
+| `service.http.externalPort` | GoCD server HTTP service port | `8080` |
+| `service.https.externalPort` | GoCD server HTTPS service port | `8081` |
 | `persistence.enabled`                | Enable persistence using PVC             | `true` |
-| `persistence.godata.storageClass`    | PVC Storage Class for /godata volume      | `nil` (uses alpha storage class annotation)  |
-| `persistence.godata.accessMode`      | PVC Access Mode for /godata volume        | `ReadWriteOnce`|
-| `persistence.godata.size`            | PVC Storage Request for /godata volume    | `1Gi` |
-| `persistence.gohome.storageClass` | PVC Storage Class for /home/go volume   | `nil` (uses alpha storage class annotation)   |
-| `persistence.gohome.accessMode`   | PVC Access Mode for /home/go volume     | `ReadWriteOnce`   |
-| `persistence.gohome.size`         | PVC Storage Request for /home/go volume | `8Gi`  |
+| `persistence.godata.storageClass`    | PVC Storage Class for GoCD server /godata volume      | `nil` (uses alpha storage class annotation)  |
+| `persistence.godata.accessMode`      | PVC Access Mode for GoCD server /godata volume        | `ReadWriteOnce`|
+| `persistence.godata.size`            | PVC Storage Request for GoCD server /godata volume    | `8Gi` |
+| `persistence.gohome.storageClass` | PVC Storage Class for GoCD server /home/go volume   | `nil` (uses alpha storage class annotation)   |
+| `persistence.gohome.accessMode`   | PVC Access Mode for GoCD server /home/go volume     | `ReadWriteOnce`   |
+| `persistence.gohome.size`         | PVC Storage Request for GoCD server /home/go volume | `8Gi`  |
 | `agent.resources`                          | CPU/Memory resource requests/limits      | Memory: `512Mi`, CPU: `300m`|
 | `server.resources`                          | CPU/Memory resource requests/limits      | Memory: `512Mi`, CPU: `300m`|
 
