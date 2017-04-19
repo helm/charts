@@ -1,0 +1,67 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    app: {{ template "fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels:
+      app: {{ template "fullname" . }}
+  template:
+    metadata:
+      name: {{ template "fullname" . }}
+      labels:
+        app: {{ template "fullname" . }}
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        release: "{{ .Release.Name }}"
+        heritage: "{{ .Release.Service }}"
+    spec:
+      volumes:
+        - name: hydra-data
+        {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ template "fullname" . }}
+        {{- else }}
+          emptyDir: {}
+        {{- end }}
+        - name: hdya-secret
+          secret:
+            secretName: {{ template "fullname" . }}-secret
+      containers:
+        - name: hydra
+          image: {{ .Values.image }}:{{ .Values.imageTag }}
+          imagePullPolicy: {{ .Values.imagePullPolicy }}
+          command: ["hydra", "host", "--dangerous-auto-logon"]
+          volumeMounts:
+            - name: hydra-data
+              mountPath: {{ .Values.mountPath }}
+          ports:
+            - name: service
+              containerPort: 4444
+          env:
+            - name: SYSTEM_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "fullname" . }}-secret
+                  key: system.secret
+            - name: DATABASE_URL
+              value: postgres://{{ .Values.postgresql.postgresUser }}:{{ .Values.postgresql.postgresPassword }}@{{ template "postgresql.fullname" . }}:5432/{{ .Values.postgresql.postgresDatabase }}?sslmode=disable
+            - name: HTTPS_ALLOW_TERMINATION_FROM
+              value: 0.0.0.0/0
+            - name: LOG_LEVEL
+              value: {{ .Values.config.logLevel }}
+            - name: CONSENT_URL
+              value: {{ .Values.config.consentUrl }}
+            - name: ACCESS_TOKEN_LIFESPAN
+              value: {{ .Values.config.accessTokenLifespan }}
+            - name: ID_TOKEN_LIFESPAN
+              value: {{ .Values.config.idTokenLifespan }}
+            - name: AUTHORIZE_CODE_LIFESPAN
+              value: {{ .Values.config.authorizeCodeLifespan }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}

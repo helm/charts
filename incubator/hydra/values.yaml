@@ -1,3 +1,42 @@
 image: "oryd/hydra"
 imageTag: "v0.7.10"
 imagePullPolicy: "Always"
+
+replicas: 2
+mountPath: "/root"
+
+# Persistent storage.
+persistence:
+  ## If this is false, then emptyDir: {} will be used.
+  ## Setting this to true is highly recommended for production use.
+  ## If this is false, you will lose your data when your pod is destroyed.
+  enabled: true
+  ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
+  ## Default: volume.alpha.kubernetes.io/storage-class: default
+  #
+  # storageClass: <storageClass>
+  accessMode: ReadWriteOnce
+  size: 1Gi
+
+postgresql:
+  postgresUser: hydra
+  postgresPassword: hydra
+  postgresDatabase: hydra
+  persistence:
+    size: 10Gi
+
+config:
+  system:
+    secret: "changeme"
+  consentUrl: "https://consent.example.com"
+  logLevel: "info"
+  accessTokenLifespan: "1h"
+  idTokenLifespan: "1h"
+  authorizeCodeLifespan: "10m"
+
+
+# http://kubernetes.io/docs/user-guide/compute-resources/
+resources:
+  requests:
+    memory: 128Mi
+    cpu: 250m
