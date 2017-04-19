@@ -19,6 +19,9 @@ persistence:
   size: 1Gi
 
 postgresql:
+  imageTag: "9.6"
+  memory: 256Mi
+  cpu: 250m
   postgresUser: hydra
   postgresPassword: hydra
   postgresDatabase: hydra
@@ -39,4 +42,4 @@ config:
 resources:
   requests:
     memory: 128Mi
-    cpu: 250m
+    cpu: 100m

@@ -29,7 +29,7 @@ spec:
         {{- else }}
           emptyDir: {}
         {{- end }}
-        - name: hdya-secret
+        - name: hydra-secret
           secret:
             secretName: {{ template "fullname" . }}-secret
       containers:
