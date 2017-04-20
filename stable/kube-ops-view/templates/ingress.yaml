@@ -1,0 +1,20 @@
+---
+{{- if .Values.ingress }}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+spec:
+  rules:
+  - http:
+       paths:
+       - path: {{ .Values.ingress.path }}
+         backend:
+           serviceName: {{ template "fullname" . }}
+           servicePort: {{ .Values.service.externalPort }}
+{{- if .Values.ingress.host }}
+    host: {{ template "fullname" . }}.{{ toYaml .Values.ingress.host }}
+{{- end }}
+{{- end }}
