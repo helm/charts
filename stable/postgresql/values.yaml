@@ -50,7 +50,7 @@ metrics:
   #      - name:
   #          usage: "LABEL"
   #          description: "Name of the database"
-  #      - size:
+  #      - size_bytes:
   #          usage: "GAUGE"
   #          description: "Size of the database in bytes"
 
