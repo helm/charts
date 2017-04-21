@@ -30,8 +30,13 @@ function log() {
 }
 
 function shutdown_mongo() {
-    log "Shutting down MongoDB..."
-    mongo admin "${admin_auth[@]}" --eval 'db.shutdownServer({force: true})'
+    if [[ $# -eq 1 ]]; then
+        args="timeoutSecs: $1"
+    else
+        args='force: true'
+    fi
+    log "Shutting down MongoDB ($args)..."
+    mongo admin "${admin_auth[@]}" --eval "db.shutdownServer({$args})"
 }
 
 my_hostname=$(hostname)
@@ -49,7 +54,7 @@ done
 log "Peers: ${peers[@]}"
 
 log "Starting a MongoDB instance..."
-mongod --config /config/mongod.conf &> /work-dir/log.txt &
+mongod --config /config/mongod.conf >> /work-dir/log.txt 2>&1 &
 
 log "Waiting for MongoDB to be ready..."
 until mongo --eval "db.adminCommand('ping')"; do
@@ -68,7 +73,7 @@ for peer in "${peers[@]}"; do
         mongo admin --host "$peer" "${admin_auth[@]}" --eval "rs.add('$service_name')"
         log "Done."
 
-        shutdown_mongo
+        shutdown_mongo "60"
         log "Good bye."
         exit 0
     fi
