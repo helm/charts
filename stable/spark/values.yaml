@@ -5,10 +5,11 @@
 
 Master:
   Name: master
-  Image: "timfpark/spark"
-  ImageTag: "2.1"
+  Image: "erikschlegel/spark-master"
+  ImageTag: "2.1.0"
   Replicas: 1
   Component: "spark-master"
+  ImagePullPolicy: "Always"
   Cpu: "100m"
   Memory: "512Mi"
   ServicePort: 7077
@@ -26,8 +27,8 @@ WebUi:
 
 Worker:
   Name: worker
-  Image: "timfpark/spark"
-  ImageTag: "2.1"
+  Image: "erikschlegel/spark-worker"
+  ImageTag: "2.1.0"
   ImagePullPolicy: "Always"
   Replicas: 3
   Component: "spark-worker"

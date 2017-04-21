@@ -24,8 +24,8 @@ spec:
     spec:
       containers:
         - name: {{.Values.Master.Component}}
+          imagePullPolicy: "{{.Values.Master.ImagePullPolicy}}"
           image: "{{.Values.Master.Image}}:{{.Values.Master.ImageTag}}"
-          command: ["/start-master"]
           ports:
             - containerPort: {{.Values.Master.ContainerPort}}
             - containerPort: {{.Values.WebUi.ContainerPort}}
