@@ -33,3 +33,6 @@ Session.vim
 
 # Chart dependencies
 **/charts/*.tgz
+
+#debug.log
+debug.log
