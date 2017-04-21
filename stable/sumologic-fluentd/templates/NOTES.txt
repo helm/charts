@@ -11,7 +11,7 @@ SumoLogic.
       sumologic.com/format: "text"
       sumologic.com/sourceCategory: "mywebsite/nginx"
       sumologic.com/sourceName: "mywebsite_nginx"
-      sumologic.com/exclude: true
+      sumologic.com/exclude: "true"
 
 {{- else -}}
 ###########################################################
