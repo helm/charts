@@ -6,14 +6,19 @@
 Master:
   Name: master
   Image: "erikschlegel/spark-master"
-  ImageTag: "2.1.0"
+  ImageTag: "2.2.0"
   Replicas: 1
   Component: "spark-master"
   ImagePullPolicy: "Always"
-  Cpu: "100m"
-  Memory: "512Mi"
   ServicePort: 7077
   ContainerPort: 7077
+  Resources:
+    Requests:
+      Cpu: "700m"
+      Memory: "3Gi"
+    Limits:
+      Cpu: "700m"
+      Memory: "3Gi"
   # Set Master JVM memory. Default 1g
   #DaemonMemory: 1g
 
@@ -28,14 +33,19 @@ WebUi:
 Worker:
   Name: worker
   Image: "erikschlegel/spark-worker"
-  ImageTag: "2.1.0"
+  ImageTag: "2.2.0"
   ImagePullPolicy: "Always"
-  Replicas: 3
+  Replicas: 6
   Component: "spark-worker"
   WorkingDirectory: "/opt/spark/work"
-  Cpu: "100m"
-  Memory: "512Mi"
   ContainerPort: 8081
+  Resources:
+    Requests:
+      Cpu: "700m"
+      Memory: "3Gi"
+    Limits:
+      Cpu: "700m"
+      Memory: "3Gi"
   Environment:
   - name: SPARK_DAEMON_MEMORY
     value: 1g
@@ -60,7 +70,7 @@ Persistence:
   # StorageClass:
   AccessMode: ReadWriteOnce
   StorageClass: fast
-  Size: 8Gi
+  Size: 128Gi
   Sku: Premium_LRS
   Provisioner: kubernetes.io/azure-disk
   Location: eastus

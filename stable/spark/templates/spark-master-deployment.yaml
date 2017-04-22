@@ -31,8 +31,11 @@ spec:
             - containerPort: {{.Values.WebUi.ContainerPort}}
           resources:
             requests:
-              cpu: "{{.Values.Master.Cpu}}"
-              memory: "{{.Values.Master.Memory}}"
+              cpu: "{{.Values.Master.Resources.Requests.Cpu}}"
+              memory: "{{.Values.Master.Resources.Requests.Memory}}"
+            limits:
+              cpu: "{{.Values.Master.Resources.Limits.Cpu}}"
+              memory: "{{.Values.Master.Resources.Limits.Memory}}"
           env:
           - name: SPARK_DAEMON_MEMORY
             value: {{ default "1g" .Values.Master.DaemonMemory | quote }}

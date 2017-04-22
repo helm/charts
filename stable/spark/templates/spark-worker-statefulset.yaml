@@ -32,8 +32,11 @@ spec:
             - containerPort: {{.Values.Worker.ContainerPort}}
           resources:
             requests:
-              cpu: "{{.Values.Worker.Cpu}}"
-              memory: "{{.Values.Worker.Memory}}"
+              cpu: "{{.Values.Worker.Resources.Requests.Cpu}}"
+              memory: "{{.Values.Worker.Resources.Requests.Memory}}"
+            limits:
+              cpu: "{{.Values.Worker.Resources.Limits.Cpu}}"
+              memory: "{{.Values.Worker.Resources.Limits.Memory}}"
           env:
 {{- if .Values.Worker.Environment }}
 {{ toYaml .Values.Worker.Environment | indent 12 }}
