@@ -27,7 +27,7 @@ GET: 89285.71 requests per second
 
 Here is a sample demo of master slave promotion.
 
-Insall this chart
+Install this chart
 ```
 $helm install -n dev incubator/redis-cache/ 
 NAME:   dev

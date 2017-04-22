@@ -3,20 +3,22 @@
 # Declare variables to be passed into your templates.
 replicaCount: 3
 image:
-  repository: nginx
-  tag: stable
-  pullPolicy: IfNotPresent
+  redis: redis
+  redisTag: 3.0-alpine
+  microSentinel: dhilipkumars/redis-sentinel-k8s
+  makeSlave: dhilipkumars/mk-redis-slave
+tag:
+  redis: 3.0-alpine
+  microSentinel: latest
+  makeSlave: latest
 service:
   name: rd-port
-  Port: 6379
+  port: 6379
   type: ClusterIP
 podDisruptionBudget:
   minAvailable: 2
 resources:
   limits:
-    cpu: 100m
     memory: 128Mi
   requests:
-    cpu: 100m
     memory: 128Mi
-

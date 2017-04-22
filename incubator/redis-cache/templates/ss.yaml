@@ -1,24 +1,29 @@
 apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
-  name: "{{ printf "rd-%s" .Release.Name  | trunc 20 }}"
+  name: "{{ template "fullname" . }}"
   labels:
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+     app: {{ template "fullname" . }}
+     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+     release: "{{ .Release.Name }}"
+     heritage: "{{ .Release.Service }}"
 spec:
-  serviceName: "{{ printf "rd-%s" .Release.Name  | trunc 20 }}"
-  replicas: {{default 3 .Values.replicaCount}}
+  serviceName: "{{ template "fullname" . }}"
+  replicas: {{ .Values.replicaCount }}
   template:
     metadata:
       labels:
-        chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
-        app: "{{ printf "rd-%s" .Release.Name  | trunc 20  }}"
+        app: {{ template "fullname" . }}
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        release: "{{ .Release.Name }}"
+        heritage: "{{ .Release.Service }}"
       annotations:
         pod.alpha.kubernetes.io/initialized: "true"
         pod.beta.kubernetes.io/init-containers: '[
            {
              "name":"sentinel-micro",
-             "image":"dhilipkumars/redis-sentinel-k8s",
-                         "args" : ["-service","{{ printf "rd-%s" .Release.Name  | trunc 20  }}"],
+             "image":"{{ .Values.image.microSentinel }}:{{ .Values.tag.microSentinel }}",
+                         "args" : ["-service","{{ template "fullname" . }}"],
              "env": [
                {
                   "name": "POD_NAMESPACE",
@@ -29,7 +34,6 @@ spec:
                      }
                   }
                }
-
              ],
             "volumeMounts": [
                {
@@ -51,7 +55,7 @@ spec:
                            matchExpressions: [{
                                "key": "app",
                                "operator": "In",
-                                "values": ["{{ printf "rd-%s" .Release.Name  | trunc 20 }}"]
+                                "values": ["{{ template "fullname" . }}"]
                             }]
                         },
                         topologyKey: "kubernetes.io/hostname"
@@ -61,12 +65,17 @@ spec:
            }
       containers:
       - name: redis
-        image: redis:3.0-alpine
+        image: {{ .Values.image.redis }}:{{ .Values.tag.redis }}
         ports:
-        - containerPort: {{ .Values.service.Port }}
-          name: {{ .Values.service.Name }}
+        - containerPort: {{ .Values.service.port }}
+          name: {{ .Values.service.name }}
+        resources:
+          requests:
+            memory: {{ .Values.resources.requests.memory }}
+          limits:
+            memory: {{ .Values.resources.limits.memory }}
       - name: make-slave
-        image: dhilipkumars/mk-redis-slave
+        image: {{ .Values.image.makeSlave }}:{{ .Values.tag.makeSlave }}
         env:
           - name: POD_NAMESPACE
             valueFrom:

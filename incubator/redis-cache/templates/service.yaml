@@ -3,14 +3,16 @@ kind: Service
 metadata:
   annotations:
     service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
-  name: {{ printf "rd-%s" .Release.Name | trunc 20 }}
+  name: {{ template "fullname" . }}
   labels:
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
-    app: {{ printf "rd-%s" .Release.Name  | trunc 20 }}
+    app: {{ template "fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
 spec:
   ports:
-  - port: {{ .Values.service.Port }}
+  - port: {{ .Values.service.port }}
     name: {{ .Values.service.name }}
   clusterIP: None
   selector:
-    app: {{ printf "rd-%s" .Release.Name  | trunc 20}}
+    app: {{ template "fullname" . }}

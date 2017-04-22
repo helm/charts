@@ -9,5 +9,5 @@
   export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
   echo http://$SERVICE_IP:{{ .Values.service.externalPort }}
 {{- else if contains "ClusterIP"  .Values.service.type }}
-  kubectl exec -i -t {{ printf "rd-%s" .Release.Name  | trunc 20 }}-0 -c redis -- redis-cli -h {{ printf "rd-%s" .Release.Name  | trunc 20 }}-0.{{ printf "rd-%s" .Release.Name  | trunc 20 }}.{{ .Release.Namespace }} -p 6379 info replication
+  kubectl exec -i -t {{ template "fullname" . }}-0 -c redis -- redis-cli -h {{ template "fullname" . }}-0.{{ template "fullname" . }}.{{ .Release.Namespace }} -p 6379 info replication
 {{- end }}
