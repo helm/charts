@@ -63,7 +63,7 @@ $ helm install \
     stable/redis-cluster
 ```
 
-The above command sets the Redis server within  `caching` namespace.
+The above command sets the Redis server within  `default` namespace.
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
