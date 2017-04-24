@@ -307,12 +307,12 @@ config:
 ##        databases: 
 ##          - "app_production"
 ##          - "testing"
-    prometheus:
-      urls: 
-        - "https://kubernetes.default:443/metrics"
-      name_prefix: "prom_"
-      bearer_token: "/var/run/secrets/kubernetes.io/serviceaccount/token"
-      insecure_skip_verify: true
+##     prometheus:
+##       urls: 
+##         - "https://kubernetes.default:443/metrics"
+##       name_prefix: "prom_"
+##       bearer_token: "/var/run/secrets/kubernetes.io/serviceaccount/token"
+##       insecure_skip_verify: true
 ##        ssl_ca: /path/to/cafile
 ##        ssl_cert: /path/to/certfile
 ##        ssl_key: /path/to/keyfile
@@ -351,18 +351,18 @@ config:
 ##      zookeeper:
 ##        servers: 
 ##          - "localhost:2181"
-##      http_listener:
-##        service_address: ":8186"
-##        read_timeout: "10s"
-##        write_timeout: "10s"
-##        max_body_size: 0
-##        max_line_size: 0
-    statsd:
-      service_address: ":8125"
-      percentiles: 
-        - 50
-        - 95
-        - 99
-      metric_separator: "_"
-      allowed_pending_messages: 10000
-      percentile_limit: 1000
+    http_listener:
+      service_address: ":8186"
+      read_timeout: "10s"
+      write_timeout: "10s"
+      max_body_size: 0
+      max_line_size: 0
+##     statsd:
+##       service_address: ":8125"
+##       percentiles: 
+##         - 50
+##         - 95
+##         - 99
+##       metric_separator: "_"
+##       allowed_pending_messages: 10000
+##       percentile_limit: 1000
