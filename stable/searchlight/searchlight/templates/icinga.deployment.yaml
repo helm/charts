@@ -1,0 +1,58 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    chart: {{.Chart.Name}}-{{.Chart.Version}}
+    heritage: {{.Release.Service}}
+    release: {{.Release.Name}}
+    run: {{ template "fullname" . }}-icinga
+  name: {{ template "fullname" . }}-icinga
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: {{ template "fullname" . }}-icinga
+  template:
+    metadata:
+      labels:
+        run: {{ template "fullname" . }}-icinga
+    spec:
+      volumes:
+      - emptyDir: {}
+        name: data-volume
+      - emptyDir: {}
+        name: script-volume
+      - name: appscode-icinga
+        secret:
+          secretName: {{ template "fullname" . }}-icinga
+      containers:
+      - image: {{.Values.icinga.icinga.image}}:{{.Values.icinga.icinga.imageTag}}
+        name: icinga
+        ports:
+        - containerPort: {{.Values.icinga.icinga.apiPort}}
+          name: api
+          protocol: TCP
+        - containerPort: {{.Values.icinga.icinga.webPort}}
+          name: web
+          protocol: TCP
+        volumeMounts:
+        - mountPath: /var/pv
+          name: data-volume
+        - mountPath: /var/db-script
+          name: script-volume
+        - mountPath: /srv/icinga2/secrets
+          name: appscode-icinga
+      - args:
+        - basic
+        - ./setup-db.sh
+        image: {{.Values.icinga.ido.image}}:{{.Values.icinga.ido.imageTag}}
+        name: ido
+        ports:
+        - containerPort: {{.Values.icinga.ido.idoPort}}
+          name: ido
+          protocol: TCP
+        volumeMounts:
+        - mountPath: /var/pv
+          name: data-volume
+        - mountPath: /var/db-script
+          name: script-volume

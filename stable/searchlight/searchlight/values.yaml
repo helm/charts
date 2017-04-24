@@ -1,0 +1,128 @@
+icinga:
+
+## Icinga configaration
+## https://github.com/appscode/searchlight/blob/master/docs/user-guide/icinga2/deployment.md#create-deployment
+##
+
+  env: |-
+    ICINGA_WEB_HOST=127.0.0.1
+    ICINGA_WEB_PORT=5432
+    ICINGA_WEB_DB=icingawebdb
+    ICINGA_WEB_USER=icingaweb
+    ICINGA_WEB_PASSWORD=12345678
+    ICINGA_WEB_ADMIN_PASSWORD=admin
+    ICINGA_IDO_HOST=127.0.0.1
+    ICINGA_IDO_PORT=5432
+    ICINGA_IDO_DB=icingaidodb
+    ICINGA_IDO_USER=icingaido
+    ICINGA_IDO_PASSWORD=12345678
+    ICINGA_API_USER=icingaapi
+    ICINGA_API_PASSWORD=12345678
+
+## user must provide caCrt, icingaKey, icingaCrt
+## Details https://github.com/appscode/searchlight/blob/master/docs/user-guide/icinga2/certificate.md
+##
+
+# caCrt:
+# icingaKey:
+# icingaCrt:
+
+##
+## Add notifyVia example: https://github.com/appscode/searchlight/blob/master/docs/user-guide/notifier/mailgun.md#configure
+
+# notifyVia:
+
+## Hipchat notifier
+## ref https://github.com/appscode/searchlight/blob/master/docs/user-guide/notifier/hipchat.md#set-environment-variables
+##
+
+# hipchatAuthToken:
+# hipchatTo:
+
+## Mailgun notifier
+## ref: https://github.com/appscode/searchlight/blob/master/docs/user-guide/notifier/mailgun.md#configure
+##
+
+# mailgunDomain:
+# mailgunAPIKey:
+# mailgunPublicAPIKey:
+# mailgunFrom:
+# mailgunTo:
+
+## SMTP notifier
+## ref: https://github.com/appscode/searchlight/blob/master/docs/user-guide/notifier/smtp.md#configure
+##
+
+# smtpHost:
+# smtpPort:
+# smtpInsecureSkipVerify:
+# smtpUsername:
+# smtpPassword:
+# smtpFrom:
+# smtpTo:
+
+## Twilio notifier
+## ref: https://github.com/appscode/searchlight/blob/master/docs/user-guide/notifier/twilio.md
+##
+
+# twilioAccountSid:
+# twilioAuthToken:
+# twilioFrom:
+# twilioTo:
+
+## Slack notifier.
+## ref: https://github.com/appscode/searchlight/blob/master/docs/user-guide/notifier/slack.md
+##
+
+# slackAuthToken:
+# slackChannel:
+
+## Plivo notifier
+## ref: https://github.com/appscode/searchlight/blob/master/docs/user-guide/notifier/plivo.md
+##
+
+# plivoAuthId:
+# plivoAuthToken:
+# plivoFrom:
+# plivoTo:
+
+## Icinga container configaration
+##
+
+  icinga:
+    image: appscode/icinga
+    imageTag: 1.5.6-k8s
+    apiPort: 5665
+    webPort: 60006
+
+## Postgress configaration
+##
+
+  ido:
+    image: appscode/postgres
+    imageTag: 9.5-v3-db
+    idoPort: 5432
+
+## Icinga secret type
+##
+
+  type: Opaque
+## Service target port
+##
+
+  apiTargetPort: 5665
+  webTargetPort: 80
+
+## Search light configaration
+##
+
+searchlight:
+
+## Searchlight image
+##
+  image: appscode/searchlight
+
+## Searchlight image tag
+##
+
+  imageTag: 1.5.6

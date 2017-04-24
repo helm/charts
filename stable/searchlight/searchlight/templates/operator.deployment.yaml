@@ -1,0 +1,26 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    chart: {{.Chart.Name}}-{{.Chart.Version}}
+    heritage: {{.Release.Service}}
+    release: {{.Release.Name}}
+    run: {{ template "fullname" . }}-operator
+  name: {{ template "fullname" . }}-operator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: {{ template "fullname" . }}-operator
+  template:
+    metadata:
+      labels:
+        run: {{ template "fullname" . }}-operator
+    spec:
+      containers:
+      - args:
+        - --icinga-secret-name={{ template "fullname" . }}-icinga
+        - --icinga-secret-namespace={{.Release.Namespace}}
+        - --v=3
+        image: {{.Values.searchlight.image}}:{{.Values.searchlight.imageTag}}
+        name: appscode-searchlight

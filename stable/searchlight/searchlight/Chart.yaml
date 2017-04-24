@@ -1,0 +1,10 @@
+apiVersion: v1
+description: Searchlight is an Alert Management project. It has a Controller to watch Kubernetes Objects. Alert objects are consumed by Searchlight Controller to create Icinga2 hosts, services and notifications.
+icon: https://cdn.appscode.com/images/icon/searchlight.png
+name: searchlight
+version: 0.1.0
+sources:
+  - https://github.com/appscode/searchlight
+maintainers:
+  - name: 'AppsCode Inc.'
+    email: support@appscode.com
