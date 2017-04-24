@@ -59,18 +59,31 @@ The following tables lists the configurable parameters of the Magento chart and 
 | `magentoMode`                      | Magento mode                             | `developer`                                              |
 | `magentoAdminUri`                  | Magento prefix to access Magento Admin   | `admin`                                                  |
 | `mariadb.mariadbRootPassword`      | MariaDB admin password                   | `nil`                                                    |
+| `mariadb.persistence.storageClass` | PVC Storage Class for MariaDB volume     | `nil`  (uses alpha storage annotation)                   |
+| `mariadb.persistence.accessMode`   | PVC Access Mode for MariaDb volume       | `ReadWriteOnce`                                          |
+| `mariadb.persistence.size`         | PVC Storage Request for MariaDB volume   | `8Gi`                                                    |
 | `serviceType`                      | Kubernetes Service type                  | `LoadBalancer`                                           |
 | `persistence.enabled`              | Enable persistence using PVC             | `true`                                                   |
-| `persistence.apache.storageClass`  | PVC Storage Class for Apache volume      | `nil`  (uses alpha storage annotation)                                              |
+| `persistence.apache.storageClass`  | PVC Storage Class for Apache volume      | `nil`  (uses alpha storage annotation)                   |
 | `persistence.apache.accessMode`    | PVC Access Mode for Apache volume        | `ReadWriteOnce`                                          |
 | `persistence.apache.size`          | PVC Storage Request for Apache volume    | `1Gi`                                                    |
-| `persistence.magento.storageClass` | PVC Storage Class for Magento volume     | `nil`  (uses alpha storage annotation)                                                |
+| `persistence.magento.storageClass` | PVC Storage Class for Magento volume     | `nil`  (uses alpha storage annotation)                   |
 | `persistence.magento.accessMode`   | PVC Access Mode for Magento volume       | `ReadWriteOnce`                                          |
 | `persistence.magento.size`         | PVC Storage Request for Magento volume   | `8Gi`                                                    |
 | `resources`                        | CPU/Memory resource requests/limits      | Memory: `512Mi`, CPU: `300m`                             |
 
 The above parameters map to the env variables defined in [bitnami/magento](http://github.com/bitnami/bitnami-docker-magento). For more information please refer to the [bitnami/magento](http://github.com/bitnami/bitnami-docker-magento) image documentation.
 
+A YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
+
+```console
+$ helm inspect values stable/magento > values.yaml
+$ vi values.yaml
+$ helm install --name my-release -f values.yaml stable/magento
+
+### Installing on GKE
+
+```
 > **Note**:
 >
 > For Magento to function correctly, you should specify the `magentoHost` parameter to specify the FQDN (recommended) or the public IP address of the Magento service.
@@ -85,23 +98,69 @@ The above parameters map to the env variables defined in [bitnami/magento](http:
 >
 > The reserved IP address can be associated to the Magento service by specifying it as the value of the `magentoLoadBalancerIP` parameter while installing the chart.
 
-Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
+### Installing on minikube
 
-```console
-$ helm install --name my-release \
-  --set magentoUsername=admin,magentoPassword=password,mariadb.mariadbRootPassword=secretpassword \
-    stable/magento
+    $ helm inspect values stable/magento > values.yaml
+
+And then edit values.yaml to provide values for at least:
+
+- magentoPassword  (requires both letters and numbers)
+- magentoEmail
+- mariadb.mariadbRootPassword
+- serviceType: NodePort
+
+    $ helm install --name my-release -f values.yaml stable/magento
+
+Magento will partially install, but it needs `magentoHost` to be defined to complete installation.   Edit your values.yaml file to set magentoHost to `minikube ip` and the NodePort from `kubectl describe service my-release-magento`.   For example, my magentoHost was `192.168.42.159:31649`
+
+    $ helm upgrade my-release -f values.yaml stable/magento
+
+After it finishes installing, you can access magento via magentoHost.
+
+### Installing on Metal
+
+Requirements:
+
+- Ingress
+- a storage plugin such as glusterfs
+- A DNS entry for your installation pointing to your Ingress Load Balancer.   For example a CNAME of my-release.example.com to ingress.example.com
+
+    $ helm inspect values stable/magento > values.yaml
+
+And then edit values.yaml to provide values for at least:
+
+- magentoHost
+- magentoPassword  (requires both letters and numbers)
+- magentoEmail
+- mariadb.mariadbRootPassword
+- mariadb.persistence.storageClass
+- serviceType: NodePort
+- persistence.apache.storageClass
+- persistence.magento.storageClass
+
+    $ helm install --name my-release -f values.yaml stable/magento
+
+Create an ingress file ingress.yaml:
+
+```yaml
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: my-release-ingress
+spec:
+  rules:
+  - host: my-release.example.com
+    http:
+      paths:
+      - backend:
+          serviceName: my-release-magento
+          servicePort: 80
 ```
 
-The above command sets the Magento administrator account username and password to `admin` and `password` respectively. Additionally it sets the MariaDB `root` user password to `secretpassword`.
+and install it
 
-Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
-
-```console
-$ helm install --name my-release -f values.yaml stable/magento
-```
-
-> **Tip**: You can use the default [values.yaml](values.yaml)
+    $ kubectl apply -f ingress.yaml
 
 ## Persistence
 
