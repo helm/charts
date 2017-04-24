@@ -1,6 +1,11 @@
 server:
   port: ${services.gate.port:8084}
   address: 0.0.0.0
+  # ssl:
+  #   enabled: true
+  #   keyStore: /opt/spinnaker/gate-tls/keystore.jks
+  #   keyStorePassword: a1pine
+  #   keyAlias: server
 
 # Circular references since we're already using 'services'
 # services:
@@ -19,6 +24,9 @@ server:
 #   igor:
 #     enabled: ${services.igor.enabled:false}
 #     baseUrl: ${services.igor.baseUrl:8088}
+
+cors:
+  allowedOriginsPattern: '^https?://(?:localhost|[^/]+\.example\.com)(?::[1-9]\d*)?/?$'
 
 redis:
   connection: ${services.redis.connection}

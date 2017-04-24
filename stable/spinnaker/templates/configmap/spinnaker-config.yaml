@@ -6,7 +6,107 @@ metadata:
     app: {{ template "fullname" . }}
 data:
   clouddriver.yml: |
-{{.Files.Get "config/clouddriver.yml" | indent 4}}
+    server:
+      port: ${services.clouddriver.port:7002}
+      address: ${services.clouddriver.host:localhost}
+
+    redis:
+      connection: ${services.redis.connection:redis://localhost:6379}
+
+    udf:
+      # Controls whether UserDataProviders are used to populate user data of new
+      # server groups. If false, user data is copied over from ancestor server
+      # groups on both CopyLastAsgAtomicOperation and
+      # ModifyAsgLaunchConfigurationOperation (only if no user data is provided
+      # on the given request).
+      enabled: ${services.clouddriver.aws.udf.enabled:true}
+
+    default:
+      account:
+        env: ${providers.aws.primaryCredentials.name}
+
+    aws:
+      # AWS Credentials are passed either as environment variables or through
+      # a standard AWS file $HOME/.aws/credentials
+      # See providers.aws.primaryCredentials in spinnaker.yml for more
+      # info on setting environment variables.
+      enabled: ${providers.aws.enabled:false}
+      defaults:
+        iamRole: ${provider.aws.defaultIAMRole:BaseIAMRole}
+      defaultRegions:
+        - name: ${providers.aws.defaultRegion:us-east-1}
+      defaultFront50Template: ${services.front50.baseUrl}
+      defaultKeyPairTemplate: ${providers.aws.defaultKeyPairTemplate}
+
+    azure:
+      enabled: ${providers.azure.enabled:false}
+
+      accounts:
+        - name: ${providers.azure.primaryCredentials.name}
+          clientId: ${providers.azure.primaryCredentials.clientId}
+          appKey: ${providers.azure.primaryCredentials.appKey}
+          tenantId: ${providers.azure.primaryCredentials.tenantId}
+          subscriptionId: ${providers.azure.primaryCredentials.subscriptionId}
+
+    google:
+      enabled: ${providers.google.enabled:false}
+
+      accounts:
+        - name: ${providers.google.primaryCredentials.name}
+          project: ${providers.google.primaryCredentials.project}
+          jsonPath: ${providers.google.primaryCredentials.jsonPath}
+
+    cf:
+      enabled: ${providers.cf.enabled:false}
+
+      accounts:
+        - name: ${providers.cf.primaryCredentials.name}
+          api: ${providers.cf.primaryCredentials.api}
+          console: ${providers.cf.primaryCredentials.console}
+          org: ${providers.cf.defaultOrg}
+          space: ${providers.cf.defaultSpace}
+          username: ${providers.cf.account.name:}
+          password: ${providers.cf.account.password:}
+
+    kubernetes:
+      enabled: ${providers.kubernetes.enabled:false}
+      accounts:
+        - name: ${providers.kubernetes.primaryCredentials.name}
+          serviceAccount: true
+          dockerRegistries:
+          {{- range $index, $account := .Values.accounts }}
+          - accountName: {{ $account.name }}
+          {{ end }}
+
+    dockerRegistry:
+      {{ if .Values.accounts }}
+      enabled: true
+      accounts:
+        {{- range $index, $account := .Values.accounts }}
+        - name: {{ $account.name }}
+          address: {{ $account.address }}
+          {{- if $account.username }}
+          username: {{ $account.username }}
+          email: {{ $account.email }}
+          {{- end }}
+          {{- if $account.password }}
+          passwordFile: /tmp/registry/password-{{ $account.name }}
+          {{- end }}
+          {{- if $account.repositories }}
+          repositories:
+            {{- range $index, $repo := $account.repositories }}
+            - {{ $repo }}
+            {{- end }}
+          {{- end }}
+        {{- end }}
+      {{ else }}
+      enabled: false
+      {{ end }}
+
+    credentials:
+      primaryAccountTypes: ${providers.aws.primaryCredentials.name}, ${providers.google.primaryCredentials.name}, ${providers.cf.primaryCredentials.name}, ${providers.azure.primaryCredentials.name}
+      challengeDestructiveActionsEnvironments: ${providers.aws.primaryCredentials.name}, ${providers.google.primaryCredentials.name}, ${providers.cf.primaryCredentials.name}, ${providers.azure.primaryCredentials.name}
+
   echo.yml: |
 {{.Files.Get "config/echo.yml" | indent 4}}
   echo-local.yml: |
@@ -36,7 +136,59 @@ data:
   rosco-local.yml: |
 {{.Files.Get "config/rosco-local.yml" | indent 4}}
   settings.js: |
-{{.Files.Get "config/settings.js" | indent 4}}
+    'use strict';
+
+    var feedbackUrl = 'http://localhost';
+    var gateHost = '{{ .Values.protocol }}://{{ .Values.host }}:9000/gate';
+    var bakeryDetailUrl = gateHost + '/bakery/logs/global/{{"{{"}}context.status.id{{"}}"}}';
+
+    window.spinnakerSettings = {
+      defaultProviders: ['kubernetes'],
+      feedbackUrl: feedbackUrl,
+      gateUrl: gateHost,
+      bakeryDetailUrl: bakeryDetailUrl,
+      pollSchedule: 30000,
+      defaultTimeZone: 'America/Los_Angeles', // see http://momentjs.com/timezone/docs/#/data-utilities/
+      providers: {
+        kubernetes: {
+          defaults: {
+            account: 'local',
+            namespace: 'default'
+          },
+        }
+      },
+      notifications: {
+        email: {
+          enabled: true,
+        },
+        hipchat: {
+          enabled: false,
+          botName: 'Skynet T-800'
+        },
+        sms: {
+          enabled: false,
+        },
+        slack: {
+          enabled: false,
+          botName: 'spinnakerbot'
+        }
+      },
+      whatsNew: {
+        gistId: '32526cd608db3d811b38',
+        fileName: 'news.md',
+      },
+      feature: {
+        pipelines: true,
+        jobs: true,
+        notifications: true,
+        fastProperty: false,
+        vpcMigrator: false,
+        clusterDiff: false,
+        roscoMode: false,
+        netflixMode: false,
+        infrastructureStages: true, // Should 'createLoadBalancer' be a pipeline stage? (no).
+      },
+    };
   spinnaker.yml: |
 {{.Files.Get "config/spinnaker.yml" | indent 4}}
   clouddriver-local.yml: |
@@ -63,10 +215,19 @@ data:
       {{- range $index, $account := .Values.accounts }}
         - name: {{ $account.name }}
           address: {{ $account.address }}
+          {{- if $account.username }}
+          username: {{ $account.username }}
+          email: {{ $account.email }}
+          {{- end }}
+          {{- if $account.password }}
+          passwordFile: /tmp/registry/password-{{ $account.name }}
+          {{- end }}
+          {{ if $account.repositories }}
           repositories:
             {{- range $index, $repo := $account.repositories }}
             - {{ $repo }}
             {{- end }}
+          {{ end }}
       {{- end }}
     credentials:
       primaryAccountTypes: ${providers.kubernetes.primaryCredentials.name}
@@ -82,7 +243,7 @@ data:
         # (clouddriver, gate, etc) at once, but not external systems (jenkins, etc).
         # Individual systems can still be overridden using their own section entry
         # directly under 'services'.
-        host: localhost
+        host: {{ .Values.host }}
         protocol: http
 
       clouddriver:
@@ -129,7 +290,7 @@ data:
       deck:
         host: {{ template "fullname" . }}-deck
         port: 9000
-        baseUrl: ${services.default.protocol}://${services.deck.host}:${services.deck.port}
+        baseUrl: {{ .Values.protocol }}://${services.deck.host}:${services.deck.port}
         gateUrl: ${services.gate.baseUrl}
         bakeryUrl: ${services.bakery.baseUrl}
         timezone: 'America/New_York'
@@ -155,11 +316,11 @@ data:
           project: my-project
         s3:
           enabled: true
-          endpoint: http://{{ .Release.Name }}-minio:9000
+          endpoint: http://{{ .Release.Name }}-minio-svc:9000
       gate:
         host: {{ template "fullname" . }}-gate
         port: 8084
-        baseUrl: ${services.default.protocol}://${services.gate.host}:${services.gate.port}
+        baseUrl: {{ .Values.protocol }}://${services.gate.host}:${services.gate.port}/gate
 
       igor:
         # If you are integrating Jenkins then you must also enable Spinnaker's
@@ -232,16 +393,46 @@ data:
         connection: redis://:{{ .Values.redis.redisPassword }}@${services.redis.host}:${services.redis.port}
 
     providers:
+    {{ with $account := first .Values.accounts }}
       kubernetes:
         enabled: true
         primaryCredentials:
           name: local
           namespace: default
-          dockerRegistryAccount: ${providers.dockerRegistry.primaryCredentials.name}
+          dockerRegistryAccount: {{ $account.name }}
 
       dockerRegistry:
         enabled: true
         primaryCredentials:
-          name: my-docker-account
-          address: https://index.docker.io/
-          repository: {{ .Values.repository }}
+          name: {{ $account.name }}
+          address: {{ $account.address }}
+          repository: vic-goog/gceme
+          {{- if $account.username }}
+          username: {{ $account.username }}
+          email: {{ $account.email }}
+          {{- end }}
+          {{- if $account.password }}
+          passwordFile: /tmp/registry/password-{{ $account.name }}
+          {{- end }}
+    {{ end }}
+  spinnaker-apache.conf: |
+    <VirtualHost 0.0.0.0:9000>
+      {{- if eq .Values.protocol "https" }}
+      SSLEngine on
+      SSLProxyEngine on
+      SSLProxyVerify none
+      SSLProxyCheckPeerCN off
+      SSLProxyCheckPeerName off
+      SSLProxyCheckPeerExpire off
+      SSLCertificateFile "/opt/spinnaker/gate-tls/server.crt"
+      SSLCertificateKeyFile "/opt/spinnaker/gate-tls/server.key"
+      {{- end }}
+      DocumentRoot /opt/deck/html
+
+      ProxyPass "/gate" "{{ .Values.protocol }}://{{ template "fullname" . }}-gate:8084/" retry=0
+      ProxyPassReverse "/gate" "{{ .Values.protocol }}://{{ template "fullname" . }}-gate:8084/"
+
+      <Directory "/opt/deck/html/">
+        Require all granted
+      </Directory>
+    </VirtualHost>

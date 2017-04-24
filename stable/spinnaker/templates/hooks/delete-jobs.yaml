@@ -25,7 +25,7 @@ spec:
 
       containers:
       - name: post-install-job
-        image: "lachlanevenson/k8s-kubectl:v1.4.7"
+        image: "lachlanevenson/k8s-kubectl:v1.6.0"
         volumeMounts:
         - name: kubectl
           mountPath: /kubectl

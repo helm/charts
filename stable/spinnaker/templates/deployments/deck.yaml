@@ -6,9 +6,14 @@ metadata:
     app: {{ template "fullname" . }}
     component: deck
 spec:
+  strategy:
+    rollingUpdate:
+      maxUnavailable: 0
   replicas: 1
   template:
     metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap/spinnaker-config.yaml") . | sha256sum }}
       labels:
         app: {{ template "fullname" . }}
         component: deck
@@ -16,23 +21,31 @@ spec:
       containers:
         - image: {{ .Values.images.deck }}
           name: deck
-          command:
-            - /bin/bash
-            - -c
-          args:
-            - "cp /opt/spinnaker/config/settings.js .; npm start"
           env:
+            - name: API_HOST
+              value: {{ .Values.protocol }}://{{ template "fullname" . }}-gate:8084/
             - name: DECK_HOST
               value: "0.0.0.0"
             - name: DECK_PORT
               value: "9000"
+            {{- if eq .Values.protocol "https" }}
+            - name: DECK_CERT
+              value: /opt/spinnaker/gate-tls/server.crt
+            - name: DECK_KEY
+              value: /opt/spinnaker/gate-tls/server.key
+            {{- end }}
           ports:
             - containerPort: 9000
               name: deck
           volumeMounts:
             - mountPath: /opt/spinnaker/config
               name: {{ template "fullname" . }}-spinnaker-config
+            - mountPath: /opt/spinnaker/gate-tls
+              name: {{ template "fullname" . }}-gate-tls
       volumes:
         - name: {{ template "fullname" . }}-spinnaker-config
           configMap:
             name: {{ template "fullname" . }}-spinnaker-config
+        - name: {{ template "fullname" . }}-gate-tls
+          secret:
+            secretName: gate-tls

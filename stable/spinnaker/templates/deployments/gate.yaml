@@ -6,9 +6,14 @@ metadata:
     app: {{ template "fullname" . }}
     component: gate
 spec:
+  strategy:
+    rollingUpdate:
+      maxUnavailable: 0
   replicas: 1
   template:
     metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap/spinnaker-config.yaml") . | sha256sum }}
       labels:
         app: {{ template "fullname" . }}
         component: gate
@@ -22,9 +27,10 @@ spec:
           volumeMounts:
             - mountPath: /opt/spinnaker/config
               name: {{ template "fullname" . }}-spinnaker-config
+            - mountPath: /opt/spinnaker/gate-tls
+              name: {{ template "fullname" . }}-gate-tls
           livenessProbe:
-            httpGet:
-              path: /env
+            tcpSocket:
               port: 8084
             initialDelaySeconds: 30
             timeoutSeconds: 1
@@ -32,3 +38,6 @@ spec:
         - name: {{ template "fullname" . }}-spinnaker-config
           configMap:
             name: {{ template "fullname" . }}-spinnaker-config
+        - name: {{ template "fullname" . }}-gate-tls
+          secret:
+            secretName: gate-tls
