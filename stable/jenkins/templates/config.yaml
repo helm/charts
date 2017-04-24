@@ -42,7 +42,11 @@ data:
                 <org.csanchez.jenkins.plugins.kubernetes.ContainerTemplate>
                   <name>jnlp</name>
                   <image>{{ .Values.Agent.Image }}:{{ .Values.Agent.ImageTag }}</image>
+{{- if .Values.Agent.Privileged }}
+                  <privileged>true</privileged>
+{{- else }}
                   <privileged>false</privileged>
+{{- end }}
                   <alwaysPullImage>false</alwaysPullImage>
                   <workingDir>/home/jenkins</workingDir>
                   <command></command>
