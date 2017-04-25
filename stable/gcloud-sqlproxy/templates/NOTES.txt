@@ -22,6 +22,17 @@ settings were not provided.
 
 {{- if (ne (printf "%s" .Values.serviceAccountKey) "") and (ne (printf "%s" .Values.cloudsql.instance) "PROJECT:REGION:INSTANCE") }}
 
-The SQL server instance can be accessed via port {{ .Values.cloudsql.port }} on the following DNS name from within your cluster:
+The SQL server instance can be accessed via port {{ .Values.cloudsql.port }} on the
+following DNS name from within your cluster:
 - {{ template "fullname" . }}.{{ .Release.Namespace }}
+
+{{- else -}}
+
+This deployment will be incomplete until you provide GCP Service Account key
+and `PROJECT:REGION:INSTANCE` settings:
+
+  helm upgrade {{ .Release.Name }} \
+      --set serviceAccountKey="$(cat service-account.json | base64)" \
+      --set cloudsql.instance="PROJECT:REGION:INSTANCE" stable/gcloud-sqlproxy
+
 {{- end }}
