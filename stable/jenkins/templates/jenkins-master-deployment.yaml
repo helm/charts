@@ -78,6 +78,10 @@ spec:
               name: http
             - containerPort: {{.Values.Master.SlaveListenerPort}}
               name: slavelistener
+            {{- if .Values.Master.JMXPort }}
+            - containerPort: {{ .Values.Master.JMXPort }}
+              name: jmx
+            {{- end }}
           resources:
             requests:
               cpu: "{{.Values.Master.Cpu}}"
