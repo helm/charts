@@ -30,9 +30,9 @@ postgresql:
 
 config:
   system:
-    secret: "changeme"
+    secret: "changeme_changeme_changeme"
   consentUrl: "https://consent.example.com"
-  logLevel: "info"
+  logLevel: "debug"
   accessTokenLifespan: "1h"
   idTokenLifespan: "1h"
   authorizeCodeLifespan: "10m"
