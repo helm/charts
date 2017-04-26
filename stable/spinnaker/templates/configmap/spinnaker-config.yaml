@@ -319,7 +319,7 @@ data:
       deck:
         host: {{ template "fullname" . }}-deck
         port: 9000
-        baseUrl: http://${services.deck.host}:${services.deck.port}
+        baseUrl: ${services.default.protocol}://${services.deck.host}:${services.deck.port}
         gateUrl: ${services.gate.baseUrl}
         bakeryUrl: ${services.bakery.baseUrl}
         timezone: 'America/New_York'
@@ -349,7 +349,7 @@ data:
       gate:
         host: {{ template "fullname" . }}-gate
         port: 8084
-        baseUrl: {{ .Values.protocol }}://${services.gate.host}:${services.gate.port}/gate
+        baseUrl: ${services.default.protocol}://${services.gate.host}:${services.gate.port}/gate
 
       igor:
         # If you are integrating Jenkins then you must also enable Spinnaker's
