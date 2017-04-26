@@ -27,8 +27,6 @@ spec:
           volumeMounts:
             - mountPath: /opt/spinnaker/config
               name: {{ template "fullname" . }}-spinnaker-config
-            - mountPath: /opt/spinnaker/gate-tls
-              name: {{ template "fullname" . }}-gate-tls
           livenessProbe:
             tcpSocket:
               port: 8084
@@ -38,6 +36,3 @@ spec:
         - name: {{ template "fullname" . }}-spinnaker-config
           configMap:
             name: {{ template "fullname" . }}-spinnaker-config
-        - name: {{ template "fullname" . }}-gate-tls
-          secret:
-            secretName: gate-tls

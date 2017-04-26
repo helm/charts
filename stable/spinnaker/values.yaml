@@ -3,9 +3,6 @@
 # For more info visit:
 #   http://www.spinnaker.io/v1.0/docs/target-deployment-configuration#section-docker-registry
 
-host: localhost
-protocol: http
-
 # Configure your Docker registries here
 accounts:
 - name: dockerhub
@@ -43,8 +40,20 @@ images:
   front50: quay.io/spinnaker/front50:v1.90.0
   rosco: quay.io/spinnaker/rosco:v0.93.0
 
+# Change this if youd like to expose Spinnaker outside the cluster
+deck:
+  host: localhost
+  port: 9000
+  protocol: http
+
+gate:
+  allowedOriginsPattern: '^https?://(?:localhost|[^/]+\.example\.com)(?::[1-9]\d*)?/?$'
+
 # Bucket to use when storing config data in S3 compatible storage
 storageBucket: spinnaker
+
+# Change service type for UI service
+serviceType: ClusterIP
 
 # Resources to provide to each of
 # the Spinnaker components

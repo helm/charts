@@ -120,9 +120,38 @@ data:
   front50-local.yml: |
 {{.Files.Get "config/front50-local.yml" | indent 4}}
   gate.yml: |
-{{.Files.Get "config/gate.yml" | indent 4}}
-  gate-local.yml: |
-{{.Files.Get "config/gate-local.yml" | indent 4}}
+    server:
+      port: ${services.gate.port:8084}
+      address: 0.0.0.0
+      # ssl:
+      #   enabled: false
+      #   keyStore: /opt/spinnaker/gate-tls/keystore.jks
+      #   keyStorePassword: password
+      #   keyAlias: server
+
+    # Circular references since we're already using 'services'
+    # services:
+    #   clouddriver:
+    #     baseUrl: ${services.clouddriver.baseUrl:localhost:7002}
+    #   orca:
+    #     baseUrl: ${services.orca.baseUrl:localhost:8083}
+    #   front50:
+    #     baseUrl: ${services.front50.baseUrl:localhost:8080}
+    # #optional services:
+    #   echo:
+    #     enabled: ${services.echo.enabled:true}
+    #     baseUrl: ${services.echo.baseUrl:8089}
+    #   flapjack:
+    #     enabled: ${services.flapjack.enabled:false}
+    #   igor:
+    #     enabled: ${services.igor.enabled:false}
+    #     baseUrl: ${services.igor.baseUrl:8088}
+
+    cors:
+      allowedOriginsPattern: {{ .Values.gate.allowedOriginsPattern }}
+
+    redis:
+      connection: ${services.redis.connection}
   igor.yml: |
 {{.Files.Get "config/igor.yml" | indent 4}}
   igor-local.yml: |
@@ -139,7 +168,7 @@ data:
     'use strict';
 
     var feedbackUrl = 'http://localhost';
-    var gateHost = '{{ .Values.protocol }}://{{ .Values.host }}:9000/gate';
+    var gateHost = '{{ .Values.deck.protocol }}://{{ .Values.deck.host }}:{{ .Values.deck.port }}/gate';
     var bakeryDetailUrl = gateHost + '/bakery/logs/global/{{"{{"}}context.status.id{{"}}"}}';
 
     window.spinnakerSettings = {
@@ -243,7 +272,7 @@ data:
         # (clouddriver, gate, etc) at once, but not external systems (jenkins, etc).
         # Individual systems can still be overridden using their own section entry
         # directly under 'services'.
-        host: {{ .Values.host }}
+        host: localhost
         protocol: http
 
       clouddriver:
@@ -290,7 +319,7 @@ data:
       deck:
         host: {{ template "fullname" . }}-deck
         port: 9000
-        baseUrl: {{ .Values.protocol }}://${services.deck.host}:${services.deck.port}
+        baseUrl: http://${services.deck.host}:${services.deck.port}
         gateUrl: ${services.gate.baseUrl}
         bakeryUrl: ${services.bakery.baseUrl}
         timezone: 'America/New_York'
@@ -415,24 +444,3 @@ data:
           passwordFile: /tmp/registry/password-{{ $account.name }}
           {{- end }}
     {{ end }}
-  spinnaker-apache.conf: |
-    <VirtualHost 0.0.0.0:9000>
-      {{- if eq .Values.protocol "https" }}
-      SSLEngine on
-      SSLProxyEngine on
-      SSLProxyVerify none
-      SSLProxyCheckPeerCN off
-      SSLProxyCheckPeerName off
-      SSLProxyCheckPeerExpire off
-      SSLCertificateFile "/opt/spinnaker/gate-tls/server.crt"
-      SSLCertificateKeyFile "/opt/spinnaker/gate-tls/server.key"
-      {{- end }}
-      DocumentRoot /opt/deck/html
-
-      ProxyPass "/gate" "{{ .Values.protocol }}://{{ template "fullname" . }}-gate:8084/" retry=0
-      ProxyPassReverse "/gate" "{{ .Values.protocol }}://{{ template "fullname" . }}-gate:8084/"
-
-      <Directory "/opt/deck/html/">
-        Require all granted
-      </Directory>
-    </VirtualHost>

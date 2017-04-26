@@ -23,29 +23,18 @@ spec:
           name: deck
           env:
             - name: API_HOST
-              value: {{ .Values.protocol }}://{{ template "fullname" . }}-gate:8084/
+              value: http://{{ template "fullname" . }}-gate:8084/
             - name: DECK_HOST
               value: "0.0.0.0"
             - name: DECK_PORT
               value: "9000"
-            {{- if eq .Values.protocol "https" }}
-            - name: DECK_CERT
-              value: /opt/spinnaker/gate-tls/server.crt
-            - name: DECK_KEY
-              value: /opt/spinnaker/gate-tls/server.key
-            {{- end }}
           ports:
             - containerPort: 9000
               name: deck
           volumeMounts:
             - mountPath: /opt/spinnaker/config
               name: {{ template "fullname" . }}-spinnaker-config
-            - mountPath: /opt/spinnaker/gate-tls
-              name: {{ template "fullname" . }}-gate-tls
       volumes:
         - name: {{ template "fullname" . }}-spinnaker-config
           configMap:
             name: {{ template "fullname" . }}-spinnaker-config
-        - name: {{ template "fullname" . }}-gate-tls
-          secret:
-            secretName: gate-tls
