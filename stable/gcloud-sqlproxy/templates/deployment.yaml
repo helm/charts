@@ -1,4 +1,4 @@
-{{- if (ne (printf "%s" .Values.serviceAccountKey) "") and (ne (printf "%s" .Values.cloudsql.instance) "PROJECT:REGION:INSTANCE") }}
+{{- if and .Values.serviceAccountKey (ne .Values.cloudsql.instance "PROJECT:REGION:INSTANCE") }}
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:

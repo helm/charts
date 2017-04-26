@@ -1,6 +1,6 @@
 ** Please be patient while the chart is being deployed **
 
-{{- if eq (printf "%s" .Values.serviceAccountKey) "" }}
+{{- if not .Values.serviceAccountKey }}
 ##############################################################################
 ####   ERROR: You did not provide Google Cloud Service Account key.       ####
 ##############################################################################
@@ -9,7 +9,7 @@ All pods do not go to the running state if the GCP Service Account key was not p
 
 {{- end }}
 
-{{- if eq (printf "%s" .Values.cloudsql.instance) "PROJECT:REGION:INSTANCE" }}
+{{- if eq .Values.cloudsql.instance "PROJECT:REGION:INSTANCE" }}
 
 ##############################################################################
 ####   ERROR: You did not provide Google Cloud PROJECT:REGION:INSTANCE    ####
@@ -20,7 +20,7 @@ settings were not provided.
 
 {{- end }}
 
-{{- if (ne (printf "%s" .Values.serviceAccountKey) "") and (ne (printf "%s" .Values.cloudsql.instance) "PROJECT:REGION:INSTANCE") }}
+{{- if and .Values.serviceAccountKey (ne .Values.cloudsql.instance "PROJECT:REGION:INSTANCE") }}
 
 The SQL server instance can be accessed via port {{ .Values.cloudsql.port }} on the
 following DNS name from within your cluster:
