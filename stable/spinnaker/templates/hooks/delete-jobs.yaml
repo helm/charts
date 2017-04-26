@@ -30,4 +30,4 @@ spec:
         command:
         - sh
         - -c
-        - "kubectl delete job {{.Release.Name}}-create-bucket {{.Release.Name}}-upload-build-image {{.Release.Name}}-delete-jobs {{.Release.Name}}-upload-run-script"
+        - "kubectl delete job --namespace {{ .Release.Namespace }} {{.Release.Name}}-create-bucket {{.Release.Name}}-upload-build-image {{.Release.Name}}-delete-jobs {{.Release.Name}}-upload-run-script"
