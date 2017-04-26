@@ -3,9 +3,8 @@ kind: Job
 metadata:
   name: "{{.Release.Name}}-delete-jobs"
   labels:
-    heritage: {{.Release.Service | quote }}
-    release: {{.Release.Name | quote }}
-    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+    app: {{ template "fullname" . }}
+    component: spinnaker
   annotations:
     "helm.sh/hook": post-delete
 spec:
@@ -13,9 +12,8 @@ spec:
     metadata:
       name: "{{.Release.Name}}"
       labels:
-        heritage: {{.Release.Service | quote }}
-        release: {{.Release.Name | quote }}
-        chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+        app: {{ template "fullname" . }}
+        component: spinnaker
     spec:
       restartPolicy: OnFailure
       volumes:
