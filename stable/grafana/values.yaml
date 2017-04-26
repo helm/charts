@@ -86,6 +86,16 @@ server:
     ##
     # storageClass:
 
+    ## Data Persistent Volume existing claim name
+    ## Requires server.persistentVolume.enabled: true
+    ## If defined, PVC must be created manually before volume will be bound
+    existingClaim: ""
+
+    ## Subdirectory of data Persistent Volume to mount
+    ## Useful if the volume's root directory is not empty
+    ##
+    subPath: ""
+
   ## Grafana resource requests and limits
   ## Ref: http://kubernetes.io/docs/user-guide/compute-resources/
   ##
