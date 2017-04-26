@@ -2,6 +2,7 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: "{{.Release.Name}}-delete-jobs"
+  namespace: {{ .Release.Namespace }}
   labels:
     app: {{ template "fullname" . }}
     component: spinnaker
