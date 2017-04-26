@@ -29,6 +29,10 @@ spec:
               name: {{ template "fullname" . }}-spinnaker-config
             - mountPath: /root/.aws
               name: {{ template "fullname" . }}-s3-config
+            {{ if .Values.gcs.enabled }}
+            - mountPath: /root/.kube
+              name: {{ template "fullname" . }}-gcs
+            {{ end }}
           readinessProbe:
             httpGet:
               path: /env
@@ -42,3 +46,8 @@ spec:
         - name: {{ template "fullname" . }}-s3-config
           configMap:
             name: {{ template "fullname" . }}-s3-config
+        {{ if .Values.gcs.enabled }}
+        - name: {{ template "fullname" . }}-gcs
+          secret:
+            secretName: {{ template "fullname" . }}-gcs
+        {{ end }}

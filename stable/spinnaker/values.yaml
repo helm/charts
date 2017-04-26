@@ -73,10 +73,16 @@ redis:
 # Minio access/secret keys for the in-cluster S3 usage
 # Minio is not exposed publically
 minio:
+  enabled: true
   imageTag: RELEASE.2016-11-26T02-23-47Z
   serviceType: ClusterIP
   accessKey: spinnakeradmin
   secretKey: spinnakeradmin
+
+gcs:
+  enabled: false
+  project: my-project-name
+  jsonKey: '<INSERT CLOUD STORAGE JSON HERE>'
 
 # Configuration for the Jenkins instance that is attached to the
 # igor component of Spinnaker. For more info about the Jenkins integration

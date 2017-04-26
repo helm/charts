@@ -340,12 +340,19 @@ data:
           enabled: false
         redis:
           enabled: false
+        {{ if .Values.gcs.enabled }}
+        gcs:
+          enabled: true
+          project: {{ .Values.gcs.project }}
+        s3:
+          enabled: false
+        {{ else }}
         gcs:
           enabled: false
-          project: my-project
         s3:
           enabled: true
           endpoint: http://{{ .Release.Name }}-minio-svc:9000
+        {{ end }}
       gate:
         host: {{ template "fullname" . }}-gate
         port: 8084
