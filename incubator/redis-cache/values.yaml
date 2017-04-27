@@ -1,6 +1,8 @@
 # Default values for redis-cache.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
+
+##Statefulset related configurations ss.yaml
 replicaCount: 3
 image:
   redis: redis
@@ -11,14 +13,16 @@ tag:
   redis: 3.0-alpine
   microSentinel: latest
   makeSlave: latest
-service:
-  name: rd-port
-  port: 6379
-  type: ClusterIP
-podDisruptionBudget:
-  minAvailable: 2
 resources:
   limits:
     memory: 128Mi
   requests:
     memory: 128Mi
+# Service related configurations
+service:
+  name: rd-port
+  port: 6379
+  type: ClusterIP
+# Pod Disruption budget related configurations
+podDisruptionBudget:
+  minAvailable: 2

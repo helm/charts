@@ -70,10 +70,7 @@ spec:
         - containerPort: {{ .Values.service.port }}
           name: {{ .Values.service.name }}
         resources:
-          requests:
-            memory: {{ .Values.resources.requests.memory }}
-          limits:
-            memory: {{ .Values.resources.limits.memory }}
+{{ toYaml .Values.resources | indent 12 }}
       - name: make-slave
         image: {{ .Values.image.makeSlave }}:{{ .Values.tag.makeSlave }}
         env:
