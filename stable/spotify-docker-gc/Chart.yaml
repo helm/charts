@@ -1,0 +1,9 @@
+name: spotify-docker-gc
+home: https://github.com/spotify/docker-gc
+version: 0.1.0
+description: A simple Docker container and image garbage collection script.
+sources:
+  - https://github.com/spotify/docker-gc
+maintainers:
+  - name: Vaughn Dice
+    email: vadice@microsoft.com

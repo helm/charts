@@ -1,0 +1,6 @@
+The spotify/docker-gc utility is now running on all Kubernetes cluster nodes.
+
+To access the DaemonSet, run 'kubectl get ds --namespace {{ .Release.Namespace }} {{ template "name" . }}'
+To access the Pod(s), run 'kubectl get pods --namespace {{ .Release.Namespace }} -l daemonset={{ template "name" . }}'
+
+For more information on configuration possibilities of this utility, visit: https://github.com/spotify/docker-gc

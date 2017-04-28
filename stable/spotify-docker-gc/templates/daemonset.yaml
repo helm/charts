@@ -1,0 +1,40 @@
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: {{ template "name" . }}
+spec:
+  {{- if ge .Capabilities.KubeVersion.Minor "6" }}
+  updateStrategy:
+    type: RollingUpdate
+  {{- end }}
+  template:
+    metadata:
+      labels:
+        daemonset: {{ template "name" . }}
+    spec:
+      containers:
+      - name: {{ template "name" . }}
+        image: "{{ .Values.image.registry }}/{{ .Values.image.org }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        command: ["/bin/sh"]
+        args: ["-c", '
+        {{- if .Values.exclude }}
+          echo "{{ .Values.exclude.images }}" | tr " " "\n" > /etc/docker-gc-exclude &&
+          echo "{{ .Values.exclude.containers }}" | tr " " "\n" > /etc/docker-gc-exclude-containers &&
+        {{- end }}
+          touch {{ .Values.cron.log }} &&
+          echo "{{ .Values.cron.schedule }} /docker-gc >> {{ .Values.cron.log }} 2>&1" | crontab - &&
+          crond -L {{ .Values.cron.log }} &&
+          tail -f {{ .Values.cron.log }}' ]
+        env:
+        - name: GRACE_PERIOD_SECONDS
+          value: "{{ .Values.env.gracePeriodSeconds }}"
+        - name: DOCKER_API_VERSION
+          value: "{{ .Values.env.dockerAPIVersion }}"
+        volumeMounts:
+        - name: docker-socket
+          mountPath: /var/run/docker.sock
+      volumes:
+      - name: docker-socket
+        hostPath:
+          path: /var/run/docker.sock
