@@ -23,8 +23,8 @@ Memory: "256Mi"
 ## Persistent volume size
 Storage: "1Gi"
 
-## StorageClass name for use with Persistent Volume Claim (PVC)
-StorageClass: default
+## StorageClass name for use with Persistent Volume Claim (PVC) using beta notations
+# StorageClass:
 
 ## Enable Consul Web UI
 ##
