@@ -58,7 +58,7 @@ The following tables lists the configurable parameters of the Odoo chart and the
 | `smtpProtocol`                        | SMTP protocol [`ssl`, `tls`]              | `nil`                                       |
 | `serviceType`                         | Kubernetes Service type                   | `LoadBalancer`                              |
 | `resources`                           | CPU/Memory resource requests/limits       | Memory: `512Mi`, CPU: `300m`                |
-| `persistence.storageClass`            | PVC Storage Class                         | `generic`                                   |
+| `persistence.storageClass`            | PVC Storage Class                         | `nil` (uses alpha storage class annotation) |
 | `persistence.accessMode`              | PVC Access Mode                           | `ReadWriteOnce`                             |
 | `persistence.size`                    | PVC Storage Request                       | `8Gi`                                       |
 | `postgresql.postgresqlPassword`       | PostgreSQL password                       | `nil`                                       |

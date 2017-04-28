@@ -23,6 +23,7 @@ import (
 	"math/rand"
 	"os"
 	"os/exec"
+	"path"
 	"path/filepath"
 	"strings"
 	"syscall"
@@ -43,14 +44,6 @@ type TestSuite struct {
 	Tests    int      `xml:"tests,attr"`
 	Time     float64  `xml:"time,attr"`
 	Cases    []testCase
-}
-
-// append(errs, err) if err != nil
-func appendError(errs []error, err error) []error {
-	if err != nil {
-		return append(errs, err)
-	}
-	return errs
 }
 
 func writeXML(dump string, start time.Time) {
@@ -101,6 +94,11 @@ var (
 	terminate = time.NewTimer(time.Duration(0)) // terminate testing at this time.
 
 	suite TestSuite
+
+	// program exit codes.
+	SUCCESS_CODE              = 0
+	INITIALIZATION_ERROR_CODE = 1
+	TEST_FAILURE_CODE         = 2
 )
 
 func init() {
@@ -160,7 +158,14 @@ func randStringRunes(n int) string {
 }
 
 func main() {
-	matches, err := filepath.Glob("stable/*")
+	ret := doMain()
+	os.Exit(ret)
+}
+
+func doMain() int {
+	matches, err := filepath.Glob("/src/k8s.io/charts/stable/*")
+	log.Printf("Matches: %+v", matches)
+
 	defer writeXML("/workspace/_artifacts", time.Now())
 	if !terminate.Stop() {
 		<-terminate.C // Drain the value if necessary.
@@ -172,19 +177,31 @@ func main() {
 
 	if err != nil {
 		fmt.Println(err)
-		return
+		return INITIALIZATION_ERROR_CODE
 	}
+
+	// Ensure helm is completely initialized before starting tests.
+	// TODO: replace with helm init --wait after
+	// https://github.com/kubernetes/helm/issues/2114
+	xmlWrap(fmt.Sprintf("Wait for helm initialization to complete"), func() error {
+		initErr := fmt.Errorf("Not Initialized")
+		for initErr != nil {
+			_, initErr = output(exec.Command("linux-amd64/helm", "version"))
+			time.Sleep(2 * time.Second)
+		}
+		return initErr
+	})
 
 	for _, dir := range matches {
 		ns := randStringRunes(10)
 		rel := randStringRunes(3)
 
-		xmlWrap(fmt.Sprintf("lint %s", dir), func() error {
+		xmlWrap(fmt.Sprintf("Helm Lint %s", path.Base(dir)), func() error {
 			_, execErr := output(exec.Command("linux-amd64/helm", "lint", dir))
 			return execErr
 		})
 
-		xmlWrap(fmt.Sprintf("install %s", dir), func() error {
+		xmlWrap(fmt.Sprintf("Helm Install %s", path.Base(dir)), func() error {
 			o, execErr := output(exec.Command("linux-amd64/helm", "install", dir, "--namespace", ns, "--name", rel, "--wait"))
 			if execErr != nil {
 				return fmt.Errorf("%s Command output: %s", execErr, string(o[:]))
@@ -192,7 +209,7 @@ func main() {
 			return nil
 		})
 
-		xmlWrap(fmt.Sprintf("test %s", dir), func() error {
+		xmlWrap(fmt.Sprintf("Helm Test %s", path.Base(dir)), func() error {
 			o, execErr := output(exec.Command("linux-amd64/helm", "test", rel))
 			if execErr != nil {
 				return fmt.Errorf("%s Command output: %s", execErr, string(o[:]))
@@ -200,12 +217,25 @@ func main() {
 			return nil
 		})
 
-		xmlWrap(fmt.Sprintf("purge %s", dir), func() error {
+		xmlWrap(fmt.Sprintf("Delete & purge %s", path.Base(dir)), func() error {
 			o, execErr := output(exec.Command("linux-amd64/helm", "delete", rel, "--purge"))
 			if execErr != nil {
 				return fmt.Errorf("%s Command output: %s", execErr, string(o[:]))
 			}
 			return nil
 		})
+
+		xmlWrap(fmt.Sprintf("Deleting namespace for %s", path.Base(dir)), func() error {
+			o, execErr := output(exec.Command("/workspace/kubernetes/client/bin/kubectl", "delete", "ns", ns))
+			if execErr != nil {
+				return fmt.Errorf("%s Command output: %s", execErr, string(o[:]))
+			}
+			return nil
+		})
 	}
+
+	if suite.Failures > 0 {
+		return TEST_FAILURE_CODE
+	}
+	return SUCCESS_CODE
 }
