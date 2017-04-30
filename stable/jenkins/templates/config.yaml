@@ -37,7 +37,15 @@ data:
               <idleMinutes>0</idleMinutes>
               <label></label>
               <nodeSelector></nodeSelector>
-              <volumes/>
+              <volumes>
+{{- range $index, $volume := .Values.Agent.volumes }}
+                <org.csanchez.jenkins.plugins.kubernetes.volumes.{{ $volume.type }}Volume>
+{{- range $key, $value := $volume }}{{- if not (eq $key "type") }}
+                  <{{ $key }}>{{ $value }}</{{ $key }}>
+{{- end }}{{- end }}
+                </org.csanchez.jenkins.plugins.kubernetes.volumes.SecretVolume>
+{{- end }}
+              </volumes>
               <containers>
                 <org.csanchez.jenkins.plugins.kubernetes.ContainerTemplate>
                   <name>jnlp</name>
