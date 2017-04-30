@@ -22,7 +22,7 @@ spec:
         pod.beta.kubernetes.io/init-containers: '[
            {
              "name":"sentinel-micro",
-             "image":"{{ .Values.image.microSentinel }}:{{ .Values.tag.microSentinel }}",
+             "image":"{{ .Values.microSentinel.image }}:{{ .Values.microSentinel.tag }}",
                          "args" : ["-service","{{ template "fullname" . }}"],
              "env": [
                {
@@ -65,14 +65,14 @@ spec:
            }
       containers:
       - name: redis
-        image: {{ .Values.image.redis }}:{{ .Values.tag.redis }}
+        image: {{ .Values.redis.image }}:{{ .Values.redis.tag }}
         ports:
         - containerPort: {{ .Values.service.port }}
           name: {{ .Values.service.name }}
         resources:
-{{ toYaml .Values.resources | indent 12 }}
+{{ toYaml .Values.redis.resources | indent 12 }}
       - name: make-slave
-        image: {{ .Values.image.makeSlave }}:{{ .Values.tag.makeSlave }}
+        image: {{ .Values.makeSlave.image }}:{{ .Values.makeSlave.tag }}
         env:
           - name: POD_NAMESPACE
             valueFrom:

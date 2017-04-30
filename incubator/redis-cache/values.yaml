@@ -4,25 +4,28 @@
 
 ##Statefulset related configurations ss.yaml
 replicaCount: 3
-image:
-  redis: redis
-  redisTag: 3.0-alpine
-  microSentinel: dhilipkumars/redis-sentinel-k8s
-  makeSlave: dhilipkumars/mk-redis-slave
-tag:
-  redis: 3.0-alpine
-  microSentinel: latest
-  makeSlave: latest
-resources:
-  limits:
-    memory: 128Mi
-  requests:
-    memory: 128Mi
+redis:
+  image: redis
+  tag: 3.0-alpine
+  resources:
+    limits:
+      memory: 128Mi
+    requests:
+      memory: 128Mi
+microSentinel:
+  image: dhilipkumars/redis-sentinel-k8s
+  tag: latest
+makeSlave:
+  image: dhilipkumars/mk-redis-slave
+  tag: latest
+
 # Service related configurations
 service:
   name: rd-port
   port: 6379
   type: ClusterIP
 # Pod Disruption budget related configurations
+
 podDisruptionBudget:
   minAvailable: 2
+  
