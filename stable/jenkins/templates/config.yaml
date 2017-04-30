@@ -43,7 +43,7 @@ data:
                   <name>jnlp</name>
                   <image>{{ .Values.Agent.Image }}:{{ .Values.Agent.ImageTag }}</image>
                   <privileged>false</privileged>
-                  <alwaysPullImage>false</alwaysPullImage>
+                  <alwaysPullImage>{{ .Values.Agent.AlwaysPullImage }}</alwaysPullImage>
                   <workingDir>/home/jenkins</workingDir>
                   <command></command>
                   <args>${computer.jnlpmac} ${computer.name}</args>

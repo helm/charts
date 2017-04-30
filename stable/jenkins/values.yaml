@@ -59,6 +59,8 @@ Agent:
   ImageTag: 2.62
   Cpu: "200m"
   Memory: "256Mi"
+  # You may want to change this to true while testing a new image
+  AlwaysPullImage: false
 
 Persistence:
   Enabled: true
