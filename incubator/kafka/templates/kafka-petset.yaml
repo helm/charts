@@ -9,7 +9,7 @@ spec:
   - port: 2181
     name: client
   selector:
-    component: "{{.Release.Name}}-{{.Values.zookeeper.Component}}"
+    component: "{{.Release.Name}}"
 
 # A headless service to create DNS records
 ---
@@ -51,8 +51,8 @@ spec:
     component: "{{.Release.Name}}-{{.Values.Component}}"
     app: kafka
 ---
-apiVersion: apps/v1alpha1
-kind: PetSet
+apiVersion: apps/v1beta1
+kind: StatefulSet
 metadata:
   name: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 63 }}"
   labels:
@@ -85,7 +85,7 @@ spec:
             command:
               - bin/kafka-topics.sh
               - --zookeeper
-              - "{{ printf "%s-%s" .Release.Name .Values.zookeeper.Name | trunc 63 }}:2181"
+              - "{{ printf "%s-zookeeper-%s" .Release.Name .Values.zookeeper.Name | trunc 63 }}:2181"
               - --list
           initialDelaySeconds: 30
           timeoutSeconds: 5
@@ -95,7 +95,7 @@ spec:
             command:
               - bin/kafka-topics.sh
               - --zookeeper
-              - "{{ printf "%s-%s" .Release.Name .Values.zookeeper.Name | trunc 63 }}:2181"
+              - "{{ printf "%s-zookeeper-%s" .Release.Name .Values.zookeeper.Name | trunc 63 }}:2181"
               - --list
           initialDelaySeconds: 30
           timeoutSeconds: 5
@@ -113,7 +113,7 @@ spec:
         command:
         - sh
         - -c
-        - "./bin/kafka-server-start.sh config/server.properties --override zookeeper.connect={{ printf "%s-%s" .Release.Name .Values.zookeeper.Name | trunc 63 }}:2181/ --override broker.id=${HOSTNAME##*-}"
+        - "./bin/kafka-server-start.sh config/server.properties --override zookeeper.connect={{ printf "%s-zookeeper-%s" .Release.Name .Values.zookeeper.Name | trunc 63 }}:2181/ --override broker.id=${HOSTNAME##*-}"
         volumeMounts:
         - name: datadir
           mountPath: "{{ .Values.DataDirectory }}"
