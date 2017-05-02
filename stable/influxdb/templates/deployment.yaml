@@ -63,7 +63,7 @@ spec:
       volumes:
       - name: data
       {{- if .Values.persistence.enabled }}
-        {{- if .Values.persistence.useExisting }}
+        {{- if not (empty .Values.persistence.name) }}
         persistentVolumeClaim:
           claimName: {{ .Values.persistence.name }}
         {{- else }}
