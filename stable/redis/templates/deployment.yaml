@@ -45,6 +45,24 @@ spec:
         volumeMounts:
         - name: redis-data
           mountPath: /bitnami/redis
+{{- if .Values.metrics.enabled }}
+      - name: metrics
+        image: "{{ .Values.metrics.image }}:{{ .Values.metrics.imageTag }}"
+        imagePullPolicy: {{ default "" .Values.metrics.imagePullPolicy | quote }}
+        env:
+        - name: REDIS_ALIAS
+          value: {{ template "fullname" . }}
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "fullname" . }}
+              key: redis-password
+        ports:
+        - name: metrics
+          containerPort: 9121
+        resources:
+{{ toYaml .Values.metrics.resources | indent 10 }}
+{{- end }}
       volumes:
       - name: redis-data
       {{- if .Values.persistence.enabled }}

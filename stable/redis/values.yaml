@@ -32,6 +32,16 @@ persistence:
   accessMode: ReadWriteOnce
   size: 8Gi
 
+metrics:
+  enabled: false
+  image: oliver006/redis_exporter
+  imageTag: v0.11
+  imagePullPolicy: IfNotPresent
+  resources:
+    requests:
+      memory: 256Mi
+      cpu: 100m
+
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
 ##
