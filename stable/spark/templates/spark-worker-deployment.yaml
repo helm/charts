@@ -25,7 +25,7 @@ spec:
       containers:
         - name: {{ template "worker-fullname" . }}
           image: "{{.Values.Worker.Image}}:{{.Values.Worker.ImageTag}}"
-          command: ["/opt/spark/bin/spark-class", "org.apache.spark.deploy.worker.Worker", "spark://{{ template "master-fullname" . }}:{{.Values.Master.ServicePort}}", "--webui-port", "{{.Values.Worker.ContainerPort}}"]
+          command: ["/opt/spark/bin/spark-class", "org.apache.spark.deploy.worker.Worker", "spark://{{ template "master-fullname" . }}:{{.Values.Master.ServicePort}}", "--webui-port", "{{.Values.Worker.ContainerPort}}", "--work-dir", "{{.Values.Worker.WorkingDirectory}}"]
           ports:
             - containerPort: {{.Values.Worker.ContainerPort}}
           resources:
@@ -37,3 +37,22 @@ spec:
             value: {{ default "1g" .Values.Worker.DaemonMemory | quote }}
           - name: SPARK_WORKER_MEMORY
             value: {{ default "1g" .Values.Worker.ExecutorMemory | quote }}
+          volumeMounts:
+{{- if .Values.Persistence.mounts }}
+{{ toYaml .Values.Persistence.mounts | indent 12 }}
+{{- end }}
+            -
+              mountPath: "{{.Values.Worker.WorkingDirectory}}"
+              name: spark-work
+              readOnly: false
+      volumes:
+{{- if .Values.Persistence.volumes }}
+{{ toYaml .Values.Persistence.volumes | indent 6 }}
+{{- end }}
+      - name: spark-work
+      {{- if .Values.Persistence.Enabled }}
+        persistentVolumeClaim:
+          claimName: {{ template "worker-fullname" . }}
+      {{- else }}
+        emptyDir: {}
+      {{- end -}}

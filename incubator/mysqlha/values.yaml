@@ -1,0 +1,42 @@
+## mysql image version
+## ref: https://hub.docker.com/r/library/mysql/tags/
+##
+imageTag: "5.7.13"
+
+replicaCount: 3
+
+## Password for MySQL root user
+##
+# mysqlRootPassword: ## Default: random 10 character string
+
+## Username/password for MySQL replication user
+##
+mysqlReplicationUser: repl
+# mysqlReplicationPassword:
+
+## Create a database user
+##
+# mysqlUser:
+# mysqlPassword: ## Default: random 10 character string
+
+
+## Allow unauthenticated access, uncomment to enable
+##
+# mysqlAllowEmptyPassword: true
+
+## Enable persistence using Persistent Volume Claims
+## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+##
+persistence:
+  enabled: true
+  ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
+  ## Default: volume.alpha.kubernetes.io/storage-class: default
+  ##
+  storageClass: fast 
+  accessMode: ReadWriteOnce
+  size: 10Gi
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi

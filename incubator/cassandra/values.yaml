@@ -1,0 +1,38 @@
+# Default values for cassandra.
+# This is a YAML-formatted file.
+# Declare name/value pairs to be passed into your templates.
+# name: value
+
+Name: cassandra
+Component: "cassandra"
+replicaCount: 3
+Image: "gcr.io/google-samples/cassandra"
+ImageTag: "v12"
+ImagePullPolicy: "Always"
+
+# Cassandra configuration options
+# For chart deployment, the value for sending to the Seed Provider is 
+# constructed using a template in the statefulset.yaml template
+cassandra:
+  MaxHeapSize: "512M"
+  HeapNewSize: "100M"
+  ClusterName: "K8Demo"
+  DC: "DC1-K8Demo"
+  Rack: "Rack1-K8Demo"
+  AutoBootstrap: "false"
+
+# Persistence information
+persistence:
+  enabled: true
+  storageClass: default
+  accessMode: ReadWriteOnce
+  size: 10Gi
+
+# Instance resources
+resources:
+  requests:
+    cpu: "500m"
+    memory: "1Gi"
+  limits:
+    cpu: "500m"
+    memory: "1Gi"    

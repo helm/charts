@@ -54,6 +54,16 @@ The following tables lists the configurable parameters of the Spark chart and th
 | `WebUi.ServicePort`   | k8s service port                 | `8080`                                                   |
 | `WebUi.ContainerPort` | Container listening port         | `8080`                                                   |
 
+### Persistence
+
+|       Parameter          |           Description            |                         Default                          |
+|--------------------------|----------------------------------|----------------------------------------------------------|
+| `Persistence.Enabled`    | Enable Persistence               | `true`                                                   |
+| `Persistence.AccessMode` | Persistence Access mode          | `ReadWriteOnce`                                          |
+| `Persistence.Size`       | Persistence size                 | `8Gi`                                                    |
+| `Persistence.volumes`    | Additional volumes to persist    | `undefined`                                              |
+| `Persistence.mounts`     | Additional mounts                | `undefined`                                              |
+
 ### Spark Worker
 
 | Parameter                    | Description                        | Default                                                    |
@@ -64,6 +74,7 @@ The following tables lists the configurable parameters of the Spark chart and th
 | `Worker.Replicas`            | k8s hpa and deployment replicas    | `3`                                                        |
 | `Worker.ReplicasMax`         | k8s hpa max replicas               | `10`                                                       |
 | `Worker.Component`           | k8s selector key                   | `spark-worker`                                             |
+| `Worker.WorkingDirectory`    | Directory to run applications in   | `SPARK_HOME/work`                                          |
 | `Worker.Cpu`                 | container requested cpu            | `100m`                                                     |
 | `Worker.Memory`              | container requested memory         | `512Mi`                                                    |
 | `Worker.ContainerPort`       | Container listening port           | `7077`                                                     |
@@ -96,3 +107,11 @@ $ helm install --name my-release -f values.yaml stable/spark
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
+## Persistence
+
+The Spark image stores persistence under `/opt/spark/work` path of the container. A Persistent Volume
+Claim is used to keep the data across deployments. 
+
+It is possible to mount several volumes using `Persistence.volumes` and `Persistence.mounts` parameters.
+
