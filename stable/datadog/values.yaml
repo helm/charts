@@ -1,14 +1,19 @@
-# Default values for datadog.
-image:
-  repository: datadog/docker-dd-agent
-  tag: latest
-  pullPolicy: IfNotPresent
 
 datadog:
   ## You'll need to set this to your Datadog API key before the agent will run.
   ## ref: https://app.datadoghq.com/account/settings#agent/kubernetes
   ##
   # apiKey:
+
+  ## dd-agent container name
+  ##
+  name: dd-agent
+
+  # Default values for datadog.
+  image:
+    repository: datadog/docker-dd-agent
+    tag: latest
+    pullPolicy: IfNotPresent
 
   ## Set logging verbosity.
   ## ref: https://github.com/DataDog/docker-dd-agent#environment-variables
@@ -34,13 +39,13 @@ datadog:
   ## ref: https://github.com/DataDog/docker-dd-agent#environment-variables
   ##
   # env:
-  #   - name: 
-  #     value: 
+  #   - name:
+  #     value:
 
   ## Provide additonal service definitions
   ## Each key will become a file in /conf.d/auto_conf
   ## ref: https://github.com/DataDog/docker-dd-agent#configuration-files
-  ## 
+  ##
   # autoconf:
   #   redisdb.yaml: |-
   #     docker_images:
@@ -53,7 +58,7 @@ datadog:
   ## Provide additonal service definitions
   ## Each key will become a file in /conf.d
   ## ref: https://github.com/DataDog/docker-dd-agent#configuration-files
-  ## 
+  ##
   # confd:
   #   redisdb.yaml: |-
   #     init_config:
@@ -64,14 +69,56 @@ datadog:
   ## Provide additonal service checks
   ## Each key will become a file in /checks.d
   ## ref: https://github.com/DataDog/docker-dd-agent#configuration-files
-  ## 
+  ##
   # checksd:
   #   service.py: |-
 
-resources:
-  requests:
-    cpu: 100m
-    memory: 128Mi
-  limits:
-    cpu: 256m
-    memory: 512Mi
+  ## dd-agent resource requests and limits
+  ## Ref: http://kubernetes.io/docs/user-guide/compute-resources/
+  ##
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 256m
+      memory: 512Mi
+
+
+kubeStateMetrics:
+  ## Whether to deploy kube-state-metrics
+  ## Ref: https://github.com/kubernetes/kube-state-metrics/
+  ## it can be set to false if it is already deployed some other way
+  ## as Datadog agents will detect it automatically.
+  enabled: true
+
+  ## kube-state-metrics container name
+  ##
+  name: kube-state-metrics
+
+  ## kube-state-metrics container image
+  ##
+  image:
+    repository: gcr.io/google_containers/kube-state-metrics
+    tag: v0.4.1
+    pullPolicy: IfNotPresent
+
+  ## Node labels for kube-state-metrics pod assignment
+  ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+  ##
+  nodeSelector: {}
+
+  ## Annotations to be added to kube-state-metrics pods
+  ##
+  podAnnotations: {}
+
+  ## kube-state-metrics resource requests and limits
+  ##
+  resources: {}
+    # limits:
+    #   cpu: 10m
+    #   memory: 16Mi
+    # requests:
+    #   cpu: 10m
+    #   memory: 16Mi
+

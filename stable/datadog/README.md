@@ -37,22 +37,30 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following tables lists the configurable parameters of the Datadog chart and their default values.
 
-|      Parameter              |          Description               |                         Default           |
-|-----------------------------|------------------------------------|-------------------------------------------|
-| `datadog.apiKey`            | Your Datadog API key               |  `Nil` You must provide your own key      |
-| `image.repository`          | The image repository to pull from  | `datadog/docker-dd-agent`                 |
-| `image.tag`                 | The image tag to pull              | `latest`                                  |
-| `imagePullPolicy`           | Image pull policy                  | `IfNotPresent`                            |
-| `datadog.env` | Additional Datadog environment variables | `nil` |
-| `datadog.apmEnabled` | Enable tracing from the host | `nil` |
-| `datadog.autoconf` | Additional Datadog service discovery configurations | `nil` |
-| `datadog.checksd` | Additional Datadog service checks | `nil` |
-| `datadog.confd` | Additional Datadog service configurations | `nil` |
-| `imagePullPolicy`           | Image pull policy                  | `IfNotPresent`                            |
-| `resources.requests.cpu`    | CPU resource requests              | 128M                                      |
-| `resources.limits.cpu`      | CPU resource limits                | 512Mi                                     |
-| `resources.requests.memory` | Memory resource requests           | 100m                                      |
-| `resources.limits.memory`   | Memory resource limits             | 256m                                      |
+|             Parameter                |            Description             |                    Default                |
+|--------------------------------------|------------------------------------|-------------------------------------------|
+| `datadog.apiKey`                     | Your Datadog API key               |  `Nil` You must provide your own key      |
+| `datadog.image.repository`           | The image repository to pull from  | `datadog/docker-dd-agent`                 |
+| `datadog.image.tag`                  | The image tag to pull              | `latest`                                  |
+| `datadog.image.pullPolicy`           | Image pull policy                  | `IfNotPresent`                            |
+| `datadog.env`                        | Additional Datadog environment variables | `nil`                               |
+| `datadog.apmEnabled`                 | Enable tracing from the host       | `nil`                                     |
+| `datadog.autoconf`                   | Additional Datadog service discovery configurations | `nil`                    |
+| `datadog.checksd`                    | Additional Datadog service checks  | `nil`                                     |
+| `datadog.confd`                      | Additional Datadog service configurations | `nil`                              |
+| `imagePullPolicy`                    | Image pull policy                  | `IfNotPresent`                            |
+| `datadog.resources.requests.cpu`     | CPU resource requests              | `100m`                                    |
+| `datadog.resources.limits.cpu`       | CPU resource limits                | `256m`                                    |
+| `datadog.resources.requests.memory`  | Memory resource requests           | `128Mi`                                   |
+| `datadog.resources.limits.memory`    | Memory resource limits             | `512Mi`                                   |
+| `kubeStateMetrics.enabled`           | If true, create kube-state-metrics | `true`                                    |
+| `kubeStateMetrics.name`              | kube-state-metrics container name  | `kube-state-metrics`                      |
+| `kubeStateMetrics.image.repository`  | kube-state-metrics container image repository | `gcr.io/google_containers/kube-state-metrics` |
+| `kubeStateMetrics.image.tag`         | kube-state-metrics container image tag | `v0.4.1`                              |
+| `kubeStateMetrics.image.pullPolicy`  | kube-state-metrics container image pull policy | `IfNotPresent`                |
+| `kubeStateMetrics.nodeSelector`      | node labels for kube-state-metrics pod assignment | `{}`                       |
+| `kubeStateMetrics.podAnnotations`    | annotations to be added to kube-state-metrics pods | `{}`                      |
+| `kubeStateMetrics.resources`         | kube-state-metrics resource requests and limits (YAML) | `{}`                  |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
@@ -79,12 +87,12 @@ Datadog offers a multitude of [tags](https://hub.docker.com/r/datadog/docker-dd-
 
 The Datadog entrypoint will copy files found in `/conf.d` and `/check.d` to
 `/etc/dd-agent/conf.d` and `/etc/dd-agent/check.d` respectively. The keys for
-`datadog.confd`, `datadog.autoconf`, and `datadog.checksd` should mirror the content found in their 
+`datadog.confd`, `datadog.autoconf`, and `datadog.checksd` should mirror the content found in their
 respective ConfigMaps, ie
 
 ```yaml
 datadog:
-  autoconf: 
+  autoconf:
     redisdb.yaml: |-
       docker_images:
         - redis
@@ -107,3 +115,4 @@ datadog:
         - host: "outside-k8s.example.com"
           port: 6379
 ```
+

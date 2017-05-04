@@ -7,12 +7,21 @@ Expand the name of the chart.
 {{- end -}}
 
 {{/*
-Create a default fully qualified app name.
+Create a default fully qualified datadog name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 */}}
-{{- define "fullname" -}}
+{{- define "datadog.fullname" -}}
 {{- $name := default .Chart.Name .Values.nameOverride -}}
-{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
+{{- printf "%s-%s-%s" .Release.Name $name .Values.datadog.name | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
+{{/*
+Create a default fully qualified kube-state-metrics name.
+We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
+*/}}
+{{- define "kubeStateMetrics.fullname" -}}
+{{- $name := default .Chart.Name .Values.nameOverride -}}
+{{- printf "%s-%s-%s" .Release.Name $name .Values.kubeStateMetrics.name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
 {{/*
@@ -39,3 +48,10 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- printf "%s-datadog-checksd" .Release.Name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
+{{/*
+Create a default fully qualified secret name.
+We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
+*/}}
+{{- define "secret.fullname" -}}
+{{- printf "%s-datadog-secret" .Release.Name | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
