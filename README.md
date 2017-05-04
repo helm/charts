@@ -61,6 +61,9 @@ The following outlines the review procedure used by the Chart repository maintai
 * ***UX REVIEWED*** - The chart installation UX has been reviewed and found to be satisfactory. (may happen in parallel to CODE REVIEWED)
 * ***LGTM*** - Added ONLY once both UX/CODE reviewed are both present. Merge must be handled by someone OTHER than the maintainer that added the LGTM label. This label indicates that given a quick pass of the comments this change is ready to merge
 
+### Stale Pull Requests
+
+After initial review feedback, if no updates have been to the pull request, the `stale` label will be added. If after another week there are still no updates it will be closed. Please re-open if/when you have made the proper adjustments.
 
 ## Status of the Project
 
