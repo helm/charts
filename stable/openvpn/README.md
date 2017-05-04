@@ -7,7 +7,7 @@ The primary purpose of this chart was to make it easy to access kubernetes servi
 ## Usage
 
 ```bash
-helm repo add stable http://storage.googleapis.com/kubernetes-charts-incubator
+helm repo add stable http://storage.googleapis.com/kubernetes-charts
 helm install stable/openvpn
 ```
 
