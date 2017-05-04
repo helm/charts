@@ -48,12 +48,16 @@ spec:
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         ports:
+        {{- if or (eq .Values.serviceProtocol "UDPNTCP") (eq .Values.serviceProtocol "UDP") }}
         - containerPort: 53
           name: dns
           protocol: UDP
+        {{- end }}
+        {{- if or (eq .Values.serviceProtocol "UDPNTCP") (eq .Values.serviceProtocol "TCP") }}
         - containerPort: 53
           name: dns-tcp
           protocol: TCP
+        {{- end }}
         livenessProbe:
           httpGet:
             path: /health
