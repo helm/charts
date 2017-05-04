@@ -29,10 +29,14 @@ spec:
   clusterIP: {{ .Values.middleware.kubernetes.clusterIP }}
   {{- end }}
   ports:
+  {{- if or (eq .Values.serviceProtocol "UDPNTCP") (eq .Values.serviceProtocol "UDP") }}
   - name: dns
     port: 53
     protocol: UDP
+  {{- end }}
+  {{- if or (eq .Values.serviceProtocol "UDPNTCP") (eq .Values.serviceProtocol "TCP") }}
   - name: dns-tcp
     port: 53
     protocol: TCP
+  {{- end }}
   type: {{ default "ClusterIP" .Values.serviceType }}

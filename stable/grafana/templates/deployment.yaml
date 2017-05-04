@@ -42,7 +42,7 @@ spec:
             - name: GF_INSTALL_PLUGINS
               valueFrom:
                 configMapKeyRef:
-                  name: {{ template "server.fullname" . }}-config
+                  name: {{ template "grafana.server.fullname" . }}-config
                   key: grafana-install-plugins
             {{- end }}
           ports:
@@ -73,7 +73,7 @@ spec:
         - name: storage-volume
       {{- if .Values.server.persistentVolume.enabled }}
           persistentVolumeClaim:
-            claimName: {{ template "grafana.server.fullname" . }}
+            claimName: {{ if .Values.server.persistentVolume.existingClaim }}{{ .Values.server.persistentVolume.existingClaim }}{{- else }}{{ template "grafana.server.fullname" . }}{{- end }}
       {{- else }}
           emptyDir: {}
       {{- end -}}
