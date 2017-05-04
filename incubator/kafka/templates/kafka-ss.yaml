@@ -1,4 +1,3 @@
----
 # headless service for petset DNS
 apiVersion: v1
 kind: Service
