@@ -5,7 +5,7 @@ version: 0.1.2
 keywords:
   - kafka
   - zookeeper
-  - kafka petset
+  - kafka statefulset
 home: https://kafka.apache.org/
 sources:
   - https://github.com/kubernetes/charts/tree/master/incubator/zookeeper
