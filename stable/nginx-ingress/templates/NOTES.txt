@@ -16,7 +16,7 @@ Get the application URL by running these commands:
   export NODE_IP=$(kubectl --namespace {{ .Release.Namespace }} get nodes -o jsonpath="{.items[0].status.addresses[1].address}")
 
   echo "Visit http://$NODE_IP:$HTTP_NODE_PORT to access your application via HTTP."
-  echo "Visit http://$NODE_IP:$HTTPS_NODE_PORT to access your application via HTTPS."
+  echo "Visit https://$NODE_IP:$HTTPS_NODE_PORT to access your application via HTTPS."
 {{- else if contains "LoadBalancer" .Values.controller.service.type }}
 It may take a few minutes for the LoadBalancer IP to be available.
 You can watch the status by running 'kubectl --namespace {{ .Release.Namespace }} get services -o wide -w {{ template "controller.fullname" . }}'
