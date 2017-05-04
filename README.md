@@ -63,7 +63,7 @@ The following outlines the review procedure used by the Chart repository maintai
 
 ### Stale Pull Requests
 
-After initial review feedback, if no updates have been to the pull request, the `stale` label will be added. If after another week there are still no updates it will be closed. Please re-open if/when you have made the proper adjustments.
+After initial review feedback, if no updates have been to the pull request for 1 week, the `stale` label will be added. If after another week there are still no updates it will be closed. Please re-open if/when you have made the proper adjustments.
 
 ## Status of the Project
 
