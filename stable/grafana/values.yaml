@@ -70,6 +70,11 @@ server:
     ##
     # annotations:
 
+    ## Grafana data Persistent Volume existing claim name
+    ## Requires server.persistentVolume.enabled: true
+    ## If defined, PVC must be created manually before volume will be bound
+    existingClaim: ""
+
     ## Grafana data Persistent Volume size
     ## Default: 1Gi
     ##
