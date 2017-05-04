@@ -43,7 +43,7 @@ data:
 {{- range $key, $value := $volume }}{{- if not (eq $key "type") }}
                   <{{ $key }}>{{ $value }}</{{ $key }}>
 {{- end }}{{- end }}
-                </org.csanchez.jenkins.plugins.kubernetes.volumes.SecretVolume>
+                </org.csanchez.jenkins.plugins.kubernetes.volumes.{{ $volume.type }}Volume>
 {{- end }}
               </volumes>
               <containers>
