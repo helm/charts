@@ -33,7 +33,7 @@ mail:
 images:
   clouddriver: quay.io/spinnaker/clouddriver:v1.599.0
   echo: quay.io/spinnaker/echo:v1.132.0
-  deck: quay.io/spinnaker/deck:v2.1074.0
+  deck: quay.io/spinnaker/deck:v2.1095.0
   igor: quay.io/spinnaker/igor:v1.65.0
   orca: quay.io/spinnaker/orca:v1.395.2
   gate: quay.io/spinnaker/gate:v3.28.0
