@@ -1,4 +1,4 @@
-name: redis-cluster
+name: redis-ha
 home: http://redis.io/
 engine: gotpl
 keywords:

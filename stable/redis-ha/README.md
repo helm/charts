@@ -5,7 +5,7 @@
 ## TL;DR;
 
 ```bash
-$ helm install stable/redis-cluster
+$ helm install stable/redis-ha
 ```
 
 By default this chart install one master pod containing redis master container and sentinel container, 2 sentinels and 1 redis slave.
@@ -24,7 +24,7 @@ This chart bootstraps a [Redis](https://github.com/bitnami/bitnami-docker-redis)
 To install the chart
 
 ```bash
-$ helm install stable/redis-cluster
+$ helm install stable/redis-ha
 ```
 
 The command deploys Redis on the Kubernetes cluster in the default configuration. By default this chart install one master pod containing redis master container and sentinel container, 2 sentinels and 1 redis slave. The [configuration](#configuration) section lists the parameters that can be configured during installation.
@@ -60,7 +60,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 ```bash
 $ helm install \
   --set redis_image=gcr.io/google_containers/redis:v1 \
-    stable/redis-cluster
+    stable/redis-ha
 ```
 
 The above command sets the Redis server within  `default` namespace.
@@ -68,7 +68,7 @@ The above command sets the Redis server within  `default` namespace.
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```bash
-$ helm install -f values.yaml stable/redis-cluster
+$ helm install -f values.yaml stable/redis-ha
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
