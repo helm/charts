@@ -66,9 +66,9 @@ server:
     accessModes:
       - ReadWriteOnce
 
-    ## Server data Persistent Volume annotations
+    ## Grafana data Persistent Volume annotations
     ##
-    # annotations:
+    annotations: {}
 
     ## Grafana data Persistent Volume existing claim name
     ## Requires server.persistentVolume.enabled: true
