@@ -80,10 +80,10 @@ A YAML file that specifies the values for the above parameters can be provided w
 $ helm inspect values stable/magento > values.yaml
 $ vi values.yaml
 $ helm install --name my-release -f values.yaml stable/magento
+```
 
 ### Installing on GKE
 
-```
 > **Note**:
 >
 > For Magento to function correctly, you should specify the `magentoHost` parameter to specify the FQDN (recommended) or the public IP address of the Magento service.
