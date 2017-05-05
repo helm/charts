@@ -9,8 +9,8 @@ metadata:
   {{- else }}
     volume.alpha.kubernetes.io/storage-class: default
   {{- end }}
-  {{- range $key, $value := .Values.server.persistentVolume.annotations }}
-    {{ $key }}: {{ $value }}
+  {{- if .Values.server.persistentVolume.annotations }}
+{{ toYaml .Values.server.persistentVolume.annotations | indent 4 }}
   {{- end }}
   labels:
     app: {{ template "grafana.fullname" . }}
