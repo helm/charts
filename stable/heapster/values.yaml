@@ -1,0 +1,61 @@
+## Default values for heapster.
+##
+replicaCount: 1
+image:
+  repository: gcr.io/google_containers/heapster
+  tag: v1.3.0
+  pullPolicy: IfNotPresent
+service:
+  type: ClusterIP
+  externalPort: 8082
+  internalPort: 8082
+  ## This allows an overide of the heapster service name
+  ## Default: {{ template "fullname" . }}
+  # nameOverride:
+resources:
+  limits:
+    cpu: 100m
+    memory: 128Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+## Heapster command and arguments
+## Default source=kubernetes.summary_api:''
+## ref: https://github.com/kubernetes/heapster/blob/master/docs/source-configuration.md
+##
+## By default sink not set
+## ref: https://github.com/kubernetes/heapster/blob/master/docs/sink-configuration.md
+##
+command:
+- "/heapster"
+- "--source=kubernetes.summary_api:''"
+
+## Resizer scales resources linearly with the number of nodes in the cluster
+## Resizer is enabled by default
+##
+resizer:
+  enabled: true
+  image:
+    repository: gcr.io/google_containers/addon-resizer
+    tag: 1.7
+    pullPolicy: IfNotPresent
+  resources:
+    limits:
+      cpu: 50m
+      memory: 90Mi
+    requests:
+      cpu: 50m
+      memory: 90Mi
+
+  ## Flags used for /pod_nanny command
+  ## container and deployment flags already determined chart name
+  ## ref: https://github.com/kubernetes/contrib/blob/master/addon-resizer/README.md
+  ##
+  flags:
+  - "--cpu=150m"
+  - "--extra-cpu=10m"
+  - "--memory=200Mi"
+  - "--extra-memory=6Mi"
+  - "--threshold=5"
+  - "--poll-period=300000"
