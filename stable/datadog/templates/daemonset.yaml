@@ -12,6 +12,7 @@ spec:
         app: {{ template "fullname" . }}
       name: {{ template "fullname" . }}
     spec:
+      hostNetwork: true
       containers:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -20,6 +21,7 @@ spec:
 {{ toYaml .Values.resources | indent 12 }}
         ports:
         - containerPort: 8125
+          hostPort: 8125
           name: dogstatsdport
           protocol: UDP
         {{- if .Values.datadog.apmEnabled }}
