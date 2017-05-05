@@ -1,0 +1,13 @@
+name: eventrouter
+description: A simple introspective kubernetes service that forwards events to a specified sink.
+version: 0.1.0
+keywords:
+  - kubernetes
+  - eventrouter
+  - introspection
+home: "https://github.com/heptio/eventrouter"
+sources:
+  - "https://gcr.io/heptio-images/eventrouter"
+maintainers:
+  - name: Ross Kukulinski
+    email: ross@kukulinski.com
