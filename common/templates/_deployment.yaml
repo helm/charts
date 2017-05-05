@@ -1,0 +1,34 @@
+{{define "common.deployment"}}
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: "{{template "common.fullname" .}}"
+  labels:
+    {{block "common.deployment.labels" . -}}
+    {{ template "common.metadata.labels" . }}
+    {{- end -}}
+    {{- block "common.deployment.xlabels" .}}{{end}}
+spec:
+  {{- block "common.deployment.spec" .}}
+  replicas: {{default 1 .Values.replicaCount | quote}}
+  template:
+    metadata:
+      labels:
+        app: {{template "common.fullname" .}}
+        release: {{.Release.Name | quote }}
+        {{- block "common.deployment.spec.xlabels" .}}{{end}}
+    spec:
+      containers:
+      {{- block "common.deployment.containers" . }}
+      - name: "{{template "common.fullname" .}}"
+        image: "{{.Values.deploymentImage | default "alpine"}}:{{.Values.deploymentTag | default "latest"}}"
+        imagePullPolicy: {{default "IfNotPresent" .Values.pullPolicy}}
+        ports:
+        - containerPort: 80
+        {{- block "common.deployment.containers.extra" . }}{{end}}
+      {{- end -}}
+      {{- block "common.deployment.volumeMounts" . }}{{ end -}}
+      {{- block "common.deployment.spec.extra" . }}{{ end -}}
+    {{- block "common.deployment.volumes" .}}{{ end -}}
+  {{- end}}
+{{- end }}

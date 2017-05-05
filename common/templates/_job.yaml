@@ -1,0 +1,35 @@
+{{define "common.job"}}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{template "common.fullname" .}}
+  labels:
+    {{block "common.job.labels" . -}}
+    {{template "common.metadata.labels"}}
+    {{- end}}
+    {{- block "common.job.xlabels" .}}{{end}}
+spec:
+  template:
+    metadata:
+      name: {{template "common.fullname" .}}
+      labels:
+        {{block "common.job.template.labels" . -}}
+        app: {{template "common.fullname" .}}
+        heritage: {{ .Release.Service | quote }}
+        release: {{ .Release.Name | quote }}
+        chart: {{template "common.chartref" . }}
+        {{- end}}
+        {{- block "common.job.spec.xlabels" .}}{{end}}
+    spec:
+      containers:
+      {{- block "common.job.containers" . }}
+      - name: {{template "common.fullname" .}}-job
+        image: "{{.Values.jobImage | default "alpine"}}:{{.Values.jobTag | default "latest"}}"
+        imagePullPolicy: {{default "IfNotPresent" .Values.pullPolicy}}
+        {{- block "common.job.containers.extra" . }}{{end}}
+      {{end}}
+      restartPolicy: {{default "Never" .Values.restartPolicy}}
+      {{- block "common.job.volumeMounts" . }}{{ end -}}
+      {{- block "common.job.spec.extra" . }}{{ end -}}
+    {{- block "common.job.volumes" .}}{{ end -}}
+{{end}}

@@ -1,0 +1,23 @@
+{{define "common.service"}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{template "common.fullname" .}}
+  labels:
+    {{block "common.service.labels" . -}}
+    {{ template "common.metadata.labels" . }}
+    {{- end}}
+    {{- block "common.service.xlabels" .}}{{end}}
+spec:
+  ports:
+  {{block "common.service.ports" . -}}
+  - port: {{default 80 .Values.commonServicePort}}
+    targetPort: {{default 80 .Values.commonServiceTargetPort}}
+    protocol: TCP
+    name: http
+  {{- end}}
+  selector:
+    {{- block "common.service.selector" . }}
+    app: {{template "common.fullname" .}}
+    {{- end}}
+{{end}}

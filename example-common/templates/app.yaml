@@ -1,0 +1,19 @@
+{{define "common.service.selector"}}
+    foo: bar
+{{end}}
+# Begin templates
+{{template "common.service" .}}
+---
+{{template "common.configmap" .}}
+---
+{{define "common.deployment.xlabels"}}
+    foo: bar
+{{- end}}
+{{define "common.deployment.containers"}}
+      - name: "{{template "fullname" .}}"
+        image: "nginx:stable"
+        imagePullPolicy: {{default "IfNotPresent" .Values.pullPolicy}}
+        ports:
+        - containerPort: 80
+{{end}}
+{{template "common.deployment" .}}
