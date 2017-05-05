@@ -14,6 +14,11 @@ spec:
       port: {{ .Values.server.httpPort }}
       protocol: TCP
       targetPort: 3000
+{{- if contains "NodePort" .Values.server.serviceType }}
+  {{- if .Values.server.nodePort }}
+      nodePort:  {{ .Values.server.nodePort }}
+  {{- end }}
+{{- end }}
   selector:
     app: {{ template "grafana.fullname" . }}
     component: "{{ .Values.server.name }}"

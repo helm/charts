@@ -117,6 +117,12 @@ server:
   # loadBalancerSourceRanges:
   #   - 0.0.0.0/0
 
+  ## nodePort port number
+  ## Is not required, but allows for static port assignment with
+  ## serviceType NodePort.
+  ## Default: nil
+  # nodePort: 30000
+
   ## Grafana local config path
   ## Default '/etc/grafana'
   ##
@@ -181,6 +187,17 @@ server:
       ## Default: "http://limping-tiger-server"
       ##
       # url: "http://limping-tiger-server"
+
+      ## The name of the database at the datasource.
+      ## Required parameter when used with elasticsearch, which refers to the index_name
+      ## Default: <empty>
+      # database:
+
+      ## Additional JSON data to be passed to the configuration of the datasource.
+      ## The JSON data is passed to curl, therefore it needs proper quoting and
+      ## escaping and needs to be on a single line. For example:
+      ##  '\"esVersion\": 2, \"interval\": \"Daily\", \"timeField\": \"@timestamp\"'
+      # jsonData: null
 
       ## Specify if Grafana has to go thru proxy to reach datasource
       ## Default: proxy
