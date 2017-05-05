@@ -1,6 +1,6 @@
 # aws-cluster-autoscaler
 
-[The cluster autoscaler on AWS](https://github.com/kubernetes/contrib/tree/master/cluster-autoscaler/cloudprovider/aws) scales worker nodes within an autoscaling group.
+[The cluster autoscaler on AWS](https://github.com/kubernetes/autoscaler/tree/master/cluster-autoscaler/cloudprovider/aws) scales worker nodes within an autoscaling group.
 
 ## TL;DR;
 
