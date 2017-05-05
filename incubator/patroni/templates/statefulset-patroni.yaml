@@ -38,7 +38,10 @@ spec:
             secretKeyRef:
               name: {{ template "fullname" . }}
               key: password-standby
-        {{if .Values.Etcd.Host }}
+        {{if .Values.Zookeeper.Hosts }}
+        - name: ZOOKEEPER_HOSTS
+          value: {{ .Values.Zookeeper.Hosts | quote }}
+        {{else if .Values.Etcd.Host }}
         - name: ETCD_HOST
           value: {{ .Values.Etcd.Host | quote }}
         {{else}}

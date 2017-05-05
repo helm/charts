@@ -29,3 +29,7 @@ Credentials:
 Etcd:
   Host: # fill-in value for etcd host (etcd.default.svc.cluster.local), leave blank to use the discovery parameter
   Discovery: # leave blank to use vendored etcd chart
+
+#Zookeeper:
+#  Hosts: #list of ZooKeeper cluster members in format: 'host1:port1','host2:port2','etc...'
+
