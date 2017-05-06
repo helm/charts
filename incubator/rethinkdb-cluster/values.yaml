@@ -1,0 +1,56 @@
+# Specs for the RethinkDB image
+image:
+  name: codylundquist/helm-rethinkdb-cluster
+  tag: 0.1.0
+  pullPolicy: IfNotPresent
+
+# RethinkDB Cluster Config
+cluster:
+  replicas: 3
+  resources: {}
+    # limits:
+    #   cpu: 100m
+    #   memory: 512Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 512Mi
+  podAnnotations: {}
+  serviceAnnotations: {}
+  persistentVolume:
+    enabled: true
+    ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
+    ## Default: volume.alpha.kubernetes.io/storage-class: default
+    ##
+    # storageClass: fast
+    accessModes:
+      - ReadWriteOnce
+    size: 1Gi
+    annotations: {}
+  rethinkConfig: |-
+    directory=/data
+    bind=all
+    no-http-admin
+
+# RethinkDB Proxy Config
+proxy:
+  replicas: 1
+  resources: {}
+    # limits:
+    #   cpu: 100m
+    #   memory: 512Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 512Mi
+  podAnnotations: {}
+  serviceAnnotations: {}
+  rethinkConfig: |-
+    bind=all
+
+# RethinkDB Ports
+ports:
+  cluster: 29015
+  driver:  28015
+  admin:   8080
+
+# RethinkDB Admin Password
+# rethinkdbPassword:

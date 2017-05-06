@@ -1,0 +1,13 @@
+name: rethinkdb
+description: The open-source database for the realtime web
+version: 0.0.1
+keywords:
+- rethinkdb
+- database
+- nosql
+home: https://www.rethinkdb.com
+sources:
+- https://hub.docker.com/r/codylundquist/helm-rethinkdb-cluster/
+maintainers:
+- name: Cody Lundquist
+  email: cody.lundquist@gmail.com
