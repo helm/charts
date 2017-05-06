@@ -93,6 +93,7 @@ The following tables lists the configurable parameters of the Traefik chart and 
 | `dashboard.auth.basic`          | Basic auth for the Traefik dashboard specified as a map, see Authentication section | unset by default; this means basic auth is disabled |
 | `service.annotations`           | Annotations for the Traefik Service definition, specified as a map   | None                                      |
 | `service.labels`                | Additional labels for the Traefik Service definition, specified as a map | None                                  |
+| `service.https.targetPort`      | Allow setting targetPort for https                                   | None                                  |
 | `gzip.enabled`                  | Whether to use gzip compression                                      | `true`                                    |
 | `kubernetes.namespaces`         | List of Kubernetes namespaces to watch                               | All namespaces                            |
 | `kubernetes.labelSelector`      | Valid Kubernetes ingress label selector to watch (e.g `realm=public`)| No label filter                           |
