@@ -10,21 +10,20 @@ metadata:
 data:
   config.json: |-
     {
-      "version": "13",
+      "version": "18",
       "credential": {
         "accessKey": {{ .Values.accessKey | quote }},
         "secretKey": {{ .Values.secretKey | quote }}
       },
       "region": "us-east-1",
+      "browser": "on",
       "logger": {
         "console": {
-          "enable": true,
-          "level": "fatal"
+          "enable": true
         },
         "file": {
           "enable": false,
-          "fileName": "",
-          "level": ""
+          "fileName": ""
         }
       },
       "notify": {
@@ -35,6 +34,7 @@ data:
             "exchange": {{ .Values.minioConfig.aqmp.exchange | quote }},
             "routingKey": {{ .Values.minioConfig.aqmp.routingKey | quote }},
             "exchangeType": {{ .Values.minioConfig.aqmp.exchangeType | quote }},
+            "deliveryMode": {{ .Values.minioConfig.aqmp.deliveryMode }},
             "mandatory": {{ .Values.minioConfig.aqmp.mandatory }},
             "immediate": {{ .Values.minioConfig.aqmp.immediate }},
             "durable": {{ .Values.minioConfig.aqmp.durable }},
@@ -65,6 +65,7 @@ data:
         "elasticsearch": {
           "1": {
             "enable": {{ .Values.minioConfig.elasticsearch.enable }},
+            "format": {{ .Values.minioConfig.elasticsearch.format | quote }},
             "url": {{ .Values.minioConfig.elasticsearch.url | quote }},
             "index": {{ .Values.minioConfig.elasticsearch.index | quote }}
           }
@@ -72,6 +73,7 @@ data:
         "redis": {
           "1": {
             "enable": {{ .Values.minioConfig.redis.enable }},
+            "format": {{ .Values.minioConfig.redis.format | quote }},
             "address": {{ .Values.minioConfig.redis.address | quote }},
             "password": {{ .Values.minioConfig.redis.password | quote }},
             "key": {{ .Values.minioConfig.redis.key | quote }}
@@ -80,6 +82,7 @@ data:
         "postgresql": {
           "1": {
             "enable": {{ .Values.minioConfig.postgresql.enable }},
+            "format": {{ .Values.minioConfig.postgresql.format | quote }},
             "connectionString": {{ .Values.minioConfig.postgresql.connectionString | quote }},
             "table": {{ .Values.minioConfig.postgresql.table | quote }},
             "host": {{ .Values.minioConfig.postgresql.host | quote }},
@@ -100,6 +103,19 @@ data:
           "1": {
             "enable": {{ .Values.minioConfig.webhook.enable }},
             "endpoint": {{ .Values.minioConfig.webhook.endpoint | quote }}
+          }
+        },
+        "mysql": {
+          "1": {
+            "enable": {{ .Values.minioConfig.mysql.enable }},
+            "format": {{ .Values.minioConfig.mysql.format | quote }},
+            "dsnString": {{ .Values.minioConfig.mysql.dsnString | quote }},
+            "table": {{ .Values.minioConfig.mysql.table | quote }},
+            "host": {{ .Values.minioConfig.mysql.host | quote }},
+            "port": {{ .Values.minioConfig.mysql.port | quote }},
+            "user": {{ .Values.minioConfig.mysql.user | quote }},
+            "password": {{ .Values.minioConfig.mysql.password | quote }},
+            "database": {{ .Values.minioConfig.mysql.database | quote }}
           }
         }
       }

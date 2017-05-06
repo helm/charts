@@ -1,4 +1,5 @@
 {{- if eq .Values.mode "distributed" }}
+{{ $nodeCount := .Values.replicas | int }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -46,9 +47,6 @@ spec:
         - name: minio-user
           secret:
             secretName: {{ template "fullname" . }}-user
-        - name: minio-configmap
-          configMap:
-            name: {{ template "fullname" . }}-cm
         - name: minio-server-config
           configMap:
             name: {{ template "fullname" . }}-config-cm
@@ -56,17 +54,21 @@ spec:
         - name: minio
           image: {{ .Values.image }}:{{ .Values.imageTag }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
-          command:
-            - /bin/sh
-            - /go/bin/start.sh
+          {{- if .Values.configPath }}
+          args:
+            - -C {{ .Values.configPath }} server
+          {{- else }}
+          args:
+            - server
+            {{- range $i := until $nodeCount }}
+            - http://{{ template "fullname" $ }}-{{$i}}.{{ template "fullname" $ }}.{{ $.Release.Namespace }}.svc.cluster.local{{ $.Values.mountPath }}
+            {{- end }}
+            {{- end }}
           volumeMounts:
             - name: export
               mountPath: {{ .Values.mountPath }}
             - name: minio-server-config
               mountPath: {{ default "/root/.minio/" .Values.configPath | quote }}
-            - name: minio-configmap
-              mountPath: /go/bin/start.sh
-              subPath: start.sh
           ports:
             - name: service
               containerPort: 9000
