@@ -67,6 +67,11 @@ spec:
         - name: surf-udp
           containerPort: 7946
           protocol: UDP
+        readinessProbe:
+          exec:
+            command:
+              - kong
+              - health
         volumeMounts:
         - mountPath: /etc/kong/
           name: config

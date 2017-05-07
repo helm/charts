@@ -133,6 +133,8 @@ documentation for more details.
 - [x] Basic setup and configuration
 - [x] Postgres and Cassandra support
 - [x] v0.10.0
+- [ ] Add [liveness check](https://github.com/Mashape/kong/issues/1677)
+- [x] Add [readiness check](https://github.com/Mashape/kong/issues/1678)
 - [ ] Ensure [Kong DB migrations only get run by single Kong instance](https://github.com/Mashape/kong/issues/2125#issuecomment-284880157)
 - [ ] Enable [Docker logs](https://github.com/Mashape/docker-kong/issues/40)
 - [ ] More options to secure admin endpoint such as internal network only
