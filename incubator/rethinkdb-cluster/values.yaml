@@ -27,7 +27,7 @@ cluster:
     size: 1Gi
     annotations: {}
   rethinkConfig: |-
-    directory=/data
+    directory=/data/db
     bind=all
     no-http-admin
 
