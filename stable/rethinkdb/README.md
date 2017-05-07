@@ -84,18 +84,14 @@ $ helm upgrade --set rethinkdbPassword=new-password my-release incubator/rethink
 
 ## Opening Up the RethinkDB Admin Console
 
-The admin port is not available outside of the cluster for security reasons. The only way to access the admin console is to use a [Kubernetes Port-Forward](https://kubernetes.io/docs/tasks/access-application-cluster/port-forward-access-application-cluster/). Also, the admin console is only available through a running RethinkDB Proxy. Here is an example:
-
+The admin port is not available outside of the cluster for security reasons. The only way to access the admin console is to use a [Kubernetes Proxy](https://kubernetes.io/docs/concepts/cluster-administration/access-cluster/#manually-constructing-apiserver-proxy-urls). To open up the admin console:
 ```console
-$ kubectl get pods -l release-my-release
-NAME                                          READY     STATUS    RESTARTS   AGE
-my-release-rethinkdb-cluster-0                1/1       Running   0          1m
-my-release-rethinkdb-cluster-1                1/1       Running   0          2m
-my-release-rethinkdb-cluster-2                1/1       Running   0          2m
-my-release-rethinkdb-proxy-2517940628-81dxd   1/1       Running   1          1m
-
-$ kubectl port-forward my-release-rethinkdb-proxy-2517940628-81dxd 8080:8080
+$ kubectl proxy
+Starting to serve on 127.0.0.1:8001
 ```
+Then use the following URL: http://localhost:8001/api/v1/namespaces/NAMESPACE/services/RELEASE_NAME-rethinkdb-admin/proxy
+Make sure a replace `NAMEPSPACE` with the correct namespace and `RELEASE_NAME` that was used when installing the chart.
+
 And then open up your browser to http://localhost:8080 and you should see the admin console
 
 ## Cleanup orphaned Persistent Volumes

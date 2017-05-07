@@ -12,3 +12,9 @@ NOTE: If you are using Minikube, the above will provide a blank Host and the wro
       The following command will open up a browser with the correct Host and Port.
 
   minikube service {{ template "fullname" . }}-proxy
+
+2. Open RethinkDB Admin Console
+
+NOTE: The RethinkDB Admin Console is not exposed externally, you will need to start a 'kubectl proxy' before you can access it.
+
+  URL: http://localhost:8001/api/v1/namespaces/{{ .Release.Namespace }}/services/{{ template "fullname" . }}-admin/proxy
