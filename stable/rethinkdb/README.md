@@ -23,8 +23,7 @@ This chart implements a dynamically scalable [RethinkDB Cluster](https://www.ret
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm repo add incubator https://kubernetes-charts-incubator.storage.googleapis.com/
-$ helm install --name my-release incubator/rethinkdb-cluster
+$ helm install --name my-release stable/rethinkdb
 ```
 
 ## Configuration
@@ -70,7 +69,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```console
-$ helm install --name my-release -f values.yaml incubator/rethinkdb-cluster
+$ helm install --name my-release -f values.yaml stable/rethinkdb
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
@@ -79,7 +78,7 @@ $ helm install --name my-release -f values.yaml incubator/rethinkdb-cluster
 
 The initial admin password is set by the config value `rethinkdbPassword`.  This value is also used by the probe which periodically checks if the RethinkDB Cluster and Proxy are still running.  If you change the RethinkDB admin password via a query (i.e. `r.db('rethinkdb').table('users').update({password: 'new-password'})`) this will cause the probe to fail which then restarts the pods over and over.  To stablize the cluster, you also need to use `helm upgrade` to update the password in the Kubernetes Secrets storage by doing:
 ```console
-$ helm upgrade --set rethinkdbPassword=new-password my-release incubator/rethinkdb-cluster
+$ helm upgrade --set rethinkdbPassword=new-password my-release stable/rethinkdb
 ```
 
 ## Opening Up the RethinkDB Admin Console
@@ -128,5 +127,5 @@ $ kubectl exec -it my-release-rethinkdb-cluster-0 -- kill 7
 
 Scaling should be managed by `helm upgrade`, which is the recommended way. Example:
 ```
-$ helm upgrade --set cluster.replicas=4 my-release incubator/rethinkdb-cluster
+$ helm upgrade --set cluster.replicas=4 my-release stable/rethinkdb
 ```
