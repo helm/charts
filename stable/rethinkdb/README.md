@@ -58,7 +58,7 @@ Parameter | Description | Default
 `ports.cluster` | RethinkDB Cluster Port | `29015`
 `ports.driver` | RethinkDB Driver Port | `28015`
 `ports.admin` | RethinkDB Admin Port | `8080`
-`rethinkdbPassword` | Password for the RethinkDB Admin user | Randomly generated if not set
+`rethinkdbPassword` | Password for the RethinkDB Admin user | `rethinkdb`
 
 *RethinkDB config files*
 

@@ -60,5 +60,5 @@ ports:
   driver:  28015
   admin:   8080
 
-# RethinkDB Admin Password - If blank, it will use {{ randAlphaNum 24 }}
-#rethinkdbPassword:
+# RethinkDB Admin Password
+rethinkdbPassword: rethinkdb
