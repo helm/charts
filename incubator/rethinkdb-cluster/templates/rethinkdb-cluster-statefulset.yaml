@@ -88,13 +88,13 @@ spec:
   - metadata:
       name: datadir
       annotations:
+      {{- if .Values.cluster.persistentVolume.storageClass }}
+        volume.beta.kubernetes.io/storage-class: {{ .Values.persistence.apache.storageClass | quote }}
+      {{- end }}
       {{- range $key, $value := .Values.cluster.persistentVolume.annotations }}
         {{ $key }}: {{ $value }}
       {{- end }}
     spec:
-      {{- if .Values.cluster.persistentVolume.storageClass }}
-      storageClassName: {{ .Values.cluster.persistentVolume.storageClass | quote }}
-      {{- end }}
       accessModes:
       {{- range .Values.cluster.persistentVolume.accessModes }}
         - {{ . | quote }}

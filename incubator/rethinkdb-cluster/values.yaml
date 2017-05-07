@@ -15,13 +15,12 @@ cluster:
     #   cpu: 100m
     #   memory: 512Mi
   podAnnotations: {}
-  serviceAnnotations: {}
+  service:
+    annotations: {}
   persistentVolume:
     enabled: true
-    ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
-    ## Default: volume.alpha.kubernetes.io/storage-class: default
-    ##
-    # storageClass: fast
+    # If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
+    #storageClass: fast
     accessModes:
       - ReadWriteOnce
     size: 1Gi
@@ -42,7 +41,16 @@ proxy:
     #   cpu: 100m
     #   memory: 512Mi
   podAnnotations: {}
-  serviceAnnotations: {}
+  service:
+    annotations: {}
+    type: LoadBalancer
+    clusterIP: ""
+    # List of IP addresses at which the proxy service is available
+    # Ref: https://kubernetes.io/docs/concepts/services-networking/service/#external-ips
+    #
+    externalIPs: []
+    loadBalancerIP: ""
+    loadBalancerSourceRanges: []
   rethinkConfig: |-
     bind=all
 
@@ -52,5 +60,5 @@ ports:
   driver:  28015
   admin:   8080
 
-# RethinkDB Admin Password
-# rethinkdbPassword:
+# RethinkDB Admin Password - If blank, it will use {{ randAlphaNum 24 }}
+#rethinkdbPassword:

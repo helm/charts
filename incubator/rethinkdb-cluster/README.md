@@ -12,7 +12,7 @@
 
 ## Acknowledgment of Previous Works
 
-I have heavely barrowed and extended code (peer discovery and probe) from the following project to build this Helm Chart and Docker image: https://github.com/rosskukulinski/kubernetes-rethinkdb-cluster.
+I have heavily borrowed and extended code (peer discovery and probe) from the following project to build this Helm Chart and Docker image: https://github.com/rosskukulinski/kubernetes-rethinkdb-cluster.
 
 ## Chart Details
 
@@ -31,30 +31,35 @@ $ helm install --name my-release incubator/rethinkdb-cluster
 
 The following table lists the configurable parameters of the rethinkdb chart and their default values.
 
-| Parameter                               | Description                                                                        | Default                                             |
-|-----------------------------------------|------------------------------------------------------------------------------------|-----------------------------------------------------|
-| `image.name`                            | Custom RethinkDB image name for auto-joining and probe                             | `codylundquist/helm-rethinkdb-cluster`              |
-| `image.tag`                             | Custom RethinkDB image tag                                                         | `0.1.0`                                             |
-| `image.pullPolicy`                      | Custom RethinkDB image pull policy                                                 | `IfNotPresent`                                      |
-| `cluster.replicas`                      | Number of RethinkDB Cluster replicas                                               | `3`                                                 |
-| `cluster.resources`                     | Resource configuration for each RethinkDB Cluster Pod                              | `{}`                                                |
-| `cluster.podAnnotations`                | Annotations to be added to RethinkDB Cluster Pods                                  | `{}`                                                |
-| `cluster.serviceAnnotations`            | Annotations to be added to RethinkDB Cluster Service                               | `{}`                                                |
-| `cluster.persistentVolume.enabled`      | If `true`, persistent volume claims are created                                    | `true`                                              |
-| `cluster.persistentVolume.storageClass` | Persistent volume storage class                                                    | `volume.alpha.kubernetes.io/storage-class: default` |
-| `cluster.persistentVolume.accessMode`   | Persistent volume access modes                                                     | `[ReadWriteOnce]`                                   |
-| `cluster.persistentVolume.size`         | Persistent volume size                                                             | `10Gi`                                              |
-| `cluster.persistentVolume.annotations`  | Persistent volume annotations                                                      | `{}`                                                |
-| `cluster.rethinkConfig`                 | Configuration passed to RethinkDB via `--config-file=/config/rethinkdb.conf`       | `directory=/data bind=all no-http-admin`            |
-| `proxy.replicas`                        | Number of RethinkDB Proxy replicas                                                 | `1`                                                 |
-| `proxy.resources`                       | Resource configuration for each RethinkDB Proxy Pod                                | `{}`                                                |
-| `proxy.podAnnotations`                  | Annotations to be added to RethinkDB Proxy Pods                                    | `{}`                                                |
-| `proxy.serviceAnnotations`              | Annotations to be added to RethinkDB Cluster Service                               | `{}`                                                |
-| `proxy.rethinkConfig`                   | Configuration passed to RethinkDB via `--config-file=/config/rethinkdb-proxy.conf` | `bind=all`                                          |
-| `ports.cluster`                         | RethinkDB Cluster Port                                                             | `29015`                                             |
-| `ports.driver`                          | RethinkDB Driver Port                                                              | `28015`                                             |
-| `ports.admin`                           | RethinkDB Admin Port                                                               | `8080`                                              |
-| `rethinkdbPassword`                     | Password for the RethinkDB Admin user                                              | Randomly generated if not set                       |
+Parameter | Description | Default
+---|---|---
+`image.name` | Custom RethinkDB image name for auto-joining and probe | `codylundquist/helm-rethinkdb-cluster`
+`image.tag` | Custom RethinkDB image tag | `0.1.0`
+`image.pullPolicy` | Custom RethinkDB image pull policy | `IfNotPresent`
+`cluster.replicas` | Number of RethinkDB Cluster replicas | `3`
+`cluster.resources` | Resource configuration for each RethinkDB Cluster Pod | `{}`
+`cluster.podAnnotations` | Annotations to be added to RethinkDB Cluster Pods | `{}`
+`cluster.service.annotations` | Annotations to be added to RethinkDB Cluster Service | `{}`
+`cluster.persistentVolume.enabled` | If `true`, persistent volume claims are created | `true`
+`cluster.persistentVolume.storageClass` | Persistent volume storage class | `default`
+`cluster.persistentVolume.accessMode` | Persistent volume access modes | `[ReadWriteOnce]`
+`cluster.persistentVolume.size` | Persistent volume size | `10Gi`
+`cluster.persistentVolume.annotations` | Persistent volume annotations | `{}`
+`cluster.rethinkConfig` | Configuration passed to RethinkDB via `--config-file=/config/rethinkdb.conf` | `directory=/data/db bind=all no-http-admin`
+`proxy.replicas` | Number of RethinkDB Proxy replicas | `1`
+`proxy.resources` | Resource configuration for each RethinkDB Proxy Pod | `{}`
+`proxy.podAnnotations` | Annotations to be added to RethinkDB Proxy Pods | `{}`
+`proxy.service.type` | RethinkDB Proxy Service Type | `LoadBalancer`
+`proxy.service.annotations` | Annotations to be added to RethinkDB Cluster Service | `{}`
+`proxy.service.clusterIP` | Internal controller proxy service IP | `""`
+`proxy.service.externalIPs` | Controller service external IP addresses | `[]`
+`proxy.service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
+`proxy.service.loadBalancerSourceRanges` | List of IP CIDRs allowed access to load balancer (if supported) | `[]`
+`proxy.rethinkConfig` | Configuration passed to RethinkDB via `--config-file=/config/rethinkdb-proxy.conf` | `bind=all`
+`ports.cluster` | RethinkDB Cluster Port | `29015`
+`ports.driver` | RethinkDB Driver Port | `28015`
+`ports.admin` | RethinkDB Admin Port | `8080`
+`rethinkdbPassword` | Password for the RethinkDB Admin user | Randomly generated if not set
 
 *RethinkDB config files*
 
