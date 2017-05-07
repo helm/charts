@@ -4,11 +4,11 @@ NOTE: It may take a few minutes for the LoadBalancer IP to be available.
       Watch the status with: 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "fullname" . }}-proxy'
 
   echo Host: $(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "fullname" . }}-proxy -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-  echo Port: $(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "fullname" . }}-proxy -o jsonpath='{.spec.ports[0].nodePort}')
+  echo Port: $(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "fullname" . }}-proxy -o jsonpath='{.spec.ports[0].port}')
   echo Username: admin
   echo Password: $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath="{.data.rethinkdb-password}" | base64 --decode)
 
-NOTE: If you are using Minikube, the above will not provide you the Host.
-      The following command will open up a browser with the correct Host.
+NOTE: If you are using Minikube, the above will provide a blank Host and the wrong Port.
+      The following command will open up a browser with the correct Host and Port.
 
   minikube service {{ template "fullname" . }}-proxy
