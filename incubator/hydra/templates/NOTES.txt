@@ -9,7 +9,7 @@
 Hydra should not be facing the internet itself, so you can access hydra via. 
 the service from other deployments (including the consent app) using the hostname:
 
-{{ template "fullname" . }}-service.<namespace>.svc.cluster.local
+{{ template "fullname" . }}-service.{{ $.Release.Namespace }}.svc.cluster.local
 
 Or on the same namespace:
 
