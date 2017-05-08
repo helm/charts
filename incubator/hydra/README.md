@@ -5,8 +5,6 @@ Hydra is able to securely manage JSON Web Keys, and has a sophisticated policy-b
 
 This chart comes bundled with an installation of Postgres.
 
-
-
 # Prerequesites
 
 * Kubernetes 1.4+ with Beta APIs enabled
@@ -33,22 +31,23 @@ Adding the `--purge` flag will completely remove any trace of your release. (No 
 # Configuring
 
 
-| Parameter                   | Description                                                                                                                | Default                        |
-|-----------------------------|----------------------------------------------------------------------------------------------------------------------------|--------------------------------|
-| image                       | The path for pulling the docker image (without tag)                                                                        | `"oryd/hydra"`                 |
-| imageTag                    | The version of the docker image to pull                                                                                    | `"0.7.10"`                     |
-| imagePullPolicy             | When to pull the docker image                                                                                              | `"Always"`                     |
-| replicas                    | How many replicas of Hydra to create                                                                                       | `2`                            |
-| mountPath                   | Where in the container to mount the storage volume                                                                         | `"/root"`                      |
-| persistence.enabled         | If false, then use `emptyDir: {}`, otherwise, issue a PVC                                                                  | `true`                         |
-| persistence.accessMode      | [ReadWriteOnce/ReadOnlyMany/ReadWriteMany](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes-1) | `ReadWriteOnce`                |
-| persistence.size            | How much storage to allocate to the volume                                                                                 | `1Gi`                          |
-| postgresql.postgresPassword | The password of the Postgres User managing Hydra                                                                           | `hydra`                        |
-| postgresql.persistence.size | How much storage to allocate to the postgres server behind Hydra                                                           | `1Gi`                          |
-| config.system.secret        | The secret password for encrypting authorization tokens.  You should change this.                                          | `"changeme_changeme_changeme"` |
-| config.consentUrl           | The URL for the consent app                                                                                                | `"https://consent.example.com"`|
-| config.logLevel             | How detailed should the log output be                                                                                      | `"debug"`                      |
-| accessTokenLifespan         | How long should an access token be valid for                                                                               | `"1h"`                         |
-| idTokenLifespan             | How long should an id token be valid for                                                                                   | `"1h"`                         |
-| authorizeCodeLifespan       | How long should an authorize code be valid for                                                                             | `"1h"`                         |
+| Parameter                     | Description                                                                                                                | Default                        |
+|-------------------------------|----------------------------------------------------------------------------------------------------------------------------|--------------------------------|
+| `image`                       | The path for pulling the docker image (without tag)                                                                        | `"oryd/hydra"`                 |
+| `imageTag`                    | The version of the docker image to pull                                                                                    | `"0.7.10"`                     |
+| `imagePullPolicy`             | When to pull the docker image                                                                                              | `"Always"`                     |
+| `replicas`                    | How many replicas of Hydra to create                                                                                       | `2`                            |
+| `mountPath`                   | Where in the container to mount the storage volume                                                                         | `"/root"`                      |
+| `persistence.enabled`         | If false, then use `emptyDir: {}`, otherwise, issue a PVC                                                                  | `true`                         |
+| `persistence.accessMode`      | [ReadWriteOnce/ReadOnlyMany/ReadWriteMany](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes-1) | `ReadWriteOnce`                |
+| `persistence.size`            | How much storage to allocate to the volume                                                                                 | `1Gi`                          |
+| `postgresql.postgresPassword` | The password of the Postgres User managing Hydra                                                                           | `hydra`                        |
+| `postgresql.persistence.size` | How much storage to allocate to the postgres server behind Hydra                                                           | `1Gi`                          |
+| `config.system.secret`        | The secret password for encrypting authorization tokens.  You should change this.                                          | `"changeme_changeme_changeme"` |
+| `config.consentUrl`           | The URL for the consent app                                                                                                | `"https://consent.example.com"`|
+| `config.logLevel`             | How detailed should the log output be                                                                                      | `"debug"`                      |
+| `accessTokenLifespan`         | How long should an access token be valid for                                                                               | `"1h"`                         |
+| `idTokenLifespan`             | How long should an id token be valid for                                                                                   | `"1h"`                         |
+| `authorizeCodeLifespan`       | How long should an authorize code be valid for                                                                             | `"1h"`                         |
 
+You can check out the [values.yaml](values.yaml) for any other configuration items not listed here.

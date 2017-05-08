@@ -1,0 +1,16 @@
+{{- if eq .Values.config.system.secret "this_is_a_secret_change_me" }}
+######################################################################
+#                             WARNING                                #
+# You are using the default secret provided with the helm chart when #
+# issuing authorization tokens.  This is very insecure.              #
+######################################################################
+{{- end }}
+
+Hydra should not be facing the internet itself, so you can access hydra via. 
+the service from other deployments (including the consent app) using the hostname:
+
+{{ template "fullname" . }}-service.<namespace>.svc.cluster.local
+
+Or on the same namespace:
+
+{{ template "fullname" . }}-service
