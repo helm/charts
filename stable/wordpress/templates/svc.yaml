@@ -10,11 +10,11 @@ metadata:
 spec:
   type: {{ .Values.serviceType }}
   ports:
-  - name: http
-    port: 80
-    targetPort: http
-  - name: https
-    port: 443
-    targetPort: https
+    - name: http
+      port: 80
+      targetPort: http
+    - name: https
+      port: 443
+      targetPort: https
   selector:
     app: {{ template "fullname" . }}
