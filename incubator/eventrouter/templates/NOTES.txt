@@ -1,0 +1,12 @@
+
+#################################################################################
+######                   Eventrouter is now starting                        #####
+#################################################################################
+
+If you selected a sink that prints to the console (e.g. `stdout` which is the 
+default sink), then you can see the events being printed out:
+
+    export POD_NAME=$(kubectl get pods --namespace {{ .Values.namespace }} -l "app={{ template "fullname" . }}" -o jsonpath="{.items[0].metadata.name}")
+    kubectl -n {{ .Values.namespace }} logs -f ${POD_NAME}
+
+For more information, please refer to the Eventrouter GitHub repo: https://github.com/heptio/eventrouter
