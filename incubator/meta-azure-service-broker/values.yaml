@@ -1,0 +1,72 @@
+# Default values for meta-azure-service-broker.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+replicaCount: 1
+image:
+  # Image location, NOT including the tag
+  repository: microsoft/meta-azure-service-broker
+  # Image tag
+  tag: canary
+  # "IfNotPresent", "Always", or "Never"; use "Always" if using a mutable image
+  pullPolicy: Always
+service:
+  # Type of service; valid values are "ClusterIP", LoadBalancer", and
+  # "NodePort". "ClusterIP" is sufficient in the average case where a service
+  # catalog installation in the same cluster is the only client that needs to
+  # communicate with this broker. i.e. The broker does not need to receive
+  # inbound requests from outside the cluster.
+  type: ClusterIP
+  # Further configuration if service is of type "NodePort"
+  nodePort:
+    # Available port in allowable range (e.g. 30000 - 32767 on minikube)
+    port: 30080
+ingress:
+  enabled: false
+  annotations: {}
+  # # domain is required if ingress is enabled
+  # # DO NOT USE THIS EXAMPLE VALUE IN PRODUCTION
+  # domain: meta-azure-service-broker.contoso.com
+  tls:
+    enabled: false
+    # # Base64-encoded certificate is required if ingress and tls are enabled
+    # # DO NOT USE THIS EXAMPLE VALUE IN PRODUCTION
+    # cert: TODO: Add base64-encoded, self-signed cert
+    # # Base64-encoded private key is required if ingress and tls are enabled
+    # # DO NOT USE THIS EXAMPLE VALUE IN PRODUCTION
+    # key: TODO: Add base64-encoded key
+config:
+  azure:
+    # Valid values are "AzureCloud" and "AzureChinaCloud"
+    environment: AzureCloud
+    # Azure subscription ID
+    subscriptionId:
+    # Azure service principal (credentials for the above subscription)
+    servicePrincipal:
+      # Required; this is the identifier of the Azure Service Directory that
+      # contains the service principal
+      tenantId:
+      # Required; when viewed in Azure Active Directory, this is also known as
+      # the application ID
+      clientId:
+      # Required
+      clientSecret:
+  # Basic auth credentials that can later be used to access this broker
+  auth:
+    # Required
+    username:
+    # Required
+    password:
+  # Only SQL Server is currently supported.
+  database:
+    # Required
+    host:
+    # Required
+    dbName:
+    # Required
+    username:
+    # Required
+    password:
+    # A 256 bit key used for database encryption; required
+    # NB: 32 ascii characters == 256 bits
+    # DO NOT USE THIS EXAMPLE VALUE IN PRODUCTION
+    encryptionKey: This is a key that is 256 bits!!
