@@ -21,6 +21,7 @@ spec:
           args:
             - "web"
           env:
+            {{ if .Values.postgresql.enabled }}
             - name: POSTGRES_HOST
               valueFrom:
                 configMapKeyRef:
@@ -43,6 +44,13 @@ spec:
                   key: postgresql-database
             - name: CONCOURSE_POSTGRES_DATA_SOURCE
               value: postgres://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@$(POSTGRES_HOST)/$(POSTGRES_DATABASE)?sslmode=disable
+            {{ else }}
+            - name: CONCOURSE_POSTGRES_DATA_SOURCE
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.fullname" . }}
+                  key: postgresql-uri
+            {{ end }}
             - name: POD_IP
               valueFrom:
                 fieldRef:
