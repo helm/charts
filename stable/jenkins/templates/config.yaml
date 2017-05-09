@@ -37,7 +37,15 @@ data:
               <idleMinutes>0</idleMinutes>
               <label></label>
               <nodeSelector></nodeSelector>
-              <volumes/>
+              <volumes>
+{{- range $index, $volume := .Values.Agent.Volumes }}
+                <org.csanchez.jenkins.plugins.kubernetes.volumes.{{ $volume.type }}Volume>
+{{- range $key, $value := $volume }}{{- if not (eq $key "type") }}
+                  <{{ $key }}>{{ $value }}</{{ $key }}>
+{{- end }}{{- end }}
+                </org.csanchez.jenkins.plugins.kubernetes.volumes.{{ $volume.type }}Volume>
+{{- end }}
+              </volumes>
               <containers>
                 <org.csanchez.jenkins.plugins.kubernetes.ContainerTemplate>
                   <name>jnlp</name>
@@ -47,7 +55,11 @@ data:
 {{- else }}
                   <privileged>false</privileged>
 {{- end }}
+{{- if .Values.Agent.PullImage }}
+                  <alwaysPullImage>true</alwaysPullImage>
+{{- else }}
                   <alwaysPullImage>false</alwaysPullImage>
+{{- end }}
                   <workingDir>/home/jenkins</workingDir>
                   <command></command>
                   <args>${computer.jnlpmac} ${computer.name}</args>
