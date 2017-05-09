@@ -1,0 +1,17 @@
+apiVersion: v1
+description: A Helm chart for the Meta Azure Service Broker
+name: meta-azure-service-broker
+version: 0.1.0
+appVersion: 474bdfb (v1.2.1+)
+keywords:
+  - azure
+  - services
+  - service broker
+home: https://github.com/azure/meta-azure-service-broker
+sources:
+  - https://github.com/azure/meta-azure-service-broker
+  - https://hub.docker.com/r/microsoft/meta-azure-service-broker/
+maintainers:
+  - name: Kent Rancourt
+    email: kent.rancourt@microsoft.com
+tillerVersion: ">=2.4.2"

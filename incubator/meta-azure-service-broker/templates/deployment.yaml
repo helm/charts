@@ -1,0 +1,106 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    app: {{ template "fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "fullname" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "fullname" . }}
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        release: "{{ .Release.Name }}"
+        heritage: "{{ .Release.Service }}"
+      {{- $sqlServer := index .Values "sql-server" }}
+      {{- if $sqlServer.embedded }}
+      annotations:
+        pod.beta.kubernetes.io/init-containers: '[
+          {
+            "name": "init-masb",
+            "image": "appropriate/nc:latest",
+            "imagePullPolicy": "IfNotPresent",
+            "command": ["sh", "-c", "until nc -z -w 5 {{ .Release.Name }}-sql-server.{{ .Release.Namespace }}.svc.cluster.local 1433; do echo waiting for mssql to come up; sleep 5; done"]
+          }
+        ]'
+      {{- end }}
+    spec:
+      containers:
+      - name: meta-azure-service-broker
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 100m
+            memory: 256Mi
+        env:
+        - name: ENVIRONMENT
+          value: {{ .Values.azure.environment }}
+        - name: SUBSCRIPTION_ID
+          value: {{ required "A value is required for azure.subscriptionId" .Values.azure.subscriptionId }}
+        - name: TENANT_ID
+          value: {{ required "A value is required for azure.tenantId" .Values.azure.tenantId }}
+        - name: CLIENT_ID
+          value: {{ required "A value is required for azure.clientId" .Values.azure.clientId }}
+        - name: CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "fullname" . }}
+              key: client-secret
+        - name: SECURITY_USER_NAME
+          value: {{ .Values.basicAuth.username }}
+        - name: SECURITY_USER_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "fullname" . }}-auth
+              key: password
+        - name: AZURE_BROKER_DATABASE_PROVIDER
+          value: sqlserver
+        - name: AZURE_BROKER_DATABASE_SERVER
+          {{- if $sqlServer.embedded }}
+          value: {{ .Release.Name }}-sql-server
+          {{- else }}
+          value: {{ required "A value is required for sql-server.host" $sqlServer.host }}
+          {{- end }}
+        - name: AZURE_BROKER_DATABASE_USER
+          value: {{ $sqlServer.username }}
+        - name: AZURE_BROKER_DATABASE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "fullname" . }}
+              key: db-password
+        - name: AZURE_BROKER_DATABASE_NAME
+          value: {{ $sqlServer.database }}
+        - name: AZURE_BROKER_DATABASE_ENCRYPTION_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "fullname" . }}
+              key: db-encryption-key 
+        ports:
+        - containerPort: 5001
+        readinessProbe:
+          tcpSocket:
+            port: 5001
+          failureThreshold: 1
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 2
+        livenessProbe:
+          tcpSocket:
+            port: 5001
+          failureThreshold: 3
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 2

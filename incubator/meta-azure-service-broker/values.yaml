@@ -1,0 +1,102 @@
+replicaCount: 1
+image:
+  ## Image location, NOT including the tag
+  repository: microsoft/meta-azure-service-broker
+  ## Image tag
+  tag: 474bdfb
+  ## "IfNotPresent", "Always", or "Never"
+  pullPolicy: IfNotPresent
+service:
+  ## Type of service; valid values are "ClusterIP", LoadBalancer", and
+  ## "NodePort". "ClusterIP" is sufficient in the average case where a service
+  ## catalog installation in the same cluster is the only client that needs to
+  ## communicate with this broker. i.e. The broker does not need to receive
+  ## inbound requests from outside the cluster.
+  type: ClusterIP
+  ## Further configuration if service is of type "NodePort"
+  nodePort:
+    ## Available port in allowable range (e.g. 30000 - 32767 on minikube)
+    port: 30080
+ingress:
+  enabled: false
+  annotations: {}
+  ## You will need to add appropriate records to DNS
+  ## DO NOT USE THIS EXAMPLE VALUE IN PRODUCTION
+  domain: meta-azure-service-broker.contoso.com
+  tls:
+    enabled: false
+    ## Base64-encoded certificate is used only if ingress and tls are both
+    ## enabled
+    ## DO NOT USE THIS EXAMPLE VALUE IN PRODUCTION
+    cert: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUQ2akNDQXRJQ0NRQ21lSVlTS0Z0LzZ6QU5CZ2txaGtpRzl3MEJBUXNGQURDQnRqRUxNQWtHQTFVRUJoTUMKVlZNeEV6QVJCZ05WQkFnVENsZGhjMmhwYm1kMGIyNHhFREFPQmdOVkJBY1RCMUpsWkcxdmJtUXhFakFRQmdOVgpCQW9UQ1UxcFkzSnZjMjltZERFUU1BNEdBMVVFQ3hNSFEyOXVkRzl6YnpFdU1Dd0dBMVVFQXhNbGJXVjBZUzFoCmVuVnlaUzF6WlhKMmFXTmxMV0p5YjJ0bGNpNWpiMjUwYjNOdkxtTnZiVEVxTUNnR0NTcUdTSWIzRFFFSkFSWWIKYTJWdWRDNXlZVzVqYjNWeWRFQnRhV055YjNOdlpuUXVZMjl0TUI0WERURTNNRFV4TURFMU5EQTBORm9YRFRFNApNRFV4TURFMU5EQTBORm93Z2JZeEN6QUpCZ05WQkFZVEFsVlRNUk13RVFZRFZRUUlFd3BYWVhOb2FXNW5kRzl1Ck1SQXdEZ1lEVlFRSEV3ZFNaV1J0YjI1a01SSXdFQVlEVlFRS0V3bE5hV055YjNOdlpuUXhFREFPQmdOVkJBc1QKQjBOdmJuUnZjMjh4TGpBc0JnTlZCQU1USlcxbGRHRXRZWHAxY21VdGMyVnlkbWxqWlMxaWNtOXJaWEl1WTI5dQpkRzl6Ynk1amIyMHhLakFvQmdrcWhraUc5dzBCQ1FFV0cydGxiblF1Y21GdVkyOTFjblJBYldsamNtOXpiMlowCkxtTnZiVENDQVNJd0RRWUpLb1pJaHZjTkFRRUJCUUFEZ2dFUEFEQ0NBUW9DZ2dFQkFLdFk4ZzBQR0tjeWl4SFIKTndWVnZwRld2U3FpZWEzQjBxSGdNS05qVmdhTXMvTkp4RmJicDFjckhuTWZlRUg5ZnBvRGkyR3JUUDZsNkI4NQpLU3N0dzU2ZFpvK3Y5ZFkwRnJzWFVyd0lsUEVXbUFqSUNMcjVHd2dicDFuT1NUWmhSQjN5WVdnU29XRVZNRExRCk9XRVRzYWhyL0QvVlBqVDEySTNEZnlBQUZ4MlRpaWhFUHdFOVJFSFNuMkxhRFI2ME5ZTi8yazFqRks5OVJYWDYKMGUrcTBtbFg1RXNob1FYWUwrZUUrSk5QMmNYZ2xUUHJnRFRudUJyeVllVWJ1OGFsMHJiRWxrdFQySi9sU0dvUQo3Szdqb3ZQNCtTSjRKUmxyKzJMbEd6VjR5RDJtakQxSDdkeTc1a0lJYXgvTnJySDJPTzJBSEkvZjBFNTJKR0NVCjJSb1V2WlVDQXdFQUFUQU5CZ2txaGtpRzl3MEJBUXNGQUFPQ0FRRUFpMzl5ODZzR3lBMUtiRHVJcHZ3Z1dydFQKbGl1eXBtcVBOTmhsK0JMQjdRSExjeE9yZkRMVHFtU1ZvTklyUGpzOGMrejNvME9TQnlOM2RqSUVKK29XOS81VwpWYjlqTVp0UlFKcjJpdWpkejZvVjUvUlYyc2FjamJuTVNDMDlRSG1yTS9DaGd2T2hRRENPS1cxbll1U1d5dnJJCkZiWnFhaHhnRVUyUW4xZXlKb1htSS9WdExtQVc1ZFNCaXFhYXhKZHRKUjMzSjh3UnVrdjYvUVNIVEJaeVRPZ28KOU91U2JHRTNyUDZEVlhndkJzRnJsaXdhWkJQMlhQTnNRTkJTVnlZNThvQUNqc1hoWnVlelkzL3ZJaktlTEZvNwpwR3NmV2JPQnV0eHdIcDU3K2lQNHNNNDRFN09ORlZiaG1uMjRacjBDTUIyeTB5UjBESkt0aDhsbzlHT2Q4UT09Ci0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K
+    ## Base64-encoded private key is used only if ingress and tls are both
+    ## enabled
+    ## DO NOT USE THIS EXAMPLE VALUE IN PRODUCTION
+    key: LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpNSUlFb3dJQkFBS0NBUUVBcTFqeURROFlwektMRWRFM0JWVytrVmE5S3FKNXJjSFNvZUF3bzJOV0JveXo4MG5FClZ0dW5WeXNlY3g5NFFmMSttZ09MWWF0TS9xWG9IemtwS3kzRG5wMW1qNi8xMWpRV3V4ZFN2QWlVOFJhWUNNZ0kKdXZrYkNCdW5XYzVKTm1GRUhmSmhhQktoWVJVd010QTVZUk94cUd2OFA5VStOUFhZamNOL0lBQVhIWk9LS0VRLwpBVDFFUWRLZll0b05IclExZzMvYVRXTVVyMzFGZGZyUjc2clNhVmZrU3lHaEJkZ3Y1NFQ0azAvWnhlQ1ZNK3VBCk5PZTRHdkpoNVJ1N3hxWFN0c1NXUzFQWW4rVklhaERzcnVPaTgvajVJbmdsR1d2N1l1VWJOWGpJUGFhTVBVZnQKM0x2bVFnaHJIODJ1c2ZZNDdZQWNqOS9RVG5Za1lKVFpHaFM5bFFJREFRQUJBb0lCQVFDVlVmWGVHNEhJY3V0dQpvM3ZuVWttNExuYTdhTXZRK0UrdWNjanhHZWdsM1FnVXcvd3VGVTFIVVhRL3J2VUZ6UHMvREVleTNhMURYU0ZqCjFGUmtKSVdNL0c0Y1dhTkxBQ211OFN4UVlNb3JMeDFleWJPUi9QUHBwTys1KzJNaDJMR2J4MVhMZEREZWdiQjMKRjY1cFF0aFhoWU5Wdldkd2o2NGdISFgwVlIvUHpRNVdUY2tmdk56VkRPM2NHVlNTVVVPMXltR1VQUVBvL09QaApxeU94TG5aeStIYXo5bTF5OTAvNDlCcDlRUUtHZmdtRkpqWkhsMHdXek5IQnJ5akVCMC9VWlAzRDNoN1VUVW10CjdDMUJFSWRScll2THdSNjdsTGNpWlVOME5tcDk2dS92cWhOTk0reTlhd2FrdzcyR2ExYk5JMWE2Q0gxQ1JnaUEKTlRUQWtLRUJBb0dCQU5LUUtGcmI1Tk9rOHJXWlZDYk9RN1ZyZ2dpajhnVTdibSsvQ2E4b0VBMndxbHM4V1JpMAoxY3NyekQrcGxRc2NZRVA2VFlLT2w2WGovM2IzNEFoN2pRZXg2aWFKVFpkenRBK2RDdzI0TzJ3TVdkbHR5VXB4CjVUTUU5c2ExYlJXbkRsS1NLbmkyVStKWFRoUmVkb1pQNWxLbkxLZHpOTE9ZWmYySUtwcWxUMlVKQW9HQkFOQlMKYzVzVFdtUkV3cU9SNktkQjBZdHQ5SFpuN3RHSWZvUFJlM1VPdldrRng4YmxNd2RKeDhBUTNvbmNCQWg0T2xzSgpSNmwyTTB1aVRzbHcxVDA2NDFobFZFYnBCYUlFbGNmVVdRenBaaWpvNUFWaEVxTzdqbkhGUWdrVTBWdzRNRDRqCm9SNnlRdVJqK0MyVzhhcGRFdU5uWVBXSlFRc1hnNXRBdEU2amdlTXRBb0dBTVZqRmpGMmlhQk50S2pBUDc3UkIKWEFBaERtTlZzZkkydEl1aCttRzZPV3NnMFpiNERuazY3WTJMSlpSWnNLdnF4Nk9laksxY1R1MTdEbWVUSW9uSwpDSGFpdUh0UEt1SmIzWmpoWVVxKzZsaU9xZzAzc25HMDFGc2lkbmxJWWwydlZweVl4WWQ5YXpzb3VrOVZHYThaCi9GN2ZjVExucy90UVU3V1l2bnRsZXZrQ2dZQVVmd2hBeWJhckJ0amZud3QwNlZUa2t2enFhVzlsempna1lBZjEKakcyMlY0dEFWbXllMnZOOFFpeWpBN0toNHJKYklwNmFYYmJPU2puV04vUERBbmc3eWp4d2ZaekFSQk00aGZ2OAorVG5EN0tZQ29YcGtBYUFTTVlZOXZuNmF4Q3g2OEtaNWpyQm1LQy9TekhjYWUrM1AwZXdJUEdqWjNvWmtVQWx0CmMwamtRUUtCZ0dkU2tycmtXTy92d1hVYW5LY1BGM01nbUFGVHpDVkxYaVZTT250MFJ1c2lhZTNsb0VpbXRXOXYKci9DdmdnNHdVRU5VWVVsTWNucG9BVE1QNFZZSlVFbForMmQwMGZLRmRLWG1rays1VnhVQzlDMWJmWGZ1QlJkTwpwa0RxS0NzYk5GcWxHdVRjNjU1QnBpRnJBOTJTZ2NIbVFYWlpESEpTdUhWYjlUVVRSY3lqCi0tLS0tRU5EIFJTQSBQUklWQVRFIEtFWS0tLS0tCg==
+azure:
+  ## Valid values are "AzureCloud" and "AzureChinaCloud"
+  environment: AzureCloud
+  ## Required; this is the identifier for the Azure account into which services
+  ## will be provisioned. BE AWARE THAT DOING SO WILL COST YOU MONEY!
+  subscriptionId:
+  ## Required; this is the identifier of the Azure Service Directory that
+  ## contains the service principal the broker will use for interacting with
+  ## Azure.
+  tenantId:
+  ## Required; this identifies the service principal. When viewed in Azure
+  ## Active Directory, this is also known as the Application ID.
+  clientId:
+  ## Required
+  clientSecret:
+## Basic auth credentials that can later be used to access this broker
+basicAuth:
+  ## DO NOT USE THIS DEFAULT VALUE IN PRODUCTION
+  username: username
+  ## DO NOT USE THIS DEFAULT VALUE IN PRODUCTION
+  password: password
+## A 256 bit key used for database encryption
+## NB: 32 ascii characters == 256 bits
+## DO NOT USE THIS DEFAULT VALUE IN PRODUCTION
+encryptionKey: This is a key that is 256 bits!!
+
+sql-server:
+  ## Should a containerized SQL Server be included in the Helm release?
+  embedded: true
+
+  ## If using the embedded SQL Server, indicates acceptance of its end user
+  ## license agreement. This must be explicitly accepted by the user. We cannot
+  ## do so on their behalf.
+  acceptLicense: false
+
+  ## Required if not embedded
+  host: 
+
+  ## Specify password for the SA user
+  ## At least 8 characters including uppercase and lowercase letters, base-10
+  ## digits and/or non-alphanumeric symbols
+  ## DO NOT USE THIS DEFAULT VALUE IN PRODUCTION
+  saPassword: Yggdrasil1
+
+  ## Create a database user
+  username: masb
+  ## At least 8 characters including uppercase and lowercase letters, base-10
+  ## digits and/or non-alphanumeric symbols
+  ## DO NOT USE THIS DEFAULT VALUE IN PRODUCTION
+  password: F00Bar!!
+
+  ## Create a database belonging to the user
+  database: masb
+
+  ## Persist data to a persistent volume
+  persistence:
+    enabled: true
+
+    ## A manually managed Persistent Volume and Claim
+    ## Requires persistence.enabled: true
+    ## If defined, PVC must be created manually before volume will be bound
+    # existingClaim:
+
+    ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
+    ## Default: volume.alpha.kubernetes.io/storage-class: default
+    # storageClass:
+    size: 2Gi
