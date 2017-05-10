@@ -63,10 +63,10 @@ Agent:
   Cpu: "200m"
   Memory: "256Mi"
   Volumes:
-    # Docker mounted volumes.  Any containers run in the agent must mount
-    # the HOST path (i.e. /mnt/work)
-    /var/run/docker.sock: /var/run/docker.sock
-    /mnt/work: /work
+    ## Docker mounted volumes.  Any containers run in the agent must mount
+    ## the HOST path (i.e. /mnt/work)
+    # /var/run/docker.sock: /var/run/docker.sock
+    # /mnt/work: /work
 
 Persistence:
   Enabled: true
