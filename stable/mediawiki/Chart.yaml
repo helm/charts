@@ -1,5 +1,5 @@
 name: mediawiki
-version: 0.4.3
+version: 0.4.7
 description: Extremely powerful, scalable software and a feature-rich wiki implementation that uses PHP to process and display data stored in a database.
 keywords:
 - mediawiki
@@ -7,6 +7,7 @@ keywords:
 - http
 - php
 home: http://www.mediawiki.org/
+icon: https://bitnami.com/assets/stacks/mediawiki/img/mediawiki-stack-220x234.png
 sources:
 - https://github.com/bitnami/bitnami-docker-mediawiki
 maintainers:

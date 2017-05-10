@@ -1,7 +1,8 @@
 name: zookeeper
 home: https://zookeeper.apache.org/
-version: 0.2.0
-description: Zookeeper Helm chart for Kubernetes.
+version: 0.3.0
+description: Centralized service for maintaining configuration information, naming, providing distributed synchronization, and providing group services.
+icon: https://zookeeper.apache.org/images/zookeeper_small.gif
 sources:
   - https://github.com/apache/zookeeper
   - https://github.com/kubernetes/contrib/tree/master/statefulset/zookeeper

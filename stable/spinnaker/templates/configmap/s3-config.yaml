@@ -7,5 +7,5 @@ metadata:
 data:
   credentials: |
     [default]
-    aws_access_key_id={{ .Values.minio.AccessKey }}
-    aws_secret_access_key={{ .Values.minio.SecretKey }}
+    aws_access_key_id={{ .Values.minio.accessKey }}
+    aws_secret_access_key={{ .Values.minio.secretKey }}

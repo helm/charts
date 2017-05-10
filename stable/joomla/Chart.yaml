@@ -1,5 +1,5 @@
 name: joomla
-version: 0.4.2
+version: 0.4.7
 description: PHP content management system (CMS) for publishing web content
 keywords:
 - joomla
@@ -8,6 +8,7 @@ keywords:
 - http
 - php
 home: http://www.joomla.org/
+icon: https://bitnami.com/assets/stacks/joomla/img/joomla-stack-220x234.png
 sources:
 - https://github.com/bitnami/bitnami-docker-joomla
 maintainers:

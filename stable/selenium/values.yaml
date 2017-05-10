@@ -1,0 +1,329 @@
+hub:
+  ## The repository and image
+  ## ref: https://hub.docker.com/r/selenium/hub/
+  image: "selenium/hub"
+
+  ## The tag for the image
+  ## ref: https://hub.docker.com/r/selenium/hub/tags/
+  tag: "2.53.1"
+
+  ## Specify a imagePullPolicy
+  ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+  pullPolicy: "IfNotPresent"
+
+  ## The port which the hub listens on
+  port: 4444
+
+  ## Set the JAVA_OPTS environment variable
+  ## If you find your selenium hub is OOMKilled, try adding -XX:+UseSerialGC
+  javaOpts: "-Xmx400m"
+
+  ## Set the SE_OPTS environment variable
+  ## ref: http://www.seleniumhq.org/docs/07_selenium_grid.jsp#node-configuration
+  # seOpts: 
+
+  ## Defining a JMX port will open the port on the container, however, it 
+  ## requires additional javaOpts, ie
+  ## javaOpts: >
+  ##   -Dcom.sun.management.jmxremote.port=4000 
+  ##   -Dcom.sun.management.jmxremote.authenticate=false 
+  ##   -Dcom.sun.management.jmxremote.ssl=false 
+  ## ref: http://openjdk.java.net/groups/jmx/
+  # jmxPort: 4000
+
+  ## Configure resource requests and limits
+  ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+  resources:
+    limits:
+      cpu: ".5"
+      memory: "512Mi"
+
+  ## The type of service to create
+  ##   Values: ClusterIP, NodePort, LoadBalancer, or ExternalName
+  ## ref: https://kubernetes.io/docs/user-guide/services/
+  serviceType: "LoadBalancer"
+
+  ## Control where client requests go, to the same pod or round-robin
+  ##   Values: ClientIP or None
+  ## ref: https://kubernetes.io/docs/user-guide/services/
+  serviceSessionAffinity: "None"
+
+  ## Define various attributes of the service
+  # serviceAnnotations:
+  #   # internal AWS ELB
+  #   service.beta.kubernetes.io/aws-load-balancer-internal: "0.0.0.0/0"
+
+  ## ref: https://seleniumhq.github.io/docs/grid.html#step_1_start_the_hub
+  # gridNewSessionWaitTimeout: -1
+  # gridJettyMaxThreads: -1
+  ## In milliseconds
+  # gridNodePolling: 5000
+  ## In milliseconds
+  # gridCleanUpCycle: 5000
+  ## In milliseconds
+  # gridTimeout: 30000
+  ## In milliseconds
+  # gridBrowserTimeout: 0
+  # gridMaxSession: 5
+  ## In milliseconds
+  # gridUnregisterIfStillDownAfer: 30000
+  # timeZone: UTC
+
+chrome:
+  ## Enable the creation of a node-chrome pod
+  enabled: false
+
+  ## The repository and image
+  ## ref: https://hub.docker.com/r/selenium/hub/
+  image: "selenium/node-chrome"
+
+  ## The tag for the image
+  ## ref: https://hub.docker.com/r/selenium/hub/tags/
+  tag: "2.53.1"
+
+  ## Specify a imagePullPolicy
+  ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+  pullPolicy: "IfNotPresent"
+
+  ## The number of pods in the deployment
+  replicas: 1
+
+  ## Set the JAVA_OPTS environment variable
+  ## If you find your selenium node is OOMKilled, try adding -XX:+UseSerialGC
+  javaOpts: "-Xmx900m"
+
+  ## Set the SE_OPTS environment variable
+  ## ref: http://www.seleniumhq.org/docs/07_selenium_grid.jsp#node-configuration
+  # seOpts: 
+
+  ## Defining a JMX port will open the port on the container, however, it 
+  ## requires additional javaOpts, ie
+  ## javaOpts: >
+  ##   -Dcom.sun.management.jmxremote.port=4000 
+  ##   -Dcom.sun.management.jmxremote.authenticate=false 
+  ##   -Dcom.sun.management.jmxremote.ssl=false 
+  ## ref: http://openjdk.java.net/groups/jmx/
+  # jmxPort: 4000
+
+  ## User defined volumes
+  ## ref: https://kubernetes.io/docs/user-guide/volumes/
+  volumes:
+    ## https://github.com/kubernetes/kubernetes/pull/34928#issuecomment-277952723
+    ## http://stackoverflow.com/questions/39852716/chrome-driver-throwing-org-openqa-selenium-remote-sessionnotfoundexception-whe
+    ## Chrome wants more than 64mb of shared memory. Docker/k8s default to 64mb.
+    - name: dshm
+      emptyDir:
+        medium: Memory
+  volumeMounts:
+    - mountPath: /dev/shm
+      name: dshm
+
+  ## Configure resource requests and limits
+  ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+  resources:
+    limits:
+      cpu: ".5"
+      memory: "1000Mi"
+
+  ## Characteristics of the browser window
+  # screenWidth: 1280
+  # screenHeight: 1024
+  # screenDepth: 24
+  # display: :10
+
+  ## Selenium node options
+  # chromeVersion:
+  # nodeMaxInstances: 1
+  # nodeMaxSession: 1
+  ## In milliseconds
+  # nodeRegisterCycle: 5000
+  # nodePort: 5555
+  # timeZone: UTC
+
+chromeDebug:
+  ## Enable the creation of a node-chrome pod
+  enabled: false
+
+  ## The repository and image
+  ## ref: https://hub.docker.com/r/selenium/hub/
+  image: "selenium/node-chrome-debug"
+
+  ## The tag for the image
+  ## ref: https://hub.docker.com/r/selenium/hub/tags/
+  tag: "2.53.1"
+
+  ## Specify a imagePullPolicy
+  ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+  pullPolicy: "IfNotPresent"
+
+  ## The number of pods in the deployment
+  replicas: 1
+
+  ## Set the JAVA_OPTS environment variable
+  ## If you find your selenium hub is OOMKilled, try adding -XX:+UseSerialGC
+  javaOpts: "-Xmx900m"
+
+  ## Set the SE_OPTS environment variable
+  ## ref: http://www.seleniumhq.org/docs/07_selenium_grid.jsp#node-configuration
+  # seOpts: 
+
+  ## Defining a JMX port will open the port on the container, however, it 
+  ## requires additional javaOpts, ie
+  ## javaOpts: >
+  ##   -Dcom.sun.management.jmxremote.port=4000 
+  ##   -Dcom.sun.management.jmxremote.authenticate=false 
+  ##   -Dcom.sun.management.jmxremote.ssl=false 
+  ## ref: http://openjdk.java.net/groups/jmx/
+  # jmxPort: 4000
+
+  ## User defined volumes
+  ## ref: https://kubernetes.io/docs/user-guide/volumes/
+  volumes:
+    ## https://github.com/kubernetes/kubernetes/pull/34928#issuecomment-277952723
+    ## http://stackoverflow.com/questions/39852716/chrome-driver-throwing-org-openqa-selenium-remote-sessionnotfoundexception-whe
+    ## Chrome wants more than 64mb of shared memory. Docker/k8s default to 64mb.
+    - name: dshm
+      emptyDir:
+        medium: Memory
+  volumeMounts:
+    - mountPath: /dev/shm
+      name: dshm
+
+  ## Configure resource requests and limits
+  ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+  resources:
+    limits:
+      cpu: ".5"
+      memory: "1500Mi"
+
+  ## Characteristics of the browser window
+  # screenWidth: 1280
+  # screenHeight: 1024
+  # screenDepth: 24
+  # display: :10
+
+  ## Selenium node options
+  # chromeVersion:
+  # nodeMaxInstances: 1
+  # nodeMaxSession: 1
+  ## In milliseconds
+  # nodeRegisterCycle: 5000
+  # nodePort: 5555
+  # timeZone: UTC
+
+firefox:
+  ## Enable the creation of a node-chrome pod
+  enabled: false
+
+  ## The repository and image
+  ## ref: https://hub.docker.com/r/selenium/hub/
+  image: "selenium/node-firefox"
+
+  ## The tag for the image
+  ## ref: https://hub.docker.com/r/selenium/hub/tags/
+  tag: "2.53.1"
+
+  ## Specify a imagePullPolicy
+  ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+  pullPolicy: "IfNotPresent"
+
+  ## The number of pods in the deployment
+  replicas: 1
+
+  ## Set the JAVA_OPTS environment variable
+  ## If you find your selenium hub is OOMKilled, try adding -XX:+UseSerialGC
+  javaOpts: "-Xmx900m"
+
+  ## Set the SE_OPTS environment variable
+  ## ref: http://www.seleniumhq.org/docs/07_selenium_grid.jsp#node-configuration
+  # seOpts: 
+
+  ## Defining a JMX port will open the port on the container, however, it 
+  ## requires additional javaOpts, ie
+  ## javaOpts: >
+  ##   -Dcom.sun.management.jmxremote.port=4000 
+  ##   -Dcom.sun.management.jmxremote.authenticate=false 
+  ##   -Dcom.sun.management.jmxremote.ssl=false 
+  ## ref: http://openjdk.java.net/groups/jmx/
+  # jmxPort: 4000
+
+  ## Configure resource requests and limits
+  ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+  resources:
+    limits:
+      cpu: ".5"
+      memory: "1000Mi"
+
+  ## Characteristics of the browser window
+  # screenWidth: 1280
+  # screenHeight: 1024
+  # screenDepth: 24
+  # display: :10
+
+  ## Selenium node options
+  # firefoxVersion:
+  # nodeMaxInstances: 1
+  # nodeMaxSession: 1
+  ## In milliseconds
+  # nodeRegisterCycle: 5000
+  # nodePort: 5555
+  # timeZone: UTC
+
+firefoxDebug:
+  ## Enable the creation of a node-chrome pod
+  enabled: false
+
+  ## The repository and image
+  ## ref: https://hub.docker.com/r/selenium/hub/
+  image: "selenium/node-firefox-debug"
+
+  ## The tag for the image
+  ## ref: https://hub.docker.com/r/selenium/hub/tags/
+  tag: "2.53.1"
+
+  ## Specify a imagePullPolicy
+  ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+  pullPolicy: "IfNotPresent"
+
+  ## The number of pods in the deployment
+  replicas: 1
+
+  ## Set the JAVA_OPTS environment variable
+  ## If you find your selenium hub is OOMKilled, try adding -XX:+UseSerialGC
+  javaOpts: "-Xmx900m"
+
+  ## Set the SE_OPTS environment variable
+  ## ref: http://www.seleniumhq.org/docs/07_selenium_grid.jsp#node-configuration
+  # seOpts: 
+
+  ## Defining a JMX port will open the port on the container, however, it 
+  ## requires additional javaOpts, ie
+  ## javaOpts: >
+  ##   -Dcom.sun.management.jmxremote.port=4000 
+  ##   -Dcom.sun.management.jmxremote.authenticate=false 
+  ##   -Dcom.sun.management.jmxremote.ssl=false 
+  ## ref: http://openjdk.java.net/groups/jmx/
+  # jmxPort: 4000
+
+  ## Configure resource requests and limits
+  ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+  resources:
+    limits:
+      cpu: ".5"
+      memory: "1500Mi"
+
+  ## Characteristics of the browser window
+  # screenWidth: 1280
+  # screenHeight: 1024
+  # screenDepth: 24
+  # display: :10
+
+  ## Selenium node options
+  # firefoxVersion:
+  # nodeMaxInstances: 1
+  # nodeMaxSession: 1
+  ## In milliseconds
+  # nodeRegisterCycle: 5000
+  # nodePort: 5555
+  # timeZone: UTC
+

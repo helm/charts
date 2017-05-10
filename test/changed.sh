@@ -46,7 +46,7 @@ fi
 
 # Install and initialize helm/tiller
 HELM_URL=https://storage.googleapis.com/kubernetes-helm
-HELM_TARBALL=helm-v2.1.3-linux-amd64.tar.gz
+HELM_TARBALL=helm-v2.4.1-linux-amd64.tar.gz
 INCUBATOR_REPO_URL=https://kubernetes-charts-incubator.storage.googleapis.com/
 pushd /opt
   wget -q ${HELM_URL}/${HELM_TARBALL}
@@ -60,20 +60,22 @@ helm repo add incubator ${INCUBATOR_REPO_URL}
 # Iterate over each of the changed charts
 #    Lint, install and delete
 for directory in ${CHANGED_FOLDERS}; do
-  CHART_NAME=`echo ${directory} | cut -d '/' -f2`
-  RELEASE_NAME="${CHART_NAME:0:7}-${BUILD_NUMBER}"
-  CURRENT_RELEASE=${RELEASE_NAME}
-  helm lint ${directory}
-  helm dep update ${directory}
-  helm install --name ${RELEASE_NAME} --namespace ${NAMESPACE} ${directory} | tee install_output
-  ./test/verify-release.sh ${NAMESPACE}
-  kubectl get pods --namespace ${NAMESPACE}
-  kubectl get svc --namespace ${NAMESPACE}
-  kubectl get deployments --namespace ${NAMESPACE}
-  kubectl get endpoints --namespace ${NAMESPACE}
-  if [ -n $VERIFICATION_PAUSE ]; then
-    cat install_output
-    sleep $VERIFICATION_PAUSE
+  if [ -d $directory ]; then
+    CHART_NAME=`echo ${directory} | cut -d '/' -f2`
+    RELEASE_NAME="${CHART_NAME:0:7}-${BUILD_NUMBER}"
+    CURRENT_RELEASE=${RELEASE_NAME}
+    helm lint ${directory}
+    helm dep update ${directory}
+    helm install --timeout 600 --name ${RELEASE_NAME} --namespace ${NAMESPACE} ${directory} | tee install_output
+    ./test/verify-release.sh ${NAMESPACE}
+    kubectl get pods --namespace ${NAMESPACE}
+    kubectl get svc --namespace ${NAMESPACE}
+    kubectl get deployments --namespace ${NAMESPACE}
+    kubectl get endpoints --namespace ${NAMESPACE}
+    if [ -n $VERIFICATION_PAUSE ]; then
+      cat install_output
+      sleep $VERIFICATION_PAUSE
+    fi
+    helm delete --purge ${RELEASE_NAME}
   fi
-  helm delete --purge ${RELEASE_NAME}
 done

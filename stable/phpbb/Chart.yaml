@@ -1,5 +1,5 @@
 name: phpbb
-version: 0.4.2
+version: 0.4.7
 description: Community forum that supports the notion of users and groups, file attachments, full-text search, notifications and more.
 keywords:
 - phpbb
@@ -7,6 +7,7 @@ keywords:
 - http
 - php
 home: https://www.phpbb.com/
+icon: https://bitnami.com/assets/stacks/phpbb/img/phpbb-stack-220x234.png
 sources:
 - https://github.com/bitnami/bitnami-docker-phpbb
 maintainers:

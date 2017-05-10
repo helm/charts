@@ -41,9 +41,25 @@ $ helm install stable/chaoskube --set dryRun=false
 |---------------------------|-----------------------------------------------------|-----------------------------------|
 | `name`                    | container name                                      | chaoskube                         |
 | `image`                   | docker image                                        | quay.io/linki/chaoskube           |
-| `imageTag`                | docker image tag                                    | v0.3.1                            |
+| `imageTag`                | docker image tag                                    | v0.4.0                            |
 | `replicas`                | number of replicas to run                           | 1                                 |
 | `interval`                | interval between pod terminations                   | 10m                               |
+| `labels`                  | label selector to filter pods by                    | "" (matches everything)           |
+| `annotations`             | annotation selector to filter pods by               | "" (matches everything)           |
+| `namespaces`              | namespace selector to filter pods by                | "" (all namespaces)               |
 | `dryRun`                  | don't kill pods, only log what would have been done | true                              |
 | `resources.cpu`           | cpu resource requests and limits                    | 10m                               |
 | `resources.memory`        | memory resource requests and limits                 | 16Mi                              |
+
+Setting label and namespaces selectors from the shell can be tricky but is possible (example with zsh):
+
+```console
+$ helm install \
+  --set labels='app=mate\,stage!=prod',namespaces='!kube-system\,!production' \
+  stable/chaoskube --debug --dry-run | grep -A4 args
+    args:
+    - --in-cluster
+    - --interval=10m
+    - --labels=app=foo,stage!=prod
+    - --namespaces=!kube-system,!production
+```

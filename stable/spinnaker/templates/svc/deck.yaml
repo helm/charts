@@ -6,6 +6,7 @@ metadata:
     app: {{ template "fullname" . }}
     component: deck
 spec:
+  type: {{ .Values.serviceType }}
   ports:
     - port: 9000
   selector:

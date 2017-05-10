@@ -1,3 +1,5 @@
+{{- if not .Values.Master.CustomConfigMap }}
+
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -7,10 +9,10 @@ data:
     <?xml version='1.0' encoding='UTF-8'?>
     <hudson>
       <disabledAdministrativeMonitors/>
-      <version>2.19.4</version>
+      <version>2.32.3</version>
       <numExecutors>0</numExecutors>
       <mode>NORMAL</mode>
-      <useSecurity>true</useSecurity>
+      <useSecurity>{{ .Values.Master.UseSecurity }}</useSecurity>
       <authorizationStrategy class="hudson.security.FullControlOnceLoggedInAuthorizationStrategy">
         <denyAnonymousReadAccess>true</denyAnonymousReadAccess>
       </authorizationStrategy>
@@ -24,9 +26,10 @@ data:
       <viewsTabBar class="hudson.views.DefaultViewsTabBar"/>
       <myViewsTabBar class="hudson.views.DefaultMyViewsTabBar"/>
       <clouds>
-        <org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud plugin="kubernetes@0.10">
-          <name>default</name>
+        <org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud plugin="kubernetes@0.11">
+          <name>kubernetes</name>
           <templates>
+{{- if .Values.Agent.Enabled }}
             <org.csanchez.jenkins.plugins.kubernetes.PodTemplate>
               <inheritFrom></inheritFrom>
               <name>default</name>
@@ -39,7 +42,11 @@ data:
                 <org.csanchez.jenkins.plugins.kubernetes.ContainerTemplate>
                   <name>jnlp</name>
                   <image>{{ .Values.Agent.Image }}:{{ .Values.Agent.ImageTag }}</image>
+{{- if .Values.Agent.Privileged }}
+                  <privileged>true</privileged>
+{{- else }}
                   <privileged>false</privileged>
+{{- end }}
                   <alwaysPullImage>false</alwaysPullImage>
                   <workingDir>/home/jenkins</workingDir>
                   <command></command>
@@ -57,11 +64,12 @@ data:
               <imagePullSecrets/>
               <nodeProperties/>
             </org.csanchez.jenkins.plugins.kubernetes.PodTemplate>
+{{- end -}}
           </templates>
           <serverUrl>https://kubernetes.default</serverUrl>
           <skipTlsVerify>false</skipTlsVerify>
           <namespace>{{ .Release.Namespace }}</namespace>
-          <jenkinsUrl>http://{{ template "fullname" . }}:8080</jenkinsUrl>
+          <jenkinsUrl>http://{{ template "fullname" . }}:{{.Values.Master.ServicePort}}</jenkinsUrl>
           <jenkinsTunnel>{{ template "fullname" . }}:50000</jenkinsTunnel>
           <containerCap>10</containerCap>
           <retentionTimeout>5</retentionTimeout>
@@ -87,3 +95,46 @@ data:
       <globalNodeProperties/>
       <noUsageStatistics>true</noUsageStatistics>
     </hudson>
+{{- if .Values.Master.ScriptApproval }}
+  scriptapproval.xml: |-
+    <?xml version='1.0' encoding='UTF-8'?>
+    <scriptApproval plugin="script-security@1.27">
+      <approvedScriptHashes/>
+      <approvedSignatures>
+{{- range $key, $val := .Values.Master.ScriptApproval }}
+        <string>{{ $val }}</string>
+{{- end }}
+      </approvedSignatures>
+      <aclApprovedSignatures/>
+      <approvedClasspathEntries/>
+      <pendingScripts/>
+      <pendingSignatures/>
+      <pendingClasspathEntries/>
+    </scriptApproval>
+{{- end }}
+  apply_config.sh: |-
+    mkdir -p /usr/share/jenkins/ref/secrets/;
+    echo "false" > /usr/share/jenkins/ref/secrets/slave-to-master-security-kill-switch;
+    cp -n /var/jenkins_config/config.xml /var/jenkins_home;
+{{- if .Values.Master.InstallPlugins }}
+    cp -n /var/jenkins_config/plugins.txt /var/jenkins_home;
+    /usr/local/bin/install-plugins.sh `echo $(cat /var/jenkins_home/plugins.txt)`;
+{{- end }}
+{{- if .Values.Master.ScriptApproval }}
+    cp -n /var/jenkins_config/scriptapproval.xml /var/jenkins_home/scriptApproval.xml;
+{{- end }}
+{{- if .Values.Master.InitScripts }}
+    mkdir -p /var/jenkins_home/init.groovy.d/;
+    cp -n /var/jenkins_config/*.groovy /var/jenkins_home/init.groovy.d/
+{{- end }}
+{{- range $key, $val := .Values.Master.InitScripts }}
+  init{{ $key }}.groovy: |-
+{{ $val | indent 4}}
+{{- end }}
+  plugins.txt: |-
+{{- if .Values.Master.InstallPlugins }}
+{{- range $index, $val := .Values.Master.InstallPlugins }}
+{{ $val | indent 4 }}
+{{- end }}
+{{- end }}
+{{- end -}}

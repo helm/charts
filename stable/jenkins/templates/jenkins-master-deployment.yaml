@@ -27,7 +27,7 @@ spec:
                   "name": "copy-default-config",
                   "image": "{{.Values.Master.Image}}:{{.Values.Master.ImageTag}}",
                   "imagePullPolicy": "{{.Values.Master.ImagePullPolicy}}",
-                  "command": ["cp", "-n", "/var/jenkins_config/config.xml", "/var/jenkins_home"],
+                  "command": [ "sh", "/var/jenkins_config/apply_config.sh" ],
                   "volumeMounts": [
                       {
                           "name": "jenkins-config",
@@ -36,6 +36,14 @@ spec:
                       {
                           "name": "jenkins-home",
                           "mountPath": "/var/jenkins_home"
+                      },
+                      {
+                          "name": "plugin-dir",
+                          "mountPath": "/usr/share/jenkins/ref/plugins/"
+                      },
+                      {
+                          "name": "secrets-dir",
+                          "mountPath": "/usr/share/jenkins/ref/secrets/"
                       }
                   ]
               }
@@ -47,10 +55,13 @@ spec:
         - name: {{ template "fullname" . }}
           image: "{{.Values.Master.Image}}:{{.Values.Master.ImageTag}}"
           imagePullPolicy: "{{.Values.Master.ImagePullPolicy}}"
+          {{- if .Values.Master.UseSecurity }}
           args: [ "--argumentsRealm.passwd.$(ADMIN_USER)=$(ADMIN_PASSWORD)",  "--argumentsRealm.roles.$(ADMIN_USER)=admin"]
+          {{- end }}
           env:
             - name: JAVA_OPTS
               value: "{{ default "" .Values.Master.JavaOpts}}"
+            {{- if .Values.Master.UseSecurity }}
             - name: ADMIN_PASSWORD
               valueFrom:
                 secretKeyRef:
@@ -61,6 +72,7 @@ spec:
                 secretKeyRef:
                   name: {{ template "fullname" . }}
                   key: jenkins-admin-user
+            {{- end }}
           ports:
             - containerPort: {{.Values.Master.ContainerPort}}
               name: http
@@ -71,6 +83,9 @@ spec:
               cpu: "{{.Values.Master.Cpu}}"
               memory: "{{.Values.Master.Memory}}"
           volumeMounts:
+{{- if .Values.Persistence.mounts }}
+{{ toYaml .Values.Persistence.mounts | indent 12 }}
+{{- end }}
             -
               mountPath: /var/jenkins_home
               name: jenkins-home
@@ -79,14 +94,29 @@ spec:
               mountPath: /var/jenkins_config
               name: jenkins-config
               readOnly: true
+            -
+              mountPath: /usr/share/jenkins/ref/plugins/
+              name: plugin-dir
+              readOnly: false
+            -
+              mountPath: /usr/share/jenkins/ref/secrets/
+              name: secrets-dir
+              readOnly: false
       volumes:
+{{- if .Values.Persistence.volumes }}
+{{ toYaml .Values.Persistence.volumes | indent 6 }}
+{{- end }}
       - name: jenkins-config
         configMap:
           name: {{ template "fullname" . }}
+      - name: plugin-dir
+        emptyDir: {}
+      - name: secrets-dir
+        emptyDir: {}
       - name: jenkins-home
       {{- if .Values.Persistence.Enabled }}
         persistentVolumeClaim:
-          claimName: {{ template "fullname" . }}
+          claimName: {{ .Values.Persistence.ExistingClaim | default (include "fullname" .) }}
       {{- else }}
         emptyDir: {}
       {{- end -}}

@@ -3,13 +3,13 @@
 *** PLEASE BE PATIENT: Drupal may take a few minutes to install ***
 *******************************************************************
 
-1. Get the Drupal URL by running:
+1. Get the Drupal URL:
 
-{{- if contains "NodePort" .Values.serviceType }}
+{{- if .Values.ingress.hostname }}
 
-  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "fullname" . }})
-  export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
-  echo http://$NODE_IP:$NODE_PORT/
+  You should be able to access your new Drupal installation through
+
+  http://{{- .Values.ingress.hostname }}/
 
 {{- else if contains "LoadBalancer" .Values.serviceType }}
 
@@ -23,6 +23,16 @@
   export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "fullname" . }}" -o jsonpath="{.items[0].metadata.name}")
   echo http://127.0.0.1:8080/
   kubectl port-forward $POD_NAME 8080:80
+{{- end }}
+
+{{- if contains "NodePort" .Values.serviceType }}
+
+  Or running:
+
+  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "fullname" . }})
+  export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+  echo http://$NODE_IP:$NODE_PORT/
+
 {{- end }}
 
 2. Login with the following credentials

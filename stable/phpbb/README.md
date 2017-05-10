@@ -48,7 +48,7 @@ The following tables lists the configurable parameters of the phpBB chart and th
 |             Parameter             |              Description              |                         Default                         |
 |-----------------------------------|---------------------------------------|---------------------------------------------------------|
 | `image`                           | phpBB image                           | `bitnami/phpbb:{VERSION}`                               |
-| `imagePullPolicy`                 | Image pull policy                     | `Always` if `imageTag` is `latest`, else `IfNotPresent` |
+| `imagePullPolicy`                 | Image pull policy                     | `IfNotPresent`                                          |
 | `phpbbUser`                       | User of the application               | `user`                                                  |
 | `phpbbPassword`                   | Application password                  | _random 10 character long alphanumeric string_          |
 | `phpbbEmail`                      | Admin email                           | `user@example.com`                                      |
