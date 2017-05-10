@@ -38,10 +38,10 @@ data:
               <label></label>
               <nodeSelector></nodeSelector>
               <volumes>
-{{- if .Values.Agent.MountDocker }}
+{{- range $key, $val := .Values.Agent.Volumes }}
                 <org.csanchez.jenkins.plugins.kubernetes.volumes.HostPathVolume>
-                  <mountPath>/var/run/docker.sock</mountPath>
-                  <hostPath>/var/run/docker.sock</hostPath>
+                  <mountPath>{{ $key }}</mountPath>
+                  <hostPath>{{ $val }}</hostPath>
                 </org.csanchez.jenkins.plugins.kubernetes.volumes.HostPathVolume>
 {{- end }}
               </volumes>
