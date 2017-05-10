@@ -2,8 +2,6 @@ apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
   name: "{{ printf "zk-%s" .Release.Name  | trunc 24 }}"
-  annotations:
-    helm.sh/created: {{.Release.Time.Seconds | quote }}
   labels:
     heritage: {{.Release.Service | quote }}
     release: {{.Release.Name | quote }}
@@ -33,7 +31,7 @@ spec:
                   "topologyKey": "kubernetes.io/hostname"
                 }]
               }
-            } 
+            }
         {{- else if eq .Values.AntiAffinity "soft"}}
         scheduler.alpha.kubernetes.io/affinity: >
             {
@@ -142,11 +140,7 @@ spec:
   - metadata:
       name: datadir
       annotations:
-        {{- if .Values.StorageClass}}
-        volume.beta.kubernetes.io/storage-class: {{.Values.StorageClass | quote}}
-        {{- else}}
-        volume.alpha.kubernetes.io/storage-class: "default"
-        {{- end}} 
+        volume.beta.kubernetes.io/storage-class: {{default "standard" .Values.StorageClass | quote}}
     spec:
       accessModes: [ "ReadWriteOnce" ]
       resources:
