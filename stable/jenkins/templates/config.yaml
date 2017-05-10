@@ -40,8 +40,8 @@ data:
               <volumes>
 {{- range $key, $val := .Values.Agent.Volumes }}
                 <org.csanchez.jenkins.plugins.kubernetes.volumes.HostPathVolume>
-                  <mountPath>{{ $key }}</mountPath>
-                  <hostPath>{{ $val }}</hostPath>
+                  <hostPath>{{ $key }}</hostPath>
+                  <mountPath>{{ $val }}</mountPath>
                 </org.csanchez.jenkins.plugins.kubernetes.volumes.HostPathVolume>
 {{- end }}
               </volumes>
