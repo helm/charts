@@ -54,7 +54,11 @@ data:
 {{- else }}
                   <privileged>false</privileged>
 {{- end }}
+{{- if .Values.Agent.PullImage }}
+                  <alwaysPullImage>true</alwaysPullImage>
+{{- else }}
                   <alwaysPullImage>false</alwaysPullImage>
+{{- end }}
                   <workingDir>/home/jenkins</workingDir>
                   <command></command>
                   <args>${computer.jnlpmac} ${computer.name}</args>

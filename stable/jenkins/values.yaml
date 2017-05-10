@@ -59,7 +59,7 @@ Agent:
   Image: jenkinsci/jnlp-slave
   ImageTag: 2.62
   Privileged: false
-  MountDocker: false
+  PullImage: false
   Cpu: "200m"
   Memory: "256Mi"
   Volumes:
