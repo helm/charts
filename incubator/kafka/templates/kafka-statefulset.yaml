@@ -1,4 +1,3 @@
----
 # headless service for statefulset DNS
 apiVersion: v1
 kind: Service
