@@ -63,11 +63,23 @@ spec:
             timeoutSeconds: 1
           ports:
             - name: http
+          {{- if .Values.controller.daemonSet.hostPort.http.enabled }}
+              hostPort: 80
+          {{- end }}
               containerPort: 80
               protocol: TCP
             - name: https
+          {{- if .Values.controller.daemonSet.hostPort.https.enabled }}
+              hostPort: 443
+          {{- end }}
               containerPort: 443
               protocol: TCP
+          {{- if .Values.controller.daemonSet.hostPort.healthz.enabled }}
+            - name: healthz
+              hostPort: 10254
+              containerPort: 10254
+              protocol: TCP
+          {{- end }}
           {{- if .Values.controller.stats.enabled }}
             - name: stats
               containerPort: 18080

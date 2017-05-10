@@ -55,10 +55,14 @@ Parameter | Description | Default
 `controller.scope.namespace` | namespace to watch for ingress | `""` (use the release namespace)
 `controller.extraArgs` | Additional controller container arguments | `{}`
 `controller.kind` | install as Deployment or DaemonSet | `Deployment`
+`controller.daemonSet.hostPort.http.enabled` | create a http hostPort for controller.kind 'DaemonSet' | `False`
+`controller.daemonSet.hostPort.https.enabled` | create a https hostPort for controller.kind 'DaemonSet' | `False`
+`controller.daemonSet.hostPort.healthz.enabled` create a healthz hostPort for controller.kind 'DaemonSet' | `False`
 `controller.nodeSelector` | node labels for pod assignment | `{}`
 `controller.podAnnotations` | annotations to be added to pods | `{}`
 `controller.replicaCount` | desired number of controller pods | `1`
 `controller.resources` | controller pod resource requests & limits | `{}`
+`controller.service.enabled` | enable controller service | `True`
 `controller.service.annotations` | annotations for controller service | `{}`
 `controller.service.clusterIP` | internal controller cluster service IP | `""`
 `controller.service.externalIPs` | controller service external IP addresses | `[]`

@@ -27,6 +27,17 @@ controller:
   ##
   kind: Deployment
 
+  ## Port type for DaemonSet
+  ##
+  daemonSet:
+    hostPort:
+      http:
+        enabled: false
+      https:
+        enabled: false
+      healthz:
+        enabled: false
+
   ## Node labels for controller pod assignment
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
   ##
@@ -47,6 +58,7 @@ controller:
     #   memory: 64Mi
 
   service:
+    enabled: true
     annotations: {}
     clusterIP: ""
 
