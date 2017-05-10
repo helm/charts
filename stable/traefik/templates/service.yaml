@@ -27,3 +27,6 @@ spec:
     name: http
   - port: 443
     name: https
+    {{- if not .Values.ssl.enabled }}
+    targetPort: 80
+    {{- end }}

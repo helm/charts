@@ -24,14 +24,14 @@
 
 2. Login as the root user:
 
-  Username: admin
+  Username: root
   Password: {{ .Values.gitlabRootPassword }}
 {{ else }}
 
 2. Set your admin user's password on your first visit to your install. Then
    login as:
 
-   Username: admin
+   Username: root
    Password: <whatever value you entered>
 {{- end }}
 

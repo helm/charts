@@ -1,0 +1,48 @@
+{{- if and .Values.serviceAccountKey (ne .Values.cloudsql.instance "PROJECT:REGION:INSTANCE") }}
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    app: {{ template "fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  replicas: {{ .Values.replicasCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "fullname" . }}
+    spec:
+      containers:
+      - name: sqlproxy
+        image: "{{ .Values.image }}:{{ .Values.imageTag }}"
+        imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+        command: ["/cloud_sql_proxy", "--dir=/cloudsql",
+                  "-instances={{ .Values.cloudsql.instance }}=tcp:0.0.0.0:{{ .Values.cloudsql.port }}",
+                  "-credential_file=/secrets/cloudsql/credentials.json"]
+        ports:
+        - name: sqlproxy
+          containerPort: {{ .Values.cloudsql.port }}
+        volumeMounts:
+        - name: cloudsql-oauth-credentials
+          mountPath: /secrets/cloudsql
+        - name: ssl-certs
+          mountPath: /etc/ssl/certs
+        - name: cloudsql
+          mountPath: /cloudsql
+      volumes:
+      - name: cloudsql-oauth-credentials
+        secret:
+          secretName: {{ template "fullname" . }}
+      - name: ssl-certs
+        hostPath:
+          path: /etc/ssl/certs
+      - name: cloudsql
+        emptyDir: {}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+{{- end }}

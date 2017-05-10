@@ -49,7 +49,7 @@ The following tables lists the configurable parameters of the JasperReports char
 |           Parameter           |                 Description                  |                         Default                          |
 |-------------------------------|----------------------------------------------|----------------------------------------------------------|
 | `image`                       | JasperReports image                          | `bitnami/jasperreports:{VERSION}`                        |
-| `imagePullPolicy`             | Image pull policy                            | `Always` if `image` tag is `latest`, else `IfNotPresent` |
+| `imagePullPolicy`             | Image pull policy                            | `IfNotPresent`                                           |
 | `jasperreportsUsername`       | User of the application                      | `user`                                                   |
 | `jasperreportsPassword`       | Application password                         | _random 10 character long alphanumeric string_           |
 | `jasperreportsEmail`          | User email                                   | `user@example.com`                                       |

@@ -45,20 +45,21 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following tables lists the configurable parameters of the MariaDB chart and their default values.
 
-| Parameter                  | Description                                | Default                                                    |
-| -----------------------    | ----------------------------------         | ---------------------------------------------------------- |
-| `image`                    | MariaDB image                              | `bitnami/mariadb:{VERSION}`                                |
-| `imagePullPolicy`          | Image pull policy.                         | `IfNotPresent`                                             |
-| `mariadbRootPassword`      | Password for the `root` user.              | `nil`                                                      |
-| `mariadbUser`              | Username of new user to create.            | `nil`                                                      |
-| `mariadbPassword`          | Password for the new user.                 | `nil`                                                      |
-| `mariadbDatabase`          | Name for new database to create.           | `nil`                                                      |
-| `persistence.enabled`      | Use a PVC to persist data                  | `true`                                                     |
-| `persistence.storageClass` | Storage class of backing PVC               | `nil` (uses alpha storage class annotation)                |
-| `persistence.accessMode`   | Use volume as ReadOnly or ReadWrite        | `ReadWriteOnce`                                            |
-| `persistence.size`         | Size of data volume                        | `8Gi`                                                      |
-| `resources`                | CPU/Memory resource requests/limits        | Memory: `256Mi`, CPU: `250m`                               |
-| `config`                   | Multi-line string for my.cnf configuration | `nil`                                                      |
+| Parameter                   | Description                                | Default                                                    |
+| -----------------------     | ----------------------------------         | ---------------------------------------------------------- |
+| `image`                     | MariaDB image                              | `bitnami/mariadb:{VERSION}`                                |
+| `imagePullPolicy`           | Image pull policy.                         | `IfNotPresent`                                             |
+| `mariadbRootPassword`       | Password for the `root` user.              | `nil`                                                      |
+| `mariadbUser`               | Username of new user to create.            | `nil`                                                      |
+| `mariadbPassword`           | Password for the new user.                 | `nil`                                                      |
+| `mariadbDatabase`           | Name for new database to create.           | `nil`                                                      |
+| `persistence.enabled`       | Use a PVC to persist data                  | `true`                                                     |
+| `persistence.existingClaim` | Use an existing PVC                        | `nil`                                                      |
+| `persistence.storageClass`  | Storage class of backing PVC               | `nil` (uses alpha storage class annotation)                |
+| `persistence.accessMode`    | Use volume as ReadOnly or ReadWrite        | `ReadWriteOnce`                                            |
+| `persistence.size`          | Size of data volume                        | `8Gi`                                                      |
+| `resources`                 | CPU/Memory resource requests/limits        | Memory: `256Mi`, CPU: `250m`                               |
+| `config`                    | Multi-line string for my.cnf configuration | `nil`                                                      |
 
 The above parameters map to the env variables defined in [bitnami/mariadb](http://github.com/bitnami/bitnami-docker-mariadb). For more information please refer to the [bitnami/mariadb](http://github.com/bitnami/bitnami-docker-mariadb) image documentation.
 
@@ -106,4 +107,13 @@ helm install --name my-release -f mariadb-values.yaml stable/mariadb
 
 The [Bitnami MariaDB](https://github.com/bitnami/bitnami-docker-mariadb) image stores the MariaDB data and configurations at the `/bitnami/mariadb` path of the container.
 
-The chart mounts a [Persistent Volume](kubernetes.io/docs/user-guide/persistent-volumes/) volume at this location. The volume is created using dynamic volume provisioning.
+The chart mounts a [Persistent Volume](kubernetes.io/docs/user-guide/persistent-volumes/) volume at this location. The volume is created using dynamic volume provisioning, by default. An existing PersistentVolumeClaim can be defined.
+
+### Existing PersistentVolumeClaims
+
+1. Create the PersistentVolume
+1. Create the PersistentVolumeClaim
+1. Install the chart
+```bash
+$ helm install --set persistence.existingClaim=PVC_NAME postgresql
+```

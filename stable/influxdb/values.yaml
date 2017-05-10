@@ -16,12 +16,50 @@ service:
 ##
 persistence:
   enabled: false
+  ## If true will use an existing PVC instead of creating one
+  # useExisting: false
+  ## Name of existing PVC to be used in the influx deployment
+  # name: 
   ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
   ## Default: volume.alpha.kubernetes.io/storage-class: default
   ##
   # storageClass:
   accessMode: ReadWriteOnce
   size: 8Gi
+
+## Create default user through Kubernetes job
+## Defaults indicated below
+##
+setDefaultUser:
+  enabled: false
+
+  ## Image of the container used for job
+  ## Default: appropriate/curl:latest
+  ##
+  # image: appropriate/curl:latest
+
+  ## Deadline for job so it does not retry forever.
+  ## Default: activeDeadline: 300
+  ##
+  # activeDeadline: 300
+
+  ## Restart policy for job
+  ## Default: OnFailure
+  # restartPolicy: OnFailure
+
+  # user:
+
+    ## The user name
+    ## Default: "admin"
+    # username: "admin"
+
+    ## User password
+    ## Default: (Randomly generated 10 characters of Ascii)
+    # password:
+
+    ## User privileges
+    ## Default: "WITH ALL PRIVILEGES"
+    # privileges: "WITH ALL PRIVILEGES"
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/

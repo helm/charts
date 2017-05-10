@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "confd.fullname" . }}
+  labels:
+    app: {{ template "confd.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+data:
+{{- if .Values.datadog.confd }}
+{{ toYaml .Values.datadog.confd | indent 2 }}
+{{- end -}}

@@ -48,9 +48,9 @@ The following tables lists the configurable parameters of the Redmine chart and 
 | Parameter                       | Description                     | Default                                                   |
 | ------------------------------- | ------------------------------- | --------------------------------------------------------- |
 | `image`                         | Redmine image                   | `bitnami/redmine:{VERSION}`                               |
-| `imagePullPolicy`               | Image pull policy               | `Always` if `image` tag is `latest`, else `IfNotPresent`  |
+| `imagePullPolicy`               | Image pull policy               | `IfNotPresent`                                            |
 | `redmineUsername`               | User of the application         | `user`                                                    |
-| `redminePassword`               | Application password            | `bitnami`                                                 |
+| `redminePassword`               | Application password            | _random 10 character long alphanumeric string_            |
 | `redmineEmail`                  | Admin email                     | `user@example.com`                                        |
 | `redmineLanguage`               | Redmine default data language   | `en`                                                      |
 | `smtpHost`                      | SMTP host                       | `nil`                                                     |
@@ -61,6 +61,7 @@ The following tables lists the configurable parameters of the Redmine chart and 
 | `mariadb.mariadbRootPassword`   | MariaDB admin password          | `nil`                                                     |
 | `serviceType`                   | Kubernetes Service type         | `LoadBalancer`                                            |
 | `persistence.enabled`           | Enable persistence using PVC    | `true`                                                    |
+| `persistence.existingClaim`     | The name of an existing PVC     | `nil`                                                     |
 | `persistence.storageClass`      | PVC Storage Class               | `nil` (uses alpha storage class annotation)               |
 | `persistence.accessMode`        | PVC Access Mode                 | `ReadWriteOnce`                                           |
 | `persistence.size`              | PVC Storage Request             | `8Gi`                                                     |
@@ -89,5 +90,20 @@ $ helm install --name my-release -f values.yaml stable/redmine
 
 The [Bitnami Redmine](https://github.com/bitnami/bitnami-docker-redmine) image stores the Redmine data and configurations at the `/bitnami/redmine` path of the container.
 
-Persistent Volume Claims are used to keep the data across deployments. This is known to work in GCE, AWS, and minikube.
+Persistent Volume Claims are used to keep the data across deployments. This is known to work in GCE, AWS, and minikube. The volume is created using dynamic volume provisioning. Clusters configured with NFS mounts require manually managed volumes and claims.
+
 See the [Configuration](#configuration) section to configure the PVC or to disable persistence.
+
+
+### Existing PersistentVolumeClaims
+
+The following example includes two PVCs, one for redmine and another for Maria DB.
+
+1. Create the PersistentVolume
+1. Create the PersistentVolumeClaim
+1. Create the directory, on a worker
+1. Install the chart
+```bash
+$ helm install --name test --set persistence.existingClaim=PVC_REDMINE,mariadb.persistence.existingClaim=PVC_MARIADB  redmine
+```
+

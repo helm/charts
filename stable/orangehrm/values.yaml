@@ -1,7 +1,7 @@
 ## Bitnami OrangeHRM image version
 ## ref: https://hub.docker.com/r/bitnami/orangehrm/tags/
 ##
-image: bitnami/orangehrm:3.3.3-r8
+image: bitnami/orangehrm:3.3.3-r11
 
 ## Specify a imagePullPolicy
 ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -41,7 +41,10 @@ mariadb:
   ##
   persistence:
     enabled: true
-    storageClass: generic
+    ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
+    ## Default: volume.alpha.kubernetes.io/storage-class: default
+    ##
+    # storageClass:
     accessMode: ReadWriteOnce
     size: 8Gi
 
@@ -59,14 +62,14 @@ persistence:
     ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
     ## Default: volume.alpha.kubernetes.io/storage-class: default
     ##
-    # storageClass: generic
+    # storageClass:
     accessMode: ReadWriteOnce
     size: 1Gi
   orangehrm:
     ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
     ## Default: volume.alpha.kubernetes.io/storage-class: default
     ##
-    # storageClass: generic
+    # storageClass:
     accessMode: ReadWriteOnce
     size: 8Gi
 

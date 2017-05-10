@@ -8,50 +8,39 @@ metadata:
     heritage: {{.Release.Service | quote }}
     release: {{.Release.Name | quote }}
     chart: "{{.Chart.Name}}-{{.Chart.Version}}"
-    component: "{{.Release.Name}}"
+    component: "{{ printf "zk-%s" .Release.Name  | trunc 24 }}"
 spec:
-  serviceName: "{{ printf "hs-zk-%s" .Release.Name | trunc 24 }}"
+  serviceName: "{{ printf "zk-hsvc-%s" .Release.Name | trunc 24 }}"
   replicas: {{.Values.Servers}}
   template:
     metadata:
       labels:
-        component: "{{.Release.Name}}"
-      annotations:
-        pod.alpha.kubernetes.io/initialized: "true"
-        {{- if eq .Values.AntiAffinity "hard"}}
-        scheduler.alpha.kubernetes.io/affinity: >
-            {
-              "podAntiAffinity": {
-                "requiredDuringSchedulingIgnoredDuringExecution": [{
-                  "labelSelector": {
-                    "matchExpressions": [{
-                      "key": "component",
-                      "operator": "In",
-                      "values": ["{{.Release.Name}}"]
-                    }]
-                  },
-                  "topologyKey": "kubernetes.io/hostname"
-                }]
-              }
-            } 
-        {{- else if eq .Values.AntiAffinity "soft"}}
-        scheduler.alpha.kubernetes.io/affinity: >
-            {
-              "podAntiAffinity": {
-                "prefferedDuringSchedulingIgnoredDuringExecution": [{
-                  "labelSelector": {
-                    "matchExpressions": [{
-                      "key": "component",
-                      "operator": "In",
-                      "values": ["{{.Release.Name}}"]
-                    }]
-                  },
-                  "topologyKey": "kubernetes.io/hostname"
-                }]
-              }
-            }
-        {{- end}}
+        component: "{{ printf "zk-%s" .Release.Name  | trunc 24 }}"
     spec:
+      {{- if eq .Values.AntiAffinity "hard"}}
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: "component"
+                    operator: In
+                    values:
+                    - "{{ printf "zk-%s" .Release.Name  | trunc 24 }}"
+              topologyKey: "kubernetes.io/hostname"
+      {{- else if eq .Values.AntiAffinity "soft"}}
+      affinity:
+        preferredDuringSchedulingIgnoredDuringExecution:
+             - weight: 1
+               podAntiAffinityTerm:
+                 labelSelector:
+                    matchExpressions:
+                      - key: "component"
+                        operator: In
+                        values: 
+                         - "{{ printf "zk-%s" .Release.Name  | trunc 24 }}"
+                 topologyKey: "kubernetes.io/hostname"
+      {{- end}}
       containers:
       - name: k8szk
         imagePullPolicy: {{.Values.ImagePullPolicy}}
@@ -71,45 +60,21 @@ spec:
         - name : ZK_REPLICAS
           value: "{{.Values.Servers}}"
         - name : ZK_HEAP_SIZE
-          valueFrom:
-            configMapKeyRef:
-                name: "{{ printf "cm-zk-%s" .Release.Name | trunc 24 }}"
-                key: jvm.heap
+          value: "{{.Values.Heap}}"
         - name : ZK_TICK_TIME
-          valueFrom:
-            configMapKeyRef:
-                name: "{{ printf "cm-zk-%s" .Release.Name | trunc 24 }}"
-                key: tick
+          value: "{{.Values.TickTimeMs}}"
         - name : ZK_INIT_LIMIT
-          valueFrom:
-            configMapKeyRef:
-                name: "{{ printf "cm-zk-%s" .Release.Name | trunc 24 }}"
-                key: init
+          value: "{{.Values.InitTicks}}"
         - name : ZK_SYNC_LIMIT
-          valueFrom:
-            configMapKeyRef:
-                name: "{{ printf "cm-zk-%s" .Release.Name | trunc 24 }}"
-                key: tick
+          value: "{{.Values.SyncTicks}}"
         - name : ZK_MAX_CLIENT_CNXNS
-          valueFrom:
-            configMapKeyRef:
-                name: "{{ printf "cm-zk-%s" .Release.Name | trunc 24 }}"
-                key: client.cnxns
+          value: "{{.Values.ClientCnxns}}"
         - name: ZK_SNAP_RETAIN_COUNT
-          valueFrom:
-            configMapKeyRef:
-                name: "{{ printf "cm-zk-%s" .Release.Name | trunc 24 }}"
-                key: snap.retain
+          value: "{{.Values.SnapRetain}}"
         - name: ZK_PURGE_INTERVAL
-          valueFrom:
-            configMapKeyRef:
-                name: "{{ printf "cm-zk-%s" .Release.Name | trunc 24 }}"
-                key: purge.interval
+          value: "{{.Values.PurgeHours}}"
         - name: ZK_LOG_LEVEL
-          valueFrom:
-            configMapKeyRef:
-                name: "{{ printf "cm-zk-%s" .Release.Name | trunc 24 }}"
-                key: log.level
+          value: {{.Values.LogLevel}}
         - name: ZK_CLIENT_PORT
           value: "{{.Values.ClientPort}}"
         - name: ZK_SERVER_PORT
@@ -119,7 +84,7 @@ spec:
         command:
         - sh
         - -c
-        - zkGenConfig.sh && zkServer.sh start-foreground
+        - zkGenConfig.sh && exec zkServer.sh start-foreground
         readinessProbe:
           exec:
             command:
@@ -141,14 +106,11 @@ spec:
   volumeClaimTemplates:
   - metadata:
       name: datadir
-      annotations:
-        {{- if .Values.StorageClass}}
-        volume.beta.kubernetes.io/storage-class: {{.Values.StorageClass | quote}}
-        {{- else}}
-        volume.alpha.kubernetes.io/storage-class: "default"
-        {{- end}} 
     spec:
       accessModes: [ "ReadWriteOnce" ]
       resources:
         requests:
           storage: {{.Values.Storage}}
+      {{- if .Values.StorageClass}}
+      storageClassName: {{.Values.StorageClass | quote}}
+      {{- end}} 

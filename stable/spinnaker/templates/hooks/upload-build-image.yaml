@@ -3,9 +3,8 @@ kind: Job
 metadata:
   name: "{{.Release.Name}}-upload-build-image"
   labels:
-    heritage: {{.Release.Service | quote }}
-    release: {{.Release.Name | quote }}
-    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+    app: {{ template "fullname" . }}
+    component: jenkins
   annotations:
     "helm.sh/hook": post-install
 spec:
@@ -13,9 +12,8 @@ spec:
     metadata:
       name: "{{.Release.Name}}"
       labels:
-        heritage: {{.Release.Service | quote }}
-        release: {{.Release.Name | quote }}
-        chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+        app: {{ template "fullname" . }}
+        component: jenkins
     spec:
       restartPolicy: OnFailure
       volumes:

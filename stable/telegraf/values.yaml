@@ -3,7 +3,7 @@
 ## ref: https://hub.docker.com/r/library/telegraf/tags/
 image:
   repo: "telegraf"
-  tag: "1.1.0-alpine"
+  tag: "1.2.0-alpine"
   pullPolicy: IfNotPresent
 
 ## Configure the telegraf daemonset here.

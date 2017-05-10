@@ -50,7 +50,7 @@ Parameter | Description | Default
 `nodeSelector` | node labels for pod assignment | `{}`
 `podAnnotations` | annotations to be added to pods | `{}`
 `replicaCount` | desired number of pods | `1`
-`resources` | pod resource requests & limits | `requests: {cpu: 2m, memory: 8Mi}`
+`resources` | pod resource requests & limits | `{}`
 `uuid` | Unique cluster ID | Dynamically generated using `uuidv4` template function
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,

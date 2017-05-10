@@ -12,6 +12,8 @@ server:
   ##
   image: "grafana/grafana:latest"
 
+  nodeSelector: {}
+
   ingress:
     ## If true, Grafana Ingress will be created
     ##
@@ -64,9 +66,14 @@ server:
     accessModes:
       - ReadWriteOnce
 
-    ## Server data Persistent Volume annotations
+    ## Grafana data Persistent Volume annotations
     ##
-    # annotations:
+    annotations: {}
+
+    ## Grafana data Persistent Volume existing claim name
+    ## Requires server.persistentVolume.enabled: true
+    ## If defined, PVC must be created manually before volume will be bound
+    existingClaim: ""
 
     ## Grafana data Persistent Volume size
     ## Default: 1Gi
@@ -94,6 +101,28 @@ server:
   ##
   serviceType: ClusterIP
 
+  ## Load balancer IP address
+  ## Is not required, but allows for static address with
+  ## serviceType LoadBalancer.
+  ## If not supported by cloud provider, this field is ignored.
+  ## Default: nil
+  ##
+  # loadBalancerIP: 130.211.x.x
+
+  ## This will restrict traffic through the cloud-provider load-balancer
+  ## to the specified client IPs.
+  ## If not supported by cloud provider, this field is ignored.
+  ## Default: nil
+  ##
+  # loadBalancerSourceRanges:
+  #   - 0.0.0.0/0
+
+  ## nodePort port number
+  ## Is not required, but allows for static port assignment with
+  ## serviceType NodePort.
+  ## Default: nil
+  # nodePort: 30000
+
   ## Grafana local config path
   ## Default '/etc/grafana'
   ##
@@ -113,6 +142,12 @@ server:
   ## Default: 300s (5m)
   ##
   # terminationGracePeriodSeconds: 300
+
+  ## Pass the plugins you want installed as a comma seperated list.
+  ## This will pass each plugin name to `grafana-cli plugins install ${plugin}`.
+  ## Ref: https://github.com/grafana/grafana-docker#installing-plugins-for-grafana-3
+  ##
+  # installPlugins:
 
   # Set datasource in beginning
   setDatasource:
@@ -152,6 +187,17 @@ server:
       ## Default: "http://limping-tiger-server"
       ##
       # url: "http://limping-tiger-server"
+
+      ## The name of the database at the datasource.
+      ## Required parameter when used with elasticsearch, which refers to the index_name
+      ## Default: <empty>
+      # database:
+
+      ## Additional JSON data to be passed to the configuration of the datasource.
+      ## The JSON data is passed to curl, therefore it needs proper quoting and
+      ## escaping and needs to be on a single line. For example:
+      ##  '\"esVersion\": 2, \"interval\": \"Daily\", \"timeField\": \"@timestamp\"'
+      # jsonData: null
 
       ## Specify if Grafana has to go thru proxy to reach datasource
       ## Default: proxy
@@ -325,4 +371,4 @@ serverConfigFile:
 ##
 ## and add it below.
 ##
-serverDashboardFiles:
+serverDashboardFiles: {}

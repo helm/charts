@@ -1,13 +1,12 @@
 ## Bitnami Redmine image version
 ## ref: https://hub.docker.com/r/bitnami/redmine/tags/
 ##
-image: bitnami/redmine:3.3.1-r8
+image: bitnami/redmine:3.3.3-r1
 
 ## Specify a imagePullPolicy
-## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
 ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
 ##
-# imagePullPolicy:
+imagePullPolicy: IfNotPresent
 
 ## User of the application
 ## ref: https://github.com/bitnami/bitnami-docker-redmine/#environment-variables
@@ -15,9 +14,10 @@ image: bitnami/redmine:3.3.1-r8
 redmineUsername: user
 
 ## Application password
-## ref: https://github.com/bitnami/bitnami-docker-redmine/#environment-variables
+## Defaults to a random 10-character alphanumeric string if not set
+## ref: https://github.com/bitnami/bitnami-docker-wordpress#environment-variables
 ##
-redminePassword: bitnami
+# redminePassword:
 
 ## Admin email
 ## ref: https://github.com/bitnami/bitnami-docker-redmine/#environment-variables
@@ -52,6 +52,11 @@ mariadb:
   ##
   persistence:
     enabled: true
+    ## A manually manage Persistent Volume Claim
+    ## Requires mariadb.persistence.enable: true
+    ## If defined, PVC must be created manually before volume will be bound
+    # existingClaim: 
+
     ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
     ## Default: volume.alpha.kubernetes.io/storage-class: default
     ##
@@ -69,6 +74,11 @@ serviceType: LoadBalancer
 ##
 persistence:
   enabled: true
+  ## A manually manage Persistent Volume Claim
+  ## Requires persistence.enable: true
+  ## If defined, PVC must be created manually before volume will be bound
+  # existingClaim: 
+
   ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
   ## Default: volume.alpha.kubernetes.io/storage-class: default
   ##
