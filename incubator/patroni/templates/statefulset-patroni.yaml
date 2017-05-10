@@ -70,8 +70,9 @@ spec:
             cpu: "{{.Values.Resources.Cpu}}"
             memory: "{{.Values.Resources.Memory}}"
         volumeMounts:
-        - name: pgdata
-          mountPath: /home/postgres/pgdata
+        - name: storage-volume
+          mountPath: "{{ .Values.persistentVolume.mountPath }}"
+          subPath: "{{ .Values.persistentVolume.subPath }}"
         - mountPath: /etc/patroni
           name: patroni-config
           readOnly: true
@@ -79,13 +80,27 @@ spec:
       - name: patroni-config
         secret:
           secretName: {{ template "fullname" . }}
+
   volumeClaimTemplates:
-  - metadata:
-      name: pgdata
-      annotations:
-        volume.alpha.kubernetes.io/storage-class: {{default "default" .Values.StorageClass }}
-    spec:
-      accessModes: [ "ReadWriteOnce" ]
-      resources:
-        requests:
-          storage: "{{.Values.Resources.Storage}}"
+    - metadata:
+        name: storage-volume
+        annotations:
+        {{- if .Values.persistentVolume.storageClass }}
+          volume.beta.kubernetes.io/storage-class: "{{ .Values.persistentVolume.storageClass }}"
+        {{- else }}
+          volume.alpha.kubernetes.io/storage-class: default
+        {{- end }}
+        {{- if .Values.persistentVolume.annotations }}
+{{ toYaml .Values.persistentVolume.annotations | indent 8 }}
+        {{- end }}
+        labels:
+          heritage: {{.Release.Service | quote }}
+          release: {{.Release.Name | quote }}
+          chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+          component: "{{.Release.Name}}-{{.Values.Component}}"
+      spec:
+        accessModes:
+{{ toYaml .Values.persistentVolume.accessModes | indent 8 }}
+        resources:
+          requests:
+            storage: "{{ .Values.persistentVolume.size }}"
