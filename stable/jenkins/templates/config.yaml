@@ -38,11 +38,12 @@ data:
               <label></label>
               <nodeSelector></nodeSelector>
               <volumes>
-{{- range $key, $val := .Values.Agent.Volumes }}
-                <org.csanchez.jenkins.plugins.kubernetes.volumes.HostPathVolume>
-                  <hostPath>{{ $key }}</hostPath>
-                  <mountPath>{{ $val }}</mountPath>
-                </org.csanchez.jenkins.plugins.kubernetes.volumes.HostPathVolume>
+{{- range $index, $volume := .Values.Agent.Volumes }}
+                <org.csanchez.jenkins.plugins.kubernetes.volumes.{{ $volume.type }}Volume>
+{{- range $key, $value := $volume }}{{- if not (eq $key "type") }}
+                  <{{ $key }}>{{ $value }}</{{ $key }}>
+{{- end }}{{- end }}
+                </org.csanchez.jenkins.plugins.kubernetes.volumes.{{ $volume.type }}Volume>
 {{- end }}
               </volumes>
               <containers>

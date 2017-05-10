@@ -63,10 +63,16 @@ Agent:
   Cpu: "200m"
   Memory: "256Mi"
   Volumes:
-    ## Docker mounted volumes.  Any containers run in the agent must mount
-    ## the HOST path (i.e. /mnt/work)
-    # /var/run/docker.sock: /var/run/docker.sock
-    # /mnt/work: /work
+    ## You can define the volumes that you want to mount for this container
+    ## Allowed types are: ConfigMap, EmptyDir, HostPath, Nfs, Pod, Secret
+    ## Configure the attributes as they appear in the corresponding Java class for that type
+    ## https://github.com/jenkinsci/kubernetes-plugin/tree/master/src/main/java/org/csanchez/jenkins/plugins/kubernetes/volumes
+    # - type: HostPath 
+    #   hostPath: /var/run/docker.sock
+    #   mountPath: /var/run/docker.sock
+    # - type: Secret
+    #   secretName: mysecret
+    #   mountPath: /var/myapp/mysecret
 
 Persistence:
   Enabled: true
