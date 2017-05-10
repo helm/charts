@@ -23,7 +23,10 @@ spec:
            {
              "name":"sentinel-micro",
              "image":"{{ .Values.microSentinel.image }}:{{ .Values.microSentinel.tag }}",
-                         "args" : ["-service","{{ template "fullname" . }}"],
+             "imagePullPolicy": "{{ .Values.microSentinel.pullPolicy }}",
+             "args" : ["-service","{{ template "fullname" . }}"],
+             "resources":
+{{ toJson .Values.microSentinel.resources | indent 17 }},
              "env": [
                {
                   "name": "POD_NAMESPACE",
@@ -66,6 +69,7 @@ spec:
       containers:
       - name: redis
         image: {{ .Values.redis.image }}:{{ .Values.redis.tag }}
+        imagePullPolicy: {{ .Values.redis.pullPolicy }}
         ports:
         - containerPort: {{ .Values.service.port }}
           name: {{ .Values.service.name }}
@@ -73,6 +77,9 @@ spec:
 {{ toYaml .Values.redis.resources | indent 12 }}
       - name: make-slave
         image: {{ .Values.makeSlave.image }}:{{ .Values.makeSlave.tag }}
+        imagePullPolicy: {{ .Values.makeSlave.pullPolicy }}
+        resources:
+{{ toYaml .Values.makeSlave.resources | indent 12 }}
         env:
           - name: POD_NAMESPACE
             valueFrom:

@@ -7,6 +7,7 @@ replicaCount: 3
 redis:
   image: redis
   tag: 3.0-alpine
+  pullPolicy: IfNotPresent
   resources:
     limits:
       memory: 128Mi
@@ -15,17 +16,31 @@ redis:
 microSentinel:
   image: dhilipkumars/redis-sentinel-k8s
   tag: latest
+  pullPolicy: IfNotPresent
+  resources: {}
+    # limits:
+    #   cpu: 10m
+    #   memory: 20Mi
+    # requests:
+    #   cpu: 10m
+    #   memory: 20Mi
 makeSlave:
   image: dhilipkumars/mk-redis-slave
   tag: latest
+  pullPolicy: IfNotPresent
+  resources: {}
+    # limits:
+    #   cpu: 10m
+    #   memory: 20Mi
+    # requests:
+    #   cpu: 10m
+    #   memory: 20Mi
 
-# Service related configurations
+# Service related configurations common for templates/service.yaml and templates/ss.yaml (redis container)
 service:
   name: rd-port
   port: 6379
-  type: ClusterIP
-# Pod Disruption budget related configurations
 
+  # Pod Disruption budget related configurations
 podDisruptionBudget:
   minAvailable: 2
-  

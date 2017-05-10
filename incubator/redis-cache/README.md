@@ -1,24 +1,27 @@
 ## Redis-cache
 
-This chart will allow as to use redis as a pure in-memory cache, this uses a special utility to perform master-slave promotion which overcomes this [promblem](https://redis.io/topics/replication#safety-of-replication-when-master-has-persistence-turned-off), K8s could restart the master soon enough that it is detected and agreed among the redis-sentinels. 
+This chart will allow us to use redis as a pure in-memory cache, this uses a special utility to perform master-slave promotion which overcomes this [problem](https://redis.io/topics/replication#safety-of-replication-when-master-has-persistence-turned-off), K8s could restart the master way before it is detected and agreed among the redis-sentinels.  
+
+###Prerequisites
+* Kubernetes 1.6+
 
 Install Redis-cache chart as an in-memory cache. 
-* Uses 7MB [redis:3-alpine](https://hub.docker.com/r/library/redis/tags/3-alpine/) image which is extreemly light weight
+* Uses 7MB [redis:3-alpine](https://hub.docker.com/r/library/redis/tags/3-alpine/) image which is extremely light weight
 * Uses [redis-sentinel-k8s](https://github.com/dhilipkumars/redis-sentinel-micro/tree/k8s) for automatic slave promotion if master fails, feel free to fork.
-* Super fast caching as no persistance involved
+* Super fast caching as no persistence involved
 * Has Pod Disruption Budget
 * Uses Statefulset
 * Has Anti-Affinity Configured
 
-Quick Benchmark comparision between redis with and without persistence enabled, as you can notice the writes are atleast 3 times slower.
+Quick Benchmark comparison between redis with and without persistence enabled, as you can notice the writes are at least 3 times slower.
 
-Redis persistance enabled
+Redis persistence enabled
 ```
 $ k exec -i -t ${REPLICA-NAME} -c redis -- redis-benchmark -q -h ${REPLICA-NAME}.${POD-NAME}.${NAMESPACE} -p 6379 -t set,get -n 100000 -d 100 -r 1000000
 SET: 22026.43 requests per second
 GET: 76161.46 requests per second
 ```
-Redis without persistance
+Redis without persistence
 ```
 $ k exec -i -t ${REPLICA-NAME} -c redis -- redis-benchmark -q -h ${REPLICA-NAME}.${POD-NAME}.${NAMESPACE} -p 6379 -t set,get -n 100000 -d 100 -r 1000000
 SET: 60060.06 requests per second
@@ -81,7 +84,7 @@ $kubectl exec -i -t rd-dev-0 -c redis -- redis-cli -h rd-dev-0.rd-dev.default -p
 OK
 ```
 
-Check if that is replicated in anyof the slave0
+Check if that is replicated in any of the slaves
 ```
 $kubectl exec -i -t rd-dev-0 -c redis -- redis-cli -h rd-dev-2.rd-dev.default -p 6379 get foo
 "bar"
