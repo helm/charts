@@ -2,11 +2,10 @@
 
  This helm chart provides an implementation of the ZooKeeper 
  [StatefulSet](http://kubernetes.io/docs/concepts/abstractions/controllers/statefulsets/) found in Kubernetes Contrib 
- [Zookeeper StatefulSet](https://github.com/kubernetes/contrib/tree/master/statefulset/zookeeper).
+ [Zookeeper StatefulSet](https://github.com/kubernetes/contrib/tree/master/statefulsets/zookeeper).
   
 ## Prerequisites
-* Kubernetes 1.5 
-* If you use spreading, the cluster will require alpha features to be enabled.
+* Kubernetes 1.6
 * PersistentVolume support on the underlying infrastructure
 * A dynamic provisioner for the PersistentVolumes
 * A familiarity with [Apache ZooKeeper 3.4.x](https://zookeeper.apache.org/doc/current/)
@@ -16,23 +15,50 @@ This chart will do the following:
 
 * Create a fixed size ZooKeeper ensemble using a 
 [StatefulSet](http://kubernetes.io/docs/concepts/abstractions/controllers/statefulsets/).
-* Create a [ConfigMap](http://kubernetes.io/docs/user-guide/configmap/) to provide configuration parameters to the Pods 
-in the ensemble.
-* Create a [PodDisruptionBudget](http://kubernetes.io/docs/admin/disruptions/) so kubectl drain will respect the Quorum 
+* Create a [PodDisruptionBudget](https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-disruption-budget/) so kubectl drain will respect the Quorum 
 size of the ensemble.
-* Optionally, apply a [Pod Anti-Affinity](http://kubernetes.io/docs/user-guide/node-selection/) annotation to spread the 
+* Create a [Headless Service](https://kubernetes.io/docs/concepts/services-networking/service/) to control the domain of the ZooKeeper ensemble.
+* Create a Service configured to connect to the available ZooKeeper instance on the configured client port.
+* Optionally, apply a [Pod Anti-Affinity](https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#inter-pod-affinity-and-anti-affinity-beta-feature) to spread the 
 ZooKeeper ensemble across nodes.
 
 ## Installing the Chart
 
-You can install the chart with the release name `my-release` as below.
+You can install the chart with the release name `my-zk` as below.
 
-```bash
+```console
 $ helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
-$ helm install --name my-release incubator/zookeeper
+$ helm install --name my-zk incubator/zookeeper
 ```
 
 If you do not specify a name, helm will select a name for you.
+
+### Installed Components
+
+You can use `kubectl get` to view all of the installed components.
+
+```console{%raw}
+$ kubectl get all -l component=zk-my-zk
+NAME            READY     STATUS              RESTARTS   AGE
+po/zk-my-zk-0   1/1       Running             0          1m
+po/zk-my-zk-1   1/1       Running             0          59s
+po/zk-my-zk-2   1/1       Running             0          12s
+
+NAME                CLUSTER-IP    EXTERNAL-IP   PORT(S)             AGE
+svc/zk-csvc-my-zk   10.0.60.195   <none>        2181/TCP            1m
+svc/zk-hsvc-my-zk   None          <none>        2888/TCP,3888/TCP   1m
+
+NAME                    DESIRED   CURRENT   AGE
+statefulsets/zk-my-zk   3         2         1m
+```
+
+1. `zy-my-zk` is the StatefulSet created by the chart.
+1. `zk-my-zk-0` - `zk-my-zk-2` are the Pods created by the StatefulSet. Each Pod has a single 
+container running a ZooKeeper server.
+1. `zk-hsvc-my-zk` is the Headless Server used to control the network domain of the ZooKeeper 
+ensemble.
+1. `zk-csvc-my-zk` is a Service that can be used by clients to connect to an available ZooKeeper 
+server.
 
 ## Configuration
 You can specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
@@ -40,7 +66,7 @@ You can specify each parameter using the `--set key=value[,key=value]` argument 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. 
 For example,
 
-```bash
+```console
 $ helm install --name my-release -f values.yaml incubator/zookeeper
 ```
 
@@ -148,7 +174,8 @@ $ kubectl exec <RELEASE-NAME>-2 -- /opt/zookeeper/bin/zkCli.sh get /foo;
 
 Watch existing members:
 ```console
-$ kubectl run --attach bbox --image=busybox --restart=Never -- sh -c 'while true; do for i in 0 1 2; do echo zk-$i $(echo stats | nc <pod-name>.<headless-service-name>:2181 | grep Mode); sleep 1; done; done';
+$  kubectl run --attach bbox --image=busybox --restart=Never -- sh -c 'while true; do for i in 0 1 2; do echo zk-$i $(echo stats | nc <pod-name>.<headless-service-name>:2181 | grep Mode); sleep 1; done; done';
+
 zk-2 Mode: follower
 zk-0 Mode: follower
 zk-1 Mode: leader
