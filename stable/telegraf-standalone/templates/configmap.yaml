@@ -1,0 +1,17 @@
+{{- if gt (len .Values.config.outputs.influxdb.urls) 0 }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    app: {{ template "fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+data:
+  telegraf.conf: |+
+    {{ template "global_tags" .Values.config.global_tags }}
+    {{ template "agent" .Values.config.agent }}
+    {{ template "outputs" .Values.config.outputs }}
+    {{ template "inputs" .Values.config.inputs -}}
+{{- end -}}
