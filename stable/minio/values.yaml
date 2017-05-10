@@ -3,7 +3,7 @@
 ## Distributed Minio ref: https://docs.minio.io/docs/distributed-minio-quickstart-guide
 ##
 image: "minio/minio"
-imageTag: "RELEASE.2017-03-16T21-50-32Z"
+imageTag: "RELEASE.2017-05-05T01-14-51Z"
 imagePullPolicy: "Always"
 mode: "standalone"
 
@@ -60,6 +60,7 @@ minioConfig:
     exchange: ""
     routingKey: ""
     exchangeType: ""
+    deliveryMode: 0
     mandatory: false
     immediate: false
     durable: false
@@ -82,15 +83,18 @@ minioConfig:
     maxPubAcksInflight: 0
   elasticsearch:
     enable: false
+    format: "namespace"
     url: ""
     index: ""
   redis:
     enable: false
+    format: "namespace"
     address: ""
     password: ""
     key: ""
   postgresql:
     enable: false
+    format: "namespace"
     connectionString: ""
     table: ""
     host: ""
@@ -105,3 +109,13 @@ minioConfig:
   webhook:
     enable: false
     endpoint: ""
+  mysql:
+    enable: false
+    format: "namespace"
+    dsnString: ""
+    table: ""
+    host: ""
+    port: ""
+    user: ""
+    password: ""
+    database: ""
