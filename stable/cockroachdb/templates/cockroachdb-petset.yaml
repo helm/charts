@@ -161,16 +161,6 @@ spec:
         env:
         - name: STATEFULSET_NAME
           value: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 56 }}"
-        livenessProbe:
-          httpGet:
-            path: /_admin/v1/health
-            port: http
-          initialDelaySeconds: 30
-        readinessProbe:
-          httpGet:
-            path: /_admin/v1/health
-            port: http
-          initialDelaySeconds: 10
         volumeMounts:
         - name: datadir
           mountPath: /cockroach/cockroach-data
