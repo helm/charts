@@ -8,8 +8,11 @@ image: bitnami/redis:3.2.9-r0
 ##
 imagePullPolicy: IfNotPresent
 
+## Use password authentication
+usePassword: true
+
 ## Redis password
-## Defaults to a random 10-character alphanumeric string if not set
+## Defaults to a random 10-character alphanumeric string if not set and usePassword is true
 ## ref: https://github.com/bitnami/bitnami-docker-redis#setting-the-server-password-on-first-run
 ##
 # redisPassword:
