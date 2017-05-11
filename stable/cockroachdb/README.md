@@ -74,7 +74,7 @@ was created with your installed chart):
 $ kubectl run -it --rm cockroach-client \
     --image=cockroachdb/cockroach \
     --restart=Never \
-    --command -- ./cockroach sql --host my-release-cockroachdb-public
+    --command -- ./cockroach sql --insecure --host my-release-cockroachdb-public
 Waiting for pod default/cockroach-client to be running, status is Pending,
 pod ready: false
 If you don't see a command prompt, try pressing enter.
