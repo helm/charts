@@ -41,19 +41,20 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following tables lists the configurable parameters of the Fluentd Cloudwatch chart and their default values.
 
-| Parameter                  | Description                                | Default                                                    |
-| -------------------------- | ------------------------------------------ | ---------------------------------------------------------- |
-| `image`                    | Image                                      | `fluent/fluentd-kubernetes-daemonset`                                |
-| `imageTag`                 | Image tag                                  | `v0.12.33-cloudwatch`                                                    |
-| `imagePullPolicy`          | Image pull policy                          | `Always` if `imageTag` is `imagePullPolicy`    |
-| `resources.limits.cpu`     | CPU limit                                  | `100m`                                                     |
-| `resources.limits.memory`  | Memory limit                               | `200Mi`                                                    |
-| `resources.requests.cpu`   | CPU request                                | `100m`                                                     |
-| `resources.requests.memory`| Memory request                             | `200Mi`                                                    |
-| `hostNetwork`              | Host network                               | `false`                                                    |
+| Parameter                       | Description                                | Default                                                    |
+| ------------------------------- | ------------------------------------------ | ---------------------------------------------------------- |
+| `image`                         | Image                                      | `fluent/fluentd-kubernetes-daemonset`                      |
+| `imageTag`                      | Image tag                                  | `v0.12.33-cloudwatch`                                      |
+| `imagePullPolicy`               | Image pull policy                          | `Always` if `imageTag` is `imagePullPolicy`                |
+| `resources.limits.cpu`          | CPU limit                                  | `100m`                                                     |
+| `resources.limits.memory`       | Memory limit                               | `200Mi`                                                    |
+| `resources.requests.cpu`        | CPU request                                | `100m`                                                     |
+| `resources.requests.memory`     | Memory request                             | `200Mi`                                                    |
+| `hostNetwork`                   | Host network                               | `false`                                                    |
 | `annotations` (removed for now) | Annotations                                | `nil`                                                      |
-| `awsRegion`                | AWS Cloudwatch region                      | `us-east-1`                                                |
-| `logGroupName`             | AWS Cloudwatch log group                   | `kubernetes`                                               |
+| `awsRegion`                     | AWS Cloudwatch region                      | `us-east-1`                                                |
+| `fluentdConfig`                 | Fluentd configuration                      | `example configuration`                                    |
+| `logGroupName`                  | AWS Cloudwatch log group                   | `kubernetes`                                               |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
