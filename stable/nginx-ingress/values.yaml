@@ -57,6 +57,11 @@ controller:
 
     loadBalancerIP: ""
     loadBalancerSourceRanges: []
+
+    targetPorts:
+      http: 80
+      https: 443
+
     type: LoadBalancer
 
     # type: NodePort
