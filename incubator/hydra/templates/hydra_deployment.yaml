@@ -36,7 +36,7 @@ spec:
         - name: hydra
           image: {{ .Values.image }}:{{ .Values.imageTag }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
-          command: ["hydra", "host", "--dangerous-auto-logon"]
+          command: ["hydra", "host"]
           volumeMounts:
             - name: hydra-data
               mountPath: {{ .Values.mountPath }}
