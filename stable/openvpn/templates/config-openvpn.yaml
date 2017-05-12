@@ -18,8 +18,7 @@ data:
       ./easyrsa build-server-full server nopass
       ./easyrsa gen-dh 
     fi
-    
-    
+
   newClientCert.sh: |-
       #!/bin/bash
       EASY_RSA_LOC="/etc/openvpn/certs"
@@ -48,7 +47,7 @@ data:
       </connection>
       EOF
       cat pki/$1.ovpn
-      
+
   configure.sh: |-
       #!/bin/sh
       /etc/openvpn/setup/setup-certs.sh
@@ -74,6 +73,7 @@ data:
       sed 's|NETWORK|'"${NETWORK}"'|' -i /etc/openvpn/openvpn.conf
       
       openvpn --config /etc/openvpn/openvpn.conf
+
   openvpn.conf: |-
       server {{ .Values.openvpn.OVPN_NETWORK }} {{ .Values.openvpn.OVPN_SUBNET }}
       verb 3
@@ -102,3 +102,18 @@ data:
 
       push "dhcp-option DOMAIN OVPN_K8S_SEARCH"
       push "dhcp-option DNS OVPN_K8S_DNS"
+
+  kubevpn.sh: |+
+      #!/bin/bash
+      if [ -z "$1" ]
+        then echo -n "Enter KEY_NAME: "
+        read -e KEY_NAME
+      else
+        KEY_NAME=$1
+      fi
+
+      POD_NAME=`kubectl get pods --namespace {{ .Release.Namespace }} -l type=openvpn | awk END'{ print $1 }'` \
+      && SERVICE_NAME=`kubectl get svc --namespace {{ .Release.Namespace }} -l type=openvpn | awk END'{ print $1 }'` \
+      && SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} $SERVICE_NAME -o jsonpath='{.status.loadBalancer.ingress[0].hostname}') \
+      && kubectl --namespace {{ .Release.Namespace }} exec -it $POD_NAME /etc/openvpn/setup/newClientCert.sh $KEY_NAME $SERVICE_IP \
+      && kubectl --namespace {{ .Release.Namespace }} exec -it $POD_NAME cat /etc/openvpn/certs/pki/$KEY_NAME.ovpn > $KEY_NAME.ovpn
