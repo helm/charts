@@ -103,7 +103,7 @@ data:
       push "dhcp-option DOMAIN OVPN_K8S_SEARCH"
       push "dhcp-option DNS OVPN_K8S_DNS"
 
-  kubevpn.sh: |+
+  kubevpn: |+
       #!/bin/bash
       if [ -z "$1" ]
         then echo -n "Enter KEY_NAME: "
