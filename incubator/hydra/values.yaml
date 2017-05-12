@@ -37,6 +37,9 @@ config:
   idTokenLifespan: "1h"
   authorizeCodeLifespan: "10m"
 
+service:
+  type: ClusterIP
+  port: 4444
 
 # http://kubernetes.io/docs/user-guide/compute-resources/
 resources:

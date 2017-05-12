@@ -8,11 +8,11 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
-  type: ClusterIP
+  type: {{ .Values.service.type }}
   selector:
     app: {{ template "fullname" . }}
   ports:
     - name: service
-      port: 4444
+      port: {{ .Values.service.port }}
       targetPort: 4444
       protocol: TCP
