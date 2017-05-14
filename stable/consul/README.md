@@ -17,7 +17,6 @@ This chart will do the following:
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
 $ helm install --name my-release stable/consul
 ```
 
