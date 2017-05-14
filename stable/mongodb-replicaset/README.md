@@ -21,7 +21,7 @@ To install the chart with the release name `my-release`:
 
 ```console
 $ helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
-$ helm install --name my-release incubator/mongodb-replicaset
+$ helm install --name my-release stable/mongodb-replicaset
 ```
 
 ## Configuration
@@ -57,7 +57,7 @@ The following tables lists the configurable parameters of the mongodb chart and 
 
 *MongoDB config file*
 
-The MongoDB config file `mongod.conf` is configured via the `configmap` configuration value. The defaults from 
+The MongoDB config file `mongod.conf` is configured via the `configmap` configuration value. The defaults from
 `values.yaml` are the following:
 
 ```yaml
@@ -75,7 +75,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```console
-$ helm install --name my-release -f values.yaml incubator/mongodb-replicaset
+$ helm install --name my-release -f values.yaml stable/mongodb-replicaset
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
@@ -84,9 +84,9 @@ Once you have all 3 nodes in running, you can run the "test.sh" script in this d
 
 ## Authentication
 
-By default, this chart creates a MongoDB replica set without authentication. Authentication can be enabled using the 
+By default, this chart creates a MongoDB replica set without authentication. Authentication can be enabled using the
 parameter `auth.enabled`. Once enabled, keyfile access control is set up and an admin user with root privileges
-is created. User credentials and keyfile may be specified directly. Alternatively, existing secrets may be provided. 
+is created. User credentials and keyfile may be specified directly. Alternatively, existing secrets may be provided.
 The secret for the admin user must contain the keys `user` and `password`, that for the key file must contain `key.txt`.
 
 ## Deep dive
