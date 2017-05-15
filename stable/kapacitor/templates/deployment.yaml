@@ -28,11 +28,16 @@ spec:
         ports:
         - containerPort: 9092
         volumeMounts:
+        - name: config
+          mountPath: /etc/kapacitor
         - name: data
           mountPath: /var/lib/kapacitor
         resources:
 {{ toYaml .Values.resources | indent 12 }}
       volumes:
+        - name: config
+          configMap:
+            name: {{ template "fullname" . }}
         - name: data
         {{- if .Values.persistence.enabled }}
           persistentVolumeClaim:
