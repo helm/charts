@@ -1,0 +1,51 @@
+{{- if and (and .Values.coscale.AppId .Values.coscale.AccessToken) .Values.coscale.TemplateId -}}
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    app: {{ template "fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  template:
+    metadata:
+      name: {{ template "fullname" . }}
+      labels:
+        app: {{ template "fullname" . }}
+    spec:
+      hostNetwork: true    
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        resources:
+{{ toYaml .Values.resources | indent 12 }}
+        env:
+        - name: APP_ID
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "fullname" . }}
+              key: app_id
+        - name: ACCESS_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "fullname" . }}
+              key: access_token
+        - name: TEMPLATE_ID
+          value: {{ .Values.coscale.TemplateId | quote }}
+        volumeMounts:
+        - name: dockersocket
+          mountPath: /var/run/docker.sock
+        - name: hostroot
+          mountPath: /host
+          readOnly: true
+      volumes:
+      - hostPath:
+          path: /var/run/docker.sock
+        name: dockersocket
+      - hostPath:
+          path: /
+        name: hostroot
+{{ end }}
