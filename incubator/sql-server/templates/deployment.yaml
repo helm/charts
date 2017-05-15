@@ -1,0 +1,89 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    app: {{ template "fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ template "fullname" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "fullname" . }}
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        release: "{{ .Release.Name }}"
+        heritage: "{{ .Release.Service }}"
+    spec:
+      containers:
+      - name: mssql
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        {{- if .Values.username }}
+        command:
+        - bash
+        - /root/scripts/entrypoint.sh
+        {{- end }}
+        resources:
+          requests:
+            cpu: 100m
+            memory: 256Mi
+          limits:
+            cpu: 100m
+            memory: 4Gi
+        env:
+        - name: ACCEPT_EULA
+          {{- if eq .Values.acceptLicense true }}
+          value: "Y"
+          {{- else }}
+          {{ fail "To install, please accept the End User License Agreement by setting acceptLicense to true. See documentation for the microsoft/mssql-server-linux Docker image on DockerHub for a link to the End User License Agreement: https://hub.docker.com/r/microsoft/mssql-server-linux/" }}
+          {{- end }}
+        - name: SA_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "fullname" . }}
+              key: sa-password
+        volumeMounts:
+        {{- if .Values.username }}
+        - name: scripts
+          mountPath: /root/scripts
+        {{- end }}
+        - name: data
+          mountPath: /var/opt/mssql
+        ports:
+        - containerPort: 1433
+        readinessProbe:
+          tcpSocket:
+            port: 1433
+          failureThreshold: 1
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 2
+        livenessProbe:
+          tcpSocket:
+            port: 1433
+          failureThreshold: 3
+          initialDelaySeconds: 300
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 2
+      volumes:
+      {{- if .Values.username }}
+      - name: scripts
+        secret:
+          secretName: {{ template "fullname" . }}-scripts
+          defaultMode: 493
+      {{- end }}
+      - name: data
+      {{- if .Values.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.persistence.existingClaim | default (include "fullname" .) }}
+      {{- else }}
+        emptyDir: {}
+      {{- end -}}

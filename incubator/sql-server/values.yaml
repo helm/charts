@@ -1,0 +1,57 @@
+## SQL Server image repository
+image:
+  ## Image location, NOT including the tag
+  repository: microsoft/mssql-server-linux
+  ## SQL Server image version
+  ## Ref: https://hub.docker.com/r/microsoft/mssql-server-linux/tags/
+  tag: ctp2-1
+  ## "IfNotPresent", "Always", or "Never"
+  pullPolicy: IfNotPresent
+
+service:
+  ## Type of service; valid values are "ClusterIP", LoadBalancer", and
+  ## "NodePort". "ClusterIP" is sufficient for the common case where all clients
+  ## of this SQL Server will reside within the cluster and access from clients
+  ## outside the cluster is neither needed nor desired.
+  type: ClusterIP
+  ## Further configuration applicable only if service is of type "NodePort"
+  nodePort:
+    ## Available port in allowable range (e.g. 30000 - 32767 on minikube)
+    port: 31433
+
+## Indicate acceptance of the end user license agreement. This must be set
+## explicitly accepted by the user. We cannot do so on their behalf.
+acceptLicense: false
+
+## Specify password for the SA user
+## At least 8 characters including uppercase and lowercase letters, base-10
+## digits and/or non-alphanumeric symbols
+# saPassword:
+
+## Create a database user
+## None is created unless specified below
+# username:
+## If username is defined, password is also required
+## At least 8 characters including uppercase and lowercase letters, base-10
+## digits and/or non-alphanumeric symbols
+# password:
+
+## Create a database belonging to the user
+## Created only if a username and password are specified above
+## Default: same as the username
+# database:
+
+## Persist data to a persistent volume
+persistence:
+  enabled: true
+
+  ## A manually managed Persistent Volume and Claim
+  ## Requires persistence.enabled: true
+  ## If defined, PVC must be created manually before volume will be bound
+  # existingClaim:
+
+  ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
+  ## Default: volume.alpha.kubernetes.io/storage-class: default
+  # storageClass:
+  accessMode: ReadWriteOnce
+  size: 8Gi

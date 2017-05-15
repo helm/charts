@@ -1,0 +1,50 @@
+{{- if .Values.username }}
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ template "fullname" . }}-scripts
+  labels:
+    app: {{ template "fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+type: Opaque
+stringData:
+  entrypoint.sh: |
+    #!/usr/bin/env bash
+
+    # Start the setup script in the background
+    /root/scripts/setup.sh &
+
+    # Replace THIS process with the SQL Server process
+    exec /opt/mssql/bin/sqlservr
+  setup.sh: |
+    #!/usr/bin/env bash
+
+    until /opt/mssql-tools/bin/sqlcmd \
+      -S localhost -U SA -P '{{ required "A value is required for saPassword" .Values.saPassword }}' \
+      -d master -i /dev/null -l 5 &> /dev/null
+    do
+      echo "setup.sh is waiting for mssql to be listening on port 1433"
+      sleep 5
+    done
+
+    /opt/mssql-tools/bin/sqlcmd -S localhost \
+      -U SA -P '{{ .Values.saPassword }}' \
+      -d master -i /root/scripts/setup.sql
+  setup.sql: |
+    CREATE DATABASE {{ default .Values.username .Values.database }};
+    GO
+
+    CREATE LOGIN {{ .Values.username }} WITH PASSWORD = '{{ required "When username is defined, a value is also required for password" .Values.password }}';
+    GO
+
+    USE {{ default .Values.username .Values.database }};
+    GO
+
+    CREATE USER {{ .Values.username }} FOR LOGIN {{ .Values.username }};
+    GO
+
+    EXEC sp_addrolemember db_owner, {{ .Values.username }};
+    GO
+{{- end }}
