@@ -5,6 +5,10 @@ image:
   tag: latest
   pullPolicy: IfNotPresent
 service:
+  # annotations:
+  #   service.beta.kubernetes.io/aws-load-balancer-internal: "0.0.0.0/0"
+  # labels:
+  #   key: value
   type: ClusterIP
   externalPort: 80
   internalPort: 8080
@@ -15,4 +19,13 @@ resources:
   requests:
     cpu: 80m
     memory: 64Mi
-
+ingress:
+  enabled: false
+  # hostname: kube-ops-view.local
+  # annotations:
+  #   kubernetes.io/ingress.class: nginx
+  # tls:
+  ## Secrets must be manually created in the namespace
+  #   - secretName: kube-ops-view.local-tls
+  #     hosts:
+  #       - kube-ops-view.local
