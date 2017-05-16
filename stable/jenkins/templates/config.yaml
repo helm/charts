@@ -16,7 +16,6 @@ data:
       <authorizationStrategy class="hudson.security.FullControlOnceLoggedInAuthorizationStrategy">
         <denyAnonymousReadAccess>true</denyAnonymousReadAccess>
       </authorizationStrategy>
-      <securityRealm class="hudson.security.LegacySecurityRealm"/>
       <disableRememberMe>false</disableRememberMe>
       <projectNamingStrategy class="jenkins.model.ProjectNamingStrategy$DefaultProjectNamingStrategy"/>
       <workspaceDir>${JENKINS_HOME}/workspace/${ITEM_FULLNAME}</workspaceDir>
@@ -124,6 +123,35 @@ data:
       <pendingClasspathEntries/>
     </scriptApproval>
 {{- end }}
+{{- if .Values.Security.Lightwave }}
+  ldap.groovy: |-
+    import hudson.security.*
+    import jenkins.*
+    import hudson.*
+    import hudson.model.*;
+    import jenkins.model.*;
+    import jenkins.security.plugins.ldap.FromGroupSearchLDAPGroupMembershipStrategy;
+    import hudson.util.Secret;
+
+    def instance = Jenkins.getInstance()
+    def hudsonRealm = new HudsonPrivateSecurityRealm(false)
+    String server = '{{ .Values.Security.Lightwave.Server }}'
+    String rootDN = '{{ .Values.Security.Lightwave.RootDN }}'
+    String userSearchBase = 'cn=Users'
+    String userSearch = 'cn={0}'
+    String groupSearchBase = ''
+    String groupSearchFilter = '(& (cn={0}) (objectclass=group) )'
+    String groupMembershipFilter = 'member={0}'
+    String managerDN = 'cn=administrator,cn=users,{{ .Values.Security.Lightwave.RootDN }}'
+    String managerPassword = '{{ .Values.Security.Lightwave.ManagerPassword }}'
+    boolean inhibitInferRootDN = false
+    String displayNameAttributeName = 'mail'
+    String mailAddressAttributeName = 'mail'
+    SecurityRealm ldapRealm = new LDAPSecurityRealm(server, rootDN, userSearchBase, userSearch, groupSearchBase, groupSearchFilter, new FromGroupSearchLDAPGroupMembershipStrategy(groupMembershipFilter), managerDN, Secret.fromString(managerPassword), inhibitInferRootDN, false, null, null, displayNameAttributeName, mailAddressAttributeName, IdStrategy.CASE_INSENSITIVE, IdStrategy.CASE_INSENSITIVE)
+    ldapRealm.setDisableRolePrefixing(true)
+    instance.setSecurityRealm(ldapRealm)
+    instance.save()
+  {{- end }}
   apply_config.sh: |-
     mkdir -p /usr/share/jenkins/ref/secrets/;
     echo "false" > /usr/share/jenkins/ref/secrets/slave-to-master-security-kill-switch;
@@ -135,10 +163,8 @@ data:
 {{- if .Values.Master.ScriptApproval }}
     cp -n /var/jenkins_config/scriptapproval.xml /var/jenkins_home/scriptApproval.xml;
 {{- end }}
-{{- if .Values.Master.InitScripts }}
     mkdir -p /var/jenkins_home/init.groovy.d/;
     cp -n /var/jenkins_config/*.groovy /var/jenkins_home/init.groovy.d/
-{{- end }}
 {{- range $key, $val := .Values.Master.InitScripts }}
   init{{ $key }}.groovy: |-
 {{ $val | indent 4}}
