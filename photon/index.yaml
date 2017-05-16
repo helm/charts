@@ -2,7 +2,7 @@ apiVersion: v1
 entries:
   jenkins:
   - appVersion: 2.46.2
-    created: 2017-05-16T09:50:03.83471193-07:00
+    created: 2017-05-16T11:15:59.11290623-07:00
     description: Open source continuous integration server. It supports multiple SCM
       tools including CVS, Subversion and Git. It can execute Apache Ant and Apache
       Maven-based projects as well as arbitrary scripts.
@@ -19,6 +19,6 @@ entries:
     - https://github.com/jenkinsci/jenkins
     - https://github.com/jenkinsci/docker-jnlp-slave
     urls:
-    - jenkins-0.6.4.tgz
+    - https://berndtj.github.io/charts/photon/jenkins-0.6.4.tgz
     version: 0.6.4
-generated: 2017-05-16T09:50:03.833994482-07:00
+generated: 2017-05-16T11:15:59.112165506-07:00
