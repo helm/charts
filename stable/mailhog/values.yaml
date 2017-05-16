@@ -15,6 +15,16 @@ service:
   nodePort:
     http: ""
     smtp: ""
+ingress:
+  enabled: false
+  annotations: {}
+  path: /
+  host: mailhog.example.com
+  tls:
+    enabled: false
+    existingSecret: false
+    secretContents: {}
+    secretAnnotations: {}
 auth:
   enabled: false
   existingSecret: ""
