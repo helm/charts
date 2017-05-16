@@ -3,6 +3,12 @@
 # Declare name/value pairs to be passed into your templates.
 # name: value
 
+## Security/Lightwave config
+Security:
+  Lightwave:
+#     Server: lightwave01.kops.bjung.net
+#     RootDN: dc=kops,dc=bjung,dc=net
+#     ManagerPassword: VMware!1
 Master:
   Name: jenkins-master
   Image: "jenkinsci/jenkins"
@@ -16,7 +22,7 @@ Master:
   Memory: "256Mi"
 # Set min/max heap here if needed with:
 # JavaOpts: "-Xms512m -Xmx512m"
-  ServicePort: 8080
+  ServicePort: 80
 # For minikube, set this to NodePort, elsewhere use LoadBalancer
 # Use ClusterIP if your setup includes ingress controller
   ServiceType: LoadBalancer
@@ -57,23 +63,19 @@ Master:
 
 Agent:
   Enabled: true
-  Image: jenkinsci/jnlp-slave
-  ImageTag: 2.62
-  Privileged: false
-  PullImage: false
-  Cpu: "200m"
-  Memory: "256Mi"
+  Image: 367199020685.dkr.ecr.us-west-2.amazonaws.com/jenkins-agent
+  ImageTag: 0.0.3
+  Privileged: true
+  PullImage: true
+  Cpu: "400m"
+  Memory: "512Mi"
   Volumes:
-    ## You can define the volumes that you want to mount for this container
-    ## Allowed types are: ConfigMap, EmptyDir, HostPath, Nfs, Pod, Secret
-    ## Configure the attributes as they appear in the corresponding Java class for that type
-    ## https://github.com/jenkinsci/kubernetes-plugin/tree/master/src/main/java/org/csanchez/jenkins/plugins/kubernetes/volumes
-    # - type: HostPath 
-    #   hostPath: /var/run/docker.sock
-    #   mountPath: /var/run/docker.sock
-    # - type: Secret
-    #   secretName: mysecret
-    #   mountPath: /var/myapp/mysecret
+  - type: HostPath 
+    hostPath: /var/run/docker.sock
+    mountPath: /var/run/docker.sock
+  - type: HostPath
+    hostPath: /mnt/work
+    mountPath: /work
 
 Persistence:
   Enabled: true
