@@ -19,15 +19,23 @@ spec:
         image: "{{ .Values.image }}"
         imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
         env:
-        - name: MARIADB_HOST
+        {{ if .Values.databaseType.postgresql }}
+        - name: REDMINE_DB_POSTGRES
+          value: {{ template "postgresql.fullname" . }}
+        - name: REDMINE_DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "postgresql.fullname" . }}
+              key: postgres-password
+        {{ else }}
+        - name: REDMINE_DB_MYSQL
           value: {{ template "mariadb.fullname" . }}
-        - name: MARIADB_PORT
-          value: "3306"
-        - name: MARIADB_PASSWORD
+        - name: REDMINE_DB_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ template "mariadb.fullname" . }}
               key: mariadb-root-password
+        {{ end }}
         - name: REDMINE_USERNAME
           value: {{ default "" .Values.redmineUsername | quote }}
         - name: REDMINE_PASSWORD

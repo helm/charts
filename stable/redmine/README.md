@@ -12,7 +12,7 @@ $ helm install stable/redmine
 
 This chart bootstraps a [Redmine](https://github.com/bitnami/bitnami-docker-redmine) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
-It also packages the [Bitnami MariaDB chart](https://github.com/kubernetes/charts/tree/master/stable/mariadb) which is required for bootstrapping a MariaDB deployment for the database requirements of the Redmine application.
+It also packages the [Bitnami MariaDB chart](https://github.com/kubernetes/charts/tree/master/stable/mariadb) and the [PostgreSQL chart](https://github.com/kubernetes/charts/tree/master/stable/postgresql) which are required for bootstrapping a MariaDB/PostgreSQL deployment for the database requirements of the Redmine application.
 
 ## Prerequisites
 
@@ -58,7 +58,10 @@ The following tables lists the configurable parameters of the Redmine chart and 
 | `smtpUser`                      | SMTP user                       | `nil`                                                     |
 | `smtpPassword`                  | SMTP password                   | `nil`                                                     |
 | `smtpTls`                       | Use TLS encryption with SMTP    | `nil`                                                     |
+| `databaseType.postgresql`       | Select postgresql database      | `nil`                                                     |
+| `databaseType.mariadb`          | Select mariadb database         | `nil`                                                     |
 | `mariadb.mariadbRootPassword`   | MariaDB admin password          | `nil`                                                     |
+| `postgresql.postgresqlPassword` | PostgreSQL admin password       | `nil`                                                     |
 | `serviceType`                   | Kubernetes Service type         | `LoadBalancer`                                            |
 | `persistence.enabled`           | Enable persistence using PVC    | `true`                                                    |
 | `persistence.existingClaim`     | The name of an existing PVC     | `nil`                                                     |
@@ -106,4 +109,3 @@ The following example includes two PVCs, one for redmine and another for Maria D
 ```bash
 $ helm install --name test --set persistence.existingClaim=PVC_REDMINE,mariadb.persistence.existingClaim=PVC_MARIADB  redmine
 ```
-
