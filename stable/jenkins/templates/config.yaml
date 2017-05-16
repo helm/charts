@@ -151,7 +151,7 @@ data:
     ldapRealm.setDisableRolePrefixing(true)
     instance.setSecurityRealm(ldapRealm)
     instance.save()
-  {{- end }}
+{{- end }}
   apply_config.sh: |-
     mkdir -p /usr/share/jenkins/ref/secrets/;
     echo "false" > /usr/share/jenkins/ref/secrets/slave-to-master-security-kill-switch;
