@@ -1,5 +1,5 @@
-apiVersion: extensions/v1beta1
-kind: Deployment
+apiVersion: apps/v1beta1
+kind: StatefulSet
 metadata:
   name: {{ template "fullname" . }}
   labels:
@@ -8,7 +8,8 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
-  replicas: 1
+  serviceName: {{ template "fullname" . }}
+  replicas: {{ .Values.replicaCount }}
   template:
     metadata:
       labels:
@@ -17,6 +18,18 @@ spec:
         release: "{{ .Release.Name }}"
         heritage: "{{ .Release.Service }}"
     spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 5
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  -  "{{ template "fullname" . }}"  
+              topologyKey: "kubernetes.io/hostname"
       containers:
       - name: {{ template "fullname" . }}
         image: {{ .Values.image }}
