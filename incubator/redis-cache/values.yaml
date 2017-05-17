@@ -5,18 +5,20 @@
 ##Statefulset related configurations ss.yaml
 replicaCount: 3
 redis:
-  image: redis
-  tag: 3.0-alpine
-  pullPolicy: IfNotPresent
+  image:
+    repository: redis
+    tag: 3.0-alpine
+    pullPolicy: IfNotPresent
   resources:
     limits:
       memory: 128Mi
     requests:
       memory: 128Mi
 microSentinel:
-  image: dhilipkumars/redis-sentinel-k8s
-  tag: latest
-  pullPolicy: IfNotPresent
+  image:
+    repository: dhilipkumars/redis-sentinel-k8s
+    tag: latest
+    pullPolicy: IfNotPresent
   resources: {}
     # limits:
     #   cpu: 10m
@@ -25,9 +27,10 @@ microSentinel:
     #   cpu: 10m
     #   memory: 20Mi
 makeSlave:
-  image: dhilipkumars/mk-redis-slave
-  tag: latest
-  pullPolicy: IfNotPresent
+  image:
+    repository: dhilipkumars/mk-redis-slave
+    tag: latest
+    pullPolicy: IfNotPresent
   resources: {}
     # limits:
     #   cpu: 10m

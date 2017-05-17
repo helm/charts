@@ -3,7 +3,7 @@ kind: StatefulSet
 metadata:
   name: "{{ template "fullname" . }}"
   labels:
-     app: {{ template "fullname" . }}
+     app: {{ template "name" . }}
      chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
      release: "{{ .Release.Name }}"
      heritage: "{{ .Release.Service }}"
@@ -13,7 +13,7 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "fullname" . }}
+        app: {{ template "name" . }}
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         release: "{{ .Release.Name }}"
         heritage: "{{ .Release.Service }}"
@@ -22,11 +22,11 @@ spec:
         pod.beta.kubernetes.io/init-containers: '[
            {
              "name":"sentinel-micro",
-             "image":"{{ .Values.microSentinel.image }}:{{ .Values.microSentinel.tag }}",
-             "imagePullPolicy": "{{ .Values.microSentinel.pullPolicy }}",
+             "image":"{{ .Values.microSentinel.image.repository }}:{{ .Values.microSentinel.image.tag }}",
+             "imagePullPolicy": "{{ .Values.microSentinel.image.pullPolicy }}",
              "args" : ["-service","{{ template "fullname" . }}"],
              "resources":
-{{ toJson .Values.microSentinel.resources | indent 17 }},
+{{ toJson .Values.microSentinel.resources | indent 16 }},
              "env": [
                {
                   "name": "POD_NAMESPACE",
@@ -49,35 +49,29 @@ spec:
     spec:
       terminationGracePeriodSeconds: 5
       affinity:
-           {
-              podAntiAffinity: {
-                 preferredDuringSchedulingIgnoredDuringExecution: [{
-                      weight: 5,
-                      podAffinityTerm: {
-                        labelSelector: {
-                           matchExpressions: [{
-                               "key": "app",
-                               "operator": "In",
-                                "values": ["{{ template "fullname" . }}"]
-                            }]
-                        },
-                        topologyKey: "kubernetes.io/hostname"
-                      }
-                  }]
-               }
-           }
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 5
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  -  "{{ template "name" . }}"
+              topologyKey: "kubernetes.io/hostname"
       containers:
       - name: redis
-        image: {{ .Values.redis.image }}:{{ .Values.redis.tag }}
-        imagePullPolicy: {{ .Values.redis.pullPolicy }}
+        image: {{ .Values.redis.image.repository }}:{{ .Values.redis.image.tag }}
+        imagePullPolicy: {{ .Values.redis.image.pullPolicy }}
         ports:
         - containerPort: {{ .Values.service.port }}
           name: {{ .Values.service.name }}
         resources:
 {{ toYaml .Values.redis.resources | indent 12 }}
       - name: make-slave
-        image: {{ .Values.makeSlave.image }}:{{ .Values.makeSlave.tag }}
-        imagePullPolicy: {{ .Values.makeSlave.pullPolicy }}
+        image: {{ .Values.makeSlave.image.repository }}:{{ .Values.makeSlave.image.tag }}
+        imagePullPolicy: {{ .Values.makeSlave.image.pullPolicy }}
         resources:
 {{ toYaml .Values.makeSlave.resources | indent 12 }}
         env:
