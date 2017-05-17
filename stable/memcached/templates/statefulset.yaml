@@ -19,23 +19,17 @@ spec:
         heritage: "{{ .Release.Service }}"
     spec:
       affinity:
-           {
-              podAntiAffinity: {
-                 preferredDuringSchedulingIgnoredDuringExecution: [{
-                      weight: 5,
-                      podAffinityTerm: {
-                        labelSelector: {
-                           matchExpressions: [{
-                               "key": "app",
-                               "operator": "In",
-                                "values": ["{{ template "fullname" . }}"]
-                            }]
-                        },
-                        topologyKey: "kubernetes.io/hostname"
-                      }
-                  }]
-               }
-           }
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 5
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  -  "{{ template "fullname" . }}"  
+              topologyKey: "kubernetes.io/hostname"
       containers:
       - name: {{ template "fullname" . }}
         image: {{ .Values.image }}
