@@ -63,6 +63,8 @@ The following tables lists the configurable parameters of the PostgresSQL chart 
 | `metrics.imageTag`         | Exporter image                             | `v0.1.1`                                                   |
 | `metrics.imagePullPolicy`  | Exporter image pull policy                 | `IfNotPresent`                                             |
 | `metrics.resources`        | Exporter resource requests/limit           | Memory: `256Mi`, CPU: `100m`                               |
+| `service.externalIPs`      | External IPs to listen on                  | `[]`                                                       |
+| `service.port`             | TCP port                                   | `5432`                                                     |
 
 The above parameters map to the env variables defined in [postgres](http://github.com/docker-library/postgres). For more information please refer to the [postgres](http://github.com/docker-library/postgres) image documentation.
 
