@@ -25,6 +25,9 @@ imageTag: "9.6.2"
 persistence:
   enabled: true
 
+  ## if set the true, Tiller will skip this resource during helm delete
+  keep: false
+
   ## A manually managed Persistent Volume and Claim
   ## Requires persistence.enabled: true
   ## If defined, PVC must be created manually before volume will be bound

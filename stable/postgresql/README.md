@@ -52,6 +52,7 @@ The following tables lists the configurable parameters of the PostgresSQL chart 
 | `postgresPassword`         | Password for the new user.                 | random 10 characters                                       |
 | `postgresDatabase`         | Name for new database to create.           | `postgres`                                                 |
 | `persistence.enabled`      | Use a PVC to persist data                  | `true`                                                     |
+| `persistence.keep`         | Keep PVC resource during helm delete       | `false`                                                    |
 | `persistence.existingClaim`| Provide an existing PersistentVolumeClaim  | `nil`                                                      |
 | `persistence.storageClass` | Storage class of backing PVC               | `nil` (uses alpha storage class annotation)                |
 | `persistence.accessMode`   | Use volume as ReadOnly or ReadWrite        | `ReadWriteOnce`                                            |
