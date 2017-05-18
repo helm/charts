@@ -1,4 +1,6 @@
 1. Watch all cluster members come up.
   $ kubectl get pods --namespace={{ .Release.Namespace }} -w
-2. Confirm consul cluster is healthy
+2. Test cluster health using Helm test.
+  $ helm test {{ .Release.Namespace }}
+3. (Optional) Manually confirm consul cluster is healthy.
   $ kubectl exec {{ .Release.Name }}-consul-0 consul members --namespace={{ .Release.Namespace }} | grep server

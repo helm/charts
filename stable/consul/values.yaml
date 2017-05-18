@@ -16,7 +16,7 @@ ConsulDnsPort: 8600
 Component: "consul"
 Replicas: 3
 Image: "consul"
-ImageTag: "0.7.5"
+ImageTag: "0.8.3"
 ImagePullPolicy: "Always"
 Cpu: "100m"
 Memory: "256Mi"
@@ -35,3 +35,8 @@ ui:
 uiService:
   enabled: true
   type: "NodePort"
+
+## test container details
+test:
+  image: lachlanevenson/k8s-kubectl
+  imageTag: v1.4.8-bash
