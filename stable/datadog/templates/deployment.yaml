@@ -1,25 +1,37 @@
+{{- if .Values.deployment.enabled }}
 {{- if .Values.datadog.apiKey }}
-{{- if .Values.datadog.collectEvents }}
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}-events
+  name: {{ template "fullname" . }}
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
 spec:
-  replicas: 1
+  replicas: {{ .Values.deployment.replicas }}
   template:
     metadata:
       labels:
-        app: {{ template "fullname" . }}-events
-      name: {{ template "fullname" . }}-events
+        app: {{ template "fullname" . }}
+      name: {{ template "fullname" . }}
     spec:
       containers:
-      - name: {{ .Chart.Name }}-events
+      - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         resources:
 {{ toYaml .Values.resources | indent 12 }}
+        ports:
+        - containerPort: 8125
+          name: dogstatsdport
+          protocol: UDP
+        {{- if .Values.datadog.apmEnabled }}
+        - containerPort: 8126
+          name: traceport
+          protocol: TCP
+        - containerPort: 7777
+          name: legacytraceport
+          protocol: TCP
+        {{- end }}
         env:
           - name: API_KEY
             valueFrom:
@@ -34,10 +46,17 @@ spec:
             value: {{ default "" .Values.datadog.nonLocalTraffic | quote }}
           - name: TAGS
             value: {{ default "" .Values.datadog.tags | quote }}
+          - name: DD_APM_ENABLED
+            value: {{ default "" .Values.datadog.apmEnabled | quote }}
           - name: KUBERNETES
             value: "yes"
+          {{- if .Values.datadog.collectEvents }}
           - name: KUBERNETES_COLLECT_EVENTS
             value: "yes"
+          {{- end }}
+{{- if .Values.datadog.env }}
+{{ toYaml .Values.datadog.env | indent 10 }}
+{{- end }}
         volumeMounts:
           - name: dockersocket
             mountPath: /var/run/docker.sock
@@ -46,6 +65,15 @@ spec:
             readOnly: true
           - name: cgroups
             mountPath: /host/sys/fs/cgroup
+            readOnly: true
+          - name: confd
+            mountPath: /conf.d
+            readOnly: true
+          - name: autoconf
+            mountPath: /etc/dd-agent/conf.d/auto_conf
+            readOnly: true
+          - name: checksd
+            mountPath: /checks.d
             readOnly: true
       volumes:
         - hostPath:
@@ -57,5 +85,14 @@ spec:
         - hostPath:
             path: /sys/fs/cgroup
           name: cgroups
+        - name: confd
+          configMap:
+            name: {{ template "confd.fullname" . }}
+        - name: checksd
+          configMap:
+            name: {{ template "checksd.fullname" . }}
+        - name: autoconf
+          configMap:
+            name: {{ template "autoconf.fullname" . }}
 {{ end }}
 {{ end }}
