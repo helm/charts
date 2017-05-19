@@ -41,6 +41,14 @@ $ helm delete my-release
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
 
+## Using PostgreSQL instead of MariaDB
+
+This chart includes the option to use a PostgreSQL database for Redmine instead of MariaDB. To use this, MariaDB must be explicitly disabled and PostgreSQL enabled:
+
+```
+helm install --name my-release stable/redmine --set databaseType.mariadb=false,databaseType.postgresql=true
+```
+
 ## Configuration
 
 The following tables lists the configurable parameters of the Redmine chart and their default values.
