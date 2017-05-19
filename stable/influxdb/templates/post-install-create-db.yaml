@@ -1,0 +1,43 @@
+{{- if .Values.createDatabase.enabled -}}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  labels:
+    app: {{ template "fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+  name: {{ template "fullname" . }}-create-db
+  annotations:
+    "helm.sh/hook": post-install
+spec:
+  activeDeadlineSeconds: {{ default 300 .Values.createDatabase.activeDeadlineSeconds }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "fullname" . }}
+        release: "{{ .Release.Name }}"
+    spec:
+      containers:
+      - name: {{ template "fullname" . }}-create-db
+        image: "{{ .Values.createDatabase.image }}"
+        env:
+          - name: INFLUXDB_DATABASE
+            value: {{ default "influxdb" .Values.createDatabase.database.database | quote }}
+          - name: INFLUXDB_DURATION
+            value: {{ default "3d" .Values.createDatabase.database.duration | quote }}
+          - name: INFLUXDB_REPLICATION
+            value: {{ default 1 .Values.createDatabase.database.replication | quote }}
+          - name: INFLUXDB_SHARD_DURATION
+            value: {{ default "1h" .Values.createDatabase.database.duration | quote }}
+          - name: INFLUXDB_SHARD_GROUP_NAME
+            value: {{ default "influxdb" .Values.createDatabase.database.shardGroupName | quote }}
+        args:
+          - "/bin/sh"
+          - "-c"
+          - |-
+             curl -X POST http://{{ template "fullname" . }}:{{ .Values.config.http.bind_address }}/query \
+             --data-urlencode \
+             "q=CREATE DATABASE ${INFLUXDB_DATABASE} WITH DURATION ${INFLUXDB_DURATION} REPLICATION ${INFLUXDB_REPLICATION} SHARD DURATION ${INFLUXDB_SHARD_DURATION} NAME ${INFLUXDB_SHARD_GROUP_NAME}"
+      restartPolicy: {{ .Values.createDatabase.restartPolicy }}
+{{- end -}}

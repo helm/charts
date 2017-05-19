@@ -61,6 +61,48 @@ setDefaultUser:
     ## Default: "WITH ALL PRIVILEGES"
     # privileges: "WITH ALL PRIVILEGES"
 
+## Create database through Kubernetes job
+## Defaults indicated below
+##
+createDatabase:
+  enabled: false
+
+  ## Image of the container used for job
+  ## Default: appropriate/curl:latest
+  ##
+  #image: appropriate/curl:latest
+
+  ## Deadline for job so it does not retry forever.
+  ## Default: activeDeadline: 300
+  ##
+  #activeDeadline: 300
+
+  ## Restart policy for job
+  ## Default: OnFailure
+  #restartPolicy: OnFailure
+
+  #database:
+
+    ## The user name
+    ## Default: "influxdb"
+    #database: ""
+
+    ## The duration
+    ## Default: "3d"
+    #duration: ""
+
+    ## The replication factor
+    ## Default: "1"
+    #replication: ""
+
+    ## The shard duration
+    ## Default: "1h"
+    #shardDuration: ""
+
+    ## The shard group name
+    ## Default: "influxdb"
+    #shardGroupName: ""
+
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
 resources:
