@@ -54,7 +54,7 @@ The following tables lists the configurable parameters of the Percona chart and 
 | `perconaUser`                | Username of new user to create.    | `nil`                                                      |
 | `perconaPassword`            | Password for the new user.         | `nil`                                                      |
 | `perconaDatabase`            | Name for new database to create.   | `nil`                                                      |
-| `persistence.enabled`      | Create a volume to store data      | true                                                       |
+| `persistence.enabled`      | Create a volume to store data      | false                                                       |
 | `persistence.size`         | Size of persistent volume claim    | 8Gi RW                                                     |
 | `persistence.storageClass` | Type of persistent volume claim    | nil  (uses alpha storage class annotation)                 |
 | `persistence.accessMode`   | ReadWriteOnce or ReadOnly          | ReadWriteOnce                                              |
@@ -84,7 +84,8 @@ $ helm install --name my-release -f values.yaml stable/percona
 
 The [Percona Server](https://hub.docker.com/_/percona/) image stores the MySQL data and configurations at the `/var/lib/mysql` path of the container.
 
-By default a PersistentVolumeClaim is created and mounted into that directory. In order to disable this functionality
-you can change the values.yaml to disable persistence and use an emptyDir instead.
+By default, an emptyDir volume is mounted at that location.
 
 > *"An emptyDir volume is first created when a Pod is assigned to a Node, and exists as long as that Pod is running on that node. When a Pod is removed from a node for any reason, the data in the emptyDir is deleted forever."*
+
+You can change the values.yaml to enable persistence and use a PersistentVolumeClaim instead.
