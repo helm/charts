@@ -38,6 +38,6 @@ spec:
           - |-
              curl -X POST http://{{ template "fullname" . }}:{{ .Values.config.http.bind_address }}/query \
              --data-urlencode \
-             "q=CREATE DATABASE ${INFLUXDB_DATABASE} WITH DURATION ${INFLUXDB_DURATION} REPLICATION ${INFLUXDB_REPLICATION} SHARD DURATION ${INFLUXDB_SHARD_DURATION} NAME ${INFLUXDB_SHARD_GROUP_NAME}"
+             "q=CREATE DATABASE \"${INFLUXDB_DATABASE}\" WITH DURATION ${INFLUXDB_DURATION} REPLICATION ${INFLUXDB_REPLICATION} SHARD DURATION ${INFLUXDB_SHARD_DURATION} NAME \"${INFLUXDB_SHARD_GROUP_NAME}\""
       restartPolicy: {{ .Values.createDatabase.restartPolicy }}
 {{- end -}}
