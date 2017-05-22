@@ -17,7 +17,7 @@ redis:
 microSentinel:
   image:
     repository: dhilipkumars/redis-sentinel-k8s
-    tag: latest
+    tag: 0.1.0
     pullPolicy: IfNotPresent
   resources: {}
     # limits:
@@ -29,7 +29,7 @@ microSentinel:
 makeSlave:
   image:
     repository: dhilipkumars/mk-redis-slave
-    tag: latest
+    tag: 0.1.0
     pullPolicy: IfNotPresent
   resources: {}
     # limits:
