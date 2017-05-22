@@ -19,3 +19,8 @@ resources:
   limits:
     cpu: 500m
     memory: 768Mi
+
+# Allow sysdig to run on Kubernetes 1.6 masters.
+tolerations:
+  - effect: NoSchedule
+    key: node-role.kubernetes.io/master
