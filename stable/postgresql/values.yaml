@@ -21,6 +21,11 @@ imageTag: "9.6.2"
 ## Default: the postgres user
 # postgresDatabase:
 
+## Specify initdb arguments, e.g. --data-checksums
+## ref: https://github.com/docker-library/docs/blob/master/postgres/content.md#postgres_initdb_args
+## ref: https://www.postgresql.org/docs/current/static/app-initdb.html
+# postgresInitdbArgs:
+
 ## Persist data to a persitent volume
 persistence:
   enabled: true

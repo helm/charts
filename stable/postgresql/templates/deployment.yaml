@@ -25,6 +25,8 @@ spec:
           value: {{ default "postgres" .Values.postgresUser | quote }}
         - name: POSTGRES_DB
           value: {{ default "" .Values.postgresDatabase | quote }}
+        - name: POSTGRES_INITDB_ARGS
+          value: {{ default "" .Values.postgresInitdbArgs | quote }}
         - name: PGDATA
           value: /var/lib/postgresql/data/pgdata
         - name: POSTGRES_PASSWORD
