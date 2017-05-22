@@ -1,0 +1,2 @@
+1. Check how the cluster state would change after adding provided pods by running these command:
+	curl -XPOST SERVICE_URL:SERVICE_PORT/advise -H "Content-type: application/json" -d @PATH_TO_JSON_WITH_PODS
