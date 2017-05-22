@@ -1,0 +1,61 @@
+{{- if .Values.datadog.apiKey }}
+{{- if .Values.datadog.collectEvents }}
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}-events
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: {{ template "fullname" . }}-events
+      name: {{ template "fullname" . }}-events
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}-events
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        resources:
+{{ toYaml .Values.resources | indent 12 }}
+        env:
+          - name: API_KEY
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "fullname" . }}
+                key: api-key
+          - name: LOG_LEVEL
+            value: {{ .Values.datadog.logLevel | quote }}
+          - name: SD_BACKEND
+            value: docker
+          - name: NON_LOCAL_TRAFFIC
+            value: {{ default "" .Values.datadog.nonLocalTraffic | quote }}
+          - name: TAGS
+            value: {{ default "" .Values.datadog.tags | quote }}
+          - name: KUBERNETES
+            value: "yes"
+          - name: KUBERNETES_COLLECT_EVENTS
+            value: "yes"
+        volumeMounts:
+          - name: dockersocket
+            mountPath: /var/run/docker.sock
+          - name: procdir
+            mountPath: /host/proc
+            readOnly: true
+          - name: cgroups
+            mountPath: /host/sys/fs/cgroup
+            readOnly: true
+      volumes:
+        - hostPath:
+            path: /var/run/docker.sock
+          name: dockersocket
+        - hostPath:
+            path: /proc
+          name: procdir
+        - hostPath:
+            path: /sys/fs/cgroup
+          name: cgroups
+{{ end }}
+{{ end }}
