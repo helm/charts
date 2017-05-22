@@ -44,6 +44,7 @@ The following tables lists the configurable parameters of the Sysdig chart and t
 | `image.repository`          | The image repository to pull from  | `sysdig/agent`                            |
 | `image.tag`                 | The image tag to pull              | `latest`                                  |
 | `image.pullPolicy`          | The Image pull policy              | `Always`                                  |
+| `tolerations`               | The tolerations for scheduling     | `node-role.kubernetes.io/master:NoSchedule`                       |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,

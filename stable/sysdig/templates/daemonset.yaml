@@ -36,6 +36,8 @@ spec:
           path: /usr
       hostNetwork: true
       hostPID: true
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
       containers:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
