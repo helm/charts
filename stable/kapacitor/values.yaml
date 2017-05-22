@@ -12,7 +12,7 @@ image:
 service:
   type: ClusterIP
 
-## Persist data to a persitent volume
+## Persist data to a persistent volume
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
 ##
 persistence:
@@ -34,6 +34,15 @@ resources:
   limits:
     memory: 2Gi
     cpu: 2
+
+## Set the environment variables for kapacitor (or anything else you want to use)
+## ref: https://docs.influxdata.com/kapacitor/v1.1/introduction/getting_started/
+##
+# Example Below
+#
+# envVars:
+#   KAPACITOR_SLACK_ENABLED: true
+#   KAPACITOR_SLACK_URL: "http://slack.com/xxxxx/xxxxx/xxxx/xxxxxxx"
     
 ## Set the URL of InfluxDB instance to create subscription on
 ## ref: https://docs.influxdata.com/kapacitor/v1.1/introduction/getting_started/

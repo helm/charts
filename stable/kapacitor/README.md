@@ -43,6 +43,25 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
+The following table lists the configurable parameters of the Kapacitor chart and their default values.
+
+| Parameter               | Description                           | Default                                                    |
+| ----------------------- | ----------------------------------    | ---------------------------------------------------------- |
+| `image.repository` | Kapacitor image | `kapacitor` |
+| `image.tag` | Kapacitor image version | `1.2` |
+| `image.pullPolicy` | Kapacitor image pull policy |  `IfNotPresent` |
+| `service.type` | Kapacitor web service type  | `ClusterIP` |
+| `persistence.enabled` | Enable Kapacitor persistence using Persistent Volume Claims | `false` |
+| `persistence.storageClass` | Kapacitor Persistent Volume Storage Class | `default` |
+| `persistence.accessMode` | Kapacitor Persistent Volume Access Mode | `ReadWriteOnce` |
+| `persistence.size` | Kapacitor Persistent Volume Storage Size | `8Gi` |
+| `resources.request.memory` | Kapacitor memory request | `256Mi` |
+| `resources.request.cpu` | Kapacitor cpu request | `0.1` |
+| `resources.limits.memory` | Kapacitor memory limit | `2Gi` |
+| `resources.limits.cpu` | Kapacitor cpu limit | `2` |
+| `envVars` | Environment variables to set initial Kapacitor configuration | `{}` |
+| `influxURL` | InfluxDB url used to interact with Kapacitor (also can be set with ```envVars.KAPACITOR_INFLUXDB_0_URLS_0```) | `http://influxdb-influxdb.tick:8086` |
+
 The configurable parameters of the Kapacitor chart and the default values are listed in `values.yaml`.
 
 The [full image documentation](https://hub.docker.com/_/kapacitor/) contains more information about running Kapacitor in docker.
