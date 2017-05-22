@@ -1,5 +1,5 @@
 apiVersion: v1
-description: A Helm chart for pure in-memory redis cache, using statefulset and redis-sentinel-micro
+description: A pure in-memory redis cache, using statefulset and redis-sentinel-micro
 name: redis-cache
 version: 0.1.0
 icon: https://redis.io/images/redis-white.png
