@@ -38,11 +38,15 @@ resources:
 ## Set the environment variables for kapacitor (or anything else you want to use)
 ## ref: https://docs.influxdata.com/kapacitor/v1.1/introduction/getting_started/
 ##
-# Example Below
+# Examples below
 #
 # envVars:
 #   KAPACITOR_SLACK_ENABLED: true
 #   KAPACITOR_SLACK_URL: "http://slack.com/xxxxx/xxxxx/xxxx/xxxxxxx"
+#
+# or, at your terminal, with
+#
+# helm install --name kapacitor-rls --set influxURL=http://influxurl.com,envVars.KAPACITOR_SLACK_ENABLED=true,envVars.KAPACITOR_SLACK_URL="http://slack.com/xxxxx/xxxxx/xxxx/xxxxxxx" stable/kapacitor
     
 ## Set the URL of InfluxDB instance to create subscription on
 ## ref: https://docs.influxdata.com/kapacitor/v1.1/introduction/getting_started/
