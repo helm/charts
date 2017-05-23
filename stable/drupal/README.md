@@ -59,7 +59,6 @@ The following tables lists the configurable parameters of the Drupal chart and t
 | `mariadb.mariadbRootPassword`     | MariaDB admin password                | `nil`                                                     |
 | `serviceType`                     | Kubernetes Service type               | `LoadBalancer`                                            |
 | `persistence.enabled`             | Enable persistence using PVC          | `true`                                                    |
-| `persistence.ExistingClaim`       | An Existing PVC name                  | `nil`                                                     |
 | `persistence.apache.storageClass` | PVC Storage Class for Apache volume   | `nil` (uses alpha storage class annotation)               |
 | `persistence.apache.accessMode`   | PVC Access Mode for Apache volume     | `ReadWriteOnce`                                           |
 | `persistence.apache.size`         | PVC Storage Request for Apache volume | `1Gi`                                                     |
