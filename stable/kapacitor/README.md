@@ -59,7 +59,7 @@ The following table lists the configurable parameters of the Kapacitor chart and
 | `resources.request.cpu` | Kapacitor cpu request | `0.1` |
 | `resources.limits.memory` | Kapacitor memory limit | `2Gi` |
 | `resources.limits.cpu` | Kapacitor cpu limit | `2` |
-| `envVars` | Environment variables to set initial Kapacitor configuration | `{}` |
+| `envVars` | Environment variables to set initial Kapacitor configuration (https://hub.docker.com/_/kapacitor/) | `{}` |
 | `influxURL` | InfluxDB url used to interact with Kapacitor (also can be set with ```envVars.KAPACITOR_INFLUXDB_0_URLS_0```) | `http://influxdb-influxdb.tick:8086` |
 
 The configurable parameters of the Kapacitor chart and the default values are listed in `values.yaml`.
