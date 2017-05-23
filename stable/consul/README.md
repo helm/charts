@@ -34,6 +34,7 @@ The following tables lists the configurable parameters of the consul chart and t
 | `Replicas`              | k8s statefulset replicas              | `3`                                                        |
 | `Component`             | k8s selector key                      | `consul`                                                   |
 | `Cpu`                   | container requested cpu               | `100m`                                                     |
+| `DisableHostNodeId`     | Disable Node Id creation (uses random)| `false`                                                   |
 | `Memory`                | container requested memory            | `512Mi`                                                    |
 | `Storage`               | Persistent volume size                | `1Gi`                                                      |
 | `StorageClass`          | Persistent volume storage class       | `nil`                                                  |
