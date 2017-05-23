@@ -36,7 +36,7 @@ resources:
     cpu: 2
 
 ## Set the environment variables for kapacitor (or anything else you want to use)
-## ref: https://docs.influxdata.com/kapacitor/v1.1/introduction/getting_started/
+## ref: https://hub.docker.com/_/kapacitor/
 ##
 # Examples below
 #
