@@ -1,3 +1,4 @@
+{{ $statsd_protocol := .Values.single.service.statsd.protocol }}
 {{- if .Values.single.enabled -}}
 {{- if .Values.single.service.enabled -}}
 apiVersion: v1
@@ -19,6 +20,9 @@ spec:
   - port: {{ trimPrefix ":" $value.service_address | int64 }}
     targetPort: {{ trimPrefix ":" $value.service_address | int64 }}
     name: "statsd"
+    {{- if $statsd_protocol }}
+    protocol: {{ $statsd_protocol }}
+    {{- end }}
     {{- end }}
     {{- if eq $key "tcp-listener" }}
   - port: {{ trimPrefix ":" $value.service_address | int64 }}
