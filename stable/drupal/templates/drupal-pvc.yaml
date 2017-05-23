@@ -1,4 +1,4 @@
-{{- if and .Values.persistence.enabled (not .Values.persistence.ExistingClaim) -}}
+{{- if and .Values.persistence.enabled (not .Values.persistence.drupal.ExistingClaim) -}}
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:

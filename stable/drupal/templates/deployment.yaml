@@ -65,7 +65,7 @@ spec:
       - name: drupal-data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ .Values.persistence.ExistingClaim | default (printf "%s-drupal" (include "fullname" .)) }}
+          claimName: {{ .Values.persistence.drupal.ExistingClaim | default (printf "%s-drupal" (include "fullname" .)) }}
       {{- else }}
         emptyDir: {}
       {{- end }}
