@@ -65,6 +65,7 @@ The following tables lists the configurable parameters of the Drupal chart and t
 | `persistence.drupal.storageClass` | PVC Storage Class for Drupal volume   | `nil` (uses alpha storage class annotation)               |
 | `persistence.drupal.accessMode`   | PVC Access Mode for Drupal volume     | `ReadWriteOnce`                                           |
 | `persistence.drupal.existingClaim`| An Existing PVC name                  | `nil`                                                     |
+| `persistence.drupal.hostPath`     | Host mount path for Drupal volume     | `nil` (will not mount to a host path)                     |
 | `persistence.drupal.size`         | PVC Storage Request for Drupal volume | `8Gi`                                                     |
 | `resources`                       | CPU/Memory resource requests/limits   | Memory: `512Mi`, CPU: `300m`                              |
 
@@ -102,4 +103,14 @@ See the [Configuration](#configuration) section to configure the PVC or to disab
 1. Install the chart
 ```bash
 $ helm install --name my-release --set persistence.drupal.existingClaim=PVC_NAME stable/drupal
+```
+
+### Host path
+
+- The specified hostPath directory must already exist.
+- Dynamically creates a PersistentVolume that mounts to the specified host path.
+- Dynamically creates a PersistentVolumeClaim bound to the mounted PersistentVolume.
+- Connects the Drupal data volume to the PersistentVolumeClaim.
+```bash
+$ helm install --name my-release --set persistence.drupal.hostPath=/PATH/TO/HOST/MOUNT stable/drupal
 ```

@@ -64,7 +64,7 @@ spec:
       volumes:
       - name: drupal-data
       {{- if .Values.persistence.enabled }}
-        {{- if .Values.persistence.hostPath }}
+        {{- if .Values.persistence.drupal.hostPath }}
         persistentVolumeClaim:
           claimName: {{ template "fullname" . }}-drupal-hostpath
         {{- else }}
