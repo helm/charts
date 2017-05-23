@@ -64,8 +64,13 @@ spec:
       volumes:
       - name: drupal-data
       {{- if .Values.persistence.enabled }}
+        {{- if .Values.persistence.hostPath }}
+        persistentVolumeClaim:
+          claimName: {{ template "fullname" . }}-drupal-hostpath
+        {{- else }}
         persistentVolumeClaim:
           claimName: {{ .Values.persistence.drupal.existingClaim | default (printf "%s-drupal" (include "fullname" .)) }}
+        {{- end }}
       {{- else }}
         emptyDir: {}
       {{- end }}
