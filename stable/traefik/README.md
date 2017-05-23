@@ -18,6 +18,7 @@ resources _cluster-wide_.
 ## Prerequisites
 
 - Kubernetes 1.4+ with Beta APIs enabled
+- You are deploying the chart to a cluster with a cloud provider capable of provisioning an external load balancer (e.g. AWS or GKE)
 - You control DNS for the domain(s) you intend to route through Traefik
 - __Suggested:__ PV provisioner support in the underlying infrastructure
 
