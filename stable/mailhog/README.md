@@ -46,7 +46,7 @@ Parameter | Description | Default
 `image.repository` | container image repository | `mailhog/mailhog`
 `image.tag` | container image tag | `v1.0.0`
 `image.pullPolicy` | container image pull policy | `IfNotPresent`
-`auth.enabled` | specified whether basic authentication is enabled, see [Auth.md](https://github.com/mailhog/MailHog/blob/master/docs/Auth.md) | `true`
+`auth.enabled` | specifies whether basic authentication is enabled, see [Auth.md](https://github.com/mailhog/MailHog/blob/master/docs/Auth.md) | `false`
 `auth.existingSecret` | if auth is enabled, uses an existing secret with this name; otherwise a secret is created | `""`
 `auth.fileName` | the name of the auth file | `auth.txt`
 `auth.fileContents` | the contents of the auth file | `""`
@@ -63,6 +63,15 @@ Parameter | Description | Default
 `service.node.smtp` | smtp port of service | `""`
 `service.nodePort.http` | if `service.type` is `NodePort` and this is non-empty, sets the http node port of the service | `""`
 `service.nodePort.smtp` | if `service.type` is `NodePort` and this is non-empty, sets the smtp node port of the service | `""`
+`ingress.enabled` | if `true`, an ingress is created | `false`
+`ingress.annotations` | annotations for the ingress | `{}`
+`ingress.path` | if `true`, an ingress is created | `/`
+`ingress.host` | the ingress host | `mailhog.example.com`
+`ingress.tls.enabled` | if `true`, tls is enabled for the ingress | `false`
+`ingress.tls.existingSecret` | if tls is enabled, uses an existing secret with this name; otherwise a secret is created | `false`
+`ingress.tls.secretAnnotations` | annotations for the tls secret | `false`
+`ingress.tls.secretContents` | YAML contents for the tls ingress | `false`
+
 `env` | Mailhog environment variables, see [CONFIG.md](https://github.com/mailhog/MailHog/blob/master/docs/CONFIG.md) | `{}`
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,

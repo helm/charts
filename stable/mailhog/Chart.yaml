@@ -1,7 +1,7 @@
 apiVersion: v1
 description: An e-mail testing tool for developers
 name: mailhog
-version: 1.0.0
+version: 1.1.0
 keywords:
   - mailhog
   - mail
