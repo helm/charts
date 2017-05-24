@@ -1,0 +1,71 @@
+# Default values for kibana.
+# Service
+Kibana:
+  name: kibana-logging
+  app: kibana-logging
+  port: 5601
+# Deployment
+  component: kibana-logging
+  replicas: 3
+  container_name: kibana-logging
+  image: kibana:5.2.0
+#image: docker.elastic.co/kibana/kibana:5.2.0
+# keep request = limit to keep this container in guaranteed class
+  cpu_limit: 200m
+  cpu_requests: 200m
+  elastic_host: http://elasticsearch:9200
+  container_port: 5601
+  env_vars:
+    - name: XPACK_SECURITY_ENABLED
+      value: false
+    - name: XPACK_MONITORING_ENABLED
+      value: false
+  lb_source:
+    - 204.128.192.0/24
+
+Elastic:
+  image: hackd.azurecr.io/elasticsearch-kubernetes:0.2
+  image_pull_secret: regsecret
+  name: elasticsearch
+  port: 9200
+  port_name: http
+  port_selector: elasticsearch-data
+  cluster_name: elasticsearch-cluster
+  cluster_port: 9300
+  cluster_port_name: cluster-comms
+
+  #Master StatefulSet
+  master_name: elasticsearch-master
+  # master_replicas: if changing this value, please also update the
+  # elasticsearch configuration file quorum settings in the
+  # samsung_cnct/elasticsearch image. This value should not be altered
+  # when running in production
+  master_replicas: 3
+  master_imagePullPolicy: Always
+  master_cpu_limits: 500m
+  master_cpu_requests: 500m
+  master_memory_limits: 6Gi
+  master_memory_requests: 6Gi
+  # master_volume_storage: set to small so when exploring with this the
+  # user doesn't accidentally create very large disks
+  master_volume_storage: 128Gi
+  # Xms & Xmx: must be the same
+  # should be ~75% of total memory allocation
+  master_Xms_Xmx: 4g
+
+  #Cluster StatefulSet
+  data_name: elasticsearch-data
+  # data_replicas: This can be changed at will for scaling purposes
+  # either in this chart or at the command line during production
+  data_replicas: 3
+  # resource notes:  datanodes are pretty heavy.
+  # These should be modified up for a real production setting
+  # recommendation is two cores and 20GB of memory for the containers
+  data_cpu_limits: 500m
+  data_memory_limits: 6Gi
+  data_cpu_requests: 500m
+  data_memory_requests: 6Gi
+  data_volume_storage: 200Gi
+  # Xms & Xmx: must be the same
+  # should be ~75% of total memory allocation
+  data_Xms_Xmx: 4g

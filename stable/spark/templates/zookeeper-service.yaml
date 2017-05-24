@@ -1,0 +1,21 @@
+{{- if .Values.Master.EnableHA }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: zoo
+  namespace: spark
+  labels:
+    app: {{ template "name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+spec:
+  ports:
+  - port: 2888
+    name: peer
+  - port: 3888
+    name: leader-election
+  clusterIP: None
+  selector:
+    app: zookeeper
+{{- end }}
