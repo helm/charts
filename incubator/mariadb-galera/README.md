@@ -49,7 +49,7 @@ The following tables lists the configurable parameters of the MariaDB chart and 
 | `mysqlDatabase`            | Name for new database to create.           | `nil`                                                      |
 | `replicas`                 | Number of replicas to deploy               | 3                                                          |
 | `persistence.enabled`      | Use a PVC to persist data                  | `true`                                                     |
-| `persistence.storageClass` | Storage class of backing PVC               | `generic`                                                  |
+| `persistence.storageClass` | Storage class of backing PVC               | `nil` (uses alpha storage class annotation)                |
 | `persistence.accessMode`   | Use volume as ReadOnly or ReadWrite        | `ReadWriteOnce`                                            |
 | `persistence.size`         | Size of data volume                        | `8Gi`                                                      |
 | `resources`                | CPU/Memory resource requests/limits        | Memory: `256Mi`, CPU: `250m`                               |
