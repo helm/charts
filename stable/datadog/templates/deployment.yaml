@@ -28,9 +28,6 @@ spec:
         - containerPort: 8126
           name: traceport
           protocol: TCP
-        - containerPort: 7777
-          name: legacytraceport
-          protocol: TCP
         {{- end }}
         env:
           - name: API_KEY
