@@ -35,8 +35,7 @@ To install the chart with the release name `my-release` in the default
 namespace:
 
 ```
-helm repo add incubator
-http://storage.googleapis.com/kubernetes-charts-incubator
+helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
 helm install --name my-kafka incubator/kafka
 ```
 
