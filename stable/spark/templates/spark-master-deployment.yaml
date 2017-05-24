@@ -39,3 +39,7 @@ spec:
           env:
           - name: SPARK_DAEMON_MEMORY
             value: {{ default "1g" .Values.Master.DaemonMemory | quote }}
+          {{- if .Values.Master.EnableHA }}
+          - name: SPARK_MASTER_OPTS
+            value: "-Dspark.deploy.recoveryMode=ZOOKEEPER -Dspark.deploy.zookeeper.url=zookeeper.spark.svc.cluster.local:2181"
+          {{- end }}

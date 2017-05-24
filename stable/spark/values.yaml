@@ -7,11 +7,12 @@ Master:
   Name: master
   Image: "erikschlegel/spark-master"
   ImageTag: "2.2.0"
-  Replicas: 1
+  Replicas: 2
   Component: "spark-master"
   ImagePullPolicy: "Always"
   ServicePort: 7077
   ContainerPort: 7077
+  EnableHA: true
   Resources:
     Requests:
       Cpu: "700m"
@@ -61,6 +62,9 @@ Zeppelin:
   Cpu: "100m"
   ServicePort: 8080
   ContainerPort: 8080
+
+Zookeeper: 
+  Replicas: 5
 
 Persistence:
   Enabled: true

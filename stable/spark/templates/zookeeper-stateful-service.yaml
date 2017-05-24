@@ -1,0 +1,42 @@
+{{- if .Values.Master.EnableHA }}
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  name: zoo
+  namespace: spark
+  labels:
+    app: {{ template "name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+spec:
+  serviceName: "zoo"
+  replicas: {{ .Values.Zookeeper.Replicas }}
+  template:
+    metadata:
+      labels:
+        app: zookeeper
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+        - name: zookeeper
+          image: solsson/zookeeper-statefulset:3.4.9@sha256:d32b44b32009a69b3450a5216f459e504f1041f587596895219fc04cf22f5546
+          ports:
+            - containerPort: 2181
+              name: client
+            - containerPort: 2888
+              name: peer
+            - containerPort: 3888
+              name: leader-election
+          volumeMounts:
+            - name: datadir
+              mountPath: /data
+            # There's defaults in this folder, such as logging config
+            #- name: conf
+            #  mountPath: /conf
+      volumes:
+        #- name: conf
+        #  emptyDir: {}
+        - name: datadir
+          emptyDir: {}
+{{- end }}

@@ -45,6 +45,7 @@ The following tables lists the configurable parameters of the Spark chart and th
 | `Master.ServicePort`    | k8s service port                   | `7077`                                                     |
 | `Master.ContainerPort`  | Container listening port           | `7077`                                                     |
 | `Master.DaemonMemory`   | Master JVM Xms and Xmx option      | `1g`                                                       |
+| `Master.EnableHA`       |Enable HA and a zookeeper cluster   | `true`                                                     |
 
 ### Spark WebUi
 
@@ -99,6 +100,10 @@ The following tables lists the configurable parameters of the Spark chart and th
 | `Zeppelin.ServicePort`  | k8s service port                 | `8080`                                                   |
 | `Zeppelin.ContainerPort`| Container listening port         | `8080`                                                   |
 
+### Zookeeper
+|       Parameter         |           Description            |                         Default                          |
+|-------------------------|----------------------------------|----------------------------------------------------------|
+| `Zookeeper.Replicas`    | The number of zookeeper replicas | `5`                                                      |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 

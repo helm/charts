@@ -1,0 +1,20 @@
+# the headless service is for PetSet DNS, this one is for clients
+---
+{{- if .Values.Master.EnableHA }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: zookeeper
+  labels:
+    app: {{ template "name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+spec:
+  ports:
+  - port: 2181
+    name: client
+  selector:
+    app: zookeeper
+  type: LoadBalancer
+{{- end }}
