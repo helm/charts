@@ -1,14 +1,14 @@
 apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "dnsname" . }}
   labels:
     app: {{ template "fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
-  serviceName: {{ template "servicename" . }}
+  serviceName: {{ template "dnsname" . }}
   replicas: {{ default "" .Values.replicas }}
   template:
     metadata:
@@ -37,7 +37,7 @@ spec:
         configMap:
           name: {{ template "fullname" . }}
       containers:
-      - name: {{ template "fullname" . }}
+      - name: {{ template "dnsname" . }}
         image: "{{ .Values.image }}"
         imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
         env:
