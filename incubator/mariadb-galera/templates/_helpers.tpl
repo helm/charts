@@ -3,7 +3,7 @@
 Expand the name of the chart.
 */}}
 {{- define "name" -}}
-{{- default .Chart.Name .Values.nameOverride | trunc 61 -}}
+{{- default .Chart.Name .Values.nameOverride | trunc 61 | trimSuffix "-" -}}
 {{- end -}}
 
 {{/*
@@ -11,7 +11,7 @@ Create a default fully qualified app name.
 */}}
 {{- define "fullname" -}}
 {{- $name := default .Chart.Name .Values.nameOverride -}}
-{{- printf "%s-%s" .Release.Name $name | trunc 61 -}}
+{{- printf "%s-%s" .Release.Name $name | trunc 61 | trimSuffix "-" -}}
 {{- end -}}
 
 {{/*
@@ -24,5 +24,5 @@ in Release.Name to avoid issues with invalid DNS names.
 */}}
 {{- define "dnsname" -}}
 {{- $name := default "mdb-ga" .Values.dnsnameOverride -}}
-{{- printf "%s-%s" .Release.Name $name | replace "." "-" | lower | trunc 61 -}}
+{{- printf "%s-%s" .Release.Name $name | replace "." "-" | lower | trunc 61 | trimSuffix "-" -}}
 {{- end -}}
