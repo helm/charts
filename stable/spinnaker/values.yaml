@@ -47,7 +47,7 @@ deck:
   protocol: http
 
 gate:
-  allowedOriginsPattern: '^https?://(?:localhost|[^/]+\.example\.com)(?::[1-9]\d*)?/?$'
+  allowedOriginsPattern: '^https?://(?:localhost|127.0.0.1|[^/]+\.example\.com)(?::[1-9]\d*)?/?$'
 
 # Bucket to use when storing config data in S3 compatible storage
 storageBucket: spinnaker
