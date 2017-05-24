@@ -54,7 +54,7 @@ spec:
             - name: DATABASE_URL
               value: postgres://{{ .Values.postgresql.postgresUser }}:{{ .Values.postgresql.postgresPassword }}@{{ template "postgresql.fullname" . }}:5432/{{ .Values.postgresql.postgresDatabase }}?sslmode=disable
             - name: HTTPS_ALLOW_TERMINATION_FROM
-              value: 0.0.0.0/0
+              value: {{ .Values.config.httpsAllowTerminationFrom }}
             - name: LOG_LEVEL
               value: {{ .Values.config.logLevel }}
             - name: CONSENT_URL

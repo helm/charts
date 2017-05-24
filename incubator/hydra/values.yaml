@@ -36,6 +36,7 @@ config:
   accessTokenLifespan: "1h"
   idTokenLifespan: "1h"
   authorizeCodeLifespan: "10m"
+  httpsAllowTerminationFrom: 0.0.0.0/0
 
 service:
   type: ClusterIP
