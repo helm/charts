@@ -13,7 +13,7 @@ spec:
   ports:
   - name: http
     port: 80
-    targetPort: http
+    targetPort: 80
 {{- if hasKey .Values "nodePort" }}
     nodePort: {{ .Values.nodePort }}
 {{- end }}
