@@ -28,7 +28,7 @@ $ helm install stable/etcd-operator --name my-release
 ```
 
 __Note__: If you set `cluster.enabled` on install, it will have no effect.
-Before you create create an etcd cluster, the TPR must be installed by the operator, so this option is ignored during helm installs, but can be used in upgrades.
+Before you create an etcd cluster, the TPR must be installed by the operator, so this option is ignored during helm installs, but can be used in upgrades.
 
 ## Uninstalling the Chart
 
