@@ -2,7 +2,7 @@
 
 [The cluster autoscaler on AWS](https://github.com/kubernetes/autoscaler/tree/master/cluster-autoscaler/cloudprovider/aws) scales worker nodes within an AWS autoscaling group.
 
-## TL;DR;
+## TL;DR:
 
 ```console
 $ helm install stable/aws-cluster-autoscaler -f values.yaml
@@ -25,7 +25,7 @@ This chart bootstraps an aws-cluster-autoscaler deployment on a [Kubernetes](htt
 
 ## Installing the Chart
 
-In order for the chart to configure the aws-cluster-autoscaler properly during the installation process, you must provide some minimal configuration which can't rely on defaults. This includes at least one element in the `autoscalingGroups` array and it's three values: `name`, `minSize` and `maxSize`. These parameters cannot be passed to helm using the `--set` parameter at this time, so you must supply these using a `values.yaml` file such as:
+In order for the chart to configure the aws-cluster-autoscaler properly during the installation process, you must provide some minimal configuration which can't rely on defaults. This includes at least one element in the `autoscalingGroups` array and its three values: `name`, `minSize` and `maxSize`. These parameters cannot be passed to helm using the `--set` parameter at this time, so you must supply these using a `values.yaml` file such as:
 
 ```
 autoscalingGroups:
@@ -34,21 +34,15 @@ autoscalingGroups:
     minSize: 1
 ```
 
-To install the chart with a `values.yaml` file in the working directory execute the following:
+To install the chart with the release name `my-release`:
 
 ```console
-$ helm install stable/aws-cluster-autoscaler -f values.yaml
+$ helm install stable/aws-cluster-autoscaler --name my-release -f values.yaml
 ```
 
-You can also set the Helm name, which adds a prefix to the Kubernetes service name by using the `--name` parameter. The following will create a Helm release named `example` and Kubernetes service named `example-aws-cluster-autoscaler`:
+The command deploys aws-cluster-autoscaler on the Kubernetes cluster using the supplied configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
 
-```console
-$ helm install stable/aws-cluster-autoscaler -f values.yaml --name example
-```
-
-The install command deploys aws-cluster-autoscaler on the Kubernetes cluster using the supplied configuration. The [configuration](#configuration) section lists all of the parameters that can be configured during installation.
-
-> **Tip**: After installing, you can list all installations using `helm list`.
+> **Tip**: List all releases using `helm list`
 
 ## Verifying Installation
 
@@ -108,7 +102,6 @@ Parameter | Description | Default
 
 Specify each parameter you'd like to override using a YAML file as described above in the [installation](#Installing the Chart) section.
 
-> **Tip**: You can download all of the defaults here: [values.yaml](values.yaml)
 
 You can also specify any non-array parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
