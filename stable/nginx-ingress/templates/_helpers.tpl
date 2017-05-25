@@ -30,7 +30,7 @@ Construct the path for the publish-service.
 By convention this will simply use the <namesapce>/<controller-name> to match the name of the
 service generated.
 
-Users can provide an override for an explict service they want bound via `.Values.controller.publishService.pathOverride`
+Users can provide an override for an explicit service they want bound via `.Values.controller.publishService.pathOverride`
 
 */}}
 {{- define "controller.publishServicePath" -}}
