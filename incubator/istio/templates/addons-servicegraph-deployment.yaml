@@ -1,0 +1,28 @@
+{{if .Values.addons.servicegraph.enabled}}
+{{- $serviceName := include "fullname" . -}}
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ $serviceName }}-servicegraph
+spec:
+  replicas: {{ .Values.addons.servicegraph.deployment.replicas }}
+  template:
+    metadata:
+      annotations:
+        {{- range $key, $value := .Values.addons.servicegraph.deployment.annotations }}
+          {{ $key }}: {{ $value | quote }}
+        {{- end }}
+      labels:
+        app:  {{ $serviceName }}-servicegraph
+    spec:
+      containers:
+      - name: servicegraph
+        image: "{{ .Values.addons.servicegraph.deployment.image }}:{{ .Values.addons.servicegraph.deployment.imageTag }}"
+        imagePullPolicy: {{ .Values.addons.servicegraph.deployment.imagePullPolicy }}
+        ports:
+          - containerPort:  {{ .Values.addons.servicegraph.service.externalPort }}
+        args:
+        - --prometheusAddr=http://prometheus:{{ .Values.addons.prometheus.service.externalPort }}
+        resources:
+{{ toYaml .Values.addons.servicegraph.deployment.resources | indent 10 }}
+{{end}}

@@ -1,0 +1,14 @@
+{{if .Values.addons.servicegraph.enabled}}
+{{- $serviceName := include "fullname" . -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $serviceName }}-servicegraph
+spec:
+  type: {{ .Values.addons.servicegraph.service.type }}
+  ports:
+  - name: http
+    port: {{ .Values.addons.servicegraph.service.externalPort }}
+  selector:
+    app: {{ $serviceName }}-servicegraph
+{{end}}
