@@ -19,6 +19,7 @@ spec:
     spec:
       containers:
       - name: {{ .Chart.Name }}
+        command: ["/bin/bash", "/entrypoint.d/entrypoint.sh"]
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         resources:
@@ -69,6 +70,9 @@ spec:
           - name: confd
             mountPath: /conf.d
             readOnly: true
+          - name: entrypoint
+            mountPath: /entrypoint.d
+            readOnly: true
           - name: autoconf
             mountPath: /etc/dd-agent/conf.d/auto_conf
             readOnly: true
@@ -88,6 +92,9 @@ spec:
         - name: confd
           configMap:
             name: {{ template "confd.fullname" . }}
+        - name: entrypoint
+          configMap:
+            name: {{ template "entrypoint.fullname" . }}
         - name: checksd
           configMap:
             name: {{ template "checksd.fullname" . }}
