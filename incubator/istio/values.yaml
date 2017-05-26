@@ -1,5 +1,7 @@
 ## Install Default RBAC roles and bindings
-installRbacRoles: true
+rbac:
+  install: true
+  apiVersion: v1beta1
 
 ## Enable Istio auth feature 
 ## This deploys a CA in the namespace and enables mTLS between the services
@@ -17,7 +19,6 @@ mixer:
 
   deployment:
     image: docker.io/istio/mixer
-    imageTag: 0.1.5
     imagePullPolicy: Always
     replicas: 1
     annotations:
@@ -45,7 +46,6 @@ manager:
 
     discovery:
       image: docker.io/istio/manager
-      imageTag: 0.1.5
       imagePullPolicy: Always
       resources:
         limits:
@@ -57,7 +57,6 @@ manager:
 
     apiserver:
       image: docker.io/istio/manager
-      imageTag: 0.1.5
       imagePullPolicy: Always
       resources:
         limits:
@@ -79,7 +78,6 @@ ingress:
     annotations:
       alpha.istio.io/sidecar: ignore
     image: docker.io/istio/proxy_debug
-    imageTag: 0.1.5
     imagePullPolicy: Always
     replicas: 1
     resources:
@@ -101,7 +99,6 @@ egress:
     annotations:
       alpha.istio.io/sidecar: ignore
     image: docker.io/istio/proxy_debug
-    imageTag: 0.1.5
     imagePullPolicy: Always
     replicas: 1
     resources:
@@ -120,7 +117,6 @@ ca:
     annotations:
       # alpha.istio.io/sidecar: ignore
     image: docker.io/istio/istio-ca
-    imageTag: 0.1.5
     imagePullPolicy: IfNotPresent
     replicas: 1
     resources:
@@ -196,7 +192,6 @@ addons:
       annotations:
         alpha.istio.io/sidecar: ignore
       image: docker.io/istio/grafana
-      imageTag: 0.1.5
       imagePullPolicy: Always
       replicas: 1
       resources:

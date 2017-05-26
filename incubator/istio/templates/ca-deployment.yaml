@@ -17,7 +17,7 @@ spec:
       serviceAccountName: {{ template "fullname" . }}-ca-service-account
       containers:
       - name: istio-ca
-        image: "{{ .Values.ca.deployment.image }}:{{ .Values.ca.deployment.imageTag }}"
+        image: "{{ .Values.ca.deployment.image }}:{{ .Chart.AppVersion }}"
         imagePullPolicy: {{ .Values.ca.deployment.imagePullPolicy }}
         env:
         - name: NAMESPACE

@@ -16,7 +16,7 @@ spec:
       serviceAccountName: {{ template "fullname" . }}-ingress-service-account
       containers:
       - name: istio-ingress
-        image: "{{ .Values.ingress.deployment.image }}:{{ .Values.ingress.deployment.imageTag }}"
+        image: "{{ .Values.ingress.deployment.image }}:{{ .Chart.AppVersion }}"
         args: ["proxy", "ingress", "-v", "2"]
         imagePullPolicy: {{ .Values.ingress.deployment.imagePullPolicy }}
         ports:

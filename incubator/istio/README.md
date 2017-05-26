@@ -37,6 +37,15 @@ You also need to have the following parameter on the api server. See the followi
 
 If the output contains "beta" or both "alpha" and "beta" you can proceed with normal installation.
 
+### Changing RBAC manifest apiVersion
+
+By default the RBAC resources are generated with the "v1beta1" apiVersion. To use "v1alpha1" do the following:
+
+```console
+$ helm install --name my-release incubator/istio --set rbac.apiVersion=v1alpha1
+```
+
+
 If it does not. Follow the steps below to disable.
 
 ### Disable RBAC role/rolebinding creation
@@ -44,7 +53,7 @@ If it does not. Follow the steps below to disable.
 To disable the creation of RBAC resources (On clusters without RBAC or if you would like to manage the creation outside the scope of this chart). Do the following:
 
 ```console
-$ helm install --name my-release incubator/istio --set installRbacRoles=false
+$ helm install --name my-release incubator/istio --set rbac.install=false
 ```
 
 ## Installing the Chart

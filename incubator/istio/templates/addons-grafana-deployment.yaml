@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: grafana
-        image:  "{{ .Values.addons.grafana.deployment.image }}:{{ .Values.addons.grafana.deployment.imageTag }}"
+        image:  "{{ .Values.addons.grafana.deployment.image }}:{{ .Chart.AppVersion }}"
         imagePullPolicy: {{ .Values.addons.grafana.deployment.imagePullPolicy }}
         ports:
           - containerPort: {{ .Values.addons.grafana.service.externalPort }}
