@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: istio
+data:
+  mesh: |-
+{{if .Values.auth.enabled }}
+    authPolicy: MUTUAL_TLS
+{{end}}
+    mixerAddress: {{ template "fullname" . }}-mixer:{{ .Values.mixer.service.externalTcpPort }}
+    discoveryAddress: {{ template "fullname" . }}-manager:{{ .Values.manager.service.externalHttpDiscovery }}
+    ingressService: {{ template "fullname" . }}-ingress
+    zipkinAddress: {{ template "fullname" . }}-zipkin:{{ .Values.addons.zipkin.service.externalPort }}
