@@ -29,6 +29,12 @@ To determine if your cluster supports this running the following:
 $ kubectl api-versions | grep rbac
 ```
 
+You also need to have the following parameter on the api server. See the following document for how to enable [RBAC](https://kubernetes.io/docs/admin/authorization/rbac/)
+
+```
+--authorization-mode=RBAC
+```
+
 If the output contains "beta" or both "alpha" and "beta" you can proceed with normal installation.
 
 If it does not. Follow the steps below to disable.
