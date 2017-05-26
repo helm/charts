@@ -53,7 +53,7 @@ The following tables lists the configurable parameters of the Datadog chart and 
 | `resources.limits.cpu`      | CPU resource limits                | 512Mi                                     |
 | `resources.requests.memory` | Memory resource requests           | 100m                                      |
 | `resources.limits.memory`   | Memory resource limits             | 256m                                      |
-
+| `tolerations`               | The tolerations for scheduling     | Setup to match the taint for `node.alpha.kubernetes.io/role=master:NoSchedule`
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
@@ -79,12 +79,12 @@ Datadog offers a multitude of [tags](https://hub.docker.com/r/datadog/docker-dd-
 
 The Datadog entrypoint will copy files found in `/conf.d` and `/check.d` to
 `/etc/dd-agent/conf.d` and `/etc/dd-agent/check.d` respectively. The keys for
-`datadog.confd`, `datadog.autoconf`, and `datadog.checksd` should mirror the content found in their 
+`datadog.confd`, `datadog.autoconf`, and `datadog.checksd` should mirror the content found in their
 respective ConfigMaps, ie
 
 ```yaml
 datadog:
-  autoconf: 
+  autoconf:
     redisdb.yaml: |-
       docker_images:
         - redis

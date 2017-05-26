@@ -39,13 +39,13 @@ datadog:
   ## ref: https://github.com/DataDog/docker-dd-agent#environment-variables
   ##
   # env:
-  #   - name: 
-  #     value: 
+  #   - name:
+  #     value:
 
   ## Provide additonal service definitions
   ## Each key will become a file in /conf.d/auto_conf
   ## ref: https://github.com/DataDog/docker-dd-agent#configuration-files
-  ## 
+  ##
   # autoconf:
   #   redisdb.yaml: |-
   #     docker_images:
@@ -58,7 +58,7 @@ datadog:
   ## Provide additonal service definitions
   ## Each key will become a file in /conf.d
   ## ref: https://github.com/DataDog/docker-dd-agent#configuration-files
-  ## 
+  ##
   # confd:
   #   redisdb.yaml: |-
   #     init_config:
@@ -69,7 +69,7 @@ datadog:
   ## Provide additonal service checks
   ## Each key will become a file in /checks.d
   ## ref: https://github.com/DataDog/docker-dd-agent#configuration-files
-  ## 
+  ##
   # checksd:
   #   service.py: |-
 
@@ -80,3 +80,10 @@ resources:
   limits:
     cpu: 256m
     memory: 512Mi
+
+# Allow datadog to run on Kubernetes 1.6 masters.
+tolerations:
+  - effect: NoSchedule
+    operator: Equal
+    key: node.alpha.kubernetes.io/role
+    value: master

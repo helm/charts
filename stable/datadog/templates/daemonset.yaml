@@ -12,6 +12,10 @@ spec:
         app: {{ template "fullname" . }}
       name: {{ template "fullname" . }}
     spec:
+{{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+{{- end }}
       containers:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
