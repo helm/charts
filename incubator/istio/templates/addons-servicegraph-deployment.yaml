@@ -22,7 +22,7 @@ spec:
         ports:
           - containerPort:  {{ .Values.addons.servicegraph.service.externalPort }}
         args:
-        - --prometheusAddr=http://{{ $serviceName }}-prometheus:{{ .Values.addons.prometheus.service.externalPort }}
+        - --prometheusAddr=http://prometheus:{{ .Values.addons.prometheus.service.externalPort }}
         resources:
 {{ toYaml .Values.addons.servicegraph.deployment.resources | indent 10 }}
 {{end}}
