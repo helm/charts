@@ -20,3 +20,7 @@ Verifying the ServiceGraph service
 Deploy your App!
 
   kubectl create -f <(istioctl kube-inject -f <your-app-spec>.yaml)
+
+Or deploy the BookInfo App!
+
+  https://istio.io/docs/samples/bookinfo.html

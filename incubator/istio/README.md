@@ -15,7 +15,28 @@ This chart bootstraps a [Istio](https://istio.io/) deployment on a [Kubernetes](
 
 ## Prerequisites
 
-- Kubernetes 1.5+ with Beta APIs enabled
+- Kubernetes 1.5+
+
+## RBAC
+By default the chart will install the associated RBAC roles and rolebindings using beta annotations.
+
+To determine if your cluster supports this running the following:
+
+```console
+$ kubectl api-versions | grep rbac
+```
+
+If the output contains "beta" or both "alpha" and "beta" you can proceed with normal installation.
+
+If it does not. Follow the steps below to disable.
+
+### Disable RBAC role/rolebinding creation
+
+To disable the creation of RBAC resources (On clusters without RBAC or if you would like to manage the creation outside the scope of this chart). Do the following:
+
+```console
+$ helm install --name my-release incubator/istio --set installRbacRoles=false
+```
 
 ## Installing the Chart
 
