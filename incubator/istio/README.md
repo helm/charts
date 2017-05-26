@@ -18,6 +18,7 @@ This chart bootstraps a [Istio](https://istio.io/) deployment on a [Kubernetes](
 ## Prerequisites
 
 - Kubernetes 1.5+
+- istioctl - See installation steps [here](https://istio.io/docs/tasks/installing-istio.html#installation-steps)
 
 ## RBAC
 By default the chart will install the associated RBAC roles and rolebindings using beta annotations.
