@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: {{ template "fullname" . }}
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "name" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -12,7 +12,7 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "fullname" . }}
+        app: {{ template "name" . }}
         version: "{{ .Values.image.tag }}"
         release: "{{ .Release.Name }}"
     spec:
@@ -21,4 +21,6 @@ spec:
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         ports:
-        - containerPort: {{ .Values.service.port }}
+        - containerPort: 8080
+        resources:
+{{ toYaml .Values.resources | indent 12 }}

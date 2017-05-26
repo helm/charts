@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: {{ template "fullname" . }}
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "name" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -13,8 +13,10 @@ metadata:
   {{- end }}
 spec:
   ports:
-  - port: {{ .Values.service.port }}
-    name: {{ .Values.service.name }}
+  - name: "http"
     protocol: TCP
+    port: {{ .Values.service.port }}
+    targetPort: 8080
   selector:
-    app: {{ template "fullname" . }}
+    app: {{ template "name" . }}
+    release: {{ .Release.Name }}
