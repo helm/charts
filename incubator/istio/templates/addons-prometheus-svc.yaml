@@ -1,0 +1,23 @@
+{{if .Values.addons.prometheus.enabled}}
+{{- $serviceName := include "fullname" . -}}
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    {{- range $key, $value := .Values.addons.prometheus.service.annotations }}
+      {{ $key }}: {{ $value | quote }}
+    {{- end }}
+  labels:
+    name: {{ $serviceName }}-prometheus
+  # Grafana datasource config is hardcoded to prometheus:9090
+  # name: {{ $serviceName }}-prometheus
+  name: prometheus
+spec:
+  selector:
+    app: {{ $serviceName }}-prometheus
+  type: {{ .Values.addons.prometheus.service.type }}
+  ports:
+  - name: prometheus
+    protocol: TCP
+    port: {{ .Values.addons.prometheus.service.externalPort }}
+{{end}}

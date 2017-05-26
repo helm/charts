@@ -1,0 +1,26 @@
+{{- $serviceName := include "fullname" . -}}
+Verify all Pods are running
+
+  kubectl get pods --namespace {{ .Release.Namespace }}
+{{if .Values.addons.grafana.enabled}}
+Verifying the Grafana dashboard
+
+  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ $serviceName }}-grafana" -o jsonpath="{.items[0].metadata.name}")
+  kubectl port-forward $POD_NAME {{ .Values.addons.grafana.service.externalPort }}:{{ .Values.addons.grafana.service.externalPort }}
+  echo http://127.0.0.1:{{ .Values.addons.grafana.service.externalPort }}/dashboard/db/istio-dashboard
+{{- end }}
+{{if .Values.addons.servicegraph.enabled}}
+Verifying the ServiceGraph service
+
+  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ $serviceName }}-servicegraph" -o jsonpath="{.items[0].metadata.name}")
+  kubectl port-forward $POD_NAME {{ .Values.addons.servicegraph.service.externalPort }}:{{ .Values.addons.servicegraph.service.externalPort }}
+  echo http://127.0.0.1:{{ .Values.addons.servicegraph.service.externalPort }}/dotviz
+{{- end }}
+
+Deploy your App!
+
+  kubectl create -f <(istioctl kube-inject -f <your-app-spec>.yaml)
+
+Or deploy the BookInfo App!
+
+  https://istio.io/docs/samples/bookinfo.html
