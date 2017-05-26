@@ -3,8 +3,8 @@
 [etcd-operator](https://coreos.com/blog/introducing-the-etcd-operator.html) Simplify etcd cluster
 configuration and management.
 
-__DISCLAIMER:__ While this chart has been well-tested, the etcd-operator is still currently in alpha.
-Current project status is available [here](https://github.com/coreos/etcd-operator)
+__DISCLAIMER:__ While this chart has been well-tested, the etcd-operator is still currently in beta.
+Current project status is available [here](https://github.com/coreos/etcd-operator).
 
 ## Introduction
 
