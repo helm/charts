@@ -13,9 +13,10 @@ spec:
   ports:
   - name: http
     port: 80
-    targetPort: 80
+    targetPort: http
 {{- if hasKey .Values "nodePort" }}
     nodePort: {{ .Values.nodePort }}
 {{- end }}
   selector:
     app: {{ template "name" . }}
+    release: {{ .Release.Name | quote }}

@@ -43,5 +43,6 @@ spec:
           successThreshold: 1
           timeoutSeconds: 30
         ports:
-        - containerPort: 9090
+        - name: http
+          containerPort: 9090
           protocol: TCP
