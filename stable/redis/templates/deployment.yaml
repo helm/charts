@@ -48,7 +48,7 @@ spec:
 {{- if .Values.metrics.enabled }}
       - name: metrics
         image: "{{ .Values.metrics.image }}:{{ .Values.metrics.imageTag }}"
-        imagePullPolicy: {{ default "" .Values.metrics.imagePullPolicy | quote }}
+        imagePullPolicy: {{ .Values.metrics.imagePullPolicy | quote }}
         env:
         - name: REDIS_ALIAS
           value: {{ template "fullname" . }}
