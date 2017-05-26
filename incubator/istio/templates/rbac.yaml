@@ -14,6 +14,9 @@ rules:
 - apiGroups: [""]
   resources: ["configmaps", "endpoints", "pods", "services"]
   verbs: ["*"]
+- apiGroups: [""]
+  resources: ["namespaces"]
+  verbs: ["get", "list"]
 ---
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1beta1
@@ -55,13 +58,14 @@ roleRef:
   name: {{ $serviceName }}-manager
   apiGroup: rbac.authorization.k8s.io
 ---
-kind: RoleBinding
+kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1beta1
 metadata:
   name: {{ $serviceName }}-ca-role-binding
 subjects:
 - kind: ServiceAccount
   name: {{ $serviceName }}-ca-service-account
+  namespace: {{.Release.Namespace}}
 roleRef:
   kind: ClusterRole
   name: {{ $serviceName }}-ca
