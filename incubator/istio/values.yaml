@@ -141,7 +141,7 @@ addons:
     enabled: true
 
     service:
-      type: LoadBalancer
+      type: ClusterIP
       externalPort: 9411
     
     deployment:
@@ -164,7 +164,7 @@ addons:
     enabled: true
     
     service:
-      type: LoadBalancer
+      type: ClusterIP
       externalPort: 9090
       annotations:
         prometheus.io/scrape: 'true'
@@ -189,7 +189,7 @@ addons:
     enabled: true
     
     service:
-      type: LoadBalancer
+      type: ClusterIP
       externalPort: 3000
     
     deployment:
@@ -212,7 +212,7 @@ addons:
     enabled: true
     
     service:
-      type: LoadBalancer
+      type: ClusterIP
       externalPort: 8088
     
     deployment:
