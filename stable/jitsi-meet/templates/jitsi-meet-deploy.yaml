@@ -1,0 +1,19 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+spec:
+  replicas: {{ .Values.jitsiMeet.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "fullname" . }}
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.jitsiMeet.image.repository }}:{{ .Values.jitsiMeet.image.tag }}"
+        imagePullPolicy: {{ .Values.jitsiMeet.image.pullPolicy }}
+        ports:
+        - containerPort: 80

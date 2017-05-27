@@ -1,0 +1,30 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}-jicofo
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: {{ template "fullname" . }}-jicofo
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}-jicofo
+        image: "{{ .Values.jicofo.image.repository }}:{{ .Values.jicofo.image.tag }}"
+        imagePullPolicy: {{ .Values.jicofo.image.pullPolicy }}
+        ports:
+        - containerPort: 5820
+        env:
+          - name: XMPP_HOST
+            value: xmpp
+          - name: DOMAIN
+            value: {{ .Values.host }}
+          - name: SECRET
+            value: {{ .Values.secret2 }}
+          - name: USERNAME
+            value: {{ .Values.local }}
+          - name: SECRET3
+            value: {{ .Values.secret3 }}

@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: "auth-xmpp"
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+spec:
+  ports:
+  - name: c2s
+    port: 5222
+    protocol: TCP
+  - name: xmpp
+    port: 5347
+    protocol: TCP
+  - name: bosh
+    port: 5280
+    protocol: TCP
+  selector:
+    app: {{ template "fullname" . }}-prosody

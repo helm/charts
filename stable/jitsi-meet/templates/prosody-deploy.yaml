@@ -1,0 +1,35 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}-prosody
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: {{ template "fullname" . }}-prosody
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}-prosody
+        image: "{{ .Values.prosody.image.repository }}:{{ .Values.prosody.image.tag }}"
+        imagePullPolicy: {{ .Values.prosody.image.pullPolicy }}
+        ports:
+        - containerPort: 5280
+        - containerPort: 5222
+        - containerPort: 5347
+        env:
+          - name: LOCAL
+            value: {{ .Values.local }}
+          - name: DOMAIN
+            value: auth.{{ .Values.host }}
+          - name: PASSWORD
+            value: {{ .Values.secret3 }}
+        volumeMounts:
+        - name: "jitsi-configuration"
+          mountPath: /etc/prosody/
+      volumes:
+        - name: "jitsi-configuration"
+          configMap:
+            name: "jitsi-configuration"

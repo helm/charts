@@ -1,0 +1,31 @@
+# Default values for jitsi-meet.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+jitsiMeet:
+  replicasCount: 1
+  image:
+    repository:
+    tag:
+    pullPolicy: IfNotPresent
+jicofo:
+  image:
+    repository:
+    tag:
+    pullPolicy: IfNotPresent
+videobridge:
+  image:
+    repository:
+    tag:
+    pullPolicy: IfNotPresent
+prosody:
+  image:
+    repository: prosody/prosody
+    tag: "0.10"
+    pullPolicy: IfNotPresent
+nat_harvester_public_address:
+host:
+domain:
+local: focus
+secret3:
+secret2:
+secret1:
