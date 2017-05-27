@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: {{ template "fullname" . }}-mixer
-        image: "{{ .Values.mixer.deployment.image }}:{{ .Chart.AppVersion }}"
+        image: "{{ .Values.mixer.deployment.image }}:{{ .Values.istioRelease }}"
         imagePullPolicy: {{ .Values.mixer.deployment.imagePullPolicy }}
         ports:
         - containerPort: {{ .Values.mixer.service.externalTcpPort }}
