@@ -53,23 +53,25 @@ spec:
         - name: https
           containerPort: 443
         livenessProbe:
-          exec:
-            command:
-            - nc
-            - -z
-            - localhost
-            - "80"
-          initialDelaySeconds: 120
+          httpGet:
+            path: /index.php
+            port: http
+            httpHeaders:
+            - name: Host
+              value: {{ include "host" . | quote }}
+          initialDelaySeconds: 180
           timeoutSeconds: 5
+          failureThreshold: 6
         readinessProbe:
-          exec:
-            command:
-            - nc
-            - -z
-            - localhost
-            - "80"
-          initialDelaySeconds: 5
-          timeoutSeconds: 1
+          httpGet:
+            path: /index.php
+            port: http
+            httpHeaders:
+            - name: Host
+              value: {{ include "host" . | quote }}
+          initialDelaySeconds: 30
+          timeoutSeconds: 3
+          periodSeconds: 5
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:

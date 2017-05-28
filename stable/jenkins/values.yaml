@@ -6,7 +6,7 @@
 Master:
   Name: jenkins-master
   Image: "jenkinsci/jenkins"
-  ImageTag: "2.46.1"
+  ImageTag: "2.46.2"
   ImagePullPolicy: "Always"
   Component: "jenkins-master"
   UseSecurity: true
@@ -57,6 +57,7 @@ Agent:
   Enabled: true
   Image: jenkinsci/jnlp-slave
   ImageTag: 2.62
+  Privileged: false
   Cpu: "200m"
   Memory: "256Mi"
 

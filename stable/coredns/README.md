@@ -80,3 +80,14 @@ $ helm install --name coredns -f values.yaml stable/coredns
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
+
+Caveats
+-------
+
+CoreDNS service, by default is deployed to listen on both "TCP" and "UDP".
+Some cloud environments like "GCE" or "Azure container service" cannot
+create external loadbalancers with both "TCP" and "UDP" protocols. So
+When deploying CoreDNS with `serviceType="LoadBalancer"` on such cloud
+environments, it is preferred to use either "TCP" or "UDP" by setting
+`serviceProtocol` parameter.

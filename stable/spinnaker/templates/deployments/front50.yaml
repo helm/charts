@@ -6,9 +6,14 @@ metadata:
     app: {{ template "fullname" . }}
     component: front50
 spec:
+  strategy:
+    rollingUpdate:
+      maxUnavailable: 0
   replicas: 1
   template:
     metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap/spinnaker-config.yaml") . | sha256sum }}
       labels:
         app: {{ template "fullname" . }}
         component: front50
@@ -24,6 +29,10 @@ spec:
               name: {{ template "fullname" . }}-spinnaker-config
             - mountPath: /root/.aws
               name: {{ template "fullname" . }}-s3-config
+            {{ if .Values.gcs.enabled }}
+            - mountPath: /root/.kube
+              name: {{ template "fullname" . }}-gcs
+            {{ end }}
           readinessProbe:
             httpGet:
               path: /env
@@ -37,3 +46,8 @@ spec:
         - name: {{ template "fullname" . }}-s3-config
           configMap:
             name: {{ template "fullname" . }}-s3-config
+        {{ if .Values.gcs.enabled }}
+        - name: {{ template "fullname" . }}-gcs
+          secret:
+            secretName: {{ template "fullname" . }}-gcs
+        {{ end }}

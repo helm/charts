@@ -1,0 +1,15 @@
+{{if .Values.addons.grafana.enabled}}
+{{- $serviceName := include "fullname" . -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $serviceName }}-grafana
+spec:
+  type: {{ .Values.addons.grafana.service.type }}
+  ports:
+  - port: {{ .Values.addons.grafana.service.externalPort }}
+    protocol: TCP
+    name: grafana
+  selector:
+    app: {{ $serviceName }}-grafana
+{{end}}

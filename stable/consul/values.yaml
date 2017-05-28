@@ -23,6 +23,11 @@ Memory: "256Mi"
 ## Persistent volume size
 Storage: "1Gi"
 
+## Needed for 0.8.0 and later IF all consul containers are spun up
+## on the same machine. Without this they all generate the same
+## host id.
+DisableHostNodeId: false
+
 ## StorageClass name for use with Persistent Volume Claim (PVC) using beta notations
 # StorageClass:
 

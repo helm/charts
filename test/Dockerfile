@@ -16,7 +16,7 @@ FROM debian:8.5
 
 ENV CLOUDSDK_CORE_DISABLE_PROMPTS=1 \
   PATH=/opt/google-cloud-sdk/bin:$PATH \
-  GOOGLE_CLOUD_SDK_VERSION=123.0.0 \
+  GOOGLE_CLOUD_SDK_VERSION=154.0.0 \
   GOOGLE_PROJECT=kubernetes-charts-ci
 
 RUN set -x \

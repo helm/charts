@@ -1,5 +1,7 @@
 # Telegraf
 
+*This chart has been deprecated as of version 0.2.1 and will not be updated. Please use the telegraf-s and telegraf-ds charts instead.*
+
 [Telegraf](https://github.com/influxdata/telegraf) is a plugin-driven server agent written by the folks over at [InfluxData](https://influxdata.com) for collecting & reporting metrics.
 
 ## TL;DR

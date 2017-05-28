@@ -51,6 +51,7 @@ The following tables lists the configurable parameters of the PostgresSQL chart 
 | `postgresUser`             | Username of new user to create.            | `postgres`                                                 |
 | `postgresPassword`         | Password for the new user.                 | random 10 characters                                       |
 | `postgresDatabase`         | Name for new database to create.           | `postgres`                                                 |
+| `postgresInitdbArgs`       | Initdb Arguments                           | `nil`                                                      |
 | `persistence.enabled`      | Use a PVC to persist data                  | `true`                                                     |
 | `persistence.existingClaim`| Provide an existing PersistentVolumeClaim  | `nil`                                                      |
 | `persistence.storageClass` | Storage class of backing PVC               | `nil` (uses alpha storage class annotation)                |
@@ -63,6 +64,8 @@ The following tables lists the configurable parameters of the PostgresSQL chart 
 | `metrics.imageTag`         | Exporter image                             | `v0.1.1`                                                   |
 | `metrics.imagePullPolicy`  | Exporter image pull policy                 | `IfNotPresent`                                             |
 | `metrics.resources`        | Exporter resource requests/limit           | Memory: `256Mi`, CPU: `100m`                               |
+| `service.externalIPs`      | External IPs to listen on                  | `[]`                                                       |
+| `service.port`             | TCP port                                   | `5432`                                                     |
 
 The above parameters map to the env variables defined in [postgres](http://github.com/docker-library/postgres). For more information please refer to the [postgres](http://github.com/docker-library/postgres) image documentation.
 

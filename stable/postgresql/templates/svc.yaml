@@ -15,7 +15,11 @@ metadata:
 spec:
   ports:
   - name: postgresql
-    port: 5432
+    port: {{ .Values.service.port }}
     targetPort: postgresql
+{{- if .Values.service.externalIPs }}
+  externalIPs:
+{{ toYaml .Values.service.externalIPs | indent 4 }}
+{{- end }}
   selector:
     app: {{ template "fullname" . }}
