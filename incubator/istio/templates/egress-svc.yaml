@@ -1,12 +1,14 @@
+{{- $serviceName := include "fullname" . -}}
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "fullname" . }}-egress
+  name: {{ $serviceName }}-egress
   labels:
-    istio: {{ template "fullname" . }}-egress
+{{ include "labels.standard" . | indent 4 }}
+    istio: {{ $serviceName }}-egress
 spec:
   type: {{ .Values.egress.service.type }}
   ports:
   - port: {{ .Values.egress.service.externalHttpPort }}
   selector:
-    istio: {{ template "fullname" . }}-egress
+    istio: {{ $serviceName }}-egress

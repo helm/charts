@@ -1,7 +1,11 @@
+{{- $serviceName := include "fullname" . -}}
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}-manager
+  name: {{ $serviceName }}-manager
+  labels:
+{{ include "labels.standard" . | indent 4 }}
+    istio: {{ $serviceName }}-manager
 spec:
   replicas: {{ .Values.manager.deployment.replicas }}
   template:
@@ -11,9 +15,9 @@ spec:
           {{ $key }}: {{ $value | quote }}
         {{- end }}
       labels:
-        istio: {{ template "fullname" . }}-manager
+        istio: {{ $serviceName }}-manager
     spec:
-      serviceAccountName: {{ template "fullname" . }}-manager-service-account
+      serviceAccountName: {{ $serviceName }}-manager-service-account
       containers:
       - name: discovery
         image: "{{ .Values.manager.deployment.discovery.image }}:{{ .Values.istioRelease }}"

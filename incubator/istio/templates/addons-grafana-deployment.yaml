@@ -4,6 +4,8 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: {{ $serviceName }}-grafana
+  labels:
+{{ include "labels.standard" . | indent 4 }}
 spec:
   replicas: {{ .Values.addons.grafana.deployment.replicas }}
   template:

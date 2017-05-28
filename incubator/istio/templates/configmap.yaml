@@ -1,7 +1,10 @@
+{{- $serviceName := include "fullname" . -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: istio
+  labels:
+{{ include "labels.standard" . | indent 4 }}
 data:
   mesh: |-
 {{if .Values.auth.enabled }}

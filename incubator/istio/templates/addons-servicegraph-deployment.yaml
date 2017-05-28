@@ -4,6 +4,8 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: {{ $serviceName }}-servicegraph
+  labels:
+{{ include "labels.standard" . | indent 4 }}
 spec:
   replicas: {{ .Values.addons.servicegraph.deployment.replicas }}
   template:

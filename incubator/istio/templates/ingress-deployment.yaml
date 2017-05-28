@@ -1,7 +1,11 @@
+{{- $serviceName := include "fullname" . -}}
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}-ingress
+  name: {{ $serviceName }}-ingress
+  labels:
+{{ include "labels.standard" . | indent 4 }}
+    istio: {{ $serviceName }}-ingress
 spec:
   replicas: {{ .Values.ingress.deployment.replicas }}
   template:
@@ -11,9 +15,9 @@ spec:
           {{ $key }}: {{ $value | quote }}
         {{- end }}
       labels:
-        istio: {{ template "fullname" . }}-ingress
+        istio: {{ $serviceName }}-ingress
     spec:
-      serviceAccountName: {{ template "fullname" . }}-ingress-service-account
+      serviceAccountName: {{ $serviceName }}-ingress-service-account
       containers:
       - name: istio-ingress
         image: "{{ .Values.ingress.deployment.image }}:{{ .Values.istioRelease }}"

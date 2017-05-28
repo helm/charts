@@ -1,7 +1,11 @@
+{{- $serviceName := include "fullname" . -}}
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: {{ template "fullname" . }}-mixer
+  labels:
+{{ include "labels.standard" . | indent 4 }}
+    istio: {{ $serviceName }}-mixer
 spec:
   replicas: {{ .Values.mixer.deployment.replicas }}
   template:

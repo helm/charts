@@ -3,6 +3,9 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: {{ $serviceName }}-egress
+  labels:
+{{ include "labels.standard" . | indent 4 }}
+    istio: {{ $serviceName }}-egress
 spec:
   replicas: {{ .Values.egress.deployment.replicas }}
   template:
