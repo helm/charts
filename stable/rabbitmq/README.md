@@ -61,6 +61,7 @@ The following tables lists the configurable parameters of the RabbitMQ chart and
 | `persistence.storageClass` | Storage class of backing PVC                            | `nil` (uses alpha storage class annotation)              |
 | `persistence.accessMode`   | Use volume as ReadOnly or ReadWrite                     | `ReadWriteOnce`                                          |
 | `persistence.size`         | Size of data volume                                     | `8Gi`                                                    |
+| `service.type`             | k8s service type exposing ports, e.g. `NodePort`        | `ClusterIP`                                              |
 
 The above parameters map to the env variables defined in [bitnami/rabbitmq](http://github.com/bitnami/bitnami-docker-rabbitmq). For more information please refer to the [bitnami/rabbitmq](http://github.com/bitnami/bitnami-docker-rabbitmq) image documentation.
 
