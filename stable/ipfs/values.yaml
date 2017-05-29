@@ -1,0 +1,15 @@
+replicaCount: 1
+
+nameOverride: ipfs
+
+service:
+  type: ClusterIP
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+
+storage:
+  size: "1Gi"

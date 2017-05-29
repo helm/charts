@@ -1,0 +1,4 @@
+apiVersion: v1
+description: A Helm chart for the Interplanetary File System
+name: ipfs
+version: 0.1.0
