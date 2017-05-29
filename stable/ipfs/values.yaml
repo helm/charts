@@ -1,9 +1,8 @@
 replicaCount: 1
 
-nameOverride: ipfs
-
 service:
   type: ClusterIP
+  nameOverride: null
 
 resources:
   requests:
@@ -12,4 +11,4 @@ resources:
 
 
 storage:
-  size: "1Gi"
+  size: "10Gi"
