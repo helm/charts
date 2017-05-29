@@ -29,6 +29,7 @@ serviceType: LoadBalancer
 sshPort: 22
 httpPort: 80
 httpsPort: 443
+prometheusPort: 9090
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/

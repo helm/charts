@@ -19,5 +19,8 @@ spec:
   - name: https
     port: {{ .Values.httpsPort | int }}
     targetPort: https
+  - name: prometheus
+    port: {{ .Values.prometheusPort | int }}
+    targetPort: prometheus
   selector:
     app: {{ template "fullname" . }}
