@@ -1,0 +1,228 @@
+## Install Default RBAC roles and bindings
+rbac:
+  install: true
+  apiVersion: v1beta1
+
+istioRelease: 0.1.5
+
+## Enable Istio auth feature 
+## This deploys a CA in the namespace and enables mTLS between the services
+auth:
+  enabled: true
+
+## Mixer configuration
+mixer:
+
+  service:
+    type: ClusterIP
+    externalTcpPort: 9091
+    externalConfigApiPort: 9094
+    externalPrometheusPort: 42422
+
+  deployment:
+    image: docker.io/istio/mixer
+    imagePullPolicy: Always
+    replicas: 1
+    annotations:
+      alpha.istio.io/sidecar: ignore
+    resources:
+      limits:
+        cpu: 100m
+        memory: 128Mi
+      requests:
+        cpu: 100m
+        memory: 128Mi
+
+## Manager configuration
+manager:
+
+  service:
+    type: ClusterIP
+    externalHttpDiscovery: 8080
+    externalHttpApiServer: 8081
+
+  deployment:
+    replicas: 1
+    annotations:
+      alpha.istio.io/sidecar: ignore
+
+    discovery:
+      image: docker.io/istio/manager
+      imagePullPolicy: Always
+      resources:
+        limits:
+          cpu: 100m
+          memory: 128Mi
+        requests:
+          cpu: 100m
+          memory: 128Mi
+
+    apiserver:
+      image: docker.io/istio/manager
+      imagePullPolicy: Always
+      resources:
+        limits:
+          cpu: 100m
+          memory: 128Mi
+        requests:
+          cpu: 100m
+          memory: 128Mi
+
+## Ingress configuration
+ingress:
+
+  service:
+    type: LoadBalancer
+    externalHttpPort: 80
+    externalHttpsPort: 443
+
+  deployment:
+    annotations:
+      alpha.istio.io/sidecar: ignore
+    image: docker.io/istio/proxy_debug
+    imagePullPolicy: Always
+    replicas: 1
+    resources:
+      limits:
+        cpu: 100m
+        memory: 128Mi
+      requests:
+        cpu: 100m
+        memory: 128Mi
+
+## Engress configuration
+egress:
+
+  service:
+    type: ClusterIP
+    externalHttpPort: 80
+
+  deployment:
+    annotations:
+      alpha.istio.io/sidecar: ignore
+    image: docker.io/istio/proxy_debug
+    imagePullPolicy: Always
+    replicas: 1
+    resources:
+      limits:
+        cpu: 100m
+        memory: 128Mi
+      requests:
+        cpu: 100m
+        memory: 128Mi
+
+## CA configuration
+## Only installed if auth.enabled
+ca:
+
+  deployment:
+    annotations:
+      # alpha.istio.io/sidecar: ignore
+    image: docker.io/istio/istio-ca
+    imagePullPolicy: IfNotPresent
+    replicas: 1
+    resources:
+      limits:
+        cpu: 100m
+        memory: 128Mi
+      requests:
+        cpu: 100m
+        memory: 128Mi
+
+
+## Addons configuration
+## Each addon may be disabled
+addons:
+  
+  zipkin:
+
+    enabled: true
+
+    service:
+      type: ClusterIP
+      externalPort: 9411
+    
+    deployment:
+      annotations:
+        alpha.istio.io/sidecar: ignore
+      image: docker.io/openzipkin/zipkin
+      imageTag: latest
+      imagePullPolicy: IfNotPresent
+      replicas: 1
+      resources:
+        limits:
+          cpu: 100m
+          memory: 128Mi
+        requests:
+          cpu: 100m
+          memory: 128Mi
+  
+  prometheus:
+    
+    enabled: true
+    
+    service:
+      type: ClusterIP
+      externalPort: 9090
+      annotations:
+        prometheus.io/scrape: 'true'
+    
+    deployment:
+      annotations:
+        alpha.istio.io/sidecar: ignore
+      image: quay.io/coreos/prometheus
+      imageTag: v1.1.1
+      imagePullPolicy: IfNotPresent
+      replicas: 1
+      resources:
+        limits:
+          cpu: 100m
+          memory: 128Mi
+        requests:
+          cpu: 100m
+          memory: 128Mi
+  
+  grafana:
+    
+    enabled: true
+    
+    service:
+      type: ClusterIP
+      externalPort: 3000
+    
+    deployment:
+      annotations:
+        alpha.istio.io/sidecar: ignore
+      image: docker.io/istio/grafana
+      imagePullPolicy: Always
+      replicas: 1
+      resources:
+        limits:
+          cpu: 100m
+          memory: 128Mi
+        requests:
+          cpu: 100m
+          memory: 128Mi
+
+  servicegraph:
+    
+    enabled: true
+    
+    service:
+      type: ClusterIP
+      externalPort: 8088
+    
+    deployment:
+      annotations:
+        alpha.istio.io/sidecar: ignore
+      image: gcr.io/istio-testing/servicegraph
+      imageTag: latest
+      imagePullPolicy: Always
+      replicas: 1
+      resources:
+        limits:
+          cpu: 100m
+          memory: 128Mi
+        requests:
+          cpu: 100m
+          memory: 128Mi
