@@ -3,7 +3,10 @@ kind: Service
 metadata:
   name: {{ template "servicename" . }}
   labels:
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    app: {{ template "name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
 spec:
   type: {{ .Values.service.type }}
   ports:
