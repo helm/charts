@@ -43,6 +43,7 @@ spec:
             - "db.adminCommand('ping')"
           initialDelaySeconds: 30
           timeoutSeconds: 5
+          failureThreshold: 6
         readinessProbe:
           exec:
             command:
@@ -50,7 +51,8 @@ spec:
             - --eval
             - "db.adminCommand('ping')"
           initialDelaySeconds: 5
-          timeoutSeconds: 1
+          timeoutSeconds: 3
+          periodSeconds: 5
         volumeMounts:
         - name: data
           mountPath: /bitnami/mongodb
