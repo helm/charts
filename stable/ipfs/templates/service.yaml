@@ -15,4 +15,4 @@ spec:
     targetPort: 8080
     name: gateway
   selector:
-    app: {{ template "fullname" . }}
+    app: {{ template "name" . }}
