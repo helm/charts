@@ -32,6 +32,16 @@ persistence:
   accessMode: ReadWriteOnce
   size: 8Gi
 
+metrics:
+  enabled: false
+  image: oliver006/redis_exporter
+  imageTag: v0.11
+  imagePullPolicy: IfNotPresent
+  resources: {}
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "9121"
+
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
 ##
