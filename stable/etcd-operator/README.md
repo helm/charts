@@ -69,6 +69,7 @@ The following tables lists the configurable parameters of the etcd-operator char
 | `cluster.backup.config.maxSnapshot`               | maximum number of snapshots to keep                                  | `5`                                            |
 | `cluster.backup.config.storageType`               | Type of storage to provision                                         | `PersistentVolume`                             |
 | `cluster.backup.config.pv.volumeSizeInMB`         | size of backup PV                                                    | `512MB`                                        |
+| `cluster.extraArgs`                               | Additional arguments for the cluster                                 | `{}`                                           |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
 
