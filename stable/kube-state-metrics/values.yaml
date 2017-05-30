@@ -1,0 +1,49 @@
+## kube-state-metrics container name
+##
+name: kube-state-metrics
+
+## kube-state-metrics container image
+##
+image:
+  repository: gcr.io/google_containers/kube-state-metrics
+  tag: v0.4.1
+  pullPolicy: IfNotPresent
+
+## Node labels for kube-state-metrics pod assignment
+## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+##
+nodeSelector: {}
+
+## Annotations to be added to kube-state-metrics pods
+##
+podAnnotations: {}
+
+replicaCount: 1
+
+## kube-state-metrics resource requests and limits
+## Ref: http://kubernetes.io/docs/user-guide/compute-resources/
+##
+resources: {}
+  # limits:
+  #   cpu: 10m
+  #   memory: 16Mi
+  # requests:
+  #   cpu: 10m
+  #   memory: 16Mi
+
+service:
+  annotations:
+    prometheus.io/scrape: "true"
+  labels: {}
+
+  clusterIP: None
+
+  ## List of IP addresses at which the kube-state-metrics service is available
+  ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
+  ##
+  externalIPs: []
+
+  loadBalancerIP: ""
+  loadBalancerSourceRanges: []
+  servicePort: 80
+  type: ClusterIP

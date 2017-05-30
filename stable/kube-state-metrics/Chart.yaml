@@ -1,0 +1,10 @@
+apiVersion: v1
+description: Add-on agent to generate and expose cluster-level metrics.
+name: kube-state-metrics
+version: 0.1.0
+sources:
+  - https://github.com/kubernetes/kube-state-metrics/
+maintainers:
+  - name: Pierre Ozoux
+    email: pierre@ozoux.net
+engine: gotpl
