@@ -6,7 +6,7 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
 spec:
   replicas: {{ .Values.replicaCount }}
-  serviceName: {{ template "name" . }}
+  serviceName: {{ template "servicename" . }}
   volumeClaimTemplates:
     - metadata:
         name: ipfs-storage
