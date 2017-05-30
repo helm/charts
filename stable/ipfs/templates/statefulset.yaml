@@ -24,6 +24,8 @@ spec:
         app: {{ template "name" . }}
     spec:
       securityContext:
+        # The image runs as uid 1000 by default, and needs to be able to write to
+        # the persistent volume to be able to start.
         fsGroup: 1000
         runAsUser: 1000
       containers:
