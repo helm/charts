@@ -25,7 +25,7 @@ spec:
         runAsUser: 1000
       containers:
       - name: {{ .Chart.Name }}
-        image: ipfs/go-ipfs:v0.4.9
+        image: {{ .Values.image }}
         ports:
         - containerPort: 5001
           name: api
