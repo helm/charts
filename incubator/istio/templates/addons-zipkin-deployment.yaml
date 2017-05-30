@@ -1,4 +1,4 @@
-{{if .Values.addons.zipkin.enabled}}
+{{ if .Values.addons.zipkin.enabled }}
 {{- $serviceName := include "fullname" . -}}
 apiVersion: extensions/v1beta1
 kind: Deployment
@@ -29,4 +29,4 @@ spec:
             fieldRef:
               apiVersion: v1
               fieldPath: metadata.namespace
-{{end}}
+{{ end }}

@@ -1,4 +1,4 @@
-{{if .Values.addons.grafana.enabled}}
+{{ if .Values.addons.grafana.enabled }}
 {{- $serviceName := include "fullname" . -}}
 apiVersion: extensions/v1beta1
 kind: Deployment

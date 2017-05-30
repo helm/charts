@@ -1,4 +1,4 @@
-{{if .Values.addons.zipkin.enabled}}
+{{ if .Values.addons.zipkin.enabled }}
 {{- $serviceName := include "fullname" . -}}
 apiVersion: v1
 kind: Service
@@ -13,4 +13,4 @@ spec:
     port: {{ .Values.addons.zipkin.service.externalPort }}
   selector:
     app: {{ $serviceName }}-zipkin
-{{end}}
+{{ end }}

@@ -7,9 +7,9 @@ metadata:
 {{ include "labels.standard" . | indent 4 }}
 data:
   mesh: |-
-{{if .Values.auth.enabled }}
+{{ if .Values.auth.enabled }}
     authPolicy: MUTUAL_TLS
-{{end}}
+{{ end }}
     mixerAddress: {{ template "fullname" . }}-mixer:{{ .Values.mixer.service.externalTcpPort }}
     discoveryAddress: {{ template "fullname" . }}-manager:{{ .Values.manager.service.externalHttpDiscovery }}
     ingressService: {{ template "fullname" . }}-ingress

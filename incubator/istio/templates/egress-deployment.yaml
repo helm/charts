@@ -30,7 +30,7 @@ spec:
               fieldPath: metadata.namespace
         resources:
 {{ toYaml .Values.egress.deployment.resources | indent 10 }}
-{{if .Values.auth.enabled }}
+{{ if .Values.auth.enabled }}
         volumeMounts:
         - mountPath: /etc/certs
           name: istio-certs
@@ -39,4 +39,4 @@ spec:
       - name: istio-certs
         secret:
           secretName: istio.default
-{{end}}
+{{ end }}

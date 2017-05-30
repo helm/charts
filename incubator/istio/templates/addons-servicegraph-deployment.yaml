@@ -1,4 +1,4 @@
-{{if .Values.addons.servicegraph.enabled}}
+{{ if .Values.addons.servicegraph.enabled }}
 {{- $serviceName := include "fullname" . -}}
 apiVersion: extensions/v1beta1
 kind: Deployment
@@ -27,4 +27,4 @@ spec:
         - --prometheusAddr=http://prometheus:{{ .Values.addons.prometheus.service.externalPort }}
         resources:
 {{ toYaml .Values.addons.servicegraph.deployment.resources | indent 10 }}
-{{end}}
+{{ end }}

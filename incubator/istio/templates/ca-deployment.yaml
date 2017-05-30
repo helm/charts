@@ -1,4 +1,4 @@
-{{if .Values.auth.enabled }}
+{{ if .Values.auth.enabled }}
 {{- $serviceName := include "fullname" . -}}
 apiVersion: v1
 kind: Deployment
@@ -32,4 +32,4 @@ spec:
               fieldPath: metadata.namespace
         resources:
 {{ toYaml .Values.ca.deployment.resources | indent 10 }}
-{{end}}
+{{ end }}

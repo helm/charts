@@ -1,4 +1,4 @@
-{{if .Values.addons.prometheus.enabled}}
+{{ if .Values.addons.prometheus.enabled }}
 {{- $serviceName := include "fullname" . -}}
 apiVersion: extensions/v1beta1
 kind: Deployment
@@ -41,4 +41,4 @@ spec:
       - name: config-volume
         configMap:
           name: {{ $serviceName }}-prometheus
-{{end}}
+{{ end }}

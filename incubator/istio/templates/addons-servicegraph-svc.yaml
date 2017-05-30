@@ -1,4 +1,4 @@
-{{if .Values.addons.servicegraph.enabled}}
+{{ if .Values.addons.servicegraph.enabled }}
 {{- $serviceName := include "fullname" . -}}
 apiVersion: v1
 kind: Service

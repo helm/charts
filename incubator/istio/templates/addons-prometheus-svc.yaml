@@ -1,4 +1,4 @@
-{{if .Values.addons.prometheus.enabled}}
+{{ if .Values.addons.prometheus.enabled }}
 {{- $serviceName := include "fullname" . -}}
 apiVersion: v1
 kind: Service
@@ -20,4 +20,4 @@ spec:
   - name: prometheus
     protocol: TCP
     port: {{ .Values.addons.prometheus.service.externalPort }}
-{{end}}
+{{ end }}
