@@ -19,3 +19,4 @@ spec:
     name: gateway
   selector:
     app: {{ template "name" . }}
+    release: {{ .Release.Name }}
