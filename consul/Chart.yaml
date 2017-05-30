@@ -1,0 +1,9 @@
+name: consul
+home: https://github.com/hashicorp/consul
+version: 0.1.0
+description: Hashicorp Consul Helm chart for Kubernetes.
+sources:
+  - https://github.com/kelseyhightower/consul-on-kubernetes
+maintainers:
+  - name: Lachlan Evenson
+    email: lachlan@deis.com
