@@ -6,5 +6,9 @@ service:
   type: ClusterIP
   nameOverride: null
 
-storage:
-  size: "10Gi"
+
+persistence:
+  enabled: true
+  size: "8Gi"
+  accessModes:
+    - ReadWriteOnce
