@@ -43,7 +43,11 @@ The following tables lists the configurable parameters of the Memcached chart an
 | `replicaCount` | The number of replicas of go-ipfs to run | 1 |
 | `service.type` | Type of the service: `ClusterIP`, `LoadBalancer` or `NodePort` | `ClusterIP` |
 | `service.nameOverride` | The name to use for the service | The full name of the release |
-| `storage.size` | Size of the PVC for each IPFS pod, used as persistent cache | `10Gi` |
+| `persistence.enabled` | Turn on persistent storage for the IPFS data directory | `true` |
+| `persistence.storageClass` | StorageClass to set for the persistent volume claim.  | The default storageclass in the cluster|
+| `persistence.annotations` | Extra annotations for the persistent volume claim. | `{}` |
+| `persistence.accessModes` | List of access modes for use with the persistent volume claim | `["ReadWriteOnce"]` |
+| `persistence.size` | Size of the PVC for each IPFS pod, used as persistent cache | `8Gi`  |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
