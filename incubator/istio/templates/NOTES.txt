@@ -2,7 +2,7 @@
 Verify all Pods are running
 
   kubectl get pods --namespace {{ .Release.Namespace }}
-{{if .Values.addons.grafana.enabled }}
+{{ if .Values.addons.grafana.enabled }}
 Verifying the Grafana dashboard
 
   export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ $serviceName }}-grafana" -o jsonpath="{.items[0].metadata.name}")
