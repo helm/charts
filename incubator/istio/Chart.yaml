@@ -4,6 +4,7 @@ name: istio
 version: 0.1.1
 appVersion: 0.1.5
 home: https://istio.io/
+icon: https://github.com/istio/istio.github.io/blob/master/favicons/android-chrome-96x96.png
 sources:
   - https://github.com/istio/istio
 maintainers:
