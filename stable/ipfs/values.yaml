@@ -4,8 +4,6 @@ image: ipfs/go-ipfs:v0.4.9
 
 service:
   type: ClusterIP
-  nameOverride: null
-
 
 persistence:
   enabled: true
