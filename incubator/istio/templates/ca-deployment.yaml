@@ -4,10 +4,11 @@ apiVersion: v1
 kind: Deployment
 apiVersion: extensions/v1beta1
 metadata:
-  name: {{ $serviceName }}-ca
+  name: {{ $serviceName }}-{{ .Values.ca.deployment.name }}
   labels:
 {{ include "labels.standard" . | indent 4 }}
-    istio: {{ $serviceName }}-ca
+    component: {{ $serviceName }}-{{ .Values.ca.deployment.name }}
+    istio: {{ $serviceName }}-{{ .Values.ca.deployment.name }}
 spec:
   replicas: {{ .Values.ca.deployment.replicas }}
   template:
@@ -17,11 +18,13 @@ spec:
           {{ $key }}: {{ $value | quote }}
         {{- end }}
       labels:
-        istio: {{ $serviceName }}-ca
+{{ include "labels.standard" . | indent 8 }}
+        component: {{ $serviceName }}-{{ .Values.ca.deployment.name }}
+        istio: {{ $serviceName }}-{{ .Values.ca.deployment.name }}
     spec:
       serviceAccountName: {{ $serviceName }}-ca-service-account
       containers:
-      - name: istio-ca
+      - name: {{ .Values.ca.deployment.name }}
         image: "{{ .Values.ca.deployment.image }}:{{ .Values.istioRelease }}"
         imagePullPolicy: {{ .Values.ca.deployment.imagePullPolicy }}
         env:

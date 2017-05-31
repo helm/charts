@@ -12,5 +12,7 @@ spec:
   - name: http
     port: {{ .Values.addons.zipkin.service.externalPort }}
   selector:
-    app: {{ $serviceName }}-zipkin
+    app: {{ include "name" . }}
+    component: {{ $serviceName }}-{{ .Values.addons.zipkin.deployment.name }}
+    release: {{ .Release.Name }}
 {{ end }}

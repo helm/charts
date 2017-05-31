@@ -2,10 +2,11 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ $serviceName }}-ingress
+  name: {{ $serviceName }}-{{ .Values.ingress.deployment.name }}
   labels:
 {{ include "labels.standard" . | indent 4 }}
-    istio: {{ $serviceName }}-ingress
+    component: {{ $serviceName }}-{{ .Values.ingress.deployment.name }}
+    istio: {{ $serviceName }}-{{ .Values.ingress.deployment.name }}
 spec:
   replicas: {{ .Values.ingress.deployment.replicas }}
   template:
@@ -15,7 +16,9 @@ spec:
           {{ $key }}: {{ $value | quote }}
         {{- end }}
       labels:
-        istio: {{ $serviceName }}-ingress
+{{ include "labels.standard" . | indent 8 }}
+        component: {{ $serviceName }}-{{ .Values.ingress.deployment.name }}
+        istio: {{ $serviceName }}-{{ .Values.ingress.deployment.name }}
     spec:
       serviceAccountName: {{ $serviceName }}-ingress-service-account
       containers:

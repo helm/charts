@@ -11,4 +11,7 @@ spec:
   ports:
   - port: {{ .Values.egress.service.externalHttpPort }}
   selector:
-    istio: {{ $serviceName }}-egress
+    app: {{ include "name" . }}
+    component: {{ $serviceName }}-{{ .Values.egress.deployment.name }}
+    release: {{ .Release.Name }}
+    istio: {{ $serviceName }}-{{ .Values.egress.deployment.name }}

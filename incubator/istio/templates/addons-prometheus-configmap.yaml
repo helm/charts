@@ -3,7 +3,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ $serviceName }}-prometheus
+  name: {{ $serviceName }}-{{ .Values.addons.prometheus.deployment.name }}
   labels:
 {{ include "labels.standard" . | indent 4 }}
 data:

@@ -3,7 +3,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ $serviceName }}-grafana
+  name: {{ $serviceName }}-{{ .Values.addons.grafana.deployment.name }}
   labels:
 {{ include "labels.standard" . | indent 4 }}
 spec:
@@ -13,5 +13,7 @@ spec:
     protocol: TCP
     name: grafana
   selector:
-    app: {{ $serviceName }}-grafana
+    app: {{ include "name" . }}
+    component: {{ $serviceName }}-{{ .Values.addons.grafana.deployment.name }}
+    release: {{ .Release.Name }}
 {{end}}
