@@ -1,7 +1,12 @@
+{{- $serviceName := include "fullname" . -}}
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}-ingress
+  name: {{ $serviceName }}-{{ .Values.ingress.deployment.name }}
+  labels:
+{{ include "labels.standard" . | indent 4 }}
+    component: {{ $serviceName }}-{{ .Values.ingress.deployment.name }}
+    istio: {{ $serviceName }}-{{ .Values.ingress.deployment.name }}
 spec:
   replicas: {{ .Values.ingress.deployment.replicas }}
   template:
@@ -11,9 +16,11 @@ spec:
           {{ $key }}: {{ $value | quote }}
         {{- end }}
       labels:
-        istio: {{ template "fullname" . }}-ingress
+{{ include "labels.standard" . | indent 8 }}
+        component: {{ $serviceName }}-{{ .Values.ingress.deployment.name }}
+        istio: {{ $serviceName }}-{{ .Values.ingress.deployment.name }}
     spec:
-      serviceAccountName: {{ template "fullname" . }}-ingress-service-account
+      serviceAccountName: {{ $serviceName }}-ingress-service-account
       containers:
       - name: istio-ingress
         image: "{{ .Values.ingress.deployment.image }}:{{ .Values.istioRelease }}"
@@ -30,7 +37,7 @@ spec:
               fieldPath: metadata.namespace
         resources:
 {{ toYaml .Values.ingress.deployment.resources | indent 10 }}
-{{if .Values.auth.enabled }}
+{{ if .Values.auth.enabled }}
         volumeMounts:
         - mountPath: /etc/certs
           name: istio-certs
@@ -39,4 +46,4 @@ spec:
       - name: istio-certs
         secret:
           secretName: istio.default
-{{end}}
+{{ end }}
