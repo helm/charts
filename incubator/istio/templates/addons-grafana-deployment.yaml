@@ -1,9 +1,12 @@
-{{if .Values.addons.grafana.enabled}}
+{{ if .Values.addons.grafana.enabled }}
 {{- $serviceName := include "fullname" . -}}
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ $serviceName }}-grafana
+  name: {{ $serviceName }}-{{ .Values.addons.grafana.deployment.name }}
+  labels:
+{{ include "labels.standard" . | indent 4 }}
+    component: {{ $serviceName }}-{{ .Values.addons.grafana.deployment.name }}
 spec:
   replicas: {{ .Values.addons.grafana.deployment.replicas }}
   template:
@@ -13,10 +16,11 @@ spec:
           {{ $key }}: {{ $value | quote }}
         {{- end }}
       labels:
-        app: {{ $serviceName }}-grafana
+{{ include "labels.standard" . | indent 8 }}
+        component: {{ $serviceName }}-{{ .Values.addons.grafana.deployment.name }}
     spec:
       containers:
-      - name: grafana
+      - name: {{ .Values.addons.grafana.deployment.name }}
         image:  "{{ .Values.addons.grafana.deployment.image }}:{{ .Values.istioRelease }}"
         imagePullPolicy: {{ .Values.addons.grafana.deployment.imagePullPolicy }}
         ports:

@@ -20,6 +20,7 @@ mixer:
     externalPrometheusPort: 42422
 
   deployment:
+    name: mixer
     image: docker.io/istio/mixer
     imagePullPolicy: Always
     replicas: 1
@@ -35,6 +36,7 @@ mixer:
 
 ## Manager configuration
 manager:
+  name: manager
 
   service:
     type: ClusterIP
@@ -47,6 +49,7 @@ manager:
       alpha.istio.io/sidecar: ignore
 
     discovery:
+      name: discovery
       image: docker.io/istio/manager
       imagePullPolicy: Always
       resources:
@@ -58,6 +61,7 @@ manager:
           memory: 128Mi
 
     apiserver:
+      name: apiserver
       image: docker.io/istio/manager
       imagePullPolicy: Always
       resources:
@@ -77,6 +81,7 @@ ingress:
     externalHttpsPort: 443
 
   deployment:
+    name: ingress
     annotations:
       alpha.istio.io/sidecar: ignore
     image: docker.io/istio/proxy_debug
@@ -98,6 +103,7 @@ egress:
     externalHttpPort: 80
 
   deployment:
+    name: egress
     annotations:
       alpha.istio.io/sidecar: ignore
     image: docker.io/istio/proxy_debug
@@ -116,6 +122,7 @@ egress:
 ca:
 
   deployment:
+    name: ca
     annotations:
       # alpha.istio.io/sidecar: ignore
     image: docker.io/istio/istio-ca
@@ -143,6 +150,7 @@ addons:
       externalPort: 9411
     
     deployment:
+      name: zipkin
       annotations:
         alpha.istio.io/sidecar: ignore
       image: docker.io/openzipkin/zipkin
@@ -168,6 +176,7 @@ addons:
         prometheus.io/scrape: 'true'
     
     deployment:
+      name: prometheus
       annotations:
         alpha.istio.io/sidecar: ignore
       image: quay.io/coreos/prometheus
@@ -191,6 +200,7 @@ addons:
       externalPort: 3000
     
     deployment:
+      name: grafana
       annotations:
         alpha.istio.io/sidecar: ignore
       image: docker.io/istio/grafana
@@ -213,6 +223,7 @@ addons:
       externalPort: 8088
     
     deployment:
+      name: servicegraph
       annotations:
         alpha.istio.io/sidecar: ignore
       image: gcr.io/istio-testing/servicegraph

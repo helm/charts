@@ -1,7 +1,12 @@
+{{- $serviceName := include "fullname" . -}}
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}-manager
+  name: {{ $serviceName }}-{{ .Values.manager.name }}
+  labels:
+{{ include "labels.standard" . | indent 4 }}
+    component: {{ $serviceName }}-{{ .Values.manager.name }}
+    istio: {{ $serviceName }}-{{ .Values.manager.name }}
 spec:
   replicas: {{ .Values.manager.deployment.replicas }}
   template:
@@ -11,11 +16,13 @@ spec:
           {{ $key }}: {{ $value | quote }}
         {{- end }}
       labels:
-        istio: {{ template "fullname" . }}-manager
+{{ include "labels.standard" . | indent 8 }}
+        component: {{ $serviceName }}-{{ .Values.manager.name }}
+        istio: {{ $serviceName }}-{{ .Values.manager.name }}
     spec:
-      serviceAccountName: {{ template "fullname" . }}-manager-service-account
+      serviceAccountName: {{ $serviceName }}-manager-service-account
       containers:
-      - name: discovery
+      - name: {{ .Values.manager.deployment.discovery.name }}
         image: "{{ .Values.manager.deployment.discovery.image }}:{{ .Values.istioRelease }}"
         imagePullPolicy: {{ .Values.manager.deployment.discovery.imagePullPolicy }}
         args: ["discovery", "-v", "2"]
@@ -29,7 +36,7 @@ spec:
               fieldPath: metadata.namespace
         resources:
 {{ toYaml .Values.manager.deployment.discovery.resources | indent 10 }}
-      - name: apiserver
+      - name: {{ .Values.manager.deployment.apiserver.name }}
         image: "{{ .Values.manager.deployment.apiserver.image }}:{{ .Values.istioRelease }}"
         imagePullPolicy: {{ .Values.manager.deployment.apiserver.imagePullPolicy }}
         args: ["apiserver", "-v", "2"]

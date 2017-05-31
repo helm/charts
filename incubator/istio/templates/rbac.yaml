@@ -1,4 +1,4 @@
-{{if .Values.rbac.install}}
+{{ if .Values.rbac.install }}
 {{- $serviceName := include "fullname" . -}}
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/{{ required "A valid .Values.rbac.apiVersion entry required!" .Values.rbac.apiVersion }}
@@ -52,7 +52,7 @@ metadata:
 subjects:
 - kind: ServiceAccount
   name: {{ $serviceName }}-manager-service-account
-  namespace: {{.Release.Namespace}}
+  namespace: {{ .Release.Namespace }}
 roleRef:
   kind: ClusterRole
   name: {{ $serviceName }}-manager
@@ -65,7 +65,7 @@ metadata:
 subjects:
 - kind: ServiceAccount
   name: {{ $serviceName }}-ca-service-account
-  namespace: {{.Release.Namespace}}
+  namespace: {{ .Release.Namespace }}
 roleRef:
   kind: ClusterRole
   name: {{ $serviceName }}-ca
@@ -78,7 +78,7 @@ metadata:
 subjects:
 - kind: ServiceAccount
   name: {{ $serviceName }}-ingress-service-account
-  namespace: {{.Release.Namespace}}
+  namespace: {{ .Release.Namespace }}
 roleRef:
   kind: ClusterRole
   name: {{ $serviceName }}-manager
@@ -91,9 +91,9 @@ metadata:
 subjects:
 - kind: ServiceAccount
   name: default
-  namespace: {{.Release.Namespace}}
+  namespace: {{ .Release.Namespace }}
 roleRef:
   kind: ClusterRole
   name: {{ $serviceName }}-sidecar
   apiGroup: rbac.authorization.k8s.io
-{{end}}
+{{ end }}

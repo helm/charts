@@ -1,9 +1,11 @@
+{{- $serviceName := include "fullname" . -}}
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "fullname" . }}-manager
+  name: {{ $serviceName }}-{{ .Values.manager.name }}
   labels:
-    istio: {{ template "fullname" . }}-manager
+{{ include "labels.standard" . | indent 4 }}
+    istio: {{ $serviceName }}-{{ .Values.manager.name }}
 spec:
   type: {{ .Values.mixer.service.type }}
   ports:
@@ -12,4 +14,7 @@ spec:
   - port: {{ .Values.manager.service.externalHttpApiServer }}
     name: http-apiserver
   selector:
-    istio: {{ template "fullname" . }}-manager
+    app: {{ include "name" . }}
+    component: {{ $serviceName }}-{{ .Values.manager.name }}
+    release: {{ .Release.Name }}
+    istio: {{ $serviceName }}-{{ .Values.manager.name }}
