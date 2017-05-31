@@ -32,7 +32,7 @@ spec:
               key: mariadb-root-password
         - name: MARIADB_HOST
           value: {{ template "mariadb.fullname" . }}
-        - name: MARIADB_PORT
+        - name: MARIADB_PORT_NUMBER
           value: "3306"
         - name: WORDPRESS_DATABASE_NAME
           value: {{ default "" .Values.mariadb.mariadbDatabase | quote }}
