@@ -1,9 +1,11 @@
-{{if .Values.addons.grafana.enabled}}
+{{ if .Values.addons.grafana.enabled }}
 {{- $serviceName := include "fullname" . -}}
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ $serviceName }}-grafana
+  name: {{ $serviceName }}-{{ .Values.addons.grafana.deployment.name }}
+  labels:
+{{ include "labels.standard" . | indent 4 }}
 spec:
   type: {{ .Values.addons.grafana.service.type }}
   ports:
@@ -11,5 +13,7 @@ spec:
     protocol: TCP
     name: grafana
   selector:
-    app: {{ $serviceName }}-grafana
+    app: {{ include "name" . }}
+    component: {{ $serviceName }}-{{ .Values.addons.grafana.deployment.name }}
+    release: {{ .Release.Name }}
 {{end}}

@@ -2,7 +2,11 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ $serviceName }}-egress
+  name: {{ $serviceName }}-{{ .Values.egress.deployment.name }}
+  labels:
+{{ include "labels.standard" . | indent 4 }}
+    component: {{ $serviceName }}-{{ .Values.egress.deployment.name }}
+    istio: {{ $serviceName }}-egress
 spec:
   replicas: {{ .Values.egress.deployment.replicas }}
   template:
@@ -12,7 +16,9 @@ spec:
           {{ $key }}: {{ $value | quote }}
         {{- end }}
       labels:
-        istio: {{ $serviceName }}-egress
+{{ include "labels.standard" . | indent 8 }}
+        component: {{ $serviceName }}-{{ .Values.egress.deployment.name }}
+        istio: {{ $serviceName }}-{{ .Values.egress.deployment.name }}
     spec:
       containers:
       - name: proxy
@@ -27,7 +33,7 @@ spec:
               fieldPath: metadata.namespace
         resources:
 {{ toYaml .Values.egress.deployment.resources | indent 10 }}
-{{if .Values.auth.enabled }}
+{{ if .Values.auth.enabled }}
         volumeMounts:
         - mountPath: /etc/certs
           name: istio-certs
@@ -36,4 +42,4 @@ spec:
       - name: istio-certs
         secret:
           secretName: istio.default
-{{end}}
+{{ end }}
