@@ -200,7 +200,7 @@ addons:
       externalPort: 3000
     
     deployment:
-      name: grafan
+      name: grafana
       annotations:
         alpha.istio.io/sidecar: ignore
       image: docker.io/istio/grafana
