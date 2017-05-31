@@ -31,3 +31,15 @@ data:
     gitlab_rails['shared_path'] = '/gitlab-data/shared';
     gitlab_rails['uploads_directory'] = '/gitlab-data/uploads';
     gitlab_ci['builds_directory'] = '/gitlab-data/builds';
+    {{- if .Values.gitlab_rails.smtp_enabled }}
+    gitlab_rails['smtp_enabled'] = true;
+    gitlab_rails['smtp_address'] = {{ .Values.gitlab_rails.smtp_address | quote }};
+    gitlab_rails['smtp_port'] = {{ .Values.gitlab_rails.smtp_port }};
+    gitlab_rails['smtp_user_name'] = ENV['SMTP_USER_NAME'];
+    gitlab_rails['smtp_password'] = ENV['SMTP_PASSWORD'];
+    gitlab_rails['smtp_domain'] = {{ .Values.gitlab_rails.smtp_domain | quote }};
+    gitlab_rails['smtp_authentication'] = "login";
+    gitlab_rails['smtp_enable_starttls_auto'] = true;
+    gitlab_email_from = {{ .Values.gitlab_email_from | quote }};
+    gitlab_email_reply_to = {{ .Values.gitlab_email_reply_to | quote }};
+    {{- end }}

@@ -71,6 +71,25 @@ persistence:
     # storageClass:
     accessMode: ReadWriteOnce
 
+## Configuration values for email delivery (smtp)
+## ref: https://docs.gitlab.com/omnibus/settings/smtp.html
+##
+# gitlab_rails:
+#   smtp_enabled: true
+#   smtp_address: "smtp.server"
+#   smtp_port: 465
+#   smtp_user_name: "smtp user"
+#   smtp_password: "smtp password"
+#   smtp_domain: "example.com"
+#   smtp_authentication: "login"
+#   smtp_enable_starttls_auto: true
+#   smtp_openssl_verify_mode: 'peer'
+  
+# If your SMTP server does not like the default 'From: gitlab@localhost' you
+# can change the 'From' with this setting.
+# gitlab_email_from: 'gitlab@example.com'
+# gitlab_email_reply_to: 'noreply@example.com'
+
 ## Configuration values for the postgresql dependency.
 ## ref: https://github.com/kubernetes/charts/blob/master/stable/postgresql/README.md
 ##
