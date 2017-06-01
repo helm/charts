@@ -70,7 +70,7 @@ mariadb:
   ##
   persistence:
     enabled: true
-    storageClass: generic
+    # storageClass:
     accessMode: ReadWriteOnce
     size: 8Gi
 
@@ -88,14 +88,14 @@ persistence:
     ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
     ## Default: volume.alpha.kubernetes.io/storage-class: default
     ##
-    # storageClass: generic
+    # storageClass:
     accessMode: ReadWriteOnce
     size: 1Gi
   osclass:
     ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
     ## Default: volume.alpha.kubernetes.io/storage-class: default
     ##
-    # storageClass: generic
+    # storageClass:
     accessMode: ReadWriteOnce
     size: 8Gi
 
