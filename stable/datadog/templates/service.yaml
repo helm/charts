@@ -1,0 +1,23 @@
+{{- if .Values.deployment.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    app: {{ template "fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+spec:
+  type: {{ .Values.serviceType }}
+  selector:
+    app: {{ template "fullname" . }}
+  ports:
+  - port: 8125
+    name: dogstatsdport
+    protocol: UDP
+  {{- if .Values.datadog.apmEnabled }}
+  - port: 8126
+    name: traceport
+    protocol: TCP
+  {{- end }}
+{{ end }}
