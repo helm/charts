@@ -91,8 +91,15 @@ spec:
           initialDelaySeconds: 5
           timeoutSeconds: 1
         volumeMounts:
-        - name: wordpress-data
-          mountPath: /bitnami
+        - mountPath: /bitnami/apache
+          name: wordpress-data
+          subPath: apache
+        - mountPath: /bitnami/wordpress
+          name: wordpress-data
+          subPath: wordpress
+        - mountPath: /bitnami/php
+          name: wordpress-data
+          subPath: php 
         resources:
 {{ toYaml .Values.resources | indent 10 }}
       volumes:

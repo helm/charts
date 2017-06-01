@@ -42,7 +42,7 @@ spec:
             - name: GF_INSTALL_PLUGINS
               valueFrom:
                 configMapKeyRef:
-                  name: {{ template "server.fullname" . }}-config
+                  name: {{ template "grafana.server.fullname" . }}-config
                   key: grafana-install-plugins
             {{- end }}
           ports:
@@ -62,6 +62,7 @@ spec:
               mountPath: {{ default "/var/lib/grafana/dashboards" .Values.server.dashboardLocalPath | quote }}
             - name: storage-volume
               mountPath: {{ default "/var/lib/grafana/data" .Values.server.storageLocalPath | quote }}
+              subPath: "{{ .Values.server.persistentVolume.subPath }}"
       terminationGracePeriodSeconds: {{ default 300 .Values.server.terminationGracePeriodSeconds }}
       volumes:
         - name: config-volume
@@ -73,7 +74,7 @@ spec:
         - name: storage-volume
       {{- if .Values.server.persistentVolume.enabled }}
           persistentVolumeClaim:
-            claimName: {{ template "grafana.server.fullname" . }}
+            claimName: {{ if .Values.server.persistentVolume.existingClaim }}{{ .Values.server.persistentVolume.existingClaim }}{{- else }}{{ template "grafana.server.fullname" . }}{{- end }}
       {{- else }}
           emptyDir: {}
       {{- end -}}

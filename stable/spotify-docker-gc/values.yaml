@@ -1,0 +1,26 @@
+image:
+  registry: docker.io
+  org: spotify
+  repository: docker-gc
+  tag: latest
+  pullPolicy: "IfNotPresent"
+
+cron:
+  schedule: "0 0 * * *"
+  log: /var/log/crond.log
+
+env:
+  # grace period in seconds before garbage collecting
+  gracePeriodSeconds: "0"
+  # docker (client) api version to use in container, to match node host (server) api version
+  # dockerAPIVersion: "1.23"
+
+# List any image or container exclusions here
+# exclude:
+#   images: |-
+#     spotify/cassandra:latest
+#     redis:.*
+#     9681260c3ad5
+#   containers: |-
+#     mariadb-data
+#     inimitable_quokka

@@ -1,6 +1,6 @@
 # nginx-ingress
 
-[nginx-ingress](https://github.com/kubernetes/contrib/tree/master/ingress/controllers/nginx) is an Ingress controller that uses ConfigMap to store the nginx configuration.
+[nginx-ingress](https://github.com/kubernetes/ingress/tree/master/controllers/nginx) is an Ingress controller that uses ConfigMap to store the nginx configuration.
 
 To use, add the `kubernetes.io/ingress.class: nginx` annotation to your Ingress resources.
 
@@ -64,6 +64,8 @@ Parameter | Description | Default
 `controller.service.externalIPs` | controller service external IP addresses | `[]`
 `controller.service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
 `controller.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
+`controller.service.targetPorts.http` | Sets the targetPort that maps to the Ingress' port 80 | `80`
+`controller.service.targetPorts.https` | Sets the targetPort that maps to the Ingress' port 443 | `443`
 `controller.service.type` | type of controller service to create | `LoadBalancer`
 `controller.service.nodePorts.http` | If `controller.service.type` is `NodePort` and this is non-empty, it sets the nodePort that maps to the Ingress' port 80 | `""`
 `controller.service.nodePorts.https` | If `controller.service.type` is `NodePort` and this is non-empty, it sets the nodePort that maps to the Ingress' port 443 | `""`

@@ -1,0 +1,25 @@
+{{- if .Values.sysdig.AccessKey -}}
+Sysdig Monitor agents are spinning up on each node in your cluster. After a few
+seconds, you should see your hosts appearing in the Explore tab:
+
+    https://app.sysdigcloud.com/#/explore/overview/l:10
+
+No further action should be required.
+
+{{- else -}}
+##############################################################################
+####               ERROR: You did not set a sysdig.AccessKey.             ####
+##############################################################################
+
+This deployment will be incomplete until you get your Sysdig Monitor Access Key.
+Sing up for a free Sysdig Monitor trial at https://sysdig.com/sign-up/
+
+Once registered you can get your Access Key at:
+
+    https://app.sysdigcloud.com/#/settings/user
+
+Then run:
+
+    helm upgrade {{ .Release.Name }} \
+        --set sysdig.AccessKey=YOUR-KEY-HERE stable/sysdig
+{{- end }}
