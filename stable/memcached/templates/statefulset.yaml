@@ -36,6 +36,7 @@ spec:
         imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
         command:
         - memcached
+        - -o modern
         - -m {{ .Values.memcached.maxItemMemory  }}
         {{- if default "" .Values.memcached.verbosity }}
         - -{{ .Values.memcached.verbosity }}
