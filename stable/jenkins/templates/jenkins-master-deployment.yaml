@@ -17,6 +17,7 @@ spec:
   template:
     metadata:
       labels:
+        app: {{ template "fullname" . }}
         heritage: {{.Release.Service | quote }}
         release: {{.Release.Name | quote }}
         chart: "{{.Chart.Name}}-{{.Chart.Version}}"
@@ -78,6 +79,10 @@ spec:
               name: http
             - containerPort: {{.Values.Master.SlaveListenerPort}}
               name: slavelistener
+            {{- if .Values.Master.JMXPort }}
+            - containerPort: {{ .Values.Master.JMXPort }}
+              name: jmx
+            {{- end }}
           resources:
             requests:
               cpu: "{{.Values.Master.Cpu}}"
