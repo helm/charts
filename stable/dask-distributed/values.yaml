@@ -16,7 +16,7 @@ Scheduler:
 
 WebUI:
   Name: webui
-  ServicePort: 8787
+  ServicePort: 80
   ContainerPort: 8787
 
 Worker:

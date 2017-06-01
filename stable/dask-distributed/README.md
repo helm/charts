@@ -8,7 +8,7 @@ Dask Distributed allows distributed computation in Python the chart also include
 ## Chart Details
 This chart will do the following:
 
-* 1 x Dask Scheduler with port 8786 (scheduler) and 8786 (webUI) exposed on an external LoadBalancer
+* 1 x Dask Scheduler with port 8786 (scheduler) and 80 (Web UI) exposed on an external LoadBalancer
 * 3 x Dask Workers that connect to the scheduler
 * 1 x Jupyter notebok with port 80 exposed on an external LoadBalancer
 * All using Kubernetes Deployments
