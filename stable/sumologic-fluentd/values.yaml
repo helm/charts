@@ -2,7 +2,7 @@
 image:
   name: sumologic/fluentd-kubernetes-sumologic
   tag: latest
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
 
 sumologic:
   ## You'll need to set this to sumo collector, before the agent will run.

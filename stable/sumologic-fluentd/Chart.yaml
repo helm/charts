@@ -4,8 +4,10 @@ description: Sumologic Log Collector
 keywords:
   - monitoring
   - logging
+icon: https://www.sumologic.com/wp-content/uploads/logo_light-theme.png
+home: https://github.com/SumoLogic/fluentd-kubernetes-sumologic
 sources:
   - https://github.com/SumoLogic/fluentd-kubernetes-sumologic
 maintainers:
-  - name: Philip Champon
+  - name: flah00
     email: techops@adaptly.com
