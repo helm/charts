@@ -7,3 +7,6 @@ imageTag: 1.5.1
 cloudProvider: cloud_provider
 ## Use cluster name here. Read details https://github.com/appscode/voyager/blob/master/docs/user-guide/README.md
 clusterName: cluster_name
+## Log level for voyager
+logLevel: 3
+

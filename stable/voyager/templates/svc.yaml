@@ -5,12 +5,12 @@ metadata:
     chart: {{.Chart.Name}}-{{.Chart.Version}}
     heritage: {{.Release.Service}}
     release: {{.Release.Name}}
-    run: {{ template "fullname" . }}
+    app: {{ template "fullname" . }}
   name: {{ template "fullname" . }}
 spec:
   ports:
-  - name: zero
-    port: 1234
-    targetPort: zero
+  - name: http
+    port: 8080
+    targetPort: http
   selector:
-    run: "{{ template "fullname" . }}"
+    app: "{{ template "fullname" . }}"

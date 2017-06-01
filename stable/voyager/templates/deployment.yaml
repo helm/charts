@@ -5,28 +5,28 @@ metadata:
     chart: {{.Chart.Name}}-{{.Chart.Version}}
     heritage: {{.Release.Service}}
     release: {{.Release.Name}}
-    run: {{ template "fullname" . }}
+    app: {{ template "fullname" . }}
   name: {{ template "fullname" . }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      run: {{ template "fullname" . }}
+      app: {{ template "fullname" . }}
   template:
     metadata:
       labels:
-        run: {{ template "fullname" . }}
+        app: {{ template "fullname" . }}
     spec:
       containers:
       - args:
         - --cloud-provider={{.Values.cloudProvider}}
         - --cluster-name={{.Values.clusterName}}
-        - --v=3
+        - --v={{.Values.logLevel}}
         image: "{{.Values.image}}:{{.Values.imageTag}}"
-        name: {{ template "name" . }}
+        name: voyager
         ports:
-        - containerPort: 1234
-          name: zero
+        - containerPort: 8080
+          name: http
           protocol: TCP
 
 
