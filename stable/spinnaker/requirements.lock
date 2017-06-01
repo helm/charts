@@ -13,5 +13,12 @@ dependencies:
   repository: https://kubernetes-charts.storage.googleapis.com/
   tags: null
   version: 0.1.0
-digest: sha256:aa4f719e4ca9190bce0694d4e786b1e40b372bf6938e7648befbe33959fcddb3
-generated: 2017-05-04T10:29:33.8770622-07:00
+- condition: ""
+  enabled: false
+  import-values: null
+  name: jenkins
+  repository: https://kubernetes-charts.storage.googleapis.com/
+  tags: null
+  version: 0.6.3
+digest: sha256:9121eaea3414bedf0bf458cd957bcbd5b672b3f6b9310e60cd048ad7730286e6
+generated: 2017-05-26T13:25:57.6050964-07:00

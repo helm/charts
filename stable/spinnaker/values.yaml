@@ -90,17 +90,11 @@ gcs:
 #   http://www.spinnaker.io/docs/jenkins-script-execution-stage
 jenkins:
   Master:
-    Name: jenkins-master
-    Image: "gcr.io/kubernetes-charts-ci/jenkins-master-k8s"
-    ImageTag: "v0.6.0"
-    ImagePullPolicy: "Always"
-    Component: "jenkins-master"
+    ImageTag: 2.62
     Cpu: "500m"
     Memory: "512Mi"
-    ServicePort: 8080
     ServiceType: ClusterIP
-    ContainerPort: 8080
-    SlaveListenerPort: 50000
+    CustomConfigMap: true
 
   Agent:
     Image: viglesiasce/spinnaker-jenkins-agent

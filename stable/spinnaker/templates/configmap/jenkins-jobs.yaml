@@ -54,6 +54,7 @@ data:
         <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
         <submoduleCfg class="list"/>
       </scm>
+      <canRoam>true</canRoam>
       <concurrentBuild>true</concurrentBuild>
       <builders>
         <hudson.plugins.descriptionsetter.DescriptionSetterBuilder plugin="description-setter@1.10">
