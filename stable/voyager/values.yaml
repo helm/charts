@@ -9,4 +9,3 @@ cloudProvider: cloud_provider
 clusterName: cluster_name
 ## Log level for voyager
 logLevel: 3
-
