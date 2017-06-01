@@ -1,0 +1,70 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "jupyter-fullname" . }}-config
+  labels:
+    heritage: {{.Release.Service | quote }}
+    release: {{.Release.Name | quote }}
+    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+    component: "{{.Release.Name}}-{{.Values.Jupyter.Component}}"
+data:
+  jupyter_notebook_config.py: |
+    c = get_config()
+    c.NotebookApp.password = '{{.Values.Jupyter.Password}}'
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "jupyter-fullname" . }}
+  labels:
+    heritage: {{.Release.Service | quote }}
+    release: {{.Release.Name | quote }}
+    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+    component: "{{.Release.Name}}-{{.Values.Jupyter.Component}}"
+spec:
+  replicas: {{default 1 .Values.Jupyter.Replicas}}
+  strategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      component: "{{.Release.Name}}-{{.Values.Jupyter.Component}}"
+  template:
+    metadata:
+      labels:
+        heritage: {{.Release.Service | quote }}
+        release: {{.Release.Name | quote }}
+        chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+        component: "{{.Release.Name}}-{{.Values.Jupyter.Component}}"
+    spec:
+      containers:
+        - name: {{ template "jupyter-fullname" . }}
+          image: "{{.Values.Jupyter.Image}}:{{.Values.Jupyter.ImageTag}}"
+          ports:
+            - containerPort: {{.Values.Jupyter.ContainerPort}}
+          resources:
+            requests:
+              cpu: "{{.Values.Jupyter.Cpu}}"
+          volumeMounts:
+          - name: config-volume
+            mountPath: /home/jovyan/.jupyter
+      volumes:
+      - name: config-volume
+        configMap:
+          name: {{ template "jupyter-fullname" . }}-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "jupyter-fullname" . }}
+  labels:
+    heritage: {{.Release.Service | quote }}
+    release: {{.Release.Name | quote }}
+    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+    component: "{{.Release.Name}}-{{.Values.Jupyter.Component}}"
+spec:
+  ports:
+    - port: {{.Values.Jupyter.ServicePort}}
+      targetPort: {{.Values.Jupyter.ContainerPort}}
+  selector:
+    component: "{{.Release.Name}}-{{.Values.Jupyter.Component}}"
+  type: "LoadBalancer"
