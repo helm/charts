@@ -1,6 +1,9 @@
 dependencies:
-- name: etcd
+- condition: ""
+  enabled: false
+  name: etcd
   repository: https://kubernetes-charts-incubator.storage.googleapis.com/
-  version: 0.1.1
-digest: sha256:dcf52049f032719c91e8df35b8b107b113cc303631de97cfffed8ecbc13f3fde
-generated: 2016-11-18T16:09:05.607060717-08:00
+  tags: null
+  version: 0.2.0
+digest: sha256:252c24b9a22eb235857447e235fbfa89ea9e13ebffedede26c087540315a88c5
+generated: 2017-03-24T16:20:33.196803732Z

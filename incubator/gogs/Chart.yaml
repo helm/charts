@@ -1,0 +1,9 @@
+---
+apiVersion: v1
+description: "Gogs: Go Git Service"
+name: gogs
+version: 0.2.0
+home: https://gogs.io/
+icon: https://gogs.io/img/favicon.ico
+keywords:
+  - git

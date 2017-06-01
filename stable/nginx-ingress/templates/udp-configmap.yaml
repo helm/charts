@@ -10,7 +10,5 @@ metadata:
     release: {{ .Release.Name }}
   name: {{ template "fullname" . }}-udp
 data:
-{{- if .Values.udp }}
 {{ toYaml .Values.udp | indent 2 }}
-{{- end }}
 {{- end }}

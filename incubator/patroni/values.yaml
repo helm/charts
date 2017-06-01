@@ -6,8 +6,8 @@ ImagePullPolicy: IfNotPresent
 # The image to use. Spilo is the dockerized Patroni
 Spilo:
   # this image was built from https://github.com/zalando/spilo/tree/master/postgres-appliance
-  Image: registry.opensource.zalan.do/acid/spilo-9.5
-  Version: 1.1-p5
+  Image: registry.opensource.zalan.do/acid/spilo-9.6
+  Version: 1.2-p17
 
 # How many postgres containers to spawn
 Replicas: 5
@@ -27,4 +27,5 @@ Credentials:
 
 # Patroni depends on etcd, configure it here
 Etcd:
+  Host: # fill-in value for etcd host (etcd.default.svc.cluster.local), leave blank to use the discovery parameter
   Discovery: # leave blank to use vendored etcd chart

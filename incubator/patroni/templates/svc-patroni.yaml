@@ -8,8 +8,7 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     component: "{{.Release.Name}}-{{.Values.Component}}"
 spec:
-  selector:
-    component: "{{.Release.Name}}-{{.Values.Component}}"
-    spilo-role: master
+  type: ClusterIP
   ports:
   - port: 5432
+    targetPort: 5432

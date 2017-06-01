@@ -19,7 +19,7 @@ set -o pipefail
 set -o xtrace
 
 # TODO should we inject this.  This is creating problems bumping the Docker version
-IMAGE_VERSION="test-image:v1.10"
+IMAGE_VERSION="test-image:v1.11"
 CHART_ROOT=${CHART_ROOT:-$(git rev-parse --show-toplevel)}
 IMAGE_NAME=${IMAGE_NAME:-"gcr.io/kubernetes-charts-ci/${IMAGE_VERSION}"}
 

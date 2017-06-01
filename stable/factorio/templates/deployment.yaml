@@ -24,6 +24,8 @@ spec:
           value: {{ .Values.factorioServer.name | quote }}
         - name: FACTORIO_DESCRIPTION
           value: {{ .Values.factorioServer.description | quote }}
+        - name: FACTORIO_PORT
+          value: {{ .Values.factorioServer.port | quote }}
         - name: FACTORIO_MAX_PLAYERS
           value: {{ .Values.factorioServer.maxPlayers | quote }}
         - name: FACTORIO_IS_PUBLIC

@@ -1,4 +1,4 @@
-#SumoKube  ![sumokube](/stable/sumokube/sumokube.jpg)
+# SumoKube  ![sumokube](/stable/sumokube/sumokube.jpg)
 
 [Sumo Logic](https://www.sumologic.com/) is a hosted logging platform.
 

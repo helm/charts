@@ -1,0 +1,60 @@
+replicaSet: rs0
+replicas: 3
+port: 27017
+
+auth:
+  enabled: false
+  # adminUser:
+  # adminPassword:
+  # key:
+  # existingKeySecret:
+  # existingAdminSecret:
+
+# Specs for the Docker image for the init container that establishes the replica set
+installImage:
+  name: gcr.io/google_containers/mongodb-install
+  tag: 0.4
+  pullPolicy: IfNotPresent
+
+# Specs for the MongoDB image
+image:
+  name: mongo
+  tag: 3.4
+  pullPolicy: IfNotPresent
+
+# Annotations to be added to MongoDB pods
+podAnnotations: {}
+
+resources: {}
+# limits:
+#   cpu: 100m
+#   memory: 512Mi
+# requests:
+#   cpu: 100m
+#   memory: 512Mi
+
+persistentVolume:
+  enabled: true
+  ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
+  ## Default: volume.alpha.kubernetes.io/storage-class: default
+  ##
+  # storageClass: fast
+  accessModes:
+    - ReadWriteOnce
+  size: 10Gi
+  annotations: {}
+
+# Annotations to be added to the service
+serviceAnnotations: {}
+
+# Entries for the MongoDB config file
+configmap:
+  storage:
+    dbPath: /data/db
+  net:
+    port: 27017
+  replication:
+    replSetName: rs0
+# security:
+#   authorization: enabled
+#   keyFile: /keydir/key.txt

@@ -10,7 +10,5 @@ metadata:
     release: {{ .Release.Name }}
   name: {{ template "fullname" . }}-tcp
 data:
-{{- if .Values.tcp }}
 {{ toYaml .Values.tcp | indent 2 }}
-{{- end }}
 {{- end }}

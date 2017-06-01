@@ -30,7 +30,7 @@ spec:
     spec:
       containers:
       - name: {{ template "fullname" . }}
-        image: "mysql:{{ .Values.imageTag }}"
+        image: "{{ .Values.image }}:{{ .Values.imageTag }}"
         imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}

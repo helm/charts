@@ -2,12 +2,12 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+  name: {{ template "fullname" . }}
   labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
     app: {{ template "fullname" . }}
-    name: {{ template "fullname" . }}
   annotations:
   {{- if .Values.persistence.storageClass }}
     volume.beta.kubernetes.io/storage-class: {{ .Values.persistence.storageClass | quote }}

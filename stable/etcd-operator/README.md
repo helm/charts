@@ -3,8 +3,8 @@
 [etcd-operator](https://coreos.com/blog/introducing-the-etcd-operator.html) Simplify etcd cluster
 configuration and management.
 
-__DISCLAIMER:__ While this chart has been well-tested, the etcd-operator is still currently in alpha.
-Current project status is available [here](https://github.com/coreos/etcd-operator)
+__DISCLAIMER:__ While this chart has been well-tested, the etcd-operator is still currently in beta.
+Current project status is available [here](https://github.com/coreos/etcd-operator).
 
 ## Introduction
 
@@ -28,7 +28,7 @@ $ helm install stable/etcd-operator --name my-release
 ```
 
 __Note__: If you set `cluster.enabled` on install, it will have no effect.
-Before you create create an etcd cluster, the TPR must be installed by the operator, so this option is ignored during helm installs, but can be used in upgrades.
+Before you create an etcd cluster, the TPR must be installed by the operator, so this option is ignored during helm installs, but can be used in upgrades.
 
 ## Uninstalling the Chart
 

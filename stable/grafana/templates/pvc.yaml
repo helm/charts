@@ -1,4 +1,5 @@
 {{- if .Values.server.persistentVolume.enabled -}}
+{{- if not .Values.server.persistentVolume.existingClaim -}}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -8,16 +9,16 @@ metadata:
   {{- else }}
     volume.alpha.kubernetes.io/storage-class: default
   {{- end }}
-  {{- range $key, $value := .Values.server.persistentVolume.annotations }}
-    {{ $key }}: {{ $value }}
+  {{- if .Values.server.persistentVolume.annotations }}
+{{ toYaml .Values.server.persistentVolume.annotations | indent 4 }}
   {{- end }}
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "grafana.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     component: "{{ .Values.server.name }}"
     heritage: "{{ .Release.Service }}"
     release: "{{ .Release.Name }}"
-  name: {{ template "server.fullname" . }}
+  name: {{ template "grafana.server.fullname" . }}
 spec:
   accessModes:
 {{- range .Values.server.persistentVolume.accessModes }}
@@ -26,4 +27,5 @@ spec:
   resources:
     requests:
       storage: {{ .Values.server.persistentVolume.size | quote }}
+{{- end -}}
 {{- end -}}

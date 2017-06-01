@@ -43,6 +43,12 @@ The following tables lists the configurable parameters of the Datadog chart and 
 | `image.repository`          | The image repository to pull from  | `datadog/docker-dd-agent`                 |
 | `image.tag`                 | The image tag to pull              | `latest`                                  |
 | `imagePullPolicy`           | Image pull policy                  | `IfNotPresent`                            |
+| `datadog.env` | Additional Datadog environment variables | `nil` |
+| `datadog.apmEnabled` | Enable tracing from the host | `nil` |
+| `datadog.autoconf` | Additional Datadog service discovery configurations | `nil` |
+| `datadog.checksd` | Additional Datadog service checks | `nil` |
+| `datadog.confd` | Additional Datadog service configurations | `nil` |
+| `imagePullPolicy`           | Image pull policy                  | `IfNotPresent`                            |
 | `resources.requests.cpu`    | CPU resource requests              | 128M                                      |
 | `resources.limits.cpu`      | CPU resource limits                | 512Mi                                     |
 | `resources.requests.memory` | Memory resource requests           | 100m                                      |
@@ -64,3 +70,40 @@ $ helm install --name my-release -f values.yaml stable/datadog
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
+### Image tags
+
+Datadog offers a multitude of [tags](https://hub.docker.com/r/datadog/docker-dd-agent/tags/), including alpine based agents and JMX.
+
+### confd and checksd
+
+The Datadog entrypoint will copy files found in `/conf.d` and `/check.d` to
+`/etc/dd-agent/conf.d` and `/etc/dd-agent/check.d` respectively. The keys for
+`datadog.confd`, `datadog.autoconf`, and `datadog.checksd` should mirror the content found in their 
+respective ConfigMaps, ie
+
+```yaml
+datadog:
+  autoconf: 
+    redisdb.yaml: |-
+      docker_images:
+        - redis
+        - bitnami/redis
+      init_config:
+      instances:
+        - host: "%%host%%"
+          port: "%%port%%"
+    jmx.yaml: |-
+      docker_images:
+        - openjdk
+      instance_config:
+      instances:
+        - host: "%%host%%"
+          port: "%%port_0%%"
+  confd:
+    redisdb.yaml: |-
+      init_config:
+      instances:
+        - host: "outside-k8s.example.com"
+          port: 6379
+```

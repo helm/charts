@@ -1,0 +1,76 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    {{- if .Values.isClusterService }}
+    k8s-app: {{ .Chart.Name | quote }}
+    kubernetes.io/cluster-service: "true"
+    kubernetes.io/name: "CoreDNS"
+    {{- else }}
+    app: {{ template "fullname" . }}
+    {{- end }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- if .Values.isClusterService }}
+      k8s-app: {{ .Chart.Name | quote }}
+      {{- else }}
+      app: {{ template "fullname" . }}
+      {{- end }}
+  template:
+    metadata:
+      labels:
+        {{- if .Values.isClusterService }}
+        k8s-app: {{ .Chart.Name | quote }}
+        {{- else }}
+        app: {{ template "fullname" . }}
+        {{- end }}
+        release: {{ .Release.Name | quote }}
+      annotations:
+        {{- if .Values.isClusterService }}
+        scheduler.alpha.kubernetes.io/critical-pod: ''
+        scheduler.alpha.kubernetes.io/tolerations: '[{"key":"CriticalAddonsOnly", "operator":"Exists"}]'
+        {{- end }}
+    spec:
+      containers:
+      - name: "coredns"
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        args: [ "-conf", "/etc/coredns/Corefile" ]
+        volumeMounts:
+        - name: config-volume
+          mountPath: /etc/coredns
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+        ports:
+        {{- if or (eq .Values.serviceProtocol "UDPNTCP") (eq .Values.serviceProtocol "UDP") }}
+        - containerPort: 53
+          name: dns
+          protocol: UDP
+        {{- end }}
+        {{- if or (eq .Values.serviceProtocol "UDPNTCP") (eq .Values.serviceProtocol "TCP") }}
+        - containerPort: 53
+          name: dns-tcp
+          protocol: TCP
+        {{- end }}
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 60
+          timeoutSeconds: 5
+          successThreshold: 1
+          failureThreshold: 5
+      volumes:
+        - name: config-volume
+          configMap:
+            name: {{ template "fullname" . }}
+            items:
+            - key: Corefile
+              path: Corefile

@@ -5,7 +5,7 @@
 
 Name: "cockroachdb"
 Image: "cockroachdb/cockroach"
-ImageTag: "latest" # Keep at latest until 1.0, then switch to a specific version
+ImageTag: "v1.0"
 ImagePullPolicy: "Always"
 BootstrapImage: "cockroachdb/cockroach-k8s-init"
 BootstrapImageTag: "0.1"

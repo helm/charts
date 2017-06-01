@@ -57,6 +57,7 @@ The following tables lists the configurable parameters of the RabbitMQ chart and
 | `rabbitmqVhost`            | RabbitMQ application vhost                              | `/`                                                      |
 | `rabbitmqManagerPort`      | RabbitMQ Manager port                                   | `15672`                                                  |
 | `persistence.enabled`      | Use a PVC to persist data                               | `true`                                                   |
+| `persistence.existingClaim`| Use an existing PVC to persist data                     | `nil`                                                    |
 | `persistence.storageClass` | Storage class of backing PVC                            | `nil` (uses alpha storage class annotation)              |
 | `persistence.accessMode`   | Use volume as ReadOnly or ReadWrite                     | `ReadWriteOnce`                                          |
 | `persistence.size`         | Size of data volume                                     | `8Gi`                                                    |
@@ -85,4 +86,15 @@ $ helm install --name my-release -f values.yaml stable/rabbitmq
 
 The [Bitnami RabbitMQ](https://github.com/bitnami/bitnami-docker-rabbitmq) image stores the RabbitMQ data and configurations at the `/bitnami/rabbitmq` path of the container.
 
-The chart mounts a [Persistent Volume](kubernetes.io/docs/user-guide/persistent-volumes/) volume at this location. The volume is created using dynamic volume provisioning.
+The chart mounts a [Persistent Volume](kubernetes.io/docs/user-guide/persistent-volumes/) volume at this location. By default, the volume is created using dynamic volume provisioning. An existing PersistentVolumeClaim can also be defined.
+
+
+### Existing PersistentVolumeClaims
+
+1. Create the PersistentVolume
+1. Create the PersistentVolumeClaim
+1. Install the chart
+```bash
+$ helm install --set persistence.existingClaim=PVC_NAME rabbitmq
+``
+

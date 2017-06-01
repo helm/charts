@@ -1,7 +1,7 @@
 # Docker image name
 image: "sstarcher/uchiwa"
 # Docker image tag
-imageTag: "0.19"
+imageTag: "0.22"
 
 # Image pull policy for the container
 pullPolicy: "IfNotPresent"

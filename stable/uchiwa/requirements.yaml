@@ -1,4 +1,4 @@
 dependencies:
 - name: sensu
-  version: 0.1.1
+  version: 0.1.2
   repository: https://kubernetes-charts.storage.googleapis.com/

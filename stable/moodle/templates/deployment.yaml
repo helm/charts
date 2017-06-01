@@ -1,0 +1,90 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    app: {{ template "fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  template:
+    metadata:
+      labels:
+        app: {{ template "fullname" . }}
+    spec:
+      containers:
+      - name: {{ template "fullname" . }}
+        image: "{{ .Values.image }}"
+        imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
+        env:
+        - name: MARIADB_HOST
+          value: {{ template "mariadb.fullname" . }}
+        - name: MARIADB_PORT
+          value: "3306"
+        - name: MARIADB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "mariadb.fullname" . }}
+              key: mariadb-root-password
+        - name: MOODLE_USERNAME
+          value: {{ default "" .Values.moodleUsername | quote }}
+        - name: MOODLE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "fullname" . }}
+              key: moodle-password
+        - name: MOODLE_EMAIL
+          value: {{ default "" .Values.moodleEmail | quote }}
+        - name: SMTP_HOST
+          value: {{ default "" .Values.smtpHost | quote }}
+        - name: SMTP_PORT
+          value: {{ default "" .Values.smtpPort | quote }}
+        - name: SMTP_USER
+          value: {{ default "" .Values.smtpUser | quote }}
+        - name: SMTP_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "fullname" . }}
+              key: smtp-password
+        - name: SMTP_PROTOCOL
+          value: {{ default "" .Values.smtpProtocol | quote }}
+        ports:
+        - name: http
+          containerPort: 80
+        - name: https
+          containerPort: 443
+        livenessProbe:
+          httpGet:
+            path: /
+            port: http
+          initialDelaySeconds: 120
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /
+            port: http
+          initialDelaySeconds: 5
+          timeoutSeconds: 1
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+        volumeMounts:
+        - name: moodle-data
+          mountPath: /bitnami/moodle
+        - name: apache-data
+          mountPath: /bitnami/apache
+      volumes:
+      - name: moodle-data
+      {{- if .Values.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ template "fullname" . }}-moodle
+      {{- else }}
+        emptyDir: {}
+      {{- end }}
+      - name: apache-data
+      {{- if .Values.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ template "fullname" . }}-apache
+      {{- else }}
+        emptyDir: {}
+      {{- end }}

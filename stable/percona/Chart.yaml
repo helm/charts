@@ -1,0 +1,17 @@
+name: percona 
+version: 0.2.0
+description: free, fully compatible, enhanced, open source drop-in replacement for MySQL
+keywords:
+- mysql
+- percona
+- database
+- sql
+home: https://www.percona.com/
+icon: https://www.percona.com/sites/all/themes/percona2015/logo.png
+sources:
+- https://github.com/kubernetes/charts
+- https://github.com/docker-library/percona
+maintainers:
+- name: Patrick Galbraith
+  email: patg@patg.net 
+engine: gotpl

@@ -43,7 +43,7 @@ The following tables lists the configurable parameters of the artifactory chart 
 |         Parameter         |           Description             |                         Default                          |
 |---------------------------|-----------------------------------|----------------------------------------------------------|
 | `Image`                   | Container image name              | `docker.bintray.io/jfrog/artifactory-oss`                |
-| `ImageTag`                | Container image tag               | `4.16.0`                                                 |
+| `ImageTag`                | Container image tag               | `5.2.0`                                                 |
 | `ImagePullPolicy`         | Container pull policy             | `Always`                                                 |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
