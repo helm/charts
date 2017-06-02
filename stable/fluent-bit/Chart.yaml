@@ -1,0 +1,16 @@
+name: fluent-bit
+version: 0.1.0
+appVersion: 0.11.7
+description: Fast and Lightweight Log/Data Forwarder for Linux, BSD and OSX
+keywords:
+- fluent
+- bit
+sources:
+- http://fluentbit.io
+icon: http://fluentbit.io/assets/img/logo1-default.png
+home: http://fluentbit.io
+maintainers:
+- name: edsiper
+  email: eduardo@treasure-data.com
+- name: kfox1111
+  email: Kevin.Fox@pnnl.gov
