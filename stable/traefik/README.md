@@ -95,6 +95,7 @@ The following tables lists the configurable parameters of the Traefik chart and 
 | `memoryRequest`                 | Initial share of memory requested per Traefik pod                    | `20Mi`                                    |
 | `cpuLimit`                      | CPU limit per Traefik pod                                            | `200m`                                    |
 | `memoryLimit`                   | Memory limit per Traefik pod                                         | `30Mi`                                    |
+| `rbac.enabled`                  | Whether to enable RBAC with a specific cluster role and binding for Traefik | `false`                            |
 | `ssl.enabled`                   | Whether to enable HTTPS                                              | `false`                                   |
 | `ssl.enforced`                  | Whether to redirect HTTP requests to HTTPS                           | `false`                                   |
 | `ssl.defaultCert`               | Base64 encoded default certficate                                    | A self-signed certificate                 |
