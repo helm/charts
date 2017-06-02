@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: {{ template "fullname" . }}
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "name" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -11,12 +11,12 @@ spec:
   replicas: {{ .Values.replicas }}
   selector:
     matchLabels:
-      app: {{ template "fullname" . }}
+      app: {{ template "name" . }}
   template:
     metadata:
       name: {{ template "fullname" . }}
       labels:
-        app: {{ template "fullname" . }}
+        app: {{ template "name" . }}
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         release: "{{ .Release.Name }}"
         heritage: "{{ .Release.Service }}"
