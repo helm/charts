@@ -16,12 +16,23 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- end -}}
 
 {{/*
-Create the name for the secret.
+Create the name for the auth secret.
 */}}
 {{- define "authFileSecret" -}}
     {{- if .Values.auth.existingKeySecret -}}
         {{- .Values.auth.existingKeySecret -}}
     {{- else -}}
-        {{- template "fullname" . -}}
+        {{- template "fullname" . -}}-auth
+    {{- end -}}
+{{- end -}}
+
+{{/*
+Create the name for the tls secret.
+*/}}
+{{- define "tlsSecret" -}}
+    {{- if .Values.ingress.tls.existingSecret -}}
+        {{- .Values.ingress.tls.existingSecret -}}
+    {{- else -}}
+        {{- template "fullname" . -}}-tls
     {{- end -}}
 {{- end -}}
