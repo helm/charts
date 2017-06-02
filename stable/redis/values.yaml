@@ -1,7 +1,7 @@
 ## Bitnami Redis image version
 ## ref: https://hub.docker.com/r/bitnami/redis/tags/
 ##
-image: bitnami/redis:3.2.8-r3
+image: bitnami/redis:3.2.9-r0
 
 ## Specify a imagePullPolicy
 ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -31,6 +31,16 @@ persistence:
   # storageClass: 
   accessMode: ReadWriteOnce
   size: 8Gi
+
+metrics:
+  enabled: false
+  image: oliver006/redis_exporter
+  imageTag: v0.11
+  imagePullPolicy: IfNotPresent
+  resources: {}
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "9121"
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/

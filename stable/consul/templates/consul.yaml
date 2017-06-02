@@ -170,6 +170,9 @@ spec:
             {{- if .Values.uiService.enabled }}
               -ui \
             {{- end }}
+            {{- if .Values.DisableHostNodeId }}
+              -disable-host-node-id \
+            {{- end }}
               -data-dir=/var/lib/consul \
               -server \
               -bootstrap-expect=${INITIAL_CLUSTER_SIZE} \

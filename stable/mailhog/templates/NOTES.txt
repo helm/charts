@@ -7,10 +7,10 @@ Web UI:
 =======
 
 export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "name" . }},release={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
-kubectl port-forward $POD_NAME 8025
+kubectl port-forward --namespace {{ .Release.Namespace }} $POD_NAME 8025
 
 SMTP Server:
 ============
 
 export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "name" . }},release={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
-kubectl port-forward $POD_NAME 1025
+kubectl port-forward --namespace {{ .Release.Namespace }} $POD_NAME 1025
