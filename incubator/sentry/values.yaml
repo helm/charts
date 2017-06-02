@@ -21,17 +21,17 @@ resources:
     cpu: 100m
     memory: 128Mi
 
-  ## Enable persistence using Persistent Volume Claims
-  ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+## Enable persistence using Persistent Volume Claims
+## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+##
+persistence:
+  enabled: false
+  ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
+  ## Default: volume.alpha.kubernetes.io/storage-class: default
   ##
-  persistence:
-    enabled: false
-    ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
-    ## Default: volume.alpha.kubernetes.io/storage-class: default
-    ##
-    # storageClass:
-    accessMode: ReadWriteOnce
-    size: 8Gi
+  # storageClass:
+  accessMode: ReadWriteOnce
+  size: 8Gi
 
 ## Configure ingress resource that allow you to access the
 ## Sentry instalation. Set up the URL
