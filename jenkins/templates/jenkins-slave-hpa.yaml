@@ -1,0 +1,20 @@
+apiVersion: extensions/v1beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: "{{ printf "%s-%s" .Release.Name .Values.Slave.Name | trunc 24 }}"
+  labels:
+    heritage: {{.Release.Service | quote }}
+    release: {{.Release.Name | quote }}
+    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+    component: "{{.Release.Name}}-{{.Values.Slave.Component}}"
+  annotations:
+    "helm.sh/created": {{.Release.Time.Seconds | quote }}
+spec:
+  scaleRef:
+    kind: Deployment
+    name: "{{ printf "%s-%s" .Release.Name .Values.Slave.Name | trunc 24 }}"
+    subresource: scale
+  minReplicas: {{default 1 .Values.Slave.Replicas | quote }}
+  maxReplicas: {{default 1 .Values.Slave.ReplicasMax | quote }}
+  cpuUtilization:
+    targetPercentage: {{default 1 .Values.Slave.CpuTargetPercentage | quote }}

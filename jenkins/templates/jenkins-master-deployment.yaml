@@ -1,0 +1,57 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: "{{ printf "%s-%s" .Release.Name .Values.Master.Name | trunc 24 }}"
+  labels:
+    heritage: {{.Release.Service | quote }}
+    release: {{.Release.Name | quote }}
+    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+    component: "{{.Release.Name}}-{{.Values.Master.Name}}"
+  annotations:
+    "helm.sh/created": {{.Release.Time.Seconds | quote }}
+spec:
+  replicas: {{default 1 .Values.Master.Replicas | quote }}
+  strategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      component: "{{.Release.Name}}-{{.Values.Master.Component}}"
+  template:
+    metadata:
+      labels:
+        heritage: {{.Release.Service | quote }}
+        release: {{.Release.Name | quote }}
+        chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+        component: "{{.Release.Name}}-{{.Values.Master.Component}}"
+    spec:
+      containers:
+        - name: "{{ printf "%s-%s" .Release.Name .Values.Master.Name | trunc 24 }}"
+          image: "{{.Values.Master.Image}}:{{.Values.Master.ImageTag}}"
+          imagePullPolicy: "{{.Values.Master.ImagePullPolicy}}"
+          ports:
+            - containerPort: {{.Values.Master.ContainerPort}}
+              name: http
+            - containerPort: {{.Values.Master.SlaveListenerPort}}
+              name: slavelistener
+          resources:
+            requests:
+              cpu: "{{.Values.Master.Cpu}}"
+              memory: "{{.Values.Master.Memory}}"
+          volumeMounts:
+            -
+              mountPath: /var/run/docker.sock
+              name: docker-socket
+              readOnly: false
+            -
+              mountPath: /var/jenkins_home
+              name: jenkins-home
+              readOnly: false
+      volumes:
+        -
+          hostPath:
+            path: /var/run/docker.sock
+          name: docker-socket
+        -
+          hostPath:
+          emptyDir: {}
+          name: jenkins-home

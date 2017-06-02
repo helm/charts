@@ -1,0 +1,30 @@
+# Default values for jenkins.
+# This is a YAML-formatted file.
+# Declare name/value pairs to be passed into your templates.
+# name: value
+
+Master:
+  Name: jenkins-master
+  Image: "csanchez/jenkins-swarm"
+  ImageTag: "latest"
+  ImagePullPolicy: "Always"
+  Replicas: 1
+  Component: "jenkins-master"
+  Cpu: "100m"
+  Memory: "512Mi"
+  ServicePort: 8080
+  ContainerPort: 8080
+  SlaveListenerPort: 50000
+
+Slave:
+  Name: jenkins-slave
+  Image: "csanchez/jenkins-swarm-slave"
+  ImageTag: "latest"
+  ImagePullPolicy: "Always"
+  Replicas: 3
+  ReplicasMax: 10
+  Component: "jenkins-slave"
+  Cpu: "200m"
+  Memory: "256Mi"
+  ContainerPort: 8080
+  CpuTargetPercentage: 50
