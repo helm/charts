@@ -216,7 +216,7 @@ nodeExporter:
   ##
   extraArgs: {}
 
-  ## Additional node-exporter extra hostPath mounts
+  ## Additional node-exporter hostPath mounts
   ##
   extraHostPathMounts: []
     # - name: textfile-dir
@@ -282,7 +282,7 @@ server:
   ##
   extraArgs: {}
 
-  ## Additional Prometheus server extra hostPath mounts
+  ## Additional Prometheus server hostPath mounts
   ##
   extraHostPathMounts: []
     # - name: certs-dir
