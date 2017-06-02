@@ -21,6 +21,27 @@ resources:
     cpu: 100m
     memory: 128Mi
 
+## Configure ingress resource that allow you to access the
+## Sentry instalation. Set up the URL
+## ref: http://kubernetes.io/docs/user-guide/ingress/
+##
+ingress:
+    enabled: false
+    hostname: sentry.local
+
+    ## Ingress annotations
+    ##
+    # annotations:
+    #   kubernetes.io/ingress.class: nginx
+
+    ## Ingress TLS configuration
+    ## Secrets must be manually created in the namespace
+    ##
+    # tls:
+    #   - secretName: sentry.local-tls
+    #     hosts:
+    #       - sentry.local
+
 postgres:
   imageTag: "9.5"
   persistence:
