@@ -15,6 +15,15 @@ controller:
   ##
   defaultBackendService: ""
 
+  ## Allows customization of the external service
+  ## the ingress will be bound to via DNS
+  publishService:
+    enabled: false
+    ## Allows overriding of the publish service to bind to
+    ## Must be <namespace>/<service_name>
+    ##
+    pathOverride: ""
+
   ## Limit the scope of the controller
   ##
   scope:
