@@ -3,7 +3,7 @@
 image:
     repository: "coscale/coscale-agent"
     tag: "latest"
-    pullPolicy: "IfNotPresent"
+    pullPolicy: "Always"
 
 coscale:
     # Required: You need your CoScale AppId key before running agents.
