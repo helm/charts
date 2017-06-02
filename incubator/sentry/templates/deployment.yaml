@@ -1,0 +1,56 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+spec:
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "fullname" . }}
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - containerPort: {{ .Values.service.internalPort }}
+        env:
+        - name: SENTRY_SECRET_KEY
+            secretKeyRef:
+              name: {{ template "fullname" . }}
+              key: sentry-secret
+        - name: SENTRY_DB_USER
+          value: {{ default "postgres" .Values.postgresUser | quote }}
+        - name: SENTRY_DB_NAME
+          value: {{ default "" .Values.postgresDatabase | quote }}
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "fullname" . }}
+              key: postgres-password
+        - name: SENTRY_POSTGRES_HOST
+          value: {{ template "postgresql.fullname" .}}
+        - name: SENTRY_POSTRGES_PORT
+          value: "5432"
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "fullname" . }}
+              key: redis-password
+        - name: SENTRY_REDIS_HOST
+          value: {{ template "redis.fullname" .}}
+        - name: SENTRY_REDIS_PORT
+          value: "6379"
+        livenessProbe:
+          httpGet:
+            path: /
+            port: {{ .Values.service.internalPort }}
+        readinessProbe:
+          httpGet:
+            path: /
+            port: {{ .Values.service.internalPort }}
+        resources:
+{{ toYaml .Values.resources | indent 12 }}
