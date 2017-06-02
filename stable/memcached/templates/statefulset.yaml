@@ -37,7 +37,7 @@ spec:
         command:
         - memcached
         - -m {{ .Values.memcached.maxItemMemory  }}
-        {{- if default "" .Values.memcached.extendedOptions }}
+        {{- if .Values.memcached.extendedOptions }}
         - -o {{ .Values.memcached.extendedOptions }}
         {{- end }}
         {{- if default "" .Values.memcached.verbosity }}
