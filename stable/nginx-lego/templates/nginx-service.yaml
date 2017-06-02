@@ -6,6 +6,7 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
 spec:
   type: {{ .Values.nginx.service.type | quote }}
+  loadBalancerIP: {{ .Values.nginx.service.loadBalancerIP | quote }}
   ports:
   - port: 80
     name: http

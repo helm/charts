@@ -3,7 +3,7 @@
 
 ## Nginx configuration
 ## ref: https://github.com/kubernetes/contrib/tree/master/ingress/controllers/nginx#automated-certificate-management-with-kube-lego
-## 
+##
 nginx:
   replicaCount: 1
   image:
@@ -12,6 +12,7 @@ nginx:
     pullPolicy: IfNotPresent
   service:
     type: LoadBalancer
+    loadBalancerIP:
   monitoring: false
   resources:
     limits:
