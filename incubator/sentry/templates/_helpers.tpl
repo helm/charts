@@ -25,3 +25,6 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- define "redis.fullname" -}}
 {{- printf "%s-%s" .Release.Name "redis" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
+{{- define "smtp.fullname" -}}
+{{- printf "%s-%s" .Release.Name "smtp" | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
