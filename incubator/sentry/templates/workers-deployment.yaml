@@ -5,16 +5,17 @@ metadata:
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: {{ .Values.workerReplicaCount }}
   template:
     metadata:
       labels:
         app: {{ template "fullname" . }}
     spec:
       containers:
-      - name: {{ .Chart.Name }}
+      - name: {{ .Chart.Name }}-workers
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
+        args: ["run", "worker"]
         ports:
         - containerPort: {{ .Values.service.internalPort }}
         env:
