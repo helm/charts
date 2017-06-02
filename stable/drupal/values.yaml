@@ -101,7 +101,7 @@ persistence:
 
     ## If defined, the drupal-data volume will mount to the speficied hostPath.
     ## Requires persistence.enabled: true
-    ## Requires persistence.ExistingClaim: nil|false
+    ## Requires persistence.existingClaim: nil|false
     ## Default: nil.
     ##
     # hostPath:

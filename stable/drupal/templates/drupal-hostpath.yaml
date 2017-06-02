@@ -1,4 +1,4 @@
-{{- if and .Values.persistence.enabled .Values.persistence.drupal.hostPath (not .Values.persistence.drupal.ExistingClaim) -}}
+{{- if and .Values.persistence.enabled .Values.persistence.drupal.hostPath (not .Values.persistence.drupal.existingClaim) -}}
 apiVersion: v1
 kind: List
 items:
