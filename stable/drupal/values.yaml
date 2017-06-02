@@ -97,7 +97,7 @@ persistence:
     ## Requires persistence.enabled: true
     ## If defined, PVC must be created manually before volume will be bound
     ##
-    # ExistingClaim:
+    # existingClaim:
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/

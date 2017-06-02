@@ -64,7 +64,7 @@ The following tables lists the configurable parameters of the Drupal chart and t
 | `persistence.apache.size`         | PVC Storage Request for Apache volume | `1Gi`                                                     |
 | `persistence.drupal.storageClass` | PVC Storage Class for Drupal volume   | `nil` (uses alpha storage class annotation)               |
 | `persistence.drupal.accessMode`   | PVC Access Mode for Drupal volume     | `ReadWriteOnce`                                           |
-| `persistence.drupal.ExistingClaim`| An Existing PVC name                  | `nil`                                                     |
+| `persistence.drupal.existingClaim`| An Existing PVC name                  | `nil`                                                     |
 | `persistence.drupal.size`         | PVC Storage Request for Drupal volume | `8Gi`                                                     |
 | `resources`                       | CPU/Memory resource requests/limits   | Memory: `512Mi`, CPU: `300m`                              |
 
@@ -101,5 +101,5 @@ See the [Configuration](#configuration) section to configure the PVC or to disab
 1. Create the PersistentVolumeClaim
 1. Install the chart
 ```bash
-$ helm install --name my-release --set persistence.drupal.ExistingClaim=PVC_NAME stable/drupal
+$ helm install --name my-release --set persistence.drupal.existingClaim=PVC_NAME stable/drupal
 ```
