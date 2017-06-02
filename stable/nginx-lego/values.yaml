@@ -12,6 +12,8 @@ nginx:
     pullPolicy: IfNotPresent
   service:
     type: LoadBalancer
+#   annotations:
+#     service.beta.kubernetes.io/aws-load-balancer-internal: "0.0.0.0/0"
   monitoring: false
   resources:
     limits:

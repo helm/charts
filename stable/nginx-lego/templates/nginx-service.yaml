@@ -4,6 +4,10 @@ metadata:
   name: {{ template "fullname" . }}
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+{{- if .Values.nginx.service.annotations }}
+  annotations:
+{{ toYaml .Values.nginx.service.annotations | indent 5 }}
+{{- end}}
 spec:
   type: {{ .Values.nginx.service.type | quote }}
   ports:
