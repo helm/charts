@@ -1,0 +1,18 @@
+apiVersion: v1
+name: gocd
+description: GoCD is a continuous delivery server.
+icon: https://www.gocd.io/assets/images/go_logo-5b5ca9e1.svg
+version: 0.1.0
+keywords:
+  - gocd
+  - ci
+  - cd
+  - continuous delivery
+  - continuous integration
+  - testing
+home: https://www.gocd.io
+sources:
+  - https://github.com/gocd/gocd
+maintainers:
+  - name: Sean Knox
+    email: knoxville@gmail.com

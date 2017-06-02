@@ -1,0 +1,60 @@
+# Default values for gocd.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+server:
+  image:
+    repository: quay.io/knoxville/gocd-server
+    tag: "v2"
+    pullPolicy: IfNotPresent
+  # See minimum server requirements: https://docs.gocd.io/current/installation/system_requirements.html
+  # resources:
+  #   limits:
+  #     cpu: 200m
+  #     memory: 1024Mi
+  #   requests:
+  #     cpu: 200m
+  #     memory: 1024Mi
+agent:
+  replicaCount: 2
+  ## Minimun number of workers available after an eviction
+  ## ref: https://kubernetes.io/docs/admin/disruptions/
+  ##
+  minAvailable: 1
+  image:
+    repository: quay.io/knoxville/gocd-agent
+    tag: "v3"
+    pullPolicy: IfNotPresent
+  # resources:
+  #   limits:
+  #     cpu: 100m
+  #     memory: 128Mi
+  #   requests:
+  #     cpu: 100m
+  #     memory: 128Mi
+
+service:
+  type: ClusterIP
+  http:
+    externalPort: 8080
+  https:
+    externalPort: 8081
+
+## Enable persistence using Persistent Volume Claims
+## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+##
+persistence:
+  enabled: true
+  godata:
+    ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
+    ## Default: volume.alpha.kubernetes.io/storage-class: default
+    ##
+    # storageClass:
+    accessMode: ReadWriteOnce
+    size: 8Gi
+  gohome:
+    ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
+    ## Default: volume.alpha.kubernetes.io/storage-class: default
+    ##
+    # storageClass:
+    accessMode: ReadWriteOnce
+    size: 8Gi
