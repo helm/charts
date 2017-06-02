@@ -7,8 +7,7 @@ This chart comes bundled with an installation of Postgres.
 
 # Prerequesites
 
-* Kubernetes 1.4+ with Beta APIs enabled
-* PV provisioner to support in the underlying infrastructure
+* Persistent volume provisioner to support in the underlying infrastructure
 
 # Install
 
