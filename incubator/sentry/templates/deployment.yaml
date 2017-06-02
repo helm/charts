@@ -19,6 +19,7 @@ spec:
         - containerPort: {{ .Values.service.internalPort }}
         env:
         - name: SENTRY_SECRET_KEY
+          valueFrom:
             secretKeyRef:
               name: {{ template "fullname" . }}
               key: sentry-secret
