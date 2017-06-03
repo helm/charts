@@ -1,0 +1,19 @@
+# Default values for fluentd-logentries.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+nameOverride: fluentd
+replicaCount: 1
+image:
+  repository: quay.io/honestbee/le-k8s-ds
+  tag: latest
+  pullPolicy: Always
+resources:
+  limits:
+    memory: 200Mi
+  requests:
+    cpu: 100m
+    memory: 200Mi
+config:
+  sample-config: "test"
+secrets:
+  sample-secret: "test"

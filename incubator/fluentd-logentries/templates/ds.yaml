@@ -1,0 +1,62 @@
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: {{ template "fullname" . }}
+  namespace: kube-system
+  labels:
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    k8s-app: fluentd-logging
+    kubernetes.io/cluster-service: "true"
+spec:
+  template:
+    metadata:
+      labels:
+        heritage: {{ .Release.Service | quote }}
+        release: {{ .Release.Name | quote }}
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        k8s-app: fluentd-logging
+        kubernetes.io/cluster-service: "true"
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        env:
+        {{- range $key, $value :=  .Values.config }}
+        - name: {{ $key | upper | replace "-" "_" }}
+          value: {{ $value | quote }}
+        {{- end }}
+        {{- $topscope := . -}}
+        {{- range $key, $value :=  .Values.secrets }}
+        - name: {{ $key | upper | replace "-" "_" }}
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "fullname" $topscope }}
+              key: {{ $key }}
+        {{- end }}
+        resources:
+{{ toYaml .Values.resources | indent 12 }}
+        volumeMounts:
+        - name: logentries-tokens
+          mountPath: /etc/logentries/
+        - name: varlog
+          mountPath: /var/log
+        - name: varlibdockercontainers
+          mountPath: /var/lib/docker/containers
+          readOnly: true
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: logentries-tokens
+        secret:
+          secretName: {{ template "fullname" . }}
+          items:
+          - key: logentries-tokens.yaml
+            path: tokens.yaml
+      - name: varlog
+        hostPath:
+          path: /var/log
+      - name: varlibdockercontainers
+        hostPath:
+          path: /var/lib/docker/containers

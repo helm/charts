@@ -1,0 +1,3 @@
+Get the application logs by running these commands:
+export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "k8s-app: fluentd-logging" -o jsonpath="{.items[0].metadata.name}")
+kubectl logs -f $POD_NAME
