@@ -120,3 +120,11 @@ resources:
   requests:
     memory: 512Mi
     cpu: 300m
+
+# Configure volume mounts. This is useful for images whose data mount paths are
+# different than the default.
+volumeMounts:
+  drupal:
+    mountPath: /bitnami/drupal
+  apache:
+    mountPath: /bitnami/apache

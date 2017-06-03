@@ -56,9 +56,9 @@ spec:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
         - name: drupal-data
-          mountPath: /bitnami/drupal
+          mountPath: {{ .Values.volumeMounts.drupal.mountPath }}
         - name: apache-data
-          mountPath: /bitnami/apache
+          mountPath: {{ .Values.volumeMounts.apache.mountPath }}
       {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
 {{ toYaml .Values.imagePullSecrets | indent 8 }}
