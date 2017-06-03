@@ -61,6 +61,10 @@ spec:
           mountPath: /bitnami/drupal
         - name: apache-data
           mountPath: /bitnami/apache
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.imagePullSecrets | indent 8 }}
+      {{- end }}
       volumes:
       - name: drupal-data
       {{- if .Values.persistence.enabled }}
