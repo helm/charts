@@ -1,5 +1,6 @@
 name: coscale
 version: 0.1.0
+appVersion: 3.9.1
 description: CoScale Agent
 keywords:
   - monitoring
@@ -12,5 +13,5 @@ icon: https://www.coscale.com/hubfs/Logo%20CoScale/CoScale_Logos/new_coscale_log
 sources:
   - https://app.coscale.com/
 maintainers:
-  - name: Frederick Ryckbosch
+  - name: fryckbos
     email: frederick.ryckbosch@coscale.com
