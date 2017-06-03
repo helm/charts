@@ -40,7 +40,7 @@ spec:
         {{- if .Values.memcached.extendedOptions }}
         - -o {{ .Values.memcached.extendedOptions }}
         {{- end }}
-        {{- if default "" .Values.memcached.verbosity }}
+        {{- if .Values.memcached.verbosity }}
         - -{{ .Values.memcached.verbosity }}
         {{- end }}
         ports:
