@@ -89,7 +89,11 @@ $ helm install --name my-release -f values.yaml stable/drupal
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
-## Private image registry
+## Image
+
+The `image` parameter allows specifying which image will be pulled for the chart.
+
+### Private registry
 
 If you configure the `image` value to one in a private registry, you will need to [specify an image pull secret](https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod).
 
