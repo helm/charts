@@ -6,14 +6,14 @@ image:
     pullPolicy: "Always"
 
 coscale:
-    # Required: You need your CoScale AppId key before running agents.
-    #AppId: ""
+    # Required: You need a CoScale AppId before running agents.
+    AppId: ""
 
-    # Required: You need your CoScale AccessToken key before running agents.
-    #AccessToken: ""
+    # Required: You need a CoScale AccessToken before running agents.
+    AccessToken: ""
 
-    # Required: You need your CoScale TemplateId key before running agents.
-    #TemplateId: ""
+    # Required: You need a CoScale TemplateId before running agents.
+    TemplateId: ""
 
 resources:
   requests:
