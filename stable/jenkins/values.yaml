@@ -88,3 +88,11 @@ Persistence:
 #  - mountPath: /var/nothing
 #    name: nothing
 #    readOnly: true
+
+## Install Default RBAC roles and bindings
+rbac:
+  install: false
+  # RBAC api version (currently either v1beta1 or v1alpha1)
+  apiVersion: v1beta1
+  # Cluster role reference
+  roleRef: cluster-admin

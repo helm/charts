@@ -49,6 +49,9 @@ The following tables lists the configurable parameters of the Jenkins chart and 
 | `Master.InitScripts`              | List of Jenkins init scripts        | Not set                                                                      |
 | `Master.InstallPlugins`           | List of Jenkins plugins to install  | `kubernetes:0.11 workflow-aggregator:2.5 credentials-binding:1.11 git:3.2.0` |
 | `Master.ScriptApproval`           | List of groovy functions to approve | Not set                                                                      |
+| `rbac.install`           | Create service account and ClusterRoleBinding for Kubernetes plugin | `false`                                                                      |
+| `rbac.apiVersion`           | RBAC API version | `v1beta1`                                                                      |
+| `rbac.roleRef`           | Cluster role name to bind to | `cluster-admin`                                                                      |
 
 ### Jenkins Agent
 
@@ -112,3 +115,11 @@ jenkins:
   Master:
     CustomConfigMap: true
 ```
+
+## RBAC
+
+If running upon a cluster with RBAC enabled you will need to do the following:
+
+* `helm install stable/jenkins --set rbac.install=true`
+* Create a Jenkins credential of type Kubernetes service account with service account name provided in the `helm status` output.
+* Under configure Jenkins -- Update the credentials config in the cloud section to use the service account credential you created in the step above.
