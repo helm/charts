@@ -12,7 +12,7 @@
 
 ## Acknowledgment of Previous Works
 
-I have heavily borrowed and extended code (peer discovery and probe) from the following project to build this Helm Chart and Docker image: https://github.com/rosskukulinski/kubernetes-rethinkdb-cluster.
+I have heavily borrowed and extended code (peer discovery and probe) from the following project to build this Helm Chart and Docker image: https://github.com/rosskukulinski/kubernetes-rethinkdb-cluster
 
 ## Chart Details
 
