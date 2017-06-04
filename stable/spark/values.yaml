@@ -7,7 +7,6 @@ Master:
   Name: master
   Image: "erikschlegel/spark-master"
   ImageTag: "2.2.0"
-  Replicas: 2
   Component: "spark-master"
   ImagePullPolicy: "Always"
   ServicePort: 7077
@@ -34,7 +33,7 @@ WebUi:
 Worker:
   Name: worker
   Image: "erikschlegel/spark-worker"
-  ImageTag: "2.2.0"
+  ImageTag: "2.2.0-ha"
   ImagePullPolicy: "Always"
   Replicas: 6
   Component: "spark-worker"
@@ -55,16 +54,15 @@ Worker:
 
 Zeppelin:
   Name: zeppelin
-  Image: "gcr.io/google_containers/zeppelin"
-  ImageTag: "v0.5.5_v2"
-  Replicas: 1
+  Image: "srfrnk/zeppelin"
+  ImageTag: "0.7.0"
   Component: "zeppelin"
   Cpu: "100m"
   ServicePort: 8080
   ContainerPort: 8080
 
 Zookeeper: 
-  Replicas: 5
+  Replicas: 3
 
 Persistence:
   Enabled: true
