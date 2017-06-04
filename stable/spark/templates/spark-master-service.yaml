@@ -18,3 +18,27 @@ spec:
   selector:
     component: "{{.Values.Master.Component}}"
   type: "LoadBalancer"
+
+{{- if .Values.Master.EnableHA }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: "{{.Values.Master.Component}}-ha"
+  labels:
+    heritage: {{.Release.Service | quote }}
+    release: {{.Release.Name | quote }}
+    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+    component: "{{.Values.Master.Component}}-ha"
+spec:
+  ports:
+    - port: {{.Values.Master.ServicePort}}
+      targetPort: {{.Values.Master.ContainerPort}}
+      name: spark
+    - port: {{.Values.WebUi.ServicePort}}
+      targetPort: {{.Values.WebUi.ContainerPort}}
+      name: http
+  selector:
+    component: "{{.Values.Master.Component}}-ha"
+  type: "LoadBalancer"
+  {{- end }}

@@ -1,49 +1,31 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "zeppelin-fullname" . }}
-  labels:
-    heritage: {{.Release.Service | quote }}
-    release: {{.Release.Name | quote }}
-    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
-    component: "{{.Release.Name}}-{{.Values.Zeppelin.Component}}"
+  name: zeppelin
 spec:
   ports:
     - port: {{.Values.Zeppelin.ServicePort}}
       targetPort: {{.Values.Zeppelin.ContainerPort}}
   selector:
-    component: "{{.Release.Name}}-{{.Values.Zeppelin.Component}}"
+    component: zeppelin
   type: "LoadBalancer"
 ---
-apiVersion: extensions/v1beta1
-kind: Deployment
+apiVersion: v1
+kind: ReplicationController
 metadata:
-  name: {{ template "zeppelin-fullname" . }}
-  labels:
-    heritage: {{.Release.Service | quote }}
-    release: {{.Release.Name | quote }}
-    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
-    component: "{{.Release.Name}}-{{.Values.Zeppelin.Component}}"
+  name: zeppelin-controller
 spec:
   replicas: {{default 1 .Values.Zeppelin.Replicas}}
-  strategy:
-    type: RollingUpdate
   selector:
-    matchLabels:
-      component: "{{.Release.Name}}-{{.Values.Zeppelin.Component}}"
+    component: zeppelin
   template:
     metadata:
       labels:
-        heritage: {{.Release.Service | quote }}
-        release: {{.Release.Name | quote }}
-        chart: "{{.Chart.Name}}-{{.Chart.Version}}"
-        component: "{{.Release.Name}}-{{.Values.Zeppelin.Component}}"
+        component: zeppelin
     spec:
       containers:
-        - name: {{ template "zeppelin-fullname" . }}
+        - name: zeppelin
           image: "{{.Values.Zeppelin.Image}}:{{.Values.Zeppelin.ImageTag}}"
-          command: ["/bin/sh","-c"]
-          args: ["sed -i.bak s/spark-master:7077/{{ template "master-fullname" . }}:{{.Values.Master.ServicePort}}/g /opt/zeppelin/conf/zeppelin-env.sh; /opt/zeppelin/bin/docker-zeppelin.sh"]
           ports:
             - containerPort: {{.Values.Zeppelin.ContainerPort}}
           resources:

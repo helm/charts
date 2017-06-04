@@ -1,14 +1,14 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{.Values.Master.Component}}
+  name: spark-master
   labels:
     heritage: {{.Release.Service | quote }}
     release: {{.Release.Name | quote }}
     chart: "{{.Chart.Name}}-{{.Chart.Version}}"
     component: "{{.Release.Name}}-{{.Values.Master.Component}}"
 spec:
-  replicas: {{default 1 .Values.Master.Replicas}}
+  replicas: 1
   strategy:
     type: RollingUpdate
   selector:
@@ -40,6 +40,53 @@ spec:
           - name: SPARK_DAEMON_MEMORY
             value: {{ default "1g" .Values.Master.DaemonMemory | quote }}
           {{- if .Values.Master.EnableHA }}
-          - name: SPARK_MASTER_OPTS
+          - name: SPARK_DAEMON_JAVA_OPTS
             value: "-Dspark.deploy.recoveryMode=ZOOKEEPER -Dspark.deploy.zookeeper.url=zookeeper.spark.svc.cluster.local:2181"
           {{- end }}
+
+{{- if .Values.Master.EnableHA }}
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: "spark-master-ha"
+  labels:
+    heritage: {{.Release.Service | quote }}
+    release: {{.Release.Name | quote }}
+    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+    component: "{{.Release.Name}}-{{.Values.Master.Component}}-ha"
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      component: "{{.Values.Master.Component}}-ha"
+  template:
+    metadata:
+      labels:
+        heritage: {{.Release.Service | quote }}
+        release: {{.Release.Name | quote }}
+        chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+        component: "{{.Values.Master.Component}}-ha"
+    spec:
+      containers:
+        - name: "{{.Values.Master.Component}}-ha"
+          imagePullPolicy: "{{.Values.Master.ImagePullPolicy}}"
+          image: "{{.Values.Master.Image}}-ha:{{.Values.Master.ImageTag}}-ha"
+          ports:
+            - containerPort: {{.Values.Master.ContainerPort}}
+            - containerPort: {{.Values.WebUi.ContainerPort}}
+          resources:
+            requests:
+              cpu: "{{.Values.Master.Resources.Requests.Cpu}}"
+              memory: "{{.Values.Master.Resources.Requests.Memory}}"
+            limits:
+              cpu: "{{.Values.Master.Resources.Limits.Cpu}}"
+              memory: "{{.Values.Master.Resources.Limits.Memory}}"
+          env:
+          - name: SPARK_DAEMON_MEMORY
+            value: {{ default "1g" .Values.Master.DaemonMemory | quote }}
+          - name: SPARK_DAEMON_JAVA_OPTS
+            value: "-Dspark.deploy.recoveryMode=ZOOKEEPER -Dspark.deploy.zookeeper.url=zookeeper.spark.svc.cluster.local:2181"
+{{- end }}
