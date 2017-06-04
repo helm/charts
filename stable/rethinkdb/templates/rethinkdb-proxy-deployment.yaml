@@ -34,11 +34,17 @@ spec:
             - name: admin
               containerPort: {{ .Values.ports.admin }}
           args:
-            - "--config-file"
-            - "/config/rethinkdb-proxy.conf"
+            - "--bind"
+            - "all"
+            {{- if .Values.proxy.driverTLS.enabled }}
+            - "--driver-tls-key"
+            - "/secrets/driver-key.pem"
+            - "--driver-tls-cert"
+            - "/secrets/driver-cert.pem"
+            {{- end }}
           volumeMounts:
-            - name: "config"
-              mountPath: "/config"
+            - name: "secrets"
+              mountPath: "/secrets"
           env:
             - name: PROXY
               value: "true"
@@ -65,6 +71,8 @@ spec:
           resources:
 {{ toYaml .Values.proxy.resources | indent 12 }}
       volumes:
-        - name: config
-          configMap:
-            name: {{ template "fullname" . }}
+        - name: secrets
+          projected:
+            sources:
+            - secret:
+                name: {{ template "fullname" . }}

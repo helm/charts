@@ -31,13 +31,16 @@ spec:
             - name: cluster
               containerPort: {{ .Values.ports.cluster }}
           args:
-            - "--config-file"
-            - "/config/rethinkdb.conf"
+            - "--directory"
+            - "/data/db"
+            - "--bind"
+            - "all"
+            - "--no-http-admin"
+            - "--cache-size"
+            - {{ .Values.cluster.rethinkCacheSize | quote }}
           volumeMounts:
             - name: "datadir"
               mountPath: "/data"
-            - name: "config"
-              mountPath: "/config"
           env:
             - name: RETHINK_CLUSTER_SERVICE
               value: "{{ template "fullname" . }}-cluster"
@@ -79,17 +82,13 @@ spec:
             timeoutSeconds: 5
           resources:
 {{ toYaml .Values.cluster.resources | indent 12 }}
-      volumes:
-        - name: config
-          configMap:
-            name: {{ template "fullname" . }}
 {{- if .Values.cluster.persistentVolume.enabled }}
   volumeClaimTemplates:
   - metadata:
       name: datadir
       annotations:
-      {{- if .Values.cluster.persistentVolume.storageClass }}
-        volume.beta.kubernetes.io/storage-class: {{ .Values.persistence.apache.storageClass | quote }}
+      {{- if .Values.cluster.storageClass.enabled }}
+        volume.beta.kubernetes.io/storage-class: {{ template "fullname" . }}
       {{- end }}
       {{- range $key, $value := .Values.cluster.persistentVolume.annotations }}
         {{ $key }}: {{ $value }}

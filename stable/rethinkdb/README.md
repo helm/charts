@@ -39,12 +39,15 @@ Parameter | Description | Default
 `cluster.resources` | Resource configuration for each RethinkDB Cluster Pod | `{}`
 `cluster.podAnnotations` | Annotations to be added to RethinkDB Cluster Pods | `{}`
 `cluster.service.annotations` | Annotations to be added to RethinkDB Cluster Service | `{}`
+`cluster.storageClass.enabled` | If `true`, create a StorageClass for the cluster. **Note**: You must set a provisioner | `false`
+`cluster.storageClass.provisioner` | Provisioner definition for StorageClass | `undefined`
+`cluster.storageClass.parameters` | Parameters for StorageClass | `undefined`
 `cluster.persistentVolume.enabled` | If `true`, persistent volume claims are created | `true`
 `cluster.persistentVolume.storageClass` | Persistent volume storage class | `default`
 `cluster.persistentVolume.accessMode` | Persistent volume access modes | `[ReadWriteOnce]`
 `cluster.persistentVolume.size` | Persistent volume size | `10Gi`
 `cluster.persistentVolume.annotations` | Persistent volume annotations | `{}`
-`cluster.rethinkConfig` | Configuration passed to RethinkDB via `--config-file=/config/rethinkdb.conf` | `directory=/data/db bind=all no-http-admin`
+`cluster.rethinkCacheSize` | RethinkDB `cache-size` value in MB | `100`
 `proxy.replicas` | Number of RethinkDB Proxy replicas | `1`
 `proxy.resources` | Resource configuration for each RethinkDB Proxy Pod | `{}`
 `proxy.podAnnotations` | Annotations to be added to RethinkDB Proxy Pods | `{}`
@@ -54,15 +57,13 @@ Parameter | Description | Default
 `proxy.service.externalIPs` | Controller service external IP addresses | `[]`
 `proxy.service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
 `proxy.service.loadBalancerSourceRanges` | List of IP CIDRs allowed access to load balancer (if supported) | `[]`
-`proxy.rethinkConfig` | Configuration passed to RethinkDB via `--config-file=/config/rethinkdb-proxy.conf` | `bind=all`
+`proxy.driverTLS.enabled` | Should RethinkDB Proxy TLS be enabled. **Note**: If enabled, you must set a key and cert | `false`
+`proxy.driverTLS.key` | RSA Private Key | `undefined`
+`proxy.driverTLS.cert` | Certificate | `undefined`
 `ports.cluster` | RethinkDB Cluster Port | `29015`
 `ports.driver` | RethinkDB Driver Port | `28015`
 `ports.admin` | RethinkDB Admin Port | `8080`
 `rethinkdbPassword` | Password for the RethinkDB Admin user | `rethinkdb`
-
-*RethinkDB config files*
-
-The RethinkDB Cluster and RethinkDB Proxy config files are configured via the `cluster.rethinkdbConfig` and `proxy.rethinkdbConfig` configuration values.
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
