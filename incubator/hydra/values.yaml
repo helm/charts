@@ -93,7 +93,7 @@ postgresql:
   postgresDatabase: "hydra"
 
   persistence:
-    size: "10GB"
+    size: "10Gi"
 
 # Configure resource requests and limits
 # ref: http://kubernetes.io/docs/user-guide/compute-resources/
