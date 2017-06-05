@@ -54,7 +54,9 @@ ingress:
     #     hosts:
     #       - sentry.local
 
-postgres:
+postgresql:
+  postgresDatabase: sentry
+  postgresUser: sentry
   imageTag: "9.5"
   persistence:
     enabled: false
