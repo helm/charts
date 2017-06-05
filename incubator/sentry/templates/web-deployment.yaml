@@ -10,6 +10,7 @@ spec:
     metadata:
       labels:
         app: {{ template "fullname" . }}
+        role: web
     spec:
       containers:
       - name: {{ .Chart.Name }}
@@ -27,19 +28,19 @@ spec:
           value: {{ default "postgres" .Values.postgresUser | quote }}
         - name: SENTRY_DB_NAME
           value: {{ default "" .Values.postgresDatabase | quote }}
-        - name: POSTGRES_PASSWORD
+        - name: SENTRY_DB_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "postgresql.fullname" . }}
               key: postgres-password
         - name: SENTRY_POSTGRES_HOST
           value: {{ template "postgresql.fullname" .}}
         - name: SENTRY_POSTRGES_PORT
           value: "5432"
-        - name: REDIS_PASSWORD
+        - name: SENTRY_REDIS_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "redis.fullname" . }}
               key: redis-password
         - name: SENTRY_REDIS_HOST
           value: {{ template "redis.fullname" .}}
@@ -56,14 +57,14 @@ spec:
             secretKeyRef:
               name: {{ template "fullname" . }}
               key: smtp-password
-        livenessProbe:
-          httpGet:
-            path: /
-            port: {{ .Values.service.internalPort }}
-        readinessProbe:
-          httpGet:
-            path: /
-            port: {{ .Values.service.internalPort }}
+  #      livenessProbe:
+  #        httpGet:
+  #          path: /
+  #          port: {{ .Values.service.internalPort }}
+  #      readinessProbe:
+  #        httpGet:
+  #          path: /
+  #          port: {{ .Values.service.internalPort }}
         volumeMounts:
         - mountPath: /var/lib/sentry/files
           name: sentry-data

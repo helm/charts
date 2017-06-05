@@ -10,6 +10,7 @@ spec:
     metadata:
       labels:
         app: {{ template "fullname" . }}
+        role: worker
     spec:
       containers:
       - name: {{ .Chart.Name }}-workers
@@ -28,31 +29,31 @@ spec:
           value: {{ default "postgres" .Values.postgresUser | quote }}
         - name: SENTRY_DB_NAME
           value: {{ default "" .Values.postgresDatabase | quote }}
-        - name: POSTGRES_PASSWORD
+        - name: SENTRY_DB_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "postgresql.fullname" . }}
               key: postgres-password
         - name: SENTRY_POSTGRES_HOST
           value: {{ template "postgresql.fullname" .}}
         - name: SENTRY_POSTRGES_PORT
           value: "5432"
-        - name: REDIS_PASSWORD
+        - name: SENTRY_REDIS_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "redis.fullname" . }}
               key: redis-password
         - name: SENTRY_REDIS_HOST
           value: {{ template "redis.fullname" .}}
         - name: SENTRY_REDIS_PORT
           value: "6379"
-        livenessProbe:
-          httpGet:
-            path: /
-            port: {{ .Values.service.internalPort }}
-        readinessProbe:
-          httpGet:
-            path: /
-            port: {{ .Values.service.internalPort }}
+  #      livenessProbe:
+  #        httpGet:
+  #          path: /
+  #          port: {{ .Values.service.internalPort }}
+  #      readinessProbe:
+  #        httpGet:
+  #          path: /
+  #          port: {{ .Values.service.internalPort }}
         resources:
 {{ toYaml .Values.resources | indent 12 }}
