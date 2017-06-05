@@ -1,0 +1,6 @@
+Congratulations your kubernetes cluster is even busier!
+
+To get busy with this pod:
+  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "fullname" . }}" -o jsonpath="{.items[0].metadata.name}")
+  kubectl exec -it  $POD_NAME sh
+
