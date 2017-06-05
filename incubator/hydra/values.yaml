@@ -18,7 +18,10 @@ persistence:
   accessMode: ReadWriteOnce
   size: 1Gi
 
+# Configure the embedded postgres deployment.
 postgresql:
+  # Set this to false if you're using an external database for hydra.
+  enabled: false
   imageTag: "9.6"
   memory: 256Mi
   cpu: 250m
@@ -37,6 +40,13 @@ config:
   idTokenLifespan: "1h"
   authorizeCodeLifespan: "10m"
   httpsAllowTerminationFrom: 0.0.0.0/0
+  postgresql:
+    # postgresHost is ignored if postgresql.enabled == true
+    postgresHost: postgres
+    postgresPort: 5432
+    postgresUser: hydra
+    postgresPassword: hydra
+    postgresDatabase: hydra
 
 service:
   type: ClusterIP

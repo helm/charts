@@ -51,6 +51,12 @@ spec:
                 secretKeyRef:
                   name: {{ template "fullname" . }}-secret
                   key: system.secret
+            - name: POSTGRES_HOST
+              {{- if .Values.postgresql.enabled }}
+              value: {{ template "postgresql.fullname" . }}
+              {{- else }}
+              value: {{ .Values.config.postgresql.postgresHost }}
+              {{- end }}
             - name: POSTGRES_USER
               valueFrom:
                 secretKeyRef:
@@ -66,10 +72,8 @@ spec:
                 secretKeyRef:
                   name: {{ template "fullname" . }}-postgres-secret
                   key: postgres.db
-              name: mysecret
-              key: username
             - name: DATABASE_URL
-              value: postgres://${POSTGRES_USER}:${POSTGRES_PASS}@{{ template "postgresql.fullname" . }}:5432/${POSTGRES_DB}?sslmode=disable
+              value: postgres://${POSTGRES_USER}:${POSTGRES_PASS}@${POSTGRES_HOST}:{{ .Values.config.postgresPort }}/${POSTGRES_DB}?sslmode=disable
             - name: HTTPS_ALLOW_TERMINATION_FROM
               value: {{ .Values.config.httpsAllowTerminationFrom }}
             - name: LOG_LEVEL
