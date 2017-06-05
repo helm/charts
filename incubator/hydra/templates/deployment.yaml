@@ -1,0 +1,56 @@
+
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "hydra.fullname" . }}
+  labels:
+    app: {{ template "hydra.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ template "hydra.name" . }}
+  template:
+    metadata:
+      name: {{ template "hydra.fullname" . }}
+      labels:
+        app: {{ template "hydra.name" . }}
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        release: "{{ .Release.Name }}"
+        heritage: "{{ .Release.Service }}"
+    spec:
+      containers:
+        - name: hydra
+          image: {{ printf "%s:%s" .Values.image .Values.imageTag | quote }}
+          imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
+          command: ["/bin/sh", "-c"]
+          args: ["hydra --help; hydra version; hydra migrate sql ${DATABASE_URL} && hydra host"]
+          ports:
+            - name: service
+              containerPort: 4444
+            - name: service2
+              containerPort: 4445
+          envFrom:
+            - configMapRef:
+                name: {{ template "hydra.fullname" . }}
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "hydra.fullname" . }}
+                  key: hydra.databaseURL
+            - name: SYSTEM_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "hydra.fullname" . }}
+                  key: hydra.systemSecret
+            - name: COOKIE_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "hydra.fullname" . }}
+                  key: hydra.cookieSecret
+          resources:
+{{ toYaml .Values.resources | indent 12 }}

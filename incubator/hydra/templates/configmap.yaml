@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "hydra.fullname" . }}
+  labels:
+    app: {{ template "hydra.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+data:
+  # Hydra  
+  bcrypt_cost: {{ .Values.config.hydra.bcryptCost | quote }}
+  log_level: {{ .Values.config.hydra.logLevel | quote }}
+  log_format: {{ .Values.config.hydra.logFormat | quote }}
+  # OAuth2
+  consent_url: {{ .Values.config.oauth2.consentURL | quote }}
+  issuer: {{ .Values.config.oauth2.issuer | quote }}
+  auth_code_lifespan: {{ .Values.config.oauth2.authCodeLifespan | quote }}
+  id_token_lifespan: {{ .Values.config.oauth2.idTokenLifespan | quote }}
+  access_token_lifespan: {{ .Values.config.oauth2.accessTokenLifespan | quote }}
+  challenge_token_lifespan: {{ .Values.config.oauth2.challengeTokenLifespan | quote }}
+  # HTTP
+  https_allow_termination_from: {{ .Values.config.oauth2.httpsAllowTerminationFrom | quote }}
