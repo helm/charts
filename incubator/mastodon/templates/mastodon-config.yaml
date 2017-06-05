@@ -1,0 +1,19 @@
+apiVersion: v1
+data:
+  db-host: {{ .Values.database.host }}
+  local-domain: {{ .Values.local_domain }}
+  local-https: {{ .Values.local_https }}
+  stream-port: {{ .Values.stream_port }}
+  db-name: {{ .Values.database.name }}
+  db-host: {{ .Values.database.host }}
+  db-user: {{ .Values.database.user }}
+  redis-host: {{ .Values.redis.host }}
+  redis-port:  {{ .Values.redis.port }}
+  smtp-domain: {{ .Values.smtp.domain }}
+  smtp-login:  {{ .Values.smtp.login }}
+  smtp-server:  {{ .Values.smtp.server }}
+  smtp-port:  {{ .Values.smtp.port }}
+  smtp-from-address: {{ .Values.smtp.from_address }}
+kind: ConfigMap
+metadata:
+  name: mastodon-{{ .Release.Name}}-config

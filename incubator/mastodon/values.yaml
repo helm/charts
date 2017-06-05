@@ -1,0 +1,46 @@
+image:
+  repository: gargron/mastodon
+  tag: latest
+  pullPolicy: IfNotPresent
+
+environment: production
+
+resources:
+  web: {}
+  stream: {}
+  worker: {}
+  jobs: {}
+    # limits:
+    #   cpu: 1000m
+    #   memory: 1024Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 128Mi
+
+database:
+  host: 'postgresql.mastodon.svc'
+  port: '5432'
+  user: 'mastodon'
+  name: 'mastodon_production'
+  password: null # required
+
+redis:
+  host: 'redis.mastodon.svc'
+  port: '6739'
+  password: null # required
+
+# Required for registration confirmations and any other notifications to work
+smtp:
+  domain: ''
+  login: ''
+  server: ''
+  port: ''
+  from_address: ''
+
+# Any 'null' fields are required
+local_domain: null
+local_https: false
+stream_port: 4000
+secret_key_base: null
+otp_secret: null
+paperclip_secret: null

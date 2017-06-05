@@ -1,0 +1,129 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+  labels:
+    app: mastodon
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    component: worker
+    release: {{ .Release.Name }}
+  name: mastodon-{{ .Release.Name }}-worker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mastodon-{{ .Release.Name }}-worker
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: mastodon-{{ .Release.Name }}-worker
+    spec:
+      containers:
+      - command:
+        - bundle
+        - exec
+        - puma
+        - -C
+        - config/puma.rb
+        env:
+        - name: RAILS_ENV
+          value: {{ .Values.environment }}
+        - name: LOCAL_DOMAIN
+          valueFrom:
+            configMapKeyRef:
+              key: local-domain
+              name: mastodon-{{ .Release.Name }}-config
+        - name: LOCAL_HTTPS
+          valueFrom:
+            configMapKeyRef:
+              key: local-https
+              name: mastodon-{{ .Release.Name }}-config
+        - name: PORT
+          valueFrom:
+            configMapKeyRef:
+              key: stream-port
+              name: mastodon-{{ .Release.Name }}-config
+        - name: DB_HOST
+          valueFrom:
+            configMapKeyRef:
+              key: db-host
+              name: mastodon-{{ .Release.Name }}-config
+        - name: DB_PASS
+          valueFrom:
+            secretKeyRef:
+              key: db-password
+              name: mastodon-{{ .Release.Name }}-secrets
+        - name: SECRET_KEY_BASE
+          valueFrom:
+            secretKeyRef:
+              key: secret-key-base
+              name: mastodon-{{ .Release.Name }}-secrets
+        - name: OTP_SECRET
+          valueFrom:
+            secretKeyRef:
+              key: otp-secret
+              name: mastodon-{{ .Release.Name }}-secrets
+        - name: PAPERCLIP_SECRET
+          valueFrom:
+            secretKeyRef:
+              key: paperclip-secret
+              name: mastodon-{{ .Release.Name }}-secrets
+        - name: DB_USER
+          valueFrom:
+            configMapKeyRef:
+              key: db-user
+              name: mastodon-{{ .Release.Name }}-config
+        - name: REDIS_HOST
+          valueFrom:
+            configMapKeyRef:
+              key: redis-host
+              name: mastodon-{{ .Release.Name }}-config
+        - name: REDIS_PASSWORD
+          valueFrom:
+            configMapKeyRef:
+              key: redis-password
+              name: mastodon-{{ .Release.Name }}-config
+        - name: REDIS_PORT
+          valueFrom:
+            configMapKeyRef:
+              key: redis-port
+              name: mastodon-{{ .Release.Name }}-config
+        - name: SMTP_DOMAIN
+          valueFrom:
+            configMapKeyRef:
+              key: smtp-domain
+              name: mastodon-{{ .Release.Name }}-config
+        - name: SMTP_LOGIN
+          valueFrom:
+            configMapKeyRef:
+              key: smtp-login
+              name: mastodon-{{ .Release.Name }}-config
+        - name: SMTP_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: smtp-password
+              name: mastodon-{{ .Release.Name }}-secrets
+        - name: SMTP_SERVER
+          valueFrom:
+            configMapKeyRef:
+              key: smtp-server
+              name: mastodon-{{ .Release.Name }}-config
+        - name: SMTP_PORT
+          valueFrom:
+            configMapKeyRef:
+              key: smtp-port
+              name: mastodon-{{ .Release.Name }}-config
+        - name: SMTP_FROM_ADDRESS
+          valueFrom:
+            configMapKeyRef:
+              key: smtp-from-address
+              name: mastodon-{{ .Release.Name }}-config
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        name: mastodon-{{ .Release.Name }}-worker
