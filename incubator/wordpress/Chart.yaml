@@ -1,0 +1,16 @@
+name: wordpress
+description: Wordpress Chart for Bare Metal Installation
+version: 0.1.0
+keywords:
+  - http
+  - wordpress
+  - www
+  - web
+  - cms
+home: "https://www.wordpress.com"
+sources:
+  - "https://github.com/nordri/helm-wordpress"
+maintainers:
+  - name: Fede Diaz
+    email: nordri@gmail.com
+engine: gotpl
