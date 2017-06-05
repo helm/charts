@@ -20,7 +20,6 @@ spec:
       labels:
         heritage: {{ .Release.Service | quote }}
         release: {{ .Release.Name | quote }}
-        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         app: {{ template "fullname" . }}
     spec:
       restartPolicy: Always

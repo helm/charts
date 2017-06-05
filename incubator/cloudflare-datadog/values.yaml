@@ -3,7 +3,7 @@
 # Declare variables to be passed into your templates.
 replicaCount: 1
 image:
-  repository: mozmea/cloudflare-datadog:latest
+  repository: mozmeao/cloudflare-datadog
   tag: latest
   pullPolicy: Always
 resources:

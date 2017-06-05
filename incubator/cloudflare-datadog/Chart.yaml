@@ -1,6 +1,14 @@
 apiVersion: v1
-description: A Helm chart for cloudflare-datadog service
+description: Bridge between Cloudflare Zone Analytics API and Datadog Metrics.
 name: cloudflare-datadog
 version: 0.1.0
 sources:
   - https://github.com/mozmar/cloudflare-datadog
+home: https://github.com/mozmar/cloudflare-datadog
+maintainers:
+  - name: Giorgos Logiotatidis
+    email: giorgos@mozilla.com
+  - name: Dave Parfitt
+    email: dparfitt@mozilla.com
+  - name: Josh Mize
+    email: jgmize@mozilla.com
