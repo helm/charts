@@ -1,0 +1,15 @@
+{{- if .Values.networkPolicy.enabled }}
+kind: NetworkPolicy
+apiVersion: {{ .Values.networkPolicy.apiVersion }}
+metadata:
+  name: "{{ template "fullname" . }}"
+spec:
+  podSelector:
+    matchLabels:
+      app: "{{ template "fullname" . }}"
+  ingress:
+    # Allow web access to the UI
+    - ports:
+      - port: 80
+      - port: 443
+{{- end }}
