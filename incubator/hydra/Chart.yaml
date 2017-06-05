@@ -1,0 +1,20 @@
+appVersion: v0.8.6
+description: A security-first open source OAuth2 and OpenID Connect server for existing and new enterprise infrastructures.
+name: hydra
+version: 0.0.1
+keywords:
+- hdyra
+- authentication
+- authorization
+- auth
+- oauth
+- jwt
+home: https://www.ory.am/products/hydra
+icon: https://github.com/ory/hydra/blob/master/docs/images/logo.png
+sources:
+- https://github.com/ory/hydra
+maintainers:
+- name: Kevin Minehart
+  email: kminehart@wehco.com
+- name: Meyer Zinn
+  email: meyerzinn@gmail.com

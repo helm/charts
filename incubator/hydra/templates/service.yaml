@@ -1,0 +1,22 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: {{ template "hydra.fullname" . }}
+  labels:
+    app: {{ template "hydra.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+{{- if .Values.serviceAnnotations }}
+  annotations:
+{{ toYaml .Values.serviceAnnotations | indent 4}}
+{{- end }}
+spec:
+  type: {{ .Values.service.type }}
+  selector:
+    app: {{ template "hydra.name" . }}
+  ports:
+    - name: service
+      port: {{ .Values.service.port }}
+      targetPort: 4444
+      protocol: TCP

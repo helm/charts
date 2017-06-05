@@ -1,0 +1,31 @@
+{{- if .Values.ingress.enabled -}}
+{{- $serviceName := include "hydra.fullname" . }}
+{{- $servicePort := .Values.service.port -}}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ template "hydra.fullname" . }}
+{{- if .Values.ingress.annotations }}
+  annotations:
+{{ toYaml .Values.ingress.annotations | indent 4}}
+{{- end }}
+  labels:
+    app: {{ template "hydra.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  rules:
+  {{- range .Values.ingress.hosts }}
+    - host: {{ . }}
+      http:
+        paths:
+          - backend:
+              serviceName: {{ $serviceName }}
+              servicePort: {{ $servicePort }}
+  {{- end -}}
+{{- if .Values.ingress.tls }}
+  tls:
+{{ toYaml .Values.ingress.tls | indent 4 }}
+{{- end -}}
+{{- end -}}
