@@ -27,7 +27,7 @@ spec:
           image: {{ printf "%s:%s" .Values.image .Values.imageTag | quote }}
           imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
           command: ["/bin/sh", "-c"]
-          args: ["hydra --help; hydra version; hydra migrate sql ${DATABASE_URL} && hydra host"]
+          args: ["hydra migrate sql ${DATABASE_URL} && hydra host"]
           ports:
             - name: service
               containerPort: 4444
