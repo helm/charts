@@ -38,6 +38,7 @@ Master:
   InstallPlugins:
       - kubernetes:0.11 
       - workflow-aggregator:2.5
+      - workflow-job:2.11
       - credentials-binding:1.11
       - git:3.2.0
 # Used to approve a list of groovy functions in pipelines used the script-security plugin. Can be viewed under /scriptApproval
