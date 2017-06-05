@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: {{ template "fullname" . }}
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "name" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -11,12 +11,12 @@ spec:
   replicas: {{ .Values.replicas }}
   selector:
     matchLabels:
-      app: {{ template "fullname" . }}
+      app: {{ template "name" . }}
   template:
     metadata:
       name: {{ template "fullname" . }}
       labels:
-        app: {{ template "fullname" . }}
+        app: {{ template "name" . }}
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         release: "{{ .Release.Name }}"
         heritage: "{{ .Release.Service }}"
@@ -51,8 +51,25 @@ spec:
                 secretKeyRef:
                   name: {{ template "fullname" . }}-secret
                   key: system.secret
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "fullname" . }}-postgres-secret
+                  key: postgres.user
+            - name: POSTGRES_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "fullname" . }}-postgres-secret
+                  key: postgres.pass
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "fullname" . }}-postgres-secret
+                  key: postgres.db
+              name: mysecret
+              key: username
             - name: DATABASE_URL
-              value: postgres://{{ .Values.postgresql.postgresUser }}:{{ .Values.postgresql.postgresPassword }}@{{ template "postgresql.fullname" . }}:5432/{{ .Values.postgresql.postgresDatabase }}?sslmode=disable
+              value: postgres://${POSTGRES_USER}:${POSTGRES_PASS}@{{ template "postgresql.fullname" . }}:5432/${POSTGRES_DB}?sslmode=disable
             - name: HTTPS_ALLOW_TERMINATION_FROM
               value: {{ .Values.config.httpsAllowTerminationFrom }}
             - name: LOG_LEVEL
