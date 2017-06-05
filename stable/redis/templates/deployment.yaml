@@ -23,6 +23,8 @@ spec:
             secretKeyRef:
               name: {{ template "fullname" . }}
               key: redis-password
+        - name: ALLOW_EMPTY_PASSWORD
+          value: "yes"
         ports:
         - name: redis
           containerPort: 6379
