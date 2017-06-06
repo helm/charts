@@ -29,9 +29,9 @@ spec:
           name: data
       volumes:
       - name: data
-      {{- if .Values.persistence.enabled }}
+      {{- if .Values.persistentVolume.enabled }}
         persistentVolumeClaim:
-          claimName: redis-pvc
+          claimName: {{ if .Values.persistentVolume.existingClaim }}{{ .Values.persistentVolume.existingClaim }}{{- else }}{{ template "fullname" . }}{{- end }}
       {{- else }}
         emptyDir: {}
       {{- end -}}
