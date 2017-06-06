@@ -22,8 +22,8 @@ spec:
         image: "{{ .Values.redis_image }}"
         ports:
         - containerPort: 6379
-        resources:
-{{ toYaml .Values.resources | indent 10 }}
+      resources:
+{{ toYaml .Values.resources.slave | indent 10 }}
         volumeMounts:
         - mountPath: /redis-master-data
           name: data

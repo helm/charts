@@ -33,9 +33,7 @@ spec:
               value: "true"
           ports:
             - containerPort: 6379
-          resources:
-            limits:
-              cpu: "0.1"
+
           volumeMounts:
             - mountPath: /redis-master-data
               name: data
@@ -46,6 +44,8 @@ spec:
               value: "true"
           ports:
             - containerPort: 26379
+        resources:
+{{ toYaml .Values.resources.slave | indent 10 }}
       volumes:
       - name: data
       {{- if .Values.persistence.enabled }}
