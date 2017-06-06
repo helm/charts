@@ -17,6 +17,8 @@ spec:
       containers:
       - name: sentinel
         image: {{ .Values.redis_image }}
+        resources:
+{{ toYaml .Values.resources.master | indent 10 }}
         env:
           - name: SENTINEL
             value: "true"

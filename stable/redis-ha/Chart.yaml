@@ -7,6 +7,7 @@ keywords:
 - database
 version: 0.2.0
 description: Highly available Redis cluster with multiple sentinels and standbys.
+icon: https://upload.wikimedia.org/wikipedia/en/thumb/6/6b/Redis_Logo.svg/1200px-Redis_Logo.svg.png
 maintainers:
   - email: ikaboubi@gmail.com
     name: KABOUBI

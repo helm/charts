@@ -45,14 +45,20 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following tables lists the configurable parameters of the Redis chart and their default values.
 
-| Parameter                  | Description                         | Default                                                   |
-| -------------------------- | ----------------------------------- | --------------------------------------------------------- |
-| `redis_image`              | Redis image                         | `gcr.io/google_containers/redis:v1`                       |
-| `persistence.enabled`      | Use a PVC to persist data           | `true`                                                    |
-| `persistence.storageClass` | Storage class of backing PVC        | `generic`                                                 |
-| `persistence.accessMode`   | Use volume as ReadOnly or ReadWrite | `ReadWriteOnce`                                           |
-| `persistence.size`         | Size of data volume                 | `8Gi`                                                     |
-| `resources`                | CPU/Memory resource requests/limits | Memory: `200Mi`, CPU: `100m`                              |
+| Parameter                        | Description                                           | Default                                                   |
+| -------------------------------- | ----------------------------------------------------- | --------------------------------------------------------- |
+| `redis_image`                    | Redis image                                           | `gcr.io/google_containers/redis:v1`                       |
+| `persistentVolume.enabled`       | Use a PVC to persist data                             | `false`                                                    |
+| `persistentVolume.storageClass`  | Storage class of backing PVC                          | `generic`                                                 |
+| `persistentVolume.accessMode`    | Use volume as ReadOnly or ReadWrite                   | `ReadWriteOnce`                                           |
+| `persistentVolume.size`          | Size of data volume                                   | `8Gi`                                                     |
+| `persistentVolume.annotations`   | Redis data Persistent Volume Claim annotations        | `{}`                                                      |
+| `persistentVolume.existingClaim` | Redis data Persistent Volume existing claim name      | ``                                                        |
+| `persistentVolume.mountPath`     | Redis data Persistent Volume mount root path          | `/data`                                                   |
+| `persistentVolume.subPath`       | Subdirectory of redis data Persistent Volume to mount | ``                                                        |
+| `resources.master`               | CPU/Memory for master nodes resource requests/limits  | Memory: `200Mi`, CPU: `100m`                              |
+| `resources.slave`                | CPU/Memory for slave nodes  resource requests/limits  | Memory: `200Mi`, CPU: `100m`                              |
+| `resources.sentinel`             | CPU/Memory for sentinel node resource requests/limits | Memory: `200Mi`, CPU: `100m`                              |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,

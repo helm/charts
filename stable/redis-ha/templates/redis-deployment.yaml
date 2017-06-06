@@ -20,10 +20,10 @@ spec:
       containers:
       - name: redis
         image: "{{ .Values.redis_image }}"
+        resources:
+{{ toYaml .Values.resources.slave | indent 10 }}
         ports:
         - containerPort: 6379
-      resources:
-{{ toYaml .Values.resources.slave | indent 10 }}
         volumeMounts:
         - mountPath: /redis-master-data
           name: data
