@@ -43,17 +43,22 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following tables lists the configurable parameters of the Redis chart and their default values.
 
-| Parameter                  | Description                         | Default                                                   |
-| -------------------------- | ----------------------------------- | --------------------------------------------------------- |
-| `image`                    | Redis image                         | `bitnami/redis:{VERSION}`                                 |
-| `imagePullPolicy`          | Image pull policy                   | `IfNotPresent`                                            |
-| `redisPassword`            | Redis password                      | Randomly generated                                        |
-| `persistence.enabled`      | Use a PVC to persist data           | `true`                                                    |
-| `persistence.existingClaim`| Use an existing PVC to persist data | `nil`                                                     |
-| `persistence.storageClass` | Storage class of backing PVC        | `generic`                                                 |
-| `persistence.accessMode`   | Use volume as ReadOnly or ReadWrite | `ReadWriteOnce`                                           |
-| `persistence.size`         | Size of data volume                 | `8Gi`                                                     |
-| `resources`                | CPU/Memory resource requests/limits | Memory: `256Mi`, CPU: `100m`                              |
+| Parameter                  | Description                           | Default                                                   |
+| -------------------------- | ------------------------------------- | --------------------------------------------------------- |
+| `image`                    | Redis image                           | `bitnami/redis:{VERSION}`                                 |
+| `imagePullPolicy`          | Image pull policy                     | `IfNotPresent`                                            |
+| `redisPassword`            | Redis password                        | Randomly generated                                        |
+| `persistence.enabled`      | Use a PVC to persist data             | `true`                                                    |
+| `persistence.existingClaim`| Use an existing PVC to persist data   | `nil`                                                     |
+| `persistence.storageClass` | Storage class of backing PVC          | `generic`                                                 |
+| `persistence.accessMode`   | Use volume as ReadOnly or ReadWrite   | `ReadWriteOnce`                                           |
+| `persistence.size`         | Size of data volume                   | `8Gi`                                                     |
+| `resources`                | CPU/Memory resource requests/limits   | Memory: `256Mi`, CPU: `100m`                              |
+| `metrics.enabled`          | Start a side-car prometheus exporter  | `false`                                                   |
+| `metrics.image`            | Exporter image                        | `oliver006/redis_exporter`                                |
+| `metrics.imageTag`         | Exporter image                        | `v0.11`                                                   |
+| `metrics.imagePullPolicy`  | Exporter image pull policy            | `IfNotPresent`                                            |
+| `metrics.resources`        | Exporter resource requests/limit      | Memory: `256Mi`, CPU: `100m`                              |
 
 The above parameters map to the env variables defined in [bitnami/redis](http://github.com/bitnami/bitnami-docker-redis). For more information please refer to the [bitnami/redis](http://github.com/bitnami/bitnami-docker-redis) image documentation.
 
@@ -90,3 +95,5 @@ By default, the chart mounts a [Persistent Volume](kubernetes.io/docs/user-guide
 $ helm install --set persistence.existingClaim=PVC_NAME redis
 ```
 
+## Metrics
+The chart optionally can start a metrics exporter for [prometheus](https://prometheus.io). The metrics endpoint (port 9121) is not exposed and it is expected that the metrics are collected from inside the k8s cluster using something similar as the described in the [example Prometheus scrape configuration](https://github.com/prometheus/prometheus/blob/master/documentation/examples/prometheus-kubernetes.yml).

@@ -1,11 +1,14 @@
-{{if .Values.addons.zipkin.enabled}}
+{{ if .Values.addons.zipkin.enabled }}
 {{- $serviceName := include "fullname" . -}}
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ $serviceName }}-zipkin
+  name: {{ $serviceName }}-{{ .Values.addons.zipkin.deployment.name }}
+  labels:
+{{ include "labels.standard" . | indent 4 }}
+    component: {{ $serviceName }}-{{ .Values.addons.zipkin.deployment.name }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.addons.zipkin.deployment.replicas }}
   template:
     metadata:
       annotations:
@@ -13,10 +16,11 @@ spec:
           {{ $key }}: {{ $value | quote }}
         {{- end }}
       labels:
-        app: {{ $serviceName }}-zipkin
+{{ include "labels.standard" . | indent 8 }}
+        component: {{ $serviceName }}-{{ .Values.addons.zipkin.deployment.name }}
     spec:
       containers:
-      - name: zipkin
+      - name: {{ .Values.addons.zipkin.deployment.name }}
         image: "{{ .Values.addons.zipkin.deployment.image }}:{{ .Values.addons.zipkin.deployment.imageTag }}"
         imagePullPolicy: {{ .Values.addons.zipkin.deployment.imagePullPolicy }}
         ports:
@@ -27,4 +31,4 @@ spec:
             fieldRef:
               apiVersion: v1
               fieldPath: metadata.namespace
-{{end}}
+{{ end }}

@@ -1,0 +1,8 @@
+# Default values for kube-state-metrics.
+prometheusScrape: true
+image:
+  repository: gcr.io/google_containers/kube-state-metrics
+  tag: v0.4.1
+  pullPolicy: IfNotPresent
+service:
+  port: 8080

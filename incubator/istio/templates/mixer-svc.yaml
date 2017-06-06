@@ -1,9 +1,11 @@
+{{- $serviceName := include "fullname" . -}}
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "fullname" . }}-mixer
+  name: {{ $serviceName }}-{{ .Values.mixer.deployment.name }}
   labels:
-    istio: {{ template "fullname" . }}-mixer
+{{ include "labels.standard" . | indent 4 }}
+    istio: {{ $serviceName }}-{{ .Values.mixer.deployment.name }}
 spec:
   type: {{ .Values.mixer.service.type }}
   ports:
@@ -14,4 +16,7 @@ spec:
   - name: prometheus
     port: {{ .Values.mixer.service.externalPrometheusPort }}
   selector:
-    istio: {{ template "fullname" . }}-mixer
+    app: {{ include "name" . }}
+    component: {{ $serviceName }}-{{ .Values.mixer.deployment.name }}
+    release: {{ .Release.Name }}
+    istio: {{ $serviceName }}-{{ .Values.mixer.deployment.name }}

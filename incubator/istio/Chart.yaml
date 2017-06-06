@@ -1,9 +1,10 @@
 apiVersion: v1
 description: Istio Helm chart for Kubernetes
 name: istio
-version: 0.1.1
+version: 0.1.5
 appVersion: 0.1.5
 home: https://istio.io/
+icon: https://github.com/istio/istio.github.io/blob/master/favicons/android-chrome-96x96.png
 sources:
   - https://github.com/istio/istio
 maintainers:
