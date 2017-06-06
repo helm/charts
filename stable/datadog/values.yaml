@@ -13,6 +13,9 @@ image:
 daemonset:
   enabled: true
 
+  # Allow the DaemonSet to schedule on tainted nodes
+  # tolerations: []
+
 # Apart from DaemonSet, deploy Datadog agent pods and related service for
 # applications that want to send custom metrics. Provides DogStasD service.
 #
