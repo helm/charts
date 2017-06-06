@@ -1,0 +1,4 @@
+apiVersion: v1
+description: Deploys external-dns into a kubernetes cluster
+name: external-dns
+version: 0.0.1

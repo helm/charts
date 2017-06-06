@@ -1,0 +1,70 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}
+  labels: {{ include "labels" . | indent 4 }}
+spec:
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels: {{ include "labels" . | indent 8 }}
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{- if .Values.image.repository }}{{ .Values.image.repository }}/{{- end -}}{{.Values.image.name}}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        args:
+        - --provider={{ .Values.provider }}
+        - --policy={{ .Values.policy }}
+        - --registry={{ .Values.registry }}
+        - --txt-owner-id={{ .Values.txtOwnerId }}
+        {{- if .Values.compatibility }}
+        - --compatibility={{ .Values.compatibility }}
+        {{- end }}
+        {{- if .Values.debug }}
+        - --debug={{ .Values.debug }}
+        {{- end }}
+        {{- if .Values.domainFilter }}
+        - --domain-filter={{ .Values.domainFilter }}
+        {{- end }}
+        {{- if .Values.dryRun }}
+        - --dry-run={{ .Values.dryRun }}
+        {{- end }}
+        {{- if .Values.fqdnTemplate }}
+        - --fqdn-template={{ .Values.fqdnTemplate }}
+        {{- end }}
+        {{- if .Values.googleProject }}
+        - --google-project={{ .Values.googleProject }}
+        {{- end }}
+        {{- if .Values.interval }}
+        - --interval={{ .Values.interval }}
+        {{- end }}
+        {{- if .Values.logFormat }}
+        - --log-format={{ .Values.logFormat }}
+        {{- end }}
+        {{- if .Values.master }}
+        - --master={{ .Values.master}}
+        {{- end }}
+        {{- if .Values.metricsAddress }}
+        - --metrics-address={{ .Values.metricsAddress }}
+        {{- end }}
+        {{- if .Values.namespace }}
+        - --namespace={{ .Values.namespace }}
+        {{- end }}
+        {{- if .Values.once }}
+        - --once={{ .Values.once }}
+        {{- end }}        
+        {{- if .Values.source.ingress }}
+        - --source=ingress
+        {{- end }}
+        {{- if .Values.source.fake }}
+        - --source=fake
+        {{- end }}
+        {{- if .Values.source.service }}
+        - --source=service
+        {{- end }}
+        {{- if .Values.txtPrefix }}
+        - --txt-prefix={{ .Values.txtPrefix }}
+        {{- end }}
