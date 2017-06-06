@@ -1,0 +1,13 @@
+OpenVPN now Running.
+1. Get the client ovpn file as follows:
+Once the IP is available get the client.ovpn file and import into your favorite openvpn tool like tunnelblick as follows:
+
+Generate client certs:
+
+export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+export POD_NAME=`kubectl get pods -l type=openvpn | awk END'{ print $1 }'`
+export SERVICE_NAME=`kubectl get svc -l type=openvpn | awk END'{ print $1 }'`
+export KEY_NAME=kubeVPN
+kubectl exec -it $POD_NAME /etc/openvpn/setup/newClientCert.sh $KEY_ NAME $SERVICE_IP > $KEY_NAME.ovpn
+
+Do this for each user that needs to connect ot the VPN.
