@@ -1,6 +1,7 @@
 ## Bitnami Magento image version
 ## ref: https://hub.docker.com/r/bitnami/magento/tags/
 ##
+
 image: bitnami/magento:2.1.7-r0
 
 ## Specify a imagePullPolicy
