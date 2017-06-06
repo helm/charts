@@ -1,0 +1,22 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: dogstatsd
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: dogstatsd
+    spec:
+      containers:
+      - name: dogstatsd-container
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        env:
+          - name: API_KEY
+            value: {{ .Values.datadog.apiKey | quote }}
+        ports:
+        - containerPort: 8125
+          name: statsd
+        resources:
+{{ toYaml .Values.resources | indent 10 }}

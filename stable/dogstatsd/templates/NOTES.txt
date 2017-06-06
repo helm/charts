@@ -1,0 +1,4 @@
+This sets up a dogstatsd instance that sends
+statistics to DataDog.
+
+You can send data to this at `dogstatsd.{{ .Release.Namespace }}`.
