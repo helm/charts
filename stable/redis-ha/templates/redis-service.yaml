@@ -2,9 +2,9 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    name: {{ template "fullname" . }}-redis-svc
+    name: {{ template "fullname" . }}-svc
     role: service
-  name: redis-svc
+  name: {{ template "fullname" . }}-svc
 spec:
   ports:
     - port: 6379
