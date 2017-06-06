@@ -36,21 +36,8 @@ spec:
           envFrom:
             - configMapRef:
                 name: {{ template "hydra.fullname" . }}
-          env:
-            - name: DATABASE_URL
-              valueFrom:
-                secretKeyRef:
-                  name: {{ template "hydra.fullname" . }}
-                  key: hydra.databaseURL
-            - name: SYSTEM_SECRET
-              valueFrom:
-                secretKeyRef:
-                  name: {{ template "hydra.fullname" . }}
-                  key: hydra.systemSecret
-            - name: COOKIE_SECRET
-              valueFrom:
-                secretKeyRef:
-                  name: {{ template "hydra.fullname" . }}
-                  key: hydra.cookieSecret
+            - secretRef:
+                name: {{ template "hydra.fullname" . }}
+                optional: false
           resources:
 {{ toYaml .Values.resources | indent 12 }}
