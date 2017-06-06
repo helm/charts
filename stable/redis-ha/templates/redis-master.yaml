@@ -12,7 +12,7 @@ metadata:
   name: redis-master
 spec:
   serviceName: "redis"
-  replicas: 1
+  replicas: {{ .Values.replicas.master }}
   template:
     metadata:
       labels:

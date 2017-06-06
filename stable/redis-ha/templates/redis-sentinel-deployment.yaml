@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: {{ template "fullname" . }}-sentinel
 spec:
-  replicas: 2
+  replicas: {{ .Values.replicas.sentinel }}
   template:
     metadata:
       labels:

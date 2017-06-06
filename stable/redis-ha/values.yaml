@@ -68,3 +68,12 @@ persistentVolume:
 
 ## Redis image version
 redis_image: gcr.io/google_containers/redis:v1
+
+
+
+## replicas number for each component
+
+replicas:
+  master: 1
+  slave: 1
+  sentinel: 3

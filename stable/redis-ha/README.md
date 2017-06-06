@@ -48,7 +48,7 @@ The following tables lists the configurable parameters of the Redis chart and th
 | Parameter                        | Description                                           | Default                                                   |
 | -------------------------------- | ----------------------------------------------------- | --------------------------------------------------------- |
 | `redis_image`                    | Redis image                                           | `gcr.io/google_containers/redis:v1`                       |
-| `persistentVolume.enabled`       | Use a PVC to persist data                             | `false`                                                    |
+| `persistentVolume.enabled`       | Use a PVC to persist data                             | `false`                                                   |
 | `persistentVolume.storageClass`  | Storage class of backing PVC                          | `generic`                                                 |
 | `persistentVolume.accessMode`    | Use volume as ReadOnly or ReadWrite                   | `ReadWriteOnce`                                           |
 | `persistentVolume.size`          | Size of data volume                                   | `8Gi`                                                     |
@@ -59,6 +59,10 @@ The following tables lists the configurable parameters of the Redis chart and th
 | `resources.master`               | CPU/Memory for master nodes resource requests/limits  | Memory: `200Mi`, CPU: `100m`                              |
 | `resources.slave`                | CPU/Memory for slave nodes  resource requests/limits  | Memory: `200Mi`, CPU: `100m`                              |
 | `resources.sentinel`             | CPU/Memory for sentinel node resource requests/limits | Memory: `200Mi`, CPU: `100m`                              |
+| `replicas.master`                | Number of master pods                                 | 1                                                         |
+| `replicas.slave`                 | Number of slave pods                                  | 1                                                         |
+| `replicas.sentinel`              | Number of sentinel pods                               | 3                                                         |
+
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
