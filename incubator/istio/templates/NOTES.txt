@@ -44,3 +44,7 @@ Deploy your App!
 Or deploy the BookInfo App!
 
   https://istio.io/docs/samples/bookinfo.html
+
+Using Istioctl
+
+  istioctl --managerAPIService {{ $serviceName }}-{{ .Values.manager.name }}:{{ .Values.manager.service.externalHttpApiServer }} [command]
