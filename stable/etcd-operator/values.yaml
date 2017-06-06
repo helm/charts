@@ -4,7 +4,7 @@
 replicaCount: 1
 image:
   repository: quay.io/coreos/etcd-operator
-  tag: v0.2.1
+  tag: v0.3.0
   pullPolicy: IfNotPresent
 resources:
   limits:
@@ -18,7 +18,7 @@ cluster:
   enabled: false
   name: etcd-cluster
   size: 3
-  version: v3.1.2
+  version: v3.1.8
   backup:
     enabled: false
     ## Cloud specific PV provisioner
