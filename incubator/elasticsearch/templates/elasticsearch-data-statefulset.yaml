@@ -1,5 +1,5 @@
-apiVersion: apps/v1alpha1
-kind: PetSet
+apiVersion: apps/v1beta1
+kind: StatefulSet
 metadata:
   name: "{{ printf "%s-data-%s" .Release.Name .Values.Name | trunc 24 }}"
   labels:
@@ -19,8 +19,6 @@ spec:
         chart: "{{.Chart.Name}}-{{.Chart.Version}}"
         component: "{{.Release.Name}}-{{.Values.Component}}"
         type: data
-      annotations:
-        pod.alpha.kubernetes.io/initialized: "true"
     spec:
       serviceAccountName: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 24 }}"
       containers:
