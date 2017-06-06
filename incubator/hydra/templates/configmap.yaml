@@ -9,15 +9,15 @@ metadata:
     heritage: "{{ .Release.Service }}"
 data:
   # Hydra  
-  bcrypt_cost: {{ .Values.config.hydra.bcryptCost | quote }}
-  log_level: {{ .Values.config.hydra.logLevel | quote }}
-  log_format: {{ .Values.config.hydra.logFormat | quote }}
+  BCRYPT_COST: {{ .Values.config.hydra.bcryptCost | quote }}
+  LOG_LEVEL: {{ .Values.config.hydra.logLevel | quote }}
+  LOG_FORMAT: {{ .Values.config.hydra.logFormat | quote }}
   # OAuth2
-  consent_url: {{ .Values.config.oauth2.consentURL | quote }}
-  issuer: {{ .Values.config.oauth2.issuer | quote }}
-  auth_code_lifespan: {{ .Values.config.oauth2.authCodeLifespan | quote }}
-  id_token_lifespan: {{ .Values.config.oauth2.idTokenLifespan | quote }}
-  access_token_lifespan: {{ .Values.config.oauth2.accessTokenLifespan | quote }}
-  challenge_token_lifespan: {{ .Values.config.oauth2.challengeTokenLifespan | quote }}
+  CONSENT_URL: {{ .Values.config.oauth2.consentURL | quote }}
+  ISSUER: {{ .Values.config.oauth2.issuer | quote }}
+  AUTH_CODE_LIFESPAN: {{ .Values.config.oauth2.authCodeLifespan | quote }}
+  ID_TOKEN_LIFESPAN: {{ .Values.config.oauth2.idTokenLifespan | quote }}
+  ACCESS_TOKEN_LIFESPAN: {{ .Values.config.oauth2.accessTokenLifespan | quote }}
+  CHALLENGE_TOKEN_LIFESPAN: {{ .Values.config.oauth2.challengeTokenLifespan | quote }}
   # HTTP
-  https_allow_termination_from: {{ .Values.config.oauth2.httpsAllowTerminationFrom | quote }}
+  HTTPS_ALLOW_TERMINATION_FROM: {{ .Values.config.http.httpsAllowTerminationFrom | quote }}
