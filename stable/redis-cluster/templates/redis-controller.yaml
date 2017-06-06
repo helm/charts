@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: redis
+  labels:
+    redis-node: "true"
+spec:
+  replicas: 1
+  selector:
+    name: redis
+  template:
+    metadata:
+      labels:
+        name: redis
+    spec:
+      containers:
+      - name: redis
+        image: "{{ .Values.redis_image }}"
+        ports:
+        - containerPort: 6379
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+        volumeMounts:
+        - mountPath: /redis-master-data
+          name: data
+      volumes:
+      - name: data
+      {{- if .Values.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: redis-pvc
+      {{- else }}
+        emptyDir: {}
+      {{- end -}}
