@@ -4,6 +4,9 @@
 webReplicaCount: 1
 cronReplicaCount: 1
 workerReplicaCount: 2
+user:
+  email: admin@sentry.local
+  password: password
 image:
   repository: sentry
   tag: "8.16"
