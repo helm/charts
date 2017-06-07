@@ -53,7 +53,7 @@ The following tables lists the configurable parameters of the etcd-operator char
 | ------------------------------------------------- | -------------------------------------------------------------------- | ---------------------------------------------- |
 | `replicaCount`                                    | Number of etcd-operator replicas to create (only 1 is supported)     | `1`                                            |
 | `image.repository`                                | etcd-operator container image                                        | `quay.io/coreos/etcd-operator`                 |
-| `image.tag`                                       | etcd-operator container image tag                                    | `v0.2.1`                                       |
+| `image.tag`                                       | etcd-operator container image tag                                    | `v0.3.2`                                       |
 | `image.pullPolicy`                                | etcd-operator container image pull policy                            | `IfNotPresent`                                 |
 | `resources.limits.cpu`                            | CPU limit per etcd-operator pod                                      | `100m`                                         |
 | `resources.limits.memory`                         | Memory limit per etcd-operator pod                                   | `128Mi`                                        |
@@ -61,7 +61,7 @@ The following tables lists the configurable parameters of the etcd-operator char
 | `resources.requests.memory`                       | Memory request per etcd-operator pod                                 | `128Mi`                                        |
 | `cluster.enabled`                                 | Whether to enable provisioning of an etcd-cluster                    | `false`                                        |
 | `cluster.name`                                    | etcd cluster name                                                    | `etcd-cluster`                                 |
-| `cluster.version`                                 | etcd cluster version                                                 | `v3.1.2`                                       |
+| `cluster.version`                                 | etcd cluster version                                                 | `v3.1.8`                                       |
 | `cluster.size`                                    | etcd cluster size                                                    | `3`                                            |
 | `cluster.backup.enabled`                          | Whether to create PV for cluster backups                             | `false`                                        |
 | `cluster.backup.provisioner`                      | Which PV provisioner to use                                          | `kubernetes.io/gce-pd` (kubernetes.io/aws-ebs) |
@@ -69,6 +69,8 @@ The following tables lists the configurable parameters of the etcd-operator char
 | `cluster.backup.config.maxSnapshot`               | maximum number of snapshots to keep                                  | `5`                                            |
 | `cluster.backup.config.storageType`               | Type of storage to provision                                         | `PersistentVolume`                             |
 | `cluster.backup.config.pv.volumeSizeInMB`         | size of backup PV                                                    | `512MB`                                        |
+| `rbac.install`                                    | install required rbac service account, roles and rolebindings        | `true`                                         |
+| `rbac.apiVersion`                                 | rbac api version `v1alpha1|v1beta1`                                  | `v1beta1`                                      |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
 
@@ -81,4 +83,40 @@ installing the chart. For example:
 
 ```bash
 $ helm install --name my-release --values values.yaml stable/etcd-operator
+```
+
+## RBAC
+By default the chart will install the associated RBAC roles and rolebindings using beta annotations.
+
+To determine if your cluster supports this running the following:
+
+```console
+$ kubectl api-versions | grep rbac
+```
+
+You also need to have the following parameter on the api server. See the following document for how to enable [RBAC](https://kubernetes.io/docs/admin/authorization/rbac/)
+
+```
+--authorization-mode=RBAC
+```
+
+If the output contains "beta" or both "alpha" and "beta" you can proceed with normal installation.
+
+### Changing RBAC manifest apiVersion
+
+By default the RBAC resources are generated with the "v1beta1" apiVersion. To use "v1alpha1" do the following:
+
+```console
+$ helm install --name my-release stable/etcd-operator --set rbac.apiVersion=v1alpha1
+```
+
+
+If it does not. Follow the steps below to disable.
+
+### Disable RBAC role/rolebinding creation
+
+To disable the creation of RBAC resources (On clusters without RBAC or if you would like to manage the creation outside the scope of this chart). Do the following:
+
+```console
+$ helm install --name my-release stable/etcd-operator --set rbac.install=false
 ```
