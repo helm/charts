@@ -6,7 +6,7 @@
 Master:
   Name: jenkins-master
   Image: "jenkinsci/jenkins"
-  ImageTag: "2.46.1"
+  ImageTag: "2.46.3"
   ImagePullPolicy: "Always"
   Component: "jenkins-master"
   UseSecurity: true
@@ -27,10 +27,18 @@ Master:
   SlaveListenerPort: 50000
   LoadBalancerSourceRanges:
   - 0.0.0.0/0
+# Optionally configure a JMX port
+# requires additional JavaOpts, ie
+# JavaOpts: >
+#   -Dcom.sun.management.jmxremote.port=4000 
+#   -Dcom.sun.management.jmxremote.authenticate=false 
+#   -Dcom.sun.management.jmxremote.ssl=false 
+# JMXPort: 4000
 # List of plugins to be install during Jenkins master start
   InstallPlugins:
       - kubernetes:0.11 
       - workflow-aggregator:2.5
+      - workflow-job:2.11
       - credentials-binding:1.11
       - git:3.2.0
 # Used to approve a list of groovy functions in pipelines used the script-security plugin. Can be viewed under /scriptApproval
@@ -57,6 +65,7 @@ Agent:
   Enabled: true
   Image: jenkinsci/jnlp-slave
   ImageTag: 2.62
+  Privileged: false
   Cpu: "200m"
   Memory: "256Mi"
   # You may want to change this to true while testing a new image

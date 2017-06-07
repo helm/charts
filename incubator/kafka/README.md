@@ -1,6 +1,6 @@
 # Apache Kafka Helm Chart
 
-This is an implementation of Kafka PetSet found here:
+This is an implementation of Kafka StatefulSet found here:
 
  * https://github.com/Yolean/kubernetes-kafka
 
@@ -13,22 +13,21 @@ This is an implementation of Kafka PetSet found here:
 * Requires at least `v2.0.0-beta.1` version of helm to support
   dependency management with requirements.yaml
 
-## PetSet Details
+## StatefulSet Details
 
-* http://kubernetes.io/docs/user-guide/petset/
+* https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/
 
-## PetSet Caveats
+## StatefulSet Caveats
 
-* http://kubernetes.io/docs/user-guide/petset/#alpha-limitations
+* https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#limitations
 
 ## Chart Details
 
 This chart will do the following:
 
-* Implement a dynamically scalable kafka cluster using Kubernetes
-  PetSets
+* Implement a dynamically scalable kafka cluster using Kubernetes StatefulSets
 
-* Implement a dynamically scalable zookeeper cluster as another Kubernetes PetSet required for the Kafka cluster above
+* Implement a dynamically scalable zookeeper cluster as another Kubernetes StatefulSet required for the Kafka cluster above
 
 ### Installing the Chart
 
@@ -36,17 +35,16 @@ To install the chart with the release name `my-release` in the default
 namespace:
 
 ```
-helm repo add incubator
-http://storage.googleapis.com/kubernetes-charts-incubator
-helm install --name my-kafka incubator/kafka
+$ helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
+$ helm install --name my-kafka incubator/kafka
 ```
 
 If using a dedicated namespace(recommended) then make sure the namespace
 exists with:
 
 ```
-kubectl create ns kafka
-helm install --name my-kafka --set global.namespace=kafka incubator/kafka
+$ kubectl create ns kafka
+$ helm install --name my-kafka --set global.namespace=kafka incubator/kafka
 ```
 
 This chart includes a ZooKeeper chart as a dependency to the Kafka

@@ -2,9 +2,9 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: {{ template "fullname" . }}
+  name: "{{- if not (empty .Values.persistence.name) }}{{ .Values.persistence.name }}{{- else }}{{ template "fullname" . }}{{- end }}"
   labels:
-    app: {{ template "fullname" . }}
+    app: "{{- if not (empty .Values.persistence.name) }}{{ .Values.persistence.name }}{{- else }}{{ template "fullname" . }}{{- end }}"
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"

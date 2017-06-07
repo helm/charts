@@ -12,7 +12,7 @@ $ helm install stable/redmine
 
 This chart bootstraps a [Redmine](https://github.com/bitnami/bitnami-docker-redmine) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
-It also packages the [Bitnami MariaDB chart](https://github.com/kubernetes/charts/tree/master/stable/mariadb) which is required for bootstrapping a MariaDB deployment for the database requirements of the Redmine application.
+It also packages the [Bitnami MariaDB chart](https://github.com/kubernetes/charts/tree/master/stable/mariadb) and the [PostgreSQL chart](https://github.com/kubernetes/charts/tree/master/stable/postgresql) which are required for bootstrapping a MariaDB/PostgreSQL deployment for the database requirements of the Redmine application.
 
 ## Prerequisites
 
@@ -41,6 +41,14 @@ $ helm delete my-release
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
 
+## Using PostgreSQL instead of MariaDB
+
+This chart includes the option to use a PostgreSQL database for Redmine instead of MariaDB. To use this, MariaDB must be explicitly disabled and PostgreSQL enabled:
+
+```
+helm install --name my-release stable/redmine --set databaseType.mariadb=false,databaseType.postgresql=true
+```
+
 ## Configuration
 
 The following tables lists the configurable parameters of the Redmine chart and their default values.
@@ -58,9 +66,13 @@ The following tables lists the configurable parameters of the Redmine chart and 
 | `smtpUser`                      | SMTP user                       | `nil`                                                     |
 | `smtpPassword`                  | SMTP password                   | `nil`                                                     |
 | `smtpTls`                       | Use TLS encryption with SMTP    | `nil`                                                     |
+| `databaseType.postgresql`       | Select postgresql database      | `false`                                                   |
+| `databaseType.mariadb`          | Select mariadb database         | `true`                                                    |
 | `mariadb.mariadbRootPassword`   | MariaDB admin password          | `nil`                                                     |
+| `postgresql.postgresqlPassword` | PostgreSQL admin password       | `nil`                                                     |
 | `serviceType`                   | Kubernetes Service type         | `LoadBalancer`                                            |
 | `persistence.enabled`           | Enable persistence using PVC    | `true`                                                    |
+| `persistence.existingClaim`     | The name of an existing PVC     | `nil`                                                     |
 | `persistence.storageClass`      | PVC Storage Class               | `nil` (uses alpha storage class annotation)               |
 | `persistence.accessMode`        | PVC Access Mode                 | `ReadWriteOnce`                                           |
 | `persistence.size`              | PVC Storage Request             | `8Gi`                                                     |
@@ -89,5 +101,19 @@ $ helm install --name my-release -f values.yaml stable/redmine
 
 The [Bitnami Redmine](https://github.com/bitnami/bitnami-docker-redmine) image stores the Redmine data and configurations at the `/bitnami/redmine` path of the container.
 
-Persistent Volume Claims are used to keep the data across deployments. This is known to work in GCE, AWS, and minikube.
+Persistent Volume Claims are used to keep the data across deployments. This is known to work in GCE, AWS, and minikube. The volume is created using dynamic volume provisioning. Clusters configured with NFS mounts require manually managed volumes and claims.
+
 See the [Configuration](#configuration) section to configure the PVC or to disable persistence.
+
+
+### Existing PersistentVolumeClaims
+
+The following example includes two PVCs, one for redmine and another for Maria DB.
+
+1. Create the PersistentVolume
+1. Create the PersistentVolumeClaim
+1. Create the directory, on a worker
+1. Install the chart
+```bash
+$ helm install --name test --set persistence.existingClaim=PVC_REDMINE,mariadb.persistence.existingClaim=PVC_MARIADB  redmine
+```

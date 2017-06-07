@@ -50,7 +50,11 @@ data:
                 <org.csanchez.jenkins.plugins.kubernetes.ContainerTemplate>
                   <name>jnlp</name>
                   <image>{{ .Values.Agent.Image }}:{{ .Values.Agent.ImageTag }}</image>
+{{- if .Values.Agent.Privileged }}
+                  <privileged>true</privileged>
+{{- else }}
                   <privileged>false</privileged>
+{{- end }}
                   <alwaysPullImage>{{ .Values.Agent.AlwaysPullImage }}</alwaysPullImage>
                   <workingDir>/home/jenkins</workingDir>
                   <command></command>
@@ -121,7 +125,7 @@ data:
     echo "false" > /usr/share/jenkins/ref/secrets/slave-to-master-security-kill-switch;
     cp -n /var/jenkins_config/config.xml /var/jenkins_home;
 {{- if .Values.Master.InstallPlugins }}
-    cp -n /var/jenkins_config/plugins.txt /var/jenkins_home;
+    cp /var/jenkins_config/plugins.txt /var/jenkins_home;
     /usr/local/bin/install-plugins.sh `echo $(cat /var/jenkins_home/plugins.txt)`;
 {{- end }}
 {{- if .Values.Master.ScriptApproval }}

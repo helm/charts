@@ -1,3 +1,4 @@
+{{- if .Values.daemonset.enabled }}
 {{- if .Values.datadog.apiKey }}
 apiVersion: extensions/v1beta1
 kind: DaemonSet
@@ -88,4 +89,5 @@ spec:
         - name: autoconf
           configMap:
             name: {{ template "autoconf.fullname" . }}
+{{ end }}
 {{ end }}

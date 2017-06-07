@@ -23,6 +23,10 @@ isClusterService: true
 # serviceType specifies type of service to be created for this chart.
 serviceType: "ClusterIP"
 
+# serviceProtocol specifies the protocol on which to expose the CoreDNS service.
+# Can be one of three options: "UDPNTCP" (default), "UDP" or "TCP"
+serviceProtocol: "UDPNTCP"
+
 # middleware configuration of CoreDNS refer to https://github.com/coredns/coredns/tree/master/middleware
 # for all specific details. set enabled to true/false to enable/disable a middleware.
 middleware:

@@ -53,9 +53,33 @@ spec:
                         }
                     },
                     {
-                        "name": "RS",
+                        "name": "REPLICA_SET",
                         "value": "{{ .Values.replicaSet }}"
                     }
+                    {{- if .Values.auth.enabled }},
+                    {
+                        "name": "AUTH",
+                        "value": "true"
+                    },
+                    {
+                        "name": "ADMIN_USER",
+                        "valueFrom": {
+                            "secretKeyRef": {
+                                "name": "{{ template "adminSecret" . }}",
+                                "key": "user"
+                            }
+                        }
+                    },
+                    {
+                        "name": "ADMIN_PASSWORD",
+                        "valueFrom": {
+                            "secretKeyRef": {
+                                "name": "{{ template "adminSecret" . }}",
+                                "key": "password"
+                            }
+                        }
+                    }
+                    {{- end }}
                 ],
                 "volumeMounts": [
                     {
@@ -70,6 +94,13 @@ spec:
                         "name": "datadir",
                         "mountPath": "/data/db"
                     }
+                    {{- if .Values.auth.enabled }},
+                    {
+                        "name": "keydir",
+                        "mountPath": "/keydir",
+                        "readOnly": true
+                    }
+                    {{- end }}
                 ]
             }
         ]'
@@ -84,25 +115,61 @@ spec:
           resources:
 {{ toYaml .Values.resources | indent 12 }}
           command:
-            - /usr/bin/mongod
+            - mongod
             - --config=/config/mongod.conf
+          {{- if .Values.auth.enabled }}
+          env:
+            - name: AUTH
+              value: "true"
+            - name: ADMIN_USER
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ template "adminSecret" . }}"
+                  key: user
+            - name: ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ template "adminSecret" . }}"
+                  key: password
+            {{- end }}
+          livenessProbe:
+            exec:
+              command:
+                - mongo
+                - --eval
+                - "db.adminCommand('ping')"
+            initialDelaySeconds: 30
+            timeoutSeconds: 5
           readinessProbe:
             exec:
               command:
-                - sh
-                - -c
-                - "/usr/bin/mongo --eval 'printjson(db.serverStatus())'"
+                - mongo
+                - --eval
+                - "db.adminCommand('ping')"
             initialDelaySeconds: 5
-            timeoutSeconds: 5
+            timeoutSeconds: 1
           volumeMounts:
             - name: datadir
               mountPath: /data/db
             - name: config
               mountPath: /config
+            - name: workdir
+              mountPath: /work-dir
+          {{- if .Values.auth.enabled }}
+            - name: keydir
+              mountPath: /keydir
+              readOnly: true
+          {{- end }}
       volumes:
         - name: config
           configMap:
             name: {{ template "fullname" . }}
+        {{- if .Values.auth.enabled }}
+        - name: keydir
+          secret:
+            defaultMode: 0400
+            secretName: {{ template "keySecret" . }}
+        {{- end }}
         - name: workdir
           emptyDir: {}
 {{- if .Values.persistentVolume.enabled }}
