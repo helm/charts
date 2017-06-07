@@ -1,0 +1,71 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    app: {{ template "fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: {{ template "fullname" . }}
+        component: "{{ .Chart.Name }}"
+    spec:
+      containers:
+      - name: {{ template "fullname" . }}
+        image: "{{ .Values.parse.image }}"
+        imagePullPolicy: {{ default "" .Values.parse.imagePullPolicy | quote }}
+        env:
+        - name: PARSE_HOST
+          value: "0.0.0.0"
+        - name: PARSE_PORT_NUMBER
+          value: {{ .Values.parse.port | quote }}
+        - name: PARSE_MOUNT_PATH
+          value: {{ .Values.parse.mountPath | quote }}
+        - name: PARSE_APP_ID
+          value: {{ .Values.parse.appId | quote }}
+        - name: PARSE_MASTER_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "fullname" . }}
+              key: master-key
+        - name: MONGODB_HOST
+          value: {{ template "mongodb.fullname" . }}
+        - name: MONGODB_PORT
+          value: "27017"
+        ports:
+        - name: server-http
+          containerPort: {{ .Values.parse.port }}
+        livenessProbe:
+          httpGet:
+            path: {{ .Values.parse.mountPath }}/users
+            port: server-http
+            httpHeaders:
+            - name: X-Parse-Application-Id
+              value: {{ .Values.parse.appId }}
+          initialDelaySeconds: 120
+        readinessProbe:
+          httpGet:
+            path: {{ .Values.parse.mountPath }}/users
+            port: server-http
+            httpHeaders:
+            - name: X-Parse-Application-Id
+              value: {{ .Values.parse.appId }}
+          initialDelaySeconds: 30
+        resources:
+{{ toYaml .Values.parse.resources | indent 10 }}
+        volumeMounts:
+        - name: parse-data
+          mountPath: /bitnami/parse
+      volumes:
+      - name: parse-data
+      {{- if .Values.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ template "fullname" . }}
+      {{- else }}
+        emptyDir: {}
+      {{- end }}

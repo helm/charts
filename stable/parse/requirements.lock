@@ -1,0 +1,10 @@
+dependencies:
+- condition: ""
+  enabled: false
+  import-values: null
+  name: mongodb
+  repository: https://kubernetes-charts.storage.googleapis.com/
+  tags: null
+  version: 0.4.10
+digest: sha256:6a73785f56aeffcde2645e9c87e5a56950bcad65047bd0f0e0a1939fb638ec5b
+generated: 2017-06-07T15:48:48.015426185+05:30
