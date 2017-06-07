@@ -16,6 +16,10 @@ Replicas: 5
 Resources:
   Cpu: 100m
   Memory: 512Mi
+  
+# Node selector for Patroni pods
+#NodeSelector:
+#  cloud.google.com/gke-nodepool: highmem-pool
 
 # Credentials used by Patroni
 # * more information: https://github.com/zalando/patroni/blob/master/docs/SETTINGS.rst#postgresql
