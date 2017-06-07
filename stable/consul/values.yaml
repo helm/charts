@@ -28,6 +28,10 @@ Storage: "1Gi"
 ## host id.
 DisableHostNodeId: false
 
+## Datacenter name for consul. If not supplied, will use the consul
+## default 'dc1'
+# DatacenterName: dc1
+
 ## StorageClass name for use with Persistent Volume Claim (PVC) using beta notations
 # StorageClass:
 

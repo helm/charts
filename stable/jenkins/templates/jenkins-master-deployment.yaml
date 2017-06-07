@@ -23,6 +23,7 @@ spec:
         chart: "{{.Chart.Name}}-{{.Chart.Version}}"
         component: "{{.Release.Name}}-{{.Values.Master.Component}}"
       annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/config.yaml") . | sha256sum }}
         pod.alpha.kubernetes.io/init-containers: '[
               {
                   "name": "copy-default-config",
