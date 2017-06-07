@@ -1,0 +1,27 @@
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  name: "{{ template "fullname" . }}-master"
+  labels:
+    app: {{ template "fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    couchbaserole: "master"
+spec:
+  serviceName: {{ template "fullname" . }}
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: {{ template "fullname" . }}
+        couchbaserole: "master"
+    spec:
+      containers:
+      - name: couchbase-master
+        image: couchbase/server:sandbox
+        env:
+          - name: TYPE
+            value: MASTER
+        ports:
+        - containerPort: 8091

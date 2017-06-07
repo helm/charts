@@ -1,0 +1,12 @@
+name: couchbase
+version: 0.1.0
+description: Couchbase cluster with a master and at least 1 worker (3 per default).
+keywords:
+- couchbase
+- database
+- nosql
+home: https://www.couchbase.com
+icon: https://blog.couchbase.com/wp-content/original-assets/2016/january/couchbase-server-and-couchdb-compared/cblogo.png
+maintainers:
+- name: Julien Stroheker
+  email: juliens@microsoft.com

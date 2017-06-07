@@ -1,0 +1,7 @@
+########################################################################
+Couchbase can be accessed via port 8091 when the service will be created
+
+Default Username : Administrator / Password : password
+
+You will have to rebalance your servers to have the H.A online.
+########################################################################
