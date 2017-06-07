@@ -1,5 +1,5 @@
-apiVersion: apps/v1alpha1
-kind: PetSet
+apiVersion: apps/v1beta1
+kind: StatefulSet
 metadata:
   name: "{{ printf "%s-data-%s" .Release.Name .Values.Name | trunc 24 }}"
   labels:
@@ -40,6 +40,8 @@ spec:
           value: "false"
         - name: ES_HEAP_SIZE
           value: "{{.Values.DataHeapSize}}"
+        - name: KUBERNETES_MASTER
+          value: kubernetes.default.svc.cluster.local
         image: "{{.Values.Image}}:{{.Values.ImageTag}}"
         imagePullPolicy: "{{.Values.ImagePullPolicy}}"
         ports:
@@ -56,13 +58,14 @@ spec:
           httpGet:
             path: /
             port: 9200
-          initialDelaySeconds: 30
-          timeoutSeconds: 1
+          initialDelaySeconds: 90
+          timeoutSeconds: 10
         readinessProbe:
           httpGet:
             path: /
             port: 9200
-          timeoutSeconds: 5
+          initialDelaySeconds: 90
+          timeoutSeconds: 10
         volumeMounts:
         - mountPath: /usr/share/elasticsearch/data
           name: elasticsearch-data
