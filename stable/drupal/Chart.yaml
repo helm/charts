@@ -1,5 +1,6 @@
 name: drupal
-version: 0.5.4
+version: 0.6.0
+appVersion: 8.3.2
 description: One of the most versatile open source content management systems.
 keywords:
 - drupal
@@ -14,6 +15,6 @@ icon: https://bitnami.com/assets/stacks/drupal/img/drupal-stack-220x234.png
 sources:
 - https://github.com/bitnami/bitnami-docker-drupal
 maintainers:
-- name: Bitnami
+- name: bitnami-bot
   email: containers@bitnami.com
 engine: gotpl

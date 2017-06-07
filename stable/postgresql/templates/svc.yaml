@@ -13,6 +13,7 @@ metadata:
     prometheus.io/port: "9187"
 {{- end }}
 spec:
+  type: {{ .Values.service.type }}
   ports:
   - name: postgresql
     port: {{ .Values.service.port }}
