@@ -1,0 +1,18 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: {{ template "fullname" . }}-service
+  labels:
+    app: {{ template "name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  type: {{ .Values.service.type }}
+  selector:
+    app: {{ template "name" . }}
+  ports:
+    - name: service
+      port: {{ .Values.service.port }}
+      targetPort: 4444
+      protocol: TCP
