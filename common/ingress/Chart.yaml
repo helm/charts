@@ -1,0 +1,11 @@
+name: ingress
+version: 0.0.1
+description: A basic and reusable Ingress for helm charts.
+keywords:
+- ingress
+- web
+- tls
+maintainers:
+- name: kubernetes
+  email: owners-official-charts@kubernetes.io
+engine: gotpl
