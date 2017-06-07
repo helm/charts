@@ -35,7 +35,7 @@ data:
               <name>default</name>
               <instanceCap>2147483647</instanceCap>
               <idleMinutes>0</idleMinutes>
-              <label></label>
+              <label>{{.Release.Name}}-{{.Values.Agent.Component}}</label>
               <nodeSelector></nodeSelector>
               <volumes/>
               <containers>
