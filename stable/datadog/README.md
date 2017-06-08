@@ -54,7 +54,7 @@ The following tables lists the configurable parameters of the Datadog chart and 
 | `resources.requests.memory` | Memory resource requests           | 100m                                      |
 | `resources.limits.memory`   | Memory resource limits             | 256m                                      |
 | `daemonset.podAnnotations`  | Annotations to add to the DaemonSet's Pods | `nil`                             |
-| `daemonset.tolerations`     | List of node taints to tolerate (requires Kubernetes 1.6) | `nil`              |
+| `daemonset.tolerations`     | List of node taints to tolerate (requires Kubernetes >1.6) | `nil`             |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
