@@ -1,0 +1,13 @@
+apiVersion: v1
+name: registry
+description: A Private Registry Helm chart for Kubernetes
+keywords:
+- registry
+version: 0.1.0
+home: https://docs.docker.com/registry/
+sources:
+- https://github.com/docker/distribution
+- https://github.com/kubernetes/kubernetes/tree/master/cluster/addons/registry
+maintainers:
+- name: ravishivt
+engine: gotpl
