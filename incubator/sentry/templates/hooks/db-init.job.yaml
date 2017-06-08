@@ -1,3 +1,4 @@
+# https://docs.sentry.io/server/installation/docker/#running-migrations
 apiVersion: batch/v1
 kind: Job
 metadata:

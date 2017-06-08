@@ -47,26 +47,18 @@ spec:
         - name: SENTRY_REDIS_PORT
           value: "6379"
         - name: SENTRY_EMAIL_HOST
-          value: {{ default "" .Values.smtpHost | quote }}
+          value: {{ default "" .Values.email.host | quote }}
         - name: SENTRY_EMAIL_PORT
-          value: {{ default "" .Values.smtpPort | quote }}
+          value: {{ default "" .Values.email.port | quote }}
         - name: SENTRY_EMAIL_USER
-          value: {{ default "" .Values.smtpUser | quote }}
+          value: {{ default "" .Values.email.user | quote }}
         - name: SENTRY_EMAIL_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ template "fullname" . }}
               key: smtp-password
-  #      livenessProbe:
-  #        httpGet:
-  #          path: /
-  #          port: {{ .Values.service.internalPort }}
-  #      readinessProbe:
-  #        httpGet:
-  #          path: /
-  #          port: {{ .Values.service.internalPort }}
         volumeMounts:
-        - mountPath: /var/lib/sentry/files
+        - mountPath: {{ .Values.persistence.filestore_dir }}
           name: sentry-data
         resources:
 {{ toYaml .Values.resources | indent 12 }}
