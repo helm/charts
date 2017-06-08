@@ -1,0 +1,15 @@
+name: kibana
+version: 0.1.0
+description: Kibana lets you visualize your Elasticsearch data and navigate the Elastic Stack.
+engine: gotpl
+home: https://www.elastic.co/products/kibana
+keywords:
+- kibana
+- elasticsearch
+maintainers:
+- email: james@jagregory.com
+  name: James Gregory
+sources:
+- https://www.elastic.co/products/kibana
+- https://github.com/elastic/kibana-docker
+- https://hub.docker.com/_/kibana/
