@@ -13,7 +13,7 @@ image:
 daemonset:
   enabled: true
 
-  # Allow the DaemonSet to schedule on tainted nodes
+  ## Allow the DaemonSet to schedule on tainted nodes (requires Kubernetes 1.6)
   # tolerations: []
 
 # Apart from DaemonSet, deploy Datadog agent pods and related service for
