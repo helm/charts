@@ -21,7 +21,7 @@ spec:
         env:
         - name: MARIADB_HOST
           value: {{ template "mariadb.fullname" . }}
-        - name: MARIADB_PORT
+        - name: MARIADB_PORT_NUMBER
           value: "3306"
         - name: MARIADB_PASSWORD
           valueFrom:
