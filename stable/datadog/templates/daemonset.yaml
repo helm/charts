@@ -12,6 +12,10 @@ spec:
       labels:
         app: {{ template "fullname" . }}
       name: {{ template "fullname" . }}
+      {{- if .Values.daemonset.podAnnotations }}
+      annotations:
+{{ toYaml .Values.daemonset.podAnnotations | indent 8 }}
+      {{- end }}
     spec:
       containers:
       - name: {{ .Chart.Name }}

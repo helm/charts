@@ -13,6 +13,10 @@ image:
 daemonset:
   enabled: true
 
+  ## Annotations to add to the DaemonSet's Pods
+  # podAnnotations:
+  #   scheduler.alpha.kubernetes.io/tolerations: '[{"key": "example", "value": "foo"}]'
+
   ## Allow the DaemonSet to schedule on tainted nodes (requires Kubernetes 1.6)
   # tolerations: []
 
