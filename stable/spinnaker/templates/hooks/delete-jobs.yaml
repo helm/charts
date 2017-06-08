@@ -3,9 +3,8 @@ kind: Job
 metadata:
   name: "{{.Release.Name}}-delete-jobs"
   labels:
-    heritage: {{.Release.Service | quote }}
-    release: {{.Release.Name | quote }}
-    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+    app: {{ template "fullname" . }}
+    component: spinnaker
   annotations:
     "helm.sh/hook": post-delete
 spec:
@@ -13,9 +12,8 @@ spec:
     metadata:
       name: "{{.Release.Name}}"
       labels:
-        heritage: {{.Release.Service | quote }}
-        release: {{.Release.Name | quote }}
-        chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+        app: {{ template "fullname" . }}
+        component: spinnaker
     spec:
       restartPolicy: OnFailure
       volumes:
@@ -25,11 +23,11 @@ spec:
 
       containers:
       - name: post-install-job
-        image: "lachlanevenson/k8s-kubectl:v1.4.7"
+        image: "lachlanevenson/k8s-kubectl:v1.6.0"
         volumeMounts:
         - name: kubectl
           mountPath: /kubectl
         command:
         - sh
         - -c
-        - "kubectl delete job {{.Release.Name}}-create-bucket {{.Release.Name}}-upload-build-image {{.Release.Name}}-delete-jobs {{.Release.Name}}-upload-run-script"
+        - "kubectl delete job --namespace {{ .Release.Namespace }} {{.Release.Name}}-create-bucket {{.Release.Name}}-upload-build-image {{.Release.Name}}-delete-jobs {{.Release.Name}}-upload-run-script"

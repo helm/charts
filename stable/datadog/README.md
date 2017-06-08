@@ -74,6 +74,9 @@ $ helm install --name my-release -f values.yaml stable/datadog
 
 Datadog offers a multitude of [tags](https://hub.docker.com/r/datadog/docker-dd-agent/tags/), including alpine based agents and JMX.
 
+### DaemonSet and Deployment
+By default installs Datadog agent inside a DaemonSet. You may also use Datadog agent inside a Deployment, if you want to collect Kubernetes API events or send custom metrics to DogStatsD endpoint.
+
 ### confd and checksd
 
 The Datadog entrypoint will copy files found in `/conf.d` and `/check.d` to

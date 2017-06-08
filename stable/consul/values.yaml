@@ -16,12 +16,21 @@ ConsulDnsPort: 8600
 Component: "consul"
 Replicas: 3
 Image: "consul"
-ImageTag: "0.7.5"
+ImageTag: "0.8.3"
 ImagePullPolicy: "Always"
 Cpu: "100m"
 Memory: "256Mi"
 ## Persistent volume size
 Storage: "1Gi"
+
+## Needed for 0.8.0 and later IF all consul containers are spun up
+## on the same machine. Without this they all generate the same
+## host id.
+DisableHostNodeId: false
+
+## Datacenter name for consul. If not supplied, will use the consul
+## default 'dc1'
+# DatacenterName: dc1
 
 ## StorageClass name for use with Persistent Volume Claim (PVC) using beta notations
 # StorageClass:
@@ -35,3 +44,8 @@ ui:
 uiService:
   enabled: true
   type: "NodePort"
+
+## test container details
+test:
+  image: lachlanevenson/k8s-kubectl
+  imageTag: v1.4.8-bash

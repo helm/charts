@@ -22,7 +22,7 @@ spec:
         env:
         - name: MARIADB_HOST
           value: {{ template "mariadb.fullname" . }}
-        - name: MARIADB_PORT
+        - name: MARIADB_PORT_NUMBER
           value: "3306"
         - name: MARIADB_PASSWORD
           valueFrom:
@@ -31,7 +31,7 @@ spec:
               key: mariadb-root-password
         - name: GHOST_HOST
           value: {{ include "host" . | quote }}
-        - name: GHOST_PORT
+        - name: GHOST_PORT_NUMBER
           {{- if eq .Values.serviceType "ClusterIP" }}
           value: "2368"
           {{- else }}
@@ -66,18 +66,24 @@ spec:
           containerPort: 2368
         livenessProbe:
           httpGet:
-            path: /
+            path: /ghost
             port: http
+            httpHeaders:
+            - name: Host
+              value: {{ include "host" . | quote }}
           initialDelaySeconds: 120
           timeoutSeconds: 5
+          failureThreshold: 6
         readinessProbe:
-          exec:
-            command:
-            - sh
-            - -c
-            - nami status ghost | grep "ghost is running"
-          initialDelaySeconds: 5
-          timeoutSeconds: 1
+          httpGet:
+            path: /ghost
+            port: http
+            httpHeaders:
+            - name: Host
+              value: {{ include "host" . | quote }}
+          initialDelaySeconds: 30
+          timeoutSeconds: 3
+          periodSeconds: 5
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:

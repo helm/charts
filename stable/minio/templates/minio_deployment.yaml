@@ -42,7 +42,6 @@ spec:
         - name: minio
           image: {{ .Values.image }}:{{ .Values.imageTag }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
-          command: ["minio"]
           {{- if .Values.configPath }}
           args: ["-C", "{{ .Values.configPath }}", "server", "{{ .Values.mountPath }}"]
           {{- else }}
