@@ -35,16 +35,16 @@ To install the chart with the release name `my-release` in the default
 namespace:
 
 ```
-helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
-helm install --name my-kafka incubator/kafka
+$ helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
+$ helm install --name my-kafka incubator/kafka
 ```
 
 If using a dedicated namespace(recommended) then make sure the namespace
 exists with:
 
 ```
-kubectl create ns kafka
-helm install --name my-kafka --set global.namespace=kafka incubator/kafka
+$ kubectl create ns kafka
+$ helm install --name my-kafka --set global.namespace=kafka incubator/kafka
 ```
 
 This chart includes a ZooKeeper chart as a dependency to the Kafka
