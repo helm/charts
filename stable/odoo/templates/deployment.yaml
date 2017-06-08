@@ -52,16 +52,14 @@ spec:
           containerPort: 8069
         livenessProbe:
           httpGet:
-            path: /
+            path: /web/login
             port: http
-          initialDelaySeconds: 180
-          timeoutSeconds: 30
+          initialDelaySeconds: 300
         readinessProbe:
           httpGet:
-            path: /
+            path: /web/login
             port: http
-          initialDelaySeconds: 5
-          timeoutSeconds: 1
+          initialDelaySeconds: 30
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
