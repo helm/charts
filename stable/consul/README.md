@@ -17,8 +17,7 @@ This chart will do the following:
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
-$ helm install --name my-release incubator/consul
+$ helm install --name my-release stable/consul
 ```
 
 ## Configuration
@@ -34,10 +33,11 @@ The following tables lists the configurable parameters of the consul chart and t
 | `Replicas`              | k8s statefulset replicas              | `3`                                                        |
 | `Component`             | k8s selector key                      | `consul`                                                   |
 | `Cpu`                   | container requested cpu               | `100m`                                                     |
-| `DisableHostNodeId`     | Disable Node Id creation (uses random)| `false`                                                   |
+| `DatacenterName`        | Consul Datacenter Name                | `dc1` (The consul default)                                 |
+| `DisableHostNodeId`     | Disable Node Id creation (uses random)| `false`                                                    |
 | `Memory`                | container requested memory            | `512Mi`                                                    |
 | `Storage`               | Persistent volume size                | `1Gi`                                                      |
-| `StorageClass`          | Persistent volume storage class       | `nil`                                                  |
+| `StorageClass`          | Persistent volume storage class       | `nil`                                                      |
 | `HttpPort`              | Consul http listening port            | `8500`                                                     |
 | `RpcPort`               | Consul rpc listening port             | `8400`                                                     |
 | `SerflanPort`           | Container serf lan listening port     | `8301`                                                     |
@@ -47,7 +47,7 @@ The following tables lists the configurable parameters of the consul chart and t
 | `ServerPort`            | Container server listening port       | `8300`                                                     |
 | `ConsulDnsPort`         | Container dns listening port          | `8600`                                                     |
 | `ui.enabled`            | Enable Consul Web UI                  | `false`                                                    |
-| `uiService.enabled`      | Create dedicated Consul Web UI svc    | `false`                                                    |
+| `uiService.enabled`     | Create dedicated Consul Web UI svc    | `false`                                                    |
 | `uiService.type`        | Dedicate Consul Web UI svc type       | `NodePort`                                                 |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
@@ -55,7 +55,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```bash
-$ helm install --name my-release -f values.yaml incubator/consul
+$ helm install --name my-release -f values.yaml stable/consul
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)

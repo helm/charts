@@ -1,5 +1,6 @@
 name: magento
-version: 0.4.7
+version: 0.4.8
+appVersion: 2.1.7
 description: A feature-rich flexible e-commerce solution. It includes transaction options, multi-store functionality, loyalty programs, product categorization and shopper filtering, promotion rules, and more.
 keywords:
 - magento
@@ -11,7 +12,7 @@ home: https://magento.com/
 sources:
 - https://github.com/bitnami/bitnami-docker-magento
 maintainers:
-- name: Bitnami
+- name: bitnami-bot
   email: containers@bitnami.com
 engine: gotpl
 icon: https://bitnami.com/assets/stacks/magento/img/magento-stack-110x117.png

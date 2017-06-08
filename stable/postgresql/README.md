@@ -43,29 +43,31 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following tables lists the configurable parameters of the PostgresSQL chart and their default values.
 
-| Parameter                  | Description                                | Default                                                    |
-| -----------------------    | ----------------------------------         | ---------------------------------------------------------- |
-| `image`                    | `postgres` image repository                | `postgres`                                                 |
-| `imageTag`                 | `postgres` image tag                       | `9.6.2`                                                    |
-| `imagePullPolicy`          | Image pull policy                          | `Always` if `imageTag` is `latest`, else `IfNotPresent`    |
-| `postgresUser`             | Username of new user to create.            | `postgres`                                                 |
-| `postgresPassword`         | Password for the new user.                 | random 10 characters                                       |
-| `postgresDatabase`         | Name for new database to create.           | `postgres`                                                 |
-| `postgresInitdbArgs`       | Initdb Arguments                           | `nil`                                                      |
-| `persistence.enabled`      | Use a PVC to persist data                  | `true`                                                     |
-| `persistence.existingClaim`| Provide an existing PersistentVolumeClaim  | `nil`                                                      |
-| `persistence.storageClass` | Storage class of backing PVC               | `nil` (uses alpha storage class annotation)                |
-| `persistence.accessMode`   | Use volume as ReadOnly or ReadWrite        | `ReadWriteOnce`                                            |
-| `persistence.size`         | Size of data volume                        | `8Gi`                                                      |
-| `persistence.subPath`      | Subdirectory of the volume to mount at     | `postgresql-db`                                            |
-| `resources`                | CPU/Memory resource requests/limits        | Memory: `256Mi`, CPU: `100m`                               |
-| `metrics.enabled`          | Start a side-car prometheus exporter       | `false`                                                    |
-| `metrics.image`            | Exporter image                             | `wrouesnel/postgres_exporter`                              |
-| `metrics.imageTag`         | Exporter image                             | `v0.1.1`                                                   |
-| `metrics.imagePullPolicy`  | Exporter image pull policy                 | `IfNotPresent`                                             |
-| `metrics.resources`        | Exporter resource requests/limit           | Memory: `256Mi`, CPU: `100m`                               |
-| `service.externalIPs`      | External IPs to listen on                  | `[]`                                                       |
-| `service.port`             | TCP port                                   | `5432`                                                     |
+| Parameter                  | Description                                     | Default                                                    |
+| -----------------------    | ---------------------------------------------   | ---------------------------------------------------------- |
+| `image`                    | `postgres` image repository                     | `postgres`                                                 |
+| `imageTag`                 | `postgres` image tag                            | `9.6.2`                                                    |
+| `imagePullPolicy`          | Image pull policy                               | `Always` if `imageTag` is `latest`, else `IfNotPresent`    |
+| `postgresUser`             | Username of new user to create.                 | `postgres`                                                 |
+| `postgresPassword`         | Password for the new user.                      | random 10 characters                                       |
+| `postgresDatabase`         | Name for new database to create.                | `postgres`                                                 |
+| `postgresInitdbArgs`       | Initdb Arguments                                | `nil`                                                      |
+| `persistence.enabled`      | Use a PVC to persist data                       | `true`                                                     |
+| `persistence.existingClaim`| Provide an existing PersistentVolumeClaim       | `nil`                                                      |
+| `persistence.storageClass` | Storage class of backing PVC                    | `nil` (uses alpha storage class annotation)                |
+| `persistence.accessMode`   | Use volume as ReadOnly or ReadWrite             | `ReadWriteOnce`                                            |
+| `persistence.size`         | Size of data volume                             | `8Gi`                                                      |
+| `persistence.subPath`      | Subdirectory of the volume to mount at          | `postgresql-db`                                            |
+| `resources`                | CPU/Memory resource requests/limits             | Memory: `256Mi`, CPU: `100m`                               |
+| `metrics.enabled`          | Start a side-car prometheus exporter            | `false`                                                    |
+| `metrics.image`            | Exporter image                                  | `wrouesnel/postgres_exporter`                              |
+| `metrics.imageTag`         | Exporter image                                  | `v0.1.1`                                                   |
+| `metrics.imagePullPolicy`  | Exporter image pull policy                      | `IfNotPresent`                                             |
+| `metrics.resources`        | Exporter resource requests/limit                | Memory: `256Mi`, CPU: `100m`                               |
+| `metrics.customMetrics`    | Additional custom metrics                       | `nil`                                                      |
+| `service.externalIPs`      | External IPs to listen on                       | `[]`                                                       |
+| `service.port`             | TCP port                                        | `5432`                                                     |
+| `service.type`             | k8s service type exposing ports, e.g. `NodePort`| `ClusterIP`                                          |
 
 The above parameters map to the env variables defined in [postgres](http://github.com/docker-library/postgres). For more information please refer to the [postgres](http://github.com/docker-library/postgres) image documentation.
 
@@ -106,3 +108,5 @@ The volume defaults to mount at a subdirectory of the volume instead of the volu
 
 ## Metrics
 The chart optionally can start a metrics exporter for [prometheus](https://prometheus.io). The metrics endpoint (port 9187) is not exposed and it is expected that the metrics are collected from inside the k8s cluster using something similar as the described in the [example Prometheus scrape configuration](https://github.com/prometheus/prometheus/blob/master/documentation/examples/prometheus-kubernetes.yml).
+
+The exporter allows to create custom metrics from additional SQL queries. See the Chart's `values.yaml` for an example and consult the [exporters documentation](https://github.com/wrouesnel/postgres_exporter#adding-new-metrics-via-a-config-file) for more details.

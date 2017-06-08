@@ -20,7 +20,7 @@ spec:
         env:
         - name: MARIADB_HOST
           value: {{ template "mariadb.fullname" . }}
-        - name: MARIADB_PORT
+        - name: MARIADB_PORT_NUMBER
           value: "3306"
         - name: MARIADB_PASSWORD
           valueFrom:
@@ -56,16 +56,18 @@ spec:
           containerPort: 8080
         livenessProbe:
           httpGet:
-            path: /jasperserver/
+            path: /jasperserver/login.html
             port: http
           initialDelaySeconds: 300
           timeoutSeconds: 5
+          failureThreshold: 6
         readinessProbe:
           httpGet:
-            path: /jasperserver/
+            path: /jasperserver/login.html
             port: http
-          initialDelaySeconds: 5
-          timeoutSeconds: 1
+          initialDelaySeconds: 30
+          timeoutSeconds: 3
+          periodSeconds: 5
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:

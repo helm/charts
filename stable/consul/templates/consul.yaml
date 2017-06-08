@@ -173,6 +173,9 @@ spec:
             {{- if .Values.DisableHostNodeId }}
               -disable-host-node-id \
             {{- end }}
+            {{- if .Values.DatacenterName }}
+              -datacenter {{ .Values.DatacenterName }} \
+            {{- end }}
               -data-dir=/var/lib/consul \
               -server \
               -bootstrap-expect=${INITIAL_CLUSTER_SIZE} \
