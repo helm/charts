@@ -46,6 +46,7 @@ The following tables lists the configurable parameters of the CockroachDB chart 
 | `Memory`                | Container requested memory         | `512Mi`                                                    |
 | `Storage`               | Persistent volume size             | `1Gi`                                                      |
 | `StorageClass`          | Persistent volume class            | `anything`                                                 |
+| `ClusterDomain`         | Cluster's default DNS domain       | `cluster.local`                                            |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 

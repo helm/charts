@@ -125,7 +125,8 @@ spec:
                 "imagePullPolicy": "{{.Values.ImagePullPolicy}}",
                 "args": [
                   "-on-start=/on-start.sh",
-                  "-service={{ printf "%s-%s" .Release.Name .Values.Name | trunc 56 }}"
+                  "-service={{ printf "%s-%s" .Release.Name .Values.Name | trunc 56 }}",
+                  "-domain={{.Values.ClusterDomain}}"
                 ],
                 "env": [
                   {
