@@ -1,5 +1,5 @@
 Redis cluster can be accessed via port 6379 on the following DNS name from within your cluster:
-redis-svc.{{ .Release.Namespace }}.svc.cluster.local
+{{ template "fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
 
 To connect to your Redis server:
 

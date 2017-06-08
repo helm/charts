@@ -1,7 +1,7 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}-sentinel
+  name: {{ template "name" . }}-sentinel
 spec:
   replicas: {{ .Values.replicas.sentinel }}
   template:
@@ -10,9 +10,7 @@ spec:
         name: redis-sentinel
         redis-sentinel: "true"
         role: sentinel
-        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-        release: "{{ .Release.Name }}"
-        heritage: "{{ .Release.Service }}"
+{{ include "labels.standard" . | indent 8 }}
     spec:
       containers:
       - name: sentinel

@@ -13,13 +13,13 @@ resources:
       memory: 200Mi
       cpu: 100m
     limits:
-      memory: 700Mi
+      memory: 200Mi
   sentinel:
     requests:
       memory: 200Mi
       cpu: 100m
     limits:
-      memory: 700Mi
+      memory: 200Mi
 
 
 ## Enable persistence using Persistent Volume Claims

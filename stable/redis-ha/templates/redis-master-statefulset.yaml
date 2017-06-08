@@ -2,13 +2,11 @@ apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
   labels:
-    name: {{ template "fullname" . }}-master
+    name: {{ template "name" . }}-master
     redis-sentinel: "true"
     redis-node: "true"
     role: master
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+{{ include "labels.standard" . | indent 4 }}
   name: redis-master
 spec:
   serviceName: "redis"
@@ -20,9 +18,7 @@ spec:
         redis-sentinel: "true"
         redis-node: "true"
         role: master
-        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-        release: "{{ .Release.Name }}"
-        heritage: "{{ .Release.Service }}"
+{{ include "labels.standard" . | indent 8 }}
     spec:
       terminationGracePeriodSeconds: 10
       containers:
@@ -40,7 +36,7 @@ spec:
             - mountPath: /redis-master-data
               name: data
         - name: sentinel
-          image: kubernetes/redis:v1
+          image: {{ .Values.redis_image }}
           resources:
 {{ toYaml .Values.resources.sentinel | indent 12 }}
           env:
@@ -52,7 +48,7 @@ spec:
       - name: data
       {{- if .Values.persistentVolume.enabled }}
         persistentVolumeClaim:
-          claimName: {{ if .Values.persistentVolume.existingClaim }}{{ .Values.persistentVolume.existingClaim }}{{- else }}{{ template "fullname" . }}{{- end }}
+          claimName: {{ if .Values.persistentVolume.existingClaim }}{{ .Values.persistentVolume.existingClaim }}{{- else }}{{ template "name" . }}{{- end }}
       {{- else }}
         emptyDir: {}
       {{- end -}}

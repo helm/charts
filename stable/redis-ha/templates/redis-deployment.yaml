@@ -1,21 +1,17 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "name" . }}
   labels:
     redis-node: "true"
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+{{ include "labels.standard" . | indent 4 }}
 spec:
   replicas: {{ .Values.replicas.slave }}
   template:
     metadata:
       labels:
         name: redis
-        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-        release: "{{ .Release.Name }}"
-        heritage: "{{ .Release.Service }}"
+{{ include "labels.standard" . | indent 8 }}
     spec:
       containers:
       - name: redis
@@ -31,7 +27,7 @@ spec:
       - name: data
       {{- if .Values.persistentVolume.enabled }}
         persistentVolumeClaim:
-          claimName: {{ if .Values.persistentVolume.existingClaim }}{{ .Values.persistentVolume.existingClaim }}{{- else }}{{ template "fullname" . }}{{- end }}
+          claimName: {{ if .Values.persistentVolume.existingClaim }}{{ .Values.persistentVolume.existingClaim }}{{- else }}{{ template "name" . }}{{- end }}
       {{- else }}
         emptyDir: {}
       {{- end -}}
