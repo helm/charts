@@ -4,7 +4,7 @@
 
 ## TL;DR;
 
-> **Note**: Istio manager currently looks for hardcoded configmap of name "istio" in the installed namespace which means that you can only install the chart once per namespace.
+> **Note**: Istio pilot currently looks for hardcoded configmap of name "istio" in the installed namespace which means that you can only install the chart once per namespace.
 
 ```console
 $ helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator

@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ $serviceName }}-{{ .Values.ingress.deployment.name }}
+  name: istio-ingress
   labels:
 {{ include "labels.standard" . | indent 4 }}
     istio: {{ $serviceName }}-{{ .Values.ingress.deployment.name }}

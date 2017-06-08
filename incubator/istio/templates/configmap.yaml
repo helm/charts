@@ -10,7 +10,7 @@ data:
 {{ if .Values.auth.enabled }}
     authPolicy: MUTUAL_TLS
 {{ end }}
-    mixerAddress: {{ template "fullname" . }}-mixer:{{ .Values.mixer.service.externalTcpPort }}
-    discoveryAddress: {{ template "fullname" . }}-manager:{{ .Values.manager.service.externalHttpDiscovery }}
-    ingressService: {{ template "fullname" . }}-ingress
-    zipkinAddress: {{ template "fullname" . }}-zipkin:{{ .Values.addons.zipkin.service.externalPort }}
+    mixerAddress: {{ $serviceName }}-mixer:{{ .Values.mixer.service.externalTcpPort }}
+    discoveryAddress: {{ $serviceName }}-pilot:{{ .Values.pilot.service.externalHttpDiscovery }}
+    ingressService: istio-ingress
+    zipkinAddress: {{ $serviceName }}-zipkin:{{ .Values.addons.zipkin.service.externalPort }}
