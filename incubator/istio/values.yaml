@@ -1,9 +1,9 @@
 ## Install Default RBAC roles and bindings
 rbac:
-  install: true
+  install: false
   apiVersion: v1beta1
 
-istioRelease: 0.1.5
+istioRelease: 0.1.6
 
 ## Enable Istio auth feature 
 ## This deploys a CA in the namespace and enables mTLS between the services
@@ -34,9 +34,9 @@ mixer:
         cpu: 100m
         memory: 128Mi
 
-## Manager configuration
-manager:
-  name: manager
+## Pilot configuration
+pilot:
+  name: pilot
 
   service:
     type: ClusterIP
@@ -50,7 +50,7 @@ manager:
 
     discovery:
       name: discovery
-      image: docker.io/istio/manager
+      image: docker.io/istio/pilot
       imagePullPolicy: Always
       resources:
         limits:
@@ -62,7 +62,7 @@ manager:
 
     apiserver:
       name: apiserver
-      image: docker.io/istio/manager
+      image: docker.io/istio/pilot
       imagePullPolicy: Always
       resources:
         limits:
