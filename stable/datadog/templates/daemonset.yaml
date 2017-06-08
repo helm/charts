@@ -2,24 +2,22 @@
 apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
-  name: {{ template "datadog.fullname" . }}
+  name: {{ template "fullname" . }}
   labels:
-    app: {{ template "name" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
 spec:
   template:
     metadata:
       labels:
-        app: {{ template "name" . }}
-        component: "{{ .Values.datadog.name }}"
-      name: {{ template "datadog.fullname" . }}
+        app: {{ template "fullname" . }}
+      name: {{ template "fullname" . }}
     spec:
       containers:
-      - name: {{ template "name" . }}-{{ .Values.datadog.name }}
-        image: "{{ .Values.datadog.image.repository }}:{{ .Values.datadog.image.tag }}"
-        imagePullPolicy: {{ .Values.datadog.image.pullPolicy }}
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
         resources:
-{{ toYaml .Values.datadog.resources | indent 12 }}
+{{ toYaml .Values.resources | indent 12 }}
         ports:
         - containerPort: 8125
           name: dogstatsdport
@@ -36,7 +34,7 @@ spec:
           - name: API_KEY
             valueFrom:
               secretKeyRef:
-                name: {{ template "secret.fullname" . }}
+                name: {{ template "fullname" . }}
                 key: api-key
           - name: LOG_LEVEL
             value: {{ .Values.datadog.logLevel | quote }}
