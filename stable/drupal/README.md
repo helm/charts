@@ -114,7 +114,7 @@ helm install --name my-release -f values.yaml stable/drupal
 ## Persistence
 The configured image must store Drupal data and Apache configurations in separate paths of the container.
 
-The default [Bitnami Drupal](https://github.com/bitnami/bitnami-docker-drupal) image stores the Drupal data and Apache configurations at the `/bitnami/drupal` and `/bitnami/apache` paths of the container. If you wish to override the `image` value, and your image stores this data and configurations in different paths, you may specify these paths with `volumeMounts.drupal.mountPath` and `volumeMounts.apache.mountPath`.
+The [Bitnami Drupal](https://github.com/bitnami/bitnami-docker-drupal) image stores the Drupal data and Apache configurations at the `/bitnami/drupal` and `/bitnami/apache` paths of the container. If you wish to override the `image` value, and your image stores this data and configurations in different paths, you may specify these paths with `volumeMounts.drupal.mountPath` and `volumeMounts.apache.mountPath`.
 
 Persistent Volume Claims are used to keep the data across deployments. This is known to work in GCE, AWS, and minikube.
 See the [Configuration](#configuration) section to configure the PVC or to disable persistence.
