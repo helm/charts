@@ -38,22 +38,25 @@ spec:
         image: "{{ .Values.image }}"
         imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
         env:
+        {{- if .Values.usePassword }}
         - name: MARIADB_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ template "fullname" . }}
               key: mariadb-root-password
-        - name: MARIADB_USER
-          value: {{ default "" .Values.mariadbUser | quote }}
         - name: MARIADB_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ template "fullname" . }}
               key: mariadb-password
-        - name: MARIADB_DATABASE
-          value: {{ default "" .Values.mariadbDatabase | quote }}
+        {{- else }}
         - name: ALLOW_EMPTY_PASSWORD
           value: "yes"
+        {{- end }}
+        - name: MARIADB_USER
+          value: {{ default "" .Values.mariadbUser | quote }}
+        - name: MARIADB_DATABASE
+          value: {{ default "" .Values.mariadbDatabase | quote }}
         ports:
         - name: mysql
           containerPort: 3306

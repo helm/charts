@@ -9,7 +9,11 @@ image: bitnami/mariadb:10.1.23-r2
 ## ref: http://kubernetes.io/docs/user-guide/images/#updating-images
 imagePullPolicy: IfNotPresent
 
+## Use password authentication
+usePassword: true
+
 ## Specify password for root user
+## Defaults to a random 10-character alphanumeric string if not set and usePassword is true
 ## ref: https://github.com/bitnami/bitnami-docker-mariadb/blob/master/README.md#setting-the-root-password-on-first-run
 ##
 # mariadbRootPassword:
@@ -34,7 +38,7 @@ serviceType: ClusterIP
 ##
 persistence:
   enabled: true
-  
+
   ## A manually managed Persistent Volume and Claim
   ## Requires persistence.enabled: true
   ## If defined, PVC must be created manually before volume will be bound
