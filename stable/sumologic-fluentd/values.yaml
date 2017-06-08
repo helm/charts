@@ -7,7 +7,7 @@ image:
 sumologic:
   ## You'll need to set this to sumo collector, before the agent will run.
   ## ref: https://github.com/SumoLogic/fluentd-kubernetes-sumologic#sumologic
-  # collectorUrl:
+  collectorUrl:
 
   ## How frequently to push logs to SumoLogic (default 5s)
   ## ref: https://github.com/SumoLogic/fluentd-kubernetes-sumologic#options
@@ -68,7 +68,8 @@ sumologic:
 ## emptyDir. If you have a directory, on the host, to store pos files, specify
 ## it here.
 persistence:
-  # hostPath: /var/run/fluentd-pos
+  enabled: false
+  hostPath: /var/run/fluentd-pos
 
 resources:
   requests:

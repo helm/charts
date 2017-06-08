@@ -98,7 +98,7 @@ spec:
             {{- end }}
       volumes:
         - name: pos-files
-          {{- if .Values.persistence.hostPath }}
+          {{- if .Values.persistence.enabled }}
           hostPath:
             path: {{ .Values.persistence.hostPath }}
           {{- else }}

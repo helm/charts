@@ -79,7 +79,8 @@ The following tables lists the configurable parameters of the sumologic-fluentd 
 | `image.name` | The image repository and name to pull from | `sumologic/fluentd-kubernetes-sumologic` |
 | `image.tag` | The image tag to pull | `latest` |
 | `imagePullPolicy` | Image pull policy | `IfNotPresent` |
-| `persistence.hostPath` | The path, on each node, to a directory for fluentd pos files. You must create the directory on each node first. | `Nil` |
+| `persistence.enabled` | Boolean value, used to turn on or off fluentd position file persistence, on nodes | `false` |
+| `persistence.hostPath` | The path, on each node, to a directory for fluentd pos files. You must create the directory on each node first. | `/var/run/fluentd-pos` |
 | `resources.requests.cpu` | CPU resource requests | 100m |
 | `resources.limits.cpu` | CPU resource limits | 256m |
 | `resources.requests.memory` | Memory resource requests | 128Mi |
