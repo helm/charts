@@ -15,4 +15,7 @@ spec:
   backup:
 {{ toYaml .Values.cluster.backup.config | indent 4 }}
   {{- end -}}
+{{- if .Values.cluster.extraArgs }}
+{{ toYaml .Values.cluster.extraArgs | indent 2 }}
+{{- end -}}
 {{- end -}}

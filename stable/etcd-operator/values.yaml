@@ -31,3 +31,4 @@ cluster:
       storageType: PersistentVolume
       pv:
         volumeSizeInMB: 512
+  extraArgs: {}
