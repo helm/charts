@@ -41,6 +41,11 @@ controller:
   ##
   nodeSelector: {}
 
+  ## Run the controller under a specified service account
+  ## Ref: https://github.com/kubernetes/ingress/tree/master/examples/rbac/nginx
+  ## 
+  serviceAccount: ""  
+
   ## Annotations to be added to controller pods
   ##
   podAnnotations: {}
