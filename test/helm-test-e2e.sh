@@ -19,4 +19,6 @@ rm -f ${HELM_TARBALL}
 linux-amd64/helm init --upgrade
 
 # Run test framework
-go run /src/k8s.io/charts/test/helm-test/main.go
+cd /src/k8s.io/charts/test/
+go get -v ./...
+go run ./helm-test/main.go
