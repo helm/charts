@@ -26,8 +26,10 @@ It also packages the [PostgreSQL](https://github.com/kubernetes/charts/tree/mast
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm install --name my-release incubator/sentry
+$ helm install --name my-release --wait incubator/sentry
 ```
+
+> **Note**: We have to use the --wait flag for initial creation because the database creationg takes longer than the default 300 seconds
 
 The command deploys Sentry on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
 
