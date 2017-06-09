@@ -48,6 +48,8 @@ uiService:
   enabled: true
   type: "NodePort"
 
+ConsulConfig: []
+
 ## test container details
 test:
   image: lachlanevenson/k8s-kubectl
