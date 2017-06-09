@@ -15,7 +15,7 @@ Verifying the Grafana dashboard
 Verifying the Grafana dashboard
 
   export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "component={{ $serviceName }}-{{ .Values.addons.grafana.deployment.name }}" -o jsonpath="{.items[0].metadata.name}")
-  kubectl port-forward $POD_NAME {{ .Values.addons.grafana.service.externalPort }}:{{ .Values.addons.grafana.service.externalPort }}
+  kubectl port-forward $POD_NAME {{ .Values.addons.grafana.service.externalPort }}:{{ .Values.addons.grafana.service.externalPort }} --namespace {{ .Release.Namespace }}
   echo http://127.0.0.1:{{ .Values.addons.grafana.service.externalPort }}/dashboard/db/istio-dashboard
 {{- end }}
 {{- end }}
@@ -32,7 +32,7 @@ Verifying the ServiceGraph service
 Verifying the ServiceGraph service
 
   export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "component={{ $serviceName }}-{{ .Values.addons.servicegraph.deployment.name }}" -o jsonpath="{.items[0].metadata.name}")
-  kubectl port-forward $POD_NAME {{ .Values.addons.servicegraph.service.externalPort }}:{{ .Values.addons.servicegraph.service.externalPort }}
+  kubectl port-forward $POD_NAME {{ .Values.addons.servicegraph.service.externalPort }}:{{ .Values.addons.servicegraph.service.externalPort }} --namespace {{ .Release.Namespace }}
   echo http://127.0.0.1:{{ .Values.addons.servicegraph.service.externalPort }}/dotviz
 {{- end }}
 {{- end }}
@@ -47,4 +47,4 @@ Or deploy the BookInfo App!
 
 Using Istioctl
 
-  istioctl --managerAPIService {{ $serviceName }}-{{ .Values.manager.name }}:{{ .Values.manager.service.externalHttpApiServer }} [command]
+  istioctl --configAPIService {{ $serviceName }}-{{ .Values.pilot.name }}:{{ .Values.pilot.service.externalHttpApiServer }} [command]
