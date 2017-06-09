@@ -10,5 +10,5 @@ sources:
 - https://hub.docker.com/r/codylundquist/helm-rethinkdb-cluster/
 icon: http://i.imgur.com/bZ75N6r.jpg
 maintainers:
-- name: Cody Lundquist
+- name: meenie
   email: cody.lundquist@gmail.com
