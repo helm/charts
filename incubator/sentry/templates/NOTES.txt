@@ -2,7 +2,7 @@
 {{- if contains "NodePort" .Values.service.type }}
   export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "fullname" . }})
   export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
-  echo http://$NODE_IP:$NODE_PORT/login
+  echo http://$NODE_IP:$NODE_PORT/auth/login/sentry
 {{- else if contains "LoadBalancer" .Values.service.type }}
      NOTE: It may take a few minutes for the LoadBalancer IP to be available.
            You can watch the status of by running 'kubectl get svc -w {{ template "fullname" . }}'
@@ -14,6 +14,8 @@
   kubectl port-forward $POD_NAME 8080:{{ .Values.service.externalPort }}
 {{- end }}
 
-2. Get the username and password
-  PASSWORD: $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath="{.data.user-password}" | base64 --decode)
+2. Log in with
+
   USER: {{ .Values.user.email }}
+  Get login password with
+    kubectl get secret --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath="{.data.user-password}" | base64 --decode

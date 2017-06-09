@@ -59,7 +59,7 @@ email:
 # Don't change these unless you know what you're doing
 service:
   name: sentry
-  type: NodePort
+  type: LoadBalancer
   externalPort: 9000
   internalPort: 9000
 
