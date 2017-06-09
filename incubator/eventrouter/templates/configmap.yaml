@@ -15,14 +15,14 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{template "fullname" .}}
-  namespace: {{default "kube-system" .Values.namespace | quote}}
+  name: {{ template "fullname" . }}
   labels:
     release: {{ .Release.Name | quote }}
-    app: {{template "fullname" .}}
-    heritage: {{.Release.Service | quote }}
+    app: {{ template "name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    heritage: {{ .Release.Service | quote }}
 data:
   config.json: |- 
     {
-      "sink": {{default "glog" .Values.sink | quote}}
+      "sink": {{ default "glog" .Values.sink | quote }}
     }
