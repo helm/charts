@@ -53,7 +53,7 @@ email:
   use_tls: false
   user:
   password:
-  enable_replies: true
+  enable_replies: false
 
 # Name of the service and what port to expose on the pod
 # Don't change these unless you know what you're doing
@@ -73,7 +73,7 @@ persistence:
   ##
   # storageClass:
   accessMode: ReadWriteOnce
-  size: 8Gi
+  size: 10Gi
 
   # Where to store sentry files
   # https://docs.sentry.io/server/filestore/
