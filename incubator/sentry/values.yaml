@@ -7,18 +7,41 @@ image:
   pullPolicy: IfNotPresent
 
 # How many web UI instances to run
-webReplicaCount: 1
+web:
+  replicacount: 1
+  resources:
+    limits:
+      cpu: 500m
+      memory: 500Mi
+    requests:
+      cpu: 300m
+      memory: 300Mi
 
 # How many cron instances to run
-cronReplicaCount: 1
+cron:
+  replicacount: 1
+  resources:
+    limits:
+      cpu: 200m
+      memory: 200Mi
+    requests:
+      cpu: 100m
+      memory: 100Mi
 
 # How many worker instances to run
-workerReplicaCount: 2
+worker:
+  replicacount: 2
+  resources:
+    limits:
+      cpu: 300m
+      memory: 300Mi
+    requests:
+      cpu: 100m
+      memory: 100Mi
 
 # Initial admin user to create 
 user:
   email: admin@sentry.local
-  password: password
 
 # BYO Email server
 # TODO: Add exim4 template
@@ -39,15 +62,6 @@ service:
   type: NodePort
   externalPort: 9000
   internalPort: 9000
-
-# Limits for the 
-resources:
-  limits:
-    cpu: 100m
-    memory: 128Mi
-  requests:
-    cpu: 100m
-    memory: 128Mi
 
 ## Enable persistence using Persistent Volume Claims
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/

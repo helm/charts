@@ -5,7 +5,7 @@ metadata:
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
 spec:
-  replicas: {{ .Values.webReplicaCount }}
+  replicas: {{ .Values.web.replicacount }}
   template:
     metadata:
       labels:
@@ -60,8 +60,28 @@ spec:
         volumeMounts:
         - mountPath: {{ .Values.persistence.filestore_dir }}
           name: sentry-data
+        livenessProbe:
+          failureThreshold: 5
+          httpGet:
+            path: /_health/
+            port: {{ .Values.service.internalPort }}
+            scheme: HTTP
+          initialDelaySeconds: 50
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 2
+        readinessProbe:
+          failureThreshold: 10
+          httpGet:
+            path: /_health/
+            port: {{ .Values.service.internalPort }}
+            scheme: HTTP
+          initialDelaySeconds: 50
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 2
         resources:
-{{ toYaml .Values.resources | indent 12 }}
+{{ toYaml .Values.web.resources | indent 12 }}
       volumes:
       - name: sentry-data
       {{- if .Values.persistence.enabled }}

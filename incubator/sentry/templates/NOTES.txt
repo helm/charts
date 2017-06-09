@@ -13,3 +13,7 @@
   echo "Visit http://127.0.0.1:8080 to use your application"
   kubectl port-forward $POD_NAME 8080:{{ .Values.service.externalPort }}
 {{- end }}
+
+2. Get the username and password
+  PASSWORD: $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath="{.data.user-password}" | base64 --decode)
+  USER: {{ .Values.user.email }}

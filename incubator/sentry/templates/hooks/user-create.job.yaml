@@ -24,12 +24,7 @@ spec:
       containers:
       - name: user-create-job
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-        # This didn't work
-        #{{ if eq .Values.user.password "" }}
-        #command: ["sentry","createuser","--no-input","--email","admin@sentry.local", "--superuser","--no-password"]
-        #{{ else }}
-        command: ["sentry","createuser","--no-input","--email","admin@sentry.local", "--superuser","--password","{{ .Values.user.password }}"]
-        {{ end }}
+        command: ["sentry","createuser","--no-input","--email","admin@sentry.local", "--superuser","--password","$(SENTRY_USER_PASSWORD)"]
         env:
         - name: SENTRY_SECRET_KEY
           valueFrom:
@@ -69,3 +64,8 @@ spec:
             secretKeyRef:
               name: {{ template "fullname" . }}
               key: smtp-password
+        - name: SENTRY_USER_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "fullname" . }}
+              key: user-password

@@ -5,7 +5,7 @@ metadata:
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
 spec:
-  replicas: {{ .Values.crenReplicaCount }}
+  replicas: {{ .Values.cron.replicacount }}
   template:
     metadata:
       labels:
@@ -59,4 +59,4 @@ spec:
               name: {{ template "fullname" . }}
               key: smtp-password
         resources:
-{{ toYaml .Values.resources | indent 12 }}
+{{ toYaml .Values.cron.resources | indent 12 }}
