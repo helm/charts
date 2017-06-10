@@ -52,6 +52,15 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- end -}}
 
 {{/*
+Create a fully qualified pushgateway name.
+We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
+*/}}
+{{- define "prometheus.pushgateway.fullname" -}}
+{{- $name := default .Chart.Name .Values.nameOverride -}}
+{{- printf "%s-%s-%s" .Release.Name $name .Values.pushgateway.name | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
+{{/*
 Return the appropriate apiVersion for networkpolicy.
 */}}
 {{- define "prometheus.networkPolicy.apiVersion" -}}
@@ -59,5 +68,4 @@ Return the appropriate apiVersion for networkpolicy.
 {{- print "extensions/v1beta1" -}}
 {{- else if ge .Capabilities.KubeVersion.Minor "7" -}}
 {{- print "networking.k8s.io/v1" -}}
-{{- end -}}
 {{- end -}}

@@ -6,6 +6,7 @@ icon: https://raw.githubusercontent.com/prometheus/prometheus.github.io/master/a
 sources:
   - https://github.com/prometheus/alertmanager
   - https://github.com/prometheus/prometheus
+  - https://github.com/prometheus/pushgateway
   - https://github.com/kubernetes/kube-state-metrics
 maintainers:
   - name: Michael Goodness
