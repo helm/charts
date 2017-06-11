@@ -5,9 +5,7 @@ apiVersion: v1
 metadata:
   name: {{ template "name" . }}-pvc
   labels:
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+{{ include "labels.standard" . | indent 4 }}
   annotations:
   {{- if .Values.persistentVolume.storageClass }}
     volume.beta.kubernetes.io/storage-class: "{{ .Values.persistentVolume.storageClass }}"

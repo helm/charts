@@ -9,4 +9,4 @@ To connect to your Redis server:
 
 2. Connect using the Redis CLI:
 
-  redis-cli -h redis-svc.{{ .Release.Namespace }}.svc.cluster.local
+  redis-cli -h {{ template "name" . }}.{{ .Release.Namespace }}.svc.cluster.local
