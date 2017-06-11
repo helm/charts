@@ -52,6 +52,7 @@ Parameter | Description | Default
 `podAnnotations` | annotations to be added to pods | `{}`
 `resources` | pod resource requests & limits | `{}`
 `verbose` | Enable verbose output | `false`
+`rollingUpdate` | Enable rolling updates to the daemon set (requires Kubernetes 1.6+) | `false`
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
