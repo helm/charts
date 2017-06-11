@@ -27,8 +27,14 @@ host. To configure Magento with the URL of your service:
 
 2. Complete your Magento deployment by running:
 
+  {{- if contains "LoadBalancer" .Values.serviceType }}
   helm upgrade {{ .Release.Name }} \
     --set magentoHost=$APP_HOST,magentoPassword=$APP_PASSWORD{{ if .Values.mariadb.mariadbRootPassword }},mariadb.mariadbRootPassword=$APP_DATABASE_PASSWORD{{ end }} stable/magento
+
+  {{- else if contains "NodePort" .Values.serviceType }}
+  helm upgrade {{ .Release.Name }} --set magentoHost=$APP_HOST:$APP_PORT
+
+  {{- end }}
 
 {{- else -}}
 1. Get the Magento URL by running:
