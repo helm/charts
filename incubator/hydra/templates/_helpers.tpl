@@ -25,7 +25,7 @@ Otherwise, it will return the set value.
 {{ $pgHost := printf "%s-%s" .Release.Name "postgresql" | trunc 63 | trimSuffix "-" }}
 {{- printf "postgres://%s:%s@%s/%s?sslmode=disable" .Values.postgresql.postgresUser .Values.postgresql.postgresPassword $pgHost .Values.postgresql.postgresDatabase | b64enc | quote -}}
 {{- else -}}
-{{- default "" .Values.config.hydra.database_url | b64enc | quote -}}
+{{- .Values.config.hydra.databaseURL | b64enc | quote -}}
 {{- end -}}
 {{- end -}}
 
