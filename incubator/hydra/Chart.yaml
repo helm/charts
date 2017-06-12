@@ -14,7 +14,7 @@ icon: https://github.com/ory/hydra/blob/master/docs/images/logo.png
 sources:
 - https://github.com/ory/hydra
 maintainers:
-- name: Kevin Minehart
+- name: kminehart
   email: kminehart@wehco.com
-- name: Meyer Zinn
+- name: 20zinnm
   email: meyerzinn@gmail.com
