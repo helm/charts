@@ -1,0 +1,72 @@
+# Default values for portus.
+nameOverride: portus
+portus:
+  replicaCount: 1
+  fqdn: portus.registry.example.com
+  image:
+    repository: opensuse/portus
+    tag: 2.2
+    pullPolicy: IfNotPresent
+  config:
+    signup: true # If enabled, then users can signup with the signup form
+    first_user_admin: true # First user signing up will be admin
+    delete: true # Allow admins and owners to delete images and tags
+    gravatar: true # If enabled, then the profile picture will be picked from the Gravatar
+    display_name: false # Allow users to have different display names on the web site
+    user_permission:
+      change_visibility: true # Allow users to change the visibility or their personal namespace
+      manage_team: true # Allow users to create/modify teams if they are an owner of it
+      manage_namespace: true # Allow users to create/modify namespaces if they are an owner of it
+    email:
+      from: "portus@example.com"
+      name: "Portus"
+      reply_to: "no-reply@example.com"
+      smtp:
+        enabled: false
+        address: "smtp.example.com"
+        port: 587
+        domain: "example.com"
+  secrets:
+    password: "" # Randomly generated if omitted
+    email:
+      smtp:
+        user_name: "username@example.com"
+        password: "password"
+    db:
+      host: "portusdb-mariadb.default.svc.cluster.local"
+      catalog: "portusdb"
+      username: "portus"
+      password: "portuspass"
+  resources:
+    limits:
+      cpu: 500m
+      memory: 768Mi
+    requests:
+      cpu: 100m
+      memory: 384Mi
+registry:
+  replicaCount: 2
+  fqdn: docker.registry.example.com
+  image:
+    repository: docker.io/library/registry
+    tag: 2.6.1
+    pullPolicy: IfNotPresent
+  config:
+    debug-addr: localhost:5001
+    s3:
+      region: ap-southeast-1
+      bucket: docker-registry-example-com
+      rootDirectory: /portus
+  secrets:
+    #https://github.com/docker/distribution/blob/master/docs/configuration.md#http
+    ha-shared-secret: "" #Randomly generated if omitted
+    s3:
+      access-key: ""
+      secret-key: ""
+  resources:
+    limits:
+      cpu: 100m
+      memory: 100Mi
+    requests:
+      cpu: 100m
+      memory: 100Mi
