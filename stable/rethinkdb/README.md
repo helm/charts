@@ -51,7 +51,7 @@ Parameter | Description | Default
 `proxy.replicas` | Number of RethinkDB Proxy replicas | `1`
 `proxy.resources` | Resource configuration for each RethinkDB Proxy Pod | `{}`
 `proxy.podAnnotations` | Annotations to be added to RethinkDB Proxy Pods | `{}`
-`proxy.service.type` | RethinkDB Proxy Service Type | `LoadBalancer`
+`proxy.service.type` | RethinkDB Proxy Service Type | `ClusterIP`
 `proxy.service.annotations` | Annotations to be added to RethinkDB Cluster Service | `{}`
 `proxy.service.clusterIP` | Internal controller proxy service IP | `""`
 `proxy.service.externalIPs` | Controller service external IP addresses | `[]`

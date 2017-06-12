@@ -46,7 +46,7 @@ proxy:
   podAnnotations: {}
   service:
     annotations: {}
-    type: LoadBalancer
+    type: ClusterIP
     clusterIP: ""
     # List of IP addresses at which the proxy service is available
     # Ref: https://kubernetes.io/docs/concepts/services-networking/service/#external-ips
