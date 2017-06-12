@@ -69,7 +69,7 @@ The following tables lists the configurable parameters of the etcd-operator char
 | `cluster.backup.config.maxSnapshot`               | maximum number of snapshots to keep                                  | `5`                                            |
 | `cluster.backup.config.storageType`               | Type of storage to provision                                         | `PersistentVolume`                             |
 | `cluster.backup.config.pv.volumeSizeInMB`         | size of backup PV                                                    | `512MB`                                        |
-| `rbac.install`                                    | install required rbac service account, roles and rolebindings        | `true`                                         |
+| `rbac.install`                                    | install required rbac service account, roles and rolebindings        | `false`                                         |
 | `rbac.apiVersion`                                 | rbac api version `v1alpha1|v1beta1`                                  | `v1beta1`                                      |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
@@ -86,7 +86,7 @@ $ helm install --name my-release --values values.yaml stable/etcd-operator
 ```
 
 ## RBAC
-By default the chart will install the associated RBAC roles and rolebindings using beta annotations.
+By default the chart will not install the recommended RBAC roles and rolebindings.
 
 To determine if your cluster supports this running the following:
 
@@ -100,23 +100,20 @@ You also need to have the following parameter on the api server. See the followi
 --authorization-mode=RBAC
 ```
 
-If the output contains "beta" or both "alpha" and "beta" you can proceed with normal installation.
+If the output contains "beta" or both "alpha" and "beta" you can may install with enabling the creating of rbac resources (see below).
+
+### Enable RBAC role/rolebinding creation
+
+To enable the creation of RBAC resources (On clusters with RBAC). Do the following:
+
+```console
+$ helm install --name my-release stable/etcd-operator --set rbac.install=true
+```
 
 ### Changing RBAC manifest apiVersion
 
 By default the RBAC resources are generated with the "v1beta1" apiVersion. To use "v1alpha1" do the following:
 
 ```console
-$ helm install --name my-release stable/etcd-operator --set rbac.apiVersion=v1alpha1
-```
-
-
-If it does not. Follow the steps below to disable.
-
-### Disable RBAC role/rolebinding creation
-
-To disable the creation of RBAC resources (On clusters without RBAC or if you would like to manage the creation outside the scope of this chart). Do the following:
-
-```console
-$ helm install --name my-release stable/etcd-operator --set rbac.install=false
+$ helm install --name my-release stable/etcd-operator --set rbac.install=true,rbac.apiVersion=v1alpha1
 ```
