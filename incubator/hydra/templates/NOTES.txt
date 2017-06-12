@@ -1,4 +1,4 @@
-{{- if and (not .Values.postgresql.enabled) (not .Values.config.hydra.databaseURL ) }}
+{{- if and (not .Values.postgresql.enabled) (not .Values.config.hydra.databaseURL) }}
 #########################################################################
 ## WARNING: You have not specified a Database to connect to.           ##
 #########################################################################
