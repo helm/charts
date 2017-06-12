@@ -48,6 +48,7 @@ The following tables lists the configurable parameters of the Drupal chart and t
 | Parameter                         | Description                           | Default                                                   |
 | --------------------------------- | ------------------------------------- | --------------------------------------------------------- |
 | `image`                           | Drupal image                          | `bitnami/drupal:{VERSION}`                                |
+| `imagePullSecrets`                | Specify image pull secrets            | `nil` (does not add image pull secrets to deployed pods)  |
 | `imagePullPolicy`                 | Image pull policy                     | `IfNotPresent`                                            |
 | `drupalUsername`                  | User of the application               | `user`                                                    |
 | `drupalPassword`                  | Application password                  | _random 10 character long alphanumeric string_            |
@@ -88,6 +89,25 @@ $ helm install --name my-release -f values.yaml stable/drupal
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
+## Image
+
+The `image` parameter allows specifying which image will be pulled for the chart.
+
+### Private registry
+
+If you configure the `image` value to one in a private registry, you will need to [specify an image pull secret](https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod).
+
+1. Manually create image pull secret(s) in the namespace. See [this YAML example reference](https://kubernetes.io/docs/concepts/containers/images/#creating-a-secret-with-a-docker-config). Consult your image registry's documentation about getting the appropriate secret.
+1. Note that the `imagePullSecrets` configuration value cannot currently be passed to helm using the `--set` parameter, so you must supply these using a `values.yaml` file, such as:
+```yaml
+imagePullSecrets:
+  - name: SECRET_NAME
+```
+1. Install the chart
+```console
+helm install --name my-release -f values.yaml stable/drupal
+```
 
 ## Persistence
 

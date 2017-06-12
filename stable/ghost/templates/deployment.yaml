@@ -22,7 +22,7 @@ spec:
         env:
         - name: MARIADB_HOST
           value: {{ template "mariadb.fullname" . }}
-        - name: MARIADB_PORT
+        - name: MARIADB_PORT_NUMBER
           value: "3306"
         - name: MARIADB_PASSWORD
           valueFrom:
@@ -31,7 +31,7 @@ spec:
               key: mariadb-root-password
         - name: GHOST_HOST
           value: {{ include "host" . | quote }}
-        - name: GHOST_PORT
+        - name: GHOST_PORT_NUMBER
           {{- if eq .Values.serviceType "ClusterIP" }}
           value: "2368"
           {{- else }}

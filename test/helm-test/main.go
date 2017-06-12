@@ -19,6 +19,7 @@ package main
 import (
 	"encoding/xml"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"math/rand"
 	"os"
@@ -28,6 +29,8 @@ import (
 	"strings"
 	"syscall"
 	"time"
+
+	"github.com/ghodss/yaml"
 )
 
 type testCase struct {
@@ -44,6 +47,10 @@ type TestSuite struct {
 	Tests    int      `xml:"tests,attr"`
 	Time     float64  `xml:"time,attr"`
 	Cases    []testCase
+}
+
+type whitelist struct {
+	Charts []string `yaml:"charts"`
 }
 
 func writeXML(dump string, start time.Time) {
@@ -99,6 +106,12 @@ var (
 	SUCCESS_CODE              = 0
 	INITIALIZATION_ERROR_CODE = 1
 	TEST_FAILURE_CODE         = 2
+
+	// File path constants
+	whiteListYamlPath = "/src/k8s.io/charts/test/helm-test/whitelist.yaml"
+	chartsBasePath    = "/src/k8s.io/charts"
+	helmPath          = "linux-amd64/helm"
+	kubectlPath       = "/workspace/kubernetes/client/bin/kubectl"
 )
 
 func init() {
@@ -162,10 +175,27 @@ func main() {
 	os.Exit(ret)
 }
 
-func doMain() int {
-	matches, err := filepath.Glob("/src/k8s.io/charts/stable/*")
-	log.Printf("Matches: %+v", matches)
+func getWhiteList(yamlPath string) ([]string, error) {
+	yamlFile, err := ioutil.ReadFile(yamlPath)
+	if err != nil {
+		return nil, err
+	}
 
+	var w whitelist
+	err = yaml.Unmarshal(yamlFile, &w)
+	if err != nil {
+		return nil, err
+	}
+	return w.Charts, nil
+}
+
+func doMain() int {
+	chartList, err := getWhiteList(whiteListYamlPath)
+	if err != nil {
+		log.Fatalf("Unable to read whitelist: %#v", err)
+	}
+
+	log.Printf("Charts for Testing: %+v", chartList)
 	defer writeXML("/workspace/_artifacts", time.Now())
 	if !terminate.Stop() {
 		<-terminate.C // Drain the value if necessary.
@@ -186,47 +216,48 @@ func doMain() int {
 	xmlWrap(fmt.Sprintf("Wait for helm initialization to complete"), func() error {
 		initErr := fmt.Errorf("Not Initialized")
 		for initErr != nil {
-			_, initErr = output(exec.Command("linux-amd64/helm", "version"))
+			_, initErr = output(exec.Command(helmPath, "version"))
 			time.Sleep(2 * time.Second)
 		}
 		return initErr
 	})
 
-	for _, dir := range matches {
+	for _, dir := range chartList {
 		ns := randStringRunes(10)
 		rel := randStringRunes(3)
+		chartPath := path.Join(chartsBasePath, dir)
 
-		xmlWrap(fmt.Sprintf("Helm Lint %s", path.Base(dir)), func() error {
-			_, execErr := output(exec.Command("linux-amd64/helm", "lint", dir))
+		xmlWrap(fmt.Sprintf("Helm Lint %s", path.Base(chartPath)), func() error {
+			_, execErr := output(exec.Command(helmPath, "lint", chartPath))
 			return execErr
 		})
 
-		xmlWrap(fmt.Sprintf("Helm Install %s", path.Base(dir)), func() error {
-			o, execErr := output(exec.Command("linux-amd64/helm", "install", dir, "--namespace", ns, "--name", rel, "--wait"))
+		xmlWrap(fmt.Sprintf("Helm Install %s", path.Base(chartPath)), func() error {
+			o, execErr := output(exec.Command(helmPath, "install", chartPath, "--namespace", ns, "--name", rel, "--wait"))
 			if execErr != nil {
 				return fmt.Errorf("%s Command output: %s", execErr, string(o[:]))
 			}
 			return nil
 		})
 
-		xmlWrap(fmt.Sprintf("Helm Test %s", path.Base(dir)), func() error {
-			o, execErr := output(exec.Command("linux-amd64/helm", "test", rel))
+		xmlWrap(fmt.Sprintf("Helm Test %s", path.Base(chartPath)), func() error {
+			o, execErr := output(exec.Command(helmPath, "test", rel))
 			if execErr != nil {
 				return fmt.Errorf("%s Command output: %s", execErr, string(o[:]))
 			}
 			return nil
 		})
 
-		xmlWrap(fmt.Sprintf("Delete & purge %s", path.Base(dir)), func() error {
-			o, execErr := output(exec.Command("linux-amd64/helm", "delete", rel, "--purge"))
+		xmlWrap(fmt.Sprintf("Delete & purge %s", path.Base(chartPath)), func() error {
+			o, execErr := output(exec.Command(helmPath, "delete", rel, "--purge"))
 			if execErr != nil {
 				return fmt.Errorf("%s Command output: %s", execErr, string(o[:]))
 			}
 			return nil
 		})
 
-		xmlWrap(fmt.Sprintf("Deleting namespace for %s", path.Base(dir)), func() error {
-			o, execErr := output(exec.Command("/workspace/kubernetes/client/bin/kubectl", "delete", "ns", ns))
+		xmlWrap(fmt.Sprintf("Deleting namespace for %s", path.Base(chartPath)), func() error {
+			o, execErr := output(exec.Command(kubectlPath, "delete", "ns", ns))
 			if execErr != nil {
 				return fmt.Errorf("%s Command output: %s", execErr, string(o[:]))
 			}
