@@ -120,7 +120,7 @@ helm install -n portus .
 | `portus.image.tag`           | Container image tag                  | `2.2`                               |
 | `portus.image.pullPolicy`    | Container image pullPolicy           | `IfNotPresent`                      |
 | `portus.fqdn`                | Portus fully qualified domain name   | `portus.registry.example.com`       |
-| `portus.config.*`            |[Portus Config](port.us.org/docs/Configuring-Portus.html)|see `values.yaml` |
+| `portus.config.*`            |[Portus Config](http://port.us.org/docs/Configuring-Portus.html)|see `values.yaml` |
 | `portus.secrets.db.host`     | Mysql host                           | `portusdb-mariadb`                  |
 | `portus.secrets.db.catalog`  | Mysql catalog                        | `portusdb`                          |
 | `portus.secrets.db.username` | Mysql username                       | `portus`                            |
