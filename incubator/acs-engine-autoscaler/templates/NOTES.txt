@@ -1,0 +1,7 @@
+To verify that acs-engine-autoscaler has started, run:
+
+  kubectl --namespace={{ .Release.Namespace }} get pods -l "app={{ template "fullname" . }}"
+
+To verify that acs-engine-autoscaler is running as expected, run:
+  kubectl logs $(kubectl --namespace={{ .Release.Namespace }} get pods -l "app={{ template "fullname" . }}" -o jsonpath="{.items[0].metadata.name}")
+
