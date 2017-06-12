@@ -32,7 +32,7 @@ spec:
               key: mariadb-root-password
         - name: MARIADB_HOST
           value: {{ template "mariadb.fullname" . }}
-        - name: MARIADB_PORT
+        - name: MARIADB_PORT_NUMBER
           value: "3306"
         - name: WORDPRESS_DATABASE_NAME
           value: {{ default "" .Values.mariadb.mariadbDatabase | quote }}
@@ -80,16 +80,18 @@ spec:
           containerPort: 443
         livenessProbe:
           httpGet:
-            path: /
+            path: /wp-login.php
             port: http
           initialDelaySeconds: 120
           timeoutSeconds: 5
+          failureThreshold: 6
         readinessProbe:
           httpGet:
-            path: /
+            path: /wp-login.php
             port: http
-          initialDelaySeconds: 5
-          timeoutSeconds: 1
+          initialDelaySeconds: 30
+          timeoutSeconds: 3
+          periodSeconds: 5
         volumeMounts:
         - mountPath: /bitnami/apache
           name: wordpress-data
@@ -99,7 +101,7 @@ spec:
           subPath: wordpress
         - mountPath: /bitnami/php
           name: wordpress-data
-          subPath: php 
+          subPath: php
         resources:
 {{ toYaml .Values.resources | indent 10 }}
       volumes:

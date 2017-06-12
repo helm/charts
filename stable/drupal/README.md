@@ -48,6 +48,7 @@ The following tables lists the configurable parameters of the Drupal chart and t
 | Parameter                         | Description                           | Default                                                   |
 | --------------------------------- | ------------------------------------- | --------------------------------------------------------- |
 | `image`                           | Drupal image                          | `bitnami/drupal:{VERSION}`                                |
+| `imagePullSecrets`                | Specify image pull secrets            | `nil` (does not add image pull secrets to deployed pods)  |
 | `imagePullPolicy`                 | Image pull policy                     | `IfNotPresent`                                            |
 | `drupalUsername`                  | User of the application               | `user`                                                    |
 | `drupalPassword`                  | Application password                  | _random 10 character long alphanumeric string_            |
@@ -64,6 +65,7 @@ The following tables lists the configurable parameters of the Drupal chart and t
 | `persistence.apache.size`         | PVC Storage Request for Apache volume | `1Gi`                                                     |
 | `persistence.drupal.storageClass` | PVC Storage Class for Drupal volume   | `nil` (uses alpha storage class annotation)               |
 | `persistence.drupal.accessMode`   | PVC Access Mode for Drupal volume     | `ReadWriteOnce`                                           |
+| `persistence.drupal.existingClaim`| An Existing PVC name                  | `nil`                                                     |
 | `persistence.drupal.size`         | PVC Storage Request for Drupal volume | `8Gi`                                                     |
 | `resources`                       | CPU/Memory resource requests/limits   | Memory: `512Mi`, CPU: `300m`                              |
 
@@ -87,9 +89,37 @@ $ helm install --name my-release -f values.yaml stable/drupal
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
+## Image
+
+The `image` parameter allows specifying which image will be pulled for the chart.
+
+### Private registry
+
+If you configure the `image` value to one in a private registry, you will need to [specify an image pull secret](https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod).
+
+1. Manually create image pull secret(s) in the namespace. See [this YAML example reference](https://kubernetes.io/docs/concepts/containers/images/#creating-a-secret-with-a-docker-config). Consult your image registry's documentation about getting the appropriate secret.
+1. Note that the `imagePullSecrets` configuration value cannot currently be passed to helm using the `--set` parameter, so you must supply these using a `values.yaml` file, such as:
+```yaml
+imagePullSecrets:
+  - name: SECRET_NAME
+```
+1. Install the chart
+```console
+helm install --name my-release -f values.yaml stable/drupal
+```
+
 ## Persistence
 
 The [Bitnami Drupal](https://github.com/bitnami/bitnami-docker-drupal) image stores the Drupal data and configurations at the `/bitnami/drupal` and `/bitnami/apache` paths of the container.
 
 Persistent Volume Claims are used to keep the data across deployments. This is known to work in GCE, AWS, and minikube.
 See the [Configuration](#configuration) section to configure the PVC or to disable persistence.
+
+### Existing PersistentVolumeClaim
+
+1. Create the PersistentVolume
+1. Create the PersistentVolumeClaim
+1. Install the chart
+```bash
+$ helm install --name my-release --set persistence.drupal.existingClaim=PVC_NAME stable/drupal
+```
