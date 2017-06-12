@@ -23,6 +23,6 @@ NOTE: It may take a few minutes for the LoadBalancer IP to be available. Watch t
 {{- end }}
 
 To get your Hydra root client credentials, you must view the logs of your Hydra pod. Assuming you have only one pod, you can do so with:
-  kubectl logs --namespace {{ .Release.Namespace }} $(kubectl get pods -l "app={{ template "hydra.name" .}}" -o jsonpath="{.items[0].metadata.name}") -c {{ template "name" . }}
+  kubectl logs --namespace {{ .Release.Namespace }} $(kubectl get pods -l "app={{ template "hydra.name" .}}" -o jsonpath="{.items[0].metadata.name}") -c {{ template "hydra.name" . }}
 
 NOTE: It is imperative that you delete the root client after configuring Hydra, as it has been exposed in logs and thus is considered compromised.
