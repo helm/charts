@@ -31,13 +31,17 @@ spec:
           ports:
             - name: service
               containerPort: 4444
-            - name: service2
-              containerPort: 4445
           envFrom:
             - configMapRef:
                 name: {{ template "hydra.fullname" . }}
             - secretRef:
                 name: {{ template "hydra.fullname" . }}
                 optional: false
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 4444
+            initialDelaySeconds: 3
+            periodSeconds: 3
           resources:
 {{ toYaml .Values.resources | indent 12 }}
