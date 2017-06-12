@@ -1,5 +1,5 @@
 image: "oryd/hydra"
-imageTag: "v0.8.6"
+imageTag: "v0.9.1"
 imagePullPolicy: "Always"
 
 service:
