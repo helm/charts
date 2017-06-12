@@ -18,7 +18,6 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{/* Generate basic labels */}}
 {{- define "labels" }}
 app: {{ .Chart.Name }}
-chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
 heritage: {{.Release.Service | quote }}
 release: {{.Release.Name | quote }}
 {{- end }}

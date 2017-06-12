@@ -2,3 +2,8 @@ apiVersion: v1
 description: Deploys external-dns into a kubernetes cluster
 name: external-dns
 version: 0.0.1
+appVersion: 0.3.0
+home: https://github.com/kubernetes-incubator/external-dns
+sources:
+- https://github.com/kubernetes-incubator/external-dns
+engine: gotpl

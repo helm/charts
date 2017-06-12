@@ -4,16 +4,21 @@ kind: Deployment
 metadata:
   name: {{ template "fullname" . }}
   labels: {{ include "labels" . | indent 4 }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
 spec:
   strategy:
     type: Recreate
   template:
     metadata:
       labels: {{ include "labels" . | indent 8 }}
+      {{- if .Values.podAnnotations }}
+      annotations:
+{{ toYaml .Values.podAnnotations | indent 8}}
+      {{- end }}
     spec:
       containers:
       - name: {{ .Chart.Name }}
-        image: "{{- if .Values.image.repository }}{{ .Values.image.repository }}/{{- end -}}{{.Values.image.name}}:{{ .Values.image.tag }}"
+        image: "{{ .Values.image.repository }}/{{.Values.image.name}}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         args:
         - --provider={{ .Values.provider }}
@@ -56,15 +61,10 @@ spec:
         {{- if .Values.once }}
         - --once={{ .Values.once }}
         {{- end }}        
-        {{- if .Values.source.ingress }}
-        - --source=ingress
-        {{- end }}
-        {{- if .Values.source.fake }}
-        - --source=fake
-        {{- end }}
-        {{- if .Values.source.service }}
-        - --source=service
-        {{- end }}
         {{- if .Values.txtPrefix }}
         - --txt-prefix={{ .Values.txtPrefix }}
         {{- end }}
+        {{ range .Values.source }}- --source={{ . }}
+        {{ end -}}
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
