@@ -19,6 +19,9 @@ spec:
         app: {{ template "name" . }}
         release: {{ .Release.Name }}
     spec:
+{{- if .Values.rbac.enabled }}
+      serviceAccountName: {{ template "fullname" . }}
+{{- end }}
       containers:
         - name: {{ template "name" . }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
