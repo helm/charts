@@ -128,8 +128,8 @@ $ helm install --name my-release --set persistence.drupal.existingClaim=PVC_NAME
 ### Host path
 
 #### System compatibility
-- The local filesystem accessibility to a container in a pod with `hostPath` is limited to OSX/MacOS with xhyve, and Linux with VirtualBox.
-- Windows does not support Kubernetes `hostPath` option with the supported VM drivers, so do not set this option. Instead you may manually sync your container whenever host files are changed with tools like [docker-sync](https://github.com/EugenMayer/docker-sync) or [docker-bg-sync](https://github.com/cweagans/docker-bg-sync).
+- The local filesystem accessibility to a container in a pod with `hostPath` has been tested on OSX/MacOS with xhyve, and Linux with VirtualBox.
+- Windows has not been tested with the supported VM drivers. Minikube does however officially support [Mounting Host Folders](https://github.com/kubernetes/minikube/blob/master/docs/host_folder_mount.md) per pod. Or you may manually sync your container whenever host files are changed with tools like [docker-sync](https://github.com/EugenMayer/docker-sync) or [docker-bg-sync](https://github.com/cweagans/docker-bg-sync).
 
 #### Mounting steps
 1. The specified `hostPath` directory must already exist (create one if it does not).
