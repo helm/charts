@@ -24,7 +24,7 @@ spec:
         - --provider={{ .Values.provider }}
         - --policy={{ .Values.policy }}
         - --registry={{ .Values.registry }}
-        - --txt-owner-id={{ .Values.txtOwnerId }}
+        - --txt-owner-id={{default .Release.Name .Values.txtOwnerId }}
         {{- if .Values.compatibility }}
         - --compatibility={{ .Values.compatibility }}
         {{- end }}
@@ -58,9 +58,6 @@ spec:
         {{- if .Values.namespace }}
         - --namespace={{ .Values.namespace }}
         {{- end }}
-        {{- if .Values.once }}
-        - --once={{ .Values.once }}
-        {{- end }}        
         {{- if .Values.txtPrefix }}
         - --txt-prefix={{ .Values.txtPrefix }}
         {{- end }}

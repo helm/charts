@@ -42,17 +42,14 @@ provider: aws
 ## The registry implementation to use to keep track of DNS record ownership (default: txt, options: txt, noop )
 registry: txt
 
-## When using the TXT registry, a name that identifies this instance of ExternalDNS (default: default)
-txtOwnerId: my-identifier
+## When using the TXT registry, a name that identifies this instance of ExternalDNS (default: Release Name)
+# txtOwnerId:
 
 ## When using the TXT registry, a custom string that's prefixed to each ownership DNS record (optional)
 # txtPrefix:
 
 ## The interval between two consecutive synchronizations in duration format.
-# interval: 1
-
-## When enabled, exits the synchronization loop after the first iteration.
-# once:
+# interval: 1m
 
 ## When enabled, prints DNS record changes rather than actually performing them.
 # dryRun: false
@@ -64,7 +61,7 @@ logFormat: text
 # metricsAddress: 127.0.0.1:7979
 
 ## When enabled, increases the logging output for debugging purposes.
-debug: false
+# debug: false
 
 ## Annotations to be added to pods
 ##

@@ -37,21 +37,22 @@ The following tables lists the configurable parameters of the consul chart and t
 | `source.service`       | Boolean, should this resource be monitored.                                                                   | `true`                         |
 | `namespace`            | Limit sources of endpoints to a specific namespace.                                                           | `all`                          |
 | `fqdnTemplate`         | A templated string that's used to generate DNS names.                                                         | `""`                           |
-| `compatibility`        | Process annotation semantics from legacy implementations (options: mate, molecule ).                          | `disabled`                     | 
+| `compatibility`        | Process annotation semantics from legacy implementations (options: mate, molecule ).                          | `disabled`                     |
 | `provider`             | The DNS provider where the DNS records will be created (options: aws, google, inmemory, azure ).              | `aws`                          |
 | `googleProject`        | When using the Google provider, specify the Google project (required when --provider=google).                 | `disabled`                     |
 | `domainFilter`         | Limit possible target zones by a domain suffix (optional).                                                    | `disabled`                     |
 | `azureResourceGroup`   | When using the Azure provider, override the Azure resource group to use (optional).                           | `disabled`                     |
-| `policy`               | Modify how DNS records are sychronized between sources and providers (options: sync, upsert-only ).           | `sync`                  |
-| `registry`             | The registry implementation to use to keep track of DNS record ownership (default: txt, options: txt, noop ). | `txt`                          | 
-| `txtOwnerId`           | When using the TXT registry, a name that identifies this instance of ExternalDNS (default: default).          | `my-identifier`                |
+| `policy`               | Modify how DNS records are sychronized between sources and providers (options: sync, upsert-only ).           | `sync`                         |
+| `registry`             | The registry implementation to use to keep track of DNS record ownership (default: txt, options: txt, noop ). | `txt`                          |
+| `txtOwnerId`           | When using the TXT registry, a name that identifies this instance of ExternalDNS (default: default).          | The Helm release name          |
 | `txtPrefix`            | When using the TXT registry, a custom string that's prefixed to each ownership DNS record (optional).         | `disabled`                     |
 | `interval`             | The interval between two consecutive synchronizations in duration format.                                     | `disabled`                     |
-| `once`                 | When enabled, exits the synchronization loop after the first iteration.                                       | `disabled`                     | 
-| `dryRun`               | When enabled, prints DNS record changes rather than actually performing them.                                 | `false`                        | 
-| `logFormat`            | The format in which log messages are printed (options: text, json).                                           | `text`                         | 
+| `dryRun`               | When enabled, prints DNS record changes rather than actually performing them.                                 | `false`                        |
+| `logFormat`            | The format in which log messages are printed (options: text, json).                                           | `text`                         |
 | `metricsAddress`       | Specify were to serve the metrics and health check endpoint.                                                  | `7979`                         |
-| `debug`                | When enabled, increases the logging output for debugging purposes.                                            | `disabled`                     | 
+| `debug`                | When enabled, increases the logging output for debugging purposes.                                            | `disabled`                     |
+| `resources`            | CPU/Memory resource requests/limits.                                                                          | `None`                         |
+| `podAnnotations`       | Additional annotations to apply to the pod.                                                                   | `None`                         |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
