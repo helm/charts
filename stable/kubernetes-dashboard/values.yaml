@@ -4,10 +4,12 @@
 # name: value
 
 image: gcr.io/google_containers/kubernetes-dashboard-amd64
-imageTag: "v1.6.0"
+imageTag: "v1.6.1"
 imagePullPolicy: "IfNotPresent"
 
 nodeSelector: {}
+
+httpPort: 80
 
 serviceType: ClusterIP
 
@@ -18,3 +20,28 @@ resources:
   requests:
     cpu: 100m
     memory: 50Mi
+
+ingress:
+  ## If true, Kubernetes Dashboard Ingress will be created.
+  ##
+  enabled: false
+
+  ## Kubernetes Dashboard Ingress annotations
+  ##
+  # annotations:
+  #   kubernetes.io/ingress.class: nginx
+  #   kubernetes.io/tls-acme: 'true'
+
+  ## Kubernetes Dashboard Ingress hostnames
+  ## Must be provided if Ingress is enabled
+  ##
+  # hosts:
+  #   - kubernetes-dashboard.domain.com
+
+  ## Kubernetes Dashboard Ingress TLS configuration
+  ## Secrets must be manually created in the namespace
+  ##
+  # tls:
+  #   - secretName: kubernetes-dashboard-tls
+  #     hosts:
+  #       - kubernetes-dashboard.domain.com
