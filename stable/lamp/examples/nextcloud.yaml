@@ -1,0 +1,13 @@
+mysql:
+  root_password: "Root Password here..."
+  user: nextcloud
+  password: "User Password here..."
+  database: nextcloud
+
+php:
+  repository: nextcloud
+  tag: fpm
+  persistent_subpaths:
+  - apps
+  - config
+  - data

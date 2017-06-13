@@ -1,0 +1,66 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+spec:
+  {{- if .Values.ingress.enabled }}
+  type: ClusterIP
+  {{- else }}
+  type: {{ .Values.service.type }}
+  {{- end }}
+  ports:
+  - port: {{ .Values.service.http_port }}
+    targetPort: 80
+    protocol: TCP
+    name: httpd
+  {{ if .Values.mysql.enabled }}
+  - port: 3306
+    targetPort: 3306
+    protocol: TCP
+    name: mysql
+  {{ end }}
+  {{ if and .Values.sftp.enabled (not .Values.ingress.enabled) }}
+  - port: {{ .Values.sftp.port }}
+    targetPort: 22
+    protocol: TCP
+    name: sftp
+  {{ end }}
+  {{ if .Values.webdav.enabled }}
+  - port: {{ .Values.webdav.port }}
+    targetPort: 8001
+    protocol: TCP
+    name: webdav
+  {{ end }}
+  {{ if .Values.phpmyadmin.enabled }}
+  - port: {{ .Values.phpmyadmin.port }}
+    targetPort: 8080
+    protocol: TCP
+    name: phpmyadmin
+  {{ end }}
+  selector:
+    app: {{ template "fullname" . }}
+{{- if and .Values.sftp.enabled .Values.ingress.enabled }}
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "fullname" . }}-sftp
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+spec:
+  type: NodePort
+  ports:
+  - targetPort: 22
+    port: {{ .Values.sftp.port }}
+    {{- if .Values.sftp.nodePort }}
+    nodePort: {{ .Values.sftp.nodePort }}
+    {{- end }}
+    protocol: TCP
+    name: sftp
+  selector:
+    app: {{ template "fullname" . }}
+{{- end -}}

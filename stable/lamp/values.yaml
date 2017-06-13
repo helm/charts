@@ -1,0 +1,169 @@
+### CONTAINERS ###
+
+init:
+  clone:
+    release: false
+    #hostPath:
+
+  manually:
+    enabled: false
+    repository: lead4good/init-wp
+    tag: latest
+    pullPolicy: Always
+
+php:
+  version: "7"
+  #repository: php
+  #tag: fpm
+  pullPolicy: Always
+  fpm_enabled: true
+  sockets: true
+  persistent_subpaths: false
+  #- subPath
+  copy_root: false
+
+  #old_http_root: /var/www/html
+  #ini: |
+  #  short_open_tag=On
+
+  resources: false
+  #  requests:
+  #    cpu: 1m
+  #    memory: 1Mi
+
+httpd:
+  resources: false
+  #  requests:
+  #    cpu: 1m
+  #    memory: 1Mi
+
+
+mysql:
+  enabled: true
+
+  #user:
+  #password:
+  #database:
+
+  repository: mysql
+  tag: 5.7
+  imagePullPolicy: Always
+  sockets: true
+
+  resources: false
+  #  requests:
+  #    cpu: 1m
+  #    memory: 1Mi
+
+sftp:
+  enabled: false
+  port: 22
+  #nodePort:
+
+  #user:
+  #password:
+
+  resources: false
+  #  requests:
+  #    cpu: 1m
+  #    memory: 1Mi
+
+webdav:
+  enabled: false
+  port: 8001
+  subdomain: webdav
+
+  #user:
+  #password:
+
+  resources: false
+  #  requests:
+  #    cpu: 1m
+  #    memory: 1Mi
+
+git:
+  enabled: false
+  branch: master
+  revision: FETCH_HEAD
+  wait: 30
+
+  #repo_url:
+
+  resources: false
+  #  requests:
+  #    cpu: 1m
+  #    memory: 1Mi
+
+svn:
+  enabled: false
+  allow_overwrite: true
+
+  #user:
+  #password:
+  #repo_url:
+
+  resources: false
+  #  requests:
+  #    cpu: 1m
+  #    memory: 1Mi
+
+phpmyadmin:
+  enabled: false
+  port: 8080
+  subdomain: phpmyadmin
+
+  resources: false
+  #  requests:
+  #    cpu: 1m
+  #    memory: 1Mi
+
+resources:
+  requests:
+    cpu: 1m
+    memory: 1Mi
+
+
+### STORAGE ###
+
+persistence:
+  enabled: true
+  keep: false
+
+  accessMode: ReadWriteOnce
+  size: 5Gi
+  #storageClass: ssd
+  #hostPath:
+
+
+### NETWORKING ###
+
+service:
+  http_port: 80
+  type: LoadBalancer
+
+ingress:
+  enabled: false
+  nginx: true
+  ssl: false
+  #domain: example.com
+  www_subdomain: false
+  #htpasswd_string: "user:$apr1$FfVI2PRr$f9MW8rsr5RmmxbdV0Iipk1"
+
+
+### WORDPRESS ###
+
+wordpress:
+  enabled: false
+
+  #gdrive_rtoken:
+  #gdrive_folder: example.com
+  #domain: "example.com"
+
+  develop:
+    enabled: false
+    #dev_domain: dev.example.com
+
+### OTHER ###
+
+keep_secrets: false
+replicaCount: 1
