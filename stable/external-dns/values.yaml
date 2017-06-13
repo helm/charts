@@ -37,7 +37,7 @@ provider: aws
 # azureResourceGroup:
 
 ## Modify how DNS records are sychronized between sources and providers (options: sync, upsert-only )
-# policy: sink
+# policy: sync
 
 ## The registry implementation to use to keep track of DNS record ownership (default: txt, options: txt, noop )
 registry: txt
