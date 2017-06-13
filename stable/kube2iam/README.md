@@ -52,6 +52,7 @@ Parameter | Description | Default
 `podAnnotations` | annotations to be added to pods | `{}`
 `resources` | pod resource requests & limits | `{}`
 `verbose` | Enable verbose output | `false`
+`rbac.enabled` | Enable role and serviceaccount creation | `false`
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

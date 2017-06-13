@@ -32,3 +32,6 @@ resources: {}
   #   memory: 16Mi
 
 verbose: false
+
+rbac:
+  enabled: false
