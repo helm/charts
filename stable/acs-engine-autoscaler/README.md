@@ -5,7 +5,7 @@
 ## TL;DR:
 
 ```console
-$ helm install incubator/acs-engine-autoscaler -f values.yaml
+$ helm install stable/acs-engine-autoscaler -f values.yaml
 ```
 Where `values.yaml` contains:
 
@@ -43,7 +43,7 @@ acsenginecluster:
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm install incubator/acs-engine-autoscaler
+$ helm install stable/acs-engine-autoscaler
 ```
 
 The command deploys acs-engine-autoscaler on the Kubernetes cluster using the supplied configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
