@@ -10,7 +10,7 @@ service:
   externalPort: 8082
   internalPort: 8082
   ## This allows an overide of the heapster service name
-  ## Default: {{ template "fullname" . }}
+  ## Default: {{ .Chart.Name }}
   # nameOverride:
 resources:
   limits:
