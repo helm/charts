@@ -9,9 +9,6 @@ host:
   iptables: false
   interface: docker0
 
-# requires k8s 1.6+
-rollingUpdate: false
-
 image:
   repository: jtblin/kube2iam
   tag: 0.6.3

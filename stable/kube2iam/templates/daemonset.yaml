@@ -52,7 +52,7 @@ spec:
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
     {{- end }}
-  {{- if .Values.rollingUpdate }}
+  {{- if .Values.updateStrategy }}
   updateStrategy:
-    type: RollingUpdate
+    type: {{ .Values.updateStrategy }}
   {{- end }}
