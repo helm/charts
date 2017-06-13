@@ -27,28 +27,30 @@ The following tables lists the configurable parameters of the Jenkins chart and 
 ### Jenkins Master
 
 
-| Parameter                         | Description                         | Default                                                                      |
-| --------------------------------- | ----------------------------------- | ---------------------------------------------------------------------------- |
-| `Master.Name`                     | Jenkins master name                 | `jenkins-master`                                                             |
-| `Master.Image`                    | Master image name                   | `jenkinsci/jenkins`                                                          |
-| `Master.ImageTag`                 | Master image tag                    | `2.46.1`                                                                     |
-| `Master.ImagePullPolicy`          | Master image pull policy            | `Always`                                                                     |
-| `Master.Component`                | k8s selector key                    | `jenkins-master`                                                             |
-| `Master.Cpu`                      | Master requested cpu                | `200m`                                                                       |
-| `Master.Memory`                   | Master requested memory             | `256Mi`                                                                      |
-| `Master.ServiceType`              | k8s service type                    | `LoadBalancer`                                                               |
-| `Master.ServicePort`              | k8s service port                    | `8080`                                                                       |
-| `Master.NodePort`                 | k8s node port                       | Not set                                                                      |
-| `Master.ContainerPort`            | Master listening port               | `8080`                                                                       |
-| `Master.SlaveListenerPort`        | Listening port for agents           | `50000`                                                                      |
-| `Master.LoadBalancerSourceRanges` | Allowed inbound IP addresses        | `0.0.0.0/0`                                                                  |
-| `Master.JMXPort`                  | Open a port, for JMX stats          | Not set                                                                      |
-| `Master.CustomConfigMap`          | Use a custom ConfigMap              | `false`                                                                      |
-| `Master.Ingress.Annotations`      | Ingress annotations                 | `{}`                                                                         |
-| `Master.Ingress.TLS`              | Ingress TLS configuration           | `[]`                                                                         |
-| `Master.InitScripts`              | List of Jenkins init scripts        | Not set                                                                      |
-| `Master.InstallPlugins`           | List of Jenkins plugins to install  | `kubernetes:0.11 workflow-aggregator:2.5 credentials-binding:1.11 git:3.2.0` |
-| `Master.ScriptApproval`           | List of groovy functions to approve | Not set                                                                      |
+| Parameter                         | Description                          | Default                                                                      |
+| --------------------------------- | ------------------------------------ | ---------------------------------------------------------------------------- |
+| `Master.Name`                     | Jenkins master name                  | `jenkins-master`                                                             |
+| `Master.Image`                    | Master image name                    | `jenkinsci/jenkins`                                                          |
+| `Master.ImageTag`                 | Master image tag                     | `2.46.1`                                                                     |
+| `Master.ImagePullPolicy`          | Master image pull policy             | `Always`                                                                     |
+| `Master.Component`                | k8s selector key                     | `jenkins-master`                                                             |
+| `Master.Cpu`                      | Master requested cpu                 | `200m`                                                                       |
+| `Master.Memory`                   | Master requested memory              | `256Mi`                                                                      |
+| `Master.ServiceType`              | k8s service type                     | `LoadBalancer`                                                               |
+| `Master.ServicePort`              | k8s service port                     | `8080`                                                                       |
+| `Master.NodePort`                 | k8s node port                        | Not set                                                                      |
+| `Master.ContainerPort`            | Master listening port                | `8080`                                                                       |
+| `Master.SlaveListenerPort`        | Listening port for agents            | `50000`                                                                      |
+| `Master.LoadBalancerSourceRanges` | Allowed inbound IP addresses         | `0.0.0.0/0`                                                                  |
+| `Master.JMXPort`                  | Open a port, for JMX stats           | Not set                                                                      |
+| `Master.CustomConfigMap`          | Use a custom ConfigMap               | `false`                                                                      |
+| `Master.Ingress.Annotations`      | Ingress annotations                  | `{}`                                                                         |
+| `Master.Ingress.TLS`              | Ingress TLS configuration            | `[]`                                                                         |
+| `Master.InitScripts`              | List of Jenkins init scripts         | Not set                                                                      |
+| `Master.InstallPlugins`           | List of Jenkins plugins to install   | `kubernetes:0.11 workflow-aggregator:2.5 credentials-binding:1.11 git:3.2.0` |
+| `Master.ScriptApproval`           | List of groovy functions to approve  | Not set                                                                      |
+| `Master.NodeSelector`             | Node labels for pod assignment       | `{}`                                                                         |
+| `Master.Tolerations`              | Toleration labels for pod assignment | `{}`                                                                         |
 
 ### Jenkins Agent
 
