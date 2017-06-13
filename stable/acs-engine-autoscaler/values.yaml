@@ -6,7 +6,7 @@ replicaCount: 1
 ## Will update the image and tag later
 image:
   repository: ritazh/kubernetes-acs-engine-autoscaler
-  tag: latest
+  tag: 0.3.1
   pullPolicy: IfNotPresent
 acsenginecluster:
   resourcegroup: 
