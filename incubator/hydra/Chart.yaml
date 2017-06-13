@@ -3,7 +3,7 @@ description: A security-first open source OAuth2 and OpenID Connect server for e
 name: hydra
 version: 0.0.10
 keywords:
-- hdyra
+- hydra
 - authentication
 - authorization
 - auth
