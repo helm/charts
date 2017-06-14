@@ -11,7 +11,7 @@ Master:
   ImagePullPolicy: "Always"
   ServicePort: 7077
   ContainerPort: 7077
-  EnableHA: true
+  EnableHA: false
   Resources:
     Requests:
       Cpu: "700m"
@@ -33,7 +33,7 @@ WebUi:
 Worker:
   Name: worker
   Image: "erikschlegel/spark-worker"
-  ImageTag: "2.2.0-ha"
+  ImageTag: "2.2.0"
   ImagePullPolicy: "Always"
   Replicas: 6
   Component: "spark-worker"
