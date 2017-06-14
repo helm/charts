@@ -53,7 +53,7 @@ The following tables lists the configurable parameters of the Datadog chart and 
 | `resources.limits.cpu`      | CPU resource limits                | 512Mi                                     |
 | `resources.requests.memory` | Memory resource requests           | 100m                                      |
 | `resources.limits.memory`   | Memory resource limits             | 256m                                      |
-
+| `tolerations`               | The tolerations for scheduling     | Setup to match the taint for `node.alpha.kubernetes.io/role=master:NoSchedule`
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

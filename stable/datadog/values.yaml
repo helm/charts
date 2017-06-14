@@ -97,3 +97,10 @@ resources:
   limits:
     cpu: 256m
     memory: 512Mi
+
+# Allow datadog to run on Kubernetes 1.6 masters.
+tolerations:
+  - effect: NoSchedule
+    operator: Equal
+    key: node.alpha.kubernetes.io/role
+    value: master
