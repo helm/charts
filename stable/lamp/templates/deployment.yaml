@@ -179,15 +179,26 @@ spec:
                 }
               ],
             "volumeMounts": [
+                {{- if and .Values.php.persistent_subpaths (or .Values.persistence.hostPath .Values.persistence.enabled)}}
+                {{- range $subPath := .Values.php.persistent_subpaths }}
                 {
-                    {{- if and .Values.php.persistent_subpaths (or .Values.persistence.hostPath .Values.persistence.enabled)}}
-                    "name": "httpd-data-nonpersistent",
-                    {{- else }}
                     "name": "httpd-data",
-                    {{- end }}
+                    "mountPath": "/var/www/html/{{ $subPath }}",
+                    "subPath": "{{ $subPath }}"
+                },
+                {{- end }}
+                {
+                    "name": "httpd-data-nonpersistent",
                     "mountPath": "/var/www/html",
                     "subPath": "web"
                 },
+                {{- else }}
+                {
+                    "name": "httpd-data",
+                    "mountPath": "/var/www/html",
+                    "subPath": "web"
+                },
+                {{- end }}
                 {
                     "name": "httpd-data",
                     "mountPath": "/var/lib/mysql",
@@ -231,26 +242,48 @@ spec:
                     "subPath": "additional.ini"
                 },
                 {{- end }}
-                {{- if .Values.php.old_http_root }}
+                {{- if and .Values.php.persistent_subpaths (or .Values.persistence.hostPath .Values.persistence.enabled)}}
+                {{- range $subPath := .Values.php.persistent_subpaths }}
                 {
-                    {{- if and .Values.php.persistent_subpaths (or .Values.persistence.hostPath .Values.persistence.enabled)}}
-                    "name": "httpd-data-nonpersistent",
-                    {{- else }}
                     "name": "httpd-data",
-                    {{- end }}
+                    "mountPath": "/var/www/html/{{ $subPath }}",
+                    "subPath": "{{ $subPath }}"
+                },
+                {{- end }}
+                {
+                    "name": "httpd-data-nonpersistent",
+                    "mountPath": "/var/www/html",
+                    "subPath": "web"
+                },
+                {{- else }}
+                {
+                    "name": "httpd-data",
+                    "mountPath": "/var/www/html",
+                    "subPath": "web"
+                },
+                {{- end }}
+                {{- if .Values.php.old_http_root }}
+                {{- if and .Values.php.persistent_subpaths (or .Values.persistence.hostPath .Values.persistence.enabled)}}
+                {{- range $subPath := .Values.php.persistent_subpaths }}
+                {
+                    "name": "httpd-data",
+                    "mountPath": "{{ .Values.php.old_http_root }}/{{ $subPath }}",
+                    "subPath": "{{ $subPath }}"
+                },
+                {{- end }}
+                {
+                    "name": "httpd-data-nonpersistent",
+                    "mountPath": "{{ .Values.php.old_http_root }}",
+                    "subPath": "web"
+                },
+                {{- else }}
+                {
+                    "name": "httpd-data",
                     "mountPath": "{{ .Values.php.old_http_root }}",
                     "subPath": "web"
                 },
                 {{- end }}
-                {
-                    {{- if and .Values.php.persistent_subpaths (or .Values.persistence.hostPath .Values.persistence.enabled)}}
-                    "name": "httpd-data-nonpersistent",
-                    {{- else }}
-                    "name": "httpd-data",
-                    {{- end }}
-                    "mountPath": "/var/www/html",
-                    "subPath": "web"
-                },
+                {{- end }}
                 {
                     "name": "httpd-data",
                     "mountPath": "/var/www/mysql",
@@ -342,15 +375,26 @@ spec:
                 }
               ],
             "volumeMounts": [
+                {{- if and .Values.php.persistent_subpaths (or .Values.persistence.hostPath .Values.persistence.enabled)}}
+                {{- range $subPath := .Values.php.persistent_subpaths }}
                 {
-                    {{- if and .Values.php.persistent_subpaths (or .Values.persistence.hostPath .Values.persistence.enabled)}}
-                    "name": "httpd-data-nonpersistent",
-                    {{- else }}
                     "name": "httpd-data",
-                    {{- end }}
+                    "mountPath": "/var/www/html/{{ $subPath }}",
+                    "subPath": "{{ $subPath }}"
+                },
+                {{- end }}
+                {
+                    "name": "httpd-data-nonpersistent",
                     "mountPath": "/var/www/html",
                     "subPath": "web"
                 },
+                {{- else }}
+                {
+                    "name": "httpd-data",
+                    "mountPath": "/var/www/html",
+                    "subPath": "web"
+                },
+                {{- end }}
                 {
                     "name": "httpd-data",
                     "mountPath": "/var/www/mysql",
@@ -414,26 +458,48 @@ spec:
                     "subPath": "additional.ini"
                 },
                 {{- end }}
-                {{- if .Values.php.old_http_root }}
+                {{- if and .Values.php.persistent_subpaths (or .Values.persistence.hostPath .Values.persistence.enabled)}}
+                {{- range $subPath := .Values.php.persistent_subpaths }}
                 {
-                    {{- if and .Values.php.persistent_subpaths (or .Values.persistence.hostPath .Values.persistence.enabled)}}
-                    "name": "httpd-data-nonpersistent",
-                    {{- else }}
                     "name": "httpd-data",
-                    {{- end }}
+                    "mountPath": "/var/www/html/{{ $subPath }}",
+                    "subPath": "{{ $subPath }}"
+                },
+                {{- end }}
+                {
+                    "name": "httpd-data-nonpersistent",
+                    "mountPath": "/var/www/html",
+                    "subPath": "web"
+                },
+                {{- else }}
+                {
+                    "name": "httpd-data",
+                    "mountPath": "/var/www/html",
+                    "subPath": "web"
+                },
+                {{- end }}
+                {{- if .Values.php.old_http_root }}
+                {{- if and .Values.php.persistent_subpaths (or .Values.persistence.hostPath .Values.persistence.enabled)}}
+                {{- range $subPath := .Values.php.persistent_subpaths }}
+                {
+                    "name": "httpd-data",
+                    "mountPath": "{{ .Values.php.old_http_root }}/{{ $subPath }}",
+                    "subPath": "{{ $subPath }}"
+                },
+                {{- end }}
+                {
+                    "name": "httpd-data-nonpersistent",
+                    "mountPath": "{{ .Values.php.old_http_root }}",
+                    "subPath": "web"
+                },
+                {{- else }}
+                {
+                    "name": "httpd-data",
                     "mountPath": "{{ .Values.php.old_http_root }}",
                     "subPath": "web"
                 },
                 {{- end }}
-                {
-                    {{- if and .Values.php.persistent_subpaths (or .Values.persistence.hostPath .Values.persistence.enabled)}}
-                    "name": "httpd-data-nonpersistent",
-                    {{- else }}
-                    "name": "httpd-data",
-                    {{- end }}
-                    "mountPath": "/var/www/html",
-                    "subPath": "web"
-                },
+                {{- end }}
                 {
                     "name": "httpd-data",
                     "mountPath": "/var/www/mysql",
@@ -636,6 +702,11 @@ spec:
               key: sftp-password
         volumeMounts:
         {{- if and .Values.php.persistent_subpaths (or .Values.persistence.hostPath .Values.persistence.enabled)}}
+        {{- range $subPath := .Values.php.persistent_subpaths }}
+        - name: httpd-data
+          mountPath: /home/{{ .Values.sftp.user }}/web/{{ $subPath }}
+          subPath: {{ $subPath }}
+        {{- end }}
         - name: httpd-data-nonpersistent
         {{- else }}
         - name: httpd-data
@@ -645,6 +716,43 @@ spec:
         resources:
         {{- if .Values.sftp.resources }}
 {{ toYaml .Values.sftp.resources | indent 12 }}
+        {{- else }}
+{{ toYaml .Values.resources | indent 12 }}
+        {{- end }}
+      {{ end }}
+      {{ if .Values.webdav.enabled }}
+      - name: webdav
+        image: lead4good/webdav
+        command: [/bin/bash, -c, "sed -i s/80/8001/g /etc/nginx/sites-enabled/webdav-site.conf && /set_htpasswd.sh && nginx -g \"daemon off;\""]
+        env:
+        - name: WEBDAV_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "fullname" . }}
+              key: webdav-user
+        - name: WEBDAV_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "fullname" . }}
+              key: webdav-password
+        ports:
+        - containerPort: 8001
+        volumeMounts:
+        {{- if and .Values.php.persistent_subpaths (or .Values.persistence.hostPath .Values.persistence.enabled)}}
+        {{- range $subPath := .Values.php.persistent_subpaths }}
+        - name: httpd-data
+          mountPath: /var/www/{{ $subPath }}
+          subPath: {{ $subPath }}
+        {{- end }}
+        - name: httpd-data-nonpersistent
+        {{- else }}
+        - name: httpd-data
+        {{- end }}
+          mountPath: /var/www
+          subPath: web
+        resources:
+        {{- if .Values.svn.resources }}
+{{ toYaml .Values.svn.resources | indent 12 }}
         {{- else }}
 {{ toYaml .Values.resources | indent 12 }}
         {{- end }}
@@ -666,6 +774,11 @@ spec:
           value: /git
         volumeMounts:
         {{- if and .Values.php.persistent_subpaths (or .Values.persistence.hostPath .Values.persistence.enabled)}}
+        {{- range $subPath := .Values.php.persistent_subpaths }}
+        - name: httpd-data
+          mountPath: /git/{{ $subPath }}
+          subPath: {{ $subPath }}
+        {{- end }}
         - name: httpd-data-nonpersistent
         {{- else }}
         - name: httpd-data
@@ -702,43 +815,16 @@ spec:
         {{- end }}
         volumeMounts:
         {{- if and .Values.php.persistent_subpaths (or .Values.persistence.hostPath .Values.persistence.enabled)}}
+        {{- range $subPath := .Values.php.persistent_subpaths }}
+        - name: httpd-data
+          mountPath: /svn/{{ $subPath }}
+          subPath: {{ $subPath }}
+        {{- end }}
         - name: httpd-data-nonpersistent
         {{- else }}
         - name: httpd-data
         {{- end }}
           mountPath: /svn
-          subPath: web
-        resources:
-        {{- if .Values.svn.resources }}
-{{ toYaml .Values.svn.resources | indent 12 }}
-        {{- else }}
-{{ toYaml .Values.resources | indent 12 }}
-        {{- end }}
-      {{ end }}
-      {{ if .Values.webdav.enabled }}
-      - name: webdav
-        image: lead4good/webdav
-        command: [/bin/bash, -c, "sed -i s/80/8001/g /etc/nginx/sites-enabled/webdav-site.conf && /set_htpasswd.sh && nginx -g \"daemon off;\""]
-        env:
-        - name: WEBDAV_USERNAME
-          valueFrom:
-            secretKeyRef:
-              name: {{ template "fullname" . }}
-              key: webdav-user
-        - name: WEBDAV_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: {{ template "fullname" . }}
-              key: webdav-password
-        ports:
-        - containerPort: 8001
-        volumeMounts:
-        {{- if and .Values.php.persistent_subpaths (or .Values.persistence.hostPath .Values.persistence.enabled)}}
-        - name: httpd-data-nonpersistent
-        {{- else }}
-        - name: httpd-data
-        {{- end }}
-          mountPath: /var/www
           subPath: web
         resources:
         {{- if .Values.svn.resources }}

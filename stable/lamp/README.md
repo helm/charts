@@ -67,6 +67,7 @@ Currently you can try the following examples:
 * [examples/wordpress-php-ini.yaml](examples/wordpress-php-ini.yaml)
 * [examples/drupal.yaml](examples/drupal.yaml)
 * [examples/joomla.yaml](examples/joomla.yaml)
+* [examples/joomla.yaml](examples/grav.yaml)
 * [examples/owncloud.yaml](examples/owncloud.yaml)
 * [examples/nextcloud.yaml](examples/nextcloud.yaml)
 
