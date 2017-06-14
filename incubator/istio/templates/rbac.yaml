@@ -3,7 +3,7 @@
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/{{ required "A valid .Values.rbac.apiVersion entry required!" .Values.rbac.apiVersion }}
 metadata:
-  name: {{ $serviceName }}-manager
+  name: {{ $serviceName }}-pilot
 rules:
 - apiGroups: ["istio.io"]
   resources: ["istioconfigs", "istioconfigs.istio.io"]
@@ -17,6 +17,9 @@ rules:
 - apiGroups: [""]
   resources: ["namespaces"]
   verbs: ["get", "list"]
+- apiGroups: [""]
+  resources: ["secrets"]
+  verbs: ["get"]
 ---
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/{{ required "A valid .Values.rbac.apiVersion entry required!" .Values.rbac.apiVersion }}
@@ -48,14 +51,14 @@ rules:
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/{{ required "A valid .Values.rbac.apiVersion entry required!" .Values.rbac.apiVersion }}
 metadata:
-  name: {{ $serviceName }}-manager-admin-role-binding
+  name: {{ $serviceName }}-pilot-admin-role-binding
 subjects:
 - kind: ServiceAccount
-  name: {{ $serviceName }}-manager-service-account
+  name: {{ $serviceName }}-pilot-service-account
   namespace: {{ .Release.Namespace }}
 roleRef:
   kind: ClusterRole
-  name: {{ $serviceName }}-manager
+  name: {{ $serviceName }}-pilot
   apiGroup: rbac.authorization.k8s.io
 ---
 kind: ClusterRoleBinding
@@ -81,7 +84,7 @@ subjects:
   namespace: {{ .Release.Namespace }}
 roleRef:
   kind: ClusterRole
-  name: {{ $serviceName }}-manager
+  name: {{ $serviceName }}-pilot
   apiGroup: rbac.authorization.k8s.io
 ---
 kind: ClusterRoleBinding

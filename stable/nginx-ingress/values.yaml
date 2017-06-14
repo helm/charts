@@ -5,7 +5,7 @@ controller:
   name: controller
   image:
     repository: gcr.io/google_containers/nginx-ingress-controller
-    tag: "0.8.3"
+    tag: "0.9.0-beta.7"
     pullPolicy: IfNotPresent
 
   config: {}
