@@ -17,6 +17,7 @@ Resources:
   Cpu: 100m
   Memory: 512Mi
   Storage: 1Gi
+  #StorageClass: default
 
 # Credentials used by Patroni
 # * more information: https://github.com/zalando/patroni/blob/master/docs/SETTINGS.rst#postgresql
