@@ -66,6 +66,7 @@ The following tables lists the configurable parameters of the Drupal chart and t
 | `persistence.drupal.storageClass` | PVC Storage Class for Drupal volume   | `nil` (uses alpha storage class annotation)               |
 | `persistence.drupal.accessMode`   | PVC Access Mode for Drupal volume     | `ReadWriteOnce`                                           |
 | `persistence.drupal.existingClaim`| An Existing PVC name                  | `nil`                                                     |
+| `persistence.drupal.hostPath`     | Host mount path for Drupal volume     | `nil` (will not mount to a host path)                     |
 | `persistence.drupal.size`         | PVC Storage Request for Drupal volume | `8Gi`                                                     |
 | `resources`                       | CPU/Memory resource requests/limits   | Memory: `512Mi`, CPU: `300m`                              |
 
@@ -123,3 +124,18 @@ See the [Configuration](#configuration) section to configure the PVC or to disab
 ```bash
 $ helm install --name my-release --set persistence.drupal.existingClaim=PVC_NAME stable/drupal
 ```
+
+### Host path
+
+#### System compatibility
+- The local filesystem accessibility to a container in a pod with `hostPath` has been tested on OSX/MacOS with xhyve, and Linux with VirtualBox.
+- Windows has not been tested with the supported VM drivers. Minikube does however officially support [Mounting Host Folders](https://github.com/kubernetes/minikube/blob/master/docs/host_folder_mount.md) per pod. Or you may manually sync your container whenever host files are changed with tools like [docker-sync](https://github.com/EugenMayer/docker-sync) or [docker-bg-sync](https://github.com/cweagans/docker-bg-sync).
+
+#### Mounting steps
+1. The specified `hostPath` directory must already exist (create one if it does not).
+1. Install the chart
+    ```bash
+    $ helm install --name my-release --set persistence.drupal.hostPath=/PATH/TO/HOST/MOUNT stable/drupal
+    ```
+    This will mount the `drupal-data` volume into the `hostPath` directory, if the site has not already been initialized. If it has, your host machine changes will persist.
+1. Because the container can not control the host machine’s directory permissions, you must set the Drupal file directory permissions yourself and disable or clear Drupal cache. See Drupal Core’s [INSTALL.txt](http://cgit.drupalcode.org/drupal/tree/core/INSTALL.txt?h=8.3.x#n152) for setting file permissions, and see [Drupal handbook page](https://www.drupal.org/node/2598914) to disable cache, or [Drush handbook](https://drushcommands.com/drush-8x/cache/cache-rebuild/) to clear cache.

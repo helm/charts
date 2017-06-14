@@ -106,6 +106,13 @@ persistence:
     ##
     # existingClaim:
 
+    ## If defined, the drupal-data volume will mount to the speficied hostPath.
+    ## Requires persistence.enabled: true
+    ## Requires persistence.existingClaim: nil|false
+    ## Default: nil.
+    ##
+    # hostPath:
+
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
 ##
