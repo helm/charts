@@ -16,8 +16,10 @@ acme:
   enabled: false
   email: admin@example.com
   staging: true
-  # Save ACME certs to a persistent volume. WARNING: If you do not do this, you will re-request
-  # certs every time a pod (re-)starts and you WILL be rate limited!
+  ## Set dnsProvider to perform domain verification using dns challenge
+  # dnsProvider: nil
+  ## Save ACME certs to a persistent volume. WARNING: If you do not do this, you will re-request
+  ## certs every time a pod (re-)starts and you WILL be rate limited!
   persistence:
     enabled: true
     ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
