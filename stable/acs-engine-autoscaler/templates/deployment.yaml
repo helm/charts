@@ -3,14 +3,14 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: {{ template "fullname" . }}
-  labels:
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+  labels: 
+{{ include "labels.standard" . | indent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   template:
     metadata:
-      labels:
-        app: {{ template "fullname" . }}
+      labels: 
+{{ include "labels.standard" . | indent 8 }}
         openai/do-not-drain: "true"
     spec:
       containers:
