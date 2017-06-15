@@ -17,7 +17,7 @@ To install the chart with the release name `my-release`, retrieve your CoScale d
 ```bash
 $ helm install \
     --name my-release \
-    --set coscale.AppId=YOUR-APP-ID,coscale.AccessToken=YOUR-ACCESS-TOKEN,coscale.TemplateId=YOUR-TEMPLATE-ID \
+    --set coscale.appId=YOUR-APP-ID,coscale.accessToken=YOUR-ACCESS-TOKEN,coscale.templateId=YOUR-TEMPLATE-ID \
     stable/coscale
 ```
 
@@ -41,11 +41,11 @@ The following tables lists the configurable parameters of the CoScale chart and 
 
 |      Parameter              |          Description               |                         Default           |
 |-----------------------------|------------------------------------|-------------------------------------------|
-| `coscale.AppId`             | Your CoScale Application Id        | `Nil` You must provide your own           |
-| `coscale.AccessToken`       | Your CoScale Access Token          | `Nil` You must provide your own           |
-| `coscale.TemplateId`        | Your CoScale Agent Template Id     | `Nil` You must provide your own           |
+| `coscale.appId`             | Your CoScale Application Id        | `Nil` You must provide your own           |
+| `coscale.accessToken`       | Your CoScale Access Token          | `Nil` You must provide your own           |
+| `coscale.templateId`        | Your CoScale Agent Template Id     | `Nil` You must provide your own           |
 | `image.repository`          | The image repository to pull from  | `coscale/coscale-agent`                   |
-| `image.tag`                 | The image tag to pull              | `latest`                                  |
+| `image.tag`                 | The image tag to pull              | `3.10.11`                                 |
 | `image.pullPolicy`          | The Image pull policy              | `IfNotPresent`                            |
 
 

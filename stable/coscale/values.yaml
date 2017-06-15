@@ -2,18 +2,18 @@
 
 image:
     repository: "coscale/coscale-agent"
-    tag: "latest"
-    pullPolicy: "Always"
+    tag: "3.10.11"
+    pullPolicy: "IfNotPresent"
 
 coscale:
     # Required: You need a CoScale AppId before running agents.
-    AppId: ""
+    appId: ""
 
     # Required: You need a CoScale AccessToken before running agents.
-    AccessToken: ""
+    accessToken: ""
 
     # Required: You need a CoScale TemplateId before running agents.
-    TemplateId: ""
+    templateId: ""
 
 resources:
   requests:
