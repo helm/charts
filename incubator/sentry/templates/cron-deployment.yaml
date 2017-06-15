@@ -3,13 +3,17 @@ kind: Deployment
 metadata:
   name: {{ template "fullname" . }}-cron
   labels:
+    app: {{ template "fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
 spec:
   replicas: {{ .Values.cron.replicacount }}
   template:
     metadata:
       labels:
         app: {{ template "fullname" . }}
+        release: "{{ .Release.Name }}"
         role: cron
     spec:
       containers:

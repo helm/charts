@@ -1,19 +1,23 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "fullname" . }}-web
   labels:
+    app: {{ template "fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
 spec:
   replicas: {{ .Values.web.replicacount }}
   template:
     metadata:
       labels:
         app: {{ template "fullname" . }}
+        release: "{{ .Release.Name }}"
         role: web
     spec:
       containers:
-      - name: {{ .Chart.Name }}
+      - name: {{ .Chart.Name }}-web
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         ports:
