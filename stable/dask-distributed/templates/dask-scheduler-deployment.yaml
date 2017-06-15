@@ -4,36 +4,36 @@ metadata:
   name: {{ template "scheduler-fullname" . }}
   labels:
     app: {{ template "name" . }}
-    heritage: {{.Release.Service | quote }}
-    release: {{.Release.Name | quote }}
-    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
-    component: "{{.Release.Name}}-{{.Values.Scheduler.Component}}"
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    component: "{{ .Release.Name }}-{{ .Values.Scheduler.Component }}"
 spec:
-  replicas: {{default 1 .Values.Scheduler.Replicas}}
+  replicas: {{ default 1 .Values.Scheduler.Replicas }}
   strategy:
     type: RollingUpdate
   selector:
     matchLabels:
-      component: "{{.Release.Name}}-{{.Values.Scheduler.Component}}"
+      component: "{{ .Release.Name }}-{{ .Values.Scheduler.Component }}"
   template:
     metadata:
       labels:
-        heritage: {{.Release.Service | quote }}
-        release: {{.Release.Name | quote }}
-        chart: "{{.Chart.Name}}-{{.Chart.Version}}"
-        component: "{{.Release.Name}}-{{.Values.Scheduler.Component}}"
+        heritage: {{ .Release.Service | quote }}
+        release: {{ .Release.Name | quote }}
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        component: "{{ .Release.Name}}-{{ .Values.Scheduler.Component }}"
     spec:
       containers:
         - name: {{ template "scheduler-fullname" . }}
-          image: "{{.Values.Scheduler.Image}}:{{.Values.Scheduler.ImageTag}}"
-          command: ["dask-scheduler", "--port", "{{.Values.Scheduler.ServicePort}}", "--bokeh-port", "{{.Values.WebUI.ContainerPort}}"]
+          image: "{{ .Values.Scheduler.Image }}:{{ .Values.Scheduler.ImageTag }}"
+          command: ["dask-scheduler", "--port", "{{ .Values.Scheduler.ServicePort }}", "--bokeh-port", "{{ .Values.WebUI.ContainerPort }}"]
           ports:
-            - containerPort: {{.Values.Scheduler.ContainerPort}}
-            - containerPort: {{.Values.WebUI.ContainerPort}}
+            - containerPort: {{ .Values.Scheduler.ContainerPort }}
+            - containerPort: {{ .Values.WebUI.ContainerPort }}
           resources:
             requests:
-              cpu: "{{.Values.Scheduler.Cpu}}"
-              memory: "{{.Values.Scheduler.Memory}}"
+              cpu: "{{ .Values.Scheduler.Cpu }}"
+              memory: "{{ .Values.Scheduler.Memory }}"
 ---
 apiVersion: v1
 kind: Service
@@ -41,19 +41,19 @@ metadata:
   name: {{ template "scheduler-fullname" . }}
   labels:
     app: {{ template "name" . }}
-    heritage: {{.Release.Service | quote }}
-    release: {{.Release.Name | quote }}
-    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
-    component: "{{.Release.Name}}-{{.Values.Scheduler.Component}}"
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    component: "{{ .Release.Name }}-{{ .Values.Scheduler.Component }}"
 spec:
   ports:
     - name: {{ template "scheduler-fullname" . }}
-      port: {{.Values.Scheduler.ServicePort}}
-      targetPort: {{.Values.Scheduler.ContainerPort}}
+      port: {{ .Values.Scheduler.ServicePort }}
+      targetPort: {{ .Values.Scheduler.ContainerPort }}
     - name: {{ template "webui-fullname" . }}
-      port: {{.Values.WebUI.ServicePort}}
-      targetPort: {{.Values.WebUI.ContainerPort}}
+      port: {{ .Values.WebUI.ServicePort }}
+      targetPort: {{ .Values.WebUI.ContainerPort }}
   selector:
-    component: "{{.Release.Name}}-{{.Values.Scheduler.Component}}"
+    component: "{{ .Release.Name }}-{{ .Values.Scheduler.Component }}"
   type: "LoadBalancer"
 

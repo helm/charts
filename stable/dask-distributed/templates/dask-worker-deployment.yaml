@@ -4,32 +4,32 @@ metadata:
   name: {{ template "worker-fullname" . }}
   labels:
     app: {{ template "name" . }}
-    heritage: {{.Release.Service | quote }}
-    release: {{.Release.Name | quote }}
-    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
-    component: "{{.Release.Name}}-{{.Values.Worker.Component}}"
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    component: "{{ .Release.Name }}-{{ .Values.Worker.Component }}"
 spec:
-  replicas: {{default 1 .Values.Worker.Replicas}}
+  replicas: {{ default 1 .Values.Worker.Replicas }}
   strategy:
     type: RollingUpdate
   selector:
     matchLabels:
-      component: "{{.Release.Name}}-{{.Values.Worker.Component}}"
+      component: "{{ .Release.Name }}-{{ .Values.Worker.Component }}"
   template:
     metadata:
       labels:
-        heritage: {{.Release.Service | quote }}
-        release: {{.Release.Name | quote }}
-        chart: "{{.Chart.Name}}-{{.Chart.Version}}"
-        component: "{{.Release.Name}}-{{.Values.Worker.Component}}"
+        heritage: {{ .Release.Service | quote }}
+        release: {{ .Release.Name | quote }}
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        component: "{{ .Release.Name }}-{{ .Values.Worker.Component }}"
     spec:
       containers:
         - name: {{ template "worker-fullname" . }}
-          image: "{{.Values.Worker.Image}}:{{.Values.Worker.ImageTag}}"
-          command: ["dask-worker", "{{ template "scheduler-fullname" . }}:{{.Values.Scheduler.ServicePort}}"]
+          image: "{{ .Values.Worker.Image }}:{{ .Values.Worker.ImageTag }}"
+          command: ["dask-worker", "{{ template "scheduler-fullname" . }}:{{ .Values.Scheduler.ServicePort }}"]
           ports:
-            - containerPort: {{.Values.Worker.ContainerPort}}
+            - containerPort: {{ .Values.Worker.ContainerPort }}
           resources:
             requests:
-              cpu: "{{.Values.Worker.Cpu}}"
-              memory: "{{.Values.Worker.Memory}}"
+              cpu: "{{ .Values.Worker.Cpu }}"
+              memory: "{{ .Values.Worker.Memory }}"

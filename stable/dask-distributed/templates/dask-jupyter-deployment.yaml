@@ -19,33 +19,33 @@ metadata:
   name: {{ template "jupyter-fullname" . }}
   labels:
     app: {{ template "name" . }}
-    heritage: {{.Release.Service | quote }}
-    release: {{.Release.Name | quote }}
-    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
-    component: "{{.Release.Name}}-{{.Values.Jupyter.Component}}"
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    component: "{{ .Release.Name }}-{{ .Values.Jupyter.Component }}"
 spec:
-  replicas: {{default 1 .Values.Jupyter.Replicas}}
+  replicas: {{ default 1 .Values.Jupyter.Replicas }}
   strategy:
     type: RollingUpdate
   selector:
     matchLabels:
-      component: "{{.Release.Name}}-{{.Values.Jupyter.Component}}"
+      component: "{{ .Release.Name }}-{{ .Values.Jupyter.Component }}"
   template:
     metadata:
       labels:
-        heritage: {{.Release.Service | quote }}
-        release: {{.Release.Name | quote }}
-        chart: "{{.Chart.Name}}-{{.Chart.Version}}"
-        component: "{{.Release.Name}}-{{.Values.Jupyter.Component}}"
+        heritage: {{ .Release.Service | quote }}
+        release: {{ .Release.Name | quote }}
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        component: "{{ .Release.Name }}-{{ .Values.Jupyter.Component }}"
     spec:
       containers:
         - name: {{ template "jupyter-fullname" . }}
-          image: "{{.Values.Jupyter.Image}}:{{.Values.Jupyter.ImageTag}}"
+          image: "{{ .Values.Jupyter.Image }}:{{ .Values.Jupyter.ImageTag }}"
           ports:
-            - containerPort: {{.Values.Jupyter.ContainerPort}}
+            - containerPort: {{ .Values.Jupyter.ContainerPort }}
           resources:
             requests:
-              cpu: "{{.Values.Jupyter.Cpu}}"
+              cpu: "{{ .Values.Jupyter.Cpu }}"
           volumeMounts:
           - name: config-volume
             mountPath: /home/jovyan/.jupyter
@@ -60,14 +60,14 @@ metadata:
   name: {{ template "jupyter-fullname" . }}
   labels:
     app: {{ template "name" . }}
-    heritage: {{.Release.Service | quote }}
-    release: {{.Release.Name | quote }}
-    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
-    component: "{{.Release.Name}}-{{.Values.Jupyter.Component}}"
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    component: "{{ .Release.Name }}-{{ .Values.Jupyter.Component }}"
 spec:
   ports:
-    - port: {{.Values.Jupyter.ServicePort}}
-      targetPort: {{.Values.Jupyter.ContainerPort}}
+    - port: {{ .Values.Jupyter.ServicePort }}
+      targetPort: {{ .Values.Jupyter.ContainerPort }}
   selector:
-    component: "{{.Release.Name}}-{{.Values.Jupyter.Component}}"
+    component: "{{ .Release.Name }}-{{ .Values.Jupyter.Component }}"
   type: "LoadBalancer"
