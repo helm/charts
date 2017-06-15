@@ -121,6 +121,21 @@ helm install -n portus .
 | `portus.image.pullPolicy`    | Container image pullPolicy           | `IfNotPresent`                      |
 | `portus.fqdn`                | Portus fully qualified domain name   | `portus.registry.example.com`       |
 | `portus.config.*`            |[Portus Config](http://port.us.org/docs/Configuring-Portus.html)|see `values.yaml` |
+| `portus.config.signup`                            | Allow guests to create accounts | `True`                |
+| `portus.config.first_user_admin`                  | Make first signup admin         | `True`                |
+| `portus.config.delete`                            | Allow delete                    | `True`                |
+| `portus.config.display_name`                      | Split username from displayname | `False`               |
+| `portus.config.gravatar`                          | Use Gravatar avatars            | `True`                |
+| `portus.config.email.from`                        | Email from address              | `portus@example.com`  |
+| `portus.config.email.name`                        | Email from name                 | `Portus`              |
+| `portus.config.email.reply_to`                    | Email reply-to                  | `no-reply@example.com`|
+| `portus.config.email.smtp.enabled`                | Email SMTP config               | `False`               |
+| `portus.config.email.smtp.address`                | Email SMTP config               | `smtp.example.com`    |
+| `portus.config.email.smtp.domain`                 | Email SMTP config domain        | `example.com`         |
+| `portus.config.email.smtp.port`                   | Email SMTP config               | `587`                 |
+| `portus.config.user_permission.change_visibility` | User Permissions                | `True`                |
+| `portus.config.user_permission.manage_namespace`  | User Permissions                | `True`                |
+| `portus.config.user_permission.manage_team`       | User Permissions                | `True`                |
 | `portus.secrets.db.host`     | Mysql host                           | `portusdb-mariadb`                  |
 | `portus.secrets.db.catalog`  | Mysql catalog                        | `portusdb`                          |
 | `portus.secrets.db.username` | Mysql username                       | `portus`                            |
