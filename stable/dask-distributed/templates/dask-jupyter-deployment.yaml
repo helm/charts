@@ -3,6 +3,7 @@ kind: ConfigMap
 metadata:
   name: {{ template "jupyter-fullname" . }}-config
   labels:
+    app: {{ template "name" . }}
     heritage: {{.Release.Service | quote }}
     release: {{.Release.Name | quote }}
     chart: "{{.Chart.Name}}-{{.Chart.Version}}"
@@ -17,6 +18,7 @@ kind: Deployment
 metadata:
   name: {{ template "jupyter-fullname" . }}
   labels:
+    app: {{ template "name" . }}
     heritage: {{.Release.Service | quote }}
     release: {{.Release.Name | quote }}
     chart: "{{.Chart.Name}}-{{.Chart.Version}}"
@@ -57,6 +59,7 @@ kind: Service
 metadata:
   name: {{ template "jupyter-fullname" . }}
   labels:
+    app: {{ template "name" . }}
     heritage: {{.Release.Service | quote }}
     release: {{.Release.Name | quote }}
     chart: "{{.Chart.Name}}-{{.Chart.Version}}"
