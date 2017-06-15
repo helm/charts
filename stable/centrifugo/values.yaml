@@ -1,0 +1,48 @@
+replicaCount: 1
+image:
+  repository: centrifugo/centrifugo
+  tag: 1.7.3
+  pullPolicy: IfNotPresent
+service:
+  name: http
+  type: ClusterIP
+  externalPort: 8000
+  internalPort: 8000
+ingress:
+  enabled: true
+  hosts:
+    - centrifugo.local
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    ingress.kubernetes.io/upstream-fail-timeout: 60
+    ingress.kubernetes.io/upstream-max-fails: 2
+    ingress.kubernetes.io/proxy-read-timeout: 3600
+    ingress.kubernetes.io/proxy-send-timeout: 3600
+
+config:
+  secret: secret
+  web: true
+  admin_password: password
+  admin_secret: secret
+  namespaces:
+  - name: public
+    anonymous: true
+    publish: true
+    watch: true
+    presence: true
+    join_leave: true
+    history_size: 10
+    history_lifetime: 30
+    recover: true
+
+args:
+  - --web=true
+
+resources:
+  limits:
+    cpu: 100m
+    memory: 256Mi
+  requests:
+    cpu: 100m
+    memory: 256Mi
+
