@@ -9,12 +9,18 @@ image:
   tag: 0.3.1
   pullPolicy: IfNotPresent
 acsenginecluster:
-  resourcegroup: 
-  azurespappid: 
-  azurespsecret: 
-  azuresptenantid: 
-  kubeconfigprivatekey: 
-  clientprivatekey: 
+  resourcegroup:
+  azurespappid:
+  azurespsecret:
+  azuresptenantid:
+  kubeconfigprivatekey:
+  clientprivatekey:
   ## Optional parameter for deployment name if not using default
-  #acsdeployment: 
+  #acsdeployment:
+  ## Optional parameter for sleep time between scaling loops (default: 60)
+  #sleeptime:
+  ## Optional parameter for pools to ignore scaling on
+  #ignorepools:
+  ## Optional parameter denominating number of nodes to spare in a pool after scaling
+  #spareagents:
 
