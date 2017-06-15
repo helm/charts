@@ -1,4 +1,6 @@
 {{- if .Values.ingress.enabled -}}
+{{- $fullName := include "fullname" . }}
+{{- $httpPort := .Values.httpPort }}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
@@ -20,8 +22,8 @@ spec:
         paths:
           - path: /
             backend:
-              serviceName: {{ template "fullname" . }}
-              servicePort: {{ .Values.httpPort }}
+              serviceName: {{ $fullName }}
+              servicePort: {{ $httpPort }}
   {{- end -}}
   {{- if .Values.ingress.tls }}
   tls:
