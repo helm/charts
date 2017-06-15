@@ -60,6 +60,10 @@ spec:
           periodSeconds: 10
           successThreshold: 1
           timeoutSeconds: 2
+        {{- if .Values.env }}
+        env:
+{{ toYaml .Values.env | indent 8 }}
+        {{- end -}}
         volumeMounts:
         - mountPath: /config
           name: config

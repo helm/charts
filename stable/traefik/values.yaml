@@ -108,3 +108,10 @@ deployment:
     httpEnabled: false
     httpsEnabled: false
     dashboardEnabled: false
+## Environment variables for the Traefik pod
+env:
+# Kubernetes ingress filters
+#kubernetes:
+#  namespaces:
+#  - default
+#  labelSelector:
