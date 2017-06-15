@@ -108,6 +108,9 @@ Parameter | Description | Default
 `kubeconfigprivatekey`| The key passed to the `kubeConfigPrivateKey` parameter in your `azuredeploy.parameters.json` generated with `acs-engine` | None. You *must* supply one.
 `clientprivatekey`| The key passed to the `clientPrivateKey` parameter in your `azuredeploy.parameters.json` generated with `acs-engine` | None. You *must* supply one.
 `acsdeployment`| [OPTIONAL] The name of the deployment used to deploy the kubernetes cluster initially. If not provided, it is defaulted to `azuredeploy` | None.
+`sleeptime`| [OPTIONAL] The number of seconds to sleep between scaling loops. If not provided, a default of 60 seconds is used. | 60
+`ignorepools`| [OPTIONAL] A list of comma seperated pool names the autoscaler should ignore. | None.
+`spareagents`| [OPTIONAL] Number of agents per pool that should always remain up. If not provided, a default of 1 agent is used. | 1
 
 Specify each parameter you'd like to override using a YAML file as described above in the [installation](#Installing the Chart) section.
 
