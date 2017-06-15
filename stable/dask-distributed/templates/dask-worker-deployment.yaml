@@ -18,6 +18,7 @@ spec:
   template:
     metadata:
       labels:
+        app: {{ template "name" . }}
         heritage: {{ .Release.Service | quote }}
         release: {{ .Release.Name | quote }}
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
