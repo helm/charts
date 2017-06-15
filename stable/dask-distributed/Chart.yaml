@@ -6,5 +6,5 @@ icon: https://avatars3.githubusercontent.com/u/17131925?v=3&s=200
 sources:
   - https://github.com/dask/distributed
 maintainers:
-  - name: Daniel Rodriguez
+  - name: danielfrg
     email: df.rodriguez143@gmail.com
