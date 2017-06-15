@@ -63,6 +63,14 @@ spec:
             - --spare-agents
             - {{ .Values.acsenginecluster.spareagents }}
             {{- end }}
+            {{- if .Values.acsenginecluster.idlethreshold }}
+            - --idle-threshold
+            - {{ .Values.acsenginecluster.idlethreshold}}
+            {{- end }}
+            {{- if .Values.acsenginecluster.overprovision }}
+            - --over-provision
+            - {{ .Values.acsenginecluster.overprovision}}
+            {{- end }}
             - -vvv
         imagePullPolicy: {{ .Values.image.pullPolicy }}
       restartPolicy: Always
