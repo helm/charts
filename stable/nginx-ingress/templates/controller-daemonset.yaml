@@ -21,6 +21,7 @@ spec:
         component: "{{ .Values.controller.name }}"
         release: {{ .Release.Name }}
     spec:
+      hostNetwork: {{ .Values.controller.hostNetwork }}
       containers:
         - name: {{ template "name" . }}-{{ .Values.controller.name }}
           image: "{{ .Values.controller.image.repository }}:{{ .Values.controller.image.tag }}"
@@ -91,7 +92,6 @@ spec:
               path: /healthz
               port: 10254
               scheme: HTTP
-          hostNetwork: {{ .Values.controller.hostNetwork }}
           resources:
 {{ toYaml .Values.controller.resources | indent 12 }}
 
