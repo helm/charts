@@ -44,8 +44,7 @@ spec:
           ports:
             - containerPort: {{ .Values.Jupyter.ContainerPort }}
           resources:
-            requests:
-              cpu: "{{ .Values.Jupyter.Cpu }}"
+{{ toYaml .Values.Jupyter.resources | indent 12 }}
           volumeMounts:
           - name: config-volume
             mountPath: /home/jovyan/.jupyter

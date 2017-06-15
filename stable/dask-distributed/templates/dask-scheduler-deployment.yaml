@@ -31,9 +31,7 @@ spec:
             - containerPort: {{ .Values.Scheduler.ContainerPort }}
             - containerPort: {{ .Values.WebUI.ContainerPort }}
           resources:
-            requests:
-              cpu: "{{ .Values.Scheduler.Cpu }}"
-              memory: "{{ .Values.Scheduler.Memory }}"
+{{ toYaml .Values.Jupyter.resources | indent 12 }}
 ---
 apiVersion: v1
 kind: Service

@@ -9,10 +9,16 @@ Scheduler:
   ImageTag: "latest"
   Replicas: 1
   Component: "dask-scheduler"
-  Cpu: "500m"
-  Memory: "1024Mi"
   ServicePort: 8786
   ContainerPort: 8786
+
+  resources: {}
+  # limits:
+  #   cpu: 500m
+  #   memory: 512Mi
+  # requests:
+  #   cpu: 500m
+  #   memory: 512Mi
 
 WebUI:
   Name: webui
@@ -25,9 +31,14 @@ Worker:
   ImageTag: "latest"
   Replicas: 3
   Component: "dask-worker"
-  Cpu: "500m"
-  Memory: "1024Mi"
   ContainerPort: 8081
+  resources: {}
+  # limits:
+  #   cpu: 500m
+  #   memory: 512Mi
+  # requests:
+  #   cpu: 500m
+  #   memory: 512Mi
 
 Jupyter:
   Name: jupyter
@@ -35,8 +46,13 @@ Jupyter:
   ImageTag: "11be019e4079"
   Replicas: 1
   Component: "jupyter-notebook"
-  Cpu: "100m"
-  Memory: "1024Mi"
   ServicePort: 80
   ContainerPort: 8888
   Password: 'sha1:aae8550c0a44:9507d45e087d5ee481a5ce9f4f16f37a0867318c'  # 'dask'
+  resources: {}
+  # limits:
+  #   cpu: 500m
+  #   memory: 512Mi
+  # requests:
+  #   cpu: 500m
+  #   memory: 512Mi
