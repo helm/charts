@@ -44,6 +44,8 @@ service:
   #   key: value
 gzip:
   enabled: true
+## Environment variables for the Traefik pod
+env:
 # Kubernetes ingress filters
 #kubernetes:
 #  namespaces:
