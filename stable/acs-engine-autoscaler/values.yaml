@@ -24,7 +24,7 @@ acsenginecluster:
   ## Optional parameter denominating number of nodes to spare in a pool after scaling
   #spareagents:
   ## Optional parameter denominating the maximum duration (in seconds) an agent can stay idle before being deleted
-  #idle-threshold:
+  #idlethreshold:
   ## Optional parameter denominating the number of extra agents to create when scaling out
-  #over-provision:
+  #overprovision:
 
