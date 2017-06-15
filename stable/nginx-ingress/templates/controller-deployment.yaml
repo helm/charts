@@ -92,6 +92,7 @@ spec:
               path: /healthz
               port: 10254
               scheme: HTTP
+          hostNetwork: {{ .Values.controller.hostNetwork }}
           resources:
 {{ toYaml .Values.controller.resources | indent 12 }}
 
