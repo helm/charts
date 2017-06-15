@@ -9,7 +9,7 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     component: "{{ .Release.Name }}-{{ .Values.Scheduler.Component }}"
 spec:
-  replicas: {{ default 1 .Values.Scheduler.Replicas }}
+  replicas: {{ .Values.Scheduler.Replicas }}
   strategy:
     type: RollingUpdate
   selector:
