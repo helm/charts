@@ -111,8 +111,8 @@ Parameter | Description | Default
 `sleeptime`| [OPTIONAL] The number of seconds to sleep between scaling loops. | 60
 `ignorepools`| [OPTIONAL] A list of comma seperated pool names the autoscaler should ignore. | None.
 `spareagents`| [OPTIONAL] Number of agents per pool that should always remain up. | 1
-`idle-threshold`| [OPTIONAL] Maximum duration (in seconds) an agent can stay idle before being deleted. | 1800 (30 minutes)
-`over-provision`| [OPTIONAL] Number of extra agents to create when scaling out. | 0
+`idlethreshold`| [OPTIONAL] Maximum duration (in seconds) an agent can stay idle before being deleted. | 1800 (30 minutes)
+`overprovision`| [OPTIONAL] Number of extra agents to create when scaling out. | 0
 Specify each parameter you'd like to override using a YAML file as described above in the [installation](#Installing the Chart) section.
 
 
