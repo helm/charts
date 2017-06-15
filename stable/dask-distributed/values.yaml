@@ -3,15 +3,14 @@
 # Declare name/value pairs to be passed into your templates.
 # name: value
 
-Scheduler:
-  Name: scheduler
-  Image: "daskdev/dask"
-  ImageTag: "latest"
-  Replicas: 1
-  Component: "dask-scheduler"
-  ServicePort: 8786
-  ContainerPort: 8786
-
+scheduler:
+  name: scheduler
+  image: "daskdev/dask"
+  imageTag: "latest"
+  replicas: 1
+  component: "dask-scheduler"
+  servicePort: 8786
+  containerPort: 8786
   resources: {}
   # limits:
   #   cpu: 500m
@@ -20,18 +19,18 @@ Scheduler:
   #   cpu: 500m
   #   memory: 512Mi
 
-WebUI:
-  Name: webui
-  ServicePort: 80
-  ContainerPort: 8787
+webUI:
+  name: webui
+  servicePort: 80
+  containerPort: 8787
 
-Worker:
-  Name: worker
-  Image: "daskdev/dask"
-  ImageTag: "latest"
-  Replicas: 3
-  Component: "dask-worker"
-  ContainerPort: 8081
+worker:
+  name: worker
+  image: "daskdev/dask"
+  imageTag: "latest"
+  replicas: 3
+  component: "dask-worker"
+  containerPort: 8081
   resources: {}
   # limits:
   #   cpu: 500m
@@ -40,15 +39,15 @@ Worker:
   #   cpu: 500m
   #   memory: 512Mi
 
-Jupyter:
-  Name: jupyter
-  Image: "jupyter/base-notebook"
-  ImageTag: "11be019e4079"
-  Replicas: 1
-  Component: "jupyter-notebook"
-  ServicePort: 80
-  ContainerPort: 8888
-  Password: 'sha1:aae8550c0a44:9507d45e087d5ee481a5ce9f4f16f37a0867318c'  # 'dask'
+jupyter:
+  name: jupyter
+  image: "jupyter/base-notebook"
+  imageTag: "11be019e4079"
+  replicas: 1
+  component: "jupyter-notebook"
+  servicePort: 80
+  containerPort: 8888
+  password: 'sha1:aae8550c0a44:9507d45e087d5ee481a5ce9f4f16f37a0867318c'  # 'dask'
   resources: {}
   # limits:
   #   cpu: 500m

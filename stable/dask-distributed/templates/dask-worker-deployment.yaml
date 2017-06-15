@@ -7,27 +7,27 @@ metadata:
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    component: "{{ .Release.Name }}-{{ .Values.Worker.Component }}"
+    component: "{{ .Release.Name }}-{{ .Values.worker.component }}"
 spec:
-  replicas: {{ .Values.Worker.Replicas }}
+  replicas: {{ .Values.worker.replicas }}
   strategy:
     type: RollingUpdate
   selector:
     matchLabels:
-      component: "{{ .Release.Name }}-{{ .Values.Worker.Component }}"
+      component: "{{ .Release.Name }}-{{ .Values.worker.component }}"
   template:
     metadata:
       labels:
         heritage: {{ .Release.Service | quote }}
         release: {{ .Release.Name | quote }}
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-        component: "{{ .Release.Name }}-{{ .Values.Worker.Component }}"
+        component: "{{ .Release.Name }}-{{ .Values.worker.component }}"
     spec:
       containers:
         - name: {{ template "worker-fullname" . }}
-          image: "{{ .Values.Worker.Image }}:{{ .Values.Worker.ImageTag }}"
-          command: ["dask-worker", "{{ template "scheduler-fullname" . }}:{{ .Values.Scheduler.ServicePort }}"]
+          image: "{{ .Values.worker.image }}:{{ .Values.worker.imageTag }}"
+          command: ["dask-worker", "{{ template "scheduler-fullname" . }}:{{ .Values.scheduler.servicePort }}"]
           ports:
-            - containerPort: {{ .Values.Worker.ContainerPort }}
+            - containerPort: {{ .Values.worker.containerPort }}
           resources:
-{{ toYaml .Values.Jupyter.resources | indent 12 }}
+{{ toYaml .Values.worker.resources | indent 12 }}

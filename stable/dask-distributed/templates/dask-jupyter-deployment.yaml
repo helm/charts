@@ -4,14 +4,14 @@ metadata:
   name: {{ template "jupyter-fullname" . }}-config
   labels:
     app: {{ template "name" . }}
-    heritage: {{.Release.Service | quote }}
-    release: {{.Release.Name | quote }}
-    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
-    component: "{{.Release.Name}}-{{.Values.Jupyter.Component}}"
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    component: "{{ .Release.Name }}-{{ .Values.jupyter.component }}"
 data:
   jupyter_notebook_config.py: |
     c = get_config()
-    c.NotebookApp.password = '{{.Values.Jupyter.Password}}'
+    c.NotebookApp.password = '{{ .Values.jupyter.password }}'
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
@@ -22,29 +22,29 @@ metadata:
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    component: "{{ .Release.Name }}-{{ .Values.Jupyter.Component }}"
+    component: "{{ .Release.Name }}-{{ .Values.jupyter.component }}"
 spec:
-  replicas: {{ .Values.Jupyter.Replicas }}
+  replicas: {{ .Values.jupyter.replicas }}
   strategy:
     type: RollingUpdate
   selector:
     matchLabels:
-      component: "{{ .Release.Name }}-{{ .Values.Jupyter.Component }}"
+      component: "{{ .Release.Name }}-{{ .Values.jupyter.component }}"
   template:
     metadata:
       labels:
         heritage: {{ .Release.Service | quote }}
         release: {{ .Release.Name | quote }}
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-        component: "{{ .Release.Name }}-{{ .Values.Jupyter.Component }}"
+        component: "{{ .Release.Name }}-{{ .Values.jupyter.component }}"
     spec:
       containers:
         - name: {{ template "jupyter-fullname" . }}
-          image: "{{ .Values.Jupyter.Image }}:{{ .Values.Jupyter.ImageTag }}"
+          image: "{{ .Values.jupyter.image }}:{{ .Values.jupyter.imageTag }}"
           ports:
-            - containerPort: {{ .Values.Jupyter.ContainerPort }}
+            - containerPort: {{ .Values.jupyter.containerPort }}
           resources:
-{{ toYaml .Values.Jupyter.resources | indent 12 }}
+{{ toYaml .Values.jupyter.resources | indent 12 }}
           volumeMounts:
           - name: config-volume
             mountPath: /home/jovyan/.jupyter
@@ -62,11 +62,11 @@ metadata:
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    component: "{{ .Release.Name }}-{{ .Values.Jupyter.Component }}"
+    component: "{{ .Release.Name }}-{{ .Values.jupyter.component }}"
 spec:
   ports:
-    - port: {{ .Values.Jupyter.ServicePort }}
-      targetPort: {{ .Values.Jupyter.ContainerPort }}
+    - port: {{ .Values.jupyter.servicePort }}
+      targetPort: {{ .Values.jupyter.containerPort }}
   selector:
-    component: "{{ .Release.Name }}-{{ .Values.Jupyter.Component }}"
+    component: "{{ .Release.Name }}-{{ .Values.jupyter.component }}"
   type: "LoadBalancer"
