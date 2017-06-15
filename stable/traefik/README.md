@@ -115,6 +115,9 @@ The following tables lists the configurable parameters of the Traefik chart and 
 | `gzip.enabled`                  | Whether to use gzip compression                                      | `true`                                    |
 | `kubernetes.namespaces`         | List of Kubernetes namespaces to watch                               | All namespaces                            |
 | `kubernetes.labelSelector`      | Valid Kubernetes ingress label selector to watch (e.g `realm=public`)| No label filter                           |
+| `accessLogs.enabled`            | Whether to enable Traefik's access logs                              | `false`                                   |
+| `accessLogs.filePath`           | The path to the log file. Logs to stdout if omitted                  | None                                      |
+| `accessLogs.format`             | What format the log entries shold be in. Either common or json       | `common`                                  |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
 
