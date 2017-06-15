@@ -42,6 +42,10 @@ service:
   #   key: value
 gzip:
   enabled: true
+accessLogs:
+  enabled: false
+  filePath: ""  # if empty, stdout is used
+  format: "common"  # choices are: common, json
 # Kubernetes ingress filters
 #kubernetes:
 #  namespaces:
