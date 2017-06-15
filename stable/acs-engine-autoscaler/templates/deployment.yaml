@@ -50,19 +50,19 @@ spec:
             {{- if .Values.acsenginecluster.acsdeployment }}
             - --acs-deployment
             - {{ .Values.acsenginecluster.acsdeployment }}
-            {{ end }}
+            {{- end }}
             {{- if .Values.acsenginecluster.sleeptime }}
             - --sleep
             - {{ .Values.acsenginecluster.sleeptime }}
-            {{ end }}
+            {{- end }}
             {{- if .Values.acsenginecluster.ignorepools }}
             - --ignore-pools
             - {{ .Values.acsenginecluster.ignorepools }}
-            {{ end }}
+            {{- end }}
             {{- if .Values.acsenginecluster.spareagents }}
             - --spare-agents
             - {{ .Values.acsenginecluster.spareagents }}
-            {{ end }}
+            {{- end }}
             - -vvv
         imagePullPolicy: {{ .Values.image.pullPolicy }}
       restartPolicy: Always
