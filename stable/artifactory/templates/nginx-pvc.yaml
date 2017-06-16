@@ -1,0 +1,23 @@
+{{- if .Values.nx_persistence.enabled }}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ .Values.nx_name }}
+  labels:
+    app: {{ .Values.nx_name }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+  annotations:
+  {{- if .Values.nx_persistence.storageClass }}
+    volume.beta.kubernetes.io/storage-class: {{ .Values.nx_persistence.storageClass | quote }}
+  {{- else }}
+    volume.alpha.kubernetes.io/storage-class: default
+  {{- end }}
+spec:
+  accessModes:
+    - {{ .Values.nx_persistence.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.nx_persistence.size | quote }}
+{{- end }}

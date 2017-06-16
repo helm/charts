@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.nx_name }}
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+spec:
+  type: {{ .Values.nx_service.type }}
+  ports:
+  - port: {{ .Values.nx_service.externalPortHttp }}
+    targetPort: {{ .Values.nx_service.internalPortHttp }}
+    protocol: TCP
+    name: {{ .Values.nx_service.name }}http
+  - port: {{ .Values.nx_service.externalPortHttps }}
+    targetPort: {{ .Values.nx_service.internalPortHttps }}
+    protocol: TCP
+    name: {{ .Values.nx_service.name }}https
+  selector:
+    app: {{ .Values.nx_name }}

@@ -1,0 +1,47 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ .Values.nx_name }}
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+spec:
+  replicas: {{ .Values.nx_replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.nx_name }}
+      annotations:
+        pod.beta.kubernetes.io/init-containers: '[{
+          "name": "remove-lost-found",
+          "image": {{ .Values.initContainerImage | quote }},
+          "command": ["rm", "-rf", "{{ .Values.nx_persistence.mountPath }}/lost+found"],
+          "volumeMounts": [{
+              "name": "nginx-volume",
+              "mountPath": {{ .Values.nx_persistence.mountPath | quote }}
+            }],
+          "imagePullPolicy": {{ .Values.imagePullPolicy | quote }}
+        }]'
+    spec:
+      containers:
+      - name: {{ .Values.nx_name }}
+        image: "{{ .Values.nx_image.repository }}:{{ .Values.nx_image.version }}"
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        env:
+        - name: ART_BASE_URL
+          value: {{ .Values.nx_env.art_url }}
+        - name: SSL
+          value: "{{ .Values.nx_env.ssl }}"
+        ports:
+        - containerPort: {{ .Values.nx_service.internalPortHttp }}
+        - containerPort: {{ .Values.nx_service.internalPortHttps }}
+        volumeMounts:
+        - mountPath: {{ .Values.nx_persistence.mountPath | quote }}
+          name: nginx-volume
+      volumes:
+      - name: nginx-volume
+      {{- if .Values.nx_persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.nx_name }}
+      {{- else }}
+        emptyDir: {}
+      {{- end -}}

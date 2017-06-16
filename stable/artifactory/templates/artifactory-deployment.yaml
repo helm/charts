@@ -1,0 +1,50 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ .Values.art_name }}
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+spec:
+  replicas: {{ .Values.art_replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.art_name }}
+      annotations:
+        pod.beta.kubernetes.io/init-containers: '[{
+          "name": "remove-lost-found",
+          "image": {{ .Values.initContainerImage | quote }},
+          "command": ["rm", "-rf", "{{ .Values.art_persistence.mountPath }}/lost+found"],
+          "volumeMounts": [{
+              "name": "artifactory-volume",
+              "mountPath": {{ .Values.art_persistence.mountPath | quote }}
+            }],
+          "imagePullPolicy": {{ .Values.imagePullPolicy | quote }}
+        }]'
+    spec:
+      containers:
+      - name: {{ .Values.art_name }}
+        image: "{{ .Values.art_image.repository }}:{{ .Values.art_image.version }}"
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        env:
+        - name: DB_TYPE
+          value: {{ .Values.db_env.db_type }}
+        - name: DB_USER
+          value: {{ .Values.db_env.db_name }}
+        - name: DB_PASSWORD
+          value: {{ .Values.db_env.db_pass }}
+        - name: DB_HOST
+          value: {{ .Values.db_service.name }}
+        ports:
+        - containerPort: {{ .Values.art_service.internalPort }}
+        volumeMounts:
+        - mountPath: {{ .Values.art_persistence.mountPath | quote }}
+          name: artifactory-volume
+      volumes:
+      - name: artifactory-volume
+      {{- if .Values.art_persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.art_name }}
+      {{- else }}
+        emptyDir: {}
+      {{- end -}}

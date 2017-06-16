@@ -1,0 +1,48 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ .Values.db_name }}
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+spec:
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.db_name }}
+      annotations:
+        pod.beta.kubernetes.io/init-containers: '[{
+          "name": "remove-lost-found",
+          "image": {{ .Values.initContainerImage | quote }},
+          "command": ["rm", "-rf", "{{ .Values.db_persistence.mountPath }}/lost+found"],
+          "volumeMounts": [{
+              "name": "postgresql-volume",
+              "mountPath": {{ .Values.db_persistence.mountPath | quote }}
+            }],
+          "imagePullPolicy": {{ .Values.imagePullPolicy | quote }}
+        }]'
+    spec:
+      containers:
+      - name: {{ .Values.db_name }}
+        image: "{{ .Values.db_image.repository }}:{{ .Values.db_image.version }}"
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        env:
+        - name: POSTGRES_DB
+          value: {{ .Values.db_env.db_name }}
+        - name: POSTGRES_USER
+          value: {{ .Values.db_env.db_user }}
+        - name: POSTGRES_PASSWORD
+          value: {{ .Values.db_env.db_pass }}
+        ports:
+        - containerPort: {{ .Values.db_service.internalPort }}
+        volumeMounts:
+        - mountPath: {{ .Values.db_persistence.mountPath | quote }}
+          name: postgresql-volume
+      volumes:
+      - name: postgresql-volume
+      {{- if .Values.db_persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.db_name }}
+      {{- else }}
+        emptyDir: {}
+      {{- end -}}

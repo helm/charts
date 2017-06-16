@@ -1,0 +1,18 @@
+Congratulations. You have just deployed JFrog Artifactory Pro!
+
+1. Get the Artifactory URL by running these commands:
+
+   NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+         You can watch the status of the service by running 'kubectl get svc -w {{ .Values.nx_name }}'
+
+   export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ .Values.nx_name }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+   export ARTIFACTORY_DNS=artifactory.local
+
+2. If you want to access your Artifactory using an alias or a qualified host and domain,
+   add the Artifactory IP to your network's DNS or your local /etc/hosts
+
+   sudo sh -c "echo \"${SERVICE_IP} ${ARTIFACTORY_DNS}\" >> /etc/hosts"
+
+3. Open Artifactory in your browser
+
+   http://${ARTIFACTORY_DNS}/artifactory

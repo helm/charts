@@ -1,0 +1,74 @@
+# Default values for artifactory.
+# This is a YAML-formatted file.
+
+# Beware when changing values here. You should know what you are doing!
+# Access the values with {{ .Values.key.subkey }}
+
+# Common
+replicaCount: 1
+imagePullPolicy: IfNotPresent
+initContainerImage: "busybox:1.26.2"
+db_env:
+  db_type: postgresql
+  db_name: artifactory
+  db_user: artifactory
+  db_pass: artXifactory1973
+
+# DB
+db_name: postgresql
+db_image:
+  repository: docker.bintray.io/postgres
+  version: 9.5.2
+db_service:
+  name: postgresql
+  type: ClusterIP
+  externalPort: 5432
+  internalPort: 5432
+db_persistence:
+  mountPath: "/var/lib/postgresql/data"
+  enabled: true
+  accessMode: ReadWriteOnce
+  size: 10Gi
+
+# Artifactory
+art_name: artifactory
+art_replicaCount: 1
+art_image:
+  ## Uncomment following line if you want to run Artifactory-Pro
+  #repository: "docker.bintray.io/jfrog/artifactory-pro"
+  repository: docker.bintray.io/jfrog/artifactory-oss
+  version: 5.3.2
+art_service:
+  name: artifactory
+  type: ClusterIP
+  # For Artifactory-Pro use port 8081
+  externalPortHttp: 80
+  internalPort: 8081
+art_persistence:
+  mountPath: "/var/opt/jfrog/artifactory"
+  enabled: true
+  accessMode: ReadWriteOnce
+  size: 20Gi
+
+# For Artifactory-Pro Uncomment following Nginx configuration.
+# Nginx
+#nx_name: nginx
+#nx_replicaCount: 1
+#nx_image:
+#  repository: docker.bintray.io/jfrog/nginx-artifactory-pro
+#  version: 5.3.2
+#nx_service:
+#  name: nginx
+#  type: LoadBalancer
+#  externalPortHttp: 80
+#  internalPortHttp: 80
+#  externalPortHttps: 443
+#  internalPortHttps: 443
+#nx_env:
+#  art_url: "http://artifactory:8081/artifactory"
+#  ssl: true
+#nx_persistence:
+#  mountPath: "/var/opt/jfrog/nginx"
+#  enabled: true
+#  accessMode: ReadWriteOnce
+#  size: 5Gi
