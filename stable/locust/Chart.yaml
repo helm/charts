@@ -1,0 +1,10 @@
+name: locust
+description: A modern load testing framework
+version: 0.1.2
+maintainers:
+  - name: Vincent De Smet
+    email: vincent.drl@gmail.com
+home: http://locust.io
+icon: https://pbs.twimg.com/profile_images/1867636195/locust-logo-orignal.png
+sources:
+  - https://github.com/honestbee/distributed-load-testing

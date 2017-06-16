@@ -1,0 +1,56 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+spec:
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "fullname" . }}
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - containerPort: {{ .Values.service.internalPort }}
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: {{ .Values.service.internalPort }}
+          initialDelaySeconds: 180
+          timeoutSeconds: 5
+        resources:
+{{ toYaml .Values.resources | indent 12 }}
+        command:
+          {{- range .Values.command }}
+          - {{ . | quote }}
+          {{- end }}
+{{ if .Values.resizer.enabled }}
+      - name: {{ .Chart.Name }}-nanny
+        {{ with .Values.resizer }}
+        image: "{{ .image.repository }}:{{ .image.tag }}"
+        imagePullPolicy: {{ .image.pullPolicy }}
+        resources:
+{{ toYaml .resources | indent 12 }}
+        env:
+          - name: MY_POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: MY_POD_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+        {{- end }}
+        command:
+          - "/pod_nanny"
+          - "--deployment={{ template "fullname" . }}"
+          - "--container={{ .Chart.Name }}"
+          {{- range .Values.resizer.flags }}
+          - {{ . | quote }}
+          {{- end }}
+{{- end -}}

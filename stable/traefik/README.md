@@ -23,6 +23,25 @@ external load balancer (e.g. AWS or GKE)
 - You control DNS for the domain(s) you intend to route through Traefik
 - __Suggested:__ PV provisioner support in the underlying infrastructure
 
+## A Quick Note on Versioning
+
+Up until version 1.2.1-b of this chart, the semantic version of the chart was
+kept in-sync with the semantic version of the (default) version of Traefik
+installed by the chart. A dash and a letter were appended to Traefik's
+semantic version to indicate incrementally improved versions of the chart
+itself. For example, chart version 1.2.1-a and 1.2.1-b _both_ provide Traefik
+1.2.1, but 1.2.1-b is a chart that is incrementally improved in some way from
+its immediate predecessor-- 1.2.1-a.
+
+This convention, in practice, suffered from a few problems, not the least of
+which was that it defied what was permitted by
+[semver 2.0.0](http://semver.org/spec/v2.0.0.html). This, in turn, lead to some
+difficulty in Helm understanding the versions of this chart.
+
+Beginning with version 1.3.0 of this chart, the version references _only_
+the revision of the chart itself. The `appVersion` field in `chart.yaml` now
+conveys information regarding the revision of Traefik that the chart provides.
+
 ## Installing the Chart
 
 To install the chart with the release name `my-release`:
@@ -68,7 +87,8 @@ The following tables lists the configurable parameters of the Traefik chart and 
 
 | Parameter                       | Description                                                          | Default                                   |
 | ------------------------------- | -------------------------------------------------------------------- | ----------------------------------------- |
-| `imageTag`                      | The version of the official Traefik image to use                     | `v1.1.2`                                  |
+| `image`                         | Traefik image name                                                   | `traefik`                                 |
+| `imageTag`                      | The version of the official Traefik image to use                     | `v1.2.1`                                  |
 | `serviceType`                   | A valid Kubernetes service type                                      | `LoadBalancer`                            |
 | `replicas`                      | The number of replicas to run; __NOTE:__ Full Traefik clustering with leader election is not yet supported, which can affect any configured Let's Encrypt setup; see Clustering section | `1` |
 | `cpuRequest`                    | Initial share of CPU requested per Traefik pod                       | `100m`                                    |

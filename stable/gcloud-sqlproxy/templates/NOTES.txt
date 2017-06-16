@@ -1,0 +1,38 @@
+** Please be patient while the chart is being deployed **
+
+{{- if not .Values.serviceAccountKey }}
+##############################################################################
+####   ERROR: You did not provide Google Cloud Service Account key.       ####
+##############################################################################
+
+All pods do not go to the running state if the GCP Service Account key was not provided.
+
+{{- end }}
+
+{{- if eq .Values.cloudsql.instance "PROJECT:REGION:INSTANCE" }}
+
+##############################################################################
+####   ERROR: You did not provide Google Cloud PROJECT:REGION:INSTANCE    ####
+##############################################################################
+
+All pods do not go to the running state if the GCP `PROJECT:REGION:INSTANCE`
+settings were not provided.
+
+{{- end }}
+
+{{- if and .Values.serviceAccountKey (ne .Values.cloudsql.instance "PROJECT:REGION:INSTANCE") }}
+
+The SQL server instance can be accessed via port {{ .Values.cloudsql.port }} on the
+following DNS name from within your cluster:
+- {{ template "fullname" . }}.{{ .Release.Namespace }}
+
+{{- else -}}
+
+This deployment will be incomplete until you provide GCP Service Account key
+and `PROJECT:REGION:INSTANCE` settings:
+
+  helm upgrade {{ .Release.Name }} \
+      --set serviceAccountKey="$(cat service-account.json | base64)" \
+      --set cloudsql.instance="PROJECT:REGION:INSTANCE" stable/gcloud-sqlproxy
+
+{{- end }}

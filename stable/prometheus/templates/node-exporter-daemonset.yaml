@@ -1,0 +1,70 @@
+{{- if .Values.nodeExporter.enabled -}}
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  labels:
+    app: {{ template "prometheus.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: "{{ .Values.nodeExporter.name }}"
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "prometheus.nodeExporter.fullname" . }}
+spec:
+  template:
+    metadata:
+    {{- if .Values.nodeExporter.podAnnotations }}
+      annotations:
+{{ toYaml .Values.nodeExporter.podAnnotations | indent 8 }}
+    {{- end }}
+      labels:
+        app: {{ template "prometheus.name" . }}
+        component: "{{ .Values.nodeExporter.name }}"
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ template "prometheus.name" . }}-{{ .Values.nodeExporter.name }}
+          image: "{{ .Values.nodeExporter.image.repository }}:{{ .Values.nodeExporter.image.tag }}"
+          imagePullPolicy: "{{ .Values.nodeExporter.image.pullPolicy }}"
+          args:
+            - --collector.procfs=/host/proc
+            - --collector.sysfs=/host/sys
+          {{- range $key, $value := .Values.nodeExporter.extraArgs }}
+            - --{{ $key }}={{ $value }}
+          {{- end }}
+          ports:
+            - name: metrics
+              containerPort: 9100
+              hostPort: {{ .Values.nodeExporter.service.hostPort }}
+          resources:
+{{ toYaml .Values.nodeExporter.resources | indent 12 }}
+          volumeMounts:
+            - name: proc
+              mountPath: /host/proc
+              readOnly:  true
+            - name: sys
+              mountPath: /host/sys
+              readOnly: true
+          {{- range .Values.nodeExporter.extraHostPathMounts }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+              readOnly: {{ .readOnly }}
+          {{- end }}
+      hostNetwork: true
+      hostPID: true
+    {{- if .Values.nodeExporter.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeExporter.nodeSelector | indent 8 }}
+    {{- end }}
+      volumes:
+        - name: proc
+          hostPath:
+            path: /proc
+        - name: sys
+          hostPath:
+            path: /sys
+      {{- range .Values.nodeExporter.extraHostPathMounts }}
+        - name: {{ .name }}
+          hostPath:
+            path: {{ .hostPath }}
+      {{- end }}
+{{- end -}}

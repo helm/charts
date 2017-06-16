@@ -19,14 +19,16 @@ host. To configure Osclass with the URL of your service:
         Watch the status with: 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "fullname" . }}'
 
   export APP_HOST=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "fullname" . }} --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
-  export APP_PASSWORD=$(printf $(printf '\%o' `kubectl get secret --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath="{.data.osclass-password[*]}"`))
-  export APP_DATABASE_PASSWORD=$(printf $(printf '\%o' `kubectl get secret --namespace {{ .Release.Namespace }} {{ template "mariadb.fullname" . }} -o jsonpath="{.data.mariadb-root-password[*]}"`))
+  export APP_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath="{.data.osclass-password}" | base64 --decode)
+  {{- if .Values.mariadb.mariadbRootPassword }}
+  export APP_DATABASE_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "mariadb.fullname" . }} -o jsonpath="{.data.mariadb-root-password}" | base64 --decode)
+  {{- end }}
   {{- end }}
 
 2. Complete your Osclass deployment by running:
 
   helm upgrade {{ .Release.Name }} \
-    --set osclassHost=$APP_HOST,osclassPassword=$APP_PASSWORD,mariadb.mariadbRootPassword=$APP_DATABASE_PASSWORD stable/osclass
+    --set osclassHost=$APP_HOST,osclassPassword=$APP_PASSWORD{{ if .Values.mariadb.mariadbRootPassword }},mariadb.mariadbRootPassword=$APP_DATABASE_PASSWORD{{ end }} stable/osclass
 
 {{- else -}}
 1. Get the Osclass URL by running:
@@ -45,6 +47,6 @@ host. To configure Osclass with the URL of your service:
 
 2. Get your Osclass login credentials by running:
 
-  echo Username : {{ .Values.osclassUsername }}
-  echo Password : $(printf $(printf '\%o' `kubectl get secret --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath="{.data.osclass-password[*]}"`))
+  echo Username  : {{ .Values.osclassUsername }}
+  echo Password  : $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath="{.data.osclass-password}" | base64 --decode)
 {{- end }}

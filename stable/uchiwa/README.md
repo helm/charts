@@ -58,7 +58,7 @@ The following tables lists the configurable parameters of the Uchiwa chart and t
 | Parameter                            | Description                              | Default                                                    |
 | -------------------------------      | -------------------------------          | ---------------------------------------------------------- |
 | `image`                              | Uchiwa image                          | `sstarcher/uchiwa`                              |
-| `imageTag`                              | Uchiwa version                          | `0.19`                              |
+| `imageTag`                              | Uchiwa version                          | `0.22`                              |
 | `imagePullPolicy`                    | Image pull policy                        | `IfNotPresent`   |
 | `replicaCount`         | Number of uchiwa replicas | `1`  |
 | `httpPort` | Service port for kubernetes | `80` |

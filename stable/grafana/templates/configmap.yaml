@@ -2,11 +2,14 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "grafana.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     component: "{{ .Values.server.name }}"
     heritage: "{{ .Release.Service }}"
     release: "{{ .Release.Name }}"
-  name: {{ template "server.fullname" . }}-config
+  name: {{ template "grafana.server.fullname" . }}-config
 data:
+  {{- if .Values.server.installPlugins }}
+  grafana-install-plugins: {{ .Values.server.installPlugins | quote }}
+  {{- end }}
 {{ toYaml .Values.serverConfigFile | indent 2 }}

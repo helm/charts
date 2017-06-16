@@ -24,6 +24,7 @@ spec:
         - --in-cluster
         - --interval={{ .Values.interval }}
         - --labels={{ .Values.labels }}
+        - --annotations={{ .Values.annotations }}
         - --namespaces={{ .Values.namespaces }}
         {{- if not .Values.dryRun}}
         - --no-dry-run

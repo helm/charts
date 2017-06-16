@@ -9,7 +9,7 @@ metadata:
 spec:
   type: ClusterIP
   ports:
-  - name: {{ .Values.linkerd.portName }}
+  - name: {{ .Values.linkerd.discoveryPortName }}
     port: 8080
   selector:
     app: my-http-service

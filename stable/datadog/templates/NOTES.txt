@@ -23,3 +23,7 @@ Then run:
     helm upgrade {{ .Release.Name }} \
         --set datadog.apiKey=YOUR-KEY-HERE stable/datadog
 {{- end }}
+
+{{- if .Values.datadog.apmEnabled }}
+The datadog agent is listening on ports 7777 and 8126.
+{{- end }}
