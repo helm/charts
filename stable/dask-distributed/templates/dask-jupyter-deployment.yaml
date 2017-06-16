@@ -1,18 +1,3 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: {{ template "jupyter-fullname" . }}-config
-  labels:
-    app: {{ template "name" . }}
-    heritage: {{ .Release.Service | quote }}
-    release: {{ .Release.Name | quote }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    component: "{{ .Release.Name }}-{{ .Values.jupyter.component }}"
-data:
-  jupyter_notebook_config.py: |
-    c = get_config()
-    c.NotebookApp.password = '{{ .Values.jupyter.password }}'
----
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
@@ -53,21 +38,3 @@ spec:
       - name: config-volume
         configMap:
           name: {{ template "jupyter-fullname" . }}-config
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: {{ template "jupyter-fullname" . }}
-  labels:
-    app: {{ template "name" . }}
-    heritage: {{ .Release.Service | quote }}
-    release: {{ .Release.Name | quote }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    component: "{{ .Release.Name }}-{{ .Values.jupyter.component }}"
-spec:
-  ports:
-    - port: {{ .Values.jupyter.servicePort }}
-      targetPort: {{ .Values.jupyter.containerPort }}
-  selector:
-    component: "{{ .Release.Name }}-{{ .Values.jupyter.component }}"
-  type: "LoadBalancer"

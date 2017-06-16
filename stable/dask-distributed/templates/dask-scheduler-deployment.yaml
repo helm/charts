@@ -33,26 +33,3 @@ spec:
             - containerPort: {{ .Values.webUI.containerPort }}
           resources:
 {{ toYaml .Values.scheduler.resources | indent 12 }}
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: {{ template "scheduler-fullname" . }}
-  labels:
-    app: {{ template "name" . }}
-    heritage: {{ .Release.Service | quote }}
-    release: {{ .Release.Name | quote }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    component: "{{ .Release.Name }}-{{ .Values.scheduler.component }}"
-spec:
-  ports:
-    - name: {{ template "scheduler-fullname" . }}
-      port: {{ .Values.scheduler.servicePort }}
-      targetPort: {{ .Values.scheduler.containerPort }}
-    - name: {{ template "webui-fullname" . }}
-      port: {{ .Values.webUI.servicePort }}
-      targetPort: {{ .Values.webUI.containerPort }}
-  selector:
-    component: "{{ .Release.Name }}-{{ .Values.scheduler.component }}"
-  type: "LoadBalancer"
-
