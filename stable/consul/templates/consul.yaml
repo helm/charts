@@ -56,7 +56,10 @@ spec:
     port: {{.Values.SerfwanUdpPort}}
   - name: server
     port: {{.Values.ServerPort}}
-  - name: consuldns
+  - name: consuldns-tcp
+    port: {{.Values.ConsulDnsPort}}
+  - name: consuldns-udp
+    protocol: "UDP"
     port: {{.Values.ConsulDnsPort}}
   clusterIP: None
   selector:
@@ -110,7 +113,10 @@ spec:
           containerPort: {{.Values.SerfwanUdpPort}}
         - name: server
           containerPort: {{.Values.ServerPort}}
-        - name: consuldns
+        - name: consuldns-tcp
+          containerPort: {{.Values.ConsulDnsPort}}
+        - name: consuldns-udp
+          protocol: "UDP"
           containerPort: {{.Values.ConsulDnsPort}}
         resources:
           requests:
@@ -129,6 +135,8 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
+        - name: DNSPORT
+          value: "{{ .Values.ConsulDnsPort }}"
         volumeMounts:
         - name: datadir
           mountPath: /var/lib/consul
@@ -183,7 +191,8 @@ spec:
               -advertise=${IP} \
               ${PEERS} \
               ${GOSSIP_KEY} \
-              -client=0.0.0.0
+              -client=0.0.0.0 \
+              -dns-port=${DNSPORT}
       volumes:
       - name: gossip-key
         secret:
