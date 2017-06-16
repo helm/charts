@@ -13,5 +13,7 @@ spec:
     - port: {{ .Values.jupyter.servicePort }}
       targetPort: {{ .Values.jupyter.containerPort }}
   selector:
+    app: {{ template "name" . }}
+    release: {{ .Release.Name | quote }}
     component: "{{ .Release.Name }}-{{ .Values.jupyter.component }}"
   type: "LoadBalancer"

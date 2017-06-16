@@ -12,9 +12,6 @@ spec:
   replicas: {{ .Values.worker.replicas }}
   strategy:
     type: RollingUpdate
-  selector:
-    matchLabels:
-      component: "{{ .Release.Name }}-{{ .Values.worker.component }}"
   template:
     metadata:
       labels:

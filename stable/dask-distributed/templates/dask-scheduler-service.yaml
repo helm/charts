@@ -17,5 +17,7 @@ spec:
       port: {{ .Values.webUI.servicePort }}
       targetPort: {{ .Values.webUI.containerPort }}
   selector:
+    app: {{ template "name" . }}
+    release: {{ .Release.Name | quote }}
     component: "{{ .Release.Name }}-{{ .Values.scheduler.component }}"
   type: "LoadBalancer"

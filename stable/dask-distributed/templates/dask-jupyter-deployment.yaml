@@ -12,9 +12,6 @@ spec:
   replicas: {{ .Values.jupyter.replicas }}
   strategy:
     type: RollingUpdate
-  selector:
-    matchLabels:
-      component: "{{ .Release.Name }}-{{ .Values.jupyter.component }}"
   template:
     metadata:
       labels:

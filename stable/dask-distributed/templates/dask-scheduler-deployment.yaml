@@ -12,9 +12,6 @@ spec:
   replicas: {{ .Values.scheduler.replicas }}
   strategy:
     type: RollingUpdate
-  selector:
-    matchLabels:
-      component: "{{ .Release.Name }}-{{ .Values.scheduler.component }}"
   template:
     metadata:
       labels:
