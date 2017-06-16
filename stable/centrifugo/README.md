@@ -47,8 +47,10 @@ The following tables lists the configurable parameters of the Redis chart and th
 | `image`                    | Cetrifugo image                       | `centrifugo/centrifugo:{VERSION}`                         |
 | `imagePullPolicy`          | Image pull policy                     | `IfNotPresent`                                            |
 | `resources`                | CPU/Memory resource requests/limits   | Memory: `256Mi`, CPU: `100m`                              |
+| `config`                   | Centrifugo config                     | `default`                                                 |
+| `args`                     | Centrifugo args                       | `--web=true`                                              |
 
-The above parameters map to the env variables defined in [bitnami/redis](http://github.com/bitnami/bitnami-docker-redis). For more information please refer to the [bitnami/redis](http://github.com/bitnami/bitnami-docker-redis) image documentation.
+For more information please refer to the [documentation](https://fzambia.gitbooks.io/centrifugal/content/index.html).
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
