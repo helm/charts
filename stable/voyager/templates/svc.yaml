@@ -13,4 +13,5 @@ spec:
     port: 8080
     targetPort: http
   selector:
-    app: "{{ template "fullname" . }}"
+    app: {{ template "name" . }}
+    release: {{ .Release.Name }}
