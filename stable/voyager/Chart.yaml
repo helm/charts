@@ -6,5 +6,5 @@ version: 0.1.0
 sources:
   - https://github.com/appscode/voyager
 maintainers:
-  - name: 'AppsCode Inc.'
+  - name: appscode
     email: support@appscode.com

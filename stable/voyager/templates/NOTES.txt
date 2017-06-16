@@ -1,4 +1,4 @@
-Set cloudProvider, clusterName for installing Voyager
+Set cloudProvider for installing Voyager
 
 To verify that Voyager has started, run:
 
