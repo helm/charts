@@ -22,7 +22,7 @@ spec:
         heritage: {{ .Release.Service | quote }}
         release: {{ .Release.Name | quote }}
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-        component: "{{ .Release.Name}}-{{ .Values.scheduler.component }}"
+        component: "{{ .Release.Name }}-{{ .Values.scheduler.component }}"
     spec:
       containers:
         - name: {{ template "scheduler-fullname" . }}
