@@ -23,7 +23,7 @@ You can deploy Artifactory OSS by using the same instructions as provided for th
 **NOTE:** The Artifactory OSS does not use Nginx, so your Artifactory's Kubernetes service exposes Tomcat's port 8081 as port 80.
 
 By default it will run Artifactory-pro to run Artifactory-oss comment nginx configuration in value.yaml and use following command:
-Remove `nginx-deployment.yaml`, `nginx-pvc.yaml` and `nginx-service.yaml` and change art_service.externalPort to 80 in [artifactory/values.yaml](artifactory/values.yaml) before running command to install Artifactory-oss.
+Remove `nginx-deployment.yaml`, `nginx-pvc.yaml` and `nginx-service.yaml` and change art_service.externalPort to 80 in [values.yaml](values.yaml) before running command to install Artifactory-oss.
 ```bash
 $ helm install --name artifactory --set art_image.repository=docker.bintray.io/jfrog/artifactory-oss stable/artifactory
 ```
