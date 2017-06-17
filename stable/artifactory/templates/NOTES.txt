@@ -5,14 +5,23 @@ Congratulations. You have just deployed JFrog Artifactory Pro!
    NOTE: It may take a few minutes for the LoadBalancer IP to be available.
          You can watch the status of the service by running 'kubectl get svc -w {{ .Values.nx_name }}'
 
+   {{- if contains "NodePort" .Values.art_service.type }}
+   export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ .Values.art_service.name }})
+   export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+   echo http://$NODE_IP:$NODE_PORT/
+
+   {{- else if contains "LoadBalancer"  .Values.art_service.type }}
    export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ .Values.nx_name }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-   export ARTIFACTORY_DNS=artifactory.local
+   echo http://$SERVICE_IP/
 
-2. If you want to access your Artifactory using an alias or a qualified host and domain,
-   add the Artifactory IP to your network's DNS or your local /etc/hosts
+   {{- else if contains "ClusterIP" .Values.art_service.type }}
+   export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ .Values.art_service.name }}" -o jsonpath="{.items[0].metadata.name}")
+   echo http://127.0.0.1:{{ .Values.art_service.externalPort }}
+   kubectl port-forward --namespace {{ .Release.Namespace }} $POD_NAME {{ .Values.art_service.externalPort }}:{{ .Values.art_service.internalPort }}
 
-   sudo sh -c "echo \"${SERVICE_IP} ${ARTIFACTORY_DNS}\" >> /etc/hosts"
+   {{- end }}
 
-3. Open Artifactory in your browser
-
-   http://${ARTIFACTORY_DNS}/artifactory
+2. Open Artifactory in your browser
+   Default credential for Artifactory:
+   user: admin
+   password: password
