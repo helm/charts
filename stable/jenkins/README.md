@@ -87,6 +87,17 @@ Agent:
 
 The suported volume types are: `ConfigMap`, `EmptyDir`, `HostPath`, `Nfs`, `Pod`, `Secret`. Each type supports a different set of configurable attributes, defined by [the corresponding Java class](https://github.com/jenkinsci/kubernetes-plugin/tree/master/src/main/java/org/csanchez/jenkins/plugins/kubernetes/volumes).
 
+## NetworkPolicy
+
+To make use of the NetworkPolicy resources created by default,
+install [a networking plugin that implements the Kubernetes
+NetworkPolicy spec](https://kubernetes.io/docs/tasks/administer-cluster/declare-network-policy#before-you-begin).
+
+For Kubernetes v1.5 & v1.6, you must also turn on NetworkPolicy by setting
+the DefaultDeny namespace annotation. Note: this will enforce policy for _all_ pods in the namespace:
+
+    kubectl annotate namespace default "net.beta.kubernetes.io/network-policy={\"ingress\":{\"isolation\":\"DefaultDeny\"}}"
+
 ## Persistence
 
 The Jenkins image stores persistence under `/var/jenkins_home` path of the container. A dynamically managed Persistent Volume

@@ -1,0 +1,26 @@
+# Default values for acs-engine-autoscaler.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+replicaCount: 1
+## Image for kubernetes-acs-engine-autoscaler
+## Will update the image and tag later
+image:
+  repository: ritazh/kubernetes-acs-engine-autoscaler
+  tag: 0.3.1
+  pullPolicy: IfNotPresent
+acsenginecluster:
+  resourcegroup:
+  azurespappid:
+  azurespsecret:
+  azuresptenantid:
+  kubeconfigprivatekey:
+  clientprivatekey:
+  ## Optional parameter for deployment name if not using default
+  #acsdeployment:
+  ## Optional parameter for sleep time between scaling loops (default: 60)
+  #sleeptime:
+  ## Optional parameter for pools to ignore scaling on
+  #ignorepools:
+  ## Optional parameter denominating number of nodes to spare in a pool after scaling
+  #spareagents:
+

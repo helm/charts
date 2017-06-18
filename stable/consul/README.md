@@ -49,6 +49,8 @@ The following tables lists the configurable parameters of the consul chart and t
 | `ui.enabled`            | Enable Consul Web UI                  | `false`                                                    |
 | `uiService.enabled`     | Create dedicated Consul Web UI svc    | `false`                                                    |
 | `uiService.type`        | Dedicate Consul Web UI svc type       | `NodePort`                                                 |
+| `test.image`        | Test container image requires kubectl + bash (used for helm test)      | `lachlanevenson/k8s-kubectl`                                                 |
+| `test.imageTag`        | Test container image tag  (used for helm test)     | `v1.4.8-bash`                                                 |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
@@ -72,7 +74,15 @@ $ kubectl delete pvc -l component=${RELEASE-NAME}-consul
 
 ## Testing
 
-Execute test.sh. It will confirm that there are at least 3 consul servers present.
+Helm tests are included and they confirm the first three cluster members have quorum.
+
+```bash
+helm test <RELEASE_NAME>
+RUNNING: inky-marsupial-ui-test-nn6lv
+PASSED: inky-marsupial-ui-test-nn6lv
+```
+
+It will confirm that there are at least 3 consul servers present.
 
 ## Cluster Health
 
