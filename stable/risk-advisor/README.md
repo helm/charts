@@ -17,9 +17,21 @@ This is a tool for operators of large Kubernetes cluster to help them foresee ho
 
 ## Installing the Chart
 
+To install the chart with the release name `my-release`:
+
 ```console
-$ helm install stable/risk-advisor
+$ helm install --name my-release stable/risk-advisor
 ```
+
+## Uninstalling the Chart
+
+To uninstall/delete the `my-release` deployment:
+
+```console
+$ helm delete my-release
+```
+
+The command removes all the Kubernetes components associated with the chart and deletes the release.
 
 ## Usage
 
