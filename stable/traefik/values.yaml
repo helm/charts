@@ -28,6 +28,7 @@ acme:
     size: 1Gi
 dashboard:
   enabled: false
+  port: 8080
   domain: traefik.example.com
   ingress:
     # annotations:
@@ -42,6 +43,8 @@ service:
   #   key: value
 gzip:
   enabled: true
+daemonset:
+  enabled: false
 # Kubernetes ingress filters
 #kubernetes:
 #  namespaces:

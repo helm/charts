@@ -1,3 +1,4 @@
+{{ if not .Values.daemonset.enabled }}
 1. Get Traefik's load balancer IP/hostname:
 
      NOTE: It may take a few minutes for this to become available.
@@ -10,4 +11,7 @@
 
          $ kubectl describe svc {{ template "fullname" . }} --namespace {{ .Release.Namespace }} | grep Ingress | awk '{print $3}'
 
-2. Configure DNS records corresponding to Kubernetes ingress resources to point to the load balancer IP/hostname found in step 1
+2.
+{{- else -}}
+1.
+{{- end }} Configure DNS records corresponding to Kubernetes ingress resources to point to the load balancer IP/hostname found in step 1
