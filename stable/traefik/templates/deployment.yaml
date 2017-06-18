@@ -50,6 +50,14 @@ spec:
         volumeMounts:
         - mountPath: /config
           name: config
+        {{- if .Values.dashboard.enabled }}
+        {{- if .Values.dashboard.auth }}
+        {{- if .Values.dashboard.auth.basic }}
+        - mountPath: /dashboard
+          name: dashboard-users
+        {{- end }}
+        {{- end }}
+        {{- end }}
         {{- if .Values.ssl.enabled }}
         - mountPath: /ssl
           name: ssl
@@ -70,6 +78,15 @@ spec:
       - name: config
         configMap:
           name: {{ template "fullname" . }}
+      {{- if .Values.dashboard.enabled }}
+      {{- if .Values.dashboard.auth }}
+      {{- if .Values.dashboard.auth.basic }}
+      - name: dashboard-users
+        secret:
+          secretName: {{ template "fullname" . }}-dashboard-users
+      {{- end }}
+      {{- end }}
+      {{- end }}
       {{- if .Values.ssl.enabled }}
       - name: ssl
         secret:

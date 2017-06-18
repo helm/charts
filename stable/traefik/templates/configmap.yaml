@@ -63,6 +63,7 @@ data:
       {{- if .Values.dashboard.auth }}
       {{- if .Values.dashboard.auth.basic }}
       [web.auth.basic]
+        usersFile = "/dashboard/users"
         users = [{{ range $key, $value := .Values.dashboard.auth.basic }}"{{ $key }}:{{ $value }}",{{ end }}]
       {{- end}}
       {{- end}}
