@@ -1,26 +1,31 @@
-{{if .Values.addons.prometheus.enabled}}
+{{ if .Values.addons.prometheus.enabled }}
 {{- $serviceName := include "fullname" . -}}
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ $serviceName }}-prometheus
+  name: {{ $serviceName }}-{{ .Values.addons.prometheus.deployment.name }}
+  labels:
+{{ include "labels.standard" . | indent 4 }}
+    component: {{ $serviceName }}-{{ .Values.addons.prometheus.deployment.name }}
 spec:
   replicas: {{ .Values.addons.prometheus.deployment.replicas }}
   selector:
     matchLabels:
-      app: {{ $serviceName }}-prometheus
+{{ include "labels.standard" . | indent 6 }}
+      component: {{ $serviceName }}-{{ .Values.addons.prometheus.deployment.name }}
   template:
     metadata:
       annotations:
         {{- range $key, $value := .Values.addons.prometheus.deployment.annotations }}
           {{ $key }}: {{ $value | quote }}
         {{- end }}
-      name: {{ $serviceName }}-prometheus
+      name: {{ $serviceName }}-{{ .Values.addons.prometheus.deployment.name }}
       labels:
-        app: {{ $serviceName }}-prometheus
+{{ include "labels.standard" . | indent 8 }}
+        component: {{ $serviceName }}-{{ .Values.addons.prometheus.deployment.name }}
     spec:
       containers:
-      - name: prometheus
+      - name: {{ .Values.addons.prometheus.deployment.name }}
         image: "{{ .Values.addons.prometheus.deployment.image }}:{{ .Values.addons.prometheus.deployment.imageTag }}"
         imagePullPolicy: {{ .Values.addons.prometheus.deployment.imagePullPolicy }}
         args:
@@ -38,5 +43,5 @@ spec:
       volumes:
       - name: config-volume
         configMap:
-          name: {{ $serviceName }}-prometheus
-{{end}}
+          name: {{ $serviceName }}-{{ .Values.addons.prometheus.deployment.name }}
+{{ end }}

@@ -5,7 +5,7 @@ controller:
   name: controller
   image:
     repository: gcr.io/google_containers/nginx-ingress-controller
-    tag: "0.8.3"
+    tag: "0.9.0-beta.7"
     pullPolicy: IfNotPresent
 
   config: {}
@@ -14,6 +14,15 @@ controller:
   ## Must be <namespace>/<service_name>
   ##
   defaultBackendService: ""
+
+  ## Allows customization of the external service
+  ## the ingress will be bound to via DNS
+  publishService:
+    enabled: false
+    ## Allows overriding of the publish service to bind to
+    ## Must be <namespace>/<service_name>
+    ##
+    pathOverride: ""
 
   ## Limit the scope of the controller
   ##

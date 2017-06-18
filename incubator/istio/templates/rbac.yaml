@@ -1,9 +1,9 @@
-{{if .Values.rbac.install}}
+{{ if .Values.rbac.install }}
 {{- $serviceName := include "fullname" . -}}
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/{{ required "A valid .Values.rbac.apiVersion entry required!" .Values.rbac.apiVersion }}
 metadata:
-  name: {{ $serviceName }}-manager
+  name: {{ $serviceName }}-pilot
 rules:
 - apiGroups: ["istio.io"]
   resources: ["istioconfigs", "istioconfigs.istio.io"]
@@ -17,6 +17,9 @@ rules:
 - apiGroups: [""]
   resources: ["namespaces"]
   verbs: ["get", "list"]
+- apiGroups: [""]
+  resources: ["secrets"]
+  verbs: ["get"]
 ---
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/{{ required "A valid .Values.rbac.apiVersion entry required!" .Values.rbac.apiVersion }}
@@ -48,14 +51,14 @@ rules:
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/{{ required "A valid .Values.rbac.apiVersion entry required!" .Values.rbac.apiVersion }}
 metadata:
-  name: {{ $serviceName }}-manager-admin-role-binding
+  name: {{ $serviceName }}-pilot-admin-role-binding
 subjects:
 - kind: ServiceAccount
-  name: {{ $serviceName }}-manager-service-account
-  namespace: {{.Release.Namespace}}
+  name: {{ $serviceName }}-pilot-service-account
+  namespace: {{ .Release.Namespace }}
 roleRef:
   kind: ClusterRole
-  name: {{ $serviceName }}-manager
+  name: {{ $serviceName }}-pilot
   apiGroup: rbac.authorization.k8s.io
 ---
 kind: ClusterRoleBinding
@@ -65,7 +68,7 @@ metadata:
 subjects:
 - kind: ServiceAccount
   name: {{ $serviceName }}-ca-service-account
-  namespace: {{.Release.Namespace}}
+  namespace: {{ .Release.Namespace }}
 roleRef:
   kind: ClusterRole
   name: {{ $serviceName }}-ca
@@ -78,10 +81,10 @@ metadata:
 subjects:
 - kind: ServiceAccount
   name: {{ $serviceName }}-ingress-service-account
-  namespace: {{.Release.Namespace}}
+  namespace: {{ .Release.Namespace }}
 roleRef:
   kind: ClusterRole
-  name: {{ $serviceName }}-manager
+  name: {{ $serviceName }}-pilot
   apiGroup: rbac.authorization.k8s.io
 ---
 kind: ClusterRoleBinding
@@ -91,9 +94,9 @@ metadata:
 subjects:
 - kind: ServiceAccount
   name: default
-  namespace: {{.Release.Namespace}}
+  namespace: {{ .Release.Namespace }}
 roleRef:
   kind: ClusterRole
   name: {{ $serviceName }}-sidecar
   apiGroup: rbac.authorization.k8s.io
-{{end}}
+{{ end }}

@@ -1,9 +1,11 @@
-{{if .Values.addons.prometheus.enabled}}
+{{ if .Values.addons.prometheus.enabled }}
 {{- $serviceName := include "fullname" . -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ $serviceName }}-prometheus
+  name: {{ $serviceName }}-{{ .Values.addons.prometheus.deployment.name }}
+  labels:
+{{ include "labels.standard" . | indent 4 }}
 data:
   prometheus.yml: |-
     global:
@@ -17,4 +19,4 @@ data:
       # scheme defaults to 'http'.
       static_configs:
       - targets: ['{{ template "fullname" . }}-mixer:{{ .Values.mixer.service.externalPrometheusPort }}']
-{{end}}
+{{ end }}
