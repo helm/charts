@@ -21,6 +21,19 @@ spec:
         type: data
       annotations:
         pod.alpha.kubernetes.io/initialized: "true"
+        # see https://www.elastic.co/guide/en/elasticsearch/reference/current/vm-max-map-count.html
+        # and https://www.elastic.co/guide/en/elasticsearch/reference/current/setup-configuration-memory.html#mlockall
+        pod.alpha.kubernetes.io/init-containers: '[
+          {
+            "name": "sysctl",
+            "image": "busybox",
+            "imagePullPolicy": "Always",
+            "command": ["sysctl", "-w", "vm.max_map_count=262144"],
+            "securityContext": {
+              "privileged": true
+            }
+          }
+        ]'
     spec:
       serviceAccountName: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 24 }}"
       containers:
@@ -38,8 +51,12 @@ spec:
               fieldPath: metadata.namespace
         - name: NODE_MASTER
           value: "false"
-        - name: ES_HEAP_SIZE
-          value: "{{.Values.DataHeapSize}}"
+        - name: PROCESSORS
+          valueFrom:
+            resourceFieldRef:
+              resource: limits.cpu
+        - name: ES_JAVA_OPTS
+          value: "-Djava.net.preferIPv4Stack=true -Xms{{.Values.DataHeapSize}} -Xmx{{.Values.DataHeapSize}}"
         - name: KUBERNETES_MASTER
           value: kubernetes.default.svc.cluster.local
         image: "{{.Values.Image}}:{{.Values.ImageTag}}"
@@ -54,32 +71,40 @@ spec:
           limits:
             cpu: "{{.Values.DataCpuLimits}}"
             memory: "{{.Values.DataMemoryLimits}}"
-        livenessProbe:
-          httpGet:
-            path: /
-            port: 9200
-          initialDelaySeconds: 90
-          timeoutSeconds: 10
         readinessProbe:
           httpGet:
-            path: /
+            path: /_cluster/health?local=true
             port: 9200
-          initialDelaySeconds: 90
-          timeoutSeconds: 10
+          initialDelaySeconds: 5
         volumeMounts:
         - mountPath: /usr/share/elasticsearch/data
           name: elasticsearch-data
+        - mountPath: /usr/share/elasticsearch/config/elasticsearch.yml
+          name: elasticsearch-config
+          subPath: elasticsearch.yml
+        - mountPath: /usr/share/elasticsearch/config/logging.yml
+          name: elasticsearch-config
+          subPath: logging.yml
+        - name: elasticsearch-config
+          mountPath: /pre-stop-hook.sh
+          subPath: pre-stop-hook.sh
         lifecycle:
           preStop:
             exec:
               command: ["/bin/bash","/pre-stop-hook.sh"]
+      terminationGracePeriodSeconds: {{.Values.DataTerminationGracePeriodSeconds}}
+      volumes:
+      - name: elasticsearch-config
+        configMap:
+          name: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 24 }}"
   volumeClaimTemplates:
   - metadata:
       name: elasticsearch-data
-      annotations:
-        volume.{{ .Values.DataStorageClassVersion }}.kubernetes.io/storage-class: "{{ .Values.DataStorageClass }}"
     spec:
       accessModes: [ ReadWriteOnce ]
+    {{- if .Values.DataStorageClass }}
+      storageClassName: "{{.Values.DataStorageClass}}"
+    {{- end }}
       resources:
         requests:
           storage: "{{.Values.DataStorage}}"

@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
   name: "{{ printf "%s-client-%s" .Release.Name .Values.Name | trunc 24 }}"
@@ -18,6 +18,20 @@ spec:
         chart: "{{.Chart.Name}}-{{.Chart.Version}}"
         component: "{{.Release.Name}}-{{.Values.Component}}"
         type: client
+      annotations:
+        # see https://www.elastic.co/guide/en/elasticsearch/reference/current/vm-max-map-count.html
+        # and https://www.elastic.co/guide/en/elasticsearch/reference/current/setup-configuration-memory.html#mlockall
+        pod.alpha.kubernetes.io/init-containers: '[
+          {
+            "name": "sysctl",
+            "image": "busybox",
+            "imagePullPolicy": "Always",
+            "command": ["sysctl", "-w", "vm.max_map_count=262144"],
+            "securityContext": {
+              "privileged": true
+            }
+          }
+        ]'
     spec:
       serviceAccountName: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 24 }}"
       containers:
@@ -33,8 +47,12 @@ spec:
           value: "false"
         - name: NODE_MASTER
           value: "false"
-        - name: ES_HEAP_SIZE
-          value: "{{.Values.ClientHeapSize}}"
+        - name: PROCESSORS
+          valueFrom:
+            resourceFieldRef:
+              resource: limits.cpu
+        - name: ES_JAVA_OPTS
+          value: "-Djava.net.preferIPv4Stack=true -Xms{{.Values.ClientHeapSize}} -Xmx{{.Values.ClientHeapSize}}"
         - name: KUBERNETES_MASTER
           value: kubernetes.default.svc.cluster.local
         resources:
@@ -44,18 +62,11 @@ spec:
           limits:
             cpu: "{{.Values.ClientCpuLimits}}"
             memory: "{{.Values.ClientMemoryLimits}}"
-        livenessProbe:
-          httpGet:
-            path: /
-            port: 9200
-          initialDelaySeconds: 90
-          timeoutSeconds: 10
         readinessProbe:
           httpGet:
-            path: /
+            path: /_cluster/health?local=true
             port: 9200
-          initialDelaySeconds: 90
-          timeoutSeconds: 10
+          initialDelaySeconds: 5
         image: "{{.Values.Image}}:{{.Values.ImageTag}}"
         imagePullPolicy: "{{.Values.ImagePullPolicy}}"
         ports:
@@ -63,3 +74,14 @@ spec:
           name: http
         - containerPort: 9300
           name: transport
+        volumeMounts:
+        - mountPath: /usr/share/elasticsearch/config/elasticsearch.yml
+          name: elasticsearch-config
+          subPath: elasticsearch.yml
+        - mountPath: /usr/share/elasticsearch/config/logging.yml
+          name: elasticsearch-config
+          subPath: logging.yml
+      volumes:
+      - name: elasticsearch-config
+        configMap:
+          name: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 24 }}"

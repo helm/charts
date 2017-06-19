@@ -13,13 +13,13 @@ ImagePullPolicy: "Always"
 ClientReplicas: 2
 ClientCpuRequests: "25m"
 ClientMemoryRequests: "256Mi"
-ClientCpuLimits: "100m"
+ClientCpuLimits: "1"
 ClientMemoryLimits: "512Mi"
 ClientHeapSize: "128m"
 MasterReplicas: 2
 MasterCpuRequests: "25m"
 MasterMemoryRequests: "256Mi"
-MasterCpuLimits: "100m"
+MasterCpuLimits: "1"
 MasterMemoryLimits: "512Mi"
 MasterHeapSize: "128m"
 DataReplicas: 3
@@ -29,5 +29,5 @@ DataCpuLimits: "1"
 DataMemoryLimits: "4Gi"
 DataHeapSize: "1536m"
 DataStorage: "30Gi"
-DataStorageClass: "anything"
-DataStorageClassVersion: "alpha"
+# DataStorageClass: "ssd"
+DataTerminationGracePeriodSeconds: 3600
