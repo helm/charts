@@ -37,7 +37,7 @@ spec:
                     matchExpressions:
                       - key: "component"
                         operator: In
-                        values: 
+                        values:
                          - "{{ printf "zk-%s" .Release.Name  | trunc 24 }}"
                  topologyKey: "kubernetes.io/hostname"
       {{- end}}
@@ -113,4 +113,4 @@ spec:
           storage: {{.Values.Storage}}
       {{- if .Values.StorageClass}}
       storageClassName: {{.Values.StorageClass | quote}}
-      {{- end}} 
+      {{- end}}
