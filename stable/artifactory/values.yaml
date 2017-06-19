@@ -42,7 +42,7 @@ artService:
   name: artifactory
   ## For minikube, set this to NodePort, elsewhere use LoadBalancer
   type: ClusterIP
-  # For Artifactory-oss use port 80
+  # For Artifactory-oss use externalPort 80
   externalPort: 8081
   internalPort: 8081
 artPersistence:
