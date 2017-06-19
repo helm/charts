@@ -3,7 +3,11 @@ kind: Service
 metadata:
   name: {{ .Values.art_name }}
   labels:
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    app: {{ template "name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: "{{ .Values.art_name }}"
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
 spec:
   type: {{ .Values.art_service.type }}
   ports:
@@ -12,4 +16,5 @@ spec:
     protocol: TCP
     name: {{ .Values.art_service.name }}
   selector:
-    app: {{ .Values.art_name }}
+    app: {{ template "name" . }}
+    component: "{{ .Values.art_name }}"

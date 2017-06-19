@@ -3,13 +3,19 @@ kind: Deployment
 metadata:
   name: {{ .Values.nx_name }}
   labels:
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    app: {{ template "name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: "{{ .Values.nx_name }}"
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
 spec:
   replicas: {{ .Values.nx_replicaCount }}
   template:
     metadata:
       labels:
-        app: {{ .Values.nx_name }}
+        app: {{ template "name" . }}
+        component: "{{ .Values.nx_name }}"
+        release: {{ .Release.Name }}
       annotations:
         pod.beta.kubernetes.io/init-containers: '[{
           "name": "remove-lost-found",

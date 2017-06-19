@@ -3,7 +3,11 @@ kind: Service
 metadata:
   name: {{ .Values.nx_name }}
   labels:
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    app: {{ template "name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: "{{ .Values.nx_name }}"
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
 spec:
   type: {{ .Values.nx_service.type }}
   ports:
@@ -16,4 +20,5 @@ spec:
     protocol: TCP
     name: {{ .Values.nx_service.name }}https
   selector:
-    app: {{ .Values.nx_name }}
+    app: {{ template "name" . }}
+    component: "{{ .Values.nx_name }}"

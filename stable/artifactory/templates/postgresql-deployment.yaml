@@ -3,13 +3,19 @@ kind: Deployment
 metadata:
   name: {{ .Values.db_name }}
   labels:
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    app: {{ template "name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: "{{ .Values.db_name }}"
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
 spec:
   replicas: {{ .Values.replicaCount }}
   template:
     metadata:
       labels:
-        app: {{ .Values.db_name }}
+        app: {{ template "name" . }}
+        component: "{{ .Values.db_name }}"
+        release: {{ .Release.Name }}
       annotations:
         pod.beta.kubernetes.io/init-containers: '[{
           "name": "remove-lost-found",

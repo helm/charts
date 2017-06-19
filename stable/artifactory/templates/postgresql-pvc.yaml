@@ -4,7 +4,7 @@ apiVersion: v1
 metadata:
   name: {{ .Values.db_name }}
   labels:
-    app: {{ .Values.db_name }}
+    app: {{ template "fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
