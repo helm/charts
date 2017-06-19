@@ -1,23 +1,23 @@
-{{- if .Values.art_persistence.enabled }}
+{{- if .Values.artPersistence.enabled }}
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: {{ .Values.art_name }}
+  name: {{ .Values.artName }}
   labels:
     app: {{ template "fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
   annotations:
-  {{- if .Values.art_persistence.storageClass }}
-    volume.beta.kubernetes.io/storage-class: {{ .Values.art_persistence.storageClass | quote }}
+  {{- if .Values.artPersistence.storageClass }}
+    volume.beta.kubernetes.io/storage-class: {{ .Values.artPersistence.storageClass | quote }}
   {{- else }}
     volume.alpha.kubernetes.io/storage-class: default
   {{- end }}
 spec:
   accessModes:
-    - {{ .Values.art_persistence.accessMode | quote }}
+    - {{ .Values.artPersistence.accessMode | quote }}
   resources:
     requests:
-      storage: {{ .Values.art_persistence.size | quote }}
+      storage: {{ .Values.artPersistence.size | quote }}
 {{- end }}

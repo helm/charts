@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Values.art_name }}
+  name: {{ .Values.artName }}
   labels:
     app: {{ template "name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
@@ -9,12 +9,12 @@ metadata:
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
 spec:
-  type: {{ .Values.art_service.type }}
+  type: {{ .Values.artService.type }}
   ports:
-  - port: {{ .Values.art_service.externalPort }}
-    targetPort: {{ .Values.art_service.internalPort }}
+  - port: {{ .Values.artService.externalPort }}
+    targetPort: {{ .Values.artService.internalPort }}
     protocol: TCP
-    name: {{ .Values.art_service.name }}
+    name: {{ .Values.artService.name }}
   selector:
     app: {{ template "name" . }}
-    component: "{{ .Values.art_name }}"
+    component: "{{ .Values.artName }}"

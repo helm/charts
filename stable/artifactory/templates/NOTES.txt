@@ -3,21 +3,21 @@ Congratulations. You have just deployed JFrog Artifactory Pro!
 1. Get the Artifactory URL by running these commands:
 
    NOTE: It may take a few minutes for the LoadBalancer IP to be available.
-         You can watch the status of the service by running 'kubectl get svc -w {{ .Values.nx_name }}'
+         You can watch the status of the service by running 'kubectl get svc -w {{ .Values.nxName }}'
 
-   {{- if contains "NodePort" .Values.art_service.type }}
-   export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ .Values.art_service.name }})
+   {{- if contains "NodePort" .Values.artService.type }}
+   export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ .Values.artService.name }})
    export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
    echo http://$NODE_IP:$NODE_PORT/
 
-   {{- else if contains "LoadBalancer"  .Values.art_service.type }}
-   export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ .Values.nx_name }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+   {{- else if contains "LoadBalancer"  .Values.artService.type }}
+   export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ .Values.nxName }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
    echo http://$SERVICE_IP/
 
-   {{- else if contains "ClusterIP" .Values.art_service.type }}
-   export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ .Values.art_service.name }}" -o jsonpath="{.items[0].metadata.name}")
-   echo http://127.0.0.1:{{ .Values.art_service.externalPort }}
-   kubectl port-forward --namespace {{ .Release.Namespace }} $POD_NAME {{ .Values.art_service.externalPort }}:{{ .Values.art_service.internalPort }}
+   {{- else if contains "ClusterIP" .Values.artService.type }}
+   export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ .Values.artService.name }}" -o jsonpath="{.items[0].metadata.name}")
+   echo http://127.0.0.1:{{ .Values.artService.externalPort }}
+   kubectl port-forward --namespace {{ .Release.Namespace }} $POD_NAME {{ .Values.artService.externalPort }}:{{ .Values.artService.internalPort }}
 
    {{- end }}
 

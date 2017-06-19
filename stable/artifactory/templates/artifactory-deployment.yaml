@@ -1,7 +1,7 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ .Values.art_name }}
+  name: {{ .Values.artName }}
   labels:
     app: {{ template "name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
@@ -9,48 +9,48 @@ metadata:
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
 spec:
-  replicas: {{ .Values.art_replicaCount }}
+  replicas: {{ .Values.artReplicaCount }}
   template:
     metadata:
       labels:
         app: {{ template "name" . }}
-        component: "{{ .Values.art_name }}"
+        component: "{{ .Values.artName }}"
         release: {{ .Release.Name }}
       annotations:
         pod.beta.kubernetes.io/init-containers: '[{
           "name": "remove-lost-found",
           "image": {{ .Values.initContainerImage | quote }},
-          "command": ["rm", "-rf", "{{ .Values.art_persistence.mountPath }}/lost+found"],
+          "command": ["rm", "-rf", "{{ .Values.artPersistence.mountPath }}/lost+found"],
           "volumeMounts": [{
               "name": "artifactory-volume",
-              "mountPath": {{ .Values.art_persistence.mountPath | quote }}
+              "mountPath": {{ .Values.artPersistence.mountPath | quote }}
             }],
           "imagePullPolicy": {{ .Values.imagePullPolicy | quote }}
         }]'
     spec:
       containers:
-      - name: {{ .Values.art_name }}
-        image: "{{ .Values.art_image.repository }}:{{ .Values.art_image.version }}"
+      - name: {{ .Values.artName }}
+        image: "{{ .Values.artImage.repository }}:{{ .Values.artImage.version }}"
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         env:
         - name: DB_TYPE
-          value: {{ .Values.db_env.db_type }}
+          value: {{ .Values.dbEnv.dbType }}
         - name: DB_USER
-          value: {{ .Values.db_env.db_name }}
+          value: {{ .Values.dbEnv.dbName }}
         - name: DB_PASSWORD
-          value: {{ .Values.db_env.db_pass }}
+          value: {{ .Values.dbEnv.dbPass }}
         - name: DB_HOST
-          value: {{ .Values.db_service.name }}
+          value: {{ .Values.dbService.name }}
         ports:
-        - containerPort: {{ .Values.art_service.internalPort }}
+        - containerPort: {{ .Values.artService.internalPort }}
         volumeMounts:
-        - mountPath: {{ .Values.art_persistence.mountPath | quote }}
+        - mountPath: {{ .Values.artPersistence.mountPath | quote }}
           name: artifactory-volume
       volumes:
       - name: artifactory-volume
-      {{- if .Values.art_persistence.enabled }}
+      {{- if .Values.artPersistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ .Values.art_name }}
+          claimName: {{ .Values.artName }}
       {{- else }}
         emptyDir: {}
       {{- end -}}

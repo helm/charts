@@ -1,11 +1,11 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ .Values.db_name }}
+  name: {{ .Values.dbName }}
   labels:
     app: {{ template "name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    component: "{{ .Values.db_name }}"
+    component: "{{ .Values.dbName }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
 spec:
@@ -14,41 +14,41 @@ spec:
     metadata:
       labels:
         app: {{ template "name" . }}
-        component: "{{ .Values.db_name }}"
+        component: "{{ .Values.dbName }}"
         release: {{ .Release.Name }}
       annotations:
         pod.beta.kubernetes.io/init-containers: '[{
           "name": "remove-lost-found",
           "image": {{ .Values.initContainerImage | quote }},
-          "command": ["rm", "-rf", "{{ .Values.db_persistence.mountPath }}/lost+found"],
+          "command": ["rm", "-rf", "{{ .Values.dbPersistence.mountPath }}/lost+found"],
           "volumeMounts": [{
               "name": "postgresql-volume",
-              "mountPath": {{ .Values.db_persistence.mountPath | quote }}
+              "mountPath": {{ .Values.dbPersistence.mountPath | quote }}
             }],
           "imagePullPolicy": {{ .Values.imagePullPolicy | quote }}
         }]'
     spec:
       containers:
-      - name: {{ .Values.db_name }}
-        image: "{{ .Values.db_image.repository }}:{{ .Values.db_image.version }}"
+      - name: {{ .Values.dbName }}
+        image: "{{ .Values.dbImage.repository }}:{{ .Values.dbImage.version }}"
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         env:
         - name: POSTGRES_DB
-          value: {{ .Values.db_env.db_name }}
+          value: {{ .Values.dbEnv.dbName }}
         - name: POSTGRES_USER
-          value: {{ .Values.db_env.db_user }}
+          value: {{ .Values.dbEnv.dbUser }}
         - name: POSTGRES_PASSWORD
-          value: {{ .Values.db_env.db_pass }}
+          value: {{ .Values.dbEnv.dbPass }}
         ports:
-        - containerPort: {{ .Values.db_service.internalPort }}
+        - containerPort: {{ .Values.dbService.internalPort }}
         volumeMounts:
-        - mountPath: {{ .Values.db_persistence.mountPath | quote }}
+        - mountPath: {{ .Values.dbPersistence.mountPath | quote }}
           name: postgresql-volume
       volumes:
       - name: postgresql-volume
-      {{- if .Values.db_persistence.enabled }}
+      {{- if .Values.dbPersistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ .Values.db_name }}
+          claimName: {{ .Values.dbName }}
       {{- else }}
         emptyDir: {}
       {{- end -}}

@@ -8,56 +8,56 @@
 replicaCount: 1
 imagePullPolicy: IfNotPresent
 initContainerImage: "busybox:1.26.2"
-db_env:
-  db_type: postgresql
-  db_name: artifactory
-  db_user: artifactory
-  db_pass: artXifactory1973
+dbEnv:
+  dbType: postgresql
+  dbName: artifactory
+  dbUser: artifactory
+  dbPass: artXifactory1973
 
 # DB
-db_name: postgresql
-db_image:
+dbName: postgresql
+dbImage:
   repository: docker.bintray.io/postgres
   version: 9.5.2
-db_service:
+dbService:
   name: postgresql
   type: ClusterIP
   externalPort: 5432
   internalPort: 5432
-db_persistence:
+dbPersistence:
   mountPath: "/var/lib/postgresql/data"
   enabled: true
   accessMode: ReadWriteOnce
   size: 10Gi
 
 # Artifactory
-art_name: artifactory
-art_replicaCount: 1
-art_image:
+artName: artifactory
+artReplicaCount: 1
+artImage:
   ## Uncomment following line if you want to run Artifactory-Pro
   #repository: "docker.bintray.io/jfrog/artifactory-oss"
   repository: "docker.bintray.io/jfrog/artifactory-pro"
   version: 5.3.2
-art_service:
+artService:
   name: artifactory
   ## For minikube, set this to NodePort, elsewhere use LoadBalancer
   type: ClusterIP
   # For Artifactory-oss use port 80
   externalPort: 8081
   internalPort: 8081
-art_persistence:
+artPersistence:
   mountPath: "/var/opt/jfrog/artifactory"
   enabled: true
   accessMode: ReadWriteOnce
   size: 20Gi
 
 # For Artifactory-oss comment following nginx configuration.
-nx_name: nginx
-nx_replicaCount: 1
-nx_image:
+nxName: nginx
+nxReplicaCount: 1
+nxImage:
   repository: docker.bintray.io/jfrog/nginx-artifactory-pro
   version: 5.3.2
-nx_service:
+nxService:
   name: nginx
   ## For minikube, set this to NodePort, elsewhere use LoadBalancer
   type: LoadBalancer
@@ -65,10 +65,10 @@ nx_service:
   internalPortHttp: 80
   externalPortHttps: 443
   internalPortHttps: 443
-nx_env:
-  art_url: "http://artifactory:8081/artifactory"
+nxEnv:
+  artUrl: "http://artifactory:8081/artifactory"
   ssl: true
-nx_persistence:
+nxPersistence:
   mountPath: "/var/opt/jfrog/nginx"
   enabled: true
   accessMode: ReadWriteOnce

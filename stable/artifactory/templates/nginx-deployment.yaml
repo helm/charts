@@ -1,53 +1,53 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ .Values.nx_name }}
+  name: {{ .Values.nxName }}
   labels:
     app: {{ template "name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    component: "{{ .Values.nx_name }}"
+    component: "{{ .Values.nxName }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
 spec:
-  replicas: {{ .Values.nx_replicaCount }}
+  replicas: {{ .Values.nxReplicaCount }}
   template:
     metadata:
       labels:
         app: {{ template "name" . }}
-        component: "{{ .Values.nx_name }}"
+        component: "{{ .Values.nxName }}"
         release: {{ .Release.Name }}
       annotations:
         pod.beta.kubernetes.io/init-containers: '[{
           "name": "remove-lost-found",
           "image": {{ .Values.initContainerImage | quote }},
-          "command": ["rm", "-rf", "{{ .Values.nx_persistence.mountPath }}/lost+found"],
+          "command": ["rm", "-rf", "{{ .Values.nxPersistence.mountPath }}/lost+found"],
           "volumeMounts": [{
               "name": "nginx-volume",
-              "mountPath": {{ .Values.nx_persistence.mountPath | quote }}
+              "mountPath": {{ .Values.nxPersistence.mountPath | quote }}
             }],
           "imagePullPolicy": {{ .Values.imagePullPolicy | quote }}
         }]'
     spec:
       containers:
-      - name: {{ .Values.nx_name }}
-        image: "{{ .Values.nx_image.repository }}:{{ .Values.nx_image.version }}"
+      - name: {{ .Values.nxName }}
+        image: "{{ .Values.nxImage.repository }}:{{ .Values.nxImage.version }}"
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         env:
         - name: ART_BASE_URL
-          value: {{ .Values.nx_env.art_url }}
+          value: {{ .Values.nxEnv.artUrl }}
         - name: SSL
-          value: "{{ .Values.nx_env.ssl }}"
+          value: "{{ .Values.nxEnv.ssl }}"
         ports:
-        - containerPort: {{ .Values.nx_service.internalPortHttp }}
-        - containerPort: {{ .Values.nx_service.internalPortHttps }}
+        - containerPort: {{ .Values.nxService.internalPortHttp }}
+        - containerPort: {{ .Values.nxService.internalPortHttps }}
         volumeMounts:
-        - mountPath: {{ .Values.nx_persistence.mountPath | quote }}
+        - mountPath: {{ .Values.nxPersistence.mountPath | quote }}
           name: nginx-volume
       volumes:
       - name: nginx-volume
-      {{- if .Values.nx_persistence.enabled }}
+      {{- if .Values.nxPersistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ .Values.nx_name }}
+          claimName: {{ .Values.nxName }}
       {{- else }}
         emptyDir: {}
       {{- end -}}
