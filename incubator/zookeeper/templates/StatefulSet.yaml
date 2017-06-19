@@ -10,7 +10,7 @@ metadata:
     chart: "{{.Chart.Name}}-{{.Chart.Version}}"
     component: {{ template "name" . }}
 spec:
-  serviceName: {{ template "fullname" . }}
+  serviceName: {{ template "fullname" . }}-headless
   replicas: {{.Values.Servers}}
   template:
     metadata:
@@ -26,7 +26,7 @@ spec:
                   - key: "component"
                     operator: In
                     values:
-                    - {{ template "fullname" . }}
+                    - {{ template "name" . }}
               topologyKey: "kubernetes.io/hostname"
       {{- else if eq .Values.AntiAffinity "soft"}}
       affinity:
@@ -38,7 +38,7 @@ spec:
                       - key: "component"
                         operator: In
                         values:
-                         - {{ template "fullname" . }}
+                         - {{ template "name" . }}
                  topologyKey: "kubernetes.io/hostname"
       {{- end}}
       containers:
