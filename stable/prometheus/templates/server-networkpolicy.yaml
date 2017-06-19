@@ -1,0 +1,15 @@
+{{- if .Values.networkPolicy.enabled }}
+apiVersion: {{ .Values.networkPolicy.apiVersion }}
+kind: NetworkPolicy
+metadata:
+  name: {{ template "prometheus.server.fullname" . }}
+spec:
+  podSelector:
+    matchLabels:
+      app: {{ template "prometheus.name" . }}
+      component: "{{ .Values.server.name }}"
+      release: {{ .Release.Name }}
+  ingress:
+    - ports:
+      - port: 9090
+{{- end }}

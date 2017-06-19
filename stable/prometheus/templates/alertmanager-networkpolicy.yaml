@@ -1,0 +1,20 @@
+{{- if .Values.networkPolicy.enabled }}
+apiVersion: {{ .Values.networkPolicy.apiVersion }}
+kind: NetworkPolicy
+metadata:
+  name: {{ template "prometheus.alertmanager.fullname" . }}
+spec:
+  podSelector:
+    matchLabels:
+      app: {{ template "prometheus.name" . }}
+      component: "{{ .Values.alertmanager.name }}"
+      release: {{ .Release.Name }}
+  ingress:
+    - from:
+      - podSelector:
+          matchLabels:
+            release: {{ .Release.Name }}
+            component: {{ .Values.server.name }}
+    - ports:
+      - port: 9093
+{{- end }}
