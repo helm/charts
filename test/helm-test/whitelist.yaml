@@ -1,0 +1,8 @@
+charts:
+  - stable/postgresql #PVC usage
+  - stable/cockroachdb #StatefulSet
+  - stable/etcd-operator #Operator & CustomResource
+  - stable/prometheus
+  - stable/spinnaker
+  - stable/jenkins
+  - incubator/zookeeper
