@@ -1,18 +1,18 @@
 apiVersion: policy/v1beta1
 kind: PodDisruptionBudget
 metadata:
-  name: "{{ printf "zk-pdb-%s" .Release.Name | trunc 24 }}"
+  name: {{ template "fullname" . }}
   annotations:
     helm.sh/created: {{.Release.Time.Seconds | quote }}
   labels:
     heritage: {{.Release.Service | quote }}
     release: {{.Release.Name | quote }}
     chart: "{{.Chart.Name}}-{{.Chart.Version}}"
-    component: "{{ printf "zk-%s" .Release.Name  | trunc 24 }}"
+    component: {{ template "name" . }}
 spec:
   selector:
     matchLabels:
-      component: "{{ printf "zk-%s" .Release.Name  | trunc 24 }}"
+      component: {{ template "name" . }}
   {{- if .Values.MinAvailable}}
   minAvailable: {{.Values.MinAvailable}}
   {{- else}}

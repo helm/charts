@@ -1,21 +1,21 @@
 apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
-  name: "{{ printf "zk-%s" .Release.Name  | trunc 24 }}"
+  name: {{ template "fullname" . }}
   annotations:
     helm.sh/created: {{.Release.Time.Seconds | quote }}
   labels:
     heritage: {{.Release.Service | quote }}
     release: {{.Release.Name | quote }}
     chart: "{{.Chart.Name}}-{{.Chart.Version}}"
-    component: "{{ printf "zk-%s" .Release.Name  | trunc 24 }}"
+    component: {{ template "name" . }}
 spec:
-  serviceName: "{{ printf "zk-hsvc-%s" .Release.Name | trunc 24 }}"
+  serviceName: {{ template "fullname" . }}
   replicas: {{.Values.Servers}}
   template:
     metadata:
       labels:
-        component: "{{ printf "zk-%s" .Release.Name  | trunc 24 }}"
+        component: {{ template "name" . }}
     spec:
       {{- if eq .Values.AntiAffinity "hard"}}
       affinity:
@@ -26,7 +26,7 @@ spec:
                   - key: "component"
                     operator: In
                     values:
-                    - "{{ printf "zk-%s" .Release.Name  | trunc 24 }}"
+                    - {{ template "fullname" . }}
               topologyKey: "kubernetes.io/hostname"
       {{- else if eq .Values.AntiAffinity "soft"}}
       affinity:
@@ -38,7 +38,7 @@ spec:
                       - key: "component"
                         operator: In
                         values:
-                         - "{{ printf "zk-%s" .Release.Name  | trunc 24 }}"
+                         - {{ template "fullname" . }}
                  topologyKey: "kubernetes.io/hostname"
       {{- end}}
       containers:
