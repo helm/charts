@@ -5,7 +5,7 @@
 ## TL;DR;
 
 ```console
-$ helm install --wait incubator/sentry
+$ helm install --wait stable/sentry
 ```
 
 ## Introduction
@@ -26,7 +26,7 @@ It also packages the [PostgreSQL](https://github.com/kubernetes/charts/tree/mast
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm install --name my-release --wait incubator/sentry
+$ helm install --name my-release --wait stable/sentry
 ```
 
 > **Note**: We have to use the --wait flag for initial creation because the database creationg takes longer than the default 300 seconds
@@ -88,13 +88,13 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 ```console
 $ helm install --name my-release \
   --set persistence.enabled=false,email.host=email \
-    incubator/sentry
+    stable/sentry
 ```
 
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 
 ```console
-$ helm install --name my-release -f values.yaml incubator/sentry
+$ helm install --name my-release -f values.yaml stable/sentry
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
