@@ -3,8 +3,8 @@ dependencies:
   enabled: false
   import-values: null
   name: zookeeper
-  repository: https://kubernetes-charts-incubator.storage.googleapis.com/
+  repository: http://storage.googleapis.com/kubernetes-charts-incubator
   tags: null
-  version: 0.2.2
-digest: sha256:7242e077d16e80c449f973c2820629836e06f5be042e2c1fad713c0623af14ef
-generated: 2017-05-02T12:18:02.471103601+02:00
+  version: 0.3.0
+digest: sha256:96333e640404babae2a462113f16fd4f629f6d6d7acb885b42a26e240369692f
+generated: 2017-06-20T11:09:23.850851987+02:00
