@@ -66,6 +66,7 @@ The following tables lists the configurable parameters of the WordPress chart an
 | `mariadb.mariadbDatabase`            | Database name to create                    | `bitnami_wordpress`                            |
 | `mariadb.mariadbUser`                | Database user to create                    | `bn_wordpress`                                 |
 | `mariadb.mariadbPassword`            | Password for the database                  | _random 10 character long alphanumeric string_ |
+| `mariadb.enableNetworkPolicy`        | Enable NetworkPolicy for mariadb           | `false`                                                    |
 | `serviceType`                        | Kubernetes Service type                    | `LoadBalancer`                                             |
 | `ingress.enabled`                    | Enable ingress controller resource         | `false`                                                    |
 | `ingress.hostname`                   | URL to address your WordPress installation | `wordpress.local`                                          |
@@ -74,6 +75,7 @@ The following tables lists the configurable parameters of the WordPress chart an
 | `persistence.storageClass`           | PVC Storage Class                          | `nil` (uses alpha storage class annotation)                |
 | `persistence.accessMode`             | PVC Access Mode                            | `ReadWriteOnce`                                            |
 | `persistence.size`                   | PVC Storage Request                        | `10Gi`                                                      |                                              |
+| `networkPolicy.enabled`              | Enable NetworkPolicy for mariadb           | `false`                                                    |
 
 The above parameters map to the env variables defined in [bitnami/wordpress](http://github.com/bitnami/bitnami-docker-wordpress). For more information please refer to the [bitnami/wordpress](http://github.com/bitnami/bitnami-docker-wordpress) image documentation.
 
@@ -94,6 +96,18 @@ $ helm install --name my-release -f values.yaml stable/wordpress
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
+## NetworkPolicy
+
+To enable network policy for Jenkins & MariaDB,
+install [a networking plugin that implements the Kubernetes
+NetworkPolicy spec](https://kubernetes.io/docs/tasks/administer-cluster/declare-network-policy#before-you-begin),
+and set both `networkPolicy.enabled` & `mariadb.networkPolicy.enabled` to `true`.
+
+For Kubernetes v1.5 & v1.6, you must also turn on NetworkPolicy by setting
+the DefaultDeny namespace annotation. Note: this will enforce policy for _all_ pods in the namespace:
+
+    kubectl annotate namespace default "net.beta.kubernetes.io/network-policy={\"ingress\":{\"isolation\":\"DefaultDeny\"}}"
 
 ## Persistence
 
