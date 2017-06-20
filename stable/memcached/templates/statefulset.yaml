@@ -38,7 +38,8 @@ spec:
         - memcached
         - -m {{ .Values.memcached.maxItemMemory  }}
         {{- if .Values.memcached.extendedOptions }}
-        - -o {{ .Values.memcached.extendedOptions }}
+        - -o
+        - {{ .Values.memcached.extendedOptions }}
         {{- end }}
         {{- if .Values.memcached.verbosity }}
         - -{{ .Values.memcached.verbosity }}
