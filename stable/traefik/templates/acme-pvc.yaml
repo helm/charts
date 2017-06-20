@@ -9,6 +9,7 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
   annotations:
+    "helm.sh/resource-policy": {{ default "keep" .Values.acme.persistence.resourcePolicy | quote }}
   {{- if .Values.acme.persistence.storageClass }}
     volume.beta.kubernetes.io/storage-class: {{ .Values.acme.persistence.storageClass | quote }}
   {{- else }}

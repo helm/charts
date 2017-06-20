@@ -26,6 +26,8 @@ acme:
     # storageClass:
     accessMode: ReadWriteOnce
     size: 1Gi
+    # Tells helm not to delete the volume even if the chart is deleted
+    resourcePolicy: keep
 dashboard:
   enabled: false
   domain: traefik.example.com
