@@ -228,4 +228,7 @@ spec:
   # Allow connections to admin UI.
   - ports:
     - port: {{.Values.HttpPort}}
+  # Allow connections from Prometheus.
+  - ports:
+    - port: 8080
 {{- end }}
