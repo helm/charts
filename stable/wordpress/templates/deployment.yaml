@@ -13,6 +13,7 @@ spec:
     metadata:
       labels:
         app: {{ template "fullname" . }}
+        {{ template "mariadb.fullname" . }}-client: "true"
     spec:
       containers:
       - name: {{ template "fullname" . }}
