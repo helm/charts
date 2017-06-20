@@ -38,6 +38,7 @@ Master:
   InstallPlugins:
       - kubernetes:0.11 
       - workflow-aggregator:2.5
+      - workflow-job:2.11
       - credentials-binding:1.11
       - git:3.2.0
 # Used to approve a list of groovy functions in pipelines used the script-security plugin. Can be viewed under /scriptApproval
@@ -64,6 +65,7 @@ Agent:
   Enabled: true
   Image: jenkinsci/jnlp-slave
   ImageTag: 2.62
+  Component: "jenkins-slave"
   Privileged: false
   Cpu: "200m"
   Memory: "256Mi"
@@ -88,3 +90,10 @@ Persistence:
 #  - mountPath: /var/nothing
 #    name: nothing
 #    readOnly: true
+
+NetworkPolicy:
+  # Enable creation of NetworkPolicy resources.
+  Enabled: false
+  # For Kubernetes v1.4, v1.5 and v1.6, use 'extensions/v1beta1'
+  # For Kubernetes v1.7, use 'networking.k8s.io/v1'
+  ApiVersion: extensions/v1beta1

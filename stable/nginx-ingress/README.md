@@ -60,6 +60,8 @@ Parameter | Description | Default
 `controller.replicaCount` | desired number of controller pods | `1`
 `controller.resources` | controller pod resource requests & limits | `{}`
 `controller.service.annotations` | annotations for controller service | `{}`
+`controller.publishService.enabled` | if true, the controller will set the endpoint records on the ingress objects to reflect those on the service | `false`
+`controller.publishService.pathOverride` | override of the default publish-service name | `""`
 `controller.service.clusterIP` | internal controller cluster service IP | `""`
 `controller.service.externalIPs` | controller service external IP addresses | `[]`
 `controller.service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`

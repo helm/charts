@@ -49,6 +49,9 @@ This repository is used by Chart developers for maintaining the official charts 
 * Provide a secure default configuration
 * Do not leverage alpha features of Kubernetes
 * Includes a [NOTES.txt](https://github.com/kubernetes/helm/blob/master/docs/charts.md#chart-license-readme-and-notes) explaining how to use the application after install
+* Follows [best practices](https://github.com/kubernetes/helm/tree/master/docs/chart_best_practices) 
+  (especially for [labels](https://github.com/kubernetes/helm/blob/master/docs/chart_best_practices/labels.md) 
+  and [values](https://github.com/kubernetes/helm/blob/master/docs/chart_best_practices/values.md))
 
 #### Documentation requirements
 
