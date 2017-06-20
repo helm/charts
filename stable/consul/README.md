@@ -91,6 +91,10 @@ Do the following after deleting the chart release to clean up orphaned Persisten
 $ kubectl delete pvc -l component=${RELEASE-NAME}-consul
 ```
 
+## Pitfalls
+
+* When ACLs are enabled and `acl_default_policy` is set to `deny`, it is necessary to set the `acl_token` to a token that can perform at least the `consul members`, otherwise the kubernetes liveness probe will keep failing and the containers will be killed every 5 minutes.
+
 ## Testing
 
 Helm tests are included and they confirm the first three cluster members have quorum.
