@@ -1,0 +1,22 @@
+# Default values for gluster.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+# ref # https://hub.docker.com/r/gluster/gluster-centos
+
+image: gluster-centos
+pullPolicy: IfNotPresent
+replicaCount: 1
+repository: hub.docker.com/gluster
+resources: 
+  limits: 
+    cpu: 100m
+    memory: 1Gi
+  requests: 
+    cpu: 100m
+    memory: 1Gi
+service: 
+  externalPort: 24007
+  internalPort: 24007
+  name: glusterfs
+tag: latest
+
