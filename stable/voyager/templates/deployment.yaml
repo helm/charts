@@ -1,0 +1,32 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+    app: {{ template "name" . }}
+  name: {{ template "fullname" . }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ template "name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+      - args:
+        - run
+        - --cloud-provider={{ .Values.cloudProvider }}
+        - --v={{ .Values.logLevel }}
+        image: "{{ .Values.image }}:{{ .Values.imageTag }}"
+        name: voyager
+        ports:
+        - containerPort: 8080
+          name: http
+          protocol: TCP
