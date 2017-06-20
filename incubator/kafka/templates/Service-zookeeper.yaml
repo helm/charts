@@ -1,0 +1,11 @@
+# headless service for petset DNS
+apiVersion: v1
+kind: Service
+metadata:
+  name: "{{ printf "%s-zookeeper-%s" .Release.Name .Values.zookeeper.Name | trunc 63 }}"
+spec:
+  ports:
+  - port: 2181
+    name: client
+  selector:
+    component: "{{.Release.Name}}"
