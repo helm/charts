@@ -1,0 +1,18 @@
+{{- if .Values.networkPolicy.enabled }}
+kind: NetworkPolicy
+apiVersion: {{ .Values.networkPolicy.apiVersion }}
+metadata:
+  name: "{{ template "fullname" . }}"
+spec:
+  podSelector:
+    matchLabels:
+      app: "{{ template "fullname" . }}"
+  ingress:
+    # Allow inbound connections
+    - from:
+      - podSelector:
+          matchLabels:
+            {{ template "fullname" . }}-client: "true"
+      ports:
+      - port: 3306
+{{- end }}

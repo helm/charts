@@ -60,6 +60,8 @@ The following tables lists the configurable parameters of the MariaDB chart and 
 | `persistence.size`          | Size of data volume                        | `8Gi`                                                      |
 | `resources`                 | CPU/Memory resource requests/limits        | Memory: `256Mi`, CPU: `250m`                               |
 | `config`                    | Multi-line string for my.cnf configuration | `nil`                                                      |
+| `networkPolicy.enabled`     | Enable NetworkPolicy                       | `false`                                                    |
+| `networkPolicy.apiVersion`  | NetworkPolicy API Version                  | `extensions/v1beta1`                                       |
 
 The above parameters map to the env variables defined in [bitnami/mariadb](http://github.com/bitnami/bitnami-docker-mariadb). For more information please refer to the [bitnami/mariadb](http://github.com/bitnami/bitnami-docker-mariadb) image documentation.
 
@@ -117,3 +119,18 @@ The chart mounts a [Persistent Volume](kubernetes.io/docs/user-guide/persistent-
 ```bash
 $ helm install --set persistence.existingClaim=PVC_NAME postgresql
 ```
+
+## NetworkPolicy
+
+To enable network policy for MariaDB, install
+[a networking plugin that implements the Kubernetes NetworkPolicy spec](https://kubernetes.io/docs/tasks/administer-cluster/declare-network-policy#before-you-begin),
+and set `NetworkPolicy.Enabled` to `true`.
+
+For Kubernetes v1.5 & v1.6, you must also turn on NetworkPolicy by setting
+the DefaultDeny namespace annotation. Note: this will enforce policy for _all_ pods in the namespace:
+
+    kubectl annotate namespace default "net.beta.kubernetes.io/network-policy={\"ingress\":{\"isolation\":\"DefaultDeny\"}}"
+
+With NetworkPolicy enabled, only pods with the generated client label will be
+able to connect to MariaDB. This label will be displayed in the output
+after a successful install.
