@@ -1,0 +1,28 @@
+{{- if .Values.networkPolicy.enabled }}
+kind: NetworkPolicy
+apiVersion: {{ template "networkPolicy.apiVersion" . }}
+metadata:
+  name: "{{ template "fullname" . }}"
+  labels:
+    app: {{ template "fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  podSelector:
+    matchLabels:
+      app: "{{ template "fullname" . }}"
+  ingress:
+    # Allow inbound connections
+    - ports:
+      - port: 5432
+    {{- if not .Values.networkPolicy.allowExternal }}
+      from:
+      - podSelector:
+          matchLabels:
+            {{ template "fullname" . }}-client: "true"
+    {{- end }}
+    # Allow prometheus scrapes
+    - ports:
+      - port: 9187
+{{- end }}
