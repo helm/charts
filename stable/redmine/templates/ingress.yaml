@@ -1,0 +1,23 @@
+{{- if .Values.ingress.hostName }}
+apiVersion: {{ required "A valid .Values.rbac.apiVersion entry required!" .Values.networkPolicyApiVersion }}
+kind: Ingress
+metadata:
+{{- if .Values.ingress.annotations }}
+  annotations:
+{{ toYaml .Values.ingress.annotations | indent 4 }}
+{{- end }}
+  name: {{ template "fullname" . }}
+spec:
+  rules:
+  - host: {{ .Values.ingress.hostName | quote }}
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: {{ template "fullname" . }}
+          servicePort: 80
+{{- if .Values.ingress.tls }}
+  tls:
+{{ toYaml .Values.ingress.tls | indent 4 }}
+{{- end -}}
+{{- end }}
