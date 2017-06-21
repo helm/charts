@@ -18,7 +18,7 @@ spec:
   {{- if .Values.cluster.restore.enabled }}
   restore:
 {{ toYaml .Values.cluster.restore.config | indent 4 }}
-  {{- end -}}
+  {{- end }}
   pod:
 {{ toYaml .Values.cluster.pod | indent 4 }}
 {{- end -}}
