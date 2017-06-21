@@ -6,6 +6,8 @@ sources:
   - https://github.com/mozmar/cloudflare-datadog
 home: https://github.com/mozmar/cloudflare-datadog
 maintainers:
+  - name: Vincent De Smet
+    email: vincent.drl@gmail.com
   - name: Giorgos Logiotatidis
     email: giorgos@mozilla.com
   - name: Dave Parfitt
