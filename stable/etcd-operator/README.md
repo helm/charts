@@ -53,7 +53,7 @@ The following tables lists the configurable parameters of the etcd-operator char
 | ------------------------------------------------- | -------------------------------------------------------------------- | ---------------------------------------------- |
 | `replicaCount`                                    | Number of etcd-operator replicas to create (only 1 is supported)     | `1`                                            |
 | `image.repository`                                | etcd-operator container image                                        | `quay.io/coreos/etcd-operator`                 |
-| `image.tag`                                       | etcd-operator container image tag                                    | `v0.2.1`                                       |
+| `image.tag`                                       | etcd-operator container image tag                                    | `v0.3.2`                                       |
 | `image.pullPolicy`                                | etcd-operator container image pull policy                            | `IfNotPresent`                                 |
 | `resources.limits.cpu`                            | CPU limit per etcd-operator pod                                      | `100m`                                         |
 | `resources.limits.memory`                         | Memory limit per etcd-operator pod                                   | `128Mi`                                        |
@@ -62,7 +62,7 @@ The following tables lists the configurable parameters of the etcd-operator char
 | `nodeSelector`                                    | node labels for etcd-operator pod assignment                         | `{}`                                           |
 | `cluster.enabled`                                 | Whether to enable provisioning of an etcd-cluster                    | `false`                                        |
 | `cluster.name`                                    | etcd cluster name                                                    | `etcd-cluster`                                 |
-| `cluster.version`                                 | etcd cluster version                                                 | `v3.1.2`                                       |
+| `cluster.version`                                 | etcd cluster version                                                 | `v3.1.8`                                       |
 | `cluster.size`                                    | etcd cluster size                                                    | `3`                                            |
 | `cluster.backup.enabled`                          | Whether to create PV for cluster backups                             | `false`                                        |
 | `cluster.backup.provisioner`                      | Which PV provisioner to use                                          | `kubernetes.io/gce-pd` (kubernetes.io/aws-ebs) |
