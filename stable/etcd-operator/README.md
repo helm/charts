@@ -79,6 +79,8 @@ The following tables lists the configurable parameters of the etcd-operator char
 | `cluster.pod.resources.requests.cpu`              | CPU request per etcd cluster pod                                     | `100m`                                         |
 | `cluster.pod.resources.requests.memory`           | Memory request per etcd cluster pod                                  | `128Mi`                                        |
 | `cluster.pod.nodeSelector`                        | node labels for etcd cluster pod assignment                          | `{}`                                           |
+| `rbac.install`                                    | install required rbac service account, roles and rolebindings        | `false`                                         |
+| `rbac.apiVersion`                                 | rbac api version `v1alpha1|v1beta1`                                  | `v1beta1`                                      |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
 
@@ -91,4 +93,37 @@ installing the chart. For example:
 
 ```bash
 $ helm install --name my-release --values values.yaml stable/etcd-operator
+```
+
+## RBAC
+By default the chart will not install the recommended RBAC roles and rolebindings.
+
+To determine if your cluster supports this running the following:
+
+```console
+$ kubectl api-versions | grep rbac
+```
+
+You also need to have the following parameter on the api server. See the following document for how to enable [RBAC](https://kubernetes.io/docs/admin/authorization/rbac/)
+
+```
+--authorization-mode=RBAC
+```
+
+If the output contains "beta" or both "alpha" and "beta" you can may install with enabling the creating of rbac resources (see below).
+
+### Enable RBAC role/rolebinding creation
+
+To enable the creation of RBAC resources (On clusters with RBAC). Do the following:
+
+```console
+$ helm install --name my-release stable/etcd-operator --set rbac.install=true
+```
+
+### Changing RBAC manifest apiVersion
+
+By default the RBAC resources are generated with the "v1beta1" apiVersion. To use "v1alpha1" do the following:
+
+```console
+$ helm install --name my-release stable/etcd-operator --set rbac.install=true,rbac.apiVersion=v1alpha1
 ```

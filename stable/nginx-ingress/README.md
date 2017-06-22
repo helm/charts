@@ -50,6 +50,7 @@ Parameter | Description | Default
 `controller.image.tag` | controller container image tag | `0.8.3`
 `controller.image.pullPolicy` | controller container image pull policy | `IfNotPresent`
 `controller.config` | nginx ConfigMap entries | none
+`controller.hostNetwork` | If the nginx deployment / daemonset should run on the host's network namespace | false
 `controller.defaultBackendService` | default 404 backend service; required only if `defaultBackend.enabled = false` | `""`
 `controller.scope.enabled` | limit the scope of the ingress controller | `false` (watch all namespaces)
 `controller.scope.namespace` | namespace to watch for ingress | `""` (use the release namespace)

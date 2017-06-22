@@ -60,3 +60,7 @@ cluster:
     ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
     ##
     nodeSelector: {}
+## Install Default RBAC roles and bindings
+rbac:
+  install: false
+  apiVersion: v1beta1
