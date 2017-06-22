@@ -59,3 +59,6 @@ resizer:
   - "--extra-memory=6Mi"
   - "--threshold=5"
   - "--poll-period=300000"
+
+## For RBAC support:
+rbac.enabled: false

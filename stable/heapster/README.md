@@ -43,6 +43,7 @@ The default configuration values for this chart are listed in `values.yaml`.
 | `resources.requests`                  | Server resource requests            | requests: {cpu: 100m, memory: 128Mi}              |
 | `command`                             | Commands for heapster pod           | "/heapster --source=kubernetes.summary_api:''     |
 | `resizer.enabled`                     | If enabled, scale resources         | true                                              |
+| `rbac.enabled`                        | Bind system:heapster role           | false                                              |
 
 The table below is only applicable if `resizer.enabled` is `true`. More information on resizer can be found [here](https://github.com/kubernetes/contrib/blob/master/addon-resizer/README.md).
 

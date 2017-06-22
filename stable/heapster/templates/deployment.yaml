@@ -11,6 +11,9 @@ spec:
       labels:
         app: {{ template "fullname" . }}
     spec:
+{{- if .Values.rbac.enabled }}
+      serviceAccountName: {{ template "fullname" . }}
+{{- end }}
       containers:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
