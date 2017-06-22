@@ -72,7 +72,8 @@ The following tables lists the configurable parameters of the Redmine chart and 
 | `postgresql.postgresqlPassword` | PostgreSQL admin password | `nil` |
 | `serviceType` | Kubernetes Service type | `LoadBalancer` |
 | `serviceLoadBalancerSourceRanges` | An array of load balancer sources | `0.0.0.0/0` |
-| `ingress.hostname` | The virtual host name | `nil` |
+| `ingress.enabled` | Enable or disable the ingress | `false` |
+| `ingress.hostname` | The virtual host name | `redmine.cluster.local` |
 | `ingress.annotations` | An array of service annotations | `nil` |
 | `ingress.tls[i].secretName | The secret kubernetes.io/tls | `nil` |
 | `ingress.tls[i].hosts[j] | The virtual host name | `nil` |

@@ -1,4 +1,4 @@
-{{- if .Values.ingress.hostName }}
+{{- if .Values.ingress.enabled }}
 apiVersion: {{ required "A valid .Values.networkPolicyApiVersion entry required!" .Values.networkPolicyApiVersion }}
 kind: Ingress
 metadata:
@@ -9,7 +9,7 @@ metadata:
   name: {{ template "fullname" . }}
 spec:
   rules:
-  - host: {{ .Values.ingress.hostName | quote }}
+  - host: {{ .Values.ingress.hostname | quote }}
     http:
       paths:
       - path: /

@@ -14,8 +14,9 @@
 
   export SERVICE_IP=$(kubectl get svc {{ template "fullname" . }} --namespace {{ .Release.Namespace }} --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
   echo http://$SERVICE_IP/
-{{- else if and (contains "ClusterIP" .Values.serviceType) (.Values.ingress.hostName) }}
-  http://{{ .Values.ingress.hostName }}/
+
+{{- else if .Values.ingress.enabled }}
+  http://{{ .Values.ingress.hostname }}/
 
 {{- else if contains "ClusterIP" .Values.serviceType }}
 

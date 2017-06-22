@@ -108,7 +108,8 @@ serviceLoadBalancerSourceRanges:
   - 0.0.0.0/0
 
 ingress:
-  # hostName: redmine.cluser.local
+  enabled: false
+  hostname: redmine.cluser.local
   annotations:
     # kubernetes.io/ingress.class: nginx
     # ingress.kubernetes.io/whitelist-source-range: "10.0.0.0/24,172.10.0.1"
