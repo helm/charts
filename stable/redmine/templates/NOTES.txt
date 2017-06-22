@@ -1,4 +1,4 @@
-1. Get the Redmine URL by running:
+1. Get the Redmine URL:
 
 {{- if contains "NodePort" .Values.serviceType }}
 
@@ -14,6 +14,10 @@
 
   export SERVICE_IP=$(kubectl get svc {{ template "fullname" . }} --namespace {{ .Release.Namespace }} --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
   echo http://$SERVICE_IP/
+
+{{- else if .Values.ingress.enabled }}
+  http://{{ .Values.ingress.hostname }}/
+
 {{- else if contains "ClusterIP" .Values.serviceType }}
 
   export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "fullname" . }}" -o jsonpath="{.items[0].metadata.name}")
