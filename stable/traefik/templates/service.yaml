@@ -30,3 +30,6 @@ spec:
     {{- if not .Values.ssl.enabled }}
     targetPort: 80
     {{- end }}
+  {{- if .Values.loadBalancerIP}}
+  loadBalancerIP: {{ .Values.loadBalancerIP }}
+  {{- end }}
