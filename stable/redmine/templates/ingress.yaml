@@ -1,5 +1,5 @@
 {{- if .Values.ingress.hostName }}
-apiVersion: {{ required "A valid .Values.rbac.apiVersion entry required!" .Values.networkPolicyApiVersion }}
+apiVersion: {{ required "A valid .Values.networkPolicyApiVersion entry required!" .Values.networkPolicyApiVersion }}
 kind: Ingress
 metadata:
 {{- if .Values.ingress.annotations }}
