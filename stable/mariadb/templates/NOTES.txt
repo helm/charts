@@ -2,9 +2,14 @@ MariaDB can be accessed via port 3306 on the following DNS name from within your
 {{ template "fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
 
 {{- if .Values.usePassword }}
-To get your password run:
+To get the root password run:
 
     MARIADB_ROOT_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath="{.data.mariadb-root-password}" | base64 --decode)
+
+{{- if .Values.mariadbUser }}
+To get the password for "{{ .Values.mariadbUser }}" run:
+
+    MARIADB_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath="{.data.mariadb-password}" | base64 --decode)
 {{- end }}
 
 To connect to your database:

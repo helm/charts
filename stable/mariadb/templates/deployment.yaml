@@ -44,11 +44,13 @@ spec:
             secretKeyRef:
               name: {{ template "fullname" . }}
               key: mariadb-root-password
+        {{- if .Values.mariadbUser }}
         - name: MARIADB_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ template "fullname" . }}
               key: mariadb-password
+        {{- end }}
         {{- else }}
         - name: ALLOW_EMPTY_PASSWORD
           value: "yes"

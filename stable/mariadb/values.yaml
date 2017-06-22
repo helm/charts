@@ -19,6 +19,7 @@ usePassword: true
 # mariadbRootPassword:
 
 ## Create a database user
+## Password defaults to a random 10-character alphanumeric string if not set and usePassword is true
 ## ref: https://github.com/bitnami/bitnami-docker-mariadb/blob/master/README.md#creating-a-database-user-on-first-run
 ##
 # mariadbUser:
