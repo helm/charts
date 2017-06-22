@@ -63,6 +63,8 @@ The following tables lists the configurable parameters of the Redis chart and th
 | `metrics.resources`        | Exporter resource requests/limit      | Memory: `256Mi`, CPU: `100m`                              |
 | `nodeSelector`             | Node labels for pod assignment        | {}                                                        |
 | `tolerations`              | Toleration labels for pod assignment  | []                                                        |
+| `networkPolicy.enabled`    | Enable NetworkPolicy                  | `false`                                                   |
+| `networkPolicy.allowExternal` | Don't require client label for connections | `true`                                            |
 
 The above parameters map to the env variables defined in [bitnami/redis](http://github.com/bitnami/bitnami-docker-redis). For more information please refer to the [bitnami/redis](http://github.com/bitnami/bitnami-docker-redis) image documentation.
 
@@ -83,6 +85,21 @@ $ helm install --name my-release -f values.yaml stable/redis
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
+## NetworkPolicy
+
+To enable network policy for redis, install
+[a networking plugin that implements the Kubernetes NetworkPolicy spec](https://kubernetes.io/docs/tasks/administer-cluster/declare-network-policy#before-you-begin),
+and set `NetworkPolicy.Enabled` to `true`.
+
+For Kubernetes v1.5 & v1.6, you must also turn on NetworkPolicy by setting
+the DefaultDeny namespace annotation. Note: this will enforce policy for _all_ pods in the namespace:
+
+    kubectl annotate namespace default "net.beta.kubernetes.io/network-policy={\"ingress\":{\"isolation\":\"DefaultDeny\"}}"
+
+With NetworkPolicy enabled, only pods with the generated client label will be
+able to connect to redis. This label will be displayed in the output
+after a successful install.
 
 ## Persistence
 
