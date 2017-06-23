@@ -17,7 +17,7 @@ spec:
     spec:
       initContainers:
       - name: init-mysql
-        image: mysql:{{ .Values.imageTag }}
+        image: {{ .Values.mysqlImage }}
         command:
           - bash
           - "-c"
@@ -46,7 +46,7 @@ spec:
           - name: scripts
             mountPath: /mnt/scripts
       - name: clone-mysql
-        image: gcr.io/google-samples/xtrabackup:1.0
+        image: {{ .Values.xtraBackupImage }}
         command:
           - bash
           - "-c"
@@ -78,7 +78,7 @@ spec:
           mountPath: /etc/mysql/conf.d
       containers:
       - name: mysql
-        image: mysql:{{ .Values.imageTag }}
+        image: {{ .Values.mysqlImage }}
         env:
         - name: MYSQL_ROOT_PASSWORD
           valueFrom:
@@ -133,7 +133,7 @@ spec:
           initialDelaySeconds: 10
           timeoutSeconds: 1
       - name: xtrabackup
-        image: gcr.io/google-samples/xtrabackup:1.0
+        image: {{ .Values.xtraBackupImage }}
         env:
         - name: MYSQL_PWD
           valueFrom:

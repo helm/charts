@@ -1,7 +1,8 @@
 ## mysql image version
 ## ref: https://hub.docker.com/r/library/mysql/tags/
 ##
-imageTag: "5.7.13"
+mysqlImage: mysql:5.7.13
+xtraBackupImage: gcr.io/google-samples/xtrabackup:1.0
 
 replicaCount: 3
 

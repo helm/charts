@@ -12,7 +12,7 @@ To connect to your database:
 
 2. Run a pod to use as a client:
 
-    kubectl run mysql-client --image=mysql:{{ .Values.imageTag }} -it --rm --restart=Never -- /bin/sh
+    kubectl run mysql-client --image={{ .Values.mysqlImage }} -it --rm --restart=Never -- /bin/sh
 
 2. Open a connection to one of the MySQL pods
 
