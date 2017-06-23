@@ -44,8 +44,8 @@ Parameter | Description | Default
 `image.tag` | risk-advisor container image tag | `v1.0.0`
 `image.pullPolicy` | risk-advisor container image pull policy | `IfNotPresent`
 `service.type` | service type | `NodePort`
-`service.port` | exposed port of risk-advisor pod | `9997`
-`service.targetPort` | in-cluster exposed port of risk-advisor service | `9997`
+`service.targetPort` | exposed port of risk-advisor pod| `9997`
+`service.port` | in-cluster exposed port of risk-advisor service | `9997`
 `service.nodePort` | exposed external port accessible from outside the cluster | `31111`
 
 ## Usage

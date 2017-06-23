@@ -22,17 +22,17 @@ spec:
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         ports:
-        - containerPort: {{ .Values.service.internalPort }}
+        - containerPort: {{ .Values.service.targetPort }}
         livenessProbe:
           httpGet:
             path: /healthz
-            port: {{ .Values.service.internalPort }}
+            port: {{ .Values.service.targetPort }}
           initialDelaySeconds: 3
           periodSeconds: 3
         readinessProbe:
           httpGet:
             path: /healthz
-            port: {{ .Values.service.internalPort }}
+            port: {{ .Values.service.targetPort }}
           initialDelaySeconds: 3
           periodSeconds: 3
         resources:
