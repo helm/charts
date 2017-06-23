@@ -2,7 +2,7 @@
 image: traefik
 imageTag: v1.2.1
 serviceType: LoadBalancer
-# Static IP Address
+# Static IP Address pass --set loadBalancerIP=false from command line if running mulitiple 
 # loadBalancerIP: xx.xx.xx.xx
 replicas: 1
 cpuRequest: 100m
