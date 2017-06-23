@@ -82,7 +82,7 @@ The following tables lists the configurable parameters of the artifactory chart 
 | `artName` | Artifactory name | `artifactory`   |
 | `artName.art_replicaCount` | Artifactory replica count | `1`   |
 | `artImage.repository`    | Container image                   | `docker.bintray.io/jfrog/artifactory-pro`                |
-| `artImage.version`       | Container image tag               | `5.3.2`                                                  |
+| `artImage.version`       | Container image tag               | `5.4.1`                                                  |
 | `artService.name` | Artifactory service name              | `artifactory`                             |
 | `artService.type`| Artifactory service type | `ClusterIP` |
 | `artService.externalPort` | Artifactory service external port | `8081`   |
@@ -94,7 +94,7 @@ The following tables lists the configurable parameters of the artifactory chart 
 | `nxName` | Nginx name | `nginx`   |
 | `nxName.artReplicaCount` | Nginx replica count | `1`   |
 | `nxImage.repository`    | Container image                   | `docker.bintray.io/jfrog/nginx-artifactory-pro`                |
-| `nxImage.version`       | Container image tag               | `5.3.2`                                                  |
+| `nxImage.version`       | Container image tag               | `5.4.1`                                                  |
 | `nxService.name` | Nginx service name              | `nginx`                             |
 | `nxService.type`| Nginx service type | `LoadBalancer` |
 | `nxService.externalPortHttp` | Nginx service external port | `80`   |
