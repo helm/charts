@@ -7,15 +7,15 @@ image:
   tag: v1.0.0
   pullPolicy: IfNotPresent
 service:
-  name: risk-advisor-service
   type: NodePort
-  externalPort: 11111
-  internalPort: 9997
-resources:
-  limits:
-    cpu: 100m
-    memory: 128Mi
-  requests:
-    cpu: 100m
-    memory: 128Mi
+  port: 9997
+  targetPort: 9997
+  nodePort: 31111
+# resources:
+#   limits:
+#     cpu: 100m
+#     memory: 128Mi
+#   requests:
+#     cpu: 100m
+#     memory: 128Mi
 
