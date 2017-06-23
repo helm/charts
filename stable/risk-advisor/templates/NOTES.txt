@@ -8,8 +8,7 @@ To make a simulation request, run these commands:
   export NODE_PORT=$(kubectl get services -o jsonpath="{.spec.ports[0].nodePort}" {{ template "fullname" . }})
 {{- end }}
   export NODE_IP=$(kubectl get nodes -o jsonpath="{.items[0].status.addresses[1].address}")
-
   echo "Check how the cluster state would change after adding provided pods to the cluster by sending HTTP POST request to http://$NODE_IP:$HTTP_NODE_PORT/advise with array of pod definitions"
-  echo "For example, using curl: curl -XPOST http://$NODE_IP:$HTTP_NODE_PORT/advise -H \"Content-type: application/json\" -d @PODS_ARRAY_JSON_FILE"
+  echo "For example, using curl: curl -XPOST http://$NODE_IP:$NODE_PORT/advise -H \"Content-type: application/json\" -d @PODS_ARRAY_JSON_FILE"
 
-  It may take a few seconds for risk advisor to respond to the request.
+ It may take a few seconds for risk advisor to respond to the request.
