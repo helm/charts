@@ -78,7 +78,7 @@ spec:
               fieldPath: status.podIP
         livenessProbe:
           exec:
-            command: [ "/bin/sh", "-c", "nodetool status | grep -E \"^UN\\s+${POD_IP}\"" ]
+            command: [ "/bin/sh", "-c", "nodetool status" ]
           initialDelaySeconds: 90
           periodSeconds: 30
         readinessProbe:
