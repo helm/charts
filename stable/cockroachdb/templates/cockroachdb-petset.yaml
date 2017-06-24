@@ -203,3 +203,32 @@ spec:
       resources:
         requests:
           storage: "{{.Values.Storage}}"
+{{- if .Values.NetworkPolicy.Enabled }}
+---
+kind: NetworkPolicy
+apiVersion: {{ .Values.NetworkPolicy.ApiVersion }}
+metadata:
+  name: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 56 }}"
+spec:
+  podSelector:
+    matchLabels:
+      component: "{{.Release.Name}}-{{.Values.Component}}"
+  ingress:
+  - from:
+    # Allow clients to connect.
+    - podSelector:
+        matchLabels:
+          {{.Release.Name}}-{{.Values.Component}}-client: "true"
+    # Allow other cockroachdb's to connect to form cluster.
+    - podSelector:
+        matchLabels:
+          component: "{{.Release.Name}}-{{.Values.Component}}"
+    ports:
+    - port: {{ .Values.GrpcPort}}
+  # Allow connections to admin UI.
+  - ports:
+    - port: {{.Values.HttpPort}}
+  # Allow connections from Prometheus.
+  - ports:
+    - port: 8080
+{{- end }}
