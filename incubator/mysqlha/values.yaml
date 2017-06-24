@@ -31,8 +31,8 @@ mysqlReplicationUser: repl
 persistence:
   enabled: true
   ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
-  ## Default: volume.alpha.kubernetes.io/storage-class: default
   ##
+  storageClass: fast
   accessMode: ReadWriteOnce
   size: 10Gi
 
