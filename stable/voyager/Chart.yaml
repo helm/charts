@@ -3,6 +3,7 @@ description: Voyager provides controller for Ingress and Certificates for Kubern
 icon: https://cdn.appscode.com/images/icon/voyager.png
 name: voyager
 version: 0.2.0
+appVersion: 3.0.0
 sources:
   - https://github.com/appscode/voyager
 maintainers:
