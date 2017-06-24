@@ -12,10 +12,8 @@ spec:
   template:
     metadata:
       labels:
-        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         app: "{{ template "name" . }}"
         release: "{{ .Release.Name }}"
-        heritage: "{{ .Release.Service }}"
     spec:
       containers:
       - name: {{ .Chart.Name }}
