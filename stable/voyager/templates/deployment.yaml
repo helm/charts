@@ -27,6 +27,11 @@ spec:
         - --v={{ .Values.logLevel }}
         image: "{{ .Values.image }}:{{ .Values.imageTag }}"
         name: voyager
+        env:
+          - name: OPERATOR_SERVICE_ACCOUNT
+            valueFrom:
+              fieldRef:
+                fieldPath: spec.serviceAccountName
         ports:
         - containerPort: 56790
           name: http
