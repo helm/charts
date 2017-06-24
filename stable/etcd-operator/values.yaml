@@ -13,6 +13,11 @@ resources:
   requests:
     cpu: 100m
     memory: 128Mi
+## Node labels for etcd-operator pod assignment
+## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+##
+nodeSelector: {}
+
 ## etcd-cluster specific values
 cluster:
   enabled: false
@@ -32,6 +37,29 @@ cluster:
       pv:
         volumeSizeInMB: 512
 
+  restore:
+    enabled: false
+    config:
+      storageType: PersistentVolume
+      backupClusterName: etcd-cluster
+
+  ## etcd cluster pod specific values
+  pod:
+    ## Antiaffinity for etcd pod assignment
+    ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+    ##
+    antiAffinity: false
+    resources:
+      limits:
+        cpu: 100m
+        memory: 128Mi
+      requests:
+        cpu: 100m
+        memory: 128Mi
+    ## Node labels for etcd pod assignment
+    ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+    ##
+    nodeSelector: {}
 ## Install Default RBAC roles and bindings
 rbac:
   install: false
