@@ -36,12 +36,18 @@ spec:
             limits:
               cpu: "{{.Values.Master.Resources.Limits.Cpu}}"
               memory: "{{.Values.Master.Resources.Limits.Memory}}"
+          {{- if .Values.Master.ConfigMapName }}
+          envFrom:
+          - configMapRef:
+              name: "{{.Values.Master.ConfigMapName}}"
+          {{ else }}
           env:
           - name: SPARK_DAEMON_MEMORY
             value: {{ default "1g" .Values.Master.DaemonMemory | quote }}
           {{- if .Values.Master.EnableHA }}
           - name: SPARK_DAEMON_JAVA_OPTS
             value: "-Dspark.deploy.recoveryMode=ZOOKEEPER -Dspark.deploy.zookeeper.url=zookeeper.spark.svc.cluster.local:2181"
+          {{- end }}
           {{- end }}
 
 {{- if .Values.Master.EnableHA }}
