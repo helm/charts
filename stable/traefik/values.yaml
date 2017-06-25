@@ -2,6 +2,7 @@
 image: traefik
 imageTag: v1.2.1
 serviceType: LoadBalancer
+loadBalancerIP:
 replicas: 1
 cpuRequest: 100m
 memoryRequest: 20Mi
