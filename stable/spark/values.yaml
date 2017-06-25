@@ -12,6 +12,7 @@ Master:
   ServicePort: 7077
   ContainerPort: 7077
   EnableHA: false
+  #ConfigMapName: spark-master-conf
   Resources:
     Requests:
       Cpu: "700m"
