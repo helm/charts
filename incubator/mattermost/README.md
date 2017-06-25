@@ -14,6 +14,9 @@ This chart will do the following:
 
 * Implement a Mattermost deployment
 
+Please note that an existing database service (either PostgreSQL or MySQL) must
+be deployed beforehand and configured with the `mattermost.db.*` options.
+
 ## Installing the Chart
 
 To install the chart with the release name `my-release`:
