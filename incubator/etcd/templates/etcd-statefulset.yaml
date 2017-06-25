@@ -197,7 +197,11 @@ spec:
   - metadata:
       name: datadir
       annotations:
+        {{- if .Values.StorageClass }}
+        volume.beta.kubernetes.io/storage-class: {{ .Values.StorageClass | quote }}
+        {{- else }}
         volume.alpha.kubernetes.io/storage-class: anything
+        {{- end }}
     spec:
       accessModes:
         - "ReadWriteOnce"
