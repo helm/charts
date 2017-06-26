@@ -11,7 +11,7 @@
   NOTE: It may take a few minutes for the LoadBalancer IP to be available, until that the commands below will not work.  
   You can watch the status by running 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "scheduler-fullname" . }}'
 
-  export DASK_SCHEDULER_UI_IP=$(kubectl get svc --namespace {{ .Release.Namespac }} {{ template "scheduler-fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+  export DASK_SCHEDULER_UI_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "scheduler-fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
   echo http://$DASK_SCHEDULER_UI_IP:{{ .Values.webUI.servicePort }}
 
 3. Get the Jupyter Notebook URL to visit by running these commands in the same shell:
