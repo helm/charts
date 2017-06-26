@@ -15,6 +15,9 @@ spec:
   template:
     metadata:
       labels:
+        {{- if and (.Values.tolerations) (le .Capabilities.KubeVersion.Minor "5") }}
+        scheduler.alpha.kubernetes.io/tolerations: '{{ toJson .Values.tolerations }}'
+        {{- end }}
         app: {{ template "fullname" . }}
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         release: "{{ .Release.Name }}"
@@ -26,6 +29,10 @@ spec:
       serviceAccountName: default
       {{- end }}
       terminationGracePeriodSeconds: 60
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- end }}
       containers:
       - image: {{ .Values.image }}:{{ .Values.imageTag }}
         name: {{ template "fullname" . }}
@@ -88,4 +95,8 @@ spec:
       {{- else }}
         emptyDir: {}
       {{- end }}
+      {{- end }}
+      {{- if and (.Values.tolerations) (ge .Capabilities.KubeVersion.Minor "6") }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 6 }}
       {{- end }}
