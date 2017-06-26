@@ -4,7 +4,9 @@ metadata:
   name: {{ template "scheduler-fullname" . }}
   labels:
     app: {{ template "name" . }}
+    heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     component: "{{ .Release.Name }}-{{ .Values.scheduler.component }}"
 spec:
   ports:
