@@ -18,6 +18,15 @@ alertmanager:
   ##
   extraArgs: {}
 
+  ## Additional alertmanager hostPath mounts
+  ##
+  extraHostPathMounts: []
+    # - name: data-dir
+    #   mountPath: /srv/data
+    #   hostPath: /var/lib/alertmanager/data
+    #   readOnly: true
+
+  ## Node labels for node-exporter pod assignment
   ingress:
     ## If true, alertmanager Ingress will be created
     ##
