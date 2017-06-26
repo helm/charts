@@ -4,9 +4,7 @@ metadata:
   name: {{ template "worker-fullname" . }}
   labels:
     app: {{ template "name" . }}
-    heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     component: "{{ .Release.Name }}-{{ .Values.worker.component }}"
 spec:
   replicas: {{ .Values.worker.replicas }}
@@ -16,9 +14,7 @@ spec:
     metadata:
       labels:
         app: {{ template "name" . }}
-        heritage: {{ .Release.Service | quote }}
         release: {{ .Release.Name | quote }}
-        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         component: "{{ .Release.Name }}-{{ .Values.worker.component }}"
     spec:
       containers:
