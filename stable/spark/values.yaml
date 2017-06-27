@@ -12,6 +12,7 @@ Master:
   ServicePort: 7077
   ContainerPort: 7077
   EnableHA: false
+  #SparkSubmitCommand: ["spark-submit", "--master local[2]", "--driver-memory 4g", "enter-your-fat.jar"]
   #ConfigMapName: spark-master-conf
   Resources:
     Requests:
@@ -21,7 +22,7 @@ Master:
       Cpu: "700m"
       Memory: "3Gi"
   # Set Master JVM memory. Default 1g
-  #DaemonMemory: 1g
+  DaemonMemory: 1g
 
 WebUi:
   Name: webui
