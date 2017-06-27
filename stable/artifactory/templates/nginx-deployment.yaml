@@ -1,7 +1,7 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "nginxName" . }}
+  name: {{ template "nginx.fullname" . }}
   labels:
     app: {{ template "name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
@@ -47,7 +47,7 @@ spec:
       - name: nginx-volume
       {{- if .Values.nxPersistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ .Values.nxName }}
+          claimName: {{ template "nginx.fullname" . }}
       {{- else }}
         emptyDir: {}
       {{- end -}}

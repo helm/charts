@@ -1,7 +1,7 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "databaseName" . }}
+  name: {{ template "database.fullname" . }}
   labels:
     app: {{ template "name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
@@ -48,7 +48,7 @@ spec:
       - name: postgresql-volume
       {{- if .Values.dbPersistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ .Values.dbName }}
+          claimName: {{ template "database.fullname" . }}
       {{- else }}
         emptyDir: {}
       {{- end -}}

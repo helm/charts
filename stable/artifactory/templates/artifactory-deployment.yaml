@@ -1,7 +1,7 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "name" . }}
+  name: {{ template "artifactory.fullname" . }}
   labels:
     app: {{ template "name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
@@ -40,7 +40,7 @@ spec:
         - name: DB_PASSWORD
           value: {{ .Values.dbEnv.dbPass }}
         - name: DB_HOST
-          value: {{ .Values.dbService.name }}
+          value: {{ template "database.name" . }}
         ports:
         - containerPort: {{ .Values.artService.internalPort }}
         volumeMounts:
@@ -50,7 +50,7 @@ spec:
       - name: artifactory-volume
       {{- if .Values.artPersistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ .Values.artName }}
+          claimName: {{ template "artifactory.fullname" . }}
       {{- else }}
         emptyDir: {}
       {{- end -}}
