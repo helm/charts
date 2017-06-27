@@ -78,7 +78,7 @@ data:
           <skipTlsVerify>false</skipTlsVerify>
           <namespace>{{ .Release.Namespace }}</namespace>
           <jenkinsUrl>http://{{ template "fullname" . }}:{{.Values.Master.ServicePort}}</jenkinsUrl>
-          <jenkinsTunnel>{{ template "fullname" . }}:50000</jenkinsTunnel>
+          <jenkinsTunnel>{{ template "fullname" . }}-agent:50000</jenkinsTunnel>
           <containerCap>10</containerCap>
           <retentionTimeout>5</retentionTimeout>
           <connectTimeout>0</connectTimeout>
