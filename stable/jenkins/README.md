@@ -48,6 +48,7 @@ The following tables lists the configurable parameters of the Jenkins chart and 
 | `Master.Ingress.TLS`              | Ingress TLS configuration           | `[]`                                                                         |
 | `Master.InitScripts`              | List of Jenkins init scripts        | Not set                                                                      |
 | `Master.InstallPlugins`           | List of Jenkins plugins to install  | `kubernetes:0.11 workflow-aggregator:2.5 credentials-binding:1.11 git:3.2.0` |
+| `Master.PreinstalledPluginsDirectory` | Directory of pre-installed plugins | Not set                                                                   |
 | `Master.ScriptApproval`           | List of groovy functions to approve | Not set                                                                      |
 
 ### Jenkins Agent
@@ -123,3 +124,21 @@ jenkins:
   Master:
     CustomConfigMap: true
 ```
+
+## Preinstalling Plugins
+
+Plugins are constantly being updated.  Sometimes this causes issues, especially if versions are not explicitly added to
+the plugins list in values.yaml.  One way to address this is starting from a base image that has plugins pre-installed.
+This should be pretty straight-forward, but since we mount the plugins directory as a volume, any pre-installed plugins
+are simply ignored.  To address this, install the plugins to a separate directory
+(e.g. `/usr/share/jenkins/ref/preinstalled_plugins`).  Below is an example Dockerfile:
+
+```
+FROM jenkinsci/jenkins:2.66
+
+RUN mkdir -p /usr/share/jenkins/ref/preinstalled_plugins
+ADD plugins.txt /usr/share/jenkins/ref/preinstalled_plugins/plugins.txt
+RUN REF=/usr/share/jenkins/ref/preinstalled_plugins /usr/local/bin/install-plugins.sh < /usr/share/jenkins/ref/preinstalled_plugins/plugins.txt
+```
+
+The plugins will be copied as part of the init-containers hook.
