@@ -35,15 +35,17 @@ The following tables lists the configurable parameters of the MySQL chart and th
 
 | Parameter                  | Description                        | Default                                                    |
 | -----------------------    | ---------------------------------- | ---------------------------------------------------------- |
-| `imageTag`                 | `mysql` image tag.                 | Most recent release                                        |
-| `mysqlRootPassword`        | Password for the `root` user.      | `nil`                                                      |
+| `mysqlImage`               | `mysql` image and tag.             | `mysql:5.7.13`                                             |
+| `xtraBackupImage`          | `xtrabackup` image and tag.        | `gcr.io/google-samples/xtrabackup:1.0`                     |
+| `replicaCount`             | Number of MySQL replicas           | 3                                                          |
+| `mysqlRootPassword`        | Password for the `root` user.      | Randomly generated                                         |
 | `mysqlUser`                | Username of new user to create.    | `nil`                                                      |
 | `mysqlPassword`            | Password for the new user.         | Randomly generated                                         |
 | `mysqlReplicationUser`     | Username for replication user      | `repl`                                                     |
 | `mysqlReplicationPassword` | Password for replication user.     | Randomly generated                                         |
 | `persistence.enabled`      | Create a volume to store data      | true                                                       | 
 | `persistence.size`         | Size of persistent volume claim    | 10Gi                                                       |
-| `persistence.storageClass` | Type of persistent volume claim    | fast                                                       |
+| `persistence.storageClass` | Type of persistent volume claim    | `nil`                                                      |
 | `persistence.accessMode`   | ReadWriteOnce or ReadOnly          | ReadWriteOnce                                              |
 | `resources`                | CPU/Memory resource requests/limits | Memory: `128Mi`, CPU: `100m`                              |
 
@@ -57,12 +59,10 @@ By default persistence is enabled, and a PersistentVolumeClaim is created and mo
 
 ```
 # https://kubernetes.io/docs/user-guide/persistent-volumes/#azure-disk
-apiVersion: storage.k8s.io/v1beta1
 kind: StorageClass
+apiVersion: storage.k8s.io/v1
 metadata:
   name: fast
-  annotations:
-    storageclass.beta.kubernetes.io/is-default-class: "true"
 provisioner: kubernetes.io/azure-disk
 parameters:
   skuName: Premium_LRS

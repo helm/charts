@@ -32,7 +32,6 @@ persistence:
   enabled: true
   ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
   ##
-  storageClass: fast
   accessMode: ReadWriteOnce
   size: 10Gi
 
