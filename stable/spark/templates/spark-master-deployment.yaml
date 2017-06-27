@@ -26,6 +26,9 @@ spec:
         - name: {{.Values.Master.Component}}
           imagePullPolicy: "{{.Values.Master.ImagePullPolicy}}"
           image: "{{.Values.Master.Image}}:{{.Values.Master.ImageTag}}"
+          {{- if .Values.Master.SparkSubmitCommand }}
+          command: {{.Values.Master.SparkSubmitCommand}}
+          {{- end }}
           ports:
             - containerPort: {{.Values.Master.ContainerPort}}
             - containerPort: {{.Values.WebUi.ContainerPort}}
@@ -80,6 +83,9 @@ spec:
         - name: "{{.Values.Master.Component}}-ha"
           imagePullPolicy: "{{.Values.Master.ImagePullPolicy}}"
           image: "{{.Values.Master.Image}}-ha:{{.Values.Master.ImageTag}}-ha"
+          {{- if .Values.Master.SparkSubmitCommand }}
+          command: {{.Values.Master.SparkSubmitCommand}}
+          {{- end }}
           ports:
             - containerPort: {{.Values.Master.ContainerPort}}
             - containerPort: {{.Values.WebUi.ContainerPort}}
