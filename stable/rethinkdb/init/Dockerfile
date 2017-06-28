@@ -1,5 +1,3 @@
-#!/bin/sh
-
 # Copyright 2016 The Kubernetes Authors All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,22 +12,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-RELEASE=$1
-NS=$2
+FROM rethinkdb:2.3.5
+MAINTAINER Cody Lundquist <cody.lundquist@gmail.com>
 
-if [ -z $RELEASE ]; then
-	echo "Please specify Helm release name. eg. test.sh winsome-shark consul"
-	exit 1
-elif [ -z $NS ]; then
-	echo "Please specify a Kubernetes namespace. eg. test.sh winsome-shark consul"
-	exit 1
-fi
+RUN apt-get update && \
+    apt-get install -yq curl && \
+    rm -rf /var/cache/apt/* && rm -rf /var/lib/apt/lists/*
 
-for i in {0..2}; do
-	if [ `kubectl exec $RELEASE-consul-$i consul members --namespace=$NS | grep server | wc -l` -ge "3" ]; then
-    		echo "$RELEASE-consul-$i OK. consul members returning at least 3 records."
-	else
-    		echo "$RELEASE-consul-$i ERROR. consul members returning less than 3 records."
-    		exit 1
-	fi
-done
+ADD http://stedolan.github.io/jq/download/linux64/jq /usr/bin/jq
+RUN chmod +x /usr/bin/jq
+
+ADD https://github.com/Yelp/dumb-init/releases/download/v1.2.0/dumb-init_1.2.0_amd64 /usr/local/bin/dumb-init
+RUN chmod +x /usr/local/bin/dumb-init
+
+COPY ./files/run.sh ./rethinkdb-probe/rethinkdb-probe /
+RUN chmod u+x /run.sh /rethinkdb-probe
+
+ENTRYPOINT ["/usr/local/bin/dumb-init", "/run.sh"]

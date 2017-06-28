@@ -1,3 +1,4 @@
+{{- if .Values.daemonset.enabled }}
 {{- if .Values.datadog.apiKey }}
 apiVersion: extensions/v1beta1
 kind: DaemonSet
@@ -11,6 +12,10 @@ spec:
       labels:
         app: {{ template "fullname" . }}
       name: {{ template "fullname" . }}
+      {{- if .Values.daemonset.podAnnotations }}
+      annotations:
+{{ toYaml .Values.daemonset.podAnnotations | indent 8 }}
+      {{- end }}
     spec:
       containers:
       - name: {{ .Chart.Name }}
@@ -88,4 +93,9 @@ spec:
         - name: autoconf
           configMap:
             name: {{ template "autoconf.fullname" . }}
+      {{- if .Values.daemonset.tolerations }}
+      tolerations:
+{{ toYaml .Values.daemonset.tolerations | indent 8 }}
+      {{- end }}
+{{ end }}
 {{ end }}

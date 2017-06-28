@@ -1,7 +1,14 @@
 ## Bitnami Drupal image version
 ## ref: https://hub.docker.com/r/bitnami/drupal/tags/
 ##
-image: bitnami/drupal:8.3.2-r0
+image: bitnami/drupal:8.3.3-r0
+
+## Optionally specify an array of imagePullSecrets.
+## Secrets must be manually created in the namespace.
+## ref: https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
+##
+# imagePullSecrets:
+#   - name: myRegistryKeySecretName
 
 ## Specify a imagePullPolicy
 ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -92,6 +99,19 @@ persistence:
     # storageClass:
     accessMode: ReadWriteOnce
     size: 8Gi
+
+    ## A manually managed Persistent Volume Claim
+    ## Requires persistence.enabled: true
+    ## If defined, PVC must be created manually before volume will be bound
+    ##
+    # existingClaim:
+
+    ## If defined, the drupal-data volume will mount to the speficied hostPath.
+    ## Requires persistence.enabled: true
+    ## Requires persistence.existingClaim: nil|false
+    ## Default: nil.
+    ##
+    # hostPath:
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
