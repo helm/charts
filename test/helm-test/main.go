@@ -232,8 +232,8 @@ func doMain() int {
 			return execErr
 		})
 
-		xmlWrap(fmt.Sprintf("Helm Update Deps %s", path.Base(chartPath)), func() error {
-			o, execErr := output(exec.Command(helmPath, "dep", "update", chartPath))
+		xmlWrap(fmt.Sprintf("Helm Dep Build %s", path.Base(chartPath)), func() error {
+			o, execErr := output(exec.Command(helmPath, "dep", "build", chartPath))
 			if execErr != nil {
 				return fmt.Errorf("%s Command output: %s", execErr, string(o[:]))
 			}

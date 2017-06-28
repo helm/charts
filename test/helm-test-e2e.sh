@@ -22,7 +22,6 @@ linux-amd64/helm init --service-account tiller --upgrade
 
 linux-amd64/helm repo add stable https://kubernetes-charts.storage.googleapis.com/
 linux-amd64/helm repo add incubator https://kubernetes-charts-incubator.storage.googleapis.com/
-linux-amd64/helm repo add kubernetes-charts http://storage.googleapis.com/kubernetes-charts
 
 # Run test framework
 pushd .
