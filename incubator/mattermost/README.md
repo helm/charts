@@ -28,13 +28,13 @@ $ helm install --name my-release incubator/mattermost
 
 ## Configuration
 
-The following tables lists the configurable parameters of the patroni chart and their default values.
+The following tables lists the configurable parameters of the mattermost chart and their default values.
 
 |       Parameter         |           Description               |                         Default                     |
 |-------------------------|-------------------------------------|-----------------------------------------------------|
 | `image.pullPolicy`      | Container pull policy               | `IfNotPresent`                                      |
 | `image.repository`      | Container image to use              | `mattermost/mattermost-prod-app`                    |
-| `image.tag`             | Container image tag to deploy       | `3`                                                 |
+| `image.tag`             | Container image tag to deploy       | `3.10.0`                                            |
 | `mattermost.db.host`    | Database host to use for Mattermost | `db`                                                |
 | `mattermost.db.port`    | Database port to use for Mattermost | `5432`                                              |
 | `mattermost.db.name`    | Database name to use for Mattermost | `mattermost`                                        |
