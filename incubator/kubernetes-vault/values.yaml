@@ -1,0 +1,23 @@
+# Default values for kubernetes-vault.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 3
+image: boostport/kubernetes-vault
+imageTag: v0.4.7
+imagePullPolicy: always
+service:
+  dummyPort: 80
+vault:
+  address: http://vault:8200
+  token: your-vault-token
+  vaultCertBackend: intermediate-ca
+  vaultCertRole: kubernetes-vault
+resources:
+  limits:
+    cpu: 100m
+    memory: 128Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
