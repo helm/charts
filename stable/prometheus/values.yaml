@@ -307,6 +307,11 @@ server:
     hosts: []
     #   - prometheus.domain.com
 
+    ## Prometheus server Ingress paths
+    ## Must be used for Prometheus federation
+    ##
+    paths: []
+
     ## Prometheus server Ingress TLS configuration
     ## Secrets must be manually created in the namespace
     ##
