@@ -20,8 +20,8 @@ using Kubernetes StatefulSets and Init Containers.
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
-$ helm install --name my-release incubator/mongodb-replicaset
+$ helm repo add stable https://kubernetes-charts.storage.googleapis.com/
+$ helm install --name my-release stable/mongodb-replicaset
 ```
 
 ## Configuration
