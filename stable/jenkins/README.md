@@ -33,6 +33,7 @@ The following tables lists the configurable parameters of the Jenkins chart and 
 | `Master.Image`                    | Master image name                   | `jenkinsci/jenkins`                                                          |
 | `Master.ImageTag`                 | Master image tag                    | `2.46.1`                                                                     |
 | `Master.ImagePullPolicy`          | Master image pull policy            | `Always`                                                                     |
+| `Master.ImagePullSecret`          | Master image pull secret            | Not set                                                                      |
 | `Master.Component`                | k8s selector key                    | `jenkins-master`                                                             |
 | `Master.Cpu`                      | Master requested cpu                | `200m`                                                                       |
 | `Master.Memory`                   | Master requested memory             | `256Mi`                                                                      |
@@ -56,6 +57,7 @@ The following tables lists the configurable parameters of the Jenkins chart and 
 | ----------------------- | ----------------------------------------------- | ---------------------- |
 | `Agent.Enabled`         | Enable Kubernetes plugin jnlp-agent podTemplate | `true`                 |
 | `Agent.Image`           | Agent image name                                | `jenkinsci/jnlp-slave` |
+| `Agent.ImagePullSecret` | Agent image pull secret                         | Not set                |
 | `Agent.ImageTag`        | Agent image tag                                 | `2.62`                 |
 | `Agent.Privileged`      | Agent privileged container                      | `false`                |
 | `Agent.Cpu`             | Agent requested cpu                             | `200m`                 |

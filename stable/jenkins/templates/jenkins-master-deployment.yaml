@@ -126,3 +126,7 @@ spec:
       {{- else }}
         emptyDir: {}
       {{- end -}}
+{{- if .Values.Master.ImagePullSecret }}
+      imagePullSecrets:
+      - name: {{ .Values.Master.ImagePullSecret }}
+{{- end -}}
