@@ -1,0 +1,43 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+spec:
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "fullname" . }}
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        command:
+        - vault
+        - server
+        - -config
+        - /vault/config/config.json
+        ports:
+        - containerPort: {{ .Values.service.port }}
+        livenessProbe:
+          tcpSocket:
+            port: {{ .Values.service.port }}
+        readinessProbe:
+          tcpSocket:
+            port: {{ .Values.service.port }}
+        securityContext:
+          capabilities:
+            add:
+            - IPC_LOCK
+        volumeMounts:
+        - name: vault-config
+          mountPath: /vault/config/
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+      volumes:
+        - name: vault-config
+          configMap:
+            name: "{{ template "fullname" . }}-config"
