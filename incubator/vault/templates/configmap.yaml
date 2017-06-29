@@ -9,4 +9,4 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
 data:
   config.json: |
-    {{ .Values.vault.config | toJson }}
+    {{ .Values.vault | toJson }}
