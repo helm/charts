@@ -22,7 +22,7 @@ spec:
 {{ toYaml .Values.resources | indent 10 }}
         ports:
         - name: api
-          containerPort: {{ .Values.config.http.bind_address -}}
+          containerPort: {{ .Values.config.http.bind_address }}
         {{- if .Values.config.admin.enabled -}}
         - name: admin
           containerPort: {{ .Values.config.admin.bind_address }}

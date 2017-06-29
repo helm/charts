@@ -18,10 +18,30 @@ resources _cluster-wide_.
 ## Prerequisites
 
 - Kubernetes 1.4+ with Beta APIs enabled
+- Kubernetes 1.6+ if you want to enable RBAC
 - You are deploying the chart to a cluster with a cloud provider capable of provisioning an
 external load balancer (e.g. AWS or GKE)
 - You control DNS for the domain(s) you intend to route through Traefik
 - __Suggested:__ PV provisioner support in the underlying infrastructure
+
+## A Quick Note on Versioning
+
+Up until version 1.2.1-b of this chart, the semantic version of the chart was
+kept in-sync with the semantic version of the (default) version of Traefik
+installed by the chart. A dash and a letter were appended to Traefik's
+semantic version to indicate incrementally improved versions of the chart
+itself. For example, chart version 1.2.1-a and 1.2.1-b _both_ provide Traefik
+1.2.1, but 1.2.1-b is a chart that is incrementally improved in some way from
+its immediate predecessor-- 1.2.1-a.
+
+This convention, in practice, suffered from a few problems, not the least of
+which was that it defied what was permitted by
+[semver 2.0.0](http://semver.org/spec/v2.0.0.html). This, in turn, lead to some
+difficulty in Helm understanding the versions of this chart.
+
+Beginning with version 1.3.0 of this chart, the version references _only_
+the revision of the chart itself. The `appVersion` field in `chart.yaml` now
+conveys information regarding the revision of Traefik that the chart provides.
 
 ## Installing the Chart
 
@@ -76,6 +96,7 @@ The following tables lists the configurable parameters of the Traefik chart and 
 | `memoryRequest`                 | Initial share of memory requested per Traefik pod                    | `20Mi`                                    |
 | `cpuLimit`                      | CPU limit per Traefik pod                                            | `200m`                                    |
 | `memoryLimit`                   | Memory limit per Traefik pod                                         | `30Mi`                                    |
+| `rbac.enabled`                  | Whether to enable RBAC with a specific cluster role and binding for Traefik | `false`                            |
 | `ssl.enabled`                   | Whether to enable HTTPS                                              | `false`                                   |
 | `ssl.enforced`                  | Whether to redirect HTTP requests to HTTPS                           | `false`                                   |
 | `ssl.defaultCert`               | Base64 encoded default certficate                                    | A self-signed certificate                 |

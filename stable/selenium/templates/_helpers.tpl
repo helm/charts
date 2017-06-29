@@ -36,7 +36,7 @@ Create a default fully qualified app name, for chromeDebug.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 */}}
 {{- define "chromeDebug.fullname" -}}
-{{- printf "%s-selenium-chromeDebug" .Release.Name | trunc 63 | trimSuffix "-" -}}
+{{- printf "%s-selenium-chrome-debug" .Release.Name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
 {{/*
@@ -52,6 +52,6 @@ Create a default fully qualified app name, for firefoxDebug.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 */}}
 {{- define "firefoxDebug.fullname" -}}
-{{- printf "%s-selenium-firefoxDebug" .Release.Name | trunc 63 | trimSuffix "-" -}}
+{{- printf "%s-selenium-firefox-debug" .Release.Name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 

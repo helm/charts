@@ -16,15 +16,20 @@ host. To configure ownCloud with the URL of your service:
   {{- else if contains "LoadBalancer" .Values.serviceType }}
 
   NOTE: It may take a few minutes for the LoadBalancer IP to be available.
-        Watch the status with: 'kubectl get svc -w {{ template "fullname" . }}'
+        Watch the status with: 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "fullname" . }}'
 
   export APP_HOST=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "fullname" . }} --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
+  export APP_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath="{.data.owncloud1-password}" | base64 --decode)
+  {{- if .Values.mariadb.mariadbRootPassword }}
+  export APP_DATABASE_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "mariadb.fullname" . }} -o jsonpath="{.data.mariadb-root-password}" | base64 --decode)
+  {{- end }}
   {{- end }}
 
 2. Complete your ownCloud deployment by running:
 
   helm upgrade {{ .Release.Name }} \
-    --set owncloudHost=$APP_HOST stable/owncloud
+    --set owncloudHost=$APP_HOST,owncloudPassword=$APP_PASSWORD{{ if .Values.mariadb.mariadbRootPassword }},mariadb.mariadbRootPassword=$APP_DATABASE_PASSWORD{{ end }} stable/owncloud
+
 {{- else -}}
 1. Get the ownCloud URL by running:
 

@@ -50,8 +50,8 @@ spec:
           readinessProbe:
             tcpSocket:
               port: smtp
-          volumeMounts:
           {{- if .Values.auth.enabled }}
+          volumeMounts:
             - name: authdir
               mountPath: /authdir
               readOnly: true

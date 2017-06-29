@@ -20,8 +20,8 @@ using Kubernetes StatefulSets and Init Containers.
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
-$ helm install --name my-release incubator/mongodb-replicaset
+$ helm repo add stable https://kubernetes-charts.storage.googleapis.com/
+$ helm install --name my-release stable/mongodb-replicaset
 ```
 
 ## Configuration
@@ -37,7 +37,7 @@ The following tables lists the configurable parameters of the mongodb chart and 
 | `installImage.tag`              | Image tag for the init container that establishes the replica set         | 0.3                                                 |
 | `installImage.pullPolicy`       | Image pull policy for the init container that establishes the replica set | IfNotPresent                                        |
 | `image.name`                    | MongoDB image name                                                        | mongo                                               |
-| `image.tag`                     | MongoDB image tag                                                         | 3.2                                                 |
+| `image.tag`                     | MongoDB image tag                                                         | 3.4                                                 |
 | `image.pullPolicy`              | MongoDB image pull policy                                                 | IfNotPresent                                        |
 | `podAnnotations`                | Annotations to be added to MongoDB pods                                   | {}                                                  |
 | `resources`                     | Pod resource requests and limits                                          | {}                                                  |
