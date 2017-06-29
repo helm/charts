@@ -7,6 +7,13 @@ cpuRequest: 100m
 memoryRequest: 20Mi
 cpuLimit: 100m
 memoryLimit: 30Mi
+nodeSelector: {}
+  #key: value
+tolerations: []
+  #- key: "key"
+  #operator: "Equal|Exists"
+  #value: "value"
+  #effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
 ssl:
   enabled: false
   enforced: false
