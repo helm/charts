@@ -23,5 +23,5 @@ Rocket.Chat will be available at the URL:
 
 To expose Rocket.Chat via an Ingress you need to set host and enable ingress.
 
-helm install --set host=chat.yourdomain.com --set ingress.enabled=true
+helm install --set host=chat.yourdomain.com --set ingress.enabled=true stable/rocketchat
 {{- end -}}
