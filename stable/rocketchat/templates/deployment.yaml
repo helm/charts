@@ -1,10 +1,10 @@
-{{- if default "" .Values.host }}
+
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: {{ template "fullname" . }}
   labels:
-    app: {{ template "name" . }}
+    app: {{ template "fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -13,7 +13,8 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "name" . }}
+        app: {{ template "fullname" . }}
+        release: "{{ .Release.Name }}"
     spec:
       containers:
       - name: {{ template "fullname" . }}
@@ -30,7 +31,11 @@ spec:
           value: mongodb://{{ template "mongodb.fullname" . }}:27017/rocketchat
         {{ end }}
         - name: ROOT_URL
+        {{ if .Values.host }}
           value: https://{{ .Values.host }}
+        {{ else }}
+          value: "http://localhost:3000"
+        {{ end }}
         - name: MAIL_URL
           valueFrom:
             secretKeyRef:
@@ -62,4 +67,4 @@ spec:
       {{- else }}
         emptyDir: {}
       {{- end }}
-{{- end -}}
+
