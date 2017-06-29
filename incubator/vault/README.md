@@ -25,7 +25,7 @@ To install the chart with the release name `my-release`:
 
 ```console
 $ helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
-$ helm install incubator/vault --set vault.storage.consul.address="myconsul-svc-name"
+$ helm install incubator/vault --set vault.storage.consul.address="myconsul-svc-name:8500"
 ```
 
 An alternative example using the Amazon S3 backend can be specified using:
