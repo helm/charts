@@ -28,6 +28,22 @@ $ helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incuba
 $ helm install incubator/vault --set vault.storage.consul.address="myconsul-svc-name"
 ```
 
+An alternative example using the Amazon S3 backend can be specified using:
+
+```
+vault:
+  listener:
+    tcp:
+      address: "0.0.0.0:8200"
+      tls_disable: 1
+  storage:
+    s3:
+      access_key: "AWS-ACCESS-KEY"
+      secret_key: "AWS-SECRET-KEY"
+      bucket: "AWS-BUCKET"
+      region: "eu-central-1"
+```
+
 ## Configuration
 
 The following tables lists the configurable parameters of the vault chart and their default values.
