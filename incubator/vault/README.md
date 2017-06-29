@@ -21,7 +21,7 @@ file.
 
 ## Installing the Chart
 
-To install the chart with the release name `my-release`:
+To install the chart, use the following:
 
 > Please see the values.yaml file for an example using the consul backend.
 
@@ -58,3 +58,13 @@ The following tables lists the configurable parameters of the vault chart and th
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
+## Using Vault
+
+Once the Vault pod is ready, it can be accessed using a `kubectl
+port-forward`:
+
+```console
+$ kubectl port-forward vault-pod 8200
+$ export VAULT_ADDR=http://127.0.0.1:8200
+$ vault status
+```
