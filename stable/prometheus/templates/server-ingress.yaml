@@ -2,6 +2,7 @@
 {{- $releaseName := .Release.Name -}}
 {{- $serviceName := include "prometheus.server.fullname" . }}
 {{- $servicePort := .Values.server.service.servicePort -}}
+{{- $paths := .Values.server.ingress.paths -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
@@ -22,6 +23,9 @@ spec:
     - host: {{ . }}
       http:
         paths:
+{{ if $paths }}
+{{ toYaml $paths |indent 10 }}
+{{ end }}
           - backend:
               serviceName: {{ $serviceName }}
               servicePort: {{ $servicePort }}
