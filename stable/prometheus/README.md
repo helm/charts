@@ -210,5 +210,5 @@ server:
     ## Prometheus server Ingress paths
     ## Must be used for Prometheus federation
     ##
-    paths: [{"backend": {"serviceName": "prometheusfederation","servicePort": 9090},"path": '/federate'}]
+    paths: [{"backend": {"serviceName": "prometheusfederation", "servicePort": 9090}, "path": '/federate'}]
 ```
