@@ -37,7 +37,15 @@ data:
               <idleMinutes>0</idleMinutes>
               <label>{{.Release.Name}}-{{.Values.Agent.Component}}</label>
               <nodeSelector></nodeSelector>
-              <volumes/>
+              <volumes>
+{{- range $index, $volume := .Values.Agent.volumes }}
+                <org.csanchez.jenkins.plugins.kubernetes.volumes.{{ $volume.type }}Volume>
+{{- range $key, $value := $volume }}{{- if not (eq $key "type") }}
+                  <{{ $key }}>{{ $value }}</{{ $key }}>
+{{- end }}{{- end }}
+                </org.csanchez.jenkins.plugins.kubernetes.volumes.{{ $volume.type }}Volume>
+{{- end }}
+              </volumes>
               <containers>
                 <org.csanchez.jenkins.plugins.kubernetes.ContainerTemplate>
                   <name>jnlp</name>
@@ -47,7 +55,7 @@ data:
 {{- else }}
                   <privileged>false</privileged>
 {{- end }}
-                  <alwaysPullImage>false</alwaysPullImage>
+                  <alwaysPullImage>{{ .Values.Agent.AlwaysPullImage }}</alwaysPullImage>
                   <workingDir>/home/jenkins</workingDir>
                   <command></command>
                   <args>${computer.jnlpmac} ${computer.name}</args>
@@ -70,7 +78,7 @@ data:
           <skipTlsVerify>false</skipTlsVerify>
           <namespace>{{ .Release.Namespace }}</namespace>
           <jenkinsUrl>http://{{ template "fullname" . }}:{{.Values.Master.ServicePort}}</jenkinsUrl>
-          <jenkinsTunnel>{{ template "fullname" . }}:50000</jenkinsTunnel>
+          <jenkinsTunnel>{{ template "fullname" . }}-agent:50000</jenkinsTunnel>
           <containerCap>10</containerCap>
           <retentionTimeout>5</retentionTimeout>
           <connectTimeout>0</connectTimeout>
