@@ -13,18 +13,19 @@ This chart will do the following:
 * Implement a Vault deployment
 
 Please note that a backend service for Vault (for example, Consul) must
-be deployed beforehand and configured with the `vault.config` option.
+be deployed beforehand and configured with the `vault` option. YAML provided
+under this option will be converted to JSON for the final vault `config.json`
+file.
 
 ## Installing the Chart
 
 To install the chart with the release name `my-release`:
 
 > Please see the values.yaml file for an example using the consul backend.
-> YAML provided in vault.config will be converted to JSON.
 
 ```console
 $ helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
-$ helm install --name my-release -f values.yaml incubator/vault
+$ helm install incubator/vault --set vault.storage.consul.address="myconsul-svc-name"
 ```
 
 ## Configuration
@@ -36,7 +37,7 @@ The following tables lists the configurable parameters of the vault chart and th
 | `image.pullPolicy`      | Container pull policy               | `IfNotPresent`                                      |
 | `image.repository`      | Container image to use              | `vault`                                             |
 | `image.tag`             | Container image tag to deploy       | `0.7.3`                                             |
-| `vault.config`          | Vault configuration                 | Please see values.yaml                              |
+| `vault`                 | Vault configuration                 | Uses consul backend                                 |
 | `replicaCount`          | k8s replicas                        | `1`                                                 |
 | `resources.limits.cpu`  | Container requested CPU             | `nil`                                               |
 | `resources.limits.memory` | Container requested memory        | `128Mi`                                             |

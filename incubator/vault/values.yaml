@@ -23,17 +23,16 @@ ingress:
     # - secretName: chart-example-tls
     #   hosts:
     #     - chart-example.local
+# A YAML representation of a final vault config.json file.
 vault:
-  config:
-    # A YAML representation of a final vault config.json file.
-    #listener:
-    #  tcp:
-    #    address: '0.0.0.0:8200'
-    #    tls_disable: 1
-    #storage:
-    #  consul:
-    #    address: ""
-    #    path: ""
+  listener:
+    tcp:
+      address: '0.0.0.0:8200'
+      tls_disable: 1
+  storage:
+    consul:
+      address: ""
+      path: "vault/"
 resources:
   limits:
 #    cpu: 100m
