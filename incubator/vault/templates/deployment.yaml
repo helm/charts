@@ -29,6 +29,7 @@ spec:
           tcpSocket:
             port: {{ .Values.service.port }}
         securityContext:
+          readOnlyRootFilesystem: true
           capabilities:
             add:
             - IPC_LOCK
