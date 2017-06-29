@@ -29,6 +29,11 @@ spec:
             httpGet:
               path: /
               port: {{ .Values.service.port }}
+          env:
+          - name: VAULT_URL_DEFAULT
+            value: {{ .Values.vaultUI.vault.urlDefault | quote }}
+          - name: VAULT_AUTH_DEFAULT
+            value: {{ .Values.vaultUI.vault.authDefault }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- if .Values.nodeSelector }}
