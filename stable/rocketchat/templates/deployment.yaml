@@ -21,6 +21,8 @@ spec:
         image: "{{ .Values.image }}"
         imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
         env:
+        - name: DEPLOY_PLATFORM
+          value: helm-chart
         - name: MONGO_URL
         {{ if .Values.mongodb.mongodbUsername }}
           valueFrom:
