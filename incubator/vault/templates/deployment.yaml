@@ -36,9 +36,13 @@ spec:
         volumeMounts:
         - name: vault-config
           mountPath: /vault/config/
+        - name: vault-root
+          mountPath: /root/
         resources:
 {{ toYaml .Values.resources | indent 10 }}
       volumes:
         - name: vault-config
           configMap:
             name: "{{ template "fullname" . }}-config"
+        - name: vault-root
+          emptyDir: {}
