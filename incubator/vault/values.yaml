@@ -31,9 +31,9 @@ vault:
       address: '0.0.0.0:8200'
       tls_disable: 1
   storage:
-    consul:
-      address: ""
-      path: "vault/"
+    #consul:
+    #  address: ""
+    #  path: ""
 resources:
   limits:
 #    cpu: 100m
