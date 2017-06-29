@@ -18,7 +18,7 @@ spec:
   - port: {{ .Values.nxService.externalPortHttps }}
     targetPort: {{ .Values.nxService.internalPortHttps }}
     protocol: TCP
-    name: {{ .Values.nxService.name }}https
+    name: {{ .Release.Name }}https
   selector:
     app: {{ template "name" . }}
     component: "{{ .Values.nxName }}"

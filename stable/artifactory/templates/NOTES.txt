@@ -5,15 +5,15 @@ Congratulations. You have just deployed JFrog Artifactory Pro!
    {{- if (not (empty .Values.nxService)) }}
 
    {{- if contains "NodePort" .Values.nxService.type }}
-   export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ .Values.nxService.name }})
+   export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "nginx.name" . }})
    export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
    echo http://$NODE_IP:$NODE_PORT/
 
    {{- else if contains "LoadBalancer"  .Values.nxService.type }}
 
    NOTE: It may take a few minutes for the LoadBalancer IP to be available.
-         You can watch the status of the service by running 'kubectl get svc -w {{ .Values.nxService.name }}'
-   export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ .Values.nxService.name }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+         You can watch the status of the service by running 'kubectl get svc -w {{ template "nginx.name" . }}'
+   export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "nginx.name" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
    echo http://$SERVICE_IP/
 
    {{- else if contains "ClusterIP" .Values.nxService.type }}
@@ -26,19 +26,19 @@ Congratulations. You have just deployed JFrog Artifactory Pro!
    {{- else }}
 
    {{- if contains "NodePort" .Values.artService.type }}
-   export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ .Values.artService.name }})
+   export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "artifactory.name" . }})
    export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
    echo http://$NODE_IP:$NODE_PORT/
 
    {{- else if contains "LoadBalancer"  .Values.artService.type }}
     NOTE: It may take a few minutes for the LoadBalancer IP to be available.
-            You can watch the status of the service by running 'kubectl get svc -w {{ .Values.artService.name }}'
+            You can watch the status of the service by running 'kubectl get svc -w {{ template "artifactory.name" . }}'
 
-   export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ .Values.artService.name }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+   export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "artifactory.name" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
    echo http://$SERVICE_IP/
 
    {{- else if contains "ClusterIP" .Values.artService.type }}
-   export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ .Values.artService.name }}" -o jsonpath="{.items[0].metadata.name}")
+   export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "artifactory.name" . }}" -o jsonpath="{.items[0].metadata.name}")
    echo http://127.0.0.1:{{ .Values.artService.externalPort }}
    kubectl port-forward --namespace {{ .Release.Namespace }} $POD_NAME {{ .Values.artService.externalPort }}:{{ .Values.artService.internalPort }}
 

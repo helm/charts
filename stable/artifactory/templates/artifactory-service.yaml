@@ -14,7 +14,7 @@ spec:
   - port: {{ .Values.artService.externalPort }}
     targetPort: {{ .Values.artService.internalPort }}
     protocol: TCP
-    name: {{ .Values.artService.name }}
+    name: {{ .Release.Name }}
   selector:
     app: {{ template "name" . }}
     component: "{{ .Values.artName }}"

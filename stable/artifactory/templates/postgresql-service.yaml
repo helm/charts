@@ -14,7 +14,7 @@ spec:
   - port: {{ .Values.dbService.externalPort }}
     targetPort: {{ .Values.dbService.internalPort }}
     protocol: TCP
-    name: {{ .Values.dbService.name }}
+    name: {{ .Release.Name }}
   selector:
     app: {{ template "name" . }}
     component: "{{ .Values.dbName }}"
