@@ -72,7 +72,7 @@ spec:
             - name: JAVA_OPTS
               value: "{{ default "" .Values.Master.JavaOpts}}"
             - name: JENKINS_OPTS
-              value: "{{ default "" .Values.Master.JenkinsOpts}}"
+              value: "{{ if .Values.Master.JenkinsUriPrefix }}--prefix={{ .Values.Master.JenkinsUriPrefix }} {{ end }}{{ default "" .Values.Master.JenkinsOpts}}"
             {{- if .Values.Master.UseSecurity }}
             - name: ADMIN_PASSWORD
               valueFrom:
