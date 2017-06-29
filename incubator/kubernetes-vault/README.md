@@ -23,18 +23,22 @@ $ helm install --name my-release incubator/kubernetes-vault --set vault.address=
 
 The following tables lists the configurable parameters of the consul chart and their default values.
 
-| Parameter               | Description                           | Default                                                    |
-| ----------------------- | ----------------------------------    | ---------------------------------------------------------- |
-| `image`                 | Container image name                  | `boostport/kubernetes-vault`                               |
-| `imageTag`              | Container image tag                   | `v0.7.5`                                                   |
-| `imagePullPolicy`       | Container pull policy                 | `Always`                                                   |
-| `replicaCount`          | k8s pod replicas                      | `3`                                                        |
-| `app`                   | k8s selector key                      | `kubernetes-vault`                                         |
-| `service.dummyPort`     | Dummy port to register pod with API. Not actually used. | `80`                                     |
-| `vault.address`         | URL of Vault server                   | `http://vault:8200`                                        |
-| `vault.token`           | Token generated from AppRole backend  | `change-this-value`                                        |
-| `vault.vaultCertBackend` | Name of CA backend used in Vault     | `intermediate-ca`                                          |
-| `vault.vaultCertRole`   | Name of cert role used in Vault       | `kubernetes-vault`                                         |
+| Parameter                   | Description                                             | Default                                                    |
+| --------------------------  | ----------------------------------                      | ---------------------------------------------------------- |
+| `image`                     | Container image name                                    | `boostport/kubernetes-vault`                               |
+| `imageTag`                  | Container image tag                                     | `v0.7.5`                                                   |
+| `imagePullPolicy`           | Container pull policy                                   | `Always`                                                   |
+| `replicaCount`              | k8s pod replicas                                        | `3`                                                        |
+| `app`                       | k8s selector key                                        | `kubernetes-vault`                                         |
+| `service.dummyPort`         | Dummy port to register pod with API. Not actually used. | `80`                                                       |
+| `vault.address`             | URL of Vault server                                     | `http://vault:8200`                                        |
+| `vault.token`               | Token generated from AppRole backend                    | `change-this-value`                                        |
+| `vault.vaultCertBackend`    | Name of CA backend used in Vault                        | `intermediate-ca`                                          |
+| `vault.vaultCertRole`       | Name of cert role used in Vault                         | `kubernetes-vault`                                         |
+| `resources.limits.cpu`      | CPU limit                                               | `100m`                                                     |
+| `resources.limits.memory`   | Memory limit                                            | `128Mi`                                                    |
+| `resources.requests.cpu`    | CPU resource request                                    | `100m`                                                     |
+| `resources.requests.memory` | Memory resource request                                 | `128Mi`                                                    |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 

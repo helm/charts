@@ -6,11 +6,12 @@ replicaCount: 3
 image: boostport/kubernetes-vault
 imageTag: v0.4.7
 imagePullPolicy: always
+app: kubernetes-vault
 service:
   dummyPort: 80
 vault:
   address: http://vault:8200
-  token: your-vault-token
+  token: change-this-value
   vaultCertBackend: intermediate-ca
   vaultCertRole: kubernetes-vault
 resources:

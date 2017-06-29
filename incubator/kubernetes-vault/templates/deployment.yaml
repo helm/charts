@@ -8,7 +8,7 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "fullname" . }}
+        app: {{ .Values.app }}
     spec:
       containers:
       - name: kubernetes-vault
