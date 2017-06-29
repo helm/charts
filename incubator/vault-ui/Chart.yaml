@@ -1,4 +1,12 @@
 apiVersion: v1
-description: A Helm chart for Kubernetes
+description: A Helm chart for Vault-UI
 name: vault-ui
 version: 0.1.0
+appVersion: 2.2.0
+home: https://github.com/djenriquez/vault-ui
+logo: https://raw.githubusercontent.com/djenriquez/vault-ui/master/app/assets/vault-ui-logo.svg
+sources:
+  - https://github.com/djenriquez/vault-ui
+maintainers:
+  - name: Jonathan Davies
+    email: jpds@protonmail.com
