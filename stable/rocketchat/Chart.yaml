@@ -17,4 +17,6 @@ sources:
 maintainers:
 - name: RocketChat
   email: buildmaster@rocket.chat
+- name: geekgonecrazy
+- name: pierreozoux
 engine: gotpl
