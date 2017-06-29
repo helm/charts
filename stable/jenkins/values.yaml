@@ -16,7 +16,8 @@ Master:
   Memory: "256Mi"
 # Set min/max heap here if needed with:
 # JavaOpts: "-Xms512m -Xmx512m"
-# JenkinsOpts: "--prefix=/jenkins"
+# JenkinsOpts: ""
+# JenkinsUriPrefix: "/jenkins"
   ServicePort: 8080
 # For minikube, set this to NodePort, elsewhere use LoadBalancer
 # Use ClusterIP if your setup includes ingress controller
