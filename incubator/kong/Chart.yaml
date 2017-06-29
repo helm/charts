@@ -1,0 +1,15 @@
+apiVersion: v1
+name: kong
+# Lock step with the Kong version, appended with -a, -b, etc. to denote versions of the chart
+version: 0.10.0-a
+description: Open-source Microservice & API Management layer built on top of NGINX.
+keywords:
+- kong
+- api
+- microservice
+home: https://getkong.org
+sources:
+- https://github.com/Mashape/kong/
+- https://github.com/kubernetes/charts/tree/master/incubator/kong
+engine: gotpl
+icon: https://getkong.org/assets/images/branding.svg

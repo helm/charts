@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "fullname" . }}-admin
+  labels:
+    app: {{ template "fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+  {{- range $key, $value := .Values.admin.service.labels }}
+    {{ $key }}: {{ $value | quote }}
+  {{- end }}
+  annotations:
+  {{- range $key, $value := .Values.admin.service.annotations }}
+    {{ $key }}: {{ $value | quote }}
+  {{- end }}
+spec:
+  type: {{ .Values.admin.service.type }}
+  {{- if .Values.admin.service.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+  {{- range $value := .Values.admin.service.loadBalancerSourceRanges }}
+    - {{ $value }}
+  {{- end }}
+  {{- end }}
+  ports:
+  - port: {{ .Values.admin.service.port }}
+    targetPort: admin
+  selector:
+    app: {{ template "fullname" . }}

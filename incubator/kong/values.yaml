@@ -1,0 +1,72 @@
+# Default values for Kong
+
+###################
+# resource limits #
+###################
+cpuRequest: 200m
+memoryRequest: 100Mi
+cpuLimit: 200m
+memoryLimit: 150Mi
+
+###########
+# general #
+###########
+image:
+  repository: kong
+  tag: 0.10.0
+replicas: 1
+logLevel: warn
+
+#############
+# datastore #
+#############
+# postgres:
+#   host: 127.0.0.1
+#   port: 5432
+#   user: kong
+#   password: kong
+#   database: kong
+#   ssl: off
+#   sslVerify: off
+# cassandra:
+#   contactPoints: 127.0.0.1
+#   port: 9042
+#   keyspace: kong
+#   consistency: ONE
+#   timeout: 5000
+#   ssl: off
+#   sslVerify: off
+#   username: kong
+#   password: kong
+#   replStrategy: SimpleStrategy
+#   replFactor: 1
+#   dataCenters: dc1:2,dc2:3
+
+##################
+# proxy endpoint #
+##################
+proxy:
+  service:
+    type: LoadBalancer
+    loadBalancerSourceRanges:
+      - 0.0.0.0/0
+    port: 8000
+    sslPort: 8443
+    # labels:
+    #   key: value
+    # annotations:
+    #   key: value
+
+##################
+# admin endpoint #
+##################
+admin:
+  service:
+    type: LoadBalancer
+    loadBalancerSourceRanges:
+      - 0.0.0.0/0
+    port: 8001
+    # labels:
+    #   key: value
+    # annotations:
+    #   key: value

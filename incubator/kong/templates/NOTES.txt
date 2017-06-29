@@ -1,0 +1,9 @@
+{{- if and (not .Values.postgres) (not .Values.cassandra) }}
+###############################################################
+####   ERROR: You did not specify a data store for Kong.   ####
+###############################################################
+
+This deployment will be incomplete until you link it to a datastore.
+Postgres and Cassandra are supported by Kong.
+Please see the README.md for more details.
+{{- end -}}
