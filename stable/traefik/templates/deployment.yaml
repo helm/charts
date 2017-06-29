@@ -20,6 +20,11 @@ spec:
         release: "{{ .Release.Name }}"
         heritage: "{{ .Release.Service }}"
     spec:
+      {{- if .Values.rbac.enabled }}
+      serviceAccountName: {{ template "fullname" . }}
+      {{- else }}
+      serviceAccountName: default
+      {{- end }}
       terminationGracePeriodSeconds: 60
       containers:
       - image: {{ .Values.image }}:{{ .Values.imageTag }}

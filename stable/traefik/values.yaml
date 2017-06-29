@@ -47,3 +47,5 @@ gzip:
 #  namespaces:
 #  - default
 #  labelSelector:
+rbac:
+  enabled: false
