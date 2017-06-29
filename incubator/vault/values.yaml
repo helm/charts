@@ -24,6 +24,7 @@ ingress:
     #   hosts:
     #     - chart-example.local
 # A YAML representation of a final vault config.json file.
+# See https://www.vaultproject.io/docs/configuration/ for more information.
 vault:
   listener:
     tcp:

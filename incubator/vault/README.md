@@ -17,6 +17,8 @@ be deployed beforehand and configured with the `vault` option. YAML provided
 under this option will be converted to JSON for the final vault `config.json`
 file.
 
+> See https://www.vaultproject.io/docs/configuration/ for more information.
+
 ## Installing the Chart
 
 To install the chart with the release name `my-release`:
@@ -32,10 +34,6 @@ An alternative example using the Amazon S3 backend can be specified using:
 
 ```
 vault:
-  listener:
-    tcp:
-      address: "0.0.0.0:8200"
-      tls_disable: 1
   storage:
     s3:
       access_key: "AWS-ACCESS-KEY"
