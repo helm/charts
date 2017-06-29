@@ -54,12 +54,14 @@ The following tables lists the configurable parameters of the Jenkins chart and 
 
 | Parameter               | Description                                     | Default                |
 | ----------------------- | ----------------------------------------------- | ---------------------- |
+| `Agent.AlwaysPullImage` | Always pull agent container image before build  | `false`                |
 | `Agent.Enabled`         | Enable Kubernetes plugin jnlp-agent podTemplate | `true`                 |
 | `Agent.Image`           | Agent image name                                | `jenkinsci/jnlp-slave` |
 | `Agent.ImageTag`        | Agent image tag                                 | `2.62`                 |
 | `Agent.Privileged`      | Agent privileged container                      | `false`                |
 | `Agent.Cpu`             | Agent requested cpu                             | `200m`                 |
 | `Agent.Memory`          | Agent requested memory                          | `256Mi`                |
+| `Agent.volumes`         | Additional volumes                              | `nil`                  |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
@@ -70,6 +72,20 @@ $ helm install --name my-release -f values.yaml stable/jenkins
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
+## Mounting volumes into your Agent pods
+
+Your Jenkins Agents will run as pods, and it's possible to inject volumes where needed:
+
+```yaml
+Agent:
+  volumes:
+  - type: Secret
+    secretName: jenkins-mysecrets
+    mountPath: /var/run/secrets/jenkins-mysecrets
+```
+
+The suported volume types are: `ConfigMap`, `EmptyDir`, `HostPath`, `Nfs`, `Pod`, `Secret`. Each type supports a different set of configurable attributes, defined by [the corresponding Java class](https://github.com/jenkinsci/kubernetes-plugin/tree/master/src/main/java/org/csanchez/jenkins/plugins/kubernetes/volumes).
 
 ## NetworkPolicy
 
