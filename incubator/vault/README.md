@@ -21,13 +21,11 @@ file.
 
 ## Installing the Chart
 
-To install the chart, use the following:
-
-> Please see the values.yaml file for an example using the consul backend.
+To install the chart, use the following, this backs vault with a Consul cluster:
 
 ```console
 $ helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
-$ helm install incubator/vault --set vault.storage.consul.address="myconsul-svc-name:8500"
+$ helm install incubator/vault --set vault.storage.consul.address="myconsul-svc-name:8500",vault.storage.consul.path="vault"
 ```
 
 An alternative example using the Amazon S3 backend can be specified using:
