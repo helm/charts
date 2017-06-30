@@ -6,7 +6,7 @@
 Name: cassandra
 Component: "cassandra"
 replicaCount: 3
-Image: "gcr.io/google-samples/cassandra"
+Image: "erikschlegel/cassandra"
 ImageTag: "v12"
 ImagePullPolicy: "Always"
 
