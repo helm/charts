@@ -1,0 +1,47 @@
+{{- if .Values.scalyr.apiKey }}
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    app: {{ template "name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+spec:
+  template:
+    metadata:
+      labels:
+        app: {{ template "fullname" . }}
+        release: "{{ .Release.Name }}"
+      name: {{ template "fullname" . }}
+    spec:
+      tolerations:
+      - operator: "Exists"
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        resources:
+{{ toYaml .Values.resources | indent 12 }}
+        ports:
+        env:
+        - name: API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "fullname" . }}
+              key: api-key
+        volumeMounts:
+        - name: dockersocket
+          mountPath: /var/scalyr/docker.sock
+          readOnly: true
+        - name: configuration
+          mountPath: /etc/scalyr-agent-2
+      volumes:
+      - name: dockersocket
+        hostPath:
+          path: /var/run/docker.sock
+      - name: configuration
+        configMap:
+          name: {{ template "fullname" . }}
+{{ end }}

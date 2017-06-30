@@ -1,0 +1,23 @@
+{{- if .Values.scalyr.apiKey -}}
+Scalyr agents are spinning up on each node in your cluster. After a few
+minutes, you should see your agents starting in your event stream:
+
+    https://www.scalyr.com/logStart
+
+No further action should be required.
+
+{{- else -}}
+##############################################################################
+####               ERROR: You did not set a scalyr.apiKey.                ####
+##############################################################################
+
+This deployment will be incomplete until you get your API key from Scalyr. 
+Once registered you can request an API key at:
+
+    https://www.scalyr.com/
+
+Then run:
+
+    helm upgrade {{ .Release.Name }} \
+        --set scalyr.apiKey=YOUR-KEY-HERE stable/scalyr
+{{- end }}

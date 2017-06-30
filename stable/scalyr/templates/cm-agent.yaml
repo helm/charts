@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    app: {{ template "name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+data:
+  agent.json: |-
+    {
+      implicit_metric_monitor: false,
+      implicit_agent_process_metrics_monitor: false,
+      import_vars: [ "API_KEY" ],
+      api_key: "$API_KEY",
+      monitors: [{
+        module: "scalyr_agent.builtin_monitors.docker_monitor",
+        report_container_metrics: {{ .Values.scalyr.config.reportContainerMetrics }}
+      }]
+    }
