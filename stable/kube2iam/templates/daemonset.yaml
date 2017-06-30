@@ -20,6 +20,8 @@ spec:
     spec:
 {{- if .Values.rbac.enabled }}
       serviceAccountName: {{ template "fullname" . }}
+{{- else }}
+      serviceAccountName: default
 {{- end }}
       containers:
         - name: kube2iam
