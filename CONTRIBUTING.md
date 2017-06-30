@@ -49,6 +49,9 @@ This repository is used by Chart developers for maintaining the official charts 
 * Provide a secure default configuration
 * Do not leverage alpha features of Kubernetes
 * Includes a [NOTES.txt](https://github.com/kubernetes/helm/blob/master/docs/charts.md#chart-license-readme-and-notes) explaining how to use the application after install
+* Follows [best practices](https://github.com/kubernetes/helm/tree/master/docs/chart_best_practices)
+  (especially for [labels](https://github.com/kubernetes/helm/blob/master/docs/chart_best_practices/labels.md)
+  and [values](https://github.com/kubernetes/helm/blob/master/docs/chart_best_practices/values.md))
 
 #### Documentation requirements
 
@@ -71,6 +74,7 @@ Once the Chart has been merged, the release job will automatically run in the CI
 Whether you are a user or contributor, official support channels include:
 
 - GitHub issues: https://github.com/kubenetes/charts/issues/new
-- Slack: #Helm room in the [Kubernetes Slack](http://slack.kubernetes.io/)
+- Slack: Helm Users - #Helm-users room in the [Kubernetes Slack](http://slack.kubernetes.io/)
+- Slack: Helm Developers - #Helm-dev room in the [Kubernetes Slack](http://slack.kubernetes.io/)
 
 Before opening a new issue or submitting a new pull request, it's helpful to search the project - it's likely that another user has already reported the issue you're facing, or it's a known issue that we're already aware of.
