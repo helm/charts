@@ -46,6 +46,8 @@ The following tables lists the configurable parameters of the Spark chart and th
 | `Master.ContainerPort`  | Container listening port           | `7077`                                                     |
 | `Master.DaemonMemory`   | Master JVM Xms and Xmx option      | `1g`                                                       |
 | `Master.EnableHA`       |Enable HA and a zookeeper cluster   | `true`                                                     |
+| `Master.SparkSubmitCommand` |Specify initial command to run on master node(ie spark-submit)   | `disabled` |
+| `Master.ConfigMapName` |Config Map reference for spark master environment   | `disabled` |
 
 ### Spark WebUi
 
