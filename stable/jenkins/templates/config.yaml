@@ -64,7 +64,12 @@ data:
                   <resourceRequestMemory>{{.Values.Agent.Memory}}</resourceRequestMemory>
                   <resourceLimitCpu>{{.Values.Agent.Cpu}}</resourceLimitCpu>
                   <resourceLimitMemory>{{.Values.Agent.Memory}}</resourceLimitMemory>
-                  <envVars/>
+                  <envVars>
+                    <org.csanchez.jenkins.plugins.kubernetes.ContainerEnvVar>
+                      <key>JENKINS_URL</key>
+                      <value>http://{{ template "fullname" . }}:{{.Values.Master.ServicePort}}{{ default "" .Values.Master.JenkinsUriPrefix }}</value>
+                    </org.csanchez.jenkins.plugins.kubernetes.ContainerEnvVar>
+                  </envVars>
                 </org.csanchez.jenkins.plugins.kubernetes.ContainerTemplate>
               </containers>
               <envVars/>
