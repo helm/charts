@@ -23,6 +23,10 @@ spec:
         env:
         - name: DEPLOY_PLATFORM
           value: helm-chart
+        - name: INSTANCE_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
         - name: MONGO_URL
         {{ if .Values.mongodb.mongodbUsername }}
           valueFrom:
