@@ -35,11 +35,9 @@ spec:
         {{ else }}
           value: mongodb://{{ template "mongodb.fullname" . }}:27017/rocketchat
         {{ end }}
-        - name: ROOT_URL
         {{ if .Values.host }}
+        - name: ROOT_URL
           value: https://{{ .Values.host }}
-        {{ else }}
-          value: "http://localhost:3000"
         {{ end }}
         - name: MAIL_URL
           valueFrom:
