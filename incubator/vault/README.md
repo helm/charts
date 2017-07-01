@@ -49,7 +49,7 @@ The following tables lists the configurable parameters of the vault chart and th
 | `image.pullPolicy`      | Container pull policy               | `IfNotPresent`                                      |
 | `image.repository`      | Container image to use              | `vault`                                             |
 | `image.tag`             | Container image tag to deploy       | `0.7.3`                                             |
-| `vault`                 | Vault configuration                 | Uses consul backend                                 |
+| `vault`                 | Vault configuration                 | No default backend                                  |
 | `replicaCount`          | k8s replicas                        | `1`                                                 |
 | `resources.limits.cpu`  | Container requested CPU             | `nil`                                               |
 | `resources.limits.memory` | Container requested memory        | `128Mi`                                             |
