@@ -8,5 +8,5 @@ icon: https://www.mattermost.org/wp-content/uploads/2016/04/icon.png
 sources:
   - https://github.com/mattermost/platform
 maintainers:
-  - name: Jonathan Davies
+  - name: jpds
     email: jpds@protonmail.com
