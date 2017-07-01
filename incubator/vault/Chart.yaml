@@ -9,5 +9,5 @@ sources:
   - https://github.com/hashicorp/vault
   - https://github.com/hashicorp/docker-vault
 maintainers:
-  - name: Jonathan Davies
+  - name: jpds
     email: jpds@protonmail.com
