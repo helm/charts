@@ -179,7 +179,7 @@ kubeStateMetrics:
     #   cpu: 10m
     #   memory: 16Mi
 
-  serviceAccountName: prometheus
+  serviceAccountName: {{ .Values.kubeStateMetrics.serviceAccountName }}
 
   service:
     annotations:
