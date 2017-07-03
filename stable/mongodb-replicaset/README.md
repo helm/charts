@@ -101,17 +101,18 @@ export RELEASE_NAME=messy-hydra
 ### Cluster Health
 
 ```console
-$ for i in 0 1 2; do kubectl exec $RELEASE_NAME-mongodb-$i -- sh -c 'mongo --eval="printjson(db.serverStatus())"'; done
+$ for i in 0 1 2; do kubectl exec $RELEASE_NAME-mongodb-replicaset-$i -- sh -c 'mongo --eval="printjson(db.serverStatus())"'; done
 ```
 
 ### Failover
 
 One can check the roles being played by each node by using the following:
 ```console
-$ for i in 0 1 2; do kubectl exec $RELEASE_NAME-mongodb-$i -- sh -c 'mongo --eval="printjson(rs.isMaster())"'; done
+$ for i in 0 1 2; do kubectl exec $RELEASE_NAME-mongodb-replicaset-$i -- sh -c 'mongo --eval="printjson(rs.isMaster())"'; done
 
-MongoDB shell version: 3.2.9
-connecting to: test
+MongoDB shell version: 3.4.5
+connecting to: mongodb://127.0.0.1:27017
+MongoDB server version: 3.4.5
 {
 	"hosts" : [
 		"messy-hydra-mongodb-0.messy-hydra-mongodb.default.svc.cluster.local:27017",
@@ -140,16 +141,16 @@ This lets us see which member is primary.
 
 Let us now test persistence and failover. First, we insert a key (in the below example, we assume pod 0 is the master):
 ```console
-$ kubectl exec $RELEASE_NAME-mongodb-0 -- mongo --eval="printjson(db.test.insert({key1: 'value1'}))"
+$ kubectl exec $RELEASE_NAME-mongodb-replicaset-0 -- mongo --eval="printjson(db.test.insert({key1: 'value1'}))"
 
-MongoDB shell version: 3.2.8
-connecting to: test
+MongoDB shell version: 3.4.5
+connecting to: mongodb://127.0.0.1:27017
 { "nInserted" : 1 }
 ```
 
 Watch existing members:
 ```console
-$ kubectl run --attach bbox --image=mongo:3.2 --restart=Never -- sh -c 'while true; do for i in 0 1 2; do echo <$release-podname-$i> $(mongo --host=$RELEASE_NAME-mongodb-$i.$RELEASE_NAME-mongodb --eval="printjson(rs.isMaster())" | grep primary); sleep 1; done; done';
+$ kubectl run --attach bbox --image=mongo:3.4 --restart=Never --env="RELEASE_NAME=$RELEASE_NAME" -- sh -c 'while true; do for i in 0 1 2; do echo $RELEASE_NAME-mongodb-replicaset-$i $(mongo --host=$RELEASE_NAME-mongodb-replicaset-$i.$RELEASE_NAME-mongodb-replicaset --eval="printjson(rs.isMaster())" | grep primary); sleep 1; done; done';
 
 Waiting for pod default/bbox2 to be running, status is Pending, pod ready: false
 If you don't see a command prompt, try pressing enter.
@@ -163,14 +164,14 @@ messy-hydra-mongodb-0 "primary" : "messy-hydra-mongodb-0.messy-hydra-mongodb.def
 
 Kill the primary and watch as a new master getting elected.
 ```console
-$ kubectl delete pod $RELEASE_NAME-mongodb-0
+$ kubectl delete pod $RELEASE_NAME-mongodb-replicaset-0
 
 pod "messy-hydra-mongodb-0" deleted
 ```
 
 Delete all pods and let the statefulset controller bring it up.
 ```console
-$ kubectl delete po -l app=mongodb
+$ kubectl delete po -l "app=mongodb-replicaset,release=$RELEASE_NAME"
 $ kubectl get po --watch-only
 NAME                    READY     STATUS        RESTARTS   AGE
 messy-hydra-mongodb-0   0/1       Pending   0         0s
@@ -208,10 +209,10 @@ messy-hydra-mongodb-2 "primary" : "messy-hydra-mongodb-0.messy-hydra-mongodb.def
 
 Check the previously inserted key:
 ```console
-$ kubectl exec $RELEASE_NAME-mongodb-1 -- mongo --eval="rs.slaveOk(); db.test.find({key1:{\$exists:true}}).forEach(printjson)"
+$ kubectl exec $RELEASE_NAME-mongodb-replicaset-1 -- mongo --eval="rs.slaveOk(); db.test.find({key1:{\$exists:true}}).forEach(printjson)"
 
-MongoDB shell version: 3.2.8
-connecting to: test
+MongoDB shell version: 3.4.5
+connecting to: mongodb://127.0.0.1:27017
 { "_id" : ObjectId("57b180b1a7311d08f2bfb617"), "key1" : "value1" }
 ```
 
