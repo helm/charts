@@ -37,6 +37,9 @@ spec:
               key: drupal-password
         - name: DRUPAL_EMAIL
           value: {{ default "" .Values.drupalEmail | quote }}
+{{- if .Values.extraVars }}
+{{ toYaml .Values.extraVars | indent 8 }}
+{{- end }}
         ports:
         - name: http
           containerPort: 80
