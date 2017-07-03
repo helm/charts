@@ -51,6 +51,14 @@ spec:
               }
           ]'
     spec:
+      {{- if .Values.Master.NodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.Master.NodeSelector | indent 8 }}
+      {{- end }}
+      {{- if .Values.Master.Tolerations }}
+      tolerations:
+{{ toYaml .Values.Master.Tolerations | indent 8 }}
+      {{- end }}
       securityContext:
         runAsUser: 0
       containers:
