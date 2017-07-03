@@ -17,11 +17,13 @@ spec:
   template:
     metadata:
       labels:
+        app: {{ template "fullname" . }}
         heritage: {{.Release.Service | quote }}
         release: {{.Release.Name | quote }}
         chart: "{{.Chart.Name}}-{{.Chart.Version}}"
         component: "{{.Release.Name}}-{{.Values.Master.Component}}"
       annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/config.yaml") . | sha256sum }}
         pod.alpha.kubernetes.io/init-containers: '[
               {
                   "name": "copy-default-config",
@@ -49,6 +51,14 @@ spec:
               }
           ]'
     spec:
+      {{- if .Values.Master.NodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.Master.NodeSelector | indent 8 }}
+      {{- end }}
+      {{- if .Values.Master.Tolerations }}
+      tolerations:
+{{ toYaml .Values.Master.Tolerations | indent 8 }}
+      {{- end }}
       securityContext:
         runAsUser: 0
       containers:
@@ -78,6 +88,10 @@ spec:
               name: http
             - containerPort: {{.Values.Master.SlaveListenerPort}}
               name: slavelistener
+            {{- if .Values.Master.JMXPort }}
+            - containerPort: {{ .Values.Master.JMXPort }}
+              name: jmx
+            {{- end }}
           resources:
             requests:
               cpu: "{{.Values.Master.Cpu}}"

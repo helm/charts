@@ -6,6 +6,7 @@ metadata:
     heritage: {{.Release.Service | quote }}
     release: {{.Release.Name | quote }}
     chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+
 spec:
   replicas: {{ .Values.replicaCount }}
   template:
@@ -40,8 +41,18 @@ spec:
           - mountPath: /etc/openvpn/setup
             name: openvpn
             readOnly: false
+          - mountPath: /etc/openvpn/certs
+            name: certs
+            readOnly: false
       volumes:
       - name: openvpn
         configMap:
           name: {{ template "fullname" . }}
-          "defaultMode": 0775
+          defaultMode: 0775
+      - name: certs
+        {{- if .Values.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ template "fullname" . }}
+        {{- else }}
+          emptyDir: {}
+        {{- end -}}

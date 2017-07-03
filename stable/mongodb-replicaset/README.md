@@ -10,10 +10,6 @@
 ## StatefulSet Caveats
 * https://kubernetes.io/docs/concepts/abstractions/controllers/statefulsets/#limitations
 
-## TODO
-* Set up authorization between replica set peers.
-* Add liveness and readiness probes
-
 ## Chart Details
 
 This chart implements a dynamically scalable [MongoDB replica set](https://docs.mongodb.com/manual/tutorial/deploy-replica-set/)
@@ -24,8 +20,8 @@ using Kubernetes StatefulSets and Init Containers.
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
-$ helm install --name my-release incubator/mongodb-replicaset
+$ helm repo add stable https://kubernetes-charts.storage.googleapis.com/
+$ helm install --name my-release stable/mongodb-replicaset
 ```
 
 ## Configuration
@@ -41,7 +37,7 @@ The following tables lists the configurable parameters of the mongodb chart and 
 | `installImage.tag`              | Image tag for the init container that establishes the replica set         | 0.3                                                 |
 | `installImage.pullPolicy`       | Image pull policy for the init container that establishes the replica set | IfNotPresent                                        |
 | `image.name`                    | MongoDB image name                                                        | mongo                                               |
-| `image.tag`                     | MongoDB image tag                                                         | 3.2                                                 |
+| `image.tag`                     | MongoDB image tag                                                         | 3.4                                                 |
 | `image.pullPolicy`              | MongoDB image pull policy                                                 | IfNotPresent                                        |
 | `podAnnotations`                | Annotations to be added to MongoDB pods                                   | {}                                                  |
 | `resources`                     | Pod resource requests and limits                                          | {}                                                  |
@@ -50,6 +46,12 @@ The following tables lists the configurable parameters of the mongodb chart and 
 | `persistentVolume.accessMode`   | Persistent volume access modes                                            | [ReadWriteOnce]                                     |
 | `persistentVolume.size`         | Persistent volume size                                                    | 10Gi                                                |
 | `persistentVolume.annotations`  | Persistent volume annotations                                             | {}                                                  |
+| `auth.enabled`                  | If `true`, keyfile access control is enabled                              | `false`                                             |
+| `auth.key`                      | key for internal authentication                                           |                                                     |
+| `auth.existingKeySecret`        | If set, an existing secret with this name for the key is used             |                                                     |
+| `auth.adminUser`                | MongoDB admin user                                                        |                                                     |
+| `auth.adminPassword`            | MongoDB admin password                                                    |                                                     |
+| `auth.existingAdminSecret`      | If set, and existing secret with this name is used for the admin user     |                                                     |
 | `serviceAnnotations`            | Annotations to be added to the service                                    | {}                                                  |
 | `configmap`                     | Content of the MongoDB config file                                        | See below                                           |
 
@@ -80,7 +82,14 @@ $ helm install --name my-release -f values.yaml incubator/mongodb-replicaset
 
 Once you have all 3 nodes in running, you can run the "test.sh" script in this directory, which will insert a key into the primary and check the secondaries for output. This script requires that the `$RELEASE_NAME` environment variable be set, in order to access the pods.
 
-# Deep dive
+## Authentication
+
+By default, this chart creates a MongoDB replica set without authentication. Authentication can be enabled using the 
+parameter `auth.enabled`. Once enabled, keyfile access control is set up and an admin user with root privileges
+is created. User credentials and keyfile may be specified directly. Alternatively, existing secrets may be provided. 
+The secret for the admin user must contain the keys `user` and `password`, that for the key file must contain `key.txt`.
+
+## Deep dive
 
 Because the pod names are dependent on the name chosen for it, the following examples use the
 environment variable `RELEASENAME`. For example, if the helm release name is `messy-hydra`, one would need to set the following before proceeding. The example scripts below assume 3 pods only.
@@ -89,20 +98,21 @@ environment variable `RELEASENAME`. For example, if the helm release name is `me
 export RELEASE_NAME=messy-hydra
 ```
 
-## Cluster Health
+### Cluster Health
 
 ```console
-$ for i in 0 1 2; do kubectl exec $RELEASE_NAME-mongodb-$i -- sh -c '/usr/bin/mongo --eval="printjson(db.serverStatus())"'; done
+$ for i in 0 1 2; do kubectl exec $RELEASE_NAME-mongodb-replicaset-$i -- sh -c 'mongo --eval="printjson(db.serverStatus())"'; done
 ```
 
-## Failover
+### Failover
 
 One can check the roles being played by each node by using the following:
 ```console
-$ for i in 0 1 2; do kubectl exec $RELEASE_NAME-mongodb-$i -- sh -c '/usr/bin/mongo --eval="printjson(rs.isMaster())"'; done
+$ for i in 0 1 2; do kubectl exec $RELEASE_NAME-mongodb-replicaset-$i -- sh -c 'mongo --eval="printjson(rs.isMaster())"'; done
 
-MongoDB shell version: 3.2.9
-connecting to: test
+MongoDB shell version: 3.4.5
+connecting to: mongodb://127.0.0.1:27017
+MongoDB server version: 3.4.5
 {
 	"hosts" : [
 		"messy-hydra-mongodb-0.messy-hydra-mongodb.default.svc.cluster.local:27017",
@@ -131,16 +141,16 @@ This lets us see which member is primary.
 
 Let us now test persistence and failover. First, we insert a key (in the below example, we assume pod 0 is the master):
 ```console
-$ kubectl exec $RELEASE_NAME-mongodb-0 -- /usr/bin/mongo --eval="printjson(db.test.insert({key1: 'value1'}))"
+$ kubectl exec $RELEASE_NAME-mongodb-replicaset-0 -- mongo --eval="printjson(db.test.insert({key1: 'value1'}))"
 
-MongoDB shell version: 3.2.8
-connecting to: test
+MongoDB shell version: 3.4.5
+connecting to: mongodb://127.0.0.1:27017
 { "nInserted" : 1 }
 ```
 
 Watch existing members:
 ```console
-$ kubectl run --attach bbox --image=mongo:3.2 --restart=Never -- sh -c 'while true; do for i in 0 1 2; do echo <$release-podname-$i> $(mongo --host=$RELEASE_NAME-mongodb-$i.$RELEASE_NAME-mongodb --eval="printjson(rs.isMaster())" | grep primary); sleep 1; done; done';
+$ kubectl run --attach bbox --image=mongo:3.4 --restart=Never --env="RELEASE_NAME=$RELEASE_NAME" -- sh -c 'while true; do for i in 0 1 2; do echo $RELEASE_NAME-mongodb-replicaset-$i $(mongo --host=$RELEASE_NAME-mongodb-replicaset-$i.$RELEASE_NAME-mongodb-replicaset --eval="printjson(rs.isMaster())" | grep primary); sleep 1; done; done';
 
 Waiting for pod default/bbox2 to be running, status is Pending, pod ready: false
 If you don't see a command prompt, try pressing enter.
@@ -154,14 +164,14 @@ messy-hydra-mongodb-0 "primary" : "messy-hydra-mongodb-0.messy-hydra-mongodb.def
 
 Kill the primary and watch as a new master getting elected.
 ```console
-$ kubectl delete pod $RELEASE_NAME-mongodb-0
+$ kubectl delete pod $RELEASE_NAME-mongodb-replicaset-0
 
 pod "messy-hydra-mongodb-0" deleted
 ```
 
 Delete all pods and let the statefulset controller bring it up.
 ```console
-$ kubectl delete po -l app=mongodb
+$ kubectl delete po -l "app=mongodb-replicaset,release=$RELEASE_NAME"
 $ kubectl get po --watch-only
 NAME                    READY     STATUS        RESTARTS   AGE
 messy-hydra-mongodb-0   0/1       Pending   0         0s
@@ -199,13 +209,13 @@ messy-hydra-mongodb-2 "primary" : "messy-hydra-mongodb-0.messy-hydra-mongodb.def
 
 Check the previously inserted key:
 ```console
-$ kubectl exec $RELEASE_NAME-mongodb-1 -- /usr/bin/mongo --eval="rs.slaveOk(); db.test.find({key1:{\$exists:true}}).forEach(printjson)"
+$ kubectl exec $RELEASE_NAME-mongodb-replicaset-1 -- mongo --eval="rs.slaveOk(); db.test.find({key1:{\$exists:true}}).forEach(printjson)"
 
-MongoDB shell version: 3.2.8
-connecting to: test
+MongoDB shell version: 3.4.5
+connecting to: mongodb://127.0.0.1:27017
 { "_id" : ObjectId("57b180b1a7311d08f2bfb617"), "key1" : "value1" }
 ```
 
-## Scaling
+### Scaling
 
 Scaling should be managed by `helm upgrade`, which is the recommended way.

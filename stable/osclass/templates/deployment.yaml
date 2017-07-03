@@ -21,7 +21,7 @@ spec:
         env:
         - name: MARIADB_HOST
           value: {{ template "mariadb.fullname" . }}
-        - name: MARIADB_PORT
+        - name: MARIADB_PORT_NUMBER
           value: "3306"
         - name: MARIADB_PASSWORD
           valueFrom:
@@ -64,23 +64,25 @@ spec:
         - name: https
           containerPort: 443
         livenessProbe:
-          exec:
-            command:
-            - nc
-            - -z
-            - localhost
-            - "80"
+          httpGet:
+            path: /index.php
+            port: http
+            httpHeaders:
+            - name: Host
+              value: {{ include "host" . | quote }}
           initialDelaySeconds: 120
-          timeoutSeconds: 5
+          timeoutSeconds: 120
+          failureThreshold: 6
         readinessProbe:
-          exec:
-            command:
-            - nc
-            - -z
-            - localhost
-            - "80"
-          initialDelaySeconds: 5
-          timeoutSeconds: 1
+          httpGet:
+            path: /index.php
+            port: http
+            httpHeaders:
+            - name: Host
+              value: {{ include "host" . | quote }}
+          initialDelaySeconds: 30
+          timeoutSeconds: 120
+          periodSeconds: 5
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
