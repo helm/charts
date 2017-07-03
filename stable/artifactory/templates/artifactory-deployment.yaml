@@ -5,7 +5,7 @@ metadata:
   labels:
     app: {{ template "name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    component: "{{ .Values.art_name }}"
+    component: "{{ .Values.artifactory.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
 spec:
@@ -14,41 +14,41 @@ spec:
     metadata:
       labels:
         app: {{ template "name" . }}
-        component: "{{ .Values.artName }}"
+        component: "{{ .Values.artifactory.name }}"
         release: {{ .Release.Name }}
       annotations:
         pod.beta.kubernetes.io/init-containers: '[{
           "name": "remove-lost-found",
           "image": {{ .Values.initContainerImage | quote }},
-          "command": ["rm", "-rf", "{{ .Values.artPersistence.mountPath }}/lost+found"],
+          "command": ["rm", "-rf", "{{ .Values.artifactory.persistence.mountPath }}/lost+found"],
           "volumeMounts": [{
               "name": "artifactory-volume",
-              "mountPath": {{ .Values.artPersistence.mountPath | quote }}
+              "mountPath": {{ .Values.artifactory.persistence.mountPath | quote }}
             }],
-          "imagePullPolicy": {{ .Values.imagePullPolicy | quote }}
+          "imagePullPolicy": {{ .Values.artifactory.image.pullPolicy | quote }}
         }]'
     spec:
       containers:
-      - name: {{ .Values.artName }}
-        image: "{{ .Values.artImage.repository }}:{{ .Values.artImage.version }}"
-        imagePullPolicy: {{ .Values.imagePullPolicy }}
+      - name: {{ .Values.artifactory.name }}
+        image: "{{ .Values.artifactory.image.repository }}:{{ .Values.artifactory.image.version }}"
+        imagePullPolicy: {{ .Values.artifactory.image.pullPolicy }}
         env:
         - name: DB_TYPE
-          value: {{ .Values.dbEnv.dbType }}
+          value: {{ .Values.database.env.type }}
         - name: DB_USER
-          value: {{ .Values.dbEnv.dbName }}
+          value: {{ .Values.database.env.user }}
         - name: DB_PASSWORD
-          value: {{ .Values.dbEnv.dbPass }}
+          value: {{ .Values.database.env.pass }}
         - name: DB_HOST
           value: {{ template "database.name" . }}
         ports:
-        - containerPort: {{ .Values.artService.internalPort }}
+        - containerPort: {{ .Values.artifactory.internalPort }}
         volumeMounts:
-        - mountPath: {{ .Values.artPersistence.mountPath | quote }}
+        - mountPath: {{ .Values.artifactory.persistence.mountPath | quote }}
           name: artifactory-volume
       volumes:
       - name: artifactory-volume
-      {{- if .Values.artPersistence.enabled }}
+      {{- if .Values.artifactory.persistence.enabled }}
         persistentVolumeClaim:
           claimName: {{ template "artifactory.fullname" . }}
       {{- else }}

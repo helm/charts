@@ -1,4 +1,4 @@
-{{- if .Values.nxPersistence.enabled }}
+{{- if .Values.nginx.persistence.enabled }}
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
@@ -9,15 +9,15 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
   annotations:
-  {{- if .Values.nxPersistence.storageClass }}
-    volume.beta.kubernetes.io/storage-class: {{ .Values.nxPersistence.storageClass | quote }}
+  {{- if .Values.nginx.persistence.storageClass }}
+    volume.beta.kubernetes.io/storage-class: {{ .Values.nginx.persistence.storageClass | quote }}
   {{- else }}
     volume.alpha.kubernetes.io/storage-class: default
   {{- end }}
 spec:
   accessModes:
-    - {{ .Values.nxPersistence.accessMode | quote }}
+    - {{ .Values.nginx.persistence.accessMode | quote }}
   resources:
     requests:
-      storage: {{ .Values.nxPersistence.size | quote }}
+      storage: {{ .Values.nginx.persistence.size | quote }}
 {{- end }}

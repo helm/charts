@@ -5,21 +5,21 @@ metadata:
   labels:
     app: {{ template "name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    component: "{{ .Values.nxName }}"
+    component: "{{ .Values.nginx.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
 spec:
-  type: {{ .Values.nxService.type }}
+  type: {{ .Values.nginx.service.type }}
   ports:
-  - port: {{ .Values.nxService.externalPortHttp }}
-    targetPort: {{ .Values.nxService.internalPortHttp }}
+  - port: {{ .Values.nginx.externalPortHttp }}
+    targetPort: {{ .Values.nginx.internalPortHttp }}
     protocol: TCP
-    name: {{ .Values.nxService.name }}http
-  - port: {{ .Values.nxService.externalPortHttps }}
-    targetPort: {{ .Values.nxService.internalPortHttps }}
+    name: {{ .Values.nginx.name }}http
+  - port: {{ .Values.nginx.externalPortHttps }}
+    targetPort: {{ .Values.nginx.internalPortHttps }}
     protocol: TCP
     name: {{ .Release.Name }}https
   selector:
     app: {{ template "name" . }}
-    component: "{{ .Values.nxName }}"
+    component: "{{ .Values.nginx.name }}"
     release: {{ .Release.Name }}

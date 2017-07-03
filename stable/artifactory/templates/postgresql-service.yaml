@@ -5,17 +5,17 @@ metadata:
   labels:
     app: {{ template "name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    component: "{{ .Values.dbName }}"
+    component: "{{ .Values.database.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
 spec:
-  type: {{ .Values.dbService.type }}
+  type: {{ .Values.database.service.type }}
   ports:
-  - port: {{ .Values.dbService.externalPort }}
-    targetPort: {{ .Values.dbService.internalPort }}
+  - port: {{ .Values.database.externalPort }}
+    targetPort: {{ .Values.database.internalPort }}
     protocol: TCP
     name: {{ .Release.Name }}
   selector:
     app: {{ template "name" . }}
-    component: "{{ .Values.dbName }}"
+    component: "{{ .Values.database.name }}"
     release: {{ .Release.Name }}

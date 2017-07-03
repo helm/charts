@@ -5,71 +5,70 @@
 # Access the values with {{ .Values.key.subkey }}
 
 # Common
-replicaCount: 1
-imagePullPolicy: IfNotPresent
 initContainerImage: "busybox:1.26.2"
-dbEnv:
-  dbType: postgresql
-  dbName: artifactory
-  dbUser: artifactory
-  dbPass: artXifactory1973
 
-# DB
-dbName: postgresql
-dbImage:
-  repository: docker.bintray.io/postgres
-  version: 9.5.2
-dbService:
+# Database
+database:
   name: postgresql
-  type: ClusterIP
+  replicaCount: 1
+  env:
+    type: postgresql
+    name: artifactory
+    user: artifactory
+    pass: artXifactory1973
+  image:
+    repository: docker.bintray.io/postgres
+    version: 9.5.2
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
   externalPort: 5432
   internalPort: 5432
-dbPersistence:
-  mountPath: "/var/lib/postgresql/data"
-  enabled: true
-  accessMode: ReadWriteOnce
-  size: 10Gi
+  persistence:
+    mountPath: "/var/lib/postgresql/data"
+    enabled: true
+    accessMode: ReadWriteOnce
+    size: 10Gi
 
 # Artifactory
-artName: artifactory
-artReplicaCount: 1
-artImage:
-  ## Uncomment following line if you want to run Artifactory-Pro
-  #repository: "docker.bintray.io/jfrog/artifactory-oss"
-  repository: "docker.bintray.io/jfrog/artifactory-pro"
-  version: 5.4.1
-artService:
+artifactory:
   name: artifactory
-  ## For minikube, set this to NodePort, elsewhere use LoadBalancer
-  type: ClusterIP
-  # For Artifactory-oss use externalPort 80
+  replicaCount: 1
+  image:
+    #repository: "docker.bintray.io/jfrog/artifactory-oss"
+    repository: "docker.bintray.io/jfrog/artifactory-pro"
+    version: 5.4.2
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
   externalPort: 8081
   internalPort: 8081
-artPersistence:
-  mountPath: "/var/opt/jfrog/artifactory"
-  enabled: true
-  accessMode: ReadWriteOnce
-  size: 20Gi
+  persistence:
+    mountPath: "/var/opt/jfrog/artifactory"
+    enabled: true
+    accessMode: ReadWriteOnce
+    size: 20Gi
 
-# For Artifactory-oss comment following nginx configuration.
-nxName: nginx
-nxReplicaCount: 1
-nxImage:
-  repository: docker.bintray.io/jfrog/nginx-artifactory-pro
-  version: 5.4.1
-nxService:
+# Nginx
+nginx:
   name: nginx
-  ## For minikube, set this to NodePort, elsewhere use LoadBalancer
-  type: LoadBalancer
+  replicaCount: 1
+  image:
+    repository: "docker.bintray.io/jfrog/nginx-artifactory-pro"
+    version: 5.4.2
+    pullPolicy: IfNotPresent
+  service:
+    ## For minikube, set this to NodePort, elsewhere use LoadBalancer
+    type: LoadBalancer
   externalPortHttp: 80
   internalPortHttp: 80
   externalPortHttps: 443
   internalPortHttps: 443
-nxEnv:
-  artUrl: "http://artifactory:8081/artifactory"
-  ssl: true
-nxPersistence:
-  mountPath: "/var/opt/jfrog/nginx"
-  enabled: true
-  accessMode: ReadWriteOnce
-  size: 5Gi
+  env:
+    artUrl: "http://artifactory:8081/artifactory"
+    ssl: true
+  persistence:
+    mountPath: "/var/opt/jfrog/nginx"
+    enabled: true
+    accessMode: ReadWriteOnce
+    size: 5Gi

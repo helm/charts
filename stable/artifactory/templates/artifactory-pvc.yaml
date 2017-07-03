@@ -1,4 +1,4 @@
-{{- if .Values.artPersistence.enabled }}
+{{- if .Values.artifactory.persistence.enabled }}
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
@@ -9,15 +9,15 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
   annotations:
-  {{- if .Values.artPersistence.storageClass }}
-    volume.beta.kubernetes.io/storage-class: {{ .Values.artPersistence.storageClass | quote }}
+  {{- if .Values.artifactory.persistence.storageClass }}
+    volume.beta.kubernetes.io/storage-class: {{ .Values.artifactory.persistence.storageClass | quote }}
   {{- else }}
     volume.alpha.kubernetes.io/storage-class: default
   {{- end }}
 spec:
   accessModes:
-    - {{ .Values.artPersistence.accessMode | quote }}
+    - {{ .Values.artifactory.persistence.accessMode | quote }}
   resources:
     requests:
-      storage: {{ .Values.artPersistence.size | quote }}
+      storage: {{ .Values.artifactory.persistence.size | quote }}
 {{- end }}

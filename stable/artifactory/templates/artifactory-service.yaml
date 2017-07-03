@@ -5,17 +5,17 @@ metadata:
   labels:
     app: {{ template "name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    component: "{{ .Values.art_name }}"
+    component: "{{ .Values.artifactory.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
 spec:
-  type: {{ .Values.artService.type }}
+  type: {{ .Values.artifactory.service.type }}
   ports:
-  - port: {{ .Values.artService.externalPort }}
-    targetPort: {{ .Values.artService.internalPort }}
+  - port: {{ .Values.artifactory.externalPort }}
+    targetPort: {{ .Values.artifactory.internalPort }}
     protocol: TCP
     name: {{ .Release.Name }}
   selector:
     app: {{ template "name" . }}
-    component: "{{ .Values.artName }}"
+    component: "{{ .Values.artifactory.name }}"
     release: {{ .Release.Name }}

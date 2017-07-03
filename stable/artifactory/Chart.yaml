@@ -11,8 +11,8 @@ sources:
   - https://bintray.com/jfrog/product/JFrog-Artifactory-Pro/view
   - https://github.com/JFrogDev
 maintainers:
-  - name: Jainish shah
+  - name: jainishshah17
     email: jainishs@jfrog.com
-  - name: Eldad Assis
+  - name: eldada
     email: eldada@jfrog.com
 icon: https://raw.githubusercontent.com/JFrogDev/artifactory-dcos/master/images/jfrog_med.png
