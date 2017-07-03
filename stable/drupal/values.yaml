@@ -121,6 +121,16 @@ resources:
     memory: 512Mi
     cpu: 300m
 
+## Configure volume mounts. This is useful for images whose data mount paths are
+## different than the default.
+## Setting volumeMounts.apache.mountPath to "" prevents Apache config mount.
+##
+volumeMounts:
+  drupal:
+    mountPath: /bitnami/drupal
+  apache:
+    mountPath: /bitnami/apache
+
 ## Configure liveness and readiness probes.
 ## Drupal core exposes /user/login to unauthenticated requests, making it a good
 ## default liveness and readiness path. However, that may not always be the
