@@ -10,7 +10,7 @@ Spilo:
   Version: 1.2-p17
 
 # How many postgres containers to spawn
-Replicas: 3
+Replicas: 5
 
 # Resource limits per replica
 Resources:
