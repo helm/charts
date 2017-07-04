@@ -10,6 +10,7 @@ image:
 client:
   name: client
   replicas: 2
+  serviceType: ClusterIP
   heapSize: "128m"
   resources:
     limits:

@@ -60,6 +60,7 @@ The following tables lists the configurable parameters of the elasticsearch char
 | `client.replicas`                    | Client node replicas (deployment)       | `2`                                 |
 | `client.resources`                   | Client node resources requests & limits | `{} - cpu limit must be an integer` |
 | `client.heapSize`                    | Client node heap size                   | `128m`                              |
+| `client.serviceType`                 | Client service type                     | `ClusterIP`                         |
 | `master.name`                        | Master component name                   | `master`                            |
 | `master.replicas`                    | Master node replicas (deployment)       | `2`                                 |
 | `master.resources`                   | Master node resources requests & limits | `{} - cpu limit must be an integer` |

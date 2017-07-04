@@ -16,3 +16,4 @@ spec:
     app: {{ template "name" . }}
     component: "{{ .Values.client.name }}"
     release: {{ .Release.Name }}
+  type: {{ .Values.client.serviceType }}
