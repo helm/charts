@@ -5,7 +5,7 @@ replicaCount: 1
 operator:
   image: appscode/stash
   pullPolicy: IfNotPresent
-  tag: 0.3.0
+  tag: 0.3.1
 pushgateway:
   image: prom/pushgateway
   pullPolicy: IfNotPresent
