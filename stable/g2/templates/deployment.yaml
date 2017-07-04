@@ -8,13 +8,11 @@ metadata:
     heritage: "{{ .Release.Service }}"
     release: "{{ .Release.Name }}"
 spec:
-  replicas: {{.Values.replicaCount}}
+  replicas: {{ .Values.replicaCount }}
   template:
     metadata:
       labels:
-        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         app: "{{ template "name" . }}"
-        heritage: "{{ .Release.Service }}"
         release: "{{ .Release.Name }}"
     spec:
 {{- if .Values.rbac.install }}
