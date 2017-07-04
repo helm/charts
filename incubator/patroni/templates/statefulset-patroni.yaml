@@ -52,11 +52,11 @@ spec:
           value: {{ .Values.WalE.Enable | quote }}
         {{if .Values.WalE.Schedule_Cron_Job }}
         - name: BACKUP_SCHEDULE
-          value: {{ default (printf "00 01 * * *" ) .Values.WalE.Schedule_Cron_Job | quote}}
+          value: {{ .Values.WalE.Schedule_Cron_Job | quote}}
         {{end}}
         {{if .Values.WalE.Retain_Backups }}
         - name: BACKUP_NUM_TO_RETAIN
-          value: {{ default (printf "2" ) .Values.WalE.Retain_Backups | quote}}
+          value: {{ .Values.WalE.Retain_Backups | quote}}
         {{end}}
         {{if .Values.WalE.S3_Bucket }}
         - name: WAL_S3_BUCKET
