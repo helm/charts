@@ -1,0 +1,47 @@
+# Default values for etcd.
+# This is a YAML-formatted file.
+# Declare name/value pairs to be passed into your templates.
+# name: value
+
+Name: etcd
+Replicas: 3
+
+Image: "gcr.io/google_containers/etcd-amd64"
+ImageTag: "3.0.14"
+ImagePullPolicy: "Always"
+
+PeerPort: 2380
+ClientPort: 2379
+Component: "etcd"
+
+## Configure resource requests and limits.
+## ref: https://kubernetes.io/docs/user-guide/compute-resources/
+##
+
+resources:
+  requests:
+    cpu: "100m"
+    memory: "512Mi"
+
+
+## Persistent Volume Storage configuration.
+## ref: https://kubernetes.io/docs/user-guide/persistent-volumes
+##
+
+persistence:
+  ## Enable persistence using Persistent Volume Claims.
+  ##
+  enabled: false
+
+  classVersion: alpha
+  ## Persistent Volume Storage Class.
+  ##
+  class: anything
+
+  ## Persistent Volume Access Mode.
+  ##
+  accessMode: ReadWriteOnce
+
+  ## Persistent Volume Storage Size.
+  ##
+  size: 512Mi

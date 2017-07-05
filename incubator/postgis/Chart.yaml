@@ -1,0 +1,10 @@
+name: stolon
+home: https://github.com/sorintlab/stolon
+version: 0.1.1
+description: Stolon Helm Chart for Kubernetes.
+sources:
+  - https://github.com/sorintlab/stolon
+  - https://github.com/lwolf/stolon-chart
+maintainers:
+  - name: Sergey Nuzhdin
+    email: ipaq.lw@gmail.com

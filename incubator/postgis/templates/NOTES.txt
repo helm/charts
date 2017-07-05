@@ -1,0 +1,5 @@
+Helm cluster in installed and initialized.
+
+
+To get superuser password run
+    PGPASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath="{.data.password}" | base64 --decode; echo)

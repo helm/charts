@@ -1,0 +1,120 @@
+# Default values for Stolon Helm Chart.
+# This is a YAML-formatted file.
+## Declare variables to be passed into your templates.
+
+## Override the name of the Chart.
+##
+# nameOverride:
+
+## Stolon image.
+##
+
+image: "timfpark/postgis-stolon"
+
+## Stolon image version.
+## ref: https://hub.docker.com/r/sorintlab/stolon/tags/
+##
+imageTag: "9.6"
+
+## Specify a imagePullPolicy: 'Always' if imageTag is 'latest', else set to 'IfNotPresent'.
+## ref: https://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+##
+# imagePullPolicy:
+
+## Configuration values for Stolon.
+
+clusterName: "postgres-cluster"
+debug: false
+
+
+store:
+  ##  Backend could be one of the following:
+  ## - etcd
+  ## - consul (not supported yet)
+  backend: "etcd"
+
+etcd:
+  ## use etcd as backend
+  enabled: true
+  ## managed mode means that service will be deployed as part of the chart as a dependency
+  # managed: true
+  persistence:
+    enabled: true
+    classVersion: beta
+    class: fast 
+
+
+pgReplUsername: "repluser"
+pgReplPassword: "linux4sure"
+pgSuperuserName: "ops"
+
+## set password for the superuser
+## default is 15 random chars
+pgSuperuserPasword: "linux4sure"
+
+sentinel:
+  replicas: 3
+
+  ## Configure resource requests and limits.
+  ## ref: https://kubernetes.io/docs/user-guide/compute-resources/
+  ##
+
+  resources:
+    requests:
+      cpu: "100m"
+      memory: "512Mi"
+
+
+proxy:
+  replicas: 3
+  ## Set serviceType to nodePort if needed
+  ## proxy is used to route RW requests to the master
+  # serviceType: NodePort
+
+  ## Configure resource requests and limits.
+  ## ref: https://kubernetes.io/docs/user-guide/compute-resources/
+  ##
+
+  resources:
+    requests:
+      cpu: "100m"
+      memory: "512Mi"
+
+keeper:
+  replicas: 3 
+  ## Set serviceType to nodePort if needed
+  ## keeper service is used to route RO requests to all nodes
+  # serviceType: NodePort
+
+  ## Configure resource requests and limits.
+  ## ref: https://kubernetes.io/docs/user-guide/compute-resources/
+  ##
+
+  resources:
+    requests:
+      cpu: "500m"
+      memory: "1Gi"
+
+## Persistent Volume Storage configuration.
+## ref: https://kubernetes.io/docs/user-guide/persistent-volumes
+##
+
+persistence:
+  ## Enable persistence using Persistent Volume Claims.
+  ##
+  enabled: true 
+
+  ## Persistent Volume Storage Class Version.
+  ##
+  classVersion: beta
+  ## Persistent Volume Storage Class.
+  ##
+  class: fast 
+
+  ## Persistent Volume Access Mode.
+  ##
+  accessMode: ReadWriteOnce
+
+  ## Persistent Volume Storage Size.
+  ##
+  size: 256Gi

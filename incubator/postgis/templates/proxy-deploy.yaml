@@ -1,0 +1,50 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "proxy.fullname" . }}
+  labels:
+    app: {{ template "proxy.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  replicas: {{ .Values.proxy.replicas }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "proxy.fullname" . }}
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        release: "{{ .Release.Name }}"
+        heritage: "{{ .Release.Service }}"
+        stolon-cluster: {{ .Values.clusterName }}
+        stolon-proxy: "true"
+    spec:
+      containers:
+      - name: stolon-proxy
+        image: "{{ .Values.image }}:{{ .Values.imageTag }}"
+        imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
+        command:
+          - "/bin/bash"
+          - "-ec"
+          - |
+            exec gosu stolon stolon-proxy
+        env:
+          - name: STPROXY_CLUSTER_NAME
+            value: {{ .Values.clusterName | quote}}
+          - name: STPROXY_STORE_BACKEND
+            value: {{ .Values.store.backend | quote}}
+          - name: STPROXY_STORE_ENDPOINTS
+            value: {{ template "store.endpoint" . }}
+          - name: STPROXY_LISTEN_ADDRESS
+            value: {{ default "0.0.0.0" .Values.proxy.listenAddress | quote }}
+          - name: STSENTINEL_DEBUG
+            value: {{ .Values.debug | quote}}
+        ports:
+          - containerPort: 5432
+        readinessProbe:
+          tcpSocket:
+            port: 5432
+          initialDelaySeconds: 10
+          timeoutSeconds: 5
+        resources:
+{{ toYaml .Values.proxy.resources | indent 10 }}

@@ -1,0 +1,90 @@
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  name: {{ template "keeper.fullname" . }}
+  labels:
+    app: {{ template "keeper.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  serviceName: {{ template "keeper.fullname" . }}
+  replicas: {{ .Values.keeper.replicas }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "keeper.fullname" . }}
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        release: "{{ .Release.Name }}"
+        heritage: "{{ .Release.Service }}"
+      annotations:
+        pod.alpha.kubernetes.io/initialized: "true"
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+      - name: stolon-keeper
+        image: "{{ .Values.image }}:{{ .Values.imageTag }}"
+        imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
+        command:
+          - "/bin/bash"
+          - "-ec"
+          - |
+            # Generate our keeper uid using the pod index
+            IFS='-' read -ra ADDR <<< "$(hostname)"
+            export STKEEPER_UID="keeper${ADDR[-1]}"
+            export POD_IP=$(hostname -i)
+            export STKEEPER_PG_LISTEN_ADDRESS=$POD_IP
+            export STOLON_DATA=/stolon-data
+            chown stolon:stolon $STOLON_DATA
+            exec gosu stolon stolon-keeper --data-dir $STOLON_DATA
+        env:
+          - name: STKEEPER_CLUSTER_NAME
+            value: {{ .Values.clusterName  | quote}}
+          - name: STKEEPER_STORE_BACKEND
+            value: {{ .Values.store.backend  | quote}}
+          - name: STKEEPER_STORE_ENDPOINTS
+            value: {{ template "store.endpoint" . }}
+          - name: STKEEPER_PG_REPL_USERNAME
+            value: {{ .Values.pgReplUsername  | quote}}
+          - name: STKEEPER_PG_REPL_PASSWORD
+            value: {{ .Values.pgReplPassword  | quote}}
+          - name: STKEEPER_PG_SU_USERNAME
+            value: {{ .Values.pgSuperuserName  | quote}}
+          - name: STKEEPER_PG_SU_PASSWORDFILE
+            value: "/etc/secrets/stolon/password"
+          - name: STSENTINEL_DEBUG
+            value: {{ .Values.debug | quote}}
+        ports:
+          - containerPort: 5432
+        volumeMounts:
+        - mountPath: /stolon-data
+          name: data
+        - mountPath: /etc/secrets/stolon
+          name: stolon
+        resources:
+{{ toYaml .Values.keeper.resources | indent 10 }}
+      volumes:
+        - name: stolon
+          secret:
+            secretName: {{ template "fullname" . }}
+
+{{- if .Values.persistence.enabled }}
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+        annotations:
+          {{- if .Values.persistence.class }}
+          volume.beta.kubernetes.io/storage-class: {{ .Values.persistence.class | quote }}
+          {{- else }}
+          volume.alpha.kubernetes.io/storage-class: default
+          {{- end }}
+      spec:
+        accessModes:
+          - {{ .Values.persistence.accessMode | quote }}
+        resources:
+          requests:
+            storage: {{ .Values.persistence.size }}
+{{- else }}
+        - name: data
+          emptyDir: {}
+{{- end }}
