@@ -62,7 +62,7 @@ data:
           <skipTlsVerify>false</skipTlsVerify>
           <namespace>{{ .Release.Namespace }}</namespace>
           <jenkinsUrl>http://{{ .Release.Name }}-jenkins:8080</jenkinsUrl>
-          <jenkinsTunnel>{{ .Release.Name }}-jenkins:50000</jenkinsTunnel>
+          <jenkinsTunnel>{{ .Release.Name }}-jenkins-agent:50000</jenkinsTunnel>
           <containerCap>0</containerCap>
           <retentionTimeout>5</retentionTimeout>
         </org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud>
