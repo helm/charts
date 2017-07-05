@@ -15,7 +15,7 @@ database:
     type: postgresql
     name: artifactory
     user: artifactory
-    pass: artXifactory1973
+#    pass: artXifactory1973
   image:
     repository: docker.bintray.io/postgres
     version: 9.5.2

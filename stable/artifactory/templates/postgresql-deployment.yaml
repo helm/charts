@@ -38,7 +38,10 @@ spec:
         - name: POSTGRES_USER
           value: {{ .Values.database.env.user }}
         - name: POSTGRES_PASSWORD
-          value: {{ .Values.database.env.pass }}
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "fullname" . }}
+              key: artifactory-database-password
         ports:
         - containerPort: {{ .Values.database.internalPort }}
         volumeMounts:

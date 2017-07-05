@@ -38,7 +38,10 @@ spec:
         - name: DB_USER
           value: {{ .Values.database.env.user }}
         - name: DB_PASSWORD
-          value: {{ .Values.database.env.pass }}
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "fullname" . }}
+              key: artifactory-database-password
         - name: DB_HOST
           value: {{ template "database.name" . }}
         ports:
