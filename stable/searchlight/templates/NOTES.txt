@@ -2,4 +2,4 @@ Set caCrt, icingaKey, icingaCrt in values file for installing Searchlight
 
 To verify that Searchlight has started, run:
 
-  kubectl --namespace={{ .Release.Namespace }} get deployments -l "release={{ .Release.Name }}"
+  kubectl --namespace={{ .Release.Namespace }} get deployments -l "release={{ .Release.Name }}, app={{ template "name" . }}"

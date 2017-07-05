@@ -1,4 +1,21 @@
+# Default values for searchlight.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+operator:
+  image: appscode/searchlight
+  pullPolicy: IfNotPresent
+  tag: 1.5.9
+
+ido:
+  image: appscode/postgres
+  pullPolicy: IfNotPresent
+  tag: 9.5-v3-db
+
 icinga:
+  image: appscode/icinga
+  pullPolicy: IfNotPresent
+  tag: 1.5.9-k8s
 
 ## Icinga configaration
 ## https://github.com/appscode/searchlight/blob/master/docs/user-guide/icinga2/deployment.md#create-deployment
@@ -85,44 +102,3 @@ icinga:
 # plivoAuthToken:
 # plivoFrom:
 # plivoTo:
-
-## Icinga container configaration
-##
-
-  icinga:
-    image: appscode/icinga
-    imageTag: 1.5.6-k8s
-    apiPort: 5665
-    webPort: 60006
-
-## Postgress configaration
-##
-
-  ido:
-    image: appscode/postgres
-    imageTag: 9.5-v3-db
-    idoPort: 5432
-
-## Icinga secret type
-##
-
-  type: Opaque
-## Service target port
-##
-
-  apiTargetPort: 5665
-  webTargetPort: 80
-
-## Search light configaration
-##
-
-searchlight:
-
-## Searchlight image
-##
-  image: appscode/searchlight
-
-## Searchlight image tag
-##
-
-  imageTag: 1.5.6
