@@ -9,7 +9,7 @@ data:
     <?xml version='1.0' encoding='UTF-8'?>
     <hudson>
       <disabledAdministrativeMonitors/>
-      <version>{{.Values.Master.ImageTag}}</version>
+      <version>{{ .Values.Master.ImageTag }}</version>
       <numExecutors>0</numExecutors>
       <mode>NORMAL</mode>
       <useSecurity>{{ .Values.Master.UseSecurity }}</useSecurity>
@@ -35,7 +35,7 @@ data:
               <name>default</name>
               <instanceCap>2147483647</instanceCap>
               <idleMinutes>0</idleMinutes>
-              <label>{{.Release.Name}}-{{.Values.Agent.Component}}</label>
+              <label>{{ .Release.Name }}-{{ .Values.Agent.Component }}</label>
               <nodeSelector></nodeSelector>
               <volumes>
 {{- range $index, $volume := .Values.Agent.volumes }}
@@ -60,10 +60,10 @@ data:
                   <command></command>
                   <args>${computer.jnlpmac} ${computer.name}</args>
                   <ttyEnabled>false</ttyEnabled>
-                  <resourceRequestCpu>{{.Values.Agent.Cpu}}</resourceRequestCpu>
-                  <resourceRequestMemory>{{.Values.Agent.Memory}}</resourceRequestMemory>
-                  <resourceLimitCpu>{{.Values.Agent.Cpu}}</resourceLimitCpu>
-                  <resourceLimitMemory>{{.Values.Agent.Memory}}</resourceLimitMemory>
+                  <resourceRequestCpu>{{ .Values.Agent.Cpu }}</resourceRequestCpu>
+                  <resourceRequestMemory>{{ .Values.Agent.Memory }}</resourceRequestMemory>
+                  <resourceLimitCpu>{{ .Values.Agent.Cpu }}</resourceLimitCpu>
+                  <resourceLimitMemory>{{ .Values.Agent.Memory }}</resourceLimitMemory>
                   <envVars/>
                 </org.csanchez.jenkins.plugins.kubernetes.ContainerTemplate>
               </containers>
@@ -77,7 +77,7 @@ data:
           <serverUrl>https://kubernetes.default</serverUrl>
           <skipTlsVerify>false</skipTlsVerify>
           <namespace>{{ .Release.Namespace }}</namespace>
-          <jenkinsUrl>http://{{ template "fullname" . }}:{{.Values.Master.ServicePort}}</jenkinsUrl>
+          <jenkinsUrl>http://{{ template "fullname" . }}:{{ .Values.Master.ServicePort }}</jenkinsUrl>
           <jenkinsTunnel>{{ template "fullname" . }}-agent:50000</jenkinsTunnel>
           <containerCap>10</containerCap>
           <retentionTimeout>5</retentionTimeout>
@@ -137,7 +137,7 @@ data:
 {{- end }}
 {{- range $key, $val := .Values.Master.InitScripts }}
   init{{ $key }}.groovy: |-
-{{ $val | indent 4}}
+{{ $val | indent 4 }}
 {{- end }}
   plugins.txt: |-
 {{- if .Values.Master.InstallPlugins }}
