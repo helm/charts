@@ -22,8 +22,8 @@ spec:
       - args:
         - run
         - --v=3
-        image: '{{.Values.operator.image}}:{{.Values.operator.tag}}'
-        imagePullPolicy: '{{.Values.operator.pullPolicy}}'
+        image: '{{ .Values.operator.image }}:{{ .Values.operator.tag }}'
+        imagePullPolicy: '{{ .Values.operator.pullPolicy }}'
         name: operator
         ports:
         - containerPort: 56790
@@ -33,8 +33,8 @@ spec:
       - args:
         - -web.listen-address=:56789
         - -persistence.file=/var/pv/pushgateway.dat
-        image: '{{.Values.pushgateway.image}}:{{.Values.pushgateway.tag}}'
-        imagePullPolicy: '{{.Values.pushgateway.pullPolicy}}'
+        image: '{{ .Values.pushgateway.image }}:{{ .Values.pushgateway.tag }}'
+        imagePullPolicy: '{{ .Values.pushgateway.pullPolicy }}'
         name: pushgateway
         ports:
         - containerPort: 56789
