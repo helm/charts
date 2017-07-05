@@ -21,7 +21,7 @@ spec:
         env:
         - name: MARIADB_HOST
           value: {{ template "mariadb.fullname" . }}
-        - name: MARIADB_PORT
+        - name: MARIADB_PORT_NUMBER
           value: "3306"
         - name: MARIADB_PASSWORD
           valueFrom:
@@ -44,23 +44,27 @@ spec:
           containerPort: 443
         livenessProbe:
           httpGet:
-            path: /
+            path: /user/login
             port: http
           initialDelaySeconds: 120
-          timeoutSeconds: 5
         readinessProbe:
           httpGet:
-            path: /
+            path: /user/login
             port: http
-          initialDelaySeconds: 5
-          timeoutSeconds: 1
+          initialDelaySeconds: 30
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
         - name: drupal-data
-          mountPath: /bitnami/drupal
+          mountPath: {{ .Values.volumeMounts.drupal.mountPath }}
+        {{- if .Values.volumeMounts.apache.mountPath }}
         - name: apache-data
-          mountPath: /bitnami/apache
+          mountPath: {{ .Values.volumeMounts.apache.mountPath }}
+        {{- end }}
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.imagePullSecrets | indent 8 }}
+      {{- end }}
       volumes:
       - name: drupal-data
       {{- if .Values.persistence.enabled }}
@@ -69,10 +73,12 @@ spec:
       {{- else }}
         emptyDir: {}
       {{- end }}
+      {{- if .Values.volumeMounts.apache.mountPath }}
       - name: apache-data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
           claimName: {{ template "fullname" . }}-apache
       {{- else }}
         emptyDir: {}
+      {{- end }}
       {{- end }}
