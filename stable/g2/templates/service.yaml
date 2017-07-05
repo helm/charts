@@ -20,4 +20,4 @@ spec:
   selector:
     app: "{{ template "name" . }}"
     release: "{{ .Release.Name }}"
-  type: '{{.Values.g2.serviceType}}'
+  type: '{{ .Values.g2.serviceType }}'
