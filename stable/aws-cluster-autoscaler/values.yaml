@@ -7,7 +7,7 @@ awsRegion: us-east-1
 
 image:
   repository: gcr.io/google_containers/cluster-autoscaler
-  tag: v0.4.0
+  tag: v0.5.4
   pullPolicy: IfNotPresent
 
 extraArgs: {}
