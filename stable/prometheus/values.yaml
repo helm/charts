@@ -18,6 +18,11 @@ alertmanager:
   ##
   extraArgs: {}
 
+  ## Additional alertmanager container environment variable
+  ## For instance to add a http_proxy
+  ##
+  extraEnv: {}
+
   ingress:
     ## If true, alertmanager Ingress will be created
     ##
