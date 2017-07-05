@@ -8,6 +8,10 @@ metadata:
     release: {{.Release.Name | quote }}
     chart: "{{.Chart.Name}}-{{.Chart.Version}}"
     component: "{{.Release.Name}}-{{.Values.Master.Component}}"
+{{- if .Values.Master.ServiceAnnotations }}
+  annotations:
+{{ toYaml .Values.Master.ServiceAnnotations | indent 4}}
+{{- end }}
 spec:
   ports:
     - port: {{.Values.Master.ServicePort}}
