@@ -1,22 +1,24 @@
 apiVersion: apps/v1beta1
-kind: Deployment
+kind: StatefulSet
 metadata:
   labels:
     app: {{ template "name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    component: "{{ .Values.client.name }}"
+    component: "{{ .Values.data.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-  name: {{ template "client.fullname" . }}
+  name: {{ template "data.fullname" . }}
 spec:
-  replicas: {{ .Values.client.replicas }}
+  serviceName: {{ template "data.fullname" . }}
+  replicas: {{ .Values.data.replicas }}
   template:
     metadata:
       labels:
         app: {{ template "name" . }}
-        component: "{{ .Values.client.name }}"
+        component: "{{ .Values.data.name }}"
         release: {{ .Release.Name }}
       annotations:
+        pod.alpha.kubernetes.io/initialized: "true"
         # see https://www.elastic.co/guide/en/elasticsearch/reference/current/vm-max-map-count.html
         # and https://www.elastic.co/guide/en/elasticsearch/reference/current/setup-configuration-memory.html#mlockall
         pod.alpha.kubernetes.io/init-containers: '[
@@ -43,8 +45,6 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
-        - name: NODE_DATA
-          value: "false"
         - name: NODE_MASTER
           value: "false"
         - name: PROCESSORS
@@ -52,29 +52,48 @@ spec:
             resourceFieldRef:
               resource: limits.cpu
         - name: ES_JAVA_OPTS
-          value: "-Djava.net.preferIPv4Stack=true -Xms{{ .Values.client.heapSize }} -Xmx{{ .Values.client.heapSize }}"
+          value: "-Djava.net.preferIPv4Stack=true -Xms{{ .Values.data.heapSize }} -Xmx{{ .Values.data.heapSize }}"
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ default "" .Values.image.pullPolicy | quote }}
+        ports:
+        - containerPort: 9300
+          name: transport
         resources:
-{{ toYaml .Values.client.resources | indent 12 }}
+{{ toYaml .Values.data.resources | indent 12 }}
         readinessProbe:
           httpGet:
             path: /_cluster/health?local=true
             port: 9200
           initialDelaySeconds: 5
-        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-        imagePullPolicy: {{ default "" .Values.image.pullPolicy | quote }}
-        ports:
-        - containerPort: 9200
-          name: http
-        - containerPort: 9300
-          name: transport
         volumeMounts:
+        - mountPath: /usr/share/elasticsearch/data
+          name: data
         - mountPath: /usr/share/elasticsearch/config/elasticsearch.yml
           name: config
           subPath: elasticsearch.yml
         - mountPath: /usr/share/elasticsearch/config/logging.yml
           name: config
           subPath: logging.yml
+        - name: config
+          mountPath: /pre-stop-hook.sh
+          subPath: pre-stop-hook.sh
+        lifecycle:
+          preStop:
+            exec:
+              command: ["/bin/bash","/pre-stop-hook.sh"]
+      terminationGracePeriodSeconds: {{ .Values.data.terminationGracePeriodSeconds }}
       volumes:
       - name: config
         configMap:
           name: {{ template "fullname" . }}
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      accessModes: [ ReadWriteOnce ]
+    {{- if .Values.data.storageClass }}
+      storageClassName: "{{ .Values.data.storageClass }}"
+    {{- end }}
+      resources:
+        requests:
+          storage: "{{ .Values.data.storage }}"
