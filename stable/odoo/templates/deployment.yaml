@@ -20,7 +20,7 @@ spec:
         env:
         - name: POSTGRESQL_HOST
           value: {{ template "postgresql.fullname" . }}
-        - name: POSTGRESQL_PORT
+        - name: POSTGRESQL_PORT_NUMBER
           value: "5432"
         - name: POSTGRESQL_PASSWORD
           valueFrom:

@@ -19,6 +19,14 @@ metadata:
       }
     ]'
 spec:
+  {{- if .Values.Master.NodeSelector }}
+  nodeSelector:
+{{ toYaml .Values.Master.NodeSelector | indent 4 }}
+  {{- end }}
+  {{- if .Values.Master.Tolerations }}
+  tolerations:
+{{ toYaml .Values.Master.Tolerations | indent 4 }}
+  {{- end }}
   containers:
     - name: {{.Release.Name}}-ui-test
       image: {{.Values.Master.Image}}:{{.Values.Master.ImageTag}}

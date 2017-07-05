@@ -11,7 +11,7 @@ To connect to your Redis server:
 
 1. Run a Redis pod that you can use as a client:
 
-   kubectl run {{ template "fullname" . }}-client --rm --tty -i{{ if .Values.usePassword }}--env REDIS_PASSWORD=$REDIS_PASSWORD{{ end }} --image {{ .Values.image }} -- bash
+   kubectl run {{ template "fullname" . }}-client --rm --tty -i{{ if .Values.usePassword }} --env REDIS_PASSWORD=$REDIS_PASSWORD{{ end }} --image {{ .Values.image }} -- bash
 
 2. Connect using the Redis CLI:
 
