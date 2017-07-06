@@ -99,12 +99,12 @@ spec:
           containerPort: {{ default 9160 .Values.config.ports.thrift }}
         volumeMounts:
         - name: data
-          {{- if .Values.persistence.enabled }}
           mountPath: /var/lib/cassandra
-          {{- else }}
-          emptyDir: {}
-          {{- end }}
-  {{- if .Values.persistence.enabled }}
+{{- if not .Values.persistence.enabled }}
+      volumes:
+      - name: data
+        emptyDir: {}
+{{- else }}
   volumeClaimTemplates:
   - metadata:
       name: data
@@ -125,4 +125,4 @@ spec:
       resources:
         requests:
           storage: {{ .Values.persistence.size | quote }}
-  {{- end }}
+{{- end }}
