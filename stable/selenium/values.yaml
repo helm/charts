@@ -14,6 +14,9 @@ hub:
   ## The port which the hub listens on
   port: 4444
 
+  ## Timeout for probe Hub readiness via HTTP request on Hub console
+  readinessTimeout: 1  
+
   ## Set the JAVA_OPTS environment variable
   ## If you find your selenium hub is OOMKilled, try adding -XX:+UseSerialGC
   javaOpts: "-Xmx400m"
