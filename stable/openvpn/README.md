@@ -21,19 +21,23 @@ POD_NAME=`kubectl get pods -l type=openvpn | awk END'{ print $1 }'` \
 && kubectl log $POD_NAME --follow
 ```
 
-When ready generate a client key as follows:
+When ready, get the kubevpn CLI:
 
 ```bash
-POD_NAME=`kubectl get pods --namespace {{ .Release.Namespace }} -l type=openvpn | awk END'{ print $1 }'` \
-&& SERVICE_NAME=`kubectl get svc --namespace {{ .Release.Namespace }} -l type=openvpn | awk END'{ print $1 }'` \
-&& SERVICE_IP=`kubectl get svc $SERVICE_NAME --namespace {{ .Release.Namespace }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}'` \
-&& KEY_NAME=kubeVPN \
-&& kubectl exec --namespace {{ .Release.Namespace }} -it $POD_NAME /etc/openvpn/setup/newClientCert.sh $KEY_NAME $SERVICE_IP \
-&& kubectl exec --namespace {{ .Release.Namespace }} -it $POD_NAME cat /etc/openvpn/certs/pki/$KEY_NAME.ovpn > $KEY_NAME.ovpn
+POD_NAME=`kubectl get pods --namespace {{ .Release.Namespace }} -l type=openvpn | awk END'{ print $1 }'` && \
+kubectl exec --namespace {{ .Release.Namespace }} -it $POD_NAME cat /etc/openvpn/setup/kubevpn.sh | tr -d '\r' > ./kubevpn && chmod +x ./kubevpn
 
 ```
 
-Be sure to change KEY_NAME if generating additional keys.  Import the .ovpn file into your favorite openvpn tool like tunnelblick and verify connectivity.
+And generate a client key as follows:
+
+```bash
+KEY_NAME=kubeVPN && \
+./kubevpn $KEY_NAME
+
+```
+
+Be sure to change KEY_NAME to your client name to generate additional keys.  Import the .ovpn file into your favorite openvpn tool like tunnelblick and verify connectivity.
 
 ## Configuration
 
