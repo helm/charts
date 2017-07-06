@@ -5,14 +5,15 @@ metadata:
   annotations:
     helm.sh/created: {{.Release.Time.Seconds | quote }}
   labels:
-    heritage: {{.Release.Service | quote }}
-    release: {{.Release.Name | quote }}
+    app: {{ template "name" . }}
     chart: "{{.Chart.Name}}-{{.Chart.Version}}"
-    component: {{ template "name" . }}
+    release: {{.Release.Name | quote }}
+    heritage: {{.Release.Service | quote }}
 spec:
   selector:
     matchLabels:
-      component: {{ template "name" . }}
+      app: {{ template "name" . }}
+      release: {{.Release.Name | quote }}
   {{- if .Values.MinAvailable}}
   minAvailable: {{.Values.MinAvailable}}
   {{- else}}

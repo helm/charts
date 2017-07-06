@@ -5,41 +5,39 @@ metadata:
   annotations:
     helm.sh/created: {{.Release.Time.Seconds | quote }}
   labels:
-    heritage: {{.Release.Service | quote }}
-    release: {{.Release.Name | quote }}
+    app: {{ template "name" . }}
     chart: "{{.Chart.Name}}-{{.Chart.Version}}"
-    component: {{ template "name" . }}
+    release: {{.Release.Name | quote }}
+    heritage: {{.Release.Service | quote }}
 spec:
   serviceName: {{ template "fullname" . }}-headless
   replicas: {{.Values.Servers}}
   template:
     metadata:
       labels:
-        component: {{ template "name" . }}
+        app: {{ template "name" . }}
+        release: {{.Release.Name | quote }}
     spec:
       {{- if eq .Values.AntiAffinity "hard"}}
       affinity:
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
-            - labelSelector:
-                matchExpressions:
-                  - key: "component"
-                    operator: In
-                    values:
-                    - {{ template "name" . }}
-              topologyKey: "kubernetes.io/hostname"
+            - topologyKey: "kubernetes.io/hostname"
+              labelSelector:
+                matchLabels:
+                  app: {{ template "name" . }}
+                  release: {{.Release.Name | quote }}
       {{- else if eq .Values.AntiAffinity "soft"}}
       affinity:
-        preferredDuringSchedulingIgnoredDuringExecution:
-             - weight: 1
-               podAntiAffinityTerm:
-                 labelSelector:
-                    matchExpressions:
-                      - key: "component"
-                        operator: In
-                        values:
-                         - {{ template "name" . }}
-                 topologyKey: "kubernetes.io/hostname"
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 1
+              podAntiAffinityTerm:
+                topologyKey: "kubernetes.io/hostname"
+                labelSelector:
+                  matchLabels:
+                    app: {{ template "name" . }}
+                    release: {{.Release.Name | quote }}
       {{- end}}
       containers:
       - name: k8szk

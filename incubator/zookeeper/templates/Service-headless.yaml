@@ -3,10 +3,10 @@ kind: Service
 metadata:
   name: {{ template "fullname" . }}-headless
   labels:
-    heritage: {{.Release.Service | quote }}
-    release: {{.Release.Name | quote }}
+    app: {{ template "name" . }}
     chart: "{{.Chart.Name}}-{{.Chart.Version}}"
-    component: {{ template "name" . }}
+    release: {{.Release.Name | quote }}
+    heritage: {{.Release.Service | quote }}
 spec:
   ports:
   - port: {{.Values.ServerPort}}
@@ -15,4 +15,5 @@ spec:
     name: leader-election
   clusterIP: None
   selector:
-    component: {{ template "name" . }}
+    app: {{ template "name" . }}
+    release: {{.Release.Name | quote }}

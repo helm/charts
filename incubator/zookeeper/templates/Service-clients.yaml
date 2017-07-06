@@ -3,13 +3,14 @@ kind: Service
 metadata:
   name: {{ template "fullname" . }}
   labels:
-    heritage: {{.Release.Service | quote }}
-    release: {{.Release.Name | quote }}
+    app: {{ template "name" . }}
     chart: "{{.Chart.Name}}-{{.Chart.Version}}"
-    component: {{ template "name" . }}
+    release: {{.Release.Name | quote }}
+    heritage: {{.Release.Service | quote }}
 spec:
   ports:
   - port: {{.Values.ClientPort}}
     name: client
   selector:
-    component: {{ template "name" . }}
+    app: {{ template "name" . }}
+    release: {{.Release.Name | quote }}
