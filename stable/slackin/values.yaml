@@ -1,0 +1,55 @@
+image:
+  name: chk1/slackin
+  digest: sha256:476ae1beb981449c1b61794bb9ec52beeff1c312ff54fbcd3010946b991975f8
+  pullPolicy: IfNotPresent
+
+slack:
+  ## Slack team id
+  ##  - https://github.com/rauchg/slackin#tips
+  ##
+  # teamId:
+
+  ## Slack invite user (with admin privileges) api token
+  ##  - https://github.com/rauchg/slackin#tips
+  ##  - https://get.slack.help/hc/en-us/articles/215770388-Creating-and-regenerating-API-tokens
+  ##
+  # apiToken:
+  verbose: true
+
+## Ingress Resources
+##  - https://kubernetes.io/docs/concepts/services-networking/ingress/
+##
+ingress:
+  ## Ingress hostname
+  ##  - https://kubernetes.io/docs/concepts/services-networking/ingress/#name-based-virtual-hosting
+  ##
+  hostname: slackin.local
+
+  ## Ingress annotations
+  ##  - https://github.com/kubernetes/ingress/tree/master/controllers/nginx#running-multiple-ingress-controllers
+  ##  - https://github.com/kubernetes/ingress/blob/master/controllers/gce/BETA_LIMITATIONS.md#disabling-glbc
+  ##
+  annotations:
+  #   kubernetes.io/ingress.class: nginx
+
+  ## TLS configuration, Secrets must be manually created in the namespace
+  ##  - https://kubernetes.io/docs/concepts/services-networking/ingress/#tls
+  ##
+  # tls:
+  #   secretName: slackin.local-tls
+
+## Kubernetes service
+##  - https://kubernetes.io/docs/concepts/services-networking/service
+service:
+  ## Service type
+  ##  - https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services---service-types
+  ##
+  type: NodePort
+
+## Resource requests and limits
+##  - https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/
+##
+resources:
+  requests:
+    cpu: 20m
+    memory: 64Mi

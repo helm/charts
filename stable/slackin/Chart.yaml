@@ -1,0 +1,12 @@
+name: slackin
+version: 0.0.1
+description: Chart to deploy slackin
+keywords:
+- slackin
+home: http://rauchg.com/slackin/
+sources:
+- https://github.com/codeformuenster/slackin-docker
+maintainers:
+- name: Sameer Naik
+  email: sameer@damagehead.com
+engine: gotpl
