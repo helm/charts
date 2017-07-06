@@ -49,6 +49,11 @@ service:
   #   key: value
 gzip:
   enabled: true
+accessLogs:
+  enabled: false
+  ## Path to the access logs file. If not provided, Traefik defaults it to stdout.
+  # filePath: ""
+  format: common  # choices are: common, json
 # Kubernetes ingress filters
 #kubernetes:
 #  namespaces:
