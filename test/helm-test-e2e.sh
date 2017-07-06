@@ -16,7 +16,12 @@ tar xzfv ${HELM_TARBALL}
 rm -f ${HELM_TARBALL}
 
 # Housekeeping
-linux-amd64/helm init --upgrade
+kubectl -n kube-system create sa tiller
+kubectl create clusterrolebinding tiller --clusterrole cluster-admin --serviceaccount=kube-system:tiller
+linux-amd64/helm init --service-account tiller --upgrade
+
+linux-amd64/helm repo add stable https://kubernetes-charts.storage.googleapis.com/
+linux-amd64/helm repo add incubator https://kubernetes-charts-incubator.storage.googleapis.com/
 
 # Run test framework
 pushd .

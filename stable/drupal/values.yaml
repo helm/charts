@@ -1,7 +1,7 @@
 ## Bitnami Drupal image version
 ## ref: https://hub.docker.com/r/bitnami/drupal/tags/
 ##
-image: bitnami/drupal:8.3.2-r0
+image: bitnami/drupal:8.3.3-r0
 
 ## Optionally specify an array of imagePullSecrets.
 ## Secrets must be manually created in the namespace.
@@ -106,6 +106,13 @@ persistence:
     ##
     # existingClaim:
 
+    ## If defined, the drupal-data volume will mount to the speficied hostPath.
+    ## Requires persistence.enabled: true
+    ## Requires persistence.existingClaim: nil|false
+    ## Default: nil.
+    ##
+    # hostPath:
+
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
 ##
@@ -113,3 +120,13 @@ resources:
   requests:
     memory: 512Mi
     cpu: 300m
+
+## Configure volume mounts. This is useful for images whose data mount paths are
+## different than the default.
+## Setting volumeMounts.apache.mountPath to "" prevents Apache config mount.
+##
+volumeMounts:
+  drupal:
+    mountPath: /bitnami/drupal
+  apache:
+    mountPath: /bitnami/apache

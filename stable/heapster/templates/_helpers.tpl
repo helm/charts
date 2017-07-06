@@ -20,6 +20,5 @@ Create a service name that defaults to app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 */}}
 {{- define "service.fullname" -}}
-{{- $name := default .Chart.Name .Values.nameOverride -}}
-{{- .Values.service.nameOverride | default (printf "%s-%s" .Release.Name $name) | trunc 63 | trimSuffix "-" -}}
+{{- .Values.service.nameOverride | default .Chart.Name }}
 {{- end -}}
