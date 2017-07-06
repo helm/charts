@@ -31,6 +31,12 @@ spec:
           - name: {{ $key }}
             value: {{ $value | quote }}
           {{ end }}
+          {{ if .Values.server.gogs }}
+          - name: DRONE_GOGS
+            value: "true"
+          - name: DRONE_GOGS_URL
+            value: http://$(GOGS_SERVICE_HOST):$(GOGS_SERVICE_PORT)
+          {{ end }}
         ports:
         - name: http
           containerPort: {{ .Values.service.http.internalPort }}

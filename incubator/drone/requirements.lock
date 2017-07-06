@@ -1,0 +1,11 @@
+dependencies:
+- alias: ""
+  condition: ""
+  enabled: false
+  import-values: null
+  name: gogs
+  repository: https://kubernetes-charts-incubator.storage.googleapis.com/
+  tags: null
+  version: 0.2.0
+digest: sha256:db88c6be82053485eb0dc6ef47d803d1c56b12f897bd0a33624376ef0da50337
+generated: 2017-07-06T10:13:25.417559846-07:00

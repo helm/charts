@@ -20,18 +20,13 @@ To install the chart, run:
 
 ```bash
 $ helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
-$ helm fetch incubator/drone --untar
-$ $EDITOR drone/values.yaml
+$ helm install incubator/drone
 ```
 
-You will need to specify custom git parameters in order for the drone server to work.
+if you wish to configure drone to point at github instead of gogs, you will need to specify
+custom your git parameters as environment variables under `.Values.server.env` in order for
+the drone server to work, and install with `helm install incubator/drone --set server.gogs=false`.
 Please refer to [values.yaml](values.yaml) for the full run-down on how to configure this.
-
-Once it's configured, you can then install drone.
-
-```
-$ helm install ./drone
-```
 
 ## Configuration
 

@@ -1,0 +1,5 @@
+dependencies:
+  - name: gogs
+    version: 0.2.0
+    repository: https://kubernetes-charts-incubator.storage.googleapis.com/
+    condition: gogs.install
