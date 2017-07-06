@@ -1,0 +1,53 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "nginx.fullname" . }}
+  labels:
+    app: {{ template "name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: "{{ .Values.nginx.name }}"
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+spec:
+  replicas: {{ .Values.nginx.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "name" . }}
+        component: "{{ .Values.nginx.name }}"
+        release: {{ .Release.Name }}
+      annotations:
+        pod.beta.kubernetes.io/init-containers: '[{
+          "name": "remove-lost-found",
+          "image": {{ .Values.initContainerImage | quote }},
+          "command": ["rm", "-rf", "{{ .Values.nginx.persistence.mountPath }}/lost+found"],
+          "volumeMounts": [{
+              "name": "nginx-volume",
+              "mountPath": {{ .Values.nginx.persistence.mountPath | quote }}
+            }],
+          "imagePullPolicy": {{ .Values.nginx.image.pullPolicy | quote }}
+        }]'
+    spec:
+      containers:
+      - name: {{ .Values.nginx.name }}
+        image: "{{ .Values.nginx.image.repository }}:{{ .Values.nginx.image.version }}"
+        imagePullPolicy: {{ .Values.nginx.image.pullPolicy }}
+        env:
+        - name: ART_BASE_URL
+          value: {{ .Values.nginx.env.artUrl }}
+        - name: SSL
+          value: "{{ .Values.nginx.env.ssl }}"
+        ports:
+        - containerPort: {{ .Values.nginx.internalPortHttp }}
+        - containerPort: {{ .Values.nginx.internalPortHttps }}
+        volumeMounts:
+        - mountPath: {{ .Values.nginx.persistence.mountPath | quote }}
+          name: nginx-volume
+      volumes:
+      - name: nginx-volume
+      {{- if .Values.nginx.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ template "nginx.fullname" . }}
+      {{- else }}
+        emptyDir: {}
+      {{- end -}}
