@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: {{ template "fullname" . }}
   labels:
-    app: {{ template "name" . }}
+    app: "{{ template "name" . }}"
     chart: "{{.Chart.Name}}-{{.Chart.Version}}"
     release: {{.Release.Name | quote }}
     heritage: {{.Release.Service | quote }}
@@ -12,5 +12,5 @@ spec:
   - port: {{.Values.ClientPort}}
     name: client
   selector:
-    app: {{ template "name" . }}
+    app: "{{ template "name" . }}"
     release: {{.Release.Name | quote }}
