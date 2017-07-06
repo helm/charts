@@ -66,19 +66,19 @@ $ helm install --name my-release --values values.yaml stable/g2
 ## RBAC
 By default the chart will not install the recommended RBAC roles and rolebindings.
 
-To determine if your cluster supports this running the following:
-
-```console
-$ kubectl api-versions | grep rbac
-```
-
-You also need to have the following parameter on the api server. See the following document for how to enable [RBAC](https://kubernetes.io/docs/admin/authorization/rbac/)
+You need to have the following parameter on the api server. See the following document for how to enable [RBAC](https://kubernetes.io/docs/admin/authorization/rbac/)
 
 ```
 --authorization-mode=RBAC
 ```
 
-If the output contains "beta" or both "alpha" and "beta" you can may install with enabling the creating of rbac resources (see below).
+To determine if your cluster supports RBAC, run the the following command:
+
+```console
+$ kubectl api-versions | grep rbac
+```
+
+If the output contains "alpha" and/or "beta", you can may install the chart with RBAC enabled (see below).
 
 ### Enable RBAC role/rolebinding creation
 
