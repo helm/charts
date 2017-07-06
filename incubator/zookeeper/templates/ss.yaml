@@ -97,12 +97,15 @@ spec:
             - "zkOk.sh"
           initialDelaySeconds: {{.Values.ProbeInitialDelaySeconds}}
           timeoutSeconds: {{.Values.ProbeTimeoutSeconds}}
+        {{- if .Values.Storage}}
         volumeMounts:
         - name: datadir
           mountPath: /var/lib/zookeeper
+        {{- end}}
       securityContext:
         runAsUser: 1000
         fsGroup: 1000
+  {{- if .Values.Storage}}
   volumeClaimTemplates:
   - metadata:
       name: datadir
@@ -113,4 +116,5 @@ spec:
           storage: {{.Values.Storage}}
       {{- if .Values.StorageClass}}
       storageClassName: {{.Values.StorageClass | quote}}
-      {{- end}} 
+      {{- end}}
+  {{- end}}
