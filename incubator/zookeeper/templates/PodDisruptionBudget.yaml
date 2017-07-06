@@ -3,19 +3,19 @@ kind: PodDisruptionBudget
 metadata:
   name: {{ template "fullname" . }}
   annotations:
-    helm.sh/created: {{.Release.Time.Seconds | quote }}
+    helm.sh/created: {{ .Release.Time.Seconds | quote }}
   labels:
     app: "{{ template "name" . }}"
-    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
-    release: {{.Release.Name | quote }}
-    heritage: {{.Release.Service | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
 spec:
   selector:
     matchLabels:
       app: "{{ template "name" . }}"
-      release: {{.Release.Name | quote }}
-  {{- if .Values.MinAvailable}}
-  minAvailable: {{.Values.MinAvailable}}
-  {{- else}}
-  minAvailable: {{sub .Values.Servers 1}}
-  {{- end}}
+      release: {{ .Release.Name | quote }}
+  {{- if .Values.MinAvailable }}
+  minAvailable: {{ .Values.MinAvailable }}
+  {{- else }}
+  minAvailable: {{ sub .Values.Servers 1 }}
+  {{- end }}

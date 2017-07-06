@@ -4,16 +4,16 @@ metadata:
   name: {{ template "fullname" . }}-headless
   labels:
     app: "{{ template "name" . }}"
-    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
-    release: {{.Release.Name | quote }}
-    heritage: {{.Release.Service | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
 spec:
   ports:
-  - port: {{.Values.ServerPort}}
+  - port: {{ .Values.ServerPort }}
     name: server
-  - port: {{.Values.LeaderElectionPort}}
+  - port: {{ .Values.LeaderElectionPort }}
     name: leader-election
   clusterIP: None
   selector:
     app: "{{ template "name" . }}"
-    release: {{.Release.Name | quote }}
+    release: {{ .Release.Name | quote }}
