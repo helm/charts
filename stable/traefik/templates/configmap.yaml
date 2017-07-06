@@ -47,6 +47,13 @@ data:
     labelselector = {{ .Values.kubernetes.labelSelector | quote }}
       {{- end}}
     {{- end}}
+    {{- if .Values.accessLogs.enabled }}
+    [accessLogs]
+    {{- if .Values.accessLogs.filePath }}
+    filePath = "{{ .Values.accessLogs.filePath }}"
+    {{- end}}
+    format = "{{ .Values.accessLogs.format }}"
+    {{- end}}
     {{- if .Values.acme.enabled }}
     [acme]
     email = "{{ .Values.acme.email }}"
