@@ -24,6 +24,9 @@ spec:
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         kubernetes.io/cluster-service: "true"
     spec:
+{{- if .Values.rbacSupport -}}
+      serviceAccountName: {{ template "fullname" . }}
+{{- end -}}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 10 }}
       containers:
