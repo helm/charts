@@ -5,7 +5,7 @@ metadata:
   annotations:
     helm.sh/created: {{ .Release.Time.Seconds | quote }}
   labels:
-    app: "{{ template "name" . }}"
+    app: {{ include "name" . | quote }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
@@ -15,7 +15,7 @@ spec:
   template:
     metadata:
       labels:
-        app: "{{ template "name" . }}"
+        app: {{ include "name" . | quote }}
         release: {{ .Release.Name | quote }}
     spec:
       {{- if eq .Values.AntiAffinity "hard" }}
@@ -25,7 +25,7 @@ spec:
             - topologyKey: "kubernetes.io/hostname"
               labelSelector:
                 matchLabels:
-                  app: "{{ template "name" . }}"
+                  app: {{ include "name" . | quote }}
                   release: {{ .Release.Name | quote }}
       {{- else if eq .Values.AntiAffinity "soft" }}
       affinity:
@@ -36,7 +36,7 @@ spec:
                 topologyKey: "kubernetes.io/hostname"
                 labelSelector:
                   matchLabels:
-                    app: "{{ template "name" . }}"
+                    app: {{ include "name" . | quote }}
                     release: {{ .Release.Name | quote }}
       {{- end }}
       containers:

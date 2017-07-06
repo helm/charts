@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: {{ template "fullname" . }}-headless
   labels:
-    app: "{{ template "name" . }}"
+    app: {{ include "name" . | quote }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
@@ -15,5 +15,5 @@ spec:
     name: leader-election
   clusterIP: None
   selector:
-    app: "{{ template "name" . }}"
+    app: {{ include "name" . | quote }}
     release: {{ .Release.Name | quote }}
