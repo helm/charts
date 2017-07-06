@@ -1,0 +1,53 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app: "{{ template "name" . }}"
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+spec:
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: "{{ template "name" . }}"
+        release: "{{ .Release.Name }}"
+    spec:
+{{- if .Values.rbac.install }}
+      serviceAccountName: {{ template "fullname" . }}
+{{- end }}
+      containers:
+      - args:
+        - run
+        - --v=3
+        image: '{{ .Values.operator.image }}:{{ .Values.operator.tag }}'
+        imagePullPolicy: '{{ .Values.operator.pullPolicy }}'
+        name: operator
+        ports:
+        - containerPort: 56790
+          name: http
+          protocol: TCP
+        terminationMessagePolicy: File
+      - args:
+        - -web.listen-address=:56789
+        - -persistence.file=/var/pv/pushgateway.dat
+        image: '{{ .Values.pushgateway.image }}:{{ .Values.pushgateway.tag }}'
+        imagePullPolicy: '{{ .Values.pushgateway.pullPolicy }}'
+        name: pushgateway
+        ports:
+        - containerPort: 56789
+          name: pushgateway
+          protocol: TCP
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /var/pv
+          name: data-volume
+        - mountPath: /tmp
+          name: stash-scratchdir
+      volumes:
+        - emptyDir: {}
+          name: data-volume
+        - emptyDir: {}
+          name: stash-scratchdir
