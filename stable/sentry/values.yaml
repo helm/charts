@@ -89,13 +89,14 @@ ingress:
 
   ## Ingress annotations
   ##
-  # annotations:
+  annotations: {}
   #   kubernetes.io/ingress.class: nginx
+  #   kubernetes.io/tls-acme: 'true'
 
   ## Ingress TLS configuration
   ## Secrets must be manually created in the namespace
   ##
-  # tls:
+  tls: []
   #   - secretName: sentry.local-tls
   #     hosts:
   #       - sentry.local

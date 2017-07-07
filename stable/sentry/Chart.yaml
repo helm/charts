@@ -8,7 +8,7 @@ keywords:
 sources:
   - https://github.com/getsentry/sentry
 home: https://sentry.io/
-icon: https://a0wx592cvgzripj.global.ssl.fastly.net/_static/6571516f8aed42e4172c9c439ba814c6/getsentry/images/branding/png/sentry-glyph-black.png
+icon: https://sentry.io/_static/getsentry/images/branding/png/sentry-glyph-black.png
 maintainers:
   - name: rothgar
     email: justin@linux.com

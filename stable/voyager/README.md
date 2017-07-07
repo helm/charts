@@ -39,9 +39,12 @@ The command removes all the Kubernetes components associated with the chart and 
 The following tables lists the configurable parameters of the Voyager chart and their default values.
 
 
-| Parameter                  | Description                  | Default              |
-| -----------------------    | ---------------------------- | -------------------- |
-| `image`                    |  Container image to run      | `appscode/voyager`   |
-| `imageTag`                 |  Image tag of container      | `1.5.6`              |
-| `cloudProvider`            |  Name of cloud provider      | ``                   |
-| `logLevel`                 |  Log level for voyager       | `3`                  |
+| Parameter                  | Description                        | Default              |
+| -----------------------    | ---------------------------------- | -------------------- |
+| `image`                    |  Container image to run            | `appscode/voyager`   |
+| `imageTag`                 |  Image tag of container            | `3.0.0`              |
+| `cloudProvider`            |  Name of cloud provider            | ``                   |
+| `cloudConfig`              |  Path to cloud config              | ``                   |
+| `logLevel`                 |  Log level for operator            | `3`                  |
+| `persistence.enabled`      |  Enable mounting cloud config      | `false`              |
+| `persistence.hostPath`     |  Host mount path for cloud config  | `/etc/kubernetes`    |
