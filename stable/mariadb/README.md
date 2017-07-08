@@ -58,6 +58,7 @@ The following tables lists the configurable parameters of the MariaDB chart and 
 | `persistence.storageClass`  | Storage class of backing PVC               | `nil` (uses alpha storage class annotation)                |
 | `persistence.accessMode`    | Use volume as ReadOnly or ReadWrite        | `ReadWriteOnce`                                            |
 | `persistence.size`          | Size of data volume                        | `8Gi`                                                      |
+| `affinity`                  | Set affinity for the pod                   | `nil`                                                      |
 | `resources`                 | CPU/Memory resource requests/limits        | Memory: `256Mi`, CPU: `250m`                               |
 | `config`                    | Multi-line string for my.cnf configuration | `nil`                                                      |
 

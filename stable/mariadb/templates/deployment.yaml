@@ -33,6 +33,10 @@ spec:
             }
           ]'
     spec:
+      {{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+      {{- end }}
       containers:
       - name: {{ template "fullname" . }}
         image: "{{ .Values.image }}"
