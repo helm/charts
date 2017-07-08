@@ -13,6 +13,10 @@ spec:
       labels:
         app: {{ template "fullname" . }}
     spec:
+      {{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+      {{- end }}
       containers:
       - name: {{ template "fullname" . }}
         image: "{{ .Values.image }}"
@@ -79,14 +83,14 @@ spec:
       - name: moodle-data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ template "fullname" . }}-moodle
+          claimName: {{ .Values.persistence.moodle.existingClaim | default (include "moodle.moodle.fullname" . ) }}
       {{- else }}
         emptyDir: {}
       {{- end }}
       - name: apache-data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ template "fullname" . }}-apache
+          claimName: {{ .Values.persistence.apache.existingClaim | default (include "moodle.apache.fullname" . ) }}
       {{- else }}
         emptyDir: {}
       {{- end }}
