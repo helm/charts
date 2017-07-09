@@ -25,4 +25,4 @@ Then run:
 
   helm upgrade {{ .Release.Name }} --set ServiceToken=<YOUR_WEAVE_CLOUD_SERVICE_TOKEN> stable/weave-cloud
 
-{{- end}}
+{{- end }}

@@ -42,4 +42,4 @@ spec:
       volumes:
       - name: grafana-data
         emptyDir: {}
-{{end}}
+{{ end }}

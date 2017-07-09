@@ -14,7 +14,7 @@ spec:
     metadata:
     {{- if .Values.controller.podAnnotations }}
       annotations:
-{{ toYaml .Values.controller.podAnnotations | indent 8}}
+{{ toYaml .Values.controller.podAnnotations | indent 8 }}
     {{- end }}
       labels:
         app: {{ template "name" . }}
@@ -31,7 +31,7 @@ spec:
             - --default-backend-service={{ if .Values.defaultBackend.enabled }}{{ .Release.Namespace }}/{{ template "defaultBackend.fullname" . }}{{ else }}{{ .Values.controller.defaultBackendService }}{{ end }}
           {{- if and (contains "0.9" .Values.controller.image.tag) .Values.controller.publishService.enabled }}
             - --publish-service={{ template "controller.publishServicePath" . }}
-          {{- end}}
+          {{- end }}
           {{- if (contains "0.9" .Values.controller.image.tag) }}
             - --configmap={{ .Release.Namespace }}/{{ template "controller.fullname" . }}
           {{- else }}
