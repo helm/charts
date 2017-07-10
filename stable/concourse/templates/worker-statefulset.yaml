@@ -14,25 +14,6 @@ spec:
     metadata:
       labels:
         app: {{ template "worker.fullname" . }}
-      annotations:
-        scheduler.alpha.kubernetes.io/affinity: >
-          {
-            "podAntiAffinity": {
-              "preferredDuringSchedulingIgnoredDuringExecution": [
-                {
-                  "weight": 100,
-                  "labelSelector": {
-                    "matchExpressions": [{
-                      "key": "app",
-                      "operator": "In",
-                      "values": ["{{ template "worker.fullname" . }}"]
-                    }]
-                  },
-                  "topologyKey": "kubernetes.io/hostname"
-                }
-              ]
-            }
-          }
     spec:
       terminationGracePeriodSeconds: 60
       containers:
@@ -90,6 +71,16 @@ spec:
               readOnly: true
             - name: concourse-work-dir
               mountPath: /concourse-work-dir
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              topologyKey: kubernetes.io/hostname
+              labelSelector:
+                matchLabels:
+                  app: {{ template "worker.fullname" . }}
+                  release: {{ .Release.Name | quote }}
       volumes:
         - name: concourse-keys
           secret:
