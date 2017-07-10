@@ -40,7 +40,7 @@ spec:
           - "Content-Type: application/json;charset=UTF-8"
           - "--data-binary"
           {{- with .Values.server.setDatasource.datasource }}
-          - "{\"name\":\"{{ .name }}\",\"type\":\"{{ .type }}\",\"url\":\"{{ .url }}\",\"database\":\"{{ .database }}\",\"jsonData\":{ {{ .jsonData }} },\"access\":\"{{ .access }}\",\"isDefault\":{{ .isDefault } }}"
+          - "{\"name\":\"{{ .name }}\",\"type\":\"{{ .type }}\",\"url\":\"{{ .url }}\",\"database\":\"{{ .database }}\",\"jsonData\":{ {{ .jsonData }} },\"access\":\"{{ .access }}\",\"isDefault\":{{ .isDefault }}}"
           {{- end }}
       restartPolicy: {{ .Values.server.setDatasource.restartPolicy }}
 {{- end -}}
