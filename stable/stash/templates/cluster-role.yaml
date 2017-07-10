@@ -1,0 +1,52 @@
+{{ if .Values.rbac.install }}
+{{- $serviceName := include "fullname" . -}}
+apiVersion: rbac.authorization.k8s.io/{{ required "A valid .Values.rbac.apiVersion entry required!" .Values.rbac.apiVersion }}
+kind: ClusterRole
+metadata:
+  name: {{ $serviceName }}
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app: "{{ template "name" . }}"
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+rules:
+- apiGroups:
+  - extensions
+  resources:
+  - thirdpartyresources
+  verbs: ["get", "create"]
+- apiGroups:
+  - stash.appscode.com
+  resources:
+  - restics
+  verbs: ["*"]
+- apiGroups:
+  - extensions
+  resources:
+  - deployments
+  - replicasets
+  - daemonsets
+  verbs: ["list", "watch", "update"]
+- apiGroups:
+  - apps
+  resources:
+  - deployments
+  verbs: ["list", "watch", "update"]
+- apiGroups: [""]
+  resources:
+  - namespaces
+  - replicationcontrollers
+  verbs: ["list", "watch", "update"]
+- apiGroups: [""]
+  resources:
+  - secrets
+  verbs: ["get"]
+- apiGroups: [""]
+  resources:
+  - events
+  verbs: ["create"]
+- apiGroups: [""]
+  resources:
+  - pods
+  verbs: ["list", delete"]
+{{ end }}

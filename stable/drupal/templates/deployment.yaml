@@ -56,9 +56,11 @@ spec:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
         - name: drupal-data
-          mountPath: /bitnami/drupal
+          mountPath: {{ .Values.volumeMounts.drupal.mountPath }}
+        {{- if .Values.volumeMounts.apache.mountPath }}
         - name: apache-data
-          mountPath: /bitnami/apache
+          mountPath: {{ .Values.volumeMounts.apache.mountPath }}
+        {{- end }}
       {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
 {{ toYaml .Values.imagePullSecrets | indent 8 }}
@@ -71,10 +73,12 @@ spec:
       {{- else }}
         emptyDir: {}
       {{- end }}
+      {{- if .Values.volumeMounts.apache.mountPath }}
       - name: apache-data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
           claimName: {{ template "fullname" . }}-apache
       {{- else }}
         emptyDir: {}
+      {{- end }}
       {{- end }}

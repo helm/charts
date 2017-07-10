@@ -6,5 +6,5 @@ metadata:
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    component: "{{.Release.Name}}-{{.Values.Component}}"
+    component: "{{ .Release.Name }}-{{ .Values.Component }}"
 subsets: []

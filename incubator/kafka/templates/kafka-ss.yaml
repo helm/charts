@@ -8,7 +8,7 @@ spec:
   - port: 2181
     name: client
   selector:
-    component: "{{.Release.Name}}"
+    component: "{{ .Release.Name }}"
 
 # A headless service to create DNS records
 ---
@@ -17,19 +17,19 @@ kind: Service
 metadata:
   name: "{{ printf "%s-broker-%s" .Release.Name .Values.Name | trunc 63 }}"
   labels:
-    heritage: {{.Release.Service | quote }}
-    release: {{.Release.Name | quote }}
-    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
-    component: "{{.Release.Name}}-{{.Values.Component}}"
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    component: "{{ .Release.Name }}-{{ .Values.Component }}"
   annotations:
-    "helm.sh/created": {{.Release.Time.Seconds | quote }}
+    "helm.sh/created": {{ .Release.Time.Seconds | quote }}
     service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
 spec:
   ports:
   - port: 9092
   clusterIP: None
   selector:
-    component: "{{.Release.Name}}-{{.Values.Component}}"
+    component: "{{ .Release.Name }}-{{ .Values.Component }}"
     app: kafka
 ---
 apiVersion: v1
@@ -37,17 +37,17 @@ kind: Service
 metadata:
   name: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 63 }}"
   labels:
-    heritage: {{.Release.Service | quote }}
-    release: {{.Release.Name | quote }}
-    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
-    component: "{{.Release.Name}}-{{.Values.Component}}"
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    component: "{{ .Release.Name }}-{{ .Values.Component }}"
   annotations:
-    "helm.sh/created": {{.Release.Time.Seconds | quote }}
+    "helm.sh/created": {{ .Release.Time.Seconds | quote }}
 spec:
   ports:
   - port: 9092
   selector:
-    component: "{{.Release.Name}}-{{.Values.Component}}"
+    component: "{{ .Release.Name }}-{{ .Values.Component }}"
     app: kafka
 ---
 apiVersion: apps/v1beta1
@@ -56,12 +56,12 @@ metadata:
   name: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 63 }}"
   labels:
     app: kafka
-    heritage: {{.Release.Service | quote }}
-    release: {{.Release.Name | quote }}
-    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
-    component: "{{.Release.Name}}-{{.Values.Component}}"
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    component: "{{ .Release.Name }}-{{ .Values.Component }}"
   annotations:
-    "helm.sh/created": {{.Release.Time.Seconds | quote }}
+    "helm.sh/created": {{ .Release.Time.Seconds | quote }}
 spec:
   serviceName: "{{ printf "%s-broker-%s" .Release.Name .Values.Name | trunc 63 }}"
   replicas: {{ default 3 .Values.Replicas }}
@@ -69,7 +69,7 @@ spec:
     metadata:
       labels:
         app: kafka
-        component: "{{.Release.Name}}-{{.Values.Component}}"
+        component: "{{ .Release.Name }}-{{ .Values.Component }}"
       annotations:
         pod.alpha.kubernetes.io/initialized: "true"
         pod.alpha.kubernetes.io/init-containers: '[
@@ -77,8 +77,8 @@ spec:
     spec:
       containers:
       - name: "{{ printf "%s-broker-%s" .Release.Name .Values.Name | trunc 63 }}"
-        image: "{{.Values.Image}}:{{.Values.ImageTag}}"
-        imagePullPolicy: "{{.Values.ImagePullPolicy}}"
+        image: "{{ .Values.Image }}:{{ .Values.ImageTag }}"
+        imagePullPolicy: "{{ .Values.ImagePullPolicy }}"
         livenessProbe:
           exec:
             command:
@@ -125,4 +125,4 @@ spec:
       accessModes: [ "ReadWriteOnce" ]
       resources:
         requests:
-          storage: {{.Values.Storage}}
+          storage: {{ .Values.Storage }}
