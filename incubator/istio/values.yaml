@@ -38,7 +38,7 @@ mixer:
 ## Pilot configuration
 pilot:
   name: istio-pilot
-  CustomConfigMap: false
+  customConfigMap: false
 
   service:
     type: ClusterIP
