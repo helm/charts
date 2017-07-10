@@ -1,4 +1,4 @@
-{{- if not .Values.pilot.CustomConfigMap }}
+{{- if not .Values.pilot.customConfigMap }}
 {{- $serviceName := include "fullname" . -}}
 apiVersion: v1
 kind: ConfigMap
