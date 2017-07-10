@@ -1,4 +1,5 @@
 {{- $serviceName := include "fullname" . -}}
+{{- if not .Values.pilot.CustomConfigMap }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -14,3 +15,4 @@ data:
     discoveryAddress: {{ .Values.pilot.name }}:{{ .Values.pilot.service.externalHttpDiscovery }}
     ingressService: istio-ingress
     zipkinAddress: {{ $serviceName }}-{{ .Values.addons.zipkin.deployment.name }}:{{ .Values.addons.zipkin.service.externalPort }}
+{{- end -}}
