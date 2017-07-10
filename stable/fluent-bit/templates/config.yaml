@@ -1,0 +1,47 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "fullname" . }}-config
+  labels:
+    app: {{ template "fullname" . }}
+data:
+  fluent-bit.conf: |-
+    [SERVICE]
+        Flush        1
+        Daemon       Off
+        Log_Level    info
+        Parsers_File parsers.conf
+
+    [INPUT]
+        Name          tail
+        Path          /var/log/containers/*.log
+        Parser        docker
+        Tag           kube.*
+        Refresh_Interval 5
+        Mem_Buf_Limit 5MB
+
+    [FILTER]
+        Name   kubernetes
+        Match  kube.*
+
+{{ if eq .Values.backend.type "test" }}
+    [OUTPUT]
+        Name  file
+        Match *
+        Path /tmp/fluent-bit.log
+{{ else if eq .Values.backend.type "forward" }}
+    [OUTPUT]
+        Name          forward
+        Match         *
+        Host          {{ .Values.backend.forward.host }}
+        Port          {{ .Values.backend.forward.port }}
+        Retry_Limit False
+{{ else if eq .Values.backend.type "es" }}
+    [OUTPUT]
+        Name  es
+        Match *
+        Host  {{ .Values.backend.es.host }}
+        Port  {{ .Values.backend.es.port }}
+        Logstash_Format On
+        Retry_Limit False
+{{- end }}

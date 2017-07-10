@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   labels:
     app: {{ template "grafana.fullname" . }}
-    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     component: "{{ .Values.server.name }}"
     heritage: "{{ .Release.Service }}"
     release: "{{ .Release.Name }}"
@@ -62,6 +62,7 @@ spec:
               mountPath: {{ default "/var/lib/grafana/dashboards" .Values.server.dashboardLocalPath | quote }}
             - name: storage-volume
               mountPath: {{ default "/var/lib/grafana/data" .Values.server.storageLocalPath | quote }}
+              subPath: "{{ .Values.server.persistentVolume.subPath }}"
       terminationGracePeriodSeconds: {{ default 300 .Values.server.terminationGracePeriodSeconds }}
       volumes:
         - name: config-volume

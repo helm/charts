@@ -7,14 +7,14 @@ elasticsearch and their
 
 ## Prerequisites Details
 
-* Kubernetes 1.3 with alpha APIs enabled
+* Kubernetes 1.5
 * PV dynamic provisioning support on the underlying infrastructure
 
-## PetSet Details
-* http://kubernetes.io/docs/user-guide/petset/
+## StatefulSets Details
+* https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/
 
-## PetSet Caveats
-* http://kubernetes.io/docs/user-guide/petset/#alpha-limitations
+## StatefulSets Caveats
+* https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#limitations
 
 ## Todo
 
@@ -25,9 +25,9 @@ elasticsearch and their
 ## Chart Details
 This chart will do the following:
 
-* Implemented a dynamically scalable elasticsearch cluster using Kubernetes PetSets/Deployments
+* Implemented a dynamically scalable elasticsearch cluster using Kubernetes StatefulSets/Deployments
 * Multi-role deployment: master, client and data nodes
-* PetSet Supports scaling down without degrading the cluster 
+* Statefulset Supports scaling down without degrading the cluster
 
 ## Installing the Chart
 
@@ -51,33 +51,27 @@ $ kubectl delete pvcs -l release=my-release,type=data
 
 The following tables lists the configurable parameters of the elasticsearch chart and their default values.
 
-|         Parameter         |           Description             |                         Default                          |
-|---------------------------|-----------------------------------|----------------------------------------------------------|
-| `Image`                   | Container image name              | `jetstack/elasticsearch-pet`                             |
-| `ImageTag`                | Container image tag               | `2.3.4`                                                  |
-| `ImagePullPolicy`         | Container pull policy             | `Always`                                                 |
-| `ClientReplicas`          | Client node replicas (deployment) | `2`                                                      |
-| `ClientCpuRequests`       | Client node requested cpu         | `25m`                                                    |
-| `ClientMemoryRequests`    | Client node requested memory      | `256Mi`                                                  |
-| `ClientCpuLimits`         | Client node requested cpu         | `100m`                                                   |
-| `ClientMemoryLimits`      | Client node requested memory      | `512Mi`                                                  |
-| `ClientHeapSize`          | Client node heap size             | `128m`                                                   |
-| `MasterReplicas`          | Master node replicas (deployment) | `2`                                                      |
-| `MasterCpuRequests`       | Master node requested cpu         | `25m`                                                    |
-| `MasterMemoryRequests`    | Master node requested memory      | `256Mi`                                                  |
-| `MasterCpuLimits`         | Master node requested cpu         | `100m`                                                   |
-| `MasterMemoryLimits`      | Master node requested memory      | `512Mi`                                                  |
-| `MasterHeapSize`          | Master node heap size             | `128m`                                                   |
-| `DataReplicas`            | Data node replicas (petset)       | `3`                                                      |
-| `DataCpuRequests`         | Data node requested cpu           | `250m`                                                   |
-| `DataMemoryRequests`      | Data node requested memory        | `2Gi`                                                    |
-| `DataCpuLimits`           | Data node requested cpu           | `1`                                                      |
-| `DataMemoryLimits`        | Data node requested memory        | `4Gi`                                                    |
-| `DataHeapSize`            | Data node heap size               | `1536m`                                                  |
-| `DataStorage`             | Data persistent volume size       | `30Gi`                                                   |
-| `DataStorageClass`        | Data persistent volume Class      | `anything`                                               |
-| `DataStorageClassVersion` | Version of StorageClass           | `alpha`                                                  |
-| `Component`               | Selector Key                      | `elasticsearch`                                          |
+| Parameter                            | Description                             | Default                             |
+| ------------------------------------ | --------------------------------------- | ----------------------------------- |
+| `image.repository`                   | Container image name                    | `jetstack/elasticsearch-pet`        |
+| `image.tag`                          | Container image tag                     | `2.4.0`                             |
+| `image.pullPolicy`                   | Container pull policy                   | `Always`                            |
+| `client.name`                        | Client component name                   | `client`                            |
+| `client.replicas`                    | Client node replicas (deployment)       | `2`                                 |
+| `client.resources`                   | Client node resources requests & limits | `{} - cpu limit must be an integer` |
+| `client.heapSize`                    | Client node heap size                   | `128m`                              |
+| `client.serviceType`                 | Client service type                     | `ClusterIP`                         |
+| `master.name`                        | Master component name                   | `master`                            |
+| `master.replicas`                    | Master node replicas (deployment)       | `2`                                 |
+| `master.resources`                   | Master node resources requests & limits | `{} - cpu limit must be an integer` |
+| `master.heapSize`                    | Master node heap size                   | `128m`                              |
+| `master.name`                        | Data component name                     | `data`                              |
+| `data.replicas`                      | Data node replicas (statefulset)        | `3`                                 |
+| `data.resources`                     | Data node resources requests & limits   | `{} - cpu limit must be an integer` |
+| `data.heapSize`                      | Data node heap size                     | `1536m`                             |
+| `data.storage`                       | Data persistent volume size             | `30Gi`                              |
+| `data.storageClass`                  | Data persistent volume Class            | `nil`                               |
+| `data.terminationGracePeriodSeconds` | Data termination grace period (seconds) | `3600`                              |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
@@ -102,7 +96,7 @@ would degrade performance heaviliy. The issue is tracked in
 
 ## Select right storage class for SSD volumes
 
-### GCE + Kubernetes 1.4
+### GCE + Kubernetes 1.5
 
 Create StorageClass for SSD-PD
 
@@ -117,9 +111,8 @@ parameters:
   type: pd-ssd
 EOF
 ```
-Create cluster with Storage class `ssd` on Kubernetes 1.4+
+Create cluster with Storage class `ssd` on Kubernetes 1.5+
 
 ```
-$ helm install incubator/elasticsearch --name my-release --set DataStorageClass=ssd,DataStorageClassVersion=beta
-
+$ helm install incubator/elasticsearch --name my-release --set data.storageClass=ssd,data.storage=100Gi
 ```

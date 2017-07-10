@@ -3,21 +3,21 @@ kind: StatefulSet
 metadata:
   name: "{{ printf "zk-%s" .Release.Name  | trunc 24 }}"
   annotations:
-    helm.sh/created: {{.Release.Time.Seconds | quote }}
+    helm.sh/created: {{ .Release.Time.Seconds | quote }}
   labels:
-    heritage: {{.Release.Service | quote }}
-    release: {{.Release.Name | quote }}
-    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     component: "{{ printf "zk-%s" .Release.Name  | trunc 24 }}"
 spec:
   serviceName: "{{ printf "zk-hsvc-%s" .Release.Name | trunc 24 }}"
-  replicas: {{.Values.Servers}}
+  replicas: {{ .Values.Servers }}
   template:
     metadata:
       labels:
         component: "{{ printf "zk-%s" .Release.Name  | trunc 24 }}"
     spec:
-      {{- if eq .Values.AntiAffinity "hard"}}
+      {{- if eq .Values.AntiAffinity "hard" }}
       affinity:
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -28,7 +28,7 @@ spec:
                     values:
                     - "{{ printf "zk-%s" .Release.Name  | trunc 24 }}"
               topologyKey: "kubernetes.io/hostname"
-      {{- else if eq .Values.AntiAffinity "soft"}}
+      {{- else if eq .Values.AntiAffinity "soft" }}
       affinity:
         preferredDuringSchedulingIgnoredDuringExecution:
              - weight: 1
@@ -37,50 +37,50 @@ spec:
                     matchExpressions:
                       - key: "component"
                         operator: In
-                        values: 
+                        values:
                          - "{{ printf "zk-%s" .Release.Name  | trunc 24 }}"
                  topologyKey: "kubernetes.io/hostname"
-      {{- end}}
+      {{- end }}
       containers:
       - name: k8szk
-        imagePullPolicy: {{.Values.ImagePullPolicy}}
+        imagePullPolicy: {{ .Values.ImagePullPolicy }}
         image: gcr.io/google_samples/k8szk:v2
         resources:
           requests:
-            memory: {{.Values.Memory}}
-            cpu: {{.Values.Cpu}}
+            memory: {{ .Values.Memory }}
+            cpu: {{ .Values.Cpu }}
         ports:
-        - containerPort: {{.Values.ClientPort}}
+        - containerPort: {{ .Values.ClientPort }}
           name: client
-        - containerPort: {{.Values.ServerPort}}
+        - containerPort: {{ .Values.ServerPort }}
           name: server
-        - containerPort: {{.Values.LeaderElectionPort}}
+        - containerPort: {{ .Values.LeaderElectionPort }}
           name: leader-election
         env:
         - name : ZK_REPLICAS
-          value: "{{.Values.Servers}}"
+          value: "{{ .Values.Servers }}"
         - name : ZK_HEAP_SIZE
-          value: "{{.Values.Heap}}"
+          value: "{{ .Values.Heap }}"
         - name : ZK_TICK_TIME
-          value: "{{.Values.TickTimeMs}}"
+          value: "{{ .Values.TickTimeMs }}"
         - name : ZK_INIT_LIMIT
-          value: "{{.Values.InitTicks}}"
+          value: "{{ .Values.InitTicks }}"
         - name : ZK_SYNC_LIMIT
-          value: "{{.Values.SyncTicks}}"
+          value: "{{ .Values.SyncTicks }}"
         - name : ZK_MAX_CLIENT_CNXNS
-          value: "{{.Values.ClientCnxns}}"
+          value: "{{ .Values.ClientCnxns }}"
         - name: ZK_SNAP_RETAIN_COUNT
-          value: "{{.Values.SnapRetain}}"
+          value: "{{ .Values.SnapRetain }}"
         - name: ZK_PURGE_INTERVAL
-          value: "{{.Values.PurgeHours}}"
+          value: "{{ .Values.PurgeHours }}"
         - name: ZK_LOG_LEVEL
-          value: {{.Values.LogLevel}}
+          value: {{ .Values.LogLevel }}
         - name: ZK_CLIENT_PORT
-          value: "{{.Values.ClientPort}}"
+          value: "{{ .Values.ClientPort }}"
         - name: ZK_SERVER_PORT
-          value: "{{.Values.ServerPort}}"
+          value: "{{ .Values.ServerPort }}"
         - name: ZK_ELECTION_PORT
-          value: "{{.Values.LeaderElectionPort}}"
+          value: "{{ .Values.LeaderElectionPort }}"
         command:
         - sh
         - -c
@@ -89,14 +89,14 @@ spec:
           exec:
             command:
             - "zkOk.sh"
-          initialDelaySeconds: {{.Values.ProbeInitialDelaySeconds}}
-          timeoutSeconds: {{.Values.ProbeTimeoutSeconds}}
+          initialDelaySeconds: {{ .Values.ProbeInitialDelaySeconds }}
+          timeoutSeconds: {{ .Values.ProbeTimeoutSeconds }}
         livenessProbe:
           exec:
             command:
             - "zkOk.sh"
-          initialDelaySeconds: {{.Values.ProbeInitialDelaySeconds}}
-          timeoutSeconds: {{.Values.ProbeTimeoutSeconds}}
+          initialDelaySeconds: {{ .Values.ProbeInitialDelaySeconds }}
+          timeoutSeconds: {{ .Values.ProbeTimeoutSeconds }}
         volumeMounts:
         - name: datadir
           mountPath: /var/lib/zookeeper
@@ -110,7 +110,7 @@ spec:
       accessModes: [ "ReadWriteOnce" ]
       resources:
         requests:
-          storage: {{.Values.Storage}}
-      {{- if .Values.StorageClass}}
-      storageClassName: {{.Values.StorageClass | quote}}
-      {{- end}} 
+          storage: {{ .Values.Storage }}
+      {{- if .Values.StorageClass }}
+      storageClassName: {{ .Values.StorageClass | quote }}
+      {{- end }}

@@ -39,10 +39,10 @@ data:
               <instanceCap>2147483647</instanceCap>
               <label></label>
               <nodeSelector></nodeSelector>
-              <resourceRequestCpu>{{.Values.jenkins.Agent.Cpu}}</resourceRequestCpu>
-              <resourceRequestMemory>{{.Values.jenkins.Agent.Memory}}</resourceRequestMemory>
-              <resourceLimitCpu>{{.Values.jenkins.Agent.Cpu}}</resourceLimitCpu>
-              <resourceLimitMemory>{{.Values.jenkins.Agent.Memory}}</resourceLimitMemory>
+              <resourceRequestCpu>{{ .Values.jenkins.Agent.Cpu }}</resourceRequestCpu>
+              <resourceRequestMemory>{{ .Values.jenkins.Agent.Memory }}</resourceRequestMemory>
+              <resourceLimitCpu>{{ .Values.jenkins.Agent.Cpu }}</resourceLimitCpu>
+              <resourceLimitMemory>{{ .Values.jenkins.Agent.Memory }}</resourceLimitMemory>
               <volumes>
                 <org.csanchez.jenkins.plugins.kubernetes.PodVolumes_-HostPathVolume>
                   <mountPath>/usr/bin/docker</mountPath>
