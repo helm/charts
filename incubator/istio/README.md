@@ -109,11 +109,11 @@ $ helm install incubator/istio --name my-release -f values.yaml
 
 ## Custom ConfigMap
 
-When creating a new chart with this chart as a dependency, CustomConfigMap can be used to override the default config.xml provided. To use, set the value to true and provide the file `templates/configmap.yaml` for your use case. If you start by copying `configmap.yaml` from this chart and want to access values from this chart you must change all references from `.Values` to `.Values.istio`.
+When creating a new chart with this chart as a dependency, customConfigMap can be used to override the default config map provided. To use, set the value to true and provide the file `templates/configmap.yaml` for your use case. If you start by copying `configmap.yaml` from this chart and want to access values from this chart you must change all references from `.Values` to `.Values.istio`.
 
 ```
 pilot:
-  CustomConfigMap: true
+  customConfigMap: true
 ```
 
 ### Addons
