@@ -36,7 +36,7 @@ mixer:
 
 ## Pilot configuration
 pilot:
-  name: pilot
+  name: istio-pilot
 
   service:
     type: ClusterIP
