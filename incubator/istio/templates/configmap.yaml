@@ -13,4 +13,4 @@ data:
     mixerAddress: {{ $serviceName }}-{{ .Values.mixer.deployment.name }}:{{ .Values.mixer.service.externalTcpPort }}
     discoveryAddress: {{ .Values.pilot.name }}:{{ .Values.pilot.service.externalHttpDiscovery }}
     ingressService: istio-ingress
-    zipkinAddress: {{ $serviceName }}-zipkin:{{ .Values.addons.zipkin.service.externalPort }}
+    zipkinAddress: {{ $serviceName }}-{{ .Values.addons.zipkin.deployment.name }}:{{ .Values.addons.zipkin.service.externalPort }}
