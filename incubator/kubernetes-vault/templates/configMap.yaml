@@ -12,7 +12,7 @@ data:
     kubernetes:
       watchNamespace: ${KUBERNETES_NAMESPACE}
       serviceNamespace: ${KUBERNETES_NAMESPACE}
-      service: {{ template "name" . }}
+      service: {{ template "fullname" . }}
 
     prometheus:
       tls:
