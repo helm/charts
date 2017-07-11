@@ -1,4 +1,4 @@
-{{- $serviceName := include "fullname" . -}}
+{{- $serviceName := include "name" . -}}
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:

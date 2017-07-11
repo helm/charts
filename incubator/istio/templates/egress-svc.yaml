@@ -1,8 +1,8 @@
-{{- $serviceName := include "fullname" . -}}
+{{- $serviceName := include "name" . -}}
 apiVersion: v1
 kind: Service
 metadata:
-  name: istio-egress
+  name: {{ $serviceName }}-{{ .Values.egress.name }}
   labels:
 {{ include "labels.standard" . | indent 4 }}
     istio: {{ $serviceName }}-egress

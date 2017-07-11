@@ -1,8 +1,8 @@
-{{- $serviceName := include "fullname" . -}}
+{{- $serviceName := include "name" . -}}
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Values.pilot.name }}
+  name: {{ $serviceName }}-{{ .Values.pilot.name }}
   labels:
 {{ include "labels.standard" . | indent 4 }}
     istio: {{ $serviceName }}-{{ .Values.pilot.name }}
