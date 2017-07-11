@@ -76,3 +76,10 @@ resources:
   requests:
     memory: 256Mi
     cpu: 100m
+
+## Specify a ServiceType
+## 'ClusterIP' is the default, set to `NodePort` if using Minikube
+## ref: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services---service-types
+##
+service:
+  type: ClusterIP
