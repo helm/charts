@@ -4,6 +4,7 @@ name: ipfs
 version: 0.1.0
 icon: https://raw.githubusercontent.com/ipfs/logo/master/raster-generated/ipfs-logo-128-ice-text.png
 home: https://ipfs.io/
+appVersion: v0.4.9
 keywords:
   - ipfs
   - distributed-web
