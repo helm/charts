@@ -38,11 +38,11 @@ spec:
         name: {{ template "fullname" . }}
         resources:
           requests:
-            cpu: "{{.Values.cpuRequest}}"
-            memory: "{{.Values.memoryRequest}}"
+            cpu: "{{ .Values.cpuRequest }}"
+            memory: "{{ .Values.memoryRequest }}"
           limits:
-            cpu: "{{.Values.cpuLimit}}"
-            memory: "{{.Values.memoryLimit}}"
+            cpu: "{{ .Values.cpuLimit }}"
+            memory: "{{ .Values.memoryLimit }}"
         readinessProbe:
           tcpSocket:
             port: 80

@@ -52,6 +52,8 @@ Parameter | Description | Default
 `podAnnotations` | annotations to be added to pods | `{}`
 `resources` | pod resource requests & limits | `{}`
 `verbose` | Enable verbose output | `false`
+`rbac.enabled` | Enable role and serviceaccount creation | `false`
+`updateStrategy` | The strategy for daemon set updates, e.g. `RollingUpdate` (requires Kubernetes 1.6+) | not set
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

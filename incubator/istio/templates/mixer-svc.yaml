@@ -6,6 +6,10 @@ metadata:
   labels:
 {{ include "labels.standard" . | indent 4 }}
     istio: {{ $serviceName }}-{{ .Values.mixer.deployment.name }}
+  annotations:
+    {{- range $key, $value := .Values.mixer.service.annotations }}
+      {{ $key }}: {{ $value | quote }}
+    {{- end }}
 spec:
   type: {{ .Values.mixer.service.type }}
   ports:
