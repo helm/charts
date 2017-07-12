@@ -1,0 +1,128 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: zookeeper-config
+data:
+  PULSAR_MEM: "\" -Xms2g -Xmx2g \""
+  PULSAR_GC: "\" -XX:+UseG1GC -XX:MaxGCPauseMillis=10\""
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: ssd
+provisioner: kubernetes.io/gce-pd
+parameters:
+  type: pd-ssd
+---
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: zk-budget
+spec:
+  selector:
+    matchLabels:
+      app: zk
+  minAvailable: {{ .Values.ZkMinAvailable }}
+---
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  name: zk
+  labels:
+    app: pulsar
+    component: zookeeper
+spec:
+  serviceName: zookeeper
+  replicas: {{ .Values.ZkReplicas }}
+  template:
+    metadata:
+      labels:
+        app: pulsar
+        component: zookeeper
+        cluster: {{ .Values.ClusterName }}
+      annotations:
+        pod.alpha.kubernetes.io/initialized: "true"
+        prometheus.io/scrape: {{ .Values.PrometheusScrape }}
+        prometheus.io/port: {{ .Values.PrometheusPort }}
+    spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 1
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: "app"
+                  operator: In
+                  values:
+                    - zookeeper
+              topologyKey: "kubernetes.io/hostname"
+      containers:
+      - name: zookeeper
+        image: streamlio/pulsar:latest
+        command: ["sh", "-c"]
+        args:
+        - >
+          bin/apply-config-from-env.py conf/zookeeper.conf &&
+          bin/generate-zookeeper-config.sh conf/zookeeper.conf &&
+          bin/pulsar zookeeper
+        ports:
+        - containerPort: {{ .Values.ZkClientPort }}
+          name: client
+        - containerPort: {{ .Values.ZkServerPort }}
+          name: server
+        - containerPort: {{ .Values.ZkLeaderElectionPort }}
+          name: leader-election
+        env:
+        - name: ZOOKEEPER_SERVERS
+          value: zk-0,zk-1,zk-2
+        envFrom:
+        - configMapRef:
+            name: zookeeper-config
+        readinessProbe:
+          exec:
+            command:
+            - "bin/pulsar-zookeeper-ruok.sh"
+          initialDelaySeconds: 5
+          timeoutSeconds: 5
+
+        livenessProbe:
+          exec:
+            command:
+            - "bin/pulsar-zookeeper-ruok.sh"
+          initialDelaySeconds: 15
+          timeoutSeconds: 5
+
+        volumeMounts:
+        - name: datadir
+          mountPath: {{ .Values.ZkVolumeMountPath }}
+
+  volumeClaimTemplates:
+  - metadata:
+      name: datadir
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 10Gi
+      storageClassName: ssd
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
+  name: zookeeper
+  labels:
+    app: pulsar
+    component: zookeeper
+spec:
+  ports:
+  - port: {{ .Values.ZkServerPort }}
+    name: server
+  - port: {{ .Values.ZkLeaderElectionPort }}
+    name: leader-election
+  clusterIP: None
+  selector:
+    app: pulsar
+    component: zookeeper

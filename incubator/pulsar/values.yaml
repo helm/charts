@@ -11,3 +11,9 @@ BookieJournalMountPath: /pulsar/data/bookkeeper/journal
 BookieLedgersMountPath: /pulsar/data/bookkeeper/ledgers
 JournalDiskVolume: /mnt/disks/ssd0
 LedgersDiskVolume: /mnt/disks/ssd1
+ZkMinAvailable: 2
+ZkReplicas: 3
+ZkClientPort: 2181
+ZkServerPort: 2888
+ZkLeaderElectionPort: 3888
+ZkVolumeMountPath: /pulsar/data
