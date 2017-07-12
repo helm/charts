@@ -1,3 +1,4 @@
+{{- if .Release.IsInstall -}}
 apiVersion: policy/v1beta1
 kind: PodDisruptionBudget
 metadata:
@@ -17,3 +18,4 @@ spec:
   {{- else }}
   minAvailable: {{ sub .Values.Servers 1 }}
   {{- end }}
+{{- end -}}
