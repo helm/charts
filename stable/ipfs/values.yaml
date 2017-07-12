@@ -1,0 +1,14 @@
+replicaCount: 1
+
+image: ipfs/go-ipfs:v0.4.9
+
+service:
+  type: ClusterIP
+
+resources: {}
+
+persistence:
+  enabled: true
+  size: "8Gi"
+  accessModes:
+    - ReadWriteOnce
