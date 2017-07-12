@@ -171,7 +171,7 @@ data:
     'use strict';
 
     var feedbackUrl = 'http://localhost';
-    var gateHost = '{{ .Values.deck.protocol }}://{{ .Values.deck.host }}:{{ .Values.deck.port }}/gate';
+    var gateHost = '/gate';
     var bakeryDetailUrl = gateHost + '/bakery/logs/global/{{ "{{ " }}context.status.id{{ " }}" }}';
 
     window.spinnakerSettings = {
