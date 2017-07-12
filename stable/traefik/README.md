@@ -99,6 +99,7 @@ The following tables lists the configurable parameters of the Traefik chart and 
 | `rbac.enabled`                  | Whether to enable RBAC with a specific cluster role and binding for Traefik | `false`                            |
 | `nodeSelector`                  | Node labels for pod assignment                                       | `{}`                                      |
 | `tolerations`                   | List of node taints to tolerate                                      | `[]`                                      |
+| `debug.enabled`                 | Whether to enable Traefik's debug logging                            | `false`                                   |
 | `ssl.enabled`                   | Whether to enable HTTPS                                              | `false`                                   |
 | `ssl.enforced`                  | Whether to redirect HTTP requests to HTTPS                           | `false`                                   |
 | `ssl.defaultCert`               | Base64 encoded default certficate                                    | A self-signed certificate                 |
