@@ -19,6 +19,7 @@ memcached:
   ##
   maxItemMemory: 64
   verbosity: v
+  extendedOptions: modern
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/

@@ -5,7 +5,7 @@
 ## TL;DR;
 
 ```console
-$ helm install --wait incubator/sentry
+$ helm install --wait stable/sentry
 ```
 
 ## Introduction
@@ -19,6 +19,7 @@ It also packages the [PostgreSQL](https://github.com/kubernetes/charts/tree/mast
 ## Prerequisites
 
 - Kubernetes 1.4+ with Beta APIs enabled
+- helm >= v2.3.0 to run "weighted" hooks in right order.
 - PV provisioner support in the underlying infrastructure (with persistence storage enabled)
 
 ## Installing the Chart
@@ -26,7 +27,7 @@ It also packages the [PostgreSQL](https://github.com/kubernetes/charts/tree/mast
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm install --name my-release --wait incubator/sentry
+$ helm install --name my-release --wait stable/sentry
 ```
 
 > **Note**: We have to use the --wait flag for initial creation because the database creationg takes longer than the default 300 seconds
@@ -74,12 +75,13 @@ The following tables lists the configurable parameters of the Sentry chart and t
 | `service.externalPort`               | Kubernetes external service port           | `9000`                                                     |
 | `service.internalPort`               | Kubernetes internal service port           | `9000`                                                     |
 | `ingress.enabled`                    | Enable ingress controller resource         | `false`                                                    |
-| `ingress.hostname`                   | URL to address your Sentry installation    | `sentry.local`                                          |
-| `ingress.tls`                        | Ingress TLS configuration                  | `[]`                                          |
+| `ingress.annotations`                | Ingress annotations                        | `{}`                                                       |
+| `ingress.hostname`                   | URL to address your Sentry installation    | `sentry.local`                                             |
+| `ingress.tls`                        | Ingress TLS configuration                  | `[]`                                                       |
 | `persistence.enabled`                | Enable persistence using PVC               | `true`                                                     |
 | `persistence.storageClass`           | PVC Storage Class                          | `nil` (uses alpha storage class annotation)                |
 | `persistence.accessMode`             | PVC Access Mode                            | `ReadWriteOnce`                                            |
-| `persistence.size`                   | PVC Storage Request                        | `10Gi`                                                      |                                              |
+| `persistence.size`                   | PVC Storage Request                        | `10Gi`                                                     |
 
 Dependent charts can also have values overwritten. Preface values with postgresql.* or redis.*
 
@@ -88,13 +90,13 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 ```console
 $ helm install --name my-release \
   --set persistence.enabled=false,email.host=email \
-    incubator/sentry
+    stable/sentry
 ```
 
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 
 ```console
-$ helm install --name my-release -f values.yaml incubator/sentry
+$ helm install --name my-release -f values.yaml stable/sentry
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
