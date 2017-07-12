@@ -1,0 +1,13 @@
+ClusterName: pulsar-kubernetes
+PrometheusPort: 8080
+PrometheusScrape: true
+BookieNumReplicas: 2
+BookiePort: 3181
+BookieMemUsage: 256
+BookieWriteCacheSize: 1024
+BookieReadAheadCacheSize: 1024
+BookieStatsProviderClass: org.apache.bookkeeper.stats.PrometheusMetricsProvider
+BookieJournalMountPath: /pulsar/data/bookkeeper/journal
+BookieLedgersMountPath: /pulsar/data/bookkeeper/ledgers
+JournalDiskVolume: /mnt/disks/ssd0
+LedgersDiskVolume: /mnt/disks/ssd1
