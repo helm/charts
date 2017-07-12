@@ -55,7 +55,7 @@ spec:
                 - key: "app"
                   operator: In
                   values:
-                    - zookeeper
+                  - zookeeper
               topologyKey: "kubernetes.io/hostname"
       containers:
       - name: zookeeper
@@ -75,6 +75,7 @@ spec:
           name: leader-election
         env:
         - name: ZOOKEEPER_SERVERS
+          {{range $i := 1 .. .Values.ZkReplicas}}zk-{{$i}}{{end}}
           value: zk-0,zk-1,zk-2
         envFrom:
         - configMapRef:

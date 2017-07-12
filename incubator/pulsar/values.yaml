@@ -1,6 +1,9 @@
 ClusterName: pulsar-kubernetes
 PrometheusPort: 8080
 PrometheusScrape: true
+PrometheusReplicas: 1
+PrometheusVersion: 1.6.3
+PrometheusUrl: http://prometheus:9090/
 BookieNumReplicas: 2
 BookiePort: 3181
 BookieMemUsage: 256
@@ -14,8 +17,11 @@ BrokerWebPort: 8080
 BrokerPulsarPort: 6650
 BrokerWebServiceUrl: http://broker:8080/
 BrokerPulsarServiceUrl: pulsar://broker:6650/
+PulsarDashboardPort: 80
 JournalDiskVolume: /mnt/disks/ssd0
 LedgersDiskVolume: /mnt/disks/ssd1
+GrafanaReplicas: 1
+GrafanaVersion: latest
 ZkMinAvailable: 2
 ZkReplicas: 3
 ZkClientPort: 2181
