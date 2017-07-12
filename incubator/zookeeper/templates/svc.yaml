@@ -3,15 +3,15 @@ kind: Service
 metadata:
   name: "{{ printf "zk-hsvc-%s" .Release.Name | trunc 24 }}"
   labels:
-    heritage: {{.Release.Service | quote }}
-    release: {{.Release.Name | quote }}
-    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     component: "{{ printf "zk-%s" .Release.Name  | trunc 24 }}"
 spec:
   ports:
-  - port: {{.Values.ServerPort}}
+  - port: {{ .Values.ServerPort }}
     name: server
-  - port: {{.Values.LeaderElectionPort}}
+  - port: {{ .Values.LeaderElectionPort }}
     name: leader-election
   clusterIP: None
   selector:

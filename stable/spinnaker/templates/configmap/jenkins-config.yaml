@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ .Release.Name }}-jenkins-config
+  name: {{.Release.Name}}-jenkins
   labels:
     app: {{ template "fullname" . }}
 data:
@@ -26,7 +26,7 @@ data:
       <myViewsTabBar class="hudson.views.DefaultMyViewsTabBar"/>
       <clouds>
         <org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud plugin="kubernetes@0.8">
-          <name>default</name>
+          <name>kubernetes</name>
           <templates>
             <org.csanchez.jenkins.plugins.kubernetes.PodTemplate>
               <name>jnlp</name>
@@ -39,10 +39,10 @@ data:
               <instanceCap>2147483647</instanceCap>
               <label></label>
               <nodeSelector></nodeSelector>
-              <resourceRequestCpu>{{.Values.jenkins.Agent.Cpu}}</resourceRequestCpu>
-              <resourceRequestMemory>{{.Values.jenkins.Agent.Memory}}</resourceRequestMemory>
-              <resourceLimitCpu>{{.Values.jenkins.Agent.Cpu}}</resourceLimitCpu>
-              <resourceLimitMemory>{{.Values.jenkins.Agent.Memory}}</resourceLimitMemory>
+              <resourceRequestCpu>{{ .Values.jenkins.Agent.Cpu }}</resourceRequestCpu>
+              <resourceRequestMemory>{{ .Values.jenkins.Agent.Memory }}</resourceRequestMemory>
+              <resourceLimitCpu>{{ .Values.jenkins.Agent.Cpu }}</resourceLimitCpu>
+              <resourceLimitMemory>{{ .Values.jenkins.Agent.Memory }}</resourceLimitMemory>
               <volumes>
                 <org.csanchez.jenkins.plugins.kubernetes.PodVolumes_-HostPathVolume>
                   <mountPath>/usr/bin/docker</mountPath>
@@ -61,9 +61,9 @@ data:
           <serverUrl>https://kubernetes.default</serverUrl>
           <skipTlsVerify>false</skipTlsVerify>
           <namespace>{{ .Release.Namespace }}</namespace>
-          <jenkinsUrl>http://{{ template "fullname" . }}-igor:8080</jenkinsUrl>
-          <jenkinsTunnel>{{ template "fullname" . }}-igor:50000</jenkinsTunnel>
-          <containerCap>100</containerCap>
+          <jenkinsUrl>http://{{ .Release.Name }}-jenkins:8080</jenkinsUrl>
+          <jenkinsTunnel>{{ .Release.Name }}-jenkins-agent:50000</jenkinsTunnel>
+          <containerCap>0</containerCap>
           <retentionTimeout>5</retentionTimeout>
         </org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud>
       </clouds>
@@ -85,3 +85,28 @@ data:
       <globalNodeProperties/>
       <noUsageStatistics>true</noUsageStatistics>
     </hudson>
+  apply_config.sh: |-
+    mkdir -p /usr/share/jenkins/ref/secrets/;
+    echo "false" > /usr/share/jenkins/ref/secrets/slave-to-master-security-kill-switch;
+    cp -n /var/jenkins_config/config.xml /var/jenkins_home;
+{{- if .Values.jenkins.Master.InstallPlugins }}
+    cp -n /var/jenkins_config/plugins.txt /var/jenkins_home;
+    /usr/local/bin/install-plugins.sh `echo $(cat /var/jenkins_home/plugins.txt)`;
+{{- end }}
+{{- if .Values.jenkins.Master.ScriptApproval }}
+    cp -n /var/jenkins_config/scriptapproval.xml /var/jenkins_home/scriptApproval.xml;
+{{- end }}
+{{- if .Values.jenkins.Master.InitScripts }}
+    mkdir -p /var/jenkins_home/init.groovy.d/;
+    cp -n /var/jenkins_config/*.groovy /var/jenkins_home/init.groovy.d/
+{{- end }}
+{{- range $key, $val := .Values.jenkins.Master.InitScripts }}
+  init{{ $key }}.groovy: |-
+{{ $val | indent 4}}
+{{- end }}
+  plugins.txt: |-
+{{- if .Values.jenkins.Master.InstallPlugins }}
+{{- range $index, $val := .Values.jenkins.Master.InstallPlugins }}
+{{ $val | indent 4 }}
+{{- end }}
+{{- end }}

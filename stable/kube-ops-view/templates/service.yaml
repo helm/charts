@@ -4,12 +4,12 @@ metadata:
   name: {{ template "fullname" . }}
 {{- if .Values.service.annotations }}
   annotations:
-{{ toYaml .Values.service.annotations | indent 4}}
+{{ toYaml .Values.service.annotations | indent 4 }}
 {{- end }}
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
 {{- if .Values.service.labels }}
-{{ toYaml .Values.service.labels | indent 4}}
+{{ toYaml .Values.service.labels | indent 4 }}
 {{- end }}
 spec:
   type: {{ .Values.service.type }}
