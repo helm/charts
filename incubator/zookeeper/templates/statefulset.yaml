@@ -2,8 +2,6 @@ apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
   name: {{ template "fullname" . }}
-  annotations:
-    helm.sh/created: {{ .Release.Time.Seconds | quote }}
   labels:
     app: {{ include "name" . | quote }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
