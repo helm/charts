@@ -9,6 +9,11 @@ BookieReadAheadCacheSize: 1024
 BookieStatsProviderClass: org.apache.bookkeeper.stats.PrometheusMetricsProvider
 BookieJournalMountPath: /pulsar/data/bookkeeper/journal
 BookieLedgersMountPath: /pulsar/data/bookkeeper/ledgers
+BrokerReplicas: 3
+BrokerWebPort: 8080
+BrokerPulsarPort: 6650
+BrokerWebServiceUrl: http://broker:8080/
+BrokerPulsarServiceUrl: pulsar://broker:6650/
 JournalDiskVolume: /mnt/disks/ssd0
 LedgersDiskVolume: /mnt/disks/ssd1
 ZkMinAvailable: 2
