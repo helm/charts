@@ -1,0 +1,44 @@
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+spec:
+  serviceName: {{ template "fullname" . }}-cluster
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "fullname" . }}
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        command:
+        - "/bin/sh"
+        - "-ec"
+        - |
+          /gnatsd -c gnatsd.conf -D \
+          -cluster nats://${HOSTNAME}.{{ template "fullname" . }}-cluster.{{.Release.Namespace}}.svc.cluster.local:6222 \
+          -routes nats://{{ template "fullname" . }}-0.{{ template "fullname" . }}-cluster.{{.Release.Namespace}}.svc.cluster.local:6222
+        ports:
+        - containerPort: {{ .Values.service.client.port }}
+          name: {{ .Values.service.client.name }}
+        - containerPort: {{ .Values.service.cluster.port }}
+          name: {{ .Values.service.cluster.name }}
+        - containerPort: {{ .Values.service.management.port }}
+          name: {{ .Values.service.management.name }}          
+        readinessProbe:
+          tcpSocket:
+            port: {{ .Values.service.client.port }}
+          initialDelaySeconds: 3
+          periodSeconds: 10
+        livenessProbe:
+          tcpSocket:
+            port: {{ .Values.service.client.port }}
+          initialDelaySeconds: 5
+          periodSeconds: 20
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
