@@ -7,6 +7,10 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
+  annotations:
+  {{- range $key, $value := .Values.web.service.annotations }}
+    {{ $key }}: {{ $value | quote }}
+  {{- end }}
 spec:
   type: {{ .Values.web.service.type }}
   ports:
