@@ -49,6 +49,8 @@ spec:
                   - "land-worker"
                   - "--name=${HOSTNAME}"
           env:
+            - name: CONCOURSE_BAGGAGECLAIM_DRIVER
+              value: "btrfs"
             - name: CONCOURSE_TSA_HOST
               valueFrom:
                 configMapKeyRef:
