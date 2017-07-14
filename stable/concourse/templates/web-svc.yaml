@@ -17,6 +17,9 @@ spec:
     - name: atc
       port: {{ .Values.concourse.atcPort }}
       targetPort: atc
+    - name: atc-https
+      port: 443
+      targetPort: atc
     - name: tsa
       port: {{ .Values.concourse.tsaPort }}
       targetPort: tsa
