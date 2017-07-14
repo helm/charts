@@ -44,6 +44,8 @@ controller:
   ## enable RBAC as per: https://github.com/kubernetes/ingress/tree/master/examples/rbac/nginx and https://github.com/kubernetes/ingress/issues/266
   rbac:
     enabled: false
+    resourceNames: 
+      - ingress-controller-leader-nginx
 
   ## Node labels for controller pod assignment
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
