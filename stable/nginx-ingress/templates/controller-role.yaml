@@ -16,13 +16,15 @@ rules:
       - ""
     resources:
       - configmaps
-    resourceNames:
+{{- if .Values.controller.rbac.resourceNames }}
       # Defaults to "<election-id>-<ingress-class>"
       # Here: "<ingress-controller-leader>-<nginx>"
       # This has to be adapted if you change either parameter
       # when launching the nginx-ingress-controller.
-{{- if .Values.controller.rbac.resourceNames }}
-{{ toYaml .Values.controller.rbac.resourceNames | indent 6 }}
+    resourceNames:
+      {{- range .Values.controller.rbac.resourceNames }}
+      - {{ . -}}
+      {{ end }}
 {{- end }}
     verbs:
       - get
