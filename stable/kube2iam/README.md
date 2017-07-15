@@ -42,6 +42,7 @@ The following tables lists the configurable parameters of the kube2iam chart and
 Parameter | Description | Default
 --- | --- | ---
 `extraArgs` | Additional container arguments | `{}`
+`extraFlags` | Additional container arguments (flags without values)| `[]`
 `host.ip` | IP address of host | `$(HOST_IP)`
 `host.iptables` | Add iptables rule | `false`
 `host.interface` | Host interface for proxying AWS metadata | `docker0`
@@ -59,7 +60,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 
 ```console
 $ helm install stable/kube2iam --name my-release \
-  --set=extraArgs.base-role-arn=arn:aws:iam::0123456789:role/,extraArgs.default-role=kube2iam-default,host.iptables=true,host.interface=cbr0
+  --set=extraArgs.base-role-arn=arn:aws:iam::0123456789:role/,extraArgs.default-role=kube2iam-default,host.iptables=true,host.interface=cbr0,extraFlags.0=auto-discover-base-arn
 ```
 
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,

@@ -4,6 +4,10 @@ extraArgs: {}
 #   api-server: ...
 #   api-token: ...
 
+extraFlags: []
+  # - auto-discover-base-arn
+  # - auto-discover-default-role
+
 host:
   ip: $(HOST_IP)
   iptables: false
