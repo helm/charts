@@ -108,8 +108,11 @@ $ helm install --name my-release -f values.yaml stable/moodle
 For using ingress (example without tls):
 ```console
 $ helm install --name my-release \
-  --set ingress.enabled=True,ingress.hosts[0]=moodle.domain.com,moodleUsername=admin,moodlePassword=password,mariadb.mariadbRootPassword=secretpassword,serviceType=ClusterIP stable/moodle
+  --set ingress.enabled=True,ingress.hosts[0]=moodle.domain.com,serviceType=ClusterIP,moodleUsername=admin,moodlePassword=password,mariadb.mariadbRootPassword=secretpassword stable/moodle
 ```
+
+These are the 3 mandatory params when Ingress is desired:
+`ingress.enabled=True,ingress.hosts[0]=moodle.domain.com,serviceType=ClusterIP`
 
 ### Ingress TLS
 If your cluster allows automatic creation/retrieval of TLS certificates (e.g. [kube-lego](https://github.com/jetstack/kube-lego)), please refer to the documentation for that mechanism.
@@ -117,7 +120,7 @@ If your cluster allows automatic creation/retrieval of TLS certificates (e.g. [k
 To manually configure TLS, first create/retrieve a key & certificate pair for the address(es) you wish to protect. Then create a TLS secret in the namespace:
 
 ```console
-kubectl create secret tls moodle-server-tls --cert=path/to/tls.cert --key=path/to/tls.key
+$ kubectl create secret tls moodle-server-tls --cert=path/to/tls.cert --key=path/to/tls.key
 ```
 
 Include the secret's name, along with the desired hostnames, in the Ingress TLS section of your custom `values.yaml` file:
