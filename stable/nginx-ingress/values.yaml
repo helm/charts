@@ -48,8 +48,8 @@ controller:
 
   ## Run the controller via this service account
   ## Ref: https://github.com/kubernetes/ingress/tree/master/examples/rbac/nginx
-  ## 
-  serviceAccountName: ""  
+  ##
+  serviceAccountName: ""
 
   ## Annotations to be added to controller pods
   ##
