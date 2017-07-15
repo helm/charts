@@ -167,11 +167,11 @@ FPM is enabled by default, this creates an additional HTTPD container which rout
 
 ### MySQL Container
 
-The MySQL container is enabled by default, any container with the base image of the offical [mysql](https://hub.docker.com/_/mysql/), [mariadb](https://hub.docker.com/_/mariadb/) or [percona](https://hub.docker.com/_/percona/) should work.
+The MySQL container is disabled by default, any container with the base image of the offical [mysql](https://hub.docker.com/_/mysql/), [mariadb](https://hub.docker.com/_/mariadb/) or [percona](https://hub.docker.com/_/percona/) should work.
 
 | Parameter | Description | Default |
 | - | - | - |
-| `mysql.enabled` | Enables MySQL service | true |
+| `mysql.enabled` | Enables MySQL service | false |
 | `mysql.user` | MySQL user | _empty_ |
 | `mysql.password` | MySQL user password | _empty_ |
 | `mysql.database` | MySQL user database | _empty_ |

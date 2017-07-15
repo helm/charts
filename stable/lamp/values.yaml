@@ -39,7 +39,7 @@ httpd:
 
 
 mysql:
-  enabled: true
+  enabled: false
 
   #user:
   #password:
