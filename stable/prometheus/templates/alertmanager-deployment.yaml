@@ -86,9 +86,9 @@ spec:
         {{- else }}
           emptyDir: {}
         {{- end -}}
-        {{- range .Values.alertmanager.extraHostPathMounts }}
+      {{- range .Values.alertmanager.extraHostPathMounts }}
         - name: {{ .name }}
           hostPath:
             path: {{ .hostPath }}
-        {{- end}}
+      {{- end}}
 {{- end }}
