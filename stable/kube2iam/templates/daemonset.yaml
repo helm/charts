@@ -12,12 +12,17 @@ spec:
     metadata:
     {{- if .Values.podAnnotations }}
       annotations:
-{{ toYaml .Values.podAnnotations | indent 8}}
+{{ toYaml .Values.podAnnotations | indent 8 }}
     {{- end }}
       labels:
         app: {{ template "name" . }}
         release: {{ .Release.Name }}
     spec:
+{{- if .Values.rbac.enabled }}
+      serviceAccountName: {{ template "fullname" . }}
+{{- else }}
+      serviceAccountName: default
+{{- end }}
       containers:
         - name: kube2iam
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -52,3 +57,7 @@ spec:
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
     {{- end }}
+  {{- if .Values.updateStrategy }}
+  updateStrategy:
+    type: {{ .Values.updateStrategy }}
+  {{- end }}

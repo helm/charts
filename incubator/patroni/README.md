@@ -57,15 +57,21 @@ The following tables lists the configurable parameters of the patroni chart and 
 | `Spilo.Version`         | Container image tag                 | `1.0-p5`                                            |
 | `ImagePullPolicy`       | Container pull policy               | `IfNotPresent`                                      |
 | `Replicas`              | k8s statefulset replicas            | `5`                                                 |
+| `NodeSelector`          | nodeSelector map                    | Empty                                               |
 | `Component`             | k8s selector key                    | `patroni`                                           |
 | `Resources.Cpu`         | container requested cpu             | `100m`                                              |
 | `Resources.Memory`      | container requested memory          | `512Mi`                                             |
-| `Resources.Storage`     | Persistent volume size              | `1Gi`                                               |
 | `Credentials.Superuser` | password for the superuser          | `tea`                                               |
 | `Credentials.Admin`     | password for the admin user         | `cola`                                              |
 | `Credentials.Standby`   | password for the replication user   | `pinacolada`                                        |
 | `Etcd.Host`             | host name of etcd cluster           | not used (Etcd.Discovery is used instead)            |
 | `Etcd.Discovery`        | domain name of etcd cluster         | `<release-name>-etcd.<namespace>.svc.cluster.local` |
+| `persistentVolume.accessModes` | Persistent Volume access modes | `[ReadWriteOnce]` |
+| `persistentVolume.annotations` | Annotations for Persistent Volume Claim` | `{}` |
+| `persistentVolume.mountPath` | Persistent Volume mount root path | `/home/postgres/pgdata` |
+| `persistentVolume.size` | Persistent Volume size | `2Gi` |
+| `persistentVolume.storageClass` | Persistent Volume Storage Class | `volume.alpha.kubernetes.io/storage-class: default` |
+| `persistentVolume.subPath` | Subdirectory of Persistent Volume to mount | `""` |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 

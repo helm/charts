@@ -1,7 +1,7 @@
 ## Bitnami JasperReports image version
 ## ref: https://hub.docker.com/r/bitnami/jasperreports/tags/
 ##
-image: bitnami/jasperreports:6.3.0-r11
+image: bitnami/jasperreports:6.4.0-r1
 
 ## Specify a imagePullPolicy
 ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
