@@ -38,4 +38,3 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- define "checksd.fullname" -}}
 {{- printf "%s-datadog-checksd" .Release.Name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
-

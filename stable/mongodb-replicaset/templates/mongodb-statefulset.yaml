@@ -17,7 +17,7 @@ spec:
         release: {{ .Release.Name }}
       annotations:
       {{- if .Values.podAnnotations }}
-{{ toYaml .Values.podAnnotations | indent 8}}
+{{ toYaml .Values.podAnnotations | indent 8 }}
       {{- end }}
         pod.alpha.kubernetes.io/init-containers: '[
             {
