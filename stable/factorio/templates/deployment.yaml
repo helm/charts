@@ -78,7 +78,7 @@ spec:
         - name: rcon
           containerPort: {{ .Values.factorioServer.rcon.port }}
           protocol: TCP
-        {{- end}}
+        {{- end }}
         volumeMounts:
         - name: saves
           mountPath: /opt/factorio/saves
@@ -88,14 +88,14 @@ spec:
       - name: saves
       {{- if .Values.persistence.savedGames.enabled }}
         persistentVolumeClaim:
-          claimName: {{template "fullname" .}}-savedgames
+          claimName: {{ template "fullname" . }}-savedgames
       {{- else }}
         emptyDir: {}
       {{- end }}
       - name: mods
       {{- if .Values.persistence.mods.enabled }}
         persistentVolumeClaim:
-          claimName: {{template "fullname" .}}-mods
+          claimName: {{ template "fullname" . }}-mods
       {{- else }}
         emptyDir: {}
       {{- end }}

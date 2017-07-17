@@ -1,0 +1,13 @@
+apiVersion: v1
+description: Prometheus SNMP exporter module
+name: snmp-exporter
+version: 0.1.0
+keywords:
+    - prometheus
+    - snmpt
+sources:
+    - https://github.com/prometheus/snmp_exporter
+maintainers:
+    - name: Nicolas Lamirault
+      email: nicolas.lamirault@gmail.com
+icon: https://raw.githubusercontent.com/prometheus/prometheus.github.io/master/assets/prometheus_logo-cb55bb5c346.png

@@ -25,4 +25,8 @@ spec:
               serviceName: {{ printf "%s-%s" $releaseName $serviceName | trunc 63 | trimSuffix "-" }}
               servicePort: {{ $httpPort }}
     {{- end -}}
+{{- if .Values.service.ingress.tls }}
+  tls:
+{{ toYaml .Values.service.ingress.tls | indent 4 }}
+{{- end -}}
 {{- end -}}

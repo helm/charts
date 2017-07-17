@@ -149,7 +149,7 @@ items:
         remote_write:
           - url: 'https://cloud.weave.works/api/prom/push'
             basic_auth:
-              password: '{{.Values.ServiceToken}}'
+              password: '{{ .Values.ServiceToken }}'
         scrape_configs:
           - job_name: kubernetes-service-endpoints
             kubernetes_sd_configs:

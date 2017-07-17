@@ -1,0 +1,24 @@
+# Default values for snmp-exporter.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+Name: snmp-exporter
+
+image:
+  repository: prom/snmp-exporter
+  tag: v0.4.0
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  externalPort: 80
+  internalPort: 80
+
+resources:
+  limits:
+    cpu: 200m
+    memory: 256Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+

@@ -37,6 +37,7 @@ spec:
             httpGet:
               path: /grid/console
               port: {{ .Values.hub.port }}
+            timeoutSeconds: {{ .Values.hub.readinessTimeout }}
           env:
             - name: JAVA_OPTS
               value: {{ default "" .Values.hub.javaOpts | quote }}

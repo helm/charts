@@ -61,4 +61,6 @@ spec:
       - name: sumo-sources
         configMap:
           name: "{{ template "fullname" . }}-config-{{.Release.Time.Seconds }}"
+      tolerations:
+{{ toYaml .Values.daemonset.tolerations | indent 8 }}
 {{ end }}

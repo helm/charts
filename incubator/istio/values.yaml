@@ -15,6 +15,7 @@ mixer:
 
   service:
     type: ClusterIP
+    annotations: {}
     externalTcpPort: 9091
     externalConfigApiPort: 9094
     externalPrometheusPort: 42422
@@ -36,7 +37,8 @@ mixer:
 
 ## Pilot configuration
 pilot:
-  name: pilot
+  name: istio-pilot
+  customConfigMap: false
 
   service:
     type: ClusterIP

@@ -27,7 +27,7 @@ spec:
   {{- if .Values.server.loadBalancerIP }}
   loadBalancerIP: {{ .Values.server.loadBalancerIP }}
   {{- end -}}
-  {{- if .Values.server.loadBalancerSourceRanges}}
+  {{- if .Values.server.loadBalancerSourceRanges }}
   loadBalancerSourceRanges:
   {{- range .Values.server.loadBalancerSourceRanges }}
   - {{ . }}
