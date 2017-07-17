@@ -57,7 +57,7 @@ spec:
             - name: {{ .name }}
               mountPath: {{ .mountPath }}
               readOnly: {{ .readOnly }}
-            {{-end}}
+            {{- end}}
 
         - name: {{ template "prometheus.name" . }}-{{ .Values.alertmanager.name }}-{{ .Values.configmapReload.name }}
           image: "{{ .Values.configmapReload.image.repository }}:{{ .Values.configmapReload.image.tag }}"
@@ -90,5 +90,5 @@ spec:
         - name: {{ .name }}
           hostPath:
             path: {{ .hostPath }}
-        {{-end}}
+        {{- end}}
 {{- end }}
