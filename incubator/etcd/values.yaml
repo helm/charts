@@ -14,4 +14,5 @@ ImagePullPolicy: "Always"
 Cpu: "100m"
 Memory: "512Mi"
 Storage: "1Gi"
-StorageClass: "anything"
+# Uncomment to set the class
+# StorageClass: "anything"
