@@ -23,6 +23,15 @@ nodeSelector: {}
 ##
 podAnnotations: {}
 
+rbac:
+  ## If true, create & use RBAC resources
+  ##
+  create: false
+
+  ## Ignored if rbac.create is true
+  ##
+  serviceAccountName: default
+
 resources: {}
   # limits:
   #   cpu: 4m
@@ -31,7 +40,5 @@ resources: {}
   #   cpu: 4m
   #   memory: 16Mi
 
-verbose: false
 
-rbac:
-  enabled: false
+verbose: false
