@@ -36,6 +36,9 @@ spec:
           {{- range $key, $value := .Values.extraArgs }}
             - --{{ $key }}={{ $value }}
           {{- end }}
+          {{- range .Values.extraFlags }}
+            - --{{ . }}
+          {{- end }}
           {{- if .Values.verbose }}
             - --verbose
           {{- end }}
