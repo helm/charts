@@ -46,7 +46,7 @@ Parameter | Description | Default
 `host.iptables` | Add iptables rule | `false`
 `host.interface` | Host interface for proxying AWS metadata | `docker0`
 `image.repository` | Image | `jtblin/kube2iam`
-`image.tag` | Image tag | `0.2.2`
+`image.tag` | Image tag | `0.6.4`
 `image.pullPolicy` | Image pull policy | `IfNotPresent`
 `nodeSelector` | node labels for pod assignment | `{}`
 `podAnnotations` | annotations to be added to pods | `{}`
