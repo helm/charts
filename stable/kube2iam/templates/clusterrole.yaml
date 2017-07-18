@@ -12,6 +12,7 @@ rules:
   - apiGroups:
       - ""
     resources:
+      - namespaces
       - pods
     verbs:
       - list
