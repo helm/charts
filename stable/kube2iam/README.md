@@ -50,10 +50,12 @@ Parameter | Description | Default
 `image.pullPolicy` | Image pull policy | `IfNotPresent`
 `nodeSelector` | node labels for pod assignment | `{}`
 `podAnnotations` | annotations to be added to pods | `{}`
+`rbac.create` | If true, create & use RBAC resources | `false`
+`rbac.serviceAccountName` | existing ServiceAccount to use (ignored if rbac.create=true) | `default`
 `resources` | pod resource requests & limits | `{}`
 `verbose` | Enable verbose output | `false`
-`rbac.enabled` | Enable role and serviceaccount creation | `false`
 `updateStrategy` | The strategy for daemon set updates, e.g. `RollingUpdate` (requires Kubernetes 1.6+) | not set
+
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
