@@ -111,7 +111,7 @@ $ helm install --name my-release \
   --set ingress.enabled=True,ingress.hosts[0]=moodle.domain.com,serviceType=ClusterIP,moodleUsername=admin,moodlePassword=password,mariadb.mariadbRootPassword=secretpassword stable/moodle
 ```
 
-These are the 3 mandatory params when Ingress is desired:
+These are the *3 mandatory parameters* when *Ingress* is desired:
 `ingress.enabled=True,ingress.hosts[0]=moodle.domain.com,serviceType=ClusterIP`
 
 ### Ingress TLS
