@@ -53,6 +53,30 @@ Scaling should typically be managed via the `helm upgrade` command, but `Statefu
 $ kubectl scale statefulset my-release-worker --replicas=3
 ```
 
+### Restarting workers
+
+If worker pods go down, their persistent volumes are changed, or if you're having other issues with them, you'll need to restart the workers. Concourse workers were designed to be deployed onto infrastructure VMs which are less "ephemeral" than pods, so it isn't good at detecting when a worker goes down and comes back under the same hostname.
+
+Scale the workers down to 0:
+
+```
+kubectl scale statefulset concourse-worker --replicas=0
+
+```
+
+And then `fly workers` until the workers are detected to be `stalled`. Then for each worker
+```
+fly prune-worker -w concourse-worker-0
+fly prune-worker -w concourse-worker-1
+...
+
+```
+And finally
+
+```
+kubectl scale statefulset concourse-worker --replicas=3
+```
+
 ## Configuration
 
 The following tables lists the configurable parameters of the Concourse chart and their default values.
@@ -110,6 +134,8 @@ The following tables lists the configurable parameters of the Concourse chart an
 | `persistence.worker.class` | Concourse Worker Persistent Volume Storage Class | `generic` |
 | `persistence.worker.accessMode` | Concourse Worker Persistent Volume Access Mode | `ReadWriteOnce` |
 | `persistence.worker.size` | Concourse Worker Persistent Volume Storage Size | `10Gi` |
+| `postgresql.enabled` | Enable PostgreSQL as a chart dependency | `true` |
+| `postgresql.uri` | PostgreSQL connection URI | `nil` |
 | `postgresql.postgresUser` | PostgreSQL User to create | `concourse` |
 | `postgresql.postgresPassword` | PostgreSQL Password for the new user | `concourse` |
 | `postgresql.postgresDatabase` | PostgreSQL Database to create | `concourse` |
@@ -243,4 +269,27 @@ web:
       - secretName: concourse-web-tls
         hosts:
           - concourse.domain.com
+```
+
+
+### PostgreSQL
+
+By default, this chart will use a PostgreSQL database deployed as a chart dependency. You can also bring your own PostgreSQL. To do so, set the following in your custom `values.yaml` file:
+
+```yaml
+## Configuration values for the postgresql dependency.
+## ref: https://github.com/kubernetes/charts/blob/master/stable/postgresql/README.md
+##
+postgresql:
+
+  ## Use the PostgreSQL chart dependency.
+  ## Set to false if bringing your own PostgreSQL.
+  ##
+  enabled: false
+
+  ## If bringing your own PostgreSQL, the full uri to use
+  ## e.g. postgres://concourse:changeme@my-postgres.com:5432/concourse?sslmode=require
+  ##
+  uri: postgres://concourse:changeme@my-postgres.com:5432/concourse?sslmode=require
+
 ```

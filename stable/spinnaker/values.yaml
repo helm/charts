@@ -47,7 +47,7 @@ deck:
   protocol: http
 
 gate:
-  allowedOriginsPattern: '^https?://(?:localhost|[^/]+\.example\.com)(?::[1-9]\d*)?/?$'
+  allowedOriginsPattern: '^https?://(?:localhost|127.0.0.1|[^/]+\.example\.com)(?::[1-9]\d*)?/?$'
 
 # Bucket to use when storing config data in S3 compatible storage
 storageBucket: spinnaker
@@ -90,17 +90,17 @@ gcs:
 #   http://www.spinnaker.io/docs/jenkins-script-execution-stage
 jenkins:
   Master:
-    Name: jenkins-master
-    Image: "gcr.io/kubernetes-charts-ci/jenkins-master-k8s"
-    ImageTag: "v0.6.0"
-    ImagePullPolicy: "Always"
-    Component: "jenkins-master"
+    ImageTag: 2.62
     Cpu: "500m"
     Memory: "512Mi"
-    ServicePort: 8080
     ServiceType: ClusterIP
-    ContainerPort: 8080
-    SlaveListenerPort: 50000
+    CustomConfigMap: true
+    InstallPlugins:
+      - kubernetes:0.11 
+      - workflow-aggregator:2.5
+      - workflow-job:2.11
+      - credentials-binding:1.12
+      - git:3.2.0
 
   Agent:
     Image: viglesiasce/spinnaker-jenkins-agent

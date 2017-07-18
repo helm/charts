@@ -67,7 +67,7 @@ spec:
           args:
             - server
             {{- range $i := until $nodeCount }}
-            - http://{{ template "fullname" $ }}-{{$i}}.{{ template "fullname" $ }}.{{ $.Release.Namespace }}.svc.cluster.local{{ $.Values.mountPath }}
+            - http://{{ template "fullname" $ }}-{{ $i }}.{{ template "fullname" $ }}.{{ $.Release.Namespace }}.svc.cluster.local{{ $.Values.mountPath }}
             {{- end }}
             {{- end }}
           volumeMounts:

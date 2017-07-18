@@ -16,4 +16,4 @@ spec:
     app: {{ include "name" . }}
     component: {{ $serviceName }}-{{ .Values.addons.grafana.deployment.name }}
     release: {{ .Release.Name }}
-{{end}}
+{{ end }}
