@@ -81,7 +81,7 @@ metadata:
   name: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 56 }}"
 spec:
   serviceName: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 56 }}"
-  replicas: {{default 3 .Values.Replicas}}
+  replicas: {{ default 3 .Values.Replicas }}
   template:
     metadata:
       labels:
