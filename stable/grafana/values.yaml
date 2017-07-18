@@ -111,6 +111,11 @@ server:
   ##
   serviceType: ClusterIP
 
+  ## Grafana service annotations
+  ##
+  service:
+    annotations: {}
+
   ## Load balancer IP address
   ## Is not required, but allows for static address with
   ## serviceType LoadBalancer.
