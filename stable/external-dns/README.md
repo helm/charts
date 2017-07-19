@@ -40,7 +40,7 @@ The following tables lists the configurable parameters of the consul chart and t
 | `googleProject`        | When using the Google provider, specify the Google project (required when --provider=google).                 | `disabled`                     |
 | `domainFilter`         | Limit possible target zones by a domain suffix (optional).                                                    | `disabled`                     |
 | `azureResourceGroup`   | When using the Azure provider, override the Azure resource group to use (optional).                           | `disabled`                     |
-| `policy`               | Modify how DNS records are sychronized between sources and providers (options: sync, upsert-only ).           | `sync`                         |
+| `policy`               | Modify how DNS records are sychronized between sources and providers (options: sync, upsert-only ).           | `upsert-only`                  |
 | `registry`             | The registry implementation to use to keep track of DNS record ownership (default: txt, options: txt, noop ). | `txt`                          |
 | `txtOwnerId`           | When using the TXT registry, a name that identifies this instance of ExternalDNS (default: default).          | The Helm release name          |
 | `txtPrefix`            | When using the TXT registry, a custom string that's prefixed to each ownership DNS record (optional).         | `disabled`                     |
