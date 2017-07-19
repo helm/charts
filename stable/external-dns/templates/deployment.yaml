@@ -16,6 +16,9 @@ spec:
 {{ toYaml .Values.podAnnotations | indent 8}}
       {{- end }}
     spec:
+      {{- if .Values.serviceAccount }}
+      serviceAccountName: {{ include "external-dns.sa-name" . }}
+      {{- end }}
       containers:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}/{{.Values.image.name}}:{{ .Values.image.tag }}"

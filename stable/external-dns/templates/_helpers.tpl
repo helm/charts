@@ -21,3 +21,8 @@ app: {{ .Chart.Name }}
 heritage: {{.Release.Service | quote }}
 release: {{.Release.Name | quote }}
 {{- end }}
+
+{{- define "external-dns.sa-name" }}
+{{- $saName := default "external-dns-sa" .Values.saNameOverride -}}
+{{- printf "%s-%s" .Release.Name $saName -}}
+{{- end }}
