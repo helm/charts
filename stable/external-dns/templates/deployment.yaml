@@ -2,15 +2,15 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}
-  labels: {{ include "labels" . | indent 4 }}
+  name: {{ template "external-dns.fullname" . }}
+  labels: {{ include "external-dns.labels" . | indent 4 }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
 spec:
   strategy:
     type: Recreate
   template:
     metadata:
-      labels: {{ include "labels" . | indent 8 }}
+      labels: {{ include "external-dns.labels" . | indent 8 }}
       {{- if .Values.podAnnotations }}
       annotations:
 {{ toYaml .Values.podAnnotations | indent 8}}
