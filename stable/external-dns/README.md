@@ -32,9 +32,7 @@ The following tables lists the configurable parameters of the consul chart and t
 | `image.repository`     | Repository to pull the container from.                                                                        | `registry.opensource.zalan.do` |
 | `image.tag`            | Container image tag.                                                                                          | `v0.3.0`                       |
 | `master`               | The Kubernetes API server to connect to.                                                                      | `auto-detect`                  |
-| `source.fake`          | Boolean, should this resource be monitored.                                                                   | `false`                        |
-| `source.ingress`       | Boolean, should this resource be monitored.                                                                   | `true`                         |
-| `source.service`       | Boolean, should this resource be monitored.                                                                   | `true`                         |
+| `source`               | List of resources to monitor, possible values are fake, service or ingress.                                   | `service`, `ingress`           |
 | `namespace`            | Limit sources of endpoints to a specific namespace.                                                           | `all`                          |
 | `fqdnTemplate`         | A templated string that's used to generate DNS names.                                                         | `""`                           |
 | `compatibility`        | Process annotation semantics from legacy implementations (options: mate, molecule ).                          | `disabled`                     |
