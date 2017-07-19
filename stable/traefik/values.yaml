@@ -49,7 +49,7 @@ service:
   #   key: value
 gzip:
   enabled: true
-accessLogs:
+accessLog:
   enabled: false
   ## Path to the access logs file. If not provided, Traefik defaults it to stdout.
   # filePath: ""
