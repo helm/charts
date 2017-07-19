@@ -18,7 +18,15 @@ This chart bootstraps a [Istio](https://istio.io/) deployment on a [Kubernetes](
 ## Prerequisites
 
 - Kubernetes 1.5+
-- istioctl - See installation steps [here](https://istio.io/docs/tasks/installing-istio.html#installation-steps)
+- istioctl
+
+### istioctl installation steps
+
+Run
+```console
+curl -L https://git.io/getIstio | sh -
+```
+to download and extract the latest release automatically (on MacOS and Ubuntu), the `istioctl` client will be added to your PATH by the above shell command.
 
 ## RBAC
 By default the chart is installed without associated RBAC roles and rolebindings. If you would like to install the provided roles and rolebindings please do the following:
