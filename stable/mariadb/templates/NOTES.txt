@@ -11,7 +11,7 @@ To get the password for "{{ .Values.mariadbUser }}" run:
 
     MARIADB_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath="{.data.mariadb-password}" | base64 --decode)
 {{- end }}
-{{- end }}
+{{- end -}}
 
 To connect to your database:
 

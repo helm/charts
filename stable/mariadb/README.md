@@ -104,6 +104,32 @@ EOF
 helm install --name my-release -f mariadb-values.yaml stable/mariadb
 ```
 
+## Consuming credentials
+
+To connect to your database in your application, you can consume the credentials from the secret. For example:
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-app
+spec:
+  containers:
+    - name: my-app
+      image: bitnami/mariadb:latest
+      env:
+        - name: MARIADB_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: my-release-mariadb
+              key: mariadb-root-password
+      command: ["sh", "-c"]
+      args:
+      - mysql -h my-release-mariadb.default.svc.cluster.local -p$MARIADB_ROOT_PASSWORD -e 'show databases;'
+  restartPolicy: Never
+
+```
+
 ## Persistence
 
 The [Bitnami MariaDB](https://github.com/bitnami/bitnami-docker-mariadb) image stores the MariaDB data and configurations at the `/bitnami/mariadb` path of the container.
