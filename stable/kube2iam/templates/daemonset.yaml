@@ -53,7 +53,7 @@ spec:
 {{ toYaml .Values.nodeSelector | indent 8 }}
     {{- end }}
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
-  {{- if .Values.updateStrategy }}
+{{- if and (eq .Capabilities.KubeVersion.Major "1") (gt .Capabilities.KubeVersion.Minor "5") }}
   updateStrategy:
     type: {{ .Values.updateStrategy }}
-  {{- end }}
+{{- end }}

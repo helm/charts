@@ -40,5 +40,9 @@ resources: {}
   #   cpu: 4m
   #   memory: 16Mi
 
+## Strategy for DaemonSet updates (requires Kubernetes 1.6+)
+## Ref: https://kubernetes.io/docs/tasks/manage-daemon/update-daemon-set/
+##
+updateStrategy: OnDelete
 
 verbose: false
