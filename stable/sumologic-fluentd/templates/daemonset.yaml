@@ -25,6 +25,9 @@ spec:
             - name: host-logs
               mountPath: /mnt/log/
               readOnly: true
+            - name: host-logs
+              mountPath: /var/log/
+              readOnly: true
             - name: docker-logs
               mountPath: /var/lib/docker/
               readOnly: true
