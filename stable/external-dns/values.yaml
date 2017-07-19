@@ -3,7 +3,7 @@
 image:
   repository: registry.opensource.zalan.do
   name: teapot/external-dns
-  tag: v0.3.0
+  tag: v0.4.0-alpha.2
   pullPolicy: IfNotPresent
 
 ## This controls which types of resource external-dns should 'watch' for new
