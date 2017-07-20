@@ -16,7 +16,7 @@ spec:
 {{ toYaml .Values.podAnnotations | indent 8}}
       {{- end }}
     spec:
-      {{- if .Values.serviceAccount }}
+      {{- if .Values.serviceAccountEnabled }}
       serviceAccountName: {{ include "external-dns.sa-name" . }}
       {{- end }}
       containers:

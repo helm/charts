@@ -76,7 +76,7 @@ resources: {}
 #    cpu: 10m
 
 # Should the chart create and use a service account. 
-# serviceAccount: false
+# serviceAccountEnabled: false
 
 # If creating a service account, you can optionally override the name used.
 # Defaults to .Release.Name-external-dns-sa. Note: Release.Name is always 
