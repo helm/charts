@@ -1,0 +1,79 @@
+{{- $replicas := .Values.replicas }}
+{{- $svcName := .Values.svc_name }}
+{{- $initLoad := .Values.initial_load }}
+{{- $distro := .Values.distro }}
+{{- $type := .Values.type }}
+{{- $branch := .Values.branch }}
+{{- $nodePort := .Values.node_port }}
+{{- $initImage := .Values.init_image }}
+{{- $initImageV := .Values.init_image_version }}
+{{- $registryImage := .Values.registry_image }}
+{{- $registryImageV := .Values.registry_image_version }}
+{{- $tarballURL := .Values.tarball_url }}
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ $svcName }}
+spec:
+  replicas: {{ $replicas }}
+  template:
+    metadata:
+      labels:
+        service: {{ $svcName }}
+    spec:
+      initContainers:
+      - name: init-myservice
+        image: "{{ $initImage }}:{{ $initImageV }}"
+        imagePullPolicy: IfNotPresent
+        command:
+          - /bin/bash
+          - -ec
+          - |
+{{- if $initLoad }}
+            fn='{{ $distro }}-{{ $type }}-registry-{{ $branch }}.tar.gz';
+            echo $fn;
+            curl {{ $tarballURL }}$fn | tar -C /var/lib/registry/ -xzvf -;
+{{- end }}
+            echo Registry is all ready serving images...;
+        volumeMounts:
+        - name: image-store
+          mountPath: /var/lib/registry
+      containers:
+      - name: registry
+        image: "{{ $registryImage }}:{{ $registryImageV }}"
+        imagePullPolicy: IfNotPresent
+        resources:
+          limits:
+            cpu: 100m
+            memory: 256Mi
+        env:
+        - name: REGISTRY_HTTP_ADDR
+          value: ":4000"
+        - name: REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY
+          value: "/var/lib/registry"
+        volumeMounts:
+        - name: image-store
+          mountPath: /var/lib/registry
+        ports:
+        - containerPort: 4000
+          name: registry
+          protocol: TCP
+      volumes:
+      - name: image-store
+        emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $svcName }}
+spec:
+  selector:
+    service: {{ $svcName }}
+  ports:
+  - name: registry
+    port: 4000
+    protocol: TCP
+    nodePort: {{ $nodePort }}
+  type: NodePort
+---

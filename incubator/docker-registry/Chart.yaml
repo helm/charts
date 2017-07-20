@@ -1,0 +1,9 @@
+version: 0.1.0
+description: private docker registry
+name: docker-registry
+keywords:
+  - docker
+  - registry
+maintainers:
+  - name: Serguei Bezverkhi 
+    email: sbezverk@cisco.com
