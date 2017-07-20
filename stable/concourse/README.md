@@ -100,6 +100,7 @@ The following tables lists the configurable parameters of the Concourse chart an
 | `concourse.resourceCheckingInterval` | Interval on which to check for new versions of resources | `1m` |
 | `concourse.oldResourceGracePeriod` | How long to cache the result of a get step after a newer version of the resource is found | `5m` |
 | `concourse.resourceCacheCleanupInterval` | The interval on which to check for and release old caches of resource versions | `30s` |
+| `concourse.baggageclaimDriver` | The filesystem driver used by baggageclaim | `naive` |
 | `concourse.externalURL` | URL used to reach any ATC from the outside world | `nil` |
 | `concourse.dockerRegistry` | An URL pointing to the Docker registry to use to fetch Docker images | `nil` |
 | `concourse.insecureDockerRegistry` | Docker registry(ies) (comma separated) to allow connecting to even if not secure | `nil` |
@@ -133,7 +134,7 @@ The following tables lists the configurable parameters of the Concourse chart an
 | `persistence.enabled` | Enable Concourse persistence using Persistent Volume Claims | `true` |
 | `persistence.worker.class` | Concourse Worker Persistent Volume Storage Class | `generic` |
 | `persistence.worker.accessMode` | Concourse Worker Persistent Volume Access Mode | `ReadWriteOnce` |
-| `persistence.worker.size` | Concourse Worker Persistent Volume Storage Size | `10Gi` |
+| `persistence.worker.size` | Concourse Worker Persistent Volume Storage Size | `20Gi` |
 | `postgresql.enabled` | Enable PostgreSQL as a chart dependency | `true` |
 | `postgresql.uri` | PostgreSQL connection URI | `nil` |
 | `postgresql.postgresUser` | PostgreSQL User to create | `concourse` |
@@ -229,7 +230,7 @@ persistence:
 
     ## Persistent Volume Storage Size.
     ##
-    size: "10Gi"
+    size: "20Gi"
 ```
 
 ### Ingress TLS
