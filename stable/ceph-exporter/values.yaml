@@ -17,7 +17,4 @@ configmap: ceph-read-only
 secret: ceph-read-only
 httpPort: 8081
 
-resources:
-  requests:
-    memory: 100Mi
-    cpu: 200m
+resources: {}
