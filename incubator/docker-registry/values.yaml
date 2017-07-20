@@ -1,0 +1,12 @@
+svcName: docker-registry
+nodePort: 30400
+initialLoad: false
+replicas: 1
+distro:
+type:
+branch:
+initImage: centos
+initImageVersion: latest
+registryImage: registry
+registryImageVersion: 2
+tarballURL:
