@@ -21,6 +21,9 @@ spec:
                   "volumeMounts": [
                       {
                           "name": "data",
+                          {{- if .Values.persistence.subPath }}
+                          "subPath": "{{ .Values.persistence.subPath }}",
+                          {{- end }}
                           "mountPath": "/var/lib/mysql"
                       }
                   ],
@@ -74,11 +77,14 @@ spec:
         volumeMounts:
         - name: data
           mountPath: /var/lib/mysql
+          {{- if .Values.persistence.subPath }}
+          subPath: {{ .Values.persistence.subPath }}
+          {{- end }}
       volumes:
       - name: data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ template "fullname" . }}
+          claimName: {{ .Values.persistence.existingClaim | default (include "fullname" .) }}
       {{- else }}
         emptyDir: {}
       {{- end -}}
