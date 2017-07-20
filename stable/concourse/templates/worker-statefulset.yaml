@@ -50,7 +50,7 @@ spec:
                   - "--name=${HOSTNAME}"
           env:
             - name: CONCOURSE_BAGGAGECLAIM_DRIVER
-              value: "btrfs"
+              value: {{ default "btrfs" .Values.worker.filesystem | quote }}
             - name: CONCOURSE_TSA_HOST
               valueFrom:
                 configMapKeyRef:
