@@ -36,7 +36,13 @@ data:
               <instanceCap>2147483647</instanceCap>
               <idleMinutes>0</idleMinutes>
               <label>{{ .Release.Name }}-{{ .Values.Agent.Component }}</label>
-              <nodeSelector></nodeSelector>
+              <nodeSelector>
+                {{- $local := dict "first" true }}
+                {{- range $key, $value := .Values.Agent.NodeSelector }}
+                  {{- if not $local.first }},{{- end }}
+                  {{- $key }}={{ $value }}
+                  {{- $_ := set $local "first" false }}
+                {{- end }}</nodeSelector>
               <volumes>
 {{- range $index, $volume := .Values.Agent.volumes }}
                 <org.csanchez.jenkins.plugins.kubernetes.volumes.{{ $volume.type }}Volume>

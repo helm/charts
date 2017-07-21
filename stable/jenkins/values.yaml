@@ -87,6 +87,7 @@ Agent:
   # - type: Secret
   #   secretName: mysecret
   #   mountPath: /var/myapp/mysecret
+  NodeSelector: {}
 
 Persistence:
   Enabled: true
