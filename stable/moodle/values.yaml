@@ -164,5 +164,4 @@ persistence:
 resources:
   requests:
     memory: 768Mi
-    cpu: 600m
-
+    cpu: 300m
