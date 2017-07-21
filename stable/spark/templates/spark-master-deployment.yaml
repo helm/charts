@@ -27,11 +27,14 @@ spec:
           imagePullPolicy: "{{.Values.Master.ImagePullPolicy}}"
           image: "{{.Values.Master.Image}}:{{.Values.Master.ImageTag}}"
           {{- if .Values.Master.SparkSubmitCommand }}
-          command:
-          - "/bin/sh"
-          - "-c"
-          - |
-            {{.Values.Master.SparkSubmitCommand}}
+          lifecycle:
+            postStart:
+              exec:
+                command:
+                  - "/bin/sh"
+                  - "-c"
+                  - |
+                    {{.Values.Master.SparkSubmitCommand}}
           {{- end }}
           ports:
             - containerPort: {{.Values.Master.ContainerPort}}
