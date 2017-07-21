@@ -75,8 +75,7 @@ spec:
           name: leader-election
         env:
         - name: ZOOKEEPER_SERVERS
-          {{range $i := 1 .. .Values.ZkReplicas}}zk-{{$i}}{{end}}
-          value: zk-0,zk-1,zk-2
+          value: {{ template "zkServers" .Values.ZkReplicas }}
         envFrom:
         - configMapRef:
             name: zookeeper-config
