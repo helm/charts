@@ -1,0 +1,30 @@
+{{- if .Values.sumologic.collectorUrl -}}
+Sumo Logic agents are spinning up on each node in your cluster. After a few
+minutes, you should see logs available in Sumo Logic.
+
+Each pod, deployment, etc. can be optionally
+[configured](https://github.com/SumoLogic/fluentd-kubernetes-sumologic#options)
+to specify its log format, source category, source name, or exclude itself from
+SumoLogic.
+
+    annotations:
+      sumologic.com/format: "text"
+      sumologic.com/sourceCategory: "mywebsite/nginx"
+      sumologic.com/sourceName: "mywebsite_nginx"
+      sumologic.com/exclude: "true"
+
+{{- else -}}
+###########################################################
+####  ERROR: You did not set a sumologic.collectorUrl  ####
+###########################################################
+
+This deployment will be incomplete until you provide your collector URL, from Sumo Logic.
+
+Create your Sumo Logic [HTTP Collector](http://help.sumologic.com/Send_Data/Sources/02Sources_for_Hosted_Collectors/HTTP_Source)
+
+Then run:
+
+    helm upgrade {{ .Release.Name }} \
+    --set sumologic.collectorUrl=YOUR-URL-HERE stable/sumologic-fluentd
+
+{{- end }}

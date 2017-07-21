@@ -22,6 +22,9 @@ spec:
         release: {{ .Release.Name }}
     spec:
       hostNetwork: {{ .Values.controller.hostNetwork }}
+    {{- if .Values.controller.serviceAccountName }}
+      serviceAccountName: {{ .Values.controller.serviceAccountName }}
+    {{- end }}
       containers:
         - name: {{ template "name" . }}-{{ .Values.controller.name }}
           image: "{{ .Values.controller.image.repository }}:{{ .Values.controller.image.tag }}"

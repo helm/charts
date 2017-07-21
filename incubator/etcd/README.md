@@ -48,6 +48,7 @@ The following tables lists the configurable parameters of the etcd chart and the
 | `ClientPort`            | k8s service port                   | `2379`                                                     |
 | `PeerPorts`             | Container listening port           | `2380`                                                     |
 | `Storage`               | Persistent volume size             | `1Gi`                                                      |
+| `StorageClass`          | Persistent volume storage class    | `anything`                                                 |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 

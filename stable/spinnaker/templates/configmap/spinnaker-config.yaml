@@ -92,6 +92,9 @@ data:
           {{- if $account.password }}
           passwordFile: /tmp/registry/password-{{ $account.name }}
           {{- end }}
+          {{- if $account.trackDigests }}
+          trackDigests: {{ $account.trackDigests }}
+          {{- end }}
           {{- if $account.repositories }}
           repositories:
             {{- range $index, $repo := $account.repositories }}
@@ -168,7 +171,7 @@ data:
     'use strict';
 
     var feedbackUrl = 'http://localhost';
-    var gateHost = '{{ .Values.deck.protocol }}://{{ .Values.deck.host }}:{{ .Values.deck.port }}/gate';
+    var gateHost = '/gate';
     var bakeryDetailUrl = gateHost + '/bakery/logs/global/{{ "{{ " }}context.status.id{{ " }}" }}';
 
     window.spinnakerSettings = {
@@ -419,7 +422,7 @@ data:
         enabled: true
         defaultMaster:
           name: default
-          baseUrl: http://localhost:8080/
+          baseUrl: http://{{ .Release.Name }}-jenkins:8080/
           username: admin
           password: admin
 
