@@ -76,21 +76,12 @@ spec:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
         - name: moodle-data
-          mountPath: /bitnami/moodle
-        - name: apache-data
-          mountPath: /bitnami/apache
+          mountPath: /bitnami
       volumes:
       - name: moodle-data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ .Values.persistence.moodle.existingClaim | default (include "moodle.moodle.fullname" . ) }}
-      {{- else }}
-        emptyDir: {}
-      {{- end }}
-      - name: apache-data
-      {{- if .Values.persistence.enabled }}
-        persistentVolumeClaim:
-          claimName: {{ .Values.persistence.apache.existingClaim | default (include "moodle.apache.fullname" . ) }}
+          claimName: {{ .Values.persistence.existingClaim | default (include "moodle.fullname" . ) }}
       {{- else }}
         emptyDir: {}
       {{- end }}
