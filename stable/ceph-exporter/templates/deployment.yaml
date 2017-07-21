@@ -13,12 +13,9 @@ spec:
     metadata:
       labels:
         app: {{ template "name" . }}
-        heritage: "{{ .Release.Service }}"
         release: "{{ .Release.Name }}"
-        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
       annotations:
-        "prometheus.io/port": "9128"
-        "prometheus.io/scrape": "true"
+{{ toYaml .Values.annotations | indent 8 }}
     spec:
       hostNetwork: True
       nodeSelector:

@@ -17,4 +17,8 @@ configmap: ceph-read-only
 secret: ceph-read-only
 httpPort: 8081
 
+annotations: {}
+#  "prometheus.io/port": "9128"
+#  "prometheus.io/scrape": "true"
+
 resources: {}
