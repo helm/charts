@@ -4,7 +4,6 @@
 
 image: bitnami/moodle:3.3.1-r0
 
-
 ## Specify a imagePullPolicy
 ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
 ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -139,24 +138,24 @@ persistence:
 
 ## Define affinity for the moodle pod
 ## Sometimes required when persistent volumes are defined externally
-## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector    
-#affinity:
-#  nodeAffinity:
-#    requiredDuringSchedulingIgnoredDuringExecution:
-#      nodeSelectorTerms:
-#      - matchExpressions:
-#        - key: node-role.kubernetes.io/master
-#          operator: Exists
-#          values:
-#          - machine01
-#    preferredDuringSchedulingIgnoredDuringExecution:
-#    - weight: 1
-#      preference:
-#        matchExpressions:
-#        - key: another-node-label-key
-#          operator: In
-#          values:
-#          - another-node-label-value
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
+# affinity:
+#   nodeAffinity:
+#     requiredDuringSchedulingIgnoredDuringExecution:
+#       nodeSelectorTerms:
+#       - matchExpressions:
+#         - key: node-role.kubernetes.io/master
+#           operator: In
+#           values:
+#           - machine01
+#     preferredDuringSchedulingIgnoredDuringExecution:
+#     - weight: 1
+#       preference:
+#         matchExpressions:
+#         - key: another-node-label-key
+#           operator: In
+#           values:
+#           - another-node-label-value
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
