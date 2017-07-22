@@ -47,28 +47,6 @@ persistence:
   accessMode: ReadWriteOnce
   size: 8Gi
 
-## Define affinity for the pod
-## Sometimes required when persistent volumes are defined externally
-## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
-#affinity:
-#  nodeAffinity:
-#    requiredDuringSchedulingIgnoredDuringExecution:
-#      nodeSelectorTerms:
-#      - matchExpressions:
-#        - key: node-role.kubernetes.io/master
-#          operator: Exists
-#          values:
-#          - machine01
-#    preferredDuringSchedulingIgnoredDuringExecution:
-#    - weight: 1
-#      preference:
-#        matchExpressions:
-#        - key: another-node-label-key
-#          operator: In
-#          values:
-#          - another-node-label-value
-
-
 ## Configure MariaDB with a custom my.cnf file
 ## ref: https://mariadb.com/kb/en/mariadb/configuring-mariadb-with-mycnf/#example-of-configuration-file
 ##
