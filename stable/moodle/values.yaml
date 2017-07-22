@@ -1,8 +1,7 @@
 ## Bitnami Moodle` image version
 ## ref: https://hub.docker.com/r/bitnami/moodle/tags/
 ##
-
-image: bitnami/moodle:3.3.1-r0
+image: bitnami/moodle:3.3.1-r1
 
 ## Specify a imagePullPolicy
 ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
@@ -153,5 +152,5 @@ persistence:
 ##
 resources:
   requests:
-    memory: 768Mi
+    memory: 512Mi
     cpu: 300m

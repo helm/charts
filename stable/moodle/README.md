@@ -63,7 +63,7 @@ The following tables lists the configurable parameters of the Moodle chart and t
 | `ingress.hosts`                     | List of Ingress hosts                   | `nil`                                       |
 | `ingress.tls`                       | List of certs. If defined, https is set | `nil`                                       |
 | `affinity`                          | Set affinity for the moodle pods        | `nil`                                       |
-| `resources`                         | CPU/Memory resource requests/limits     | Memory: `768Mi`, CPU: `300m`                |
+| `resources`                         | CPU/Memory resource requests/limits     | Memory: `512Mi`, CPU: `300m`                |
 | `persistence.enabled`               | Enable persistence using PVC            | `true`                                      |
 | `persistence.storageClass`          | PVC Storage Class for Moodle volume     | `nil` (uses alpha storage class annotation) |
 | `persistence.accessMode`            | PVC Access Mode for Moodle volume       | `ReadWriteOnce`                             |
