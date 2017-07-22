@@ -6,3 +6,5 @@ appVersion: 0.0.3
 home: https://github.com/coreos/zetcd
 sources:
   - https://github.com/coreos/zetcd
+maintainers:
+  - name: hunter
