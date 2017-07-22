@@ -27,16 +27,8 @@ We truncate at 24 chars because some Kubernetes name fields are limited to this 
 Create a default fully qualified app name.
 We truncate at 24 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 */}}
-{{- define "moodle.apache.fullname" -}}
-{{- printf "%s-%s" .Release.Name "moodle-apache" | trunc 63 | trimSuffix "-" -}}
-{{- end -}}
-
-{{/*
-Create a default fully qualified app name.
-We truncate at 24 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
-*/}}
-{{- define "moodle.moodle.fullname" -}}
-{{- printf "%s-%s" .Release.Name "moodle-moodle" | trunc 63 | trimSuffix "-" -}}
+{{- define "moodle.fullname" -}}
+{{- printf "%s-%s" .Release.Name "moodle" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
 
