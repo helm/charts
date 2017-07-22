@@ -14,15 +14,10 @@ spec:
       labels:
         app: "{{ template "name" . }}"
         release: "{{ .Release.Name }}"
-      annotations:
-        scheduler.alpha.kubernetes.io/critical-pod: ''
     spec:
 {{- if .Values.rbac.install }}
       serviceAccountName: {{ template "fullname" . }}
 {{- end }}
-      tolerations:
-      - key: "CriticalAddonsOnly"
-        operator: "Exists"
       containers:
       - name: operator
         image: "{{ .Values.image }}:{{ .Values.imageTag }}"

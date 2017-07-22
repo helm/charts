@@ -2,7 +2,7 @@
 ## Voyager chart configuration
 ##
 image: appscode/voyager
-imageTag: 3.1.0
+imageTag: 3.1.1
 ## Use cloud provider here. Read details https://github.com/appscode/voyager/blob/master/docs/user-guide/README.md
 cloudProvider: cloud_provider
 ## The path to the cloud provider configuration file. Empty string for no configuration file.

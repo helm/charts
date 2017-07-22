@@ -43,7 +43,7 @@ The following tables lists the configurable parameters of the Voyager chart and 
 | Parameter              | Description                                                   | Default            |
 | ---------------------- | ------------------------------------------------------------- | ------------------ |
 | `image`                |  Container image to run                                       | `appscode/voyager` |
-| `imageTag`             |  Image tag of container                                       | `3.1.0`            |
+| `imageTag`             |  Image tag of container                                       | `3.1.1`            |
 | `cloudProvider`        |  Name of cloud provider                                       | ``                 |
 | `cloudConfig`          |  Path to cloud config                                         | ``                 |
 | `logLevel`             |  Log level for operator                                       | `3`                |

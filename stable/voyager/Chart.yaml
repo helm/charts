@@ -3,7 +3,7 @@ description: 'Voyager by AppsCode - Secure Ingress Controller for Kubernetes'
 icon: https://cdn.appscode.com/images/icon/voyager.png
 name: voyager
 version: 1.1.0
-appVersion: 3.1.0
+appVersion: 3.1.1
 sources:
   - https://github.com/appscode/voyager
 maintainers:
