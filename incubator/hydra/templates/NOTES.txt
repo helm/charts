@@ -13,7 +13,7 @@ To connect to Hydra, you can use:
   echo http://$NODE_IP/
 {{- else if contains "LoadBalancer" .Values.service.type }}
   export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "hydra.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-  echo http://$SERVICE_IP/
+  echo http://$SERVICE_IP:4444/
 NOTE: It may take a few minutes for the LoadBalancer IP to be available. Watch the status with:
   kubectl get svc -w --namespace {{ .Release.Namespace }} {{ template "hydra.fullname" . }}
 {{- else if contains "ClusterIP"  .Values.service.type }}
