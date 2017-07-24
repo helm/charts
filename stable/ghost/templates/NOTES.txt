@@ -19,6 +19,7 @@ host. To configure Ghost with the URL of your service:
         Watch the status with: 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "fullname" . }}'
 
   export APP_HOST=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "fullname" . }} --template "{{ "{{ range (index .status.loadBalancer.ingress 0) }}{{ . }}{{ end }}" }}")
+  export APP_PORT={{ default "80" .Values.ghostPort  }}
   {{- end }}
 
 2. Complete your Ghost deployment by running:
