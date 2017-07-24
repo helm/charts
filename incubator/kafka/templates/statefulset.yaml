@@ -3,19 +3,18 @@ kind: StatefulSet
 metadata:
   name: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 63 }}"
   labels:
-    app: kafka
+    app: "{{ .Release.Name }}-{{ .Values.Component }}"
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
-    component: "{{ .Release.Name }}-{{ .Values.Component }}"
 spec:
   serviceName: "{{ printf "%s-broker-%s" .Release.Name .Values.Name | trunc 63 }}"
   replicas: {{ default 3 .Values.Replicas }}
   template:
     metadata:
       labels:
-        app: kafka
-        component: "{{ .Release.Name }}-{{ .Values.Component }}"
+        app: "{{ .Release.Name }}-{{ .Values.Component }}"
+        release: {{ .Release.Name | quote }}
       annotations:
         pod.alpha.kubernetes.io/initialized: "true"
         pod.alpha.kubernetes.io/init-containers: '[
