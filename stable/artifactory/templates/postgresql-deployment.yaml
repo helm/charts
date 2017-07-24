@@ -1,0 +1,57 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "database.fullname" . }}
+  labels:
+    app: {{ template "name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: "{{ .Values.database.name }}"
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "name" . }}
+        component: "{{ .Values.database.name }}"
+        release: {{ .Release.Name }}
+      annotations:
+        pod.beta.kubernetes.io/init-containers: '[{
+          "name": "remove-lost-found",
+          "image": {{ .Values.initContainerImage | quote }},
+          "command": ["rm", "-rf", "{{ .Values.database.persistence.mountPath }}/lost+found"],
+          "volumeMounts": [{
+              "name": "postgresql-volume",
+              "mountPath": {{ .Values.database.persistence.mountPath | quote }}
+            }],
+          "imagePullPolicy": {{ .Values.database.image.pullPolicy | quote }}
+        }]'
+    spec:
+      containers:
+      - name: {{ .Values.database.name }}
+        image: "{{ .Values.database.image.repository }}:{{ .Values.database.image.version }}"
+        imagePullPolicy: {{ .Values.database.image.pullPolicy }}
+        env:
+        - name: POSTGRES_DB
+          value: {{ .Values.database.env.name }}
+        - name: POSTGRES_USER
+          value: {{ .Values.database.env.user }}
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "fullname" . }}
+              key: artifactory-database-password
+        ports:
+        - containerPort: {{ .Values.database.internalPort }}
+        volumeMounts:
+        - mountPath: {{ .Values.database.persistence.mountPath | quote }}
+          name: postgresql-volume
+      volumes:
+      - name: postgresql-volume
+      {{- if .Values.database.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ template "database.fullname" . }}
+      {{- else }}
+        emptyDir: {}
+      {{- end -}}

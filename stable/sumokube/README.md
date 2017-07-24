@@ -1,4 +1,4 @@
-#SumoKube  ![sumokube](/stable/sumokube/sumokube.jpg)
+# SumoKube  ![sumokube](/stable/sumokube/sumokube.jpg)
 
 [Sumo Logic](https://www.sumologic.com/) is a hosted logging platform.
 
@@ -54,6 +54,7 @@ The following tables lists the configurable parameters of the Sumokube chart and
 | `resources.limits.cpu`      | CPU resource limits                | 256m                                     |
 | `resources.requests.memory` | Memory resource requests           | 128Mi                                      |
 | `resources.limits.memory`   | Memory resource limits             | 256Mi                                      |
+| `daemonset.tolerations`     | List of node taints to tolerate (requires Kubernetes >= 1.6)            | []    |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
@@ -61,6 +62,14 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 ```bash
 $ helm install --name my-release \
     --set sumologic.accessId=YOUR-ID-HERE,sumologic.accessKey=YOUR-KEY-HERE,sumologic.categoryName=my-source-category-name \
+    stable/sumokube
+```
+
+Example of adding daemonset tolerations to run on master nodes. Requires Helm >=2.5
+
+```bash
+$ helm install --name my-release \
+    --set sumologic.accessId=YOUR-ID-HERE,sumologic.accessKey=YOUR-KEY-HERE,sumologic.categoryName=my-source-category-name,daemonset.tolerations[0].effect=NoSchedule,daemonset.tolerations[0].key=node-role.kubernetes.io/master \
     stable/sumokube
 ```
 

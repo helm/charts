@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: "{{ template "fullname" . }}-admin"
+  labels:
+    app: "{{ template "name" . }}-admin"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+spec:
+  clusterIP: None
+  ports:
+    - port: {{ .Values.ports.admin }}
+      targetPort: admin
+  selector:
+    app: "{{ template "name" . }}-proxy"
+    release: {{ .Release.Name | quote }}

@@ -56,15 +56,17 @@ spec:
             command:
             - rabbitmqctl
             - status
-          initialDelaySeconds: 30
+          initialDelaySeconds: 120
           timeoutSeconds: 5
+          failureThreshold: 6
         readinessProbe:
           exec:
             command:
             - rabbitmqctl
             - status
-          initialDelaySeconds: 5
-          timeoutSeconds: 1
+          initialDelaySeconds: 10
+          timeoutSeconds: 3
+          periodSeconds: 5
         volumeMounts:
         - name: data
           mountPath: /bitnami/rabbitmq
@@ -74,7 +76,7 @@ spec:
       - name: data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ .Values.persistence.existingClaim | default (include "fullname" .) }} 
+          claimName: {{ .Values.persistence.existingClaim | default (include "fullname" .) }}
       {{- else }}
         emptyDir: {}
       {{- end -}}

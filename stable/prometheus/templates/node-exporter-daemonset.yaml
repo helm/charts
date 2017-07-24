@@ -44,8 +44,17 @@ spec:
             - name: sys
               mountPath: /host/sys
               readOnly: true
+          {{- range .Values.nodeExporter.extraHostPathMounts }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+              readOnly: {{ .readOnly }}
+          {{- end }}
       hostNetwork: true
       hostPID: true
+    {{- if .Values.nodeExporter.tolerations }}
+      tolerations:
+{{ toYaml .Values.nodeExporter.tolerations | indent 8 }}
+    {{- end }}
     {{- if .Values.nodeExporter.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeExporter.nodeSelector | indent 8 }}
@@ -57,4 +66,9 @@ spec:
         - name: sys
           hostPath:
             path: /sys
+      {{- range .Values.nodeExporter.extraHostPathMounts }}
+        - name: {{ .name }}
+          hostPath:
+            path: {{ .hostPath }}
+      {{- end }}
 {{- end -}}

@@ -1,8 +1,14 @@
+{{ if .Values.auth.enabled }}
+{{- $serviceName := include "fullname" . -}}
 apiVersion: v1
 kind: Deployment
 apiVersion: extensions/v1beta1
 metadata:
-  name: {{ template "fullname" . }}-ca
+  name: {{ $serviceName }}-{{ .Values.ca.deployment.name }}
+  labels:
+{{ include "labels.standard" . | indent 4 }}
+    component: {{ $serviceName }}-{{ .Values.ca.deployment.name }}
+    istio: {{ $serviceName }}-{{ .Values.ca.deployment.name }}
 spec:
   replicas: {{ .Values.ca.deployment.replicas }}
   template:
@@ -12,11 +18,13 @@ spec:
           {{ $key }}: {{ $value | quote }}
         {{- end }}
       labels:
-        istio: {{ template "fullname" . }}-ca
+{{ include "labels.standard" . | indent 8 }}
+        component: {{ $serviceName }}-{{ .Values.ca.deployment.name }}
+        istio: {{ $serviceName }}-{{ .Values.ca.deployment.name }}
     spec:
-      serviceAccountName: {{ template "fullname" . }}-ca-service-account
+      serviceAccountName: {{ $serviceName }}-ca-service-account
       containers:
-      - name: istio-ca
+      - name: {{ .Values.ca.deployment.name }}
         image: "{{ .Values.ca.deployment.image }}:{{ .Values.istioRelease }}"
         imagePullPolicy: {{ .Values.ca.deployment.imagePullPolicy }}
         env:
@@ -27,3 +35,4 @@ spec:
               fieldPath: metadata.namespace
         resources:
 {{ toYaml .Values.ca.deployment.resources | indent 10 }}
+{{ end }}

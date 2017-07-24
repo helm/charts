@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "fullname" . }}-tests
+data:
+  run.sh: |-
+    @test "Testing Consul cluster has quorum" {
+      for i in {0..2}; do
+        if [ `kubectl exec {{ .Release.Name }}-consul-$i consul members --namespace={{ .Release.Namespace }} | grep server | wc -l` -ge "3" ]; then
+          echo "{{ .Release.Name }}-consul-$i OK. consul members returning at least 3 records."
+        else
+          echo "{{ .Release.Name }}-consul-$i ERROR. consul members returning less than 3 records."
+          exit 1
+        fi
+      done
+    }

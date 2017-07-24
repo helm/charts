@@ -101,8 +101,10 @@ Parameter | Description | Default
 `nodeExporter.image.tag` | node-exporter container image tag | `v0.13.0`
 `nodeExporter.image.pullPolicy` | node-exporter container image pull policy | `IfNotPresent`
 `nodeExporter.extraArgs` | Additional node-exporter container arguments | `{}`
+`nodeExporter.extraHostPathMounts` | Additional node-exporter hostPath mounts | `[]`
 `nodeExporter.nodeSelector` | node labels for node-exporter pod assignment | `{}`
 `nodeExporter.podAnnotations` | annotations to be added to node-exporter pods | `{}`
+`nodeExporter.tolerations` | node taints to tolerate (requires Kubernetes >=1.6) | `[]`
 `nodeExporter.resources` | node-exporter resource requests and limits (YAML) | `{}`
 `nodeExporter.service.annotations` | annotations for node-exporter service | `{prometheus.io/scrape: "true"}`
 `nodeExporter.service.clusterIP` | internal node-exporter cluster service IP | `None`
@@ -117,6 +119,7 @@ Parameter | Description | Default
 `server.image.pullPolicy` | Prometheus server container image pull policy | `IfNotPresent`
 `server.alertmanagerURL` | (optional) alertmanager URL; only used if alertmanager.enabled = false | `""`
 `server.extraArgs` | Additional Prometheus server container arguments | `{}`
+`server.extraHostPathMounts` | Additional Prometheus server hostPath mounts | `[]`
 `server.ingress.enabled` | If true, Prometheus server Ingress will be created | `false`
 `server.ingress.annotations` | Prometheus server Ingress annotations | `[]`
 `server.ingress.hosts` | Prometheus server Ingress hostnames | `[]`

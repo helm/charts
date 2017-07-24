@@ -1,9 +1,9 @@
 ## Install Default RBAC roles and bindings
 rbac:
-  install: true
+  install: false
   apiVersion: v1beta1
 
-istioRelease: 0.1.5
+istioRelease: 0.1.6
 
 ## Enable Istio auth feature 
 ## This deploys a CA in the namespace and enables mTLS between the services
@@ -15,11 +15,13 @@ mixer:
 
   service:
     type: ClusterIP
+    annotations: {}
     externalTcpPort: 9091
     externalConfigApiPort: 9094
     externalPrometheusPort: 42422
 
   deployment:
+    name: mixer
     image: docker.io/istio/mixer
     imagePullPolicy: Always
     replicas: 1
@@ -33,8 +35,10 @@ mixer:
         cpu: 100m
         memory: 128Mi
 
-## Manager configuration
-manager:
+## Pilot configuration
+pilot:
+  name: istio-pilot
+  customConfigMap: false
 
   service:
     type: ClusterIP
@@ -47,7 +51,8 @@ manager:
       alpha.istio.io/sidecar: ignore
 
     discovery:
-      image: docker.io/istio/manager
+      name: discovery
+      image: docker.io/istio/pilot
       imagePullPolicy: Always
       resources:
         limits:
@@ -58,7 +63,8 @@ manager:
           memory: 128Mi
 
     apiserver:
-      image: docker.io/istio/manager
+      name: apiserver
+      image: docker.io/istio/pilot
       imagePullPolicy: Always
       resources:
         limits:
@@ -77,6 +83,7 @@ ingress:
     externalHttpsPort: 443
 
   deployment:
+    name: ingress
     annotations:
       alpha.istio.io/sidecar: ignore
     image: docker.io/istio/proxy_debug
@@ -98,6 +105,7 @@ egress:
     externalHttpPort: 80
 
   deployment:
+    name: egress
     annotations:
       alpha.istio.io/sidecar: ignore
     image: docker.io/istio/proxy_debug
@@ -116,6 +124,7 @@ egress:
 ca:
 
   deployment:
+    name: ca
     annotations:
       # alpha.istio.io/sidecar: ignore
     image: docker.io/istio/istio-ca
@@ -143,6 +152,7 @@ addons:
       externalPort: 9411
     
     deployment:
+      name: zipkin
       annotations:
         alpha.istio.io/sidecar: ignore
       image: docker.io/openzipkin/zipkin
@@ -168,6 +178,7 @@ addons:
         prometheus.io/scrape: 'true'
     
     deployment:
+      name: prometheus
       annotations:
         alpha.istio.io/sidecar: ignore
       image: quay.io/coreos/prometheus
@@ -191,6 +202,7 @@ addons:
       externalPort: 3000
     
     deployment:
+      name: grafana
       annotations:
         alpha.istio.io/sidecar: ignore
       image: docker.io/istio/grafana
@@ -213,6 +225,7 @@ addons:
       externalPort: 8088
     
     deployment:
+      name: servicegraph
       annotations:
         alpha.istio.io/sidecar: ignore
       image: gcr.io/istio-testing/servicegraph
