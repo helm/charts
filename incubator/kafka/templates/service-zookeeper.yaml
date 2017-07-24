@@ -8,4 +8,4 @@ spec:
   - port: 2181
     name: client
   selector:
-    component: "{{.Values.zookeeper.Name}}-{{.Release.Name}}"
+    component: "{{ .Values.zookeeper.Name }}-{{ .Release.Name }}"
