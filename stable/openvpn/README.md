@@ -17,23 +17,22 @@ Please be aware that certificate generation is variable and may take some time (
 Check pod status via:
 
 ```bash
-POD_NAME=`kubectl get pods -l type=openvpn | awk END'{ print $1 }'` \
+POD_NAME=$(kubectl get pods -l type=openvpn -o jsonpath='{.items[0].metadata.name}') \
 && kubectl log $POD_NAME --follow
 ```
 
 When ready generate a client key as follows:
 
 ```bash
-POD_NAME=`kubectl get pods --namespace {{ .Release.Namespace }} -l type=openvpn | awk END'{ print $1 }'` \
-&& SERVICE_NAME=`kubectl get svc --namespace {{ .Release.Namespace }} -l type=openvpn | awk END'{ print $1 }'` \
-&& SERVICE_IP=`kubectl get svc $SERVICE_NAME --namespace {{ .Release.Namespace }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}'` \
-&& KEY_NAME=kubeVPN \
-&& kubectl exec --namespace {{ .Release.Namespace }} -it $POD_NAME /etc/openvpn/setup/newClientCert.sh $KEY_NAME $SERVICE_IP \
-&& kubectl exec --namespace {{ .Release.Namespace }} -it $POD_NAME cat /etc/openvpn/certs/pki/$KEY_NAME.ovpn > $KEY_NAME.ovpn
-
+POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l type=openvpn -o jsonpath='{.items[0].metadata.name}')
+SERVICE_NAME=$(kubectl get svc --namespace {{ .Release.Namespace }} -l type=openvpn  -o jsonpath='{.items[0].metadata.name}')
+SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} $SERVICE_NAME -o go-template='{{range $k, $v := (index .status.loadBalancer.ingress 0)}}{{$v}}{{end}}')
+KEY_NAME=kubeVPN \
+kubectl --namespace {{ .Release.Namespace }} exec -it $POD_NAME /etc/openvpn/setup/newClientCert.sh $KEY_NAME $SERVICE_IP
+kubectl --namespace {{ .Release.Namespace }} exec -it $POD_NAME cat /etc/openvpn/certs/pki/$KEY_NAME.ovpn > $KEY_NAME.ovpn
 ```
 
-Be sure to change KEY_NAME if generating additional keys.  Import the .ovpn file into your favorite openvpn tool like tunnelblick and verify connectivity.
+Be sure to change `KEY_NAME` if generating additional keys.  Import the .ovpn file into your favorite openvpn tool like tunnelblick and verify connectivity.
 
 ## Configuration
 
