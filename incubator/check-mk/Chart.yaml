@@ -9,7 +9,7 @@ keywords:
 - monitoring
 maintainers:
 - email: junaid18183@gmail.com
-  name: Juned Memon
+  name: junaid18183
 name: check-mk
 sources:
 - https://github.com/kubernetes/charts
