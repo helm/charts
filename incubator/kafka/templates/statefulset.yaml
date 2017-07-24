@@ -4,12 +4,10 @@ metadata:
   name: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 63 }}"
   labels:
     app: kafka
-    heritage: {{ .Release.Service | quote }}
-    release: {{ .Release.Name | quote }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
     component: "{{ .Release.Name }}-{{ .Values.Component }}"
-  annotations:
-    "helm.sh/created": {{ .Release.Time.Seconds | quote }}
 spec:
   serviceName: "{{ printf "%s-broker-%s" .Release.Name .Values.Name | trunc 63 }}"
   replicas: {{ default 3 .Values.Replicas }}
