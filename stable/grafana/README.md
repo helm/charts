@@ -43,3 +43,4 @@ The command removes all the Kubernetes components associated with the chart and 
 | `server.resources`                     | Server resource requests and limits | requests: {cpu: 100m, memory: 100Mi}              |
 | `server.serviceType`                   | ClusterIP, NodePort, or LoadBalancer| ClusterIP                                         |
 | `server.setDatasource.enabled`         | Creates grafana datasource with job | false                                             |
+| `server.service.annotations`           | Service annotations                 | null                                              |

@@ -53,6 +53,7 @@ The following tables lists the configurable parameters of the Drupal chart and t
 | `drupalUsername`                  | User of the application               | `user`                                                    |
 | `drupalPassword`                  | Application password                  | _random 10 character long alphanumeric string_            |
 | `drupalEmail`                     | Admin email                           | `user@example.com`                                        |
+| `extraVars`                       | Extra environment variables           | `nil`                                                     |
 | `ingress.annotations`             | Specify ingress class                 | `kubernetes.io/ingress.class: nginx`                      |
 | `ingress.enabled`                 | Enable ingress controller resource    | `false`                                                   |
 | `ingress.hostname`                | URL for your Drupal installation      | `drupal.local`                                            |
@@ -69,6 +70,8 @@ The following tables lists the configurable parameters of the Drupal chart and t
 | `persistence.drupal.hostPath`     | Host mount path for Drupal volume     | `nil` (will not mount to a host path)                     |
 | `persistence.drupal.size`         | PVC Storage Request for Drupal volume | `8Gi`                                                     |
 | `resources`                       | CPU/Memory resource requests/limits   | Memory: `512Mi`, CPU: `300m`                              |
+| `volumeMounts.drupal.mountPath`   | Drupal data volume mount path         | `/bitnami/drupal`                                         |
+| `volumeMounts.apache.mountPath`   | Apache data volume mount path         | `/bitnami/apache`                                         |
 
 The above parameters map to the env variables defined in [bitnami/drupal](http://github.com/bitnami/bitnami-docker-drupal). For more information please refer to the [bitnami/drupal](http://github.com/bitnami/bitnami-docker-drupal) image documentation.
 
@@ -110,8 +113,9 @@ helm install --name my-release -f values.yaml stable/drupal
 ```
 
 ## Persistence
+The configured image must store Drupal data and Apache configurations in separate paths of the container.
 
-The [Bitnami Drupal](https://github.com/bitnami/bitnami-docker-drupal) image stores the Drupal data and configurations at the `/bitnami/drupal` and `/bitnami/apache` paths of the container.
+The [Bitnami Drupal](https://github.com/bitnami/bitnami-docker-drupal) image stores the Drupal data and Apache configurations at the `/bitnami/drupal` and `/bitnami/apache` paths of the container. If you wish to override the `image` value, and your image stores this data and configurations in different paths, you may specify these paths with `volumeMounts.drupal.mountPath` and `volumeMounts.apache.mountPath`.
 
 Persistent Volume Claims are used to keep the data across deployments. This is known to work in GCE, AWS, and minikube.
 See the [Configuration](#configuration) section to configure the PVC or to disable persistence.

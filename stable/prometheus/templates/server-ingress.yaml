@@ -7,7 +7,7 @@ kind: Ingress
 metadata:
 {{- if .Values.server.ingress.annotations }}
   annotations:
-{{ toYaml .Values.server.ingress.annotations | indent 4}}
+{{ toYaml .Values.server.ingress.annotations | indent 4 }}
 {{- end }}
   labels:
     app: {{ template "prometheus.name" . }}

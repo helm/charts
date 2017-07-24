@@ -3,7 +3,7 @@ kind: Service
 metadata:
 {{- if .Values.service.annotations }}
   annotations:
-{{ toYaml .Values.service.annotations | indent 4}}
+{{ toYaml .Values.service.annotations | indent 4 }}
 {{- end }}
   labels:
     app: {{ template "name" . }}

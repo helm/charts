@@ -4,12 +4,12 @@ metadata:
   name: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 63 }}"
   labels:
     app: kafka
-    heritage: {{.Release.Service | quote }}
-    release: {{.Release.Name | quote }}
-    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
-    component: "{{.Release.Name}}-{{.Values.Component}}"
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    component: "{{ .Release.Name }}-{{ .Values.Component }}"
   annotations:
-    "helm.sh/created": {{.Release.Time.Seconds | quote }}
+    "helm.sh/created": {{ .Release.Time.Seconds | quote }}
 spec:
   serviceName: "{{ printf "%s-broker-%s" .Release.Name .Values.Name | trunc 63 }}"
   replicas: {{ default 3 .Values.Replicas }}
@@ -17,7 +17,7 @@ spec:
     metadata:
       labels:
         app: kafka
-        component: "{{.Release.Name}}-{{.Values.Component}}"
+        component: "{{ .Release.Name }}-{{ .Values.Component }}"
       annotations:
         pod.alpha.kubernetes.io/initialized: "true"
         pod.alpha.kubernetes.io/init-containers: '[
@@ -25,8 +25,8 @@ spec:
     spec:
       containers:
       - name: "{{ printf "%s-broker-%s" .Release.Name .Values.Name | trunc 63 }}"
-        image: "{{.Values.Image}}:{{.Values.ImageTag}}"
-        imagePullPolicy: "{{.Values.ImagePullPolicy}}"
+        image: "{{ .Values.Image }}:{{ .Values.ImageTag }}"
+        imagePullPolicy: "{{ .Values.ImagePullPolicy }}"
         livenessProbe:
           exec:
             command:
@@ -73,4 +73,4 @@ spec:
       accessModes: [ "ReadWriteOnce" ]
       resources:
         requests:
-          storage: {{.Values.Storage}}
+          storage: {{ .Values.Storage }}

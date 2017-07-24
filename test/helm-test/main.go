@@ -232,6 +232,14 @@ func doMain() int {
 			return execErr
 		})
 
+		xmlWrap(fmt.Sprintf("Helm Dep Build %s", path.Base(chartPath)), func() error {
+			o, execErr := output(exec.Command(helmPath, "dep", "build", chartPath))
+			if execErr != nil {
+				return fmt.Errorf("%s Command output: %s", execErr, string(o[:]))
+			}
+			return nil
+		})
+
 		xmlWrap(fmt.Sprintf("Helm Install %s", path.Base(chartPath)), func() error {
 			o, execErr := output(exec.Command(helmPath, "install", chartPath, "--namespace", ns, "--name", rel, "--wait"))
 			if execErr != nil {

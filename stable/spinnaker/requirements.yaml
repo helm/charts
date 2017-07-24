@@ -6,3 +6,6 @@ dependencies:
   version: 0.1.0
   repository: https://kubernetes-charts.storage.googleapis.com/
   condition: minio.enabled
+- name: jenkins
+  version: 0.8.0
+  repository: https://kubernetes-charts.storage.googleapis.com/
