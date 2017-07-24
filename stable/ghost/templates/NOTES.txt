@@ -32,13 +32,14 @@ host. To configure Ghost with the URL of your service:
 {{- if eq .Values.serviceType "ClusterIP" }}
 
   export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "fullname" . }}" -o jsonpath="{.items[0].metadata.name}")
-  echo Blog URL  :  http://127.0.0.1{{ if .Values.ghostPort }}:{{ .Values.ghostPort  }}{{ end }}/
-  echo Admin URL : http://127.0.0.1{{ if .Values.ghostPort }}:{{ .Values.ghostPort  }}{{ end }}/ghost
+  echo Blog URL  :  http://127.0.0.1:{{ default "80" .Values.ghostPort }}/
+  echo Admin URL : http://127.0.0.1:{{ default "80" .Values.ghostPort }}/ghost
   kubectl port-forward $POD_NAME {{ default "80" .Values.ghostPort }}:2368
+
 {{- else }}
 
-  echo Blog URL  : http://{{ include "host" . }}{{ if .Values.ghostPort }}:{{ .Values.ghostPort  }}{{ end }}/
-  echo Admin URL : http://{{ include "host" . }}{{ if .Values.ghostPort }}:{{ .Values.ghostPort  }}{{ end }}/ghost
+  echo Blog URL  : http://{{ include "host" . }}:{{ default "80" .Values.ghostPort }}/
+  echo Admin URL : http://{{ include "host" . }}:{{ default "80" .Values.ghostPort }}/ghost
 {{- end }}
 
 2. Get your Ghost login credentials by running:
