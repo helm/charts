@@ -54,5 +54,5 @@ spec:
         persistentVolumeClaim:
           claimName: {{ template "fullname" . }}
         {{- else }}
-          emptyDir: {}
+        emptyDir: {}
         {{- end -}}
