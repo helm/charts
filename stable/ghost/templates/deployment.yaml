@@ -32,11 +32,7 @@ spec:
         - name: GHOST_HOST
           value: {{ include "host" . | quote }}
         - name: GHOST_PORT_NUMBER
-          {{- if eq .Values.serviceType "ClusterIP" }}
-          value: "2368"
-          {{- else }}
           value: {{ default "80" .Values.ghostPort | quote }}
-          {{- end }}
         - name: GHOST_USERNAME
           value: {{ default "" .Values.ghostUsername | quote }}
         - name: GHOST_PASSWORD
