@@ -29,21 +29,19 @@ spec:
             command:
               - bin/kafka-topics.sh
               - --zookeeper
-              - "{{ printf "%s-zookeeper-%s" .Release.Name .Values.zookeeper.Name | trunc 63 }}:2181"
+              - "{{ printf "%s-zookeeper" .Release.Name | trunc 63 }}:2181"
               - --list
           initialDelaySeconds: 30
           timeoutSeconds: 5
-        name: liveness
         readinessProbe:
           exec:
             command:
               - bin/kafka-topics.sh
               - --zookeeper
-              - "{{ printf "%s-zookeeper-%s" .Release.Name .Values.zookeeper.Name | trunc 63 }}:2181"
+              - "{{ printf "%s-zookeeper" .Release.Name | trunc 63 }}:2181"
               - --list
           initialDelaySeconds: 30
           timeoutSeconds: 5
-        name: readiness
         ports:
         - containerPort: 9092
           name: kafka
@@ -57,7 +55,7 @@ spec:
         command:
         - sh
         - -c
-        - "./bin/kafka-server-start.sh config/server.properties --override zookeeper.connect={{ printf "%s-zookeeper-%s" .Release.Name .Values.zookeeper.Name | trunc 63 }}:2181/ --override broker.id=${HOSTNAME##*-}"
+        - "./bin/kafka-server-start.sh config/server.properties --override zookeeper.connect={{ printf "%s-zookeeper" .Release.Name | trunc 63 }}:2181/ --override broker.id=${HOSTNAME##*-}"
         volumeMounts:
         - name: datadir
           mountPath: "{{ .Values.DataDirectory }}"
