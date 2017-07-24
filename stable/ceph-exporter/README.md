@@ -47,3 +47,22 @@ $ helm delete my-release
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
 
+## Configuration
+
+The following tables lists the configurable parameters of the ceph-exporter chart and their default values.
+
+| Parameter | Description | Default |
+| --------- | ----------- | ------- |
+| `image` | Image to use | `digitalocean/ceph_exporter` |
+| `imageTag` | Image tag to use | `1.0.0` |
+| `imagePullPolicy` | Image pull policy | `IfNotPresent` |
+| `replicaCount` | Number of replicas | `1` |
+| `nodeSelector` | Node selector to use to schedule pods | `{}` |
+| `serviceType` | The type of service to bind | `ClusterIP` |
+| `user` | The ceph username to use | `read-only` |
+| `configmap` | The name of the configmap with the ceph config | `ceph-read-only` |
+| `secret` | The name of the secret with the ceph credentials | `ceph-read-only` |
+| `httpPort` | The http port to listen on | `8081` |
+| `annotations` | Add extra annotations to the pods | `{}` |
+| `resources` | Request resource allocation | `{}` |
+
