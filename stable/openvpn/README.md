@@ -12,7 +12,7 @@ helm install stable/openvpn
 ```
 
 Wait for the external load balancer IP to become available.  Check service status via: `kubectl get svc`
- 
+
 Please be aware that certificate generation is variable and may take some time (minutes).
 Check pod status via:
 
@@ -51,5 +51,6 @@ New certificates are generated with each deployment.  If persistence is enabled 
 * openvpn.OVPN_PROTO: tcp - Protocol used by openvpn tcp or udp (default: tcp).
 * openvpn.OVPN_K8S_POD_NETWORK: "10.0.0.0" - Kubernetes pod network (optional).
 * openvpn.OVPN_K8S_POD_SUBNET: "255.0.0.0" - Kubernetes pod network subnet (optional).
+* openvpn.conf: "" - Arbitrary lines appended to the end of the server configuration file
 
 #### Note: As configured the chart will create a route for a large 10.0.0.0/8 network that may cause issues if that is your local network.  If so tweak this value to something more restrictive.  This route is added, because GKE generates pods with IPs in this range.
