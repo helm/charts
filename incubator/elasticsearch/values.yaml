@@ -12,6 +12,7 @@ client:
   replicas: 2
   serviceType: ClusterIP
   heapSize: "128m"
+  antiAffinity: "soft"
   resources:
     limits:
       cpu: "1"
@@ -24,6 +25,7 @@ master:
   name: master
   replicas: 2
   heapSize: "128m"
+  antiAffinity: "soft"
   resources:
     limits:
       cpu: "1"
