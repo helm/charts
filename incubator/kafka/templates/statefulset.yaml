@@ -15,10 +15,6 @@ spec:
       labels:
         app: {{ include "name" . | quote }}
         release: {{ .Release.Name | quote }}
-      annotations:
-        pod.alpha.kubernetes.io/initialized: "true"
-        pod.alpha.kubernetes.io/init-containers: '[
-        ]'
     spec:
       containers:
       - name: {{ template "fullname" . }}
