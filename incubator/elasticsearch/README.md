@@ -72,6 +72,7 @@ The following tables lists the configurable parameters of the elasticsearch char
 | `data.storage`                       | Data persistent volume size             | `30Gi`                              |
 | `data.storageClass`                  | Data persistent volume Class            | `nil`                               |
 | `data.terminationGracePeriodSeconds` | Data termination grace period (seconds) | `3600`                              |
+| `data.antiAffinity`                  | Data anti-affinity policy               | `soft`                              |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
