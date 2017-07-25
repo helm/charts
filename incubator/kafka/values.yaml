@@ -4,7 +4,7 @@
 
 Replicas: 3
 Image: "solsson/kafka"
-ImageTag: "0.10.0.1"
+ImageTag: "0.11.0.0"
 ImagePullPolicy: "IfNotPresent"
 Cpu: "100m"
 Memory: "512Mi"
