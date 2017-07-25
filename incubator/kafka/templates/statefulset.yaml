@@ -1,19 +1,19 @@
 apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
-  name: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 63 }}"
+  name: {{ template "fullname" . }}
   labels:
-    app: "{{ .Release.Name }}-{{ .Values.Component }}"
+    app: {{ include "name" . | quote }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
 spec:
-  serviceName: "{{ printf "%s-broker-%s" .Release.Name .Values.Name | trunc 63 }}"
+  serviceName: {{ template "fullname" . }}-headless
   replicas: {{ default 3 .Values.Replicas }}
   template:
     metadata:
       labels:
-        app: "{{ .Release.Name }}-{{ .Values.Component }}"
+        app: {{ include "name" . | quote }}
         release: {{ .Release.Name | quote }}
       annotations:
         pod.alpha.kubernetes.io/initialized: "true"
@@ -21,7 +21,7 @@ spec:
         ]'
     spec:
       containers:
-      - name: "{{ printf "%s-broker-%s" .Release.Name .Values.Name | trunc 63 }}"
+      - name: {{ template "fullname" . }}
         image: "{{ .Values.Image }}:{{ .Values.ImageTag }}"
         imagePullPolicy: "{{ .Values.ImagePullPolicy }}"
         livenessProbe:
@@ -29,7 +29,7 @@ spec:
             command:
               - bin/kafka-topics.sh
               - --zookeeper
-              - "{{ printf "%s-zookeeper" .Release.Name | trunc 63 }}:2181"
+              - "{{ template "name" . }}-zookeeper:2181"
               - --list
           initialDelaySeconds: 30
           timeoutSeconds: 5
@@ -38,7 +38,7 @@ spec:
             command:
               - bin/kafka-topics.sh
               - --zookeeper
-              - "{{ printf "%s-zookeeper" .Release.Name | trunc 63 }}:2181"
+              - "{{ template "name" . }}-zookeeper:2181"
               - --list
           initialDelaySeconds: 30
           timeoutSeconds: 5
@@ -55,7 +55,7 @@ spec:
         command:
         - sh
         - -c
-        - "./bin/kafka-server-start.sh config/server.properties --override zookeeper.connect={{ printf "%s-zookeeper" .Release.Name | trunc 63 }}:2181/ --override broker.id=${HOSTNAME##*-}"
+        - "./bin/kafka-server-start.sh config/server.properties --override zookeeper.connect={{ template "name" . }}-zookeeper:2181/ --override broker.id=${HOSTNAME##*-}"
         volumeMounts:
         - name: datadir
           mountPath: "{{ .Values.DataDirectory }}"
