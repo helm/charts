@@ -7,9 +7,13 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
+  annotations:
+    service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
 spec:
   ports:
-  - port: 9092
+  - name: broker
+    port: 9092
+  clusterIP: None
   selector:
     app: {{ include "name" . | quote }}
     release: {{ .Release.Name | quote }}
