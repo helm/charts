@@ -59,7 +59,7 @@ webhookRelay:
     pullPolicy: IfNotPresent
 
 # Keel self-update
-# uncomment lines below if you want Keel to automaticly
+# Comment lines below if you do not want Keel to automaticly
 # self-update to the latest release version
 keel:
   # keel policy (all/major/minor/patch/force)
@@ -74,13 +74,13 @@ keel:
      tag: image.tag
 
 # Resources
-resources:
-  limits:
-    cpu: 100m
-    memory: 128Mi
-  requests:
-    cpu: 50m
-    memory: 64Mi
+#resources:
+#  limits:
+#    cpu: 100m
+#    memory: 128Mi
+#  requests:
+#    cpu: 50m
+#    memory: 64Mi
 
 # NodeSelector
 nodeSelector: {}

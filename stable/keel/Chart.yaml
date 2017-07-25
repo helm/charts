@@ -11,8 +11,8 @@ home: https://keel.sh
 sources:
 - https://github.com/rusenask/keel
 maintainers:
-- name: Rimas Mocevicius
+- name: rimusz
   email: rmocius@gmail.com
-- name: Karolis Rusenas
+- name: rusenask
   email: karolis.rusenas@gmail.com
 engine: gotpl

@@ -1,7 +1,7 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "name" . }}
+  name: {{ template "fullname" . }}
   namespace: kube-system
   labels:
     app: {{ template "name" . }}
@@ -16,6 +16,7 @@ spec:
     metadata:
       labels:
         app: {{ template "name" . }}
+        release: {{ .Release.Name }}
     spec:
       containers:
         - name: keel
