@@ -17,7 +17,7 @@ spec:
         release: {{ .Release.Name | quote }}
     spec:
       containers:
-      - name: {{ template "fullname" . }}
+      - name: {{ template "name" . }}-broker
         image: "{{ .Values.Image }}:{{ .Values.ImageTag }}"
         imagePullPolicy: "{{ .Values.ImagePullPolicy }}"
         livenessProbe:
