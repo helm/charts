@@ -146,8 +146,9 @@ spec:
         livenessProbe:
           exec:
             command:
-            - consul
-            - members
+            - "/bin/sh"
+            - "-ec"
+            - "curl -fsq localhost:{{ .Values.HttpPort }}/v1/status/peers|grep -q $(hostname -i)"
           initialDelaySeconds: 300
           timeoutSeconds: 5
         command:
