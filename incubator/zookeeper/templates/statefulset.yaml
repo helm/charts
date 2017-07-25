@@ -9,7 +9,7 @@ metadata:
     heritage: {{ .Release.Service | quote }}
 spec:
   serviceName: {{ template "fullname" . }}-headless
-  replicas: {{ .Values.Servers }}
+  replicas: {{ default 3 .Values.Servers }}
   template:
     metadata:
       labels:
@@ -38,7 +38,7 @@ spec:
                     release: {{ .Release.Name | quote }}
       {{- end }}
       containers:
-      - name: k8szk
+      - name: {{ template "name" . }}-server
         imagePullPolicy: {{ .Values.ImagePullPolicy }}
         image: gcr.io/google_samples/k8szk:v2
         resources:

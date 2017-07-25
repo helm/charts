@@ -12,7 +12,7 @@ Resources: {}
   #   memory: 2Gi
 Heap: "1G"
 Storage: "2Gi"
-#StorageClass : default
+# StorageClass : default
 ServerPort: 2888
 LeaderElectionPort: 3888
 ClientPort: 2181
