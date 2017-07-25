@@ -54,7 +54,7 @@ following configurable parameters:
 | Parameter               | Description                        | Default                                                    |
 | ----------------------- | ---------------------------------- | ---------------------------------------------------------- |
 | `Image`                 | Kafka Container image name         | `solsson/kafka`                                            |
-| `ImageTag`              | Kafka Container image tag          | `0.10.0.1`                                                 |
+| `ImageTag`              | Kafka Container image tag          | `0.11.0.0`                                                 |
 | `ImagePullPolicy`       | Kafka Container pull policy        | `Always`                                                   |
 | `Replicas`              | Kafka Brokers                      | `3`                                                        |
 | `Component`             | Kafka k8s selector key             | `kafka`                                                    |
