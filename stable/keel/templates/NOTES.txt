@@ -1,0 +1,33 @@
+1. The {{ template "name" .}} is getting provisioned in your cluster. After a few minutes, you can run the following to verify.
+
+To verify that {{ template "name" . }} has started, run:
+
+  kubectl --namespace=kube-system get pods -l "app={{ template "name" . }}"
+
+{{- if .Values.service.enabled }}
+
+2. Get your Keel service URL:
+
+{{- if contains "LoadBalancer" .Values.service.type }}
+
+  NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+        Watch the status with: 'kubectl get svc --namespace kube-system -w {{ template "name" . }}'
+
+  export SERVICE_IP=$(kubectl get svc --namespace kube-system  {{ template "name" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+  echo http://$SERVICE_IP:{{ .Values.service.externalPort }}
+
+{{- else if contains "ClusterIP"  .Values.service.type }}
+
+  export POD_NAME=$(kubectl get pods --namespace kube-system  -l "app={{ template "name" . }}" -o jsonpath="{.items[0].metadata.name}")
+  echo http://127.0.0.1:{{ .Values.service.externalPort }}
+  kubectl port-forward --namespace kube-system $POD_NAME {{ .Values.service.externalPort }}:{{ .Values.service.externalPort }}
+
+{{- else if contains "NodePort" .Values.service.type }}
+
+  export NODE_PORT=$(kubectl get --namespace kube-system  -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "name" . }})
+  export NODE_IP=$(kubectl get nodes --namespace kube-system  -o jsonpath="{.items[0].status.addresses[0].address}")
+  echo http://$NODE_IP:$NODE_PORT/
+
+{{- end }}
+
+{{- end }}
