@@ -51,12 +51,12 @@ The following tables lists the configurable parameters of the zetcd chart and th
 | `image.repository`                                | zetcd container image                                        | `quay.io/coreos/zetcd`                 |
 | `image.tag`                                       | zetcd container image tag                                    | `v0.0.3`                                       |
 | `image.pullPolicy`                                | zetcd container image pull policy                            | `IfNotPresent`                                 |
-| `resources.limits.cpu`                            | CPU limit per zetcd pod                                      | `100m`                                         |
-| `resources.limits.memory`                         | Memory limit per zetcd pod                                   | `128Mi`                                        |
-| `resources.requests.cpu`                          | CPU request per zetcd pod                                    | `100m`                                         |
-| `resources.requests.memory`                       | Memory request per zetcd pod                                 | `128Mi`                                        |
-| `etcd.operatorEnabled`                                 | Whether to use etcd-operator to launch a cluster                    | `true`                                        |
-| `etcd.endpoints`                                 | Existing etcd endpoints to be used when etcd-operator is disabled                    | `localhost:2379`                                        |
+| `resources.limits.cpu`                            | CPU limit per zetcd pod                                      |                                          |
+| `resources.limits.memory`                         | Memory limit per zetcd pod                                   |                                         |
+| `resources.requests.cpu`                          | CPU request per zetcd pod                                    |                                          |
+| `resources.requests.memory`                       | Memory request per zetcd pod                                 |                                         |
+| `etcd.operatorEnabled`                            | Whether to use etcd-operator to launch a cluster                    | `true`                                        |
+| `etcd.endpoints`                                  | Existing etcd endpoints to be used when etcd-operator is disabled                    | `localhost:2379`                                        |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
