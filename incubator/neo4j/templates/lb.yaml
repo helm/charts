@@ -1,0 +1,21 @@
+# Load balancer so we can access machines from outside
+apiVersion: v1
+kind: Service
+metadata:
+  name: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 56 }}-loadbalancer"
+  labels:
+    heritage: {{.Release.Service | quote }}
+    release: {{.Release.Name | quote }}
+    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+    component: "{{.Release.Name}}-{{.Values.Component}}"
+spec:
+  type: {{.Values.ServiceType}}
+  ports:
+    - port: {{.Values.HttpPort}}
+      targetPort: {{.Values.HttpPort}}
+      name: browser
+    - port: {{.Values.BoltPort}}
+      targetPort: {{.Values.BoltPort}}
+      name: bolt
+  selector:
+    component: "{{.Release.Name}}-{{.Values.Component}}"

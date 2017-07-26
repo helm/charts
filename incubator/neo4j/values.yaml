@@ -1,0 +1,28 @@
+# Default values for Neo4j.
+# This is a YAML-formatted file.
+# Declare name/value pairs to be passed into your templates.
+# name: value
+
+Name: "neo4j"
+Image: "neo4j"
+ImageTag: "3.2.2-enterprise"
+ImagePullPolicy: "Always"
+NumberOfCores: 3
+NumberOfReadReplicas: 0
+MinAvailable: "67%"
+Component: "neo4j"
+BoltPort: 7687
+HttpPort: 7474
+DiscoveryPort: 5000
+TxPort: 6000
+RaftPort: 7000
+Resources:
+  requests:
+    cpu: "100m"
+    memory: "512Mi"
+Storage: "1Gi"
+StorageClass: "anything"
+ClusterDomain: "cluster.local"
+ServiceType: "LoadBalancer"
+TestImage: "markhneedham/k8s-kubectl"
+TestImageTag: "master"

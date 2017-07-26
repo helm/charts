@@ -1,0 +1,12 @@
+Neo4j can be accessed via port 7687 (or whatever you set the BoltPort value to)
+at the following DNS name from within your cluster:
+{{ .Release.Name }}-public.{{ .Release.Namespace }}.svc.cluster.local
+
+You can connect to the cluster using the Cypher shell by running:
+
+    kubectl run -it --rm cypher-shell \
+        --image=neo4j:3.2.1-enterprise \
+        --restart=Never \
+        --command -- ./bin/cypher-shell -u neo4j -p neo4j --a {{ printf "%s-%s" .Release.Name .Values.Name | trunc 56 }}.default.svc.cluster.local "call dbms.cluster.overview()"
+
+This will print out the addresses of the members of the cluster.

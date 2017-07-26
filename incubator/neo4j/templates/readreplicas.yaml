@@ -1,0 +1,48 @@
+apiVersion: apps/v1beta1 # for versions before 1.6.0 use extensions/v1beta1
+kind: Deployment
+metadata:
+  name: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 56 }}-replica"
+spec:
+  replicas: {{default 0 .Values.NumberOfReadReplicas}}
+  template:
+    metadata:
+      labels:
+        heritage: {{.Release.Service | quote }}
+        release: {{.Release.Name | quote }}
+        chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+        component: "{{.Release.Name}}-{{.Values.Component}}"
+    spec:
+      containers:
+      - name: neo4j
+        image: "{{.Values.Image}}:{{.Values.ImageTag}}"
+        imagePullPolicy: "{{.Values.ImagePullPolicy}}"
+        env:
+          - name: NEO4J_causalClustering_initialDiscoveryMembers
+            value: "neo4j-core-0.neo4j.default.svc.cluster.local:5000,neo4j-core-1.neo4j.default.svc.cluster.local:5000,neo4j-core-2.neo4j.default.svc.cluster.local:5000"
+          - name: NEO4J_dbms_mode
+            value: READ_REPLICA
+          - name: NUMBER_OF_CORES
+            value: "{{default 3 .Values.NumberOfCores}}"
+        command:
+          - "/bin/bash"
+          - "-ecx"
+          - |
+            echo "dbms.security.auth_enabled=false" >> conf/neo4j.conf
+
+            STATEFULSET_NAME="{{ printf "%s-%s" .Release.Name .Values.Name | trunc 56 }}"
+            MEMBERS=""
+            for id in $(seq 0 $(($NUMBER_OF_CORES-1))) ; do
+                  token="${STATEFULSET_NAME}-core-$id.${STATEFULSET_NAME}.default.svc.cluster.local:5000"
+                  MEMBERS="${MEMBERS}${MEMBERS:+,}${token}"
+            done
+
+            export NEO4J_causal__clustering_initial__discovery__members=$MEMBERS
+            export NEO4J_dbms_connectors_default__advertised__address=$(hostname -f)
+            exec /docker-entrypoint.sh "neo4j"
+        ports:
+        - containerPort: 7474
+          name: browser
+        - containerPort: 7687
+          name: bolt
+        securityContext:
+          privileged: true
