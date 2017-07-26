@@ -1,60 +1,84 @@
 # Cassandra
-A Cassandra Chart for Kubernetes
 
-## Install Chart
-To install the Cassandra Chart into your Kubernetes cluster (This Chart requires persistent volume by default, you may need to create a storage class before install chart. To create storage class, see [Persist data](#persist_data) section)
+Cassandra is a distributed NoSQL database management system designed to handle
+large amounts of data across many commodity servers, providing high
+availability with no single point of failure.
+
+## Installing Chart
+ 
+Installation of this Chart requires PV (Persistent Volume) storage.  You may
+need to create a storage class before you install.  To create this, see the
+[Persist Data](#persisting_data) section.
 
 ```bash
 helm install --namespace "cassandra" -n "cassandra" incubator/cassandra
 ```
 
-After installation succuess, you can get a status of Chart
+Once installed, you can get the status of the Chart with:
 
 ```bash
 helm status "cassandra"
 ```
 
-If you want to delete your Chart, use this command
+To uninstall this Chart:
+
 ```bash
 helm delete  --purge "cassandra"
 ```
 
-## Persist data
-You need to create `StorageClass` before able to persist data in persistent volume. 
-To create a `StorageClass` on Google Cloud, run the following
+## Persisting Data
+
+In order to persist data you need to create a `StorageClass`.  This allows the chart
+to create the required storage automatically on your behalf.
+
+On GCE (Google Container Engine):
 
 ```bash
 kubectl create -f sample/create-storage-gce.yaml
 ```
 
-And set the following values in `values.yaml`
+Then set the following values in `values.yaml`
 
 ```yaml
 persistence:
   enabled: true
 ```
 
-If you want to create a `StorageClass` on other platform, please see documentation here [https://kubernetes.io/docs/user-guide/persistent-volumes/](https://kubernetes.io/docs/user-guide/persistent-volumes/)
+If you want to create a `StorageClass` on other platform, please see
+documentation here
+[https://kubernetes.io/docs/user-guide/persistent-volumes/](https://kubernetes.io/docs/user-guide/persistent-volumes/)
 
 
-## Install Chart with specific cluster size
-By default, this Chart will create a cassandra with 3 nodes. If you want to change the cluster size during installation, you can use `--set config.cluster_size={value}` argument. Or edit `values.yaml`
+## Sizing Cassandra Cluster
 
-For example:
-Set cluster size to 5
+This Chart defaults to creating a Cassandra cluster with 3 nodes.  To increase
+the cluster size during installation you can use `--set
+config.cluster_size={value}`, or edit `values.yaml` and set it there.
+
+Example (Set cluster size to 5):
 
 ```bash
 helm install --namespace "cassandra" -n "cassandra" --set config.cluster_size=5 incubator/cassandra/
 ```
 
-## Install Chart with specific resource size
-By default, this Chart will create a cassandra with CPU 2 vCPU and 4Gi of memery which is suitable for development environment.
-If you want to use this Chart for production, I would recommend to update the CPU to 4 vCPU and 16Gi. Also increase size of `max_heap_size` and `heap_new_size`.
-To update the settings, edit `values.yaml`
+## Modifying resource limits
 
-## Install Chart with specific node
-Sometime you may need to deploy your cassandra to specific nodes to allocate resources. You can use node selector by edit `nodes.enabled=true` in `values.yaml`
-For example, you have 6 vms in node pools and you want to deploy cassandra to node which labeled as `cloud.google.com/gke-nodepool: pool-db`
+This Chart defaults to creating Cassandra nodes with 2 vCPU's and 4Gi of memory
+which is suitable for development environments.  In order to adjust this chart
+for realistic production values, we recommend updating CPU resources to 4 vCPUs
+and at least 16Gi of memory.
+
+Increasing the size of `max_heap_size` and `heap_new_size` to larger values is
+also recommended.  You can edit all of these settings in `values.yaml` or via
+the `--set` command.
+
+## Selecting specific nodes
+
+In some clusters you may wish to select specific nodes (such as nodes with fast
+SSD storage, or more memory).  You can select nodes by enabling
+`nodes.enabled=true` in `values.yaml`.  For example, you have 6 high memory vms
+in a node pool and you wish to deploy Cassandra to these nodes, labelled as
+`cloud.google.com/gke-nodepool: pool-db`
 
 Set the following values in `values.yaml`
 
@@ -66,21 +90,27 @@ nodes:
       cloud.google.com/gke-nodepool: pool-db
 ```
 
-## Scale cassandra
-When you want to change the cluser size of your cassandra, you can use the helm upgrade command.
+## Scaling cassandra
+
+To dynamically scale up the size of the Cassandra cluster you can use the helm
+upgrade command:
 
 ```bash
 helm upgrade --set config.cluster_size=5 cassandra incubator/cassandra
 ```
 
-## Get cassandra status
-You can get your cassandra cluster status by running the command
+## Cassandra Status
+
+You can get your Cassandra cluster status by running the command:
 
 ```bash
-kubectl exec -it --namespace cassandra $(kubectl get pods --namespace cassandra -l app=cassandra-cassandra -o jsonpath='{.items[0].metadata.name}') nodetool status
+kubectl exec -it --namespace cassandra $(kubectl get pods --namespace cassandra
+-l app=cassandra-cassandra -o jsonpath='{.items[0].metadata.name}') nodetool
+status
 ```
 
-Output
+Output:
+
 ```bash
 Datacenter: asia-east1
 ======================
@@ -93,13 +123,17 @@ UN  10.8.3.6   103.07 KiB  256          65.2%             1a42b953-8728-4139-b07
 ```
 
 ## Benchmark
-You can use [cassandra-stress](https://docs.datastax.com/en/cassandra/3.0/cassandra/tools/toolsCStress.html) tool to run the benchmark on the cluster by the following command
+You can use
+[cassandra-stress](https://docs.datastax.com/en/cassandra/3.0/cassandra/tools/toolsCStress.html)
+tool benchmark the cluster with the following command:
 
 ```bash
-kubectl exec -it --namespace cassandra $(kubectl get pods --namespace cassandra -l app=cassandra-cassandra -o jsonpath='{.items[0].metadata.name}') cassandra-stress
+kubectl exec -it --namespace cassandra $(kubectl get pods --namespace cassandra
+-l app=cassandra-cassandra -o jsonpath='{.items[0].metadata.name}')
+cassandra-stress
 ```
 
-Example of `cassandra-stress` argument
+Here's an example of `cassandra-stress` arguments to:
  - Run both read and write with ration 9:1
  - Operator total 1 million keys with uniform distribution
  - Use QUORUM for read/write
@@ -108,5 +142,9 @@ Example of `cassandra-stress` argument
  - Use NetworkTopologyStrategy with replica factor 2
 
 ```bash
-cassandra-stress mixed ratio\(write=1,read=9\) n=1000000 cl=QUORUM -pop dist=UNIFORM\(1..1000000\) -mode native cql3 -rate threads=50 -log file=~/mixed_autorate_r9w1_1M.log -graph file=test2.html title=test revision=test2 -schema "replication(strategy=NetworkTopologyStrategy, factor=2)"
+cassandra-stress mixed ratio\(write=1,read=9\) n=1000000 cl=QUORUM -pop
+dist=UNIFORM\(1..1000000\) -mode native cql3 -rate threads=50 -log
+file=~/mixed_autorate_r9w1_1M.log -graph file=test2.html title=test
+revision=test2 -schema "replication(strategy=NetworkTopologyStrategy,
+factor=2)"
 ```
