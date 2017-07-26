@@ -8,7 +8,7 @@ availability with no single point of failure.
  
 Installation of this Chart requires PV (Persistent Volume) storage.  You may
 need to create a storage class before you install.  To create this, see the
-[Persist Data](#persisting_data) section.
+[Persisting Data](#persisting-data) section.
 
 ```bash
 helm install --namespace "cassandra" -n "cassandra" incubator/cassandra
