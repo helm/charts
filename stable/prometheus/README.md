@@ -148,7 +148,6 @@ Parameter | Description | Default
 `serverFiles.rules` | Prometheus server rules configuration | `""`
 `serverFiles.prometheus.yml` | Prometheus server scrape configuration | example configuration
 `networkPolicy.enabled` | Enable NetworkPolicy | `false` |
-`networkPolicy.apiVersion` | NetworkPolicy API Version | `extensions/v1beta1` |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

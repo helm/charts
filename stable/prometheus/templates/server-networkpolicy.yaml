@@ -1,8 +1,14 @@
 {{- if .Values.networkPolicy.enabled }}
-apiVersion: {{ .Values.networkPolicy.apiVersion }}
+apiVersion: {{ template "prometheus.networkPolicy.apiVersion" . }}
 kind: NetworkPolicy
 metadata:
   name: {{ template "prometheus.server.fullname" . }}
+  labels:
+    app: {{ template "prometheus.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: "{{ .Values.server.name }}"
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
 spec:
   podSelector:
     matchLabels:

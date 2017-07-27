@@ -1,8 +1,14 @@
 {{- if .Values.networkPolicy.enabled }}
-apiVersion: {{ .Values.networkPolicy.apiVersion }}
+apiVersion: {{ template "prometheus.networkPolicy.apiVersion" . }}
 kind: NetworkPolicy
 metadata:
   name: {{ template "prometheus.kubeStateMetrics.fullname" . }}
+  labels:
+    app: {{ template "prometheus.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: "{{ .Values.kubeStateMetrics.name }}"
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
 spec:
   podSelector:
     matchLabels:
@@ -14,7 +20,7 @@ spec:
     - podSelector:
         matchLabels:
           release: {{ .Release.Name }}
-          component: {{ .Values.server.name }}
+          component: "{{ .Values.server.name }}"
   - ports:
     - port: 8080
 {{- end }}
