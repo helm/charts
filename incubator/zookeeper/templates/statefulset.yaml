@@ -1,54 +1,48 @@
 apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
-  name: "{{ printf "zk-%s" .Release.Name  | trunc 24 }}"
-  annotations:
-    helm.sh/created: {{ .Release.Time.Seconds | quote }}
+  name: {{ template "fullname" . }}
   labels:
-    heritage: {{ .Release.Service | quote }}
-    release: {{ .Release.Name | quote }}
+    app: {{ include "name" . | quote }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    component: "{{ printf "zk-%s" .Release.Name  | trunc 24 }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
 spec:
-  serviceName: "{{ printf "zk-hsvc-%s" .Release.Name | trunc 24 }}"
+  serviceName: {{ template "fullname" . }}-headless
   replicas: {{ .Values.Servers }}
   template:
     metadata:
       labels:
-        component: "{{ printf "zk-%s" .Release.Name  | trunc 24 }}"
+        app: {{ include "name" . | quote }}
+        release: {{ .Release.Name | quote }}
     spec:
       {{- if eq .Values.AntiAffinity "hard" }}
       affinity:
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
-            - labelSelector:
-                matchExpressions:
-                  - key: "component"
-                    operator: In
-                    values:
-                    - "{{ printf "zk-%s" .Release.Name  | trunc 24 }}"
-              topologyKey: "kubernetes.io/hostname"
+            - topologyKey: "kubernetes.io/hostname"
+              labelSelector:
+                matchLabels:
+                  app: {{ include "name" . | quote }}
+                  release: {{ .Release.Name | quote }}
       {{- else if eq .Values.AntiAffinity "soft" }}
       affinity:
-        preferredDuringSchedulingIgnoredDuringExecution:
-             - weight: 1
-               podAntiAffinityTerm:
-                 labelSelector:
-                    matchExpressions:
-                      - key: "component"
-                        operator: In
-                        values:
-                         - "{{ printf "zk-%s" .Release.Name  | trunc 24 }}"
-                 topologyKey: "kubernetes.io/hostname"
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 1
+              podAffinityTerm:
+                topologyKey: "kubernetes.io/hostname"
+                labelSelector:
+                  matchLabels:
+                    app: {{ include "name" . | quote }}
+                    release: {{ .Release.Name | quote }}
       {{- end }}
       containers:
       - name: k8szk
         imagePullPolicy: {{ .Values.ImagePullPolicy }}
         image: gcr.io/google_samples/k8szk:v2
         resources:
-          requests:
-            memory: {{ .Values.Memory }}
-            cpu: {{ .Values.Cpu }}
+{{ toYaml .Values.Resources | indent 10 }}
         ports:
         - containerPort: {{ .Values.ClientPort }}
           name: client
