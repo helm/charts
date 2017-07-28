@@ -91,6 +91,9 @@ controller:
       http: ""
       https: ""
 
+    # externalTrafficPolicy: Local
+    # healthCheckNodePort: 32080
+
   stats:
     enabled: false
 
