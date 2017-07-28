@@ -1,0 +1,12 @@
+apiVersion: v1
+description: A Mattermost Helm chart for Kubernetes
+name: mattermost
+version: 0.1.0
+appVersion: 3.10.0
+home: https://about.mattermost.com/
+icon: https://www.mattermost.org/wp-content/uploads/2016/04/icon.png
+sources:
+  - https://github.com/mattermost/platform
+maintainers:
+  - name: jpds
+    email: jpds@protonmail.com

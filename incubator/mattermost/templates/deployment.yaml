@@ -1,0 +1,65 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    app: {{ template "name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.service.port }}
+          livenessProbe:
+            httpGet:
+              path: /
+              port: {{ .Values.service.port }}
+          readinessProbe:
+            httpGet:
+              path: /
+              port: {{ .Values.service.port }}
+          volumeMounts:
+          {{- if .Values.persistence.enabled }}
+          - name: mattermost-app-data
+            mountPath: /mattermost/data
+          {{- end }}
+          - name: host-localtime
+            mountPath: /etc/localtime
+            readOnly: true
+          env:
+          - name: DB_HOST
+            value: {{ .Values.mattermost.db.host }}
+          - name: DB_PORT
+            value: {{ .Values.mattermost.db.port | quote }}
+          - name: MM_USERNAME
+            value: {{ .Values.mattermost.db.username }}
+          - name: MM_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "fullname" . }}
+                key: mattermost-db-password
+          - name: MM_DBNAME
+            value: {{ .Values.mattermost.db.name }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+      volumes:
+      # optional persistant storage
+      {{- if .Values.persistence.enabled }}
+      - name: mattermost-app-data
+        persistentVolumeClaim:
+          claimName: {{ template "fullname" . }}-app
+      {{- end }}
+      - name: host-localtime
+        hostPath:
+          path: /etc/localtime
