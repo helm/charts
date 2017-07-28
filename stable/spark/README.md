@@ -53,6 +53,7 @@ The following tables lists the configurable parameters of the Spark chart and th
 | `WebUi.Name`          | Spark webui name                 | `spark-webui`                                            |
 | `WebUi.ServicePort`   | k8s service port                 | `8080`                                                   |
 | `WebUi.ContainerPort` | Container listening port         | `8080`                                                   |
+| `WebUi.LoadBalancerAnnotations` | Annotations for the LB | `[]`                                                     |
 
 ### Spark Worker
 
@@ -76,16 +77,16 @@ The following tables lists the configurable parameters of the Spark chart and th
 ### Zeppelin
 
 |       Parameter         |           Description            |                         Default                          |
-|-------------------------|----------------------------------|----------------------------------------------------------|
-| `Zeppelin.Name`         | Zeppelin name                    | `zeppelin-controller`                                    |
-| `Zeppelin.Image`        | Container image name             | `gcr.io/google_containers/zeppelin`                      |
-| `Zeppelin.ImageTag`     | Container image tag              | `v0.5.5_v2`                                              |
-| `Zeppelin.Replicas`     | k8s deployment replicas          | `1`                                                      |
-| `Zeppelin.Component`    | k8s selector key                 | `zeppelin`                                               |
-| `Zeppelin.Cpu`          | container requested cpu          | `100m`                                                   |
-| `Zeppelin.ServicePort`  | k8s service port                 | `8080`                                                   |
-| `Zeppelin.ContainerPort`| Container listening port         | `8080`                                                   |
-
+|------------------------------------|----------------------------------|-----------------------------------------------|
+| `Zeppelin.Name`                    | Zeppelin name                    | `zeppelin-controller`                         |
+| `Zeppelin.Image`                   | Container image name             | `gcr.io/google_containers/zeppelin`           |
+| `Zeppelin.ImageTag`                | Container image tag              | `v0.5.5_v2`                                   |
+| `Zeppelin.Replicas`                | k8s deployment replicas          | `1`                                           |
+| `Zeppelin.Component`               | k8s selector key                 | `zeppelin`                                    |
+| `Zeppelin.Cpu`                     | container requested cpu          | `100m`                                        |
+| `Zeppelin.ServicePort`             | k8s service port                 | `8080`                                        |
+| `Zeppelin.ContainerPort`           | Container listening port         | `8080`                                        |
+| `Zeppelin.LoadBalancerAnnotations` | Annotations for the LB           | `[]`                                          |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
