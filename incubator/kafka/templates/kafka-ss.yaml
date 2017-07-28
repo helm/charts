@@ -112,7 +112,7 @@ spec:
         command:
         - sh
         - -c
-        - "./bin/kafka-server-start.sh config/server.properties --override zookeeper.connect={{ printf "%s-zookeeper-%s" .Release.Name .Values.zookeeper.Name | trunc 63 }}:2181/ --override broker.id=${HOSTNAME##*-}"
+        - "./bin/kafka-server-start.sh config/server.properties --override zookeeper.connect={{ printf "%s-zookeeper-%s" .Release.Name .Values.zookeeper.Name | trunc 63 }}:2181/ --override log.dirs={{ printf "%s/logs" .Values.DataDirectory | trunc 63 }} --override broker.id=${HOSTNAME##*-}"
         volumeMounts:
         - name: datadir
           mountPath: "{{ .Values.DataDirectory }}"
