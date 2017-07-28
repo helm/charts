@@ -3,7 +3,7 @@
 This image is using Fabric8's great [kubernetes discovery
 plugin](https://github.com/fabric8io/elasticsearch-cloud-kubernetes) for
 elasticsearch and their
-[image](https://hub.docker.com/r/fabric8/elasticsearch-k8s/) as parent.
+[image](https://hub.docker.com/r/jetstack/elasticsearch-pet/) as parent.
 
 ## Prerequisites Details
 
