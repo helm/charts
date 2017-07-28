@@ -88,7 +88,6 @@ spec:
               - --list
           initialDelaySeconds: 30
           timeoutSeconds: 5
-        name: liveness
         readinessProbe:
           exec:
             command:
@@ -98,7 +97,6 @@ spec:
               - --list
           initialDelaySeconds: 30
           timeoutSeconds: 5
-        name: readiness
         ports:
         - containerPort: 9092
           name: kafka
