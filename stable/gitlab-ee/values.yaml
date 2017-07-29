@@ -1,7 +1,7 @@
 ## GitLab EE image
 ## ref: https://hub.docker.com/r/gitlab/gitlab-ee/tags/
 ##
-image: gitlab/gitlab-ee:9.1.0-ee.0
+image: gitlab/gitlab-ee:9.4.1-ee.0
 
 ## Specify a imagePullPolicy
 ## 'Always' if imageTag is 'latest', else set to 'IfNotPresent'
