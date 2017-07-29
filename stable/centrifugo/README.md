@@ -46,7 +46,7 @@ The following tables lists the configurable parameters of the Redis chart and th
 | -------------------------- | ------------------------------------- | --------------------------------------------------------- |
 | `image`                    | Cetrifugo image                       | `centrifugo/centrifugo:{VERSION}`                         |
 | `imagePullPolicy`          | Image pull policy                     | `IfNotPresent`                                            |
-| `resources`                | CPU/Memory resource requests/limits   | Memory: `256Mi`, CPU: `100m`                              |
+| `resources`                | CPU/Memory resource requests/limits   | `{}`                              |
 | `config`                   | Centrifugo config                     | `default`                                                 |
 | `args`                     | Centrifugo args                       | `--web=true`                                              |
 

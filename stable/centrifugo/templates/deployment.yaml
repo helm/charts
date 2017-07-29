@@ -3,10 +3,10 @@ kind: Deployment
 metadata:
   name: {{ template "fullname" . }}
   labels:
-    app: {{ template "fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
-    heritage: "{{ .Release.Service }}"
-    release: "{{ .Release.Name }}"
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    app: {{ template "name" . }}
 spec:
   replicas: {{ .Values.replicaCount }}
   strategy:
@@ -16,9 +16,10 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/config: {{ include (print $.Template.BasePath "/config.yaml") . | sha256sum }}
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
       labels:
-        app: {{ template "fullname" . }}
+        app: {{ template "name" . }}
+        release: {{ .Release.Name }}
     spec:
       containers:
       - name: {{ .Chart.Name }}
@@ -35,18 +36,19 @@ spec:
           mountPath: "/centrifugo"
           readOnly: true
         ports:
-        - containerPort: {{ .Values.service.internalPort }}
+        - name: http
+          containerPort: {{ .Values.service.port }}
         livenessProbe:
           httpGet:
             path: /connection
-            port: {{ .Values.service.internalPort }}
+            port: {{ .Values.service.port }}
         readinessProbe:
           httpGet:
             path: /connection
-            port: {{ .Values.service.internalPort }}
+            port: {{ .Values.service.port }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
       volumes:
       - name: {{ template "fullname" . }}-config
         configMap:
-          name: {{ template "fullname" . }}
+          name: {{ template "fullname" . }}-config
