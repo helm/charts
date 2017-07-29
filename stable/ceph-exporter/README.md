@@ -34,7 +34,7 @@ $ kubectl create configmap ceph-read-only --from-file=conf=/etc/ceph/ceph.conf
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm install --name my-release stable/ceph-exporter --set secret.manage=false,configmap.manage=false
+$ helm install --name my-release stable/ceph-exporter --set enable=true,secret.manage=false,configmap.manage=false
 ```
 
 ## Uninstalling the Chart
@@ -53,6 +53,7 @@ The following tables lists the configurable parameters of the ceph-exporter char
 
 | Parameter | Description | Default |
 | --------- | ----------- | ------- |
+| `enabled` | Enable the chart | 'false' |
 | `image` | Image to use | `digitalocean/ceph_exporter` |
 | `imageTag` | Image tag to use | `1.0.0` |
 | `imagePullPolicy` | Image pull policy | `IfNotPresent` |
