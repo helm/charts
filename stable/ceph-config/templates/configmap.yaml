@@ -1,0 +1,32 @@
+{{- $local := dict "first" true }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ if hasKey .Values "name" }}{{ .Values.name }}{{ else }}{{ .Release.Name }}{{ end }}
+  labels:
+    app: {{ template "name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+data:
+  ceph.conf: |
+    [global]
+    {{- if .Values.auth }}
+    auth_service_required = {{ .Values.auth }}
+    auth_client_required = {{ .Values.auth }}
+    auth_cluster_required = {{ .Values.auth }}
+    {{- end }}
+    {{- $_ := set $local "first" true }}
+    mon_host = 
+      {{- range .Values.monHost }}
+        {{- if not $local.first }},{{ end }} {{ . }}
+        {{- $_ := set $local "first" false }}
+      {{- end }}
+    {{- $_ := set $local "first" true }}
+    {{ if .Values.monInitialMembers }}mon_initial_members = 
+      {{- range .Values.monInitialMembers }}
+        {{- if not $local.first }},{{ end }} {{ . }}
+        {{- $_ := set $local "first" false }}
+      {{- end }}
+    {{- end }}
+    {{ if .Values.fsid }}fsid = {{ .Values.fsid }}{{- end}}

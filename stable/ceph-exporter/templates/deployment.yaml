@@ -24,7 +24,7 @@ spec:
       - name: {{ template "fullname" . }}
         image: "{{ .Values.image }}:{{ .Values.imageTag }}"
         imagePullPolicy: {{ .Values.imagePullPolicy }}
-        args: [-ceph.user, read-only]
+        args: [-ceph.user, {{ .Values.secret.user }}]
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         ports:
@@ -32,7 +32,7 @@ spec:
           name: http
         volumeMounts:
         - name: secret
-          mountPath: /etc/ceph/ceph.client.{{ .Values.user }}.keyring
+          mountPath: /etc/ceph/ceph.client.{{ .Values.secret.user }}.keyring
           subPath: key
         - name: configmap
           mountPath: /etc/ceph/ceph.conf
@@ -40,7 +40,7 @@ spec:
       volumes:
         - name: secret
           secret:
-            secretName: {{ .Values.secret }}
+            secretName: {{ .Values.secret.name }}
         - name: configmap
           configMap:
-            name: {{ .Values.configmap }}
+            name: {{ .Values.configmap.name }}

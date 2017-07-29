@@ -34,7 +34,7 @@ $ kubectl create configmap ceph-read-only --from-file=conf=/etc/ceph/ceph.conf
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm install --name my-release stable/ceph-exporter
+$ helm install --name my-release stable/ceph-exporter --set secret.manage=false,configmap.manage=false
 ```
 
 ## Uninstalling the Chart
@@ -59,9 +59,9 @@ The following tables lists the configurable parameters of the ceph-exporter char
 | `replicaCount` | Number of replicas | `1` |
 | `nodeSelector` | Node selector to use to schedule pods | `{}` |
 | `serviceType` | The type of service to bind | `ClusterIP` |
-| `user` | The ceph username to use | `read-only` |
-| `configmap` | The name of the configmap with the ceph config | `ceph-read-only` |
-| `secret` | The name of the secret with the ceph credentials | `ceph-read-only` |
+| `secret.user` | The ceph username to use | `read-only` |
+| `secret.name` | The name of the secret with the ceph credentials | `ceph-read-only` |
+| `configmap.name` | The name of the configmap with the ceph config | `ceph-read-only` |
 | `httpPort` | The http port to listen on | `8081` |
 | `annotations` | Add extra annotations to the pods | `{}` |
 | `resources` | Request resource allocation | `{}` |

@@ -12,10 +12,17 @@ nodeSelector: {}
 
 serviceType: ClusterIP
 
-user: "read-only"
-configmap: ceph-read-only
-secret: ceph-read-only
 httpPort: 8081
+
+configmap:
+  manage: true
+  name: ceph-read-only
+
+secret:
+  manage: true
+  name: ceph-read-only
+  user: read-only
+# key: xxxxx
 
 annotations: {}
 #  "prometheus.io/port": "9128"
