@@ -18,7 +18,7 @@ spec:
       containers:
       - name: {{ template "fullname" . }}
         image: "{{ .Values.image }}"
-        imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
+        imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
         env:
         - name: MARIADB_HOST
           value: {{ template "mariadb.fullname" . }}
@@ -32,29 +32,29 @@ spec:
         - name: SUGARCRM_HOST
           value: {{ include "host" . | quote }}
         - name: SUGARCRM_USERNAME
-          value: {{ default "" .Values.sugarcrmUsername | quote }}
+          value: {{ .Values.sugarcrmUsername | quote }}
         - name: SUGARCRM_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ template "fullname" . }}
               key: sugarcrm-password
         - name: SUGARCRM_EMAIL
-          value: {{ default "" .Values.sugarcrmEmail | quote }}
+          value: {{ .Values.sugarcrmEmail | quote }}
         - name: SUGARCRM_LASTNAME
-          value: {{ default "" .Values.sugarcrmLastName | quote }}
+          value: {{ .Values.sugarcrmLastName | quote }}
         - name: SUGARCRM_SMTP_HOST
-          value: {{ default "" .Values.sugarcrmSmtpHost | quote }}
+          value: {{ .Values.sugarcrmSmtpHost | quote }}
         - name: SUGARCRM_SMTP_PORT
-          value: {{ default "" .Values.sugarcrmSmtpPort | quote }}
+          value: {{ .Values.sugarcrmSmtpPort | quote }}
         - name: SUGARCRM_SMTP_USER
-          value: {{ default "" .Values.sugarcrmSmtpUser | quote }}
+          value: {{ .Values.sugarcrmSmtpUser | quote }}
         - name: SUGARCRM_SMTP_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ template "fullname" . }}
               key: sugarcrm-smtp-password
         - name: SUGARCRM_SMTP_PROTOCOL
-          value: {{ default "" .Values.sugarcrmSmtpProtocol | quote }}
+          value: {{ .Values.sugarcrmSmtpProtocol | quote }}
         ports:
         - name: http
           containerPort: 80
