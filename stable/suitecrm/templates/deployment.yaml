@@ -18,7 +18,7 @@ spec:
       containers:
       - name: {{ template "fullname" . }}
         image: "{{ .Values.image }}"
-        imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
+        imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
         env:
         - name: MARIADB_HOST
           value: {{ template "mariadb.fullname" . }}
@@ -32,29 +32,29 @@ spec:
         - name: SUITECRM_HOST
           value: {{ include "host" . | quote }}
         - name: SUITECRM_USERNAME
-          value: {{ default "" .Values.suitecrmUsername | quote }}
+          value: {{ .Values.suitecrmUsername | quote }}
         - name: SUITECRM_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ template "fullname" . }}
               key: suitecrm-password
         - name: SUITECRM_EMAIL
-          value: {{ default "" .Values.suitecrmEmail | quote }}
+          value: {{ .Values.suitecrmEmail | quote }}
         - name: SUITECRM_LAST_NAME
-          value: {{ default "" .Values.suitecrmLastName | quote }}
+          value: {{ .Values.suitecrmLastName | quote }}
         - name: SUITECRM_SMTP_HOST
-          value: {{ default "" .Values.suitecrmSmtpHost | quote }}
+          value: {{ .Values.suitecrmSmtpHost | quote }}
         - name: SUITECRM_SMTP_PORT
-          value: {{ default "" .Values.suitecrmSmtpPort | quote }}
+          value: {{ .Values.suitecrmSmtpPort | quote }}
         - name: SUITECRM_SMTP_USER
-          value: {{ default "" .Values.suitecrmSmtpUser | quote }}
+          value: {{ .Values.suitecrmSmtpUser | quote }}
         - name: SUITECRM_SMTP_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ template "fullname" . }}
               key: suitecrm-smtp-password
         - name: SUITECRM_SMTP_PROTOCOL
-          value: {{ default "" .Values.suitecrmSmtpProtocol | quote }}
+          value: {{ .Values.suitecrmSmtpProtocol | quote }}
         ports:
         - name: http
           containerPort: 80
