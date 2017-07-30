@@ -31,6 +31,22 @@ spec:
         {{- range $arg := .Values.args }}
         - {{ $arg }}
         {{- end }}
+        env:
+        - name: CENTRIFUGO_ADMIN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "fullname" . }}
+              key: admin-password
+        - name: CENTRIFUGO_ADMIN_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "fullname" . }}
+              key: admin-secret
+        - name: CENTRIFUGO_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "fullname" . }}
+              key: secret
         volumeMounts:
         - name: "{{ template "fullname" . }}-config"
           mountPath: "/centrifugo"

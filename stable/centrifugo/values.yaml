@@ -26,10 +26,7 @@ ingress:
     ingress.kubernetes.io/proxy-send-timeout: 3600
 
 config:
-  secret: secret
   web: true
-  admin_password: password
-  admin_secret: secret
   namespaces:
   - name: public
     anonymous: true
@@ -40,6 +37,17 @@ config:
     history_size: 10
     history_lifetime: 30
     recover: true
+
+## Centrifugo secret
+## Defaults to a random 10-character alphanumeric string if not set
+secret: ""
+admin:
+  ## Centrifugo admin secret
+  ## Defaults to a random 10-character alphanumeric string if not set
+  secret: ""
+  ## Centrifugo admin password
+  ## Defaults to a random 10-character alphanumeric string if not set
+  password: ""
 
 args:
   - --web=true

@@ -40,7 +40,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the Redis chart and their default values.
+The following tables lists the configurable parameters of the Centrifugo chart and their default values.
 
 | Parameter                  | Description                           | Default                                                   |
 | -------------------------- | ------------------------------------- | --------------------------------------------------------- |
@@ -56,7 +56,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 
 ```bash
 $ helm install --name my-release \
-  --set ingress.enabled=false \
+  --set ingress.enabled=true \
     stable/centrifugo
 ```
 
