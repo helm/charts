@@ -14,9 +14,7 @@ spec:
     metadata:
       labels:
         app: {{ template "name" . }}
-        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         release: "{{ .Release.Name }}"
-        heritage: "{{ .Release.Service }}"
         component: "{{ .Chart.Name }}-dashboard"
     spec:
       containers:
