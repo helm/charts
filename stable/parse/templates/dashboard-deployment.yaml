@@ -21,7 +21,7 @@ spec:
       containers:
       - name: {{ template "fullname" . }}
         image: "{{ .Values.parseDashboard.image }}"
-        imagePullPolicy: {{ default "" .Values.parseDashboard.imagePullPolicy | quote }}
+        imagePullPolicy: {{ .Values.parseDashboard.imagePullPolicy | quote }}
         env:
         - name: PARSE_DASHBOARD_USER
           value: {{ .Values.parseDashboard.username }}

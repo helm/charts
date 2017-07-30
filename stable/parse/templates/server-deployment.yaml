@@ -20,7 +20,7 @@ spec:
       containers:
       - name: {{ template "fullname" . }}
         image: "{{ .Values.parse.image }}"
-        imagePullPolicy: {{ default "" .Values.parse.imagePullPolicy | quote }}
+        imagePullPolicy: {{ .Values.parse.imagePullPolicy | quote }}
         env:
         - name: PARSE_HOST
           value: "0.0.0.0"
