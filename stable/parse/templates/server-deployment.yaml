@@ -7,6 +7,7 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
+    component: "server"
 spec:
   replicas: 1
   template:
@@ -14,7 +15,7 @@ spec:
       labels:
         app: {{ template "name" . }}
         release: "{{ .Release.Name }}"
-        component: "{{ .Chart.Name }}"
+        component: "server"
     spec:
       containers:
       - name: {{ template "fullname" . }}
