@@ -21,3 +21,4 @@ spec:
     targetPort: dashboard-http
   selector:
     app: {{ template "name" . }}
+    release: "{{ .Release.Name }}"
