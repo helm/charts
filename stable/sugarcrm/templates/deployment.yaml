@@ -67,7 +67,7 @@ spec:
             httpHeaders:
             - name: Host
               value: {{ include "host" . | quote }}
-          initialDelaySeconds: 300
+          initialDelaySeconds: 600
         readinessProbe:
           httpGet:
             path: /index.php
