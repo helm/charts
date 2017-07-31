@@ -47,20 +47,20 @@ The following tables lists the configurable parameters of the Parse chart and th
 |------------------------------------|----------------------------------------|---------------------------------------------|
 | `serviceType`                      | Kubernetes Service type                | `LoadBalancer`                              |
 | `loadBalancerIP`                   | `loadBalancerIP` for the Parse Service | `nil`                                       |
-| `parse.image`                      | Parse image                            | `bitnami/parse:{VERSION}`                   |
-| `parse.imagePullPolicy`            | Parse image pull policy                | `IfNotPresent`                              |
-| `parse.port`                       | Parse server port                      | `1337`                                      |
-| `parse.mountPath`                  | Parse API mount path                   | `/parse`                                    |
-| `parse.appId`                      | Parse server App Id                    | `myappID`                                   |
-| `parse.masterKey`                  | Parse server Master Key                | `random 10 character alphanumeric string`   |
-| `parse.resources`                  | CPU/Memory resource requests/limits    | Memory: `512Mi`, CPU: `300m`                |
-| `parseDashboard.enabled`           | Enable parse dashboard                 | `true`                                      |
-| `parseDashboard.image`             | Dashboard image                        | `bitnami/parse-dashboard:{VERSION}`         |
-| `parseDashboard.imagePullPolicy`   | Dashboard image pull policy            | `IfNotPresent`                              |
-| `parseDashboard.username`          | Dashboard username                     | `user`                                      |
-| `parseDashboard.password`          | Dashboard user password                | `random 10 character alphanumeric string`   |
-| `parseDashboard.appName`           | Dashboard application name             | `MyDashboard`                               |
-| `parseDashboard.resources`         | CPU/Memory resource requests/limits    | Memory: `512Mi`, CPU: `300m`                |
+| `server.image`                     | Parse server image                     | `bitnami/parse:{VERSION}`                   |
+| `server.imagePullPolicy`           | Parse server image pull policy         | `IfNotPresent`                              |
+| `server.port`                      | Parse server server port               | `1337`                                      |
+| `server.mountPath`                 | Parse server API mount path            | `/parse`                                    |
+| `server.appId`                     | Parse server App Id                    | `myappID`                                   |
+| `server.masterKey`                 | Parse server Master Key                | `random 10 character alphanumeric string`   |
+| `server.resources`                 | CPU/Memory resource requests/limits    | Memory: `512Mi`, CPU: `300m`                |
+| `dashboard.enabled`                | Enable parse dashboard                 | `true`                                      |
+| `dashboard.image`                  | Dashboard image                        | `bitnami/parse-dashboard:{VERSION}`         |
+| `dashboard.imagePullPolicy`        | Dashboard image pull policy            | `IfNotPresent`                              |
+| `dashboard.username`               | Dashboard username                     | `user`                                      |
+| `dashboard.password`               | Dashboard user password                | `random 10 character alphanumeric string`   |
+| `dashboard.appName`                | Dashboard application name             | `MyDashboard`                               |
+| `dashboard.resources`              | CPU/Memory resource requests/limits    | Memory: `512Mi`, CPU: `300m`                |
 | `persistence.enabled`              | Enable Parse persistence using PVC     | `true`                                      |
 | `persistence.storageClass`         | PVC Storage Class for Parse volume     | `nil` (uses alpha storage class annotation) |
 | `persistence.accessMode`           | PVC Access Mode for Parse volume       | `ReadWriteOnce`                             |
@@ -90,7 +90,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 
 ```console
 $ helm install --name my-release \
-  --set parseDashboard.username=admin,parseDashboard.password=password \
+  --set dashboard.username=admin,dashboard.password=password \
     stable/parse
 ```
 

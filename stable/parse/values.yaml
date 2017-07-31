@@ -8,7 +8,7 @@ serviceType: LoadBalancer
 ##
 loadBalancerIP:
 
-parse:
+server:
   ## Bitnami Parse image version
   ## ref: https://hub.docker.com/r/bitnami/parse/tags/
   ##
@@ -47,7 +47,7 @@ parse:
     #   memory: 512Mi
     #   cpu: 300m
 
-parseDashboard:
+dashboard:
   ## Enable deployment of Parse Dashboard
   ##
   enabled: true

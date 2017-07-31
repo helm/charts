@@ -19,17 +19,17 @@ spec:
     spec:
       containers:
       - name: {{ template "fullname" . }}
-        image: "{{ .Values.parse.image }}"
-        imagePullPolicy: {{ .Values.parse.imagePullPolicy | quote }}
+        image: "{{ .Values.server.image }}"
+        imagePullPolicy: {{ .Values.server.imagePullPolicy | quote }}
         env:
         - name: PARSE_HOST
           value: "0.0.0.0"
         - name: PARSE_PORT_NUMBER
-          value: {{ .Values.parse.port | quote }}
+          value: {{ .Values.server.port | quote }}
         - name: PARSE_MOUNT_PATH
-          value: {{ .Values.parse.mountPath | quote }}
+          value: {{ .Values.server.mountPath | quote }}
         - name: PARSE_APP_ID
-          value: {{ .Values.parse.appId | quote }}
+          value: {{ .Values.server.appId | quote }}
         - name: PARSE_MASTER_KEY
           valueFrom:
             secretKeyRef:
@@ -41,25 +41,25 @@ spec:
           value: "27017"
         ports:
         - name: server-http
-          containerPort: {{ .Values.parse.port }}
+          containerPort: {{ .Values.server.port }}
         livenessProbe:
           httpGet:
-            path: {{ .Values.parse.mountPath }}/users
+            path: {{ .Values.server.mountPath }}/users
             port: server-http
             httpHeaders:
             - name: X-Parse-Application-Id
-              value: {{ .Values.parse.appId }}
+              value: {{ .Values.server.appId }}
           initialDelaySeconds: 120
         readinessProbe:
           httpGet:
-            path: {{ .Values.parse.mountPath }}/users
+            path: {{ .Values.server.mountPath }}/users
             port: server-http
             httpHeaders:
             - name: X-Parse-Application-Id
-              value: {{ .Values.parse.appId }}
+              value: {{ .Values.server.appId }}
           initialDelaySeconds: 30
         resources:
-{{ toYaml .Values.parse.resources | indent 10 }}
+{{ toYaml .Values.server.resources | indent 10 }}
         volumeMounts:
         - name: parse-data
           mountPath: /bitnami/parse

@@ -14,7 +14,7 @@ spec:
   {{- end }}
   ports:
   - name: server-http
-    port: {{ .Values.parse.port }}
+    port: {{ .Values.server.port }}
     targetPort: server-http
   - name: dashboard-http
     port: 80
