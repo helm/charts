@@ -1,0 +1,40 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: consul
+  labels:
+    app: {{ template "cortex.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: consul
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+      - name: consul
+        image: {{ .Values.consul.image.repository }}:{{ .Values.consul.image.tag }}
+        imagePullPolicy: {{ .Values.consul.image.pullPolicy }}
+        args:
+        - agent
+        - -ui
+        - -server
+        - -client=0.0.0.0
+        - -bootstrap
+        env:
+        - name: CHECKPOINT_DISABLE
+          value: "1"
+        ports:
+        - name: server-noscrape
+          containerPort: {{ .Values.consul.serverNoScrapePort }}
+        - name: serf-noscrape
+          containerPort: {{ .Values.consul.serfNoScrapePort }}
+        - name: client-noscrape
+          containerPort: {{ .Values.consul.clientNoScrapePort }}
+        - name: http-noscrape
+          containerPort: {{ .Values.consul.httpNoScrapePort }}

@@ -1,0 +1,28 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: configs
+  labels:
+    app: {{ template "cortex.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: configs
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+      - name: configs
+        image: {{ .Values.cortexConfigs.image.repository }}:{{ .Values.cortexConfigs.image.tag }}
+        imagePullPolicy: {{ .Values.cortexConfigs.image.pullPolicy }}
+        args:
+        - -server.http-listen-port={{ .Values.cortexConfigs.listenPort }}
+        - -database.uri={{ .Values.global.configDbURI }}
+        - -database.migrations={{ .Values.cortexConfigs.migrationsURI }}
+        ports:
+        - containerPort: {{ .Values.cortexConfigs.listenPort }}

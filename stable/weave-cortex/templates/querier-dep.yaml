@@ -1,0 +1,42 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: querier
+  labels:
+    app: {{ template "cortex.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.querier.replicas }}
+  template:
+    metadata:
+      labels:
+        name: querier
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+      - name: querier
+        image: {{ .Values.querier.image.repository }}:{{ .Values.querier.image.tag }}
+        imagePullPolicy: {{ .Values.querier.image.pullPolicy }}
+        args:
+        - -server.http-listen-port={{ .Values.querier.listenPort }}
+        - -consul.hostname={{ .Values.global.consulURI }}
+        - -s3.url={{ .Values.global.s3URI }}
+        - -dynamodb.original-table-name=cortex
+        - -dynamodb.url={{ .Values.global.dynamoDBURI }}
+        - -dynamodb.periodic-table.prefix=cortex_weekly_
+        - -dynamodb.periodic-table.start=2017-01-06
+        - -dynamodb.daily-buckets-from=2017-01-10
+        - -dynamodb.base64-buckets-from=2017-01-17
+        - -dynamodb.v4-schema-from=2017-02-05
+        - -dynamodb.v5-schema-from=2017-02-22
+        - -dynamodb.v7-schema-from=2017-03-19
+        - -dynamodb.chunk-table.from=2017-04-17
+        - -memcached.hostname={{ .Values.global.memcachedURI }}
+        - -memcached.timeout={{ .Values.global.memcachedTimeout }}
+        - -memcached.service={{ .Values.global.memcachedService }}
+        - -distributor.replication-factor={{ .Values.distributor.replicationFactor }}
+        ports:
+        - containerPort: {{ .Values.querier.listenPort }}

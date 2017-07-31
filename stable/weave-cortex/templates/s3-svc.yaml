@@ -1,0 +1,19 @@
+{{- if .Values.fakeS3.enabled -}}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: s3
+  labels:
+    app: {{ template "cortex.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  ports:
+    - port: {{ .Values.fakeS3.servicePort }}
+      targetPort: {{ .Values.fakeS3.listenPort }}
+  selector:
+    name: s3
+    release: {{ .Release.Name }}
+{{- end -}}

@@ -1,0 +1,70 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: ingester
+  labels:
+    app: {{ template "cortex.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: 1
+
+  # Ingesters are not ready for at least 1 min
+  # after creation.  This has to be in sync with
+  # the ring timeout value, as this will stop a
+  # stampede of new ingesters if we should loose
+  # some.
+  minReadySeconds: {{ .Values.ingester.minReadySeconds }}
+
+  # Having maxSurge 0 and maxUnavailable 1 means
+  # the deployment will update one ingester at a time
+  # as it will have to stop one (making one unavailable)
+  # before it can start one (surge of zero)
+  strategy:
+    rollingUpdate:
+      maxSurge: {{ .Values.ingester.strategy.rollingUpdateMaxSurge }}
+      maxUnavailable: {{ .Values.ingester.strategy.rollingUpdateMinAvailable }}
+
+  template:
+    metadata:
+      labels:
+        name: ingester
+        release: {{ .Release.Name }}
+    spec:
+      # Give ingesters 40 minutes grace to flush chunks and exit cleanly.
+      # Service is available during this time, as long as we don't stop
+      # too many ingesters at once.
+      terminationGracePeriodSeconds: {{ .Values.ingester.terminationGracePeriodSeconds }}
+
+      containers:
+      - name: ingester
+        image: {{ .Values.ingester.image.repository }}:{{ .Values.ingester.image.tag }}
+        imagePullPolicy: {{ .Values.ingester.image.pullPolicy }}
+        args:
+        - -ingester.join-after={{ .Values.ingester.joinAfter }}
+        - -ingester.claim-on-rollout={{ .Values.ingester.claimOnRollout }}
+        - -consul.hostname={{ .Values.global.consulURI }}
+        - -s3.url={{ .Values.global.s3URI }}:{{ .Values.fakeS3.servicePort }}
+        - -dynamodb.original-table-name=cortex
+        - -dynamodb.url={{ .Values.global.dynamoDBURI }}
+        - -dynamodb.periodic-table.prefix=cortex_weekly_
+        - -dynamodb.periodic-table.start=2017-01-06
+        - -dynamodb.daily-buckets-from=2017-01-10
+        - -dynamodb.base64-buckets-from=2017-01-17
+        - -dynamodb.v4-schema-from=2017-02-05
+        - -dynamodb.v5-schema-from=2017-02-22
+        - -dynamodb.v7-schema-from=2017-03-19
+        - -dynamodb.chunk-table.from=2017-04-17
+        - -memcached.hostname={{ .Values.global.memcachedURI }}
+        - -memcached.timeout={{ .Values.global.memcachedTimeout }}
+        - -memcached.service={{ .Values.global.memcachedService }}
+        ports:
+        - containerPort: {{ .Values.ingester.listenPort }}
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: {{ .Values.ingester.listenPort }}
+          initialDelaySeconds: 15
+          timeoutSeconds: 1

@@ -1,0 +1,301 @@
+global:
+  s3URI: s3://abc:123@s3.default.svc.cluster.local:4569
+  dynamoDBURI: dynamodb://user:pass@dynamodb.default.svc.cluster.local:8000
+  consulURI: consul.default.svc.cluster.local:8500
+  memcachedURI: memcached.default.svc.cluster.local
+  memcachedTimeout: 100ms
+  memcachedService: memcached
+  configDbURI: postgres://postgres@configs-db.default.svc.cluster.local/configs?sslmode=disable
+  configs: http://configs.default.svc.cluster.local:80
+  alertmanagerURI: http://alertmanager.default.svc.cluster.local/api/prom/alertmanager/
+
+alertmanager:
+  image:
+    repository: quay.io/weaveworks/cortex-alertmanager
+    tag: master-0a92a540
+    imagePullPolicy: IfNotPresent
+
+  listenPort: 80
+  servicePort: 80
+  configURL: http://configs.default.svc.cluster.local:80
+  externalURI: /api/prom/alertmanager
+  loglevel: debug
+
+postgressConfigDB:
+  servicePort: 5432
+  listenPort: 5432
+  image:
+    repository: postgres
+    tag: 9.6
+    pullPolicy: IfNotPresent
+
+cortexConfigs:
+  listenPort: 80
+  servicePort: 80
+  migrationsURI: /migrations
+  image:
+    repository: quay.io/weaveworks/cortex-configs
+    tag: master-eb4b2116
+    pullPolicy: IfNotPresent
+
+consul:
+  serverNoScrapePort: 8300
+  serfNoScrapePort: 8301
+  clientNoScrapePort: 8400
+  httpNoScrapePort: 8500
+  serviceHttpPort: 8500
+
+  image:
+    repository: consul
+    tag: 0.7.1
+    pullPolicy: IfNotPresent
+
+distributor:
+  logLevel: debug
+  listenPort: 80
+  servicePort: 80
+  consulHostName: consul.default.svc.cluster.local
+  replicationFactor: 1
+  image:
+    repository: quay.io/weaveworks/cortex-distributor
+    tag: master-eb4b2116
+    pullPolicy: IfNotPresent
+
+dynamodb:
+  listenPort: 8000
+  servicePort: 8000
+  image:
+    repository: deangiberson/aws-dynamodb-local
+    tag: latest
+    pullPolicy: IfNotPresent
+
+ingester:
+  replicas: 1
+  minReadySeconds: 60
+  joinAfter: 30s
+  claimOnRollout: false
+  terminationGracePeriodSeconds: 2400
+  listenPort: 80
+  servicePort: 80
+
+  strategy:
+    rollingUpdateMaxSurge: 0
+    rollingUpdateMinAvailable: 1
+
+  image:
+    repository: quay.io/weaveworks/cortex-ingester
+    tag: master-747f3493
+    pullPolicy: IfNotPresent
+
+memcached:
+  replicas: 1
+  maxMemMB: 64
+  listenPort: 11211
+  servicePort: 11211
+
+  image:
+    repository: memcached
+    tag: 1.4.25
+    pullPolicy: IfNotPresent
+
+nginx:
+  replicas: 1
+  listenPort: 80
+  servicePort: 80
+  serviceType: NodePort
+  nodePort: 30080
+
+  image:
+    repository: nginx
+    tag: latest
+    pullPolicy: IfNotPresent
+
+  config:
+    workerProcesses: 5
+    errorLog: /dev/stderr
+    pid: nginx.pid
+    workerRLimitNoFile: 8192
+    workerConnections: 4096
+
+    http:
+      sendfile: on
+      tcpNoPush: on
+      resolverAddress: 10.0.0.10
+
+    server:
+      listenPort: 80
+      pushPassthroughURI: http://distributor.default.svc.cluster.local
+      queryPassthroughURI: http://querier.default.svc.cluster.local
+
+querier:
+  replicas: 1
+  listenPort: 80
+  servicePort: 80
+
+  image:
+    repository: quay.io/weaveworks/cortex-querier
+    tag: master-eb4b2116
+    pullPolicy: IfNotPresent
+
+ruler:
+  replicas: 1
+  logLevel: debug
+  listenPort: 80
+  servicePort: 80
+
+  image:
+    repository: quay.io/weaveworks/cortex-ruler
+    tag: master-eb4b2116
+    pullPolicy: IfNotPresent
+
+
+fakeS3:
+  enabled: true
+  replicas: 1
+  listenPort: 4569
+  servicePort: 4569
+
+  image:
+    repository: lphoward/fake-s3
+    tag: latest
+    pullPolicy: IfNotPresent
+
+
+tableManager:
+  replicas: 1
+  listenPort: 80
+  servicePort: 80
+  image:
+    repository: quay.io/weaveworks/cortex-table-manager
+    tag: master-d18915fb
+    pullPolicy: IfNotPresent
+
+
+retrieval:
+  replicas: 1
+  listenPort: 80
+  servicePort: 80
+  image:
+    repository: prom/prometheus
+    tag: v1.4.1
+    pullPolicy: IfNotPresent
+
+  configFiles:
+    prometheus.yml: |-
+      global:
+        scrape_interval: 30s # By default, scrape targets every 15 seconds.
+
+      remote_write:
+        url: http://nginx.default.svc.cluster.local:80/api/prom/push
+
+      scrape_configs:
+      - job_name: 'kubernetes-pods'
+        kubernetes_sd_configs:
+          - role: pod
+
+        tls_config:
+          ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+        bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+
+        # You can specify the following annotations (on pods):
+        #   prometheus.io.scrape: false - don't scrape this pod
+        #   prometheus.io.scheme: https - use https for scraping
+        #   prometheus.io.port - scrape this port
+        #   prometheus.io.path - scrape this path
+        relabel_configs:
+
+        # Always use HTTPS for the api server
+        - source_labels: [__meta_kubernetes_service_label_component]
+          regex: apiserver
+          action: replace
+          target_label: __scheme__
+          replacement: https
+
+        # Drop anything annotated with prometheus.io.scrape=false
+        - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
+          action: drop
+          regex: false
+
+        # Drop any endpoint who's pod port name ends with -noscrape
+        - source_labels: [__meta_kubernetes_pod_container_port_name]
+          action: drop
+          regex: .*-noscrape
+
+        # Allow pods to override the scrape scheme with prometheus.io.scheme=https
+        - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scheme]
+          action: replace
+          target_label: __scheme__
+          regex: ^(https?)$
+          replacement: $1
+
+        # Allow service to override the scrape path with prometheus.io.path=/other_metrics_path
+        - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_path]
+          action: replace
+          target_label: __metrics_path__
+          regex: ^(.+)$
+          replacement: $1
+
+        # Allow services to override the scrape port with prometheus.io.port=1234
+        - source_labels: [__address__, __meta_kubernetes_pod_annotation_prometheus_io_port]
+          action: replace
+          target_label: __address__
+          regex: (.+?)(\:\d+)?;(\d+)
+          replacement: $1:$3
+
+        # Drop pods without a name label
+        - source_labels: [__meta_kubernetes_pod_label_name]
+          action: drop
+          regex: ^$
+
+        # Rename jobs to be <namespace>/<name, from pod name label>
+        - source_labels: [__meta_kubernetes_namespace, __meta_kubernetes_pod_label_name]
+          action: replace
+          separator: /
+          target_label: job
+          replacement: $1
+
+        # Rename instances to be the pod name
+        - source_labels: [__meta_kubernetes_pod_name]
+          action: replace
+          target_label: instance
+
+        # Include node name as a extra field
+        - source_labels: [__meta_kubernetes_pod_node_name]
+          target_label: node
+
+      # This scrape config gather all nodes
+      - job_name: 'kubernetes-nodes'
+        kubernetes_sd_configs:
+          - role: node
+
+        # couldn't get prometheus to validate the kublet cert for scraping, so don't bother for now
+        tls_config:
+          insecure_skip_verify: true
+        bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+
+        relabel_configs:
+        - target_label: __scheme__
+          replacement: https
+        - source_labels: [__meta_kubernetes_node_label_kubernetes_io_hostname]
+          target_label: instance
+
+      # This scrape config just pulls in the default/kubernetes service
+      - job_name: 'kubernetes-service'
+        kubernetes_sd_configs:
+          - role: endpoints
+
+        tls_config:
+          insecure_skip_verify: true
+        bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+
+        relabel_configs:
+        - source_labels: [__meta_kubernetes_service_label_component]
+          regex: apiserver
+          action: keep
+
+        - target_label: __scheme__
+          replacement: https
+
+        - source_labels: []
+          target_label: job
+          replacement: default/kubernetes

@@ -1,0 +1,22 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx
+  labels:
+    app: {{ template "cortex.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: NodePort
+  ports:
+  - name: http
+    port: {{ .Values.nginx.listenPort }}
+    targetPort: {{ .Values.nginx.servicePort }}
+{{- if eq .Values.nginx.serviceType "NodePort" }}
+    nodePort: {{ .Values.nginx.nodePort }}
+{{- end }}
+  selector:
+    name: nginx
+    release: {{ .Release.Name }}

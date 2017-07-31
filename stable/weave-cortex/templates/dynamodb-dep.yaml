@@ -1,0 +1,26 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: dynamodb
+  labels:
+    app: {{ template "cortex.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: dynamodb
+        release: {{ .Release.Name }}
+      annotations:
+        prometheus.io.scrape: "false"
+    spec:
+      containers:
+      - name: dynamodb
+        image: {{ .Values.dynamodb.image.repository }}:{{ .Values.dynamodb.image.tag }}
+        imagePullPolicy: {{ .Values.dynamodb.pullPolicy }}
+        ports:
+        - containerPort: {{ .Values.dynamodb.listenPort }}

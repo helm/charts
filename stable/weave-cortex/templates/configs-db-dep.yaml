@@ -1,0 +1,30 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: configs-db
+  namespace: default
+  labels:
+    app: {{ template "cortex.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: configs-db
+        release: {{ .Release.Name }}
+      annotations:
+        prometheus.io.scrape: "false"
+    spec:
+      containers:
+      - name: configs-db
+        image: {{ .Values.postgressConfigDB.image.repository }}:{{ .Values.postgressConfigDB.image.tag }}
+        imagePullPolicy: {{ .Values.postgressConfigDB.image.pullPolicy }}
+        env:
+          - name: POSTGRES_DB
+            value: configs
+        ports:
+        - containerPort: {{ .Values.postgressConfigDB.listenPort }}

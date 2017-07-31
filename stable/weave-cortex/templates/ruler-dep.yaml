@@ -1,0 +1,45 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: ruler
+  labels:
+    app: {{ template "cortex.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.ruler.replicas }}
+  template:
+    metadata:
+      labels:
+        name: ruler
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+      - name: ruler
+        image: {{ .Values.ruler.image.repository }}:{{ .Values.ruler.image.tag }}
+        imagePullPolicy: {{ .Values.ruler.image.pullPolicy}}
+        args:
+        - -log.level={{ .Values.ruler.logLevel }}
+        - -server.http-listen-port={{ .Values.ruler.listenPort }}
+        - -ruler.configs.url={{ .Values.global.configs }}
+        - -ruler.alertmanager-url={{ .Values.global.alertmanagerURI }}
+        - -consul.hostname={{ .Values.global.consulURI }}
+        - -s3.url={{ .Values.global.s3URI -}}/s3
+        - -dynamodb.original-table-name=cortex
+        - -dynamodb.url={{ .Values.global.dynamoDBURI }}
+        - -dynamodb.periodic-table.prefix=cortex_weekly_
+        - -dynamodb.periodic-table.start=2017-01-06
+        - -dynamodb.daily-buckets-from=2017-01-10
+        - -dynamodb.base64-buckets-from=2017-01-17
+        - -dynamodb.v4-schema-from=2017-02-05
+        - -dynamodb.v5-schema-from=2017-02-22
+        - -dynamodb.v7-schema-from=2017-03-19
+        - -dynamodb.chunk-table.from=2017-04-17
+        - -memcached.hostname={{ .Values.global.memcachedURI }}
+        - -memcached.timeout={{ .Values.global.memcachedTimeout }}
+        - -memcached.service={{ .Values.global.memcachedService }}
+        - -distributor.replication-factor={{ .Values.distributor.replicationFactor }}
+        ports:
+        - containerPort: {{ .Values.ruler.listenPort }}

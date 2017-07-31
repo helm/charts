@@ -1,0 +1,22 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: memcached
+  labels:
+    app: {{ template "cortex.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  # The memcache client uses DNS to get a list of memcached servers and then
+  # uses a consistent hash of the key to determine which server to pick.
+  clusterIP: None
+  ports:
+    - name: memcached
+      port: {{ .Values.memcached.listenPort }}
+    - name: prom
+      port: 9150
+  selector:
+    name: memcached
+    release: {{ .Release.Name }}
