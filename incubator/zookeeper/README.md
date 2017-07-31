@@ -77,23 +77,23 @@ The configuration parameters in this section control the resources requested and
 
 | Parameter | Description | Default |
 | --------- | ----------- | ------- |
-| `Servers` | The number of ZooKeeper servers. This should always be (1,3,5, or 7) | `3` |
-| `MinAvailable` | The minimum number of servers that must be available during evictions. This should in the interval `[(Servers/2) + 1,(Servers - 1)]`. | `Servers-1` |
-| `Cpu` | The amount of CPU to request. As ZooKeeper is not very CPU intensive, `2` is a good choice to start with for a production deployment. | `1` |
-| `Heap` | The amount of JVM heap that the ZooKeeper servers will use. As ZooKeeper stores all of its data in memory, this value should reflect the size of your working set. The JVM -Xms/-Xmx format is used. |`2G` |
-| `Memory` | The amount of memory to request. This value should be at least 2 GiB larger than `Heap` to avoid swapping. You many want to use `1.5 * Heap` for values larger than 2GiB. The Kubernetes format is used. |`2Gi` |
-| `Storage` | The amount of Storage to request. Even though ZooKeeper keeps is working set in memory, it logs all transactions, and periodically snapshots, to storage media. The amount of storage required will vary with your workload, working memory size, and log and snapshot retention policy. Note that, on some cloud providers selecting a small volume size will result is sub-par I/O performance. 250 GiB is a good place to start for production workloads. | `50Gi`|
-| `StorageClass` | The storage class of the storage allocated for the ensemble. If this value is present, it will add an annotation asking the PV Provisioner for that storage class. | `default` |
+| `servers` | The number of ZooKeeper servers. This should always be (1,3,5, or 7) | `3` |
+| `minAvailable` | The minimum number of servers that must be available during evictions. This should in the interval `[(servers/2) + 1,(servers - 1)]`. | `servers-1` |
+| `cpu` | The amount of CPU to request. As ZooKeeper is not very CPU intensive, `2` is a good choice to start with for a production deployment. | `1` |
+| `heap` | The amount of JVM heap that the ZooKeeper servers will use. As ZooKeeper stores all of its data in memory, this value should reflect the size of your working set. The JVM -Xms/-Xmx format is used. |`1G` |
+| `memory` | The amount of memory to request. This value should be at least 2 GiB larger than `heap` to avoid swapping. You many want to use `1.5 * heap` for values larger than 2GiB. The Kubernetes format is used. |`2Gi` |
+| `storage` | The amount of storage to request. Even though ZooKeeper keeps is working set in memory, it logs all transactions, and periodically snapshots, to storage media. The amount of storage required will vary with your workload, working memory size, and log and snapshot retention policy. Note that, on some cloud providers selecting a small volume size will result is sub-par I/O performance. 250 GiB is a good place to start for production workloads. | `50Gi`|
+| `storageClass` | The storage class of the storage allocated for the ensemble. If this value is present, it will add an annotation asking the PV Provisioner for that storage class. | `default` |
 
 ### Network 
 These parameters control the network ports on which the ensemble communicates.
 
 | Parameter | Description | Default |
 | --------- | ----------- | ------- |
-| `ServerPort` | The port on which the ZooKeeper servers listen for requests from other servers in the ensemble. | `2888` |
-| `LeaderElectionPort` | The port on which the ZooKeeper servers perform leader election. | `3888` |
-| `ClientPort` | The port on which the ZooKeeper servers listen for client requests. | `2181` |
-| `ClientCnxns` | The maximum number of simultaneous client connections that each server in the ensemble will allow. | `60` |
+| `serverPort` | The port on which the ZooKeeper servers listen for requests from other servers in the ensemble. | `2888` |
+| `leaderElectionPort` | The port on which the ZooKeeper servers perform leader election. | `3888` |
+| `clientPort` | The port on which the ZooKeeper servers listen for client requests. | `2181` |
+| `clientCnxns` | The maximum number of simultaneous client connections that each server in the ensemble will allow. | `60` |
 
 ### Time
 ZooKeeper uses the Zab protocol to replicate its state machine across the ensemble. The following parameters control 
@@ -101,9 +101,9 @@ the timeouts for the protocol.
 
 | Parameter | Description | Default |
 | --------- | ----------- | ------- |
-| `TicktimeMs` | The number of milliseconds in one ZooKeeper Tick. You might want to increase this value if the network latency is high or unpredictable in your environment. | `2000` |
-| `InitTicks` | The amount of time, in Ticks, that a follower is allowed to connect to and sync with a leader. Increase this value if the amount of data stored on the servers is large. | `10` |
-| `SyncTicks` | The amount of time, in Ticks, that a follower is allowed to lag behind a leader. If the follower is longer than SyncTicks behind the leader, the follower is dropped.  | `5` |
+| `tickTimeMs` | The number of milliseconds in one ZooKeeper Tick. You might want to increase this value if the network latency is high or unpredictable in your environment. | `2000` |
+| `initTicks` | The amount of time, in Ticks, that a follower is allowed to connect to and sync with a leader. Increase this value if the amount of data stored on the servers is large. | `10` |
+| `syncTicks` | The amount of time, in Ticks, that a follower is allowed to lag behind a leader. If the follower is longer than syncTicks behind the leader, the follower is dropped.  | `5` |
 
 ### Log Retention 
 ZooKeeper writes its WAL (Write Ahead Log) and periodic snapshots to storage media. These parameters control the 
@@ -113,8 +113,8 @@ all available storage media.
 
 | Parameter | Description | Default |
 | --------- | ----------- | ------- |
-| `SnapRetain` | The number of snapshots to retain on disk. If `PurgeHours` is set to 0 this parameter has no effect. | `3` |
-| `PurgeHours` | The amount of time, in hours, between ZooKeeper snapshot and log purges. Setting this to 0 will disable purges.| `1` |
+| `snapRetain` | The number of snapshots to retain on disk. If `purgeHours` is set to 0 this parameter has no effect. | `3` |
+| `purgeHours` | The amount of time, in hours, between ZooKeeper snapshot and log purges. Setting this to 0 will disable purges.| `1` |
 
 ### Spreading 
 Spreading allows you specify an anti-affinity between ZooKeeper servers in the ensemble. This will prevent the Pods from 
@@ -122,7 +122,7 @@ being scheduled on the same node.
 
 | Parameter | Description | Default |
 | --------- | ----------- | ------- |
-| `AntiAffinity` | If present it must take the values 'hard' or 'soft'. 'hard' will cause the Kubernetes scheduler to not schedule the Pods on the same physical node under any circumstances 'soft' will cause the Kubernetes scheduler to make a best effort to not co-locate the Pods, but, if the only available resources are on the same node, the scheduler will co-locate them. | `hard` |
+| `antiAffinity` | If present it must take the values 'hard' or 'soft'. 'hard' will cause the Kubernetes scheduler to not schedule the Pods on the same physical node under any circumstances 'soft' will cause the Kubernetes scheduler to make a best effort to not co-locate the Pods, but, if the only available resources are on the same node, the scheduler will co-locate them. | `hard` |
 
 
 ### Logging 
@@ -132,7 +132,7 @@ and ELK.
 
 | Parameter | Description | Default |
 | --------- | ----------- | ------- |
-| `LogLevel` | The log level of the ZooKeeper applications. One of `ERROR`,`WARN`,`INFO`,`DEBUG`. | `INFO` |
+| `logLevel` | The log level of the ZooKeeper applications. One of `ERROR`,`WARN`,`INFO`,`DEBUG`. | `INFO` |
 
 ### Liveness and Readiness
 The servers in the ensemble have both liveness and readiness checks specified. These parameters can be used to tune 
@@ -140,15 +140,15 @@ the sensitivity of the liveness and readiness checks.
 
 | Parameter | Description | Default |
 | --------- | ----------- | ------- |
-| `ProbeInitialDelaySeconds` | The initial delay before the liveness and readiness probes will be invoked. | `15` |
-| `ProbeTimeoutSeconds` | The amount of time before the probes are considered to be failed due to a timeout. | `5` |
+| `probeInitialDelaySeconds` | The initial delay before the liveness and readiness probes will be invoked. | `15` |
+| `probeTimeoutSeconds` | The amount of time before the probes are considered to be failed due to a timeout. | `5` |
 
 ### ImagePull
 This parameter controls when the image is pulled from the repository.
 
 | Parameter | Description | Default |
 | --------- | ----------- | ------- |
-| `ImagePullPolicy` | The policy for pulling the image from the repository. | `Always` |
+| `imagePullPolicy` | The policy for pulling the image from the repository. | `Always` |
 
 # Deep dive
 
