@@ -42,7 +42,7 @@ rabbitmqNodeName: rabbit
 ## Node name to cluster with. e.g.: `clusternode@hostname`
 ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables
 ##
-# rabbitmqClusternodename:
+# rabbitmqClusterNodeName:
 
 ## RabbitMQ application vhost
 ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables
