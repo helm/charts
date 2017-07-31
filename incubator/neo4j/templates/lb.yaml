@@ -9,13 +9,13 @@ metadata:
     chart: "{{.Chart.Name}}-{{.Chart.Version}}"
     app: {{ template "name" . }}
 spec:
-  type: {{.Values.ServiceType}}
+  type: {{.Values.serviceType}}
   ports:
-    - port: {{.Values.HttpPort}}
-      targetPort: {{.Values.HttpPort}}
+    - port: {{.Values.httpPort}}
+      targetPort: {{.Values.httpPort}}
       name: browser
-    - port: {{.Values.BoltPort}}
-      targetPort: {{.Values.BoltPort}}
+    - port: {{.Values.boltPort}}
+      targetPort: {{.Values.boltPort}}
       name: bolt
   selector:
     app: {{ template "name" . }}

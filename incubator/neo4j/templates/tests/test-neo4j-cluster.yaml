@@ -26,7 +26,7 @@ metadata:
 spec:
   containers:
     - name: {{.Release.Name}}-ui-test
-      image: {{.Values.TestImage}}:{{.Values.TestImageTag}}
+      image: {{.Values.testImage}}:{{.Values.testImageTag}}
       env:
         - name: "STATEFULSET_NAME"
           value: "{{ template "fullname" . }}"

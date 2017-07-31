@@ -50,20 +50,20 @@ The following tables lists the configurable parameters of the Neo4j chart and th
 
 |         Parameter          |             Description                 |                         Default                          |
 |----------------------------|-----------------------------------------|----------------------------------------------------------|
-| `Image`                    | Neo4j image                             | `neo4j`                                                  |
-| `ImageTag`                 | Neo4j version                           | `{VERSION}`                                              |
-| `ImagePullPolicy`          | Image pull policy                       | `Always` if `ImageTag` is `latest`, else `IfNotPresent`. |
-| `NumberOfCores`            | Number of machines in CORE mode         | `3`                                                      |
-| `NumberOfReadReplicas`     | Number of machines in READ_REPLICA mode | `0`                                                      |
-| `StorageClass`             | Storage class of backing PVC            | `nil` (uses alpha storage class annotation)              |
-| `Storage`                  | Size of data volume                     | `1Gi`                                                    |
+| `image`                    | Neo4j image                             | `neo4j`                                                  |
+| `imageTag`                 | Neo4j version                           | `{VERSION}`                                              |
+| `imagePullPolicy`          | Image pull policy                       | `Always` if `ImageTag` is `latest`, else `IfNotPresent`. |
+| `numberOfCores`            | Number of machines in CORE mode         | `3`                                                      |
+| `numberOfReadReplicas`     | Number of machines in READ_REPLICA mode | `0`                                                      |
+| `storageClass`             | Storage class of backing PVC            | `nil` (uses alpha storage class annotation)              |
+| `storage`                  | Size of data volume                     | `1Gi`                                                    |
 
 The above parameters map to the env variables defined in the [Neo4j docker image](https://github.com/neo4j/docker-neo4j).
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```bash
-$ helm install --name neo4j-helm --set NumberOfCores=5,NumberOfReadReplicas=3 incubator/neo4j
+$ helm install --name neo4j-helm --set numberOfCores=5,numberOfReadReplicas=3 incubator/neo4j
 ```
 
 The above command creates a cluster containing 5 core servers and 3 read replicas.

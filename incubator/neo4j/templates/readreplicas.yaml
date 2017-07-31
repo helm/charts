@@ -8,7 +8,7 @@ metadata:
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     app: {{ template "name" . }}
 spec:
-  replicas: {{default 0 .Values.NumberOfReadReplicas}}
+  replicas: {{default 0 .Values.numberOfReadReplicas}}
   template:
     metadata:
       labels:
@@ -17,22 +17,22 @@ spec:
     spec:
       containers:
       - name: neo4j
-        image: "{{.Values.Image}}:{{.Values.ImageTag}}"
-        imagePullPolicy: "{{.Values.ImagePullPolicy}}"
+        image: "{{.Values.image}}:{{.Values.imageTag}}"
+        imagePullPolicy: "{{.Values.imagePullPolicy}}"
         env:
           - name: NEO4J_causalClustering_initialDiscoveryMembers
             value: "neo4j-core-0.neo4j.default.svc.cluster.local:5000,neo4j-core-1.neo4j.default.svc.cluster.local:5000,neo4j-core-2.neo4j.default.svc.cluster.local:5000"
           - name: NEO4J_dbms_mode
             value: READ_REPLICA
           - name: NUMBER_OF_CORES
-            value: "{{default 3 .Values.NumberOfCores}}"
+            value: "{{default 3 .Values.numberOfCores}}"
         command:
           - "/bin/bash"
           - "-ecx"
           - |
             echo "dbms.security.auth_enabled=false" >> conf/neo4j.conf
 
-            STATEFULSET_NAME="{{ printf "%s-%s" .Release.Name .Values.Name | trunc 56 }}"
+            STATEFULSET_NAME="{{ template "fullname" . }}"
             MEMBERS=""
             for id in $(seq 0 $(($NUMBER_OF_CORES-1))) ; do
                   token="${STATEFULSET_NAME}-core-$id.${STATEFULSET_NAME}.default.svc.cluster.local:5000"
@@ -43,9 +43,9 @@ spec:
             export NEO4J_dbms_connectors_default__advertised__address=$(hostname -f)
             exec /docker-entrypoint.sh "neo4j"
         ports:
-        - containerPort: 7474
+        - containerPort: {{.Values.httpPort}}
           name: browser
-        - containerPort: 7687
+        - containerPort: {{.Values.boltPort}}
           name: bolt
         securityContext:
           privileged: true
