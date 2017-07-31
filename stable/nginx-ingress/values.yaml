@@ -207,6 +207,7 @@ udp: {}
   # 53: "kube-system/kube-dns:53"
 
 # Enable RBAC mode if install is true
+# Ref: https://github.com/kubernetes/ingress/tree/master/examples/rbac/nginx
 rbac: {}
   # install: true
   # apiVersion: v1beta1
