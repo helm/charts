@@ -81,7 +81,7 @@ dashboard:
   ## Configure resource requests and limits
   ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
   ##
-  resources:
+  resources: {}
     # requests:
     #   memory: 512Mi
     #   cpu: 300m
