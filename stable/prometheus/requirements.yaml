@@ -1,0 +1,5 @@
+dependencies:
+  - name: node-exporter
+    repository: https://github.com/kubernetes/charts/tree/master/stable
+    version: 0.1.0
+    alias: node-exporter
