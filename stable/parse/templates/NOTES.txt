@@ -23,7 +23,7 @@ Parse Server
   export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}'):{{ .Values.parse.port }}
 {{- else if contains "ClusterIP"  .Values.serviceType }}
 
-  export SERVER_POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "name" . }},component=server" -o jsonpath="{.items[0].metadata.name}")
+  export SERVER_POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "name" . }},release={{ .Release.Name }},component=server" -o jsonpath="{.items[0].metadata.name}")
   kubectl port-forward $SERVER_POD_NAME {{ .Values.parse.port }}:{{ .Values.parse.port }}
   export SERVICE_IP=127.0.0.1:{{ .Values.parse.port }}
 
@@ -66,7 +66,7 @@ service:
 
 {{- if eq .Values.serviceType "ClusterIP" }}
 
-  export DASHBOARD_POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "name" . }},component=dashboard" -o jsonpath="{.items[0].metadata.name}")
+  export DASHBOARD_POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "name" . }},release={{ .Release.Name }},component=dashboard" -o jsonpath="{.items[0].metadata.name}")
   echo http://127.0.0.1:4040/
   kubectl port-forward $DASHBOARD_POD_NAME 4040:4040
 {{- else }}
