@@ -28,10 +28,7 @@ spec:
 {{- if .Values.ingress.tls }}
   tls:
 {{ toYaml .Values.ingress.tls | indent 4 }}
-  backend:
-    serviceName: {{ $serviceName }}
-    servicePort: 80
-  {{- end -}}
+{{- end -}}
 {{- end -}}
 
 
