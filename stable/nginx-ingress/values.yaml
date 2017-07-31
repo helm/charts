@@ -205,3 +205,8 @@ tcp: {}
 ##
 udp: {}
   # 53: "kube-system/kube-dns:53"
+
+# Enable RBAC mode if install is true
+rbac: {}
+  # install: true
+  # apiVersion: v1beta1
