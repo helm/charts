@@ -1,5 +1,4 @@
-Neo4j can be accessed via port 7687 (or whatever you set the BoltPort value to)
-at the following DNS name from within your cluster:
+Neo4j can be accessed via port {{ .Values.BoltPort }} at the following DNS name from within your cluster:
 {{ .Release.Name }}-public.{{ .Release.Namespace }}.svc.cluster.local
 
 You can connect to the cluster using the Cypher shell by running:

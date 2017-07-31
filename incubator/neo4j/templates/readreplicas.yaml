@@ -1,16 +1,19 @@
 apiVersion: apps/v1beta1 # for versions before 1.6.0 use extensions/v1beta1
 kind: Deployment
 metadata:
-  name: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 56 }}-replica"
+  name: "{{ template "fullname" . }}-replica"
+  labels:
+    heritage: {{.Release.Service | quote }}
+    release: {{.Release.Name | quote }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    app: {{ template "name" . }}
 spec:
   replicas: {{default 0 .Values.NumberOfReadReplicas}}
   template:
     metadata:
       labels:
-        heritage: {{.Release.Service | quote }}
+        app: {{ template "name" . }}
         release: {{.Release.Name | quote }}
-        chart: "{{.Chart.Name}}-{{.Chart.Version}}"
-        component: "{{.Release.Name}}-{{.Values.Component}}"
     spec:
       containers:
       - name: neo4j
