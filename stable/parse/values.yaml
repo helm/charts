@@ -43,9 +43,9 @@ parse:
   ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
   ##
   resources:
-    requests:
-      memory: 512Mi
-      cpu: 300m
+    # requests:
+    #   memory: 512Mi
+    #   cpu: 300m
 
 parseDashboard:
   ## Enable deployment of Parse Dashboard
@@ -82,9 +82,9 @@ parseDashboard:
   ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
   ##
   resources:
-    requests:
-      memory: 512Mi
-      cpu: 300m
+    # requests:
+    #   memory: 512Mi
+    #   cpu: 300m
 
 ## Enable persistence using Persistent Volume Claims
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
