@@ -1,0 +1,5 @@
+dependencies:
+- name: sql-server
+  version: 0.1.0
+  repository: http://127.0.0.1:8879/charts 
+  condition: sql-server.embedded

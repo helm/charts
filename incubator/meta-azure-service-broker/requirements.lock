@@ -1,0 +1,10 @@
+dependencies:
+- condition: ""
+  enabled: false
+  import-values: null
+  name: sql-server
+  repository: http://127.0.0.1:8879/charts
+  tags: null
+  version: 0.1.0
+digest: sha256:eed391b4592638fd8970e6a42cb69999056cc680dc2c4fbea511bf58f5ec75b3
+generated: 2017-05-16T11:23:54.596141944-04:00
