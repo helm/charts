@@ -147,6 +147,7 @@ Parameter | Description | Default
 `serverFiles.alerts` | Prometheus server alerts configuration | `""`
 `serverFiles.rules` | Prometheus server rules configuration | `""`
 `serverFiles.prometheus.yml` | Prometheus server scrape configuration | example configuration
+`networkPolicy.enabled` | Enable NetworkPolicy | `false` |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
@@ -200,3 +201,19 @@ server:
         hosts:
           - prometheus.domain.com
 ```
+
+### NetworkPolicy
+
+Enabling Network Policy for Prometheus will secure connections to Alert Manager
+and Kube State Metrics by only accepting connections from Prometheus Server.
+All inbound connections to Prometheus Server are still allowed.
+
+To enable network policy for Prometheus, install a networking plugin that
+implements the Kubernetes NetworkPolicy spec, and set `networkPolicy.enabled` to true.
+
+If NetworkPolicy is enabled for Prometheus' scrape targets, you may also need
+to manually create a networkpolicy which allows it.
+
+For Kubernetes v1.5 & v1.6, you must also turn on NetworkPolicy by setting the DefaultDeny namespace annotation. Note: this will enforce policy for all pods in the namespace:
+
+    kubectl annotate namespace default "net.beta.kubernetes.io/network-policy={\"ingress\":{\"isolation\":\"DefaultDeny\"}}"
