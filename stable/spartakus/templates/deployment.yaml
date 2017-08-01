@@ -13,7 +13,7 @@ spec:
     metadata:
     {{- if .Values.podAnnotations }}
       annotations:
-{{ toYaml .Values.podAnnotations | indent 8}}
+{{ toYaml .Values.podAnnotations | indent 8 }}
     {{- end }}
       labels:
         app: {{ template "name" . }}

@@ -28,7 +28,7 @@ spec:
         {{- range $key, $val := .Values.envVars }}
         - name: {{ $key }}
           value: {{ $val | quote }}
-        {{- end}}
+        {{- end }}
         ports:
         - containerPort: 9092
         volumeMounts:

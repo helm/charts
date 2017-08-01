@@ -21,8 +21,7 @@ spec:
     - host: {{ . }}
       http:
         paths:
-          - path: /
-            backend:
+          - backend:
               serviceName: {{ printf "%s-%s" $releaseName "grafana" | trunc 63 }}
               servicePort: {{ $servicePort }}
   {{- end -}}

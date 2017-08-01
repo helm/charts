@@ -15,7 +15,7 @@ spec:
     metadata:
     {{- if .Values.controller.podAnnotations }}
       annotations:
-{{ toYaml .Values.controller.podAnnotations | indent 8}}
+{{ toYaml .Values.controller.podAnnotations | indent 8 }}
     {{- end }}
       labels:
         app: {{ template "name" . }}
@@ -23,6 +23,9 @@ spec:
         release: {{ .Release.Name }}
     spec:
       hostNetwork: {{ .Values.controller.hostNetwork }}
+    {{- if .Values.controller.serviceAccountName }}
+      serviceAccountName: {{ .Values.controller.serviceAccountName }}
+    {{- end }}
       containers:
         - name: {{ template "name" . }}-{{ .Values.controller.name }}
           image: "{{ .Values.controller.image.repository }}:{{ .Values.controller.image.tag }}"
@@ -30,9 +33,12 @@ spec:
           args:
             - /nginx-ingress-controller
             - --default-backend-service={{ if .Values.defaultBackend.enabled }}{{ .Release.Namespace }}/{{ template "defaultBackend.fullname" . }}{{ else }}{{ .Values.controller.defaultBackendService }}{{ end }}
+          {{- if .Values.controller.defaultSSLCertificate }}
+            - --default-ssl-certificate={{ .Values.controller.defaultSSLCertificate }}
+          {{- end }}
           {{- if and (contains "0.9" .Values.controller.image.tag) .Values.controller.publishService.enabled }}
             - --publish-service={{ template "controller.publishServicePath" . }}
-          {{- end}}
+          {{- end }}
           {{- if (contains "0.9" .Values.controller.image.tag) }}
             - --configmap={{ .Release.Namespace }}/{{ template "controller.fullname" . }}
           {{- else }}

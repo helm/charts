@@ -1,5 +1,11 @@
 # Default values for Sysdig Monitor Helm package.
 
+rbac:
+    # true here enables creation of rbac resources
+    install: false
+    # rbac version
+    apiVersion: v1beta1
+    
 image:
     repository: "sysdig/agent"
     tag: "latest"
@@ -11,6 +17,8 @@ sysdig:
 
     # Optional: Key-value agent tags following the format "key:val,key2:val2".
     AgentTags: ""
+
+    serviceAccountName: "sysdig-account"
 
 resources:
   requests:

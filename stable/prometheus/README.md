@@ -61,7 +61,7 @@ Parameter | Description | Default
 `alertmanager.persistentVolume.existingClaim` | alertmanager data Persistent Volume existing claim name | `""`
 `alertmanager.persistentVolume.mountPath` | alertmanager data Persistent Volume mount root path | `/data`
 `alertmanager.persistentVolume.size` | alertmanager data Persistent Volume size | `2Gi`
-`alertmanager.persistentVolume.storageClass` | alertmanager data Persistent Volume Storage Class | `volume.alpha.kubernetes.io/storage-class: default`
+`alertmanager.persistentVolume.storageClass` | alertmanager data Persistent Volume Storage Class | `unset
 `alertmanager.persistentVolume.subPath` | Subdirectory of alertmanager data Persistent Volume to mount | `""`
 `alertmanager.podAnnotations` | annotations to be added to alertmanager pods | `{}`
 `alertmanager.replicaCount` | desired number of alertmanager pods | `1`
@@ -104,6 +104,7 @@ Parameter | Description | Default
 `nodeExporter.extraHostPathMounts` | Additional node-exporter hostPath mounts | `[]`
 `nodeExporter.nodeSelector` | node labels for node-exporter pod assignment | `{}`
 `nodeExporter.podAnnotations` | annotations to be added to node-exporter pods | `{}`
+`nodeExporter.tolerations` | node taints to tolerate (requires Kubernetes >=1.6) | `[]`
 `nodeExporter.resources` | node-exporter resource requests and limits (YAML) | `{}`
 `nodeExporter.service.annotations` | annotations for node-exporter service | `{prometheus.io/scrape: "true"}`
 `nodeExporter.service.clusterIP` | internal node-exporter cluster service IP | `None`
@@ -130,7 +131,7 @@ Parameter | Description | Default
 `server.persistentVolume.existingClaim` | Prometheus server data Persistent Volume existing claim name | `""`
 `server.persistentVolume.mountPath` | Prometheus server data Persistent Volume mount root path | `/data`
 `server.persistentVolume.size` | Prometheus server data Persistent Volume size | `8Gi`
-`server.persistentVolume.storageClass` | Prometheus server data Persistent Volume Storage Class | `volume.alpha.kubernetes.io/storage-class: default`
+`server.persistentVolume.storageClass` | Prometheus server data Persistent Volume Storage Class |  unset
 `server.persistentVolume.subPath` | Subdirectory of Prometheus server data Persistent Volume to mount | `""`
 `server.podAnnotations` | annotations to be added to Prometheus server pods | `{}`
 `server.replicaCount` | desired number of Prometheus server pods | `1`
@@ -146,6 +147,7 @@ Parameter | Description | Default
 `serverFiles.alerts` | Prometheus server alerts configuration | `""`
 `serverFiles.rules` | Prometheus server rules configuration | `""`
 `serverFiles.prometheus.yml` | Prometheus server scrape configuration | example configuration
+`networkPolicy.enabled` | Enable NetworkPolicy | `false` |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
@@ -199,3 +201,19 @@ server:
         hosts:
           - prometheus.domain.com
 ```
+
+### NetworkPolicy
+
+Enabling Network Policy for Prometheus will secure connections to Alert Manager
+and Kube State Metrics by only accepting connections from Prometheus Server.
+All inbound connections to Prometheus Server are still allowed.
+
+To enable network policy for Prometheus, install a networking plugin that
+implements the Kubernetes NetworkPolicy spec, and set `networkPolicy.enabled` to true.
+
+If NetworkPolicy is enabled for Prometheus' scrape targets, you may also need
+to manually create a networkpolicy which allows it.
+
+For Kubernetes v1.5 & v1.6, you must also turn on NetworkPolicy by setting the DefaultDeny namespace annotation. Note: this will enforce policy for all pods in the namespace:
+
+    kubectl annotate namespace default "net.beta.kubernetes.io/network-policy={\"ingress\":{\"isolation\":\"DefaultDeny\"}}"

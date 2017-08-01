@@ -26,7 +26,7 @@ spec:
         - --labels={{ .Values.labels }}
         - --annotations={{ .Values.annotations }}
         - --namespaces={{ .Values.namespaces }}
-        {{- if not .Values.dryRun}}
+        {{- if not .Values.dryRun }}
         - --no-dry-run
         {{- end }}
         resources:

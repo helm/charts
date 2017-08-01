@@ -3,9 +3,6 @@
 [Traefik](http://traefik.io/) is a modern HTTP reverse proxy and load balancer made to deploy
 microservices with ease.
 
-__DISCLAIMER:__ While this chart has been well-tested, testers have encountered occasional issues
-with the Traefik software itself. Be advised that your mileage may vary.
-
 ## Introduction
 
 This chart bootstraps Traefik as a Kubernetes ingress controller with optional support for SSL and
@@ -119,6 +116,9 @@ The following tables lists the configurable parameters of the Traefik chart and 
 | `gzip.enabled`                  | Whether to use gzip compression                                      | `true`                                    |
 | `kubernetes.namespaces`         | List of Kubernetes namespaces to watch                               | All namespaces                            |
 | `kubernetes.labelSelector`      | Valid Kubernetes ingress label selector to watch (e.g `realm=public`)| No label filter                           |
+| `accessLogs.enabled`            | Whether to enable Traefik's access logs                              | `false`                                   |
+| `accessLogs.filePath`           | The path to the log file. Logs to stdout if omitted                  | None                                      |
+| `accessLogs.format`             | What format the log entries should be in. Either `common` or `json`  | `common`                                  |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
 

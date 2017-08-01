@@ -54,6 +54,7 @@ Parameter | Description | Default
 `controller.defaultBackendService` | default 404 backend service; required only if `defaultBackend.enabled = false` | `""`
 `controller.scope.enabled` | limit the scope of the ingress controller | `false` (watch all namespaces)
 `controller.scope.namespace` | namespace to watch for ingress | `""` (use the release namespace)
+`controller.serviceAccountName` | Service account to run under | `default`
 `controller.extraArgs` | Additional controller container arguments | `{}`
 `controller.kind` | install as Deployment or DaemonSet | `Deployment`
 `controller.nodeSelector` | node labels for pod assignment | `{}`

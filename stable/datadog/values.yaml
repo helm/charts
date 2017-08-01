@@ -79,14 +79,13 @@ datadog:
   ## Each key will become a file in /conf.d/auto_conf
   ## ref: https://github.com/DataDog/docker-dd-agent#configuration-files
   ##
-  # autoconf:
-  #   redisdb.yaml: |-
-  #     docker_images:
-  #       - redis
-  #     init_config:
-  #     instances:
-  #       - host: "%%host%%"
-  #         port: "%%port%%"
+  autoconf:
+    kubernetes_state.yaml: |-
+      docker_images:
+        - kube-state-metrics
+      init_config:
+      instances:
+        - kube_state_url: http://%%host%%:%%port%%/metrics
 
   ## Provide additonal service definitions
   ## Each key will become a file in /conf.d
