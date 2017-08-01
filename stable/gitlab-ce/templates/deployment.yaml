@@ -15,6 +15,7 @@ spec:
       labels:
         app: {{ template "fullname" . }}
     spec:
+      serviceAccountName: {{ template "fullname" . }}
       containers:
       - name: {{ template "fullname" . }}
         image: {{ .Values.image }}
@@ -72,6 +73,8 @@ spec:
           containerPort: 80
         - name: https
           containerPort: 443
+        - name: prometheus
+          containerPort: 9090
         livenessProbe:
           httpGet:
             path: /help
