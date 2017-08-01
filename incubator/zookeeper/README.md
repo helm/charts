@@ -1,9 +1,8 @@
 # Zookeeper Helm Chart
-
  This helm chart provides an implementation of the ZooKeeper 
  [StatefulSet](http://kubernetes.io/docs/concepts/abstractions/controllers/statefulsets/) found in Kubernetes Contrib 
  [Zookeeper StatefulSet](https://github.com/kubernetes/contrib/tree/master/statefulsets/zookeeper).
-  
+
 ## Prerequisites
 * Kubernetes 1.6
 * PersistentVolume support on the underlying infrastructure
@@ -23,7 +22,6 @@ size of the ensemble.
 ZooKeeper ensemble across nodes.
 
 ## Installing the Chart
-
 You can install the chart with the release name `my-zk` as below.
 
 ```console
@@ -34,7 +32,6 @@ $ helm install --name my-zk incubator/zookeeper
 If you do not specify a name, helm will select a name for you.
 
 ### Installed Components
-
 You can use `kubectl get` to view all of the installed components.
 
 ```console{%raw}
@@ -79,13 +76,13 @@ The configuration parameters in this section control the resources requested and
 | --------- | ----------- | ------- |
 | `servers` | The number of ZooKeeper servers. This should always be (1,3,5, or 7) | `3` |
 | `minAvailable` | The minimum number of servers that must be available during evictions. This should in the interval `[(servers/2) + 1,(servers - 1)]`. | `servers-1` |
-| `cpu` | The amount of CPU to request. As ZooKeeper is not very CPU intensive, `2` is a good choice to start with for a production deployment. | `1` |
-| `heap` | The amount of JVM heap that the ZooKeeper servers will use. As ZooKeeper stores all of its data in memory, this value should reflect the size of your working set. The JVM -Xms/-Xmx format is used. |`1G` |
-| `memory` | The amount of memory to request. This value should be at least 2 GiB larger than `heap` to avoid swapping. You many want to use `1.5 * heap` for values larger than 2GiB. The Kubernetes format is used. |`2Gi` |
+| `resources.requests.cpu` | The amount of CPU to request. As ZooKeeper is not very CPU intensive, `2` is a good choice to start with for a production deployment. | `500m` |
+| `heap` | The amount of JVM heap that the ZooKeeper servers will use. As ZooKeeper stores all of its data in memory, this value should reflect the size of your working set. The JVM -Xms/-Xmx format is used. |`2G` |
+| `resources.requests.memory` | The amount of memory to request. This value should be at least 2 GiB larger than `heap` to avoid swapping. You many want to use `1.5 * heap` for values larger than 2GiB. The Kubernetes format is used. |`2Gi` |
 | `storage` | The amount of storage to request. Even though ZooKeeper keeps is working set in memory, it logs all transactions, and periodically snapshots, to storage media. The amount of storage required will vary with your workload, working memory size, and log and snapshot retention policy. Note that, on some cloud providers selecting a small volume size will result is sub-par I/O performance. 250 GiB is a good place to start for production workloads. | `50Gi`|
 | `storageClass` | The storage class of the storage allocated for the ensemble. If this value is present, it will add an annotation asking the PV Provisioner for that storage class. | `default` |
 
-### Network 
+### Network
 These parameters control the network ports on which the ensemble communicates.
 
 | Parameter | Description | Default |
@@ -103,9 +100,9 @@ the timeouts for the protocol.
 | --------- | ----------- | ------- |
 | `tickTimeMs` | The number of milliseconds in one ZooKeeper Tick. You might want to increase this value if the network latency is high or unpredictable in your environment. | `2000` |
 | `initTicks` | The amount of time, in Ticks, that a follower is allowed to connect to and sync with a leader. Increase this value if the amount of data stored on the servers is large. | `10` |
-| `syncTicks` | The amount of time, in Ticks, that a follower is allowed to lag behind a leader. If the follower is longer than syncTicks behind the leader, the follower is dropped.  | `5` |
+| `syncTicks` | The amount of time, in Ticks, that a follower is allowed to lag behind a leader. If the follower is longer than `syncTicks` behind the leader, the follower is dropped.  | `5` |
 
-### Log Retention 
+### Log Retention
 ZooKeeper writes its WAL (Write Ahead Log) and periodic snapshots to storage media. These parameters control the 
 retention policy for snapshots and WAL segments. If you do not configure the ensemble to automatically periodically 
 purge snapshots and logs, it is important to implement such a mechanism yourself. Otherwise, you will eventually exhaust 
@@ -116,7 +113,7 @@ all available storage media.
 | `snapRetain` | The number of snapshots to retain on disk. If `purgeHours` is set to 0 this parameter has no effect. | `3` |
 | `purgeHours` | The amount of time, in hours, between ZooKeeper snapshot and log purges. Setting this to 0 will disable purges.| `1` |
 
-### Spreading 
+### Spreading
 Spreading allows you specify an anti-affinity between ZooKeeper servers in the ensemble. This will prevent the Pods from 
 being scheduled on the same node.
 
@@ -124,8 +121,7 @@ being scheduled on the same node.
 | --------- | ----------- | ------- |
 | `antiAffinity` | If present it must take the values 'hard' or 'soft'. 'hard' will cause the Kubernetes scheduler to not schedule the Pods on the same physical node under any circumstances 'soft' will cause the Kubernetes scheduler to make a best effort to not co-locate the Pods, but, if the only available resources are on the same node, the scheduler will co-locate them. | `hard` |
 
-
-### Logging 
+### Logging
 In order to allow for the default installation to work well with the log rolling and retention policy of Kubernetes, 
 all logs are written to stdout. This should also be compatible with logging integrations such as Google Cloud Logging 
 and ELK.
@@ -166,7 +162,6 @@ The ZooKeeper version is the latest stable version (3.4.9). The distribution is 
 directory is symbolically linked to /opt/zookeeper. Symlinks are created to simulate a rpm installation into /usr.
 
 ## Failover
-
 You can test failover by killing the leader. Insert a key:
 ```console
 $ kubectl exec <RELEASE-NAME>-0 -- /opt/zookeeper/bin/zkCli.sh create /foo bar;
@@ -221,7 +216,6 @@ bar
 ```
 
 ## Scaling
-
 ZooKeeper can not be safely scaled in versions prior to 3.5.x. There are manual procedures for scaling an ensemble, but 
 as noted in the [ZooKeeper 3.5.2 documentation](https://zookeeper.apache.org/doc/r3.5.2-alpha/zookeeperReconfig.html) these 
 procedures require a rolling restart, are known to be error prone, and often result in a data loss.
