@@ -1,0 +1,38 @@
+---
+apiVersion: {{ .Values.deployment.apiVersion }}
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    app: {{ template "name" . }}
+spec:
+  replicas: {{ .Values.deployment.replicaCount }}
+  template:
+    metadata:
+      labels:
+        run: {{ template "fullname" . }}
+        heritage: {{ .Release.Service }}
+        release: {{ .Release.Name }}
+        chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+        app: {{ template "name" . }}
+    spec:
+      {{- if .Values.rbac.create }}
+      serviceAccountName: {{ .Values.rbac.serviceAccountName }}
+      {{- end }}
+      containers:
+      - name: kubernetes-vault
+        image: {{ .Values.deployment.image.repository }}:{{ .Values.deployment.image.tag }}
+        imagePullPolicy: {{ .Values.deployment.image.pullPolicy }}
+        env:
+        - name: KUBERNETES_NAMESPACE
+          value: {{ .Release.Namespace }}
+        volumeMounts:
+        - name: config-volume
+          mountPath: /kubernetes-vault
+      volumes:
+        - name: config-volume
+          configMap:
+            name: {{ template "fullname" . }}

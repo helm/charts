@@ -1,0 +1,52 @@
+{{- if .Values.rbac.create }}
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ .Values.rbac.serviceAccountName }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    app: {{ template "name" . }}
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/{{ .Values.rbac.apiVersion }}
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    app: {{ template "name" . }}
+rules:
+- apiGroups: [""]
+  resources:
+  - pods
+  verbs: ["list","watch"]
+- apiGroups: [""]
+  resources:
+  - endpoints
+  verbs: ["get"]
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/{{ .Values.rbac.apiVersion }}
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    app: {{ template "name" . }}
+subjects:
+- kind: ServiceAccount
+  name: {{ .Values.rbac.serviceAccountName }}
+  namespace: {{ .Release.Namespace }}
+roleRef:
+  kind: ClusterRole
+  name: {{ template "fullname" . }}
+  apiGroup: rbac.authorization.k8s.io
+---
+{{- end }}
+

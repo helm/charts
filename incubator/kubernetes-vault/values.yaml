@@ -1,0 +1,162 @@
+
+rbac:
+  # current api version
+  apiVersion: v1beta1
+  # true here enables creation of rbac resources
+  create: false
+  # set a different service account name
+  serviceAccountName: 'kubernetes-vault'
+
+# using external CA
+externalCA: false
+
+deployment:
+  # for versions before 1.6.0 use extensions/v1beta1
+  apiVersion: apps/v1beta1
+  image:
+    repository: 'boostport/kubernetes-vault'
+    tag:  v0.4.8
+    pullPolicy: 'Always'
+  replicaCount: 3
+
+service:
+  servicePort: 80
+
+# ConfigMap Entries
+configmap:
+
+  # Please include your own token value here.
+  # Override values here that are
+  kubernetes-vault.yml: |-
+    vault:
+      addr: http://vault:8200
+      token: change-this-value
+
+    kubernetes:
+      watchNamespace: ${KUBERNETES_NAMESPACE}
+      serviceNamespace: ${KUBERNETES_NAMESPACE}
+      service: kubernetes-vault
+
+    prometheus:
+      tls:
+        vaultCertBackend: intermediate-ca
+        vaultCertRole: kubernetes-vault
+
+# ConfigMap Entries, with external CA
+configmapExternalCA:
+
+  # Please include your own token value here.
+  kubernetes-vault.yml: |-
+    vault:
+      addr: https://vault:8200
+      token: change-this-value
+      tls:
+        caCert: /kubernetes-vault/ca.pem
+
+    kubernetes:
+      watchNamespace: ${KUBERNETES_NAMESPACE}
+      serviceNamespace: ${KUBERNETES_NAMESPACE}
+      service: kubernetes-vault
+
+    prometheus:
+      tls:
+        certFile: /kubernetes-vault/cert.pem
+        certKey: /kubernetes-vault/cert.key
+        caCert: /kubernetes-vault/ca.pem
+
+  # Create your own certs and place here.
+  cert.pem: |-
+    -----BEGIN CERTIFICATE-----
+    MIID6DCCAtCgAwIBAgIUWPiW0GBRZeWx9mbZtzDNHRabT8swDQYJKoZIhvcNAQEL
+    BQAwGjEYMBYGA1UEAxMPSW50ZXJtZWRpYXRlIENBMCAXDTE3MDMwMzA1NDkxNloY
+    DzIwNjcwMjE5MDM0OTQ2WjAbMRkwFwYDVQQDExBrdWJlcm5ldGVzLXZhdWx0MIIB
+    IjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0LVUqLLJOOUnBjc17FqlKE/n
+    QiuYMZrovKfOqKuCfzPu6CqjYpFiK4BR6Dw6j4pxpQu4lIQLFqs4e5+EVuFnzTyr
+    fUwMcspO3inZ7+7YQGZTo1ZmPgLwLlCBHPQokLKjA8PHQf2LZJW5juAB6Y1968pQ
+    bPpeD8oMMKXewytstGauPpLs+cUyz9+DjACM+YFe4XAJaSyYVJFHoqy8heidOgKX
+    7EomNIFi/pgRZZOxKd4Z46PpBke5whjX0ZUx3zR4VHpp9y+sOjML3EVOmoRDXqFL
+    951WQICW80q1J9j1YKqq/cbtdTbmaFxWozlYSmCp0GB7cLUqzPnmADZ+CL8uPwID
+    AQABo4IBITCCAR0wDgYDVR0PAQH/BAQDAgOoMB0GA1UdJQQWMBQGCCsGAQUFBwMB
+    BggrBgEFBQcDAjAdBgNVHQ4EFgQU0UigrSv7X97CLRze4ItAAdGgWAcwHwYDVR0j
+    BBgwFoAUv3RNXviPfxATRxIauafY9RRfvmowQwYIKwYBBQUHAQEENzA1MDMGCCsG
+    AQUFBzAChidodHRwOi8vdmF1bHQ6ODIwMC92MS9pbnRlcm1lZGlhdGUtY2EvY2Ew
+    LAYDVR0RBCUwI4IQa3ViZXJuZXRlcy12YXVsdIIJbG9jYWxob3N0hwR/AAABMDkG
+    A1UdHwQyMDAwLqAsoCqGKGh0dHA6Ly92YXVsdDo4MjAwL3YxL2ludGVybWVkaWF0
+    ZS1jYS9jcmwwDQYJKoZIhvcNAQELBQADggEBAIVmY7hEs6wQbtC3CaFNC5+Nx2Vx
+    eoGco7HMmFcSfGTTNgw7FA0tHikI4Q0hMCeDi4qMy+AYfzBMrYR0T0TmocOO4kNX
+    nsBsyf/0Mb6pLfFg3js1IMfUrHW8h/vMgTRiLL1PejijuJeXgZEO4XXBdmos8WiH
+    ixEOYJHYvecDndOFS6YqAP/NTHkJVhf1NFkMmlHJVjDn6bBwW00yVKZthZ6APNCr
+    XgKaKX0p2BChh8bxwrTQgMattwPnnS1MiZi6tx+zs99qQByPkPfRCV8ABOnHDvyO
+    SnETdHv4zaIVNMcrpHs9f3qhFvYtAgeT3xuBmjWgCFFrtbhvsMif3p2dnXk=
+    -----END CERTIFICATE-----
+    -----BEGIN CERTIFICATE-----
+    MIIDkTCCAnmgAwIBAgIUXvxwgZK/6qtpxmuZty23U6AVnF0wDQYJKoZIhvcNAQEL
+    BQAwEjEQMA4GA1UEAxMHUm9vdCBDQTAgFw0xNzAzMDMwNTQ2NDRaGA8yMDY3MDIx
+    OTA0NDcxNFowGjEYMBYGA1UEAxMPSW50ZXJtZWRpYXRlIENBMIIBIjANBgkqhkiG
+    9w0BAQEFAAOCAQ8AMIIBCgKCAQEAol8fFnbOHydXo6wnuuhEb3NfJu0+0RTgFzWr
+    6xekvQrsRL4tUIonhC3xOXyINswhOI53XLZCTnSd4L7oVdY0umoNRXqtpSvjulK0
+    Ggd5+dxzBKQbAQ+DWemN8g9fLbkd8R0fx3gtmjY+4hASFuyX+wI/jroTy+Cyluid
+    ahVZmzDEW/KyGjBN4xxkTlHceX8VFvwb7f/39ALCl9mBLpDiTD8qLkZRPZUzX02J
+    OGLylGK57UTS/9zLC39+eil1/qycpBPHbVXj+AnSIp4F+ikAfY1OWC08fqK1H6LA
+    iuqk2uSA4Ft0vyRhGPt/TttrvWTVx+VeCxHi+cXmtY9lQnuaqwIDAQABo4HUMIHR
+    MA4GA1UdDwEB/wQEAwIBBjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBS/dE1e
+    +I9/EBNHEhq5p9j1FF++ajAfBgNVHSMEGDAWgBSp7Khi3m9qqsC82CRLaPkPcYO2
+    nzA7BggrBgEFBQcBAQQvMC0wKwYIKwYBBQUHMAKGH2h0dHA6Ly92YXVsdDo4MjAw
+    L3YxL3Jvb3QtY2EvY2EwMQYDVR0fBCowKDAmoCSgIoYgaHR0cDovL3ZhdWx0Ojgy
+    MDAvdjEvcm9vdC1jYS9jcmwwDQYJKoZIhvcNAQELBQADggEBABMF+ferbsJC3dlw
+    6kUsd+idLuYM1eXhpjgkgh2D/5H01Hjar39tuIZNH8uTPCNNvV/o5UHEG7b97XEk
+    +EXH9HZopFYYuSqQZqE+x8Cq9uKXWaSI69w7N9zVyMFEX+ZsHRm6lvntedZhXERU
+    HHUiD8Qvf5Dui4RLXcO6eKT6zr0fVNurl6hs3l6ma4Z0zDmrgBhlxrW98gXhRRyK
+    5M0AxBAfNRsT7hu+Tp7xrNuhDOE+SPotbIVi30rVAn88BhkYAtJK3CIAKRJ1W5bW
+    Sjv5ZzZvfE6u0R255qpoJQfUjHUL1OmFTW3yJrgjabrz/GgsagbD53h33ML9cNez
+    hhBu79U=
+    -----END CERTIFICATE-----
+
+  cert.key: |-
+    -----BEGIN RSA PRIVATE KEY-----
+    MIIEpAIBAAKCAQEA0LVUqLLJOOUnBjc17FqlKE/nQiuYMZrovKfOqKuCfzPu6Cqj
+    YpFiK4BR6Dw6j4pxpQu4lIQLFqs4e5+EVuFnzTyrfUwMcspO3inZ7+7YQGZTo1Zm
+    PgLwLlCBHPQokLKjA8PHQf2LZJW5juAB6Y1968pQbPpeD8oMMKXewytstGauPpLs
+    +cUyz9+DjACM+YFe4XAJaSyYVJFHoqy8heidOgKX7EomNIFi/pgRZZOxKd4Z46Pp
+    Bke5whjX0ZUx3zR4VHpp9y+sOjML3EVOmoRDXqFL951WQICW80q1J9j1YKqq/cbt
+    dTbmaFxWozlYSmCp0GB7cLUqzPnmADZ+CL8uPwIDAQABAoIBAGc7ScSnqiAaOFM6
+    u9FMhKSL4Tc5mO3wUW3/EpkbPFDuvxzW+jmm74fU0K6uG8kkEVIxmfrb1SBBUI7V
+    OABBPbama6xuETo2FwyMZt/mo9A2zOfdtHS3v1UpPLO1kNsBgOA71jMt1eTKqh2h
+    b1C2S7J1P5KnxB7LMXxejvC6aepQeru3px8T5bRRdB8RgLoZsw8OkhlLh7HM7nV/
+    D1hetDgw3ten+6tSb9GMZHWgM48f4+yGfCFW+lfbYm0AdogBuG6DUgBgfgho91jP
+    MzIAsFuLKRaovpmcZWMlEgcm5eWXmkmECDVytTD5nshKu0g2xFGdqPx8kxOj8BDI
+    yV10DAECgYEA3SS4AQHpk17D+hywKDr8gicRQD42kiWoQHLuUYeUQ2zjlZL73yug
+    YCuOgJZRSU4aDl6NX024rNxRgoc8Qt+85ti6kvy8wwKI6Tv0WMqVoJHtdLBiehK1
+    utCWWj6D5ej9g1t3eulPd+Y+HR1Kiyj0OfuZIDpPouyTXFcjpfKKXk8CgYEA8ZrY
+    4KtTHn4Q2y8UgHOBucjDGruIVpFOXVfRlgXMy9j1Yc7Dox+DCh8iaR4Rz9sbVXec
+    qT+cOcN9letNyUbLNqFv+lRE7fLe9F2MQNvny0ODiSzOh8DpckBxN/C3hB9/qsi8
+    evAE6k80l4SYF4gizEIwRok+PLE2vtHRLzlapRECgYEAyUZ/VyNndaNeGgn8Z1Fw
+    vAFU2TUGtDQkFCzHLluJHWlBJsU2C+SIPp/GPtERwPeeDZAPejuiJ2sLoRL3TSKY
+    qz99aQUxxQhMloPkHOCeGRxYlMlpiBP5ZcQt5Itbv2k1PFaGw88Qbl+YDyW20DwB
+    NbkCoOuRygcrBHOnVYYQXE8CgYEArAhPT0KOr9KiG//dAE2+3FPYoMtRnBphC1QB
+    t2ov1iKJLvi0Ew3YF7ftn526nx9ryiKeWWEi03qgjMR8ocoX3rF682tXnXrnSGbn
+    /DLZTMGpAl72PHGfiCvcsjFj6t8m36uJkZwgU9rMHutaBL95z6l9iGwm9b5Vte/e
+    nFqhcZECgYBR+jc3QPGQ9ALbXcN3oNovTu+6O2ugxTBjJuhBLdO6Q5oZto/3Ge6I
+    FHhptg27hq3EhRDNGrLF9Vd/5Ujj+hgrlQOVXYRRkZQMNp4kFTdlG0R/+Tm4b8S3
+    7axTT7jYA532uVbwN936DqRIFtyTmzp59FwE+pPOqVJvo36r6YbS9w==
+    -----END RSA PRIVATE KEY-----
+
+  ca.pem: |-
+    -----BEGIN CERTIFICATE-----
+    MIIC9jCCAd6gAwIBAgIUVpGQ4b11qE33Vj+76ZZBkAgP9PUwDQYJKoZIhvcNAQEL
+    BQAwEjEQMA4GA1UEAxMHUm9vdCBDQTAgFw0xNzAzMDMwNTQ0NDRaGA8yMDY3MDIx
+    OTA1NDUxNFowEjEQMA4GA1UEAxMHUm9vdCBDQTCCASIwDQYJKoZIhvcNAQEBBQAD
+    ggEPADCCAQoCggEBAMyT4PF+B+fwyutMxCajyCZiutsgjMjPF27NA6AgFqQKIChi
+    s9WkiqgQ481KOwC2do3qeAVA2SGIaeBJYS6Rky8Qlte0mPktk3wrBnOh8QwPKTIq
+    /RQe2UvmCEJJ+HQdqFZ2DVwP3PKTIznvTvkiB6LsYD7xWOaSnpILjyb7WQVIrCLM
+    7Gn4BVqWrfDFQ2fCNjjareEQZjBMQ//TEDCySIVcH2732DQYaSmdrYbBIL3XOQTE
+    vyfvXMGszwueoVAV43RgHwqVvqZ1Dg9QwLk63Hq3DDlHqw/ZhUtTatdJ+jIaoGgl
+    IRBUBzKa5+PNqpLJ25nXkCb0cfsTMltoQHzMACkCAwEAAaNCMEAwDgYDVR0PAQH/
+    BAQDAgEGMA8GA1UdEwEB/wQFMAMBAf8wHQYDVR0OBBYEFKnsqGLeb2qqwLzYJEto
+    +Q9xg7afMA0GCSqGSIb3DQEBCwUAA4IBAQArFsSy8fKyPbZueiT9k/F9ls0US3WQ
+    af8JNP9XuhpC/J9SumuSJh8OybDnvxUZrqVtSu8GdD/Pq+0kDohluY3Byzrro16s
+    6oweA2tHAetXjwoOdmaQKGnNg2T6+prBScz+H3lHNjYZfG7Ey8YJdTIi5K4DHP67
+    C6f5e4lZcvVxpCqxcJWy3YK7TYE2KXKmHEk2GmoqCwMXhp2uviTaEM2eJ80Yai2s
+    vnbpRxTMFTC7c9YklP63rK6aF6Xzqe68+wPn/o6nx2JPbHRbOTEoEipoEMZLKILf
+    i3SnFU4sUUQgdtOI6smGYqXWxnDoK2hsUidVdLr8W1TvANQw6wh3V+Ya
+    -----END CERTIFICATE-----

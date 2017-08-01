@@ -1,0 +1,16 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    app: {{ template "name" . }}
+data:
+{{- if .Values.externalCA }}
+{{ toYaml .Values.configmapExternalCA | indent 2 }}
+{{- else }}
+{{ toYaml .Values.configmap | indent 2 }}
+{{- end }}
