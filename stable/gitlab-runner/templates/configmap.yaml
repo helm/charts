@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    app: {{ template "fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+data:
+  entrypoint: |
+    #!/bin/bash
+
+    set -xe
+
+    cp /scripts/config.toml /etc/gitlab-runner/
+
+    # Register the runner
+    /entrypoint register --non-interactive \
+      --url $GITLAB_URL \
+      --executor kubernetes
+
+    # Start the runner
+    /entrypoint run --user=gitlab-runner \
+      --working-directory=/home/gitlab-runner
+  config.toml: |
+    concurrent = {{ .Values.concurrent }}
+    check_interval = {{ .Values.checkInterval }}

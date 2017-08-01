@@ -1,0 +1,27 @@
+{{- if .Values.gitlabUrl }}
+{{- if .Values.runnerRegistrationToken }}
+Your GitLab Runner should now be registered against the GitLab instance reachable at: {{ .Values.gitlabUrl }}
+{{- else -}}
+##############################################################################
+## WARNING: You did not specify an runnerRegistrationToken in your 'helm install' call. ##
+##############################################################################
+
+This deployment will be incomplete until you provide the Registration Token for your
+GitLab instance:
+
+    helm upgrade {{ .Release.Name }} \
+        --set gitlabUrl=http://gitlab.your-domain.com,runnerRegistrationToken=your-registration-token \
+        stable/gitlab-runner
+{{- end -}}
+{{- else -}}
+##############################################################################
+## WARNING: You did not specify an gitlabUrl in your 'helm install' call. ##
+##############################################################################
+
+This deployment will be incomplete until you provide the URL that your
+GitLab instance is reachable at:
+
+    helm upgrade {{ .Release.Name }} \
+        --set gitlabUrl=http://gitlab.your-domain.com,runnerRegistrationToken=your-registration-token \
+        stable/gitlab-runner
+{{- end -}}
