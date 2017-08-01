@@ -9,7 +9,7 @@ Inspired by the awesome work of Carlos Sanchez <carlos@apache.org>
 ## Chart Details
 This chart will do the following:
 
-* 1 x Jenkins Master with port 8080 exposed on an external LoadBalancer
+* 1 x Jenkins Master with port 8080
 * All using Kubernetes Deployments
 
 ## Installing the Chart
@@ -20,53 +20,9 @@ To install the chart with the release name `my-release`:
 $ helm install --name my-release stable/jenkins
 ```
 
-## Configuration
+# Configuration
 
-The following tables lists the configurable parameters of the Jenkins chart and their default values.
-
-### Jenkins Master
-
-| Parameter                         | Description                          | Default                                                                      |
-| --------------------------------- | ------------------------------------ | ---------------------------------------------------------------------------- |
-| `Master.Name`                     | Jenkins master name                  | `jenkins-master`                                                             |
-| `Master.Image`                    | Master image name                    | `jenkinsci/jenkins`                                                          |
-| `Master.ImageTag`                 | Master image tag                     | `2.46.1`                                                                     |
-| `Master.ImagePullPolicy`          | Master image pull policy             | `Always`                                                                     |
-| `Master.Component`                | k8s selector key                     | `jenkins-master`                                                             |
-| `Master.Cpu`                      | Master requested cpu                 | `200m`                                                                       |
-| `Master.Memory`                   | Master requested memory              | `256Mi`                                                                      |
-| `Master.ServiceType`              | k8s service type                     | `LoadBalancer`                                                               |
-| `Master.ServicePort`              | k8s service port                     | `8080`                                                                       |
-| `Master.NodePort`                 | k8s node port                        | Not set                                                                      |
-| `Master.ContainerPort`            | Master listening port                | `8080`                                                                       |
-| `Master.SlaveListenerPort`        | Listening port for agents            | `50000`                                                                      |
-| `Master.LoadBalancerSourceRanges` | Allowed inbound IP addresses         | `0.0.0.0/0`                                                                  |
-| `Master.LoadBalancerIP`           | Optional fixed external IP           | Not set                                                                      |
-| `Master.JMXPort`                  | Open a port, for JMX stats           | Not set                                                                      |
-| `Master.CustomConfigMap`          | Use a custom ConfigMap               | `false`                                                                      |
-| `Master.Ingress.Annotations`      | Ingress annotations                  | `{}`                                                                         |
-| `Master.Ingress.TLS`              | Ingress TLS configuration            | `[]`                                                                         |
-| `Master.InitScripts`              | List of Jenkins init scripts         | Not set                                                                      |
-| `Master.InstallPlugins`           | List of Jenkins plugins to install   | `kubernetes:0.11 workflow-aggregator:2.5 credentials-binding:1.11 git:3.2.0` |
-| `Master.ScriptApproval`           | List of groovy functions to approve  | Not set                                                                      |
-| `Master.NodeSelector`             | Node labels for pod assignment       | `{}`                                                                         |
-| `Master.Tolerations`              | Toleration labels for pod assignment | `{}`                                                                         |
-| `rbac.install`           | Create service account and ClusterRoleBinding for Kubernetes plugin | `false`                                                                      |
-| `rbac.apiVersion`           | RBAC API version | `v1beta1`                                                                      |
-| `rbac.roleRef`           | Cluster role name to bind to | `cluster-admin`                                                                      |
-
-### Jenkins Agent
-
-| Parameter               | Description                                     | Default                |
-| ----------------------- | ----------------------------------------------- | ---------------------- |
-| `Agent.AlwaysPullImage` | Always pull agent container image before build  | `false`                |
-| `Agent.Enabled`         | Enable Kubernetes plugin jnlp-agent podTemplate | `true`                 |
-| `Agent.Image`           | Agent image name                                | `jenkinsci/jnlp-slave` |
-| `Agent.ImageTag`        | Agent image tag                                 | `2.62`                 |
-| `Agent.Privileged`      | Agent privileged container                      | `false`                |
-| `Agent.Cpu`             | Agent requested cpu                             | `200m`                 |
-| `Agent.Memory`          | Agent requested memory                          | `256Mi`                |
-| `Agent.volumes`         | Additional volumes                              | `nil`                  |
+The following tables list the configurable parameters of the Jenkins chart and their default values.
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
@@ -78,12 +34,43 @@ $ helm install --name my-release -f values.yaml stable/jenkins
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
-## Mounting volumes into your Agent pods
+## Jenkins Master
+
+| Parameter                          | Description                          | Default           |
+| ---------------------------------- | ------------------------------------ | ----------------- |
+| `master.image.repository`          | Master image name                    | `jenkins/jenkins` |
+| `master.image.tag`                 | Master image tag                     | `lts`             |
+| `master.image.pullPolicy`          | Master image pull policy             | `Always`          |
+| `master.resources.limits.cpu`      | Master limited cpu                   | `200m`            |
+| `master.resources.limits.memory`   | Master limited memory                | `256Mi`           |
+| `master.resources.requests.cpu`    | Master requested cpu                 | `200m`            |
+| `master.resources.requests.memory` | Master requested memory              | `256Mi`           |
+| `master.env`                       | Master environment variables         | `{}`              |
+| `master.jmxPort`                   | Open a port, for JMX stats           | Not set           |
+| `master.nodeSelector`              | Node labels for pod assignment       | `{}`              |
+| `master.tolerations`               | Toleration labels for pod assignment | `{}`              |
+
+## Jenkins Agent
+
+| Parameter                         | Description                                     | Default              |
+| --------------------------------- | ----------------------------------------------- | -------------------- |
+| `agent.enabled`                   | Enable Kubernetes plugin jnlp-agent podTemplate | `true`               |
+| `agent.privileged`                | Agent privileged container                      | `false`              |
+| `agent.image.repository`          | Agent image name                                | `jenkins/jnlp-slave` |
+| `agent.image.tag`                 | Agent image tag                                 | `latest`             |
+| `agent.image.pullPolicy`          | Always pull agent container image before build  | `IfNotPresent`       |
+| `agent.resources.limits.cpu`      | Agent requested cpu                             | `200m`               |
+| `agent.resources.limits.memory`   | Agent requested memory                          | `256Mi`              |
+| `agent.resources.requests.cpu`    | Agent requested cpu                             | `200m`               |
+| `agent.resources.requests.memory` | Agent requested memory                          | `256Mi`              |
+| `agent.volumes`                   | Additional volumes                              | `nil`                |
+
+### Mounting volumes into your Agent pods
 
 Your Jenkins Agents will run as pods, and it's possible to inject volumes where needed:
 
 ```yaml
-Agent:
+agent:
   volumes:
   - type: Secret
     secretName: jenkins-mysecrets
@@ -92,7 +79,77 @@ Agent:
 
 The suported volume types are: `ConfigMap`, `EmptyDir`, `HostPath`, `Nfs`, `Pod`, `Secret`. Each type supports a different set of configurable attributes, defined by [the corresponding Java class](https://github.com/jenkinsci/kubernetes-plugin/tree/master/src/main/java/org/csanchez/jenkins/plugins/kubernetes/volumes).
 
+## ConfigMap
+
+| Parameter         | Description                         | Default                                                                      |
+| ----------------- | ----------------------------------- | ---------------------------------------------------------------------------- |
+| `customConfigMap` | Use a custom ConfigMap              | `false`                                                                      |
+| `initScripts`     | List of Jenkins init scripts        | Not set                                                                      |
+| `installPlugins`  | List of Jenkins plugins to install  | `kubernetes:0.11 workflow-aggregator:2.5 credentials-binding:1.11 git:3.2.0` |
+| `scriptApproval`  | List of groovy functions to approve | Not set                                                                      |
+
+### Custom ConfigMap
+
+When creating a new chart with this chart as a dependency, CustomConfigMap can be used to override the default config.xml provided.
+It also allows for providing additional xml configuration files that will be copied into `/var/jenkins_home`. In the parent chart's values.yaml,
+set the value to true and provide the file `templates/config.yaml` for your use case. If you start by copying `config.yaml` from this chart and
+want to access values from this chart you must change all references from `.Values` to `.Values.jenkins`.
+
+```
+customConfigMap: true
+```
+
+## Persistence
+
+The Jenkins image stores persistence under `/var/jenkins_home` path of the container. A dynamically managed Persistent Volume
+Claim is used to keep the data across deployments, by default. This is known to work in GCE, AWS, and minikube. Alternatively,
+a previously configured Persistent Volume Claim can be used.
+
+It is possible to mount several volumes using `persistence.volumes` and `persistence.mounts` parameters.
+
+### Persistence Values
+
+| Parameter                   | Description                     | Default         |
+| --------------------------- | ------------------------------- | --------------- |
+| `persistence.enabled`       | Enable the use of a Jenkins PVC | `true`          |
+| `persistence.existingClaim` | Provide the name of a PVC       | `nil`           |
+| `persistence.accessMode`    | The PVC access mode             | `ReadWriteOnce` |
+| `persistence.size`          | The size of the PVC             | `8Gi`           |
+| `persistence.storageClass`  | The storage class of the PV     | `nil`           |
+
+#### Existing PersistentVolumeClaim
+
+1. Create the PersistentVolume
+1. Create the PersistentVolumeClaim
+1. Install the chart
+```bash
+$ helm install --name my-release --set persistence.existingClaim=PVC_NAME stable/jenkins
+```
+
+## Service
+
+| Parameter                          | Description                  | Default     |
+| ---------------------------------- | ---------------------------- | ----------- |
+| `service.type`                     | k8s service type             | `ClusterIP` |
+| `service.externalPort`             | k8s node port                | `80`        |
+| `service.internalPort`             | Master listening port        | `8080`      |
+| `service.loadBalancerSourceRanges` | Allowed inbound IP addresses | `0.0.0.0/0` |
+
+## Ingress
+
+| Parameter             | Description               | Default                   |
+| --------------------- | ------------------------- | ------------------------- |
+| `ingress.enabled`     | Ingress enabled           | `false`                   |
+| `ingress.hosts`       | Ingress hosts             | `['chart-example.local']` |
+| `ingress.annotations` | Ingress annotations       | `{}`                      |
+| `ingress.tls`         | Ingress TLS configuration | `[]`                      |
+
 ## NetworkPolicy
+
+| Parameter                 | Description              | Default              |
+| ------------------------- | ------------------------ | -------------------- |
+| `networkPolicy.enabled`   | NetworkPolicy enabled    | `false`              |
+| `networkPolicy.apiVersion`| NetworkPolicy apiVersion | `extensions/v1beta1` |
 
 To make use of the NetworkPolicy resources created by default,
 install [a networking plugin that implements the Kubernetes
@@ -103,49 +160,12 @@ the DefaultDeny namespace annotation. Note: this will enforce policy for _all_ p
 
     kubectl annotate namespace default "net.beta.kubernetes.io/network-policy={\"ingress\":{\"isolation\":\"DefaultDeny\"}}"
 
-## Persistence
-
-The Jenkins image stores persistence under `/var/jenkins_home` path of the container. A dynamically managed Persistent Volume
-Claim is used to keep the data across deployments, by default. This is known to work in GCE, AWS, and minikube. Alternatively,
-a previously configured Persistent Volume Claim can be used.
-
-It is possible to mount several volumes using `Persistence.volumes` and `Persistence.mounts` parameters.
-
-### Persistence Values
-
-| Parameter                   | Description                     | Default         |
-| --------------------------- | ------------------------------- | --------------- |
-| `Persistence.Enabled`       | Enable the use of a Jenkins PVC | `true`          |
-| `Persistence.ExistingClaim` | Provide the name of a PVC       | `nil`           |
-| `Persistence.AccessMode`    | The PVC access mode             | `ReadWriteOnce` |
-| `Persistence.Size`          | The size of the PVC             | `8Gi`           |
-| `Persistence.volumes`       | Additional volumes              | `nil`           |
-| `Persistence.mounts`        | Additional mounts               | `nil`           |
-
-
-#### Existing PersistentVolumeClaim
-
-1. Create the PersistentVolume
-1. Create the PersistentVolumeClaim
-1. Install the chart
-```bash
-$ helm install --name my-release --set Persistence.ExistingClaim=PVC_NAME stable/jenkins
-```
-
-## Custom ConfigMap
-
-When creating a new chart with this chart as a dependency, CustomConfigMap can be used to override the default config.xml provided.
-It also allows for providing additional xml configuration files that will be copied into `/var/jenkins_home`. In the parent chart's values.yaml,
-set the value to true and provide the file `templates/config.yaml` for your use case. If you start by copying `config.yaml` from this chart and
-want to access values from this chart you must change all references from `.Values` to `.Values.jenkins`.
-
-```
-jenkins:
-  Master:
-    CustomConfigMap: true
-```
-
 ## RBAC
+
+| Parameter      | Description                                                         | Default         |
+| -------------- | ------------------------------------------------------------------- | --------------- |
+| `rbac.install` | Create service account and ClusterRoleBinding for Kubernetes plugin | `false`         |
+| `rbac.roleRef` | Cluster role name to bind to                                        | `cluster-admin` |
 
 If running upon a cluster with RBAC enabled you will need to do the following:
 

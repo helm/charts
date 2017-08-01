@@ -1,36 +1,36 @@
-1. Get your '{{ .Values.Master.AdminUser }}' user password by running:
-  printf $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath="{.data.jenkins-admin-password}" | base64 --decode);echo
+1. Get your '{{ .Values.master.adminUser }}' user password by running:
+  printf $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath="{.data.admin-password}" | base64 --decode);echo
 
-{{- if .Values.Master.HostName }}
+{{- if .Values.ingress.enabled }}
 
-2. Visit http://{{ .Values.Master.HostName }}
+2. Visit http://{{ index .Values.ingress.hosts 0 }}
 {{- else }}
 2. Get the Jenkins URL to visit by running these commands in the same shell:
-{{- if contains "NodePort" .Values.Master.ServiceType }}
+{{- if contains "NodePort" .Values.service.type }}
   export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "fullname" . }})
   export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
   echo http://$NODE_IP:$NODE_PORT/login
 
-{{- else if contains "LoadBalancer" .Values.Master.ServiceType }}
+{{- else if contains "LoadBalancer" .Values.service.type }}
   NOTE: It may take a few minutes for the LoadBalancer IP to be available.
         You can watch the status of by running 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "fullname" . }}'
   export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "fullname" . }} --template "{{ "{{ range (index .status.loadBalancer.ingress 0) }}{{ . }}{{ end }}" }}")
-  echo http://$SERVICE_IP:{{ .Values.Master.ServicePort }}/login
+  echo http://$SERVICE_IP:{{ .Values.service.externalPort }}/login
 
-{{- else if contains "ClusterIP"  .Values.Master.ServiceType }}
+{{- else if contains "ClusterIP"  .Values.service.type }}
   export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "component={{ template "fullname" . }}-master" -o jsonpath="{.items[0].metadata.name}")
-  echo http://127.0.0.1:{{ .Values.Master.ServicePort }}
-  kubectl port-forward $POD_NAME {{ .Values.Master.ServicePort }}:{{ .Values.Master.ServicePort }}
+  echo http://127.0.0.1:{{ .Values.service.externalPort }}
+  kubectl port-forward $POD_NAME {{ .Values.service.externalPort }}:{{ .Values.service.externalPort }}
 
 {{- end }}
 {{- end }}
 
-3. Login with the password from step 1 and the username: {{ .Values.Master.AdminUser }}
+3. Login with the password from step 1 and the username: {{ .Values.master.adminUser }}
 
 For more information on running Jenkins on Kubernetes, visit:
 https://cloud.google.com/solutions/jenkins-on-container-engine
 
-{{- if .Values.Persistence.Enabled }}
+{{- if .Values.persistence.enabled }}
 {{- else }}
 #################################################################################
 ######   WARNING: Persistence is disabled!!! You will lose your data when   #####

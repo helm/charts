@@ -1,5 +1,4 @@
-{{- if not .Values.Master.CustomConfigMap }}
-
+{{- if not .Values.master.CustomConfigMap }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -9,10 +8,10 @@ data:
     <?xml version='1.0' encoding='UTF-8'?>
     <hudson>
       <disabledAdministrativeMonitors/>
-      <version>{{ .Values.Master.ImageTag }}</version>
+      <version>{{ .Values.master.image.tag }}</version>
       <numExecutors>0</numExecutors>
       <mode>NORMAL</mode>
-      <useSecurity>{{ .Values.Master.UseSecurity }}</useSecurity>
+      <useSecurity>{{ .Values.master.useSecurity }}</useSecurity>
       <authorizationStrategy class="hudson.security.FullControlOnceLoggedInAuthorizationStrategy">
         <denyAnonymousReadAccess>true</denyAnonymousReadAccess>
       </authorizationStrategy>
@@ -29,12 +28,13 @@ data:
         <org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud plugin="kubernetes@0.11">
           <name>kubernetes</name>
           <templates>
-{{- if .Values.Agent.Enabled }}
+{{- if .Values.agent.enabled }}
             <org.csanchez.jenkins.plugins.kubernetes.PodTemplate>
               <inheritFrom></inheritFrom>
               <name>default</name>
               <instanceCap>2147483647</instanceCap>
               <idleMinutes>0</idleMinutes>
+<<<<<<< HEAD:stable/jenkins/templates/config.yaml
               <label>{{ .Release.Name }}-{{ .Values.Agent.Component }}</label>
               <nodeSelector>
                 {{- $local := dict "first" true }}
@@ -43,8 +43,12 @@ data:
                   {{- $key }}={{ $value }}
                   {{- $_ := set $local "first" false }}
                 {{- end }}</nodeSelector>
+=======
+              <label>{{ .Release.Name }}-agent</label>
+              <nodeSelector></nodeSelector>
+>>>>>>> Update and standardize jenkins chart:stable/jenkins/templates/configmap.yaml
               <volumes>
-{{- range $index, $volume := .Values.Agent.volumes }}
+{{- range $index, $volume := .Values.agent.volumes }}
                 <org.csanchez.jenkins.plugins.kubernetes.volumes.{{ $volume.type }}Volume>
 {{- range $key, $value := $volume }}{{- if not (eq $key "type") }}
                   <{{ $key }}>{{ $value }}</{{ $key }}>
@@ -55,17 +59,14 @@ data:
               <containers>
                 <org.csanchez.jenkins.plugins.kubernetes.ContainerTemplate>
                   <name>jnlp</name>
-                  <image>{{ .Values.Agent.Image }}:{{ .Values.Agent.ImageTag }}</image>
-{{- if .Values.Agent.Privileged }}
-                  <privileged>true</privileged>
-{{- else }}
-                  <privileged>false</privileged>
-{{- end }}
-                  <alwaysPullImage>{{ .Values.Agent.AlwaysPullImage }}</alwaysPullImage>
+                  <image>{{ .Values.agent.image.repository }}:{{ .Values.agent.image.tag }}</image>
+                  <privileged>{{ .Values.agent.privileged }}</privileged>
+                  <alwaysPullImage>{{ eq .Values.agent.image.pullPolicy "Always" }}</alwaysPullImage>
                   <workingDir>/home/jenkins</workingDir>
                   <command></command>
                   <args>${computer.jnlpmac} ${computer.name}</args>
                   <ttyEnabled>false</ttyEnabled>
+<<<<<<< HEAD:stable/jenkins/templates/config.yaml
                   <resourceRequestCpu>{{.Values.Agent.Cpu}}</resourceRequestCpu>
                   <resourceRequestMemory>{{.Values.Agent.Memory}}</resourceRequestMemory>
                   <resourceLimitCpu>{{.Values.Agent.Cpu}}</resourceLimitCpu>
@@ -76,6 +77,17 @@ data:
                       <value>http://{{ template "fullname" . }}:{{.Values.Master.ServicePort}}{{ default "" .Values.Master.JenkinsUriPrefix }}</value>
                     </org.csanchez.jenkins.plugins.kubernetes.ContainerEnvVar>
                   </envVars>
+=======
+{{- if .Values.agent.resources.limits }}
+                  <resourceLimitCpu>{{ .Values.agent.resources.limits.cpu }}</resourceLimitCpu>
+                  <resourceLimitMemory>{{ .Values.agent.resources.limits.memory }}</resourceLimitMemory>
+{{- end }}
+{{- if .Values.agent.resources.requests }}
+                  <resourceRequestCpu>{{ .Values.agent.resources.requests.cpu }}</resourceRequestCpu>
+                  <resourceRequestMemory>{{ .Values.agent.resources.requests.memory }}</resourceRequestMemory>
+{{- end }}
+                  <envVars/>
+>>>>>>> Update and standardize jenkins chart:stable/jenkins/templates/configmap.yaml
                 </org.csanchez.jenkins.plugins.kubernetes.ContainerTemplate>
               </containers>
               <envVars/>
@@ -88,8 +100,13 @@ data:
           <serverUrl>https://kubernetes.default</serverUrl>
           <skipTlsVerify>false</skipTlsVerify>
           <namespace>{{ .Release.Namespace }}</namespace>
+<<<<<<< HEAD:stable/jenkins/templates/config.yaml
           <jenkinsUrl>http://{{ template "fullname" . }}:{{.Values.Master.ServicePort}}{{ default "" .Values.Master.JenkinsUriPrefix }}</jenkinsUrl>
           <jenkinsTunnel>{{ template "fullname" . }}-agent:50000</jenkinsTunnel>
+=======
+          <jenkinsUrl>http://{{ template "fullname" . }}:{{ .Values.service.externalPort }}</jenkinsUrl>
+          <jenkinsTunnel>{{ template "fullname" . }}-agentlistener:{{ .Values.agent.listenerPort }}</jenkinsTunnel>
+>>>>>>> Update and standardize jenkins chart:stable/jenkins/templates/configmap.yaml
           <containerCap>10</containerCap>
           <retentionTimeout>5</retentionTimeout>
           <connectTimeout>0</connectTimeout>
@@ -108,19 +125,19 @@ data:
         </hudson.model.AllView>
       </views>
       <primaryView>All</primaryView>
-      <slaveAgentPort>50000</slaveAgentPort>
+      <slaveAgentPort>{{ .Values.agent.listenerPort }}</slaveAgentPort>
       <label></label>
       <nodeProperties/>
       <globalNodeProperties/>
       <noUsageStatistics>true</noUsageStatistics>
     </hudson>
-{{- if .Values.Master.ScriptApproval }}
+{{- if .Values.master.scriptApproval }}
   scriptapproval.xml: |-
     <?xml version='1.0' encoding='UTF-8'?>
     <scriptApproval plugin="script-security@1.27">
       <approvedScriptHashes/>
       <approvedSignatures>
-{{- range $key, $val := .Values.Master.ScriptApproval }}
+{{- range $key, $val := .Values.master.scriptApproval }}
         <string>{{ $val }}</string>
 {{- end }}
       </approvedSignatures>
@@ -135,25 +152,25 @@ data:
     mkdir -p /usr/share/jenkins/ref/secrets/;
     echo "false" > /usr/share/jenkins/ref/secrets/slave-to-master-security-kill-switch;
     cp -n /var/jenkins_config/config.xml /var/jenkins_home;
-{{- if .Values.Master.InstallPlugins }}
+{{- if .Values.master.installPlugins }}
     cp /var/jenkins_config/plugins.txt /var/jenkins_home;
     rm /usr/share/jenkins/ref/plugins/*.lock
     /usr/local/bin/install-plugins.sh `echo $(cat /var/jenkins_home/plugins.txt)`;
 {{- end }}
-{{- if .Values.Master.ScriptApproval }}
+{{- if .Values.master.scriptApproval }}
     cp -n /var/jenkins_config/scriptapproval.xml /var/jenkins_home/scriptApproval.xml;
 {{- end }}
-{{- if .Values.Master.InitScripts }}
+{{- if .Values.master.initScripts }}
     mkdir -p /var/jenkins_home/init.groovy.d/;
     cp -n /var/jenkins_config/*.groovy /var/jenkins_home/init.groovy.d/
 {{- end }}
-{{- range $key, $val := .Values.Master.InitScripts }}
+{{- range $key, $val := .Values.master.initScripts }}
   init{{ $key }}.groovy: |-
 {{ $val | indent 4 }}
 {{- end }}
   plugins.txt: |-
-{{- if .Values.Master.InstallPlugins }}
-{{- range $index, $val := .Values.Master.InstallPlugins }}
+{{- if .Values.master.installPlugins }}
+{{- range $index, $val := .Values.master.installPlugins }}
 {{ $val | indent 4 }}
 {{- end }}
 {{- end }}
