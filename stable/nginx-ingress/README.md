@@ -64,6 +64,7 @@ Parameter | Description | Default
 `controller.service.annotations` | annotations for controller service | `{}`
 `controller.publishService.enabled` | if true, the controller will set the endpoint records on the ingress objects to reflect those on the service | `false`
 `controller.publishService.pathOverride` | override of the default publish-service name | `""`
+`controller.rbac.enabled` | if true, will set up RBAC | `false`
 `controller.service.clusterIP` | internal controller cluster service IP | `""`
 `controller.service.externalIPs` | controller service external IP addresses | `[]`
 `controller.service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
