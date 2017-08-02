@@ -113,6 +113,27 @@ Parameter | Description | Default
 `nodeExporter.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
 `nodeExporter.service.servicePort` | node-exporter service port | `9100`
 `nodeExporter.service.type` | type of node-exporter service to create | `ClusterIP`
+`pushgateway.enabled` | If true, create pushgateway | `true`
+`pushgateway.name` | pushgateway container name | `pushgateway`
+`pushgateway.image.repository` | pushgateway container image repository | `prom/pushgateway`
+`pushgateway.image.tag` | pushgateway container image tag | `v0.4.0`
+`pushgateway.image.pullPolicy` | pushgateway container image pull policy | `IfNotPresent`
+`pushgateway.extraArgs` | Additional pushgateway container arguments | `{}`
+`pushgateway.ingress.enabled` | If true, pushgateway Ingress will be created | `false`
+`pushgateway.ingress.annotations` | pushgateway Ingress annotations | `{}`
+`pushgateway.ingress.hosts` | pushgateway Ingress hostnames | `[]`
+`pushgateway.ingress.tls` | pushgateway Ingress TLS configuration (YAML) | `[]`
+`pushgateway.nodeSelector` | node labels for pushgateway pod assignment | `{}`
+`pushgateway.podAnnotations` | annotations to be added to pushgateway pods | `{}`
+`pushgateway.replicaCount` | desired number of pushgateway pods | `1`
+`pushgateway.resources` | pushgateway pod resource requests & limits | `{}`
+`pushgateway.service.annotations` | annotations for pushgateway service | `{}`
+`pushgateway.service.clusterIP` | internal pushgateway cluster service IP | `""`
+`pushgateway.service.externalIPs` | pushgateway service external IP addresses | `[]`
+`pushgateway.service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
+`pushgateway.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
+`pushgateway.service.servicePort` | pushgateway service port | `9091`
+`pushgateway.service.type` | type of pushgateway service to create | `ClusterIP`
 `server.name` | Prometheus server container name | `server`
 `server.image.repository` | Prometheus server container image repository | `prom/prometheus`
 `server.image.tag` | Prometheus server container image tag | `v1.5.1`
