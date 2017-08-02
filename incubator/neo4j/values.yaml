@@ -21,9 +21,15 @@ discoveryPort: 5000
 txPort: 6000
 raftPort: 7000
 
-# Cluster sizing
-numberOfCores: 3
-numberOfReadReplicas: 0
+# Cores
+core:
+  name: core
+  numberOfServers: 3
+
+# Read Replicas
+readReplicas:
+  name: replica
+  numberOfServers: 0
 
 component: "neo4j"
 
@@ -41,10 +47,3 @@ storageSize: "10Gi"
 storageClass: "standard"
 storageAccessModes: [ "ReadWriteOnce" ]
 storageAnnotations: {}
-
-serviceType: "LoadBalancer"
-
-# Components
-coreComponent: core
-readReplicasComponent: replica
-loadBalancerComponent: load-balancer

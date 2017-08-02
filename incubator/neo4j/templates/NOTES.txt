@@ -1,6 +1,3 @@
-Neo4j can be accessed via port {{ .Values.BoltPort }} at the following DNS name from within your cluster:
-{{ .Release.Name }}-loadbalancer.{{ .Release.Namespace }}.svc.cluster.local
-
 You can connect to the cluster using the Cypher shell by running:
 
     kubectl run -it --rm cypher-shell \

@@ -4,7 +4,7 @@ metadata:
   name: "{{ template "fullname" . }}-core"
 spec:
   serviceName: {{ template "fullname" . }}
-  replicas: {{ .Values.numberOfCores }}
+  replicas: {{ .Values.core.numberOfServers }}
   template:
     metadata:
       labels:
@@ -12,7 +12,7 @@ spec:
         release: {{ .Release.Name | quote }}
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         app: {{ template "name" . }}
-        component: "{{ .Values.coreComponent }}"
+        component: "{{ .Values.core.name }}"
     spec:
       containers:
       - name: {{ template "fullname" . }}
@@ -22,7 +22,7 @@ spec:
           - name: NEO4J_dbms_mode
             value: CORE
           - name: NUMBER_OF_CORES
-            value: "{{ .Values.numberOfCores }}"
+            value: "{{ .Values.core.numberOfServers }}"
         command:
           - "/bin/bash"
           - "-ecx"
