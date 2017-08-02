@@ -20,12 +20,19 @@ rules:
     verbs:
       - list
       - watch
+{{- if and .Values.controller.scope.enabled .Values.controller.scope.namespace }}
   - apiGroups:
       - ""
     resources:
-    {{- if .Values.controller.scope.enabled }}
       - namespaces
-    {{- end }}
+    resourceNames:
+      - "{{ .Values.controller.scope.namespace }}"
+    verbs:
+      - get
+{{- end }}
+  - apiGroups:
+      - ""
+    resources:
       - nodes
     verbs:
       - get
