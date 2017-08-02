@@ -17,5 +17,10 @@ spec:
   - name: mysql
     port: 3306
     targetPort: mysql
+{{- if .Values.metrics.enabled }}
+  - name: metrics
+    port: 9104
+    targetPort: metrics
+{{- end }}
   selector:
     app: {{ template "fullname" . }}
