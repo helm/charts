@@ -14,6 +14,8 @@ spec:
       labels:
         app: {{ template "fullname" . }}
     spec:
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
       containers:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
