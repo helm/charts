@@ -43,3 +43,8 @@ storageAccessModes: [ "ReadWriteOnce" ]
 storageAnnotations: {}
 
 serviceType: "LoadBalancer"
+
+# Components
+coreComponent: core
+readReplicasComponent: replica
+loadBalancerComponent: load-balancer

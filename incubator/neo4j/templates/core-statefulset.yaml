@@ -12,6 +12,7 @@ spec:
         release: {{ .Release.Name | quote }}
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         app: {{ template "name" . }}
+        component: "{{ .Values.coreComponent }}"
     spec:
       containers:
       - name: {{ template "fullname" . }}

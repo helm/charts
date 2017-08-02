@@ -7,6 +7,7 @@ metadata:
     release: {{ .Release.Name | quote }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     app: {{ template "name" . }}
+    component: "{{ .Values.readReplicaComponent }}"
 spec:
   replicas: {{ .Values.numberOfReadReplicas }}
   template:
@@ -20,8 +21,6 @@ spec:
         image: "{{ .Values.image }}:{{ .Values.imageTag }}"
         imagePullPolicy: "{{ .Values.imagePullPolicy }}"
         env:
-          - name: NEO4J_causalClustering_initialDiscoveryMembers
-            value: "neo4j-core-0.neo4j.default.svc.cluster.local:5000,neo4j-core-1.neo4j.default.svc.cluster.local:5000,neo4j-core-2.neo4j.default.svc.cluster.local:5000"
           - name: NEO4J_dbms_mode
             value: READ_REPLICA
           - name: NUMBER_OF_CORES

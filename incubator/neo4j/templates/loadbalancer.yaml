@@ -7,6 +7,7 @@ metadata:
     release: {{ .Release.Name | quote }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     app: {{ template "name" . }}
+    component: "{{ .Values.loadBalancerComponent }}"
 spec:
   type: {{ .Values.serviceType }}
   ports:
