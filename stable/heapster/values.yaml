@@ -9,8 +9,8 @@ image:
 # labels:
 #   kubernetes.io/cluster-service: "true"
 #   kubernetes.io/name: "Heapster"
-labels:
-nodeSelector:
+labels: {}
+nodeSelector: {}
 
 service:
   type: ClusterIP
