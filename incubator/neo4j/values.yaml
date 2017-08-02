@@ -4,24 +4,42 @@
 # name: value
 
 name: "neo4j"
+
+# Specs for the Neo4j docker image
 image: "neo4j"
 imageTag: "3.2.2-enterprise"
 imagePullPolicy: "Always"
-numberOfCores: 3
-numberOfReadReplicas: 0
-Component: "neo4j"
+
+# Specs for the images used for running tests against the Helm package
+testImage: "markhneedham/k8s-kubectl"
+testImageTag: "master"
+
+# Ports
 boltPort: 7687
 httpPort: 7474
 discoveryPort: 5000
 txPort: 6000
 raftPort: 7000
-resources:
-  requests:
-    cpu: "100m"
-    memory: "512Mi"
-storage: "1Gi"
-storageClass: "anything"
-clusterDomain: "cluster.local"
+
+# Cluster sizing
+numberOfCores: 3
+numberOfReadReplicas: 0
+
+component: "neo4j"
+
+resources: {}
+# limits:
+#   cpu: 100m
+#   memory: 512Mi
+# requests:
+#   cpu: 100m
+#   memory: 512Mi
+
+# Storage
+persistentVolumeClaimEnabled: true
+storageSize: "10Gi"
+storageClass: "standard"
+storageAccessModes: [ "ReadWriteOnce" ]
+storageAnnotations: {}
+
 serviceType: "LoadBalancer"
-testImage: "markhneedham/k8s-kubectl"
-testImageTag: "master"

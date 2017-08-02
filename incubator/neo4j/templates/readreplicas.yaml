@@ -3,29 +3,29 @@ kind: Deployment
 metadata:
   name: "{{ template "fullname" . }}-replica"
   labels:
-    heritage: {{.Release.Service | quote }}
-    release: {{.Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     app: {{ template "name" . }}
 spec:
-  replicas: {{default 0 .Values.numberOfReadReplicas}}
+  replicas: {{ .Values.numberOfReadReplicas }}
   template:
     metadata:
       labels:
         app: {{ template "name" . }}
-        release: {{.Release.Name | quote }}
+        release: {{ .Release.Name | quote }}
     spec:
       containers:
       - name: neo4j
-        image: "{{.Values.image}}:{{.Values.imageTag}}"
-        imagePullPolicy: "{{.Values.imagePullPolicy}}"
+        image: "{{ .Values.image }}:{{ .Values.imageTag }}"
+        imagePullPolicy: "{{ .Values.imagePullPolicy }}"
         env:
           - name: NEO4J_causalClustering_initialDiscoveryMembers
             value: "neo4j-core-0.neo4j.default.svc.cluster.local:5000,neo4j-core-1.neo4j.default.svc.cluster.local:5000,neo4j-core-2.neo4j.default.svc.cluster.local:5000"
           - name: NEO4J_dbms_mode
             value: READ_REPLICA
           - name: NUMBER_OF_CORES
-            value: "{{default 3 .Values.numberOfCores}}"
+            value: "{{ .Values.numberOfCores }}"
         command:
           - "/bin/bash"
           - "-ecx"
@@ -43,9 +43,9 @@ spec:
             export NEO4J_dbms_connectors_default__advertised__address=$(hostname -f)
             exec /docker-entrypoint.sh "neo4j"
         ports:
-        - containerPort: {{.Values.httpPort}}
+        - containerPort: {{ .Values.httpPort }}
           name: browser
-        - containerPort: {{.Values.boltPort}}
+        - containerPort: {{ .Values.boltPort }}
           name: bolt
         securityContext:
           privileged: true

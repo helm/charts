@@ -1,62 +1,27 @@
-apiVersion: v1
-kind: Service
-metadata:
-  name: "{{ template "fullname" . }}-public"
-  labels:
-    heritage: {{.Release.Service | quote }}
-    release: {{.Release.Name | quote }}
-    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
-    app: {{ template "name" . }}
-spec:
-  ports:
-    - port: {{.Values.httpPort}}
-      targetPort: {{.Values.httpPort}}
-  selector:
-    app: {{ template "name" . }}
-    release: {{ .Release.Name }}
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: {{ template "fullname" . }}
-  labels:
-    heritage: {{.Release.Service | quote }}
-    release: {{.Release.Name | quote }}
-    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
-    app: {{ template "name" . }}
-spec:
-  clusterIP: None
-  ports:
-    - port: {{.Values.httpPort}}
-      targetPort: {{.Values.httpPort}}
-  selector:
-    app: {{ template "name" . }}
-    release: {{ .Release.Name }}
----
 apiVersion: "apps/v1beta1"
 kind: StatefulSet
 metadata:
   name: "{{ template "fullname" . }}-core"
 spec:
   serviceName: {{ template "fullname" . }}
-  replicas: {{default 3 .Values.numberOfCores}}
+  replicas: {{ .Values.numberOfCores }}
   template:
     metadata:
       labels:
-        heritage: {{.Release.Service | quote }}
-        release: {{.Release.Name | quote }}
-        chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+        heritage: {{ .Release.Service | quote }}
+        release: {{ .Release.Name | quote }}
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         app: {{ template "name" . }}
     spec:
       containers:
       - name: {{ template "fullname" . }}
-        image: "{{.Values.image}}:{{.Values.imageTag}}"
-        imagePullPolicy: "{{.Values.imagePullPolicy}}"
+        image: "{{ .Values.image }}:{{ .Values.imageTag }}"
+        imagePullPolicy: "{{ .Values.imagePullPolicy }}"
         env:
           - name: NEO4J_dbms_mode
             value: CORE
           - name: NUMBER_OF_CORES
-            value: "{{default 3 .Values.numberOfCores}}"
+            value: "{{ .Values.numberOfCores }}"
         command:
           - "/bin/bash"
           - "-ecx"
@@ -79,15 +44,15 @@ spec:
             export NEO4J_causal__clustering_initial__discovery__members=$MEMBERS
             exec /docker-entrypoint.sh "neo4j"
         ports:
-        - containerPort: {{.Values.discoveryPort}}
+        - containerPort: {{ .Values.discoveryPort }}
           name: discovery
-        - containerPort: {{.Values.txPort}}
+        - containerPort: {{ .Values.txPort }}
           name: tx
-        - containerPort: {{.Values.raftPort}}
+        - containerPort: {{ .Values.raftPort }}
           name: raft
-        - containerPort: {{.Values.httpPort}}
+        - containerPort: {{ .Values.httpPort }}
           name: browser
-        - containerPort: {{.Values.boltPort}}
+        - containerPort: {{ .Values.boltPort }}
           name: bolt
         securityContext:
           privileged: true
@@ -96,13 +61,29 @@ spec:
           mountPath: /data
         resources:
 {{ toYaml .Values.resources | indent 10 }}
+
+{{- if .Values.persistentVolumeClaimEnabled }}
   volumeClaimTemplates:
-  - metadata:
-      name: datadir
-      annotations:
-        volume.alpha.kubernetes.io/storage-class: "{{.Values.storageClass}}"
-    spec:
-      accessModes: [ "ReadWriteOnce" ]
-      resources:
-        requests:
-          storage: "{{.Values.storage}}"
+    - metadata:
+        name: datadir
+        annotations:
+        {{- if .Values.storageClass | quote }}
+          volume.beta.kubernetes.io/storage-class: {{ .Values.storageClass | quote }}
+        {{- else }}
+          volume.beta.kubernetes.io/storage-class: anything
+        {{- end }}
+        {{- range $key, $value := .Values.storageAnnotations }}
+          {{ $key }}: {{ $value }}
+        {{- end }}
+      spec:
+        accessModes:
+        {{- range .Values.storageAccessModes }}
+          - {{ . | quote }}
+        {{- end }}
+        resources:
+          requests:
+            storage: {{ .Values.storageSize | quote }}
+{{- else }}
+        - name: datadir
+          emptyDir: {}
+{{- end }}

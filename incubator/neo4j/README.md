@@ -5,11 +5,6 @@
 ## TL;DR;
 
 ```bash
-$ git clone git@github.com:mneedham/charts.git
-$ cd charts
-```
-
-```bash
 $ helm install incubator/neo4j
 ```
 
@@ -19,7 +14,7 @@ This chart bootstraps a [Neo4j](https://github.com/neo4j/docker-neo4j) deploymen
 
 ## Prerequisites
 
-- Kubernetes 1.4+ with Beta APIs enabled
+- Kubernetes 1.6+ with Beta APIs enabled
 - PV provisioner support in the underlying infrastructure
 
 ## Installing the Chart
@@ -39,7 +34,7 @@ The command deploys Neo4j on the Kubernetes cluster in the default configuration
 To uninstall/delete the `neo4j-helm` deployment:
 
 ```bash
-$ helm delete neo4j-helm -- purge
+$ helm delete neo4j-helm --purge
 ```
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
@@ -52,11 +47,11 @@ The following tables lists the configurable parameters of the Neo4j chart and th
 |----------------------------|-----------------------------------------|----------------------------------------------------------|
 | `image`                    | Neo4j image                             | `neo4j`                                                  |
 | `imageTag`                 | Neo4j version                           | `{VERSION}`                                              |
-| `imagePullPolicy`          | Image pull policy                       | `Always` if `ImageTag` is `latest`, else `IfNotPresent`. |
+| `imagePullPolicy`          | Image pull policy                       | `Always` if `imageTag` is `latest`, else `IfNotPresent`. |
 | `numberOfCores`            | Number of machines in CORE mode         | `3`                                                      |
 | `numberOfReadReplicas`     | Number of machines in READ_REPLICA mode | `0`                                                      |
-| `storageClass`             | Storage class of backing PVC            | `nil` (uses alpha storage class annotation)              |
-| `storage`                  | Size of data volume                     | `1Gi`                                                    |
+| `storageClass`             | Storage class of backing PVC            | `anything` (uses alpha storage class annotation)              |
+| `storage`                  | Size of data volume                     | `10Gi`                                                    |
 
 The above parameters map to the env variables defined in the [Neo4j docker image](https://github.com/neo4j/docker-neo4j).
 

@@ -9,5 +9,5 @@ sources:
   - https://github.com/neo4j/docker-neo4j
   - https://github.com/mneedham/k8s-kubectl
 maintainers:
-  - name: Mark Needham
+  - name: mneedham
     email: mark.needham@neo4j.com
