@@ -69,3 +69,4 @@ Return the appropriate apiVersion for networkpolicy.
 {{- else if ge .Capabilities.KubeVersion.Minor "7" -}}
 {{- print "networking.k8s.io/v1" -}}
 {{- end -}}
+{{- end -}}
