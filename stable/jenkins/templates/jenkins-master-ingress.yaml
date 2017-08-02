@@ -12,7 +12,7 @@ spec:
   - host: {{ .Values.Master.HostName | quote }}
     http:
       paths:
-      - path: /
+      - path: /*
         backend:
           serviceName: {{ template "fullname" . }}
           servicePort: {{ .Values.Master.ServicePort }}
