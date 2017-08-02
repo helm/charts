@@ -1,0 +1,35 @@
+{{ if .Values.rbac.install }}
+{{- $serviceName := include "fullname" . -}}
+apiVersion: rbac.authorization.k8s.io/{{ required "A valid .Values.rbac.apiVersion entry required!" .Values.rbac.apiVersion }}
+kind: Role
+metadata:
+  name: {{ $serviceName }}
+  namespace : {{ .Release.Namespace }}
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app: "{{ template "fullname" . }}"
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+rules:
+- apiGroups: [""]
+  resources:
+  - configmaps
+  - namespaces
+  - pods
+  - secrets 
+  verbs: ["get"]
+- apiGroups: [""]
+  resources:
+  - configmaps
+  resourceNames:
+    - {{ template "controller.fullname" . }}
+  verbs: ["get", "update"]
+- apiGroups: [""]
+  resources:
+  - configmaps
+  verbs: ["create"]
+- apiGroups: [""]
+  resources:
+  - endpoints
+  verbs: ["get", "create", "update"]
+{{ end }}
