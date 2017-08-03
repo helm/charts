@@ -20,11 +20,6 @@ controller:
   ##
   defaultBackendService: ""
 
-  ## Optionally specify the secret name for default SSL certificate
-  ## Must be <namespace>/<secret_name>
-  ##
-  defaultSSLCertificate: ""
-
   ## Allows customization of the external service
   ## the ingress will be bound to via DNS
   publishService:
