@@ -56,7 +56,7 @@ spec:
         - name: USE_WALE
           value: ""
         - name: PGROOT
-          value: /home/postgres/pgdata/pgroot
+          value: "{{ .Values.persistentVolume.mountPath }}/pgroot"
         - name: POD_NAMESPACE
           valueFrom:
             fieldRef:

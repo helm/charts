@@ -37,7 +37,7 @@ persistentVolume:
   size: 1G
   storageClass: ""
   subPath: ""
-  mountPath: "/home/postgres/data"
+  mountPath: "/home/postgres/pgdata"
   annotations: {}
 
   accessModes:
