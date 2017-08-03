@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "fullname" . }}-tests
+  name: {{ template "neo4j.fullname" . }}-tests
   labels:
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    app: {{ template "name" . }}
+    app: {{ template "neo4j.name" . }}
 data:
   run.sh: |-
     @test "Testing Neo4j cluster has quorum" {

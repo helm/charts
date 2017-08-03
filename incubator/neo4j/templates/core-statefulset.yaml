@@ -1,9 +1,9 @@
 apiVersion: "apps/v1beta1"
 kind: StatefulSet
 metadata:
-  name: "{{ template "fullname" . }}-core"
+  name: "{{ template "neo4j.core.fullname" . }}"
 spec:
-  serviceName: {{ template "fullname" . }}
+  serviceName: {{ template "neo4j.fullname" . }}
   replicas: {{ .Values.core.numberOfServers }}
   template:
     metadata:
@@ -11,11 +11,11 @@ spec:
         heritage: {{ .Release.Service | quote }}
         release: {{ .Release.Name | quote }}
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-        app: {{ template "name" . }}
+        app: {{ template "neo4j.name" . }}
         component: "{{ .Values.core.name }}"
     spec:
       containers:
-      - name: {{ template "fullname" . }}
+      - name: {{ template "neo4j.fullname" . }}
         image: "{{ .Values.image }}:{{ .Values.imageTag }}"
         imagePullPolicy: "{{ .Values.imagePullPolicy }}"
         env:
@@ -35,7 +35,7 @@ spec:
             echo "causal_clustering.raft_messages_log_enable=true" >> conf/neo4j.conf
             echo "dbms.security.auth_enabled=false" >> conf/neo4j.conf
 
-            STATEFULSET_NAME="{{ template "fullname" . }}"
+            STATEFULSET_NAME="{{ template "neo4j.fullname" . }}"
             MEMBERS=""
             for id in $(seq 0 $(($NUMBER_OF_CORES-1))) ; do
                   token="${STATEFULSET_NAME}-core-$id.${STATEFULSET_NAME}.default.svc.cluster.local:5000"
@@ -59,32 +59,26 @@ spec:
           privileged: true
         volumeMounts:
         - name: datadir
-          mountPath: /data
+          mountPath: "{{ .Values.core.persistentVolume.mountPath }}"
+          subPath: "{{ .Values.core.persistentVolume.subPath }}"
         resources:
 {{ toYaml .Values.resources | indent 10 }}
 
-{{- if .Values.persistentVolumeClaimEnabled }}
   volumeClaimTemplates:
     - metadata:
         name: datadir
         annotations:
-        {{- if .Values.storageClass | quote }}
-          volume.beta.kubernetes.io/storage-class: {{ .Values.storageClass | quote }}
+        {{- if .Values.core.persistentVolume.storageClass | quote }}
+          volume.beta.kubernetes.io/storage-class: {{ .Values.core.persistentVolume.storageClass | quote }}
         {{- else }}
-          volume.beta.kubernetes.io/storage-class: anything
+          volume.beta.kubernetes.io/storage-class: standard
         {{- end }}
-        {{- range $key, $value := .Values.storageAnnotations }}
-          {{ $key }}: {{ $value }}
+        {{- if .Values.core.persistentVolume.annotations }}
+{{ toYaml .Values.core.persistentVolume.annotations | indent 12 }}
         {{- end }}
       spec:
         accessModes:
-        {{- range .Values.storageAccessModes }}
-          - {{ . | quote }}
-        {{- end }}
+          - ReadWriteOnce
         resources:
           requests:
-            storage: {{ .Values.storageSize | quote }}
-{{- else }}
-        - name: datadir
-          emptyDir: {}
-{{- end }}
+            storage: "{{ .Values.core.persistentVolume.size }}"

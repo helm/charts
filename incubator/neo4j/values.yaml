@@ -26,12 +26,43 @@ core:
   name: core
   numberOfServers: 3
 
+  persistentVolume:
+    ## core server data Persistent Volume access modes
+    ## Must match those of existing PV or dynamic provisioner
+    ## Ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+    ##
+    accessModes:
+      - ReadWriteOnce
+
+    ## core server data Persistent Volume Claim annotations
+    ##
+    annotations: {}
+
+    ## core server data Persistent Volume mount root path
+    ##
+    mountPath: /data
+
+    ## core server data Persistent Volume size
+    ##
+    size: 10Gi
+
+    ## core server data Persistent Volume Storage Class
+    ## If defined, storageClassName: <storageClass>
+    ## If undefined (the default) or set to null, no storageClassName spec is
+    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+    ##   GKE, AWS & OpenStack)
+    ##
+    storageClass: "standard"
+
+    ## Subdirectory of core server data Persistent Volume to mount
+    ## Useful if the volume's root directory is not empty
+    ##
+    subPath: ""
+
 # Read Replicas
-readReplicas:
+readReplica:
   name: replica
   numberOfServers: 0
-
-component: "neo4j"
 
 resources: {}
 # limits:
@@ -40,10 +71,3 @@ resources: {}
 # requests:
 #   cpu: 100m
 #   memory: 512Mi
-
-# Storage
-persistentVolumeClaimEnabled: true
-storageSize: "10Gi"
-storageClass: "standard"
-storageAccessModes: [ "ReadWriteOnce" ]
-storageAnnotations: {}
