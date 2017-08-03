@@ -26,7 +26,7 @@ The following tables lists the configurable parameters of the consul chart and t
 | Parameter                   | Description                                             | Default                                                    |
 | --------------------------  | ----------------------------------                      | ---------------------------------------------------------- |
 | `image`                     | Container image name                                    | `boostport/kubernetes-vault`                               |
-| `imageTag`                  | Container image tag                                     | `v0.7.5`                                                   |
+| `imageTag`                  | Container image tag                                     | `0.4.8`                                                    |
 | `imagePullPolicy`           | Container pull policy                                   | `Always`                                                   |
 | `replicaCount`              | k8s pod replicas                                        | `3`                                                        |
 | `app`                       | k8s selector key                                        | `kubernetes-vault`                                         |
