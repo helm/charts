@@ -10,7 +10,7 @@ keywords:
 home: https://netsil.com/
 icon: https://s3.amazonaws.com/docs.netsil.com/logos/Netsil_640x640-blue.jpg
 sources:
-  - https://github.com/netsil/manifests/tree/master/kubernetes
+  - https://github.com/kubernetes/charts
 maintainers:
   - name: Matt Baldwin
     email: baldwin@stackpointcloud.com
