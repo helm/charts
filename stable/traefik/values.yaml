@@ -2,7 +2,6 @@
 image: traefik
 imageTag: 1.3.4
 serviceType: LoadBalancer
-googleStaticIP:
 replicas: 1
 cpuRequest: 100m
 memoryRequest: 20Mi
@@ -62,3 +61,5 @@ accessLogs:
 #  labelSelector:
 rbac:
   enabled: false
+gcp:
+  staticIP:

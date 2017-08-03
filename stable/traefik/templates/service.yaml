@@ -20,8 +20,8 @@ metadata:
   {{- end }}
 spec:
   type: {{ .Values.serviceType }}
-  {{- if .Values.googleStaticIP }}
-  loadBalancerIP: {{ .Values.googleStaticIP }}
+  {{- if .Values.gcp.staticIP }}
+  loadBalancerIP: {{ .Values.gcp.staticIP }}
   {{- end }}
   selector:
     app: {{ template "fullname" . }}
