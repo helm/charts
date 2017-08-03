@@ -7,7 +7,7 @@ metadata:
     release: {{ .Release.Name | quote }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     app: {{ template "neo4j.name" . }}
-    component: "{{ .Values.core.name}}"
+    component: "{{ .Values.core.name }}"
 spec:
   clusterIP: None
   ports:

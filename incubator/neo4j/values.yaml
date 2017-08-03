@@ -8,7 +8,7 @@ name: "neo4j"
 # Specs for the Neo4j docker image
 image: "neo4j"
 imageTag: "3.2.2-enterprise"
-imagePullPolicy: "Always"
+imagePullPolicy: "IfNotPresent"
 
 # Specs for the images used for running tests against the Helm package
 testImage: "markhneedham/k8s-kubectl"
@@ -17,14 +17,14 @@ testImageTag: "master"
 # Ports
 boltPort: 7687
 httpPort: 7474
-discoveryPort: 5000
 txPort: 6000
-raftPort: 7000
 
 # Cores
 core:
   name: core
   numberOfServers: 3
+  discoveryPort: 5000
+  raftPort: 7000
 
   persistentVolume:
     ## core server data Persistent Volume access modes

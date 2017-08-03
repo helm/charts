@@ -43,15 +43,15 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following tables lists the configurable parameters of the Neo4j chart and their default values.
 
-|         Parameter              |             Description                 |                         Default                          |
-|--------------------------------|-----------------------------------------|----------------------------------------------------------|
-| `image`                        | Neo4j image                             | `neo4j`                                                  |
-| `imageTag`                     | Neo4j version                           | `{VERSION}`                                              |
-| `imagePullPolicy`              | Image pull policy                       | `Always` if `imageTag` is `latest`, else `IfNotPresent`. |
-| `core.numberOfServers`         | Number of machines in CORE mode         | `3`                                                      |
-| `readReplica.numberOfServers`  | Number of machines in READ_REPLICA mode | `0`                                                      |
-| `storageClass`                 | Storage class of backing PVC            | `anything` (uses alpha storage class annotation)         |
-| `storage`                      | Size of data volume                     | `10Gi`                                                   |
+|         Parameter                    |             Description                 |                         Default                          |
+|--------------------------------------|-----------------------------------------|----------------------------------------------------------|
+| `image`                              | Neo4j image                             | `neo4j`                                                  |
+| `imageTag`                           | Neo4j version                           | `{VERSION}`                                              |
+| `imagePullPolicy`                    | Image pull policy                       | `Always` if `imageTag` is `latest`, else `IfNotPresent`. |
+| `core.numberOfServers`               | Number of machines in CORE mode         | `3`                                                      |
+| `readReplica.numberOfServers`        | Number of machines in READ_REPLICA mode | `0`                                                      |
+| `core.persistentVolume.storageClass` | Storage class of backing PVC            | `anything` (uses beta storage class annotation)          |
+| `core.persistentVolume.size`         | Size of data volume                     | `10Gi`                                                   |
 
 The above parameters map to the env variables defined in the [Neo4j docker image](https://github.com/neo4j/docker-neo4j).
 

@@ -47,5 +47,7 @@ spec:
           name: browser
         - containerPort: {{ .Values.boltPort }}
           name: bolt
+        - containerPort: {{ .Values.txPort }}
+          name: tx
         securityContext:
           privileged: true

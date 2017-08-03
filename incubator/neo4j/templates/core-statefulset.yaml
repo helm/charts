@@ -45,12 +45,12 @@ spec:
             export NEO4J_causal__clustering_initial__discovery__members=$MEMBERS
             exec /docker-entrypoint.sh "neo4j"
         ports:
-        - containerPort: {{ .Values.discoveryPort }}
+        - containerPort: {{ .Values.core.discoveryPort }}
           name: discovery
+        - containerPort: {{ .Values.core.raftPort }}
+          name: raft
         - containerPort: {{ .Values.txPort }}
           name: tx
-        - containerPort: {{ .Values.raftPort }}
-          name: raft
         - containerPort: {{ .Values.httpPort }}
           name: browser
         - containerPort: {{ .Values.boltPort }}
