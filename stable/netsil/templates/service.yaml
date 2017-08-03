@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: {{ .Chart.Name }}
+  name: {{ .Chart.Name }}
+spec:
+  selector:
+    app: {{ .Chart.Name }}
+    component: {{ .Chart.Name }}
+  ports:
+    - name: http
+      port: 80
+    - name: https
+      port: 443
+      nodePort: 30443
+    - name: port2000
+      port: 2000
+    - name: port2001
+      port: 2001
+    - name: port2003
+      port: 2003
+    - name: port2003udp
+      port: 2003
+      protocol: UDP
+  type: NodePort

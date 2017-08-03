@@ -1,0 +1,17 @@
+name: netsil
+version: 1.5.0
+description: Netsil Application Operations Center (AOC)
+keywords:
+  - kubernetes
+  - monitoring
+  - analytics
+  - alerting
+  - metric
+home: https://netsil.com/
+icon: https://s3.amazonaws.com/docs.netsil.com/logos/Netsil_640x640-blue.jpg
+sources:
+  - https://github.com/netsil/manifests/tree/master/kubernetes
+maintainers:
+  - name: Matt Baldwin
+    email: baldwin@stackpointcloud.com
+engine: gotpl

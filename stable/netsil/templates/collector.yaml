@@ -1,0 +1,52 @@
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  namespace: {{ .Chart.Name }}
+  name: collector
+  labels:
+    app: {{ .Chart.Name }}
+    component: collector
+spec:
+  template:
+    metadata:
+      labels:
+        app: {{ .Chart.Name }}
+        component: collector
+    spec:
+      hostNetwork: true
+      containers:
+      - name: collector
+        image: "{{ .Values.collector.image }}:{{ .Values.collector.tag }}"
+        command: ["/bin/bash","-c","while true ; do NETSIL_SP_HOST=$NETSIL_SERVICE_HOST /opt/netsil/collectors/start.sh ; echo Exiting, possibly to upgrade ; sleep 5 ; done"]
+        securityContext:
+          capabilities:
+            add:
+            - NET_RAW
+            - NET_ADMIN
+        env:
+        - name: DEPLOY_ENV
+          value: 'docker'
+        - name: KUBERNETES
+          value: "yes"
+        - name: SD_BACKEND
+          value: docker
+        volumeMounts:
+        - name: cgroup
+          mountPath: /host/sys/fs/cgroup/
+          readOnly: true
+        - name: proc
+          mountPath: /host/proc/
+          readOnly: true
+        - name: docker-sock
+          mountPath: /var/run/docker.sock
+          readOnly: true
+      volumes:
+      - name: cgroup
+        hostPath:
+          path: /sys/fs/cgroup/
+      - name: proc
+        hostPath:
+          path: /proc/
+      - name: docker-sock
+        hostPath:
+          path: /var/run/docker.sock
