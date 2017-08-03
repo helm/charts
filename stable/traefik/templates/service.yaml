@@ -20,6 +20,9 @@ metadata:
   {{- end }}
 spec:
   type: {{ .Values.serviceType }}
+  {{- if .Values.googleStaticIP }}
+  loadBalancerIP: {{ .Values.googleStaticIP }}
+  {{- end }}
   selector:
     app: {{ template "fullname" . }}
   ports:
