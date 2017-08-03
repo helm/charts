@@ -37,28 +37,27 @@ spec:
               key: drupal-password
         - name: DRUPAL_EMAIL
           value: {{ default "" .Values.drupalEmail | quote }}
+{{- if .Values.extraVars }}
+{{ toYaml .Values.extraVars | indent 8 }}
+{{- end }}
         ports:
         - name: http
           containerPort: 80
         - name: https
           containerPort: 443
         livenessProbe:
-          httpGet:
-            path: /user/login
-            port: http
-          initialDelaySeconds: 120
+{{ toYaml .Values.livenessProbe | indent 10 }}
         readinessProbe:
-          httpGet:
-            path: /user/login
-            port: http
-          initialDelaySeconds: 30
+{{ toYaml .Values.readinessProbe | indent 10 }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
         - name: drupal-data
-          mountPath: /bitnami/drupal
+          mountPath: {{ .Values.volumeMounts.drupal.mountPath }}
+        {{- if .Values.volumeMounts.apache.mountPath }}
         - name: apache-data
-          mountPath: /bitnami/apache
+          mountPath: {{ .Values.volumeMounts.apache.mountPath }}
+        {{- end }}
       {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
 {{ toYaml .Values.imagePullSecrets | indent 8 }}
@@ -71,10 +70,12 @@ spec:
       {{- else }}
         emptyDir: {}
       {{- end }}
+      {{- if .Values.volumeMounts.apache.mountPath }}
       - name: apache-data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
           claimName: {{ template "fullname" . }}-apache
       {{- else }}
         emptyDir: {}
+      {{- end }}
       {{- end }}

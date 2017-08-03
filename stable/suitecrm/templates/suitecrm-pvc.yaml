@@ -1,0 +1,23 @@
+{{- if .Values.persistence.enabled -}}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ template "fullname" . }}-suitecrm
+  labels:
+    app: {{ template "name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+  annotations:
+  {{- if .Values.persistence.suitecrm.storageClass }}
+    volume.beta.kubernetes.io/storage-class: {{ .Values.persistence.suitecrm.storageClass | quote }}
+  {{- else }}
+    volume.alpha.kubernetes.io/storage-class: default
+  {{- end }}
+spec:
+  accessModes:
+    - {{ .Values.persistence.suitecrm.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.suitecrm.size | quote }}
+{{- end -}}

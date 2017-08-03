@@ -18,7 +18,15 @@ This chart bootstraps a [Istio](https://istio.io/) deployment on a [Kubernetes](
 ## Prerequisites
 
 - Kubernetes 1.5+
-- istioctl - See installation steps [here](https://istio.io/docs/tasks/installing-istio.html#installation-steps)
+- istioctl
+
+### istioctl installation steps
+
+Run
+```console
+curl -L https://git.io/getIstio | sh -
+```
+to download and extract the latest release automatically (on MacOS and Ubuntu), the `istioctl` client will be added to your PATH by the above shell command.
 
 ## RBAC
 By default the chart is installed without associated RBAC roles and rolebindings. If you would like to install the provided roles and rolebindings please do the following:
@@ -105,6 +113,15 @@ Alternatively, a YAML file that specifies the values for the above parameters ca
 
 ```console
 $ helm install incubator/istio --name my-release -f values.yaml
+```
+
+## Custom ConfigMap
+
+When creating a new chart with this chart as a dependency, customConfigMap can be used to override the default config map provided. To use, set the value to true and provide the file `templates/configmap.yaml` for your use case. If you start by copying `configmap.yaml` from this chart and want to access values from this chart you must change all references from `.Values` to `.Values.istio`.
+
+```
+pilot:
+  customConfigMap: true
 ```
 
 ### Addons

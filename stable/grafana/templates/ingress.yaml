@@ -1,6 +1,6 @@
 {{- if .Values.server.ingress.enabled -}}
 {{- $releaseName := .Release.Name -}}
-{{- $servicePort := .Values.server.httpPort -}}
+{{- $servicePort := .Values.server.service.httpPort -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
@@ -21,8 +21,7 @@ spec:
     - host: {{ . }}
       http:
         paths:
-          - path: /
-            backend:
+          - backend:
               serviceName: {{ printf "%s-%s" $releaseName "grafana" | trunc 63 }}
               servicePort: {{ $servicePort }}
   {{- end -}}
