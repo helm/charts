@@ -79,6 +79,10 @@ spec:
         {{- end }}
         args:
         - --configfile=/config/traefik.toml
+        {{- if .Values.metrics }}
+        - --web.metrics.prometheus
+        - --web.metrics.prometheus.buckets={{- default "0.1,0.3,1.2,5" .Values.metrics.prometheus.buckets }}
+        {{- end}}
       volumes:
       - name: config
         configMap:

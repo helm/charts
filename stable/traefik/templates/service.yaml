@@ -30,3 +30,6 @@ spec:
     {{- if not .Values.ssl.enabled }}
     targetPort: 80
     {{- end }}
+  - port: 8080
+    name: metrics
+#    targetPort: 8080
