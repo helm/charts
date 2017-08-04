@@ -39,8 +39,6 @@ spec:
             - --scale-down-unneeded-time={{ .Values.scaleDown.unneededTime }}
             - --skip-nodes-with-local-storage={{ .Values.skipNodes.withLocalStorage }}
             - --skip-nodes-with-system-pods={{ .Values.skipNodes.withSystemPods }}
-            - --stderrthreshold=info
-            - --v=4
           {{- range $key, $value := .Values.extraArgs }}
             - --{{ $key }}={{ $value }}
           {{- end }}
