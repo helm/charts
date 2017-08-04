@@ -1,0 +1,12 @@
+apiVersion: v1
+description: A Helm chart for Metabase
+name: metabase
+version: 0.1.0
+appVersion: v0.24.2
+maintainers:
+- name: pmint93
+  email: phamminhthanh69@gmail.com
+home: http://www.metabase.com/
+icon: http://www.metabase.com/images/logo.svg
+sources:
+- https://github.com/metabase/metabase
