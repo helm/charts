@@ -18,7 +18,7 @@ spec:
       {{- end }}
       containers:
       - name: {{ .Chart.Name }}
-        image: "{{ .Values.image.repository }}/{{.Values.image.name}}:{{ .Values.image.tag }}"
+        image: "{{.Values.image.name}}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         args:
         - --provider={{ .Values.provider }}
@@ -29,13 +29,13 @@ spec:
         - --compatibility={{ .Values.compatibility }}
         {{- end }}
         {{- if .Values.debug }}
-        - --debug={{ .Values.debug }}
+        - --debug
         {{- end }}
         {{- if .Values.domainFilter }}
         - --domain-filter={{ .Values.domainFilter }}
         {{- end }}
         {{- if .Values.dryRun }}
-        - --dry-run={{ .Values.dryRun }}
+        - --dry-run
         {{- end }}
         {{- if .Values.fqdnTemplate }}
         - --fqdn-template={{ .Values.fqdnTemplate }}

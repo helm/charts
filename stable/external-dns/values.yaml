@@ -1,9 +1,8 @@
 
 ## Details about the image to be pulled.
 image:
-  repository: registry.opensource.zalan.do
-  name: teapot/external-dns
-  tag: v0.4.0-alpha.2
+  name: registry.opensource.zalan.do/teapot/external-dns
+  tag: v0.4.2
   pullPolicy: IfNotPresent
 
 ## This controls which types of resource external-dns should 'watch' for new
@@ -67,7 +66,7 @@ logFormat: text
 ##
 # podAnnotations: {}
 
-## CPU and Memory limit and request for Uchiwa
+## CPU and Memory limit and request for external-dns
 resources: {}
 #  limits:
 #    memory: 50Mi
