@@ -19,11 +19,11 @@ spec:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
-        command:
-        - vault
-        - server
-        - -config
-        - /vault/config/config.json
+        {{- if .Values.vaultmode.dev }}
+        command: ["vault", "server", "-dev"]
+        {{- else }}
+        command: ["vault", "server", "-config", "/vault/config/config.json"]
+        {{- end }}
         ports:
         - containerPort: {{ .Values.service.port }}
         livenessProbe:
