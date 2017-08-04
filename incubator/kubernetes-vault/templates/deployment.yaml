@@ -8,6 +8,9 @@ spec:
   template:
     metadata:
       labels:
+        heritage: {{ .Release.Service }}
+        release: {{ .Release.Name }}
+        chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
         app: {{ .Values.app }}
     spec:
       containers:
