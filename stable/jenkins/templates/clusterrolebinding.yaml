@@ -1,20 +1,19 @@
-{{ if .Values.rbac.install }}
-{{- $serviceName := include "fullname" . -}}
+{{- if .Values.rbac.create -}}
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRoleBinding
 metadata:
-  name: {{ $serviceName }}-role-binding
   labels:
-    app: {{ $serviceName }}
+    app: {{ template "name" .}}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+  name: {{ template "fullname" . }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: {{ .Values.rbac.roleRef }}
+  name: {{ template "fullname" . }}
 subjects:
 - kind: ServiceAccount
-  name: {{ $serviceName }}
+  name: {{ template "fullname" . }}
   namespace: {{ .Release.Namespace }}
-{{ end }}
+{{- end -}}

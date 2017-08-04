@@ -82,17 +82,19 @@ installPlugins:
 
 persistence:
   enabled: true
-
   ## A manually managed Persistent Volume and Claim
   ## Requires persistence.enabled: true
   ## If defined, PVC must be created manually before volume will be bound
   # existingClaim:
-
+  ## Persistent Volume Claim annotations
+  ##
+  annotations: {}
   ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
   ## Default: volume.alpha.kubernetes.io/storage-class: default
   ##
-  # storageClass: 
-  accessMode: ReadWriteOnce
+  # storageClass: ''
+  accessModes:
+    - ReadWriteOnce
   size: 8Gi
 
 service:
@@ -127,6 +129,4 @@ networkPolicy:
 
 ## Install Default RBAC roles and bindings
 rbac:
-  install: false
-  # Cluster role reference
-  roleRef: cluster-admin
+  create: false

@@ -26,27 +26,3 @@ spec:
     app: {{ template "name" . }}
     release: {{ .Release.Name }}
     component: {{ .Release.Name }}-{{ .Values.service.name }}
-{{- if .Values.agent.enabled }}
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: {{ template "fullname" . }}-agentlistener
-  labels:
-    app: {{ template "name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
-    component: {{ .Release.Name }}-agentlistener
-spec:
-  type: ClusterIP
-  ports:
-  - port: {{ .Values.agent.listenerPort }}
-    targetPort: {{ .Values.agent.listenerPort }}
-    protocol: TCP
-    name: agent-listener
-  selector:
-    app: {{ template "name" . }}
-    release: {{ .Release.Name }}
-    component: {{ .Release.Name }}-agentlistener
-{{- end }}

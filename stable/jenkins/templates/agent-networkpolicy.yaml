@@ -1,0 +1,17 @@
+{{- if and .Values.networkPolicy.enabled .Values.agent.enabled }}
+kind: NetworkPolicy
+apiVersion: {{ .Values.networkPolicy.apiVersion }}
+metadata:
+  name: {{ .Release.Name }}-agent
+  labels:
+    app: {{ template "name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: {{ template "fullname" . }}-agent
+spec:
+  podSelector:
+    matchLabels:
+      # DefaultDeny
+      "jenkins/{{ .Release.Name }}-agent": "true"
+{{- end }}

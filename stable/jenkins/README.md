@@ -162,10 +162,9 @@ the DefaultDeny namespace annotation. Note: this will enforce policy for _all_ p
 
 ## RBAC
 
-| Parameter      | Description                                                         | Default         |
-| -------------- | ------------------------------------------------------------------- | --------------- |
-| `rbac.install` | Create service account and ClusterRoleBinding for Kubernetes plugin | `false`         |
-| `rbac.roleRef` | Cluster role name to bind to                                        | `cluster-admin` |
+| Parameter     | Description                                                         | Default         |
+| ------------- | ------------------------------------------------------------------- | --------------- |
+| `rbac.create` | Create service account and ClusterRoleBinding for Kubernetes plugin | `false`         |
 
 If running upon a cluster with RBAC enabled you will need to do the following:
 

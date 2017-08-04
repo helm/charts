@@ -3,9 +3,17 @@ kind: NetworkPolicy
 apiVersion: {{ .Values.networkPolicy.apiVersion }}
 metadata:
   name: {{ .Release.Name }}-master
+  labels:
+    app: {{ template "name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: {{ template "fullname" . }}-master
 spec:
   podSelector:
     matchLabels:
+      app: {{ template "name" . }}
+      release: {{ .Release.Name }}
       component: {{ .Release.Name }}-master
   ingress:
     # Allow web access to the UI
@@ -18,16 +26,4 @@ spec:
             "jenkins/{{ .Release.Name }}-agent": "true"
       ports:
       - port: {{ .Values.agentlistenerService.externalPort }}
-{{- if .Values.agent.enabled }}
----
-kind: NetworkPolicy
-apiVersion: {{ .Values.networkPolicy.apiVersion }}
-metadata:
-  name: {{ .Release.Name }}-agent
-spec:
-  podSelector:
-    matchLabels:
-      # DefaultDeny
-      "jenkins/{{ .Release.Name }}-agent": "true"
-{{- end }}
 {{- end }}
