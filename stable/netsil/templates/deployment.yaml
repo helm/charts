@@ -3,6 +3,12 @@ kind: Deployment
 metadata:
   namespace: {{ .Chart.Name }}
   name: {{ .Chart.Name }}
+  labels:
+    app: {{ template "name" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: stream-processor
 spec:
   replicas: 1
   template:

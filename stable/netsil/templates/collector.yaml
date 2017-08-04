@@ -4,7 +4,10 @@ metadata:
   namespace: {{ .Chart.Name }}
   name: collector
   labels:
-    app: {{ .Chart.Name }}
+    app: {{ template "name" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     component: collector
 spec:
   template:
