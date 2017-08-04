@@ -32,4 +32,3 @@ spec:
     {{- end }}
   - port: 8080
     name: metrics
-#    targetPort: 8080
