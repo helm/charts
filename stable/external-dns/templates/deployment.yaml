@@ -5,8 +5,6 @@ metadata:
   labels: {{ include "external-dns.labels" . | indent 4 }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
 spec:
-  strategy:
-    type: Recreate
   template:
     metadata:
       labels: {{ include "external-dns.labels" . | indent 8 }}
