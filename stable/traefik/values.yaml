@@ -61,3 +61,8 @@ accessLogs:
 #  labelSelector:
 rbac:
   enabled: false
+# Enable the /metrics endpoint, for now only supports prometheus
+# set to true to enable metric collection by prometheus
+metrics:
+  enabled: false
+  prometheus.buckets: 0.1,0.3,1.2,5
