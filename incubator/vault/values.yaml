@@ -35,10 +35,22 @@ vault:
     tcp:
       address: '0.0.0.0:8200'
       tls_disable: 1
+# See https://www.vaultproject.io/docs/configuration/storage/ for storage backends
   storage:
     #consul:
     #  address: ""
     #  path: ""
+    #
+    #etcd:
+    #  address: ""
+    #  path: "vault/"
+    #
+    #s3:
+    #  bucket: ""
+    #  region: ""
+    #  access_key: ""
+    #  secret_key: ""
+    #  endpoint: "" # When not using AWS S3
 resources:
   limits:
 #    cpu: 100m
