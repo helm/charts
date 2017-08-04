@@ -11,60 +11,20 @@ source:
   - service
   - ingress
 
-## The Kubernetes API server to connect to, leave unset to use auto-detect.
-# master: http://127.0.0.1:8080
-
-## Limit sources of endpoints to a specific namespace.
-# namespace: all
-
-## A templated string that's used to generate DNS names
-# fqdnTemplate: {{.Name}}.my-org.com
-
-## Process annotation semantics from legacy implementations (options: mate, molecule )
-# compatibility: 
-
 ## The DNS provider where the DNS records will be created (options: aws, google, inmemory, azure )
 provider: aws
-
-## When using the Google provider, specify the Google project (required when --provider=google)
-# googleProject:
 
 ## Limit possible target zones by a domain suffix (optional)
 # domainFilter:
 
-## When using the Azure provider, override the Azure resource group to use (optional)
-# azureResourceGroup:
-
 ## Modify how DNS records are sychronized between sources and providers (options: sync, upsert-only )
 policy: upsert-only
-
-## The registry implementation to use to keep track of DNS record ownership (default: txt, options: txt, noop )
-registry: txt
-
-## When using the TXT registry, a name that identifies this instance of ExternalDNS (default: Release Name)
-# txtOwnerId:
-
-## When using the TXT registry, a custom string that's prefixed to each ownership DNS record (optional)
-# txtPrefix:
-
-## The interval between two consecutive synchronizations in duration format.
-# interval: 1m
-
-## When enabled, prints DNS record changes rather than actually performing them.
-# dryRun: false
-
-## The format in which log messages are printed (options: text, json)
-logFormat: text
-
-## Specify were to serve the metrics and health check endpoint.
-# metricsAddress: 127.0.0.1:7979
-
-## When enabled, increases the logging output for debugging purposes.
-# debug: false
 
 ## Annotations to be added to pods
 ##
 # podAnnotations: {}
+
+extraArgs: {}
 
 ## CPU and Memory limit and request for external-dns
 resources: {}
@@ -74,10 +34,10 @@ resources: {}
 #    memory: 50Mi
 #    cpu: 10m
 
-# Should the chart create and use a service account. 
+# Should the chart create and use a service account.
 # serviceAccountEnabled: false
 
 # If creating a service account, you can optionally override the name used.
-# Defaults to .Release.Name-external-dns-sa. Note: Release.Name is always 
+# Defaults to .Release.Name-external-dns-sa. Note: Release.Name is always
 # included to prevent collisions.
-# saNameOverride: 
+# saNameOverride:
