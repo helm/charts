@@ -12,7 +12,7 @@ spec:
         release: {{ .Release.Name | quote }}
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         app: {{ template "neo4j.name" . }}
-        component: "{{ .Values.core.name }}"
+        component: core
     spec:
       containers:
       - name: {{ template "neo4j.fullname" . }}

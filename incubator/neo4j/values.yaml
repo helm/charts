@@ -21,7 +21,6 @@ txPort: 6000
 
 # Cores
 core:
-  name: core
   numberOfServers: 3
   discoveryPort: 5000
   raftPort: 7000
@@ -61,7 +60,6 @@ core:
 
 # Read Replicas
 readReplica:
-  name: replica
   numberOfServers: 0
 
 resources: {}

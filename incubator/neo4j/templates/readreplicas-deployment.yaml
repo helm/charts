@@ -7,7 +7,7 @@ metadata:
     release: {{ .Release.Name | quote }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     app: {{ template "neo4j.name" . }}
-    component: "{{ .Values.readReplica.name }}"
+    component: replica
 spec:
   replicas: {{ .Values.readReplica.numberOfServers }}
   template:
@@ -15,7 +15,7 @@ spec:
       labels:
         app: {{ template "neo4j.name" . }}
         release: {{ .Release.Name | quote }}
-        component: "{{ .Values.readReplica.name }}"
+        component: replica
     spec:
       containers:
       - name: neo4j
