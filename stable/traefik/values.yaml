@@ -7,6 +7,8 @@ cpuRequest: 100m
 memoryRequest: 20Mi
 cpuLimit: 100m
 memoryLimit: 30Mi
+debug:
+  enabled: false
 nodeSelector: {}
   #key: value
 tolerations: []
