@@ -13,19 +13,9 @@ This Helm chart simplifies the deployment of a docker registry with access contr
 
 ## Pre Requisites:
 
-* Requires (and tested with) helm `v2.3.1` or above.
-* Requires mariadb 10.0
+* Requires (and tested with) helm `v2.5.0` or above.
 * Requires Ingress Controller with configurable `proxy-body-size` ([nginx-ingress](https://github.com/kubernetes/charts/tree/master/stable/nginx-ingress))
 * Requires Let's Encrypt support for Ingress resources ([kube-lego](https://github.com/kubernetes/charts/tree/master/stable/kube-lego))
-* Currently only tested with s3 backed registries
-
-### Database
-
--   Example non-persistent database for demonstration purposes:
-
-    ```
-    helm install stable/mariadb --set persistence.enabled=false,mariadbUser=portus,mariadbRootPassword=mypassword,mariadbPassword=portuspass,mariadbDatabase=portusdb -n portusdb
-    ```
 
 ### Ingress Controller
 
@@ -57,9 +47,15 @@ This Helm chart simplifies the deployment of a docker registry with access contr
     helm install stable/kube-lego -n ing --set config.LEGO_EMAIL=user@example.com,config.LEGO_URL=https://acme-v01.api.letsencrypt.org/directory
     ```
 
+### Registry with Minio
+
+By default the Minio chart will be installed and used as storage for the Docker registry
+
 ### Registry S3 Bucket
 
-Bucket - with a `rootDirectory`:
+Alternatively, s3 may be used as a backing registry:
+
+Create a Bucket - with a `rootDirectory`:
 ```
 export AWS_REGION=ap-southeast-1
 export S3_BUCKET=docker-registry-example-com
@@ -102,6 +98,8 @@ Ref: [Docker Registry docs](https://docs.docker.com/registry/storage-drivers/s3/
 This chart will do the following:
 
 * Create Ingress resources with TLS support for both the docker registry and portus
+* Conditionaly deploy Minio
+* Conditionaly deploy Mariadb
 * Create a Deployment for SUSE/Portus
 * Create a Deployment for docker/registry with Portus webhooks and authentication integration
 
