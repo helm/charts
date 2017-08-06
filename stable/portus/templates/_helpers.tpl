@@ -13,6 +13,18 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- printf "%s-%s" .Release.Name "registry" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
+{{- define "mariadb.fullname" -}}
+{{- printf "%s-%s" .Release.Name "mariadb" | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
+{{- define "minio.fullname" -}}
+{{- printf "%s-%s" .Release.Name "minio" | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
+{{- define "minio.svc" -}}
+{{- printf "%s-%s" .Release.Name "minio-svc" | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
 {{/*
 Create fully qualified configmap names.
 */}}

@@ -30,6 +30,19 @@ spec:
           value: "true"
         - name: PORTUS_MACHINE_FQDN_VALUE
           value: {{ .Values.portus.fqdn | quote }}
+        {{- if .Values.mariadb.enabled }}
+        - name: MARIADB_SERVICE_HOST
+          value: {{ template "mariadb.fullname" . }}
+        - name: MARIADB_DATABASE
+          value: {{ .Values.mariadb.mariadbDatabase | quote }}
+        - name: MARIADB_USER
+          value: {{ .Values.mariadb.mariadbUser | quote }}
+        - name: MARIADB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "mariadb.fullname" . }}
+              key: mariadb-password
+        {{- else }}
         - name: MARIADB_SERVICE_HOST
           valueFrom:
             secretKeyRef:
@@ -50,6 +63,7 @@ spec:
             secretKeyRef:
               name: {{ template "portus.secret-db" . }}
               key: db-name
+        {{- end }}
         - name: PORTUS_PORTUS_PASSWORD
           valueFrom:
             secretKeyRef:
