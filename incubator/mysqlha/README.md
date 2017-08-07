@@ -33,21 +33,22 @@ $ helm delete my-release
 
 The following tables lists the configurable parameters of the MySQL chart and their default values.
 
-| Parameter                  | Description                        | Default                                                    |
-| -----------------------    | ---------------------------------- | ---------------------------------------------------------- |
-| `mysqlImage`               | `mysql` image and tag.             | `mysql:5.7.13`                                             |
-| `xtraBackupImage`          | `xtrabackup` image and tag.        | `gcr.io/google-samples/xtrabackup:1.0`                     |
-| `replicaCount`             | Number of MySQL replicas           | 3                                                          |
-| `mysqlRootPassword`        | Password for the `root` user.      | Randomly generated                                         |
-| `mysqlUser`                | Username of new user to create.    | `nil`                                                      |
-| `mysqlPassword`            | Password for the new user.         | Randomly generated                                         |
-| `mysqlReplicationUser`     | Username for replication user      | `repl`                                                     |
-| `mysqlReplicationPassword` | Password for replication user.     | Randomly generated                                         |
-| `persistence.enabled`      | Create a volume to store data      | true                                                       | 
-| `persistence.size`         | Size of persistent volume claim    | 10Gi                                                       |
-| `persistence.storageClass` | Type of persistent volume claim    | `nil`                                                      |
-| `persistence.accessMode`   | ReadWriteOnce or ReadOnly          | ReadWriteOnce                                              |
-| `resources`                | CPU/Memory resource requests/limits | Memory: `128Mi`, CPU: `100m`                              |
+| Parameter                  | Description                         | Default                                |
+| -----------------------    | ----------------------------------- | -------------------------------------- |
+| `mysqlImage`               | `mysql` image and tag.              | `mysql:5.7.13`                         |
+| `xtraBackupImage`          | `xtrabackup` image and tag.         | `gcr.io/google-samples/xtrabackup:1.0` |
+| `replicaCount`             | Number of MySQL replicas            | 3                                      |
+| `mysqlRootPassword`        | Password for the `root` user.       | Randomly generated                     |
+| `mysqlUser`                | Username of new user to create.     | `nil`                                  |
+| `mysqlPassword`            | Password for the new user.          | Randomly generated                     |
+| `mysqlReplicationUser`     | Username for replication user       | `repl`                                 |
+| `mysqlReplicationPassword` | Password for replication user.      | Randomly generated                     |
+| `mysqlDatabase`            | Name of the new Database to create  | `nil`                                  | 
+| `persistence.enabled`      | Create a volume to store data       | true                                   | 
+| `persistence.size`         | Size of persistent volume claim     | 10Gi                                   |
+| `persistence.storageClass` | Type of persistent volume claim     | `nil`                                  |
+| `persistence.accessMode`   | ReadWriteOnce or ReadOnly           | ReadWriteOnce                          |
+| `resources`                | CPU/Memory resource requests/limits | Memory: `128Mi`, CPU: `100m`           |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
