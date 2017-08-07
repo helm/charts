@@ -1,0 +1,17 @@
+# A headless service to create DNS records
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-hdfs-nn
+  labels:
+    component: hdfs-nn
+spec:
+  ports:
+  - name: dfs
+    port: 9000
+    protocol: TCP
+  - name: webhdfs
+    port: 50070
+  clusterIP: None
+  selector:
+    component: {{ .Release.Name }}-hdfs-nn

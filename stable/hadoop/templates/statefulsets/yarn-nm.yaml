@@ -1,0 +1,54 @@
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  name: {{ .Release.Name}}-yarn-nm
+  labels:
+    app: {{ template "fullname" . }}
+    component: yarn-nm
+spec:
+  serviceName: {{ .Release.Name }}-yarn-nm
+  replicas: {{ .Values.yarn.numNodes }}
+  template:
+    metadata:
+      labels:
+        component: {{ .Release.Name }}-yarn-nm
+    spec:
+      terminationGracePeriodSeconds: 0
+      containers:
+      - name: yarn-nm
+        image: {{ .Values.hadoop.image }}
+        ports:
+        - containerPort: 8088
+          name: web
+        command:
+           - "/bin/bash"
+           - "/tmp/hadoop-config/bootstrap.sh"
+           - "-d"
+        resources:
+{{ toYaml .Values.yarn.nodeManager.resources | indent 10 }}
+        readinessProbe:
+          httpGet:
+            path: /node
+            port: 8042
+          initialDelaySeconds: 5
+          timeoutSeconds: 2
+        env:
+          - name: MY_CPU_LIMIT
+            valueFrom:
+              resourceFieldRef:
+                containerName: yarn-nm
+                resource: limits.cpu
+                divisor: 1
+          - name: MY_MEM_LIMIT
+            valueFrom:
+              resourceFieldRef:
+                containerName: yarn-nm
+                resource: limits.memory
+                divisor: 1M
+        volumeMounts:
+          - name: hadoop-config
+            mountPath: /tmp/hadoop-config
+      volumes:
+        - name: hadoop-config
+          configMap:
+            name: {{ .Release.Name }}-config

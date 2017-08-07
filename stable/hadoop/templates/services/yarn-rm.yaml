@@ -1,0 +1,14 @@
+# A headless service to create DNS records
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-yarn-rm
+  labels:
+    component: yarn-rm
+spec:
+  ports:
+  - port: 8088
+    name: web
+  clusterIP: None
+  selector:
+    component: {{ .Release.Name }}-yarn-rm

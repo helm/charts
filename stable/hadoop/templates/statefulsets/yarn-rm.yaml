@@ -1,0 +1,46 @@
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  name: {{ .Release.Name}}-yarn-rm
+  labels:
+    app: {{ template "fullname" . }}
+    component: yarn-rm
+spec:
+  serviceName: {{ .Release.Name }}-yarn-rm
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        component: {{ .Release.Name }}-yarn-rm
+    spec:
+      terminationGracePeriodSeconds: 0
+      containers:
+      - name: yarn-rm
+        image: {{ .Values.hadoop.image }}
+        ports:
+        - containerPort: 8088
+          name: web
+        command:
+           - "/bin/bash"
+           - "/tmp/hadoop-config/bootstrap.sh"
+           - "-d"
+        resources:
+          requests:
+            memory: "1024Mi"
+            cpu: "100m"
+          limits:
+            memory: "2048Mi"
+            cpu: "2000m"
+        readinessProbe:
+          httpGet:
+            path: /ws/v1/cluster/info
+            port: 8088
+          initialDelaySeconds: 5
+          timeoutSeconds: 2
+        volumeMounts:
+          - name: hadoop-config
+            mountPath: /tmp/hadoop-config
+      volumes:
+        - name: hadoop-config
+          configMap:
+            name: {{ .Release.Name }}-config

@@ -1,0 +1,43 @@
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  name: {{ .Release.Name}}-hdfs-dn
+  labels:
+    app: {{ template "fullname" . }}
+    component: hdfs-dn
+spec:
+  serviceName: {{ .Release.Name }}-hdfs-dn
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        component: {{ .Release.Name }}-hdfs-dn
+    spec:
+      terminationGracePeriodSeconds: 0
+      containers:
+      - name: hdfs-dn
+        image: {{ .Values.hadoop.image }}
+        command:
+           - "/bin/bash"
+           - "/tmp/hadoop-config/bootstrap.sh"
+           - "-d"
+        resources:
+          requests:
+            memory: "1024Mi"
+            cpu: "100m"
+          limits:
+            memory: "2048Mi"
+            cpu: "1000m"
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 50075
+          initialDelaySeconds: 5
+          timeoutSeconds: 2
+        volumeMounts:
+          - name: hadoop-config
+            mountPath: /tmp/hadoop-config
+      volumes:
+        - name: hadoop-config
+          configMap:
+            name: {{ .Release.Name }}-config

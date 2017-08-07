@@ -1,0 +1,13 @@
+# Service to access the yarn web ui
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-yarn-ui
+  labels:
+    component: yarn-ui
+spec:
+  ports:
+  - port: 8088
+    name: web
+  selector:
+    component: {{ .Release.Name }}-yarn-rm

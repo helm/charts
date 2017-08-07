@@ -1,0 +1,17 @@
+hadoop:
+  image: danisla/hadoop:2.7.3
+
+  # The version of the hadoop libraries being used in the image.
+  version: 2.7.3
+
+yarn:
+  numNodes: 2
+
+  nodeManager:
+
+    # CPU and memory resources allocated to each node manager pod.
+    # This should be tuned to fit your workload.
+    resources:
+      limits:
+        memory: "1024Mi"
+        cpu: "1000m"
