@@ -148,7 +148,7 @@ addons:
     enabled: true
 
     service:
-      type: ClusterIP
+      type: NodePort
       externalPort: 9411
     
     deployment:
@@ -172,7 +172,7 @@ addons:
     enabled: true
     
     service:
-      type: ClusterIP
+      type: NodePort
       externalPort: 9090
       annotations:
         prometheus.io/scrape: 'true'
@@ -198,7 +198,7 @@ addons:
     enabled: true
     
     service:
-      type: ClusterIP
+      type: NodePort
       externalPort: 3000
     
     deployment:
