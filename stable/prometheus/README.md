@@ -146,6 +146,7 @@ Parameter | Description | Default
 `server.ingress.hosts` | Prometheus server Ingress hostnames | `[]`
 `server.ingress.tls` | Prometheus server Ingress TLS configuration (YAML) | `[]`
 `server.nodeSelector` | node labels for Prometheus server pod assignment | `{}`
+`server.tolerations` | node taints to tolerate (requires Kubernetes >=1.6) | `[]`
 `server.persistentVolume.enabled` | If true, Prometheus server will create a Persistent Volume Claim | `true`
 `server.persistentVolume.accessModes` | Prometheus server data Persistent Volume access modes | `[ReadWriteOnce]`
 `server.persistentVolume.annotations` | Prometheus server data Persistent Volume annotations | `{}`
