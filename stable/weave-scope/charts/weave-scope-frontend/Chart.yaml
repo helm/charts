@@ -1,0 +1,4 @@
+apiVersion: v1
+description: A Helm chart for the Weave Scope cluster visualizer frontend.
+name: weave-scope-frontend
+version: 0.2.0
