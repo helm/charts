@@ -51,6 +51,9 @@ spec:
               }
           ]'
     spec:
+      {{- if .Values.rbac.install }}
+      serviceAccountName: {{ template "fullname" . }}
+      {{- end }}
       {{- if .Values.Master.NodeSelector }}
       nodeSelector:
 {{ toYaml .Values.Master.NodeSelector | indent 8 }}
