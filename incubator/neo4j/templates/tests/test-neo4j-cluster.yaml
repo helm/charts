@@ -9,20 +9,6 @@ metadata:
     app: {{ template "neo4j.name" . }}
   annotations:
     "helm.sh/hook": test-success
-    "pod.beta.kubernetes.io/init-containers": '[
-      {
-        "name": "test-framework",
-        "image": "dduportal/bats:0.4.0",
-        "command": ["bash", "-c", "
-          set -ex\n
-          # copy bats to tools dir\n
-          cp -R /usr/local/libexec/ /tools/bats/\n
-        "],
-        "volumeMounts": [
-          {"name": "tools", "mountPath": "/tools"}
-        ]
-      }
-    ]'
 spec:
   containers:
     - name: {{ .Release.Name }}-ui-test
@@ -36,6 +22,13 @@ spec:
         name: tests
         readOnly: true
       - mountPath: /tools
+        name: tools
+  initContainers:
+  - name: test-framework
+    image: "dduportal/bats:0.4.0"
+    command: ["bash", "-c", "set -ex\ncp -R /usr/local/libexec/ /tools/bats/"]
+    volumeMounts:
+      - mountPath: "/tools"
         name: tools
   volumes:
   - name: tests
