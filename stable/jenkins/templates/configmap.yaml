@@ -1,4 +1,4 @@
-{{- if not .Values.master.CustomConfigMap }}
+{{- if not .Values.customConfigMap }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -131,13 +131,13 @@ data:
       <globalNodeProperties/>
       <noUsageStatistics>true</noUsageStatistics>
     </hudson>
-{{- if .Values.master.scriptApproval }}
+{{- if .Values.scriptApproval }}
   scriptapproval.xml: |-
     <?xml version='1.0' encoding='UTF-8'?>
     <scriptApproval plugin="script-security@1.27">
       <approvedScriptHashes/>
       <approvedSignatures>
-{{- range $key, $val := .Values.master.scriptApproval }}
+{{- range $key, $val := .Values.scriptApproval }}
         <string>{{ $val }}</string>
 {{- end }}
       </approvedSignatures>
@@ -152,25 +152,25 @@ data:
     mkdir -p /usr/share/jenkins/ref/secrets/;
     echo "false" > /usr/share/jenkins/ref/secrets/slave-to-master-security-kill-switch;
     cp -n /var/jenkins_config/config.xml /var/jenkins_home;
-{{- if .Values.master.installPlugins }}
+{{- if .Values.installPlugins }}
     cp /var/jenkins_config/plugins.txt /var/jenkins_home;
     rm /usr/share/jenkins/ref/plugins/*.lock
     /usr/local/bin/install-plugins.sh `echo $(cat /var/jenkins_home/plugins.txt)`;
 {{- end }}
-{{- if .Values.master.scriptApproval }}
+{{- if .Values.scriptApproval }}
     cp -n /var/jenkins_config/scriptapproval.xml /var/jenkins_home/scriptApproval.xml;
 {{- end }}
-{{- if .Values.master.initScripts }}
+{{- if .Values.initScripts }}
     mkdir -p /var/jenkins_home/init.groovy.d/;
     cp -n /var/jenkins_config/*.groovy /var/jenkins_home/init.groovy.d/
 {{- end }}
-{{- range $key, $val := .Values.master.initScripts }}
+{{- range $key, $val := .Values.initScripts }}
   init{{ $key }}.groovy: |-
 {{ $val | indent 4 }}
 {{- end }}
   plugins.txt: |-
-{{- if .Values.master.installPlugins }}
-{{- range $index, $val := .Values.master.installPlugins }}
+{{- if .Values.installPlugins }}
+{{- range $index, $val := .Values.installPlugins }}
 {{ $val | indent 4 }}
 {{- end }}
 {{- end }}
