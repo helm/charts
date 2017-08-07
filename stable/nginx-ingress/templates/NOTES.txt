@@ -46,7 +46,6 @@ An example Ingress that makes use of the controller:
                 servicePort: 80
               path: /
     # This section is only required if TLS is to be enabled for the Ingress
-    # secretName can be omitted if you have specified controller.defaultSSLCertificate
     tls:
         - hosts:
             - www.example.com
