@@ -26,6 +26,9 @@ mysqlha:
   ##
   # mysqlAllowEmptyPassword: true
 
+  ## Create database with name and grant all permissions to user on startup, if needed
+  # mysqlDatabase:
+
 ## Enable persistence using Persistent Volume Claims
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
 ##

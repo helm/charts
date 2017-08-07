@@ -80,6 +80,8 @@ spec:
       - name: mysql
         image: {{ .Values.mysqlha.mysqlImage }}
         env:
+        - name: MYSQL_DATABASE
+          value: {{ default "" .Values.mysqlha.mysqlDatabase | quote }}
         - name: MYSQL_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
