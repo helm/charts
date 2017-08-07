@@ -1,0 +1,67 @@
+apiVersion: v1
+kind: List
+items:
+  - metadata:
+      labels:
+        name: {{ template "fullname" . }}-app
+        chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+        app: {{ template "fullname" . }}
+        heritage: {{ .Release.Service }}
+        release: {{ .Release.Name }}
+        {{- include "scope_labels" . | indent 8 }}
+      name: {{ template "fullname" . }}-app
+      annotations:
+        {{- include "scope_annotations" . | indent 8 }}
+    spec:
+      selector:
+        matchLabels:
+          name: {{ template "fullname" . }}-app
+          app: {{ template "fullname" . }}
+          heritage: {{ .Release.Service }}
+          release: {{ .Release.Name }}
+      template:
+        metadata:
+          labels:
+            name: {{ template "fullname" . }}-app
+            chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+            app: {{ template "fullname" . }}
+            heritage: {{ .Release.Service }}
+            release: {{ .Release.Name }}
+            {{- include "scope_labels" . | indent 12 }}
+        spec:
+          containers:
+            - name: app
+              image: {{ .Values.global.image | default "weaveworks/scope" }}:{{ .Values.global.imageTag | default "1.6.1" }}
+              imagePullPolicy: {{ .Values.imagePullPolicy | default "" | quote }}
+              args:
+                - '--no-probe'
+              ports:
+                - containerPort: {{ .Values.containerPort | default 4040 }}
+                  protocol: TCP
+              {{- include "scope_resources" . | indent 14 }}
+      replicas: 1
+    apiVersion: apps/v1beta1
+    kind: Deployment
+  - metadata:
+      labels:
+        name: {{ .Values.global.serviceName | default "weave-scope-app" }}
+        chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+        app: {{ template "fullname" . }}
+        heritage: {{ .Release.Service }}
+        release: {{ .Release.Name }}
+        {{- include "scope_labels" . | indent 8 }}
+      name: {{ .Values.global.serviceName | default "weave-scope-app" }}
+      annotations:
+        {{- include "scope_annotations" . | indent 8 }}
+    spec:
+      ports:
+        - name: {{ .Values.global.serviceName  | default "weave-scope-app" }}
+          port: {{ .Values.global.servicePort | default 80 }}
+          targetPort: {{ .Values.containerPort | default 4040 }}
+          protocol: TCP
+      selector:
+        name: {{ template "fullname" . }}-app
+        {{- include "scope_labels" . | indent 8 }}
+      type: {{ .Values.global.serviceType | default "ClusterIP" }}
+    apiVersion: v1
+    kind: Service
