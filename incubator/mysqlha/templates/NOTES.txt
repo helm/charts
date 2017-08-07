@@ -1,4 +1,4 @@
-The MySQL cluster is comprised of {{ .Values.replicaCount }} MySQL pods: 1 master and {{ sub .Values.replicaCount 1 }} slaves. Each instance is accessible within the cluster through: 
+The MySQL cluster is comprised of {{ .Values.mysqlha.replicaCount }} MySQL pods: 1 master and {{ sub .Values.mysqlha.replicaCount 1 }} slaves. Each instance is accessible within the cluster through:
 
     <pod-name>.{{ template "fullname" . }}
 

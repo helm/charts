@@ -4,26 +4,27 @@
 mysqlImage: mysql:5.7.13
 xtraBackupImage: gcr.io/google-samples/xtrabackup:1.0
 
-replicaCount: 3
+mysqlha:
+  replicaCount: 3
 
-## Password for MySQL root user
-##
-# mysqlRootPassword: ## Default: random 10 character string
+  ## Password for MySQL root user
+  ##
+  # mysqlRootPassword: ## Default: random 10 character string
 
-## Username/password for MySQL replication user
-##
-mysqlReplicationUser: repl
-# mysqlReplicationPassword:
+  ## Username/password for MySQL replication user
+  ##
+  mysqlReplicationUser: repl
+  # mysqlReplicationPassword:
 
-## Create a database user
-##
-# mysqlUser:
-# mysqlPassword: ## Default: random 10 character string
+  ## Create a database user
+  ##
+  # mysqlUser:
+  # mysqlPassword: ## Default: random 10 character string
 
 
-## Allow unauthenticated access, uncomment to enable
-##
-# mysqlAllowEmptyPassword: true
+  ## Allow unauthenticated access, uncomment to enable
+  ##
+  # mysqlAllowEmptyPassword: true
 
 ## Enable persistence using Persistent Volume Claims
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/

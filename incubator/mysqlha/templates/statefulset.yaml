@@ -9,7 +9,7 @@ metadata:
     heritage: "{{ .Release.Service }}"
 spec:
   serviceName: {{ template "fullname" . }}
-  replicas: {{ .Values.replicaCount }}
+  replicas: {{ .Values.mysqlha.replicaCount }}
   template:
     metadata:
       labels:
@@ -35,7 +35,7 @@ spec:
             xtrabackup --prepare --user=${MYSQL_REPLICATION_USER} --password=${MYSQL_REPLICATION_PASSWORD} --target-dir=/var/lib/mysql\n
         env:
         - name: MYSQL_REPLICATION_USER
-          value: {{ .Values.mysqlReplicationUser }}
+          value: {{ .Values.mysqlha.mysqlReplicationUser }}
         - name: MYSQL_REPLICATION_PASSWORD
           valueFrom:
             secretKeyRef:
@@ -48,7 +48,7 @@ spec:
         - name: conf
           mountPath: /etc/mysql/conf.d
       - name: init-mysql
-        image: {{ .Values.mysqlImage }}
+        image: {{ .Values.mysqlha.mysqlImage }}
         command:
           - bash
           - "-c"
@@ -78,7 +78,7 @@ spec:
             mountPath: /mnt/scripts
       containers:
       - name: mysql
-        image: {{ .Values.mysqlImage }}
+        image: {{ .Values.mysqlha.mysqlImage }}
         env:
         - name: MYSQL_ROOT_PASSWORD
           valueFrom:
@@ -86,15 +86,15 @@ spec:
               name: {{ template "fullname" . }}
               key: mysql-root-password
         - name: MYSQL_REPLICATION_USER
-          value: {{ .Values.mysqlReplicationUser }}
+          value: {{ .Values.mysqlha.mysqlReplicationUser }}
         - name: MYSQL_REPLICATION_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ template "fullname" . }}
               key: mysql-replication-password
-        {{ if .Values.mysqlUser }}
+        {{ if .Values.mysqlha.mysqlUser }}
         - name: MYSQL_USER
-          value: {{ .Values.mysqlUser | quote }}
+          value: {{ .Values.mysqlha.mysqlUser | quote }}
         - name: MYSQL_PASSWORD
           valueFrom:
             secretKeyRef:
@@ -141,7 +141,7 @@ spec:
               name: {{ template "fullname" . }}
               key: mysql-root-password
         - name: MYSQL_REPLICATION_USER
-          value: {{ .Values.mysqlReplicationUser }}
+          value: {{ .Values.mysqlha.mysqlReplicationUser }}
         - name: MYSQL_REPLICATION_PASSWORD
           valueFrom:
             secretKeyRef:
