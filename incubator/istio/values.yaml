@@ -12,6 +12,7 @@ auth:
 
 ## Mixer configuration
 mixer:
+  name: mixer
 
   service:
     type: ClusterIP
@@ -37,7 +38,7 @@ mixer:
 
 ## Pilot configuration
 pilot:
-  name: istio-pilot
+  name: pilot
   customConfigMap: false
 
   service:
@@ -76,6 +77,7 @@ pilot:
 
 ## Ingress configuration
 ingress:
+  name: ingress
 
   service:
     type: LoadBalancer
@@ -99,6 +101,7 @@ ingress:
 
 ## Engress configuration
 egress:
+  name: egress
 
   service:
     type: ClusterIP

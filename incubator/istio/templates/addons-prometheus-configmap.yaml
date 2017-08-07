@@ -1,5 +1,5 @@
 {{ if .Values.addons.prometheus.enabled }}
-{{- $serviceName := include "fullname" . -}}
+{{- $serviceName := include "name" . -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -18,5 +18,5 @@ data:
       # metrics_path defaults to '/metrics'
       # scheme defaults to 'http'.
       static_configs:
-      - targets: ['{{ template "fullname" . }}-mixer:{{ .Values.mixer.service.externalPrometheusPort }}']
+      - targets: ['{{ $serviceName }}-{{ .Values.mixer.name }}:{{ .Values.mixer.service.externalPrometheusPort }}']
 {{ end }}

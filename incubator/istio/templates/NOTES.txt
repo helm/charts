@@ -1,4 +1,4 @@
-{{- $serviceName := include "fullname" . -}}
+{{- $serviceName := include "name" . -}}
 Verify all Pods are running
 
   kubectl get pods --namespace {{ .Release.Namespace }}
@@ -7,9 +7,9 @@ Verify all Pods are running
 Verifying the Grafana dashboard
 
   NOTE: It may take a few minutes for the LoadBalancer IP to be available.
-        Watch the status with: 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ $serviceName }}-grafana'
+        Watch the status with: 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ $serviceName }}-{{ .Values.addons.grafana.deployment.name }}'
 
-  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ $serviceName }}-grafana -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ $serviceName }}-{{ .Values.addons.grafana.deployment.name }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
   echo http://$SERVICE_IP/dashboard/db/istio-dashboard
 {{- else }}
 Verifying the Grafana dashboard
@@ -24,9 +24,9 @@ Verifying the Grafana dashboard
 Verifying the ServiceGraph service
 
   NOTE: It may take a few minutes for the LoadBalancer IP to be available.
-        Watch the status with: 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ $serviceName }}-servicegraph'
+        Watch the status with: 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ $serviceName }}-{{ .Values.addons.servicegraph.deployment.name }}'
 
-  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ $serviceName }}-servicegraph -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ $serviceName }}-{{ .Values.addons.servicegraph.deployment.name }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
   echo http://$SERVICE_IP:{{ .Values.addons.servicegraph.service.externalPort }}/dotviz
 {{- else }}
 Verifying the ServiceGraph service

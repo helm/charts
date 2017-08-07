@@ -1,9 +1,9 @@
 {{ if .Values.addons.zipkin.enabled }}
-{{- $serviceName := include "fullname" . -}}
+{{- $serviceName := include "name" . -}}
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ $serviceName }}-zipkin
+  name: {{ $serviceName }}-{{ .Values.addons.zipkin.deployment.name }}
   labels:
 {{ include "labels.standard" . | indent 4 }}
 spec:
