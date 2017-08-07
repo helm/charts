@@ -48,7 +48,7 @@ spec:
         - name: conf
           mountPath: /etc/mysql/conf.d
       - name: init-mysql
-        image: {{ .Values.mysqlha.mysqlImage }}
+        image: {{ .Values.mysqlImage }}
         command:
           - bash
           - "-c"
@@ -78,7 +78,7 @@ spec:
             mountPath: /mnt/scripts
       containers:
       - name: mysql
-        image: {{ .Values.mysqlha.mysqlImage }}
+        image: {{ .Values.mysqlImage }}
         env:
         - name: MYSQL_DATABASE
           value: {{ default "" .Values.mysqlha.mysqlDatabase | quote }}
