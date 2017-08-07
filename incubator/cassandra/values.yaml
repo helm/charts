@@ -7,7 +7,7 @@ Name: cassandra
 Component: "cassandra"
 replicaCount: 6
 Image: "erikschlegel/cassandra"
-VmInstanceType: "Standard_L4s"
+VmInstanceType: "Standard_L4"
 ImageTag: "v12"
 ImagePullPolicy: "Always"
 
