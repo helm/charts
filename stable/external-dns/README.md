@@ -25,20 +25,20 @@ $ helm install --name my-release stable/external-dns
 The following tables lists the configurable parameters of the external-dns chart and their default values.
 
 
-| Parameter              | Description                                                                                                      | Default                                                      |
-| ---------------------- | ---------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
-| `domainFilter`         | Limit possible target zones by a domain suffix (optional).                                                       | `disabled`                                                   |
-| `extaArg`              | Optional object of extra args, as `name`: `value` pairs. Where the name is the command line arg to external-dns. | ``                                                           |
-| `image.name`           | Container image name (Including repository name if not `hub.docker.com`).                                        | `registry.opensource.zalan.do/teapot/external-dns`           |
-| `image.pullPolicy`     | Container pull policy.                                                                                           | `IfNotPresent`                                               |
-| `image.tag`            | Container image tag.                                                                                             | `v0.3.0`                                                     |
-| `podAnnotations`       | Additional annotations to apply to the pod.                                                                      | `None`                                                       |
-| `policy`               | Modify how DNS records are sychronized between sources and providers (options: sync, upsert-only ).              | `upsert-only`                                                |
-| `provider`             | The DNS provider where the DNS records will be created (options: aws, google, inmemory, azure ).                 | `aws`                                                        |
-| `resources`            | CPU/Memory resource requests/limits.                                                                             | `None`                                                       |
-| `saNameOverride`       | Override the default ServiceAccount name.                                                                        | `.Release.Name-external-dns-sa`                              |
-| `serviceAccount`       | Should the chart create, and use a Service Account. (Boolean).                                                   | `false`                                                      |
-| `source`               | List of resources to monitor, possible values are fake, service or ingress.                                      | `service`, `ingress`                                         |
+| Parameter              | Description                                                                                                                | Default                                                      |
+| ---------------------- | -------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
+| `domainFilter`         | Limit possible target zones by a domain suffix (optional).                                                                 | `disabled`                                                   |
+| `extaArg`              | Optional object of extra args, as `name`: `value` pairs. Where the name is the command line arg to external-dns.           | ``                                                           |
+| `image.name`           | Container image name (Including repository name if not `hub.docker.com`).                                                  | `registry.opensource.zalan.do/teapot/external-dns`           |
+| `image.pullPolicy`     | Container pull policy.                                                                                                     | `IfNotPresent`                                               |
+| `image.tag`            | Container image tag.                                                                                                       | `v0.4.2`                                                     |
+| `podAnnotations`       | Additional annotations to apply to the pod.                                                                                | `None`                                                       |
+| `policy`               | Modify how DNS records are sychronized between sources and providers (options: sync, upsert-only ).                        | `upsert-only`                                                |
+| `provider`             | The DNS provider where the DNS records will be created (options: aws, google, azure, cloudflare, digitalocean, inmemory ). | `aws`                                                        |
+| `resources`            | CPU/Memory resource requests/limits.                                                                                       | `None`                                                       |
+| `saNameOverride`       | Override the default ServiceAccount name.                                                                                  | `.Release.Name-external-dns-sa`                              |
+| `serviceAccount`       | Should the chart create, and use a Service Account. (Boolean).                                                             | `false`                                                      |
+| `source`               | List of resources to monitor, possible values are fake, service or ingress.                                                | `service`, `ingress`                                         |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
