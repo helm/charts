@@ -15,6 +15,10 @@ image:
   pullPolicy: IfNotPresent
 
 extraArgs: {}
+  # scale-down-delay: 10m
+  # scale-down-unneeded-time: 10m
+  # skip-nodes-with-local-storage: false
+  # skip-nodes-with-system-pods: true
 
 ## Node labels for pod assignment
 ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
@@ -41,10 +45,6 @@ resources: {}
   #   cpu: 100m
   #   memory: 300Mi
 
-scaleDown:
-  delay: 10m
-  unneededTime: 10m
-
 service:
   annotations: {}
   clusterIP: ""
@@ -58,10 +58,6 @@ service:
   loadBalancerSourceRanges: []
   servicePort: 8085
   type: ClusterIP
-
-skipNodes:
-  withLocalStorage: false
-  withSystemPods: true
 
 spotinst:
   account: ""

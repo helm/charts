@@ -92,8 +92,6 @@ Parameter | Description | Default
 `rbac.serviceAccountName` | existing ServiceAccount to use (ignored if rbac.create=true) | `default`
 `replicaCount` | desired number of pods | `1`
 `resources` | pod resource requests & limits | `{}`
-`scaleDown.delay` | time to wait between scaling operations | `10m` (10 minutes)
-`scaleDown.unneededTime` | How long a node should be unneeded before it is eligible for scale down | `10m` (10 minutes
 `service.annotations` | annotations to add to service | none
 `service.clusterIP` | IP address to assign to service | `""`
 `service.externalIPs` | service external IP addresses | `[]`
@@ -101,8 +99,6 @@ Parameter | Description | Default
 `service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
 `service.servicePort` | service port to expose | `8085`
 `service.type` | type of service to create | `ClusterIP`
-`skipNodes.withLocalStorage` | don't terminate nodes running pods that use local storage | `false`
-`skipNodes.withSystemPods` | don't terminate nodes running pods in the `kube-system` namespace | `true`
 `spotinst.account` | Spotinst Account ID (required if `cloudprovider=spotinst`) | `""`
 `spotinst.token` | Spotinst API token (required if `cloudprovider=spotinst`) | `""`
 `spotinst.image.repository` | Image (used if `cloudProvider=spotinst`) | `spotinst/kubernetes-cluster-autoscaler`

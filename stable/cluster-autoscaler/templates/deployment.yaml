@@ -35,10 +35,6 @@ spec:
           {{- range .Values.autoscalingGroups }}
             - --nodes={{ .minSize }}:{{ .maxSize }}:{{ .name }}
           {{- end }}
-            - --scale-down-delay={{ .Values.scaleDown.delay }}
-            - --scale-down-unneeded-time={{ .Values.scaleDown.unneededTime }}
-            - --skip-nodes-with-local-storage={{ .Values.skipNodes.withLocalStorage }}
-            - --skip-nodes-with-system-pods={{ .Values.skipNodes.withSystemPods }}
           {{- range $key, $value := .Values.extraArgs }}
             - --{{ $key }}={{ $value }}
           {{- end }}
