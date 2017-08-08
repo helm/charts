@@ -3,7 +3,7 @@
     pod_name() {
         local full_name="${FULL_NAME?Environment variable FULL_NAME not set}"
         local index="$1"
-        echo "$full_name-$index.$full_name.default.svc.cluster.local"
+        echo "$full_name-$index.$full_name"
     }
 
     replicas() {
