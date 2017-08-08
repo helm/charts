@@ -22,10 +22,10 @@ spec:
         release: "{{ .Release.Name }}"
     spec:
       nodeSelector:
-{{ toYaml .Values.server.nodeSelector | indent 12 }}
+{{ toYaml .Values.server.nodeSelector | indent 8 }}
   {{- if .Values.server.tolerations }}
       tolerations:
-{{ toYaml .Values.server.tolerations | ident 12 }}
+{{ toYaml .Values.server.tolerations | ident 8 }}
   {{- end }}
       containers:
         - name: {{ template "grafana.name" . }}
