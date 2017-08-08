@@ -22,8 +22,7 @@ Setting up your website is easy, you can either use [git](#git-container) or [sv
 Once you've set up your website, you'd like to have seperate development environments for testing? Don't worry, with one additional setting you can [clone an existing release](#cloning-charts) without downtime using the [xtrabackup](https://www.percona.com/software/mysql-database/percona-xtrabackup) [init container](https://hub.docker.com/r/lead4good/xtrabackup/).
 
 Official containers are used wherever possible ( namingly [php](https://hub.docker.com/_/php/), [apache](https://hub.docker.com/_/httpd/), [mysql](https://hub.docker.com/_/mysql/), [mariadb](https://hub.docker.com/_/mariadb/) and [percona](https://hub.docker.com/_/percona/) ) while the use of well established containers was anticipated otherwise ( [phpmyadmin/phpmyadmin](https://hub.docker.com/r/phpmyadmin/phpmyadmin/), [atmoz/sftp](https://hub.docker.com/r/atmoz/sftp/),
-[openweb/git-sync](https://hub.docker.com/r/openweb/git-sync/) ) . To provide some of its unique features such as chart cloning and wordpress support some containers had to be newly created. All of those are hosted as automated builds on docker hub - with their respective sources on GitHub ([lead4good/init-wp](https://hub.docker.com/r/lead4good/init-wp/),
-[lead4good/httpd-fpm](https://hub.docker.com/r/lead4good/httpd-fpm/), [lead4good/svn-sync](https://hub.docker.com/r/lead4good/svn-sync/), [lead4good/webdav](https://hub.docker.com/r/lead4good/webdav/), [lead4good/xtrabackup](https://hub.docker.com/r/lead4good/xtrabackup/)).
+[openweb/git-sync](https://hub.docker.com/r/openweb/git-sync/) ) . To provide some of its unique features such as chart cloning and wordpress support some containers had to be newly created. All of those are hosted as automated builds on docker hub - with their respective sources on GitHub ([lead4good/init-wp](https://hub.docker.com/r/lead4good/init-wp/), [lead4good/svn-sync](https://hub.docker.com/r/lead4good/svn-sync/), [lead4good/webdav](https://hub.docker.com/r/lead4good/webdav/), [lead4good/xtrabackup](https://hub.docker.com/r/lead4good/xtrabackup/)).
 
 ## Prerequisites
 
@@ -171,7 +170,7 @@ The MySQL container is disabled by default, any container with the base image of
 
 | Parameter | Description | Default |
 | - | - | - |
-| `mysql.enabled` | Enables MySQL service | false |
+| `mysql.root_password` | Sets the MySQL root password, enables MySQL service if not empty | _empty_ |
 | `mysql.user` | MySQL user | _empty_ |
 | `mysql.password` | MySQL user password | _empty_ |
 | `mysql.database` | MySQL user database | _empty_ |

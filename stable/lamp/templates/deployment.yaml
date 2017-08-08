@@ -528,7 +528,7 @@ spec:
       containers:
       {{- if .Values.php.fpm_enabled }}
       - name: "httpd"
-        image: "lead4good/httpd-fpm"
+        image: "httpd:2.4-alpine"
         imagePullPolicy: "Always"
         ports:
         - containerPort: 80
@@ -549,10 +549,13 @@ spec:
         - mountPath: /var/run/php
           name: sockets
           subPath: php
-        env:
-        - name: PHP_SOCKET
-          value: /var/run/php/php-fpm.sock
         {{- end }}
+        - mountPath: /usr/local/apache2/conf/extra/httpd-vhosts.conf
+          name: httpd-config
+          subPath: httpd-vhosts{{ if .Values.php.sockets }}-socket{{ end }}.conf
+        - mountPath: /usr/local/apache2/conf/httpd.conf
+          name: httpd-config
+          subPath: httpd.conf
         resources:
         {{- if .Values.httpd.resources }}
 {{ toYaml .Values.httpd.resources | indent 12 }}
@@ -638,7 +641,7 @@ spec:
         {{- else }}
 {{ toYaml .Values.resources | indent 12 }}
         {{- end }}
-      {{- if .Values.mysql.enabled }}
+      {{- if .Values.mysql.root_password }}
       - name: "mysql"
         image: "{{ .Values.mysql.repository }}:{{ .Values.mysql.tag }}"
         imagePullPolicy: {{ .Values.mysql.pullPolicy }}
@@ -876,6 +879,10 @@ spec:
       {{- if or .Values.init.clone.release .Values.wordpress.enabled }}
       - configMap: {name: {{template "fullname" .}}-init }
         name: init
+      {{- end }}
+      {{- if .Values.php.fpm_enabled }}
+      - configMap: {name: {{template "fullname" .}}-httpd }
+        name: httpd-config
       {{- end }}
       {{- if .Values.init.clone.release }}
       - name: clone-data

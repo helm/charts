@@ -39,8 +39,7 @@ httpd:
 
 
 mysql:
-  enabled: false
-
+  #root_password
   #user:
   #password:
   #database:

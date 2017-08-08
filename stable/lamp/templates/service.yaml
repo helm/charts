@@ -15,7 +15,7 @@ spec:
     targetPort: 80
     protocol: TCP
     name: httpd
-  {{ if .Values.mysql.enabled }}
+  {{ if .Values.mysql.root_password }}
   - port: 3306
     targetPort: 3306
     protocol: TCP

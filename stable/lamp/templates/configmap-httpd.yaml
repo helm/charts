@@ -1,0 +1,12 @@
+{{- if .Values.php.fpm_enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{template "fullname" .}}-httpd
+  labels:
+    app: {{template "fullname" .}}
+data:
+{{ (.Files.Glob "files/httpd/httpd.conf").AsConfig | indent 2 }}
+{{ (.Files.Glob "files/httpd/httpd-vhosts.conf").AsConfig | indent 2 }}
+{{ (.Files.Glob "files/httpd/httpd-vhosts-socket.conf").AsConfig | indent 2 }}
+{{- end }}
