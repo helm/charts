@@ -4,25 +4,27 @@ metadata:
   name: {{ template "fullname" . }}-test
   annotations:
     "helm.sh/hook": test-success
-    "pod.beta.kubernetes.io/init-containers": '[
-      {
-        "name": "test-framework",
-        "image": "dduportal/bats:0.4.0",
-        "command": ["bash", "-c", "
-          set -ex\n
-          # copy bats to tools dir\n
-          cp -R /usr/local/libexec/ /tools/bats/\n
-        "],
-        "volumeMounts": [
-          {"name": "tools", "mountPath": "/tools"}
-        ]
-      }
-    ]'
 spec:
+  initContainers:
+    - name: test-framework
+      image: dduportal/bats:0.4.0
+      command:
+        - bash
+        - -c
+        - |
+          set -ex
+          # copy bats to tools dir
+          cp -R /usr/local/libexec/ /tools/bats/
+      volumeMounts:
+        - name: tools
+          mountPath: /tools
   containers:
     - name: mongo
       image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
-      command: ["/tools/bats/bats", "-t", "/tests/mongo-up-test.sh"]
+      command:
+        - /tools/bats/bats
+        - -t
+        - /tests/mongo-up-test.sh
       volumeMounts:
         - name: tools
           mountPath: /tools
