@@ -32,6 +32,11 @@ spec:
       tolerations:
 {{ toYaml .Values.master.tolerations | indent 8 }}
       {{- end }}
+      {{- if .Values.rbac.create }}
+      serviceAccountName: {{ template "fullname" . }}
+      {{- else }}
+      serviceAccountName: default
+      {{- end }}
       securityContext:
         runAsUser: 0
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
