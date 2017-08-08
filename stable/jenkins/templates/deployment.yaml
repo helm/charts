@@ -5,22 +5,17 @@ metadata:
   labels:
     app: {{ template "name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-    release: {{ .Release.Name }}
+    component: {{ .Values.master.name }}
     heritage: {{ .Release.Service }}
-    component: {{ template "fullname" . }}-master
+    release: {{ .Release.Name }}
 spec:
   replicas: 1
-  selector:
-    matchLabels:
-      app: {{ template "name" . }}
-      release: {{ .Release.Name }}
-      component: {{ template "fullname" . }}-master
   template:
     metadata:
       labels:
-        app: {{ template "fullname" . }}
+        app: {{ template "name" . }}
+        component: {{ .Values.master.name }}
         release: {{ .Release.Name }}
-        component: {{ template "fullname" . }}-master
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
     spec:

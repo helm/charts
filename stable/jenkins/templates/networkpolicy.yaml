@@ -2,28 +2,27 @@
 kind: NetworkPolicy
 apiVersion: {{ .Values.networkPolicy.apiVersion }}
 metadata:
-  name: {{ .Release.Name }}-master
+  name: {{ template "fullname" . }}
   labels:
     app: {{ template "name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-    release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
-    component: {{ template "fullname" . }}-master
+    release: {{ .Release.Name }}
 spec:
   podSelector:
     matchLabels:
       app: {{ template "name" . }}
+      component: {{ .Values.master.name }}
       release: {{ .Release.Name }}
-      component: {{ .Release.Name }}-master
   ingress:
     # Allow web access to the UI
     - ports:
-      - port: {{ .Values.master.service.externalPort }}
+      - port: {{ .Values.service.externalPort }}
     # Allow inbound connections from slave
     - from:
       - podSelector:
           matchLabels:
-            "jenkins/{{ .Release.Name }}-agent": "true"
+            "jenkins/{{ template "fullname" . }}-agent": "true"
       ports:
-      - port: {{ .Values.agentlistenerService.externalPort }}
+      - port: {{ .Values.agent.listenerPort }}
 {{- end }}

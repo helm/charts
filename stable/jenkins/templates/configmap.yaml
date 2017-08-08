@@ -34,7 +34,6 @@ data:
               <name>default</name>
               <instanceCap>2147483647</instanceCap>
               <idleMinutes>0</idleMinutes>
-<<<<<<< HEAD:stable/jenkins/templates/config.yaml
               <label>{{ .Release.Name }}-{{ .Values.Agent.Component }}</label>
               <nodeSelector>
                 {{- $local := dict "first" true }}
@@ -43,10 +42,9 @@ data:
                   {{- $key }}={{ $value }}
                   {{- $_ := set $local "first" false }}
                 {{- end }}</nodeSelector>
-=======
               <label>{{ .Release.Name }}-agent</label>
+              <label>{{ template "fullname" . }}-agent</label>
               <nodeSelector></nodeSelector>
->>>>>>> Update and standardize jenkins chart:stable/jenkins/templates/configmap.yaml
               <volumes>
 {{- range $index, $volume := .Values.agent.volumes }}
                 <org.csanchez.jenkins.plugins.kubernetes.volumes.{{ $volume.type }}Volume>
@@ -66,28 +64,20 @@ data:
                   <command></command>
                   <args>${computer.jnlpmac} ${computer.name}</args>
                   <ttyEnabled>false</ttyEnabled>
-<<<<<<< HEAD:stable/jenkins/templates/config.yaml
-                  <resourceRequestCpu>{{.Values.Agent.Cpu}}</resourceRequestCpu>
-                  <resourceRequestMemory>{{.Values.Agent.Memory}}</resourceRequestMemory>
-                  <resourceLimitCpu>{{.Values.Agent.Cpu}}</resourceLimitCpu>
-                  <resourceLimitMemory>{{.Values.Agent.Memory}}</resourceLimitMemory>
+                  {{- if .Values.agent.resources.limits }}
+                  <resourceLimitCpu>{{ .Values.agent.resources.limits.cpu }}</resourceLimitCpu>
+                  <resourceLimitMemory>{{ .Values.agent.resources.limits.memory }}</resourceLimitMemory>
+                  {{- end }}
+                  {{- if .Values.agent.resources.requests }}
+                  <resourceRequestCpu>{{ .Values.agent.resources.requests.cpu }}</resourceRequestCpu>
+                  <resourceRequestMemory>{{ .Values.agent.resources.requests.memory }}</resourceRequestMemory>
+                  {{- end }}
                   <envVars>
                     <org.csanchez.jenkins.plugins.kubernetes.ContainerEnvVar>
                       <key>JENKINS_URL</key>
-                      <value>http://{{ template "fullname" . }}:{{.Values.Master.ServicePort}}{{ default "" .Values.Master.JenkinsUriPrefix }}</value>
+                      <value>http://{{ template "fullname" . }}:{{ .Values.service.externalPort }}{{ default "" .Values.master.uriPrefix }}</value>
                     </org.csanchez.jenkins.plugins.kubernetes.ContainerEnvVar>
                   </envVars>
-=======
-{{- if .Values.agent.resources.limits }}
-                  <resourceLimitCpu>{{ .Values.agent.resources.limits.cpu }}</resourceLimitCpu>
-                  <resourceLimitMemory>{{ .Values.agent.resources.limits.memory }}</resourceLimitMemory>
-{{- end }}
-{{- if .Values.agent.resources.requests }}
-                  <resourceRequestCpu>{{ .Values.agent.resources.requests.cpu }}</resourceRequestCpu>
-                  <resourceRequestMemory>{{ .Values.agent.resources.requests.memory }}</resourceRequestMemory>
-{{- end }}
-                  <envVars/>
->>>>>>> Update and standardize jenkins chart:stable/jenkins/templates/configmap.yaml
                 </org.csanchez.jenkins.plugins.kubernetes.ContainerTemplate>
               </containers>
               <envVars/>
@@ -100,13 +90,8 @@ data:
           <serverUrl>https://kubernetes.default</serverUrl>
           <skipTlsVerify>false</skipTlsVerify>
           <namespace>{{ .Release.Namespace }}</namespace>
-<<<<<<< HEAD:stable/jenkins/templates/config.yaml
-          <jenkinsUrl>http://{{ template "fullname" . }}:{{.Values.Master.ServicePort}}{{ default "" .Values.Master.JenkinsUriPrefix }}</jenkinsUrl>
-          <jenkinsTunnel>{{ template "fullname" . }}-agent:50000</jenkinsTunnel>
-=======
-          <jenkinsUrl>http://{{ template "fullname" . }}:{{ .Values.service.externalPort }}</jenkinsUrl>
+          <jenkinsUrl>http://{{ template "fullname" . }}:{{ .Values.service.externalPort }}{{ default "" .Values.master.uriPrefix }}</jenkinsUrl>
           <jenkinsTunnel>{{ template "fullname" . }}-agentlistener:{{ .Values.agent.listenerPort }}</jenkinsTunnel>
->>>>>>> Update and standardize jenkins chart:stable/jenkins/templates/configmap.yaml
           <containerCap>10</containerCap>
           <retentionTimeout>5</retentionTimeout>
           <connectTimeout>0</connectTimeout>

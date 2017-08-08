@@ -6,9 +6,9 @@ metadata:
   labels:
     app: {{ template "name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-    release: {{ .Release.Name }}
+    component: agentlistener
     heritage: {{ .Release.Service }}
-    component: {{ .Release.Name }}-agentlistener
+    release: {{ .Release.Name }}
 spec:
   type: ClusterIP
   ports:
@@ -18,6 +18,6 @@ spec:
     name: agent-listener
   selector:
     app: {{ template "name" . }}
+    component: {{ .Values.master.name }}
     release: {{ .Release.Name }}
-    component: {{ .Release.Name }}-agentlistener
 {{- end }}

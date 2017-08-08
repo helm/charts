@@ -4,6 +4,7 @@
 # name: value
 
 master:
+  name: master
   image:
     repository: jenkinsci/jenkins
     tag: 'lts'
@@ -98,7 +99,6 @@ persistence:
   size: 8Gi
 
 service:
-  name: ui
   type: ClusterIP
   externalPort: 80
   internalPort: 8080

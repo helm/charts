@@ -5,9 +5,8 @@ metadata:
   labels:
     app: {{ template "name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-    release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
-    component: {{ .Release.Name }}-{{ .Values.service.name }}
+    release: {{ .Release.Name }}
 {{- if .Values.service.annotations }}
   annotations:
 {{ toYaml .Values.service.annotations | indent 4 }}
@@ -21,8 +20,8 @@ spec:
   - port: {{ .Values.service.externalPort }}
     targetPort: {{ .Values.service.internalPort }}
     protocol: TCP
-    name: {{ .Values.service.name }}
+    name: http
   selector:
     app: {{ template "name" . }}
+    component: {{ .Values.master.name }}
     release: {{ .Release.Name }}
-    component: {{ .Release.Name }}-{{ .Values.service.name }}
