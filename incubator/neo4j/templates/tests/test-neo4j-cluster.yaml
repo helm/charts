@@ -16,6 +16,8 @@ spec:
       env:
         - name: "STATEFULSET_NAME"
           value: "{{ template "neo4j.fullname" . }}"
+        - name: "HTTP_PORT"
+          value: "{{ .Values.httpPort }}"
       command: ["/tools/bats/bats", "-t", "/tests/run.sh"]
       volumeMounts:
       - mountPath: /tests

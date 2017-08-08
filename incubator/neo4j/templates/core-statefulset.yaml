@@ -23,22 +23,27 @@ spec:
             value: CORE
           - name: NUMBER_OF_CORES
             value: "{{ .Values.core.numberOfServers }}"
+          - name: DISCOVERY_PORT
+            value: "{{ .Values.core.discoveryPort }}"
+          - name: TX_PORT
+            value: "{{ .Values.txPort }}"
+          - name: RAFT_PORT
+            value: "{{ .Values.core.raftPort }}"
+          - name: NEO4J_dbms_security_auth__enabled
+            value: "false"
         command:
           - "/bin/bash"
           - "-ecx"
           - |
             export NEO4J_dbms_connectors_default__advertised__address=$(hostname -f)
-            export NEO4J_causal__clustering_discovery__advertised__address=$(hostname -f)::5000
-            export NEO4J_causal__clustering_transaction__advertised__address=$(hostname -f):6000
-            export NEO4J_causal__clustering_raft__advertised__address=$(hostname -f):7000
-
-            echo "causal_clustering.raft_messages_log_enable=true" >> conf/neo4j.conf
-            echo "dbms.security.auth_enabled=false" >> conf/neo4j.conf
+            export NEO4J_causal__clustering_discovery__advertised__address=$(hostname -f):${DISCOVERY_PORT}
+            export NEO4J_causal__clustering_transaction__advertised__address=$(hostname -f):${TX_PORT}
+            export NEO4J_causal__clustering_raft__advertised__address=$(hostname -f):${RAFT_PORT}
 
             STATEFULSET_NAME="{{ template "neo4j.fullname" . }}"
             MEMBERS=""
             for id in $(seq 0 $(($NUMBER_OF_CORES-1))) ; do
-                  token="${STATEFULSET_NAME}-core-$id.${STATEFULSET_NAME}.default.svc.cluster.local:5000"
+                  token="${STATEFULSET_NAME}-core-$id.${STATEFULSET_NAME}.default.svc.cluster.local:${DISCOVERY_PORT}"
                   MEMBERS="${MEMBERS}${MEMBERS:+,}${token}"
             done
 

@@ -43,15 +43,23 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following tables lists the configurable parameters of the Neo4j chart and their default values.
 
-|         Parameter                    |             Description                 |                         Default                          |
-|--------------------------------------|-----------------------------------------|----------------------------------------------------------|
-| `image`                              | Neo4j image                             | `neo4j`                                                  |
-| `imageTag`                           | Neo4j version                           | `{VERSION}`                                              |
-| `imagePullPolicy`                    | Image pull policy                       | `Always` if `imageTag` is `latest`, else `IfNotPresent`. |
-| `core.numberOfServers`               | Number of machines in CORE mode         | `3`                                                      |
-| `readReplica.numberOfServers`        | Number of machines in READ_REPLICA mode | `0`                                                      |
-| `core.persistentVolume.storageClass` | Storage class of backing PVC            | `anything` (uses beta storage class annotation)          |
-| `core.persistentVolume.size`         | Size of data volume                     | `10Gi`                                                   |
+|         Parameter                    |             Description                        |                         Default                          |
+|--------------------------------------|------------------------------------------------|----------------------------------------------------------|
+| `image`                              | Neo4j image                                    | `neo4j`                                                  |
+| `imageTag`                           | Neo4j version                                  | `{VERSION}`                                              |
+| `imagePullPolicy`                    | Image pull policy                              | `Always` if `imageTag` is `latest`, else `IfNotPresent`. |
+| `txPort`                             | Port used for serving transactions to replicas | `6000`                                                   |
+| `httpPort`                           | Port the HTTP server listens on                | `7687`                                                   |
+| `boltPort`                           | Port the Bolt server listens on                | `7474`                                                   |
+| `core.numberOfServers`               | Number of machines in CORE mode                | `3`                                                      |
+| `core.discoveryPort`                 | Port used for cluster discovery                | `5000`                                                   |
+| `core.raftPort`                      | Port used for Raft protocol traffic            | `7000`                                                   |
+| `core.persistentVolume.storageClass` | Storage class of backing PVC                   | `standard` (uses beta storage class annotation)          |
+| `core.persistentVolume.size`         | Size of data volume                            | `10Gi`                                                   |
+| `core.persistentVolume.mountPath`    | Persistent Volume mount root path              | `/data`                                                  |
+| `core.persistentVolume.annotations`  | Persistent Volume Claim annotations            | `{}`                                                     |
+| `readReplica.numberOfServers`        | Number of machines in READ_REPLICA mode        | `0`                                                      |
+| `resources`                          | Resources required (e.g. CPU, memory)          | `{}`                                                     |  
 
 The above parameters map to the env variables defined in the [Neo4j docker image](https://github.com/neo4j/docker-neo4j).
 

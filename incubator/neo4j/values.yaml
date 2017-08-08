@@ -26,13 +26,6 @@ core:
   raftPort: 7000
 
   persistentVolume:
-    ## core server data Persistent Volume access modes
-    ## Must match those of existing PV or dynamic provisioner
-    ## Ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
-    ##
-    accessModes:
-      - ReadWriteOnce
-
     ## core server data Persistent Volume Claim annotations
     ##
     annotations: {}
