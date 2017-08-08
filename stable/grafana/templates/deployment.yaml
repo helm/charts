@@ -25,7 +25,7 @@ spec:
 {{ toYaml .Values.server.nodeSelector | indent 8 }}
   {{- if .Values.server.tolerations }}
       tolerations:
-{{ toYaml .Values.server.tolerations | ident 8 }}
+{{ toYaml .Values.server.tolerations | indent 8 }}
   {{- end }}
       containers:
         - name: {{ template "grafana.name" . }}
