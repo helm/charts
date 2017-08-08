@@ -79,7 +79,7 @@ spec:
             {{- end }}
           ports:
             - name: http
-              containerPort: {{ .Values.service.externalPort }}
+              containerPort: {{ .Values.service.internalPort }}
             {{- if .Values.agent.enabled }}
             - name: agent-listener
               containerPort: {{ .Values.agent.listenerPort }}
