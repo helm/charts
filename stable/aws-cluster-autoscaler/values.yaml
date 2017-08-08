@@ -47,3 +47,7 @@ service:
 skipNodes:
   withLocalStorage: false
   withSystemPods: true
+
+deployment:
+  serviceAccountName: ""
+  tolerations: []
