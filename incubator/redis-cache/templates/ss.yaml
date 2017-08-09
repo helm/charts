@@ -23,14 +23,14 @@ spec:
       terminationGracePeriodSeconds: 60 
       affinity:
         podAntiAffinity:
-        {{- if eq .Values.AntiAffinity "hard" }}
+        {{- if eq .Values.antiAffinity "hard" }}
           requiredDuringSchedulingIgnoredDuringExecution:
           - topologyKey: "kubernetes.io/hostname"
             labelSelector:
               matchLabels:
                 app:  {{ template "name" . }}
                 release: {{ .Release.Name | quote }}
-         {{- else if eq .Values.AntiAffinity "soft" }}
+         {{- else if eq .Values.antiAffinity "soft" }}
           preferredDuringSchedulingIgnoredDuringExecution:
           - weight: 5
             podAffinityTerm:
