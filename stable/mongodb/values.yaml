@@ -21,6 +21,9 @@ image: bitnami/mongodb:3.4.7-r0
 # mongodbPassword:
 # mongodbDatabase:
 
+## Kubernetes service type
+serviceType: ClusterIP
+
 ## Enable persistence using Persistent Volume Claims
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
 ##
