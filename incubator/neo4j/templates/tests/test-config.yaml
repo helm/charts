@@ -63,10 +63,10 @@ data:
       done
 
       # kill a machine and make sure it comes back again
-      # machine_to_kill="${STATEFULSET_NAME}-core-0"
-      # kubectl delete pod ${machine_to_kill}
-      # run check_role ${machine_to_kill}
-      # echo $status
-      # echo $output
-      # [ "$status" -eq 0 ]
+      machine_to_kill="${STATEFULSET_NAME}-core-0"
+      kubectl delete pod ${machine_to_kill}
+      run check_role ${machine_to_kill}
+      echo $status
+      echo $output
+      [ "$status" -eq 0 ]
     }
