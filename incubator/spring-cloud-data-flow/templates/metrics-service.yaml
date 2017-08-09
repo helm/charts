@@ -1,0 +1,15 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: {{ template "shortname" . }}-metrics
+  labels:
+    spring-cloud-service: metrics
+spec:
+  type: {{ .Values.metrics.service.type }}
+  ports:
+    - port: {{ .Values.metrics.service.externalPort }}
+      targetPort: {{ .Values.metrics.service.internalPort }}
+      protocol: TCP
+      name: http
+  selector:
+    name: {{ template "shortname" . }}-metrics
