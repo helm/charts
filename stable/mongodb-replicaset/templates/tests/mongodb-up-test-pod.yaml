@@ -1,6 +1,11 @@
 apiVersion: v1
 kind: Pod
 metadata:
+  labels:
+    app: {{ template "name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
   name: {{ template "fullname" . }}-test
   annotations:
     "helm.sh/hook": test-success
@@ -24,16 +29,21 @@ spec:
       command:
         - /tools/bats/bats
         - -t
-        - /tests/mongo-up-test.sh
+        - /tests/mongodb-up-test.sh
+      env:
+        - name: FULL_NAME
+          value: {{ template "fullname" . }}
+        - name: REPLICAS
+          value: "{{ .Values.replicas }}"
       volumeMounts:
         - name: tools
           mountPath: /tools
         - name: tests
           mountPath: /tests
   volumes:
-  - name: tools
-    emptyDir: {}
-  - name: tests
-    configMap:
-      name: {{ template "fullname" . }}-tests
+    - name: tools
+      emptyDir: {}
+    - name: tests
+      configMap:
+        name: {{ template "fullname" . }}-tests
   restartPolicy: Never
