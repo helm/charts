@@ -12,17 +12,18 @@ rules:
   - apiGroups:
       - ""
     resources:
-      - namespaces
       - pods
     verbs:
+      - get
       - list
       - watch
+      - create
+      - delete
   - apiGroups:
       - ""
     resources:
-      - pods
-      - volumes
+      - pods/exec
+      - pods/log
     verbs:
-      - create
-      - delete
+      - get
 {{- end -}}
