@@ -13,7 +13,7 @@ image: concourse/concourse
 ## Concourse image version.
 ## ref: https://hub.docker.com/r/concourse/concourse/tags/
 ##
-imageTag: "2.6.0"
+imageTag: "3.3.2"
 
 ## Specify a imagePullPolicy: 'Always' if imageTag is 'latest', else set to 'IfNotPresent'.
 ## ref: https://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -173,6 +173,13 @@ concourse:
   ## URL used to reach any ATC from the outside world.
   ##
   # externalURL:
+
+  ## The filesystem driver used by baggageclaim on workers, as of Concourse 3.1 can be values
+  ## "overlay", "btrfs", or "naive". "overlay" is more stable than "btrfs" but is not supported
+  ## on some Linux kernels, while "naive" is most supported but least space efficient. For background see
+  ## https://github.com/concourse/concourse/issues/1230.
+  ##
+  baggageclaimDriver: naive
 
   ## An URL pointing to the Docker registry to use to fetch Docker images.
   ## If unset, this will default to the Docker default
@@ -344,7 +351,7 @@ persistence:
 
     ## Persistent Volume Storage Size.
     ##
-    size: 10Gi
+    size: 20Gi
 
 ## Configuration values for the postgresql dependency.
 ## ref: https://github.com/kubernetes/charts/blob/master/stable/postgresql/README.md
