@@ -43,24 +43,25 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following tables lists the configurable parameters of the RabbitMQ chart and their default values.
 
-|         Parameter          |                       Description                       |                         Default                          |
-|----------------------------|---------------------------------------------------------|----------------------------------------------------------|
-| `image`                    | RabbitMQ image                                          | `bitnami/rabbitmq:{VERSION}`                             |
-| `imagePullPolicy`          | Image pull policy                                       | `Always` if `imageTag` is `latest`, else `IfNotPresent`. |
-| `rabbitmqUsername`         | RabbitMQ application username                           | `user`                                                   |
-| `rabbitmqPassword`         | RabbitMQ application password                           | _random 10 character long alphanumeric string_           |
-| `rabbitmqErlangCookie`     | Erlang cookie                                           | _random 32 character long alphanumeric string_           |
-| `rabbitmqNodePort`         | Node port                                               | `5672`                                                   |
-| `rabbitmqNodeType`         | Node type                                               | `stats`                                                  |
-| `rabbitmqNodeName`         | Node name                                               | `rabbit`                                                 |
-| `rabbitmqClusterNodeName`  | Node name to cluster with. e.g.: `clusternode@hostname` | `nil`                                                    |
-| `rabbitmqVhost`            | RabbitMQ application vhost                              | `/`                                                      |
-| `rabbitmqManagerPort`      | RabbitMQ Manager port                                   | `15672`                                                  |
-| `persistence.enabled`      | Use a PVC to persist data                               | `true`                                                   |
-| `persistence.existingClaim`| Use an existing PVC to persist data                     | `nil`                                                    |
-| `persistence.storageClass` | Storage class of backing PVC                            | `nil` (uses alpha storage class annotation)              |
-| `persistence.accessMode`   | Use volume as ReadOnly or ReadWrite                     | `ReadWriteOnce`                                          |
-| `persistence.size`         | Size of data volume                                     | `8Gi`                                                    |
+|          Parameter          |                       Description                       |                         Default                          |
+|-----------------------------|---------------------------------------------------------|----------------------------------------------------------|
+| `image`                     | RabbitMQ image                                          | `bitnami/rabbitmq:{VERSION}`                             |
+| `imagePullPolicy`           | Image pull policy                                       | `Always` if `imageTag` is `latest`, else `IfNotPresent`. |
+| `rabbitmqUsername`          | RabbitMQ application username                           | `user`                                                   |
+| `rabbitmqPassword`          | RabbitMQ application password                           | _random 10 character long alphanumeric string_           |
+| `rabbitmqErlangCookie`      | Erlang cookie                                           | _random 32 character long alphanumeric string_           |
+| `rabbitmqNodePort`          | Node port                                               | `5672`                                                   |
+| `rabbitmqNodeType`          | Node type                                               | `stats`                                                  |
+| `rabbitmqNodeName`          | Node name                                               | `rabbit`                                                 |
+| `rabbitmqClusterNodeName`   | Node name to cluster with. e.g.: `clusternode@hostname` | `nil`                                                    |
+| `rabbitmqVhost`             | RabbitMQ application vhost                              | `/`                                                      |
+| `rabbitmqManagerPort`       | RabbitMQ Manager port                                   | `15672`                                                  |
+| `serviceType`               | Kubernetes Service type                                 | `ClusterIP`                                              |
+| `persistence.enabled`       | Use a PVC to persist data                               | `true`                                                   |
+| `persistence.existingClaim` | Use an existing PVC to persist data                     | `nil`                                                    |
+| `persistence.storageClass`  | Storage class of backing PVC                            | `nil` (uses alpha storage class annotation)              |
+| `persistence.accessMode`    | Use volume as ReadOnly or ReadWrite                     | `ReadWriteOnce`                                          |
+| `persistence.size`          | Size of data volume                                     | `8Gi`                                                    |
 
 The above parameters map to the env variables defined in [bitnami/rabbitmq](http://github.com/bitnami/bitnami-docker-rabbitmq). For more information please refer to the [bitnami/rabbitmq](http://github.com/bitnami/bitnami-docker-rabbitmq) image documentation.
 
