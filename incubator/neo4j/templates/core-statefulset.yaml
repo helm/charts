@@ -23,42 +23,31 @@ spec:
             value: CORE
           - name: NUMBER_OF_CORES
             value: "{{ .Values.core.numberOfServers }}"
-          - name: DISCOVERY_PORT
-            value: "{{ .Values.core.discoveryPort }}"
-          - name: TX_PORT
-            value: "{{ .Values.txPort }}"
-          - name: RAFT_PORT
-            value: "{{ .Values.core.raftPort }}"
           - name: NEO4J_dbms_security_auth__enabled
             value: "false"
+          - name: NEO4J_causal__clustering_discovery__type
+            value: DNS
+          - name: NEO4J_causal__clustering_initial__discovery__members
+            value: "{{ template "neo4j.fullname" . }}.default.svc.cluster.local:5000"
         command:
           - "/bin/bash"
           - "-ecx"
           - |
             export NEO4J_dbms_connectors_default__advertised__address=$(hostname -f)
-            export NEO4J_causal__clustering_discovery__advertised__address=$(hostname -f):${DISCOVERY_PORT}
-            export NEO4J_causal__clustering_transaction__advertised__address=$(hostname -f):${TX_PORT}
-            export NEO4J_causal__clustering_raft__advertised__address=$(hostname -f):${RAFT_PORT}
-
-            STATEFULSET_NAME="{{ template "neo4j.fullname" . }}"
-            MEMBERS=""
-            for id in $(seq 0 $(($NUMBER_OF_CORES-1))) ; do
-                  token="${STATEFULSET_NAME}-core-$id.${STATEFULSET_NAME}.default.svc.cluster.local:${DISCOVERY_PORT}"
-                  MEMBERS="${MEMBERS}${MEMBERS:+,}${token}"
-            done
-
-            export NEO4J_causal__clustering_initial__discovery__members=$MEMBERS
+            export NEO4J_causal__clustering_discovery__advertised__address=$(hostname -f):5000
+            export NEO4J_causal__clustering_transaction__advertised__address=$(hostname -f):6000
+            export NEO4J_causal__clustering_raft__advertised__address=$(hostname -f):7000
             exec /docker-entrypoint.sh "neo4j"
         ports:
-        - containerPort: {{ .Values.core.discoveryPort }}
+        - containerPort: 5000
           name: discovery
-        - containerPort: {{ .Values.core.raftPort }}
+        - containerPort: 7000
           name: raft
-        - containerPort: {{ .Values.txPort }}
+        - containerPort: 6000
           name: tx
-        - containerPort: {{ .Values.httpPort }}
+        - containerPort: 7474
           name: browser
-        - containerPort: {{ .Values.boltPort }}
+        - containerPort: 7687
           name: bolt
         securityContext:
           privileged: true

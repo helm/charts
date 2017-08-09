@@ -47,13 +47,8 @@ The following tables lists the configurable parameters of the Neo4j chart and th
 |--------------------------------------|------------------------------------------------|----------------------------------------------------------|
 | `image`                              | Neo4j image                                    | `neo4j`                                                  |
 | `imageTag`                           | Neo4j version                                  | `{VERSION}`                                              |
-| `imagePullPolicy`                    | Image pull policy                              | `Always` if `imageTag` is `latest`, else `IfNotPresent`. |
-| `txPort`                             | Port used for serving transactions to replicas | `6000`                                                   |
-| `httpPort`                           | Port the HTTP server listens on                | `7687`                                                   |
-| `boltPort`                           | Port the Bolt server listens on                | `7474`                                                   |
+| `imagePullPolicy`                    | Image pull policy                              | `IfNotPresent`                                           |
 | `core.numberOfServers`               | Number of machines in CORE mode                | `3`                                                      |
-| `core.discoveryPort`                 | Port used for cluster discovery                | `5000`                                                   |
-| `core.raftPort`                      | Port used for Raft protocol traffic            | `7000`                                                   |
 | `core.persistentVolume.storageClass` | Storage class of backing PVC                   | `standard` (uses beta storage class annotation)          |
 | `core.persistentVolume.size`         | Size of data volume                            | `10Gi`                                                   |
 | `core.persistentVolume.mountPath`    | Persistent Volume mount root path              | `/data`                                                  |

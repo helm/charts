@@ -15,10 +15,10 @@ data:
         name=$1
         end="$((SECONDS+90))"
         while true; do
-          echo "testing http://$name:${HTTP_PORT}/db/data"
-          out=`wget http://$name:${HTTP_PORT}/db/data -O - 2>&1`
+          echo "testing http://$name:7474/db/data"
+          out=`wget http://$name:7474/db/data -O - 2>&1`
           echo "out: $out"
-          wget http://$name:${HTTP_PORT}/db/data -O - 2>&1
+          wget http://$name:7474/db/data -O - 2>&1
           response_code=$?
           echo "response: $response_code"
           [[ "0" = "$response_code" ]] && break
