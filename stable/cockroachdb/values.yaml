@@ -21,3 +21,6 @@ Resources:
 Storage: "1Gi"
 StorageClass: "anything"
 ClusterDomain: "cluster.local"
+NetworkPolicy:
+  Enabled: false
+  AllowExternal: true
