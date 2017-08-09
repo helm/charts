@@ -13,9 +13,18 @@
 
 {{- if contains "NodePort" .Values.serviceType }}
 
-    export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "fullname" . }})
     export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
-    echo amqp://$NODE_IP:$NODE_PORT/
+    export NODE_PORT_AMQP=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[1].nodePort}" services {{ template "fullname" . }})
+    export NODE_PORT_STATS=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[3].nodePort}" services {{ template "fullname" . }})
+
+  To Access the RabbitMQ AMQP port:
+
+    echo amqp://$NODE_IP:$NODE_PORT_AMQP/
+
+  To Access the RabbitMQ Management interface:
+
+    echo http://$NODE_IP:$NODE_PORT_STATS/
+
 {{- else if contains "LoadBalancer" .Values.serviceType }}
 
   NOTE: It may take a few minutes for the LoadBalancer IP to be available.
