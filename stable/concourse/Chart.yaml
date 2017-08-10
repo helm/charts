@@ -11,6 +11,8 @@ sources:
   - https://github.com/concourse/bin
   - https://github.com/kubernetes/charts
 maintainers:
-  - name: Ferran Rodenas
+  - name: frodenas
     email: frodenas@gmail.com
+  - name: viglesiasce
+    email: viglesias@google.com
 engine: gotpl
