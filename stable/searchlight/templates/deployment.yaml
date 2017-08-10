@@ -1,0 +1,70 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app: "{{ template "name" . }}"
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: "{{ template "name" . }}"
+        release: "{{ .Release.Name }}"
+    spec:
+      containers:
+      - name: operator
+        image: {{ .Values.operator.image }}:{{ .Values.operator.tag }}
+        imagePullPolicy: '{{ .Values.operator.pullPolicy }}'
+        args:
+        - run
+        - --icinga-secret-name={{ template "fullname" . }}
+        - --icinga-secret-namespace={{ .Release.Namespace }}
+        - --v=3
+        ports:
+        - containerPort: 56790
+          name: http
+          protocol: TCP
+      - name: icinga
+        image: {{ .Values.icinga.image }}:{{ .Values.icinga.tag }}
+        imagePullPolicy: '{{ .Values.ido.pullPolicy }}'
+        ports:
+        - containerPort: 5665
+          name: api
+          protocol: TCP
+        - containerPort: 80
+          name: web
+          protocol: TCP
+        volumeMounts:
+        - mountPath: /var/pv
+          name: data-volume
+        - mountPath: /var/db-script
+          name: script-volume
+        - mountPath: /srv/icinga2/secrets
+          name: searchlight-icinga
+      - name: ido
+        image: {{ .Values.ido.image }}:{{ .Values.ido.tag }}
+        imagePullPolicy: '{{ .Values.ido.pullPolicy }}'
+        args:
+        - basic
+        - ./setup-db.sh
+        ports:
+        - containerPort: 5432
+          name: ido
+          protocol: TCP
+        volumeMounts:
+        - mountPath: /var/pv
+          name: data-volume
+        - mountPath: /var/db-script
+          name: script-volume
+      volumes:
+      - emptyDir: {}
+        name: data-volume
+      - emptyDir: {}
+        name: script-volume
+      - name: searchlight-icinga
+        secret:
+          secretName: {{ template "fullname" . }}

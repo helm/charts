@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    app: "{{ template "name" . }}"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  ports:
+  - name: web
+    port: 80
+    targetPort: web
+  - name: api
+    port: 5665
+    targetPort: api
+  - name: http
+    port: 56790
+    protocol: TCP
+    targetPort: http
+  selector:
+    app: "{{ template "name" . }}"
+    release: "{{ .Release.Name }}"
