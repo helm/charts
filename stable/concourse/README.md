@@ -112,6 +112,12 @@ The following tables lists the configurable parameters of the Concourse chart an
 | `concourse.githubAuthAuthUrl` | Override default endpoint AuthURL for Github Enterprise | `nil` |
 | `concourse.githubAuthTokenUrl` | Override default endpoint TokenURL for Github Enterprise | `nil` |
 | `concourse.githubAuthApiUrl` | Override default API endpoint URL for Github Enterprise | `nil` |
+| `concourse.gitlabAuthClientId` | Application client ID for enabling GitLab OAuth | `nil` |
+| `concourse.gitlabAuthClientSecret` | Application client secret for enabling GitLab OAuth | `nil` |
+| `concourse.gitlabAuthGroup` | GitLab groups (comma separated) whose members will have access | `nil` |
+| `concourse.gitlabAuthAuthUrl` | Endpoint AuthURL for GitLab server | `nil` |
+| `concourse.gitlabAuthTokenUrl` | Endpoint TokenURL for GitLab server | `nil` |
+| `concourse.gitlabAuthApiUrl` | API endpoint URL for GitLab server | `nil` |
 | `concourse.genericOauthDisplayName` | Name for this auth method on the web UI | `nil` |
 | `concourse.genericOauthClientId` | Application client ID for enabling generic OAuth | `nil` |
 | `concourse.genericOauthClientSecret` | Application client secret for enabling generic OAuth | `nil` |

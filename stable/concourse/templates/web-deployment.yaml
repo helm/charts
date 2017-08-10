@@ -155,6 +155,38 @@ spec:
                 configMapKeyRef:
                   name: {{ template "concourse.fullname" . }}
                   key: github-auth-api-url
+            - name: CONCOURSE_GITLAB_AUTH_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.fullname" . }}
+                  key: gitlab-auth-client-id
+            - name: CONCOURSE_GITLAB_AUTH_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.fullname" . }}
+                  key: gitlab-auth-client-secret
+            {{- if .Values.concourse.gitlabAuthGroup }}
+            - name: CONCOURSE_GITLAB_AUTH_GROUP
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "concourse.fullname" . }}
+                  key: gitlab-auth-group
+            {{- end }}
+            - name: CONCOURSE_GITLAB_AUTH_AUTH_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "concourse.fullname" . }}
+                  key: gitlab-auth-auth-url
+            - name: CONCOURSE_GITLAB_AUTH_TOKEN_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "concourse.fullname" . }}
+                  key: gitlab-auth-token-url
+            - name: CONCOURSE_GITLAB_AUTH_API_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "concourse.fullname" . }}
+                  key: gitlab-auth-api-url
             - name: CONCOURSE_GENERIC_OAUTH_DISPLAY_NAME
               valueFrom:
                 configMapKeyRef:

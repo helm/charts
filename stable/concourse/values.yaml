@@ -222,6 +222,30 @@ concourse:
   ##
   # githubAuthApiUrl:
 
+  ## Application client ID for enabling GitLab OAuth.
+  ##
+  # gitlabAuthClientId:
+
+  ## Application client secret for enabling GitLab OAuth.
+  ##
+  # gitlabAuthClientSecret:
+
+  ## GitLab Group (comma separated) whose members will have access.
+  ##
+  # gitlabAuthGroup:
+
+  ## Endpoint AuthURL for Gitlab server.
+  ##
+  # gitlabAuthAuthUrl:
+
+  ## Endpoint TokenURL for Gitlab server.
+  ##
+  # gitlabAuthTokenUrl:
+
+  ## API endpoint URL for Github server.
+  ##
+  # gitlabAuthApiUrl:
+
   ## Name for this auth method on the web UI.
   ##
   # genericOauthDisplayName:
