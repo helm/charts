@@ -51,6 +51,20 @@ spec:
                   name: {{ template "concourse.fullname" . }}
                   key: postgresql-uri
             {{ end }}
+            {{ if .Values.encryptionKey }}
+            - name: CONCOURSE_ENCRYPTION_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.fullname" . }}
+                  key: encryption-key
+            {{ end }}
+            {{ if .Values.oldEncryptionKey }}
+            - name: CONCOURSE_OLD_ENCRYPTION_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.fullname" . }}
+                  key: old-encryption-key
+            {{ end }}
             - name: POD_IP
               valueFrom:
                 fieldRef:
