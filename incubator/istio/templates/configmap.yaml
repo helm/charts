@@ -1,3 +1,4 @@
+{{- if not .Values.pilot.customConfigMap }}
 {{- $serviceName := include "fullname" . -}}
 apiVersion: v1
 kind: ConfigMap
@@ -10,7 +11,8 @@ data:
 {{ if .Values.auth.enabled }}
     authPolicy: MUTUAL_TLS
 {{ end }}
-    mixerAddress: {{ template "fullname" . }}-mixer:{{ .Values.mixer.service.externalTcpPort }}
-    discoveryAddress: {{ template "fullname" . }}-manager:{{ .Values.manager.service.externalHttpDiscovery }}
-    ingressService: {{ template "fullname" . }}-ingress
-    zipkinAddress: {{ template "fullname" . }}-zipkin:{{ .Values.addons.zipkin.service.externalPort }}
+    mixerAddress: {{ $serviceName }}-{{ .Values.mixer.deployment.name }}:{{ .Values.mixer.service.externalTcpPort }}
+    discoveryAddress: {{ .Values.pilot.name }}:{{ .Values.pilot.service.externalHttpDiscovery }}
+    ingressService: istio-ingress
+    zipkinAddress: {{ $serviceName }}-{{ .Values.addons.zipkin.deployment.name }}:{{ .Values.addons.zipkin.service.externalPort }}
+{{- end -}}

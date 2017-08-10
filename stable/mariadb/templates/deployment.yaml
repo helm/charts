@@ -78,6 +78,19 @@ spec:
           timeoutSeconds: 1
         resources:
 {{ toYaml .Values.resources | indent 10 }}
+{{- if .Values.metrics.enabled }}
+      - name: metrics
+        image: "{{ .Values.metrics.image }}:{{ .Values.metrics.imageTag }}"
+        imagePullPolicy: {{ .Values.metrics.imagePullPolicy | quote }}
+        env:
+        - name: DATA_SOURCE_NAME
+          value: "root:{{ .Values.mariadbRootPassword }}@(localhost:3306)/"
+        ports:
+        - name: metrics
+          containerPort: 9104
+        resources:
+{{ toYaml .Values.metrics.resources | indent 10 }}
+{{- end }}
         volumeMounts:
         - name: data
           mountPath: /bitnami/mariadb

@@ -20,6 +20,9 @@ metadata:
   {{- end }}
 spec:
   type: {{ .Values.serviceType }}
+  {{- if .Values.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.loadBalancerIP }}
+  {{- end }}
   selector:
     app: {{ template "fullname" . }}
   ports:

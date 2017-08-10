@@ -61,6 +61,11 @@ The following tables lists the configurable parameters of the MariaDB chart and 
 | `persistence.size`          | Size of data volume                        | `8Gi`                                       |
 | `resources`                 | CPU/Memory resource requests/limits        | Memory: `256Mi`, CPU: `250m`                |
 | `config`                    | Multi-line string for my.cnf configuration | `nil`                                       |
+| `metrics.enabled`           | Start a side-car prometheus exporter       | `false`                                     |
+| `metrics.image`             | Exporter image                             | `prom/mysqld-exporter`                      |
+| `metrics.imageTag`          | Exporter image                             | `v0.10.0`                                   |
+| `metrics.imagePullPolicy`   | Exporter image pull policy                 | `IfNotPresent`                              |
+| `metrics.resources`         | Exporter resource requests/limit           | `nil`                                       |
 
 The above parameters map to the env variables defined in [bitnami/mariadb](http://github.com/bitnami/bitnami-docker-mariadb). For more information please refer to the [bitnami/mariadb](http://github.com/bitnami/bitnami-docker-mariadb) image documentation.
 
@@ -134,7 +139,7 @@ spec:
 
 The [Bitnami MariaDB](https://github.com/bitnami/bitnami-docker-mariadb) image stores the MariaDB data and configurations at the `/bitnami/mariadb` path of the container.
 
-The chart mounts a [Persistent Volume](kubernetes.io/docs/user-guide/persistent-volumes/) volume at this location. The volume is created using dynamic volume provisioning, by default. An existing PersistentVolumeClaim can be defined.
+The chart mounts a [Persistent Volume](http://kubernetes.io/docs/user-guide/persistent-volumes/) volume at this location. The volume is created using dynamic volume provisioning, by default. An existing PersistentVolumeClaim can be defined.
 
 ### Existing PersistentVolumeClaims
 
@@ -144,3 +149,7 @@ The chart mounts a [Persistent Volume](kubernetes.io/docs/user-guide/persistent-
 ```bash
 $ helm install --set persistence.existingClaim=PVC_NAME postgresql
 ```
+
+## Metrics
+
+The chart can optionally start a metrics exporter endpoint on port `9104` for [prometheus](https://prometheus.io). The data exposed by the endpoint is intended to be consumed by a prometheus chart deployed within the cluster and as such the endpoint is not exposed outside the cluster.

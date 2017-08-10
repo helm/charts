@@ -24,7 +24,7 @@ spec:
           name: "{{ template "fullname" . }}-config"
       containers:
       - name: {{ .Values.linkerd.name }}
-        image: {{ .Values.linkerd.image}}
+        image: {{ .Values.linkerd.image }}
         env:
         - name: POD_IP
           valueFrom:
@@ -55,7 +55,7 @@ spec:
           mountPath: "/io.buoyant/linkerd/config"
           readOnly: true
       - name: kubectl
-        image: {{ .Values.kubectl.image}}
+        image: {{ .Values.kubectl.image }}
         args:
         - "proxy"
         - "-p"

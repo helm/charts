@@ -4,7 +4,7 @@
 
 ## TL;DR;
 
-> **Note**: Istio manager currently looks for hardcoded configmap of name "istio" in the installed namespace which means that you can only install the chart once per namespace.
+> **Note**: Istio pilot currently looks for hardcoded configmap of name "istio" in the installed namespace which means that you can only install the chart once per namespace.
 
 ```console
 $ helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
@@ -18,10 +18,24 @@ This chart bootstraps a [Istio](https://istio.io/) deployment on a [Kubernetes](
 ## Prerequisites
 
 - Kubernetes 1.5+
-- istioctl - See installation steps [here](https://istio.io/docs/tasks/installing-istio.html#installation-steps)
+- istioctl
+
+### istioctl installation steps
+
+Run
+```console
+curl -L https://git.io/getIstio | sh -
+```
+to download and extract the latest release automatically (on MacOS and Ubuntu), the `istioctl` client will be added to your PATH by the above shell command.
 
 ## RBAC
-By default the chart will install the associated RBAC roles and rolebindings using beta annotations.
+By default the chart is installed without associated RBAC roles and rolebindings. If you would like to install the provided roles and rolebindings please do the following:
+
+```
+$ helm install incubator/istio --set rbac.install=true
+```
+
+This will install the associated RBAC roles and rolebindings using beta annotations.
 
 To determine if your cluster supports this running the following:
 
@@ -42,18 +56,17 @@ If the output contains "beta" or both "alpha" and "beta" you can proceed with no
 By default the RBAC resources are generated with the "v1beta1" apiVersion. To use "v1alpha1" do the following:
 
 ```console
-$ helm install --name my-release incubator/istio --set rbac.apiVersion=v1alpha1
+$ helm install --name my-release incubator/istio --set rbac.install=true,rbac.apiVersion=v1alpha1
 ```
-
 
 If it does not. Follow the steps below to disable.
 
 ### Disable RBAC role/rolebinding creation
 
-To disable the creation of RBAC resources (On clusters without RBAC or if you would like to manage the creation outside the scope of this chart). Do the following:
+If you don't want the RBAC roles and bindings to be created by the installation of this chart simply install the default chart.
 
 ```console
-$ helm install --name my-release incubator/istio --set rbac.install=false
+$ helm install --name my-release incubator/istio
 ```
 
 ## Installing the Chart
@@ -100,6 +113,15 @@ Alternatively, a YAML file that specifies the values for the above parameters ca
 
 ```console
 $ helm install incubator/istio --name my-release -f values.yaml
+```
+
+## Custom ConfigMap
+
+When creating a new chart with this chart as a dependency, customConfigMap can be used to override the default config map provided. To use, set the value to true and provide the file `templates/configmap.yaml` for your use case. If you start by copying `configmap.yaml` from this chart and want to access values from this chart you must change all references from `.Values` to `.Values.istio`.
+
+```
+pilot:
+  customConfigMap: true
 ```
 
 ### Addons

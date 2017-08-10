@@ -14,7 +14,7 @@
 {{- else if contains "LoadBalancer" .Values.Master.ServiceType }}
   NOTE: It may take a few minutes for the LoadBalancer IP to be available.
         You can watch the status of by running 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "fullname" . }}'
-  export SERVICE_IP=$(kubectl get svc {{ template "fullname" . }} --namespace {{ .Release.Namespace }} --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "fullname" . }} --template "{{ "{{ range (index .status.loadBalancer.ingress 0) }}{{ . }}{{ end }}" }}")
   echo http://$SERVICE_IP:{{ .Values.Master.ServicePort }}/login
 
 {{- else if contains "ClusterIP"  .Values.Master.ServiceType }}
@@ -36,4 +36,10 @@ https://cloud.google.com/solutions/jenkins-on-container-engine
 ######   WARNING: Persistence is disabled!!! You will lose your data when   #####
 ######            the Jenkins pod is terminated.                            #####
 #################################################################################
+{{- end }}
+
+{{- if .Values.rbac.install }}
+Configure the Kubernetes plugin in Jenkins to use the following Service Account name {{ template "fullname" . }} using the following steps:
+  Create a Jenkins credential of type Kubernetes service account with service account name {{ template "fullname" . }}
+  Under configure Jenkins -- Update the credentials config in the cloud section to use the service account credential you created in the step above.
 {{- end }}
