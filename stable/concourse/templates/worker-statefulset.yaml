@@ -28,7 +28,9 @@ spec:
                       "values": ["{{ template "worker.fullname" . }}"]
                     }]
                   },
-                  "topologyKey": "kubernetes.io/hostname"
+                  "podAffinityTerm": {
+                    "topologyKey": "kubernetes.io/hostname"
+                  }
                 }
               ]
             }
