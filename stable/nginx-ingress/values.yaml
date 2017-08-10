@@ -77,6 +77,11 @@ controller:
     loadBalancerIP: ""
     loadBalancerSourceRanges: []
 
+    ## Set external traffic policy to: "Local" to preserve source IP on
+    ## providers supporting it
+    ## Ref: https://kubernetes.io/docs/tutorials/services/source-ip/#source-ip-for-services-with-typeloadbalancer
+    externalTrafficPolicy: ""
+
     targetPorts:
       http: 80
       https: 443
