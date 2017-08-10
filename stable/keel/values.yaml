@@ -1,0 +1,86 @@
+# Default values for keel.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+image:
+  repository: karolisr/keel
+  tag: 0.4.2
+  pullPolicy: IfNotPresent
+
+# Polling is enabled by default,
+# you can disable it setting value below to false
+polling:
+  enabled: true
+
+# Helm provider support
+helmProvider:
+  enabled: false
+
+# Google Container Registry
+# GCP Project ID
+gcr:
+  enabled: false
+  projectId:  ""
+  pubSub:
+    enabled: false
+
+# Webhook Notification
+# Remote webhook endpoint for notification delivery
+webhook:
+  enabled: false
+  endpoint: ""
+
+# Slack Notification
+slack:
+  enabled: false
+  token: ""
+  channel: ""
+
+# Keel service
+# Enable to receive webhooks from Docker registries
+service:
+  enabled: false
+  type: LoadBalancer
+  externalPort: 9300
+
+# Webhook Relay service
+# If you don’t want to expose your Keel service, you can use https://webhookrelay.com/
+# which can deliver webhooks to your internal Keel service through Keel sidecar container.
+webhookRelay:
+  enabled: false
+  # webhookrelay.com credentials
+  key: ""
+  secret: ""
+  bucket: ""
+  # webhookrelay docker image
+  image:
+    repository: webhookrelay/webhookrelayd
+    tag: 0.2.7
+    pullPolicy: IfNotPresent
+
+# Keel self-update
+# Comment lines below if you do not want Keel to automaticly
+# self-update to the latest release version
+keel:
+  # keel policy (all/major/minor/patch/force)
+  policy: all
+  # trigger type, defaults to events such as pubsub, webhooks
+  trigger: poll
+  # polling schedule
+  pollSchedule: "@every 3m"
+  # images to track and update
+  images:
+   - repository: image.repository
+     tag: image.tag
+
+# Resources
+#resources:
+#  limits:
+#    cpu: 100m
+#    memory: 128Mi
+#  requests:
+#    cpu: 50m
+#    memory: 64Mi
+
+# NodeSelector
+nodeSelector: {}

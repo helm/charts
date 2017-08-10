@@ -1,7 +1,7 @@
 # MongoDB Helm Chart
 
 ## Prerequisites Details
-* Kubernetes 1.5+ with Beta APIs enabled.
+* Kubernetes 1.6+ with Beta APIs enabled.
 * PV support on the underlying infrastructure.
 
 ## StatefulSet Details
