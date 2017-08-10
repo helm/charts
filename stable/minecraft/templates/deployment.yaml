@@ -98,7 +98,7 @@ spec:
         - name: rcon
           containerPort: {{ .Values.minecraftServer.rcon.port }}
           protocol: TCP
-        {{- end}}
+        {{- end }}
         volumeMounts:
         - name: datadir
           mountPath: /data
@@ -106,7 +106,7 @@ spec:
       - name: datadir
       {{- if .Values.persistence.dataDir.enabled }}
         persistentVolumeClaim:
-          claimName: {{template "fullname" .}}-datadir
+          claimName: {{ template "fullname" . }}-datadir
       {{- else }}
         emptyDir: {}
       {{- end }}

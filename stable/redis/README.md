@@ -60,6 +60,8 @@ The following tables lists the configurable parameters of the Redis chart and th
 | `metrics.imageTag`         | Exporter image                        | `v0.11`                                                   |
 | `metrics.imagePullPolicy`  | Exporter image pull policy            | `IfNotPresent`                                            |
 | `metrics.resources`        | Exporter resource requests/limit      | Memory: `256Mi`, CPU: `100m`                              |
+| `nodeSelector`             | Node labels for pod assignment        | {}                                                        |
+| `tolerations`              | Toleration labels for pod assignment  | []                                                        |
 
 The above parameters map to the env variables defined in [bitnami/redis](http://github.com/bitnami/bitnami-docker-redis). For more information please refer to the [bitnami/redis](http://github.com/bitnami/bitnami-docker-redis) image documentation.
 

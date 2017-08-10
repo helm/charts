@@ -13,6 +13,14 @@ spec:
       labels:
         app: {{ template "fullname" . }}
     spec:
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- end }}
+      {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+      {{- end }}
       containers:
       - name: {{ template "fullname" . }}
         image: "{{ .Values.image }}"
@@ -57,11 +65,13 @@ spec:
         env:
         - name: REDIS_ALIAS
           value: {{ template "fullname" . }}
+        {{- if .Values.usePassword }}
         - name: REDIS_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ template "fullname" . }}
               key: redis-password
+        {{- end }}
         ports:
         - name: metrics
           containerPort: 9121

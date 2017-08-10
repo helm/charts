@@ -11,7 +11,7 @@ host:
 
 image:
   repository: jtblin/kube2iam
-  tag: 0.2.2
+  tag: 0.6.4
   pullPolicy: IfNotPresent
 
 ## Node labels for pod assignment
@@ -23,6 +23,15 @@ nodeSelector: {}
 ##
 podAnnotations: {}
 
+rbac:
+  ## If true, create & use RBAC resources
+  ##
+  create: false
+
+  ## Ignored if rbac.create is true
+  ##
+  serviceAccountName: default
+
 resources: {}
   # limits:
   #   cpu: 4m
@@ -30,5 +39,10 @@ resources: {}
   # requests:
   #   cpu: 4m
   #   memory: 16Mi
+
+## Strategy for DaemonSet updates (requires Kubernetes 1.6+)
+## Ref: https://kubernetes.io/docs/tasks/manage-daemon/update-daemon-set/
+##
+updateStrategy: OnDelete
 
 verbose: false

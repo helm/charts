@@ -11,6 +11,9 @@ data:
   traefik.toml: |
     # traefik.toml
     logLevel = "INFO"
+    {{- if .Values.debug.enabled }}
+    debug = true
+    {{- end }}
     {{- if .Values.ssl.enabled }}
     defaultEntryPoints = ["http","https"]
     {{- else }}
@@ -46,6 +49,13 @@ data:
       {{- if .Values.kubernetes.labelSelector }}
     labelselector = {{ .Values.kubernetes.labelSelector | quote }}
       {{- end}}
+    {{- end}}
+    {{- if .Values.accessLogs.enabled }}
+    [accessLogs]
+    {{- if .Values.accessLogs.filePath }}
+    filePath = "{{ .Values.accessLogs.filePath }}"
+    {{- end}}
+    format = "{{ .Values.accessLogs.format }}"
     {{- end}}
     {{- if .Values.acme.enabled }}
     [acme]

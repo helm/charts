@@ -1,12 +1,15 @@
 # Default values for Traefik
 image: traefik
-imageTag: 1.3.1
+imageTag: 1.3.4
 serviceType: LoadBalancer
+loadBalancerIP:
 replicas: 1
 cpuRequest: 100m
 memoryRequest: 20Mi
 cpuLimit: 100m
 memoryLimit: 30Mi
+debug:
+  enabled: false
 nodeSelector: {}
   #key: value
 tolerations: []
@@ -49,6 +52,11 @@ service:
   #   key: value
 gzip:
   enabled: true
+accessLogs:
+  enabled: false
+  ## Path to the access logs file. If not provided, Traefik defaults it to stdout.
+  # filePath: ""
+  format: common  # choices are: common, json
 # Kubernetes ingress filters
 #kubernetes:
 #  namespaces:

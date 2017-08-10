@@ -34,4 +34,4 @@ data:
       servers:
       - ip: 0.0.0.0
         port: 4140
-{{ end}}
+{{ end }}

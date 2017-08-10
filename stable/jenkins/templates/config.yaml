@@ -9,7 +9,7 @@ data:
     <?xml version='1.0' encoding='UTF-8'?>
     <hudson>
       <disabledAdministrativeMonitors/>
-      <version>{{.Values.Master.ImageTag}}</version>
+      <version>{{ .Values.Master.ImageTag }}</version>
       <numExecutors>0</numExecutors>
       <mode>NORMAL</mode>
       <useSecurity>{{ .Values.Master.UseSecurity }}</useSecurity>
@@ -35,7 +35,7 @@ data:
               <name>default</name>
               <instanceCap>2147483647</instanceCap>
               <idleMinutes>0</idleMinutes>
-              <label>{{.Release.Name}}-{{.Values.Agent.Component}}</label>
+              <label>{{ .Release.Name }}-{{ .Values.Agent.Component }}</label>
               <nodeSelector></nodeSelector>
               <volumes>
 {{- range $index, $volume := .Values.Agent.volumes }}
@@ -142,7 +142,7 @@ data:
 {{- end }}
 {{- range $key, $val := .Values.Master.InitScripts }}
   init{{ $key }}.groovy: |-
-{{ $val | indent 4}}
+{{ $val | indent 4 }}
 {{- end }}
   plugins.txt: |-
 {{- if .Values.Master.InstallPlugins }}
