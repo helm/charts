@@ -2,8 +2,9 @@
 image: traefik
 imageTag: 1.3.4
 serviceType: LoadBalancer
-loadBalancerIP:
-#loadBalancerSourceRanges: []
+loadBalancer:
+  IP:
+  #sourceRanges: []
 replicas: 1
 cpuRequest: 100m
 memoryRequest: 20Mi
