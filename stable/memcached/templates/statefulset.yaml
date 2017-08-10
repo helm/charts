@@ -20,16 +20,23 @@ spec:
     spec:
       affinity:
         podAntiAffinity:
+        {{- if eq .Values.AntiAffinity "hard" }}
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - topologyKey: "kubernetes.io/hostname"
+            labelSelector:
+              matchLabels:
+                app:  {{ template "fullname" . }}
+                release: {{ .Release.Name | quote }}
+        {{- else if eq .Values.AntiAffinity "soft" }}
           preferredDuringSchedulingIgnoredDuringExecution:
           - weight: 5
             podAffinityTerm:
+            - topologyKey: "kubernetes.io/hostname"
               labelSelector:
-                matchExpressions:
-                - key: app
-                  operator: In
-                  values:
-                  -  "{{ template "fullname" . }}"  
-              topologyKey: "kubernetes.io/hostname"
+                matchLabels:
+                  app:  {{ template "fullname" . }}
+                  release: {{ .Release.Name | quote }}
+        {{- end }}
       containers:
       - name: {{ template "fullname" . }}
         image: {{ .Values.image }}

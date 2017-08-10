@@ -94,6 +94,9 @@ mariadb:
 ##
 serviceType: LoadBalancer
 
+## Allow health checks to be pointed at the https port
+healthcheckHttps: false
+
 ## Configure ingress resource that allow you to access the
 ## Wordpress instalation. Set up the URL
 ## ref: http://kubernetes.io/docs/user-guide/ingress/

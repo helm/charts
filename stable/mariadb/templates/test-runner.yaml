@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: {{ template "fullname" . }}-test
+  name: "{{ template "fullname" . }}-test-{{ randAlphaNum 5 | lower }}"
   annotations:
     "helm.sh/hook": test-success
     "pod.beta.kubernetes.io/init-containers": '[
@@ -20,18 +20,27 @@ metadata:
     ]'
 spec:
   containers:
-    - name: mongo
-      image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
-      command: ["/tools/bats/bats", "-t", "/tests/mongo-up-test.sh"]
+    - name: mariadb-test
+      image: {{.Values.image}}
+      command: ["/tools/bats/bats", "-t", "/tests/run.sh"]
+      {{- if .Values.usePassword }}
+      env:
+        - name: MARIADB_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "fullname" . }}
+              key: mariadb-root-password
+      {{- end }}
       volumeMounts:
-        - name: tools
-          mountPath: /tools
-        - name: tests
-          mountPath: /tests
+      - mountPath: /tests
+        name: tests
+        readOnly: true
+      - mountPath: /tools
+        name: tools
   volumes:
-  - name: tools
-    emptyDir: {}
   - name: tests
     configMap:
       name: {{ template "fullname" . }}-tests
+  - name: tools
+    emptyDir: {}
   restartPolicy: Never
