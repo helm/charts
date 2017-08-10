@@ -23,6 +23,12 @@ spec:
   {{- if .Values.loadBalancerIP }}
   loadBalancerIP: {{ .Values.loadBalancerIP }}
   {{- end }}
+  {{- if .Values.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+    {{- range $cidr := .Values.loadBalancerSourceRanges }}
+    - {{ $cidr }}
+    {{- end }}
+  {{- end }}
   selector:
     app: {{ template "fullname" . }}
   ports:
