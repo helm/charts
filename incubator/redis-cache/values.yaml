@@ -4,7 +4,7 @@
 
 ##Statefulset related configurations ss.yaml
 antiAffinity : "hard"
-replicaCount: 2
+replicaCount: 3
 redis:
   image:
     repository: redis
