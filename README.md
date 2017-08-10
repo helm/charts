@@ -5,7 +5,7 @@ Use this repository to submit official Charts for Kubernetes Helm. Charts are cu
 
 ## How do I install these charts?
 
-Just `helm install stable/<chart>`. This is the default repository for Helm and is installed by default.
+Just `helm install stable/<chart>`. This is the default repository for Helm which is located at https://kubernetes-charts.storage.googleapis.com/ and is installed by default.
 
 For more information on using Helm, refer to the [Helm's documentation](https://github.com/kubernetes/helm#docs).
 

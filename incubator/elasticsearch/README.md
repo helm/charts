@@ -3,7 +3,7 @@
 This image is using Fabric8's great [kubernetes discovery
 plugin](https://github.com/fabric8io/elasticsearch-cloud-kubernetes) for
 elasticsearch and their
-[image](https://hub.docker.com/r/fabric8/elasticsearch-k8s/) as parent.
+[image](https://hub.docker.com/r/jetstack/elasticsearch-pet/) as parent.
 
 ## Prerequisites Details
 
@@ -72,6 +72,7 @@ The following tables lists the configurable parameters of the elasticsearch char
 | `data.storage`                       | Data persistent volume size             | `30Gi`                              |
 | `data.storageClass`                  | Data persistent volume Class            | `nil`                               |
 | `data.terminationGracePeriodSeconds` | Data termination grace period (seconds) | `3600`                              |
+| `data.antiAffinity`                  | Data anti-affinity policy               | `soft`                              |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 

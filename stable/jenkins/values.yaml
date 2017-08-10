@@ -16,6 +16,8 @@ Master:
   Memory: "256Mi"
 # Set min/max heap here if needed with:
 # JavaOpts: "-Xms512m -Xmx512m"
+# JenkinsOpts: ""
+# JenkinsUriPrefix: "/jenkins"
   ServicePort: 8080
 # For minikube, set this to NodePort, elsewhere use LoadBalancer
 # Use ClusterIP if your setup includes ingress controller
@@ -119,6 +121,7 @@ NetworkPolicy:
 ## Install Default RBAC roles and bindings
 rbac:
   install: false
+  serviceAccount: default
   # RBAC api version (currently either v1beta1 or v1alpha1)
   apiVersion: v1beta1
   # Cluster role reference
