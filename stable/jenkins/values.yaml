@@ -89,6 +89,9 @@ Agent:
   # - type: Secret
   #   secretName: mysecret
   #   mountPath: /var/myapp/mysecret
+  NodeSelector: {}
+  # Key Value selectors. Ex:
+  # jenkins-agent: v1
 
 Persistence:
   Enabled: true
