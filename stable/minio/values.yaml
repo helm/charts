@@ -3,7 +3,7 @@
 ## Distributed Minio ref: https://docs.minio.io/docs/distributed-minio-quickstart-guide
 ##
 image: "minio/minio"
-imageTag: "RELEASE.2017-06-13T19-01-01Z"
+imageTag: "RELEASE.2017-07-24T18-27-35Z"
 imagePullPolicy: "Always"
 mode: "standalone"
 
