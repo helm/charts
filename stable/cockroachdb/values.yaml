@@ -5,7 +5,7 @@
 
 Name: "cockroachdb"
 Image: "cockroachdb/cockroach"
-ImageTag: "v1.0.1"
+ImageTag: "v1.0.3"
 ImagePullPolicy: "Always"
 BootstrapImage: "cockroachdb/cockroach-k8s-init"
 BootstrapImageTag: "0.2"
@@ -21,3 +21,6 @@ Resources:
 Storage: "1Gi"
 StorageClass: "anything"
 ClusterDomain: "cluster.local"
+NetworkPolicy:
+  Enabled: false
+  AllowExternal: true

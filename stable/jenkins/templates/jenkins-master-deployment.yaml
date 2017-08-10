@@ -61,6 +61,7 @@ spec:
       {{- end }}
       securityContext:
         runAsUser: 0
+      serviceAccountName: {{ if .Values.rbac.install }}{{ template "fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
       containers:
         - name: {{ template "fullname" . }}
           image: "{{ .Values.Master.Image }}:{{ .Values.Master.ImageTag }}"
@@ -70,7 +71,9 @@ spec:
           {{- end }}
           env:
             - name: JAVA_OPTS
-              value: "{{ default "" .Values.Master.JavaOpts }}"
+              value: "{{ default "" .Values.Master.JavaOpts}}"
+            - name: JENKINS_OPTS
+              value: "{{ if .Values.Master.JenkinsUriPrefix }}--prefix={{ .Values.Master.JenkinsUriPrefix }} {{ end }}{{ default "" .Values.Master.JenkinsOpts}}"
             {{- if .Values.Master.UseSecurity }}
             - name: ADMIN_PASSWORD
               valueFrom:

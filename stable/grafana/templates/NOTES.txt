@@ -2,7 +2,7 @@
 
    kubectl get secret --namespace {{ .Release.Namespace }} {{ template "grafana.server.fullname" . }} -o jsonpath="{.data.grafana-admin-password}" | base64 --decode ; echo
 
-2. The Grafana server can be accessed via port {{ .Values.server.httpPort }} on the following DNS name from within your cluster:
+2. The Grafana server can be accessed via port {{ .Values.server.service.httpPort }} on the following DNS name from within your cluster:
 
    {{ template "grafana.server.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
 {{ if .Values.server.ingress.enabled }}
@@ -12,16 +12,16 @@
 {{- end }}
 {{ else }}
    Get the Grafana URL to visit by running these commands in the same shell:
-{{ if contains "NodePort" .Values.server.serviceType -}}
+{{ if contains "NodePort" .Values.server.service.type -}}
      export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "grafana.server.fullname" . }})
      export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
      echo http://$NODE_IP:$NODE_PORT
-{{ else if contains "LoadBalancer" .Values.server.serviceType -}}
+{{ else if contains "LoadBalancer" .Values.server.service.type -}}
    NOTE: It may take a few minutes for the LoadBalancer IP to be available.
         You can watch the status of by running 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "grafana.server.fullname" . }}'
      export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "grafana.server.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
      echo http://$SERVICE_IP:{{ .Values.server.httpPort -}}
-{{ else if contains "ClusterIP"  .Values.server.serviceType }}
+{{ else if contains "ClusterIP"  .Values.server.service.type }}
      export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "grafana.fullname" . }},component={{ .Values.server.name }}" -o jsonpath="{.items[0].metadata.name}")
      kubectl --namespace {{ .Release.Namespace }} port-forward $POD_NAME 3000
 {{- end }}

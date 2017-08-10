@@ -1,0 +1,101 @@
+{{- if include "host" . -}}
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    app: {{ template "name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  template:
+    metadata:
+      labels:
+        app: {{ template "name" . }}
+        release: "{{ .Release.Name }}"
+    spec:
+      containers:
+      - name: {{ template "fullname" . }}
+        image: "{{ .Values.image }}"
+        imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
+        env:
+        - name: MARIADB_HOST
+          value: {{ template "mariadb.fullname" . }}
+        - name: MARIADB_PORT_NUMBER
+          value: "3306"
+        - name: MARIADB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "mariadb.fullname" . }}
+              key: mariadb-root-password
+        - name: SUGARCRM_HOST
+          value: {{ include "host" . | quote }}
+        - name: SUGARCRM_USERNAME
+          value: {{ .Values.sugarcrmUsername | quote }}
+        - name: SUGARCRM_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "fullname" . }}
+              key: sugarcrm-password
+        - name: SUGARCRM_EMAIL
+          value: {{ .Values.sugarcrmEmail | quote }}
+        - name: SUGARCRM_LASTNAME
+          value: {{ .Values.sugarcrmLastName | quote }}
+        - name: SUGARCRM_SMTP_HOST
+          value: {{ .Values.sugarcrmSmtpHost | quote }}
+        - name: SUGARCRM_SMTP_PORT
+          value: {{ .Values.sugarcrmSmtpPort | quote }}
+        - name: SUGARCRM_SMTP_USER
+          value: {{ .Values.sugarcrmSmtpUser | quote }}
+        - name: SUGARCRM_SMTP_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "fullname" . }}
+              key: sugarcrm-smtp-password
+        - name: SUGARCRM_SMTP_PROTOCOL
+          value: {{ .Values.sugarcrmSmtpProtocol | quote }}
+        ports:
+        - name: http
+          containerPort: 80
+        - name: https
+          containerPort: 443
+        livenessProbe:
+          httpGet:
+            path: /index.php
+            port: http
+            httpHeaders:
+            - name: Host
+              value: {{ include "host" . | quote }}
+          initialDelaySeconds: 600
+        readinessProbe:
+          httpGet:
+            path: /index.php
+            port: http
+            httpHeaders:
+            - name: Host
+              value: {{ include "host" . | quote }}
+          initialDelaySeconds: 60
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+        volumeMounts:
+        - name: sugarcrm-data
+          mountPath: /bitnami/sugarcrm
+        - name: apache-data
+          mountPath: /bitnami/apache
+      volumes:
+      - name: sugarcrm-data
+      {{- if .Values.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ template "fullname" . }}-sugarcrm
+      {{- else }}
+        emptyDir: {}
+      {{- end }}
+      - name: apache-data
+      {{- if .Values.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ template "fullname" . }}-apache
+      {{- else }}
+        emptyDir: {}
+      {{- end }}
+{{- end -}}

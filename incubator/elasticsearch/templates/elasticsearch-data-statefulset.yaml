@@ -34,6 +34,29 @@ spec:
         ]'
     spec:
       serviceAccountName: {{ template "fullname" . }}
+      {{- if eq .Values.data.antiAffinity "hard" }}
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - topologyKey: "kubernetes.io/hostname"
+              labelSelector:
+                matchLabels:
+                  app: "{{ template "name" . }}"
+                  release: "{{ .Release.Name }}"
+                  component: "{{ .Values.data.name }}"
+      {{- else if eq .Values.data.antiAffinity "soft" }}
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 1
+            podAffinityTerm:
+              topologyKey: kubernetes.io/hostname
+              labelSelector:
+                matchLabels:
+                  app: "{{ template "name" . }}"
+                  release: "{{ .Release.Name }}"
+                  component: "{{ .Values.data.name }}"
+      {{- end }}
       containers:
       - name: elasticsearch
         env:
