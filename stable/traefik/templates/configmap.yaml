@@ -74,3 +74,17 @@ data:
       {{- end}}
       {{- end}}
     {{- end }}
+    {{ if .Values.metrics.prometheus.enabled }}
+    [web.metrics.prometheus]
+      Buckets = {{ .Values.metrics.prometheus.buckets }}
+    {{- end }}
+    {{ if .Values.metrics.datadog.enabled }}
+    [web.metrics.datadog]
+      Address = {{ .Values.metrics.datadog.address }}
+      PushInterval = "{{ .Values.metrics.datadog.pushInterval }}"
+    {{- end }}
+    {{ if .Values.metrics.statsd.enabled }}
+    [web.metrics.statsd]
+      Address = {{ .Values.metrics.statsd.address }}
+      PushInterval = "{{ .Values.metrics.statsd.pushInterval }}"
+    {{- end }}
