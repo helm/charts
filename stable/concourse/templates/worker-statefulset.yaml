@@ -75,6 +75,11 @@ spec:
               value: "/concourse-keys/worker_key"
             - name: CONCOURSE_WORK_DIR
               value: "/concourse-work-dir"
+            - name: CONCOURSE_BAGGAGECLAIM_DRIVER
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "concourse.fullname" . }}
+                  key: concourse-baggageclaim-driver
           resources:
 {{ toYaml .Values.worker.resources | indent 12 }}
           securityContext:

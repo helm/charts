@@ -11,6 +11,9 @@ data:
   traefik.toml: |
     # traefik.toml
     logLevel = "INFO"
+    {{- if .Values.debug.enabled }}
+    debug = true
+    {{- end }}
     {{- if .Values.ssl.enabled }}
     defaultEntryPoints = ["http","https"]
     {{- else }}

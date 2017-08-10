@@ -8,13 +8,14 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
+  type: {{ .Values.serviceType }}
   ports:
   - name: epmd
     port: 4369
     targetPort: epmd
-  - name: ampq
+  - name: amqp
     port: {{ default "5672" .Values.rabbitmqNodePort }}
-    targetPort: ampq
+    targetPort: amqp
   - name: dist
     port: {{ default "5672" .Values.rabbitmqNodePort | add 20000 }}
     targetPort: dist

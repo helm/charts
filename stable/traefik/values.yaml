@@ -2,11 +2,14 @@
 image: traefik
 imageTag: 1.3.4
 serviceType: LoadBalancer
+loadBalancerIP:
 replicas: 1
 cpuRequest: 100m
 memoryRequest: 20Mi
 cpuLimit: 100m
 memoryLimit: 30Mi
+debug:
+  enabled: false
 nodeSelector: {}
   #key: value
 tolerations: []

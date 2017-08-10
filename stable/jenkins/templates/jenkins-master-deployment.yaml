@@ -61,6 +61,7 @@ spec:
       {{- end }}
       securityContext:
         runAsUser: 0
+      serviceAccountName: {{ if .Values.rbac.install }}{{ template "fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
       containers:
         - name: {{ template "fullname" . }}
           image: "{{ .Values.Master.Image }}:{{ .Values.Master.ImageTag }}"
