@@ -124,7 +124,7 @@ NetworkPolicy:
 ## Install Default RBAC roles and bindings
 rbac:
   install: false
-  serviceAccount: default
+  serviceAccountName: default
   # RBAC api version (currently either v1beta1 or v1alpha1)
   apiVersion: v1beta1
   # Cluster role reference
