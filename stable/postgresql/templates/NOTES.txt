@@ -8,9 +8,16 @@ To get your user password run:
 To connect to your database run the following command (using the env variable from above):
 
    kubectl run {{ template "fullname" . }}-client --rm --tty -i --image postgres \
-   --env "PGPASSWORD=$PGPASSWORD" \
+   --env "PGPASSWORD=$PGPASSWORD" \{{- if and (.Values.networkPolicy.enabled) (not .Values.networkPolicy.allowExternal) }}
+   --labels="{{ template "fullname" . }}-client=true" \{{- end }}
    --command -- psql -U {{ default "postgres" .Values.postgresUser }} \
    -h {{ template "fullname" . }} {{ default "postgres" .Values.postgresDatabase }}
+
+{{ if and (.Values.networkPolicy.enabled) (not .Values.networkPolicy.allowExternal) }}
+Note: Since NetworkPolicy is enabled, only pods with label
+{{ template "fullname" . }}-client=true"
+will be able to connect to this PostgreSQL cluster.
+{{- end }}
 
 To connect to your database directly from outside the K8s cluster:
    {{- if contains "NodePort" .Values.service.type }}
