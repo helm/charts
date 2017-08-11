@@ -17,7 +17,8 @@ spec:
     spec:
       initContainers:
       - name: volume-permissions
-        image: busybox
+        image: "{{ .Values.initContainerImage }}"
+        imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
         command: ['sh', '-c', 'chmod -R g+rwX /bitnami']
         volumeMounts:
         - mountPath: /bitnami

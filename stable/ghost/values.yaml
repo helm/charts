@@ -3,6 +3,10 @@
 ##
 image: bitnami/ghost:0.11.10-r2
 
+## Busybox image version
+##
+initContainerImage: busybox:1.27.1
+
 ## Specify a imagePullPolicy
 ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
 ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
