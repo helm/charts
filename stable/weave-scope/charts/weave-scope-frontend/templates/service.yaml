@@ -1,0 +1,32 @@
+{{- $svcname := "weave-scope" -}}
+{{- $svcport := 80 -}}
+{{- $svctype := "ClusterIP" -}}
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    name: {{ $svcname }}
+    {{- include "helm_std_labels" . | indent 4 }}
+  name: {{ $svcname }}
+  annotations:
+    {{- include "scope_annotations" . | indent 4 }}
+spec:
+  ports:
+    {{- if .Values.global.service }}
+    - name: {{ .Values.global.service.name | default $svcname }}
+      port: {{ .Values.global.service.port | default $svcport }}
+    {{- else }}
+    - name: {{ $svcname }}
+      port: {{ $svcport }}
+    {{- end }}
+      targetPort: {{ .Values.containerPort | default 4040 }}
+      protocol: TCP
+  selector:
+    name: {{ template "fullname" . }}-app
+    {{- include "helm_std_labels" . | indent 4 }}
+  {{- if .Values.global.service }}
+  type: {{ .Values.global.service.type | default $svctype }}
+  {{- else }}
+  type: {{ $svctype }}
+  {{- end }}

@@ -1,0 +1,72 @@
+{{- $svcname := "weave-scope" -}}
+{{- $svcport := 80 -}}
+
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  labels:
+    name: {{ .Values.serviceAccount | default "weave-scope" }}-agent
+    {{- include "helm_std_labels" . | indent 4 }}
+    component: agent
+  name: {{ template "fullname" . }}-agent
+  annotations:
+    {{- include "scope_annotations" . | indent 4 }}
+spec:
+  selector: 
+    matchLabels:
+      name: {{ template "fullname" . }}-agent
+      app: {{ template "fullname" . }}
+      heritage: {{ .Release.Service }}
+      release: {{ .Release.Name }}
+  updateStrategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        name: {{ template "fullname" . }}-agent
+        {{- include "helm_std_labels" . | indent 8 }}
+        component: frontend
+    spec:
+      tolerations:
+        - effect: NoSchedule
+          operator: Exists
+      containers:
+        - name: agent
+          image: {{ .Values.global.image | default "weaveworks/scope" }}:{{ .Values.global.imageTag | default "1.6.2" }}
+          imagePullPolicy: {{ .Values.imagePullPolicy | default "" | quote }}
+          args:
+            - '--no-app'
+            - '--probe.docker.bridge={{ .Values.dockerBridge | default "docker0" }}'
+            - '--probe.docker=true'
+            - '--probe.kubernetes=true'
+            {{- if .Values.probeToken }}
+            - '--probe-token={{ .Values.probeToken }}'
+            {{- else if .Values.scopeFrontendAddr }}
+            - >-  {{ .Values.scopeFrontendAddr }}
+            {{- else }}
+            - >-
+              {{- if .Values.global.service }}
+              {{ .Values.global.service.name | default $svcname }}.{{ .Release.Namespace }}.svc.{{ .Values.global.clusterDomain | default "cluster.local." }}:{{ .Values.global.service.port | default $svcport }}
+              {{- else }}
+              {{ $svcname }}.{{ .Release.Namespace }}.svc.{{ .Values.global.clusterDomain | default "cluster.local." }}:{{ $svcport }}
+              {{- end }}
+            {{- end }}
+          securityContext:
+            privileged: true
+          {{- include "scope_resources" . | indent 10 }}
+          volumeMounts:
+            - name: docker-socket
+              mountPath: /var/run/docker.sock
+            - name: scope-plugins
+              mountPath: /var/run/scope/plugins
+      volumes:
+        - name: docker-socket
+          hostPath:
+            path: /var/run/docker.sock
+        - name: scope-plugins
+          hostPath:
+            path: /var/run/scope/plugins
+      hostPID: true
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      serviceAccountName: {{ .Values.serviceAccount | default "weave-scope" }}
