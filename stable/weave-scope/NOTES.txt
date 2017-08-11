@@ -1,0 +1,19 @@
+After installing a Scope frontend and node agents, access the frontend 
+in your web browser.  If you used this chart to install the frontend, 
+it can be accessed in the following ways:
+
+1) Using `kubectl port-forward` directly to the frontend pod
+
+2) Using an SSH or other port-forward through a cluster node to the 
+   Service's address and port
+
+3) (for a NodePort or LoadBalancer service) Using a node IP and the 
+   Service's NodePort
+   
+
+4) (for a LoadBalancer service) Using the created load balancer's 
+   external IP and port
+
+For more details on using Weave Scope, see the Weave Scope documentation:
+
+https://www.weave.works/docs/scope/latest/introducing/

@@ -1,0 +1,5 @@
+dependencies:
+- name: weave-scope-agent
+  condition: weave-scope-agent.enabled, global.agentEnabled
+- name: weave-scope-frontend
+  condition: weave-scope-frontend.enabled, global.frontendEnabled

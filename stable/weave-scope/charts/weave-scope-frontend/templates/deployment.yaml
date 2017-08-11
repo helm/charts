@@ -1,0 +1,35 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    name: {{ template "fullname" . }}-app
+    {{- include "helm_std_labels" . | indent 4 }}
+    component: frontend
+  name: {{ template "fullname" . }}-app
+  annotations:
+    {{- include "scope_annotations" . | indent 4 }}
+spec:
+  selector:
+    matchLabels:
+      name: {{ template "fullname" . }}-app
+      app: {{ template "fullname" . }}
+      heritage: {{ .Release.Service }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        name: {{ template "fullname" . }}-app
+        {{- include "helm_std_labels" . | indent 8 }}
+        component: frontend
+    spec:
+      containers:
+        - name: app
+          image: {{ .Values.global.image | default "weaveworks/scope" }}:{{ .Values.global.imageTag | default "1.6.2" }}
+          imagePullPolicy: {{ .Values.imagePullPolicy | default "" | quote }}
+          args:
+            - '--no-probe'
+          ports:
+            - containerPort: {{ .Values.containerPort | default 4040 }}
+              protocol: TCP
+          {{- include "scope_resources" . | indent 10 }}
+  replicas: 1

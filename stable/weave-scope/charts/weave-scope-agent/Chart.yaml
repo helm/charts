@@ -1,0 +1,4 @@
+apiVersion: v1
+description: A Helm chart for the Weave Scope cluster visualizer node agent.
+name: weave-scope-agent
+version: 0.2.0
