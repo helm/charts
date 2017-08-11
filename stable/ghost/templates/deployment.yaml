@@ -15,6 +15,13 @@ spec:
       labels:
         app: {{ template "fullname" . }}
     spec:
+      initContainers:
+      - name: volume-permissions
+        image: busybox
+        command: ['sh', '-c', 'chmod -R g+rwX /bitnami']
+        volumeMounts:
+        - mountPath: /bitnami
+          name: ghost-data
       containers:
       - name: {{ template "fullname" . }}
         image: "{{ .Values.image }}"
