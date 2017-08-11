@@ -20,12 +20,12 @@ metadata:
   {{- end }}
 spec:
   type: {{ .Values.serviceType }}
-  {{- if .Values.loadBalancer.IP }}
-  loadBalancerIP: {{ .Values.loadBalancer.IP }}
+  {{- if .Values.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.loadBalancerIP }}
   {{- end }}
-  {{- if .Values.loadBalancer.sourceRanges }}
+  {{- if .Values.loadBalancerSourceRanges }}
   loadBalancerSourceRanges:
-    {{- range $cidr := .Values.loadBalancer.sourceRanges }}
+    {{- range $cidr := .Values.loadBalancerSourceRanges }}
     - {{ $cidr }}
     {{- end }}
   {{- end }}
