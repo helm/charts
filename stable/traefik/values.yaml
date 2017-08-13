@@ -2,11 +2,15 @@
 image: traefik
 imageTag: 1.3.4
 serviceType: LoadBalancer
+loadBalancerIP:
+#loadBalancerSourceRanges: []
 replicas: 1
 cpuRequest: 100m
 memoryRequest: 20Mi
 cpuLimit: 100m
 memoryLimit: 30Mi
+debug:
+  enabled: false
 nodeSelector: {}
   #key: value
 tolerations: []
@@ -64,3 +68,18 @@ accessLogs:
 #  labelSelector:
 rbac:
   enabled: false
+# Enable the /metrics endpoint, for now only supports prometheus
+# set to true to enable metric collection by prometheus
+metrics:
+  prometheus:
+    enabled: false
+    buckets: 0.1,0.3,1.2,5
+  datadog:
+    enabled: false
+#    address: "localhost:8125"
+#    pushInterval: 30s
+  statsd:
+    enabled: false
+#    address: "localhost:8125"
+#    pushInterval: 30s
+

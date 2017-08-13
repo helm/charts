@@ -12,6 +12,9 @@ image: memcached:1.4.36-alpine
 
 ##Replica count 
 replicaCount: 3
+
+## Select AnitAffinity as either hard or soft, default is hard
+AntiAffinity: "hard"
   
 memcached:
   ## Various values that get set as command-line flags.

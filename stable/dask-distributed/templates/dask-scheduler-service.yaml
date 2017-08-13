@@ -20,4 +20,4 @@ spec:
     app: {{ template "name" . }}
     release: {{ .Release.Name | quote }}
     component: "{{ .Release.Name }}-{{ .Values.scheduler.component }}"
-  type: "LoadBalancer"
+  type: {{ .Values.scheduler.serviceType }}

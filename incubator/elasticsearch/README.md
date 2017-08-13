@@ -3,7 +3,7 @@
 This image is using Fabric8's great [kubernetes discovery
 plugin](https://github.com/fabric8io/elasticsearch-cloud-kubernetes) for
 elasticsearch and their
-[image](https://hub.docker.com/r/fabric8/elasticsearch-k8s/) as parent.
+[image](https://hub.docker.com/r/jetstack/elasticsearch-pet/) as parent.
 
 ## Prerequisites Details
 
@@ -56,6 +56,8 @@ The following tables lists the configurable parameters of the elasticsearch char
 | `image.repository`                   | Container image name                    | `jetstack/elasticsearch-pet`        |
 | `image.tag`                          | Container image tag                     | `2.4.0`                             |
 | `image.pullPolicy`                   | Container pull policy                   | `Always`                            |
+| `cluster.name`                       | Cluster name          			         | `elasticsearch`                     |
+| `cluster.config`                     | Additional cluster config appended      | `{}`                                |
 | `client.name`                        | Client component name                   | `client`                            |
 | `client.replicas`                    | Client node replicas (deployment)       | `2`                                 |
 | `client.resources`                   | Client node resources requests & limits | `{} - cpu limit must be an integer` |
@@ -79,6 +81,8 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 In terms of Memory resources you should make sure that you follow that equation:
 
 - `${role}HeapSize < ${role}MemoryRequests < ${role}MemoryLimits`
+
+The YAML value of cluster.config is appended to elasticsearch.yml file for additional customization ("script.inline: on" for example to allow inline scripting)
 
 # Deep dive
 
