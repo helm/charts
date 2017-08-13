@@ -46,6 +46,9 @@ dashboard:
   auth:
     # basic:
     #   username: password
+  statistics:
+    ## Number of recent errors to show in the ‘Health’ tab
+    # recentErrors:
 service:
   # annotations:
   #   key: value
