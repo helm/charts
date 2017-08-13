@@ -24,7 +24,7 @@ spec:
       containers:
       - name: user-create-job
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-        command: ["sentry","createuser","--no-input","--email","admin@sentry.local", "--superuser","--password","$(SENTRY_USER_PASSWORD)"]
+        command: ["sentry","createuser","--no-input","--email", "{{ .Values.user.email }}", "--superuser","--password","$(SENTRY_USER_PASSWORD)"]
         env:
         - name: SENTRY_SECRET_KEY
           valueFrom:
