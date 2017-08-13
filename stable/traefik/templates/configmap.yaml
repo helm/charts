@@ -76,6 +76,12 @@ data:
         users = [{{ range $key, $value := .Values.dashboard.auth.basic }}"{{ $key }}:{{ $value }}",{{ end }}]
       {{- end}}
       {{- end}}
+      {{- if .Values.dashboard.statistics }}
+      {{- if .Values.dashboard.statistics.recentErrors }}
+      [web.statistics]
+        RecentErrors = {{ .Values.dashboard.statistics.recentErrors }}
+      {{- end}}
+      {{- end}}
     {{- end }}
     {{ if .Values.metrics.prometheus.enabled }}
     [web.metrics.prometheus]

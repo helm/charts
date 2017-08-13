@@ -56,6 +56,8 @@ The following tables lists the configurable parameters of the MySQL chart and th
 | `persistence.size`         | Size of persistent volume claim    | 8Gi RW                                                     |
 | `persistence.storageClass` | Type of persistent volume claim    | nil  (uses alpha storage class annotation)                 |
 | `persistence.accessMode`   | ReadWriteOnce or ReadOnly          | ReadWriteOnce                                              |
+| `persistence.existingClaim`| Name of existing persistent volume | `nil`
+| `persistence.subPath`      | Subdirectory of the volume to mount | `nil`
 | `resources`                | CPU/Memory resource requests/limits | Memory: `256Mi`, CPU: `100m`                              |
 | `configurationFiles`       | List of mysql configuration files  | `nil`
 
