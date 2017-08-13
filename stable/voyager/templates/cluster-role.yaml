@@ -1,0 +1,67 @@
+{{ if .Values.rbac.install }}
+{{- $serviceName := include "fullname" . -}}
+apiVersion: rbac.authorization.k8s.io/{{ required "A valid .Values.rbac.apiVersion entry required!" .Values.rbac.apiVersion }}
+kind: ClusterRole
+metadata:
+  name: {{ $serviceName }}
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app: "{{ template "name" . }}"
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+rules:
+- apiGroups:
+  - extensions
+  resources:
+  - thirdpartyresources
+  verbs: ["get", "create", "list"]
+- apiGroups:
+  - voyager.appscode.com
+  resources: ["*"]
+  verbs: ["*"]
+- apiGroups:
+  - monitoring.coreos.com
+  resources:
+  - servicemonitors
+  verbs: ["get", "create", "update"]
+- apiGroups:
+  - extensions
+  resources:
+  - deployments
+  - daemonsets
+  - ingresses
+  verbs: ["*"]
+- apiGroups: [""]
+  resources:
+  - replicationcontrollers
+  - services
+  - endpoints
+  - configmaps
+  verbs: ["*"]
+- apiGroups: [""]
+  resources:
+  - secrets
+  - namespaces
+  verbs: ["get", "list", "watch"]
+- apiGroups: [""]
+  resources:
+  - events
+  verbs: ["create"]
+- apiGroups: [""]
+  resources:
+  - pods
+  verbs: ["list", "watch", "delete"]
+- apiGroups: [""]
+  resources:
+  - nodes
+  verbs: ["list", "get"]
+- apiGroups: [""]
+  resources:
+  - serviceaccounts
+  verbs: ["get", "create", "delete"]
+- apiGroups: ["rbac.authorization.k8s.io"]
+  resources:
+  - roles
+  - rolebindings
+  verbs: ["get", "create", "delete"]
+{{ end }}

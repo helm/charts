@@ -1,5 +1,6 @@
 # Voyager
-[Voyager](https://github.com/appscode/voyager)  provides controller for Ingress and Certificates for Kubernetes developed by AppsCode.
+[Voyager by AppsCode](https://github.com/appscode/voyager) - Secure Ingress Controller for Kubernetes
+
 ## TL;DR;
 
 ```bash
@@ -39,12 +40,61 @@ The command removes all the Kubernetes components associated with the chart and 
 The following tables lists the configurable parameters of the Voyager chart and their default values.
 
 
-| Parameter                  | Description                        | Default              |
-| -----------------------    | ---------------------------------- | -------------------- |
-| `image`                    |  Container image to run            | `appscode/voyager`   |
-| `imageTag`                 |  Image tag of container            | `3.0.0`              |
-| `cloudProvider`            |  Name of cloud provider            | ``                   |
-| `cloudConfig`              |  Path to cloud config              | ``                   |
-| `logLevel`                 |  Log level for operator            | `3`                  |
-| `persistence.enabled`      |  Enable mounting cloud config      | `false`              |
-| `persistence.hostPath`     |  Host mount path for cloud config  | `/etc/kubernetes`    |
+| Parameter              | Description                                                   | Default            |
+| ---------------------- | ------------------------------------------------------------- | ------------------ |
+| `image`                |  Container image to run                                       | `appscode/voyager` |
+| `imageTag`             |  Image tag of container                                       | `3.1.1`            |
+| `cloudProvider`        |  Name of cloud provider                                       | ``                 |
+| `cloudConfig`          |  Path to cloud config                                         | ``                 |
+| `logLevel`             |  Log level for operator                                       | `3`                |
+| `persistence.enabled`  |  Enable mounting cloud config                                 | `false`            |
+| `persistence.hostPath` |  Host mount path for cloud config                             | `/etc/kubernetes`  |
+| `rbac.install`         | install required rbac service account, roles and rolebindings | `false`            |
+| `rbac.apiVersion`      | rbac api version `v1alpha1|v1beta1`                           | `v1beta1`          |
+
+
+Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
+
+```bash
+$ helm install --name my-release --set image.tag=v0.2.1 stable/voyager
+```
+
+Alternatively, a YAML file that specifies the values for the parameters can be provided while
+installing the chart. For example:
+
+```bash
+$ helm install --name my-release --values values.yaml stable/voyager
+```
+
+## RBAC
+By default the chart will not install the recommended RBAC roles and rolebindings.
+
+You need to have the following parameter on the api server. See the following document for how to enable [RBAC](https://kubernetes.io/docs/admin/authorization/rbac/)
+
+```
+--authorization-mode=RBAC
+```
+
+To determine if your cluster supports RBAC, run the the following command:
+
+```console
+$ kubectl api-versions | grep rbac
+```
+
+If the output contains "alpha" and/or "beta", you can may install the chart with RBAC enabled (see below).
+
+### Enable RBAC role/rolebinding creation
+
+To enable the creation of RBAC resources (On clusters with RBAC). Do the following:
+
+```console
+$ helm install --name my-release stable/voyager --set rbac.install=true
+```
+
+### Changing RBAC manifest apiVersion
+
+By default the RBAC resources are generated with the "v1beta1" apiVersion. To use "v1alpha1" do the following:
+
+```console
+$ helm install --name my-release stable/voyager --set rbac.install=true,rbac.apiVersion=v1alpha1
+```
