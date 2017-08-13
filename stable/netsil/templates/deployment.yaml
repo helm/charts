@@ -1,8 +1,7 @@
-apiVersion: apps/v1beta1 # for versions before 1.6.0 use extensions/v1beta1
+apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
-  namespace: {{ .Chart.Name }}
-  name: {{ .Chart.Name }}
+  name: {{ template "fullname" . }}-stream-processor
   labels:
     app: {{ template "name" . }}
     heritage: {{ .Release.Service }}
@@ -16,7 +15,7 @@ spec:
       name: stream-processor
       labels:
         app: {{ .Chart.Name }}
-        component: {{ .Chart.Name }}
+        component: stream-processor
         version: stable
     spec:
       containers:

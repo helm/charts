@@ -1,8 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  namespace: {{ .Chart.Name }}
-  name: {{ .Chart.Name }}
+  name: {{ template "fullname" . }}-stream-processor
   labels:
     app: {{ template "name" . }}
     heritage: {{ .Release.Service }}
@@ -11,8 +10,9 @@ metadata:
     component: stream-processor
 spec:
   selector:
-    app: {{ .Chart.Name }}
-    component: {{ .Chart.Name }}
+    app: {{ template "name" . }}
+    release: {{ .Release.Name }}
+    component: stream-processor
   ports:
     - name: http
       port: 80
