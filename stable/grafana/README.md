@@ -41,6 +41,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `server.persistentVolume.existingClaim`   | Existing persistent volume claim    | null                                              |
 | `server.persistentVolume.subPath`         | Subdirectory of pvc to mount        | null                                              |
 | `server.resources`                        | Server resource requests and limits | requests: {cpu: 100m, memory: 100Mi}              |
+| `server.tolerations`                      | node taints to tolerate (requires Kubernetes >=1.6) | null |
 | `server.service.annotations`              | Service annotations                 | null                                              |
 | `server.service.httpPort`                 | Service port                        | 80                                                |
 | `server.service.loadBalancerIP`           | IP to assign to load balancer       | null                                              |
