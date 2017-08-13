@@ -9,7 +9,7 @@ server:
   image: "grafana/grafana:latest"
 
   nodeSelector: {}
-  tolerations: {}
+  tolerations: []
 
   ingress:
     ## If true, Grafana Ingress will be created
