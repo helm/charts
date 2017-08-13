@@ -1,6 +1,6 @@
 {{- if .Values.ingress.enabled }}
-{{- $fullName := include "fullname" . }}
-{{- $path := .Values.ingress.path }}
+{{- $fullName := include "fullname" . -}}
+{{- $path := .Values.ingress.path -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
