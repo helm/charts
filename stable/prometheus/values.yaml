@@ -1,10 +1,5 @@
-
-
 rbac:
-  # false for all versions of k8s prior to 1.6, may be true on 1.6
   create: false
-  apiVersion: v1beta1
-
 
 alertmanager:
   ## If false, alertmanager will not be installed
@@ -12,7 +7,7 @@ alertmanager:
   enabled: true
 
   # Defines the serviceAccountName to associate with a role when rbac is enabled.
-  serviceAccountName: prometheus-alertmanager
+  serviceAccountName: default
 
   ## alertmanager container name
   ##
@@ -172,7 +167,7 @@ kubeStateMetrics:
   enabled: true
 
   # Defines the serviceAccountName to associate with a role when rbac is enabled.
-  serviceAccountName: prometheus-kube-state-metrics
+  serviceAccountName: default
 
   ## kube-state-metrics container name
   ##
@@ -230,7 +225,7 @@ nodeExporter:
   enabled: true
 
   # Defines the serviceAccountName to associate with a role when rbac is enabled.
-  serviceAccountName: prometheus-node-exporter
+  serviceAccountName: default
 
   ## node-exporter container name
   ##
@@ -308,7 +303,7 @@ server:
   name: server
 
   # Defines the serviceAccountName to associate with a role when rbac is enabled.
-  serviceAccountName: prometheus-server
+  serviceAccountName: default
 
   ## Prometheus server container image
   ##

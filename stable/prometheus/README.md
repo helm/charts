@@ -67,7 +67,7 @@ Parameter | Description | Default
 `alertmanager.podAnnotations` | annotations to be added to alertmanager pods | `{}`
 `alertmanager.replicaCount` | desired number of alertmanager pods | `1`
 `alertmanager.resources` | alertmanager pod resource requests & limits | `{}`
-`alertmanager.serviceAccountName` | service account name for the alertmanager to associate with a cluster role | `prometheus-alertmanager`
+`alertmanager.serviceAccountName` | service account name for the alertmanager to associate with a cluster role (ignored if rbac.create=true) | `default`
 `alertmanager.service.annotations` | annotations for alertmanager service | `{}`
 `alertmanager.service.clusterIP` | internal alertmanager cluster service IP | `""`
 `alertmanager.service.externalIPs` | alertmanager service external IP addresses | `[]`
@@ -90,7 +90,7 @@ Parameter | Description | Default
 `kubeStateMetrics.podAnnotations` | annotations to be added to kube-state-metrics pods | `{}`
 `kubeStateMetrics.replicaCount` | desired number of kube-state-metrics pods | `1`
 `kubeStateMetrics.resources` | kube-state-metrics resource requests and limits (YAML) | `{}`
-`kubeStateMetrics.serviceAccountName` | service account name for the kube-state-metrics to associate with a cluster role | `prometheus-kube-state-metrics`
+`kubeStateMetrics.serviceAccountName` | service account name for the kube-state-metrics to associate with a cluster role (ignored if rbac.create=true) | `default`
 `kubeStateMetrics.service.annotations` | annotations for kube-state-metrics service | `{prometheus.io/scrape: "true"}`
 `kubeStateMetrics.service.clusterIP` | internal kube-state-metrics cluster service IP | `None`
 `kubeStateMetrics.service.externalIPs` | kube-state-metrics service external IP addresses | `[]`
@@ -109,7 +109,7 @@ Parameter | Description | Default
 `nodeExporter.podAnnotations` | annotations to be added to node-exporter pods | `{}`
 `nodeExporter.tolerations` | node taints to tolerate (requires Kubernetes >=1.6) | `[]`
 `nodeExporter.resources` | node-exporter resource requests and limits (YAML) | `{}`
-`nodeExporter.serviceAccountName` | service account name for the node-exporter to associate with a cluster role | `prometheus-node-exporter`
+`nodeExporter.serviceAccountName` | service account name for the node-exporter to associate with a cluster role (ignored if rbac.create=true) | `default`
 `nodeExporter.service.annotations` | annotations for node-exporter service | `{prometheus.io/scrape: "true"}`
 `nodeExporter.service.clusterIP` | internal node-exporter cluster service IP | `None`
 `nodeExporter.service.externalIPs` | node-exporter service external IP addresses | `[]`
@@ -138,8 +138,7 @@ Parameter | Description | Default
 `pushgateway.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
 `pushgateway.service.servicePort` | pushgateway service port | `9091`
 `pushgateway.service.type` | type of pushgateway service to create | `ClusterIP`
-`rbac.install` | defaults to false, set to true when rbac is enabled | `false`
-`rbac.create` | defaults to false, set to true when rbac is enabled | `false`
+`rbac.create` | If true, create & use RBAC resources | `false`
 `rbac.apiVersion` | sets the apiVersion of rbac resources. |`v1beta1`
 `server.name` | Prometheus server container name | `server`
 `server.image.repository` | Prometheus server container image repository | `prom/prometheus`
@@ -166,7 +165,7 @@ Parameter | Description | Default
 `server.podAnnotations` | annotations to be added to Prometheus server pods | `{}`
 `server.replicaCount` | desired number of Prometheus server pods | `1`
 `server.resources` | Prometheus server resource requests and limits | `{}`
-`server.serviceAccountName` | service account name for the server to associate with a cluster role | `prometheus-server`
+`server.serviceAccountName` | service account name for the server to associate with a cluster role (ignored if rbac.create=true) | `default`
 `server.service.annotations` | annotations for Prometheus server service | `{}`
 `server.service.clusterIP` | internal Prometheus server cluster service IP | `""`
 `server.service.externalIPs` | Prometheus server service external IP addresses | `[]`
