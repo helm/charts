@@ -1,4 +1,3 @@
-
 ## Details about the image to be pulled.
 image:
   name: registry.opensource.zalan.do/teapot/external-dns
@@ -7,7 +6,7 @@ image:
 
 ## This controls which types of resource external-dns should 'watch' for new
 ## DNS entries.
-source:
+sources:
   - service
   - ingress
 
@@ -15,14 +14,14 @@ source:
 provider: aws
 
 ## Limit possible target zones by a domain suffix (optional)
-# domainFilter:
+domainFilter: ""
 
 ## Modify how DNS records are sychronized between sources and providers (options: sync, upsert-only )
 policy: upsert-only
 
 ## Annotations to be added to pods
 ##
-# podAnnotations: {}
+podAnnotations: {}
 
 extraArgs: {}
 
@@ -34,10 +33,11 @@ resources: {}
 #    memory: 50Mi
 #    cpu: 10m
 
-# Should the chart create and use a service account.
-# serviceAccountEnabled: false
+rbac:
+  ## If true, create & use RBAC resources
+  ##
+  create: false
 
-# If creating a service account, you can optionally override the name used.
-# Defaults to .Release.Name-external-dns-sa. Note: Release.Name is always
-# included to prevent collisions.
-# saNameOverride:
+  ## Ignored if rbac.create is true
+  ##
+  serviceAccountName: default

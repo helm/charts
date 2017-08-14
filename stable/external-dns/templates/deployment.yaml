@@ -1,36 +1,36 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "external-dns.fullname" . }}
   labels: {{ include "external-dns.labels" . | indent 4 }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+  name: {{ template "external-dns.fullname" . }}
 spec:
   template:
     metadata:
       labels: {{ include "external-dns.labels" . | indent 8 }}
-      {{- if .Values.podAnnotations }}
+    {{- if .Values.podAnnotations }}
       annotations:
 {{ toYaml .Values.podAnnotations | indent 8}}
-      {{- end }}
+    {{- end }}
     spec:
-      {{- if .Values.serviceAccountEnabled }}
-      serviceAccountName: {{ include "external-dns.sa-name" . }}
-      {{- end }}
       containers:
-      - name: {{ .Chart.Name }}
-        image: "{{.Values.image.name}}:{{ .Values.image.tag }}"
-        imagePullPolicy: {{ .Values.image.pullPolicy }}
-        args:
-        - --provider={{ .Values.provider }}
-        - --policy={{ .Values.policy }}
-        {{- if .Values.domainFilter }}
-        - --domain-filter={{ .Values.domainFilter }}
+        - name: {{ template "name" . }}
+          image: "{{.Values.image.name}}:{{ .Values.image.tag }}"
+          imagePullPolicy: "{{ .Values.image.pullPolicy }}"
+          args:
+            - --provider={{ .Values.provider }}
+            - --policy={{ .Values.policy }}
+          {{- if .Values.domainFilter }}
+            - --domain-filter={{ .Values.domainFilter }}
+          {{- end }}
+          {{- range .Values.sources }}
+            - --source={{ . }}
+          {{- end }}
+          {{- range $key, $value := .Values.extraArgs }}
+            - --{{ $key }}={{ $value }}
+          {{- end }}
+        {{- if .Values.resources }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
         {{- end }}
-        {{- range .Values.source }}
-        - --source={{ . }}
-        {{- end }}
-        {{- range $key, $value := .Values.extraArgs }}
-        - --{{ $key }}={{ $value }}
-        {{- end }}
-        resources:
-{{ toYaml .Values.resources | indent 10 }}
+      serviceAccountName: {{ if .Values.rbac.create }}{{ template "external-dns.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}

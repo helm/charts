@@ -17,12 +17,7 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 
 {{/* Generate basic labels */}}
 {{- define "external-dns.labels" }}
-app: {{ .Chart.Name }}
-heritage: {{.Release.Service | quote }}
-release: {{.Release.Name | quote }}
-{{- end }}
-
-{{- define "external-dns.sa-name" }}
-{{- $saName := default "external-dns-sa" .Values.saNameOverride -}}
-{{- printf "%s-%s" .Release.Name $saName -}}
+app: {{ template "name" . }}
+heritage: {{.Release.Service }}
+release: {{.Release.Name }}
 {{- end }}
