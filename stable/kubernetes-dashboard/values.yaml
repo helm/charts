@@ -45,3 +45,12 @@ ingress:
   #   - secretName: kubernetes-dashboard-tls
   #     hosts:
   #       - kubernetes-dashboard.domain.com
+
+rbac:
+  ## If true, create & use RBAC resources
+  #
+  create: false
+
+  ## Ignored if rbac.create is true
+  #
+  serviceAccountName: default
