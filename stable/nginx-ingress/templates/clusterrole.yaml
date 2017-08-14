@@ -39,7 +39,7 @@ rules:
       - update
       - watch
   - apiGroups:
-      - "extensions"
+      - extensions
     resources:
       - ingresses
     verbs:
@@ -54,7 +54,7 @@ rules:
       - create
       - patch
   - apiGroups:
-      - "extensions"
+      - extensions
     resources:
       - ingresses/status
     verbs:
