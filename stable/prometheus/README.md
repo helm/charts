@@ -50,6 +50,7 @@ Parameter | Description | Default
 `alertmanager.image.tag` | alertmanager container image tag | `v0.5.1`
 `alertmanager.image.pullPolicy` | alertmanager container image pull policy | `IfNotPresent`
 `alertmanager.extraArgs` | Additional alertmanager container arguments | `{}`
+`alertmanager.configMapOverrideName` | Prometheus alertmanager ConfigMap override where full-name is `{{.Release.Name}}-{{.Values.alertmanager.configMapOverrideName}}` and setting this value will prevent the default alertmanager ConfigMap from being generated | `""`
 `alertmanager.ingress.enabled` | If true, alertmanager Ingress will be created | `false`
 `alertmanager.ingress.annotations` | alertmanager Ingress annotations | `{}`
 `alertmanager.ingress.hosts` | alertmanager Ingress hostnames | `[]`
@@ -141,6 +142,7 @@ Parameter | Description | Default
 `server.alertmanagerURL` | (optional) alertmanager URL; only used if alertmanager.enabled = false | `""`
 `server.extraArgs` | Additional Prometheus server container arguments | `{}`
 `server.extraHostPathMounts` | Additional Prometheus server hostPath mounts | `[]`
+`server.configMapOverrideName` | Prometheus server ConfigMap override where full-name is `{{.Release.Name}}-{{.Values.server.configMapOverrideName}}` and setting this value will prevent the default server ConfigMap from being generated | `""`
 `server.ingress.enabled` | If true, Prometheus server Ingress will be created | `false`
 `server.ingress.annotations` | Prometheus server Ingress annotations | `[]`
 `server.ingress.hosts` | Prometheus server Ingress hostnames | `[]`

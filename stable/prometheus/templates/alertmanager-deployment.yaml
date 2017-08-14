@@ -73,7 +73,7 @@ spec:
       volumes:
         - name: config-volume
           configMap:
-            name: {{ template "prometheus.alertmanager.fullname" . }}
+            name: {{ if .Values.alertmanager.configMapOverrideName }}{{ .Release.Name }}-{{ .Values.alertmanager.configMapOverrideName }}{{- else }}{{ template "prometheus.alertmanager.fullname" . }}{{- end }}
         - name: storage-volume
         {{- if .Values.alertmanager.persistentVolume.enabled }}
           persistentVolumeClaim:
