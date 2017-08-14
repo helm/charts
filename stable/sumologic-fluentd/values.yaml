@@ -17,10 +17,10 @@ sumologic:
   # numThreads: 1
 
   ## Set the _sourceName metadata field in SumoLogic. (Default "%{namespace}.%{pod}.%{container}")
-  # sourceName: 
+  # sourceName:
 
   ## Set the _sourceCategory metadata field in SumoLogic. (Default "%{namespace}/%{pod_name}")
-  # sourceCategory: 
+  # sourceCategory:
 
   ## Set the prefix, for _sourceCategory metadata. (Defualt nil)
   # sourceCategoryPrefix:
@@ -38,7 +38,7 @@ sumologic:
   ## Files matching this pattern will be ignored by the in_tail plugin, and will
   ## not be sent to Kubernetes or Sumo Logic. This can be a comma seperated list.
   ## ref: http://docs.fluentd.org/v0.12/articles/in_tail#excludepath
-  # excludePath: 
+  # excludePath:
 
   ## A ruby regex for namespaces. All matching namespaces will be excluded
   ## from Sumo Logic. The logs will still be sent to FluentD
@@ -53,7 +53,7 @@ sumologic:
   ## A ruby regex for containers. All matching containers will be excluded
   ## from Sumo Logic. The logs will still be sent to FluentD
   ## ref: http://rubular.com/
-  # excludeContainerRegex: 
+  # excludeContainerRegex:
 
   ## A ruby regex for hosts. All matching hosts will be excluded from Sumo
   ## Logic. The logs will still be sent to FluentD
@@ -78,3 +78,5 @@ resources:
   limits:
     cpu: 256m
     memory: 256Mi
+
+rbac: {}

@@ -85,6 +85,7 @@ The following tables lists the configurable parameters of the sumologic-fluentd 
 | `resources.limits.cpu` | CPU resource limits | 256m |
 | `resources.requests.memory` | Memory resource requests | 128Mi |
 | `resources.limits.memory` | Memory resource limits | 256Mi |
+| `rbac.serviceAccountName` | RBAC service account name | {{ fullname }} |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
