@@ -38,7 +38,7 @@ The following tables lists the configurable parameters of the external-dns chart
 | `rbac.create`          | If true, create & use RBAC resources                                                                                       |	`false`                                                      |
 | `rbac.serviceAccountName` |	existing ServiceAccount to use (ignored if rbac.create=true)                                                            |	`default` |
 | `resources`            | CPU/Memory resource requests/limits.                                                                                       | `{}`                                                         |
-| `sources`               | List of resource types to monitor, possible values are fake, service or ingress.                                                | `service, ingress`                                         |
+| `sources`               | List of resource types to monitor, possible values are fake, service or ingress.                                                | `[service, ingress]`                                         |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
