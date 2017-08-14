@@ -33,5 +33,5 @@ spec:
     app: {{ template "name" . }}
     component: "{{ .Values.defaultBackend.name }}"
     release: {{ .Release.Name }}
-  type: ClusterIP
+  type: "{{ .Values.defaultBackend.service.type }}"
 {{- end }}

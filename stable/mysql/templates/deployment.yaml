@@ -21,6 +21,9 @@ spec:
                   "volumeMounts": [
                       {
                           "name": "data",
+                          {{- if .Values.persistence.subPath }}
+                          "subPath": "{{ .Values.persistence.subPath }}",
+                          {{- end }}
                           "mountPath": "/var/lib/mysql"
                       }
                   ],
@@ -60,25 +63,40 @@ spec:
         livenessProbe:
           exec:
             command:
+            {{- if .Values.mysqlAllowEmptyPassword }}
             - mysqladmin
             - ping
+            {{- else }}
+            - sh
+            - -c
+            - "mysqladmin ping -u root -p${MYSQL_ROOT_PASSWORD}"
+            {{- end }}
           initialDelaySeconds: 30
           timeoutSeconds: 5
         readinessProbe:
           exec:
             command:
+            {{- if .Values.mysqlAllowEmptyPassword }}
             - mysqladmin
             - ping
+            {{- else }}
+            - sh
+            - -c
+            - "mysqladmin ping -u root -p${MYSQL_ROOT_PASSWORD}"
+            {{- end }}
           initialDelaySeconds: 5
           timeoutSeconds: 1
         volumeMounts:
         - name: data
           mountPath: /var/lib/mysql
+          {{- if .Values.persistence.subPath }}
+          subPath: {{ .Values.persistence.subPath }}
+          {{- end }}
       volumes:
       - name: data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ template "fullname" . }}
+          claimName: {{ .Values.persistence.existingClaim | default (include "fullname" .) }}
       {{- else }}
         emptyDir: {}
       {{- end -}}

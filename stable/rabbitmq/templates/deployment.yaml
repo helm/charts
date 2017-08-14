@@ -45,7 +45,7 @@ spec:
         ports:
         - name: epmd
           containerPort: 4369
-        - name: ampq
+        - name: amqp
           containerPort: {{ default "5672" .Values.rabbitmqNodePort }}
         - name: dist
           containerPort: {{ default "5672" .Values.rabbitmqNodePort | add 20000 }}
