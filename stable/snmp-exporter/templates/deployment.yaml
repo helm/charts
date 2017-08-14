@@ -1,0 +1,40 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{template "fullname" .}}
+  labels:
+    app: {{ template "fullname" . }}
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+spec:
+  replicas: {{default 1 .Values.replicaCount}}
+  template:
+    metadata:
+      labels:
+        app: {{template "fullname" .}}
+        release: {{.Release.Name | quote }}
+      annotations:
+        "prometheus.io/port": "9116"
+        "prometheus.io/scrape": "true"
+    spec:
+      hostNetwork: True
+{{ toYaml .Values.targets | indent 10 }}
+      containers:
+      - name: {{ template "fullname" . }}
+        image: "{{default "prom/node-exporter" .Values.image}}:{{default "v0.4.0" .Values.imageTag}}"
+        imagePullPolicy: {{default "IfNotPresent" .Values.ImagePullPolicy}}
+        args: [-ceph.user, read-only]
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+        ports:
+        - containerPort: 9116
+          name: http
+        volumeMounts:
+        - name: configmap
+          mountPath: /etc/prometheus/snmp.yml
+          subPath: conf
+      volumes:
+        - name: configmap
+          configMap:
+            name: {{default "snmp-read-only" .Values.configmap}}

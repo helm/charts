@@ -18,10 +18,13 @@ alertmanager:
   ##
   extraArgs: {}
 
-  ## Additional alertmanager container environment variable
-  ## For instance to add a http_proxy
+  ## Additional alertmanager hostPath mounts
   ##
-  extraEnv: {}
+  extraHostPathMounts: []
+    # - name: data-dir
+    #   mountPath: /srv/data
+    #   hostPath: /var/lib/alertmanager/data
+    #   readOnly: true
 
   ingress:
     ## If true, alertmanager Ingress will be created
