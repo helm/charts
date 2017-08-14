@@ -1,7 +1,12 @@
-{{- if .Values.controller.rbac.enabled -}}
+{{- if .Values.rbac.create -}}
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRole
 metadata:
+  labels:
+    app: {{ template "name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
   name: {{ template "fullname" . }}
 rules:
   - apiGroups:
@@ -18,6 +23,9 @@ rules:
   - apiGroups:
       - ""
     resources:
+    {{- if .Values.controller.scope.enabled }}
+      - namespaces
+    {{- end }}
       - nodes
     verbs:
       - get
@@ -28,8 +36,8 @@ rules:
     verbs:
       - get
       - list
-      - watch
       - update
+      - watch
   - apiGroups:
       - "extensions"
     resources:
@@ -43,8 +51,8 @@ rules:
     resources:
       - events
     verbs:
-        - create
-        - patch
+      - create
+      - patch
   - apiGroups:
       - "extensions"
     resources:

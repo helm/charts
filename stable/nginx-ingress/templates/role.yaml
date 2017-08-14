@@ -1,13 +1,19 @@
-{{- if .Values.controller.rbac.enabled -}}
+{{- if .Values.rbac.create -}}
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: Role
 metadata:
+  labels:
+    app: {{ template "name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
   name: {{ template "fullname" . }}
 rules:
   - apiGroups:
       - ""
     resources:
       - configmaps
+      - namespaces
       - pods
       - secrets
     verbs:
@@ -16,16 +22,8 @@ rules:
       - ""
     resources:
       - configmaps
-{{- if .Values.controller.rbac.resourceNames }}
-      # Defaults to "<election-id>-<ingress-class>"
-      # Here: "<ingress-controller-leader>-<nginx>"
-      # This has to be adapted if you change either parameter
-      # when launching the nginx-ingress-controller.
     resourceNames:
-      {{- range .Values.controller.rbac.resourceNames }}
-      - {{ . -}}
-      {{ end }}
-{{- end }}
+      - {{ .Values.controller.electionID }}-{{ .Values.controller.ingressClass }}
     verbs:
       - get
       - update
@@ -40,7 +38,7 @@ rules:
     resources:
       - endpoints
     verbs:
-      - get
       - create
+      - get
       - update
 {{- end -}}
