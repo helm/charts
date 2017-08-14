@@ -23,6 +23,12 @@ alertmanager:
   ##
   extraEnv: {}
 
+  ## ConfigMap override where fullname is {{.Release.Name}}-{{.Values.alertmanager.configMapOverrideName}}
+  ## Defining configMapOverrideName will cause templates/alertmanager-configmap.yaml
+  ## to NOT generate a ConfigMap resource
+  ##
+  configMapOverrideName: ""
+
   ingress:
     ## If true, alertmanager Ingress will be created
     ##
@@ -306,6 +312,12 @@ server:
     #   mountPath: /etc/kubernetes/certs
     #   hostPath: /etc/kubernetes/certs
     #   readOnly: true
+
+  ## ConfigMap override where fullname is {{.Release.Name}}-{{.Values.server.configMapOverrideName}}
+  ## Defining configMapOverrideName will cause templates/server-configmap.yaml
+  ## to NOT generate a ConfigMap resource
+  ##
+  configMapOverrideName: ""
 
   ingress:
     ## If true, Prometheus server Ingress will be created
