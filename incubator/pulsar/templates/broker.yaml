@@ -1,0 +1,85 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: broker-config
+data:
+  PULSAR_MEM: "\" -Xms8g -Xmx8g -XX:MaxDirectMemorySize=4g\""
+  PULSAR_GC: "\" -XX:+UseG1GC \""
+  zookeeperServers: zk-0.zookeeper,zk-1.zookeeper,zk-2.zookeeper
+  globalZookeeperServers: zk-0.zookeeper,zk-1.zookeeper,zk-2.zookeeper
+  clusterName: {{ .Values.ClusterName }}
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: broker
+spec:
+  replicas: {{ .Values.BrokerReplicas }}
+  template:
+    metadata:
+      labels:
+        app: pulsar
+        component: broker
+      annotations:
+        prometheus.io/scrape: {{ .Values.PrometheusScrape }}
+        prometheus.io/port: {{ .Values.PrometheusPort }}
+    spec:
+      containers:
+      - name: broker
+        image: streamlio/pulsar:latest
+        command: ["sh", "-c"]
+        args:
+        - >
+          bin/apply-config-from-env.py conf/broker.conf &&
+          bin/pulsar broker
+        ports:
+        - containerPort: {{ .Values.BrokerWebPort }}
+        - containerPort: {{ .Values.BrokerPulsarPort }}
+        envFrom:
+        - configMapRef:
+            name: broker-config
+        env:
+        - name: advertisedAddress
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: broker
+  labels:
+    app: pulsar
+    component: broker
+spec:
+    ports:
+    - port: {{ .Values.BrokerWebPort }}
+      name: http
+    - port: {{ .Values.BrokerPulsarPort }}
+      name: pulsar
+    clusterIP: None
+    selector:
+      app: pulsar
+      component: broker
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pulsar-admin
+spec:
+  containers:
+  - name: pulsar-admin
+    image: streamlio/pulsar:latest
+    command: ["sh", "-c"]
+    args:
+    - >
+      bin/apply-config-from-env.py conf/client.conf &&
+      sleep 10000000000
+    envFrom:
+    - configMapRef:
+          name: broker-config
+    env:
+    - name: webServiceUrl
+      value: {{ .Values.BrokerWebServiceUrl }}
+    - name: brokerServiceUrl
+      value: {{ .Values.BrokerPulsarServiceUrl }}

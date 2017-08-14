@@ -1,0 +1,117 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: bookie-config
+data:
+  PULSAR_MEM: "\" -Xms4g -Xmx4g -XX:MaxDirectMemorySize=4g\""
+  PULSAR_GC: "\" -XX:+UseG1GC \""
+  dbStorage_writeCacheMaxSizeMb: {{ .Values.BookieWriteCacheSize }}
+  dbStorage_readAheadCacheMaxSizeMb: {{ .Values.BookieReadAheadCacheSize }}
+  zkServers: zk-0.zookeeper,zk-1.zookeeper,zk-2.zookeeper
+  statsProviderClass: {{ .Values.BookieStatsProviderClass }}
+---
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: bookie
+  labels:
+    app: pulsar
+    component: bookkeeper
+spec:
+  template:
+    metadata:
+      labels:
+        app: pulsar
+        component: bookkeeper
+        cluster: {{ .Values.ClusterName }}
+      annotations:
+        prometheus.io/scrape: {{ .Values.PrometheusScrape }}
+        prometheus.io/port: {{ .Values.PrometheusPort }}
+
+      spec:
+        containers:
+        - name: bookie
+          image: streamlio/pulsar:latest
+          command: ["sh", "-c"]
+          args:
+          - >
+            bin/apply-config-from-env.py conf/bookkeeper.conf &&
+            bin/pulsar bookie
+          ports:
+          - containerPort: {{ .Values.BookiePort }}
+            name: client
+          envFrom:
+          - configMapRef:
+              name: bookie-config
+
+          volumeMounts:
+          - name: journal-disk
+            mountPath: {{ .Values.BookieJournalMountPath }}
+          - name: ledgers-disk
+            mountPath: {{ .Values.BookieLedgersMountPath }}
+
+          initContainers:
+          - name: bookie-metaformat
+            image: streamlio/pulsar:latest
+            command: ["sh", "-c"]
+            args:
+            - >
+              bin/apply-config-from-env.py conf/bookkeeper.conf &&
+              bin/bookkeeper shell metaformat --nonInteractive || true;
+            envFrom:
+            - configMapRef:
+                name: bookie-config
+
+          volumes:
+          - name: journal-disk
+            hostPath:
+              path: {{ .Values.JournalDiskVolume }}
+          - name: ledgers-disk
+            hostPath:
+              path: {{ .Values.LedgersDiskVolume }}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: bookkeeper
+  labels:
+    app: pulsar
+    component: bookkeeper
+spec:
+  ports:
+  - port: {{ .Values.BookiePort }}
+    name: server
+  clusterIP: None
+  selector:
+    app: pulsar
+    component: bookkeeper
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: bookie-autorecovery
+spec:
+  replicas: {{ .Values.BookieNumReplicas }}
+  template:
+    metadata:
+      labels:
+        app: pulsar
+        component: bookkeeper-replication
+    spec:
+      containers:
+      - name: replication-worker
+        image: streamlio/pulsar:latest
+        command: ["sh", "-c"]
+        args:
+        - >
+          bin/apply-config-from-env.py conf/bookkeeper.conf &&
+          bin/bookkeeper autorecovery
+        envFrom:
+        - configMapRef:
+            name: bookie-config
+        env:
+        - name: PULSAR_MEM
+          value: "\" -Xmx{{ .Values.BookieMemUsage }}m \""
+        - name: PULSAR_GC
+          value: "\"  \""
