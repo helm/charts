@@ -19,8 +19,8 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 Create a default short app name to use for resource naming.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 */}}
-{{- define "shortname" -}}
-{{- $name := default "scdf" .Values.shortNameOverride -}}
+{{- define "scdf.fullname" -}}
+{{- $name := default "data-flow" .Values.appNameOverride -}}
 {{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
@@ -28,7 +28,7 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 Create a default short app name to use for environment variables.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 */}}
-{{- define "envname" -}}
-{{- $name := default "scdf" .Values.shortNameOverride -}}
+{{- define "scdf.envname" -}}
+{{- $name := default "data-flow" .Values.appNameOverride -}}
 {{- printf "%s_%s" .Release.Name $name | upper | replace "-" "_" | trunc 63 | trimSuffix "_" -}}
 {{- end -}}

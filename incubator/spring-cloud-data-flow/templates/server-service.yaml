@@ -1,10 +1,13 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: {{ template "shortname" . }}-server
+  name: {{ template "scdf.fullname" . }}-server
   labels:
-    spring-cloud-service: {{ template "shortname" . }}-server
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    app: {{ template "name" . }}
+    component: {{ template "name" . }}-server
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
 spec:
   # If you are running k8s on a local dev box, you can use type NodePort instead
   type: {{ .Values.server.service.type }}
@@ -14,4 +17,6 @@ spec:
       protocol: TCP
       name: http
   selector:
-    name: {{ template "shortname" . }}-server
+    app: {{ template "name" . }}
+    component: {{ template "name" . }}-server
+    release: {{ .Release.Name }}

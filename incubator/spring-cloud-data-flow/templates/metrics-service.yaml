@@ -1,9 +1,13 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: {{ template "shortname" . }}-metrics
+  name: {{ template "scdf.fullname" . }}-metrics
   labels:
-    spring-cloud-service: metrics
+    app: {{ template "name" . }}
+    component: {{ template "name" . }}-metrics
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
 spec:
   type: {{ .Values.metrics.service.type }}
   ports:
@@ -12,4 +16,6 @@ spec:
       protocol: TCP
       name: http
   selector:
-    name: {{ template "shortname" . }}-metrics
+    app: {{ template "name" . }}
+    component: {{ template "name" . }}-metrics
+    release: {{ .Release.Name }}

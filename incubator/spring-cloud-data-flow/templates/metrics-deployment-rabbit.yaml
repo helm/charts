@@ -1,9 +1,10 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "shortname" . }}-metrics
+  name: {{ template "scdf.fullname" . }}-metrics
   labels:
-    app: {{ template "shortname" . }}-server
+    app: {{ template "name" . }}
+    component: {{ template "name" . }}-metrics
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -12,10 +13,12 @@ spec:
   template:
     metadata:
       labels:
-        name: {{ template "shortname" . }}-metrics
+        app: {{ template "name" . }}
+        component: {{ template "name" . }}-metrics
+        release: "{{ .Release.Name }}"
     spec:
       containers:
-      - name: {{ template "shortname" . }}-metrics
+      - name: {{ template "scdf.fullname" . }}-metrics
         image: {{ .Values.metrics.image }}:{{ .Values.metrics.version }}
         imagePullPolicy: {{ .Values.metrics.imagePullPolicy }}
         ports:

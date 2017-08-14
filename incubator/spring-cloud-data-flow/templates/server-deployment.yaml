@@ -1,9 +1,10 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "shortname" . }}-server
+  name: {{ template "scdf.fullname" . }}-server
   labels:
-    app: {{ template "shortname" . }}-server
+    app: {{ template "name" . }}
+    component: {{ template "name" . }}-server
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -12,10 +13,12 @@ spec:
   template:
     metadata:
       labels:
-        name: {{ template "shortname" . }}-server
+        app: {{ template "name" . }}
+        component: {{ template "name" . }}-server
+        release: "{{ .Release.Name }}"
     spec:
       containers:
-      - name: {{ template "shortname" . }}-server
+      - name: {{ template "scdf.fullname" . }}-server
         image: {{ .Values.server.image }}:{{ .Values.server.version }}
         imagePullPolicy: {{ .Values.server.imagePullPolicy }}
         volumeMounts: [
@@ -84,15 +87,15 @@ spec:
         - name: SPRING_CLOUD_DEPLOYER_KUBERNETES_LIVENESS_PROBE_DELAY
           value: '{{ .Values.deployer.livenessProbe.initialDelaySeconds }}'
         - name: SPRING_CLOUD_KUBERNETES_CONFIG_NAME
-          value: {{ template "shortname" . }}-server
+          value: {{ template "scdf.fullname" . }}-server
         - name: SPRING_CLOUD_KUBERNETES_SECRETS_ENABLE_API
           value: 'true'
         - name: SPRING_CLOUD_KUBERNETES_SECRETS_PATHS
           value: /etc/secrets
         - name: SPRING_CLOUD_DATAFLOW_METRICS_COLLECTOR_URI
-          value: 'http://${{ printf "{" }}{{ template "envname" . }}_METRICS_SERVICE_HOST}'
+          value: 'http://${{ printf "{" }}{{ template "scdf.envname" . }}_METRICS_SERVICE_HOST}'
         - name: SPRING_CLOUD_DATAFLOW_SERVER_URI
-          value: 'http://${{ printf "{" }}{{ template "envname" . }}_SERVER_SERVICE_HOST}:${{ printf "{" }}{{ template "envname" . }}_SERVER_SERVICE_PORT}'
+          value: 'http://${{ printf "{" }}{{ template "scdf.envname" . }}_SERVER_SERVICE_HOST}:${{ printf "{" }}{{ template "scdf.envname" . }}_SERVER_SERVICE_PORT}'
           # Maven repo for metadata artifact resolution plus metrics destination for all stream apps
         - name: SPRING_APPLICATION_JSON
           value: "{ \"maven\": { \"local-repository\": null, \"remote-repositories\": { \"repo1\": { \"url\": \"https://repo.spring.io/libs-snapshot\"} } }, \"spring.cloud.dataflow.application-properties.stream.spring.cloud.stream.bindings.applicationMetrics.destination\": \"metrics\" }"
