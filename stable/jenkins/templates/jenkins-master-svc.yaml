@@ -25,4 +25,7 @@ spec:
   type: {{.Values.Master.ServiceType}}
   {{if eq .Values.Master.ServiceType "LoadBalancer"}}
   loadBalancerSourceRanges: {{.Values.Master.LoadBalancerSourceRanges}}
+  {{if .Values.Master.LoadBalancerIP}}
+  loadBalancerIP: {{.Values.Master.LoadBalancerIP}}
+  {{end}}
   {{end}}
