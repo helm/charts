@@ -20,6 +20,19 @@ controller:
   ##
   defaultBackendService: ""
 
+  ## Optionally specify the secret name for default SSL certificate
+  ## Must be <namespace>/<secret_name>
+  ##
+  defaultSSLCertificate: ""
+
+  ## Election ID to use for status update
+  ##
+  electionID: ingress-controller-leader
+
+  ## Name of the ingress class to route through this controller
+  ##
+  ingressClass: nginx
+
   ## Allows customization of the external service
   ## the ingress will be bound to via DNS
   publishService:
@@ -45,11 +58,6 @@ controller:
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
   ##
   nodeSelector: {}
-
-  ## Run the controller via this service account
-  ## Ref: https://github.com/kubernetes/ingress/tree/master/examples/rbac/nginx
-  ##
-  serviceAccountName: ""
 
   ## Annotations to be added to controller pods
   ##
@@ -161,6 +169,11 @@ defaultBackend:
     loadBalancerSourceRanges: []
     servicePort: 80
     type: ClusterIP
+
+## Enable RBAC as per https://github.com/kubernetes/ingress/tree/master/examples/rbac/nginx and https://github.com/kubernetes/ingress/issues/266
+rbac:
+  create: false
+  serviceAccountName: default
 
 ## If controller.stats.enabled = true, Prometheus metrics will be exported
 ## Ref: https://github.com/hnlq715/nginx-vts-exporter
