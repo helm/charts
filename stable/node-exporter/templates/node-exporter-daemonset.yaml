@@ -1,14 +1,13 @@
-{{- if .Values.nodeExporter.enabled -}}
 apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
   labels:
-    app: {{ template "prometheus.name" . }}
+    app: {{ template "nodeExporter.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     component: "{{ .Values.nodeExporter.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-  name: {{ template "prometheus.nodeExporter.fullname" . }}
+  name: {{ template "nodeExporter.fullname" . }}
 spec:
   template:
     metadata:
@@ -17,12 +16,12 @@ spec:
 {{ toYaml .Values.nodeExporter.podAnnotations | indent 8 }}
     {{- end }}
       labels:
-        app: {{ template "prometheus.name" . }}
+        app: {{ template "nodeExporter.name" . }}
         component: "{{ .Values.nodeExporter.name }}"
         release: {{ .Release.Name }}
     spec:
       containers:
-        - name: {{ template "prometheus.name" . }}-{{ .Values.nodeExporter.name }}
+        - name: {{ .Values.nodeExporter.name }}
           image: "{{ .Values.nodeExporter.image.repository }}:{{ .Values.nodeExporter.image.tag }}"
           imagePullPolicy: "{{ .Values.nodeExporter.image.pullPolicy }}"
           args:
@@ -51,10 +50,6 @@ spec:
           {{- end }}
       hostNetwork: true
       hostPID: true
-    {{- if .Values.nodeExporter.tolerations }}
-      tolerations:
-{{ toYaml .Values.nodeExporter.tolerations | indent 8 }}
-    {{- end }}
     {{- if .Values.nodeExporter.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeExporter.nodeSelector | indent 8 }}
@@ -71,4 +66,3 @@ spec:
           hostPath:
             path: {{ .hostPath }}
       {{- end }}
-{{- end -}}

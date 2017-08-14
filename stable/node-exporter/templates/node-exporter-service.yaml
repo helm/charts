@@ -4,18 +4,18 @@ kind: Service
 metadata:
 {{- if .Values.nodeExporter.service.annotations }}
   annotations:
-{{ toYaml .Values.nodeExporter.service.annotations | indent 4 }}
+{{ toYaml .Values.nodeExporter.service.annotations | indent 4}}
 {{- end }}
   labels:
-    app: {{ template "prometheus.name" . }}
+    app: {{ template "node-exporter.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     component: "{{ .Values.nodeExporter.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
 {{- if .Values.nodeExporter.service.labels }}
-{{ toYaml .Values.nodeExporter.service.labels | indent 4 }}
+{{ toYaml .Values.nodeExporter.service.labels | indent 4}}
 {{- end }}
-  name: {{ template "prometheus.nodeExporter.fullname" . }}
+  name: {{ template "node-exporter.fullname" . }}
 spec:
 {{- if .Values.nodeExporter.service.clusterIP }}
   clusterIP: {{ .Values.nodeExporter.service.clusterIP }}
@@ -39,7 +39,7 @@ spec:
       protocol: TCP
       targetPort: 9100
   selector:
-    app: {{ template "prometheus.name" . }}
+    app: {{ template "node-exporter.name" . }}
     component: "{{ .Values.nodeExporter.name }}"
     release: {{ .Release.Name }}
   type: "{{ .Values.nodeExporter.service.type }}"
