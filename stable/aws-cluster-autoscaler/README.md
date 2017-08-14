@@ -4,8 +4,10 @@
 
 ## TL;DR:
 
+## Helm < 2.5
+
 ```console
-$ helm install stable/aws-cluster-autoscaler -f values.yaml
+$ helm install stable/aws-cluster-autoscaler --name my-release -f values.yaml
 ```
 Where `values.yaml` contains:
 
@@ -14,6 +16,11 @@ autoscalingGroups:
   - name: your-asg-name
     maxSize: 10
     minSize: 1
+```
+## Helm >= 2.5
+
+```console
+$ helm install stable/aws-cluster-autoscaler --name my-release autoscalingGroups[0].name=your-asg-name,autoscalingGroups[0].maxSize=10,autoscalingGroups[0].minSize=1
 ```
 
 ## Introduction
@@ -25,7 +32,7 @@ This chart bootstraps an aws-cluster-autoscaler deployment on a [Kubernetes](htt
 
 ## Installing the Chart
 
-In order for the chart to configure the aws-cluster-autoscaler properly during the installation process, you must provide some minimal configuration which can't rely on defaults. This includes at least one element in the `autoscalingGroups` array and its three values: `name`, `minSize` and `maxSize`. These parameters cannot be passed to helm using the `--set` parameter at this time, so you must supply these using a `values.yaml` file such as:
+In order for the chart to configure the aws-cluster-autoscaler properly during the installation process, you must provide some minimal configuration which can't rely on defaults. This includes at least one element in the `autoscalingGroups` array and its three values: `name`, `minSize` and `maxSize`. If you are using Helm < 2.5 these parameters cannot be passed to helm using the `--set` parameter, so you must supply these using a `values.yaml` file such as:
 
 ```
 autoscalingGroups:
@@ -36,8 +43,15 @@ autoscalingGroups:
 
 To install the chart with the release name `my-release`:
 
+## Helm < 2.5
+
 ```console
 $ helm install stable/aws-cluster-autoscaler --name my-release -f values.yaml
+```
+## Helm >= 2.5
+
+```console
+$ helm install stable/aws-cluster-autoscaler --name my-release autoscalingGroups[0].name=your-asg-name,autoscalingGroups[0].maxSize=10,autoscalingGroups[0].minSize=1
 ```
 
 The command deploys aws-cluster-autoscaler on the Kubernetes cluster using the supplied configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
@@ -99,6 +113,8 @@ Parameter | Description | Default
 `service.type` | type of service to create | `ClusterIP`
 `skipNodes.withLocalStorage` | don't terminate nodes running pods that use local storage | `false`
 `skipNodes.withSystemPods` | don't terminate nodes running pods in the `kube-system` namespace | `true`
+`deployment.serviceAccountName` | service account to use if RBAC is enabled  | `""`
+`deployment.tolerations` | List of node taints to tolerate (requires Kubernetes >= 1.6) | `[]`
 
 Specify each parameter you'd like to override using a YAML file as described above in the [installation](#Installing the Chart) section.
 

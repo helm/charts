@@ -19,6 +19,7 @@ spec:
         app: {{ template "name" . }}
         release: {{ .Release.Name }}
     spec:
+      serviceAccountName: {{ .Values.deployment.serviceAccountName }}
       containers:
         - name: {{ template "name" . }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -51,6 +52,8 @@ spec:
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
     {{- end }}
+      tolerations:
+{{ toYaml .Values.deployment.tolerations | indent 8 }}
       volumes:
         - name: ssl-certs
           hostPath:
