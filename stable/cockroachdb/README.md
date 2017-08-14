@@ -47,6 +47,8 @@ The following tables lists the configurable parameters of the CockroachDB chart 
 | `Storage`               | Persistent volume size             | `1Gi`                                                      |
 | `StorageClass`          | Persistent volume class            | `anything`                                                 |
 | `ClusterDomain`         | Cluster's default DNS domain       | `cluster.local`                                            |
+| `NetworkPolicy.Enabled` | Enable NetworkPolicy               | `false`                                                    |
+| `NetworkPolicy.AllowExternal` | Don't require client label for connections | `true`                                       |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
@@ -177,6 +179,22 @@ clusterID:  {35ecbc27-3f67-4e7d-9b8f-27c31aae17d6}
 nodeID:     2
 [...]
 ```
+
+## NetworkPolicy
+
+To enable network policy for CockroachDB,
+install [a networking plugin that implements the Kubernetes
+NetworkPolicy spec](https://kubernetes.io/docs/tasks/administer-cluster/declare-network-policy#before-you-begin),
+and set `NetworkPolicy.Enabled` to `true`.
+
+For Kubernetes v1.5 & v1.6, you must also turn on NetworkPolicy by setting
+the DefaultDeny namespace annotation. Note: this will enforce policy for _all_ pods in the namespace:
+
+    kubectl annotate namespace default "net.beta.kubernetes.io/network-policy={\"ingress\":{\"isolation\":\"DefaultDeny\"}}"
+
+For more precise policy, set `networkPolicy.allowExternal=false`. This will
+only allow pods with the generated client label to connect to CockroachDB.
+This label will be displayed in the output of a successful install.
 
 ## Scaling
 

@@ -14,12 +14,12 @@ spec:
       name: {{ template "fullname" . }}-proxy
       labels:
         app: {{ template "name" . }}-proxy
-        heritage: {{.Release.Service | quote }}
-        release: {{.Release.Name | quote }}
-        chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+        heritage: {{ .Release.Service | quote }}
+        release: {{ .Release.Name | quote }}
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
       annotations:
       {{- if .Values.proxy.podAnnotations }}
-{{ toYaml .Values.proxy.podAnnotations | indent 8}}
+{{ toYaml .Values.proxy.podAnnotations | indent 8 }}
       {{- end }}
     spec:
       containers:

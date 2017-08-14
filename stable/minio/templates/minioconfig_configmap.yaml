@@ -10,7 +10,7 @@ metadata:
 data:
   config.json: |-
     {
-      "version": "18",
+      "version": "19",
       "credential": {
         "accessKey": {{ .Values.accessKey | quote }},
         "secretKey": {{ .Values.secretKey | quote }}
@@ -116,6 +116,17 @@ data:
             "user": {{ .Values.minioConfig.mysql.user | quote }},
             "password": {{ .Values.minioConfig.mysql.password | quote }},
             "database": {{ .Values.minioConfig.mysql.database | quote }}
+          }
+        },
+        "mqtt": {
+          "1": {
+            "enable": {{ .Values.minioConfig.mqtt.enable }},
+            "broker": {{ .Values.minioConfig.mqtt.broker | quote }},
+            "topic": {{ .Values.minioConfig.mqtt.topic | quote }},
+            "qos": {{ .Values.minioConfig.mqtt.qos | int }},
+            "clientId": {{ .Values.minioConfig.mqtt.clientId | quote }},
+            "username": {{ .Values.minioConfig.mqtt.username | quote }},
+            "password": {{ .Values.minioConfig.mqtt.password | quote }}
           }
         }
       }

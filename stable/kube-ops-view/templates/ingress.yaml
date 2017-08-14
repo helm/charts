@@ -10,7 +10,7 @@ metadata:
     heritage: "{{ .Release.Service }}"
 {{- if .Values.ingress.annotations }}
   annotations:
-{{ toYaml .Values.ingress.annotations | indent 4}}
+{{ toYaml .Values.ingress.annotations | indent 4 }}
 {{- end }}
 spec:
   rules:
