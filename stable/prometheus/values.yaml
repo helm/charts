@@ -367,7 +367,7 @@ server:
   #  operator: "Equal|Exists"
   #  value: "value"
   #  effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
-  
+
   ## Node labels for Prometheus server pod assignment
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
   nodeSelector: {}
