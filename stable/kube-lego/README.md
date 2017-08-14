@@ -53,6 +53,7 @@ Parameter | Description | Default
 `podAnnotations` | annotations to be added to pods | `{}`
 `replicaCount` | desired number of pods | `1`
 `resources` | kube-lego resource requests and limits (YAML) |`{}`
+`serviceAccount`| kube-lego serviceAccount name | 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
