@@ -4,7 +4,7 @@ metadata:
   annotations:
     service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
 metadata:
-  name: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 24 }}"
+  name: {{ template "fullname" . }}
   labels:
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
@@ -23,18 +23,18 @@ spec:
 apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
-  name: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 24 }}"
+  name: {{ template "fullname" . }}
   labels:
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     component: "{{ .Release.Name }}-{{ .Values.Component }}"
 spec:
-  serviceName: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 24 }}"
+  serviceName: {{ template "fullname" . }}
   replicas: {{ default 3 .Values.Replicas }}
   template:
     metadata:
-      name: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 24 }}"
+      name: {{ template "fullname" . }}
       labels:
         heritage: {{ .Release.Service | quote }}
         release: {{ .Release.Name | quote }}
@@ -44,7 +44,7 @@ spec:
         pod.alpha.kubernetes.io/initialized: "true"
     spec:
       containers:
-      - name: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 24 }}"
+      - name: {{ template "fullname" . }}
         image: "{{ .Values.Image }}:{{ .Values.ImageTag }}"
         imagePullPolicy: "{{ .Values.ImagePullPolicy }}"
         ports:
@@ -60,7 +60,7 @@ spec:
         - name: INITIAL_CLUSTER_SIZE
           value: {{ default 3 .Values.Replicas | quote }}
         - name: SET_NAME
-          value: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 24 }}"
+          value: {{ template "fullname" . }}
         volumeMounts:
         - name: datadir
           mountPath: /var/run/etcd
