@@ -82,7 +82,7 @@ spec:
       volumes:
         - name: config-volume
           configMap:
-            name: {{ template "prometheus.server.fullname" . }}
+            name: {{ if .Values.server.configMapOverrideName }}{{ .Release.Name }}-{{ .Values.server.configMapOverrideName }}{{- else }}{{ template "prometheus.server.fullname" . }}{{- end }}
         - name: storage-volume
         {{- if .Values.server.persistentVolume.enabled }}
           persistentVolumeClaim:
