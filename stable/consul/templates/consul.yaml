@@ -120,8 +120,11 @@ spec:
           containerPort: {{.Values.ConsulDnsPort}}
         resources:
           requests:
-            cpu: "{{ .Values.Cpu }}"
-            memory: "{{ .Values.Memory }}"
+            cpu: "{{ .Values.resources.requests.cpu }}"
+            memory: "{{ .Values.resources.requests.memory }}"
+          limits:
+            cpu: "{{ .Values.resources.limits.cpu }}"
+            memory: "{{ .Values.resources.limits.memory }}"
         env:
         - name: INITIAL_CLUSTER_SIZE
           value: {{ default 3 .Values.Replicas | quote }}
