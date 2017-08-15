@@ -11,33 +11,16 @@ metadata:
 rules:
 - apiGroups:
   - ""
-  - "extensions"
-  resources:
-  - configmaps
-  - secrets
-  - services
-  - endpoints
-  - ingresses
-  - nodes
-  - pods
-  verbs:
-  - list
-  - get
-  - watch
-- apiGroups:
-  - ""
   resources:
   - services
   verbs:
   - create
-  - update
+  - get
   - delete
 - apiGroups:
-  - "extensions"
-  - ""
+  - extensions
   resources:
   - ingresses
-  - ingresses/status
   verbs:
   - get
   - update
@@ -47,17 +30,11 @@ rules:
   - delete
   - watch
 - apiGroups:
-  - "*"
   - ""
   resources:
-  - events
-  - certificates
   - secrets
   verbs:
-  - create
-  - list
-  - update
   - get
-  - patch
-  - watch
+  - create
+  - update
 {{- end -}}
