@@ -17,7 +17,7 @@
 function create-patch-file () {
     local file="$1"
 
-    tee "$file" <<EOF >/dev/null
+    cat << EOF > "$file"
 [{
   "op":    "add",
   "path":  "/metadata/labels/name",
