@@ -28,6 +28,9 @@ sumologic:
   ## ref: https://github.com/SumoLogic/fluentd-kubernetes-sumologic#sumologic
   collectorUrl:
 
+  ## The source of fluentd logs, either file or systemd
+  fluentdSource: file
+
   ## How frequently to push logs to SumoLogic (default 5s)
   ## ref: https://github.com/SumoLogic/fluentd-kubernetes-sumologic#options
   # flushInterval: 5
