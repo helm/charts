@@ -20,8 +20,8 @@ spec:
           args:
             - --provider={{ .Values.provider }}
             - --policy={{ .Values.policy }}
-          {{- if .Values.domainFilter }}
-            - --domain-filter={{ .Values.domainFilter }}
+          {{- range .Values.domainFilters }}
+            - --domain-filter={{ . }}
           {{- end }}
           {{- range .Values.sources }}
             - --source={{ . }}

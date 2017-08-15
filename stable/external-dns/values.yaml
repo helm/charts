@@ -13,8 +13,8 @@ sources:
 ## The DNS provider where the DNS records will be created (options: aws, google, inmemory, azure )
 provider: aws
 
-## Limit possible target zones by a domain suffix (optional)
-domainFilter: ""
+## Limit possible target zones by domain suffixes (optional)
+domainFilters: []
 
 ## Modify how DNS records are sychronized between sources and providers (options: sync, upsert-only )
 policy: upsert-only

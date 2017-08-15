@@ -27,7 +27,7 @@ The following tables lists the configurable parameters of the external-dns chart
 
 | Parameter              | Description                                                                                                                | Default                                                      |
 | ---------------------- | -------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
-| `domainFilter`         | Limit possible target zones by a domain suffix (optional).                                                                 | `""`                                                   |
+| `domainFilters`         | Limit possible target zones by domain suffixes (optional).                                                                 | `[]`                                                   |
 | `extraArgs`            | Optional object of extra args, as `name`: `value` pairs. Where the name is the command line arg to external-dns.           | `{}`                                                         |
 | `image.name`           | Container image name (Including repository name if not `hub.docker.com`).                                                  | `registry.opensource.zalan.do/teapot/external-dns`           |
 | `image.pullPolicy`     | Container pull policy.                                                                                                     | `IfNotPresent`                                               |
