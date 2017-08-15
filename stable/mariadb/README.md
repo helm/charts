@@ -16,7 +16,7 @@ This chart bootstraps a [MariaDB](https://github.com/bitnami/bitnami-docker-mari
 
 ## Prerequisites
 
-- Kubernetes 1.4+ with Beta APIs enabled
+- Kubernetes 1.6+ with Beta APIs enabled
 - PV provisioner support in the underlying infrastructure
 
 ## Installing the Chart
