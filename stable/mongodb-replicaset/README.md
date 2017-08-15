@@ -34,7 +34,7 @@ The following tables lists the configurable parameters of the mongodb chart and 
 | `replicas`                      | Number of replicas in the replica set                                     | 3                                                   |
 | `port`                          | MongoDB port                                                              | 27017                                               |
 | `installImage.name`             | Image name for the init container that establishes the replica set        | gcr.io/google_containers/mongodb-install            |
-| `installImage.tag`              | Image tag for the init container that establishes the replica set         | 0.3                                                 |
+| `installImage.tag`              | Image tag for the init container that establishes the replica set         | 0.5                                                 |
 | `installImage.pullPolicy`       | Image pull policy for the init container that establishes the replica set | IfNotPresent                                        |
 | `image.name`                    | MongoDB image name                                                        | mongo                                               |
 | `image.tag`                     | MongoDB image tag                                                         | 3.4                                                 |
@@ -75,7 +75,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```console
-$ helm install --name my-release -f values.yaml incubator/mongodb-replicaset
+$ helm install --name my-release -f values.yaml stable/mongodb-replicaset
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
@@ -214,6 +214,28 @@ $ kubectl exec $RELEASE_NAME-mongodb-replicaset-1 -- mongo --eval="rs.slaveOk();
 MongoDB shell version: 3.4.5
 connecting to: mongodb://127.0.0.1:27017
 { "_id" : ObjectId("57b180b1a7311d08f2bfb617"), "key1" : "value1" }
+```
+
+### Exposing your MongoDB cluster to an external application
+
+If your application is not part of the same Kubernetes cluster of your MongoDB replica set. You need to expose your pods individually to create a MongoDB URI.
+
+```console
+$ for i in 0 1 2; do kubectl expose $RELEASE_NAME-mongodb-replicaset-$i --type=NodePort; done
+```
+
+```console
+$ kubectl get svc -o wide                                                            
+NAME                            CLUSTER-IP       EXTERNAL-IP   PORT(S)           AGE       SELECTOR
+messy-hydra-mongodb-replicaset-0   100.71.206.249   <nodes>       27017:30371/TCP   22s       app=mongodb-replicaset,name=messy-hydra-mongodb-replicaset-0,release=messy-hydra
+messy-hydra-mongodb-replicaset-1   100.71.26.100    <nodes>       27017:31818/TCP   6d        app=mongodb-replicaset,name=messy-hydra-mongodb-replicaset-1,release=messy-hydra
+messy-hydra-mongodb-replicaset-2   100.64.55.35     <nodes>       27017:31365/TCP   1h        app=mongodb-replicaset,name=messy-hydra-mongodb-replicaset-2,release=messy-hydra
+```
+
+Now connect from the console with the MongoDB URI
+
+```console
+mongo mongodb://${IP_KUBE_NODE_0}:30371,${IP_KUBE_NODE_1}:31818,${IP_KUBE_NODE_2}:31365/?replicaSet=rs0
 ```
 
 ### Scaling
