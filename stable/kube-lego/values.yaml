@@ -46,4 +46,5 @@ resources: {}
   #   memory: 8Mi
 
 rbac:
-  enabled: false
+  create: false
+  serviceAccountName: default
