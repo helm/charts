@@ -32,6 +32,7 @@ data:
       nobind
       dev tun
       redirect-gateway def1
+      cipher AES-256-CBC
       <key>
       `cat ${EASY_RSA_LOC}/pki/private/$1.key`
       </key>
@@ -87,6 +88,8 @@ data:
       keepalive 10 60
       persist-key
       persist-tun
+
+      cipher AES-256-CBC
 
       proto {{ .Values.openvpn.OVPN_PROTO }}
       port  {{ .Values.service.internalPort }}
