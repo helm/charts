@@ -1,0 +1,36 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels: {{ include "external-dns.labels" . | indent 4 }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+  name: {{ template "external-dns.fullname" . }}
+spec:
+  template:
+    metadata:
+      labels: {{ include "external-dns.labels" . | indent 8 }}
+    {{- if .Values.podAnnotations }}
+      annotations:
+{{ toYaml .Values.podAnnotations | indent 8}}
+    {{- end }}
+    spec:
+      containers:
+        - name: {{ template "name" . }}
+          image: "{{.Values.image.name}}:{{ .Values.image.tag }}"
+          imagePullPolicy: "{{ .Values.image.pullPolicy }}"
+          args:
+            - --provider={{ .Values.provider }}
+            - --policy={{ .Values.policy }}
+          {{- range .Values.domainFilters }}
+            - --domain-filter={{ . }}
+          {{- end }}
+          {{- range .Values.sources }}
+            - --source={{ . }}
+          {{- end }}
+          {{- range $key, $value := .Values.extraArgs }}
+            - --{{ $key }}={{ $value }}
+          {{- end }}
+        {{- if .Values.resources }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+        {{- end }}
+      serviceAccountName: {{ if .Values.rbac.create }}{{ template "external-dns.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
