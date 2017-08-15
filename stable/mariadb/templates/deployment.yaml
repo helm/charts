@@ -12,27 +12,20 @@ spec:
     metadata:
       labels:
         app: {{ template "fullname" . }}
-      annotations:
-        pod.alpha.kubernetes.io/init-containers: '
-          [
-            {
-              "name": "copy-custom-config",
-              "image": "{{ .Values.image }}",
-              "imagePullPolicy": {{ .Values.imagePullPolicy | quote }},
-              "command": ["sh", "-c", "mkdir -p /bitnami/mariadb/conf && cp -n /bitnami/mariadb_config/my.cnf /bitnami/mariadb/conf/my_custom.cnf"],
-              "volumeMounts": [
-                {
-                  "name": "config",
-                  "mountPath": "/bitnami/mariadb_config"
-                },
-                {
-                  "name": "data",
-                  "mountPath": "/bitnami/mariadb"
-                }
-              ]
-            }
-          ]'
     spec:
+      initContainers:
+      - name: "copy-custom-config"
+        image: "{{ .Values.image }}"
+        imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
+        command:
+          - "sh"
+          -  "-c"
+          -  "mkdir -p /bitnami/mariadb/conf && cp -n /bitnami/mariadb_config/my.cnf /bitnami/mariadb/conf/my_custom.cnf"
+        volumeMounts:
+        - name: data
+          mountPath: /bitnami/mariadb
+        - name: config
+          mountPath: /bitnami/mariadb_config
       containers:
       - name: {{ template "fullname" . }}
         image: "{{ .Values.image }}"
