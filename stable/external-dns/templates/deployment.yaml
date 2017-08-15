@@ -7,11 +7,11 @@ metadata:
 spec:
   template:
     metadata:
-      labels: {{ include "external-dns.labels" . | indent 8 }}
     {{- if .Values.podAnnotations }}
       annotations:
 {{ toYaml .Values.podAnnotations | indent 8}}
     {{- end }}
+      labels: {{ include "external-dns.labels" . | indent 8 }}
     spec:
       containers:
         - name: {{ template "name" . }}
@@ -29,8 +29,18 @@ spec:
           {{- range $key, $value := .Values.extraArgs }}
             - --{{ $key }}={{ $value }}
           {{- end }}
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 7979
+          ports:
+            - containerPort: 7979
         {{- if .Values.resources }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
         {{- end }}
+    {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "external-dns.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
