@@ -19,19 +19,6 @@ spec:
         release: {{ .Release.Name }}
       annotations:
         pod.alpha.kubernetes.io/initialized: "true"
-        # see https://www.elastic.co/guide/en/elasticsearch/reference/current/vm-max-map-count.html
-        # and https://www.elastic.co/guide/en/elasticsearch/reference/current/setup-configuration-memory.html#mlockall
-        pod.alpha.kubernetes.io/init-containers: '[
-          {
-            "name": "sysctl",
-            "image": "busybox",
-            "imagePullPolicy": "Always",
-            "command": ["sysctl", "-w", "vm.max_map_count=262144"],
-            "securityContext": {
-              "privileged": true
-            }
-          }
-        ]'
     spec:
       serviceAccountName: {{ template "fullname" . }}
       {{- if eq .Values.data.antiAffinity "hard" }}
@@ -57,6 +44,15 @@ spec:
                   release: "{{ .Release.Name }}"
                   component: "{{ .Values.data.name }}"
       {{- end }}
+      initContainers:
+      # see https://www.elastic.co/guide/en/elasticsearch/reference/current/vm-max-map-count.html
+      # and https://www.elastic.co/guide/en/elasticsearch/reference/current/setup-configuration-memory.html#mlockall
+      - name: "sysctl"
+        image: "busybox"
+        imagePullPolicy: "Always"
+        command: ["sysctl", "-w", "vm.max_map_count=262144"]
+        securityContext:
+          privileged: true
       containers:
       - name: elasticsearch
         env:
