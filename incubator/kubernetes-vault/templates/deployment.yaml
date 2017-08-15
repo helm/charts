@@ -2,20 +2,22 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: kubernetes-vault
+  name: {{ template "fullname" . }}
+  labels:
+    app: {{ .Values.app }}
+    release: {{ .Release.Name }}
 spec:
   replicas: {{ .Values.replicaCount }}
   template:
     metadata:
-      labels:
-        heritage: {{ .Release.Service }}
-        release: {{ .Release.Name }}
-        chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-        app: {{ .Values.app }}
-    spec:
+      labels: 
+        app: {{ template "fullname" . }}
+        release: release: {{ .Release.Name }}
+          spec:
       containers:
       - name: kubernetes-vault
-        image: "{{ .Values.image }}:{{ .Values.imageTag }}"
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
         env:
         - name: KUBERNETES_NAMESPACE
           valueFrom:
@@ -27,4 +29,4 @@ spec:
       volumes:
         - name: config-volume
           configMap:
-            name: kubernetes-vault
+            name: {{ template "fullname" . }}

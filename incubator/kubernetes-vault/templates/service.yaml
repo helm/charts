@@ -4,7 +4,8 @@ metadata:
   name: "{{ template "fullname" . }}"
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
-    component: "{{ template "fullname" . }}"
+    app: {{ template "fullname" . }}
+    release: {{ .Release.Name }}
 spec:
   clusterIP: None
   ports:
@@ -12,3 +13,5 @@ spec:
       port: {{ .Values.service.dummyPort }}
   selector:
     run: {{ template "fullname" . }}
+    app: {{ template "fullname" . }}
+    release: {{ .Release.Name }}
