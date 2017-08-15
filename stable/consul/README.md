@@ -1,7 +1,7 @@
 # Consul Helm Chart
 
 ## Prerequisites Details
-* Kubernetes 1.5
+* Kubernetes 1.6+
 * PV support on underlying infrastructure
 
 ## StatefulSet Details
