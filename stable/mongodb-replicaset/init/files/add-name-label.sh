@@ -32,7 +32,9 @@ function create-label () {
     local token="$(< /var/run/secrets/kubernetes.io/serviceaccount/token)"
     local url="https://$KUBERNETES_SERVICE_HOST:$KUBERNETES_PORT_443_TCP_PORT/api/v1/namespaces/$POD_NAMESPACE/pods/$POD_NAME"
 
-    curl -sS --insecure --request PATCH --data "@$data" \
+    curl -sS --request PATCH \
+        --data "@$data" \
+        --cacert /var/run/secrets/kubernetes.io/serviceaccount/ca.crt \
         -H "Authorization: Bearer $token" \
         -H "Content-Type:application/json-patch+json" \
         "$url"
