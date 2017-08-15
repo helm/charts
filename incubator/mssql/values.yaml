@@ -1,5 +1,5 @@
-## mysql image version
-## ref: https://hub.docker.com/r/library/mysql/tags/
+## mssql image version
+## ref: https://hub.docker.com/r/microsoft/mssql-server-linux/tags/
 ##
 imageTag: "rc2"
 
