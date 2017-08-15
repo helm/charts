@@ -1,0 +1,30 @@
+MSSQL can be accessed via port 1433 on the following DNS name from within your cluster:
+{{ template "fullname" . }}
+
+To get your sa password run:
+
+    kubectl get secret --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath="{.data.sa-password}" | base64 --decode; echo
+
+To connect to your database:
+
+1. Run an Ubuntu pod that you can use as a client:
+
+    kubectl run -i --tty ubuntu --image=ubuntu:16.04 --restart=Never -- bash -il
+
+2. Install the mssql client:
+
+    $ apt-get update
+    $ apt-get install -y curl apt-transport-https
+    $ apt-get update && apt-get install -y locales && rm -rf /var/lib/apt/lists/* \
+    && localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
+    $ locale-gen en_US en_US.UTF-8
+    $ dpkg-reconfigure locales
+    $ curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
+    $ curl https://packages.microsoft.com/config/ubuntu/16.04/prod.list | tee /etc/apt/sources.list.d/msprod.list 
+    $ apt-get update && apt-get install mssql-tools unixodbc-dev -y
+    $ echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bash_profile
+    $ echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bashrc
+    $ source ~/.bashrc
+
+3. Connect using the mssql tools, then provide your password:
+    $ sqlcmd -S {{ template "fullname" . }} -U SA -P '<YourPassword>'
