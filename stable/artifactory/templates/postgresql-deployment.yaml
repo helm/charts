@@ -17,7 +17,7 @@ spec:
         component: "{{ .Values.database.name }}"
         release: {{ .Release.Name }}
     spec:
-      initContianers:
+      initContainers:
       - name: "remove-lost-found"
         image: "{{ .Values.initContainerImage }}"
         imagePullPolicy: "{{ .Values.database.image.pullPolicy }}"

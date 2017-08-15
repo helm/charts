@@ -17,7 +17,7 @@ spec:
         component: "{{ .Values.artifactory.name }}"
         release: {{ .Release.Name }}
     spec:
-      initContianers:
+      initContainers:
       - name: "remove-lost-found"
         image: "{{ .Values.initContainerImage }}"
         imagePullPolicy: {{ .Values.artifactory.image.pullPolicy }}
