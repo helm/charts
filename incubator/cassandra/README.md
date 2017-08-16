@@ -8,7 +8,7 @@ To install the Cassandra Chart into your Kubernetes cluster (This Chart requires
 helm install --namespace "cassandra" -n "cassandra" incubator/cassandra
 ```
 
-After installation succuess, you can get a status of Chart
+After installation succeeds, you can get a status of Chart
 
 ```bash
 helm status "cassandra"
@@ -48,7 +48,7 @@ helm install --namespace "cassandra" -n "cassandra" --set config.cluster_size=5 
 ```
 
 ## Install Chart with specific resource size
-By default, this Chart will create a cassandra with CPU 2 vCPU and 4Gi of memery which is suitable for development environment.
+By default, this Chart will create a cassandra with CPU 2 vCPU and 4Gi of memory which is suitable for development environment.
 If you want to use this Chart for production, I would recommend to update the CPU to 4 vCPU and 16Gi. Also increase size of `max_heap_size` and `heap_new_size`.
 To update the settings, edit `values.yaml`
 
@@ -67,7 +67,7 @@ nodes:
 ```
 
 ## Scale cassandra
-When you want to change the cluser size of your cassandra, you can use the helm upgrade command.
+When you want to change the cluster size of your cassandra, you can use the helm upgrade command.
 
 ```bash
 helm upgrade --set config.cluster_size=5 cassandra incubator/cassandra
