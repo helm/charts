@@ -72,7 +72,7 @@ for directory in ${CHANGED_FOLDERS}; do
     kubectl get svc --namespace ${NAMESPACE}
     kubectl get deployments --namespace ${NAMESPACE}
     kubectl get endpoints --namespace ${NAMESPACE}
-    helm test
+    helm test ${RELEASE_NAME}
     if [ -n $VERIFICATION_PAUSE ]; then
       cat install_output
       sleep $VERIFICATION_PAUSE
