@@ -67,7 +67,7 @@ nodes:
 ```
 
 ## Scale cassandra
-When you want to change the cluser size of your cassandra, you can use the helm upgrade command.
+When you want to change the cluster size of your cassandra, you can use the helm upgrade command.
 
 ```bash
 helm upgrade --set config.cluster_size=5 cassandra incubator/cassandra
