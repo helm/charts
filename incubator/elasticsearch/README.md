@@ -90,7 +90,7 @@ The YAML value of cluster.config is appended to elasticsearch.yml file for addit
 
 This is a limitation in kubernetes right now. There is no way to raise the
 limits of lockable memory, so that these memory areas won't be swapped. This
-would degrade performance heaviliy. The issue is tracked in
+would degrade performance heavily. The issue is tracked in
 [kubernetes/#3595](https://github.com/kubernetes/kubernetes/issues/3595).
 
 ```
