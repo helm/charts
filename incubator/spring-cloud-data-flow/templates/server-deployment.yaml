@@ -4,7 +4,7 @@ metadata:
   name: {{ template "scdf.fullname" . }}-server
   labels:
     app: {{ template "name" . }}
-    component: {{ template "name" . }}-server
+    component: server
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -14,7 +14,7 @@ spec:
     metadata:
       labels:
         app: {{ template "name" . }}
-        component: {{ template "name" . }}-server
+        component: server
         release: "{{ .Release.Name }}"
     spec:
       containers:
@@ -22,6 +22,11 @@ spec:
         image: {{ .Values.server.image }}:{{ .Values.server.version }}
         imagePullPolicy: {{ .Values.server.imagePullPolicy }}
         volumeMounts: [
+          {
+            name: data-flow,
+            mountPath: /etc/secrets/data-flow,
+            readOnly: true
+          },
           {
             name: rabbitmq,
             mountPath: /etc/secrets/rabbitmq,
@@ -41,12 +46,7 @@ spec:
         ports:
         - containerPort: {{ .Values.server.service.internalPort }}
         resources:
-          limits:
-            cpu: {{ .Values.server.resources.limits.cpu }}
-            memory: {{ .Values.server.resources.limits.memory }}
-          requests:
-            cpu: {{ .Values.server.resources.requests.cpu }}
-            memory: {{ .Values.server.resources.requests.cpu }}
+{{ toYaml .Values.server.resources | indent 10 }}
         livenessProbe:
           httpGet:
             path: /management/health
@@ -100,6 +100,12 @@ spec:
         - name: SPRING_APPLICATION_JSON
           value: "{ \"maven\": { \"local-repository\": null, \"remote-repositories\": { \"repo1\": { \"url\": \"https://repo.spring.io/libs-snapshot\"} } }, \"spring.cloud.dataflow.application-properties.stream.spring.cloud.stream.bindings.applicationMetrics.destination\": \"metrics\" }"
       volumes: [
+        {
+          name: data-flow,
+          secret: {
+            secretName: {{ template "scdf.fullname" . }}
+          }
+        },
         {
           name: rabbitmq,
           secret: {

@@ -4,7 +4,7 @@ metadata:
   name: {{ template "scdf.fullname" . }}-metrics
   labels:
     app: {{ template "name" . }}
-    component: {{ template "name" . }}-metrics
+    component: metrics
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -14,7 +14,7 @@ spec:
     metadata:
       labels:
         app: {{ template "name" . }}
-        component: {{ template "name" . }}-metrics
+        component: metrics
         release: "{{ .Release.Name }}"
     spec:
       containers:
@@ -24,12 +24,7 @@ spec:
         ports:
         - containerPort: {{ .Values.metrics.service.internalPort }}
         resources:
-          limits:
-            cpu: {{ .Values.metrics.resources.limits.cpu }}
-            memory: {{ .Values.metrics.resources.limits.memory }}
-          requests:
-            cpu: {{ .Values.metrics.resources.requests.cpu }}
-            memory: {{ .Values.metrics.resources.requests.cpu }}
+{{ toYaml .Values.metrics.resources | indent 10 }}
         livenessProbe:
           httpGet:
             path: /health

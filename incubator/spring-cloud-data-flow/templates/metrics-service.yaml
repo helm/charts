@@ -4,7 +4,7 @@ metadata:
   name: {{ template "scdf.fullname" . }}-metrics
   labels:
     app: {{ template "name" . }}
-    component: {{ template "name" . }}-metrics
+    component: metrics
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -17,5 +17,5 @@ spec:
       name: http
   selector:
     app: {{ template "name" . }}
-    component: {{ template "name" . }}-metrics
+    component: metrics
     release: {{ .Release.Name }}

@@ -15,13 +15,13 @@ server:
     type: LoadBalancer
     externalPort: 80
     internalPort: 80
-  resources:
-    limits:
-      cpu: 1.0
-      memory: 2048Mi
-    requests:
-      cpu: 0.5
-      memory: 1024Mi
+  resources: {}
+  #  limits:
+  #    cpu: 1.0
+  #    memory: 2048Mi
+  #  requests:
+  #    cpu: 0.5
+  #    memory: 640Mi
 metrics:
   image: springcloud/metrics-collector-rabbit
   version: 1.0.0.RELEASE
@@ -30,13 +30,13 @@ metrics:
     type: ClusterIP
     externalPort: 80
     internalPort: 80
-  resources:
-    limits:
-      cpu: 1.0
-      memory: 1024Mi
-    requests:
-      cpu: 0.5
-      memory: 640Mi
+  resources: {}
+  #  limits:
+  #    cpu: 1.0
+  #    memory: 1024Mi
+  #  requests:
+  #    cpu: 0.5
+  #    memory: 640Mi
 deployer:
   readinessProbe:
     initialDelaySeconds: 120

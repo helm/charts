@@ -4,7 +4,7 @@ metadata:
   name: {{ template "scdf.fullname" . }}-server
   labels:
     app: {{ template "name" . }}
-    component: {{ template "name" . }}-server
+    component: server
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -22,8 +22,8 @@ data:
               file:
                 enabled: true
                 users:
-                  {{ .Values.dataflowAdminUsername }}: {{ .Values.dataflowAdminPassword }}, {{ .Values.dataflowAdminRoles }}
-                  {{ .Values.dataflowUsername }}: {{ .Values.dataflowPassword }}, {{ .Values.dataflowRoles }}
+                  {{ .Values.dataflowAdminUsername }}: ${data-flow-admin-password}, {{ .Values.dataflowAdminRoles }}
+                  {{ .Values.dataflowUsername }}: ${data-flow-password}, {{ .Values.dataflowRoles }}
         deployer:
           kubernetes:
             environmentVariables: 'SPRING_RABBITMQ_HOST=${{ printf "{%s" .Release.Name | upper }}_RABBITMQ_SERVICE_HOST},SPRING_RABBITMQ_PORT=${{ printf "{%s" .Release.Name | upper }}_RABBITMQ_SERVICE_PORT_AMPQ},SPRING_RABBITMQ_USERNAME={{ .Values.rabbitmq.rabbitmqUsername }},SPRING_RABBITMQ_PASSWORD=${rabbitmq-password},SPRING_REDIS_HOST=${{ printf "{%s" .Release.Name | upper }}_REDIS_SERVICE_HOST},SPRING_REDIS_PORT=${{ printf "{%s" .Release.Name | upper }}_REDIS_SERVICE_PORT},SPRING_REDIS_PASSWORD=${redis-password}'

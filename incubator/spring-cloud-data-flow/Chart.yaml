@@ -10,5 +10,5 @@ sources:
 - https://github.com/spring-cloud/spring-cloud-dataflow-metrics-collector
 icon: https://raw.githubusercontent.com/spring-cloud/spring-cloud-dataflow/master/spring-cloud-dataflow-docs/src/main/docbook/images/logo.png
 maintainers:
-- name: Thomas Risberg
+- name: trisberg
   email: trisberg@pivotal.io
