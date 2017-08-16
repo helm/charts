@@ -7,7 +7,7 @@ elasticsearch and their
 
 ## Prerequisites Details
 
-* Kubernetes 1.5
+* Kubernetes 1.6+
 * PV dynamic provisioning support on the underlying infrastructure
 
 ## StatefulSets Details
