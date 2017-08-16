@@ -11,9 +11,9 @@ metadata:
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
-  name: cluster-autoscaler
+  name: {{ template "fullname" . }}
 subjects:
   - kind: ServiceAccount
-    name: cluster-autoscaler
+    name: {{ template "fullname" . }}
     namespace: {{ .Release.Namespace }}
 {{- end -}}
