@@ -4,8 +4,10 @@
 
 ## TL;DR:
 
+## Helm < 2.5
+
 ```console
-$ helm install stable/cluster-autoscaler -f values.yaml
+$ helm install stable/cluster-autoscaler --name my-release -f values.yaml
 ```
 Where `values.yaml` contains:
 
@@ -14,6 +16,11 @@ autoscalingGroups:
   - name: your-scaling-group-name
     maxSize: 10
     minSize: 1
+```
+## Helm >= 2.5
+
+```console
+$ helm install stable/cluster-autoscaler --name my-release autoscalingGroups[0].name=your-asg-name,autoscalingGroups[0].maxSize=10,autoscalingGroups[0].minSize=1
 ```
 
 ## Introduction
@@ -25,7 +32,7 @@ This chart bootstraps an cluster-autoscaler deployment on a [Kubernetes](http://
 
 ## Installing the Chart
 
-In order for the chart to configure the cluster-autoscaler properly during the installation process, you must provide some minimal configuration which can't rely on defaults. This includes at least one element in the `autoscalingGroups` array and its three values: `name`, `minSize` and `maxSize`. These parameters cannot be passed to helm using the `--set` parameter at this time, so you must supply these using a `values.yaml` file such as:
+In order for the chart to configure the cluster-autoscaler properly during the installation process, you must provide some minimal configuration which can't rely on defaults. This includes at least one element in the `autoscalingGroups` array and its three values: `name`, `minSize` and `maxSize`. If you are using Helm < 2.5 these parameters cannot be passed to helm using the `--set` parameter, so you must supply these using a `values.yaml` file such as:
 
 ```
 autoscalingGroups:
@@ -36,8 +43,16 @@ autoscalingGroups:
 
 To install the chart with the release name `my-release`:
 
+## Helm < 2.5
+
 ```console
 $ helm install stable/cluster-autoscaler --name my-release -f values.yaml
+```
+
+## Helm >= 2.5
+
+```console
+$ helm install stable/cluster-autoscaler --name my-release autoscalingGroups[0].name=your-asg-name,autoscalingGroups[0].maxSize=10,autoscalingGroups[0].minSize=1
 ```
 
 The command deploys cluster-autoscaler on the Kubernetes cluster using the supplied configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
@@ -104,6 +119,7 @@ Parameter | Description | Default
 `spotinst.image.repository` | Image (used if `cloudProvider=spotinst`) | `spotinst/kubernetes-cluster-autoscaler`
 `spotinst.image.tag` | Image tag (used if `cloudProvider=spotinst`) | `v0.6.0`
 `spotinst.image.pullPolicy` | Image pull policy (used if `cloudProvider=spotinst`) | `IfNotPresent`
+`tolerations` | List of node taints to tolerate (requires Kubernetes >= 1.6) | `[]`
 
 
 Specify each parameter you'd like to override using a YAML file as described above in the [installation](#Installing the Chart) section.
