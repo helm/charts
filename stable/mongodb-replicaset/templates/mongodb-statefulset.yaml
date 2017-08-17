@@ -73,9 +73,11 @@ spec:
               mountPath: /keydir
               readOnly: true
           {{- end }}
+
+        {{- if .Values.podServices.enabled }}
         - name: add-name-label
-          image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
-          imagePullPolicy: "{{ .Values.image.pullPolicy }}"
+          image: "{{ .Values.installImage.name }}:{{ .Values.installImage.tag }}"
+          imagePullPolicy: "{{ .Values.installImage.pullPolicy }}"
           command:
             - /add-name-label.sh
           args:
@@ -90,6 +92,7 @@ spec:
               fieldRef:
                 apiVersion: v1
                 fieldPath: metadata.name
+        {{- end }}
 
       containers:
         - name: {{ template "name" . }}
