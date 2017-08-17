@@ -221,7 +221,7 @@ addons:
     enabled: true
     
     service:
-      type: ClusterIP
+      type: NodePort
       externalPort: 8088
     
     deployment:
