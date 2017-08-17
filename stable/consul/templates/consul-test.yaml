@@ -9,12 +9,12 @@ spec:
     - name: test-framework
       image: dduportal/bats:0.4.0
       command:
-        - "ba$h"
-        - "-c"
-        - |
-          set -ex
-          # copy bats to tools dir
-          cp -R /usr/local/libexec/ /tools/bats/
+      - "bash"
+      - "-c"
+      - |
+        set -ex
+        # copy bats to tools dir
+        cp -R /usr/local/libexec/ /tools/bats/
       volumeMounts:
       - mountPath: /tools
         name: tools
