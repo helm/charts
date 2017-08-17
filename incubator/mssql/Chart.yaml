@@ -1,0 +1,15 @@
+name: mssql
+version: 0.1.0
+description: Fast, reliable, scalable, and easy to use open-source relational database system.
+keywords:
+- mssql
+- database
+- sql
+home: https://docs.microsoft.com/en-us/sql/linux/sql-server-linux-overview
+icon: https://www.mysql.com/common/logos/logo-mysql-170x115.png
+sources:
+- https://github.com/kubernetes/charts
+maintainers:
+- name: Tomer Rosenthal
+  email: torosent@microsoft.com
+engine: gotpl
