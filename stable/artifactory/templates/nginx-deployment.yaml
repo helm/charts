@@ -16,18 +16,18 @@ spec:
         app: {{ template "name" . }}
         component: "{{ .Values.nginx.name }}"
         release: {{ .Release.Name }}
-      annotations:
-        pod.beta.kubernetes.io/init-containers: '[{
-          "name": "remove-lost-found",
-          "image": {{ .Values.initContainerImage | quote }},
-          "command": ["rm", "-rf", "{{ .Values.nginx.persistence.mountPath }}/lost+found"],
-          "volumeMounts": [{
-              "name": "nginx-volume",
-              "mountPath": {{ .Values.nginx.persistence.mountPath | quote }}
-            }],
-          "imagePullPolicy": {{ .Values.nginx.image.pullPolicy | quote }}
-        }]'
     spec:
+      initContainers:
+      - name: "remove-lost-found"
+        image: "{{ .Values.initContainerImage }}"
+        imagePullPolicy: {{ .Values.nginx.image.pullPolicy }}
+        command:
+        - "rm"
+        - "-rf"
+        - "{{ .Values.nginx.persistence.mountPath }}/lost+found"
+        volumeMounts:
+        - mountPath: {{ .Values.nginx.persistence.mountPath | quote }}
+          name: nginx-volume
       containers:
       - name: {{ .Values.nginx.name }}
         image: "{{ .Values.nginx.image.repository }}:{{ .Values.nginx.image.version }}"

@@ -2,6 +2,7 @@
 
 ## Prerequisites Details
 
+* Kubernetes 1.6+
 * Artifactory Pro trial license [get one from here](https://www.jfrog.com/artifactory/free-trial/)
 
 ## Chart Details
