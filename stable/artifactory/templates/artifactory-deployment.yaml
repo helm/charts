@@ -16,18 +16,18 @@ spec:
         app: {{ template "name" . }}
         component: "{{ .Values.artifactory.name }}"
         release: {{ .Release.Name }}
-      annotations:
-        pod.beta.kubernetes.io/init-containers: '[{
-          "name": "remove-lost-found",
-          "image": {{ .Values.initContainerImage | quote }},
-          "command": ["rm", "-rf", "{{ .Values.artifactory.persistence.mountPath }}/lost+found"],
-          "volumeMounts": [{
-              "name": "artifactory-volume",
-              "mountPath": {{ .Values.artifactory.persistence.mountPath | quote }}
-            }],
-          "imagePullPolicy": {{ .Values.artifactory.image.pullPolicy | quote }}
-        }]'
     spec:
+      initContainers:
+      - name: "remove-lost-found"
+        image: "{{ .Values.initContainerImage }}"
+        imagePullPolicy: {{ .Values.artifactory.image.pullPolicy }}
+        command:
+        - "rm"
+        - "-rf"
+        - "{{ .Values.artifactory.persistence.mountPath }}/lost+found"
+        volumeMounts:
+        - mountPath: {{ .Values.artifactory.persistence.mountPath | quote }}
+          name: artifactory-volume
       containers:
       - name: {{ .Values.artifactory.name }}
         image: "{{ .Values.artifactory.image.repository }}:{{ .Values.artifactory.image.version }}"
