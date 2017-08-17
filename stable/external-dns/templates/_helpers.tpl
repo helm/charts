@@ -12,7 +12,11 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 */}}
 {{- define "external-dns.fullname" -}}
 {{- $name := default .Chart.Name .Values.nameOverride -}}
+{{- if ne $name .Release.Name -}}
 {{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- printf "%s" $name | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
 {{- end -}}
 
 {{/* Generate basic labels */}}
