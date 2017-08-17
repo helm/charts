@@ -1,7 +1,7 @@
 ## Details about the image to be pulled.
 image:
   name: registry.opensource.zalan.do/teapot/external-dns
-  tag: v0.4.2
+  tag: v0.4.3
   pullPolicy: IfNotPresent
 
 ## This controls which types of resource external-dns should 'watch' for new
@@ -16,12 +16,19 @@ provider: aws
 ## Limit possible target zones by domain suffixes (optional)
 domainFilters: []
 
+## Node labels for pod assignment
+## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+##
+nodeSelector: {}
+
 ## Modify how DNS records are sychronized between sources and providers (options: sync, upsert-only )
 policy: upsert-only
 
 ## Annotations to be added to pods
 ##
 podAnnotations: {}
+
+debug: false
 
 extraArgs: {}
 
@@ -41,3 +48,17 @@ rbac:
   ## Ignored if rbac.create is true
   ##
   serviceAccountName: default
+
+service:
+  annotations: {}
+  clusterIP: ""
+
+  ## List of IP addresses at which the service is available
+  ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
+  ##
+  externalIPs: []
+
+  loadBalancerIP: ""
+  loadBalancerSourceRanges: []
+  servicePort: 7979
+  type: ClusterIP
