@@ -22,9 +22,9 @@ spec:
         image: "{{ .Values.initContainerImage }}"
         imagePullPolicy: {{ .Values.nginx.image.pullPolicy }}
         command:
-          - "rm"
-          - "-rf"
-          - "{{ .Values.nginx.persistence.mountPath }}/lost+found"
+        - "rm"
+        - "-rf"
+        - "{{ .Values.nginx.persistence.mountPath }}/lost+found"
         volumeMounts:
         - mountPath: {{ .Values.nginx.persistence.mountPath | quote }}
           name: nginx-volume

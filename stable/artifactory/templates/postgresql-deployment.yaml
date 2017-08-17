@@ -22,9 +22,9 @@ spec:
         image: "{{ .Values.initContainerImage }}"
         imagePullPolicy: "{{ .Values.database.image.pullPolicy }}"
         command:
-          - "rm"
-          - "-rf"
-          - "{{ .Values.database.persistence.mountPath }}/lost+found"
+        - "rm"
+        - "-rf"
+        - "{{ .Values.database.persistence.mountPath }}/lost+found"
         volumeMounts:
         - mountPath: {{ .Values.database.persistence.mountPath | quote }}
           name: postgresql-volume

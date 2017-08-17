@@ -22,9 +22,9 @@ spec:
         image: "{{ .Values.initContainerImage }}"
         imagePullPolicy: {{ .Values.artifactory.image.pullPolicy }}
         command:
-          - "rm"
-          - "-rf"
-          - "{{ .Values.artifactory.persistence.mountPath }}/lost+found"
+        - "rm"
+        - "-rf"
+        - "{{ .Values.artifactory.persistence.mountPath }}/lost+found"
         volumeMounts:
         - mountPath: {{ .Values.artifactory.persistence.mountPath | quote }}
           name: artifactory-volume
