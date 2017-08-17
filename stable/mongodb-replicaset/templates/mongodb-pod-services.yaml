@@ -1,0 +1,32 @@
+{{- if .Values.podServices.enabled }}
+# Services to expose pods individually
+{{ $podCount := .Values.replicas | int }}
+{{- range $i := until $podCount }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
+  {{- if $.Values.podServiceAnnotations }}
+{{ toYaml $.Values.podServiceAnnotations | indent 4 }}
+  {{- end }}
+
+  labels:
+    app: {{ template "name" $ }}
+    chart: {{ $.Chart.Name }}-{{ $.Chart.Version }}
+    heritage: {{ $.Release.Service }}
+    release: {{ $.Release.Name }}
+    name: {{ template "fullname" $ }}-{{ $i }}
+  name: {{ template "fullname" $ }}-{{ $i }}
+spec:
+  type: {{ default "NodePort" $.Values.podServices.type }}
+  ports:
+    - port: {{ $.Values.port }}
+      targetPort: {{ $.Values.port }}
+  selector:
+    app: {{ template "name" $ }}
+    release: {{ $.Release.Name }}
+    name: {{ template "fullname" $ }}-{{ $i }}
+{{- end }}
+{{- end }}

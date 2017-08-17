@@ -55,6 +55,10 @@ The following tables lists the configurable parameters of the mongodb chart and 
 | `serviceAnnotations`            | Annotations to be added to the service                                    | {}                                                  |
 | `configmap`                     | Content of the MongoDB config file                                        | See below                                           |
 
+| `podServices.enabled`           | Enable pod services | `false`                                            |
+| `podServices.type`              | Pod services type    | `NodePort` |
+| `podServiceAnnotations`         | Annotations to be added to the pod services when `podServices.type` is `LoadBalancer`                                    | {}                                                  |
+
 *MongoDB config file*
 
 The MongoDB config file `mongod.conf` is configured via the `configmap` configuration value. The defaults from 
@@ -218,11 +222,7 @@ connecting to: mongodb://127.0.0.1:27017
 
 ### Exposing your MongoDB cluster to an external application
 
-If your application is not part of the same Kubernetes cluster of your MongoDB replica set. You need to expose your pods individually to create a MongoDB URI.
-
-```console
-$ for i in 0 1 2; do kubectl expose $RELEASE_NAME-mongodb-replicaset-$i --type=NodePort; done
-```
+If your application is not part of the same Kubernetes cluster of your MongoDB replica set, you need to enable `servicePods` to create a service for every pod.
 
 ```console
 $ kubectl get svc -o wide                                                            

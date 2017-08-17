@@ -60,3 +60,8 @@ configmap:
 # security:
 #   authorization: enabled
 #   keyFile: /keydir/key.txt
+
+# Expose your MongoDB cluster to external applications
+#podServices:
+#  enabled: true
+#  type: NodePort
