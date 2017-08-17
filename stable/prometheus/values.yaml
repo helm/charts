@@ -6,7 +6,7 @@ alertmanager:
   ##
   enabled: true
 
-  # Defines the serviceAccountName to associate with a role when rbac is enabled.
+  # Defines the serviceAccountName to use when `rbac.create=false`
   serviceAccountName: default
 
   ## alertmanager container name
@@ -166,7 +166,7 @@ kubeStateMetrics:
   ##
   enabled: true
 
-  # Defines the serviceAccountName to associate with a role when rbac is enabled.
+  # Defines the serviceAccountName to use when `rbac.create=false`
   serviceAccountName: default
 
   ## kube-state-metrics container name
@@ -224,7 +224,7 @@ nodeExporter:
   ##
   enabled: true
 
-  # Defines the serviceAccountName to associate with a role when rbac is enabled.
+  # Defines the serviceAccountName to use when `rbac.create=false`
   serviceAccountName: default
 
   ## node-exporter container name
@@ -302,7 +302,7 @@ server:
   ##
   name: server
 
-  # Defines the serviceAccountName to associate with a role when rbac is enabled.
+  # Defines the serviceAccountName to use when `rbac.create=false`
   serviceAccountName: default
 
   ## Prometheus server container image
