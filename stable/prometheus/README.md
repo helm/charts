@@ -146,6 +146,7 @@ Parameter | Description | Default
 `server.ingress.enabled` | If true, Prometheus server Ingress will be created | `false`
 `server.ingress.annotations` | Prometheus server Ingress annotations | `[]`
 `server.ingress.hosts` | Prometheus server Ingress hostnames | `[]`
+`server.ingress.paths` | Prometheus server Ingress paths | `[]`
 `server.ingress.tls` | Prometheus server Ingress TLS configuration (YAML) | `[]`
 `server.nodeSelector` | node labels for Prometheus server pod assignment | `{}`
 `server.tolerations` | node taints to tolerate (requires Kubernetes >=1.6) | `[]`
@@ -226,6 +227,20 @@ server:
         hosts:
           - prometheus.domain.com
 ```
+
+
+### Ingress Paths
+Prometheus federation requires the source server's 'federate' endpoint to be scraped on port 9090, to define the needed Ingress paths:
+
+```
+server:
+  ingress:
+    ## Prometheus server Ingress paths
+    ## Must be used for Prometheus federation
+    ##
+    paths: [{"backend": {"serviceName": "prometheusfederation", "servicePort": 9090}, "path": '/federate'}]
+```
+
 
 ### NetworkPolicy
 
