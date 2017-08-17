@@ -49,6 +49,7 @@ controller:
     namespace: "" # defaults to .Release.Namespace
 
   extraArgs: {}
+  extraEnvs: {}
 
   ## DaemonSet or Deployment
   ##
