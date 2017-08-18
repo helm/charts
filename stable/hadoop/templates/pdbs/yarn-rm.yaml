@@ -1,0 +1,13 @@
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ template "fullname" . }}-yarn-rm
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "fullname" . }}-yarn-rm
+      chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+      release: "{{ .Release.Name }}"
+      heritage: "{{ .Release.Service }}"
+  minAvailable: {{ .Values.yarn.resourceManager.pdbMinAvailable }}
+  

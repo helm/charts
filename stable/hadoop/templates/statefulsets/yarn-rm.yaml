@@ -52,12 +52,7 @@ spec:
            - "/tmp/hadoop-config/bootstrap.sh"
            - "-d"
         resources:
-          requests:
-            memory: "1024Mi"
-            cpu: "100m"
-          limits:
-            memory: "2048Mi"
-            cpu: "2000m"
+{{ toYaml .Values.yarn.resourceManager.resources | indent 10 }}
         readinessProbe:
           httpGet:
             path: /ws/v1/cluster/info

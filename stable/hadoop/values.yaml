@@ -6,8 +6,35 @@ imagePullPolicy: IfNotPresent
 # The version of the hadoop libraries being used in the image.
 hadoopVersion: 2.7.3
 
+hdfs:
+  nameNode:
+    pdbMinAvailable: 1
+
+    resources:
+      limits:
+        memory: "2048Mi"
+        cpu: "1000m"
+
+  dataNode:
+    pdbMinAvailable: 1
+
+    resources:
+      limits:
+        memory: "2048Mi"
+        cpu: "1000m"
+
 yarn:
+  resourceManager:
+    pdbMinAvailable: 1
+
+    resources:
+      limits:
+        memory: "2048Mi"
+        cpu: "2000m"
+
   nodeManager:
+    pdbMinAvailable: 0
+
     # The number of YARN NodeManager instances.
     replicas: 2
 

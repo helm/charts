@@ -49,12 +49,7 @@ spec:
            - "/tmp/hadoop-config/bootstrap.sh"
            - "-d"
         resources:
-          requests:
-            memory: "1024Mi"
-            cpu: "100m"
-          limits:
-            memory: "2048Mi"
-            cpu: "1000m"
+{{ toYaml .Values.hdfs.nameNode.resources | indent 10 }}
         readinessProbe:
           httpGet:
             path: /
