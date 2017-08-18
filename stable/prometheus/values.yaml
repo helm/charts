@@ -1,7 +1,13 @@
+rbac:
+  create: false
+
 alertmanager:
   ## If false, alertmanager will not be installed
   ##
   enabled: true
+
+  # Defines the serviceAccountName to use when `rbac.create=false`
+  serviceAccountName: default
 
   ## alertmanager container name
   ##
@@ -160,6 +166,9 @@ kubeStateMetrics:
   ##
   enabled: true
 
+  # Defines the serviceAccountName to use when `rbac.create=false`
+  serviceAccountName: default
+
   ## kube-state-metrics container name
   ##
   name: kube-state-metrics
@@ -215,6 +224,9 @@ nodeExporter:
   ##
   enabled: true
 
+  # Defines the serviceAccountName to use when `rbac.create=false`
+  serviceAccountName: default
+
   ## node-exporter container name
   ##
   name: node-exporter
@@ -223,7 +235,7 @@ nodeExporter:
   ##
   image:
     repository: prom/node-exporter
-    tag: v0.13.0
+    tag: v0.14.0
     pullPolicy: IfNotPresent
 
   ## Additional node-exporter container arguments
@@ -290,6 +302,9 @@ server:
   ##
   name: server
 
+  # Defines the serviceAccountName to use when `rbac.create=false`
+  serviceAccountName: default
+
   ## Prometheus server container image
   ##
   image:
@@ -352,7 +367,7 @@ server:
   #  operator: "Equal|Exists"
   #  value: "value"
   #  effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
-  
+
   ## Node labels for Prometheus server pod assignment
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
   nodeSelector: {}
