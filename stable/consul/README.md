@@ -32,8 +32,7 @@ The following tables lists the configurable parameters of the consul chart and t
 | `ImagePullPolicy`       | Container pull policy                 | `Always`                                                   |
 | `Replicas`              | k8s statefulset replicas              | `3`                                                        |
 | `Component`             | k8s selector key                      | `consul`                                                   |
-| `ConsulConfig.[].type`  | either `secret` or `configMap`        | -                                                      |
-| `ConsulConfig.[].name`  | the name of the secret/configmap in k8s | -                                                         |
+| `ConsulConfig`          | List of secrets and configMaps containing consul configuration | []                                                       |
 | `Cpu`                   | container requested cpu               | `100m`                                                     |
 | `DatacenterName`        | Consul Datacenter Name                | `dc1` (The consul default)                                 |
 | `DisableHostNodeId`     | Disable Node Id creation (uses random)| `false`                                                    |
