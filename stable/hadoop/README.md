@@ -52,11 +52,12 @@ The following tables lists the configurable parameters of the Hadoop chart and t
 | `hdfs.dataNode.persistentVolume.enabled`          | Enable/disable the use of persistent volumes                                       | `false`                                                          | 
 | `hdfs.dataNode.persistentVolume.storageClassName` | Name of the StorageClass to use per your volume provider                           | `standard`                                                       |
 | `hdfs.dataNode.persistentVolume.accessMode`       | Access mode for the volume                                                         | `ReadWriteOnce`                                                  |
-| `hdfs.dataNode.persistentVolume.size`             | Size of the volume                                                                 | `100Gi`                                                           |
+| `hdfs.dataNode.persistentVolume.size`             | Size of the volume                                                                 | `100Gi`                                                          |
 | `yarn.resourceManager.pdbMinAvailable`            | PDB for the YARN ResourceManager                                                   | `1`                                                              |
 | `yarn.resourceManager.resources`                  | resources for the YARN ResourceManager                                             | `requests:memory=1024Mi,cpu=200m,limits:memory=2048Mi,cpu=1000m` |
 | `yarn.nodeManager.pdbMinAvailable`                | PDB for the YARN NodeManager                                                       | `1`                                                              |
 | `yarn.nodeManager.replicas`                       | Number of YARN NodeManager replicas                                                | `2`                                                              |
+| `yarn.nodeManager.parallelCreate`                 | Create all nodeManager statefulset pods in parallel (K8S 1.7+)                     | `false`                                                          |
 | `yarn.nodeManager.resources`                      | Resource limits and requests for YARN NodeManager pods                             | `limits.memory=2048Mi, limits.cpu=1000m`                         |
 
 ## Related charts
