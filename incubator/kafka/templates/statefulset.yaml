@@ -42,12 +42,7 @@ spec:
         - containerPort: 9092
           name: kafka
         resources:
-          limits:
-            cpu: "{{ .Values.MaxCpu }}"
-            memory: "{{ .Values.MaxMemory }}"
-          requests:
-            cpu: "{{ .Values.Cpu }}"
-            memory: "{{ .Values.Memory }}"
+{{ toYaml .Values.resources | indent 10 }}
         command:
         - sh
         - -c

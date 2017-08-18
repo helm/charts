@@ -58,10 +58,7 @@ following configurable parameters:
 | `ImagePullPolicy`       | Kafka Container pull policy        | `Always`                                                   |
 | `Replicas`              | Kafka Brokers                      | `3`                                                        |
 | `Component`             | Kafka k8s selector key             | `kafka`                                                    |
-| `Cpu`                   | Kafka container requested cpu      | `100m`                                                     |
-| `Memory`                | Kafka container requested memory   | `512Mi`                                                    |
-| `MaxCpu`                | Kafka container cpu limit          | `200m`                                                     |
-| `MaxMemory`             | Kafka container memory limit       | `1024Mi`                                                   |
+| `resources`             | Kafka resource requests and limits | `{}`                                                       |
 | `DataDirectory`         | Kafka data directory               | `/opt/kafka/data`                                          |
 | `Storage`               | Kafka Persistent volume size       | `1Gi`                                                      |
 
