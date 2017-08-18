@@ -42,7 +42,8 @@ spec:
       terminationGracePeriodSeconds: 0
       containers:
       - name: yarn-rm
-        image: {{ .Values.hadoop.image }}
+        image: {{ .Values.image }}
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
         ports:
         - containerPort: 8088
           name: web

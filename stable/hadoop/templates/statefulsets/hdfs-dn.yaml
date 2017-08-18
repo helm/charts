@@ -42,7 +42,8 @@ spec:
       terminationGracePeriodSeconds: 0
       containers:
       - name: hdfs-dn
-        image: {{ .Values.hadoop.image }}
+        image: {{ .Values.image }}
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
         command:
            - "/bin/bash"
            - "/tmp/hadoop-config/bootstrap.sh"

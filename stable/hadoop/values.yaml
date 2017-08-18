@@ -1,13 +1,15 @@
-hadoop:
-  image: danisla/hadoop:2.7.3
+# The base hadoop image to use for all components.
+# See this repo for image build details: https://github.com/Comcast/kube-yarn/tree/master/image
+image: danisla/hadoop:2.7.3
+imagePullPolicy: IfNotPresent
 
-  # The version of the hadoop libraries being used in the image.
-  version: 2.7.3
+# The version of the hadoop libraries being used in the image.
+hadoopVersion: 2.7.3
 
 yarn:
-  numNodes: 2
-
   nodeManager:
+    # The number of YARN NodeManager instances.
+    replicas: 2
 
     # CPU and memory resources allocated to each node manager pod.
     # This should be tuned to fit your workload.

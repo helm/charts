@@ -11,7 +11,7 @@ metadata:
     heritage: {{ .Release.Service }}
 spec:
   serviceName: {{ .Release.Name }}-yarn-nm
-  replicas: {{ .Values.yarn.numNodes }}
+  replicas: {{ .Values.yarn.nodeManager.replicas }}
   template:
     metadata:
       labels:
@@ -42,7 +42,8 @@ spec:
       terminationGracePeriodSeconds: 0
       containers:
       - name: yarn-nm
-        image: {{ .Values.hadoop.image }}
+        image: {{ .Values.image }}
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
         ports:
         - containerPort: 8088
           name: web
