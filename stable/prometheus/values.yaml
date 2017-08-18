@@ -18,11 +18,10 @@ alertmanager:
   ##
   extraArgs: {}
 
-  ## The URL at which to check to see if the container is running. If the container has a base URL set
-  ## (via the extraArgs configuration), this is required to ensure the pod health checks will query
-  ## the endpoint expected.
+  ## The URL prefix at which the container can be accessed. Useful in the case the '-web.external-url' includes a slug
+  ## so that the various internal URLs are still able to access as they are in the default case.
   ## (Optional)
-  healthCheckURL: "/#/status"
+  baseURL: ""
 
   ## Additional alertmanager container environment variable
   ## For instance to add a http_proxy
@@ -307,11 +306,10 @@ server:
   ## only used if alertmanager.enabled = false
   alertmanagerURL: ""
 
-  ## The URL at which to check to see if the container is running. If the container has a base URL set
-  ## (via the extraArgs configuration), this is required to ensure the pod health checks will query
-  ## the endpoint expected.
+  ## The URL prefix at which the container can be accessed. Useful in the case the '-web.external-url' includes a slug
+  ## so that the various internal URLs are still able to access as they are in the default case.
   ## (Optional)
-  healthCheckURL: "/status"
+  baseURL: ""
 
   ## Additional Prometheus server container arguments
   ##
