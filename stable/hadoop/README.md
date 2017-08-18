@@ -25,7 +25,7 @@ The following tables lists the configurable parameters of the Hadoop chart and t
 | `hadoop.image`                              | Hadoop image ([source](https://github.com/Comcast/kube-yarn/tree/master/image))                            | `danisla/hadoop:{VERSION}`                              |
 | `hadoop.version`                    | Version of hadoop libaries being used                          | `{VERSION}`                                             |
 | `yarn.numNodes`                  | Number of YARN NodeManager replicas                    | `2`                                                     |
-| `yarn.nodeManager.resources`                  | Resource limits and requests for YARN NodeManager pods                    | `limits.memory=1024Mi, limits.cpu=1000m`                                                     |
+| `yarn.nodeManager.resources`                  | Resource limits and requests for YARN NodeManager pods                    | `limits.memory=2048Mi, limits.cpu=1000m`                                                     |
 
 ## Related charts
 
