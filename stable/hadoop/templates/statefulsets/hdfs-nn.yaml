@@ -13,6 +13,25 @@ spec:
       labels:
         component: {{ .Release.Name }}-hdfs-nn
     spec:
+      affinity:
+        podAntiAffinity:
+        {{- if eq .Values.AntiAffinity "hard" }}
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - topologyKey: "kubernetes.io/hostname"
+            labelSelector:
+              matchLabels:
+                app:  {{ template "fullname" . }}
+                release: {{ .Release.Name | quote }}
+        {{- else if eq .Values.AntiAffinity "soft" }}
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 5
+            podAffinityTerm:
+            - topologyKey: "kubernetes.io/hostname"
+              labelSelector:
+                matchLabels:
+                  app:  {{ template "fullname" . }}
+                  release: {{ .Release.Name | quote }}
+        {{- end }}
       terminationGracePeriodSeconds: 0
       containers:
       - name: hdfs-nn

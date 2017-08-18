@@ -18,6 +18,6 @@
     helm install --namespace {{ .Release.Namespace }} --set hadoop.useConfigMap=true stable/zeppelin
 
 6. You can scale the number of yarn nodes like this:
-   helm upgrade --set yarn.numNodes=4 {{ .Release.Name }} .
+   helm upgrade {{ .Release.Name }} --set yarn.numNodes=4 stable/hadoop
 
    Make sure to update the values.yaml if you want to make this permanent.

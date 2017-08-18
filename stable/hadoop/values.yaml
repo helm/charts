@@ -15,3 +15,6 @@ yarn:
       limits:
         memory: "1024Mi"
         cpu: "1000m"
+
+# Select AnitAffinity as either hard or soft, default is hard
+AntiAffinity: "hard"
