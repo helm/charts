@@ -4,7 +4,9 @@ metadata:
   name: {{ .Release.Name }}-zeppelin
   labels:
     app: {{ template "fullname" . }}
-    component: zeppelin
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
 spec:
   strategy:
     rollingUpdate:
@@ -14,7 +16,9 @@ spec:
     metadata:
       labels:
         app: {{ template "fullname" . }}
-        component: zeppelin
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        release: "{{ .Release.Name }}"
+        heritage: "{{ .Release.Service }}"
     spec:
       terminationGracePeriodSeconds: 0
       containers:
