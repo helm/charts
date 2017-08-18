@@ -18,6 +18,12 @@ alertmanager:
   ##
   extraArgs: {}
 
+  ## The URL at which to check to see if the container is running. If the container has a base URL set
+  ## (via the extraArgs configuration), this is required to ensure the pod health checks will query
+  ## the endpoint expected.
+  ## (Optional)
+  healthCheckURL: "/#/status"
+
   ## Additional alertmanager container environment variable
   ## For instance to add a http_proxy
   ##
@@ -300,6 +306,12 @@ server:
   ## (optional) alertmanager URL
   ## only used if alertmanager.enabled = false
   alertmanagerURL: ""
+
+  ## The URL at which to check to see if the container is running. If the container has a base URL set
+  ## (via the extraArgs configuration), this is required to ensure the pod health checks will query
+  ## the endpoint expected.
+  ## (Optional)
+  healthCheckURL: "/status"
 
   ## Additional Prometheus server container arguments
   ##

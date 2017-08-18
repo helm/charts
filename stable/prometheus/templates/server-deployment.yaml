@@ -53,7 +53,7 @@ spec:
             - containerPort: 9090
           readinessProbe:
             httpGet:
-              path: /status
+              path: {{ .Values.server.healthCheckURL }}
               port: 9090
             initialDelaySeconds: 30
             timeoutSeconds: 30

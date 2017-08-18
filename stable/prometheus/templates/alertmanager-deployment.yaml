@@ -41,7 +41,7 @@ spec:
             - containerPort: 9093
           readinessProbe:
             httpGet:
-              path: /#/status
+              path: {{ .Values.alertmanager.healthCheckURL }}
               port: 9093
             initialDelaySeconds: 30
             timeoutSeconds: 30
