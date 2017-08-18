@@ -12,6 +12,7 @@ metadata:
 spec:
   serviceName: {{ .Release.Name }}-yarn-nm
   replicas: {{ .Values.yarn.nodeManager.replicas }}
+  podManagementPolicy: Parallel
   template:
     metadata:
       labels:
@@ -22,14 +23,14 @@ spec:
     spec:
       affinity:
         podAntiAffinity:
-        {{- if eq .Values.AntiAffinity "hard" }}
+        {{- if eq .Values.antiAffinity "hard" }}
           requiredDuringSchedulingIgnoredDuringExecution:
           - topologyKey: "kubernetes.io/hostname"
             labelSelector:
               matchLabels:
                 app:  {{ template "fullname" . }}
                 release: {{ .Release.Name | quote }}
-        {{- else if eq .Values.AntiAffinity "soft" }}
+        {{- else if eq .Values.antiAffinity "soft" }}
           preferredDuringSchedulingIgnoredDuringExecution:
           - weight: 5
             podAffinityTerm:

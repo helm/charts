@@ -63,4 +63,4 @@ MEM_PER_NODE=$(bc -l <<< "scale=0; ${MEM_PER_NODE} - (${MEM_PER_NODE} % 100)")
 CPU_LIMIT=${CPU_PER_NODE/%.*/m}
 MEM_LIMIT=${MEM_PER_NODE/%.*/Mi}
 
-echo -n "--set yarn.numNodes=${NUM_NODES},yarn.nodeManager.resources.limits.cpu=${CPU_LIMIT},yarn.nodeManager.resources.limits.memory=${MEM_LIMIT}"
+echo -n "--set yarn.nodeManager.replicas=${NUM_NODES},yarn.nodeManager.resources.limits.cpu=${CPU_LIMIT},yarn.nodeManager.resources.limits.memory=${MEM_LIMIT}"

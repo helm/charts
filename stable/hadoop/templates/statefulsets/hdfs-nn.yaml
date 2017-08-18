@@ -22,14 +22,14 @@ spec:
     spec:
       affinity:
         podAntiAffinity:
-        {{- if eq .Values.AntiAffinity "hard" }}
+        {{- if eq .Values.antiAffinity "hard" }}
           requiredDuringSchedulingIgnoredDuringExecution:
           - topologyKey: "kubernetes.io/hostname"
             labelSelector:
               matchLabels:
                 app:  {{ template "fullname" . }}
                 release: {{ .Release.Name | quote }}
-        {{- else if eq .Values.AntiAffinity "soft" }}
+        {{- else if eq .Values.antiAffinity "soft" }}
           preferredDuringSchedulingIgnoredDuringExecution:
           - weight: 5
             podAffinityTerm:
@@ -59,7 +59,31 @@ spec:
         volumeMounts:
           - name: hadoop-config
             mountPath: /tmp/hadoop-config
+          - name: dfs
+            mountPath: /root/hdfs/namenode
       volumes:
         - name: hadoop-config
           configMap:
             name: {{ .Release.Name }}-config
+{{- if not .Values.hdfs.nameNode.persistentVolume.enabled }}
+        - name: dfs
+          emptyDir: {}
+{{- else }}        
+  volumeClaimTemplates:
+    - metadata:
+        name: dfs
+        labels:
+          app: {{ template "fullname" . }}-hdfs-nn
+          chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+          release: "{{ .Release.Name }}"
+          heritage: "{{ .Release.Service }}"
+      spec:
+        {{- if .Values.hdfs.nameNode.persistentVolume.storageClassName }}
+        storageClassName: {{ .Values.hdfs.nameNode.persistentVolume.storageClassName }}
+        {{- end }}
+        accessModes:
+          - {{ .Values.hdfs.nameNode.persistentVolume.accessMode | quote }}
+        resources:
+          requests:
+            storage: {{ .Values.hdfs.nameNode.persistentVolume.size | quote }}
+{{- end -}}

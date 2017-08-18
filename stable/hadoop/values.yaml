@@ -6,34 +6,60 @@ imagePullPolicy: IfNotPresent
 # The version of the hadoop libraries being used in the image.
 hadoopVersion: 2.7.3
 
+# Select anitAffinity as either hard or soft, default is hard
+antiAffinity: "hard"
+
 hdfs:
   nameNode:
     pdbMinAvailable: 1
 
     resources:
+      requests:
+        memory: "1024Mi"
+        cpu: "200m"
       limits:
         memory: "2048Mi"
         cpu: "1000m"
 
+    persistentVolume:
+      enabled: false
+      storageClassName: standard
+      accessMode: ReadWriteOnce 
+      size: 50Gi
+
   dataNode:
+    replicas: 2
+
     pdbMinAvailable: 1
 
     resources:
+      requests:
+        memory: "1024Mi"
+        cpu: "200m"
       limits:
         memory: "2048Mi"
         cpu: "1000m"
+
+    persistentVolume:
+      enabled: false
+      storageClassName: standard
+      accessMode: ReadWriteOnce 
+      size: 100Gi
 
 yarn:
   resourceManager:
     pdbMinAvailable: 1
 
     resources:
+      requests:
+        memory: "1024Mi"
+        cpu: "200m"
       limits:
         memory: "2048Mi"
         cpu: "2000m"
 
   nodeManager:
-    pdbMinAvailable: 0
+    pdbMinAvailable: 1
 
     # The number of YARN NodeManager instances.
     replicas: 2
@@ -44,6 +70,3 @@ yarn:
       limits:
         memory: "2048Mi"
         cpu: "1000m"
-
-# Select AnitAffinity as either hard or soft, default is hard
-AntiAffinity: "hard"
