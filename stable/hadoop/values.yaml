@@ -13,7 +13,7 @@ yarn:
     # This should be tuned to fit your workload.
     resources:
       limits:
-        memory: "1024Mi"
+        memory: "2048Mi"
         cpu: "1000m"
 
 # Select AnitAffinity as either hard or soft, default is hard

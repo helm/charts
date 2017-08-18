@@ -2,16 +2,23 @@ apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
   name: {{ .Release.Name}}-yarn-rm
+  annotations:
+    checksum/config: {{ include (print $.Template.BasePath "/configmaps/hadoop-config.yaml") . | sha256sum }}
   labels:
-    app: {{ template "fullname" . }}
-    component: yarn-rm
+    app: {{ template "fullname" . }}-yarn-rm
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 spec:
   serviceName: {{ .Release.Name }}-yarn-rm
   replicas: 1
   template:
     metadata:
       labels:
-        component: {{ .Release.Name }}-yarn-rm
+        app: {{ template "fullname" . }}-yarn-rm
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        release: "{{ .Release.Name }}"
+        heritage: "{{ .Release.Service }}"
     spec:
       affinity:
         podAntiAffinity:

@@ -1,17 +1,24 @@
 apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
-  name: {{ .Release.Name}}-yarn-nm
+  name: {{ .Release.Name }}-yarn-nm
+  annotations:
+    checksum/config: {{ include (print $.Template.BasePath "/configmaps/hadoop-config.yaml") . | sha256sum }}
   labels:
-    app: {{ template "fullname" . }}
-    component: yarn-nm
+    app: {{ template "fullname" . }}-yarn-nm
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 spec:
   serviceName: {{ .Release.Name }}-yarn-nm
   replicas: {{ .Values.yarn.numNodes }}
   template:
     metadata:
       labels:
-        component: {{ .Release.Name }}-yarn-nm
+        app: {{ template "fullname" . }}-yarn-nm
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        release: "{{ .Release.Name }}"
+        heritage: "{{ .Release.Service }}"
     spec:
       affinity:
         podAntiAffinity:

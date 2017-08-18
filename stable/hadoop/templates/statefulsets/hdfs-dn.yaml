@@ -1,17 +1,24 @@
 apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
-  name: {{ .Release.Name}}-hdfs-dn
+  name: {{ .Release.Name }}-hdfs-dn
+  annotations:
+    checksum/config: {{ include (print $.Template.BasePath "/configmaps/hadoop-config.yaml") . | sha256sum }}
   labels:
-    app: {{ template "fullname" . }}
-    component: hdfs-dn
+    app: {{ template "fullname" . }}-hdfs-dn
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 spec:
   serviceName: {{ .Release.Name }}-hdfs-dn
   replicas: 1
   template:
     metadata:
       labels:
-        component: {{ .Release.Name }}-hdfs-dn
+        app: {{ template "fullname" . }}-hdfs-dn
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        release: "{{ .Release.Name }}"
+        heritage: "{{ .Release.Service }}"
     spec:
       affinity:
         podAntiAffinity:

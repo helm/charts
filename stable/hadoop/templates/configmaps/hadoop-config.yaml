@@ -4,6 +4,9 @@ metadata:
   name: {{ .Release.Name }}-config
   labels:
     app: {{ template "fullname" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 data:
   bootstrap.sh: |
     #!/bin/bash
