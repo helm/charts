@@ -14,7 +14,7 @@ image: memcached:1.4.36-alpine
 replicaCount: 3
 
 ##Pod disruption budget minAvailable count
-pdbCount: 3
+pdbMinAvailable: 3
 
 ## Select AnitAffinity as either hard or soft, default is hard
 AntiAffinity: "hard"
