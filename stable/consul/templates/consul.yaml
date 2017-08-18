@@ -12,17 +12,17 @@ kind: Service
 metadata:
   name: "{{ template "fullname" . }}-ui"
   labels:
-    heritage: {{.Release.Service | quote }}
-    release: {{.Release.Name | quote }}
-    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
-    component: "{{.Release.Name}}-{{.Values.Component}}"
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    component: "{{ .Release.Name }}-{{ .Values.Component }}"
 spec:
   ports:
   - name: http
-    port: {{.Values.HttpPort}}
+    port: {{ .Values.HttpPort }}
   selector:
-    component: "{{.Release.Name}}-{{.Values.Component}}"
-  type: "{{.Values.uiService.type}}"
+    component: "{{ .Release.Name }}-{{ .Values.Component }}"
+  type: "{{ .Values.uiService.type }}"
 {{- end }}
 ---
 apiVersion: v1
@@ -30,58 +30,61 @@ kind: Service
 metadata:
   name: "{{ template "fullname" . }}"
   labels:
-    heritage: {{.Release.Service | quote }}
-    release: {{.Release.Name | quote }}
-    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
-    component: "{{.Release.Name}}-{{.Values.Component}}"
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    component: "{{ .Release.Name }}-{{ .Values.Component }}"
   annotations:
     service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
 spec:
   ports:
   - name: http
-    port: {{.Values.HttpPort}}
+    port: {{ .Values.HttpPort }}
   - name: rpc
-    port: {{.Values.RpcPort}}
+    port: {{ .Values.RpcPort }}
   - name: serflan-tcp
     protocol: "TCP"
-    port: {{.Values.SerflanPort}}
+    port: {{ .Values.SerflanPort }}
   - name: serflan-udp
     protocol: "UDP"
-    port: {{.Values.SerflanUdpPort}}
+    port: {{ .Values.SerflanUdpPort }}
   - name: serfwan-tcp
     protocol: "TCP"
-    port: {{.Values.SerfwanPort}}
+    port: {{ .Values.SerfwanPort }}
   - name: serfwan-udp
     protocol: "UDP"
-    port: {{.Values.SerfwanUdpPort}}
+    port: {{ .Values.SerfwanUdpPort }}
   - name: server
     port: {{.Values.ServerPort}}
-  - name: consuldns
+  - name: consuldns-tcp
+    port: {{.Values.ConsulDnsPort}}
+  - name: consuldns-udp
+    protocol: "UDP"
     port: {{.Values.ConsulDnsPort}}
   clusterIP: None
   selector:
-    component: "{{.Release.Name}}-{{.Values.Component}}"
+    component: "{{ .Release.Name }}-{{ .Values.Component }}"
 ---
 apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
   name: "{{ template "fullname" . }}"
   labels:
-    heritage: {{.Release.Service | quote }}
-    release: {{.Release.Name | quote }}
-    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
-    component: "{{.Release.Name}}-{{.Values.Component}}"
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    component: "{{ .Release.Name }}-{{ .Values.Component }}"
 spec:
   serviceName: "{{ template "fullname" . }}"
-  replicas: {{default 3 .Values.Replicas}}
+  replicas: {{ default 3 .Values.Replicas }}
   template:
     metadata:
       name: "{{ template "fullname" . }}"
       labels:
-        heritage: {{.Release.Service | quote }}
-        release: {{.Release.Name | quote }}
-        chart: "{{.Chart.Name}}-{{.Chart.Version}}"
-        component: "{{.Release.Name}}-{{.Values.Component}}"
+        heritage: {{ .Release.Service | quote }}
+        release: {{ .Release.Name | quote }}
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        component: "{{ .Release.Name }}-{{ .Values.Component }}"
       annotations:
         pod.alpha.kubernetes.io/initialized: "true"
     spec:
@@ -89,33 +92,36 @@ spec:
         fsGroup: 1000
       containers:
       - name: "{{ template "fullname" . }}"
-        image: "{{.Values.Image}}:{{.Values.ImageTag}}"
-        imagePullPolicy: "{{.Values.ImagePullPolicy}}"
+        image: "{{ .Values.Image }}:{{ .Values.ImageTag }}"
+        imagePullPolicy: "{{ .Values.ImagePullPolicy }}"
         ports:
         - name: http
-          containerPort: {{.Values.HttpPort}}
+          containerPort: {{ .Values.HttpPort }}
         - name: rpc
-          containerPort: {{.Values.RpcPort}}
+          containerPort: {{ .Values.RpcPort }}
         - name: serflan-tcp
           protocol: "TCP"
-          containerPort: {{.Values.SerflanPort}}
+          containerPort: {{ .Values.SerflanPort }}
         - name: serflan-udp
           protocol: "UDP"
-          containerPort: {{.Values.SerflanUdpPort}}
+          containerPort: {{ .Values.SerflanUdpPort }}
         - name: serfwan-tcp
           protocol: "TCP"
-          containerPort: {{.Values.SerfwanPort}}
+          containerPort: {{ .Values.SerfwanPort }}
         - name: serfwan-udp
           protocol: "UDP"
-          containerPort: {{.Values.SerfwanUdpPort}}
+          containerPort: {{ .Values.SerfwanUdpPort }}
         - name: server
           containerPort: {{.Values.ServerPort}}
-        - name: consuldns
+        - name: consuldns-tcp
+          containerPort: {{.Values.ConsulDnsPort}}
+        - name: consuldns-udp
+          protocol: "UDP"
           containerPort: {{.Values.ConsulDnsPort}}
         resources:
           requests:
-            cpu: "{{.Values.Cpu}}"
-            memory: "{{.Values.Memory}}"
+            cpu: "{{ .Values.Cpu }}"
+            memory: "{{ .Values.Memory }}"
         env:
         - name: INITIAL_CLUSTER_SIZE
           value: {{ default 3 .Values.Replicas | quote }}
@@ -129,6 +135,8 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
+        - name: DNSPORT
+          value: "{{ .Values.ConsulDnsPort }}"
         volumeMounts:
         - name: datadir
           mountPath: /var/lib/consul
@@ -148,10 +156,12 @@ spec:
           - |
             IP=$(hostname -i)
 
+            {{- if .Values.EncryptGossip }}
             if [ -e /etc/consul/secrets/gossip-key ]; then
               echo "{\"encrypt\": \"$(base64 /etc/consul/secrets/gossip-key)\"}" > /etc/consul/encrypt.json
               GOSSIP_KEY="-config-file /etc/consul/encrypt.json"
             fi
+            {{- end }}
 
             for i in $(seq 0 $((${INITIAL_CLUSTER_SIZE} - 1))); do
                 while true; do
@@ -182,8 +192,11 @@ spec:
               -bind=0.0.0.0 \
               -advertise=${IP} \
               ${PEERS} \
+            {{- if .Values.EncryptGossip }}
               ${GOSSIP_KEY} \
-              -client=0.0.0.0
+            {{- end }}
+              -client=0.0.0.0 \
+              -dns-port=${DNSPORT}
       volumes:
       - name: gossip-key
         secret:
@@ -193,7 +206,7 @@ spec:
       name: datadir
       annotations:
       {{- if .Values.StorageClass }}
-        volume.beta.kubernetes.io/storage-class: {{.Values.StorageClass | quote}}
+        volume.beta.kubernetes.io/storage-class: {{ .Values.StorageClass | quote }}
       {{- else }}
         volume.alpha.kubernetes.io/storage-class: default
       {{- end }}
@@ -203,4 +216,4 @@ spec:
       resources:
         requests:
           # upstream recommended max is 700M
-          storage: "{{.Values.Storage}}"
+          storage: "{{ .Values.Storage }}"

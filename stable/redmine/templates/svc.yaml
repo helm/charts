@@ -15,6 +15,6 @@ spec:
     targetPort: http
   selector:
     app: {{ template "fullname" . }}
-  {{if eq .Values.serviceType "LoadBalancer"}}
-  loadBalancerSourceRanges: {{.Values.serviceLoadBalancerSourceRanges}}
-  {{end}}
+  {{ if eq .Values.serviceType "LoadBalancer" }}
+  loadBalancerSourceRanges: {{ .Values.serviceLoadBalancerSourceRanges }}
+  {{ end }}

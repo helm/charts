@@ -46,7 +46,7 @@ fi
 
 # Install and initialize helm/tiller
 HELM_URL=https://storage.googleapis.com/kubernetes-helm
-HELM_TARBALL=helm-v2.4.2-linux-amd64.tar.gz
+HELM_TARBALL=helm-v2.5.1-linux-amd64.tar.gz
 INCUBATOR_REPO_URL=https://kubernetes-charts-incubator.storage.googleapis.com/
 pushd /opt
   wget -q ${HELM_URL}/${HELM_TARBALL}
@@ -72,6 +72,7 @@ for directory in ${CHANGED_FOLDERS}; do
     kubectl get svc --namespace ${NAMESPACE}
     kubectl get deployments --namespace ${NAMESPACE}
     kubectl get endpoints --namespace ${NAMESPACE}
+    helm test ${RELEASE_NAME}
     if [ -n $VERIFICATION_PAUSE ]; then
       cat install_output
       sleep $VERIFICATION_PAUSE

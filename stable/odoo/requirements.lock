@@ -1,9 +1,6 @@
 dependencies:
-- condition: ""
-  enabled: false
-  name: postgresql
+- name: postgresql
   repository: https://kubernetes-charts.storage.googleapis.com/
-  tags: null
-  version: 0.6.0
-digest: sha256:c28c9e40a4048c77c49e3f74d3fe76a6788fb8f7e1d2b38e10d44953c9835224
-generated: 2017-04-10T10:44:40.649994374+05:30
+  version: 0.7.1
+digest: sha256:05eb6bdf2223d57a221786d93bf86b73703058d17d327409ad7cbfb58a2f4699
+generated: 2017-07-31T11:08:38.527351227+05:30

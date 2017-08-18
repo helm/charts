@@ -57,10 +57,10 @@ The following tables lists the configurable parameters of the patroni chart and 
 | `Spilo.Version`         | Container image tag                 | `1.0-p5`                                            |
 | `ImagePullPolicy`       | Container pull policy               | `IfNotPresent`                                      |
 | `Replicas`              | k8s statefulset replicas            | `5`                                                 |
+| `NodeSelector`          | nodeSelector map                    | Empty                                               |
 | `Component`             | k8s selector key                    | `patroni`                                           |
 | `Resources.Cpu`         | container requested cpu             | `100m`                                              |
 | `Resources.Memory`      | container requested memory          | `512Mi`                                             |
-| `Resources.Storage`     | Persistent volume size              | `1Gi`                                               |
 | `Credentials.Superuser` | password for the superuser          | `tea`                                               |
 | `Credentials.Admin`     | password for the admin user         | `cola`                                              |
 | `Credentials.Standby`   | password for the replication user   | `pinacolada`                                        |
@@ -71,7 +71,12 @@ The following tables lists the configurable parameters of the patroni chart and 
 | `Zookeeper.Enable`      | using zookeeper as DCS              | `false`                                             |
 | `Zookeeper.DeployChart` | deploy zookeeper chart              | `false`                                             |
 | `Zookeeper.Hosts`       | list of zookeeper cluster members   | 'host1:port1','host2:port2','etc...'                |
-
+| `persistentVolume.accessModes` | Persistent Volume access modes | `[ReadWriteOnce]` |
+| `persistentVolume.annotations` | Annotations for Persistent Volume Claim` | `{}` |
+| `persistentVolume.mountPath` | Persistent Volume mount root path | `/home/postgres/pgdata` |
+| `persistentVolume.size` | Persistent Volume size | `2Gi` |
+| `persistentVolume.storageClass` | Persistent Volume Storage Class | `volume.alpha.kubernetes.io/storage-class: default` |
+| `persistentVolume.subPath` | Subdirectory of Persistent Volume to mount | `""` |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 

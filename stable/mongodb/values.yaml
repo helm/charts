@@ -1,7 +1,7 @@
 ## Bitnami MongoDB image version
 ## ref: https://hub.docker.com/r/bitnami/mongodb/tags/
 ##
-image: bitnami/mongodb:3.4.5-r0
+image: bitnami/mongodb:3.4.7-r0
 
 ## Specify a imagePullPolicy
 ## 'Always' if imageTag is 'latest', else set to 'IfNotPresent'
@@ -20,6 +20,9 @@ image: bitnami/mongodb:3.4.5-r0
 # mongodbUsername:
 # mongodbPassword:
 # mongodbDatabase:
+
+## Kubernetes service type
+serviceType: ClusterIP
 
 ## Enable persistence using Persistent Volume Claims
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/

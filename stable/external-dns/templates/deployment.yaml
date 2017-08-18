@@ -1,0 +1,49 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels: {{ include "external-dns.labels" . | indent 4 }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+  name: {{ template "external-dns.fullname" . }}
+spec:
+  template:
+    metadata:
+    {{- if .Values.podAnnotations }}
+      annotations:
+{{ toYaml .Values.podAnnotations | indent 8}}
+    {{- end }}
+      labels: {{ include "external-dns.labels" . | indent 8 }}
+    spec:
+      containers:
+        - name: {{ template "name" . }}
+          image: "{{.Values.image.name}}:{{ .Values.image.tag }}"
+          imagePullPolicy: "{{ .Values.image.pullPolicy }}"
+          args:
+          {{- if .Values.debug }}
+            - --debug
+          {{- end }}
+          {{- range .Values.domainFilters }}
+            - --domain-filter={{ . }}
+          {{- end }}
+            - --policy={{ .Values.policy }}
+            - --provider={{ .Values.provider }}
+          {{- range .Values.sources }}
+            - --source={{ . }}
+          {{- end }}
+          {{- range $key, $value := .Values.extraArgs }}
+            - --{{ $key }}={{ $value }}
+          {{- end }}
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 7979
+          ports:
+            - containerPort: 7979
+        {{- if .Values.resources }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+        {{- end }}
+    {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
+      serviceAccountName: {{ if .Values.rbac.create }}{{ template "external-dns.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}

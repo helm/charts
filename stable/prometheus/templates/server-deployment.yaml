@@ -21,6 +21,7 @@ spec:
         component: "{{ .Values.server.name }}"
         release: {{ .Release.Name }}
     spec:
+      serviceAccountName: {{ if .Values.rbac.create }}{{ template "prometheus.server.fullname" . }}{{ else }}"{{ .Values.server.serviceAccountName }}"{{ end }}
       containers:
         - name: {{ template "prometheus.name" . }}-{{ .Values.server.name }}-{{ .Values.configmapReload.name }}
           image: "{{ .Values.configmapReload.image.repository }}:{{ .Values.configmapReload.image.tag }}"
@@ -74,11 +75,15 @@ spec:
       nodeSelector:
 {{ toYaml .Values.server.nodeSelector | indent 8 }}
     {{- end }}
+    {{- if .Values.server.tolerations }}
+      tolerations:
+{{ toYaml .Values.server.tolerations | indent 8 }}
+    {{- end }}
       terminationGracePeriodSeconds: {{ .Values.server.terminationGracePeriodSeconds }}
       volumes:
         - name: config-volume
           configMap:
-            name: {{ template "prometheus.server.fullname" . }}
+            name: {{ if .Values.server.configMapOverrideName }}{{ .Release.Name }}-{{ .Values.server.configMapOverrideName }}{{- else }}{{ template "prometheus.server.fullname" . }}{{- end }}
         - name: storage-volume
         {{- if .Values.server.persistentVolume.enabled }}
           persistentVolumeClaim:

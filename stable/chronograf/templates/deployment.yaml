@@ -25,7 +25,7 @@ spec:
             secretKeyRef:
               name: {{ template "fullname" . }}
               key: token_secret
-{{- if .Values.oauth.github.enabled}}
+{{- if .Values.oauth.github.enabled }}
         - name: GH_CLIENT_ID
           valueFrom:
             secretKeyRef:
@@ -42,7 +42,7 @@ spec:
               name: {{ template "fullname" . }}
               key: gh_orgs
 {{- end }}
-{{- if .Values.oauth.heroku.enabled}}
+{{- if .Values.oauth.heroku.enabled }}
         - name: HEROKU_CLIENT_ID
           valueFrom:
             secretKeyRef:
@@ -59,7 +59,7 @@ spec:
               name: {{ template "fullname" . }}
               key: he_orgs
 {{- end }}
-{{- if .Values.oauth.google.enabled}}
+{{- if .Values.oauth.google.enabled }}
         - name: GOOGLE_CLIENT_ID
           valueFrom:
             secretKeyRef:

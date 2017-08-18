@@ -13,6 +13,7 @@ metadata:
       {{ $key }}: {{ $value | quote }}
     {{- end }}
 spec:
+  type: {{ .Values.addons.prometheus.service.type }}
   ports:
   - name: {{ .Values.addons.prometheus.deployment.name }}
     protocol: TCP

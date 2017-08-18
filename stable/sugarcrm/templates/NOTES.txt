@@ -1,0 +1,50 @@
+{{- if empty (include "host" .) -}}
+###############################################################################
+### ERROR: You did not provide an external host in your 'helm install' call ###
+###############################################################################
+
+This deployment will be incomplete until you configure SugarCRM with a resolvable
+host. To configure SugarCRM with the URL of your service:
+
+1. Get the SugarCRM URL by running:
+
+  {{- if contains "NodePort" .Values.serviceType }}
+
+  export APP_PORT=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath="{.spec.ports[0].nodePort}")
+  export APP_HOST=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+
+  {{- else if contains "LoadBalancer" .Values.serviceType }}
+
+  NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+        Watch the status with: 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "fullname" . }}'
+
+  export APP_HOST=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "fullname" . }} --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
+  export APP_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath="{.data.sugarcrm-password}" | base64 --decode)
+  {{- if .Values.mariadb.mariadbRootPassword }}
+  export APP_DATABASE_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "mariadb.fullname" . }} -o jsonpath="{.data.mariadb-root-password}" | base64 --decode)
+  {{- end }}
+  {{- end }}
+
+2. Complete your SugarCRM deployment by running:
+
+  helm upgrade {{ .Release.Name }} \
+    --set sugarcrmHost=$APP_HOST,sugarcrmPassword=$APP_PASSWORD{{ if .Values.mariadb.mariadbRootPassword }},mariadb.mariadbRootPassword=$APP_DATABASE_PASSWORD{{ end }} stable/sugarcrm
+
+{{- else -}}
+1. Get the SugarCRM URL by running:
+
+{{- if eq .Values.serviceType "ClusterIP" }}
+
+  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "name" . }},release={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
+  echo http://127.0.0.1:8080/
+  kubectl port-forward $POD_NAME 8080:80
+{{- else }}
+
+  echo URL : http://{{ include "host" . }}/
+{{- end }}
+
+2. Get your SugarCRM login credentials by running:
+
+  echo Username: {{ .Values.sugarcrmUsername }}
+  echo Password: $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath="{.data.sugarcrm-password}" | base64 --decode)
+{{- end }}

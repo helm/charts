@@ -19,47 +19,43 @@ spec:
         heritage: "{{ .Release.Service }}"
       annotations:
         pod.alpha.kubernetes.io/initialized: "true"
-        pod.beta.kubernetes.io/init-containers: '[
-           {
-             "name":"sentinel-micro",
-             "image":"{{ .Values.microSentinel.image.repository }}:{{ .Values.microSentinel.image.tag }}",
-             "imagePullPolicy": "{{ .Values.microSentinel.image.pullPolicy }}",
-             "args" : ["-service","{{ template "fullname" . }}"],
-             "resources":
-{{ toJson .Values.microSentinel.resources | indent 16 }},
-             "env": [
-               {
-                  "name": "POD_NAMESPACE",
-                  "valueFrom": {
-                     "fieldRef" : {
-                        "apiVersion" : "v1",
-                        "fieldPath" : "metadata.namespace"
-                     }
-                  }
-               }
-             ],
-            "volumeMounts": [
-               {
-                  "name": "config",
-                  "mountPath": "/config"
-               }
-            ]
-           }
-        ]'
     spec:
-      terminationGracePeriodSeconds: 5
+      terminationGracePeriodSeconds: 60 
       affinity:
         podAntiAffinity:
+        {{- if eq .Values.antiAffinity "hard" }}
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - topologyKey: "kubernetes.io/hostname"
+            labelSelector:
+              matchLabels:
+                app:  {{ template "name" . }}
+                release: {{ .Release.Name | quote }}
+         {{- else if eq .Values.antiAffinity "soft" }}
           preferredDuringSchedulingIgnoredDuringExecution:
           - weight: 5
             podAffinityTerm:
               labelSelector:
-                matchExpressions:
-                - key: app
-                  operator: In
-                  values:
-                  -  "{{ template "name" . }}"
+                matchLabels:
+                  app: {{  template "name" . }}
+                  release: {{ .Release.Name | quote }}
               topologyKey: "kubernetes.io/hostname"
+         {{- end }}
+      initContainers :
+      - name: sentinel-micro 
+        image: {{ .Values.microSentinel.image.repository }}:{{ .Values.microSentinel.image.tag }}
+        imagePullPolicy: {{ .Values.microSentinel.image.pullPolicy }}
+        args: ["-service",{{ template "fullname" . }}]
+        resources:
+{{ toYaml .Values.microSentinel.resources | indent 12 }}
+        env:
+          - name: POD_NAMESPACE
+            valueFrom:
+              fieldRef:
+                apiVersion: "v1"
+                fieldPath: metadata.namespace
+        volumeMounts:
+        - name: config
+          mountPath: /config
       containers:
       - name: redis
         image: {{ .Values.redis.image.repository }}:{{ .Values.redis.image.tag }}

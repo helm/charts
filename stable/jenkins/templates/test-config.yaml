@@ -5,5 +5,5 @@ metadata:
 data:
   run.sh: |-
     @test "Testing Jenkins UI is accessible" {
-      curl --retry 12 --retry-delay 10 {{.Release.Name}}-jenkins:8080/login
+      curl --retry 12 --retry-delay 10 {{ .Release.Name }}-jenkins:8080{{ default "" .Values.Master.JenkinsUriPrefix }}/login
     }

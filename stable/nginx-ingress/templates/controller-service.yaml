@@ -3,7 +3,7 @@ kind: Service
 metadata:
 {{- if .Values.controller.service.annotations }}
   annotations:
-{{ toYaml .Values.controller.service.annotations | indent 4}}
+{{ toYaml .Values.controller.service.annotations | indent 4 }}
 {{- end }}
   labels:
     app: {{ template "name" . }}
@@ -24,6 +24,9 @@ spec:
 {{- if .Values.controller.service.loadBalancerSourceRanges }}
   loadBalancerSourceRanges:
 {{ toYaml .Values.controller.service.loadBalancerSourceRanges | indent 4 }}
+{{- end }}
+{{- if .Values.controller.service.externalTrafficPolicy }}
+  externalTrafficPolicy: "{{ .Values.controller.service.externalTrafficPolicy }}"
 {{- end }}
   ports:
     - name: http
