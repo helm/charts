@@ -64,6 +64,9 @@ yarn:
     # The number of YARN NodeManager instances.
     replicas: 2
 
+    # Create statefulsets in parallel (K8S 1.7+)
+    parallelCreate: false
+
     # CPU and memory resources allocated to each node manager pod.
     # This should be tuned to fit your workload.
     resources:

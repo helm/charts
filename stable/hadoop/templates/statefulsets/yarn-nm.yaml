@@ -12,7 +12,9 @@ metadata:
 spec:
   serviceName: {{ .Release.Name }}-yarn-nm
   replicas: {{ .Values.yarn.nodeManager.replicas }}
+{{- if .Values.yarn.nodeManager.parallelCreate }}
   podManagementPolicy: Parallel
+{{- end }}
   template:
     metadata:
       labels:
