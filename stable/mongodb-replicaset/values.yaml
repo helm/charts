@@ -49,6 +49,10 @@ persistentVolume:
 # Annotations to be added to the service
 serviceAnnotations: {}
 
+tls:
+  cacert: abc=
+  cakey: abc=
+
 # Entries for the MongoDB config file
 configmap:
   storage:
