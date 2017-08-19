@@ -119,12 +119,7 @@ spec:
           protocol: "UDP"
           containerPort: {{.Values.ConsulDnsPort}}
         resources:
-          requests:
-            cpu: "{{ .Values.resources.requests.cpu }}"
-            memory: "{{ .Values.resources.requests.memory }}"
-          limits:
-            cpu: "{{ .Values.resources.limits.cpu }}"
-            memory: "{{ .Values.resources.limits.memory }}"
+{{ toYaml .Values.resources | indent 10 }}
         env:
         - name: INITIAL_CLUSTER_SIZE
           value: {{ default 3 .Values.Replicas | quote }}
