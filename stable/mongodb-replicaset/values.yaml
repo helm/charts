@@ -29,11 +29,11 @@ podAntiAffinity: "soft"
 
 resources: {}
 # limits:
-#   cpu: 100m
+#   cpu: 500m
 #   memory: 512Mi
 # requests:
 #   cpu: 100m
-#   memory: 512Mi
+#   memory: 256Mi
 
 persistentVolume:
   enabled: true
@@ -57,6 +57,12 @@ configmap:
     port: 27017
   replication:
     replSetName: rs0
-# security:
-#   authorization: enabled
-#   keyFile: /keydir/key.txt
+  ssl:
+    mode: requireSSL
+    PEMKeyFile: /work-dir/tls/mongo.pem
+    CAFile: /work-dir/tls/mongoCA.crt
+    clusterFile: /work-dir/tls/mongo.pem
+security:  
+  authorization: enabled
+  clusterAuthMode: x509
+# keyFile: /keydir/key.txt
