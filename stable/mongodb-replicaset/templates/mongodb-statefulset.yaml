@@ -129,6 +129,8 @@ spec:
               mountPath: /data/db
             - name: config
               mountPath: /config
+            - name: ca
+              mountPath: /ca
             - name: workdir
               mountPath: /work-dir
           {{- if .Values.auth.enabled }}
@@ -163,8 +165,8 @@ spec:
             name: {{ template "fullname" . }}
         - name: ca
           secret:
-            name: {{ template "fullname" . }}-ca
             defaultMode: 0400
+            secretName: {{ template "fullname" . }}-ca
         {{- if .Values.auth.enabled }}
         - name: keydir
           secret:

@@ -13,6 +13,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+set -v
 
 replica_set=$REPLICA_SET
 script_name=${0##*/}
@@ -36,7 +37,7 @@ function shutdown_mongo() {
         args='force: true'
     fi
     log "Shutting down MongoDB ($args)..."
-    mongo "$MONGOARGS" admin "${admin_auth[@]}" --eval "db.shutdownServer({$args})"
+    mongo $MONGOARGS admin "${admin_auth[@]}" --eval "db.shutdownServer({$args})"
 }
 
 my_hostname=$(hostname)
@@ -52,20 +53,37 @@ while read -ra line; do
 done
 
 # Generate the ca cert
+log "Generating certificate"
 MONGOCACRT=/ca/tls.crt
 MONGOCAKEY=/ca/tls.key
 MONGOPEM=/work-dir/mongo.pem
 MONGOARGS="--ssl --sslCAFile $MONGOCACRT --sslPEMKeyFile $MONGOPEM"
 
-SUBJECT=$(cat /config/subject)CN=$my_hostname
-openssl req -new -nodes -newkey rsa:4096 \
-    -subj "$SUBJECT" -keyout mongo.key -out mongo.csr
+cat >openssl.cnf <<EOL
+[req]
+req_extensions = v3_req
+distinguished_name = req_distinguished_name
+[req_distinguished_name]
+[ v3_req ]
+basicConstraints = CA:FALSE
+keyUsage = nonRepudiation, digitalSignature, keyEncipherment
+subjectAltName = @alt_names
+[alt_names]
+DNS.1 = $(echo -n "$my_hostname" | sed s/-[0-9]*$//)
+DNS.2 = $my_hostname
+DNS.3 = $service_name
+DNS.4 = localhost
+DNS.5 = 127.0.0.1
+EOL
 
-openssl x509 -CA $MONGOCACRT -CAkey /ca/tls.key -CAcreateserial -req \
-    -days 3650 -in mongo.csr -out mongo.crt
+openssl genrsa -out mongo.key 2048
+openssl req -new -key mongo.key -out mongo.csr -subj "/CN=$my_hostname" -config openssl.cnf
+openssl x509 -req -in mongo.csr \
+    -CA $MONGOCACRT -CAkey $MONGOCAKEY -CAcreateserial \
+    -out mongo.crt -days 3650 -extensions v3_req -extfile openssl.cnf
 
 rm mongo.csr
-cat mongo.key mongo.crt > $MONGOPEM
+cat mongo.crt mongo.key > $MONGOPEM
 rm mongo.key mongo.crt
 
 log "Peers: ${peers[@]}"
@@ -74,7 +92,7 @@ log "Starting a MongoDB instance..."
 mongod --config /config/mongod.conf >> /work-dir/log.txt 2>&1 &
 
 log "Waiting for MongoDB to be ready..."
-until mongo "$MONGOARGS" --eval "db.adminCommand('ping')"; do
+until mongo $MONGOARGS --eval "db.adminCommand('ping')"; do
     log "Retrying..."
     sleep 2
 done
@@ -83,11 +101,11 @@ log "Initialized."
 
 # try to find a master and add yourself to its replica set.
 for peer in "${peers[@]}"; do
-    mongo "$MONGOARGS" admin --host "$peer" "${admin_auth[@]}" --eval "rs.isMaster()" | grep '"ismaster" : true'
+    mongo $MONGOARGS admin --host "$peer" "${admin_auth[@]}" --eval "rs.isMaster()" | grep '"ismaster" : true'
     if [[ $? -eq 0 ]]; then
         log "Found master: $peer"
         log "Adding myself ($service_name) to replica set..."
-        mongo "$MONGOARGS" admin --host "$peer" "${admin_auth[@]}" --eval "rs.add('$service_name')"
+        mongo $MONGOARGS admin --host "$peer" "${admin_auth[@]}" --eval "rs.add('$service_name')"
         log "Done."
 
         shutdown_mongo "60"
@@ -97,12 +115,12 @@ for peer in "${peers[@]}"; do
 done
 
 # else initiate a replica set with yourself.
-mongo "$MONGOARGS" --eval "rs.status()" | grep "no replset config has been received"
+mongo $MONGOARGS --eval "rs.status()" | grep "no replset config has been received"
 if [[ $? -eq 0 ]]; then
     log "Initiating a new replica set with myself ($service_name)..."
-    mongo "$MONGOARGS" --eval "rs.initiate({'_id': '$replica_set', 'members': [{'_id': 0, 'host': '$service_name'}]})"
+    mongo $MONGOARGS --eval "rs.initiate({'_id': '$replica_set', 'members': [{'_id': 0, 'host': '$service_name'}]})"
 
-    mongo "$MONGOARGS" --eval "rs.status()"
+    mongo $MONGOARGS --eval "rs.status()"
 
     if [[ "$AUTH" == "true" ]]; then
         # sleep a little while just to be sure the initiation of the replica set has fully
@@ -110,7 +128,7 @@ if [[ $? -eq 0 ]]; then
         sleep 3
 
         log "Creating admin user..."
-        mongo "$MONGOARGS" admin --eval "db.createUser({user: '$admin_user', pwd: '$admin_password', roles: [{role: 'root', db: 'admin'}]})"
+        mongo $MONGOARGS admin --eval "db.createUser({user: '$admin_user', pwd: '$admin_password', roles: [{role: 'root', db: 'admin'}]})"
     fi
 
     log "Done."

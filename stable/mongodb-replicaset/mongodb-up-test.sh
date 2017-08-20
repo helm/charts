@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-MONGOCACRT=/ca/tls.crt
-MONGOPEM=/work-dir/mongo.pem
-MONGOARGS="--ssl --sslCAFile $MONGOCACRT --sslPEMKeyFile $MONGOPEM"
+    MONGOCACRT=/ca/tls.crt
+    MONGOPEM=/work-dir/mongo.pem
+    MONGOARGS="--ssl --sslCAFile $MONGOCACRT --sslPEMKeyFile $MONGOPEM"
 
     pod_name() {
         local full_name="${FULL_NAME?Environment variable FULL_NAME not set}"

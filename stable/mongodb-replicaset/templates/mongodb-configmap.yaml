@@ -8,6 +8,5 @@ metadata:
     release: {{ .Release.Name }}
   name: {{ template "fullname" . }}
 data:
-  subject: {{ .Values.tls.subject }}
   mongod.conf: |
 {{ toYaml .Values.configmap | indent 4 }}
