@@ -357,6 +357,9 @@ worker:
       cpu: "100m"
       memory: "512Mi"
 
+  ## Configure the filesystem for the workers' images'
+  filesystem: "btrfs"
+
 ## Persistent Volume Storage configuration.
 ## ref: https://kubernetes.io/docs/user-guide/persistent-volumes
 ##
