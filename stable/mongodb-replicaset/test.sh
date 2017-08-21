@@ -19,7 +19,9 @@ POD_NAME="${RELEASE_NAME:-mongo}-mongodb-replicaset"
 
 MONGOCACRT=/ca/tls.crt
 MONGOPEM=/work-dir/mongo.pem
-MONGOARGS="--ssl --sslCAFile $MONGOCACRT --sslPEMKeyFile $MONGOPEM"
+if [ -f $MONGOPEM ]; then
+    MONGOARGS="--ssl --sslCAFile $MONGOCACRT --sslPEMKeyFile $MONGOPEM"
+fi
 
 for i in $(seq 0 2); do
     pod="${POD_NAME}-$i"

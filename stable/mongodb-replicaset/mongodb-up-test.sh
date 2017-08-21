@@ -2,7 +2,9 @@
 
     MONGOCACRT=/ca/tls.crt
     MONGOPEM=/work-dir/mongo.pem
-    MONGOARGS="--ssl --sslCAFile $MONGOCACRT --sslPEMKeyFile $MONGOPEM"
+    if [ -f $MONGOPEM ]; then
+        MONGOARGS="--ssl --sslCAFile $MONGOCACRT --sslPEMKeyFile $MONGOPEM"
+    fi
 
     pod_name() {
         local full_name="${FULL_NAME?Environment variable FULL_NAME not set}"

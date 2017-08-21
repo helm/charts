@@ -13,7 +13,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-set -v
 
 replica_set=$REPLICA_SET
 script_name=${0##*/}
@@ -53,11 +52,12 @@ while read -ra line; do
 done
 
 # Generate the ca cert
-log "Generating certificate"
 MONGOCACRT=/ca/tls.crt
-MONGOCAKEY=/ca/tls.key
-MONGOPEM=/work-dir/mongo.pem
-MONGOARGS="--ssl --sslCAFile $MONGOCACRT --sslPEMKeyFile $MONGOPEM"
+if [ -f $MONGOCACRT  ]; then
+    log "Generating certificate"
+    MONGOCAKEY=/ca/tls.key
+    MONGOPEM=/work-dir/mongo.pem
+    MONGOARGS="--ssl --sslCAFile $MONGOCACRT --sslPEMKeyFile $MONGOPEM"
 
 cat >openssl.cnf <<EOL
 [req]
@@ -76,15 +76,18 @@ DNS.4 = localhost
 DNS.5 = 127.0.0.1
 EOL
 
-openssl genrsa -out mongo.key 2048
-openssl req -new -key mongo.key -out mongo.csr -subj "/CN=$my_hostname" -config openssl.cnf
-openssl x509 -req -in mongo.csr \
-    -CA $MONGOCACRT -CAkey $MONGOCAKEY -CAcreateserial \
-    -out mongo.crt -days 3650 -extensions v3_req -extfile openssl.cnf
+    # Generate the certs
+    openssl genrsa -out mongo.key 2048
+    openssl req -new -key mongo.key -out mongo.csr -subj "/CN=$my_hostname" -config openssl.cnf
+    openssl x509 -req -in mongo.csr \
+        -CA $MONGOCACRT -CAkey $MONGOCAKEY -CAcreateserial \
+        -out mongo.crt -days 3650 -extensions v3_req -extfile openssl.cnf
 
-rm mongo.csr
-cat mongo.crt mongo.key > $MONGOPEM
-rm mongo.key mongo.crt
+    rm mongo.csr
+    cat mongo.crt mongo.key > $MONGOPEM
+    rm mongo.key mongo.crt
+fi
+
 
 log "Peers: ${peers[@]}"
 
