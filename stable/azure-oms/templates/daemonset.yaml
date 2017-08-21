@@ -1,0 +1,54 @@
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+{{ include "labels.standard" . | indent 4 }}
+spec:
+  template:
+    metadata:
+      labels:
+{{ include "labels.standard" . | indent 8 }}
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        securityContext:
+          privileged: true
+        ports:
+        - containerPort: 25225
+          protocol: TCP
+        - containerPort: 25224
+          protocol: UDP
+        volumeMounts:
+        - mountPath: /var/run/docker.sock
+          name: docker-sock
+        - mountPath: /var/opt/microsoft/omsagent/state/containerhostname
+          name: container-hostname
+        - mountPath: /var/log
+          name: host-log
+        - mountPath: /etc/omsagent-secret
+          name: omsagent-secret
+          readOnly: true
+        livenessProbe:
+          exec:
+            command:
+            - /bin/bash
+            - -c
+            - ps -ef | grep omsagent | grep -v "grep"
+          initialDelaySeconds: 60
+          periodSeconds: 60
+      volumes:
+      - name: docker-sock
+        hostPath:
+          path: /var/run/docker.sock
+      - name: container-hostname
+        hostPath:
+          path: /etc/hostname
+      - name: host-log
+        hostPath:
+          path: /var/log
+      - name: omsagent-secret
+        secret:
+          secretName: {{ template "fullname" . }}
