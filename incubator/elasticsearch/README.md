@@ -56,33 +56,34 @@ $ kubectl delete pvc -l release=my-release,component=data
 
 The following tables lists the configurable parameters of the elasticsearch chart and their default values.
 
-|              Parameter               |                             Description                             |               Default               |
-| ------------------------------------ | ------------------------------------------------------------------- | ----------------------------------- |
-| `image.repository`                   | Container image name                                                | `jetstack/elasticsearch-pet`        |
-| `image.tag`                          | Container image tag                                                 | `2.4.0`                             |
-| `image.pullPolicy`                   | Container pull policy                                               | `Always`                            |
-| `cluster.name`                       | Cluster name                                                        | `elasticsearch`                     |
-| `cluster.config`                     | Additional cluster config appended                                  | `{}`                                |
-| `client.name`                        | Client component name                                               | `client`                            |
-| `client.replicas`                    | Client node replicas (deployment)                                   | `2`                                 |
-| `client.resources`                   | Client node resources requests & limits                             | `{} - cpu limit must be an integer` |
-| `client.heapSize`                    | Client node heap size                                               | `128m`                              |
-| `client.serviceType`                 | Client service type                                                 | `ClusterIP`                         |
-| `master.name`                        | Master component name                                               | `master`                            |
-| `master.replicas`                    | Master node replicas (deployment)                                   | `2`                                 |
-| `master.resources`                   | Master node resources requests & limits                             | `{} - cpu limit must be an integer` |
-| `master.heapSize`                    | Master node heap size                                               | `128m`                              |
-| `master.name`                        | Master component name                                               | `master`                            |
-| `master.storage`                     | Master persistent volume size                                       | `10Gi`                              |
-| `master.storageClass`                | Master persistent volume Class                                      | `nil`                               |
-| `data.replicas`                      | Data node replicas (statefulset)                                    | `3`                                 |
-| `data.resources`                     | Data node resources requests & limits                               | `{} - cpu limit must be an integer` |
-| `data.heapSize`                      | Data node heap size                                                 | `1536m`                             |
-| `data.storage`                       | Data persistent volume size                                         | `30Gi`                              |
-| `data.storageClass`                  | Data persistent volume Class                                        | `nil`                               |
-| `data.terminationGracePeriodSeconds` | Data termination grace period (seconds)                             | `3600`                              |
-| `data.antiAffinity`                  | Data anti-affinity policy                                           | `soft`                              |
-| `rbac.create`                        | Create service account and ClusterRoleBinding for Kubernetes plugin | `false`                             |
+|              Parameter               |                             Description                             |               Default                |
+| ------------------------------------ | ------------------------------------------------------------------- | ------------------------------------ |
+| `image.repository`                   | Container image name                                                | `centerforopenscience/elasticsearch` |
+| `image.tag`                          | Container image tag                                                 | `5.4`                                |
+| `image.pullPolicy`                   | Container pull policy                                               | `Always`                             |
+| `cluster.name`                       | Cluster name                                                        | `elasticsearch`                      |
+| `cluster.config`                     | Additional cluster config appended                                  | `{}`                                 |
+| `cluster.env`                        | Cluster environment variables                                       | `{}`                                 |
+| `client.name`                        | Client component name                                               | `client`                             |
+| `client.replicas`                    | Client node replicas (deployment)                                   | `2`                                  |
+| `client.resources`                   | Client node resources requests & limits                             | `{} - cpu limit must be an integer`  |
+| `client.heapSize`                    | Client node heap size                                               | `512m`                               |
+| `client.serviceType`                 | Client service type                                                 | `ClusterIP`                          |
+| `master.name`                        | Master component name                                               | `master`                             |
+| `master.replicas`                    | Master node replicas (deployment)                                   | `2`                                  |
+| `master.resources`                   | Master node resources requests & limits                             | `{} - cpu limit must be an integer`  |
+| `master.heapSize`                    | Master node heap size                                               | `512m`                               |
+| `master.name`                        | Master component name                                               | `master`                             |
+| `master.storage`                     | Master persistent volume size                                       | `4Gi`                                |
+| `master.storageClass`                | Master persistent volume Class                                      | `nil`                                |
+| `data.replicas`                      | Data node replicas (statefulset)                                    | `3`                                  |
+| `data.resources`                     | Data node resources requests & limits                               | `{} - cpu limit must be an integer`  |
+| `data.heapSize`                      | Data node heap size                                                 | `1536m`                              |
+| `data.storage`                       | Data persistent volume size                                         | `30Gi`                               |
+| `data.storageClass`                  | Data persistent volume Class                                        | `nil`                                |
+| `data.terminationGracePeriodSeconds` | Data termination grace period (seconds)                             | `3600`                               |
+| `data.antiAffinity`                  | Data anti-affinity policy                                           | `soft`                               |
+| `rbac.create`                        | Create service account and ClusterRoleBinding for Kubernetes plugin | `false`                              |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 

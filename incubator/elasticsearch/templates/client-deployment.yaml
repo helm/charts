@@ -63,6 +63,8 @@ spec:
               fieldPath: metadata.namespace
         - name: NODE_DATA
           value: "false"
+        - name: NODE_INGEST
+          value: "false"
         - name: NODE_MASTER
           value: "false"
         - name: PROCESSORS
@@ -71,6 +73,10 @@ spec:
               resource: limits.cpu
         - name: ES_JAVA_OPTS
           value: "-Djava.net.preferIPv4Stack=true -Xms{{ .Values.client.heapSize }} -Xmx{{ .Values.client.heapSize }}"
+        {{- range $key, $value :=  .Values.cluster.env }}
+        - name: {{ $key }}
+          value: {{ $value | quote }}
+        {{- end }}
         resources:
 {{ toYaml .Values.client.resources | indent 12 }}
         readinessProbe:
