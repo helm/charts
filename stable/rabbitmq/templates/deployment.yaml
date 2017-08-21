@@ -30,7 +30,7 @@ spec:
             secretKeyRef:
               name: {{ template "rabbitmq.fullname" . }}
               key: rabbitmq-erlang-cookie
-        - name: RABBITMQ_NODE_PORT
+        - name: RABBITMQ_NODE_PORT_NUMBER
           value: {{ default "5672" .Values.rabbitmqNodePort | quote }}
         - name: RABBITMQ_NODE_TYPE
           value: {{ default "stats" .Values.rabbitmqNodeType | quote }}
@@ -40,7 +40,7 @@ spec:
           value: {{ default "" .Values.rabbitmqClusterNodeName | quote }}
         - name: RABBITMQ_VHOST
           value: {{ default "/" .Values.rabbitmqVhost | quote }}
-        - name: RABBITMQ_MANAGER_PORT
+        - name: RABBITMQ_MANAGER_PORT_NUMBER
           value: {{ default "15672" .Values.rabbitmqManagerPort | quote }}
         ports:
         - name: epmd
