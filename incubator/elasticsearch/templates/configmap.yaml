@@ -106,11 +106,14 @@ data:
       sleep 1
     done
 
-    curl -s -XPUT localhost:9200/_cluster/settings -d "{
-      \"transient\" :{
-          \"cluster.routing.allocation.exclude._ip\" : \"\"
-      }
-    }"
-    echo
+    echo "Wait for node shards to become empty"
+    SHARD_STATS=$(curl -s -XGET 'http://localhost:9200/_cat/shards?format=json')
+    SHARD_COUNT=$(echo "${SHARD_STATS}" | jq "[.[] | select(.node==\"${HOSTNAME}\")] | length")
+    while [ "${SHARD_COUNT}" -gt 0 ]; do
+      SHARD_STATS=$(curl -s -XGET 'http://localhost:9200/_cat/shards?format=json')
+      SHARD_COUNT=$(echo "${SHARD_STATS}" | jq "[.[] | select(.node==\"${HOSTNAME}\")] | length")
+      echo "Node contains ${SHARD_COUNT} shards"
+      sleep 1
+    done
 
     echo "Node clear to shutdown"
