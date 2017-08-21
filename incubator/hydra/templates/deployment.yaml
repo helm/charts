@@ -1,0 +1,47 @@
+
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "hydra.fullname" . }}
+  labels:
+    app: {{ template "hydra.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ template "hydra.name" . }}
+  template:
+    metadata:
+      name: {{ template "hydra.fullname" . }}
+      labels:
+        app: {{ template "hydra.name" . }}
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        release: "{{ .Release.Name }}"
+        heritage: "{{ .Release.Service }}"
+    spec:
+      containers:
+        - name: hydra
+          image: {{ printf "%s:%s" .Values.image .Values.imageTag | quote }}
+          imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
+          command: ["/bin/sh", "-c"]
+          args: ["hydra migrate sql ${DATABASE_URL} && hydra host"]
+          ports:
+            - name: service
+              containerPort: 4444
+          envFrom:
+            - configMapRef:
+                name: {{ template "hydra.fullname" . }}
+            - secretRef:
+                name: {{ template "hydra.fullname" . }}
+                optional: false
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 4444
+            initialDelaySeconds: 3
+            periodSeconds: 3
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
