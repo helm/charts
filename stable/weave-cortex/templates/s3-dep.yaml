@@ -1,0 +1,27 @@
+{{- if .Values.fakeS3.enabled -}}
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: s3
+  labels:
+    app: {{ template "cortex.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.ruler.replicas }}
+  template:
+    metadata:
+      labels:
+        name: s3
+        release: {{ .Release.Name }}
+      annotations:
+        prometheus.io.scrape: "false"
+    spec:
+      containers:
+      - name: s3
+        image: {{ .Values.fakeS3.image.repository }}:{{ .Values.fakeS3.image.tag }}
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: {{ .Values.fakeS3.listenPort }}
+{{- end -}}

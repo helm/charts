@@ -1,0 +1,44 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: nginx-{{ .Release.Name }}
+  labels:
+    app: {{ template "cortex.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+  nginx.conf: |-
+    worker_processes  {{ .Values.nginx.config.workerProcesses }};  ## Default: 1
+    error_log  {{ .Values.nginx.config.errorLog }};
+    pid        {{ .Values.nginx.config.pid }};
+    worker_rlimit_nofile {{ .Values.nginx.config.workerRLimitNoFile }};
+
+    events {
+      worker_connections  {{ .Values.nginx.config.workerConnections }};  ## Default: 1024
+    }
+
+    http {
+      default_type application/octet-stream;
+      log_format   main '$remote_addr - $remote_user [$time_local]  $status '
+        '"$request" $body_bytes_sent "$http_referer" '
+        '"$http_user_agent" "$http_x_forwarded_for"';
+      access_log   /dev/stderr  main;
+      sendfile     on;
+      tcp_nopush   on;
+      resolver {{ .Values.nginx.config.http.resolverAddress }};
+
+      server { # simple reverse-proxy
+        listen {{ .Values.nginx.config.server.listenPort }};
+        proxy_set_header X-Scope-OrgID 0;
+
+        # pass requests for dynamic content to rails/turbogears/zope, et al
+        location = /api/prom/push {
+          proxy_pass      {{ .Values.nginx.config.server.pushPassthroughURI }}$request_uri;
+        }
+
+        location ~ /api/prom/.* {
+          proxy_pass      {{ .Values.nginx.config.server.queryPassthroughURI }}$request_uri;
+        }
+      }
+    }

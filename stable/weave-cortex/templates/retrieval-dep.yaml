@@ -1,0 +1,34 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: retrieval
+  labels:
+    app: {{ template "cortex.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.retrieval.replicas }}
+  template:
+    metadata:
+      labels:
+        name: retrieval
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+      - name: retrieval
+        image: {{ .Values.retrieval.image.repository }}:{{ .Values.retrieval.image.tag }}
+        imagePullPolicy: {{ .Values.retrieval.image.pullPolicy }}
+        args:
+        - -config.file=/etc/prometheus/prometheus.yml
+        - -web.listen-address=:{{- .Values.retrieval.listenPort }}
+        ports:
+        - containerPort: {{ .Values.retrieval.listenPort }}
+        volumeMounts:
+        - name: config-volume
+          mountPath: /etc/prometheus
+      volumes:
+        - name: config-volume
+          configMap:
+            name: retrieval-{{ .Release.Name }}

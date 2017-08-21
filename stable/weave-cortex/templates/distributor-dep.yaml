@@ -1,0 +1,29 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: distributor
+  labels:
+    app: {{ template "cortex.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: distributor
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+      - name: distributor
+        image: {{ .Values.distributor.image.repository }}:{{ .Values.distributor.image.tag }}
+        imagePullPolicy: {{ .Values.distributor.image.pullPolicy }}
+        args:
+        - -log.level={{ .Values.distributor.logLevel }}
+        - -server.http-listen-port={{ .Values.distributor.listenPort }}
+        - -consul.hostname={{ .Values.distributor.consulHostName }}:{{ .Values.consul.serviceHttpPort }}
+        - -distributor.replication-factor={{ .Values.distributor.replicationFactor }}
+        ports:
+        - containerPort: {{ .Values.distributor.listenPort }}

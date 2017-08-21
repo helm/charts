@@ -1,0 +1,31 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: table-manager
+  labels:
+    app: {{ template "cortex.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.tableManager.replicas }}
+  template:
+    metadata:
+      labels:
+        name: table-manager
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+      - name: table-manager
+        image: {{ .Values.tableManager.image.repository }}:{{ .Values.tableManager.image.tag }}
+        imagePullPolicy: IfNotPresent
+        args:
+        - -server.http-listen-port={{ .Values.tableManager.listenPort }}
+        - -dynamodb.original-table-name=cortex
+        - -dynamodb.url={{ .Values.global.dynamoDBURI }}
+        - -dynamodb.periodic-table.prefix=cortex_weekly_
+        - -dynamodb.periodic-table.start=2017-01-06
+        - -dynamodb.chunk-table.from=2017-04-17
+        ports:
+        - containerPort: {{ .Values.tableManager.listenPort }}

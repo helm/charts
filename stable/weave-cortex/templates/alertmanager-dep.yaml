@@ -1,0 +1,30 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: alertmanager
+  labels:
+    app: {{ template "cortex.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: alertmanager
+        app: {{ template "cortex.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+      - name: alertmanager
+        image: {{ .Values.alertmanager.image.repository }}:{{ .Values.alertmanager.image.tag }}
+        imagePullPolicy: {{ .Values.alertmanager.image.imagePullPolicy }}
+        args:
+        - -log.level={{ .Values.alertmanager.loglevel }}
+        - -server.http-listen-port={{ .Values.alertmanager.listenPort }}
+        - -alertmanager.configs.url={{ .Values.alertmanager.configURL }}
+        - -alertmanager.web.external-url={{ .Values.alertmanager.externalURI }}
+        ports:
+        - containerPort: {{ .Values.alertmanager.listenPort }}

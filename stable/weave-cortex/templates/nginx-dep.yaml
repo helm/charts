@@ -1,0 +1,34 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: nginx
+  labels:
+    app: {{ template "cortex.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.nginx.replicas }}
+  template:
+    metadata:
+      labels:
+        name: nginx
+        release: {{ .Release.Name }}
+      annotations:
+        prometheus.io.scrape: "false"
+    spec:
+      containers:
+      - name: nginx
+        image: {{ .Values.nginx.image.repository }}:{{ .Values.nginx.image.tag }}
+        imagePullPolicy: IfNotPresent
+        ports:
+        - name: http
+          containerPort: {{ .Values.nginx.listenPort }}
+        volumeMounts:
+        - name: config-volume
+          mountPath: /etc/nginx
+      volumes:
+        - name: config-volume
+          configMap:
+            name: nginx-{{ .Release.Name }}

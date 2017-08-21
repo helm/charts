@@ -1,0 +1,30 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: memcached
+  labels:
+    app: {{ template "cortex.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.memcached.replicas }}
+  template:
+    metadata:
+      labels:
+        name: memcached
+        release: {{ .Release.Name }}
+      annotations:
+        prometheus.io.scrape: "false"
+    spec:
+      containers:
+      - name: memcached
+        image: {{ .Values.memcached.image.repository }}:{{ .Values.memcached.image.tag }}
+        imagePullPolicy: {{ .Values.memcached.image.pullPolicy }}
+        args:
+        - -m {{ .Values.memcached.maxMemMB }} # Maximum memory to use, in megabytes. 64MB is default.
+        - -p {{ .Values.memcached.listenPort }} # Default port, but being explicit is nice.
+        ports:
+        - name: clients
+          containerPort: {{ .Values.memcached.listenPort }}
