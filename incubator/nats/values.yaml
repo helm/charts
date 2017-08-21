@@ -1,0 +1,42 @@
+# Default values for nats.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+replicaCount: 3
+image:
+  repository: gabrtv/nats
+  tag: 0.9.6
+  pullPolicy: IfNotPresent
+service:
+  client:
+    type: ClusterIP
+    port: 4222
+    name: nats
+  cluster:
+    type: None
+    port: 6222
+    name: nats-cluster
+  management:
+    type: ClusterIP
+    port: 8222
+    name: nats-mgmt
+ingress:
+  enabled: false
+  # Used to create Ingress record (should used with service.type: ClusterIP).
+  hosts:
+    - nats.example.com
+  annotations:
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  tls:
+    # Secrets must be manually created in the namespace.
+    # - secretName: chart-example-tls
+    #   hosts:
+    #     - chart-example.local
+resources:
+  limits:
+    cpu: 100m
+    memory: 128Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+

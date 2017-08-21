@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "fullname" . }}-cluster
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+spec:
+  clusterIP: {{ .Values.service.cluster.type }}
+  ports:
+  - port: {{ .Values.service.cluster.port }}
+    targetPort: {{ .Values.service.cluster.port }}
+    protocol: TCP
+    name: {{ .Values.service.cluster.name }}
+  selector:
+    app: {{ template "fullname" . }}

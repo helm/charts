@@ -1,0 +1,4 @@
+apiVersion: v1
+description: NATS high performance messaging system for cloud native applications, IoT messaging, and microservices architectures
+name: nats
+version: 0.1.0

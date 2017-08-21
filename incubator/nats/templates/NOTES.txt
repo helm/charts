@@ -1,0 +1,8 @@
+
+Wait for NATS to bootstrap {{ .Values.replicaCount }} pods with:
+kubectl get po -n {{ .Release.Namespace }} -w
+
+Once NATS is running, access the NATS client port via the internal Kubernetes service: 
+{{ template "fullname" . }}.{{ .Release.Namespace }}:{{ .Values.service.client.port }}
+
+{{ if eq .Values.ingress.enabled true }}Optionally, explore the NATS management dashboard at: {{- range $index, $host := .Values.ingress.hosts }} http://{{ $host }} {{- end }}{{ end }}
