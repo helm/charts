@@ -1,7 +1,15 @@
 ## Bitnami Ghost image version
 ## ref: https://hub.docker.com/r/bitnami/ghost/tags/
 ##
-image: bitnami/ghost:0.11.10-r1
+image: bitnami/ghost:0.11.10-r2
+
+## Busybox image used to configure volume permissions
+##
+volumePermissions:
+  image:
+    name: busybox
+    tag: 1.27.1
+#    pullPolicy:
 
 ## Specify a imagePullPolicy
 ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'

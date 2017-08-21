@@ -1,16 +1,19 @@
 name: mariadb
-version: 0.6.3
+version: 1.0.2
+appVersion: 10.1.26
 description: Fast, reliable, scalable, and easy to use open-source relational database system. MariaDB Server is intended for mission-critical, heavy-load production systems as well as for embedding into mass-deployed software.
 keywords:
 - mariadb
 - mysql
 - database
 - sql
+- prometheus
 home: https://mariadb.org
 icon: https://bitnami.com/assets/stacks/mariadb/img/mariadb-stack-220x234.png
 sources:
 - https://github.com/bitnami/bitnami-docker-mariadb
+- https://github.com/prometheus/mysqld_exporter
 maintainers:
-- name: Bitnami
+- name: bitnami-bot
   email: containers@bitnami.com
 engine: gotpl

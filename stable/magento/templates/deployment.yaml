@@ -59,7 +59,7 @@ spec:
             httpHeaders:
             - name: Host
               value: {{ include "host" . | quote }}
-          initialDelaySeconds: 300
+          initialDelaySeconds: 420
           timeoutSeconds: 5
           failureThreshold: 6
         readinessProbe:

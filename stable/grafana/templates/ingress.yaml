@@ -1,6 +1,6 @@
 {{- if .Values.server.ingress.enabled -}}
 {{- $releaseName := .Release.Name -}}
-{{- $servicePort := .Values.server.httpPort -}}
+{{- $servicePort := .Values.server.service.httpPort -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:

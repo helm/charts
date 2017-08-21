@@ -14,10 +14,11 @@ spec:
       app: {{ template "fullname" . }}
   template:
     metadata:
-      labels:
-        {{- if and (.Values.tolerations) (le .Capabilities.KubeVersion.Minor "5") }}
+      {{- if and (.Values.tolerations) (le .Capabilities.KubeVersion.Minor "5") }}
+      annotations:
         scheduler.alpha.kubernetes.io/tolerations: '{{ toJson .Values.tolerations }}'
-        {{- end }}
+      {{- end }}
+      labels:
         app: {{ template "fullname" . }}
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         release: "{{ .Release.Name }}"

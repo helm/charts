@@ -1,7 +1,7 @@
 apiVersion: v1
 description: Istio Helm chart for Kubernetes
 name: istio
-version: 0.1.6-chart1
+version: 0.1.6-chart5
 appVersion: 0.1.6
 home: https://istio.io/
 icon: https://raw.githubusercontent.com/istio/istio.github.io/master/favicons/mstile-150x150.png

@@ -25,6 +25,8 @@ image:
 # Annotations to be added to MongoDB pods
 podAnnotations: {}
 
+podAntiAffinity: "soft"
+
 resources: {}
 # limits:
 #   cpu: 100m
