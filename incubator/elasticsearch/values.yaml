@@ -30,6 +30,8 @@ master:
   name: master
   replicas: 2
   heapSize: "128m"
+  storage: "10Gi"
+  # storageClass: "ssd"
   antiAffinity: "soft"
   resources:
     limits:

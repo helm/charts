@@ -61,7 +61,7 @@ The following tables lists the configurable parameters of the elasticsearch char
 | `image.repository`                   | Container image name                    | `jetstack/elasticsearch-pet`        |
 | `image.tag`                          | Container image tag                     | `2.4.0`                             |
 | `image.pullPolicy`                   | Container pull policy                   | `Always`                            |
-| `cluster.name`                       | Cluster name          			         | `elasticsearch`                     |
+| `cluster.name`                       | Cluster name          			             | `elasticsearch`                     |
 | `cluster.config`                     | Additional cluster config appended      | `{}`                                |
 | `client.name`                        | Client component name                   | `client`                            |
 | `client.replicas`                    | Client node replicas (deployment)       | `2`                                 |
@@ -72,7 +72,9 @@ The following tables lists the configurable parameters of the elasticsearch char
 | `master.replicas`                    | Master node replicas (deployment)       | `2`                                 |
 | `master.resources`                   | Master node resources requests & limits | `{} - cpu limit must be an integer` |
 | `master.heapSize`                    | Master node heap size                   | `128m`                              |
-| `master.name`                        | Data component name                     | `data`                              |
+| `master.name`                        | Master component name                   | `master`                            |
+| `master.storage`                     | Master persistent volume size           | `10Gi`                              |
+| `master.storageClass`                | Master persistent volume Class          | `nil`                               |
 | `data.replicas`                      | Data node replicas (statefulset)        | `3`                                 |
 | `data.resources`                     | Data node resources requests & limits   | `{} - cpu limit must be an integer` |
 | `data.heapSize`                      | Data node heap size                     | `1536m`                             |

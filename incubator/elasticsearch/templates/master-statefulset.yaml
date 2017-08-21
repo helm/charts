@@ -1,5 +1,5 @@
 apiVersion: apps/v1beta1
-kind: Deployment
+kind: StatefulSet
 metadata:
   labels:
     app: {{ template "elasticsearch.name" . }}
@@ -9,6 +9,7 @@ metadata:
     release: {{ .Release.Name }}
   name: {{ template "elasticsearch.master.fullname" . }}
 spec:
+  serviceName: {{ template "master.fullname" . }}
   replicas: {{ .Values.master.replicas }}
   template:
     metadata:
@@ -82,6 +83,8 @@ spec:
         - containerPort: 9300
           name: transport
         volumeMounts:
+        - mountPath: /usr/share/elasticsearch/data
+          name: data
         - mountPath: /usr/share/elasticsearch/config/elasticsearch.yml
           name: config
           subPath: elasticsearch.yml
@@ -92,3 +95,14 @@ spec:
       - name: config
         configMap:
           name: {{ template "elasticsearch.fullname" . }}
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      accessModes: [ ReadWriteOnce ]
+    {{- if .Values.master.storageClass }}
+      storageClassName: "{{ .Values.master.storageClass }}"
+    {{- end }}
+      resources:
+        requests:
+          storage: "{{ .Values.master.storage }}"
