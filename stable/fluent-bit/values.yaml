@@ -5,8 +5,8 @@ on_minikube: false
 image:
   fluent_bit:
     repository: fluent/fluent-bit
-    tag: 0.11.16
-  pullPolicy: IfNotPresent
+    tag: 0.11.17
+  pullPolicy: Always
 
 backend:
   type: forward
