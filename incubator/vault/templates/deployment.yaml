@@ -26,6 +26,15 @@ spec:
         {{- else }}
         command: ["vault", "server", "-config", "/vault/config/config.json"]
         {{- end }}
+        env:
+        # populate secrets
+        {{- range $key, $value :=  .Values.secrets }}
+        - name: {{ $key | upper | replace "-" "_" }}
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "fullname" $ }}
+              key: {{ $key }}
+        {{- end }}
         ports:
         - containerPort: {{ .Values.service.port }}
         livenessProbe:
