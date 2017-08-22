@@ -7,6 +7,7 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
+
 spec:
   serviceName: {{ template "worker.fullname" . }}
   replicas: {{ .Values.worker.replicas }}
@@ -14,6 +15,10 @@ spec:
     metadata:
       labels:
         app: {{ template "worker.fullname" . }}
+      annotations:
+        {{- range $key, $value := .Values.worker.annotations }}
+        {{ $key }}: {{ $value | quote }}
+        {{- end }}
     spec:
       terminationGracePeriodSeconds: 60
       containers:
