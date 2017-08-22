@@ -63,8 +63,10 @@ spec:
               fieldPath: metadata.namespace
         - name: NODE_DATA
           value: "false"
+{{- if hasPrefix "5." .Values.image.tag }}
         - name: NODE_INGEST
           value: "false"
+{{- end }}
         - name: NODE_MASTER
           value: "false"
         - name: PROCESSORS

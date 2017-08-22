@@ -5,6 +5,7 @@
 image:
   repository: "centerforopenscience/elasticsearch"
   tag: "5.4"
+  # tag: "2.4"
   pullPolicy: "Always"
 
 cluster:
