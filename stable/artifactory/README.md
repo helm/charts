@@ -64,7 +64,7 @@ The following tables lists the configurable parameters of the artifactory chart 
 | `database.env.type`          | Database type                     | `postgresql`                                             |
 | `database.env.name`          | Database name                     | `artifactory`                                            |
 | `database.env.user`          | Database username                 | `artifactory`                                            |
-| `database.env.pass`          | Database password                 | `artXifactory1973`                                       |
+| `database.env.pass`          | Database password                 | `Randomly generated`                                     |
 | `database.image.repository`          | Database container image                     | `docker.bintray.io/postgres`             |
 | `database.image.version`          | Database container image tag                     | `9.5.2`                                 |
 | `database.image.pullPolicy`         | Container pull policy             | `IfNotPresent`                                           |
