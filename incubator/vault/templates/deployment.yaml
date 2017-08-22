@@ -7,6 +7,8 @@ metadata:
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+  annotations:
+    checksum/config-map: {{ include (print $.Chart.Name "/templates/configmap.yaml") . | sha256sum }}
 spec:
   replicas: {{ .Values.replicaCount }}
   template:
@@ -47,6 +49,6 @@ spec:
       volumes:
         - name: vault-config
           configMap:
-            name: "{{ template "fullname" . }}-config-{{ .Release.Revision }}"
+            name: "{{ template "fullname" . }}"
         - name: vault-root
           emptyDir: {}
