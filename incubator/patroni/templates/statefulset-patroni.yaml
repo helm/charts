@@ -1,18 +1,18 @@
 apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "patroni.fullname" . }}
   labels:
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     component: "{{.Release.Name}}-{{.Values.Component}}"
 spec:
-  serviceName: {{ template "fullname" . }}
+  serviceName: {{ template "patroni.fullname" . }}
   replicas: {{default 5 .Values.Replicas }}
   template:
     metadata:
-      name: {{ template "fullname" . }}
+      name: {{ template "patroni.fullname" . }}
       labels:
         heritage: {{.Release.Service | quote }}
         release: {{.Release.Name | quote }}
@@ -32,17 +32,17 @@ spec:
         - name: PGPASSWORD_SUPERUSER
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "patroni.fullname" . }}
               key: password-superuser
         - name: PGPASSWORD_ADMIN
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "patroni.fullname" . }}
               key: password-admin
         - name: PGPASSWORD_STANDBY
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "patroni.fullname" . }}
               key: password-standby
         {{if .Values.Etcd.Host }}
         - name: ETCD_HOST
@@ -52,7 +52,7 @@ spec:
           value: {{default (printf "%s-etcd" .Release.Name | trunc 63) .Values.Etcd.Discovery }}
         {{end}}
         - name: SCOPE
-          value: {{ template "fullname" . }}
+          value: {{ template "patroni.fullname" . }}
         - name: USE_WALE
           value: ""
         - name: PGROOT
@@ -79,7 +79,7 @@ spec:
       volumes:
       - name: patroni-config
         secret:
-          secretName: {{ template "fullname" . }}
+          secretName: {{ template "patroni.fullname" . }}
 
   volumeClaimTemplates:
     - metadata:
