@@ -313,7 +313,7 @@ web:
     ##
     enabled: false
 
-    ## Annotations.
+    ## Annotations to be added to the web ingress.
     ##
     # annotations:
     #   kubernetes.io/ingress.class: nginx
@@ -356,6 +356,11 @@ worker:
     requests:
       cpu: "100m"
       memory: "512Mi"
+
+  ## Annotations to be added to the worker pods.
+  ##
+  # annotations:
+  #   iam.amazonaws.com/role: arn:aws:iam::123456789012:role/concourse
 
 ## Persistent Volume Storage configuration.
 ## ref: https://kubernetes.io/docs/user-guide/persistent-volumes
