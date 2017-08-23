@@ -41,6 +41,10 @@ $ helm install --name my-release -f values.yaml stable/jenkins
 | `master.image.repository`          | Master image name                    | `jenkins/jenkins` |
 | `master.image.tag`                 | Master image tag                     | `lts`             |
 | `master.image.pullPolicy`          | Master image pull policy             | `Always`          |
+| `master.useSecurity`               | Enable authentication                | `true`            |
+| `master.adminUser`                 | Administrator Username               | `admin`           |
+| `master.adminPassword`             | Administrator Password               | Random            |
+| `master.uriPrefix`                 | URI Path Prefix                      | Not set           |
 | `master.resources.limits.cpu`      | Master limited cpu                   | `200m`            |
 | `master.resources.limits.memory`   | Master limited memory                | `256Mi`           |
 | `master.resources.requests.cpu`    | Master requested cpu                 | `200m`            |
@@ -64,6 +68,7 @@ $ helm install --name my-release -f values.yaml stable/jenkins
 | `agent.resources.requests.cpu`    | Agent requested cpu                             | `200m`               |
 | `agent.resources.requests.memory` | Agent requested memory                          | `256Mi`              |
 | `agent.volumes`                   | Additional volumes                              | `nil`                |
+| `agent.nodeSelector`              | Node labels for pod assignment                  | `{}`                 |
 
 ### Mounting volumes into your Agent pods
 
@@ -72,9 +77,9 @@ Your Jenkins Agents will run as pods, and it's possible to inject volumes where 
 ```yaml
 agent:
   volumes:
-  - type: Secret
-    secretName: jenkins-mysecrets
-    mountPath: /var/run/secrets/jenkins-mysecrets
+    - type: Secret
+      secretName: jenkins-mysecrets
+      mountPath: /var/run/secrets/jenkins-mysecrets
 ```
 
 The supported volume types are: `ConfigMap`, `EmptyDir`, `HostPath`, `Nfs`, `Pod`, `Secret`. Each type supports a different set of configurable attributes, defined by [the corresponding Java class](https://github.com/jenkinsci/kubernetes-plugin/tree/master/src/main/java/org/csanchez/jenkins/plugins/kubernetes/volumes).
@@ -95,7 +100,7 @@ It also allows for providing additional xml configuration files that will be cop
 set the value to true and provide the file `templates/config.yaml` for your use case. If you start by copying `config.yaml` from this chart and
 want to access values from this chart you must change all references from `.Values` to `.Values.jenkins`.
 
-```
+```yaml
 customConfigMap: true
 ```
 
@@ -134,6 +139,7 @@ $ helm install --name my-release --set persistence.existingClaim=PVC_NAME stable
 | `service.externalPort`             | k8s node port                | `80`        |
 | `service.internalPort`             | Master listening port        | `8080`      |
 | `service.loadBalancerSourceRanges` | Allowed inbound IP addresses | `0.0.0.0/0` |
+| `service.loadBalancerIP`           | Optional fixed external IP   | Not set     |
 
 ## Ingress
 
@@ -158,7 +164,9 @@ NetworkPolicy spec](https://kubernetes.io/docs/tasks/administer-cluster/declare-
 For Kubernetes v1.5 & v1.6, you must also turn on NetworkPolicy by setting
 the DefaultDeny namespace annotation. Note: this will enforce policy for _all_ pods in the namespace:
 
-    kubectl annotate namespace default "net.beta.kubernetes.io/network-policy={\"ingress\":{\"isolation\":\"DefaultDeny\"}}"
+```bash
+kubectl annotate namespace default "net.beta.kubernetes.io/network-policy={\"ingress\":{\"isolation\":\"DefaultDeny\"}}"
+```
 
 ## RBAC
 
@@ -168,6 +176,6 @@ the DefaultDeny namespace annotation. Note: this will enforce policy for _all_ p
 
 If running upon a cluster with RBAC enabled you will need to do the following:
 
-* `helm install stable/jenkins --set rbac.install=true`
+* `helm install stable/jenkins --set rbac.create=true`
 * Create a Jenkins credential of type Kubernetes service account with service account name provided in the `helm status` output.
 * Under configure Jenkins -- Update the credentials config in the cloud section to use the service account credential you created in the step above.

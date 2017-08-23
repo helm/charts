@@ -11,8 +11,8 @@ master:
     pullPolicy: Always
   useSecurity: true
   adminUser: admin
-  #uriPrefix: /jenkins
   #adminPassword: <defaults to random>
+  #uriPrefix: /jenkins
   resources: {}
     #limits:
     #  cpu: 200m
@@ -29,6 +29,8 @@ master:
   #  -Dcom.sun.management.jmxremote.port=4000 
   #  -Dcom.sun.management.jmxremote.authenticate=false 
   #  -Dcom.sun.management.jmxremote.ssl=false 
+  #JENKINS_OPTS: >
+  #  --prefix=/jenkins 
   # Optionally configure a JMX port
   #jmxPort: 4000
   # Node labels and tolerations for pod assignment
@@ -60,7 +62,7 @@ agent:
   # - type: Secret
   #   secretName: mysecret
   #   mountPath: /var/myapp/mysecret
-  NodeSelector: {}
+  nodeSelector: {}
   # Key Value selectors. Ex:
   # jenkins-agent: v1
 
@@ -104,7 +106,9 @@ service:
   internalPort: 8080
   # annotations:
   # loadBalancerSourceRanges:
-  # - 0.0.0.0/0
+  #   - 0.0.0.0/0
+  # Optionally assign a known public LB IP
+  # loadBalancerIP: 1.2.3.4
 
 ingress:
   enabled: false

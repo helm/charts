@@ -3,6 +3,11 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ template "fullname" . }}
+  labels:
+    app: {{ template "name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 data:
   config.xml: |-
     <?xml version='1.0' encoding='UTF-8'?>
@@ -28,7 +33,7 @@ data:
         <org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud plugin="kubernetes@0.11">
           <name>kubernetes</name>
           <templates>
-{{- if .Values.agent.enabled }}
+            {{- if .Values.agent.enabled }}
             <org.csanchez.jenkins.plugins.kubernetes.PodTemplate>
               <inheritFrom></inheritFrom>
               <name>default</name>
@@ -37,22 +42,24 @@ data:
               <label>{{ .Release.Name }}-{{ .Values.Agent.Component }}</label>
               <nodeSelector>
                 {{- $local := dict "first" true }}
-                {{- range $key, $value := .Values.Agent.NodeSelector }}
+                {{- range $key, $value := .Values.agent.nodeSelector }}
                   {{- if not $local.first }},{{- end }}
                   {{- $key }}={{ $value }}
                   {{- $_ := set $local "first" false }}
-                {{- end }}</nodeSelector>
+                {{- end -}}
+              </nodeSelector>
               <label>{{ .Release.Name }}-agent</label>
               <label>{{ template "fullname" . }}-agent</label>
-              <nodeSelector></nodeSelector>
               <volumes>
-{{- range $index, $volume := .Values.agent.volumes }}
+                {{- range $index, $volume := .Values.agent.volumes }}
                 <org.csanchez.jenkins.plugins.kubernetes.volumes.{{ $volume.type }}Volume>
-{{- range $key, $value := $volume }}{{- if not (eq $key "type") }}
+                  {{- range $key, $value := $volume }}
+                  {{- if not (eq $key "type") }}
                   <{{ $key }}>{{ $value }}</{{ $key }}>
-{{- end }}{{- end }}
+                  {{- end }}
+                  {{- end }}
                 </org.csanchez.jenkins.plugins.kubernetes.volumes.{{ $volume.type }}Volume>
-{{- end }}
+                {{- end }}
               </volumes>
               <containers>
                 <org.csanchez.jenkins.plugins.kubernetes.ContainerTemplate>
@@ -85,7 +92,7 @@ data:
               <imagePullSecrets/>
               <nodeProperties/>
             </org.csanchez.jenkins.plugins.kubernetes.PodTemplate>
-{{- end -}}
+            {{- end -}}
           </templates>
           <serverUrl>https://kubernetes.default</serverUrl>
           <skipTlsVerify>false</skipTlsVerify>
@@ -116,15 +123,15 @@ data:
       <globalNodeProperties/>
       <noUsageStatistics>true</noUsageStatistics>
     </hudson>
-{{- if .Values.scriptApproval }}
+  {{- if .Values.scriptApproval }}
   scriptapproval.xml: |-
     <?xml version='1.0' encoding='UTF-8'?>
     <scriptApproval plugin="script-security@1.27">
       <approvedScriptHashes/>
       <approvedSignatures>
-{{- range $key, $val := .Values.scriptApproval }}
+        {{- range $key, $val := .Values.scriptApproval }}
         <string>{{ $val }}</string>
-{{- end }}
+        {{- end }}
       </approvedSignatures>
       <aclApprovedSignatures/>
       <approvedClasspathEntries/>
@@ -132,31 +139,31 @@ data:
       <pendingSignatures/>
       <pendingClasspathEntries/>
     </scriptApproval>
-{{- end }}
+  {{- end }}
   apply_config.sh: |-
     mkdir -p /usr/share/jenkins/ref/secrets/;
     echo "false" > /usr/share/jenkins/ref/secrets/slave-to-master-security-kill-switch;
     cp -n /var/jenkins_config/config.xml /var/jenkins_home;
-{{- if .Values.installPlugins }}
+    {{- if .Values.installPlugins }}
     cp /var/jenkins_config/plugins.txt /var/jenkins_home;
     rm /usr/share/jenkins/ref/plugins/*.lock
     /usr/local/bin/install-plugins.sh `echo $(cat /var/jenkins_home/plugins.txt)`;
-{{- end }}
-{{- if .Values.scriptApproval }}
+    {{- end }}
+    {{- if .Values.scriptApproval }}
     cp -n /var/jenkins_config/scriptapproval.xml /var/jenkins_home/scriptApproval.xml;
-{{- end }}
-{{- if .Values.initScripts }}
+    {{- end }}
+    {{- if .Values.initScripts }}
     mkdir -p /var/jenkins_home/init.groovy.d/;
     cp -n /var/jenkins_config/*.groovy /var/jenkins_home/init.groovy.d/
-{{- end }}
-{{- range $key, $val := .Values.initScripts }}
+    {{- end }}
+  {{- range $key, $val := .Values.initScripts }}
   init{{ $key }}.groovy: |-
 {{ $val | indent 4 }}
-{{- end }}
+  {{- end }}
   plugins.txt: |-
-{{- if .Values.installPlugins }}
-{{- range $index, $val := .Values.installPlugins }}
+  {{- if .Values.installPlugins }}
+  {{- range $index, $val := .Values.installPlugins }}
 {{ $val | indent 4 }}
-{{- end }}
-{{- end }}
+  {{- end }}
+  {{- end }}
 {{- end -}}
