@@ -26,7 +26,7 @@ elasticsearch and their
 This chart will do the following:
 
 * Implemented a dynamically scalable elasticsearch cluster using Kubernetes StatefulSets/Deployments
-* Multi-role deployment: master, client and data nodes
+* Multi-role deployment: master, client (coordinating) and data nodes
 * Statefulset Supports scaling down without degrading the cluster
 
 ## Installing the Chart
@@ -58,6 +58,7 @@ The following tables lists the configurable parameters of the elasticsearch char
 
 |              Parameter               |                             Description                             |               Default                |
 | ------------------------------------ | ------------------------------------------------------------------- | ------------------------------------ |
+| `appVersion`                         | Application Version                                                 | `5.4`                                |
 | `image.repository`                   | Container image name                                                | `centerforopenscience/elasticsearch` |
 | `image.tag`                          | Container image tag                                                 | `5.4`                                |
 | `image.pullPolicy`                   | Container pull policy                                               | `Always`                             |
@@ -107,6 +108,23 @@ would degrade performance heavily. The issue is tracked in
 [WARN ][bootstrap] This can result in part of the JVM being swapped out.
 [WARN ][bootstrap] Increase RLIMIT_MEMLOCK, soft limit: 65536, hard limit: 65536
 ```
+
+## Minimum Master Nodes
+> The minimum_master_nodes setting is extremely important to the stability of your cluster. This setting helps prevent split brains, the existence of two masters in a single cluster.
+
+>When you have a split brain, your cluster is at danger of losing data. Because the master is considered the supreme ruler of the cluster, it decides when new indices can be created, how shards are moved, and so forth. If you have two masters, data integrity becomes perilous, since you have two nodes that think they are in charge.
+
+>This setting tells Elasticsearch to not elect a master unless there are enough master-eligible nodes available. Only then will an election take place.
+
+>This setting should always be configured to a quorum (majority) of your master-eligible nodes. A quorum is (number of master-eligible nodes / 2) + 1
+
+More info: https://www.elastic.co/guide/en/elasticsearch/guide/1.x/_important_configuration_changes.html#_minimum_master_nodes
+
+# Client and Coordinating Nodes
+
+Elasticsearch v5 terminology has updated, and now refers to a `Client Node` as a `Coordinating Node`.
+
+More info: https://www.elastic.co/guide/en/elasticsearch/reference/5.5/modules-node.html#coordinating-node
 
 ## Select right storage class for SSD volumes
 

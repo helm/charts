@@ -1,12 +1,12 @@
 # Default values for elasticsearch.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
+appVersion: "5.4"
 
 image:
   repository: "centerforopenscience/elasticsearch"
   tag: "5.4"
-  # tag: "2.4"
-  pullPolicy: "Always"
+  pullPolicy: "IfNotPresent"
 
 cluster:
   name: "elasticsearch"
@@ -26,7 +26,7 @@ client:
   resources:
     limits:
       cpu: "1"
-      memory: "1024Mi"
+      # memory: "1024Mi"
     requests:
       cpu: "25m"
       memory: "512Mi"
@@ -41,7 +41,7 @@ master:
   resources:
     limits:
       cpu: "1"
-      memory: "1024Mi"
+      # memory: "1024Mi"
     requests:
       cpu: "25m"
       memory: "512Mi"
@@ -57,7 +57,7 @@ data:
   resources:
     limits:
       cpu: "1"
-      memory: "2048Mi"
+      # memory: "2048Mi"
     requests:
       cpu: "25m"
       memory: "1536Mi"

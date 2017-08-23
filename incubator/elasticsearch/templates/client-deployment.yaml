@@ -63,7 +63,7 @@ spec:
               fieldPath: metadata.namespace
         - name: NODE_DATA
           value: "false"
-{{- if hasPrefix "5." .Values.image.tag }}
+{{- if hasPrefix "5." .Values.appVersion }}
         - name: NODE_INGEST
           value: "false"
 {{- end }}
@@ -83,11 +83,16 @@ spec:
 {{ toYaml .Values.client.resources | indent 12 }}
         readinessProbe:
           httpGet:
-            path: /_cluster/health?local=true
+            path: /_cluster/health?wait_for_status=yellow
             port: 9200
           initialDelaySeconds: 5
+        livenessProbe:
+          httpGet:
+            path: /_cluster/health?wait_for_status=yellow
+            port: 9200
+          initialDelaySeconds: 90
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-        imagePullPolicy: {{ default "" .Values.image.pullPolicy | quote }}
+        imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         ports:
         - containerPort: 9200
           name: http

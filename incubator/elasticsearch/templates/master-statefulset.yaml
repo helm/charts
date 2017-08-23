@@ -9,7 +9,7 @@ metadata:
     release: {{ .Release.Name }}
   name: {{ template "elasticsearch.master.fullname" . }}
 spec:
-  serviceName: {{ template "master.fullname" . }}
+  serviceName: {{ template "elasticsearch.master.fullname" . }}
   replicas: {{ .Values.master.replicas }}
   template:
     metadata:
@@ -53,7 +53,7 @@ spec:
           privileged: true
       - name: "chown"
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-        imagePullPolicy: {{ default "" .Values.image.pullPolicy | quote }}
+        imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         command:
         - /bin/bash
         - -c
@@ -77,7 +77,7 @@ spec:
               fieldPath: metadata.namespace
         - name: NODE_DATA
           value: "false"
-{{- if hasPrefix "5." .Values.image.tag }}
+{{- if hasPrefix "5." .Values.appVersion }}
         - name: NODE_INGEST
           value: "false"
 {{- end }}
@@ -99,7 +99,7 @@ spec:
             port: 9200
           initialDelaySeconds: 5
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-        imagePullPolicy: {{ default "" .Values.image.pullPolicy | quote }}
+        imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         ports:
         - containerPort: 9300
           name: transport

@@ -12,7 +12,7 @@ spec:
   clusterIP: None
   ports:
     - port: 9300
-      targetPort: 9300
+      targetPort: transport
   selector:
     app: {{ template "elasticsearch.name" . }}
     component: "{{ .Values.master.name }}"
