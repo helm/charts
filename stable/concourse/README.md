@@ -14,7 +14,7 @@ This chart bootstraps a [Concourse](https://concourse.ci/) deployment on a [Kube
 
 ## Prerequisites Details
 
-* Kubernetes 1.5 (for `StatefulSets` support)
+* Kubernetes 1.6 (for `pod affinity` support)
 * PV support on underlying infrastructure (if persistence is required)
 
 ## Installing the Chart
