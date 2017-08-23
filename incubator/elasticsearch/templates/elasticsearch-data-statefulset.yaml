@@ -2,25 +2,25 @@ apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
   labels:
-    app: {{ template "name" . }}
+    app: {{ template "elasticsearch.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     component: "{{ .Values.data.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-  name: {{ template "data.fullname" . }}
+  name: {{ template "elasticsearch.data.fullname" . }}
 spec:
-  serviceName: {{ template "data.fullname" . }}
+  serviceName: {{ template "elasticsearch.data.fullname" . }}
   replicas: {{ .Values.data.replicas }}
   template:
     metadata:
       labels:
-        app: {{ template "name" . }}
+        app: {{ template "elasticsearch.name" . }}
         component: "{{ .Values.data.name }}"
         release: {{ .Release.Name }}
       annotations:
         pod.alpha.kubernetes.io/initialized: "true"
     spec:
-      serviceAccountName: {{ template "fullname" . }}
+      serviceAccountName: {{ template "elasticsearch.fullname" . }}
       {{- if eq .Values.data.antiAffinity "hard" }}
       affinity:
         podAntiAffinity:
@@ -28,7 +28,7 @@ spec:
             - topologyKey: "kubernetes.io/hostname"
               labelSelector:
                 matchLabels:
-                  app: "{{ template "name" . }}"
+                  app: "{{ template "elasticsearch.name" . }}"
                   release: "{{ .Release.Name }}"
                   component: "{{ .Values.data.name }}"
       {{- else if eq .Values.data.antiAffinity "soft" }}
@@ -40,7 +40,7 @@ spec:
               topologyKey: kubernetes.io/hostname
               labelSelector:
                 matchLabels:
-                  app: "{{ template "name" . }}"
+                  app: "{{ template "elasticsearch.name" . }}"
                   release: "{{ .Release.Name }}"
                   component: "{{ .Values.data.name }}"
       {{- end }}
@@ -57,7 +57,7 @@ spec:
       - name: elasticsearch
         env:
         - name: SERVICE
-          value: {{ template "master.fullname" . }}
+          value: {{ template "elasticsearch.master.fullname" . }}
         - name: KUBERNETES_MASTER
           value: kubernetes.default.svc.cluster.local
         - name: KUBERNETES_NAMESPACE
@@ -104,7 +104,7 @@ spec:
       volumes:
       - name: config
         configMap:
-          name: {{ template "fullname" . }}
+          name: {{ template "elasticsearch.fullname" . }}
   volumeClaimTemplates:
   - metadata:
       name: data
