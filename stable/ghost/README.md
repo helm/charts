@@ -52,7 +52,7 @@ The following tables lists the configurable parameters of the Ghost chart and th
 | `ghostHost`                       | Ghost host to create application URLs                 | `nil`                                                     |
 | `ghostPort`                       | Ghost port to create application URLs along with host | `80`                                                      |
 | `ghostLoadBalancerIP`             | `loadBalancerIP` for the Ghost Service                | `nil`                                                     |
-| `ghostUsername`                   | User of the application                               | `user`                                                    |
+| `ghostUsername`                   | User of the application                               | `user@example.com`                                        |
 | `ghostPassword`                   | Application password                                  | Randomly generated                                        |
 | `ghostEmail`                      | Admin email                                           | `user@example.com`                                        |
 | `ghostBlogTitle`                  | Ghost Blog name                                       | `User's Blog`                                             |
