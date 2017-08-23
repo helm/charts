@@ -14,6 +14,8 @@ export POD_PORT =`kubectl get pod -l "app=goldfish" \
 
 kubectl port-forward $POD_NAME $POD_NAME
 
+Then go to your browser and access http://localhost:$POD_NAME
+
 
 {{- else if contains "NodePort" .Values.service.type }}
   export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "fullname" . }})
