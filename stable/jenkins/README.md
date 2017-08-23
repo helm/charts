@@ -155,7 +155,7 @@ If running upon a cluster with RBAC enabled you will need to do the following:
 
 ## ALB-ingress-controller
 
-If running the (ALB-ingress-controller)[https://github.com/coreos/alb-ingress-controller] for your ingress:
+If running the [ALB-ingress-controller](https://github.com/coreos/alb-ingress-controller) for your ingress:
 
 The alb-ingress-controller doesn't support using the ClusterIP. If you try this it will create the ALB but not the target group. This is because the target group mapping relies
 on the NodePort to create the alb target group.
