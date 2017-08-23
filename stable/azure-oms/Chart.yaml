@@ -1,0 +1,7 @@
+apiVersion: v1
+description: The OMS Agent for Linux enables rich and real-time analytics for operational data (Syslog, Performance, Alerts, Inventory) from Linux servers, Docker Containers and monitoring tools like Nagios, Zabbix and System Center.
+icon: https://github.com/Microsoft/OMS-docker/raw/master/img/image6.png
+name: azure-oms
+version: 0.1.0
+sources:
+  - https://github.com/Microsoft/OMS-Agent-for-Linux

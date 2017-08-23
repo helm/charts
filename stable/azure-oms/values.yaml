@@ -1,0 +1,10 @@
+# Default values for azure-oms.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+image:
+  repository: "microsoft/oms"
+  tag: latest
+  pullPolicy: Always
+azure_oms:
+  wsid_data:
+  key_data:

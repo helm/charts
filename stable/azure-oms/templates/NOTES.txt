@@ -1,0 +1,17 @@
+{{- if not (and .Values.azure_oms.wsid_data .Values.azure_oms.key_data) }}
+##################################################
+####   ERROR: Need to set OMS configuration   ####
+##################################################
+
+This deployment will be incomplete until you set the correct OMS configuration
+
+    helm upgrade {{ .Release.Name }} \
+        --set azure_oms.wsid_data=VALUE azure_oms.key_data=VALUE stable/azure_oms
+{{- else }}
+Check to see whether the OMS Agent daemon-set is running fine.
+
+    root@ubuntu16-13db:~# kubectl get ds {{ template "fullname" . }}
+    NAME       DESIRED   CURRENT   NODE-SELECTOR   AGE
+    omsagent   3         3         <none>          1h
+
+{{- end }}
