@@ -1,23 +1,23 @@
 apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "kafka.fullname" . }}
   labels:
-    app: {{ include "name" . | quote }}
+    app: {{ include "kafka.name" . | quote }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
 spec:
-  serviceName: {{ template "fullname" . }}-headless
+  serviceName: {{ template "kafka.fullname" . }}-headless
   replicas: {{ default 3 .Values.Replicas }}
   template:
     metadata:
       labels:
-        app: {{ include "name" . | quote }}
+        app: {{ include "kafka.name" . | quote }}
         release: {{ .Release.Name | quote }}
     spec:
       containers:
-      - name: {{ template "name" . }}-broker
+      - name: {{ template "kafka.name" . }}-broker
         image: "{{ .Values.Image }}:{{ .Values.ImageTag }}"
         imagePullPolicy: "{{ .Values.ImagePullPolicy }}"
         livenessProbe:
