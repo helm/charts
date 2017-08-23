@@ -22,7 +22,7 @@ image: bitnami/prestashop:1.7.2-0-r0
 ## User of the application
 ## ref: https://github.com/bitnami/bitnami-docker-prestashop#configuration
 ##
-prestashopUsername: user
+prestashopUsername: user@example.com
 
 ## Application password
 ## Defaults to a random 10-character alphanumeric string if not set
