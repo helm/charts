@@ -40,11 +40,16 @@ $ helm install --name my-release incubator/elasticsearch
 
 ## Deleting the Charts
 
-Deletion of the PetSet doesn't cascade to deleting associated Pods and PVCs. To delete them:
+Delete the Helm deployment as normal
 
 ```
-$ kubectl delete pods -l release=my-release,type=data
-$ kubectl delete pvcs -l release=my-release,type=data
+$ helm delete my-release
+```
+
+Deletion of the StatefulSet doesn't cascade to deleting associated PVCs. To delete them:
+
+```
+$ kubectl delete pvc -l release=my-release,component=data
 ```
 
 ## Configuration
