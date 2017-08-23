@@ -6,12 +6,10 @@
 apiVersion: v1
 kind: Service
 metadata:
+  {{- if $.Values.podServices.annotations }}
   annotations:
-    service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
-  {{- if $.Values.podServiceAnnotations }}
-{{ toYaml $.Values.podServiceAnnotations | indent 4 }}
+{{ toYaml $.Values.podServices.annotations | indent 4 }}
   {{- end }}
-
   labels:
     app: {{ template "name" $ }}
     chart: {{ $.Chart.Name }}-{{ $.Chart.Version }}
@@ -20,10 +18,28 @@ metadata:
     name: {{ template "fullname" $ }}-{{ $i }}
   name: {{ template "fullname" $ }}-{{ $i }}
 spec:
-  type: {{ default "NodePort" $.Values.podServices.type }}
+# Provides options for the service so chart users have the full choice
+  type: "{{ $.Values.podServices.type }}"
+  clusterIP: "{{ $.Values.podServices.clusterIP }}"
+{{- if $.Values.podServices.externalIPs }}
+  externalIPs:
+{{ toYaml $.Values.podServices.externalIPs | indent 4 }}
+{{- end }}
+{{- if $.Values.podServices.loadBalancerIP }}
+  loadBalancerIP: "{{ $.Values.podServices.loadBalancerIP }}"
+{{- end }}
+{{- if $.Values.podServices.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+{{ toYaml $.Values.podServices.loadBalancerSourceRanges | indent 4 }}
+{{- end }}
   ports:
-    - port: {{ $.Values.port }}
-      targetPort: {{ $.Values.port }}
+    - name: peer
+      port: {{ $.Values.podServices.port }}
+      protocol: TCP
+      targetPort: peer
+      {{- if (and (eq $.Values.podServices.type "NodePort") (not (empty $.Values.podServices.nodePort))) }}
+      nodePort: {{ $.Values.podServices.nodePort }}
+      {{- end }}
   selector:
     app: {{ template "name" $ }}
     release: {{ $.Release.Name }}

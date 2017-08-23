@@ -1,4 +1,4 @@
-{{- range $i := until $podCount }}
+{{ $podCount := .Values.replicas | int }}
 1. After the statefulset is created completely, one can check which instance is primary by running:
 
     $ for ((i = 0; i < {{ .Values.replicas }}; ++i)); do kubectl exec --namespace {{ .Release.Namespace }} {{ template "fullname" . }}-$i -- sh -c 'mongo --eval="printjson(rs.isMaster())"'; done
@@ -14,22 +14,29 @@
     $ kubectl exec --namespace {{ .Release.Namespace }} POD_NAME -- mongo --eval="rs.slaveOk(); db.test.find().forEach(printjson)"
 
 {{- if contains "NodePort" .Values.podServices.type }}
+
 4.
-{{ $podCount := .Values.replicas | int }}
+{{- range $i := until $podCount }}
   export NODE_PORT_{{ $i }}=$(kubectl get --namespace {{ $.Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "fullname" $ }}-{{ $i }})
 {{- end }}
+
   export NODE_IP_=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+
   You can get the MongoDB URI with
 
-  echo mongodb://$NODE_IP_0:$NODE_PORT_0,$NODE_IP_1:$NODE_PORT_1,$NODE_IP_2:$NODE_PORT_2, ... /?replicaSet={{ .Values.replicaset }}
+  echo mongodb://$NODE_IP:$NODE_PORT_0,$NODE_IP:$NODE_PORT_1,$NODE_IP:$NODE_PORT_2, ... /?replicaSet={{ .Values.replicaset }}
 {{- else if contains "LoadBalancer" .Values.podServices.type }}
+
 4.
      NOTE: It may take a few minutes for the LoadBalancer IP to be available.
-           You can watch the status of by running 'kubectl get svc -w {{ template "servicename" . }}'
+           You can watch the status of by running 'kubectl get svc -w -l app={{ template "name" . }}'
+
 {{- range $i := until $podCount }}
-  export SERVICE_IP_{{ $i }}=$(kubectl get svc --namespace {{ $.Release.Namespace }} {{ template "servicename" $ }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+  export SERVICE_IP_{{ $i }}=$(kubectl get svc --namespace {{ $.Release.Namespace }} {{ template "fullname" $ }}-{{ $i }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+{{- end }}
+
   You can get the MongoDB URI with
 
-  echo mongodb://$SERVICE_IP_0:{{ .Values.port }},$SERVICE_IP_1:{{ .Values.port }},$SERVICE_IP_2,:{{ .Values.port }}, ... /?replicaSet={{ .Values.replicaset }}
-{{- end }}
+  echo mongodb://$SERVICE_IP_0:{{ $.Values.port }},$SERVICE_IP_1:{{ $.Values.port }},$SERVICE_IP_2,:{{ $.Values.port }}, ... /?replicaSet={{ $.Values.replicaset }}
+
 {{- end }}

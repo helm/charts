@@ -57,7 +57,9 @@ The following tables lists the configurable parameters of the mongodb chart and 
 
 | `podServices.enabled`           | Enable pod services | `false`                                            |
 | `podServices.type`              | Pod services type    | `NodePort` |
-| `podServiceAnnotations`         | Annotations to be added to the pod services when `podServices.type` is `LoadBalancer`                                    | {}                                                  |
+| `podService.annotations`        | Annotations to be added to the pod services when `podServices.type` is `LoadBalancer`                                    | {}                                                  |
+| `podServices.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported)      | None   
+| `podServices.loadBalancerIP`           | An available static IP you have reserved on your cloud platform      | None                                      | 
 
 *MongoDB config file*
 
@@ -222,10 +224,12 @@ connecting to: mongodb://127.0.0.1:27017
 
 ### Exposing your MongoDB cluster to an external application
 
-If your application is not part of the same Kubernetes cluster of your MongoDB replica set, you need to enable `servicePods` to create a service for every pod.
+If your application is not part of the same Kubernetes cluster of your MongoDB replica set, you need to enable `podServices` to create a service for every pod. Then, pick the right settings for `podServices` on the values you pass to helm.
+
+After you install or upgrade the chart you will get some commands that will help you set the MongoDB URI, the following command shows a set of `NodePort` services, so the output might change depending of the configuration values you provided.
 
 ```console
-$ kubectl get svc -o wide                                                            
+$ kubectl get svc -o wide -l app=messy-hydra
 NAME                            CLUSTER-IP       EXTERNAL-IP   PORT(S)           AGE       SELECTOR
 messy-hydra-mongodb-replicaset-0   100.71.206.249   <nodes>       27017:30371/TCP   22s       app=mongodb-replicaset,name=messy-hydra-mongodb-replicaset-0,release=messy-hydra
 messy-hydra-mongodb-replicaset-1   100.71.26.100    <nodes>       27017:31818/TCP   6d        app=mongodb-replicaset,name=messy-hydra-mongodb-replicaset-1,release=messy-hydra

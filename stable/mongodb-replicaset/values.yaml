@@ -64,4 +64,11 @@ configmap:
 # Expose your MongoDB cluster to external applications
 #podServices:
 #  enabled: true
-#  type: NodePort
+#  annotations: {}
+#  clusterIP: ""
+#  externalIPs: []
+#  loadBalancerIP: ""
+#  loadBalancerSourceRanges: []
+#  type: ClusterIP
+#  port: 27017
+#  nodePort: ""
