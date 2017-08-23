@@ -21,6 +21,9 @@ spec:
         component: "{{ .Values.server.name }}"
         release: {{ .Release.Name }}
     spec:
+      {{- if .Values.server.serviceAccountName }}
+      serviceAccountName: {{ .Values.server.serviceAccountName }}
+      {{- end }}
       containers:
         - name: {{ template "prometheus.name" . }}-{{ .Values.server.name }}-{{ .Values.configmapReload.name }}
           image: "{{ .Values.configmapReload.image.repository }}:{{ .Values.configmapReload.image.tag }}"

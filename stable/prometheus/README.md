@@ -164,6 +164,7 @@ Parameter | Description | Default
 `server.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
 `server.service.servicePort` | Prometheus server service port | `80`
 `server.service.type` | type of Prometheus server service to create | `ClusterIP`
+`server.serviceAccountName` | Prometheus service account name for scraping data | ``
 `server.terminationGracePeriodSeconds` | Prometheus server Pod termination grace period | `300`
 `serverFiles.alerts` | Prometheus server alerts configuration | `""`
 `serverFiles.rules` | Prometheus server rules configuration | `""`
