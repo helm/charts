@@ -8,6 +8,11 @@ image: bitnami/odoo:10.0.20170802-r0
 ##
 imagePullPolicy: IfNotPresent
 
+## User of the application
+## ref: https://github.com/bitnami/bitnami-docker-odoo#configuration
+##
+odooUsername: user@example.com
+
 ## Admin email
 ## ref: https://github.com/bitnami/bitnami-docker-odoo#configuration
 ##
