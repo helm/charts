@@ -26,15 +26,15 @@ function create-patch-file () {
 EOF
 }
 
-
 function create-label () {
     local data="$1"
     local token="$(< /var/run/secrets/kubernetes.io/serviceaccount/token)"
     local url="https://$KUBERNETES_SERVICE_HOST:$KUBERNETES_PORT_443_TCP_PORT/api/v1/namespaces/$POD_NAMESPACE/pods/$POD_NAME"
+    local cacert="/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"
 
     curl -sS --request PATCH \
         --data "@$data" \
-        --cacert /var/run/secrets/kubernetes.io/serviceaccount/ca.crt \
+        --cacert "$cacert" \
         -H "Authorization: Bearer $token" \
         -H "Content-Type:application/json-patch+json" \
         "$url"
