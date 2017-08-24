@@ -10,6 +10,8 @@ service:
   name: vault
   type: ClusterIP
   port: 8200
+  # define nodePort if type: NodePort
+  # nodePort: 1111
 ingress:
   enabled: false
   # Used to create Ingress record (should used with service.type: ClusterIP).
