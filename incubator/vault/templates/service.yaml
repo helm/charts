@@ -12,7 +12,7 @@ spec:
   ports:
   - port: {{ .Values.service.port }}
     {{- if .Values.service.nodePort }}
-    nodePort: {{ .Values.service.nodePort }}
+    nodePort: {{ .Values.service.nodePort}}
     {{- end }}
     protocol: TCP
     name: {{ .Values.service.name }}
