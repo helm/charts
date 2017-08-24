@@ -152,3 +152,18 @@ If running upon a cluster with RBAC enabled you will need to do the following:
 * `helm install stable/jenkins --set rbac.install=true`
 * Create a Jenkins credential of type Kubernetes service account with service account name provided in the `helm status` output.
 * Under configure Jenkins -- Update the credentials config in the cloud section to use the service account credential you created in the step above.
+
+
+## ALB-ingress-controller
+
+If running the [ALB-ingress-controller](https://github.com/coreos/alb-ingress-controller) for your ingress:
+
+The alb-ingress-controller doesn't support using the ClusterIP. If you try this it will create the ALB but not the target group. This is because the target group mapping relies
+on the NodePort to create the ALB target group.
+
+In your values.yml:
+```yml
+ServiceType: NodePort
+```
+
+If you do not set the `HostName` in your config to a route53 managed DNS the ingress will also fail. 
