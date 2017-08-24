@@ -418,6 +418,11 @@ worker:
     guardian.api.garden-server.create.failed
     unknown handle
 
+  ## Strategy for StatefulSet updates (requires Kubernetes 1.6+)
+  ## Ref: https://kubernetes.io/docs/concepts/workloads/controllers/statefulset
+  ##
+  updateStrategy: RollingUpdate
+
 ## Persistent Volume Storage configuration.
 ## ref: https://kubernetes.io/docs/user-guide/persistent-volumes
 ##
