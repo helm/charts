@@ -2,10 +2,11 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: {{ template "fullname" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
-    heritage: {{.Release.Service | quote }}
-    release: {{.Release.Name | quote }}
-    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
 
 spec:
   replicas: {{ .Values.replicaCount }}
@@ -14,9 +15,9 @@ spec:
       labels:
         app: {{ template "fullname" . }}
         type: openvpn
-        heritage: {{.Release.Service | quote }}
-        release: {{.Release.Name | quote }}
-        chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+        heritage: {{ .Release.Service | quote }}
+        release: {{ .Release.Name | quote }}
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     spec:
       containers:
       - name: {{ .Chart.Name }}
@@ -32,11 +33,11 @@ spec:
               - NET_ADMIN
         resources:
           requests:
-            cpu: "{{.Values.resources.requests.cpu}}"
-            memory: "{{.Values.resources.requests.memory}}"
+            cpu: "{{ .Values.resources.requests.cpu }}"
+            memory: "{{ .Values.resources.requests.memory }}"
           limits:
-            cpu: "{{.Values.resources.limits.cpu}}"
-            memory: "{{.Values.resources.limits.memory}}"
+            cpu: "{{ .Values.resources.limits.cpu }}"
+            memory: "{{ .Values.resources.limits.memory }}"
         volumeMounts:
           - mountPath: /etc/openvpn/setup
             name: openvpn
@@ -54,5 +55,5 @@ spec:
         persistentVolumeClaim:
           claimName: {{ template "fullname" . }}
         {{- else }}
-          emptyDir: {}
+        emptyDir: {}
         {{- end -}}

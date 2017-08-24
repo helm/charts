@@ -61,6 +61,6 @@ items:
             - name: agent
               args:
                 - '--token={{.Values.ServiceToken}}'
-              image: 'quay.io/weaveworks/fluxd:0.2.0'
+              image: 'quay.io/weaveworks/fluxd:0.3.0'
               imagePullPolicy: IfNotPresent
           serviceAccountName: weave-flux

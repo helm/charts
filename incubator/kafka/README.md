@@ -31,7 +31,7 @@ This chart will do the following:
 
 ### Installing the Chart
 
-To install the chart with the release name `my-release` in the default
+To install the chart with the release name `my-kafka` in the default
 namespace:
 
 ```
@@ -53,26 +53,21 @@ following configurable parameters:
 
 | Parameter               | Description                        | Default                                                    |
 | ----------------------- | ---------------------------------- | ---------------------------------------------------------- |
-| `Name`                  | Kafka master name                  | `kf`                                                       |
 | `Image`                 | Kafka Container image name         | `solsson/kafka`                                            |
-| `ImageTag`              | Kafka Container image tag          | `0.10.0.1`                                                 |
+| `ImageTag`              | Kafka Container image tag          | `0.11.0.0`                                                 |
 | `ImagePullPolicy`       | Kafka Container pull policy        | `Always`                                                   |
 | `Replicas`              | Kafka Brokers                      | `3`                                                        |
 | `Component`             | Kafka k8s selector key             | `kafka`                                                    |
-| `Cpu`                   | Kafka container requested cpu      | `100m`                                                     |
-| `Memory`                | Kafka container requested memory   | `512Mi`                                                    |
-| `MaxCpu`                | Kafka container cpu limit          | `200m`                                                     |
-| `MaxMemory`             | Kafka container memory limit       | `1024Mi`                                                   |
+| `resources`             | Kafka resource requests and limits | `{}`                                                       |
 | `DataDirectory`         | Kafka data directory               | `/opt/kafka/data`                                          |
 | `Storage`               | Kafka Persistent volume size       | `1Gi`                                                      |
-| `zookeeper.Name`        | Name of the Zookeeper Service      | `zk`                                                       |
 
 Specify parameters using `--set key=value[,key=value]` argument to `helm install`
 
 Alternatively a YAML file that specifies the values for the parameters can be provided like this:
 
 ```bash
-$ helm install --name my-release -f values.yaml incubator/kafka
+$ helm install --name my-kafka -f values.yaml incubator/kafka
 ```
 
 ### Connecting to Kafka
@@ -88,7 +83,7 @@ metadata:
 spec:
   containers:
   - name: kafka
-    image: solsson/kafka:0.10.0.1
+    image: solsson/kafka:0.11.0.0
     command:
       - sh
       - -c
@@ -98,14 +93,13 @@ spec:
 Once you have the testclient pod above running, you can list all kafka
 topics with:
 
-` kubectl exec testclient -- ./bin/kafka-topics.sh --zookeeper
-my-release-zk:2181 --list`
+` kubectl -n kafka exec -ti testclient -- ./bin/kafka-topics.sh --zookeeper
+my-release-zookeeper:2181 --list`
 
 Where `my-release` is the name of your helm release.
 
 ## Known Limitations
 
-* Namespace creation is not automated
 * Topic creation is not automated
 * Only supports storage options that have backends for persistent volume claims (tested mostly on AWS)
 * Kafka cluster is not accessible via an external endpoint

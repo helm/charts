@@ -1,7 +1,7 @@
 ## Bitnami TestLink image version
 ## ref: https://hub.docker.com/r/bitnami/testlink/tags/
 ##
-image: bitnami/testlink:1.9.16-r6
+image: bitnami/testlink:1.9.16-r8
 
 ## Specify a imagePullPolicy
 ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'

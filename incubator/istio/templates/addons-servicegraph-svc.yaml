@@ -15,4 +15,4 @@ spec:
     app: {{ include "name" . }}
     component: {{ $serviceName }}-{{ .Values.addons.servicegraph.deployment.name }}
     release: {{ .Release.Name }}
-{{end}}
+{{ end }}

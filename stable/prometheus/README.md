@@ -50,6 +50,7 @@ Parameter | Description | Default
 `alertmanager.image.tag` | alertmanager container image tag | `v0.5.1`
 `alertmanager.image.pullPolicy` | alertmanager container image pull policy | `IfNotPresent`
 `alertmanager.extraArgs` | Additional alertmanager container arguments | `{}`
+`alertmanager.configMapOverrideName` | Prometheus alertmanager ConfigMap override where full-name is `{{.Release.Name}}-{{.Values.alertmanager.configMapOverrideName}}` and setting this value will prevent the default alertmanager ConfigMap from being generated | `""`
 `alertmanager.ingress.enabled` | If true, alertmanager Ingress will be created | `false`
 `alertmanager.ingress.annotations` | alertmanager Ingress annotations | `{}`
 `alertmanager.ingress.hosts` | alertmanager Ingress hostnames | `[]`
@@ -61,11 +62,12 @@ Parameter | Description | Default
 `alertmanager.persistentVolume.existingClaim` | alertmanager data Persistent Volume existing claim name | `""`
 `alertmanager.persistentVolume.mountPath` | alertmanager data Persistent Volume mount root path | `/data`
 `alertmanager.persistentVolume.size` | alertmanager data Persistent Volume size | `2Gi`
-`alertmanager.persistentVolume.storageClass` | alertmanager data Persistent Volume Storage Class | `volume.alpha.kubernetes.io/storage-class: default`
+`alertmanager.persistentVolume.storageClass` | alertmanager data Persistent Volume Storage Class | `unset
 `alertmanager.persistentVolume.subPath` | Subdirectory of alertmanager data Persistent Volume to mount | `""`
 `alertmanager.podAnnotations` | annotations to be added to alertmanager pods | `{}`
 `alertmanager.replicaCount` | desired number of alertmanager pods | `1`
 `alertmanager.resources` | alertmanager pod resource requests & limits | `{}`
+`alertmanager.serviceAccountName` | service account name for alertmanager to use (ignored if rbac.create=true) | `default`
 `alertmanager.service.annotations` | annotations for alertmanager service | `{}`
 `alertmanager.service.clusterIP` | internal alertmanager cluster service IP | `""`
 `alertmanager.service.externalIPs` | alertmanager service external IP addresses | `[]`
@@ -88,6 +90,7 @@ Parameter | Description | Default
 `kubeStateMetrics.podAnnotations` | annotations to be added to kube-state-metrics pods | `{}`
 `kubeStateMetrics.replicaCount` | desired number of kube-state-metrics pods | `1`
 `kubeStateMetrics.resources` | kube-state-metrics resource requests and limits (YAML) | `{}`
+`kubeStateMetrics.serviceAccountName` | service account name for kube-state-metrics to use (ignored if rbac.create=true) | `default`
 `kubeStateMetrics.service.annotations` | annotations for kube-state-metrics service | `{prometheus.io/scrape: "true"}`
 `kubeStateMetrics.service.clusterIP` | internal kube-state-metrics cluster service IP | `None`
 `kubeStateMetrics.service.externalIPs` | kube-state-metrics service external IP addresses | `[]`
@@ -104,7 +107,9 @@ Parameter | Description | Default
 `nodeExporter.extraHostPathMounts` | Additional node-exporter hostPath mounts | `[]`
 `nodeExporter.nodeSelector` | node labels for node-exporter pod assignment | `{}`
 `nodeExporter.podAnnotations` | annotations to be added to node-exporter pods | `{}`
+`nodeExporter.tolerations` | node taints to tolerate (requires Kubernetes >=1.6) | `[]`
 `nodeExporter.resources` | node-exporter resource requests and limits (YAML) | `{}`
+`nodeExporter.serviceAccountName` | service account name for node-exporter to use (ignored if rbac.create=true) | `default`
 `nodeExporter.service.annotations` | annotations for node-exporter service | `{prometheus.io/scrape: "true"}`
 `nodeExporter.service.clusterIP` | internal node-exporter cluster service IP | `None`
 `nodeExporter.service.externalIPs` | node-exporter service external IP addresses | `[]`
@@ -112,6 +117,28 @@ Parameter | Description | Default
 `nodeExporter.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
 `nodeExporter.service.servicePort` | node-exporter service port | `9100`
 `nodeExporter.service.type` | type of node-exporter service to create | `ClusterIP`
+`pushgateway.enabled` | If true, create pushgateway | `true`
+`pushgateway.name` | pushgateway container name | `pushgateway`
+`pushgateway.image.repository` | pushgateway container image repository | `prom/pushgateway`
+`pushgateway.image.tag` | pushgateway container image tag | `v0.4.0`
+`pushgateway.image.pullPolicy` | pushgateway container image pull policy | `IfNotPresent`
+`pushgateway.extraArgs` | Additional pushgateway container arguments | `{}`
+`pushgateway.ingress.enabled` | If true, pushgateway Ingress will be created | `false`
+`pushgateway.ingress.annotations` | pushgateway Ingress annotations | `{}`
+`pushgateway.ingress.hosts` | pushgateway Ingress hostnames | `[]`
+`pushgateway.ingress.tls` | pushgateway Ingress TLS configuration (YAML) | `[]`
+`pushgateway.nodeSelector` | node labels for pushgateway pod assignment | `{}`
+`pushgateway.podAnnotations` | annotations to be added to pushgateway pods | `{}`
+`pushgateway.replicaCount` | desired number of pushgateway pods | `1`
+`pushgateway.resources` | pushgateway pod resource requests & limits | `{}`
+`pushgateway.service.annotations` | annotations for pushgateway service | `{}`
+`pushgateway.service.clusterIP` | internal pushgateway cluster service IP | `""`
+`pushgateway.service.externalIPs` | pushgateway service external IP addresses | `[]`
+`pushgateway.service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
+`pushgateway.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
+`pushgateway.service.servicePort` | pushgateway service port | `9091`
+`pushgateway.service.type` | type of pushgateway service to create | `ClusterIP`
+`rbac.create` | If true, create & use RBAC resources | `false`
 `server.name` | Prometheus server container name | `server`
 `server.image.repository` | Prometheus server container image repository | `prom/prometheus`
 `server.image.tag` | Prometheus server container image tag | `v1.5.1`
@@ -119,33 +146,38 @@ Parameter | Description | Default
 `server.alertmanagerURL` | (optional) alertmanager URL; only used if alertmanager.enabled = false | `""`
 `server.extraArgs` | Additional Prometheus server container arguments | `{}`
 `server.extraHostPathMounts` | Additional Prometheus server hostPath mounts | `[]`
+`server.configMapOverrideName` | Prometheus server ConfigMap override where full-name is `{{.Release.Name}}-{{.Values.server.configMapOverrideName}}` and setting this value will prevent the default server ConfigMap from being generated | `""`
 `server.ingress.enabled` | If true, Prometheus server Ingress will be created | `false`
 `server.ingress.annotations` | Prometheus server Ingress annotations | `[]`
 `server.ingress.hosts` | Prometheus server Ingress hostnames | `[]`
 `server.ingress.tls` | Prometheus server Ingress TLS configuration (YAML) | `[]`
 `server.nodeSelector` | node labels for Prometheus server pod assignment | `{}`
+`server.tolerations` | node taints to tolerate (requires Kubernetes >=1.6) | `[]`
 `server.persistentVolume.enabled` | If true, Prometheus server will create a Persistent Volume Claim | `true`
 `server.persistentVolume.accessModes` | Prometheus server data Persistent Volume access modes | `[ReadWriteOnce]`
 `server.persistentVolume.annotations` | Prometheus server data Persistent Volume annotations | `{}`
 `server.persistentVolume.existingClaim` | Prometheus server data Persistent Volume existing claim name | `""`
 `server.persistentVolume.mountPath` | Prometheus server data Persistent Volume mount root path | `/data`
 `server.persistentVolume.size` | Prometheus server data Persistent Volume size | `8Gi`
-`server.persistentVolume.storageClass` | Prometheus server data Persistent Volume Storage Class | `volume.alpha.kubernetes.io/storage-class: default`
+`server.persistentVolume.storageClass` | Prometheus server data Persistent Volume Storage Class |  unset
 `server.persistentVolume.subPath` | Subdirectory of Prometheus server data Persistent Volume to mount | `""`
 `server.podAnnotations` | annotations to be added to Prometheus server pods | `{}`
 `server.replicaCount` | desired number of Prometheus server pods | `1`
 `server.resources` | Prometheus server resource requests and limits | `{}`
+`server.serviceAccountName` | service account name for server to use (ignored if rbac.create=true) | `default`
 `server.service.annotations` | annotations for Prometheus server service | `{}`
 `server.service.clusterIP` | internal Prometheus server cluster service IP | `""`
 `server.service.externalIPs` | Prometheus server service external IP addresses | `[]`
 `server.service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
 `server.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
+`server.service.nodePort` | Port to be used as the service NodePort (ignored if `server.service.type` is not `NodePort`) | `0`
 `server.service.servicePort` | Prometheus server service port | `80`
 `server.service.type` | type of Prometheus server service to create | `ClusterIP`
 `server.terminationGracePeriodSeconds` | Prometheus server Pod termination grace period | `300`
 `serverFiles.alerts` | Prometheus server alerts configuration | `""`
 `serverFiles.rules` | Prometheus server rules configuration | `""`
 `serverFiles.prometheus.yml` | Prometheus server scrape configuration | example configuration
+`networkPolicy.enabled` | Enable NetworkPolicy | `false` |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
@@ -199,3 +231,19 @@ server:
         hosts:
           - prometheus.domain.com
 ```
+
+### NetworkPolicy
+
+Enabling Network Policy for Prometheus will secure connections to Alert Manager
+and Kube State Metrics by only accepting connections from Prometheus Server.
+All inbound connections to Prometheus Server are still allowed.
+
+To enable network policy for Prometheus, install a networking plugin that
+implements the Kubernetes NetworkPolicy spec, and set `networkPolicy.enabled` to true.
+
+If NetworkPolicy is enabled for Prometheus' scrape targets, you may also need
+to manually create a networkpolicy which allows it.
+
+For Kubernetes v1.5 & v1.6, you must also turn on NetworkPolicy by setting the DefaultDeny namespace annotation. Note: this will enforce policy for all pods in the namespace:
+
+    kubectl annotate namespace default "net.beta.kubernetes.io/network-policy={\"ingress\":{\"isolation\":\"DefaultDeny\"}}"

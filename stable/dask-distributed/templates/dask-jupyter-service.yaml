@@ -16,4 +16,4 @@ spec:
     app: {{ template "name" . }}
     release: {{ .Release.Name | quote }}
     component: "{{ .Release.Name }}-{{ .Values.jupyter.component }}"
-  type: "LoadBalancer"
+  type: {{ .Values.jupyter.serviceType }}

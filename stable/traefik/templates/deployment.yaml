@@ -14,10 +14,11 @@ spec:
       app: {{ template "fullname" . }}
   template:
     metadata:
-      labels:
-        {{- if and (.Values.tolerations) (le .Capabilities.KubeVersion.Minor "5") }}
+      {{- if and (.Values.tolerations) (le .Capabilities.KubeVersion.Minor "5") }}
+      annotations:
         scheduler.alpha.kubernetes.io/tolerations: '{{ toJson .Values.tolerations }}'
-        {{- end }}
+      {{- end }}
+      labels:
         app: {{ template "fullname" . }}
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         release: "{{ .Release.Name }}"
@@ -38,11 +39,11 @@ spec:
         name: {{ template "fullname" . }}
         resources:
           requests:
-            cpu: "{{.Values.cpuRequest}}"
-            memory: "{{.Values.memoryRequest}}"
+            cpu: "{{ .Values.cpuRequest }}"
+            memory: "{{ .Values.memoryRequest }}"
           limits:
-            cpu: "{{.Values.cpuLimit}}"
-            memory: "{{.Values.memoryLimit}}"
+            cpu: "{{ .Values.cpuLimit }}"
+            memory: "{{ .Values.memoryLimit }}"
         readinessProbe:
           tcpSocket:
             port: 80

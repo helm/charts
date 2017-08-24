@@ -49,6 +49,7 @@ The following tables lists the configurable parameters of the Redis chart and th
 | `imagePullPolicy`          | Image pull policy                     | `IfNotPresent`                                            |
 | `usePassword`              | Use password                          | `true`                                         |
 | `redisPassword`            | Redis password                        | Randomly generated                                        |
+| `args`                     | Redis command-line args               | []                                                        |
 | `persistence.enabled`      | Use a PVC to persist data             | `true`                                                    |
 | `persistence.existingClaim`| Use an existing PVC to persist data   | `nil`                                                     |
 | `persistence.storageClass` | Storage class of backing PVC          | `generic`                                                 |

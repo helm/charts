@@ -12,22 +12,18 @@ spec:
     metadata:
       labels:
         app: {{ template "fullname" . }}
-      annotations:
-        pod.beta.kubernetes.io/init-containers: '[
-              {
-                  "name": "remove-lost-found",
-                  "image": "busybox:1.25.0",
-                  "command": ["rm", "-fr", "/var/lib/mysql/lost+found"],
-                  "volumeMounts": [
-                      {
-                          "name": "data",
-                          "mountPath": "/var/lib/mysql"
-                      }
-                  ],
-                  "imagePullPolicy": {{ .Values.imagePullPolicy | quote }}
-              }
-          ]'
     spec:
+      initContainers:
+      - name: "remove-lost-found"
+        image: "busybox:1.25.0" 
+        imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
+        command: 
+        - "rm"
+        - "-fr"
+        - "/var/lib/mysql/lost+found"
+        volumeMounts:
+        - name: data
+          mountPath: /var/lib/mysql
       containers:
       - name: {{ template "fullname" . }}
         image: "mysql:{{ .Values.imageTag }}"
