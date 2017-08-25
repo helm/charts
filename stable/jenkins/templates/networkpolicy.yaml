@@ -12,7 +12,7 @@ spec:
   podSelector:
     matchLabels:
       app: {{ template "name" . }}
-      component: {{ .Values.master.name }}
+      component: master
       release: {{ .Release.Name }}
   ingress:
     # Allow web access to the UI

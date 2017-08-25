@@ -44,7 +44,7 @@ $ helm install --name my-release -f values.yaml stable/jenkins
 | `master.useSecurity`               | Enable authentication                | `true`            |
 | `master.adminUser`                 | Administrator Username               | `admin`           |
 | `master.adminPassword`             | Administrator Password               | Random            |
-| `master.uriPrefix`                 | URI Path Prefix                      | Not set           |
+| `master.uriPrefix`                 | URI Path Prefix                      | `''`              |
 | `master.resources.limits.cpu`      | Master limited cpu                   | `200m`            |
 | `master.resources.limits.memory`   | Master limited memory                | `256Mi`           |
 | `master.resources.requests.cpu`    | Master requested cpu                 | `200m`            |
@@ -52,7 +52,7 @@ $ helm install --name my-release -f values.yaml stable/jenkins
 | `master.env`                       | Master environment variables         | `{}`              |
 | `master.jmxPort`                   | Open a port, for JMX stats           | Not set           |
 | `master.nodeSelector`              | Node labels for pod assignment       | `{}`              |
-| `master.tolerations`               | Toleration labels for pod assignment | `{}`              |
+| `master.tolerations`               | Toleration labels for pod assignment | `[]`              |
 
 ## Jenkins Agent
 

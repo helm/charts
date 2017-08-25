@@ -4,7 +4,6 @@
 # name: value
 
 master:
-  name: master
   image:
     repository: jenkinsci/jenkins
     tag: 'lts'
@@ -12,7 +11,7 @@ master:
   useSecurity: true
   adminUser: admin
   #adminPassword: <defaults to random>
-  #uriPrefix: /jenkins
+  uriPrefix: '' # e.g. '/jenkins'
   resources: {}
     #limits:
     #  cpu: 200m
@@ -37,7 +36,7 @@ master:
   # ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
   nodeSelector: {}
   # ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
-  tolerations: {}
+  tolerations: []
 
 agent:
   enabled: true

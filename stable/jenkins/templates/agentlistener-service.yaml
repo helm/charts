@@ -18,6 +18,6 @@ spec:
     name: agent-listener
   selector:
     app: {{ template "name" . }}
-    component: {{ .Values.master.name }}
+    component: master
     release: {{ .Release.Name }}
 {{- end }}

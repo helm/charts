@@ -7,17 +7,15 @@ metadata:
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-    component: {{ .Values.master.name }}
+    component: master
 spec:
   replicas: 1
   template:
     metadata:
       labels:
         app: {{ template "name" . }}
-        chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-        heritage: {{ .Release.Service }}
         release: {{ .Release.Name }}
-        component: {{ .Values.master.name }}
+        component: master
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
     spec:
