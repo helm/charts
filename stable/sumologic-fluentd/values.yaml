@@ -22,7 +22,7 @@ sumologic:
   ## Set the _sourceCategory metadata field in SumoLogic. (Default "%{namespace}/%{pod_name}")
   # sourceCategory:
 
-  ## Set the prefix, for _sourceCategory metadata. (Defualt nil)
+  ## Set the prefix, for _sourceCategory metadata. (Default nil)
   # sourceCategoryPrefix:
 
   ## Used to replace - with another character. (default /)
@@ -36,7 +36,7 @@ sumologic:
   # kubernetesMeta: true
 
   ## Files matching this pattern will be ignored by the in_tail plugin, and will
-  ## not be sent to Kubernetes or Sumo Logic. This can be a comma seperated list.
+  ## not be sent to Kubernetes or Sumo Logic. This can be a comma separated list.
   ## ref: http://docs.fluentd.org/v0.12/articles/in_tail#excludepath
   # excludePath:
 
