@@ -48,6 +48,8 @@ The following tables lists the configurable parameters of the Datadog chart and 
 | `datadog.autoconf`          | Additional Datadog service discovery configurations | `nil`                    |
 | `datadog.checksd`           | Additional Datadog service checks  | `nil`                                     |
 | `datadog.confd`             | Additional Datadog service configurations | `nil`                              |
+| `datadog.volumes`           | Additional volumes for the daemonset or deployment | `nil`                     |
+| `datadog.volumeMounts`      | Additional volumeMounts for the daemonset or deployment | `nil`                |
 | `resources.requests.cpu`    | CPU resource requests              | `100m`                                    |
 | `resources.limits.cpu`      | CPU resource limits                | `256m`                                    |
 | `resources.requests.memory` | Memory resource requests           | `128Mi`                                   |
