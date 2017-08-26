@@ -4,7 +4,7 @@ metadata:
   annotations:
     service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "etcd.fullname" . }}
   labels:
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
@@ -23,18 +23,18 @@ spec:
 apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "etcd.fullname" . }}
   labels:
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     component: "{{ .Release.Name }}-{{ .Values.Component }}"
 spec:
-  serviceName: {{ template "fullname" . }}
+  serviceName: {{ template "etcd.fullname" . }}
   replicas: {{ default 3 .Values.Replicas }}
   template:
     metadata:
-      name: {{ template "fullname" . }}
+      name: {{ template "etcd.fullname" . }}
       labels:
         heritage: {{ .Release.Service | quote }}
         release: {{ .Release.Name | quote }}
@@ -44,7 +44,7 @@ spec:
         pod.alpha.kubernetes.io/initialized: "true"
     spec:
       containers:
-      - name: {{ template "fullname" . }}
+      - name: {{ template "etcd.fullname" . }}
         image: "{{ .Values.Image }}:{{ .Values.ImageTag }}"
         imagePullPolicy: "{{ .Values.ImagePullPolicy }}"
         ports:
@@ -60,7 +60,7 @@ spec:
         - name: INITIAL_CLUSTER_SIZE
           value: {{ default 3 .Values.Replicas | quote }}
         - name: SET_NAME
-          value: {{ template "fullname" . }}
+          value: {{ template "etcd.fullname" . }}
         volumeMounts:
         - name: datadir
           mountPath: /var/run/etcd
