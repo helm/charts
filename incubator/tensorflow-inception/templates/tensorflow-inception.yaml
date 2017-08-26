@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "tensorflow-inception.fullname" . }}
   labels:
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
@@ -21,7 +21,7 @@ spec:
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "tensorflow-inception.fullname" . }}
   labels:
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
@@ -45,7 +45,7 @@ spec:
         component: "{{ .Release.Name }}-{{ .Values.Component }}"
     spec:
       containers:
-        - name: {{ template "fullname" . }}
+        - name: {{ template "tensorflow-inception.fullname" . }}
           image: "{{ .Values.Image }}:{{ .Values.ImageTag }}"
           imagePullPolicy: "{{ .Values.ImagePullPolicy }}"
           command:
