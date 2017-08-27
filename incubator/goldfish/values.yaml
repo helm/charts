@@ -11,6 +11,8 @@ service:
   type: ClusterIP
   externalPort: 80
   internalPort: 8000
+  # Custom nodePort when type: NodePort
+  # nodePort: 31000
 ingress:
   enabled: false
   # Used to create an Ingress record.
