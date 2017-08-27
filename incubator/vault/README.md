@@ -49,6 +49,7 @@ The following tables lists the configurable parameters of the vault chart and th
 | `image.pullPolicy`      | Container pull policy               | `IfNotPresent`                                      |
 | `image.repository`      | Container image to use              | `vault`                                             |
 | `image.tag`             | Container image tag to deploy       | `0.8.1`                                             |
+| `vaultmode.dev`         | Use Vault in dev mode               | true                                                |
 | `vault`                 | Vault configuration                 | No default backend                                  |
 | `replicaCount`          | k8s replicas                        | `1`                                                 |
 | `resources.limits.cpu`  | Container requested CPU             | `nil`                                               |

@@ -29,7 +29,7 @@ vaultmode:
 # Only used to enable dev mode. When in dev mode, the rest of this configuration
 # is ignored. See https://www.vaultproject.io/intro/getting-started/dev-server.html
 # for more information.
-  dev: false
+  dev: true
 vault:
   listener:
     tcp:
