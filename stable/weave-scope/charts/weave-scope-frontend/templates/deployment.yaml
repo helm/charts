@@ -2,7 +2,6 @@ apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
   labels:
-    name: {{ template "fullname" . }}-app
     {{- include "helm_std_labels" . | indent 4 }}
     component: frontend
   name: {{ template "fullname" . }}-app
@@ -11,14 +10,12 @@ metadata:
 spec:
   selector:
     matchLabels:
-      name: {{ template "fullname" . }}-app
-      app: {{ template "fullname" . }}
-      heritage: {{ .Release.Service }}
+      app: {{ template "name" . }}
       release: {{ .Release.Name }}
+      component: frontend
   template:
     metadata:
       labels:
-        name: {{ template "fullname" . }}-app
         {{- include "helm_std_labels" . | indent 8 }}
         component: frontend
     spec:

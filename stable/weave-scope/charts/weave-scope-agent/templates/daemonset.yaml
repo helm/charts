@@ -5,7 +5,6 @@ apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
   labels:
-    name: {{ .Values.serviceAccount | default "weave-scope" }}-agent
     {{- include "helm_std_labels" . | indent 4 }}
     component: agent
   name: {{ template "fullname" . }}-agent
@@ -14,18 +13,16 @@ metadata:
 spec:
   selector: 
     matchLabels:
-      name: {{ template "fullname" . }}-agent
-      app: {{ template "fullname" . }}
-      heritage: {{ .Release.Service }}
+      app: {{ template "name" . }}
       release: {{ .Release.Name }}
+      component: agent
   updateStrategy:
     type: RollingUpdate
   template:
     metadata:
       labels:
-        name: {{ template "fullname" . }}-agent
         {{- include "helm_std_labels" . | indent 8 }}
-        component: frontend
+        component: agent
     spec:
       tolerations:
         - effect: NoSchedule
@@ -46,9 +43,9 @@ spec:
             {{- else }}
             - >-
               {{- if .Values.global.service }}
-              {{ .Values.global.service.name | default $svcname }}.{{ .Release.Namespace }}.svc.{{ .Values.global.clusterDomain | default "cluster.local." }}:{{ .Values.global.service.port | default $svcport }}
+              {{ .Values.global.service.name | default $svcname }}.{{ .Release.Namespace }}.svc:{{ .Values.global.service.port | default $svcport }}
               {{- else }}
-              {{ $svcname }}.{{ .Release.Namespace }}.svc.{{ .Values.global.clusterDomain | default "cluster.local." }}:{{ $svcport }}
+              {{ $svcname }}.{{ .Release.Namespace }}.svc:{{ $svcport }}
               {{- end }}
             {{- end }}
           securityContext:

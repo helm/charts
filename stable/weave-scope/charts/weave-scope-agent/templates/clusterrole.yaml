@@ -2,7 +2,6 @@ apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRole
 metadata:
   labels:
-    name: weave-scope
     {{- include "helm_std_labels" . | indent 4 }}
     component: agent
   name: weave-scope
