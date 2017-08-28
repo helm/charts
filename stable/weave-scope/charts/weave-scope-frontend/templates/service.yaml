@@ -6,9 +6,13 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    name: {{ $svcname }}
     {{- include "helm_std_labels" . | indent 4 }}
+    component: frontend
+  {{- if .Values.global.service }}
+  name: {{ .Values.global.service.name | default $svcname }}
+  {{- else }}
   name: {{ $svcname }}
+  {{- end }}
   annotations:
     {{- include "scope_annotations" . | indent 4 }}
 spec:
@@ -23,8 +27,9 @@ spec:
       targetPort: {{ .Values.containerPort | default 4040 }}
       protocol: TCP
   selector:
-    name: {{ template "fullname" . }}-app
-    {{- include "helm_std_labels" . | indent 4 }}
+    app: {{ template "name" . }}
+    release: {{ .Release.Name }}
+    component: frontend
   {{- if .Values.global.service }}
   type: {{ .Values.global.service.type | default $svctype }}
   {{- else }}

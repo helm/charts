@@ -1,5 +1,10 @@
+# We alias the child chart names to avoid having to deal with hyphenated 
+# YAML keys.
+
 dependencies:
 - name: weave-scope-agent
-  condition: weave-scope-agent.enabled, global.agentEnabled
+  alias: agent
+  condition: agent.enabled, global.agentEnabled
 - name: weave-scope-frontend
-  condition: weave-scope-frontend.enabled, global.frontendEnabled
+  alias: frontend
+  condition: frontend.enabled, global.frontendEnabled
