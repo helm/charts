@@ -10,10 +10,10 @@ metadata:
     release: {{ .Release.Name }}
   name: {{ template "prometheus.nodeExporter.fullname" . }}
 spec:
+  {{- if .Values.nodeExporter.updateStrategy }}
   updateStrategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxUnavailable: 1
+{{ toYaml .Values.nodeExporter.updateStrategy | indent 4 }}
+  {{- end }}
   template:
     metadata:
     {{- if .Values.nodeExporter.podAnnotations }}
