@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: "{{.Release.Name}}-ui-test-{{ randAlphaNum 5 | lower }}"
+  name: "{{ .Release.Name }}-ui-test-{{ randAlphaNum 5 | lower }}"
   annotations:
     "helm.sh/hook": test-success
     "pod.beta.kubernetes.io/init-containers": '[
@@ -20,8 +20,8 @@ metadata:
     ]'
 spec:
   containers:
-    - name: {{.Release.Name}}-ui-test
-      image: {{.Values.test.image}}:{{.Values.test.imageTag}}
+    - name: {{ .Release.Name }}-ui-test
+      image: {{ .Values.test.image }}:{{ .Values.test.imageTag }}
       command: ["/tools/bats/bats", "-t", "/tests/run.sh"]
       volumeMounts:
       - mountPath: /tests

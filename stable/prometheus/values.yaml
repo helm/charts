@@ -1,7 +1,13 @@
+rbac:
+  create: false
+
 alertmanager:
   ## If false, alertmanager will not be installed
   ##
   enabled: true
+
+  # Defines the serviceAccountName to use when `rbac.create=false`
+  serviceAccountName: default
 
   ## alertmanager container name
   ##
@@ -17,6 +23,17 @@ alertmanager:
   ## Additional alertmanager container arguments
   ##
   extraArgs: {}
+
+  ## Additional alertmanager container environment variable
+  ## For instance to add a http_proxy
+  ##
+  extraEnv: {}
+
+  ## ConfigMap override where fullname is {{.Release.Name}}-{{.Values.alertmanager.configMapOverrideName}}
+  ## Defining configMapOverrideName will cause templates/alertmanager-configmap.yaml
+  ## to NOT generate a ConfigMap resource
+  ##
+  configMapOverrideName: ""
 
   ingress:
     ## If true, alertmanager Ingress will be created
@@ -79,10 +96,13 @@ alertmanager:
     size: 2Gi
 
     ## alertmanager data Persistent Volume Storage Class
-    ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
-    ## Default: volume.alpha.kubernetes.io/storage-class: default
+    ## If defined, storageClassName: <storageClass>
+    ## If set to "-", storageClassName: "", which disables dynamic provisioning
+    ## If undefined (the default) or set to null, no storageClassName spec is
+    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+    ##   GKE, AWS & OpenStack)
     ##
-    storageClass: ""
+    # storageClass: "-"
 
     ## Subdirectory of alertmanager data Persistent Volume to mount
     ## Useful if the volume's root directory is not empty
@@ -146,6 +166,9 @@ kubeStateMetrics:
   ##
   enabled: true
 
+  # Defines the serviceAccountName to use when `rbac.create=false`
+  serviceAccountName: default
+
   ## kube-state-metrics container name
   ##
   name: kube-state-metrics
@@ -201,6 +224,9 @@ nodeExporter:
   ##
   enabled: true
 
+  # Defines the serviceAccountName to use when `rbac.create=false`
+  serviceAccountName: default
+
   ## node-exporter container name
   ##
   name: node-exporter
@@ -209,7 +235,7 @@ nodeExporter:
   ##
   image:
     repository: prom/node-exporter
-    tag: v0.13.0
+    tag: v0.14.0
     pullPolicy: IfNotPresent
 
   ## Additional node-exporter container arguments
@@ -223,6 +249,15 @@ nodeExporter:
     #   mountPath: /srv/txt_collector
     #   hostPath: /var/lib/node-exporter
     #   readOnly: true
+
+  ## Node tolerations for node-exporter scheduling to nodes with taints
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+  ##
+  tolerations: []
+  #- key: "key"
+  #  operator: "Equal|Exists"
+  #  value: "value"
+  #  effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
 
   ## Node labels for node-exporter pod assignment
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
@@ -267,6 +302,9 @@ server:
   ##
   name: server
 
+  # Defines the serviceAccountName to use when `rbac.create=false`
+  serviceAccountName: default
+
   ## Prometheus server container image
   ##
   image:
@@ -289,6 +327,12 @@ server:
     #   mountPath: /etc/kubernetes/certs
     #   hostPath: /etc/kubernetes/certs
     #   readOnly: true
+
+  ## ConfigMap override where fullname is {{.Release.Name}}-{{.Values.server.configMapOverrideName}}
+  ## Defining configMapOverrideName will cause templates/server-configmap.yaml
+  ## to NOT generate a ConfigMap resource
+  ##
+  configMapOverrideName: ""
 
   ingress:
     ## If true, Prometheus server Ingress will be created
@@ -314,6 +358,15 @@ server:
     #   - secretName: prometheus-server-tls
     #     hosts:
     #       - prometheus.domain.com
+
+  ## Node tolerations for server scheduling to nodes with taints
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+  ##
+  tolerations: []
+  #- key: "key"
+  #  operator: "Equal|Exists"
+  #  value: "value"
+  #  effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
 
   ## Node labels for Prometheus server pod assignment
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
@@ -350,10 +403,13 @@ server:
     size: 8Gi
 
     ## Prometheus server data Persistent Volume Storage Class
-    ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
-    ## Default: volume.alpha.kubernetes.io/storage-class: default
+    ## If defined, storageClassName: <storageClass>
+    ## If set to "-", storageClassName: "", which disables dynamic provisioning
+    ## If undefined (the default) or set to null, no storageClassName spec is
+    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+    ##   GKE, AWS & OpenStack)
     ##
-    storageClass: ""
+    # storageClass: "-"
 
     ## Subdirectory of Prometheus server data Persistent Volume to mount
     ## Useful if the volume's root directory is not empty
@@ -396,6 +452,89 @@ server:
   ## Prometheus server pod termination grace period
   ##
   terminationGracePeriodSeconds: 300
+
+pushgateway:
+  ## If false, pushgateway will not be installed
+  ##
+  enabled: true
+
+  ## pushgateway container name
+  ##
+  name: pushgateway
+
+  ## pushgateway container image
+  ##
+  image:
+    repository: prom/pushgateway
+    tag: v0.4.0
+    pullPolicy: IfNotPresent
+
+  ## Additional pushgateway container arguments
+  ##
+  extraArgs: {}
+
+  ingress:
+    ## If true, pushgateway Ingress will be created
+    ##
+    enabled: false
+
+    ## pushgateway Ingress annotations
+    ##
+    annotations:
+    #   kubernetes.io/ingress.class: nginx
+    #   kubernetes.io/tls-acme: 'true'
+
+    ## pushgateway Ingress hostnames
+    ## Must be provided if Ingress is enabled
+    ##
+    hosts: []
+    #   - pushgateway.domain.com
+
+    ## pushgateway Ingress TLS configuration
+    ## Secrets must be manually created in the namespace
+    ##
+    tls: []
+    #   - secretName: prometheus-alerts-tls
+    #     hosts:
+    #       - pushgateway.domain.com
+
+  ## Node labels for pushgateway pod assignment
+  ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+  ##
+  nodeSelector: {}
+
+  ## Annotations to be added to pushgateway pods
+  ##
+  podAnnotations: {}
+
+  replicaCount: 1
+
+  ## pushgateway resource requests and limits
+  ## Ref: http://kubernetes.io/docs/user-guide/compute-resources/
+  ##
+  resources: {}
+    # limits:
+    #   cpu: 10m
+    #   memory: 32Mi
+    # requests:
+    #   cpu: 10m
+    #   memory: 32Mi
+
+  service:
+    annotations:
+      prometheus.io/probe: pushgateway
+    labels: {}
+    clusterIP: ""
+
+    ## List of IP addresses at which the pushgateway service is available
+    ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
+    ##
+    externalIPs: []
+
+    loadBalancerIP: ""
+    loadBalancerSourceRanges: []
+    servicePort: 9091
+    type: ClusterIP
 
 ## alertmanager ConfigMap entries
 ##
@@ -510,6 +649,12 @@ serverFiles:
         relabel_configs:
           - action: labelmap
             regex: __meta_kubernetes_node_label_(.+)
+          - target_label: __address__
+            replacement: kubernetes.default.svc:443
+          - source_labels: [__meta_kubernetes_node_name]
+            regex: (.+)
+            target_label: __metrics_path__
+            replacement: /api/v1/nodes/${1}/proxy/metrics
 
       # Scrape config for service endpoints.
       #
@@ -552,6 +697,17 @@ serverFiles:
           - source_labels: [__meta_kubernetes_service_name]
             action: replace
             target_label: kubernetes_name
+
+      - job_name: 'prometheus-pushgateway'
+        honor_labels: true
+
+        kubernetes_sd_configs:
+          - role: service
+
+        relabel_configs:
+          - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_probe]
+            action: keep
+            regex: pushgateway
 
       # Example scrape config for probing services via the Blackbox Exporter.
       #
@@ -619,3 +775,8 @@ serverFiles:
           - source_labels: [__meta_kubernetes_pod_name]
             action: replace
             target_label: kubernetes_pod_name
+
+networkPolicy:
+  ## Enable creation of NetworkPolicy resources.
+  ##
+  enabled: false

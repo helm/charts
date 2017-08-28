@@ -12,48 +12,46 @@ spec:
     metadata:
       labels:
         app: {{ template "fullname" . }}
-      annotations:
-        pod.alpha.kubernetes.io/init-containers: '
-          [
-            {
-              "name": "copy-custom-config",
-              "image": "{{ .Values.image }}",
-              "imagePullPolicy": {{ .Values.imagePullPolicy | quote }},
-              "command": ["sh", "-c", "mkdir -p /bitnami/mariadb/conf && cp -n /bitnami/mariadb_config/my.cnf /bitnami/mariadb/conf/my_custom.cnf"],
-              "volumeMounts": [
-                {
-                  "name": "config",
-                  "mountPath": "/bitnami/mariadb_config"
-                },
-                {
-                  "name": "data",
-                  "mountPath": "/bitnami/mariadb"
-                }
-              ]
-            }
-          ]'
     spec:
+      initContainers:
+      - name: "copy-custom-config"
+        image: "{{ .Values.image }}"
+        imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
+        command:
+          - "sh"
+          -  "-c"
+          -  "mkdir -p /bitnami/mariadb/conf && cp -n /bitnami/mariadb_config/my.cnf /bitnami/mariadb/conf/my_custom.cnf"
+        volumeMounts:
+        - name: data
+          mountPath: /bitnami/mariadb
+        - name: config
+          mountPath: /bitnami/mariadb_config
       containers:
       - name: {{ template "fullname" . }}
         image: "{{ .Values.image }}"
         imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
         env:
+        {{- if .Values.usePassword }}
         - name: MARIADB_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ template "fullname" . }}
               key: mariadb-root-password
-        - name: MARIADB_USER
-          value: {{ default "" .Values.mariadbUser | quote }}
+        {{- if .Values.mariadbUser }}
         - name: MARIADB_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ template "fullname" . }}
               key: mariadb-password
-        - name: MARIADB_DATABASE
-          value: {{ default "" .Values.mariadbDatabase | quote }}
+        {{- end }}
+        {{- else }}
         - name: ALLOW_EMPTY_PASSWORD
           value: "yes"
+        {{- end }}
+        - name: MARIADB_USER
+          value: {{ default "" .Values.mariadbUser | quote }}
+        - name: MARIADB_DATABASE
+          value: {{ default "" .Values.mariadbDatabase | quote }}
         ports:
         - name: mysql
           containerPort: 3306
@@ -73,6 +71,19 @@ spec:
           timeoutSeconds: 1
         resources:
 {{ toYaml .Values.resources | indent 10 }}
+{{- if .Values.metrics.enabled }}
+      - name: metrics
+        image: "{{ .Values.metrics.image }}:{{ .Values.metrics.imageTag }}"
+        imagePullPolicy: {{ .Values.metrics.imagePullPolicy | quote }}
+        env:
+        - name: DATA_SOURCE_NAME
+          value: "root:{{ .Values.mariadbRootPassword }}@(localhost:3306)/"
+        ports:
+        - name: metrics
+          containerPort: 9104
+        resources:
+{{ toYaml .Values.metrics.resources | indent 10 }}
+{{- end }}
         volumeMounts:
         - name: data
           mountPath: /bitnami/mariadb

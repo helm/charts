@@ -3,7 +3,7 @@
 ## Distributed Minio ref: https://docs.minio.io/docs/distributed-minio-quickstart-guide
 ##
 image: "minio/minio"
-imageTag: "RELEASE.2017-05-05T01-14-51Z"
+imageTag: "RELEASE.2017-08-05T00-00-53Z"
 imagePullPolicy: "Always"
 mode: "standalone"
 
@@ -119,3 +119,11 @@ minioConfig:
     user: ""
     password: ""
     database: ""
+  mqtt:
+    enable: false
+    broker: ""
+    topic: ""
+    qos: 0
+    clientId: ""
+    username: ""
+    password: ""

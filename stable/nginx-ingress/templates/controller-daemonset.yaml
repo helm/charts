@@ -12,8 +12,9 @@ metadata:
 spec:
   template:
     metadata:
-    {{- if .Values.controller.podAnnotations }}
       annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/controller-configmap.yaml") . | sha256sum }}
+    {{- if .Values.controller.podAnnotations }}
 {{ toYaml .Values.controller.podAnnotations | indent 8}}
     {{- end }}
       labels:
@@ -30,7 +31,13 @@ spec:
             - --default-backend-service={{ if .Values.defaultBackend.enabled }}{{ .Release.Namespace }}/{{ template "defaultBackend.fullname" . }}{{ else }}{{ .Values.controller.defaultBackendService }}{{ end }}
           {{- if and (contains "0.9" .Values.controller.image.tag) .Values.controller.publishService.enabled }}
             - --publish-service={{ template "controller.publishServicePath" . }}
-          {{- end}}
+          {{- end }}
+          {{- if (contains "0.9" .Values.controller.image.tag) }}
+            - --election-id={{ .Values.controller.electionID }}
+          {{- end }}
+          {{- if (contains "0.9" .Values.controller.image.tag) }}
+            - --ingress-class={{ .Values.controller.ingressClass }}
+          {{- end }}
           {{- if (contains "0.9" .Values.controller.image.tag) }}
             - --configmap={{ .Release.Namespace }}/{{ template "controller.fullname" . }}
           {{- else }}
@@ -93,7 +100,6 @@ spec:
               scheme: HTTP
           resources:
 {{ toYaml .Values.controller.resources | indent 12 }}
-
       {{- if .Values.controller.stats.enabled }}
         - name: {{ template "name" . }}-{{ .Values.statsExporter.name }}
           image: "{{ .Values.statsExporter.image.repository }}:{{ .Values.statsExporter.image.tag }}"
@@ -114,9 +120,11 @@ spec:
           resources:
 {{ toYaml .Values.statsExporter.resources | indent 12 }}
       {{- end }}
+      hostNetwork: {{ .Values.controller.hostNetwork }}
     {{- if .Values.controller.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.controller.nodeSelector | indent 8 }}
     {{- end }}
+      serviceAccountName: {{ if .Values.rbac.create }}{{ template "fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
       terminationGracePeriodSeconds: 60
 {{- end }}

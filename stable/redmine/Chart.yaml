@@ -1,5 +1,6 @@
 name: redmine
-version: 1.0.1
+version: 1.2.4
+appVersion: 3.4.2
 description: A flexible project management web application.
 keywords:
 - redmine

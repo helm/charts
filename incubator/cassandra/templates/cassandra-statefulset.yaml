@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "cassandra.fullname" . }}
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "cassandra.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -27,30 +27,30 @@ spec:
     port: {{ default 9160 .Values.config.ports.thrift }}
     targetPort: {{ default 9160 .Values.config.ports.thrift }}
   selector:
-    app: {{ template "fullname" . }}
+    app: {{ template "cassandra.fullname" . }}
 ---
 apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "cassandra.fullname" . }}
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "cassandra.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
-  serviceName: {{ template "fullname" . }}
+  serviceName: {{ template "cassandra.fullname" . }}
   replicas: {{ .Values.config.cluster_size }}
   template:
     metadata:
       labels:
-        app: {{ template "fullname" . }}
+        app: {{ template "cassandra.fullname" . }}
     spec:
 {{- if .Values.selector }}
 {{ toYaml .Values.selector | indent 6 }}
 {{- end }}
       containers:
-      - name: {{ template "fullname" . }}
+      - name: {{ template "cassandra.fullname" . }}
         image: "{{ .Values.image.repo }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         resources:
@@ -59,7 +59,7 @@ spec:
         {{- $seed_size := default 1 .Values.config.seed_size | int -}}
         {{- $global := . }}
         - name: CASSANDRA_SEEDS
-          value: "{{- range $i, $e := until $seed_size }}{{ template "fullname" $global }}-{{ $i }}.{{ template "fullname" $global }}.{{ $global.Release.Namespace }}.svc.cluster.local,{{- end }}"
+          value: "{{- range $i, $e := until $seed_size }}{{ template "cassandra.fullname" $global }}-{{ $i }}.{{ template "cassandra.fullname" $global }}.{{ $global.Release.Namespace }}.svc.cluster.local,{{- end }}"
         - name: MAX_HEAP_SIZE
           value: {{ default "8192M" .Values.config.max_heap_size | quote }}
         - name: HEAP_NEWSIZE
@@ -78,7 +78,7 @@ spec:
               fieldPath: status.podIP
         livenessProbe:
           exec:
-            command: [ "/bin/sh", "-c", "nodetool status | grep -E \"^UN\\s+${POD_IP}\"" ]
+            command: [ "/bin/sh", "-c", "nodetool status" ]
           initialDelaySeconds: 90
           periodSeconds: 30
         readinessProbe:
@@ -99,17 +99,17 @@ spec:
           containerPort: {{ default 9160 .Values.config.ports.thrift }}
         volumeMounts:
         - name: data
-          {{- if .Values.persistence.enabled }}
           mountPath: /var/lib/cassandra
-          {{- else }}
-          emptyDir: {}
-          {{- end }}
-  {{- if .Values.persistence.enabled }}
+{{- if not .Values.persistence.enabled }}
+      volumes:
+      - name: data
+        emptyDir: {}
+{{- else }}
   volumeClaimTemplates:
   - metadata:
       name: data
       labels:
-        app: {{ template "fullname" . }}
+        app: {{ template "cassandra.fullname" . }}
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         release: "{{ .Release.Name }}"
         heritage: "{{ .Release.Service }}"
@@ -125,4 +125,4 @@ spec:
       resources:
         requests:
           storage: {{ .Values.persistence.size | quote }}
-  {{- end }}
+{{- end }}

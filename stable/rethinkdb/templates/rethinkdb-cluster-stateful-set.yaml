@@ -15,12 +15,12 @@ spec:
       name: "{{ template "fullname" . }}-cluster"
       labels:
         app: "{{ template "name" . }}-cluster"
-        heritage: {{.Release.Service | quote }}
-        release: {{.Release.Name | quote }}
-        chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+        heritage: {{ .Release.Service | quote }}
+        release: {{ .Release.Name | quote }}
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
       annotations:
       {{- if .Values.cluster.podAnnotations }}
-{{ toYaml .Values.cluster.podAnnotations | indent 8}}
+{{ toYaml .Values.cluster.podAnnotations | indent 8 }}
       {{- end }}
     spec:
       containers:
@@ -102,6 +102,7 @@ spec:
         requests:
           storage: {{ .Values.cluster.persistentVolume.size | quote }}
 {{- else }}
+      volumes:
         - name: datadir
           emptyDir: {}
 {{- end }}

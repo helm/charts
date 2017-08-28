@@ -1,18 +1,18 @@
 Redis can be accessed via port 6379 on the following DNS name from within your cluster:
-{{ template "fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
+{{ template "redis.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
 
 {{- if .Values.usePassword }}
 To get your password run:
 
-    REDIS_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath="{.data.redis-password}" | base64 --decode)
+    REDIS_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "redis.fullname" . }} -o jsonpath="{.data.redis-password}" | base64 --decode)
 {{- end }}
 
 To connect to your Redis server:
 
 1. Run a Redis pod that you can use as a client:
 
-   kubectl run {{ template "fullname" . }}-client --rm --tty -i{{ if .Values.usePassword }}--env REDIS_PASSWORD=$REDIS_PASSWORD{{ end }} --image {{ .Values.image }} -- bash
+   kubectl run {{ template "redis.fullname" . }}-client --rm --tty -i{{ if .Values.usePassword }} --env REDIS_PASSWORD=$REDIS_PASSWORD{{ end }} --image {{ .Values.image }} -- bash
 
 2. Connect using the Redis CLI:
 
-  redis-cli -h {{ template "fullname" . }}{{ if .Values.usePassword }} -a $REDIS_PASSWORD{{ end }}
+  redis-cli -h {{ template "redis.fullname" . }}{{ if .Values.usePassword }} -a $REDIS_PASSWORD{{ end }}

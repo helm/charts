@@ -1,63 +1,63 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "tensorflow-inception.fullname" . }}
   labels:
-    heritage: {{.Release.Service | quote }}
-    release: {{.Release.Name | quote }}
-    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
-    component: "{{.Release.Name}}-{{.Values.Component}}"
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    component: "{{ .Release.Name }}-{{ .Values.Component }}"
   annotations:
-    "helm.sh/created": {{.Release.Time.Seconds | quote }}
+    "helm.sh/created": {{ .Release.Time.Seconds | quote }}
 spec:
   ports:
-  - port: {{.Values.ServicePort}}
-    targetPort: {{.Values.ContainerPort}}
+  - port: {{ .Values.ServicePort }}
+    targetPort: {{ .Values.ContainerPort }}
   selector:
-    component: "{{.Release.Name}}-{{.Values.Component}}"
-  type: {{.Values.ServiceType}}
+    component: "{{ .Release.Name }}-{{ .Values.Component }}"
+  type: {{ .Values.ServiceType }}
 
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "tensorflow-inception.fullname" . }}
   labels:
-    heritage: {{.Release.Service | quote }}
-    release: {{.Release.Name | quote }}
-    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
-    component: "{{.Release.Name}}-{{.Values.Component}}"
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    component: "{{ .Release.Name }}-{{ .Values.Component }}"
   annotations:
-    "helm.sh/created": {{.Release.Time.Seconds | quote }}
+    "helm.sh/created": {{ .Release.Time.Seconds | quote }}
 spec:
   replicas: {{ default 1 .Values.Replicas }}
   strategy:
     type: RollingUpdate
   selector:
     matchLabels:
-      component: "{{.Release.Name}}-{{.Values.Component}}"
+      component: "{{ .Release.Name }}-{{ .Values.Component }}"
   template:
     metadata:
       labels:
-        heritage: {{.Release.Service | quote }}
-        release: {{.Release.Name | quote }}
-        chart: "{{.Chart.Name}}-{{.Chart.Version}}"
-        component: "{{.Release.Name}}-{{.Values.Component}}"
+        heritage: {{ .Release.Service | quote }}
+        release: {{ .Release.Name | quote }}
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        component: "{{ .Release.Name }}-{{ .Values.Component }}"
     spec:
       containers:
-        - name: {{ template "fullname" . }}
-          image: "{{.Values.Image}}:{{.Values.ImageTag}}"
-          imagePullPolicy: "{{.Values.ImagePullPolicy}}"
+        - name: {{ template "tensorflow-inception.fullname" . }}
+          image: "{{ .Values.Image }}:{{ .Values.ImageTag }}"
+          imagePullPolicy: "{{ .Values.ImagePullPolicy }}"
           command:
           - "/bin/sh"
           - "-c"
           args:
-          - "/serving/bazel-bin/tensorflow_serving/model_servers/tensorflow_model_server --port={{.Values.ContainerPort}} --model_name=inception --model_base_path=/serving/inception-export"
+          - "/serving/bazel-bin/tensorflow_serving/model_servers/tensorflow_model_server --port={{ .Values.ContainerPort }} --model_name=inception --model_base_path=/serving/inception-export"
           ports:
-            - containerPort: {{.Values.ContainerPort}}
+            - containerPort: {{ .Values.ContainerPort }}
           readinessProbe:
             tcpSocket:
-              port: {{.Values.ContainerPort}}
+              port: {{ .Values.ContainerPort }}
             initialDelaySeconds: 15
             timeoutSeconds: 1
           resources:

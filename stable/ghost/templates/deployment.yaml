@@ -15,6 +15,14 @@ spec:
       labels:
         app: {{ template "fullname" . }}
     spec:
+      initContainers:
+      - name: volume-permissions
+        image: "{{ .Values.volumePermissions.image.name }}:{{ .Values.volumePermissions.image.tag }}"
+        imagePullPolicy: {{ default "" .Values.volumePermissions.image.pullPolicy | quote }}
+        command: ['sh', '-c', 'chmod -R g+rwX /bitnami']
+        volumeMounts:
+        - mountPath: /bitnami
+          name: ghost-data
       containers:
       - name: {{ template "fullname" . }}
         image: "{{ .Values.image }}"
@@ -32,11 +40,7 @@ spec:
         - name: GHOST_HOST
           value: {{ include "host" . | quote }}
         - name: GHOST_PORT_NUMBER
-          {{- if eq .Values.serviceType "ClusterIP" }}
-          value: "2368"
-          {{- else }}
-          value: {{ default "" .Values.ghostPort | quote }}
-          {{- end }}
+          value: {{ default "80" .Values.ghostPort | quote }}
         - name: GHOST_USERNAME
           value: {{ default "" .Values.ghostUsername | quote }}
         - name: GHOST_PASSWORD

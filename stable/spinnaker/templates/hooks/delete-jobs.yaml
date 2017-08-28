@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: "{{.Release.Name}}-delete-jobs"
+  name: "{{ .Release.Name }}-delete-jobs"
   labels:
     app: {{ template "fullname" . }}
     component: spinnaker
@@ -10,7 +10,7 @@ metadata:
 spec:
   template:
     metadata:
-      name: "{{.Release.Name}}"
+      name: "{{ .Release.Name }}"
       labels:
         app: {{ template "fullname" . }}
         component: spinnaker
@@ -30,4 +30,4 @@ spec:
         command:
         - sh
         - -c
-        - "kubectl delete job --namespace {{ .Release.Namespace }} {{.Release.Name}}-create-bucket {{.Release.Name}}-upload-build-image {{.Release.Name}}-delete-jobs {{.Release.Name}}-upload-run-script"
+        - "kubectl delete job --namespace {{ .Release.Namespace }} -l app={{ template "fullname" . }}"

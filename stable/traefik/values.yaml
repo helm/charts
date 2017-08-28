@@ -1,12 +1,23 @@
 # Default values for Traefik
 image: traefik
-imageTag: v1.2.1
+imageTag: 1.3.6
 serviceType: LoadBalancer
+loadBalancerIP:
+#loadBalancerSourceRanges: []
 replicas: 1
 cpuRequest: 100m
 memoryRequest: 20Mi
 cpuLimit: 100m
 memoryLimit: 30Mi
+debug:
+  enabled: false
+nodeSelector: {}
+  #key: value
+tolerations: []
+  #- key: "key"
+  #operator: "Equal|Exists"
+  #value: "value"
+  #effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
 ssl:
   enabled: false
   enforced: false
@@ -35,6 +46,9 @@ dashboard:
   auth:
     # basic:
     #   username: password
+  statistics:
+    ## Number of recent errors to show in the ‘Health’ tab
+    # recentErrors:
 service:
   # annotations:
   #   key: value
@@ -42,8 +56,30 @@ service:
   #   key: value
 gzip:
   enabled: true
+accessLogs:
+  enabled: false
+  ## Path to the access logs file. If not provided, Traefik defaults it to stdout.
+  # filePath: ""
+  format: common  # choices are: common, json
 # Kubernetes ingress filters
 #kubernetes:
 #  namespaces:
 #  - default
 #  labelSelector:
+rbac:
+  enabled: false
+# Enable the /metrics endpoint, for now only supports prometheus
+# set to true to enable metric collection by prometheus
+metrics:
+  prometheus:
+    enabled: false
+    buckets: 0.1,0.3,1.2,5
+  datadog:
+    enabled: false
+#    address: "localhost:8125"
+#    pushInterval: 30s
+  statsd:
+    enabled: false
+#    address: "localhost:8125"
+#    pushInterval: 30s
+

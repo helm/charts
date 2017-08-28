@@ -1,30 +1,62 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
-  name: "{{ printf "%s-client-%s" .Release.Name .Values.Name | trunc 24 }}"
   labels:
-    heritage: {{.Release.Service | quote }}
-    release: {{.Release.Name | quote }}
-    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
-    component: "{{.Release.Name}}-{{.Values.Component}}"
-    type: client
+    app: {{ template "elasticsearch.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: "{{ .Values.client.name }}"
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "elasticsearch.client.fullname" . }}
 spec:
-  replicas: {{default 2 .Values.ClientReplicas }}
+  replicas: {{ .Values.client.replicas }}
   template:
     metadata:
       labels:
-        heritage: {{.Release.Service | quote }}
-        release: {{.Release.Name | quote }}
-        chart: "{{.Chart.Name}}-{{.Chart.Version}}"
-        component: "{{.Release.Name}}-{{.Values.Component}}"
-        type: client
+        app: {{ template "elasticsearch.name" . }}
+        component: "{{ .Values.client.name }}"
+        release: {{ .Release.Name }}
     spec:
-      serviceAccountName: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 24 }}"
+      serviceAccountName: {{ template "elasticsearch.fullname" . }}
+      {{- if eq .Values.client.antiAffinity "hard" }}
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - topologyKey: "kubernetes.io/hostname"
+              labelSelector:
+                matchLabels:
+                  app: "{{ template "elasticsearch.name" . }}"
+                  release: "{{ .Release.Name }}"
+                  component: "{{ .Values.client.name }}"
+      {{- else if eq .Values.client.antiAffinity "soft" }}
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 1
+            podAffinityTerm:
+              topologyKey: kubernetes.io/hostname
+              labelSelector:
+                matchLabels:
+                  app: "{{ template "elasticsearch.name" . }}"
+                  release: "{{ .Release.Name }}"
+                  component: "{{ .Values.client.name }}"
+      {{- end }}
+      initContainers:
+      # see https://www.elastic.co/guide/en/elasticsearch/reference/current/vm-max-map-count.html
+      # and https://www.elastic.co/guide/en/elasticsearch/reference/current/setup-configuration-memory.html#mlockall
+      - name: "sysctl"
+        image: "busybox"
+        imagePullPolicy: "Always"
+        command: ["sysctl", "-w", "vm.max_map_count=262144"]
+        securityContext:
+          privileged: true
       containers:
       - name: elasticsearch
         env:
         - name: SERVICE
-          value: "{{ printf "%s-cluster-%s" .Release.Name .Values.Name | trunc 24 }}"
+          value: {{ template "elasticsearch.master.fullname" . }}
+        - name: KUBERNETES_MASTER
+          value: kubernetes.default.svc.cluster.local
         - name: KUBERNETES_NAMESPACE
           valueFrom:
             fieldRef:
@@ -33,30 +65,34 @@ spec:
           value: "false"
         - name: NODE_MASTER
           value: "false"
-        - name: ES_HEAP_SIZE
-          value: "{{.Values.ClientHeapSize}}"
+        - name: PROCESSORS
+          valueFrom:
+            resourceFieldRef:
+              resource: limits.cpu
+        - name: ES_JAVA_OPTS
+          value: "-Djava.net.preferIPv4Stack=true -Xms{{ .Values.client.heapSize }} -Xmx{{ .Values.client.heapSize }}"
         resources:
-          requests:
-            cpu: "{{.Values.ClientCpuRequests}}"
-            memory: "{{.Values.ClientMemoryRequests}}"
-          limits:
-            cpu: "{{.Values.ClientCpuLimits}}"
-            memory: "{{.Values.ClientMemoryLimits}}"
-        livenessProbe:
-          httpGet:
-            path: /
-            port: 9200
-          initialDelaySeconds: 30
-          timeoutSeconds: 1
+{{ toYaml .Values.client.resources | indent 12 }}
         readinessProbe:
           httpGet:
-            path: /
+            path: /_cluster/health?local=true
             port: 9200
-          timeoutSeconds: 5
-        image: "{{.Values.Image}}:{{.Values.ImageTag}}"
-        imagePullPolicy: "{{.Values.ImagePullPolicy}}"
+          initialDelaySeconds: 5
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ default "" .Values.image.pullPolicy | quote }}
         ports:
         - containerPort: 9200
           name: http
         - containerPort: 9300
           name: transport
+        volumeMounts:
+        - mountPath: /usr/share/elasticsearch/config/elasticsearch.yml
+          name: config
+          subPath: elasticsearch.yml
+        - mountPath: /usr/share/elasticsearch/config/logging.yml
+          name: config
+          subPath: logging.yml
+      volumes:
+      - name: config
+        configMap:
+          name: {{ template "elasticsearch.fullname" . }}

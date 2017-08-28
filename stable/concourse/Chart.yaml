@@ -1,5 +1,6 @@
 name: concourse
-version: 0.1.3
+version: 0.4.0
+appVersion: 3.3.2
 description: Concourse is a simple and scalable CI system.
 icon: https://avatars1.githubusercontent.com/u/7809479
 keywords:
@@ -11,6 +12,8 @@ sources:
   - https://github.com/concourse/bin
   - https://github.com/kubernetes/charts
 maintainers:
-  - name: Ferran Rodenas
+  - name: frodenas
     email: frodenas@gmail.com
+  - name: viglesiasce
+    email: viglesias@google.com
 engine: gotpl

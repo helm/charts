@@ -32,6 +32,9 @@ DisableHostNodeId: false
 ## default 'dc1'
 # DatacenterName: dc1
 
+## Encrypt Gossip traffic
+EncryptGossip: true
+
 ## StorageClass name for use with Persistent Volume Claim (PVC) using beta notations
 # StorageClass:
 

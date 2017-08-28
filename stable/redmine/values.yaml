@@ -1,7 +1,7 @@
 ## Bitnami Redmine image version
 ## ref: https://hub.docker.com/r/bitnami/redmine/tags/
 ##
-image: bitnami/redmine:3.3.3-r2
+image: bitnami/redmine:3.4.2-r2
 
 ## Specify a imagePullPolicy
 ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -98,9 +98,29 @@ postgresql:
     size: 8Gi
 
 ## Kubernetes configuration
-## For minikube, set this to NodePort, elsewhere use LoadBalancer
+##   minikube: NodePort
+##   ingress: ClusterIP
+##   elsewhere: LoadBalancer
 ##
 serviceType: LoadBalancer
+## Control hosts connecting to "LoadBalancer" only
+serviceLoadBalancerSourceRanges:
+  - 0.0.0.0/0
+
+ingress:
+  enabled: false
+  hostname: redmine.cluser.local
+  annotations:
+    # kubernetes.io/ingress.class: nginx
+    # ingress.kubernetes.io/whitelist-source-range: "10.0.0.0/24,172.10.0.1"
+  tls:
+    # - secretName: redmine.cluster.local
+    #   hosts:
+    #     - redmine.cluster.local
+
+## For Kubernetes v1.4, v1.5 and v1.6, use 'extensions/v1beta1'
+## For Kubernetes v1.7, use 'networking.k8s.io/v1'
+networkPolicyApiVersion: extensions/v1beta1
 
 ## Enable persistence using Persistent Volume Claims
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/

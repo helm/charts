@@ -29,3 +29,7 @@ resources:
   limits:
     cpu: 256m
     memory: 256Mi
+
+daemonset:
+  tolerations: []
+

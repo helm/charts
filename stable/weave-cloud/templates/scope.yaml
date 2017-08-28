@@ -64,7 +64,7 @@ items:
                 - '--probe.docker=true'
                 - '--probe.kubernetes=true'
                 - '--service-token={{.Values.ServiceToken}}'
-              image: 'weaveworks/scope:1.4.0'
+              image: 'weaveworks/scope:1.6.2'
               imagePullPolicy: IfNotPresent
               securityContext:
                 privileged: true
@@ -73,12 +73,14 @@ items:
                   mountPath: /var/run/docker.sock
                 - name: scope-plugins
                   mountPath: /var/run/scope/plugins
+                - name: sys-kernel-debug
+                  mountPath: /sys/kernel/debug
           hostNetwork: true
           hostPID: true
           serviceAccountName: weave-scope
           tolerations:
             - effect: NoSchedule
-              key: node-role.kubernetes.io/master
+              operator: Exists
           volumes:
             - name: docker-socket
               hostPath:
@@ -86,5 +88,8 @@ items:
             - name: scope-plugins
               hostPath:
                 path: /var/run/scope/plugins
+            - name: sys-kernel-debug
+              hostPath:
+                path: /sys/kernel/debug
       updateStrategy:
         type: RollingUpdate

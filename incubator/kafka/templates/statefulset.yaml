@@ -1,0 +1,62 @@
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  name: {{ template "kafka.fullname" . }}
+  labels:
+    app: {{ include "kafka.name" . | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+spec:
+  serviceName: {{ template "kafka.fullname" . }}-headless
+  replicas: {{ default 3 .Values.Replicas }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "kafka.name" . | quote }}
+        release: {{ .Release.Name | quote }}
+    spec:
+      containers:
+      - name: {{ template "kafka.name" . }}-broker
+        image: "{{ .Values.Image }}:{{ .Values.ImageTag }}"
+        imagePullPolicy: "{{ .Values.ImagePullPolicy }}"
+        livenessProbe:
+          exec:
+            command:
+              - bin/kafka-topics.sh
+              - --zookeeper
+              - "{{ .Release.Name }}-zookeeper:2181"
+              - --list
+          initialDelaySeconds: 30
+          timeoutSeconds: 5
+        readinessProbe:
+          exec:
+            command:
+              - bin/kafka-topics.sh
+              - --zookeeper
+              - "{{ .Release.Name }}-zookeeper:2181"
+              - --list
+          initialDelaySeconds: 30
+          timeoutSeconds: 5
+        ports:
+        - containerPort: 9092
+          name: kafka
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+        command:
+        - sh
+        - -c
+        - "./bin/kafka-server-start.sh config/server.properties --override zookeeper.connect={{ .Release.Name }}-zookeeper:2181/ --override log.dirs={{ printf "%s/logs" .Values.DataDirectory | trunc 63 }} --override broker.id=${HOSTNAME##*-}"
+        volumeMounts:
+        - name: datadir
+          mountPath: "{{ .Values.DataDirectory }}"
+  volumeClaimTemplates:
+  - metadata:
+      name: datadir
+      annotations:
+        volume.alpha.kubernetes.io/storage-class: anything
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: {{ .Values.Storage }}

@@ -19,6 +19,7 @@ data:
   concourse-old-resource-grace-period: {{ .Values.concourse.oldResourceGracePeriod | quote }}
   concourse-resource-cache-cleanup-interval: {{ .Values.concourse.resourceCacheCleanupInterval | quote }}
   concourse-external-url: {{ default "" .Values.concourse.externalURL | quote }}
+  concourse-baggageclaim-driver: {{ .Values.concourse.baggageclaimDriver | quote }}
   garden-docker-registry: {{ default "" .Values.concourse.dockerRegistry | quote }}
   garden-insecure-docker-registry: {{ default "" .Values.concourse.insecureDockerRegistry | quote }}
   github-auth-organization: {{ default "" .Values.concourse.githubAuthOrganization | quote }}
@@ -27,6 +28,10 @@ data:
   github-auth-auth-url: {{ default "" .Values.concourse.githubAuthAuthUrl | quote }}
   github-auth-token-url: {{ default "" .Values.concourse.githubAuthTokenUrl | quote }}
   github-auth-api-url: {{ default "" .Values.concourse.githubAuthApiUrl | quote }}
+  gitlab-auth-group: {{ default "" .Values.concourse.gitlabAuthGroup | quote }}
+  gitlab-auth-auth-url: {{ default "" .Values.concourse.gitlabAuthAuthUrl | quote }}
+  gitlab-auth-token-url: {{ default "" .Values.concourse.gitlabAuthTokenUrl | quote }}
+  gitlab-auth-api-url: {{ default "" .Values.concourse.gitlabAuthApiUrl | quote }}
   generic-oauth-display-name: {{ default "" .Values.concourse.genericOauthDisplayName | quote }}
   generic-oauth-auth-url: {{ default "" .Values.concourse.genericOauthAuthUrl | quote }}
   generic-oauth-auth-url-param: {{ default "" .Values.concourse.genericOauthAuthUrlParam | quote }}

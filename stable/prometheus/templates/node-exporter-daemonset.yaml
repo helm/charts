@@ -21,6 +21,7 @@ spec:
         component: "{{ .Values.nodeExporter.name }}"
         release: {{ .Release.Name }}
     spec:
+      serviceAccountName: {{ if .Values.rbac.create }}{{ template "prometheus.nodeExporter.fullname" . }}{{ else }}"{{ .Values.nodeExporter.serviceAccountName }}"{{ end }}
       containers:
         - name: {{ template "prometheus.name" . }}-{{ .Values.nodeExporter.name }}
           image: "{{ .Values.nodeExporter.image.repository }}:{{ .Values.nodeExporter.image.tag }}"
@@ -51,6 +52,10 @@ spec:
           {{- end }}
       hostNetwork: true
       hostPID: true
+    {{- if .Values.nodeExporter.tolerations }}
+      tolerations:
+{{ toYaml .Values.nodeExporter.tolerations | indent 8 }}
+    {{- end }}
     {{- if .Values.nodeExporter.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeExporter.nodeSelector | indent 8 }}

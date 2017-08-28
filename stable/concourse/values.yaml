@@ -13,7 +13,7 @@ image: concourse/concourse
 ## Concourse image version.
 ## ref: https://hub.docker.com/r/concourse/concourse/tags/
 ##
-imageTag: "2.6.0"
+imageTag: "3.3.2"
 
 ## Specify a imagePullPolicy: 'Always' if imageTag is 'latest', else set to 'IfNotPresent'.
 ## ref: https://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -136,6 +136,9 @@ concourse:
   workerKeyPub: |-
     ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC496FSYFcBAKgDtMsBAJiF/6/NxlXKP5UZecyEsedYuTt1GOgJTwaA1qZ1LmHsbfLDE68oDdiM4uvxfI4wtLhz57w3u0jOUxZ2JeF7SVwEf1nVqLn4Gh/f8GUNQGSyIp1zUD5Bx9fq0PAyQ47mt7Ufi84rcf8LKl7nzAIHTcdg2BvTkQN9bUGPaq/Pb1W2bKPAQy4OzXTSIyrAJ89TH2jFeaZfyxQFGbD9jVHH/yl0oiMrDeaRYgccE5II+KY7WoLjsBry/9Qf2ERELKTK4UeIGIqWci9lab1ti+GxFPPiC3krNFjo4jShV4eUs4cNIrjwNrxVaKPXmU6o7Y3Hpayx Concourse
 
+  oldEncryptionKey:
+  encryptionKey:
+
   ## ATC listen port.
   ## ref: https://concourse.ci/architecture.html
   ##
@@ -173,6 +176,13 @@ concourse:
   ## URL used to reach any ATC from the outside world.
   ##
   # externalURL:
+
+  ## The filesystem driver used by baggageclaim on workers, as of Concourse 3.1 can be values
+  ## "overlay", "btrfs", or "naive". "overlay" is more stable than "btrfs" but is not supported
+  ## on some Linux kernels, while "naive" is most supported but least space efficient. For background see
+  ## https://github.com/concourse/concourse/issues/1230.
+  ##
+  baggageclaimDriver: naive
 
   ## An URL pointing to the Docker registry to use to fetch Docker images.
   ## If unset, this will default to the Docker default
@@ -214,6 +224,30 @@ concourse:
   ## Override default API endpoint URL for Github Enterprise.
   ##
   # githubAuthApiUrl:
+
+  ## Application client ID for enabling GitLab OAuth.
+  ##
+  # gitlabAuthClientId:
+
+  ## Application client secret for enabling GitLab OAuth.
+  ##
+  # gitlabAuthClientSecret:
+
+  ## GitLab Group (comma separated) whose members will have access.
+  ##
+  # gitlabAuthGroup:
+
+  ## Endpoint AuthURL for Gitlab server.
+  ##
+  # gitlabAuthAuthUrl:
+
+  ## Endpoint TokenURL for Gitlab server.
+  ##
+  # gitlabAuthTokenUrl:
+
+  ## API endpoint URL for Github server.
+  ##
+  # gitlabAuthApiUrl:
 
   ## Name for this auth method on the web UI.
   ##
@@ -279,7 +313,7 @@ web:
     ##
     enabled: false
 
-    ## Annotations.
+    ## Annotations to be added to the web ingress.
     ##
     # annotations:
     #   kubernetes.io/ingress.class: nginx
@@ -323,6 +357,11 @@ worker:
       cpu: "100m"
       memory: "512Mi"
 
+  ## Annotations to be added to the worker pods.
+  ##
+  # annotations:
+  #   iam.amazonaws.com/role: arn:aws:iam::123456789012:role/concourse
+
 ## Persistent Volume Storage configuration.
 ## ref: https://kubernetes.io/docs/user-guide/persistent-volumes
 ##
@@ -344,12 +383,23 @@ persistence:
 
     ## Persistent Volume Storage Size.
     ##
-    size: 10Gi
+    size: 20Gi
 
 ## Configuration values for the postgresql dependency.
 ## ref: https://github.com/kubernetes/charts/blob/master/stable/postgresql/README.md
 ##
 postgresql:
+
+  ## Use the PostgreSQL chart dependency.
+  ## Set to false if bringing your own PostgreSQL.
+  ##
+  enabled: true
+
+  ## If bringing your own PostgreSQL, the full uri to use
+  ## e.g. postgres://concourse:changeme@my-postgres.com:5432/concourse?sslmode=disable
+  ##
+  # uri:
+
   ### PostgreSQL User to create.
   ##
   postgresUser: concourse

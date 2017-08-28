@@ -1,5 +1,6 @@
 name: joomla
-version: 0.4.9
+version: 0.4.15
+appVersion: 3.7.5
 description: PHP content management system (CMS) for publishing web content
 keywords:
 - joomla

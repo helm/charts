@@ -47,7 +47,9 @@ The following tables lists the configurable parameters of the Redis chart and th
 | -------------------------- | ------------------------------------- | --------------------------------------------------------- |
 | `image`                    | Redis image                           | `bitnami/redis:{VERSION}`                                 |
 | `imagePullPolicy`          | Image pull policy                     | `IfNotPresent`                                            |
+| `usePassword`              | Use password                          | `true`                                         |
 | `redisPassword`            | Redis password                        | Randomly generated                                        |
+| `args`                     | Redis command-line args               | []                                                        |
 | `persistence.enabled`      | Use a PVC to persist data             | `true`                                                    |
 | `persistence.existingClaim`| Use an existing PVC to persist data   | `nil`                                                     |
 | `persistence.storageClass` | Storage class of backing PVC          | `generic`                                                 |
@@ -59,6 +61,8 @@ The following tables lists the configurable parameters of the Redis chart and th
 | `metrics.imageTag`         | Exporter image                        | `v0.11`                                                   |
 | `metrics.imagePullPolicy`  | Exporter image pull policy            | `IfNotPresent`                                            |
 | `metrics.resources`        | Exporter resource requests/limit      | Memory: `256Mi`, CPU: `100m`                              |
+| `nodeSelector`             | Node labels for pod assignment        | {}                                                        |
+| `tolerations`              | Toleration labels for pod assignment  | []                                                        |
 
 The above parameters map to the env variables defined in [bitnami/redis](http://github.com/bitnami/bitnami-docker-redis). For more information please refer to the [bitnami/redis](http://github.com/bitnami/bitnami-docker-redis) image documentation.
 
@@ -84,7 +88,7 @@ $ helm install --name my-release -f values.yaml stable/redis
 
 The [Bitnami Redis](https://github.com/bitnami/bitnami-docker-redis) image stores the Redis data and configurations at the `/bitnami/redis` path of the container.
 
-By default, the chart mounts a [Persistent Volume](kubernetes.io/docs/user-guide/persistent-volumes/) volume at this location. The volume is created using dynamic volume provisioning. If a Persistent Volume Claim already exists, specify it during installation.
+By default, the chart mounts a [Persistent Volume](http://kubernetes.io/docs/user-guide/persistent-volumes/) volume at this location. The volume is created using dynamic volume provisioning. If a Persistent Volume Claim already exists, specify it during installation.
 
 ### Existing PersistentVolumeClaim
 

@@ -13,7 +13,7 @@ spec:
       containers:
       - name: fluent-bit
         image: "{{ .Values.image.fluent_bit.repository }}:{{ .Values.image.fluent_bit.tag }}"
-        imagePullPolicy: "{{ .Values.image.pullPolicy}}"
+        imagePullPolicy: "{{ .Values.image.pullPolicy }}"
         env:
 {{ toYaml .Values.env | indent 10 }}
         resources:
@@ -33,6 +33,14 @@ spec:
           readOnly: true
 {{ end }}
       terminationGracePeriodSeconds: 10
+    {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
+    {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+    {{- end }}
       volumes:
       - name: varlog
         hostPath:
