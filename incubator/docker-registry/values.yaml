@@ -1,0 +1,19 @@
+nodePort: 30400
+initialLoad: false
+replicas: 1
+distro:
+type:
+branch:
+initImage: centos
+initImageVersion: latest
+registryImage: registry
+registryImageVersion: 2
+tarballURL:
+persistentVolume:
+  enabled: false
+  accessModes:
+    - ReadWriteOnce
+  existingClaim: ""
+  size: 20Gi
+  storageClass: ""
+  annotations: {}

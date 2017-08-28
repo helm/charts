@@ -1,5 +1,6 @@
 name: nginx-lego
-version: 0.2.1
+version: 0.2.2
+deprecated: true
 description: Chart for nginx-ingress-controller and kube-lego
 keywords:
 - kube-lego

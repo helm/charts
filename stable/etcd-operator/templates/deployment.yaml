@@ -17,14 +17,19 @@ spec:
         heritage: "{{ .Release.Service }}"
         release: "{{ .Release.Name }}"
     spec:
+{{- if .Values.rbac.install }}
+      serviceAccountName: {{ template "fullname" . }}
+{{- end }}
       containers:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         command:
-        - "/bin/sh"
-        - "-c"
-        - "/usr/local/bin/etcd-operator --pv-provisioner={{ .Values.cluster.backup.provisioner }}"
+        - "/usr/local/bin/etcd-operator"
+        - "--pv-provisioner={{ .Values.cluster.backup.provisioner }}"
+{{- range $key, $value := .Values.commandArgs }}
+        - "--{{ $key }}={{ $value }}"
+{{- end }}
         env:
         - name: MY_POD_NAMESPACE
           valueFrom:
@@ -36,3 +41,7 @@ spec:
               fieldPath: metadata.name
         resources:
 {{ toYaml .Values.resources | indent 12 }}
+    {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}

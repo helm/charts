@@ -21,6 +21,7 @@ spec:
           args:
             - "web"
           env:
+            {{ if .Values.postgresql.enabled }}
             - name: POSTGRES_HOST
               valueFrom:
                 configMapKeyRef:
@@ -43,6 +44,27 @@ spec:
                   key: postgresql-database
             - name: CONCOURSE_POSTGRES_DATA_SOURCE
               value: postgres://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@$(POSTGRES_HOST)/$(POSTGRES_DATABASE)?sslmode=disable
+            {{ else }}
+            - name: CONCOURSE_POSTGRES_DATA_SOURCE
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.fullname" . }}
+                  key: postgresql-uri
+            {{ end }}
+            {{ if .Values.encryptionKey }}
+            - name: CONCOURSE_ENCRYPTION_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.fullname" . }}
+                  key: encryption-key
+            {{ end }}
+            {{ if .Values.oldEncryptionKey }}
+            - name: CONCOURSE_OLD_ENCRYPTION_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.fullname" . }}
+                  key: old-encryption-key
+            {{ end }}
             - name: POD_IP
               valueFrom:
                 fieldRef:
@@ -147,6 +169,38 @@ spec:
                 configMapKeyRef:
                   name: {{ template "concourse.fullname" . }}
                   key: github-auth-api-url
+            - name: CONCOURSE_GITLAB_AUTH_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.fullname" . }}
+                  key: gitlab-auth-client-id
+            - name: CONCOURSE_GITLAB_AUTH_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.fullname" . }}
+                  key: gitlab-auth-client-secret
+            {{- if .Values.concourse.gitlabAuthGroup }}
+            - name: CONCOURSE_GITLAB_AUTH_GROUP
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "concourse.fullname" . }}
+                  key: gitlab-auth-group
+            {{- end }}
+            - name: CONCOURSE_GITLAB_AUTH_AUTH_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "concourse.fullname" . }}
+                  key: gitlab-auth-auth-url
+            - name: CONCOURSE_GITLAB_AUTH_TOKEN_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "concourse.fullname" . }}
+                  key: gitlab-auth-token-url
+            - name: CONCOURSE_GITLAB_AUTH_API_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "concourse.fullname" . }}
+                  key: gitlab-auth-api-url
             - name: CONCOURSE_GENERIC_OAUTH_DISPLAY_NAME
               valueFrom:
                 configMapKeyRef:

@@ -4,6 +4,9 @@ metadata:
   name: {{ template "fullname" . }}
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    {{- range $key, $value := .Values.labels }}
+    {{ $key }}: {{ $value }}
+    {{- end }}
 spec:
   replicas: {{ .Values.replicaCount }}
   template:
@@ -11,6 +14,8 @@ spec:
       labels:
         app: {{ template "fullname" . }}
     spec:
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
       containers:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"

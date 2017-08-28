@@ -5,7 +5,7 @@ metadata:
   labels:
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
-    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     app: {{ template "locust.fullname" . }}
     component: "master"
 spec:
@@ -14,7 +14,7 @@ spec:
   - name: {{ .Values.service.name }}
     port: {{ .Values.service.externalPort }}
     targetPort: {{ .Values.service.internalPort }}
-    nodePort: {{ .Values.service.nodePort}}
+    nodePort: {{ .Values.service.nodePort }}
     protocol: TCP
   - name: master-p1
     port: 5557

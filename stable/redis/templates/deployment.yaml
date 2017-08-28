@@ -1,9 +1,9 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "redis.fullname" . }}
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "redis.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -11,18 +11,30 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "fullname" . }}
+        app: {{ template "redis.fullname" . }}
     spec:
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- end }}
+      {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+      {{- end }}
       containers:
-      - name: {{ template "fullname" . }}
+      - name: {{ template "redis.fullname" . }}
         image: "{{ .Values.image }}"
         imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
+        {{- if .Values.args }}
+        args:
+{{ toYaml .Values.args | indent 10 }}
+        {{- end }}
         env:
         {{- if .Values.usePassword }}
         - name: REDIS_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "redis.fullname" . }}
               key: redis-password
         {{- else }}
         - name: ALLOW_EMPTY_PASSWORD
@@ -56,12 +68,14 @@ spec:
         imagePullPolicy: {{ .Values.metrics.imagePullPolicy | quote }}
         env:
         - name: REDIS_ALIAS
-          value: {{ template "fullname" . }}
+          value: {{ template "redis.fullname" . }}
+        {{- if .Values.usePassword }}
         - name: REDIS_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "redis.fullname" . }}
               key: redis-password
+        {{- end }}
         ports:
         - name: metrics
           containerPort: 9121
@@ -72,7 +86,7 @@ spec:
       - name: redis-data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ .Values.persistence.existingClaim | default (include "fullname" .) }}
+          claimName: {{ .Values.persistence.existingClaim | default (include "redis.fullname" .) }}
       {{- else }}
         emptyDir: {}
       {{- end -}}

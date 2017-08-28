@@ -16,7 +16,7 @@ This chart bootstraps a [MariaDB](https://github.com/bitnami/bitnami-docker-mari
 
 ## Prerequisites
 
-- Kubernetes 1.4+ with Beta APIs enabled
+- Kubernetes 1.6+ with Beta APIs enabled
 - PV provisioner support in the underlying infrastructure
 
 ## Installing the Chart
@@ -45,21 +45,27 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following tables lists the configurable parameters of the MariaDB chart and their default values.
 
-| Parameter                   | Description                                | Default                                                    |
-| -----------------------     | ----------------------------------         | ---------------------------------------------------------- |
-| `image`                     | MariaDB image                              | `bitnami/mariadb:{VERSION}`                                |
-| `imagePullPolicy`           | Image pull policy.                         | `IfNotPresent`                                             |
-| `mariadbRootPassword`       | Password for the `root` user.              | `nil`                                                      |
-| `mariadbUser`               | Username of new user to create.            | `nil`                                                      |
-| `mariadbPassword`           | Password for the new user.                 | `nil`                                                      |
-| `mariadbDatabase`           | Name for new database to create.           | `nil`                                                      |
-| `persistence.enabled`       | Use a PVC to persist data                  | `true`                                                     |
-| `persistence.existingClaim` | Use an existing PVC                        | `nil`                                                      |
-| `persistence.storageClass`  | Storage class of backing PVC               | `nil` (uses alpha storage class annotation)                |
-| `persistence.accessMode`    | Use volume as ReadOnly or ReadWrite        | `ReadWriteOnce`                                            |
-| `persistence.size`          | Size of data volume                        | `8Gi`                                                      |
-| `resources`                 | CPU/Memory resource requests/limits        | Memory: `256Mi`, CPU: `250m`                               |
-| `config`                    | Multi-line string for my.cnf configuration | `nil`                                                      |
+|          Parameter          |                Description                 |                   Default                   |
+| --------------------------- | ------------------------------------------ | ------------------------------------------- |
+| `image`                     | MariaDB image                              | `bitnami/mariadb:{VERSION}`                 |
+| `imagePullPolicy`           | Image pull policy.                         | `IfNotPresent`                              |
+| `usePassword`               | Enable password authentication             | `true`                                      |
+| `mariadbRootPassword`       | Password for the `root` user.              | Randomly generated                          |
+| `mariadbUser`               | Username of new user to create.            | `nil`                                       |
+| `mariadbPassword`           | Password for the new user.                 | `nil`                                       |
+| `mariadbDatabase`           | Name for new database to create.           | `nil`                                       |
+| `persistence.enabled`       | Use a PVC to persist data                  | `true`                                      |
+| `persistence.existingClaim` | Use an existing PVC                        | `nil`                                       |
+| `persistence.storageClass`  | Storage class of backing PVC               | `nil` (uses alpha storage class annotation) |
+| `persistence.accessMode`    | Use volume as ReadOnly or ReadWrite        | `ReadWriteOnce`                             |
+| `persistence.size`          | Size of data volume                        | `8Gi`                                       |
+| `resources`                 | CPU/Memory resource requests/limits        | Memory: `256Mi`, CPU: `250m`                |
+| `config`                    | Multi-line string for my.cnf configuration | `nil`                                       |
+| `metrics.enabled`           | Start a side-car prometheus exporter       | `false`                                     |
+| `metrics.image`             | Exporter image                             | `prom/mysqld-exporter`                      |
+| `metrics.imageTag`          | Exporter image                             | `v0.10.0`                                   |
+| `metrics.imagePullPolicy`   | Exporter image pull policy                 | `IfNotPresent`                              |
+| `metrics.resources`         | Exporter resource requests/limit           | `nil`                                       |
 
 The above parameters map to the env variables defined in [bitnami/mariadb](http://github.com/bitnami/bitnami-docker-mariadb). For more information please refer to the [bitnami/mariadb](http://github.com/bitnami/bitnami-docker-mariadb) image documentation.
 
@@ -103,11 +109,37 @@ EOF
 helm install --name my-release -f mariadb-values.yaml stable/mariadb
 ```
 
+## Consuming credentials
+
+To connect to your database in your application, you can consume the credentials from the secret. For example:
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-app
+spec:
+  containers:
+    - name: my-app
+      image: bitnami/mariadb:latest
+      env:
+        - name: MARIADB_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: my-release-mariadb
+              key: mariadb-root-password
+      command: ["sh", "-c"]
+      args:
+      - mysql -h my-release-mariadb.default.svc.cluster.local -p$MARIADB_ROOT_PASSWORD -e 'show databases;'
+  restartPolicy: Never
+
+```
+
 ## Persistence
 
 The [Bitnami MariaDB](https://github.com/bitnami/bitnami-docker-mariadb) image stores the MariaDB data and configurations at the `/bitnami/mariadb` path of the container.
 
-The chart mounts a [Persistent Volume](kubernetes.io/docs/user-guide/persistent-volumes/) volume at this location. The volume is created using dynamic volume provisioning, by default. An existing PersistentVolumeClaim can be defined.
+The chart mounts a [Persistent Volume](http://kubernetes.io/docs/user-guide/persistent-volumes/) volume at this location. The volume is created using dynamic volume provisioning, by default. An existing PersistentVolumeClaim can be defined.
 
 ### Existing PersistentVolumeClaims
 
@@ -117,3 +149,7 @@ The chart mounts a [Persistent Volume](kubernetes.io/docs/user-guide/persistent-
 ```bash
 $ helm install --set persistence.existingClaim=PVC_NAME postgresql
 ```
+
+## Metrics
+
+The chart can optionally start a metrics exporter endpoint on port `9104` for [prometheus](https://prometheus.io). The data exposed by the endpoint is intended to be consumed by a prometheus chart deployed within the cluster and as such the endpoint is not exposed outside the cluster.

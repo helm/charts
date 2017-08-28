@@ -3,66 +3,69 @@ kind: Deployment
 metadata:
   name: {{ template "fullname" . }}
   labels:
-    heritage: {{.Release.Service | quote }}
-    release: {{.Release.Name | quote }}
-    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
-    component: "{{.Release.Name}}-{{.Values.Master.Name}}"
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    component: "{{ .Release.Name }}-{{ .Values.Master.Name }}"
 spec:
   replicas: 1
   strategy:
     type: RollingUpdate
   selector:
     matchLabels:
-      component: "{{.Release.Name}}-{{.Values.Master.Component}}"
+      component: "{{ .Release.Name }}-{{ .Values.Master.Component }}"
   template:
     metadata:
       labels:
         app: {{ template "fullname" . }}
-        heritage: {{.Release.Service | quote }}
-        release: {{.Release.Name | quote }}
-        chart: "{{.Chart.Name}}-{{.Chart.Version}}"
-        component: "{{.Release.Name}}-{{.Values.Master.Component}}"
+        heritage: {{ .Release.Service | quote }}
+        release: {{ .Release.Name | quote }}
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        component: "{{ .Release.Name }}-{{ .Values.Master.Component }}"
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/config.yaml") . | sha256sum }}
-        pod.alpha.kubernetes.io/init-containers: '[
-              {
-                  "name": "copy-default-config",
-                  "image": "{{.Values.Master.Image}}:{{.Values.Master.ImageTag}}",
-                  "imagePullPolicy": "{{.Values.Master.ImagePullPolicy}}",
-                  "command": [ "sh", "/var/jenkins_config/apply_config.sh" ],
-                  "volumeMounts": [
-                      {
-                          "name": "jenkins-config",
-                          "mountPath": "/var/jenkins_config"
-                      },
-                      {
-                          "name": "jenkins-home",
-                          "mountPath": "/var/jenkins_home"
-                      },
-                      {
-                          "name": "plugin-dir",
-                          "mountPath": "/usr/share/jenkins/ref/plugins/"
-                      },
-                      {
-                          "name": "secrets-dir",
-                          "mountPath": "/usr/share/jenkins/ref/secrets/"
-                      }
-                  ]
-              }
-          ]'
     spec:
+      {{- if .Values.Master.NodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.Master.NodeSelector | indent 8 }}
+      {{- end }}
+      {{- if .Values.Master.Tolerations }}
+      tolerations:
+{{ toYaml .Values.Master.Tolerations | indent 8 }}
+      {{- end }}
       securityContext:
         runAsUser: 0
+      serviceAccountName: {{ if .Values.rbac.install }}{{ template "fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
+      initContainers:
+        - name: "copy-default-config"
+          image: "{{ .Values.Master.Image }}:{{ .Values.Master.ImageTag }}"
+          imagePullPolicy: "{{ .Values.Master.ImagePullPolicy }}"
+          command: [ "sh", "/var/jenkins_config/apply_config.sh" ]
+          volumeMounts:
+            -
+              mountPath: /var/jenkins_home
+              name: jenkins-home
+            -
+              mountPath: /var/jenkins_config
+              name: jenkins-config
+            -
+              mountPath: /usr/share/jenkins/ref/plugins/
+              name: plugin-dir
+            -
+              mountPath: /usr/share/jenkins/ref/secrets/
+              name: secrets-dir
       containers:
         - name: {{ template "fullname" . }}
-          image: "{{.Values.Master.Image}}:{{.Values.Master.ImageTag}}"
-          imagePullPolicy: "{{.Values.Master.ImagePullPolicy}}"
+          image: "{{ .Values.Master.Image }}:{{ .Values.Master.ImageTag }}"
+          imagePullPolicy: "{{ .Values.Master.ImagePullPolicy }}"
           {{- if .Values.Master.UseSecurity }}
           args: [ "--argumentsRealm.passwd.$(ADMIN_USER)=$(ADMIN_PASSWORD)",  "--argumentsRealm.roles.$(ADMIN_USER)=admin"]
           {{- end }}
           env:
             - name: JAVA_OPTS
               value: "{{ default "" .Values.Master.JavaOpts}}"
+            - name: JENKINS_OPTS
+              value: "{{ if .Values.Master.JenkinsUriPrefix }}--prefix={{ .Values.Master.JenkinsUriPrefix }} {{ end }}{{ default "" .Values.Master.JenkinsOpts}}"
             {{- if .Values.Master.UseSecurity }}
             - name: ADMIN_PASSWORD
               valueFrom:
@@ -76,9 +79,9 @@ spec:
                   key: jenkins-admin-user
             {{- end }}
           ports:
-            - containerPort: {{.Values.Master.ContainerPort}}
+            - containerPort: {{ .Values.Master.ContainerPort }}
               name: http
-            - containerPort: {{.Values.Master.SlaveListenerPort}}
+            - containerPort: {{ .Values.Master.SlaveListenerPort }}
               name: slavelistener
             {{- if .Values.Master.JMXPort }}
             - containerPort: {{ .Values.Master.JMXPort }}
@@ -86,8 +89,8 @@ spec:
             {{- end }}
           resources:
             requests:
-              cpu: "{{.Values.Master.Cpu}}"
-              memory: "{{.Values.Master.Memory}}"
+              cpu: "{{ .Values.Master.Cpu }}"
+              memory: "{{ .Values.Master.Memory }}"
           volumeMounts:
 {{- if .Values.Persistence.mounts }}
 {{ toYaml .Values.Persistence.mounts | indent 12 }}

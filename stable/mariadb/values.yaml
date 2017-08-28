@@ -2,19 +2,24 @@
 ## ref: https://hub.docker.com/r/bitnami/mariadb/tags/
 ##
 ## Default: none
-image: bitnami/mariadb:10.1.23-r2
+image: bitnami/mariadb:10.1.26-r0
 
 ## Specify an imagePullPolicy (Required)
 ## It's recommended to change this to 'Always' if the image tag is 'latest'
 ## ref: http://kubernetes.io/docs/user-guide/images/#updating-images
 imagePullPolicy: IfNotPresent
 
+## Use password authentication
+usePassword: true
+
 ## Specify password for root user
+## Defaults to a random 10-character alphanumeric string if not set and usePassword is true
 ## ref: https://github.com/bitnami/bitnami-docker-mariadb/blob/master/README.md#setting-the-root-password-on-first-run
 ##
 # mariadbRootPassword:
 
 ## Create a database user
+## Password defaults to a random 10-character alphanumeric string if not set and usePassword is true
 ## ref: https://github.com/bitnami/bitnami-docker-mariadb/blob/master/README.md#creating-a-database-user-on-first-run
 ##
 # mariadbUser:
@@ -34,7 +39,7 @@ serviceType: ClusterIP
 ##
 persistence:
   enabled: true
-  
+
   ## A manually managed Persistent Volume and Claim
   ## Requires persistence.enabled: true
   ## If defined, PVC must be created manually before volume will be bound
@@ -53,6 +58,16 @@ persistence:
 # config: |-
   # [mysqld]
   # innodb_buffer_pool_size=2G
+
+metrics:
+  enabled: false
+  image: prom/mysqld-exporter
+  imageTag: v0.10.0
+  imagePullPolicy: IfNotPresent
+  resources: {}
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "9104"
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/

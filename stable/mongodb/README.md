@@ -51,6 +51,7 @@ The following tables lists the configurable parameters of the MongoDB chart and 
 | `mongodbUsername`          | MongoDB custom user                 | `nil`                                                    |
 | `mongodbPassword`          | MongoDB custom user password        | `nil`                                                    |
 | `mongodbDatabase`          | Database to create                  | `nil`                                                    |
+| `serviceType`              | Kubernetes Service type             | `ClusterIP`                                              |
 | `persistence.enabled`      | Use a PVC to persist data           | `true`                                                   |
 | `persistence.storageClass` | Storage class of backing PVC        | `nil` (uses alpha storage class annotation)              |
 | `persistence.accessMode`   | Use volume as ReadOnly or ReadWrite | `ReadWriteOnce`                                          |
@@ -80,4 +81,4 @@ $ helm install --name my-release -f values.yaml stable/mongodb
 
 The [Bitnami MongoDB](https://github.com/bitnami/bitnami-docker-mongodb) image stores the MongoDB data and configurations at the `/bitnami/mongodb` path of the container.
 
-The chart mounts a [Persistent Volume](kubernetes.io/docs/user-guide/persistent-volumes/) volume at this location. The volume is created using dynamic volume provisioning.
+The chart mounts a [Persistent Volume](http://kubernetes.io/docs/user-guide/persistent-volumes/) volume at this location. The volume is created using dynamic volume provisioning.

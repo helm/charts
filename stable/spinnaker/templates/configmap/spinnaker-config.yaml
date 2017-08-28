@@ -92,6 +92,9 @@ data:
           {{- if $account.password }}
           passwordFile: /tmp/registry/password-{{ $account.name }}
           {{- end }}
+          {{- if $account.trackDigests }}
+          trackDigests: {{ $account.trackDigests }}
+          {{- end }}
           {{- if $account.repositories }}
           repositories:
             {{- range $index, $repo := $account.repositories }}
@@ -108,17 +111,17 @@ data:
       challengeDestructiveActionsEnvironments: ${providers.aws.primaryCredentials.name}, ${providers.google.primaryCredentials.name}, ${providers.cf.primaryCredentials.name}, ${providers.azure.primaryCredentials.name}
 
   echo.yml: |
-{{.Files.Get "config/echo.yml" | indent 4}}
+{{ .Files.Get "config/echo.yml" | indent 4 }}
   echo-local.yml: |
-{{.Files.Get "config/echo-local.yml" | indent 4}}
+{{ .Files.Get "config/echo-local.yml" | indent 4 }}
   fiat.yml: |
-{{.Files.Get "config/fiat.yml" | indent 4}}
+{{ .Files.Get "config/fiat.yml" | indent 4 }}
   fiat.yml-local: |
-{{.Files.Get "config/fiat-local.yml" | indent 4}}
+{{ .Files.Get "config/fiat-local.yml" | indent 4 }}
   front50.yml: |
-{{.Files.Get "config/front50.yml" | indent 4}}
+{{ .Files.Get "config/front50.yml" | indent 4 }}
   front50-local.yml: |
-{{.Files.Get "config/front50-local.yml" | indent 4}}
+{{ .Files.Get "config/front50-local.yml" | indent 4 }}
   gate.yml: |
     server:
       port: ${services.gate.port:8084}
@@ -153,23 +156,23 @@ data:
     redis:
       connection: ${services.redis.connection}
   igor.yml: |
-{{.Files.Get "config/igor.yml" | indent 4}}
+{{ .Files.Get "config/igor.yml" | indent 4 }}
   igor-local.yml: |
-{{.Files.Get "config/igor-local.yml" | indent 4}}
+{{ .Files.Get "config/igor-local.yml" | indent 4 }}
   orca.yml: |
-{{.Files.Get "config/orca.yml" | indent 4}}
+{{ .Files.Get "config/orca.yml" | indent 4 }}
   orca-local.yml: |
-{{.Files.Get "config/orca-local.yml" | indent 4}}
+{{ .Files.Get "config/orca-local.yml" | indent 4 }}
   rosco.yml: |
-{{.Files.Get "config/rosco.yml" | indent 4}}
+{{ .Files.Get "config/rosco.yml" | indent 4 }}
   rosco-local.yml: |
-{{.Files.Get "config/rosco-local.yml" | indent 4}}
+{{ .Files.Get "config/rosco-local.yml" | indent 4 }}
   settings.js: |
     'use strict';
 
     var feedbackUrl = 'http://localhost';
-    var gateHost = '{{ .Values.deck.protocol }}://{{ .Values.deck.host }}:{{ .Values.deck.port }}/gate';
-    var bakeryDetailUrl = gateHost + '/bakery/logs/global/{{"{{"}}context.status.id{{"}}"}}';
+    var gateHost = '/gate';
+    var bakeryDetailUrl = gateHost + '/bakery/logs/global/{{ "{{ " }}context.status.id{{ " }}" }}';
 
     window.spinnakerSettings = {
       defaultProviders: ['kubernetes'],
@@ -219,7 +222,7 @@ data:
       },
     };
   spinnaker.yml: |
-{{.Files.Get "config/spinnaker.yml" | indent 4}}
+{{ .Files.Get "config/spinnaker.yml" | indent 4 }}
   clouddriver-local.yml: |
     server:
       port: ${services.clouddriver.port:7002}
@@ -419,7 +422,7 @@ data:
         enabled: true
         defaultMaster:
           name: default
-          baseUrl: http://localhost:8080/
+          baseUrl: http://{{ .Release.Name }}-jenkins:8080/
           username: admin
           password: admin
 

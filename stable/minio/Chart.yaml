@@ -1,7 +1,7 @@
 apiVersion: v1
 description: Distributed object storage server built for cloud applications and devops.
 name: minio
-version: 0.1.2
+version: 0.1.5
 keywords:
 - storage
 - object-storage

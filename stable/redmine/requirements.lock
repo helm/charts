@@ -1,17 +1,9 @@
 dependencies:
-- condition: ""
-  enabled: false
-  import-values: null
-  name: mariadb
+- name: mariadb
   repository: https://kubernetes-charts.storage.googleapis.com/
-  tags: null
-  version: 0.6.2
-- condition: ""
-  enabled: false
-  import-values: null
-  name: postgresql
-  repository: https://kubernetes-charts.storage.googleapis.com/
-  tags: null
   version: 0.7.0
-digest: sha256:fa96513ea021269bf0c60dae013e35e9f433fd6c033fe7b2a0aaba3f3478fab1
-generated: 2017-05-22T14:36:45.594988036+01:00
+- name: postgresql
+  repository: https://kubernetes-charts.storage.googleapis.com/
+  version: 0.7.1
+digest: sha256:96b99240482d688230a22d465df9102efc95920cd3e0015020b2a5c1dfe12e35
+generated: 2017-08-09T22:52:59.279323666-04:00

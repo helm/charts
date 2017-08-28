@@ -1,5 +1,7 @@
 # aws-cluster-autoscaler
 
+**This chart has been deprecated as of version 0.3.1 and will not be updated. Please use the cluster-autoscaler chart instead.**
+
 [The cluster autoscaler on AWS](https://github.com/kubernetes/autoscaler/tree/master/cluster-autoscaler/cloudprovider/aws) scales worker nodes within an AWS autoscaling group.
 
 ## TL;DR:
@@ -82,7 +84,7 @@ Parameter | Description | Default
 `autoscalingGroups[].minSize` | minimum autoscaling group size | None. You *must* supply at least one.
 `awsRegion` | AWS region | `us-east-1`
 `image.repository` | Image | `gcr.io/google_containers/cluster-autoscaler`
-`image.tag` | Image tag | `v0.4.0`
+`image.tag` | Image tag | `v0.5.4`
 `image.pullPolicy` | Image pull policy | `IfNotPresent`
 `extraArgs` | additional container arguments | `{}`
 `nodeSelector` | node labels for pod assignment | `{}`

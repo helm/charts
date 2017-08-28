@@ -17,94 +17,62 @@ spec:
         release: {{ .Release.Name }}
       annotations:
       {{- if .Values.podAnnotations }}
-{{ toYaml .Values.podAnnotations | indent 8}}
+{{ toYaml .Values.podAnnotations | indent 8 }}
       {{- end }}
-        pod.alpha.kubernetes.io/init-containers: '[
-            {
-                "name": "install",
-                "image": "{{ .Values.installImage.name }}:{{ .Values.installImage.tag }}",
-                "args": ["--work-dir=/work-dir"],
-                "imagePullPolicy": "{{ .Values.installImage.pullPolicy }}",
-                "volumeMounts": [
-                    {
-                        "name": "workdir",
-                        "mountPath": "/work-dir"
-                    },
-                    {
-                        "name": "config",
-                        "mountPath": "/config"
-                    }
-                ]
-            },
-            {
-                "name": "bootstrap",
-                "image": "{{ .Values.image.name }}:{{ .Values.image.tag }}",
-                "command": ["/work-dir/peer-finder"],
-                "args": ["-on-start=/work-dir/on-start.sh", "-service={{ template "fullname" . }}"],
-                "imagePullPolicy": "{{ .Values.image.pullPolicy }}",
-                "env": [
-                    {
-                        "name": "POD_NAMESPACE",
-                        "valueFrom": {
-                            "fieldRef": {
-                                "apiVersion": "v1",
-                                "fieldPath": "metadata.namespace"
-                            }
-                        }
-                    },
-                    {
-                        "name": "REPLICA_SET",
-                        "value": "{{ .Values.replicaSet }}"
-                    }
-                    {{- if .Values.auth.enabled }},
-                    {
-                        "name": "AUTH",
-                        "value": "true"
-                    },
-                    {
-                        "name": "ADMIN_USER",
-                        "valueFrom": {
-                            "secretKeyRef": {
-                                "name": "{{ template "adminSecret" . }}",
-                                "key": "user"
-                            }
-                        }
-                    },
-                    {
-                        "name": "ADMIN_PASSWORD",
-                        "valueFrom": {
-                            "secretKeyRef": {
-                                "name": "{{ template "adminSecret" . }}",
-                                "key": "password"
-                            }
-                        }
-                    }
-                    {{- end }}
-                ],
-                "volumeMounts": [
-                    {
-                        "name": "workdir",
-                        "mountPath": "/work-dir"
-                    },
-                    {
-                        "name": "config",
-                        "mountPath": "/config"
-                    },
-                    {
-                        "name": "datadir",
-                        "mountPath": "/data/db"
-                    }
-                    {{- if .Values.auth.enabled }},
-                    {
-                        "name": "keydir",
-                        "mountPath": "/keydir",
-                        "readOnly": true
-                    }
-                    {{- end }}
-                ]
-            }
-        ]'
     spec:
+      initContainers:
+        - name: install
+          image: "{{ .Values.installImage.name }}:{{ .Values.installImage.tag }}"
+          args:
+            - --work-dir=/work-dir
+          imagePullPolicy: "{{ .Values.installImage.pullPolicy }}"
+          volumeMounts:
+            - name: workdir
+              mountPath: /work-dir
+            - name: config
+              mountPath: /config
+        - name: bootstrap
+          image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
+          command:
+            - /work-dir/peer-finder
+          args:
+            - -on-start=/work-dir/on-start.sh
+            - "-service={{ template "fullname" . }}"
+          imagePullPolicy: "{{ .Values.image.pullPolicy }}"
+          env:
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.namespace
+            - name: REPLICA_SET
+              value: {{ .Values.replicaSet }}
+          {{- if .Values.auth.enabled }}
+            - name: AUTH
+              value: "true"
+            - name: ADMIN_USER
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ template "adminSecret" . }}"
+                  key: user
+            - name: ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ template "adminSecret" . }}"
+                  key: password
+          {{- end }}
+          volumeMounts:
+            - name: workdir
+              mountPath: /work-dir
+            - name: config
+              mountPath: /config
+            - name: datadir
+              mountPath: /data/db
+          {{- if .Values.auth.enabled }}
+            - name: keydir
+              mountPath: /keydir
+              readOnly: true
+          {{- end }}
       containers:
         - name: {{ template "name" . }}
           image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
@@ -131,7 +99,7 @@ spec:
                 secretKeyRef:
                   name: "{{ template "adminSecret" . }}"
                   key: password
-            {{- end }}
+          {{- end }}
           livenessProbe:
             exec:
               command:
@@ -160,6 +128,27 @@ spec:
               mountPath: /keydir
               readOnly: true
           {{- end }}
+      {{- if eq .Values.podAntiAffinity "hard" }}
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - topologyKey: "kubernetes.io/hostname"
+              labelSelector:
+                matchLabels:
+                  app: "{{ template "name" . }}"
+                  release: "{{ .Release.Name }}"
+      {{- else if eq .Values.podAntiAffinity "soft" }}
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 1
+              podAffinityTerm:
+                topologyKey: kubernetes.io/hostname
+                labelSelector:
+                  matchLabels:
+                    app: "{{ template "name" . }}"
+                    release: "{{ .Release.Name }}"
+      {{- end }}
       volumes:
         - name: config
           configMap:

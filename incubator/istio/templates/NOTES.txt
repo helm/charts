@@ -1,4 +1,4 @@
-{{- $serviceName := include "fullname" . -}}
+{{- $serviceName := include "istio.fullname" . -}}
 Verify all Pods are running
 
   kubectl get pods --namespace {{ .Release.Namespace }}
@@ -47,4 +47,4 @@ Or deploy the BookInfo App!
 
 Using Istioctl
 
-  istioctl --configAPIService {{ $serviceName }}-{{ .Values.pilot.name }}:{{ .Values.pilot.service.externalHttpApiServer }} [command]
+  istioctl [command]

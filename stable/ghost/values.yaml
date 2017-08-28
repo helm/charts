@@ -1,7 +1,15 @@
 ## Bitnami Ghost image version
 ## ref: https://hub.docker.com/r/bitnami/ghost/tags/
 ##
-image: bitnami/ghost:0.11.9-r2
+image: bitnami/ghost:0.11.10-r2
+
+## Busybox image used to configure volume permissions
+##
+volumePermissions:
+  image:
+    name: busybox
+    tag: 1.27.1
+#    pullPolicy:
 
 ## Specify a imagePullPolicy
 ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
@@ -27,7 +35,7 @@ ghostPort: 80
 ## User of the application
 ## ref: https://github.com/bitnami/bitnami-docker-ghost#configuration
 ##
-ghostUsername: user
+ghostUsername: user@example.com
 
 ## Application password
 ## Defaults to a random 10-character alphanumeric string if not set

@@ -1,14 +1,55 @@
 
-** P.S. RabbitMQ may take a few minutes to become available. Please be patient. **
+** Please be patient while the chart is being deployed **
 
-The RabbitMQ AMQP port {{ default "5672" .Values.rabbitmqNodePort }} can be accessed on the following DNS name from within your cluster: {{ template "fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
+  Credentials:
 
-  echo Username      : {{ .Values.rabbitmqUsername }}
-  echo Password      : $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath="{.data.rabbitmq-password}" | base64 --decode)
-  echo ErLang Cookie : $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath="{.data.rabbitmq-erlang-cookie}" | base64 --decode)
+    echo Username      : {{ .Values.rabbitmqUsername }}
+    echo Password      : $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "rabbitmq.fullname" . }} -o jsonpath="{.data.rabbitmq-password}" | base64 --decode)
+    echo ErLang Cookie : $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "rabbitmq.fullname" . }} -o jsonpath="{.data.rabbitmq-erlang-cookie}" | base64 --decode)
 
-To Access the RabbitMQ Management interface:
+  RabbitMQ can be accessed within the cluster on port {{ .Values.rabbitmqNodePort }} at {{ template "rabbitmq.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
 
-  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "fullname" . }}" -o jsonpath="{.items[0].metadata.name}")
-  echo URL : http://127.0.0.1:{{ default "15672" .Values.rabbitmqManagerPort }}
-  kubectl port-forward $POD_NAME {{ default "15672" .Values.rabbitmqManagerPort }}:{{ default "15672" .Values.rabbitmqManagerPort }}
+  To access for outside the cluster execute the following commands:
+
+{{- if contains "NodePort" .Values.serviceType }}
+
+    export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+    export NODE_PORT_AMQP=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[1].nodePort}" services {{ template "rabbitmq.fullname" . }})
+    export NODE_PORT_STATS=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[3].nodePort}" services {{ template "rabbitmq.fullname" . }})
+
+  To Access the RabbitMQ AMQP port:
+
+    echo amqp://$NODE_IP:$NODE_PORT_AMQP/
+
+  To Access the RabbitMQ Management interface:
+
+    echo http://$NODE_IP:$NODE_PORT_STATS/
+
+{{- else if contains "LoadBalancer" .Values.serviceType }}
+
+  NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+        Watch the status with: 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "rabbitmq.fullname" . }}'
+
+    export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "rabbitmq.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+
+  To Access the RabbitMQ AMQP port:
+
+    echo amqp://$SERVICE_IP:{{ .Values.rabbitmqNodePort }}/
+
+  To Access the RabbitMQ Management interface:
+
+    echo http://$SERVICE_IP:{{ .Values.rabbitmqManagerPort }}/
+
+{{- else if contains "ClusterIP"  .Values.serviceType }}
+
+    export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "rabbitmq.fullname" . }}" -o jsonpath="{.items[0].metadata.name}")
+    kubectl port-forward $POD_NAME {{ .Values.rabbitmqNodePort }}:{{ .Values.rabbitmqNodePort }} {{ .Values.rabbitmqManagerPort }}:{{ .Values.rabbitmqManagerPort }}
+
+  To Access the RabbitMQ AMQP port:
+
+    echo amqp://127.0.0.1:{{ .Values.rabbitmqNodePort }}/
+
+  To Access the RabbitMQ Management interface:
+
+    echo URL : http://127.0.0.1:{{ .Values.rabbitmqManagerPort }}
+{{- end }}

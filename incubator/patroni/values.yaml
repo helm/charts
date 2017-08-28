@@ -16,7 +16,10 @@ Replicas: 5
 Resources:
   Cpu: 100m
   Memory: 512Mi
-  Storage: 1Gi
+  
+# Node selector for Patroni pods
+#NodeSelector:
+#  cloud.google.com/gke-nodepool: highmem-pool
 
 # Credentials used by Patroni
 # * more information: https://github.com/zalando/patroni/blob/master/docs/SETTINGS.rst#postgresql
@@ -29,3 +32,13 @@ Credentials:
 Etcd:
   Host: # fill-in value for etcd host (etcd.default.svc.cluster.local), leave blank to use the discovery parameter
   Discovery: # leave blank to use vendored etcd chart
+
+persistentVolume:
+  size: 1G
+  storageClass: ""
+  subPath: ""
+  mountPath: "/home/postgres/pgdata"
+  annotations: {}
+
+  accessModes:
+    - ReadWriteOnce

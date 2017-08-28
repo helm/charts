@@ -1,9 +1,9 @@
 dependencies:
 - name: mariadb
-  version: 0.6.2
+  version: 0.7.0
   repository: https://kubernetes-charts.storage.googleapis.com/
   condition: databaseType.mariadb
 - name: postgresql
-  version: 0.7.0
+  version: 0.7.1
   repository: https://kubernetes-charts.storage.googleapis.com/
   condition: databaseType.postgresql

@@ -5,13 +5,27 @@ image:
   repository: gcr.io/google_containers/heapster
   tag: v1.3.0
   pullPolicy: IfNotPresent
+## Here labels can be added to the heapster deployment
+# labels:
+#   kubernetes.io/cluster-service: "true"
+#   kubernetes.io/name: "Heapster"
+labels: {}
+nodeSelector: {}
+
 service:
   type: ClusterIP
   externalPort: 8082
   internalPort: 8082
   ## This allows an overide of the heapster service name
-  ## Default: {{ template "fullname" . }}
+  ## Default: {{ .Chart.Name }}
   # nameOverride:
+
+  ## Here labels can be added to the heapster service
+  # labels:
+  #   kubernetes.io/cluster-service: "true"
+  #   kubernetes.io/name: "Heapster"
+  labels:
+
 resources:
   limits:
     cpu: 100m

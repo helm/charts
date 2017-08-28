@@ -1,5 +1,9 @@
 {{- if .Values.cluster.storageClass.enabled }}
-apiVersion: storage.k8s.io/v1beta1
+apiVersion: {{ if .Capabilities.APIVersions.Has "storage.k8s.io/v1" -}}
+  storage.k8s.io/v1
+{{- else -}}
+  storage.k8s.io/v1beta1
+{{- end }}
 kind: StorageClass
 metadata:
   labels:

@@ -4,7 +4,7 @@
 replicaCount: 1
 image:
   repository: quay.io/coreos/etcd-operator
-  tag: v0.2.1
+  tag: v0.3.3
   pullPolicy: IfNotPresent
 resources:
   limits:
@@ -13,12 +13,22 @@ resources:
   requests:
     cpu: 100m
     memory: 128Mi
+## Node labels for etcd-operator pod assignment
+## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+##
+nodeSelector: {}
+
+## etcd-operator specific values
+## additional command arguments go here; will be translated to `--key=value` form
+commandArgs:
+  # analytics: true
+
 ## etcd-cluster specific values
 cluster:
   enabled: false
   name: etcd-cluster
   size: 3
-  version: v3.1.2
+  version: v3.1.8
   backup:
     enabled: false
     ## Cloud specific PV provisioner
@@ -31,3 +41,31 @@ cluster:
       storageType: PersistentVolume
       pv:
         volumeSizeInMB: 512
+
+  restore:
+    enabled: false
+    config:
+      storageType: PersistentVolume
+      backupClusterName: etcd-cluster
+
+  ## etcd cluster pod specific values
+  pod:
+    ## Antiaffinity for etcd pod assignment
+    ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+    ##
+    antiAffinity: false
+    resources:
+      limits:
+        cpu: 100m
+        memory: 128Mi
+      requests:
+        cpu: 100m
+        memory: 128Mi
+    ## Node labels for etcd pod assignment
+    ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+    ##
+    nodeSelector: {}
+## Install Default RBAC roles and bindings
+rbac:
+  install: false
+  apiVersion: v1beta1

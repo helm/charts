@@ -1,5 +1,6 @@
 name: ghost
-version: 0.4.10
+version: 0.4.15
+appVersion: 0.11.10
 description: A simple, powerful publishing platform that allows you to share your stories with the world
 keywords:
 - ghost

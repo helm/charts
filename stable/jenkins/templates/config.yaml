@@ -9,7 +9,7 @@ data:
     <?xml version='1.0' encoding='UTF-8'?>
     <hudson>
       <disabledAdministrativeMonitors/>
-      <version>2.32.3</version>
+      <version>{{ .Values.Master.ImageTag }}</version>
       <numExecutors>0</numExecutors>
       <mode>NORMAL</mode>
       <useSecurity>{{ .Values.Master.UseSecurity }}</useSecurity>
@@ -35,9 +35,23 @@ data:
               <name>default</name>
               <instanceCap>2147483647</instanceCap>
               <idleMinutes>0</idleMinutes>
-              <label>{{.Release.Name}}-{{.Values.Agent.Component}}</label>
-              <nodeSelector></nodeSelector>
-              <volumes/>
+              <label>{{ .Release.Name }}-{{ .Values.Agent.Component }}</label>
+              <nodeSelector>
+                {{- $local := dict "first" true }}
+                {{- range $key, $value := .Values.Agent.NodeSelector }}
+                  {{- if not $local.first }},{{- end }}
+                  {{- $key }}={{ $value }}
+                  {{- $_ := set $local "first" false }}
+                {{- end }}</nodeSelector>
+              <volumes>
+{{- range $index, $volume := .Values.Agent.volumes }}
+                <org.csanchez.jenkins.plugins.kubernetes.volumes.{{ $volume.type }}Volume>
+{{- range $key, $value := $volume }}{{- if not (eq $key "type") }}
+                  <{{ $key }}>{{ $value }}</{{ $key }}>
+{{- end }}{{- end }}
+                </org.csanchez.jenkins.plugins.kubernetes.volumes.{{ $volume.type }}Volume>
+{{- end }}
+              </volumes>
               <containers>
                 <org.csanchez.jenkins.plugins.kubernetes.ContainerTemplate>
                   <name>jnlp</name>
@@ -47,7 +61,7 @@ data:
 {{- else }}
                   <privileged>false</privileged>
 {{- end }}
-                  <alwaysPullImage>false</alwaysPullImage>
+                  <alwaysPullImage>{{ .Values.Agent.AlwaysPullImage }}</alwaysPullImage>
                   <workingDir>/home/jenkins</workingDir>
                   <command></command>
                   <args>${computer.jnlpmac} ${computer.name}</args>
@@ -56,7 +70,12 @@ data:
                   <resourceRequestMemory>{{.Values.Agent.Memory}}</resourceRequestMemory>
                   <resourceLimitCpu>{{.Values.Agent.Cpu}}</resourceLimitCpu>
                   <resourceLimitMemory>{{.Values.Agent.Memory}}</resourceLimitMemory>
-                  <envVars/>
+                  <envVars>
+                    <org.csanchez.jenkins.plugins.kubernetes.ContainerEnvVar>
+                      <key>JENKINS_URL</key>
+                      <value>http://{{ template "fullname" . }}:{{.Values.Master.ServicePort}}{{ default "" .Values.Master.JenkinsUriPrefix }}</value>
+                    </org.csanchez.jenkins.plugins.kubernetes.ContainerEnvVar>
+                  </envVars>
                 </org.csanchez.jenkins.plugins.kubernetes.ContainerTemplate>
               </containers>
               <envVars/>
@@ -69,8 +88,8 @@ data:
           <serverUrl>https://kubernetes.default</serverUrl>
           <skipTlsVerify>false</skipTlsVerify>
           <namespace>{{ .Release.Namespace }}</namespace>
-          <jenkinsUrl>http://{{ template "fullname" . }}:{{.Values.Master.ServicePort}}</jenkinsUrl>
-          <jenkinsTunnel>{{ template "fullname" . }}:50000</jenkinsTunnel>
+          <jenkinsUrl>http://{{ template "fullname" . }}:{{.Values.Master.ServicePort}}{{ default "" .Values.Master.JenkinsUriPrefix }}</jenkinsUrl>
+          <jenkinsTunnel>{{ template "fullname" . }}-agent:50000</jenkinsTunnel>
           <containerCap>10</containerCap>
           <retentionTimeout>5</retentionTimeout>
           <connectTimeout>0</connectTimeout>
@@ -118,6 +137,7 @@ data:
     cp -n /var/jenkins_config/config.xml /var/jenkins_home;
 {{- if .Values.Master.InstallPlugins }}
     cp /var/jenkins_config/plugins.txt /var/jenkins_home;
+    rm /usr/share/jenkins/ref/plugins/*.lock
     /usr/local/bin/install-plugins.sh `echo $(cat /var/jenkins_home/plugins.txt)`;
 {{- end }}
 {{- if .Values.Master.ScriptApproval }}
@@ -129,7 +149,7 @@ data:
 {{- end }}
 {{- range $key, $val := .Values.Master.InitScripts }}
   init{{ $key }}.groovy: |-
-{{ $val | indent 4}}
+{{ $val | indent 4 }}
 {{- end }}
   plugins.txt: |-
 {{- if .Values.Master.InstallPlugins }}

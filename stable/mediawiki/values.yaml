@@ -1,7 +1,7 @@
 ## Bitnami MediaWiki image version
 ## ref: https://hub.docker.com/r/bitnami/mediawiki/tags/
 ##
-image: bitnami/mediawiki:1.28.2-r1
+image: bitnami/mediawiki:1.29.1-r0
 
 ## Specify a imagePullPolicy
 ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'

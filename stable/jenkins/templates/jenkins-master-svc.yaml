@@ -8,6 +8,10 @@ metadata:
     release: {{.Release.Name | quote }}
     chart: "{{.Chart.Name}}-{{.Chart.Version}}"
     component: "{{.Release.Name}}-{{.Values.Master.Component}}"
+{{- if .Values.Master.ServiceAnnotations }}
+  annotations:
+{{ toYaml .Values.Master.ServiceAnnotations | indent 4 }}
+{{- end }}
 spec:
   ports:
     - port: {{.Values.Master.ServicePort}}
@@ -16,12 +20,12 @@ spec:
       {{if (and (eq .Values.Master.ServiceType "NodePort") (not (empty .Values.Master.NodePort)))}}
       nodePort: {{.Values.Master.NodePort}}
       {{end}}
-    - port: {{.Values.Master.SlaveListenerPort}}
-      targetPort: {{.Values.Master.SlaveListenerPort}}
-      name: slavelistener
   selector:
     component: "{{.Release.Name}}-{{.Values.Master.Component}}"
   type: {{.Values.Master.ServiceType}}
   {{if eq .Values.Master.ServiceType "LoadBalancer"}}
   loadBalancerSourceRanges: {{.Values.Master.LoadBalancerSourceRanges}}
+  {{if .Values.Master.LoadBalancerIP}}
+  loadBalancerIP: {{.Values.Master.LoadBalancerIP}}
+  {{end}}
   {{end}}

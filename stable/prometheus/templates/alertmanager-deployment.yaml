@@ -22,10 +22,16 @@ spec:
         component: "{{ .Values.alertmanager.name }}"
         release: {{ .Release.Name }}
     spec:
+      serviceAccountName: {{ if .Values.rbac.create }}{{ template "prometheus.alertmanager.fullname" . }}{{ else }}"{{ .Values.alertmanager.serviceAccountName }}"{{ end }}
       containers:
         - name: {{ template "prometheus.name" . }}-{{ .Values.alertmanager.name }}
           image: "{{ .Values.alertmanager.image.repository }}:{{ .Values.alertmanager.image.tag }}"
           imagePullPolicy: "{{ .Values.alertmanager.image.pullPolicy }}"
+          env:
+            {{- range $key, $value := .Values.alertmanager.extraEnv }}
+            - name: {{ $key }}
+              value: {{ $value }}
+            {{- end }}
           args:
             - --config.file=/etc/config/alertmanager.yml
             - --storage.path={{ .Values.alertmanager.persistentVolume.mountPath }}
@@ -68,7 +74,7 @@ spec:
       volumes:
         - name: config-volume
           configMap:
-            name: {{ template "prometheus.alertmanager.fullname" . }}
+            name: {{ if .Values.alertmanager.configMapOverrideName }}{{ .Release.Name }}-{{ .Values.alertmanager.configMapOverrideName }}{{- else }}{{ template "prometheus.alertmanager.fullname" . }}{{- end }}
         - name: storage-volume
         {{- if .Values.alertmanager.persistentVolume.enabled }}
           persistentVolumeClaim:

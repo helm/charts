@@ -17,6 +17,15 @@ usePassword: true
 ##
 # redisPassword:
 
+## Redis command arguments
+##
+## Can be used to specify command line arguments, for example:
+##
+## args:
+##  - "redis-server"
+##  - "--maxmemory-policy volatile-ttl"
+args:
+
 ## Enable persistence using Persistent Volume Claims
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
 ##
@@ -52,3 +61,9 @@ resources:
   requests:
     memory: 256Mi
     cpu: 100m
+
+## Node labels and tolerations for pod assignment
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
+nodeSelector: {}
+tolerations: []
