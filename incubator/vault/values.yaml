@@ -25,32 +25,32 @@ ingress:
     #     - chart-example.local
 # A YAML representation of a final vault config.json file.
 # See https://www.vaultproject.io/docs/configuration/ for more information.
-vaultmode:
-# Only used to enable dev mode. When in dev mode, the rest of this configuration
-# is ignored. See https://www.vaultproject.io/intro/getting-started/dev-server.html
-# for more information.
-  dev: true
 vault:
-  listener:
-    tcp:
-      address: '0.0.0.0:8200'
-      tls_disable: 1
-# See https://www.vaultproject.io/docs/configuration/storage/ for storage backends
-  storage:
-    #consul:
-    #  address: ""
-    #  path: ""
-    #
-    #etcd:
-    #  address: ""
-    #  path: "vault/"
-    #
-    #s3:
-    #  bucket: ""
-    #  region: ""
-    #  access_key: ""
-    #  secret_key: ""
-    #  endpoint: "" # When not using AWS S3
+  # Only used to enable dev mode. When in dev mode, the rest of this configuration
+  # is ignored. See https://www.vaultproject.io/intro/getting-started/dev-server.html
+  # for more information.
+  dev: true
+  config:
+    listener:
+      tcp:
+        address: '0.0.0.0:8200'
+        tls_disable: 1
+    # See https://www.vaultproject.io/docs/configuration/storage/ for storage backends
+    storage:
+      #consul:
+      #  address: ""
+      #  path: ""
+      #
+      #etcd:
+      #  address: ""
+      #  path: "vault/"
+      #
+      #s3:
+      #  bucket: ""
+      #  region: ""
+      #  access_key: ""
+      #  secret_key: ""
+      #  endpoint: "" # When not using AWS S3
 resources:
   limits:
 #    cpu: 100m

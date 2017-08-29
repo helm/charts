@@ -25,19 +25,20 @@ To install the chart, use the following, this backs vault with a Consul cluster:
 
 ```console
 $ helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
-$ helm install incubator/vault --set vault.storage.consul.address="myconsul-svc-name:8500",vault.storage.consul.path="vault"
+$ helm install incubator/vault --set vault.config.storage.consul.address="myconsul-svc-name:8500",vault.config.storage.consul.path="vault"
 ```
 
 An alternative example using the Amazon S3 backend can be specified using:
 
 ```
 vault:
-  storage:
-    s3:
-      access_key: "AWS-ACCESS-KEY"
-      secret_key: "AWS-SECRET-KEY"
-      bucket: "AWS-BUCKET"
-      region: "eu-central-1"
+  config:
+    storage:
+      s3:
+        access_key: "AWS-ACCESS-KEY"
+        secret_key: "AWS-SECRET-KEY"
+        bucket: "AWS-BUCKET"
+        region: "eu-central-1"
 ```
 
 ## Configuration
@@ -49,8 +50,8 @@ The following tables lists the configurable parameters of the vault chart and th
 | `image.pullPolicy`      | Container pull policy               | `IfNotPresent`                                      |
 | `image.repository`      | Container image to use              | `vault`                                             |
 | `image.tag`             | Container image tag to deploy       | `0.8.1`                                             |
-| `vaultmode.dev`         | Use Vault in dev mode               | true                                                |
-| `vault`                 | Vault configuration                 | No default backend                                  |
+| `vault.dev`             | Use Vault in dev mode               | true (set to false in production)                   |
+| `vault.config`          | Vault configuration                 | No default backend                                  |
 | `replicaCount`          | k8s replicas                        | `1`                                                 |
 | `resources.limits.cpu`  | Container requested CPU             | `nil`                                               |
 | `resources.limits.memory` | Container requested memory        | `128Mi`                                             |
