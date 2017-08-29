@@ -77,5 +77,4 @@ configmap:
   security:
   # Uncomment for TLS support
   # authorization: enabled
-  # clusterAuthMode: x509
   # keyFile: /keydir/key.txt
