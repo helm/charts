@@ -12,7 +12,7 @@ To verify that {{ template "fullname" . }} has started, run:
 ####   ERROR: You did not provide Buildkite Agent Token.                  ####
 ##############################################################################
 
-All pods do not go to the running state if the Buildkite Agent Token was not provided.
+Pods will not go to the running state if the Buildkite Agent Token was not provided.
 
 This deployment will be incomplete until you provide Buildkite Agent Token:
 
