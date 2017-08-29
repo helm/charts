@@ -18,7 +18,7 @@ Replicas: 3
 Image: "consul"
 ImageTag: "0.8.3"
 ImagePullPolicy: "Always"
-resources: {}
+Resources: {}
  # requests:
  #   cpu: "100m"
  #   memory: "256Mi"
