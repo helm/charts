@@ -23,14 +23,14 @@ ingress:
     # - secretName: chart-example-tls
     #   hosts:
     #     - chart-example.local
-# A YAML representation of a final vault config.json file.
-# See https://www.vaultproject.io/docs/configuration/ for more information.
 vault:
   # Only used to enable dev mode. When in dev mode, the rest of this configuration
   # is ignored. See https://www.vaultproject.io/intro/getting-started/dev-server.html
   # for more information.
   dev: true
   config:
+    # A YAML representation of a final vault config.json file.
+    # See https://www.vaultproject.io/docs/configuration/ for more information.
     listener:
       tcp:
         address: '0.0.0.0:8200'
