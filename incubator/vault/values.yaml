@@ -24,9 +24,10 @@ ingress:
     #   hosts:
     #     - chart-example.local
 vault:
-  # Only used to enable dev mode. When in dev mode, the rest of this configuration
-  # is ignored. See https://www.vaultproject.io/intro/getting-started/dev-server.html
-  # for more information.
+  # Only used to enable dev mode. When in dev mode, the rest of this config
+  # section below is not used to configure Vault. See
+  # https://www.vaultproject.io/intro/getting-started/dev-server.html for more
+  # information.
   dev: true
   config:
     # A YAML representation of a final vault config.json file.
