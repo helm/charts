@@ -191,7 +191,7 @@ data:
       },
       notifications: {
         email: {
-          enabled: {{ .Values.email.enabled }},
+          enabled: {{ .Values.mail.enabled }},
         },
         hipchat: {
           enabled: false,
