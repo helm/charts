@@ -224,6 +224,9 @@ nodeExporter:
   ##
   enabled: true
 
+  rbac:
+    create: false
+
   # Defines the serviceAccountName to use when `rbac.create=false`
   serviceAccountName: default
 

@@ -1,0 +1,2 @@
+For more information on running Prometheus, visit:
+https://prometheus.io/
