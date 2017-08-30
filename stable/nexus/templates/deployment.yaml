@@ -23,13 +23,13 @@ spec:
             - containerPort: {{ .Values.service.internalPort }}
           livenessProbe:
             httpGet:
-              path: /service/metrics/ping
+              path: /
               port: {{ .Values.service.internalPort }}
             initialDelaySeconds: 30
             periodSeconds: 30
           readinessProbe:
             httpGet:
-              path: /service/metrics/ping
+              path: /
               port: {{ .Values.service.internalPort }}
             initialDelaySeconds: 30
             periodSeconds: 30
