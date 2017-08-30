@@ -29,6 +29,10 @@ mail:
   fromAddress: spinnaker@example.org
   port: 25
 
+slack:
+  enabled: false
+  token:
+
 # Images for each component
 images:
   clouddriver: gcr.io/spinnaker-marketplace/clouddriver:0.5.0-72
