@@ -25,10 +25,15 @@ spec:
             httpGet:
               path: /service/metrics/ping
               port: {{ .Values.service.internalPort }}
+            initialDelaySeconds: 30
+            periodSeconds: 30
           readinessProbe:
             httpGet:
               path: /service/metrics/ping
               port: {{ .Values.service.internalPort }}
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            failureThreshold: 6
           volumeMounts:
             - mountPath: /nexus-data
               name: nexus-data-volume

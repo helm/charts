@@ -51,14 +51,14 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 ```bash
 $ helm install --name my-release \
   --set persistence.enabled=false \
-    stable/mysql
+    stable/nexus
 ```
 The above example turns off the persistence. Data will not be kept between restarts or deployments
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```bash
-$ helm install --name my-release -f values.yaml stable/mysql
+$ helm install --name my-release -f values.yaml stable/nexus
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
