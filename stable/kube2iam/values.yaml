@@ -11,7 +11,7 @@ host:
 
 image:
   repository: jtblin/kube2iam
-  tag: 0.6.4
+  tag: 0.7.0
   pullPolicy: IfNotPresent
 
 ## Node labels for pod assignment
@@ -46,3 +46,5 @@ resources: {}
 updateStrategy: OnDelete
 
 verbose: false
+
+tolerations: []

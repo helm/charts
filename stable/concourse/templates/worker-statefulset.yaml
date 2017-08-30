@@ -7,6 +7,7 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
+
 spec:
   serviceName: {{ template "worker.fullname" . }}
   replicas: {{ .Values.worker.replicas }}
@@ -15,24 +16,9 @@ spec:
       labels:
         app: {{ template "worker.fullname" . }}
       annotations:
-        scheduler.alpha.kubernetes.io/affinity: >
-          {
-            "podAntiAffinity": {
-              "preferredDuringSchedulingIgnoredDuringExecution": [
-                {
-                  "weight": 100,
-                  "labelSelector": {
-                    "matchExpressions": [{
-                      "key": "app",
-                      "operator": "In",
-                      "values": ["{{ template "worker.fullname" . }}"]
-                    }]
-                  },
-                  "topologyKey": "kubernetes.io/hostname"
-                }
-              ]
-            }
-          }
+        {{- range $key, $value := .Values.worker.annotations }}
+        {{ $key }}: {{ $value | quote }}
+        {{- end }}
     spec:
       terminationGracePeriodSeconds: 60
       containers:
@@ -75,6 +61,11 @@ spec:
               value: "/concourse-keys/worker_key"
             - name: CONCOURSE_WORK_DIR
               value: "/concourse-work-dir"
+            - name: CONCOURSE_BAGGAGECLAIM_DRIVER
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "concourse.fullname" . }}
+                  key: concourse-baggageclaim-driver
           resources:
 {{ toYaml .Values.worker.resources | indent 12 }}
           securityContext:
@@ -85,6 +76,16 @@ spec:
               readOnly: true
             - name: concourse-work-dir
               mountPath: /concourse-work-dir
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              topologyKey: kubernetes.io/hostname
+              labelSelector:
+                matchLabels:
+                  app: {{ template "worker.fullname" . }}
+                  release: {{ .Release.Name | quote }}
       volumes:
         - name: concourse-keys
           secret:

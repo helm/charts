@@ -1,7 +1,7 @@
 ## GitLab CE image
 ## ref: https://hub.docker.com/r/gitlab/gitlab-ce/tags/
 ##
-image: gitlab/gitlab-ce:9.1.0-ce.0
+image: gitlab/gitlab-ce:9.4.1-ce.0
 
 ## Specify a imagePullPolicy
 ## 'Always' if imageTag is 'latest', else set to 'IfNotPresent'
@@ -23,6 +23,19 @@ image: gitlab/gitlab-ce:9.1.0-ce.0
 ## ref: http://kubernetes.io/docs/user-guide/services/#publishing-services---service-types
 ##
 serviceType: LoadBalancer
+
+## Ingress configuration options
+##
+ingress:
+  annotations:
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+  enabled: false
+  tls:
+      # - secretName: gitlab.cluster.local
+      #   hosts:
+      #     - gitlab.cluster.local
+  url: gitlab.cluster.local
 
 ## Configure external service ports
 ## ref: http://kubernetes.io/docs/user-guide/services/

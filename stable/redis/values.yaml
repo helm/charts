@@ -17,6 +17,15 @@ usePassword: true
 ##
 # redisPassword:
 
+## Redis command arguments
+##
+## Can be used to specify command line arguments, for example:
+##
+## args:
+##  - "redis-server"
+##  - "--maxmemory-policy volatile-ttl"
+args:
+
 ## Enable persistence using Persistent Volume Claims
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
 ##

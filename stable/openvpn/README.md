@@ -12,28 +12,27 @@ helm install stable/openvpn
 ```
 
 Wait for the external load balancer IP to become available.  Check service status via: `kubectl get svc`
- 
+
 Please be aware that certificate generation is variable and may take some time (minutes).
 Check pod status via:
 
 ```bash
-POD_NAME=`kubectl get pods -l type=openvpn | awk END'{ print $1 }'` \
+POD_NAME=$(kubectl get pods -l type=openvpn -o jsonpath='{.items[0].metadata.name}') \
 && kubectl log $POD_NAME --follow
 ```
 
 When ready generate a client key as follows:
 
 ```bash
-POD_NAME=`kubectl get pods --namespace {{ .Release.Namespace }} -l type=openvpn | awk END'{ print $1 }'` \
-&& SERVICE_NAME=`kubectl get svc --namespace {{ .Release.Namespace }} -l type=openvpn | awk END'{ print $1 }'` \
-&& SERVICE_IP=`kubectl get svc $SERVICE_NAME --namespace {{ .Release.Namespace }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}'` \
-&& KEY_NAME=kubeVPN \
-&& kubectl exec --namespace {{ .Release.Namespace }} -it $POD_NAME /etc/openvpn/setup/newClientCert.sh $KEY_NAME $SERVICE_IP \
-&& kubectl exec --namespace {{ .Release.Namespace }} -it $POD_NAME cat /etc/openvpn/certs/pki/$KEY_NAME.ovpn > $KEY_NAME.ovpn
-
+POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l type=openvpn -o jsonpath='{.items[0].metadata.name}')
+SERVICE_NAME=$(kubectl get svc --namespace {{ .Release.Namespace }} -l type=openvpn  -o jsonpath='{.items[0].metadata.name}')
+SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} $SERVICE_NAME -o go-template='{{range $k, $v := (index .status.loadBalancer.ingress 0)}}{{$v}}{{end}}')
+KEY_NAME=kubeVPN \
+kubectl --namespace {{ .Release.Namespace }} exec -it $POD_NAME /etc/openvpn/setup/newClientCert.sh $KEY_NAME $SERVICE_IP
+kubectl --namespace {{ .Release.Namespace }} exec -it $POD_NAME cat /etc/openvpn/certs/pki/$KEY_NAME.ovpn > $KEY_NAME.ovpn
 ```
 
-Be sure to change KEY_NAME if generating additional keys.  Import the .ovpn file into your favorite openvpn tool like tunnelblick and verify connectivity.
+Be sure to change `KEY_NAME` if generating additional keys.  Import the .ovpn file into your favorite openvpn tool like tunnelblick and verify connectivity.
 
 ## Configuration
 
@@ -51,5 +50,6 @@ New certificates are generated with each deployment.  If persistence is enabled 
 * openvpn.OVPN_PROTO: tcp - Protocol used by openvpn tcp or udp (default: tcp).
 * openvpn.OVPN_K8S_POD_NETWORK: "10.0.0.0" - Kubernetes pod network (optional).
 * openvpn.OVPN_K8S_POD_SUBNET: "255.0.0.0" - Kubernetes pod network subnet (optional).
+* openvpn.conf: "" - Arbitrary lines appended to the end of the server configuration file
 
 #### Note: As configured the chart will create a route for a large 10.0.0.0/8 network that may cause issues if that is your local network.  If so tweak this value to something more restrictive.  This route is added, because GKE generates pods with IPs in this range.

@@ -2,43 +2,62 @@ apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
   labels:
-    app: {{ template "name" . }}
+    app: {{ template "elasticsearch.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     component: "{{ .Values.data.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-  name: {{ template "data.fullname" . }}
+  name: {{ template "elasticsearch.data.fullname" . }}
 spec:
-  serviceName: {{ template "data.fullname" . }}
+  serviceName: {{ template "elasticsearch.data.fullname" . }}
   replicas: {{ .Values.data.replicas }}
   template:
     metadata:
       labels:
-        app: {{ template "name" . }}
+        app: {{ template "elasticsearch.name" . }}
         component: "{{ .Values.data.name }}"
         release: {{ .Release.Name }}
       annotations:
         pod.alpha.kubernetes.io/initialized: "true"
-        # see https://www.elastic.co/guide/en/elasticsearch/reference/current/vm-max-map-count.html
-        # and https://www.elastic.co/guide/en/elasticsearch/reference/current/setup-configuration-memory.html#mlockall
-        pod.alpha.kubernetes.io/init-containers: '[
-          {
-            "name": "sysctl",
-            "image": "busybox",
-            "imagePullPolicy": "Always",
-            "command": ["sysctl", "-w", "vm.max_map_count=262144"],
-            "securityContext": {
-              "privileged": true
-            }
-          }
-        ]'
     spec:
-      serviceAccountName: {{ template "fullname" . }}
+      serviceAccountName: {{ template "elasticsearch.fullname" . }}
+      {{- if eq .Values.data.antiAffinity "hard" }}
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - topologyKey: "kubernetes.io/hostname"
+              labelSelector:
+                matchLabels:
+                  app: "{{ template "elasticsearch.name" . }}"
+                  release: "{{ .Release.Name }}"
+                  component: "{{ .Values.data.name }}"
+      {{- else if eq .Values.data.antiAffinity "soft" }}
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 1
+            podAffinityTerm:
+              topologyKey: kubernetes.io/hostname
+              labelSelector:
+                matchLabels:
+                  app: "{{ template "elasticsearch.name" . }}"
+                  release: "{{ .Release.Name }}"
+                  component: "{{ .Values.data.name }}"
+      {{- end }}
+      initContainers:
+      # see https://www.elastic.co/guide/en/elasticsearch/reference/current/vm-max-map-count.html
+      # and https://www.elastic.co/guide/en/elasticsearch/reference/current/setup-configuration-memory.html#mlockall
+      - name: "sysctl"
+        image: "busybox"
+        imagePullPolicy: "Always"
+        command: ["sysctl", "-w", "vm.max_map_count=262144"]
+        securityContext:
+          privileged: true
       containers:
       - name: elasticsearch
         env:
         - name: SERVICE
-          value: {{ template "master.fullname" . }}
+          value: {{ template "elasticsearch.master.fullname" . }}
         - name: KUBERNETES_MASTER
           value: kubernetes.default.svc.cluster.local
         - name: KUBERNETES_NAMESPACE
@@ -85,7 +104,7 @@ spec:
       volumes:
       - name: config
         configMap:
-          name: {{ template "fullname" . }}
+          name: {{ template "elasticsearch.fullname" . }}
   volumeClaimTemplates:
   - metadata:
       name: data

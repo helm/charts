@@ -170,10 +170,6 @@ spec:
       # No pre-stop hook is required, a SIGTERM plus some time is all that's
       # needed for graceful shutdown of a node.
       terminationGracePeriodSeconds: 60
-      volumes:
-      - name: datadir
-        persistentVolumeClaim:
-          claimName: datadir
   volumeClaimTemplates:
   - metadata:
       name: datadir

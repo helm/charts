@@ -21,6 +21,6 @@ server, you should provide multiple servers in the connection string to allow
 for the client to continue to function in the presence of individual server
 failures. It is important that you do not use IP addresses and instead use the
 DNS entries for the domain established by the StatefulSet's HeadlessService.
-Your connection string should look like {{ template "fullname" . }}-headless-0:{{ .Values.ClientPort }},{{ template "fullname" . }}-headless-1:{{ .Values.ClientPort }},...
-You can also use the client Service {{ template "fullname" . }}:{{ .Values.ClientPort }} to connect to an
+Your connection string should look like {{ template "zookeeper.fullname" . }}-headless-0:{{ .Values.ClientPort }},{{ template "zookeeper.fullname" . }}-headless-1:{{ .Values.ClientPort }},...
+You can also use the client Service {{ template "zookeeper.fullname" . }}:{{ .Values.ClientPort }} to connect to an
 available ZooKeeper server.

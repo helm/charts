@@ -7,11 +7,17 @@ image:
   tag: "2.4.0"
   pullPolicy: "Always"
 
+cluster:
+  name: "elasticsearch"
+  config:
+    
+
 client:
   name: client
   replicas: 2
   serviceType: ClusterIP
   heapSize: "128m"
+  antiAffinity: "soft"
   resources:
     limits:
       cpu: "1"
@@ -24,6 +30,7 @@ master:
   name: master
   replicas: 2
   heapSize: "128m"
+  antiAffinity: "soft"
   resources:
     limits:
       cpu: "1"
@@ -39,6 +46,7 @@ data:
   storage: "30Gi"
   # storageClass: "ssd"
   terminationGracePeriodSeconds: 3600
+  antiAffinity: "soft"
   resources:
     limits:
       cpu: "1"

@@ -1,4 +1,4 @@
-# Contributing guidelines
+# Contributing Guidelines
 
 The Kubernetes Charts project accepts contributions via GitHub pull requests. This document outlines the process to help get your contribution accepted.
 
@@ -15,11 +15,11 @@ please add a comment [here](https://github.com/kubernetes/kubernetes/issues/2779
 
 ***NOTE***: Only original source code from you and other people that have signed the CLA can be accepted into the main repository.
 
-### Reporting a bug in Helm
+### Reporting a Bug in Helm
 
 This repository is used by Chart developers for maintaining the official charts for Kubernetes Helm. If your issue is in the Helm tool itself, please use the issue tracker in the [kubernetes/helm](https://github.com/kubernetes/helm) repository.
 
-### How to contribute a Chart
+### How to Contribute a Chart
 
 1. If you haven't already done so, sign a Contributor License Agreement (see details above).
 1. Fork this repository, develop and test your Chart.
@@ -73,7 +73,7 @@ Once the Chart has been merged, the release job will automatically run in the CI
 
 Whether you are a user or contributor, official support channels include:
 
-- GitHub issues: https://github.com/kubenetes/charts/issues/new
+- GitHub issues: https://github.com/kubenetes/charts/issues
 - Slack: Helm Users - #Helm-users room in the [Kubernetes Slack](http://slack.kubernetes.io/)
 - Slack: Helm Developers - #Helm-dev room in the [Kubernetes Slack](http://slack.kubernetes.io/)
 

@@ -1,8 +1,8 @@
-## Google Cloud SQl Proxy image
+## Google Cloud SQL Proxy image
 ## ref: https://cloud.google.com/sql/docs/mysql/sql-proxy
 ## ref: https://cloud.google.com/sql/docs/postgres/sql-proxy
 image: b.gcr.io/cloudsql-docker/gce-proxy
-imageTag: "1.09"
+imageTag: "1.10"
 
 ## Specify a imagePullPolicy
 ## 'Always' if imageTag is 'latest', else set to 'IfNotPresent'

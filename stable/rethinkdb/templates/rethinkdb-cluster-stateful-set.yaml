@@ -102,6 +102,7 @@ spec:
         requests:
           storage: {{ .Values.cluster.persistentVolume.size | quote }}
 {{- else }}
+      volumes:
         - name: datadir
           emptyDir: {}
 {{- end }}
