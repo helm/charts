@@ -23,7 +23,7 @@ $ helm install --name my-release stable/netsil
 
 ## Configuration
 
-The following tables lists the configurable parameters of the Memcached chart and their default values.
+The following tables lists the configurable parameters of the Netsil chart and their default values.
 
 |      Parameter            |          Description            |                         Default                         |
 |---------------------------|---------------------------------|---------------------------------------------------------|
