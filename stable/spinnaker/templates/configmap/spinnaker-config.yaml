@@ -202,7 +202,7 @@ data:
         },
         slack: {
           enabled: {{ .Values.slack.enabled }},
-          botName: 'spinnakerbot'
+          botName: '{{ .Values.slack.botName }}'
         }
       },
       whatsNew: {
