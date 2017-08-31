@@ -1,9 +1,9 @@
 deployment:
   image: netsil/netsil
-  pullPolicy: ifNotPresent
+  pullPolicy: IfNotPresent
   tag: stable-1.5.3
 
 collector:
   image: netsil/collectors
-  pullPolicy: ifNotPresent
+  pullPolicy: IfNotPresent
   tag: stable-1.5.3
