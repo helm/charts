@@ -23,7 +23,15 @@ $ helm install --name my-release stable/netsil
 
 ## Configuration
 
-Configurable values are documented in the `values.yaml`.
+The following tables lists the configurable parameters of the Memcached chart and their default values.
+
+|      Parameter            |          Description            |                         Default                         |
+|---------------------------|---------------------------------|---------------------------------------------------------|
+| `tag`                     | The image tag 		          | A recent official Netsil tag                            |
+| `repository`         		| Image repository                | A recent official Netsil repo                           |
+| `type`     				| Service type					  | NodePort                                                |
+| `pullPolicy`              | 							      | IfNotPresent                                            |
+
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
