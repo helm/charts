@@ -1,5 +1,6 @@
 name: netsil
 version: 1.5.3
+appVersion: 1.5.3
 description: Netsil Application Operations Center (AOC)
 keywords:
   - monitoring

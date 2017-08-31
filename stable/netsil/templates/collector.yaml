@@ -13,6 +13,7 @@ spec:
     metadata:
       labels:
         app: {{ .Chart.Name }}
+        release: {{ .Release.Name }}
         component: collector
     spec:
       hostNetwork: true

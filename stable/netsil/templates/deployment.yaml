@@ -15,8 +15,8 @@ spec:
       name: stream-processor
       labels:
         app: {{ .Chart.Name }}
+        release: {{ .Release.Name }}
         component: stream-processor
-        version: stable
     spec:
       containers:
       - name: {{ .Chart.Name }}
