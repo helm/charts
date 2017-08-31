@@ -4,8 +4,6 @@
 
 ## Chart Details
 
-This Chart will: 
-
 * Installs a deployment that provisions the Netsil AOC Console along with a DaemonSet for the AOC agent.
 * Requires 2X Large sizes at AWS or equivalent.
 * Requires the [kube-state-metrics chart](https://github.com/kubernetes/charts/tree/master/stable/kube-state-metrics).
