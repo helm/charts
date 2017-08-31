@@ -88,9 +88,9 @@ $ helm install --name my-release -f values.yaml stable/redis
 
 ## NetworkPolicy
 
-To enable network policy for redis, install
+To enable network policy for Redis, install
 [a networking plugin that implements the Kubernetes NetworkPolicy spec](https://kubernetes.io/docs/tasks/administer-cluster/declare-network-policy#before-you-begin),
-and set `NetworkPolicy.Enabled` to `true`.
+and set `networkPolicy.enabled` to `true`.
 
 For Kubernetes v1.5 & v1.6, you must also turn on NetworkPolicy by setting
 the DefaultDeny namespace annotation. Note: this will enforce policy for _all_ pods in the namespace:
@@ -98,7 +98,7 @@ the DefaultDeny namespace annotation. Note: this will enforce policy for _all_ p
     kubectl annotate namespace default "net.beta.kubernetes.io/network-policy={\"ingress\":{\"isolation\":\"DefaultDeny\"}}"
 
 With NetworkPolicy enabled, only pods with the generated client label will be
-able to connect to redis. This label will be displayed in the output
+able to connect to Redis. This label will be displayed in the output
 after a successful install.
 
 ## Persistence

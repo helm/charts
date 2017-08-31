@@ -3,6 +3,11 @@ kind: NetworkPolicy
 apiVersion: {{ template "networkPolicy.apiVersion" . }}
 metadata:
   name: "{{ template "redis.fullname" . }}"
+  labels:
+    app: {{ template "redis.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
 spec:
   podSelector:
     matchLabels:
