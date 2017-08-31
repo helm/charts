@@ -35,7 +35,8 @@ data:
               <name>default</name>
               <namespace>{{ .Release.Namespace }}</namespace>
               <instanceCap>2147483647</instanceCap>
-              <idleMinutes>0</idleMinutes>
+              <idleMinutes>{{ default 0 .Values.Agent.IdleMinutes }}</idleMinutes>
+              <slaveConnectTimeout>{{ default 100 .Values.Agent.ConnectTimeout }}</slaveConnectTimeout>              
               <label>{{.Release.Name}}-{{.Values.Agent.Component}}</label>
               <nodeSelector></nodeSelector>
               <volumes>
@@ -68,13 +69,14 @@ data:
                   <envVars/>
                 </org.csanchez.jenkins.plugins.kubernetes.ContainerTemplate>
               </containers>
-              <envVars/>
+              <envVars>
 {{- range $index, $var := .Values.Agent.envVars }}
                 <org.csanchez.jenkins.plugins.kubernetes.PodEnvVar>
                   <key>{{ $var.name }}</key>
                   <value>{{ $var.value }}</value>
                 </org.csanchez.jenkins.plugins.kubernetes.PodEnvVar>
 {{- end }}
+              </envVars>
               <annotations/>
               <imagePullSecrets>
 {{- range $index, $secret := .Values.Agent.imagePullSecrets }}
