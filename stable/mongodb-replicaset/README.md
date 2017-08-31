@@ -113,7 +113,6 @@ configmap:
     ssl:
       mode: requireSSL
       CAFile: /ca/tls.crt
-      clusterFile: /work-dir/mongo.pem
       PEMKeyFile: /work-dir/mongo.pem
   replication:
     replSetName: rs0
@@ -123,8 +122,8 @@ configmap:
     keyFile: /keydir/key.txt
 ```
 
-To access the cluster you need one of the certificates generated during cluster setup in `/work-dir/mongo.pem` or you
-generate an own one via:
+To access the cluster you need one of the certificates generated during cluster setup in `/work-dir/mongo.pem` of the
+certain container or you generate an own one via:
 
 ```console
 $ cat >openssl.cnf <<EOL

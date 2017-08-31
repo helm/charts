@@ -70,7 +70,6 @@ configmap:
     # Uncomment for TLS support
     # mode: requireSSL
     # CAFile: /ca/tls.crt
-    # clusterFile: /work-dir/mongo.pem
     # PEMKeyFile: /work-dir/mongo.pem
   replication:
     replSetName: rs0
