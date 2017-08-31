@@ -5,24 +5,10 @@ streamProcessor:
     pullPolicy: IfNotPresent
   
   service:
-    annotations: {}
-    clusterIP: ""
     type: NodePort
-
-  podAnnotations: {} 
-
-  resources: {}
-
-  nodeSelector: {}
 
 collector:
   image:
     repository: netsil/collectors
     tag: stable-1.5.3
     pullPolicy: IfNotPresent
-  
-  podAnnotations: {} 
-
-  resources: {}
-
-  nodeSelector: {}

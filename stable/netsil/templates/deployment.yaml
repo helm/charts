@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
       - name: {{ .Chart.Name }}
-        image: "{{ .Values.deployment.image }}:{{ .Values.deployment.tag }}"
+        image: "{{ .Values.streamProcessor.image.repository }}:{{ .Values.streamProcessor.image.tag }}"
         command:
         - /root/startup.sh
         ports:

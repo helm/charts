@@ -19,7 +19,7 @@ spec:
       hostNetwork: true
       containers:
       - name: collector
-        image: "{{ .Values.collector.image }}:{{ .Values.collector.tag }}"
+        image: "{{ .Values.collector.image.repository }}:{{ .Values.collector.image.tag }}"
         command: ["/bin/bash","-c","while true ; do NETSIL_SP_HOST=$NETSIL_SERVICE_HOST /opt/netsil/collectors/start.sh ; echo Exiting, possibly to upgrade ; sleep 5 ; done"]
         securityContext:
           capabilities:

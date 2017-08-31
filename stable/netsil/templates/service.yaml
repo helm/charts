@@ -28,4 +28,4 @@ spec:
     - name: port2003udp
       port: 2003
       protocol: UDP
-  type: NodePort
+  type: {{ .Values.streamProcessor.service.type }}
