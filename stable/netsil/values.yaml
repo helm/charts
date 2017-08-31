@@ -1,9 +1,28 @@
-deployment:
-  image: netsil/netsil
-  pullPolicy: IfNotPresent
-  tag: stable-1.5.3
+streamProcessor:
+  image:
+    repository: netsil/netsil
+    tag: stable-1.5.3
+    pullPolicy: IfNotPresent
+  
+  service:
+    annotations: {}
+    clusterIP: ""
+    type: NodePort
+
+  podAnnotations: {} 
+
+  resources: {}
+
+  nodeSelector: {}
 
 collector:
-  image: netsil/collectors
-  pullPolicy: IfNotPresent
-  tag: stable-1.5.3
+  image:
+    repository: netsil/collectors
+    tag: stable-1.5.3
+    pullPolicy: IfNotPresent
+  
+  podAnnotations: {} 
+
+  resources: {}
+
+  nodeSelector: {}
