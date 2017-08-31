@@ -51,9 +51,11 @@ The following tables lists the configurable parameters of the Jenkins chart and 
 | `Master.ScriptApproval`           | List of groovy functions to approve  | Not set                                                                      |
 | `Master.NodeSelector`             | Node labels for pod assignment       | `{}`                                                                         |
 | `Master.Tolerations`              | Toleration labels for pod assignment | `{}`                                                                         |
-| `rbac.install`           | Create service account and ClusterRoleBinding for Kubernetes plugin | `false`                                                                      |
-| `rbac.apiVersion`           | RBAC API version | `v1beta1`                                                                      |
-| `rbac.roleRef`           | Cluster role name to bind to | `cluster-admin`                                                                      |
+| `rbac.install`                    | Create service account and ClusterRoleBinding for Kubernetes plugin | `false`                                       |
+| `rbac.apiVersion`                 | RBAC API version                     | `v1beta1`                                                                    |
+| `rbac.roleRef`                    | Cluster role name to bind to         | `cluster-admin`                                                              |
+| `Master.UseSecurity`              | Use basic security                   | `true`                                                                       |
+| `Master.AdminUser`                | Admin username (and password) created as a secret if useSecurity is true | `admin`                                  |
 
 ### Jenkins Agent
 
