@@ -28,6 +28,7 @@ extraArgs: {}
 nodeSelector: {}
 
 podAnnotations: {}
+podLabels: {}
 replicaCount: 1
 
 rbac:
