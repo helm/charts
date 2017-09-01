@@ -24,4 +24,5 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 app: {{ template "name" . }}
 heritage: {{.Release.Service }}
 release: {{.Release.Name }}
+{{ toYaml .Values.podLabels }}
 {{- end }}

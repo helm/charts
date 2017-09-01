@@ -28,6 +28,8 @@ policy: upsert-only
 ##
 podAnnotations: {}
 
+podLabels: {}
+
 debug: false
 
 extraArgs: {}
