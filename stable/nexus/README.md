@@ -45,6 +45,7 @@ The following tables lists the configurable parameters of the Nexus chart and th
 | `persistence.size`         | Size of persistent volume to claim  | 8Gi RW                                                     |
 | `persistence.storageClass` | Type of persistent volume claim     | nil  (uses alpha storage class annotation)                 |
 | `persistence.accessMode`   | ReadWriteOnce or ReadOnly           | ReadWriteOnce                                              |
+| `service.type`             | Kubernetes Service type             | `ClusterIP`                                                |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
