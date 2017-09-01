@@ -73,9 +73,20 @@ resources:
     memory: 256Mi
     cpu: 100m
 
+
+## Configure the service
+##
 service:
+  ## k8s service type exposing ports, e.g. NodePort| ClusterIP
+  ##
   type: ClusterIP
+
+  ## TCP port to listen on
+  ##
   port: 5432
+
+  ## External IPs to listen on
+  ##
   externalIPs: []
 
 networkPolicy:
