@@ -12,22 +12,25 @@ This chart bootstraps a nexus instance
 
 ## Installing the Chart
 
-To install the chart with the release name `my-release`:
+To install the chart:
 
 ```bash
-$ helm install --name my-release stable/nexus
+$ helm install stable/nexus
 ```
 
-The command deploys Nexus on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters the can be configured during installation.
+The above command deploys Nexus on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
 
 The default login is admin/admin123
 
 ## Uninstalling the Chart
 
-to uninstall/delete the `my-release` deployment:
+to uninstall/delete the deployment:
 
 ```bash
-$ helm delete my-release
+$ helm list
+NAME           	REVISION	UPDATED                 	STATUS  	CHART      	NAMESPACE
+plinking-gopher	1       	Fri Sep  1 13:19:50 2017	DEPLOYED	nexus-0.1.0	default
+$ helm delete plinking-gopher
 ```
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
@@ -36,16 +39,21 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following tables lists the configurable parameters of the Nexus chart and their default values.
 
-| Parameter                  | Description                         | Default                                                    |
-| -----------------------    | ----------------------------------  | ---------------------------------------------------------- |
-| `imageTag`                 | `nexus` image tag.                  | 3.5.1-02                                                   |
-| `imagePullPolicy`          | Image pull policy                   | `IfNotPresent`                                             |
-| `ingress.enabled`          | Flag for enabling ingress           | false                                                      |
-| `persistence.enabled`      | Create a volume to store data       | true                                                       |
-| `persistence.size`         | Size of persistent volume to claim  | 8Gi RW                                                     |
-| `persistence.storageClass` | Type of persistent volume claim     | nil  (uses alpha storage class annotation)                 |
-| `persistence.accessMode`   | ReadWriteOnce or ReadOnly           | ReadWriteOnce                                              |
-| `service.type`             | Kubernetes Service type             | `ClusterIP`                                                |
+| Parameter                                   | Description                         | Default                                    |
+| ------------------------------------------  | ----------------------------------  | -------------------------------------------|
+| `imageTag`                                  | `nexus` image tag.                  | 3.5.1-02                                   |
+| `imagePullPolicy`                           | Image pull policy                   | `IfNotPresent`                             |
+| `ingress.enabled`                           | Flag for enabling ingress           | false                                      |
+| `persistence.enabled`                       | Create a volume to store data       | true                                       |
+| `persistence.size`                          | Size of persistent volume to claim  | 8Gi RW                                     |
+| `persistence.storageClass`                  | Type of persistent volume claim     | nil  (uses alpha storage class annotation) |
+| `persistence.accessMode`                    | ReadWriteOnce or ReadOnly           | ReadWriteOnce                              |
+| `service.type`                              | Kubernetes Service type             | `ClusterIP`                                |
+| `service.readinessProbe.initialDelaySeconds`| ReadinessProbe initial delay        | 30                                         |
+| `service.readinessProbe.periodSeconds`      | Seconds between polls               | 30                                         |
+| `service.readinessProbe.failureThreshold`   | Number of attempts before failure   | 6                                          |
+| `service.livenessProbe.initialDelaySeconds` | livenessProbe initial delay         | 30                                         |
+| `service.livenessProbe.periodSeconds`       | Seconds between polls               | 30                                         |                
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
