@@ -96,7 +96,9 @@ Parameter | Description | Default
 `defaultBackend.service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
 `defaultBackend.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
 `defaultBackend.service.type` | type of default backend service to create | `ClusterIP`
-`rbac.create` | If true, create & use RBAC resources | `false`
+`rbac.create` | If true, create Role, RoleBinding, ClusterRole and ClusterRoleBinding resources | `false`
+`rbac.createRole` | If true, create Role and RoleBinding resources | `false`
+`rbac.createClusterRole` | If true, create ClusterRole and ClusterRoleBinding resources | `false`
 `rbac.serviceAccountName` | ServiceAccount to be used (ignored if rbac.create=true) | `default`
 `statsExporter.name` | name of the Prometheus metrics exporter component | `stats-exporter`
 `statsExporter.image.repository` | Prometheus metrics exporter container image repository | `quay.io/cy-play/vts-nginx-exporter`
