@@ -5,12 +5,18 @@ replicaCount: 1
 image:
   repository: clearent/nexus
   tag: 3.5.1-02
-  pullPolicy: IfNotPresent
 service:
   name: nexus
   type: ClusterIP
   externalPort: 8081
   internalPort: 8081
+  readinessProbe:
+    initialDelaySeconds: 30
+    periodSeconds: 30
+    failureThreshold: 6
+  livenessProbe:
+    initialDelaySeconds: 30
+    periodSeconds: 30
 ingress:
   enabled: false
   # Used to create an Ingress record.
