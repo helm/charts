@@ -199,7 +199,10 @@ statsExporter:
     #   memory: 20Mi
 
   service:
-    annotations: {}
+    annotations:
+      prometheus.io/scrape: "true"
+      prometheus.io/port: "9913"
+
     clusterIP: ""
 
     ## List of IP addresses at which the stats-exporter service is available
