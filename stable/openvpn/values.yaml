@@ -18,12 +18,12 @@ resources:
   requests:
     cpu: 300m
     memory: 128Mi
-persistence: 
+persistence:
   enabled: true
   #StorageClass: generic
   accessMode: ReadWriteOnce
   size: 2M
-openvpn: 
+openvpn:
     # Network allocated for openvpn clients (default: 10.240.0.0).
     OVPN_NETWORK: 10.240.0.0
     # Network subnet allocated for openvpn client (default: 255.255.0.0).
@@ -34,3 +34,8 @@ openvpn:
     OVPN_K8S_POD_NETWORK: "10.0.0.0"
     # Kubernetes pod network subnet (optional).
     OVPN_K8S_POD_SUBNET: "255.0.0.0"
+    # Arbitrary lines appended to the end of the server configuration file
+    #conf: |
+    #  max-clients 100
+    #  client-to-client
+

@@ -1,17 +1,20 @@
 apiVersion: v1
-description: Apache Kafka is publish-subscribe messaging rethought as a distributed commit log.
+description: Apache Kafka is publish-subscribe messaging rethought as a distributed
+  commit log.
 name: kafka
-version: 0.1.2
+version: 0.2.0
 keywords:
-  - kafka
-  - zookeeper
-  - kafka statefulset
+- kafka
+- zookeeper
+- kafka statefulset
 home: https://kafka.apache.org/
 sources:
-  - https://github.com/kubernetes/charts/tree/master/incubator/zookeeper
-  - https://github.com/Yolean/kubernetes-kafka
-  - https://github.com/solsson/dockerfiles/tree/master/kafka
+- https://github.com/kubernetes/charts/tree/master/incubator/zookeeper
+- https://github.com/Yolean/kubernetes-kafka
+- https://github.com/solsson/dockerfiles/tree/master/kafka
 maintainers:
-  - name: Faraaz Khan
-    email: faraaz@rationalizeit.us
+- name: Faraaz Khan
+  email: faraaz@rationalizeit.us
+- name: Marc Villacorta
+  email: marc.villacorta@gmail.com
 icon: https://kafka.apache.org/images/logo.png

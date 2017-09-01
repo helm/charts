@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   labels:
     app: {{ template "grafana.fullname" . }}
-    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     component: "{{ .Values.server.name }}"
     heritage: "{{ .Release.Service }}"
     release: "{{ .Release.Name }}"
@@ -13,6 +13,8 @@ spec:
   template:
     metadata:
       annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        checksum/dashboards-config: {{ include (print $.Template.BasePath "/dashboards-configmap.yaml") . | sha256sum }}
       {{- range $key, $value := .Values.server.annotations }}
         {{ $key }}: {{ $value }}
       {{- end }}
@@ -22,7 +24,11 @@ spec:
         release: "{{ .Release.Name }}"
     spec:
       nodeSelector:
-{{ toYaml .Values.server.nodeSelector | indent 12 }}
+{{ toYaml .Values.server.nodeSelector | indent 8 }}
+  {{- if .Values.server.tolerations }}
+      tolerations:
+{{ toYaml .Values.server.tolerations | indent 8 }}
+  {{- end }}
       containers:
         - name: {{ template "grafana.name" . }}
           image: "{{ .Values.server.image }}"

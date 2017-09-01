@@ -4,63 +4,63 @@ metadata:
   annotations:
     service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
 metadata:
-  name: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 24 }}"
+  name: {{ template "etcd.fullname" . }}
   labels:
-    heritage: {{.Release.Service | quote }}
-    release: {{.Release.Name | quote }}
-    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
-    component: "{{.Release.Name}}-{{.Values.Component}}"
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    component: "{{ .Release.Name }}-{{ .Values.Component }}"
 spec:
   ports:
-  - port: {{.Values.PeerPort}}
+  - port: {{ .Values.PeerPort }}
     name: etcd-server
-  - port: {{.Values.ClientPort}}
+  - port: {{ .Values.ClientPort }}
     name: etcd-client
   clusterIP: None
   selector:
-    component: "{{.Release.Name}}-{{.Values.Component}}"
+    component: "{{ .Release.Name }}-{{ .Values.Component }}"
 ---
 apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
-  name: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 24 }}"
+  name: {{ template "etcd.fullname" . }}
   labels:
-    heritage: {{.Release.Service | quote }}
-    release: {{.Release.Name | quote }}
-    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
-    component: "{{.Release.Name}}-{{.Values.Component}}"
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    component: "{{ .Release.Name }}-{{ .Values.Component }}"
 spec:
-  serviceName: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 24 }}"
-  replicas: {{default 3 .Values.Replicas}}
+  serviceName: {{ template "etcd.fullname" . }}
+  replicas: {{ default 3 .Values.Replicas }}
   template:
     metadata:
-      name: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 24 }}"
+      name: {{ template "etcd.fullname" . }}
       labels:
-        heritage: {{.Release.Service | quote }}
-        release: {{.Release.Name | quote }}
-        chart: "{{.Chart.Name}}-{{.Chart.Version}}"
-        component: "{{.Release.Name}}-{{.Values.Component}}"
+        heritage: {{ .Release.Service | quote }}
+        release: {{ .Release.Name | quote }}
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        component: "{{ .Release.Name }}-{{ .Values.Component }}"
       annotations:
         pod.alpha.kubernetes.io/initialized: "true"
     spec:
       containers:
-      - name: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 24 }}"
-        image: "{{.Values.Image}}:{{.Values.ImageTag}}"
-        imagePullPolicy: "{{.Values.ImagePullPolicy}}"
+      - name: {{ template "etcd.fullname" . }}
+        image: "{{ .Values.Image }}:{{ .Values.ImageTag }}"
+        imagePullPolicy: "{{ .Values.ImagePullPolicy }}"
         ports:
-        - containerPort: {{.Values.PeerPort}}
+        - containerPort: {{ .Values.PeerPort }}
           name: peer
-        - containerPort: {{.Values.ClientPort}}
+        - containerPort: {{ .Values.ClientPort }}
           name: client
         resources:
           requests:
-            cpu: "{{.Values.Cpu}}"
-            memory: "{{.Values.Memory}}"
+            cpu: "{{ .Values.Cpu }}"
+            memory: "{{ .Values.Memory }}"
         env:
         - name: INITIAL_CLUSTER_SIZE
-          value: {{default 3 .Values.Replicas | quote }}
+          value: {{ default 3 .Values.Replicas | quote }}
         - name: SET_NAME
-          value: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 24 }}"
+          value: {{ template "etcd.fullname" . }}
         volumeMounts:
         - name: datadir
           mountPath: /var/run/etcd
@@ -197,11 +197,15 @@ spec:
   - metadata:
       name: datadir
       annotations:
+        {{- if .Values.StorageClass }}
+        volume.beta.kubernetes.io/storage-class: {{ .Values.StorageClass | quote }}
+        {{- else }}
         volume.alpha.kubernetes.io/storage-class: anything
+        {{- end }}
     spec:
       accessModes:
         - "ReadWriteOnce"
       resources:
         requests:
           # upstream recommended max is 700M
-          storage: "{{.Values.Storage}}"
+          storage: "{{ .Values.Storage }}"

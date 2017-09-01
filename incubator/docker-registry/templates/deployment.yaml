@@ -1,0 +1,62 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "docker-registry.fullname" . }}
+  labels:
+    app: {{ template "docker-registry.name" . }} 
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+spec:
+  replicas: {{ .Values.replicas }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "docker-registry.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      initContainers:
+      - name: init-myservice
+        image: "{{ .Values.initImage }}:{{ .Values.initImageVersion }}"
+        imagePullPolicy: IfNotPresent
+        command:
+          - /bin/bash
+          - -ec
+          - |
+{{- if .Values.initLoad }}
+            fn='{{ .Values.distro }}-{{ .Values.type }}-registry-{{ .Values.branch }}.tar.gz';
+            echo $fn;
+            curl {{ .Values.tarballURL }}$fn | tar -C /var/lib/registry/ -xzvf -;
+{{- end }}
+            echo Registry is all ready serving images...;
+        volumeMounts:
+        - name: image-store
+          mountPath: /var/lib/registry
+      containers:
+      - name: registry
+        image: "{{ .Values.registryImage }}:{{ .Values.registryImageVersion }}"
+        imagePullPolicy: IfNotPresent
+        resources:
+          limits:
+            cpu: 100m
+            memory: 256Mi
+        env:
+        - name: REGISTRY_HTTP_ADDR
+          value: ":4000"
+        - name: REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY
+          value: "/var/lib/registry"
+        volumeMounts:
+        - name: image-store
+          mountPath: /var/lib/registry
+        ports:
+        - containerPort: 4000
+          name: registry
+          protocol: TCP
+      volumes:
+      - name: image-store
+      {{- if .Values.persistentVolumeEnabled }}
+        persistentVolumeClaim:
+          claimName: {{ if .Values.persistentVolume.existingClaim }}{{ .Values.persistentVolume.existingClaim }}{{- else }}{{ template "docker-registry.fullname" . }}{{- end }}
+      {{- else }}
+        emptyDir: {}
+      {{- end -}}

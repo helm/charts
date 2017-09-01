@@ -1,10 +1,10 @@
-{{- $serviceName := include "fullname" . -}}
+{{- $serviceName := include "istio.fullname" . -}}
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ $serviceName }}-{{ .Values.pilot.name }}
+  name: {{ .Values.pilot.name }}
   labels:
-{{ include "labels.standard" . | indent 4 }}
+{{ include "istio.labels.standard" . | indent 4 }}
     istio: {{ $serviceName }}-{{ .Values.pilot.name }}
 spec:
   type: {{ .Values.pilot.service.type }}
@@ -14,7 +14,7 @@ spec:
   - port: {{ .Values.pilot.service.externalHttpApiServer }}
     name: http-apiserver
   selector:
-    app: {{ include "name" . }}
+    app: {{ include "istio.name" . }}
     component: {{ $serviceName }}-{{ .Values.pilot.name }}
     release: {{ .Release.Name }}
     istio: {{ $serviceName }}-{{ .Values.pilot.name }}

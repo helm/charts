@@ -3,10 +3,15 @@
 # Declare name/value pairs to be passed into your templates.
 # name: value
 Servers: 3
-Cpu: "1"
-Memory: "4Gi"
-Heap: "2G"
-Storage: "50Gi"
+Resources: {}
+  # requests:
+  #   cpu: 250m
+  #   memory: 1Gi
+  # limits:
+  #   cpu: 500m
+  #   memory: 2Gi
+Heap: "1G"
+Storage: "2Gi"
 #StorageClass : default
 ServerPort: 2888
 LeaderElectionPort: 3888

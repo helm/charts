@@ -51,6 +51,7 @@ The following tables lists the configurable parameters of the MongoDB chart and 
 | `mongodbUsername`          | MongoDB custom user                 | `nil`                                                    |
 | `mongodbPassword`          | MongoDB custom user password        | `nil`                                                    |
 | `mongodbDatabase`          | Database to create                  | `nil`                                                    |
+| `serviceType`              | Kubernetes Service type             | `ClusterIP`                                              |
 | `persistence.enabled`      | Use a PVC to persist data           | `true`                                                   |
 | `persistence.storageClass` | Storage class of backing PVC        | `nil` (uses alpha storage class annotation)              |
 | `persistence.accessMode`   | Use volume as ReadOnly or ReadWrite | `ReadWriteOnce`                                          |

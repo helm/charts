@@ -18,8 +18,8 @@ host. To configure ownCloud with the URL of your service:
   NOTE: It may take a few minutes for the LoadBalancer IP to be available.
         Watch the status with: 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "fullname" . }}'
 
-  export APP_HOST=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "fullname" . }} --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
-  export APP_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath="{.data.owncloud1-password}" | base64 --decode)
+  export APP_HOST=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "fullname" . }} --template "{{ "{{ range (index .status.loadBalancer.ingress 0) }}{{ . }}{{ end }}" }}")
+  export APP_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath="{.data.owncloud-password}" | base64 --decode)
   {{- if .Values.mariadb.mariadbRootPassword }}
   export APP_DATABASE_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "mariadb.fullname" . }} -o jsonpath="{.data.mariadb-root-password}" | base64 --decode)
   {{- end }}
@@ -45,6 +45,6 @@ host. To configure ownCloud with the URL of your service:
 
 2. Get your ownCloud login credentials by running:
 
-  echo Email:    {{ .Values.owncloudUsername }}
+  echo User:     {{ .Values.owncloudUsername }}
   echo Password: $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath="{.data.owncloud-password}" | base64 --decode)
 {{- end }}

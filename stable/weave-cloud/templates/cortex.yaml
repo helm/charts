@@ -63,7 +63,7 @@ items:
                 - '-config.file=/etc/prometheus/prometheus.yml'
                 - '-web.listen-address=:8080'
                 - '-storage.local.engine=none'
-              image: 'prom/prometheus:v1.6.3'
+              image: 'prom/prometheus:v1.7.1'
               imagePullPolicy: IfNotPresent
               ports:
                 - containerPort: 8080
@@ -130,7 +130,7 @@ items:
           serviceAccountName: weave-cortex
           tolerations:
             - effect: NoSchedule
-              key: node-role.kubernetes.io/master
+              operator: Exists
       updateStrategy:
         type: RollingUpdate
   - apiVersion: v1

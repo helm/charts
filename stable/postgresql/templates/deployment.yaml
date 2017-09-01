@@ -1,9 +1,9 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "postgresql.fullname" . }}
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "postgresql.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -11,10 +11,10 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "fullname" . }}
+        app: {{ template "postgresql.fullname" . }}
     spec:
       containers:
-      - name: {{ template "fullname" . }}
+      - name: {{ template "postgresql.fullname" . }}
         image: "{{ .Values.image }}:{{ .Values.imageTag }}"
         imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
         env:
@@ -32,7 +32,7 @@ spec:
         - name: POSTGRES_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "postgresql.fullname" . }}
               key: postgres-password
         - name: POD_IP
           valueFrom: { fieldRef: { fieldPath: status.podIP } }
@@ -87,14 +87,14 @@ spec:
       - name: data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ .Values.persistence.existingClaim | default (include "fullname" .) }}
+          claimName: {{ .Values.persistence.existingClaim | default (include "postgresql.fullname" .) }}
       {{- else }}
         emptyDir: {}
       {{- end }}
       {{- if and .Values.metrics.enabled .Values.metrics.customMetrics }}
       - name: custom-metrics
         secret:
-          secretName: {{ template "fullname" . }}
+          secretName: {{ template "postgresql.fullname" . }}
           items:
             - key: custom-metrics.yaml
               path: custom-metrics.yaml

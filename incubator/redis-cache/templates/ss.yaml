@@ -1,65 +1,61 @@
 apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
-  name: "{{ template "fullname" . }}"
+  name: "{{ template "redis-cache.fullname" . }}"
   labels:
-     app: {{ template "name" . }}
+     app: {{ template "redis-cache.name" . }}
      chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
      release: "{{ .Release.Name }}"
      heritage: "{{ .Release.Service }}"
 spec:
-  serviceName: "{{ template "fullname" . }}"
+  serviceName: "{{ template "redis-cache.fullname" . }}"
   replicas: {{ .Values.replicaCount }}
   template:
     metadata:
       labels:
-        app: {{ template "name" . }}
+        app: {{ template "redis-cache.name" . }}
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         release: "{{ .Release.Name }}"
         heritage: "{{ .Release.Service }}"
       annotations:
         pod.alpha.kubernetes.io/initialized: "true"
-        pod.beta.kubernetes.io/init-containers: '[
-           {
-             "name":"sentinel-micro",
-             "image":"{{ .Values.microSentinel.image.repository }}:{{ .Values.microSentinel.image.tag }}",
-             "imagePullPolicy": "{{ .Values.microSentinel.image.pullPolicy }}",
-             "args" : ["-service","{{ template "fullname" . }}"],
-             "resources":
-{{ toJson .Values.microSentinel.resources | indent 16 }},
-             "env": [
-               {
-                  "name": "POD_NAMESPACE",
-                  "valueFrom": {
-                     "fieldRef" : {
-                        "apiVersion" : "v1",
-                        "fieldPath" : "metadata.namespace"
-                     }
-                  }
-               }
-             ],
-            "volumeMounts": [
-               {
-                  "name": "config",
-                  "mountPath": "/config"
-               }
-            ]
-           }
-        ]'
     spec:
-      terminationGracePeriodSeconds: 5
+      terminationGracePeriodSeconds: 60 
       affinity:
         podAntiAffinity:
+        {{- if eq .Values.antiAffinity "hard" }}
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - topologyKey: "kubernetes.io/hostname"
+            labelSelector:
+              matchLabels:
+                app:  {{ template "redis-cache.name" . }}
+                release: {{ .Release.Name | quote }}
+         {{- else if eq .Values.antiAffinity "soft" }}
           preferredDuringSchedulingIgnoredDuringExecution:
           - weight: 5
             podAffinityTerm:
               labelSelector:
-                matchExpressions:
-                - key: app
-                  operator: In
-                  values:
-                  -  "{{ template "name" . }}"
+                matchLabels:
+                  app: {{  template "redis-cache.name" . }}
+                  release: {{ .Release.Name | quote }}
               topologyKey: "kubernetes.io/hostname"
+         {{- end }}
+      initContainers :
+      - name: sentinel-micro 
+        image: {{ .Values.microSentinel.image.repository }}:{{ .Values.microSentinel.image.tag }}
+        imagePullPolicy: {{ .Values.microSentinel.image.pullPolicy }}
+        args: ["-service",{{ template "redis-cache.fullname" . }}]
+        resources:
+{{ toYaml .Values.microSentinel.resources | indent 12 }}
+        env:
+          - name: POD_NAMESPACE
+            valueFrom:
+              fieldRef:
+                apiVersion: "v1"
+                fieldPath: metadata.namespace
+        volumeMounts:
+        - name: config
+          mountPath: /config
       containers:
       - name: redis
         image: {{ .Values.redis.image.repository }}:{{ .Values.redis.image.tag }}

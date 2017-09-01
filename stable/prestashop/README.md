@@ -51,7 +51,7 @@ The following tables lists the configurable parameters of the PrestaShop chart a
 | `imagePullPolicy`                     | Image pull policy                           | `Always` if `image` tag is `latest`, else `IfNotPresent` |
 | `prestashopHost`                      | PrestaShop host to create application URLs  | `nil`                                                    |
 | `prestashopLoadBalancerIP`            | `loadBalancerIP` for the PrestaShop Service | `nil`                                                    |
-| `prestashopUsername`                  | User of the application                     | `user`                                                   |
+| `prestashopUsername`                  | User of the application                     | `user@example.com`                                       |
 | `prestashopPassword`                  | Application password                        | _random 10 character long alphanumeric string_           |
 | `prestashopEmail`                     | Admin email                                 | `user@example.com`                                       |
 | `prestashopFirstName`                 | First Name                                  | `Bitnami`                                                |
