@@ -2,8 +2,9 @@ name: nexus
 version: 0.1.0
 description: A Helm chart for sonotype nexus
 keywords:
-  - nexus
-  - sonotype
+  - dependency
+  - management
+  - sonatype
   - repository
 home: https://www.sonatype.com/nexus-repository-oss
 icon: https://www.sonatype.com/hs-fs/hubfs/Sonatype_Logos/SON_logo_main.png?t=1504013727967&width=212&name=SON_logo_main.png
