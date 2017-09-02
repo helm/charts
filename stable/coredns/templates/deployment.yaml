@@ -61,6 +61,11 @@ spec:
           name: dns-tcp
           protocol: TCP
         {{- end }}
+        {{- if .Values.middleware.prometheus.enabled }}
+        - containerPort: 9153
+          name: metrics-tcp
+          protocol: TCP
+        {{- end }}
         livenessProbe:
           httpGet:
             path: /health
