@@ -90,6 +90,8 @@ controller:
     ## Ref: https://kubernetes.io/docs/tutorials/services/source-ip/#source-ip-for-services-with-typeloadbalancer
     externalTrafficPolicy: ""
 
+    healthCheckNodePort: 0
+
     targetPorts:
       http: 80
       https: 443
