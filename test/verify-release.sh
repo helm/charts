@@ -19,22 +19,20 @@ RETRY=18
 RETRY_DELAY=10
 while [ "$COUNT" -lt "$RETRY" ]; do
   POD_STATUS=`kubectl get pods --no-headers --namespace $NAMESPACE`
-  if [ -z "$POD_STATUS" ];then
-    echo "INFO: No pods found for this release, retrying after sleep"
+  if [ -n "$POD_STATUS" ];then
+    PODS_FOUND=1
+  fi
+
+  UNREADY_CONTAINERS=`kubectl get pods --namespace $NAMESPACE \
+    -o jsonpath="{.items[*].status.containerStatuses[?(@.ready!=true)]}"`
+  if [ -n "$UNREADY_CONTAINERS" ];then
+    echo "INFO: Some containers are not yet ready; retrying after sleep"
     COUNT=$((COUNT+1))
     sleep $RETRY_DELAY
     continue
   else
-    PODS_FOUND=1
-  fi
-  if ! echo "$POD_STATUS" | grep -v Running;then
-    echo "INFO: All pods entered the Running state"
+    echo "INFO: All containers are ready"
     exit 0
-  else
-    echo "INFO: Sleeping waiting for containers to be ready"
-    COUNT=$((COUNT+1))
-    kubectl get pods  --no-headers --namespace $NAMESPACE
-    sleep $RETRY_DELAY
   fi
 done
 
