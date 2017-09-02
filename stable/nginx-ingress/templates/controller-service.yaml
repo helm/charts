@@ -63,9 +63,3 @@ spec:
     component: "{{ .Values.controller.name }}"
     release: {{ .Release.Name }}
   type: "{{ .Values.controller.service.type }}"
-{{- if .Values.controller.service.externalTrafficPolicy }}
-  externalTrafficPolicy: "{{ .Values.controller.service.externalTrafficPolicy }}"
-{{- end }}
-{{- if .Values.controller.service.healthCheckNodePort }}
-  healthCheckNodePort: {{ .Values.controller.service.healthCheckNodePort }}
-{{- end }}
