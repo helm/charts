@@ -30,6 +30,10 @@ spec:
           timeoutSeconds: 5
         resources:
 {{ toYaml .Values.resources | indent 12 }}
+{{- if .Values.env }}
+        env:
+{{ toYaml .Values.env | indent 10 }}
+{{- end }}
         command:
           {{- range .Values.command }}
           - {{ . | quote }}
