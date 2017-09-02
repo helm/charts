@@ -34,7 +34,7 @@ while [ "$POD_RETRY_COUNT" -lt "$RETRY" ]; do
     CONTAINER_RETRY_COUNT=0
     while [ "$CONTAINER_RETRY_COUNT" -lt "$RETRY" ]; do
       UNREADY_CONTAINERS=`kubectl get pods --namespace $NAMESPACE \
-        -o jsonpath="{.items[*].status.containerStatuses[?(@.ready!=true)]}"`
+        -o jsonpath="{.items[*].status.containerStatuses[?(@.ready!=true)].name}"`
       if [ -n "$UNREADY_CONTAINERS" ];then
         echo "INFO: Some containers are not yet ready; retrying after sleep"
         CONTAINER_RETRY_COUNT=$((CONTAINER_RETRY_COUNT+1))
