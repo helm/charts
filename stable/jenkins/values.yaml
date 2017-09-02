@@ -16,6 +16,8 @@ Master:
   Memory: "256Mi"
 # Set min/max heap here if needed with:
 # JavaOpts: "-Xms512m -Xmx512m"
+# JenkinsOpts: ""
+# JenkinsUriPrefix: "/jenkins"
   ServicePort: 8080
 # For minikube, set this to NodePort, elsewhere use LoadBalancer
 # Use ClusterIP if your setup includes ingress controller
@@ -30,16 +32,18 @@ Master:
   SlaveListenerPort: 50000
   LoadBalancerSourceRanges:
   - 0.0.0.0/0
+# Optionally assign a known public LB IP
+# LoadBalancerIP: 1.2.3.4
 # Optionally configure a JMX port
 # requires additional JavaOpts, ie
 # JavaOpts: >
-#   -Dcom.sun.management.jmxremote.port=4000 
-#   -Dcom.sun.management.jmxremote.authenticate=false 
-#   -Dcom.sun.management.jmxremote.ssl=false 
+#   -Dcom.sun.management.jmxremote.port=4000
+#   -Dcom.sun.management.jmxremote.authenticate=false
+#   -Dcom.sun.management.jmxremote.ssl=false
 # JMXPort: 4000
 # List of plugins to be install during Jenkins master start
   InstallPlugins:
-      - kubernetes:0.11 
+      - kubernetes:0.11
       - workflow-aggregator:2.5
       - workflow-job:2.13
       - credentials-binding:1.12
@@ -87,6 +91,9 @@ Agent:
   # - type: Secret
   #   secretName: mysecret
   #   mountPath: /var/myapp/mysecret
+  NodeSelector: {}
+  # Key Value selectors. Ex:
+  # jenkins-agent: v1
 
 Persistence:
   Enabled: true
@@ -119,6 +126,7 @@ NetworkPolicy:
 ## Install Default RBAC roles and bindings
 rbac:
   install: false
+  serviceAccountName: default
   # RBAC api version (currently either v1beta1 or v1alpha1)
   apiVersion: v1beta1
   # Cluster role reference

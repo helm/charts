@@ -1,7 +1,7 @@
 ## Bitnami PrestaShop image version
 ## ref: https://hub.docker.com/r/bitnami/prestashop/tags/
 ##
-image: bitnami/prestashop:1.7.2-0-r0
+image: bitnami/prestashop:1.7.2-2-r0
 
 ## Specify a imagePullPolicy
 ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
@@ -22,7 +22,7 @@ image: bitnami/prestashop:1.7.2-0-r0
 ## User of the application
 ## ref: https://github.com/bitnami/bitnami-docker-prestashop#configuration
 ##
-prestashopUsername: user
+prestashopUsername: user@example.com
 
 ## Application password
 ## Defaults to a random 10-character alphanumeric string if not set

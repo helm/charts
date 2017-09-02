@@ -35,6 +35,7 @@ The following tables lists the configurable parameters of the consul chart and t
 | `Cpu`                   | container requested cpu               | `100m`                                                     |
 | `DatacenterName`        | Consul Datacenter Name                | `dc1` (The consul default)                                 |
 | `DisableHostNodeId`     | Disable Node Id creation (uses random)| `false`                                                    |
+| `EncryptGossip`         | Whether or not gossip is encrypted    | `true`                                                     |
 | `Memory`                | container requested memory            | `512Mi`                                                    |
 | `Storage`               | Persistent volume size                | `1Gi`                                                      |
 | `StorageClass`          | Persistent volume storage class       | `nil`                                                      |

@@ -1,7 +1,7 @@
 apiVersion: v1
 description: Automatically requests certificates from Let's Encrypt
 name: kube-lego
-version: 0.1.10
+version: 0.1.11
 keywords:
   - kube-lego
   - letsencrypt

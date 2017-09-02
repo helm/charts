@@ -5,7 +5,7 @@ Use this repository to submit official Charts for Kubernetes Helm. Charts are cu
 
 ## How do I install these charts?
 
-Just `helm install stable/<chart>`. This is the default repository for Helm and is installed by default.
+Just `helm install stable/<chart>`. This is the default repository for Helm which is located at https://kubernetes-charts.storage.googleapis.com/ and is installed by default.
 
 For more information on using Helm, refer to the [Helm's documentation](https://github.com/kubernetes/helm#docs).
 
@@ -48,7 +48,7 @@ In order to get a Chart from incubator to stable, Chart maintainers should open 
 
 We'd love for you to contribute a Chart that provides a useful application or service for Kubernetes. Please read our [Contribution Guide](CONTRIBUTING.md) for more information on how you can contribute Charts.
 
-Note: We use the same [workflow](https://github.com/kubernetes/kubernetes/blob/master/docs/devel/development.md#git-setup),
+Note: We use the same [workflow](https://github.com/kubernetes/community/blob/master/contributors/devel/development.md#workflow),
 [License](LICENSE) and [Contributor License Agreement](CONTRIBUTING.md) as the main Kubernetes repository.
 
 ## Review Process
