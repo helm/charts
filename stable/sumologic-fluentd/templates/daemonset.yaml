@@ -18,11 +18,6 @@ spec:
 {{ toYaml .Values.podAnnotations | indent 8 }}
     {{- end }}
     spec:
-    {{- if .Values.rbac.serviceAccountName }}
-      serviceAccountName: {{ .Values.rbac.serviceAccountName }}
-    {{- else }}
-      serviceAccountName: {{ template "fullname" . }}
-    {{- end }}
       containers:
         - name: {{ template "fullname" . }}
           image: "{{.Values.image.name}}:{{.Values.image.tag}}"
@@ -124,6 +119,7 @@ spec:
             - name: VERIFY_SSL
               value: {{ quote .Values.sumologic.verifySsl }}
             {{- end }}
+      serviceAccountName: {{ if .Values.rbac.create }}{{ template "fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
       volumes:
         - name: pos-files
           {{- if .Values.persistence.enabled }}
