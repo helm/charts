@@ -2,11 +2,11 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   labels:
-    app: {{ template "name" . }}
+    app: {{ template "aws-cluster-autoscaler.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-  name: {{ template "fullname" . }}
+  name: {{ template "aws-cluster-autoscaler.fullname" . }}
 spec:
   replicas: {{ .Values.replicaCount }}
   template:
@@ -16,11 +16,11 @@ spec:
 {{ toYaml .Values.podAnnotations | indent 8 }}
     {{- end }}
       labels:
-        app: {{ template "name" . }}
+        app: {{ template "aws-cluster-autoscaler.name" . }}
         release: {{ .Release.Name }}
     spec:
       containers:
-        - name: {{ template "name" . }}
+        - name: {{ template "aws-cluster-autoscaler.name" . }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: "{{ .Values.image.pullPolicy }}"
           command:
