@@ -2,9 +2,9 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "buildkite.fullname" . }}
   labels:
-    app: {{ template "name" . }}
+    app: {{ template "buildkite.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
@@ -13,10 +13,10 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "name" . }}
+        app: {{ template "buildkite.name" . }}
         release: {{ .Release.Name }}
     spec:
-      serviceAccount: {{ template "fullname" . }}
+      serviceAccount: {{ template "buildkite.fullname" . }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag  }}"
@@ -28,7 +28,7 @@ spec:
             - name: BUILDKITE_AGENT_TOKEN
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "fullname" . }}
+                  name: {{ template "buildkite.fullname" . }}
                   key: agent-token
             - name: BUILDKITE_AGENT_META_DATA
               value: "{{ .Values.agent.meta }}"
@@ -36,7 +36,7 @@ spec:
             - name: SSH_PRIVATE_RSA_KEY
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "fullname" . }}
+                  name: {{ template "buildkite.fullname" . }}
                   key: agent-ssh
             {{- end }}
             # EXTRA BUILDKITE AGENT ENV VARS
@@ -61,12 +61,12 @@ spec:
         {{- if .Values.registryCreds.gcrServiceAccountKey }}
         - name: service-key
           secret:
-            secretName: {{ template "fullname" . }}-gcr
+            secretName: {{ template "buildkite.fullname" . }}-gcr
         {{- end }}
         {{- if .Values.registryCreds.dockerConfig }}
         - name: docker-config
           secret:
-            secretName: {{ template "fullname" . }}-registry
+            secretName: {{ template "buildkite.fullname" . }}-registry
         {{- end }}
     {{- if .Values.nodeSelector }}
       nodeSelector:
