@@ -1,7 +1,7 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "gogs.fullname" . }}
+  name: {{ template "fullname" . }}
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
 spec:
@@ -10,11 +10,11 @@ spec:
     type: RollingUpdate
   selector:
     matchLabels:
-      app: {{ template "gogs.fullname" . }}
+      app: {{ template "fullname" . }}
   template:
     metadata:
       labels:
-        app: {{ template "gogs.fullname" . }}
+        app: {{ template "fullname" . }}
     spec:
       containers:
         - name: {{ .Chart.Name }}
@@ -46,11 +46,11 @@ spec:
       volumes:
         - name: config
           configMap:
-            name: {{ template "gogs.fullname" . }}-config
+            name: {{ template "fullname" . }}-config
         - name: data
       {{- if .Values.persistence.enabled }}
           persistentVolumeClaim:
-            claimName: {{ template "gogs.fullname" . }}
+            claimName: {{ template "fullname" . }}
       {{- else }}
           emptyDir: {}
       {{- end -}}
