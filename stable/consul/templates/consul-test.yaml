@@ -32,7 +32,7 @@ spec:
   volumes:
   - name: tests
     configMap:
-      name: {{ template "fullname" . }}-tests
+      name: {{ template "consul.fullname" . }}-tests
   - name: tools
     emptyDir: {}
   restartPolicy: Never
