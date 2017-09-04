@@ -61,18 +61,14 @@ spec:
   volumeClaimTemplates:
     - metadata:
         name: datadir
-        annotations:
-        {{- if .Values.core.persistentVolume.storageClass | quote }}
-          volume.beta.kubernetes.io/storage-class: {{ .Values.core.persistentVolume.storageClass | quote }}
-        {{- else }}
-          volume.beta.kubernetes.io/storage-class: standard
-        {{- end }}
-        {{- if .Values.core.persistentVolume.annotations }}
-{{ toYaml .Values.core.persistentVolume.annotations | indent 12 }}
-        {{- end }}
       spec:
         accessModes:
           - ReadWriteOnce
+        {{- if .Values.core.persistentVolume.storageClass | quote }}
+        storageClassName: {{ .Values.core.persistentVolume.storageClass | quote }}
+        {{- else }}
+        storageClassName: standard
+        {{- end }}
         resources:
           requests:
             storage: "{{ .Values.core.persistentVolume.size }}"

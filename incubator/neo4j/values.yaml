@@ -18,9 +18,6 @@ testImageTag: "master"
 core:
   numberOfServers: 3
   persistentVolume:
-    ## core server data Persistent Volume Claim annotations
-    ##
-    annotations: {}
 
     ## core server data Persistent Volume mount root path
     ##
