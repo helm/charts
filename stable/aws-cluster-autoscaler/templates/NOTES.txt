@@ -5,4 +5,4 @@
 
 To verify that aws-cluster-autoscaler has started, run:
 
-  kubectl --namespace={{ .Release.Namespace }} get pods -l "app={{ template "name" . }},release={{ .Release.Name }}"
+  kubectl --namespace={{ .Release.Namespace }} get pods -l "app={{ template "aws-cluster-autoscaler.name" . }},release={{ .Release.Name }}"
