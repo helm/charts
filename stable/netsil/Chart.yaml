@@ -12,6 +12,6 @@ icon: https://s3.amazonaws.com/docs.netsil.com/logos/Netsil_640x640-blue.jpg
 sources:
   - https://github.com/kubernetes/charts
 maintainers:
-  - name: Matt Baldwin
+  - name: baldwinSPC
     email: baldwin@stackpointcloud.com
 engine: gotpl
