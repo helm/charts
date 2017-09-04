@@ -13,7 +13,6 @@ spec:
     metadata:
       labels:
         app: {{ template "name" . }}
-        version: "{{ .Values.image.tag }}"
         release: "{{ .Release.Name }}"
     spec:
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
