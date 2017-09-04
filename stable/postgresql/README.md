@@ -91,6 +91,8 @@ $ helm install --name my-release -f values.yaml stable/postgresql
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
+If you wish to use a custom name for the service. Use the `nameOverride` value.
+
 ## Persistence
 
 The [postgres](https://github.com/docker-library/postgres) image stores the PostgreSQL data and configurations at the `/var/lib/postgresql/data/pgdata` path of the container.
