@@ -75,7 +75,7 @@ spec:
         livenessProbe:
           httpGet:
             path: /help
-            port: http
+            port: {{ default "http" .Values.livenessPort }}
           # This pod takes a very long time to start up. Be cautious when
           # lowering this value to avoid Pod death during startup.
           initialDelaySeconds: 200
@@ -86,7 +86,7 @@ spec:
         readinessProbe:
           httpGet:
             path: /help
-            port: http
+            port: {{ default "http" .Values.readinessPort }}
           initialDelaySeconds: 30
           timeoutSeconds: 1
           periodSeconds: 10
