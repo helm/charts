@@ -40,8 +40,14 @@ DisableHostNodeId: false
 ## Encrypt Gossip traffic
 EncryptGossip: true
 
-## StorageClass name for use with Persistent Volume Claim (PVC) using beta notations
-# StorageClass:
+## consul data Persistent Volume Storage Class
+## If defined, StorageClassName: <storageClass>
+## If set to "-", StorageClassName: "", which disables dynamic provisioning
+## If undefined (the default) or set to null, no storageClassName spec is
+##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+##   GKE, AWS & OpenStack)
+##
+# StorageClass: "-"
 
 ## Enable Consul Web UI
 ##
