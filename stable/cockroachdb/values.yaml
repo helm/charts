@@ -19,7 +19,13 @@ Resources:
     cpu: "100m"
     memory: "512Mi"
 Storage: "1Gi"
-StorageClass: "anything"
+## cockroachdb data Persistent Volume Storage Class
+## If defined, StorageClass: <storageClass>
+## If set to "-", StorageClass: "", which disables dynamic provisioning
+## If undefined (the default) or set to null, no storageClassName spec is
+##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+##   GKE, AWS & OpenStack)
+## StorageClass: "-"
 ClusterDomain: "cluster.local"
 NetworkPolicy:
   Enabled: false
