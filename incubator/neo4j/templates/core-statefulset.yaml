@@ -64,11 +64,6 @@ spec:
       spec:
         accessModes:
           - ReadWriteOnce
-        {{- if .Values.core.persistentVolume.storageClass | quote }}
-        storageClassName: {{ .Values.core.persistentVolume.storageClass | quote }}
-        {{- else }}
-        storageClassName: standard
-        {{- end }}
         resources:
           requests:
             storage: "{{ .Values.core.persistentVolume.size }}"
