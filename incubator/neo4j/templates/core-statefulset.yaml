@@ -61,9 +61,20 @@ spec:
   volumeClaimTemplates:
     - metadata:
         name: datadir
+        annotations:
+        {{- if .Values.core.persistentVolume.annotations }}
+{{ toYaml .Values.core.persistentVolume.annotations | indent 12 }}
+        {{- end }}
       spec:
         accessModes:
           - ReadWriteOnce
+      {{- if .Values.core.persistentVolume.storageClass }}
+      {{- if (eq "-" .Values.core.persistentVolume.storageClass) }}
+        storageClassName: ""
+      {{- else }}
+        storageClassName: "{{ .Values.core.persistentVolume.storageClass }}"
+      {{- end }}
+      {{- end }}
         resources:
           requests:
             storage: "{{ .Values.core.persistentVolume.size }}"
