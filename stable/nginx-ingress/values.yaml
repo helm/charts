@@ -54,6 +54,15 @@ controller:
   ##
   kind: Deployment
 
+  ## Node tolerations for server scheduling to nodes with taints
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+  ##
+  tolerations: []
+  #- key: "key"
+  #  operator: "Equal|Exists"
+  #  value: "value"
+  #  effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
+
   ## Node labels for controller pod assignment
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
   ##
@@ -138,6 +147,15 @@ defaultBackend:
     pullPolicy: IfNotPresent
 
   extraArgs: {}
+
+  ## Node tolerations for server scheduling to nodes with taints
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+  ##
+  tolerations: []
+  #- key: "key"
+  #  operator: "Equal|Exists"
+  #  value: "value"
+  #  effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
 
   ## Node labels for default backend pod assignment
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
