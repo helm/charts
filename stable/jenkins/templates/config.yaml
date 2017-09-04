@@ -45,6 +45,11 @@ data:
                   {{- $key }}={{ $value }}
                   {{- $_ := set $local "first" false }}
                 {{- end }}</nodeSelector>
+              <nodeUsageMode>NORMAL</nodeUsageMode>
+              <customWorkspaceVolumeEnabled>false</customWorkspaceVolumeEnabled>
+              <workspaceVolume class="org.csanchez.jenkins.plugins.kubernetes.volumes.workspace.EmptyDirWorkspaceVolume">
+                <memory>false</memory>
+              </workspaceVolume>
               <volumes>
 {{- range $index, $volume := .Values.Agent.volumes }}
                 <org.csanchez.jenkins.plugins.kubernetes.volumes.{{ $volume.type }}Volume>
@@ -88,6 +93,15 @@ data:
                 </org.csanchez.jenkins.plugins.kubernetes.PodEnvVar>
 {{- end }}
               </envVars>
+              <ports/>
+              <livenessProbe>
+                <execArgs></execArgs>
+                <timeoutSeconds>0</timeoutSeconds>
+                <initialDelaySeconds>0</initialDelaySeconds>
+                <failureThreshold>0</failureThreshold>
+                <periodSeconds>0</periodSeconds>
+                <successThreshold>0</successThreshold>
+              </livenessProbe>
               <annotations/>
               <imagePullSecrets>
 {{- range $index, $secret := .Values.Agent.imagePullSecrets }}
