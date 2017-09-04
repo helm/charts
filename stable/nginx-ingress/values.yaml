@@ -54,6 +54,9 @@ controller:
   ##
   kind: Deployment
 
+  daemonset:
+    hostPort: false
+
   ## Node labels for controller pod assignment
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
   ##
