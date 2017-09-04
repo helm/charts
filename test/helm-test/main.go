@@ -108,8 +108,8 @@ var (
 	TEST_FAILURE_CODE         = 2
 
 	// File path constants
-	whiteListYamlPath = "/src/k8s.io/charts/test/helm-test/whitelist.yaml"
-	chartsBasePath    = "/src/k8s.io/charts"
+	chartsBasePath    = path.Join(os.Getenv("GOPATH"), "/src/k8s.io/charts")
+	whiteListYamlPath = path.Join(chartsBasePath, "test/helm-test/whitelist.yaml")
 	helmPath          = "linux-amd64/helm"
 	kubectlPath       = "/workspace/kubernetes/client/bin/kubectl"
 )
