@@ -13,10 +13,10 @@ spec:
       name: {{ template "fullname" . }}
       labels:
         app: {{ template "fullname" . }}
-      {{- if .Values.daemonset.podAnnotations }}
+    {{- if .Values.podAnnotations }}
       annotations:
-{{ toYaml .Values.daemonset.podAnnotations | indent 8 }}
-      {{- end }}
+{{ toYaml .Values.podAnnotations | indent 8 }}
+    {{- end }}
     spec:
     {{- if .Values.rbac.serviceAccountName }}
       serviceAccountName: {{ .Values.rbac.serviceAccountName }}
@@ -121,9 +121,9 @@ spec:
         - name: docker-logs
           hostPath:
             path: /var/lib/docker
-      {{- if .Values.daemonset.tolerations }}
+    {{- if .Values.tolerations }}
       tolerations:
-{{ toYaml .Values.daemonset.tolerations | indent 8 }}
-      {{- end }}
+{{ toYaml .Values.tolerations | indent 8 }}
+    {{- end }}
   updateStrategy:
-    type: {{ default "OnDelete" .Values.daemonset.updateStrategy | quote }}
+    type: "{{ .Values.updateStrategy }}"
