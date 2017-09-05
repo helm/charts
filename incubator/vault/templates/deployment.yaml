@@ -1,0 +1,64 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    app: {{ template "name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+  annotations:
+    checksum/config-map: {{ include (print $.Chart.Name "/templates/configmap.yaml") . | sha256sum }}
+    checksum/secret: {{ include (print $.Chart.Name "/templates/secret.yaml") . | sha256sum }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        {{- if .Values.vaultmode.dev }}
+        command: ["vault", "server", "-dev"]
+        {{- else }}
+        command: ["vault", "server", "-config", "/vault/config/config.json"]
+        {{- end }}
+        env:
+        # populate secrets
+        {{- range $key, $value :=  .Values.secrets }}
+        - name: {{ $key | upper | replace "-" "_" }}
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "fullname" $ }}
+              key: {{ $key }}
+        {{- end }}
+        ports:
+        - containerPort: {{ .Values.service.port }}
+        livenessProbe:
+          tcpSocket:
+            port: {{ .Values.service.port }}
+        readinessProbe:
+          tcpSocket:
+            port: {{ .Values.service.port }}
+        securityContext:
+          readOnlyRootFilesystem: true
+          capabilities:
+            add:
+            - IPC_LOCK
+        volumeMounts:
+        - name: vault-config
+          mountPath: /vault/config/
+        - name: vault-root
+          mountPath: /root/
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+      volumes:
+        - name: vault-config
+          configMap:
+            name: "{{ template "fullname" . }}"
+        - name: vault-root
+          emptyDir: {}
