@@ -1,0 +1,28 @@
+{{- if .Values.networkPolicy.enabled }}
+kind: NetworkPolicy
+apiVersion: {{ .Values.networkPolicy.apiVersion }}
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    app: {{ template "name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+spec:
+  podSelector:
+    matchLabels:
+      app: {{ template "name" . }}
+      component: master
+      release: {{ .Release.Name }}
+  ingress:
+    # Allow web access to the UI
+    - ports:
+      - port: {{ .Values.service.externalPort }}
+    # Allow inbound connections from slave
+    - from:
+      - podSelector:
+          matchLabels:
+            "jenkins/{{ template "fullname" . }}-agent": "true"
+      ports:
+      - port: {{ .Values.agent.listenerPort }}
+{{- end }}
