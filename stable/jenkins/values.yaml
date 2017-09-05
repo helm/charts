@@ -102,10 +102,15 @@ Persistence:
   ## If defined, PVC must be created manually before volume will be bound
   # ExistingClaim:
 
-  ## If defined, volume.beta.kubernetes.io/storage-class: <StorageClass>
-  ## Default: volume.alpha.kubernetes.io/storage-class: default
+  ## jenkins data Persistent Volume Storage Class
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
   ##
-  # StorageClass:
+  # StorageClass: "-"
+
   AccessMode: ReadWriteOnce
   Size: 8Gi
   volumes:
