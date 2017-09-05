@@ -11,3 +11,7 @@ rbac:
   create: false
   # Ignored if rbac.create is true
   serviceAccountName: default
+  # Default to clusterIP for backward compatibility
+  type: ClusterIP
+  nodePort: 0
+  loadBalancerIP: ""
