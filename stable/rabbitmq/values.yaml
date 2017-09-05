@@ -1,7 +1,7 @@
 ## Bitnami RabbitMQ image version
 ## ref: https://hub.docker.com/r/bitnami/rabbitmq/tags/
 ##
-image: bitnami/rabbitmq:3.6.11-r3
+image: bitnami/rabbitmq:3.6.11-r4
 
 ## Specify a imagePullPolicy
 ## 'Always' if imageTag is 'latest', else set to 'IfNotPresent'
