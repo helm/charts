@@ -17,5 +17,6 @@
   echo "Visit http://127.0.0.1:8080 to use your application"
   kubectl port-forward $POD_NAME 8080:{{ .Values.service.externalPort }}
 {{- end }}
+
 2. Next, create a channel for your IBM Blockchain network and have your peer nodes join by running these commands:
   helm install stable/ibm-blockchain-channel
