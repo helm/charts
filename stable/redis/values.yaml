@@ -40,6 +40,7 @@ persistence:
   ## Note: the following properties are only used if existingClaim is not set
 
   ## If defined, storageClassName: <storageClass>
+  ## unless storageClass is set to "-" - in which the storageClassName will be set to "", to bypass dynamic creation
   ## Default: not set - uses DefaultStorageClass admission controller to decide storage class
   # storageClass:
   accessMode: ReadWriteOnce
