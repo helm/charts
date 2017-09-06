@@ -28,7 +28,7 @@ spec:
           imagePullPolicy: "{{ .Values.configmapReload.image.pullPolicy }}"
           args:
             - --volume-dir=/etc/config
-            - --webhook-url=http://localhost:9090/-/reload
+            - --webhook-url=http://localhost:9090{{ .Values.server.baseUrl }}/-/reload
           resources:
 {{ toYaml .Values.configmapReload.resources | indent 12 }}
           volumeMounts:
@@ -41,7 +41,7 @@ spec:
           imagePullPolicy: "{{ .Values.server.image.pullPolicy }}"
           args:
           {{- if or .Values.alertmanager.enabled .Values.server.alertmanagerURL }}
-            - --alertmanager.url={{- if .Values.alertmanager.enabled }}http://{{ template "prometheus.alertmanager.fullname" . }}:{{ .Values.alertmanager.service.servicePort }}{{- else }}{{ .Values.server.alertmanagerURL }}{{- end }}
+            - --alertmanager.url={{- if .Values.alertmanager.enabled }}http://{{ template "prometheus.alertmanager.fullname" . }}:{{ .Values.alertmanager.service.servicePort }}{{ .Values.alertmanager.baseURL }}{{- else }}{{ .Values.server.alertmanagerURL }}{{- end }}
           {{- end }}
             - --config.file=/etc/config/prometheus.yml
             - --storage.local.path={{ .Values.server.persistentVolume.mountPath }}
@@ -54,7 +54,7 @@ spec:
             - containerPort: 9090
           readinessProbe:
             httpGet:
-              path: /status
+              path: {{ .Values.server.baseURL }}/status
               port: 9090
             initialDelaySeconds: 30
             timeoutSeconds: 30

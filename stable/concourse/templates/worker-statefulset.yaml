@@ -102,18 +102,19 @@ spec:
   volumeClaimTemplates:
     - metadata:
         name: concourse-work-dir
-        annotations:
-          {{- if .Values.persistence.worker.class }}
-          volume.beta.kubernetes.io/storage-class: {{ .Values.persistence.worker.class | quote }}
-          {{- else }}
-          volume.alpha.kubernetes.io/storage-class: default
-          {{- end }}
       spec:
         accessModes:
           - {{ .Values.persistence.worker.accessMode | quote }}
         resources:
           requests:
             storage: {{ .Values.persistence.worker.size | quote }}
+      {{- if .Values.persistence.worker.storageClass }}
+      {{- if (eq "-" .Values.persistence.worker.storageClass) }}
+        storageClassName: ""
+      {{- else }}
+        storageClassName: "{{ .Values.persistence.worker.storageClass }}"
+      {{- end }}
+      {{- end }}
   {{- else }}
         - name: concourse-work-dir
           emptyDir: {}
