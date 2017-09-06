@@ -8,16 +8,17 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
-  annotations:
-  {{- if .Values.persistence.mediawiki.storageClass }}
-    volume.beta.kubernetes.io/storage-class: {{ .Values.persistence.mediawiki.storageClass | quote }}
-  {{- else }}
-    volume.alpha.kubernetes.io/storage-class: default
-  {{- end }}
 spec:
   accessModes:
     - {{ .Values.persistence.mediawiki.accessMode | quote }}
   resources:
     requests:
       storage: {{ .Values.persistence.mediawiki.size | quote }}
+{{- if .Values.persistence.mediawiki.storageClass }}
+{{- if (eq "-" .Values.persistence.mediawiki.storageClass) }}
+  storageClassName: ""
+{{- else }}
+  storageClassName: "{{ .Values.persistence.mediawiki.storageClass }}"
+{{- end }}
+{{- end }}
 {{- end -}}
