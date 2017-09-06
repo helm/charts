@@ -1,19 +1,19 @@
 apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "zookeeper.fullname" . }}
   labels:
-    app: {{ include "name" . | quote }}
+    app: {{ include "zookeeper.name" . | quote }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
 spec:
-  serviceName: {{ template "fullname" . }}-headless
+  serviceName: {{ template "zookeeper.fullname" . }}-headless
   replicas: {{ .Values.Servers }}
   template:
     metadata:
       labels:
-        app: {{ include "name" . | quote }}
+        app: {{ include "zookeeper.name" . | quote }}
         release: {{ .Release.Name | quote }}
     spec:
       {{- if eq .Values.AntiAffinity "hard" }}
@@ -23,7 +23,7 @@ spec:
             - topologyKey: "kubernetes.io/hostname"
               labelSelector:
                 matchLabels:
-                  app: {{ include "name" . | quote }}
+                  app: {{ include "zookeeper.name" . | quote }}
                   release: {{ .Release.Name | quote }}
       {{- else if eq .Values.AntiAffinity "soft" }}
       affinity:
@@ -34,7 +34,7 @@ spec:
                 topologyKey: "kubernetes.io/hostname"
                 labelSelector:
                   matchLabels:
-                    app: {{ include "name" . | quote }}
+                    app: {{ include "zookeeper.name" . | quote }}
                     release: {{ .Release.Name | quote }}
       {{- end }}
       containers:

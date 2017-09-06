@@ -37,6 +37,9 @@ spec:
       port: {{ .Values.server.service.servicePort }}
       protocol: TCP
       targetPort: 9090
+    {{- if .Values.server.service.nodePort }}
+      nodePort: {{ .Values.server.service.nodePort }}
+    {{- end }}
   selector:
     app: {{ template "prometheus.name" . }}
     component: "{{ .Values.server.name }}"

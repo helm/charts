@@ -14,7 +14,11 @@ spec:
       labels:
         app: {{ template "fullname" . }}
     spec:
+    {{- if .Values.rbac.serviceAccountName }}
+      serviceAccountName: {{ .Values.rbac.serviceAccountName }}
+    {{- else }}
       serviceAccountName: {{ template "fullname" . }}
+    {{- end }}
       containers:
         - name: {{ template "fullname" . }}
           image: "{{.Values.image.name}}:{{.Values.image.tag}}"

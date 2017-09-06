@@ -85,6 +85,7 @@ The following tables lists the configurable parameters of the sumologic-fluentd 
 | `resources.limits.cpu` | CPU resource limits | 256m |
 | `resources.requests.memory` | Memory resource requests | 128Mi |
 | `resources.limits.memory` | Memory resource limits | 256Mi |
+| `rbac.serviceAccountName` | RBAC service account name | {{ fullname }} |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
@@ -107,7 +108,7 @@ $ helm install --name my-release -f values.yaml stable/sumologic-fluentd
 
 By default, the fluentd position files will be written to an ephemeral
 `emptyDir`. Each time the pods die, new position files will be created, all of
-the logs in the cluster will be sent to sumologic again. To avoid unneccessary
+the logs in the cluster will be sent to sumologic again. To avoid unnecessary
 re-transmissions, pos directories can be maintained as a `hostPath`. Create a
 directory, on each of the nodes, and point `persistence.hostPath` at that
 directory.

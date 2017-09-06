@@ -37,6 +37,9 @@ spec:
         scheduler.alpha.kubernetes.io/tolerations: '[{"key":"CriticalAddonsOnly", "operator":"Exists"}]'
         {{- end }}
     spec:
+      {{- if .Values.isClusterService }}
+      dnsPolicy: Default
+      {{- end }}
       containers:
       - name: "coredns"
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -56,6 +59,11 @@ spec:
         {{- if or (eq .Values.serviceProtocol "UDPNTCP") (eq .Values.serviceProtocol "TCP") }}
         - containerPort: 53
           name: dns-tcp
+          protocol: TCP
+        {{- end }}
+        {{- if .Values.middleware.prometheus.enabled }}
+        - containerPort: {{ .Values.middleware.prometheus.port }}
+          name: metrics
           protocol: TCP
         {{- end }}
         livenessProbe:

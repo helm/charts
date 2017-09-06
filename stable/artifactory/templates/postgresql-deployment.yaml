@@ -16,18 +16,18 @@ spec:
         app: {{ template "name" . }}
         component: "{{ .Values.database.name }}"
         release: {{ .Release.Name }}
-      annotations:
-        pod.beta.kubernetes.io/init-containers: '[{
-          "name": "remove-lost-found",
-          "image": {{ .Values.initContainerImage | quote }},
-          "command": ["rm", "-rf", "{{ .Values.database.persistence.mountPath }}/lost+found"],
-          "volumeMounts": [{
-              "name": "postgresql-volume",
-              "mountPath": {{ .Values.database.persistence.mountPath | quote }}
-            }],
-          "imagePullPolicy": {{ .Values.database.image.pullPolicy | quote }}
-        }]'
     spec:
+      initContainers:
+      - name: "remove-lost-found"
+        image: "{{ .Values.initContainerImage }}"
+        imagePullPolicy: "{{ .Values.database.image.pullPolicy }}"
+        command:
+        - "rm"
+        - "-rf"
+        - "{{ .Values.database.persistence.mountPath }}/lost+found"
+        volumeMounts:
+        - mountPath: {{ .Values.database.persistence.mountPath | quote }}
+          name: postgresql-volume
       containers:
       - name: {{ .Values.database.name }}
         image: "{{ .Values.database.image.repository }}:{{ .Values.database.image.version }}"

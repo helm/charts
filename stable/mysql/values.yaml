@@ -45,3 +45,9 @@ resources:
   requests:
     memory: 256Mi
     cpu: 100m
+
+# Custom mysql configuration files used to override default mysql settings
+configurationFiles:
+#  mysql.cnf: |-
+#    [mysqld]
+#    skip-name-resolve

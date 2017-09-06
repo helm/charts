@@ -16,7 +16,7 @@ This chart bootstraps a [MariaDB](https://github.com/bitnami/bitnami-docker-mari
 
 ## Prerequisites
 
-- Kubernetes 1.4+ with Beta APIs enabled
+- Kubernetes 1.6+ with Beta APIs enabled
 - PV provisioner support in the underlying infrastructure
 
 ## Installing the Chart
@@ -46,10 +46,11 @@ The command removes all the Kubernetes components associated with the chart and 
 The following tables lists the configurable parameters of the MariaDB chart and their default values.
 
 |          Parameter          |                Description                 |                   Default                   |
-|-----------------------------|--------------------------------------------|---------------------------------------------|
+| --------------------------- | ------------------------------------------ | ------------------------------------------- |
 | `image`                     | MariaDB image                              | `bitnami/mariadb:{VERSION}`                 |
 | `imagePullPolicy`           | Image pull policy.                         | `IfNotPresent`                              |
-| `mariadbRootPassword`       | Password for the `root` user.              | `nil`                                       |
+| `usePassword`               | Enable password authentication             | `true`                                      |
+| `mariadbRootPassword`       | Password for the `root` user.              | Randomly generated                          |
 | `mariadbUser`               | Username of new user to create.            | `nil`                                       |
 | `mariadbPassword`           | Password for the new user.                 | `nil`                                       |
 | `mariadbDatabase`           | Name for new database to create.           | `nil`                                       |
@@ -106,6 +107,32 @@ config: |-
 EOF
 
 helm install --name my-release -f mariadb-values.yaml stable/mariadb
+```
+
+## Consuming credentials
+
+To connect to your database in your application, you can consume the credentials from the secret. For example:
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-app
+spec:
+  containers:
+    - name: my-app
+      image: bitnami/mariadb:latest
+      env:
+        - name: MARIADB_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: my-release-mariadb
+              key: mariadb-root-password
+      command: ["sh", "-c"]
+      args:
+      - mysql -h my-release-mariadb.default.svc.cluster.local -p$MARIADB_ROOT_PASSWORD -e 'show databases;'
+  restartPolicy: Never
+
 ```
 
 ## Persistence

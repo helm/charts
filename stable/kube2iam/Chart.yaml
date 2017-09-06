@@ -1,5 +1,5 @@
 name: kube2iam
-version: 0.5.1
+version: 0.5.4
 description: Provide IAM credentials to pods based on annotations.
 keywords:
   - kube2iam

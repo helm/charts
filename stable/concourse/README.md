@@ -14,7 +14,7 @@ This chart bootstraps a [Concourse](https://concourse.ci/) deployment on a [Kube
 
 ## Prerequisites Details
 
-* Kubernetes 1.5 (for `StatefulSets` support)
+* Kubernetes 1.6 (for `pod affinity` support)
 * PV support on underlying infrastructure (if persistence is required)
 
 ## Installing the Chart
@@ -84,7 +84,7 @@ The following tables lists the configurable parameters of the Concourse chart an
 | Parameter               | Description                           | Default                                                    |
 | ----------------------- | ----------------------------------    | ---------------------------------------------------------- |
 | `image` | Concourse image | `concourse/concourse` |
-| `imageTag` | Concourse image version | `2.6.0` |
+| `imageTag` | Concourse image version | `3.3.2` |
 | `imagePullPolicy` |Concourse image pull policy |  `Always` if `imageTag` is `latest`, else `IfNotPresent` |
 | `concourse.username` | Concourse Basic Authentication Username | `concourse` |
 | `concourse.password` | Concourse Basic Authentication Password | `concourse` |
@@ -112,6 +112,12 @@ The following tables lists the configurable parameters of the Concourse chart an
 | `concourse.githubAuthAuthUrl` | Override default endpoint AuthURL for Github Enterprise | `nil` |
 | `concourse.githubAuthTokenUrl` | Override default endpoint TokenURL for Github Enterprise | `nil` |
 | `concourse.githubAuthApiUrl` | Override default API endpoint URL for Github Enterprise | `nil` |
+| `concourse.gitlabAuthClientId` | Application client ID for enabling GitLab OAuth | `nil` |
+| `concourse.gitlabAuthClientSecret` | Application client secret for enabling GitLab OAuth | `nil` |
+| `concourse.gitlabAuthGroup` | GitLab groups (comma separated) whose members will have access | `nil` |
+| `concourse.gitlabAuthAuthUrl` | Endpoint AuthURL for GitLab server | `nil` |
+| `concourse.gitlabAuthTokenUrl` | Endpoint TokenURL for GitLab server | `nil` |
+| `concourse.gitlabAuthApiUrl` | API endpoint URL for GitLab server | `nil` |
 | `concourse.genericOauthDisplayName` | Name for this auth method on the web UI | `nil` |
 | `concourse.genericOauthClientId` | Application client ID for enabling generic OAuth | `nil` |
 | `concourse.genericOauthClientSecret` | Application client secret for enabling generic OAuth | `nil` |
