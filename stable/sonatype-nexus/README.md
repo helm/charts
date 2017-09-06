@@ -4,7 +4,7 @@
 
 ## Introduction
 
-This chart bootstraps a nexus instance
+This chart bootstraps a sonatype nexus instance
 
 ## Prerequisites
 
@@ -15,7 +15,7 @@ This chart bootstraps a nexus instance
 To install the chart:
 
 ```bash
-$ helm install stable/nexus
+$ helm install stable/sonatype-nexus
 ```
 
 The above command deploys Nexus on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
@@ -60,14 +60,14 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 ```bash
 $ helm install --name my-release \
   --set persistence.enabled=false \
-    stable/nexus
+    stable/sonatype-nexus
 ```
 The above example turns off the persistence. Data will not be kept between restarts or deployments
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```bash
-$ helm install --name my-release -f values.yaml stable/nexus
+$ helm install --name my-release -f values.yaml stable/sonatype-nexus
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
