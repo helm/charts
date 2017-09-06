@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "scdf.fullname" . }}-server
+  labels:
+    app: {{ template "name" . }}
+    component: server
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+data:
+  application.yaml: |-
+    security:
+      basic:
+        enabled: true
+        realm: Spring Cloud Data Flow
+    spring:
+      cloud:
+        dataflow:
+          security:
+            authentication:
+              file:
+                enabled: true
+                users:
+                  {{ .Values.dataflowAdminUsername }}: ${data-flow-admin-password}, {{ .Values.dataflowAdminRoles }}
+                  {{ .Values.dataflowUsername }}: ${data-flow-password}, {{ .Values.dataflowRoles }}
+        deployer:
+          kubernetes:
+            environmentVariables: 'SPRING_RABBITMQ_HOST=${{ printf "{%s" .Release.Name | upper }}_RABBITMQ_SERVICE_HOST},SPRING_RABBITMQ_PORT=${{ printf "{%s" .Release.Name | upper }}_RABBITMQ_SERVICE_PORT_AMPQ},SPRING_RABBITMQ_USERNAME={{ .Values.rabbitmq.rabbitmqUsername }},SPRING_RABBITMQ_PASSWORD=${rabbitmq-password},SPRING_REDIS_HOST=${{ printf "{%s" .Release.Name | upper }}_REDIS_SERVICE_HOST},SPRING_REDIS_PORT=${{ printf "{%s" .Release.Name | upper }}_REDIS_SERVICE_PORT},SPRING_REDIS_PASSWORD=${redis-password}'
+      datasource:
+        url: 'jdbc:mysql://${{ printf "{%s" .Release.Name | upper }}_MYSQL_SERVICE_HOST}:3306/dataflow'
+        driverClassName: org.mariadb.jdbc.Driver
+        username: root
+        password: ${mysql-root-password}
+        testOnBorrow: true
+        validationQuery: "SELECT 1"
+      redis:
+        host: ${{ printf "{%s" .Release.Name | upper }}_REDIS_SERVICE_HOST}
+        port: ${{ printf "{%s" .Release.Name | upper }}_REDIS_SERVICE_PORT}
+        password: ${redis-password}

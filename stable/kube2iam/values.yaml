@@ -23,6 +23,8 @@ nodeSelector: {}
 ##
 podAnnotations: {}
 
+podLabels: {}
+
 rbac:
   ## If true, create & use RBAC resources
   ##

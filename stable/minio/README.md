@@ -167,3 +167,22 @@ $ helm install --set persistence.enabled=false stable/minio
 ```
 
 > *"An emptyDir volume is first created when a Pod is assigned to a Node, and exists as long as that Pod is running on that node. When a Pod is removed from a node for any reason, the data in the emptyDir is deleted forever."*
+
+NetworkPolicy
+-------------
+
+To enable network policy for Minio,
+install [a networking plugin that implements the Kubernetes
+NetworkPolicy spec](https://kubernetes.io/docs/tasks/administer-cluster/declare-network-policy#before-you-begin),
+and set `networkPolicy.enabled` to `true`.
+
+For Kubernetes v1.5 & v1.6, you must also turn on NetworkPolicy by setting
+the DefaultDeny namespace annotation. Note: this will enforce policy for _all_ pods in the namespace:
+
+    kubectl annotate namespace default "net.beta.kubernetes.io/network-policy={\"ingress\":{\"isolation\":\"DefaultDeny\"}}"
+
+With NetworkPolicy enabled, traffic will be limited to just port 9000.
+
+For more precise policy, set `networkPolicy.allowExternal=true`. This will
+only allow pods with the generated client label to connect to Minio.
+This label will be displayed in the output of a successful install.

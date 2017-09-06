@@ -1,0 +1,21 @@
+{{- define "common.persistentvolumeclaim.tpl" -}}
+apiVersion: v1
+kind: PersistentVolumeClaim
+{{ template "common.metadata" . }}
+  annotations:
+  {{- if .Values.persistence.storageClass }}
+    volume.beta.kubernetes.io/storage-class: {{ .Values.persistence.storageClass | quote }}
+  {{- end }}
+spec:
+  accessModes:
+    - {{ .Values.persistence.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.size | quote }}
+{{- end -}}
+{{- define "common.persistentvolumeclaim" -}}
+{{- $top := first . -}}
+{{- if and $top.Values.persistence.enabled (not $top.Values.persistence.existingClaim) -}}
+{{- template "common.util.merge" (append . "common.persistentvolumeclaim.tpl") -}}
+{{- end -}}
+{{- end -}}
