@@ -5,7 +5,7 @@ keywords:
   - blockchain
 home: https://ibm-blockchain.github.io
 sources:
-  - https://github.ibm.com/IBM-Blockchain/ibm-container-service
+  - https://github.com/IBM-Blockchain/ibm-container-service
 maintainers: 
   - name: Mihir Shah
     email: mrshah@us.ibm.com
