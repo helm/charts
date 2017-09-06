@@ -87,9 +87,6 @@ spec:
   - metadata:
       name: datadir
       annotations:
-      {{- if .Values.cluster.storageClass.enabled }}
-        volume.beta.kubernetes.io/storage-class: {{ template "rethinkdb.fullname" . }}
-      {{- end }}
       {{- range $key, $value := .Values.cluster.persistentVolume.annotations }}
         {{ $key }}: {{ $value }}
       {{- end }}
@@ -101,6 +98,9 @@ spec:
       resources:
         requests:
           storage: {{ .Values.cluster.persistentVolume.size | quote }}
+    {{- if .Values.cluster.storageClass.enabled }}
+      storageClassName: {{ template "fullname" . }}
+    {{- end }}
 {{- else }}
       volumes:
         - name: datadir
