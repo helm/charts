@@ -127,3 +127,6 @@ minioConfig:
     clientId: ""
     username: ""
     password: ""
+networkPolicy:
+  enabled: false
+  allowExternal: true

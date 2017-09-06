@@ -6,3 +6,8 @@ image:
   pullPolicy: IfNotPresent
 service:
   port: 8080
+rbac:
+  # If true, create & use RBAC resources
+  create: false
+  # Ignored if rbac.create is true
+  serviceAccountName: default
