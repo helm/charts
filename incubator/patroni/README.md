@@ -26,6 +26,7 @@ To install the chart with the release name `my-release`:
 
 ```console
 $ helm repo add incubator https://kubernetes-charts-incubator.storage.googleapis.com/
+$ helm dependency update
 $ helm install --name my-release incubator/patroni
 ```
 
