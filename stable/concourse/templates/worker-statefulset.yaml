@@ -77,6 +77,18 @@ spec:
             - name: concourse-work-dir
               mountPath: /concourse-work-dir
       affinity:
+      {{ if .Values.worker.nodeAffinity.enabled }}
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                - key: {{ .Values.worker.nodeAffinity.key | quote }}
+                  operator: In
+                  values:
+                  {{- range .Values.worker.nodeAffinity.values }}
+                  - {{ . }}
+                  {{ end }}
+      {{ end }}
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
           - weight: 100
