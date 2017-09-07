@@ -129,14 +129,23 @@ The following tables lists the configurable parameters of the Concourse chart an
 | `web.replicas` | Number of Concourse Web replicas | `1` |
 | `web.resources` | Concourse Web resource requests and limits | `{requests: {cpu: "100m", memory: "128Mi"}}` |
 | `web.service.type` | Concourse Web service type | `NodePort` |
+| `web.service.nodePort.fixed` | Concourse Web NodePort fixed if web.service.type is NodePort | `false`|
+| `web.service.nodePort.atc` | Concourse Web ATC NodePort | `nil` |
+| `web.service.nodePort.tsa` | Concourse Web TSA NodePort | `nil` |
 | `web.ingress.enabled` | Enable Concourse Web Ingress | `false` |
 | `web.ingress.annotations` | Concourse Web Ingress annotations | `{}` |
 | `web.ingress.hosts` | Concourse Web Ingress Hostnames | `[]` |
 | `web.ingress.tls` | Concourse Web Ingress TLS configuration | `[]` |
+| `web.nodeAffinity.enabled` | Concourse Web use nodeAffinity | `false` |
+| `web.nodeAffinity.key` | Concourse Web nodeAffinity key | `nil` |
+| `web.nodeAffinity.value` | Concourse Web nodeAffinity value | `nil` |
 | `worker.nameOverride` | Override the Concourse Worker components name| `worker` |
 | `worker.replicas` | Number of Concourse Worker replicas | `2` |
 | `worker.minAvailable` | Minimun number of workers available after an eviction | `1` |
 | `worker.resources` | Concourse Worker resource requests and limits | `{requests: {cpu: "100m", memory: "512Mi"}}` |
+| `worker.nodeAffinity.enabled` | Concourse Worker use nodeAffinity | `false` |
+| `worker.nodeAffinity.key` | Concourse Worker nodeAffinity key | `nil` |
+| `worker.nodeAffinity.value` | Concourse Worker nodeAffinity value | `nil` |
 | `persistence.enabled` | Enable Concourse persistence using Persistent Volume Claims | `true` |
 | `persistence.worker.class` | Concourse Worker Persistent Volume Storage Class | `generic` |
 | `persistence.worker.accessMode` | Concourse Worker Persistent Volume Access Mode | `ReadWriteOnce` |
