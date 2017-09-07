@@ -387,3 +387,13 @@ serverConfigFile:
 ## and add it below.
 ##
 serverDashboardFiles: {}
+
+## Grafana dashboard files from local directory
+## for example, if you create the following structure:
+##  dashboards/
+##    dashboard1.json
+##    dashboard2.json
+## both these dashboard will be added to the deployment and automatically populated in grafana
+dashboards:
+  enabled: false
+  folderName: "dashboards"
