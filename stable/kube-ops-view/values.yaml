@@ -29,3 +29,8 @@ ingress:
   #   - secretName: kube-ops-view.local-tls
   #     hosts:
   #       - kube-ops-view.local
+rbac:
+  # If true, create & use RBAC resources
+  create: false
+  # Ignored if rbac.create is true
+  serviceAccountName: default

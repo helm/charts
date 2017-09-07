@@ -1,6 +1,6 @@
 # Default values for Traefik
 image: traefik
-imageTag: 1.3.5
+imageTag: 1.3.7
 serviceType: LoadBalancer
 loadBalancerIP:
 #loadBalancerSourceRanges: []

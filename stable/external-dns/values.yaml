@@ -13,6 +13,12 @@ sources:
 ## The DNS provider where the DNS records will be created (options: aws, google, inmemory, azure )
 provider: aws
 
+# AWS Access keys to inject as environment variables
+aws:
+  secret_key: ""
+  access_key: ""
+  region: "us-east-1"
+
 ## Limit possible target zones by domain suffixes (optional)
 domainFilters: []
 
@@ -27,6 +33,8 @@ policy: upsert-only
 ## Annotations to be added to pods
 ##
 podAnnotations: {}
+
+podLabels: {}
 
 debug: false
 
