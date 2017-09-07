@@ -373,9 +373,14 @@ persistence:
   ## Worker Persistence configuration.
   ##
   worker:
-    ## Persistent Volume Storage Class.
+    ## concourse data Persistent Volume Storage Class
+    ## If defined, storageClassName: <storageClass>
+    ## If set to "-", storageClassName: "", which disables dynamic provisioning
+    ## If undefined (the default) or set to null, no storageClassName spec is
+    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+    ##   GKE, AWS & OpenStack)
     ##
-    # class:
+    # storageClass: "-"
 
     ## Persistent Volume Access Mode.
     ##

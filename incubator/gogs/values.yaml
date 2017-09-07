@@ -10,7 +10,7 @@ serviceType: NodePort
 replicaCount: 1
 
 image: gogs/gogs
-imageTag: 0.10.18
+imageTag: 0.11.29
 imagePullPolicy: IfNotPresent
 
 service:

@@ -42,7 +42,7 @@ spec:
             - containerPort: 9093
           readinessProbe:
             httpGet:
-              path: /#/status
+              path: {{ .Values.alertmanager.baseURL }}/#/status
               port: 9093
             initialDelaySeconds: 30
             timeoutSeconds: 30
@@ -60,7 +60,7 @@ spec:
           imagePullPolicy: "{{ .Values.configmapReload.image.pullPolicy }}"
           args:
             - --volume-dir=/etc/config
-            - --webhook-url=http://localhost:9093/-/reload
+            - --webhook-url=http://localhost:9093{{ .Values.alertmanager.baseURL }}/-/reload
           resources:
 {{ toYaml .Values.configmapReload.resources | indent 12 }}
           volumeMounts:

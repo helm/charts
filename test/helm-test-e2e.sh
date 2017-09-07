@@ -28,4 +28,4 @@ pushd .
 cd $GOPATH
 go get github.com/ghodss/yaml
 popd
-go run /src/k8s.io/charts/test/helm-test/main.go
+go run $GOPATH/src/k8s.io/charts/test/helm-test/main.go

@@ -39,4 +39,9 @@ spec:
     port: 53
     protocol: TCP
   {{- end }}
+  {{- if .Values.middleware.prometheus.enabled }}
+  - name: metrics
+    port: {{ .Values.middleware.prometheus.port }}
+    protocol: TCP
+  {{- end }}
   type: {{ default "ClusterIP" .Values.serviceType }}
