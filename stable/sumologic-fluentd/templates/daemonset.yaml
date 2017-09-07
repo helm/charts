@@ -47,6 +47,8 @@ spec:
                 secretKeyRef:
                   name: "{{ template "fullname-secrets" . }}"
                   key: collector-url
+            - name: FLUENTD_SOURCE
+              value: {{ quote .Values.sumologic.fluentdSource }}
             {{- if .Values.sumologic.flushInterval }}
             - name: FLUSH_INTERVAL
               value: {{ quote .Values.sumologic.flushInterval }}
