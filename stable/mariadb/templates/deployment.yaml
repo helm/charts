@@ -79,8 +79,14 @@ spec:
         image: "{{ .Values.metrics.image }}:{{ .Values.metrics.imageTag }}"
         imagePullPolicy: {{ .Values.metrics.imagePullPolicy | quote }}
         env:
-        - name: DATA_SOURCE_NAME
-          value: "root:{{ .Values.mariadbRootPassword }}@(localhost:3306)/"
+        {{- if .Values.usePassword }}
+        - name: MARIADB_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "fullname" . }}
+              key: mariadb-root-password
+        {{- end }}
+        command: [ 'sh', '-c', 'DATA_SOURCE_NAME="root:$MARIADB_ROOT_PASSWORD@(localhost:3306)/" /bin/mysqld_exporter' ]
         ports:
         - name: metrics
           containerPort: 9104
