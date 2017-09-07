@@ -8,6 +8,9 @@ server:
   ##
   image: "grafana/grafana:latest"
 
+  # replicaCount must be 1 if persistentVolume is enabled
+  replicaCount: 1
+
   nodeSelector: {}
   tolerations: []
 
