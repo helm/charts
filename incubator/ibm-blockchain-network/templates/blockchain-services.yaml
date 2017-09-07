@@ -1,0 +1,72 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: blockchain-ca
+  labels:
+    run: blockchain-ca
+spec:
+  type: NodePort
+  selector:
+    name: ca
+  ports:
+  - protocol: TCP
+    port: 7054
+    nodePort: 30000
+    name: grpc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: blockchain-orderer
+  labels:
+    run: blockchain-orderer
+spec:
+  type: NodePort
+  selector:
+    name: orderer
+  ports:
+  - protocol: TCP
+    port: 31010
+    nodePort: 31010
+    name: grpc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: blockchain-org1peer1
+  labels:
+    run: blockchain-org1peer1
+spec:
+  type: NodePort
+  selector:
+    name: org1peer1
+  ports:
+  - protocol: TCP
+    port: 5010
+    nodePort: 30110
+    name: grpc
+  - protocol: TCP
+    port: 5011
+    nodePort: 30111
+    name: events
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: blockchain-org2peer1
+  labels:
+    run: blockchain-org2peer1
+spec:
+  type: NodePort
+  selector:
+    name: org2peer1
+  ports:
+  - protocol: TCP
+    port: 5010
+    nodePort: 30210
+    name: grpc
+  - protocol: TCP
+    port: 5011
+    nodePort: 30211
+    name: events
