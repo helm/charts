@@ -27,7 +27,7 @@ spec:
         - name: config
           mountPath: /bitnami/mariadb_config
       containers:
-      - name: {{ template "fullname" . }}
+      - name: mariadb
         image: "{{ .Values.image }}"
         imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
         env:
@@ -90,6 +90,18 @@ spec:
         ports:
         - name: metrics
           containerPort: 9104
+        livenessProbe:
+          httpGet:
+            path: /metrics
+            port: metrics
+          initialDelaySeconds: 15
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /metrics
+            port: metrics
+          initialDelaySeconds: 5
+          timeoutSeconds: 1
         resources:
 {{ toYaml .Values.metrics.resources | indent 10 }}
 {{- end }}
