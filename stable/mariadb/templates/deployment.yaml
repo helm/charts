@@ -71,6 +71,9 @@ spec:
           timeoutSeconds: 1
         resources:
 {{ toYaml .Values.resources | indent 10 }}
+        volumeMounts:
+        - name: data
+          mountPath: /bitnami/mariadb
 {{- if .Values.metrics.enabled }}
       - name: metrics
         image: "{{ .Values.metrics.image }}:{{ .Values.metrics.imageTag }}"
@@ -84,9 +87,6 @@ spec:
         resources:
 {{ toYaml .Values.metrics.resources | indent 10 }}
 {{- end }}
-        volumeMounts:
-        - name: data
-          mountPath: /bitnami/mariadb
       volumes:
       - name: config
         configMap:
