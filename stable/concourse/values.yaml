@@ -304,6 +304,8 @@ web:
     ## ref: https://kubernetes.io/docs/user-guide/services/#publishing-services---service-types
     ##
     type: ClusterIP
+    nodePort:
+      fixed: false
 
   ## Ingress configuration.
   ## ref: https://kubernetes.io/docs/user-guide/ingress/
@@ -332,6 +334,9 @@ web:
     #   - secretName: concourse-web-tls
     #     hosts:
     #       - concourse.domain.com
+    #
+  nodeAffinity:
+    enabled: false
 
 ## Configuration values for Concourse Worker components.
 ##
@@ -361,6 +366,9 @@ worker:
   ##
   # annotations:
   #   iam.amazonaws.com/role: arn:aws:iam::123456789012:role/concourse
+  #
+  nodeAffinity:
+    enabled: false
 
 ## Persistent Volume Storage configuration.
 ## ref: https://kubernetes.io/docs/user-guide/persistent-volumes
