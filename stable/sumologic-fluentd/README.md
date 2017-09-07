@@ -108,7 +108,7 @@ $ helm install --name my-release -f values.yaml stable/sumologic-fluentd
 
 By default, the fluentd position files will be written to an ephemeral
 `emptyDir`. Each time the pods die, new position files will be created, all of
-the logs in the cluster will be sent to sumologic again. To avoid unneccessary
+the logs in the cluster will be sent to sumologic again. To avoid unnecessary
 re-transmissions, pos directories can be maintained as a `hostPath`. Create a
 directory, on each of the nodes, and point `persistence.hostPath` at that
 directory.

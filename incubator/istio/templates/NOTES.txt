@@ -1,4 +1,4 @@
-{{- $serviceName := include "fullname" . -}}
+{{- $serviceName := include "istio.fullname" . -}}
 Verify all Pods are running
 
   kubectl get pods --namespace {{ .Release.Namespace }}

@@ -60,7 +60,9 @@ helm repo add incubator ${INCUBATOR_REPO_URL}
 # Iterate over each of the changed charts
 #    Lint, install and delete
 for directory in ${CHANGED_FOLDERS}; do
-  if [ -d $directory ]; then
+  if [ "$directory" == "incubator/common" ]; then
+    continue
+  elif [ -d $directory ]; then
     CHART_NAME=`echo ${directory} | cut -d '/' -f2`
     RELEASE_NAME="${CHART_NAME:0:7}-${BUILD_NUMBER}"
     CURRENT_RELEASE=${RELEASE_NAME}
