@@ -34,6 +34,7 @@ rules:
     - "nodes"
     - "pods"
   verbs: ["get", "list"]
+{{- if .Values.datadog.leaderElection }}
 - apiGroups: [""]
   resources:
     - "configmaps"
@@ -43,4 +44,5 @@ rules:
   resources:
     - "configmaps"
   verbs: ["create"]
+{{ end }}
 {{- end -}}

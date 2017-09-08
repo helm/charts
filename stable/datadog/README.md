@@ -61,6 +61,8 @@ The following tables lists the configurable parameters of the Datadog chart and 
 | `daemonset.tolerations`     | List of node taints to tolerate (requires Kubernetes >= 1.6) | `nil`           |
 | `daemonset.useHostNetwork`  | If true, use the host's network    | `nil`                                     |
 | `daemonset.useHostPort`     | If true, use the same ports for both host and container  | `nil`               |
+| `datadog.leaderElection`    | Adds the leader Election feature   | `false`                                   |
+| `datadog.leaderLeaseElection`| The duration for which a leader stays elected.| `nil`                         |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
@@ -118,3 +120,11 @@ datadog:
           port: 6379
 ```
 
+### leader election
+
+The Datadog Agent supports built in leader election option for the Kubernetes event collector As of 5.17.
+This feature relies on ConfigMaps, enabling this flag will grant Datadog Agent get, list, delete and create access to the ConfigMap resource.
+See the full [RBAC](https://github.com/DataDog/integrations-core/tree/master/kubernetes#gathering-kubernetes-events)
+Agents coordinate by performing a leader election among members of the Datadog DaemonSet through kubernetes to ensure only one leader agent instance is gathering events at a given time.
+*This functionality is disabled by default.*
+The `datadog.leaderLeaseElection` is the duration for which a leader stays elected. It should be > 30 seconds. The longer it is, the less hard your agent hits the apiserver with requests, but it also means that if the leader dies (and under certain conditions) there can be an event blackout until the lease expires and a new leader takes over.
