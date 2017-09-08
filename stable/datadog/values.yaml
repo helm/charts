@@ -106,6 +106,14 @@ datadog:
   #     mountPath: /etc/passwd
   #     readOnly: true
 
+  ## Enable leader election mechanism for event collection
+  ##
+  leaderElection: False
+
+  ## Set the lease time for leader election
+  ##
+  # leaderLeaseElection: 600
+
   ## Provide additonal service definitions
   ## Each key will become a file in /conf.d/auto_conf
   ## ref: https://github.com/DataDog/docker-dd-agent#configuration-files
