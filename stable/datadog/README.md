@@ -123,6 +123,7 @@ datadog:
 ### leader election
 
 The Datadog Agent supports built in leader election option for the Kubernetes event collector As of 5.17.
+<<<<<<< HEAD
 
 This feature relies on ConfigMaps, enabling this flag will grant Datadog Agent get, list, delete and create access to the ConfigMap resource.
 See the full [RBAC](https://github.com/DataDog/integrations-core/tree/master/kubernetes#gathering-kubernetes-events) and keep in mind that these RBAC entities **will need** to be created before the option is set.
@@ -134,3 +135,10 @@ Agents coordinate by performing a leader election among members of the Datadog D
 The `datadog.leaderLeaseDuration` is the duration for which a leader stays elected. It should be > 30 seconds. The longer it is, the less frequently your agents hit the apiserver with requests, but it also means that if the leader dies (and under certain conditions), events can be missed until the lease expires and a new leader takes over.
 
 Make sure the `rbac.create` is enable as well to ensure the feature to work properly.
+=======
+This feature relies on ConfigMaps, enabling this flag will grant Datadog Agent get, list, delete and create access to the ConfigMap resource.
+See the full [RBAC](https://github.com/DataDog/integrations-core/tree/master/kubernetes#gathering-kubernetes-events)
+Agents coordinate by performing a leader election among members of the Datadog DaemonSet through kubernetes to ensure only one leader agent instance is gathering events at a given time.
+*This functionality is disabled by default.*
+The `datadog.leaderLeaseElection` is the duration for which a leader stays elected. It should be > 30 seconds. The longer it is, the less hard your agent hits the apiserver with requests, but it also means that if the leader dies (and under certain conditions) there can be an event blackout until the lease expires and a new leader takes over.
+>>>>>>> adding leader election to the Datadog Chart
