@@ -123,7 +123,14 @@ The following tables lists the configurable parameters of the Traefik chart and 
 | `accessLogs.enabled`            | Whether to enable Traefik's access logs                              | `false`                                   |
 | `accessLogs.filePath`           | The path to the log file. Logs to stdout if omitted                  | None                                      |
 | `accessLogs.format`             | What format the log entries should be in. Either `common` or `json`  | `common`                                  |
-
+| `metrics.prometheus.enabled`    | Enable/ Disable the `/metrics` endpoint for metric collection by Prometheus. | `false`                           |
+| `metrics.prometheus.buckets`    | Buckets of observation values, response times less than each value (in seconds) in the bucket. | `0.1,0.3,1.2,5` |
+| `metrics.datadog.enabled`       | Enable/ Disable pushing metrics to Datadog.                          | `false`                                   |
+| `metrics.datadog.address`       | Datadog host in the format <hostname>:<port>                         | `localhost:8125`                          |
+| `metrics.datadog.pushInterval`  | How often to push metrics to Datadog.                                | `10s`                                     |
+| `metrics.statsd.enabled`        | Enable/ Disable pushing metrics to Statsd.                           | `false`                                   |
+| `metrics.statsd.address`        | Statsd host in the format <hostname>:<port>                          | `localhost:8125`                          |
+| `metrics.statsd.pushInterval`   | How often to push metrics to Statsd.                                 | `10s`                                     |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
 
