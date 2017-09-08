@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: "{{ template "jaeger.fullname" . }}-collector"
+  labels:
+    app: "{{ template "jaeger.fullname" . }}-collector"
+    jaeger-infra: collector-service
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    component: "{{ template "jaeger.fullname" . }}-collector"
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+{{- if .Values.service.collector.annotations }}
+  annotations:
+{{ toYaml .Values.service.collector.annotations | indent 6 }}
+{{- end }}
+spec:
+  ports:
+  - name: jaeger-collector-tchannel
+    port: {{ .Values.service.collector.tchannelPort }}
+    protocol: TCP
+    targetPort: {{ .Values.service.collector.tchannelPort }}
+  - name: jaeger-collector-http
+    port: {{ .Values.service.collector.httpPort }}
+    protocol: TCP
+    targetPort: {{ .Values.service.collector.httpPort }}
+  - name: jaeger-collector-zipkin
+    port: {{ .Values.service.collector.zipkinPort }}
+    protocol: TCP
+    targetPort: {{ .Values.service.collector.zipkinPort }}
+  selector:
+    jaeger-infra: collector-pod
+  type: {{ .Values.service.collector.type }}

@@ -1,0 +1,45 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: "{{ template "jaeger.fullname" . }}-query"
+  labels:
+    app: "{{ template "jaeger.fullname" . }}-query"
+    jaeger-infra: query-deployment
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    component: "{{ template "jaeger.fullname" . }}-query"
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+{{- if .Values.deployment.collector.annotations }}
+  annotations:
+{{ toYaml .Values.deployment.collector.annotations | indent 6 }}
+{{- end }}
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        jaeger-infra: query-pod
+    spec:
+      containers:
+      - name: "{{ template "jaeger.fullname" . }}-query"
+        image: "{{ .Values.deployment.query.image }}:{{ .Values.deployment.query.tag }}"
+        imagePullPolicy: {{ .Values.deployment.query.pullPolicy }}
+        ports:
+        - containerPort: {{ .Values.service.query.targetPort }}
+          protocol: TCP
+        command:
+        - "/go/bin/query-linux"
+        - "--cassandra.servers={{ template "cassandra.fullname" . }}"
+        - "--cassandra.keyspace=jaeger_v1_{{ .Values.cassandra.config.dc_name }}"
+        - "--query.static-files=/go/jaeger-ui/"
+{{- range $key, $value := .Values.deployment.query.cmdlineParams }}
+        - "{{ $value }}"
+{{- end }}
+        readinessProbe:
+          httpGet:
+            path: "/"
+            port: {{ .Values.service.query.targetPort }}
+      dnsPolicy: {{ .Values.deployment.collector.dnsPolicy }}
+      restartPolicy: Always

@@ -1,0 +1,79 @@
+# Default values for jaeger.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+cassandra:
+  image:
+    tag: 3.11
+  persistence:
+    enabled: false
+  config:
+    cluster_name: jaeger
+    seed_size: 1
+    dc_name: dc1
+    rack_name: rack1
+    endpoint_snitch: GossipingPropertyFileSnitch
+
+job:
+  schema:
+    annotations: {}
+    image: jaegertracing/jaeger-cassandra-schema
+    tag: 0.6
+    pullPolicy: IfNotPresent
+    mode: prod
+
+daemonset:
+  agent:
+    annotations: {}
+    image: jaegertracing/jaeger-agent
+    tag: 0.6
+    pullPolicy: IfNotPresent
+    cmdlineParams: {}
+
+deployment:
+  collector:
+    annotations: {}
+    image: jaegertracing/jaeger-collector
+    tag: 0.6
+    pullPolicy: IfNotPresent
+    dnsPolicy: ClusterFirst
+    cmdlineParams: {}
+  query:
+    annotations: {}
+    image: jaegertracing/jaeger-query
+    tag: 0.6
+    pullPolicy: IfNotPresent
+    dnsPolicy: ClusterFirst
+    cmdlineParams: {}
+
+service:
+  collector:
+    annotations: {}
+    type: ClusterIP
+    tchannelPort: 14267
+    httpPort: 14268
+    zipkinPort: 9411
+  query:
+    annotations: {}
+    type: NodePort
+    queryPort: 80
+    targetPort: 16686
+  agent:
+    annotations: {}
+    zipkinThriftPort: 5775
+    compactPort: 6831
+    binaryPort: 6832
+
+ingress:
+  enabled: false
+  # Used to create an Ingress record.
+  # hosts:
+  #   - chart-example.local
+  #annotations:
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  #tls:
+    # Secrets must be manually created in the namespace.
+    # - secretName: chart-example-tls
+    #   hosts:
+    #     - chart-example.local

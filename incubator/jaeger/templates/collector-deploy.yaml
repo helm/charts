@@ -1,0 +1,45 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: "{{ template "jaeger.fullname" . }}-collector"
+  labels:
+    app: "{{ template "jaeger.fullname" . }}-collector"
+    jaeger-infra: collector-deployment
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    component: "{{ template "jaeger.fullname" . }}-collector"
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+{{- if .Values.deployment.collector.annotations }}
+  annotations:
+{{ toYaml .Values.deployment.collector.annotations | indent 6 }}
+{{- end }}
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        jaeger-infra: collector-pod
+    spec:
+      containers:
+      - name: "{{ template "jaeger.fullname" . }}-collector"
+        image: "{{ .Values.deployment.collector.image }}:{{ .Values.deployment.collector.tag }}"
+        imagePullPolicy: {{ .Values.deployment.collector.pullPolicy }}
+        ports:
+        - containerPort: {{ .Values.service.collector.tchannelPort }}
+          protocol: TCP
+        - containerPort: {{ .Values.service.collector.httpPort }}
+          protocol: TCP
+        - containerPort: {{ .Values.service.collector.zipkinPort }}
+          protocol: TCP
+        command:
+        - "/go/bin/collector-linux"
+        - "--cassandra.servers={{ template "cassandra.fullname" . }}"
+        - "--cassandra.keyspace=jaeger_v1_{{ .Values.cassandra.config.dc_name }}"
+        - "--collector.zipkin.http-port={{ .Values.service.collector.zipkinPort }}"
+{{- range $key, $value := .Values.deployment.collector.cmdlineParams }}
+        - "{{ $value }}"
+{{- end }}
+      dnsPolicy: {{ .Values.deployment.collector.dnsPolicy }}
+      restartPolicy: Always
