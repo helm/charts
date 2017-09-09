@@ -1,0 +1,11 @@
+{{- if .Values.minio.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-minio-scripts
+data:
+  create-bucket.sh: |-
+    mc config host add {{.Release.Name}}-minio http://{{ template "minio.svc" . }}:9000 {{ .Values.minio.accessKey }} {{ .Values.minio.secretKey }} S3v4
+    mc mb {{ .Release.Name }}-minio/{{ .Values.registry.config.s3.bucket }}
+    echo '' | mc pipe {{ .Release.Name }}-minio/{{ .Values.registry.config.s3.bucket }}/{{ .Values.registry.config.s3.rootDirectory }}/_
+{{- end }}
