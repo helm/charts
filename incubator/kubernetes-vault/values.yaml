@@ -6,7 +6,7 @@ replicaCount: 3
 image:
   repository: boostport/kubernetes-vault
   tag: 0.4.8
-  pullPolicy: always
+  pullPolicy: Always
 app: kubernetes-vault
 service:
   dummyPort: 80
