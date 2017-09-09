@@ -3,9 +3,10 @@
 # Declare variables to be passed into your templates.
 
 replicaCount: 3
-image: boostport/kubernetes-vault
-imageTag: 0.4.8
-imagePullPolicy: always
+image:
+  repository: boostport/kubernetes-vault
+  tag: 0.4.8
+  pullPolicy: always
 app: kubernetes-vault
 service:
   dummyPort: 80
