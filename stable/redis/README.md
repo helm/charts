@@ -14,8 +14,10 @@ This chart bootstraps a [Redis](https://github.com/bitnami/bitnami-docker-redis)
 
 ## Prerequisites
 
-- Kubernetes 1.4+ with Beta APIs enabled
-- PV provisioner support in the underlying infrastructure
+- Kubernetes 1.6+ with Beta APIs enabled
+- PV provisioner support in the underlying infrastructure, including
+  DefaultStorageClass admission controller enabled if default storage
+  provisioning is desired.
 
 ## Installing the Chart
 
