@@ -34,7 +34,7 @@ The following tables lists the configurable parameters of the mongodb chart and 
 | `replicas`                      | Number of replicas in the replica set                                     | 3                                                   |
 | `port`                          | MongoDB port                                                              | 27017                                               |
 | `installImage.name`             | Image name for the init container that establishes the replica set        | gcr.io/google_containers/mongodb-install            |
-| `installImage.tag`              | Image tag for the init container that establishes the replica set         | 0.3                                                 |
+| `installImage.tag`              | Image tag for the init container that establishes the replica set         | 0.5                                                 |
 | `installImage.pullPolicy`       | Image pull policy for the init container that establishes the replica set | IfNotPresent                                        |
 | `image.name`                    | MongoDB image name                                                        | mongo                                               |
 | `image.tag`                     | MongoDB image tag                                                         | 3.4                                                 |
@@ -54,6 +54,12 @@ The following tables lists the configurable parameters of the mongodb chart and 
 | `auth.existingAdminSecret`      | If set, and existing secret with this name is used for the admin user     |                                                     |
 | `serviceAnnotations`            | Annotations to be added to the service                                    | {}                                                  |
 | `configmap`                     | Content of the MongoDB config file                                        | See below                                           |
+
+| `podServices.enabled`           | Enable pod services | `false`                                            |
+| `podServices.type`              | Pod services type    | `NodePort` |
+| `podService.annotations`        | Annotations to be added to the pod services when `podServices.type` is `LoadBalancer`                                    | {}                                                  |
+| `podServices.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported)      | None   
+| `podServices.loadBalancerIP`           | An available static IP you have reserved on your cloud platform      | None                                      | 
 
 *MongoDB config file*
 
@@ -214,6 +220,26 @@ $ kubectl exec $RELEASE_NAME-mongodb-replicaset-1 -- mongo --eval="rs.slaveOk();
 MongoDB shell version: 3.4.5
 connecting to: mongodb://127.0.0.1:27017
 { "_id" : ObjectId("57b180b1a7311d08f2bfb617"), "key1" : "value1" }
+```
+
+### Exposing your MongoDB cluster to an external application
+
+If your application is not part of the same Kubernetes cluster of your MongoDB replica set, you need to enable `podServices` to create a service for every pod. Then, pick the right settings for `podServices` on the values you pass to helm.
+
+After you install or upgrade the chart you will get some commands that will help you set the MongoDB URI, the following command shows a set of `NodePort` services, so the output might change depending of the configuration values you provided.
+
+```console
+$ kubectl get svc -o wide -l app=messy-hydra
+NAME                            CLUSTER-IP       EXTERNAL-IP   PORT(S)           AGE       SELECTOR
+messy-hydra-mongodb-replicaset-0   100.71.206.249   <nodes>       27017:30371/TCP   22s       app=mongodb-replicaset,name=messy-hydra-mongodb-replicaset-0,release=messy-hydra
+messy-hydra-mongodb-replicaset-1   100.71.26.100    <nodes>       27017:31818/TCP   6d        app=mongodb-replicaset,name=messy-hydra-mongodb-replicaset-1,release=messy-hydra
+messy-hydra-mongodb-replicaset-2   100.64.55.35     <nodes>       27017:31365/TCP   1h        app=mongodb-replicaset,name=messy-hydra-mongodb-replicaset-2,release=messy-hydra
+```
+
+Now connect from the console with the MongoDB URI
+
+```console
+mongo mongodb://${IP_KUBE_NODE_0}:30371,${IP_KUBE_NODE_1}:31818,${IP_KUBE_NODE_2}:31365/?replicaSet=rs0
 ```
 
 ### Scaling

@@ -13,7 +13,7 @@ auth:
 # Specs for the Docker image for the init container that establishes the replica set
 installImage:
   name: gcr.io/google_containers/mongodb-install
-  tag: 0.4
+  tag: 0.5
   pullPolicy: IfNotPresent
 
 # Specs for the MongoDB image
@@ -60,3 +60,15 @@ configmap:
 # security:
 #   authorization: enabled
 #   keyFile: /keydir/key.txt
+
+# Expose your MongoDB cluster to external applications
+#podServices:
+#  enabled: true
+#  annotations: {}
+#  clusterIP: ""
+#  externalIPs: []
+#  loadBalancerIP: ""
+#  loadBalancerSourceRanges: []
+#  type: ClusterIP
+#  port: 27017
+#  nodePort: ""

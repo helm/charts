@@ -15,10 +15,10 @@
 FROM alpine:3.4
 MAINTAINER Anirudh Ramanathan <foxish@google.com>
 
-RUN apk update && apk add bash && wget -qO /peer-finder http://storage.googleapis.com/kubernetes-release/pets/peer-finder 
+RUN apk update && apk add bash curl && wget -qO /peer-finder http://storage.googleapis.com/kubernetes-release/pets/peer-finder 
 
 ENTRYPOINT ["/install.sh"]
 
 ADD files/* /
 
-RUN chmod -c 755 /install.sh /on-start.sh /peer-finder
+RUN chmod -c 755 /install.sh /on-start.sh /peer-finder /add-name-label.sh

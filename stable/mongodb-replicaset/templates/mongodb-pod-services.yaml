@@ -1,0 +1,48 @@
+{{- if .Values.podServices.enabled }}
+# Services to expose pods individually
+{{ $podCount := .Values.replicas | int }}
+{{- range $i := until $podCount }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  {{- if $.Values.podServices.annotations }}
+  annotations:
+{{ toYaml $.Values.podServices.annotations | indent 4 }}
+  {{- end }}
+  labels:
+    app: {{ template "name" $ }}
+    chart: {{ $.Chart.Name }}-{{ $.Chart.Version }}
+    heritage: {{ $.Release.Service }}
+    release: {{ $.Release.Name }}
+    name: {{ template "fullname" $ }}-{{ $i }}
+  name: {{ template "fullname" $ }}-{{ $i }}
+spec:
+# Provides options for the service so chart users have the full choice
+  type: "{{ $.Values.podServices.type }}"
+  clusterIP: "{{ $.Values.podServices.clusterIP }}"
+{{- if $.Values.podServices.externalIPs }}
+  externalIPs:
+{{ toYaml $.Values.podServices.externalIPs | indent 4 }}
+{{- end }}
+{{- if $.Values.podServices.loadBalancerIP }}
+  loadBalancerIP: "{{ $.Values.podServices.loadBalancerIP }}"
+{{- end }}
+{{- if $.Values.podServices.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+{{ toYaml $.Values.podServices.loadBalancerSourceRanges | indent 4 }}
+{{- end }}
+  ports:
+    - name: peer
+      port: {{ $.Values.podServices.port }}
+      protocol: TCP
+      targetPort: peer
+      {{- if (and (eq $.Values.podServices.type "NodePort") (not (empty $.Values.podServices.nodePort))) }}
+      nodePort: {{ $.Values.podServices.nodePort }}
+      {{- end }}
+  selector:
+    app: {{ template "name" $ }}
+    release: {{ $.Release.Name }}
+    name: {{ template "fullname" $ }}-{{ $i }}
+{{- end }}
+{{- end }}
