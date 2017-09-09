@@ -1,11 +1,11 @@
 {{ if .Values.addons.zipkin.enabled }}
-{{- $serviceName := include "fullname" . -}}
+{{- $serviceName := include "istio.fullname" . -}}
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: {{ $serviceName }}-{{ .Values.addons.zipkin.deployment.name }}
   labels:
-{{ include "labels.standard" . | indent 4 }}
+{{ include "istio.labels.standard" . | indent 4 }}
     component: {{ $serviceName }}-{{ .Values.addons.zipkin.deployment.name }}
 spec:
   replicas: {{ .Values.addons.zipkin.deployment.replicas }}
@@ -16,7 +16,7 @@ spec:
           {{ $key }}: {{ $value | quote }}
         {{- end }}
       labels:
-{{ include "labels.standard" . | indent 8 }}
+{{ include "istio.labels.standard" . | indent 8 }}
         component: {{ $serviceName }}-{{ .Values.addons.zipkin.deployment.name }}
     spec:
       containers:

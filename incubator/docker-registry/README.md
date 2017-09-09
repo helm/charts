@@ -17,7 +17,7 @@ $ helm install --name my-release incubator/docker-registry
 |-------------------------|----------------------------------------|---------------------|
 | `svcName`               | Service name                           | docker-registry     |
 | `nodePort`              | Port from the range 30000-32000        | 30400               |
-| `initialLoad`           | Load tarball with saved regstry        | false               |
+| `initialLoad`           | Load tarball with saved registry       | false               |
 | `replicas`              | Number of replicas                     | 1                   |
 | `distro`                | Used to as a part of tarball file name | \<blank>            |
 | `branch`                | Used to as a part of tarball file name | \<blank>            |

@@ -46,7 +46,7 @@ fi
 
 # Install and initialize helm/tiller
 HELM_URL=https://storage.googleapis.com/kubernetes-helm
-HELM_TARBALL=helm-v2.4.2-linux-amd64.tar.gz
+HELM_TARBALL=helm-v2.5.1-linux-amd64.tar.gz
 INCUBATOR_REPO_URL=https://kubernetes-charts-incubator.storage.googleapis.com/
 pushd /opt
   wget -q ${HELM_URL}/${HELM_TARBALL}
@@ -60,7 +60,9 @@ helm repo add incubator ${INCUBATOR_REPO_URL}
 # Iterate over each of the changed charts
 #    Lint, install and delete
 for directory in ${CHANGED_FOLDERS}; do
-  if [ -d $directory ]; then
+  if [ "$directory" == "incubator/common" ]; then
+    continue
+  elif [ -d $directory ]; then
     CHART_NAME=`echo ${directory} | cut -d '/' -f2`
     RELEASE_NAME="${CHART_NAME:0:7}-${BUILD_NUMBER}"
     CURRENT_RELEASE=${RELEASE_NAME}
@@ -72,6 +74,7 @@ for directory in ${CHANGED_FOLDERS}; do
     kubectl get svc --namespace ${NAMESPACE}
     kubectl get deployments --namespace ${NAMESPACE}
     kubectl get endpoints --namespace ${NAMESPACE}
+    helm test ${RELEASE_NAME}
     if [ -n $VERIFICATION_PAUSE ]; then
       cat install_output
       sleep $VERIFICATION_PAUSE

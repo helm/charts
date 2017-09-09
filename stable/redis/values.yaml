@@ -17,6 +17,15 @@ usePassword: true
 ##
 # redisPassword:
 
+## Redis command arguments
+##
+## Can be used to specify command line arguments, for example:
+##
+## args:
+##  - "redis-server"
+##  - "--maxmemory-policy volatile-ttl"
+args:
+
 ## Enable persistence using Persistent Volume Claims
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
 ##
@@ -58,3 +67,16 @@ resources:
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
 nodeSelector: {}
 tolerations: []
+
+networkPolicy:
+  ## Enable creation of NetworkPolicy resources.
+  ##
+  enabled: false
+
+  ## The Policy model to apply. When set to false, only pods with the correct
+  ## client label will have network access to the port PostgreSQL is listening
+  ## on. When true, Redis will accept connections from any source
+  ## (with the correct destination port).
+  ##
+  allowExternal: true
+

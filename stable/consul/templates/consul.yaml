@@ -156,10 +156,12 @@ spec:
           - |
             IP=$(hostname -i)
 
+            {{- if .Values.EncryptGossip }}
             if [ -e /etc/consul/secrets/gossip-key ]; then
               echo "{\"encrypt\": \"$(base64 /etc/consul/secrets/gossip-key)\"}" > /etc/consul/encrypt.json
               GOSSIP_KEY="-config-file /etc/consul/encrypt.json"
             fi
+            {{- end }}
 
             for i in $(seq 0 $((${INITIAL_CLUSTER_SIZE} - 1))); do
                 while true; do
@@ -190,7 +192,9 @@ spec:
               -bind=0.0.0.0 \
               -advertise=${IP} \
               ${PEERS} \
+            {{- if .Values.EncryptGossip }}
               ${GOSSIP_KEY} \
+            {{- end }}
               -client=0.0.0.0 \
               -dns-port=${DNSPORT}
       volumes:

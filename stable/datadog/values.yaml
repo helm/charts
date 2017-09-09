@@ -20,6 +20,10 @@ daemonset:
   ## Allow the DaemonSet to schedule on tainted nodes (requires Kubernetes >= 1.6)
   # tolerations: []
 
+  ## Allow the DaemonSet to perform a rolling update on helm update
+  ## ref: https://kubernetes.io/docs/tasks/manage-daemon/update-daemon-set/
+  # updateStrategy: RollingUpdate
+
 # Apart from DaemonSet, deploy Datadog agent pods and related service for
 # applications that want to send custom metrics. Provides DogStasD service.
 #

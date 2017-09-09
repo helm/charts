@@ -49,6 +49,9 @@ The following tables lists the configurable parameters of the kubernetes-dashboa
 | `ingress.enabled`     | Enable ingress controller resource | `false`                                                                  |
 | `ingress.hosts`       | Dashboard Hostnames                | `nil`                                                                    |
 | `ingress.tls`         | Ingress TLS configuration          | `[]`                                                                     |
+| `rbac.create`         | Create & use RBAC resources        | `false`                                                                  |
+| `rbac.serviceAccountName` |  ServiceAccount kubernetes-dashboard will use (ignored if rbac.create=true) | `default`        |
+
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```console
