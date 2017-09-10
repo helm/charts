@@ -1,17 +1,17 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "concourse.fullname" . }}
+  name: {{ template "concourse.concourse.fullname" . }}
   labels:
-    app: {{ template "concourse.fullname" . }}
+    app: {{ template "concourse.concourse.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 data:
-  postgresql-host: {{ template "postgresql.fullname" . }}
+  postgresql-host: {{ template "concourse.postgresql.fullname" . }}
   postgresql-database: {{ .Values.postgresql.postgresDatabase | quote }}
   concourse-atc-port: {{ .Values.concourse.atcPort | quote }}
-  concourse-tsa-host: {{ template "web.fullname" . }}
+  concourse-tsa-host: {{ template "concourse.web.fullname" . }}
   concourse-tsa-port: {{ .Values.concourse.tsaPort | quote }}
   concourse-allow-self-signed-certificates: {{ .Values.concourse.allowSelfSignedCertificates | quote }}
   concourse-auth-duration: {{ .Values.concourse.authDuration | quote }}
