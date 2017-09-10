@@ -44,6 +44,16 @@ spec:
           mountPath: /root/
         resources:
 {{ toYaml .Values.resources | indent 10 }}
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              topologyKey: kubernetes.io/hostname
+              labelSelector:
+                matchLabels:
+                  app: {{ template "fullname" . }}
+                  release: {{ .Release.Name | quote }}
       volumes:
         - name: vault-config
           configMap:
