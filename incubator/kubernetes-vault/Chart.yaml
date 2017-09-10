@@ -1,0 +1,13 @@
+name: kubernetes-vault
+version: 0.0.1
+description: The Kubernetes-Vault project allows pods to automatically receive a Vault token using Vault's AppRole auth backend.
+keywords:
+  - vault
+home: https://github.com/Boostport/kubernetes-vault/
+sources:
+  - https://github.com/Boostport/kubernetes-vault/
+icon: https://github.com/Boostport/kubernetes-vault/blob/master/flow-diagram.png
+maintainers:
+  - name: Alejandro Escobar
+    email: jaescobar.cell@gmail.com
+engine: gotpl
