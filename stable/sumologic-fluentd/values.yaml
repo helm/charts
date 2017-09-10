@@ -4,6 +4,20 @@ image:
   tag: latest
   pullPolicy: Always
 
+## Annotations to add to the DaemonSet's Pods
+podAnnotations: {}
+#  scheduler.alpha.kubernetes.io/tolerations: '[{"key": "example", "value": "foo"}]'
+
+## Allow the DaemonSet to schedule on tainted nodes (requires Kubernetes >= 1.6)
+tolerations: []
+#   - key: node.alpha.kubernetes.io/role
+#     effect: NoSchedule
+#     operator: "Exists"
+
+## Allow the DaemonSet to perform a rolling update on helm update
+## ref: https://kubernetes.io/docs/tasks/manage-daemon/update-daemon-set/
+updateStrategy: OnDelete
+
 sumologic:
   ## You'll need to set this to sumo collector, before the agent will run.
   ## ref: https://github.com/SumoLogic/fluentd-kubernetes-sumologic#sumologic

@@ -13,6 +13,10 @@ spec:
       name: {{ template "fullname" . }}
       labels:
         app: {{ template "fullname" . }}
+    {{- if .Values.podAnnotations }}
+      annotations:
+{{ toYaml .Values.podAnnotations | indent 8 }}
+    {{- end }}
     spec:
     {{- if .Values.rbac.serviceAccountName }}
       serviceAccountName: {{ .Values.rbac.serviceAccountName }}
@@ -117,3 +121,9 @@ spec:
         - name: docker-logs
           hostPath:
             path: /var/lib/docker
+    {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+    {{- end }}
+  updateStrategy:
+    type: "{{ .Values.updateStrategy }}"
