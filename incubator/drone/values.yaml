@@ -1,0 +1,51 @@
+image:
+  registry: docker.io
+  org: drone
+  name: drone
+  tag: 0.7.3
+  pullPolicy: IfNotPresent
+
+service:
+  http:
+    externalPort: 80
+    internalPort: 8000
+  type: ClusterIP
+
+ingress:
+  enabled: false
+  # enable TLS via kube-lego
+  tls: false
+  hostname: drone.example.com
+
+server:
+  # Drone server configuration. Values in here get injected as environment variables.
+  # See http://readme.drone.io/admin/installation-reference#server-options for a list of possible values.
+  gogs: true
+  env:
+    DRONE_DEBUG: "false"
+    DRONE_DATABASE_DRIVER: "sqlite3"
+    DRONE_DATABASE_DATASOURCE: "drone.sqlite"
+  resources:
+    requests:
+      memory: 32Mi
+      cpu: 40m
+    limits:
+      memory: 2Gi
+      cpu: 1
+
+agent:
+  # Drone agent configuration. Values in here get injected as environment variables.
+  # See http://readme.drone.io/admin/installation-reference#server-options for a list of possible values.
+  env:
+    DRONE_DEBUG: "false"
+  resources:
+    requests:
+      memory: 32Mi
+      cpu: 40m
+    limits:
+      memory: 2Gi
+      cpu: 1
+
+# Uncomment this if you want to set a specific shared secret between
+# the agents and servers, otherwise this will be auto-generated.
+#shared_secret: supersecret
