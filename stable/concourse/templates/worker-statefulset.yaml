@@ -1,20 +1,20 @@
 apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
-  name: {{ template "worker.fullname" . }}
+  name: {{ template "concourse.worker.fullname" . }}
   labels:
-    app: {{ template "worker.fullname" . }}
+    app: {{ template "concourse.worker.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 
 spec:
-  serviceName: {{ template "worker.fullname" . }}
+  serviceName: {{ template "concourse.worker.fullname" . }}
   replicas: {{ .Values.worker.replicas }}
   template:
     metadata:
       labels:
-        app: {{ template "worker.fullname" . }}
+        app: {{ template "concourse.worker.fullname" . }}
       annotations:
         {{- range $key, $value := .Values.worker.annotations }}
         {{ $key }}: {{ $value | quote }}
@@ -22,7 +22,7 @@ spec:
     spec:
       terminationGracePeriodSeconds: 60
       containers:
-        - name: {{ template "worker.fullname" . }}
+        - name: {{ template "concourse.worker.fullname" . }}
           image: "{{ .Values.image }}:{{ .Values.imageTag }}"
           imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
           args:
@@ -38,22 +38,22 @@ spec:
             - name: CONCOURSE_TSA_HOST
               valueFrom:
                 configMapKeyRef:
-                  name: {{ template "concourse.fullname" . }}
+                  name: {{ template "concourse.concourse.fullname" . }}
                   key: concourse-tsa-host
             - name: CONCOURSE_TSA_PORT
               valueFrom:
                 configMapKeyRef:
-                  name: {{ template "concourse.fullname" . }}
+                  name: {{ template "concourse.concourse.fullname" . }}
                   key: concourse-tsa-port
             - name: CONCOURSE_GARDEN_DOCKER_REGISTRY
               valueFrom:
                 configMapKeyRef:
-                  name: {{ template "concourse.fullname" . }}
+                  name: {{ template "concourse.concourse.fullname" . }}
                   key: garden-docker-registry
             - name: CONCOURSE_GARDEN_INSECURE_DOCKER_REGISTRY
               valueFrom:
                 configMapKeyRef:
-                  name: {{ template "concourse.fullname" . }}
+                  name: {{ template "concourse.concourse.fullname" . }}
                   key: garden-insecure-docker-registry
             - name: CONCOURSE_TSA_PUBLIC_KEY
               value: "/concourse-keys/host_key.pub"
@@ -64,7 +64,7 @@ spec:
             - name: CONCOURSE_BAGGAGECLAIM_DRIVER
               valueFrom:
                 configMapKeyRef:
-                  name: {{ template "concourse.fullname" . }}
+                  name: {{ template "concourse.concourse.fullname" . }}
                   key: concourse-baggageclaim-driver
           resources:
 {{ toYaml .Values.worker.resources | indent 12 }}
@@ -84,12 +84,12 @@ spec:
               topologyKey: kubernetes.io/hostname
               labelSelector:
                 matchLabels:
-                  app: {{ template "worker.fullname" . }}
+                  app: {{ template "concourse.worker.fullname" . }}
                   release: {{ .Release.Name | quote }}
       volumes:
         - name: concourse-keys
           secret:
-            secretName: {{ template "concourse.fullname" . }}
+            secretName: {{ template "concourse.concourse.fullname" . }}
             defaultMode: 0400
             items:
               - key: host-key-pub

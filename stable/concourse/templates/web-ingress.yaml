@@ -5,9 +5,9 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: {{ template "web.fullname" . }}
+  name: {{ template "concourse.web.fullname" . }}
   labels:
-    app: {{ template "web.fullname" . }}
+    app: {{ template "concourse.web.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
