@@ -62,9 +62,6 @@ The following tables lists the configurable parameters of the sumologic-fluentd 
 | `podAnnotations` | Annotations to add to the DaemonSet's Pods | `{}` |
 | `tolerations` | List of node taints to tolerate (requires Kubernetes >= 1.6) | `[]` |
 | `updateStrategy` | `OnDelete` or `RollingUpdate` (requires Kubernetes >= 1.6) | `OnDelete` |
-| `rbac.enabled` | Is Role Based Authentication enabled in the cluster | `false` |
-| `rbac.apiVersion` | The API version to use | `v1beta1` |
-| `rbac.create` | Is Role Based Authentication enabled in the cluster | `false` |
 | `sumologic.collectorUrl` | An HTTP collector in SumoLogic that the container can send logs to via HTTP | `Nil` You must provide your own |
 | `sumologic.fluentdSource` | The fluentd input source, `file` or `systemd` | `file` |
 | `sumologic.flushInterval` | How frequently to push logs to sumo, in seconds | `5` |
@@ -94,6 +91,7 @@ The following tables lists the configurable parameters of the sumologic-fluentd 
 | `resources.limits.cpu` | CPU resource limits | 256m |
 | `resources.requests.memory` | Memory resource requests | 128Mi |
 | `resources.limits.memory` | Memory resource limits | 256Mi |
+| `rbac.create` | Is Role Based Authentication enabled in the cluster | `false` |
 | `rbac.serviceAccountName` | RBAC service account name | {{ fullname }} |
 
 
@@ -156,4 +154,3 @@ To enable the creation of RBAC resources, do the following
 ```console
 $ helm install --name my-release stable/sumologic-fluentd --set rbac.create=true
 ```
-
