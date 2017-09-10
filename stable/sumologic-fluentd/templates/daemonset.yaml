@@ -3,7 +3,7 @@ kind: DaemonSet
 metadata:
   name: {{ template "fullname" . }}
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "name" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -11,12 +11,12 @@ spec:
   template:
     metadata:
       name: {{ template "fullname" . }}
-      labels:
-        app: {{ template "fullname" . }}
     {{- if .Values.podAnnotations }}
       annotations:
 {{ toYaml .Values.podAnnotations | indent 8 }}
     {{- end }}
+      labels:
+        app: {{ template "name" . }}
     spec:
       containers:
         - name: {{ template "fullname" . }}

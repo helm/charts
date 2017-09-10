@@ -43,7 +43,7 @@ sumologic:
   sourceCategoryPrefix: ""
 
   ## Used to replace - with another character. (default /)
-  # sourceCategoryReplaceDash: 
+  sourceCategoryReplaceDash: ""
 
   ## Format to post logs into Sumo. json, json_merge, or text (default json)
   logFormat: json
@@ -125,5 +125,3 @@ rbac:
   ## Ignored if rbac.create is true
   serviceAccountName: default
 
-  # RBAC api version (currently either v1beta1 or v1alpha1)
-  apiVersion: rbac.authorization.k8s.io/v1beta1

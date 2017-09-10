@@ -64,6 +64,7 @@ The following tables lists the configurable parameters of the sumologic-fluentd 
 | `updateStrategy` | `OnDelete` or `RollingUpdate` (requires Kubernetes >= 1.6) | `OnDelete` |
 | `rbac.enabled` | Is Role Based Authentication enabled in the cluster | `false` |
 | `rbac.apiVersion` | The API version to use | `v1beta1` |
+| `rbac.create` | Is Role Based Authentication enabled in the cluster | `false` |
 | `sumologic.collectorUrl` | An HTTP collector in SumoLogic that the container can send logs to via HTTP | `Nil` You must provide your own |
 | `sumologic.fluentdSource` | The fluentd input source, `file` or `systemd` | `file` |
 | `sumologic.flushInterval` | How frequently to push logs to sumo, in seconds | `5` |
@@ -153,15 +154,6 @@ If the output contains "beta" or both "alpha" and "beta" you can enable rbac.
 To enable the creation of RBAC resources, do the following
 
 ```console
-$ helm install --name my-release stable/sumologic-fluentd --set rbac.enabled=true
-```
-
-### Changing RBAC manifest apiVersion
-
-By default the RBAC resources are generated with the "v1beta1" apiVersion. To
-use "v1alpha1" do the following:
-
-```console
-$ helm install --name my-release stable/sumologic-fluentd --set rbac.enabled=true,rbac.apiVersion=v1alpha1
+$ helm install --name my-release stable/sumologic-fluentd --set rbac.create=true
 ```
 
