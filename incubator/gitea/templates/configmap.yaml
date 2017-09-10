@@ -1,0 +1,128 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  labels:
+    app: {{ template "fullname" . }}-config
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    component: {{ default "gitea" .Values.service.nameOverride }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "fullname" . }}-config
+data:
+  app.ini: |-
+    APP_NAME = {{ .Values.gitea.appName }}
+    RUN_MODE = {{ .Values.gitea.runMode }}
+    RUN_USER = {{ .Values.gitea.runUser }}
+
+    [repository]
+    ROOT = {{ .Values.gitea.repository.root }}
+    SCRIPT_TYPE = {{ .Values.gitea.repository.scriptType }}
+    ANSI_CHARSET = {{ .Values.gitea.repository.ansiCharset }}
+    FORCE_PRIVATE = {{ .Values.gitea.repository.forcePrivate }}
+    MAX_CREATION_LIMIT = {{ .Values.gitea.repository.maxCreationLimit }}
+    PULL_REQUEST_QUEUE_LENGTH = {{ .Values.gitea.repository.pullRequestQueueLength }}
+
+    [ui]
+    EXPLORE_PAGING_NUM = {{ .Values.gitea.ui.explorePagingNum }}
+    ISSUE_PAGING_NUM = {{ .Values.gitea.ui.issuePagingNum }}
+    FEED_MAX_COMMIT_NUM = {{ .Values.gitea.ui.feedMaxCommitNum }}
+
+    [ui.admin]
+    USER_PAGING_NUM = {{ .Values.gitea.uiAdmin.userPagingNum }}
+    REPO_PAGING_NUM = {{ .Values.gitea.uiAdmin.repoPagingNum }}
+    NOTICE_PAGING_NUM = {{ .Values.gitea.uiAdmin.noticePagingNum }}
+    ORG_PAGING_NUM = {{ .Values.gitea.uiAdmin.orgPagingNum }}
+    
+    [markdown]
+    ENABLE_HARD_LINE_BREAK = {{ .Values.gitea.markdown.enableHardLineBreak }}
+
+    [server]
+    PROTOCOL = http
+    DOMAIN = {{ .Values.gitea.server.domain }}
+    ROOT_URL = {{ .Values.gitea.server.rootUrl }}
+    HTTP_ADDR = {{ .Values.gitea.server.httpAddr }}
+    HTTP_PORT = {{ .Values.gitea.server.httpPort }}
+    UNIX_SOCKET_PERMISSION = {{ .Values.gitea.server.unixSocketPermission }}
+    DISABLE_SSH = {{ .Values.gitea.server.disableSsh }}
+    START_SSH_SERVER = {{ .Values.gitea.server.startSshServer }}
+    SSH_DOMAIN = {{ .Values.gitea.server.sshDomain }}
+    SSH_PORT = {{ .Values.gitea.server.sshPort }}
+    SSH_LISTEN_PORT = {{ .Values.gitea.server.sshListenPort }}
+    OFFLINE_MODE = {{ .Values.gitea.server.offlineMode }}
+    DISABLE_ROUTER_LOG = {{ .Values.gitea.server.disableRouterLog }}
+    CERT_FILE = {{ .Values.gitea.server.certFile }}
+    KEY_FILE = {{ .Values.gitea.server.keyFile }}
+    STATIC_ROOT_PATH = {{ .Values.gitea.server.staticRootPath }}
+    ENABLE_GZIP = {{ .Values.gitea.server.enableGzip }}
+    LANDING_PAGE = {{ .Values.gitea.server.landingPage }}
+    LFS_START_SERVER = {{ .Values.gitea.server.lfsStartServer }}
+    LFS_CONTENT_PATH = {{ .Values.gitea.server.lfsContentPath }}
+    LFS_JWT_SECRET = {{ .Values.gitea.server.lfsJwtSecret }}
+
+    [database]
+    DB_TYPE = {{ .Values.gitea.database.dbType | quote }}
+    HOST = {{ .Values.gitea.database.host | quote }}
+    NAME = {{ .Values.gitea.database.name | quote }}
+    USER = {{ .Values.gitea.database.user | quote }}
+    PASSWD = {{ .Values.gitea.database.password | quote }}
+    SSL_MODE = {{ .Values.gitea.database.sslMode }}
+    PATH = {{ .Values.gitea.database.path }}
+    
+    [security]
+    INSTALL_LOCK = true
+    SECRET_KEY = {{ default "" .Values.gitea.security.secretKey | b64enc | quote }}
+    LOGIN_REMEMBER_DAYS = {{ .Values.gitea.security.loginRememberDays }}
+    COOKIE_USERNAME = {{ .Values.gitea.security.cookieUsername }}
+    COOKIE_REMEMBER_NAME = {{ .Values.gitea.security.cookieRememberName }}
+    REVERSE_PROXY_AUTHENTICATION_USER = {{ .Values.gitea.security.reverseProxyAuthenticationUser }}
+
+    [openid]
+    ENABLE_OPENID_SIGNIN = {{ .Values.gitea.openid.enableOpenidSignin }}
+    ENABLE_OPENID_SIGNUP = {{ .Values.gitea.openid.enableOpenidSignup }}
+    WHITELISTED_URIS = {{ .Values.gitea.openid.whitelistedUris }}
+    BLACKLISTED_URIS = {{ .Values.gitea.openid.blacklistedUris }}
+
+    [service]
+    ACTIVE_CODE_LIVE_MINUTES = {{ .Values.gitea.service.activeCodeLiveMinutes }}
+    RESET_PASSWD_CODE_LIVE_MINUTES = {{ .Values.gitea.service.resetPasswdCodeLiveMinutes }}
+    REGISTER_EMAIL_CONFIRM = {{ .Values.gitea.service.registerEmailConfirm }}
+    DISABLE_REGISTRATION = {{ .Values.gitea.service.disableRegistration }}
+    SHOW_REGISTRATION_BUTTON = {{ .Values.gitea.service.showRegistrationButton }}
+    REQUIRE_SIGNIN_VIEW = {{ .Values.gitea.service.requireSignInView }}
+    ENABLE_CACHE_AVATAR = {{ .Values.gitea.service.enableCacheAvatar }}
+    ENABLE_NOTIFY_MAIL = {{ .Values.gitea.service.enableNotifyMail }}
+    ENABLE_REVERSE_PROXY_AUTHENTICATION = {{ .Values.gitea.service.enableReverseProxyAuthentication }}
+    ENABLE_REVERSE_PROXY_AUTO_REGISTRATION = {{ .Values.gitea.service.enableReverseProxyAutoRegistration }}
+    DISABLE_MINIMUM_KEY_SIZE_CHECK = {{ .Values.gitea.service.disableMinimumKeySizeCheck }}
+    ENABLE_CAPTCHA = {{ .Values.gitea.service.enableCaptcha }}
+
+    [webhook]
+    QUEUE_LENGTH = {{ .Values.gitea.webhook.queueLength }}
+    DELIVER_TIMEOUT = {{ .Values.gitea.webhook.deliverTimeout }}
+    SKIP_TLS_VERIFY = {{ .Values.gitea.webhook.skipTlsVerify }}
+    PAGING_NUM = {{ .Values.gitea.webhook.pagingNum }}
+
+    [mailer]
+
+    [cache]
+    ADAPTER = {{ .Values.gitea.cache.adapter }}
+    INTERVAL = {{ .Values.gitea.cache.interval }}
+    HOST = {{ .Values.gitea.cache.host }}
+
+    [session]
+
+    [picture]
+
+    [attachment]
+
+    [log]
+    MODE = {{ .Values.gitea.log.mode }}
+    LEVEL = {{ .Values.gitea.log.level }}
+
+    [cron]
+
+    [other]
+    SHOW_FOOTER_BRANDING = {{ .Values.gitea.other.showFooterBranding }}
+    SHOW_FOOTER_VERSION = {{ .Values.gitea.other.showFooterVersion }}
+    SHOW_FOOTER_TEMPLATE_LOAD_TIME = {{ .Values.gitea.other.showFooterTemplateLoadTime }}
+
