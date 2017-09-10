@@ -41,6 +41,11 @@ spec:
               readOnly: true
             - name: pos-files
               mountPath: /mnt/pos/
+            {{- if eq .Values.sumologic.fluentdSource "systemd" }}
+            - name: rkt-logs
+              mountPath: /var/lib/rkt/
+              readOnly: true
+            {{- end }}
           env:
             - name: COLLECTOR_URL
               valueFrom:
@@ -79,25 +84,33 @@ spec:
             - name: KUBERNETES_META
               value: {{ quote .Values.sumologic.kubernetesMeta }}
             {{- end }}
-            {{- if .Values.sumologic.excludePath }}
-            - name: EXCLUDE_PATH
-              value: {{ quote .Values.sumologic.excludePath }}
+            {{- if .Values.sumologic.excludeContainerRegex }}
+            - name: EXCLUDE_CONTAINER_REGEX
+              value: {{ quote .Values.sumologic.excludeContainerRegex }}
+            {{- end }}
+            {{- if .Values.sumologic.excludeFacilityRegex }}
+            - name: EXCLUDE_FACILITY_REGEX
+              value: {{ quote .Values.sumologic.excludeFacilityRegex }}
+            {{- end }}
+            {{- if .Values.sumologic.excludeHostRegex }}
+            - name: EXCLUDE_HOST_REGEX
+              value: {{ quote .Values.sumologic.excludeHostRegex }}
             {{- end }}
             {{- if .Values.sumologic.excludeNamespaceRegex }}
             - name: EXCLUDE_NAMESPACE_REGEX
               value: {{ quote .Values.sumologic.excludeNamespaceRegex }}
             {{- end }}
+            {{- if .Values.sumologic.excludePath }}
+            - name: EXCLUDE_PATH
+              value: {{ quote .Values.sumologic.excludePath }}
+            {{- end }}
             {{- if .Values.sumologic.excludePodRegex }}
             - name: EXCLUDE_POD_REGEX
               value: {{ quote .Values.sumologic.excludePodRegex }}
             {{- end }}
-            {{- if .Values.sumologic.excludeContainerRegex }}
-            - name: EXCLUDE_CONTAINER_REGEX
-              value: {{ quote .Values.sumologic.excludeContainerRegex }}
-            {{- end }}
-            {{- if .Values.sumologic.excludeHostRegex }}
-            - name: EXCLUDE_HOST_REGEX
-              value: {{ quote .Values.sumologic.excludeHostRegex }}
+            {{- if .Values.sumologic.excludePriorityRegex }}
+            - name: EXCLUDE_PRIORITY_REGEX
+              value: {{ quote .Values.sumologic.excludePriorityRegex }}
             {{- end }}
             {{- if .Values.sumologic.fluentdOpt }}
             - name: FLUENTD_OPT
@@ -118,6 +131,11 @@ spec:
         - name: host-logs
           hostPath:
             path: /var/log/
+        {{- if eq .Values.sumologic.fluentdSource "systemd" }}
+        - name: rkt-logs
+          hostPath:
+            path: /var/lib/rkt
+        {{- end }}
         - name: docker-logs
           hostPath:
             path: /var/lib/docker

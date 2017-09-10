@@ -1,0 +1,24 @@
+{{ if .Values.rbac.enabled }}
+{{- $serviceName := include "fullname" . -}}
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/{{ required "A valid .Values.rbac.apiVersion entry required!" .Values.rbac.apiVersion }}
+metadata:
+  name: {{ $serviceName }}
+rules:
+- apiGroups: [""]
+  resources: ["namespaces", "pods"]
+  verbs: ["get", "list", "watch"]
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/{{ required "A valid .Values.rbac.apiVersion entry required!" .Values.rbac.apiVersion }}
+metadata:
+  name: {{ $serviceName }}
+subjects:
+- kind: ServiceAccount
+  name: {{ $serviceName }}
+  namespace: {{ .Release.Namespace }}
+roleRef:
+  kind: ClusterRole
+  name: {{ $serviceName }}
+  apiGroup: rbac.authorization.k8s.io
+{{ end }}

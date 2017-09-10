@@ -6,26 +6,25 @@
 
 ## Introduction
 
-This chart adds the Sumo Logic Collector to all nodes in your cluster via a
-DaemonSet. After you have installed the chart, each pod, deployment, etc. can be
-optionally
+This chart adds the Sumo Logic Collector to all nodes in your cluster as a
+DaemonSet. The image supports fluentd `file` and `systemd` log sources.
+
+After you have installed the chart, each pod, deployment, etc. can be optionally
 [configured](https://github.com/SumoLogic/fluentd-kubernetes-sumologic#options)
 to specify its log format, source category, source name, or exclude itself from
 SumoLogic.
+
+### Configure an individual pod
 
     annotations:
       sumologic.com/format: "text"
       sumologic.com/sourceCategory: "mywebsite/nginx"
       sumologic.com/sourceName: "mywebsite_nginx"
+
+### Prevent an individual pod from logging
+
+    annotations:
       sumologic.com/exclude: "true"
-
-### Systemd
-
-The current docker image, for [fluentd-kubernetes-sumologic](https://github.com/SumoLogic/fluentd-kubernetes-sumologic)
-does not support systemd. The only logs available to SumoLogic are those in
-`/var/log/containers`. Logs generated in the `kube-system` namespace can only be
-excluded using `EXCLUDE_NAMESPACE` and `EXCLUDE_CONTAINER`. The `EXPORT_PATH`
-option is not relevant on a systemd OS.
 
 ## Prerequisites
 
@@ -63,6 +62,8 @@ The following tables lists the configurable parameters of the sumologic-fluentd 
 | `podAnnotations` | Annotations to add to the DaemonSet's Pods | `{}` |
 | `tolerations` | List of node taints to tolerate (requires Kubernetes >= 1.6) | `[]` |
 | `updateStrategy` | `OnDelete` or `RollingUpdate` (requires Kubernetes >= 1.6) | `OnDelete` |
+| `rbac.enabled` | Is Role Based Authentication enabled in the cluster | `false` |
+| `rbac.apiVersion` | The API version to use | `v1beta1` |
 | `sumologic.collectorUrl` | An HTTP collector in SumoLogic that the container can send logs to via HTTP | `Nil` You must provide your own |
 | `sumologic.flushInterval` | How frequently to push logs to sumo, in seconds | `5` |
 | `sumologic.numThreads` | The number of http threads sending data to sumo | `1` |
@@ -72,11 +73,14 @@ The following tables lists the configurable parameters of the sumologic-fluentd 
 | `sumologic.sourceCategoryReplaceDash` | Used to replace `-` with another character | `/` |
 | `sumologic.logFormat` | Format to post logs, into sumo (`json`, `json_merge`, or `text`) | `json` |
 | `sumologic.kubernetesMeta` | Include or exclude kubernetes metadata, with `json` format | `true` |
-| `sumologic.excludePath` | Files in this pattern will not be sent to sumo, ie `"[\"/var/log/containers/*.log\", \"/var/log/*.log\"]` | `Nil` |
-| `sumologic.excludeNamespaceRegex` | All matching namespaces will not be sent to sumo | `Nil` |
-| `sumologic.excludePodRegex` | All matching pods will not be sent to sumo | `Nil` |
 | `sumologic.excludeContainerRegex` | All matching containers will not be sent to sumo | `Nil` |
+| `sumologic.excludeFacilityRegex` | All matching facilities will not be sent to sumo | `Nil` |
 | `sumologic.excludeHostRegex` | All matching hosts will not be sent to sumo | `Nil` |
+| `sumologic.excludeNamespaceRegex` | All matching namespaces will not be sent to sumo | `Nil` |
+| `sumologic.excludePath` | Files in this pattern will not be sent to sumo, ie `"[\"/var/log/containers/*.log\", \"/var/log/*.log\"]` | `Nil` |
+| `sumologic.excludePodRegex` | All matching pods will not be sent to sumo | `Nil` |
+| `sumologic.excludePriorityRegex` | All matching priorities will not be sent to sumo | `Nil` |
+| `sumologic.excludeUnitRegex` | All matching systemd units will not be sent to sumo | `Nil` |
 | `sumologic.fluentdOpt` | Additional command line options, sent to fluentd | `Nil` |
 | `sumologic.verifySsl` | Verify SumoLogic HTTPS certificates | `true` |
 | `image.name` | The image repository and name to pull from | `sumologic/fluentd-kubernetes-sumologic` |
@@ -121,3 +125,42 @@ $ helm install --name my-release \
     --set sumologic.collectorUrl=URL,persistence.hostPath=/var/run/fluentd \
     stable/sumologic-fluentd
 ```
+
+### RBAC
+
+By default the chart will not install the associated RBAC rolebinding,
+using beta annotations.
+
+To determine if your cluster supports this running the following:
+
+```console
+$ kubectl api-versions | grep rbac
+```
+
+You also need to have the following parameter on the api server. See the
+following document for how to enable
+[RBAC](https://kubernetes.io/docs/admin/authorization/rbac/)
+
+```
+--authorization-mode=RBAC
+```
+
+If the output contains "beta" or both "alpha" and "beta" you can enable rbac.
+
+### Enable RBAC role/rolebinding creation
+
+To enable the creation of RBAC resources, do the following
+
+```console
+$ helm install --name my-release stable/sumologic-fluentd --set rbac.enabled=true
+```
+
+### Changing RBAC manifest apiVersion
+
+By default the RBAC resources are generated with the "v1beta1" apiVersion. To
+use "v1alpha1" do the following:
+
+```console
+$ helm install --name my-release stable/sumologic-fluentd --set rbac.enabled=true,rbac.apiVersion=v1alpha1
+```
+
