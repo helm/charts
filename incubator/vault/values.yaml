@@ -34,7 +34,7 @@ vault:
     # See https://www.vaultproject.io/docs/configuration/ for more information.
     listener:
       tcp:
-        address: '0.0.0.0:8200'
+        address: '[::]:8200'
         tls_disable: 1
     # See https://www.vaultproject.io/docs/configuration/storage/ for storage backends
     storage:
