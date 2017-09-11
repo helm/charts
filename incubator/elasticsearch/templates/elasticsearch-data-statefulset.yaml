@@ -105,14 +105,20 @@ spec:
       - name: config
         configMap:
           name: {{ template "elasticsearch.fullname" . }}
+  {{- if .Values.data.persistence.enabled }}
   volumeClaimTemplates:
   - metadata:
-      name: data
+      name: data-{{ .Release.Name }}
     spec:
       accessModes: [ ReadWriteOnce ]
-    {{- if .Values.data.storageClass }}
-      storageClassName: "{{ .Values.data.storageClass }}"
-    {{- end }}
       resources:
         requests:
           storage: "{{ .Values.data.storage }}"
+    {{- if .Values.data.storageClass }}
+      storageClassName: "{{ .Values.data.storageClass }}"
+    {{ else }}
+    {{- end }}
+  {{- else }}
+      - name: data-{{ .Release.Name }}
+        emptyDir: {}
+  {{- end -}}
