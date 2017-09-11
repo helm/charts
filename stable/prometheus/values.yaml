@@ -248,12 +248,10 @@ nodeExporter:
     tag: v0.14.0
     pullPolicy: IfNotPresent
 
-  ## Set update Strategy to Rolling Update instead of default OnDelete
+  ## Custom Update Strategy
   ##
   updateStrategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxUnavailable: 1
+    type: OnDelete
 
   ## Additional node-exporter container arguments
   ##
