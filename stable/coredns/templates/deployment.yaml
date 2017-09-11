@@ -37,6 +37,13 @@ spec:
         scheduler.alpha.kubernetes.io/tolerations: '[{"key":"CriticalAddonsOnly", "operator":"Exists"}]'
         {{- end }}
     spec:
+      {{- if .Values.middleware.kubernetes.enabled }}
+      {{- if .Values.rbac.enabled }}
+      serviceAccountName: {{ template "coredns.fullname" . }}
+      {{- else }}
+      serviceAccountName: default
+      {{- end }}
+      {{- end }}
       {{- if .Values.isClusterService }}
       dnsPolicy: Default
       {{- end }}

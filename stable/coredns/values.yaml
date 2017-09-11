@@ -17,6 +17,9 @@ resources:
     cpu: 100m
     memory: 128Mi
 
+rbac:
+  enabled: true
+
 # isClusterService specifies whether chart should be deployed as cluster-service or normal k8s app.
 isClusterService: true
 
