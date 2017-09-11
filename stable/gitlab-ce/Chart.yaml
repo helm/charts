@@ -1,4 +1,5 @@
 name: gitlab-ce
+deprecated: true
 version: 0.1.9
 description: GitLab Community Edition
 keywords:
