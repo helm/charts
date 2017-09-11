@@ -8,16 +8,17 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
-  annotations:
-  {{- if .Values.persistence.joomla.storageClass }}
-    volume.beta.kubernetes.io/storage-class: {{ .Values.persistence.joomla.storageClass | quote }}
-  {{- else }}
-    volume.alpha.kubernetes.io/storage-class: default
-  {{- end }}
 spec:
   accessModes:
     - {{ .Values.persistence.joomla.accessMode | quote }}
   resources:
     requests:
       storage: {{ .Values.persistence.joomla.size | quote }}
+{{- if .Values.persistence.joomla.storageClass }}
+{{- if (eq "-" .Values.persistence.joomla.storageClass) }}
+  storageClassName: ""
+{{- else }}
+  storageClassName: "{{ .Values.persistence.joomla.storageClass }}"
+{{- end }}
+{{- end }}
 {{- end -}}

@@ -11,8 +11,7 @@ metadata:
 spec:
   type: {{ .Values.serviceType }}
   ports:
-  - name: http
-    port: {{ .Values.httpPort }}
+  - port: {{ .Values.httpPort }}
     targetPort: http
 {{- if hasKey .Values "nodePort" }}
     nodePort: {{ .Values.nodePort }}

@@ -2,22 +2,23 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: {{ template "database.fullname" . }}
+  name: {{ template "artifactory.database.fullname" . }}
   labels:
-    app: {{ template "name" . }}
+    app: {{ template "artifactory.name" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
-  annotations:
-  {{- if .Values.database.persistence.storageClass }}
-    volume.beta.kubernetes.io/storage-class: {{ .Values.database.persistence.storageClass | quote }}
-  {{- else }}
-    volume.alpha.kubernetes.io/storage-class: default
-  {{- end }}
 spec:
   accessModes:
     - {{ .Values.database.persistence.accessMode | quote }}
   resources:
     requests:
       storage: {{ .Values.database.persistence.size | quote }}
+{{- if .Values.database.persistence.storageClass }}
+{{- if (eq "-" .Values.database.persistence.storageClass) }}
+  storageClassName: ""
+{{- else }}
+  storageClassName: "{{ .Values.database.persistence.storageClass }}"
+{{- end }}
+{{- end }}
 {{- end }}
