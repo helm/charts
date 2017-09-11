@@ -5,7 +5,7 @@
 replicaCount: 3
 image:
   repository: boostport/kubernetes-vault
-  tag: 0.4.8
+  tag: v0.4.8
   pullPolicy: Always
 app: kubernetes-vault
 service:
