@@ -160,6 +160,7 @@ wordpress:
 
   develop:
     enabled: false
+    del_uploads: false
     #dev_domain: dev.example.com
 
 ### OTHER ###

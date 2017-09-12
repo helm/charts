@@ -310,6 +310,12 @@ spec:
             "image": "lead4good/init-wp",
             "command": ["bash", "-c", "chown -R www-data:www-data /var/www/ && su -s /bin/bash -c \"bash /init/init_wp.sh\" www-data"],
             "env": [
+                {{- if .Values.wordpress.develop.delete_uploads }}
+                {
+                  "name": "DELETE_UPLOADS",
+                  "value": "1"
+                },
+                {{- end }}
                 {{- if .Values.svn.enabled }}
                 {
                   "name": "SVN_ENABLED",

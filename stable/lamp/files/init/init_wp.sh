@@ -103,15 +103,20 @@ function prepare_html
 	mv .htaccess.tmp .htaccess
 
 	if ! [ -z "$DEVELOPMENT" ]; then
-		echo "Removing cache and uploads directory"
-		rm -rf wp-content/uploads/ wp-content/cache/
+		echo "Removing cache directory"
+		rm -rf wp-content/cache/
+		if ! [ -z "$DELETE_UPLOADS" ]; then
+			echo "Removing uploads directory"
+			rm -rf wp-content/uploads/
 
-		echo "Linking uploads directory to live site"
-		(echo "#route all access to downloads directory to real site
-		RewriteRule ^wp-content/uploads/(.*)$ http://www.$WEB_DOMAIN/wp-content/uploads/\$1 [R=302,L]
+			echo "Linking uploads directory to live site"
+			(echo "#route all access to downloads directory to real site
+RewriteRule ^wp-content/uploads/(.*)$ http://www.$WEB_DOMAIN/wp-content/uploads/\$1 [R=302,L]
 
-		" && cat .htaccess) > .htaccess.tmp
-		mv .htaccess.tmp .htaccess
+" && cat .htaccess) > .htaccess.tmp
+			mv .htaccess.tmp .htaccess
+		fi
+
 
 		if ! [ -z "$HTACCESS_AUTH" ]; then
 			echo "Adding .htaccess Authentication"
