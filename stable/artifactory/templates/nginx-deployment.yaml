@@ -1,9 +1,9 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "nginx.fullname" . }}
+  name: {{ template "artifactory.nginx.fullname" . }}
   labels:
-    app: {{ template "name" . }}
+    app: {{ template "artifactory.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     component: "{{ .Values.nginx.name }}"
     heritage: {{ .Release.Service }}
@@ -13,7 +13,7 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "name" . }}
+        app: {{ template "artifactory.name" . }}
         component: "{{ .Values.nginx.name }}"
         release: {{ .Release.Name }}
     spec:
@@ -47,7 +47,7 @@ spec:
       - name: nginx-volume
       {{- if .Values.nginx.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ template "nginx.fullname" . }}
+          claimName: {{ template "artifactory.nginx.fullname" . }}
       {{- else }}
         emptyDir: {}
       {{- end -}}

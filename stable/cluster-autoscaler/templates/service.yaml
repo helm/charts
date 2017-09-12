@@ -6,11 +6,11 @@ metadata:
 {{ toYaml .Values.service.annotations | indent 4 }}
 {{- end }}
   labels:
-    app: {{ template "name" . }}
+    app: {{ template "cluster-autoscaler.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-  name: {{ template "fullname" . }}
+  name: {{ template "cluster-autoscaler.fullname" . }}
 spec:
   clusterIP: "{{ .Values.service.clusterIP }}"
 {{- if .Values.service.externalIPs }}
@@ -29,6 +29,6 @@ spec:
       protocol: TCP
       targetPort: 8085
   selector:
-    app: {{ template "name" . }}
+    app: {{ template "cluster-autoscaler.name" . }}
     release: {{ .Release.Name }}
   type: "{{ .Values.service.type }}"
