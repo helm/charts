@@ -67,7 +67,7 @@ spec:
             - name: dashboard-volume
               mountPath: {{ default "/var/lib/grafana/dashboards" .Values.server.dashboardLocalPath | quote }}
             - name: storage-volume
-              mountPath: {{ default "/var/lib/grafana/data" .Values.server.storageLocalPath | quote }}
+              mountPath: {{ default "/var/lib/grafana" .Values.server.storageLocalPath | quote }}
               subPath: "{{ .Values.server.persistentVolume.subPath }}"
       terminationGracePeriodSeconds: {{ default 300 .Values.server.terminationGracePeriodSeconds }}
       volumes:

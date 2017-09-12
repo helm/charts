@@ -2,50 +2,50 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "acs-engine-autoscaler.fullname" . }}
   labels:
-{{ include "labels.standard" . | indent 4 }}
+{{ include "acs-engine-autoscaler.labels.standard" . | indent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   template:
     metadata:
       labels:
-{{ include "labels.standard" . | indent 8 }}
+{{ include "acs-engine-autoscaler.labels.standard" . | indent 8 }}
         openai/do-not-drain: "true"
     spec:
       containers:
-      - name: {{ template "fullname" . }}
+      - name: {{ template "acs-engine-autoscaler.fullname" . }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         env:
         - name: AZURE_SP_APP_ID
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "acs-engine-autoscaler.fullname" . }}
               key: azure-sp-app-id
         - name: AZURE_SP_SECRET
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "acs-engine-autoscaler.fullname" . }}
               key: azure-sp-secret
         - name: AZURE_SP_TENANT_ID
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "acs-engine-autoscaler.fullname" . }}
               key: azure-sp-tenant-id
         - name: KUBECONFIG_PRIVATE_KEY
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "acs-engine-autoscaler.fullname" . }}
               key: kubeconfig-private-key
         - name: CLIENT_PRIVATE_KEY
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "acs-engine-autoscaler.fullname" . }}
               key: client-private-key
         - name: CA_PRIVATE_KEY
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "acs-engine-autoscaler.fullname" . }}
               key: ca-private-key
         command:
             - python
