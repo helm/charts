@@ -376,6 +376,16 @@ worker:
   #               values:
   #                 - "true"
 
+  ## Time to delay after the worker process shuts down. This inserts time between shutdown and startup
+  ## to avoid errors caused by a worker restart.
+  postStopDelaySeconds: 60
+
+  ## Time to allow the pod to terminate before being forcefully terminated. This should include
+  ## postStopDelaySeconds, and should additionally provide time for the worker to retire, e.g.
+  ## = postStopDelaySeconds + max time to allow the worker to drain its tasks. See
+  ## https://concourse.ci/worker-internals.html for worker lifecycle semantics.
+  terminationGracePeriodSeconds: 120
+
 ## Persistent Volume Storage configuration.
 ## ref: https://kubernetes.io/docs/user-guide/persistent-volumes
 ##
