@@ -1,0 +1,66 @@
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    app: {{ template "name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  serviceName: {{ template "fullname" . }}
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "name" . }}
+        chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+        release: {{ .Release.Name }}
+        heritage: {{ .Release.Service }}
+    spec:
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
+      containers:
+      - name: {{ template "fullname" . }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - containerPort: 3000
+          name: aero-clients
+        - containerPort: 3002
+          name: aero-mesh
+        - containerPort: 3003
+          name: aero-info
+        readinessProbe:
+          tcpSocket:
+              port: 3000
+          initialDelaySeconds: 15
+          timeoutSeconds: 1
+        volumeMounts:
+        - name: config-volume
+          mountPath: /etc/aerospike
+        {{- range $pv := .Values.persistentVolume }}
+        - name: {{ $pv.name | quote }}
+          mountPath: {{ $pv.mountPath | quote }}
+        {{- end }}
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      volumes:
+      - name: config-volume
+        configMap:
+          name: {{ template "fullname" . }}
+          items:
+          - key: aerospike.conf
+            path: aerospike.conf
+  volumeClaimTemplates:
+  {{- range $pv := .Values.persistentVolume }}
+  - metadata:
+      name: {{ $pv.name | quote }}
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName:  {{ $pv.storageClassName | quote }}
+      resources:
+        requests:
+          storage: {{ $pv.storage | quote }}
+  {{- end }}

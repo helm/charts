@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "fullname" . }}
+data:
+  aerospike.conf: |
+    # aerospike configuration file from: {{ .Values.confFile }}
+    {{- $mesh := include "aerospike.mesh" .  }}
+    {{ .Files.Get .Values.confFile |replace "#REPLACE_THIS_LINE_WITH_MESH_CONFIG" $mesh | indent 4}}
