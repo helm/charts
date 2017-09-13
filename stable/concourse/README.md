@@ -57,6 +57,10 @@ $ kubectl scale statefulset my-release-worker --replicas=3
 
 If a worker isn't taking on work, you can restart the worker with `kubectl delete pod`. This will initiate a graceful shutdown by "retiring" the worker, with some waiting time before the worker starts up again to ensure concourse doesn't try looking for old volumes on the new worker. The values `worker.postStopDelaySeconds` and `worker.terminationGracePeriodSeconds` can be used to tune this.
 
+### Worker Liveness Probe
+
+The worker's Liveness Probe will trigger a restart of the worker if it detects unrecoverable errors, by looking at the worker's logs. The set of strings used to identify such errors could change in the future, but can be tuned with `worker.fatalErrors`. See [values.yaml](values.yaml) for the defaults.
+
 ## Configuration
 
 The following tables lists the configurable parameters of the Concourse chart and their default values.
@@ -120,6 +124,7 @@ The following tables lists the configurable parameters of the Concourse chart an
 | `worker.additionalAffinities` | Additional affinities to apply to worker pods. E.g: node affinity | `nil` |
 | `worker.postStopDelaySeconds` | Time to wait after graceful shutdown of worker before starting up again | `60` |
 | `worker.terminationGracePeriodSeconds` | Upper bound for graceful shutdown, including `worker.postStopDelaySeconds` | `120` |
+| `worker.fatalErrors` | Newline delimited strings which, when logged, should trigger a restart of the worker | *See [values.yaml](values.yaml)* |
 | `persistence.enabled` | Enable Concourse persistence using Persistent Volume Claims | `true` |
 | `persistence.worker.class` | Concourse Worker Persistent Volume Storage Class | `generic` |
 | `persistence.worker.accessMode` | Concourse Worker Persistent Volume Access Mode | `ReadWriteOnce` |

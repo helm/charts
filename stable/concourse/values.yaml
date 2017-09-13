@@ -386,6 +386,15 @@ worker:
   ## https://concourse.ci/worker-internals.html for worker lifecycle semantics.
   terminationGracePeriodSeconds: 120
 
+  ## If any of the strings are found in logs, the worker's livenessProbe will fail and trigger a pod restart.
+  ## Specify one string per line, exact matching is used.
+  ##
+  ## "guardian.api.garden-server.create.failed" appears when the worker's filesystem has issues.
+  ## "unknown handle" appears if a worker didn't cleanly restart.
+  fatalErrors: |-
+    guardian.api.garden-server.create.failed
+    unknown handle
+
 ## Persistent Volume Storage configuration.
 ## ref: https://kubernetes.io/docs/user-guide/persistent-volumes
 ##

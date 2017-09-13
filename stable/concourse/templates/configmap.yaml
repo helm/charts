@@ -38,4 +38,5 @@ data:
   generic-oauth-scope: {{ default "" .Values.concourse.genericOauthScope | quote }}
   generic-oauth-token-url: {{ default "" .Values.concourse.genericOauthTokenUrl | quote }}
   worker-post-stop-delay-seconds: {{ .Values.worker.postStopDelaySeconds | quote }}
+  worker-fatal-errors: {{ default "" .Values.worker.fatalErrors | quote }}
   

@@ -30,8 +30,25 @@ spec:
           args:
             - -c
             - |-
-              concourse worker --name=${HOSTNAME}
+              cp /dev/null /concourse-work-dir/.liveness_probe
+              concourse worker --name=${HOSTNAME} | tee -a /concourse-work-dir/.liveness_probe
               sleep ${POST_STOP_DELAY_SECONDS}
+          livenessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - |-
+                  FATAL_ERRORS=$( echo "${LIVENESS_PROBE_FATAL_ERRORS}" | grep -q '\S' && \
+                      grep -F "${LIVENESS_PROBE_FATAL_ERRORS}" /concourse-work-dir/.liveness_probe )
+                  cp /dev/null /concourse-work-dir/.liveness_probe
+                  if [ ! -z "${FATAL_ERRORS}" ]; then
+                    >&2 echo "Fatal error detected: ${FATAL_ERRORS}"
+                    exit 1
+                  fi
+            failureThreshold: 1
+            initialDelaySeconds: 10
+            periodSeconds: 10
           lifecycle:
             preStop:
               exec:
@@ -76,6 +93,11 @@ spec:
                 configMapKeyRef:
                   name: {{ template "concourse.concourse.fullname" . }}
                   key: worker-post-stop-delay-seconds
+            - name: LIVENESS_PROBE_FATAL_ERRORS
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: worker-fatal-errors
           resources:
 {{ toYaml .Values.worker.resources | indent 12 }}
           securityContext:
