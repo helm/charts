@@ -43,12 +43,6 @@ podLabels: {}
 
 debug: false
 
-dryRun: false
-
-once: false
-
-publishInternalServices: false
-
 extraArgs: {}
 
 ## CPU and Memory limit and request for external-dns

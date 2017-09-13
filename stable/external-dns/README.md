@@ -41,9 +41,6 @@ The following tables lists the configurable parameters of the external-dns chart
 | `resources`               | CPU/Memory resource requests/limits.                                                                                       | `{}`                                               |
 | `sources`                 | List of resource types to monitor, possible values are fake, service or ingress.                                           | `[service, ingress]`                               |
 | `debug`                   | Increases the logging output for debugging purposes.                                                                       | `false`                                            |
-| `dryRun`                  | Prints DNS record changes rather than actually performing them.                                                            | `false`                                            |
-| `once`                    | Exits the synchronization loop after the first iteration.                                                                  | `false`                                            |
-| `publishInternalServices` | Allow external-dns to publish DNS records for ClusterIP services.                                                          | `false`                                            |
 | `extraArgs`               | Additional key-value parameters.                                                                                           | `{}`                                               |
 
 

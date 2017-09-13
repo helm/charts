@@ -21,15 +21,6 @@ spec:
           {{- if .Values.debug }}
             - --debug
           {{- end }}
-          {{- if .Values.dryRun }}
-            - --dry-run
-          {{- end }}
-          {{- if .Values.once }}
-            - --once
-          {{- end }}
-          {{- if .Values.publishInternalServices }}
-            - --publish-internal-services
-          {{- end }}
           {{- range .Values.domainFilters }}
             - --domain-filter={{ . }}
           {{- end }}
@@ -39,7 +30,11 @@ spec:
             - --source={{ . }}
           {{- end }}
           {{- range $key, $value := .Values.extraArgs }}
+            {{- if $value }}
             - --{{ $key }}={{ $value }}
+            {{- else }}
+            - --{{ $key }}
+            {{- end }}
           {{- end }}
           env:
         {{- if and .Values.aws.secret_key .Values.aws.access_key }}
