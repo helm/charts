@@ -4,10 +4,11 @@ kind: Service
 metadata:
   name: {{ .Release.Name }}-yarn-nm
   labels:
-    app: {{ template "fullname" . }}-yarn-nm
+    app: {{ template "fullname" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+    component: yarn-nm
 spec:
   ports:
   - port: 8088
@@ -18,4 +19,5 @@ spec:
     name: api
   clusterIP: None
   selector:
-    app: {{ template "fullname" . }}-yarn-nm
+    app: {{ template "fullname" . }}
+    component: yarn-nm

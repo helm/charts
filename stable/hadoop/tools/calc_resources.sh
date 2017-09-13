@@ -25,9 +25,8 @@ function finish {
 trap finish EXIT
 
 # Wait for proxy
-timeout=5
-count=0 && while [[ $count -lt $timeout && -z "$(curl -s localhost:8001/api/v1)" ]]; do ((count=count+1)) ; sleep 2; done
-[[ $tcount -eq $timeout ]] && echo "ERROR: could not start kube proxy to fetch node stats summary" && exit 1
+(while [[ $count -lt 5 && -z "$(curl -s localhost:8001/api/v1)" ]]; do ((count=count+1)) ; sleep 2; done && [[ $count -lt 5 ]])
+[[ $? -ne 0 ]] && echo "ERROR: could not start kube proxy to fetch node stats summary" && exit 1
 
 declare -a NODE_STATS
 declare -a AVAIL_CPU
@@ -51,16 +50,26 @@ done
 CORES=$(echo "${AVAIL_CPU[*]}" | tr ' ' '\n' | sort -n  | head -1)
 MEMORY=$(echo "${AVAIL_MEM[*]}" | tr ' ' '\n' | sort -n | head -1)
 
+# Subtract resources used by the chart. Note these are default values.
+HADOOP_SHARE_CPU=400
+CORES=$(bc -l <<< "scale=0; (${CORES} - ${HADOOP_SHARE_CPU})")
+
+HADOOP_SHARE_MEM=1024
+MEMORY=$(bc -l <<< "scale=0; (${MEMORY} - ${HADOOP_SHARE_MEM})")
+
 CPU_PER_NODE=$(bc -l <<< "scale=2; (${CORES} * ${TARGET_PCT}/100)")
 MEM_PER_NODE=$(bc -l <<< "scale=2; (${MEMORY} * ${TARGET_PCT}/100)")
 
 # Round cpu to lower mCPU
-CPU_PER_NODE=$(bc -l <<< "scale=0; ${CPU_PER_NODE} - (${CPU_PER_NODE} % 100)")
+CPU_PER_NODE=$(bc -l <<< "scale=0; ${CPU_PER_NODE} - (${CPU_PER_NODE} % 10)")
 
 # Round mem to lower Mi
 MEM_PER_NODE=$(bc -l <<< "scale=0; ${MEM_PER_NODE} - (${MEM_PER_NODE} % 100)")
 
+[[ "${CPU_PER_NODE/%.*/}" -lt 100 ]] && echo "WARN: Insufficient available CPU for scheduling" >&2
+[[ "${MEM_PER_NODE/%.*/}" -lt 2048 ]] && MEM_PER_NODE=2048.0 && echo "WARN: Insufficient available Memory for scheduling" >&2
+
 CPU_LIMIT=${CPU_PER_NODE/%.*/m}
 MEM_LIMIT=${MEM_PER_NODE/%.*/Mi}
 
-echo -n "--set yarn.nodeManager.replicas=${NUM_NODES},yarn.nodeManager.resources.limits.cpu=${CPU_LIMIT},yarn.nodeManager.resources.limits.memory=${MEM_LIMIT}"
+echo -n "--set yarn.nodeManager.replicas=${NUM_NODES},yarn.nodeManager.resources.requests.cpu=${CPU_LIMIT},yarn.nodeManager.resources.requests.memory=${MEM_LIMIT},yarn.nodeManager.resources.limits.cpu=${CPU_LIMIT},yarn.nodeManager.resources.limits.memory=${MEM_LIMIT}"

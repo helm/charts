@@ -4,13 +4,15 @@ kind: Service
 metadata:
   name: {{ .Release.Name }}-yarn-ui
   labels:
-    app: {{ template "fullname" . }}-yarn-ui
+    app: {{ template "fullname" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+    component: yarn-ui
 spec:
   ports:
   - port: 8088
     name: web
   selector:
-    app: {{ template "fullname" . }}-yarn-rm
+    app: {{ template "fullname" . }}
+    component: yarn-rm

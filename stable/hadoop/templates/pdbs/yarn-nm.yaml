@@ -5,9 +5,10 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app: {{ template "fullname" . }}-yarn-nm
-      chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-      release: "{{ .Release.Name }}"
-      heritage: "{{ .Release.Service }}"
+      app: {{ template "fullname" . }}
+      chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+      release: {{ .Release.Name }}
+      heritage: {{ .Release.Service }}
+      component: yarn-nm
   minAvailable: {{ .Values.yarn.nodeManager.pdbMinAvailable }}
   

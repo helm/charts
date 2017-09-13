@@ -5,9 +5,10 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app: {{ template "fullname" . }}-hdfs-dn
-      chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-      release: "{{ .Release.Name }}"
-      heritage: "{{ .Release.Service }}"
+      app: {{ template "fullname" . }}
+      chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+      release: {{ .Release.Name }}
+      heritage: {{ .Release.Service }}
+      component: hdfs-dn
   minAvailable: {{ .Values.hdfs.dataNode.pdbMinAvailable }}
   

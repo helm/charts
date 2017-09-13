@@ -5,20 +5,22 @@ metadata:
   annotations:
     checksum/config: {{ include (print $.Template.BasePath "/configmaps/hadoop-config.yaml") . | sha256sum }}
   labels:
-    app: {{ template "fullname" . }}-yarn-rm
+    app: {{ template "fullname" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+    component: yarn-rm
 spec:
   serviceName: {{ .Release.Name }}-yarn-rm
   replicas: 1
   template:
     metadata:
       labels:
-        app: {{ template "fullname" . }}-yarn-rm
-        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-        release: "{{ .Release.Name }}"
-        heritage: "{{ .Release.Service }}"
+        app: {{ template "fullname" . }}
+        chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+        release: {{ .Release.Name }}
+        heritage: {{ .Release.Service }}
+        component: yarn-rm
     spec:
       affinity:
         podAntiAffinity:
@@ -29,15 +31,17 @@ spec:
               matchLabels:
                 app:  {{ template "fullname" . }}
                 release: {{ .Release.Name | quote }}
+                component: yarn-rm
         {{- else if eq .Values.antiAffinity "soft" }}
           preferredDuringSchedulingIgnoredDuringExecution:
           - weight: 5
             podAffinityTerm:
-            - topologyKey: "kubernetes.io/hostname"
+              topologyKey: "kubernetes.io/hostname"
               labelSelector:
                 matchLabels:
                   app:  {{ template "fullname" . }}
                   release: {{ .Release.Name | quote }}
+                  component: yarn-rm
         {{- end }}
       terminationGracePeriodSeconds: 0
       containers:
@@ -58,6 +62,12 @@ spec:
             path: /ws/v1/cluster/info
             port: 8088
           initialDelaySeconds: 5
+          timeoutSeconds: 2
+        livenessProbe:
+          httpGet:
+            path: /ws/v1/cluster/info
+            port: 8088
+          initialDelaySeconds: 10
           timeoutSeconds: 2
         volumeMounts:
           - name: hadoop-config

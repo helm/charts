@@ -14,6 +14,8 @@ To install the chart with the release name `hadoop` that utilizes 50% of the ava
 $ helm install --name hadoop $(stable/hadoop/tools/calc_resources.sh 50) stable/hadoop
 ```
 
+> Note that you need at least 2GB of free memory per NodeManager pod, if your cluster isn't large enough, not all pods will be scheduled.
+
 The optional [`calc_resources.sh`](./tools/calc_resources.sh) script is used as a convienince helper to set the `yarn.numNodes`, and `yarn.nodeManager.resources` appropriately to utilize all nodes in the Kubernetes cluster and a given percentage of their resources. For example, with a 3 node `n1-standard-4` GKE cluster and an argument of `50`, this would create 3 NodeManager pods claiming 2 cores and 7.5Gi of memory.
 
 ### Persistence
@@ -41,24 +43,24 @@ The following tables lists the configurable parameters of the Hadoop chart and t
 | `hadoopVersion`                                   | Version of hadoop libaries being used                                              | `{VERSION}`                                                      |
 | `antiAffinity`                                    | Pod antiaffinity, `hard` or `soft`                                                 | `hard`                                                           |
 | `hdfs.nameNode.podMinAvailable`                   | PDB for HDFS NameNode                                                              | `1`                                                              |
-| `hdfs.nameNode.resources`                         | resources for the HDFS NameNode                                                    | `requests:memory=1024Mi,cpu=200m,limits:memory=2048Mi,cpu=1000m` |
+| `hdfs.nameNode.resources`                         | resources for the HDFS NameNode                                                    | `requests:memory=256Mi,cpu=10m,limits:memory=2048Mi,cpu=1000m` |
 | `hdfs.nameNode.persistentVolume.enabled`          | Enable/disable the use of persistent volumes                                       | `false`                                                          | 
 | `hdfs.nameNode.persistentVolume.storageClassName` | Name of the StorageClass to use per your volume provider                           | `standard`                                                       |
 | `hdfs.nameNode.persistentVolume.accessMode`       | Access mode for the volume                                                         | `ReadWriteOnce`                                                  |
 | `hdfs.nameNode.persistentVolume.size`             | Size of the volume                                                                 | `50Gi`                                                           |
-| `hdfs.dataNode.replicas`                          | Number of HDFS DataNode replicas                                                   | `2`                                                              |
+| `hdfs.dataNode.replicas`                          | Number of HDFS DataNode replicas                                                   | `1`                                                              |
 | `hdfs.dataNode.podMinAvailable`                   | PDB for HDFS DataNode                                                              | `1`                                                              |
-| `hdfs.dataNode.resources`                         | resources for the HDFS DataNode                                                    | `requests:memory=1024Mi,cpu=200m,limits:memory=2048Mi,cpu=1000m` |
+| `hdfs.dataNode.resources`                         | resources for the HDFS DataNode                                                    | `requests:memory=256Mi,cpu=10m,limits:memory=2048Mi,cpu=1000m` |
 | `hdfs.dataNode.persistentVolume.enabled`          | Enable/disable the use of persistent volumes                                       | `false`                                                          | 
 | `hdfs.dataNode.persistentVolume.storageClassName` | Name of the StorageClass to use per your volume provider                           | `standard`                                                       |
 | `hdfs.dataNode.persistentVolume.accessMode`       | Access mode for the volume                                                         | `ReadWriteOnce`                                                  |
 | `hdfs.dataNode.persistentVolume.size`             | Size of the volume                                                                 | `100Gi`                                                          |
 | `yarn.resourceManager.pdbMinAvailable`            | PDB for the YARN ResourceManager                                                   | `1`                                                              |
-| `yarn.resourceManager.resources`                  | resources for the YARN ResourceManager                                             | `requests:memory=1024Mi,cpu=200m,limits:memory=2048Mi,cpu=1000m` |
+| `yarn.resourceManager.resources`                  | resources for the YARN ResourceManager                                             | `requests:memory=256Mi,cpu=10m,limits:memory=2048Mi,cpu=1000m` |
 | `yarn.nodeManager.pdbMinAvailable`                | PDB for the YARN NodeManager                                                       | `1`                                                              |
 | `yarn.nodeManager.replicas`                       | Number of YARN NodeManager replicas                                                | `2`                                                              |
 | `yarn.nodeManager.parallelCreate`                 | Create all nodeManager statefulset pods in parallel (K8S 1.7+)                     | `false`                                                          |
-| `yarn.nodeManager.resources`                      | Resource limits and requests for YARN NodeManager pods                             | `limits.memory=2048Mi, limits.cpu=1000m`                         |
+| `yarn.nodeManager.resources`                      | Resource limits and requests for YARN NodeManager pods                             | `requests:memory=2048Mi,cpu=1000m,limits:memory=2048Mi,cpu=1000m`|
 
 ## Related charts
 

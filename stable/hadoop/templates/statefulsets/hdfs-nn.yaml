@@ -5,20 +5,22 @@ metadata:
   annotations:
     checksum/config: {{ include (print $.Template.BasePath "/configmaps/hadoop-config.yaml") . | sha256sum }}
   labels:
-    app: {{ template "fullname" . }}-hdfs-nn
+    app: {{ template "fullname" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+    component: hdfs-nn
 spec:
   serviceName: {{ .Release.Name }}-hdfs-nn
   replicas: 1
   template:
     metadata:
       labels:
-        app: {{ template "fullname" . }}-hdfs-nn
-        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-        release: "{{ .Release.Name }}"
-        heritage: "{{ .Release.Service }}"
+        app: {{ template "fullname" . }}
+        chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+        release: {{ .Release.Name }}
+        heritage: {{ .Release.Service }}
+        component: hdfs-nn
     spec:
       affinity:
         podAntiAffinity:
@@ -29,15 +31,17 @@ spec:
               matchLabels:
                 app:  {{ template "fullname" . }}
                 release: {{ .Release.Name | quote }}
+                component: hdfs-nn
         {{- else if eq .Values.antiAffinity "soft" }}
           preferredDuringSchedulingIgnoredDuringExecution:
           - weight: 5
             podAffinityTerm:
-            - topologyKey: "kubernetes.io/hostname"
+              topologyKey: "kubernetes.io/hostname"
               labelSelector:
                 matchLabels:
                   app:  {{ template "fullname" . }}
                   release: {{ .Release.Name | quote }}
+                  component: hdfs-nn
         {{- end }}
       terminationGracePeriodSeconds: 0
       containers:
@@ -56,6 +60,12 @@ spec:
             port: 50070
           initialDelaySeconds: 5
           timeoutSeconds: 2
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 50070
+          initialDelaySeconds: 10
+          timeoutSeconds: 2
         volumeMounts:
           - name: hadoop-config
             mountPath: /tmp/hadoop-config
@@ -73,10 +83,11 @@ spec:
     - metadata:
         name: dfs
         labels:
-          app: {{ template "fullname" . }}-hdfs-nn
-          chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-          release: "{{ .Release.Name }}"
-          heritage: "{{ .Release.Service }}"
+          app: {{ template "fullname" . }}
+          chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+          release: {{ .Release.Name }}
+          heritage: {{ .Release.Service }}
+          component: hdfs-nn
       spec:
         {{- if .Values.hdfs.nameNode.persistentVolume.storageClassName }}
         storageClassName: {{ .Values.hdfs.nameNode.persistentVolume.storageClassName }}

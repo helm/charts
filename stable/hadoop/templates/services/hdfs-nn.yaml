@@ -4,10 +4,11 @@ kind: Service
 metadata:
   name: {{ .Release.Name }}-hdfs-nn
   labels:
-    app: {{ template "fullname" . }}-hdfs-nn
+    app: {{ template "fullname" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+    component: hdfs-nn
 spec:
   ports:
   - name: dfs
@@ -17,4 +18,5 @@ spec:
     port: 50070
   clusterIP: None
   selector:
-    app: {{ template "fullname" . }}-hdfs-nn
+    app: {{ template "fullname" . }}
+    component: hdfs-nn

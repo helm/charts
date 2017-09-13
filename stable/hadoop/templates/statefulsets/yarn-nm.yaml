@@ -5,10 +5,11 @@ metadata:
   annotations:
     checksum/config: {{ include (print $.Template.BasePath "/configmaps/hadoop-config.yaml") . | sha256sum }}
   labels:
-    app: {{ template "fullname" . }}-yarn-nm
+    app: {{ template "fullname" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+    component: yarn-nm
 spec:
   serviceName: {{ .Release.Name }}-yarn-nm
   replicas: {{ .Values.yarn.nodeManager.replicas }}
@@ -18,10 +19,11 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "fullname" . }}-yarn-nm
-        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-        release: "{{ .Release.Name }}"
-        heritage: "{{ .Release.Service }}"
+        app: {{ template "fullname" . }}
+        chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+        release: {{ .Release.Name }}
+        heritage: {{ .Release.Service }}
+        component: yarn-nm
     spec:
       affinity:
         podAntiAffinity:
@@ -32,15 +34,17 @@ spec:
               matchLabels:
                 app:  {{ template "fullname" . }}
                 release: {{ .Release.Name | quote }}
+                component: yarn-nm
         {{- else if eq .Values.antiAffinity "soft" }}
           preferredDuringSchedulingIgnoredDuringExecution:
           - weight: 5
             podAffinityTerm:
-            - topologyKey: "kubernetes.io/hostname"
+              topologyKey: "kubernetes.io/hostname"
               labelSelector:
                 matchLabels:
                   app:  {{ template "fullname" . }}
                   release: {{ .Release.Name | quote }}
+                  component: yarn-nm
         {{- end }}
       terminationGracePeriodSeconds: 0
       containers:
@@ -60,7 +64,13 @@ spec:
           httpGet:
             path: /node
             port: 8042
-          initialDelaySeconds: 5
+          initialDelaySeconds: 10
+          timeoutSeconds: 2
+        livenessProbe:
+          httpGet:
+            path: /node
+            port: 8042
+          initialDelaySeconds: 10
           timeoutSeconds: 2
         env:
           - name: MY_CPU_LIMIT

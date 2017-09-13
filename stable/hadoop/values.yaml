@@ -7,7 +7,7 @@ imagePullPolicy: IfNotPresent
 hadoopVersion: 2.7.3
 
 # Select anitAffinity as either hard or soft, default is hard
-antiAffinity: "hard"
+antiAffinity: "soft"
 
 hdfs:
   nameNode:
@@ -15,8 +15,8 @@ hdfs:
 
     resources:
       requests:
-        memory: "1024Mi"
-        cpu: "200m"
+        memory: "256Mi"
+        cpu: "10m"
       limits:
         memory: "2048Mi"
         cpu: "1000m"
@@ -28,14 +28,14 @@ hdfs:
       size: 50Gi
 
   dataNode:
-    replicas: 2
+    replicas: 1
 
     pdbMinAvailable: 1
 
     resources:
       requests:
-        memory: "1024Mi"
-        cpu: "200m"
+        memory: "256Mi"
+        cpu: "10m"
       limits:
         memory: "2048Mi"
         cpu: "1000m"
@@ -52,8 +52,8 @@ yarn:
 
     resources:
       requests:
-        memory: "1024Mi"
-        cpu: "200m"
+        memory: "256Mi"
+        cpu: "10m"
       limits:
         memory: "2048Mi"
         cpu: "2000m"
@@ -70,6 +70,9 @@ yarn:
     # CPU and memory resources allocated to each node manager pod.
     # This should be tuned to fit your workload.
     resources:
+      requests:
+        memory: "2048Mi"
+        cpu: "1000m"
       limits:
         memory: "2048Mi"
         cpu: "1000m"
