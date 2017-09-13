@@ -21,6 +21,15 @@ spec:
           {{- if .Values.debug }}
             - --debug
           {{- end }}
+          {{- if .Values.dryRun }}
+            - --dry-run
+          {{- end }}
+          {{- if .Values.once }}
+            - --once
+          {{- end }}
+          {{- if .Values.publishInternalServices }}
+            - --publish-internal-services
+          {{- end }}
           {{- range .Values.domainFilters }}
             - --domain-filter={{ . }}
           {{- end }}
