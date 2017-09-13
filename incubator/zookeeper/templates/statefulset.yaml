@@ -38,7 +38,7 @@ spec:
                     release: {{ .Release.Name | quote }}
       {{- end }}
       containers:
-      - name: {{ template "name" . }}-server
+      - name: {{ template "zookeeper.name" . }}-server
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         image: gcr.io/google_samples/k8szk:v2
         resources:
