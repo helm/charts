@@ -1,3 +1,6 @@
+{{- $values_alerts := pluck "alerts" .Values.serverFiles -}}
+{{- $values_rules := pluck "rules" .Values.serverFiles -}}
+{{- $values_prometheus := pluck "prometheus.yml" .Values.serverFiles -}}
 {{- if (empty .Values.server.configMapOverrideName) -}}
 apiVersion: v1
 kind: ConfigMap
@@ -10,5 +13,27 @@ metadata:
     release: {{ .Release.Name }}
   name: {{ template "prometheus.server.fullname" . }}
 data:
-{{ toYaml .Values.serverFiles | indent 2 }}
+{{- if ne ($values_alerts|compact|len) 0 }}
+  # alerts from Values file
+  alerts: {{ toYaml ($values_alerts | first) | indent 4 }}
+{{- else }}
+  alerts: ""
+{{- end }}
+
+{{- if ne ($values_rules|compact|len) 0 }}
+  # rules from Values file
+  rules: {{ toYaml ($values_rules | first) | indent 4 }}
+{{- else }}
+  rules: ""
+{{- end }}
+
+{{- if ne ($values_prometheus|compact|len) 0 }}
+  # prometheus.yml from Values file
+  prometheus.yml: {{ toYaml ($values_prometheus | first)  | indent 4 }}
+{{- else }}
+  # default prometheus config file
+  prometheus.yml: |-
+{{ include "prometheus.prometheus.yaml" . | indent 4 }}
+{{- end }}
+
 {{- end }}
