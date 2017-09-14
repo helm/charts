@@ -3,7 +3,7 @@ kind: Job
 metadata:
   name: "{{ template "jaeger.fullname" . }}-cassandra-schema"
   labels:
-    app: "{{ template "jaeger.fullname" . }}-cassandra-schema"
+    app: "{{ template "jaeger" . }}"
     jaeger-infra: cassandra-schema-job
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     component: "{{ template "jaeger.fullname" . }}-cassandra-schema"

@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: "{{ template "jaeger.fullname" . }}-collector"
   labels:
-    app: "{{ template "jaeger.fullname" . }}-collector"
+    app: "{{ template "jaeger" . }}"
     jaeger-infra: collector-deployment
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     component: "{{ template "jaeger.fullname" . }}-collector"

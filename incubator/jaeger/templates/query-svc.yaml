@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: "{{ template "jaeger.fullname" . }}-query"
   labels:
-    app: "{{ template "jaeger.fullname" . }}-query"
+    app: "{{ template "jaeger" . }}"
     jaeger-infra: query-service
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     component: "{{ template "jaeger.fullname" . }}-query"

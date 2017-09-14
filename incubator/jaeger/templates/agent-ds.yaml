@@ -3,7 +3,7 @@ kind: DaemonSet
 metadata:
   name: "{{ template "jaeger.fullname" . }}-agent"
   labels:
-    app: "{{ template "jaeger.fullname" . }}-agent"
+    app: "{{ template "jaeger" . }}"
     jaeger-infra: agent-daemonset
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     component: "{{ template "jaeger.fullname" . }}-agent"

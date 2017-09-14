@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: "{{ template "jaeger.fullname" . }}-agent"
   labels:
-    app: "{{ template "jaeger.fullname" . }}-agent"
+    app: "{{ template "jaeger" . }}"
     jaeger-infra: {{ .Values.service.agent.name }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     component: "{{ template "jaeger.fullname" . }}-agent"
