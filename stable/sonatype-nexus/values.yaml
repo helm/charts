@@ -7,7 +7,7 @@ image:
   tag: 3.5.1-02
 service:
   name: nexus
-  type: ClusterIP
+  type: LoadBalancer
   externalPort: 8081
   internalPort: 8081
   readinessProbe:
