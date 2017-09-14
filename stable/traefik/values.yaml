@@ -1,9 +1,11 @@
 # Default values for Traefik
 image: traefik
 imageTag: 1.3.8
+## can switch the service type to NodePort if required
 serviceType: LoadBalancer
 loadBalancerIP:
 #loadBalancerSourceRanges: []
+
 replicas: 1
 cpuRequest: 100m
 memoryRequest: 20Mi
@@ -58,6 +60,14 @@ service:
   #   key: value
   # labels:
   #   key: value
+  ## Further config for service of type NodePort
+  ## Configure ports in allowable range (eg. 30000 - 32767 on minikube)
+  ## nodePorts:
+  ##   http: 31000
+  ##   https: 32000
+  nodePorts:
+    http: ""
+    https: ""
 gzip:
   enabled: true
 accessLogs:
@@ -86,4 +96,3 @@ metrics:
     enabled: false
 #    address: "localhost:8125"
 #    pushInterval: 30s
-
