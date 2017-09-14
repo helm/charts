@@ -33,7 +33,7 @@ core:
     ## If undefined (the default) or set to null, no storageClassName spec is
     ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
     ##   GKE, AWS & OpenStack)
-    ##storageClass: "-"
+    storageClass:
 
     ## Subdirectory of core server data Persistent Volume to mount
     ## Useful if the volume's root directory is not empty
