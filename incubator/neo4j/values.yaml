@@ -10,6 +10,13 @@ image: "neo4j"
 imageTag: "3.2.3-enterprise"
 imagePullPolicy: "IfNotPresent"
 
+# Use password authentication
+authEnabled: true
+
+## Specify password for neo4j user
+## Defaults to a random 10-character alphanumeric string if not set and authEnabled is true
+# neo4jPassword:
+
 # Specs for the images used for running tests against the Helm package
 testImage: "markhneedham/k8s-kubectl"
 testImageTag: "master"
