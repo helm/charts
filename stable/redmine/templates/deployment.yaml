@@ -19,7 +19,10 @@ spec:
         image: "{{ .Values.image }}"
         imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
         env:
-        {{ if .Values.databaseType.postgresql }}
+        {{- if .Values.redmineEnvironment }}
+{{ toYaml .Values.redmineEnvironment | indent 8 }}
+        {{- end }}
+        {{- if .Values.databaseType.postgresql }}
         - name: REDMINE_DB_POSTGRES
           value: {{ template "postgresql.fullname" . }}
         - name: REDMINE_DB_PASSWORD
@@ -27,7 +30,7 @@ spec:
             secretKeyRef:
               name: {{ template "postgresql.fullname" . }}
               key: postgres-password
-        {{ else }}
+        {{- else }}
         - name: REDMINE_DB_MYSQL
           value: {{ template "mariadb.fullname" . }}
         - name: REDMINE_DB_PASSWORD
@@ -35,7 +38,7 @@ spec:
             secretKeyRef:
               name: {{ template "mariadb.fullname" . }}
               key: mariadb-root-password
-        {{ end }}
+        {{- end }}
         - name: REDMINE_USERNAME
           value: {{ default "" .Values.redmineUsername | quote }}
         - name: REDMINE_PASSWORD
