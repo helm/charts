@@ -1,3 +1,4 @@
+{{- /* plucking the keys from the values file so that this remains backwards compatible from version 4.5.0 and below */ -}}
 {{- $values_alerts := pluck "alerts" .Values.serverFiles -}}
 {{- $values_rules := pluck "rules" .Values.serverFiles -}}
 {{- $values_prometheus := pluck "prometheus.yml" .Values.serverFiles -}}
