@@ -53,7 +53,7 @@ spec:
         {{end}}
         - name: SCOPE
           value: {{ template "patroni.fullname" . }}
-	{{if .Values.WalE.Enable }}
+        {{if .Values.WalE.Enable }}
         - name: USE_WALE
           value: {{ .Values.WalE.Enable | quote }}
         {{if .Values.WalE.Schedule_Cron_Job }}
