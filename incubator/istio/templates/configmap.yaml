@@ -1,11 +1,11 @@
 {{- if not .Values.pilot.customConfigMap }}
-{{- $serviceName := include "fullname" . -}}
+{{- $serviceName := include "istio.fullname" . -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: istio
   labels:
-{{ include "labels.standard" . | indent 4 }}
+{{ include "istio.labels.standard" . | indent 4 }}
 data:
   mesh: |-
 {{ if .Values.auth.enabled }}

@@ -1,3 +1,4 @@
+{{- if (empty .Values.server.configMapOverrideName) -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -10,3 +11,4 @@ metadata:
   name: {{ template "prometheus.server.fullname" . }}
 data:
 {{ toYaml .Values.serverFiles | indent 2 }}
+{{- end }}

@@ -32,16 +32,18 @@ Master:
   SlaveListenerPort: 50000
   LoadBalancerSourceRanges:
   - 0.0.0.0/0
+# Optionally assign a known public LB IP
+# LoadBalancerIP: 1.2.3.4
 # Optionally configure a JMX port
 # requires additional JavaOpts, ie
 # JavaOpts: >
-#   -Dcom.sun.management.jmxremote.port=4000 
-#   -Dcom.sun.management.jmxremote.authenticate=false 
-#   -Dcom.sun.management.jmxremote.ssl=false 
+#   -Dcom.sun.management.jmxremote.port=4000
+#   -Dcom.sun.management.jmxremote.authenticate=false
+#   -Dcom.sun.management.jmxremote.ssl=false
 # JMXPort: 4000
 # List of plugins to be install during Jenkins master start
   InstallPlugins:
-      - kubernetes:0.11 
+      - kubernetes:0.11
       - workflow-aggregator:2.5
       - workflow-job:2.13
       - credentials-binding:1.12
@@ -100,10 +102,15 @@ Persistence:
   ## If defined, PVC must be created manually before volume will be bound
   # ExistingClaim:
 
-  ## If defined, volume.beta.kubernetes.io/storage-class: <StorageClass>
-  ## Default: volume.alpha.kubernetes.io/storage-class: default
+  ## jenkins data Persistent Volume Storage Class
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
   ##
-  # StorageClass:
+  # StorageClass: "-"
+
   AccessMode: ReadWriteOnce
   Size: 8Gi
   volumes:
