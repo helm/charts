@@ -1,14 +1,18 @@
 apiVersion: policy/v1beta1
 kind: PodDisruptionBudget
 metadata:
-  name: {{ template "fullname" . }}-hdfs-dn
+  name: {{ .Release.Name }}-hdfs-dn
+  labels:
+    app: {{ template "name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: hdfs-dn
 spec:
   selector:
     matchLabels:
-      app: {{ template "fullname" . }}
-      chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+      app: {{ template "name" . }}
       release: {{ .Release.Name }}
-      heritage: {{ .Release.Service }}
       component: hdfs-dn
   minAvailable: {{ .Values.hdfs.dataNode.pdbMinAvailable }}
   

@@ -1,14 +1,18 @@
 apiVersion: policy/v1beta1
 kind: PodDisruptionBudget
 metadata:
-  name: {{ template "fullname" . }}-yarn-nm
+  name: {{ .Release.Name }}-yarn-nm
+  labels:
+    app: {{ template "name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: yarn-nm
 spec:
   selector:
     matchLabels:
-      app: {{ template "fullname" . }}
-      chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+      app: {{ template "name" . }}
       release: {{ .Release.Name }}
-      heritage: {{ .Release.Service }}
       component: yarn-nm
   minAvailable: {{ .Values.yarn.nodeManager.pdbMinAvailable }}
   

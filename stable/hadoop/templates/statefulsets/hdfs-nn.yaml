@@ -5,7 +5,7 @@ metadata:
   annotations:
     checksum/config: {{ include (print $.Template.BasePath "/configmaps/hadoop-config.yaml") . | sha256sum }}
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
@@ -16,10 +16,8 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "fullname" . }}
-        chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+        app: {{ template "name" . }}
         release: {{ .Release.Name }}
-        heritage: {{ .Release.Service }}
         component: hdfs-nn
     spec:
       affinity:
@@ -29,7 +27,7 @@ spec:
           - topologyKey: "kubernetes.io/hostname"
             labelSelector:
               matchLabels:
-                app:  {{ template "fullname" . }}
+                app:  {{ template "name" . }}
                 release: {{ .Release.Name | quote }}
                 component: hdfs-nn
         {{- else if eq .Values.antiAffinity "soft" }}
@@ -39,7 +37,7 @@ spec:
               topologyKey: "kubernetes.io/hostname"
               labelSelector:
                 matchLabels:
-                  app:  {{ template "fullname" . }}
+                  app:  {{ template "name" . }}
                   release: {{ .Release.Name | quote }}
                   component: hdfs-nn
         {{- end }}
@@ -83,10 +81,8 @@ spec:
     - metadata:
         name: dfs
         labels:
-          app: {{ template "fullname" . }}
-          chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+          app: {{ template "name" . }}
           release: {{ .Release.Name }}
-          heritage: {{ .Release.Service }}
           component: hdfs-nn
       spec:
         {{- if .Values.hdfs.nameNode.persistentVolume.storageClassName }}
