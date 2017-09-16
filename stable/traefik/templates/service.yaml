@@ -34,12 +34,21 @@ spec:
   ports:
   - port: 80
     name: http
+    {{- if and (eq .Values.serviceType "NodePort") (.Values.nodePort.httpPort) }}
+    nodePort: {{ .Values.nodePort.httpPort }}
+    {{- end }}
   - port: 443
     name: https
     {{- if not .Values.ssl.enabled }}
     targetPort: 80
     {{- end }}
+    {{- if and (eq .Values.serviceType "NodePort") (.Values.nodePort.httpsPort) }}
+    nodePort: {{ .Values.nodePort.httpsPort }}
+    {{- end }}
   {{- if or .Values.metrics.prometheus.enabled .Values.metrics.datadog.enabled .Values.metrics.statsd.enabled }}
   - port: 8080
     name: metrics
+    {{- if and (eq .Values.serviceType "NodePort") (.Values.nodePort.metricsPort) }}
+    nodePort: {{ .Values.nodePort.metricsPort }}
+    {{- end }}
   {{- end }}
