@@ -79,6 +79,20 @@ datadog:
   #   - name:
   #     value:
 
+  ## The dd-agent supports detailed process and container monitoring and
+  ## requires control over the volume and volumeMounts for the daemonset
+  ## or deployment.
+  ## ref: https://docs.datadoghq.com/guides/process/
+  ##
+  # volume:
+  #  - hostPath:
+  #      path: /etc/passwd
+  #    name: passwd
+  # volumeMount:
+  #   - name: passwd
+  #     mountPath: /etc/passwd
+  #     readOnly: true
+
   ## Provide additonal service definitions
   ## Each key will become a file in /conf.d/auto_conf
   ## ref: https://github.com/DataDog/docker-dd-agent#configuration-files
