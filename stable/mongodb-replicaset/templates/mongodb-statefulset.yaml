@@ -2,18 +2,18 @@ apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
   labels:
-    app: {{ template "name" . }}
+    app: {{ template "mongodb-replicaset.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-  name: {{ template "fullname" . }}
+  name: {{ template "mongodb-replicaset.fullname" . }}
 spec:
-  serviceName: {{ template "fullname" . }}
+  serviceName: {{ template "mongodb-replicaset.fullname" . }}
   replicas: {{ .Values.replicas }}
   template:
     metadata:
       labels:
-        app: {{ template "name" . }}
+        app: {{ template "mongodb-replicaset.name" . }}
         release: {{ .Release.Name }}
       annotations:
       {{- if .Values.podAnnotations }}
@@ -37,7 +37,7 @@ spec:
             - /work-dir/peer-finder
           args:
             - -on-start=/work-dir/on-start.sh
-            - "-service={{ template "fullname" . }}"
+            - "-service={{ template "mongodb-replicaset.fullname" . }}"
           imagePullPolicy: "{{ .Values.image.pullPolicy }}"
           env:
             - name: POD_NAMESPACE
@@ -53,12 +53,12 @@ spec:
             - name: ADMIN_USER
               valueFrom:
                 secretKeyRef:
-                  name: "{{ template "adminSecret" . }}"
+                  name: "{{ template "mongodb-replicaset.adminSecret" . }}"
                   key: user
             - name: ADMIN_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: "{{ template "adminSecret" . }}"
+                  name: "{{ template "mongodb-replicaset.adminSecret" . }}"
                   key: password
           {{- end }}
           volumeMounts:
@@ -74,7 +74,7 @@ spec:
               readOnly: true
           {{- end }}
       containers:
-        - name: {{ template "name" . }}
+        - name: {{ template "mongodb-replicaset.name" . }}
           image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
           imagePullPolicy: "{{ .Values.image.pullPolicy }}"
           ports:
@@ -92,12 +92,12 @@ spec:
             - name: ADMIN_USER
               valueFrom:
                 secretKeyRef:
-                  name: "{{ template "adminSecret" . }}"
+                  name: "{{ template "mongodb-replicaset.adminSecret" . }}"
                   key: user
             - name: ADMIN_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: "{{ template "adminSecret" . }}"
+                  name: "{{ template "mongodb-replicaset.adminSecret" . }}"
                   key: password
           {{- end }}
           livenessProbe:
@@ -135,7 +135,7 @@ spec:
             - topologyKey: "kubernetes.io/hostname"
               labelSelector:
                 matchLabels:
-                  app: "{{ template "name" . }}"
+                  app: "{{ template "mongodb-replicaset.name" . }}"
                   release: "{{ .Release.Name }}"
       {{- else if eq .Values.podAntiAffinity "soft" }}
       affinity:
@@ -146,18 +146,18 @@ spec:
                 topologyKey: kubernetes.io/hostname
                 labelSelector:
                   matchLabels:
-                    app: "{{ template "name" . }}"
+                    app: "{{ template "mongodb-replicaset.name" . }}"
                     release: "{{ .Release.Name }}"
       {{- end }}
       volumes:
         - name: config
           configMap:
-            name: {{ template "fullname" . }}
+            name: {{ template "mongodb-replicaset.fullname" . }}
         {{- if .Values.auth.enabled }}
         - name: keydir
           secret:
             defaultMode: 0400
-            secretName: {{ template "keySecret" . }}
+            secretName: {{ template "mongodb-replicaset.keySecret" . }}
         {{- end }}
         - name: workdir
           emptyDir: {}
