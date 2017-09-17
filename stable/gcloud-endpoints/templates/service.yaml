@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "gcloud-endpoints.fullname" . }}
 spec:
   ports:
 {{- if (.Values.httpPort) }}
@@ -28,6 +28,6 @@ spec:
     name: https
 {{- end }}
   selector:
-    app: {{ template "fullname" . }}
+    app: {{ template "gcloud-endpoints.fullname" . }}
   type: {{ .Values.serviceType }}
 
