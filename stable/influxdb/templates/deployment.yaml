@@ -1,9 +1,9 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "influxdb.fullname" . }}
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "influxdb.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -12,10 +12,10 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "fullname" . }}
+        app: {{ template "influxdb.fullname" . }}
     spec:
       containers:
-      - name: {{ template "fullname" . }}
+      - name: {{ template "influxdb.fullname" . }}
         image: "{{ .Values.image.repo }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         resources:
@@ -68,11 +68,11 @@ spec:
           claimName: {{ .Values.persistence.name }}
         {{- else }}
         persistentVolumeClaim:
-          claimName: {{ template "fullname" . }}
+          claimName: {{ template "influxdb.fullname" . }}
         {{- end }}
       {{- else }}
         emptyDir: {}
       {{- end }}
       - name: config
         configMap:
-          name: {{ template "fullname" . }}
+          name: {{ template "influxdb.fullname" . }}
