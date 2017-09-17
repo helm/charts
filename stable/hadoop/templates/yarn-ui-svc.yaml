@@ -1,20 +1,18 @@
-# A headless service to create DNS records
+# Service to access the yarn web ui
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Release.Name }}-yarn-rm
+  name: {{ template "hadoop.fullname" . }}-yarn-ui
   labels:
-    app: {{ template "name" . }}
+    app: {{ template "hadoop.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
-    component: yarn-rm
+    component: yarn-ui
 spec:
   ports:
   - port: 8088
     name: web
-  clusterIP: None
   selector:
-    app: {{ template "name" . }}
-    release: {{ .Release.Name }}
+    app: {{ template "hadoop.name" . }}
     component: yarn-rm

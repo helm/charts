@@ -1,22 +1,22 @@
 apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
-  name: {{ .Release.Name }}-hdfs-dn
+  name: {{ template "hadoop.fullname" . }}-hdfs-dn
   annotations:
-    checksum/config: {{ include (print $.Template.BasePath "/configmaps/hadoop-config.yaml") . | sha256sum }}
+    checksum/config: {{ include (print $.Template.BasePath "/hadoop-configmap.yaml") . | sha256sum }}
   labels:
-    app: {{ template "name" . }}
+    app: {{ template "hadoop.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
     component: hdfs-dn
 spec:
-  serviceName: {{ .Release.Name }}-hdfs-dn
+  serviceName: {{ template "hadoop.fullname" . }}-hdfs-dn
   replicas: {{ .Values.hdfs.dataNode.replicas }}
   template:
     metadata:
       labels:
-        app: {{ template "name" . }}
+        app: {{ template "hadoop.name" . }}
         release: {{ .Release.Name }}
         component: hdfs-dn
     spec:
@@ -27,7 +27,7 @@ spec:
           - topologyKey: "kubernetes.io/hostname"
             labelSelector:
               matchLabels:
-                app:  {{ template "name" . }}
+                app:  {{ template "hadoop.name" . }}
                 release: {{ .Release.Name | quote }}
                 component: hdfs-dn
         {{- else if eq .Values.antiAffinity "soft" }}
@@ -37,7 +37,7 @@ spec:
               topologyKey: "kubernetes.io/hostname"
               labelSelector:
                 matchLabels:
-                  app:  {{ template "name" . }}
+                  app:  {{ template "hadoop.name" . }}
                   release: {{ .Release.Name | quote }}
                   component: hdfs-dn
         {{- end }}
@@ -65,32 +65,18 @@ spec:
           initialDelaySeconds: 10
           timeoutSeconds: 2
         volumeMounts:
-          - name: hadoop-config
-            mountPath: /tmp/hadoop-config
-          - name: dfs
-            mountPath: /root/hdfs/datanode
-      volumes:
         - name: hadoop-config
-          configMap:
-            name: {{ .Release.Name }}-config
-{{- if not .Values.hdfs.dataNode.persistentVolume.enabled }}
+          mountPath: /tmp/hadoop-config
         - name: dfs
-          emptyDir: {}
-{{- else }}        
-  volumeClaimTemplates:
-    - metadata:
-        name: dfs
-        labels:
-          app: {{ template "name" . }}
-          release: {{ .Release.Name }}
-          component: hdfs-dn
-      spec:
-        {{- if .Values.hdfs.dataNode.persistentVolume.storageClassName }}
-        storageClassName: {{ .Values.hdfs.dataNode.persistentVolume.storageClassName }}
-        {{- end }}
-        accessModes:
-          - {{ .Values.hdfs.dataNode.persistentVolume.accessMode | quote }}
-        resources:
-          requests:
-            storage: {{ .Values.hdfs.dataNode.persistentVolume.size | quote }}
-{{- end -}}
+          mountPath: /root/hdfs/datanode
+      volumes:
+      - name: hadoop-config
+        configMap:
+          name: {{ template "hadoop.fullname" . }}
+      - name: dfs
+      {{- if .Values.persistence.dataNode.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ template "hadoop.fullname" . }}-hdfs-dn
+      {{- else }}        
+        emptyDir: {}
+      {{- end }}

@@ -1,17 +1,17 @@
 apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
-  name: {{ .Release.Name }}-yarn-nm
+  name: {{ template "hadoop.fullname" . }}-yarn-nm
   annotations:
-    checksum/config: {{ include (print $.Template.BasePath "/configmaps/hadoop-config.yaml") . | sha256sum }}
+    checksum/config: {{ include (print $.Template.BasePath "/hadoop-configmap.yaml") . | sha256sum }}
   labels:
-    app: {{ template "name" . }}
+    app: {{ template "hadoop.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
     component: yarn-nm
 spec:
-  serviceName: {{ .Release.Name }}-yarn-nm
+  serviceName: {{ template "hadoop.fullname" . }}-yarn-nm
   replicas: {{ .Values.yarn.nodeManager.replicas }}
 {{- if .Values.yarn.nodeManager.parallelCreate }}
   podManagementPolicy: Parallel
@@ -19,7 +19,7 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "name" . }}
+        app: {{ template "hadoop.name" . }}
         release: {{ .Release.Name }}
         component: yarn-nm
     spec:
@@ -30,7 +30,7 @@ spec:
           - topologyKey: "kubernetes.io/hostname"
             labelSelector:
               matchLabels:
-                app:  {{ template "name" . }}
+                app:  {{ template "hadoop.name" . }}
                 release: {{ .Release.Name | quote }}
                 component: yarn-nm
         {{- else if eq .Values.antiAffinity "soft" }}
@@ -40,7 +40,7 @@ spec:
               topologyKey: "kubernetes.io/hostname"
               labelSelector:
                 matchLabels:
-                  app:  {{ template "name" . }}
+                  app:  {{ template "hadoop.name" . }}
                   release: {{ .Release.Name | quote }}
                   component: yarn-nm
         {{- end }}
@@ -71,22 +71,22 @@ spec:
           initialDelaySeconds: 10
           timeoutSeconds: 2
         env:
-          - name: MY_CPU_LIMIT
-            valueFrom:
-              resourceFieldRef:
-                containerName: yarn-nm
-                resource: limits.cpu
-                divisor: 1
-          - name: MY_MEM_LIMIT
-            valueFrom:
-              resourceFieldRef:
-                containerName: yarn-nm
-                resource: limits.memory
-                divisor: 1M
+        - name: MY_CPU_LIMIT
+          valueFrom:
+            resourceFieldRef:
+              containerName: yarn-nm
+              resource: limits.cpu
+              divisor: 1
+        - name: MY_MEM_LIMIT
+          valueFrom:
+            resourceFieldRef:
+              containerName: yarn-nm
+              resource: limits.memory
+              divisor: 1M
         volumeMounts:
-          - name: hadoop-config
-            mountPath: /tmp/hadoop-config
-      volumes:
         - name: hadoop-config
-          configMap:
-            name: {{ .Release.Name }}-config
+          mountPath: /tmp/hadoop-config
+      volumes:
+      - name: hadoop-config
+        configMap:
+          name: {{ template "hadoop.fullname" . }}

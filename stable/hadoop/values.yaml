@@ -21,12 +21,6 @@ hdfs:
         memory: "2048Mi"
         cpu: "1000m"
 
-    persistentVolume:
-      enabled: false
-      storageClassName: standard
-      accessMode: ReadWriteOnce 
-      size: 50Gi
-
   dataNode:
     replicas: 1
 
@@ -39,12 +33,6 @@ hdfs:
       limits:
         memory: "2048Mi"
         cpu: "1000m"
-
-    persistentVolume:
-      enabled: false
-      storageClassName: standard
-      accessMode: ReadWriteOnce 
-      size: 100Gi
 
 yarn:
   resourceManager:
@@ -76,3 +64,16 @@ yarn:
       limits:
         memory: "2048Mi"
         cpu: "1000m"
+
+persistence:
+  nameNode:
+    enabled: false
+    storageClass: "-"
+    accessMode: ReadWriteOnce 
+    size: 50Gi
+
+  dataNode:
+    enabled: false
+    storageClass: "-"
+    accessMode: ReadWriteOnce 
+    size: 200Gi
