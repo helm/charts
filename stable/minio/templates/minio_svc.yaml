@@ -1,9 +1,9 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: {{ template "fullname" . }}-svc
+  name: {{ template "minio.fullname" . }}-svc
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "minio.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -13,7 +13,7 @@ spec:
   loadBalancerIP: {{ default "" .Values.minioLoadBalancerIP }}
   {{- end }}
   selector:
-    app: {{ template "fullname" . }}
+    app: {{ template "minio.fullname" . }}
   ports:
     - name: service
       port: 9000
