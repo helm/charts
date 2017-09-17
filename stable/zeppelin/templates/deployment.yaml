@@ -3,10 +3,10 @@ kind: Deployment
 metadata:
   name: {{ .Release.Name }}-zeppelin
   labels:
-    app: {{ template "fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    app: {{ template "zeppelin.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 spec:
   strategy:
     rollingUpdate:
@@ -15,10 +15,8 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "fullname" . }}
-        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-        release: "{{ .Release.Name }}"
-        heritage: "{{ .Release.Service }}"
+        app: {{ template "zeppelin.name" . }}
+        release: {{ .Release.Name }}
     spec:
       terminationGracePeriodSeconds: 0
       containers:

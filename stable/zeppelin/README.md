@@ -33,5 +33,7 @@ The [Hadoop](https://github.com/kubernetes/charts/tree/master/stable/hadoop) cha
 
 ```
 helm install -n hadoop stable/hadoop
-helm install --set hadoop.useConfigMap=true stable/zeppelin
+helm install --set hadoop.useConfigMap=true,hadoop.configMapName=hadoop-hadoop stable/zeppelin
 ```
+
+> Note that you may also want to set the `spark.numExecutors` value to match the number of yarn NodeManager replicas and the `executorMemory` value to half of the NodeManager memory limit.

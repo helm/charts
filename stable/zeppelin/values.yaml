@@ -7,7 +7,7 @@ zeppelin:
 
 hadoop:
   useConfigMap: false
-  configMapName: hadoop-config
+  configMapName: hadoop-hadoop
   configPath: /usr/hadoop-2.7.3/etc/hadoop
 
 spark:
