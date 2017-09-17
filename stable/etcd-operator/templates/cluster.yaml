@@ -15,4 +15,10 @@ spec:
   backup:
 {{ toYaml .Values.cluster.backup.config | indent 4 }}
   {{- end -}}
+  {{- if .Values.cluster.restore.enabled }}
+  restore:
+{{ toYaml .Values.cluster.restore.config | indent 4 }}
+  {{- end }}
+  pod:
+{{ toYaml .Values.cluster.pod | indent 4 }}
 {{- end -}}

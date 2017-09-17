@@ -3,7 +3,7 @@
 
   * Within your cluster, at the following DNS name at port {{ .Values.concourse.atcPort }}:
 
-    {{ template "web.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
+    {{ template "concourse.web.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
 
   {{- if .Values.web.ingress.enabled }}
 
@@ -16,19 +16,19 @@
   * From outside the cluster, run these commands in the same shell:
     {{- if contains "NodePort" .Values.web.service.type }}
 
-    export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "web.fullname" . }})
+    export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "concourse.web.fullname" . }})
     export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
     echo http://$NODE_IP:$NODE_PORT
     {{- else if contains "LoadBalancer" .Values.web.service.type }}
 
      NOTE: It may take a few minutes for the LoadBalancer IP to be available.
-           You can watch the status of by running 'kubectl get svc -w {{ template "web.fullname" . }}'
+           You can watch the status of by running 'kubectl get svc -w {{ template "concourse.web.fullname" . }}'
 
-    export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "web.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+    export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "concourse.web.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
     echo http://$SERVICE_IP:{{ .Values.concourse.atcPort }}
     {{- else if contains "ClusterIP"  .Values.web.service.type }}
 
-    export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "web.fullname" . }}" -o jsonpath="{.items[0].metadata.name}")
+    export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "concourse.web.fullname" . }}" -o jsonpath="{.items[0].metadata.name}")
     echo "Visit http://127.0.0.1:8080 to use Concourse"
     kubectl port-forward --namespace {{ .Release.Namespace }} $POD_NAME 8080:{{ .Values.concourse.atcPort }}
     {{- end }}
@@ -40,3 +40,7 @@
   Password: {{ .Values.concourse.password }}
 
 3. If this is your first time using Concourse, follow the tutorial at https://concourse.ci/hello-world.html
+{{- if contains "naive" .Values.concourse.baggageclaimDriver }}
+
+4. ***WARNING*** You are using the "naive" baggage claim driver, which is also the default value for this chart. This is the default for compatability reasons, but is very space inefficient, and should be changed to either "btrfs" or "overlay" depending on that filesystem's support in the Linux kernel your cluster is using. Please see https://github.com/concourse/concourse/issues/1230 for background.
+{{- end }}

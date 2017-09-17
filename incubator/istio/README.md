@@ -18,7 +18,15 @@ This chart bootstraps a [Istio](https://istio.io/) deployment on a [Kubernetes](
 ## Prerequisites
 
 - Kubernetes 1.5+
-- istioctl - See installation steps [here](https://istio.io/docs/tasks/installing-istio.html#installation-steps)
+- istioctl
+
+### istioctl installation steps
+
+Run
+```console
+curl -L https://git.io/getIstio | sh -
+```
+to download and extract the latest release automatically (on MacOS and Ubuntu), the `istioctl` client will be added to your PATH by the above shell command.
 
 ## RBAC
 By default the chart is installed without associated RBAC roles and rolebindings. If you would like to install the provided roles and rolebindings please do the following:
@@ -98,7 +106,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 
 ```console
 $ helm install stable/istio --name my-release \
-    --set auth.enabled=flase
+    --set auth.enabled=false
 ```
 
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,

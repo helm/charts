@@ -20,6 +20,15 @@ metadata:
   {{- end }}
 spec:
   type: {{ .Values.serviceType }}
+  {{- if .Values.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.loadBalancerIP }}
+  {{- end }}
+  {{- if .Values.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+    {{- range $cidr := .Values.loadBalancerSourceRanges }}
+    - {{ $cidr }}
+    {{- end }}
+  {{- end }}
   selector:
     app: {{ template "fullname" . }}
   ports:
@@ -30,3 +39,7 @@ spec:
     {{- if not .Values.ssl.enabled }}
     targetPort: 80
     {{- end }}
+  {{- if or .Values.metrics.prometheus.enabled .Values.metrics.datadog.enabled .Values.metrics.statsd.enabled }}
+  - port: 8080
+    name: metrics
+  {{- end }}

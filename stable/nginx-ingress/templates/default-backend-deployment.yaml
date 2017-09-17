@@ -46,5 +46,9 @@ spec:
       nodeSelector:
 {{ toYaml .Values.defaultBackend.nodeSelector | indent 8 }}
     {{- end }}
+    {{- if .Values.defaultBackend.tolerations }}
+      tolerations:
+{{ toYaml .Values.defaultBackend.tolerations | indent 8 }}
+    {{- end }}
       terminationGracePeriodSeconds: 60
 {{- end }}

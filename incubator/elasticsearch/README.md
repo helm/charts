@@ -3,11 +3,11 @@
 This image is using Fabric8's great [kubernetes discovery
 plugin](https://github.com/fabric8io/elasticsearch-cloud-kubernetes) for
 elasticsearch and their
-[image](https://hub.docker.com/r/fabric8/elasticsearch-k8s/) as parent.
+[image](https://hub.docker.com/r/jetstack/elasticsearch-pet/) as parent.
 
 ## Prerequisites Details
 
-* Kubernetes 1.5
+* Kubernetes 1.6+
 * PV dynamic provisioning support on the underlying infrastructure
 
 ## StatefulSets Details
@@ -40,11 +40,16 @@ $ helm install --name my-release incubator/elasticsearch
 
 ## Deleting the Charts
 
-Deletion of the PetSet doesn't cascade to deleting associated Pods and PVCs. To delete them:
+Delete the Helm deployment as normal
 
 ```
-$ kubectl delete pods -l release=my-release,type=data
-$ kubectl delete pvcs -l release=my-release,type=data
+$ helm delete my-release
+```
+
+Deletion of the StatefulSet doesn't cascade to deleting associated PVCs. To delete them:
+
+```
+$ kubectl delete pvc -l release=my-release,component=data
 ```
 
 ## Configuration
@@ -56,6 +61,8 @@ The following tables lists the configurable parameters of the elasticsearch char
 | `image.repository`                   | Container image name                    | `jetstack/elasticsearch-pet`        |
 | `image.tag`                          | Container image tag                     | `2.4.0`                             |
 | `image.pullPolicy`                   | Container pull policy                   | `Always`                            |
+| `cluster.name`                       | Cluster name          			         | `elasticsearch`                     |
+| `cluster.config`                     | Additional cluster config appended      | `{}`                                |
 | `client.name`                        | Client component name                   | `client`                            |
 | `client.replicas`                    | Client node replicas (deployment)       | `2`                                 |
 | `client.resources`                   | Client node resources requests & limits | `{} - cpu limit must be an integer` |
@@ -72,6 +79,7 @@ The following tables lists the configurable parameters of the elasticsearch char
 | `data.storage`                       | Data persistent volume size             | `30Gi`                              |
 | `data.storageClass`                  | Data persistent volume Class            | `nil`                               |
 | `data.terminationGracePeriodSeconds` | Data termination grace period (seconds) | `3600`                              |
+| `data.antiAffinity`                  | Data anti-affinity policy               | `soft`                              |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
@@ -79,13 +87,15 @@ In terms of Memory resources you should make sure that you follow that equation:
 
 - `${role}HeapSize < ${role}MemoryRequests < ${role}MemoryLimits`
 
+The YAML value of cluster.config is appended to elasticsearch.yml file for additional customization ("script.inline: on" for example to allow inline scripting)
+
 # Deep dive
 
 ## Mlocking
 
 This is a limitation in kubernetes right now. There is no way to raise the
 limits of lockable memory, so that these memory areas won't be swapped. This
-would degrade performance heaviliy. The issue is tracked in
+would degrade performance heavily. The issue is tracked in
 [kubernetes/#3595](https://github.com/kubernetes/kubernetes/issues/3595).
 
 ```

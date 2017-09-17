@@ -1,4 +1,5 @@
 {{- if .Values.sysdig.AccessKey }}
+---
 apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
@@ -38,6 +39,9 @@ spec:
       hostPID: true
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
+      {{- if .Values.rbac.install }}
+      serviceAccountName: {{ .Values.sysdig.serviceAccountName }}
+      {{- end }}
       containers:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -76,4 +80,4 @@ spec:
         - mountPath: /host/usr
           name: usr-vol
           readOnly: true
-{{ end }}
+{{- end }}

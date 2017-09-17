@@ -4,15 +4,12 @@ server:
   # annotations:
   #   iam.amazonaws.com/role: grafana
 
-  ## Grafana service port
-  ##
-  httpPort: 80
-
   ## Grafana Docker image
   ##
   image: "grafana/grafana:latest"
 
   nodeSelector: {}
+  tolerations: []
 
   ingress:
     ## If true, Grafana Ingress will be created
@@ -80,16 +77,14 @@ server:
     ##
     size: 1Gi
 
-    ## Data Persistent Volume Storage Class
-    ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
-    ## Default: volume.alpha.kubernetes.io/storage-class: default
+    ## grafana data Persistent Volume Storage Class
+    ## If defined, storageClassName: <storageClass>
+    ## If set to "-", storageClassName: "", which disables dynamic provisioning
+    ## If undefined (the default) or set to null, no storageClassName spec is
+    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+    ##   GKE, AWS & OpenStack)
     ##
-    # storageClass:
-
-    ## Data Persistent Volume existing claim name
-    ## Requires server.persistentVolume.enabled: true
-    ## If defined, PVC must be created manually before volume will be bound
-    existingClaim: ""
+    # storageClass: "-"
 
     ## Subdirectory of data Persistent Volume to mount
     ## Useful if the volume's root directory is not empty
@@ -107,31 +102,41 @@ server:
       cpu: 100m
       memory: 100Mi
 
-  ## Grafana service type
-  ##
-  serviceType: ClusterIP
+  ## Grafana service
+  service:
+    ## Grafana service annotations
+    ##
+    annotations: {}
 
-  ## Load balancer IP address
-  ## Is not required, but allows for static address with
-  ## serviceType LoadBalancer.
-  ## If not supported by cloud provider, this field is ignored.
-  ## Default: nil
-  ##
-  # loadBalancerIP: 130.211.x.x
+    ## Grafana service type
+    ##
+    type: ClusterIP
 
-  ## This will restrict traffic through the cloud-provider load-balancer
-  ## to the specified client IPs.
-  ## If not supported by cloud provider, this field is ignored.
-  ## Default: nil
-  ##
-  # loadBalancerSourceRanges:
-  #   - 0.0.0.0/0
+    ## Grafana service port
+    ##
+    httpPort: 80
 
-  ## nodePort port number
-  ## Is not required, but allows for static port assignment with
-  ## serviceType NodePort.
-  ## Default: nil
-  # nodePort: 30000
+    ## Load balancer IP address
+    ## Is not required, but allows for static address with
+    ## serviceType LoadBalancer.
+    ## If not supported by cloud provider, this field is ignored.
+    ## Default: nil
+    ##
+    # loadBalancerIP: 130.211.x.x
+
+    ## This will restrict traffic through the cloud-provider load-balancer
+    ## to the specified client IPs.
+    ## If not supported by cloud provider, this field is ignored.
+    ## Default: nil
+    ##
+    # loadBalancerSourceRanges:
+    #   - 0.0.0.0/0
+
+    ## nodePort port number
+    ## Is not required, but allows for static port assignment with
+    ## serviceType NodePort.
+    ## Default: nil
+    # nodePort: 30000
 
   ## Grafana local config path
   ## Default '/etc/grafana'

@@ -18,8 +18,13 @@ Replicas: 3
 Image: "consul"
 ImageTag: "0.8.3"
 ImagePullPolicy: "Always"
-Cpu: "100m"
-Memory: "256Mi"
+Resources: {}
+ # requests:
+ #   cpu: "100m"
+ #   memory: "256Mi"
+ # limits:
+ #   cpu: "500m"
+ #   memory: "512Mi"
 ## Persistent volume size
 Storage: "1Gi"
 
@@ -31,6 +36,9 @@ DisableHostNodeId: false
 ## Datacenter name for consul. If not supplied, will use the consul
 ## default 'dc1'
 # DatacenterName: dc1
+
+## Encrypt Gossip traffic
+EncryptGossip: true
 
 ## StorageClass name for use with Persistent Volume Claim (PVC) using beta notations
 # StorageClass:

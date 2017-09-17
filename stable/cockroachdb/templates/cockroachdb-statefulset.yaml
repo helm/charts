@@ -89,65 +89,47 @@ spec:
         release: {{ .Release.Name | quote }}
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         component: "{{ .Release.Name }}-{{ .Values.Component }}"
-      annotations:
-        scheduler.alpha.kubernetes.io/affinity: >
-            {
-              "podAntiAffinity": {
-                "preferredDuringSchedulingIgnoredDuringExecution": [{
-                  "weight": 100,
-                  "labelSelector": {
-                    "matchExpressions": [{
-                      "key": "component",
-                      "operator": "In",
-                      "values": ["{{ .Release.Name }}-{{ .Values.Component }}"]
-                    }]
-                  },
-                  "topologyKey": "kubernetes.io/hostname"
-                }]
-              }
-            }
-        # Init containers are run only once in the lifetime of a pod, before
-        # it's started up for the first time. It has to exit successfully
-        # before the pod's main containers are allowed to start.
-        # This particular init container does a DNS lookup for other pods in
-        # the set to help determine whether or not a cluster already exists.
-        # If any other pods exist, it creates a file in the cockroach-data
-        # directory to pass that information along to the primary container that
-        # has to decide what command-line flags to use when starting CockroachDB.
-        # This only matters when a pod's persistent volume is empty - if it has
-        # data from a previous execution, that data will always be used.
-        # The cockroachdb/cockroach-k8s-init image is defined at
-        # github.com/cockroachdb/cockroach/blob/master/cloud/kubernetes/init
-        pod.alpha.kubernetes.io/init-containers: '[
-            {
-                "name": "bootstrap",
-                "image": "{{ .Values.BootstrapImage }}:{{ .Values.BootstrapImageTag }}",
-                "imagePullPolicy": "{{ .Values.ImagePullPolicy }}",
-                "args": [
-                  "-on-start=/on-start.sh",
-                  "-service={{ printf "%s-%s" .Release.Name .Values.Name | trunc 56 }}",
-                  "-domain={{ .Values.ClusterDomain }}"
-                ],
-                "env": [
-                  {
-                      "name": "POD_NAMESPACE",
-                      "valueFrom": {
-                          "fieldRef": {
-                              "apiVersion": "v1",
-                              "fieldPath": "metadata.namespace"
-                          }
-                      }
-                   }
-                ],
-                "volumeMounts": [
-                    {
-                        "name": "datadir",
-                        "mountPath": "/cockroach/cockroach-data"
-                    }
-                ]
-            }
-        ]'
     spec:
+      # Init containers are run only once in the lifetime of a pod, before
+      # it's started up for the first time. It has to exit successfully
+      # before the pod's main containers are allowed to start.
+      # This particular init container does a DNS lookup for other pods in
+      # the set to help determine whether or not a cluster already exists.
+      # If any other pods exist, it creates a file in the cockroach-data
+      # directory to pass that information along to the primary container that
+      # has to decide what command-line flags to use when starting CockroachDB.
+      # This only matters when a pod's persistent volume is empty - if it has
+      # data from a previous execution, that data will always be used.
+      # The cockroachdb/cockroach-k8s-init image is defined at
+      # github.com/cockroachdb/cockroach/blob/master/cloud/kubernetes/init
+      initContainers:
+      - name: bootstrap
+        image: "{{ .Values.BootstrapImage }}:{{ .Values.BootstrapImageTag }}"
+        imagePullPolicy: "{{ .Values.ImagePullPolicy }}"
+        args:
+        - "-on-start=/on-start.sh"
+        - "-service={{ printf "%s-%s" .Release.Name .Values.Name | trunc 56 }}"
+        - "-domain={{ .Values.ClusterDomain }}"
+        env:
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        volumeMounts:
+        - name: datadir
+          mountPath: "/cockroach/cockroach-data"
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - cockroachdb
+              topologyKey: kubernetes.io/hostname
       containers:
       - name: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 56 }}"
         image: "{{ .Values.Image }}:{{ .Values.ImageTag }}"
@@ -188,10 +170,6 @@ spec:
       # No pre-stop hook is required, a SIGTERM plus some time is all that's
       # needed for graceful shutdown of a node.
       terminationGracePeriodSeconds: 60
-      volumes:
-      - name: datadir
-        persistentVolumeClaim:
-          claimName: datadir
   volumeClaimTemplates:
   - metadata:
       name: datadir

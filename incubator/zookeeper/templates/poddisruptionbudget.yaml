@@ -1,0 +1,21 @@
+{{- if .Release.IsInstall -}}
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ template "zookeeper.fullname" . }}
+  labels:
+    app: {{ include "zookeeper.name" . | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ include "zookeeper.name" . | quote }}
+      release: {{ .Release.Name | quote }}
+  {{- if .Values.minAvailable }}
+  minAvailable: {{ .Values.minAvailable }}
+  {{- else }}
+  minAvailable: {{ sub .Values.servers 1 }}
+  {{- end }}
+{{- end -}}

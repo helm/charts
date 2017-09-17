@@ -23,7 +23,7 @@ mixer:
   deployment:
     name: mixer
     image: docker.io/istio/mixer
-    imagePullPolicy: Always
+    imagePullPolicy: IfNotPresent
     replicas: 1
     annotations:
       alpha.istio.io/sidecar: ignore
@@ -53,7 +53,7 @@ pilot:
     discovery:
       name: discovery
       image: docker.io/istio/pilot
-      imagePullPolicy: Always
+      imagePullPolicy: IfNotPresent
       resources:
         limits:
           cpu: 100m
@@ -65,7 +65,7 @@ pilot:
     apiserver:
       name: apiserver
       image: docker.io/istio/pilot
-      imagePullPolicy: Always
+      imagePullPolicy: IfNotPresent
       resources:
         limits:
           cpu: 100m
@@ -87,7 +87,7 @@ ingress:
     annotations:
       alpha.istio.io/sidecar: ignore
     image: docker.io/istio/proxy_debug
-    imagePullPolicy: Always
+    imagePullPolicy: IfNotPresent
     replicas: 1
     resources:
       limits:
@@ -109,7 +109,7 @@ egress:
     annotations:
       alpha.istio.io/sidecar: ignore
     image: docker.io/istio/proxy_debug
-    imagePullPolicy: Always
+    imagePullPolicy: IfNotPresent
     replicas: 1
     resources:
       limits:
@@ -148,7 +148,7 @@ addons:
     enabled: true
 
     service:
-      type: ClusterIP
+      type: NodePort
       externalPort: 9411
     
     deployment:
@@ -172,7 +172,7 @@ addons:
     enabled: true
     
     service:
-      type: ClusterIP
+      type: NodePort
       externalPort: 9090
       annotations:
         prometheus.io/scrape: 'true'
@@ -198,7 +198,7 @@ addons:
     enabled: true
     
     service:
-      type: ClusterIP
+      type: NodePort
       externalPort: 3000
     
     deployment:
@@ -206,7 +206,7 @@ addons:
       annotations:
         alpha.istio.io/sidecar: ignore
       image: docker.io/istio/grafana
-      imagePullPolicy: Always
+      imagePullPolicy: IfNotPresent
       replicas: 1
       resources:
         limits:
@@ -221,7 +221,7 @@ addons:
     enabled: true
     
     service:
-      type: ClusterIP
+      type: NodePort
       externalPort: 8088
     
     deployment:
@@ -230,7 +230,7 @@ addons:
         alpha.istio.io/sidecar: ignore
       image: gcr.io/istio-testing/servicegraph
       imageTag: latest
-      imagePullPolicy: Always
+      imagePullPolicy: IfNotPresent
       replicas: 1
       resources:
         limits:

@@ -17,12 +17,10 @@ spec:
       labels:
         app: {{ template "name" . }}
         release: {{ .Release.Name }}
+      {{- if .Values.podLabels }}
+{{ toYaml .Values.podLabels | indent 8 }}
+      {{- end }}
     spec:
-{{- if .Values.rbac.enabled }}
-      serviceAccountName: {{ template "fullname" . }}
-{{- else }}
-      serviceAccountName: default
-{{- end }}
       containers:
         - name: kube2iam
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -51,13 +49,16 @@ spec:
         {{- if .Values.host.iptables }}
           securityContext:
             privileged: true
-          {{- end }}
+        {{- end }}
       hostNetwork: true
     {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
     {{- end }}
-  {{- if .Values.updateStrategy }}
+      serviceAccountName: {{ if .Values.rbac.create }}{{ template "fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+{{- if and (eq .Capabilities.KubeVersion.Major "1") (gt .Capabilities.KubeVersion.Minor "5") }}
   updateStrategy:
     type: {{ .Values.updateStrategy }}
-  {{- end }}
+{{- end }}

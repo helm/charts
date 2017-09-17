@@ -55,9 +55,12 @@ spec:
     protocol: "UDP"
     port: {{ .Values.SerfwanUdpPort }}
   - name: server
-    port: {{ .Values.ServerPort }}
-  - name: consuldns
-    port: {{ .Values.ConsulDnsPort }}
+    port: {{.Values.ServerPort}}
+  - name: consuldns-tcp
+    port: {{.Values.ConsulDnsPort}}
+  - name: consuldns-udp
+    protocol: "UDP"
+    port: {{.Values.ConsulDnsPort}}
   clusterIP: None
   selector:
     component: "{{ .Release.Name }}-{{ .Values.Component }}"
@@ -109,13 +112,14 @@ spec:
           protocol: "UDP"
           containerPort: {{ .Values.SerfwanUdpPort }}
         - name: server
-          containerPort: {{ .Values.ServerPort }}
-        - name: consuldns
-          containerPort: {{ .Values.ConsulDnsPort }}
+          containerPort: {{.Values.ServerPort}}
+        - name: consuldns-tcp
+          containerPort: {{.Values.ConsulDnsPort}}
+        - name: consuldns-udp
+          protocol: "UDP"
+          containerPort: {{.Values.ConsulDnsPort}}
         resources:
-          requests:
-            cpu: "{{ .Values.Cpu }}"
-            memory: "{{ .Values.Memory }}"
+{{ toYaml .Values.Resources | indent 10 }}
         env:
         - name: INITIAL_CLUSTER_SIZE
           value: {{ default 3 .Values.Replicas | quote }}
@@ -129,6 +133,8 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
+        - name: DNSPORT
+          value: "{{ .Values.ConsulDnsPort }}"
         volumeMounts:
         - name: datadir
           mountPath: /var/lib/consul
@@ -148,10 +154,12 @@ spec:
           - |
             IP=$(hostname -i)
 
+            {{- if .Values.EncryptGossip }}
             if [ -e /etc/consul/secrets/gossip-key ]; then
               echo "{\"encrypt\": \"$(base64 /etc/consul/secrets/gossip-key)\"}" > /etc/consul/encrypt.json
               GOSSIP_KEY="-config-file /etc/consul/encrypt.json"
             fi
+            {{- end }}
 
             for i in $(seq 0 $((${INITIAL_CLUSTER_SIZE} - 1))); do
                 while true; do
@@ -182,8 +190,11 @@ spec:
               -bind=0.0.0.0 \
               -advertise=${IP} \
               ${PEERS} \
+            {{- if .Values.EncryptGossip }}
               ${GOSSIP_KEY} \
-              -client=0.0.0.0
+            {{- end }}
+              -client=0.0.0.0 \
+              -dns-port=${DNSPORT}
       volumes:
       - name: gossip-key
         secret:

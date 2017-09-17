@@ -1,10 +1,10 @@
-{{- $serviceName := include "fullname" . -}}
+{{- $serviceName := include "istio.fullname" . -}}
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: {{ $serviceName }}-{{ .Values.mixer.deployment.name }}
   labels:
-{{ include "labels.standard" . | indent 4 }}
+{{ include "istio.labels.standard" . | indent 4 }}
     component: {{ $serviceName }}-{{ .Values.mixer.deployment.name }}
     istio: {{ $serviceName }}-{{ .Values.mixer.deployment.name }}
 spec:
@@ -16,7 +16,7 @@ spec:
           {{ $key }}: {{ $value | quote }}
         {{- end }}
       labels:
-{{ include "labels.standard" . | indent 8 }}
+{{ include "istio.labels.standard" . | indent 8 }}
         component: {{ $serviceName }}-{{ .Values.mixer.deployment.name }}
         istio: {{ $serviceName }}-{{ .Values.mixer.deployment.name }}
     spec:

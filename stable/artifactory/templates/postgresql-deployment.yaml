@@ -1,9 +1,9 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "database.fullname" . }}
+  name: {{ template "artifactory.database.fullname" . }}
   labels:
-    app: {{ template "name" . }}
+    app: {{ template "artifactory.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     component: "{{ .Values.database.name }}"
     heritage: {{ .Release.Service }}
@@ -13,21 +13,21 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "name" . }}
+        app: {{ template "artifactory.name" . }}
         component: "{{ .Values.database.name }}"
         release: {{ .Release.Name }}
-      annotations:
-        pod.beta.kubernetes.io/init-containers: '[{
-          "name": "remove-lost-found",
-          "image": {{ .Values.initContainerImage | quote }},
-          "command": ["rm", "-rf", "{{ .Values.database.persistence.mountPath }}/lost+found"],
-          "volumeMounts": [{
-              "name": "postgresql-volume",
-              "mountPath": {{ .Values.database.persistence.mountPath | quote }}
-            }],
-          "imagePullPolicy": {{ .Values.database.image.pullPolicy | quote }}
-        }]'
     spec:
+      initContainers:
+      - name: "remove-lost-found"
+        image: "{{ .Values.initContainerImage }}"
+        imagePullPolicy: "{{ .Values.database.image.pullPolicy }}"
+        command:
+        - "rm"
+        - "-rf"
+        - "{{ .Values.database.persistence.mountPath }}/lost+found"
+        volumeMounts:
+        - mountPath: {{ .Values.database.persistence.mountPath | quote }}
+          name: postgresql-volume
       containers:
       - name: {{ .Values.database.name }}
         image: "{{ .Values.database.image.repository }}:{{ .Values.database.image.version }}"
@@ -40,7 +40,7 @@ spec:
         - name: POSTGRES_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "artifactory.fullname" . }}
               key: artifactory-database-password
         ports:
         - containerPort: {{ .Values.database.internalPort }}
@@ -51,7 +51,7 @@ spec:
       - name: postgresql-volume
       {{- if .Values.database.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ template "database.fullname" . }}
+          claimName: {{ template "artifactory.database.fullname" . }}
       {{- else }}
         emptyDir: {}
       {{- end -}}
