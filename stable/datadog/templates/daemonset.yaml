@@ -75,6 +75,9 @@ spec:
           - name: checksd
             mountPath: /checks.d
             readOnly: true
+{{- if .Values.datadog.volumeMounts }}
+{{ toYaml .Values.datadog.volumeMounts | indent 10 }}
+{{- end }}
       volumes:
         - hostPath:
             path: /var/run/docker.sock
@@ -94,6 +97,9 @@ spec:
         - name: autoconf
           configMap:
             name: {{ template "autoconf.fullname" . }}
+{{- if .Values.datadog.volumes }}
+{{ toYaml .Values.datadog.volumes | indent 8 }}
+{{- end }}
       {{- if .Values.daemonset.tolerations }}
       tolerations:
 {{ toYaml .Values.daemonset.tolerations | indent 8 }}
