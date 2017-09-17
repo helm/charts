@@ -59,6 +59,7 @@ spec:
         volumeMounts:
           - name: dockersocket
             mountPath: /var/run/docker.sock
+            readOnly: true
           - name: procdir
             mountPath: /host/proc
             readOnly: true
@@ -97,5 +98,7 @@ spec:
       tolerations:
 {{ toYaml .Values.daemonset.tolerations | indent 8 }}
       {{- end }}
+  updateStrategy:
+    type: {{ default "OnDelete" .Values.daemonset.updateStrategy | quote }}
 {{ end }}
 {{ end }}

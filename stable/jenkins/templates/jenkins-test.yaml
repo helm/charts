@@ -4,20 +4,6 @@ metadata:
   name: "{{ .Release.Name }}-ui-test-{{ randAlphaNum 5 | lower }}"
   annotations:
     "helm.sh/hook": test-success
-    "pod.beta.kubernetes.io/init-containers": '[
-      {
-        "name": "test-framework",
-        "image": "dduportal/bats:0.4.0",
-        "command": ["bash", "-c", "
-          set -ex\n
-          # copy bats to tools dir\n
-          cp -R /usr/local/libexec/ /tools/bats/\n
-        "],
-        "volumeMounts": [
-          {"name": "tools", "mountPath": "/tools"}
-        ]
-      }
-    ]'
 spec:
   {{- if .Values.Master.NodeSelector }}
   nodeSelector:
@@ -27,6 +13,19 @@ spec:
   tolerations:
 {{ toYaml .Values.Master.Tolerations | indent 4 }}
   {{- end }}
+  initContainers:
+    - name: "test-framework"
+      image: "dduportal/bats:0.4.0"
+      command:
+      - "bash"
+      - "-c"
+      - |
+        set -ex
+        # copy bats to tools dir
+        cp -R /usr/local/libexec/ /tools/bats/
+      volumeMounts:
+      - mountPath: /tools
+        name: tools
   containers:
     - name: {{ .Release.Name }}-ui-test
       image: {{ .Values.Master.Image }}:{{ .Values.Master.ImageTag }}

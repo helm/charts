@@ -14,7 +14,7 @@ This chart bootstraps a [Concourse](https://concourse.ci/) deployment on a [Kube
 
 ## Prerequisites Details
 
-* Kubernetes 1.5 (for `StatefulSets` support)
+* Kubernetes 1.6 (for `pod affinity` support)
 * PV support on underlying infrastructure (if persistence is required)
 
 ## Installing the Chart
@@ -84,7 +84,7 @@ The following tables lists the configurable parameters of the Concourse chart an
 | Parameter               | Description                           | Default                                                    |
 | ----------------------- | ----------------------------------    | ---------------------------------------------------------- |
 | `image` | Concourse image | `concourse/concourse` |
-| `imageTag` | Concourse image version | `2.6.0` |
+| `imageTag` | Concourse image version | `3.3.2` |
 | `imagePullPolicy` |Concourse image pull policy |  `Always` if `imageTag` is `latest`, else `IfNotPresent` |
 | `concourse.username` | Concourse Basic Authentication Username | `concourse` |
 | `concourse.password` | Concourse Basic Authentication Password | `concourse` |

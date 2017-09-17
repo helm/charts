@@ -1,5 +1,5 @@
 {{ if .Values.addons.prometheus.enabled }}
-{{- $serviceName := include "fullname" . -}}
+{{- $serviceName := include "istio.fullname" . -}}
 apiVersion: v1
 kind: Service
 metadata:
@@ -7,18 +7,19 @@ metadata:
   # name: {{ $serviceName }}-prometheus
   name: {{ .Values.addons.prometheus.deployment.name }}
   labels:
-{{ include "labels.standard" . | indent 4 }}
+{{ include "istio.labels.standard" . | indent 4 }}
   annotations:
     {{- range $key, $value := .Values.addons.prometheus.service.annotations }}
       {{ $key }}: {{ $value | quote }}
     {{- end }}
 spec:
+  type: {{ .Values.addons.prometheus.service.type }}
   ports:
   - name: {{ .Values.addons.prometheus.deployment.name }}
     protocol: TCP
     port: {{ .Values.addons.prometheus.service.externalPort }}
   selector:
-    app: {{ include "name" . }}
+    app: {{ include "istio.name" . }}
     component: {{ $serviceName }}-{{ .Values.addons.prometheus.deployment.name }}
     release: {{ .Release.Name }}
 {{ end }}

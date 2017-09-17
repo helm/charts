@@ -313,7 +313,7 @@ web:
     ##
     enabled: false
 
-    ## Annotations.
+    ## Annotations to be added to the web ingress.
     ##
     # annotations:
     #   kubernetes.io/ingress.class: nginx
@@ -357,6 +357,11 @@ worker:
       cpu: "100m"
       memory: "512Mi"
 
+  ## Annotations to be added to the worker pods.
+  ##
+  # annotations:
+  #   iam.amazonaws.com/role: arn:aws:iam::123456789012:role/concourse
+
 ## Persistent Volume Storage configuration.
 ## ref: https://kubernetes.io/docs/user-guide/persistent-volumes
 ##
@@ -368,9 +373,14 @@ persistence:
   ## Worker Persistence configuration.
   ##
   worker:
-    ## Persistent Volume Storage Class.
+    ## concourse data Persistent Volume Storage Class
+    ## If defined, storageClassName: <storageClass>
+    ## If set to "-", storageClassName: "", which disables dynamic provisioning
+    ## If undefined (the default) or set to null, no storageClassName spec is
+    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+    ##   GKE, AWS & OpenStack)
     ##
-    # class:
+    # storageClass: "-"
 
     ## Persistent Volume Access Mode.
     ##

@@ -1,9 +1,9 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "nginx.fullname" . }}
+  name: {{ template "artifactory.nginx.fullname" . }}
   labels:
-    app: {{ template "name" . }}
+    app: {{ template "artifactory.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     component: "{{ .Values.nginx.name }}"
     heritage: {{ .Release.Service }}
@@ -13,21 +13,21 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "name" . }}
+        app: {{ template "artifactory.name" . }}
         component: "{{ .Values.nginx.name }}"
         release: {{ .Release.Name }}
-      annotations:
-        pod.beta.kubernetes.io/init-containers: '[{
-          "name": "remove-lost-found",
-          "image": {{ .Values.initContainerImage | quote }},
-          "command": ["rm", "-rf", "{{ .Values.nginx.persistence.mountPath }}/lost+found"],
-          "volumeMounts": [{
-              "name": "nginx-volume",
-              "mountPath": {{ .Values.nginx.persistence.mountPath | quote }}
-            }],
-          "imagePullPolicy": {{ .Values.nginx.image.pullPolicy | quote }}
-        }]'
     spec:
+      initContainers:
+      - name: "remove-lost-found"
+        image: "{{ .Values.initContainerImage }}"
+        imagePullPolicy: {{ .Values.nginx.image.pullPolicy }}
+        command:
+        - "rm"
+        - "-rf"
+        - "{{ .Values.nginx.persistence.mountPath }}/lost+found"
+        volumeMounts:
+        - mountPath: {{ .Values.nginx.persistence.mountPath | quote }}
+          name: nginx-volume
       containers:
       - name: {{ .Values.nginx.name }}
         image: "{{ .Values.nginx.image.repository }}:{{ .Values.nginx.image.version }}"
@@ -47,7 +47,7 @@ spec:
       - name: nginx-volume
       {{- if .Values.nginx.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ template "nginx.fullname" . }}
+          claimName: {{ template "artifactory.nginx.fullname" . }}
       {{- else }}
         emptyDir: {}
       {{- end -}}
