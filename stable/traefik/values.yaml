@@ -63,8 +63,8 @@ service:
   ## Further config for service of type NodePort
   ## Configure ports in allowable range (eg. 30000 - 32767 on minikube)
   ## nodePorts:
-  ##   http: 31000
-  ##   https: 32000
+  ##   http: 30080
+  ##   https: 30443
   nodePorts:
     http: ""
     https: ""
