@@ -1,11 +1,11 @@
 apiVersion: policy/v1beta1
 kind: PodDisruptionBudget
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "memcached.fullname" . }}
 spec:
   selector:
     matchLabels:
-      app: {{ template "fullname" . }}
+      app: {{ template "memcached.fullname" . }}
       chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
       release: "{{ .Release.Name }}"
       heritage: "{{ .Release.Service }}"
