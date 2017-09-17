@@ -3,12 +3,12 @@ kind: DaemonSet
 metadata:
   name: fluent-bit
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "fluent-bit.fullname" . }}
 spec:
   template:
     metadata:
       labels:
-        app: {{ template "fullname" . }}
+        app: {{ template "fluent-bit.fullname" . }}
     spec:
       containers:
       - name: fluent-bit
@@ -50,7 +50,7 @@ spec:
           path: /var/lib/docker/containers
       - name: config
         configMap:
-          name: {{ template "fullname" . }}-config
+          name: {{ template "fluent-bit.fullname" . }}-config
 {{ if .Values.on_minikube }}
       - name: mnt
         hostPath:
