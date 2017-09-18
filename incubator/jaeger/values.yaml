@@ -14,55 +14,69 @@ cassandra:
     rack_name: rack1
     endpoint_snitch: GossipingPropertyFileSnitch
 
-job:
-  schema:
-    annotations: {}
-    image: jaegertracing/jaeger-cassandra-schema
-    tag: 0.6
-    pullPolicy: IfNotPresent
-    mode: prod
-
-daemonset:
-  agent:
-    annotations: {}
-    image: jaegertracing/jaeger-agent
-    tag: 0.6
-    pullPolicy: IfNotPresent
-    cmdlineParams: {}
-
-deployment:
-  collector:
-    annotations: {}
-    image: jaegertracing/jaeger-collector
-    tag: 0.6
-    pullPolicy: IfNotPresent
-    dnsPolicy: ClusterFirst
-    cmdlineParams: {}
-  query:
-    annotations: {}
-    image: jaegertracing/jaeger-query
-    tag: 0.6
-    pullPolicy: IfNotPresent
-    dnsPolicy: ClusterFirst
-    cmdlineParams: {}
-
-service:
-  collector:
-    annotations: {}
-    type: ClusterIP
-    tchannelPort: 14267
-    httpPort: 14268
-    zipkinPort: 9411
-  query:
-    annotations: {}
-    type: NodePort
-    queryPort: 80
-    targetPort: 16686
-  agent:
-    annotations: {}
-    zipkinThriftPort: 5775
-    compactPort: 6831
-    binaryPort: 6832
+schema:
+  annotationsPod: {}
+  image: jaegertracing/jaeger-cassandra-schema
+  tag: 0.6
+  pullPolicy: IfNotPresent
+  mode: prod
+agent:
+  annotationsPod: {}
+  image: jaegertracing/jaeger-agent
+  tag: 0.6
+  pullPolicy: IfNotPresent
+  cmdlineParams: {}
+  annotationsSvc: {}
+  zipkinThriftPort: 5775
+  compactPort: 6831
+  binaryPort: 6832
+  resources:
+    # limits:
+    #   cpu: 500m
+    #   memory: 512Mi
+    requests:
+      cpu: 256m
+      memory: 128Mi
+  nodeSelector: {}
+collector:
+  annotationsPod: {}
+  image: jaegertracing/jaeger-collector
+  tag: 0.6
+  pullPolicy: IfNotPresent
+  dnsPolicy: ClusterFirst
+  cmdlineParams: {}
+  annotationsSvc: {}
+  type: ClusterIP
+  tchannelPort: 14267
+  httpPort: 14268
+  zipkinPort: 9411
+  resources:
+    # limits:
+    #   cpu: 500m
+    #   memory: 512Mi
+    requests:
+      cpu: 1024m
+      memory: 1024Mi
+  nodeSelector: {}
+query:
+  annotationsPod: {}
+  image: jaegertracing/jaeger-query
+  tag: 0.6
+  pullPolicy: IfNotPresent
+  dnsPolicy: ClusterFirst
+  cmdlineParams: {}
+  annotationsSvc: {}
+  type: NodePort
+  queryPort: 80
+  targetPort: 16686
+  resources:
+    # limits:
+    #   cpu: 500m
+    #   memory: 512Mi
+    requests:
+      cpu: 256m
+      memory: 128Mi
+  nodeSelector: {}
 
 ingress:
   enabled: false

@@ -1,17 +1,17 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: "{{ template "jaeger.fullname" . }}-collector"
+  name: "jaeger-collector"
   labels:
-    app: "{{ template "jaeger" . }}"
+    app: "{{ template "jaeger.name" . }}"
     jaeger-infra: collector-deployment
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-    component: "{{ template "jaeger.fullname" . }}-collector"
+    component: "jaeger-collector"
     heritage: "{{ .Release.Service }}"
     release: "{{ .Release.Name }}"
-{{- if .Values.deployment.collector.annotations }}
-  annotations:
-{{ toYaml .Values.deployment.collector.annotations | indent 6 }}
+{{- if .Values.collector.annotationsPod }}
+  annotationsPod:
+{{ toYaml .Values.collector.annotationsPod | indent 6 }}
 {{- end }}
 spec:
   replicas: 1
@@ -20,26 +20,33 @@ spec:
   template:
     metadata:
       labels:
+        app: "{{ template "jaeger.name" . }}"
+        component: "jaeger-collector"
+        release: "{{ .Release.Name }}"
         jaeger-infra: collector-pod
     spec:
+      nodeSelector:
+{{ toYaml .Values.collector.nodeSelector | indent 8 }}
       containers:
-      - name: "{{ template "jaeger.fullname" . }}-collector"
-        image: "{{ .Values.deployment.collector.image }}:{{ .Values.deployment.collector.tag }}"
-        imagePullPolicy: {{ .Values.deployment.collector.pullPolicy }}
+      - name: "jaeger-collector"
+        image: "{{ .Values.collector.image }}:{{ .Values.collector.tag }}"
+        imagePullPolicy: {{ .Values.collector.pullPolicy }}
         ports:
-        - containerPort: {{ .Values.service.collector.tchannelPort }}
+        - containerPort: {{ .Values.collector.tchannelPort }}
           protocol: TCP
-        - containerPort: {{ .Values.service.collector.httpPort }}
+        - containerPort: {{ .Values.collector.httpPort }}
           protocol: TCP
-        - containerPort: {{ .Values.service.collector.zipkinPort }}
+        - containerPort: {{ .Values.collector.zipkinPort }}
           protocol: TCP
+        resources:
+{{ toYaml .Values.collector.resources | indent 10 }}
         command:
         - "/go/bin/collector-linux"
         - "--cassandra.servers={{ template "cassandra.fullname" . }}"
         - "--cassandra.keyspace=jaeger_v1_{{ .Values.cassandra.config.dc_name }}"
-        - "--collector.zipkin.http-port={{ .Values.service.collector.zipkinPort }}"
-{{- range $key, $value := .Values.deployment.collector.cmdlineParams }}
+        - "--collector.zipkin.http-port={{ .Values.collector.zipkinPort }}"
+{{- range $key, $value := .Values.collector.cmdlineParams }}
         - "{{ $value }}"
 {{- end }}
-      dnsPolicy: {{ .Values.deployment.collector.dnsPolicy }}
+      dnsPolicy: {{ .Values.collector.dnsPolicy }}
       restartPolicy: Always

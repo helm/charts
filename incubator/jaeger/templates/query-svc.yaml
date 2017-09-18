@@ -1,24 +1,27 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: "{{ template "jaeger.fullname" . }}-query"
+  name: "jaeger-query"
   labels:
-    app: "{{ template "jaeger" . }}"
+    app: "{{ template "jaeger.name" . }}"
     jaeger-infra: query-service
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-    component: "{{ template "jaeger.fullname" . }}-query"
+    component: "jaeger-query"
     heritage: "{{ .Release.Service }}"
     release: "{{ .Release.Name }}"
-{{- if .Values.service.query.annotations }}
+{{- if .Values.query.annotationsSvc }}
   annotations:
-{{ toYaml .Values.service.query.annotations | indent 6 }}
+{{ toYaml .Values.query.annotationsSvc | indent 6 }}
 {{- end }}
 spec:
   ports:
   - name: jaeger-query
-    port: {{ .Values.service.query.queryPort }}
+    port: {{ .Values.query.queryPort }}
     protocol: TCP
-    targetPort: {{ .Values.service.query.targetPort }}
+    targetPort: {{ .Values.query.targetPort }}
   selector:
+    app: "{{ template "jaeger.name" . }}"
+    component: "jaeger-query"
+    release: "{{ .Release.Name }}"
     jaeger-infra: query-pod
-  type: {{ .Values.service.query.type }}
+  type: {{ .Values.query.type }}

@@ -1,33 +1,36 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: "{{ template "jaeger.fullname" . }}-cassandra-schema"
+  name: "jaeger-cassandra-schema"
   labels:
-    app: "{{ template "jaeger" . }}"
+    app: "{{ template "jaeger.name" . }}"
     jaeger-infra: cassandra-schema-job
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-    component: "{{ template "jaeger.fullname" . }}-cassandra-schema"
+    component: "jaeger-cassandra-schema"
     heritage: "{{ .Release.Service }}"
     release: "{{ .Release.Name }}"
-{{- if .Values.job.schema.annotations }}
-  annotations:
-{{ toYaml .Values.job.schema.annotations | indent 6 }}
+{{- if .Values.schema.annotationsPod }}
+  annotationsPod:
+{{ toYaml .Values.schema.annotationsPod | indent 6 }}
 {{- end }}
 spec:
   activeDeadlineSeconds: 120
   template:
     metadata:
-      name: "{{ template "jaeger.fullname" . }}-cassandra-schema"
+      app: "{{ template "jaeger.name" . }}"
+      component: "jaeger-cassandra-schema"
+      release: "{{ .Release.Name }}"
+      name: "jaeger-cassandra-schema"
     spec:
       containers:
-      - name: "{{ template "jaeger.fullname" . }}-cassandra-schema"
-        image: "{{ .Values.job.schema.image }}:{{ .Values.job.schema.tag }}"
-        imagePullPolicy: {{ .Values.job.schema.pullPolicy }}
+      - name: "jaeger-cassandra-schema"
+        image: "{{ .Values.schema.image }}:{{ .Values.schema.tag }}"
+        imagePullPolicy: {{ .Values.schema.pullPolicy }}
         env:
           - name: CQLSH_HOST
             value: "{{ template "cassandra.fullname" . }}"
           - name: MODE
-            value: "{{ .Values.job.schema.mode }}"
+            value: "{{ .Values.schema.mode }}"
           - name: DATACENTER
             value: "{{ .Values.cassandra.config.dc_name }}"
       restartPolicy: Never
