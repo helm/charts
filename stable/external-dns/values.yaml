@@ -1,7 +1,7 @@
 ## Details about the image to be pulled.
 image:
   name: registry.opensource.zalan.do/teapot/external-dns
-  tag: v0.4.3
+  tag: v0.4.4
   pullPolicy: IfNotPresent
 
 ## This controls which types of resource external-dns should 'watch' for new
