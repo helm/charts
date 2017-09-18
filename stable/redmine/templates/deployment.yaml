@@ -19,8 +19,8 @@ spec:
         image: "{{ .Values.image }}"
         imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
         env:
-        {{- if .Values.redmineEnvironment }}
-{{ toYaml .Values.redmineEnvironment | indent 8 }}
+        {{- if .Values.extraVars }}
+{{ toYaml .Values.extraVars | indent 8 }}
         {{- end }}
         {{- if .Values.databaseType.postgresql }}
         - name: REDMINE_DB_POSTGRES

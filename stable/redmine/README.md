@@ -61,7 +61,7 @@ The following tables lists the configurable parameters of the Redmine chart and 
 | `redminePassword` | Application password | _random 10 character long alphanumeric string_ |
 | `redmineEmail` | Admin email | `user@example.com` |
 | `redmineLanguage` | Redmine default data language | `en` |
-| `redmineEnvironment` | Environment variables, passed to redmine| `[]` |
+| `extraVars` | Environment variables, passed to redmine | `nil` |
 | `smtpHost` | SMTP host | `nil` |
 | `smtpPort` | SMTP port | `nil` |
 | `smtpUser` | SMTP user | `nil` |
