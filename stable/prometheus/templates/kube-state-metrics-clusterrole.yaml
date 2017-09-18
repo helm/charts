@@ -14,6 +14,7 @@ rules:
       - ""
     resources:
       - nodes
+      - persistentvolumeclaims
       - pods
       - services
       - resourcequotas
@@ -28,6 +29,22 @@ rules:
       - daemonsets
       - deployments
       - replicasets
+    verbs:
+      - list
+      - watch
+  - apiGroups:
+      - apps
+    resources:
+      - statefulsets
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - batch
+    resources:
+      - cronjobs
+      - jobs
     verbs:
       - list
       - watch
