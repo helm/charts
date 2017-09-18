@@ -4,7 +4,7 @@ This directory contains a Kubernetes chart to deploy a Vault server.
 
 ## Prerequisites Details
 
-* Kubernetes 1.5
+* Kubernetes 1.6+
 
 ## Chart Details
 
@@ -54,7 +54,7 @@ The following tables lists the configurable parameters of the vault chart and th
 | `vault.config`          | Vault configuration                 | No default backend                                  |
 | `replicaCount`          | k8s replicas                        | `1`                                                 |
 | `resources.limits.cpu`  | Container requested CPU             | `nil`                                               |
-| `resources.limits.memory` | Container requested memory        | `128Mi`                                             |
+| `resources.limits.memory` | Container requested memory        | `nil`                                               |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
