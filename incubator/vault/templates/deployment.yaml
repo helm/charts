@@ -1,9 +1,9 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "vault.fullname" . }}
   labels:
-    app: {{ template "name" . }}
+    app: {{ template "vault.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
@@ -12,7 +12,7 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "name" . }}
+        app: {{ template "vault.name" . }}
         release: {{ .Release.Name }}
     spec:
       containers:
@@ -52,11 +52,11 @@ spec:
               topologyKey: kubernetes.io/hostname
               labelSelector:
                 matchLabels:
-                  app: {{ template "fullname" . }}
+                  app: {{ template "vault.fullname" . }}
                   release: {{ .Release.Name | quote }}
       volumes:
         - name: vault-config
           configMap:
-            name: "{{ template "fullname" . }}-config-{{ .Release.Revision }}"
+            name: "{{ template "vault.fullname" . }}-config-{{ .Release.Revision }}"
         - name: vault-root
           emptyDir: {}
