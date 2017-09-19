@@ -32,4 +32,4 @@ spec:
     component: "jaeger-collector"
     release: "{{ .Release.Name }}"
     jaeger-infra: collector-pod
-  type: {{ .Values.collector.type }}
+  type: {{ .Values.collector.service.type }}

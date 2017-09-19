@@ -32,7 +32,7 @@ spec:
         image: "{{ .Values.query.image }}:{{ .Values.query.tag }}"
         imagePullPolicy: {{ .Values.query.pullPolicy }}
         ports:
-        - containerPort: {{ .Values.service.query.service.targetPort }}
+        - containerPort: {{ .Values.query.service.targetPort }}
           protocol: TCP
         resources:
 {{ toYaml .Values.query.resources | indent 10 }}

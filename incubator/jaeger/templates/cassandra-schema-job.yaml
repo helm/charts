@@ -17,9 +17,6 @@ spec:
   activeDeadlineSeconds: 120
   template:
     metadata:
-      app: "{{ template "jaeger.name" . }}"
-      component: "jaeger-cassandra-schema"
-      release: "{{ .Release.Name }}"
       name: "jaeger-cassandra-schema"
     spec:
       containers:
