@@ -7,6 +7,8 @@ metadata:
     release: {{ .Release.Name | quote }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     component: "{{ .Release.Name }}-{{ .Values.Master.Name }}"
+  annotation:
+    description: {{ .Chart.Description }}
 spec:
   replicas: 1
   strategy:
