@@ -7,6 +7,8 @@ metadata:
     {{- range $key, $value := .Values.labels }}
     {{ $key }}: {{ $value }}
     {{- end }}
+  annotation:
+    description: {{ .Chart.Description }}
 spec:
   replicas: {{ .Values.replicaCount }}
   template:
