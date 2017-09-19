@@ -12,6 +12,9 @@ image:
 # get guaranteed delivery of the metrics in Datadog-per-namespace setup!
 daemonset:
   enabled: true
+  ## Bind ports on the hostNetwork. The ports will need to be available on all
+  ## hosts. Can be used for custom metrics instead of a service endpoint
+  # hostNetwork: true
 
   ## Annotations to add to the DaemonSet's Pods
   # podAnnotations:
@@ -31,7 +34,7 @@ daemonset:
 deployment:
   enabled: false
   replicas: 1
- 
+
 ## deploy the kube-state-metrics deployment
 ## ref: https://github.com/kubernetes/charts/tree/master/stable/kube-state-metrics
 ##
