@@ -8,18 +8,18 @@ The following tables lists the configurable parameters of the consul chart and t
 
 | Parameter                     | Description                            | Default                                         |
 | ----------------------------- | -------------------------------------- | ----------------------------------------------- |
-| `image`                         | Container's image                      | `jamescarr/mcrouter` <br> Note: Third-party image as indicated in the [official documentation](https://github.com/facebook/mcrouter/wiki/mcrouter-installation). <br> It is recommended to build a new, up-to-date image based on the [official Dockerfile](https://github.com/facebook/mcrouter/blob/master/mcrouter/scripts/docker/Dockerfile) |
 | `controller` | Controller used for deploying the Mcrouter pods. Possible values: `daemonset` or `statefulset` | `daemonset` |
 | `daemonset.hostPort` | Host port used by the DaemonSet controller | `5000` |
-| `mcrouterCommandParams.port`       | Port(s) to listen on (comma separated) | `5000`   |
+| `image`                         | Container's image                      | `jamescarr/mcrouter` <br> Note: Third-party image as indicated in the [official documentation](https://github.com/facebook/mcrouter/wiki/mcrouter-installation). <br> It is recommended to build a new, up-to-date image based on the [official Dockerfile](https://github.com/facebook/mcrouter/blob/master/mcrouter/scripts/docker/Dockerfile) |
 | `mcrouterCommandParams.configFile` | The config file to use for the mcrouter command. If not provided, then `memcachedService.serviceName` and `memcachedService.replicaCount` must be provided | No value |
+| `mcrouterCommandParams.port`       | Port(s) to listen on (comma separated) | `5000`   |
 | `memcached.enabled`         | If true, the Memcached chart will be installed as a dependency | `true`   |
-| `resources.requests.cpu`    | CPU resource requests    | `100m`  |
 | `resources.limits.cpu`      | CPU resource limits      | `256m`  |
-| `resources.requests.memory` | Memory resource requests | `128Mi` |
 | `resources.limits.memory`   | Memory resource limits   | `512Mi` |
-| `statefulset.replicas` | Number of pod replicas used by the StatefulSet controller | `1` |
+| `resources.requests.cpu`    | CPU resource requests    | `100m`  |
+| `resources.requests.memory` | Memory resource requests | `128Mi` |
 | `statefulset.antiAffinity` | Pod anti-affinity logic used by the StatefulSet controller. Possible values: `hard`, `soft` | `hard` |
+| `statefulset.replicas` | Number of pod replicas used by the StatefulSet controller | `1` |
 
 ## Controllers
 
