@@ -4,14 +4,14 @@ Helm chart for [Mcrouter](https://github.com/facebook/mcrouter), a Memcached pro
 
 ## Configuration
 
-The following tables lists the configurable parameters of the consul chart and their default values.
+The following tables lists the configurable parameters of the Mcrouter chart and their default values.
 
 | Parameter                     | Description                            | Default                                         |
 | ----------------------------- | -------------------------------------- | ----------------------------------------------- |
 | `controller` | Controller used for deploying the Mcrouter pods. Possible values: `daemonset` or `statefulset` | `daemonset` |
 | `daemonset.hostPort` | Host port used by the DaemonSet controller | `5000` |
 | `image`                         | Container's image                      | `jamescarr/mcrouter` <br> Note: Third-party image as indicated in the [official documentation](https://github.com/facebook/mcrouter/wiki/mcrouter-installation). <br> It is recommended to build a new, up-to-date image based on the [official Dockerfile](https://github.com/facebook/mcrouter/blob/master/mcrouter/scripts/docker/Dockerfile) |
-| `mcrouterCommandParams.configFile` | The config file to use for the mcrouter command. If not provided, then `memcachedService.serviceName` and `memcachedService.replicaCount` must be provided | No value |
+| `mcrouterCommandParams.configFile` | The config file to use for the mcrouter command. If not provided, then a config file will automatically be generated based on the Memcached chart's parameters. | No value |
 | `mcrouterCommandParams.port`       | Port(s) to listen on (comma separated) | `5000`   |
 | `memcached.enabled`         | If true, the Memcached chart will be installed as a dependency | `true`   |
 | `resources.limits.cpu`      | CPU resource limits      | `256m`  |
@@ -31,20 +31,18 @@ If using the StatefulSet controller then the service can be accessed by default 
 
 ## Testing
 
-Install the Memcached chart:
-
-    helm install stable/memcached --name mycache --set replicaCount=3
-
 Install the Mcrouter chart:
 
-    helm install mcrouter-helm-chart/mcrouter --name=myproxy --set memcachedService.serviceName="mycache-memcached" --set memcachedService.replicaCount=3
+    helm install stable/mcrouter --name=myproxy
 
-Connect to one of the Mcrouter pods:
+Connect to one of the Mcrouter pods and start a telnet session:
 
     MCROUTER_POD_IP=$(kubectl get pods -l app=myproxy-mcrouter -o jsonpath="{.items[0].status.podIP}")
     
     kubectl run -it --rm alpine --image=alpine --restart=Never telnet $MCROUTER_POD_IP 5000
-    
+
+In the telnet prompt enter the following commands:
+
     set mykey 0 0 5
     
     hello
