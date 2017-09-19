@@ -8,6 +8,8 @@ metadata:
     release: {{ .Release.Name | quote }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     component: "{{ .Release.Name }}-{{ .Values.jupyter.component }}"
+  annotation: 
+    description: {{ .Chart.Description }}
 spec:
   replicas: {{ .Values.jupyter.replicas }}
   strategy:
