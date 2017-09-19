@@ -7,6 +7,8 @@ metadata:
     release: {{ .Release.Name | quote }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     component: "{{ .Release.Name }}-{{ .Values.Master.Component }}"
+  annotation:
+    description: {{ .Chart.Description }}
 spec:
   ports:
     - port: {{ .Values.Master.ServicePort }}
