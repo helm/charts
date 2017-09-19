@@ -11,10 +11,10 @@ sources:
 - https://github.com/kubernetes/charts
 - https://github.com/fluent/fluentd-kubernetes-daemonset
 maintainers:
-- name: Josh Carp
+- name: jmcarp
   email: jm.carp@gmail.com
-- name: Michael Haselton
+- name: icereval
   email: michael.haselton@gmail.com
-- name: Quentin Nerden
+- name: kenden
   email: quentin.nerden@stylight.com
 engine: gotpl
