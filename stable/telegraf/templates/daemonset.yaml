@@ -8,6 +8,8 @@ metadata:
     app: {{ template "fullname" . }}-ds
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
+  annotation:
+    description: {{ .Chart.Description }}
 spec:
   template:
     metadata:
