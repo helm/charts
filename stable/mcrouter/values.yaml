@@ -1,6 +1,11 @@
 ## Third-party image as indicated in https://github.com/facebook/mcrouter/wiki/mcrouter-installation
 image: jamescarr/mcrouter
 
+## Memcached chart parameters
+memcached:
+  ## If true, the Memcached chart will be installed as a dependency
+  enabled: true
+
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
 resources:

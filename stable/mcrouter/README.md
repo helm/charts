@@ -13,10 +13,7 @@ The following tables lists the configurable parameters of the consul chart and t
 | `daemonset.hostPort` | Host port used by the DaemonSet controller | `5000` |
 | `mcrouterCommandParams.port`       | Port(s) to listen on (comma separated) | `5000`   |
 | `mcrouterCommandParams.configFile` | The config file to use for the mcrouter command. If not provided, then `memcachedService.serviceName` and `memcachedService.replicaCount` must be provided | No value |
-| `memcachedService.serviceName`  | Memcached service's name. If provided, then `memcachedService.replicaCount` must also be provided. If not provided, then `mcrouterCommandParams.configFile` must be provided | `memcached` |
-| `memcachedService.replicaCount` | Number of Memcached pod replicas. If provided, then `memcachedService.serviceName` must also be provided. If not provided, then `mcrouterCommandParams.configFile` must be provided | `3` |
-| `memcachedService.port`         | Memcached service's port         | `11211`     |
-| `memcachedService.namespace`    | Memcached service's namespace    | `default`   |
+| `memcached.enabled`         | If true, the Memcached chart will be installed as a dependency | `true`   |
 | `resources.requests.cpu`    | CPU resource requests    | `100m`  |
 | `resources.limits.cpu`      | CPU resource limits      | `256m`  |
 | `resources.requests.memory` | Memory resource requests | `128Mi` |

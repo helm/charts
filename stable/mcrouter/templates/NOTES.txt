@@ -1,14 +1,3 @@
-{{- if and (not .Values.mcrouterCommandParams.configFile) (not (and .Values.memcachedService.serviceName .Values.memcachedService.replicaCount)) }}
-###################################################################################
-####   ERROR:                                                                  ####
-####                                                                           ####
-####   You must provide either a value for "mcrouterCommandParams.configFile", ####
-####   or values for memcachedService.serviceName and                          ####
-####   memcachedService.replicaCount.                                          ####
-####   This deployment will not work properly unless you fix this issue.       ####
-###################################################################################
-{{- else }}
-
 If you'd like to test your instance:
 
     MCROUTER_POD_IP=$(kubectl get pods --namespace {{ .Release.Namespace }} -l app={{ template "fullname" . }} -o jsonpath="{.items[0].status.podIP}")
@@ -22,4 +11,3 @@ If you'd like to test your instance:
     get mykey
 
     quit
-{{- end }}

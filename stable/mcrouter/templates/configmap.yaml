@@ -12,14 +12,14 @@ data:
 {{- if .Values.mcrouterCommandParams.configFile }}{{ range .Files.Lines .Values.mcrouterCommandParams.configFile }}
     {{ . }}{{ end }}
 {{- else }}
-    {{- if and .Values.memcachedService.serviceName .Values.memcachedService.replicaCount }}
+    {{- if .Values.memcached.enabled }}
     {
       "pools": {
         "A": {
           "servers": [
             {{- $global := . }}
-            {{- range $i, $e := until (.Values.memcachedService.replicaCount | int) }}
-            "{{ $global.Values.memcachedService.serviceName }}-{{ $i }}.{{ $global.Values.memcachedService.serviceName }}.{{ $global.Values.memcachedService.namespace }}.svc.cluster.local:{{ $global.Values.memcachedService.port }}",
+            {{- range $i, $e := until (.Values.memcached.replicaCount | int) }}
+            "{{ $global.Release.Name }}-memcached-{{ $i }}.{{ $global.Release.Name }}-memcached.{{ $global.Release.Namespace }}.svc.cluster.local:11211",
             {{- end }}
           ]
         }
