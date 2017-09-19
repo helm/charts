@@ -4,6 +4,8 @@ metadata:
   name: fluent-bit
   labels:
     app: {{ template "fullname" . }}
+  annotation:
+    description: {{ .Chart.Description }}
 spec:
   template:
     metadata:
