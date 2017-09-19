@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "kube-state-metrics.fullname" . }}
   labels:
-    app: {{ template "name" . }}
+    app: {{ template "kube-state-metrics.name" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -18,5 +18,5 @@ spec:
     port: {{ .Values.service.port }}
     targetPort: 8080
   selector:
-    app: {{ template "name" . }}
+    app: {{ template "kube-state-metrics.name" . }}
     release: {{ .Release.Name }}
