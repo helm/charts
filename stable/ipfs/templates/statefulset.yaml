@@ -1,19 +1,19 @@
 apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "ipfs.fullname" . }}
   labels:
-    app: {{ template "name" . }}
+    app: {{ template "ipfs.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
 spec:
   replicas: {{ .Values.replicaCount }}
-  serviceName: {{ template "servicename" . }}
+  serviceName: {{ template "ipfs.servicename" . }}
   template:
     metadata:
       labels:
-        app: {{ template "name" . }}
+        app: {{ template "ipfs.name" . }}
         chart: {{ .Chart.Name }}-{{ .Chart.Version }}
         heritage: {{ .Release.Service }}
         release: {{ .Release.Name }}
