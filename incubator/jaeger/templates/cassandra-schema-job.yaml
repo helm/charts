@@ -9,9 +9,9 @@ metadata:
     component: "jaeger-cassandra-schema"
     heritage: "{{ .Release.Service }}"
     release: "{{ .Release.Name }}"
-{{- if .Values.schema.annotationsPod }}
-  annotationsPod:
-{{ toYaml .Values.schema.annotationsPod | indent 6 }}
+{{- if .Values.schema.annotations }}
+  annotations:
+{{ toYaml .Values.schema.annotations | indent 6 }}
 {{- end }}
 spec:
   activeDeadlineSeconds: 120

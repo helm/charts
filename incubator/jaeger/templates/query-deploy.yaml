@@ -9,9 +9,9 @@ metadata:
     component: "jaeger-query"
     heritage: "{{ .Release.Service }}"
     release: "{{ .Release.Name }}"
-{{- if .Values.query.annotationsPod }}
-  annotationsPod:
-{{ toYaml .Values.query.annotationsPod | indent 6 }}
+{{- if .Values.query.annotations }}
+  annotations:
+{{ toYaml .Values.query.annotations | indent 6 }}
 {{- end }}
 spec:
   replicas: 1
@@ -32,7 +32,7 @@ spec:
         image: "{{ .Values.query.image }}:{{ .Values.query.tag }}"
         imagePullPolicy: {{ .Values.query.pullPolicy }}
         ports:
-        - containerPort: {{ .Values.service.query.targetPort }}
+        - containerPort: {{ .Values.service.query.service.targetPort }}
           protocol: TCP
         resources:
 {{ toYaml .Values.query.resources | indent 10 }}
@@ -47,6 +47,6 @@ spec:
         readinessProbe:
           httpGet:
             path: "/"
-            port: {{ .Values.service.query.targetPort }}
+            port: {{ .Values.query.service.targetPort }}
       dnsPolicy: {{ .Values.query.dnsPolicy }}
       restartPolicy: Always

@@ -9,9 +9,9 @@ metadata:
     component: "jaeger-collector"
     heritage: "{{ .Release.Service }}"
     release: "{{ .Release.Name }}"
-{{- if .Values.collector.annotationsPod }}
-  annotationsPod:
-{{ toYaml .Values.collector.annotationsPod | indent 6 }}
+{{- if .Values.collector.annotations }}
+  annotations:
+{{ toYaml .Values.collector.annotations | indent 6 }}
 {{- end }}
 spec:
   replicas: 1
@@ -32,11 +32,11 @@ spec:
         image: "{{ .Values.collector.image }}:{{ .Values.collector.tag }}"
         imagePullPolicy: {{ .Values.collector.pullPolicy }}
         ports:
-        - containerPort: {{ .Values.collector.tchannelPort }}
+        - containerPort: {{ .Values.collector.service.tchannelPort }}
           protocol: TCP
-        - containerPort: {{ .Values.collector.httpPort }}
+        - containerPort: {{ .Values.collector.service.httpPort }}
           protocol: TCP
-        - containerPort: {{ .Values.collector.zipkinPort }}
+        - containerPort: {{ .Values.collector.service.zipkinPort }}
           protocol: TCP
         resources:
 {{ toYaml .Values.collector.resources | indent 10 }}
@@ -44,7 +44,7 @@ spec:
         - "/go/bin/collector-linux"
         - "--cassandra.servers={{ template "cassandra.fullname" . }}"
         - "--cassandra.keyspace=jaeger_v1_{{ .Values.cassandra.config.dc_name }}"
-        - "--collector.zipkin.http-port={{ .Values.collector.zipkinPort }}"
+        - "--collector.zipkin.http-port={{ .Values.collector.service.zipkinPort }}"
 {{- range $key, $value := .Values.collector.cmdlineParams }}
         - "{{ $value }}"
 {{- end }}

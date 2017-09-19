@@ -9,9 +9,9 @@ metadata:
     component: "jaeger-agent"
     heritage: "{{ .Release.Service }}"
     release: "{{ .Release.Name }}"
-{{- if .Values.agent.annotationsPod }}
-  annotationsPod:
-{{ toYaml .Values.agent.annotationsPod | indent 6 }}
+{{- if .Values.agent.annotations }}
+  annotations:
+{{ toYaml .Values.agent.annotations | indent 6 }}
 {{- end }}
 spec:
   template:
@@ -30,16 +30,16 @@ spec:
         imagePullPolicy: {{ .Values.agent.pullPolicy }}
         command:
         - "/go/bin/agent-linux"
-        - "--collector.host-port={{ template "jaeger.fullname" . }}-collector:{{ .Values.collector.tchannelPort }}"
+        - "--collector.host-port={{ template "jaeger.fullname" . }}-collector:{{ .Values.collector.service.tchannelPort }}"
 {{- range $key, $value := .Values.agent.cmdlineParams }}
         - "{{ $value }}"
 {{- end }}
         ports:
-        - containerPort: {{ .Values.agent.zipkinThriftPort }}
+        - containerPort: {{ .Values.agent.service.zipkinThriftPort }}
           protocol: UDP
-        - containerPort: {{ .Values.agent.compactPort }}
+        - containerPort: {{ .Values.agent.service.compactPort }}
           protocol: UDP
-        - containerPort: {{ .Values.agent.binaryPort }}
+        - containerPort: {{ .Values.agent.service.binaryPort }}
           protocol: UDP
         resources:
 {{ toYaml .Values.agent.resources | indent 10 }}

@@ -9,24 +9,24 @@ metadata:
     component: "jaeger-agent"
     heritage: "{{ .Release.Service }}"
     release: "{{ .Release.Name }}"
-{{- if .Values.agent.annotationsSvc }}
+{{- if .Values.agent.service.annotations }}
   annotations:
-{{ toYaml .Values.agent.annotationsSvc | indent 6 }}
+{{ toYaml .Values.agent.service.annotations | indent 6 }}
 {{- end }}
 spec:
   ports:
   - name: agent-zipkin-thrift
-    port: {{ .Values.agent.zipkinThriftPort }}
+    port: {{ .Values.agent.service.zipkinThriftPort }}
     protocol: UDP
-    targetPort: {{ .Values.agent.zipkinThriftPort }}
+    targetPort: {{ .Values.agent.service.zipkinThriftPort }}
   - name: agent-compact
-    port: {{ .Values.agent.compactPort }}
+    port: {{ .Values.agent.service.compactPort }}
     protocol: UDP
-    targetPort: {{ .Values.agent.compactPort }}
+    targetPort: {{ .Values.agent.service.compactPort }}
   - name: agent-binary
-    port: {{ .Values.agent.binaryPort }}
+    port: {{ .Values.agent.service.binaryPort }}
     protocol: UDP
-    targetPort: {{ .Values.agent.binaryPort }}
+    targetPort: {{ .Values.agent.service.binaryPort }}
   clusterIP: None
   selector:
     app: "{{ template "jaeger.name" . }}"

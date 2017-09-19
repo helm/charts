@@ -9,24 +9,24 @@ metadata:
     component: "jaeger-collector"
     heritage: "{{ .Release.Service }}"
     release: "{{ .Release.Name }}"
-{{- if .Values.collector.annotationsSvc }}
+{{- if .Values.collector.service.annotations }}
   annotations:
-{{ toYaml .Values.collector.annotationsSvc | indent 6 }}
+{{ toYaml .Values.collector.service.annotations | indent 6 }}
 {{- end }}
 spec:
   ports:
   - name: jaeger-collector-tchannel
-    port: {{ .Values.collector.tchannelPort }}
+    port: {{ .Values.collector.service.tchannelPort }}
     protocol: TCP
-    targetPort: {{ .Values.collector.tchannelPort }}
+    targetPort: {{ .Values.collector.service.tchannelPort }}
   - name: jaeger-collector-http
-    port: {{ .Values.collector.httpPort }}
+    port: {{ .Values.collector.service.httpPort }}
     protocol: TCP
-    targetPort: {{ .Values.collector.httpPort }}
+    targetPort: {{ .Values.collector.service.httpPort }}
   - name: jaeger-collector-zipkin
-    port: {{ .Values.collector.zipkinPort }}
+    port: {{ .Values.collector.service.zipkinPort }}
     protocol: TCP
-    targetPort: {{ .Values.collector.zipkinPort }}
+    targetPort: {{ .Values.collector.service.zipkinPort }}
   selector:
     app: "{{ template "jaeger.name" . }}"
     component: "jaeger-collector"

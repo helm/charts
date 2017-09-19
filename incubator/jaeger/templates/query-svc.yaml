@@ -9,16 +9,16 @@ metadata:
     component: "jaeger-query"
     heritage: "{{ .Release.Service }}"
     release: "{{ .Release.Name }}"
-{{- if .Values.query.annotationsSvc }}
+{{- if .Values.query.service.annotations }}
   annotations:
-{{ toYaml .Values.query.annotationsSvc | indent 6 }}
+{{ toYaml .Values.query.service.annotations | indent 6 }}
 {{- end }}
 spec:
   ports:
   - name: jaeger-query
-    port: {{ .Values.query.queryPort }}
+    port: {{ .Values.query.service.queryPort }}
     protocol: TCP
-    targetPort: {{ .Values.query.targetPort }}
+    targetPort: {{ .Values.query.service.targetPort }}
   selector:
     app: "{{ template "jaeger.name" . }}"
     component: "jaeger-query"
