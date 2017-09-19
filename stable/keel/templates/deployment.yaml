@@ -10,6 +10,7 @@ metadata:
     heritage: {{ .Release.Service }}
   annotations:
     kubernetes.io/service-account.name: keel
+    description: {{ .Chart.Description }}
 spec:
   replicas: 1
   template:
