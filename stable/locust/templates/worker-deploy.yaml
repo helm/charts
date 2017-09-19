@@ -8,6 +8,8 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     app: {{ template "locust.fullname" . }}
     component: worker
+  annotation:
+    description: {{ .Chart.Description }}
 spec:
   replicas: {{ default 2 .Values.worker.replicaCount }}
   strategy:
