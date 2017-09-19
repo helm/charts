@@ -8,6 +8,8 @@ metadata:
     release: "{{ .Release.Name }}"
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     kubernetes.io/cluster-service: "true"
+  annotation:
+    description: {{ .Chart.Description }}
 spec:
   replicas: 1
   strategy:
