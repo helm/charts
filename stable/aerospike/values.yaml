@@ -15,9 +15,6 @@ persistentVolume: {}
   #   storage: 4G
   #   storageClassName: standard
 
-# aerospike config file should be located at this path.
-# Namespaces used in config file should map to the volumes in persistentVolume
-confFile: aerospike.conf
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
@@ -30,3 +27,58 @@ resources: {}
   # requests:
   #  cpu: 100m
   #  memory: 128Mi
+
+confFile: |-
+  #default config file
+  service {
+      user root
+      group root
+      paxos-single-replica-limit 1
+      pidfile /var/run/aerospike/asd.pid
+      service-threads 4
+      transaction-queues 4
+      transaction-threads-per-queue 4
+      proto-fd-max 15000
+  }
+  logging {
+      file /var/log/aerospike/aerospike.log {
+      context any info
+      }
+
+      console {
+      context any info 
+      }
+  }
+  network {
+      service {
+      address any
+      port 3000
+      }
+      heartbeat {
+      address any
+      interval 150
+      #REPLACE_THIS_LINE_WITH_MESH_CONFIG
+      mode mesh
+      port 3002
+      timeout 20
+      protocol v3
+
+      }
+      fabric {
+      port 3001
+      }
+
+      info {
+      port 3003
+      }
+  }
+
+  namespace test {
+      replication-factor 2
+      memory-size 1G
+      default-ttl 5d
+      storage-engine device {
+      file /opt/aerospike/data/test.dat
+      filesize 4G
+      }
+  }
