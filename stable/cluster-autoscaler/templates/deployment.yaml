@@ -74,3 +74,4 @@ spec:
         - name: ssl-certs
           hostPath:
             path: /etc/ssl/certs/ca-certificates.crt
+      dnsPolicy: "Default"
