@@ -10,7 +10,8 @@ spec:
     metadata:
       name: {{ include "common.fullname" . }}
       labels:
-{{ include "common.labels.standard" . | indent 8 }}
+        app: {{ template "common.name" . }}
+        release: {{ .Release.Name | quote }}
     spec:
       volumes:
       - name: storage-volume

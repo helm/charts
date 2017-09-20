@@ -12,4 +12,5 @@ spec:
     protocol: TCP
     name: {{ .Release.Name }}
   selector:
-    app: {{ template "common.fullname" . }}
+    app: {{ template "common.name" . }}
+    release: {{ .Release.Name | quote }}
