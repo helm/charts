@@ -9,7 +9,7 @@ metadata:
     heritage: {{ .Release.Service | quote }}
 spec:
   serviceName: {{ template "zookeeper.fullname" . }}-headless
-  replicas: {{ .Values.Servers }}
+  replicas: {{ .Values.servers }}
   template:
     metadata:
       labels:
