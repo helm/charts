@@ -2,15 +2,15 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "datadog.fullname" . }}
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "datadog.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
 spec:
   type: {{ .Values.serviceType }}
   selector:
-    app: {{ template "fullname" . }}
+    app: {{ template "datadog.fullname" . }}
   ports:
   - port: 8125
     name: dogstatsdport

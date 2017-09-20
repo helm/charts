@@ -1,6 +1,6 @@
 To verify that kube2iam has started, run:
 
-  kubectl --namespace={{ .Release.Namespace }} get pods -l "app={{ template "name" . }},release={{ .Release.Name }}"
+  kubectl --namespace={{ .Release.Namespace }} get pods -l "app={{ template "kube2iam.name" . }},release={{ .Release.Name }}"
 
 Add an iam.amazonaws.com/role annotation to your pods with the role you want them to assume.
 
