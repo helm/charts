@@ -2,7 +2,7 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "name" -}}
+{{- define "external-dns.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
@@ -21,7 +21,7 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 
 {{/* Generate basic labels */}}
 {{- define "external-dns.labels" }}
-app: {{ template "name" . }}
+app: {{ template "external-dns.name" . }}
 heritage: {{.Release.Service }}
 release: {{.Release.Name }}
 {{- if .Values.podLabels}}
