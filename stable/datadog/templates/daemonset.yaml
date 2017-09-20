@@ -17,8 +17,8 @@ spec:
 {{ toYaml .Values.daemonset.podAnnotations | indent 8 }}
       {{- end }}
     spec:
-      {{- if .Values.daemonset.hostNetwork }}
-      hostNetwork: {{ .Values.daemonset.hostNetwork }}
+      {{- if .Values.daemonset.useHostNetwork }}
+      hostNetwork: {{ .Values.daemonset.useHostNetwork }}
       {{- end }}
       containers:
       - name: {{ .Chart.Name }}
@@ -28,13 +28,22 @@ spec:
 {{ toYaml .Values.resources | indent 12 }}
         ports:
         - containerPort: 8125
+          {{- if .Values.daemonset.useHostPort }}
+          hostPort: 8125
+          {{- end }}
           name: dogstatsdport
           protocol: UDP
         {{- if .Values.datadog.apmEnabled }}
         - containerPort: 8126
+          {{- if .Values.daemonset.useHostPort }}
+          hostPort: 8126
+          {{- end }}
           name: traceport
           protocol: TCP
         - containerPort: 7777
+          {{- if .Values.daemonset.useHostPort }}
+          hostPort: 7777
+          {{- end }}
           name: legacytraceport
           protocol: TCP
         {{- end }}

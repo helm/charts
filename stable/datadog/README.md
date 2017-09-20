@@ -53,9 +53,10 @@ The following tables lists the configurable parameters of the Datadog chart and 
 | `resources.requests.memory` | Memory resource requests           | `128Mi`                                   |
 | `resources.limits.memory`   | Memory resource limits             | `512Mi`                                   |
 | `kubeStateMetrics.enabled`  | If true, create kube-state-metrics | `true`                                    |
-| `daemonset.hostNetwork`     | If true, use the host's network    | `nil`                                     |
 | `daemonset.podAnnotations`  | Annotations to add to the DaemonSet's Pods | `nil`                             |
 | `daemonset.tolerations`     | List of node taints to tolerate (requires Kubernetes >= 1.6) | `nil`           |
+| `daemonset.useHostNetwork`  | If true, use the host's network    | `nil`                                     |
+| `daemonset.useHostPort`     | If true, use the same ports for both host and container  | `nil`               |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
