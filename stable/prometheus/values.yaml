@@ -141,7 +141,6 @@ alertmanager:
     ##
     externalIPs: []
 
-
     loadBalancerIP: ""
     loadBalancerSourceRanges: []
     servicePort: 80
