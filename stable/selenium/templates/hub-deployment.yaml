@@ -4,6 +4,8 @@ metadata:
   name: {{ template "hub.fullname" . }}
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+  annotation:
+    description: {{ .Chart.Description }}
 spec:
   replicas: 1
   template:
