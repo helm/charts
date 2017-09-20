@@ -8,6 +8,8 @@ metadata:
     component: "{{ .Values.nginx.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
+  annotation:
+    description: {{ .Chart.Description }}
 spec:
   replicas: {{ .Values.nginx.replicaCount }}
   template:
