@@ -8,6 +8,8 @@ metadata:
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
   name: {{ template "prometheus.server.fullname" . }}
+  annotation:
+    description: {{ .Chart.Description }}
 spec:
   replicas: {{ .Values.server.replicaCount }}
   template:
