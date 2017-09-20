@@ -6,12 +6,12 @@ image:
   pullPolicy: IfNotPresent
 service:
   port: 8080
+  # Default to clusterIP for backward compatibility
+  type: ClusterIP
+  nodePort: 0
+  loadBalancerIP: ""
 rbac:
   # If true, create & use RBAC resources
   create: false
   # Ignored if rbac.create is true
   serviceAccountName: default
-  # Default to clusterIP for backward compatibility
-  type: ClusterIP
-  nodePort: 0
-  loadBalancerIP: ""
