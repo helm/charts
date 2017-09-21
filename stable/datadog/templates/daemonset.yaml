@@ -41,9 +41,6 @@ spec:
           name: traceport
           protocol: TCP
         - containerPort: 7777
-          {{- if .Values.daemonset.useHostPort }}
-          hostPort: 7777
-          {{- end }}
           name: legacytraceport
           protocol: TCP
         {{- end }}
