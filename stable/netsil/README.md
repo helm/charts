@@ -25,12 +25,15 @@ $ helm install --name my-release stable/netsil
 
 The following tables lists the configurable parameters of the Netsil chart and their default values.
 
-|      Parameter            |          Description            |                         Default                         |
-|---------------------------|---------------------------------|---------------------------------------------------------|
-| `tag`                     | The image tag 		          | A recent official Netsil tag                            |
-| `repository`         		| Image repository                | A recent official Netsil repo                           |
-| `type`     				| Service type					  | NodePort                                                |
-| `pullPolicy`              | 							      | IfNotPresent                                            |
+|      Parameter                            |          Description            |                         Default                         |
+|-------------------------------------------|---------------------------------|---------------------------------------------------------|
+| `streamProcessor.image.tag`               | The image tag 		          | A recent official Netsil tag                            |
+| `streamProcessor.image.repository`        | Streamprocessor Image repository| A recent official Netsil repo                           |
+| `streamProcessor.service.type`     		| Service type					  | NodePort                                                |
+| `streamProcessor.image.pullPolicy`        | 							      | IfNotPresent                                            |
+| `collector.image.tag`                     | The collector image tag 		  | A recent official Netsil tag                            |
+| `collector.image.repository`              | The collector image             | A recent official Netsil repo                           |
+| `collector.image.pullPolicy`              | 							      | IfNotPresent                                            |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
