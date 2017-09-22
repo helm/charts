@@ -1,6 +1,6 @@
 # Default values for jaeger.
 # This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
+# Jaeger values are grouped by component. Cassandra values override subchart values
 
 # Begin: Override values on the Cassandra subchart to customize for Jaeger
 cassandra:
