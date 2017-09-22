@@ -2,22 +2,21 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 agentname: omsagent
-secretname: omsagent-secret
 omsagent:
   image:
-    registry:
-    org: microsoft
+    repository: microsoft
+    # *sigh* work with OMS folks to push a verison...
     tag: latest
-    pull_policy: Always
+    pullPolicy: Always
   annotations:
     agentVersion: 1.4.0-45
     dockerProviderVersion: 10.0.0-25
   containers:
     ports:
-     containerPort:
-      TCP: 25225
-      UDP: 25224
+      containerPort:
+        TCP: 25225
+        UDP: 25224
   secret:
-   wsid: <your_workspace_id>
-   key: <your_workspace_key>
-  domain: opinsights.azure.com
+    wsid: <your_workspace_id>
+    key: <your_workspace_key>
+    domain: opinsights.azure.com

@@ -2,11 +2,15 @@ apiVersion: v1
 description: A chart for deploying omsagent as a daemonset Kubernetes
 name: msoms
 version: 0.1.0
+appVersion: 1.4.0-45
 home: https://azure.microsoft.com/en-us/services/log-analytics/
 sources:
+  - https://docs.microsoft.com/en-us/azure/container-service/kubernetes/container-service-tutorial-kubernetes-monitor
   - https://github.com/Microsoft/OMS-docker
   - https://github.com/Microsoft/OMS-Agent-for-Linux
   - https://github.com/Microsoft/Docker-Provider
 maintainers:
   - name: OMS Containers
     email: OMSContainers@microsoft.com
+  - name: brendandburns
+    email: bburns@microsoft.com

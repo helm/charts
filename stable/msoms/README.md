@@ -8,7 +8,7 @@ This chart deploys an OMS sidecar agent as a daemonset on a [Kubernetes](http://
 
 ## Prerequisites
 
-- Kubernetes 1.4+ with Beta APIs enabled
+- Kubernetes 1.6+ with Beta APIs enabled
 
 ## Installing the Chart
 

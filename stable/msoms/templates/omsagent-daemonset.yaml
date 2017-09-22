@@ -1,55 +1,59 @@
 apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
- name: {{ .Values.agentname }}
-spec:
- updateStrategy:
-    type: RollingUpdate
- template:
-  metadata:
-   labels:
+  name: {{ .Values.agentname }}
+  labels:
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-    app: {{ .Values.agentname  }}
+    app: {{ template "fullname" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-   annotations:
-    agentVersion: {{ .Values.omsagent.annotations.agentVersion }}
-    dockerProviderVersion: {{ .Values.omsagent.annotations.dockerProviderVersion }}
-  spec:
-   containers:
-     - name: {{ .Values.agentname  }}
-       image: "{{ .Values.omsagent.image.registry }}{{ .Values.omsagent.image.org }}/oms:{{ .Values.omsagent.image.tag }}"
-       imagePullPolicy: {{ .Values.omsagent.image.pull_policy }}
-       securityContext:
-         privileged: true
-       ports:
-       - containerPort: {{ .Values.omsagent.containers.ports.containerPort.TCP }}
-         protocol: TCP
-       - containerPort: {{ .Values.omsagent.containers.ports.containerPort.TCP }}
-         protocol: UDP
-       volumeMounts:
+    component: monitoring
+spec:
+  updateStrategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        release: {{ .Release.Name }}
+        app: {{ template "name" . }}
+      annotations:
+        agentVersion: {{ .Values.omsagent.annotations.agentVersion }}
+        dockerProviderVersion: {{ .Values.omsagent.annotations.dockerProviderVersion }}
+    spec:
+      containers:
+      - name: {{ .Values.agentname  }}
+        image: "{{ .Values.omsagent.image.repository }}/oms:{{ .Values.omsagent.image.tag }}"
+        imagePullPolicy: {{ .Values.omsagent.image.pullPolicy }}
+        securityContext:
+          privileged: true
+        ports:
+        - containerPort: {{ .Values.omsagent.containers.ports.containerPort.TCP }}
+          protocol: TCP
+        - containerPort: {{ .Values.omsagent.containers.ports.containerPort.TCP }}
+          protocol: UDP
+        volumeMounts:
         - mountPath: /var/run/docker.sock
           name: docker-sock
         - mountPath: /var/log
           name: host-log
         - mountPath: /etc/omsagent-secret
-          name: {{ .Values.secretname }}
+          name: oms-secret
           readOnly: true
-       livenessProbe:
-        exec:
-         command:
-         - /bin/bash
-         - -c
-         - ps -ef | grep omsagent | grep -v "grep"
-        initialDelaySeconds: 60
-        periodSeconds: 60
-   volumes:
-    - name: docker-sock
-      hostPath:
-       path: /var/run/docker.sock
-    - name: host-log
-      hostPath:
-       path: /var/log
-    - name: {{ .Values.secretname }}
-      secret:
-       secretName: {{ .Values.secretname }}
+        livenessProbe:
+          exec:
+            command:
+            - /bin/bash
+            - -c
+            - ps -ef | grep omsagent | grep -v "grep"
+          initialDelaySeconds: 60
+          periodSeconds: 60
+      volumes:
+      - name: docker-sock
+        hostPath:
+          path: /var/run/docker.sock
+      - name: host-log
+        hostPath:
+          path: /var/log
+      - name: oms-secret
+        secret:
+          secretName: {{ template "fullname" . }}
