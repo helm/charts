@@ -1,13 +1,30 @@
 # Default values for sumologic-fluentd.
 image:
   name: sumologic/fluentd-kubernetes-sumologic
-  tag: latest
-  pullPolicy: Always
+  tag: v1.4
+  pullPolicy: IfNotPresent
+
+## Annotations to add to the DaemonSet's Pods
+podAnnotations: {}
+#  scheduler.alpha.kubernetes.io/tolerations: '[{"key": "example", "value": "foo"}]'
+
+## Allow the DaemonSet to schedule on tainted nodes (requires Kubernetes >= 1.6)
+tolerations: []
+#   - key: node.alpha.kubernetes.io/role
+#     effect: NoSchedule
+#     operator: "Exists"
+
+## Allow the DaemonSet to perform a rolling update on helm update
+## ref: https://kubernetes.io/docs/tasks/manage-daemon/update-daemon-set/
+updateStrategy: OnDelete
 
 sumologic:
   ## You'll need to set this to sumo collector, before the agent will run.
   ## ref: https://github.com/SumoLogic/fluentd-kubernetes-sumologic#sumologic
-  collectorUrl:
+  collectorUrl: ""
+
+  ## The source of fluentd logs, either file or systemd
+  fluentdSource: file
 
   ## How frequently to push logs to SumoLogic (default 5s)
   ## ref: https://github.com/SumoLogic/fluentd-kubernetes-sumologic#options
@@ -17,52 +34,74 @@ sumologic:
   # numThreads: 1
 
   ## Set the _sourceName metadata field in SumoLogic. (Default "%{namespace}.%{pod}.%{container}")
-  # sourceName:
+  sourceName: ""
 
   ## Set the _sourceCategory metadata field in SumoLogic. (Default "%{namespace}/%{pod_name}")
-  # sourceCategory:
+  sourceCategory: ""
 
   ## Set the prefix, for _sourceCategory metadata. (Default nil)
-  # sourceCategoryPrefix:
+  sourceCategoryPrefix: ""
 
   ## Used to replace - with another character. (default /)
-  # sourceCategoryReplaceDash:
+  sourceCategoryReplaceDash: ""
 
   ## Format to post logs into Sumo. json, json_merge, or text (default json)
-  # logFormat: json
+  logFormat: json
 
   ## Include or exclude Kubernetes metadata such as namespace and pod_name if
   ## using json log format. (default true)
-  # kubernetesMeta: true
+  kubernetesMeta: true
+  
+  ## A ruby regex for containers. All matching containers will be excluded
+  ## from Sumo Logic. The logs will still be sent to FluentD
+  ## ref: http://rubular.com/
+  ## ref: https://github.com/SumoLogic/fluentd-kubernetes-sumologic#options
+  excludeContainerRegex: ""
 
   ## Files matching this pattern will be ignored by the in_tail plugin, and will
   ## not be sent to Kubernetes or Sumo Logic. This can be a comma separated list.
   ## ref: http://docs.fluentd.org/v0.12/articles/in_tail#excludepath
-  # excludePath:
-
-  ## A ruby regex for namespaces. All matching namespaces will be excluded
-  ## from Sumo Logic. The logs will still be sent to FluentD
-  ## ref: http://rubular.com/
-  # excludeNamespaceRegex:
-
-  ## A ruby regex for pods. All matching pods will be excluded from Sumo
-  ## Logic. The logs will still be sent to FluentD
-  ## ref: http://rubular.com/
-  # excludePodRegex:
-
-  ## A ruby regex for containers. All matching containers will be excluded
-  ## from Sumo Logic. The logs will still be sent to FluentD
-  ## ref: http://rubular.com/
-  # excludeContainerRegex:
+  excludePath: ""
 
   ## A ruby regex for hosts. All matching hosts will be excluded from Sumo
   ## Logic. The logs will still be sent to FluentD
   ## ref: http://rubular.com/
-  # excludeHostRegex:
+  ## ref: https://github.com/SumoLogic/fluentd-kubernetes-sumologic#options
+  excludeHostRegex: ""
+
+  ## A ruby regex for namespaces. All matching namespaces will be excluded
+  ## from Sumo Logic. The logs will still be sent to FluentD
+  ## ref: http://rubular.com/
+  ## ref: https://github.com/SumoLogic/fluentd-kubernetes-sumologic#options
+  excludeNamespaceRegex: ""
+
+  ## A ruby regex for pods. All matching pods will be excluded from Sumo
+  ## Logic. The logs will still be sent to FluentD
+  ## ref: http://rubular.com/
+  excludePodRegex: ""
+
+  ## A ruby regex for systemd units. All matching facilities will be excluded from 
+  ## Sumo Logic. The logs will still be sent to FluentD
+  ## ref: http://rubular.com/
+  ## ref: https://github.com/SumoLogic/fluentd-kubernetes-sumologic#options
+  excludeFacilityRegex: ""
+  
+  ## A ruby regex for syslog priorities, which are integers represented as
+  ## strings. All matching priorities will be excluded from 
+  ## Sumo Logic. The logs will still be sent to FluentD
+  ## ref: http://rubular.com/
+  ## ref: https://github.com/SumoLogic/fluentd-kubernetes-sumologic#options
+  excludePriorityRegex: ""
+
+  ## A ruby regex for systemd units. All matching hosts will be excluded from 
+  ## Sumo Logic. The logs will still be sent to FluentD
+  ## ref: http://rubular.com/
+  ## ref: https://github.com/SumoLogic/fluentd-kubernetes-sumologic#options
+  excludeUnitRegex: ""
 
   ## Fluentd command line options
   ## ref: http://docs.fluentd.org/v0.12/articles/command-line-option
-  # fluentdOpt:
+  fluentdOpt: ""
 
 ## By default, the daemonset will store position files, for logs tailed, in an
 ## emptyDir. If you have a directory, on the host, to store pos files, specify
@@ -79,4 +118,10 @@ resources:
     cpu: 256m
     memory: 256Mi
 
-rbac: {}
+rbac:
+  ## If true, create and use RBAC resources
+  create: false
+
+  ## Ignored if rbac.create is true
+  serviceAccountName: default
+
