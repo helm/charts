@@ -34,10 +34,18 @@ spec:
         - name: bootstrap
           image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
           command:
+          {{- if .Values.podServices.enabled }}
+            - /work-dir/public-hosts-finder
+          {{- else }}
             - /work-dir/peer-finder
+          {{- end }}
           args:
             - -on-start=/work-dir/on-start.sh
+            {{- if .Values.podServices.enabled }}
+            - "-selector=app={{ template "name" . }},release={{ .Release.Name }}"
+            {{- else }}
             - "-service={{ template "fullname" . }}"
+            {{- end }}
           imagePullPolicy: "{{ .Values.image.pullPolicy }}"
           env:
             - name: POD_NAMESPACE

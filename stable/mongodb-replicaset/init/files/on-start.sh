@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -x
 
 # Copyright 2016 The Kubernetes Authors. All rights reserved.
 #
@@ -45,11 +46,22 @@ log "Bootstrapping MongoDB replica set member: $my_hostname"
 log "Reading standard input..."
 while read -ra line; do
     if [[ "${line}" == *"${my_hostname}"* ]]; then
-        service_name="$line"
+        mongo_host="$line"
         continue
     fi
     peers=("${peers[@]}" "$line")
 done
+
+# sets mongo_host when hostname is not part of the peers array
+if [[ -z "$mongo_host" ]]; then
+    index=${my_hostname##*-}
+    mongo_host="${peers[$index]}"
+    # Remove my external host from the peer list
+    # The connection from the service won't be available until
+    # the main container is running since the services NodePort and LoadBalancer
+    # types do not tolerate unready endpoints.
+    unset "peers[$index]"
+fi
 
 log "Peers: ${peers[@]}"
 
@@ -67,10 +79,11 @@ log "Initialized."
 # try to find a master and add yourself to its replica set.
 for peer in "${peers[@]}"; do
     mongo admin --host "$peer" "${admin_auth[@]}" --eval "rs.isMaster()" | grep '"ismaster" : true'
+    #timeout 10 mongo admin --host "$peer" "${admin_auth[@]}" --eval "rs.isMaster()" | grep '"ismaster" : true'
     if [[ $? -eq 0 ]]; then
         log "Found master: $peer"
-        log "Adding myself ($service_name) to replica set..."
-        mongo admin --host "$peer" "${admin_auth[@]}" --eval "rs.add('$service_name')"
+        log "Adding myself ($mongo_host) to replica set..."
+        mongo admin --host "$peer" "${admin_auth[@]}" --eval "rs.add('$mongo_host')"
         log "Done."
 
         shutdown_mongo "60"
@@ -82,8 +95,13 @@ done
 # else initiate a replica set with yourself.
 mongo --eval "rs.status()" | grep "no replset config has been received"
 if [[ $? -eq 0 ]]; then
-    log "Initiating a new replica set with myself ($service_name)..."
-    mongo --eval "rs.initiate({'_id': '$replica_set', 'members': [{'_id': 0, 'host': '$service_name'}]})"
+    log "Initiating a new replica set with myself ($mongo_host)..."
+    # init containers can not have rediness checks so we need to make think
+    # the bootstrap container that is connecting to the k8s service otherwise
+    # MongoDB initialization will fail
+    echo "127.0.0.1       ${mongo_host%:*}" >> /etc/hosts
+    cat /etc/hosts
+    mongo --host "$mongo_host" --eval "rs.initiate({'_id': '$replica_set', 'members': [{'_id': 0, 'host': '$mongo_host'}]})"
 
     mongo --eval "rs.status()"
 

@@ -17,6 +17,11 @@ all: push
 TAG = 0.5
 PREFIX = gcr.io/google_containers/mongodb-install
 
+build: bin/linux/public-hosts-finder container
+
+bin/linux/public-hosts-finder: main.go
+	GOOS=linux GOARCH=amd64 go build -o $@
+
 container:
 	docker build -t $(PREFIX):$(TAG) .
 
@@ -24,4 +29,5 @@ push: container
 	gcloud docker -- push $(PREFIX):$(TAG)
 
 clean:
+	rm -f bin/linux/plublic-hosts-finder
 	docker rmi $(PREFIX):$(TAG)

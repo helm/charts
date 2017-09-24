@@ -12,10 +12,11 @@
     POD_NAME must be replaced by the name of the pod being queried.
 
     $ kubectl exec --namespace {{ .Release.Namespace }} POD_NAME -- mongo --eval="rs.slaveOk(); db.test.find().forEach(printjson)"
-
-{{- if contains "NodePort" .Values.podServices.type }}
+{{- if (and (not (empty .Values.podServices.enabled)) (eq .Values.podServices.enabled true)) }}
 
 4.
+{{- if (and (not (empty .Values.podServices.enabled)) (contains .Values.podServices.type "NodePort")) }}
+
 {{- range $i := until $podCount }}
   export NODE_PORT_{{ $i }}=$(kubectl get --namespace {{ $.Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "fullname" $ }}-{{ $i }})
 {{- end }}
@@ -25,9 +26,9 @@
   You can get the MongoDB URI with
 
   echo mongodb://$NODE_IP:$NODE_PORT_0,$NODE_IP:$NODE_PORT_1,$NODE_IP:$NODE_PORT_2, ... /?replicaSet={{ .Values.replicaset }}
-{{- else if contains "LoadBalancer" .Values.podServices.type }}
 
-4.
+{{- else if (and (not (empty .Values.podServices.enabled)) (contains .Values.podServices.type "LoadBalancer")) }}
+
      NOTE: It may take a few minutes for the LoadBalancer IP to be available.
            You can watch the status of by running 'kubectl get svc -w -l app={{ template "name" . }}'
 
@@ -39,4 +40,5 @@
 
   echo mongodb://$SERVICE_IP_0:{{ $.Values.port }},$SERVICE_IP_1:{{ $.Values.port }},$SERVICE_IP_2,:{{ $.Values.port }}, ... /?replicaSet={{ $.Values.replicaset }}
 
+{{- end }}
 {{- end }}

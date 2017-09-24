@@ -20,5 +20,6 @@ RUN apk update && apk add bash curl && wget -qO /peer-finder http://storage.goog
 ENTRYPOINT ["/install.sh"]
 
 ADD files/* /
+ADD bin/linux/* /
 
-RUN chmod -c 755 /install.sh /on-start.sh /peer-finder /add-name-label.sh
+RUN chmod -c 755 /install.sh /on-start.sh /peer-finder /public-hosts-finder /add-name-label.sh

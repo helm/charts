@@ -63,7 +63,7 @@ configmap:
 
 # Expose your MongoDB cluster to external applications
 #podServices:
-#  enabled: true
+#  enabled: false
 #  annotations: {}
 #  clusterIP: ""
 #  externalIPs: []
