@@ -28,7 +28,7 @@ spec:
           imagePullPolicy: "{{ .Values.configmapReload.image.pullPolicy }}"
           args:
             - --volume-dir=/etc/config
-            - --webhook-url=http://localhost:9090{{ .Values.server.baseUrl }}/-/reload
+            - --webhook-url=http://localhost:9090{{ .Values.server.baseURL }}/-/reload
           resources:
 {{ toYaml .Values.configmapReload.resources | indent 12 }}
           volumeMounts:
