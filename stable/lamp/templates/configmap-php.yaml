@@ -1,41 +1,4 @@
-{{- if or .Values.init.clone.release .Values.wordpress.enabled }}
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: {{template "fullname" .}}-init
-  labels:
-    app: {{template "fullname" .}}
-data:
-  {{- if .Values.init.clone.release }}
-{{ (.Files.Glob "files/init/init_clone.sh").AsConfig | indent 2 }}
-{{ (.Files.Glob "files/init/init_db_clone.sh").AsConfig | indent 2 }}
-  {{- end }}
-  {{- if .Values.wordpress.enabled }}
-{{ (.Files.Glob "files/init/init_wp.sh").AsConfig | indent 2 }}
-{{ (.Files.Glob "files/init/init_wp_db.sh").AsConfig | indent 2 }}
-  {{- end }}
-{{- end }}
-{{- if and .Values.php.fpm_enabled ( or .Values.init.clone.release .Values.wordpress.enabled ) }}
-
----
-
-{{- end }}
-{{- if .Values.php.fpm_enabled }}
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: {{template "fullname" .}}-httpd
-  labels:
-    app: {{template "fullname" .}}
-data:
-{{ (.Files.Glob "files/httpd/httpd.conf").AsConfig | indent 2 }}
-{{ (.Files.Glob "files/httpd/httpd-vhosts.conf").AsConfig | indent 2 }}
-{{ (.Files.Glob "files/httpd/httpd-vhosts-socket.conf").AsConfig | indent 2 }}
-{{- end }}
 {{- if or .Values.mysql.sockets ( or .Values.php.fpm_enabled .Values.php.ini ) }}
-
----
-
 apiVersion: v1
 kind: ConfigMap
 metadata:
