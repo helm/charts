@@ -49,7 +49,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 
 ```bash
 $ helm install --name omsagent \
-  --set omsagent.secret.wsid=<your_workspace_id>,omsagent.secret.key=<your_workspace_key>
+  --set omsagent.secret.wsid=<your_workspace_id>,omsagent.secret.key=<your_workspace_key> stable/msoms
 
 ```
 
