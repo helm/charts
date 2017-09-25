@@ -7,7 +7,7 @@ export CLONEDBDIR=/clone_data/db
 if [ -n "$(ls -A $WEBDIR)" ]; then
 	echo "Pod allready initialized, continuing..."
 else
-	xtrabackup -uroot -p$MYSQL_ROOT_PASSWORD -H$MYSQL_HOST -h $CLONEDBDIR --backup --target-dir=$DBDIR
+	xtrabackup -uroot -p"$MYSQL_ROOT_PASSWORD" -H$MYSQL_HOST -h $CLONEDBDIR --backup --target-dir=$DBDIR
 
 	if ! [ "$?" -eq 0 ]; then
 		echo "Failed to generate DB backup, exiting..."

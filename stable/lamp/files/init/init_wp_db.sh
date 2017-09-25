@@ -4,7 +4,7 @@ shopt -s expand_aliases
 export WEBDIR=/var/www/html
 export MYSQLDIR=/var/www/mysql
 
-alias msql="mysql -uroot -p$MYSQL_ROOT_PASSWORD -e"
+alias msql="mysql -uroot -p\"$MYSQL_ROOT_PASSWORD\" -e"
 alias wpc="su www-data -s /bin/bash -c"
 SQLHEADER=$(cat <<EOF
 -- MySQL dump 10.13  Distrib 5.5.52, for debian-linux-gnu (i686)
@@ -41,7 +41,7 @@ function start_mysql
 
 	/entrypoint.sh mysqld &
 
-	until mysql -uroot -p$PASSWORD -e ";"
+	until mysql -uroot -p"$PASSWORD" -e ";"
 	do
 		echo "Can't connect to mysql, retrying in 5 seconds."
 		sleep 5
@@ -50,7 +50,7 @@ function start_mysql
 
 function stop_mysql
 {
-	mysqladmin -uroot -p$MYSQL_ROOT_PASSWORD shutdown
+	mysqladmin -uroot -p"$MYSQL_ROOT_PASSWORD" shutdown
 
 	while ! [ -z "$(ps aux | grep mysqld | grep -v grep)" ]
 	do

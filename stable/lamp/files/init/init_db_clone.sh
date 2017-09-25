@@ -12,7 +12,7 @@ function start_mysql
 
 	/entrypoint.sh mysqld &
 
-	until mysql -uroot -p$PASSWORD -e ";"
+	until mysql -uroot -p"$PASSWORD" -e ";"
 	do
 		echo "Can't connect to mysql, retrying in 5 seconds."
 		sleep 5
@@ -21,7 +21,7 @@ function start_mysql
 
 function stop_mysql
 {
-	mysqladmin -uroot -p$MYSQL_ROOT_PASSWORD shutdown
+	mysqladmin -uroot -p"$MYSQL_ROOT_PASSWORD" shutdown
 
 	while ! [ -z "$(ps aux | grep mysqld | grep -v grep)" ]
 	do
@@ -39,10 +39,10 @@ function init_from_backup
 	#change owner of mysqldir
 	chown -R mysql:mysql /var/lib/mysql
 
-	start_mysql $OLD_MYSQL_ROOT_PASSWORD
+	start_mysql "$OLD_MYSQL_ROOT_PASSWORD"
 
-  mysqladmin -uroot -p$OLD_MYSQL_ROOT_PASSWORD password $MYSQL_ROOT_PASSWORD
-	mysql -uroot -p$OLD_MYSQL_ROOT_PASSWORD -e "ALTER USER 'root' IDENTIFIED BY '$MYSQL_ROOT_PASSWORD'; flush privileges"
+  mysqladmin -uroot -p"$OLD_MYSQL_ROOT_PASSWORD" password "$MYSQL_ROOT_PASSWORD"
+	mysql -uroot -p"$OLD_MYSQL_ROOT_PASSWORD" -e "ALTER USER 'root' IDENTIFIED BY '$MYSQL_ROOT_PASSWORD'; flush privileges"
 
 	stop_mysql
 
