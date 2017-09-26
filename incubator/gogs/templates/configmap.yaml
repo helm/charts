@@ -22,6 +22,7 @@ data:
     [server]
     PROTOCOL = http
     DOMAIN = {{ .Values.service.gogs.serverDomain }}
+    SSH_DOMAIN = {{ .Values.service.gogs.sshDomain }}
     ROOT_URL = {{ .Values.service.gogs.serverRootUrl }}
     LANDING_PAGE = {{ .Values.service.gogs.serverLandingPage }}
 
