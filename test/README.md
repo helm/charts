@@ -28,7 +28,7 @@ The logic is as follows:
 ### Triggering
 
 In order for the tests to be kicked off one of the 
-[Kubernetes Charts Maintainers](https://github.com/orgs/kubernetes/teams/charts-maintainers/members) must add the 
+[Kubernetes member](https://github.com/orgs/kubernetes/people) must add the 
 "ok-to-test" label. This can also be done by commenting "/ok-to-test" on the pull request. 
 
 This check is there to ensure that PRs are spot checked for any nefarious code. There are 2 things to check for:
