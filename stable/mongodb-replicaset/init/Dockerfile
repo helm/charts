@@ -15,11 +15,11 @@
 FROM alpine:3.4
 MAINTAINER Anirudh Ramanathan <foxish@google.com>
 
-RUN apk update && apk add bash curl && wget -qO /peer-finder http://storage.googleapis.com/kubernetes-release/pets/peer-finder 
+RUN apk update && apk add bash openssl && wget -qO /peer-finder http://storage.googleapis.com/kubernetes-release/pets/peer-finder && wget -qO /kubectl https://storage.googleapis.com/kubernetes-release/release/v1.7.0/bin/linux/amd64/kubectl
 
 ENTRYPOINT ["/install.sh"]
 
 ADD files/* /
 ADD bin/linux/* /
 
-RUN chmod -c 755 /install.sh /on-start.sh /peer-finder /public-hosts-finder /add-name-label.sh
+RUN chmod -c 755 /install.sh /on-start.sh /peer-finder /public-hosts-finder /kubectl

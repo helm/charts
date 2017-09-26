@@ -40,3 +40,4 @@ mkdir -p "${WORKDIR_VOLUME}"
 cp /on-start.sh "${WORKDIR_VOLUME}"/
 cp /peer-finder "${WORKDIR_VOLUME}"/
 cp /public-hosts-finder "${WORKDIR_VOLUME}"/
+cp /kubectl "${WORKDIR_VOLUME}"/

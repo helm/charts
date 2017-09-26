@@ -87,7 +87,12 @@ spec:
           image: "{{ .Values.installImage.name }}:{{ .Values.installImage.tag }}"
           imagePullPolicy: "{{ .Values.installImage.pullPolicy }}"
           command:
-            - /add-name-label.sh
+            - /kubectl
+            - --namespace=$(POD_NAMESPACE)
+            - label
+            - pods
+            - $(POD_NAME)
+            - name=$(POD_NAME)
           args:
           env:
           - name: POD_NAMESPACE
