@@ -14,6 +14,12 @@ spec:
     metadata:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/controller-configmap.yaml") . | sha256sum }}
+        {{- if .Values.nginxTemplateFile }}
+        checksum/custom-template: {{ (print .Values.nginxTemplateFile) . | sha256sum }}
+        {{- end }}
+        {{- if .Values.dhparamFile }}
+        checksum/dhparam: {{ (print .Values.dhparamFile) . | sha256sum }}
+        {{- end }}
     {{- if .Values.controller.podAnnotations }}
 {{ toYaml .Values.controller.podAnnotations | indent 8}}
     {{- end }}
@@ -68,6 +74,19 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.namespace
+          {{- if or .Values.nginxTemplateFile .Values.dhparamFile }}
+          volumeMounts:
+            {{- if .Values.nginxTemplateFile }}
+            - name: custom-template
+              mountPath: /etc/nginx/template
+              readOnly: true
+            {{- end }}
+            {{- if .Values.dhparamFile }}
+            - name: dhparam
+              mountPath: /etc/nginx/dhparam
+              readOnly: true
+            {{- end }}
+          {{- end }}
           livenessProbe:
             httpGet:
               path: /healthz
@@ -123,6 +142,25 @@ spec:
               protocol: TCP
           resources:
 {{ toYaml .Values.statsExporter.resources | indent 12 }}
+      {{- end }}
+      {{- if or .Values.nginxTemplateFile .Values.dhparamFile }}
+      volumes:
+        {{- if .Values.nginxTemplateFile }}
+        - name: custom-template
+          configMap:
+            name: {{ template "fullname" . }}-custom-template
+            items:
+            - key: nginx.tmpl
+              path: nginx.tmpl
+        {{- end }}
+        {{- if .Values.dhparamFile }}
+        - name: dhparam
+          secret:
+            secretName: {{ template "fullname" . }}-dhparam
+            items:
+            - key: dhparam.pem
+              path: dhparam.pem
+        {{- end }}
       {{- end }}
       hostNetwork: {{ .Values.controller.hostNetwork }}
     {{- if .Values.controller.nodeSelector }}
