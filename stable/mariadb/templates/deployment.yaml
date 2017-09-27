@@ -10,6 +10,10 @@ metadata:
 spec:
   template:
     metadata:
+      {{- if and (.Values.tolerations) (le .Capabilities.KubeVersion.Minor "5") }}
+      annotations:
+        scheduler.alpha.kubernetes.io/tolerations: '{{ toJson .Values.tolerations }}'
+      {{- end }}
       labels:
         app: {{ template "fullname" . }}
     spec:
@@ -95,6 +99,10 @@ spec:
         resources:
 {{ toYaml .Values.metrics.resources | indent 10 }}
 {{- end }}
+    {{- if and (.Values.tolerations) (ge .Capabilities.KubeVersion.Minor "6") }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 6 }}
+      {{- end }}
       volumes:
       - name: config
         configMap:

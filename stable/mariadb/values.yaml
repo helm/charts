@@ -73,6 +73,12 @@ metrics:
     prometheus.io/scrape: "true"
     prometheus.io/port: "9104"
 
+tolerations:
+  #- key: "key"
+  #  operator: "Equal|Exists"
+  #  value: "value"
+  #  effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
+  
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
 ##

@@ -66,6 +66,7 @@ The following tables lists the configurable parameters of the MariaDB chart and 
 | `metrics.imageTag`          | Exporter image                             | `v0.10.0`                                   |
 | `metrics.imagePullPolicy`   | Exporter image pull policy                 | `IfNotPresent`                              |
 | `metrics.resources`         | Exporter resource requests/limit           | `nil`                                       |
+| `tolerations[]`             | List of node tains to tolerate			   | `[]`                                        |
 
 The above parameters map to the env variables defined in [bitnami/mariadb](http://github.com/bitnami/bitnami-docker-mariadb). For more information please refer to the [bitnami/mariadb](http://github.com/bitnami/bitnami-docker-mariadb) image documentation.
 
