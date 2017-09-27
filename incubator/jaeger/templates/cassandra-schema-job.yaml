@@ -1,12 +1,12 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: "jaeger-cassandra-schema"
+  name: "{{ template "jaeger.fullname" . }}-cassandra-schema"
   labels:
     app: "{{ template "jaeger.name" . }}"
     jaeger-infra: cassandra-schema-job
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-    component: "jaeger-cassandra-schema"
+    component: "cassandra-schema"
     heritage: "{{ .Release.Service }}"
     release: "{{ .Release.Name }}"
 {{- if .Values.schema.annotations }}
@@ -17,10 +17,10 @@ spec:
   activeDeadlineSeconds: 120
   template:
     metadata:
-      name: "jaeger-cassandra-schema"
+      name: "{{ template "jaeger.fullname" . }}-cassandra-schema"
     spec:
       containers:
-      - name: "jaeger-cassandra-schema"
+      - name: "{{ template "jaeger.fullname" . }}-cassandra-schema"
         image: "{{ .Values.schema.image }}:{{ .Values.schema.tag }}"
         imagePullPolicy: {{ .Values.schema.pullPolicy }}
         env:

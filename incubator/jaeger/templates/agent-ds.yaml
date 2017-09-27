@@ -1,12 +1,12 @@
 apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
-  name: "jaeger-agent"
+  name: "{{ template "jaeger.fullname" . }}-agent"
   labels:
     app: "{{ template "jaeger.name" . }}"
     jaeger-infra: agent-daemonset
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-    component: "jaeger-agent"
+    component: "agent"
     heritage: "{{ .Release.Service }}"
     release: "{{ .Release.Name }}"
 {{- if .Values.agent.annotations }}
@@ -18,14 +18,14 @@ spec:
     metadata:
       labels:
         app: "{{ template "jaeger.name" . }}"
-        component: "jaeger-agent"
+        component: "agent"
         release: "{{ .Release.Name }}"
         jaeger-infra: agent-instance
     spec:
       nodeSelector:
 {{ toYaml .Values.agent.nodeSelector | indent 8 }}
       containers:
-      - name: "jaeger-agent"
+      - name: "{{ template "jaeger.fullname" . }}-agent"
         image: "{{ .Values.agent.image }}:{{ .Values.agent.tag }}"
         imagePullPolicy: {{ .Values.agent.pullPolicy }}
         command:

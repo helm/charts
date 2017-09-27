@@ -1,12 +1,12 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: "jaeger-query"
+  name: "{{ template "jaeger.fullname" . }}-query"
   labels:
     app: "{{ template "jaeger.name" . }}"
     jaeger-infra: query-deployment
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-    component: "jaeger-query"
+    component: "query"
     heritage: "{{ .Release.Service }}"
     release: "{{ .Release.Name }}"
 {{- if .Values.query.annotations }}
@@ -21,14 +21,14 @@ spec:
     metadata:
       labels:
         app: "{{ template "jaeger.name" . }}"
-        component: "jaeger-query"
+        component: "query"
         release: "{{ .Release.Name }}"
         jaeger-infra: query-pod
     spec:
       nodeSelector:
 {{ toYaml .Values.query.nodeSelector | indent 8 }}
       containers:
-      - name: "jaeger-query"
+      - name: "{{ template "jaeger.fullname" . }}-query"
         image: "{{ .Values.query.image }}:{{ .Values.query.tag }}"
         imagePullPolicy: {{ .Values.query.pullPolicy }}
         ports:

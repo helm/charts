@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: "jaeger-collector"
+  name: "{{ template "jaeger.fullname" . }}-collector"
   labels:
     app: "{{ template "jaeger.name" . }}"
     jaeger-infra: collector-service
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-    component: "jaeger-collector"
+    component: "collector"
     heritage: "{{ .Release.Service }}"
     release: "{{ .Release.Name }}"
 {{- if .Values.collector.service.annotations }}
@@ -29,7 +29,7 @@ spec:
     targetPort: {{ .Values.collector.service.zipkinPort }}
   selector:
     app: "{{ template "jaeger.name" . }}"
-    component: "jaeger-collector"
+    component: "collector"
     release: "{{ .Release.Name }}"
     jaeger-infra: collector-pod
   type: {{ .Values.collector.service.type }}

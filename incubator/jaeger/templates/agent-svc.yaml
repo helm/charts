@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: "jaeger-agent"
+  name: "{{ template "jaeger.fullname" . }}-agent"
   labels:
     app: "{{ template "jaeger.name" . }}"
     jaeger-infra: {{ .Values.agent.name }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-    component: "jaeger-agent"
+    component: "agent"
     heritage: "{{ .Release.Service }}"
     release: "{{ .Release.Name }}"
 {{- if .Values.agent.service.annotations }}
@@ -30,6 +30,6 @@ spec:
   clusterIP: None
   selector:
     app: "{{ template "jaeger.name" . }}"
-    component: "jaeger-agent"
+    component: "agent"
     release: "{{ .Release.Name }}"
     jaeger-infra: agent-instance
