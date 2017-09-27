@@ -30,7 +30,7 @@ spec:
         imagePullPolicy: {{ .Values.agent.pullPolicy }}
         command:
         - "/go/bin/agent-linux"
-        - "--collector.host-port={{ template "jaeger.name" . }}-collector:{{ .Values.collector.service.tchannelPort }}"
+        - "--collector.host-port={{ template "jaeger.fullname" . }}-collector:{{ .Values.collector.service.tchannelPort }}"
 {{- range $key, $value := .Values.agent.cmdlineParams }}
         - "{{ $value }}"
 {{- end }}
