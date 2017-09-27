@@ -243,3 +243,15 @@ tcp: {}
 ##
 udp: {}
   # 53: "kube-system/kube-dns:53"
+
+## Enables DHParam.
+## Provide a file in PEM format
+## http://nginx.org/en/docs/http/ngx_http_ssl_module.html#ssl_dhparam
+##
+#dhparamFile: |-
+
+## Enables Nginx Custom Template.
+## Provide template file to use instead of default one
+## https://github.com/kubernetes/ingress/blob/master/controllers/nginx/configuration.md#custom-nginx-template
+##
+#nginxTemplateFile: |-
