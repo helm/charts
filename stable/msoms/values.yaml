@@ -28,5 +28,7 @@ resources:
     cpu: 500m
     memory: 768Mi  
 
-## Node selector
-nodeSelector: {}
+# Node selector - default to Linux as cannot deploy OMS agent container to Windows nodes
+nodeSelector: {
+  beta.kubernetes.io/os: linux
+  }
