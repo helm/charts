@@ -18,7 +18,7 @@ spec:
     app: {{ template "msoms.name" .   }}
    annotations:
     agentVersion: {{ .Values.omsagent.image.tag }}
-    dockerProviderVersion: 10.0.0-27
+    dockerProviderVersion: 10.0.0-28
   spec:
    containers:
      - name: {{ template "msoms.name" . }}
