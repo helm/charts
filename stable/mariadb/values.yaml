@@ -73,7 +73,7 @@ metrics:
     prometheus.io/scrape: "true"
     prometheus.io/port: "9104"
 
-tolerations:
+tolerations: []
   #- key: "key"
   #  operator: "Equal|Exists"
   #  value: "value"
