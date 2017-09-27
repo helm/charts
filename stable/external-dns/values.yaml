@@ -27,6 +27,9 @@ cloudflare:
 ## Limit possible target zones by domain suffixes (optional)
 domainFilters: []
 
+## Dry run mode to see the changes to be submitted to DNS Provider API (optional). 
+dryRun: false
+
 ## Node labels for pod assignment
 ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
 ##

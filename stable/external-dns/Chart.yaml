@@ -5,6 +5,7 @@ name: external-dns
 version: 0.2.0
 appVersion: 0.4.3
 home: https://github.com/kubernetes-incubator/external-dns
+icon: https://github.com/kubernetes-incubator/external-dns/blob/master/img/external-dns.png
 sources:
 - https://github.com/kubernetes-incubator/external-dns
 engine: gotpl

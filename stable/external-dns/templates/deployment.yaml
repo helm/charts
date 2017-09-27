@@ -24,6 +24,9 @@ spec:
           {{- range .Values.domainFilters }}
             - --domain-filter={{ . }}
           {{- end }}
+          {{- if .Values.dryRun }}
+            - --dry-run
+          {{- end }}
             - --policy={{ .Values.policy }}
             - --provider={{ .Values.provider }}
           {{- range .Values.sources }}
