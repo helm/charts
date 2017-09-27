@@ -59,4 +59,9 @@ spec:
     - name: omsagent-secret
       secret:
        secretName: {{ template "msoms.fullname" .}}
-{{- end }}               
+{{- if .Values.nodeSelector }}       
+   nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 4 }}       
+{{- end }}
+{{- end }}
+           
