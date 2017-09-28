@@ -68,6 +68,10 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.namespace
+          {{- range $key, $value := .Values.controller.extraEnvs }}
+            - name: {{ $key | upper | replace "." "_" }}
+              value: {{ $value }}
+          {{- end }}
           livenessProbe:
             httpGet:
               path: /healthz
