@@ -1,0 +1,14 @@
+description: Scalyr Agent
+home: https://www.scalyr.com
+icon: https://www.scalyr.com/s2/src/img/logo-reverse.png
+keywords:
+- monitoring
+- alerting
+- logging
+maintainers:
+- email: pierre@ozoux.net
+  name: Pierre Ozoux
+name: scalyr
+sources:
+- https://www.scalyr.com/help/install-agent-docker
+version: 0.1.0
