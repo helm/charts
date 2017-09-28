@@ -75,18 +75,11 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.namespace
-          {{- if or .Values.nginxTemplateFile .Values.dhparamFile }}
+          {{- if or .Values.nginxTemplateFile }}
           volumeMounts:
-            {{- if .Values.nginxTemplateFile }}
             - name: custom-template
               mountPath: /etc/nginx/template
               readOnly: true
-            {{- end }}
-            {{- if .Values.dhparamFile }}
-            - name: dhparam
-              mountPath: /etc/nginx/dhparam
-              readOnly: true
-            {{- end }}
           {{- end }}
           livenessProbe:
             httpGet:
@@ -144,24 +137,14 @@ spec:
           resources:
 {{ toYaml .Values.statsExporter.resources | indent 12 }}
       {{- end }}
-      {{- if or .Values.nginxTemplateFile .Values.dhparamFile }}
+      {{- if .Values.nginxTemplateFile }}
       volumes:
-        {{- if .Values.nginxTemplateFile }}
         - name: custom-template
           configMap:
             name: {{ template "fullname" . }}-custom-template
             items:
             - key: nginx.tmpl
               path: nginx.tmpl
-        {{- end }}
-        {{- if .Values.dhparamFile }}
-        - name: dhparam
-          secret:
-            secretName: {{ template "fullname" . }}-dhparam
-            items:
-            - key: dhparam.pem
-              path: dhparam.pem
-        {{- end }}
       {{- end }}
       hostNetwork: {{ .Values.controller.hostNetwork }}
     {{- if .Values.controller.nodeSelector }}
