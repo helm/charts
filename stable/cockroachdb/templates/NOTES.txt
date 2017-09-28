@@ -9,8 +9,15 @@ For example, you can open up a SQL shell to the cluster by running:
 
     kubectl run -it --rm cockroach-client \
         --image=cockroachdb/cockroach \
-        --restart=Never \
+        --restart=Never \{{- if and (.Values.NetworkPolicy.Enabled) (not .Values.NetworkPolicy.AllowExternal) }}
+        --labels="{{.Release.Name}}-{{.Values.Component}}-client=true" \{{- end }}
         --command -- ./cockroach sql --insecure --host {{ printf "%s-%s" .Release.Name .Values.Name | trunc 56 }}-public.{{ .Release.Namespace }}
+
+{{ if and (.Values.NetworkPolicy.Enabled) (not .Values.NetworkPolicy.AllowExternal) }}
+Note: Since NetworkPolicy is enabled, only pods with label
+{{.Release.Name}}-{{.Values.Component}}-client=true"
+will be able to connect to this cockroachdb cluster.
+{{- end }}
 
 From there, you can interact with the SQL shell as you would any other SQL shell,
 confident that any data you write will be safe and available even if parts of

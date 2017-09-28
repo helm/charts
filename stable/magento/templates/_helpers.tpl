@@ -16,6 +16,22 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- end -}}
 
 {{/*
+Create a random alphanumeric password string.
+We append a random number to the string to avoid password validation errors
+*/}}
+{{- define "randomPassword" -}}
+{{- randAlphaNum 9 -}}{{- randNumeric 1 -}}
+{{- end -}}
+
+{{/*
+Get the user defined password or use a random string
+*/}}
+{{- define "password" -}}
+{{- $password := index .Values (printf "%sPassword" .Chart.Name) -}}
+{{- default (include "randomPassword" .) $password -}}
+{{- end -}}
+
+{{/*
 Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 */}}

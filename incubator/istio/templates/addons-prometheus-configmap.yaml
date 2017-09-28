@@ -1,11 +1,11 @@
 {{ if .Values.addons.prometheus.enabled }}
-{{- $serviceName := include "fullname" . -}}
+{{- $serviceName := include "istio.fullname" . -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ $serviceName }}-{{ .Values.addons.prometheus.deployment.name }}
   labels:
-{{ include "labels.standard" . | indent 4 }}
+{{ include "istio.labels.standard" . | indent 4 }}
 data:
   prometheus.yml: |-
     global:
@@ -18,5 +18,5 @@ data:
       # metrics_path defaults to '/metrics'
       # scheme defaults to 'http'.
       static_configs:
-      - targets: ['{{ template "fullname" . }}-mixer:{{ .Values.mixer.service.externalPrometheusPort }}']
+      - targets: ['{{ template "istio.fullname" . }}-mixer:{{ .Values.mixer.service.externalPrometheusPort }}']
 {{ end }}

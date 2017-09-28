@@ -28,7 +28,11 @@ spec:
           imagePullPolicy: "{{ .Values.defaultBackend.image.pullPolicy }}"
           args:
           {{- range $key, $value := .Values.defaultBackend.extraArgs }}
+            {{- if $value }}
             - --{{ $key }}={{ $value }}
+            {{- else }}
+            - --{{ $key }}
+            {{- end }}
           {{- end }}
           livenessProbe:
             httpGet:
@@ -45,6 +49,10 @@ spec:
     {{- if .Values.defaultBackend.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.defaultBackend.nodeSelector | indent 8 }}
+    {{- end }}
+    {{- if .Values.defaultBackend.tolerations }}
+      tolerations:
+{{ toYaml .Values.defaultBackend.tolerations | indent 8 }}
     {{- end }}
       terminationGracePeriodSeconds: 60
 {{- end }}

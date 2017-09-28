@@ -50,7 +50,7 @@ spec:
           httpGet:
             path: /
             port: dashboard-http
-          initialDelaySeconds: 120
+          initialDelaySeconds: 240
         readinessProbe:
           httpGet:
             path: /

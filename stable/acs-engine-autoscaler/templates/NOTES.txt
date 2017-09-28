@@ -4,10 +4,10 @@ The acs-engine-autoscaler is getting provisioned in your cluster. After a few mi
 
 To verify that acs-engine-autoscaler has started, run:
 
-  kubectl --namespace={{ .Release.Namespace }} get pods -l "app={{ template "name" . }}"
+  kubectl --namespace={{ .Release.Namespace }} get pods -l "app={{ template "acs-engine-autoscaler.name" . }}"
 
 To verify that acs-engine-autoscaler is running as expected, run:
-  kubectl logs $(kubectl --namespace={{ .Release.Namespace }} get pods -l "app={{ template "name" . }}" -o jsonpath="{.items[0].metadata.name}")
+  kubectl logs $(kubectl --namespace={{ .Release.Namespace }} get pods -l "app={{ template "acs-engine-autoscaler.name" . }}" -o jsonpath="{.items[0].metadata.name}")
 
 {{- else -}}
 ##############################################################################

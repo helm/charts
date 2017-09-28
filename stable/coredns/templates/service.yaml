@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "coredns.fullname" . }}
   labels:
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
@@ -11,7 +11,7 @@ metadata:
     kubernetes.io/cluster-service: "true"
     kubernetes.io/name: "CoreDNS"
     {{- else }}
-    app: {{ template "fullname" . }}
+    app: {{ template "coredns.fullname" . }}
     {{- end }}
   annotations:
     {{- if .Values.middleware.prometheus.enabled }}
@@ -23,7 +23,7 @@ spec:
   {{- if .Values.isClusterService }}
     k8s-app: {{ .Chart.Name | quote }}
   {{- else }}
-    app: {{ template "fullname" . }}
+    app: {{ template "coredns.fullname" . }}
   {{- end }}
   {{- if .Values.isClusterService }}
   clusterIP: {{ .Values.middleware.kubernetes.clusterIP }}
@@ -37,6 +37,11 @@ spec:
   {{- if or (eq .Values.serviceProtocol "UDPNTCP") (eq .Values.serviceProtocol "TCP") }}
   - name: dns-tcp
     port: 53
+    protocol: TCP
+  {{- end }}
+  {{- if .Values.middleware.prometheus.enabled }}
+  - name: metrics
+    port: {{ .Values.middleware.prometheus.port }}
     protocol: TCP
   {{- end }}
   type: {{ default "ClusterIP" .Values.serviceType }}

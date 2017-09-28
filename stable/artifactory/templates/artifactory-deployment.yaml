@@ -1,9 +1,9 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "artifactory.fullname" . }}
+  name: {{ template "artifactory.artifactory.fullname" . }}
   labels:
-    app: {{ template "name" . }}
+    app: {{ template "artifactory.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     component: "{{ .Values.artifactory.name }}"
     heritage: {{ .Release.Service }}
@@ -13,21 +13,21 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "name" . }}
+        app: {{ template "artifactory.name" . }}
         component: "{{ .Values.artifactory.name }}"
         release: {{ .Release.Name }}
-      annotations:
-        pod.beta.kubernetes.io/init-containers: '[{
-          "name": "remove-lost-found",
-          "image": {{ .Values.initContainerImage | quote }},
-          "command": ["rm", "-rf", "{{ .Values.artifactory.persistence.mountPath }}/lost+found"],
-          "volumeMounts": [{
-              "name": "artifactory-volume",
-              "mountPath": {{ .Values.artifactory.persistence.mountPath | quote }}
-            }],
-          "imagePullPolicy": {{ .Values.artifactory.image.pullPolicy | quote }}
-        }]'
     spec:
+      initContainers:
+      - name: "remove-lost-found"
+        image: "{{ .Values.initContainerImage }}"
+        imagePullPolicy: {{ .Values.artifactory.image.pullPolicy }}
+        command:
+        - "rm"
+        - "-rf"
+        - "{{ .Values.artifactory.persistence.mountPath }}/lost+found"
+        volumeMounts:
+        - mountPath: {{ .Values.artifactory.persistence.mountPath | quote }}
+          name: artifactory-volume
       containers:
       - name: {{ .Values.artifactory.name }}
         image: "{{ .Values.artifactory.image.repository }}:{{ .Values.artifactory.image.version }}"
@@ -40,10 +40,10 @@ spec:
         - name: DB_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "artifactory.fullname" . }}
               key: artifactory-database-password
         - name: DB_HOST
-          value: {{ template "database.name" . }}
+          value: {{ template "artifactory.database.name" . }}
         ports:
         - containerPort: {{ .Values.artifactory.internalPort }}
         volumeMounts:
@@ -53,7 +53,7 @@ spec:
       - name: artifactory-volume
       {{- if .Values.artifactory.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ template "artifactory.fullname" . }}
+          claimName: {{ template "artifactory.artifactory.fullname" . }}
       {{- else }}
         emptyDir: {}
       {{- end -}}

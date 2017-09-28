@@ -7,6 +7,11 @@ image:
   tag: "2.4.0"
   pullPolicy: "Always"
 
+cluster:
+  name: "elasticsearch"
+  config:
+    
+
 client:
   name: client
   replicas: 2
