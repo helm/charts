@@ -1,0 +1,15 @@
+replicaCount: 1
+image:
+  repository: gcr.io/google-containers/prometheus-to-sd
+  tag: v0.2.1
+  pullPolicy: IfNotPresent
+resources:
+  limits:
+   cpu: 50m
+   memory: 128Mi
+  requests:
+   cpu: 10m
+   memory: 64Mi
+port: 6060
+metricSources:
+  kube-state-metrics: http://kube-state-metrics:8080
