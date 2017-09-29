@@ -1,0 +1,63 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    app: {{ template "name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  template:
+    metadata:
+      labels:
+        app: {{ template "name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+          - name: SLACK_API_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "fullname" . }}
+                key: slackApiToken
+          - name: TAG_TO_CHANNEL
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "fullname" . }}
+                key: tagToChannel
+          - name: STACK_SITE
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "fullname" . }}
+                key: stackSite
+          - name: DEBUG
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "fullname" . }}
+                key: debug
+          livenessProbe:
+            exec:
+              command:
+              - sh
+              - -c
+              - ps -ef | grep /go/bin/stack2slack | grep -v grep
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          readinessProbe:
+            exec:
+              command:
+              - sh
+              - -c
+              - ps -ef | grep /go/bin/stack2slack | grep -v grep
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}

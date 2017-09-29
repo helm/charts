@@ -1,0 +1,9 @@
+apiVersion: v1
+description: A Slack bot to monitor StackOverflow/StackExchange tags
+name: stack2slack
+version: 0.1.0
+sources:
+- https://github.com/dunglas/stack2slack
+maintainers:
+- name: Kévin Dunglas
+  email: dunglas@gmail.com
