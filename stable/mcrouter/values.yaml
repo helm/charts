@@ -1,5 +1,5 @@
-## Third-party image as indicated in https://github.com/facebook/mcrouter/wiki/mcrouter-installation
-image: jamescarr/mcrouter
+## Container image
+image: jphalip/mcrouter:0.36.0
 
 ## Memcached chart parameters
 memcached:
