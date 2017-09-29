@@ -1,7 +1,7 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "name" . }}-sentinel
+  name: {{ template "fullname" . }}-sentinel
 spec:
   replicas: {{ .Values.replicas.sentinel }}
   template:

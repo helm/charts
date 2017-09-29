@@ -7,7 +7,7 @@ metadata:
     redis-node: "true"
     role: master
 {{ include "labels.standard" . | indent 4 }}
-  name: redis-master
+  name: {{ template "fullname" . }}-master
 spec:
   serviceName: "redis"
   replicas: {{ .Values.replicas.master }}
