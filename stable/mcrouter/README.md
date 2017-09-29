@@ -10,7 +10,7 @@ The following tables lists the configurable parameters of the Mcrouter chart and
 | ----------------------------- | -------------------------------------- | ----------------------------------------------- |
 | `controller` | Controller used for deploying the Mcrouter pods. Possible values: `daemonset` or `statefulset` | `daemonset` |
 | `daemonset.hostPort` | Host port used by the DaemonSet controller | `5000` |
-| `image`                         | Container's image                      | `jamescarr/mcrouter` <br> Note: Third-party image as indicated in the [official documentation](https://github.com/facebook/mcrouter/wiki/mcrouter-installation). <br> It is recommended to build a new, up-to-date image based on the [official Dockerfile](https://github.com/facebook/mcrouter/blob/master/mcrouter/scripts/docker/Dockerfile) |
+| `image`                         | Container's image                      | `jphalip/mcrouter:0.36.0`<br>Note: Third-party image (see [source](https://github.com/jphalip/mcrouter-docker))<br>It is recommended to build a new, up-to-date image based on the [official Dockerfile](https://github.com/facebook/mcrouter/blob/master/mcrouter/scripts/docker/Dockerfile) |
 | `mcrouterCommandParams.configFile` | The config file to use for the mcrouter command. If not provided, then a config file will automatically be generated based on the Memcached chart's parameters. | No value |
 | `mcrouterCommandParams.port`       | Port(s) to listen on (comma separated) | `5000`   |
 | `memcached.enabled`         | If true, the Memcached chart will be installed as a dependency | `true`   |
