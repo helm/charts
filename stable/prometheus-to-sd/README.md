@@ -36,7 +36,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the Redis chart and their default values.
+The following tables lists the configurable parameters and their default values.
 
 | Parameter                             | Description                           | Default                                                   |
 | --------------------------            | ------------------------------------- | --------------------------------------------------------- |
@@ -63,4 +63,4 @@ Alternatively, a YAML file that specifies the values for the parameters can be p
 $ helm install --name my-release -f values.yaml stable/prometheus-to-sd
 ```
 
-Multiple metrics sources can be defined. 
+Multiple metrics sources can be defined.
