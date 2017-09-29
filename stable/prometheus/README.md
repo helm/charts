@@ -87,6 +87,7 @@ Parameter | Description | Default
 `kubeStateMetrics.image.repository` | kube-state-metrics container image repository| `gcr.io/google_containers/kube-state-metrics`
 `kubeStateMetrics.image.tag` | kube-state-metrics container image tag | `v0.4.1`
 `kubeStateMetrics.image.pullPolicy` | kube-state-metrics container image pull policy | `IfNotPresent`
+`kubeStateMetrics.args` | kube-state-metrics container arguments | `{}`
 `kubeStateMetrics.nodeSelector` | node labels for kube-state-metrics pod assignment | `{}`
 `kubeStateMetrics.podAnnotations` | annotations to be added to kube-state-metrics pods | `{}`
 `kubeStateMetrics.replicaCount` | desired number of kube-state-metrics pods | `1`
