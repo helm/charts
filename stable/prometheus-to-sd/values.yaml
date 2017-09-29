@@ -6,10 +6,10 @@ image:
 resources:
   limits:
    cpu: 50m
-   memory: 128Mi
+   memory: 64Mi
   requests:
-   cpu: 10m
+   cpu: 50m
    memory: 64Mi
 port: 6060
-metricSources:
-  kube-state-metrics: http://kube-state-metrics:8080
+metricsSources: {}
+  # kube-state-metrics: http://kube-state-metrics:8080
