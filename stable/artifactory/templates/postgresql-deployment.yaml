@@ -8,6 +8,8 @@ metadata:
     component: "{{ .Values.database.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
+  annotation:
+    description: {{ .Chart.Description }}
 spec:
   replicas: {{ .Values.replicaCount }}
   template:
