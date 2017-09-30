@@ -5,6 +5,8 @@ metadata:
   name: {{ template "chrome.fullname" . }}
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+  annotation:
+    description: {{ .Chart.Description }}
 spec:
   replicas: {{ .Values.chrome.replicas }}
   template:

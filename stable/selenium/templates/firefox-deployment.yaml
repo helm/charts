@@ -5,6 +5,8 @@ metadata:
   name: {{ template "firefox.fullname" . }}
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+  annotation:
+    description: {{ .Chart.Description }}
 spec:
   replicas: {{ .Values.firefox.replicas }}
   template:
