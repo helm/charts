@@ -3,6 +3,8 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: {{ template "fullname" . }}-lego
+  annotation:
+    description: {{ .Chart.Description }}
 spec:
   replicas: {{ .Values.lego.replicaCount }}
   template:
