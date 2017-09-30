@@ -5,6 +5,8 @@ metadata:
   labels:
     app: {{ template "fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+  annotation:
+    description: {{ .Chart.Description }}
 spec:
   replicas: {{ .Values.replicaCount }}
   template:
