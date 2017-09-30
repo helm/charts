@@ -6,6 +6,8 @@ metadata:
   name: {{ template "datadog.fullname" . }}
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+  annotation:
+    description: {{ .Chart.Description }}
 spec:
   replicas: {{ .Values.deployment.replicas }}
   template:
