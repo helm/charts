@@ -13,3 +13,8 @@ logLevel: 3
 persistence:
   enabled: false
   hostPath: /etc/kubernetes
+
+## Node labels for pod assignment
+## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+##
+nodeSelector: {}
