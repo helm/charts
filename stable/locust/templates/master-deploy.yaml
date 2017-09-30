@@ -8,6 +8,8 @@ metadata:
     release: {{ .Release.Name | quote }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     component: master
+  annotation:
+    description: {{ .Chart.Description }}
 spec:
   replicas: 1
   strategy:
