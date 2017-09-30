@@ -9,6 +9,8 @@ metadata:
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
   name: {{ template "prometheus.kubeStateMetrics.fullname" . }}
+  annotation:
+    description: {{ .Chart.Description }}
 spec:
   replicas: {{ .Values.kubeStateMetrics.replicaCount }}
   template:
