@@ -19,6 +19,11 @@ aws:
   access_key: ""
   region: "us-east-1"
 
+# Cloudflare keys to inject as environment variables
+cloudflare:
+  api_key: ""
+  email: ""
+
 ## Limit possible target zones by domain suffixes (optional)
 domainFilters: []
 

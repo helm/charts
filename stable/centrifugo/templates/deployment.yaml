@@ -1,12 +1,12 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "centrifugo.fullname" . }}
   labels:
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    app: {{ template "name" . }}
+    app: {{ template "centrifugo.name" . }}
 spec:
   replicas: {{ .Values.replicaCount }}
   strategy:
@@ -18,7 +18,7 @@ spec:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
       labels:
-        app: {{ template "name" . }}
+        app: {{ template "centrifugo.name" . }}
         release: {{ .Release.Name }}
     spec:
       containers:
@@ -35,20 +35,20 @@ spec:
         - name: CENTRIFUGO_ADMIN_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "centrifugo.fullname" . }}
               key: admin-password
         - name: CENTRIFUGO_ADMIN_SECRET
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "centrifugo.fullname" . }}
               key: admin-secret
         - name: CENTRIFUGO_SECRET
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "centrifugo.fullname" . }}
               key: secret
         volumeMounts:
-        - name: "{{ template "fullname" . }}-config"
+        - name: "{{ template "centrifugo.fullname" . }}-config"
           mountPath: "/centrifugo"
           readOnly: true
         ports:
@@ -65,6 +65,6 @@ spec:
         resources:
 {{ toYaml .Values.resources | indent 10 }}
       volumes:
-      - name: {{ template "fullname" . }}-config
+      - name: {{ template "centrifugo.fullname" . }}-config
         configMap:
-          name: {{ template "fullname" . }}-config
+          name: {{ template "centrifugo.fullname" . }}-config

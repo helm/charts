@@ -8,16 +8,17 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
-  annotations:
-  {{- if .Values.persistence.sugarcrm.storageClass }}
-    volume.beta.kubernetes.io/storage-class: {{ .Values.persistence.sugarcrm.storageClass | quote }}
-  {{- else }}
-    volume.alpha.kubernetes.io/storage-class: default
-  {{- end }}
 spec:
   accessModes:
     - {{ .Values.persistence.sugarcrm.accessMode | quote }}
   resources:
     requests:
       storage: {{ .Values.persistence.sugarcrm.size | quote }}
+{{- if .Values.persistence.sugarcrm.storageClass }}
+{{- if (eq "-" .Values.persistence.sugarcrm.storageClass) }}
+  storageClassName: ""
+{{- else }}
+  storageClassName: "{{ .Values.persistence.sugarcrm.storageClass }}"
+{{- end }}
+{{- end }}
 {{- end -}}

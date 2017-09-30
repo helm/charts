@@ -26,6 +26,8 @@ The following tables lists the configurable parameters of the external-dns chart
 | `aws.access_key`          | `AWS_ACCESS_KEY_ID` to set in the environment (optional).                                                                  | `""`                                               |
 | `aws.secret_key`          | `AWS_SECRET_ACCESS_KEY` to set in the environment (optional).                                                              | `""`                                               |
 | `aws.region`              | `AWS_DEFAULT_REGION` to set in the environment (optional).                                                                 | `us-east-1`                                        |
+| `cloudflare.api_key`      | `CF_API_KEY` to set in the environment (optional).                                                                 | `""`                                        |
+| `cloudflare.email`        | `CF_API_EMAIL` to set in the environment (optional).                                                                 | `""`                                        |
 | `domainFilters`           | Limit possible target zones by domain suffixes (optional).                                                                 | `[]`                                               |
 | `extraArgs`               | Optional object of extra args, as `name`: `value` pairs. Where the name is the command line arg to external-dns.           | `{}`                                               |
 | `image.name`              | Container image name (Including repository name if not `hub.docker.com`).                                                  | `registry.opensource.zalan.do/teapot/external-dns` |
