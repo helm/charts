@@ -47,6 +47,8 @@ items:
         app: weave-scope
         weave-cloud-component: scope
         weave-scope-component: agent
+    annotation:
+      description: {{ .Chart.Description }}
     spec:
       template:
         metadata:

@@ -47,6 +47,8 @@ items:
         app: weave-cortex
         weave-cloud-component: cortex
         weave-cortex-component: agent
+    annotation:
+      description: {{ .Chart.Description }}
     spec:
       replicas: 1
       template:
