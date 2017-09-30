@@ -6,6 +6,8 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     heritage: "{{ .Release.Service }}"
     release: "{{ .Release.Name }}"
+  annotation:
+    description: {{ .Chart.Description }}
   name: {{ template "linkerd.fullname" . }}
 spec:
   template:
