@@ -2,9 +2,9 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: {{ template "fullname" . }}-dokuwiki
+  name: {{ template "dokuwiki.fullname" . }}-dokuwiki
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "dokuwiki.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"

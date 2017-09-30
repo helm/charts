@@ -48,6 +48,8 @@ The following tables lists the configurable parameters of the Datadog chart and 
 | `datadog.autoconf`          | Additional Datadog service discovery configurations | `nil`                    |
 | `datadog.checksd`           | Additional Datadog service checks  | `nil`                                     |
 | `datadog.confd`             | Additional Datadog service configurations | `nil`                              |
+| `datadog.volumes`           | Additional volumes for the daemonset or deployment | `nil`                     |
+| `datadog.volumeMounts`      | Additional volumeMounts for the daemonset or deployment | `nil`                |
 | `resources.requests.cpu`    | CPU resource requests              | `100m`                                    |
 | `resources.limits.cpu`      | CPU resource limits                | `256m`                                    |
 | `resources.requests.memory` | Memory resource requests           | `128Mi`                                   |
@@ -55,6 +57,8 @@ The following tables lists the configurable parameters of the Datadog chart and 
 | `kubeStateMetrics.enabled`  | If true, create kube-state-metrics | `true`                                    |
 | `daemonset.podAnnotations`  | Annotations to add to the DaemonSet's Pods | `nil`                             |
 | `daemonset.tolerations`     | List of node taints to tolerate (requires Kubernetes >= 1.6) | `nil`           |
+| `daemonset.useHostNetwork`  | If true, use the host's network    | `nil`                                     |
+| `daemonset.useHostPort`     | If true, use the same ports for both host and container  | `nil`               |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
