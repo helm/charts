@@ -7,6 +7,8 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
+  annotation:
+    description: {{ .Chart.Description }}
 spec:
   replicas: {{ .Values.proxy.replicas }}
   template:
