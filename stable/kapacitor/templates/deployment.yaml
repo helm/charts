@@ -7,7 +7,9 @@ metadata:
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    heritage: "{{ .Release.Service }}"  
+  annotation:
+    description: {{ .Chart.Description }}
     app: {{ template "kapacitor.fullname" . }}
 spec:
   replicas: 1
