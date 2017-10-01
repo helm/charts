@@ -26,13 +26,13 @@ The following tables lists the configurable parameters of the external-dns chart
 | `aws.access_key`          | `AWS_ACCESS_KEY_ID` to set in the environment (optional).                                                                  | `""`                                               |
 | `aws.secret_key`          | `AWS_SECRET_ACCESS_KEY` to set in the environment (optional).                                                              | `""`                                               |
 | `aws.region`              | `AWS_DEFAULT_REGION` to set in the environment (optional).                                                                 | `us-east-1`                                        |
-| `cloudflare.api_key`      | `CF_API_KEY` to set in the environment (optional).                                                                 | `""`                                        |
-| `cloudflare.email`        | `CF_API_EMAIL` to set in the environment (optional).                                                                 | `""`                                        |
+| `cloudflare.api_key`      | `CF_API_KEY` to set in the environment (optional).                                                                         | `""`                                               |
+| `cloudflare.email`        | `CF_API_EMAIL` to set in the environment (optional).                                                                       | `""`                                               |
 | `domainFilters`           | Limit possible target zones by domain suffixes (optional).                                                                 | `[]`                                               |
 | `extraArgs`               | Optional object of extra args, as `name`: `value` pairs. Where the name is the command line arg to external-dns.           | `{}`                                               |
 | `image.name`              | Container image name (Including repository name if not `hub.docker.com`).                                                  | `registry.opensource.zalan.do/teapot/external-dns` |
 | `image.pullPolicy`        | Container pull policy.                                                                                                     | `IfNotPresent`                                     |
-| `image.tag`               | Container image tag.                                                                                                       | `v0.4.3`                                           |
+| `image.tag`               | Container image tag.                                                                                                       | `v0.4.4`                                           |
 | `podAnnotations`          | Additional annotations to apply to the pod.                                                                                | `{}`                                               |
 | `policy`                  | Modify how DNS records are sychronized between sources and providers (options: sync, upsert-only ).                        | `upsert-only`                                      |
 | `provider`                | The DNS provider where the DNS records will be created (options: aws, google, azure, cloudflare, digitalocean, inmemory ). | `aws`                                              |
@@ -40,6 +40,7 @@ The following tables lists the configurable parameters of the external-dns chart
 | `rbac.serviceAccountName` | Existing ServiceAccount to use (ignored if rbac.create=true)                                                               | `default`                                          |
 | `resources`               | CPU/Memory resource requests/limits.                                                                                       | `{}`                                               |
 | `sources`                 | List of resource types to monitor, possible values are fake, service or ingress.                                           | `[service, ingress]`                               |
+| `extraArgs`               | Additional key-value parameters.                                                                                           | `{}`                                               |
 | `tolerations`             | List of node taints to tolerate (requires Kubernetes >= 1.6)                                                               | `[]`                                               |
 
 
