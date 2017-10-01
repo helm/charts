@@ -5,7 +5,7 @@ replicaCount: 1
 image:
   repository: quay.io/tuannvm/goldfish
   tag: v0.7.3
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
 service:
   name: nginx
   type: ClusterIP
