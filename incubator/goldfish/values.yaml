@@ -4,7 +4,7 @@
 replicaCount: 1
 image:
   repository: quay.io/tuannvm/goldfish
-  tag: 0.7.3
+  tag: v0.7.3
   pullPolicy: Always
 service:
   name: nginx
