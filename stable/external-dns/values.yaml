@@ -55,6 +55,8 @@ logLevel: info
 
 extraArgs: {}
 
+extraEnv: {}
+
 ## CPU and Memory limit and request for external-dns
 resources: {}
 #  limits:
