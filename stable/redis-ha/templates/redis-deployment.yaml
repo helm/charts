@@ -1,0 +1,33 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    redis-node: "true"
+{{ include "labels.standard" . | indent 4 }}
+spec:
+  replicas: {{ .Values.replicas.slave }}
+  template:
+    metadata:
+      labels:
+        name: redis
+{{ include "labels.standard" . | indent 8 }}
+    spec:
+      containers:
+      - name: redis
+        image: "{{ .Values.redis_image }}"
+        resources:
+{{ toYaml .Values.resources.slave | indent 10 }}
+        ports:
+        - containerPort: 6379
+        volumeMounts:
+        - mountPath: /redis-master-data
+          name: data
+      volumes:
+      - name: data
+      {{- if .Values.persistentVolume.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ if .Values.persistentVolume.existingClaim }}{{ .Values.persistentVolume.existingClaim }}{{- else }}{{ template "fullname" . }}{{- end }}
+      {{- else }}
+        emptyDir: {}
+      {{- end -}}

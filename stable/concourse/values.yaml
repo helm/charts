@@ -362,6 +362,20 @@ worker:
   # annotations:
   #   iam.amazonaws.com/role: arn:aws:iam::123456789012:role/concourse
 
+  ## Additional affinities to add to the worker pods.
+  ## Useful if you prefer to run workers on non-spot instances, for example
+  ##
+  # additionalAffinities:
+  #   nodeAffinity:
+  #     preferredDuringSchedulingIgnoredDuringExecution:
+  #       - weight: 50
+  #         preference:
+  #           matchExpressions:
+  #             - key: spot
+  #               operator: NotIn
+  #               values:
+  #                 - "true"
+
 ## Persistent Volume Storage configuration.
 ## ref: https://kubernetes.io/docs/user-guide/persistent-volumes
 ##

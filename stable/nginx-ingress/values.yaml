@@ -201,8 +201,8 @@ rbac:
 statsExporter:
   name: stats-exporter
   image:
-    repository: quay.io/cy-play/vts-nginx-exporter
-    tag: v0.0.3
+    repository: sophos/nginx-vts-exporter
+    tag: v0.6
     pullPolicy: IfNotPresent
 
   endpoint: /metrics
