@@ -1,8 +1,5 @@
 # Helm chart for GoldFish service
 
-only need access, secret,region & bucket name
-
-
 This Helm chart simplifies the deployment of [goldfish](https://github.com/Caiyeon/goldfish) on Kubernetes.
 
 ## Pre Requisites:
