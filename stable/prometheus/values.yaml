@@ -144,6 +144,7 @@ alertmanager:
     loadBalancerIP: ""
     loadBalancerSourceRanges: []
     servicePort: 80
+    # nodePort: 30000
     type: ClusterIP
 
 ## Monitors ConfigMap changes and POSTs to a URL
@@ -462,6 +463,10 @@ server:
   ## Prometheus server pod termination grace period
   ##
   terminationGracePeriodSeconds: 300
+
+  ## Prometheus data retention period (i.e 360h)
+  ##
+  retention: ""
 
 pushgateway:
   ## If false, pushgateway will not be installed
