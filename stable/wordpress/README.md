@@ -74,7 +74,8 @@ The following tables lists the configurable parameters of the WordPress chart an
 | `persistence.enabled`                | Enable persistence using PVC               | `true`                                                     |
 | `persistence.storageClass`           | PVC Storage Class                          | `nil` (uses alpha storage class annotation)                |
 | `persistence.accessMode`             | PVC Access Mode                            | `ReadWriteOnce`                                            |
-| `persistence.size`                   | PVC Storage Request                        | `10Gi`                                                      |                                              |
+| `persistence.size`                   | PVC Storage Request                        | `10Gi`                                                     |
+| `nodeSelector`                       | Node labels for pod assignment             | `{}`                                                       |
 
 The above parameters map to the env variables defined in [bitnami/wordpress](http://github.com/bitnami/bitnami-docker-wordpress). For more information please refer to the [bitnami/wordpress](http://github.com/bitnami/bitnami-docker-wordpress) image documentation.
 

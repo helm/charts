@@ -1,0 +1,36 @@
+{{- if .Values.defaultBucket.enabled }}
+apiVersion: v1
+kind: Pod
+metadata:
+  name: {{ template "fullname" . }}-create-bucket
+  labels:
+    app: {{ template "fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+  annotations:
+    "helm.sh/hook": post-install
+spec:
+  restartPolicy: OnFailure
+  containers:
+  - name: minio-mc
+    image: minio/mc
+    command: ["/bin/sh", "-c",
+    "/usr/bin/mc config host add myminio http://$MINIO_ENDPOINT:9000 $MINIO_ACCESS_KEY $MINIO_SECRET_KEY;
+    /usr/bin/mc rm -r --force myminio/{{ .Values.defaultBucket.name }};
+    /usr/bin/mc mb myminio/{{ .Values.defaultBucket.name }};
+    /usr/bin/mc policy {{ .Values.defaultBucket.policy }} myminio/{{ .Values.defaultBucket.name }};"]
+    env:
+      - name: MINIO_ACCESS_KEY
+        valueFrom:
+          secretKeyRef:
+            name: {{ template "fullname" . }}-user
+            key: accesskey
+      - name: MINIO_SECRET_KEY
+        valueFrom:
+          secretKeyRef:
+            name: {{ template "fullname" . }}-user
+            key: secretkey
+      - name: MINIO_ENDPOINT
+        value: {{ template "fullname" . }}-svc
+{{- end }}

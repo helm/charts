@@ -14,7 +14,7 @@ spec:
       labels: {{ include "external-dns.labels" . | indent 8 }}
     spec:
       containers:
-        - name: {{ template "name" . }}
+        - name: {{ template "external-dns.name" . }}
           image: "{{.Values.image.name}}:{{ .Values.image.tag }}"
           imagePullPolicy: "{{ .Values.image.pullPolicy }}"
           args:
