@@ -13,12 +13,13 @@ data:
         Parsers_File parsers.conf
 
     [INPUT]
-        Name          tail
-        Path          /var/log/containers/*.log
-        Parser        docker
-        Tag           kube.*
+        Name             tail
+        Path             /var/log/containers/*.log
+        Parser           docker
+        Tag              kube.*
         Refresh_Interval 5
-        Mem_Buf_Limit 5MB
+        Mem_Buf_Limit    5MB
+        Skip_Long_Lines  On
 
     [FILTER]
         Name   kubernetes
