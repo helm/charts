@@ -32,20 +32,20 @@ To install the chart with the release name `goldfish` in the default namespace:
 helm install -n goldfish .
 ```
 
-| Parameter                   | Description                        | Default                             |
-| --------------------------- | ---------------------------------- | ----------------------------------- |
-| `Name`                      | Name                               | `core`                              |
-| `replicaCount`              | Number of replicas                 | `1`                                 |
-| `image.repository`          | Image and registry name            | `quay.io/tuannvm/goldfish` |
-| `image.tag`                 | Container image tag                | `latest`                            |
-| `image.pullPolicy`          | Container image tag                | `Always`                            |
-| `service.type`              | k8s service type                   | `ClusterIP`                          |
-| `service.externalPort`          | external port                    | `80`               |
-| `service.internalPort`          | pod-listened port                    | `8000`               |
-| `ingress.enabled`             | Enable ingress usage      | `false`                                 |
-| `ingress.hosts`             | service hostname      | `chart-example.local`                                 |
-| `config.*`                  | variables to generate config file      | `-`                                 |
-| `secrets.*`                  | variables to be created as `ENV`      | `-`                                 |
+|       Parameter        |            Description            |          Default           |
+| ---------------------- | --------------------------------- | -------------------------- |
+| `Name`                 | Name                              | `core`                     |
+| `replicaCount`         | Number of replicas                | `1`                        |
+| `image.repository`     | Image and registry name           | `quay.io/tuannvm/goldfish` |
+| `image.tag`            | Container image tag               | `latest`                   |
+| `image.pullPolicy`     | Container image tag               | `Always`                   |
+| `service.type`         | k8s service type                  | `ClusterIP`                |
+| `service.externalPort` | external port                     | `80`                       |
+| `service.internalPort` | pod-listened port                 | `8000`                     |
+| `ingress.enabled`      | Enable ingress usage              | `false`                    |
+| `ingress.hosts`        | service hostname                  | `chart-example.local`      |
+| `config.*`             | variables to generate config file | `-`                        |
+| `secrets.*`            | variables to be created as `ENV`  | `-`                        |
 
 Specify parameters using `--set key=value[,key=value]` argument to `helm install`
 
