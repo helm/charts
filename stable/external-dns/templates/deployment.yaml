@@ -33,7 +33,11 @@ spec:
             - --source={{ . }}
           {{- end }}
           {{- range $key, $value := .Values.extraArgs }}
+            {{- if $value }}
             - --{{ $key }}={{ $value }}
+            {{- else }}
+            - --{{ $key }}
+            {{- end }}
           {{- end }}
           {{- if .Values.aws.zone_type }}
             - --zone-type={{ .Values.aws.zone_type }}
@@ -77,5 +81,9 @@ spec:
     {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
+    {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
     {{- end }}
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "external-dns.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}

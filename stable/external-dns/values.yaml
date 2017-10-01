@@ -2,6 +2,7 @@
 image:
   name: registry.opensource.zalan.do/teapot/external-dns
   tag: v0.4.5
+
   pullPolicy: IfNotPresent
 
 ## This controls which types of resource external-dns should 'watch' for new
@@ -36,6 +37,9 @@ domainFilters: []
 ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
 ##
 nodeSelector: {}
+
+## List of node taints to tolerate (requires Kubernetes >= 1.6)
+tolerations: []
 
 ## Modify how DNS records are sychronized between sources and providers (options: sync, upsert-only )
 policy: upsert-only
