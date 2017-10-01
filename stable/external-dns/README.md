@@ -40,6 +40,7 @@ The following tables lists the configurable parameters of the external-dns chart
 | `rbac.serviceAccountName` | Existing ServiceAccount to use (ignored if rbac.create=true)                                                               | `default`                                          |
 | `resources`               | CPU/Memory resource requests/limits.                                                                                       | `{}`                                               |
 | `sources`                 | List of resource types to monitor, possible values are fake, service or ingress.                                           | `[service, ingress]`                               |
+| `tolerations`             | List of node taints to tolerate (requires Kubernetes >= 1.6)                                                               | `[]`                                               |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
