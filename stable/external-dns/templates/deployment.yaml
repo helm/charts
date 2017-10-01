@@ -18,8 +18,11 @@ spec:
           image: "{{.Values.image.name}}:{{ .Values.image.tag }}"
           imagePullPolicy: "{{ .Values.image.pullPolicy }}"
           args:
-          {{- if .Values.debug }}
-            - --debug
+          {{- if .Values.logLevel }}
+            - --log-level={{ .Values.logLevel }}
+          {{- end }}
+          {{- if .Values.publishInternalServices }}
+            - --publish-internal-services
           {{- end }}
           {{- range .Values.domainFilters }}
             - --domain-filter={{ . }}
@@ -35,6 +38,9 @@ spec:
             {{- else }}
             - --{{ $key }}
             {{- end }}
+          {{- end }}
+          {{- if .Values.aws.zone_type }}
+            - --zone-type={{ .Values.aws.zone_type }}
           {{- end }}
           env:
         {{- if and .Values.aws.secret_key .Values.aws.access_key }}
