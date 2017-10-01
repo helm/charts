@@ -106,7 +106,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 
 ```console
 $ helm install stable/istio --name my-release \
-    --set auth.enabled=flase
+    --set auth.enabled=false
 ```
 
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,

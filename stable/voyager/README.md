@@ -48,3 +48,5 @@ The following tables lists the configurable parameters of the Voyager chart and 
 | `logLevel`                 |  Log level for operator            | `3`                  |
 | `persistence.enabled`      |  Enable mounting cloud config      | `false`              |
 | `persistence.hostPath`     |  Host mount path for cloud config  | `/etc/kubernetes`    |
+| `nodeSelector`             |  Node labels for pod assignment    | `{}`                 |
+`

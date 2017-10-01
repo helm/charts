@@ -29,6 +29,11 @@ mail:
   fromAddress: spinnaker@example.org
   port: 25
 
+slack:
+  enabled: false
+  token:
+  botName: 'spinnakerbot'
+
 # Images for each component
 images:
   clouddriver: gcr.io/spinnaker-marketplace/clouddriver:0.5.0-72
@@ -45,6 +50,16 @@ deck:
   host: localhost
   port: 9000
   protocol: http
+  ingress:
+    enabled: false
+    # annotations:
+      # ingress.kubernetes.io/ssl-redirect: 'true'
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+    #tls:
+    #  - secretName: -tls
+    #    hosts:
+    #      - domain.com
 
 gate:
   allowedOriginsPattern: '^https?://(?:localhost|127.0.0.1|[^/]+\.example\.com)(?::[1-9]\d*)?/?$'
