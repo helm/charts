@@ -2,7 +2,7 @@
 ## ref: https://hub.docker.com/r/bitnami/magento/tags/
 ##
 
-image: bitnami/magento:2.1.9-r0
+image: bitnami/magento:2.2.0-r0
 
 ## Specify a imagePullPolicy
 ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
