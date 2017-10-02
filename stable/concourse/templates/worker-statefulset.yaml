@@ -77,6 +77,9 @@ spec:
             - name: concourse-work-dir
               mountPath: /concourse-work-dir
       affinity:
+{{- if .Values.worker.additionalAffinities }}
+{{ toYaml .Values.worker.additionalAffinities | indent 8 }}
+{{- end }}
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
           - weight: 100
