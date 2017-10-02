@@ -137,6 +137,7 @@ The following tables lists the configurable parameters of the Concourse chart an
 | `worker.replicas` | Number of Concourse Worker replicas | `2` |
 | `worker.minAvailable` | Minimun number of workers available after an eviction | `1` |
 | `worker.resources` | Concourse Worker resource requests and limits | `{requests: {cpu: "100m", memory: "512Mi"}}` |
+| `worker.additionalAffinities` | Additional affinities to apply to worker pods. E.g: node affinity | `nil` |
 | `persistence.enabled` | Enable Concourse persistence using Persistent Volume Claims | `true` |
 | `persistence.worker.class` | Concourse Worker Persistent Volume Storage Class | `generic` |
 | `persistence.worker.accessMode` | Concourse Worker Persistent Volume Access Mode | `ReadWriteOnce` |
