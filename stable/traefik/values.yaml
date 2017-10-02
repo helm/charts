@@ -1,10 +1,23 @@
 # Default values for Traefik
-imageTag: v1.1.2
+image: traefik
+imageTag: 1.3.8
 serviceType: LoadBalancer
+loadBalancerIP:
+#loadBalancerSourceRanges: []
+replicas: 1
 cpuRequest: 100m
 memoryRequest: 20Mi
 cpuLimit: 100m
 memoryLimit: 30Mi
+debug:
+  enabled: false
+nodeSelector: {}
+  #key: value
+tolerations: []
+  #- key: "key"
+  #operator: "Equal|Exists"
+  #value: "value"
+  #effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
 ssl:
   enabled: false
   enforced: false
@@ -18,11 +31,59 @@ acme:
   # certs every time a pod (re-)starts and you WILL be rate limited!
   persistence:
     enabled: true
-    storageClass: generic
+    ## acme data Persistent Volume Storage Class
+    ## If defined, storageClassName: <storageClass>
+    ## If set to "-", storageClassName: "", which disables dynamic provisioning
+    ## If undefined (the default) or set to null, no storageClassName spec is
+    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+    ##   GKE, AWS & OpenStack)
+    ##
+    # storageClass: "-"
     accessMode: ReadWriteOnce
     size: 1Gi
 dashboard:
   enabled: false
   domain: traefik.example.com
+  ingress:
+    # annotations:
+    #   key: value
+  auth:
+    # basic:
+    #   username: password
+  statistics:
+    ## Number of recent errors to show in the ‘Health’ tab
+    # recentErrors:
+service:
+  # annotations:
+  #   key: value
+  # labels:
+  #   key: value
 gzip:
   enabled: true
+accessLogs:
+  enabled: false
+  ## Path to the access logs file. If not provided, Traefik defaults it to stdout.
+  # filePath: ""
+  format: common  # choices are: common, json
+# Kubernetes ingress filters
+#kubernetes:
+#  namespaces:
+#  - default
+#  labelSelector:
+rbac:
+  enabled: false
+# Enable the /metrics endpoint, for now only supports prometheus
+# set to true to enable metric collection by prometheus
+metrics:
+  prometheus:
+    enabled: false
+    buckets: 0.1,0.3,1.2,5
+  datadog:
+    enabled: false
+#    address: "localhost:8125"
+#    pushInterval: 30s
+  statsd:
+    enabled: false
+#    address: "localhost:8125"
+#    pushInterval: 30s
+

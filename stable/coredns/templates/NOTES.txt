@@ -1,0 +1,35 @@
+{{- if .Values.isClusterService }}
+CoreDNS is now running in the cluster as a cluster-service.
+{{- else }}
+CoreDNS is now running in the cluster.
+It can be accessed using the below endpoint
+{{- if contains "NodePort" .Values.serviceType }}
+  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "coredns.fullname" . }})
+  export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+  echo "$NODE_IP:$NODE_PORT"
+{{- else if contains "LoadBalancer" .Values.serviceType }}
+  NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+        You can watch the status by running 'kubectl get svc -w {{ template "coredns.fullname" . }}'
+
+{{- if contains "UDPNTCP" .Values.serviceProtocol }}
+  NOTE: Some cloud environments cannot create external loadbalancers with both "TCP" and "UDP" protocols.
+        So in case of error, use either "UDP" or "TCP" protocol by setting `serviceProtocol` parameter.
+{{- end }}
+
+    export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "coredns.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+    echo $SERVICE_IP
+{{- else if contains "ClusterIP"  .Values.serviceType }}
+    "{{ template "coredns.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local"
+    from within the cluster
+{{- end }}
+{{- end }}
+
+It can be tested with the following:
+
+1. Launch a Pod with DNS tools:
+
+kubectl run -it --rm --restart=Never --image=infoblox/dnstools:latest dnstools
+
+2. Query the DNS server:
+
+/ # host kubernetes

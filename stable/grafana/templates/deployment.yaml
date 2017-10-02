@@ -2,40 +2,55 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   labels:
-    app: {{ template "fullname" . }}
-    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+    app: {{ template "grafana.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     component: "{{ .Values.server.name }}"
     heritage: "{{ .Release.Service }}"
     release: "{{ .Release.Name }}"
-  name: {{ template "server.fullname" . }}
+  name: {{ template "grafana.server.fullname" . }}
 spec:
   replicas: 1
   template:
     metadata:
       annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        checksum/dashboards-config: {{ include (print $.Template.BasePath "/dashboards-configmap.yaml") . | sha256sum }}
       {{- range $key, $value := .Values.server.annotations }}
         {{ $key }}: {{ $value }}
       {{- end }}
       labels:
-        app: {{ template "fullname" . }}
+        app: {{ template "grafana.fullname" . }}
         component: "{{ .Values.server.name }}"
         release: "{{ .Release.Name }}"
     spec:
+      nodeSelector:
+{{ toYaml .Values.server.nodeSelector | indent 8 }}
+  {{- if .Values.server.tolerations }}
+      tolerations:
+{{ toYaml .Values.server.tolerations | indent 8 }}
+  {{- end }}
       containers:
-        - name: {{ template "name" . }}
+        - name: {{ template "grafana.name" . }}
           image: "{{ .Values.server.image }}"
           imagePullPolicy: {{ default "Always" .Values.server.imagePullPolicy }}
           env:
             - name: GF_SECURITY_ADMIN_USER
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "server.fullname" . }}
+                  name: {{ template "grafana.server.fullname" . }}
                   key: grafana-admin-user
             - name: GF_SECURITY_ADMIN_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "server.fullname" . }}
+                  name: {{ template "grafana.server.fullname" . }}
                   key: grafana-admin-password
+            {{- if .Values.server.installPlugins }}
+            - name: GF_INSTALL_PLUGINS
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "grafana.server.fullname" . }}-config
+                  key: grafana-install-plugins
+            {{- end }}
           ports:
             - containerPort: 3000
           readinessProbe:
@@ -52,19 +67,20 @@ spec:
             - name: dashboard-volume
               mountPath: {{ default "/var/lib/grafana/dashboards" .Values.server.dashboardLocalPath | quote }}
             - name: storage-volume
-              mountPath: {{ default "/var/lib/grafana/data" .Values.server.storageLocalPath | quote }}
+              mountPath: {{ default "/var/lib/grafana" .Values.server.storageLocalPath | quote }}
+              subPath: "{{ .Values.server.persistentVolume.subPath }}"
       terminationGracePeriodSeconds: {{ default 300 .Values.server.terminationGracePeriodSeconds }}
       volumes:
         - name: config-volume
           configMap:
-            name: {{ template "server.fullname" . }}-config
+            name: {{ template "grafana.server.fullname" . }}-config
         - name: dashboard-volume
           configMap:
-            name: {{ template "server.fullname" . }}-dashs
+            name: {{ template "grafana.server.fullname" . }}-dashs
         - name: storage-volume
       {{- if .Values.server.persistentVolume.enabled }}
           persistentVolumeClaim:
-            claimName: {{ template "server.fullname" . }}
+            claimName: {{ if .Values.server.persistentVolume.existingClaim }}{{ .Values.server.persistentVolume.existingClaim }}{{- else }}{{ template "grafana.server.fullname" . }}{{- end }}
       {{- else }}
           emptyDir: {}
       {{- end -}}

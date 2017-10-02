@@ -1,0 +1,83 @@
+{{- if .Values.sysdig.AccessKey }}
+---
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    app: {{ template "fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  template:
+    metadata:
+      name: {{ template "fullname" . }}
+      labels:
+        app: {{ template "fullname" . }}
+    spec:
+      volumes:
+      - name: docker-sock
+        hostPath:
+         path: /var/run/docker.sock
+      - name: dev-vol
+        hostPath:
+         path: /dev
+      - name: proc-vol
+        hostPath:
+         path: /proc
+      - name: boot-vol
+        hostPath:
+         path: /boot
+      - name: modules-vol
+        hostPath:
+         path: /lib/modules
+      - name: usr-vol
+        hostPath:
+          path: /usr
+      hostNetwork: true
+      hostPID: true
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+      {{- if .Values.rbac.install }}
+      serviceAccountName: {{ .Values.sysdig.serviceAccountName }}
+      {{- end }}
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        resources:
+{{ toYaml .Values.resources | indent 12 }}
+        securityContext:
+         privileged: true
+        env:
+          - name: ACCESS_KEY
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "fullname" . }}
+                key: access-key
+          - name: TAGS
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "fullname" . }}
+                key: tags
+        volumeMounts:
+        - mountPath: /host/var/run/docker.sock
+          name: docker-sock
+          readOnly: false
+        - mountPath: /host/dev
+          name: dev-vol
+          readOnly: false
+        - mountPath: /host/proc
+          name: proc-vol
+          readOnly: true
+        - mountPath: /host/boot
+          name: boot-vol
+          readOnly: true
+        - mountPath: /host/lib/modules
+          name: modules-vol
+          readOnly: true
+        - mountPath: /host/usr
+          name: usr-vol
+          readOnly: true
+{{- end }}

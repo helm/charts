@@ -1,0 +1,124 @@
+# Define which registries and repositories you want available in your
+# Spinnaker pipeline definitions
+# For more info visit:
+#   http://www.spinnaker.io/v1.0/docs/target-deployment-configuration#section-docker-registry
+
+# Configure your Docker registries here
+accounts:
+- name: dockerhub
+  address: https://index.docker.io
+  repositories:
+    - library/alpine
+    - library/ubuntu
+    - library/centos
+    - library/nginx
+# - name: gcr
+#   address: https://gcr.io
+#   username: _json_key
+#   password: '<INSERT YOUR SERVICE ACCOUNT JSON HERE>'
+#   email: 1234@5678.com
+
+# Settings for notifications via email
+# For more info visit:
+#   http://www.spinnaker.io/docs/notifications-and-events-guide#section-email
+mail:
+  enabled: false
+  host: smtp.example.org
+  username: admin
+  password: admin
+  fromAddress: spinnaker@example.org
+  port: 25
+
+slack:
+  enabled: false
+  token:
+  botName: 'spinnakerbot'
+
+# Images for each component
+images:
+  clouddriver: gcr.io/spinnaker-marketplace/clouddriver:0.5.0-72
+  echo: gcr.io/spinnaker-marketplace/echo:0.4.0-72
+  deck: gcr.io/spinnaker-marketplace/deck:1.3.0-72
+  igor: gcr.io/spinnaker-marketplace/igor:0.4.0-72
+  orca: gcr.io/spinnaker-marketplace/orca:0.5.0-72
+  gate: gcr.io/spinnaker-marketplace/gate:0.5.0-72
+  front50: gcr.io/spinnaker-marketplace/front50:0.4.1-72
+  rosco: gcr.io/spinnaker-marketplace/rosco:0.4.0-72
+
+# Change this if youd like to expose Spinnaker outside the cluster
+deck:
+  host: localhost
+  port: 9000
+  protocol: http
+  ingress:
+    enabled: false
+    # annotations:
+      # ingress.kubernetes.io/ssl-redirect: 'true'
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+    #tls:
+    #  - secretName: -tls
+    #    hosts:
+    #      - domain.com
+
+gate:
+  allowedOriginsPattern: '^https?://(?:localhost|127.0.0.1|[^/]+\.example\.com)(?::[1-9]\d*)?/?$'
+
+# Bucket to use when storing config data in S3 compatible storage
+storageBucket: spinnaker
+
+# Change service type for UI service
+serviceType: ClusterIP
+
+# Resources to provide to each of
+# the Spinnaker components
+resources:
+  limits:
+    cpu: 1000m
+    memory: 1280Mi
+  requests:
+    cpu: 1000m
+    memory: 1280Mi
+
+# Redis password to use for the in-cluster redis service
+# Redis is not exposed publically
+redis:
+  redisPassword: password
+
+# Minio access/secret keys for the in-cluster S3 usage
+# Minio is not exposed publically
+minio:
+  enabled: true
+  imageTag: RELEASE.2016-11-26T02-23-47Z
+  serviceType: ClusterIP
+  accessKey: spinnakeradmin
+  secretKey: spinnakeradmin
+
+gcs:
+  enabled: false
+  project: my-project-name
+  jsonKey: '<INSERT CLOUD STORAGE JSON HERE>'
+
+# Configuration for the Jenkins instance that is attached to the
+# igor component of Spinnaker. For more info about the Jenkins integration
+# with Spinnaker, visit:
+#   http://www.spinnaker.io/docs/jenkins-script-execution-stage
+jenkins:
+  Master:
+    ImageTag: 2.62
+    Cpu: "500m"
+    Memory: "512Mi"
+    ServiceType: ClusterIP
+    CustomConfigMap: true
+    InstallPlugins:
+      - kubernetes:0.11 
+      - workflow-aggregator:2.5
+      - workflow-job:2.11
+      - credentials-binding:1.12
+      - git:3.2.0
+
+  Agent:
+    Image: viglesiasce/spinnaker-jenkins-agent
+    ImageTag: v0.2.0
+    Cpu: "500m"
+    Memory: "512Mi"

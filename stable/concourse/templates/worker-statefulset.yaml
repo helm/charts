@@ -1,0 +1,121 @@
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  name: {{ template "concourse.worker.fullname" . }}
+  labels:
+    app: {{ template "concourse.worker.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+
+spec:
+  serviceName: {{ template "concourse.worker.fullname" . }}
+  replicas: {{ .Values.worker.replicas }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "concourse.worker.fullname" . }}
+      annotations:
+        {{- range $key, $value := .Values.worker.annotations }}
+        {{ $key }}: {{ $value | quote }}
+        {{- end }}
+    spec:
+      terminationGracePeriodSeconds: 60
+      containers:
+        - name: {{ template "concourse.worker.fullname" . }}
+          image: "{{ .Values.image }}:{{ .Values.imageTag }}"
+          imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
+          args:
+            - "worker"
+          lifecycle:
+            preStop:
+              exec:
+                command:
+                  - "concourse"
+                  - "land-worker"
+                  - "--name=${HOSTNAME}"
+          env:
+            - name: CONCOURSE_TSA_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: concourse-tsa-host
+            - name: CONCOURSE_TSA_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: concourse-tsa-port
+            - name: CONCOURSE_GARDEN_DOCKER_REGISTRY
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: garden-docker-registry
+            - name: CONCOURSE_GARDEN_INSECURE_DOCKER_REGISTRY
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: garden-insecure-docker-registry
+            - name: CONCOURSE_TSA_PUBLIC_KEY
+              value: "/concourse-keys/host_key.pub"
+            - name: CONCOURSE_TSA_WORKER_PRIVATE_KEY
+              value: "/concourse-keys/worker_key"
+            - name: CONCOURSE_WORK_DIR
+              value: "/concourse-work-dir"
+            - name: CONCOURSE_BAGGAGECLAIM_DRIVER
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: concourse-baggageclaim-driver
+          resources:
+{{ toYaml .Values.worker.resources | indent 12 }}
+          securityContext:
+            privileged: true
+          volumeMounts:
+            - name: concourse-keys
+              mountPath: /concourse-keys
+              readOnly: true
+            - name: concourse-work-dir
+              mountPath: /concourse-work-dir
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              topologyKey: kubernetes.io/hostname
+              labelSelector:
+                matchLabels:
+                  app: {{ template "concourse.worker.fullname" . }}
+                  release: {{ .Release.Name | quote }}
+      volumes:
+        - name: concourse-keys
+          secret:
+            secretName: {{ template "concourse.concourse.fullname" . }}
+            defaultMode: 0400
+            items:
+              - key: host-key-pub
+                path: host_key.pub
+              - key: worker-key
+                path: worker_key
+              - key: worker-key-pub
+                path: worker_key.pub
+  {{- if .Values.persistence.enabled }}
+  volumeClaimTemplates:
+    - metadata:
+        name: concourse-work-dir
+      spec:
+        accessModes:
+          - {{ .Values.persistence.worker.accessMode | quote }}
+        resources:
+          requests:
+            storage: {{ .Values.persistence.worker.size | quote }}
+      {{- if .Values.persistence.worker.storageClass }}
+      {{- if (eq "-" .Values.persistence.worker.storageClass) }}
+        storageClassName: ""
+      {{- else }}
+        storageClassName: "{{ .Values.persistence.worker.storageClass }}"
+      {{- end }}
+      {{- end }}
+  {{- else }}
+        - name: concourse-work-dir
+          emptyDir: {}
+  {{- end }}

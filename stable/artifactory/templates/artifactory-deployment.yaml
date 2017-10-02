@@ -1,0 +1,59 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "artifactory.artifactory.fullname" . }}
+  labels:
+    app: {{ template "artifactory.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: "{{ .Values.artifactory.name }}"
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+spec:
+  replicas: {{ .Values.artReplicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "artifactory.name" . }}
+        component: "{{ .Values.artifactory.name }}"
+        release: {{ .Release.Name }}
+    spec:
+      initContainers:
+      - name: "remove-lost-found"
+        image: "{{ .Values.initContainerImage }}"
+        imagePullPolicy: {{ .Values.artifactory.image.pullPolicy }}
+        command:
+        - "rm"
+        - "-rf"
+        - "{{ .Values.artifactory.persistence.mountPath }}/lost+found"
+        volumeMounts:
+        - mountPath: {{ .Values.artifactory.persistence.mountPath | quote }}
+          name: artifactory-volume
+      containers:
+      - name: {{ .Values.artifactory.name }}
+        image: "{{ .Values.artifactory.image.repository }}:{{ .Values.artifactory.image.version }}"
+        imagePullPolicy: {{ .Values.artifactory.image.pullPolicy }}
+        env:
+        - name: DB_TYPE
+          value: {{ .Values.database.env.type }}
+        - name: DB_USER
+          value: {{ .Values.database.env.user }}
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "artifactory.fullname" . }}
+              key: artifactory-database-password
+        - name: DB_HOST
+          value: {{ template "artifactory.database.name" . }}
+        ports:
+        - containerPort: {{ .Values.artifactory.internalPort }}
+        volumeMounts:
+        - mountPath: {{ .Values.artifactory.persistence.mountPath | quote }}
+          name: artifactory-volume
+      volumes:
+      - name: artifactory-volume
+      {{- if .Values.artifactory.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ template "artifactory.artifactory.fullname" . }}
+      {{- else }}
+        emptyDir: {}
+      {{- end -}}

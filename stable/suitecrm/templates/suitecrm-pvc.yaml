@@ -1,0 +1,24 @@
+{{- if .Values.persistence.enabled -}}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ template "fullname" . }}-suitecrm
+  labels:
+    app: {{ template "name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  accessModes:
+    - {{ .Values.persistence.suitecrm.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.suitecrm.size | quote }}
+{{- if .Values.persistence.suitecrm.storageClass }}
+{{- if (eq "-" .Values.persistence.suitecrm.storageClass) }}
+  storageClassName: ""
+{{- else }}
+  storageClassName: "{{ .Values.persistence.suitecrm.storageClass }}"
+{{- end }}
+{{- end }}
+{{- end -}}

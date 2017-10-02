@@ -1,22 +1,31 @@
-{{- if .Values.cluster.enabled -}}
+{{- $clusterEnabled := (and (not .Release.IsInstall) .Values.cluster.enabled) -}}
+{{- if and .Release.IsInstall .Values.cluster.enabled -}}
+Not enabling cluster, the ThirdPartResource must be installed before you can create a Cluster. Continuing rest of normal deployment.
+
+{{ end -}}
+
+{{- if $clusterEnabled -}}
 1. Watch etcd cluster start
   kubectl get pods -l etcd_cluster={{ .Values.cluster.name }} --namespace {{ .Release.Namespace }} -w
 2. Confirm etcd cluster is healthy
-  $ kubectl run --rm -i --tty etcd-test --image quay.io/coreos/etcd --restart=Never -- /bin/sh
-  / # ETCDCTL_API=3 etcdctl --endpoints http://{{ .Values.cluster.name }}-0000:2379 put foo bar
-  / # ETCDCTL_API=3 etcdctl --endpoints http://{{ .Values.cluster.name }}-0000:2379 member list
+  $ kubectl run --rm -i --tty --env="ETCDCTL_API=3" --env="ETCDCTL_ENDPOINTS=http://{{ .Values.cluster.name }}-client:2379" etcd-test --image quay.io/coreos/etcd --restart=Never -- /bin/sh -c 'watch -n1 "etcdctl  member list"'
+
+3. Interact with the cluster!
+  $ kubectl run --rm -i --tty --env ETCDCTL_API=3 etcd-test --image quay.io/coreos/etcd --restart=Never -- /bin/sh
+  / # etcdctl --endpoints http://{{ .Values.cluster.name }}-client:2379 put foo bar
+  / # etcdctl --endpoints http://{{ .Values.cluster.name }}-client:2379 get foo
   OK
   (ctrl-D to exit)
-3. Optional
+4. Optional
   Check the etcd-operator logs
-  export POD=$(kubectl get pods -l app={{ template "fullname" . }} --namespace {{ .Release.Namespace }} --output name)
+  export POD=$(kubectl get pods -l app={{ template "etcd-operator.fullname" . }} --namespace {{ .Release.Namespace }} --output name)
   kubectl logs $POD --namespace={{ .Release.Namespace }}
 
 {{- else -}}
-1. etcd-operator deployed. 
+1. etcd-operator deployed.
   If you would like to deploy an etcd-cluster set cluster.enabled to true in values.yaml
   Check the etcd-operator logs
-    export POD=$(kubectl get pods -l app={{ template "fullname" . }} --namespace {{ .Release.Namespace }} --output name)
+    export POD=$(kubectl get pods -l app={{ template "etcd-operator.fullname" . }} --namespace {{ .Release.Namespace }} --output name)
     kubectl logs $POD --namespace={{ .Release.Namespace }}
 
 {{- end -}}

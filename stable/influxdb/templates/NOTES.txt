@@ -13,4 +13,3 @@ You can also connect to the influx cli from inside the container. To open a shel
 To tail the logs for the InfluxDB pod run the following:
 
 - kubectl logs -f --namespace {{ .Release.Namespace }} $(kubectl get pods --namespace {{ .Release.Namespace }} -l app={{ template "fullname" . }} -o jsonpath='{ .items[0].metadata.name }')
-

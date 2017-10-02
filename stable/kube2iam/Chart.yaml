@@ -1,6 +1,6 @@
 name: kube2iam
-version: 0.1.0
-description: Provide IAM credentials to containers running inside a kubernetes cluster based on annotations.
+version: 0.6.0
+description: Provide IAM credentials to pods based on annotations.
 keywords:
 - kube2iam
 - aws
@@ -13,4 +13,6 @@ maintainers:
   email: jm.carp@gmail.com
 - name: Michael Haselton
   email: michael.haselton@gmail.com
+- name: Michael Goodness
+  email: mgoodness@gmail.com
 engine: gotpl

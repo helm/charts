@@ -19,7 +19,7 @@ spec:
         image: "{{ .Values.image }}:{{ .Values.imageTag }}"
         imagePullPolicy: Always
         resources:
-          {{ include "toYaml" .Values.resources | indent 10 }}
+{{ toYaml .Values.resources | indent 10 }}
         env:
         - name: EULA
           value: {{ .Values.minecraftServer.eula | quote }}
@@ -98,7 +98,7 @@ spec:
         - name: rcon
           containerPort: {{ .Values.minecraftServer.rcon.port }}
           protocol: TCP
-        {{- end}}
+        {{- end }}
         volumeMounts:
         - name: datadir
           mountPath: /data
@@ -106,7 +106,7 @@ spec:
       - name: datadir
       {{- if .Values.persistence.dataDir.enabled }}
         persistentVolumeClaim:
-          claimName: {{template "fullname" .}}-datadir
+          claimName: {{ template "fullname" . }}-datadir
       {{- else }}
         emptyDir: {}
       {{- end }}

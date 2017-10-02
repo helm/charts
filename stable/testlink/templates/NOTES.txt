@@ -24,4 +24,4 @@
 2. Get your TestLink login credentials by running:
 
     echo Username: {{ .Values.testlinkUsername }}
-    echo Password: $(printf $(printf '\%o' `kubectl get secret --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath="{.data.testlink-password[*]}"`))
+    echo Password: $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath="{.data.testlink-password}" | base64 --decode)

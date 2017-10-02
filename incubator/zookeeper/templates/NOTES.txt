@@ -1,0 +1,25 @@
+Thank you for installing ZooKeeper on your Kubernetes cluster. More information
+about ZooKeeper can be found at https://zookeeper.apache.org/doc/current/
+
+1. ZooKeeper is not accessible outside of the Kubernetes cluster. Its purpose is
+to provide coordination for distributed systems running inside the cluster. As
+ZooKeeper uses a TCP based protocol with an internal wire format, you will
+probably want to use an existing client library for communication with the
+ensemble.
+
+2. The officially maintained clients are written in C and Java, and these can be
+obtained with ZooKeeper release from
+http://www-us.apache.org/dist/zookeeper/zookeeper-3.4.9/.
+A list of language specific bindings and higher level libraries is available
+here https://cwiki.apache.org/confluence/display/ZOOKEEPER/ZKClientBindings.
+
+3. Most ZooKeeper clients require a connection string when instantiating an
+instance of the client library, or when first connecting the client to the
+ensemble. The connection string takes the form
+<server>:<port>,<server>:<port>,... . If your ensemble has greater than 1
+server, you should provide multiple servers in the connection string to allow
+for the client to continue to function in the presence of individual server
+failures. It is important that you do not use IP addresses and instead use the
+DNS entries for the domain established by the StatefulSet's HeadlessService.
+Your connection string should look like {{ template "zookeeper.fullname" . }}-headless-0:{{ .Values.ClientPort }},{{ template "zookeeper.fullname" . }}-headless-1:{{ .Values.ClientPort }},...
+You can also use the client Service {{ template "zookeeper.fullname" . }}:{{ .Values.ClientPort }} to connect to an available ZooKeeper server.

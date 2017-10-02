@@ -1,0 +1,84 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "coredns.fullname" . }}
+  labels:
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    {{- if .Values.isClusterService }}
+    k8s-app: {{ .Chart.Name | quote }}
+    kubernetes.io/cluster-service: "true"
+    kubernetes.io/name: "CoreDNS"
+    {{- else }}
+    app: {{ template "coredns.fullname" . }}
+    {{- end }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- if .Values.isClusterService }}
+      k8s-app: {{ .Chart.Name | quote }}
+      {{- else }}
+      app: {{ template "coredns.fullname" . }}
+      {{- end }}
+  template:
+    metadata:
+      labels:
+        {{- if .Values.isClusterService }}
+        k8s-app: {{ .Chart.Name | quote }}
+        {{- else }}
+        app: {{ template "coredns.fullname" . }}
+        {{- end }}
+        release: {{ .Release.Name | quote }}
+      annotations:
+        {{- if .Values.isClusterService }}
+        scheduler.alpha.kubernetes.io/critical-pod: ''
+        scheduler.alpha.kubernetes.io/tolerations: '[{"key":"CriticalAddonsOnly", "operator":"Exists"}]'
+        {{- end }}
+    spec:
+      {{- if .Values.isClusterService }}
+      dnsPolicy: Default
+      {{- end }}
+      containers:
+      - name: "coredns"
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        args: [ "-conf", "/etc/coredns/Corefile" ]
+        volumeMounts:
+        - name: config-volume
+          mountPath: /etc/coredns
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+        ports:
+        {{- if or (eq .Values.serviceProtocol "UDPNTCP") (eq .Values.serviceProtocol "UDP") }}
+        - containerPort: 53
+          name: dns
+          protocol: UDP
+        {{- end }}
+        {{- if or (eq .Values.serviceProtocol "UDPNTCP") (eq .Values.serviceProtocol "TCP") }}
+        - containerPort: 53
+          name: dns-tcp
+          protocol: TCP
+        {{- end }}
+        {{- if .Values.middleware.prometheus.enabled }}
+        - containerPort: {{ .Values.middleware.prometheus.port }}
+          name: metrics
+          protocol: TCP
+        {{- end }}
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 60
+          timeoutSeconds: 5
+          successThreshold: 1
+          failureThreshold: 5
+      volumes:
+        - name: config-volume
+          configMap:
+            name: {{ template "coredns.fullname" . }}
+            items:
+            - key: Corefile
+              path: Corefile

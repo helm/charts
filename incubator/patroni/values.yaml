@@ -6,8 +6,8 @@ ImagePullPolicy: IfNotPresent
 # The image to use. Spilo is the dockerized Patroni
 Spilo:
   # this image was built from https://github.com/zalando/spilo/tree/master/postgres-appliance
-  Image: registry.opensource.zalan.do/acid/spilo-9.5
-  Version: 1.1-p5
+  Image: registry.opensource.zalan.do/acid/spilo-9.6
+  Version: 1.2-p17
 
 # How many postgres containers to spawn
 Replicas: 5
@@ -16,7 +16,10 @@ Replicas: 5
 Resources:
   Cpu: 100m
   Memory: 512Mi
-  Storage: 1Gi
+  
+# Node selector for Patroni pods
+#NodeSelector:
+#  cloud.google.com/gke-nodepool: highmem-pool
 
 # Credentials used by Patroni
 # * more information: https://github.com/zalando/patroni/blob/master/docs/SETTINGS.rst#postgresql
@@ -27,4 +30,24 @@ Credentials:
 
 # Patroni depends on etcd, configure it here
 Etcd:
+  Host: # fill-in value for etcd host (etcd.default.svc.cluster.local), leave blank to use the discovery parameter
   Discovery: # leave blank to use vendored etcd chart
+
+WalE:
+  Enable: false
+  Schedule_Cron_Job: 00 01 * * *
+  Retain_Backups: 2
+  S3_Bucket:
+  GCS_Bucket:
+  Kubernetes_Secret:
+  Backup_Threshold_Megabytes: 1024
+  Backup_Threshold_Percentage: 30
+
+persistentVolume:
+  size: 1G
+  storageClass: ""
+  subPath: ""
+  mountPath: "/home/postgres/pgdata"
+  annotations: {}
+  accessModes:
+    - ReadWriteOnce

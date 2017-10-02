@@ -1,16 +1,16 @@
 # Patroni Helm Chart
 
-This directory contains a Kubernetes chart to deploy a five node patroni cluster using a petset.
+This directory contains a Kubernetes chart to deploy a five node patroni cluster using a statefulset.
 
 ## Prerequisites Details
-* Kubernetes 1.3 with alpha APIs enabled
+* Kubernetes 1.5
 * PV support on the underlying infrastructure
 
-## PetSet Details
-* http://kubernetes.io/docs/user-guide/petset/
+## Statefulset Details
+* https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/
 
-## PetSet Caveats
-* http://kubernetes.io/docs/user-guide/petset/#alpha-limitations
+## Statefulset Caveats
+* https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#limitations
 
 ## Todo
 * Make namespace configurable
@@ -25,7 +25,8 @@ This chart will do the following:
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
+$ helm repo add incubator https://kubernetes-charts-incubator.storage.googleapis.com/
+$ helm dependency update
 $ helm install --name my-release incubator/patroni
 ```
 
@@ -56,15 +57,30 @@ The following tables lists the configurable parameters of the patroni chart and 
 | `Spilo.Image`           | Container image name                | `registry.opensource.zalan.do/acid/spilo-9.5`       |
 | `Spilo.Version`         | Container image tag                 | `1.0-p5`                                            |
 | `ImagePullPolicy`       | Container pull policy               | `IfNotPresent`                                      |
-| `Replicas`              | k8s petset replicas                 | `5`                                                 |
+| `Replicas`              | k8s statefulset replicas            | `5`                                                 |
+| `NodeSelector`          | nodeSelector map                    | Empty                                               |
 | `Component`             | k8s selector key                    | `patroni`                                           |
 | `Resources.Cpu`         | container requested cpu             | `100m`                                              |
 | `Resources.Memory`      | container requested memory          | `512Mi`                                             |
-| `Resources.Storage`     | Persistent volume size              | `1Gi`                                               |
 | `Credentials.Superuser` | password for the superuser          | `tea`                                               |
 | `Credentials.Admin`     | password for the admin user         | `cola`                                              |
 | `Credentials.Standby`   | password for the replication user   | `pinacolada`                                        |
+| `Etcd.Host`             | host name of etcd cluster           | not used (Etcd.Discovery is used instead)            |
 | `Etcd.Discovery`        | domain name of etcd cluster         | `<release-name>-etcd.<namespace>.svc.cluster.local` |
+| `WalE.Enable`           | use of wal-e tool for base backup/restore | `false` |
+| `WalE.Schedule_Cron_Job` | schedule of wal-e backups          | `00 01 * * *` |
+| `WalE.Retain_Backups`   | number of backups to retain         | `2` |
+| `WalE.S3_Bucket:`       | Amazon S3 bucket used for wal-e backups | `` |
+| `WalE.GCS_Bucket`       | Google cloud plataform storage used for wal-e backups | `` |
+| `WalE.Kubernetes_Secret` | kubernetes secret for provider bucket | `` |
+| `WalE.Backup_Threshold_Megabytes` | maximum size of the WAL segments accumulated after the base backup to consider WAL-E restore instead of pg_basebackup | `1024` |
+| `WalE.Backup_Threshold_Percentage` | maximum ratio (in percents) of the accumulated WAL files to the base backup to consider WAL-E restore instead of pg_basebackup | `30` |
+| `persistentVolume.accessModes` | Persistent Volume access modes | `[ReadWriteOnce]` |
+| `persistentVolume.annotations` | Annotations for Persistent Volume Claim` | `{}` |
+| `persistentVolume.mountPath` | Persistent Volume mount root path | `/home/postgres/pgdata` |
+| `persistentVolume.size` | Persistent Volume size | `2Gi` |
+| `persistentVolume.storageClass` | Persistent Volume Storage Class | `volume.alpha.kubernetes.io/storage-class: default` |
+| `persistentVolume.subPath` | Subdirectory of Persistent Volume to mount | `""` |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
@@ -84,7 +100,7 @@ In order to remove everything you created a simple `helm delete <release-name>` 
 $ release=<release-name>
 $ helm delete $release
 $ grace=$(kubectl get po $release-patroni-0 --template '{{.spec.terminationGracePeriodSeconds}}')
-$ kubectl delete petset,po -l release=$release
+$ kubectl delete statefulset,po -l release=$release
 $ sleep $grace
 $ kubectl delete pvc -l release=$release
 ```

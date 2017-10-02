@@ -1,0 +1,53 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "artifactory.nginx.fullname" . }}
+  labels:
+    app: {{ template "artifactory.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: "{{ .Values.nginx.name }}"
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+spec:
+  replicas: {{ .Values.nginx.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "artifactory.name" . }}
+        component: "{{ .Values.nginx.name }}"
+        release: {{ .Release.Name }}
+    spec:
+      initContainers:
+      - name: "remove-lost-found"
+        image: "{{ .Values.initContainerImage }}"
+        imagePullPolicy: {{ .Values.nginx.image.pullPolicy }}
+        command:
+        - "rm"
+        - "-rf"
+        - "{{ .Values.nginx.persistence.mountPath }}/lost+found"
+        volumeMounts:
+        - mountPath: {{ .Values.nginx.persistence.mountPath | quote }}
+          name: nginx-volume
+      containers:
+      - name: {{ .Values.nginx.name }}
+        image: "{{ .Values.nginx.image.repository }}:{{ .Values.nginx.image.version }}"
+        imagePullPolicy: {{ .Values.nginx.image.pullPolicy }}
+        env:
+        - name: ART_BASE_URL
+          value: {{ .Values.nginx.env.artUrl }}
+        - name: SSL
+          value: "{{ .Values.nginx.env.ssl }}"
+        ports:
+        - containerPort: {{ .Values.nginx.internalPortHttp }}
+        - containerPort: {{ .Values.nginx.internalPortHttps }}
+        volumeMounts:
+        - mountPath: {{ .Values.nginx.persistence.mountPath | quote }}
+          name: nginx-volume
+      volumes:
+      - name: nginx-volume
+      {{- if .Values.nginx.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ template "artifactory.nginx.fullname" . }}
+      {{- else }}
+        emptyDir: {}
+      {{- end -}}

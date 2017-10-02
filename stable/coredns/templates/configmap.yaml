@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "coredns.fullname" . }}
+data:
+  Corefile: |-
+    .:53 {
+      {{- range $key, $middleware := .Values.middleware }}
+      {{- if $middleware.enabled }}
+      {{- if eq "kubernetes" $key }}
+        kubernetes {{ $middleware.clusterDomain }} {
+          cidrs {{ $middleware.clusterCidr }}
+        }
+      {{- end }}
+      {{- if eq "etcd" $key }}
+        etcd {{ range $middleware.zones }}{{ . }} {{ end }}{
+          {{ if $middleware.path }}path {{ $middleware.path }}{{ end }}
+          endpoint {{ $middleware.endpoint }}
+        }
+      {{- end }}
+      {{- if eq "loadbalance" $key }}
+        loadbalance {{ default "round_robin" $middleware.policy }}
+      {{- end }}
+      {{- if eq "log" $key }}
+        log {{ default "stdout" $middleware.file }}
+      {{- end }}
+      {{- if eq "errors" $key }}
+        errors {{ default "stderr" $middleware.file }}
+      {{- end }}
+      {{- if eq "health" $key }}
+        health
+      {{- end }}
+      {{- if eq "prometheus" $key }}
+        prometheus 0.0.0.0:{{ $middleware.port }}
+      {{- end }}
+      {{- if eq "proxy" $key }}
+        proxy . /etc/resolv.conf
+      {{- end }}
+      {{- if eq "cache" $key }}
+        cache 30
+      {{- end }}
+      {{- end }}
+      {{- end }}
+    }

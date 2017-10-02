@@ -1,10 +1,17 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "fullname" . }}-config
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "linkerd.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+  name: {{ template "linkerd.fullname" . }}-config
 data:
+{{ if .Values.config }}
+  config.yaml: |-
+{{ toYaml .Values.config| indent 4 }}
+{{ else }}
   config.yaml: |-
     admin:
       port: 9990
@@ -18,12 +25,13 @@ data:
     - protocol: http
       # Incoming requests to linkerd with a Host header of "hello" get assigned
       # a name like /http/1.1/GET/hello.  This dtab transforms that into
-      # /#/io.l5d.k8s/{{ .Release.Namespace }}/{{ .Values.linkerd.portName }}/hello which indicates that the kubernetes
-      # namer should query the API for ports named "{{ .Values.linkerd.portName }}" on pods in the
+      # /#/io.l5d.k8s/{{ .Release.Namespace }}/{{ .Values.linkerd.discoveryPortName }}/hello which indicates that the kubernetes
+      # namer should query the API for ports named "{{ .Values.linkerd.discoveryPortName }}" on pods in the
       # "{{ .Release.Namespace }}" namespace named "hello".  linkerd will then load balance over
       # those pods.
-      baseDtab: |
-        /http/1.1/* => /#/io.l5d.k8s/{{ .Release.Namespace }}/{{ .Values.linkerd.portName }}
+      dtab: |
+        /http/1.1/* => /#/io.l5d.k8s/{{ .Release.Namespace }}/{{ .Values.linkerd.discoveryPortName }}
       servers:
       - ip: 0.0.0.0
         port: 4140
+{{ end }}

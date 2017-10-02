@@ -1,0 +1,24 @@
+{{- if .Values.artifactory.persistence.enabled }}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ template "artifactory.artifactory.fullname" . }}
+  labels:
+    app: {{ template "artifactory.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  accessModes:
+    - {{ .Values.artifactory.persistence.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.artifactory.persistence.size | quote }}
+{{- if .Values.artifactory.persistence.storageClass }}
+{{- if (eq "-" .Values.artifactory.persistence.storageClass) }}
+  storageClassName: ""
+{{- else }}
+  storageClassName: "{{ .Values.artifactory.persistence.storageClass }}"
+{{- end }}
+{{- end }}
+{{- end }}

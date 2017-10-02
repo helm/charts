@@ -1,0 +1,27 @@
+Congratulations. You have just deployed JFrog Artifactory Pro!
+
+1. Get the Artifactory URL by running these commands:
+
+   {{- if contains "NodePort" .Values.nginx.service.type }}
+   export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "artifactory.nginx.name" . }})
+   export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+   echo http://$NODE_IP:$NODE_PORT/
+
+   {{- else if contains "LoadBalancer"  .Values.nginx.service.type }}
+
+   NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+         You can watch the status of the service by running 'kubectl get svc -w {{ template "artifactory.nginx.name" . }}'
+   export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "artifactory.nginx.name" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+   echo http://$SERVICE_IP/
+
+   {{- else if contains "ClusterIP" .Values.nginx.service.type }}
+   export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "component={{ .Values.nginx.name }}" -o jsonpath="{.items[0].metadata.name}")
+   echo http://127.0.0.1:{{ .Values.nginx.externalPortHttp }}
+   kubectl port-forward --namespace {{ .Release.Namespace }} $POD_NAME {{ .Values.nginx.externalPortHttp }}:{{ .Values.nginx.internalPortHttp }}
+
+   {{- end }}
+
+2. Open Artifactory in your browser
+   Default credential for Artifactory:
+   user: admin
+   password: password

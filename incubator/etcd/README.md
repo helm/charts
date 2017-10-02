@@ -5,14 +5,14 @@ Credit to https://github.com/ingvagabund. This is an implementation of that work
 * https://github.com/kubernetes/contrib/pull/1295
 
 ## Prerequisites Details
-* Kubernetes 1.3 with alpha APIs enabled
+* Kubernetes 1.5 (for `StatefulSets` support)
 * PV support on the underlying infrastructure
 
-## PetSet Details
-* http://kubernetes.io/docs/user-guide/petset/
+## StatefulSet Details
+* https://kubernetes.io/docs/concepts/abstractions/controllers/statefulsets/
 
-## PetSet Caveats
-* http://kubernetes.io/docs/user-guide/petset/#alpha-limitations
+## StatefulSet Caveats
+* https://kubernetes.io/docs/concepts/abstractions/controllers/statefulsets/#limitations
 
 ## Todo
 * Implement SSL
@@ -20,7 +20,7 @@ Credit to https://github.com/ingvagabund. This is an implementation of that work
 ## Chart Details
 This chart will do the following:
 
-* Implemented a dynamically scalable etcd cluster using Kubernetes PetSets
+* Implemented a dynamically scalable etcd cluster using Kubernetes StatefulSets
 
 ## Installing the Chart
 
@@ -41,13 +41,14 @@ The following tables lists the configurable parameters of the etcd chart and the
 | `Image`                 | Container image name               | `gcr.io/google_containers/etcd-amd64`                      |
 | `ImageTag`              | Container image tag                | `2.2.5`                                                    |
 | `ImagePullPolicy`       | Container pull policy              | `Always`                                                   |
-| `Replicas`              | k8s petset replicas                | `3`                                                        |
+| `Replicas`              | k8s statefulset replicas           | `3`                                                        |
 | `Component`             | k8s selector key                   | `etcd`                                                     |
 | `Cpu`                   | container requested cpu            | `100m`                                                     |
 | `Memory`                | container requested memory         | `512Mi`                                                    |
 | `ClientPort`            | k8s service port                   | `2379`                                                     |
 | `PeerPorts`             | Container listening port           | `2380`                                                     |
 | `Storage`               | Persistent volume size             | `1Gi`                                                      |
+| `StorageClass`          | Persistent volume storage class    | `anything`                                                 |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
@@ -84,7 +85,7 @@ cluster is healthy
 ## Failover
 
 If any etcd member fails it gets re-joined eventually.
-You can test the scenario by killing process of one of the pets:
+You can test the scenario by killing process of one of the replicas:
 
 ```shell
 $ ps aux | grep etcd-1
@@ -137,7 +138,7 @@ etcd-0    1/1       Running   0          7m
 etcd-1    1/1       Running   0          7m
 etcd-2    1/1       Running   0          6m
 
-$ kubectl patch petset/etcd -p '{"spec":{"replicas": 5}}'
+$ kubectl patch statefulset/etcd -p '{"spec":{"replicas": 5}}'
 "etcd" patched
 
 $ kubectl get pods -l "component=${RELEASE-NAME}-etcd"
@@ -149,11 +150,11 @@ etcd-3    1/1       Running   0          4s
 etcd-4    1/1       Running   0          1s
 ```
 
-Scaling-down is similar. For instance, changing the number of pets to ``4``:
+Scaling-down is similar. For instance, changing the number of replicas to ``4``:
 
 ```sh
-$ kubectl edit petset/etcd
-petset "etcd" edited
+$ kubectl edit statefulset/etcd
+statefulset "etcd" edited
 
 $ kubectl get pods -l "component=${RELEASE-NAME}-etcd"
 NAME      READY     STATUS    RESTARTS   AGE
@@ -163,7 +164,7 @@ etcd-2    1/1       Running   0          8m
 etcd-3    1/1       Running   0          4s
 ```
 
-Once a pet is terminated (either by running ``kubectl delete pod etcd-ID`` or scaling down),
+Once a replica is terminated (either by running ``kubectl delete pod etcd-ID`` or scaling down),
 content of ``/var/run/etcd/`` directory is cleaned up.
-If any of the etcd pets restarts (e.g. caused by etcd failure or any other),
-the directory is kept untouched so the pet can recover from the failure.
+If any of the etcd pods restarts (e.g. caused by etcd failure or any other),
+the directory is kept untouched so the pod can recover from the failure.

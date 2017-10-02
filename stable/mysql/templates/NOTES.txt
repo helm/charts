@@ -3,7 +3,7 @@ MySQL can be accessed via port 3306 on the following DNS name from within your c
 
 To get your root password run:
 
-    printf $(printf '\%o' `kubectl get secret --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath="{.data.mysql-root-password[*]}"`);echo
+    kubectl get secret --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath="{.data.mysql-root-password}" | base64 --decode; echo
 
 To connect to your database:
 

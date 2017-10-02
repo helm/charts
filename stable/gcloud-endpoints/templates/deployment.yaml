@@ -1,0 +1,83 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    app: {{ template "fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: {{ template "fullname" . }}
+    spec:
+      containers:
+        - name: endpoints
+          image: "{{ .Values.image }}"
+          imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
+          args: [
+{{- if (.Values.httpPort) }}
+            "--http_port", {{ default "" .Values.httpPort | quote }},
+{{- end }}
+{{- if (.Values.http2Port) }}
+            "--http2_port", {{ default "" .Values.http2Port | quote }},
+{{- end }}
+{{- if (.Values.sslPort) }}
+            "--ssl_port", {{ default "" .Values.sslPort | quote }},
+{{- end }}
+{{- if (.Values.backend) }}
+            "--backend", {{ default "" .Values.backend | quote }},
+{{- end }}
+{{- if (.Values.service) }}
+            "--service", {{ default "" .Values.service | quote }},
+{{- end }}
+{{- if (.Values.version) }}
+            "--version", {{ default "" .Values.version | quote }},
+{{- end }}
+{{- if (.Values.serviceAccountKey) }}
+            "--service_account_key", {{ default "" .Values.serviceAccountKey | quote }},
+{{- end }}
+{{- if (.Values.nginxConfig) }}
+            "--nginx_config", {{ default "" .Values.nginxConfig | quote }},
+{{- end }}
+{{- if (.Values.statusPort) }}
+            "--status_port", {{ default "" .Values.statusPort | quote }},
+{{- end }}
+          ]
+          ports:
+{{- if (.Values.httpPort) }}
+            - containerPort: {{ default "0" .Values.httpPort }}
+              name: http
+{{- else if and (not .Values.http2Port) (not .Values.sslPort) }}
+            - containerPort: 8080
+              name: http
+{{- end }}
+{{- if (.Values.http2Port) }}
+            - containerPort: {{ default "0" .Values.http2Port }}
+              name: http2
+{{- end }}
+{{- if (.Values.sslPort) }}
+            - containerPort: {{ default "0" .Values.sslPort }}
+              name: https
+{{- end }}
+{{- if (.Values.statusPort) }}
+            - containerPort: {{ default "0" .Values.statusPort }}
+              name: status
+          livenessProbe:
+            httpGet:
+              path: /endpoints_status
+              port: {{ default "0" .Values.statusPort }}
+            initialDelaySeconds: 5
+            timeoutSeconds: 1
+          readinessProbe:
+            httpGet:
+              path: /endpoints_status
+              port: {{ default "0" .Values.statusPort }}
+            initialDelaySeconds: 5
+            timeoutSeconds: 1
+{{- end }}
+          resources:
+            {{ include "toYaml" .Values.resources | indent 12 }}

@@ -1,23 +1,87 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "chronograf.fullname" . }}
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "chronograf.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
-  replicas: 1
+  replicas: {{ .Values.service.replicas }}
   template:
     metadata:
       labels:
-        app: {{ template "fullname" . }}
+        app: {{ template "chronograf.fullname" . }}
     spec:
       containers:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
+{{- if .Values.oauth.enabled }}
+        env:
+        - name: TOKEN_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "chronograf.fullname" . }}
+              key: token_secret
+{{- if .Values.oauth.github.enabled }}
+        - name: GH_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "chronograf.fullname" . }}
+              key: gh_client_id
+        - name: GH_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "chronograf.fullname" . }}
+              key: gh_client_secret
+        - name: GH_ORGS
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "chronograf.fullname" . }}
+              key: gh_orgs
+{{- end }}
+{{- if .Values.oauth.heroku.enabled }}
+        - name: HEROKU_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "chronograf.fullname" . }}
+              key: he_client_id
+        - name: HEROKU_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "chronograf.fullname" . }}
+              key: he_client_secret
+        - name: HEROKU_ORGS
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "chronograf.fullname" . }}
+              key: he_orgs
+{{- end }}
+{{- if .Values.oauth.google.enabled }}
+        - name: GOOGLE_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "chronograf.fullname" . }}
+              key: go_client_id
+        - name: GOOGLE_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "chronograf.fullname" . }}
+              key: go_client_secret
+        - name: GOOGLE_DOMAINS
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "chronograf.fullname" . }}
+              key: go_domains
+        - name: PUBLIC_URL
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "chronograf.fullname" . }}
+              key: go_public_url
+{{- end }}
+{{- end }}
         ports:
         - containerPort: 8888
           name: api
@@ -38,7 +102,7 @@ spec:
         - name: data
         {{- if .Values.persistence.enabled }}
           persistentVolumeClaim:
-            claimName: {{ template "fullname" . }}
+            claimName: {{ template "chronograf.fullname" . }}
         {{ else }}
           emptyDir: {}
         {{ end }}

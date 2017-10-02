@@ -1,3 +1,8 @@
+################################################################################
+#### This chart has been deprecated as of version 0.2.1 and will not be updated.
+#### Please use the nginx-ingress and (optional) kube-lego charts instead.
+################################################################################
+
 This chart runs an nginx-ingress-controller  {{- if .Values.lego.enabled }}  and kube-lego  {{- end }}  adding the ability to use ingress resources to route in your cluster  {{- if .Values.lego.enabled -}}  as well as optionally generating SSL certs for you  {{- end -}}.
 
 EXAMPLE INGRESS YAML:
@@ -14,7 +19,7 @@ metadata:
     kubernetes.io/tls-acme: "true"
 {{- end }}
 spec:
-  rules: 
+  rules:
   - host: www.example.com
     http:
       paths:

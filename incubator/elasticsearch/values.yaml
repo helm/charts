@@ -1,33 +1,56 @@
 # Default values for elasticsearch.
 # This is a YAML-formatted file.
-# Declare name/value pairs to be passed into your templates.
-# name: value
+# Declare variables to be passed into your templates.
 
-Name: es
-PeerPort: 2380
-ClientPort: 2379
-Component: "elasticsearch"
-Image: "jetstack/elasticsearch-pet"
-ImageTag: "2.3.5"
-ImagePullPolicy: "Always"
-ClientReplicas: 2
-ClientCpuRequests: "25m"
-ClientMemoryRequests: "256Mi"
-ClientCpuLimits: "100m"
-ClientMemoryLimits: "512Mi"
-ClientHeapSize: "128m"
-MasterReplicas: 2
-MasterCpuRequests: "25m"
-MasterMemoryRequests: "256Mi"
-MasterCpuLimits: "100m"
-MasterMemoryLimits: "512Mi"
-MasterHeapSize: "128m"
-DataReplicas: 3
-DataCpuRequests: "250m"
-DataMemoryRequests: "2Gi"
-DataCpuLimits: "1"
-DataMemoryLimits: "4Gi"
-DataHeapSize: "1536m"
-DataStorage: "30Gi"
-DataStorageClass: "anything"
-DataStorageClassVersion: "alpha"
+image:
+  repository: "jetstack/elasticsearch-pet"
+  tag: "2.4.0"
+  pullPolicy: "Always"
+
+cluster:
+  name: "elasticsearch"
+  config:
+    
+
+client:
+  name: client
+  replicas: 2
+  serviceType: ClusterIP
+  heapSize: "128m"
+  antiAffinity: "soft"
+  resources:
+    limits:
+      cpu: "1"
+      memory: "512Mi"
+    requests:
+      cpu: "25m"
+      memory: "256Mi"
+
+master:
+  name: master
+  replicas: 2
+  heapSize: "128m"
+  antiAffinity: "soft"
+  resources:
+    limits:
+      cpu: "1"
+      memory: "512Mi"
+    requests:
+      cpu: "25m"
+      memory: "256Mi"
+
+data:
+  name: data
+  replicas: 3
+  heapSize: "1536m"
+  storage: "30Gi"
+  # storageClass: "ssd"
+  terminationGracePeriodSeconds: 3600
+  antiAffinity: "soft"
+  resources:
+    limits:
+      cpu: "1"
+      memory: "512Mi"
+    requests:
+      cpu: "25m"
+      memory: "256Mi"

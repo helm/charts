@@ -1,13 +1,12 @@
 ## Bitnami phpBB image version
 ## ref: https://hub.docker.com/r/bitnami/phpbb/tags/
 ##
-image: bitnami/phpbb:3.1.10-r0
+image: bitnami/phpbb:3.2.1-r1
 
 ## Specify a imagePullPolicy
-## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
 ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
 ##
-# imagePullPolicy:
+imagePullPolicy: IfNotPresent
 
 ## User of the application
 ## ref: https://github.com/bitnami/bitnami-docker-phpbb#environment-variables
@@ -47,7 +46,14 @@ mariadb:
   ##
   persistence:
     enabled: true
-    storageClass: generic
+    ## mariadb data Persistent Volume Storage Class
+    ## If defined, storageClassName: <storageClass>
+    ## If set to "-", storageClassName: "", which disables dynamic provisioning
+    ## If undefined (the default) or set to null, no storageClassName spec is
+    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+    ##   GKE, AWS & OpenStack)
+    ##
+    # storageClass: "-"
     accessMode: ReadWriteOnce
     size: 8Gi
 
@@ -62,11 +68,25 @@ serviceType: LoadBalancer
 persistence:
   enabled: true
   apache:
-    storageClass: generic
+    ## apache data Persistent Volume Storage Class
+    ## If defined, storageClassName: <storageClass>
+    ## If set to "-", storageClassName: "", which disables dynamic provisioning
+    ## If undefined (the default) or set to null, no storageClassName spec is
+    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+    ##   GKE, AWS & OpenStack)
+    ##
+    # storageClass: "-"
     accessMode: ReadWriteOnce
     size: 1Gi
   phpbb:
-    storageClass: generic
+    ## phpbb data Persistent Volume Storage Class
+    ## If defined, storageClassName: <storageClass>
+    ## If set to "-", storageClassName: "", which disables dynamic provisioning
+    ## If undefined (the default) or set to null, no storageClassName spec is
+    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+    ##   GKE, AWS & OpenStack)
+    ##
+    # storageClass: "-"
     accessMode: ReadWriteOnce
     size: 8Gi
 

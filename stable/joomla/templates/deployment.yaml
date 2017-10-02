@@ -1,9 +1,9 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "joomla.fullname" . }}
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "joomla.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -12,28 +12,28 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "fullname" . }}
+        app: {{ template "joomla.fullname" . }}
     spec:
       containers:
-      - name: {{ template "fullname" . }}
+      - name: {{ template "joomla.fullname" . }}
         image: "{{ .Values.image }}"
         imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
         env:
         - name: MARIADB_HOST
-          value: {{ template "mariadb.fullname" . }}
-        - name: MARIADB_PORT
+          value: {{ template "joomla.mariadb.fullname" . }}
+        - name: MARIADB_PORT_NUMBER
           value: "3306"
         - name: MARIADB_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "mariadb.fullname" . }}
+              name: {{ template "joomla.mariadb.fullname" . }}
               key: mariadb-root-password
         - name: JOOMLA_USERNAME
           value: {{ default "" .Values.joomlaUsername | quote }}
         - name: JOOMLA_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "joomla.fullname" . }}
               key: joomla-password
         - name: JOOMLA_EMAIL
           value: {{ default "" .Values.joomlaEmail | quote }}
@@ -46,7 +46,7 @@ spec:
         - name: SMTP_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "joomla.fullname" . }}
               key: smtp-password
         - name: SMTP_PROTOCOL
           value: {{ default "" .Values.smtpProtocol | quote }}
@@ -57,16 +57,18 @@ spec:
           containerPort: 443
         livenessProbe:
           httpGet:
-            path: /
+            path: /index.php
             port: http
           initialDelaySeconds: 120
           timeoutSeconds: 5
+          failureThreshold: 6
         readinessProbe:
           httpGet:
-            path: /
+            path: /index.php
             port: http
-          initialDelaySeconds: 5
-          timeoutSeconds: 1
+          initialDelaySeconds: 30
+          timeoutSeconds: 3
+          periodSeconds: 5
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
@@ -78,14 +80,14 @@ spec:
       - name: joomla-data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ template "fullname" . }}-joomla
+          claimName: {{ template "joomla.fullname" . }}-joomla
       {{- else }}
         emptyDir: {}
       {{- end }}
       - name: apache-data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ template "fullname" . }}-apache
+          claimName: {{ template "joomla.fullname" . }}-apache
       {{- else }}
         emptyDir: {}
       {{- end }}

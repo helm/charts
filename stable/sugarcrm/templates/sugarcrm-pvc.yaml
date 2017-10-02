@@ -1,0 +1,24 @@
+{{- if .Values.persistence.enabled -}}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ template "fullname" . }}-sugarcrm
+  labels:
+    app: {{ template "name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  accessModes:
+    - {{ .Values.persistence.sugarcrm.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.sugarcrm.size | quote }}
+{{- if .Values.persistence.sugarcrm.storageClass }}
+{{- if (eq "-" .Values.persistence.sugarcrm.storageClass) }}
+  storageClassName: ""
+{{- else }}
+  storageClassName: "{{ .Values.persistence.sugarcrm.storageClass }}"
+{{- end }}
+{{- end }}
+{{- end -}}

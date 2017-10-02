@@ -1,0 +1,17 @@
+apiVersion: v1
+description: check_mk monitoring
+engine: gotpl
+home: https://mathias-kettner.de/check_mk.html
+icon: http://git.mathias-kettner.de/git/?p=check_mk.git;a=blob_plain;f=web/htdocs/images/logo_mk.png;h=f41c2227828b79c035fa2e2d3fba5ec939c6f2c3;hb=HEAD
+keywords:
+- check_mk
+- nagios
+- monitoring
+maintainers:
+- email: junaid18183@gmail.com
+  name: junaid18183
+name: check-mk
+sources:
+- https://github.com/kubernetes/charts
+- http://git.mathias-kettner.de/git/
+version: 0.2.0

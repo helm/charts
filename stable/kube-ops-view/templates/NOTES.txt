@@ -1,0 +1,11 @@
+To access the Kubernetes Operational View UI:
+
+1. First start the kubectl proxy:
+
+   kubectl proxy
+
+2. Now open the following URL in your browser:
+
+   http://localhost:8001/api/v1/proxy/namespaces/{{ .Release.Namespace }}/services/{{ template "kube-ops-view.fullname" . }}/
+
+Please try reloading the page if you see "ServiceUnavailable / no endpoints available for service", pod creation might take a moment.

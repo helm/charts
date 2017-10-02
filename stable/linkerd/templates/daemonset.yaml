@@ -2,21 +2,29 @@ apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
   labels:
-    app: {{ template "fullname" . }}
-  name: {{ template "fullname" . }}
+    app: {{ template "linkerd.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+  name: {{ template "linkerd.fullname" . }}
 spec:
   template:
     metadata:
+      annotations:
+      {{- range $key, $value := .Values.linkerd.annotations }}
+        {{ $key }}: {{ $value }}
+      {{- end }}
       labels:
-        app: {{ template "fullname" . }}
+        app: {{ template "linkerd.fullname" . }}
+        release: "{{ .Release.Name }}"
     spec:
       volumes:
-      - name: {{ template "fullname" . }}-config
+      - name: {{ template "linkerd.fullname" . }}-config
         configMap:
-          name: "{{ template "fullname" . }}-config"
+          name: "{{ template "linkerd.fullname" . }}-config"
       containers:
-      - name: l5d
-        image: {{ .Values.image.linkerd.repository }}:{{ .Values.image.linkerd.tag }}
+      - name: {{ .Values.linkerd.name }}
+        image: {{ .Values.linkerd.image }}
         env:
         - name: POD_IP
           valueFrom:
@@ -35,14 +43,22 @@ spec:
           containerPort: 9990
           hostPort: 9990
         resources:
-{{ toYaml .Values.resources | indent 10 }}
+{{ toYaml .Values.linkerd.resources | indent 10 }}
+        livenessProbe:
+          httpGet:
+            path: /admin
+            port: 9990
+          initialDelaySeconds: 10
+          periodSeconds: 5
         volumeMounts:
-        - name: "{{ template "fullname" . }}-config"
+        - name: "{{ template "linkerd.fullname" . }}-config"
           mountPath: "/io.buoyant/linkerd/config"
           readOnly: true
       - name: kubectl
-        image: {{ .Values.image.kubectl.repository }}:{{ .Values.image.kubectl.tag }}
+        image: {{ .Values.kubectl.image }}
         args:
         - "proxy"
         - "-p"
         - "8001"
+        resources:
+{{ toYaml .Values.kubectl.resources | indent 10 }}

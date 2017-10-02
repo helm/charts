@@ -1,11 +1,11 @@
-1. Get the WordPress URL by running:
+1. Get the WordPress URL:
 
-{{- if contains "NodePort" .Values.serviceType }}
+{{- if .Values.ingress.enabled }}
 
-  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "fullname" . }})
-  export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
-  echo http://$NODE_IP:$NODE_PORT/admin
+  You should be able to access your new WordPress installation through
 
+  http://{{- .Values.ingress.hostname }}/admin
+  
 {{- else if contains "LoadBalancer" .Values.serviceType }}
 
   NOTE: It may take a few minutes for the LoadBalancer IP to be available.
@@ -18,6 +18,17 @@
   export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "fullname" . }}" -o jsonpath="{.items[0].metadata.name}")
   echo http://127.0.0.1:8080/admin
   kubectl port-forward $POD_NAME 8080:80
+
+{{- end }}
+
+{{- if contains "NodePort" .Values.serviceType }}
+
+  Or running:
+
+  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "fullname" . }})
+  export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+  echo http://$NODE_IP:$NODE_PORT/admin
+
 {{- end }}
 
 2. Login with the following credentials to see your blog

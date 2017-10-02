@@ -1,0 +1,123 @@
+## Bitnami Osclass image version
+## ref: https://hub.docker.com/r/bitnami/osclass/tags/
+##
+image: bitnami/osclass:3.7.4-r1
+
+## Specify a imagePullPolicy
+## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+##
+imagePullPolicy: IfNotPresent
+
+## Osclass host to create application URLs
+## ref: https://github.com/bitnami/bitnami-docker-osclass#configuration
+##
+# osclassHost:
+
+## loadBalancerIP for the Osclass Service (optional, cloud specific)
+## ref: http://kubernetes.io/docs/user-guide/services/#type-loadbalancer
+##
+# osclassLoadBalancerIP:
+
+## User of the application
+## ref: https://github.com/bitnami/bitnami-docker-osclass#configuration
+##
+osclassUsername: user
+
+## Application password
+## Defaults to a random 10-character alphanumeric string if not set
+## ref: https://github.com/bitnami/bitnami-docker-osclass#configuration
+##
+# osclassPassword:
+
+## Admin email
+## ref: https://github.com/bitnami/bitnami-docker-osclass#configuration
+##
+osclassEmail: user@example.com
+
+## Application title
+## ref: https://github.com/bitnami/bitnami-docker-osclass#configuration
+osclassWebTitle: 'Sample Web Page'
+
+## Allow site to appear in search engines
+## ref: https://github.com/bitnami/bitnami-docker-osclass#configuration
+osclassPingEngines: 1
+
+## Automatically send usage statistics and crash reports to Osclass
+## ref: https://github.com/bitnami/bitnami-docker-osclass#configuration
+##
+osclassSaveStats: 1
+
+## SMTP mail delivery configuration
+## ref: https://github.com/bitnami/bitnami-docker-osclass/#smtp-configuration
+##
+# smtpHost:
+# smtpPort:
+# smtpUser:
+# smtpPassword:
+# smtpProtocol:
+
+##
+## MariaDB chart configuration
+##
+mariadb:
+  ## MariaDB admin password
+  ## ref: https://github.com/bitnami/bitnami-docker-mariadb/blob/master/README.md#setting-the-root-password-on-first-run
+  ##
+  # mariadbRootPassword:
+
+  ## Enable persistence using Persistent Volume Claims
+  ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+  ##
+  persistence:
+    enabled: true
+    ## mariadb data Persistent Volume Storage Class
+    ## If defined, storageClassName: <storageClass>
+    ## If set to "-", storageClassName: "", which disables dynamic provisioning
+    ## If undefined (the default) or set to null, no storageClassName spec is
+    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+    ##   GKE, AWS & OpenStack)
+    ##
+    # storageClass: "-"
+    accessMode: ReadWriteOnce
+    size: 8Gi
+
+## Kubernetes configuration
+## For minikube, set this to NodePort, elsewhere use LoadBalancer
+##
+serviceType: LoadBalancer
+
+## Enable persistence using Persistent Volume Claims
+## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+##
+persistence:
+  enabled: true
+  apache:
+    ## apache data Persistent Volume Storage Class
+    ## If defined, storageClassName: <storageClass>
+    ## If set to "-", storageClassName: "", which disables dynamic provisioning
+    ## If undefined (the default) or set to null, no storageClassName spec is
+    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+    ##   GKE, AWS & OpenStack)
+    ##
+    # storageClass: "-"
+    accessMode: ReadWriteOnce
+    size: 1Gi
+  osclass:
+    ## osclass data Persistent Volume Storage Class
+    ## If defined, storageClassName: <storageClass>
+    ## If set to "-", storageClassName: "", which disables dynamic provisioning
+    ## If undefined (the default) or set to null, no storageClassName spec is
+    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+    ##   GKE, AWS & OpenStack)
+    ##
+    # storageClass: "-"
+    accessMode: ReadWriteOnce
+    size: 8Gi
+
+## Configure resource requests and limits
+## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+##
+resources:
+  requests:
+    memory: 512Mi
+    cpu: 300m

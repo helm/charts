@@ -1,0 +1,33 @@
+{{- if and .Values.sysdig.AccessKey .Values.rbac.install }}
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ .Values.sysdig.serviceAccountName }}
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/{{ .Values.rbac.apiVersion }}
+metadata:
+  name: sysdig-cluster-role
+rules:
+  - apiGroups: ["*"]
+    resources: ["*"]
+    verbs: ["*"]
+  - nonResourceURLs: ["*"]
+    verbs: ["*"]
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/{{ .Values.rbac.apiVersion }}
+metadata:
+  name: sysdig-cluster-role-binding
+  namespace: {{ .Release.Namespace }} # required
+subjects:
+  - kind: ServiceAccount
+    name: {{ .Values.sysdig.serviceAccountName }}
+    namespace: {{ .Release.Namespace }} # required
+roleRef:
+  kind: ClusterRole
+  name: sysdig-cluster-role
+  apiGroup: rbac.authorization.k8s.io
+---
+{{- end }}

@@ -1,22 +1,46 @@
+{{- if .Values.kubeStateMetrics.enabled -}}
 apiVersion: v1
 kind: Service
 metadata:
+{{- if .Values.kubeStateMetrics.service.annotations }}
   annotations:
-    prometheus.io/scrape: 'true'
+{{ toYaml .Values.kubeStateMetrics.service.annotations | indent 4 }}
+{{- end }}
   labels:
-    app: {{ template "fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app: {{ template "prometheus.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     component: "{{ .Values.kubeStateMetrics.name }}"
-    heritage: "{{ .Release.Service }}"
-    release: "{{ .Release.Name }}"
-  name: {{ template "kubeStateMetrics.fullname" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+{{- if .Values.kubeStateMetrics.service.labels }}
+{{ toYaml .Values.kubeStateMetrics.service.labels | indent 4 }}
+{{- end }}
+  name: {{ template "prometheus.kubeStateMetrics.fullname" . }}
 spec:
+{{- if .Values.kubeStateMetrics.service.clusterIP }}
+  clusterIP: {{ .Values.kubeStateMetrics.service.clusterIP }}
+{{- end }}
+{{- if .Values.kubeStateMetrics.service.externalIPs }}
+  externalIPs:
+{{ toYaml .Values.kubeStateMetrics.service.externalIPs | indent 4 }}
+{{- end }}
+{{- if .Values.kubeStateMetrics.service.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.kubeStateMetrics.service.loadBalancerIP }}
+{{- end }}
+{{- if .Values.kubeStateMetrics.service.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+  {{- range $cidr := .Values.kubeStateMetrics.service.loadBalancerSourceRanges }}
+    - {{ $cidr }}
+  {{- end }}
+{{- end }}
   ports:
-    - port: {{ .Values.kubeStateMetrics.httpPort }}
-      name: {{ default "http" .Values.kubeStateMetrics.httpPortName | quote }}
+    - name: http
+      port: {{ .Values.kubeStateMetrics.service.servicePort }}
       protocol: TCP
       targetPort: 8080
   selector:
-    app: {{ template "fullname" . }}
+    app: {{ template "prometheus.name" . }}
     component: "{{ .Values.kubeStateMetrics.name }}"
-  type: "{{ .Values.kubeStateMetrics.serviceType }}"
+    release: {{ .Release.Name }}
+  type: "{{ .Values.kubeStateMetrics.service.type }}"
+{{- end }}

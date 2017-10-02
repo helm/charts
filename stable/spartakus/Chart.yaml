@@ -1,6 +1,6 @@
 name: spartakus
-version: 1.0.0
-description: A Spartakus Helm chart for Kubernetes. Spartakus aims to collect information about Kubernetes clusters.
+version: 1.1.1
+description: Collect information about Kubernetes clusters to help improve the project.
 sources:
   - https://github.com/kubernetes-incubator/spartakus
 maintainers:

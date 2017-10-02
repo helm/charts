@@ -1,10 +1,10 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "etcd-operator.fullname" . }}
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    app: "{{ template "fullname" . }}"
+    app: "{{ template "etcd-operator.fullname" . }}"
     heritage: "{{ .Release.Service }}"
     release: "{{ .Release.Name }}"
 spec:
@@ -13,22 +13,35 @@ spec:
     metadata:
       labels:
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-        app: {{ template "fullname" . }}
+        app: {{ template "etcd-operator.fullname" . }}
         heritage: "{{ .Release.Service }}"
         release: "{{ .Release.Name }}"
     spec:
+{{- if .Values.rbac.install }}
+      serviceAccountName: {{ template "etcd-operator.fullname" . }}
+{{- end }}
       containers:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
-        command: 
-        - "/bin/sh"
-        - "-c"
-        - "/usr/local/bin/etcd-operator --pv-provisioner={{ .Values.cluster.backup.provisioner }}"
+        command:
+        - "/usr/local/bin/etcd-operator"
+        - "--pv-provisioner={{ .Values.cluster.backup.provisioner }}"
+{{- range $key, $value := .Values.commandArgs }}
+        - "--{{ $key }}={{ $value }}"
+{{- end }}
         env:
         - name: MY_POD_NAMESPACE
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
+        - name: MY_POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
         resources:
 {{ toYaml .Values.resources | indent 12 }}
+    {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}

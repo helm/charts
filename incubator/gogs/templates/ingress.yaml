@@ -1,0 +1,32 @@
+{{- if .Values.service.ingress.enabled -}}
+{{- $releaseName := .Release.Name -}}
+{{- $serviceName := default "gogs" .Values.service.nameOverride -}}
+{{- $httpPort := .Values.service.httpPort -}}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ template "gogs.gogs.fullname" . }}
+  labels:
+    app: {{ template "gogs.gogs.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+  annotations:
+    {{- range $key, $value := .Values.service.ingress.annotations }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
+spec:
+  rules:
+    {{- range .Values.service.ingress.hosts }}
+    - host: {{ . }}
+      http:
+        paths:
+          - backend:
+              serviceName: {{ printf "%s-%s" $releaseName $serviceName | trunc 63 | trimSuffix "-" }}
+              servicePort: {{ $httpPort }}
+    {{- end -}}
+{{- if .Values.service.ingress.tls }}
+  tls:
+{{ toYaml .Values.service.ingress.tls | indent 4 }}
+{{- end -}}
+{{- end -}}

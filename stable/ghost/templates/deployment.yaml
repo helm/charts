@@ -15,6 +15,14 @@ spec:
       labels:
         app: {{ template "fullname" . }}
     spec:
+      initContainers:
+      - name: volume-permissions
+        image: "{{ .Values.volumePermissions.image.name }}:{{ .Values.volumePermissions.image.tag }}"
+        imagePullPolicy: {{ default "" .Values.volumePermissions.image.pullPolicy | quote }}
+        command: ['sh', '-c', 'chmod -R g+rwX /bitnami']
+        volumeMounts:
+        - mountPath: /bitnami
+          name: ghost-data
       containers:
       - name: {{ template "fullname" . }}
         image: "{{ .Values.image }}"
@@ -22,7 +30,7 @@ spec:
         env:
         - name: MARIADB_HOST
           value: {{ template "mariadb.fullname" . }}
-        - name: MARIADB_PORT
+        - name: MARIADB_PORT_NUMBER
           value: "3306"
         - name: MARIADB_PASSWORD
           valueFrom:
@@ -31,12 +39,8 @@ spec:
               key: mariadb-root-password
         - name: GHOST_HOST
           value: {{ include "host" . | quote }}
-        - name: GHOST_PORT
-          {{- if eq .Values.serviceType "ClusterIP" }}
-          value: "2368"
-          {{- else }}
-          value: {{ default "" .Values.ghostPort | quote }}
-          {{- end }}
+        - name: GHOST_PORT_NUMBER
+          value: {{ default "80" .Values.ghostPort | quote }}
         - name: GHOST_USERNAME
           value: {{ default "" .Values.ghostUsername | quote }}
         - name: GHOST_PASSWORD
@@ -66,18 +70,24 @@ spec:
           containerPort: 2368
         livenessProbe:
           httpGet:
-            path: /
+            path: /ghost
             port: http
+            httpHeaders:
+            - name: Host
+              value: {{ include "host" . | quote }}
           initialDelaySeconds: 120
           timeoutSeconds: 5
+          failureThreshold: 6
         readinessProbe:
-          exec:
-            command:
-            - sh
-            - -c
-            - nami status ghost | grep "ghost is running"
-          initialDelaySeconds: 5
-          timeoutSeconds: 1
+          httpGet:
+            path: /ghost
+            port: http
+            httpHeaders:
+            - name: Host
+              value: {{ include "host" . | quote }}
+          initialDelaySeconds: 30
+          timeoutSeconds: 3
+          periodSeconds: 5
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:

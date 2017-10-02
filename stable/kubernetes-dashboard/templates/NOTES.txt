@@ -1,0 +1,32 @@
+*********************************************************************************
+*** PLEASE BE PATIENT: kubernetes-dashboard may take a few minutes to install ***
+*********************************************************************************
+
+{{- if .Values.ingress.enabled }}
+From outside the cluster, the server URL(s) are:
+{{- range .Values.ingress.hosts }}
+     http://{{ . }}
+{{- end }}
+
+{{- else if contains "NodePort" .Values.serviceType }}
+
+Get the Kubernetes Dashboard URL by running:
+  export NODE_PORT=$(kubectl get -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "kubernetes-dashboard.fullname" . }})
+  export NODE_IP=$(kubectl get nodes -o jsonpath="{.items[0].status.addresses[0].address}")
+  echo http://$NODE_IP:$NODE_PORT/
+
+{{- else if contains "LoadBalancer" .Values.serviceType }}
+
+  NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+        Watch the status with: 'kubectl get svc -w {{ template "kubernetes-dashboard.fullname" . }}'
+
+Get the Kubernetes Dashboard URL by running:
+  export SERVICE_IP=$(kubectl get svc {{ template "kubernetes-dashboard.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+  echo http://$SERVICE_IP/
+{{- else if contains "ClusterIP"  .Values.serviceType }}
+
+Get the Kubernetes Dashboard URL by running:
+  export POD_NAME=$(kubectl get pods -n {{ .Release.Namespace }} -l "app={{ template "kubernetes-dashboard.name" . }},release={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
+  echo http://127.0.0.1:9090/
+  kubectl -n {{ .Release.Namespace }} port-forward $POD_NAME 9090:9090
+{{- end }}

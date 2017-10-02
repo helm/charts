@@ -1,20 +1,22 @@
 OpenVPN is now starting.
 
 Please be aware that certificate generation is variable and may take some time (minutes).
-check pod status via:
-POD_NAME=`kubectl get pods -l type=openvpn | awk END'{ print $1 }'` \
-&& kubectl log $POD_NAME --follow
 
-LoadBalaner ingress creation can take some time as well.
-check service status via: kubectl get svckubectl get svc
+Check pod status with the command:
+
+  POD_NAME=$(kubectl get pods -l type=openvpn -o jsonpath='{ .items[0].metadata.name }') && kubectl log $POD_NAME --follow
+
+LoadBalancer ingress creation can take some time as well. Check service status with the command:
+
+  kubectl get svc
 
 Once the external IP is available and all the server certificates are generated create client key .ovpn files by pasting the following into a shell:
 
-POD_NAME=`kubectl get pods --namespace {{ .Release.Namespace }} -l type=openvpn | awk END'{ print $1 }'` \
-&& SERVICE_NAME=`kubectl get svc --namespace {{ .Release.Namespace }} -l type=openvpn | awk END'{ print $1 }'` \
-&& SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} $SERVICE_NAME -o jsonpath='{.status.loadBalancer.ingress[0].ip}') \
-&& KEY_NAME=kubeVPN \
-&& kubectl --namespace {{ .Release.Namespace }} exec -it $POD_NAME /etc/openvpn/setup/newClientCert.sh $KEY_NAME $SERVICE_IP \
-&& kubectl --namespace {{ .Release.Namespace }} exec -it $POD_NAME cat /usr/share/easy-rsa/pki/$KEY_NAME.ovpn > $KEY_NAME.ovpn
+  POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l type=openvpn -o jsonpath='{ .items[0].metadata.name }')
+  SERVICE_NAME=$(kubectl get svc --namespace {{ .Release.Namespace }} -l type=openvpn  -o jsonpath='{ .items[0].metadata.name }')
+  SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} $SERVICE_NAME {{"-o go-template='{{ range $k, $v := (index .status.loadBalancer.ingress 0)}}{{ $v }}{{end}}'"}})
+  KEY_NAME=kubeVPN
+  kubectl --namespace {{ .Release.Namespace }} exec -it $POD_NAME /etc/openvpn/setup/newClientCert.sh $KEY_NAME $SERVICE_IP
+  kubectl --namespace {{ .Release.Namespace }} exec -it $POD_NAME cat /etc/openvpn/certs/pki/$KEY_NAME.ovpn > $KEY_NAME.ovpn
 
 Copy the resulting $KEY_NAME.ovpn file to your open vpn client (ex: in tunnelblick, just double click on the file).  Do this for each user that needs to connect to the VPN.  Change KEY_NAME for each additional user.

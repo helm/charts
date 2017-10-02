@@ -1,0 +1,119 @@
+# Default values for sentry.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+image:
+  repository: sentry
+  tag: "8.17"
+  pullPolicy: IfNotPresent
+
+# How many web UI instances to run
+web:
+  replicacount: 1
+  resources:
+    limits:
+      cpu: 500m
+      memory: 500Mi
+    requests:
+      cpu: 300m
+      memory: 300Mi
+
+# How many cron instances to run
+cron:
+  replicacount: 1
+  resources:
+    limits:
+      cpu: 200m
+      memory: 200Mi
+    requests:
+      cpu: 100m
+      memory: 100Mi
+
+# How many worker instances to run
+worker:
+  replicacount: 2
+  resources:
+    limits:
+      cpu: 300m
+      memory: 300Mi
+    requests:
+      cpu: 100m
+      memory: 100Mi
+
+# Initial admin user to create 
+user:
+  email: admin@sentry.local
+
+# BYO Email server
+# TODO: Add exim4 template
+# https://docs.sentry.io/server/installation/docker/#outbound-email
+email:
+  from_address: sentry@sentry.local
+  host: smtp
+  port: 25
+  use_tls: false
+  user:
+  password:
+  enable_replies: false
+
+# Name of the service and what port to expose on the pod
+# Don't change these unless you know what you're doing
+service:
+  name: sentry
+  type: LoadBalancer
+  externalPort: 9000
+  internalPort: 9000
+
+## Enable persistence using Persistent Volume Claims
+## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+##
+persistence:
+  enabled: true
+  ## database data Persistent Volume Storage Class
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  ##
+  # storageClass: "-"
+  accessMode: ReadWriteOnce
+  size: 10Gi
+
+  # Where to store sentry files
+  # https://docs.sentry.io/server/filestore/
+  filestore_dir: /var/lib/sentry/files
+
+## Configure ingress resource that allow you to access the
+## Sentry instalation. Set up the URL
+## ref: http://kubernetes.io/docs/user-guide/ingress/
+##
+ingress:
+  enabled: true
+  hostname: sentry.local
+
+  ## Ingress annotations
+  ##
+  annotations: {}
+  #   kubernetes.io/ingress.class: nginx
+  #   kubernetes.io/tls-acme: 'true'
+
+  ## Ingress TLS configuration
+  ## Secrets must be manually created in the namespace
+  ##
+  tls: []
+  #   - secretName: sentry.local-tls
+  #     hosts:
+  #       - sentry.local
+
+# TODO: add support for plugins https://docs.sentry.io/server/plugins/
+
+postgresql:
+  postgresDatabase: sentry
+  postgresUser: sentry
+  imageTag: "9.5"
+  persistence:
+    enabled: true
+      
+redis:
+  persistence:
+    enabled: true

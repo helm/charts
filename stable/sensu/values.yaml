@@ -1,7 +1,7 @@
 # Docker image name
 image: "sstarcher/sensu"
 # Docker image tag
-imageTag: "0.26"
+imageTag: "0.28"
 
 # Image pull policy for the container
 pullPolicy: "IfNotPresent"
@@ -25,13 +25,13 @@ server:
   resources:
     requests:
       cpu: 100m
-      memory: 100Mi  
+      memory: 100Mi
 # CPU and Memory limit and request for Sensu Api
-api:      
+api:
   resources:
     requests:
       cpu: 50m
-      memory: 100Mi      
+      memory: 100Mi
 
 # Redis configuration
 REDIS_PORT: 6379
@@ -43,4 +43,3 @@ REDIS_RECONNECT_ON_ERROR: true
 redis:
   persistence:
     enabled: false
-

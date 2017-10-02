@@ -1,0 +1,13 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  labels:
+    app: {{ template "gogs.fullname" . }}-tcp
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    component: {{ default "gogs" .Values.service.nameOverride }}
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+  name: tcp-{{ template "gogs.gogs.fullname" . }}-ssh
+data:
+  2222: default/{{ template "gogs.fullname" . }}:ssh
+

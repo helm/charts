@@ -1,4 +1,4 @@
 dependencies:
 - name: redis
-  version: 0.4.1
+  version: 0.9.0
   repository: https://kubernetes-charts.storage.googleapis.com/

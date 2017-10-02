@@ -1,13 +1,13 @@
 Patroni can be accessed via port 5432 on the following DNS name from within your cluster:
-{{ template "fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
+{{ template "patroni.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
 
 To get your password for superuser or admin run:
 
     # admin user password
-    PGPASSWORD_ADMIN=$(printf $(printf '\%o' `kubectl get secret --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath="{.data.password-admin[*]}"`);echo)
+    PGPASSWORD_ADMIN=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "patroni.fullname" . }} -o jsonpath="{.data.password-admin}" | base64 --decode)
 
     # superuser password
-    PGPASSWORD_SUPERUSER=$(printf $(printf '\%o' `kubectl get secret --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath="{.data.password-superuser[*]}"`);echo)
+    PGPASSWORD_SUPERUSER=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "patroni.fullname" . }} -o jsonpath="{.data.password-superuser}" | base64 --decode)
 
 To connect to your database:
 
@@ -16,10 +16,10 @@ To connect to your database:
     kubectl run -i --tty --rm psql --image=postgres \
       --env "PGPASSWORD=$PGPASSWORD_ADMIN" \
       --command -- psql -U admin \
-      -h {{ template "fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local postgres
+      -h {{ template "patroni.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local postgres
 
     # login as superuser
     kubectl run -i --tty --rm psql --image=postgres \
       --env "PGPASSWORD=$PGPASSWORD_SUPERUSER" \
       --command -- psql -U postgres \
-      -h {{ template "fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local postgres
+      -h {{ template "patroni.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local postgres

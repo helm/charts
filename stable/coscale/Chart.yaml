@@ -1,0 +1,17 @@
+name: coscale
+version: 0.2.0
+appVersion: 3.9.1
+description: CoScale Agent
+keywords:
+- monitoring
+- alerting
+- metric
+- event
+- anomaly detection
+home: https://www.coscale.com/
+icon: https://www.coscale.com/hubfs/Logo%20CoScale/CoScale_Logos/new_coscale_logo.png
+sources:
+- https://app.coscale.com/
+maintainers:
+- name: fryckbos
+  email: frederick.ryckbosch@coscale.com

@@ -3,7 +3,7 @@
 ## Distributed Minio ref: https://docs.minio.io/docs/distributed-minio-quickstart-guide
 ##
 image: "minio/minio"
-imageTag: "latest"
+imageTag: "RELEASE.2017-08-05T00-00-53Z"
 imagePullPolicy: "Always"
 mode: "standalone"
 
@@ -27,10 +27,15 @@ replicas: 4
 ##
 persistence:
   enabled: true
-  ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
-  ## Default: volume.alpha.kubernetes.io/storage-class: default
+
+  ## minio data Persistent Volume Storage Class
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
   ##
-  # storageClass: <storageClass>
+  # storageClass: "-"
   accessMode: ReadWriteOnce
   size: 10Gi
 
@@ -48,3 +53,93 @@ resources:
   requests:
     memory: 256Mi
     cpu: 250m
+
+
+## Create a bucket after minio install
+##
+defaultBucket:
+  enabled: false
+  ## If enabled, must be a string with length > 0
+  # name: example
+  ## Can be one of none|download|upload|public
+  # policy: download
+
+## https://docs.minio.io/docs/minio-bucket-notification-guide
+##
+minioConfig:
+  aqmp:
+    enable: false
+    url: ""
+    exchange: ""
+    routingKey: ""
+    exchangeType: ""
+    deliveryMode: 0
+    mandatory: false
+    immediate: false
+    durable: false
+    internal: false
+    noWait: false
+    autoDeleted: false
+  nats:
+    enable: false
+    address: ""
+    subject: ""
+    username: ""
+    password: ""
+    token: ""
+    secure: false
+    pingInterval: 0
+    enableStreaming: false
+    clusterID: ""
+    clientID: ""
+    async: false
+    maxPubAcksInflight: 0
+  elasticsearch:
+    enable: false
+    format: "namespace"
+    url: ""
+    index: ""
+  redis:
+    enable: false
+    format: "namespace"
+    address: ""
+    password: ""
+    key: ""
+  postgresql:
+    enable: false
+    format: "namespace"
+    connectionString: ""
+    table: ""
+    host: ""
+    port: ""
+    user: ""
+    password: ""
+    database: ""
+  kafka:
+    enable: false
+    brokers: "null"
+    topic: ""
+  webhook:
+    enable: false
+    endpoint: ""
+  mysql:
+    enable: false
+    format: "namespace"
+    dsnString: ""
+    table: ""
+    host: ""
+    port: ""
+    user: ""
+    password: ""
+    database: ""
+  mqtt:
+    enable: false
+    broker: ""
+    topic: ""
+    qos: 0
+    clientId: ""
+    username: ""
+    password: ""
+networkPolicy:
+  enabled: false
+  allowExternal: true

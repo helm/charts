@@ -3,18 +3,18 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "kapacitor.fullname" . }}
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
-    app: {{ template "fullname" . }}
+    app: {{ template "kapacitor.fullname" . }}
 spec:
   replicas: 1
   template:
     metadata:
       labels:
-        app: {{ template "fullname" . }}
+        app: {{ template "kapacitor.fullname" . }}
     spec:
       containers:
       - name: {{ .Chart.Name }}
@@ -22,9 +22,13 @@ spec:
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         env:
         - name: KAPACITOR_HOSTNAME
-          value: {{ template "fullname" . }}.{{ .Release.Namespace }}
+          value: {{ template "kapacitor.fullname" . }}.{{ .Release.Namespace }}
         - name: KAPACITOR_INFLUXDB_0_URLS_0
           value: {{ .Values.influxURL }}
+        {{- range $key, $val := .Values.envVars }}
+        - name: {{ $key }}
+          value: {{ $val | quote }}
+        {{- end }}
         ports:
         - containerPort: 9092
         volumeMounts:
@@ -34,10 +38,10 @@ spec:
 {{ toYaml .Values.resources | indent 12 }}
       volumes:
         - name: data
-        {{ if .Values.persistence.enabled }}
-        persistentVolumeClaim:
-          claimName: {{ template "fullname" . }}
-          {{ else }}
+        {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ template "kapacitor.fullname" . }}
+        {{- else }}
           emptyDir: {}
-          {{ end }}
+        {{- end }}
 {{- end }}

@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "datadog.checksd.fullname" . }}
+  labels:
+    app: {{ template "datadog.checksd.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+data:
+{{- if .Values.datadog.checksd }}
+{{ toYaml .Values.datadog.checksd | indent 2 }}
+{{- end -}}

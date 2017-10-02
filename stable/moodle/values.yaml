@@ -1,0 +1,164 @@
+## Bitnami Moodle` image version
+## ref: https://hub.docker.com/r/bitnami/moodle/tags/
+##
+image: bitnami/moodle:3.3.2-r1
+
+## Specify a imagePullPolicy
+## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
+## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+##
+imagePullPolicy: IfNotPresent
+
+## User of the application
+## ref: https://github.com/bitnami/bitnami-docker-moodle#configuration
+##
+moodleUsername: user
+
+## Application password
+## Defaults to a random 10-character alphanumeric string if not set
+## ref: https://github.com/bitnami/bitnami-docker-moodle#configuration
+##
+# moodlePassword:
+
+## Admin email
+## ref: https://github.com/bitnami/bitnami-docker-moodle#configuration
+moodleEmail: user@example.com
+
+## SMTP mail delivery configuration
+## ref: https://github.com/bitnami/bitnami-docker-moodle/#smtp-configuration
+# smtpHost:
+# smtpPort:
+# smtpUser:
+# smtpPassword:
+# smtpProtocol:
+
+##
+## MariaDB chart configuration
+##
+mariadb:
+  ## MariaDB admin password
+  ## ref: https://github.com/bitnami/bitnami-docker-mariadb/blob/master/README.md#setting-the-root-password-on-first-run
+  ##
+  # mariadbRootPassword:
+
+  ## Enable persistence using Persistent Volume Claims
+  ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+  ##
+  persistence:
+    enabled: true
+    ## mariadb data Persistent Volume Storage Class
+    ## If defined, storageClassName: <storageClass>
+    ## If set to "-", storageClassName: "", which disables dynamic provisioning
+    ## If undefined (the default) or set to null, no storageClassName spec is
+    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+    ##   GKE, AWS & OpenStack)
+    ##
+    # storageClass: "-"
+    accessMode: ReadWriteOnce
+    size: 8Gi
+#    existingClaim: ""
+
+  ## Define affinity for the pod
+  ## Sometimes required when persistent volumes are defined externally
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
+#  affinity:
+#    nodeAffinity:
+#      requiredDuringSchedulingIgnoredDuringExecution:
+#        nodeSelectorTerms:
+#        - matchExpressions:
+#          - key: node-role.kubernetes.io/master
+#            operator: Exists
+#            values:
+#            - machine01
+#      preferredDuringSchedulingIgnoredDuringExecution:
+#      - weight: 1
+#        preference:
+#          matchExpressions:
+#          - key: another-node-label-key
+#            operator: In
+#            values:
+#            - another-node-label-value
+#
+#  resources:
+#    requests:
+#      memory: 768Mi
+#      cpu: 750m
+
+
+## Kubernetes configuration
+## For minikube, set this to NodePort, for ingress ClusterIP, elsewhere use LoadBalancer
+##
+serviceType: LoadBalancer
+
+## Optionally, create ingress controller
+ingress:
+  ## If true, Moodle server Ingress will be created
+  ##
+  enabled: false
+
+  ## Moodle server Ingress annotations
+  ##
+  annotations: {}
+  #   kubernetes.io/ingress.class: nginx
+  #   kubernetes.io/tls-acme: 'true'
+
+  ## Moodle server Ingress hostnames
+  ## Must be provided if Ingress is enabled
+  ##
+  hosts: []
+  #   - moodle.domain.com
+
+  ## Moodle server Ingress TLS configuration
+  ## Secrets must be manually created in the namespace
+  ## kubectl create secret tls moodle-server-tls --cert=tls.crt --key=tls.key
+  ##
+  tls: []
+  #   - secretName: moodle-server-tls
+  #     hosts:
+  #       - moodle.domain.com
+
+## Enable persistence using Persistent Volume Claims
+## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+##
+persistence:
+  enabled: true
+  ## database data Persistent Volume Storage Class
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  ##
+  # storageClass: "-"
+  accessMode: ReadWriteOnce
+  size: 8Gi
+  #existingClaim: ""
+
+## Define affinity for the moodle pod
+## Sometimes required when persistent volumes are defined externally
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
+# affinity:
+#   nodeAffinity:
+#     requiredDuringSchedulingIgnoredDuringExecution:
+#       nodeSelectorTerms:
+#       - matchExpressions:
+#         - key: node-role.kubernetes.io/master
+#           operator: In
+#           values:
+#           - machine01
+#     preferredDuringSchedulingIgnoredDuringExecution:
+#     - weight: 1
+#       preference:
+#         matchExpressions:
+#         - key: another-node-label-key
+#           operator: In
+#           values:
+#           - another-node-label-value
+
+## Configure resource requests and limits
+## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+##
+resources:
+  requests:
+    memory: 512Mi
+    cpu: 300m

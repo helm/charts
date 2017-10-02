@@ -1,0 +1,10 @@
+name: dask-distributed
+version: 2.0.0
+description: Distributed computation in Python
+home: https://github.com/dask/distributed
+icon: https://avatars3.githubusercontent.com/u/17131925?v=3&s=200
+sources:
+- https://github.com/dask/distributed
+maintainers:
+- name: danielfrg
+  email: df.rodriguez143@gmail.com

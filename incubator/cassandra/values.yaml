@@ -1,0 +1,63 @@
+## Cassandra image version
+## ref: https://hub.docker.com/r/library/cassandra/
+image:
+  repo: "cassandra"
+  tag: "3"
+  pullPolicy: IfNotPresent
+
+## Specify a service type
+## ref: http://kubernetes.io/docs/user-guide/services/
+service:
+  type: ClusterIP
+
+## Persist data to a persitent volume
+persistence:
+  enabled: true
+  ## cassandra data Persistent Volume Storage Class
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  ##
+  # storageClass: "-"
+  accessMode: ReadWriteOnce
+  size: 10Gi
+
+## Configure resource requests and limits
+## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+## Minimum memory for development is 4GB and 2 CPU cores
+## Minimum memory for production is 8GB and 4 CPU cores
+## ref: http://docs.datastax.com/en/archived/cassandra/2.0/cassandra/architecture/architecturePlanningHardware_c.html
+resources:
+  requests:
+    memory: 4Gi
+    cpu: 2
+  limits:
+    memory: 4Gi
+    cpu: 2
+
+## Change cassandra configuration paramaters below:
+## ref: http://docs.datastax.com/en/cassandra/3.0/cassandra/configuration/configCassandra_yaml.html
+## Recommended max heap size is 1/2 of system memory
+## Recommeneed heap new size is 1/4 of max heap size
+## ref: http://docs.datastax.com/en/cassandra/3.0/cassandra/operations/opsTuneJVM.html
+config:
+  cluster_name: cassandra
+  cluster_size: 3
+  seed_size: 2
+  num_tokens: 256 
+  dc_name: DC1
+  rack_name: RAC1
+  endpoint_snitch: SimpleSnitch
+  max_heap_size: 2048M
+  heap_new_size: 512M
+  ports:
+    cql: 9042
+    thrift: 9160
+
+## Configure node selector. Edit code below for adding selector to pods
+## ref: https://kubernetes.io/docs/user-guide/node-selection/
+# selector:
+  # nodeSelector:
+    # cloud.google.com/gke-nodepool: pool-db

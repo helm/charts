@@ -1,0 +1,15 @@
+apiVersion: v1
+description: Automatically requests certificates from Let's Encrypt
+name: kube-lego
+version: 0.1.11
+keywords:
+  - kube-lego
+  - letsencrypt
+sources:
+  - https://github.com/jetstack/kube-lego/tree/master/examples/nginx
+maintainers:
+  - name: Jack Zampolin
+    email: jack.zampolin@gmail.com
+  - name: Michael Goodness
+    email: mgoodness@gmail.com
+engine: gotpl

@@ -1,0 +1,23 @@
+{{- if and .Values.sumologic.accessId .Values.sumologic.accessKey -}}
+Sumo Logic agents are spinning up on each node in your cluster. After a few
+minutes, you should see logs available in Sumo Logic.
+
+No further action should be required.
+
+{{- else -}}
+##############################################################################
+####  ERROR: You did not set a sumologic.accessId or sumologic.accessKey  ####
+##############################################################################
+
+This deployment will be incomplete until you provide your API access ID and key
+from Sumo Logic.
+
+Retrieve your Sumo Logic Access ID and key from using the instructions found at
+[Sumo Logic Access Keys](https://help.sumologic.com/Manage/Security/Access_Keys)
+
+Then run:
+
+    helm upgrade {{ .Release.Name }} \
+    --set sumologic.accessId=YOUR-ID-HERE,sumologic.accessKey=YOUR-KEY-HERE stable/sumokube
+
+{{- end }}

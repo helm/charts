@@ -11,6 +11,9 @@ data:
   traefik.toml: |
     # traefik.toml
     logLevel = "INFO"
+    {{- if .Values.debug.enabled }}
+    debug = true
+    {{- end }}
     {{- if .Values.ssl.enabled }}
     defaultEntryPoints = ["http","https"]
     {{- else }}
@@ -34,6 +37,26 @@ data:
           KeyFile = "/ssl/tls.key"
       {{- end }}
     [kubernetes]
+    {{- if .Values.kubernetes}}
+      {{- if .Values.kubernetes.namespaces }}
+    namespaces = [
+        {{- range $idx, $element := .Values.kubernetes.namespaces }}
+            {{- if $idx }}, {{ end }}
+            {{- $element | quote }}
+        {{- end -}}
+        ]
+      {{- end}}
+      {{- if .Values.kubernetes.labelSelector }}
+    labelselector = {{ .Values.kubernetes.labelSelector | quote }}
+      {{- end}}
+    {{- end}}
+    {{- if .Values.accessLogs.enabled }}
+    [accessLogs]
+    {{- if .Values.accessLogs.filePath }}
+    filePath = "{{ .Values.accessLogs.filePath }}"
+    {{- end}}
+    format = "{{ .Values.accessLogs.format }}"
+    {{- end}}
     {{- if .Values.acme.enabled }}
     [acme]
     email = "{{ .Values.acme.email }}"
@@ -47,4 +70,30 @@ data:
     {{- if .Values.dashboard.enabled }}
     [web]
     address = ":8080"
+      {{- if .Values.dashboard.auth }}
+      {{- if .Values.dashboard.auth.basic }}
+      [web.auth.basic]
+        users = [{{ range $key, $value := .Values.dashboard.auth.basic }}"{{ $key }}:{{ $value }}",{{ end }}]
+      {{- end}}
+      {{- end}}
+      {{- if .Values.dashboard.statistics }}
+      {{- if .Values.dashboard.statistics.recentErrors }}
+      [web.statistics]
+        RecentErrors = {{ .Values.dashboard.statistics.recentErrors }}
+      {{- end}}
+      {{- end}}
+    {{- end }}
+    {{ if .Values.metrics.prometheus.enabled }}
+    [web.metrics.prometheus]
+      Buckets = {{ .Values.metrics.prometheus.buckets }}
+    {{- end }}
+    {{ if .Values.metrics.datadog.enabled }}
+    [web.metrics.datadog]
+      Address = {{ .Values.metrics.datadog.address }}
+      PushInterval = "{{ .Values.metrics.datadog.pushInterval }}"
+    {{- end }}
+    {{ if .Values.metrics.statsd.enabled }}
+    [web.metrics.statsd]
+      Address = {{ .Values.metrics.statsd.address }}
+      PushInterval = "{{ .Values.metrics.statsd.pushInterval }}"
     {{- end }}

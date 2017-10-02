@@ -2,16 +2,29 @@
 # This is a YAML-formatted file.
 # Declare name/value pairs to be passed into your templates.
 # name: value
-
-
-Name: zk
-PeerPort: 2888
-LeaderElectionPort: 3888
-Component: "zk"
-Replicas: 3
-Image: "java"
-ImageTag: "openjdk-8-jre"
-ImagePullPolicy: "Always"
-Cpu: "100m"
-Memory: "512Mi"
-Storage: "1Gi"
+servers: 3
+# minAvailable: 2
+resources:
+  requests:
+    cpu: 500m
+    memory: 2Gi
+  limits:
+    cpu: 1
+    memory: 4Gi
+heap: "2G"
+storage: "50Gi"
+# storageClass: default
+serverPort: 2888
+leaderElectionPort: 3888
+clientPort: 2181
+imagePullPolicy: "Always"
+tickTimeMs: 2000
+initTicks: 10
+syncTicks: 5
+clientCnxns: 60
+snapRetain: 3
+purgeHours: 1
+probeInitialDelaySeconds: 15
+probeTimeoutSeconds: 5
+antiAffinity: "hard"
+logLevel: "INFO"

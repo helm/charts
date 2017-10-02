@@ -1,0 +1,38 @@
+{{- if .Values.controller.stats.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+{{- if .Values.statsExporter.service.annotations }}
+  annotations:
+{{ toYaml .Values.statsExporter.service.annotations | indent 4 }}
+{{- end }}
+  labels:
+    app: {{ template "name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: "{{ .Values.controller.name }}"
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "controller.fullname" . }}-metrics
+spec:
+  clusterIP: "{{ .Values.statsExporter.service.clusterIP }}"
+{{- if .Values.statsExporter.service.externalIPs }}
+  externalIPs:
+{{ toYaml .Values.statsExporter.service.externalIPs | indent 4 }}
+{{- end }}
+{{- if .Values.statsExporter.service.loadBalancerIP }}
+  loadBalancerIP: "{{ .Values.statsExporter.service.loadBalancerIP }}"
+{{- end }}
+{{- if .Values.statsExporter.service.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+{{ toYaml .Values.statsExporter.service.loadBalancerSourceRanges | indent 4 }}
+{{- end }}
+  ports:
+    - name: metrics
+      port: {{ .Values.statsExporter.service.servicePort }}
+      targetPort: 9913
+  selector:
+    app: {{ template "name" . }}
+    component: "{{ .Values.controller.name }}"
+    release: {{ .Release.Name }}
+  type: "{{ .Values.statsExporter.service.type }}"
+{{- end }}

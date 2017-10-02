@@ -16,7 +16,7 @@ It also packages the [Bitnami MariaDB chart](https://github.com/kubernetes/chart
 
 ## Prerequisites
 
-- Kubernetes 1.4+ with Beta APIs enabled
+- Kubernetes 1.5+ with Beta APIs enabled
 - PV provisioner support in the underlying infrastructure
 
 ## Installing the Chart
@@ -51,7 +51,7 @@ The following tables lists the configurable parameters of the PrestaShop chart a
 | `imagePullPolicy`                     | Image pull policy                           | `Always` if `image` tag is `latest`, else `IfNotPresent` |
 | `prestashopHost`                      | PrestaShop host to create application URLs  | `nil`                                                    |
 | `prestashopLoadBalancerIP`            | `loadBalancerIP` for the PrestaShop Service | `nil`                                                    |
-| `prestashopUsername`                  | User of the application                     | `user`                                                   |
+| `prestashopUsername`                  | User of the application                     | `user@example.com`                                       |
 | `prestashopPassword`                  | Application password                        | _random 10 character long alphanumeric string_           |
 | `prestashopEmail`                     | Admin email                                 | `user@example.com`                                       |
 | `prestashopFirstName`                 | First Name                                  | `Bitnami`                                                |
@@ -64,10 +64,10 @@ The following tables lists the configurable parameters of the PrestaShop chart a
 | `mariadb.mariadbRootPassword`         | MariaDB admin password                      | `nil`                                                    |
 | `serviceType`                         | Kubernetes Service type                     | `LoadBalancer`                                           |
 | `persistence.enabled`                 | Enable persistence using PVC                | `true`                                                   |
-| `persistence.apache.storageClass`     | PVC Storage Class for Apache volume         | `generic`                                                |
+| `persistence.apache.storageClass`     | PVC Storage Class for Apache volume         | `nil` (uses alpha storage class annotation)              |
 | `persistence.apache.accessMode`       | PVC Access Mode for Apache volume           | `ReadWriteOnce`                                          |
 | `persistence.apache.size`             | PVC Storage Request for Apache volume       | `1Gi`                                                    |
-| `persistence.prestashop.storageClass` | PVC Storage Class for PrestaShop volume     | `generic`                                                |
+| `persistence.prestashop.storageClass` | PVC Storage Class for PrestaShop volume     | `nil` (uses alpha storage class annotation)              |
 | `persistence.prestashop.accessMode`   | PVC Access Mode for PrestaShop volume       | `ReadWriteOnce`                                          |
 | `persistence.prestashop.size`         | PVC Storage Request for PrestaShop volume   | `8Gi`                                                    |
 | `resources`                           | CPU/Memory resource requests/limits         | Memory: `512Mi`, CPU: `300m`                             |

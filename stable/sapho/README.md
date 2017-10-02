@@ -41,17 +41,18 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following tables lists the configurable parameters of the Sapho chart and their default values.
 
-| Parameter                            | Description                              | Default                                                    |
-| -------------------------------      | -------------------------------          | ---------------------------------------------------------- |
-| `image`                              | Sapho image                              | `sapho/ops-docker-tomcat:{VERSION}`                              |
-| `imagePullPolicy`                    | Image pull policy                        | `Always` if `image` tag is `latest`, else `IfNotPresent`   |
-| `saphoDBuser`                        | User of the application                  | `user`                                                     |
-| `saphoDBpass`                        | MySQL DB Password                        | `nil`                                                      |
-| `saphoDBtype`                        | Sapho DB Type                            | `mysql`                                                    |
-| `saphoDBhost`                        | Sapho DB HostName                        | `nil`                                                      |
-| `mysql.mysqlRootPassword`            | MySQL admin password                     | `nil`                                                      |
-| `serviceType`                        | Kubernetes Service type                  | `LoadBalancer`                                             |
-| `persistence.enabled`                | Enable persistence using PVC             | `true`                                                                                       
+| Parameter                        | Description                     | Default                                                    |
+| -------------------------------  | ------------------------------- | ---------------------------------------------------------- |
+| `image`                          | Sapho image                     | `sapho/ops-docker-tomcat:{VERSION}`                        |
+| `imagePullPolicy`                | Image pull policy               | `Always` if `image` tag is `latest`, else `IfNotPresent`   |
+| `saphoDBuser`                    | User of the application         | `user`                                                     |
+| `saphoDBpass`                    | MySQL DB Password               | `nil`                                                      |
+| `saphoDBtype`                    | Sapho DB Type                   | `mysql`                                                    |
+| `saphoDBhost`                    | Sapho DB HostName               | `nil`                                                      |
+| `mysql.mysqlRootPassword`        | MySQL admin password            | `nil`                                                      |
+| `serviceType`                    | Kubernetes Service type         | `LoadBalancer`                                             |
+| `mysql.persistence.enabled`      | Enable persistence using PVC    | `true`                                                     |
+| `mysql.persistence.storageClass` | The PVC storage class to use.   | `nil` (uses alpha storage class annotation)                |
 
 The above parameters map to the env variables defined in [sapho/ops-docker-tomcat](https://bitbucket.org/sapho/ops-docker-tomcat). For more information please refer to the [sapho/ops-docker-tomcat](https://bitbucket.org/sapho/ops-docker-tomcat) image documentation.
 

@@ -49,7 +49,7 @@ The following tables lists the configurable parameters of the JasperReports char
 |           Parameter           |                 Description                  |                         Default                          |
 |-------------------------------|----------------------------------------------|----------------------------------------------------------|
 | `image`                       | JasperReports image                          | `bitnami/jasperreports:{VERSION}`                        |
-| `imagePullPolicy`             | Image pull policy                            | `Always` if `image` tag is `latest`, else `IfNotPresent` |
+| `imagePullPolicy`             | Image pull policy                            | `IfNotPresent`                                           |
 | `jasperreportsUsername`       | User of the application                      | `user`                                                   |
 | `jasperreportsPassword`       | Application password                         | _random 10 character long alphanumeric string_           |
 | `jasperreportsEmail`          | User email                                   | `user@example.com`                                       |
@@ -62,7 +62,7 @@ The following tables lists the configurable parameters of the JasperReports char
 | `mariadb.mariadbRootPassword` | MariaDB admin password                       | `nil`                                                    |
 | `serviceType`                 | Kubernetes Service type                      | `LoadBalancer`                                           |
 | `persistence.enabled`         | Enable persistence using PVC                 | `true`                                                   |
-| `persistence.storageClass`    | PVC Storage Class for JasperReports volume   | `generic`                                                |
+| `persistence.storageClass`    | PVC Storage Class for JasperReports volume   | `nil` (uses alpha storage annotation)                     |
 | `persistence.accessMode`      | PVC Access Mode for JasperReports volume     | `ReadWriteOnce`                                          |
 | `persistence.size`            | PVC Storage Request for JasperReports volume | `8Gi`                                                    |
 | `resources`                   | CPU/Memory resource requests/limits          | Memory: `512Mi`, CPU: `300m`                             |

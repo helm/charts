@@ -1,0 +1,15 @@
+name: cassandra
+version: 0.1.4
+description: Apache Cassandra is a free and open-source distributed database management
+  system designed to handle large amounts of data across many commodity servers, providing
+  high availability with no single point of failure.
+icon: https://upload.wikimedia.org/wikipedia/commons/5/5e/Cassandra_logo.svg
+keywords:
+- cassandra
+- database
+- nosql
+home: http://cassandra.apache.org
+maintainers:
+- name: Siri C
+  email: goonohc@gmail.com
+engine: gotpl

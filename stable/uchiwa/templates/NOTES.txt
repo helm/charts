@@ -13,6 +13,6 @@
   echo http://$SERVICE_IP:{{ .Values.httpPort }}/login
 {{- else if contains "ClusterIP"  .Values.serviceType }}
   export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "fullname" . }}" -o jsonpath="{.items[0].metadata.name}")
-  echo http://127.0.0.1:3000
-  kubectl port-forward $POD_NAME 3000:3000
+  echo http://127.0.0.1:{{ .Values.port }}
+  kubectl port-forward $POD_NAME {{ .Values.port }}:{{ .Values.port }}
 {{- end }}

@@ -1,9 +1,9 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "dokuwiki.fullname" . }}
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "dokuwiki.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -11,10 +11,10 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "fullname" . }}
+        app: {{ template "dokuwiki.fullname" . }}
     spec:
       containers:
-      - name: {{ template "fullname" . }}
+      - name: {{ template "dokuwiki.fullname" . }}
         image: "{{ .Values.image }}"
         imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
         env:
@@ -25,7 +25,7 @@ spec:
         - name: DOKUWIKI_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "dokuwiki.fullname" . }}
               key: dokuwiki-password
         - name: DOKUWIKI_EMAIL
           value: {{ default "" .Values.dokuwikiEmail | quote }}
@@ -38,16 +38,18 @@ spec:
           containerPort: 443
         livenessProbe:
           httpGet:
-            path: /
+            path: /doku.php
             port: http
           initialDelaySeconds: 120
           timeoutSeconds: 5
+          failureThreshold: 6
         readinessProbe:
           httpGet:
-            path: /
+            path: /doku.php
             port: http
-          initialDelaySeconds: 5
-          timeoutSeconds: 1
+          initialDelaySeconds: 30
+          timeoutSeconds: 3
+          periodSeconds: 5
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
@@ -59,14 +61,14 @@ spec:
       - name: dokuwiki-data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ template "fullname" . }}-dokuwiki
+          claimName: {{ template "dokuwiki.fullname" . }}-dokuwiki
       {{- else }}
         emptyDir: {}
       {{- end }}
       - name: apache-data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ template "fullname" . }}-apache
+          claimName: {{ template "dokuwiki.fullname" . }}-apache
       {{- else }}
         emptyDir: {}
       {{- end }}
