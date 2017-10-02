@@ -28,7 +28,7 @@ spec:
           - containerPort: {{ .Values.addons.grafana.service.externalPort }}
         env:
         - name: GRAFANA_PORT
-          value: "3000"
+          value: "{{ .Values.addons.grafana.service.externalPort }}"
         - name: GF_AUTH_BASIC_ENABLED
           value: "false"
         - name: GF_AUTH_ANONYMOUS_ENABLED
