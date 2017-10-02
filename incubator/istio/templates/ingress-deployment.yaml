@@ -1,4 +1,4 @@
-{{- $serviceName := include "istio.fullname" . -}}
+{{- $serviceName := include "istio.name" . -}}
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
@@ -25,11 +25,23 @@ spec:
       - name: istio-ingress
         image: "{{ .Values.ingress.deployment.image }}:{{ .Values.istioRelease }}"
         args: ["proxy", "ingress", "-v", "2"]
+        args:
+        - proxy
+        - ingress
+        - -v
+        - "2"
+        - --discoveryAddress
+        - {{ .Values.pilot.name }}:{{ .Values.pilot.service.externalHttpDiscovery }}
         imagePullPolicy: {{ .Values.ingress.deployment.imagePullPolicy }}
         ports:
         - containerPort: {{ .Values.ingress.service.externalHttpPort }}
         - containerPort: {{ .Values.ingress.service.externalHttpsPort }}
         env:
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.name
         - name: POD_NAMESPACE
           valueFrom:
             fieldRef:
@@ -39,11 +51,19 @@ spec:
 {{ toYaml .Values.ingress.deployment.resources | indent 10 }}
 {{ if .Values.auth.enabled }}
         volumeMounts:
-        - mountPath: /etc/certs
-          name: istio-certs
+        - name: istio-certs
+          mountPath: /etc/certs
+          readOnly: true
+        - name: ingress-certs
+          mountPath: /etc/istio/ingress-certs
           readOnly: true
       volumes:
       - name: istio-certs
         secret:
           secretName: istio.default
+          optional: true
+      - name: ingress-certs
+        secret:
+          secretName: istio-ingress-certs
+          optional: true
 {{ end }}

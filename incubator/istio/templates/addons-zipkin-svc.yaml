@@ -1,9 +1,9 @@
 {{ if .Values.addons.zipkin.enabled }}
-{{- $serviceName := include "istio.fullname" . -}}
+{{- $serviceName := include "istio.name" . -}}
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ $serviceName }}-zipkin
+  name: {{ $serviceName }}-{{ .Values.addons.zipkin.deployment.name }}
   labels:
 {{ include "istio.labels.standard" . | indent 4 }}
 spec:

@@ -1,4 +1,4 @@
-{{- $serviceName := include "istio.fullname" . -}}
+{{- $serviceName := include "istio.name" . -}}
 apiVersion: v1
 kind: Service
 metadata:
@@ -15,8 +15,14 @@ spec:
   ports:
   - name: tcp
     port: {{ .Values.mixer.service.externalTcpPort }}
+  - name: http-health
+    port: {{ .Values.mixer.service.externalHttpHeathPort }}
   - name: configapi
     port: {{ .Values.mixer.service.externalConfigApiPort }}
+  - name: statsd-prom
+    port: {{ .Values.mixer.service.externalStatsdPromPort }}
+  - name: statsd-udp
+    port: {{ .Values.mixer.service.externalStatsdUdpPort }}
   - name: prometheus
     port: {{ .Values.mixer.service.externalPrometheusPort }}
   selector:

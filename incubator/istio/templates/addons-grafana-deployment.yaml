@@ -1,5 +1,5 @@
 {{ if .Values.addons.grafana.enabled }}
-{{- $serviceName := include "istio.fullname" . -}}
+{{- $serviceName := include "istio.name" . -}}
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
@@ -27,7 +27,7 @@ spec:
           - containerPort: {{ .Values.addons.grafana.service.externalPort }}
         env:
         - name: GRAFANA_PORT
-          value: "{{ .Values.addons.grafana.service.externalPort }}"
+          value: "3000"
         - name: GF_AUTH_BASIC_ENABLED
           value: "false"
         - name: GF_AUTH_ANONYMOUS_ENABLED

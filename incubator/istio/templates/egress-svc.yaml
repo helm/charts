@@ -1,11 +1,11 @@
-{{- $serviceName := include "istio.fullname" . -}}
+{{- $serviceName := include "istio.name" . -}}
 apiVersion: v1
 kind: Service
 metadata:
-  name: istio-egress
+  name: {{ $serviceName }}-{{ .Values.egress.deployment.name }}
   labels:
 {{ include "istio.labels.standard" . | indent 4 }}
-    istio: {{ $serviceName }}-egress
+    istio: {{ $serviceName }}-{{ .Values.egress.deployment.name }}
 spec:
   type: {{ .Values.egress.service.type }}
   ports:

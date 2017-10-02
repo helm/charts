@@ -3,7 +3,7 @@ rbac:
   install: false
   apiVersion: v1beta1
 
-istioRelease: 0.1.6
+istioRelease: 0.2.6
 
 ## Enable Istio auth feature 
 ## This deploys a CA in the namespace and enables mTLS between the services
@@ -17,6 +17,9 @@ mixer:
     type: ClusterIP
     annotations: {}
     externalTcpPort: 9091
+    externalHttpHeathPort: 9093
+    externalStatsdPromPort: 9102
+    externalStatsdUdpPort: 9125
     externalConfigApiPort: 9094
     externalPrometheusPort: 42422
 
@@ -26,7 +29,7 @@ mixer:
     imagePullPolicy: IfNotPresent
     replicas: 1
     annotations:
-      alpha.istio.io/sidecar: ignore
+      sidecar.istio.io/inject: "false"
     resources:
       limits:
         cpu: 100m
@@ -37,33 +40,21 @@ mixer:
 
 ## Pilot configuration
 pilot:
-  name: istio-pilot
+  name: pilot
   customConfigMap: false
 
   service:
     type: ClusterIP
     externalHttpDiscovery: 8080
-    externalHttpApiServer: 8081
+    externalAdmissionWebhookServer: 443
 
   deployment:
     replicas: 1
     annotations:
-      alpha.istio.io/sidecar: ignore
+      sidecar.istio.io/inject: "false"
 
     discovery:
       name: discovery
-      image: docker.io/istio/pilot
-      imagePullPolicy: IfNotPresent
-      resources:
-        limits:
-          cpu: 100m
-          memory: 128Mi
-        requests:
-          cpu: 100m
-          memory: 128Mi
-
-    apiserver:
-      name: apiserver
       image: docker.io/istio/pilot
       imagePullPolicy: IfNotPresent
       resources:
@@ -85,7 +76,7 @@ ingress:
   deployment:
     name: ingress
     annotations:
-      alpha.istio.io/sidecar: ignore
+      sidecar.istio.io/inject: "false"
     image: docker.io/istio/proxy_debug
     imagePullPolicy: IfNotPresent
     replicas: 1
@@ -107,7 +98,7 @@ egress:
   deployment:
     name: egress
     annotations:
-      alpha.istio.io/sidecar: ignore
+      sidecar.istio.io/inject: "false"
     image: docker.io/istio/proxy_debug
     imagePullPolicy: IfNotPresent
     replicas: 1
@@ -126,7 +117,7 @@ ca:
   deployment:
     name: ca
     annotations:
-      # alpha.istio.io/sidecar: ignore
+      sidecar.istio.io/inject: "false"
     image: docker.io/istio/istio-ca
     imagePullPolicy: IfNotPresent
     replicas: 1
@@ -154,7 +145,7 @@ addons:
     deployment:
       name: zipkin
       annotations:
-        alpha.istio.io/sidecar: ignore
+        sidecar.istio.io/inject: "false"
       image: docker.io/openzipkin/zipkin
       imageTag: latest
       imagePullPolicy: IfNotPresent
@@ -180,7 +171,7 @@ addons:
     deployment:
       name: prometheus
       annotations:
-        alpha.istio.io/sidecar: ignore
+        sidecar.istio.io/inject: "false"
       image: quay.io/coreos/prometheus
       imageTag: v1.1.1
       imagePullPolicy: IfNotPresent
@@ -204,7 +195,7 @@ addons:
     deployment:
       name: grafana
       annotations:
-        alpha.istio.io/sidecar: ignore
+        sidecar.istio.io/inject: "false"
       image: docker.io/istio/grafana
       imagePullPolicy: IfNotPresent
       replicas: 1
@@ -227,7 +218,7 @@ addons:
     deployment:
       name: servicegraph
       annotations:
-        alpha.istio.io/sidecar: ignore
+        sidecar.istio.io/inject: "false"
       image: gcr.io/istio-testing/servicegraph
       imageTag: latest
       imagePullPolicy: IfNotPresent

@@ -1,4 +1,4 @@
-{{- $serviceName := include "istio.fullname" . -}}
+{{- $serviceName := include "istio.name" . -}}
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
@@ -28,7 +28,13 @@ spec:
         args: ["discovery", "-v", "2"]
         ports:
         - containerPort: {{ .Values.pilot.service.externalHttpDiscovery }}
+        - containerPort: {{ .Values.pilot.service.externalAdmissionWebhookServer }}
         env:
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.name
         - name: POD_NAMESPACE
           valueFrom:
             fieldRef:
@@ -36,17 +42,10 @@ spec:
               fieldPath: metadata.namespace
         resources:
 {{ toYaml .Values.pilot.deployment.discovery.resources | indent 10 }}
-      - name: {{ .Values.pilot.deployment.apiserver.name }}
-        image: "{{ .Values.pilot.deployment.apiserver.image }}:{{ .Values.istioRelease }}"
-        imagePullPolicy: {{ .Values.pilot.deployment.apiserver.imagePullPolicy }}
-        args: ["apiserver", "-v", "2"]
-        ports:
-        - containerPort: {{ .Values.pilot.service.externalHttpApiServer }}
-        env:
-        - name: POD_NAMESPACE
-          valueFrom:
-            fieldRef:
-              apiVersion: v1
-              fieldPath: metadata.namespace
-        resources:
-{{ toYaml .Values.pilot.deployment.apiserver.resources | indent 10 }}
+        volumeMounts:
+        - name: config-volume
+          mountPath: /etc/istio/config
+      volumes:
+      - name: config-volume
+        configMap:
+          name: istio
