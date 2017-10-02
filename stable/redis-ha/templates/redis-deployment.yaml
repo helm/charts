@@ -11,6 +11,7 @@ spec:
     metadata:
       labels:
         name: redis
+        role: replica
 {{ include "labels.standard" . | indent 8 }}
     spec:
       containers:
