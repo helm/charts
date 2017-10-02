@@ -67,6 +67,10 @@ spec:
             - name: config-volume
               mountPath: /etc/config
               readOnly: true
+    {{- if .Values.alertmanager.strategy }}
+      strategy:
+{{ toYaml .Values.alertmanager.strategy | indent 8 }}
+    {{- end }}
     {{- if .Values.alertmanager.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.alertmanager.nodeSelector | indent 8 }}
