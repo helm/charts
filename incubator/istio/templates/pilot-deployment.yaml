@@ -1,3 +1,4 @@
+{{- if and .Values.istio.install (not .Release.IsInstall) -}}
 {{- $serviceName := include "istio.name" . -}}
 apiVersion: extensions/v1beta1
 kind: Deployment
@@ -23,7 +24,7 @@ spec:
       serviceAccountName: {{ $serviceName }}-pilot-service-account
       containers:
       - name: {{ .Values.pilot.deployment.discovery.name }}
-        image: "{{ .Values.pilot.deployment.discovery.image }}:{{ .Values.istioRelease }}"
+        image: "{{ .Values.pilot.deployment.discovery.image }}:{{ .Values.istio.release }}"
         imagePullPolicy: {{ .Values.pilot.deployment.discovery.imagePullPolicy }}
         args: ["discovery", "-v", "2"]
         ports:
@@ -49,3 +50,4 @@ spec:
       - name: config-volume
         configMap:
           name: istio
+{{- end -}}

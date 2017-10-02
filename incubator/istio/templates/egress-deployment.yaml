@@ -1,3 +1,4 @@
+{{- if and .Values.istio.install (not .Release.IsInstall) -}}
 {{- $serviceName := include "istio.name" . -}}
 apiVersion: extensions/v1beta1
 kind: Deployment
@@ -22,7 +23,7 @@ spec:
     spec:
       containers:
       - name: proxy
-        image: "{{ .Values.egress.deployment.image }}:{{ .Values.istioRelease }}"
+        image: "{{ .Values.egress.deployment.image }}:{{ .Values.istio.release }}"
         imagePullPolicy: {{ .Values.egress.deployment.imagePullPolicy }}
         args:
         - proxy
@@ -55,3 +56,4 @@ spec:
           secretName: istio.default
           optional: true
 {{ end }}
+{{- end -}}

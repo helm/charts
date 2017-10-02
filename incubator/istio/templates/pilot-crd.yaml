@@ -5,9 +5,6 @@ metadata:
   name: destinationpolicies.config.istio.io
   labels:
 {{ include "istio.labels.standard" . | indent 4 }}
-  annotations:
-    helm.sh/hook: pre-install
-    helm.sh/hook-weight: "1"
 spec:
   group: config.istio.io
   names:
@@ -24,9 +21,6 @@ metadata:
   name: egressrules.config.istio.io
   labels:
 {{ include "istio.labels.standard" . | indent 4 }}
-  annotations:
-    helm.sh/hook: pre-install
-    helm.sh/hook-weight: "1"
 spec:
   group: config.istio.io
   names:
@@ -43,9 +37,6 @@ metadata:
   name: routerules.config.istio.io
   labels:
 {{ include "istio.labels.standard" . | indent 4 }}
-  annotations:
-    helm.sh/hook: pre-install
-    helm.sh/hook-weight: "1"
 spec:
   group: config.istio.io
   names:

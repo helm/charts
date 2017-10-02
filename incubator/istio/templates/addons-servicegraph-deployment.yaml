@@ -1,3 +1,4 @@
+{{- if and .Values.istio.install (not .Release.IsInstall) -}}
 {{ if .Values.addons.servicegraph.enabled }}
 {{- $serviceName := include "istio.name" . -}}
 apiVersion: extensions/v1beta1
@@ -31,3 +32,4 @@ spec:
         resources:
 {{ toYaml .Values.addons.servicegraph.deployment.resources | indent 10 }}
 {{ end }}
+{{- end -}}

@@ -1,3 +1,4 @@
+{{- if and .Values.istio.install (not .Release.IsInstall) -}}
 {{- $serviceName := include "istio.name" . -}}
 apiVersion: "config.istio.io/v1alpha2"
 kind: attributemanifest
@@ -379,4 +380,4 @@ spec:
     instances:
     - tcpbytesent.metric
     - tcpbytereceived.metric
----
+{{- end -}}

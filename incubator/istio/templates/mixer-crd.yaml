@@ -7,9 +7,6 @@ metadata:
 {{ include "istio.labels.standard" . | indent 4 }}
     package: istio.io.mixer
     istio: core
-  annotations:
-    helm.sh/hook: pre-install
-    helm.sh/hook-weight: "1"
 spec:
   group: config.istio.io
   names:
@@ -27,9 +24,6 @@ metadata:
 {{ include "istio.labels.standard" . | indent 4 }}
     package: istio.io.mixer
     istio: core
-  annotations:
-    helm.sh/hook: pre-install
-    helm.sh/hook-weight: "1"
 spec:
   group: config.istio.io
   names:
@@ -47,9 +41,6 @@ metadata:
 {{ include "istio.labels.standard" . | indent 4 }}
     package: denier
     istio: mixer-adapter
-  annotations:
-    helm.sh/hook: pre-install
-    helm.sh/hook-weight: "1"
 spec:
   group: config.istio.io
   names:
@@ -67,9 +58,6 @@ metadata:
 {{ include "istio.labels.standard" . | indent 4 }}
     package: listchecker
     istio: mixer-adapter
-  annotations:
-    helm.sh/hook: pre-install
-    helm.sh/hook-weight: "1"
 spec:
   group: config.istio.io
   names:
@@ -87,9 +75,6 @@ metadata:
 {{ include "istio.labels.standard" . | indent 4 }}
     package: memquota
     istio: mixer-adapter
-  annotations:
-    helm.sh/hook: pre-install
-    helm.sh/hook-weight: "1"
 spec:
   group: config.istio.io
   names:
@@ -107,9 +92,6 @@ metadata:
 {{ include "istio.labels.standard" . | indent 4 }}
     package: noop
     istio: mixer-adapter
-  annotations:
-    helm.sh/hook: pre-install
-    helm.sh/hook-weight: "1"
 spec:
   group: config.istio.io
   names:
@@ -119,7 +101,6 @@ spec:
   scope: Namespaced
   version: v1alpha2
 ---
-
 kind: CustomResourceDefinition
 apiVersion: apiextensions.k8s.io/v1beta1
 metadata:
@@ -128,9 +109,6 @@ metadata:
 {{ include "istio.labels.standard" . | indent 4 }}
     package: prometheus
     istio: mixer-adapter
-  annotations:
-    helm.sh/hook: pre-install
-    helm.sh/hook-weight: "1"
 spec:
   group: config.istio.io
   names:
@@ -148,9 +126,6 @@ metadata:
 {{ include "istio.labels.standard" . | indent 4 }}
     package: stackdriver
     istio: mixer-adapter
-  annotations:
-    helm.sh/hook: pre-install
-    helm.sh/hook-weight: "1"
 spec:
   group: config.istio.io
   names:
@@ -160,7 +135,6 @@ spec:
   scope: Namespaced
   version: v1alpha2
 ---
-
 kind: CustomResourceDefinition
 apiVersion: apiextensions.k8s.io/v1beta1
 metadata:
@@ -169,9 +143,6 @@ metadata:
 {{ include "istio.labels.standard" . | indent 4 }}
     package: statsd
     istio: mixer-adapter
-  annotations:
-    helm.sh/hook: pre-install
-    helm.sh/hook-weight: "1"
 spec:
   group: config.istio.io
   names:
@@ -189,9 +160,6 @@ metadata:
 {{ include "istio.labels.standard" . | indent 4 }}
     package: stdio
     istio: mixer-adapter
-  annotations:
-    helm.sh/hook: pre-install
-    helm.sh/hook-weight: "1"
 spec:
   group: config.istio.io
   names:
@@ -201,7 +169,6 @@ spec:
   scope: Namespaced
   version: v1alpha2
 ---
-
 kind: CustomResourceDefinition
 apiVersion: apiextensions.k8s.io/v1beta1
 metadata:
@@ -210,9 +177,6 @@ metadata:
 {{ include "istio.labels.standard" . | indent 4 }}
     package: svcctrl
     istio: mixer-adapter
-  annotations:
-    helm.sh/hook: pre-install
-    helm.sh/hook-weight: "1"
 spec:
   group: config.istio.io
   names:
@@ -222,7 +186,6 @@ spec:
   scope: Namespaced
   version: v1alpha2
 ---
-
 kind: CustomResourceDefinition
 apiVersion: apiextensions.k8s.io/v1beta1
 metadata:
@@ -231,9 +194,6 @@ metadata:
 {{ include "istio.labels.standard" . | indent 4 }}
     package: checknothing
     istio: mixer-instance
-  annotations:
-    helm.sh/hook: pre-install
-    helm.sh/hook-weight: "1"
 spec:
   group: config.istio.io
   names:
@@ -251,9 +211,6 @@ metadata:
 {{ include "istio.labels.standard" . | indent 4 }}
     package: listentry
     istio: mixer-instance
-  annotations:
-    helm.sh/hook: pre-install
-    helm.sh/hook-weight: "1"
 spec:
   group: config.istio.io
   names:
@@ -271,9 +228,6 @@ metadata:
 {{ include "istio.labels.standard" . | indent 4 }}
     package: logentry
     istio: mixer-instance
-  annotations:
-    helm.sh/hook: pre-install
-    helm.sh/hook-weight: "1"
 spec:
   group: config.istio.io
   names:
@@ -283,7 +237,6 @@ spec:
   scope: Namespaced
   version: v1alpha2
 ---
-
 kind: CustomResourceDefinition
 apiVersion: apiextensions.k8s.io/v1beta1
 metadata:
@@ -292,9 +245,6 @@ metadata:
 {{ include "istio.labels.standard" . | indent 4 }}
     package: metric
     istio: mixer-instance
-  annotations:
-    helm.sh/hook: pre-install
-    helm.sh/hook-weight: "1"
 spec:
   group: config.istio.io
   names:
@@ -312,9 +262,6 @@ metadata:
 {{ include "istio.labels.standard" . | indent 4 }}
     package: quota
     istio: mixer-instance
-  annotations:
-    helm.sh/hook: pre-install
-    helm.sh/hook-weight: "1"
 spec:
   group: config.istio.io
   names:
@@ -332,9 +279,6 @@ metadata:
 {{ include "istio.labels.standard" . | indent 4 }}
     package: reportnothing
     istio: mixer-instance
-  annotations:
-    helm.sh/hook: pre-install
-    helm.sh/hook-weight: "1"
 spec:
   group: config.istio.io
   names:

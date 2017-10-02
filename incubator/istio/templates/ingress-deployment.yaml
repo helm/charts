@@ -1,3 +1,4 @@
+{{- if and .Values.istio.install (not .Release.IsInstall) -}}
 {{- $serviceName := include "istio.name" . -}}
 apiVersion: extensions/v1beta1
 kind: Deployment
@@ -23,7 +24,7 @@ spec:
       serviceAccountName: {{ $serviceName }}-ingress-service-account
       containers:
       - name: istio-ingress
-        image: "{{ .Values.ingress.deployment.image }}:{{ .Values.istioRelease }}"
+        image: "{{ .Values.ingress.deployment.image }}:{{ .Values.istio.release }}"
         args: ["proxy", "ingress", "-v", "2"]
         args:
         - proxy
@@ -67,3 +68,4 @@ spec:
           secretName: istio-ingress-certs
           optional: true
 {{ end }}
+{{- end -}}

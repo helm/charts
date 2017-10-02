@@ -1,3 +1,4 @@
+{{- if and .Values.istio.install (not .Release.IsInstall) -}}
 {{- $serviceName := include "istio.name" . -}}
 apiVersion: v1
 kind: Service
@@ -15,3 +16,4 @@ spec:
     component: {{ $serviceName }}-{{ .Values.egress.deployment.name }}
     release: {{ .Release.Name }}
     istio: {{ $serviceName }}-{{ .Values.egress.deployment.name }}
+{{- end -}}

@@ -1,3 +1,4 @@
+{{- if and .Values.istio.install (not .Release.IsInstall) -}}
 {{ if .Values.addons.grafana.enabled }}
 {{- $serviceName := include "istio.name" . -}}
 apiVersion: extensions/v1beta1
@@ -21,7 +22,7 @@ spec:
     spec:
       containers:
       - name: {{ .Values.addons.grafana.deployment.name }}
-        image:  "{{ .Values.addons.grafana.deployment.image }}:{{ .Values.istioRelease }}"
+        image:  "{{ .Values.addons.grafana.deployment.image }}:{{ .Values.istio.release }}"
         imagePullPolicy: {{ .Values.addons.grafana.deployment.imagePullPolicy }}
         ports:
           - containerPort: {{ .Values.addons.grafana.service.externalPort }}
@@ -43,3 +44,4 @@ spec:
       - name: grafana-data
         emptyDir: {}
 {{ end }}
+{{- end -}}

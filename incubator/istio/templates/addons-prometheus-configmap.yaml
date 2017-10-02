@@ -1,3 +1,4 @@
+{{- if and .Values.istio.install (not .Release.IsInstall) -}}
 {{ if .Values.addons.prometheus.enabled }}
 {{- $serviceName := include "istio.name" . -}}
 apiVersion: v1
@@ -36,3 +37,4 @@ data:
       static_configs:
       - targets: ['{{ $serviceName }}-{{ .Values.mixer.deployment.name }}.{{ .Release.Namespace }}:{{ .Values.mixer.service.externalHttpHeathPort }}']
 {{ end }}
+{{- end -}}

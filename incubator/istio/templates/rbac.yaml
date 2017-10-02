@@ -1,3 +1,4 @@
+{{- if and .Values.istio.install (not .Release.IsInstall) -}}
 {{ if .Values.rbac.install }}
 {{- $serviceName := include "istio.name" . -}}
 kind: ClusterRole
@@ -178,3 +179,4 @@ roleRef:
   name: {{ $serviceName }}-mixer
   apiGroup: rbac.authorization.k8s.io
 {{ end }}
+{{- end -}}

@@ -1,3 +1,4 @@
+{{- if and .Values.istio.install (not .Release.IsInstall) -}}
 {{- if not .Values.pilot.customConfigMap }}
 {{- $serviceName := include "istio.name" . -}}
 apiVersion: v1
@@ -67,5 +68,6 @@ data:
       # Statsd metrics collector. Istio mixer exposes a UDP endpoint
       # to collect and convert statsd metrics into Prometheus metrics.
       statsdUdpAddress: istio-mixer.istio-system:9125
+{{- end -}}
 {{- end -}}
  

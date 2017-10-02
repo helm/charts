@@ -1,3 +1,4 @@
+{{- if and .Values.istio.install (not .Release.IsInstall) -}}
 {{ if .Values.addons.servicegraph.enabled }}
 {{- $serviceName := include "istio.name" . -}}
 apiVersion: v1
@@ -16,3 +17,4 @@ spec:
     component: {{ $serviceName }}-{{ .Values.addons.servicegraph.deployment.name }}
     release: {{ .Release.Name }}
 {{ end }}
+{{- end -}}
