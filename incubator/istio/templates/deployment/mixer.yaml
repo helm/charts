@@ -13,9 +13,10 @@ spec:
   template:
     metadata:
       annotations:
-        {{- range $key, $value := .Values.ingress.annotations }}
-          {{ $key }}: {{ $value | quote }}
-        {{- end }}
+        checksum/config: {{ include (print $.Template.BasePath "/configmap/mixer-config.yaml") . | sha256sum }}
+      {{- range $key, $value := .Values.mixer.deployment.annotations }}
+        {{ $key }}: {{ $value | quote }}
+      {{- end }}
       labels:
 {{ include "istio.labels.standard" . | indent 8 }}
         component: {{ $serviceName }}-{{ .Values.mixer.deployment.name }}
@@ -45,7 +46,7 @@ spec:
           - --configStoreURL=fs:///etc/opt/mixer/configroot
           - --configStore2URL=k8s://
           - --configDefaultNamespace={{ .Release.Namespace }}
-          - --traceOutput=http://{{ $serviceName }}-{{ .Values.addons.zipkin.deployment.name }}:{{ .Values.addons.zipkin.service.externalPort }}/api/v1/spans
+          - --traceOutput=http://{{ $serviceName }}-{{ .Values.addons.zipkin.deployment.name }}.{{ .Release.Namespace }}:{{ .Values.addons.zipkin.service.externalPort }}/api/v1/spans
           - --logtostderr
           - -v
           - "2"

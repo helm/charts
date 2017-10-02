@@ -17,9 +17,10 @@ spec:
   template:
     metadata:
       annotations:
-        {{- range $key, $value := .Values.addons.prometheus.deployment.annotations }}
-          {{ $key }}: {{ $value | quote }}
-        {{- end }}
+        checksum/config: {{ include (print $.Template.BasePath "/addons/configmap/prometheus-config.yaml") . | sha256sum }}
+      {{- range $key, $value := .Values.addons.prometheus.deployment.annotations }}
+        {{ $key }}: {{ $value | quote }}
+      {{- end }}
       name: {{ $serviceName }}-{{ .Values.addons.prometheus.deployment.name }}
       labels:
 {{ include "istio.labels.standard" . | indent 8 }}

@@ -24,6 +24,7 @@ spec:
     port: {{ .Values.mixer.service.externalStatsdPromPort }}
   - name: statsd-udp
     port: {{ .Values.mixer.service.externalStatsdUdpPort }}
+    protocol: UDP
   - name: prometheus
     port: {{ .Values.mixer.service.externalPrometheusPort }}
   selector:

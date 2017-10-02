@@ -21,10 +21,10 @@ data:
     #
     # To disable the mixer completely (including metrics), comment out
     # the following line
-    mixerAddress: {{ $serviceName }}-{{ .Values.mixer.deployment.name }}:{{ .Values.mixer.service.externalTcpPort }}
+    mixerAddress: {{ $serviceName }}-{{ .Values.mixer.deployment.name }}.{{ .Release.Namespace }}:{{ .Values.mixer.service.externalTcpPort }}
     # This is the ingress service name, update if you used a different name
-    ingressService: {{ $serviceName }}-{{ .Values.ingress.name }}
-    egressProxyAddress: {{ $serviceName }}-{{ .Values.egress.name }}.{{ .Release.Namespace }}:{{ .Values.egress.service.externalHttpPort }}
+    ingressService: {{ $serviceName }}-{{ .Values.ingress.deployment.name }}.{{ .Release.Namespace }}
+    egressProxyAddress: {{ $serviceName }}-{{ .Values.egress.deployment.name }}.{{ .Release.Namespace }}:{{ .Values.egress.service.externalHttpPort }}
     #
     # Along with discoveryRefreshDelay, this setting determines how
     # frequently should Envoy fetch and update its internal configuration
@@ -60,14 +60,14 @@ data:
       proxyAdminPort: 15000
       #
       # Address where Istio Pilot service is running
-      discoveryAddress: {{ $serviceName }}-{{ .Values.pilot.name }}:{{ .Values.pilot.service.externalHttpDiscovery }}
+      discoveryAddress: {{ $serviceName }}-{{ .Values.pilot.name }}.{{ .Release.Namespace }}:{{ .Values.pilot.service.externalHttpDiscovery }}
       #
       # Zipkin trace collector
-      zipkinAddress: {{ $serviceName }}-{{ .Values.addons.zipkin.deployment.name }}:{{ .Values.addons.zipkin.service.externalPort }}
+      zipkinAddress: {{ $serviceName }}-{{ .Values.addons.zipkin.deployment.name }}.{{ .Release.Namespace }}:{{ .Values.addons.zipkin.service.externalPort }}
       #
       # Statsd metrics collector. Istio mixer exposes a UDP endpoint
       # to collect and convert statsd metrics into Prometheus metrics.
-      statsdUdpAddress: istio-mixer.istio-system:9125
+      statsdUdpAddress: {{ $serviceName }}-{{ .Values.mixer.deployment.name }}.{{ .Release.Namespace }}:{{ .Values.mixer.service.externalStatsdUdpPort }}
 {{- end -}}
 {{- end -}}
  

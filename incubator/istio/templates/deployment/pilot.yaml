@@ -13,9 +13,10 @@ spec:
   template:
     metadata:
       annotations:
-        {{- range $key, $value := .Values.pilot.deployment.annotations }}
-          {{ $key }}: {{ $value | quote }}
-        {{- end }}
+        checksum/config: {{ include (print $.Template.BasePath "/configmap/istio-config.yaml") . | sha256sum }}
+      {{- range $key, $value := .Values.pilot.deployment.annotations }}
+        {{ $key }}: {{ $value | quote }}
+      {{- end }}
       labels:
 {{ include "istio.labels.standard" . | indent 8 }}
         component: {{ $serviceName }}-{{ .Values.pilot.name }}
@@ -49,5 +50,5 @@ spec:
       volumes:
       - name: config-volume
         configMap:
-          name: istio
+          name: {{ $serviceName }}
 {{- end -}}

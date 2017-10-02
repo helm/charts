@@ -12,6 +12,27 @@ istio:
 auth:
   enabled: true
 
+## Initializer configuration
+initializer:
+  enabled: false
+
+  deployment:
+    name: initializer
+    image: docker.io/istio/sidecar_initializer
+    initImage: docker.io/istio/proxy_init
+    proxyImage: docker.io/istio/proxy
+    imagePullPolicy: IfNotPresent
+    replicas: 1
+    annotations:
+      sidecar.istio.io/inject: "false"
+    resources:
+      limits:
+        cpu: 100m
+        memory: 128Mi
+      requests:
+        cpu: 100m
+        memory: 128Mi
+
 ## Mixer configuration
 mixer:
 

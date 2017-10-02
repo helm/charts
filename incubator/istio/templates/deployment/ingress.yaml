@@ -32,7 +32,7 @@ spec:
         - -v
         - "2"
         - --discoveryAddress
-        - {{ .Values.pilot.name }}:{{ .Values.pilot.service.externalHttpDiscovery }}
+        - {{ $serviceName }}-{{ .Values.pilot.name }}:{{ .Values.pilot.service.externalHttpDiscovery }}
         imagePullPolicy: {{ .Values.ingress.deployment.imagePullPolicy }}
         ports:
         - containerPort: {{ .Values.ingress.service.externalHttpPort }}

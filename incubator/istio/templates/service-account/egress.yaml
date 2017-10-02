@@ -3,8 +3,8 @@
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: {{ $serviceName }}-pilot-service-account
+  name: {{ $serviceName }}-{{ .Values.egress.deployment.name }}-service-account
   labels:
 {{ include "istio.labels.standard" . | indent 4 }}
-    istio: {{ $serviceName }}-pilot
+    istio: {{ $serviceName }}-{{ .Values.egress.deployment.name }}
 {{- end -}}
