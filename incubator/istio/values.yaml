@@ -26,12 +26,13 @@ initializer:
     annotations:
       sidecar.istio.io/inject: "false"
     resources:
-      limits:
-        cpu: 100m
-        memory: 128Mi
-      requests:
-        cpu: 100m
-        memory: 128Mi
+      limits: {}
+      #limits:
+        #cpu: 100m
+        #memory: 128Mi
+      #requests:
+        #cpu: 100m
+        #memory: 128Mi
 
 ## Mixer configuration
 mixer:
@@ -53,13 +54,13 @@ mixer:
     replicas: 1
     annotations:
       sidecar.istio.io/inject: "false"
-    resources:
-      limits:
-        cpu: 100m
-        memory: 128Mi
-      requests:
-        cpu: 100m
-        memory: 128Mi
+    resources: {}
+      #limits:
+        #cpu: 100m
+        #memory: 128Mi
+      #requests:
+        #cpu: 100m
+        #memory: 128Mi
 
 ## Pilot configuration
 pilot:
@@ -80,13 +81,13 @@ pilot:
       name: discovery
       image: docker.io/istio/pilot
       imagePullPolicy: IfNotPresent
-      resources:
-        limits:
-          cpu: 100m
-          memory: 128Mi
-        requests:
-          cpu: 100m
-          memory: 128Mi
+      resources: {}
+      #limits:
+        #cpu: 100m
+        #memory: 128Mi
+      #requests:
+        #cpu: 100m
+        #memory: 128Mi
 
 ## Ingress configuration
 ingress:
@@ -104,12 +105,13 @@ ingress:
     imagePullPolicy: IfNotPresent
     replicas: 1
     resources:
-      limits:
-        cpu: 100m
-        memory: 128Mi
-      requests:
-        cpu: 100m
-        memory: 128Mi
+      limits: {}
+      #limits:
+        #cpu: 100m
+        #memory: 128Mi
+      #requests:
+        #cpu: 100m
+        #memory: 128Mi
 
 ## Engress configuration
 egress:
@@ -126,12 +128,13 @@ egress:
     imagePullPolicy: IfNotPresent
     replicas: 1
     resources:
-      limits:
-        cpu: 100m
-        memory: 128Mi
-      requests:
-        cpu: 100m
-        memory: 128Mi
+      limits: {}
+      #limits:
+        #cpu: 100m
+        #memory: 128Mi
+      #requests:
+        #cpu: 100m
+        #memory: 128Mi
 
 ## CA configuration
 ## Only installed if auth.enabled
@@ -145,12 +148,13 @@ ca:
     imagePullPolicy: IfNotPresent
     replicas: 1
     resources:
-      limits:
-        cpu: 100m
-        memory: 128Mi
-      requests:
-        cpu: 100m
-        memory: 128Mi
+      limits: {}
+      #limits:
+        #cpu: 100m
+        #memory: 128Mi
+      #requests:
+        #cpu: 100m
+        #memory: 128Mi
 
 
 ## Addons configuration
@@ -173,13 +177,13 @@ addons:
       imageTag: latest
       imagePullPolicy: IfNotPresent
       replicas: 1
-      resources:
-        limits:
-          cpu: 100m
-          memory: 128Mi
-        requests:
-          cpu: 100m
-          memory: 128Mi
+      resources: {}
+      #limits:
+        #cpu: 100m
+        #memory: 128Mi
+      #requests:
+        #cpu: 100m
+        #memory: 128Mi
   
   prometheus:
     
@@ -199,13 +203,13 @@ addons:
       imageTag: v1.1.1
       imagePullPolicy: IfNotPresent
       replicas: 1
-      resources:
-        limits:
-          cpu: 100m
-          memory: 128Mi
-        requests:
-          cpu: 100m
-          memory: 128Mi
+      resources: {}
+      #limits:
+        #cpu: 100m
+        #memory: 128Mi
+      #requests:
+        #cpu: 100m
+        #memory: 128Mi
   
   grafana:
     
@@ -222,13 +226,13 @@ addons:
       image: docker.io/istio/grafana
       imagePullPolicy: IfNotPresent
       replicas: 1
-      resources:
-        limits:
-          cpu: 100m
-          memory: 128Mi
-        requests:
-          cpu: 100m
-          memory: 128Mi
+      resources: {}
+      #limits:
+        #cpu: 100m
+        #memory: 128Mi
+      #requests:
+        #cpu: 100m
+        #memory: 128Mi
 
   servicegraph:
     
@@ -246,10 +250,10 @@ addons:
       imageTag: latest
       imagePullPolicy: IfNotPresent
       replicas: 1
-      resources:
-        limits:
-          cpu: 100m
-          memory: 128Mi
-        requests:
-          cpu: 100m
-          memory: 128Mi
+      resources: {}
+      #limits:
+        #cpu: 100m
+        #memory: 128Mi
+      #requests:
+        #cpu: 100m
+        #memory: 128Mi
