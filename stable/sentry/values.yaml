@@ -88,7 +88,7 @@ persistence:
 ## ref: http://kubernetes.io/docs/user-guide/ingress/
 ##
 ingress:
-  enabled: true
+  enabled: false
   hostname: sentry.local
 
   ## Ingress annotations
