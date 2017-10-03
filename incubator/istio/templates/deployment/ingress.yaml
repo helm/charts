@@ -25,7 +25,6 @@ spec:
       containers:
       - name: istio-ingress
         image: "{{ .Values.ingress.deployment.image }}:{{ .Values.istio.release }}"
-        args: ["proxy", "ingress", "-v", "2"]
         args:
         - proxy
         - ingress

@@ -4,10 +4,6 @@ apiVersion: "config.istio.io/v1alpha2"
 kind: attributemanifest
 metadata:
   name: istioproxy
-  annotations:
-    helm.sh/hook: pre-install
-    helm.sh/hook-weight: "2"
-  namespace: {{ .Release.Namespace }}
 spec:
   attributes:
     origin.ip:
@@ -78,10 +74,6 @@ apiVersion: "config.istio.io/v1alpha2"
 kind: attributemanifest
 metadata:
   name: kubernetes
-  annotations:
-    helm.sh/hook: pre-install
-    helm.sh/hook-weight: "2"
-  namespace: {{ .Release.Namespace }}
 spec:
   attributes:
     source.ip:
@@ -113,10 +105,6 @@ apiVersion: "config.istio.io/v1alpha2"
 kind: stdio
 metadata:
   name: handler
-  annotations:
-    helm.sh/hook: pre-install
-    helm.sh/hook-weight: "2"
-  namespace: {{ .Release.Namespace }}
 spec:
   outputAsJson: true
 ---
@@ -124,10 +112,6 @@ apiVersion: "config.istio.io/v1alpha2"
 kind: logentry
 metadata:
   name: accesslog
-  annotations:
-    helm.sh/hook: pre-install
-    helm.sh/hook-weight: "2"
-  namespace: {{ .Release.Namespace }}
 spec:
   severity: '"Default"'
   timestamp: request.time
@@ -148,10 +132,6 @@ apiVersion: "config.istio.io/v1alpha2"
 kind: rule
 metadata:
   name: stdio
-  annotations:
-    helm.sh/hook: pre-install
-    helm.sh/hook-weight: "2"
-  namespace: {{ .Release.Namespace }}
 spec:
   match: "true" # If omitted match is true.
   actions:
@@ -163,10 +143,6 @@ apiVersion: "config.istio.io/v1alpha2"
 kind: metric
 metadata:
   name: requestcount
-  annotations:
-    helm.sh/hook: pre-install
-    helm.sh/hook-weight: "2"
-  namespace: {{ .Release.Namespace }}
 spec:
   value: "1"
   dimensions:
@@ -181,10 +157,6 @@ apiVersion: "config.istio.io/v1alpha2"
 kind: metric
 metadata:
   name: requestduration
-  annotations:
-    helm.sh/hook: pre-install
-    helm.sh/hook-weight: "2"
-  namespace: {{ .Release.Namespace }}
 spec:
   value: response.duration | "0ms"
   dimensions:
@@ -199,10 +171,6 @@ apiVersion: "config.istio.io/v1alpha2"
 kind: metric
 metadata:
   name: requestsize
-  annotations:
-    helm.sh/hook: pre-install
-    helm.sh/hook-weight: "2"
-  namespace: {{ .Release.Namespace }}
 spec:
   value: request.size | 0
   dimensions:
@@ -217,10 +185,6 @@ apiVersion: "config.istio.io/v1alpha2"
 kind: metric
 metadata:
   name: responsesize
-  annotations:
-    helm.sh/hook: pre-install
-    helm.sh/hook-weight: "2"
-  namespace: {{ .Release.Namespace }}
 spec:
   value: response.size | 0
   dimensions:
@@ -235,10 +199,6 @@ apiVersion: "config.istio.io/v1alpha2"
 kind: metric
 metadata:
   name: tcpbytesent
-  annotations:
-    helm.sh/hook: pre-install
-    helm.sh/hook-weight: "2"
-  namespace: {{ .Release.Namespace }}
   labels:
     istio-protocol: tcp # needed so that mixer will only generate when context.protocol == tcp
 spec:
@@ -254,10 +214,6 @@ apiVersion: "config.istio.io/v1alpha2"
 kind: metric
 metadata:
   name: tcpbytereceived
-  annotations:
-    helm.sh/hook: pre-install
-    helm.sh/hook-weight: "2"
-  namespace: {{ .Release.Namespace }}
   labels:
     istio-protocol: tcp # needed so that mixer will only generate when context.protocol == tcp
 spec:
@@ -273,10 +229,6 @@ apiVersion: "config.istio.io/v1alpha2"
 kind: prometheus
 metadata:
   name: handler
-  annotations:
-    helm.sh/hook: pre-install
-    helm.sh/hook-weight: "2"
-  namespace: {{ .Release.Namespace }}
 spec:
   metrics:
   - name: request_count
@@ -349,10 +301,6 @@ apiVersion: "config.istio.io/v1alpha2"
 kind: rule
 metadata:
   name: promhttp
-  annotations:
-    helm.sh/hook: pre-install
-    helm.sh/hook-weight: "2"
-  namespace: {{ .Release.Namespace }}
   labels:
     istio-protocol: http
 spec:
@@ -368,10 +316,6 @@ apiVersion: "config.istio.io/v1alpha2"
 kind: rule
 metadata:
   name: promtcp
-  annotations:
-    helm.sh/hook: pre-install
-    helm.sh/hook-weight: "2"
-  namespace: {{ .Release.Namespace }}
   labels:
     istio-protocol: tcp # needed so that mixer will only execute when context.protocol == TCP
 spec:

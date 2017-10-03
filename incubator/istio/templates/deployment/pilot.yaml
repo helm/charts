@@ -27,7 +27,7 @@ spec:
       - name: {{ .Values.pilot.deployment.discovery.name }}
         image: "{{ .Values.pilot.deployment.discovery.image }}:{{ .Values.istio.release }}"
         imagePullPolicy: {{ .Values.pilot.deployment.discovery.imagePullPolicy }}
-        args: ["discovery", "-v", "2"]
+        args: ["discovery", "-v", "2", "--admission-service", "istio-pilot-external"]
         ports:
         - containerPort: {{ .Values.pilot.service.externalHttpDiscovery }}
         - containerPort: {{ .Values.pilot.service.externalAdmissionWebhookServer }}

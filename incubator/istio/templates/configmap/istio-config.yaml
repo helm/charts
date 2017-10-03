@@ -23,7 +23,7 @@ data:
     # the following line
     mixerAddress: {{ $serviceName }}-{{ .Values.mixer.deployment.name }}.{{ .Release.Namespace }}:{{ .Values.mixer.service.externalTcpPort }}
     # This is the ingress service name, update if you used a different name
-    ingressService: {{ $serviceName }}-{{ .Values.ingress.deployment.name }}.{{ .Release.Namespace }}
+    ingressService: {{ $serviceName }}-{{ .Values.ingress.deployment.name }}
     egressProxyAddress: {{ $serviceName }}-{{ .Values.egress.deployment.name }}.{{ .Release.Namespace }}:{{ .Values.egress.service.externalHttpPort }}
     #
     # Along with discoveryRefreshDelay, this setting determines how
