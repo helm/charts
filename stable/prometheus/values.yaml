@@ -65,7 +65,7 @@ alertmanager:
     #     hosts:
     #       - alertmanager.domain.com
 
-  ## Server Deployment Strategy type
+  ## Alertmanager Deployment Strategy type
   # strategy:
   #   type: Recreate
 

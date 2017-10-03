@@ -10,6 +10,10 @@ metadata:
   name: {{ template "prometheus.server.fullname" . }}
 spec:
   replicas: {{ .Values.server.replicaCount }}
+  {{- if .Values.server.strategy }}
+  strategy:
+{{ toYaml .Values.server.strategy | indent 4 }}
+  {{- end }}
   template:
     metadata:
     {{- if .Values.server.podAnnotations }}
@@ -74,10 +78,6 @@ spec:
               mountPath: {{ .mountPath }}
               readOnly: {{ .readOnly }}
           {{- end }}
-    {{- if .Values.server.strategy }}
-      strategy:
-{{ toYaml .Values.server.strategy | indent 8 }}
-    {{- end }}
     {{- if .Values.server.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.server.nodeSelector | indent 8 }}
