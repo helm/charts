@@ -20,6 +20,10 @@ spec:
         component: {{ $serviceName }}-{{ .Values.mixer.deployment.name }}
         istio: {{ $serviceName }}-{{ .Values.mixer.deployment.name }}
     spec:
+    {{- if .Values.mixer.deployment.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
       containers:
       - name: {{ $serviceName }}-{{ .Values.mixer.deployment.name }}
         image: "{{ .Values.mixer.deployment.image }}:{{ .Values.istioRelease }}"
