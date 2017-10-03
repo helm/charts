@@ -21,6 +21,14 @@ spec:
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
       {{- end }}
+      initContainers:
+      - name: "fix-non-root-permissions"
+        image: "busybox"
+        imagePullPolicy: "Always"
+        command: [ "chmod", "-R", "g+rwX", "/bitnami" ]
+        volumeMounts:
+        - name: redis-data
+          mountPath: /bitnami
       containers:
       - name: {{ template "redis.fullname" . }}
         image: "{{ .Values.image }}"
