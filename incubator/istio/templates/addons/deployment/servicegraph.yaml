@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
       - name: {{ .Values.addons.servicegraph.deployment.name }}
-        image: "{{ .Values.addons.servicegraph.deployment.image }}:{{ .Values.addons.servicegraph.deployment.imageTag }}"
+        image: "{{ .Values.addons.servicegraph.deployment.image }}:{{ .Values.istio.release }}"
         imagePullPolicy: {{ .Values.addons.servicegraph.deployment.imagePullPolicy }}
         ports:
           - containerPort:  {{ .Values.addons.servicegraph.service.externalPort }}

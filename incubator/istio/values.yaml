@@ -246,8 +246,7 @@ addons:
       name: servicegraph
       annotations:
         sidecar.istio.io/inject: "false"
-      image: gcr.io/istio-testing/servicegraph
-      imageTag: latest
+      image: docker.io/istio/servicegraph
       imagePullPolicy: IfNotPresent
       replicas: 1
       resources: {}
