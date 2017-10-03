@@ -12,6 +12,7 @@ metadata:
 {{ toYaml .Values.metrics.annotations | indent 4 }}
 {{- end }}
 spec:
+  type: {{ .Values.serviceType }}
   ports:
   - name: redis
     port: 6379
