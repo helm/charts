@@ -105,7 +105,7 @@ metadata:
   name: {{ $serviceName }}-initializer-admin-role-binding
 subjects:
 - kind: ServiceAccount
-  name: {{ $serviceName }}--initializer-service-account
+  name: {{ $serviceName }}-initializer-service-account
   namespace: {{ .Release.Namespace }}
 roleRef:
   kind: ClusterRole
