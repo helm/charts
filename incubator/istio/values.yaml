@@ -3,12 +3,36 @@ rbac:
   install: false
   apiVersion: v1beta1
 
-istioRelease: 0.1.6
+istio:
+  install: false
+  release: 0.2.6
 
 ## Enable Istio auth feature 
 ## This deploys a CA in the namespace and enables mTLS between the services
 auth:
   enabled: true
+
+## Initializer configuration
+initializer:
+  enabled: false
+
+  deployment:
+    name: initializer
+    image: docker.io/istio/sidecar_initializer
+    initImage: docker.io/istio/proxy_init
+    proxyImage: docker.io/istio/proxy
+    imagePullPolicy: IfNotPresent
+    replicas: 1
+    annotations:
+      sidecar.istio.io/inject: "false"
+    resources:
+      limits: {}
+      #limits:
+        #cpu: 100m
+        #memory: 128Mi
+      #requests:
+        #cpu: 100m
+        #memory: 128Mi
 
 ## Mixer configuration
 mixer:
@@ -17,6 +41,9 @@ mixer:
     type: ClusterIP
     annotations: {}
     externalTcpPort: 9091
+    externalHttpHeathPort: 9093
+    externalStatsdPromPort: 9102
+    externalStatsdUdpPort: 9125
     externalConfigApiPort: 9094
     externalPrometheusPort: 42422
 
@@ -26,53 +53,41 @@ mixer:
     imagePullPolicy: IfNotPresent
     replicas: 1
     annotations:
-      alpha.istio.io/sidecar: ignore
-    resources:
-      limits:
-        cpu: 100m
-        memory: 128Mi
-      requests:
-        cpu: 100m
-        memory: 128Mi
+      sidecar.istio.io/inject: "false"
+    resources: {}
+      #limits:
+        #cpu: 100m
+        #memory: 128Mi
+      #requests:
+        #cpu: 100m
+        #memory: 128Mi
 
 ## Pilot configuration
 pilot:
-  name: istio-pilot
+  name: pilot
   customConfigMap: false
 
   service:
     type: ClusterIP
     externalHttpDiscovery: 8080
-    externalHttpApiServer: 8081
+    externalAdmissionWebhookServer: 443
 
   deployment:
     replicas: 1
     annotations:
-      alpha.istio.io/sidecar: ignore
+      sidecar.istio.io/inject: "false"
 
     discovery:
       name: discovery
       image: docker.io/istio/pilot
       imagePullPolicy: IfNotPresent
-      resources:
-        limits:
-          cpu: 100m
-          memory: 128Mi
-        requests:
-          cpu: 100m
-          memory: 128Mi
-
-    apiserver:
-      name: apiserver
-      image: docker.io/istio/pilot
-      imagePullPolicy: IfNotPresent
-      resources:
-        limits:
-          cpu: 100m
-          memory: 128Mi
-        requests:
-          cpu: 100m
-          memory: 128Mi
+      resources: {}
+      #limits:
+        #cpu: 100m
+        #memory: 128Mi
+      #requests:
+        #cpu: 100m
+        #memory: 128Mi
 
 ## Ingress configuration
 ingress:
@@ -85,17 +100,18 @@ ingress:
   deployment:
     name: ingress
     annotations:
-      alpha.istio.io/sidecar: ignore
+      sidecar.istio.io/inject: "false"
     image: docker.io/istio/proxy_debug
     imagePullPolicy: IfNotPresent
     replicas: 1
     resources:
-      limits:
-        cpu: 100m
-        memory: 128Mi
-      requests:
-        cpu: 100m
-        memory: 128Mi
+      limits: {}
+      #limits:
+        #cpu: 100m
+        #memory: 128Mi
+      #requests:
+        #cpu: 100m
+        #memory: 128Mi
 
 ## Engress configuration
 egress:
@@ -107,17 +123,18 @@ egress:
   deployment:
     name: egress
     annotations:
-      alpha.istio.io/sidecar: ignore
+      sidecar.istio.io/inject: "false"
     image: docker.io/istio/proxy_debug
     imagePullPolicy: IfNotPresent
     replicas: 1
     resources:
-      limits:
-        cpu: 100m
-        memory: 128Mi
-      requests:
-        cpu: 100m
-        memory: 128Mi
+      limits: {}
+      #limits:
+        #cpu: 100m
+        #memory: 128Mi
+      #requests:
+        #cpu: 100m
+        #memory: 128Mi
 
 ## CA configuration
 ## Only installed if auth.enabled
@@ -126,17 +143,18 @@ ca:
   deployment:
     name: ca
     annotations:
-      # alpha.istio.io/sidecar: ignore
+      sidecar.istio.io/inject: "false"
     image: docker.io/istio/istio-ca
     imagePullPolicy: IfNotPresent
     replicas: 1
     resources:
-      limits:
-        cpu: 100m
-        memory: 128Mi
-      requests:
-        cpu: 100m
-        memory: 128Mi
+      limits: {}
+      #limits:
+        #cpu: 100m
+        #memory: 128Mi
+      #requests:
+        #cpu: 100m
+        #memory: 128Mi
 
 
 ## Addons configuration
@@ -154,18 +172,18 @@ addons:
     deployment:
       name: zipkin
       annotations:
-        alpha.istio.io/sidecar: ignore
+        sidecar.istio.io/inject: "false"
       image: docker.io/openzipkin/zipkin
       imageTag: latest
       imagePullPolicy: IfNotPresent
       replicas: 1
-      resources:
-        limits:
-          cpu: 100m
-          memory: 128Mi
-        requests:
-          cpu: 100m
-          memory: 128Mi
+      resources: {}
+      #limits:
+        #cpu: 100m
+        #memory: 128Mi
+      #requests:
+        #cpu: 100m
+        #memory: 128Mi
   
   prometheus:
     
@@ -180,18 +198,18 @@ addons:
     deployment:
       name: prometheus
       annotations:
-        alpha.istio.io/sidecar: ignore
+        sidecar.istio.io/inject: "false"
       image: quay.io/coreos/prometheus
       imageTag: v1.1.1
       imagePullPolicy: IfNotPresent
       replicas: 1
-      resources:
-        limits:
-          cpu: 100m
-          memory: 128Mi
-        requests:
-          cpu: 100m
-          memory: 128Mi
+      resources: {}
+      #limits:
+        #cpu: 100m
+        #memory: 128Mi
+      #requests:
+        #cpu: 100m
+        #memory: 128Mi
   
   grafana:
     
@@ -204,17 +222,17 @@ addons:
     deployment:
       name: grafana
       annotations:
-        alpha.istio.io/sidecar: ignore
+        sidecar.istio.io/inject: "false"
       image: docker.io/istio/grafana
       imagePullPolicy: IfNotPresent
       replicas: 1
-      resources:
-        limits:
-          cpu: 100m
-          memory: 128Mi
-        requests:
-          cpu: 100m
-          memory: 128Mi
+      resources: {}
+      #limits:
+        #cpu: 100m
+        #memory: 128Mi
+      #requests:
+        #cpu: 100m
+        #memory: 128Mi
 
   servicegraph:
     
@@ -227,15 +245,14 @@ addons:
     deployment:
       name: servicegraph
       annotations:
-        alpha.istio.io/sidecar: ignore
-      image: gcr.io/istio-testing/servicegraph
-      imageTag: latest
+        sidecar.istio.io/inject: "false"
+      image: docker.io/istio/servicegraph
       imagePullPolicy: IfNotPresent
       replicas: 1
-      resources:
-        limits:
-          cpu: 100m
-          memory: 128Mi
-        requests:
-          cpu: 100m
-          memory: 128Mi
+      resources: {}
+      #limits:
+        #cpu: 100m
+        #memory: 128Mi
+      #requests:
+        #cpu: 100m
+        #memory: 128Mi
