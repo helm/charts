@@ -1,0 +1,15 @@
+apiVersion: v1
+description: A Helm chart for Goldfish - Vault UI
+name: goldfish
+version: 0.2.3
+icon: https://github.com/Caiyeon/goldfish/blob/master/frontend/client/assets/logo@2x.png?raw=true
+home: https://vault-ui.io/#/
+appVersion: v0.7.3
+keywords:
+- goldfish
+- vault-ui
+sources:
+- https://github.com/Caiyeon/goldfish
+maintainers:
+- name: Tuan Nguyen
+  email: me@tuannvm.com
