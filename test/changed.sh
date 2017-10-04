@@ -67,7 +67,6 @@ for directory in ${CHANGED_FOLDERS}; do
     RELEASE_NAME="${CHART_NAME:0:7}-${BUILD_NUMBER}"
     CURRENT_RELEASE=${RELEASE_NAME}
     helm dep update ${directory}
-    helm lint ${directory}
     helm install --timeout 600 --name ${RELEASE_NAME} --namespace ${NAMESPACE} ${directory} | tee install_output
     ./test/verify-release.sh ${NAMESPACE}
     kubectl get pods --namespace ${NAMESPACE}

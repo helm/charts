@@ -2,7 +2,24 @@
 
 ## Pull Request Testing
 
-### Procedure
+There are two forms of testing run on a pull request. Static analysis, run
+automatically, and operational testing, run when a maintainer flags a pull
+request as being ready. The operational testing is run on Kubernertes test
+infrastructure.
+
+### Static Analysis
+
+Static analysis is performed on every pull request and is run by CircleCI. The
+configuration is stored in the [`.circleci/config.yml`](../.circleci/config.yml)
+file.
+
+The static analysis currently:
+
+* Performs `helm lint` on any changed charts to provide quick feedback
+
+### Operational Testing
+
+#### Procedure
 
 Pull requests testing is run via the [Kuberentes Test Infrastructure](https://github.com/kubernetes/test-infra).
 
@@ -19,13 +36,12 @@ The logic is as follows:
 1. [Install and initialize Helm](https://github.com/kubernetes/charts/blob/master/test/changed.sh#L47)
 1. [For any charts that have changed](https://github.com/kubernetes/charts/blob/master/test/changed.sh#L62):
     - Download dependent charts, if any, with `helm dep update`
-    - Run `helm lint` on the chart
     - Run `helm install` in a new namespace for this PR+build
     - Use the [test/verify-release.sh](https://github.com/kubernetes/charts/blob/master/test/verify-release.sh) to ensure that if any pods were launched that they get to the `Running` state
     - Run `helm test` on the release
     - Delete the release
 
-### Triggering
+#### Triggering
 
 In order for the tests to be kicked off one of the 
 [Kubernetes member](https://github.com/orgs/kubernetes/people) must add the 
