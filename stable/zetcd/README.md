@@ -55,6 +55,7 @@ The following tables lists the configurable parameters of the zetcd chart and th
 | `resources.limits.memory`                         | Memory limit per zetcd pod                                   |                                         |
 | `resources.requests.cpu`                          | CPU request per zetcd pod                                    |                                          |
 | `resources.requests.memory`                       | Memory request per zetcd pod                                 |                                         |
+| `nodeSelector`                                    | Node labels for pod assignment                               |`{}`                                     |
 | `etcd.operatorEnabled`                            | Whether to use etcd-operator to launch a cluster                    | `true`                                        |
 | `etcd.endpoints`                                  | Existing etcd endpoints to be used when etcd-operator is disabled                    | `localhost:2379`                                        |
 
