@@ -1,0 +1,39 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "nats.fullname" . }}
+  labels:
+    app: {{ template "nats.fullname" . }}
+    component: {{ template "nats.fullname" . }}-nats
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: {{ template "nats.fullname" . }}
+        component: {{ template "nats.fullname" . }}-nats
+    spec:
+      containers:
+      - name: {{ template "nats.fullname" . }}
+        image: "{{ .Values.image }}"
+        imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
+        env:
+        - name: EXTRA
+          value: -DV
+        - name: ROUTESCMD
+          value: "--routes nats://{{ template "nats.fullname" . }}:6222"
+        ports:
+        - containerPort: 4222
+          name: client
+        - containerPort: 6222
+          name: cluster
+        - containerPort: 8222
+          name: monitor
+        readinessProbe:
+          tcpSocket:
+            port: 8222
+          initialDelaySeconds: 10
+          timeoutSeconds: 5
