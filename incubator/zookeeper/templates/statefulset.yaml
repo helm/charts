@@ -94,9 +94,12 @@ spec:
         volumeMounts:
         - name: datadir
           mountPath: /var/lib/zookeeper
+          subPath: data
+      {{- if eq .Values.Security.Enabled true }}
       securityContext:
-        runAsUser: 1000
-        fsGroup: 1000
+        runAsUser: {{ .Values.Security.RunAsUser }}
+        fsGroup: {{ .Values.Security.FsGroup }}
+      {{- end }}
   volumeClaimTemplates:
   - metadata:
       name: datadir
