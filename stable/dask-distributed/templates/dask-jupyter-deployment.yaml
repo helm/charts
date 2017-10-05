@@ -1,9 +1,9 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "jupyter-fullname" . }}
+  name: {{ template "dask-distributed.jupyter-fullname" . }}
   labels:
-    app: {{ template "name" . }}
+    app: {{ template "dask-distributed.name" . }}
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
@@ -15,12 +15,12 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "name" . }}
+        app: {{ template "dask-distributed.name" . }}
         release: {{ .Release.Name | quote }}
         component: "{{ .Release.Name }}-{{ .Values.jupyter.component }}"
     spec:
       containers:
-        - name: {{ template "jupyter-fullname" . }}
+        - name: {{ template "dask-distributed.jupyter-fullname" . }}
           image: "{{ .Values.jupyter.image }}:{{ .Values.jupyter.imageTag }}"
           ports:
             - containerPort: {{ .Values.jupyter.containerPort }}
@@ -32,4 +32,4 @@ spec:
       volumes:
       - name: config-volume
         configMap:
-          name: {{ template "jupyter-fullname" . }}-config
+          name: {{ template "dask-distributed.jupyter-fullname" . }}-config

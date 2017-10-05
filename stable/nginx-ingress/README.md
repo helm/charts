@@ -101,8 +101,8 @@ Parameter | Description | Default
 `rbac.create` | If true, create & use RBAC resources | `false`
 `rbac.serviceAccountName` | ServiceAccount to be used (ignored if rbac.create=true) | `default`
 `statsExporter.name` | name of the Prometheus metrics exporter component | `stats-exporter`
-`statsExporter.image.repository` | Prometheus metrics exporter container image repository | `quay.io/cy-play/vts-nginx-exporter`
-`statsExporter.image.tag` | Prometheus metrics exporter image tag | `v0.0.3`
+`statsExporter.image.repository` | Prometheus metrics exporter container image repository | `sophos/nginx-vts-exporter`
+`statsExporter.image.tag` | Prometheus metrics exporter image tag | `v0.6`
 `statsExporter.image.pullPolicy` | Prometheus metrics exporter image pull policy | `IfNotPresent`
 `statsExporter.endpoint` | path at which Prometheus metrics are exposed | `/metrics`
 `statsExporter.extraArgs` | Additional Prometheus metrics exporter container arguments | `{}`

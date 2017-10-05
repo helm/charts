@@ -1,14 +1,14 @@
 Selenium Hub can be accessed via port {{ .Values.hub.port }} on the following 
 DNS name from within your cluster:
 
-- http://{{ template "hub.fullname" . }}.{{ .Release.Namespace }}:{{ .Values.hub.port }}
+- http://{{ template "selenium.hub.fullname" . }}.{{ .Release.Namespace }}:{{ .Values.hub.port }}
 
 You can easily connect to the remote instance from your browser. Forward the
 webserver port to localhost:4444
 
 - kubectl port-forward --namespace {{ .Release.Namespace }} \
   $(kubectl get pods --namespace {{ .Release.Namespace }} \
-    -l app={{ template "hub.fullname" . }} \
+    -l app={{ template "selenium.hub.fullname" . }} \
     -o jsonpath='{ .items[0].metadata.name }') 4444
 
 You can also connect to the container running Selenium Hub. To open a shell
@@ -16,14 +16,14 @@ session in the pod run the following:
 
 - kubectl exec -i -t --namespace {{ .Release.Namespace }} \
   $(kubectl get pods --namespace {{ .Release.Namespace }} \
-    -l app={{ template "hub.fullname" . }} \
+    -l app={{ template "selenium.hub.fullname" . }} \
     -o jsonpath='{.items[0].metadata.name}') /bin/sh
 
 To tail the logs for the Selenium Hub pod run the following:
 
 - kubectl logs -f --namespace {{ .Release.Namespace }} \
     $(kubectl get pods --namespace {{ .Release.Namespace }} \
-      -l app={{ template "hub.fullname" . }} \
+      -l app={{ template "selenium.hub.fullname" . }} \
       -o jsonpath='{ .items[0].metadata.name }')
 
 {{- if eq .Values.hub.serviceType "LoadBalancer" }}
@@ -31,7 +31,7 @@ To tail the logs for the Selenium Hub pod run the following:
 To watch for the LoadBalancer IP run the following
 
 - kubectl get svc -w --namespace {{ .Release.Namespace }} \
-    -l app={{ template "hub.fullname" . }}
+    -l app={{ template "selenium.hub.fullname" . }}
 {{- end }}
 
 {{- if and (not .Values.chrome.enabled) (not .Values.chromeDebug.enabled) (not .Values.firefox.enabled) (not .Values.firefoxDebug.enabled) }}
@@ -65,7 +65,7 @@ To scale the number of selenium nodes
 - Chrome VNC
   kubectl port-forward --namespace {{ .Release.Namespace }} \
   $(kubectl get pods --namespace {{ .Release.Namespace }} \
-    -l app={{ template "chromeDebug.fullname" . }} \
+    -l app={{ template "selenium.chromeDebug.fullname" . }} \
     -o jsonpath='{ .items[0].metadata.name }') 5900
 {{ end }}
 
@@ -80,7 +80,7 @@ To scale the number of selenium nodes
 - Firefox VNC
   kubectl port-forward --namespace {{ .Release.Namespace }} \
   $(kubectl get pods --namespace {{ .Release.Namespace }} \
-    -l app={{ template "firefoxDebug.fullname" . }} \
+    -l app={{ template "selenium.firefoxDebug.fullname" . }} \
     -o jsonpath='{ .items[0].metadata.name }') 5900
 {{ end -}}
 

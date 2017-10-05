@@ -1,9 +1,7 @@
 name: parse
 version: 0.3.0
-appVersion: 2.6.1
-description: Parse is a platform that enables users to add a scalable and powerful
-  backend to launch a full-featured app for iOS, Android, JavaScript, Windows, Unity,
-  and more.
+appVersion: 2.6.2
+description: Parse is a platform that enables users to add a scalable and powerful backend to launch a full-featured app for iOS, Android, JavaScript, Windows, Unity, and more.
 keywords:
 - parse
 - backend
