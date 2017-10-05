@@ -71,7 +71,6 @@ The following tables lists the configurable parameters of the Sentry chart and t
 | `email.enable_replies`               | Allow email replies                        | `false`                                                    |
 | `service.type`                       | Kubernetes service type                    | `LoadBalancer`                                             |
 | `service.name`                       | Kubernetes service name                    | `sentry`                                                   |
-| `service.name`                       | Kubernetes service name                    | `sentry`                                                   |
 | `service.externalPort`               | Kubernetes external service port           | `9000`                                                     |
 | `service.internalPort`               | Kubernetes internal service port           | `9000`                                                     |
 | `ingress.enabled`                    | Enable ingress controller resource         | `false`                                                    |

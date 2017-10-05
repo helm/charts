@@ -1,6 +1,7 @@
-name: percona 
-version: 0.2.2
-description: free, fully compatible, enhanced, open source drop-in replacement for MySQL
+name: percona
+version: 0.3.0
+description: free, fully compatible, enhanced, open source drop-in replacement for
+  MySQL
 keywords:
 - mysql
 - percona
@@ -13,5 +14,5 @@ sources:
 - https://github.com/docker-library/percona
 maintainers:
 - name: Patrick Galbraith
-  email: patg@patg.net 
+  email: patg@patg.net
 engine: gotpl
