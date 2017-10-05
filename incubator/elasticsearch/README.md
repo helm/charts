@@ -76,6 +76,7 @@ The following tables lists the configurable parameters of the elasticsearch char
 | `data.replicas`                      | Data node replicas (statefulset)        | `3`                                 |
 | `data.resources`                     | Data node resources requests & limits   | `{} - cpu limit must be an integer` |
 | `data.heapSize`                      | Data node heap size                     | `1536m`                             |
+| `data.persistence`                   | Data persistent disabled/enabled        | `true`                              |
 | `data.storage`                       | Data persistent volume size             | `30Gi`                              |
 | `data.storageClass`                  | Data persistent volume Class            | `nil`                               |
 | `data.terminationGracePeriodSeconds` | Data termination grace period (seconds) | `3600`                              |
