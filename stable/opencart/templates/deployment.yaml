@@ -1,10 +1,10 @@
-{{- if include "host" . -}}
+{{- if include "opencart.host" . -}}
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "opencart.fullname" . }}
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "opencart.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -12,30 +12,30 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "fullname" . }}
+        app: {{ template "opencart.fullname" . }}
     spec:
       containers:
-      - name: {{ template "fullname" . }}
+      - name: {{ template "opencart.fullname" . }}
         image: "{{ .Values.image }}"
         imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
         env:
         - name: MARIADB_HOST
-          value: {{ template "mariadb.fullname" . }}
+          value: {{ template "opencart.mariadb.fullname" . }}
         - name: MARIADB_PORT_NUMBER
           value: "3306"
         - name: MARIADB_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "mariadb.fullname" . }}
+              name: {{ template "opencart.mariadb.fullname" . }}
               key: mariadb-root-password
         - name: OPENCART_HOST
-          value: {{ include "host" . | quote }}
+          value: {{ include "opencart.host" . | quote }}
         - name: OPENCART_USERNAME
           value: {{ default "" .Values.opencartUsername | quote }}
         - name: OPENCART_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "opencart.fullname" . }}
               key: opencart-password
         - name: OPENCART_EMAIL
           value: {{ default "" .Values.opencartEmail | quote }}
@@ -48,7 +48,7 @@ spec:
         - name: SMTP_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "opencart.fullname" . }}
               key: smtp-password
         - name: SMTP_PROTOCOL
           value: {{ default "" .Values.smtpProtocol | quote }}
@@ -63,7 +63,7 @@ spec:
             port: http
             httpHeaders:
             - name: Host
-              value: {{ include "host" . | quote }}
+              value: {{ include "opencart.host" . | quote }}
           initialDelaySeconds: 120
           timeoutSeconds: 5
           failureThreshold: 6
@@ -73,7 +73,7 @@ spec:
             port: http
             httpHeaders:
             - name: Host
-              value: {{ include "host" . | quote }}
+              value: {{ include "opencart.host" . | quote }}
           initialDelaySeconds: 30
           timeoutSeconds: 3
           periodSeconds: 5
@@ -88,14 +88,14 @@ spec:
       - name: opencart-data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ template "fullname" . }}-opencart
+          claimName: {{ template "opencart.fullname" . }}-opencart
       {{- else }}
         emptyDir: {}
       {{- end }}
       - name: apache-data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ template "fullname" . }}-apache
+          claimName: {{ template "opencart.fullname" . }}-apache
       {{- else }}
         emptyDir: {}
       {{- end }}
