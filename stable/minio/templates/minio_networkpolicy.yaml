@@ -1,17 +1,17 @@
 {{- if .Values.networkPolicy.enabled }}
 kind: NetworkPolicy
-apiVersion: {{ template "networkPolicy.apiVersion" . }}
+apiVersion: {{ template "minio.networkPolicy.apiVersion" . }}
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "minio.fullname" . }}
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "minio.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
   podSelector:
     matchLabels:
-      app: {{ template "fullname" . }}
+      app: {{ template "minio.fullname" . }}
   ingress:
     - ports:
         - port: {{ .Values.servicePort }}
@@ -19,6 +19,6 @@ spec:
       from:
         - podSelector:
             matchLabels:
-              {{ template "fullname" . }}-client: "true"
+              {{ template "minio.fullname" . }}-client: "true"
       {{- end }}
 {{- end }}
