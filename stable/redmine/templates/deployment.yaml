@@ -1,9 +1,9 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "redmine.fullname" . }}
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "redmine.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -12,10 +12,10 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "fullname" . }}
+        app: {{ template "redmine.fullname" . }}
     spec:
       containers:
-      - name: {{ template "fullname" . }}
+      - name: {{ template "redmine.fullname" . }}
         image: "{{ .Values.image }}"
         imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
         env:
@@ -24,19 +24,19 @@ spec:
         {{- end }}
         {{- if .Values.databaseType.postgresql }}
         - name: REDMINE_DB_POSTGRES
-          value: {{ template "postgresql.fullname" . }}
+          value: {{ template "redmine.postgresql.fullname" . }}
         - name: REDMINE_DB_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "postgresql.fullname" . }}
+              name: {{ template "redmine.postgresql.fullname" . }}
               key: postgres-password
         {{- else }}
         - name: REDMINE_DB_MYSQL
-          value: {{ template "mariadb.fullname" . }}
+          value: {{ template "redmine.mariadb.fullname" . }}
         - name: REDMINE_DB_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "mariadb.fullname" . }}
+              name: {{ template "redmine.mariadb.fullname" . }}
               key: mariadb-root-password
         {{- end }}
         - name: REDMINE_USERNAME
@@ -44,7 +44,7 @@ spec:
         - name: REDMINE_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "redmine.fullname" . }}
               key: redmine-password
         - name: REDMINE_EMAIL
           value: {{ default "" .Values.redmineEmail | quote }}
@@ -59,7 +59,7 @@ spec:
         - name: SMTP_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "redmine.fullname" . }}
               key: smtp-password
         - name: SMTP_TLS
           value: {{ default "" .Values.smtpTls | quote }}
@@ -85,7 +85,7 @@ spec:
       - name: redmine-data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ .Values.persistence.existingClaim | default (include "fullname" .) }}
+          claimName: {{ .Values.persistence.existingClaim | default (include "redmine.fullname" .) }}
       {{- else }}
         emptyDir: {}
       {{- end -}}
