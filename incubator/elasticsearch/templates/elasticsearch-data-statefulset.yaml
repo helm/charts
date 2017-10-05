@@ -111,7 +111,11 @@ spec:
     spec:
       accessModes: [ ReadWriteOnce ]
     {{- if .Values.data.storageClass }}
+    {{- if (eq "-" .Values.persistence.storageClass) }}
+      storageClassName: ""
+    {{- else }}
       storageClassName: "{{ .Values.data.storageClass }}"
+    {{- end }}
     {{- end }}
       resources:
         requests:
