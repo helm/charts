@@ -1,0 +1,23 @@
+{{- if and .Values.server.persistence.enabled (not .Values.server.persistence.godata.existingClaim) -}}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ .Values.server.persistence.godata.name }}
+  labels:
+    app: {{ .Chart.Name }}-server
+    role: server
+spec:
+  accessModes:
+    - {{ .Values.server.persistence.godata.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.server.persistence.godata.size | quote }}
+{{- if .Values.server.persistence.godata.storageClass }}
+  storageClassName: {{ .Values.server.persistence.godata.storageClass }}
+{{- else }}
+  storageClassName: ""
+  selector:
+    matchLabels:
+      app: {{ .Values.server.persistence.godata.pvName }}
+{{- end }}
+{{- end }}

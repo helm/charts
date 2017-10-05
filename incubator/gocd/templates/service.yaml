@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Chart.Name }}-server-service
+  labels:
+    app: {{ .Chart.Name }}-server
+    role: server
+spec:
+  type: {{ .Values.server.service.type }}
+  ports:
+    - port: {{ .Values.server.service.httpPort }}
+      targetPort: 8153
+      {{- if .Values.server.service.nodeHttpPort }}
+      nodePort: {{ .Values.server.service.nodeHttpPort }}
+      {{- end}}
+      protocol: TCP
+      name: http
+
+    - port: {{ .Values.server.service.httpsPort }}
+      targetPort: 8154
+      {{- if .Values.server.service.nodeHttpsPort }}
+      nodePort: {{ .Values.server.service.nodeHttpsPort }}
+      {{- end}}
+      protocol: TCP
+      name: https
+  selector:
+    app: {{ .Chart.Name }}-server
+    role: server

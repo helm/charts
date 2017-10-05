@@ -1,0 +1,109 @@
+# Default values for gocd.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+app:
+  version:
+
+server:
+  replicaCount: 1
+  image:
+    repository: gocd/gocd-server
+    tag:
+    pullPolicy: IfNotPresent
+  # resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+
+  # nodeSelector: {}
+  # This is used to select which node to run the particular pod on. Remove the curly braces and adjust the node selector as necessary. This will select the node which matches the labels provided in the nodeSelector.
+
+  healthCheck:
+    initialDelaySeconds: 180
+    periodSeconds: 5
+  env:
+    goServerSystemProperties:
+  service:
+    type: NodePort
+    httpPort: 8153
+    httpsPort: 8154
+  # Provide the nodeHttpPort and nodeHttpsPort if you want the service to be exposed on specific ports. Without this, random node ports will be assigned.
+    nodeHttpPort:
+    nodeHttpsPort:
+  ingress:
+    enabled: false
+  # Used to create an Ingress record.
+  #  hosts:
+  #    - foo.go.cd
+    # annotations:
+    #     # kubernetes.io/ingress.class: nginx
+    #     # kubernetes.io/tls-acme: "true"
+    # tls:
+  persistence:
+    enabled: false # change to true if a persistent volume is available and configured manually.
+    godata:
+      pvName: godata-gocd-server
+      name: "godata-pvc"
+      accessMode: ReadWriteOnce
+      size: 1Gi
+      storageClass:
+      ExistingClaim:
+    homego:
+      pvName: homego-gocd-server
+      name: "homego-pvc"
+      accessMode: ReadWriteOnce
+      size: 1Gi
+      storageClass:
+      ExistingClaim:
+
+agent:
+  replicaCount: 1
+  image:
+    repository: gocd/gocd-agent-alpine-3.6
+    tag:
+    pullPolicy: IfNotPresent
+  env:
+    goServerUrl:
+    agentAutoRegisterKey:
+    agentAutoRegisterResources:
+    agentAutoRegisterEnvironemnts:
+    agentAutoRegisterHostname:
+    goAgentSystemProperties:
+    goAgentBootstrapperArgs:
+    goAgentBootstrapperJvmArgs:
+  persistence:
+    enabled: false
+    homego:
+      pvName: gocd-agent
+      name: "homego-agent-pvc"
+      accessMode: ReadWriteOnce
+      size: 1Gi
+      storageClass:
+      ExistingClaim:
+
+  healthCheck:
+    enabled: false
+    initialDelaySeconds: 180
+    periodSeconds: 60
+    failureThreshold: 60
+
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+
+  # nodeSelector: {}
+  # This is used to select which node to run the particular pod on. Remove the curly braces and adjust the node selector as necessary. This will select the node which matches the labels provided in the nodeSelector.
