@@ -2,11 +2,11 @@ apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "linkerd.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     heritage: "{{ .Release.Service }}"
     release: "{{ .Release.Name }}"
-  name: {{ template "fullname" . }}
+  name: {{ template "linkerd.fullname" . }}
 spec:
   template:
     metadata:
@@ -15,13 +15,13 @@ spec:
         {{ $key }}: {{ $value }}
       {{- end }}
       labels:
-        app: {{ template "fullname" . }}
+        app: {{ template "linkerd.fullname" . }}
         release: "{{ .Release.Name }}"
     spec:
       volumes:
-      - name: {{ template "fullname" . }}-config
+      - name: {{ template "linkerd.fullname" . }}-config
         configMap:
-          name: "{{ template "fullname" . }}-config"
+          name: "{{ template "linkerd.fullname" . }}-config"
       containers:
       - name: {{ .Values.linkerd.name }}
         image: {{ .Values.linkerd.image }}
@@ -51,7 +51,7 @@ spec:
           initialDelaySeconds: 10
           periodSeconds: 5
         volumeMounts:
-        - name: "{{ template "fullname" . }}-config"
+        - name: "{{ template "linkerd.fullname" . }}-config"
           mountPath: "/io.buoyant/linkerd/config"
           readOnly: true
       - name: kubectl
