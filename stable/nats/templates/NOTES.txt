@@ -1,0 +1,2 @@
+NATS can be accessed via port 4222 on the following DNS name from within your cluster:
+{{ template "nats.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local

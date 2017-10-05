@@ -1,0 +1,9 @@
+name: nats
+version: 0.10.1
+appVersion: 3.2.9
+description: NATS is an open-source, cloud-native messaging system. 
+keywords:
+- nats
+home: http://nats.io/
+sources:
+- https://github.com/pires/kubernetes-nats-cluster
