@@ -38,6 +38,12 @@ redmineLanguage: en
 # smtpPassword:
 # smtpTls:
 
+## Environment variables, to pass to the entry point
+##
+# extraVars:
+#   - name: NAMI_DEBUG
+#     value: --log-level trace
+
 ## Database configuration. Please note that only one of the following databases should be selected.
 ## ref: https://github.com/bitnami/bitnami-docker-redmine#run-the-application-using-postgresql-database
 ##

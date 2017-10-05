@@ -2,9 +2,9 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "gitlab-ee.fullname" . }}
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "gitlab-ee.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -13,10 +13,10 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "fullname" . }}
+        app: {{ template "gitlab-ee.fullname" . }}
     spec:
       containers:
-      - name: {{ template "fullname" . }}
+      - name: {{ template "gitlab-ee.fullname" . }}
         image: {{ .Values.image }}
         imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
         env:
@@ -29,13 +29,13 @@ spec:
         - name: GITLAB_OMNIBUS_CONFIG
           valueFrom:
             configMapKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "gitlab-ee.fullname" . }}
               key: gitlab_omnibus_config
         - name: GITLAB_ROOT_PASSWORD
         {{- if default "" .Values.gitlabRootPassword }}
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "gitlab-ee.fullname" . }}
               key: gitlab-root-password
         {{ end }}
         - name: EXTERNAL_URL
@@ -43,27 +43,27 @@ spec:
         ## DB configuration
         ##
         - name: DB_HOST
-          value: {{ template "postgresql.fullname" . }}
+          value: {{ template "gitlab-ee.postgresql.fullname" . }}
         - name: DB_USER
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "gitlab-ee.fullname" . }}
               key: db-user
         - name: DB_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "gitlab-ee.fullname" . }}
               key: db-password
         - name: DB_DATABASE
           value: {{ .Values.postgresql.postgresDatabase | quote }}
         ## Redis configuration
         ##
         - name: REDIS_HOST
-          value: {{ template "redis.fullname" . }}
+          value: {{ template "gitlab-ee.redis.fullname" . }}
         - name: REDIS_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "gitlab-ee.fullname" . }}
               key: redis-password
         ports:
         - name: ssh
@@ -103,14 +103,14 @@ spec:
       - name: gitlab-etc
       {{- if .Values.persistence.gitlabEtc.enabled }}
         persistentVolumeClaim:
-          claimName: {{ template "fullname" . }}-etc
+          claimName: {{ template "gitlab-ee.fullname" . }}-etc
       {{- else }}
         emptyDir: {}
       {{- end }}
       - name: gitlab-data
       {{- if .Values.persistence.gitlabData.enabled }}
         persistentVolumeClaim:
-          claimName: {{ template "fullname" . }}-data
+          claimName: {{ template "gitlab-ee.fullname" . }}-data
       {{- else }}
         emptyDir: {}
       {{- end }}
