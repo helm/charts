@@ -28,7 +28,11 @@ spec:
           imagePullPolicy: "{{ .Values.defaultBackend.image.pullPolicy }}"
           args:
           {{- range $key, $value := .Values.defaultBackend.extraArgs }}
+            {{- if $value }}
             - --{{ $key }}={{ $value }}
+            {{- else }}
+            - --{{ $key }}
+            {{- end }}
           {{- end }}
           livenessProbe:
             httpGet:

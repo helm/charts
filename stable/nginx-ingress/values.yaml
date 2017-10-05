@@ -5,7 +5,7 @@ controller:
   name: controller
   image:
     repository: gcr.io/google_containers/nginx-ingress-controller
-    tag: "0.9.0-beta.12"
+    tag: "0.9.0-beta.14"
     pullPolicy: IfNotPresent
 
   config: {}
@@ -201,8 +201,8 @@ rbac:
 statsExporter:
   name: stats-exporter
   image:
-    repository: quay.io/cy-play/vts-nginx-exporter
-    tag: v0.0.3
+    repository: sophos/nginx-vts-exporter
+    tag: v0.6
     pullPolicy: IfNotPresent
 
   endpoint: /metrics
