@@ -95,10 +95,10 @@ spec:
         - name: datadir
           mountPath: /var/lib/zookeeper
           subPath: data
-      {{- if eq .Values.Security.Enabled true }}
+      {{- if eq .Values.security.enabled true }}
       securityContext:
-        runAsUser: {{ .Values.Security.RunAsUser }}
-        fsGroup: {{ .Values.Security.FsGroup }}
+        runAsUser: {{ .Values.security.runAsUser }}
+        fsGroup: {{ .Values.security.fsGroup }}
       {{- end }}
   volumeClaimTemplates:
   - metadata:
