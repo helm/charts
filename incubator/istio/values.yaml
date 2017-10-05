@@ -14,6 +14,7 @@ auth:
 
 ## Initializer configuration
 initializer:
+  customConfigMap: false
   enabled: false
 
   deployment:
@@ -36,6 +37,7 @@ initializer:
 
 ## Mixer configuration
 mixer:
+  customConfigMap: false
 
   service:
     type: ClusterIP
