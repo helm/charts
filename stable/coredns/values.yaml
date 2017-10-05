@@ -18,7 +18,10 @@ resources:
     memory: 128Mi
 
 rbac:
-  enabled: true
+  # If true, create & use RBAC resources
+  create: true
+  # Ignored if rbac.create is true
+  serviceAccountName: default
 
 # isClusterService specifies whether chart should be deployed as cluster-service or normal k8s app.
 isClusterService: true
