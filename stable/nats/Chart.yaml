@@ -1,6 +1,6 @@
 name: nats
-version: 0.10.1
-appVersion: 3.2.9
+version: 0.0.1
+appVersion: 1.0.2
 description: NATS is an open-source, cloud-native messaging system. 
 keywords:
 - nats
