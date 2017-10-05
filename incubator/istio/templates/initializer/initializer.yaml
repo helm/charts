@@ -1,0 +1,25 @@
+{{- if and .Values.istio.install (not .Release.IsInstall) -}}
+{{ if .Values.initializer.enabled }}
+{{- $serviceName := include "istio.name" . -}}
+apiVersion: admissionregistration.k8s.io/v1alpha1
+kind: InitializerConfiguration
+metadata:
+  name: {{ $serviceName }}-{{ .Values.initializer.deployment.name }}
+  labels:
+{{ include "istio.labels.standard" . | indent 4 }}
+    component: {{ $serviceName }}-{{ .Values.initializer.deployment.name }}
+    istio: {{ $serviceName }}-{{ .Values.initializer.deployment.name }}
+initializers:
+  - name: sidecar.initializer.istio.io
+    rules:
+      - apiGroups:
+          - "*"
+        apiVersions:
+          - "*"
+        resources:
+          - deployments
+          - statefulsets
+          - jobs
+          - daemonsets
+{{ end }}
+{{- end -}}
