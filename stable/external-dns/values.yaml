@@ -1,7 +1,8 @@
 ## Details about the image to be pulled.
 image:
   name: registry.opensource.zalan.do/teapot/external-dns
-  tag: v0.4.3
+  tag: v0.4.5
+
   pullPolicy: IfNotPresent
 
 ## This controls which types of resource external-dns should 'watch' for new
@@ -9,6 +10,9 @@ image:
 sources:
   - service
   - ingress
+
+# Allow external-dns to publish DNS records for ClusterIP services (optional)
+publishInternalServices: false
 
 ## The DNS provider where the DNS records will be created (options: aws, google, inmemory, azure )
 provider: aws
@@ -18,6 +22,8 @@ aws:
   secret_key: ""
   access_key: ""
   region: "us-east-1"
+  # Filter for zones of this type (optional, options: public, private)
+  zone_type: ""
 
 # Cloudflare keys to inject as environment variables
 cloudflare:
@@ -32,6 +38,9 @@ domainFilters: []
 ##
 nodeSelector: {}
 
+## List of node taints to tolerate (requires Kubernetes >= 1.6)
+tolerations: []
+
 ## Modify how DNS records are sychronized between sources and providers (options: sync, upsert-only )
 policy: upsert-only
 
@@ -41,7 +50,8 @@ podAnnotations: {}
 
 podLabels: {}
 
-debug: false
+# Verbosity of the logs (options: panic, debug, info, warn, error, fatal)
+logLevel: info
 
 extraArgs: {}
 
