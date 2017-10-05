@@ -46,3 +46,7 @@ spec:
             path: {{ .Values.persistence.hostPath | quote }}
           name: cloudconfig
 {{- end -}}
+    {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+{{- end -}}

@@ -7,11 +7,11 @@ apiVersion: {{ if .Capabilities.APIVersions.Has "storage.k8s.io/v1" -}}
 kind: StorageClass
 metadata:
   labels:
-    app: "{{ template "name" . }}-cluster"
+    app: "{{ template "rethinkdb.name" . }}-cluster"
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
-  name: {{ template "fullname" . }}
+  name: {{ template "rethinkdb.fullname" . }}
 provisioner: {{ .Values.cluster.storageClass.provisioner }}
 parameters:
 {{- range $key, $value := .Values.cluster.storageClass.parameters }}
