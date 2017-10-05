@@ -1,0 +1,14 @@
+# A headless service to create DNS records
+apiVersion: v1
+kind: Service
+metadata:
+  name: broker
+  namespace: kubeless
+  labels:
+{{ include "labels.standard" . | indent 4 }}
+spec:
+  ports:
+  - port: 9092
+  clusterIP: None
+  selector:
+    kubeless: kafka

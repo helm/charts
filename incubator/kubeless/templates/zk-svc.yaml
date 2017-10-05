@@ -1,0 +1,14 @@
+# Headless service is for PetSet DNS, this one is for clients
+apiVersion: v1
+kind: Service
+metadata:
+  name: zookeeper
+  namespace: kubeless
+  labels:
+{{ include "labels.standard" . | indent 4 }}
+spec:
+  ports:
+  - port: 2181
+    name: client
+  selector:
+    kubeless: zookeeper
