@@ -1,0 +1,14 @@
+streamProcessor:
+  image:
+    repository: netsil/netsil
+    tag: stable-1.5.3
+    pullPolicy: IfNotPresent
+  
+  service:
+    type: NodePort
+
+collector:
+  image:
+    repository: netsil/collectors
+    tag: stable-1.5.3
+    pullPolicy: IfNotPresent

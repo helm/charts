@@ -1,0 +1,17 @@
+name: netsil
+version: 1.5.3
+appVersion: 1.5.3
+description: Netsil Application Operations Center (AOC)
+keywords:
+  - monitoring
+  - analytics
+  - alerting
+  - metric
+home: https://netsil.com/
+icon: https://s3.amazonaws.com/docs.netsil.com/logos/Netsil_640x640-blue.jpg
+sources:
+  - https://github.com/kubernetes/charts
+maintainers:
+  - name: baldwinSPC
+    email: baldwin@stackpointcloud.com
+engine: gotpl
