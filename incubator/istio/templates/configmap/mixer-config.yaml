@@ -1,4 +1,5 @@
 {{- if and .Values.istio.install (not .Release.IsInstall) -}}
+{{- if not .Values.mixer.customConfigMap }}
 {{- $serviceName := include "istio.name" . -}}
 apiVersion: v1
 kind: ConfigMap
@@ -10,4 +11,5 @@ metadata:
     istio: {{ $serviceName }}-{{ .Values.mixer.deployment.name }}
 data:
   mapping.conf: |-
+{{- end -}}
 {{- end -}}
