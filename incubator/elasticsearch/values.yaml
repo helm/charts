@@ -44,6 +44,7 @@ data:
   replicas: 3
   heapSize: "1536m"
   storage: "30Gi"
+  persistence: true
   # If storageClass: "-", this sets storageClassName: "" which uses emptyDir
   # storageClass: "ssd"
   terminationGracePeriodSeconds: 3600
