@@ -1,0 +1,23 @@
+{{- if and .Values.agent.persistence.enabled (not .Values.agent.persistence.homego.existingClaim) -}}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ .Values.agent.persistence.homego.name }}
+  labels:
+    app: {{ .Values.agent.name }}
+    role: agent
+spec:
+  accessModes:
+    - {{ .Values.agent.persistence.homego.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.agent.persistence.homego.size | quote }}
+{{- if .Values.agent.persistence.homego.storageClass }}
+  storageClassName: {{ .Values.agent.persistence.homego.storageClass }}
+{{- else }}
+  storageClassName: ""
+  selector:
+    matchLabels:
+      app: {{ .Values.agent.persistence.homego.pvName }}
+{{- end }}
+{{- end }}

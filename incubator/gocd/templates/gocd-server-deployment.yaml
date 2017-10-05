@@ -1,0 +1,64 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ .Chart.Name }}-server-deployment
+  labels:
+    app: {{ .Chart.Name }}-server
+    role: server
+spec:
+  replicas: {{ .Values.server.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Chart.Name }}-server
+        role: server
+    spec:
+      {{- if .Values.server.persistence.enabled }}
+      volumes:
+        - name: godata-vol
+          persistentVolumeClaim:
+            claimName: {{ .Values.server.persistence.godata.name }}
+        - name: homego-vol
+          persistentVolumeClaim:
+            claimName: {{ .Values.server.persistence.homego.name }}
+      {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}-server
+          {{- if .Values.server.image.tag }}
+          image: "{{ .Values.server.image.repository }}:{{ .Values.server.image.tag }}"
+          {{- else }}
+          image: "{{ .Values.server.image.repository }}:v{{default .Chart.AppVersion .Values.app.version }}"
+          {{- end }}
+          imagePullPolicy: {{ .Values.server.image.pullPolicy }}
+          env:
+            {{- if .Values.server.env.goServerSystemProperties }}
+            - name: GO_SERVER_SYSTEM_PROPERTIES
+              value: {{ .Values.server.env.goServerSystemProperties }}
+            {{- end }}
+          ports:
+            - containerPort: 8153
+            - containerPort: 8154
+          livenessProbe:
+            httpGet:
+              path: /go/auth/login
+              port: 8153
+            initialDelaySeconds: 60
+            periodSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /go/auth/login
+              port: 8153
+            initialDelaySeconds: 60
+          {{- if .Values.server.persistence.enabled }}
+          volumeMounts:
+          - name: godata-vol
+            mountPath: /godata
+          - name: homego-vol
+            mountPath: /home/go
+          {{- end }}
+          resources:
+{{ toYaml .Values.server.resources | indent 12 }}
+    {{- if .Values.server.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.server.nodeSelector | indent 8 }}
+    {{- end }}

@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name:  "{{ .Chart.Name }}-tests"
+data:
+  run.sh: |-
+    @test "Testing GoCD UI is accessible" {
+      {{- if .Values.agent.goServerUrl }}
+        curl --retry 12 --retry-delay 10 {{ .Values.agent.goServerUrl }}/auth/login
+      {{- else }}
+        curl --retry 12 --retry-delay 10 "http://{{ .Chart.Name }}-server-service:{{ .Values.server.service.httpPort }}/go/auth/login"
+      {{- end }}
+    }
+
+    @test "Testing GoCD Agents are connected to server" {
+      {{- if .Values.agent.goServerUrl }}
+        agentCount="$(curl '{{ .Values.agent.goServerUrl }}/api/agents' -H 'Accept: application/vnd.go.cd.v4+json' |  jq '._embedded.agents' | jq '. | length' )"
+        [ "$agentCount" -eq {{ .Values.agent.replicaCount }} ]
+      {{- else }}
+        agentCount="$(curl 'http://{{ .Chart.Name }}-server-service:{{ .Values.server.service.httpPort }}/go/api/agents' -H 'Accept: application/vnd.go.cd.v4+json' |  jq '._embedded.agents' | jq '. | length' )"
+        [ "$agentCount" -eq {{ .Values.agent.replicaCount }} ]
+      {{- end }}
+    }
+
+    @test "Testing GoCD application is accessible through service" {
+      curl http://{{ .Chart.Name }}-server-service:{{ .Values.server.service.httpPort }}/go
+    }
