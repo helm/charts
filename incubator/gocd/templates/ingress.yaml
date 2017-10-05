@@ -1,0 +1,21 @@
+{{- if .Values.server.ingress.enabled -}}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ .Chart.Name }}-server-ingress
+  labels:
+    app: {{ .Chart.Name }}-server
+    role: server
+  annotations:
+    {{- range $key, $value := .Values.server.ingress.annotations }}
+      {{ $key }}: {{ $value | quote }}
+    {{- end }}
+spec:
+  backend:
+    serviceName: {{ .Chart.Name }}-server-service
+    servicePort: {{ .Values.server.service.httpPort }}
+  rules:
+    {{- range $host := .Values.server.ingress.hosts }}
+    - host: {{ $host }}
+  {{- end -}}
+{{- end -}}
