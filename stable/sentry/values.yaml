@@ -3,7 +3,7 @@
 # Declare variables to be passed into your templates.
 image:
   repository: sentry
-  tag: "8.17"
+  tag: "8.20"
   pullPolicy: IfNotPresent
 
 # How many web UI instances to run
@@ -34,7 +34,7 @@ worker:
   resources:
     limits:
       cpu: 300m
-      memory: 300Mi
+      memory: 500Mi
     requests:
       cpu: 100m
       memory: 100Mi

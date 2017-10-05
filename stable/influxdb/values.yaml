@@ -10,9 +10,11 @@ image:
 ## ref: http://kubernetes.io/docs/user-guide/services/
 ##
 service:
+  ## Add annotations to service
+  # annotations: {}
   type: ClusterIP
 
-## Persist data to a persitent volume
+## Persist data to a persistent volume
 ##
 persistence:
   enabled: false
