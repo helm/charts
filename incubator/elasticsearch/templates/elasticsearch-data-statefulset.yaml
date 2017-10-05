@@ -111,7 +111,7 @@ spec:
     spec:
       accessModes: [ ReadWriteOnce ]
     {{- if .Values.data.storageClass }}
-    {{- if eq .Values.data.storageClass "-" }}
+    {{- if (eq "-" .Values.data.storageClass) }}
       storageClassName: ""
     {{- else }}
       storageClassName: "{{ .Values.data.storageClass }}"
