@@ -26,14 +26,14 @@ cassandra:
 schema:
   annotations: {}
   image: jaegertracing/jaeger-cassandra-schema
-  tag: 0.6
+  tag: 0.8
   pullPolicy: IfNotPresent
   # Acceptable values are test and prod. Default is for production use.
   mode: prod
 agent:
   annotations: {}
   image: jaegertracing/jaeger-agent
-  tag: 0.6
+  tag: 0.8
   pullPolicy: IfNotPresent
   cmdlineParams: {}
   service:
@@ -55,7 +55,7 @@ agent:
 collector:
   annotations: {}
   image: jaegertracing/jaeger-collector
-  tag: 0.6
+  tag: 0.8
   pullPolicy: IfNotPresent
   dnsPolicy: ClusterFirst
   cmdlineParams: {}
@@ -79,7 +79,7 @@ collector:
 query:
   annotations: {}
   image: jaegertracing/jaeger-query
-  tag: 0.6
+  tag: 0.8
   pullPolicy: IfNotPresent
   dnsPolicy: ClusterFirst
   cmdlineParams: {}
