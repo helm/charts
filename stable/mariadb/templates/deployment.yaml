@@ -13,6 +13,14 @@ spec:
       labels:
         app: {{ template "mariadb.fullname" . }}
     spec:
+      initContainers:
+      - name: "fix-non-root-permissions"
+        image: "busybox"
+        imagePullPolicy: "Always"
+        command: [ "sh" , "-c", "mkdir -p /bitnami/mariadb/conf/ && chmod -R g+rwX /bitnami" ]
+        volumeMounts:
+        - name: data
+          mountPath: /bitnami/mariadb
       containers:
       - name: mariadb
         image: "{{ .Values.image }}"
