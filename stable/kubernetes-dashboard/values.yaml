@@ -45,6 +45,11 @@ ingress:
   #   - secretName: kubernetes-dashboard-tls
   #     hosts:
   #       - kubernetes-dashboard.domain.com
+  service:
+    enabled: false
+    type: LoadBalancer
+    appSelector: nginx-ingress
+    loadBalancerSourceRanges: []
 
 rbac:
   ## If true, create & use RBAC resources
