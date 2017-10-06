@@ -37,20 +37,26 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following tables lists the configurable parameters of the kubernetes-dashboard chart and their default values.
 
-| Parameter             | Description                        | Default                                                                  |
-|-----------------------|------------------------------------|--------------------------------------------------------------------------|
-| `image`               | Image                              | `gcr.io/google_containers/kubernetes-dashboard-amd64`                    |
-| `imageTag`            | Image tag                          | `v1.7.0`                                                                 |
-| `imagePullPolicy`     | Image pull policy                  | `IfNotPresent`                                                           |
-| `nodeSelector`        | node labels for pod assignment     | `{}`                                                                     |
-| `httpPort`            | Dashboard port                     | 80                                                                       |
-| `resources`           | Pod resource requests & limits     | `limits: {cpu: 100m, memory: 50Mi}, requests: {cpu: 100m, memory: 50Mi}` |
-| `ingress.annotations` | Specify ingress class              | `kubernetes.io/ingress.class: nginx`                                     |
-| `ingress.enabled`     | Enable ingress controller resource | `false`                                                                  |
-| `ingress.hosts`       | Dashboard Hostnames                | `nil`                                                                    |
-| `ingress.tls`         | Ingress TLS configuration          | `[]`                                                                     |
-| `rbac.create`         | Create & use RBAC resources        | `false`                                                                  |
-| `rbac.serviceAccountName` |  ServiceAccount kubernetes-dashboard will use (ignored if rbac.create=true) | `default`        |
+Parameter | Description | Default
+--- | --- | ---
+`image` | Image | `gcr.io/google_containers/kubernetes-dashboard-amd64`
+`imageTag` | Image tag | `v1.7.0`
+`imagePullPolicy` | Image pull policy | `IfNotPresent`
+`nodeSelector` | node labels for pod assignment | `{}`
+`httpPort` | Dashboard port | `80`
+`resources` | Pod resource requests & limits | `limits: {cpu: 100m, memory: 50Mi}, requests: {cpu: 100m, memory: 50Mi}`
+`ingress.annotations` | Specify ingress class | `kubernetes.io/ingress.class: nginx`
+`ingress.enabled` | Enable ingress controller resource | `false`
+`ingress.hosts` | Dashboard Hostnames | `nil`
+`ingress.tls` | Ingress TLS configuration | `[]`
+`ingress.service.enabled` | Create a service for the Ingress (currently needed for AWS ELBs) | `false`
+`ingress.service.appSelector` | App selector | `nginx-ingress`
+`ingress.service.type` | Type of Service to create | `LoadBalancer`
+`ingress.service.annotations` | Annotations for ingress service  | `{}`
+`ingress.service.loadBalancerSourceRanges` | IP whitelist | `[]`
+`rbac.create` | Create & use RBAC resources | `false`
+`rbac.serviceAccountName` | ServiceAccount kubernetes-dashboard will use (ignored if rbac.create=true) | `default`
+
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
