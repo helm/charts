@@ -1,0 +1,19 @@
+{{- if .Values.rbac.create -}}
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRole
+metadata:
+  labels:
+    app: {{ template "kube-ops-view.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "kube-ops-view.fullname" . }}
+rules:
+- apiGroups: [""]
+  resources: ["nodes", "pods"]
+  verbs: ["list"]
+- apiGroups: [""]
+  resources: ["services/proxy"]
+  resourceNames: ["heapster"]
+  verbs: ["get"]
+{{- end -}}

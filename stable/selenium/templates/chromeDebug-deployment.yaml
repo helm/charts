@@ -2,7 +2,7 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "chromeDebug.fullname" . }}
+  name: {{ template "selenium.chromeDebug.fullname" . }}
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
 spec:
@@ -10,7 +10,7 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "chromeDebug.fullname" . }}
+        app: {{ template "selenium.chromeDebug.fullname" . }}
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         release: "{{ .Release.Name }}"
         heritage: "{{ .Release.Service }}"
@@ -30,7 +30,7 @@ spec:
               name: vnc
           env:
             - name: HUB_PORT_4444_TCP_ADDR
-              value: {{ template "hub.fullname" . }}
+              value: {{ template "selenium.hub.fullname" . }}
             - name: HUB_PORT_4444_TCP_PORT
               value: {{ .Values.hub.port | quote }}
             - name: JAVA_OPTS

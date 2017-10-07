@@ -1,23 +1,23 @@
 apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "kafka.fullname" . }}
   labels:
-    app: {{ include "name" . | quote }}
+    app: {{ include "kafka.name" . | quote }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
 spec:
-  serviceName: {{ template "fullname" . }}-headless
+  serviceName: {{ template "kafka.fullname" . }}-headless
   replicas: {{ default 3 .Values.Replicas }}
   template:
     metadata:
       labels:
-        app: {{ include "name" . | quote }}
+        app: {{ include "kafka.name" . | quote }}
         release: {{ .Release.Name | quote }}
     spec:
       containers:
-      - name: {{ template "name" . }}-broker
+      - name: {{ template "kafka.name" . }}-broker
         image: "{{ .Values.Image }}:{{ .Values.ImageTag }}"
         imagePullPolicy: "{{ .Values.ImagePullPolicy }}"
         livenessProbe:
@@ -42,16 +42,11 @@ spec:
         - containerPort: 9092
           name: kafka
         resources:
-          limits:
-            cpu: "{{ .Values.MaxCpu }}"
-            memory: "{{ .Values.MaxMemory }}"
-          requests:
-            cpu: "{{ .Values.Cpu }}"
-            memory: "{{ .Values.Memory }}"
+{{ toYaml .Values.resources | indent 10 }}
         command:
         - sh
         - -c
-        - "./bin/kafka-server-start.sh config/server.properties --override zookeeper.connect={{ .Release.Name }}-zookeeper:2181/ --override broker.id=${HOSTNAME##*-}"
+        - "./bin/kafka-server-start.sh config/server.properties --override zookeeper.connect={{ .Release.Name }}-zookeeper:2181/ --override log.dirs={{ printf "%s/logs" .Values.DataDirectory }} --override broker.id=${HOSTNAME##*-}"
         volumeMounts:
         - name: datadir
           mountPath: "{{ .Values.DataDirectory }}"

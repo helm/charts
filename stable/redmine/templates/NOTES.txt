@@ -2,17 +2,17 @@
 
 {{- if contains "NodePort" .Values.serviceType }}
 
-  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "fullname" . }})
+  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "redmine.fullname" . }})
   export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
   echo http://$NODE_IP:$NODE_PORT/
 
 {{- else if contains "LoadBalancer" .Values.serviceType }}
 
   NOTE: It may take a few minutes for the LoadBalancer IP to be available.
-        Watch the status with: 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "fullname" . }}'
+        Watch the status with: 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "redmine.fullname" . }}'
 
 
-  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "fullname" . }} --template "{{ "{{ range (index .status.loadBalancer.ingress 0) }}{{ . }}{{ end }}" }}")
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "redmine.fullname" . }} --template "{{ "{{ range (index .status.loadBalancer.ingress 0) }}{{ . }}{{ end }}" }}")
   echo http://$SERVICE_IP/
 
 {{- else if .Values.ingress.enabled }}
@@ -20,7 +20,7 @@
 
 {{- else if contains "ClusterIP" .Values.serviceType }}
 
-  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "fullname" . }}" -o jsonpath="{.items[0].metadata.name}")
+  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "redmine.fullname" . }}" -o jsonpath="{.items[0].metadata.name}")
   echo http://127.0.0.1:3000/
   kubectl port-forward $POD_NAME 3000:3000
 {{- end }}
@@ -28,4 +28,4 @@
 2. Login with the following credentials
 
   echo Username: {{ .Values.redmineUsername }}
-  echo Password: $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath="{.data.redmine-password}" | base64 --decode)
+  echo Password: $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "redmine.fullname" . }} -o jsonpath="{.data.redmine-password}" | base64 --decode)

@@ -1,10 +1,10 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "etcd-operator.fullname" . }}
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    app: "{{ template "fullname" . }}"
+    app: "{{ template "etcd-operator.fullname" . }}"
     heritage: "{{ .Release.Service }}"
     release: "{{ .Release.Name }}"
 spec:
@@ -13,12 +13,12 @@ spec:
     metadata:
       labels:
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-        app: {{ template "fullname" . }}
+        app: {{ template "etcd-operator.fullname" . }}
         heritage: "{{ .Release.Service }}"
         release: "{{ .Release.Name }}"
     spec:
 {{- if .Values.rbac.install }}
-      serviceAccountName: {{ template "fullname" . }}
+      serviceAccountName: {{ template "etcd-operator.fullname" . }}
 {{- end }}
       containers:
       - name: {{ .Chart.Name }}
@@ -41,3 +41,7 @@ spec:
               fieldPath: metadata.name
         resources:
 {{ toYaml .Values.resources | indent 12 }}
+    {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
