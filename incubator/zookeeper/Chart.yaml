@@ -1,6 +1,6 @@
 name: zookeeper
 home: https://zookeeper.apache.org/
-version: 0.4.1
+version: 0.4.2
 description: Centralized service for maintaining configuration information, naming,
   providing distributed synchronization, and providing group services.
 icon: https://zookeeper.apache.org/images/zookeeper_small.gif
