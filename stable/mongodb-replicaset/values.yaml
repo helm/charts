@@ -74,6 +74,6 @@ configmap:
   replication:
     replSetName: rs0
   security:
-  # Uncomment for TLS support
+  # Uncomment for TLS support or keyfile access control without TLS
   # authorization: enabled
   # keyFile: /keydir/key.txt

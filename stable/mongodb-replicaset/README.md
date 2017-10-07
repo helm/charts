@@ -94,7 +94,7 @@ The secret for the admin user must contain the keys `user` and `password`, that 
 
 ## TLS support
 
-To enable full TLS encryption setl `tls.enabled` to `true`. It is recommended to create your own CA by executing:
+To enable full TLS encryption set `tls.enabled` to `true`. It is recommended to create your own CA by executing:
 
 ```console
 $ openssl genrsa -out ca.key 2048
@@ -102,7 +102,7 @@ $ openssl req -x509 -new -nodes -key ca.key -days 10000 -out ca.crt -subj "/CN=m
 ```
 
 After that paste the base64 encoded (`cat ca.key | base64 -w0`) cert and key into the fields `tls.cacert` and
-`tls.cakey`. Adapt the configmap for the replicaset as following:
+`tls.cakey`. Adapt the configmap for the replicaset as follows:
 
 ```yml
 configmap:
@@ -123,7 +123,7 @@ configmap:
 ```
 
 To access the cluster you need one of the certificates generated during cluster setup in `/work-dir/mongo.pem` of the
-certain container or you generate an own one via:
+certain container or you generate your own one via:
 
 ```console
 $ cat >openssl.cnf <<EOL
@@ -149,7 +149,7 @@ $ cat mongo.crt mongo.key > mongo.pem
 $ rm mongo.key mongo.crt
 ```
 
-Please ensure that you exchanged the `$HOSTNAME` with your actual hostname and the `$HOSTNAME1`, `$HOSTNAME2`, etc. with
+Please ensure that you exchange the `$HOSTNAME` with your actual hostname and the `$HOSTNAME1`, `$HOSTNAME2`, etc. with
 alternative hostnames you want to allow access to the MongoDB replicaset. You should now be able to authenticate to the
 mongodb with your `mongo.pem` certificate:
 
