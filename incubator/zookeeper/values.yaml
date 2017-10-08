@@ -28,3 +28,7 @@ probeInitialDelaySeconds: 15
 probeTimeoutSeconds: 5
 antiAffinity: "hard"
 logLevel: "INFO"
+security:
+  enabled: false
+  runAsUser: 1000
+  fsGroup: 1000

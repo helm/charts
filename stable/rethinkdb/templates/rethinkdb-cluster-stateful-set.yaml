@@ -1,20 +1,20 @@
 apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
-  name: "{{ template "fullname" . }}-cluster"
+  name: "{{ template "rethinkdb.fullname" . }}-cluster"
   labels:
-    app: "{{ template "name" . }}-cluster"
+    app: "{{ template "rethinkdb.name" . }}-cluster"
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
 spec:
-  serviceName: "{{ template "fullname" . }}-cluster"
+  serviceName: "{{ template "rethinkdb.fullname" . }}-cluster"
   replicas: {{ .Values.cluster.replicas }}
   template:
     metadata:
-      name: "{{ template "fullname" . }}-cluster"
+      name: "{{ template "rethinkdb.fullname" . }}-cluster"
       labels:
-        app: "{{ template "name" . }}-cluster"
+        app: "{{ template "rethinkdb.name" . }}-cluster"
         heritage: {{ .Release.Service | quote }}
         release: {{ .Release.Name | quote }}
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
@@ -24,7 +24,7 @@ spec:
       {{- end }}
     spec:
       containers:
-        - name: {{ template "name" . }}-cluster
+        - name: {{ template "rethinkdb.name" . }}-cluster
           image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
           imagePullPolicy: "{{ .Values.image.pullPolicy }}"
           ports:
@@ -43,11 +43,11 @@ spec:
               mountPath: "/data"
           env:
             - name: RETHINK_CLUSTER_SERVICE
-              value: "{{ template "fullname" . }}-cluster"
+              value: "{{ template "rethinkdb.fullname" . }}-cluster"
             - name: RETHINKDB_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "fullname" . }}
+                  name: {{ template "rethinkdb.fullname" . }}
                   key: rethinkdb-password
             - name: POD_IP
               valueFrom:
@@ -88,7 +88,7 @@ spec:
       name: datadir
       annotations:
       {{- if .Values.cluster.storageClass.enabled }}
-        volume.beta.kubernetes.io/storage-class: {{ template "fullname" . }}
+        volume.beta.kubernetes.io/storage-class: {{ template "rethinkdb.fullname" . }}
       {{- end }}
       {{- range $key, $value := .Values.cluster.persistentVolume.annotations }}
         {{ $key }}: {{ $value }}

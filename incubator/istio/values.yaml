@@ -5,7 +5,7 @@ rbac:
 
 istio:
   install: false
-  release: 0.2.6
+  release: 0.2.7
 
 ## Enable Istio auth feature 
 ## This deploys a CA in the namespace and enables mTLS between the services
@@ -14,6 +14,7 @@ auth:
 
 ## Initializer configuration
 initializer:
+  customConfigMap: false
   enabled: false
 
   deployment:
@@ -36,6 +37,7 @@ initializer:
 
 ## Mixer configuration
 mixer:
+  customConfigMap: false
 
   service:
     type: ClusterIP
