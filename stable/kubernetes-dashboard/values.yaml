@@ -23,6 +23,11 @@ service:
   type: ClusterIP
   externalPort: 80
 
+  ## This allows an overide of the heapster service name
+  ## Default: {{ .Chart.Name }}
+  ##
+  # nameOverride:
+
   ## Kubernetes Dashboard Service annotations
   ##
   annotations: {}

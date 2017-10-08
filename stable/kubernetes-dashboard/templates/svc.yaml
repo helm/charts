@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "kubernetes-dashboard.fullname" . }}
+  name: {{ template "kubernetes-dashboard.service.fullname" . }}
   labels:
-    app: {{ template "kubernetes-dashboard.name" . }}
+    app: {{ template "kubernetes-dashboard.fullname" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
@@ -24,5 +24,5 @@ spec:
     nodePort: {{ .Values.service.nodePort }}
 {{- end }}
   selector:
-    app: {{ template "kubernetes-dashboard.name" . }}
+    app: {{ template "kubernetes-dashboard.fullname" . }}
     release: {{ .Release.Name }}
