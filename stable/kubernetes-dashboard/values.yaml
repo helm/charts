@@ -8,6 +8,12 @@ image:
   tag: v1.8.1
   pullPolicy: IfNotPresent
 
+## Here labels can be added to the kubernets dashboard deployment
+##
+labels: {}
+# kubernetes.io/cluster-service: "true"
+# kubernetes.io/name: "Kuberetes Dashboard"
+
 ## Node labels for pod assignment
 ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
 ##
@@ -21,6 +27,11 @@ service:
   ##
   annotations: {}
   # foo.io/bar: "true"
+
+  ## Here labels can be added to the Kubernetes Dashboard service
+  ##
+  labels: {}
+  # kubernetes.io/name: "Kubernetes Dashboard"
 
 resources:
   limits:
