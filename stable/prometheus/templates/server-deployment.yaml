@@ -50,6 +50,9 @@ spec:
           {{- if .Values.server.retention }}
             - --storage.local.retention={{ .Values.server.retention }}
           {{- end }}
+          {{- if .Values.server.heapsize }}
+            - --storage.local.target-heap-size={{ .Values.server.heapsize }}
+          {{- end }}
             - --config.file=/etc/config/prometheus.yml
             - --storage.local.path={{ .Values.server.persistentVolume.mountPath }}
             - --web.console.libraries=/etc/prometheus/console_libraries
