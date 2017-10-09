@@ -137,6 +137,16 @@ The following tables lists the configurable parameters of the Concourse chart an
 | `postgresql.postgresPassword` | PostgreSQL Password for the new user | `concourse` |
 | `postgresql.postgresDatabase` | PostgreSQL Database to create | `concourse` |
 | `postgresql.persistence.enabled` | Enable PostgreSQL persistence using Persistent Volume Claims | `true` |
+| `credentialManager.enabled` | Enable Credential Manager | `false` |
+| `credentialManager.vault.url` | Vault Server URL | `nil` |
+| `credentialManager.vault.pathPrefix` | Vault path to namespace secrets | `/concourse` |
+| `credentialManager.vault.caCert` | CA public certificate when using self-signed TLS with Vault | `nil` |
+| `credentialManager.vault.authBackend` | Vault Authentication Backend to use, leave blank when using clientToken | `nil` |
+| `credentialManager.vault.clientToken` | Vault periodic client token | `nil` |
+| `credentialManager.vault.appRoleId` | Vault AppRole RoleID | `nil` |
+| `credentialManager.vault.appRoleSecretId` | Vault AppRole SecretID | `nil` |
+| `credentialManager.vault.clientCert` | Vault Client Certificate | `nil` |
+| `credentialManager.vault.clientKey` | Vault Client Key | `nil` |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
@@ -289,4 +299,30 @@ postgresql:
   ##
   uri: postgres://concourse:changeme@my-postgres.com:5432/concourse?sslmode=require
 
+```
+
+### Credential Management
+
+By default, this chart will not use a [Credential Manager](https://concourse.ci/creds.html).
+
+```yaml
+## Configuration values for the Credential Manager.
+## ref: https://concourse.ci/creds.html
+##
+credentialManager:
+  ## Enable Credential Manager using below configuration.
+  ##
+  enabled: true
+
+  ## use Hashicorp Vault for Credential Manager.
+  ##
+  vault:
+    ## URL pointing to vault addr (i.e. http://vault:8200).
+    ##
+    url: http://vault:8200
+
+    ## initial periodic token issued for concourse
+    ## ref: https://www.vaultproject.io/docs/concepts/tokens.html#periodic-tokens
+    ##
+    clientToken: PERIODIC_VAULT_TOKEN 
 ```
