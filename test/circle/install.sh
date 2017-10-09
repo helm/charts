@@ -1,4 +1,4 @@
-#!/bin/bash -xe
+#!/bin/bash -e
 # Copyright 2017 The Kubernetes Authors All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,3 +21,7 @@ tar -xvf helm-${HELM_LATEST_VERSION}-linux-amd64.tar.gz
 sudo mv linux-amd64/helm /usr/local/bin
 rm -f helm-${HELM_LATEST_VERSION}-linux-amd64.tar.gz
 rm -rf linux-amd64
+
+# Install A YAML Linter
+# Pinning to a version for consistency
+sudo pip install yamllint==1.8.1
