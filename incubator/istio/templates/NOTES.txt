@@ -56,7 +56,11 @@ Verifying the ServiceGraph service
 
 Deploy your App!
 
-  kubectl create -f <(istioctl kube-inject -f <your-app-spec>.yaml)
+{{ if .Values.initializer.enabled }}
+  kubectl create -f <your-app-spec>.yaml
+{{- else }}
+  kubectl create -f <(istioctl kube-inject -i {{ .Release.Namespace }} -f <your-app-spec>.yaml)
+{{- end }}
 
 Or deploy the BookInfo App!
 
