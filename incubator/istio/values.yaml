@@ -16,6 +16,7 @@ auth:
 initializer:
   customConfigMap: false
   enabled: false
+  policy: enabled
 
   deployment:
     name: initializer
