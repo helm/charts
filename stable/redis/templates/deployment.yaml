@@ -13,6 +13,9 @@ spec:
       labels:
         app: {{ template "redis.fullname" . }}
     spec:
+      securityContext:
+        runAsUser: 1001
+        fsGroup: 1001
       {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
@@ -21,14 +24,6 @@ spec:
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
       {{- end }}
-      initContainers:
-      - name: "fix-non-root-permissions"
-        image: "busybox"
-        imagePullPolicy: "Always"
-        command: [ "chmod", "-R", "g+rwX", "/bitnami" ]
-        volumeMounts:
-        - name: redis-data
-          mountPath: /bitnami
       containers:
       - name: {{ template "redis.fullname" . }}
         image: "{{ .Values.image }}"
