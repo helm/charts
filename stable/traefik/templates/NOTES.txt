@@ -12,12 +12,21 @@
          $ kubectl describe svc {{ template "fullname" . }} --namespace {{ .Release.Namespace }} | grep Ingress | awk '{print $3}'
 
 2. Configure DNS records corresponding to Kubernetes ingress resources to point to the load balancer IP/hostname found in step 1
-{{ end }}
+{{- end }}
 {{- if eq .Values.serviceType "NodePort" }}
+{{- if (and (not (empty .Values.service.nodePorts.https)) (not (empty .Values.service.nodePorts.http)))}}
 1. Traefik is listening on the following ports on the host machine:
 
      http - {{ .Values.service.nodePorts.http }}
      https - {{ .Values.service.nodePorts.https }}
+{{- else }}
+1. Traefik has been started and is binding to dynamically assigned ports on machine.
+
+     You can see the nodePorts which the service is using by running:
+
+          $ kubectl describe svc {{ template "fullname" . }} --namespace {{ .Release.Namespace }}
+
+{{- end }}
 
 2. Configure DNS records corresponding to Kubernetes ingress resources to point to the NODE_IP/NODE_HOST
-{{ end }}
+{{- end }}

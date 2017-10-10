@@ -61,13 +61,16 @@ service:
   # labels:
   #   key: value
   ## Further config for service of type NodePort
-  ## Configure ports in allowable range (eg. 30000 - 32767 on minikube)
-  ## nodePorts:
-  ##   http: 30080
-  ##   https: 30443
+  ## Default config with empty string "" will assign a dynamic
+  ## nodePort to http and https ports
   nodePorts:
     http: ""
     https: ""
+  ## If static nodePort configuration is required it can be enabled as below
+  ## Configure ports in allowable range (eg. 30000 - 32767 on minikube)
+  # nodePorts:
+  #   http: 30080
+  #   https: 30443
 gzip:
   enabled: true
 accessLogs:
