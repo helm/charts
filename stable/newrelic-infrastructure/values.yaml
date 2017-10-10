@@ -7,7 +7,7 @@ verboseLog: false
 
 image:
   name: newrelic/infrastructure
-  tag: 0.0.5
+  tag: 0.0.7
   pullPolicy: IfNotPresent
 
 resources:
