@@ -64,13 +64,12 @@ spec:
               secretKeyRef:
                 name: {{ template "fullname" . }}
                 key: tags
-        {{- if .Values.secure.enable }}
+{{- $additionalconf := .Values.sysdig.AdditionalConf -}}
+{{- if .Values.secure.enable }}
+{{- $additionalconf := printf "%s%s" .Values.secure.SecureConf .Values.sysdig.AdditionalConf -}}
+{{- end }}
           - name: ADDITIONAL_CONF
-            value: "{{ .Values.sysdig.AdditionalConf }}\n{{ .Values.secure.SecureConf }}"
-        {{- else if .Values.sysdig.AdditionalConf }}
-          - name: ADDITIONAL_CONF
-            value: "{{ .Values.sysdig.AdditionalConf }}"
-        {{- end }}
+            value: {{ $additionalconf | quote }}
 {{- if .Values.sysdig.env }}
 {{ toYaml .Values.sysdig.env | indent 10 }}
 {{- end }}
