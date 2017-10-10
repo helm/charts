@@ -1,4 +1,4 @@
-# Default values for Sysdig Monitor Helm package.
+# Default values for Sysdig Monitor and Secure Helm package.
 
 rbac:
     # true here enables creation of rbac resources
@@ -18,7 +18,21 @@ sysdig:
     # Optional: Key-value agent tags following the format "key:val,key2:val2".
     AgentTags: ""
 
+    # Optional: additional configuration parameters.
+    # This will be moved into a ConfigMap shortly.
+    AdditionalConf: ""
+
     serviceAccountName: "sysdig-account"
+
+    # Optional: array of additional env variables used for custom config.
+    #env:
+    #   - name:
+    #     value:
+
+secure:
+    # true here enables Sysdig Secure: container run-time security & forensics
+    enable: false
+    SecureConf: "security: {enabled: true}\ncommandlines_capture: {enabled: true}\nmemdump: {enabled: true}"
 
 resources:
   requests:
