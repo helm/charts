@@ -6,11 +6,11 @@ metadata:
 {{ toYaml .Values.service.annotations | indent 4 }}
 {{- end }}
   labels:
-    app: {{ template "name" . }}
+    app: {{ template "mailhog.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-  name: {{ template "fullname" . }}
+  name: {{ template "mailhog.fullname" . }}
 spec:
   type: "{{ .Values.service.type }}"
   clusterIP: "{{ .Values.service.clusterIP }}"
@@ -41,5 +41,5 @@ spec:
       nodePort: {{ .Values.service.nodePort.smtp }}
       {{- end }}
   selector:
-    app: {{ template "name" . }}
+    app: {{ template "mailhog.name" . }}
     release: {{ .Release.Name }}
