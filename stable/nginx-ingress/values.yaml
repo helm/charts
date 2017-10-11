@@ -33,6 +33,10 @@ controller:
   ##
   ingressClass: nginx
 
+  # labels to add to the pod container metadata
+  podLabels: {}
+  #  key: value
+
   ## Allows customization of the external service
   ## the ingress will be bound to via DNS
   publishService:
@@ -156,6 +160,10 @@ defaultBackend:
   #  operator: "Equal|Exists"
   #  value: "value"
   #  effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
+
+  # labels to add to the pod container metadata
+  podLabels: {}
+  #  key: value
 
   ## Node labels for default backend pod assignment
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/

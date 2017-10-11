@@ -22,6 +22,9 @@ spec:
         app: {{ template "name" . }}
         component: "{{ .Values.controller.name }}"
         release: {{ .Release.Name }}
+        {{- if .Values.controller.podLabels }}
+{{ toYaml .Values.controller.podLabels | indent 8 }}
+        {{- end }}
     spec:
       containers:
         - name: {{ template "name" . }}-{{ .Values.controller.name }}
