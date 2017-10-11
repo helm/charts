@@ -32,7 +32,9 @@ sysdig:
 secure:
     # true here enables Sysdig Secure: container run-time security & forensics
     enable: false
-    SecureConf: "security: {enabled: true}\ncommandlines_capture: {enabled: true}\nmemdump: {enabled: true}"
+
+    # Default Sysdig Secure configuration (please add trailing \n)
+    SecureConf: "security: {enabled: true}\ncommandlines_capture: {enabled: true}\nmemdump: {enabled: true}\n"
 
 resources:
   requests:
