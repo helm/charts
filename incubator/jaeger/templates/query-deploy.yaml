@@ -24,6 +24,9 @@ spec:
         component: "query"
         release: "{{ .Release.Name }}"
         jaeger-infra: query-pod
+{{- if .Values.query.podLabels }}
+{{ toYaml .Values.query.podLabels | indent 8 }}
+{{- end }}
     spec:
       nodeSelector:
 {{ toYaml .Values.query.nodeSelector | indent 8 }}
