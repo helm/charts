@@ -25,7 +25,7 @@ volumePermissions:
 ## Ghost port to create application URLs along with host.
 ## ref: https://github.com/bitnami/bitnami-docker-ghost#configuration
 ##
-ghostPort: 80
+# ghostPort:
 
 ## loadBalancerIP for the Ghost Service (optional, cloud specific)
 ## ref: http://kubernetes.io/docs/user-guide/services/#type-loadbalancer
