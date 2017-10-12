@@ -3,7 +3,7 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "minio.fullname" . }}
 spec:
   accessModes:
     {{- if eq .Values.mode "shared" }}

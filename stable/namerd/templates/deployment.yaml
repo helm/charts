@@ -1,9 +1,9 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "namerd.fullname" . }}
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "namerd.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     heritage: "{{ .Release.Service }}"
     release: "{{ .Release.Name }}"
@@ -12,14 +12,14 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "fullname" . }}
+        app: {{ template "namerd.fullname" . }}
     spec:
       volumes:
-      - name: {{ template "fullname" . }}-config
+      - name: {{ template "namerd.fullname" . }}-config
         configMap:
-          name: "{{ template "fullname" . }}-config"
+          name: "{{ template "namerd.fullname" . }}-config"
       containers:
-      - name: {{ template "fullname" . }}
+      - name: {{ template "namerd.fullname" . }}
         image: "{{ .Values.namerd.image.repository }}"
         imagePullPolicy: {{ default "" .Values.namerd.image.pullPolicy | quote }}
         args:
@@ -30,7 +30,7 @@ spec:
         - name: api
           containerPort: {{ .Values.service.apiPort }}
         volumeMounts:
-        - name: "{{ template "fullname" . }}-config"
+        - name: "{{ template "namerd.fullname" . }}-config"
           mountPath: "/io.buoyant/namerd/config"
           readOnly: true
         resources:

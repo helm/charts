@@ -1,7 +1,7 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "sensu.fullname" . }}
   labels:
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
@@ -11,7 +11,7 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "fullname" . }}
+        app: {{ template "sensu.fullname" . }}
         release: {{ .Release.Name | quote }}
     spec:
       containers:
@@ -28,11 +28,11 @@ spec:
         - name: API_PORT
           value: '4567'
         - name: REDIS_HOST
-          value: {{ template "redis.fullname" . }}
+          value: {{ template "sensu.redis.fullname" . }}
         - name: REDIS_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "redis.fullname" . }}
+              name: {{ template "sensu.redis.fullname" . }}
               key: redis-password
         - name: REDIS_DB
           value: {{ .Values.REDIS_DB | quote }}
@@ -51,11 +51,11 @@ spec:
 {{ toYaml .Values.api.resources | indent 10 }}
         env:
         - name: REDIS_HOST
-          value: {{ template "redis.fullname" . }}
+          value: {{ template "sensu.redis.fullname" . }}
         - name: REDIS_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "redis.fullname" . }}
+              name: {{ template "sensu.redis.fullname" . }}
               key: redis-password
         - name: REDIS_DB
           value: {{ .Values.REDIS_DB | quote }}

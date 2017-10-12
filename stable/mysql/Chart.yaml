@@ -1,6 +1,7 @@
 name: mysql
-version: 0.2.9
-description: Fast, reliable, scalable, and easy to use open-source relational database system.
+version: 0.3.0
+description: Fast, reliable, scalable, and easy to use open-source relational database
+  system.
 keywords:
 - mysql
 - database

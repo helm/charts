@@ -1,9 +1,9 @@
 apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
-  name: "{{ template "fullname" . }}-proxy"
+  name: "{{ template "rethinkdb.fullname" . }}-proxy"
   labels:
-    app: "{{ template "name" . }}-proxy"
+    app: "{{ template "rethinkdb.name" . }}-proxy"
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
@@ -11,9 +11,9 @@ spec:
   replicas: {{ .Values.proxy.replicas }}
   template:
     metadata:
-      name: {{ template "fullname" . }}-proxy
+      name: {{ template "rethinkdb.fullname" . }}-proxy
       labels:
-        app: {{ template "name" . }}-proxy
+        app: {{ template "rethinkdb.name" . }}-proxy
         heritage: {{ .Release.Service | quote }}
         release: {{ .Release.Name | quote }}
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
@@ -23,7 +23,7 @@ spec:
       {{- end }}
     spec:
       containers:
-        - name: {{ template "name" . }}-proxy
+        - name: {{ template "rethinkdb.name" . }}-proxy
           image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
           imagePullPolicy: "{{ .Values.image.pullPolicy }}"
           ports:
@@ -49,11 +49,11 @@ spec:
             - name: PROXY
               value: "true"
             - name: RETHINK_CLUSTER_SERVICE
-              value: "{{ template "fullname" . }}-cluster"
+              value: "{{ template "rethinkdb.fullname" . }}-cluster"
             - name: RETHINKDB_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "fullname" . }}
+                  name: {{ template "rethinkdb.fullname" . }}
                   key: rethinkdb-password
             - name: POD_IP
               valueFrom:
@@ -75,4 +75,4 @@ spec:
           projected:
             sources:
             - secret:
-                name: {{ template "fullname" . }}
+                name: {{ template "rethinkdb.fullname" . }}

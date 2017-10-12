@@ -9,7 +9,7 @@ metadata:
     heritage: {{ .Release.Service | quote }}
 spec:
   ports:
-  - port: {{ .Values.ClientPort }}
+  - port: {{ .Values.clientPort }}
     name: client
   selector:
     app: {{ include "zookeeper.name" . | quote }}

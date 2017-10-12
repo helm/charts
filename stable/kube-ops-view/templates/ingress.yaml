@@ -2,9 +2,9 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "kube-ops-view.fullname" . }}
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "kube-ops-view.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -19,7 +19,7 @@ spec:
         paths:
           - path: /
             backend:
-              serviceName: {{ template "fullname" . }}
+              serviceName: {{ template "kube-ops-view.fullname" . }}
               servicePort: {{ .Values.service.externalPort }}
 {{- if .Values.ingress.tls }}
   tls:
