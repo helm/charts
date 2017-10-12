@@ -45,6 +45,7 @@ The default configuration values for this chart are listed in `values.yaml`.
 | `rbac.create`                         | Bind system:heapster role                                    | false                                             |
 | `rbac.serviceAccountName`             | existing ServiceAccount to use (ignored if rbac.create=true) | default                                           |
 | `resizer.enabled`                     | If enabled, scale resources                                  | true                                              |
+| `nodeSelector`                        | Node labels for pod assignment                               | `{}`                                              |
 
 The table below is only applicable if `resizer.enabled` is `true`. More information on resizer can be found [here](https://github.com/kubernetes/contrib/blob/master/addon-resizer/README.md).
 
