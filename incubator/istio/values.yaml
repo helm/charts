@@ -7,7 +7,7 @@ istio:
   install: false
   release: 0.2.7
 
-## Enable Istio auth feature 
+## Enable Istio auth feature
 ## This deploys a CA in the namespace and enables mTLS between the services
 auth:
   enabled: true
@@ -30,14 +30,13 @@ initializer:
     ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
     ##
     nodeSelector: {}
-    resources:
-      limits: {}
-      #limits:
-        #cpu: 100m
-        #memory: 128Mi
-      #requests:
-        #cpu: 100m
-        #memory: 128Mi
+    resources: {}
+    #  limits:
+    #   cpu: 100m
+    #   memory: 128Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 128Mi
 
 ## Mixer configuration
 mixer:
@@ -65,12 +64,12 @@ mixer:
     ##
     nodeSelector: {}
     resources: {}
-      #limits:
-        #cpu: 100m
-        #memory: 128Mi
-      #requests:
-        #cpu: 100m
-        #memory: 128Mi
+    #  limits:
+    #    cpu: 100m
+    #    memory: 128Mi
+    #  requests:
+    #    cpu: 100m
+    #    memory: 128Mi
 
 ## Pilot configuration
 pilot:
@@ -96,12 +95,12 @@ pilot:
       image: docker.io/istio/pilot
       imagePullPolicy: IfNotPresent
       resources: {}
-      #limits:
-        #cpu: 100m
-        #memory: 128Mi
-      #requests:
-        #cpu: 100m
-        #memory: 128Mi
+      #  limits:
+      #    cpu: 100m
+      #    memory: 128Mi
+      #  requests:
+      #    cpu: 100m
+      #    memory: 128Mi
 
 ## Ingress configuration
 ingress:
@@ -123,13 +122,12 @@ ingress:
     ##
     nodeSelector: {}
     resources:
-      limits: {}
-      #limits:
-        #cpu: 100m
-        #memory: 128Mi
-      #requests:
-        #cpu: 100m
-        #memory: 128Mi
+    #  limits:
+    #    cpu: 100m
+    #    memory: 128Mi
+    #  requests:
+    #    cpu: 100m
+    #    memory: 128Mi
 
 ## Engress configuration
 egress:
@@ -149,14 +147,13 @@ egress:
     ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
     ##
     nodeSelector: {}
-    resources:
-      limits: {}
-      #limits:
-        #cpu: 100m
-        #memory: 128Mi
-      #requests:
-        #cpu: 100m
-        #memory: 128Mi
+    resources: {}
+    #  limits:
+    #    cpu: 100m
+    #    memory: 128Mi
+    #  requests:
+    #    cpu: 100m
+    #    memory: 128Mi
 
 ## CA configuration
 ## Only installed if auth.enabled
@@ -173,20 +170,18 @@ ca:
     ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
     ##
     nodeSelector: {}
-    resources:
-      limits: {}
-      #limits:
-        #cpu: 100m
-        #memory: 128Mi
-      #requests:
-        #cpu: 100m
-        #memory: 128Mi
-
+    resources: {}
+    #  limits:
+    #    cpu: 100m
+    #    memory: 128Mi
+    #  requests:
+    #    cpu: 100m
+    #    memory: 128Mi
 
 ## Addons configuration
 ## Each addon may be disabled
 addons:
-  
+
   zipkin:
 
     enabled: true
@@ -194,7 +189,7 @@ addons:
     service:
       type: NodePort
       externalPort: 9411
-    
+
     deployment:
       name: zipkin
       annotations:
@@ -208,23 +203,23 @@ addons:
       ##
       nodeSelector: {}
       resources: {}
-      #limits:
-        #cpu: 100m
-        #memory: 128Mi
-      #requests:
-        #cpu: 100m
-        #memory: 128Mi
-  
+      #  limits:
+      #    cpu: 100m
+      #    memory: 128Mi
+      #  requests:
+      #    cpu: 100m
+      #    memory: 128Mi
+
   prometheus:
-    
+
     enabled: true
-    
+
     service:
       type: NodePort
       externalPort: 9090
       annotations:
         prometheus.io/scrape: 'true'
-    
+
     deployment:
       name: prometheus
       annotations:
@@ -238,21 +233,21 @@ addons:
       ##
       nodeSelector: {}
       resources: {}
-      #limits:
-        #cpu: 100m
-        #memory: 128Mi
-      #requests:
-        #cpu: 100m
-        #memory: 128Mi
-  
+      #  limits:
+      #    cpu: 100m
+      #    memory: 128Mi
+      #  requests:
+      #    cpu: 100m
+      #    memory: 128Mi
+
   grafana:
-    
+
     enabled: true
-    
+
     service:
       type: NodePort
       externalPort: 3000
-    
+
     deployment:
       name: grafana
       annotations:
@@ -265,21 +260,21 @@ addons:
       ##
       nodeSelector: {}
       resources: {}
-      #limits:
-        #cpu: 100m
-        #memory: 128Mi
-      #requests:
-        #cpu: 100m
-        #memory: 128Mi
+      #  limits:
+      #    cpu: 100m
+      #    memory: 128Mi
+      #  requests:
+      #    cpu: 100m
+      #    memory: 128Mi
 
   servicegraph:
-    
+
     enabled: true
-    
+
     service:
       type: NodePort
       externalPort: 8088
-    
+
     deployment:
       name: servicegraph
       annotations:
@@ -292,9 +287,9 @@ addons:
       ##
       nodeSelector: {}
       resources: {}
-      #limits:
-        #cpu: 100m
-        #memory: 128Mi
-      #requests:
-        #cpu: 100m
-        #memory: 128Mi
+      #  limits:
+      #    cpu: 100m
+      #    memory: 128Mi
+      #  requests:
+      #    cpu: 100m
+      #    memory: 128Mi
