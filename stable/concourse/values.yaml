@@ -304,8 +304,12 @@ web:
     ## ref: https://kubernetes.io/docs/user-guide/services/#publishing-services---service-types
     ##
     type: ClusterIP
-    nodePort:
-      fixed: false
+
+  # If you fix atc nodeport, this parameter set(web.service.atcNodePort)
+  #  atcNodePort: 30150
+  #
+  # If you fix tsa nodeport, this parameter set(web.service.tsaNodePort)
+  #  tsaNodePort: 30151
 
   ## Ingress configuration.
   ## ref: https://kubernetes.io/docs/user-guide/ingress/
@@ -335,8 +339,6 @@ web:
     #     hosts:
     #       - concourse.domain.com
     #
-  nodeAffinity:
-    enabled: false
 
 ## Configuration values for Concourse Worker components.
 ##
@@ -367,8 +369,6 @@ worker:
   # annotations:
   #   iam.amazonaws.com/role: arn:aws:iam::123456789012:role/concourse
   #
-  nodeAffinity:
-    enabled: false
 
   ## Additional affinities to add to the worker pods.
   ## Useful if you prefer to run workers on non-spot instances, for example
