@@ -15,6 +15,11 @@ persistentVolume: {}
   #   storage: 4G
   #   storageClassName: standard
 
+service:
+  type: ClusterIP
+  annotations: {}
+  loadBalancerIP:
+  clusterIP: None
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
