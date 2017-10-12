@@ -1,0 +1,7 @@
+apiVersion: v1
+description: File, Block, and Object Storage Services for your Cloud-Native Environment
+name: rook
+version: 0.0.1
+icon: https://rook.io/images/logos/rook/rook-logo-color-on-transparent.png
+sources:
+  - https://github.com/rook/rook

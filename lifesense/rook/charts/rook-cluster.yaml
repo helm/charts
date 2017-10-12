@@ -1,0 +1,77 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: rook
+---
+apiVersion: rook.io/v1alpha1
+kind: Cluster
+metadata:
+  name: rook
+  namespace: rook
+spec:
+  versionTag: master
+  dataDirHostPath: /data/rook_data
+  # toggle to use hostNetwork
+  hostNetwork: false
+# To control where various services will be scheduled by kubernetes, use the placement configuration sections below.
+# The example under 'all' would have all services scheduled on kubernetes nodes labeled with 'role=storage' and
+# tolerate taints with a key of 'storage-node'.
+#  placement:
+#    all:
+#      nodeAffinity:
+#        requiredDuringSchedulingIgnoredDuringExecution:
+#          nodeSelectorTerms:
+#          - matchExpressions:
+#            - key: role
+#              operator: In
+#              values:
+#              - storage-node
+#      podAffinity:
+#      podAntiAffinity:
+#      tolerations:
+#      - key: storage-node
+#        operator: Exists
+#    api:
+#      nodeAffinity:
+#      podAffinity:
+#      podAntiAffinity:
+#      tolerations:
+#    mgr:
+#      nodeAffinity:
+#      podAffinity:
+#      podAntiAffinity:
+#      tolerations:
+#    mon:
+#      nodeAffinity:
+#      podAffinity:
+#      podAntiAffinity:
+#      tolerations:
+#    osd:
+#      nodeAffinity:
+#      podAffinity:
+#      podAntiAffinity:
+#      tolerations:
+  storage:                # cluster level storage configuration and selection
+    useAllNodes: true
+    useAllDevices: false
+    deviceFilter:
+    metadataDevice:
+    location:
+    storeConfig:
+      storeType: filestore
+      databaseSizeMB: 1024 # this value can be removed for environments with normal sized disks (100 GB or larger)
+      journalSizeMB: 1024  # this value can be removed for environments with normal sized disks (20 GB or larger)
+# Individual nodes and their config can be specified as well, but 'useAllNodes' above must be set to false. Then, only the named
+# nodes below will be used as storage resources.  Each node's 'name' field should match their 'kubernetes.io/hostname' label.
+#    nodes:
+#    - name: "172.17.4.101"
+#      directories:         # specific directores to use for storage can be specified for each node
+#      - path: "/rook/storage-dir"
+#    - name: "172.17.4.201"
+#      devices:             # specific devices to use for storage can be specified for each node
+#      - name: "sdb"
+#      - name: "sdc"
+#      storeConfig:         # configuration can be specified at the node level which overrides the cluster level config
+#        storeType: bluestore
+#    - name: "172.17.4.301"
+#      deviceFilter: "^sd."
