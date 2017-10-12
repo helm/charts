@@ -1,3 +1,4 @@
+{{- if .Values.selfSigned.create }}
 {{ $fullname := include "fullname" . }}
 {{ $tlsBuiltName := printf "%s-tls" $fullname }}
 {{ $tlsSecretName := default $tlsBuiltName .Values.secret.tlsName }}
@@ -72,4 +73,5 @@ spec:
       - name: localkube
         hostPath:
           path: /var/lib/localkube
+{{- end }}
 {{- end }}
