@@ -265,19 +265,10 @@ spec:
             - name: concourse-keys
               mountPath: /concourse-keys
               readOnly: true
-      {{ if .Values.web.nodeAffinity.enabled }}
       affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-              - matchExpressions:
-                - key: {{ .Values.web.nodeAffinity.key | quote }}
-                  operator: In
-                  values:
-                  {{- range .Values.web.nodeAffinity.values }}
-                  - {{ . }}
-                  {{ end }}
-      {{ end }}
+{{- if .Values.web.additionalAffinities }}
+{{ toYaml .Values.web.additionalAffinities | indent 8 }}
+{{- end }}
       volumes:
         - name: concourse-keys
           secret:
