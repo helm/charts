@@ -7,6 +7,10 @@ metadata:
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+{{- if .Values.service.ServiceAnnotations }}
+  annotations:
+{{ toYaml .Values.service.ServiceAnnotations | indent 4 }}
+{{- end }}
 spec:
   type: {{ .Values.service.type }}
   ports:

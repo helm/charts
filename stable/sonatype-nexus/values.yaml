@@ -17,6 +17,7 @@ service:
   livenessProbe:
     initialDelaySeconds: 30
     periodSeconds: 30
+  ServiceAnnotations: {}
 ingress:
   enabled: false
   # Used to create an Ingress record.
