@@ -36,6 +36,9 @@ spec:
           {{- if and (contains "0.9" .Values.controller.image.tag) .Values.controller.publishService.enabled }}
             - --publish-service={{ template "controller.publishServicePath" . }}
           {{- end }}
+          {{- if (not (eq .Values.controller.defaultSSLCertificate "")) }}
+            - --default-ssl-certificate={{ .Values.controller.defaultSSLCertificate }}
+          {{- end }}
           {{- if (contains "0.9" .Values.controller.image.tag) }}
             - --election-id={{ .Values.controller.electionID }}
           {{- end }}
