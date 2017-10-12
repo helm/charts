@@ -1,0 +1,61 @@
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: {{ template "fluentd-cloudwatch.fullname" . }}
+  labels:
+    app: {{ template "fluentd-cloudwatch.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+spec:
+  template:
+    metadata:
+      labels:
+        app: {{ template "fluentd-cloudwatch.name" . }}
+        release: "{{ .Release.Name }}"
+      annotations:
+{{ toYaml .Values.annotations | indent 8 }}
+    spec:
+      containers:
+      - name: {{ template "fluentd-cloudwatch.fullname" . }}
+        image: "{{ .Values.image }}:{{ .Values.imageTag }}"
+        imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
+        #hostNetwork: {{ default false .Values.hostNetwork }}
+        env:
+        - name: AWS_REGION
+          value: {{ .Values.awsRegion }}
+        - name: LOG_GROUP_NAME
+          value: {{ .Values.logGroupName }}
+
+        - name: AWS_ACCESS_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              key: aws_access_key_id
+              name: {{ template "fluentd-cloudwatch.fullname" . }}
+        - name: AWS_SECRET_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              key: aws_secret_access_key
+              name: {{ template "fluentd-cloudwatch.fullname" . }}
+
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+        volumeMounts:
+        - name: varlog
+          mountPath: /var/log
+        - name: varlibdockercontainers
+          mountPath: /var/lib/docker/containers
+          readOnly: true
+        - name: config-volume
+          mountPath: /fluentd/etc
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: varlog
+        hostPath:
+          path: /var/log
+      - name: varlibdockercontainers
+        hostPath:
+          path: /var/lib/docker/containers
+      - name: config-volume
+        configMap:
+          name: {{ template "fluentd-cloudwatch.fullname" . }}
