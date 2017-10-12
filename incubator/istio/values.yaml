@@ -26,6 +26,10 @@ initializer:
     replicas: 1
     annotations:
       sidecar.istio.io/inject: "false"
+    ## Node labels for pod assignment
+    ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+    ##
+    nodeSelector: {}
     resources:
       limits: {}
       #limits:
@@ -56,6 +60,10 @@ mixer:
     replicas: 1
     annotations:
       sidecar.istio.io/inject: "false"
+    ## Node labels for pod assignment
+    ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+    ##
+    nodeSelector: {}
     resources: {}
       #limits:
         #cpu: 100m
@@ -78,6 +86,10 @@ pilot:
     replicas: 1
     annotations:
       sidecar.istio.io/inject: "false"
+    ## Node labels for pod assignment
+    ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+    ##
+    nodeSelector: {}
 
     discovery:
       name: discovery
@@ -106,6 +118,10 @@ ingress:
     image: docker.io/istio/proxy_debug
     imagePullPolicy: IfNotPresent
     replicas: 1
+    ## Node labels for pod assignment
+    ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+    ##
+    nodeSelector: {}
     resources:
       limits: {}
       #limits:
@@ -129,6 +145,10 @@ egress:
     image: docker.io/istio/proxy_debug
     imagePullPolicy: IfNotPresent
     replicas: 1
+    ## Node labels for pod assignment
+    ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+    ##
+    nodeSelector: {}
     resources:
       limits: {}
       #limits:
@@ -149,6 +169,10 @@ ca:
     image: docker.io/istio/istio-ca
     imagePullPolicy: IfNotPresent
     replicas: 1
+    ## Node labels for pod assignment
+    ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+    ##
+    nodeSelector: {}
     resources:
       limits: {}
       #limits:
@@ -179,6 +203,10 @@ addons:
       imageTag: latest
       imagePullPolicy: IfNotPresent
       replicas: 1
+      ## Node labels for pod assignment
+      ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+      ##
+      nodeSelector: {}
       resources: {}
       #limits:
         #cpu: 100m
@@ -205,6 +233,10 @@ addons:
       imageTag: v1.1.1
       imagePullPolicy: IfNotPresent
       replicas: 1
+      ## Node labels for pod assignment
+      ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+      ##
+      nodeSelector: {}
       resources: {}
       #limits:
         #cpu: 100m
@@ -228,6 +260,10 @@ addons:
       image: docker.io/istio/grafana
       imagePullPolicy: IfNotPresent
       replicas: 1
+      ## Node labels for pod assignment
+      ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+      ##
+      nodeSelector: {}
       resources: {}
       #limits:
         #cpu: 100m
@@ -251,6 +287,10 @@ addons:
       image: docker.io/istio/servicegraph
       imagePullPolicy: IfNotPresent
       replicas: 1
+      ## Node labels for pod assignment
+      ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+      ##
+      nodeSelector: {}
       resources: {}
       #limits:
         #cpu: 100m

@@ -23,6 +23,10 @@ spec:
         component: {{ $serviceName }}-{{ .Values.ca.deployment.name }}
         istio: {{ $serviceName }}-{{ .Values.ca.deployment.name }}
     spec:
+    {{- if .Values.ca.deployment.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
       serviceAccountName: {{ $serviceName }}-ca-service-account
       containers:
       - name: {{ .Values.ca.deployment.name }}
