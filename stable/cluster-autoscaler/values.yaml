@@ -5,6 +5,8 @@ autoscalingGroups: []
 
 # Required if cloudProvider=aws
 awsRegion: us-east-1
+# awsAccessKeyId: ''
+# awsSecretAccessKey: ''
 
 # Currently only `aws` & `spotinst` are supported
 cloudProvider: aws
