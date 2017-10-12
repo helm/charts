@@ -18,10 +18,11 @@ set -o nounset
 set -o pipefail
 set -o xtrace
 
-git fetch --tags https://github.com/kubernetes/charts master
+git remote add k8s https://github.com/kubernetes/charts
+git fetch k8s master
 
 NAMESPACE="pr-${PULL_NUMBER}-${BUILD_NUMBER}"
-CHANGED_FOLDERS=`git diff --find-renames --name-only $(git merge-base master HEAD) stable/ incubator/ | awk -F/ '{print $1"/"$2}' | uniq`
+CHANGED_FOLDERS=`git diff --find-renames --name-only $(git merge-base k8s/master HEAD) stable/ incubator/ | awk -F/ '{print $1"/"$2}' | uniq`
 CURRENT_RELEASE=""
 
 # Exit early if no charts have changed
