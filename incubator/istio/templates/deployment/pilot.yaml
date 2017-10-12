@@ -22,6 +22,10 @@ spec:
         component: {{ $serviceName }}-{{ .Values.pilot.name }}
         istio: {{ $serviceName }}-{{ .Values.pilot.name }}
     spec:
+    {{- if .Values.pilot.deployment.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
       serviceAccountName: {{ $serviceName }}-pilot-service-account
       containers:
       - name: {{ .Values.pilot.deployment.discovery.name }}

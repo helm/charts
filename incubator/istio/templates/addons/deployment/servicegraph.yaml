@@ -20,6 +20,10 @@ spec:
 {{ include "istio.labels.standard" . | indent 8 }}
         component: {{ $serviceName }}-{{ .Values.addons.servicegraph.deployment.name }}
     spec:
+    {{- if .Values.addons.servicegraph.deployment.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
       containers:
       - name: {{ .Values.addons.servicegraph.deployment.name }}
         image: "{{ .Values.addons.servicegraph.deployment.image }}:{{ .Values.istio.release }}"
