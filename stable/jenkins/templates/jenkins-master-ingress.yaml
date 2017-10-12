@@ -6,14 +6,14 @@ metadata:
   annotations:
 {{ toYaml .Values.Master.Ingress.Annotations | indent 4 }}
 {{- end }}
-  name: {{ template "fullname" . }}
+  name: {{ template "jenkins.fullname" . }}
 spec:
   rules:
   - host: {{ .Values.Master.HostName | quote }}
     http:
       paths:
       - backend:
-          serviceName: {{ template "fullname" . }}
+          serviceName: {{ template "jenkins.fullname" . }}
           servicePort: {{ .Values.Master.ServicePort }}
 {{- if .Values.Master.Ingress.TLS }}
   tls:

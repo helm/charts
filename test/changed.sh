@@ -21,7 +21,7 @@ set -o xtrace
 git fetch --tags https://github.com/kubernetes/charts master
 
 NAMESPACE="pr-${PULL_NUMBER}-${BUILD_NUMBER}"
-CHANGED_FOLDERS=`git diff --find-renames --name-only FETCH_HEAD stable/ incubator/ | awk -F/ '{print $1"/"$2}' | uniq`
+CHANGED_FOLDERS=`git diff --find-renames --name-only $(git merge-base master HEAD) stable/ incubator/ | awk -F/ '{print $1"/"$2}' | uniq`
 CURRENT_RELEASE=""
 
 # Exit early if no charts have changed
@@ -66,7 +66,6 @@ for directory in ${CHANGED_FOLDERS}; do
     CHART_NAME=`echo ${directory} | cut -d '/' -f2`
     RELEASE_NAME="${CHART_NAME:0:7}-${BUILD_NUMBER}"
     CURRENT_RELEASE=${RELEASE_NAME}
-    helm lint ${directory}
     helm dep update ${directory}
     helm install --timeout 600 --name ${RELEASE_NAME} --namespace ${NAMESPACE} ${directory} | tee install_output
     ./test/verify-release.sh ${NAMESPACE}

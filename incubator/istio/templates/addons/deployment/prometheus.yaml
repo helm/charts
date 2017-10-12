@@ -1,0 +1,54 @@
+{{- if and .Values.istio.install (not .Release.IsInstall) -}}
+{{ if .Values.addons.prometheus.enabled }}
+{{- $serviceName := include "istio.name" . -}}
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ $serviceName }}-{{ .Values.addons.prometheus.deployment.name }}
+  labels:
+{{ include "istio.labels.standard" . | indent 4 }}
+    component: {{ $serviceName }}-{{ .Values.addons.prometheus.deployment.name }}
+spec:
+  replicas: {{ .Values.addons.prometheus.deployment.replicas }}
+  selector:
+    matchLabels:
+{{ include "istio.labels.standard" . | indent 6 }}
+      component: {{ $serviceName }}-{{ .Values.addons.prometheus.deployment.name }}
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/addons/configmap/prometheus-config.yaml") . | sha256sum }}
+      {{- range $key, $value := .Values.addons.prometheus.deployment.annotations }}
+        {{ $key }}: {{ $value | quote }}
+      {{- end }}
+      name: {{ $serviceName }}-{{ .Values.addons.prometheus.deployment.name }}
+      labels:
+{{ include "istio.labels.standard" . | indent 8 }}
+        component: {{ $serviceName }}-{{ .Values.addons.prometheus.deployment.name }}
+    spec:
+    {{- if .Values.addons.prometheus.deployment.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
+      containers:
+      - name: {{ .Values.addons.prometheus.deployment.name }}
+        image: "{{ .Values.addons.prometheus.deployment.image }}:{{ .Values.addons.prometheus.deployment.imageTag }}"
+        imagePullPolicy: {{ .Values.addons.prometheus.deployment.imagePullPolicy }}
+        args:
+          - '-storage.local.retention=6h'
+          - '-storage.local.memory-chunks=500000'
+          - '-config.file=/etc/prometheus/prometheus.yml'
+        ports:
+        - name: web
+          containerPort: {{ .Values.addons.prometheus.service.externalPort }}
+        resources:
+{{ toYaml .Values.addons.prometheus.deployment.resources | indent 10 }}
+        volumeMounts:
+        - name: config-volume
+          mountPath: /etc/prometheus
+      volumes:
+      - name: config-volume
+        configMap:
+          name: {{ $serviceName }}-{{ .Values.addons.prometheus.deployment.name }}
+{{ end }}
+{{- end -}}
