@@ -2,9 +2,9 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "minecraft.fullname" . }}
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "minecraft.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -12,10 +12,10 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "fullname" . }}
+        app: {{ template "minecraft.fullname" . }}
     spec:
       containers:
-      - name: {{ template "fullname" . }}
+      - name: {{ template "minecraft.fullname" . }}
         image: "{{ .Values.image }}:{{ .Values.imageTag }}"
         imagePullPolicy: Always
         resources:
@@ -86,7 +86,7 @@ spec:
         - name: RCON_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "minecraft.fullname" . }}
               key: rcon-password
         {{- end }}
 
@@ -106,7 +106,7 @@ spec:
       - name: datadir
       {{- if .Values.persistence.dataDir.enabled }}
         persistentVolumeClaim:
-          claimName: {{ template "fullname" . }}-datadir
+          claimName: {{ template "minecraft.fullname" . }}-datadir
       {{- else }}
         emptyDir: {}
       {{- end }}
