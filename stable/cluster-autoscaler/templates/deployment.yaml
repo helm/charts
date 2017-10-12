@@ -45,6 +45,14 @@ spec:
           {{- if eq .Values.cloudProvider "aws" }}
             - name: AWS_REGION
               value: "{{ .Values.awsRegion }}"
+          {{- if .Values.awsAccessKeyId }}
+            - name: AWS_ACCESS_KEY_ID
+              value: "{{ .Values.awsAccessKeyId }}"
+          {{- end }}
+          {{- if .Values.awsSecretAccessKey }}
+            - name: AWS_SECRET_ACCESS_KEY
+              value: "{{ .Values.awsSecretAccessKey }}"
+          {{- end }}
           {{- else if eq .Values.cloudProvider "spotinst" }}
             - name: SPOTINST_TOKEN
               value: "{{ .Values.spotinst.token }}"
