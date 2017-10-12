@@ -288,6 +288,20 @@ web:
   ##
   replicas: 1
 
+  ## Additional affinities to add to the web pods.
+  ## Useful if you prefer to run workers on non-spot instances, for example
+  ##
+  # additionalAffinities:
+  #   nodeAffinity:
+  #     preferredDuringSchedulingIgnoredDuringExecution:
+  #       - weight: 50
+  #         preference:
+  #           matchExpressions:
+  #             - key: spot
+  #               operator: NotIn
+  #               values:
+  #                 - "true"
+
   ## Configure resource requests and limits.
   ## ref: https://kubernetes.io/docs/user-guide/compute-resources/
   ##
@@ -304,6 +318,12 @@ web:
     ## ref: https://kubernetes.io/docs/user-guide/services/#publishing-services---service-types
     ##
     type: ClusterIP
+
+  # If you fix atc nodeport, this parameter set(web.service.atcNodePort)
+  #  atcNodePort: 30150
+  #
+  # If you fix tsa nodeport, this parameter set(web.service.tsaNodePort)
+  #  tsaNodePort: 30151
 
   ## Ingress configuration.
   ## ref: https://kubernetes.io/docs/user-guide/ingress/
@@ -332,6 +352,8 @@ web:
     #   - secretName: concourse-web-tls
     #     hosts:
     #       - concourse.domain.com
+    #
+    #
 
 ## Configuration values for Concourse Worker components.
 ##
@@ -361,6 +383,7 @@ worker:
   ##
   # annotations:
   #   iam.amazonaws.com/role: arn:aws:iam::123456789012:role/concourse
+  #
 
   ## Additional affinities to add to the worker pods.
   ## Useful if you prefer to run workers on non-spot instances, for example
