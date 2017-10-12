@@ -84,3 +84,7 @@ networkPolicy:
   ##
   allowExternal: true
 
+service:
+  type: ClusterIP
+  annotations: {}
+  loadBalancerIP:
