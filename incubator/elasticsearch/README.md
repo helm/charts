@@ -58,7 +58,7 @@ The following tables lists the configurable parameters of the elasticsearch char
 
 |              Parameter               |                             Description                             |               Default                |
 | ------------------------------------ | ------------------------------------------------------------------- | ------------------------------------ |
-| `appVersion`                         | Application Version                                                 | `5.4`                                |
+| `appVersion`                         | Application Version (Elasticsearch)                                 | `5.4`                                |
 | `image.repository`                   | Container image name                                                | `centerforopenscience/elasticsearch` |
 | `image.tag`                          | Container image tag                                                 | `5.4`                                |
 | `image.pullPolicy`                   | Container pull policy                                               | `Always`                             |
@@ -95,6 +95,18 @@ In terms of Memory resources you should make sure that you follow that equation:
 The YAML value of cluster.config is appended to elasticsearch.yml file for additional customization ("script.inline: on" for example to allow inline scripting)
 
 # Deep dive
+
+## Application Version
+
+This chart aims to support Elasticsearch v2 and v5 deployments by specifying the `values.yaml` parameter `appVersion`.
+
+### Version Specific Features
+
+* Memory Locking *(variable renamed)*
+* Ingest Node *(v5)*
+* X-Pack Plugin *(v5)*
+
+Upgrade paths & more info: https://www.elastic.co/guide/en/elasticsearch/reference/current/setup-upgrade.html
 
 ## Mlocking
 
