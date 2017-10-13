@@ -8,13 +8,14 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
+  replicas: {{ .Values.replicas }}
   template:
     metadata:
       labels:
         app: {{ template "fullname" . }}
     spec:
       containers:
-      - name: {{ template "fullname" . }}-tomcat
+      - name: tomcat
         image: "{{ .Values.disconf.image }}:{{ .Values.disconf.imageTag }}"
         imagePullPolicy: {{ .Values.imagePullPolicy | quote }}                                  
         ports:
@@ -38,7 +39,7 @@ spec:
           mountPath: /data
         resources:
 {{ toYaml .Values.disconf.resources | indent 10 }}             
-      - name: {{ template "fullname" . }}-nginx
+      - name: nginx
         image: "{{ .Values.nginx.image }}:{{ .Values.nginx.imageTag }}"
         imagePullPolicy: {{ .Values.imagePullPolicy | quote }}                                 
         ports:

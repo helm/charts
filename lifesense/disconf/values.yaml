@@ -15,7 +15,7 @@ nginx:
     requests:
       memory: 256Mi
       cpu: 100m
-
+replicas: 2
 DISCONF_DOAMIN: disconf.lifesense.com
 #mail
 EMAIL_MONITOR_ON: true
