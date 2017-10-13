@@ -1,0 +1,22 @@
+{{- if and .Values.istio.install (not .Release.IsInstall) -}}
+{{- $serviceName := include "istio.name" . -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $serviceName }}-{{ .Values.ingress.deployment.name }}
+  labels:
+{{ include "istio.labels.standard" . | indent 4 }}
+    istio: {{ $serviceName }}-{{ .Values.ingress.deployment.name }}
+spec:
+  type: {{ .Values.ingress.service.type }}
+  ports:
+  - port: {{ .Values.ingress.service.externalHttpPort }}
+    name: http
+  - port: {{ .Values.ingress.service.externalHttpsPort }}
+    name: https
+  selector:
+    app: {{ include "istio.name" . }}
+    component: {{ $serviceName }}-{{ .Values.ingress.deployment.name }}
+    release: {{ .Release.Name }}
+    istio: {{ $serviceName }}-{{ .Values.ingress.deployment.name }}
+{{- end -}}

@@ -10,6 +10,10 @@ metadata:
   name: {{ template "prometheus.server.fullname" . }}
 spec:
   replicas: {{ .Values.server.replicaCount }}
+  {{- if .Values.server.strategy }}
+  strategy:
+{{ toYaml .Values.server.strategy | indent 4 }}
+  {{- end }}
   template:
     metadata:
     {{- if .Values.server.podAnnotations }}

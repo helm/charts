@@ -5,7 +5,7 @@ controller:
   name: controller
   image:
     repository: gcr.io/google_containers/nginx-ingress-controller
-    tag: "0.9.0-beta.12"
+    tag: "0.9.0-beta.15"
     pullPolicy: IfNotPresent
 
   config: {}
@@ -33,6 +33,10 @@ controller:
   ##
   ingressClass: nginx
 
+  # labels to add to the pod container metadata
+  podLabels: {}
+  #  key: value
+
   ## Allows customization of the external service
   ## the ingress will be bound to via DNS
   publishService:
@@ -46,7 +50,7 @@ controller:
   ##
   scope:
     enabled: false
-    namespace: "" # defaults to .Release.Namespace
+    namespace: ""   # defaults to .Release.Namespace
 
   extraArgs: {}
 
@@ -58,10 +62,10 @@ controller:
   ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
   ##
   tolerations: []
-  #- key: "key"
-  #  operator: "Equal|Exists"
-  #  value: "value"
-  #  effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
+  #  - key: "key"
+  #    operator: "Equal|Exists"
+  #    value: "value"
+  #    effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
 
   ## Node labels for controller pod assignment
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
@@ -75,12 +79,12 @@ controller:
   replicaCount: 1
 
   resources: {}
-    # limits:
-    #   cpu: 100m
-    #   memory: 64Mi
-    # requests:
-    #   cpu: 100m
-    #   memory: 64Mi
+  #  limits:
+  #    cpu: 100m
+  #    memory: 64Mi
+  #  requests:
+  #    cpu: 100m
+  #    memory: 64Mi
 
   service:
     annotations: {}
@@ -152,10 +156,14 @@ defaultBackend:
   ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
   ##
   tolerations: []
-  #- key: "key"
-  #  operator: "Equal|Exists"
-  #  value: "value"
-  #  effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
+  #  - key: "key"
+  #    operator: "Equal|Exists"
+  #    value: "value"
+  #    effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
+
+  # labels to add to the pod container metadata
+  podLabels: {}
+  #  key: value
 
   ## Node labels for default backend pod assignment
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
@@ -169,12 +177,12 @@ defaultBackend:
   replicaCount: 1
 
   resources: {}
-    # limits:
-    #   cpu: 10m
-    #   memory: 20Mi
-    # requests:
-    #   cpu: 10m
-    #   memory: 20Mi
+  # limits:
+  #   cpu: 10m
+  #   memory: 20Mi
+  # requests:
+  #   cpu: 10m
+  #   memory: 20Mi
 
   service:
     annotations: {}
@@ -211,12 +219,12 @@ statsExporter:
   statusPage: http://localhost:18080/nginx_status/format/json
 
   resources: {}
-    # limits:
-    #   cpu: 10m
-    #   memory: 20Mi
-    # requests:
-    #   cpu: 10m
-    #   memory: 20Mi
+  # limits:
+  #   cpu: 10m
+  #   memory: 20Mi
+  # requests:
+  #   cpu: 10m
+  #   memory: 20Mi
 
   service:
     annotations: {}
@@ -236,10 +244,10 @@ statsExporter:
 # Ref: https://github.com/kubernetes/contrib/tree/master/ingress/controllers/nginx/examples/tcp
 ##
 tcp: {}
-  # 8080: "default/example-tcp-svc:9000"
+#  8080: "default/example-tcp-svc:9000"
 
 # UDP service key:value pairs
 # Ref: https://github.com/kubernetes/contrib/tree/master/ingress/controllers/nginx/examples/udp
 ##
 udp: {}
-  # 53: "kube-system/kube-dns:53"
+#  53: "kube-system/kube-dns:53"

@@ -65,6 +65,10 @@ alertmanager:
     #     hosts:
     #       - alertmanager.domain.com
 
+  ## Alertmanager Deployment Strategy type
+  # strategy:
+  #   type: Recreate
+
   ## Node labels for alertmanager pod assignment
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
   ##
@@ -369,6 +373,10 @@ server:
     #   - secretName: prometheus-server-tls
     #     hosts:
     #       - prometheus.domain.com
+
+  ## Server Deployment Strategy type
+  # strategy:
+  #   type: Recreate
 
   ## Node tolerations for server scheduling to nodes with taints
   ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/

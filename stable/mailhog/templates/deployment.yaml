@@ -2,11 +2,11 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   labels:
-    app: {{ template "name" . }}
+    app: {{ template "mailhog.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-  name: {{ template "fullname" . }}
+  name: {{ template "mailhog.fullname" . }}
 spec:
   template:
     metadata:
@@ -15,11 +15,11 @@ spec:
 {{ toYaml .Values.podAnnotations | indent 8 }}
     {{- end }}
       labels:
-        app: {{ template "name" . }}
+        app: {{ template "mailhog.name" . }}
         release: {{ .Release.Name }}
     spec:
       containers:
-        - name: {{ template "name" . }}
+        - name: {{ template "mailhog.name" . }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: "{{ .Values.image.pullPolicy }}"
           env:
@@ -66,5 +66,5 @@ spec:
       volumes:
         - name: authdir
           secret:
-            secretName: {{ template "authFileSecret" . }}
+            secretName: {{ template "mailhog.authFileSecret" . }}
     {{- end }}

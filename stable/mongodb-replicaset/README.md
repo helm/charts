@@ -46,6 +46,9 @@ The following tables lists the configurable parameters of the mongodb chart and 
 | `persistentVolume.accessMode`   | Persistent volume access modes                                            | [ReadWriteOnce]                                     |
 | `persistentVolume.size`         | Persistent volume size                                                    | 10Gi                                                |
 | `persistentVolume.annotations`  | Persistent volume annotations                                             | {}                                                  |
+| `tls.enabled`                   | Enable MongoDB TLS support including authentication                       | `false`                                             |
+| `tls.cacert`                    | The CA certificate used for the members                                   | Our self signed CA certificate                      |
+| `tls.cakey`                     | The CA key used for the members                                           | Our key for the self signed CA certificate          |
 | `auth.enabled`                  | If `true`, keyfile access control is enabled                              | `false`                                             |
 | `auth.key`                      | key for internal authentication                                           |                                                     |
 | `auth.existingKeySecret`        | If set, an existing secret with this name for the key is used             |                                                     |
@@ -88,6 +91,71 @@ By default, this chart creates a MongoDB replica set without authentication. Aut
 parameter `auth.enabled`. Once enabled, keyfile access control is set up and an admin user with root privileges
 is created. User credentials and keyfile may be specified directly. Alternatively, existing secrets may be provided. 
 The secret for the admin user must contain the keys `user` and `password`, that for the key file must contain `key.txt`.
+
+## TLS support
+
+To enable full TLS encryption set `tls.enabled` to `true`. It is recommended to create your own CA by executing:
+
+```console
+$ openssl genrsa -out ca.key 2048
+$ openssl req -x509 -new -nodes -key ca.key -days 10000 -out ca.crt -subj "/CN=mydomain.com"
+```
+
+After that paste the base64 encoded (`cat ca.key | base64 -w0`) cert and key into the fields `tls.cacert` and
+`tls.cakey`. Adapt the configmap for the replicaset as follows:
+
+```yml
+configmap:
+  storage:
+    dbPath: /data/db
+  net:
+    port: 27017
+    ssl:
+      mode: requireSSL
+      CAFile: /ca/tls.crt
+      PEMKeyFile: /work-dir/mongo.pem
+  replication:
+    replSetName: rs0
+  security:
+    authorization: enabled
+    clusterAuthMode: x509
+    keyFile: /keydir/key.txt
+```
+
+To access the cluster you need one of the certificates generated during cluster setup in `/work-dir/mongo.pem` of the
+certain container or you generate your own one via:
+
+```console
+$ cat >openssl.cnf <<EOL
+[req]
+req_extensions = v3_req
+distinguished_name = req_distinguished_name
+[req_distinguished_name]
+[ v3_req ]
+basicConstraints = CA:FALSE
+keyUsage = nonRepudiation, digitalSignature, keyEncipherment
+subjectAltName = @alt_names
+[alt_names]
+DNS.1 = $HOSTNAME1
+DNS.1 = $HOSTNAME2
+EOL
+$ openssl genrsa -out mongo.key 2048
+$ openssl req -new -key mongo.key -out mongo.csr -subj "/CN=$HOSTNAME" -config openssl.cnf
+$ openssl x509 -req -in mongo.csr \
+    -CA $MONGOCACRT -CAkey $MONGOCAKEY -CAcreateserial \
+    -out mongo.crt -days 3650 -extensions v3_req -extfile openssl.cnf
+$ rm mongo.csr
+$ cat mongo.crt mongo.key > mongo.pem
+$ rm mongo.key mongo.crt
+```
+
+Please ensure that you exchange the `$HOSTNAME` with your actual hostname and the `$HOSTNAME1`, `$HOSTNAME2`, etc. with
+alternative hostnames you want to allow access to the MongoDB replicaset. You should now be able to authenticate to the
+mongodb with your `mongo.pem` certificate:
+
+```console
+$ mongo --ssl --sslCAFile=ca.crt --sslPEMKeyFile=mongo.pem --eval "db.adminCommand('ping')"
+```
 
 ## Deep dive
 
