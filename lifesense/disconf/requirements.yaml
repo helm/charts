@@ -6,5 +6,5 @@ dependencies:
   version: 0.3.1
   repository: https://kubernetes-charts-incubator.storage.googleapis.com/
 - name:  redis
-  version: 0.7.0
+  version: 0.10.2
   repository: https://kubernetes-charts.storage.googleapis.com/

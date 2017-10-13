@@ -47,7 +47,7 @@ zookeeper:
       memory: 4Gi
   heap: "2G"
   storage: "50Gi"
-  storageClass: rook-block
+  storageClass: "rook-block"
   serverPort: 2888
   leaderElectionPort: 3888
   clientPort: 2181
@@ -77,7 +77,6 @@ mysql:
   mysqlUser: disconf
   mysqlPassword: CCmRPz4Eeergp7Ni
   mysqlDatabase: disconf
-  mysqlAllowEmptyPassword: true
   imagePullPolicy: IfNotPresent
   persistence:
     enabled: true
