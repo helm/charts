@@ -22,14 +22,14 @@ spec:
           containerPort: 8080
         livenessProbe:
           httpGet:
-            path: /
+            path: /api/config/item?app=1
             port: http
           initialDelaySeconds: 120
           timeoutSeconds: 5
           failureThreshold: 6
         readinessProbe:
           httpGet:
-            path: /
+            path: /api/config/item?app=1
             port: http
         volumeMounts:
         - name: configurations
@@ -46,14 +46,14 @@ spec:
           containerPort: 80
         livenessProbe:
           httpGet:
-            path: /
+            path: /index.html
             port: http
           initialDelaySeconds: 120
           timeoutSeconds: 5
           failureThreshold: 6
         readinessProbe:
           httpGet:
-            path: /
+            path: /index.html
             port: http
         volumeMounts:
         - name: nginx

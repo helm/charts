@@ -13,7 +13,7 @@ data:
     DEFAULT_FROM_EMAIL = {{ default 25 .Values.DEFAULT_FROM_EMAIL }} 
     CHECK_CONSISTENCY_ON= true
   default.conf: "upstream disconf {\n    server 127.0.0.1:8080;\n}\n\nserver {\n    \n
-    \   listen   80;\n\n    location / {\n        root /home/html;\n        if ($query_string)
+    \   listen   80;\n\n    location / {\n        root /data/html;\n        if ($query_string)
     {\n            expires max;\n        }\n    }\n\n    location ~ ^/(api|export)
     {\n        proxy_pass_header Server;\n        proxy_set_header Host $http_host;\n
     \       proxy_redirect off;\n        proxy_set_header X-Real-IP $remote_addr;\n
@@ -22,8 +22,8 @@ data:
   jdbc-mysql.properties: |-
     jdbc.driverClassName=com.mysql.jdbc.Driver
     jdbc.db_0.url=jdbc:mysql://{{ template "mysql.fullname" . }}:3306/{{.Values.mysql.mysqlDatabase}}?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&rewriteBatchedStatements=false
-    jdbc.db_0.username={{.Values.mysql.mysqlUser|quote}} 
-    jdbc.db_0.password={{.Values.mysql.mysqlPassword|quote}} 
+    jdbc.db_0.username={{.Values.mysql.mysqlUser}}
+    jdbc.db_0.password={{.Values.mysql.mysqlPassword}}
     jdbc.maxPoolSize=20
     jdbc.minPoolSize=10
     jdbc.initialPoolSize=10
