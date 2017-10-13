@@ -33,7 +33,6 @@ import (
 	v1 "k8s.io/client-go/pkg/api/v1"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
-	//"github.com/davecgh/go-spew/spew"
 )
 
 const (
@@ -104,7 +103,7 @@ func main() {
 	for newPeers, peers := sets.NewString(), sets.NewString(); script != ""; time.Sleep(pollPeriod) {
 		services, err := servicesByLabel(client, *namespace, *selector)
 		if err != nil {
-			log.Printf("I could not find services with the selector %s. I am assuming they are not ready yet", selector)
+			log.Printf("I could not find services with the selector %s. I am assuming they are not ready yet", *selector)
 			log.Printf("%v", err)
 			continue
 		}
