@@ -47,7 +47,7 @@ zookeeper:
       memory: 4Gi
   heap: "2G"
   storage: "50Gi"
-  storageClass: "default"
+  storageClass: "rook-block"
   serverPort: 2888
   leaderElectionPort: 3888
   clientPort: 2181
@@ -80,7 +80,7 @@ mysql:
   imagePullPolicy: IfNotPresent
   persistence:
     enabled: true
-    storageClass: "default"
+    storageClass: "rook-block"
     accessMode: ReadWriteOnce
     size: 8Gi
   resources:
