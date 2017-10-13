@@ -1,17 +1,15 @@
-name: mysql
-version: 0.3.0
-description: Fast, reliable, scalable, and easy to use open-source relational database
+name: disconf
+version: 0.0.0
+description: disconf
   system.
 keywords:
-- mysql
-- database
-- sql
-home: https://www.mysql.com/
+- disconf
+home: https://github.com/caiwenhao/disconf.git
 icon: https://www.mysql.com/common/logos/logo-mysql-170x115.png
 sources:
-- https://github.com/kubernetes/charts
-- https://github.com/docker-library/mysql
+- https://github.com/caiwenhao/charts
+- https://github.com/caiwenhao/disconf.git
 maintainers:
-- name: Vic Iglesias
-  email: viglesias@google.com
+- name: caiwenhao
+  email: 77749770@qq.com
 engine: gotpl
