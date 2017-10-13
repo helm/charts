@@ -23,14 +23,14 @@ spec:
         livenessProbe:
           httpGet:
             path: /api/config/item?app=1
-            port: http
+            port: 8080
           initialDelaySeconds: 120
           timeoutSeconds: 5
           failureThreshold: 6
         readinessProbe:
           httpGet:
             path: /api/config/item?app=1
-            port: http
+            port: 8080
         volumeMounts:
         - name: configurations
           mountPath: /tmp/conf
@@ -47,14 +47,14 @@ spec:
         livenessProbe:
           httpGet:
             path: /index.html
-            port: http
+            port: 80
           initialDelaySeconds: 120
           timeoutSeconds: 5
           failureThreshold: 6
         readinessProbe:
           httpGet:
             path: /index.html
-            port: http
+            port: 80
         volumeMounts:
         - name: nginx
           mountPath: /etc/nginx/conf.d/
