@@ -16,9 +16,9 @@ data:
     CHECK_CONSISTENCY_ON= true
   jdbc-mysql.properties: |-
     jdbc.driverClassName=com.mysql.jdbc.Driver
-    jdbc.db_0.url=jdbc:mysql://{{ .Values.mysqlHost }}:{{ .Values.mysqlPort }}/disconf?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&rewriteBatchedStatements=false
-    jdbc.db_0.username={{ .Values.mysqlUser }} 
-    jdbc.db_0.password={{ .Values.mysqlPassword }} 
+    jdbc.db_0.url=jdbc:mysql://{{ template "mysql.fullname" . }}:3306/{{.Values.mysql.mysqlDatabase}}?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&rewriteBatchedStatements=false
+    jdbc.db_0.username={{ .Values.mysql.mysqlUser }} 
+    jdbc.db_0.password={{ .Values.mysql.mysqlPassword }} 
     jdbc.maxPoolSize=20
     jdbc.minPoolSize=10
     jdbc.initialPoolSize=10
@@ -27,18 +27,18 @@ data:
   redis-config.properties: |-
     redis.group1.retry.times=2
     redis.group1.client1.name=BeidouRedis1
-    redis.group1.client1.host={{ .Values.REDIS_HOST1 }} 
-    redis.group1.client1.port={{ .Values.REDIS_PORT1 }}
+    redis.group1.client1.host={{ template "redis.fullname" . }}
+    redis.group1.client1.port=6379
     redis.group1.client1.timeout=5000
-    redis.group1.client1.password={{ default "" .Values.REDIS_PASSWD1 }}
+    redis.group1.client1.password={{ .Values.redis.redisPassword }}
     redis.group1.client2.name=BeidouRedis2
-    redis.group1.client2.host={{ .Values.REDIS_HOST2 }}
-    redis.group1.client2.port={{ .Values.REDIS_PORT2 }}
+    redis.group1.client2.host={{ template "redis.fullname" . }}
+    redis.group1.client2.port=6379
     redis.group1.client2.timeout=5000
-    redis.group1.client2.password={{ default "" .Values.REDIS_PASSWD2 }}
+    redis.group1.client2.password={{ .Values.redis.redisPassword }}
     redis.evictor.delayCheckSeconds=300
     redis.evictor.checkPeriodSeconds=30
     redis.evictor.failedTimesToBeTickOut=6
   zoo.properties: |2-
-    hosts={{ .Values.ZOOK_HOSTS }}
+    hosts={{ template "zookeeper.fullname" . }}:{{ .Values.zookeeper.clientPort }}
     zookeeper_url_prefix=/disconf

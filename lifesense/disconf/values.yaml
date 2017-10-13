@@ -16,7 +16,6 @@ nginx:
       memory: 256Mi
       cpu: 100m
 
-DISCONF_DOAMIN: disconf.lifesense.com
 #mail
 EMAIL_MONITOR_ON: true
 EMAIL_HOST: smtp.163.com
@@ -24,28 +23,10 @@ EMAIL_HOST_PASSWORD: password
 EMAIL_HOST_USER: sender@163.com
 EMAIL_PORT: 25
 DEFAULT_FROM_EMAIL: disconf@163.com
-#mysql 
-mysqlRootPassword: VCOZZZlwbeK3EMah
-mysqlUser: disconf
-mysqlPassword: CCmRPz4Eeergp7Ni
-mysqlDatabase: disconf
-mysqlHost: 
-mysqlPort: 3306
-#redis
-REDIS_HOST1:
-REDIS_PORT1: 3306
-REDIS_PASSWD1: ""
-REDIS_HOST2:
-REDIS_PORT2:
-REDIS_PASSWD2: ""
-#zook
-ZOOK_HOSTS:
 
 imagePullPolicy: IfNotPresent
-
 service:
   externalPort: 80
-  
 ingress:
   enabled: true
   host: 
@@ -56,24 +37,36 @@ ingress:
 #------------------------------------------------------------------------------
 
 zookeeper:
-  Servers: 3
-  Resources: {}
-  Heap: "1G"
-  Storage: "2Gi"
-  ServerPort: 2888
-  LeaderElectionPort: 3888
-  ClientPort: 2181
-  ImagePullPolicy: "IfNotPresent"
-  TickTimeMs: 2000
-  InitTicks: 10
-  SyncTicks: 5
-  ClientCnxns: 60
-  SnapRetain: 3
-  PurgeHours: 1
-  ProbeInitialDelaySeconds : 15
-  ProbeTimeoutSeconds : 5
-  AntiAffinity : "hard"
-  LogLevel : "INFO"
+  servers: 3
+  minAvailable: 2
+  resources:
+    requests:
+      cpu: 500m
+      memory: 2Gi
+    limits:
+      cpu: 1
+      memory: 4Gi
+  heap: "2G"
+  storage: "50Gi"
+  storageClass: rook-block
+  serverPort: 2888
+  leaderElectionPort: 3888
+  clientPort: 2181
+  imagePullPolicy: "IfNotPresent"
+  tickTimeMs: 2000
+  initTicks: 10
+  syncTicks: 5
+  clientCnxns: 60
+  snapRetain: 3
+  purgeHours: 1
+  probeInitialDelaySeconds: 15
+  probeTimeoutSeconds: 5
+  antiAffinity: "hard"
+  logLevel: "INFO"
+  security:
+    enabled: false
+    runAsUser: 1000
+    fsGroup: 1000
 
 #------------------------------------------------------------------------------
 # Mysql:
@@ -82,45 +75,54 @@ zookeeper:
 mysql:
   image: "mysql"
   imageTag: "5.7.14"
-
-  ## Specify password for root user
-  ##
-  ## Default: random 10 character string
-  # mysqlRootPassword: testing
-
-  ## Create a database user
-  ##
-  # mysqlUser:
-  # mysqlPassword:
-
-  ## Allow unauthenticated access, uncomment to enable
-  ##
-  # mysqlAllowEmptyPassword: true
-
-  ## Create a database
-  ##
-  # mysqlDatabase:
-
-  ## Specify an imagePullPolicy (Required)
-  ## It's recommended to change this to 'Always' if the image tag is 'latest'
-  ## ref: http://kubernetes.io/docs/user-guide/images/#updating-images
-  ##
+  mysqlRootPassword: VCOZZZlwbeK3EMah
+  mysqlUser: disconf
+  mysqlPassword: CCmRPz4Eeergp7Ni
+  mysqlDatabase: disconf
   imagePullPolicy: IfNotPresent
-
-  ## Persist data to a persitent volume
   persistence:
-    enabled: false
-    ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
-    ## Default: volume.alpha.kubernetes.io/storage-class: default
-    ##
-    # storageClass:
+    enabled: true
+    storageClass: "rook-block"
     accessMode: ReadWriteOnce
     size: 8Gi
-
-  ## Configure resource requests and limits
-  ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
-  ##
   resources:
     requests:
       memory: 256Mi
       cpu: 100m
+  configurationFiles:
+  #  mysql.cnf: |-
+  #    [mysqld]
+  #    skip-name-resolve
+
+#------------------------------------------------------------------------------
+# Redis:
+#------------------------------------------------------------------------------
+redis:
+  image: bitnami/redis:3.2.9-r2
+  imagePullPolicy: IfNotPresent
+  serviceType: ClusterIP
+  usePassword: true
+  redisPassword: 0LmnFqQylPrBkbgy
+  persistence:
+    enabled: true
+    storageClass: "rook-block"
+    accessMode: ReadWriteOnce
+    size: 8Gi
+  metrics:
+    enabled: false
+    image: oliver006/redis_exporter
+    imageTag: v0.11
+    imagePullPolicy: IfNotPresent
+    resources: {}
+    annotations:
+      prometheus.io/scrape: "true"
+      prometheus.io/port: "9121"
+  resources:
+    requests:
+      memory: 256Mi
+      cpu: 100m
+  nodeSelector: {}
+  tolerations: []
+  networkPolicy:
+    enabled: false
+    allowExternal: true
