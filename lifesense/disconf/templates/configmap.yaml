@@ -32,15 +32,15 @@ data:
   redis-config.properties: |-
     redis.group1.retry.times=2
     redis.group1.client1.name=BeidouRedis1
-    redis.group1.client1.host={{ template "redis.fullname" . }}
+    redis.group1.client1.host={{ template "redis-ha.fullname" . }}
     redis.group1.client1.port=6379
     redis.group1.client1.timeout=5000
-    redis.group1.client1.password={{ .Values.redis.redisPassword }}
+    redis.group1.client1.password=""
     redis.group1.client2.name=BeidouRedis2
-    redis.group1.client2.host={{ template "redis.fullname" . }}
+    redis.group1.client2.host={{ template "redis-ha.fullname" . }}
     redis.group1.client2.port=6379
     redis.group1.client2.timeout=5000
-    redis.group1.client2.password={{ .Values.redis.redisPassword }}
+    redis.group1.client2.password=""
     redis.evictor.delayCheckSeconds=300
     redis.evictor.checkPeriodSeconds=30
     redis.evictor.failedTimesToBeTickOut=6
