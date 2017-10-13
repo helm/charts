@@ -22,8 +22,8 @@ data:
   jdbc-mysql.properties: |-
     jdbc.driverClassName=com.mysql.jdbc.Driver
     jdbc.db_0.url=jdbc:mysql://{{ template "mysql.fullname" . }}:3306/{{.Values.mysql.mysqlDatabase}}?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&rewriteBatchedStatements=false
-    jdbc.db_0.username={{ .Values.mysql.mysqlUser }} 
-    jdbc.db_0.password={{ .Values.mysql.mysqlPassword }} 
+    jdbc.db_0.username={{.Values.mysql.mysqlUser|quote}} 
+    jdbc.db_0.password={{.Values.mysql.mysqlPassword|quote}} 
     jdbc.maxPoolSize=20
     jdbc.minPoolSize=10
     jdbc.initialPoolSize=10
