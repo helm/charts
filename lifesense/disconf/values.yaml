@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 disconf:
   image: "reg.lifesense.com/lifesense/disconf"
-  imageTag: "v0.0.0"
+  imageTag: "v0.0.1"
   resources:
     requests:
       memory: 256Mi
