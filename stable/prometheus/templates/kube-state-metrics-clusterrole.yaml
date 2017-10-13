@@ -39,21 +39,6 @@ rules:
     resources:
       - statefulsets
     verbs:
-      - list
-      - watch
-  - apiGroups:
-      - batch
-    resources:
-      - cronjobs
-      - jobs
-    verbs:
-      - list
-      - watch
-  - apiGroups:
-      - apps
-    resources:
-      - statefulsets
-    verbs:
       - get
       - list
       - watch
