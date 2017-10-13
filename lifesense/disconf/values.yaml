@@ -43,6 +43,9 @@ ZOOK_HOSTS:
 
 imagePullPolicy: IfNotPresent
 
+service:
+  externalPort: 80
+  
 ingress:
   enabled: true
   host: 

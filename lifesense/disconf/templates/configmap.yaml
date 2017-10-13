@@ -3,7 +3,8 @@ kind: ConfigMap
 metadata:
   name: {{ template "fullname" . }}
 data:
-{{ (.Files.Glob "default.conf").AsConfig | indent 2 }}
+  default.conf: |
+{{ (.Files.Glob "default.tpl").AsConfig | indent 4 }}
   application.properties: |
     domain={{ .Values.DISCONF_DOAMIN }}
     EMAIL_MONITOR_ON = {{ default true .Values.EMAIL_MONITOR_ON }} 
