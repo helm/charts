@@ -47,7 +47,7 @@ zookeeper:
       memory: 4Gi
   heap: "2G"
   storage: "50Gi"
-  storageClass: "rook-block"
+  storageClass: "default"
   serverPort: 2888
   leaderElectionPort: 3888
   clientPort: 2181
@@ -80,7 +80,7 @@ mysql:
   imagePullPolicy: IfNotPresent
   persistence:
     enabled: true
-    storageClass: "rook-block"
+    storageClass: "default"
     accessMode: ReadWriteOnce
     size: 8Gi
   resources:
@@ -95,32 +95,26 @@ mysql:
 #------------------------------------------------------------------------------
 # Redis:
 #------------------------------------------------------------------------------
-redis:
-  image: bitnami/redis:3.2.9-r2
-  imagePullPolicy: IfNotPresent
-  serviceType: ClusterIP
-  usePassword: true
-  redisPassword: 0LmnFqQylPrBkbgy
-  persistence:
-    enabled: true
-    storageClass: "rook-block"
-    accessMode: ReadWriteOnce
-    size: 8Gi
-  metrics:
-    enabled: false
-    image: oliver006/redis_exporter
-    imageTag: v0.11
-    imagePullPolicy: IfNotPresent
-    resources: {}
-    annotations:
-      prometheus.io/scrape: "true"
-      prometheus.io/port: "9121"
+redis-ha:
   resources:
-    requests:
-      memory: 256Mi
-      cpu: 100m
-  nodeSelector: {}
-  tolerations: []
-  networkPolicy:
+    master:
+      requests:
+        memory: 200Mi
+        cpu: 100m
+      limits:
+        memory: 700Mi
+    slave:
+      requests:
+        memory: 200Mi
+        cpu: 100m
+      limits:
+        memory: 200Mi
+    sentinel:
+      requests:
+        memory: 200Mi
+        cpu: 100m
+      limits:
+        memory: 200Mi
+  persistentVolume:
     enabled: false
-    allowExternal: true
+  redis_image: reg.lifesense.com/google_containers/redis:v1

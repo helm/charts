@@ -5,6 +5,6 @@ dependencies:
 - name: zookeeper
   version: 0.4.2
   repository: https://kubernetes-charts-incubator.storage.googleapis.com/
-- name:  redis
-  version: 0.10.2
+- name:  redis-ha
+  version: 0.2.1
   repository: https://kubernetes-charts.storage.googleapis.com/
