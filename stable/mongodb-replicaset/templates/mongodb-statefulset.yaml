@@ -31,6 +31,32 @@ spec:
               mountPath: /work-dir
             - name: config
               mountPath: /config
+
+        {{- if .Values.podServices.enabled }}
+        - name: add-name-label
+          image: "{{ .Values.installImage.name }}:{{ .Values.installImage.tag }}"
+          imagePullPolicy: "{{ .Values.installImage.pullPolicy }}"
+          command:
+            - /kubectl
+            - --namespace=$(POD_NAMESPACE)
+            - label
+            - pods
+            - $(POD_NAME)
+            - name=$(POD_NAME)
+          args:
+          env:
+          - name: POD_NAMESPACE
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+          - name: POD_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.name
+        {{- end }}
+
         - name: bootstrap
           image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
           command:
@@ -82,30 +108,6 @@ spec:
               readOnly: true
           {{- end }}
 
-        {{- if .Values.podServices.enabled }}
-        - name: add-name-label
-          image: "{{ .Values.installImage.name }}:{{ .Values.installImage.tag }}"
-          imagePullPolicy: "{{ .Values.installImage.pullPolicy }}"
-          command:
-            - /kubectl
-            - --namespace=$(POD_NAMESPACE)
-            - label
-            - pods
-            - $(POD_NAME)
-            - name=$(POD_NAME)
-          args:
-          env:
-          - name: POD_NAMESPACE
-            valueFrom:
-              fieldRef:
-                apiVersion: v1
-                fieldPath: metadata.namespace
-          - name: POD_NAME
-            valueFrom:
-              fieldRef:
-                apiVersion: v1
-                fieldPath: metadata.name
-        {{- end }}
 
       containers:
         - name: {{ template "name" . }}
