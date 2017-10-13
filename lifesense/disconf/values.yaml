@@ -71,7 +71,7 @@ zookeeper:
 # Mysql:
 #------------------------------------------------------------------------------
 mysql:
-  image: "mysql"
+  image: " reg.lifesense.com/library/mysql"
   imageTag: "5.7.14"
   mysqlRootPassword: VCOZZZlwbeK3EMah
   mysqlUser: disconf

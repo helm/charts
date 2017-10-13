@@ -33,7 +33,7 @@ spec:
             port: http
         volumeMounts:
         - name: configurations
-          mountPath: /usr/local/tomcat/webapps/ROOT/WEB-INF/classes
+          mountPath: /tmp/conf
         - name: html
           mountPath: /data
         resources:
