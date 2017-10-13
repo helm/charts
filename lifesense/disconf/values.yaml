@@ -25,7 +25,7 @@ EMAIL_HOST_USER: sender@163.com
 EMAIL_PORT: 25
 DEFAULT_FROM_EMAIL: disconf@163.com
 
-imagePullPolicy: IfNotPresent
+imagePullPolicy: Always
 service:
   externalPort: 80
 ingress:
