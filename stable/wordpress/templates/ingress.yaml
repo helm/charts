@@ -9,8 +9,11 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
  annotations:
+   {{- if .Values.ingress.tlsEnabled }}
+   ingress.kubernetes.io/secure-backends: "true"
+   {{- end }}
    {{- range $key, $value := .Values.ingress.annotations }}
-     {{ $key }}: {{ $value | quote }}
+   {{ $key }}: {{ $value | quote }}
    {{- end }}
 spec:
   rules:
@@ -20,7 +23,7 @@ spec:
           - path: /
             backend:
               serviceName: {{ template "fullname" . }}
-              servicePort: 80
+              servicePort: {{ if .Values.ingress.tlsEnabled }}443{{ else }}80{{end}}
 {{- if .Values.ingress.tls }}
   tls:
 {{ toYaml .Values.ingress.tls | indent 4 }}

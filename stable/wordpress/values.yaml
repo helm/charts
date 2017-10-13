@@ -108,6 +108,9 @@ healthcheckHttps: false
 ingress:
     enabled: false
     hostname: wordpress.local
+    ## If you're going to want to have wordpress running over TLS, please enable this
+    ## It will toggle ingress traffic to go to port 443 on wordpress, and inform ingress service that upstream is HTTPS
+    tlsEnabled: false
 
     ## Ingress annotations
     ##
@@ -116,6 +119,7 @@ ingress:
 
     ## Ingress TLS configuration
     ## Secrets must be manually created in the namespace
+    ## Also please enable tls with tlsEnabled setting
     ##
     # tls:
     #   - secretName: wordpress.local-tls
