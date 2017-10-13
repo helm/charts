@@ -106,25 +106,25 @@ healthcheckHttps: false
 ## ref: http://kubernetes.io/docs/user-guide/ingress/
 ##
 ingress:
-    enabled: false
-    hostname: wordpress.local
-    ## If you're going to want to have wordpress running over TLS, please enable this
-    ## It will toggle ingress traffic to go to port 443 on wordpress, and inform ingress service that upstream is HTTPS
-    tlsEnabled: false
+  enabled: false
+  hostname: wordpress.local
+  ## If you're going to want to have wordpress running over TLS, please enable this
+  ## It will toggle ingress traffic to go to port 443 on wordpress, and inform ingress service that upstream is HTTPS
+  tlsEnabled: false
 
-    ## Ingress annotations
-    ##
-    # annotations:
-    #   kubernetes.io/ingress.class: nginx
+  ## Ingress annotations
+  ##
+  # annotations:
+  #   kubernetes.io/ingress.class: nginx
 
-    ## Ingress TLS configuration
-    ## Secrets must be manually created in the namespace
-    ## Also please enable tls with tlsEnabled setting
-    ##
-    # tls:
-    #   - secretName: wordpress.local-tls
-    #     hosts:
-    #       - wordpress.local
+  ## Ingress TLS configuration
+  ## Secrets must be manually created in the namespace
+  ## Also please enable tls with tlsEnabled setting
+  ##
+  # tls:
+  #   - secretName: wordpress.local-tls
+  #     hosts:
+  #       - wordpress.local
 
 ## Enable persistence using Persistent Volume Claims
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
