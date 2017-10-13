@@ -111,6 +111,15 @@ for directory in ${CHANGED_FOLDERS}; do
     yamllinter ${directory}
 
     semvercompare ${directory}
+
+    # Check for the existance of the NOTES.txt file. This is required for charts
+    # in this repo.
+    if [ ! -f ${directory}/templates/NOTES.txt ]; then
+      echo "Error NOTES.txt template not found. Please create one."
+      echo "For more information see https://docs.helm.sh/developing_charts/#chart-license-readme-and-notes"
+      exitCode=1
+    fi
+
   fi
 done
 
