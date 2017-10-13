@@ -71,6 +71,7 @@ The following tables lists the configurable parameters of the WordPress chart an
 | `ingress.enabled`                    | Enable ingress controller resource         | `false`                                                    |
 | `ingress.hostname`                   | URL to address your WordPress installation | `wordpress.local`                                          |
 | `ingress.tls`                        | Ingress TLS configuration                  | `[]`                                          |
+| `ingress.tlsEnabled`                 | Utilize TLS backend in ingress             | `false`                                          |
 | `persistence.enabled`                | Enable persistence using PVC               | `true`                                                     |
 | `persistence.storageClass`           | PVC Storage Class                          | `nil` (uses alpha storage class annotation)                |
 | `persistence.accessMode`             | PVC Access Mode                            | `ReadWriteOnce`                                            |
