@@ -72,8 +72,8 @@ persistence:
 ## ref: https://mariadb.com/kb/en/mariadb/configuring-mariadb-with-mycnf/#example-of-configuration-file
 ##
 # config: |-
-  # [mysqld]
-  # innodb_buffer_pool_size=2G
+#   [mysqld]
+#   innodb_buffer_pool_size=2G
 
 metrics:
   enabled: false
