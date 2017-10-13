@@ -3,7 +3,7 @@
 #------------------------------------------------------------------------------
 disconf:
   image: "reg.lifesense.com/lifesense/disconf"
-  imageTag: "v0.0.1"
+  imageTag: "v0.0.2"
   resources:
     requests:
       memory: 256Mi
@@ -16,6 +16,7 @@ nginx:
       memory: 256Mi
       cpu: 100m
 
+DISCONF_DOAMIN: disconf.lifesense.com
 #mail
 EMAIL_MONITOR_ON: true
 EMAIL_HOST: smtp.163.com
