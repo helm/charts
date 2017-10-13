@@ -1,0 +1,17 @@
+name: mysql
+version: 0.3.0
+description: Fast, reliable, scalable, and easy to use open-source relational database
+  system.
+keywords:
+- mysql
+- database
+- sql
+home: https://www.mysql.com/
+icon: https://www.mysql.com/common/logos/logo-mysql-170x115.png
+sources:
+- https://github.com/kubernetes/charts
+- https://github.com/docker-library/mysql
+maintainers:
+- name: Vic Iglesias
+  email: viglesias@google.com
+engine: gotpl

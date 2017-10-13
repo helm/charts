@@ -1,0 +1,123 @@
+#------------------------------------------------------------------------------
+# Disconf:
+#------------------------------------------------------------------------------
+disconf:
+  image: "reg.lifesense.com/lifesense/disconf"
+  imageTag: "v0.0.0"
+  resources:
+    requests:
+      memory: 256Mi
+      cpu: 100m
+nginx:
+  image: "reg.lifesense.com/library/nginx"
+  imageTag: "1.11.4-alpine"
+  resources:
+    requests:
+      memory: 256Mi
+      cpu: 100m
+
+DISCONF_DOAMIN: disconf.lifesense.com
+#mail
+EMAIL_MONITOR_ON: true
+EMAIL_HOST: smtp.163.com
+EMAIL_HOST_PASSWORD: password
+EMAIL_HOST_USER: sender@163.com
+EMAIL_PORT: 25
+DEFAULT_FROM_EMAIL: disconf@163.com
+#mysql 
+mysqlRootPassword: VCOZZZlwbeK3EMah
+mysqlUser: disconf
+mysqlPassword: CCmRPz4Eeergp7Ni
+mysqlDatabase: disconf
+mysqlHost: 
+mysqlPort: 3306
+#redis
+REDIS_HOST1:
+REDIS_PORT1: 3306
+REDIS_PASSWD1: ""
+REDIS_HOST2:
+REDIS_PORT2:
+REDIS_PASSWD2: ""
+#zook
+ZOOK_HOSTS:
+
+imagePullPolicy: IfNotPresent
+
+ingress:
+  enabled: true
+  host: 
+  - disconf.lifesense.com
+
+#------------------------------------------------------------------------------
+# Zookeeper:
+#------------------------------------------------------------------------------
+
+zookeeper:
+  Servers: 3
+  Resources: {}
+  Heap: "1G"
+  Storage: "2Gi"
+  ServerPort: 2888
+  LeaderElectionPort: 3888
+  ClientPort: 2181
+  ImagePullPolicy: "IfNotPresent"
+  TickTimeMs: 2000
+  InitTicks: 10
+  SyncTicks: 5
+  ClientCnxns: 60
+  SnapRetain: 3
+  PurgeHours: 1
+  ProbeInitialDelaySeconds : 15
+  ProbeTimeoutSeconds : 5
+  AntiAffinity : "hard"
+  LogLevel : "INFO"
+
+#------------------------------------------------------------------------------
+# Mysql:
+#------------------------------------------------------------------------------
+
+mysql:
+  image: "mysql"
+  imageTag: "5.7.14"
+
+  ## Specify password for root user
+  ##
+  ## Default: random 10 character string
+  # mysqlRootPassword: testing
+
+  ## Create a database user
+  ##
+  # mysqlUser:
+  # mysqlPassword:
+
+  ## Allow unauthenticated access, uncomment to enable
+  ##
+  # mysqlAllowEmptyPassword: true
+
+  ## Create a database
+  ##
+  # mysqlDatabase:
+
+  ## Specify an imagePullPolicy (Required)
+  ## It's recommended to change this to 'Always' if the image tag is 'latest'
+  ## ref: http://kubernetes.io/docs/user-guide/images/#updating-images
+  ##
+  imagePullPolicy: IfNotPresent
+
+  ## Persist data to a persitent volume
+  persistence:
+    enabled: false
+    ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
+    ## Default: volume.alpha.kubernetes.io/storage-class: default
+    ##
+    # storageClass:
+    accessMode: ReadWriteOnce
+    size: 8Gi
+
+  ## Configure resource requests and limits
+  ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+  ##
+  resources:
+    requests:
+      memory: 256Mi
+      cpu: 100m

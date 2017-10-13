@@ -1,0 +1,13 @@
+dependencies:
+- name: mysql
+  version: 0.3.0
+  repository: https://kubernetes-charts.storage.googleapis.com/
+- name: zookeeper
+  version: 0.3.1
+  repository: https://kubernetes-charts-incubator.storage.googleapis.com/
+- name:  mysql
+  version: 0.2.6
+  repository: https://kubernetes-charts.storage.googleapis.com/
+- name:  redis
+  version: 0.7.0
+  repository: https://kubernetes-charts.storage.googleapis.com/  
