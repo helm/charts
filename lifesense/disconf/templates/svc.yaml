@@ -9,8 +9,8 @@ metadata:
     heritage: "{{ .Release.Service }}"
 spec:
   ports:
-  - name: {{ template "name" . }}
-    port: 80
-    targetPort: {{ template "name" . }}
+  - name: nginx
+    port: {{ .Values.service.externalPort}}
+    targetPort: 80
   selector:
     app: {{ template "fullname" . }}
