@@ -1,37 +1,30 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  labels:
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
-    app: {{ template "name" . }}
   name: {{ template "fullname" . }}
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app: "{{ template "name" . }}"
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
 spec:
   replicas: 1
-  selector:
-    matchLabels:
-      app: {{ template "name" . }}
-      release: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app: {{ template "name" . }}
-        release: {{ .Release.Name }}
+        app: "{{ template "name" . }}"
+        release: "{{ .Release.Name }}"
     spec:
+      serviceAccountName: {{ if .Values.rbac.create }}{{ template "fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
       containers:
-      - args:
+      - name: operator
+        image: {{ .Values.image }}:{{ .Values.imageTag }}
+        args:
         - run
         - --cloud-provider={{ .Values.cloudProvider }}
         - --cloud-config={{ .Values.cloudConfig }}
         - --v={{ .Values.logLevel }}
-        image: "{{ .Values.image }}:{{ .Values.imageTag }}"
-        name: voyager
-        env:
-          - name: OPERATOR_SERVICE_ACCOUNT
-            valueFrom:
-              fieldRef:
-                fieldPath: spec.serviceAccountName
+        - --rbac={{ .Values.rbac.create }}
         ports:
         - containerPort: 56790
           name: http
