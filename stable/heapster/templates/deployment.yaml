@@ -1,7 +1,7 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "heapster.fullname" . }}
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     {{- range $key, $value := .Values.labels }}
@@ -12,11 +12,13 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "fullname" . }}
+        app: {{ template "heapster.fullname" . }}
     spec:
-      serviceAccountName: {{ if .Values.rbac.create }}{{ template "fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
+      serviceAccountName: {{ if .Values.rbac.create }}{{ template "heapster.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
+{{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
+{{- end }}
       containers:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -58,7 +60,7 @@ spec:
         {{- end }}
         command:
           - "/pod_nanny"
-          - "--deployment={{ template "fullname" . }}"
+          - "--deployment={{ template "heapster.fullname" . }}"
           - "--container={{ .Chart.Name }}"
           {{- range .Values.resizer.flags }}
           - {{ . | quote }}
