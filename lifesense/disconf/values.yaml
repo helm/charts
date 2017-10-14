@@ -31,7 +31,7 @@ service:
 ingress:
   enabled: true
   hosts: 
-  - disconf.lifesense.com
+  - disconf-th2.lifesense.com
 
 #------------------------------------------------------------------------------
 # Zookeeper:
