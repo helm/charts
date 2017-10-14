@@ -12,11 +12,18 @@ metadata:
     prometheus.io/scrape: '{{ .Values.prometheusScrape }}'
   {{- end }}
 spec:
+  type: "{{ .Values.service.type }}"
   ports:
   - name: "http"
     protocol: TCP
     port: {{ .Values.service.port }}
+  {{- if .Values.service.nodePort }}
+    nodePort: {{ .Values.service.nodePort }}
+  {{- end }}
     targetPort: 8080
+{{- if .Values.service.loadBalancerIP }}
+  loadBalancerIP: "{{ .Values.service.loadBalancerIP }}"
+{{- end }}
   selector:
     app: {{ template "kube-state-metrics.name" . }}
     release: {{ .Release.Name }}
