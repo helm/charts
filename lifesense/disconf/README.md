@@ -4,5 +4,5 @@
 #验证
 helm lint .
 helm dep up .
-helm get manifest
+helm  upgrade  disconf .
 ```

@@ -45,5 +45,5 @@ data:
     redis.evictor.checkPeriodSeconds=30
     redis.evictor.failedTimesToBeTickOut=6
   zoo.properties: |2-
-    hosts={{ template "zookeeper.fullname" . }}:{{ .Values.zookeeper.clientPort }}
+    hosts={template "zookeeper.fullname" .}}-headless.{{.Release.Namespace}}.svc.cluster.local:{{ .Values.zookeeper.clientPort }}
     zookeeper_url_prefix=/disconf
