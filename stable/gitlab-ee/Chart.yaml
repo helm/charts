@@ -1,5 +1,6 @@
 name: gitlab-ee
-version: 0.1.10
+deprecated: true
+version: 0.2.1
 description: GitLab Enterprise Edition
 keywords:
 - git

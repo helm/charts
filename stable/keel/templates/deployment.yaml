@@ -1,10 +1,10 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "keel.fullname" . }}
   namespace: kube-system
   labels:
-    app: {{ template "name" . }}
+    app: {{ template "keel.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
@@ -15,7 +15,7 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "name" . }}
+        app: {{ template "keel.name" . }}
         release: {{ .Release.Name }}
     spec:
       containers:
@@ -75,12 +75,12 @@ spec:
             - name: KEY
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "fullname" . }}-webhookrelay
+                  name: {{ template "keel.fullname" . }}-webhookrelay
                   key: key
             - name: SECRET
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "fullname" . }}-webhookrelay
+                  name: {{ template "keel.fullname" . }}-webhookrelay
                   key: secret
             - name: BUCKET
               value: "{{ .Values.webhookRelay.bucket }}"

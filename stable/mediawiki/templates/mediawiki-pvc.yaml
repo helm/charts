@@ -2,9 +2,9 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: {{ template "fullname" . }}-mediawiki
+  name: {{ template "mediawiki.fullname" . }}-mediawiki
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "mediawiki.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"

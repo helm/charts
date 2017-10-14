@@ -43,12 +43,13 @@ The following tables lists the configurable parameters of the Voyager chart and 
 | Parameter                 | Description                                                   | Default            |
 | --------------------------| ------------------------------------------------------------- | ------------------ |
 | `image`                   | Container image to run                                        | `appscode/voyager` |
-| `imageTag`                | Image tag of container                                        | `3.2.0`            |
+| `imageTag`                | Image tag of container                                        | `3.2.1`            |
 | `cloudProvider`           | Name of cloud provider                                        | `nil`              |
 | `cloudConfig`             | Path to cloud config                                          | `nil`              |
 | `logLevel`                | Log level for operator                                        | `3`                |
 | `persistence.enabled`     | Enable mounting cloud config                                  | `false`            |
 | `persistence.hostPath`    | Host mount path for cloud config                              | `/etc/kubernetes`  |
+| `nodeSelector`            |  Node labels for pod assignment                               | `{}`               |
 | `rbac.create`             | install required rbac service account, roles and rolebindings | `false`            |
 | `rbac.serviceAccountName` | ServiceAccount Voyager will use (ignored if rbac.create=true) | `default`          |
 
@@ -86,3 +87,4 @@ To enable the creation of RBAC resources (On clusters with RBAC). Do the followi
 ```console
 $ helm install --name my-release stable/voyager --set rbac.create=true
 ```
+
