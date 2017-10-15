@@ -25,7 +25,7 @@ spec:
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
     {{- end }}
-      serviceAccountName: {{ $serviceName }}-ingress-service-account
+      serviceAccountName: {{ $serviceName }}-{{ .Values.ingress.deployment.name }}-service-account
       containers:
       - name: istio-ingress
         image: "{{ .Values.ingress.deployment.image }}:{{ .Values.istio.release }}"

@@ -25,6 +25,7 @@ spec:
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
     {{- end }}
+      serviceAccountName: {{ $serviceName }}-{{ .Values.egress.deployment.name }}-service-account
       containers:
       - name: proxy
         image: "{{ .Values.egress.deployment.image }}:{{ .Values.istio.release }}"
