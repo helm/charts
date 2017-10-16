@@ -1,9 +1,9 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "sonarqube.fullname" . }}
   labels:
-    app: {{ template "name" . }}
+    app: {{ template "sonarqube.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
@@ -12,7 +12,7 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "name" . }}
+        app: {{ template "sonarqube.name" . }}
         release: {{ .Release.Name }}
     spec:
       containers:
@@ -56,21 +56,21 @@ spec:
       - name: sonarqube-conf
         {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ template "fullname" . }}-conf
+          claimName: {{ template "sonarqube.fullname" . }}-conf
         {{- else }}
         emptyDir: {}
         {{- end  }}
       - name: sonarqube-data
         {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ template "fullname" . }}-data
+          claimName: {{ template "sonarqube.fullname" . }}-data
         {{- else }}
         emptyDir: {}
         {{- end  }}
       - name: sonarqube-extensions
         {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ template "fullname" . }}-extensions
+          claimName: {{ template "sonarqube.fullname" . }}-extensions
         {{- else }}
         emptyDir: {}
         {{- end -}}
