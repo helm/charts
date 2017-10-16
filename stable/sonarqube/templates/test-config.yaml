@@ -5,5 +5,5 @@ metadata:
 data:
   run.sh: |-
     @test "Testing Sonarqube UI is accessible" {
-      curl --retry 12 --retry-delay 10 {{ .Release.Name }}-sonarqube:9000
+      curl --connect-timeout 5 --retry 12 --retry-delay 1 --retry-max-time 60 {{ .Release.Name }}-sonarqube:9000
     }
