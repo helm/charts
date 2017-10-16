@@ -31,7 +31,7 @@ spec:
   volumes:
   - name: tests
     configMap:
-      name: {{ template "fullname" . }}-tests
+      name: {{ template "sonarqube.fullname" . }}-tests
   - name: tools
     emptyDir: {}
   restartPolicy: Never
