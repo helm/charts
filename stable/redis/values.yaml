@@ -86,4 +86,3 @@ networkPolicy:
   ## (with the correct destination port).
   ##
   allowExternal: true
-
