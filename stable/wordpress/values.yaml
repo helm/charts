@@ -138,9 +138,9 @@ ingress:
     ## key and certificate must be base64 encoded strings
     ## name should line up with a tlsSecret set further up
     ## If you're using kube-lego, this is unneeded, as it will create the secret for you if it is not set
-    #- name: wordpress.local-tls
-    #  key:
-    #  certificate:
+    # - name: wordpress.local-tls
+    #   key:
+    #   certificate:
 
 ## Enable persistence using Persistent Volume Claims
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
@@ -165,9 +165,6 @@ resources:
   requests:
     memory: 512Mi
     cpu: 300m
-  # limits:
-  #  memory: 512Mi
-  #  cpu: 500m
 
 ## Node labels for pod assignment
 ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
