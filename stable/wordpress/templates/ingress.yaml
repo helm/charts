@@ -1,31 +1,37 @@
-{{- if .Values.ingress.enabled -}}
+{{- if .Values.ingress.enabled }}
+{{- $rootContext := . }}
+{{- range .Values.ingress.hosts }}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: {{ template "fullname" . }}
+  name: "{{- printf "%s-%s" .name $rootContext.Release.Name | trunc 63 | trimSuffix "-" -}}"
   labels:
-    app: {{ template "fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    app: {{ template "fullname" $rootContext }}
+    chart: "{{ $rootContext.Chart.Name }}-{{ $rootContext.Chart.Version }}"
+    release: "{{ $rootContext.Release.Name }}"
+    heritage: "{{ $rootContext.Release.Service }}"
   annotations:
-    {{- if .Values.ingress.tlsEnabled }}
+    {{- if .tls }}
     ingress.kubernetes.io/secure-backends: "true"
     {{- end }}
-    {{- range $key, $value := .Values.ingress.annotations }}
+    {{- range $key, $value := .annotations }}
     {{ $key }}: {{ $value | quote }}
     {{- end }}
 spec:
   rules:
-    - host: {{ .Values.ingress.hostname }}
-      http:
-        paths:
-          - path: /
-            backend:
-              serviceName: {{ template "fullname" . }}
-              servicePort: {{ if .Values.ingress.tlsEnabled }}443{{ else }}80{{end}}
-{{- if .Values.ingress.tls }}
+  - host: {{ .name }}
+    http:
+      paths:
+        - path: /
+          backend:
+            serviceName: {{ template "fullname" $rootContext }}
+            servicePort: {{ if .tls }}443{{ else }}80{{end}}
+{{- if .tls }}
   tls:
-{{ toYaml .Values.ingress.tls | indent 4 }}
-{{- end -}}
-{{- end -}}
+  - hosts:
+    - {{ .name }}
+    secretName: {{ .tlsSecret }}
+{{- end }}
+---
+{{- end }}
+{{- end }}
