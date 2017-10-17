@@ -52,6 +52,8 @@ master:
     size: "4Gi"
     # storageClass: "ssd"
   antiAffinity: "soft"
+  budget:
+    minAvailable: 1
   resources:
     limits:
       cpu: "1"
@@ -77,6 +79,8 @@ data:
     # storageClass: "ssd"
   terminationGracePeriodSeconds: 3600
   antiAffinity: "soft"
+  budget:
+    minAvailable: 1
   resources:
     limits:
       cpu: "1"
