@@ -58,7 +58,15 @@ semvercompare() {
   printf "\nChecking the Chart version has increased for the chart at ${1}\n"
 
   # Checkout the Chart.yaml file on master to read the version for comparison
-  git show k8s/master:$1/Chart.yaml > /tmp/Chart.yaml
+  # Sending the output to a file and the error to /dev/null so that these
+  # messages do not clutter up the end user output
+  $(git show k8s/master:$1/Chart.yaml 1> /tmp/Chart.yaml 2> /dev/null)
+
+  ## If the chart is new git cannot checkout the chart. In that case return
+  if [ $? -ne 0 ]; then
+    echo "Unable to find Chart on master. New chart detected."
+    return
+  fi
 
   local oldVer=`yaml r /tmp/Chart.yaml version`
   local newVer=`yaml r $1/Chart.yaml version`
@@ -85,6 +93,8 @@ semvercompare() {
   if [ $ret -ne 0 ]; then
     echo "Error please increment the new chart version to be greater than the existing version of $oldVer"
     exitCode=1
+  else
+    echo "New higher version $newVer found"
   fi
 
   # Clean up
