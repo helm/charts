@@ -187,7 +187,7 @@ kubeStateMetrics:
   ##
   image:
     repository: gcr.io/google_containers/kube-state-metrics
-    tag: v1.0.1
+    tag: v1.1.0-rc.0
     pullPolicy: IfNotPresent
 
   ## Node labels for kube-state-metrics pod assignment
