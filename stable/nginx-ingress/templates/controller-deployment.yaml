@@ -39,6 +39,9 @@ spec:
           {{- if (contains "0.9" .Values.controller.image.tag) }}
             - --election-id={{ .Values.controller.electionID }}
           {{- end }}
+          {{- if and (contains "0.9" .Values.controller.image.tag) .Values.controller.allowTLSPassthrough.enabled }}
+            - --enable-ssl-passthrough
+          {{- end }}
           {{- if (contains "0.9" .Values.controller.image.tag) }}
             - --ingress-class={{ .Values.controller.ingressClass }}
           {{- end }}

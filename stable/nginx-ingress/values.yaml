@@ -52,6 +52,11 @@ controller:
     enabled: false
     namespace: ""   # defaults to .Release.Namespace
 
+  ## Enable TLS passthrough globally
+  ## Only applies to annotated ingress
+  allowTLSPassthrough:
+      enabled: true
+
   extraArgs: {}
 
   ## DaemonSet or Deployment
