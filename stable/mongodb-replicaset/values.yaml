@@ -70,14 +70,14 @@ configmap:
     dbPath: /data/db
   net:
     port: 27017
-    ssl:
     # Uncomment for TLS support
-    # mode: requireSSL
-    # CAFile: /ca/tls.crt
-    # PEMKeyFile: /work-dir/mongo.pem
+    #ssl:
+    #  mode: requireSSL
+    #  CAFile: /ca/tls.crt
+    #  PEMKeyFile: /work-dir/mongo.pem
   replication:
     replSetName: rs0
-  security:
   # Uncomment for TLS support or keyfile access control without TLS
-  # authorization: enabled
-  # keyFile: /keydir/key.txt
+  #security:
+  #  authorization: enabled
+  #  keyFile: /keydir/key.txt
