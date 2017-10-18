@@ -476,6 +476,12 @@ server:
   ##
   retention: ""
 
+  ## Prometheus target heapsize to control memory usage(i.e 1GiB, 512MiB)
+  ## A rule of thumb is to set it to 2/3 of its target physical memory to give space to underlying Go runtimes
+  ## e.g. With underlying target physical memory of 3GiB, set the heapsize to 2GiB
+  ##
+  heapsize: "2GiB"
+
 pushgateway:
   ## If false, pushgateway will not be installed
   ##
