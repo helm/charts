@@ -13,7 +13,7 @@ image: concourse/concourse
 ## Concourse image version.
 ## ref: https://hub.docker.com/r/concourse/concourse/tags/
 ##
-imageTag: "3.3.2"
+imageTag: "3.5.0"
 
 ## Specify a imagePullPolicy: 'Always' if imageTag is 'latest', else set to 'IfNotPresent'.
 ## ref: https://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -417,6 +417,11 @@ worker:
   fatalErrors: |-
     guardian.api.garden-server.create.failed
     unknown handle
+
+  ## Strategy for StatefulSet updates (requires Kubernetes 1.6+)
+  ## Ref: https://kubernetes.io/docs/concepts/workloads/controllers/statefulset
+  ##
+  updateStrategy: RollingUpdate
 
 ## Persistent Volume Storage configuration.
 ## ref: https://kubernetes.io/docs/user-guide/persistent-volumes
