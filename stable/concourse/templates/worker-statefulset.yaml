@@ -154,3 +154,7 @@ spec:
         - name: concourse-work-dir
           emptyDir: {}
   {{- end }}
+{{- if and (eq .Capabilities.KubeVersion.Major "1") (gt .Capabilities.KubeVersion.Minor "5") }}
+  updateStrategy:
+    type: {{ .Values.worker.updateStrategy }}
+{{- end }}
