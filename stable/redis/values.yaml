@@ -75,6 +75,10 @@ resources:
 nodeSelector: {}
 tolerations: []
 
+## Additional pod labels
+## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+podLabels: {}
+
 networkPolicy:
   ## Enable creation of NetworkPolicy resources.
   ##

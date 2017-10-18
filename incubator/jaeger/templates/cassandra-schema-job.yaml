@@ -18,6 +18,10 @@ spec:
   template:
     metadata:
       name: "{{ template "jaeger.fullname" . }}-cassandra-schema"
+{{- if .Values.schema.podLabels }}
+      labels:
+{{ toYaml .Values.schema.podLabels | indent 8 }}
+{{- end }}
     spec:
       containers:
       - name: "{{ template "jaeger.fullname" . }}-cassandra-schema"
@@ -30,4 +34,6 @@ spec:
             value: "{{ .Values.schema.mode }}"
           - name: DATACENTER
             value: "{{ .Values.cassandra.config.dc_name }}"
+        resources:
+{{ toYaml .Values.schema.resources | indent 10 }}
       restartPolicy: Never
