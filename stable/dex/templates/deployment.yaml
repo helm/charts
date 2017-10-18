@@ -49,6 +49,7 @@ spec:
           name: config
         - mountPath: /etc/dex/tls
           name: tls
+{{ toYaml .Values.extraVolumeMounts | indent 8 }}
       volumes:
       - secret:
           defaultMode: 420
@@ -61,3 +62,4 @@ spec:
         secret:
           defaultMode: 420
           secretName: {{ $tlsSecretName | quote }}
+{{ toYaml .Values.extraVolumes | indent 6 }}

@@ -27,6 +27,9 @@ resources:
     cpu: 100m
     memory: 50Mi
 
+extraVolumes: []
+extraVolumeMounts: []
+
 selfSigned:
   create: true
   image: gcr.io/google_containers/kubernetes-dashboard-init-amd64
