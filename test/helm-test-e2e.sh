@@ -7,7 +7,7 @@ set -o xtrace
 
 # Install and initialize helm/tiller
 HELM_URL=https://storage.googleapis.com/kubernetes-helm
-HELM_TARBALL=helm-v2.4.2-linux-amd64.tar.gz
+HELM_TARBALL=helm-v2.6.2-linux-amd64.tar.gz
 
 wget -q ${HELM_URL}/${HELM_TARBALL}
 tar xzfv ${HELM_TARBALL}
