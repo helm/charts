@@ -4,7 +4,7 @@
 # name: value
 
 image: gcr.io/google_containers/kubernetes-dashboard-amd64
-imageTag: "v1.7.0"
+imageTag: "v1.7.1"
 imagePullPolicy: "IfNotPresent"
 
 nodeSelector: {}
