@@ -10,26 +10,29 @@ Accessing your Cloud SQL instance using the Cloud SQL Proxy offers these advanta
 ## Introduction
 
 This chart creates a Google Cloud Endpoints deployment and service on a Kubernetes cluster using the Helm package manager.
-You need to create a service account for the proxy as per these [instructions](https://cloud.google.com/sql/docs/postgres/connect-container-engine).
+You need to enable Cloud SQL Administration API and create a service account for the proxy as per these [instructions](https://cloud.google.com/sql/docs/postgres/connect-container-engine).
 
 ## Prerequisites
 
 - Kubernetes cluster on Google Container Engine (GKE)
 - Kubernetes cluster on Google Compute Engine (GCE)
+- Cloud SQL Administration API enabled
 - GCP Service account for the proxy.
 
 ## Installing the Chart
 
-Install from remote URL with the release name `gcp-sqlproxy` into namespace `sqlproxy`, set GCP service account and SQL instance and port:
+Install from remote URL with the release name `pg-sqlproxy` into namespace `sqlproxy`, set GCP service account and SQL instance and port:
 
 ```console
 $ helm upgrade pg-sqlproxy stable/gcloud-sqlproxy --namespace sqlproxy \
   --set serviceAccountKey="$(cat service-account.json | base64)",cloudsql.instance="PROJECT:REGION:INSTANCE",cloudsql.port="5432" -i
 ```
 
-Replace Postgres/MySQL host with: if access is from the same namespace with `pg-sqlproxy` or if it is from a different namespace with `pg-sqlproxy.sqlproxy`, the rest database connections settings do not have to be changed.
+Replace Postgres/MySQL host with: if access is from the same namespace with `pg-sqlproxy-gcloud-sqlproxy` or if it is from a different namespace with `pg-sqlproxy-gcloud-sqlproxy.sqlproxy`, the rest database connections settings do not have to be changed.
 
 > **Tip**: List all releases using `helm list`
+> **Tip**: If you encounter a YAML parse error on on `gcloud-sqlproxy/templates/secrets.yaml`, you might need to set `-w 0` option to `base64` command.
+> **Tip**: If you are using a MySQL instance, you may want to replace `pg-sqlproxy` with `mysql-sqlproxy` and `5432` with `3306`.
 
 ## Uninstalling the Chart
 
