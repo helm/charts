@@ -70,7 +70,6 @@ persistentVolume:
 redis_image: gcr.io/google_containers/redis:v1
 
 
-
 ## replicas number for each component
 
 replicas:
