@@ -69,10 +69,10 @@ The following tables lists the configurable parameters of the WordPress chart an
 | `serviceType`                        | Kubernetes Service type                    | `LoadBalancer`                                             |
 | `healthcheckHttps`                   | Use https for liveliness and readiness     | `false`                                             |
 | `ingress.enabled`                    | Enable ingress controller resource         | `false`                                                    |
-| `ingress.hostnames[0].name`          | Hostname to your WordPress installation    | `wordpress.local`                                          |
-| `ingress.hostnames[0].tls`           | Utilize TLS backend in ingress             | `false`                                                    |
-| `ingress.hostnames[0].tlsSecret`     | TLS Secret (certificates)                  | `wordpress.local-tls-secret`                               |
-| `ingress.hostnames[0].annotations`   | Annotations for this host's ingress record | `[]`                                                       |
+| `ingress.hosts[0].name`              | Hostname to your WordPress installation    | `wordpress.local`                                          |
+| `ingress.hosts[0].tls`               | Utilize TLS backend in ingress             | `false`                                                    |
+| `ingress.hosts[0].tlsSecret`         | TLS Secret (certificates)                  | `wordpress.local-tls-secret`                               |
+| `ingress.hosts[0].annotations`       | Annotations for this host's ingress record | `[]`                                                       |
 | `ingress.secrets[0].name`            | TLS Secret Name                            | `nil`                                                      |
 | `ingress.secrets[0].certificate`     | TLS Secret Certificate                     | `nil`                                                      |
 | `ingress.secrets[0].key`             | TLS Secret Key                             | `nil`                                                      |
