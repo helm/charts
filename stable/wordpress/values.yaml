@@ -140,6 +140,9 @@ ingress:
   ##
   ## name should line up with a tlsSecret set further up
   ## If you're using kube-lego, this is unneeded, as it will create the secret for you if it is not set
+  ##
+  ## It is also possible to create and manage the certificates outside of this helm chart
+  ## Please see README.md for more information
   # - name: wordpress.local-tls
   #   key:
   #   certificate:
