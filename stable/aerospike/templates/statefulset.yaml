@@ -46,6 +46,10 @@ spec:
 {{ toYaml .Values.resources | indent 10 }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+      {{- end }}
       volumes:
       - name: config-volume
         configMap:
