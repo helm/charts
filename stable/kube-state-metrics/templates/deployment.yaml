@@ -24,3 +24,5 @@ spec:
         - containerPort: 8080
         resources:
 {{ toYaml .Values.resources | indent 12 }}
+        args: 
+{{ toYaml .Values.args | indent 12 }}
