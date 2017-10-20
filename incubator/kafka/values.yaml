@@ -15,6 +15,7 @@ resources: {}
   #   memory: 1024Mi
 Storage: "1Gi"
 DataDirectory: "/opt/kafka/data"
+ExtraArgs: ""
 
 #------------------------------------------------------------------------------
 # Zookeeper:
