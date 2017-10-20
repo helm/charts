@@ -15,8 +15,10 @@ spec:
         app: {{ template "heapster.fullname" . }}
     spec:
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "heapster.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
+{{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
+{{- end }}
       containers:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"

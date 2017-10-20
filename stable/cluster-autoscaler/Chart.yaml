@@ -2,7 +2,7 @@ apiVersion: v1
 description: Scales worker nodes within autoscaling groups.
 icon: https://github.com/kubernetes/kubernetes/blob/master/logo/logo.png
 name: cluster-autoscaler
-version: 0.2.0
+version: 0.2.1
 sources:
 - https://github.com/kubernetes/autoscaler/tree/master/cluster-autoscaler
 - https://github.com/spotinst/kubernetes-autoscaler/tree/master/cluster-autoscaler

@@ -22,6 +22,10 @@ extraArgs: {}
   # skip-nodes-with-local-storage: false
   # skip-nodes-with-system-pods: true
 
+## Affinity for pod assignment
+## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+## affinity: {}
+
 ## Node labels for pod assignment
 ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
 ##

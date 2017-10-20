@@ -39,12 +39,13 @@ The default configuration values for this chart are listed in `values.yaml`.
 | `service.type`                        | Type for the service                                         | ClusterIP                                         |
 | `service.externalPort`                | Service external port                                        | 8082                                              |
 | `service.internalPort`                | Service internal port                                        | 8082                                              |
-| `resources.limits`                    | Server resource  limits                                      | requests: {cpu: 100m, memory: 128Mi}              |
+| `resources.limits`                    | Server resource  limits                                      | limits: {cpu: 100m, memory: 128Mi}              |
 | `resources.requests`                  | Server resource requests                                     | requests: {cpu: 100m, memory: 128Mi}              |
 | `command`                             | Commands for heapster pod                                    | "/heapster --source=kubernetes.summary_api:''     |
 | `rbac.create`                         | Bind system:heapster role                                    | false                                             |
 | `rbac.serviceAccountName`             | existing ServiceAccount to use (ignored if rbac.create=true) | default                                           |
 | `resizer.enabled`                     | If enabled, scale resources                                  | true                                              |
+| `nodeSelector`                        | Node labels for pod assignment                               | `{}`                                              |
 
 The table below is only applicable if `resizer.enabled` is `true`. More information on resizer can be found [here](https://github.com/kubernetes/contrib/blob/master/addon-resizer/README.md).
 
@@ -53,6 +54,6 @@ The table below is only applicable if `resizer.enabled` is `true`. More informat
 | `resizer.image.repository`            | Repository for container image      | gcr.io/google_containers/addon-resizer            |
 | `resizer.image.tag`                   | Container image tag                 | 1.7                                               |
 | `resizer.image.pullPolicy`            | Image pull policy                   | IfNotPresent                                      |
-| `resizer.resources.limits`            | Server resource  limits             | requests: {cpu: 50m, memory: 90Mi}                |
+| `resizer.resources.limits`            | Server resource  limits             | limits: {cpu: 50m, memory: 90Mi}                |
 | `resizer.resources.requests`          | Server resource requests            | requests: {cpu: 50m, memory: 90Mi}                |
 | `resizer.flags`                       | Flags for pod nanny command         | Defaults set in values.yaml                       |

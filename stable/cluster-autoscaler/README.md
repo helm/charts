@@ -92,6 +92,7 @@ The following tables lists the configurable parameters of the cluster-autoscaler
 
 Parameter | Description | Default
 --- | --- | ---
+`affinity` | node/pod affinities | None
 `autoscalingGroups[].name` | autoscaling group name | None. You *must* supply at least one.
 `autoscalingGroups[].maxSize` | maximum autoscaling group size | None. You *must* supply at least one.
 `autoscalingGroups[].minSize` | minimum autoscaling group size | None. You *must* supply at least one.
