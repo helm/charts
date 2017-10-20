@@ -135,7 +135,7 @@ ingress:
 
   secrets:
   ## If you're providing your own certificates, please use this to add the certificates as secrets
-  ## key and certificate should not be base64 encoded (should start with -----BEGIN CERTIFICATE----- or
+  ## key and certificate should start with -----BEGIN CERTIFICATE----- or
   ## -----BEGIN RSA PRIVATE KEY-----
   ##
   ## name should line up with a tlsSecret set further up
