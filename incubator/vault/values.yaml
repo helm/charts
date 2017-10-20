@@ -4,7 +4,7 @@
 replicaCount: 1
 image:
   repository: vault
-  tag: 0.8.2
+  tag: 0.8.3
   pullPolicy: IfNotPresent
 service:
   name: vault
