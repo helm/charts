@@ -67,7 +67,7 @@ persistentVolume:
   subPath: ""
 
 ## Redis image version
-redis_image: gcr.io/google_containers/redis:v1
+redis_image: quay.io/smile/redis:4.0.2
 
 
 
