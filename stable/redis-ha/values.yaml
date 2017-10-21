@@ -65,3 +65,4 @@ replicas:
   master: 1
   slave: 1
   sentinel: 3
+  
