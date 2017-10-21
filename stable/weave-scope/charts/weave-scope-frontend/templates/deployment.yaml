@@ -2,31 +2,34 @@ apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
   labels:
-    {{- include "helm_std_labels" . | indent 4 }}
+    {{- include "weave-scope.helm_std_labels" . | indent 4 }}
     component: frontend
-  name: {{ template "fullname" . }}-app
+  name: {{ template "weave-scope.fullname" . }}-app
   annotations:
-    {{- include "scope_annotations" . | indent 4 }}
+    {{- include "weave-scope.annotations" . | indent 4 }}
 spec:
   selector:
     matchLabels:
-      app: {{ template "name" . }}
+      app: {{ template "weave-scope.name" . }}
       release: {{ .Release.Name }}
       component: frontend
   template:
     metadata:
       labels:
-        {{- include "helm_std_labels" . | indent 8 }}
+        {{- include "weave-scope.helm_std_labels" . | indent 8 }}
         component: frontend
     spec:
       containers:
         - name: app
-          image: {{ .Values.global.image | default "weaveworks/scope" }}:{{ .Values.global.imageTag | default "1.6.2" }}
-          imagePullPolicy: {{ .Values.imagePullPolicy | default "" | quote }}
+          image: {{ .Values.global.image }}:{{ .Values.global.imageTag }}
+          imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
           args:
             - '--no-probe'
           ports:
-            - containerPort: {{ .Values.containerPort | default 4040 }}
+            - containerPort: {{ required "You must supply a container port to open" .Values.containerPort }}
               protocol: TCP
-          {{- include "scope_resources" . | indent 10 }}
+          {{- if .Values.resources }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+          {{- end }}
   replicas: 1

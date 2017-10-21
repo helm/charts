@@ -1,98 +1,70 @@
 # Where defaults exist, the values are set to them here.
 # Values with no preferred or common defaults are set to empty strings.
-
 global:
-
-#  global.image: the image that will be used for this release
-#  image: "weaveworks/scope"
-
-#  global.imageTag: the version of Weave Scope desired for this release
-#  imageTag: "1.6.2"
-
-#  global.service.* sets the values for the service that provides access to the Weave Scope frontend
-    service:
-
-#  global.service.name: the short name desired for the frontend service
-#  global.service.name is a global so we can access its value easily from the agent subchart
-#      name: "weave-scope-app"
-
-#  global.service.port: the port exposed by the Scope frontend service
-#  global.service.port is a global so we can access its value easily from the agent subchart
-#      port: 80
-
-#  global.service.type: the frontend service type must be ClusterIP, NodePort or LoadBalancer
-#  global.service.type is a global to keep it with the other values for configuring the frontend service
-      type: "NodePort"
-
-#frontend.* controls how the Scope frontend is installed
-#frontend:
-
-#  enabled: true
-
-#  frontend.imagePullPolicy: controls when the image is pulled
-#  imagePullPolicy: ""
-
-#  frontend.containerPort: the port opened to the Scope frontend
-#  containerPort: 4040
-
-#  frontend.resources.*: controls requests/limits for the frontend
-#  frontend.resources.* values are all optional
+# global.image: (required) the image that will be used for this release
+  image: "weaveworks/scope"
+# global.imageTag: (required) the version of Weave Scope desired for this release
+  imageTag: "1.6.2"
+# global.service.* sets the values for the service that provides access to the Weave Scope frontend
+  service:
+# global.service.name: (required if frontend.enabled == true) the short name desired for the frontend service
+# global.service.name is a global so we can access its value easily from the agent subchart
+    name: "weave-scope-app"
+# global.service.port: (required if frontend.enabled == true) the port exposed by the Scope frontend service
+# global.service.port is a global so we can access its value easily from the agent subchart
+    port: 80
+# global.service.type: (required if frontend.enabled == true) the frontend service type must be ClusterIP, NodePort or LoadBalancer
+# global.service.type is a global to keep it with the other values for configuring the frontend service
+    type: "ClusterIP"
+# global.rbac: whether RBAC is enabled in the cluster or not
+  rbac: true
+#
+# weave-scope-frontend.* controls how the Scope frontend is installed
+weave-scope-frontend:
+  enabled: true
+# weave-scope-frontend.imagePullPolicy: controls when the image is pulled
+  imagePullPolicy: ""
+# weave-scope-frontend.containerPort: (required if frontend.enabled == true) the port opened to the Scope frontend
+  containerPort: 4040
+# weave-scope-frontend.resources.*: controls requests/limits for the frontend
+# weave-scope-frontend.resources.* values are all optional but should not be set to empty values
 #  resources: 
-
 #    requests:
-
-#      frontend.resources.requests.cpu: CPU req. in MHz (m)
+# weave-scope-frontend.resources.requests.cpu: CPU req. in MHz (m)
 #      cpu: ""
-
-#      frontend.resources.requests.memory: memory req. in MiB (Mi)
+# weave-scope-frontend.resources.requests.memory: memory req. in MiB (Mi)
 #      memory: ""
-
 #    limits:
-
-#      frontend.resources.limits.cpu: CPU limit in MHz (m)
+# weave-scope-frontend.resources.limits.cpu: CPU limit in MHz (m)
 #      cpu: ""
-
-#      frontend.resources.limits.memory: memory limit in MiB (Mi)
+# weave-scope-frontend.resources.limits.memory: memory limit in MiB (Mi)
 #      memory: ""
-
-#agent.* controls how the Weave Scope node agent pods are installed
-#agent:
-
-#  enabled: true
-
-#  agent.imagePullPolicy: controls when the image is pulled
-#  imagePullPolicy: ""
-
-#  agent.probeToken is the token used to connect to Weave Cloud
-#  agent.probeToken is not needed for connecting to non-cloud Scope frontends
-#  probeToken: ""
-
-#  agent.serviceAccount: the service account to be created for the agent
-#  serviceAccount: "weave-scope"
-
-#  agent.scopeFrontendAddr: the host:port of a Scope frontend to send data to
-#  agent.scopeFrontendAddr is only needed for some cases where the frontend is deployed separately from the agent
-#  scopeFrontendAddr: ""
-
-#  agent.dockerBridge is the name of the Docker bridge interface
-#  dockerBridge: "docker0"
-
-#  agent.resources.*: controls requests/limits for the agent
-#  agent.resources.* values are all optional
+#
+# weave-scope-agent.* controls how the Weave Scope node agent pods are installed
+weave-scope-agent:
+  enabled: true
+# weave-scope-agent.imagePullPolicy: controls when the image is pulled
+  imagePullPolicy: ""
+# weave-scope-agent.serviceAccountName: (required if global.rbac == true && agent.enabled == true) the service account to be created for the agent
+  serviceAccountName: "weave-scope"
+# weave-scope-agent.dockerBridge: (required if agent.enabled == true) the name of the Docker bridge interface
+  dockerBridge: "docker0"
+# weave-scope-agent.scopeFrontendAddr: the host:port of a Scope frontend to send data to
+# weave-scope-agent.scopeFrontendAddr is only needed for some cases where the frontend is deployed separately from the agent
+  scopeFrontendAddr: ""
+# weave-scope-agent.probeToken: the token used to connect to Weave Cloud
+# weave-scope-agent.probeToken is not needed for connecting to non-cloud Scope frontends
+  probeToken: ""
+# weave-scope-agent.resources.*: controls requests/limits for the agent
+# weave-scope-agent.resources.* values are all optional but should not be set to empty values
 #  resources:
-
 #    requests:
-
-#      agent.resources.requests.cpu: CPU req. in MHz (m)
+# weave-scope-agent.resources.requests.cpu: CPU req. in MHz (m)
 #      cpu: ""
-
-#      agent.resources.requests.memory: memory req. in MiB (Mi)
+# weave-scope-agent.resources.requests.memory: memory req. in MiB (Mi)
 #      memory: ""
-
 #    limits:
-
-#      agent.resources.limits.cpu: CPU limit in MHz (m)
+# weave-scope-agent.resources.limits.cpu: CPU limit in MHz (m)
 #      cpu: ""
-
-#      agent.resources.limits.memory: memory limit in MiB (Mi)
+# weave-scope-agent.resources.limits.memory: memory limit in MiB (Mi)
 #      memory: ""

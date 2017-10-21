@@ -2,9 +2,9 @@
 # YAML keys.
 
 dependencies:
-- name: weave-scope-agent
-  alias: agent
-  condition: agent.enabled, global.agentEnabled
-- name: weave-scope-frontend
-  alias: frontend
-  condition: frontend.enabled, global.frontendEnabled
+  - name: weave-scope-agent
+    alias: agent
+    condition: weave-scope-agent.enabled
+  - name: weave-scope-frontend
+    alias: frontend
+    condition: weave-scope-frontend.enabled
