@@ -5,15 +5,15 @@ apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
   labels:
-    {{- include "helm_std_labels" . | indent 4 }}
+    {{- include "weave-scope.helm_std_labels" . | indent 4 }}
     component: agent
-  name: {{ template "fullname" . }}-agent
+  name: {{ template "weave-scope.fullname" . }}-agent
   annotations:
-    {{- include "scope_annotations" . | indent 4 }}
+    {{- include "weave-scope.annotations" . | indent 4 }}
 spec:
   selector: 
     matchLabels:
-      app: {{ template "name" . }}
+      app: {{ template "weave-scope.name" . }}
       release: {{ .Release.Name }}
       component: agent
   updateStrategy:
@@ -21,7 +21,7 @@ spec:
   template:
     metadata:
       labels:
-        {{- include "helm_std_labels" . | indent 8 }}
+        {{- include "weave-scope.helm_std_labels" . | indent 8 }}
         component: agent
     spec:
       tolerations:
@@ -29,28 +29,31 @@ spec:
           operator: Exists
       containers:
         - name: agent
-          image: {{ .Values.global.image | default "weaveworks/scope" }}:{{ .Values.global.imageTag | default "1.6.2" }}
-          imagePullPolicy: {{ .Values.imagePullPolicy | default "" | quote }}
+          image: {{ .Values.global.image }}:{{ .Values.global.imageTag }}
+          imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
           args:
             - '--no-app'
-            - '--probe.docker.bridge={{ .Values.dockerBridge | default "docker0" }}'
+            - '--probe.docker.bridge={{ .Values.dockerBridge }}'
             - '--probe.docker=true'
             - '--probe.kubernetes=true'
-            {{- if .Values.probeToken }}
-            - '--probe-token={{ .Values.probeToken }}'
-            {{- else if .Values.scopeFrontendAddr }}
-            - >-  {{ .Values.scopeFrontendAddr }}
+            {{- if .Values.global.probeToken }}
+            - '--probe-token={{ .Values.global.probeToken }}'
+            {{- else if .Values.global.scopeFrontendAddr }}
+            - >-  {{ .Values.global.scopeFrontendAddr }}
             {{- else }}
             - >-
               {{- if .Values.global.service }}
-              {{ .Values.global.service.name | default $svcname }}.{{ .Release.Namespace }}.svc:{{ .Values.global.service.port | default $svcport }}
+              {{ .Values.global.service.name }}.{{ .Release.Namespace }}.svc:{{ .Values.global.service.port }}
               {{- else }}
               {{ $svcname }}.{{ .Release.Namespace }}.svc:{{ $svcport }}
               {{- end }}
             {{- end }}
           securityContext:
             privileged: true
-          {{- include "scope_resources" . | indent 10 }}
+          {{- if .Values.resources }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+          {{- end }}
           volumeMounts:
             - name: docker-socket
               mountPath: /var/run/docker.sock
@@ -66,4 +69,4 @@ spec:
       hostPID: true
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
-      serviceAccountName: {{ .Values.serviceAccount | default "weave-scope" }}
+      serviceAccountName: {{ .Values.serviceAccountName }}

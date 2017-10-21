@@ -1,37 +1,20 @@
-{{- $svcname := "weave-scope" -}}
-{{- $svcport := 80 -}}
-{{- $svctype := "ClusterIP" -}}
-
 apiVersion: v1
 kind: Service
 metadata:
   labels:
-    {{- include "helm_std_labels" . | indent 4 }}
+    {{- include "weave-scope.helm_std_labels" . | indent 4 }}
     component: frontend
-  {{- if .Values.global.service }}
-  name: {{ .Values.global.service.name | default $svcname }}
-  {{- else }}
-  name: {{ $svcname }}
-  {{- end }}
+  name: {{ .Values.global.service.name }}
   annotations:
-    {{- include "scope_annotations" . | indent 4 }}
+    {{- include "weave-scope.annotations" . | indent 4 }}
 spec:
   ports:
-    {{- if .Values.global.service }}
-    - name: {{ .Values.global.service.name | default $svcname }}
-      port: {{ .Values.global.service.port | default $svcport }}
-    {{- else }}
-    - name: {{ $svcname }}
-      port: {{ $svcport }}
-    {{- end }}
-      targetPort: {{ .Values.containerPort | default 4040 }}
+    - name: {{ required "You must specify a service name" .Values.global.service.name }}
+      port: {{ required "You must specify a port the frontend service should listen on" .Values.global.service.port }}
+      targetPort: {{ .Values.containerPort }}
       protocol: TCP
   selector:
-    app: {{ template "name" . }}
+    app: {{ template "weave-scope.name" . }}
     release: {{ .Release.Name }}
     component: frontend
-  {{- if .Values.global.service }}
-  type: {{ .Values.global.service.type | default $svctype }}
-  {{- else }}
-  type: {{ $svctype }}
-  {{- end }}
+  type: {{ required "You must supply a service type: ClusterIP, NodePort or LoadBalancer" .Values.global.service.type }}
