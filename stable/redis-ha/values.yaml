@@ -20,8 +20,7 @@ resources:
       cpu: 100m
     limits:
       memory: 200Mi
-
-
+      
 ## Enable persistence using Persistent Volume Claims
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
 ##
@@ -69,10 +68,7 @@ persistentVolume:
 ## Redis image version
 redis_image: quay.io/smile/redis:4.0.2
 
-
-
 ## replicas number for each component
-
 replicas:
   master: 1
   slave: 1
