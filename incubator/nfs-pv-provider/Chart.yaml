@@ -1,0 +1,14 @@
+name: nfs-pv-provider
+description: Basic NFS server providing PVs
+version: 0.1.0
+keywords:
+  - nfs
+  - pv
+  - pvc
+  - storage
+home: https://github.com/kingdonb/examples-volumes-nfs
+sources:
+  - https://github.com/kingdonb/nfs-data
+maintainers:
+  - name: kingdonb
+    email: kingdon@tuesdaystudios.com

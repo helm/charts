@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ template "nfs-pv-provider.fullname" . }}
+  labels:
+    app: {{ template "nfs-pv-provider.name" . }}
+    chart: {{ template "nfs-pv-provider.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+  {{- if .Values.server.persistentVolume.annotations }}
+  annotations:
+{{ toYaml .Values.server.persistentVolume.annotations | indent 4 }}
+  {{- end }}
+spec:
+  accessModes: [ "ReadWriteOnce" ]
+{{- if .Values.server.persistentVolume.storageClass }}
+{{- if (eq "-" .Values.server.persistentVolume.storageClass) }}
+  storageClassName: ""
+{{- else }}
+  storageClassName: "{{ .Values.server.persistentVolume.storageClass }}"
+{{- end }}
+{{- end }}
+  resources:
+    requests:
+      storage: "{{ .Values.server.persistentVolume.capacity }}"
