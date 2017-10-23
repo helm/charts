@@ -54,7 +54,7 @@ spec:
           protocol: TCP
       volumes:
       - name: image-store
-      {{- if .Values.persistentVolumeEnabled }}
+      {{- if .Values.persistentVolume.enabled }}
         persistentVolumeClaim:
           claimName: {{ if .Values.persistentVolume.existingClaim }}{{ .Values.persistentVolume.existingClaim }}{{- else }}{{ template "docker-registry.fullname" . }}{{- end }}
       {{- else }}

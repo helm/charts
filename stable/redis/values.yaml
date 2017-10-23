@@ -8,6 +8,9 @@ image: bitnami/redis:3.2.9-r2
 ##
 imagePullPolicy: IfNotPresent
 
+## Kubernetes service type
+serviceType: ClusterIP
+
 ## Use password authentication
 usePassword: true
 

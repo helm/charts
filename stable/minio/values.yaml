@@ -54,7 +54,16 @@ resources:
     memory: 256Mi
     cpu: 250m
 
-## Below settings can be used to setup event notifications as explained here.
+
+## Create a bucket after minio install
+##
+defaultBucket:
+  enabled: false
+  ## If enabled, must be a string with length > 0
+  # name: example
+  ## Can be one of none|download|upload|public
+  # policy: download
+
 ## https://docs.minio.io/docs/minio-bucket-notification-guide
 ##
 minioConfig:

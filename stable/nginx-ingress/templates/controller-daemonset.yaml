@@ -53,7 +53,11 @@ spec:
             - --watch-namespace={{ default .Release.Namespace .Values.controller.scope.namespace }}
           {{- end }}
           {{- range $key, $value := .Values.controller.extraArgs }}
+            {{- if $value }}
             - --{{ $key }}={{ $value }}
+            {{- else }}
+            - --{{ $key }}
+            {{- end }}
           {{- end }}
           env:
             - name: POD_NAME

@@ -33,12 +33,21 @@ Etcd:
   Host: # fill-in value for etcd host (etcd.default.svc.cluster.local), leave blank to use the discovery parameter
   Discovery: # leave blank to use vendored etcd chart
 
+WalE:
+  Enable: false
+  Schedule_Cron_Job: 00 01 * * *
+  Retain_Backups: 2
+  S3_Bucket:
+  GCS_Bucket:
+  Kubernetes_Secret:
+  Backup_Threshold_Megabytes: 1024
+  Backup_Threshold_Percentage: 30
+
 persistentVolume:
   size: 1G
   storageClass: ""
   subPath: ""
   mountPath: "/home/postgres/pgdata"
   annotations: {}
-
   accessModes:
     - ReadWriteOnce

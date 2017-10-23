@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    name: {{ template "name" . }}
+    role: service
+{{ include "labels.standard" . | indent 4 }}
+  name: {{ template "fullname" . }}
+spec:
+  ports:
+    - port: 6379
+      targetPort: 6379
+  selector:
+    redis-node: "true"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"

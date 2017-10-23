@@ -9,12 +9,12 @@ metadata:
     {{ $key }}: {{ $value | quote }}
   {{- end }}
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "linkerd.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     component: "{{ .Values.linkerd.name }}"
     heritage: "{{ .Release.Service }}"
     release: "{{ .Release.Name }}"
-  name: {{ template "fullname" . }}
+  name: {{ template "linkerd.fullname" . }}
 spec:
   rules:
   {{- range .Values.linkerd.ingress.hosts }}
@@ -22,7 +22,7 @@ spec:
       http:
         paths:
           - backend:
-              serviceName: {{ template "fullname" $globalContext }}
+              serviceName: {{ template "linkerd.fullname" $globalContext }}
               servicePort: {{ $servicePort }}
   {{- end -}}
   {{- if .Values.linkerd.ingress.tls }}
