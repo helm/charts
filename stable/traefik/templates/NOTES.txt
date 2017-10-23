@@ -20,9 +20,7 @@
      http - {{ .Values.service.nodePorts.http }}
      https - {{ .Values.service.nodePorts.https }}
 {{- else }}
-1. Traefik has been started and is binding to dynamically assigned ports on machine.
-
-     You can see the nodePorts which the service is using by running:
+1. Traefik has been started. You can find out the port numbers being used by traefik by running:
 
           $ kubectl describe svc {{ template "fullname" . }} --namespace {{ .Release.Namespace }}
 
