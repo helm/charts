@@ -62,7 +62,7 @@ The following tables lists the configurable parameters of the Selenium chart and
 | `hub.timeZone` | The time zone for the container | `nil` |
 | `chrome.enabled` | Schedule a chrome node pod | `false` |
 | `chrome.image` | The selenium node chrome image | `selenium/node-chrome` |
-| `chrome.tag` | The selenium node chrome tag | `2.53.1` |
+| `chrome.tag` | The selenium node chrome tag | `3.6.0` |
 | `chrome.pullPolicy` | The pull policy for the node chrome image | `IfNotPresent` |
 | `chrome.replicas` | The number of selenium node chrome pods | `1` |
 | `chrome.javaOpts` | The java options for the selenium node chrome JVM, default sets the maximum heap size to 900 mb | `-Xmx900m` |
@@ -152,5 +152,3 @@ $ helm install --name my-release -f values.yaml stable/selenium
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
-
-
