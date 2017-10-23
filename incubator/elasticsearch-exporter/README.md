@@ -56,12 +56,10 @@ Parameter | Description | Default
 `es.all` | if `true`, query stats for all nodes in the cluster, rather than just the node we connect to | `true`
 `es.indices` | if true, query stats for all indices in the cluster | `true`
 `es.timeout` | timeout for trying to get stats from Elasticsearch | `30s`
-
 `es.ssl.enabled` | If true, a secure connection to E cluster is used | `false`
 `es.ssl.client.ca.pem` | PEM that contains trusted CAs used for setting up secure Elasticsearch connection |
 `es.ssl.client.pem` | PEM that contains the client cert to connect to Elasticsearch |
 `es.ssl.client.key` | Private key for client auth when connecting to Elasticsearch |
-
 `web.path` | path under which to expose metrics | `/metrics`
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
