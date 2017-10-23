@@ -34,10 +34,9 @@ Etcd:
   DeployChart: true
   Host: # if not deploying etcd chart, fill-in value for etcd host (etcd.default.svc.cluster.local)
   Discovery: # leave blank to use vendored etcd chart
-
 Zookeeper:
   Enable: false
-  DeployChart: true
+  DeployChart: false
   Hosts: # if not deploying etcd chart, fill-in list of ZooKeeper cluster members in format: 'host1:port1','host2:port2','etc...'
 
 persistentVolume:
