@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "checksd.fullname" . }}
+  name: {{ template "datadog.checksd.fullname" . }}
   labels:
-    app: {{ template "checksd.fullname" . }}
+    app: {{ template "datadog.checksd.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"

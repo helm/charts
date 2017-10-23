@@ -1,15 +1,15 @@
 {{- if .Values.ingress.enabled -}}
-{{- $serviceName := include "fullname" . -}}
+{{- $serviceName := include "centrifugo.fullname" . -}}
 {{- $servicePort := .Values.service.port -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "centrifugo.fullname" . }}
   labels:
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    app: {{ template "name" . }}
+    app: {{ template "centrifugo.name" . }}
   annotations:
     {{- range $key, $value := .Values.ingress.annotations }}
       {{ $key }}: {{ $value | quote }}

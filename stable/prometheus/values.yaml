@@ -17,12 +17,17 @@ alertmanager:
   ##
   image:
     repository: prom/alertmanager
-    tag: v0.5.1
+    tag: v0.9.1
     pullPolicy: IfNotPresent
 
   ## Additional alertmanager container arguments
   ##
   extraArgs: {}
+
+  ## The URL prefix at which the container can be accessed. Useful in the case the '-web.external-url' includes a slug
+  ## so that the various internal URLs are still able to access as they are in the default case.
+  ## (Optional)
+  baseURL: ""
 
   ## Additional alertmanager container environment variable
   ## For instance to add a http_proxy
@@ -59,6 +64,10 @@ alertmanager:
     #   - secretName: prometheus-alerts-tls
     #     hosts:
     #       - alertmanager.domain.com
+
+  ## Alertmanager Deployment Strategy type
+  # strategy:
+  #   type: Recreate
 
   ## Node labels for alertmanager pod assignment
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
@@ -139,6 +148,7 @@ alertmanager:
     loadBalancerIP: ""
     loadBalancerSourceRanges: []
     servicePort: 80
+    # nodePort: 30000
     type: ClusterIP
 
 ## Monitors ConfigMap changes and POSTs to a URL
@@ -177,7 +187,7 @@ kubeStateMetrics:
   ##
   image:
     repository: gcr.io/google_containers/kube-state-metrics
-    tag: v0.4.1
+    tag: v1.1.0-rc.0
     pullPolicy: IfNotPresent
 
   ## Node labels for kube-state-metrics pod assignment
@@ -235,7 +245,7 @@ nodeExporter:
   ##
   image:
     repository: prom/node-exporter
-    tag: v0.14.0
+    tag: v0.15.0
     pullPolicy: IfNotPresent
 
   ## Additional node-exporter container arguments
@@ -254,10 +264,10 @@ nodeExporter:
   ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
   ##
   tolerations: []
-  #- key: "key"
-  #  operator: "Equal|Exists"
-  #  value: "value"
-  #  effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
+    # - key: "key"
+    #   operator: "Equal|Exists"
+    #   value: "value"
+    #   effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
 
   ## Node labels for node-exporter pod assignment
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
@@ -309,12 +319,17 @@ server:
   ##
   image:
     repository: prom/prometheus
-    tag: v1.5.2
+    tag: v1.8.0
     pullPolicy: IfNotPresent
 
   ## (optional) alertmanager URL
   ## only used if alertmanager.enabled = false
   alertmanagerURL: ""
+
+  ## The URL prefix at which the container can be accessed. Useful in the case the '-web.external-url' includes a slug
+  ## so that the various internal URLs are still able to access as they are in the default case.
+  ## (Optional)
+  baseURL: ""
 
   ## Additional Prometheus server container arguments
   ##
@@ -359,14 +374,18 @@ server:
     #     hosts:
     #       - prometheus.domain.com
 
+  ## Server Deployment Strategy type
+  # strategy:
+  #   type: Recreate
+
   ## Node tolerations for server scheduling to nodes with taints
   ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
   ##
   tolerations: []
-  #- key: "key"
-  #  operator: "Equal|Exists"
-  #  value: "value"
-  #  effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
+    # - key: "key"
+    #   operator: "Equal|Exists"
+    #   value: "value"
+    #   effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
 
   ## Node labels for Prometheus server pod assignment
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
@@ -452,6 +471,10 @@ server:
   ## Prometheus server pod termination grace period
   ##
   terminationGracePeriodSeconds: 300
+
+  ## Prometheus data retention period (i.e 360h)
+  ##
+  retention: ""
 
 pushgateway:
   ## If false, pushgateway will not be installed

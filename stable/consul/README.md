@@ -1,7 +1,7 @@
 # Consul Helm Chart
 
 ## Prerequisites Details
-* Kubernetes 1.5
+* Kubernetes 1.6+
 * PV support on underlying infrastructure
 
 ## StatefulSet Details
@@ -32,14 +32,13 @@ The following tables lists the configurable parameters of the consul chart and t
 | `ImagePullPolicy`       | Container pull policy                 | `Always`                                                   |
 | `Replicas`              | k8s statefulset replicas              | `3`                                                        |
 | `Component`             | k8s selector key                      | `consul`                                                   |
-| `Cpu`                   | container requested cpu               | `100m`                                                     |
 | `DatacenterName`        | Consul Datacenter Name                | `dc1` (The consul default)                                 |
 | `DisableHostNodeId`     | Disable Node Id creation (uses random)| `false`                                                    |
 | `EncryptGossip`         | Whether or not gossip is encrypted    | `true`                                                     |
-| `Memory`                | container requested memory            | `512Mi`                                                    |
 | `Storage`               | Persistent volume size                | `1Gi`                                                      |
 | `StorageClass`          | Persistent volume storage class       | `nil`                                                      |
 | `HttpPort`              | Consul http listening port            | `8500`                                                     |
+| `Resources`             | Container resource requests and limits| `{}`                                                       |
 | `RpcPort`               | Consul rpc listening port             | `8400`                                                     |
 | `SerflanPort`           | Container serf lan listening port     | `8301`                                                     |
 | `SerflanUdpPort`        | Container serf lan UDP listening port | `8301`                                                     |

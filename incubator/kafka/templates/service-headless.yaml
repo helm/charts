@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "fullname" . }}-headless
+  name: {{ template "kafka.fullname" . }}-headless
   labels:
-    app: {{ include "name" . | quote }}
+    app: {{ include "kafka.name" . | quote }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
@@ -15,5 +15,5 @@ spec:
     port: 9092
   clusterIP: None
   selector:
-    app: {{ include "name" . | quote }}
+    app: {{ include "kafka.name" . | quote }}
     release: {{ .Release.Name | quote }}

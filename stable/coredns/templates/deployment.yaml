@@ -1,7 +1,7 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "coredns.fullname" . }}
   labels:
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
@@ -11,7 +11,7 @@ metadata:
     kubernetes.io/cluster-service: "true"
     kubernetes.io/name: "CoreDNS"
     {{- else }}
-    app: {{ template "fullname" . }}
+    app: {{ template "coredns.fullname" . }}
     {{- end }}
 spec:
   replicas: {{ .Values.replicaCount }}
@@ -20,7 +20,7 @@ spec:
       {{- if .Values.isClusterService }}
       k8s-app: {{ .Chart.Name | quote }}
       {{- else }}
-      app: {{ template "fullname" . }}
+      app: {{ template "coredns.fullname" . }}
       {{- end }}
   template:
     metadata:
@@ -28,7 +28,7 @@ spec:
         {{- if .Values.isClusterService }}
         k8s-app: {{ .Chart.Name | quote }}
         {{- else }}
-        app: {{ template "fullname" . }}
+        app: {{ template "coredns.fullname" . }}
         {{- end }}
         release: {{ .Release.Name | quote }}
       annotations:
@@ -61,6 +61,11 @@ spec:
           name: dns-tcp
           protocol: TCP
         {{- end }}
+        {{- if .Values.middleware.prometheus.enabled }}
+        - containerPort: {{ .Values.middleware.prometheus.port }}
+          name: metrics
+          protocol: TCP
+        {{- end }}
         livenessProbe:
           httpGet:
             path: /health
@@ -73,7 +78,7 @@ spec:
       volumes:
         - name: config-volume
           configMap:
-            name: {{ template "fullname" . }}
+            name: {{ template "coredns.fullname" . }}
             items:
             - key: Corefile
               path: Corefile

@@ -33,7 +33,7 @@ The command removes all the Kubernetes components associated with the chart and 
 |-------------------------------------------|-------------------------------------|---------------------------------------------------|
 | `server.image`                            | Container image to run              | grafana/grafana:latest                            |
 | `server.adminUser`                        | Admin user username                 | admin                                             |
-| `server.adminPassword`                    | Admin user password                 | admin                                             |
+| `server.adminPassword`                    | Admin user password                 | Randomly generated                                |
 | `server.persistentVolume.enabled`         | Create a volume to store data       | true                                              |
 | `server.persistentVolume.size`            | Size of persistent volume claim     | 1Gi RW                                            |
 | `server.persistentVolume.storageClass`    | Type of persistent volume claim     | `nil` (uses alpha storage class annotation)       |

@@ -2,7 +2,7 @@
 ## ref: https://hub.docker.com/r/bitnami/mariadb/tags/
 ##
 ## Default: none
-image: bitnami/mariadb:10.1.26-r0
+image: bitnami/mariadb:10.1.28-r2
 
 ## Specify an imagePullPolicy (Required)
 ## It's recommended to change this to 'Always' if the image tag is 'latest'
@@ -45,10 +45,14 @@ persistence:
   ## If defined, PVC must be created manually before volume will be bound
   # existingClaim:
 
-  ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
-  ## Default: volume.alpha.kubernetes.io/storage-class: default
+  ## mariadb data Persistent Volume Storage Class
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
   ##
-  # storageClass:
+  # storageClass: "-"
   accessMode: ReadWriteOnce
   size: 8Gi
 

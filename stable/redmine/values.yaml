@@ -1,7 +1,7 @@
 ## Bitnami Redmine image version
 ## ref: https://hub.docker.com/r/bitnami/redmine/tags/
 ##
-image: bitnami/redmine:3.4.2-r2
+image: bitnami/redmine:3.4.3-r0
 
 ## Specify a imagePullPolicy
 ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -38,6 +38,12 @@ redmineLanguage: en
 # smtpPassword:
 # smtpTls:
 
+## Environment variables, to pass to the entry point
+##
+# extraVars:
+#   - name: NAMI_DEBUG
+#     value: --log-level trace
+
 ## Database configuration. Please note that only one of the following databases should be selected.
 ## ref: https://github.com/bitnami/bitnami-docker-redmine#run-the-application-using-postgresql-database
 ##
@@ -64,10 +70,14 @@ mariadb:
     ## If defined, PVC must be created manually before volume will be bound
     # existingClaim:
 
-    ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
-    ## Default: volume.alpha.kubernetes.io/storage-class: default
+    ## mariadb data Persistent Volume Storage Class
+    ## If defined, storageClassName: <storageClass>
+    ## If set to "-", storageClassName: "", which disables dynamic provisioning
+    ## If undefined (the default) or set to null, no storageClassName spec is
+    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+    ##   GKE, AWS & OpenStack)
     ##
-    # storageClass:
+    # storageClass: "-"
     accessMode: ReadWriteOnce
     size: 8Gi
 
@@ -90,10 +100,14 @@ postgresql:
     ## If defined, PVC must be created manually before volume will be bound
     # existingClaim:
 
-    ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
-    ## Default: volume.alpha.kubernetes.io/storage-class: default
+    ## postgresql data Persistent Volume Storage Class
+    ## If defined, storageClassName: <storageClass>
+    ## If set to "-", storageClassName: "", which disables dynamic provisioning
+    ## If undefined (the default) or set to null, no storageClassName spec is
+    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+    ##   GKE, AWS & OpenStack)
     ##
-    # storageClass:
+    # storageClass: "-"
     accessMode: ReadWriteOnce
     size: 8Gi
 
@@ -132,9 +146,13 @@ persistence:
   ## If defined, PVC must be created manually before volume will be bound
   # existingClaim:
 
-  ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
-  ## Default: volume.alpha.kubernetes.io/storage-class: default
+  ## redmine data Persistent Volume Storage Class
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
   ##
-  # storageClass:
+  # storageClass: "-"
   accessMode: ReadWriteOnce
   size: 8Gi

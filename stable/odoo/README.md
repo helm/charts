@@ -49,6 +49,7 @@ The following tables lists the configurable parameters of the Odoo chart and the
 |---------------------------------------|-------------------------------------------|---------------------------------------------|
 | `imageTag`                            | `bitnami/odoo` image tag                  | Odoo image version                          |
 | `imagePullPolicy`                     | Image pull policy                         | `IfNotPresent`                              |
+| `odooUsername`                        | User of the application                   | `user@example.com`                          |
 | `odooPassword`                        | Admin account password                    | `bitnami`                                   |
 | `odooEmail`                           | Admin account email                       | `user@example.com`                          |
 | `smtpHost`                            | SMTP host                                 | `nil`                                       |

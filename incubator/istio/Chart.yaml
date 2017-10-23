@@ -1,12 +1,14 @@
 apiVersion: v1
 description: Istio Helm chart for Kubernetes
 name: istio
-version: 0.1.6-chart5
-appVersion: 0.1.6
+# To avoid confusion the helm chart version stays in sync with the istio version - DO NOT UNSYNC -- ldemailly@google.com
+# https://github.com/kubernetes/charts/issues/1501
+version: 0.2.7-chart5
+appVersion: 0.2.7
 home: https://istio.io/
 icon: https://raw.githubusercontent.com/istio/istio.github.io/master/favicons/mstile-150x150.png
 sources:
-  - https://github.com/istio/istio
+- https://github.com/istio/istio
 maintainers:
-  - name: lachie83
-    email: lachlan.evenson@microsoft.com
+- name: lachie83
+  email: lachlan.evenson@microsoft.com

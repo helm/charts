@@ -25,6 +25,10 @@ spec:
       - name: {{ template "redis.fullname" . }}
         image: "{{ .Values.image }}"
         imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
+        {{- if .Values.args }}
+        args:
+{{ toYaml .Values.args | indent 10 }}
+        {{- end }}
         env:
         {{- if .Values.usePassword }}
         - name: REDIS_PASSWORD

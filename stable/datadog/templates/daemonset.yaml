@@ -3,20 +3,23 @@
 apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "datadog.fullname" . }}
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
 spec:
   template:
     metadata:
       labels:
-        app: {{ template "fullname" . }}
-      name: {{ template "fullname" . }}
+        app: {{ template "datadog.fullname" . }}
+      name: {{ template "datadog.fullname" . }}
       {{- if .Values.daemonset.podAnnotations }}
       annotations:
 {{ toYaml .Values.daemonset.podAnnotations | indent 8 }}
       {{- end }}
     spec:
+      {{- if .Values.daemonset.useHostNetwork }}
+      hostNetwork: {{ .Values.daemonset.useHostNetwork }}
+      {{- end }}
       containers:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -25,10 +28,16 @@ spec:
 {{ toYaml .Values.resources | indent 12 }}
         ports:
         - containerPort: 8125
+          {{- if .Values.daemonset.useHostPort }}
+          hostPort: 8125
+          {{- end }}
           name: dogstatsdport
           protocol: UDP
         {{- if .Values.datadog.apmEnabled }}
         - containerPort: 8126
+          {{- if .Values.daemonset.useHostPort }}
+          hostPort: 8126
+          {{- end }}
           name: traceport
           protocol: TCP
         - containerPort: 7777
@@ -39,7 +48,7 @@ spec:
           - name: API_KEY
             valueFrom:
               secretKeyRef:
-                name: {{ template "fullname" . }}
+                name: {{ template "datadog.fullname" . }}
                 key: api-key
           - name: LOG_LEVEL
             value: {{ .Values.datadog.logLevel | quote }}
@@ -59,6 +68,7 @@ spec:
         volumeMounts:
           - name: dockersocket
             mountPath: /var/run/docker.sock
+            readOnly: true
           - name: procdir
             mountPath: /host/proc
             readOnly: true
@@ -74,6 +84,9 @@ spec:
           - name: checksd
             mountPath: /checks.d
             readOnly: true
+{{- if .Values.datadog.volumeMounts }}
+{{ toYaml .Values.datadog.volumeMounts | indent 10 }}
+{{- end }}
       volumes:
         - hostPath:
             path: /var/run/docker.sock
@@ -86,16 +99,21 @@ spec:
           name: cgroups
         - name: confd
           configMap:
-            name: {{ template "confd.fullname" . }}
+            name: {{ template "datadog.confd.fullname" . }}
         - name: checksd
           configMap:
-            name: {{ template "checksd.fullname" . }}
+            name: {{ template "datadog.checksd.fullname" . }}
         - name: autoconf
           configMap:
-            name: {{ template "autoconf.fullname" . }}
+            name: {{ template "datadog.autoconf.fullname" . }}
+{{- if .Values.datadog.volumes }}
+{{ toYaml .Values.datadog.volumes | indent 8 }}
+{{- end }}
       {{- if .Values.daemonset.tolerations }}
       tolerations:
 {{ toYaml .Values.daemonset.tolerations | indent 8 }}
       {{- end }}
+  updateStrategy:
+    type: {{ default "OnDelete" .Values.daemonset.updateStrategy | quote }}
 {{ end }}
 {{ end }}

@@ -18,8 +18,13 @@ Replicas: 3
 Image: "consul"
 ImageTag: "0.8.3"
 ImagePullPolicy: "Always"
-Cpu: "100m"
-Memory: "256Mi"
+Resources: {}
+ # requests:
+ #   cpu: "100m"
+ #   memory: "256Mi"
+ # limits:
+ #   cpu: "500m"
+ #   memory: "512Mi"
 ## Persistent volume size
 Storage: "1Gi"
 

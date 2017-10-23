@@ -68,9 +68,8 @@ services:
         token: # twilio auth token
         from: # phone number by which sms messages are sent
       slack:
-        enabled: false
-        token: # the API token for the bot
-        botName: # the username of the bot
+        enabled: ${services.echo.notifications.slack.enabled:false}
+        token: ${services.echo.notifications.slack.token}
 
   deck:
     host: ${services.default.host}

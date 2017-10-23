@@ -14,4 +14,4 @@ name: check-mk
 sources:
 - https://github.com/kubernetes/charts
 - http://git.mathias-kettner.de/git/
-version: 0.1.0
+version: 0.2.0

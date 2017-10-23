@@ -25,7 +25,8 @@ This chart will do the following:
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
+$ helm repo add incubator https://kubernetes-charts-incubator.storage.googleapis.com/
+$ helm dependency update
 $ helm install --name my-release incubator/patroni
 ```
 
@@ -71,6 +72,14 @@ The following tables lists the configurable parameters of the patroni chart and 
 | `Zookeeper.Enable`      | using zookeeper as DCS              | `false`                                             |
 | `Zookeeper.DeployChart` | deploy zookeeper chart              | `false`                                             |
 | `Zookeeper.Hosts`       | list of zookeeper cluster members   | 'host1:port1','host2:port2','etc...'                |
+| `WalE.Enable`           | use of wal-e tool for base backup/restore | `false` |
+| `WalE.Schedule_Cron_Job` | schedule of wal-e backups          | `00 01 * * *` |
+| `WalE.Retain_Backups`   | number of backups to retain         | `2` |
+| `WalE.S3_Bucket:`       | Amazon S3 bucket used for wal-e backups | `` |
+| `WalE.GCS_Bucket`       | Google cloud plataform storage used for wal-e backups | `` |
+| `WalE.Kubernetes_Secret` | kubernetes secret for provider bucket | `` |
+| `WalE.Backup_Threshold_Megabytes` | maximum size of the WAL segments accumulated after the base backup to consider WAL-E restore instead of pg_basebackup | `1024` |
+| `WalE.Backup_Threshold_Percentage` | maximum ratio (in percents) of the accumulated WAL files to the base backup to consider WAL-E restore instead of pg_basebackup | `30` |
 | `persistentVolume.accessModes` | Persistent Volume access modes | `[ReadWriteOnce]` |
 | `persistentVolume.annotations` | Annotations for Persistent Volume Claim` | `{}` |
 | `persistentVolume.mountPath` | Persistent Volume mount root path | `/home/postgres/pgdata` |

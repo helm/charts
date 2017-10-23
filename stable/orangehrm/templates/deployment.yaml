@@ -1,9 +1,9 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "orangehrm.fullname" . }}
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "orangehrm.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -11,28 +11,28 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "fullname" . }}
+        app: {{ template "orangehrm.fullname" . }}
     spec:
       containers:
-      - name: {{ template "fullname" . }}
+      - name: {{ template "orangehrm.fullname" . }}
         image: "{{ .Values.image }}"
         imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
         env:
         - name: MARIADB_HOST
-          value: {{ template "mariadb.fullname" . }}
+          value: {{ template "orangehrm.mariadb.fullname" . }}
         - name: MARIADB_PORT_NUMBER
           value: "3306"
         - name: MARIADB_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "mariadb.fullname" . }}
+              name: {{ template "orangehrm.mariadb.fullname" . }}
               key: mariadb-root-password
         - name: ORANGEHRM_USERNAME
           value: {{ default "" .Values.orangehrmUsername | quote }}
         - name: ORANGEHRM_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "orangehrm.fullname" . }}
               key: orangehrm-password
         - name: SMTP_HOST
           value: {{ default "" .Values.smtpHost | quote }}
@@ -43,7 +43,7 @@ spec:
         - name: SMTP_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "orangehrm.fullname" . }}
               key: smtp-password
         - name: SMTP_PROTOCOL
           value: {{ default "none" .Values.smtpProtocol | quote }}
@@ -73,14 +73,14 @@ spec:
       - name: orangehrm-data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ template "fullname" . }}-orangehrm
+          claimName: {{ template "orangehrm.fullname" . }}-orangehrm
       {{- else }}
         emptyDir: {}
       {{- end }}
       - name: apache-data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ template "fullname" . }}-apache
+          claimName: {{ template "orangehrm.fullname" . }}-apache
       {{- else }}
         emptyDir: {}
       {{- end }}

@@ -25,8 +25,11 @@ spec:
   loadBalancerSourceRanges:
 {{ toYaml .Values.controller.service.loadBalancerSourceRanges | indent 4 }}
 {{- end }}
-{{- if .Values.controller.service.externalTrafficPolicy }}
+{{- if and (ge .Capabilities.KubeVersion.Minor "7") (.Values.controller.service.externalTrafficPolicy) }}
   externalTrafficPolicy: "{{ .Values.controller.service.externalTrafficPolicy }}"
+{{- end }}
+{{- if and (ge .Capabilities.KubeVersion.Minor "7") (.Values.controller.service.healthCheckNodePort) }}
+  healthCheckNodePort: {{ .Values.controller.service.healthCheckNodePort }}
 {{- end }}
   ports:
     - name: http

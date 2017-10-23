@@ -1,0 +1,75 @@
+{{- if .Values.agent.token }}
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "buildkite.fullname" . }}
+  labels:
+    app: {{ template "buildkite.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "buildkite.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      serviceAccount: {{ template "buildkite.fullname" . }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag  }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          securityContext:
+            privileged: true
+          env:
+            # BUILDKITE AGENT ENV VARS
+            - name: BUILDKITE_AGENT_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "buildkite.fullname" . }}
+                  key: agent-token
+            - name: BUILDKITE_AGENT_META_DATA
+              value: "{{ .Values.agent.meta }}"
+            {{- if .Values.privateSshKey }}
+            - name: SSH_PRIVATE_RSA_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "buildkite.fullname" . }}
+                  key: agent-ssh
+            {{- end }}
+            # EXTRA BUILDKITE AGENT ENV VARS
+{{- if .Values.extraEnv }}{{ toYaml .Values.extraEnv | indent 12 }}{{- end }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+          volumeMounts:
+            - name: var-run-docker-sock
+              mountPath: /var/run/docker.sock
+            {{- if .Values.registryCreds.gcrServiceAccountKey }}
+            - name: service-key
+              mountPath: /etc/service_key
+            {{- end }}
+            {{- if .Values.registryCreds.dockerConfig }}
+            - name: docker-config
+              mountPath: /root/.docker
+            {{- end }}
+      volumes:
+        - name: var-run-docker-sock
+          hostPath:
+            path: /var/run/docker.sock
+        {{- if .Values.registryCreds.gcrServiceAccountKey }}
+        - name: service-key
+          secret:
+            secretName: {{ template "buildkite.fullname" . }}-gcr
+        {{- end }}
+        {{- if .Values.registryCreds.dockerConfig }}
+        - name: docker-config
+          secret:
+            secretName: {{ template "buildkite.fullname" . }}-registry
+        {{- end }}
+    {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
+{{- end }}

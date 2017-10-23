@@ -8,16 +8,17 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
-  annotations:
-  {{- if .Values.acme.persistence.storageClass }}
-    volume.beta.kubernetes.io/storage-class: {{ .Values.acme.persistence.storageClass | quote }}
-  {{- else }}
-    volume.alpha.kubernetes.io/storage-class: default
-  {{- end }}
 spec:
   accessModes:
     - {{ .Values.acme.persistence.accessMode | quote }}
   resources:
     requests:
       storage: {{ .Values.acme.persistence.size | quote }}
+{{- if .Values.acme.persistence.storageClass }}
+{{- if (eq "-" .Values.acme.persistence.storageClass) }}
+  storageClassName: ""
+{{- else }}
+  storageClassName: "{{ .Values.acme.persistence.storageClass }}"
+{{- end }}
+{{- end }}
 {{- end }}

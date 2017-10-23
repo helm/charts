@@ -22,6 +22,9 @@ spec:
         app: {{ template "name" . }}
         component: "{{ .Values.controller.name }}"
         release: {{ .Release.Name }}
+        {{- if .Values.controller.podLabels }}
+{{ toYaml .Values.controller.podLabels | indent 8 }}
+        {{- end }}
     spec:
       containers:
         - name: {{ template "name" . }}-{{ .Values.controller.name }}
@@ -54,7 +57,11 @@ spec:
             - --watch-namespace={{ default .Release.Namespace .Values.controller.scope.namespace }}
           {{- end }}
           {{- range $key, $value := .Values.controller.extraArgs }}
+            {{- if $value }}
             - --{{ $key }}={{ $value }}
+            {{- else }}
+            - --{{ $key }}
+            {{- end }}
           {{- end }}
           env:
             - name: POD_NAME
@@ -125,6 +132,10 @@ spec:
     {{- if .Values.controller.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.controller.nodeSelector | indent 8 }}
+    {{- end }}
+    {{- if .Values.controller.tolerations }}
+      tolerations:
+{{ toYaml .Values.controller.tolerations | indent 8 }}
     {{- end }}
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
       terminationGracePeriodSeconds: 60

@@ -70,6 +70,8 @@ The following tables lists the configurable parameters of the PostgresSQL chart 
 | `service.type`             | k8s service type exposing ports, e.g. `NodePort`| `ClusterIP`                                                |
 | `networkPolicy.enabled`    | Enable NetworkPolicy                            | `false`                                                    |
 | `networkPolicy.allowExternal` | Don't require client label for connections   | `true`                                                     |
+| `nodeSelector`             | Node labels for pod assignment                  | {}                                                         |
+| `tolerations`              | Toleration labels for pod assignment            | []                                                         |
 
 The above parameters map to the env variables defined in [postgres](http://github.com/docker-library/postgres). For more information please refer to the [postgres](http://github.com/docker-library/postgres) image documentation.
 
