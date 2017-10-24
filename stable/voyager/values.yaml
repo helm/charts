@@ -2,9 +2,9 @@
 ## Voyager chart configuration
 ##
 image: appscode/voyager
-imageTag: 3.0.0
+imageTag: 3.2.1
 ## Use cloud provider here. Read details https://github.com/appscode/voyager/blob/master/docs/user-guide/README.md
-cloudProvider: cloud_provider
+cloudProvider:
 ## The path to the cloud provider configuration file. Empty string for no configuration file.
 ## ie. for azure use /etc/kubernetes/azure.json
 # cloudConfig: /etc/kubernetes/azure.json
@@ -18,3 +18,10 @@ persistence:
 ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
 ##
 nodeSelector: {}
+
+## Install Default RBAC roles and bindings
+rbac:
+  ## If true, create & use RBAC resources
+  create: false
+  ## Ignored if rbac.create is true
+  serviceAccountName: default

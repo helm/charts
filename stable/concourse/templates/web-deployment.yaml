@@ -265,6 +265,10 @@ spec:
             - name: concourse-keys
               mountPath: /concourse-keys
               readOnly: true
+      affinity:
+{{- if .Values.web.additionalAffinities }}
+{{ toYaml .Values.web.additionalAffinities | indent 8 }}
+{{- end }}
       volumes:
         - name: concourse-keys
           secret:

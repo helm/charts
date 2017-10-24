@@ -27,7 +27,7 @@ spec:
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
     {{- end }}
-      serviceAccountName: {{ $serviceName }}-ca-service-account
+      serviceAccountName: {{ $serviceName }}-{{ .Values.ca.deployment.name }}-service-account
       containers:
       - name: {{ .Values.ca.deployment.name }}
         image: "{{ .Values.ca.deployment.image }}:{{ .Values.istio.release }}"

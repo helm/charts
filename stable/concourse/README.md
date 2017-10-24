@@ -117,6 +117,7 @@ The following tables lists the configurable parameters of the Concourse chart an
 | `web.ingress.annotations` | Concourse Web Ingress annotations | `{}` |
 | `web.ingress.hosts` | Concourse Web Ingress Hostnames | `[]` |
 | `web.ingress.tls` | Concourse Web Ingress TLS configuration | `[]` |
+| `web.additionalAffinities` | Additional affinities to apply to web pods. E.g: node affinity | `nil` |
 | `worker.nameOverride` | Override the Concourse Worker components name| `worker` |
 | `worker.replicas` | Number of Concourse Worker replicas | `2` |
 | `worker.minAvailable` | Minimum number of workers available after an eviction | `1` |
@@ -125,6 +126,7 @@ The following tables lists the configurable parameters of the Concourse chart an
 | `worker.postStopDelaySeconds` | Time to wait after graceful shutdown of worker before starting up again | `60` |
 | `worker.terminationGracePeriodSeconds` | Upper bound for graceful shutdown, including `worker.postStopDelaySeconds` | `120` |
 | `worker.fatalErrors` | Newline delimited strings which, when logged, should trigger a restart of the worker | *See [values.yaml](values.yaml)* |
+| `worker.updateStrategy` | `OnDelete` or `RollingUpdate` (requires Kubernetes >= 1.6) | `RollingUpdate` |
 | `persistence.enabled` | Enable Concourse persistence using Persistent Volume Claims | `true` |
 | `persistence.worker.class` | Concourse Worker Persistent Volume Storage Class | `generic` |
 | `persistence.worker.accessMode` | Concourse Worker Persistent Volume Access Mode | `ReadWriteOnce` |

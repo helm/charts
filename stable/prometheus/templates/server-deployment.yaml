@@ -48,7 +48,7 @@ spec:
             - --alertmanager.url={{- if .Values.alertmanager.enabled }}http://{{ template "prometheus.alertmanager.fullname" . }}:{{ .Values.alertmanager.service.servicePort }}{{ .Values.alertmanager.baseURL }}{{- else }}{{ .Values.server.alertmanagerURL }}{{- end }}
           {{- end }}
           {{- if .Values.server.retention }}
-            - --storage.local.retention = {{ .Values.server.retention }}
+            - --storage.local.retention={{ .Values.server.retention }}
           {{- end }}
             - --config.file=/etc/config/prometheus.yml
             - --storage.local.path={{ .Values.server.persistentVolume.mountPath }}

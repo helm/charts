@@ -20,7 +20,6 @@ rules:
   comments:
     require-starting-space: true
     min-spaces-from-content: 2
-  comments-indentation: enable
   document-end: disable
   document-start: disable           # No --- to start a file
   empty-lines:

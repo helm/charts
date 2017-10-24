@@ -34,6 +34,7 @@ spec:
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
     {{- end }}
+      serviceAccountName: {{ $serviceName }}-{{ .Values.initializer.deployment.name }}-service-account
       containers:
       - name: {{ $serviceName }}-{{ .Values.initializer.deployment.name }}
         image: "{{ .Values.initializer.deployment.image }}:{{ .Values.istio.release }}"
