@@ -30,4 +30,4 @@ spec:
             value: "{{ .Values.schema.mode }}"
           - name: DATACENTER
             value: "{{ .Values.cassandra.config.dc_name }}"
-      restartPolicy: Never
+      restartPolicy: OnFailure
