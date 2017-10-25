@@ -12,8 +12,15 @@ image:
 persistentVolume: {}
   # - mountPath: /opt/aerospike/data
   #   name: aerospike-data
-  #   storage: 4G
-  #   storageClassName: standard
+  #   template:
+  #     accessModes: [ "ReadWriteOnce" ]
+  #     # storageClassName:  "standard"
+  #     resources:
+  #       requests:
+  #         storage: "36G"
+  #     selector:
+  #       matchLabels:
+  #         diskname: "aerospike-data-backbone"
 
 service:
   type: ClusterIP

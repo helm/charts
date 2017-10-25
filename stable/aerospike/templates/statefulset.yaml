@@ -62,9 +62,5 @@ spec:
   - metadata:
       name: {{ $pv.name | quote }}
     spec:
-      accessModes: [ "ReadWriteOnce" ]
-      storageClassName:  {{ $pv.storageClassName | quote }}
-      resources:
-        requests:
-          storage: {{ $pv.storage | quote }}
+{{ toYaml $pv.template | indent 6 }}
   {{- end }}
