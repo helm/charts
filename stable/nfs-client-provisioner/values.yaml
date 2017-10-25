@@ -7,6 +7,9 @@ image:
   tag: latest
   pullPolicy: IfNotPresent
 
+storageclass:
+  name: nfs
+
 nfs:
   provisionerName: fuseim.pri/ifs
   server: 10.10.10.60
