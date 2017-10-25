@@ -98,6 +98,9 @@ spec:
                 configMapKeyRef:
                   name: {{ template "concourse.concourse.fullname" . }}
                   key: worker-fatal-errors
+{{- if .Values.worker.env }}
+{{ toYaml .Values.worker.env | indent 12 }}
+{{- end }}
           resources:
 {{ toYaml .Values.worker.resources | indent 12 }}
           securityContext:
