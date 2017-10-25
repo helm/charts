@@ -20,7 +20,7 @@ persistentVolume: {}
   #         storage: "36G"
   #     selector:
   #       matchLabels:
-  #         diskname: "aerospike-data-backbone"
+  #         diskname: "aerospike-data"
 
 service:
   type: ClusterIP
