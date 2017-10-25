@@ -26,7 +26,7 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           volumeMounts:
             - name: nfs-client-root
-              mountPath: /persistentvolume
+              mountPath: /persistentvolumes
           env:
             - name: PROVISIONER_NAME
               value: {{ .Values.nfs.provisionerName }}
