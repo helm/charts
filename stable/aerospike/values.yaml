@@ -58,7 +58,7 @@ confFile: |-
       }
 
       console {
-      context any info 
+      context any info
       }
   }
   network {
