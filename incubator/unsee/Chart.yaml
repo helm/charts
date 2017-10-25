@@ -1,0 +1,15 @@
+apiVersion: v1
+description: Unsee - Alert dashboard for Prometheus Alertmanager.
+name: unsee
+version: 0.1.1
+sources:
+  - https://github.com/cloudflare/unsee
+keywords:
+- monitoring
+- alertmanager
+- prometheus
+- alert
+- dashboard
+maintainers:
+  - name: Sven Mueller
+    email: sven.mueller@commercetools.com

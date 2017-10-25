@@ -1,0 +1,121 @@
+## restart policy for all containers
+##
+restartPolicy: Always
+
+## Image Settings
+##
+image:
+  repository: cloudflare/unsee
+  tag: latest
+  pullPolicy: IfNotPresent
+
+## Specify a service type
+## ClusterIP is default
+## ref: http://kubernetes.io/docs/user-guide/services/
+##
+service:
+  replicas: 1
+  type: ClusterIP
+
+## Configure the ingress object to hook into existing infastructure
+## ref : http://kubernetes.io/docs/user-guide/ingress/
+## OPTIONALLY you can set .Values.ingress.secretName to set which secret to use
+##
+ingress:
+  ## If true, alertmanager Ingress will be created
+  ##
+  enabled: false
+
+  ## Ingress annotations
+  ##
+  annotations: {}
+    # kubernetes.io/ingress.class: "nginx"
+    # secretName: my-tls-cert
+    # kubernetes.io/tls-acme: "true"
+
+resources:
+  requests:
+    cpu: 5m
+    memory: 40Mi
+  limits:
+    cpu: 10m
+    memory: 80Mi
+
+envs:
+
+  alertmanager:
+
+    ## Timeout for requests send to Alertmanager API
+    ##
+    # timeout: 40s
+
+    ## Interval for refreshing alerts and silences using Alertmanager API
+    ##
+    # ttl: 1m
+
+    ## List of Alertmanager instances URI (<name>:<uri>).
+    ##
+    uris:
+      - staging:https://staging.alertmanager.example.com
+      - production:https://prod.alertmanager.example.com
+
+  # annotations:
+
+    ## Enabling this option will hide all annotations in the UI, except for
+    ## those that are listed in the envs.annotation.visible option.
+    ##
+    # defaultHidden: false
+
+    ## List of annotation names that should be hidden in the UI.
+    ##
+    # hidden: []
+
+    ## List of annotation names that should be visible in the UI.
+    ## This option is only useful when envs.annotation.defaultHidden is set.
+    ##
+    # visible: []
+
+  ## Will enable debug mode.
+  ##
+  # debug: false
+
+  # color:
+
+    ## List of label names that will all have the same color applied.
+    ##
+    # labelsStatic: []
+
+    ## List of label names that should have unique colors generated in the UI.
+    ##
+    # labelsUnique: []
+
+  ## Default alert filter to apply when user loads unsee UI without any
+  ## filter specified.
+  ##
+  # filterDefault:
+
+  ## Replace JIRA issue IDs in the comment text with links to those issues.
+  ##
+  # jiraRegex:
+
+  ## List of label names to show on the UI, all other labels will be stripped.
+  ##
+  # keepLabels: []
+
+  # sentry:
+
+    ## DSN for Sentry integration in Go.
+    ##
+    # dsn: https://<key>:<secret>@sentry.io/<project>
+
+    ## DSN for Sentry integration in javascript.
+    ##
+    # publicDsn: https://<key>@sentry.io/<project>
+
+  ## List of label names that should not be shown on the UI.
+  ##
+  # stripLabels: []
+
+  ## URL path for application.
+  ##
+  # webPrefix: /

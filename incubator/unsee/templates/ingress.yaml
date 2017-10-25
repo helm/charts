@@ -1,0 +1,21 @@
+{{- if .Values.ingress.enabled -}}
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+{{- if .Values.ingress.annotations }}
+  annotations:
+{{ toYaml .Values.ingress.annotations | indent 4}}
+{{- end }}
+  name: {{ template "fullname" . }}
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    app: {{ template "fullname" . }}
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+    component: alert-dashboard
+spec:
+  backend:
+    serviceName: {{ template "fullname" . }}
+    servicePort: http-service
+{{- end -}}
