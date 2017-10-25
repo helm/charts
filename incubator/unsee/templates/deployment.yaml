@@ -1,0 +1,124 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    app: {{ template "fullname" . }}
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+    component: alert-dashboard
+spec:
+  replicas: {{ .Values.service.replicas }}
+  selector:
+    matchLabels:
+      app: {{ template "fullname" . }}
+      release: "{{ .Release.Name }}"
+      component: alert-dashboard
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: {{ template "fullname" . }}
+        release: "{{ .Release.Name }}"
+        component: alert-dashboard
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        env:
+        {{ if .Values.envs.alertmanager -}}
+        {{ if .Values.envs.alertmanager.timeout -}}
+        - name: ALERTMANAGER_TIMEOUT
+          value: {{ .Values.envs.alertmanager.timeout }}
+        {{ end -}}
+        {{ if .Values.envs.alertmanager.ttl -}}
+        - name: ALERTMANAGER_TTL
+          value: {{ .Values.envs.alertmanager.ttl }}
+        {{ end -}}
+        {{ if .Values.envs.alertmanager.uris -}}
+        - name: ALERTMANAGER_URIS
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "fullname" . }}
+              key: alertmanager.uris
+        {{ end -}}
+        {{ end -}}
+        {{ if .Values.envs.annotations -}}
+        {{ if .Values.envs.annotations.defaultHidden -}}
+        - name: ANNOTATIONS_DEFAULT_HIDDEN
+          value: {{ .Values.envs.annotations.defaultHidden }}
+        {{ end -}}
+        {{ if .Values.envs.annotations.hidden -}}
+        - name: ANNOTATIONS_HIDDEN
+          value: {{ template "join" .Values.envs.annotations.hidden }}
+        {{ end -}}
+        {{ if .Values.envs.annotations.visible -}}
+        - name: ANNOTATIONS_VISIBLE
+          value: {{ template "join" .Values.envs.annotations.visible }}
+        {{ end -}}
+        {{ end -}}
+        {{ if .Values.envs.debug -}}
+        - name: DEBUG
+          value: {{ .Values.envs.DEBUG }}
+        {{ end -}}
+        {{ if .Values.envs.color -}}
+        {{ if .Values.envs.color.labelsStatic -}}
+        - name: COLOR_LABELS_STATIC
+          value: {{ template "join" .Values.envs.color.labelsStatic }}
+        {{ end -}}
+        {{ if .Values.envs.color.labelsUnique -}}
+        - name: COLOR_LABELS_UNIQUE
+          value: {{ template "join" .Values.envs.color.labelsUnique }}
+        {{ end -}}
+        {{ end -}}
+        {{ if .Values.envs.filterDefault -}}
+        - name: FILTER_DEFAULT
+          value: {{ .Values.envs.filterDefault }}
+        {{ end -}}
+        {{ if .Values.envs.jiraRegex -}}
+        - name: JIRA_REGEX
+          value: {{ .Values.envs.jiraRegex }}
+        {{ end -}}
+        {{ if .Values.envs.keepLabels -}}
+        - name: KEEP_LABELS
+          value: {{ template "join" .Values.envs.keepLabels }}
+        {{ end -}}
+        {{ if .Values.envs.sentry -}}
+        {{ if .Values.envs.sentry.dsn -}}
+        - name: SENTRY_DSN
+          value: {{ .Values.envs.sentry.dsn }}
+        {{ end -}}
+        {{ if .Values.envs.sentry.publicDsn -}}
+        - name: SENTRY_PUBLIC_DSN
+          value: {{ .Values.envs.sentry.publicDsn }}
+        {{ end -}}
+        {{ end -}}
+        {{ if .Values.envs.stripLabels -}}
+        - name: STRIP_LABELS
+          value: {{ template "join" .Values.envs.stripLabels }}
+        {{ end -}}
+        {{ if .Values.envs.webPrefix -}}
+        - name: WEB_PREFIX
+          value: {{ .Values.envs.webPrefix }}
+        {{ end -}}
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+        ports:
+          - containerPort: 8080
+            name: http-app
+        livenessProbe:
+          httpGet:
+            path: /?q=
+            port: http-app
+        readinessProbe:
+          httpGet:
+            path: /?q=
+            port: http-app

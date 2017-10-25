@@ -1,0 +1,21 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    app: {{ template "fullname" . }}
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+    component: alert-dashboard
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - name: http-service
+      port: 80
+      targetPort: http-app
+      protocol: TCP
+  selector:
+    app: {{ template "fullname" . }}
+    release: "{{ .Release.Name }}"
+    component: alert-dashboard
