@@ -19,7 +19,6 @@ RUN apk update && apk add bash openssl && wget -qO /peer-finder http://storage.g
 
 ENTRYPOINT ["/install.sh"]
 
-ADD files/* /
-ADD bin/linux/* /
+ADD files/* bin/linux/* /
 
 RUN chmod -c 755 /install.sh /on-start.sh /peer-finder /public-hosts-finder /kubectl

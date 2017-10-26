@@ -1,0 +1,64 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}-dns
+  labels:
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    k8s-app: {{ .Chart.Name | quote }}
+    kubernetes.io/cluster-service: "true"
+    kubernetes.io/name: "CoreDNS"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: {{ .Chart.Name | quote }}
+  template:
+    metadata:
+      labels:
+        k8s-app: {{ .Chart.Name | quote }}
+        release: {{ .Release.Name | quote }}
+      annotations:
+        scheduler.alpha.kubernetes.io/critical-pod: ''
+        scheduler.alpha.kubernetes.io/tolerations: '[{"key":"CriticalAddonsOnly", "operator":"Exists"}]'
+    spec:
+      initContainers:
+      - name: install
+        image: "{{ .Values.installImage.name }}:{{ .Values.installImage.tag }}"
+        command: ["/bin/bash", "-c", "cat /etc/coredns/Corefile"]
+        imagePullPolicy: "{{ .Values.installImage.pullPolicy }}"
+        volumeMounts:
+        - name: config-volume
+          mountPath: /etc/coredns
+
+      containers:
+      - name: "coredns"
+        image: "{{ .Values.coreDNSImage.repository }}:{{ .Values.coreDNSImage.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        args: [ "-conf", "/etc/coredns/Corefile" ]
+        volumeMounts:
+        - name: config-volume
+          mountPath: /etc/coredns
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+        ports:
+        - containerPort: 53
+          name: dns-tcp
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 60
+          timeoutSeconds: 5
+          successThreshold: 1
+          failureThreshold: 5
+      volumes:
+        - name: config-volume
+          configMap:
+            name: {{ template "fullname" . }}-dns
+            items:
+            - key: Corefile
+              path: Corefile

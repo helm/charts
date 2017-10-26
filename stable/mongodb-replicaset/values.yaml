@@ -62,8 +62,8 @@ configmap:
 #   keyFile: /keydir/key.txt
 
 # Expose your MongoDB cluster to external applications
-#podServices:
-#  enabled: false
+podServices:
+  enabled: false
 #  annotations: {}
 #  clusterIP: ""
 #  externalIPs: []
@@ -72,3 +72,10 @@ configmap:
 #  type: ClusterIP
 #  port: 27017
 #  nodePort: ""
+
+# Specs for the CoreDNS image
+coreDNSImage:
+  repository: coredns/coredns
+  tag: "006"
+  pullPolicy: IfNotPresent
+
