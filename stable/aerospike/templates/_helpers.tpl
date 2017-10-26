@@ -21,6 +21,6 @@ Create aerospike mesh setup
 {{- define "aerospike.mesh" -}}
     {{- $fullname := include "fullname" . -}}
     {{- range $i, $e := until (.Values.replicaCount|int) }}
-    {{ printf "mesh-seed-address-port %s-%d.%s 3002" $fullname $i $fullname }}
+    {{ printf "mesh-seed-address-port %s-%d.%s-mesh 3002" $fullname $i $fullname }}
     {{- end -}}
 {{- end -}}

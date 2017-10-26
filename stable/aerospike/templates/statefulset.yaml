@@ -8,7 +8,7 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
-  serviceName: {{ template "fullname" . }}
+  serviceName: {{ template "fullname" . }}-mesh
   replicas: {{ .Values.replicaCount }}
   template:
     metadata:
