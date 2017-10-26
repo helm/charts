@@ -4,6 +4,8 @@ metadata:
   name: "{{ .Release.Name }}-ui-test-{{ randAlphaNum 5 | lower }}"
   annotations:
     "helm.sh/hook": test-success
+  labels:
+    {{- include "weave-scope.helm_std_labels" . | indent 4 }}
 spec:
   initContainers:
     - name: "test-framework"

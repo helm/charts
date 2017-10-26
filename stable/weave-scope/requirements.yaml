@@ -3,8 +3,6 @@
 
 dependencies:
   - name: weave-scope-agent
-    alias: agent
     condition: weave-scope-agent.enabled
   - name: weave-scope-frontend
-    alias: frontend
     condition: weave-scope-frontend.enabled

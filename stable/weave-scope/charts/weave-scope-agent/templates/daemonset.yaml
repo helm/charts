@@ -59,6 +59,8 @@ spec:
               mountPath: /var/run/docker.sock
             - name: scope-plugins
               mountPath: /var/run/scope/plugins
+            - name: sys-kernel-debug
+              mountPath: /sys/kernel/debug
       volumes:
         - name: docker-socket
           hostPath:
@@ -66,6 +68,10 @@ spec:
         - name: scope-plugins
           hostPath:
             path: /var/run/scope/plugins
+        - name: sys-kernel-debug
+          hostPath:
+            path: /sys/kernel/debug
+
       hostPID: true
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet

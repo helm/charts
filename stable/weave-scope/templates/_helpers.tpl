@@ -10,12 +10,12 @@ app: {{ template "weave-scope.name" . }}
 {{- define "weave-scope.annotations" }}
 cloud.weave.works/launcher-info: |-
   { 
-    "server-version": "master-c3b4969",
+    "server-version": "master-4fe8efe",
     "original-request": {
-      "url": "/k8s/v1.6/scope.yaml",
+      "url": "/k8s/v1.7/scope.yaml"
     },
-    "email-address": "support@weave.works"
-    "source-app": "weave-scope"
+    "email-address": "support@weave.works",
+    "source-app": "weave-scope",
     "weave-cloud-component": "scope"
   }
 {{- end }}

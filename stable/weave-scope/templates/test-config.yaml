@@ -3,6 +3,8 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ template "weave-scope.fullname" . }}-tests
+  labels:
+    {{- include "weave-scope.helm_std_labels" . | indent 4 }}
 data:
   run.sh: |-
 {{ if $frontend.enabled }}
