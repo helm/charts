@@ -38,7 +38,7 @@ master:
   persistence:
     enabled: true
     accessMode: ReadWriteOnce
-    storage: "4Gi"
+    size: "4Gi"
     # storageClass: "ssd"
   antiAffinity: "soft"
   resources:
@@ -56,7 +56,7 @@ data:
   persistence:
     enabled: true
     accessMode: ReadWriteOnce
-    storage: "30Gi"
+    size: "30Gi"
     # storageClass: "ssd"
   terminationGracePeriodSeconds: 3600
   antiAffinity: "soft"

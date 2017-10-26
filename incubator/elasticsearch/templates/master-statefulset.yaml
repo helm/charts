@@ -116,10 +116,10 @@ spec:
       - name: config
         configMap:
           name: {{ template "elasticsearch.fullname" . }}
-{{- if not .Values.master.persistence.enabled }}
+  {{- if not .Values.master.persistence.enabled }}
       - name: data
         emptyDir: {}
-{{- else }}
+  {{- else }}
   volumeClaimTemplates:
   - metadata:
       name: data
@@ -134,5 +134,5 @@ spec:
     {{- end }}
       resources:
         requests:
-          storage: "{{ .Values.master.persistence.storage }}"
-{{ end }}
+          storage: "{{ .Values.master.persistence.size }}"
+  {{ end }}
