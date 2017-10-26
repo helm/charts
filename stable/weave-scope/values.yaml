@@ -4,7 +4,7 @@ global:
 # global.image: (required) the image that will be used for this release
   image: "weaveworks/scope"
 # global.imageTag: (required) the version of Weave Scope desired for this release
-  imageTag: "1.6.2"
+  imageTag: "1.6.5"
 # global.service.* sets the values for the service that provides access to the Weave Scope frontend
   service:
 # global.service.name: (required if frontend.enabled == true) the short name desired for the frontend service
