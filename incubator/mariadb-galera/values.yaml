@@ -1,0 +1,50 @@
+## Adfinis SyGroup MariaDB Galera image version
+## ref: https://hub.docker.com/r/adfinissygroup/k8s-mariadb-galera-centos/tags/
+##
+## Default: none
+image: adfinissygroup/k8s-mariadb-galera-centos:v002
+
+## Specify an imagePullPolicy (Required)
+## It's recommended to change this to 'Always' if the image tag is 'latest'
+## ref: https://kubernetes.io/docs/user-guide/images/#updating-images
+imagePullPolicy: IfNotPresent
+
+## Specify password for root user
+# mysqlRootPassword:
+
+## Create a database user
+# mysqlUser:
+# mysqlPassword:
+
+## Create a database
+# mysqlDatabase:
+
+## Number of pods in the StatefulSet
+replicas: 3
+
+## Enable persistence using Persistent Volume Claims
+## ref: https://kubernetes.io/docs/user-guide/persistent-volumes/
+##
+persistence:
+  enabled: true
+  ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
+  ## Default: volume.alpha.kubernetes.io/storage-class: default
+  ##
+  # storageClass:
+  accessMode: ReadWriteOnce
+  size: 8Gi
+
+## Configure MariaDB with a custom my.cnf file
+## ref: https://mariadb.com/kb/en/mariadb/configuring-mariadb-with-mycnf/#example-of-configuration-file
+##
+# config: |-
+  # [mysqld]
+  # innodb_buffer_pool_size=2G
+
+## Configure resource requests and limits
+## ref: https://kubernetes.io/docs/user-guide/compute-resources/
+##
+resources:
+  requests:
+    memory: 256Mi
+    cpu: 250m
