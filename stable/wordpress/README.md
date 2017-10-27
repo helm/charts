@@ -55,21 +55,24 @@ The following tables lists the configurable parameters of the WordPress chart an
 | `wordpressFirstName`                 | First name                                 | `FirstName`                                                |
 | `wordpressLastName`                  | Last name                                  | `LastName`                                                 |
 | `wordpressBlogName`                  | Blog name                                  | `User's Blog!`                                             |
-| `allowEmptyPassword`                 | Allow DB blank passwords                   | `yes`                                          |
+| `allowEmptyPassword`                 | Allow DB blank passwords                   | `yes`                                                      |
 | `smtpHost`                           | SMTP host                                  | `nil`                                                      |
 | `smtpPort`                           | SMTP port                                  | `nil`                                                      |
 | `smtpUser`                           | SMTP user                                  | `nil`                                                      |
 | `smtpPassword`                       | SMTP password                              | `nil`                                                      |
 | `smtpUsername`                       | User name for SMTP emails                  | `nil`                                                      |
 | `smtpProtocol`                       | SMTP protocol [`tls`, `ssl`]               | `nil`                                                      |
+| `deployMariadb`                      | Deploy MariaDB container(s)                | `true`                                                     |
+| `mariadb.mariadbHostname`            | MariaDB Hostname if deployMariadb is false | `nil`                                                      |
 | `mariadb.mariadbRootPassword`        | MariaDB admin password                     | `nil`                                                      |
-| `mariadb.mariadbDatabase`            | Database name to create                    | `bitnami_wordpress`                            |
-| `mariadb.mariadbUser`                | Database user to create                    | `bn_wordpress`                                 |
-| `mariadb.mariadbPassword`            | Password for the database                  | _random 10 character long alphanumeric string_ |
+| `mariadb.mariadbDatabase`            | Database name to create                    | `bitnami_wordpress`                                        |
+| `mariadb.mariadbUser`                | Database user to create                    | `bn_wordpress`                                             |
+| `mariadb.mariadbPassword`            | Password for the database                  | _random 10 character long alphanumeric string_             |
 | `serviceType`                        | Kubernetes Service type                    | `LoadBalancer`                                             |
-| `healthcheckHttps`                   | Use https for liveliness and readiness     | `false`                                             |
+| `healthcheckHttps`                   | Use https for liveliness and readiness     | `false`                                                    |
 | `ingress.enabled`                    | Enable ingress controller resource         | `false`                                                    |
 | `ingress.hosts[0].name`              | Hostname to your WordPress installation    | `wordpress.local`                                          |
+| `ingress.hosts[0].path`              | Path within the url structure              | `/`                                                        |
 | `ingress.hosts[0].tls`               | Utilize TLS backend in ingress             | `false`                                                    |
 | `ingress.hosts[0].tlsSecret`         | TLS Secret (certificates)                  | `wordpress.local-tls-secret`                               |
 | `ingress.hosts[0].annotations`       | Annotations for this host's ingress record | `[]`                                                       |
