@@ -1,4 +1,11 @@
+
+##############################################################################
+This chart has been deprecated in favor of the official GitLab chart:
+http://docs.gitlab.com/ce/install/kubernetes/gitlab_omnibus.html
+##############################################################################
+
 {{- if default "" .Values.externalUrl }}
+
 1. Get your GitLab URL by running:
 
 {{- if contains "NodePort" .Values.serviceType }}

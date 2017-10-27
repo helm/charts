@@ -12,7 +12,7 @@ server:
   ## Bitnami Parse image version
   ## ref: https://hub.docker.com/r/bitnami/parse/tags/
   ##
-  image: bitnami/parse:2.6.2-r0
+  image: bitnami/parse:2.6.4-r0
 
   ## Specify a imagePullPolicy
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images

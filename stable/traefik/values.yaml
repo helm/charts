@@ -1,9 +1,9 @@
-# Default values for Traefik
+## Default values for Traefik
 image: traefik
-imageTag: 1.3.8
+imageTag: 1.4.1
 serviceType: LoadBalancer
 loadBalancerIP:
-#loadBalancerSourceRanges: []
+# loadBalancerSourceRanges: []
 replicas: 1
 cpuRequest: 100m
 memoryRequest: 20Mi
@@ -12,12 +12,12 @@ memoryLimit: 30Mi
 debug:
   enabled: false
 nodeSelector: {}
-  #key: value
+  # key: value
 tolerations: []
-  #- key: "key"
-  #operator: "Equal|Exists"
-  #value: "value"
-  #effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
+# - key: "key"
+#   operator: "Equal|Exists"
+#   value: "value"
+#   effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
 ssl:
   enabled: false
   enforced: false
@@ -27,8 +27,8 @@ acme:
   enabled: false
   email: admin@example.com
   staging: true
-  # Save ACME certs to a persistent volume. WARNING: If you do not do this, you will re-request
-  # certs every time a pod (re-)starts and you WILL be rate limited!
+  ## Save ACME certs to a persistent volume. WARNING: If you do not do this, you will re-request
+  ## certs every time a pod (re-)starts and you WILL be rate limited!
   persistence:
     enabled: true
     ## acme data Persistent Volume Storage Class
@@ -65,25 +65,24 @@ accessLogs:
   ## Path to the access logs file. If not provided, Traefik defaults it to stdout.
   # filePath: ""
   format: common  # choices are: common, json
-# Kubernetes ingress filters
-#kubernetes:
-#  namespaces:
-#  - default
-#  labelSelector:
+  ## Kubernetes ingress filters
+  # kubernetes:
+  #   namespaces:
+  #   - default
+  #   labelSelector:
 rbac:
   enabled: false
-# Enable the /metrics endpoint, for now only supports prometheus
-# set to true to enable metric collection by prometheus
+## Enable the /metrics endpoint, for now only supports prometheus
+## set to true to enable metric collection by prometheus
 metrics:
   prometheus:
     enabled: false
     buckets: 0.1,0.3,1.2,5
   datadog:
     enabled: false
-#    address: "localhost:8125"
-#    pushInterval: 30s
+    # address: "localhost:8125"
+    # pushInterval: 30s
   statsd:
     enabled: false
-#    address: "localhost:8125"
-#    pushInterval: 30s
-
+    # address: "localhost:8125"
+    # pushInterval: 30s
