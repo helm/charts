@@ -20,8 +20,6 @@ resources:
       cpu: 100m
     limits:
       memory: 200Mi
-
-
 ## Enable persistence using Persistent Volume Claims
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
 ##
@@ -30,7 +28,6 @@ persistentVolume:
   ## If false, use emptyDir
   ##
   enabled: false
-
   ## Redis data Persistent Volume access modes
   ## Must match those of existing PV or dynamic provisioner
   ## Ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
@@ -41,16 +38,13 @@ persistentVolume:
   ## Redis data Persistent Volume Claim annotations
   ##
   annotations: {}
-
   ## Redis data Persistent Volume existing claim name
   ## Requires alertmanager.persistentVolume.enabled: true
   ## If defined, PVC must be created manually before volume will be bound
   existingClaim: ""
-
   ## Redis data Persistent Volume mount root path
   ##
   mountPath: /data
-
   ## alertmanager data Persistent Volume size
   ##
   size: 2Gi
@@ -60,19 +54,13 @@ persistentVolume:
   ## Default: volume.alpha.kubernetes.io/storage-class: default
   ##
   storageClass: ""
-
   ## Subdirectory of redis data Persistent Volume to mount
   ## Useful if the volume's root directory is not empty
   ##
   subPath: ""
-
 ## Redis image version
-redis_image: gcr.io/google_containers/redis:v1
-
-
-
+redis_image: quay.io/smile/redis:4.0.2
 ## replicas number for each component
-
 replicas:
   master: 1
   slave: 1
