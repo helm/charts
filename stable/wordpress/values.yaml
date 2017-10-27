@@ -53,10 +53,17 @@ allowEmptyPassword: yes
 # smtpUsername:
 # smtpProtocol:
 
+## Deploy MariaDB containers
+deployMariadb: true
+
 ##
 ## MariaDB chart configuration
 ##
 mariadb:
+  ## MariaDB Hostname
+  ## If you would prefer to use a preexisting database host setdeployMariadb to false and then enter the hostname below
+  # mariadbHostname:
+
   ## MariaDB admin password
   ## ref: https://github.com/bitnami/bitnami-docker-mariadb/blob/master/README.md#setting-the-root-password-on-first-run
   ##

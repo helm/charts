@@ -31,7 +31,11 @@ spec:
               name: {{ template "mariadb.fullname" . }}
               key: mariadb-root-password
         - name: MARIADB_HOST
+{{- if .Values.deployMariadb }}
           value: {{ template "mariadb.fullname" . }}
+{{- else }}
+          value: {{ default "" .Values.mariadb.mariadbHostname | quote }}
+{{- end }}
         - name: MARIADB_PORT_NUMBER
           value: "3306"
         - name: WORDPRESS_DATABASE_NAME

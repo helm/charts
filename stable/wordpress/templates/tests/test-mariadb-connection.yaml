@@ -10,7 +10,11 @@ spec:
     image: {{ .Values.image }}
     env:
       - name: MARIADB_HOST
+{{- if .Values.deployMariadb }}
         value: {{ template "mariadb.fullname" . }}
+{{- else }}
+        value: {{ default "" .Values.mariadb.mariadbHostname | quote }}
+{{- end }}
       - name: MARIADB_PORT
         value: "3306"
       - name: WORDPRESS_DATABASE_NAME
