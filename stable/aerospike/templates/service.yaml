@@ -25,6 +25,9 @@ spec:
     - port: 3000
       protocol: TCP
       name: aerospike-client
+    - port: 3002
+      protocol: TCP
+      name: aerospike-mesh
   selector:
     app: {{ template "name" . }}
     release: {{ .Release.Name }}
