@@ -47,7 +47,7 @@ Parameter | Description | Default
 `config.LEGO_URL` | Let's Encrypt API endpoint. To get "real" certificates set to the production API of Let's Encrypt: https://acme-v01.api.letsencrypt.org/directory | `https://acme-staging.api.letsencrypt.org/directory` (staging)
 `config.LEGO_PORT` | kube-lego port | `8080`
 `image.repository` | kube-lego container image repository | `jetstack/kube-lego`
-`image.tag` | kube-lego container image tag | `0.1.3`
+`image.tag` | kube-lego container image tag | `0.1.5`
 `image.pullPolicy` | kube-lego container image pull policy | `IfNotPresent`
 `nodeSelector` | node labels for pod assignment | `{}`
 `podAnnotations` | annotations to be added to pods | `{}`
