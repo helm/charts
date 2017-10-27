@@ -15,3 +15,5 @@ details:
   This package provides a highly available Redis cluster with multiple sentinels and standbys.
   Note the `redis-master` pod is used for bootstrapping only and can be deleted once
   the cluster is up and running.
+sources:
+  - https://github.com/smileisak/docker-images/tree/master/redis
