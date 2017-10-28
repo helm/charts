@@ -56,7 +56,7 @@ deck:
       # ingress.kubernetes.io/ssl-redirect: 'true'
       # kubernetes.io/ingress.class: nginx
       # kubernetes.io/tls-acme: "true"
-    #tls:
+    # tls:
     #  - secretName: -tls
     #    hosts:
     #      - domain.com
@@ -111,7 +111,7 @@ jenkins:
     ServiceType: ClusterIP
     CustomConfigMap: true
     InstallPlugins:
-      - kubernetes:0.11 
+      - kubernetes:0.11
       - workflow-aggregator:2.5
       - workflow-job:2.11
       - credentials-binding:1.12
