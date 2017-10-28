@@ -15,14 +15,14 @@ spec:
     metadata:
     {{- if .Values.defaultBackend.podAnnotations }}
       annotations:
-{{ toYaml .Values.defaultBackend.podAnnotations | indent 8 }}
+        {{- toYaml .Values.defaultBackend.podAnnotations | nindent 8 }}
     {{- end }}
       labels:
         app: {{ template "name" . }}
         component: "{{ .Values.defaultBackend.name }}"
         release: {{ .Release.Name }}
         {{- if .Values.defaultBackend.podLabels }}
-{{ toYaml .Values.defaultBackend.podLabels | indent 8 }}
+        {{- toYaml .Values.defaultBackend.podLabels | nindent 8 }}
         {{- end }}
     spec:
       containers:
@@ -48,14 +48,14 @@ spec:
             - containerPort: 8080
               protocol: TCP
           resources:
-{{ toYaml .Values.defaultBackend.resources | indent 12 }}
+            {{- toYaml .Values.defaultBackend.resources | nindent 12 }}
     {{- if .Values.defaultBackend.nodeSelector }}
       nodeSelector:
-{{ toYaml .Values.defaultBackend.nodeSelector | indent 8 }}
+        {{- toYaml .Values.defaultBackend.nodeSelector | nindent 8 }}
     {{- end }}
     {{- if .Values.defaultBackend.tolerations }}
       tolerations:
-{{ toYaml .Values.defaultBackend.tolerations | indent 8 }}
+        {{- toYaml .Values.defaultBackend.tolerations | nindent 8 }}
     {{- end }}
       terminationGracePeriodSeconds: 60
 {{- end }}

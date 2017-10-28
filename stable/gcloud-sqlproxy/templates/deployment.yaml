@@ -20,7 +20,7 @@ spec:
         image: "{{ .Values.image }}:{{ .Values.imageTag }}"
         imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
         resources:
-{{ toYaml .Values.resources | indent 10 }}
+          {{- toYaml .Values.resources | nindent 10 }}
         command: ["/cloud_sql_proxy", "--dir=/cloudsql",
                   "-instances={{ .Values.cloudsql.instance }}=tcp:0.0.0.0:{{ .Values.cloudsql.port }}",
                   "-credential_file=/secrets/cloudsql/credentials.json"]
@@ -44,5 +44,5 @@ spec:
       - name: cloudsql
         emptyDir: {}
       nodeSelector:
-{{ toYaml .Values.nodeSelector | indent 8 }}
+        {{- toYaml .Values.nodeSelector | nindent 8 }}
 {{- end }}

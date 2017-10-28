@@ -21,7 +21,7 @@ spec:
         args:
           - server
         resources:
-{{ toYaml .Values.server.resources | indent 10 }}
+          {{- toYaml .Values.server.resources | nindent 10 }}
         env:
         - name: API_HOST
           value: localhost
@@ -48,7 +48,7 @@ spec:
         args:
           - api
         resources:
-{{ toYaml .Values.api.resources | indent 10 }}
+          {{- toYaml .Values.api.resources | nindent 10 }}
         env:
         - name: REDIS_HOST
           value: {{ template "sensu.redis.fullname" . }}

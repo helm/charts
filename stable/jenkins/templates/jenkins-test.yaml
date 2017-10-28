@@ -7,11 +7,11 @@ metadata:
 spec:
   {{- if .Values.Master.NodeSelector }}
   nodeSelector:
-{{ toYaml .Values.Master.NodeSelector | indent 4 }}
+    {{- toYaml .Values.Master.NodeSelector | nindent 4 }}
   {{- end }}
   {{- if .Values.Master.Tolerations }}
   tolerations:
-{{ toYaml .Values.Master.Tolerations | indent 4 }}
+    {{- toYaml .Values.Master.Tolerations | nindent 4 }}
   {{- end }}
   initContainers:
     - name: "test-framework"

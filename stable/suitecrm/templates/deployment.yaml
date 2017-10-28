@@ -77,7 +77,7 @@ spec:
               value: {{ include "host" . | quote }}
           initialDelaySeconds: 60
         resources:
-{{ toYaml .Values.resources | indent 10 }}
+          {{- toYaml .Values.resources | nindent 10 }}
         volumeMounts:
         - name: suitecrm-data
           mountPath: /bitnami/suitecrm

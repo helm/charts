@@ -80,5 +80,5 @@ spec:
               port: 9000
             timeoutSeconds: 1
           resources:
-{{ toYaml .Values.resources | indent 12 }}
+            {{- toYaml .Values.resources | nindent 12 }}
 {{- end }}

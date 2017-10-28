@@ -20,7 +20,7 @@ spec:
         image: "{{ .Values.image.repo }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ default "" .Values.image.pullPolicy | quote }}
         resources:
-{{ toYaml .Values.single.resources | indent 10 }}
+          {{- toYaml .Values.single.resources | nindent 10 }}
         volumeMounts:
         - name: config
           mountPath: /etc/telegraf

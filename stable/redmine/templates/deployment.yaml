@@ -20,7 +20,7 @@ spec:
         imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
         env:
         {{- if .Values.extraVars }}
-{{ toYaml .Values.extraVars | indent 8 }}
+        {{- toYaml .Values.extraVars | nindent 8 }}
         {{- end }}
         {{- if .Values.databaseType.postgresql }}
         - name: REDMINE_DB_POSTGRES

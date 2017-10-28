@@ -4,7 +4,7 @@ kind: Ingress
 metadata:
 {{- if .Values.Master.Ingress.Annotations }}
   annotations:
-{{ toYaml .Values.Master.Ingress.Annotations | indent 4 }}
+    {{- toYaml .Values.Master.Ingress.Annotations | nindent 4 }}
 {{- end }}
   name: {{ template "jenkins.fullname" . }}
 spec:
@@ -17,6 +17,6 @@ spec:
           servicePort: {{ .Values.Master.ServicePort }}
 {{- if .Values.Master.Ingress.TLS }}
   tls:
-{{ toYaml .Values.Master.Ingress.TLS | indent 4 }}
+    {{- toYaml .Values.Master.Ingress.TLS | nindent 4 }}
 {{- end -}}
 {{- end }}

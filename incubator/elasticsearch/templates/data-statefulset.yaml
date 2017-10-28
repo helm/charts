@@ -93,7 +93,7 @@ spec:
         - containerPort: 9300
           name: transport
         resources:
-{{ toYaml .Values.data.resources | indent 12 }}
+            {{- toYaml .Values.data.resources | nindent 12 }}
         readinessProbe:
           httpGet:
             path: /_cluster/health?local=true

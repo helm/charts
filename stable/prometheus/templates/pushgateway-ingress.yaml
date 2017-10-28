@@ -28,6 +28,6 @@ spec:
   {{- end -}}
 {{- if .Values.pushgateway.ingress.tls }}
   tls:
-{{ toYaml .Values.pushgateway.ingress.tls | indent 4 }}
+    {{- toYaml .Values.pushgateway.ingress.tls | nindent 4 }}
   {{- end -}}
 {{- end -}}

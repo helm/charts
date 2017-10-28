@@ -15,11 +15,11 @@ spec:
     spec:
       {{- if .Values.nodeSelector }}
       nodeSelector:
-{{ toYaml .Values.nodeSelector | indent 8 }}
+        {{- toYaml .Values.nodeSelector | nindent 8 }}
       {{- end }}
       {{- if .Values.tolerations }}
       tolerations:
-{{ toYaml .Values.tolerations | indent 8 }}
+        {{- toYaml .Values.tolerations | nindent 8 }}
       {{- end }}
       containers:
       - name: {{ template "postgresql.fullname" . }}
@@ -66,7 +66,7 @@ spec:
           timeoutSeconds: 3
           periodSeconds: 5
         resources:
-{{ toYaml .Values.resources | indent 10 }}
+          {{- toYaml .Values.resources | nindent 10 }}
         volumeMounts:
         - name: data
           mountPath: /var/lib/postgresql/data/pgdata
@@ -89,7 +89,7 @@ spec:
             readOnly: true
         {{- end }}
         resources:
-{{ toYaml .Values.metrics.resources | indent 10 }}
+          {{- toYaml .Values.metrics.resources | nindent 10 }}
 {{- end }}
       volumes:
       - name: data

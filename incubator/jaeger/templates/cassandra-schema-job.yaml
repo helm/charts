@@ -11,7 +11,7 @@ metadata:
     release: "{{ .Release.Name }}"
 {{- if .Values.schema.annotations }}
   annotations:
-{{ toYaml .Values.schema.annotations | indent 6 }}
+      {{- toYaml .Values.schema.annotations | nindent 6 }}
 {{- end }}
 spec:
   activeDeadlineSeconds: 120

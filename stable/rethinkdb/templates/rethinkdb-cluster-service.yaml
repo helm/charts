@@ -10,7 +10,7 @@ metadata:
   annotations:
     service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
   {{- if .Values.cluster.service.annotations }}
-{{ toYaml .Values.cluster.service.annotations | indent 4 }}
+    {{- toYaml .Values.cluster.service.annotations | nindent 4 }}
   {{- end }}
 spec:
   clusterIP: None

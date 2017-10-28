@@ -13,7 +13,7 @@ spec:
       name: {{ template "fullname" . }}
     {{- if .Values.podAnnotations }}
       annotations:
-{{ toYaml .Values.podAnnotations | indent 8 }}
+        {{- toYaml .Values.podAnnotations | nindent 8 }}
     {{- end }}
       labels:
         app: {{ template "name" . }}
@@ -24,7 +24,7 @@ spec:
           image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{.Values.image.pullPolicy}}
           resources:
-{{ toYaml .Values.resources | indent 12 }}
+            {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
             - name: host-logs
               mountPath: /mnt/log/
@@ -144,7 +144,7 @@ spec:
             path: /var/lib/docker
     {{- if .Values.tolerations }}
       tolerations:
-{{ toYaml .Values.tolerations | indent 8 }}
+        {{- toYaml .Values.tolerations | nindent 8 }}
     {{- end }}
   updateStrategy:
     type: "{{ .Values.updateStrategy }}"

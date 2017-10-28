@@ -113,7 +113,7 @@ spec:
           name: wordpress-data
           subPath: php
         resources:
-{{ toYaml .Values.resources | indent 10 }}
+          {{- toYaml .Values.resources | nindent 10 }}
       volumes:
       - name: wordpress-data
       {{- if .Values.persistence.enabled }}
@@ -124,5 +124,5 @@ spec:
       {{ end }}
     {{- if .Values.nodeSelector }}
       nodeSelector:
-{{ toYaml .Values.nodeSelector | indent 8 }}
+        {{- toYaml .Values.nodeSelector | nindent 8 }}
       {{- end -}}

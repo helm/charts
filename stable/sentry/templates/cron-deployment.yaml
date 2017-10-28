@@ -63,4 +63,4 @@ spec:
               name: {{ template "fullname" . }}
               key: smtp-password
         resources:
-{{ toYaml .Values.cron.resources | indent 12 }}
+            {{- toYaml .Values.cron.resources | nindent 12 }}

@@ -12,7 +12,7 @@ spec:
     metadata:
     {{- if .Values.podAnnotations }}
       annotations:
-{{ toYaml .Values.podAnnotations | indent 8 }}
+        {{- toYaml .Values.podAnnotations | nindent 8 }}
     {{- end }}
       labels:
         app: {{ template "mailhog.name" . }}
@@ -57,10 +57,10 @@ spec:
               readOnly: true
           {{- end }}
           resources:
-{{ toYaml .Values.resources | indent 12 }}
+            {{- toYaml .Values.resources | nindent 12 }}
     {{- if .Values.nodeSelector }}
       nodeSelector:
-{{ toYaml .Values.nodeSelector | indent 8 }}
+        {{- toYaml .Values.nodeSelector | nindent 8 }}
     {{- end }}
     {{- if .Values.auth.enabled }}
       volumes:

@@ -4,7 +4,7 @@ kind: Ingress
 metadata:
 {{- if .Values.ingress.annotations }}
   annotations:
-{{ toYaml .Values.ingress.annotations | indent 4 }}
+    {{- toYaml .Values.ingress.annotations | nindent 4 }}
 {{- end }}
   name: {{ template "redmine.fullname" . }}
 spec:
@@ -18,6 +18,6 @@ spec:
           servicePort: 80
 {{- if .Values.ingress.tls }}
   tls:
-{{ toYaml .Values.ingress.tls | indent 4 }}
+    {{- toYaml .Values.ingress.tls | nindent 4 }}
 {{- end -}}
 {{- end }}

@@ -136,7 +136,7 @@ spec:
           volume.alpha.kubernetes.io/storage-class: default
         {{- end }}
         {{- if .Values.persistentVolume.annotations }}
-{{ toYaml .Values.persistentVolume.annotations | indent 8 }}
+        {{- toYaml .Values.persistentVolume.annotations | nindent 8 }}
         {{- end }}
         labels:
           heritage: {{.Release.Service | quote }}
@@ -145,7 +145,7 @@ spec:
           component: "{{ .Release.Name }}-{{ .Values.Component }}"
       spec:
         accessModes:
-{{ toYaml .Values.persistentVolume.accessModes | indent 8 }}
+        {{- toYaml .Values.persistentVolume.accessModes | nindent 8 }}
         resources:
           requests:
             storage: "{{ .Values.persistentVolume.size }}"

@@ -51,7 +51,7 @@ spec:
            - "/tmp/hadoop-config/bootstrap.sh"
            - "-d"
         resources:       
-{{ toYaml .Values.hdfs.dataNode.resources | indent 10 }}
+          {{- toYaml .Values.hdfs.dataNode.resources | nindent 10 }}
         readinessProbe:
           httpGet:
             path: /

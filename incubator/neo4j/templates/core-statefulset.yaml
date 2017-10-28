@@ -56,14 +56,14 @@ spec:
           mountPath: "{{ .Values.core.persistentVolume.mountPath }}"
           subPath: "{{ .Values.core.persistentVolume.subPath }}"
         resources:
-{{ toYaml .Values.resources | indent 10 }}
+          {{- toYaml .Values.resources | nindent 10 }}
 
   volumeClaimTemplates:
     - metadata:
         name: datadir
         annotations:
         {{- if .Values.core.persistentVolume.annotations }}
-{{ toYaml .Values.core.persistentVolume.annotations | indent 12 }}
+            {{- toYaml .Values.core.persistentVolume.annotations | nindent 12 }}
         {{- end }}
       spec:
         accessModes:

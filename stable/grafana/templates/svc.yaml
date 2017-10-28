@@ -3,7 +3,7 @@ kind: Service
 metadata:
 {{- if .Values.server.service.annotations }}
   annotations:
-{{ toYaml .Values.server.service.annotations | indent 4 }}
+    {{- toYaml .Values.server.service.annotations | nindent 4 }}
 {{- end }}
   labels:
     app: {{ template "grafana.fullname" . }}

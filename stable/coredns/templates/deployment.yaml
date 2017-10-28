@@ -49,7 +49,7 @@ spec:
         - name: config-volume
           mountPath: /etc/coredns
         resources:
-{{ toYaml .Values.resources | indent 10 }}
+          {{- toYaml .Values.resources | nindent 10 }}
         ports:
         {{- if or (eq .Values.serviceProtocol "UDPNTCP") (eq .Values.serviceProtocol "UDP") }}
         - containerPort: 53

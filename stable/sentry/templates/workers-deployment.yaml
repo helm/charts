@@ -63,4 +63,4 @@ spec:
               name: {{ template "fullname" . }}
               key: smtp-password
         resources:
-{{ toYaml .Values.worker.resources | indent 12 }}
+            {{- toYaml .Values.worker.resources | nindent 12 }}

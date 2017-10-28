@@ -25,7 +25,7 @@ spec:
         - name: master
           image: {{ .Values.redis_image }}
           resources:
-{{ toYaml .Values.resources.master | indent 12 }}
+            {{- toYaml .Values.resources.master | nindent 12 }}
           env:
             - name: MASTER
               value: "true"
@@ -38,7 +38,7 @@ spec:
         - name: sentinel
           image: {{ .Values.redis_image }}
           resources:
-{{ toYaml .Values.resources.sentinel | indent 12 }}
+            {{- toYaml .Values.resources.sentinel | nindent 12 }}
           env:
             - name: SENTINEL
               value: "true"

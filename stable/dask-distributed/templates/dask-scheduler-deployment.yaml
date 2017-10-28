@@ -27,4 +27,4 @@ spec:
             - containerPort: {{ .Values.scheduler.containerPort }}
             - containerPort: {{ .Values.webUI.containerPort }}
           resources:
-{{ toYaml .Values.scheduler.resources | indent 12 }}
+            {{- toYaml .Values.scheduler.resources | nindent 12 }}

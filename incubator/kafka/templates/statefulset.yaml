@@ -42,7 +42,7 @@ spec:
         - containerPort: 9092
           name: kafka
         resources:
-{{ toYaml .Values.resources | indent 10 }}
+          {{- toYaml .Values.resources | nindent 10 }}
         command:
         - sh
         - -c

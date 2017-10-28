@@ -11,7 +11,7 @@ metadata:
     release: "{{ .Release.Name }}"
 {{- if .Values.agent.annotations }}
   annotations:
-{{ toYaml .Values.agent.annotations | indent 6 }}
+      {{- toYaml .Values.agent.annotations | nindent 6 }}
 {{- end }}
 spec:
   template:
@@ -23,7 +23,7 @@ spec:
         jaeger-infra: agent-instance
     spec:
       nodeSelector:
-{{ toYaml .Values.agent.nodeSelector | indent 8 }}
+        {{- toYaml .Values.agent.nodeSelector | nindent 8 }}
       containers:
       - name: "{{ template "jaeger.fullname" . }}-agent"
         image: "{{ .Values.agent.image }}:{{ .Values.agent.tag }}"
@@ -42,4 +42,4 @@ spec:
         - containerPort: {{ .Values.agent.service.binaryPort }}
           protocol: UDP
         resources:
-{{ toYaml .Values.agent.resources | indent 10 }}
+          {{- toYaml .Values.agent.resources | nindent 10 }}

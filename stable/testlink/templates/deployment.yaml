@@ -70,7 +70,7 @@ spec:
             port: http
           initialDelaySeconds: 30
         resources:
-{{ toYaml .Values.resources | indent 10 }}
+          {{- toYaml .Values.resources | nindent 10 }}
         volumeMounts:
         - name: testlink-data
           mountPath: /bitnami/testlink

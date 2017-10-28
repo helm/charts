@@ -76,5 +76,5 @@ spec:
               value: {{ .Values.firefox.timeZone | quote }}
             {{- end }}
           resources:
-{{ toYaml .Values.firefox.resources | indent 12 }}
+            {{- toYaml .Values.firefox.resources | nindent 12 }}
 {{- end -}}

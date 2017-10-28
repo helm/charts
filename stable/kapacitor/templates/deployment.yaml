@@ -35,7 +35,7 @@ spec:
         - name: data
           mountPath: /var/lib/kapacitor
         resources:
-{{ toYaml .Values.resources | indent 12 }}
+            {{- toYaml .Values.resources | nindent 12 }}
       volumes:
         - name: data
         {{- if .Values.persistence.enabled }}

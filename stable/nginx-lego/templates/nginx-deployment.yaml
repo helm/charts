@@ -31,7 +31,7 @@ spec:
         - containerPort: 8080
 {{- end }}
         resources:
-{{ toYaml .Values.nginx.resources | indent 10 }}
+          {{- toYaml .Values.nginx.resources | nindent 10 }}
         args:
         - /nginx-ingress-controller
         - --default-backend-service={{ .Release.Namespace }}/{{ template "nginx-lego.fullname" . }}-default-backend

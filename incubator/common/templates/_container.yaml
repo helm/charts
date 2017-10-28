@@ -6,7 +6,7 @@ ports:
 - name: http
   containerPort: 80
 resources:
-{{ toYaml .Values.resources | indent 2 }}
+  {{- toYaml .Values.resources | nindent 2 }}
 {{- end -}}
 {{- define "common.container" -}}
 {{- /* clear new line so indentation works correctly */ -}}

@@ -27,6 +27,6 @@ spec:
   {{- end -}}
   {{- if .Values.server.ingress.tls }}
   tls:
-{{ toYaml .Values.server.ingress.tls | indent 4 }}
+    {{- toYaml .Values.server.ingress.tls | nindent 4 }}
   {{- end -}}
 {{- end -}}

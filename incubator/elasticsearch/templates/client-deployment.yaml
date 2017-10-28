@@ -80,7 +80,7 @@ spec:
           value: {{ $value | quote }}
         {{- end }}
         resources:
-{{ toYaml .Values.client.resources | indent 12 }}
+            {{- toYaml .Values.client.resources | nindent 12 }}
         readinessProbe:
           httpGet:
             path: /_cluster/health?wait_for_status=yellow

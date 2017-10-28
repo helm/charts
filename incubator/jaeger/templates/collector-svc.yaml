@@ -11,7 +11,7 @@ metadata:
     release: "{{ .Release.Name }}"
 {{- if .Values.collector.service.annotations }}
   annotations:
-{{ toYaml .Values.collector.service.annotations | indent 6 }}
+      {{- toYaml .Values.collector.service.annotations | nindent 6 }}
 {{- end }}
 spec:
   ports:

@@ -57,7 +57,7 @@ spec:
            - "/tmp/hadoop-config/bootstrap.sh"
            - "-d"
         resources:
-{{ toYaml .Values.yarn.nodeManager.resources | indent 10 }}
+          {{- toYaml .Values.yarn.nodeManager.resources | nindent 10 }}
         readinessProbe:
           httpGet:
             path: /node

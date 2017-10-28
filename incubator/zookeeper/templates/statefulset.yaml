@@ -42,7 +42,7 @@ spec:
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         image: gcr.io/google_samples/k8szk:v2
         resources:
-{{ toYaml .Values.resources | indent 10 }}
+          {{- toYaml .Values.resources | nindent 10 }}
         ports:
         - containerPort: {{ .Values.clientPort }}
           name: client

@@ -93,7 +93,7 @@ spec:
                   name: {{ template "minio.fullname" . }}-user
                   key: secretkey
           resources:
-{{ toYaml .Values.resources | indent 12 }}
+            {{- toYaml .Values.resources | nindent 12 }}
   volumeClaimTemplates:
     - metadata:
         name: export

@@ -18,7 +18,7 @@ spec:
       - name: redis
         image: "{{ .Values.redis_image }}"
         resources:
-{{ toYaml .Values.resources.slave | indent 10 }}
+          {{- toYaml .Values.resources.slave | nindent 10 }}
         ports:
         - containerPort: 6379
         volumeMounts:

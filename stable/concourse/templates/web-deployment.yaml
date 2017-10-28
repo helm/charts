@@ -260,15 +260,15 @@ spec:
             initialDelaySeconds: 5
             timeoutSeconds: 1
           resources:
-{{ toYaml .Values.web.resources | indent 12 }}
+            {{- toYaml .Values.web.resources | nindent 12 }}
           volumeMounts:
             - name: concourse-keys
               mountPath: /concourse-keys
               readOnly: true
       affinity:
-{{- if .Values.web.additionalAffinities }}
-{{ toYaml .Values.web.additionalAffinities | indent 8 }}
-{{- end }}
+        {{- if .Values.web.additionalAffinities }}
+        {{- toYaml .Values.web.additionalAffinities | nindent 8 }}
+        {{- end }}
       volumes:
         - name: concourse-keys
           secret:

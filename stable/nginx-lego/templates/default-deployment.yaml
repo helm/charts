@@ -18,4 +18,4 @@ spec:
         ports:
         - containerPort: 8080
         resources:
-{{ toYaml .Values.default.resources | indent 10 }}
+          {{- toYaml .Values.default.resources | nindent 10 }}

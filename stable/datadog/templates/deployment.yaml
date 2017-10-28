@@ -19,7 +19,7 @@ spec:
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         resources:
-{{ toYaml .Values.resources | indent 12 }}
+            {{- toYaml .Values.resources | nindent 12 }}
         ports:
         - containerPort: 8125
           name: dogstatsdport
@@ -51,9 +51,9 @@ spec:
           - name: KUBERNETES_COLLECT_EVENTS
             value: "yes"
           {{- end }}
-{{- if .Values.datadog.env }}
-{{ toYaml .Values.datadog.env | indent 10 }}
-{{- end }}
+          {{- if .Values.datadog.env }}
+          {{- toYaml .Values.datadog.env | nindent 10 }}
+          {{- end }}
         volumeMounts:
           - name: dockersocket
             mountPath: /var/run/docker.sock
@@ -72,9 +72,9 @@ spec:
           - name: checksd
             mountPath: /checks.d
             readOnly: true
-{{- if .Values.datadog.volumeMounts }}
-{{ toYaml .Values.datadog.volumeMounts | indent 10 }}
-{{- end }}
+          {{- if .Values.datadog.volumeMounts }}
+          {{- toYaml .Values.datadog.volumeMounts | nindent 10 }}
+          {{- end }}
       volumes:
         - hostPath:
             path: /var/run/docker.sock
@@ -94,8 +94,8 @@ spec:
         - name: autoconf
           configMap:
             name: {{ template "datadog.autoconf.fullname" . }}
-{{- if .Values.datadog.volumes }}
-{{ toYaml .Values.datadog.volumes | indent 8 }}
-{{- end }}
+        {{- if .Values.datadog.volumes }}
+        {{- toYaml .Values.datadog.volumes | nindent 8 }}
+        {{- end }}
 {{ end }}
 {{ end }}
