@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "service.fullname" . }}
+  name: {{ template "heapster.service.fullname" . }}
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    app: {{ template "fullname" . }}
+    app: {{ template "heapster.fullname" . }}
     heritage: "{{ .Release.Service }}"
     release: "{{ .Release.Name }}"
     {{- range $key, $value := .Values.service.labels }}
@@ -17,4 +17,4 @@ spec:
     targetPort: {{ .Values.service.internalPort }}
     protocol: TCP
   selector:
-    app: {{ template "fullname" . }}
+    app: {{ template "heapster.fullname" . }}

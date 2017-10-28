@@ -2,9 +2,9 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "minio.fullname" . }}
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "minio.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -14,12 +14,12 @@ spec:
   {{- end }}
   selector:
     matchLabels:
-      app: {{ template "fullname" . }}
+      app: {{ template "minio.fullname" . }}
   template:
     metadata:
-      name: {{ template "fullname" . }}
+      name: {{ template "minio.fullname" . }}
       labels:
-        app: {{ template "fullname" . }}
+        app: {{ template "minio.fullname" . }}
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         release: "{{ .Release.Name }}"
         heritage: "{{ .Release.Service }}"
@@ -34,16 +34,16 @@ spec:
         - name: export
         {{- if .Values.persistence.enabled }}
           persistentVolumeClaim:
-            claimName: {{ template "fullname" . }}
+            claimName: {{ template "minio.fullname" . }}
         {{- else }}
           emptyDir: {}
         {{- end }}
         - name: minio-server-config
           configMap:
-            name: {{ template "fullname" . }}-config-cm
+            name: {{ template "minio.fullname" . }}-config-cm
         - name: minio-user
           secret:
-            secretName: {{ template "fullname" . }}-user
+            secretName: {{ template "minio.fullname" . }}-user
       containers:
         - name: minio
           image: {{ .Values.image }}:{{ .Values.imageTag }}
@@ -68,12 +68,12 @@ spec:
             - name: MINIO_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "fullname" . }}-user
+                  name: {{ template "minio.fullname" . }}-user
                   key: accesskey
             - name: MINIO_SECRET_KEY
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "fullname" . }}-user
+                  name: {{ template "minio.fullname" . }}-user
                   key: secretkey
           livenessProbe:
             tcpSocket:

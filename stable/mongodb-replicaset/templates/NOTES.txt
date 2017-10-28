@@ -1,6 +1,6 @@
 1. After the statefulset is created completely, one can check which instance is primary by running:
 
-    $ for ((i = 0; i < {{ .Values.replicas }}; ++i)); do kubectl exec --namespace {{ .Release.Namespace }} {{ template "fullname" . }}-$i -- sh -c 'mongo --eval="printjson(rs.isMaster())"'; done
+    $ for ((i = 0; i < {{ .Values.replicas }}; ++i)); do kubectl exec --namespace {{ .Release.Namespace }} {{ template "mongodb-replicaset.fullname" . }}-$i -- sh -c 'mongo --eval="printjson(rs.isMaster())"'; done
 
 2. One can insert a key into the primary instance of the mongodb replica set by running the following:
     MASTER_POD_NAME must be replaced with the name of the master found from the previous step.
