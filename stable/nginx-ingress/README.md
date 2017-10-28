@@ -68,6 +68,8 @@ Parameter | Description | Default
 `controller.publishService.pathOverride` | override of the default publish-service name | `""`
 `controller.service.clusterIP` | internal controller cluster service IP | `""`
 `controller.service.externalIPs` | controller service external IP addresses | `[]`
+`controller.service.externalTrafficPolicy` | If `controller.service.type` is `NodePort` or `LoadBalancer`, set this to `Local` to enable [source IP preservation](https://kubernetes.io/docs/tutorials/services/source-ip/#source-ip-for-services-with-typenodeport) | `"Cluster"`
+`controller.service.healthCheckNodePort` | If `controller.service.type` is `NodePort` or `LoadBalancer` and `controller.service.externalTrafficPolicy` is set to `Local`, set this to [the managed health-check port the kube-proxy will expose](https://kubernetes.io/docs/tutorials/services/source-ip/#source-ip-for-services-with-typenodeport). If blank, a random port in the `NodePort` range will be assigned | `""`
 `controller.service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
 `controller.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
 `controller.service.targetPorts.http` | Sets the targetPort that maps to the Ingress' port 80 | `80`
