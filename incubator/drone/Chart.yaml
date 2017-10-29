@@ -1,7 +1,10 @@
 name: drone
+home: https://drone.io/
 version: 0.1.0
+appVersion: 0.8.1
 description: Drone CI
 keywords:
+- continuous-delivery
 - continuous-deployment
 - continuous-integration
 - docker
@@ -9,7 +12,7 @@ keywords:
 - drone.io
 - go
 sources:
-- http://readme.drone.io/
+- https://github.com/drone/drone
 maintainers:
-- name: Matthew Fisher
-  email: mfisher@deis.com
+- name: christian-roggia
+  email: christian.roggia@gmail.com

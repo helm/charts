@@ -1,9 +1,9 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}-agent
+  name: {{ template "drone.fullname" . }}-agent
   labels:
-    app: {{ template "fullname" . }}-agent
+    app: {{ template "drone.fullname" . }}-agent
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -12,24 +12,22 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "fullname" . }}-agent
+        app: {{ template "drone.fullname" . }}-agent
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         release: "{{ .Release.Name }}"
         heritage: "{{ .Release.Service }}"
     spec:
       containers:
-      - name: {{ template "fullname" . }}-agent
-        image: "{{ .Values.image.registry }}/{{ .Values.image.org }}/{{ .Values.image.name }}:{{ .Values.image.tag }}"
-        imagePullPolicy: {{ .Values.image.pullPolicy }}
-        args:
-          - "agent"
+      - name: {{ template "drone.fullname" . }}-agent
+        image: "{{ .Values.agentImage.repository }}:{{ .Values.agentImage.tag }}"
+        imagePullPolicy: {{ .Values.agentImage.pullPolicy }}
         env:
           - name: DRONE_SERVER
-            value: ws://{{ template "fullname" . }}/ws/broker
+            value: ws://{{ template "drone.fullname" . }}/ws/broker
           - name: DRONE_SECRET
             valueFrom:
               secretKeyRef:
-                name: {{ template "fullname" . }}
+                name: {{ template "drone.fullname" . }}
                 key: secret
           - name: DOCKER_HOST
             value: tcp://localhost:2375
@@ -39,7 +37,7 @@ spec:
           {{ end }}
         resources:
 {{ toYaml .Values.agent.resources | indent 10 }}
-      - name: {{ template "fullname" . }}-dind
+      - name: {{ template "drone.fullname" . }}-dind
         image: docker:17.05.0-ce-dind
         env:
         - name: DOCKER_DRIVER

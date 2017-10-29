@@ -16,12 +16,11 @@ This chart stands up a Drone server. This includes:
 
 ## Installing the Chart
 
-To install the chart, run:
+To install the chart with the release name `my-release`:
 
 ```bash
 $ helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
-$ helm fetch incubator/drone --untar
-$ $EDITOR drone/values.yaml
+$ helm install --name my-release incubator/drone
 ```
 
 You will need to specify custom git parameters in order for the drone server to work.
@@ -35,16 +34,6 @@ $ helm install ./drone
 
 ## Configuration
 
-Please refer to [values.yaml](values.yaml) for the full run-down on defaults. These are a mixture
-of Kubernetes and drone directives.
-
-Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
-
-Alternatively, a YAML file that specifies the values for the parameters can be provided while
-installing the chart. For example,
-
-```bash
-$ helm inspect values incubator/drone > values.yaml
-$ $EDITOR values.yaml # make some changes
-$ helm install -f values.yaml incubator/drone
-```
+The following tables lists the configurable parameters of the drone charts and their default values.
+|              Parameter               |                             Description                             |               Default                |
+| ------------------------------------ | ------------------------------------------------------------------- | ------------------------------------ |

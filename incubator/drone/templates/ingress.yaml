@@ -1,28 +1,32 @@
 {{- if .Values.ingress.enabled -}}
+{{- $fullName := include "drone.fullname" . }}
+{{- $httpPort := .Values.service.httpPort }}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: {{ template "fullname" . }}
-  labels:
-    app: {{ template "fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
   annotations:
-{{ toYaml .Values.ingress.annotations | indent 4 }}
+  {{- range $key, $value := .Values.ingress.annotations }}
+    {{ $key }}: {{ $value | quote }}
+  {{- end }}
+  labels:
+    app: {{ template "drone.name" . }}
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+  name: {{ template "drone.fullname" . }}
 spec:
-{{- if .Values.ingress.tls }}
-  tls:
-  - hosts:
-    - {{ .Values.ingress.hostname }}
-    secretName: {{ template "fullname" . }}-tls
-{{- end }}
   rules:
-  - host: {{ .Values.ingress.hostname }}
-    http:
-      paths:
-      - path: /
-        backend:
-          serviceName: {{ template "fullname" . }}
-          servicePort: {{ .Values.service.http.externalPort }}
+  {{- range .Values.ingress.hosts }}
+    - host: {{ . }}
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: {{ $fullName }}
+              servicePort: {{ $httpPort }}
+  {{- end -}}
+  {{- if .Values.ingress.tls }}
+  tls:
+{{ toYaml .Values.ingress.tls | indent 4 }}
+  {{- end -}}
 {{- end -}}
