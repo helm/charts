@@ -47,3 +47,10 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- $name := default .Chart.Name .Values.nameOverride -}}
 {{- printf "%s-%s-%s" .Release.Name $name .Values.defaultBackend.name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
+
+Create a default backend namespace.
+We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
+*/}}
+{{- define "nginx-ingress.defaultBackend.namespace" -}}
+{{ default .Release.Namespace .Values.controller.scope.namespace }}
+{{- end -}}
