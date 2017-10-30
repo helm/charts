@@ -17,4 +17,4 @@ spec:
     app: {{ template "weave-scope.name" . }}
     release: {{ .Release.Name }}
     component: frontend
-  type: {{ required "You must supply a service type: ClusterIP, NodePort or LoadBalancer" .Values.global.service.type }}
+  type: {{ required "You must specify a supported service type (ClusterIP, NodePort or LoadBalancer)" .Values.global.service.type }}

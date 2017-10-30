@@ -1,4 +1,5 @@
-{{- if .Values.global.rbac }}
+{{- if .Values.rbac }}
+{{- if .Values.rbac.create }}
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRole
 metadata:
@@ -19,4 +20,5 @@ rules:
       - '*'
     verbs:
       - '*'
+{{- end }}
 {{- end }}

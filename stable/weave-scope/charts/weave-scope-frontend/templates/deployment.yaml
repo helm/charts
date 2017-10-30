@@ -21,12 +21,17 @@ spec:
     spec:
       containers:
         - name: app
-          image: {{ .Values.global.image }}:{{ .Values.global.imageTag }}
+          image: {{ required "You must specify the desired container image" .Values.global.image }}:{{ required "You must specify the desired container image tag" .Values.global.imageTag }}
+          {{- if .Values.imagePullPolicy }}
           imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
+          {{- end }}
           args:
-            - '--no-probe'
+            - "--no-probe"
+          {{- if ne (int .Values.containerPort) 4040 }}
+            - "--app.http.address=:{{ .Values.containerPort }}"
+          {{- end }}
           ports:
-            - containerPort: {{ required "You must supply a container port to open" .Values.containerPort }}
+            - containerPort: {{ required "You must specify the port the frontend container opens" .Values.containerPort }}
               protocol: TCP
           {{- if .Values.resources }}
           resources:

@@ -1,4 +1,5 @@
-{{- if .Values.global.rbac }}
+{{- if .Values.rbac }}
+{{- if .Values.rbac.create }}
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRoleBinding
 metadata:
@@ -14,6 +15,7 @@ roleRef:
   name: weave-scope
 subjects:
   - kind: ServiceAccount
-    name: {{ .Values.serviceAccountName }}
+    name: {{ required "rbac.serviceAccountName must be set if rbac.create is true" .Values.rbac.serviceAccountName }}
     namespace: {{ .Release.Namespace }}
+{{- end }}
 {{- end }}
