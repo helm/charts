@@ -23,7 +23,7 @@ spec:
         imagePullPolicy: {{ .Values.agentImage.pullPolicy }}
         env:
           - name: DRONE_SERVER
-            value: ws://{{ template "drone.fullname" . }}/ws/broker
+            value: {{ template "drone.fullname" . }}:9000
           - name: DRONE_SECRET
             valueFrom:
               secretKeyRef:

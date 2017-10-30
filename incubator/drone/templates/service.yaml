@@ -16,6 +16,9 @@ spec:
 {{- if hasKey .Values.service "nodePort" }}
     nodePort: {{ .Values.service.nodePort }}
 {{- end }}
+  - name: grpc
+    port: 9000
+    targetPort: 9000
   selector:
     app: {{ template "drone.fullname" . }}-server
     release: {{ .Release.Name | quote }}

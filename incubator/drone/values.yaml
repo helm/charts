@@ -58,7 +58,7 @@ ingress:
 server:
   ## If not set, it will be autofilled with the cluster host.
   ##
-  # host: "drone.domain.io"
+  # host: "https://drone.domain.io"
 
   ## Drone server configuration.
   ## Values in here get injected as environment variables.
