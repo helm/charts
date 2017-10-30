@@ -29,8 +29,10 @@ spec:
           operator: Exists
       containers:
         - name: agent
-          image: {{ .Values.global.image }}:{{ .Values.global.imageTag }}
+          image: {{ required "You must specify the desired container image" .Values.global.image }}:{{ required "You must specify the desired container image tag" .Values.global.imageTag }}
+          {{- if .Values.imagePullPolicy }}
           imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
+          {{- end }}
           args:
             - '--no-app'
             - '--probe.docker.bridge={{ .Values.dockerBridge }}'
@@ -75,4 +77,10 @@ spec:
       hostPID: true
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
-      serviceAccountName: {{ .Values.serviceAccountName }}
+      {{- if .Values.rbac }}
+        {{- if .Values.rbac.create }}
+      serviceAccountName: {{ required "rbac.serviceAccountName must be set if rbac.create is true" .Values.rbac.serviceAccountName }}
+        {{- else if .Values.rbac.serviceAccountName }}
+      serviceAccountName: {{ .Values.rbac.serviceAccountName }}
+        {{- end }}
+      {{- end }}

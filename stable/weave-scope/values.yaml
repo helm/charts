@@ -5,7 +5,7 @@ global:
   image: "weaveworks/scope"
 # global.imageTag: (required) the version of Weave Scope desired for this release
   imageTag: "1.6.5"
-# global.service.* sets the values for the service that provides access to the Weave Scope frontend
+# global.service.*: the configuration of the service used to access the frontend
   service:
 # global.service.name: (required if frontend.enabled == true) the short name desired for the frontend service
 # global.service.name is a global so we can access its value easily from the agent subchart
@@ -13,11 +13,9 @@ global:
 # global.service.port: (required if frontend.enabled == true) the port exposed by the Scope frontend service
 # global.service.port is a global so we can access its value easily from the agent subchart
     port: 80
-# global.service.type: (required if frontend.enabled == true) the frontend service type must be ClusterIP, NodePort or LoadBalancer
+# global.service.type: (required if frontend.enabled == true) the type of the frontend service -- must be ClusterIP, NodePort or LoadBalancer
 # global.service.type is a global to keep it with the other values for configuring the frontend service
     type: "ClusterIP"
-# global.rbac: whether RBAC is enabled in the cluster or not
-  rbac: true
 #
 # weave-scope-frontend.* controls how the Scope frontend is installed
 weave-scope-frontend:
@@ -45,8 +43,6 @@ weave-scope-agent:
   enabled: true
 # weave-scope-agent.imagePullPolicy: controls when the image is pulled
   imagePullPolicy: ""
-# weave-scope-agent.serviceAccountName: (required if global.rbac == true && agent.enabled == true) the service account to be created for the agent
-  serviceAccountName: "weave-scope"
 # weave-scope-agent.dockerBridge: (required if agent.enabled == true) the name of the Docker bridge interface
   dockerBridge: "docker0"
 # weave-scope-agent.scopeFrontendAddr: the host:port of a Scope frontend to send data to
@@ -55,6 +51,16 @@ weave-scope-agent:
 # weave-scope-agent.probeToken: the token used to connect to Weave Cloud
 # weave-scope-agent.probeToken is not needed for connecting to non-cloud Scope frontends
   probeToken: ""
+# weave-scope-agent.rbac.*: controls RBAC resource creation/use
+  rbac:
+# weave-scope-agent.rbac.create: whether RBAC resources should be created
+# weave-scope-agent.rbac.create *must* be set to false if RBAC is not enabled in the cluster
+# weave-scope-agent.rbac.create *may* be set to false in an RBAC-enabled cluster to allow for external management of RBAC
+    create: true
+# weave-scope-agent.rbac.serviceAccountName: the service account name that the agent will use
+# weave-scope-agent.rbac.serviceAccountName *must* already exist if rbac.create is false
+# weave-scope-agent.rbac.serviceAccountName *must not* already exist and is required to be set if rbac.create is true (it will then be created/managed as part of the release)
+    serviceAccountName: "weave-scope"
 # weave-scope-agent.resources.*: controls requests/limits for the agent
 # weave-scope-agent.resources.* values are all optional but should not be set to empty values
 #  resources:
