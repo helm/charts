@@ -1,0 +1,19 @@
+{{- if .Values.master.budget.minAvailable -}}
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: "{{ template "elasticsearch.master.fullname" . }}"
+  labels:
+    app: {{ template "elasticsearch.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: "{{ .Values.master.name }}"
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "elasticsearch.name" . }}
+      component: "{{ .Values.master.name }}"
+      release: {{ .Release.Name }}
+  minAvailable: {{ .Values.master.budget.minAvailable }}
+{{- end -}}
