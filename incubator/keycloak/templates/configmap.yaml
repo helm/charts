@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "keycloak.fullname" . }}
+  labels:
+    app: {{ template "keycloak.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+data:
+  postgresql-host: {{ template "keycloak.postgresql.fullname" . }}
+  postgresql-port: "5432"
+  postgresql-database: {{ .Values.postgresql.postgresDatabase | quote }}
+  postgresql-user: {{ .Values.postgresql.postgresUser | quote }}
+
+  keycloak-loglevel: {{ default "INFO" .Values.keycloak.loglevel | quote }}

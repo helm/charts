@@ -1,0 +1,77 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "keycloak.fullname" . }}
+  labels:
+    app: {{ template "keycloak.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: {{ template "keycloak.fullname" . }}
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        env:
+          - name: PROXY_ADDRESS_FORWARDING
+            value: "true"
+          - name: KEYCLOAK_LOGLEVEL
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "keycloak.fullname" . }}
+                key: keycloak-loglevel
+          - name: KEYCLOAK_USER
+            value: {{ default "keycloak" .Values.keycloak.username | quote }}
+          - name: KEYCLOAK_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "keycloak.fullname" . }}
+                key: keycloak-password
+
+          - name: POSTGRES_PORT_5432_TCP_ADDR
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "keycloak.fullname" . }}
+                key: postgresql-host
+          - name: POSTGRES_PORT_5432_TCP_PORT
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "keycloak.fullname" . }}
+                key: postgresql-port
+          - name: POSTGRES_USER
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "keycloak.fullname" . }}
+                key: postgresql-user
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "keycloak.postgresql.fullname" . }}
+                key: postgres-password
+          - name: POSTGRES_DATABASE
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "keycloak.fullname" . }}
+                key: postgresql-database
+        ports:
+        - containerPort: 8080
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          initialDelaySeconds: 120
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          initialDelaySeconds: 5
+          timeoutSeconds: 1
+        resources:
+{{ toYaml .Values.keycloak.resources | indent 12 }}
