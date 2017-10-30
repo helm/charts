@@ -97,11 +97,11 @@ datadog:
   ## or deployment.
   ## ref: https://docs.datadoghq.com/guides/process/
   ##
-  # volume:
+  # volumes:
   #  - hostPath:
   #      path: /etc/passwd
   #    name: passwd
-  # volumeMount:
+  # volumeMounts:
   #   - name: passwd
   #     mountPath: /etc/passwd
   #     readOnly: true
