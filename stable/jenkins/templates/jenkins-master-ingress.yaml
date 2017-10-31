@@ -15,27 +15,21 @@ spec:
   - host: {{ .name | quote }}
     http:
       paths:
-      {{- if .paths }}
-        {{- range .paths }}
-          {{- if .backend }}
+      {{- if .paths }}{{- range .paths }}{{- if .backend }}
       - backend:
           serviceName: {{ .backend.serviceName | default $serviceName | quote }}
           servicePort: {{ .backend.servicePort | default $servicePort }}
-          {{- else }}
-      - backend:
-          serviceName: {{ $serviceName | quote }}
-          servicePort: {{ $servicePort }}
-          {{- end }}
-          {{- if .path }}
-        path: {{ .path | quote }}
-          {{- end }}
-        {{- end }}
       {{- else }}
       - backend:
           serviceName: {{ $serviceName | quote }}
           servicePort: {{ $servicePort }}
-      {{- end }}
-  {{- end }}
+      {{- end }}{{- if .path }}
+        path: {{ .path | quote }}
+      {{- end }}{{- end }}{{- else }}
+      - backend:
+          serviceName: {{ $serviceName | quote }}
+          servicePort: {{ $servicePort }}
+  {{- end }}{{- end }}
 {{- if .Values.Master.Ingress.TLS }}
   tls:
 {{ toYaml .Values.Master.Ingress.TLS | indent 4 }}
