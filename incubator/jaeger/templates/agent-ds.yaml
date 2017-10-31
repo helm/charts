@@ -21,6 +21,9 @@ spec:
         component: "agent"
         release: "{{ .Release.Name }}"
         jaeger-infra: agent-instance
+{{- if .Values.agent.podLabels }}
+{{ toYaml .Values.agent.podLabels | indent 8 }}
+{{- end }}
     spec:
       nodeSelector:
 {{ toYaml .Values.agent.nodeSelector | indent 8 }}
