@@ -3,7 +3,7 @@
 
 {{- if .Values.Master.Ingress.Hosts }}
 
-2. Visit http://{{ .Values.Master.Ingress.Hosts[0] }}
+2. Visit http://{{ index .Values.Master.Ingress.Hosts 0 }}
 {{- else }}
 2. Get the Jenkins URL to visit by running these commands in the same shell:
 {{- if contains "NodePort" .Values.Master.ServiceType }}
