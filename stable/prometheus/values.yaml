@@ -128,12 +128,12 @@ alertmanager:
   ## Ref: http://kubernetes.io/docs/user-guide/compute-resources/
   ##
   resources: {}
-    # limits:
-    #   cpu: 10m
-    #   memory: 32Mi
-    # requests:
-    #   cpu: 10m
-    #   memory: 32Mi
+  # limits:
+  #   cpu: 10m
+  #   memory: 32Mi
+  # requests:
+  #   cpu: 10m
+  #   memory: 32Mi
 
   service:
     annotations: {}
@@ -205,12 +205,12 @@ kubeStateMetrics:
   ## Ref: http://kubernetes.io/docs/user-guide/compute-resources/
   ##
   resources: {}
-    # limits:
-    #   cpu: 10m
-    #   memory: 16Mi
-    # requests:
-    #   cpu: 10m
-    #   memory: 16Mi
+  # limits:
+  #   cpu: 10m
+  #   memory: 16Mi
+  # requests:
+  #   cpu: 10m
+  #   memory: 16Mi
 
   service:
     annotations:
@@ -255,19 +255,19 @@ nodeExporter:
   ## Additional node-exporter hostPath mounts
   ##
   extraHostPathMounts: []
-    # - name: textfile-dir
-    #   mountPath: /srv/txt_collector
-    #   hostPath: /var/lib/node-exporter
-    #   readOnly: true
+  # - name: textfile-dir
+  #   mountPath: /srv/txt_collector
+  #   hostPath: /var/lib/node-exporter
+  #   readOnly: true
 
   ## Node tolerations for node-exporter scheduling to nodes with taints
   ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
   ##
   tolerations: []
-    # - key: "key"
-    #   operator: "Equal|Exists"
-    #   value: "value"
-    #   effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
+  # - key: "key"
+  #   operator: "Equal|Exists"
+  #   value: "value"
+  #   effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
 
   ## Node labels for node-exporter pod assignment
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
@@ -282,12 +282,12 @@ nodeExporter:
   ## Ref: https://kubernetes.io/docs/user-guide/compute-resources/
   ##
   resources: {}
-    # limits:
-    #   cpu: 200m
-    #   memory: 50Mi
-    # requests:
-    #   cpu: 100m
-    #   memory: 30Mi
+  # limits:
+  #   cpu: 200m
+  #   memory: 50Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 30Mi
 
   service:
     annotations:
@@ -338,10 +338,10 @@ server:
   ## Additional Prometheus server hostPath mounts
   ##
   extraHostPathMounts: []
-    # - name: certs-dir
-    #   mountPath: /etc/kubernetes/certs
-    #   hostPath: /etc/kubernetes/certs
-    #   readOnly: true
+  # - name: certs-dir
+  #   mountPath: /etc/kubernetes/certs
+  #   hostPath: /etc/kubernetes/certs
+  #   readOnly: true
 
   ## ConfigMap override where fullname is {{.Release.Name}}-{{.Values.server.configMapOverrideName}}
   ## Defining configMapOverrideName will cause templates/server-configmap.yaml
@@ -382,10 +382,10 @@ server:
   ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
   ##
   tolerations: []
-    # - key: "key"
-    #   operator: "Equal|Exists"
-    #   value: "value"
-    #   effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
+  # - key: "key"
+  #   operator: "Equal|Exists"
+  #   value: "value"
+  #   effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
 
   ## Node labels for Prometheus server pod assignment
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
@@ -438,7 +438,7 @@ server:
   ## Annotations to be added to Prometheus server pods
   ##
   podAnnotations: {}
-    # iam.amazonaws.com/role: prometheus
+  # iam.amazonaws.com/role: prometheus
 
   replicaCount: 1
 
@@ -446,12 +446,12 @@ server:
   ## Ref: http://kubernetes.io/docs/user-guide/compute-resources/
   ##
   resources: {}
-    # limits:
-    #   cpu: 500m
-    #   memory: 512Mi
-    # requests:
-    #   cpu: 500m
-    #   memory: 512Mi
+  # limits:
+  #   cpu: 500m
+  #   memory: 512Mi
+  # requests:
+  #   cpu: 500m
+  #   memory: 512Mi
 
   service:
     annotations: {}
@@ -536,12 +536,12 @@ pushgateway:
   ## Ref: http://kubernetes.io/docs/user-guide/compute-resources/
   ##
   resources: {}
-    # limits:
-    #   cpu: 10m
-    #   memory: 32Mi
-    # requests:
-    #   cpu: 10m
-    #   memory: 32Mi
+  # limits:
+  #   cpu: 10m
+  #   memory: 32Mi
+  # requests:
+  #   cpu: 10m
+  #   memory: 32Mi
 
   service:
     annotations:
