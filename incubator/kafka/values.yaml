@@ -21,6 +21,7 @@ DataDirectory: "/opt/kafka/data"
 #------------------------------------------------------------------------------
 
 zookeeper:
+  Enabled: true
   Servers: 3
   Resources: {}
   Heap: "1G"
@@ -39,3 +40,6 @@ zookeeper:
   ProbeTimeoutSeconds : 5
   AntiAffinity : "hard"
   LogLevel : "INFO"
+  # If the Zookeeper Chart is disabled a URL and port are required to connect
+  Url: ""
+  Port: 2181
