@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    app: {{ template "name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+      {{- if .Values.service.ports.tcp }}
+    - port: {{ .Values.service.ports.tcp.internal }}
+      targetPort: {{ .Values.service.ports.tcp.external }}
+      protocol: TCP
+      name: riemann-tcp
+      {{- end }}
+      {{- if .Values.service.ports.udp }}
+    - port: {{ .Values.service.ports.udp.internal }}
+      targetPort: {{ .Values.service.ports.udp.external }}
+      protocol: UDP
+      name: riemann-udp
+      {{- end }}
+      {{- if .Values.service.ports.websocket }}
+    - port: {{ .Values.service.ports.websocket.internal }}
+      targetPort: {{ .Values.service.ports.websocket.external }}
+      protocol: TCP
+      name: riemann-websocket
+      {{- end }}
+  selector:
+    app: {{ template "name" . }}
+    release: {{ .Release.Name }}
