@@ -1,6 +1,6 @@
 {{- if and .Values.persistence.enabled (not .Values.persistence.existingClassName) -}}
 kind: StorageClass
-apiVersion: storage.k8s.io/v1beta1
+apiVersion: storage.k8s.io/v1
 metadata:
  name: "{{ .Values.persistence.storageClass }}"
 provisioner: {{ .Values.persistence.storage.provisioner }}
@@ -8,3 +8,4 @@ parameters:
  skuName: {{ .Values.persistence.storage.parameters.skuName }}
  location: {{ .Values.persistence.storage.parameters.location }}
  {{- end -}}
+ 
