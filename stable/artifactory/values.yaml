@@ -43,7 +43,7 @@ artifactory:
   name: artifactory
   replicaCount: 1
   image:
-    #repository: "docker.bintray.io/jfrog/artifactory-oss"
+    # repository: "docker.bintray.io/jfrog/artifactory-oss"
     repository: "docker.bintray.io/jfrog/artifactory-pro"
     version: 5.5.2
     pullPolicy: IfNotPresent
