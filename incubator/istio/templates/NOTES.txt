@@ -64,7 +64,7 @@ Deploy your App!
 
 Or deploy the BookInfo App!
 
-  https://istio.io/docs/guides/bookinfo.html
+
 
 Using Istioctl
 
