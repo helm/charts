@@ -26,7 +26,7 @@ elasticsearch and their
 This chart will do the following:
 
 * Implemented a dynamically scalable elasticsearch cluster using Kubernetes StatefulSets/Deployments
-* Multi-role deployment: master, client and data nodes
+* Multi-role deployment: master, client (coordinating) and data nodes
 * Statefulset Supports scaling down without degrading the cluster
 
 ## Installing the Chart
@@ -56,30 +56,35 @@ $ kubectl delete pvc -l release=my-release,component=data
 
 The following tables lists the configurable parameters of the elasticsearch chart and their default values.
 
-| Parameter                            | Description                             | Default                             |
-| ------------------------------------ | --------------------------------------- | ----------------------------------- |
-| `image.repository`                   | Container image name                    | `jetstack/elasticsearch-pet`        |
-| `image.tag`                          | Container image tag                     | `2.4.0`                             |
-| `image.pullPolicy`                   | Container pull policy                   | `Always`                            |
-| `cluster.name`                       | Cluster name          			         | `elasticsearch`                     |
-| `cluster.config`                     | Additional cluster config appended      | `{}`                                |
-| `client.name`                        | Client component name                   | `client`                            |
-| `client.replicas`                    | Client node replicas (deployment)       | `2`                                 |
-| `client.resources`                   | Client node resources requests & limits | `{} - cpu limit must be an integer` |
-| `client.heapSize`                    | Client node heap size                   | `128m`                              |
-| `client.serviceType`                 | Client service type                     | `ClusterIP`                         |
-| `master.name`                        | Master component name                   | `master`                            |
-| `master.replicas`                    | Master node replicas (deployment)       | `2`                                 |
-| `master.resources`                   | Master node resources requests & limits | `{} - cpu limit must be an integer` |
-| `master.heapSize`                    | Master node heap size                   | `128m`                              |
-| `master.name`                        | Data component name                     | `data`                              |
-| `data.replicas`                      | Data node replicas (statefulset)        | `3`                                 |
-| `data.resources`                     | Data node resources requests & limits   | `{} - cpu limit must be an integer` |
-| `data.heapSize`                      | Data node heap size                     | `1536m`                             |
-| `data.storage`                       | Data persistent volume size             | `30Gi`                              |
-| `data.storageClass`                  | Data persistent volume Class            | `nil`                               |
-| `data.terminationGracePeriodSeconds` | Data termination grace period (seconds) | `3600`                              |
-| `data.antiAffinity`                  | Data anti-affinity policy               | `soft`                              |
+|              Parameter               |                             Description                             |               Default                |
+| ------------------------------------ | ------------------------------------------------------------------- | ------------------------------------ |
+| `appVersion`                         | Application Version (Elasticsearch)                                 | `5.4`                                |
+| `image.repository`                   | Container image name                                                | `centerforopenscience/elasticsearch` |
+| `image.tag`                          | Container image tag                                                 | `5.4`                                |
+| `image.pullPolicy`                   | Container pull policy                                               | `Always`                             |
+| `cluster.name`                       | Cluster name                                                        | `elasticsearch`                      |
+| `cluster.config`                     | Additional cluster config appended                                  | `{}`                                 |
+| `cluster.env`                        | Cluster environment variables                                       | `{}`                                 |
+| `client.name`                        | Client component name                                               | `client`                             |
+| `client.replicas`                    | Client node replicas (deployment)                                   | `2`                                  |
+| `client.resources`                   | Client node resources requests & limits                             | `{} - cpu limit must be an integer`  |
+| `client.heapSize`                    | Client node heap size                                               | `512m`                               |
+| `client.serviceType`                 | Client service type                                                 | `ClusterIP`                          |
+| `master.name`                        | Master component name                                               | `master`                             |
+| `master.replicas`                    | Master node replicas (deployment)                                   | `2`                                  |
+| `master.resources`                   | Master node resources requests & limits                             | `{} - cpu limit must be an integer`  |
+| `master.heapSize`                    | Master node heap size                                               | `512m`                               |
+| `master.name`                        | Master component name                                               | `master`                             |
+| `master.storage`                     | Master persistent volume size                                       | `4Gi`                                |
+| `master.storageClass`                | Master persistent volume Class                                      | `nil`                                |
+| `data.replicas`                      | Data node replicas (statefulset)                                    | `3`                                  |
+| `data.resources`                     | Data node resources requests & limits                               | `{} - cpu limit must be an integer`  |
+| `data.heapSize`                      | Data node heap size                                                 | `1536m`                              |
+| `data.storage`                       | Data persistent volume size                                         | `30Gi`                               |
+| `data.storageClass`                  | Data persistent volume Class                                        | `nil`                                |
+| `data.terminationGracePeriodSeconds` | Data termination grace period (seconds)                             | `3600`                               |
+| `data.antiAffinity`                  | Data anti-affinity policy                                           | `soft`                               |
+| `rbac.create`                        | Create service account and ClusterRoleBinding for Kubernetes plugin | `false`                              |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
@@ -90,6 +95,18 @@ In terms of Memory resources you should make sure that you follow that equation:
 The YAML value of cluster.config is appended to elasticsearch.yml file for additional customization ("script.inline: on" for example to allow inline scripting)
 
 # Deep dive
+
+## Application Version
+
+This chart aims to support Elasticsearch v2 and v5 deployments by specifying the `values.yaml` parameter `appVersion`.
+
+### Version Specific Features
+
+* Memory Locking *(variable renamed)*
+* Ingest Node *(v5)*
+* X-Pack Plugin *(v5)*
+
+Upgrade paths & more info: https://www.elastic.co/guide/en/elasticsearch/reference/current/setup-upgrade.html
 
 ## Mlocking
 
@@ -103,6 +120,23 @@ would degrade performance heavily. The issue is tracked in
 [WARN ][bootstrap] This can result in part of the JVM being swapped out.
 [WARN ][bootstrap] Increase RLIMIT_MEMLOCK, soft limit: 65536, hard limit: 65536
 ```
+
+## Minimum Master Nodes
+> The minimum_master_nodes setting is extremely important to the stability of your cluster. This setting helps prevent split brains, the existence of two masters in a single cluster.
+
+>When you have a split brain, your cluster is at danger of losing data. Because the master is considered the supreme ruler of the cluster, it decides when new indices can be created, how shards are moved, and so forth. If you have two masters, data integrity becomes perilous, since you have two nodes that think they are in charge.
+
+>This setting tells Elasticsearch to not elect a master unless there are enough master-eligible nodes available. Only then will an election take place.
+
+>This setting should always be configured to a quorum (majority) of your master-eligible nodes. A quorum is (number of master-eligible nodes / 2) + 1
+
+More info: https://www.elastic.co/guide/en/elasticsearch/guide/1.x/_important_configuration_changes.html#_minimum_master_nodes
+
+# Client and Coordinating Nodes
+
+Elasticsearch v5 terminology has updated, and now refers to a `Client Node` as a `Coordinating Node`.
+
+More info: https://www.elastic.co/guide/en/elasticsearch/reference/5.5/modules-node.html#coordinating-node
 
 ## Select right storage class for SSD volumes
 

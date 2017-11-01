@@ -11,6 +11,10 @@ metadata:
   name: {{ template "prometheus.alertmanager.fullname" . }}
 spec:
   replicas: {{ .Values.alertmanager.replicaCount }}
+  {{- if .Values.server.strategy }}
+  strategy:
+{{ toYaml .Values.server.strategy | indent 4 }}
+  {{- end }}
   template:
     metadata:
     {{- if .Values.alertmanager.podAnnotations }}

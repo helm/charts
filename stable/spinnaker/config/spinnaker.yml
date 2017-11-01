@@ -48,7 +48,7 @@ services:
     notifications:
       # The following blocks can enable Spinnaker to send notifications
       # using the corresponding mechanism.
-      # See http://www.spinnaker.io/docs/notifications-and-events-guide
+      # See https://www.spinnaker.io/setup/features/notifications/
       # for more information.
       mail:
         enabled: ${services.echo.notifications.mail.enabled:false}
@@ -68,9 +68,8 @@ services:
         token: # twilio auth token
         from: # phone number by which sms messages are sent
       slack:
-        enabled: false
-        token: # the API token for the bot
-        botName: # the username of the bot
+        enabled: ${services.echo.notifications.slack.enabled:false}
+        token: ${services.echo.notifications.slack.token}
 
   deck:
     host: ${services.default.host}
@@ -202,7 +201,7 @@ services:
 providers:
   aws:
     # For more information on configuring Amazon Web Services (aws), see
-    # http://www.spinnaker.io/v1.0/docs/target-deployment-setup#section-amazon-web-services-setup
+    # https://www.spinnaker.io/setup/providers/aws/
 
     enabled: false
     simpleDBEnabled: false
@@ -222,7 +221,7 @@ providers:
 
   google:
     # For more information on configuring Google Cloud Platform (google), see
-    # http://www.spinnaker.io/v1.0/docs/target-deployment-setup#section-google-cloud-platform-setup
+    # https://www.spinnaker.io/setup/providers/gce/
 
     enabled: false
     defaultRegion: us-central1
@@ -235,22 +234,9 @@ providers:
       project:
       jsonPath:
 
-  cf:
-    # For more information on configuring Cloud Foundry (cf) support, see
-    # http://www.spinnaker.io/v1.0/docs/target-deployment-setup#section-cloud-foundry-platform-setup
-
-    enabled: false
-    defaultOrg: spinnaker-cf-org
-    defaultSpace: spinnaker-cf-space
-    primaryCredentials:
-      name: my-cf-account
-      api: my-cf-api-uri
-      console: my-cf-console-base-url
-      # You must also supply cf.account.username and cf.account.password through env properties
-
   azure:
     # For more information on configuring Microsoft Azure (azure), see
-    # http://www.spinnaker.io/v1.0/docs/target-deployment-setup#section-azure-cloud-platform-setup
+    # https://www.spinnaker.io/setup/providers/azure/
 
     enabled: false
     defaultRegion: westus
@@ -264,18 +250,9 @@ providers:
       tenantId:
       subscriptionId:
 
-  titan:
-    # If you want to deploy some services to titan,
-    # set enabled and provide primary credentials for deploying.
-    # Enabling titan is independent of other providers.
-    enabled: false
-    defaultRegion: us-east-1
-    primaryCredentials:
-      name: my-titan-account
-
   kubernetes:
     # For more information on configuring Kubernetes clusters (kubernetes), see
-    # http://www.spinnaker.io/v1.0/docs/target-deployment-setup#section-kubernetes-cluster-setup
+    # https://www.spinnaker.io/setup/providers/kubernetes/
 
     # NOTE: enabling kubernetes also requires enabling dockerRegistry.
     enabled: ${providers.kubernetes.enabled}

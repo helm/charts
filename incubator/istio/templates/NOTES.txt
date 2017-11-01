@@ -1,4 +1,21 @@
-{{- $serviceName := include "istio.fullname" . -}}
+{{- $istioInstall := (and (not .Release.IsInstall) .Values.istio.install) -}}
+{{- $serviceName := include "istio.name" . -}}
+{{- if and .Release.IsInstall .Values.istio.install -}}
+Installing required CustomerResourceDefinitions before installing Istio services.
+
+To install Istio services run the following:
+helm upgrade {{ .Release.Name }} incubator/istio --reuse-values --set istio.install=true
+{{ end -}}
+
+{{- if and .Release.IsInstall (not .Values.istio.install) -}}
+Installing required CustomerResourceDefinitions before installing Istio services.
+
+To install Istio services run the following:
+helm upgrade {{ .Release.Name }} incubator/istio --reuse-values --set istio.install=true
+{{ end -}}
+
+{{- if $istioInstall -}}
+
 Verify all Pods are running
 
   kubectl get pods --namespace {{ .Release.Namespace }}
@@ -39,7 +56,11 @@ Verifying the ServiceGraph service
 
 Deploy your App!
 
-  kubectl create -f <(istioctl kube-inject -f <your-app-spec>.yaml)
+{{ if .Values.initializer.enabled }}
+  kubectl create -f <your-app-spec>.yaml
+{{- else }}
+  kubectl create -f <(istioctl kube-inject -i {{ .Release.Namespace }} -f <your-app-spec>.yaml)
+{{- end }}
 
 Or deploy the BookInfo App!
 
@@ -48,3 +69,5 @@ Or deploy the BookInfo App!
 Using Istioctl
 
   istioctl [command]
+
+{{- end -}}

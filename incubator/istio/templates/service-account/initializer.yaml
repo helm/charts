@@ -1,0 +1,12 @@
+{{- if and .Values.istio.install (not .Release.IsInstall) -}}
+{{ if .Values.initializer.enabled }}
+{{- $serviceName := include "istio.name" . -}}
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ $serviceName }}-{{ .Values.initializer.deployment.name }}-service-account
+  labels:
+{{ include "istio.labels.standard" . | indent 4 }}
+    istio: {{ $serviceName }}-{{ .Values.initializer.deployment.name }}
+{{ end }}
+{{- end -}}
