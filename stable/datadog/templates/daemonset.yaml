@@ -62,7 +62,7 @@ spec:
             value: {{ .Values.datadog.leaderElection | quote}}
           {{- if .Values.datadog.leaderElection }}
           - name: KUBERNETES_LEADER_LEASE_DURATION
-            value: {{ default "600" .Values.datadog.leaderLeaseElection | quote }}
+            value: {{ default "600" .Values.datadog.leaderLeaseDuration | quote }}
           {{- end }}
           - name: NON_LOCAL_TRAFFIC
             value: {{ default "" .Values.datadog.nonLocalTraffic | quote }}

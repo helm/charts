@@ -108,11 +108,11 @@ datadog:
 
   ## Enable leader election mechanism for event collection
   ##
-  leaderElection: False
+  leaderElection: false
 
   ## Set the lease time for leader election
   ##
-  # leaderLeaseElection: 600
+  # leaderLeaseDuration: 600
 
   ## Provide additonal service definitions
   ## Each key will become a file in /conf.d/auto_conf
