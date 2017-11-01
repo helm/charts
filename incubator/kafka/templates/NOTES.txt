@@ -8,7 +8,7 @@ You can connect to Kafka by running a simple pod in the K8s cluster like this wi
   spec:
     containers:
     - name: kafka
-      image: solsson/kafka:0.11.0.0
+      image: {{ .Values.Image }}:{{ .Values.ImageTag }}
       command:
         - sh
         - -c
