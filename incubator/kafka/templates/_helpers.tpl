@@ -22,7 +22,7 @@ else use user-provided URL
 {{- define "zookeeper.url" }}
 {{- $port := .Values.zookeeper.Port | toString }}
 {{- if .Values.zookeeper.Enabled -}}
-{{- printf "%s:%s" .Release.Name $port }}
+{{- printf "%s-zookeeper:%s" .Release.Name $port }}
 {{- else -}}
 {{- printf "%s:%s" .Values.zookeeper.Url $port }}
 {{- end -}}
