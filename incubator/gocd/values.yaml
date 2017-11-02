@@ -47,7 +47,8 @@ server:
     #     # kubernetes.io/tls-acme: "true"
     # tls:
   persistence:
-    enabled: false # change to true if a persistent volume is available and configured manually.
+    # change to true if a persistent volume is available and configured manually.
+    enabled: false
     godata:
       pvName: godata-gocd-server
       name: "godata-pvc"
