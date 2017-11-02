@@ -44,6 +44,7 @@ persistence:
   size: 8Gi
   claimName: myclaim
   storage:
+    enabled: true
     provisioner: kubernetes.io/azure-disk
     parameters:
       skuName: Standard_LRS

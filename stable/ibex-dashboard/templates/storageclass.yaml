@@ -5,6 +5,7 @@ metadata:
  name: "{{ .Values.persistence.storageClass }}"
 provisioner: {{ .Values.persistence.storage.provisioner }}
 parameters:
- skuName: {{ .Values.persistence.storage.parameters.skuName }}
- location: {{ .Values.persistence.storage.parameters.location }}
+  {{- range $key, $value := .Values.persistence.storage.parameters }}
+    {{ $key }}: {{ $value }}
+  {{- end }}
  {{- end -}}
