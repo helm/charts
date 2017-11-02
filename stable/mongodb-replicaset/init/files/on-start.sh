@@ -53,6 +53,7 @@ while read -ra line; do
 done
 
 # sets mongo_host when hostname is not part of the peers array
+
 if [[ -z "$mongo_host" ]]; then
     index=${my_hostname##*-}
     mongo_host="${peers[$index]}"
@@ -66,6 +67,7 @@ fi
 log "Peers: ${peers[@]}"
 
 log "Starting a MongoDB instance..."
+sleep 30
 mongod --config /config/mongod.conf >> /work-dir/log.txt 2>&1 &
 
 log "Waiting for MongoDB to be ready..."

@@ -6,13 +6,17 @@ metadata:
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
-    k8s-app: {{ .Chart.Name | quote }}
-    kubernetes.io/cluster-service: "true"
-    kubernetes.io/name: "CoreDNS"
+    app: {{ .Chart.Name | quote }}
+    layer: "dns"
 spec:
   selector:
-    app: {{ template "fullname" . }}
+    app: {{ template "name" . }}
+    release: {{ .Release.Name | quote }}
+    layer: "dns"
   ports:
+  - name: dns-udp
+    port: 53
+    protocol: UDP
   - name: dns-tcp
     port: 53
     protocol: TCP

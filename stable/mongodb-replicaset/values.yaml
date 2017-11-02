@@ -78,4 +78,3 @@ coreDNSImage:
   repository: coredns/coredns
   tag: "006"
   pullPolicy: IfNotPresent
-

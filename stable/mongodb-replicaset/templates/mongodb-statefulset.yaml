@@ -68,7 +68,7 @@ spec:
           args:
             - -on-start=/work-dir/on-start.sh
             {{- if .Values.podServices.enabled }}
-            - "-selector=app={{ template "name" . }},release={{ .Release.Name }},name"
+            - "-selector=app={{ template "name" . }},release={{ .Release.Name }}"
             - "-coredns-configmap={{ template "fullname" . }}-dns"
             {{- else }}
             - "-service={{ template "fullname" . }}"
