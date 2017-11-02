@@ -19,6 +19,16 @@ spec:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}"
         imagePullPolicy: "{{ .Values.image.pullPolicy }}"
+        {{- if .Values.service.ports.tcp.internal }}
+        livenessProbe:
+          tcpSocket:
+            port: {{ .Values.service.ports.tcp.internal }}
+          initialDelaySeconds: 10
+        readinessProbe:
+          tcpSocket:
+            port: {{ .Values.service.ports.tcp.internal }}
+          initialDelaySeconds: 5
+        {{- end }}
         volumeMounts:
         - name: "{{ .Release.Name }}-config"
           mountPath: /usr/local/etc/riemann
