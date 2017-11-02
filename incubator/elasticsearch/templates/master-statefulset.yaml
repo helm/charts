@@ -124,7 +124,8 @@ spec:
   - metadata:
       name: data
     spec:
-      accessModes: {{ .Values.master.persistence.accessMode | quote }}
+      accessModes:
+        - {{ .Values.master.persistence.accessMode | quote }}
     {{- if .Values.master.persistence.storageClass }}
     {{- if (eq "-" .Values.master.persistence.storageClass) }}
       storageClassName: ""
