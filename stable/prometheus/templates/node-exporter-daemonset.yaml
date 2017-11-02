@@ -27,8 +27,8 @@ spec:
           image: "{{ .Values.nodeExporter.image.repository }}:{{ .Values.nodeExporter.image.tag }}"
           imagePullPolicy: "{{ .Values.nodeExporter.image.pullPolicy }}"
           args:
-            - --collector.procfs=/host/proc
-            - --collector.sysfs=/host/sys
+            - --path.procfs=/host/proc
+            - --path.sysfs=/host/sys
           {{- range $key, $value := .Values.nodeExporter.extraArgs }}
             - --{{ $key }}={{ $value }}
           {{- end }}
