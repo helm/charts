@@ -103,6 +103,9 @@ The following tables lists the configurable parameters of the Traefik chart and 
 | `ssl.enforced`                  | Whether to redirect HTTP requests to HTTPS                           | `false`                                   |
 | `ssl.defaultCert`               | Base64 encoded default certficate                                    | A self-signed certificate                 |
 | `ssl.defaultKey`                | Base64 encoded private key for the certificate above                 | The private key for the certificate above |
+| `ssl.certificates`              | Additional certificates for [SNI](https://docs.traefik.io/configuration/entrypoints/#redirect-http-to-https). The value is a dictionary, where the keys are the name of the certificate and the values are maps with two fields: "cert" and "key" | {} |
+| `ssl.certificates.<name>.cert`  | Base64 encoded certificate for certificate <name>                    | None                                      |
+| `ssl.certificates.<name>.key`   | Base64 encoded private key for certificate <name>                    | None                                      |
 | `acme.enabled`                  | Whether to use Let's Encrypt to obtain certificates                  | `false`                                   |
 | `acme.email`                    | Email address to be used in certificates obtained from Let's Encrypt | `admin@example.com`                       |
 | `acme.staging`                  | Whether to get certs from Let's Encrypt's staging environment        | `true`                                    |

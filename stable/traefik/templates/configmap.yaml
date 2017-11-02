@@ -35,6 +35,11 @@ data:
           [[entryPoints.https.tls.certificates]]
           CertFile = "/ssl/tls.crt"
           KeyFile = "/ssl/tls.key"
+          {{- range $name, $element := .Values.ssl.certificates }}
+          [[entryPoints.https.tls.certificates]]
+          CertFile = "/ssl/{{$name}}.crt"
+          KeyFile = "/ssl/{{$name}}.key"
+          {{- end}}
       {{- end }}
     [kubernetes]
     {{- if .Values.kubernetes}}
