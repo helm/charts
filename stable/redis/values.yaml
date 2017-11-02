@@ -79,6 +79,9 @@ tolerations: []
 ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
 podLabels: {}
 
+## annotations for redis pods
+podAnnotations: {}
+
 networkPolicy:
   ## Enable creation of NetworkPolicy resources.
   ##
