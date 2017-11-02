@@ -1,10 +1,10 @@
 # Riemann Helm Chart
 
 Riemann is an event stream processor for monitoring distributed systems. The
-heart of Riemann is in it's clojure based stream configurations.
+heart of Riemann is in it's clojure based stream configurations. Read more about Riemann at [http://riemann.io/](http://riemann.io/).
 
 Riemann was created by [Kyle Kingsbury](https://github.com/aphyr) with help
-from many others. Read more about Riemann at http://riemann.io/
+from many others.
 
 ## Install
 
