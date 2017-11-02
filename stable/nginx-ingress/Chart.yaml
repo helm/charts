@@ -7,7 +7,7 @@ keywords:
   - ingress
   - nginx
 sources:
-  - https://github.com/kubernetes/contrib/tree/master/ingress/controllers/nginx
+  - https://github.com/kubernetes/ingress-nginx
 maintainers:
   - name: jackzampolin
     email: jack.zampolin@gmail.com
