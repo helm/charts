@@ -8,4 +8,3 @@ parameters:
  skuName: {{ .Values.persistence.storage.parameters.skuName }}
  location: {{ .Values.persistence.storage.parameters.location }}
  {{- end -}}
- 
