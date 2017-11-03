@@ -83,13 +83,13 @@ server:
 
   ## CPU and memory limits for drone server
   ##
-  resources:
-    requests:
-      memory: 32Mi
-      cpu: 40m
-    limits:
-      memory: 2Gi
-      cpu: 1
+  resources: {}
+  #  requests:
+  #    memory: 32Mi
+  #    cpu: 40m
+  #  limits:
+  #    memory: 2Gi
+  #    cpu: 1
 
 agent:
   ## Drone agent configuration.
@@ -101,13 +101,13 @@ agent:
 
   ## CPU and memory limits for drone agent
   ##
-  resources:
-    requests:
-      memory: 32Mi
-      cpu: 40m
-    limits:
-      memory: 2Gi
-      cpu: 1
+  resources: {}
+  #  requests:
+  #    memory: 32Mi
+  #    cpu: 40m
+  #  limits:
+  #    memory: 2Gi
+  #    cpu: 1
 
 ## Uncomment this if you want to set a specific shared secret between
 ## the agents and servers, otherwise this will be auto-generated.

@@ -1,39 +1,54 @@
 # Drone.io
 
-[Drone](http://readme.drone.io/) is a Continuous Integration platform built on container technology. Every build is executed inside an ephemeral Docker container, giving developers complete control over their build environment with guaranteed isolation.
+[Drone](http://readme.drone.io/) is a Continuous Integration platform built on container technology.
 
-## Introduction
+## TL;DR;
 
-This chart stands up a Drone server. This includes:
-
-- A [Drone Server](http://readme.drone.io/admin/installation-guide/) Pod
-- A [Drone Agent](http://readme.drone.io/admin/installation-guide/) Pod
-
-## Prerequisites
-
-- Kubernetes 1.5+
-- The ability to point a DNS entry or URL at your Drone installation
+```console
+$ helm install incubator/drone
+```
 
 ## Installing the Chart
 
 To install the chart with the release name `my-release`:
 
-```bash
-$ helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
+```console
 $ helm install --name my-release incubator/drone
 ```
 
-You will need to specify custom git parameters in order for the drone server to work.
-Please refer to [values.yaml](values.yaml) for the full run-down on how to configure this.
+## Uninstalling the Chart
 
-Once it's configured, you can then install drone.
+To uninstall/delete the `my-release` deployment:
 
+```console
+$ helm delete my-release
 ```
-$ helm install ./drone
-```
+
+The command removes nearly all the Kubernetes components associated with the
+chart and deletes the release.
 
 ## Configuration
 
 The following tables lists the configurable parameters of the drone charts and their default values.
-|              Parameter               |                             Description                             |               Default                |
-| ------------------------------------ | ------------------------------------------------------------------- | ------------------------------------ |
+
+| Parameter               | Description                                                                                   | Default                 |
+|-------------------------|-----------------------------------------------------------------------------------------------|-------------------------|
+| `image.repository`      | Drone **server** image                                                                        | `docker.io/drone/drone` |
+| `image.tag`             | Drone **server** image tag                                                                    | `0.8.1`                 |
+| `image.pullPolicy`      | Drone **server** image pull policy                                                            | `IfNotPresent`          |
+| `agentImage.repository` | Drone **agent** image                                                                         | `docker.io/drone/agent` |
+| `agentImage.tag`        | Drone **agent** image tag                                                                     | `0.8.1`                 |
+| `agentImage.pullPolicy` | Drone **agent** image pull policy                                                             | `IfNotPresent`          |
+| `service.httpPort`      | Drone's Web GUI HTTP port                                                                     | `80`                    |
+| `service.nodePort`      | If `service.type` is `NodePort` and this is non-empty, sets the http node port of the service | `32015`                 |
+| `service.type`          | Service type (ClusterIP, NodePort or LoadBalancer)                                            | `ClusterIP`             |
+| `ingress.enabled`       | Enables Ingress for Drone                                                                     | `false`                 |
+| `ingress.annotations`   | Ingress annotations                                                                           | `{}`                    |
+| `ingress.hosts`         | Ingress accepted hostnames                                                                    | `nil`                   |
+| `ingress.tls`           | Ingress TLS configuration                                                                     | `[]`                    |
+| `server.host`           | Drone **server** hostname                                                                     | `(internal hostname)`   |
+| `server.env`            | Drone **server** environment variables                                                        | `(default values)`      |
+| `server.resources`      | Drone **server** pod resource requests & limits                                               | `{}`                    |
+| `agent.env`             | Drone **agent** environment variables                                                         | `(default values)`      |
+| `agent.resources`       | Drone **agent** pod resource requests & limits                                                | `{}`                    |
+| `shared_secret`         | Drone server and agent shared secret                                                          | `(random value)`        |
