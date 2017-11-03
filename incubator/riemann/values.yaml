@@ -30,10 +30,10 @@ riemann:
       (tcp-server {:host host})
       (udp-server {:host host})
       (ws-server  {:host host}))
-    
+
     ; Expire old events from the index every 5 seconds.
     (periodically-expire 5 {:keep-keys [:host :service :tags]})
-    
+
     (let [index (index)]
       ; Inbound events will be passed to these streams:
       (streams
@@ -42,4 +42,3 @@ riemann:
           index
           #(info %)
     )))
-
