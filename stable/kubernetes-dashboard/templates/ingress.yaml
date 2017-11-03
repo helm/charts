@@ -27,12 +27,12 @@ spec:
               servicePort: {{ $httpPort }}
   {{- end -}}
   {{- else }}
-  - http:
-      paths:
-        - path: /
-          backend:
-            serviceName: {{ $fullName }}
-            servicePort: {{ $httpPort }}
+    - http:
+        paths:
+          - path: /
+            backend:
+              serviceName: {{ $fullName }}
+              servicePort: {{ $httpPort }}
   {{- end -}}
   {{- if .Values.ingress.tls }}
   tls:
