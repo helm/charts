@@ -10,6 +10,7 @@ metadata:
     heritage: "{{ .Release.Service }}"
   annotations:
     "helm.sh/hook": post-install
+    "helm.sh/hook-delete-policy": hook-succeeded
 spec:
   restartPolicy: OnFailure
   containers:
