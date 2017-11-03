@@ -22,16 +22,19 @@ spec:
         {{- if .Values.service.ports.tcp.internal }}
         livenessProbe:
           tcpSocket:
-            port: {{ .Values.service.ports.tcp.internal }}
+            port: 5555
           initialDelaySeconds: 10
         readinessProbe:
           tcpSocket:
-            port: {{ .Values.service.ports.tcp.internal }}
+            port: 5555
           initialDelaySeconds: 5
         {{- end }}
         volumeMounts:
         - name: "{{ .Release.Name }}-config"
           mountPath: /usr/local/etc/riemann
+        ports:
+        - name: riemann-tcp
+          containerPort: 5555
       volumes:
       - name: "{{ .Release.Name }}-config"
         configMap:
