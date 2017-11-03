@@ -13,7 +13,9 @@ spec:
     metadata:
       labels:
         app: {{ template "riemann.name" . }}
+        chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
         release: {{ .Release.Name }}
+        heritage: {{ .Release.Service }}
     spec:
       containers:
       - name: {{ .Chart.Name }}
