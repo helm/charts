@@ -21,14 +21,14 @@ spec:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: "{{ .Values.image.pullPolicy }}"
-        {{- if .Values.service.ports.tcp.internal }}
+        {{- if .Values.service.ports.tcp }}
         livenessProbe:
           tcpSocket:
-            port: 5555
+            port: riemann-tcp
           initialDelaySeconds: 10
         readinessProbe:
           tcpSocket:
-            port: 5555
+            port: riemann-tcp
           initialDelaySeconds: 5
         {{- end }}
         volumeMounts:
@@ -37,6 +37,13 @@ spec:
         ports:
         - name: riemann-tcp
           containerPort: 5555
+          protocol: TCP
+        - name: riemann-udp
+          containerPort: 5555
+          protocol: UDP
+        - name: riemann-ws
+          protocol: TCP
+          containerPort: 5556
       volumes:
       - name: "{{ .Release.Name }}-config"
         configMap:

@@ -11,22 +11,22 @@ spec:
   type: {{ .Values.service.type }}
   ports:
       {{- if .Values.service.ports.tcp }}
-    - port: {{ .Values.service.ports.tcp.internal }}
-      targetPort: {{ .Values.service.ports.tcp.external }}
+    - name: riemann-tcp
+      port: {{ .Values.service.ports.tcp }}
+      targetPort: riemann-tcp
       protocol: TCP
-      name: riemann-tcp
       {{- end }}
       {{- if .Values.service.ports.udp }}
-    - port: {{ .Values.service.ports.udp.internal }}
-      targetPort: {{ .Values.service.ports.udp.external }}
+    - name: riemann-udp
+      port: {{ .Values.service.ports.udp }}
+      targetPort: riemann-udp
       protocol: UDP
-      name: riemann-udp
       {{- end }}
       {{- if .Values.service.ports.websocket }}
-    - port: {{ .Values.service.ports.websocket.internal }}
-      targetPort: {{ .Values.service.ports.websocket.external }}
+    - name: riemann-ws
+      port: {{ .Values.service.ports.websocket }}
+      targetPort: riemann-ws
       protocol: TCP
-      name: riemann-websocket
       {{- end }}
   selector:
     app: {{ template "riemann.name" . }}

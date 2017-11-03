@@ -22,12 +22,9 @@ image.repository | Name of the image to run, without the tag. | [raykrueger/riem
 image.tag | The image tag to use. | 0.2.14
 image.pullPolicy | The kubernetes image pull policy. | IfNotPresent
 service.type | The kubernetes service type to use. | ClusterIP
-service.ports.udp.internal | The internal udp target port for the service to use. | 5555
-service.ports.udp.external | The external udp port for the service to listen on. | 5555
-service.ports.tcp.internal | The internal tcp target port for the service to use. | 5555
-service.ports.tcp.external | The external tcp port for the service to listen on. | 5555
-service.ports.websocket.internal | The internal port the service should point to for websockets. | 5556
-service.ports.websocket.external | The external port the service should listen to for websockets. | 5556
+service.ports.udp | The udp port the servie should listen on. | 5555
+service.ports.tcp | The tcp port the service should listen on. | 5555
+service.ports.websocket | The port the service should listen on for use with websockets. | 5556
 resources | Any resource constraints to apply. | None
 riemann.config | The actual configuration loaded into the Riemann application. | (See values.yaml)
 

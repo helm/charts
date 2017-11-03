@@ -8,15 +8,9 @@ image:
 service:
   type: ClusterIP
   ports:
-    udp:
-      internal: 5555
-      external: 5555
-    tcp:
-      internal: 5555
-      external: 5555
-    websocket:
-      internal: 5556
-      external: 5556
+    udp: 5555
+    tcp: 5555
+    websocket: 5556
 resources: {}
 # This is close to the default config. It has been modified to log to console.
 # Customize as needed, just make sure you indent correctly.
