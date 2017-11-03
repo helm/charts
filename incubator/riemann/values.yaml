@@ -2,7 +2,8 @@
 # does not support horizontal scaling out of the box.
 replicaCount: 1
 image:
-  repository: raykrueger/riemann:0.2.14
+  repository: raykrueger/riemann
+  tag: 0.2.14
   pullPolicy: IfNotPresent
 service:
   type: ClusterIP

@@ -18,7 +18,8 @@ The following configurations may be set. It is recommended to use values.yaml fo
 Parameter | Description | Default
 --------- | ----------- | -------
 replicaCount | How many replicas to run. Riemann can really only work with one. | 1
-image.repository | The image to run, in full form. | [raykrueger/riemann:0.2.14](https://github.com/raykrueger/riemann-docker)
+image.repository | Name of the image to run, without the tag. | [raykrueger/riemann](https://github.com/raykrueger/riemann-docker)
+image.tag | The image tag to use. | 0.2.14
 image.pullPolicy | The kubernetes image pull policy. | IfNotPresent
 service.type | The kubernetes service type to use. | ClusterIP
 service.ports.udp.internal | The internal udp target port for the service to use. | 5555
