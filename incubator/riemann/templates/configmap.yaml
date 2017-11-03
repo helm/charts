@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ .Release.Name }}-configmap
+  name: {{ template "riemann.fullname" . }}
 data:
   riemann.config: |
 {{/* This must be slammed left to parse correctly */}}

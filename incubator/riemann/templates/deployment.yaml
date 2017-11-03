@@ -38,5 +38,5 @@ spec:
       volumes:
       - name: "{{ .Release.Name }}-config"
         configMap:
-          name: "{{ .Release.Name }}-configmap" 
+          name: {{ template "riemann.fullname" . }}
 
