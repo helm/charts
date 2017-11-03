@@ -36,7 +36,7 @@ data:
           CertFile = "/ssl/tls.crt"
           KeyFile = "/ssl/tls.key"
       {{- else }}
-      [entryPoints.httpx]
+      [entryPoints.httpn]
       address = ":84"
       compress = {{ .Values.gzip.enabled }}
       {{- end }}
