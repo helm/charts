@@ -37,13 +37,14 @@ spec:
     {{- if (and (eq .Values.serviceType "NodePort") (not (empty .Values.service.nodePorts.http)))}}
     nodePort: {{ .Values.service.nodePorts.http }}
     {{- end }}
+    targetPort: 80
   - port: 443
     name: https
     {{- if (and (eq .Values.serviceType "NodePort") (not (empty .Values.service.nodePorts.https)))}}
     nodePort: {{ .Values.service.nodePorts.https }}
     {{- end }}
     {{- if not .Values.ssl.enabled }}
-    targetPort: 80
+    targetPort: 84
     {{- end }}
   {{- if or .Values.metrics.prometheus.enabled .Values.metrics.datadog.enabled .Values.metrics.statsd.enabled }}
   - port: 8080
