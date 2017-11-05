@@ -1,0 +1,9 @@
+name: kubevirt
+home: https://github.com/kubevirt/kubevirt
+version: 0.1.0
+description: KubeVirt is a virtual machine management add-on for Kubernetes. The aim is to provide a common ground for virtualization solutions on top of Kubernetes.
+sources:
+- https://github.com/kubevirt/kubevirt
+maintainers:
+- name: Artyom Lukianov
+  email: alukiano@redhat.com

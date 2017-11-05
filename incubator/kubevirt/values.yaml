@@ -1,0 +1,8 @@
+kubevirt:
+  repository: "kubevirt"
+  tag: "latest"
+  apiserver:
+    externalips:
+      - 10.10.10.10
+  spiceproxy:
+    externalip: 10.10.10.10
