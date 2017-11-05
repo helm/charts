@@ -1,0 +1,44 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: virt-controller
+  namespace: kube-system
+spec:
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: virt-controller
+    spec:
+      serviceAccountName: kubevirt-infra
+      containers:
+      - name: virt-controller
+        image: "{{ .Values.kubevirt.repository }}/virt-controller:{{ .Values.kubevirt.tag }}"
+        imagePullPolicy: IfNotPresent
+        command:
+            - "/virt-controller"
+            - "--launcher-image"
+            - "{{ .Values.kubevirt.repository }}/virt-launcher:{{ .Values.kubevirt.tag }}"
+            - "--migrator-image"
+            - "{{ .Values.kubevirt.repository }}/virt-migrator:{{ .Values.kubevirt.tag }}"
+            - "--port"
+            - "8182"
+        ports:
+          - containerPort: 8182
+            name: "virt-controller"
+            protocol: "TCP"
+        livenessProbe:
+          failureThreshold: 8
+          httpGet:
+            port: 8182
+            path: /healthz
+          initialDelaySeconds: 15
+          timeoutSeconds: 10
+        readinessProbe:
+          httpGet:
+            port: 8182
+            path: /leader
+          initialDelaySeconds: 15
+          timeoutSeconds: 10
+      securityContext:
+        runAsNonRoot: true

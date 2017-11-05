@@ -1,0 +1,42 @@
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRole
+metadata:
+  name: kubevirt-infra
+  namespace: kube-system
+  labels:
+    name: kubevirt
+rules:
+  - apiGroups:
+      - ''
+    resources:
+      - pods
+    verbs:
+      - get
+      - list
+      - watch
+      - delete
+      - update  
+      - create  
+  - apiGroups:
+      - ''
+    resources:
+      - nodes
+      - persistentvolumeclaims  
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - kubevirt.io
+    resources:
+      - virtualmachines
+      - migrations  
+      - virtualmachinereplicasets  
+    verbs:
+      - get
+      - list
+      - watch
+      - delete
+      - update  
+      - create  
+      - deletecollection
