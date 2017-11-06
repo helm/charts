@@ -73,7 +73,7 @@ spec:
         {{- end }}
         ports:
         - containerPort: 80
-        - containerPort: 84
+        - containerPort: 8080
         - containerPort: 443
         {{- if .Values.dashboard.enabled }}
         - containerPort: 8080

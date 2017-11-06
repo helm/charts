@@ -44,7 +44,7 @@ spec:
     nodePort: {{ .Values.service.nodePorts.https }}
     {{- end }}
     {{- if not .Values.ssl.enabled }}
-    targetPort: 84
+    targetPort: 8080
     {{- end }}
   {{- if or .Values.metrics.prometheus.enabled .Values.metrics.datadog.enabled .Values.metrics.statsd.enabled }}
   - port: 8080
