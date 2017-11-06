@@ -4,19 +4,19 @@ kind: Deployment
 metadata:
   name: {{ template "drone.fullname" . }}-server
   labels:
-    app: {{ template "drone.fullname" . }}-server
+    app: {{ template "drone.name" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
+    component: server
 spec:
   replicas: 1
   template:
     metadata:
       labels:
-        app: {{ template "drone.fullname" . }}-server
-        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        app: {{ template "drone.name" . }}
         release: "{{ .Release.Name }}"
-        heritage: "{{ .Release.Service }}"
+        component: server
     spec:
       containers:
       - name: {{ template "drone.fullname" . }}-server

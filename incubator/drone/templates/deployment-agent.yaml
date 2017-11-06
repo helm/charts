@@ -3,19 +3,19 @@ kind: Deployment
 metadata:
   name: {{ template "drone.fullname" . }}-agent
   labels:
-    app: {{ template "drone.fullname" . }}-agent
+    app: {{ template "drone.name" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
+    component: agent
 spec:
   replicas: 1
   template:
     metadata:
       labels:
-        app: {{ template "drone.fullname" . }}-agent
-        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        app: {{ template "drone.name" . }}
         release: "{{ .Release.Name }}"
-        heritage: "{{ .Release.Service }}"
+        component: agent
     spec:
       containers:
       - name: {{ template "drone.fullname" . }}-agent

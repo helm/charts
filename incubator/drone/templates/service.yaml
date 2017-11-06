@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: {{ template "drone.fullname" . }}
   labels:
-    app: {{ template "drone.fullname" . }}
+    app: {{ template "drone.name" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -20,5 +20,6 @@ spec:
     port: 9000
     targetPort: 9000
   selector:
-    app: {{ template "drone.fullname" . }}-server
+    app: {{ template "drone.name" . }}
     release: {{ .Release.Name | quote }}
+    component: server
