@@ -2,12 +2,12 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "kapacitor.fullname" . }}
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
-    app: {{ template "fullname" . }}
+    app: {{ template "kapacitor.fullname" . }}
 spec:
   accessModes:
     - {{ .Values.persistence.accessMode | quote }}

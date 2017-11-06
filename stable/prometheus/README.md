@@ -176,6 +176,7 @@ Parameter | Description | Default
 `server.service.servicePort` | Prometheus server service port | `80`
 `server.service.type` | type of Prometheus server service to create | `ClusterIP`
 `server.terminationGracePeriodSeconds` | Prometheus server Pod termination grace period | `300`
+`server.retention` | (optional) Prometheus data retention | `""`
 `serverFiles.alerts` | Prometheus server alerts configuration | `""`
 `serverFiles.rules` | Prometheus server rules configuration | `""`
 `serverFiles.prometheus.yml` | Prometheus server scrape configuration | example configuration

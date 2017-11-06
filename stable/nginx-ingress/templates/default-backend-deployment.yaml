@@ -21,6 +21,9 @@ spec:
         app: {{ template "name" . }}
         component: "{{ .Values.defaultBackend.name }}"
         release: {{ .Release.Name }}
+        {{- if .Values.defaultBackend.podLabels }}
+{{ toYaml .Values.defaultBackend.podLabels | indent 8 }}
+        {{- end }}
     spec:
       containers:
         - name: {{ template "name" . }}-{{ .Values.defaultBackend.name }}
@@ -28,7 +31,11 @@ spec:
           imagePullPolicy: "{{ .Values.defaultBackend.image.pullPolicy }}"
           args:
           {{- range $key, $value := .Values.defaultBackend.extraArgs }}
+            {{- if $value }}
             - --{{ $key }}={{ $value }}
+            {{- else }}
+            - --{{ $key }}
+            {{- end }}
           {{- end }}
           livenessProbe:
             httpGet:

@@ -6,7 +6,7 @@ metadata:
   annotations:
 {{ toYaml .Values.ingress.annotations | indent 4 }}
 {{- end }}
-  name: {{ template "fullname" . }}
+  name: {{ template "redmine.fullname" . }}
 spec:
   rules:
   - host: {{ .Values.ingress.hostname | quote }}
@@ -14,7 +14,7 @@ spec:
       paths:
       - path: /
         backend:
-          serviceName: {{ template "fullname" . }}
+          serviceName: {{ template "redmine.fullname" . }}
           servicePort: 80
 {{- if .Values.ingress.tls }}
   tls:

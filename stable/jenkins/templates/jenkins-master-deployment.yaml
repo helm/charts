@@ -1,7 +1,7 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "jenkins.fullname" . }}
   labels:
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
@@ -17,7 +17,7 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "fullname" . }}
+        app: {{ template "jenkins.fullname" . }}
         heritage: {{ .Release.Service | quote }}
         release: {{ .Release.Name | quote }}
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
@@ -35,7 +35,7 @@ spec:
       {{- end }}
       securityContext:
         runAsUser: 0
-      serviceAccountName: {{ if .Values.rbac.install }}{{ template "fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
+      serviceAccountName: {{ if .Values.rbac.install }}{{ template "jenkins.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
       initContainers:
         - name: "copy-default-config"
           image: "{{ .Values.Master.Image }}:{{ .Values.Master.ImageTag }}"
@@ -55,7 +55,7 @@ spec:
               mountPath: /usr/share/jenkins/ref/secrets/
               name: secrets-dir
       containers:
-        - name: {{ template "fullname" . }}
+        - name: {{ template "jenkins.fullname" . }}
           image: "{{ .Values.Master.Image }}:{{ .Values.Master.ImageTag }}"
           imagePullPolicy: "{{ .Values.Master.ImagePullPolicy }}"
           {{- if .Values.Master.UseSecurity }}
@@ -70,12 +70,12 @@ spec:
             - name: ADMIN_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "fullname" . }}
+                  name: {{ template "jenkins.fullname" . }}
                   key: jenkins-admin-password
             - name: ADMIN_USER
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "fullname" . }}
+                  name: {{ template "jenkins.fullname" . }}
                   key: jenkins-admin-user
             {{- end }}
           ports:
@@ -117,7 +117,7 @@ spec:
 {{- end }}
       - name: jenkins-config
         configMap:
-          name: {{ template "fullname" . }}
+          name: {{ template "jenkins.fullname" . }}
       - name: plugin-dir
         emptyDir: {}
       - name: secrets-dir
@@ -125,7 +125,7 @@ spec:
       - name: jenkins-home
       {{- if .Values.Persistence.Enabled }}
         persistentVolumeClaim:
-          claimName: {{ .Values.Persistence.ExistingClaim | default (include "fullname" .) }}
+          claimName: {{ .Values.Persistence.ExistingClaim | default (include "jenkins.fullname" .) }}
       {{- else }}
         emptyDir: {}
       {{- end -}}

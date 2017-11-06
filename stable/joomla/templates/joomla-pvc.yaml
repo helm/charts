@@ -2,9 +2,9 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: {{ template "fullname" . }}-joomla
+  name: {{ template "joomla.fullname" . }}-joomla
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "joomla.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"

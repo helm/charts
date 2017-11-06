@@ -1,7 +1,8 @@
 name: opencart
-version: 0.5.4
+version: 0.6.0
 appVersion: 3.0.2
-description: A free and open source e-commerce platform for online merchants. It provides a professional and reliable foundation for a successful online store.
+description: A free and open source e-commerce platform for online merchants. It provides
+  a professional and reliable foundation for a successful online store.
 keywords:
 - opencart
 - e-commerce

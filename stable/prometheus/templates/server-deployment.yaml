@@ -10,6 +10,10 @@ metadata:
   name: {{ template "prometheus.server.fullname" . }}
 spec:
   replicas: {{ .Values.server.replicaCount }}
+  {{- if .Values.server.strategy }}
+  strategy:
+{{ toYaml .Values.server.strategy | indent 4 }}
+  {{- end }}
   template:
     metadata:
     {{- if .Values.server.podAnnotations }}
@@ -28,7 +32,7 @@ spec:
           imagePullPolicy: "{{ .Values.configmapReload.image.pullPolicy }}"
           args:
             - --volume-dir=/etc/config
-            - --webhook-url=http://localhost:9090{{ .Values.server.baseUrl }}/-/reload
+            - --webhook-url=http://localhost:9090{{ .Values.server.baseURL }}/-/reload
           resources:
 {{ toYaml .Values.configmapReload.resources | indent 12 }}
           volumeMounts:
@@ -42,6 +46,9 @@ spec:
           args:
           {{- if or .Values.alertmanager.enabled .Values.server.alertmanagerURL }}
             - --alertmanager.url={{- if .Values.alertmanager.enabled }}http://{{ template "prometheus.alertmanager.fullname" . }}:{{ .Values.alertmanager.service.servicePort }}{{ .Values.alertmanager.baseURL }}{{- else }}{{ .Values.server.alertmanagerURL }}{{- end }}
+          {{- end }}
+          {{- if .Values.server.retention }}
+            - --storage.local.retention={{ .Values.server.retention }}
           {{- end }}
             - --config.file=/etc/config/prometheus.yml
             - --storage.local.path={{ .Values.server.persistentVolume.mountPath }}
@@ -78,6 +85,10 @@ spec:
     {{- if .Values.server.tolerations }}
       tolerations:
 {{ toYaml .Values.server.tolerations | indent 8 }}
+    {{- end }}
+    {{- if .Values.server.affinity }}
+      affinity:
+{{ toYaml .Values.server.affinity | indent 8 }}
     {{- end }}
       terminationGracePeriodSeconds: {{ .Values.server.terminationGracePeriodSeconds }}
       volumes:

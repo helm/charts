@@ -1,9 +1,9 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "worker-fullname" . }}
+  name: {{ template "dask-distributed.worker-fullname" . }}
   labels:
-    app: {{ template "name" . }}
+    app: {{ template "dask-distributed.name" . }}
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
@@ -15,14 +15,14 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "name" . }}
+        app: {{ template "dask-distributed.name" . }}
         release: {{ .Release.Name | quote }}
         component: "{{ .Release.Name }}-{{ .Values.worker.component }}"
     spec:
       containers:
-        - name: {{ template "worker-fullname" . }}
+        - name: {{ template "dask-distributed.worker-fullname" . }}
           image: "{{ .Values.worker.image }}:{{ .Values.worker.imageTag }}"
-          command: ["dask-worker", "{{ template "scheduler-fullname" . }}:{{ .Values.scheduler.servicePort }}"]
+          command: ["dask-worker", "{{ template "dask-distributed.scheduler-fullname" . }}:{{ .Values.scheduler.servicePort }}"]
           ports:
             - containerPort: {{ .Values.worker.containerPort }}
           resources:

@@ -1,6 +1,6 @@
 name: magento
-version: 0.4.15
-appVersion: 2.1.9
+version: 0.5.0
+appVersion: 2.2.0
 description: A feature-rich flexible e-commerce solution. It includes transaction options, multi-store functionality, loyalty programs, product categorization and shopper filtering, promotion rules, and more.
 keywords:
 - magento

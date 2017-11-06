@@ -196,7 +196,7 @@ func doMain() int {
 	}
 
 	log.Printf("Charts for Testing: %+v", chartList)
-	defer writeXML("/workspace/_artifacts", time.Now())
+	defer writeXML("/go/src/k8s.io/charts/_artifacts", time.Now())
 	if !terminate.Stop() {
 		<-terminate.C // Drain the value if necessary.
 	}
