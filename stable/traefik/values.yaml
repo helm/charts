@@ -89,12 +89,12 @@ rbac:
 metrics:
   prometheus:
     enabled: false
-    buckets: 0.1,0.3,1.2,5
+    # buckets: [0.1,0.3,1.2,5]
   datadog:
     enabled: false
-    # address: "localhost:8125"
-    # pushInterval: 30s
+    # address: localhost:8125
+    # pushInterval: 10s
   statsd:
     enabled: false
-    # address: "localhost:8125"
-    # pushInterval: 30s
+    # address: localhost:8125
+    # pushInterval: 10s
