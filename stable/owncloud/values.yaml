@@ -8,6 +8,13 @@ image: bitnami/owncloud:10.0.3-r0
 ##
 imagePullPolicy: IfNotPresent
 
+## Allowing use of ingress controllers
+## ref: https://kubernetes.io/docs/concepts/services-networking/ingress/
+##
+ingressController:
+    enabled: false
+    servicePort: http
+
 ## ownCloud host to create application URLs
 ## ref: https://github.com/bitnami/bitnami-docker-owncloud#configuration
 ##
