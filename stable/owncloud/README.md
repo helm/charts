@@ -49,6 +49,8 @@ The following tables lists the configurable parameters of the ownCloud chart and
 |-------------------------------------|-------------------------------------------|---------------------------------------------|
 | `image`                             | ownCloud image                            | `bitnami/owncloud:{VERSION}`                |
 | `imagePullPolicy`                   | Image pull policy                         | `IfNotPresent`                              |
+| `ingressController.enabled`         | Enable use of ingress controllers         | `false`                                     |
+| `ingressController.servicePort`     | Ingress' backend servicePort              | `http`                                      |
 | `owncloudHost`                      | ownCloud host to create application URLs  | `nil`                                       |
 | `owncloudLoadBalancerIP`            | `loadBalancerIP` for the owncloud Service | `nil`                                       |
 | `owncloudUsername`                  | User of the application                   | `user`                                      |
