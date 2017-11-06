@@ -51,4 +51,4 @@ The following tables lists the configurable parameters of the drone charts and t
 | `server.resources`      | Drone **server** pod resource requests & limits                                               | `{}`                    |
 | `agent.env`             | Drone **agent** environment variables                                                         | `(default values)`      |
 | `agent.resources`       | Drone **agent** pod resource requests & limits                                                | `{}`                    |
-| `shared_secret`         | Drone server and agent shared secret                                                          | `(random value)`        |
+| `sharedSecret`         | Drone server and agent shared secret                                                          | `(random value)`        |
