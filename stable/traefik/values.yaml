@@ -85,16 +85,18 @@ accessLogs:
 rbac:
   enabled: false
 ## Enable the /metrics endpoint, for now only supports prometheus
-## set to true to enable metric collection by prometheus
 metrics:
+  ## set to true to enable metric collection by prometheus
   prometheus:
     enabled: false
-    buckets: 0.1,0.3,1.2,5
+    # buckets: [0.1,0.3,1.2,5]
+  ## set to true to enable metric collection by datadog
   datadog:
     enabled: false
-    # address: "localhost:8125"
-    # pushInterval: 30s
+    # address: localhost:8125
+    # pushInterval: 10s
+  ## set to true to enable metric collection by statsd
   statsd:
     enabled: false
-    # address: "localhost:8125"
-    # pushInterval: 30s
+    # address: localhost:8125
+    # pushInterval: 10s
