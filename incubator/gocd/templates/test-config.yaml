@@ -1,17 +1,17 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name:  "{{ .Chart.Name }}-tests"
+  name:  "{{ template "gocd.name" . }}-tests"
 data:
   run.sh: |-
     @test "Testing GoCD UI is accessible" {
       {{- if .Values.agent.goServerUrl }}
         curl --connect-timeout 10 --retry 12 --retry-delay 10 --retry-max-time {{ .Values.server.healthCheck.initialDelaySeconds }} {{ .Values.agent.goServerUrl }}/auth/login
       {{- else }}
-        curl --connect-timeout 10 --retry 12 --retry-delay 10 --retry-max-time {{ .Values.server.healthCheck.initialDelaySeconds }} "http://{{ .Chart.Name }}-server-service:{{ .Values.server.service.httpPort }}/go/auth/login"
+        curl --connect-timeout 10 --retry 12 --retry-delay 10 --retry-max-time {{ .Values.server.healthCheck.initialDelaySeconds }} "http://{{ template "gocd.name" . }}-server-service:{{ .Values.server.service.httpPort }}/go/auth/login"
       {{- end }}
     }
 
     @test "Testing GoCD application is accessible through service" {
-      curl --retry 2 --retry-delay 10 --retry-max-time {{ .Values.server.healthCheck.initialDelaySeconds }} http://{{ .Chart.Name }}-server-service:{{ .Values.server.service.httpPort }}/go
+      curl --retry 2 --retry-delay 10 --retry-max-time {{ .Values.server.healthCheck.initialDelaySeconds }} http://{{ template "gocd.name" . }}-server-service:{{ .Values.server.service.httpPort }}/go
     }

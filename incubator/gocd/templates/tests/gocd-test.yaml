@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: "{{ .Chart.Name }}-test-{{ randAlphaNum 5 | lower }}"
+  name: "{{ template "gocd.name" . }}-test-{{ randAlphaNum 5 | lower }}"
   annotations:
     "helm.sh/hook": test-success
 spec:
@@ -19,7 +19,7 @@ spec:
       - mountPath: /tools
         name: tools
   containers:
-    - name: {{ .Chart.Name }}-ui-test
+    - name: {{ template "gocd.name" . }}-ui-test
       image: "gocddev/gocd-helm-build:v0.1.0"
       command: ["/tools/bats/bats", "-t", "/tests/run.sh"]
       volumeMounts:
@@ -31,7 +31,7 @@ spec:
   volumes:
   - name: tests
     configMap:
-      name: "{{ .Chart.Name }}-tests"
+      name: "{{ template "gocd.name" . }}-tests"
   - name: tools
     emptyDir: {}
   restartPolicy: Never

@@ -5,6 +5,9 @@ metadata:
   name: {{ .Values.agent.persistence.homego.name }}
   labels:
     app: {{ .Values.agent.name }}
+    chart: "{{ template "gocd.name" . }}-{{ .Chart.Version }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
     role: agent
 spec:
   accessModes:

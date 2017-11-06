@@ -2,9 +2,12 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: {{ .Chart.Name }}-server-ingress
+  name: {{ template "gocd.name" . }}-server-ingress
   labels:
-    app: {{ .Chart.Name }}-server
+    app: {{ template "gocd.name" . }}-server
+    chart: "{{ template "gocd.name" . }}-{{ .Chart.Version }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
     role: server
   annotations:
     {{- range $key, $value := .Values.server.ingress.annotations }}
@@ -12,7 +15,7 @@ metadata:
     {{- end }}
 spec:
   backend:
-    serviceName: {{ .Chart.Name }}-server-service
+    serviceName: {{ template "gocd.name" . }}-server-service
     servicePort: {{ .Values.server.service.httpPort }}
   rules:
     {{- range $host := .Values.server.ingress.hosts }}

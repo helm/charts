@@ -1,16 +1,22 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ .Chart.Name }}-agent-deployment
+  name: {{ template "gocd.name" . }}-agent-deployment
   labels:
-    app: {{ .Chart.Name }}-agent
+    app: {{ template "gocd.name" . }}-agent
+    chart: "{{ template "gocd.name" . }}-{{ .Chart.Version }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
     role: agent
 spec:
   replicas: {{ .Values.agent.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "gocd.name" . }}-agent
   template:
     metadata:
       labels:
-        app: {{ .Chart.Name }}-agent
+        app: {{ template "gocd.name" . }}-agent
         role: agent
     spec:
       {{- if .Values.agent.persistence.enabled }}
@@ -20,7 +26,7 @@ spec:
             claimName: {{ .Values.agent.persistence.homego.name }}
       {{- end }}
       containers:
-        - name: {{ .Chart.Name }}-agent
+        - name: {{ template "gocd.name" . }}-agent
           {{- if .Values.agent.image.tag }}
           image: "{{ .Values.agent.image.repository }}:{{ .Values.agent.image.tag }}"
           {{- else }}
@@ -34,7 +40,7 @@ spec:
           {{- if .Values.agent.env.goServerUrl }}
             value: {{ .Values.agent.env.goServerUrl }}
           {{- else }}
-            value: "https://{{ .Chart.Name }}-server-service:{{ .Values.server.service.httpsPort }}/go"
+            value: "https://{{ template "gocd.name" . }}-server-service:{{ .Values.server.service.httpsPort }}/go"
           {{- end }}
 
           {{- if .Values.agent.env.agentAutoRegisterKey }}

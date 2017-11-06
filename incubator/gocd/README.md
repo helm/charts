@@ -55,6 +55,8 @@ The following tables lists the configurable parameters of the GoCD chart and the
 | `server.image.repository`                  | GoCD server image                                                                                             | `gocd/gocd-server`  |
 | `server.image.tag`                         | GoCD server image tag                                                                                         | `.Chart.appVersion` |
 | `server.image.pullPolicy`                  | Image pull policy                                                                                             | `IfNotPresent`      |
+| `server.resources`                         | GoCD server resource requests and limits                                                                      | `{}`                |
+| `server.nodeSelector`                      | GoCD server nodeSelector for pod labels                                                                       | `{}`                |
 | `server.env.goServerSystemProperties`      | GoCD Server system properties                                                                                 | `nil`               |
 | `server.service.type`                      | Type of GoCD server Kubernetes service                                                                        | `NodePort`          |
 | `server.service.httpPort`                  | GoCD server service HTTP port                                                                                 | `8153`              |
@@ -63,7 +65,7 @@ The following tables lists the configurable parameters of the GoCD chart and the
 | `server.service.nodeHttpsPort`             | GoCD server service node HTTPS port. **Note**: A random nodePort will get assigned if not specified           | `nil`               |  
 | `server.ingress.enabled`                   | Enable GoCD ingress.                                                                                          | `false`             |  
 | `server.ingress.hosts`                     | GoCD ingress hosts records.                                                                                   | `nil`               |
-| `server.healthCheck.initialDelaySeconds`   | GoCD server start up time.                                                                                    | `180`               |
+| `server.healthCheck.initialDelaySeconds`   | Initial delays in seconds to start the health checks. **Note**:GoCD server start up time.                     | `180`               |
 | `server.healthCheck.periodSeconds`         | GoCD server heath check interval period.                                                                      | `5`                 |
 
 ### GoCD Agent
@@ -74,6 +76,8 @@ The following tables lists the configurable parameters of the GoCD chart and the
 | `agent.image.repository`                  | GoCD agent image                                                                                                                                                                 | `gocd/gocd-agent-alpine-3.6` |
 | `agent.image.tag`                         | GoCD agent image tag                                                                                                                                                             | `.Chart.appVersion`          |
 | `agent.image.pullPolicy`                  | Image pull policy                                                                                                                                                                | `IfNotPresent`               |
+| `agent.resources`                         | GoCD agent resource requests and limits                                                                                                                                          | `{}`                |
+| `agent.nodeSelector`                      | GoCD agent nodeSelector for pod labels                                                                                                                                           | `{}`                |
 | `agent.env.goServerUrl`                   | GoCD Server Url                                                                                                                                                                  | `nil`                        |
 | `agent.env.agentAutoRegisterKey`          | GoCD Agent autoregister key                                                                                                                                                      | `nil`                        |
 | `agent.env.agentAutoRegisterResources`    | Comma separated list of GoCD Agent resources                                                                                                                                     | `nil`                        |
