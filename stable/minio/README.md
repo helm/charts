@@ -96,7 +96,6 @@ install | `false` |
 | `defaultBucket.name`       | Bucket name | `nil` |
 | `defaultBucket.policy` | Bucket policy | `download` |
 
-
 Some of the parameters above map to the env variables defined in the [Minio DockerHub image](https://hub.docker.com/r/minio/minio/).
 
 You can specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
