@@ -48,6 +48,30 @@ helm install incubator/jaeger --name myrel --set cassandra.config.max_heap_size=
 
 > **Tip**: List all releases using `helm list`
 
+## Installing the Chart using an Existing Cassandra Cluster
+
+If you already have an existing running Cassandra cluster, you can configure the chart as follows to use it as your backing store (replace `cassandra` with whatever hostname the cluster has been configured with):
+
+```bash
+helm install incubator/jaeger --name myrel --set tags.cassandra=false --set tags.elasticsearch=false --set cassandra.config.host=cassandra
+```
+
+> **Tip**: It is highly encouraged to run the Cassandra cluster with storage persistence.
+
+## Installing the Chart using a New ElasticSearch Cluster
+
+**Currently unsupported**
+
+## Installing the Chart using an Existing ElasticSearch Cluster
+
+If you already have an existing running ElasticSearch cluster, you can configure the chart as follows to use it as your backing store (replace `http://elasticsearch:9200` with whatever hostname the cluster has been configured with):
+
+```bash
+helm install incubator/jaeger --name myrel --set tags.cassandra=false --set tags.elasticsearch=false --set elasticsearch.config.host=http://elasticsearch:9200
+```
+
+> **Tip**: It is highly encouraged to run the ElasticSearch cluster with storage persistence.
+
 ## Uninstalling the Chart
 
 To uninstall/delete the `myrel` deployment:
@@ -68,11 +92,15 @@ The following tables lists the configurable parameters of the Jaeger chart and t
 |-----------------------------------|------------------------------------|----------------------------------------|
 | `cassandra.image.tag`             | The image tag/version              |  3.11                                  |
 | `cassandra.persistence.enabled`   | To enable storage persistence      |  false (Highly recommended to enable)  |
+| `cassandra.config.host`           | Existing Cassandra hostname        |  ""                                    |
 | `cassandra.config.cluster_name`   | Cluster name                       |  jaeger                                |
 | `cassandra.config.seed_size`      | Seed size                          |  1                                     |
 | `cassandra.config.dc_name`        | Datacenter name                    |  dc1                                   |
 | `cassandra.config.rack_name`      | Rack name                          |  rack1                                 |
 | `cassandra.config.endpoint_snitch`| Node discovery method              |  GossipingPropertyFileSnitch           |
+| `elasticsearch.config.host`       | Existing ElasticSearch hostname    |  ""                                    |
+| `elasticsearch.config.username`   | Existing ElasticSearch username    |  "elastic"                             |
+| `elasticsearch.config.password`   | Existing ElasticSearch password    |  "changeme"                            |
 | `schema.annotations`              | Annotations for the schema job     |  nil                                   |
 | `schema.image`                    | Image to setup cassandra schema    |  jaegertracing/jaeger-cassandra-schema |
 | `schema.tag`                      | Image tag/version                  |  0.6                                   |
