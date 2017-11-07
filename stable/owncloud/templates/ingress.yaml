@@ -1,4 +1,4 @@
-{{- if .Values.ingressController.enabled -}}
+{{- if .Values.ingressController.enabled }}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
@@ -10,12 +10,11 @@ metadata:
     heritage: "{{ .Release.Service }}"
 spec:
   rules:
-  - host: {{ .Values.owncloudHost}}
+  - host: {{ .Values.owncloudHost }}
     http:
       paths:
       - path: /
         backend:
-          serviceName: {{ template "fullname" .}}
-          servicePort: {{ .Values.ingressController.servicePort}}
-{{- end -}}
-
+          serviceName: {{ template "fullname" . }}
+          servicePort: {{ .Values.ingressController.servicePort }}
+{{- end }}
