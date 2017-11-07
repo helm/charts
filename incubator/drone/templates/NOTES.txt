@@ -40,6 +40,7 @@ This deployment will be incomplete until you configure a valid version
 control provider:
 
     helm upgrade {{ .Release.Name }} \
+      --reuse-values \
       --set server.env.DRONE_PROVIDER="github" \
       --set server.env.DRONE_GITHUB="true" \
       --set server.env.DRONE_ORGS="my-github-org" \
