@@ -11,10 +11,4 @@ log:
   destination: logs0.papertrailapp.com
   port: 1000
 
-resources:
-  limits:
-    cpu: 50m
-    memory: 128Mi
-  requests:
-    cpu: 10m
-    memory: 16Mi
+resources: {}
