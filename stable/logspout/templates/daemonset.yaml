@@ -4,9 +4,9 @@ metadata:
   name: {{ template "fullname" . }}
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
-    app: {{ template "fullname" . }}
-    heritage: "{{ .Release.Service }}"
-    component: logrouter
+    app: {{ template "name" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
 spec:
   template:
     metadata:
