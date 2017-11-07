@@ -72,11 +72,19 @@ spec:
           name: acme
         {{- end }}
         ports:
-        - containerPort: 80
-        - containerPort: 8080
-        - containerPort: 443
+        - name: http
+          containerPort: 80
+          protocol: TCP
+        - name: httpn
+          containerPort: 8880
+          protocol: TCP
+        - name: https
+          containerPort: 443
+          protocol: TCP
         {{- if .Values.dashboard.enabled }}
-        - containerPort: 8080
+        - name: dash
+          containerPort: 8080
+          protocol: TCP
         {{- end }}
         args:
         - --configfile=/config/traefik.toml

@@ -37,7 +37,7 @@ data:
           KeyFile = "/ssl/tls.key"
       {{- else }}
       [entryPoints.httpn]
-      address = ":8080"
+      address = ":8880"
       compress = {{ .Values.gzip.enabled }}
       {{- end }}
     [kubernetes]
