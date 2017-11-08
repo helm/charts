@@ -46,3 +46,4 @@ rules:
   verbs: ["create"]
 {{ end }}
 {{- end -}}
+
