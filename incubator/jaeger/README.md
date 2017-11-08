@@ -60,7 +60,15 @@ helm install incubator/jaeger --name myrel --set tags.cassandra=false --set tags
 
 ## Installing the Chart using a New ElasticSearch Cluster
 
-**Currently unsupported**
+To install the chart with the release name `myrel` using a new ElasticSearch cluster instead of Cassandra (default), run the following command:
+
+```bash
+$ helm install incubator/jaeger --name myrel --set tags.cassandra=false --set tags.elasticsearch=true
+```
+
+After a few minutes, you should see 2 ElasticSearch client nodes, 2 ElasticSearch data nodes, 3 ElasticSearch master nodes, a Jaeger DaemonSet, a Jaeger Collector, and a Jaeger Query (UI) pod deployed into your Kubernetes cluster.
+
+> **Tip**: If the ElasticSearch client nodes do not enter the running state, try --set elasticsearch.rbac.create=true
 
 ## Installing the Chart using an Existing ElasticSearch Cluster
 
