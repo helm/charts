@@ -1,4 +1,6 @@
-{{- if .Values.Master.HostName }}
+{{- if .Values.Master.Ingress.Hosts }}
+{{- $serviceName := include "jenkins.fullname" . }}
+{{- $servicePort := .Values.Master.ServicePort }}
 apiVersion: {{ .Values.NetworkPolicy.ApiVersion }}
 kind: Ingress
 metadata:
@@ -9,14 +11,27 @@ metadata:
   name: {{ template "jenkins.fullname" . }}
 spec:
   rules:
-  - host: {{ .Values.Master.HostName | quote }}
+  {{- range .Values.Master.Ingress.Hosts }}
+  - host: {{ .name | quote }}
     http:
       paths:
+      {{- if .paths }}{{- range .paths }}{{- if .backend }}
       - backend:
-          serviceName: {{ template "jenkins.fullname" . }}
-          servicePort: {{ .Values.Master.ServicePort }}
+          serviceName: {{ .backend.serviceName | default $serviceName | quote }}
+          servicePort: {{ .backend.servicePort | default $servicePort }}
+      {{- else }}
+      - backend:
+          serviceName: {{ $serviceName | quote }}
+          servicePort: {{ $servicePort }}
+      {{- end }}{{- if .path }}
+        path: {{ .path | quote }}
+      {{- end }}{{- end }}{{- else }}
+      - backend:
+          serviceName: {{ $serviceName | quote }}
+          servicePort: {{ $servicePort }}
+  {{- end }}{{- end }}
 {{- if .Values.Master.Ingress.TLS }}
   tls:
 {{ toYaml .Values.Master.Ingress.TLS | indent 4 }}
-{{- end -}}
+{{- end }}
 {{- end }}

@@ -26,7 +26,6 @@ Master:
   ServiceAnnotations: {}
     #   service.beta.kubernetes.io/aws-load-balancer-backend-protocol: https
 # Used to create Ingress record (should used with ServiceType: ClusterIP)
-# HostName: jenkins.cluster.local
 # NodePort: <to set explicitly, choose port between 30000-32767
   ContainerPort: 8080
   SlaveListenerPort: 50000
@@ -43,11 +42,11 @@ Master:
 # JMXPort: 4000
 # List of plugins to be install during Jenkins master start
   InstallPlugins:
-      - kubernetes:0.11
-      - workflow-aggregator:2.5
-      - workflow-job:2.13
-      - credentials-binding:1.12
-      - git:3.4.0
+    - kubernetes:0.11
+    - workflow-aggregator:2.5
+    - workflow-job:2.13
+    - credentials-binding:1.12
+    - git:3.4.0
 # Used to approve a list of groovy functions in pipelines used the script-security plugin. Can be viewed under /scriptApproval
   # ScriptApproval:
   #   - "method groovy.json.JsonSlurperClassic parseText java.lang.String"
@@ -67,7 +66,9 @@ Master:
     Annotations:
       # kubernetes.io/ingress.class: nginx
       # kubernetes.io/tls-acme: "true"
-
+    Hosts:
+      # - name: "jenkins.cluster.local"
+      #   paths: []
     TLS:
       # - secretName: jenkins.cluster.local
       #   hosts:
@@ -111,6 +112,7 @@ Persistence:
   ##
   # StorageClass: "-"
 
+  Annotations: {}
   AccessMode: ReadWriteOnce
   Size: 8Gi
   volumes:
