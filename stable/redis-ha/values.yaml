@@ -38,16 +38,12 @@ persistentVolume:
   ## Redis data Persistent Volume Claim annotations
   ##
   annotations: {}
-  ## Redis data Persistent Volume existing claim name
-  ## Requires alertmanager.persistentVolume.enabled: true
-  ## If defined, PVC must be created manually before volume will be bound
-  existingClaim: ""
   ## Redis data Persistent Volume mount root path
   ##
   mountPath: /data
   ## alertmanager data Persistent Volume size
   ##
-  size: 2Gi
+  size: 8Gi
 
   ## Redis data Persistent Volume Storage Class
   ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
