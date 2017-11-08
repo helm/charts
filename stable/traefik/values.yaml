@@ -48,6 +48,8 @@ dashboard:
   ingress:
     # annotations:
     #   key: value
+    # labels:
+    #   key: value
   auth:
     # basic:
     #   username: password

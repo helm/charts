@@ -16,6 +16,11 @@ spec:
       env:
         - name: "STATEFULSET_NAME"
           value: "{{ template "neo4j.fullname" . }}"
+        - name: NEO4J_SECRETS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "neo4j.secrets.fullname" . }}
+              key: neo4j-password
       command: ["/tools/bats/bats", "-t", "/tests/run.sh"]
       volumeMounts:
       - mountPath: /tests
