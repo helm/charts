@@ -60,7 +60,7 @@ Alternatively, a YAML file that specifies the values for the parameters can be p
 $ helm install --name my-release -f values.yaml stable/consul
 ```
 
-> **Tip**: You can use the default [values.yaml](values.yaml)
+> **Tip**: You can use the default [https://github.com/kubernetes/charts/tree/master/stable/consul/values.yaml](values.yaml)
 
 ## Cleanup orphaned Persistent Volumes
 
