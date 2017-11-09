@@ -52,6 +52,7 @@ Parameter | Description | Default
 `controller.config` | nginx ConfigMap entries | none
 `controller.hostNetwork` | If the nginx deployment / daemonset should run on the host's network namespace | false
 `controller.defaultBackendService` | default 404 backend service; required only if `defaultBackend.enabled = false` | `""`
+`controller.defaultSSLCertificate` | catch-all SSL certificate which do not match any of the configured server names. Defaults to self signed certificate | `""`
 `controller.electionID` | election ID to use for the status update | `ingress-controller-leader`
 `controller.ingressClass` | name of the ingress class to route through this controller | `nginx`
 `controller.scope.enabled` | limit the scope of the ingress controller | `false` (watch all namespaces)
