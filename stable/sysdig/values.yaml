@@ -38,11 +38,11 @@ secure:
 
 resources:
     requests:
-      cpu: 100m
-      memory: 512Mi
+        cpu: 100m
+        memory: 512Mi
     limits:
-      cpu: 500m
-      memory: 768Mi
+        cpu: 500m
+        memory: 768Mi
 
 # Allow sysdig to run on Kubernetes 1.6 masters.
 tolerations:
