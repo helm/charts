@@ -1,0 +1,103 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "searchlight.fullname" . }}
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app: "{{ template "searchlight.name" . }}"
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: "{{ template "searchlight.name" . }}"
+        release: "{{ .Release.Name }}"
+{{- if and .Values.criticalAddon (eq .Release.Namespace "kube-system") }}
+      annotations:
+        scheduler.alpha.kubernetes.io/critical-pod: ''
+{{- end }}
+    spec:
+      serviceAccountName: {{ if .Values.rbac.create }}{{ template "searchlight.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
+      containers:
+      - name: operator
+        image: {{ .Values.operator.image }}:{{ .Values.operator.tag }}
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        {{- if .Values.imagePullSecrets }}
+        imagePullSecrets:
+{{ toYaml .Values.imagePullSecrets | indent 8 }}
+        {{- end }}
+        args:
+        - run
+        - --v={{ .Values.logLevel }}
+        - --config-dir=/srv
+        - --config-secret-name={{ template "searchlight.fullname" . }}
+        - --api.address=:8080
+        - --web.address=:56790
+        ports:
+        - name: api
+          containerPort: 8080
+          protocol: TCP
+        - name: web
+          containerPort: 56790
+          protocol: TCP
+        volumeMounts:
+        - name: data
+          mountPath: /srv
+      - name: icinga
+        image: {{ .Values.icinga.image }}:{{ .Values.icinga.tag }}
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        {{- if .Values.imagePullSecrets }}
+        imagePullSecrets:
+{{ toYaml .Values.imagePullSecrets | indent 8 }}
+        {{- end }}
+        ports:
+        - name: icinga
+          containerPort: 5665
+          protocol: TCP
+        - name: ui
+          containerPort: 60006
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            scheme: HTTPS
+            port: 5665
+            path: /v1/status
+            httpHeaders:
+              - name: Authorization
+                value: "Basic c3RhdHVzdXNlcjpzdGF0dXNwYXNz"
+          initialDelaySeconds: 120
+          periodSeconds: 30
+        volumeMounts:
+        - name: data
+          mountPath: /srv
+      - name: ido
+        image: {{ .Values.ido.image }}:{{ .Values.ido.tag }}
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        {{- if .Values.imagePullSecrets }}
+        imagePullSecrets:
+{{ toYaml .Values.imagePullSecrets | indent 8 }}
+        {{- end }}
+        env:
+        - name: PGDATA
+          value: /var/lib/postgresql/data/pgdata
+        ports:
+        - name: ido
+          containerPort: 5432
+          protocol: TCP
+        volumeMounts:
+        - name: data
+          mountPath: /var/lib/postgresql/data
+      volumes:
+      - name: data
+        emptyDir: {}
+{{- if and .Values.criticalAddon (eq .Release.Namespace "kube-system") }}
+      tolerations:
+      - key: "CriticalAddonsOnly"
+        operator: "Exists"
+{{- end -}}
+{{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+{{- end -}}

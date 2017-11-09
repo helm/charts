@@ -25,17 +25,31 @@ spec:
           - name: NEO4J_dbms_mode
             value: READ_REPLICA
           - name: NEO4J_dbms_security_auth__enabled
-            value: "false"
+            value: "{{ .Values.authEnabled }}"
           - name: NEO4J_causal__clustering_discovery__type
             value: DNS
           - name: NEO4J_causal__clustering_initial__discovery__members
             value: "{{ template "neo4j.fullname" . }}.default.svc.cluster.local:5000"
+          {{- if .Values.authEnabled }}
+          - name: NEO4J_SECRETS_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "neo4j.secrets.fullname" . }}
+                key: neo4j-password
+          {{- end }}
         command:
           - "/bin/bash"
-          - "-ecx"
+          - "-c"
           - |
             export NEO4J_dbms_connectors_default__advertised__address=$(hostname -f)
             export NEO4J_causal__clustering_transaction__advertised__address=$(hostname -f):6000
+
+            if [ "${AUTH_ENABLED:-}" == "true" ]; then
+              export NEO4J_AUTH="neo4j/${NEO4J_SECRETS_PASSWORD}"
+            else
+              export NEO4J_AUTH="none"
+            fi
+
             exec /docker-entrypoint.sh "neo4j"
         ports:
         - containerPort: 7474

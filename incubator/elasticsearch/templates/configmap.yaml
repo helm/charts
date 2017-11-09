@@ -13,10 +13,10 @@ data:
     
     node.data: ${NODE_DATA:true}
     node.master: ${NODE_MASTER:true}
+{{- if hasPrefix "5." .Values.appVersion }}
+    node.ingest: ${NODE_INGEST:true}
+{{- end }}
     node.name: ${HOSTNAME}
-
-    # see https://github.com/kubernetes/kubernetes/issues/3595
-    bootstrap.mlockall: ${BOOTSTRAP_MLOCKALL:false}
 
     network.host: 0.0.0.0
 
@@ -25,10 +25,30 @@ data:
         service: ${SERVICE}
         namespace: ${KUBERNETES_NAMESPACE}
 
+{{- if hasPrefix "2." .Values.appVersion }}
+    # see https://github.com/kubernetes/kubernetes/issues/3595
+    bootstrap.mlockall: ${BOOTSTRAP_MLOCKALL:false}
+
     discovery:
       type: kubernetes
       zen:
-        minimum_master_nodes: 2
+        minimum_master_nodes: ${MINIMUM_MASTER_NODES:2}
+{{- end }}
+{{- if hasPrefix "5." .Values.appVersion }}
+    # see https://github.com/kubernetes/kubernetes/issues/3595
+    bootstrap.memory_lock: ${BOOTSTRAP_MEMORY_LOCK:false}
+
+    discovery:
+      zen:
+        hosts_provider: kubernetes
+        minimum_master_nodes: ${MINIMUM_MASTER_NODES:2}
+
+    # see https://www.elastic.co/guide/en/x-pack/current/xpack-settings.html
+    xpack.ml.enabled: ${XPACK_ML_ENABLED:false}
+    xpack.monitoring.enabled: ${XPACK_MONITORING_ENABLED:false}
+    xpack.security.enabled: ${XPACK_SECURITY_ENABLED:false}
+    xpack.watcher.enabled: ${XPACK_WATCHER_ENABLED:false}
+{{- end }}
 
     # see https://github.com/elastic/elasticsearch-definitive-guide/pull/679
     processors: ${PROCESSORS:}
@@ -106,11 +126,14 @@ data:
       sleep 1
     done
 
-    curl -s -XPUT localhost:9200/_cluster/settings -d "{
-      \"transient\" :{
-          \"cluster.routing.allocation.exclude._ip\" : \"\"
-      }
-    }"
-    echo
+    echo "Wait for node shards to become empty"
+    SHARD_STATS=$(curl -s -XGET 'http://localhost:9200/_cat/shards?format=json')
+    SHARD_COUNT=$(echo "${SHARD_STATS}" | jq "[.[] | select(.node==\"${HOSTNAME}\")] | length")
+    while [ "${SHARD_COUNT}" -gt 0 ]; do
+      SHARD_STATS=$(curl -s -XGET 'http://localhost:9200/_cat/shards?format=json')
+      SHARD_COUNT=$(echo "${SHARD_STATS}" | jq "[.[] | select(.node==\"${HOSTNAME}\")] | length")
+      echo "Node contains ${SHARD_COUNT} shards"
+      sleep 1
+    done
 
     echo "Node clear to shutdown"
