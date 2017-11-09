@@ -38,6 +38,10 @@ persistentVolume:
   ## Redis data Persistent Volume Claim annotations
   ##
   annotations: {}
+  ## Redis data Persistent Volume existing claim name
+  ## Requires alertmanager.persistentVolume.enabled: true
+  ## If defined, PVC must be created manually before volume will be bound
+  existingClaim: ""
   ## Redis data Persistent Volume mount root path
   ##
   mountPath: /data
