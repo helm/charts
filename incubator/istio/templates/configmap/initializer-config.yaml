@@ -7,7 +7,7 @@ metadata:
   name: {{ $serviceName }}-inject
 data:
   config: |-
-    policy: "enabled"
+    policy: {{ .Values.initializer.policy | quote }}
     namespaces: [""] # everything, aka v1.NamepsaceAll, aka cluster-wide
     initializerName: "sidecar.initializer.istio.io"
     params:

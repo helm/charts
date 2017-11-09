@@ -13,8 +13,14 @@ spec:
     - name: atc
       port: {{ .Values.concourse.atcPort }}
       targetPort: atc
+      {{ if and (eq "NodePort" .Values.web.service.type) .Values.web.service.atcNodePort }}
+      nodePort: {{ .Values.web.service.atcNodePort}}
+      {{ end }}
     - name: tsa
       port: {{ .Values.concourse.tsaPort }}
       targetPort: tsa
+      {{ if and (eq "NodePort" .Values.web.service.type) .Values.web.service.tsaNodePort }}
+      nodePort: {{ .Values.web.service.tsaNodePort}}
+      {{ end }}
   selector:
     app: {{ template "concourse.web.fullname" . }}

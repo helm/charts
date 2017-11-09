@@ -1,24 +1,25 @@
 apiVersion: apps/v1beta1
-kind: Deployment
+kind: StatefulSet
 metadata:
   labels:
     app: {{ template "elasticsearch.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    component: "{{ .Values.client.name }}"
+    component: "{{ .Values.data.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-  name: {{ template "elasticsearch.client.fullname" . }}
+  name: {{ template "elasticsearch.data.fullname" . }}
 spec:
-  replicas: {{ .Values.client.replicas }}
+  serviceName: {{ template "elasticsearch.data.fullname" . }}
+  replicas: {{ .Values.data.replicas }}
   template:
     metadata:
       labels:
         app: {{ template "elasticsearch.name" . }}
-        component: "{{ .Values.client.name }}"
+        component: "{{ .Values.data.name }}"
         release: {{ .Release.Name }}
     spec:
       serviceAccountName: {{ template "elasticsearch.fullname" . }}
-      {{- if eq .Values.client.antiAffinity "hard" }}
+      {{- if eq .Values.data.antiAffinity "hard" }}
       affinity:
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -27,8 +28,8 @@ spec:
                 matchLabels:
                   app: "{{ template "elasticsearch.name" . }}"
                   release: "{{ .Release.Name }}"
-                  component: "{{ .Values.client.name }}"
-      {{- else if eq .Values.client.antiAffinity "soft" }}
+                  component: "{{ .Values.data.name }}"
+      {{- else if eq .Values.data.antiAffinity "soft" }}
       affinity:
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
@@ -39,7 +40,7 @@ spec:
                 matchLabels:
                   app: "{{ template "elasticsearch.name" . }}"
                   release: "{{ .Release.Name }}"
-                  component: "{{ .Values.client.name }}"
+                  component: "{{ .Values.data.name }}"
       {{- end }}
       initContainers:
       # see https://www.elastic.co/guide/en/elasticsearch/reference/current/vm-max-map-count.html
@@ -50,6 +51,19 @@ spec:
         command: ["sysctl", "-w", "vm.max_map_count=262144"]
         securityContext:
           privileged: true
+      - name: "chown"
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+        command:
+        - /bin/bash
+        - -c
+        - chown -R elasticsearch:elasticsearch /usr/share/elasticsearch/data &&
+          chown -R elasticsearch:elasticsearch /usr/share/elasticsearch/logs
+        securityContext:
+          runAsUser: 0
+        volumeMounts:
+        - mountPath: /usr/share/elasticsearch/data
+          name: data
       containers:
       - name: elasticsearch
         env:
@@ -61,8 +75,6 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
-        - name: NODE_DATA
-          value: "false"
         - name: NODE_MASTER
           value: "false"
         - name: PROCESSORS
@@ -70,29 +82,62 @@ spec:
             resourceFieldRef:
               resource: limits.cpu
         - name: ES_JAVA_OPTS
-          value: "-Djava.net.preferIPv4Stack=true -Xms{{ .Values.client.heapSize }} -Xmx{{ .Values.client.heapSize }}"
+          value: "-Djava.net.preferIPv4Stack=true -Xms{{ .Values.data.heapSize }} -Xmx{{ .Values.data.heapSize }}"
+        {{- range $key, $value :=  .Values.cluster.env }}
+        - name: {{ $key }}
+          value: {{ $value | quote }}
+        {{- end }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+        ports:
+        - containerPort: 9300
+          name: transport
         resources:
-{{ toYaml .Values.client.resources | indent 12 }}
+{{ toYaml .Values.data.resources | indent 12 }}
         readinessProbe:
           httpGet:
             path: /_cluster/health?local=true
             port: 9200
           initialDelaySeconds: 5
-        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-        imagePullPolicy: {{ default "" .Values.image.pullPolicy | quote }}
-        ports:
-        - containerPort: 9200
-          name: http
-        - containerPort: 9300
-          name: transport
         volumeMounts:
+        - mountPath: /usr/share/elasticsearch/data
+          name: data
         - mountPath: /usr/share/elasticsearch/config/elasticsearch.yml
           name: config
           subPath: elasticsearch.yml
         - mountPath: /usr/share/elasticsearch/config/logging.yml
           name: config
           subPath: logging.yml
+        - name: config
+          mountPath: /pre-stop-hook.sh
+          subPath: pre-stop-hook.sh
+        lifecycle:
+          preStop:
+            exec:
+              command: ["/bin/bash","/pre-stop-hook.sh"]
+      terminationGracePeriodSeconds: {{ .Values.data.terminationGracePeriodSeconds }}
       volumes:
       - name: config
         configMap:
           name: {{ template "elasticsearch.fullname" . }}
+  {{- if not .Values.data.persistence.enabled }}
+      - name: data
+        emptyDir: {}
+  {{- else }}
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      accessModes:
+        - {{ .Values.data.persistence.accessMode | quote }}
+    {{- if .Values.data.persistence.storageClass }}
+    {{- if (eq "-" .Values.data.persistence.storageClass) }}
+      storageClassName: ""
+    {{- else }}
+      storageClassName: "{{ .Values.data.persistence.storageClass }}"
+    {{- end }}
+    {{- end }}
+      resources:
+        requests:
+          storage: "{{ .Values.data.persistence.size }}"
+  {{- end }}
