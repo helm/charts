@@ -1,27 +1,24 @@
 apiVersion: apps/v1beta1
-kind: StatefulSet
+kind: Deployment
 metadata:
   labels:
     app: {{ template "elasticsearch.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    component: "{{ .Values.data.name }}"
+    component: "{{ .Values.client.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-  name: {{ template "elasticsearch.data.fullname" . }}
+  name: {{ template "elasticsearch.client.fullname" . }}
 spec:
-  serviceName: {{ template "elasticsearch.data.fullname" . }}
-  replicas: {{ .Values.data.replicas }}
+  replicas: {{ .Values.client.replicas }}
   template:
     metadata:
       labels:
         app: {{ template "elasticsearch.name" . }}
-        component: "{{ .Values.data.name }}"
+        component: "{{ .Values.client.name }}"
         release: {{ .Release.Name }}
-      annotations:
-        pod.alpha.kubernetes.io/initialized: "true"
     spec:
       serviceAccountName: {{ template "elasticsearch.fullname" . }}
-      {{- if eq .Values.data.antiAffinity "hard" }}
+      {{- if eq .Values.client.antiAffinity "hard" }}
       affinity:
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -30,8 +27,8 @@ spec:
                 matchLabels:
                   app: "{{ template "elasticsearch.name" . }}"
                   release: "{{ .Release.Name }}"
-                  component: "{{ .Values.data.name }}"
-      {{- else if eq .Values.data.antiAffinity "soft" }}
+                  component: "{{ .Values.client.name }}"
+      {{- else if eq .Values.client.antiAffinity "soft" }}
       affinity:
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
@@ -42,7 +39,7 @@ spec:
                 matchLabels:
                   app: "{{ template "elasticsearch.name" . }}"
                   release: "{{ .Release.Name }}"
-                  component: "{{ .Values.data.name }}"
+                  component: "{{ .Values.client.name }}"
       {{- end }}
       initContainers:
       # see https://www.elastic.co/guide/en/elasticsearch/reference/current/vm-max-map-count.html
@@ -64,6 +61,12 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
+        - name: NODE_DATA
+          value: "false"
+{{- if hasPrefix "5." .Values.appVersion }}
+        - name: NODE_INGEST
+          value: "false"
+{{- end }}
         - name: NODE_MASTER
           value: "false"
         - name: PROCESSORS
@@ -71,48 +74,38 @@ spec:
             resourceFieldRef:
               resource: limits.cpu
         - name: ES_JAVA_OPTS
-          value: "-Djava.net.preferIPv4Stack=true -Xms{{ .Values.data.heapSize }} -Xmx{{ .Values.data.heapSize }}"
-        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-        imagePullPolicy: {{ default "" .Values.image.pullPolicy | quote }}
-        ports:
-        - containerPort: 9300
-          name: transport
+          value: "-Djava.net.preferIPv4Stack=true -Xms{{ .Values.client.heapSize }} -Xmx{{ .Values.client.heapSize }}"
+        {{- range $key, $value :=  .Values.cluster.env }}
+        - name: {{ $key }}
+          value: {{ $value | quote }}
+        {{- end }}
         resources:
-{{ toYaml .Values.data.resources | indent 12 }}
+{{ toYaml .Values.client.resources | indent 12 }}
         readinessProbe:
           httpGet:
-            path: /_cluster/health?local=true
+            path: /_cluster/health?wait_for_status=yellow
             port: 9200
           initialDelaySeconds: 5
+        livenessProbe:
+          httpGet:
+            path: /_cluster/health?wait_for_status=yellow
+            port: 9200
+          initialDelaySeconds: 90
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+        ports:
+        - containerPort: 9200
+          name: http
+        - containerPort: 9300
+          name: transport
         volumeMounts:
-        - mountPath: /usr/share/elasticsearch/data
-          name: data
         - mountPath: /usr/share/elasticsearch/config/elasticsearch.yml
           name: config
           subPath: elasticsearch.yml
         - mountPath: /usr/share/elasticsearch/config/logging.yml
           name: config
           subPath: logging.yml
-        - name: config
-          mountPath: /pre-stop-hook.sh
-          subPath: pre-stop-hook.sh
-        lifecycle:
-          preStop:
-            exec:
-              command: ["/bin/bash","/pre-stop-hook.sh"]
-      terminationGracePeriodSeconds: {{ .Values.data.terminationGracePeriodSeconds }}
       volumes:
       - name: config
         configMap:
           name: {{ template "elasticsearch.fullname" . }}
-  volumeClaimTemplates:
-  - metadata:
-      name: data
-    spec:
-      accessModes: [ ReadWriteOnce ]
-    {{- if .Values.data.storageClass }}
-      storageClassName: "{{ .Values.data.storageClass }}"
-    {{- end }}
-      resources:
-        requests:
-          storage: "{{ .Values.data.storage }}"

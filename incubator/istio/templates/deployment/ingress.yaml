@@ -21,7 +21,11 @@ spec:
         component: {{ $serviceName }}-{{ .Values.ingress.deployment.name }}
         istio: {{ $serviceName }}-{{ .Values.ingress.deployment.name }}
     spec:
-      serviceAccountName: {{ $serviceName }}-ingress-service-account
+    {{- if .Values.ingress.deployment.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
+      serviceAccountName: {{ $serviceName }}-{{ .Values.ingress.deployment.name }}-service-account
       containers:
       - name: istio-ingress
         image: "{{ .Values.ingress.deployment.image }}:{{ .Values.istio.release }}"
