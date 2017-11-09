@@ -1,0 +1,32 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "sentry-kubernetes.fullname" . }}
+  labels: {{ include "sentry-kubernetes.labels" . | indent 4 }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      labels: {{ include "sentry-kubernetes.labels" . | indent 8 }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+          - name: DSN
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "sentry-kubernetes.fullname" . }}
+                key: sentry.dsn
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+    {{- end }}
+      serviceAccountName: {{ if .Values.rbac.create }}{{ template "sentry-kubernetes.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
