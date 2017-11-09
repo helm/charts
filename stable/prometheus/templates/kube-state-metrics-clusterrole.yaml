@@ -13,7 +13,9 @@ rules:
   - apiGroups:
       - ""
     resources:
+      - namespaces
       - nodes
+      - persistentvolumeclaims
       - pods
       - services
       - resourcequotas
@@ -37,6 +39,7 @@ rules:
     resources:
       - statefulsets
     verbs:
+      - get
       - list
       - watch
   - apiGroups:

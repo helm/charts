@@ -40,3 +40,4 @@ $ docker push 127.0.0.1:{node_port}/{local docker image name}
 To pull a container from the registry:
 ```bash
 $ docker pull 127.0.0.1:{node_port}/{container name}
+```

@@ -18,10 +18,11 @@ set -o nounset
 set -o pipefail
 set -o xtrace
 
-git fetch --tags https://github.com/kubernetes/charts master
+git remote add k8s https://github.com/kubernetes/charts
+git fetch k8s master
 
 NAMESPACE="pr-${PULL_NUMBER}-${BUILD_NUMBER}"
-CHANGED_FOLDERS=`git diff --find-renames --name-only FETCH_HEAD stable/ incubator/ | awk -F/ '{print $1"/"$2}' | uniq`
+CHANGED_FOLDERS=`git diff --find-renames --name-only $(git merge-base k8s/master HEAD) stable/ incubator/ | awk -F/ '{print $1"/"$2}' | uniq`
 CURRENT_RELEASE=""
 
 # Exit early if no charts have changed
@@ -46,7 +47,7 @@ fi
 
 # Install and initialize helm/tiller
 HELM_URL=https://storage.googleapis.com/kubernetes-helm
-HELM_TARBALL=helm-v2.5.1-linux-amd64.tar.gz
+HELM_TARBALL=helm-v2.6.2-linux-amd64.tar.gz
 INCUBATOR_REPO_URL=https://kubernetes-charts-incubator.storage.googleapis.com/
 pushd /opt
   wget -q ${HELM_URL}/${HELM_TARBALL}
@@ -67,7 +68,6 @@ for directory in ${CHANGED_FOLDERS}; do
     RELEASE_NAME="${CHART_NAME:0:7}-${BUILD_NUMBER}"
     CURRENT_RELEASE=${RELEASE_NAME}
     helm dep update ${directory}
-    helm lint ${directory}
     helm install --timeout 600 --name ${RELEASE_NAME} --namespace ${NAMESPACE} ${directory} | tee install_output
     ./test/verify-release.sh ${NAMESPACE}
     kubectl get pods --namespace ${NAMESPACE}

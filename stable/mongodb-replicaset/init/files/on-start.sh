@@ -36,7 +36,7 @@ function shutdown_mongo() {
         args='force: true'
     fi
     log "Shutting down MongoDB ($args)..."
-    mongo admin "${admin_auth[@]}" --eval "db.shutdownServer({$args})"
+    mongo admin "${admin_auth[@]}" "${ssl_args[@]}" --eval "db.shutdownServer({$args})"
 }
 
 my_hostname=$(hostname)
@@ -51,13 +51,51 @@ while read -ra line; do
     peers=("${peers[@]}" "$line")
 done
 
+# Generate the ca cert
+ca_crt=/ca/tls.crt
+if [ -f $ca_crt  ]; then
+    log "Generating certificate"
+    ca_key=/ca/tls.key
+    pem=/work-dir/mongo.pem
+    ssl_args=(--ssl --sslCAFile $ca_crt --sslPEMKeyFile $pem)
+
+cat >openssl.cnf <<EOL
+[req]
+req_extensions = v3_req
+distinguished_name = req_distinguished_name
+[req_distinguished_name]
+[ v3_req ]
+basicConstraints = CA:FALSE
+keyUsage = nonRepudiation, digitalSignature, keyEncipherment
+subjectAltName = @alt_names
+[alt_names]
+DNS.1 = $(echo -n "$my_hostname" | sed s/-[0-9]*$//)
+DNS.2 = $my_hostname
+DNS.3 = $service_name
+DNS.4 = localhost
+DNS.5 = 127.0.0.1
+EOL
+
+    # Generate the certs
+    openssl genrsa -out mongo.key 2048
+    openssl req -new -key mongo.key -out mongo.csr -subj "/CN=$my_hostname" -config openssl.cnf
+    openssl x509 -req -in mongo.csr \
+        -CA $ca_crt -CAkey $ca_key -CAcreateserial \
+        -out mongo.crt -days 3650 -extensions v3_req -extfile openssl.cnf
+
+    rm mongo.csr
+    cat mongo.crt mongo.key > $pem
+    rm mongo.key mongo.crt
+fi
+
+
 log "Peers: ${peers[@]}"
 
 log "Starting a MongoDB instance..."
 mongod --config /config/mongod.conf >> /work-dir/log.txt 2>&1 &
 
 log "Waiting for MongoDB to be ready..."
-until mongo --eval "db.adminCommand('ping')"; do
+until mongo "${ssl_args[@]}" --eval "db.adminCommand('ping')"; do
     log "Retrying..."
     sleep 2
 done
@@ -66,11 +104,11 @@ log "Initialized."
 
 # try to find a master and add yourself to its replica set.
 for peer in "${peers[@]}"; do
-    mongo admin --host "$peer" "${admin_auth[@]}" --eval "rs.isMaster()" | grep '"ismaster" : true'
+    mongo admin --host "$peer" "${admin_auth[@]}" "${ssl_args[@]}" --eval "rs.isMaster()" | grep '"ismaster" : true'
     if [[ $? -eq 0 ]]; then
         log "Found master: $peer"
         log "Adding myself ($service_name) to replica set..."
-        mongo admin --host "$peer" "${admin_auth[@]}" --eval "rs.add('$service_name')"
+        mongo admin --host "$peer" "${admin_auth[@]}" "${ssl_args[@]}" --eval "rs.add('$service_name')"
         log "Done."
 
         shutdown_mongo "60"
@@ -80,12 +118,12 @@ for peer in "${peers[@]}"; do
 done
 
 # else initiate a replica set with yourself.
-mongo --eval "rs.status()" | grep "no replset config has been received"
+mongo "${ssl_args[@]}" --eval "rs.status()" | grep "no replset config has been received"
 if [[ $? -eq 0 ]]; then
     log "Initiating a new replica set with myself ($service_name)..."
-    mongo --eval "rs.initiate({'_id': '$replica_set', 'members': [{'_id': 0, 'host': '$service_name'}]})"
+    mongo "${ssl_args[@]}" --eval "rs.initiate({'_id': '$replica_set', 'members': [{'_id': 0, 'host': '$service_name'}]})"
 
-    mongo --eval "rs.status()"
+    mongo "${ssl_args[@]}" --eval "rs.status()"
 
     if [[ "$AUTH" == "true" ]]; then
         # sleep a little while just to be sure the initiation of the replica set has fully
@@ -93,7 +131,7 @@ if [[ $? -eq 0 ]]; then
         sleep 3
 
         log "Creating admin user..."
-        mongo admin --eval "db.createUser({user: '$admin_user', pwd: '$admin_password', roles: [{role: 'root', db: 'admin'}]})"
+        mongo admin "${ssl_args[@]}" --eval "db.createUser({user: '$admin_user', pwd: '$admin_password', roles: [{role: 'root', db: 'admin'}]})"
     fi
 
     log "Done."
