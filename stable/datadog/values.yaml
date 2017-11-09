@@ -146,3 +146,12 @@ datadog:
     limits:
       cpu: 256m
       memory: 512Mi
+## for managing rbac control
+rbac:
+  ## If true, create & use RBAC resources
+  ##
+  create: false
+
+  ## Ignored if rbac.create is true
+  ##
+  serviceAccountName: default
