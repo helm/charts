@@ -63,6 +63,10 @@ spec:
               fieldPath: metadata.namespace
         - name: NODE_DATA
           value: "false"
+{{- if hasPrefix "5." .Values.appVersion }}
+        - name: NODE_INGEST
+          value: "false"
+{{- end }}
         - name: NODE_MASTER
           value: "false"
         - name: PROCESSORS
@@ -71,15 +75,24 @@ spec:
               resource: limits.cpu
         - name: ES_JAVA_OPTS
           value: "-Djava.net.preferIPv4Stack=true -Xms{{ .Values.client.heapSize }} -Xmx{{ .Values.client.heapSize }}"
+        {{- range $key, $value :=  .Values.cluster.env }}
+        - name: {{ $key }}
+          value: {{ $value | quote }}
+        {{- end }}
         resources:
 {{ toYaml .Values.client.resources | indent 12 }}
         readinessProbe:
           httpGet:
-            path: /_cluster/health?local=true
+            path: /_cluster/health?wait_for_status=yellow
             port: 9200
           initialDelaySeconds: 5
+        livenessProbe:
+          httpGet:
+            path: /_cluster/health?wait_for_status=yellow
+            port: 9200
+          initialDelaySeconds: 90
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-        imagePullPolicy: {{ default "" .Values.image.pullPolicy | quote }}
+        imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         ports:
         - containerPort: 9200
           name: http

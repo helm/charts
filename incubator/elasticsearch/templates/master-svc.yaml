@@ -4,16 +4,16 @@ metadata:
   labels:
     app: {{ template "elasticsearch.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    component: "{{ .Values.client.name }}"
+    component: "{{ .Values.master.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-  name: {{ template "elasticsearch.client.fullname" . }}
+  name: {{ template "elasticsearch.master.fullname" . }}
 spec:
+  clusterIP: None
   ports:
-    - port: 9200
-      targetPort: http
+    - port: 9300
+      targetPort: transport
   selector:
     app: {{ template "elasticsearch.name" . }}
-    component: "{{ .Values.client.name }}"
+    component: "{{ .Values.master.name }}"
     release: {{ .Release.Name }}
-  type: {{ .Values.client.serviceType }}

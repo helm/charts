@@ -3,7 +3,7 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: {{ template "fullname" . }}-pvc
+  name: {{ template "fullname" . }}
   labels:
 {{ include "labels.standard" . | indent 4 }}
   annotations:

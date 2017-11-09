@@ -26,6 +26,10 @@ spec:
 {{ include "istio.labels.standard" . | indent 8 }}
         component: {{ $serviceName }}-{{ .Values.addons.prometheus.deployment.name }}
     spec:
+    {{- if .Values.addons.prometheus.deployment.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
       containers:
       - name: {{ .Values.addons.prometheus.deployment.name }}
         image: "{{ .Values.addons.prometheus.deployment.image }}:{{ .Values.addons.prometheus.deployment.imageTag }}"
