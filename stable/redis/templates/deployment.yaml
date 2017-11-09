@@ -13,6 +13,9 @@ spec:
       labels:
         app: {{ template "redis.fullname" . }}
     spec:
+      securityContext:
+        runAsUser: 1001
+        fsGroup: 1001
       {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
@@ -61,7 +64,7 @@ spec:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
         - name: redis-data
-          mountPath: /bitnami/redis
+          mountPath: /bitnami
 {{- if .Values.metrics.enabled }}
       - name: metrics
         image: "{{ .Values.metrics.image }}:{{ .Values.metrics.imageTag }}"
