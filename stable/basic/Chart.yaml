@@ -1,0 +1,14 @@
+apiVersion: v1
+name: basic
+description: Deploys a basic single PostgreSQL primary database
+version: 1
+appVersion: 1.6.0
+keywords:
+- postgresql
+- postgres
+- database
+- sql
+home: https://www.crunchydata.com/
+icon: https://www.crunchydata.com/images/logo.svg
+sources:
+- https://github.com/CrunchyData/crunchy-containers
