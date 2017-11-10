@@ -22,10 +22,7 @@ spec:
           - name: PROXY_ADDRESS_FORWARDING
             value: "true"
           - name: KEYCLOAK_LOGLEVEL
-            valueFrom:
-              configMapKeyRef:
-                name: {{ template "keycloak.fullname" . }}
-                key: keycloak-loglevel
+            value: {{ default "INFO" .Values.keycloak.loglevel | quote }}
           - name: KEYCLOAK_USER
             value: {{ default "keycloak" .Values.keycloak.username | quote }}
           - name: KEYCLOAK_PASSWORD
@@ -35,30 +32,18 @@ spec:
                 key: keycloak-password
 
           - name: POSTGRES_PORT_5432_TCP_ADDR
-            valueFrom:
-              configMapKeyRef:
-                name: {{ template "keycloak.fullname" . }}
-                key: postgresql-host
+            value: {{ template "keycloak.postgresql.fullname" . }}
           - name: POSTGRES_PORT_5432_TCP_PORT
-            valueFrom:
-              configMapKeyRef:
-                name: {{ template "keycloak.fullname" . }}
-                key: postgresql-port
+            value: "5432"
           - name: POSTGRES_USER
-            valueFrom:
-              configMapKeyRef:
-                name: {{ template "keycloak.fullname" . }}
-                key: postgresql-user
+            value: {{ .Values.postgresql.postgresUser | quote }}
           - name: POSTGRES_PASSWORD
             valueFrom:
               secretKeyRef:
                 name: {{ template "keycloak.postgresql.fullname" . }}
                 key: postgres-password
           - name: POSTGRES_DATABASE
-            valueFrom:
-              configMapKeyRef:
-                name: {{ template "keycloak.fullname" . }}
-                key: postgresql-database
+            value: {{ .Values.postgresql.postgresDatabase | quote }}
         ports:
         - containerPort: 8080
         livenessProbe:
