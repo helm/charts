@@ -1,0 +1,13 @@
+name: busbar
+version: 0.0.1
+appVersion: 1.5.0
+description: A tool to build, deploy and control applications running on a Kubernetes cluster.
+keywords:
+- application hosting
+home: https://busbar.io
+sources:
+- https://github.com/busbar-io/busbar-server
+maintainers:
+- name: busbar.io
+  email: maintainers@busbar.io
+engine: gotpl

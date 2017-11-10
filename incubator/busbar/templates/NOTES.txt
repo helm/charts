@@ -1,0 +1,20 @@
+The busbar CLI parameters for the newly created cluster are as follow:
+- default_git_branch: master
+- busbar_profile: {{ .Values.clusterName }}.{{ .Values.privateDomainName }}
+
+For the URL for the Busbar API, Kubecofig service and the private Docker Registry,
+run the following commands once the services are created:
+
+Busbar API
+- kubectl describe svc {{ template "busbar.fullname" . }}-web | grep "LoadBalancer Ingress:" | cut -f 2
+
+Kubeconfig Service
+- kubectl describe svc {{ template "kubeConfig.fullname" . }} | grep "LoadBalancer Ingress:" | cut -f 2
+
+Private Docker Registry:
+- kubectl describe svc {{ template "kubeRegistry.fullname" . }}-external | grep "LoadBalancer Ingress:" | cut -f 2
+
+Please note that the Kubeconfig service Docker image needs to be built and pushed to your private Docker registry
+in order for the service to work. The dockerfile can be found at https://github.com/busbar-io/kubeconfig-server
+
+For further information please check the documentation at https://github.com/busbar-io/busbar-server
