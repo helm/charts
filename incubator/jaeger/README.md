@@ -4,7 +4,7 @@
 
 ## Introduction
 
-This chart adds all components required to run Jaeger as described in the [jaeger-kubernetes](https://github.com/jaegertracing/jaeger-kubernetes) GitHub page for a production-like deployment. The chart will initialize Cassandra using the cassandra-schema Job, deploy jaeger-agent as a DaemonSet and deploy the jaeger-collector and jaeger-query components as standard individual deployments. This chart also depends on the [cassandra chart](https://github.com/kubernetes/charts/tree/master/incubator/cassandra).
+This chart adds all components required to run Jaeger as described in the [jaeger-kubernetes](https://github.com/jaegertracing/jaeger-kubernetes) GitHub page for a production-like deployment. The chart default will deploy a new Cassandra cluster, but also supports using an existing Cassandra cluster, deploying a new ElasticSearch cluster, or connecting to an existing ElasticSearch cluster. Once the back storage available, the chart will deploy jaeger-agent as a DaemonSet and deploy the jaeger-collector and jaeger-query components as standard individual deployments.
 
 ## Prerequisites
 
@@ -28,6 +28,39 @@ resources:
   limits:
     memory: 8Gi
     cpu: 2
+```
+
+- The ElasticSearch chart calls out the following requirements for a production environment:
+```
+client:
+  ...
+  resources:
+    limits:
+      cpu: "1"
+      # memory: "1024Mi"
+    requests:
+      cpu: "25m"
+      memory: "512Mi"
+
+master:
+  ...
+  resources:
+    limits:
+      cpu: "1"
+      # memory: "1024Mi"
+    requests:
+      cpu: "25m"
+      memory: "512Mi"
+
+data:
+  ...
+  resources:
+    limits:
+      cpu: "1"
+      # memory: "2048Mi"
+    requests:
+      cpu: "25m"
+      memory: "1536Mi"
 ```
 
 ## Installing the Chart
@@ -168,3 +201,7 @@ Override any required configuration options in the Cassandra chart that is requi
 ### Image tags
 
 Jaeger offers a multitude of [tags](https://hub.docker.com/u/jaegertracing/) for the various components used in this chart.
+
+### Pending enhancements
+- Moving configurable parameters to use ConfigMap
+- Sidecar deployment support
