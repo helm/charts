@@ -12,13 +12,13 @@ spec:
   replicas: {{ .Values.server.replicaCount }}
   {{- if .Values.server.strategy }}
   strategy:
-{{ toYaml .Values.server.strategy | indent 4 }}
+    {{- toYaml .Values.server.strategy | nindent 4 }}
   {{- end }}
   template:
     metadata:
     {{- if .Values.server.podAnnotations }}
       annotations:
-{{ toYaml .Values.server.podAnnotations | indent 8 }}
+        {{- toYaml .Values.server.podAnnotations | nindent 8 }}
     {{- end }}
       labels:
         app: {{ template "prometheus.name" . }}
@@ -34,7 +34,7 @@ spec:
             - --volume-dir=/etc/config
             - --webhook-url=http://localhost:9090{{ .Values.server.baseURL }}/-/reload
           resources:
-{{ toYaml .Values.configmapReload.resources | indent 12 }}
+            {{- toYaml .Values.configmapReload.resources | nindent 12 }}
           volumeMounts:
             - name: config-volume
               mountPath: /etc/config
@@ -66,7 +66,7 @@ spec:
             initialDelaySeconds: 30
             timeoutSeconds: 30
           resources:
-{{ toYaml .Values.server.resources | indent 12 }}
+            {{- toYaml .Values.server.resources | nindent 12 }}
           volumeMounts:
             - name: config-volume
               mountPath: /etc/config
@@ -80,11 +80,11 @@ spec:
           {{- end }}
     {{- if .Values.server.nodeSelector }}
       nodeSelector:
-{{ toYaml .Values.server.nodeSelector | indent 8 }}
+        {{- toYaml .Values.server.nodeSelector | nindent 8 }}
     {{- end }}
     {{- if .Values.server.tolerations }}
       tolerations:
-{{ toYaml .Values.server.tolerations | indent 8 }}
+        {{- toYaml .Values.server.tolerations | nindent 8 }}
     {{- end }}
     {{- if .Values.server.affinity }}
       affinity:

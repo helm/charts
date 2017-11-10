@@ -22,7 +22,7 @@ spec:
 {{- end }}
 {{- if .Values.pushgateway.service.externalIPs }}
   externalIPs:
-{{ toYaml .Values.pushgateway.service.externalIPs | indent 4 }}
+    {{- toYaml .Values.pushgateway.service.externalIPs | nindent 4 }}
 {{- end }}
 {{- if .Values.pushgateway.service.loadBalancerIP }}
   loadBalancerIP: {{ .Values.pushgateway.service.loadBalancerIP }}

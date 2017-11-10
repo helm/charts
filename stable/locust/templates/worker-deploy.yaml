@@ -42,7 +42,7 @@ spec:
         - name: TARGET_HOST
           value: {{ index .Values.master.config "target-host" | quote }}
         resources:
-{{ toYaml .Values.worker.resources | indent 10 }}
+          {{- toYaml .Values.worker.resources | nindent 10 }}
       restartPolicy: Always
       volumes:
         - name: "locust-tasks"

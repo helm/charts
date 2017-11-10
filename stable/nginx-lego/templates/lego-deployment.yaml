@@ -36,5 +36,5 @@ spec:
             fieldRef:
               fieldPath: status.podIP
         resources:
-{{ toYaml .Values.nginx.resources | indent 10 }}
+          {{- toYaml .Values.nginx.resources | nindent 10 }}
 {{- end }}

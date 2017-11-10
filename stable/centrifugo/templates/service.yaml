@@ -3,7 +3,7 @@ kind: Service
 metadata:
 {{- if .Values.service.annotations }}
   annotations:
-{{ toYaml .Values.service.annotations | indent 4 }}
+    {{- toYaml .Values.service.annotations | nindent 4 }}
 {{- end }}
   labels:
     heritage: {{ .Release.Service }}
@@ -16,14 +16,14 @@ spec:
   clusterIP: "{{ .Values.service.clusterIP }}"
 {{- if .Values.service.externalIPs }}
   externalIPs:
-{{ toYaml .Values.service.externalIPs | indent 4 }}
+    {{- toYaml .Values.service.externalIPs | nindent 4 }}
 {{- end }}
 {{- if .Values.service.loadBalancerIP }}
   loadBalancerIP: "{{ .Values.service.loadBalancerIP }}"
 {{- end }}
 {{- if .Values.service.loadBalancerSourceRanges }}
   loadBalancerSourceRanges:
-{{ toYaml .Values.service.loadBalancerSourceRanges | indent 4 }}
+    {{- toYaml .Values.service.loadBalancerSourceRanges | nindent 4 }}
 {{- end }}
   ports:
     - name: http

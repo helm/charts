@@ -85,7 +85,7 @@ spec:
           successThreshold: 1
           timeoutSeconds: 2
         resources:
-{{ toYaml .Values.web.resources | indent 12 }}
+            {{- toYaml .Values.web.resources | nindent 12 }}
       volumes:
       - name: sentry-data
       {{- if .Values.persistence.enabled }}

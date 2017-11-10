@@ -43,7 +43,7 @@ spec:
           containerPort: 9990
           hostPort: 9990
         resources:
-{{ toYaml .Values.linkerd.resources | indent 10 }}
+          {{- toYaml .Values.linkerd.resources | nindent 10 }}
         livenessProbe:
           httpGet:
             path: /admin
@@ -61,4 +61,4 @@ spec:
         - "-p"
         - "8001"
         resources:
-{{ toYaml .Values.kubectl.resources | indent 10 }}
+          {{- toYaml .Values.kubectl.resources | nindent 10 }}

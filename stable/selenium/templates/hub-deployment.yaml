@@ -80,4 +80,4 @@ spec:
               value: {{ .Values.hub.timeZone | quote }}
             {{- end }}
           resources:
-{{ toYaml .Values.hub.resources | indent 12 }}
+            {{- toYaml .Values.hub.resources | nindent 12 }}

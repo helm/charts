@@ -65,7 +65,7 @@ spec:
           initialDelaySeconds: 5
           timeoutSeconds: 1
         resources:
-{{ toYaml .Values.resources | indent 10 }}
+          {{- toYaml .Values.resources | nindent 10 }}
       volumes:
       - name: config
         configMap:

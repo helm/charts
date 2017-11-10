@@ -65,7 +65,7 @@ spec:
             initialDelaySeconds: 30
             timeoutSeconds: 10
           resources:
-{{ toYaml .Values.resources | indent 12 }}
+            {{- toYaml .Values.resources | nindent 12 }}
 {{- if .Values.webhookRelay.enabled }}
         - name: webhookrelayd
           image: "{{ .Values.webhookRelay.image.repository }}:{{ .Values.webhookRelay.image.tag }}"
@@ -85,7 +85,7 @@ spec:
             - name: BUCKET
               value: "{{ .Values.webhookRelay.bucket }}"
           resources:
-{{ toYaml .Values.resources | indent 12 }}
+            {{- toYaml .Values.resources | nindent 12 }}
 {{- end }}
       nodeSelector:
-{{ toYaml .Values.nodeSelector | indent 8 }}
+        {{- toYaml .Values.nodeSelector | nindent 8 }}

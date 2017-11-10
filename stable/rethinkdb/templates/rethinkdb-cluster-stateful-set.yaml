@@ -20,7 +20,7 @@ spec:
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
       annotations:
       {{- if .Values.cluster.podAnnotations }}
-{{ toYaml .Values.cluster.podAnnotations | indent 8 }}
+        {{- toYaml .Values.cluster.podAnnotations | nindent 8 }}
       {{- end }}
     spec:
       containers:
@@ -81,7 +81,7 @@ spec:
             successThreshold: 1
             timeoutSeconds: 5
           resources:
-{{ toYaml .Values.cluster.resources | indent 12 }}
+            {{- toYaml .Values.cluster.resources | nindent 12 }}
 {{- if .Values.cluster.persistentVolume.enabled }}
   volumeClaimTemplates:
   - metadata:

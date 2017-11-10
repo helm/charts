@@ -3,7 +3,7 @@ kind: Service
 metadata:
 {{- if .Values.server.service.annotations }}
   annotations:
-{{ toYaml .Values.server.service.annotations | indent 4 }}
+    {{- toYaml .Values.server.service.annotations | nindent 4 }}
 {{- end }}
   labels:
     app: {{ template "prometheus.name" . }}
@@ -11,9 +11,9 @@ metadata:
     component: "{{ .Values.server.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-{{- if .Values.server.service.labels }}
-{{ toYaml .Values.server.service.labels | indent 4 }}
-{{- end }}
+    {{- if .Values.server.service.labels }}
+    {{- toYaml .Values.server.service.labels | nindent 4 }}
+    {{- end }}
   name: {{ template "prometheus.server.fullname" . }}
 spec:
 {{- if .Values.server.service.clusterIP }}
@@ -21,7 +21,7 @@ spec:
 {{- end }}
 {{- if .Values.server.service.externalIPs }}
   externalIPs:
-{{ toYaml .Values.server.service.externalIPs | indent 4 }}
+    {{- toYaml .Values.server.service.externalIPs | nindent 4 }}
 {{- end }}
 {{- if .Values.server.service.loadBalancerIP }}
   loadBalancerIP: {{ .Values.server.service.loadBalancerIP }}

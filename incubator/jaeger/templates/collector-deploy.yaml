@@ -11,7 +11,7 @@ metadata:
     release: "{{ .Release.Name }}"
 {{- if .Values.collector.annotations }}
   annotations:
-{{ toYaml .Values.collector.annotations | indent 6 }}
+      {{- toYaml .Values.collector.annotations | nindent 6 }}
 {{- end }}
 spec:
   replicas: 1
@@ -29,7 +29,7 @@ spec:
 {{- end }}
     spec:
       nodeSelector:
-{{ toYaml .Values.collector.nodeSelector | indent 8 }}
+        {{- toYaml .Values.collector.nodeSelector | nindent 8 }}
       containers:
       - name: "{{ template "jaeger.fullname" . }}-collector"
         image: "{{ .Values.collector.image }}:{{ .Values.collector.tag }}"
@@ -42,7 +42,7 @@ spec:
         - containerPort: {{ .Values.collector.service.zipkinPort }}
           protocol: TCP
         resources:
-{{ toYaml .Values.collector.resources | indent 10 }}
+          {{- toYaml .Values.collector.resources | nindent 10 }}
         command:
         - "/go/bin/collector-linux"
         - "--cassandra.servers={{ template "cassandra.fullname" . }}"

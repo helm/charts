@@ -5,7 +5,7 @@ kind: PersistentVolumeClaim
 metadata:
   {{- if .Values.server.persistentVolume.annotations }}
   annotations:
-{{ toYaml .Values.server.persistentVolume.annotations | indent 4 }}
+    {{- toYaml .Values.server.persistentVolume.annotations | nindent 4 }}
   {{- end }}
   labels:
     app: {{ template "prometheus.name" . }}
@@ -16,7 +16,7 @@ metadata:
   name: {{ template "prometheus.server.fullname" . }}
 spec:
   accessModes:
-{{ toYaml .Values.server.persistentVolume.accessModes | indent 4 }}
+    {{- toYaml .Values.server.persistentVolume.accessModes | nindent 4 }}
 {{- if .Values.server.persistentVolume.storageClass }}
 {{- if (eq "-" .Values.server.persistentVolume.storageClass) }}
   storageClassName: ""

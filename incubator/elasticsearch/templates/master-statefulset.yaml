@@ -92,7 +92,7 @@ spec:
           value: {{ $value | quote }}
         {{- end }}
         resources:
-{{ toYaml .Values.master.resources | indent 12 }}
+            {{- toYaml .Values.master.resources | nindent 12 }}
         readinessProbe:
           httpGet:
             path: /_cluster/health?local=true

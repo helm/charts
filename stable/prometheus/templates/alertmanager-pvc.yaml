@@ -5,7 +5,7 @@ kind: PersistentVolumeClaim
 metadata:
   {{- if .Values.alertmanager.persistentVolume.annotations }}
   annotations:
-{{ toYaml .Values.alertmanager.persistentVolume.annotations | indent 4 }}
+    {{- toYaml .Values.alertmanager.persistentVolume.annotations | nindent 4 }}
   {{- end }}
   labels:
     app: {{ template "prometheus.name" . }}
@@ -16,7 +16,7 @@ metadata:
   name: {{ template "prometheus.alertmanager.fullname" . }}
 spec:
   accessModes:
-{{ toYaml .Values.alertmanager.persistentVolume.accessModes | indent 4 }}
+    {{- toYaml .Values.alertmanager.persistentVolume.accessModes | nindent 4 }}
 {{- if .Values.alertmanager.persistentVolume.storageClass }}
 {{- if (eq "-" .Values.alertmanager.persistentVolume.storageClass) }}
   storageClassName: ""

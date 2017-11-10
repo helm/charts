@@ -21,11 +21,11 @@ spec:
         fsGroup: 1001
       {{- if .Values.nodeSelector }}
       nodeSelector:
-{{ toYaml .Values.nodeSelector | indent 8 }}
+        {{- toYaml .Values.nodeSelector | nindent 8 }}
       {{- end }}
       {{- if .Values.tolerations }}
       tolerations:
-{{ toYaml .Values.tolerations | indent 8 }}
+        {{- toYaml .Values.tolerations | nindent 8 }}
       {{- end }}
       containers:
       - name: {{ template "redis.fullname" . }}
@@ -33,7 +33,7 @@ spec:
         imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
         {{- if .Values.args }}
         args:
-{{ toYaml .Values.args | indent 10 }}
+          {{- toYaml .Values.args | nindent 10 }}
         {{- end }}
         env:
         {{- if .Values.usePassword }}
@@ -64,7 +64,7 @@ spec:
           initialDelaySeconds: 5
           timeoutSeconds: 1
         resources:
-{{ toYaml .Values.resources | indent 10 }}
+          {{- toYaml .Values.resources | nindent 10 }}
         volumeMounts:
         - name: redis-data
           mountPath: /bitnami
@@ -86,7 +86,7 @@ spec:
         - name: metrics
           containerPort: 9121
         resources:
-{{ toYaml .Values.metrics.resources | indent 10 }}
+          {{- toYaml .Values.metrics.resources | nindent 10 }}
 {{- end }}
       volumes:
       - name: redis-data

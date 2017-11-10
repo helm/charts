@@ -23,6 +23,6 @@ spec:
               servicePort: 80
 {{- if .Values.ingress.tls }}
   tls:
-{{ toYaml .Values.ingress.tls | indent 4 }}
+    {{- toYaml .Values.ingress.tls | nindent 4 }}
 {{- end -}}
 {{- end -}}

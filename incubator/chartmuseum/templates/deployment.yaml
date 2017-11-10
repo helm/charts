@@ -39,4 +39,4 @@ spec:
         - mountPath: /storage
           name: storage-volume
         resources:
-{{ toYaml .Values.resources | indent 10 }}
+          {{- toYaml .Values.resources | nindent 10 }}

@@ -15,9 +15,9 @@ spec:
         image: "{{ .Values.image.fluent_bit.repository }}:{{ .Values.image.fluent_bit.tag }}"
         imagePullPolicy: "{{ .Values.image.pullPolicy }}"
         env:
-{{ toYaml .Values.env | indent 10 }}
+          {{- toYaml .Values.env | nindent 10 }}
         resources:
-{{ toYaml .Values.resources | indent 10 }}
+          {{- toYaml .Values.resources | nindent 10 }}
         volumeMounts:
         - name: varlog
           mountPath: /var/log
@@ -35,11 +35,11 @@ spec:
       terminationGracePeriodSeconds: 10
     {{- if .Values.nodeSelector }}
       nodeSelector:
-{{ toYaml .Values.nodeSelector | indent 8 }}
+        {{- toYaml .Values.nodeSelector | nindent 8 }}
     {{- end }}
     {{- if .Values.tolerations }}
       tolerations:
-{{ toYaml .Values.tolerations | indent 8 }}
+        {{- toYaml .Values.tolerations | nindent 8 }}
     {{- end }}
       volumes:
       - name: varlog

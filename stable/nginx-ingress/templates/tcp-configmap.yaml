@@ -10,5 +10,5 @@ metadata:
     release: {{ .Release.Name }}
   name: {{ template "fullname" . }}-tcp
 data:
-{{ toYaml .Values.tcp | indent 2 }}
+  {{- toYaml .Values.tcp | nindent 2 }}
 {{- end }}

@@ -59,7 +59,7 @@ spec:
               value: {{ .Values.server.appId }}
           initialDelaySeconds: 30
         resources:
-{{ toYaml .Values.server.resources | indent 10 }}
+          {{- toYaml .Values.server.resources | nindent 10 }}
         volumeMounts:
         - name: parse-data
           mountPath: /bitnami/parse

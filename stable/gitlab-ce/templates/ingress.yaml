@@ -4,7 +4,7 @@ kind: Ingress
 metadata:
 {{- if .Values.ingress.annotations }}
   annotations:
-{{ toYaml .Values.ingress.annotations | indent 4 }}
+    {{- toYaml .Values.ingress.annotations | nindent 4 }}
 {{- end }}
   name: {{ template "gitlab-ce.fullname" . }}
   labels:
@@ -33,6 +33,6 @@ spec:
 
 {{- if .Values.ingress.tls }}
   tls:
-{{ toYaml .Values.ingress.tls | indent 4 }}
+    {{- toYaml .Values.ingress.tls | nindent 4 }}
 {{- end -}}
 {{- end }}

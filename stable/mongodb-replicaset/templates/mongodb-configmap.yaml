@@ -9,4 +9,4 @@ metadata:
   name: {{ template "mongodb-replicaset.fullname" . }}
 data:
   mongod.conf: |
-{{ toYaml .Values.configmap | indent 4 }}
+    {{- toYaml .Values.configmap | nindent 4 }}

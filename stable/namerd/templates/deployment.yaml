@@ -34,7 +34,7 @@ spec:
           mountPath: "/io.buoyant/namerd/config"
           readOnly: true
         resources:
-{{ toYaml .Values.namerd.resources | indent 12 }}
+            {{- toYaml .Values.namerd.resources | nindent 12 }}
       - name: kubectl
         image: "{{ .Values.kubectl.image.repository }}"
         imagePullPolicy: {{ default "" .Values.kubectl.image.pullPolicy | quote }}
@@ -43,4 +43,4 @@ spec:
         - "-p"
         - "8001"
         resources:
-{{ toYaml .Values.kubectl.resources | indent 12 }}
+            {{- toYaml .Values.kubectl.resources | nindent 12 }}

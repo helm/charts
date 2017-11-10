@@ -15,7 +15,7 @@ spec:
     spec:
       {{- if .Values.affinity }}
       affinity:
-{{ toYaml .Values.affinity | indent 8 }}
+        {{- toYaml .Values.affinity | nindent 8 }}
       {{- end }}
       containers:
       - name: {{ template "fullname" . }}
@@ -73,7 +73,7 @@ spec:
           timeoutSeconds: 3
           periodSeconds: 5
         resources:
-{{ toYaml .Values.resources | indent 10 }}
+          {{- toYaml .Values.resources | nindent 10 }}
         volumeMounts:
         - name: moodle-data
           mountPath: /bitnami

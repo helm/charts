@@ -4,7 +4,7 @@ kind: Service
 metadata:
 {{- if .Values.nodeExporter.service.annotations }}
   annotations:
-{{ toYaml .Values.nodeExporter.service.annotations | indent 4 }}
+    {{- toYaml .Values.nodeExporter.service.annotations | nindent 4 }}
 {{- end }}
   labels:
     app: {{ template "prometheus.name" . }}
@@ -12,9 +12,9 @@ metadata:
     component: "{{ .Values.nodeExporter.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-{{- if .Values.nodeExporter.service.labels }}
-{{ toYaml .Values.nodeExporter.service.labels | indent 4 }}
-{{- end }}
+    {{- if .Values.nodeExporter.service.labels }}
+    {{- toYaml .Values.nodeExporter.service.labels | nindent 4 }}
+    {{- end }}
   name: {{ template "prometheus.nodeExporter.fullname" . }}
 spec:
 {{- if .Values.nodeExporter.service.clusterIP }}
@@ -22,7 +22,7 @@ spec:
 {{- end }}
 {{- if .Values.nodeExporter.service.externalIPs }}
   externalIPs:
-{{ toYaml .Values.nodeExporter.service.externalIPs | indent 4 }}
+    {{- toYaml .Values.nodeExporter.service.externalIPs | nindent 4 }}
 {{- end }}
 {{- if .Values.nodeExporter.service.loadBalancerIP }}
   loadBalancerIP: {{ .Values.nodeExporter.service.loadBalancerIP }}

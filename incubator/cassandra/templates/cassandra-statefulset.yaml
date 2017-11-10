@@ -49,15 +49,15 @@ spec:
 {{ toYaml .Values.podLabels | indent 8 }}
 {{- end }}
     spec:
-{{- if .Values.selector }}
-{{ toYaml .Values.selector | indent 6 }}
-{{- end }}
+      {{- if .Values.selector }}
+      {{- toYaml .Values.selector | nindent 6 }}
+      {{- end }}
       containers:
       - name: {{ template "cassandra.fullname" . }}
         image: "{{ .Values.image.repo }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         resources:
-{{ toYaml .Values.resources | indent 10 }}
+          {{- toYaml .Values.resources | nindent 10 }}
         env:
         {{- $seed_size := default 1 .Values.config.seed_size | int -}}
         {{- $global := . }}

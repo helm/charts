@@ -15,7 +15,7 @@ spec:
     metadata:
     {{- if .Values.pushgateway.podAnnotations }}
       annotations:
-{{ toYaml .Values.pushgateway.podAnnotations | indent 8 }}
+        {{- toYaml .Values.pushgateway.podAnnotations | nindent 8 }}
     {{- end }}
       labels:
         app: {{ template "prometheus.name" . }}
@@ -39,10 +39,10 @@ spec:
             initialDelaySeconds: 10
             timeoutSeconds: 10
           resources:
-{{ toYaml .Values.pushgateway.resources | indent 12 }}
+            {{- toYaml .Values.pushgateway.resources | nindent 12 }}
     {{- if .Values.pushgateway.nodeSelector }}
       nodeSelector:
-{{ toYaml .Values.pushgateway.nodeSelector | indent 8 }}
+        {{- toYaml .Values.pushgateway.nodeSelector | nindent 8 }}
     {{- end }}
     {{- if .Values.pushgateway.affinity }}
       affinity:

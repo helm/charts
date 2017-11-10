@@ -46,7 +46,7 @@ spec:
         ports:
         - containerPort: {{ .Values.server.service.internalPort }}
         resources:
-{{ toYaml .Values.server.resources | indent 10 }}
+          {{- toYaml .Values.server.resources | nindent 10 }}
         livenessProbe:
           httpGet:
             path: /management/health

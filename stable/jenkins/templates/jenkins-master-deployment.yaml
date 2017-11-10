@@ -27,11 +27,11 @@ spec:
     spec:
       {{- if .Values.Master.NodeSelector }}
       nodeSelector:
-{{ toYaml .Values.Master.NodeSelector | indent 8 }}
+        {{- toYaml .Values.Master.NodeSelector | nindent 8 }}
       {{- end }}
       {{- if .Values.Master.Tolerations }}
       tolerations:
-{{ toYaml .Values.Master.Tolerations | indent 8 }}
+        {{- toYaml .Values.Master.Tolerations | nindent 8 }}
       {{- end }}
       securityContext:
         runAsUser: 0
@@ -92,9 +92,9 @@ spec:
               cpu: "{{ .Values.Master.Cpu }}"
               memory: "{{ .Values.Master.Memory }}"
           volumeMounts:
-{{- if .Values.Persistence.mounts }}
-{{ toYaml .Values.Persistence.mounts | indent 12 }}
-{{- end }}
+            {{- if .Values.Persistence.mounts }}
+            {{- toYaml .Values.Persistence.mounts | nindent 12 }}
+            {{- end }}
             -
               mountPath: /var/jenkins_home
               name: jenkins-home
@@ -112,9 +112,9 @@ spec:
               name: secrets-dir
               readOnly: false
       volumes:
-{{- if .Values.Persistence.volumes }}
-{{ toYaml .Values.Persistence.volumes | indent 6 }}
-{{- end }}
+      {{- if .Values.Persistence.volumes }}
+      {{- toYaml .Values.Persistence.volumes | nindent 6 }}
+      {{- end }}
       - name: jenkins-config
         configMap:
           name: {{ template "jenkins.fullname" . }}

@@ -37,20 +37,20 @@ spec:
               key: drupal-password
         - name: DRUPAL_EMAIL
           value: {{ default "" .Values.drupalEmail | quote }}
-{{- if .Values.extraVars }}
-{{ toYaml .Values.extraVars | indent 8 }}
-{{- end }}
+        {{- if .Values.extraVars }}
+        {{- toYaml .Values.extraVars | nindent 8 }}
+        {{- end }}
         ports:
         - name: http
           containerPort: 80
         - name: https
           containerPort: 443
         livenessProbe:
-{{ toYaml .Values.livenessProbe | indent 10 }}
+          {{- toYaml .Values.livenessProbe | nindent 10 }}
         readinessProbe:
-{{ toYaml .Values.readinessProbe | indent 10 }}
+          {{- toYaml .Values.readinessProbe | nindent 10 }}
         resources:
-{{ toYaml .Values.resources | indent 10 }}
+          {{- toYaml .Values.resources | nindent 10 }}
         volumeMounts:
         - name: drupal-data
           mountPath: {{ .Values.volumeMounts.drupal.mountPath }}
@@ -60,7 +60,7 @@ spec:
         {{- end }}
       {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
-{{ toYaml .Values.imagePullSecrets | indent 8 }}
+        {{- toYaml .Values.imagePullSecrets | nindent 8 }}
       {{- end }}
       volumes:
       - name: drupal-data

@@ -99,7 +99,7 @@ spec:
                   name: {{ template "concourse.concourse.fullname" . }}
                   key: worker-fatal-errors
           resources:
-{{ toYaml .Values.worker.resources | indent 12 }}
+            {{- toYaml .Values.worker.resources | nindent 12 }}
           securityContext:
             privileged: true
           volumeMounts:
@@ -109,9 +109,9 @@ spec:
             - name: concourse-work-dir
               mountPath: /concourse-work-dir
       affinity:
-{{- if .Values.worker.additionalAffinities }}
-{{ toYaml .Values.worker.additionalAffinities | indent 8 }}
-{{- end }}
+        {{- if .Values.worker.additionalAffinities }}
+        {{- toYaml .Values.worker.additionalAffinities | nindent 8 }}
+        {{- end }}
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
           - weight: 100

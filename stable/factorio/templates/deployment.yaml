@@ -18,7 +18,7 @@ spec:
         image: "{{ .Values.image }}:{{ .Values.imageTag }}"
         imagePullPolicy: Always
         resources:
-{{ toYaml .Values.resources | indent 10 }}
+          {{- toYaml .Values.resources | nindent 10 }}
         env:
         - name: FACTORIO_SERVER_NAME
           value: {{ .Values.factorioServer.name | quote }}

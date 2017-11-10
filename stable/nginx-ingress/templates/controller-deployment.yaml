@@ -25,7 +25,7 @@ spec:
         component: "{{ .Values.controller.name }}"
         release: {{ .Release.Name }}
         {{- if .Values.controller.podLabels }}
-{{ toYaml .Values.controller.podLabels | indent 8 }}
+        {{- toYaml .Values.controller.podLabels | nindent 8 }}
         {{- end }}
     spec:
       containers:
@@ -109,7 +109,7 @@ spec:
               port: 10254
               scheme: HTTP
           resources:
-{{ toYaml .Values.controller.resources | indent 12 }}
+            {{- toYaml .Values.controller.resources | nindent 12 }}
       {{- if .Values.controller.stats.enabled }}
         - name: {{ template "name" . }}-{{ .Values.statsExporter.name }}
           image: "{{ .Values.statsExporter.image.repository }}:{{ .Values.statsExporter.image.tag }}"
@@ -128,16 +128,16 @@ spec:
               containerPort: 9913
               protocol: TCP
           resources:
-{{ toYaml .Values.statsExporter.resources | indent 12 }}
+            {{- toYaml .Values.statsExporter.resources | nindent 12 }}
       {{- end }}
       hostNetwork: {{ .Values.controller.hostNetwork }}
     {{- if .Values.controller.nodeSelector }}
       nodeSelector:
-{{ toYaml .Values.controller.nodeSelector | indent 8 }}
+        {{- toYaml .Values.controller.nodeSelector | nindent 8 }}
     {{- end }}
     {{- if .Values.controller.tolerations }}
       tolerations:
-{{ toYaml .Values.controller.tolerations | indent 8 }}
+        {{- toYaml .Values.controller.tolerations | nindent 8 }}
     {{- end }}
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
       terminationGracePeriodSeconds: 60

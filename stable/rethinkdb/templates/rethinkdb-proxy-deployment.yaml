@@ -19,7 +19,7 @@ spec:
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
       annotations:
       {{- if .Values.proxy.podAnnotations }}
-{{ toYaml .Values.proxy.podAnnotations | indent 8 }}
+        {{- toYaml .Values.proxy.podAnnotations | nindent 8 }}
       {{- end }}
     spec:
       containers:
@@ -69,7 +69,7 @@ spec:
                 fieldRef:
                   fieldPath: metadata.name
           resources:
-{{ toYaml .Values.proxy.resources | indent 12 }}
+            {{- toYaml .Values.proxy.resources | nindent 12 }}
       volumes:
         - name: secrets
           projected:

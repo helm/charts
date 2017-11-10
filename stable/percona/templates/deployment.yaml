@@ -29,7 +29,7 @@ spec:
         image: "mysql:{{ .Values.imageTag }}"
         imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
         resources:
-{{ toYaml .Values.resources | indent 10 }}
+          {{- toYaml .Values.resources | nindent 10 }}
         env:
         {{- if .Values.mysqlAllowEmptyPassword }}
         - name: MYSQL_ALLOW_EMPTY_PASSWORD

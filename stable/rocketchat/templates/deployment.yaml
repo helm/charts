@@ -58,7 +58,7 @@ spec:
           initialDelaySeconds: 20
           timeoutSeconds: 5
         resources:
-{{ toYaml .Values.resources | indent 10 }}
+          {{- toYaml .Values.resources | nindent 10 }}
         volumeMounts:
         - name: rocket-data
           mountPath: /app/uploads

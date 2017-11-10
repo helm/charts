@@ -13,12 +13,12 @@ spec:
   version: "{{ .Values.cluster.version }}"
   {{- if .Values.cluster.backup.enabled }}
   backup:
-{{ toYaml .Values.cluster.backup.config | indent 4 }}
+    {{- toYaml .Values.cluster.backup.config | nindent 4 }}
   {{- end -}}
   {{- if .Values.cluster.restore.enabled }}
   restore:
-{{ toYaml .Values.cluster.restore.config | indent 4 }}
+    {{- toYaml .Values.cluster.restore.config | nindent 4 }}
   {{- end }}
   pod:
-{{ toYaml .Values.cluster.pod | indent 4 }}
+    {{- toYaml .Values.cluster.pod | nindent 4 }}
 {{- end -}}

@@ -78,7 +78,7 @@ spec:
           timeoutSeconds: 3
           periodSeconds: 5
         resources:
-{{ toYaml .Values.resources | indent 10 }}
+          {{- toYaml .Values.resources | nindent 10 }}
         volumeMounts:
         - name: opencart-data
           mountPath: /bitnami/opencart

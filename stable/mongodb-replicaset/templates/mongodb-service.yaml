@@ -5,7 +5,7 @@ metadata:
   annotations:
     service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
   {{- if .Values.serviceAnnotations }}
-{{ toYaml .Values.serviceAnnotations | indent 4 }}
+    {{- toYaml .Values.serviceAnnotations | nindent 4 }}
   {{- end }}
   labels:
     app: {{ template "mongodb-replicaset.name" . }}

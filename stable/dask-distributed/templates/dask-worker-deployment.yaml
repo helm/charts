@@ -26,4 +26,4 @@ spec:
           ports:
             - containerPort: {{ .Values.worker.containerPort }}
           resources:
-{{ toYaml .Values.worker.resources | indent 12 }}
+            {{- toYaml .Values.worker.resources | nindent 12 }}

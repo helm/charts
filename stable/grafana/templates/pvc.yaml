@@ -5,7 +5,7 @@ kind: PersistentVolumeClaim
 metadata:
   annotations:
   {{- if .Values.server.persistentVolume.annotations }}
-{{ toYaml .Values.server.persistentVolume.annotations | indent 4 }}
+    {{- toYaml .Values.server.persistentVolume.annotations | nindent 4 }}
   {{- end }}
   labels:
     app: {{ template "grafana.fullname" . }}

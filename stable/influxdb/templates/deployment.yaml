@@ -19,7 +19,7 @@ spec:
         image: "{{ .Values.image.repo }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         resources:
-{{ toYaml .Values.resources | indent 10 }}
+          {{- toYaml .Values.resources | nindent 10 }}
         ports:
         - name: api
           containerPort: {{ .Values.config.http.bind_address }}

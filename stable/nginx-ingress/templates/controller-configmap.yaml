@@ -10,6 +10,6 @@ metadata:
   name: {{ template "controller.fullname" . }}
 data:
   enable-vts-status: "{{ .Values.controller.stats.enabled }}"
-{{- if .Values.controller.config }}
-{{ toYaml .Values.controller.config | indent 2 }}
-{{- end }}
+  {{- if .Values.controller.config }}
+  {{- toYaml .Values.controller.config | nindent 2 }}
+  {{- end }}

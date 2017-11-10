@@ -4,7 +4,7 @@ kind: Service
 metadata:
 {{- if .Values.controller.stats.service.annotations }}
   annotations:
-{{ toYaml .Values.controller.stats.service.annotations | indent 4 }}
+    {{- toYaml .Values.controller.stats.service.annotations | nindent 4 }}
 {{- end }}
   labels:
     app: {{ template "name" . }}
@@ -17,14 +17,14 @@ spec:
   clusterIP: "{{ .Values.controller.stats.service.clusterIP }}"
 {{- if .Values.controller.stats.service.externalIPs }}
   externalIPs:
-{{ toYaml .Values.controller.stats.service.externalIPs | indent 4 }}
+    {{- toYaml .Values.controller.stats.service.externalIPs | nindent 4 }}
 {{- end }}
 {{- if .Values.controller.stats.service.loadBalancerIP }}
   loadBalancerIP: "{{ .Values.controller.stats.service.loadBalancerIP }}"
 {{- end }}
 {{- if .Values.controller.stats.service.loadBalancerSourceRanges }}
   loadBalancerSourceRanges:
-{{ toYaml .Values.controller.stats.service.loadBalancerSourceRanges | indent 4 }}
+    {{- toYaml .Values.controller.stats.service.loadBalancerSourceRanges | nindent 4 }}
 {{- end }}
   ports:
     - name: stats

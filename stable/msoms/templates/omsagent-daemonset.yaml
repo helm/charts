@@ -25,7 +25,7 @@ spec:
        image: "microsoft/oms:{{ .Values.omsagent.image.tag }}"
        imagePullPolicy: {{ .Values.omsagent.image.pullPolicy }}
        resources:
-{{ toYaml .Values.resources | indent 8 }}
+        {{- toYaml .Values.resources | nindent 8 }}
        securityContext:
          privileged: true
        ports:

@@ -44,7 +44,7 @@ spec:
         imagePullPolicy: {{ .Values.microSentinel.image.pullPolicy }}
         args: ["-service",{{ template "redis-cache.fullname" . }}]
         resources:
-{{ toYaml .Values.microSentinel.resources | indent 12 }}
+            {{- toYaml .Values.microSentinel.resources | nindent 12 }}
         env:
           - name: POD_NAMESPACE
             valueFrom:
@@ -62,12 +62,12 @@ spec:
         - containerPort: {{ .Values.service.port }}
           name: {{ .Values.service.name }}
         resources:
-{{ toYaml .Values.redis.resources | indent 12 }}
+            {{- toYaml .Values.redis.resources | nindent 12 }}
       - name: make-slave
         image: {{ .Values.makeSlave.image.repository }}:{{ .Values.makeSlave.image.tag }}
         imagePullPolicy: {{ .Values.makeSlave.image.pullPolicy }}
         resources:
-{{ toYaml .Values.makeSlave.resources | indent 12 }}
+            {{- toYaml .Values.makeSlave.resources | nindent 12 }}
         env:
           - name: POD_NAMESPACE
             valueFrom:

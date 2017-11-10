@@ -17,7 +17,7 @@ spec:
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "heapster.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
 {{- if .Values.nodeSelector }}
       nodeSelector:
-{{ toYaml .Values.nodeSelector | indent 8 }}
+        {{- toYaml .Values.nodeSelector | nindent 8 }}
 {{- end }}
       containers:
       - name: {{ .Chart.Name }}
@@ -32,10 +32,10 @@ spec:
           initialDelaySeconds: 180
           timeoutSeconds: 5
         resources:
-{{ toYaml .Values.resources | indent 12 }}
+            {{- toYaml .Values.resources | nindent 12 }}
       {{- if .Values.env }}
         env:
-{{ toYaml .Values.env | indent 10 }}
+          {{- toYaml .Values.env | nindent 10 }}
       {{- end }}
         command:
           {{- range .Values.command }}
@@ -47,7 +47,7 @@ spec:
         image: "{{ .image.repository }}:{{ .image.tag }}"
         imagePullPolicy: {{ .image.pullPolicy }}
         resources:
-{{ toYaml .resources | indent 12 }}
+            {{- toYaml .resources | nindent 12 }}
         env:
           - name: MY_POD_NAME
             valueFrom:

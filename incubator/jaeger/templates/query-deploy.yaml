@@ -11,7 +11,7 @@ metadata:
     release: "{{ .Release.Name }}"
 {{- if .Values.query.annotations }}
   annotations:
-{{ toYaml .Values.query.annotations | indent 6 }}
+      {{- toYaml .Values.query.annotations | nindent 6 }}
 {{- end }}
 spec:
   replicas: 1
@@ -29,7 +29,7 @@ spec:
 {{- end }}
     spec:
       nodeSelector:
-{{ toYaml .Values.query.nodeSelector | indent 8 }}
+        {{- toYaml .Values.query.nodeSelector | nindent 8 }}
       containers:
       - name: "{{ template "jaeger.fullname" . }}-query"
         image: "{{ .Values.query.image }}:{{ .Values.query.tag }}"
@@ -38,7 +38,7 @@ spec:
         - containerPort: {{ .Values.query.service.targetPort }}
           protocol: TCP
         resources:
-{{ toYaml .Values.query.resources | indent 10 }}
+          {{- toYaml .Values.query.resources | nindent 10 }}
         command:
         - "/go/bin/query-linux"
         - "--cassandra.servers={{ template "cassandra.fullname" . }}"

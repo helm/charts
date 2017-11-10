@@ -20,7 +20,7 @@ spec:
     targetPort: postgresql
 {{- if .Values.service.externalIPs }}
   externalIPs:
-{{ toYaml .Values.service.externalIPs | indent 4 }}
+    {{- toYaml .Values.service.externalIPs | nindent 4 }}
 {{- end }}
   selector:
     app: {{ template "postgresql.fullname" . }}

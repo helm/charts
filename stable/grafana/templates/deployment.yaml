@@ -24,10 +24,10 @@ spec:
         release: "{{ .Release.Name }}"
     spec:
       nodeSelector:
-{{ toYaml .Values.server.nodeSelector | indent 8 }}
+        {{- toYaml .Values.server.nodeSelector | nindent 8 }}
   {{- if .Values.server.tolerations }}
       tolerations:
-{{ toYaml .Values.server.tolerations | indent 8 }}
+        {{- toYaml .Values.server.tolerations | nindent 8 }}
   {{- end }}
       containers:
         - name: {{ template "grafana.name" . }}
@@ -60,7 +60,7 @@ spec:
             initialDelaySeconds: 30
             timeoutSeconds: 30
           resources:
-{{ toYaml .Values.server.resources | indent 12 }}
+            {{- toYaml .Values.server.resources | nindent 12 }}
           volumeMounts:
             - name: config-volume
               mountPath: {{ default "/etc/grafana" .Values.server.configLocalPath | quote }}

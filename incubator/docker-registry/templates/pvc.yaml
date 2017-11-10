@@ -5,7 +5,7 @@ kind: PersistentVolumeClaim
 metadata:
   annotations:
   {{- if .Values.persistentVolume.annotations }}
-{{ toYaml .Values.persistentVolume.annotations | indent 4 }}
+    {{- toYaml .Values.persistentVolume.annotations | nindent 4 }}
   {{- end }}
   labels:
     app: {{ template "docker-registry.name" . }}
@@ -15,7 +15,7 @@ metadata:
   name: {{ template "docker-registry.fullname" . }}
 spec:
   accessModes:
-{{ toYaml .Values.persistentVolume.accessModes | indent 4 }}
+    {{- toYaml .Values.persistentVolume.accessModes | nindent 4 }}
   resources:
     requests:
       storage: "{{ .Values.persistentVolume.size }}"

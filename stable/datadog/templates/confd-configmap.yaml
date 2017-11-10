@@ -8,6 +8,6 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 data:
-{{- if .Values.datadog.confd }}
-{{ toYaml .Values.datadog.confd | indent 2 }}
-{{- end -}}
+  {{- if .Values.datadog.confd }}
+  {{- toYaml .Values.datadog.confd | nindent 2 }}
+  {{- end -}}
