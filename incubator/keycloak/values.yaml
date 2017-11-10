@@ -31,9 +31,9 @@ keycloak:
     # limits:
     #   cpu: "100m"
     #   memory: "1024Mi"
-    requests:
-      cpu: "100m"
-      memory: "1024Mi"
+    # requests:
+    #   cpu: "100m"
+    #   memory: "1024Mi"
 
   ## Ingress configuration.
   ## ref: https://kubernetes.io/docs/user-guide/ingress/
@@ -90,7 +90,7 @@ postgresql:
   ## PostgreSQL Password for the new user.
   ## If not set, a random 10 characters password will be used.
   ##
-  postgresPassword: keycloak
+  # postgresPassword: keycloak
 
   ## PostgreSQL Database to create.
   ##
