@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: {{ template "keycloak.fullname" . }}
   labels:
-    app: {{ template "keycloak.fullname" . }}
+    app: {{ template "keycloak.name" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -12,7 +12,8 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "keycloak.fullname" . }}
+        app: {{ template "keycloak.name" . }}
+        release: "{{ .Release.Name }}"
     spec:
       containers:
       - name: {{ .Chart.Name }}
