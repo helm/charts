@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: "{{.Values.container.name.default}}"
+  labels:
+    name: "{{.Values.container.name.default}}"
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+spec:
+  ports:
+  - port: {{.Values.container.port}}
+    name: web
+  clusterIP: None
+  selector:
+    app: "{{.Values.container.name.primary}}"
