@@ -98,6 +98,7 @@ Parameter | Description | Default
 `defaultBackend.service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
 `defaultBackend.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
 `defaultBackend.service.type` | type of default backend service to create | `ClusterIP`
+`imagePullSecrets` | Specify image pull secrets | `nil` (does not add image pull secrets to deployed pods)
 `rbac.create` | If true, create & use RBAC resources | `false`
 `rbac.serviceAccountName` | ServiceAccount to be used (ignored if rbac.create=true) | `default`
 `statsExporter.name` | name of the Prometheus metrics exporter component | `stats-exporter`

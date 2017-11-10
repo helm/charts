@@ -205,6 +205,13 @@ defaultBackend:
     servicePort: 80
     type: ClusterIP
 
+## Optionally specify an array of imagePullSecrets.
+## Secrets must be manually created in the namespace.
+## ref: https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
+##
+imagePullSecrets:
+  - name: myRegistryKeySecretName
+
 ## Enable RBAC as per https://github.com/kubernetes/ingress/tree/master/examples/rbac/nginx and https://github.com/kubernetes/ingress/issues/266
 rbac:
   create: false
