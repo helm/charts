@@ -13,3 +13,6 @@ resources: {}
   # requests:
   #  cpu: 100m
   #  memory: 128Mi
+rbac:
+  create: false
+  serviceAccountName: default
