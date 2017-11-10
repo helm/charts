@@ -20,31 +20,31 @@ spec:
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         env:
-          - name: PROXY_ADDRESS_FORWARDING
-            value: "true"
-          - name: KEYCLOAK_LOGLEVEL
-            value: {{ default "INFO" .Values.keycloak.loglevel | quote }}
-          - name: KEYCLOAK_USER
-            value: {{ default "keycloak" .Values.keycloak.username | quote }}
-          - name: KEYCLOAK_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: {{ template "keycloak.fullname" . }}
-                key: keycloak-password
+        - name: PROXY_ADDRESS_FORWARDING
+          value: "true"
+        - name: KEYCLOAK_LOGLEVEL
+          value: {{ default "INFO" .Values.keycloak.loglevel | quote }}
+        - name: KEYCLOAK_USER
+          value: {{ default "keycloak" .Values.keycloak.username | quote }}
+        - name: KEYCLOAK_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "keycloak.fullname" . }}
+              key: keycloak-password
 
-          - name: POSTGRES_PORT_5432_TCP_ADDR
-            value: {{ template "keycloak.postgresql.fullname" . }}
-          - name: POSTGRES_PORT_5432_TCP_PORT
-            value: "5432"
-          - name: POSTGRES_USER
-            value: {{ .Values.postgresql.postgresUser | quote }}
-          - name: POSTGRES_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: {{ template "keycloak.postgresql.fullname" . }}
-                key: postgres-password
-          - name: POSTGRES_DATABASE
-            value: {{ .Values.postgresql.postgresDatabase | quote }}
+        - name: POSTGRES_PORT_5432_TCP_ADDR
+          value: {{ template "keycloak.postgresql.fullname" . }}
+        - name: POSTGRES_PORT_5432_TCP_PORT
+          value: "5432"
+        - name: POSTGRES_USER
+          value: {{ .Values.postgresql.postgresUser | quote }}
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "keycloak.postgresql.fullname" . }}
+              key: postgres-password
+        - name: POSTGRES_DATABASE
+          value: {{ .Values.postgresql.postgresDatabase | quote }}
         ports:
         - containerPort: 8080
         livenessProbe:
@@ -60,4 +60,4 @@ spec:
           initialDelaySeconds: 5
           timeoutSeconds: 1
         resources:
-{{ toYaml .Values.keycloak.resources | indent 12 }}
+{{ toYaml .Values.keycloak.resources | indent 10 }}

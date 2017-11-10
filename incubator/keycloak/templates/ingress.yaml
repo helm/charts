@@ -14,13 +14,13 @@ metadata:
 {{- end }}
 spec:
   rules:
-    - host: {{ .Values.keycloak.ingress.hostname }}
-      http:
-        paths:
-          - path: /
-            backend:
-              serviceName: {{ template "keycloak.fullname" . }}
-              servicePort: {{ .Values.keycloak.service.port }}
+  - host: {{ .Values.keycloak.ingress.hostname }}
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: {{ template "keycloak.fullname" . }}
+          servicePort: {{ .Values.keycloak.service.port }}
 {{- if .Values.keycloak.ingress.tls }}
   tls:
 {{ toYaml .Values.keycloak.ingress.tls | indent 4 }}

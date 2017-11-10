@@ -58,9 +58,9 @@ keycloak:
     ## Secrets must be manually created in the namespace.
     ##
     # tls:
-    #   - secretName: keycloak.example.com-tls
-    #     hosts:
-    #       - keycloak.example.com
+    # - secretName: keycloak.example.com-tls
+    #   hosts:
+    #   - keycloak.example.com
     #
     #
   service:
