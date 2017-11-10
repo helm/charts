@@ -1,0 +1,16 @@
+name: basic
+container:
+  port: 5432
+  name: basic
+credentials:
+  primary: password
+  root: password
+  user: password
+serviceType: ClusterIP
+image:
+  repository: crunchydata
+  container: crunchy-postgres
+  tag: centos7-9.6.5-1.6.0
+resources:
+  cpu: 200m
+  memory: 512Mi
