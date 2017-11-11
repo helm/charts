@@ -16,7 +16,7 @@ ConsulDnsPort: 8600
 Component: "consul"
 Replicas: 3
 Image: "consul"
-ImageTag: "0.8.3"
+ImageTag: "1.0.0"
 ImagePullPolicy: "Always"
 Resources: {}
  # requests:
