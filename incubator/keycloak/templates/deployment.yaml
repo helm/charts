@@ -23,9 +23,9 @@ spec:
         - name: PROXY_ADDRESS_FORWARDING
           value: "true"
         - name: KEYCLOAK_LOGLEVEL
-          value: {{ default "INFO" .Values.keycloak.loglevel | quote }}
+          value: {{ .Values.keycloak.loglevel | quote }}
         - name: KEYCLOAK_USER
-          value: {{ default "keycloak" .Values.keycloak.username | quote }}
+          value: {{ .Values.keycloak.username | quote }}
         - name: KEYCLOAK_PASSWORD
           valueFrom:
             secretKeyRef:

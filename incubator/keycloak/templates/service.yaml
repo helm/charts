@@ -18,7 +18,7 @@ spec:
   type: {{ .Values.keycloak.service.type }}
   ports:
   - name: http
-    port: {{ default "80" .Values.keycloak.service.port }}
+    port: {{ .Values.keycloak.service.port }}
     targetPort: 8080
     {{ if and (eq "NodePort" .Values.keycloak.service.type) .Values.keycloak.service.nodePort }}
     nodePort: {{ .Values.keycloak.service.nodePort}}
