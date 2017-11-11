@@ -105,7 +105,7 @@ gcs:
 #   https://www.spinnaker.io/setup/ci/jenkins/
 jenkins:
   Master:
-    ImageTag: 2.62
+    ImageTag: 2.67
     Cpu: "500m"
     Memory: "512Mi"
     ServiceType: ClusterIP
