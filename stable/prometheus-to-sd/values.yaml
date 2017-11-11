@@ -1,7 +1,7 @@
 replicaCount: 1
 image:
   repository: gcr.io/google-containers/prometheus-to-sd
-  tag: v0.2.1
+  tag: v0.2.2
   pullPolicy: IfNotPresent
 resources:
   limits:
