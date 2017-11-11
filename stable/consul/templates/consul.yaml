@@ -25,6 +25,18 @@ spec:
   type: "{{ .Values.uiService.type }}"
 {{- end }}
 ---
+{{- if .Values.maxUnavailable }}
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: "{{ template "fullname" . }}-pdb"
+spec:
+  maxUnavailable: {{ .Values.maxUnavailable }}
+  selector:
+    matchLabels:
+      component: "{{ .Release.Name }}-{{ .Values.Component }}"
+{{- end }}
+---
 apiVersion: v1
 kind: Service
 metadata:

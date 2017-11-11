@@ -43,6 +43,14 @@ EncryptGossip: true
 ## StorageClass name for use with Persistent Volume Claim (PVC) using beta notations
 # StorageClass:
 
+## Setting maxUnavailable will create a pod disruption budget that will prevent
+## voluntarty cluster administration from taking down too many consul pods. If
+## you set maxUnavailable, you should set it to ceil((n/2) - 1), where
+## n = Replicas. For example, if you have 5 or 6 Replicas, you'll want to set
+## maxUnavailable = 2. If you are using the default of 3 Replicas, you'll want
+## to set maxUnavailable to 1.
+maxUnavailable: 1
+
 ## Enable Consul Web UI
 ##
 ui:
