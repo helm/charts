@@ -66,6 +66,7 @@ The following tables lists the configurable parameters of the Metabase chart and
 | timeZone               | Service time zone                                          | UTC               |
 | emojiLogging           | Get a funny emoji in service log                           | true              |
 | javaToolOptions        | JVM options                                                | null              |
+| pluginsDirectory       | A directory with Metabase plugins                          | null              |
 | service.type           | ClusterIP, NodePort, or LoadBalancer                       | ClusterIP         |
 | service.externalPort   | Service external port                                      | 80                |
 | service.internalPort   | Service internal port, should be the same as `listen.port` | 3000              |

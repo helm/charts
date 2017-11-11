@@ -5,7 +5,7 @@
 replicaCount: 1
 image:
   repository: metabase/metabase
-  tag: v0.24.2
+  tag: v0.26.2
   pullPolicy: IfNotPresent
 
 # Config Jetty web server
@@ -43,6 +43,7 @@ password:
 timeZone: UTC
 emojiLogging: true
 # javaToolOptions:
+# pluginsDirectory:
 
 service:
   name: metabase
