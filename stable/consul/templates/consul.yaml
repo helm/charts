@@ -77,6 +77,8 @@ metadata:
 spec:
   serviceName: "{{ template "fullname" . }}"
   replicas: {{ default 3 .Values.Replicas }}
+  updateStrategy:
+    type: RollingUpdate
   template:
     metadata:
       name: "{{ template "fullname" . }}"
