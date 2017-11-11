@@ -4,13 +4,5 @@ image:
   tag: v0.2.2
   pullPolicy: IfNotPresent
 resources: {}
-  # limits:
-  #  cpu: 50m
-  #  memory: 64Mi
-  # requests:
-  #  cpu: 50m
-  #  memory: 64Mi
 port: 6060
 metricsSources: {}
-  # kube-state-metrics: http://kube-state-metrics:8080
-  # component-name: http://host:port?whitelisted=a,b,c
