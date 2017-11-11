@@ -1,9 +1,9 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "prometheus-to-sd.fullname" . }}
   labels:
-    app: {{ template "name" . }}
+    app: {{ template "prometheus-to-sd.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
@@ -12,7 +12,7 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "name" . }}
+        app: {{ template "prometheus-to-sd.name" . }}
         release: {{ .Release.Name }}
     spec:
       containers:
