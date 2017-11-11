@@ -38,5 +38,7 @@
 
 2. Login with the following credentials
 
+  To get your user password run:
+    kubectl get secret --namespace {{ .Release.Namespace }} {{ template "keycloak.fullname" . }} -o jsonpath="{.data.keycloak-password}" | base64 --decode; echo
+
   Username: {{ .Values.keycloak.username }}
-  Password: {{ .Values.keycloak.password }}

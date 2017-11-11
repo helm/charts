@@ -18,8 +18,10 @@ keycloak:
   ## This user has full admin access
   username: keycloak
 
-  ## First keycloak password
-  password: keycloak
+  ## Keycloak Password for the first user.
+  ## If not set, a random 10 characters password will be used.
+  ##
+  # password: keycloak
 
   ## Keycloak logging level
   loglevel: INFO
