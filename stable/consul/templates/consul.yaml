@@ -88,6 +88,16 @@ spec:
     spec:
       securityContext:
         fsGroup: 1000
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: component
+                operator: In
+                values:
+                - "{{ .Release.Name }}-{{ .Values.Component }}"
+            topologyKey: kubernetes.io/hostname
       containers:
       - name: "{{ template "fullname" . }}"
         image: "{{ .Values.Image }}:{{ .Values.ImageTag }}"
