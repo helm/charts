@@ -4,7 +4,7 @@
 replicaCount: 1
 image:
   repository: vault
-  tag: 0.8.2
+  tag: 0.8.3
   pullPolicy: IfNotPresent
 service:
   name: vault
@@ -13,12 +13,12 @@ service:
 ingress:
   enabled: false
   # Used to create Ingress record (should used with service.type: ClusterIP).
-  #hosts:
+  # hosts:
   #  - chart-example.local
-  #annotations:
+  # annotations:
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
-  #tls:
+  # tls:
     # Secrets must be manually created in the namespace.
     # - secretName: chart-example-tls
     #   hosts:
@@ -29,11 +29,11 @@ resources: {}
   # resources, such as Minikube. If you do want to specify resources, uncomment the following
   # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
   # limits:
-  #  cpu: 100m
-  #  memory: 128Mi
+  #   cpu: 100m
+  #   memory: 128Mi
   # requests:
-  #  cpu: 100m
-  #  memory: 128Mi
+  #   cpu: 100m
+  #   memory: 128Mi
 vault:
   # Only used to enable dev mode. When in dev mode, the rest of this config
   # section below is not used to configure Vault. See
@@ -49,17 +49,17 @@ vault:
         tls_disable: 1
     # See https://www.vaultproject.io/docs/configuration/storage/ for storage backends
     storage:
-      #consul:
-      #  address: ""
-      #  path: ""
+      # consul:
+      #   address: ""
+      #   path: ""
       #
-      #etcd:
-      #  address: ""
-      #  path: "vault/"
+      # etcd:
+      #   address: ""
+      #   path: "vault/"
       #
-      #s3:
-      #  bucket: ""
-      #  region: ""
-      #  access_key: ""
-      #  secret_key: ""
-      #  endpoint: "" # When not using AWS S3
+      # s3:
+      #   bucket: ""
+      #   region: ""
+      #   access_key: ""
+      #   secret_key: ""
+      #   endpoint: "" # When not using AWS S3
