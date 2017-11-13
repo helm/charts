@@ -20,6 +20,8 @@ spec:
         {{ $key }}: {{ $value | quote }}
         {{- end }}
     spec:
+      tolerations:
+{{ toYaml .Values.worker.tolerations | indent 8 }}
       terminationGracePeriodSeconds: {{ .Values.worker.terminationGracePeriodSeconds }}
       containers:
         - name: {{ template "concourse.worker.fullname" . }}
