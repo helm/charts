@@ -2,10 +2,10 @@ apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
   labels:
-    name: {{ template "name" . }}-salve
+    name: {{ template "name" . }}-slave
     redis-node: "true"
 {{ include "labels.standard" . | indent 4 }}
-  name: {{ template "fullname" . }}-salve
+  name: {{ template "fullname" . }}-slave
 spec:
   serviceName: "redis"
   replicas: {{ .Values.replicas.slave }}
