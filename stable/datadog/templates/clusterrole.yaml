@@ -9,6 +9,10 @@ metadata:
     release: {{ .Release.Name }}
   name: {{ template "datadog.fullname" . }}
 rules:
+  - nonResourceURLs:
+      - "/version"  # Used to get apiserver version metadata
+      - "/healthz"  # Healthcheck
+    verbs: ["get"]
   - apiGroups:
       - apps
     resources:
@@ -35,6 +39,7 @@ rules:
       - ""
     resources:
       - events
+      - namespaces
       - nodes
       - pods
       - services
