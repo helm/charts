@@ -132,7 +132,7 @@ persistence:
   # storageClass: "-"
   accessMode: ReadWriteOnce
   size: 8Gi
-  #existingClaim: ""
+  # existingClaim: ""
 
 ## Define affinity for the moodle pod
 ## Sometimes required when persistent volumes are defined externally
