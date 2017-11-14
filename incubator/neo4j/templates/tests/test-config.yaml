@@ -15,10 +15,10 @@ data:
         name=$1
         end="$((SECONDS+90))"
         while true; do
-          echo "testing http://$name:7474/db/data"
-          out=`wget http://$name:7474/db/data -O - 2>&1`
+          echo "testing http://neo4j:${NEO4J_SECRETS_PASSWORD}@$name:7474/db/data"
+          out=`wget http://neo4j:${NEO4J_SECRETS_PASSWORD}@$name:7474/db/data -O - 2>&1`
           echo "out: $out"
-          wget http://$name:7474/db/data -O - 2>&1
+          wget http://neo4j:${NEO4J_SECRETS_PASSWORD}@$name:7474/db/data -O - 2>&1
           response_code=$?
           echo "response: $response_code"
           [[ "0" = "$response_code" ]] && break
@@ -43,8 +43,7 @@ data:
         end="$((SECONDS+90))"
         while true; do
           echo "checking cluster role: $name"
-
-          kubectl exec $name -- bin/cypher-shell "call dbms.cluster.role()"
+          kubectl exec $name -- bin/cypher-shell -u neo4j -p ${NEO4J_SECRETS_PASSWORD} "call dbms.cluster.role()"
           response_code=$?
           echo "response: $response_code"
           [[ "0" = "$response_code" ]] && break
