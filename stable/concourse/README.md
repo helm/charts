@@ -109,6 +109,17 @@ The following tables lists the configurable parameters of the Concourse chart an
 | `concourse.genericOauthAuthUrlParam` | Parameters (comma separated) to pass to the authentication server AuthURL | `nil` |
 | `concourse.genericOauthScope` | Optional scope required to authorize user | `nil` |
 | `concourse.genericOauthTokenUrl` | Generic OAuth provider TokenURL endpoint | `nil` |
+| `concourse.vault.vaultUrl` | Vault server address used to access secrets. | `nil` |
+| `concourse.vault.vaultPathPrefix` | Path under which to namespace credential lookup. (default: /concourse) | `nil` |
+| `concourse.vault.vaultCaCert` | Path to a PEM-encoded CA cert file to use to verify the vault server SSL cert. | `nil` |
+| `concourse.vault.vaultCaPath` | Path to a directory of PEM-encoded CA cert files to verify the vault server SSL cert. | `nil` |
+| `concourse.vault.vaultClientCert` | Path to the client certificate for Vault authorization. | `nil` |
+| `concourse.vault.vaultClientKey` | Path to the client private key for Vault authorization. | `nil` |
+| `concourse.vault.vaultServerName` | If set, is used to set the SNI host when connecting via TLS. | `nil` |
+| `concourse.vault.vaultInsecureSkipVerify` | Enable insecure SSL verification. | `nil` |
+| `concourse.vault.vaultClientToken` | Client token for accessing secrets within the Vault server. | `nil` |
+| `concourse.vault.vaultAuthBackend` | Auth backend to use for logging in to Vault. | `nil` |
+| `concourse.vault.vaultAuthParam` | Parameter to pass when logging in via the backend. Can be specified multiple times. | `nil` |
 | `web.nameOverride` | Override the Concourse Web components name | `web` |
 | `web.replicas` | Number of Concourse Web replicas | `1` |
 | `web.resources` | Concourse Web resource requests and limits | `{requests: {cpu: "100m", memory: "128Mi"}}` |
