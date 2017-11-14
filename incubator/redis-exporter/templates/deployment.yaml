@@ -1,7 +1,7 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "redis-exporter.fullname" . }}
+  name: {{ .Release.Name }}
   labels:
     app: {{ template "redis-exporter.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
@@ -23,7 +23,7 @@ spec:
             - containerPort: {{ .Values.service.internalPort }}
           env:
             - name: REDIS_ADDR
-              value: {{ .Values.redisAddress }}	  
+              value: {{ .Values.redisAddress }}
           livenessProbe:
             httpGet:
               path: /
