@@ -14,6 +14,12 @@ spec:
       labels:
         app: {{ template "vault.name" . }}
         release: {{ .Release.Name }}
+{{- if .Values.podAnnotations }}
+      annotations:
+      {{- range $key, $value := .Values.podAnnotations }}
+        {{ $key }}: {{ $value | quote }}
+      {{- end }}
+{{- end }}
     spec:
       containers:
       - name: {{ .Chart.Name }}
@@ -22,7 +28,9 @@ spec:
         {{- if .Values.vault.dev }}
         command: ["vault", "server", "-dev", "-dev-listen-address", "[::]:8200"]
         {{- else }}
-        command: ["vault", "server", "-config", "/vault/config/config.json"]
+        command: ["sh", "-c"]
+        args:
+          - export VAULT_CLUSTER_ADDR="http://$POD_IP:8201"; vault server -config /vault/config/config.json
         {{- end }}
         ports:
         - containerPort: {{ .Values.service.port }}
@@ -30,13 +38,19 @@ spec:
           tcpSocket:
             port: {{ .Values.service.port }}
         readinessProbe:
-          tcpSocket:
-            port: {{ .Values.service.port }}
+            httpGet:
+              path: /v1/sys/health
+              port: {{ .Values.service.port }}
         securityContext:
           readOnlyRootFilesystem: true
           capabilities:
             add:
             - IPC_LOCK
+        env:
+          - name: POD_IP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
         volumeMounts:
         - name: vault-config
           mountPath: /vault/config/
