@@ -11,6 +11,6 @@ home: http://riemann.io/
 sources:
 - https://github.com/raykrueger/riemann-docker
 maintainers:
-- name: Ray Krueger
+- name: raykrueger
   email: raykrueger@gmail.com
 engine: gotpl
