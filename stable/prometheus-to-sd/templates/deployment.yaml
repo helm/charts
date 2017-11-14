@@ -1,7 +1,7 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "prometheus-to-sd.fullname" . }}
+  name: {{ .Release.Name }}
   labels:
     app: {{ template "prometheus-to-sd.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
