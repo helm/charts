@@ -1,6 +1,6 @@
 name: selenium
-version: 0.2.0
-appVersion: 3.4.0
+version: 0.2.1
+appVersion: 3.6.0
 description: Chart for selenium grid
 keywords:
 - qa
