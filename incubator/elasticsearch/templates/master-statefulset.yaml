@@ -126,7 +126,7 @@ spec:
   {{- else }}
   volumeClaimTemplates:
   - metadata:
-      name: data
+      name: {{ .Values.master.persistence.name }}
     spec:
       accessModes:
         - {{ .Values.master.persistence.accessMode | quote }}

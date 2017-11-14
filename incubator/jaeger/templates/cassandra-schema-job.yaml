@@ -36,4 +36,4 @@ spec:
             value: "{{ .Values.cassandra.config.dc_name }}"
         resources:
 {{ toYaml .Values.schema.resources | indent 10 }}
-      restartPolicy: Never
+      restartPolicy: OnFailure
