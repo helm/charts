@@ -52,7 +52,7 @@ spec:
             - --storage.local.retention={{ .Values.server.retention }}
           {{- end }}
             - --config.file=/etc/config/prometheus.yml
-            - --storage.local.path={{ .Values.server.persistentVolume.mountPath }}
+            - --storage.tsdb.path={{ .Values.server.persistentVolume.mountPath }}
             - --web.console.libraries=/etc/prometheus/console_libraries
             - --web.console.templates=/etc/prometheus/consoles
           {{- range $key, $value := .Values.server.extraArgs }}
