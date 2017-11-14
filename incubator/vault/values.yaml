@@ -9,9 +9,9 @@ image:
 service:
   name: vault
   type: ClusterIP
+  externalPort: 8200
   port: 8200
-  # annotations:
-  #   cloud.google.com/load-balancer-type: "Internal"
+  annotations: {}
 ingress:
   enabled: false
   # Used to create Ingress record (should used with service.type: ClusterIP).
@@ -34,8 +34,9 @@ resources: {}
   #   cpu: 100m
   #   memory: 128Mi
   # requests:
-  #   cpu: 100m
-  #   memory: 128Mi
+  #  cpu: 100m
+  #  memory: 128Mi
+podAnnotations: {}
 vault:
   # Only used to enable dev mode. When in dev mode, the rest of this config
   # section below is not used to configure Vault. See
@@ -56,6 +57,7 @@ vault:
     listener:
       tcp:
         address: '[::]:8200'
+        cluster_address: '[::]:8201'
         tls_disable: true
         # tls_cert_file: /vault/tls/server.crt
         # tls_key_file: /vault/tls/server.key

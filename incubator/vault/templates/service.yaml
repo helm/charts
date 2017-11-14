@@ -7,15 +7,18 @@ metadata:
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+{{- if .Values.service.annotations }}
   annotations:
-    {{- range $key, $value := .Values.service.annotations }}
-      {{ $key }}: {{ $value | quote }}
-    {{- end }}
+  {{- range $key, $value := .Values.service.annotations }}
+    {{ $key }}: {{ $value | quote }}
+  {{- end }}
+{{- end }}
 spec:
   type: {{ .Values.service.type }}
   ports:
-  - port: {{ .Values.service.port }}
+  - port: {{ .Values.service.externalPort }}
     protocol: TCP
+    targetPort: {{ .Values.service.port }}
     name: {{ .Values.service.name }}
   selector:
     app: {{ template "vault.name" . }}
