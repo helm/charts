@@ -67,7 +67,7 @@ for directory in ${CHANGED_FOLDERS}; do
     CHART_NAME=`echo ${directory} | cut -d '/' -f2`
     RELEASE_NAME="${CHART_NAME:0:7}-${BUILD_NUMBER}"
     CURRENT_RELEASE=${RELEASE_NAME}
-    helm dep update ${directory}
+    helm dep build ${directory}
     helm install --timeout 600 --name ${RELEASE_NAME} --namespace ${NAMESPACE} ${directory} | tee install_output
     ./test/verify-release.sh ${NAMESPACE}
     kubectl get pods --namespace ${NAMESPACE}
