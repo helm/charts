@@ -7,5 +7,8 @@ service:
   type: ClusterIP
   externalPort: 9121
   internalPort: 9121
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: 9121
 resources: {}
 redisAddress: redis://myredis:6379
