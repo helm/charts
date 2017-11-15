@@ -41,7 +41,7 @@ spec:
 {{ toYaml .Values.query.resources | indent 10 }}
         command:
         - "/go/bin/query-linux"
-{{ if ne .Values.elasticsearch.config.host "" }}
+{{ if not (empty .Values.elasticsearch.config.host) }}
         - "--span-storage.type=elasticsearch"
         - "--es.server-urls={{ .Values.elasticsearch.config.host }}"
         - "--es.username={{ .Values.elasticsearch.config.username }}"
@@ -49,7 +49,7 @@ spec:
 {{ else if .Values.tags.elasticsearch }}
         - "--span-storage.type=elasticsearch"
         - "--es.server-urls=http://{{ template "elasticsearch.fullname" . }}-client:9200"
-{{ else if ne .Values.cassandra.config.host "" }}
+{{ else if not (empty .Values.cassandra.config.host) }}
         - "--cassandra.servers={{ .Values.cassandra.config.host }}"
         - "--cassandra.keyspace=jaeger_v1_{{ .Values.cassandra.config.dc_name }}"
 {{ else }}

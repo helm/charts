@@ -1,4 +1,4 @@
-{{ if ne .Values.cassandra.config.host "" }}
+{{ if not (empty .Values.cassandra.config.host) }}
 apiVersion: batch/v1
 kind: Job
 metadata:
