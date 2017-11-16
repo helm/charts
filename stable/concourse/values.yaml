@@ -279,7 +279,12 @@ concourse:
 
   ## Parent for vault configurations.
   ##
-  # vault:
+  vault:
+
+    ## Use the vault chart dependency.
+    ## Set to false if bringing your own PostgreSQL.
+    ##
+    enabled: false
 
     ## Vault server address used to access secrets..
     ##

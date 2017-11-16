@@ -109,6 +109,7 @@ The following tables lists the configurable parameters of the Concourse chart an
 | `concourse.genericOauthAuthUrlParam` | Parameters (comma separated) to pass to the authentication server AuthURL | `nil` |
 | `concourse.genericOauthScope` | Optional scope required to authorize user | `nil` |
 | `concourse.genericOauthTokenUrl` | Generic OAuth provider TokenURL endpoint | `nil` |
+| `concourse.vault.enabled` | Global enable or disable of vault functionality. | `false` |
 | `concourse.vault.vaultUrl` | Vault server address used to access secrets. | `nil` |
 | `concourse.vault.vaultPathPrefix` | Path under which to namespace credential lookup. (default: /concourse) | `nil` |
 | `concourse.vault.vaultCaCert` | Path to a PEM-encoded CA cert file to use to verify the vault server SSL cert. | `nil` |
