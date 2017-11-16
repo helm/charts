@@ -279,7 +279,7 @@ concourse:
 
   ## Parent for vault configurations.
   ##
-  # vault:
+  vault:
 
     ## Vault server address used to access secrets..
     ##
