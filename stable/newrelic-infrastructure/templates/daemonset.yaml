@@ -17,7 +17,7 @@ spec:
       hostIPC: true
       hostNetwork: true
       containers:
-        - name: {{ template "name" . }}
+        - name: {{ template "newrelic-infra.name" . }}
           image: "{{.Values.image.name}}:{{ .Values.image.tag }}"
           imagePullPolicy: "{{ .Values.image.pullPolicy }}"
           securityContext:
@@ -59,7 +59,7 @@ spec:
             secretName: newrelic-config
         - name: dev
           hostPath:
-              path: /dev
+            path: /dev
         - name: run
           hostPath:
               path: /var/run/docker.sock

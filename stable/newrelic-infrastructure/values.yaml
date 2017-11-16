@@ -1,4 +1,5 @@
-licenseKey: undefined
+# IMPORTANT: Specify your New Relic API key here.
+# licenseKey: 
 
 verboseLog: false
 
@@ -7,7 +8,7 @@ verboseLog: false
 
 image:
   name: newrelic/infrastructure
-  tag: 0.0.5
+  tag: 0.0.11
   pullPolicy: IfNotPresent
 
 resources:
