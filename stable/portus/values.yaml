@@ -60,7 +60,7 @@ registry:
       rootDirectory: portus
       secure: true
   secrets:
-    #https://github.com/docker/distribution/blob/master/docs/configuration.md#http
+    # https://github.com/docker/distribution/blob/master/docs/configuration.md#http
     ha-shared-secret: ""  # Randomly generated if omitted
     s3:
       access-key: ""
