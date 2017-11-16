@@ -11,6 +11,8 @@ metadata:
   name: {{ template "controller.fullname" . }}
 spec:
   replicas: {{ .Values.controller.replicaCount }}
+  strategy:
+{{ toYaml .Values.controller.updateStrategy | indent 4 }}
   template:
     metadata:
       annotations:

@@ -135,4 +135,6 @@ spec:
     {{- end }}
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
       terminationGracePeriodSeconds: 60
+  updateStrategy:
+{{ toYaml .Values.controller.updateStrategy | indent 4 }}
 {{- end }}
