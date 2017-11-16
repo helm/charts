@@ -10,5 +10,20 @@ metadata:
     release: {{ .Release.Name }}
   name: {{ template "prometheus.server.fullname" . }}
 data:
-{{ toYaml .Values.serverFiles | indent 2 }}
-{{- end }}
+{{- $alertmanagerHostname := include "prometheus.alertmanager.hostname" . -}}
+{{- $root := . -}}
+{{- range $key, $value := .Values.serverFiles }}
+  {{ $key }}: |
+{{ toYaml $value | default "{}" | indent 4 }}
+{{- if eq $key "prometheus.yml" -}}
+{{- if $alertmanagerHostname -}}
+    alerting:
+      alertmanagers:
+      - path_prefix: {{ $root.Values.alertmanager.baseURL }}
+        static_configs:
+        - targets:
+          - {{ $alertmanagerHostname }}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}

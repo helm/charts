@@ -146,7 +146,7 @@ Parameter | Description | Default
 `server.image.repository` | Prometheus server container image repository | `prom/prometheus`
 `server.image.tag` | Prometheus server container image tag | `v1.5.1`
 `server.image.pullPolicy` | Prometheus server container image pull policy | `IfNotPresent`
-`server.alertmanagerURL` | (optional) alertmanager URL; only used if alertmanager.enabled = false | `""`
+`server.alertmanagerHostname` | (optional) alertmanager hostname; only used if alertmanager.enabled = false | `""`
 `server.extraArgs` | Additional Prometheus server container arguments | `{}`
 `server.prefixURL` | The prefix slug at which the server can be accessed | ``
 `server.baseURL` | The external url at which the server can be accessed | ``
@@ -180,8 +180,8 @@ Parameter | Description | Default
 `server.service.type` | type of Prometheus server service to create | `ClusterIP`
 `server.terminationGracePeriodSeconds` | Prometheus server Pod termination grace period | `300`
 `server.retention` | (optional) Prometheus data retention | `""`
-`serverFiles.alerts` | Prometheus server alerts configuration | `""`
-`serverFiles.rules` | Prometheus server rules configuration | `""`
+`serverFiles.alerts` | Prometheus server alerts configuration | `{}`
+`serverFiles.rules` | Prometheus server rules configuration | `{}`
 `serverFiles.prometheus.yml` | Prometheus server scrape configuration | example configuration
 `networkPolicy.enabled` | Enable NetworkPolicy | `false` |
 
@@ -199,6 +199,12 @@ $ helm install stable/prometheus --name my-release -f values.yaml
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
+### Prometheus 2.0
+
+Prometheus version 2.0 has made changes to alertmanager, storage and recording rules. Check out the migration guide [here](https://prometheus.io/docs/prometheus/2.0/migration/)
+
+Users of this chart will need to update their alerting rules to the new format before they can upgrade.
 
 ### ConfigMap Files
 AlertManager is configured through [alertmanager.yml](https://prometheus.io/docs/alerting/configuration/). This file (and any others listed in `alertmanagerFiles`) will be mounted into the `alertmanager` pod.
