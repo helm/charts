@@ -8,15 +8,15 @@ portus:
     tag: 2.2
     pullPolicy: IfNotPresent
   config:
-    signup: true # If enabled, then users can signup with the signup form
-    first_user_admin: true # First user signing up will be admin
-    delete: true # Allow admins and owners to delete images and tags
-    gravatar: true # If enabled, then the profile picture will be picked from the Gravatar
-    display_name: false # Allow users to have different display names on the web site
+    signup: true  # If enabled, then users can signup with the signup form
+    first_user_admin: true  # First user signing up will be admin
+    delete: true  # Allow admins and owners to delete images and tags
+    gravatar: true  # If enabled, then the profile picture will be picked from the Gravatar
+    display_name: false  # Allow users to have different display names on the web site
     user_permission:
-      change_visibility: true # Allow users to change the visibility or their personal namespace
-      manage_team: true # Allow users to create/modify teams if they are an owner of it
-      manage_namespace: true # Allow users to create/modify namespaces if they are an owner of it
+      change_visibility: true  # Allow users to change the visibility or their personal namespace
+      manage_team: true  # Allow users to create/modify teams if they are an owner of it
+      manage_namespace: true  # Allow users to create/modify namespaces if they are an owner of it
     email:
       from: "portus@example.com"
       name: "Portus"
@@ -27,7 +27,7 @@ portus:
         port: 587
         domain: "example.com"
   secrets:
-    password: "" # Randomly generated if omitted
+    password: ""  # Randomly generated if omitted
     email:
       smtp:
         user_name: "username@example.com"
@@ -55,13 +55,13 @@ registry:
     debug-addr: localhost:5001
     s3:
       region: "us-east-1"
-      regionendpoint: "" #empty for AWS s3
+      regionendpoint: ""  # empty for AWS s3
       bucket: registry
       rootDirectory: portus
       secure: true
   secrets:
     #https://github.com/docker/distribution/blob/master/docs/configuration.md#http
-    ha-shared-secret: "" #Randomly generated if omitted
+    ha-shared-secret: ""  # Randomly generated if omitted
     s3:
       access-key: ""
       secret-key: ""
@@ -102,7 +102,6 @@ mariadb:
   mariadbRootPassword: portusadmin
   mariadbPassword: portuspass
   mariadbDatabase: portusdb
-  
   ## Enable persistence using Persistent Volume Claims
   ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
   ##
