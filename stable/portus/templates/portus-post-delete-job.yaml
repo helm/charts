@@ -1,0 +1,33 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: "{{ .Release.Name }}-delete-jobs"
+  labels:
+    app: {{ template "portus.fullname" . }}
+    component: portus
+  annotations:
+    "helm.sh/hook": post-delete
+spec:
+  template:
+    metadata:
+      name: "{{ .Release.Name }}"
+      labels:
+        app: {{ template "portus.fullname" . }}
+        component: portus
+    spec:
+      restartPolicy: OnFailure
+      volumes:
+      - name: kubectl
+        hostPath:
+          path: /usr/bin/kubectl
+
+      containers:
+      - name: post-delete-job
+        image: "lachlanevenson/k8s-kubectl:v1.6.0"
+        volumeMounts:
+        - name: kubectl
+          mountPath: /kubectl
+        command:
+        - sh
+        - -c
+        - "kubectl delete job --namespace {{ .Release.Namespace }} -l app={{ template "portus.fullname" . }}"

@@ -1,0 +1,135 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: "{{ template "portus.fullname" . }}"
+  labels:
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app: "{{ template "portus.fullname" . }}"
+    component: "portus"
+spec:
+  replicas: {{ .Values.portus.replicaCount }}
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: "{{ template "portus.fullname" . }}"
+        component: "portus"
+    spec:
+      containers:
+      - name: "portus"
+        image: "{{ .Values.portus.image.repository }}:{{ .Values.portus.image.tag }}"
+        imagePullPolicy: {{ .Values.portus.image.pullPolicy }}
+        env:
+        - name: REGISTRY_SSL_ENABLED
+          value: "true"
+        - name: PORTUS_MACHINE_FQDN_VALUE
+          value: {{ .Values.portus.fqdn | quote }}
+        {{- if .Values.mariadb.enabled }}
+        - name: MARIADB_SERVICE_HOST
+          value: {{ template "mariadb.fullname" . }}
+        - name: MARIADB_DATABASE
+          value: {{ .Values.mariadb.mariadbDatabase | quote }}
+        - name: MARIADB_USER
+          value: {{ .Values.mariadb.mariadbUser | quote }}
+        - name: MARIADB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "mariadb.fullname" . }}
+              key: mariadb-password
+        {{- else }}
+        - name: MARIADB_SERVICE_HOST
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "portus.secret-db" . }}
+              key: hostname
+        - name: MARIADB_USER
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "portus.secret-db" . }}
+              key: username
+        - name: MARIADB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "portus.secret-db" . }}
+              key: password
+        - name: MARIADB_DATABASE
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "portus.secret-db" . }}
+              key: db-name
+        {{- end }}
+        - name: PORTUS_PORTUS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "portus.secret" . }}
+              key: password
+        - name: PORTUS_SECRET_KEY_BASE
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "portus.secret" . }}
+              key: secret-key-base
+        {{- if .Values.portus.config.email.smtp.enabled }}
+        - name: PORTUS_EMAIL_SMTP_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "portus.secret" . }}
+              key: smtp-password
+        - name: PORTUS_EMAIL_SMTP_USER_NAME
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "portus.secret" . }}
+              key: smtp-user-name
+        {{- end }}
+        ports:
+        - containerPort: 80
+          protocol: TCP
+        - containerPort: 443
+          protocol: TCP
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 443
+            scheme: HTTPS
+          initialDelaySeconds: 10
+          timeoutSeconds: 1
+        resources:
+{{ toYaml .Values.portus.resources | indent 10 }}
+        volumeMounts:
+        - mountPath: /certificates/portus-ca.crt
+          name: tls-cert
+          subPath: portus-ca.crt
+          readOnly: true
+        - mountPath: /secrets/portus.key
+          name: tls-cert
+          subPath: portus.key
+          readOnly: true
+        - mountPath: /srv/Portus/config/config.yml
+          name: config
+          subPath: config.yml
+          readOnly: true
+      securityContext:
+        fsGroup: 8
+        # wwwrun(30) is member in group web(8)
+        runAsUser: 30
+      volumes:
+      - name: tls-cert
+        secret:
+          defaultMode: 440
+          secretName: {{ .Values.portus.fqdn }}.tls
+          items:
+          - key: tls.crt
+            path: portus-ca.crt
+          - key: tls.key
+            path: portus.key
+      - name: config
+        configMap:
+          name: {{ template "portus.configmap" . }}
+          items:
+          - key: config.yml
+            path: config.yml

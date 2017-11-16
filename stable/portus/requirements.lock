@@ -1,0 +1,9 @@
+dependencies:
+- name: mariadb
+  repository: https://kubernetes-charts.storage.googleapis.com/
+  version: 0.7.0
+- name: minio
+  repository: https://kubernetes-charts.storage.googleapis.com/
+  version: 0.1.4
+digest: sha256:d0483767c3f49b7f6cc7b257bf4abe3981e85f658c4dc95fa29ee9cf157071b8
+generated: 2017-11-16T11:10:43.999851-05:00

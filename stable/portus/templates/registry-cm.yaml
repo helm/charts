@@ -1,0 +1,73 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "{{ template "registry.configmap" . }}"
+  labels:
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app: "{{ template "portus.fullname" . }}"
+data:
+  config.yml: |
+    version: 0.1
+    auth:
+      token:
+        realm: https://{{ .Values.portus.fqdn }}/v2/token
+        service: {{ .Values.registry.fqdn }}
+        issuer: {{ .Values.portus.fqdn }}
+        rootcertbundle: /etc/ssl/portus/tls.crt
+    health:
+      storagedriver:
+        enabled: true
+        interval: 10s
+        threshold: 3
+    http:
+      addr: :5000
+      host: {{ .Values.registry.fqdn }}
+      tls:
+        certificate: /etc/ssl/docker/tls.crt
+        key: /etc/ssl/docker/tls.key
+      headers:
+        X-Content-Type-Options: [nosniff]
+      debug:
+        addr: {{ index .Values.registry.config "debug-addr" }}
+    log:
+      level: info
+      fields:
+        service: registry
+    maintenance:
+      uploadpurging:
+        enabled: true
+        age: 168h
+        interval: 24h
+        dryrun: false
+      readonly:
+        enabled: false
+    notifications:
+      endpoints:
+      - name: portus
+        url: https://{{ .Values.portus.fqdn }}/v2/webhooks/events
+        timeout: 3000ms
+        threshold: 5
+        backoff: 1s
+    storage:
+      s3:
+        bucket: {{ .Values.registry.config.s3.bucket | quote }}
+        rootdirectory: {{ .Values.registry.config.s3.rootDirectory | quote }}
+        {{- if .Values.minio.enabled }}
+        region: "us-east-1"
+        regionendpoint: "http://{{ template "minio.svc" . }}:9000"
+        secure: false
+        {{- else }}
+        region: {{ .Values.registry.config.s3.region | quote }}
+        regionendpoint: {{ .Values.registry.config.s3.regionendpoint | quote }}
+        secure: {{ .Values.registry.config.s3.secure | quote }}
+        {{- end}}
+        v4auth: true
+        chunksize: 10485760 # 10 * 1024 * 1024
+      redirect:
+        disable: true
+      delete:
+        enabled: true
+      cache:
+        blobdescriptor: inmemory

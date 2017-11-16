@@ -1,0 +1,32 @@
+{{- if .Values.minio.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: "{{ .Release.Name }}-create-bucket"
+  labels:
+    app: "{{ template "portus.fullname" . }}"
+    component: minio
+  annotations:
+    "helm.sh/hook": post-install
+spec:
+  template:
+    metadata:
+      name: "{{ .Release.Name }}"
+      labels:
+        app: "{{ template "portus.fullname" . }}"
+        component: minio
+    spec:
+      restartPolicy: OnFailure
+      containers:
+      - name: post-install-job
+        image: "{{ .Values.minio.client.imageRepository }}:{{ .Values.minio.client.imageTag }}"
+        command: ["sh", "/scripts/create-bucket.sh"]
+        volumeMounts:
+        - mountPath: /scripts
+          name: scripts
+          readOnly: true
+      volumes:
+      - name: scripts
+        configMap:
+          name: {{ .Release.Name }}-minio-scripts
+{{- end }}
