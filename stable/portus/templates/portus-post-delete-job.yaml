@@ -3,7 +3,7 @@ kind: Job
 metadata:
   name: "{{ .Release.Name }}-delete-jobs"
   labels:
-    app: {{ template "portus.fullname" . }}
+    app: {{ template "portus.name" . }}
     component: portus
   annotations:
     "helm.sh/hook": post-delete
@@ -12,7 +12,7 @@ spec:
     metadata:
       name: "{{ .Release.Name }}"
       labels:
-        app: {{ template "portus.fullname" . }}
+        app: {{ template "portus.name" . }}
         component: portus
     spec:
       restartPolicy: OnFailure

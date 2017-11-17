@@ -6,12 +6,12 @@ metadata:
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    app: "{{ template "portus.fullname" . }}"
+    app: "{{ template "portus.name" . }}"
 spec:
   ports:
   - name: https
     port: 443
     targetPort: 5000
   selector:
-    app: "{{ template "portus.fullname" . }}"
+    app: "{{ template "portus.name" . }}"
     component: "docker-registry"

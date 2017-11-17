@@ -6,7 +6,7 @@ metadata:
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    app: "{{ template "portus.fullname" . }}"
+    app: "{{ template "portus.name" . }}"
 data:
   config.yml: |
     # This file contains the default values for the configuration of this

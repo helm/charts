@@ -4,7 +4,7 @@ kind: Job
 metadata:
   name: "{{ .Release.Name }}-create-bucket"
   labels:
-    app: "{{ template "portus.fullname" . }}"
+    app: "{{ template "portus.name" . }}"
     component: minio
   annotations:
     "helm.sh/hook": post-install
@@ -13,7 +13,7 @@ spec:
     metadata:
       name: "{{ .Release.Name }}"
       labels:
-        app: "{{ template "portus.fullname" . }}"
+        app: "{{ template "portus.name" . }}"
         component: minio
     spec:
       restartPolicy: OnFailure

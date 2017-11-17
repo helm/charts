@@ -6,7 +6,7 @@ metadata:
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    app: "{{ template "portus.fullname" . }}"
+    app: "{{ template "portus.name" . }}"
     component: "portus"
 spec:
   replicas: {{ .Values.portus.replicaCount }}
@@ -18,7 +18,7 @@ spec:
   template:
     metadata:
       labels:
-        app: "{{ template "portus.fullname" . }}"
+        app: "{{ template "portus.name" . }}"
         component: "portus"
     spec:
       containers:
