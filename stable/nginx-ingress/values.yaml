@@ -58,6 +58,13 @@ controller:
   ##
   kind: Deployment
 
+  # The update strategy to apply to the Deployment or DaemonSet
+  ##
+  updateStrategy: {}
+  #  rollingUpdate:
+  #    maxUnavailable: 1
+  #  type: RollingUpdate
+
   ## Node tolerations for server scheduling to nodes with taints
   ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
   ##
