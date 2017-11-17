@@ -2,9 +2,9 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{template "fullname" .}}-httpd
+  name: {{template "lamp.fullname" .}}-httpd
   labels:
-    app: {{template "fullname" .}}
+    app: {{template "lamp.fullname" .}}
 data:
 {{ (.Files.Glob "files/httpd/httpd.conf").AsConfig | indent 2 }}
 {{ (.Files.Glob "files/httpd/httpd-vhosts.conf").AsConfig | indent 2 }}

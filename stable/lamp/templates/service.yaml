@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "lamp.fullname" . }}
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
 spec:
@@ -40,4 +40,4 @@ spec:
     name: phpmyadmin
   {{ end }}
   selector:
-    app: {{ template "fullname" . }}
+    app: {{ template "lamp.fullname" . }}

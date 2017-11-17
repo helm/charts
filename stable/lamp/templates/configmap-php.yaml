@@ -2,9 +2,9 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{template "fullname" .}}-php
+  name: {{template "lamp.fullname" .}}-php
   labels:
-    app: {{template "fullname" .}}
+    app: {{template "lamp.fullname" .}}
 data:
   additional.ini: |
   {{- if .Values.php.ini }}

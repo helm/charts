@@ -2,9 +2,9 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{template "fullname" .}}-init
+  name: {{template "lamp.fullname" .}}-init
   labels:
-    app: {{template "fullname" .}}
+    app: {{template "lamp.fullname" .}}
 data:
   {{- if .Values.init.clone.release }}
 {{ (.Files.Glob "files/init/init_clone.sh").AsConfig | indent 2 }}

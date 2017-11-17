@@ -2,7 +2,7 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: {{ template "fullname" . }}-service
+  name: {{ template "lamp.fullname" . }}-service
   annotations:
     {{- if .Values.ingress.ssl }}
     kubernetes.io/tls-acme: "true"
@@ -14,32 +14,32 @@ metadata:
 spec:
   {{- if .Values.ingress.ssl }}
   tls:
-  - secretName: {{ template "fullname" . }}-tls-service
+  - secretName: {{ template "lamp.fullname" . }}-tls-service
     hosts:
     {{- if .Values.phpmyadmin.enabled }}
-    - {{ .Values.phpmyadmin.subdomain }}.{{ template "domain" . }}
+    - {{ .Values.phpmyadmin.subdomain }}.{{ template "lamp.domain" . }}
     {{- end }}
     {{- if .Values.webdav.enabled }}
-    - {{ .Values.webdav.subdomain }}.{{ template "domain" . }}
+    - {{ .Values.webdav.subdomain }}.{{ template "lamp.domain" . }}
     {{- end }}
   {{- end }}
   rules:
   {{- if .Values.phpmyadmin.enabled }}
-  - host: {{ .Values.phpmyadmin.subdomain }}.{{ template "domain" . }}
+  - host: {{ .Values.phpmyadmin.subdomain }}.{{ template "lamp.domain" . }}
     http:
       paths:
       - path: /
         backend:
-          serviceName: {{ template "fullname" . }}
+          serviceName: {{ template "lamp.fullname" . }}
           servicePort: {{ .Values.phpmyadmin.port }}
   {{- end }}
   {{- if .Values.webdav.enabled }}
-  - host: {{ .Values.webdav.subdomain }}.{{ template "domain" . }}
+  - host: {{ .Values.webdav.subdomain }}.{{ template "lamp.domain" . }}
     http:
       paths:
       - path: /
         backend:
-          serviceName: {{ template "fullname" . }}
+          serviceName: {{ template "lamp.fullname" . }}
           servicePort: {{ .Values.webdav.port }}
   {{- end }}
 {{- end }}

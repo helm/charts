@@ -1,7 +1,7 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "lamp.fullname" . }}
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
 spec:
@@ -9,7 +9,7 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "fullname" . }}
+        app: {{ template "lamp.fullname" . }}
     spec:
       initContainers:
       - name: "init-chown-mysql"
@@ -142,7 +142,7 @@ spec:
         - name: MYSQL_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "lamp.fullname" . }}
               key: mysql-root-password
         resources:
         {{- if .Values.init.resources }}
@@ -198,7 +198,7 @@ spec:
         - name: MYSQL_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "lamp.fullname" . }}
               key: mysql-root-password
         resources:
         {{- if .Values.init.resources }}
@@ -273,7 +273,7 @@ spec:
         - name: RTOKEN
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "lamp.fullname" . }}
               key: gdrive-rtoken
         - name: WEB_DOMAIN
           value: {{ required "Please specify the domain of the wordpress backup at .Values.wordpress.domain" .Values.wordpress.domain }}
@@ -331,7 +331,7 @@ spec:
         env:
         {{- if .Values.wordpress.develop.enabled }}
         - name: WEB_TEST_DOMAIN
-          value: {{ template "domain" . }}
+          value: {{ template "lamp.domain" . }}
         - name: WEB_DOMAIN
           value: {{ required "Please specify the domain of the wordpress backup at .Values.wordpress.domain" .Values.wordpress.domain }}
         {{- end }}
@@ -346,7 +346,7 @@ spec:
         - name: MYSQL_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "lamp.fullname" . }}
               key: mysql-root-password
         resources:
         {{- if .Values.init.resources }}
@@ -479,24 +479,24 @@ spec:
         - name: MYSQL_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "lamp.fullname" . }}
               key: mysql-root-password
         {{- if and .Values.mysql.user .Values.mysql.password }}
         - name: MYSQL_USER
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "lamp.fullname" . }}
               key: mysql-user
         - name: MYSQL_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "lamp.fullname" . }}
               key: mysql-password
         {{- if .Values.mysql.database }}
         - name: MYSQL_DATABASE
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "lamp.fullname" . }}
               key: mysql-database
         {{- end }}
         {{- end }}
@@ -526,12 +526,12 @@ spec:
         - name: SFTP_USER
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "lamp.fullname" . }}
               key: sftp-user
         - name: SFTP_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "lamp.fullname" . }}
               key: sftp-password
         volumeMounts:
         {{- if and .Values.php.persistentSubpaths (or .Values.persistence.hostPath .Values.persistence.enabled)}}
@@ -561,12 +561,12 @@ spec:
         - name: WEBDAV_USERNAME
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "lamp.fullname" . }}
               key: webdav-user
         - name: WEBDAV_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "lamp.fullname" . }}
               key: webdav-password
         ports:
         - containerPort: 8001
@@ -633,12 +633,12 @@ spec:
         - name: SYNC_USER
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "lamp.fullname" . }}
               key: svn-user
         - name: SYNC_PASS
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "lamp.fullname" . }}
               key: svn-password
         - name: SYNC_URL
           value: {{required "Please specify the SVN repository at .Values.svn.repoURL" .Values.svn.repoURL }}
@@ -693,7 +693,7 @@ spec:
           path: {{ .Values.persistence.hostPath }}
         {{- else }}{{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ template "fullname" . }}
+          claimName: {{ template "lamp.fullname" . }}
         {{- else }}
         emptyDir: {}
         {{- end }}
@@ -703,15 +703,15 @@ spec:
         emptyDir: {}
       {{- end }}
       {{- if or .Values.mysql.sockets ( or ( and .Values.php.fpmEnabled .Values.php.sockets) .Values.php.ini ) }}
-      - configMap: {name: {{template "fullname" .}}-php }
+      - configMap: {name: {{template "lamp.fullname" .}}-php }
         name: configmap-php
       {{- end }}
       {{- if or .Values.init.clone.release .Values.wordpress.enabled }}
-      - configMap: {name: {{template "fullname" .}}-init }
+      - configMap: {name: {{template "lamp.fullname" .}}-init }
         name: init
       {{- end }}
       {{- if .Values.php.fpmEnabled }}
-      - configMap: {name: {{template "fullname" .}}-httpd }
+      - configMap: {name: {{template "lamp.fullname" .}}-httpd }
         name: httpd-config
       {{- end }}
       {{- if .Values.init.clone.release }}
