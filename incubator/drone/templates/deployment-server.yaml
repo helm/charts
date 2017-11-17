@@ -1,0 +1,54 @@
+{{- if hasKey .Values.server.env "DRONE_PROVIDER" }}
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "drone.fullname" . }}-server
+  labels:
+    app: {{ template "drone.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+    component: server
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: {{ template "drone.name" . }}
+        release: "{{ .Release.Name }}"
+        component: server
+    spec:
+      containers:
+      - name: {{ template "drone.fullname" . }}-server
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        env:
+          - name: DRONE_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "drone.fullname" . }}
+                key: secret
+          - name: DRONE_HOST
+          {{- if hasKey .Values.server "host" }}
+            value: {{ .Values.server.host }}
+          {{- else }}
+            value: {{ template "drone.fullname" . }}
+          {{- end }}
+          {{ range $key, $value := .Values.server.env }}
+          - name: {{ $key }}
+            value: {{ $value | quote }}
+          {{ end }}
+        ports:
+        - name: http
+          containerPort: 8000
+          protocol: TCP
+        - name: grpc
+          containerPort: 9000
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /
+            port: http
+        resources:
+{{ toYaml .Values.server.resources | indent 10 }}
+{{ end }}

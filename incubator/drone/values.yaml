@@ -1,0 +1,115 @@
+appVersion: "0.8.1"
+
+## The official drone image, change tag to use a different version.
+## https://hub.docker.com/r/drone/drone/tags/
+##
+image:
+  repository: "docker.io/drone/drone"
+  tag: "0.8.1"
+  pullPolicy: "IfNotPresent"
+
+## Since version 8.x drone splitted agent and server into two
+## different images.
+##
+## NOTE: Older versions of drone are **not** supported.
+## https://hub.docker.com/r/drone/agent/tags/
+##
+agentImage:
+  repository: "docker.io/drone/agent"
+  tag: "0.8.1"
+  pullPolicy: "IfNotPresent"
+
+service:
+  httpPort: 80
+
+  ## If service.type is not set to NodePort, the following statement
+  ## will be ignored.
+  ##
+  # nodePort: 32015
+
+  ## Service type can be set to ClusterIP, NodePort or LoadBalancer.
+  ##
+  type: ClusterIP
+
+ingress:
+  ## If true, Drone Ingress will be created.
+  ##
+  enabled: false
+
+  ## Drone Ingress annotations
+  ##
+  # annotations:
+  #   kubernetes.io/ingress.class: nginx
+  #   kubernetes.io/tls-acme: 'true'
+
+  ## Drone hostnames must be provided if Ingress is enabled
+  ##
+  # hosts:
+  #   - drone.domain.io
+
+  ## Drone Ingress TLS configuration secrets
+  ## Must be manually created in the namespace
+  ##
+  # tls:
+  #   - secretName: drone-tls
+  #     hosts:
+  #       - drone.domain.io
+
+server:
+  ## If not set, it will be autofilled with the cluster host.
+  ##
+  # host: "https://drone.domain.io"
+
+  ## Drone server configuration.
+  ## Values in here get injected as environment variables.
+  ## http://readme.drone.io/admin/installation-reference
+  ##
+  env:
+    DRONE_DEBUG: "false"
+    DRONE_DATABASE_DRIVER: "sqlite3"
+    DRONE_DATABASE_DATASOURCE: "drone.sqlite"
+
+    ## Drone requires some environment variables to bootstrap the
+    ## git service or it won't start up.
+    ## Uncomment this and add your own custom configuration.
+    ##
+    # DRONE_PROVIDER: "github"
+    # DRONE_OPEN: "true"
+    # DRONE_GITHUB: "true"
+    # DRONE_ORGS: "my-github-org,my-other-github-org"
+    # DRONE_ADMIN:"admin-1,admin-2"
+    # DRONE_GITHUB_CLIENT: "github-oauth2-client-id"
+    # DRONE_GITHUB_SECRET: "github-oauth2-client-secret"
+
+  ## CPU and memory limits for drone server
+  ##
+  resources: {}
+  #  requests:
+  #    memory: 32Mi
+  #    cpu: 40m
+  #  limits:
+  #    memory: 2Gi
+  #    cpu: 1
+
+agent:
+  ## Drone agent configuration.
+  ## Values in here get injected as environment variables.
+  ## http://readme.drone.io/admin/installation-reference
+  ##
+  env:
+    DRONE_DEBUG: "false"
+
+  ## CPU and memory limits for drone agent
+  ##
+  resources: {}
+  #  requests:
+  #    memory: 32Mi
+  #    cpu: 40m
+  #  limits:
+  #    memory: 2Gi
+  #    cpu: 1
+
+## Uncomment this if you want to set a specific shared secret between
+## the agents and servers, otherwise this will be auto-generated.
+##
+# sharedSecret: supersecret
