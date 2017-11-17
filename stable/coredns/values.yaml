@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: coredns/coredns
-  tag: "006"
+  tag: "0.9.10"
   pullPolicy: IfNotPresent
 
 resources:
@@ -33,9 +33,9 @@ serviceType: "ClusterIP"
 # Can be one of three options: "UDPNTCP" (default), "UDP" or "TCP"
 serviceProtocol: "UDPNTCP"
 
-# middleware configuration of CoreDNS refer to https://github.com/coredns/coredns/tree/master/middleware
-# for all specific details. set enabled to true/false to enable/disable a middleware.
-middleware:
+# plugn configuration of CoreDNS refer to https://github.com/coredns/coredns/tree/master/plugin
+# for all specific details. set enabled to true/false to enable/disable a plugin.
+plugins:
   kubernetes:
     enabled: true
     clusterCidr: "10.3.0.0/24"
@@ -46,10 +46,8 @@ middleware:
     port: "9153"
   errors:
     enabled: true
-    file: "stderr"
   log:
     enabled: false
-    file: "stdout"
   health:
     enabled: true
   proxy:

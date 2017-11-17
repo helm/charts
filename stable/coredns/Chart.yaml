@@ -1,6 +1,6 @@
 name: coredns
-version: 0.6.0
-description: CoreDNS is a DNS server that chains middleware and provides Kubernetes
+version: 0.9.10
+description: CoreDNS is a DNS server that chains plugins and provides Kubernetes
   DNS Services
 keywords:
 - coredns
