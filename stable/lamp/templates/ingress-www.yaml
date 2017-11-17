@@ -12,10 +12,7 @@ metadata:
     ingress.kubernetes.io/auth-secret: {{ template "lamp.fullname" . }}
     ingress.kubernetes.io/auth-realm: "Authenticate"
     {{- end }}
-    {{- range $annotation := .Values.ingress.annotations }}
-    {{ $annotation }}
-    {{- end }}
-
+{{ toYaml .Values.ingress.annotations | indent 4 }}
 spec:
   {{- if .Values.ingress.ssl }}
   tls:

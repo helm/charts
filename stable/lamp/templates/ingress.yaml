@@ -16,9 +16,7 @@ metadata:
     ingress.kubernetes.io/configuration-snippet: |
       rewrite ^(.*)$ $scheme://www.{{ template "lamp.domain" . }}$1;
     {{- end }}
-    {{- range $annotation := .Values.ingress.annotations }}
-    {{ $annotation }}
-    {{- end }}
+{{ toYaml .Values.ingress.annotations | indent 4 }}
 spec:
   {{- if .Values.ingress.ssl }}
   tls:
