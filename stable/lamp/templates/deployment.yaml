@@ -3,13 +3,17 @@ kind: Deployment
 metadata:
   name: {{ template "lamp.fullname" . }}
   labels:
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    app: {{ template "lamp.fullname" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
 spec:
   replicas: {{ .Values.replicaCount }}
   template:
     metadata:
       labels:
         app: {{ template "lamp.fullname" . }}
+        release: {{ .Release.Name }}
     spec:
       initContainers:
       - name: "init-chown-mysql"

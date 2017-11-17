@@ -4,7 +4,10 @@ kind: Service
 metadata:
   name: {{ template "lamp.fullname" . }}-sftp
   labels:
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    app: {{ template "lamp.fullname" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
 spec:
   type: NodePort
   ports:

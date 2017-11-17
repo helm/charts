@@ -4,7 +4,10 @@ kind: ConfigMap
 metadata:
   name: {{template "lamp.fullname" .}}-php
   labels:
-    app: {{template "lamp.fullname" .}}
+    app: {{ template "lamp.fullname" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
 data:
   additional.ini: |
   {{- if .Values.php.ini }}
