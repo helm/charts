@@ -15,3 +15,5 @@ rbac:
   create: false
   # Ignored if rbac.create is true
   serviceAccountName: default
+# Arguments passed to kube-state-metrics
+args: []
