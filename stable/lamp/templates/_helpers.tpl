@@ -20,7 +20,7 @@ Get the domain name of the chart - used for ingress rules
 */}}
 {{- define "lamp.domain" -}}
 {{- if .Values.wordpress.develop.enabled -}}
-{{- required "Please specify a develop domain at .Values.wordpress.develop.devDomain" .Values.wordpress.develop.devDomain | printf "%s.%s" ( include "fullname" .) -}}
+{{- required "Please specify a develop domain at .Values.wordpress.develop.devDomain" .Values.wordpress.develop.devDomain | printf "%s.%s" ( include "lamp.fullname" .) -}}
 {{- else -}}
 {{- if not .Values.ingress.enabled -}}
 no_domain_specified
