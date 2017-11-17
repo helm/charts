@@ -44,9 +44,7 @@ persistence:
   ##
   # storageClass: "-"
   # accessMode: ReadWriteOnce
-  # dataVolumeSize: 8Gi
-  # confVolumeSize: 1Gi
-  # extensionsVolumeSize: 2Gi
+  # size: 10Gi
 
 ## Configuration values for the postgresql dependency
 ## ref: https://github.com/kubernetes/charts/blob/master/stable/postgressql/README.md
