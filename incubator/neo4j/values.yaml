@@ -10,6 +10,13 @@ image: "neo4j"
 imageTag: "3.2.3-enterprise"
 imagePullPolicy: "IfNotPresent"
 
+# Use password authentication
+authEnabled: true
+
+## Specify password for neo4j user
+## Defaults to a random 10-character alphanumeric string if not set and authEnabled is true
+# neo4jPassword:
+
 # Specs for the images used for running tests against the Helm package
 testImage: "markhneedham/k8s-kubectl"
 testImageTag: "master"
@@ -33,16 +40,31 @@ core:
     ## If undefined (the default) or set to null, no storageClassName spec is
     ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
     ##   GKE, AWS & OpenStack)
-    ##storageClass: "-"
+    ## storageClass: "-"
 
     ## Subdirectory of core server data Persistent Volume to mount
     ## Useful if the volume's root directory is not empty
     ##
     subPath: ""
 
+    ## Pass extra environment variables to the Neo4j container.
+    ##
+    # extraVars:
+    # - name: EXTRA_VAR_1
+    #   value: extra-var-value-1
+    # - name: EXTRA_VAR_2
+    #   value: extra-var-value-2
+
 # Read Replicas
 readReplica:
   numberOfServers: 0
+  ## Pass extra environment variables to the Neo4j container.
+  ##
+  # extraVars:
+  # - name: EXTRA_VAR_1
+  #   value: extra-var-value-1
+  # - name: EXTRA_VAR_2
+  #   value: extra-var-value-2
 
 resources: {}
 # limits:
