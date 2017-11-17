@@ -21,6 +21,9 @@ spec:
         app: {{ template "name" . }}
         component: "{{ .Values.defaultBackend.name }}"
         release: {{ .Release.Name }}
+        {{- if .Values.defaultBackend.podLabels }}
+{{ toYaml .Values.defaultBackend.podLabels | indent 8 }}
+        {{- end }}
     spec:
       containers:
         - name: {{ template "name" . }}-{{ .Values.defaultBackend.name }}
