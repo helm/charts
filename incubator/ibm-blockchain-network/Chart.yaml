@@ -1,4 +1,9 @@
-name: ibm-blockchain-network
+name: {{ template "ibm-blockchain-chaincode.fullname" . }}
+labels:
+  app: {{ template "ibm-blockchain-chaincode.name" . }}
+  chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+  release: {{ .Release.Name }}
+  heritage: {{ .Release.Service }}
 version: 1.0.0
 appVersion: 1.0.0
 description: IBM Blockchain Network Chart
