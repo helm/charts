@@ -22,10 +22,10 @@ This chart bootstraps a [Neo4j](https://github.com/neo4j/docker-neo4j) deploymen
 To install the chart with the release name `neo4j-helm`:
 
 ```bash
-$ helm install --name neo4j-helm incubator/neo4j
+$ helm install --name neo4j-helm incubator/neo4j --set neo4jPassword=mySecretPassword
 ```
 
-The command deploys Neo4j on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
+The command deploys Neo4j on the Kubernetes cluster in the default configuration but with the password set to `mySecretPassword`. The [configuration](#configuration) section lists the parameters that can be configured during installation.
 
 > **Tip**: List all releases using `helm list`
 
@@ -48,13 +48,14 @@ The following tables lists the configurable parameters of the Neo4j chart and th
 | `image`                              | Neo4j image                                    | `neo4j`                                                  |
 | `imageTag`                           | Neo4j version                                  | `{VERSION}`                                              |
 | `imagePullPolicy`                    | Image pull policy                              | `IfNotPresent`                                           |
+| `authEnabled`                        | Is login/password required?                    | `true`                                                   |
 | `core.numberOfServers`               | Number of machines in CORE mode                | `3`                                                      |
 | `core.persistentVolume.storageClass` | Storage class of backing PVC                   | `standard` (uses beta storage class annotation)          |
 | `core.persistentVolume.size`         | Size of data volume                            | `10Gi`                                                   |
 | `core.persistentVolume.mountPath`    | Persistent Volume mount root path              | `/data`                                                  |
 | `core.persistentVolume.annotations`  | Persistent Volume Claim annotations            | `{}`                                                     |
 | `readReplica.numberOfServers`        | Number of machines in READ_REPLICA mode        | `0`                                                      |
-| `resources`                          | Resources required (e.g. CPU, memory)          | `{}`                                                     |  
+| `resources`                          | Resources required (e.g. CPU, memory)          | `{}`                                                     |
 
 The above parameters map to the env variables defined in the [Neo4j docker image](https://github.com/neo4j/docker-neo4j).
 

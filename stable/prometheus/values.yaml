@@ -248,6 +248,11 @@ nodeExporter:
     tag: v0.15.0
     pullPolicy: IfNotPresent
 
+  ## Custom Update Strategy
+  ##
+  updateStrategy:
+    type: OnDelete
+
   ## Additional node-exporter container arguments
   ##
   extraArgs: {}
@@ -319,7 +324,7 @@ server:
   ##
   image:
     repository: prom/prometheus
-    tag: v1.8.0
+    tag: v1.8.1
     pullPolicy: IfNotPresent
 
   ## (optional) alertmanager URL
