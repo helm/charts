@@ -51,6 +51,13 @@ EncryptGossip: true
 ## to set maxUnavailable to 1.
 maxUnavailable: 1
 
+## Anti-Affinity setting. The default "hard" will use pod anti-affinity that is
+## requiredDuringSchedulingIgnoredDuringExecution to ensure 2 services don't
+## end up on the same node. Setting this to "soft" will use
+## preferredDuringSchedulingIgnoredDuringExecution. If set to anything else,
+## no anti-affinity rules will be configured.
+antiAffinity: "hard"
+
 ## Enable Consul Web UI
 ##
 ui:

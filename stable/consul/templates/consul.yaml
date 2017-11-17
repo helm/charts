@@ -102,6 +102,7 @@ spec:
     spec:
       securityContext:
         fsGroup: 1000
+      {{- if eq .Values.antiAffinity "hard" }}
       affinity:
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -112,6 +113,20 @@ spec:
                 values:
                 - "{{ .Release.Name }}-{{ .Values.Component }}"
             topologyKey: kubernetes.io/hostname
+      {{- else if eq .Values.antiAffinity "soft" }}
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 1
+            podAffinityTerm:
+              topologyKey: kubernetes.io/hostname
+              labelSelector:
+                matchExpressions:
+                - key: component
+                  operator: In
+                  values:
+                  - "{{ .Release.Name }}-{{ .Values.Component }}"
+      {{- end }}
       containers:
       - name: "{{ template "fullname" . }}"
         image: "{{ .Values.Image }}:{{ .Values.ImageTag }}"
