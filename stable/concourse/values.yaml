@@ -379,6 +379,20 @@ worker:
       cpu: "100m"
       memory: "512Mi"
 
+  ## Configure additional environment variables for the
+  ## worker container(s)
+  # env:
+  #   - name: http_proxy
+  #     value: "http://proxy.your-domain.com:3128"
+  #   - name: https_proxy
+  #     value: "http://proxy.your-domain.com:3128"
+  #   - name: no_proxy
+  #     value: "your-domain.com"
+  #   - name: CONCOURSE_GARDEN_DNS_SERVER
+  #     value: "8.8.8.8"
+  #   - name: CONCOURSE_GARDEN_DNS_PROXY_ENABLE
+  #     value: "true"
+
   ## Annotations to be added to the worker pods.
   ##
   # annotations:
