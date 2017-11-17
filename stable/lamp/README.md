@@ -308,6 +308,7 @@ In development mode everything that gets executed in normal mode will also get e
 | `wordpress.gdriveFolder` | gdrive backup folder - the latest backup inside of the folder where the name includes the string `_full` will be downloaded | `wordpress.domain` |
 | `wordpress.domain` | wordpress domain used in dev mode to be search replaced | _empty_ |
 | `wordpress.develop.enabled` | enables develop mode | false |
+| `wordpress.develop.deleteUploads` | deletes `wp_content/uploads` folder and links to live site within htaccess | false |
 | `wordpress.develop.devDomain` | used to search replace `wordpress.domain` to `fullname of template`.`develop.devDomain` e.g `mysite-com-lamp.dev.example.com` | _empty_ |
 
 ### Other
