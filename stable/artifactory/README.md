@@ -79,7 +79,7 @@ The following tables lists the configurable parameters of the artifactory chart 
 | `artifactory.replicaCount`            | Replica count for Artifactory deployment| `1`                                                |
 | `artifactory.image.pullPolicy`         | Container pull policy             | `IfNotPresent`                                           |
 | `artifactory.image.repository`    | Container image                   | `docker.bintray.io/jfrog/artifactory-pro`                |
-| `artifactory.image.version`       | Container image tag               | `5.5.1`                                                  |
+| `artifactory.image.version`       | Container image tag               | `5.5.2`                                                  |
 | `artifactory.service.type`| Artifactory service type | `ClusterIP` |
 | `artifactory.externalPort` | Artifactory service external port | `8081`   |
 | `artifactory.internalPort` | Artifactory service internal port | `8081`   |
@@ -91,7 +91,7 @@ The following tables lists the configurable parameters of the artifactory chart 
 | `nginx.replicaCount` | Nginx replica count | `1`   |
 | `nginx.image.repository`    | Container image                   | `docker.bintray.io/jfrog/nginx-artifactory-pro`                |
 | `nginx.image.pullPolicy`    | Container pull policy                   | `IfNotPresent`                |
-| `nginx.image.version`       | Container image tag               | `5.5.1`                                                  |
+| `nginx.image.version`       | Container image tag               | `5.5.2`                                                  |
 | `nginx.service.type`| Nginx service type | `LoadBalancer` |
 | `nginx.externalPortHttp` | Nginx service external port | `80`   |
 | `nginx.internalPortHttp` | Nginx service internal port | `80`   |
