@@ -27,7 +27,7 @@ spec:
   {{- if .Values.metrics.enabled }}
   - name: metrics
     port: 9121
-    targetPort: redis
+    targetPort: metrics
   {{- end }}
   selector:
     app: {{ template "redis.fullname" . }}
