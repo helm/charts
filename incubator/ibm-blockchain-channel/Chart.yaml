@@ -1,4 +1,9 @@
-name: ibm-blockchain-channel
+name: {{ template "ibm-blockchain-channel.fullname" . }}
+labels:
+  app: {{ template "ibm-blockchain-channel.name" . }}
+  chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+  release: {{ .Release.Name }}
+  heritage: {{ .Release.Service }}
 version: 1.0.0
 appVersion: 1.0.0
 description: IBM Blockchain Channel Chart
