@@ -1,0 +1,24 @@
+{{- if and .Values.acsenginecluster.resourcegroup .Values.acsenginecluster.azurespappid .Values.acsenginecluster.azurespsecret .Values.acsenginecluster.azuresptenantid .Values.acsenginecluster.kubeconfigprivatekey .Values.acsenginecluster.clientprivatekey -}}
+
+The acs-engine-autoscaler is getting provisioned in your cluster. After a few minutes, you can run the following to verify.
+
+To verify that acs-engine-autoscaler has started, run:
+
+  kubectl --namespace={{ .Release.Namespace }} get pods -l "app={{ template "acs-engine-autoscaler.name" . }}"
+
+To verify that acs-engine-autoscaler is running as expected, run:
+  kubectl logs $(kubectl --namespace={{ .Release.Namespace }} get pods -l "app={{ template "acs-engine-autoscaler.name" . }}" -o jsonpath="{.items[0].metadata.name}")
+
+{{- else -}}
+##############################################################################
+####  ERROR: You are missing required values in the values.yaml file.     ####
+##############################################################################
+
+This deployment will be incomplete until all the required fields in the values.yaml file have been provided.
+
+To update, run:
+
+    helm upgrade {{ .Release.Name }} \
+    --set acsenginecluster.resourcegroup=YOUR-RESOURCEGROUP-HERE,acsenginecluster.azurespappid=YOUR-AZURESPAPPID-HERE,acsenginecluster.azurespsecret=YOUR-AZURESPSECRET-HERE,acsenginecluster.azuresptenantid=YOUR-AZURESPTENANTID-HERE,acsenginecluster.kubeconfigprivatekey=YOUR-KUBECONFIGPRIVATEKEY-HERE,acsenginecluster.clientprivatekey=YOUR-CLIENTPRIVATEKEY-HERE stable/acs-engine-autoscaler
+
+{{- end }}

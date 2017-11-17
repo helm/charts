@@ -1,7 +1,7 @@
 # MongoDB Helm Chart
 
 ## Prerequisites Details
-* Kubernetes 1.5+ with Beta APIs enabled.
+* Kubernetes 1.6+ with Beta APIs enabled.
 * PV support on the underlying infrastructure.
 
 ## StatefulSet Details
@@ -20,8 +20,8 @@ using Kubernetes StatefulSets and Init Containers.
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
-$ helm install --name my-release incubator/mongodb-replicaset
+$ helm repo add stable https://kubernetes-charts.storage.googleapis.com/
+$ helm install --name my-release stable/mongodb-replicaset
 ```
 
 ## Configuration
@@ -37,7 +37,7 @@ The following tables lists the configurable parameters of the mongodb chart and 
 | `installImage.tag`              | Image tag for the init container that establishes the replica set         | 0.3                                                 |
 | `installImage.pullPolicy`       | Image pull policy for the init container that establishes the replica set | IfNotPresent                                        |
 | `image.name`                    | MongoDB image name                                                        | mongo                                               |
-| `image.tag`                     | MongoDB image tag                                                         | 3.2                                                 |
+| `image.tag`                     | MongoDB image tag                                                         | 3.4                                                 |
 | `image.pullPolicy`              | MongoDB image pull policy                                                 | IfNotPresent                                        |
 | `podAnnotations`                | Annotations to be added to MongoDB pods                                   | {}                                                  |
 | `resources`                     | Pod resource requests and limits                                          | {}                                                  |
@@ -46,6 +46,9 @@ The following tables lists the configurable parameters of the mongodb chart and 
 | `persistentVolume.accessMode`   | Persistent volume access modes                                            | [ReadWriteOnce]                                     |
 | `persistentVolume.size`         | Persistent volume size                                                    | 10Gi                                                |
 | `persistentVolume.annotations`  | Persistent volume annotations                                             | {}                                                  |
+| `tls.enabled`                   | Enable MongoDB TLS support including authentication                       | `false`                                             |
+| `tls.cacert`                    | The CA certificate used for the members                                   | Our self signed CA certificate                      |
+| `tls.cakey`                     | The CA key used for the members                                           | Our key for the self signed CA certificate          |
 | `auth.enabled`                  | If `true`, keyfile access control is enabled                              | `false`                                             |
 | `auth.key`                      | key for internal authentication                                           |                                                     |
 | `auth.existingKeySecret`        | If set, an existing secret with this name for the key is used             |                                                     |
@@ -75,7 +78,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```console
-$ helm install --name my-release -f values.yaml incubator/mongodb-replicaset
+$ helm install --name my-release -f values.yaml stable/mongodb-replicaset
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
@@ -89,6 +92,71 @@ parameter `auth.enabled`. Once enabled, keyfile access control is set up and an 
 is created. User credentials and keyfile may be specified directly. Alternatively, existing secrets may be provided. 
 The secret for the admin user must contain the keys `user` and `password`, that for the key file must contain `key.txt`.
 
+## TLS support
+
+To enable full TLS encryption set `tls.enabled` to `true`. It is recommended to create your own CA by executing:
+
+```console
+$ openssl genrsa -out ca.key 2048
+$ openssl req -x509 -new -nodes -key ca.key -days 10000 -out ca.crt -subj "/CN=mydomain.com"
+```
+
+After that paste the base64 encoded (`cat ca.key | base64 -w0`) cert and key into the fields `tls.cacert` and
+`tls.cakey`. Adapt the configmap for the replicaset as follows:
+
+```yml
+configmap:
+  storage:
+    dbPath: /data/db
+  net:
+    port: 27017
+    ssl:
+      mode: requireSSL
+      CAFile: /ca/tls.crt
+      PEMKeyFile: /work-dir/mongo.pem
+  replication:
+    replSetName: rs0
+  security:
+    authorization: enabled
+    clusterAuthMode: x509
+    keyFile: /keydir/key.txt
+```
+
+To access the cluster you need one of the certificates generated during cluster setup in `/work-dir/mongo.pem` of the
+certain container or you generate your own one via:
+
+```console
+$ cat >openssl.cnf <<EOL
+[req]
+req_extensions = v3_req
+distinguished_name = req_distinguished_name
+[req_distinguished_name]
+[ v3_req ]
+basicConstraints = CA:FALSE
+keyUsage = nonRepudiation, digitalSignature, keyEncipherment
+subjectAltName = @alt_names
+[alt_names]
+DNS.1 = $HOSTNAME1
+DNS.1 = $HOSTNAME2
+EOL
+$ openssl genrsa -out mongo.key 2048
+$ openssl req -new -key mongo.key -out mongo.csr -subj "/CN=$HOSTNAME" -config openssl.cnf
+$ openssl x509 -req -in mongo.csr \
+    -CA $MONGOCACRT -CAkey $MONGOCAKEY -CAcreateserial \
+    -out mongo.crt -days 3650 -extensions v3_req -extfile openssl.cnf
+$ rm mongo.csr
+$ cat mongo.crt mongo.key > mongo.pem
+$ rm mongo.key mongo.crt
+```
+
+Please ensure that you exchange the `$HOSTNAME` with your actual hostname and the `$HOSTNAME1`, `$HOSTNAME2`, etc. with
+alternative hostnames you want to allow access to the MongoDB replicaset. You should now be able to authenticate to the
+mongodb with your `mongo.pem` certificate:
+
+```console
+$ mongo --ssl --sslCAFile=ca.crt --sslPEMKeyFile=mongo.pem --eval "db.adminCommand('ping')"
+```
+
 ## Deep dive
 
 Because the pod names are dependent on the name chosen for it, the following examples use the
@@ -101,17 +169,18 @@ export RELEASE_NAME=messy-hydra
 ### Cluster Health
 
 ```console
-$ for i in 0 1 2; do kubectl exec $RELEASE_NAME-mongodb-$i -- sh -c 'mongo --eval="printjson(db.serverStatus())"'; done
+$ for i in 0 1 2; do kubectl exec $RELEASE_NAME-mongodb-replicaset-$i -- sh -c 'mongo --eval="printjson(db.serverStatus())"'; done
 ```
 
 ### Failover
 
 One can check the roles being played by each node by using the following:
 ```console
-$ for i in 0 1 2; do kubectl exec $RELEASE_NAME-mongodb-$i -- sh -c 'mongo --eval="printjson(rs.isMaster())"'; done
+$ for i in 0 1 2; do kubectl exec $RELEASE_NAME-mongodb-replicaset-$i -- sh -c 'mongo --eval="printjson(rs.isMaster())"'; done
 
-MongoDB shell version: 3.2.9
-connecting to: test
+MongoDB shell version: 3.4.5
+connecting to: mongodb://127.0.0.1:27017
+MongoDB server version: 3.4.5
 {
 	"hosts" : [
 		"messy-hydra-mongodb-0.messy-hydra-mongodb.default.svc.cluster.local:27017",
@@ -140,16 +209,16 @@ This lets us see which member is primary.
 
 Let us now test persistence and failover. First, we insert a key (in the below example, we assume pod 0 is the master):
 ```console
-$ kubectl exec $RELEASE_NAME-mongodb-0 -- mongo --eval="printjson(db.test.insert({key1: 'value1'}))"
+$ kubectl exec $RELEASE_NAME-mongodb-replicaset-0 -- mongo --eval="printjson(db.test.insert({key1: 'value1'}))"
 
-MongoDB shell version: 3.2.8
-connecting to: test
+MongoDB shell version: 3.4.5
+connecting to: mongodb://127.0.0.1:27017
 { "nInserted" : 1 }
 ```
 
 Watch existing members:
 ```console
-$ kubectl run --attach bbox --image=mongo:3.2 --restart=Never -- sh -c 'while true; do for i in 0 1 2; do echo <$release-podname-$i> $(mongo --host=$RELEASE_NAME-mongodb-$i.$RELEASE_NAME-mongodb --eval="printjson(rs.isMaster())" | grep primary); sleep 1; done; done';
+$ kubectl run --attach bbox --image=mongo:3.4 --restart=Never --env="RELEASE_NAME=$RELEASE_NAME" -- sh -c 'while true; do for i in 0 1 2; do echo $RELEASE_NAME-mongodb-replicaset-$i $(mongo --host=$RELEASE_NAME-mongodb-replicaset-$i.$RELEASE_NAME-mongodb-replicaset --eval="printjson(rs.isMaster())" | grep primary); sleep 1; done; done';
 
 Waiting for pod default/bbox2 to be running, status is Pending, pod ready: false
 If you don't see a command prompt, try pressing enter.
@@ -163,14 +232,14 @@ messy-hydra-mongodb-0 "primary" : "messy-hydra-mongodb-0.messy-hydra-mongodb.def
 
 Kill the primary and watch as a new master getting elected.
 ```console
-$ kubectl delete pod $RELEASE_NAME-mongodb-0
+$ kubectl delete pod $RELEASE_NAME-mongodb-replicaset-0
 
 pod "messy-hydra-mongodb-0" deleted
 ```
 
 Delete all pods and let the statefulset controller bring it up.
 ```console
-$ kubectl delete po -l app=mongodb
+$ kubectl delete po -l "app=mongodb-replicaset,release=$RELEASE_NAME"
 $ kubectl get po --watch-only
 NAME                    READY     STATUS        RESTARTS   AGE
 messy-hydra-mongodb-0   0/1       Pending   0         0s
@@ -208,10 +277,10 @@ messy-hydra-mongodb-2 "primary" : "messy-hydra-mongodb-0.messy-hydra-mongodb.def
 
 Check the previously inserted key:
 ```console
-$ kubectl exec $RELEASE_NAME-mongodb-1 -- mongo --eval="rs.slaveOk(); db.test.find({key1:{\$exists:true}}).forEach(printjson)"
+$ kubectl exec $RELEASE_NAME-mongodb-replicaset-1 -- mongo --eval="rs.slaveOk(); db.test.find({key1:{\$exists:true}}).forEach(printjson)"
 
-MongoDB shell version: 3.2.8
-connecting to: test
+MongoDB shell version: 3.4.5
+connecting to: mongodb://127.0.0.1:27017
 { "_id" : ObjectId("57b180b1a7311d08f2bfb617"), "key1" : "value1" }
 ```
 

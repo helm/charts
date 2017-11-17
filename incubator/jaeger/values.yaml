@@ -1,0 +1,147 @@
+# Default values for jaeger.
+# This is a YAML-formatted file.
+
+# Begin: Override values on the Cassandra/ElasticSearch subchart to customize for Jaeger
+# This chart has been based on the Kubernetes integration found in the following repo:
+# https://github.com/jaegertracing/jaeger-kubernetes/blob/master/production/cassandra.yml
+# https://github.com/jaegertracing/jaeger-kubernetes/blob/master/production-elasticsearch/elasticsearch.yml
+cassandra:
+  image:
+    tag: 3.11
+  persistence:
+    # To enable persistence, please see the documentation for the Cassandra chart
+    enabled: false
+  config:
+    # Change the host value to point to an existing Cassandra instance
+    # Be sure to set both tags.cassandra and tags.elasticsearch to false
+    host: ""
+    cluster_name: jaeger
+    seed_size: 1
+    dc_name: dc1
+    rack_name: rack1
+    endpoint_snitch: GossipingPropertyFileSnitch
+
+elasticsearch:
+  config:
+    # Change the host value to point to an existing ElasticSearch instance
+    # Be sure to set both tags.cassandra and tags.elasticsearch to false
+    host: ""
+    username: "elastic"
+    password: "changeme"
+# End: Override values on the Cassandra/ElasticSearch subchart to customize for Jaeger
+
+# Begin: Default values for the various components of Jaeger
+tags:
+  # Chose which backing store to use. By default Cassandra is enabled.
+  cassandra: true
+  elasticsearch: false
+
+schema:
+  annotations: {}
+  image: jaegertracing/jaeger-cassandra-schema
+  tag: 0.8
+  pullPolicy: IfNotPresent
+  # Acceptable values are test and prod. Default is for production use.
+  mode: prod
+  resources: {}
+    # limits:
+    #   cpu: 500m
+    #   memory: 512Mi
+    # requests:
+    #   cpu: 256m
+    #   memory: 128Mi
+  ## Additional pod labels
+  ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+  podLabels: {}
+agent:
+  annotations: {}
+  image: jaegertracing/jaeger-agent
+  tag: 0.8
+  pullPolicy: IfNotPresent
+  cmdlineParams: {}
+  service:
+    annotations: {}
+    # zipkinThriftPort :accept zipkin.thrift over compact thrift protocol
+    zipkinThriftPort: 5775
+    # compactPort: accept jaeger.thrift over compact thrift protocol
+    compactPort: 6831
+    # binaryPort: accept jaeger.thrift over binary thrift protocol
+    binaryPort: 6832
+  resources: {}
+    # limits:
+    #   cpu: 500m
+    #   memory: 512Mi
+    # requests:
+    #   cpu: 256m
+    #   memory: 128Mi
+  nodeSelector: {}
+  ## Additional pod labels
+  ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+  podLabels: {}
+collector:
+  annotations: {}
+  image: jaegertracing/jaeger-collector
+  tag: 0.8
+  pullPolicy: IfNotPresent
+  dnsPolicy: ClusterFirst
+  cmdlineParams: {}
+  service:
+    annotations: {}
+    type: ClusterIP
+    # tchannelPort: used by jaeger-agent to send spans in jaeger.thrift format
+    tchannelPort: 14267
+    # httpPort: can accept spans directly from clients in jaeger.thrift format
+    httpPort: 14268
+    # can accept Zipkin spans in JSON or Thrift
+    zipkinPort: 9411
+  resources: {}
+    # limits:
+    #   cpu: 500m
+    #   memory: 512Mi
+    # requests:
+    #   cpu: 1024m
+    #   memory: 1024Mi
+  nodeSelector: {}
+  ## Additional pod labels
+  ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+  podLabels: {}
+query:
+  annotations: {}
+  image: jaegertracing/jaeger-query
+  tag: 0.8
+  pullPolicy: IfNotPresent
+  dnsPolicy: ClusterFirst
+  cmdlineParams: {}
+  service:
+    annotations: {}
+    type: NodePort
+    # queryPort: externally accessible port for UI and API
+    queryPort: 80
+    # targetPort: the internal port the UI and API are exposed on
+    targetPort: 16686
+  resources: {}
+    # limits:
+    #   cpu: 500m
+    #   memory: 512Mi
+    # requests:
+    #    cpu: 256m
+    #    memory: 128Mi
+  nodeSelector: {}
+  ## Additional pod labels
+  ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+  podLabels: {}
+# End: Default values for the various components of Jaeger
+
+ingress:
+  enabled: false
+  # Used to create an Ingress record.
+  # hosts:
+  #   - chart-example.local
+  # annotations:
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  # tls:
+    # Secrets must be manually created in the namespace.
+    # - secretName: chart-example-tls
+    #   hosts:
+    #     - chart-example.local

@@ -1,0 +1,14 @@
+version: 2
+jobs:
+   build:
+     docker:
+       # TODO: Update to 3.6.3 when the image become available
+       - image: circleci/python:3.6.2
+     steps:
+       - checkout
+       - run:
+           name: install tools
+           command: test/circle/install.sh
+       - run: 
+           name: lint
+           command: test/circle/lint.sh

@@ -1,0 +1,66 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "voyager.fullname" . }}
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app: "{{ template "voyager.name" . }}"
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: "{{ template "voyager.name" . }}"
+        release: "{{ .Release.Name }}"
+{{- if and .Values.criticalAddon (eq .Release.Namespace "kube-system") }}
+      annotations:
+        scheduler.alpha.kubernetes.io/critical-pod: ''
+{{- end }}
+    spec:
+      serviceAccountName: {{ if .Values.rbac.create }}{{ template "voyager.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
+      containers:
+      - name: operator
+        image: {{ .Values.operator.image }}:{{ .Values.operator.imageTag }}
+        imagePullPolicy: {{ .Values.imagePullPolicy  }}
+        {{- if .Values.imagePullSecrets }}
+        imagePullSecrets:
+{{ toYaml .Values.imagePullSecrets | indent 8 }}
+        {{- end }}
+        args:
+        - run
+        - --cloud-provider={{ .Values.cloudProvider }}
+        - --cloud-config={{ .Values.cloudConfig }}
+        - --v={{ .Values.logLevel }}
+        - --rbac={{ .Values.rbac.create }}
+        - --ingress-class={{ .Values.ingressClass }}
+        - --operator-service={{ template "voyager.fullname" . }}
+        - --haproxy-image={{ .Values.haproxy.image }}:{{ .Values.haproxy.imageTag }}
+        - --exporter-sidecar-image={{ .Values.exporter.image }}:{{ .Values.exporter.imageTag }}
+        ports:
+        - containerPort: 56790
+          name: ops
+          protocol: TCP
+        - containerPort: 56791
+          name: acme
+          protocol: TCP
+{{- if .Values.persistence.enabled }}
+        volumeMounts:
+          - mountPath: {{ dir .Values.cloudConfig | quote }}
+            name: cloudconfig
+            readOnly: true
+      volumes:
+        - hostPath:
+            path: {{ .Values.persistence.hostPath | quote }}
+          name: cloudconfig
+{{- end -}}
+{{- if and .Values.criticalAddon (eq .Release.Namespace "kube-system") }}
+      tolerations:
+      - key: "CriticalAddonsOnly"
+        operator: "Exists"
+{{- end -}}
+{{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+{{- end -}}

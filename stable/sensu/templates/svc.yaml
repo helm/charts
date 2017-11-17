@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "sensu.fullname" . }}
   labels:
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
@@ -10,11 +10,11 @@ metadata:
     router.deis.io/routable: "true"
   annotations:
     router.deis.io/domains: {{ .Values.deis.domains | quote }}
-  {{end}}
+  {{ end }}
 spec:
-  type: {{.Values.serviceType }}
+  type: {{ .Values.serviceType }}
   ports:
   - port: {{ .Values.httpPort }}
     targetPort: 4567
   selector:
-    app: {{ template "fullname" . }}
+    app: {{ template "sensu.fullname" . }}

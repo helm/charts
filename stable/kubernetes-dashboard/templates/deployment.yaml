@@ -1,0 +1,49 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "kubernetes-dashboard.fullname" . }}
+  labels:
+    app: {{ template "kubernetes-dashboard.name" . }}
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    kubernetes.io/cluster-service: "true"
+spec:
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: {{ template "kubernetes-dashboard.name" . }}
+        heritage: "{{ .Release.Service }}"
+        release: "{{ .Release.Name }}"
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        kubernetes.io/cluster-service: "true"
+    spec:
+      serviceAccountName: {{ if .Values.rbac.create }}{{ template "kubernetes-dashboard.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 10 }}
+      containers:
+      - name: main
+        image: "{{ .Values.image }}:{{ .Values.imageTag }}"
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /
+            port: 9090
+            scheme: HTTP
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 30
+        ports:
+        - name: http
+          containerPort: 9090
+          protocol: TCP

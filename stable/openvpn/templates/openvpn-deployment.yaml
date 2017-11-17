@@ -1,22 +1,23 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "openvpn.fullname" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
-    heritage: {{.Release.Service | quote }}
-    release: {{.Release.Name | quote }}
-    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
 
 spec:
   replicas: {{ .Values.replicaCount }}
   template:
     metadata:
       labels:
-        app: {{ template "fullname" . }}
+        app: {{ template "openvpn.fullname" . }}
         type: openvpn
-        heritage: {{.Release.Service | quote }}
-        release: {{.Release.Name | quote }}
-        chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+        heritage: {{ .Release.Service | quote }}
+        release: {{ .Release.Name | quote }}
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     spec:
       containers:
       - name: {{ .Chart.Name }}
@@ -32,11 +33,11 @@ spec:
               - NET_ADMIN
         resources:
           requests:
-            cpu: "{{.Values.resources.requests.cpu}}"
-            memory: "{{.Values.resources.requests.memory}}"
+            cpu: "{{ .Values.resources.requests.cpu }}"
+            memory: "{{ .Values.resources.requests.memory }}"
           limits:
-            cpu: "{{.Values.resources.limits.cpu}}"
-            memory: "{{.Values.resources.limits.memory}}"
+            cpu: "{{ .Values.resources.limits.cpu }}"
+            memory: "{{ .Values.resources.limits.memory }}"
         volumeMounts:
           - mountPath: /etc/openvpn/setup
             name: openvpn
@@ -47,12 +48,12 @@ spec:
       volumes:
       - name: openvpn
         configMap:
-          name: {{ template "fullname" . }}
+          name: {{ template "openvpn.fullname" . }}
           defaultMode: 0775
       - name: certs
         {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ template "fullname" . }}
+          claimName: {{ template "openvpn.fullname" . }}
         {{- else }}
-          emptyDir: {}
+        emptyDir: {}
         {{- end -}}

@@ -1,9 +1,9 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "odoo.fullname" . }}
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "odoo.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -11,28 +11,28 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "fullname" . }}
+        app: {{ template "odoo.fullname" . }}
     spec:
       containers:
-      - name: {{ template "fullname" . }}
+      - name: {{ template "odoo.fullname" . }}
         image: "{{ .Values.image }}"
         imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
         env:
         - name: POSTGRESQL_HOST
-          value: {{ template "postgresql.fullname" . }}
-        - name: POSTGRESQL_PORT
+          value: {{ template "odoo.postgresql.fullname" . }}
+        - name: POSTGRESQL_PORT_NUMBER
           value: "5432"
         - name: POSTGRESQL_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "postgresql.fullname" . }}
+              name: {{ template "odoo.postgresql.fullname" . }}
               key: postgres-password
         - name: ODOO_EMAIL
           value: {{ default "" .Values.odooEmail | quote }}
         - name: ODOO_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "odoo.fullname" . }}
               key: odoo-password
         - name: SMTP_HOST
           value: {{ default "" .Values.smtpHost | quote }}
@@ -43,7 +43,7 @@ spec:
         - name: SMTP_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "odoo.fullname" . }}
               key: smtp-password
         - name: SMTP_PROTOCOL
           value: {{ default "" .Values.smtpProtocol | quote }}
@@ -71,7 +71,7 @@ spec:
       - name: odoo-data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ template "fullname" . }}
+          claimName: {{ template "odoo.fullname" . }}
       {{- else }}
         emptyDir: {}
       {{- end }}

@@ -1,6 +1,9 @@
 name: prestashop
-version: 0.4.9
-description: A popular open source ecommerce solution. Professional tools are easily accessible to increase online sales including instant guest checkout, abandoned cart reminders and automated Email marketing.
+version: 0.5.2
+appVersion: 1.7.2
+description: A popular open source ecommerce solution. Professional tools are easily
+  accessible to increase online sales including instant guest checkout, abandoned
+  cart reminders and automated Email marketing.
 keywords:
 - prestashop
 - e-commerce
@@ -11,7 +14,7 @@ home: https://prestashop.com/
 sources:
 - https://github.com/bitnami/bitnami-docker-prestashop
 maintainers:
-- name: Bitnami
+- name: bitnami-bot
   email: containers@bitnami.com
 engine: gotpl
 icon: https://bitnami.com/assets/stacks/prestashop/img/prestashop-stack-110x117.png

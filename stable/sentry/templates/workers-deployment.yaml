@@ -1,0 +1,66 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}-worker
+  labels:
+    app: {{ template "fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  replicas: {{ .Values.worker.replicacount }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "fullname" . }}
+        release: "{{ .Release.Name }}"
+        role: worker
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}-workers
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        args: ["run", "worker"]
+        ports:
+        - containerPort: {{ .Values.service.internalPort }}
+        env:
+        - name: SENTRY_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "fullname" . }}
+              key: sentry-secret
+        - name: SENTRY_DB_USER
+          value: {{ default "sentry" .Values.postgresUser | quote }}
+        - name: SENTRY_DB_NAME
+          value: {{ default "sentry" .Values.postgresDatabase | quote }}
+        - name: SENTRY_DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "postgresql.fullname" . }}
+              key: postgres-password
+        - name: SENTRY_POSTGRES_HOST
+          value: {{ template "postgresql.fullname" . }}
+        - name: SENTRY_POSTGRES_PORT
+          value: "5432"
+        - name: SENTRY_REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "redis.fullname" . }}
+              key: redis-password
+        - name: SENTRY_REDIS_HOST
+          value: {{ template "redis.fullname" . }}
+        - name: SENTRY_REDIS_PORT
+          value: "6379"
+        - name: SENTRY_EMAIL_HOST
+          value: {{ default "" .Values.email.host | quote }}
+        - name: SENTRY_EMAIL_PORT
+          value: {{ default "" .Values.email.port | quote }}
+        - name: SENTRY_EMAIL_USER
+          value: {{ default "" .Values.email.user | quote }}
+        - name: SENTRY_EMAIL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "fullname" . }}
+              key: smtp-password
+        resources:
+{{ toYaml .Values.worker.resources | indent 12 }}

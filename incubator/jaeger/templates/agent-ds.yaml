@@ -1,0 +1,48 @@
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: "{{ template "jaeger.fullname" . }}-agent"
+  labels:
+    app: "{{ template "jaeger.name" . }}"
+    jaeger-infra: agent-daemonset
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    component: "agent"
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+{{- if .Values.agent.annotations }}
+  annotations:
+{{ toYaml .Values.agent.annotations | indent 6 }}
+{{- end }}
+spec:
+  template:
+    metadata:
+      labels:
+        app: "{{ template "jaeger.name" . }}"
+        component: "agent"
+        release: "{{ .Release.Name }}"
+        jaeger-infra: agent-instance
+{{- if .Values.agent.podLabels }}
+{{ toYaml .Values.agent.podLabels | indent 8 }}
+{{- end }}
+    spec:
+      nodeSelector:
+{{ toYaml .Values.agent.nodeSelector | indent 8 }}
+      containers:
+      - name: "{{ template "jaeger.fullname" . }}-agent"
+        image: "{{ .Values.agent.image }}:{{ .Values.agent.tag }}"
+        imagePullPolicy: {{ .Values.agent.pullPolicy }}
+        command:
+        - "/go/bin/agent-linux"
+        - "--collector.host-port={{ template "jaeger.fullname" . }}-collector:{{ .Values.collector.service.tchannelPort }}"
+{{- range $key, $value := .Values.agent.cmdlineParams }}
+        - "{{ $value }}"
+{{- end }}
+        ports:
+        - containerPort: {{ .Values.agent.service.zipkinThriftPort }}
+          protocol: UDP
+        - containerPort: {{ .Values.agent.service.compactPort }}
+          protocol: UDP
+        - containerPort: {{ .Values.agent.service.binaryPort }}
+          protocol: UDP
+        resources:
+{{ toYaml .Values.agent.resources | indent 10 }}

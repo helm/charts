@@ -10,20 +10,26 @@ image:
 ## ref: http://kubernetes.io/docs/user-guide/services/
 ##
 service:
+  ## Add annotations to service
+  # annotations: {}
   type: ClusterIP
 
-## Persist data to a persitent volume
+## Persist data to a persistent volume
 ##
 persistence:
   enabled: false
   ## If true will use an existing PVC instead of creating one
   # useExisting: false
   ## Name of existing PVC to be used in the influx deployment
-  # name: 
-  ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
-  ## Default: volume.alpha.kubernetes.io/storage-class: default
+  # name:
+  ## influxdb data Persistent Volume Storage Class
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
   ##
-  # storageClass:
+  # storageClass: "-"
   accessMode: ReadWriteOnce
   size: 8Gi
 

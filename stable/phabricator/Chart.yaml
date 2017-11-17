@@ -1,5 +1,6 @@
 name: phabricator
-version: 0.4.8
+version: 0.5.0
+appVersion: 2017.45.0
 description: Collection of open source web applications that help software companies build better software.
 keywords:
 - phabricator
@@ -19,7 +20,7 @@ home: https://www.phacility.com/phabricator/
 sources:
 - https://github.com/bitnami/bitnami-docker-phabricator
 maintainers:
-- name: Bitnami
+- name: bitnami-bot
   email: containers@bitnami.com
 engine: gotpl
 icon: https://bitnami.com/assets/stacks/phabricator/img/phabricator-stack-110x117.png

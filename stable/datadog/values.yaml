@@ -12,6 +12,30 @@ image:
 # get guaranteed delivery of the metrics in Datadog-per-namespace setup!
 daemonset:
   enabled: true
+  ## Bind ports on the hostNetwork. Useful for CNI networking where hostPort might
+  ## not be supported. The ports will need to be available on all hosts. Can be
+  ## used for custom metrics instead of a service endpoint.
+  ## WARNING: Make sure that hosts using this are properly firewalled otherwise
+  ## metrics and traces will be accepted from any host able to connect to this host.
+  # useHostNetwork: true
+
+  ## Sets the hostPort to the same value of the container port. Can be used as
+  ## for sending custom metrics. The ports will need to be available on all
+  ## hosts.
+  ## WARNING: Make sure that hosts using this are properly firewalled otherwise
+  ## metrics and traces will be accepted from any host able to connect to this host.
+  # useHostPort: true
+
+  ## Annotations to add to the DaemonSet's Pods
+  # podAnnotations:
+  #   scheduler.alpha.kubernetes.io/tolerations: '[{"key": "example", "value": "foo"}]'
+
+  ## Allow the DaemonSet to schedule on tainted nodes (requires Kubernetes >= 1.6)
+  # tolerations: []
+
+  ## Allow the DaemonSet to perform a rolling update on helm update
+  ## ref: https://kubernetes.io/docs/tasks/manage-daemon/update-daemon-set/
+  # updateStrategy: RollingUpdate
 
 # Apart from DaemonSet, deploy Datadog agent pods and related service for
 # applications that want to send custom metrics. Provides DogStasD service.
@@ -21,11 +45,20 @@ deployment:
   enabled: false
   replicas: 1
 
+## deploy the kube-state-metrics deployment
+## ref: https://github.com/kubernetes/charts/tree/master/stable/kube-state-metrics
+##
+kubeStateMetrics.enabled: true
+
 datadog:
   ## You'll need to set this to your Datadog API key before the agent will run.
   ## ref: https://app.datadoghq.com/account/settings#agent/kubernetes
   ##
   # apiKey:
+
+  ## dd-agent container name
+  ##
+  name: dd-agent
 
   ## Set logging verbosity.
   ## ref: https://github.com/DataDog/docker-dd-agent#environment-variables
@@ -59,18 +92,31 @@ datadog:
   #   - name:
   #     value:
 
+  ## The dd-agent supports detailed process and container monitoring and
+  ## requires control over the volume and volumeMounts for the daemonset
+  ## or deployment.
+  ## ref: https://docs.datadoghq.com/guides/process/
+  ##
+  # volume:
+  #  - hostPath:
+  #      path: /etc/passwd
+  #    name: passwd
+  # volumeMount:
+  #   - name: passwd
+  #     mountPath: /etc/passwd
+  #     readOnly: true
+
   ## Provide additonal service definitions
   ## Each key will become a file in /conf.d/auto_conf
   ## ref: https://github.com/DataDog/docker-dd-agent#configuration-files
   ##
-  # autoconf:
-  #   redisdb.yaml: |-
-  #     docker_images:
-  #       - redis
-  #     init_config:
-  #     instances:
-  #       - host: "%%host%%"
-  #         port: "%%port%%"
+  autoconf:
+    kubernetes_state.yaml: |-
+      docker_images:
+        - kube-state-metrics
+      init_config:
+      instances:
+        - kube_state_url: http://%%host%%:%%port%%/metrics
 
   ## Provide additonal service definitions
   ## Each key will become a file in /conf.d
@@ -90,10 +136,13 @@ datadog:
   # checksd:
   #   service.py: |-
 
-resources:
-  requests:
-    cpu: 100m
-    memory: 128Mi
-  limits:
-    cpu: 256m
-    memory: 512Mi
+  ## dd-agent resource requests and limits
+  ## Ref: http://kubernetes.io/docs/user-guide/compute-resources/
+  ##
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 256m
+      memory: 512Mi

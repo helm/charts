@@ -1,0 +1,31 @@
+{{- if .Values.ingress.enabled -}}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ template "rocketchat.fullname" . }}
+  labels:
+    app: {{ template "rocketchat.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+  annotations:
+{{ toYaml .Values.ingress.annotations | indent 4 }}
+{{- if .Values.ingress.tls }}
+    kubernetes.io/tls-acme: "true"
+{{- end }}
+spec:
+{{- if .Values.ingress.tls }}
+  tls:
+  - hosts:
+    - {{ .Values.host }}
+    secretName: {{ template "rocketchat.fullname" . }}-tls
+{{- end }}
+  rules:
+  - host: {{ .Values.host }}
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: {{ template "rocketchat.fullname" . }}
+          servicePort: 3000
+{{- end -}}

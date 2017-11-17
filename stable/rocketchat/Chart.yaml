@@ -1,0 +1,23 @@
+name: rocketchat
+version: 0.1.0
+description: Prepare to take off with the ultimate chat platform, experience the next
+  level of team communications
+keywords:
+- chat
+- communication
+- http
+- web
+- application
+- nodejs
+- javascript
+- meteor
+home: https://rocket.chat/
+icon: https://cdn-www.rocket.chat/images/logo/logo.svg
+sources:
+- https://github.com/RocketChat/Docker.Official.Image/
+maintainers:
+- name: RocketChat
+  email: buildmaster@rocket.chat
+- name: geekgonecrazy
+- name: pierreozoux
+engine: gotpl

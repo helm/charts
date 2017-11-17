@@ -3,18 +3,18 @@
 This image is using Fabric8's great [kubernetes discovery
 plugin](https://github.com/fabric8io/elasticsearch-cloud-kubernetes) for
 elasticsearch and their
-[image](https://hub.docker.com/r/fabric8/elasticsearch-k8s/) as parent.
+[image](https://hub.docker.com/r/jetstack/elasticsearch-pet/) as parent.
 
 ## Prerequisites Details
 
-* Kubernetes 1.3 with alpha APIs enabled
+* Kubernetes 1.6+
 * PV dynamic provisioning support on the underlying infrastructure
 
-## PetSet Details
-* http://kubernetes.io/docs/user-guide/petset/
+## StatefulSets Details
+* https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/
 
-## PetSet Caveats
-* http://kubernetes.io/docs/user-guide/petset/#alpha-limitations
+## StatefulSets Caveats
+* https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#limitations
 
 ## Todo
 
@@ -25,9 +25,9 @@ elasticsearch and their
 ## Chart Details
 This chart will do the following:
 
-* Implemented a dynamically scalable elasticsearch cluster using Kubernetes PetSets/Deployments
-* Multi-role deployment: master, client and data nodes
-* PetSet Supports scaling down without degrading the cluster 
+* Implemented a dynamically scalable elasticsearch cluster using Kubernetes StatefulSets/Deployments
+* Multi-role deployment: master, client (coordinating) and data nodes
+* Statefulset Supports scaling down without degrading the cluster
 
 ## Installing the Chart
 
@@ -40,44 +40,57 @@ $ helm install --name my-release incubator/elasticsearch
 
 ## Deleting the Charts
 
-Deletion of the PetSet doesn't cascade to deleting associated Pods and PVCs. To delete them:
+Delete the Helm deployment as normal
 
 ```
-$ kubectl delete pods -l release=my-release,type=data
-$ kubectl delete pvcs -l release=my-release,type=data
+$ helm delete my-release
+```
+
+Deletion of the StatefulSet doesn't cascade to deleting associated PVCs. To delete them:
+
+```
+$ kubectl delete pvc -l release=my-release,component=data
 ```
 
 ## Configuration
 
 The following tables lists the configurable parameters of the elasticsearch chart and their default values.
 
-|         Parameter         |           Description             |                         Default                          |
-|---------------------------|-----------------------------------|----------------------------------------------------------|
-| `Image`                   | Container image name              | `jetstack/elasticsearch-pet`                             |
-| `ImageTag`                | Container image tag               | `2.3.4`                                                  |
-| `ImagePullPolicy`         | Container pull policy             | `Always`                                                 |
-| `ClientReplicas`          | Client node replicas (deployment) | `2`                                                      |
-| `ClientCpuRequests`       | Client node requested cpu         | `25m`                                                    |
-| `ClientMemoryRequests`    | Client node requested memory      | `256Mi`                                                  |
-| `ClientCpuLimits`         | Client node requested cpu         | `100m`                                                   |
-| `ClientMemoryLimits`      | Client node requested memory      | `512Mi`                                                  |
-| `ClientHeapSize`          | Client node heap size             | `128m`                                                   |
-| `MasterReplicas`          | Master node replicas (deployment) | `2`                                                      |
-| `MasterCpuRequests`       | Master node requested cpu         | `25m`                                                    |
-| `MasterMemoryRequests`    | Master node requested memory      | `256Mi`                                                  |
-| `MasterCpuLimits`         | Master node requested cpu         | `100m`                                                   |
-| `MasterMemoryLimits`      | Master node requested memory      | `512Mi`                                                  |
-| `MasterHeapSize`          | Master node heap size             | `128m`                                                   |
-| `DataReplicas`            | Data node replicas (petset)       | `3`                                                      |
-| `DataCpuRequests`         | Data node requested cpu           | `250m`                                                   |
-| `DataMemoryRequests`      | Data node requested memory        | `2Gi`                                                    |
-| `DataCpuLimits`           | Data node requested cpu           | `1`                                                      |
-| `DataMemoryLimits`        | Data node requested memory        | `4Gi`                                                    |
-| `DataHeapSize`            | Data node heap size               | `1536m`                                                  |
-| `DataStorage`             | Data persistent volume size       | `30Gi`                                                   |
-| `DataStorageClass`        | Data persistent volume Class      | `anything`                                               |
-| `DataStorageClassVersion` | Version of StorageClass           | `alpha`                                                  |
-| `Component`               | Selector Key                      | `elasticsearch`                                          |
+|              Parameter               |                             Description                             |               Default                |
+| ------------------------------------ | ------------------------------------------------------------------- | ------------------------------------ |
+| `appVersion`                         | Application Version (Elasticsearch)                                 | `5.4`                                |
+| `image.repository`                   | Container image name                                                | `centerforopenscience/elasticsearch` |
+| `image.tag`                          | Container image tag                                                 | `5.4`                                |
+| `image.pullPolicy`                   | Container pull policy                                               | `Always`                             |
+| `cluster.name`                       | Cluster name                                                        | `elasticsearch`                      |
+| `cluster.config`                     | Additional cluster config appended                                  | `{}`                                 |
+| `cluster.env`                        | Cluster environment variables                                       | `{}`                                 |
+| `client.name`                        | Client component name                                               | `client`                             |
+| `client.replicas`                    | Client node replicas (deployment)                                   | `2`                                  |
+| `client.resources`                   | Client node resources requests & limits                             | `{} - cpu limit must be an integer`  |
+| `client.heapSize`                    | Client node heap size                                               | `512m`                               |
+| `client.serviceType`                 | Client service type                                                 | `ClusterIP`                          |
+| `master.name`                        | Master component name                                               | `master`                             |
+| `master.replicas`                    | Master node replicas (deployment)                                   | `2`                                  |
+| `master.resources`                   | Master node resources requests & limits                             | `{} - cpu limit must be an integer`  |
+| `master.heapSize`                    | Master node heap size                                               | `512m`                               |
+| `master.name`                        | Master component name                                               | `master`                             |
+| `master.persistence.enabled`         | Master persistent enabled/disabled                                  | `true`                               |
+| `master.persistence.name`            | Master statefulset PVC template name                                | `data`                               |
+| `master.persistence.size`            | Master persistent volume size                                       | `4Gi`                                |
+| `master.persistence.storageClass`    | Master persistent volume Class                                      | `nil`                                |
+| `master.persistence.accessMode`      | Master persistent Access Mode                                       | `ReadWriteOnce`                      |
+| `data.replicas`                      | Data node replicas (statefulset)                                    | `3`                                  |
+| `data.resources`                     | Data node resources requests & limits                               | `{} - cpu limit must be an integer`  |
+| `data.heapSize`                      | Data node heap size                                                 | `1536m`                              |
+| `data.persistence.enabled`           | Data persistent enabled/disabled                                    | `true`                               |
+| `data.persistence.name`              | Data statefulset PVC template name                                  | `data`                               |
+| `data.persistence.size`              | Data persistent volume size                                         | `30Gi`                               |
+| `data.persistence.storageClass`      | Data persistent volume Class                                        | `nil`                                |
+| `data.persistence.accessMode`        | Data persistent Access Mode                                         | `ReadWriteOnce`                      |
+| `data.terminationGracePeriodSeconds` | Data termination grace period (seconds)                             | `3600`                               |
+| `data.antiAffinity`                  | Data anti-affinity policy                                           | `soft`                               |
+| `rbac.create`                        | Create service account and ClusterRoleBinding for Kubernetes plugin | `false`                              |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
@@ -85,13 +98,27 @@ In terms of Memory resources you should make sure that you follow that equation:
 
 - `${role}HeapSize < ${role}MemoryRequests < ${role}MemoryLimits`
 
+The YAML value of cluster.config is appended to elasticsearch.yml file for additional customization ("script.inline: on" for example to allow inline scripting)
+
 # Deep dive
+
+## Application Version
+
+This chart aims to support Elasticsearch v2 and v5 deployments by specifying the `values.yaml` parameter `appVersion`.
+
+### Version Specific Features
+
+* Memory Locking *(variable renamed)*
+* Ingest Node *(v5)*
+* X-Pack Plugin *(v5)*
+
+Upgrade paths & more info: https://www.elastic.co/guide/en/elasticsearch/reference/current/setup-upgrade.html
 
 ## Mlocking
 
 This is a limitation in kubernetes right now. There is no way to raise the
 limits of lockable memory, so that these memory areas won't be swapped. This
-would degrade performance heaviliy. The issue is tracked in
+would degrade performance heavily. The issue is tracked in
 [kubernetes/#3595](https://github.com/kubernetes/kubernetes/issues/3595).
 
 ```
@@ -100,9 +127,26 @@ would degrade performance heaviliy. The issue is tracked in
 [WARN ][bootstrap] Increase RLIMIT_MEMLOCK, soft limit: 65536, hard limit: 65536
 ```
 
+## Minimum Master Nodes
+> The minimum_master_nodes setting is extremely important to the stability of your cluster. This setting helps prevent split brains, the existence of two masters in a single cluster.
+
+>When you have a split brain, your cluster is at danger of losing data. Because the master is considered the supreme ruler of the cluster, it decides when new indices can be created, how shards are moved, and so forth. If you have two masters, data integrity becomes perilous, since you have two nodes that think they are in charge.
+
+>This setting tells Elasticsearch to not elect a master unless there are enough master-eligible nodes available. Only then will an election take place.
+
+>This setting should always be configured to a quorum (majority) of your master-eligible nodes. A quorum is (number of master-eligible nodes / 2) + 1
+
+More info: https://www.elastic.co/guide/en/elasticsearch/guide/1.x/_important_configuration_changes.html#_minimum_master_nodes
+
+# Client and Coordinating Nodes
+
+Elasticsearch v5 terminology has updated, and now refers to a `Client Node` as a `Coordinating Node`.
+
+More info: https://www.elastic.co/guide/en/elasticsearch/reference/5.5/modules-node.html#coordinating-node
+
 ## Select right storage class for SSD volumes
 
-### GCE + Kubernetes 1.4
+### GCE + Kubernetes 1.5
 
 Create StorageClass for SSD-PD
 
@@ -117,9 +161,8 @@ parameters:
   type: pd-ssd
 EOF
 ```
-Create cluster with Storage class `ssd` on Kubernetes 1.4+
+Create cluster with Storage class `ssd` on Kubernetes 1.5+
 
 ```
-$ helm install incubator/elasticsearch --name my-release --set DataStorageClass=ssd,DataStorageClassVersion=beta
-
+$ helm install incubator/elasticsearch --name my-release --set data.storageClass=ssd,data.storage=100Gi
 ```

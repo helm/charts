@@ -1,0 +1,16 @@
+apiVersion: v1
+name: risk-advisor
+description: Risk Advisor add-on module for Kubernetes
+version: 2.0.0
+sources:
+- https://github.com/Prytu/risk-advisor/
+maintainers:
+- name: pposkrobko
+  email: pawel.poskrobko@icloud.com
+- name: Prytu
+  email: mich.pryt@gmail.com
+- name: GraczykowskiMichal
+  email: graczykowskimichal@gmail.com
+- name: jackmax
+  email: jacek.maksymowicz@student.uw.edu.pl
+icon: https://raw.githubusercontent.com/Prytu/risk-advisor/master/logo.svg

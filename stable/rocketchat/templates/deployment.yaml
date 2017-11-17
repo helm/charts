@@ -1,0 +1,73 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "rocketchat.fullname" . }}
+  labels:
+    app: {{ template "rocketchat.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: {{ template "rocketchat.name" . }}
+        release: "{{ .Release.Name }}"
+    spec:
+      containers:
+      - name: {{ template "rocketchat.fullname" . }}
+        image: "{{ .Values.image }}"
+        imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
+        env:
+        - name: DEPLOY_PLATFORM
+          value: helm-chart
+        - name: INSTANCE_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        - name: MONGO_URL
+        {{ if .Values.mongodb.mongodbUsername }}
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "rocketchat.fullname" . }}
+              key: mongo-uri
+        {{ else }}
+          value: mongodb://{{ template "rocketchat.mongodb.fullname" . }}:27017/rocketchat
+        {{ end }}
+        {{ if .Values.host }}
+        - name: ROOT_URL
+          value: https://{{ .Values.host }}
+        {{ end }}
+        - name: MAIL_URL
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "rocketchat.fullname" . }}
+              key: mail-url
+        {{- range $key, $value :=  .Values.config }}
+        - name: {{ $key }}
+          value: {{ $value | quote }}
+        {{- end }}
+        ports:
+        - name: http
+          containerPort: 3000
+        livenessProbe:
+          httpGet:
+            path: /
+            port: http
+          initialDelaySeconds: 20
+          timeoutSeconds: 5
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+        volumeMounts:
+        - name: rocket-data
+          mountPath: /app/uploads
+      volumes:
+      - name: rocket-data
+      {{- if .Values.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ template "rocketchat.fullname" . }}
+      {{- else }}
+        emptyDir: {}
+      {{- end }}
+

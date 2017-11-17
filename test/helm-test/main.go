@@ -108,8 +108,8 @@ var (
 	TEST_FAILURE_CODE         = 2
 
 	// File path constants
-	whiteListYamlPath = "/src/k8s.io/charts/test/helm-test/whitelist.yaml"
-	chartsBasePath    = "/src/k8s.io/charts"
+	chartsBasePath    = path.Join(os.Getenv("GOPATH"), "/src/k8s.io/charts")
+	whiteListYamlPath = path.Join(chartsBasePath, "test/helm-test/whitelist.yaml")
 	helmPath          = "linux-amd64/helm"
 	kubectlPath       = "/workspace/kubernetes/client/bin/kubectl"
 )
@@ -196,7 +196,7 @@ func doMain() int {
 	}
 
 	log.Printf("Charts for Testing: %+v", chartList)
-	defer writeXML("/workspace/_artifacts", time.Now())
+	defer writeXML("/go/src/k8s.io/charts/_artifacts", time.Now())
 	if !terminate.Stop() {
 		<-terminate.C // Drain the value if necessary.
 	}
@@ -230,6 +230,14 @@ func doMain() int {
 		xmlWrap(fmt.Sprintf("Helm Lint %s", path.Base(chartPath)), func() error {
 			_, execErr := output(exec.Command(helmPath, "lint", chartPath))
 			return execErr
+		})
+
+		xmlWrap(fmt.Sprintf("Helm Dep Build %s", path.Base(chartPath)), func() error {
+			o, execErr := output(exec.Command(helmPath, "dep", "build", chartPath))
+			if execErr != nil {
+				return fmt.Errorf("%s Command output: %s", execErr, string(o[:]))
+			}
+			return nil
 		})
 
 		xmlWrap(fmt.Sprintf("Helm Install %s", path.Base(chartPath)), func() error {

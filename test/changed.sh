@@ -18,10 +18,11 @@ set -o nounset
 set -o pipefail
 set -o xtrace
 
-git fetch --tags https://github.com/kubernetes/charts master
+git remote add k8s https://github.com/kubernetes/charts
+git fetch k8s master
 
 NAMESPACE="pr-${PULL_NUMBER}-${BUILD_NUMBER}"
-CHANGED_FOLDERS=`git diff --find-renames --name-only FETCH_HEAD stable/ incubator/ | awk -F/ '{print $1"/"$2}' | uniq`
+CHANGED_FOLDERS=`git diff --find-renames --name-only $(git merge-base k8s/master HEAD) stable/ incubator/ | awk -F/ '{print $1"/"$2}' | uniq`
 CURRENT_RELEASE=""
 
 # Exit early if no charts have changed
@@ -46,7 +47,7 @@ fi
 
 # Install and initialize helm/tiller
 HELM_URL=https://storage.googleapis.com/kubernetes-helm
-HELM_TARBALL=helm-v2.4.2-linux-amd64.tar.gz
+HELM_TARBALL=helm-v2.7.2-linux-amd64.tar.gz
 INCUBATOR_REPO_URL=https://kubernetes-charts-incubator.storage.googleapis.com/
 pushd /opt
   wget -q ${HELM_URL}/${HELM_TARBALL}
@@ -60,18 +61,20 @@ helm repo add incubator ${INCUBATOR_REPO_URL}
 # Iterate over each of the changed charts
 #    Lint, install and delete
 for directory in ${CHANGED_FOLDERS}; do
-  if [ -d $directory ]; then
+  if [ "$directory" == "incubator/common" ]; then
+    continue
+  elif [ -d $directory ]; then
     CHART_NAME=`echo ${directory} | cut -d '/' -f2`
     RELEASE_NAME="${CHART_NAME:0:7}-${BUILD_NUMBER}"
     CURRENT_RELEASE=${RELEASE_NAME}
-    helm lint ${directory}
-    helm dep update ${directory}
+    helm dep build ${directory}
     helm install --timeout 600 --name ${RELEASE_NAME} --namespace ${NAMESPACE} ${directory} | tee install_output
     ./test/verify-release.sh ${NAMESPACE}
     kubectl get pods --namespace ${NAMESPACE}
     kubectl get svc --namespace ${NAMESPACE}
     kubectl get deployments --namespace ${NAMESPACE}
     kubectl get endpoints --namespace ${NAMESPACE}
+    helm test ${RELEASE_NAME}
     if [ -n $VERIFICATION_PAUSE ]; then
       cat install_output
       sleep $VERIFICATION_PAUSE

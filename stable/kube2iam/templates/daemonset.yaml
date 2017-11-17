@@ -2,21 +2,24 @@ apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
   labels:
-    app: {{ template "name" . }}
+    app: {{ template "kube2iam.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-  name: {{ template "fullname" . }}
+  name: {{ template "kube2iam.fullname" . }}
 spec:
   template:
     metadata:
     {{- if .Values.podAnnotations }}
       annotations:
-{{ toYaml .Values.podAnnotations | indent 8}}
+{{ toYaml .Values.podAnnotations | indent 8 }}
     {{- end }}
       labels:
-        app: {{ template "name" . }}
+        app: {{ template "kube2iam.name" . }}
         release: {{ .Release.Name }}
+      {{- if .Values.podLabels }}
+{{ toYaml .Values.podLabels | indent 8 }}
+      {{- end }}
     spec:
       containers:
         - name: kube2iam
@@ -39,6 +42,22 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: status.podIP
+          {{- if and .Values.aws.secret_key .Values.aws.access_key }}
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "kube2iam.fullname" . }}
+                  key: aws_access_key_id
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "kube2iam.fullname" . }}
+                  key: aws_secret_access_key
+          {{- end }}
+          {{- if .Values.aws.region }}
+            - name: AWS_DEFAULT_REGION
+              value: {{ .Values.aws.region }}
+          {{- end }}
           ports:
             - containerPort: 8181
           resources:
@@ -46,9 +65,16 @@ spec:
         {{- if .Values.host.iptables }}
           securityContext:
             privileged: true
-          {{- end }}
+        {{- end }}
       hostNetwork: true
     {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
     {{- end }}
+      serviceAccountName: {{ if .Values.rbac.create }}{{ template "kube2iam.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+{{- if and (eq .Capabilities.KubeVersion.Major "1") (gt .Capabilities.KubeVersion.Minor "5") }}
+  updateStrategy:
+    type: {{ .Values.updateStrategy }}
+{{- end }}

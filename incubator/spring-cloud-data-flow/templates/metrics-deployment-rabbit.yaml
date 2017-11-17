@@ -1,0 +1,55 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "scdf.fullname" . }}-metrics
+  labels:
+    app: {{ template "name" . }}
+    component: metrics
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: {{ template "name" . }}
+        component: metrics
+        release: "{{ .Release.Name }}"
+    spec:
+      containers:
+      - name: {{ template "scdf.fullname" . }}-metrics
+        image: {{ .Values.metrics.image }}:{{ .Values.metrics.version }}
+        imagePullPolicy: {{ .Values.metrics.imagePullPolicy }}
+        ports:
+        - containerPort: {{ .Values.metrics.service.internalPort }}
+        resources:
+{{ toYaml .Values.metrics.resources | indent 10 }}
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: {{ .Values.metrics.service.internalPort }}
+          initialDelaySeconds: 60
+          timeoutSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: {{ .Values.metrics.service.internalPort }}
+          initialDelaySeconds: 30
+          timeoutSeconds: 10
+        env:
+        - name: SERVER_PORT
+          value: '80'
+        - name: SECURITY_BASIC_ENABLED
+          value: 'false'
+        - name: SPRING_RABBITMQ_HOST
+          value: '${{ printf "{%s" .Release.Name | upper }}_RABBITMQ_SERVICE_HOST}'
+        - name: SPRING_RABBITMQ_PORT
+          value: '${{ printf "{%s" .Release.Name | upper }}_RABBITMQ_SERVICE_PORT_AMPQ}'
+        - name: SPRING_RABBITMQ_USERNAME
+          value: '{{ .Values.rabbitmq.rabbitmqUsername }}'
+        - name: SPRING_RABBITMQ_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ printf "%s-%s" .Release.Name "rabbitmq" | trunc 63 | trimSuffix "-" }}
+              key: rabbitmq-password

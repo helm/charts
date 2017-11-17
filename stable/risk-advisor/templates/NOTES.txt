@@ -1,0 +1,14 @@
+The risk advisor has been installed. Risk advisor allows you to make a simulation of adding new pods to the cluster to let you know if and on what node they would be scheduled if it was a real create pod request. It should help operators of huge clusters predict the changes in cluster state. For the purposes of simulation you need to make a request on `/advise` endpoint of risk advisor service with JSON array containing pods definition.
+
+To get the risk advisor service URL, run these commands:
+
+{{- if (not (empty .Values.service.nodePort)) }}
+  export NODE_PORT={{ .Values.service.nodePort }}
+{{- else }}
+  export NODE_PORT=$(kubectl get services -o jsonpath="{.spec.ports[0].nodePort}" {{ template "risk-advisor.fullname" . }})
+{{- end }}
+  export NODE_IP=$(kubectl get nodes -o jsonpath="{.items[0].status.addresses[1].address}")
+  echo "Check how the cluster state would change after adding provided pods to the cluster by sending HTTP POST request to http://$NODE_IP:$NODE_PORT/advise with array of pod definitions"
+  echo "For example, using curl: curl -XPOST http://$NODE_IP:$NODE_PORT/advise -H \"Content-type: application/json\" -d @PODS_ARRAY_JSON_FILE"
+
+It may take a few seconds for risk advisor to respond to the request.

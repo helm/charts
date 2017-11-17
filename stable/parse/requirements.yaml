@@ -1,0 +1,4 @@
+dependencies:
+- name: mongodb
+  version: 0.4.15
+  repository: https://kubernetes-charts.storage.googleapis.com/

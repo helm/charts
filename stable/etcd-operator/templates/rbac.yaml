@@ -1,0 +1,77 @@
+{{ if .Values.rbac.install }}
+{{- $serviceName := include "etcd-operator.fullname" . -}}
+apiVersion: rbac.authorization.k8s.io/{{ required "A valid .Values.rbac.apiVersion entry required!" .Values.rbac.apiVersion }}
+kind: ClusterRole
+metadata:
+  name: {{ $serviceName }}
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app: "{{ template "etcd-operator.fullname" . }}"
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+rules:
+- apiGroups:
+  - etcd.coreos.com
+  resources:
+  - clusters
+  verbs:
+  - "*"
+- apiGroups:
+  - etcd.database.coreos.com
+  resources:
+  - etcdclusters
+  verbs:
+  - "*"
+- apiGroups:
+  - extensions
+  resources:
+  - thirdpartyresources
+  verbs:
+  - "*"
+- apiGroups:
+  - apiextensions.k8s.io
+  resources:
+  - customresourcedefinitions
+  verbs:
+  - "*"
+- apiGroups:
+  - storage.k8s.io
+  resources:
+  - storageclasses
+  verbs:
+  - "*"
+- apiGroups: 
+  - ""
+  resources:
+  - pods
+  - services
+  - endpoints
+  - persistentvolumeclaims
+  - events
+  verbs:
+  - "*"
+- apiGroups:
+  - apps
+  resources:
+  - deployments
+  verbs:
+  - "*"
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/{{ required "A valid .Values.rbac.apiVersion entry required!" .Values.rbac.apiVersion }}
+metadata:
+  name: {{ $serviceName }}
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app: "{{ template "etcd-operator.fullname" . }}"
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+subjects:
+- kind: ServiceAccount
+  name: {{ $serviceName }}
+  namespace: {{ .Release.Namespace }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ $serviceName }}
+{{ end }}

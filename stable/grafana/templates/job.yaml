@@ -34,8 +34,8 @@ spec:
               key: grafana-admin-password
         args:
           - "http://$(ADMIN_USER):$(ADMIN_PASSWORD)@{{ template "grafana.fullname" . }}:{{ .Values.server.httpPort }}/api/datasources"
-          - "-X"
-          - POST
+          - "--max-time"
+          - "10"
           - "-H"
           - "Content-Type: application/json;charset=UTF-8"
           - "--data-binary"

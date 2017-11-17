@@ -12,6 +12,12 @@ image: memcached:1.4.36-alpine
 
 ##Replica count 
 replicaCount: 3
+
+##Pod disruption budget minAvailable count
+pdbMinAvailable: 3
+
+## Select AnitAffinity as either hard or soft, default is hard
+AntiAffinity: "hard"
   
 memcached:
   ## Various values that get set as command-line flags.
@@ -19,6 +25,7 @@ memcached:
   ##
   maxItemMemory: 64
   verbosity: v
+  extendedOptions: modern
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/

@@ -1,16 +1,24 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "heapster.fullname" . }}
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    {{- range $key, $value := .Values.labels }}
+    {{ $key }}: {{ $value }}
+    {{- end }}
 spec:
   replicas: {{ .Values.replicaCount }}
   template:
     metadata:
       labels:
-        app: {{ template "fullname" . }}
+        app: {{ template "heapster.fullname" . }}
     spec:
+      serviceAccountName: {{ if .Values.rbac.create }}{{ template "heapster.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
+{{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+{{- end }}
       containers:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -25,6 +33,10 @@ spec:
           timeoutSeconds: 5
         resources:
 {{ toYaml .Values.resources | indent 12 }}
+      {{- if .Values.env }}
+        env:
+{{ toYaml .Values.env | indent 10 }}
+      {{- end }}
         command:
           {{- range .Values.command }}
           - {{ . | quote }}
@@ -48,7 +60,7 @@ spec:
         {{- end }}
         command:
           - "/pod_nanny"
-          - "--deployment={{ template "fullname" . }}"
+          - "--deployment={{ template "heapster.fullname" . }}"
           - "--container={{ .Chart.Name }}"
           {{- range .Values.resizer.flags }}
           - {{ . | quote }}
