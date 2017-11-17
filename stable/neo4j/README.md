@@ -90,3 +90,24 @@ $ helm install --name neo4j-helm -f values.yaml stable/neo4j
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
+## Persistence
+
+The [neo4j](https://github.com/neo4j/docker-neo4j) image stores the Neo4j data
+at the `/data` path of the container by default.
+
+The chart mounts a
+[Persistent Volume](http://kubernetes.io/docs/user-guide/persistent-volumes/)
+volume at this location. The volume is created using dynamic volume
+provisioning. If the PersistentVolumeClaim should not be managed by the chart,
+define `persistence.existingClaim`.
+
+### Existing PersistentVolumeClaims
+
+1. Create the PersistentVolume
+2. Create the PersistentVolumeClaim
+3. Install the chart
+
+```bash
+$ helm install --set core.persistentVolume.existingClaim=PVC_NAME incubator/neo4j
+```

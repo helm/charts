@@ -1,0 +1,28 @@
+{{- if and .Values.core.persistentVolume.enabled (not .Values.core.persistentVolume.existingClaim) }}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ template "neo4j.core.fullname" . }}
+  labels:
+    app: {{ template "neo4j.core.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+  annotations:
+{{- if .Values.core.persistentVolume.annotations }}
+{{ toYaml .Values.core.persistentVolume.annotations | indent 4 }}
+{{- end }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.core.persistentVolume.size | quote }}
+{{- if .Values.core.persistentVolume.storageClass }}
+{{- if (eq "-" .Values.core.persistentVolume.storageClass) }}
+  storageClassName: ""
+{{- else }}
+  storageClassName: "{{ .Values.core.persistentVolume.storageClass }}"
+{{- end }}
+{{- end }}
+{{- end }}

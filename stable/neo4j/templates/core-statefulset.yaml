@@ -77,7 +77,6 @@ spec:
         - name: datadir
           mountPath: "{{ .Values.core.persistentVolume.mountPath }}"
           subPath: "{{ .Values.core.persistentVolume.subPath }}"
-        volumeMounts:
         - name: plugins
           mountPath: /plugins
         resources:
@@ -92,23 +91,10 @@ spec:
       volumes:
         - name: plugins
           emptyDir: {}
-  volumeClaimTemplates:
-    - metadata:
-        name: datadir
-        annotations:
-        {{- if .Values.core.persistentVolume.annotations }}
-{{ toYaml .Values.core.persistentVolume.annotations | indent 12 }}
+        - name: datadir
+        {{- if .Values.core.persistentVolume.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.core.persistentVolume.existingClaim | default (include "neo4j.core.fullname" .) }}
+        {{- else }}
+          emptyDir: {}
         {{- end }}
-      spec:
-        accessModes:
-          - ReadWriteOnce
-      {{- if .Values.core.persistentVolume.storageClass }}
-      {{- if (eq "-" .Values.core.persistentVolume.storageClass) }}
-        storageClassName: ""
-      {{- else }}
-        storageClassName: "{{ .Values.core.persistentVolume.storageClass }}"
-      {{- end }}
-      {{- end }}
-        resources:
-          requests:
-            storage: "{{ .Values.core.persistentVolume.size }}"
