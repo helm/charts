@@ -26,7 +26,7 @@ Official containers are used wherever possible ( namingly [php](https://hub.dock
 
 ## Prerequisites
 
-- Kubernetes 1.4+ with Beta APIs enabled
+- Kubernetes 1.7+
 - LoadBalancer support or Ingress Controller
 
 ## Installing the Chart
@@ -141,6 +141,10 @@ If `init.clone.release` is set to the fullname of an existing, already running L
 | - | - | - |
 | `init.clone.release` | Fullname of the release to clone | _empty_ |
 | `init.clone.hostPath` | If the release to clone uses hostPath instead of PVC, set it here. This will only work if both releases are deployed on the same node | _empty_ |
+
+### Init Containers Resources
+
+| `init.resources` | init containers resource requests/limits | `resources` |
 
 ### PHP and HTTPD Containers
 

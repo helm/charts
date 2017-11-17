@@ -11,6 +11,8 @@ init:
     tag: latest
     pullPolicy: Always
 
+  resources: false
+
 php:
   version: "7"
   #repository: php
@@ -142,11 +144,14 @@ service:
 
 ingress:
   enabled: false
-  nginx: true
-  ssl: false
   #domain: example.com
-  www_subdomain: false
+  #ssl: false
+  #www_subdomain: false
   #htpasswd_string: "user:$apr1$FfVI2PRr$f9MW8rsr5RmmxbdV0Iipk1"
+
+  annotations:
+    ingress.kubernetes.io/proxy-body-size: "50m"
+    kubernetes.io/ingress.class: nginx
 
 
 ### WORDPRESS ###
