@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: {{ template "lamp.fullname" . }}
   labels:
-    app: {{ template "lamp.fullname" . }}
+    app: {{ template "lamp.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
@@ -12,7 +12,7 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "lamp.fullname" . }}
+        app: {{ template "lamp.name" . }}
         release: {{ .Release.Name }}
     spec:
       initContainers:

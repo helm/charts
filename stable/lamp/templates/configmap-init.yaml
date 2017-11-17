@@ -4,7 +4,7 @@ kind: ConfigMap
 metadata:
   name: {{template "lamp.fullname" .}}-init
   labels:
-    app: {{ template "lamp.fullname" . }}
+    app: {{ template "lamp.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
