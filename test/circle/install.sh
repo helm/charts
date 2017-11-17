@@ -14,7 +14,7 @@
 # limitations under the License.
 
 # Install Helm
-HELM_LATEST_VERSION="v2.6.1"
+HELM_LATEST_VERSION="v2.7.2"
 
 wget http://storage.googleapis.com/kubernetes-helm/helm-${HELM_LATEST_VERSION}-linux-amd64.tar.gz
 tar -xvf helm-${HELM_LATEST_VERSION}-linux-amd64.tar.gz
@@ -25,3 +25,13 @@ rm -rf linux-amd64
 # Install A YAML Linter
 # Pinning to a version for consistency
 sudo pip install yamllint==1.8.1
+
+# Install YAML Command line reader
+wget https://github.com/mikefarah/yaml/releases/download/1.13.1/yaml_linux_amd64
+chmod +x yaml_linux_amd64
+sudo mv yaml_linux_amd64 /usr/local/bin/yaml
+
+# Install SemVer testing tool
+wget https://github.com/Masterminds/vert/releases/download/v0.1.0/vert-v0.1.0-linux-amd64
+chmod +x vert-v0.1.0-linux-amd64
+sudo mv vert-v0.1.0-linux-amd64 /usr/local/bin/vert
