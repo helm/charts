@@ -1,4 +1,4 @@
-{{- if and .Values.ingress.enabled .Values.ingress.www_subdomain }}
+{{- if and .Values.ingress.enabled .Values.ingress.subdomainWWW }}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
@@ -7,7 +7,7 @@ metadata:
     {{- if .Values.ingress.ssl }}
     kubernetes.io/tls-acme: "true"
     {{- end }}
-    {{- if .Values.ingress.htpasswd_string }}
+    {{- if .Values.ingress.htpasswdString }}
     ingress.kubernetes.io/auth-type: basic
     ingress.kubernetes.io/auth-secret: {{ template "fullname" . }}
     ingress.kubernetes.io/auth-realm: "Authenticate"
@@ -30,5 +30,5 @@ spec:
       - path: /
         backend:
           serviceName: {{ template "fullname" . }}
-          servicePort: {{ .Values.service.http_port }}
+          servicePort: {{ .Values.service.HTTPPort }}
 {{- end }}

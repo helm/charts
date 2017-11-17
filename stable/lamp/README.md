@@ -78,7 +78,7 @@ You can specify each of the parameters using the `--set key=value[,key=value]` a
 
 ```console
 $ helm install --name my-release \
-  --set init.clone.release=my-first-release-lamp,php.sockets=false,php.old_http_root=/var/www/my-website.com \
+  --set init.clone.release=my-first-release-lamp,php.sockets=false,php.oldHTTPRoot=/var/www/my-website.com \
     stable/lamp
 ```
 
@@ -149,9 +149,9 @@ If `init.clone.release` is set to the fullname of an existing, already running L
 ### PHP and HTTPD Containers
 
 The PHP container is at the heart of the LAMP chart. By default, the LAMP chart uses the official PHP container from docker hub with PHP version 7.1. You can also use your own PHP container, which needs to have the official PHP container at its base.
-FPM is enabled by default, this creates an additional HTTPD container which routes PHP request via FCGI to the PHP container. Set `php.fpm_enabled` to false to work with the official `php:apache` image.
+FPM is enabled by default, this creates an additional HTTPD container which routes PHP request via FCGI to the PHP container. Set `php.fpmEnabled` to false to work with the official `php:apache` image.
 
-> **Note**: If you are using a custom container, be sure to use the official `php:apache` or `php:fpm` containers at its base and set `php.fpm_enabled` accordingly
+> **Note**: If you are using a custom container, be sure to use the official `php:apache` or `php:fpm` containers at its base and set `php.fpmEnabled` accordingly
 
 | Parameter | Description | Default |
 | - | - | - |
@@ -159,12 +159,12 @@ FPM is enabled by default, this creates an additional HTTPD container which rout
 | `php.repository` | If not empty, repository is chosen over default php repo | _empty_ |
 | `php.tag` | Repository tag | _empty_ |
 | `php.pullPolicy` | Image pull policy | Always |
-| `php.fpm_enabled` | Enables docker FPM repository, be sure to disable if working with a custom repository based on the apache tag | true |
+| `php.fpmEnabled` | Enables docker FPM repository, be sure to disable if working with a custom repository based on the apache tag | true |
 | `php.sockets` | If FPM is enabled, enables communication between HTTPD and PHP via sockets instead of TCP | true |
-| `php.old_http_root` | Additionaly mounts the webroot at `php.old_http_root` to compansate for absolute path file links  | _empty_ |
+| `php.oldHTTPRoot` | Additionaly mounts the webroot at `php.oldHTTPRoot` to compansate for absolute path file links  | _empty_ |
 | `php.ini` | additional PHP config values, see examples on how to use | _empty_ |
-| `php.copy_root` | if true, copies the containers web root `/var/www/html` into persistent storage. This must be enabled, if the container already comes with files installed to `/var/www/html`  | false |
-| `php.persistent_subpaths` | instead of enabling persistence for the whole webroot, only subpaths of webroot can be enabled for persistence. Have a look at the [nextcloud example](examples/nextcloud.yaml) to see how it works | _empty_ |
+| `php.copyRoot` | if true, copies the containers web root `/var/www/html` into persistent storage. This must be enabled, if the container already comes with files installed to `/var/www/html`  | false |
+| `php.persistentSubpaths` | instead of enabling persistence for the whole webroot, only subpaths of webroot can be enabled for persistence. Have a look at the [nextcloud example](examples/nextcloud.yaml) to see how it works | _empty_ |
 | `php.resources` | PHP container resource requests/limits | `resources` |
 | `httpd.resources` | HTTPD container resource requests/limits | `resources` |
 
@@ -174,7 +174,7 @@ The MySQL container is disabled by default, any container with the base image of
 
 | Parameter | Description | Default |
 | - | - | - |
-| `mysql.root_password` | Sets the MySQL root password, enables MySQL service if not empty | _empty_ |
+| `mysql.rootPassword` | Sets the MySQL root password, enables MySQL service if not empty | _empty_ |
 | `mysql.user` | MySQL user | _empty_ |
 | `mysql.password` | MySQL user password | _empty_ |
 | `mysql.database` | MySQL user database | _empty_ |
@@ -219,7 +219,7 @@ If Git is enabled, the contents of the specified repository will be synchronized
 | Parameter | Description | Default |
 | - | - | - |
 | `git.enabled` | Enables Git service | false |
-| `git.repo_url` | Git Repository URL | _empty_ |
+| `git.repoURL` | Git Repository URL | _empty_ |
 | `git.branch` | Repository branch to sync | master |
 | `git.revision` | Revision to sync | FETCH_HEAD |
 | `git.wait` | Time between Git syncs | 30 |
@@ -227,7 +227,7 @@ If Git is enabled, the contents of the specified repository will be synchronized
 
 ### SVN Container
 
-If SVN is enabled, the contents of the specified repository will be synchronized every 30 seconds to the web root. If allow_overwrite is disabled and files already exist in the web folder then it will not create a working clone or sync files.
+If SVN is enabled, the contents of the specified repository will be synchronized every 30 seconds to the web root. If allowOverwrite is disabled and files already exist in the web folder then it will not create a working clone or sync files.
 
 > **Note**: You should not combine SFTP or WebDAV with the SVN container since this might cause confusion if someone edits a file via SFTP just to find out that its changes got reverted by the SVN sync process
 
@@ -236,8 +236,8 @@ If SVN is enabled, the contents of the specified repository will be synchronized
 | `svn.enabled` | Enables svn service | false |
 | `svn.user` | SVN User | _empty_ |
 | `svn.password` | SVN Password | _empty_ |
-| `svn.repo_url` | SVN Repository URL | _empty_ |
-| `svn.allow_overwrite` | if disabled and files already exist in the web folder will not create working clone or sync files | true |
+| `svn.repoURL` | SVN Repository URL | _empty_ |
+| `svn.allowOverwrite` | if disabled and files already exist in the web folder will not create working clone or sync files | true |
 | `svn.resources` | resource requests/limits | `resources` |
 
 ### PHPMyAdmin Container
@@ -286,12 +286,12 @@ If `ingress.enabled` is set to true, the LAMP charts services are made accessibl
 | Parameter | Description | Default |
 | - | - | - |
 | `service.type` | Changes to ClusterIP automatically if ingress enabled | LoadBalancer |
-| `service.http_port` | Port to advertise the main web service in LoadBalancer mode | 80 |
+| `service.HTTPPort` | Port to advertise the main web service in LoadBalancer mode | 80 |
 | `ingress.enabled` | Enables ingress support - working ingress controller necessary | false |
 | `ingress.domain` | domain to advertise the services - A records need to point to ingress controllers IP | _empty_ |
-| `ingress.www_subdomain` | enables www subdomain and 301 redirect from domain | false |
+| `ingress.subdomainWWW` | enables www subdomain and 301 redirect from domain | false |
 | `ingress.ssl` | Enables [lego](https://github.com/jetstack/kube-lego) letsencrypt ssl support - working lego container necessary | false |
-| `ingress.htpasswd_string` | if specified main web service requires authentication. Format: _user:$apr1$F..._ | _empty_ |
+| `ingress.htpasswdString` | if specified main web service requires authentication. Format: _user:$apr1$F..._ | _empty_ |
 | `ingress.annotations` | specify custom ingress annotations such as e.g. `ingress.kubernetes.io/proxy-body-size` |  |
 
 ### Wordpress
@@ -304,15 +304,15 @@ In development mode everything that gets executed in normal mode will also get e
 | Parameter | Description | Default |
 | - | - | - |
 | `wordpress.enabled` | Enables wordpress normal mode | false |
-| `wordpress.gdrive_rtoken` | gdrive rtoken for authentication used for downloading InfiniteWP backup from gdrive | _empty_ |
-| `wordpress.gdrive_folder` | gdrive backup folder - the latest backup inside of the folder where the name includes the string `_full` will be downloaded | `wordpress.domain` |
+| `wordpress.gdriveRToken` | gdrive rtoken for authentication used for downloading InfiniteWP backup from gdrive | _empty_ |
+| `wordpress.gdriveFolder` | gdrive backup folder - the latest backup inside of the folder where the name includes the string `_full` will be downloaded | `wordpress.domain` |
 | `wordpress.domain` | wordpress domain used in dev mode to be search replaced | _empty_ |
 | `wordpress.develop.enabled` | enables develop mode | false |
-| `wordpress.develop.dev_domain` | used to search replace `wordpress.domain` to `fullname of template`.`develop.dev_domain` e.g `mysite-com-lamp.dev.example.com` | _empty_ |
+| `wordpress.develop.devDomain` | used to search replace `wordpress.domain` to `fullname of template`.`develop.devDomain` e.g `mysite-com-lamp.dev.example.com` | _empty_ |
 
 ### Other
 
 | Parameter | Description | Default |
 | - | - | - |
-| `keep_secrets` | Keep secrets after helm delete | false |
+| `keepSecrets` | Keep secrets after helm delete | false |
 | `replicaCount` | > 1 will corrupt your database if one is used. Future releases might enable elastic scaling via galeradb | 1 |

@@ -4,7 +4,7 @@
 # and www.`ingress.domain` pointing to your ingress controllers public IP
 
 mysql:
-  root_password: "Root Password here..."
+  rootPassword: "Root Password here..."
   user: wordpress
   password: "User Password here..."
   database: wordpress
@@ -26,4 +26,4 @@ ingress:
   enabled: true
   ssl: true
   domain: example.com
-  www_subdomain: enabled
+  subdomainWWW: enabled

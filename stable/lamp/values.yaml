@@ -18,13 +18,13 @@ php:
   #repository: php
   #tag: fpm
   pullPolicy: Always
-  fpm_enabled: true
+  fpmEnabled: true
   sockets: true
-  persistent_subpaths: false
+  persistentSubpaths: false
   #- subPath
-  copy_root: false
+  copyRoot: false
 
-  #old_http_root: /var/www/html
+  #oldHTTPRoot: /var/www/html
   #ini: |
   #  short_open_tag=On
 
@@ -41,7 +41,7 @@ httpd:
 
 
 mysql:
-  #root_password
+  #rootPassword
   #user:
   #password:
   #database:
@@ -88,7 +88,7 @@ git:
   revision: FETCH_HEAD
   wait: 30
 
-  #repo_url:
+  #repoURL:
 
   resources: false
   #  requests:
@@ -97,11 +97,11 @@ git:
 
 svn:
   enabled: false
-  allow_overwrite: true
+  allowOverwrite: true
 
   #user:
   #password:
-  #repo_url:
+  #repoURL:
 
   resources: false
   #  requests:
@@ -147,15 +147,15 @@ persistence:
 ### NETWORKING ###
 
 service:
-  http_port: 80
+  HTTPPort: 80
   type: LoadBalancer
 
 ingress:
   enabled: false
   #domain: example.com
   #ssl: false
-  #www_subdomain: false
-  #htpasswd_string: "user:$apr1$FfVI2PRr$f9MW8rsr5RmmxbdV0Iipk1"
+  #subdomainWWW: false
+  #htpasswdString: "user:$apr1$FfVI2PRr$f9MW8rsr5RmmxbdV0Iipk1"
 
   annotations:
     ingress.kubernetes.io/proxy-body-size: "50m"
@@ -167,16 +167,16 @@ ingress:
 wordpress:
   enabled: false
 
-  #gdrive_rtoken:
-  #gdrive_folder: example.com
+  #gdriveRToken:
+  #gdriveFolder: example.com
   #domain: "example.com"
 
   develop:
     enabled: false
-    del_uploads: false
-    #dev_domain: dev.example.com
+    deleteUploads: false
+    #devDomain: dev.example.com
 
 ### OTHER ###
 
-keep_secrets: false
+keepSecrets: false
 replicaCount: 1

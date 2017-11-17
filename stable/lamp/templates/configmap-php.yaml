@@ -1,4 +1,4 @@
-{{- if or .Values.mysql.sockets ( or .Values.php.fpm_enabled .Values.php.ini ) }}
+{{- if or .Values.mysql.sockets ( or .Values.php.fpmEnabled .Values.php.ini ) }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -14,7 +14,7 @@ data:
     mysqli.default_socket=/var/run/mysqld/mysqld.sock
     pdo_mysql.default_socket=/var/run/mysqld/mysqld.sock
   {{- end }}
-  {{- if .Values.php.fpm_enabled }}
+  {{- if .Values.php.fpmEnabled }}
   zz-docker.conf: |
     [global]
     daemonize = no

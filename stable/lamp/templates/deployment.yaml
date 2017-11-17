@@ -25,12 +25,12 @@ spec:
         {{- else }}
 {{ toYaml .Values.resources | indent 12 }}
         {{- end }}
-      {{- if and .Values.php.persistent_subpaths (or .Values.persistence.hostPath .Values.persistence.enabled)}}
+      {{- if and .Values.php.persistentSubpaths (or .Values.persistence.hostPath .Values.persistence.enabled)}}
       - name: "init-chown-data"
         image: "busybox"
         command: ["sh", "-c", "chown -R 33:33 /data/web"]
         volumeMounts:
-        {{- range $subPath := .Values.php.persistent_subpaths }}
+        {{- range $subPath := .Values.php.persistentSubpaths }}
         - name: httpd-data
           mountPath: /data/web/{{ $subPath }}
           subPath: {{ $subPath }}
@@ -44,14 +44,14 @@ spec:
         {{- else }}
 {{ toYaml .Values.resources | indent 12 }}
         {{- end }}
-      {{- if .Values.php.copy_root}}
+      {{- if .Values.php.copyRoot}}
       - name: "copy-root"
         image: "{{ .Values.php.repository }}:{{ .Values.php.tag }}"
         imagePullPolicy: "Always"
         command: ["/bin/bash", "-c", "cp -ua /var/www/html/* /data/web/ && cp -ua /var/www/html/.[^.]* /data/web/ && chown 33:33 -R /data/web/"]
         volumeMounts:
-        {{- if and .Values.php.persistent_subpaths (or .Values.persistence.hostPath .Values.persistence.enabled)}}
-        {{- range $subPath := .Values.php.persistent_subpaths }}
+        {{- if and .Values.php.persistentSubpaths (or .Values.persistence.hostPath .Values.persistence.enabled)}}
+        {{- range $subPath := .Values.php.persistentSubpaths }}
         - name: httpd-data
           mountPath: /data/web/{{ $subPath }}
           subPath: {{ $subPath }}
@@ -70,7 +70,7 @@ spec:
         {{- end }}
       {{- end }}
       {{- end }}
-      {{- if and .Values.php.fpm_enabled .Values.php.sockets }}
+      {{- if and .Values.php.fpmEnabled .Values.php.sockets }}
       - name: "init-chown-php"
         image: "busybox"
         command: ["chown", "-R", "33:33", "/tmp/php"]
@@ -116,8 +116,8 @@ spec:
         imagePullPolicy: {{ .Values.mysql.pullPolicy }}
         command: ["bash", "/init/init_db_clone.sh"]
         volumeMounts:
-        {{- if and .Values.php.persistent_subpaths (or .Values.persistence.hostPath .Values.persistence.enabled)}}
-        {{- range $subPath := .Values.php.persistent_subpaths }}
+        {{- if and .Values.php.persistentSubpaths (or .Values.persistence.hostPath .Values.persistence.enabled)}}
+        {{- range $subPath := .Values.php.persistentSubpaths }}
         - name: httpd-data
           mountPath: /var/www/html/{{ $subPath }}
           subPath: {{ $subPath }}
@@ -162,8 +162,8 @@ spec:
             mountPath: /etc/php5/cli/conf.d/additional.ini
             subPath: additional.ini
         {{- end }}
-        {{- if and .Values.php.persistent_subpaths (or .Values.persistence.hostPath .Values.persistence.enabled)}}
-        {{- range $subPath := .Values.php.persistent_subpaths }}
+        {{- if and .Values.php.persistentSubpaths (or .Values.persistence.hostPath .Values.persistence.enabled)}}
+        {{- range $subPath := .Values.php.persistentSubpaths }}
         - name: httpd-data
           mountPath: /var/www/html/{{ $subPath }}
           subPath: {{ $subPath }}
@@ -174,18 +174,18 @@ spec:
         {{- end }}
           mountPath: /var/www/html
           subPath: web
-        {{- if .Values.php.old_http_root }}
-        {{- if and .Values.php.persistent_subpaths (or .Values.persistence.hostPath .Values.persistence.enabled)}}
-        {{- range $subPath := .Values.php.persistent_subpaths }}
+        {{- if .Values.php.oldHTTPRoot }}
+        {{- if and .Values.php.persistentSubpaths (or .Values.persistence.hostPath .Values.persistence.enabled)}}
+        {{- range $subPath := .Values.php.persistentSubpaths }}
         - name: httpd-data
-          mountPath: {{ .Values.php.old_http_root }}/{{ $subPath }}
+          mountPath: {{ .Values.php.oldHTTPRoot }}/{{ $subPath }}
           subPath: {{ $subPath }}
         {{- end }}
         - name: httpd-data-nonpersistent
         {{- else }}
         - name: httpd-data
         {{- end }}
-          mountPath: {{ .Values.php.old_http_root }}
+          mountPath: {{ .Values.php.oldHTTPRoot }}
           subPath: web
         {{- end }}
         - name: httpd-data
@@ -214,8 +214,8 @@ spec:
         imagePullPolicy: Always
         command: ["bash", "-c", "chown -R www-data:www-data /var/www/ && su -s /bin/bash -c \"bash /init/init_wp.sh\" www-data"]
         volumeMounts:
-        {{- if and .Values.php.persistent_subpaths (or .Values.persistence.hostPath .Values.persistence.enabled)}}
-        {{- range $subPath := .Values.php.persistent_subpaths }}
+        {{- if and .Values.php.persistentSubpaths (or .Values.persistence.hostPath .Values.persistence.enabled)}}
+        {{- range $subPath := .Values.php.persistentSubpaths }}
         - name: httpd-data
           mountPath: /var/www/html/{{ $subPath }}
           subPath: {{ $subPath }}
@@ -244,11 +244,11 @@ spec:
         - name: USE_MYSQL_SOCKETS
           value: "1"
         {{- end }}
-        {{- if and .Values.ingress.htpasswd_string ( not .Values.ingress.enabled ) }}
+        {{- if and .Values.ingress.htpasswdString ( not .Values.ingress.enabled ) }}
         - name: HTACCESS_AUTH
-          value: {{ .Values.htpasswd_string }}
+          value: {{ .Values.htpasswdString }}
         {{- end }}
-        {{- if .Values.svn.allow_overwrite }}
+        {{- if .Values.svn.allowOverwrite }}
         - name: ALLOW_OVERWRITE
           value: "true"
         {{- end }}
@@ -265,8 +265,8 @@ spec:
           value: "true"
         {{- end }}
         - name: GDRIVE_FOLDER
-          {{- if .Values.wordpress.gdrive_folder }}
-          value: {{ .Values.wordpress.gdrive_folder }}
+          {{- if .Values.wordpress.gdriveFolder }}
+          value: {{ .Values.wordpress.gdriveFolder }}
           {{- else }}
           value: {{ required "Please specify the domain of the wordpress backup at .Values.wordpress.domain" .Values.wordpress.domain }}
           {{- end }}
@@ -294,8 +294,8 @@ spec:
           mountPath: /etc/php5/cli/conf.d/additional.ini
           subPath: "additional.ini"
         {{- end }}
-        {{- if and .Values.php.persistent_subpaths (or .Values.persistence.hostPath .Values.persistence.enabled)}}
-        {{- range $subPath := .Values.php.persistent_subpaths }}
+        {{- if and .Values.php.persistentSubpaths (or .Values.persistence.hostPath .Values.persistence.enabled)}}
+        {{- range $subPath := .Values.php.persistentSubpaths }}
         - name: httpd-data
           mountPath: /var/www/html/{{ $subPath }}
           subPath: {{ $subPath }}
@@ -306,18 +306,18 @@ spec:
         {{- end }}
           mountPath: /var/www/html
           subPath: web
-        {{- if .Values.php.old_http_root }}
-        {{- if and .Values.php.persistent_subpaths (or .Values.persistence.hostPath .Values.persistence.enabled)}}
-        {{- range $subPath := .Values.php.persistent_subpaths }}
+        {{- if .Values.php.oldHTTPRoot }}
+        {{- if and .Values.php.persistentSubpaths (or .Values.persistence.hostPath .Values.persistence.enabled)}}
+        {{- range $subPath := .Values.php.persistentSubpaths }}
         - name: httpd-data
-          mountPath: {{ .Values.php.old_http_root }}/{{ $subPath }}
+          mountPath: {{ .Values.php.oldHTTPRoot }}/{{ $subPath }}
           subPath: {{ $subPath }}
         {{- end }}
         - name: httpd-data-nonpersistent
         {{- else }}
         - name: httpd-data
         {{- end }}
-          mountPath: {{ .Values.php.old_http_root }}
+          mountPath: {{ .Values.php.oldHTTPRoot }}
           subPath: web
         {{- end }}
         - name: httpd-data
@@ -356,15 +356,15 @@ spec:
         {{- end }}
       {{- end }}
       containers:
-      {{- if .Values.php.fpm_enabled }}
+      {{- if .Values.php.fpmEnabled }}
       - name: "httpd"
         image: "httpd:2.4-alpine"
         imagePullPolicy: "Always"
         ports:
         - containerPort: 80
         volumeMounts:
-        {{- if and .Values.php.persistent_subpaths (or .Values.persistence.hostPath .Values.persistence.enabled)}}
-        {{- range $subPath := .Values.php.persistent_subpaths }}
+        {{- if and .Values.php.persistentSubpaths (or .Values.persistence.hostPath .Values.persistence.enabled)}}
+        {{- range $subPath := .Values.php.persistentSubpaths }}
         - name: httpd-data
           mountPath: /var/www/html/{{ $subPath }}
           subPath: {{ $subPath }}
@@ -418,8 +418,8 @@ spec:
 {{ toYaml .Values.php.envVars | indent 8 }}
         {{- end }}
         volumeMounts:
-        {{- if and .Values.php.persistent_subpaths (or .Values.persistence.hostPath .Values.persistence.enabled)}}
-        {{- range $subPath := .Values.php.persistent_subpaths }}
+        {{- if and .Values.php.persistentSubpaths (or .Values.persistence.hostPath .Values.persistence.enabled)}}
+        {{- range $subPath := .Values.php.persistentSubpaths }}
         - name: httpd-data
           mountPath: /var/www/html/{{ $subPath }}
           subPath: {{ $subPath }}
@@ -433,21 +433,21 @@ spec:
         - name: httpd-data
           mountPath: /var/www/mysql
           subPath: mysql
-        {{- if .Values.php.old_http_root }}
-        {{- if and .Values.php.persistent_subpaths (or .Values.persistence.hostPath .Values.persistence.enabled)}}
-        {{- range $subPath := .Values.php.persistent_subpaths }}
+        {{- if .Values.php.oldHTTPRoot }}
+        {{- if and .Values.php.persistentSubpaths (or .Values.persistence.hostPath .Values.persistence.enabled)}}
+        {{- range $subPath := .Values.php.persistentSubpaths }}
         - name: httpd-data
-          mountPath: {{ .Values.php.old_http_root }}/{{ $subPath }}
+          mountPath: {{ .Values.php.oldHTTPRoot }}/{{ $subPath }}
           subPath: {{ $subPath }}
         {{- end }}
         - name: httpd-data-nonpersistent
         {{- else }}
         - name: httpd-data
         {{- end }}
-          mountPath: {{ .Values.php.old_http_root }}
+          mountPath: {{ .Values.php.oldHTTPRoot }}
           subPath: web
         {{- end }}
-        {{- if and .Values.php.fpm_enabled .Values.php.sockets }}
+        {{- if and .Values.php.fpmEnabled .Values.php.sockets }}
         - mountPath: /var/run/php
           name: sockets
           subPath: php
@@ -471,7 +471,7 @@ spec:
         {{- else }}
 {{ toYaml .Values.resources | indent 12 }}
         {{- end }}
-      {{- if .Values.mysql.root_password }}
+      {{- if .Values.mysql.rootPassword }}
       - name: "mysql"
         image: "{{ .Values.mysql.repository }}:{{ .Values.mysql.tag }}"
         imagePullPolicy: {{ .Values.mysql.pullPolicy }}
@@ -534,8 +534,8 @@ spec:
               name: {{ template "fullname" . }}
               key: sftp-password
         volumeMounts:
-        {{- if and .Values.php.persistent_subpaths (or .Values.persistence.hostPath .Values.persistence.enabled)}}
-        {{- range $subPath := .Values.php.persistent_subpaths }}
+        {{- if and .Values.php.persistentSubpaths (or .Values.persistence.hostPath .Values.persistence.enabled)}}
+        {{- range $subPath := .Values.php.persistentSubpaths }}
         - name: httpd-data
           mountPath: /home/{{ .Values.sftp.user }}/web/{{ $subPath }}
           subPath: {{ $subPath }}
@@ -571,8 +571,8 @@ spec:
         ports:
         - containerPort: 8001
         volumeMounts:
-        {{- if and .Values.php.persistent_subpaths (or .Values.persistence.hostPath .Values.persistence.enabled)}}
-        {{- range $subPath := .Values.php.persistent_subpaths }}
+        {{- if and .Values.php.persistentSubpaths (or .Values.persistence.hostPath .Values.persistence.enabled)}}
+        {{- range $subPath := .Values.php.persistentSubpaths }}
         - name: httpd-data
           mountPath: /var/www/{{ $subPath }}
           subPath: {{ $subPath }}
@@ -596,7 +596,7 @@ spec:
         command: [/bin/bash, -c, "chown www-data:www-data /git/ && su -s /bin/bash -c '/go/bin/git-sync' www-data"]
         env:
         - name: GIT_SYNC_REPO
-          value: {{ required "Please specify the GIT repository at .Values.git.repo_url" .Values.git.repo_url }}
+          value: {{ required "Please specify the GIT repository at .Values.git.repoURL" .Values.git.repoURL }}
         - name: GIT_SYNC_BRANCH
           value: {{ .Values.git.branch }}
         - name: GIT_SYNC_REV
@@ -606,8 +606,8 @@ spec:
         - name: GIT_SYNC_DEST
           value: /git
         volumeMounts:
-        {{- if and .Values.php.persistent_subpaths (or .Values.persistence.hostPath .Values.persistence.enabled)}}
-        {{- range $subPath := .Values.php.persistent_subpaths }}
+        {{- if and .Values.php.persistentSubpaths (or .Values.persistence.hostPath .Values.persistence.enabled)}}
+        {{- range $subPath := .Values.php.persistentSubpaths }}
         - name: httpd-data
           mountPath: /git/{{ $subPath }}
           subPath: {{ $subPath }}
@@ -641,14 +641,14 @@ spec:
               name: {{ template "fullname" . }}
               key: svn-password
         - name: SYNC_URL
-          value: {{required "Please specify the SVN repository at .Values.svn.repo_url" .Values.svn.repo_url }}
-        {{ if .Values.svn.allow_overwrite }}
+          value: {{required "Please specify the SVN repository at .Values.svn.repoURL" .Values.svn.repoURL }}
+        {{ if .Values.svn.allowOverwrite }}
         - name: ALLOW_OVERWRITE
           value: "true"
         {{- end }}
         volumeMounts:
-        {{- if and .Values.php.persistent_subpaths (or .Values.persistence.hostPath .Values.persistence.enabled)}}
-        {{- range $subPath := .Values.php.persistent_subpaths }}
+        {{- if and .Values.php.persistentSubpaths (or .Values.persistence.hostPath .Values.persistence.enabled)}}
+        {{- range $subPath := .Values.php.persistentSubpaths }}
         - name: httpd-data
           mountPath: /svn/{{ $subPath }}
           subPath: {{ $subPath }}
@@ -683,7 +683,7 @@ spec:
         {{- end }}
       {{ end }}
       volumes:
-      {{- if and .Values.php.persistent_subpaths (or .Values.persistence.hostPath .Values.persistence.enabled)}}
+      {{- if and .Values.php.persistentSubpaths (or .Values.persistence.hostPath .Values.persistence.enabled)}}
       - name: httpd-data-nonpersistent
         emptyDir: {}
       {{- end }}
@@ -702,7 +702,7 @@ spec:
       - name: sockets
         emptyDir: {}
       {{- end }}
-      {{- if or .Values.mysql.sockets ( or ( and .Values.php.fpm_enabled .Values.php.sockets) .Values.php.ini ) }}
+      {{- if or .Values.mysql.sockets ( or ( and .Values.php.fpmEnabled .Values.php.sockets) .Values.php.ini ) }}
       - configMap: {name: {{template "fullname" .}}-php }
         name: configmap-php
       {{- end }}
@@ -710,7 +710,7 @@ spec:
       - configMap: {name: {{template "fullname" .}}-init }
         name: init
       {{- end }}
-      {{- if .Values.php.fpm_enabled }}
+      {{- if .Values.php.fpmEnabled }}
       - configMap: {name: {{template "fullname" .}}-httpd }
         name: httpd-config
       {{- end }}

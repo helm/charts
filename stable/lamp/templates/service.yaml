@@ -11,11 +11,11 @@ spec:
   type: {{ .Values.service.type }}
   {{- end }}
   ports:
-  - port: {{ .Values.service.http_port }}
+  - port: {{ .Values.service.HTTPPort }}
     targetPort: 80
     protocol: TCP
     name: httpd
-  {{ if .Values.mysql.root_password }}
+  {{ if .Values.mysql.rootPassword }}
   - port: 3306
     targetPort: 3306
     protocol: TCP

@@ -7,12 +7,12 @@ metadata:
     {{- if .Values.ingress.ssl }}
     kubernetes.io/tls-acme: "true"
     {{- end }}
-    {{- if .Values.ingress.htpasswd_string }}
+    {{- if .Values.ingress.htpasswdString }}
     ingress.kubernetes.io/auth-type: basic
     ingress.kubernetes.io/auth-secret: {{ template "fullname" . }}
     ingress.kubernetes.io/auth-realm: "Authenticate"
     {{- end }}
-    {{- if .Values.ingress.www_subdomain }}
+    {{- if .Values.ingress.subdomainWWW }}
     ingress.kubernetes.io/configuration-snippet: |
       rewrite ^(.*)$ $scheme://www.{{ template "domain" . }}$1;
     {{- end }}
@@ -33,5 +33,5 @@ spec:
       - path: /
         backend:
           serviceName: {{ template "fullname" . }}
-          servicePort: {{ .Values.service.http_port }}
+          servicePort: {{ .Values.service.HTTPPort }}
 {{- end }}

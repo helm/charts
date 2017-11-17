@@ -34,8 +34,6 @@ function init_from_backup
 	#change owner of httpdir
 	chown -R www-data:www-data /var/www/html
 
-	OLD_MYSQL_ROOT_PASSWORD=$(cat /secrets/mysql_root_password)
-
 	#change owner of mysqldir
 	chown -R mysql:mysql /var/lib/mysql
 
