@@ -1,6 +1,6 @@
-name: {{ template "ibm-blockchain-chaincode.fullname" . }}
+name: {{ template "ibm-blockchain-network.fullname" . }}
 labels:
-  app: {{ template "ibm-blockchain-chaincode.name" . }}
+  app: {{ template "ibm-blockchain-network.name" . }}
   chart: {{ .Chart.Name }}-{{ .Chart.Version }}
   release: {{ .Release.Name }}
   heritage: {{ .Release.Service }}
