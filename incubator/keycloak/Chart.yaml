@@ -1,0 +1,14 @@
+name: keycloak
+version: 0.1.0
+appVersion: 3.3.0.Final
+description: Open Source Identity and Access Management For Modern Applications and Services
+keywords:
+  - authentication
+home: http://www.keycloak.org/
+icon: http://www.keycloak.org/resources/images/keycloak_logo_480x108.png
+sources:
+  - https://github.com/jboss-dockerfiles/keycloak
+maintainers:
+  - name: nexeck
+    email: marcel@beck.im
+engine: gotpl
