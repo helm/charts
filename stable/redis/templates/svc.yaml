@@ -15,8 +15,8 @@ metadata:
 {{ toYaml .Values.metrics.annotations | indent 4 }}
 {{- end }}
 spec:
-  type: {{ .Values.service.type }}
-  {{ if eq .Values.service.type "LoadBalancer" -}} {{ if .Values.service.loadBalancerIP -}}
+  type: {{ .Values.serviceType }}
+  {{ if eq .Values.serviceType "LoadBalancer" -}} {{ if .Values.service.loadBalancerIP -}}
   loadBalancerIP: {{ .Values.service.loadBalancerIP }}
   {{ end -}}
   {{- end -}}
