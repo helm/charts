@@ -289,10 +289,10 @@ If `ingress.enabled` is set to true, the LAMP charts services are made accessibl
 | `service.http_port` | Port to advertise the main web service in LoadBalancer mode | 80 |
 | `ingress.enabled` | Enables ingress support - working ingress controller necessary | false |
 | `ingress.domain` | domain to advertise the services - A records need to point to ingress controllers IP | _empty_ |
-| `ingress.nginx` | Disable if other ingress controller than nginx is used | true |
 | `ingress.www_subdomain` | enables www subdomain and 301 redirect from domain | false |
 | `ingress.ssl` | Enables [lego](https://github.com/jetstack/kube-lego) letsencrypt ssl support - working lego container necessary | false |
 | `ingress.htpasswd_string` | if specified main web service requires authentication. Format: _user:$apr1$F..._ | _empty_ |
+| `ingress.annotations` | specify custom ingress annotations such as e.g. `ingress.kubernetes.io/proxy-body-size` |  |
 
 ### Wordpress
 

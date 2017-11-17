@@ -1,8 +1,8 @@
-{{- if .Values.ingress.enabled }}
+{{- if and .Values.ingress.enabled .Values.ingress.www_subdomain }}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: {{ template "fullname" . }}-app
+  name: {{ template "fullname" . }}-www
   annotations:
     {{- if .Values.ingress.ssl }}
     kubernetes.io/tls-acme: "true"
@@ -12,22 +12,19 @@ metadata:
     ingress.kubernetes.io/auth-secret: {{ template "fullname" . }}
     ingress.kubernetes.io/auth-realm: "Authenticate"
     {{- end }}
-    {{- if .Values.ingress.www_subdomain }}
-    ingress.kubernetes.io/configuration-snippet: |
-      rewrite ^(.*)$ $scheme://www.{{ template "domain" . }}$1;
-    {{- end }}
     {{- range $annotation := .Values.ingress.annotations }}
     {{ $annotation }}
     {{- end }}
+
 spec:
   {{- if .Values.ingress.ssl }}
   tls:
-  - secretName: {{ template "fullname" . }}-tls-app
+  - secretName: {{ template "fullname" . }}-tls-www
     hosts:
-    - {{ template "domain" . }}
+    - www.{{ template "domain" . }}
   {{- end }}
   rules:
-  - host: {{ template "domain" . }}
+  - host: www.{{ template "domain" . }}
     http:
       paths:
       - path: /
