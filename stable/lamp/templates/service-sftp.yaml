@@ -1,0 +1,20 @@
+{{- if and .Values.sftp.enabled .Values.ingress.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "fullname" . }}-sftp
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+spec:
+  type: NodePort
+  ports:
+  - targetPort: 22
+    port: {{ .Values.sftp.port }}
+    {{- if .Values.sftp.nodePort }}
+    nodePort: {{ .Values.sftp.nodePort }}
+    {{- end }}
+    protocol: TCP
+    name: sftp
+  selector:
+    app: {{ template "fullname" . }}
+{{- end -}}
