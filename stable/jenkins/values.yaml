@@ -6,7 +6,7 @@
 Master:
   Name: jenkins-master
   Image: "jenkins/jenkins"
-  ImageTag: "2.84"
+  ImageTag: "lts"
   ImagePullPolicy: "Always"
   Component: "jenkins-master"
   UseSecurity: true
@@ -45,9 +45,9 @@ Master:
   InstallPlugins:
     - kubernetes:1.1
     - workflow-aggregator:2.5
-    - workflow-job:2.14.1
+    - workflow-job:2.15
     - credentials-binding:1.13
-    - git:3.6.0
+    - git:3.6.4
   # Used to approve a list of groovy functions in pipelines used the script-security plugin. Can be viewed under /scriptApproval
   # ScriptApproval:
   #   - "method groovy.json.JsonSlurperClassic parseText java.lang.String"
@@ -111,6 +111,7 @@ Persistence:
   ##
   # StorageClass: "-"
 
+  Annotations: {}
   AccessMode: ReadWriteOnce
   Size: 8Gi
   volumes:

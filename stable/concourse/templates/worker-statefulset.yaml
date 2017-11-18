@@ -98,6 +98,9 @@ spec:
                 configMapKeyRef:
                   name: {{ template "concourse.concourse.fullname" . }}
                   key: worker-fatal-errors
+{{- if .Values.worker.env }}
+{{ toYaml .Values.worker.env | indent 12 }}
+{{- end }}
           resources:
 {{ toYaml .Values.worker.resources | indent 12 }}
           securityContext:
@@ -154,3 +157,7 @@ spec:
         - name: concourse-work-dir
           emptyDir: {}
   {{- end }}
+{{- if and (eq .Capabilities.KubeVersion.Major "1") (gt .Capabilities.KubeVersion.Minor "5") }}
+  updateStrategy:
+    type: {{ .Values.worker.updateStrategy }}
+{{- end }}
