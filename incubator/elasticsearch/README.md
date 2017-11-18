@@ -76,6 +76,7 @@ The following tables lists the configurable parameters of the elasticsearch char
 | `master.heapSize`                    | Master node heap size                                               | `512m`                               |
 | `master.name`                        | Master component name                                               | `master`                             |
 | `master.persistence.enabled`         | Master persistent enabled/disabled                                  | `true`                               |
+| `master.persistence.name`            | Master statefulset PVC template name                                | `data`                               |
 | `master.persistence.size`            | Master persistent volume size                                       | `4Gi`                                |
 | `master.persistence.storageClass`    | Master persistent volume Class                                      | `nil`                                |
 | `master.persistence.accessMode`      | Master persistent Access Mode                                       | `ReadWriteOnce`                      |
@@ -83,6 +84,7 @@ The following tables lists the configurable parameters of the elasticsearch char
 | `data.resources`                     | Data node resources requests & limits                               | `{} - cpu limit must be an integer`  |
 | `data.heapSize`                      | Data node heap size                                                 | `1536m`                              |
 | `data.persistence.enabled`           | Data persistent enabled/disabled                                    | `true`                               |
+| `data.persistence.name`              | Data statefulset PVC template name                                  | `data`                               |
 | `data.persistence.size`              | Data persistent volume size                                         | `30Gi`                               |
 | `data.persistence.storageClass`      | Data persistent volume Class                                        | `nil`                                |
 | `data.persistence.accessMode`        | Data persistent Access Mode                                         | `ReadWriteOnce`                      |

@@ -17,7 +17,7 @@ data:
     {{- if .Values.ssl.enabled }}
     defaultEntryPoints = ["http","https"]
     {{- else }}
-    defaultEntryPoints = ["http"]
+    defaultEntryPoints = ["http", "httpn"]
     {{- end }}
     [entryPoints]
       [entryPoints.http]
@@ -35,6 +35,10 @@ data:
           [[entryPoints.https.tls.certificates]]
           CertFile = "/ssl/tls.crt"
           KeyFile = "/ssl/tls.key"
+      {{- else }}
+      [entryPoints.httpn]
+      address = ":8880"
+      compress = {{ .Values.gzip.enabled }}
       {{- end }}
     [kubernetes]
     {{- if .Values.kubernetes}}
@@ -51,7 +55,7 @@ data:
       {{- end}}
     {{- end}}
     {{- if .Values.accessLogs.enabled }}
-    [accessLogs]
+    [accessLog]
     {{- if .Values.accessLogs.filePath }}
     filePath = "{{ .Values.accessLogs.filePath }}"
     {{- end}}
