@@ -4,7 +4,7 @@ kind: Deployment
 metadata:
   name: {{ template "busbar.fullname" . }}-web
   labels:
-    app: {{ template "busbar.fullname" . }}-web
+    app: {{ template "busbar.name" . }}-web
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -12,7 +12,7 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "busbar.fullname" . }}-web
+        app: {{ template "busbar.name" . }}-web
         component: web
     spec:
       containers:
@@ -53,7 +53,7 @@ kind: Deployment
 metadata:
   name: {{ template "busbar.fullname" . }}-worker
   labels:
-    app: {{ template "busbar.fullname" . }}-worker
+    app: {{ template "busbar.name" . }}-worker
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -61,7 +61,7 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "busbar.fullname" . }}-worker
+        app: {{ template "busbar.name" . }}-worker
         component: worker
     spec:
       containers:
