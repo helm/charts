@@ -23,6 +23,18 @@ ingress:
   # - secretName: chart-example-tls
   #   hosts:
   #     - chart-example.local
+
+readinessProbe:
+  initialDelaySeconds: 30
+  periodSeconds: 30
+  failureThreshold: 6
+livenessProbe:
+  initialDelaySeconds: 30
+  periodSeconds: 30
+
+# Set extra env variables. Like proxy settings.
+extraEnv: {}
+
 resources: {}
 # We usually recommend not to specify default resources and to leave this as a conscious
 # choice for the user. This also increases chances charts run on environments with little
@@ -42,9 +54,18 @@ persistence:
   ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
   ##   GKE, AWS & OpenStack)
   ##
-  # storageClass: "-"
+  storageClass: ""
   # accessMode: ReadWriteOnce
   # size: 10Gi
+
+#List of plugins to install.
+#For example:
+#plugins:
+#  install:
+#    - "https://github.com/AmadeusITGroup/sonar-stash/releases/download/1.3.0/sonar-stash-plugin-1.3.0.jar"
+#    - "https://github.com/SonarSource/sonar-ldap/releases/download/2.2-RC3/sonar-ldap-plugin-2.2.0.601.jar"
+plugins:
+  install: []
 
 ## Configuration values for the postgresql dependency
 ## ref: https://github.com/kubernetes/charts/blob/master/stable/postgressql/README.md
@@ -53,3 +74,5 @@ postgresql:
   postgresUser: "sonarUser"
   postgresPassword: "sonarPass"
   postgresDatabase: "sonarDB"
+  persistence:
+    enabled: true
