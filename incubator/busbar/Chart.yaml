@@ -8,6 +8,12 @@ home: https://busbar.io
 sources:
 - https://github.com/busbar-io/busbar-server
 maintainers:
-- name: busbar.io
+- name: busbar-io
   email: maintainers@busbar.io
+- name: waldman
+  email: leon@waldman.io
+- name: markgergely
+  email: markgergely@me.com
+- name: dschaaff
+  email: daniel@danielschaaff.com
 engine: gotpl
