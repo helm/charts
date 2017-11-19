@@ -75,4 +75,4 @@ postgresql:
   postgresPassword: "sonarPass"
   postgresDatabase: "sonarDB"
   persistence:
-    enabled: true
+    enabled: false
