@@ -2,7 +2,7 @@
 ##
 
 ## Busbar Base Images Images
-busbarDockerRegistry: busbario
+busbarDockerImage: busbario/busbar
 busbarDockerTag: latest
 
 ## Cluster Name
