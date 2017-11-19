@@ -12,6 +12,7 @@ metadata:
 spec:
   selector:
     app: {{ template "busbar.name" . }}-web
+    release: "{{ .Release.Name }}"
     component: web
   type: LoadBalancer
   ports:

@@ -13,6 +13,7 @@ spec:
     metadata:
       labels:
         app: {{ template "busbar.name" . }}-web
+        release: "{{ .Release.Name }}"
         component: web
     spec:
       containers:
@@ -62,6 +63,7 @@ spec:
     metadata:
       labels:
         app: {{ template "busbar.name" . }}-worker
+        release: "{{ .Release.Name }}"
         component: worker
     spec:
       containers:
