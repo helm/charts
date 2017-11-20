@@ -148,7 +148,11 @@ datadog:
       memory: 512Mi
 
 rbac:
+  ## If true, create & use RBAC resources
   create: false
+
+  ## Set to existing service account
+  ## Ignored if rbac.create is true
   serviceAccountName: default
 
 tolerations: []
