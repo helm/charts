@@ -28,11 +28,11 @@ rules:
   verbs: ["get", "list"]
 - apiGroups: [""]
   resources:
-    - "events"
-    - "namespaces"
+    - "namespaces" #
+    - "events"     # Cluster events + kube_service cache invalidation
+    - "services"   # kube_service tag
     - "nodes"
     - "pods"
-    - "services"
   verbs: ["get", "list"]
 - apiGroups: [""]
   resources:
