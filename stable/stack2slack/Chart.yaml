@@ -6,4 +6,5 @@ appVersion: 0.1.0
 sources:
 - https://github.com/dunglas/stack2slack
 maintainers:
-- dunglas
+- name: dunglas
+  email: dunglas@gmail.com

@@ -1,9 +1,9 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "stack2slack.fullname" . }}
   labels:
-    app: {{ template "name" . }}
+    app: {{ template "stack2slack.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
@@ -11,7 +11,7 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "name" . }}
+        app: {{ template "stack2slack.name" . }}
         release: {{ .Release.Name }}
     spec:
       containers:
@@ -22,22 +22,22 @@ spec:
           - name: SLACK_API_TOKEN
             valueFrom:
               secretKeyRef:
-                name: {{ template "fullname" . }}
+                name: {{ template "stack2slack.fullname" . }}
                 key: slackApiToken
           - name: TAG_TO_CHANNEL
             valueFrom:
               configMapKeyRef:
-                name: {{ template "fullname" . }}
+                name: {{ template "stack2slack.fullname" . }}
                 key: tagToChannel
           - name: STACK_SITE
             valueFrom:
               configMapKeyRef:
-                name: {{ template "fullname" . }}
+                name: {{ template "stack2slack.fullname" . }}
                 key: stackSite
           - name: DEBUG
             valueFrom:
               configMapKeyRef:
-                name: {{ template "fullname" . }}
+                name: {{ template "stack2slack.fullname" . }}
                 key: debug
           livenessProbe:
             exec:
