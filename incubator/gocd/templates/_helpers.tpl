@@ -3,11 +3,11 @@
 Expand the name of the chart.
 */}}
 {{- define "gocd.name" -}}
-{{- default .Chart.Name | trunc 24 | trimSuffix "-" -}}
+{{- default .Chart.Name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
 {{- define "gocd.version" -}}
-{{- default .Chart.Version | trunc 24 | trimSuffix "-" -}}
+{{- default .Chart.Version | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
 {{/*
@@ -16,5 +16,5 @@ We truncate at 24 chars because some Kubernetes name fields are limited to this 
 */}}
 {{- define "gocd.fullname" -}}
 {{- $name := default .Chart.Name .Values.nameOverride -}}
-{{- printf "%s-%s" .Release.Name $name | trunc 24 -}}
+{{- printf "%s-%s" .Release.Name $name | trunc 63 -}}
 {{- end -}}

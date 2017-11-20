@@ -1,7 +1,12 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name:  "{{ template "gocd.name" . }}-tests"
+  name: "{{ template "gocd.fullname" . }}-tests"
+  labels:
+    app: {{ template "gocd.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
 data:
   run.sh: |-
     @test "Testing GoCD UI is accessible" {

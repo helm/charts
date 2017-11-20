@@ -2,13 +2,13 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: {{ .Values.server.persistence.godata.name }}
+  name: {{ template "gocd.fullname" . }}-data
   labels:
-    app: {{ template "gocd.name" . }}-server
-    chart: "{{ template "gocd.name" . }}-{{ .Chart.Version }}"
+    app: {{ template "gocd.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
-    role: server
+    component: server
 spec:
   accessModes:
     - {{ .Values.server.persistence.godata.accessMode | quote }}
@@ -19,8 +19,9 @@ spec:
   storageClassName: {{ .Values.server.persistence.godata.storageClass }}
 {{- else }}
   storageClassName: ""
+{{- end }}
+{{- if .Values.server.persistence.godata.pvSelector }}
   selector:
-    matchLabels:
-      app: {{ .Values.server.persistence.godata.pvName }}
+{{ toYaml .Values.server.persistence.godata.pvSelector | indent 4 }}
 {{- end }}
 {{- end }}

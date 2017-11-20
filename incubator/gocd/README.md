@@ -11,7 +11,7 @@ This chart bootstraps a single node GoCD server and a GoCD Agent deployment with
 
 ## Prerequisites
 
-- Kubernetes 1.5+ with Beta APIs enabled
+- Kubernetes 1.7+ with Beta APIs enabled
 - PV provisioner support in the underlying infrastructure
 
 ## Installing the Chart
@@ -114,11 +114,10 @@ a previously configured Persistent Volume Claim can be used.
 | Parameter                                | Description                               | Default              |
 | ---------------------------------------- | ----------------------------------------- | -------------------- |
 | `server.persistence.enabled`             | Enable the use of a GoCD server PVC       | `false`              |
-| `server.persistence.godata.pvName`       | Provide the name of a PV for `godata` PVC | `godata-gocd-server` |
-| `server.persistence.godata.name`         | The PVC name                              | `godata-pvc`         |
 | `server.persistence.godata.accessMode`   | The PVC access mode                       | `ReadWriteOnce`      |
 | `server.persistence.godata.size`         | The size of the PVC                       | `1Gi`                |
 | `server.persistence.godata.storageClass` | The PVC storage class name                | `nil`                |
+| `server.persistence.godata.pvSelector`   | The godata Persistence Volume Selectors   | `nil`                |
 
 ### Server `/home/go` persistence Values
 
@@ -126,11 +125,10 @@ a previously configured Persistent Volume Claim can be used.
 | Parameter                                | Description                               | Default              |
 | ---------------------------------------- | ----------------------------------------- | -------------------- |
 | `server.persistence.enabled`             | Enable the use of a GoCD server PVC       | `false`              |
-| `server.persistence.homego.pvName`       | Provide the name of a PV for `godata` PVC | `homego-gocd-server` |
-| `server.persistence.homego.name`         | The PVC name                              | `homego-pvc`         |
 | `server.persistence.homego.accessMode`   | The PVC access mode                       | `ReadWriteOnce`      |
 | `server.persistence.homego.size`         | The size of the PVC                       | `1Gi`                |
 | `server.persistence.homego.storageClass` | The PVC storage class name                | `nil`                |
+| `server.persistence.homego.pvSelector`   | The homego Persistence Volume Selectors   | `nil`                |
 
 ### Agent `/home/go` persistence Values
 
@@ -143,13 +141,11 @@ a previously configured Persistent Volume Claim can be used.
 
 | Parameter                                | Description                               | Default              |
 | ---------------------------------------- | ----------------------------------------- | -------------------- |
-| `agent.persistence.enabled`             | Enable the use of a GoCD agent PVC         | `false`              |
-| `agent.persistence.homego.pvName`       | Provide the name of a PV for `homego` PVC  | `gocd-agent`         |
-| `agent.persistence.homego.name`         | The PVC name                               | `homego-agent-pvc`   |
-| `agent.persistence.homego.accessMode`   | The PVC access mode                        | `ReadWriteOnce`      |
-| `agent.persistence.homego.size`         | The size of the PVC                        | `1Gi`                |
-| `agent.persistence.homego.storageClass` | The PVC storage class name                 | `nil`                |
-
+| `agent.persistence.enabled`              | Enable the use of a GoCD agent PVC        | `false`              |
+| `agent.persistence.homego.accessMode`    | The PVC access mode                       | `ReadWriteOnce`      |
+| `agent.persistence.homego.size`          | The size of the PVC                       | `1Gi`                |
+| `agent.persistence.homego.storageClass`  | The PVC storage class name                | `nil`                |
+| `agent.persistence.homego.pvSelector`    | The homego Persistence Volume Selectors   | `nil`                |
 
 
 ### Existing PersistentVolumeClaim

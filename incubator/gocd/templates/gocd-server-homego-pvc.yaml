@@ -2,13 +2,13 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: {{ .Values.server.persistence.homego.name }}
+  name: {{ template "gocd.fullname" . }}-home
   labels:
-    app: {{ template "gocd.name" . }}-server
-    chart: "{{ template "gocd.name" . }}-{{ .Chart.Version }}"
+    app: {{ template "gocd.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
-    role: server
+    component: server
 spec:
   accessModes:
     - {{ .Values.server.persistence.homego.accessMode | quote }}
@@ -19,8 +19,9 @@ spec:
   storageClassName: {{ .Values.server.persistence.homego.storageClass }}
 {{- else }}
   storageClassName: ""
+{{- end }}
+{{- if .Values.server.persistence.homego.pvSelector }}
   selector:
-    matchLabels:
-      app: {{ .Values.server.persistence.homego.pvName }}
+{{ toYaml .Values.server.persistence.homego.pvSelector | indent 4 }}
 {{- end }}
 {{- end }}
