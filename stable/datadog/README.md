@@ -52,6 +52,8 @@ The following tables lists the configurable parameters of the Datadog chart and 
 | `datadog.confd`             | Additional Datadog service configurations | `nil`                              |
 | `datadog.volumes`           | Additional volumes for the daemonset or deployment | `nil`                     |
 | `datadog.volumeMounts`      | Additional volumeMounts for the daemonset or deployment | `nil`                |
+|`rbac.create`                | If true, create & use RBAC resources | `false`                                 |
+|`rbac.serviceAccountName`    | existing ServiceAccount to use (ignored if rbac.create=true) | `default`       |
 | `resources.requests.cpu`    | CPU resource requests              | `100m`                                    |
 | `resources.limits.cpu`      | CPU resource limits                | `256m`                                    |
 | `resources.requests.memory` | Memory resource requests           | `128Mi`                                   |
@@ -117,4 +119,3 @@ datadog:
         - host: "outside-k8s.example.com"
           port: 6379
 ```
-

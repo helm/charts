@@ -10,16 +10,42 @@ metadata:
   name: {{ template "datadog.fullname" . }}
 rules:
 - nonResourceURLs:
-  - "/version"  # Used to get apiserver version metadata
-  - "/healthz"  # Healthcheck
+    - "/version"  # Used to get apiserver version metadata
+    - "/healthz"  # Healthcheck
   verbs: ["get"]
-- apiGroups: [""]
+- apiGroups:
+    - apps
   resources:
-    - "nodes"
-    - "namespaces"  #
-    - "events"      # Cluster events + kube_service cache invalidation
-    - "services"    # kube_service tag
-  verbs: ["get", "list"]
+    - deployments
+  verbs:
+    - get
+    - list
+- apiGroups:
+    - batch
+  resources:
+    - jobs
+  verbs:
+    - get
+    - list
+- apiGroups:
+    - extensions
+  resources:
+    - daemonsets
+    - replicasets
+  verbs:
+    - get
+    - list
+- apiGroups:
+    - ""
+  resources:
+    - events
+    - namespaces
+    - nodes
+    - pods
+    - services
+  verbs:
+    - get
+    - list
 - apiGroups: [""]
   resources:
     - "configmaps"

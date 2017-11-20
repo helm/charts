@@ -146,7 +146,6 @@ datadog:
     limits:
       cpu: 256m
       memory: 512Mi
-
 rbac:
   ## If true, create & use RBAC resources
   create: true
