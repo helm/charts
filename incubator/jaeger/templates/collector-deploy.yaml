@@ -24,6 +24,9 @@ spec:
         component: "collector"
         release: "{{ .Release.Name }}"
         jaeger-infra: collector-pod
+{{- if .Values.collector.podLabels }}
+{{ toYaml .Values.collector.podLabels | indent 8 }}
+{{- end }}
     spec:
       nodeSelector:
 {{ toYaml .Values.collector.nodeSelector | indent 8 }}

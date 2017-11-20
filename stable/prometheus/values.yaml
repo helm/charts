@@ -319,7 +319,7 @@ server:
   ##
   image:
     repository: prom/prometheus
-    tag: v1.8.0
+    tag: v1.8.1
     pullPolicy: IfNotPresent
 
   ## (optional) alertmanager URL
