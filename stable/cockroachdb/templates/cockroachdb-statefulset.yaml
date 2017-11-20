@@ -9,6 +9,8 @@ metadata:
     release: {{ .Release.Name | quote }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     component: "{{ .Release.Name }}-{{ .Values.Component }}"
+  annotations:
+    description: {{ .Chart.Description }}
 spec:
   ports:
   # The main port, served by gRPC, serves Postgres-flavor SQL, internode
