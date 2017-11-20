@@ -54,7 +54,7 @@ If a chart has multiple components, a `component` label should be added (e. g. `
 
 ## Configuration
 
-Docker images should be configurable.
+* Docker images should be configurable. Image tags should use stable versions.
 
 ```yaml
 image:
@@ -63,9 +63,13 @@ image:
   pullPolicy: IfNotPresent
 ```
 
-Image tags should use stable versions.
+* The use of the `default` function should be avoided if possible in favor of defaults in `values.yaml`.
+* It is usually best to not specify defaults for resources and to just provide sensible values that are commented out as a recommendation, especially when resources are rather high. This makes it easier to test charts on small clusters or Minikube. Setting resources should generally be a conscious choice of the user.
 
 ## Documentation
 
 `README.md` and `NOTES.txt` are mandatory. `README.md` should contain a table listing all configuration options. `NOTES.txt` should provide accurate and useful information how the chart can be used/accessed.
 
+## Compatibility
+
+We officially support compatibility with the current and the previous minor version of Kubernetes. Generated resources should use the latest possible API versions compatible with these versions. For extended backwards compatibility conditional logic based on capalilities may be used (see [built-in objects](https://github.com/kubernetes/helm/blob/master/docs/chart_template_guide/builtin_objects.md)).
