@@ -6,7 +6,7 @@ This is an implementation of Aerospike StatefulSet found here:
 
 ## Pre Requisites:
 
-* Kubernetes 1.5 with beta APIs enabled and support for statefulsets
+* Kubernetes 1.7+ with beta APIs enabled and support for statefulsets
 
 * PV support on underlying infrastructure (only if you are provisioning persistent volume).
 
@@ -37,17 +37,17 @@ $ helm install --name my-aerospike --namespace aerospike incubator/aerospike
 
 The chart can be customized using the following configurable parameters:
 
-| Parameter               | Description                        | Default                                                    |
-| ----------------------- | ---------------------------------- | ---------------------------------------------------------- |
-| `image.repository`        | Aerospike Container image name            | `aerospike/aerospike-server`                               |
-| `image.tag`               | Aerospike Container image tag             | `3.14.1.2`                                                 |
-| `image.pullPolicy`        | Aerospike Container pull policy           | `Always`                                                   |
-| `replicaCount`            | Aerospike Brokers                         | `1`                                                        |
-| `persistentVolume`        | Configuration of persistent volumes for storage-engine   | `{}`                                        |
-| `confFile`                | Aerospike config filename. This file should be included in the chart path.        | `aerospike.conf`   |
-| `resources`               | Aerospike resource requests and limits    | `{}`                                                       |
-| `nodeSelector`            | Labels for pod assignment                 | `{}`                                                       |
-| `terminationGracePeriodSeconds`   | This is the time kubernetes will wait before forcefully terminating the container   | `30`     |
+| Parameter                       | Description                                                     | Default                      |
+| ------------------------------- | ----------------------------------------------------------------| -----------------------------|
+| `image.repository`              | Aerospike Container image name                                  | `aerospike/aerospike-server` |
+| `image.tag`                     | Aerospike Container image tag                                   | `3.14.1.2`                   |
+| `image.pullPolicy`              | Aerospike Container pull policy                                 | `Always`                     |
+| `replicaCount`                  | Aerospike Brokers                                               | `1`                          |
+| `persistentVolume`              | config of persistent volumes for storage-engine                 | `{}`                         |
+| `confFile`                      | config filename. This file should be included in the chart path | `aerospike.conf`             |
+| `resources`                     | resource requests and limits                                    | `{}`                         |
+| `nodeSelector`                  | Labels for pod assignment                                       | `{}`                         |
+| `terminationGracePeriodSeconds` | wit time before forcefully terminating container                | `30`                         |
 
 Specify parameters using `--set key=value[,key=value]` argument to `helm install`
 
