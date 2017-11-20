@@ -37,6 +37,9 @@ spec:
                 name: {{ template "neo4j.secrets.fullname" . }}
                 key: neo4j-password
           {{- end }}
+{{- if .Values.readReplica.extraVars }}
+{{ toYaml .Values.readReplica.extraVars | indent 10 }}
+{{- end }}
         command:
           - "/bin/bash"
           - "-c"

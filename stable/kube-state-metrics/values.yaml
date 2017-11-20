@@ -15,3 +15,20 @@ rbac:
   create: false
   # Ignored if rbac.create is true
   serviceAccountName: default
+
+# Available collectors for kube-state-metrics. By default all available
+# collectors are enabled.
+collectors:
+  daemonsets: true
+  deployments: true
+  limitranges: true
+  nodes: true
+  pods: true
+  replicasets: true
+  replicationcontrollers: true
+  resourcequotas: true
+  services: true
+  jobs: true
+  cronjobs: true
+  statefulsets: true
+  persistentvolumeclaims: true
