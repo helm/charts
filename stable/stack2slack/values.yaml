@@ -6,5 +6,5 @@ tagToChannel:
 stackSite: 'stackoverflow'
 image:
   repository: dunglas/stack2slack
-  tag: latest
+  tag: 0.1.0
   pullPolicy: IfNotPresent

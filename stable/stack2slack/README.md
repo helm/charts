@@ -10,7 +10,7 @@ package manager.
 
 ## Prerequisites
 
-- Kubernetes 1.2+ with Beta APIs enabled
+- Kubernetes 1.7+ with Beta APIs enabled
 
 ## Installing the Chart
 
