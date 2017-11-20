@@ -8,6 +8,8 @@ metadata:
     component: "{{ .Values.artifactory.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
+  annotations:
+    description: {{ .Chart.Description }}
 spec:
   replicas: {{ .Values.artReplicaCount }}
   template:
