@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "keycloak.fullname" . }}
+{{- if .Values.keycloak.service.annotations }}
+  annotations:
+{{ toYaml .Values.keycloak.service.annotations | indent 4 }}
+{{- end }}
+  labels:
+    app: {{ template "keycloak.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+{{- if .Values.keycloak.service.labels }}
+{{ toYaml .Values.keycloak.service.labels | indent 4 }}
+{{- end }}
+spec:
+  type: {{ .Values.keycloak.service.type }}
+  ports:
+  - name: http
+    port: {{ .Values.keycloak.service.port }}
+    targetPort: 8080
+    {{ if and (eq "NodePort" .Values.keycloak.service.type) .Values.keycloak.service.nodePort }}
+    nodePort: {{ .Values.keycloak.service.nodePort}}
+    {{ end }}
+    protocol: TCP
+  selector:
+    app: {{ template "keycloak.name" . }}
+    release: "{{ .Release.Name }}"

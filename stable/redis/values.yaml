@@ -75,14 +75,22 @@ resources:
 nodeSelector: {}
 tolerations: []
 
+## Additional pod labels
+## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+podLabels: {}
+
 networkPolicy:
   ## Enable creation of NetworkPolicy resources.
   ##
   enabled: false
 
   ## The Policy model to apply. When set to false, only pods with the correct
-  ## client label will have network access to the port PostgreSQL is listening
+  ## client label will have network access to the port Redis is listening
   ## on. When true, Redis will accept connections from any source
   ## (with the correct destination port).
   ##
   allowExternal: true
+
+service:
+  annotations: {}
+  loadBalancerIP:
