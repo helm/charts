@@ -7,6 +7,8 @@ metadata:
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
   name: {{ template "fullname" . }}
+  annotations:
+    description: {{ .Chart.Description }}
 spec:
   replicas: {{ .Values.replicaCount }}
   template:
