@@ -24,7 +24,7 @@ weave-scope-frontend:
   enabled: true
     # weave-scope-frontend.resources.*: controls requests/limits for the frontend
     # weave-scope-frontend.resources.* values are all optional but should not be set to empty values
-    # resources: 
+    # resources:
       # requests:
         # weave-scope-frontend.resources.requests.cpu: CPU req. in MHz (m)
         # cpu: ""
