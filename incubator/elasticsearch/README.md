@@ -1,9 +1,5 @@
 # Elasticsearch Helm Chart
 
-This image is using (centerforopenscience/elasticsearch)[https://hub.docker.com/r/centerforopenscience/elasticsearch/], using Fabric8's great [kubernetes discovery
-plugin](https://github.com/fabric8io/elasticsearch-cloud-kubernetes) for
-elasticsearch.
-
 ## Prerequisites Details
 
 * Kubernetes 1.6+
