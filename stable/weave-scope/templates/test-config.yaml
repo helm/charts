@@ -9,7 +9,7 @@ data:
   run.sh: |-
 {{ if $frontend.enabled }}
     @test "Testing Weave Scope UI is accessible" {
-      curl --retry 12 --retry-delay 10 http://{{ .Values.global.service.name }}.{{ .Release.Namespace }}.svc:{{ .Values.global.service.port }}
+      curl --retry 12 --retry-delay 10 http://{{ .Values.global.service.name | default (include "toplevel.fullname" .) }}.{{ .Release.Namespace }}.svc:{{ .Values.global.service.port }}
     }
 {{- else }}
     @test "Null test if the frontend is not installed" {

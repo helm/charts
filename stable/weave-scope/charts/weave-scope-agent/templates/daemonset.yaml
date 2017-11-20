@@ -1,19 +1,16 @@
-{{- $svcname := "weave-scope" -}}
-{{- $svcport := 80 -}}
-
 apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
   labels:
-    {{- include "weave-scope.helm_std_labels" . | indent 4 }}
+    {{- include "weave-scope-agent.helm_std_labels" . | indent 4 }}
     component: agent
-  name: {{ template "weave-scope.fullname" . }}-agent
+  name: {{ template "weave-scope-agent.fullname" . }}
   annotations:
-    {{- include "weave-scope.annotations" . | indent 4 }}
+    {{- include "weave-scope-agent.annotations" . | indent 4 }}
 spec:
-  selector: 
+  selector:
     matchLabels:
-      app: {{ template "weave-scope.name" . }}
+      app: {{ template "toplevel.name" . }}
       release: {{ .Release.Name }}
       component: agent
   updateStrategy:
@@ -21,18 +18,16 @@ spec:
   template:
     metadata:
       labels:
-        {{- include "weave-scope.helm_std_labels" . | indent 8 }}
+        {{- include "weave-scope-agent.helm_std_labels" . | indent 8 }}
         component: agent
     spec:
       tolerations:
         - effect: NoSchedule
           operator: Exists
       containers:
-        - name: agent
-          image: {{ required "You must specify the desired container image" .Values.global.image }}:{{ required "You must specify the desired container image tag" .Values.global.imageTag }}
-          {{- if .Values.imagePullPolicy }}
-          imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
-          {{- end }}
+        - name: {{ template "weave-scope-agent.name" . }}
+          image: "{{ .Values.global.image.repository }}:{{ .Values.global.image.tag }}"
+          imagePullPolicy: "{{ .Values.global.image.pullPolicy }}"
           args:
             - '--no-app'
             - '--probe.docker.bridge={{ .Values.dockerBridge }}'
@@ -41,21 +36,14 @@ spec:
             {{- if .Values.global.probeToken }}
             - '--probe-token={{ .Values.global.probeToken }}'
             {{- else if .Values.global.scopeFrontendAddr }}
-            - >-  {{ .Values.global.scopeFrontendAddr }}
+            - {{ .Values.global.scopeFrontendAddr }}
             {{- else }}
-            - >-
-              {{- if .Values.global.service }}
-              {{ .Values.global.service.name }}.{{ .Release.Namespace }}.svc:{{ .Values.global.service.port }}
-              {{- else }}
-              {{ $svcname }}.{{ .Release.Namespace }}.svc:{{ $svcport }}
-              {{- end }}
+            - {{ .Values.global.service.name | default (include "toplevel.fullname" .) }}.{{ .Release.Namespace }}.svc:{{ .Values.global.service.port }}
             {{- end }}
           securityContext:
             privileged: true
-          {{- if .Values.resources }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
-          {{- end }}
           volumeMounts:
             - name: docker-socket
               mountPath: /var/run/docker.sock
@@ -73,14 +61,7 @@ spec:
         - name: sys-kernel-debug
           hostPath:
             path: /sys/kernel/debug
-
       hostPID: true
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
-      {{- if .Values.rbac }}
-        {{- if .Values.rbac.create }}
-      serviceAccountName: {{ required "rbac.serviceAccountName must be set if rbac.create is true" .Values.rbac.serviceAccountName }}
-        {{- else if .Values.rbac.serviceAccountName }}
-      serviceAccountName: {{ .Values.rbac.serviceAccountName }}
-        {{- end }}
-      {{- end }}
+      serviceAccountName: {{ .Values.rbac.serviceAccountName | default (include "toplevel.fullname" .) }}

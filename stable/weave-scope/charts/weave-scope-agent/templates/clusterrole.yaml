@@ -1,4 +1,3 @@
-{{- if .Values.rbac }}
 {{- if .Values.rbac.create }}
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRole
@@ -6,7 +5,7 @@ metadata:
   labels:
     {{- include "weave-scope.helm_std_labels" . | indent 4 }}
     component: agent
-  name: weave-scope
+  name: {{ .Values.rbac.serviceAccountName | default (include "toplevel.fullname" .) }} 
   annotations:
     {{- include "weave-scope.annotations" . | indent 4 }}
 rules:
@@ -20,5 +19,4 @@ rules:
       - '*'
     verbs:
       - '*'
-{{- end }}
 {{- end }}

@@ -1,4 +1,3 @@
-{{- if .Values.rbac }}
 {{- if .Values.rbac.create }}
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRoleBinding
@@ -6,16 +5,15 @@ metadata:
   labels:
     {{- include "weave-scope.helm_std_labels" . | indent 4 }}
     component: agent
-  name: weave-scope
+  name: {{ include "toplevel.fullname" . }}
   annotations:
     {{- include "weave-scope.annotations" . | indent 4 }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: weave-scope
+  name: {{ .Values.rbac.serviceAccountName | default (include "toplevel.fullname" .) }}
 subjects:
   - kind: ServiceAccount
-    name: {{ required "rbac.serviceAccountName must be set if rbac.create is true" .Values.rbac.serviceAccountName }}
+    name: {{ .Values.rbac.serviceAccountName | default (include "toplevel.fullname" .) }}
     namespace: {{ .Release.Namespace }}
-{{- end }}
 {{- end }}

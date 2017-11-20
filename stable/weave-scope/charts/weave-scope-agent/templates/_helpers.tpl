@@ -1,5 +1,5 @@
 {{/* Helm standard labels */}}
-{{- define "weave-scope.helm_std_labels" }}
+{{- define "weave-scope-agent.helm_std_labels" }}
 chart: {{ .Chart.Name }}-{{ .Chart.Version }}
 heritage: {{ .Release.Service }}
 release: {{ .Release.Name }}
@@ -7,7 +7,7 @@ app: {{ template "toplevel.name" . }}
 {{- end }}
 
 {{/* Weave Scope default annotations */}}
-{{- define "weave-scope.annotations" }}
+{{- define "weave-scope-agent.annotations" }}
 cloud.weave.works/launcher-info: |-
   {
     "server-version": "master-4fe8efe",
@@ -23,7 +23,7 @@ cloud.weave.works/launcher-info: |-
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "weave-scope.name" -}}
+{{- define "weave-scope-agent.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
@@ -37,7 +37,7 @@ Expand the name of the top-level chart.
 {{/*
 Create a default fully qualified app name.  We truncate at 63 chars.
 */}}
-{{- define "weave-scope.fullname" -}}
+{{- define "weave-scope-agent.fullname" -}}
 {{- printf "%s-%s" .Chart.Name .Release.Name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 

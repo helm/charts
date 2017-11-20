@@ -24,10 +24,12 @@ Note that most of this documentation is repeated in `values.yaml`; if you're in 
 
 | Parameter | Description | Default |
 |----------:|:------------|:--------|
-| **image** | the image that will be used for this release (required) | "weaveworks/scope" |
-| **imageTag** | the version of Weave Scope desired for this release (required) | "1.6.5"
+| **image.*** | the parameters of the image pulls for this release | |
+| **image.repository** | the image that will be used for this release (required) | "weaveworks/scope" |
+| **image.tag** | the version of Weave Scope desired for this release (required) | "1.6.5"
+| **image.pullPolicy** | the imagePullPolicy for the container (required): IfNotPresent, Always, or Never | IfNotPresent
 | **service.*** | the configuration of the service used to access the frontend | |
-| **service.name** | the short name desired for the frontend service (required if weave-scope-frontend is enabled) -- this is a global so we can access its value easily from the agent subchart | "weave-scope-app" |
+| **service.name** | the short name desired for the frontend service (optional, but if not specified by the user a value will be calculated) -- this is a global so we can access its value easily from the agent subchart | "weave-scope-app" |
 | **service.port** | the port exposed by the Scope frontend service (required if weave-scope-frontend is enabled) -- this is a global so we can access its value easily from the agent subchart | 80 |
 | **service.type** | the type of the frontend service (required if weave-scope-frontend is enabled): ClusterIP, NodePort or LoadBalancer -- this is a global to keep it with the other values for configuring the frontend service | "ClusterIP" |
 
@@ -39,8 +41,6 @@ The **weave-scope-frontend** section controls how the Scope frontend is installe
 | Parameter | Description | Default |
 |----------:|:------------|:--------|
 | **enabled** | controls whether the frontend is deployed | true |
-| **imagePullPolicy** | controls when the image is pulled (**note** that the value for this in the official Weave Scope Kubernetes manifest is "IfNotPresent", but here it defaults to unset to conform to Helm conventions) | |
-| **containerPort** | the port opened to the Scope frontend (required if weave-scope-frontend is enabled) | 4040 |
 | **resources.*** | controls requests/limits for the frontend (these values are all optional) | |
 | **resources.requests.cpu** | CPU request in MHz (m) | |
 | **resources.requests.memory** | memory request in MiB (Mi) | | 
@@ -54,14 +54,12 @@ The **agent** section controls how the Weave Scope node agent pods are installed
 | Parameter | Description | Default |
 |----------:|:------------|:--------|
 | **enabled** | controls whether the agent is deployed | true |
-| **imagePullPolicy** | controls when the image is pulled (**see note above** about the frontend pull policy; the same note applies here) | |
-| **serviceAccountName** | the name of the service account to be created for the agent | "weave-scope" |
 | **dockerBridge** | the name of the Docker bridge interface | "docker0" |
 | **scopeFrontendAddr** | the host:port of a Scope frontend to send data to -- this is only needed in cases where the frontend is deployed separately from the agent (e.g. an install outside the cluster or a pre-existing install inside it) | |
 | **probeToken** | the token used to connect to Weave Cloud -- this is not needed for connecting to non-cloud Scope frontends | |
 | **rbac.*** | controls RBAC resource creation/use | |
-| **rbac.create** | whether RBAC resources should be created -- this **must** be set to false if RBAC is not enabled in the cluster; it *may* be set to false in an RBAC-enabled cluster to allow for external management of RBAC | true |
-| **rbac.serviceAccountName** | the service account name that the agent will use -- this name **must** already exist if rbac.create is false; it **must not** already exist and is required to be set if rbac.create is true (it will then be created/managed as part of the release) | "weave-scope" |
+| **rbac.create** | whether RBAC resources should be created (required) -- this **must** be set to false if RBAC is not enabled in the cluster; it *may* be set to false in an RBAC-enabled cluster to allow for external management of RBAC | true |
+| **rbac.serviceAccountName** | the service account name that the agent will use (optional, but if not specified by the user a value will be calculated) -- this name **must** already exist if rbac.create is false; it **must not** already exist if rbac.create is true (it will then be created/managed as part of the release) | "weave-scope" |
 | **resources.*** | controls requests/limits for the agent (these values are all optional) | |
 | **resources.requests.cpu** | CPU request in MHz (m) | |
 | **resources.requests.memory** | memory request in MiB (Mi)| |

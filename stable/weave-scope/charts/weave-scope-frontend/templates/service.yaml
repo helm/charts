@@ -2,19 +2,19 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    {{- include "weave-scope.helm_std_labels" . | indent 4 }}
+    {{- include "weave-scope-frontend.helm_std_labels" . | indent 4 }}
     component: frontend
-  name: {{ .Values.global.service.name }}
+  name: {{ .Values.global.service.name | default (include "toplevel.fullname" .) }}
   annotations:
-    {{- include "weave-scope.annotations" . | indent 4 }}
+    {{- include "weave-scope-frontend.annotations" . | indent 4 }}
 spec:
   ports:
-    - name: {{ required "You must specify a service name" .Values.global.service.name }}
-      port: {{ required "You must specify a port the frontend service should listen on" .Values.global.service.port }}
-      targetPort: {{ .Values.containerPort }}
+    - name: http
+      port: {{ .Values.global.service.port }}
+      targetPort: http
       protocol: TCP
   selector:
-    app: {{ template "weave-scope.name" . }}
+    app: {{ template "toplevel.name" . }}
     release: {{ .Release.Name }}
     component: frontend
-  type: {{ required "You must specify a supported service type (ClusterIP, NodePort or LoadBalancer)" .Values.global.service.type }}
+  type: {{ .Values.global.service.type }}
