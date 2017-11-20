@@ -1,9 +1,11 @@
 ## Busbar default Values
 ##
 
-## Busbar Base Images Images
-busbarDockerImage: busbario/busbar
-busbarDockerTag: latest
+## Busbar Image
+image:
+  name: busbario/busbar
+  tag: 1.5.1
+  pullPolicy: Always
 
 ## Cluster Name
 clusterName: busbar_cluster

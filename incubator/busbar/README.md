@@ -24,8 +24,9 @@ helm install busbar \
 
 | Parameter                    | Description                              | Default                           |
 |------------------------------|------------------------------------------|-----------------------------------|
-| `busbarDockerRegistry`       | Registry hosting the Busbar Docker Image | busbario                          |
-| `busbarDockerTag`            | Busbar Image tag to use on installation  | latest                            |
+| `image.name`                 | Busbar Docker registry/Image             | busbario/busbar                   |
+| `image.tag`                  | Busbar Image tag to use on installation  | 1.5.1                             |
+| `image.pullPolicy`           | Busbar Image pull policy                 | always                            |
 | `clusterName`                | Kubernetes Cluster Name                  | busbar_cluster                    |
 | `privateDomainName`          | Private Domain Name                      | private                           |
 | `publicDomainName`           | Public Domain Name                       | example.com                       |

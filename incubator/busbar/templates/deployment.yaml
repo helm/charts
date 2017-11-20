@@ -18,8 +18,8 @@ spec:
     spec:
       containers:
       - name: {{ template "busbar.fullname" . }}-web
-        image: {{ .Values.busbarDockerImage }}:{{ .Values.busbarDockerTag }}
-        imagePullPolicy: Always
+        image: {{ .Values.image.name }}:{{ .Values.image.tag }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
         command:
         - /bin/sh
         - -c
@@ -68,8 +68,8 @@ spec:
     spec:
       containers:
       - name: {{ template "busbar.fullname" . }}-worker
-        image: {{ .Values.busbarDockerImage }}:{{ .Values.busbarDockerTag }}
-        imagePullPolicy: Always
+        image: {{ .Values.image.name }}:{{ .Values.image.tag }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
         command:
         - /bin/sh
         - -c
