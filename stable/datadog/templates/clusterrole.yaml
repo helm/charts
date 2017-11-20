@@ -1,5 +1,5 @@
 {{- if .Values.rbac.create -}}
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: {{ template "rbac.apiVersion" . }}
 kind: ClusterRole
 metadata:
   labels:
@@ -9,41 +9,50 @@ metadata:
     release: {{ .Release.Name }}
   name: {{ template "datadog.fullname" . }}
 rules:
-  - nonResourceURLs:
-      - "/version"  # Used to get apiserver version metadata
-      - "/healthz"  # Healthcheck
-    verbs: ["get"]
-  - apiGroups:
-      - apps
-    resources:
-      - deployments
-    verbs:
-      - get
-      - list
-  - apiGroups:
-      - batch
-    resources:
-      - jobs
-    verbs:
-      - get
-      - list
-  - apiGroups:
-      - extensions
-    resources:
-      - daemonsets
-      - replicasets
-    verbs:
-      - get
-      - list
-  - apiGroups:
-      - ""
-    resources:
-      - events
-      - namespaces
-      - nodes
-      - pods
-      - services
-    verbs:
-      - get
-      - list
+- nonResourceURLs:
+    - "/version"  # Used to get apiserver version metadata
+    - "/healthz"  # Healthcheck
+  verbs: ["get"]
+- apiGroups:
+    - apps
+  resources:
+    - deployments
+  verbs:
+    - get
+    - list
+- apiGroups:
+    - batch
+  resources:
+    - jobs
+  verbs:
+    - get
+    - list
+- apiGroups:
+    - extensions
+  resources:
+    - daemonsets
+    - replicasets
+  verbs:
+    - get
+    - list
+- apiGroups:
+    - ""
+  resources:
+    - events
+    - namespaces
+    - nodes
+    - pods
+    - services
+  verbs:
+    - get
+    - list
+- apiGroups: [""]
+  resources:
+    - "configmaps"
+  resourceNames: ["datadog-leader-elector"]
+  verbs: ["get", "delete", "update"]
+- apiGroups: [""]
+  resources:
+    - "configmaps"
+  verbs: ["create"]
 {{- end -}}

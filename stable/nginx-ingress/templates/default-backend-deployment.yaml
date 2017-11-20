@@ -3,12 +3,12 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   labels:
-    app: {{ template "name" . }}
+    app: {{ template "nginx-ingress.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     component: "{{ .Values.defaultBackend.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-  name: {{ template "defaultBackend.fullname" . }}
+  name: {{ template "nginx-ingress.defaultBackend.fullname" . }}
 spec:
   replicas: {{ .Values.defaultBackend.replicaCount }}
   template:
@@ -18,7 +18,7 @@ spec:
 {{ toYaml .Values.defaultBackend.podAnnotations | indent 8 }}
     {{- end }}
       labels:
-        app: {{ template "name" . }}
+        app: {{ template "nginx-ingress.name" . }}
         component: "{{ .Values.defaultBackend.name }}"
         release: {{ .Release.Name }}
         {{- if .Values.defaultBackend.podLabels }}
@@ -26,7 +26,7 @@ spec:
         {{- end }}
     spec:
       containers:
-        - name: {{ template "name" . }}-{{ .Values.defaultBackend.name }}
+        - name: {{ template "nginx-ingress.name" . }}-{{ .Values.defaultBackend.name }}
           image: "{{ .Values.defaultBackend.image.repository }}:{{ .Values.defaultBackend.image.tag }}"
           imagePullPolicy: "{{ .Values.defaultBackend.image.pullPolicy }}"
           args:

@@ -114,6 +114,7 @@ spec:
       tolerations:
 {{ toYaml .Values.daemonset.tolerations | indent 8 }}
       {{- end }}
+      serviceAccountName: {{ if .Values.rbac.create }}{{ template "datadog.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
   updateStrategy:
     type: {{ default "OnDelete" .Values.daemonset.updateStrategy | quote }}
 {{ end }}
