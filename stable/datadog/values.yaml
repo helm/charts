@@ -149,9 +149,8 @@ datadog:
 
 rbac:
   ## If true, create & use RBAC resources
-  create: false
+  create: true
 
-  ## Set to existing service account
   ## Ignored if rbac.create is true
   serviceAccountName: default
 
