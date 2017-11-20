@@ -48,6 +48,9 @@ spec:
         volumeMounts:
         - name: "{{ template "docker-registry.fullname" . }}-config"
           mountPath: "/etc/docker/registry"
+        - mountPath: /etc/ssl/docker
+          name: tls-cert
+          readOnly: true
         - name: image-store
           mountPath: /var/lib/registry
         ports:
@@ -58,6 +61,9 @@ spec:
       - name: {{ template "docker-registry.fullname" . }}-config
         configMap:
           name: {{ template "docker-registry.fullname" . }}-config
+      - name: tls-cert
+        secret:
+          secretName: {{ .Values.registry.fqdn }}.tls
       - name: image-store
       {{- if .Values.persistentVolume.enabled }}
         persistentVolumeClaim:

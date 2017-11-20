@@ -26,6 +26,11 @@ persistentVolume:
   annotations: {}
 
 registry:
+  fqdn: registry.docker.example.com
+  secrets:
+    s3:
+      access-key: ""
+      secret-key: ""
   configData:
     version: 0.1
     log:
