@@ -74,6 +74,8 @@ metadata:
     release: {{ .Release.Name | quote }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     component: "{{ .Release.Name }}-{{ .Values.Component }}"
+  annotations:
+    description: {{ .Chart.Description }}
 spec:
   serviceName: "{{ template "fullname" . }}"
   replicas: {{ default 3 .Values.Replicas }}
