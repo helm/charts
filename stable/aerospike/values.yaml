@@ -5,7 +5,7 @@ nodeSelector: {}
 image:
   repository: aerospike/aerospike-server
   tag: 3.14.1.2
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
 
 # Set as empty object {} if no volumes need to be created
 # See confFile below
