@@ -8,5 +8,5 @@ metadata:
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
 data:
-  config.yml: |
-{{ toYaml .Values.registry.configData | indent 2 }}
+  config.yml: |-
+{{ toYaml .Values.registry.configData | indent 4 }}
