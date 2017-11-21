@@ -10,22 +10,21 @@ rbac:
 
 # Select what to deploy
 deployments:
-  etcdOperator: false
-  etcdCluster: false
+  etcdOperator: true
   # one time deployment, delete once completed,
   # Ref: https://github.com/coreos/etcd-operator/blob/master/doc/user/walkthrough/backup-operator.md
   backupOperator: true
   # one time deployment, delete once completed
   # Ref: https://github.com/coreos/etcd-operator/blob/master/doc/user/walkthrough/restore-operator.md
-  restoreOperator: false
+  restoreOperator: true
 
 # creates custom resources, not all required,
 # you could use `helm template --values <values.yaml> --name release_name ... `
 # and create the resources yourself to deploy on your cluster later
 customResources:
+  createEtcdClusterCRD: true
   createBackupCRD: false
   createRestoreCRD: false
-  createEtcdClusterCRD: true
 
 # etcdOperator
 etcdOperator:

@@ -1,5 +1,5 @@
-{{- $clusterEnabled := (and (not .Release.IsInstall) .Values.deployments.etcdCluster) -}}
-{{- if and .Release.IsInstall .Values.deployments.etcdCluster -}}
+{{- $clusterEnabled := (and (not .Release.IsInstall) .Values.customResources.createEtcdClusterCRD) -}}
+{{- if and .Release.IsInstall .Values.customResources.createEtcdClusterCRD -}}
 Not enabling cluster, the ThirdPartResource must be installed before you can create a Cluster. Continuing rest of normal deployment.
 
 {{ end -}}
