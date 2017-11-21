@@ -37,15 +37,24 @@ resources: {}
 #  memory: 128Mi
 persistence:
   enabled: true
-  existingClaim: false
-  storageClass: slow
-  existingClassName: false
+  ## Ibex data Persistent Volume Storage Class
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (ACS, gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
   accessMode: ReadWriteOnce
   size: 8Gi
-  claimName: myclaim
-  storage:
-    enabled: true
-    provisioner: kubernetes.io/azure-disk
-    parameters:
-      skuName: Standard_LRS
-      location: eastus
+  ## A manually managed Persistent Volume Claim
+  ## Requires persistence.enabled: true
+  ## If defined, PVC must be created manually before volume will be bound
+  # existingClaim: false
+  # claimName: myclaim
+  # existingClassName: false
+  # storageClass: slow
+  ## Azure sample settings for storage
+  # storage:
+    # provisioner: kubernetes.io/azure-disk
+    # parameters:
+      # skuName: Standard_LRS
+      # location: eastus
