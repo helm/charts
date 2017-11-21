@@ -133,4 +133,5 @@ Agents coordinate by performing a leader election among members of the Datadog D
 
 The `datadog.leaderLeaseDuration` is the duration for which a leader stays elected. It should be > 30 seconds. The longer it is, the less frequently your agents hit the apiserver with requests, but it also means that if the leader dies (and under certain conditions), events can be missed until the lease expires and a new leader takes over.
 
+
 Make sure the `rbac.create` is enable as well to ensure the feature to work properly.
