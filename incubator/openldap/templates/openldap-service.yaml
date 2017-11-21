@@ -1,0 +1,27 @@
+#
+# Service spec for openldap
+#
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "openldap.fullname" . }}-service
+  labels:
+    app: {{ template "openldap.fullname" . }}
+    version: {{ .Chart.Version }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "-" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: {{ .Values.openldap.serviceType | quote }}
+  selector:
+    app: {{ template "openldap.fullname" . }}
+    release: {{ .Release.Name }}
+  ports:
+  - name: ldap-port
+    protocol: TCP
+    port: {{ .Values.openldap.ldapExternalPort }}
+    targetPort: {{ .Values.openldap.ldapInternalPort }}
+  - name: ldap-ssl-port
+    protocol: TCP
+    port: {{ .Values.openldap.sslLdapExternalPort }}
+    targetPort: {{ .Values.openldap.sslLdapInternalPort }}

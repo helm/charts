@@ -1,0 +1,68 @@
+#
+# A Deployment spec for openldap slapd
+#
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name:  {{ template "openldap.fullname" . }}
+  labels:
+    app: {{ template "openldap.fullname" . }}
+    version: {{ .Chart.Version }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.openldap.replicas }}
+  selector:
+    matchLabels:
+      app: {{ template "openldap.fullname" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "openldap.fullname" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+      - name: {{ .Values.openldap.containerName | quote }}
+        image: "{{ .Values.openldap.image.name }}:{{ .Values.openldap.image.tag }}"
+        imagePullPolicy: {{ .Values.openldap.imagePullPolicy | quote }}
+        ports:
+        - name: ldap
+          containerPort: {{ .Values.openldap.ldapInternalPort }}
+        - name: ssl-ldap
+          containerPort: {{ .Values.openldap.sslLdapInternalPort }}
+        envFrom:
+        - configMapRef:
+            name: {{ template "openldap.fullname" . }}-env-configmap
+        - secretRef:
+            name: {{ template "openldap.fullname" . }}-secret
+
+        volumeMounts:
+        - name: data
+          mountPath: /var/lib/ldap
+          subPath: data
+        - name: data
+          mountPath: /etc/ldap/slapd.d
+          subPath: config-data
+        {{- if .Values.openldap.customLdifFiles }}
+        - name: customldif
+          mountPath: /container/service/slapd/assets/config/bootstrap/ldif/custom
+        {{- end }}
+
+        resources:
+{{ toYaml .Values.openldap.resources | indent 10 }}
+
+      volumes:
+      {{- if .Values.openldap.customLdifFiles }}
+      - name: customldif
+        configMap:
+          name: {{ template "openldap.fullname" . }}-customldif-configmap
+      {{- end }}
+      - name: data
+      {{- if .Values.openldap.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.openldap.persistence.existingClaim | default (include "openldap.fullname" .) }}
+      {{- else }}
+        emptyDir: {}
+      {{- end -}}
