@@ -78,12 +78,12 @@ mariadb:
 
   ## ref: https://github.com/bitnami/bitnami-docker-mariadb/blob/master/README.md#creating-a-database-on-first-run
   ##
-  mariadbDatabase: bitnami_wordpress
+  mariadbDatabase: bitnami_ghost
 
   ## Create a database user
   ## ref: https://github.com/bitnami/bitnami-docker-mariadb/blob/master/README.md#creating-a-database-user-on-first-run
   ##
-  mariadbUser: bn_wordpress
+  mariadbUser: bn_ghost
 
   ## Password for mariadbUser
   ## ref: https://github.com/bitnami/bitnami-docker-mariadb/blob/master/README.md#creating-a-database-user-on-first-run
