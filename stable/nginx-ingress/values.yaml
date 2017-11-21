@@ -143,6 +143,10 @@ controller:
       servicePort: 18080
       type: ClusterIP
 
+## Rollback limit
+##
+revisionHistoryLimit: 10
+
 ## Default 404 backend
 ##
 defaultBackend:
