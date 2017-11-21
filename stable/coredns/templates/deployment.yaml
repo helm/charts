@@ -13,6 +13,8 @@ metadata:
     {{- else }}
     app: {{ template "coredns.fullname" . }}
     {{- end }}
+  annotations:
+    description: {{ .Chart.Description }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
