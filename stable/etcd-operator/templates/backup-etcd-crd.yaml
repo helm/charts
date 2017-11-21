@@ -1,0 +1,17 @@
+{{- if .Values.customResources.createBackupCRD }}
+---
+apiVersion: "etcd.database.coreos.com/v1beta2"
+kind: "EtcdBackup"
+metadata:
+  name: {{ template "etcd-backup-operator.fullname" . }}
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app: {{ template "etcd-backup-operator.fullname" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+    component: "{{ .Release.Name }}-{{ .Values.component }}"
+
+spec:
+  clusterName: {{ .Values.etcdCluster.name }}
+{{ toYaml .Values.backupOperator.spec | indent 2 }}
+{{- end}}
