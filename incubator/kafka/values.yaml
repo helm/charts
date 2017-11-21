@@ -16,6 +16,7 @@ resources: {}
 Storage: "1Gi"
 # StorageClass: default
 DataDirectory: "/opt/kafka/data"
+ExtraArgs: ""
 
 #------------------------------------------------------------------------------
 # Zookeeper:

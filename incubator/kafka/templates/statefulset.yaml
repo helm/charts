@@ -46,7 +46,7 @@ spec:
         command:
         - sh
         - -c
-        - "./bin/kafka-server-start.sh config/server.properties --override zookeeper.connect={{ .Release.Name }}-zookeeper:2181/ --override log.dirs={{ printf "%s/logs" .Values.DataDirectory }} --override broker.id=${HOSTNAME##*-}"
+        - "./bin/kafka-server-start.sh config/server.properties --override zookeeper.connect={{ .Release.Name }}-zookeeper:2181/ --override log.dirs={{ printf "%s/logs" .Values.DataDirectory }} --override broker.id=${HOSTNAME##*-} {{ .Values.ExtraArgs }}"
         volumeMounts:
         - name: datadir
           mountPath: "{{ .Values.DataDirectory }}"

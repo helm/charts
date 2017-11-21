@@ -61,6 +61,7 @@ following configurable parameters:
 | `resources`             | Kafka resource requests and limits | `{}`                                                       |
 | `DataDirectory`         | Kafka data directory               | `/opt/kafka/data`                                          |
 | `Storage`               | Kafka Persistent volume size       | `1Gi`                                                      |
+| `ExtraArgs`             | Extra arguments to pass to kafka   | ` `
 
 Specify parameters using `--set key=value[,key=value]` argument to `helm install`
 
@@ -97,6 +98,16 @@ topics with:
 my-release-zookeeper:2181 --list`
 
 Where `my-release` is the name of your helm release.
+
+## Configuring (default) Kafka Retention
+
+You can use the ExtraArgs value:
+
+```
+--set ExtraArgs="--override log.retention.hours=72 
+                --override log.roll.hours=24 
+                --override log.segment.bytes=104857600" 
+```
 
 ## Known Limitations
 
