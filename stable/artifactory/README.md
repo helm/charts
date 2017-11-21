@@ -2,6 +2,7 @@
 
 ## Prerequisites Details
 
+* Kubernetes 1.6+
 * Artifactory Pro trial license [get one from here](https://www.jfrog.com/artifactory/free-trial/)
 
 ## Chart Details
@@ -63,7 +64,7 @@ The following tables lists the configurable parameters of the artifactory chart 
 | `database.env.type`          | Database type                     | `postgresql`                                             |
 | `database.env.name`          | Database name                     | `artifactory`                                            |
 | `database.env.user`          | Database username                 | `artifactory`                                            |
-| `database.env.pass`          | Database password                 | `artXifactory1973`                                       |
+| `database.env.pass`          | Database password                 | `Randomly generated`                                     |
 | `database.image.repository`          | Database container image                     | `docker.bintray.io/postgres`             |
 | `database.image.version`          | Database container image tag                     | `9.5.2`                                 |
 | `database.image.pullPolicy`         | Container pull policy             | `IfNotPresent`                                           |
@@ -78,7 +79,7 @@ The following tables lists the configurable parameters of the artifactory chart 
 | `artifactory.replicaCount`            | Replica count for Artifactory deployment| `1`                                                |
 | `artifactory.image.pullPolicy`         | Container pull policy             | `IfNotPresent`                                           |
 | `artifactory.image.repository`    | Container image                   | `docker.bintray.io/jfrog/artifactory-pro`                |
-| `artifactory.image.version`       | Container image tag               | `5.4.1`                                                  |
+| `artifactory.image.version`       | Container image tag               | `5.5.2`                                                  |
 | `artifactory.service.type`| Artifactory service type | `ClusterIP` |
 | `artifactory.externalPort` | Artifactory service external port | `8081`   |
 | `artifactory.internalPort` | Artifactory service internal port | `8081`   |
@@ -90,7 +91,7 @@ The following tables lists the configurable parameters of the artifactory chart 
 | `nginx.replicaCount` | Nginx replica count | `1`   |
 | `nginx.image.repository`    | Container image                   | `docker.bintray.io/jfrog/nginx-artifactory-pro`                |
 | `nginx.image.pullPolicy`    | Container pull policy                   | `IfNotPresent`                |
-| `nginx.image.version`       | Container image tag               | `5.4.1`                                                  |
+| `nginx.image.version`       | Container image tag               | `5.5.2`                                                  |
 | `nginx.service.type`| Nginx service type | `LoadBalancer` |
 | `nginx.externalPortHttp` | Nginx service external port | `80`   |
 | `nginx.internalPortHttp` | Nginx service internal port | `80`   |

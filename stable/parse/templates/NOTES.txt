@@ -1,0 +1,82 @@
+
+
+******************************************************************
+*** PLEASE BE PATIENT: Parse may take a few minutes to install ***
+******************************************************************
+
+Parse Server
+------------
+
+1. Get your Parse Server URL:
+
+{{- if contains "NodePort" .Values.serviceType }}
+
+  export NODE_PORT=$(kubectl get svc --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" {{ template "parse.fullname" . }})
+  export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+  export SERVICE_IP=$NODE_IP:$NODE_PORT
+
+{{- else if contains "LoadBalancer" .Values.serviceType }}
+
+  NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+        Watch the status with: 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "parse.fullname" . }}'
+
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "parse.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}'):{{ .Values.server.port }}
+{{- else if contains "ClusterIP"  .Values.serviceType }}
+
+  export SERVER_POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "parse.name" . }},release={{ .Release.Name }},component=server" -o jsonpath="{.items[0].metadata.name}")
+  kubectl port-forward $SERVER_POD_NAME {{ .Values.server.port }}:{{ .Values.server.port }}
+  export SERVICE_IP=127.0.0.1:{{ .Values.server.port }}
+
+{{- end }}
+
+Example Usage:
+
+  curl -X POST \
+    -H "X-Parse-Application-Id: {{ .Values.server.appId }}" \
+    -H "Content-Type: application/json" \
+    -d '{"score":1337,"playerName":"Sean Plott","cheatMode":false}' \
+    http://$SERVICE_IP{{ .Values.server.mountPath }}/classes/GameScore
+
+{{ if .Values.dashboard.enabled -}}
+Parse Dashboard
+---------------
+{{ if empty (include "parse.host" .) }}
+###############################################################################
+### ERROR: You did not provide an external host in your 'helm install' call ###
+###############################################################################
+
+Your Parse Dashboard deployment will be incomplete until you configure your
+Parse Server with a resolvable host. To configure Parse with the URL of your
+service:
+
+1. Get the Parse Server URL by running:
+
+  NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+        Watch the status with: 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "parse.fullname" . }}'
+
+  export APP_HOST=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "parse.fullname" . }} --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
+
+2. Complete your Parse Dashboard deployment by running:
+
+  helm upgrade {{ .Release.Name }} \
+    --set server.host=$APP_HOST,server.port={{ .Values.server.port }},server.masterKey=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "parse.fullname" . }} -o jsonpath="{.data.master-key}" | base64 --decode),dashboard.username={{ .Values.dashboard.username }},dashboard.password=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "parse.fullname" . }} -o jsonpath="{.data.parse-dashboard-password}" | base64 --decode) stable/parse
+
+{{ else }}
+1. Get the Parse Dashboard URL by running:
+
+{{- if eq .Values.serviceType "ClusterIP" }}
+
+  export DASHBOARD_POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "parse.name" . }},release={{ .Release.Name }},component=dashboard" -o jsonpath="{.items[0].metadata.name}")
+  echo http://127.0.0.1:4040/
+  kubectl port-forward $DASHBOARD_POD_NAME 4040:4040
+{{- else }}
+
+  echo http://{{ include "parse.host" . }}/
+{{- end }}
+
+2. Get your Parsh Dashboard login credentials by running:
+
+  echo Username: {{ .Values.dashboard.username }}
+  echo Password: $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "parse.fullname" . }} -o jsonpath="{.data.parse-dashboard-password}" | base64 --decode)
+{{- end }}
+{{- end }}

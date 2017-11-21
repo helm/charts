@@ -9,7 +9,12 @@ image:
 # labels:
 #   kubernetes.io/cluster-service: "true"
 #   kubernetes.io/name: "Heapster"
-labels:
+labels: {}
+
+## Node labels for pod assignment
+## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+##
+nodeSelector: {}
 
 service:
   type: ClusterIP
@@ -44,6 +49,9 @@ command:
 - "/heapster"
 - "--source=kubernetes.summary_api:''"
 
+## heapster env variables
+env: []
+
 ## Resizer scales resources linearly with the number of nodes in the cluster
 ## Resizer is enabled by default
 ##
@@ -72,3 +80,11 @@ resizer:
   - "--extra-memory=6Mi"
   - "--threshold=5"
   - "--poll-period=300000"
+
+## For RBAC support:
+rbac:
+  create: false
+
+  ## Ignored if rbac.create is true
+  ##
+  serviceAccountName: default

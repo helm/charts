@@ -1,9 +1,9 @@
 Memcached can be accessed via port 11211 on the following DNS name from within your cluster:
-{{ template "fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
+{{ template "memcached.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
 
 If you'd like to test your instance, forward the port locally:
 
-  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "fullname" . }}" -o jsonpath="{.items[0].metadata.name}")
+  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "memcached.fullname" . }}" -o jsonpath="{.items[0].metadata.name}")
   kubectl port-forward $POD_NAME 11211
 
 In another tab, attempt to set a key:

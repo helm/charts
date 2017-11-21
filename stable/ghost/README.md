@@ -52,14 +52,14 @@ The following tables lists the configurable parameters of the Ghost chart and th
 | `ghostHost`                       | Ghost host to create application URLs                 | `nil`                                                     |
 | `ghostPort`                       | Ghost port to create application URLs along with host | `80`                                                      |
 | `ghostLoadBalancerIP`             | `loadBalancerIP` for the Ghost Service                | `nil`                                                     |
-| `ghostUsername`                   | User of the application                               | `user`                                                    |
+| `ghostUsername`                   | User of the application                               | `user@example.com`                                        |
 | `ghostPassword`                   | Application password                                  | Randomly generated                                        |
 | `ghostEmail`                      | Admin email                                           | `user@example.com`                                        |
 | `ghostBlogTitle`                  | Ghost Blog name                                       | `User's Blog`                                             |
 | `mariadb.mariadbRootPassword`     | MariaDB admin password                                | `nil`                                                     |
 | `serviceType`                     | Kubernetes Service type                               | `LoadBalancer`                                            |
 | `persistence.enabled`             | Enable persistence using PVC                          | `true`                                                    |
-| `persistence.storageClass`        | PVC Storage Class for Ghost volume                    | `nil` (uses alpha storage annotation) |
+| `persistence.storageClass`        | PVC Storage Class for Ghost volume                    | `nil` (uses alpha storage annotation)                     |
 | `persistence.accessMode`          | PVC Access Mode for Ghost volume                      | `ReadWriteOnce`                                           |
 | `persistence.size`                | PVC Storage Request for Ghost volume                  | `8Gi`                                                     |
 | `resources`                       | CPU/Memory resource requests/limits                   | Memory: `512Mi`, CPU: `300m`                              |

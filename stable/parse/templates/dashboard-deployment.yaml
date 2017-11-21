@@ -1,0 +1,67 @@
+{{- if and (include "parse.host" .) .Values.dashboard.enabled -}}
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "parse.fullname" . }}-dashboard
+  labels:
+    app: {{ template "parse.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+    component: "dashboard"
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: {{ template "parse.name" . }}
+        release: "{{ .Release.Name }}"
+        component: "dashboard"
+    spec:
+      containers:
+      - name: {{ template "parse.fullname" . }}
+        image: "{{ .Values.dashboard.image }}"
+        imagePullPolicy: {{ .Values.dashboard.imagePullPolicy | quote }}
+        env:
+        - name: PARSE_DASHBOARD_USER
+          value: {{ .Values.dashboard.username }}
+        - name: PARSE_DASHBOARD_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "parse.fullname" . }}
+              key: parse-dashboard-password
+        - name: PARSE_HOST
+          value: {{ include "parse.host" . | quote }}
+        - name: PARSE_PORT_NUMBER
+          value: {{ .Values.server.port | quote }}
+        - name: PARSE_APP_ID
+          value: {{ .Values.server.appId | quote }}
+        - name: PARSE_MASTER_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "parse.fullname" . }}
+              key: master-key
+        - name: PARSE_DASHBOARD_APP_NAME
+          value: {{ .Values.dashboard.appName | quote }}
+        ports:
+        - name: dashboard-http
+          containerPort: 4040
+        livenessProbe:
+          httpGet:
+            path: /
+            port: dashboard-http
+          initialDelaySeconds: 240
+        readinessProbe:
+          httpGet:
+            path: /
+            port: dashboard-http
+          initialDelaySeconds: 30
+        resources:
+{{ toYaml .Values.dashboard.resources | indent 10 }}
+        volumeMounts:
+        - name: parse-dashboard-data
+          mountPath: /bitnami/parse-dashboard
+      volumes:
+      - name: parse-dashboard-data
+        emptyDir: {}
+{{- end -}}

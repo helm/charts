@@ -1,11 +1,23 @@
 MariaDB can be accessed via port 3306 on the following DNS name from within your cluster:
-{{ template "fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
+{{ template "mariadb.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
+
+{{ if .Values.usePassword -}}
+To get the root password run:
+
+    MARIADB_ROOT_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "mariadb.fullname" . }} -o jsonpath="{.data.mariadb-root-password}" | base64 --decode)
+
+{{ if .Values.mariadbUser -}}
+To get the password for "{{ .Values.mariadbUser }}" run:
+
+    MARIADB_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "mariadb.fullname" . }} -o jsonpath="{.data.mariadb-password}" | base64 --decode)
+{{- end }}
+{{- end -}}
 
 To connect to your database:
 
 1. Run a pod that you can use as a client:
 
-    kubectl run {{ template "fullname" . }}-client --rm --tty -i --image bitnami/mariadb --command -- bash
+    kubectl run {{ template "mariadb.fullname" . }}-client --rm --tty -i {{ if .Values.usePassword }}--env MARIADB_ROOT_PASSWORD=$MARIADB_ROOT_PASSWORD{{ end }} --image bitnami/mariadb --command -- bash
 
 2. Connect using the mysql cli, then provide your password:
-    $ mysql -h {{ template "fullname" . }} {{- if .Values.mariadbRootPassword }} -p {{ .Values.mariadbRootPassword }}{{- end -}}
+    mysql -h {{ template "mariadb.fullname" . }} {{- if .Values.usePassword }} -p$MARIADB_ROOT_PASSWORD{{ end }}

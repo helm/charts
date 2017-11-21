@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "fullname" . }}-tests
+data:
+  run.sh: |-
+    @test "Testing Spinnaker UI is accessible" {
+      curl --retry 12 --retry-delay 10 {{ template "fullname" . }}-deck:9000
+    }
+    @test "Testing Jenkins UI is accessible" {
+      curl --retry 12 --retry-delay 10 {{.Release.Name}}-jenkins:8080/login
+    }

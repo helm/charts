@@ -1,10 +1,10 @@
 {{- if and .Values.cluster.enabled (not .Release.IsInstall) -}}
-apiVersion: "etcd.coreos.com/v1beta1"
-kind: "Cluster"
+apiVersion: "etcd.database.coreos.com/v1beta2"
+kind: "EtcdCluster"
 metadata:
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    app: "{{ template "fullname" . }}"
+    app: "{{ template "etcd-operator.fullname" . }}"
     heritage: "{{ .Release.Service }}"
     release: "{{ .Release.Name }}"
   name: "{{ .Values.cluster.name }}"
@@ -15,4 +15,10 @@ spec:
   backup:
 {{ toYaml .Values.cluster.backup.config | indent 4 }}
   {{- end -}}
+  {{- if .Values.cluster.restore.enabled }}
+  restore:
+{{ toYaml .Values.cluster.restore.config | indent 4 }}
+  {{- end }}
+  pod:
+{{ toYaml .Values.cluster.pod | indent 4 }}
 {{- end -}}

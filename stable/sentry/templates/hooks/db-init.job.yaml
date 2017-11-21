@@ -2,7 +2,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: "{{.Release.Name}}-db-init"
+  name: "{{ .Release.Name }}-db-init"
   labels:
     app: {{ template "fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
@@ -16,7 +16,7 @@ metadata:
 spec:
   template:
     metadata:
-      name: "{{.Release.Name}}-db-init"
+      name: "{{ .Release.Name }}-db-init"
       labels:
         app: {{ template "fullname" . }}
         release: "{{ .Release.Name }}"
@@ -42,7 +42,7 @@ spec:
               name: {{ template "postgresql.fullname" . }}
               key: postgres-password
         - name: SENTRY_POSTGRES_HOST
-          value: {{ template "postgresql.fullname" .}}
+          value: {{ template "postgresql.fullname" . }}
         - name: SENTRY_POSTRGES_PORT
           value: "5432"
         - name: SENTRY_REDIS_PASSWORD
@@ -51,7 +51,7 @@ spec:
               name: {{ template "redis.fullname" . }}
               key: redis-password
         - name: SENTRY_REDIS_HOST
-          value: {{ template "redis.fullname" .}}
+          value: {{ template "redis.fullname" . }}
         - name: SENTRY_REDIS_PORT
           value: "6379"
         - name: SENTRY_EMAIL_HOST

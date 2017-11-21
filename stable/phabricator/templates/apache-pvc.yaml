@@ -2,22 +2,23 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: {{ template "fullname" . }}-apache
+  name: {{ template "phabricator.fullname" . }}-apache
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "phabricator.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
-  annotations:
-  {{- if .Values.persistence.apache.storageClass }}
-    volume.beta.kubernetes.io/storage-class: {{ .Values.persistence.apache.storageClass | quote }}
-  {{- else }}
-    volume.alpha.kubernetes.io/storage-class: default
-  {{- end }}
 spec:
   accessModes:
     - {{ .Values.persistence.apache.accessMode | quote }}
   resources:
     requests:
       storage: {{ .Values.persistence.apache.size | quote }}
+{{- if .Values.persistence.apache.storageClass }}
+{{- if (eq "-" .Values.persistence.apache.storageClass) }}
+  storageClassName: ""
+{{- else }}
+  storageClassName: "{{ .Values.persistence.apache.storageClass }}"
+{{- end }}
+{{- end }}
 {{- end -}}

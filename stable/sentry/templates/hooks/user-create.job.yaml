@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: "{{.Release.Name}}-user-create"
+  name: "{{ .Release.Name }}-user-create"
   labels:
     app: {{ template "fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
@@ -15,7 +15,7 @@ metadata:
 spec:
   template:
     metadata:
-      name: "{{.Release.Name}}-user-create"
+      name: "{{ .Release.Name }}-user-create"
       labels:
         app: {{ template "fullname" . }}
         release: "{{ .Release.Name }}"
@@ -24,7 +24,7 @@ spec:
       containers:
       - name: user-create-job
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-        command: ["sentry","createuser","--no-input","--email","admin@sentry.local", "--superuser","--password","$(SENTRY_USER_PASSWORD)"]
+        command: ["sentry","createuser","--no-input","--email", "{{ .Values.user.email }}", "--superuser","--password","$(SENTRY_USER_PASSWORD)"]
         env:
         - name: SENTRY_SECRET_KEY
           valueFrom:
@@ -41,7 +41,7 @@ spec:
               name: {{ template "postgresql.fullname" . }}
               key: postgres-password
         - name: SENTRY_POSTGRES_HOST
-          value: {{ template "postgresql.fullname" .}}
+          value: {{ template "postgresql.fullname" . }}
         - name: SENTRY_POSTRGES_PORT
           value: "5432"
         - name: SENTRY_REDIS_PASSWORD
@@ -50,7 +50,7 @@ spec:
               name: {{ template "redis.fullname" . }}
               key: redis-password
         - name: SENTRY_REDIS_HOST
-          value: {{ template "redis.fullname" .}}
+          value: {{ template "redis.fullname" . }}
         - name: SENTRY_REDIS_PORT
           value: "6379"
         - name: SENTRY_EMAIL_HOST

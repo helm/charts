@@ -10,6 +10,10 @@ metadata:
     release: {{ .Release.Name }}
   name: {{ template "prometheus.nodeExporter.fullname" . }}
 spec:
+  {{- if .Values.nodeExporter.updateStrategy }}
+  updateStrategy:
+{{ toYaml .Values.nodeExporter.updateStrategy | indent 4 }}
+  {{- end }}
   template:
     metadata:
     {{- if .Values.nodeExporter.podAnnotations }}
@@ -21,13 +25,14 @@ spec:
         component: "{{ .Values.nodeExporter.name }}"
         release: {{ .Release.Name }}
     spec:
+      serviceAccountName: {{ if .Values.rbac.create }}{{ template "prometheus.nodeExporter.fullname" . }}{{ else }}"{{ .Values.nodeExporter.serviceAccountName }}"{{ end }}
       containers:
         - name: {{ template "prometheus.name" . }}-{{ .Values.nodeExporter.name }}
           image: "{{ .Values.nodeExporter.image.repository }}:{{ .Values.nodeExporter.image.tag }}"
           imagePullPolicy: "{{ .Values.nodeExporter.image.pullPolicy }}"
           args:
-            - --collector.procfs=/host/proc
-            - --collector.sysfs=/host/sys
+            - --path.procfs=/host/proc
+            - --path.sysfs=/host/sys
           {{- range $key, $value := .Values.nodeExporter.extraArgs }}
             - --{{ $key }}={{ $value }}
           {{- end }}
@@ -51,6 +56,10 @@ spec:
           {{- end }}
       hostNetwork: true
       hostPID: true
+    {{- if .Values.nodeExporter.tolerations }}
+      tolerations:
+{{ toYaml .Values.nodeExporter.tolerations | indent 8 }}
+    {{- end }}
     {{- if .Values.nodeExporter.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeExporter.nodeSelector | indent 8 }}

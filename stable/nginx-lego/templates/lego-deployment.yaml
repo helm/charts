@@ -2,7 +2,7 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}-lego
+  name: {{ template "nginx-lego.fullname" . }}-lego
 spec:
   replicas: {{ .Values.lego.replicaCount }}
   template:
@@ -20,12 +20,12 @@ spec:
         - name: LEGO_EMAIL
           valueFrom:
             configMapKeyRef:
-              name: {{ template "fullname" . }}-lego
+              name: {{ template "nginx-lego.fullname" . }}-lego
               key: lego.email
         - name: LEGO_URL
           valueFrom:
             configMapKeyRef:
-              name: {{ template "fullname" . }}-lego
+              name: {{ template "nginx-lego.fullname" . }}-lego
               key: lego.url
         - name: LEGO_NAMESPACE
           valueFrom:

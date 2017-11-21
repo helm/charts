@@ -1,0 +1,4 @@
+dependencies:
+- name: common
+  version: 0.0.1
+  repository: https://kubernetes-charts-incubator.storage.googleapis.com/
