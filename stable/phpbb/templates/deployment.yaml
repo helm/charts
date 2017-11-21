@@ -19,15 +19,25 @@ spec:
         image: "{{ .Values.image }}"
         imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
         env:
+        - name: ALLOW_EMPTY_PASSWORD
+        {{- if .Values.allowEmptyPassword }}
+          value: "yes"
+        {{- else }}
+          value: "no"
+        {{- end }}
         - name: MARIADB_HOST
           value: {{ template "phpbb.mariadb.fullname" . }}
         - name: MARIADB_PORT_NUMBER
           value: "3306"
-        - name: MARIADB_PASSWORD
+        - name: PHPBB_DATABASE_NAME
+          value: {{ default "" .Values.mariadb.mariadbDatabase | quote }}
+        - name: PHPBB_DATABASE_USER
+          value: {{ default "" .Values.mariadb.mariadbUser | quote }}
+        - name: PHPBB_DATABASE_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ template "phpbb.mariadb.fullname" . }}
-              key: mariadb-root-password
+              key: mariadb-password
         - name: PHPBB_USERNAME
           value: {{ default "" .Values.phpbbUser | quote }}
         - name: PHPBB_PASSWORD

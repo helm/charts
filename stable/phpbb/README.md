@@ -52,11 +52,15 @@ The following tables lists the configurable parameters of the phpBB chart and th
 | `phpbbUser`                       | User of the application               | `user`                                                  |
 | `phpbbPassword`                   | Application password                  | _random 10 character long alphanumeric string_          |
 | `phpbbEmail`                      | Admin email                           | `user@example.com`                                      |
+| `allowEmptyPassword`              | Allow DB blank passwords              | `yes`                                                   |
 | `smtpHost`                        | SMTP host                             | `nil`                                                   |
 | `smtpPort`                        | SMTP port                             | `nil`                                                   |
 | `smtpUser`                        | SMTP user                             | `nil`                                                   |
 | `smtpPassword`                    | SMTP password                         | `nil`                                                   |
 | `mariadb.mariadbRootPassword`     | MariaDB admin password                | `nil`                                                   |
+| `mariadb.mariadbDatabase`         | Database name to create               | `bitnami_phpbb`                                         |
+| `mariadb.mariadbUser`             | Database user to create               | `bn_phpbb`                                              |
+| `mariadb.mariadbPassword`         | Password for the database             | _random 10 character long alphanumeric string_          |
 | `serviceType`                     | Kubernetes Service type               | `LoadBalancer`                                          |
 | `persistence.enabled`             | Enable persistence using PVC          | `true`                                                  |
 | `persistence.apache.storageClass` | PVC Storage Class for Apache volume   | `nil` (uses alpha storage class annotation)             |
