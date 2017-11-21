@@ -54,6 +54,10 @@ controller:
 
   extraArgs: {}
 
+  ## Additional environment variables to set
+  ##
+  extraEnvs: {}
+
   ## DaemonSet or Deployment
   ##
   kind: Deployment

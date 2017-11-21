@@ -53,6 +53,7 @@ Parameter | Description | Default
 `controller.hostNetwork` | If the nginx deployment / daemonset should run on the host's network namespace | false
 `controller.defaultBackendService` | default 404 backend service; required only if `defaultBackend.enabled = false` | `""`
 `controller.electionID` | election ID to use for the status update | `ingress-controller-leader`
+`controller.extraEnvs` | any additional environment variables to set in the pods | `{}`
 `controller.ingressClass` | name of the ingress class to route through this controller | `nginx`
 `controller.scope.enabled` | limit the scope of the ingress controller | `false` (watch all namespaces)
 `controller.scope.namespace` | namespace to watch for ingress | `""` (use the release namespace)
