@@ -1,0 +1,7 @@
+name: openfaas
+home: https://blog.alexellis.io/introducing-functions-as-a-service/
+version: 1.0.0
+description: Enable Kubernetes as a backend for OpenFaaS (Functions as a Service)
+sources:
+- https://github.com/openfaas/faas
+- https://github.com/openfaas/faas-netes

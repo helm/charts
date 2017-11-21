@@ -1,0 +1,92 @@
+{{- if .Values.async }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: {{ template "faas-netesd.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: nats
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: nats
+  namespace: {{ .Release.Namespace | quote }}
+spec:
+  type: ClusterIP
+  ports:
+    - port: 4222
+      protocol: TCP
+  selector:
+    app: nats
+---
+apiVersion: apps/v1beta1 # for versions before 1.6.0 use extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: {{ template "faas-netesd.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: nats
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: nats
+  namespace: {{ .Release.Namespace | quote }}
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: nats
+    spec:
+      containers:
+      - name:  nats
+        {{- if .Values.armhf }}
+        image: {{ .Values.images.natsArmhf }}
+        {{- else }}
+        image: {{ .Values.images.nats }}
+        {{- end }}
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 4222
+          protocol: TCP
+        - containerPort: 8222
+          protocol: TCP
+        command: ["/nats-streaming-server"]
+        args:
+          - --store
+          - memory
+          - --cluster_id
+          - faas-cluster
+---
+apiVersion: apps/v1beta1 # for versions before 1.6.0 use extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: {{ template "faas-netesd.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: queue-worker
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: queue-worker
+  namespace: {{ .Release.Namespace | quote }}
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: queue-worker
+    spec:
+      containers:
+      - name:  queue-worker
+        {{- if .Values.armhf }}
+        image: {{ .Values.images.queueWorkerArmhf }}
+        {{- else }}
+        image: {{ .Values.images.queueWorker }}
+        {{- end }}
+        imagePullPolicy: Always
+        {{- if .Values.functionNamespace }}
+        env:
+        - name: faas_function_suffix
+          value: .{{ .Values.functionNamespace }}
+        {{- end }}
+---
+{{- end }}

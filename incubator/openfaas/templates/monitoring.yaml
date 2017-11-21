@@ -1,0 +1,141 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: {{ template "faas-netesd.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: prometheus
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: prometheus
+  namespace: {{ .Release.Namespace | quote }}
+spec:
+  type: ClusterIP
+  ports:
+    - port: 9090
+      protocol: TCP
+  selector:
+    app: prometheus
+---
+apiVersion: apps/v1beta1 # for versions before 1.6.0 use extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: {{ template "faas-netesd.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: prometheus
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: prometheus
+  namespace: {{ .Release.Namespace | quote }}
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: prometheus
+      annotations:
+        checksum/prometheus-config: {{ include (print $.Template.BasePath "/configmaps.yaml") . | sha256sum | quote }}
+    spec:
+      containers:
+      - name: prometheus
+        {{- if .Values.armhf }}
+        image: {{ .Values.images.prometheusArmhf }}
+        {{- else }}
+        image: {{ .Values.images.prometheus }}
+        {{- end }}
+        command:
+          - prometheus
+          - -config.file=/etc/prometheus/prometheus.yml
+          - -storage.local.path=/prometheus
+          - -storage.local.memory-chunks=10000
+          - --alertmanager.url=http://alertmanager:9093
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 9090
+          protocol: TCP
+        volumeMounts:
+        - mountPath: /etc/prometheus/prometheus.yml
+          name: prometheus-config
+          subPath: prometheus.yml
+        - mountPath: /etc/prometheus/alert.rules
+          name: prometheus-config
+          subPath: alert.rules
+      volumes:
+        - name: prometheus-config
+          configMap:
+            name: prometheus-config
+            items:
+              - key: prometheus.yml
+                path: prometheus.yml
+                mode: 0644
+              - key: alert.rules
+                path: alert.rules
+                mode: 0644
+---
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: {{ template "faas-netesd.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: alertmanager
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: alertmanager
+  namespace: {{ .Release.Namespace | quote }}
+spec:
+  type: ClusterIP
+  ports:
+    - port: 9093
+      protocol: TCP
+  selector:
+    app: alertmanager
+---
+apiVersion: apps/v1beta1 # for versions before 1.6.0 use extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: {{ template "faas-netesd.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: alertmanager
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: alertmanager
+  namespace: {{ .Release.Namespace | quote }}
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: alertmanager
+      annotations:
+        checksum/alertmanager-config: {{ include (print $.Template.BasePath "/configmaps.yaml") . | sha256sum | quote  }}
+    spec:
+      containers:
+      - name: alertmanager
+        {{- if .Values.armhf }}
+        image: {{ .Values.images.alertmanagerArmhf }}
+        {{- else }}
+        image: {{ .Values.images.alertmanager }}
+        {{- end }}
+        imagePullPolicy: Always
+        command: ["/bin/alertmanager","-config.file=/alertmanager.yml", "-storage.path=/alertmanager"]
+        ports:
+        - containerPort: 9003
+          protocol: TCP
+        volumeMounts:
+        - mountPath: /alertmanager.yml
+          name: alertmanager-config
+          subPath: alertmanager.yml
+      volumes:
+        - name: alertmanager-config
+          configMap:
+            name: alertmanager-config
+            items:
+              - key: alertmanager.yml
+                path: alertmanager.yml
+                mode: 0644
+---
