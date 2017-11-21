@@ -4,6 +4,10 @@ metadata:
   name: "{{ template "neo4j.core.fullname" . }}"
 spec:
   serviceName: {{ template "neo4j.fullname" . }}
+  selector:
+    matchLabels:
+      app: {{ template "neo4j.name" . }}
+      component: core
   replicas: {{ .Values.core.numberOfServers }}
   template:
     metadata:
