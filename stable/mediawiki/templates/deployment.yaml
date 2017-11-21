@@ -25,6 +25,11 @@ spec:
         {{- else }}
           value: "no"
         {{- end }}
+        - name: MARIADB_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "mediawiki.mariadb.fullname" . }}
+              key: mariadb-root-password
         - name: MARIADB_HOST
           value: {{ template "mediawiki.mariadb.fullname" . }}
         - name: MARIADB_PORT_NUMBER
