@@ -10,9 +10,11 @@ image:
 ## ref: http://kubernetes.io/docs/user-guide/services/
 ##
 service:
+  ## Add annotations to service
+  # annotations: {}
   type: ClusterIP
 
-## Persist data to a persitent volume
+## Persist data to a persistent volume
 ##
 persistence:
   enabled: false
@@ -74,7 +76,13 @@ resources:
   limits:
     memory: 16Gi
     cpu: 8
-    
+
+## Node labels for pod assignment
+## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+##
+nodeSelector: {}
+
+
 ## Change InfluxDB configuration paramaters below:
 ## Defaults are indicated
 ## ref: https://docs.influxdata.com/influxdb/v1.1/administration/config/

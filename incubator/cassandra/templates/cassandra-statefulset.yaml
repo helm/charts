@@ -45,6 +45,9 @@ spec:
     metadata:
       labels:
         app: {{ template "cassandra.fullname" . }}
+{{- if .Values.podLabels }}
+{{ toYaml .Values.podLabels | indent 8 }}
+{{- end }}
     spec:
 {{- if .Values.selector }}
 {{ toYaml .Values.selector | indent 6 }}
@@ -113,16 +116,17 @@ spec:
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         release: "{{ .Release.Name }}"
         heritage: "{{ .Release.Service }}"
-      annotations:
-      {{- if .Values.persistence.storageClass }}
-        volume.beta.kubernetes.io/storage-class: {{ .Values.persistence.storageClass | quote }}
-      {{- else }}
-        volume.alpha.kubernetes.io/storage-class: default
-      {{- end }}
     spec:
       accessModes:
         - {{ .Values.persistence.accessMode | quote }}
       resources:
         requests:
           storage: {{ .Values.persistence.size | quote }}
+    {{- if .Values.persistence.storageClass }}
+    {{- if (eq "-" .Values.persistence.storageClass) }}
+      storageClassName: ""
+    {{- else }}
+      storageClassName: "{{ .Values.persistence.storageClass }}"
+    {{- end }}
+    {{- end }}
 {{- end }}

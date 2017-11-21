@@ -13,9 +13,9 @@ spec:
     matchLabels:
       app: {{ include "zookeeper.name" . | quote }}
       release: {{ .Release.Name | quote }}
-  {{- if .Values.MinAvailable }}
-  minAvailable: {{ .Values.MinAvailable }}
+  {{- if .Values.minAvailable }}
+  minAvailable: {{ .Values.minAvailable }}
   {{- else }}
-  minAvailable: {{ sub .Values.Servers 1 }}
+  minAvailable: {{ sub .Values.servers 1 }}
   {{- end }}
 {{- end -}}

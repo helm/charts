@@ -2,17 +2,18 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: {{ template "fullname" . }}-owncloud
-  annotations:
-  {{- if .Values.persistence.owncloud.storageClass }}
-    volume.beta.kubernetes.io/storage-class: {{ .Values.persistence.owncloud.storageClass | quote }}
-  {{- else }}
-    volume.alpha.kubernetes.io/storage-class: default
-  {{- end }}
+  name: {{ template "owncloud.fullname" . }}-owncloud
 spec:
   accessModes:
     - {{ .Values.persistence.owncloud.accessMode | quote }}
   resources:
     requests:
       storage: {{ .Values.persistence.owncloud.size | quote }}
+{{- if .Values.persistence.owncloud.storageClass }}
+{{- if (eq "-" .Values.persistence.owncloud.storageClass) }}
+  storageClassName: ""
+{{- else }}
+  storageClassName: "{{ .Values.persistence.owncloud.storageClass }}"
+{{- end }}
+{{- end }}
 {{- end -}}

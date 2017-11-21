@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "coredns.fullname" . }}
 data:
   Corefile: |-
     .:53 {

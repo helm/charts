@@ -1,10 +1,10 @@
 {{- if .Values.agent.token }}
 
-The {{ template "fullname" . }} is getting provisioned in your cluster. After a few minutes, you can run the following to verify.
+The {{ template "buildkite.fullname" . }} is getting provisioned in your cluster. After a few minutes, you can run the following to verify.
 
-To verify that {{ template "fullname" . }} has started, run:
+To verify that {{ template "buildkite.fullname" . }} has started, run:
 
-  kubectl --namespace={{ .Release.Namespace }} get pods -l "app={{ template "name" . }},release={{ .Release.Name }}"
+  kubectl --namespace={{ .Release.Namespace }} get pods -l "app={{ template "buildkite.name" . }},release={{ .Release.Name }}"
 
 {{- else }}
 
@@ -16,7 +16,7 @@ Pods will not go to the running state if the Buildkite Agent Token was not provi
 
 This deployment will be incomplete until you provide Buildkite Agent Token:
 
-  helm upgrade {{ template "fullname" . }} stable/builkite \
+  helm upgrade {{ template "buildkite.fullname" . }} stable/builkite \
       --set agent.token="YOUR_BUILKITE_TOKEN"
 
 {{- end }}

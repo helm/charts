@@ -14,12 +14,15 @@ spec:
       labels: {{ include "external-dns.labels" . | indent 8 }}
     spec:
       containers:
-        - name: {{ template "name" . }}
+        - name: {{ template "external-dns.name" . }}
           image: "{{.Values.image.name}}:{{ .Values.image.tag }}"
           imagePullPolicy: "{{ .Values.image.pullPolicy }}"
           args:
-          {{- if .Values.debug }}
-            - --debug
+          {{- if .Values.logLevel }}
+            - --log-level={{ .Values.logLevel }}
+          {{- end }}
+          {{- if .Values.publishInternalServices }}
+            - --publish-internal-services
           {{- end }}
           {{- range .Values.domainFilters }}
             - --domain-filter={{ . }}
@@ -30,10 +33,17 @@ spec:
             - --source={{ . }}
           {{- end }}
           {{- range $key, $value := .Values.extraArgs }}
+            {{- if $value }}
             - --{{ $key }}={{ $value }}
+            {{- else }}
+            - --{{ $key }}
+            {{- end }}
+          {{- end }}
+          {{- if .Values.aws.zone_type }}
+            - --zone-type={{ .Values.aws.zone_type }}
           {{- end }}
           env:
-          {{- if and .Values.aws.secret_key .Values.aws.access_key }}
+        {{- if and .Values.aws.secret_key .Values.aws.access_key }}
           - name: AWS_ACCESS_KEY_ID
             valueFrom:
               secretKeyRef:
@@ -44,11 +54,20 @@ spec:
               secretKeyRef:
                 name: {{ template "external-dns.fullname" . }}
                 key: aws_secret_access_key
-          {{- end }}
-          {{- if .Values.aws.region }}
+        {{- end }}
+        {{- if .Values.aws.region }}
           - name: AWS_DEFAULT_REGION
             value: {{ .Values.aws.region }}
-          {{- end }}
+        {{- end }}
+        {{- if and .Values.cloudflare.api_key .Values.cloudflare.email }}
+          - name: CF_API_KEY
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "external-dns.fullname" . }}
+                key: cloudflare_api_key
+          - name: CF_API_EMAIL
+            value: "{{ .Values.cloudflare.email }}"
+        {{- end }}
           livenessProbe:
             httpGet:
               path: /healthz
@@ -62,5 +81,9 @@ spec:
     {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
+    {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
     {{- end }}
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "external-dns.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
