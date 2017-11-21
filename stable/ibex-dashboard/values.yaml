@@ -53,7 +53,8 @@ persistence:
   # existingClassName: false
   # storageClass: slow
   ## Azure sample settings for storage
-  # storage:
+  storage:
+    provisionerEnabled: false
     # provisioner: kubernetes.io/azure-disk
     # parameters:
       # skuName: Standard_LRS
