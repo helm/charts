@@ -44,6 +44,6 @@ rules:
   resources:
     - "configmaps"
   verbs: ["create"]
-{{ end }}
+{{- end }}
 {{- end -}}
 
