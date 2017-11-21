@@ -9,6 +9,9 @@ metadata:
     component: "{{ .Release.Name }}-{{ .Values.Component }}"
 spec:
   type: ClusterIP
+  clusterIP: None
   ports:
   - port: 5432
     targetPort: 5432
+  selector:
+    component: "{{ .Release.Name }}-{{ .Values.Component }}"
