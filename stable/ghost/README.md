@@ -56,7 +56,11 @@ The following tables lists the configurable parameters of the Ghost chart and th
 | `ghostPassword`                   | Application password                                  | Randomly generated                                        |
 | `ghostEmail`                      | Admin email                                           | `user@example.com`                                        |
 | `ghostBlogTitle`                  | Ghost Blog name                                       | `User's Blog`                                             |
+| `allowEmptyPassword`              | Allow DB blank passwords                              | `yes`                                                     |
 | `mariadb.mariadbRootPassword`     | MariaDB admin password                                | `nil`                                                     |
+| `mariadb.mariadbDatabase`         | Database name to create                               | `bitnami_ghost`                                           |
+| `mariadb.mariadbUser`             | Database user to create                               | `bn_ghost`                                                |
+| `mariadb.mariadbPassword`         | Password for the database                             | _random 10 character long alphanumeric string_            |
 | `serviceType`                     | Kubernetes Service type                               | `LoadBalancer`                                            |
 | `persistence.enabled`             | Enable persistence using PVC                          | `true`                                                    |
 | `persistence.storageClass`        | PVC Storage Class for Ghost volume                    | `nil` (uses alpha storage annotation)                     |

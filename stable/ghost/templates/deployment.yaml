@@ -28,15 +28,30 @@ spec:
         image: "{{ .Values.image }}"
         imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
         env:
-        - name: MARIADB_HOST
-          value: {{ template "ghost.mariadb.fullname" . }}
-        - name: MARIADB_PORT_NUMBER
-          value: "3306"
-        - name: MARIADB_PASSWORD
+        - name: ALLOW_EMPTY_PASSWORD
+        {{- if .Values.allowEmptyPassword }}
+          value: "yes"
+        {{- else }}
+          value: "no"
+        {{- end }}
+        - name: MARIADB_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ template "ghost.mariadb.fullname" . }}
               key: mariadb-root-password
+        - name: MARIADB_HOST
+          value: {{ template "ghost.mariadb.fullname" . }}
+        - name: MARIADB_PORT_NUMBER
+          value: "3306"
+        - name: GHOST_DATABASE_NAME
+          value: {{ default "" .Values.mariadb.mariadbDatabase | quote }}
+        - name: GHOST_DATABASE_USER
+          value: {{ default "" .Values.mariadb.mariadbUser | quote }}
+        - name: GHOST_DATABASE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "ghost.mariadb.fullname" . }}
+              key: mariadb-password
         - name: GHOST_HOST
           value: {{ include "ghost.host" . | quote }}
         - name: GHOST_PORT_NUMBER
