@@ -1,0 +1,63 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "keycloak.fullname" . }}
+  labels:
+    app: {{ template "keycloak.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: {{ template "keycloak.name" . }}
+        release: "{{ .Release.Name }}"
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        env:
+        - name: PROXY_ADDRESS_FORWARDING
+          value: "true"
+        - name: KEYCLOAK_LOGLEVEL
+          value: {{ .Values.keycloak.loglevel | quote }}
+        - name: KEYCLOAK_USER
+          value: {{ .Values.keycloak.username | quote }}
+        - name: KEYCLOAK_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "keycloak.fullname" . }}
+              key: keycloak-password
+
+        - name: POSTGRES_PORT_5432_TCP_ADDR
+          value: {{ template "keycloak.postgresql.fullname" . }}
+        - name: POSTGRES_PORT_5432_TCP_PORT
+          value: "5432"
+        - name: POSTGRES_USER
+          value: {{ .Values.postgresql.postgresUser | quote }}
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "keycloak.postgresql.fullname" . }}
+              key: postgres-password
+        - name: POSTGRES_DATABASE
+          value: {{ .Values.postgresql.postgresDatabase | quote }}
+        ports:
+        - containerPort: 8080
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          initialDelaySeconds: 120
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          initialDelaySeconds: 5
+          timeoutSeconds: 1
+        resources:
+{{ toYaml .Values.keycloak.resources | indent 10 }}

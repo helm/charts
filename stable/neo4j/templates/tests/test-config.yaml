@@ -1,0 +1,71 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "neo4j.fullname" . }}-tests
+  labels:
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    app: {{ template "neo4j.name" . }}
+data:
+  run.sh: |-
+    @test "Testing Neo4j cluster has quorum" {
+      echo "checking if the cluster is up"
+      check_machine() {
+        name=$1
+        end="$((SECONDS+90))"
+        while true; do
+          echo "testing http://neo4j:${NEO4J_SECRETS_PASSWORD}@$name:7474/db/data"
+          out=`wget http://neo4j:${NEO4J_SECRETS_PASSWORD}@$name:7474/db/data -O - 2>&1`
+          echo "out: $out"
+          wget http://neo4j:${NEO4J_SECRETS_PASSWORD}@$name:7474/db/data -O - 2>&1
+          response_code=$?
+          echo "response: $response_code"
+          [[ "0" = "$response_code" ]] && break
+          [[ "${SECONDS}" -ge "${end}" ]] && exit 1
+          sleep 1
+        done
+      }
+
+      for id in {0..2}; do
+        name="${STATEFULSET_NAME}-core-$id.${STATEFULSET_NAME}.default.svc.cluster.local"
+        echo "checking $name"
+        run check_machine $name
+        echo $status
+        echo $output
+        [ "$status" -eq 0 ]
+      done
+    }
+
+    @test "Testing we can get the cluster role of each server" {
+      check_role() {
+        name=$1
+        end="$((SECONDS+90))"
+        while true; do
+          echo "checking cluster role: $name"
+          kubectl exec $name -- bin/cypher-shell -u neo4j -p ${NEO4J_SECRETS_PASSWORD} "call dbms.cluster.role()"
+          response_code=$?
+          echo "response: $response_code"
+          [[ "0" = "$response_code" ]] && break
+          [[ "${SECONDS}" -ge "${end}" ]] && exit 1
+          sleep 1
+        done
+      }
+
+      for id in {0..2}; do
+        name="${STATEFULSET_NAME}-core-$id"
+        echo "checking role of $name"
+        run check_role $name
+        echo $status
+        echo $output
+        [ "$status" -eq 0 ]
+      done
+
+      # kill a machine and make sure it comes back again
+      machine_to_kill="${STATEFULSET_NAME}-core-0"
+      kubectl delete pod ${machine_to_kill}
+      run check_role ${machine_to_kill}
+      echo $status
+      echo $output
+      [ "$status" -eq 0 ]
+    }
