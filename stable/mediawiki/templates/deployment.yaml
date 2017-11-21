@@ -19,11 +19,21 @@ spec:
         image: "{{ .Values.image }}"
         imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
         env:
+        - name: ALLOW_EMPTY_PASSWORD
+        {{- if .Values.allowEmptyPassword }}
+          value: "yes"
+        {{- else }}
+          value: "no"
+        {{- end }}
         - name: MARIADB_HOST
           value: {{ template "mediawiki.mariadb.fullname" . }}
         - name: MARIADB_PORT_NUMBER
           value: "3306"
-        - name: MARIADB_PASSWORD
+        - name: MEDIAWIKI_DATABASE_NAME
+          value: {{ default "" .Values.mariadb.mariadbDatabase | quote }}
+        - name: MEDIAWIKI_DATABASE_USER
+          value: {{ default "" .Values.mariadb.mariadbUser | quote }}
+        - name: WORDPRESS_DATABASE_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ template "mediawiki.mariadb.fullname" . }}
