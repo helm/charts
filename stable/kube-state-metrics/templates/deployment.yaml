@@ -18,6 +18,46 @@ spec:
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "kube-state-metrics.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
       containers:
       - name: {{ .Chart.Name }}
+        args:
+{{ if .Values.collectors.daemonsets }}
+        - --collectors=daemonsets
+{{  end  }}
+{{  if .Values.collectors.deployments }}
+        - --collectors=deployments
+{{  end  }}
+{{  if .Values.collectors.limitranges  }}
+        - --collectors=limitranges
+{{  end  }}
+{{  if .Values.collectors.nodes  }}
+        - --collectors=nodes
+{{  end  }}
+{{  if .Values.collectors.pods  }}
+        - --collectors=pods
+{{  end  }}
+{{  if .Values.collectors.replicasets  }}
+        - --collectors=replicasets
+{{  end  }}
+{{  if .Values.collectors.replicationcontrollers  }}
+        - --collectors=replicationcontrollers
+{{  end  }}
+{{  if .Values.collectors.resourcequotas  }}
+        - --collectors=resourcequotas
+{{  end  }}
+{{  if .Values.collectors.services  }}
+        - --collectors=services
+{{  end  }}
+{{  if .Values.collectors.jobs  }}
+        - --collectors=jobs
+{{  end  }}
+{{  if .Values.collectors.cronjobs  }}
+        - --collectors=cronjobs
+{{  end  }}
+{{  if .Values.collectors.statefulsets  }}
+        - --collectors=statefulsets
+{{  end  }}
+{{  if .Values.collectors.persistentvolumeclaims  }}
+        - --collectors=persistentvolumeclaims
+{{  end  }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         ports:

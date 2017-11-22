@@ -80,7 +80,15 @@ data:
               </containers>
               <envVars/>
               <annotations/>
+{{- if .Values.Agent.ImagePullSecret }}
+              <imagePullSecrets>
+                <org.csanchez.jenkins.plugins.kubernetes.PodImagePullSecret>
+                  <name>{{ .Values.Agent.ImagePullSecret }}</name>
+                </org.csanchez.jenkins.plugins.kubernetes.PodImagePullSecret>
+              </imagePullSecrets>
+{{- else }}
               <imagePullSecrets/>
+{{- end }}
               <nodeProperties/>
             </org.csanchez.jenkins.plugins.kubernetes.PodTemplate>
 {{- end -}}
