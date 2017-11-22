@@ -1,5 +1,5 @@
-apiVersion: extensions/v1beta1
-kind: Deployment
+apiVersion: apps/v1beta1
+kind: StatefulSet
 metadata:
   name: {{ template "couchdb.fullname" . }}
   labels:
@@ -9,6 +9,11 @@ metadata:
     heritage: {{ .Release.Service }}
 spec:
   replicas: {{ .Values.replicaCount }}
+  serviceName: {{ template "couchdb.fullname" . }}
+  podManagementPolicy: Parallel
+  selector:
+    matchLabels:
+      app: {{ template "couchdb.name" . }}
   template:
     metadata:
       labels:
@@ -20,17 +25,32 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            - containerPort: {{ .Values.service.internalPort }}
+            - name: couchdb
+              containerPort: {{ .Values.service.internalPort }}
+            - name: epmd
+              containerPort: 4369
+            - containerPort: 9100
+          env:
+            - name: ERL_FLAGS
+              value: "-name couchdb -setcookie monster"
           livenessProbe:
             httpGet:
               path: /
               port: {{ .Values.service.internalPort }}
           readinessProbe:
             httpGet:
-              path: /
+              path: /_up
               port: {{ .Values.service.internalPort }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
+          volumeMounts:
+          - name: database-storage
+            mountPath: /var/lib/couchdb
+        - name: couchdb-statefulset-assembler
+          image: kocolosk/couchdb-statefulset-assembler:1.0.0
+      volumes:
+        - name: database-storage
+          emptyDir: {}
     {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
