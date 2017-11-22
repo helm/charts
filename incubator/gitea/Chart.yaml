@@ -1,0 +1,12 @@
+apiVersion: v1
+description: A Helm chart for Gitea
+name: gitea
+version: 0.1.0
+appVersion: 1.2
+home: https://gitea.io/
+icon: https://gitea.io/images/gitea.png
+sources:
+  - https://github.com/go-gitea/gitea
+maintainers:
+  - name: jpds
+email: jpds@protonmail.com
