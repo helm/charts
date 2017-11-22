@@ -125,4 +125,3 @@ etcdCluster:
     ## Node labels for etcd pod assignment
     ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
     nodeSelector: {}
-
