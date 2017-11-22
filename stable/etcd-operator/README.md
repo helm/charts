@@ -51,36 +51,62 @@ The following tables lists the configurable parameters of the etcd-operator char
 
 | Parameter                                         | Description                                                          | Default                                        |
 | ------------------------------------------------- | -------------------------------------------------------------------- | ---------------------------------------------- |
-| `replicaCount`                                    | Number of etcd-operator replicas to create (only 1 is supported)     | `1`                                            |
-| `image.repository`                                | etcd-operator container image                                        | `quay.io/coreos/etcd-operator`                 |
-| `image.tag`                                       | etcd-operator container image tag                                    | `v0.6.1`                                       |
-| `image.pullPolicy`                                | etcd-operator container image pull policy                            | `IfNotPresent`                                 |
-| `resources.limits.cpu`                            | CPU limit per etcd-operator pod                                      | `100m`                                         |
-| `resources.limits.memory`                         | Memory limit per etcd-operator pod                                   | `128Mi`                                        |
-| `resources.requests.cpu`                          | CPU request per etcd-operator pod                                    | `100m`                                         |
-| `resources.requests.memory`                       | Memory request per etcd-operator pod                                 | `128Mi`                                        |
-| `nodeSelector`                                    | node labels for etcd-operator pod assignment                         | `{}`                                           |
-| `cluster.enabled`                                 | Whether to enable provisioning of an etcd-cluster                    | `false`                                        |
-| `cluster.name`                                    | etcd cluster name                                                    | `etcd-cluster`                                 |
-| `cluster.version`                                 | etcd cluster version                                                 | `v3.1.8`                                       |
-| `cluster.size`                                    | etcd cluster size                                                    | `3`                                            |
-| `cluster.backup.enabled`                          | Whether to create PV for cluster backups                             | `false`                                        |
-| `cluster.backup.provisioner`                      | Which PV provisioner to use                                          | `kubernetes.io/gce-pd` (kubernetes.io/aws-ebs) |
-| `cluster.backup.config.snapshotIntervalInSecond`  | etcd snapshot interval in seconds                                    | `30`                                           |
-| `cluster.backup.config.maxSnapshot`               | maximum number of snapshots to keep                                  | `5`                                            |
-| `cluster.backup.config.storageType`               | Type of storage to provision                                         | `PersistentVolume`                             |
-| `cluster.backup.config.pv.volumeSizeInMB`         | size of backup PV                                                    | `512MB`                                        |
-| `cluster.restore.enabled`                         | Whether to restore from PV                                           | `false`                                        |
-| `cluster.restore.config.storageType`              | Type of storage to restore from                                      | `PersistentVolume`                             |
-| `cluster.restore.config.backupClusterName`        | Name of cluster to restore from                                      | `etcd-cluster`                                 |
-| `cluster.pod.antiAffinity`                        | Whether etcd cluster pods should have an antiAffinity                | `false`                                        |
-| `cluster.pod.resources.limits.cpu`                | CPU limit per etcd cluster pod                                       | `100m`                                         |
-| `cluster.pod.resources.limits.memory`             | Memory limit per etcd cluster pod                                    | `128Mi`                                        |
-| `cluster.pod.resources.requests.cpu`              | CPU request per etcd cluster pod                                     | `100m`                                         |
-| `cluster.pod.resources.requests.memory`           | Memory request per etcd cluster pod                                  | `128Mi`                                        |
-| `cluster.pod.nodeSelector`                        | node labels for etcd cluster pod assignment                          | `{}`                                           |
 | `rbac.install`                                    | install required rbac service account, roles and rolebindings        | `false`                                         |
 | `rbac.apiVersion`                                 | rbac api version `v1alpha1|v1beta1`                                  | `v1beta1`                                      |
+| `deployments.etcdOperator`                        | Deploy the etcd cluster operator                                     | `true`                                         |
+| `deployments.backupOperator`                      | Deploy the etcd backup operator                                      | `true`                                         |
+| `deployments.restoreOperator`                     | Deploy the etcd restore operator                                     | `true`                                         |
+| `customResources.createEtcdClusterCRD`            | Create a custom resource: EtcdCluster                                | `true`                                         |
+| `customResources.createBackupCRD`                 | Create an a custom resource: EtcdBackup                              | `false`                                        |
+| `customResources.createRestoreCRD`                | Create an a custom resource: EtcdRestore                             | `false`                                        |
+| `etcdOperator.name`                               | Etcd Operator name                                                   | `etcd-operator`                                |
+| `etcdOperator.replicaCount`                       | Number of operator replicas to create (only 1 is supported)          | `1`                                            |
+| `etcdOperator.image.repository`                   | etcd-operator container image                                        | `quay.io/coreos/etcd-operator`                 |
+| `etcdOperator.image.tag`                          | etcd-operator container image tag                                    | `v0.7.0`                                       |
+| `etcdOperator.image.pullpolicy`                   | etcd-operator container image pull policy                            | `Always`                                       |
+| `etcdOperator.resources.cpu`                      | CPU limit per etcd-operator pod                                      | `100m`                                         |
+| `etcdOperator.resources.memory`                   | Memory limit per etcd-operator pod                                   | `128Mi`                                        |
+| `etcdOperator.nodeSelector`                       | Node labels for etcd operator pod assignment                         | `{}`                                           |
+| `etcdOperator.commandArgs`                        | Additional command arguments                                         | `{}`                                           |
+| `backupOperator.name`                             | Backup operator name                                                 | `etcd-backup-operator`                         |
+| `backupOperator.replicaCount`                     | Number of operator replicas to create (only 1 is supported)          | `1`                                            |
+| `backupOperator.image.repository`                 | Operator container image                                             | `quay.io/coreos/etcd-operator`                 |
+| `backupOperator.image.tag`                        | Operator container image tag                                         | `v0.7.0`                                       |
+| `backupOperator.image.pullpolicy`                 | Operator container image pull policy                                 | `Always`                                       |
+| `backupOperator.resources.cpu`                    | CPU limit per etcd-operator pod                                      | `100m`                                         |
+| `backupOperator.resources.memory`                 | Memory limit per etcd-operator pod                                   | `128Mi`                                        |
+| `backupOperator.spec.storageType`                 | Storage to use for backup file, currently only S3 supported          | `S3`                                           |
+| `backupOperator.spec.s3.s3Bucket`                 | Bucket in S3 to store backup file                                    |                                                |
+| `backupOperator.spec.s3.awsSecret`                | Name of kubernetes secrete containing aws credentials                |                                                |
+| `backupOperator.nodeSelector`                     | Node labels for etcd operator pod assignment                         | `{}`                                           |
+| `backupOperator.commandArgs`                      | Additional command arguments                                         | `{}`                                           |
+| `restoreOperator.name`                            | Restore operator name                                                | `etcd-backup-operator`                         |
+| `restoreOperator.replicaCount`                    | Number of operator replicas to create (only 1 is supported)          | `1`                                            |
+| `restoreOperator.image.repository`                | Operator container image                                             | `quay.io/coreos/etcd-operator`                 |
+| `restoreOperator.image.tag`                       | Operator container image tag                                         | `v0.7.0`                                       |
+| `restoreOperator.image.pullpolicy`                | Operator container image pull policy                                 | `Always`                                       |
+| `restoreOperator.resources.cpu`                   | CPU limit per etcd-operator pod                                      | `100m`                                         |
+| `restoreOperator.resources.memory`                | Memory limit per etcd-operator pod                                   | `128Mi`                                        |
+| `restoreOperator.spec.s3.path`                    | Path in S3 bucket containing the backup file                         |                                                |
+| `restoreOperator.spec.s3.awsSecret`               | Name of kubernetes secrete containing aws credentials                |                                                |
+| `restoreOperator.nodeSelector`                    | Node labels for etcd operator pod assignment                         | `{}`                                           |
+| `restoreOperator.commandArgs`                     | Additional command arguments                                         | `{}`                                           |
+| `etcdCluster.name`                                | etcd cluster name                                                    | `etcd-cluster`                                 |
+| `etcdCluster.size`                                | etcd cluster size                                                    | `3`                                            |
+| `etcdCluster.version`                             | etcd cluster version                                                 | `3.2.10`                                       |
+| `etcdCluster.image.repository`                    | etcd container image                                                 | `quay.io/coreos/etcd-operator`                 |
+| `etcdCluster.image.tag`                           | etcd container image tag                                             | `v3.2.10`                                       |
+| `etcdCluster.image.pullPolicy`                    | etcd container image pull policy                                     | `Always`                                 |
+| `etcdCluster.enableTLS`                           | Enable use of TLS                                                    | `false`                                 |
+| `etcdCluster.tls.static.member.peerSecret`        | Kubernetes secret containing TLS peer certs                          | `etcd-peer-tls`                                 |
+| `etcdCluster.tls.static.member.serverSecret`      | Kubernetes secret containing TLS server certs                        | `etcd-server-tls`                                 |
+| `etcdCluster.tls.static.operatorSecret`           | Kubernetes secret containing TLS client certs                        | `etcd-client-tls`                                 |
+| `etcdCluster.pod.antiAffinity`                    | Whether etcd cluster pods should have an antiAffinity                | `false`                                        |
+| `etcdCluster.pod.resources.limits.cpu`            | CPU limit per etcd cluster pod                                       | `100m`                                         |
+| `etcdCluster.pod.resources.limits.memory`         | Memory limit per etcd cluster pod                                    | `128Mi`                                        |
+| `etcdCluster.pod.resources.requests.cpu`          | CPU request per etcd cluster pod                                     | `100m`                                         |
+| `etcdCluster.pod.resources.requests.memory`       | Memory request per etcd cluster pod                                  | `128Mi`                                        |
+| `etcdCluster.pod.nodeSelector`                    | node labels for etcd cluster pod assignment                          | `{}`                                           |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
 

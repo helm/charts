@@ -41,6 +41,13 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.name
+        resources:
+          limits:
+            cpu: {{ .Values.backupOperator.resources.cpu }}
+            memory: {{ .Values.backupOperator.resources.memory }}
+          requests:
+            cpu: {{ .Values.backupOperator.resources.cpu }}
+            memory: {{ .Values.backupOperator.resources.memory }}
     {{- if .Values.backupOperator.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.backupOperator.nodeSelector | indent 8 }}

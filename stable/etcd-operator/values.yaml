@@ -5,7 +5,7 @@ component: etcd-operator
 
 ## Install Default RBAC roles and bindings
 rbac:
-  install: true
+  install: false
   apiVersion: v1beta1
 
 # Select what to deploy
@@ -40,10 +40,8 @@ etcdOperator:
   ## Node labels for etcd-operator pod assignment
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
   nodeSelector: {}
-  ## etcd-operator specific values
   ## additional command arguments go here; will be translated to `--key=value` form
-  ## e.g.,
-  ##   analytics: true
+  ## e.g., analytics: true
   commandArgs: {}
 
 # backup spec
@@ -54,11 +52,9 @@ backupOperator:
     repository: quay.io/coreos/etcd-operator
     tag: v0.7.0
     pullPolicy: Always
-  ## etcd-operator specific values
-  ## additional command arguments go here; will be translated to `--key=value` form
-  ## e.g.,
-  ##   analytics: true
-  commandArgs: {}
+  resources:
+    cpu: 100m
+    memory: 128Mi
   spec:
     storageType: S3
     s3:
@@ -67,6 +63,9 @@ backupOperator:
   ## Node labels for etcd pod assignment
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
   nodeSelector: {}
+  ## additional command arguments go here; will be translated to `--key=value` form
+  ## e.g., analytics: true
+  commandArgs: {}
 
 # restore spec
 restoreOperator:
@@ -77,11 +76,9 @@ restoreOperator:
     tag: v0.7.0
     pullPolicy: Always
   port: 19999
-  ## etcd-operator specific values
-  ## additional command arguments go here; will be translated to `--key=value` form
-  ## e.g.,
-  ##   analytics: true
-  commandArgs: {}
+  resources:
+    cpu: 100m
+    memory: 128Mi
   spec:
     s3:
       # The format of "path" must be: "<s3-bucket-name>/<path-to-backup-file>"
@@ -91,6 +88,9 @@ restoreOperator:
   ## Node labels for etcd pod assignment
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
   nodeSelector: {}
+  ## additional command arguments go here; will be translated to `--key=value` form
+  ## e.g., analytics: true
+  commandArgs: {}
 
 ## etcd-cluster specific values
 etcdCluster:
@@ -102,15 +102,13 @@ etcdCluster:
     tag: v3.2.10
     pullPolicy: Always
   enableTLS: false
-
   # TLS configs
   tls:
     static:
       member:
         peerSecret: etcd-peer-tls
         serverSecret: etcd-server-tls
-        operatorSecret: etcd-client-tls
-
+      operatorSecret: etcd-client-tls
   ## etcd cluster pod specific values
   ## Ref: https://github.com/coreos/etcd-operator/blob/master/doc/user/spec_examples.md#three-members-cluster-with-resource-requirement
   pod:

@@ -45,6 +45,13 @@ spec:
               fieldPath: metadata.name
         - name: SERVICE_ADDR
           value: "{{ .Values.restoreOperator.name }}:{{ .Values.restoreOperator.port }}"
+        resources:
+          limits:
+            cpu: {{ .Values.restoreOperator.resources.cpu }}
+            memory: {{ .Values.restoreOperator.resources.memory }}
+          requests:
+            cpu: {{ .Values.restoreOperator.resources.cpu }}
+            memory: {{ .Values.restoreOperator.resources.memory }}
     {{- if .Values.restoreOperator.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.restoreOperator.nodeSelector | indent 8 }}
