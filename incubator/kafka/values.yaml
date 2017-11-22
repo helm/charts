@@ -14,6 +14,7 @@ resources: {}
   #   cpu: 100m
   #   memory: 1024Mi
 Storage: "1Gi"
+# StorageClass: default
 DataDirectory: "/opt/kafka/data"
 
 #------------------------------------------------------------------------------
@@ -25,6 +26,7 @@ zookeeper:
   Resources: {}
   Heap: "1G"
   Storage: "2Gi"
+  # StorageClass: default
   ServerPort: 2888
   LeaderElectionPort: 3888
   ClientPort: 2181
