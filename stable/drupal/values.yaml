@@ -39,6 +39,12 @@ allowEmptyPassword: yes
 ## MariaDB chart configuration
 ##
 mariadb:
+  ## Whether to use the database specified as a requirement or not. For example, to configure the chart with an existing database server.
+  enabled: true
+
+  ## MariaDB host
+  # mariadbHost:
+
   ## MariaDB admin password
   ## ref: https://github.com/bitnami/bitnami-docker-mariadb/blob/master/README.md#setting-the-root-password-on-first-run
   ##

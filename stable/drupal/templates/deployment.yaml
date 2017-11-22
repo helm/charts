@@ -25,13 +25,12 @@ spec:
         {{- else }}
           value: "no"
         {{- end }}
-        - name: MARIADB_ROOT_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: {{ template "drupal.mariadb.fullname" . }}
-              key: mariadb-root-password
         - name: MARIADB_HOST
+        {{- if .Values.mariadb.enabled }}
           value: {{ template "drupal.mariadb.fullname" . }}
+        {{- else }}
+          value: {{ default "" .Values.mariadb.mariadbHost | quote }}
+        {{- end }}
         - name: MARIADB_PORT_NUMBER
           value: "3306"
         - name: DRUPAL_DATABASE_NAME
@@ -39,10 +38,14 @@ spec:
         - name: DRUPAL_DATABASE_USER
           value: {{ default "" .Values.mariadb.mariadbUser | quote }}
         - name: DRUPAL_DATABASE_PASSWORD
+        {{- if .Values.mariadb.enabled }}
           valueFrom:
             secretKeyRef:
               name: {{ template "drupal.mariadb.fullname" . }}
               key: mariadb-password
+        {{- else }}
+          value: {{ default "" .Values.mariadb.mariadbPassword | quote }}
+        {{- end }}
         - name: DRUPAL_USERNAME
           value: {{ default "" .Values.drupalUsername | quote }}
         - name: DRUPAL_PASSWORD
