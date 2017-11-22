@@ -1,0 +1,78 @@
+# Default values for searchlight.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+operator:
+  image: appscode/searchlight
+  tag: 4.0.0
+
+ido:
+  image: appscode/postgres
+  tag: 9.5-alpine
+
+icinga:
+  image: appscode/icinga
+  tag: 4.0.0-k8s
+
+## Optionally specify an array of imagePullSecrets.
+## Secrets must be manually created in the namespace.
+## ref: https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
+##
+# imagePullSecrets:
+
+#   - name: myRegistryKeySecretName
+## Specify a imagePullPolicy
+## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+##
+imagePullPolicy: IfNotPresent
+
+## Node labels for pod assignment
+## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+##
+nodeSelector: {}
+
+## Log level for proxy
+logLevel: 3
+
+## Icinga configaration
+## https://github.com/appscode/searchlight/blob/master/docs/icinga2/deployment.md#create-deployment
+icinga2web:
+  password: changeit
+
+notifier:
+  hipchat:
+    authToken: ''
+  mailgun:
+    domain: ''
+    apiKey: ''
+    publicAPIKey: ''
+    from: ''
+  smtp:
+    host: ''
+    port: ''
+    insecureSkipVerify: ''
+    username: ''
+    password: ''
+    from: ''
+  twilio:
+    accountSid: ''
+    authToken: ''
+    from: ''
+  slack:
+    authToken: ''
+    channel: ''
+  plivo:
+    authId: ''
+    authToken: ''
+    from: ''
+
+## Installs Searchlight operator as critical addon
+## https://kubernetes.io/docs/tasks/administer-cluster/guaranteed-scheduling-critical-addon-pods/
+criticalAddon: false
+
+## Install Default RBAC roles and bindings
+rbac:
+  ## If true, create & use RBAC resources
+  create: false
+  ## Ignored if rbac.create is true
+  serviceAccountName: default
