@@ -34,6 +34,8 @@ The following tables lists the configurable parameters of the Jenkins chart and 
 | `Master.ImagePullPolicy`          | Master image pull policy             | `Always`                                                                     |
 | `Master.ImagePullSecret`          | Master image pull secret             | Not set                                                                      |
 | `Master.Component`                | k8s selector key                     | `jenkins-master`                                                             |
+| `Master.UseSecurity`              | Use basic security                   | `true`                                                                       |
+| `Master.AdminUser`                | Admin username (and password) created as a secret if useSecurity is true | `admin`                                  |
 | `Master.Cpu`                      | Master requested cpu                 | `200m`                                                                       |
 | `Master.Memory`                   | Master requested memory              | `256Mi`                                                                      |
 | `Master.ServiceType`              | k8s service type                     | `LoadBalancer`                                                               |
@@ -42,6 +44,7 @@ The following tables lists the configurable parameters of the Jenkins chart and 
 | `Master.ContainerPort`            | Master listening port                | `8080`                                                                       |
 | `Master.SlaveListenerPort`        | Listening port for agents            | `50000`                                                                      |
 | `Master.LoadBalancerSourceRanges` | Allowed inbound IP addresses         | `0.0.0.0/0`                                                                  |
+| `Master.LoadBalancerIP`           | Optional fixed external IP           | Not set                                                                      |
 | `Master.JMXPort`                  | Open a port, for JMX stats           | Not set                                                                      |
 | `Master.CustomConfigMap`          | Use a custom ConfigMap               | `false`                                                                      |
 | `Master.Ingress.Annotations`      | Ingress annotations                  | `{}`                                                                         |
@@ -51,9 +54,9 @@ The following tables lists the configurable parameters of the Jenkins chart and 
 | `Master.ScriptApproval`           | List of groovy functions to approve  | Not set                                                                      |
 | `Master.NodeSelector`             | Node labels for pod assignment       | `{}`                                                                         |
 | `Master.Tolerations`              | Toleration labels for pod assignment | `{}`                                                                         |
-| `rbac.install`           | Create service account and ClusterRoleBinding for Kubernetes plugin | `false`                                                                      |
-| `rbac.apiVersion`           | RBAC API version | `v1beta1`                                                                      |
-| `rbac.roleRef`           | Cluster role name to bind to | `cluster-admin`                                                                      |
+| `rbac.install`                    | Create service account and ClusterRoleBinding for Kubernetes plugin | `false`                                       |
+| `rbac.apiVersion`                 | RBAC API version                     | `v1beta1`                                                                    |
+| `rbac.roleRef`                    | Cluster role name to bind to         | `cluster-admin`                                                              |
 
 ### Jenkins Agent
 

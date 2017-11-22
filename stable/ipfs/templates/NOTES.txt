@@ -1,0 +1,26 @@
+You have successfully installed IPFS in your kubernetes cluster!
+
+You can access the IPFS API from inside your cluster by connecting to port 5001 on
+    {{ template "ipfs.servicename" . }}.{{ .Release.Namespace }}
+
+You can also connect to port 8080 on the same hostname for talking to the IPFS Gateway.
+
+
+If you want to connect to it from your local computer, you can find a URL to connect with the
+following (for the gateway service):
+
+{{- if contains "NodePort" .Values.service.type }}
+  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "ipfs.fullname" . }})
+  export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+  echo http://$NODE_IP:$NODE_PORT
+{{- else if contains "LoadBalancer" .Values.service.type }}
+     NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+           You can watch the status of by running 'kubectl get svc -w {{ template "ipfs.servicename" . }}'
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "ipfs.servicename" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+  echo "Use the API Gateway by accessing http://$SERVICE_IP:8080/ipfs/<IPFS-HASH>"
+{{- else if contains "ClusterIP"  .Values.service.type }}
+  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "ipfs.name" . }},release={{ .Release.Name }}"  -o jsonpath="{.items[0].metadata.name}")
+  echo "Use the API Gateway by accessing http://localhost:8080/ipfs/<IPFS-HASH>"
+  kubectl --namespace {{ .Release.Namespace}} port-forward $POD_NAME 8080:8080
+
+{{- end }}

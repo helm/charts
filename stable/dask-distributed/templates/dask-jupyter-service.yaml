@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "jupyter-fullname" . }}
+  name: {{ template "dask-distributed.jupyter-fullname" . }}
   labels:
-    app: {{ template "name" . }}
+    app: {{ template "dask-distributed.name" . }}
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
@@ -13,7 +13,7 @@ spec:
     - port: {{ .Values.jupyter.servicePort }}
       targetPort: {{ .Values.jupyter.containerPort }}
   selector:
-    app: {{ template "name" . }}
+    app: {{ template "dask-distributed.name" . }}
     release: {{ .Release.Name | quote }}
     component: "{{ .Release.Name }}-{{ .Values.jupyter.component }}"
-  type: "LoadBalancer"
+  type: {{ .Values.jupyter.serviceType }}

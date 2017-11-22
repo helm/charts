@@ -1,6 +1,6 @@
 # Spinnaker Chart
 
-[Spinnaker](http://spinnaker.io/) is a resilient service mesh for cloud native apps
+[Spinnaker](http://spinnaker.io/) is an open source, multi-cloud continuous delivery platform.
 
 ## Chart Details
 This chart will provision a fully functional and fully featured Spinnaker installation 

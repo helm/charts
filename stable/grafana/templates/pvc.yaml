@@ -4,11 +4,6 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   annotations:
-  {{- if .Values.server.persistentVolume.storageClass }}
-    volume.beta.kubernetes.io/storage-class: {{ .Values.server.persistentVolume.storageClass | quote }}
-  {{- else }}
-    volume.alpha.kubernetes.io/storage-class: default
-  {{- end }}
   {{- if .Values.server.persistentVolume.annotations }}
 {{ toYaml .Values.server.persistentVolume.annotations | indent 4 }}
   {{- end }}
@@ -27,5 +22,12 @@ spec:
   resources:
     requests:
       storage: {{ .Values.server.persistentVolume.size | quote }}
+{{- if .Values.server.persistentVolume.storageClass }}
+{{- if (eq "-" .Values.server.persistentVolume.storageClass) }}
+  storageClassName: ""
+{{- else }}
+  storageClassName: "{{ .Values.server.persistentVolume.storageClass }}"
+{{- end }}
+{{- end }}
 {{- end -}}
 {{- end -}}

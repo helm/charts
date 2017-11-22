@@ -1,0 +1,16 @@
+zeppelin:
+  image: dylanmei/zeppelin:0.7.2
+  resources:
+    limits:
+      memory: "4096Mi"
+      cpu: "2000m"
+
+hadoop:
+  useConfigMap: false
+  configMapName: hadoop-hadoop
+  configPath: /usr/hadoop-2.7.3/etc/hadoop
+
+spark:
+  driverMemory: 1g
+  executorMemory: 1g
+  numExecutors: 2

@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "web.fullname" . }}
+  name: {{ template "concourse.web.fullname" . }}
   labels:
-    app: {{ template "web.fullname" . }}
+    app: {{ template "concourse.web.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -13,8 +13,14 @@ spec:
     - name: atc
       port: {{ .Values.concourse.atcPort }}
       targetPort: atc
+      {{ if and (eq "NodePort" .Values.web.service.type) .Values.web.service.atcNodePort }}
+      nodePort: {{ .Values.web.service.atcNodePort}}
+      {{ end }}
     - name: tsa
       port: {{ .Values.concourse.tsaPort }}
       targetPort: tsa
+      {{ if and (eq "NodePort" .Values.web.service.type) .Values.web.service.tsaNodePort }}
+      nodePort: {{ .Values.web.service.tsaNodePort}}
+      {{ end }}
   selector:
-    app: {{ template "web.fullname" . }}
+    app: {{ template "concourse.web.fullname" . }}

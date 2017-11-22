@@ -2,9 +2,9 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "rocketchat.fullname" . }}
   labels:
-    app: {{ template "name" . }}
+    app: {{ template "rocketchat.name" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -18,7 +18,7 @@ spec:
   tls:
   - hosts:
     - {{ .Values.host }}
-    secretName: {{ template "fullname" . }}-tls
+    secretName: {{ template "rocketchat.fullname" . }}-tls
 {{- end }}
   rules:
   - host: {{ .Values.host }}
@@ -26,6 +26,6 @@ spec:
       paths:
       - path: /
         backend:
-          serviceName: {{ template "fullname" . }}
+          serviceName: {{ template "rocketchat.fullname" . }}
           servicePort: 3000
 {{- end -}}

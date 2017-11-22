@@ -5,7 +5,7 @@ Use this repository to submit official Charts for Kubernetes Helm. Charts are cu
 
 ## How do I install these charts?
 
-Just `helm install stable/<chart>`. This is the default repository for Helm and is installed by default.
+Just `helm install stable/<chart>`. This is the default repository for Helm which is located at https://kubernetes-charts.storage.googleapis.com/ and is installed by default.
 
 For more information on using Helm, refer to the [Helm's documentation](https://github.com/kubernetes/helm#docs).
 
@@ -48,7 +48,7 @@ In order to get a Chart from incubator to stable, Chart maintainers should open 
 
 We'd love for you to contribute a Chart that provides a useful application or service for Kubernetes. Please read our [Contribution Guide](CONTRIBUTING.md) for more information on how you can contribute Charts.
 
-Note: We use the same [workflow](https://github.com/kubernetes/kubernetes/blob/master/docs/devel/development.md#git-setup),
+Note: We use the same [workflow](https://github.com/kubernetes/community/blob/master/contributors/devel/development.md#workflow),
 [License](LICENSE) and [Contributor License Agreement](CONTRIBUTING.md) as the main Kubernetes repository.
 
 ## Review Process
@@ -64,6 +64,12 @@ The following outlines the review procedure used by the Chart repository maintai
 ### Stale Pull Requests
 
 After initial review feedback, if no updates have been made to the pull request for 1 week, the `stale` label will be added. If after another week there are still no updates it will be closed. Please re-open if/when you have made the proper adjustments.
+
+## Supported Kubernetes Versions
+
+This chart repository supports the latest and previous minor versions of Kubernetes. For example, if the latest minor release of Kubernetes is 1.8 then 1.7 and 1.8 are supported. Charts may still work on previous versions of Kubernertes even through they are outside the target supported window.
+
+To provide that support the API versions of objects should be those that work for both the latest minor release and the previous one.
 
 ## Status of the Project
 

@@ -3,7 +3,7 @@
 # Declare variables to be passed into your templates.
 image:
   repository: sentry
-  tag: "8.17"
+  tag: "8.20"
   pullPolicy: IfNotPresent
 
 # How many web UI instances to run
@@ -34,12 +34,12 @@ worker:
   resources:
     limits:
       cpu: 300m
-      memory: 300Mi
+      memory: 500Mi
     requests:
       cpu: 100m
       memory: 100Mi
 
-# Initial admin user to create 
+# Initial admin user to create
 user:
   email: admin@sentry.local
 
@@ -68,10 +68,14 @@ service:
 ##
 persistence:
   enabled: true
-  ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
-  ## Default: volume.alpha.kubernetes.io/storage-class: default
+  ## database data Persistent Volume Storage Class
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
   ##
-  # storageClass:
+  # storageClass: "-"
   accessMode: ReadWriteOnce
   size: 10Gi
 
@@ -84,7 +88,7 @@ persistence:
 ## ref: http://kubernetes.io/docs/user-guide/ingress/
 ##
 ingress:
-  enabled: true
+  enabled: false
   hostname: sentry.local
 
   ## Ingress annotations
@@ -109,7 +113,7 @@ postgresql:
   imageTag: "9.5"
   persistence:
     enabled: true
-      
+
 redis:
   persistence:
     enabled: true

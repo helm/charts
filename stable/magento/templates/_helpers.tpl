@@ -2,7 +2,7 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "name" -}}
+{{- define "magento.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
@@ -10,16 +10,32 @@ Expand the name of the chart.
 Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 */}}
-{{- define "fullname" -}}
+{{- define "magento.fullname" -}}
 {{- $name := default .Chart.Name .Values.nameOverride -}}
 {{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
+{{/*
+Create a random alphanumeric password string.
+We append a random number to the string to avoid password validation errors
+*/}}
+{{- define "magento.randomPassword" -}}
+{{- randAlphaNum 9 -}}{{- randNumeric 1 -}}
+{{- end -}}
+
+{{/*
+Get the user defined password or use a random string
+*/}}
+{{- define "magento.password" -}}
+{{- $password := index .Values (printf "%sPassword" .Chart.Name) -}}
+{{- default (include "magento.randomPassword" .) $password -}}
 {{- end -}}
 
 {{/*
 Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 */}}
-{{- define "mariadb.fullname" -}}
+{{- define "magento.mariadb.fullname" -}}
 {{- printf "%s-%s" .Release.Name "mariadb" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
@@ -27,7 +43,7 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 Get the user defined LoadBalancerIP for this release.
 Note, returns 127.0.0.1 if using ClusterIP.
 */}}
-{{- define "serviceIP" -}}
+{{- define "magento.serviceIP" -}}
 {{- if eq .Values.serviceType "ClusterIP" -}}
 127.0.0.1
 {{- else -}}
@@ -39,7 +55,7 @@ Note, returns 127.0.0.1 if using ClusterIP.
 Gets the host to be used for this application.
 If not using ClusterIP, or if a host or LoadBalancerIP is not defined, the value will be empty.
 */}}
-{{- define "host" -}}
+{{- define "magento.host" -}}
 {{- $host := index .Values (printf "%sHost" .Chart.Name) | default "" -}}
-{{- default (include "serviceIP" .) $host -}}
+{{- default (include "magento.serviceIP" .) $host -}}
 {{- end -}}

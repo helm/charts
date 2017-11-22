@@ -1,6 +1,6 @@
 # nginx-ingress
 
-[nginx-ingress](https://github.com/kubernetes/ingress/tree/master/controllers/nginx) is an Ingress controller that uses ConfigMap to store the nginx configuration.
+[nginx-ingress](https://github.com/kubernetes/ingress-nginx) is an Ingress controller that uses ConfigMap to store the nginx configuration.
 
 To use, add the `kubernetes.io/ingress.class: nginx` annotation to your Ingress resources.
 
@@ -41,21 +41,24 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the aws-cluster-autoscaler chart and their default values.
+The following tables lists the configurable parameters of the nginx-ingress chart and their default values.
 
 Parameter | Description | Default
 --- | --- | ---
 `controller.name` | name of the controller component | `controller`
 `controller.image.repository` | controller container image repository | `gcr.io/google_containers/nginx-ingress-controller`
-`controller.image.tag` | controller container image tag | `0.8.3`
+`controller.image.tag` | controller container image tag | `0.9.0-beta.15`
 `controller.image.pullPolicy` | controller container image pull policy | `IfNotPresent`
 `controller.config` | nginx ConfigMap entries | none
 `controller.hostNetwork` | If the nginx deployment / daemonset should run on the host's network namespace | false
 `controller.defaultBackendService` | default 404 backend service; required only if `defaultBackend.enabled = false` | `""`
+`controller.electionID` | election ID to use for the status update | `ingress-controller-leader`
+`controller.ingressClass` | name of the ingress class to route through this controller | `nginx`
 `controller.scope.enabled` | limit the scope of the ingress controller | `false` (watch all namespaces)
 `controller.scope.namespace` | namespace to watch for ingress | `""` (use the release namespace)
 `controller.extraArgs` | Additional controller container arguments | `{}`
 `controller.kind` | install as Deployment or DaemonSet | `Deployment`
+`controller.tolerations` | node taints to tolerate (requires Kubernetes >=1.6) | `[]`
 `controller.nodeSelector` | node labels for pod assignment | `{}`
 `controller.podAnnotations` | annotations to be added to pods | `{}`
 `controller.replicaCount` | desired number of controller pods | `1`
@@ -81,9 +84,10 @@ Parameter | Description | Default
 `controller.stats.service.type` | type of controller stats service to create | `ClusterIP`
 `defaultBackend.name` | name of the default backend component | `default-backend`
 `defaultBackend.image.repository` | default backend container image repository | `gcr.io/google_containers/defaultbackend`
-`defaultBackend.image.tag` | default backend container image tag | `1.2`
+`defaultBackend.image.tag` | default backend container image tag | `1.3`
 `defaultBackend.image.pullPolicy` | default backend container image pull policy | `IfNotPresent`
 `defaultBackend.extraArgs` | Additional default backend container arguments | `{}`
+`defaultBackend.tolerations` | node taints to tolerate (requires Kubernetes >=1.6) | `[]`
 `defaultBackend.nodeSelector` | node labels for pod assignment | `{}`
 `defaultBackend.podAnnotations` | annotations to be added to pods | `{}`
 `defaultBackend.replicaCount` | desired number of default backend pods | `1`
@@ -94,9 +98,11 @@ Parameter | Description | Default
 `defaultBackend.service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
 `defaultBackend.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
 `defaultBackend.service.type` | type of default backend service to create | `ClusterIP`
+`rbac.create` | If true, create & use RBAC resources | `false`
+`rbac.serviceAccountName` | ServiceAccount to be used (ignored if rbac.create=true) | `default`
 `statsExporter.name` | name of the Prometheus metrics exporter component | `stats-exporter`
-`statsExporter.image.repository` | Prometheus metrics exporter container image repository | `quay.io/cy-play/vts-nginx-exporter`
-`statsExporter.image.tag` | Prometheus metrics exporter image tag | `v0.0.3`
+`statsExporter.image.repository` | Prometheus metrics exporter container image repository | `sophos/nginx-vts-exporter`
+`statsExporter.image.tag` | Prometheus metrics exporter image tag | `v0.6`
 `statsExporter.image.pullPolicy` | Prometheus metrics exporter image pull policy | `IfNotPresent`
 `statsExporter.endpoint` | path at which Prometheus metrics are exposed | `/metrics`
 `statsExporter.extraArgs` | Additional Prometheus metrics exporter container arguments | `{}`

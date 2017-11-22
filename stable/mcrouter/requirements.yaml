@@ -1,0 +1,5 @@
+dependencies:
+- name: memcached
+  version: 1.2.1
+  repository: https://kubernetes-charts.storage.googleapis.com/
+  condition: mcrouter.memcached.enabled
