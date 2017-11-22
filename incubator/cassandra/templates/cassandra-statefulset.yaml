@@ -103,6 +103,10 @@ spec:
         volumeMounts:
         - name: data
           mountPath: /var/lib/cassandra
+      {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+        - name: {{ .Values.image.pullSecrets }}
+      {{- end }}
 {{- if not .Values.persistence.enabled }}
       volumes:
       - name: data
