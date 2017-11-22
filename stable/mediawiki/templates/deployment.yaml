@@ -38,7 +38,7 @@ spec:
           value: {{ default "" .Values.mariadb.mariadbDatabase | quote }}
         - name: MEDIAWIKI_DATABASE_USER
           value: {{ default "" .Values.mariadb.mariadbUser | quote }}
-        - name: WORDPRESS_DATABASE_PASSWORD
+        - name: MEDIAWIKI_DATABASE_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ template "mediawiki.mariadb.fullname" . }}

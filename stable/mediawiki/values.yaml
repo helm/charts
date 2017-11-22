@@ -31,7 +31,7 @@ mediawikiEmail: user@example.com
 mediawikiName: My Wiki
 
 ## Set to `yes` to allow the container to be started with blank passwords
-## ref: https://github.com/bitnami/bitnami-docker-wordpress#environment-variables
+## ref: https://github.com/bitnami/bitnami-docker-mediawiki#environment-variables
 allowEmptyPassword: yes
 
 ## SMTP mail delivery configuration
