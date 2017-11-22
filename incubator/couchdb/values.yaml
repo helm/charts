@@ -1,16 +1,16 @@
 # Default values for couchdb.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
-replicaCount: 1
+replicaCount: 3
 image:
-  repository: nginx
-  tag: stable
+  repository: couchdb
+  tag: 2.1.1
   pullPolicy: IfNotPresent
 service:
-  name: nginx
+  name: couchdb
   type: ClusterIP
-  externalPort: 80
-  internalPort: 80
+  externalPort: 5984
+  internalPort: 5984
 ingress:
   enabled: false
   # Used to create an Ingress record.
