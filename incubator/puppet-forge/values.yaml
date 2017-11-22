@@ -26,7 +26,7 @@ ingress:
     # - secretName: chart-example-tls
     #   hosts:
     #     - chart-example.local
-resources: 
+resources:
   requests:
     cpu: 100m
     memory: 16Mi
@@ -58,4 +58,3 @@ puppet_forge:
     size: '250'
   module_dir:
     - /puppet/modules
-
