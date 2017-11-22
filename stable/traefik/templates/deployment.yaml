@@ -60,9 +60,15 @@ spec:
           periodSeconds: 10
           successThreshold: 1
           timeoutSeconds: 2
-        {{- if .Values.env }}
+        {{- if and .Values.acme.enabled .Values.acme.dnsProvider.name }}
         env:
-{{ toYaml .Values.env | indent 8 }}
+        {{- range $k, $v := .Values.acme.dnsProvider.config }}
+          - name: {{ $k }}
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "fullname" $ }}-dnsprovider-config
+                key: {{ $k }}
+        {{- end }}
         {{- end }}
         volumeMounts:
         - mountPath: /config
