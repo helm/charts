@@ -1,6 +1,6 @@
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # Kafka:
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 Replicas: 3
 Image: "solsson/kafka"
@@ -17,11 +17,12 @@ Storage: "1Gi"
 # StorageClass: default
 DataDirectory: "/opt/kafka/data"
 
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # Zookeeper:
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 zookeeper:
+  Enabled: true
   Servers: 3
   Resources: {}
   Heap: "1G"
@@ -37,7 +38,10 @@ zookeeper:
   ClientCnxns: 60
   SnapRetain: 3
   PurgeHours: 1
-  ProbeInitialDelaySeconds : 15
-  ProbeTimeoutSeconds : 5
-  AntiAffinity : "hard"
-  LogLevel : "INFO"
+  ProbeInitialDelaySeconds: 15
+  ProbeTimeoutSeconds: 5
+  AntiAffinity: "hard"
+  LogLevel: "INFO"
+  # If the Zookeeper Chart is disabled a URL and port are required to connect
+  Url: ""
+  Port: 2181
