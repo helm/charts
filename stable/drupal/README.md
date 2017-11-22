@@ -59,6 +59,8 @@ The following tables lists the configurable parameters of the Drupal chart and t
 | `ingress.enabled`                 | Enable ingress controller resource    | `false`                                                   |
 | `ingress.hostname`                | URL for your Drupal installation      | `drupal.local`                                            |
 | `ingress.tls`                     | Ingress TLS configuration             | `[]`                                                      |
+| `mariadb.enabled`                 | Use or not the mariadb chart          | `true`                                                    |
+| `mariadb.mariadbHost`             | MariaDB server host                   | `nil`                                                     |
 | `mariadb.mariadbRootPassword`     | MariaDB admin password                | `nil`                                                     |
 | `mariadb.mariadbDatabase`         | Database name to create               | `bitnami_drupal`                                          |
 | `mariadb.mariadbUser`             | Database user to create               | `bn_drupal`                                               |
