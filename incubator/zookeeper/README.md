@@ -122,11 +122,13 @@ The servers in the ensemble have both liveness and readiness checks specified. T
 | `probeInitialDelaySeconds` | The initial delay before the liveness and readiness probes will be invoked. | `15` |
 | `probeTimeoutSeconds` | The amount of time before the probes are considered to be failed due to a timeout. | `5` |
 
-### ImagePull
-This parameter controls when the image is pulled from the repository.
+### Image
+This parameter controls which image is pulled and when.
 
 | Parameter | Description | Default |
 | --------- | ----------- | ------- |
+| `image` | The image to pull. | `gcr.io/google_samples/k8szk` |
+| `imageTag` | The tag to pull. | `v3` |
 | `imagePullPolicy` | The policy for pulling the image from the repository. | `Always` |
 
 # Deep dive
