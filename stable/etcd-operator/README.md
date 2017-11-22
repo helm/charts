@@ -56,7 +56,7 @@ The following tables lists the configurable parameters of the etcd-operator char
 | `deployments.etcdOperator`                        | Deploy the etcd cluster operator                                     | `true`                                         |
 | `deployments.backupOperator`                      | Deploy the etcd backup operator                                      | `true`                                         |
 | `deployments.restoreOperator`                     | Deploy the etcd restore operator                                     | `true`                                         |
-| `customResources.createEtcdClusterCRD`            | Create a custom resource: EtcdCluster                                | `true`                                         |
+| `customResources.createEtcdClusterCRD`            | Create a custom resource: EtcdCluster                                | `false`                                         |
 | `customResources.createBackupCRD`                 | Create an a custom resource: EtcdBackup                              | `false`                                        |
 | `customResources.createRestoreCRD`                | Create an a custom resource: EtcdRestore                             | `false`                                        |
 | `etcdOperator.name`                               | Etcd Operator name                                                   | `etcd-operator`                                |
