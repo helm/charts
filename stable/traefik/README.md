@@ -104,7 +104,8 @@ The following tables lists the configurable parameters of the Traefik chart and 
 | `ssl.defaultCert`               | Base64 encoded default certficate                                    | A self-signed certificate                 |
 | `ssl.defaultKey`                | Base64 encoded private key for the certificate above                 | The private key for the certificate above |
 | `acme.enabled`                  | Whether to use Let's Encrypt to obtain certificates                  | `false`                                   |
-| `acme.dnsProvider`              | Which DNS provider to use. See [here](https://github.com/xenolf/lego/tree/master/providers/dns) for the list of possible values. | `nil`                                     |
+| `acme.dnsProvider.name`         | Which DNS provider to use. See [here](https://github.com/xenolf/lego/tree/master/providers/dns) for the list of possible values. | `nil`                                     |
+| `acme.dnsProvider.config`       | The configuration environment variables needed for the DNS provider to do DNS challenge. See [here](Example: AWS Route 53). | `{}`                                     |
 | `acme.email`                    | Email address to be used in certificates obtained from Let's Encrypt | `admin@example.com`                       |
 | `acme.staging`                  | Whether to get certs from Let's Encrypt's staging environment        | `true`                                    |
 | `acme.persistence.enabled`      | Create a volume to store ACME certs (if ACME is enabled)             | `true`                                    |
@@ -179,4 +180,41 @@ dashboard:
   auth:
     basic:
       test: $apr1$H6uskkkW$IgXLP6ewTrSuBkTrqE8wj/
+```
+
+### Let's Encrypt domain verification using DNS challenge
+
+When obtaining an ACME (Let's Encrypt) certificate, sometimes it's more desirable to do DNS challenge, for example, if the
+server you want to obtain a certificate for does not have a public IP address.
+
+First, check if your DNS provider is supported by [lego](https://github.com/xenolf/lego/tree/master/providers/dns)(the ACME library that Traefik is using).
+Next, you will need to configure the Traefik chart to use DNS challenge. In the ACME section:
+
+```yaml
+acme:
+  enabled: true
+  dnsProvider:
+    name: # name of the dns provider to use
+    config:
+      # variables that the specific dns provider requires
+```
+
+#### Example: AWS Route 53
+
+Route 53 requires the [following configuration variables to be set](https://github.com/xenolf/lego/blob/master/providers/dns/route53/route53.go#L58-L59):
+- `AWS_ACCESS_KEY_ID`
+- `AWS_SECRET_ACCESS_KEY`
+- `AWS_REGION`
+
+The configuration for the DNS provider would look like this:
+
+```yaml
+acme:
+  enabled: true
+  dnsProvider:
+    name: route53
+    config:
+      - AWS_ACCESS_KEY_ID: ...
+      - AWS_SECRET_ACCESS_KEY: ...
+      - AWS_REGION: us-east-1
 ```
