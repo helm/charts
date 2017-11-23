@@ -30,8 +30,8 @@ acme:
   staging: true
   ## Set dnsProvider to perform domain verification using dns challenge
   dnsProvider:
-    # name: route53
-    # config:
+    name: ""
+    config: {}
     #   - AWS_REGION: us-east-1
     #   - AWS_ACCESS_KEY_ID: ""
     #   - AWS_SECRET_ACCESS_KEY: ""
