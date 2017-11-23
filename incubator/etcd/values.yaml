@@ -6,19 +6,14 @@
 Name: etcd
 PeerPort: 2380
 ClientPort: 2379
-# ProxyPort: 23790
 Component: "etcd"
 PeerTLS: true
-# InitialSize should be set only at INSTALL, after the cluster is live, don't change this setting.
-InitialSize: 3
 # Replicas scales the cluster with the "helm upgrade" command
-# This should not be lower that the InitialSize and take note of the following (from etcd project site)
 # The recommended etcd cluster size is 3, 5 or 7, which is decided by the fault tolerance requirement.
 # A 7-member cluster can provide enough fault tolerance in most cases.
 # While larger cluster provides better fault tolerance the write performance reduces since data needs to
 # be replicated to more machines.
 Replicas: 3
-# ProxyReplicas: 1
 Image: "nearform/docker-etcd"
 ImageTag: "latest"
 ImagePullPolicy: "Always"

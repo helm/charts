@@ -38,7 +38,7 @@ spec:
             memory: "{{ .Values.Memory }}"
         env:
         - name: INITIAL_CLUSTER_SIZE
-          value: {{ default 3 .Values.InitialSize | quote }}
+          value: "1"
         - name: SET_NAME
           value: {{ template "etcd.fullname" . }}
         volumeMounts:
@@ -51,6 +51,8 @@ spec:
                 - "/bin/sh"
                 - "-ecx"
                 - |
+                  # Cleaning up after a controlled stop, like a scale down of the cluster
+                  # is needed so the member is removed and could be started fresh
                   {{- if .Values.PeerTLS }}
                   PROTO=https
                   {{- else }}
