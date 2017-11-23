@@ -7,12 +7,12 @@ metadata:
 {{ toYaml .Values.controller.stats.service.annotations | indent 4 }}
 {{- end }}
   labels:
-    app: {{ template "name" . }}
+    app: {{ template "nginx-ingress.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     component: "{{ .Values.controller.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-  name: {{ template "controller.fullname" . }}-stats
+  name: {{ template "nginx-ingress.controller.fullname" . }}-stats
 spec:
   clusterIP: "{{ .Values.controller.stats.service.clusterIP }}"
 {{- if .Values.controller.stats.service.externalIPs }}
@@ -31,7 +31,7 @@ spec:
       port: {{ .Values.controller.stats.service.servicePort }}
       targetPort: 18080
   selector:
-    app: {{ template "name" . }}
+    app: {{ template "nginx-ingress.name" . }}
     component: "{{ .Values.controller.name }}"
     release: {{ .Release.Name }}
   type: "{{ .Values.controller.stats.service.type }}"
