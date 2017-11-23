@@ -29,14 +29,22 @@ spec:
         {{- if .Values.mariadb.enabled }}
           value: {{ template "drupal.mariadb.fullname" . }}
         {{- else }}
-          value: {{ default "" .Values.mariadb.mariadbHost | quote }}
+          value: {{ default "" .Values.externalDatabase.host | quote }}
         {{- end }}
         - name: MARIADB_PORT_NUMBER
           value: "3306"
         - name: DRUPAL_DATABASE_NAME
+        {{- if .Values.mariadb.enabled }}
           value: {{ default "" .Values.mariadb.mariadbDatabase | quote }}
+        {{- else }}
+          value: {{ default "" .Values.externalDatabase.database | quote }}
+        {{- end }}
         - name: DRUPAL_DATABASE_USER
+        {{- if .Values.mariadb.enabled }}
           value: {{ default "" .Values.mariadb.mariadbUser | quote }}
+        {{- else }}
+          value: {{ default "" .Values.externalDatabase.user | quote }}
+        {{- end }}
         - name: DRUPAL_DATABASE_PASSWORD
         {{- if .Values.mariadb.enabled }}
           valueFrom:
@@ -44,7 +52,7 @@ spec:
               name: {{ template "drupal.mariadb.fullname" . }}
               key: mariadb-password
         {{- else }}
-          value: {{ default "" .Values.mariadb.mariadbPassword | quote }}
+          value: {{ default "" .Values.externalDatabase.password | quote }}
         {{- end }}
         - name: DRUPAL_USERNAME
           value: {{ default "" .Values.drupalUsername | quote }}
