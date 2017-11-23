@@ -1,4 +1,4 @@
-apiVersion: v3.14.1.2
+appVersion: v3.14.1.2
 description: A Helm chart for Aerospike in Kubernetes
 name: aerospike
 keywords:
