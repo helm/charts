@@ -7,6 +7,14 @@ service:
   type: ClusterIP
   externalPort: 8080
   internalPort: 8080
+
+persistence:
+  enabled: true
+  # existingClaim: "existingClaim"
+  # storageClass: default
+  accessModes: ReadWriteOnce
+  size: 16Gi
+
 resources:
   limits:
     cpu: 100m
