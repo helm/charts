@@ -1,6 +1,6 @@
 {{- if .Values.ingress.enabled -}}
 {{- $serviceName := include "jaeger.name" . -}}
-{{- $servicePort := .Values.service.externalPort -}}
+{{- $servicePort := .Values.query.service.queryPort -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
