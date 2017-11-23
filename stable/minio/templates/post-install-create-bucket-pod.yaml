@@ -13,6 +13,10 @@ metadata:
     "helm.sh/hook-delete-policy": hook-succeeded
 spec:
   restartPolicy: OnFailure
+{{- if .Values.nodeSelector }}
+  nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 4 }}
+{{- end }}
   containers:
   - name: minio-mc
     image: minio/mc
