@@ -36,11 +36,11 @@ acme:
   logging: false
   ## Set dnsProvider to perform domain verification using dns challenge
   dnsProvider:
-    name: route53
-    config:
-      - AWS_REGION: us-east-1
-      - AWS_ACCESS_KEY_ID: ...
-      - AWS_SECRET_ACCESS_KEY: ...
+    # name: route53
+    # config:
+    #   - AWS_REGION: us-east-1
+    #   - AWS_ACCESS_KEY_ID: ""
+    #   - AWS_SECRET_ACCESS_KEY: ""
   ## Save ACME certs to a persistent volume. WARNING: If you do not do this, you will re-request
   ## certs every time a pod (re-)starts and you WILL be rate limited!
   persistence:
