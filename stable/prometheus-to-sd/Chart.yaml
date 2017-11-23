@@ -6,7 +6,7 @@ keywords:
 - prometheus
 - stackdriver
 maintainers:
-- name: Arcadie Condrat
+- name: acondrat
   email: arcadie.condrat@gmail.com
 name: prometheus-to-sd
 version: 0.1.0
