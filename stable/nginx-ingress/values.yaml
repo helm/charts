@@ -143,6 +143,8 @@ controller:
       servicePort: 18080
       type: ClusterIP
 
+  lifecycle: {}
+
 ## Default 404 backend
 ##
 defaultBackend:
