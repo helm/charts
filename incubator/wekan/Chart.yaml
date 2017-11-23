@@ -1,0 +1,12 @@
+apiVersion: v1
+description: A Helm chart for Wekan
+name: wekan
+version: 0.1.0
+appVersion: 0.50
+home: http://wekan.io/
+icon: https://raw.githubusercontent.com/wekan/wekan.github.io/master/wekan-logo.png
+sources:
+  - https://github.com/wekan/wekan
+maintainers:
+  - name: jpds
+    email: jpds@protonmail.com
