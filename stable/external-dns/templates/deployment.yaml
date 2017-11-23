@@ -40,7 +40,7 @@ spec:
             {{- end }}
           {{- end }}
           {{- if .Values.aws.zoneType }}
-            - --zone-type={{ .Values.aws.zoneType }}
+            - --aws-zone-type={{ .Values.aws.zoneType }}
           {{- end }}
           env:
         {{- if and .Values.aws.secretKey .Values.aws.accessKey }}
