@@ -1,0 +1,10 @@
+apiVersion: v1
+description: A Helm chart for logspout log forwarder
+name: logspout
+version: 0.1.0
+appVersion: 3.2.3
+maintainers:
+  - name: thaddeuselms
+    email: thadelms@gmail.com
+home: https://gliderlabs.github.io/projects/
+icon: http://gliderlabs.github.io/images/logo.svg

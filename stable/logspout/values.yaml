@@ -1,0 +1,14 @@
+
+image:
+  repository: gliderlabs/logspout
+  tag: v3.2.2
+  pullPolicy: IfNotPresent
+
+# The paramenters below are determines the logspout destination.
+# For example destination: logs0.papertrailapp.com port:1000
+log:
+  level: syslog
+  destination: logs0.papertrailapp.com
+  port: 1000
+
+resources: {}

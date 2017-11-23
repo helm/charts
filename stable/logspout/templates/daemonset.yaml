@@ -1,0 +1,43 @@
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    app: {{ template "name" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+spec:
+  template:
+    metadata:
+      labels:
+        app: {{ template "fullname" . }}
+        release: {{ .Release.Name }}
+    spec:
+      hostPID: true
+      hostIPC: true
+      hostNetwork: true
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          env:
+            - name: ROUTE_URIS
+              value: {{.Values.log.level}}://{{.Values.log.destination}}:{{.Values.log.port}}
+          livenessProbe:
+            exec:
+              command:
+              - ls
+              - /var/run/docker.sock
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          securityContext:
+            privileged: true  
+          volumeMounts:
+            - name: log
+              mountPath: /var/run/docker.sock
+          resources:
+{{ toYaml .Values.resources | indent 12 }}                 
+      volumes:
+        - name: log
+          hostPath:
+              path: /var/run/docker.sock
