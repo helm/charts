@@ -10,6 +10,8 @@ service:
   name: vault
   type: ClusterIP
   port: 8200
+  #annotations:
+    # cloud.google.com/load-balancer-type: "Internal"
 ingress:
   enabled: false
   # Used to create Ingress record (should used with service.type: ClusterIP).
