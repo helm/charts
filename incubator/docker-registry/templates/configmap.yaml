@@ -9,4 +9,4 @@ metadata:
     release: {{ .Release.Name }}
 data:
   config.yml: |-
-{{ toYaml .Values.registry.configData | indent 4 }}
+{{ toYaml .Values.configData | indent 4 }}

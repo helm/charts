@@ -63,7 +63,7 @@ spec:
           name: {{ template "docker-registry.fullname" . }}-config
       - name: tls-cert
         secret:
-          secretName: {{ .Values.registry.fqdn }}.tls
+          secretName: {{ .Values.fqdn }}.tls
       - name: image-store
       {{- if .Values.persistentVolume.enabled }}
         persistentVolumeClaim:
