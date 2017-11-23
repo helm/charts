@@ -1,11 +1,6 @@
 dependencies:
-- alias: ""
-  condition: ""
-  enabled: false
-  import-values: null
-  name: common
+- name: common
   repository: https://kubernetes-charts-incubator.storage.googleapis.com/
-  tags: null
   version: 0.0.1
-digest: sha256:321cd050dce9ef5f3665adff9323163820ac4c7d18b91876a520e6f0e8b49d46
-generated: 2017-09-20T00:29:42.620906219-05:00
+digest: sha256:306378be27e855f6823d057c0d90ba3be227d44dc75b2c70c484a03c2515511e
+generated: 2017-11-23T21:17:51.874638864+01:00
