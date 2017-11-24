@@ -61,7 +61,7 @@ controller:
   ## Only if controller.kind=DaemonSet
   ## Make controller available on hostPort (http on 80/tcp, https on 443/tcp and stats on 18080/tcp)
   ##
-  enableHostPort: true
+  enableHostPort: false
 
   # The update strategy to apply to the Deployment or DaemonSet
   ##
