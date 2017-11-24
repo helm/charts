@@ -122,7 +122,7 @@ Updated member with ID 7fd61f3f79d97779 in cluster
 ...
 ```
 
-## Scaling using kubectl
+## Scaling using Helm
 
 Scaling is managed by `helm upgrade`.
 
