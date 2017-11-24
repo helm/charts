@@ -57,6 +57,11 @@ The following tables lists the configurable parameters of the Ghost chart and th
 | `ghostEmail`                      | Admin email                                           | `user@example.com`                                        |
 | `ghostBlogTitle`                  | Ghost Blog name                                       | `User's Blog`                                             |
 | `allowEmptyPassword`              | Allow DB blank passwords                              | `yes`                                                     |
+| `externalDatabase.host`           | Host of the external database                         | `nil`                                                     |
+| `externalDatabase.user`           | Existing username in the external db                  | `bn_ghost`                                                |
+| `externalDatabase.password`       | Password for the above username                       | `nil`                                                     |
+| `externalDatabase.database`       | Name of the existing databse                          | `bitnami_ghost`                                           |
+| `mariadb.enabled`                 | Use or not the mariadb chart                          | `true`                                                    |
 | `mariadb.mariadbRootPassword`     | MariaDB admin password                                | `nil`                                                     |
 | `mariadb.mariadbDatabase`         | Database name to create                               | `bitnami_ghost`                                           |
 | `mariadb.mariadbUser`             | Database user to create                               | `bn_ghost`                                                |

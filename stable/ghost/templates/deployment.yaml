@@ -34,24 +34,35 @@ spec:
         {{- else }}
           value: "no"
         {{- end }}
-        - name: MARIADB_ROOT_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: {{ template "ghost.mariadb.fullname" . }}
-              key: mariadb-root-password
         - name: MARIADB_HOST
+        {{- if .Values.mariadb.enabled }}
           value: {{ template "ghost.mariadb.fullname" . }}
+        {{- else }}
+          value: {{ default "" .Values.externalDatabase.host | quote }}
+        {{- end }}
         - name: MARIADB_PORT_NUMBER
           value: "3306"
         - name: GHOST_DATABASE_NAME
+        {{- if .Values.mariadb.enabled }}
           value: {{ default "" .Values.mariadb.mariadbDatabase | quote }}
+        {{- else }}
+          value: {{ default "" .Values.externalDatabase.database | quote }}
+        {{- end }}
         - name: GHOST_DATABASE_USER
+        {{- if .Values.mariadb.enabled }}
           value: {{ default "" .Values.mariadb.mariadbUser | quote }}
+        {{- else }}
+          value: {{ default "" .Values.externalDatabase.user | quote }}
+        {{- end }}
         - name: GHOST_DATABASE_PASSWORD
+        {{- if .Values.mariadb.enabled }}
           valueFrom:
             secretKeyRef:
               name: {{ template "ghost.mariadb.fullname" . }}
               key: mariadb-password
+        {{- else }}
+          value: {{ default "" .Values.externalDatabase.password | quote }}
+        {{- end }}
         - name: GHOST_HOST
           value: {{ include "ghost.host" . | quote }}
         - name: GHOST_PORT_NUMBER
