@@ -38,13 +38,13 @@ The following tables lists the configurable parameters of the etcd chart and the
 | Parameter               | Description                        | Default                                                    |
 | ----------------------- | ---------------------------------- | ---------------------------------------------------------- |
 | `Name`                  | Spark master name                  | `etcd`                                                     |
-| `Image`                 | Container image name               | `gcr.io/google_containers/etcd-amd64`                      |
-| `ImageTag`              | Container image tag                | `2.2.5`                                                    |
+| `Image`                 | Container image name               | `nearform/docker-etcd`                      |
+| `ImageTag`              | Container image tag                | `2.3.10`                                                    |
 | `ImagePullPolicy`       | Container pull policy              | `Always`                                                   |
 | `Replicas`              | k8s statefulset replicas           | `3`                                                        |
 | `Component`             | k8s selector key                   | `etcd`                                                     |
 | `Cpu`                   | container requested cpu            | `100m`                                                     |
-| `Memory`                | container requested memory         | `512Mi`                                                    |
+| `Memory`                | container requested memory         | `256Mi`                                                    |
 | `ClientPort`            | k8s service port                   | `2379`                                                     |
 | `PeerPorts`             | Container listening port           | `2380`                                                     |
 | `Storage`               | Persistent volume size             | `1Gi`                                                      |
@@ -127,9 +127,9 @@ Updated member with ID 7fd61f3f79d97779 in cluster
 
 ## Scaling using kubectl
 
-This is for reference. Scaling should be managed by `helm upgrade`
+Scaling is managed by `helm upgrade`
 
-The etcd cluster can be scale up by running ``kubectl patch`` or ``kubectl edit``. For instance,
+The etcd cluster can be scale up by chaning the number of replicas in the `values.yaml` or by specifying it as a parameter.
 
 ```sh
 $ kubectl get pods -l "component=${RELEASE-NAME}-etcd"

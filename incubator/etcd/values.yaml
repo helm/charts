@@ -15,7 +15,7 @@ PeerTLS: true
 # be replicated to more machines.
 Replicas: 3
 Image: "nearform/docker-etcd"
-ImageTag: "latest"
+ImageTag: "3.2.10"
 ImagePullPolicy: "Always"
 Cpu: "100m"
 Memory: "256Mi"
