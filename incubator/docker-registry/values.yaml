@@ -9,6 +9,7 @@ initImageVersion: latest
 registryImage: registry
 registryImageVersion: 2
 tarballURL:
+filesystemStorage: true
 persistentVolume:
   enabled: false
   accessModes:
@@ -24,3 +25,26 @@ persistentVolume:
   ##
   storageClass: "-"
   annotations: {}
+
+fqdn: registry.docker.example.com
+secrets:
+  s3:
+    access-key: ""
+    secret-key: ""
+configData:
+  version: 0.1
+  log:
+    fields:
+      service: registry
+  storage:
+    cache:
+      blobdescriptor: inmemory
+  http:
+    addr: :4000
+    headers:
+      X-Content-Type-Options: [nosniff]
+  health:
+    storagedriver:
+      enabled: true
+      interval: 10s
+      threshold: 3

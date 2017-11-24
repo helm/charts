@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: {{ template "docker-registry.fullname" . }}
   labels:
-    app: {{ template "docker-registry.name" . }} 
+    app: {{ template "docker-registry.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
@@ -36,16 +36,25 @@ spec:
       - name: registry
         image: "{{ .Values.registryImage }}:{{ .Values.registryImageVersion }}"
         imagePullPolicy: IfNotPresent
+        command:
+        - /bin/registry
+        - serve
+        - /etc/docker/registry/config.yml
         resources:
           limits:
             cpu: 100m
             memory: 256Mi
         env:
-        - name: REGISTRY_HTTP_ADDR
-          value: ":4000"
-        - name: REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY
-          value: "/var/lib/registry"
+{{- if .Values.filesystemStorage }}
+          - name: REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY
+            value: "/var/lib/registry"
+{{- end }}
         volumeMounts:
+        - name: "{{ template "docker-registry.fullname" . }}-config"
+          mountPath: "/etc/docker/registry"
+        - mountPath: /etc/ssl/docker
+          name: tls-cert
+          readOnly: true
         - name: image-store
           mountPath: /var/lib/registry
         ports:
@@ -53,6 +62,12 @@ spec:
           name: registry
           protocol: TCP
       volumes:
+      - name: {{ template "docker-registry.fullname" . }}-config
+        configMap:
+          name: {{ template "docker-registry.fullname" . }}-config
+      - name: tls-cert
+        secret:
+          secretName: {{ .Values.fqdn }}.tls
       - name: image-store
       {{- if .Values.persistentVolume.enabled }}
         persistentVolumeClaim:
