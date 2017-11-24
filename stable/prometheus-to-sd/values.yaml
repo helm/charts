@@ -6,3 +6,4 @@ image:
 resources: {}
 port: 6060
 metricsSources: {}
+nodeSelector: {}
