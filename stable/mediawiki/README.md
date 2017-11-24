@@ -59,6 +59,11 @@ The following tables lists the configurable parameters of the MediaWiki chart an
 | `smtpHostID`                         | SMTP host ID                             | `nil`                                                   |
 | `smtpUser`                           | SMTP user                                | `nil`                                                   |
 | `smtpPassword`                       | SMTP password                            | `nil`                                                   |
+| `externalDatabase.host`              | Host of the external database            | `nil`                                                   |
+| `externalDatabase.user`              | Existing username in the external db     | `bn_mediawiki`                                          |
+| `externalDatabase.password`          | Password for the above username          | `nil`                                                   |
+| `externalDatabase.database`          | Name of the existing databse             | `bitnami_mediawiki`                                     |
+| `mariadb.enabled`                    | Use or not the mariadb chart             | `true`                                                  |
 | `mariadb.mariadbRootPassword`        | MariaDB admin password                   | `nil`                                                   |
 | `mariadb.mariadbDatabase`            | Database name to create                  | `bitnami_mediawiki`                                     |
 | `mariadb.mariadbUser`                | Database user to create                  | `bn_mediawiki`                                          |
