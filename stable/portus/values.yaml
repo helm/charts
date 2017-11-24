@@ -30,6 +30,21 @@ portus:
         address: "smtp.example.com"
         port: 587
         domain: "example.com"
+    ldap:
+      enabled: false
+      host: "ldap.example.com"
+      port: 389
+      method: "plain"
+      base: ""
+      filter: ""
+      uid: "uid"
+      authentication:
+        enabled: false
+        bind_dn: ""
+        password: ""
+      guess_email:
+        enabled: false
+        attr: ""
   secrets:
     password: ""  # Randomly generated if omitted
     email:

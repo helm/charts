@@ -54,29 +54,29 @@ data:
     # be able to use Portus. Take a look at the documentation of LDAP support in our
     # online docs: http://port.us.org/features/2_LDAP-support.html.
     ldap:
-      enabled: false
+      enabled: {{ .Values.portus.config.ldap.enabled }}
 
-      hostname: "ldap_hostname"
-      port: 389
+      hostname: {{ .Values.portus.config.ldap.host | quote }}
+      port: {{ .Values.portus.config.ldap.port }}
 
       # Available options: "plain", "simple_tls" and "starttls". The default is
       # "plain", the recommended is "starttls".
-      method: "plain"
+      method: {{ .Values.portus.config.ldap.method | quote }}
 
       # The base where users are located (e.g. "ou=users,dc=example,dc=com").
-      base: ""
+      base: {{ .Values.portus.config.ldap.base | quote }}
 
       # User filter (e.g. "mail=george*").
-      filter: ""
+      filter: {{ .Values.portus.config.ldap.filter | quote }}
 
       # The LDAP attribute where to search for username. The default is 'uid'.
-      uid: "uid"
+      uid: {{ .Values.portus.config.ldap.uid | quote }}
 
       # LDAP credentials used to search for a user.
       authentication:
-        enabled: false
-        bind_dn: ""
-        password: ""
+        enabled: {{ .Values.portus.config.ldap.authentication.enabled }}
+        bind_dn: {{ .Values.portus.config.ldap.authentication.bind_dn | quote }}
+        password: {{ .Values.portus.config.ldap.authentication.password | quote }}
 
       # Portus needs an email for each user, but there's no standard way to get
       # that from LDAP servers. You can tell Portus how to get the email from users
@@ -97,8 +97,8 @@ data:
       # If something goes wrong when trying to guess the email, then it just falls
       # back to the default behavior (empty email).
       guess_email:
-        enabled: false
-        attr: ""
+        enabled: {{ .Values.portus.config.ldap.guess_email.enabled }}
+        attr: {{ .Values.portus.config.ldap.guess_email.attr | quote }}
 
     # Set first_user_admin to true if you want that the first user that signs up
     # to be an admin.
