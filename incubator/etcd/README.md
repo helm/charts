@@ -154,5 +154,5 @@ etcd-3    1/1       Running   0          4s
 ```
 
 Once a replica is terminated (either by running ``kubectl delete pod etcd-ID`` or scaling down), the data directory is cleaned up.
-If any of the etcd pods restarts (e.g. caused by etcd failure or any other),
+If any of the etcd pods restart (e.g. caused by etcd failure or other),
 the data directory is kept untouched so the pod can recover from the failure. When for some reason a member is removed from the Etcd cluster, the restarting pod will detect this, remove the data directory and exit. It will join the Etcd cluster as a new member on next restart as if it were a brand new node.

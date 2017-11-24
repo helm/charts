@@ -14,7 +14,7 @@ PeerTLS: true
 # While larger cluster provides better fault tolerance the write performance reduces since data needs to
 # be replicated to more machines.
 Replicas: 3
-Image: "nearform/docker-etcd"
+Image: "nearform/etcd"
 ImageTag: "3.2.10"
 ImagePullPolicy: "Always"
 Cpu: "100m"
