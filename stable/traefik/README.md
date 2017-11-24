@@ -86,7 +86,7 @@ The following tables lists the configurable parameters of the Traefik chart and 
 | Parameter                       | Description                                                          | Default                                   |
 | ------------------------------- | -------------------------------------------------------------------- | ----------------------------------------- |
 | `image`                         | Traefik image name                                                   | `traefik`                                 |
-| `imageTag`                      | The version of the official Traefik image to use                     | `1.4.0`                                  |
+| `imageTag`                      | The version of the official Traefik image to use                     | `1.4.3`                                  |
 | `serviceType`                   | A valid Kubernetes service type                                      | `LoadBalancer`                            |
 | `loadBalancerIP`                | An available static IP you have reserved on your cloud platform      | None                                      |
 | `loadBalancerSourceRanges`      | list of IP CIDRs allowed access to load balancer (if supported)      | None                                      |
@@ -113,10 +113,13 @@ The following tables lists the configurable parameters of the Traefik chart and 
 | `dashboard.enabled`             | Whether to enable the Traefik dashboard                              | `false`                                   |
 | `dashboard.domain`              | Domain for the Traefik dashboard                                     | `traefik.example.com`                     |
 | `dashboard.ingress.annotations` | Annotations for the Traefik dashboard Ingress definition, specified as a map | None                              |
+| `dashboard.ingress.labels`      | Labels for the Traefik dashboard Ingress definition, specified as a map      | None                              |
 | `dashboard.auth.basic`          | Basic auth for the Traefik dashboard specified as a map, see Authentication section | unset by default; this means basic auth is disabled |
 | `dashboard.statistics.recentErrors` | Number of recent errors to show in the ‘Health’ tab              | None                                      |
 | `service.annotations`           | Annotations for the Traefik Service definition, specified as a map   | None                                      |
 | `service.labels`                | Additional labels for the Traefik Service definition, specified as a map | None                                  |
+| `service.nodePorts.http`           | Desired nodePort for service of type NodePort used for http requests  |   blank ('') - will assign a dynamic node port                                      |
+| `service.nodePorts.https`           | Desired nodePort for service of type NodePort used for https requests  | blank ('') - will assign a dynamic node port                                      |
 | `gzip.enabled`                  | Whether to use gzip compression                                      | `true`                                    |
 | `kubernetes.namespaces`         | List of Kubernetes namespaces to watch                               | All namespaces                            |
 | `kubernetes.labelSelector`      | Valid Kubernetes ingress label selector to watch (e.g `realm=public`)| No label filter                           |

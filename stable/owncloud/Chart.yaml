@@ -1,5 +1,5 @@
 name: owncloud
-version: 0.4.17
+version: 0.5.0
 appVersion: 10.0.3
 description: A file sharing server that puts the control and security of your own data back into your hands.
 keywords:

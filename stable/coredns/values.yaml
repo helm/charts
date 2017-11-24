@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: coredns/coredns
-  tag: "006"
+  tag: "011"
   pullPolicy: IfNotPresent
 
 resources:
@@ -16,6 +16,12 @@ resources:
   requests:
     cpu: 100m
     memory: 128Mi
+
+rbac:
+  # If true, create & use RBAC resources
+  create: false
+  # Ignored if rbac.create is true
+  serviceAccountName: default
 
 # isClusterService specifies whether chart should be deployed as cluster-service or normal k8s app.
 isClusterService: true
@@ -40,7 +46,7 @@ middleware:
     port: "9153"
   errors:
     enabled: true
-    file: "stderr"
+    file: "stdout"
   log:
     enabled: false
     file: "stdout"
