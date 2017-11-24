@@ -52,9 +52,6 @@ externalDatabase:
   ## Database name
   # database: bitnami_mediawiki
 
-
-
-
 ##
 ## MariaDB chart configuration
 ##
