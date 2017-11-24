@@ -72,15 +72,9 @@ $ for i in <0..n>; do kubectl exec <release-podname-$i> -- sh -c 'etcdctl cluste
 ```
 eg.
 ```
-$ for i in {0..9}; do kubectl exec named-lynx-etcd-$i --namespace=etcd -- sh -c 'etcdctl cluster-health'; done
-member 7878c44dabe58db is healthy: got healthy result from http://named-lynx-etcd-7.named-lynx-etcd:2379
-member 19d2ab7b415341cc is healthy: got healthy result from http://named-lynx-etcd-4.named-lynx-etcd:2379
-member 6b627d1b92282322 is healthy: got healthy result from http://named-lynx-etcd-3.named-lynx-etcd:2379
+$ for i in {0..2}; do kubectl exec <release name>-etcd-$i --namespace=etcd -- sh -c 'etcdctl cluster-health'; done
 member 6bb377156d9e3fb3 is healthy: got healthy result from http://named-lynx-etcd-0.named-lynx-etcd:2379
-member 8ebbb00c312213d6 is healthy: got healthy result from http://named-lynx-etcd-8.named-lynx-etcd:2379
-member a32e3e8a520ff75f is healthy: got healthy result from http://named-lynx-etcd-5.named-lynx-etcd:2379
-member dc83003f0a226816 is healthy: got healthy result from http://named-lynx-etcd-2.named-lynx-etcd:2379
-member e3dc94686f60465d is healthy: got healthy result from http://named-lynx-etcd-6.named-lynx-etcd:2379
+member 8ebbb00c312213d6 is healthy: got healthy result from member dc83003f0a226816 is healthy: got healthy result from http://named-lynx-etcd-2.named-lynx-etcd:2379
 member f5ee1ca177a88a58 is healthy: got healthy result from http://named-lynx-etcd-1.named-lynx-etcd:2379
 cluster is healthy
 ```
