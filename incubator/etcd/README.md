@@ -61,6 +61,9 @@ $ helm install --name my-release -f values.yaml incubator/etcd
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
 # Deep dive
+This chart spins up 3 replicas by default, which means the Etcd cluster will have 3 members. However, the initial Etcd cluster size is 1, so the first pod that spins up forms the cluster by itself. The next 2 members are added to the cluster. Even with the default values you can come down to 1 member without the cluster failing.
+
+This allows cluster size management by Helm and adds relisance to the cluster.
 
 ## Cluster Health
 
@@ -127,34 +130,26 @@ Updated member with ID 7fd61f3f79d97779 in cluster
 
 ## Scaling using kubectl
 
-Scaling is managed by `helm upgrade`
+Scaling is managed by `helm upgrade`.
 
 The etcd cluster can be scale up by chaning the number of replicas in the `values.yaml` or by specifying it as a parameter.
 
 ```sh
-$ kubectl get pods -l "component=${RELEASE-NAME}-etcd"
-NAME      READY     STATUS    RESTARTS   AGE
-etcd-0    1/1       Running   0          7m
-etcd-1    1/1       Running   0          7m
-etcd-2    1/1       Running   0          6m
-
-$ kubectl patch statefulset/etcd -p '{"spec":{"replicas": 5}}'
-"etcd" patched
+helm upgrade <release name> --set Replicas=5 incubator/etcd
 
 $ kubectl get pods -l "component=${RELEASE-NAME}-etcd"
 NAME      READY     STATUS    RESTARTS   AGE
 etcd-0    1/1       Running   0          8m
 etcd-1    1/1       Running   0          8m
 etcd-2    1/1       Running   0          8m
-etcd-3    1/1       Running   0          4s
+etcd-3    1/1       Running   0          8s
 etcd-4    1/1       Running   0          1s
 ```
 
 Scaling-down is similar. For instance, changing the number of replicas to ``4``:
 
 ```sh
-$ kubectl edit statefulset/etcd
-statefulset "etcd" edited
+$ helm upgrade <release name> --set Replicas=4 incubator/etcd
 
 $ kubectl get pods -l "component=${RELEASE-NAME}-etcd"
 NAME      READY     STATUS    RESTARTS   AGE
@@ -164,7 +159,6 @@ etcd-2    1/1       Running   0          8m
 etcd-3    1/1       Running   0          4s
 ```
 
-Once a replica is terminated (either by running ``kubectl delete pod etcd-ID`` or scaling down),
-content of ``/var/run/etcd/`` directory is cleaned up.
+Once a replica is terminated (either by running ``kubectl delete pod etcd-ID`` or scaling down), the data directory is cleaned up.
 If any of the etcd pods restarts (e.g. caused by etcd failure or any other),
-the directory is kept untouched so the pod can recover from the failure.
+the data directory is kept untouched so the pod can recover from the failure. When for some reason a member is removed from the Etcd cluster, the restarting pod will detect this, remove the data directory and exit. It will join the Etcd cluster as a new member on next restart as if it were a brand new node.
