@@ -25,24 +25,35 @@ spec:
         {{- else }}
           value: "no"
         {{- end }}
-        - name: MARIADB_ROOT_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: {{ template "phpbb.mariadb.fullname" . }}
-              key: mariadb-root-password
         - name: MARIADB_HOST
+        {{- if .Values.mariadb.enabled }}
           value: {{ template "phpbb.mariadb.fullname" . }}
+        {{- else }}
+          value: {{ default "" .Values.externalDatabase.host | quote }}
+        {{- end }}
         - name: MARIADB_PORT_NUMBER
           value: "3306"
         - name: PHPBB_DATABASE_NAME
+        {{- if .Values.mariadb.enabled }}
           value: {{ default "" .Values.mariadb.mariadbDatabase | quote }}
+        {{- else }}
+          value: {{ default "" .Values.externalDatabase.database | quote }}
+        {{- end }}
         - name: PHPBB_DATABASE_USER
+        {{- if .Values.mariadb.enabled }}
           value: {{ default "" .Values.mariadb.mariadbUser | quote }}
+        {{- else }}
+          value: {{ default "" .Values.externalDatabase.user | quote }}
+        {{- end }}
         - name: PHPBB_DATABASE_PASSWORD
+        {{- if .Values.mariadb.enabled }}
           valueFrom:
             secretKeyRef:
               name: {{ template "phpbb.mariadb.fullname" . }}
               key: mariadb-password
+        {{- else }}
+          value: {{ default "" .Values.externalDatabase.password | quote }}
+        {{- end }}
         - name: PHPBB_USERNAME
           value: {{ default "" .Values.phpbbUser | quote }}
         - name: PHPBB_PASSWORD
