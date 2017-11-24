@@ -7,18 +7,17 @@ metadata:
     release: {{ .Release.Name | quote }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     app: "{{ template "portus.name" . }}"
+{{- if .Values.portus.ingress.annotations }}
   annotations:
-    kubernetes.io/tls-acme: "true"
-    kubernetes.io/ingress.class: "nginx"
-    # nginx config upstream requires https
-    ingress.kubernetes.io/secure-backends: "true"
+{{ toYaml .Values.portus.ingress.annotations | indent 4 }}
+{{- end }}
 spec:
+{{- if .Values.portus.ingress.tls }}
   tls:
-  - hosts:
-    - {{ .Values.portus.fqdn }}
-    secretName: {{ .Values.portus.fqdn }}.tls
+{{ toYaml .Values.portus.ingress.tls | indent 4 }}
+{{- end }}
   rules:
-  - host: {{ .Values.portus.fqdn }}
+  - host: {{ .Values.portus.fqdn | quote }}
     http:
       paths:
       - backend:
