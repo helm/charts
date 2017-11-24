@@ -42,22 +42,22 @@ setDefaultUser:
   ## Image of the container used for job
   ## Default: appropriate/curl:latest
   ##
-  # image: appropriate/curl:latest
+  image: appropriate/curl:latest
 
   ## Deadline for job so it does not retry forever.
   ## Default: activeDeadline: 300
   ##
-  # activeDeadline: 300
+  activeDeadline: 300
 
   ## Restart policy for job
   ## Default: OnFailure
-  # restartPolicy: OnFailure
+  restartPolicy: OnFailure
 
-  # user:
+  user:
 
     ## The user name
     ## Default: "admin"
-    # username: "admin"
+    username: "admin"
 
     ## User password
     ## Default: (Randomly generated 10 characters of Ascii)
@@ -65,7 +65,7 @@ setDefaultUser:
 
     ## User privileges
     ## Default: "WITH ALL PRIVILEGES"
-    # privileges: "WITH ALL PRIVILEGES"
+    privileges: "WITH ALL PRIVILEGES"
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/

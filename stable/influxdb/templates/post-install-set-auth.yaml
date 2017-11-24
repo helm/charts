@@ -11,7 +11,7 @@ metadata:
   annotations:
     "helm.sh/hook": post-install
 spec:
-  activeDeadlineSeconds: {{ default 300 .Values.setDefaultUser.activeDeadlineSeconds }}
+  activeDeadlineSeconds: {{ .Values.setDefaultUser.activeDeadlineSeconds }}
   template:
     metadata:
       labels:
@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
       - name: {{ template "influxdb.fullname" . }}-set-auth
-        image: "{{ default "appropriate/curl:latest" .Values.setDefaultUser.image }}"
+        image: "{{ .Values.setDefaultUser.image }}"
         env:
           - name: INFLUXDB_USER
             valueFrom:
@@ -38,6 +38,6 @@ spec:
           - |
              curl -X POST http://{{ template "influxdb.fullname" . }}:{{ .Values.config.http.bind_address }}/query \
              --data-urlencode \
-             "q=CREATE USER \"${INFLUXDB_USER}\" WITH PASSWORD '${INFLUXDB_PASSWORD}' {{ default "WITH ALL PRIVILEGES" .Values.setDefaultUser.user.privileges }}"
-      restartPolicy: {{ default "OnFailure" .Values.setDefaultUser.restartPolicy }}
+             "q=CREATE USER \"${INFLUXDB_USER}\" WITH PASSWORD '${INFLUXDB_PASSWORD}' {{ .Values.setDefaultUser.user.privileges }}"
+      restartPolicy: {{ .Values.setDefaultUser.restartPolicy }}
 {{- end -}}
