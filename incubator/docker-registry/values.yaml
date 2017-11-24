@@ -9,6 +9,7 @@ initImageVersion: latest
 registryImage: registry
 registryImageVersion: 2
 tarballURL:
+filesystemStorage: true
 persistentVolume:
   enabled: false
   accessModes:
@@ -38,8 +39,6 @@ configData:
   storage:
     cache:
       blobdescriptor: inmemory
-    filesystem:
-      rootdirectory: /var/lib/registry
   http:
     addr: :4000
     headers:

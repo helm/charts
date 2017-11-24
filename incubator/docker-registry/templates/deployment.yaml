@@ -45,6 +45,10 @@ spec:
             cpu: 100m
             memory: 256Mi
         env:
+{{- if .Values.filesystemStorage }}
+          - name: REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY
+            value: "/var/lib/registry"
+{{- end }}
         volumeMounts:
         - name: "{{ template "docker-registry.fullname" . }}-config"
           mountPath: "/etc/docker/registry"
