@@ -1,4 +1,7 @@
 dependencies:
+- name: docker-registry
+  version: 0.3.0
+  repository: https://kubernetes-charts-incubator.storage.googleapis.com/
 - name: mariadb
   version: 0.7.0
   repository: https://kubernetes-charts.storage.googleapis.com/

@@ -2,4 +2,4 @@
 Portus may take up to 5 minutes to start, once ready:
 
 Portus can be accessed via https://{{ .Values.portus.fqdn }}
-Registry can be accessed via https://{{ .Values.registry.fqdn }}
+Registry can be accessed via https://{{ .Values.portus.dockerFqdn }}

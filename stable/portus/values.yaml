@@ -3,6 +3,10 @@ nameOverride: portus
 portus:
   replicaCount: 1
   fqdn: portus.registry.example.com
+  # these need to match the values in docker-registry.configData
+  dockerFqdn: docker.registry.example.com
+  dockerS3Bucket: registry
+  dockerRootDirectory: portus
   image:
     repository: opensuse/portus
     tag: 2.2
@@ -44,21 +48,10 @@ portus:
     requests:
       cpu: 100m
       memory: 384Mi
-registry:
+
+docker-registry:
   replicaCount: 2
-  fqdn: docker.registry.example.com
-  image:
-    repository: docker.io/library/registry
-    tag: 2.6.1
-    pullPolicy: IfNotPresent
-  config:
-    debug-addr: localhost:5001
-    s3:
-      region: "us-east-1"
-      regionendpoint: ""  # empty for AWS s3
-      bucket: registry
-      rootDirectory: portus
-      secure: true
+  fqdn: "docker.registry.example.com"
   secrets:
     # https://github.com/docker/distribution/blob/master/docs/configuration.md#http
     ha-shared-secret: ""  # Randomly generated if omitted
@@ -72,6 +65,48 @@ registry:
     requests:
       cpu: 100m
       memory: 100Mi
+  configData:
+    version: 0.1
+    auth:
+      token:
+        realm: https://portus.registry.example.com/v2/token
+        service: docker.registry.example.com
+        issuer: portus.registry.example.com
+        rootcertbundle: /etc/ssl/docker/tls.crt
+    health:
+      storagedriver:
+        enabled: true
+        interval: 10s
+        threshold: 3
+    http:
+      addr: :5000
+      host: docker.registry.example.com
+      tls:
+        certificate: /etc/ssl/docker/tls.crt
+        key: /etc/ssl/docker/tls.key
+      headers:
+        X-Content-Type-Options: [nosniff]
+      debug:
+        addr: localhost:5001
+    log:
+      level: info
+      fields:
+        service: registry
+    maintenance:
+      uploadpurging:
+        enabled: true
+        age: 168h
+        interval: 24h
+        dryrun: false
+      readonly:
+        enabled: false
+    notifications:
+      endpoints:
+      - name: portus
+        url: https://portus.registry.example.com/v2/webhooks/events
+        timeout: 3000ms
+        threshold: 5
+        backoff: 1s
 
 ##
 ## Minio chart configuration
