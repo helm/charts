@@ -78,20 +78,20 @@ spec:
           ports:
             - name: http
               containerPort: 80
-              {{- if .Values.controller.daemonset.hostPort }}
+              {{- if .Values.controller.enablehostPort }}
               hostPort: 80
               {{- end }}
               protocol: TCP
             - name: https
               containerPort: 443
-              {{- if .Values.controller.daemonset.hostPort }}
+              {{- if .Values.controller.enablehostPort }}
               hostPort: 443
               {{- end }}
               protocol: TCP
           {{- if .Values.controller.stats.enabled }}
             - name: stats
               containerPort: 18080
-              {{- if .Values.controller.daemonset.hostPort }}
+              {{- if .Values.controller.enablehostPort }}
               hostPort: 18080
               {{- end }}
               protocol: TCP
