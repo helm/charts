@@ -236,6 +236,85 @@ spec:
                 configMapKeyRef:
                   name: {{ template "concourse.concourse.fullname" . }}
                   key: generic-oauth-token-url
+            {{- if .Values.concourse.vault.enabled }}
+            {{- if .Values.concourse.vault.vaultUrl }}
+            - name: CONCOURSE_VAULT_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: vault-url
+            {{- end }}
+            {{- if .Values.concourse.vault.vaultPathPrefix }}
+            - name: CONCOURSE_VAULT_PATH_PREFIX
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: vault-path-prefix
+            {{- end }}
+            {{- if .Values.concourse.vault.vaultCaCert }}
+            - name: CONCOURSE_VAULT_CA_CERT
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: vault-ca-cert
+            {{- end }}
+            {{- if .Values.concourse.vault.vaultCaPath }}
+            - name: CONCOURSE_VAULT_CA_PATH
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: vault-ca-path
+            {{- end }}
+            {{- if .Values.concourse.vault.vaultClientCert }}
+            - name: CONCOURSE_VAULT_CLIENT_CERT
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: vault-client-cert
+            {{- end }}
+            {{- if .Values.concourse.vault.vaultClientKey }}
+            - name: CONCOURSE_VAULT_CLIENT_KEY
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: vault-client-key
+            {{- end }}
+            {{- if .Values.concourse.vault.vaultServerName }}
+            - name: CONCOURSE_VAULT_SERVER_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: vault-server-name
+            {{- end }}
+            {{- if .Values.concourse.vault.vaultInsecureSkipVerify }}
+            - name: CONCOURSE_VAULT_INSECURE_SKIP_VERIFY
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: vault-insecure-skip-verify
+            {{- end }}
+            {{- if .Values.concourse.vault.vaultClientToken }}
+            - name: CONCOURSE_VAULT_CLIENT_TOKEN
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: vault-client-token
+            {{- end }}
+            {{- if .Values.concourse.vault.vaultAuthBackend }}
+            - name: CONCOURSE_VAULT_AUTH_BACKEND
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: vault-auth-backend
+            {{- end }}
+            {{- if .Values.concourse.vault.vaultAuthParam }}
+            - name: CONCOURSE_VAULT_AUTH_PARAM
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: vault-auth-param
+            {{- end }}
+            {{- end }}
             - name: CONCOURSE_TSA_HOST_KEY
               value: "/concourse-keys/host_key"
             - name: CONCOURSE_SESSION_SIGNING_KEY

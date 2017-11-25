@@ -39,4 +39,16 @@ data:
   generic-oauth-token-url: {{ default "" .Values.concourse.genericOauthTokenUrl | quote }}
   worker-post-stop-delay-seconds: {{ .Values.worker.postStopDelaySeconds | quote }}
   worker-fatal-errors: {{ default "" .Values.worker.fatalErrors | quote }}
+  vault-url: {{ default "" .Values.concourse.vault.vaultUrl | quote }}
+  vault-path-prefix: {{ default "" .Values.concourse.vault.vaultPathPrefix | quote }}
+  vault-ca-cert: {{ default "" .Values.concourse.vault.vaultCaCert | quote }}
+  vault-ca-path: {{ default "" .Values.concourse.vault.vaultCaPath | quote }}
+  vault-client-cert: {{ default "" .Values.concourse.vault.vaultClientCert | quote }}
+  vault-client-key: {{ default "" .Values.concourse.vault.vaultClientKey | quote }}
+  vault-server-name: {{ default "" .Values.concourse.vault.vaultServerName | quote }}
+  vault-insecure-skip-verify: {{ default "" .Values.concourse.vault.vaultInsecureSkipVerify | quote }}
+  vault-client-token: {{ default "" .Values.concourse.vault.vaultClientToken | quote }}
+  vault-auth-backend: {{ default "" .Values.concourse.vault.vaultAuthBackend | quote }}
+  vault-auth-param: {{ default "" .Values.concourse.vault.vaultAuthParam | quote }}
+
   

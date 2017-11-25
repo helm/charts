@@ -277,6 +277,59 @@ concourse:
   ##
   # genericOauthTokenUrl:
 
+  ## Parent for vault configurations.
+  ##
+  vault:
+
+    ## Use the vault chart dependency.
+    ## Set to false if bringing your own PostgreSQL.
+    ##
+    enabled: false
+
+    ## Vault server address used to access secrets..
+    ##
+    # vaultUrl:
+
+    ## Path under which to namespace credential lookup. (default: /concourse).
+    ##
+    # vaultPathPrefix:
+
+    ## Path to a PEM-encoded CA cert file to use to verify the vault server SSL cert.
+    ##
+    # vaultCaCert:
+
+    ## Path to a directory of PEM-encoded CA cert files to verify the vault server SSL cert.
+    ##
+    # vaultCaPath:
+
+    ## Path to the client certificate for Vault authorization.
+    ##
+    # vaultClientCert:
+
+    ## Path to the client private key for Vault authorization.
+    ##
+    # vaultClientKey:
+
+    ## If set, is used to set the SNI host when connecting via TLS.
+    ##
+    # vaultServerName:
+
+    ## Enable insecure SSL verification.
+    ##
+    # vaultInsecureSkipVerify:
+
+    ## Client token for accessing secrets within the Vault server.
+    ##
+    # vaultClientToken:
+
+    ## Auth backend to use for logging in to Vault.
+    ##
+    # vaultAuthBackend:
+
+    ## Parameter to pass when logging in via the backend. Can be specified multiple times.
+    ##
+    # vaultAuthParam:
+
 ## Configuration values for Concourse Web components.
 ##
 web:
