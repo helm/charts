@@ -56,6 +56,7 @@ The following tables lists the configurable parameters of the PostgresSQL chart 
 | `persistence.existingClaim`| Provide an existing PersistentVolumeClaim       | `nil`                                                      |
 | `persistence.storageClass` | Storage class of backing PVC                    | `nil` (uses alpha storage class annotation)                |
 | `persistence.accessMode`   | Use volume as ReadOnly or ReadWrite             | `ReadWriteOnce`                                            |
+| `persistence.annotations`  | Persistent Volume annotations                   | `{}`                                                       |
 | `persistence.size`         | Size of data volume                             | `8Gi`                                                      |
 | `persistence.subPath`      | Subdirectory of the volume to mount at          | `postgresql-db`                                            |
 | `resources`                | CPU/Memory resource requests/limits             | Memory: `256Mi`, CPU: `100m`                               |

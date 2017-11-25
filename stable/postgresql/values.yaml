@@ -47,6 +47,8 @@ persistence:
   size: 8Gi
   subPath: "postgresql-db"
 
+  # annotations: {}
+
 metrics:
   enabled: false
   image: wrouesnel/postgres_exporter
