@@ -2,7 +2,7 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: {{ template "fullname" . }}-owncloud
+  name: {{ template "owncloud.fullname" . }}-owncloud
 spec:
   accessModes:
     - {{ .Values.persistence.owncloud.accessMode | quote }}

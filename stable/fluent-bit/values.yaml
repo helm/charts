@@ -5,7 +5,7 @@ on_minikube: false
 image:
   fluent_bit:
     repository: fluent/fluent-bit
-    tag: 0.12.3
+    tag: 0.12.7
   pullPolicy: Always
 
 backend:

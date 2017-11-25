@@ -76,3 +76,7 @@ spec:
       - name: config
         configMap:
           name: {{ template "influxdb.fullname" . }}
+    {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- end -}}

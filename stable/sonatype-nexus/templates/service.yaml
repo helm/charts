@@ -14,6 +14,12 @@ spec:
       targetPort: {{ .Values.service.internalPort }}
       protocol: TCP
       name: {{ .Values.service.name }}
+    {{- if .Values.docker.enabled }}
+    - port: {{ .Values.docker.port }}
+      targetPort: {{ .Values.docker.port }}
+      protocol: TCP
+      name: {{ .Values.service.name }}-docker
+    {{- end }}
   selector:
     app: {{ template "name" . }}
     release: {{ .Release.Name }}

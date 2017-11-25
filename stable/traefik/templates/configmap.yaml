@@ -55,7 +55,7 @@ data:
       {{- end}}
     {{- end}}
     {{- if .Values.accessLogs.enabled }}
-    [accessLogs]
+    [accessLog]
     {{- if .Values.accessLogs.filePath }}
     filePath = "{{ .Values.accessLogs.filePath }}"
     {{- end}}
