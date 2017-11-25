@@ -15,10 +15,10 @@ spec:
 {{- if .Values.podLabels }}
 {{ toYaml .Values.podLabels | indent 8 }}
 {{- end }}
-        {{- if .Values.podAnnotations }}
+      {{- if .Values.podAnnotations }}
       annotations:
 {{ toYaml .Values.podAnnotations | indent 8 }}
-        {{- end }}
+      {{- end }}
     spec:
       securityContext:
         runAsUser: 1001
