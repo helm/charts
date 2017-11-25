@@ -30,7 +30,7 @@ acme:
   staging: true
   ## Set dnsProvider to perform domain verification using dns challenge
   dnsProvider:
-    name: route53
+    name: nil
     auroradns:
       - AURORA_USER_ID: ""
       - AURORA_KEY: ""
