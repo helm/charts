@@ -1,0 +1,20 @@
+{{- if .Values.ingress.enabled }}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    app: {{ template "fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  rules:
+  - host: {{ .Values.owncloudHost }}
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: {{ template "fullname" . }}
+          servicePort: {{ .Values.ingress.servicePort }}
+{{- end }}
