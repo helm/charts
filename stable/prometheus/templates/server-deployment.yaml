@@ -86,6 +86,10 @@ spec:
       tolerations:
 {{ toYaml .Values.server.tolerations | indent 8 }}
     {{- end }}
+    {{- if .Values.server.affinity }}
+      affinity:
+{{ toYaml .Values.server.affinity | indent 8 }}
+    {{- end }}
       terminationGracePeriodSeconds: {{ .Values.server.terminationGracePeriodSeconds }}
       volumes:
         - name: config-volume

@@ -46,7 +46,7 @@ config:
   cluster_name: cassandra
   cluster_size: 3
   seed_size: 2
-  num_tokens: 256 
+  num_tokens: 256
   dc_name: DC1
   rack_name: RAC1
   endpoint_snitch: SimpleSnitch
@@ -61,3 +61,7 @@ config:
 # selector:
   # nodeSelector:
     # cloud.google.com/gke-nodepool: pool-db
+
+## Additional pod labels
+## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+podLabels: {}
