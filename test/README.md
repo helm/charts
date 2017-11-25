@@ -35,7 +35,7 @@ The logic is as follows:
 1. [Get credentials for the Kubernetes cluster used for testing.](https://github.com/kubernetes/charts/blob/master/test/changed.sh#L42)
 1. [Install and initialize Helm](https://github.com/kubernetes/charts/blob/master/test/changed.sh#L47)
 1. [For any charts that have changed](https://github.com/kubernetes/charts/blob/master/test/changed.sh#L62):
-    - Download dependent charts, if any, with `helm dep update`
+    - Download dependent charts, if any, with `helm dep build`
     - Run `helm install` in a new namespace for this PR+build
     - Use the [test/verify-release.sh](https://github.com/kubernetes/charts/blob/master/test/verify-release.sh) to ensure that if any pods were launched that they get to the `Running` state
     - Run `helm test` on the release
@@ -62,7 +62,7 @@ to update the public repositories. The procedure is as follows:
 1. [Authenticate to Google Cloud so that we can upload to the Cloud Storage bucket that hosts the charts](https://github.com/kubernetes/charts/blob/master/test/repo-sync.sh#L27)
 1. For the stable and incubator folders:
    - Download the existing index.yaml from the repository
-   - Run `helm dep update` on all the charts in the current repository
+   - Run `helm dep build` on all the charts in the current repository
    - Run `helm package` on each chart
    - Recreate the index using `helm repo index`
    - Upload the repostory using `gsutil rsync`
