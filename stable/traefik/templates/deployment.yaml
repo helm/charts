@@ -62,7 +62,7 @@ spec:
           timeoutSeconds: 2
         {{- if and .Values.acme.enabled .Values.acme.dnsProvider.name }}
         env:
-        {{- range $k, $v := .Values.acme.dnsProvider.config }}
+        {{- range $k, $v := (index .Values.acme.dnsProvider .Values.acme.dnsProvider.name) }}
           - name: {{ $k }}
             valueFrom:
               secretKeyRef:

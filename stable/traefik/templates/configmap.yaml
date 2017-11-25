@@ -68,8 +68,8 @@ data:
     storage = "/acme/acme.json"
     entryPoint = "https"
     onHostRule = true
-    {{- if .Values.acme.dnsProvider }}
-    dnsProvider = "{{ .Values.acme.dnsProvider }}"
+    {{- if .Values.acme.dnsProvider.name }}
+    dnsProvider = "{{ .Values.acme.dnsProvider.name }}"
     {{- end }}
     {{- if .Values.acme.staging }}
     caServer = "https://acme-staging.api.letsencrypt.org/directory"
