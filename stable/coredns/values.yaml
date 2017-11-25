@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: coredns/coredns
-  tag: "006"
+  tag: "011"
   pullPolicy: IfNotPresent
 
 resources:
@@ -46,7 +46,7 @@ middleware:
     port: "9153"
   errors:
     enabled: true
-    file: "stderr"
+    file: "stdout"
   log:
     enabled: false
     file: "stdout"

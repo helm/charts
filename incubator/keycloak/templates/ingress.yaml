@@ -1,0 +1,28 @@
+{{- if .Values.keycloak.ingress.enabled -}}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ template "keycloak.fullname" . }}
+  labels:
+    app: {{ template "keycloak.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+{{- if .Values.keycloak.ingress.annotations }}
+  annotations:
+{{ toYaml .Values.keycloak.ingress.annotations | indent 4 }}
+{{- end }}
+spec:
+  rules:
+  - host: {{ .Values.keycloak.ingress.hostname }}
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: {{ template "keycloak.fullname" . }}
+          servicePort: {{ .Values.keycloak.service.port }}
+{{- if .Values.keycloak.ingress.tls }}
+  tls:
+{{ toYaml .Values.keycloak.ingress.tls | indent 4 }}
+{{- end -}}
+{{- end -}}

@@ -30,6 +30,12 @@ ingress:
   #  - secretName: nexus-tls
   #    hosts:
   #      - nexus.local
+## Configuration if choosing to host docker registry
+docker:
+  enabled: false
+  # Used to enable a docker registry
+  # port: 5509
+  # host: docker.local
 ## Persist data to a persitent volume
 persistence:
   enabled: true
