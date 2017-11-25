@@ -9,4 +9,4 @@ sources:
   - https://github.com/docker/distribution-library-image
 maintainers:
   - name: jpds
-email: jpds@protonmail.com
+    email: jpds@protonmail.com
