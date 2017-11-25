@@ -12,6 +12,9 @@ spec:
     metadata:
       labels:
         app: {{ template "redis.fullname" . }}
+{{- if .Values.podLabels }}
+{{ toYaml .Values.podLabels | indent 8 }}
+{{- end }}
     spec:
       securityContext:
         runAsUser: 1001

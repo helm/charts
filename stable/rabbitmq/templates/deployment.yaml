@@ -42,6 +42,8 @@ spec:
           value: {{ default "/" .Values.rabbitmqVhost | quote }}
         - name: RABBITMQ_MANAGER_PORT_NUMBER
           value: {{ default "15672" .Values.rabbitmqManagerPort | quote }}
+        - name: RABBITMQ_DISK_FREE_LIMIT
+          value: {{ default "\"8GiB\"" .Values.rabbitmqDiskFreeLimit | quote }}
         ports:
         - name: epmd
           containerPort: 4369

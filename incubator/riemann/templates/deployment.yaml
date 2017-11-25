@@ -1,0 +1,51 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "riemann.fullname" . }}
+  labels:
+    app: {{ template "riemann.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "riemann.name" . }}
+        chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+        release: {{ .Release.Name }}
+        heritage: {{ .Release.Service }}
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: "{{ .Values.image.pullPolicy }}"
+        {{- if .Values.service.ports.tcp }}
+        livenessProbe:
+          tcpSocket:
+            port: riemann-tcp
+          initialDelaySeconds: 10
+        readinessProbe:
+          tcpSocket:
+            port: riemann-tcp
+          initialDelaySeconds: 5
+        {{- end }}
+        volumeMounts:
+        - name: "{{ .Release.Name }}-config"
+          mountPath: /usr/local/etc/riemann
+        ports:
+        - name: riemann-tcp
+          containerPort: 5555
+          protocol: TCP
+        - name: riemann-udp
+          containerPort: 5555
+          protocol: UDP
+        - name: riemann-ws
+          protocol: TCP
+          containerPort: 5556
+      volumes:
+      - name: "{{ .Release.Name }}-config"
+        configMap:
+          name: {{ template "riemann.fullname" . }}
+

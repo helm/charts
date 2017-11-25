@@ -27,6 +27,9 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - containerPort: {{ .Values.service.internalPort }}
+            {{- if .Values.docker.enabled }}
+            - containerPort: {{ .Values.docker.port }}
+            {{- end }}
           livenessProbe:
             httpGet:
               path: /
@@ -44,10 +47,10 @@ spec:
             - mountPath: /nexus-data
               name: nexus-data-volume
       volumes:
-      - name: nexus-data-volume
-        {{- if .Values.persistence.enabled }}
-        persistentVolumeClaim:
-          claimName: {{ template "fullname" . }}
-        {{- else }}
+        - name: nexus-data-volume
+          {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ template "fullname" . }}
+          {{- else }}
           emptyDir: {}
-        {{- end -}}
+          {{- end -}}
