@@ -1,0 +1,49 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "fullname" . }}
+data:
+  application.properties: |
+    domain={{ .Values.DISCONF_DOAMIN }}
+    EMAIL_MONITOR_ON = {{ default true .Values.EMAIL_MONITOR_ON }} 
+    EMAIL_HOST = {{ default "" .Values.EMAIL_HOST }} 
+    EMAIL_HOST_PASSWORD = {{ default "" .Values.EMAIL_HOST_PASSWORD }} 
+    EMAIL_HOST_USER = {{ default "" .Values.EMAIL_HOST_USER }} 
+    EMAIL_PORT = {{ default "" .Values.EMAIL_PORT }} 
+    DEFAULT_FROM_EMAIL = {{ default 25 .Values.DEFAULT_FROM_EMAIL }} 
+    CHECK_CONSISTENCY_ON= true
+  default.conf: "upstream disconf {\n    server 127.0.0.1:8080;\n}\n\nserver {\n    \n
+    \   listen   80;\n\n    location / {\n        root /data/html;\n        if ($query_string)
+    {\n            expires max;\n        }\n    }\n\n    location ~ ^/(api|export)
+    {\n        proxy_pass_header Server;\n        proxy_set_header Host $http_host;\n
+    \       proxy_redirect off;\n        proxy_set_header X-Real-IP $remote_addr;\n
+    \       proxy_set_header X-Scheme $scheme;\n        proxy_pass http://disconf;\n
+    \   }\n}\n\n"    
+  jdbc-mysql.properties: |-
+    jdbc.driverClassName=com.mysql.jdbc.Driver
+    jdbc.db_0.url=jdbc:mysql://{{ template "mysql.fullname" . }}:3306/{{.Values.mysql.mysqlDatabase}}?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&rewriteBatchedStatements=false
+    jdbc.db_0.username={{.Values.mysql.mysqlUser}}
+    jdbc.db_0.password={{.Values.mysql.mysqlPassword}}
+    jdbc.maxPoolSize=20
+    jdbc.minPoolSize=10
+    jdbc.initialPoolSize=10
+    jdbc.idleConnectionTestPeriod=1200
+    jdbc.maxIdleTime=3600
+  redis-config.properties: |-
+    redis.group1.retry.times=2
+    redis.group1.client1.name=BeidouRedis1
+    redis.group1.client1.host={{ template "redis-ha.fullname" . }}
+    redis.group1.client1.port=6379
+    redis.group1.client1.timeout=5000
+    redis.group1.client1.password=""
+    redis.group1.client2.name=BeidouRedis2
+    redis.group1.client2.host={{ template "redis-ha.fullname" . }}
+    redis.group1.client2.port=6379
+    redis.group1.client2.timeout=5000
+    redis.group1.client2.password=""
+    redis.evictor.delayCheckSeconds=300
+    redis.evictor.checkPeriodSeconds=30
+    redis.evictor.failedTimesToBeTickOut=6
+  zoo.properties: |2-
+    hosts={template "zookeeper.fullname" .}}-headless.{{.Release.Namespace}}.svc.cluster.local:{{ .Values.zookeeper.clientPort }}
+    zookeeper_url_prefix=/disconf

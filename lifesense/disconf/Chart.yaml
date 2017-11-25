@@ -1,0 +1,15 @@
+name: disconf
+version: 0.0.1
+description: disconf
+  system.
+keywords:
+- disconf
+home: https://github.com/caiwenhao/disconf.git
+icon: https://www.mysql.com/common/logos/logo-mysql-170x115.png
+sources:
+- https://github.com/caiwenhao/charts
+- https://github.com/caiwenhao/disconf.git
+maintainers:
+- name: caiwenhao
+  email: 77749770@qq.com
+engine: gotpl

@@ -1,0 +1,77 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    app: {{ template "fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  replicas: {{ .Values.replicas }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "fullname" . }}
+    spec:
+      containers:
+      - name: tomcat
+        image: "{{ .Values.disconf.image }}:{{ .Values.disconf.imageTag }}"
+        imagePullPolicy: {{ .Values.imagePullPolicy | quote }}                                  
+        ports:
+        - name: disconf
+          containerPort: 8080
+        livenessProbe:
+          httpGet:
+            path: /api/config/item?app=1
+            port: 8080
+          initialDelaySeconds: 120
+          timeoutSeconds: 5
+          failureThreshold: 6
+        readinessProbe:
+          httpGet:
+            path: /api/config/item?app=1
+            port: 8080
+        volumeMounts:
+        - name: configurations
+          mountPath: /tmp/conf
+        - name: html
+          mountPath: /data
+        resources:
+{{ toYaml .Values.disconf.resources | indent 10 }}             
+      - name: nginx
+        image: "{{ .Values.nginx.image }}:{{ .Values.nginx.imageTag }}"
+        imagePullPolicy: {{ .Values.imagePullPolicy | quote }}                                 
+        ports:
+        - name: nginx
+          containerPort: 80
+        livenessProbe:
+          httpGet:
+            path: /index.html
+            port: 80
+          initialDelaySeconds: 120
+          timeoutSeconds: 5
+          failureThreshold: 6
+        readinessProbe:
+          httpGet:
+            path: /index.html
+            port: 80
+        volumeMounts:
+        - name: nginx
+          mountPath: /etc/nginx/conf.d/
+        - name: html
+          mountPath: /data
+        resources:
+{{ toYaml .Values.disconf.resources | indent 10 }}       
+      volumes:
+      - name: configurations
+        configMap:
+          name: {{ template "fullname" . }}
+      - name: html
+        emptyDir: {}
+      - name: nginx
+        configMap:
+          name: {{ template "fullname" . }}
+          items:
+          - key: default.conf
+            path: default.conf

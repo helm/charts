@@ -1,0 +1,121 @@
+#------------------------------------------------------------------------------
+# Disconf:
+#------------------------------------------------------------------------------
+disconf:
+  image: "reg.lifesense.com/lifesense/disconf"
+  imageTag: "v0.0.2"
+  resources:
+    requests:
+      memory: 256Mi
+      cpu: 100m
+nginx:
+  image: "reg.lifesense.com/library/nginx"
+  imageTag: "1.11.4-alpine"
+  resources:
+    requests:
+      memory: 256Mi
+      cpu: 100m
+replicas: 2
+DISCONF_DOAMIN: disconf.lifesense.com
+#mail
+EMAIL_MONITOR_ON: true
+EMAIL_HOST: smtp.163.com
+EMAIL_HOST_PASSWORD: password
+EMAIL_HOST_USER: sender@163.com
+EMAIL_PORT: 25
+DEFAULT_FROM_EMAIL: disconf@163.com
+
+imagePullPolicy: Always
+service:
+  externalPort: 80
+ingress:
+  enabled: true
+  hosts: 
+  - disconf-th2.lifesense.com
+
+#------------------------------------------------------------------------------
+# Zookeeper:
+#------------------------------------------------------------------------------
+zookeeper:
+  servers: 3
+  minAvailable: 2
+  resources:
+    requests:
+      cpu: 500m
+      memory: 2Gi
+    limits:
+      cpu: 1
+      memory: 4Gi
+  heap: "2G"
+  storage: "50Gi"
+  storageClass: "rook-block"
+  serverPort: 2888
+  leaderElectionPort: 3888
+  clientPort: 2181
+  imagePullPolicy: "IfNotPresent"
+  tickTimeMs: 2000
+  initTicks: 10
+  syncTicks: 5
+  clientCnxns: 60
+  snapRetain: 3
+  purgeHours: 1
+  probeInitialDelaySeconds: 15
+  probeTimeoutSeconds: 5
+  antiAffinity: "hard"
+  logLevel: "INFO"
+  security:
+    enabled: false
+    runAsUser: 1000
+    fsGroup: 1000
+
+#------------------------------------------------------------------------------
+# Mysql:
+#------------------------------------------------------------------------------
+mysql:
+  image: "reg.lifesense.com/library/mysql"
+  imageTag: "5.7.14"
+  mysqlRootPassword: VCOZZZlwbeK3EMah
+  mysqlUser: disconf
+  mysqlPassword: CCmRPz4Eeergp7Ni
+  mysqlDatabase: disconf
+  imagePullPolicy: IfNotPresent
+  persistence:
+    enabled: true
+    storageClass: "rook-block"
+    accessMode: ReadWriteOnce
+    size: 8Gi
+  resources:
+    requests:
+      memory: 256Mi
+      cpu: 100m
+  configurationFiles:
+  #  mysql.cnf: |-
+  #    [mysqld]
+  #    skip-name-resolve
+
+#------------------------------------------------------------------------------
+# Redis:
+#------------------------------------------------------------------------------
+redis-ha:
+  resources:
+    master:
+      requests:
+        memory: 200Mi
+        cpu: 100m
+      limits:
+        memory: 700Mi
+    slave:
+      requests:
+        memory: 200Mi
+        cpu: 100m
+      limits:
+        memory: 200Mi
+    sentinel:
+      requests:
+        memory: 200Mi
+        cpu: 100m
+      limits:
+        memory: 200Mi
+  persistentVolume:
+    enabled: false
+  redis_image: reg.lifesense.com/google_containers/redis:v1
