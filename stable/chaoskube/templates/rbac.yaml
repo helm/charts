@@ -1,0 +1,36 @@
+{{ if .Values.rbac.install }}
+apiVersion: rbac.authorization.k8s.io/{{ required "A valid .Values.rbac.apiVersion entry required!" .Values.rbac.apiVersion }}
+kind: ClusterRole
+metadata:
+  name: {{ template "serviceName" . }}
+  labels:
+    app: {{ printf "%s-%s" .Release.Name .Values.name }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+rules:
+- apiGroups: 
+  - ""
+  resources:
+  - pods
+  verbs:
+  - "*"
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/{{ required "A valid .Values.rbac.apiVersion entry required!" .Values.rbac.apiVersion }}
+metadata:
+  name: {{ template "serviceName" . }}
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app: {{ printf "%s-%s" .Release.Name .Values.name }}
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+subjects:
+- kind: ServiceAccount
+  name: {{ template "serviceName" . }}
+  namespace: {{ .Release.Namespace }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ template "serviceName" . }}
+{{ end }}

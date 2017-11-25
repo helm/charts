@@ -29,3 +29,7 @@ dryRun: true
 resources:
   cpu: 10m
   memory: 16Mi
+
+rbac:
+  install: false
+  apiVersion: v1beta1

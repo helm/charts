@@ -17,6 +17,9 @@ spec:
         release: {{ .Release.Name }}
         heritage: {{ .Release.Service }}
     spec:
+      {{- if .Values.rbac.install }}
+      serviceAccount: {{ template "serviceName" . }}
+      {{- end }}
       containers:
       - name: {{ .Values.name }}
         image: {{ .Values.image }}:{{ .Values.imageTag }}
