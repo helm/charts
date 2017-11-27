@@ -15,7 +15,7 @@ PeerTLS: true
 # be replicated to more machines.
 Replicas: 3
 Image: "nearform/etcd"
-ImageTag: "3.2.10"
+ImageTag: "latest"
 ImagePullPolicy: "Always"
 Cpu: "100m"
 Memory: "256Mi"
