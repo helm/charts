@@ -28,17 +28,13 @@ spec:
           name: peer
         - containerPort: {{ .Values.ClientPort }}
           name: client
-        #readinessProbe:
-        #  ${PROTO}Get:
-        #    path: /metrics
-        #    port: {{ .Values.ClientPort }}
         resources:
           requests:
             cpu: "{{ .Values.Cpu }}"
             memory: "{{ .Values.Memory }}"
         env:
         - name: INITIAL_CLUSTER_SIZE
-          value: "1
+          value: "1"
         - name: SET_NAME
           value: {{ template "etcd.fullname" . }}
         volumeMounts:
