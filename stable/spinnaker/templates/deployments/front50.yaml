@@ -35,7 +35,7 @@ spec:
             {{ end }}
           readinessProbe:
             httpGet:
-              path: /env
+              path: /health
               port: 8080
             initialDelaySeconds: 20
             timeoutSeconds: 1

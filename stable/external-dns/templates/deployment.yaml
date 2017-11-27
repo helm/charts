@@ -39,11 +39,11 @@ spec:
             - --{{ $key }}
             {{- end }}
           {{- end }}
-          {{- if .Values.aws.zone_type }}
-            - --zone-type={{ .Values.aws.zone_type }}
+          {{- if .Values.aws.zoneType }}
+            - --zone-type={{ .Values.aws.zoneType }}
           {{- end }}
           env:
-        {{- if and .Values.aws.secret_key .Values.aws.access_key }}
+        {{- if and .Values.aws.secretKey .Values.aws.accessKey }}
           - name: AWS_ACCESS_KEY_ID
             valueFrom:
               secretKeyRef:
@@ -59,7 +59,7 @@ spec:
           - name: AWS_DEFAULT_REGION
             value: {{ .Values.aws.region }}
         {{- end }}
-        {{- if and .Values.cloudflare.api_key .Values.cloudflare.email }}
+        {{- if and .Values.cloudflare.apiKey .Values.cloudflare.email }}
           - name: CF_API_KEY
             valueFrom:
               secretKeyRef:

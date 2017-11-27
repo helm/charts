@@ -28,6 +28,11 @@ service:
   ##
   sshPort: 22
 
+  ## SSH_DOMAIN - Domain name to be exposed in SSH clone URL.
+  ## ref: https://gogs.io/docs/advanced/configuration_cheat_sheet
+  ##
+  sshDomain: localhost
+
   ## Gogs configuration values
   ## ref: https://gogs.io/docs/advanced/configuration_cheat_sheet
   ##

@@ -20,6 +20,8 @@ spec:
         {{ $key }}: {{ $value | quote }}
         {{- end }}
     spec:
+      tolerations:
+{{ toYaml .Values.worker.tolerations | indent 8 }}
       terminationGracePeriodSeconds: {{ .Values.worker.terminationGracePeriodSeconds }}
       containers:
         - name: {{ template "concourse.worker.fullname" . }}
@@ -98,6 +100,9 @@ spec:
                 configMapKeyRef:
                   name: {{ template "concourse.concourse.fullname" . }}
                   key: worker-fatal-errors
+{{- if .Values.worker.env }}
+{{ toYaml .Values.worker.env | indent 12 }}
+{{- end }}
           resources:
 {{ toYaml .Values.worker.resources | indent 12 }}
           securityContext:
