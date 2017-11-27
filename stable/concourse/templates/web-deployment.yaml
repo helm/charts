@@ -14,6 +14,8 @@ spec:
       labels:
         app: {{ template "concourse.web.fullname" . }}
     spec:
+      tolerations:
+{{ toYaml .Values.web.tolerations | indent 8 }}
       containers:
         - name: {{ template "concourse.web.fullname" . }}
           image: "{{ .Values.image }}:{{ .Values.imageTag }}"
