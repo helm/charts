@@ -38,7 +38,7 @@ spec:
             memory: "{{ .Values.Memory }}"
         env:
         - name: INITIAL_CLUSTER_SIZE
-          value: "1"
+          value: "1
         - name: SET_NAME
           value: {{ template "etcd.fullname" . }}
         volumeMounts:
