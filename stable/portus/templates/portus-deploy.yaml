@@ -86,6 +86,13 @@ spec:
               name: {{ template "portus.secret" . }}
               key: smtp-user-name
         {{- end }}
+        {{- if .Values.portus.config.ldap.enabled }}
+        - name: PORTUS_LDAP_AUTHENTICATION_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "portus.secret" . }}
+              key: ldap-bind-password
+        {{- end }}
         ports:
         - containerPort: 80
           protocol: TCP

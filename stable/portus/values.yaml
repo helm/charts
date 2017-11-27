@@ -41,7 +41,6 @@ portus:
       authentication:
         enabled: false
         bind_dn: ""
-        password: ""
       guess_email:
         enabled: false
         attr: ""
@@ -51,6 +50,9 @@ portus:
       smtp:
         user_name: "username@example.com"
         password: "password"
+      ldap:
+        bind_password: ""
+
     db:
       host: "example-mariadb.default.svc.cluster.local"
       catalog: "portusdb"
