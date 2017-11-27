@@ -1,4 +1,10 @@
 ---
+name: {{ template "ibm-blockchain-chaincode.fullname" . }}-install-org1peer1
+labels:
+  app: {{ template "ibm-blockchain-chaincode.name" . }}
+  chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+  release: {{ .Release.Name }}
+  heritage: {{ .Release.Service }}
 apiVersion: v1
 kind: Pod
 metadata:
