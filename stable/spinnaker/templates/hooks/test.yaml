@@ -20,7 +20,7 @@ spec:
         name: tools
   containers:
     - name: {{.Release.Name}}-ui-test
-      image: gcr.io/spinnaker-marketplace/clouddriver:0.5.0-72
+      image: tutum/curl:trusty
       command: ["/tools/bats/bats", "-t", "/tests/run.sh"]
       volumeMounts:
       - mountPath: /tests
