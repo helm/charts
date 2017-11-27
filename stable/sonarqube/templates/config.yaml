@@ -6,5 +6,5 @@ metadata:
 data:
   {{- if .Values.sonarProperties }}
   sonar.properties:
-    {{ .Values.sonarProperties | indent 4}}
+    {{ toYaml .Values.sonarProperties | indent 4}}
   {{- end}}

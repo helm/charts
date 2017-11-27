@@ -101,7 +101,7 @@ spec:
       - name: sonarqube
         {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ template "sonarqube.fullname" . }}
+          claimName: {{ if .Values.persistence.existingClaim }}{{ .Values.persistence.existingClaim }}{{- else }}{{ template "sonarqube.fullname" . }}{{- end }}
         {{- else }}
         emptyDir: {}
         {{- end  }}

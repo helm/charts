@@ -7,6 +7,6 @@ data:
     cd /opt/sonarqube/extensions/plugins
     {{- if .Values.plugins.install }}
       {{- range $index, $val := .Values.plugins.install }}
-        wget {{ $val }}
+        wget {{ $val }} --no-check-certificate
       {{- end }}
     {{- end }}
