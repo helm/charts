@@ -281,21 +281,24 @@ ingress:
   # domain: example.com
 
   ## ingress.subdomainWWW enables www subdomain and 301 redirect from domain
+  ## > NOTE: Requires nginx ingress controller
   # subdomainWWW: false
 
   ## ingress.ssl Enables [lego](https://github.com/jetstack/kube-lego) letsencrypt
   ## ssl support - working lego container necessary
+  ## > NOTE: Requires nginx ingress controller
   # ssl: false
 
   ## ingress.htpasswdString if specified main web service requires authentication.
   ## Format: _user:$apr1$F..._
+  ## > NOTE: Requires nginx ingress controller
   # htpasswdString: "user:$apr1$FfVI2PRr$f9MW8rsr5RmmxbdV0Iipk1"
 
   ## ingress.annotations specify custom ingress annotations such as e.g.
-  ## `ingress.kubernetes.io/proxy-body-size
-  annotations:
-    ingress.kubernetes.io/proxy-body-size: "50m"
-    kubernetes.io/ingress.class: nginx
+  # annotations:
+  #   ingress.kubernetes.io/proxy-body-size: "50m"
+  #   kubernetes.io/ingress.class: nginx
+
 
 
 ### WORDPRESS ###
