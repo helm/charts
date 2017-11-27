@@ -1,4 +1,10 @@
 ---
+name: {{ template "ibm-blockchain-network.fullname" . }}-services
+labels:
+  app: {{ template "ibm-blockchain-network.name" . }}
+  chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+  release: {{ .Release.Name }}
+  heritage: {{ .Release.Service }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -9,6 +15,8 @@ spec:
   type: NodePort
   selector:
     name: ca
+    app: {{ template "ibm-blockchain-network.name" . }}
+    release: {{ .Release.Name }}
   ports:
   - protocol: TCP
     port: 7054
@@ -25,6 +33,8 @@ spec:
   type: NodePort
   selector:
     name: orderer
+    app: {{ template "ibm-blockchain-network.name" . }}
+    release: {{ .Release.Name }}
   ports:
   - protocol: TCP
     port: 31010
@@ -41,6 +51,8 @@ spec:
   type: NodePort
   selector:
     name: org1peer1
+    app: {{ template "ibm-blockchain-network.name" . }}
+    release: {{ .Release.Name }}
   ports:
   - protocol: TCP
     port: 5010
@@ -61,6 +73,8 @@ spec:
   type: NodePort
   selector:
     name: org2peer1
+    app: {{ template "ibm-blockchain-network.name" . }}
+    release: {{ .Release.Name }}
   ports:
   - protocol: TCP
     port: 5010

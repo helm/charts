@@ -1,4 +1,10 @@
 ---
+name: {{ template "ibm-blockchain-network.fullname" . }}-shared
+labels:
+  app: {{ template "ibm-blockchain-network.name" . }}
+  chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+  release: {{ .Release.Name }}
+  heritage: {{ .Release.Service }}
 kind: PersistentVolume
 apiVersion: v1
 metadata:
