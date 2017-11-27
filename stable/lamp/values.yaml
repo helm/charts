@@ -300,7 +300,6 @@ ingress:
   #   kubernetes.io/ingress.class: nginx
 
 
-
 ### WORDPRESS ###
 
 wordpress:
