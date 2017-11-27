@@ -105,7 +105,7 @@ The following tables lists the configurable parameters of the Traefik chart and 
 | `ssl.defaultKey`                | Base64 encoded private key for the certificate above                 | The private key for the certificate above |
 | `acme.enabled`                  | Whether to use Let's Encrypt to obtain certificates                  | `false`                                   |
 | `acme.dnsProvider.name`         | Which DNS provider to use. See [here](https://github.com/xenolf/lego/tree/master/providers/dns) for the list of possible values. | `nil`                                     |
-| `acme.dnsProvider.config`       | The configuration environment variables needed for the DNS provider to do DNS challenge. See [here](#example-aws-route-53). | `{}`                                     |
+| `acme.dnsProvider.$name`        | The configuration environment variables (encoded as a secret) needed for the DNS provider to do DNS challenge. See [here](#example-aws-route-53). | `{}`                     |
 | `acme.email`                    | Email address to be used in certificates obtained from Let's Encrypt | `admin@example.com`                       |
 | `acme.staging`                  | Whether to get certs from Let's Encrypt's staging environment        | `true`                                    |
 | `acme.persistence.enabled`      | Create a volume to store ACME certs (if ACME is enabled)             | `true`                                    |
@@ -194,14 +194,14 @@ Next, you will need to configure the Traefik chart to use DNS challenge. In the 
 acme:
   enabled: true
   dnsProvider:
-    name: # name of the dns provider to use
-    config:
+    name:  # name of the dns provider to use
+    $name: # the configuration of the dns provider. See the following section for an example
       # variables that the specific dns provider requires
 ```
 
 #### Example: AWS Route 53
 
-Route 53 requires the [following configuration variables to be set](https://github.com/xenolf/lego/blob/master/providers/dns/route53/route53.go#L58-L59):
+Route 53 requires the [following configuration variables to be set](values.yaml#L98-L101):
 - `AWS_ACCESS_KEY_ID`
 - `AWS_SECRET_ACCESS_KEY`
 - `AWS_REGION`
@@ -213,7 +213,7 @@ acme:
   enabled: true
   dnsProvider:
     name: route53
-    config:
+    route53:
       AWS_ACCESS_KEY_ID: ...
       AWS_SECRET_ACCESS_KEY: ...
       AWS_REGION: us-east-1
