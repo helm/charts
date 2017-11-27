@@ -118,7 +118,5 @@ jenkins:
       - git:3.2.0
 
   Agent:
-    Image: viglesiasce/spinnaker-jenkins-agent
-    ImageTag: v0.2.0
     Cpu: "500m"
     Memory: "512Mi"
