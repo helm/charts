@@ -8,6 +8,7 @@ Master:
   Image: "jenkins/jenkins"
   ImageTag: "lts"
   ImagePullPolicy: "Always"
+# ImagePullSecret: jenkins
   Component: "jenkins-master"
   UseSecurity: true
   AdminUser: admin
@@ -77,6 +78,7 @@ Agent:
   Enabled: true
   Image: jenkins/jnlp-slave
   ImageTag: 3.10-1
+# ImagePullSecret: jenkins
   Component: "jenkins-slave"
   Privileged: false
   Cpu: "200m"
