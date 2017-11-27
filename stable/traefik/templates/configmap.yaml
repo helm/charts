@@ -25,12 +25,8 @@ data:
       compress = {{ .Values.gzip.enabled }}
         {{- if .Values.ssl.enforced }}
         [entryPoints.http.redirect]
-          {{- if .Values.ssl.enabled }}
-          entryPoint = "https"
-          {{- else }}
           regex = "^http://(.*)"
           replacement = "https://$1"
-          {{- end }}
         {{- end }}
       {{- if .Values.ssl.enabled }}
       [entryPoints.https]
