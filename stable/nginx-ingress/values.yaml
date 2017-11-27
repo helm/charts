@@ -93,6 +93,11 @@ controller:
   #    cpu: 100m
   #    memory: 64Mi
 
+  ## Override NGINX template
+  customTemplate:
+    configMapName: ""
+    configMapKey: ""
+
   service:
     annotations: {}
     clusterIP: ""

@@ -54,6 +54,8 @@ The following tables lists the configurable parameters of the Jenkins chart and 
 | `Master.ScriptApproval`           | List of groovy functions to approve  | Not set                                                                      |
 | `Master.NodeSelector`             | Node labels for pod assignment       | `{}`                                                                         |
 | `Master.Tolerations`              | Toleration labels for pod assignment | `{}`                                                                         |
+| `NetworkPolicy.Enabled`           | Enable creation of NetworkPolicy resources. | `false`                                                               |
+| `NetworkPolicy.ApiVersion`        | NetworkPolicy ApiVersion             | `extensions/v1beta1`                                                         |
 | `rbac.install`                    | Create service account and ClusterRoleBinding for Kubernetes plugin | `false`                                       |
 | `rbac.apiVersion`                 | RBAC API version                     | `v1beta1`                                                                    |
 | `rbac.roleRef`                    | Cluster role name to bind to         | `cluster-admin`                                                              |
@@ -106,6 +108,11 @@ For Kubernetes v1.5 & v1.6, you must also turn on NetworkPolicy by setting
 the DefaultDeny namespace annotation. Note: this will enforce policy for _all_ pods in the namespace:
 
     kubectl annotate namespace default "net.beta.kubernetes.io/network-policy={\"ingress\":{\"isolation\":\"DefaultDeny\"}}"
+
+
+Install helm chart with network policy enabled: 
+
+    $ helm install stable/jenkins --set NetworkPolicy.Enabled=true
 
 ## Persistence
 

@@ -302,6 +302,15 @@ web:
   #               values:
   #                 - "true"
 
+  ## Tolerations for the worker nodes.
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  tolerations: []
+  # tolerations:
+  #  - key: "toleration=key"
+  #    operator: "Equal"
+  #    value: "value"
+  #    effect: "NoSchedule"
+
   ## Configure resource requests and limits.
   ## ref: https://kubernetes.io/docs/user-guide/compute-resources/
   ##
@@ -412,6 +421,15 @@ worker:
   #               operator: NotIn
   #               values:
   #                 - "true"
+
+  ## Tolerations for the worker nodes.
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  tolerations: []
+  # tolerations:
+  #  - key: "toleration=key"
+  #    operator: "Equal"
+  #    value: "value"
+  #    effect: "NoSchedule"
 
   ## Time to delay after the worker process shuts down. This inserts time between shutdown and startup
   ## to avoid errors caused by a worker restart.

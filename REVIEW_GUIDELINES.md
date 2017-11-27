@@ -58,7 +58,7 @@ If a chart has multiple components, a `component` label should be added (e. g. `
 
 ```yaml
 image:
-  name: myapp
+  repository: myapp
   tag: 1.2.3
   pullPolicy: IfNotPresent
 ```
