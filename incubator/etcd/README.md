@@ -47,6 +47,7 @@ The following tables lists the configurable parameters of the etcd chart and the
 | `Memory`                | container requested memory         | `256Mi`                                                    |
 | `ClientPort`            | k8s service port                   | `2379`                                                     |
 | `PeerPorts`             | Container listening port           | `2380`                                                     |
+| `PeerTLS`               | Encrypt peer trafic |               `true`                                                     |
 | `Storage`               | Persistent volume size             | `1Gi`                                                      |
 | `StorageClass`          | Persistent volume storage class    | `anything`                                                 |
 
