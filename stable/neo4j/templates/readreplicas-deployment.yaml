@@ -1,0 +1,65 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: "{{ template "neo4j.replica.fullname" . }}"
+  labels:
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    app: {{ template "neo4j.name" . }}
+    component: replica
+spec:
+  replicas: {{ .Values.readReplica.numberOfServers }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "neo4j.name" . }}
+        release: {{ .Release.Name | quote }}
+        component: replica
+    spec:
+      containers:
+      - name: neo4j
+        image: "{{ .Values.image }}:{{ .Values.imageTag }}"
+        imagePullPolicy: "{{ .Values.imagePullPolicy }}"
+        env:
+          - name: NEO4J_dbms_mode
+            value: READ_REPLICA
+          - name: NEO4J_dbms_security_auth__enabled
+            value: "{{ .Values.authEnabled }}"
+          - name: NEO4J_causal__clustering_discovery__type
+            value: DNS
+          - name: NEO4J_causal__clustering_initial__discovery__members
+            value: "{{ template "neo4j.fullname" . }}.default.svc.cluster.local:5000"
+          {{- if .Values.authEnabled }}
+          - name: NEO4J_SECRETS_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "neo4j.secrets.fullname" . }}
+                key: neo4j-password
+          {{- end }}
+{{- if .Values.readReplica.extraVars }}
+{{ toYaml .Values.readReplica.extraVars | indent 10 }}
+{{- end }}
+        command:
+          - "/bin/bash"
+          - "-c"
+          - |
+            export NEO4J_dbms_connectors_default__advertised__address=$(hostname -f)
+            export NEO4J_causal__clustering_transaction__advertised__address=$(hostname -f):6000
+
+            if [ "${AUTH_ENABLED:-}" == "true" ]; then
+              export NEO4J_AUTH="neo4j/${NEO4J_SECRETS_PASSWORD}"
+            else
+              export NEO4J_AUTH="none"
+            fi
+
+            exec /docker-entrypoint.sh "neo4j"
+        ports:
+        - containerPort: 7474
+          name: browser
+        - containerPort: 7687
+          name: bolt
+        - containerPort: 6000
+          name: tx
+        securityContext:
+          privileged: true
