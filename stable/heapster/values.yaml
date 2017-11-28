@@ -3,7 +3,7 @@
 replicaCount: 1
 image:
   repository: gcr.io/google_containers/heapster
-  tag: v1.3.0
+  tag: v1.5.0-beta.2
   pullPolicy: IfNotPresent
 ## Here labels can be added to the heapster deployment
 # labels:
