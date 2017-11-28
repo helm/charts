@@ -1,5 +1,5 @@
 name: prometheus
-version: 4.6.13
+version: 4.6.14
 description: Prometheus is a monitoring system and time series database.
 home: https://prometheus.io/
 icon: https://raw.githubusercontent.com/prometheus/prometheus.github.io/master/assets/prometheus_logo-cb55bb5c346.png
@@ -8,6 +8,7 @@ sources:
   - https://github.com/prometheus/prometheus
   - https://github.com/prometheus/pushgateway
   - https://github.com/kubernetes/kube-state-metrics
+  - https://github.com/sylr/alertmanager-splunkbot
 maintainers:
   - name: mgoodness
     email: mgoodness@gmail.com

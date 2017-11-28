@@ -181,6 +181,18 @@ Parameter | Description | Default
 `serverFiles.rules` | Prometheus server rules configuration | `""`
 `serverFiles.prometheus.yml` | Prometheus server scrape configuration | example configuration
 `networkPolicy.enabled` | Enable NetworkPolicy | `false` |
+`splunkbot.enabled` | If true, create splunkbot | `false`
+`splunkbot.name` | splunkbot container name | `splunkbot`
+`splunkbot.image.repository` | splunkbot container image repository | `sylr/alertmanager-splunkbot`
+`splunkbot.image.tag` | splunkbot container image tag | `v0.0.6`
+`splunkbot.image.pullPolicy` | splunkbot container image pull policy | `IfNotPresent`
+`splunkbot.config.listeningAddress` | splunkbot config listening address  | `"127.0.0.1"`
+`splunkbot.config.listeningPort` | splunkbot config listening port  | `"44553"`
+`splunkbot.config.splunkUrl` | splunkbot config Splunk URL  | `"https://10.101.0.46/services/collector/event/1.0"`
+`splunkbot.config.splunkTokenSecret` | splunkbot splunk secret name  | `"splunkbot-secrets"`
+`splunkbot.config.splunkTokenSecretKey` | splunkbot splunk secret key | `"splunkbot-token"`
+`splunkbot.extraArgs` | Additional splunkbot container arguments | `[]`
+`splunkbot.extraEnv` | Additional splunkbot container arguments | `{}`
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

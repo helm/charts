@@ -63,6 +63,32 @@ spec:
               mountPath: "{{ .Values.alertmanager.persistentVolume.mountPath }}"
               subPath: "{{ .Values.alertmanager.persistentVolume.subPath }}"
 
+        {{- if .Values.splunkbot.enabled }}
+        - name: {{ template "prometheus.name" . }}-{{ .Values.splunkbot.name }}
+          image: "{{ .Values.splunkbot.image.repository }}:{{ .Values.splunkbot.image.tag }}"
+          imagePullPolicy: "{{ .Values.splunkbot.image.pullPolicy }}"
+          env:
+            - name: SPLUNKBOT_LISTENING_ADDRESS
+              value: "{{ .Values.splunkbot.config.listeningAddress }}"
+            - name: SPLUNKBOT_LISTENING_PORT
+              value: "{{ .Values.splunkbot.config.listeningPort }}"
+            - name: SPLUNKBOT_SPLUNK_URL
+              value: "{{ .Values.splunkbot.config.splunkUrl }}"
+            - name: SPLUNKBOT_SPLUNK_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.splunkbot.config.splunkTokenSecret }}
+                  key: {{ .Values.splunkbot.config.splunkTokenSecretKey }}
+            {{- range $key, $value := .Values.splunkbot.extraEnv }}
+            - name: {{ $key }}
+              value: {{ $value }}
+            {{- end }}
+          args:
+          {{- range $value := .Values.splunkbot.extraArgs }}
+            - {{ $value }}
+          {{- end }}
+        {{- end }}
+
         - name: {{ template "prometheus.name" . }}-{{ .Values.alertmanager.name }}-{{ .Values.configmapReload.name }}
           image: "{{ .Values.configmapReload.image.repository }}:{{ .Values.configmapReload.image.tag }}"
           imagePullPolicy: "{{ .Values.configmapReload.image.pullPolicy }}"

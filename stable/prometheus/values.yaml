@@ -151,6 +151,45 @@ alertmanager:
     # nodePort: 30000
     type: ClusterIP
 
+splunkbot:
+  ## If false, splunkbot will not be installed
+  ##
+  enabled: false
+
+  ## splunkbot container name
+  ##
+  name: alertmanager-splunkbot
+
+  ## splunkbot container image
+  ##
+  image:
+    repository: sylr/alertmanager-splunkbot
+    tag: v0.0.6
+    pullPolicy: IfNotPresent
+
+  ## splunkbot container config
+  ##
+  config:
+    ## Example values, you need to edit this
+    ##
+    listeningAddress: 127.0.0.1
+    listeningPort: 44553
+    splunkUrl: https://splunk.company.com/services/collector/event/1.0
+
+    ## You have to create the secret manually
+    ##
+    splunkTokenSecret: splunkbot-secrets
+    splunkTokenSecretKey: splunk-token
+
+  ## Additional splunkbot container env vars
+  ##
+  extraEnv: {}
+
+  ## Additional splunkbot container arguments
+  ## e.g.: -v, --insecure
+  ##
+  extraArgs: []
+
 ## Monitors ConfigMap changes and POSTs to a URL
 ## Ref: https://github.com/jimmidyson/configmap-reload
 ##
