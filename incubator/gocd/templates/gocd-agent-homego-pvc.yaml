@@ -2,13 +2,13 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: {{ template "gocd.fullname" . }}-agent-home
+  name: {{ template "gocd.fullname" . }}-agent
   labels:
     app: {{ .Values.agent.name }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
-    component: agent
+    component: {{ template "gocd.name" . }}-agent
 spec:
   accessModes:
     - {{ .Values.agent.persistence.homego.accessMode | quote }}

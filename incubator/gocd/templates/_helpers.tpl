@@ -6,13 +6,9 @@ Expand the name of the chart.
 {{- default .Chart.Name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
-{{- define "gocd.version" -}}
-{{- default .Chart.Version | trunc 63 | trimSuffix "-" -}}
-{{- end -}}
-
 {{/*
 Create a default fully qualified app name.
-We truncate at 24 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
+We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 */}}
 {{- define "gocd.fullname" -}}
 {{- $name := default .Chart.Name .Values.nameOverride -}}

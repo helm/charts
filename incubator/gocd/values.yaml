@@ -53,32 +53,24 @@ server:
     nodeHttpsPort:
   ingress:
     # server.ingress.enabled is the toggle to enable GoCD Server Ingress
-    enabled: true
+    enabled: false
     # server.ingress.hosts is used to create an Ingress record.
-    hosts:
-      - foo.go.cd
+#    hosts:
+#      - foo.go.cd
 
   persistence:
     # server.persistence.enabled is the toggle for sever volume persistence. Change to true if a persistent volume is available and configured manually.
-    enabled: true
-    # server.persistence.godata is the GoCD server `/godata` volume configuration
-    godata:
-      accessMode: "ReadWriteOnce"
-      size: 1Gi
-      storageClass:
-      ExistingClaim:
-      pvSelector:
-#        matchLabels:
-#          volume-type: ssd
-    # server.persistence.homego is the GoCD server `/home/go` volume configuration
-    homego:
-      accessMode: "ReadWriteOnce"
-      size: 1Gi
-      storageClass:
-      ExistingClaim:
-      pvSelector:
-#        matchLabels:
-#          volume-type: ssd
+    enabled: false
+    accessMode: "ReadWriteOnce"
+    size: 1Gi
+    storageClass:
+    ExistingClaim:
+    pvSelector:
+      matchLabels:
+#        volume-type: ssd
+    subpath:
+      godata: godata
+      homego: homego
 
 agent:
   # agent.replicaCount is the GoCD Agent replicas Count. Specify the number of GoCD agents to run

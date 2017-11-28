@@ -3,30 +3,25 @@ kind: Deployment
 metadata:
   name: {{ template "gocd.fullname" . }}-agent
   labels:
-    app: {{ template "gocd.fullname" . }}-agent
+    app: {{ template "gocd.name" . }}-agent
     chart:  "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
-    component: agent
+    component: {{ template "gocd.name" . }}-agent
 spec:
   replicas: {{ .Values.agent.replicaCount }}
-  selector:
-    matchLabels:
-      app: {{ template "gocd.fullname" . }}-agent
-      release: {{ .Release.Name | quote }}
-      component: agent
   template:
     metadata:
       labels:
-        app: {{ template "gocd.fullname" . }}-agent
+        app: {{ template "gocd.name" . }}-agent
         release: {{ .Release.Name | quote }}
-        component: agent
+        component: {{ template "gocd.name" . }}-agent
     spec:
       {{- if .Values.agent.persistence.enabled }}
       volumes:
         - name: homego-vol
           persistentVolumeClaim:
-            claimName: {{ template "gocd.fullname" . }}-agent-home
+            claimName: {{ template "gocd.fullname" . }}-agent
       {{- end }}
       containers:
         - name: {{ template "gocd.name" . }}-agent

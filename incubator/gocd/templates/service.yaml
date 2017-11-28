@@ -7,7 +7,7 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
-    component: server
+    component: {{ template "gocd.name" . }}-server
 spec:
   type: {{ .Values.server.service.type }}
   ports:
@@ -29,4 +29,4 @@ spec:
   selector:
     app: {{ template "gocd.name" . }}
     release: {{ .Release.Name | quote }}
-    component: server
+    component: {{ template "gocd.name" . }}-server

@@ -108,27 +108,19 @@ Claim is used to keep the data across deployments, by default. This is known to 
 a previously configured Persistent Volume Claim can be used.
 
 
-### Server `/godata` persistence Values
+### Server persistence Values
 
 
 | Parameter                                | Description                               | Default              |
 | ---------------------------------------- | ----------------------------------------- | -------------------- |
 | `server.persistence.enabled`             | Enable the use of a GoCD server PVC       | `false`              |
-| `server.persistence.godata.accessMode`   | The PVC access mode                       | `ReadWriteOnce`      |
-| `server.persistence.godata.size`         | The size of the PVC                       | `1Gi`                |
-| `server.persistence.godata.storageClass` | The PVC storage class name                | `nil`                |
-| `server.persistence.godata.pvSelector`   | The godata Persistence Volume Selectors   | `nil`                |
+| `server.persistence.accessMode`          | The PVC access mode                       | `ReadWriteOnce`      |
+| `server.persistence.size`                | The size of the PVC                       | `1Gi`                |
+| `server.persistence.storageClass`        | The PVC storage class name                | `nil`                |
+| `server.persistence.pvSelector`          | The godata Persistence Volume Selectors   | `nil`                |
+| `server.persistence.subpath.godata`      | The /godata path on Persistence Volume    | `godata`             |
+| `server.persistence.subpath.homego`      | The /home/go path on Persistence Volume   | `homego`             |
 
-### Server `/home/go` persistence Values
-
-
-| Parameter                                | Description                               | Default              |
-| ---------------------------------------- | ----------------------------------------- | -------------------- |
-| `server.persistence.enabled`             | Enable the use of a GoCD server PVC       | `false`              |
-| `server.persistence.homego.accessMode`   | The PVC access mode                       | `ReadWriteOnce`      |
-| `server.persistence.homego.size`         | The size of the PVC                       | `1Gi`                |
-| `server.persistence.homego.storageClass` | The PVC storage class name                | `nil`                |
-| `server.persistence.homego.pvSelector`   | The homego Persistence Volume Selectors   | `nil`                |
 
 ### Agent `/home/go` persistence Values
 
@@ -157,7 +149,6 @@ a previously configured Persistent Volume Claim can be used.
 ```
 $ helm install --name my-release --set server.persistence.godata.existingClaim=PVC_NAME stable/gocd
 ```
-
 
 # License
 
