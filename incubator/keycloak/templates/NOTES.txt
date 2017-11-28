@@ -7,13 +7,11 @@
 
 {{- if .Values.keycloak.ingress.enabled }}
 
-  * From outside the cluster, the URL is:
+  * From outside the cluster:
 
-  {{- if .Values.keycloak.ingress.tls }}
-    https://{{ .Values.keycloak.ingress.hostname }}
-  {{- else }}
-    http://{{ .Values.keycloak.ingress.hostname }}
-  {{- end }}
+    {{- range .Values.keycloak.ingress.hosts }}
+      - http{{ if $.Values.keycloak.ingress.tls.enabled }}s{{ end }}://{{ . }}
+    {{- end }}
 
 {{- else }}
 
@@ -48,4 +46,4 @@
   Username: {{ .Values.keycloak.username }}
 
   To retrieve the initial user password run:
-  kubectl get secret --namespace {{ .Release.Namespace }} {{ template "keycloak.fullname" . }} -o jsonpath="{.data.password}" | base64 --decode; echo
+  kubectl get secret --namespace {{ .Release.Namespace }} {{ template "keycloak.fullname" . }}-http -o jsonpath="{.data.password}" | base64 --decode; echo
