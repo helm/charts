@@ -43,7 +43,10 @@ spec:
           - name: MB_DB_TYPE
             value: {{ .Values.database.type | lower }}
           - name: MB_ENCRYPTION_SECRET_KEY
-            value: {{ .Values.database.encryptionKey | quote }}
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "metabase.fullname" . }}-database
+                key: encryptionKey
           {{- if ne (.Values.database.type | lower) "h2" }}
             {{- if .Values.database.connectionURI }}
           - name: MB_DB_CONNECTION_URI
