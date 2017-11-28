@@ -1,0 +1,157 @@
+image: fluent/fluentd-kubernetes-daemonset
+imageTag: v0.12.33-cloudwatch
+
+## Specify an imagePullPolicy (Required)
+## It's recommended to change this to 'Always' if the image tag is 'latest'
+## ref: http://kubernetes.io/docs/user-guide/images/#updating-images
+imagePullPolicy: IfNotPresent
+
+
+## Configure resource requests and limits
+## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+##
+resources:
+  limits:
+    cpu: 100m
+    memory: 200Mi
+  requests:
+    cpu: 100m
+    memory: 200Mi
+
+# hostNetwork: false
+
+annotations: {}
+
+awsRegion: us-east-1
+logGroupName: kubernetes
+
+fluentdConfig: |
+  <match fluent.**>
+    type null
+  </match>
+
+  <source>
+    type tail
+    path /var/log/containers/*.log
+    pos_file /var/log/fluentd-containers.log.pos
+    time_format %Y-%m-%dT%H:%M:%S.%NZ
+    tag kubernetes.*
+    format json
+    read_from_head true
+  </source>
+
+  <source>
+    type tail
+    format /^(?<time>[^ ]* [^ ,]*)[^\[]*\[[^\]]*\]\[(?<severity>[^ \]]*) *\] (?<message>.*)$/
+    time_format %Y-%m-%d %H:%M:%S
+    path /var/log/salt/minion
+    pos_file /var/log/fluentd-salt.pos
+    tag salt
+  </source>
+
+  <source>
+    type tail
+    format syslog
+    path /var/log/startupscript.log
+    pos_file /var/log/fluentd-startupscript.log.pos
+    tag startupscript
+  </source>
+
+  <source>
+    type tail
+    format /^time="(?<time>[^)]*)" level=(?<severity>[^ ]*) msg="(?<message>[^"]*)"( err="(?<error>[^"]*)")?( statusCode=($<status_code>\d+))?/
+    path /var/log/docker.log
+    pos_file /var/log/fluentd-docker.log.pos
+    tag docker
+  </source>
+
+  <source>
+    type tail
+    format none
+    path /var/log/etcd.log
+    pos_file /var/log/fluentd-etcd.log.pos
+    tag etcd
+  </source>
+
+  <source>
+    type tail
+    format kubernetes
+    multiline_flush_interval 5s
+    path /var/log/kubelet.log
+    pos_file /var/log/fluentd-kubelet.log.pos
+    tag kubelet
+  </source>
+
+  <source>
+    type tail
+    format kubernetes
+    multiline_flush_interval 5s
+    path /var/log/kube-proxy.log
+    pos_file /var/log/fluentd-kube-proxy.log.pos
+    tag kube-proxy
+  </source>
+
+  <source>
+    type tail
+    format kubernetes
+    multiline_flush_interval 5s
+    path /var/log/kube-apiserver.log
+    pos_file /var/log/fluentd-kube-apiserver.log.pos
+    tag kube-apiserver
+  </source>
+
+  <source>
+    type tail
+    format kubernetes
+    multiline_flush_interval 5s
+    path /var/log/kube-controller-manager.log
+    pos_file /var/log/fluentd-kube-controller-manager.log.pos
+    tag kube-controller-manager
+  </source>
+
+  <source>
+    type tail
+    format kubernetes
+    multiline_flush_interval 5s
+    path /var/log/kube-scheduler.log
+    pos_file /var/log/fluentd-kube-scheduler.log.pos
+    tag kube-scheduler
+  </source>
+
+  <source>
+    type tail
+    format kubernetes
+    multiline_flush_interval 5s
+    path /var/log/rescheduler.log
+    pos_file /var/log/fluentd-rescheduler.log.pos
+    tag rescheduler
+  </source>
+
+  <source>
+    type tail
+    format kubernetes
+    multiline_flush_interval 5s
+    path /var/log/glbc.log
+    pos_file /var/log/fluentd-glbc.log.pos
+    tag glbc
+  </source>
+
+  <source>
+    type tail
+    format kubernetes
+    multiline_flush_interval 5s
+    path /var/log/cluster-autoscaler.log
+    pos_file /var/log/fluentd-cluster-autoscaler.log.pos
+    tag cluster-autoscaler
+  </source>
+
+  <filter kubernetes.**>
+    type kubernetes_metadata
+  </filter>
+
+  <match **>
+    type cloudwatch_logs
+    log_group_name "#{ENV['LOG_GROUP_NAME']}"
+    auto_create_stream true
+    use_tag_as_stream true
+  </match>

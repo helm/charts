@@ -43,9 +43,9 @@ artifactory:
   name: artifactory
   replicaCount: 1
   image:
-    #repository: "docker.bintray.io/jfrog/artifactory-oss"
+    # repository: "docker.bintray.io/jfrog/artifactory-oss"
     repository: "docker.bintray.io/jfrog/artifactory-pro"
-    version: 5.5.1
+    version: 5.5.2
     pullPolicy: IfNotPresent
   service:
     type: ClusterIP
@@ -71,7 +71,7 @@ nginx:
   replicaCount: 1
   image:
     repository: "docker.bintray.io/jfrog/nginx-artifactory-pro"
-    version: 5.5.1
+    version: 5.5.2
     pullPolicy: IfNotPresent
   service:
     ## For minikube, set this to NodePort, elsewhere use LoadBalancer

@@ -18,8 +18,6 @@ spec:
         release: {{ .Release.Name | quote }}
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         component: "{{ .Release.Name }}-{{ .Values.Component }}"
-      annotations:
-        pod.alpha.kubernetes.io/initialized: "true"
     spec:
       containers:
       - name: {{ template "etcd.fullname" . }}

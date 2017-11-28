@@ -1,8 +1,10 @@
 # Default values for jaeger.
 # This is a YAML-formatted file.
-# Jaeger values are grouped by component. Cassandra values override subchart values
 
-# Begin: Override values on the Cassandra subchart to customize for Jaeger
+# Begin: Override values on the Cassandra/ElasticSearch subchart to customize for Jaeger
+# This chart has been based on the Kubernetes integration found in the following repo:
+# https://github.com/jaegertracing/jaeger-kubernetes/blob/master/production/cassandra.yml
+# https://github.com/jaegertracing/jaeger-kubernetes/blob/master/production-elasticsearch/elasticsearch.yml
 cassandra:
   image:
     tag: 3.11
@@ -10,30 +12,51 @@ cassandra:
     # To enable persistence, please see the documentation for the Cassandra chart
     enabled: false
   config:
+    # Change the host value to point to an existing Cassandra instance
+    # Be sure to set both tags.cassandra and tags.elasticsearch to false
+    host: ""
     cluster_name: jaeger
     seed_size: 1
     dc_name: dc1
     rack_name: rack1
     endpoint_snitch: GossipingPropertyFileSnitch
-# End: Override values on the Cassandra subchart to customize for Jaeger
+
+elasticsearch:
+  config:
+    # Change the host value to point to an existing ElasticSearch instance
+    # Be sure to set both tags.cassandra and tags.elasticsearch to false
+    host: ""
+    username: "elastic"
+    password: "changeme"
+# End: Override values on the Cassandra/ElasticSearch subchart to customize for Jaeger
 
 # Begin: Default values for the various components of Jaeger
-# This chart has been based on the Kubernetes integration found in the following repo:
-# https://github.com/jaegertracing/jaeger-kubernetes/blob/master/production/jaeger-production-template.yml
-#
-# This is the jaeger-cassandra-schema Job which sets up the Cassandra schema for
-# use by Jaeger
+tags:
+  # Chose which backing store to use. By default Cassandra is enabled.
+  cassandra: true
+  elasticsearch: false
+
 schema:
   annotations: {}
   image: jaegertracing/jaeger-cassandra-schema
-  tag: 0.6
+  tag: 0.8
   pullPolicy: IfNotPresent
   # Acceptable values are test and prod. Default is for production use.
   mode: prod
+  resources: {}
+    # limits:
+    #   cpu: 500m
+    #   memory: 512Mi
+    # requests:
+    #   cpu: 256m
+    #   memory: 128Mi
+  ## Additional pod labels
+  ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+  podLabels: {}
 agent:
   annotations: {}
   image: jaegertracing/jaeger-agent
-  tag: 0.6
+  tag: 0.8
   pullPolicy: IfNotPresent
   cmdlineParams: {}
   service:
@@ -52,10 +75,13 @@ agent:
     #   cpu: 256m
     #   memory: 128Mi
   nodeSelector: {}
+  ## Additional pod labels
+  ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+  podLabels: {}
 collector:
   annotations: {}
   image: jaegertracing/jaeger-collector
-  tag: 0.6
+  tag: 0.8
   pullPolicy: IfNotPresent
   dnsPolicy: ClusterFirst
   cmdlineParams: {}
@@ -76,10 +102,13 @@ collector:
     #   cpu: 1024m
     #   memory: 1024Mi
   nodeSelector: {}
+  ## Additional pod labels
+  ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+  podLabels: {}
 query:
   annotations: {}
   image: jaegertracing/jaeger-query
-  tag: 0.6
+  tag: 0.8
   pullPolicy: IfNotPresent
   dnsPolicy: ClusterFirst
   cmdlineParams: {}
@@ -98,6 +127,9 @@ query:
     #    cpu: 256m
     #    memory: 128Mi
   nodeSelector: {}
+  ## Additional pod labels
+  ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+  podLabels: {}
 # End: Default values for the various components of Jaeger
 
 ingress:
@@ -105,10 +137,10 @@ ingress:
   # Used to create an Ingress record.
   # hosts:
   #   - chart-example.local
-  #annotations:
+  # annotations:
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
-  #tls:
+  # tls:
     # Secrets must be manually created in the namespace.
     # - secretName: chart-example-tls
     #   hosts:
