@@ -10,5 +10,5 @@ jobs:
            name: install tools
            command: test/circle/install.sh
        - run: 
-           name: helm lint
+           name: lint
            command: test/circle/lint.sh

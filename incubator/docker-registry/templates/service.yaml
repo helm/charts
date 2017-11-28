@@ -4,16 +4,15 @@ metadata:
   name: {{ template "docker-registry.fullname" . }}
   labels:
     app: {{ template "docker-registry.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    heritage: {{ .Release.Service }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      protocol: TCP
+      name: {{ .Values.service.name }}
   selector:
     app: {{ template "docker-registry.name" . }}
     release: {{ .Release.Name }}
-  ports:
-  - name: registry
-    port: 4000
-    protocol: TCP
-    nodePort: {{ .Values.nodePort }}
-  type: NodePort

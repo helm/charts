@@ -22,6 +22,11 @@ spec:
         component: {{ $serviceName }}-{{ .Values.mixer.deployment.name }}
         istio: {{ $serviceName }}-{{ .Values.mixer.deployment.name }}
     spec:
+    {{- if .Values.mixer.deployment.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
+      serviceAccountName: {{ $serviceName }}-{{ .Values.mixer.deployment.name }}-service-account
       containers:
       - name: statsd-to-prometheus
         image: prom/statsd-exporter

@@ -78,7 +78,7 @@ datadog:
   ## Enables event collection from the kubernetes API
   ## ref: https://github.com/DataDog/docker-dd-agent#environment-variables
   ##
-  collectEvents: False
+  collectEvents: false
 
   ## Un-comment this to enable APM and tracing, on ports 7777 and 8126
   ## ref: https://github.com/DataDog/docker-dd-agent#tracing-from-the-host
@@ -97,11 +97,11 @@ datadog:
   ## or deployment.
   ## ref: https://docs.datadoghq.com/guides/process/
   ##
-  # volume:
+  # volumes:
   #  - hostPath:
   #      path: /etc/passwd
   #    name: passwd
-  # volumeMount:
+  # volumeMounts:
   #   - name: passwd
   #     mountPath: /etc/passwd
   #     readOnly: true
@@ -146,3 +146,12 @@ datadog:
     limits:
       cpu: 256m
       memory: 512Mi
+
+rbac:
+  ## If true, create & use RBAC resources
+  create: true
+
+  ## Ignored if rbac.create is true
+  serviceAccountName: default
+
+tolerations: []
