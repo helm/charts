@@ -175,7 +175,7 @@ spec:
         - name: ca
           secret:
             defaultMode: 0400
-            secretName: {{ template "fullname" . }}-ca
+            secretName: {{ template "mongodb-replicaset.fullname" . }}-ca
         {{- end }}
         {{- if .Values.auth.enabled }}
         - name: keydir
