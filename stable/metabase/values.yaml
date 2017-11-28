@@ -31,6 +31,8 @@ database:
   # dbname:
   # username:
   # password:
+  ## Alternatively, use a connection URI for full configurability. Example for SSL enabled Postgres.
+  # connectionURI: postgres://user:password@host:port/database?ssl=true&sslmode=require&sslfactory=org.postgresql.ssl.NonValidatingFactory"
 
 password:
   # Changing Metabase password complexity:

@@ -56,6 +56,7 @@ The following tables lists the configurable parameters of the Metabase chart and
 | ssl.keyStorePassword   | The password for key Store                                 | null              |
 | database.type          | Backend database type                                      | h2                |
 | database.encryptionKey | Secret key for encrypt sensitive information into database | null              |
+| database.connectionURI | Database connection URI (alternative to the below settings)| null              |
 | database.host          | Database host                                              | null              |
 | database.port          | Database port                                              | null              |
 | database.dbname        | Database name                                              | null              |
