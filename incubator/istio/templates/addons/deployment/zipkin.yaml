@@ -1,0 +1,40 @@
+{{- if and .Values.istio.install (not .Release.IsInstall) -}}
+{{ if .Values.addons.zipkin.enabled }}
+{{- $serviceName := include "istio.name" . -}}
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ $serviceName }}-{{ .Values.addons.zipkin.deployment.name }}
+  labels:
+{{ include "istio.labels.standard" . | indent 4 }}
+    component: {{ $serviceName }}-{{ .Values.addons.zipkin.deployment.name }}
+spec:
+  replicas: {{ .Values.addons.zipkin.deployment.replicas }}
+  template:
+    metadata:
+      annotations:
+        {{- range $key, $value := .Values.addons.zipkin.deployment.annotations }}
+          {{ $key }}: {{ $value | quote }}
+        {{- end }}
+      labels:
+{{ include "istio.labels.standard" . | indent 8 }}
+        component: {{ $serviceName }}-{{ .Values.addons.zipkin.deployment.name }}
+    spec:
+    {{- if .Values.addons.zipkin.deployment.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
+      containers:
+      - name: {{ .Values.addons.zipkin.deployment.name }}
+        image: "{{ .Values.addons.zipkin.deployment.image }}:{{ .Values.addons.zipkin.deployment.imageTag }}"
+        imagePullPolicy: {{ .Values.addons.zipkin.deployment.imagePullPolicy }}
+        ports:
+        - containerPort: {{ .Values.addons.zipkin.service.externalPort }}
+        env:
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+{{ end }}
+{{- end -}}

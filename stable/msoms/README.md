@@ -31,13 +31,14 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following tables lists the configurable parameters of the MSOMS chart and their default values.
 
-| Parameter                  | Description                        | Default                                                    |
-| -----------------------    | ---------------------------------- | ---------------------------------------------------------- |
-| `omsagent.image.tag`       | `msoms` image tag.                 | Most recent release                                        |
-| `omsagent.image.pullPolicy`| `msoms` image pull policy.         | IfNotPresent                                               |
-| `omsagent.secret.wsid`     | OMS workspace id                   | Does not have a default value, needs to be provided        |
-| `omsagent.secret.key`      | OMS workspace key                  | Does not have a default value, needs to be provided        |
+| Parameter                  | Description                        | Default                                                                          |
+| -----------------------    | ---------------------------------- | -------------------------------------------------------------------------------- |
+| `omsagent.image.tag`       | `msoms` image tag.                 | Most recent release                                                              |
+| `omsagent.image.pullPolicy`| `msoms` image pull policy.         | IfNotPresent                                                                     |
+| `omsagent.secret.wsid`     | OMS workspace id                   | Does not have a default value, needs to be provided                              |
+| `omsagent.secret.key`      | OMS workspace key                  | Does not have a default value, needs to be provided                              |
 | `omsagent.domain`          | OMS cloud domain (public / govt)   | opinsights.azure.com (Public cloud as default), opinsights.azure.us (Govt Cloud) |
+| `nodeSelector`             | Nodes to run the omsagent on       | None, E.g. Use --set nodeSelector."role"="master" to run only on master          |
 
 To get your workspace id and key do the following
 - In the Azure Log Analytics portal, on the Overview page, click the Settings tile. Click the Connected Sources tab at the left and select "Linux Server" on the right hand side.
@@ -49,7 +50,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 
 ```bash
 $ helm install --name omsagent \
-  --set omsagent.secret.wsid=<your_workspace_id>,omsagent.secret.key=<your_workspace_key>
+  --set omsagent.secret.wsid=<your_workspace_id>,omsagent.secret.key=<your_workspace_key> stable/msoms
 
 ```
 

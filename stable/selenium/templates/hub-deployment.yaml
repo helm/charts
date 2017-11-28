@@ -1,7 +1,7 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "hub.fullname" . }}
+  name: {{ template "selenium.hub.fullname" . }}
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
 spec:
@@ -9,7 +9,7 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "hub.fullname" . }}
+        app: {{ template "selenium.hub.fullname" . }}
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         release: "{{ .Release.Name }}"
         heritage: "{{ .Release.Service }}"

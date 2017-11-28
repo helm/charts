@@ -1,9 +1,9 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "metabase.fullname" . }}
   labels:
-    app: {{ template "name" . }}
+    app: {{ template "metabase.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
@@ -12,7 +12,7 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "name" . }}
+        app: {{ template "metabase.name" . }}
         release: {{ .Release.Name }}
     spec:
       containers:
@@ -32,12 +32,12 @@ spec:
           - name: MB_JETTY_SSL_Keystore
             valueFrom:
               secretKeyRef:
-                name: {{ template "fullname" . }}-ssl
+                name: {{ template "metabase.fullname" . }}-ssl
                 key: keystore
           - name: MB_JETTY_SSL_Keystore_Password
             valueFrom:
               secretKeyRef:
-                name: {{ template "fullname" . }}-ssl
+                name: {{ template "metabase.fullname" . }}-ssl
                 key: password
           {{- end }}
           - name: MB_DB_TYPE
@@ -54,12 +54,12 @@ spec:
           - name: MB_DB_USER
             valueFrom:
               secretKeyRef:
-                name: {{ template "fullname" . }}-database
+                name: {{ template "metabase.fullname" . }}-database
                 key: username
           - name: MB_DB_PASS
             valueFrom:
               secretKeyRef:
-                name: {{ template "fullname" . }}-database
+                name: {{ template "metabase.fullname" . }}-database
                 key: password
           {{- end }}
           - name: MB_PASSWORD_COMPLEXITY

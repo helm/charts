@@ -43,28 +43,31 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following tables lists the configurable parameters of the Redis chart and their default values.
 
-| Parameter                  | Description                           | Default                                                   |
-| -------------------------- | ------------------------------------- | --------------------------------------------------------- |
-| `image`                    | Redis image                           | `bitnami/redis:{VERSION}`                                 |
-| `imagePullPolicy`          | Image pull policy                     | `IfNotPresent`                                            |
-| `usePassword`              | Use password                          | `true`                                         |
-| `redisPassword`            | Redis password                        | Randomly generated                                        |
-| `args`                     | Redis command-line args               | []                                                        |
-| `persistence.enabled`      | Use a PVC to persist data             | `true`                                                    |
-| `persistence.existingClaim`| Use an existing PVC to persist data   | `nil`                                                     |
-| `persistence.storageClass` | Storage class of backing PVC          | `generic`                                                 |
-| `persistence.accessMode`   | Use volume as ReadOnly or ReadWrite   | `ReadWriteOnce`                                           |
-| `persistence.size`         | Size of data volume                   | `8Gi`                                                     |
-| `resources`                | CPU/Memory resource requests/limits   | Memory: `256Mi`, CPU: `100m`                              |
-| `metrics.enabled`          | Start a side-car prometheus exporter  | `false`                                                   |
-| `metrics.image`            | Exporter image                        | `oliver006/redis_exporter`                                |
-| `metrics.imageTag`         | Exporter image                        | `v0.11`                                                   |
-| `metrics.imagePullPolicy`  | Exporter image pull policy            | `IfNotPresent`                                            |
-| `metrics.resources`        | Exporter resource requests/limit      | Memory: `256Mi`, CPU: `100m`                              |
-| `nodeSelector`             | Node labels for pod assignment        | {}                                                        |
-| `tolerations`              | Toleration labels for pod assignment  | []                                                        |
-| `networkPolicy.enabled`    | Enable NetworkPolicy                  | `false`                                                   |
-| `networkPolicy.allowExternal` | Don't require client label for connections | `true`                                            |
+|           Parameter           |                Description                       |           Default            |
+|-------------------------------|--------------------------------------------------|------------------------------|
+| `image`                       | Redis image                                      | `bitnami/redis:{VERSION}`    |
+| `imagePullPolicy`             | Image pull policy                                | `IfNotPresent`               |
+| `serviceType`                 | Kubernetes Service type                          | `ClusterIP`                  |
+| `usePassword`                 | Use password                                     | `true`                       |
+| `redisPassword`               | Redis password                                   | Randomly generated           |
+| `args`                        | Redis command-line args                          | []                           |
+| `persistence.enabled`         | Use a PVC to persist data                        | `true`                       |
+| `persistence.existingClaim`   | Use an existing PVC to persist data              | `nil`                        |
+| `persistence.storageClass`    | Storage class of backing PVC                     | `generic`                    |
+| `persistence.accessMode`      | Use volume as ReadOnly or ReadWrite              | `ReadWriteOnce`              |
+| `persistence.size`            | Size of data volume                              | `8Gi`                        |
+| `resources`                   | CPU/Memory resource requests/limits              | Memory: `256Mi`, CPU: `100m` |
+| `metrics.enabled`             | Start a side-car prometheus exporter             | `false`                      |
+| `metrics.image`               | Exporter image                                   | `oliver006/redis_exporter`   |
+| `metrics.imageTag`            | Exporter image                                   | `v0.11`                      |
+| `metrics.imagePullPolicy`     | Exporter image pull policy                       | `IfNotPresent`               |
+| `metrics.resources`           | Exporter resource requests/limit                 | Memory: `256Mi`, CPU: `100m` |
+| `nodeSelector`                | Node labels for pod assignment                   | {}                           |
+| `tolerations`                 | Toleration labels for pod assignment             | []                           |
+| `networkPolicy.enabled`       | Enable NetworkPolicy                             | `false`                      |
+| `networkPolicy.allowExternal` | Don't require client label for connections       | `true`                       |
+| `service.annotations`         | annotations for redis service                    | {}                           |
+| `service.loadBalancerIP`      | loadBalancerIP if service type is `LoadBalancer` | ``                           |
 
 The above parameters map to the env variables defined in [bitnami/redis](http://github.com/bitnami/bitnami-docker-redis). For more information please refer to the [bitnami/redis](http://github.com/bitnami/bitnami-docker-redis) image documentation.
 
@@ -103,7 +106,7 @@ after a successful install.
 
 ## Persistence
 
-The [Bitnami Redis](https://github.com/bitnami/bitnami-docker-redis) image stores the Redis data and configurations at the `/bitnami/redis` path of the container.
+The [Bitnami Redis](https://github.com/bitnami/bitnami-docker-redis) image stores the Redis data and configurations at the `/bitnami` path of the container.
 
 By default, the chart mounts a [Persistent Volume](http://kubernetes.io/docs/user-guide/persistent-volumes/) volume at this location. The volume is created using dynamic volume provisioning. If a Persistent Volume Claim already exists, specify it during installation.
 
@@ -117,4 +120,4 @@ $ helm install --set persistence.existingClaim=PVC_NAME redis
 ```
 
 ## Metrics
-The chart optionally can start a metrics exporter for [prometheus](https://prometheus.io). The metrics endpoint (port 9121) is not exposed and it is expected that the metrics are collected from inside the k8s cluster using something similar as the described in the [example Prometheus scrape configuration](https://github.com/prometheus/prometheus/blob/master/documentation/examples/prometheus-kubernetes.yml).
+The chart optionally can start a metrics exporter for [prometheus](https://prometheus.io). The metrics endpoint (port 9121) is exposed in the service. Metrics can be scraped from within the cluster using something similar as the described in the [example Prometheus scrape configuration](https://github.com/prometheus/prometheus/blob/master/documentation/examples/prometheus-kubernetes.yml). If metrics are to be scraped from outside the cluster, the Kubenretes API proxy can be utilized to access the endpoint.

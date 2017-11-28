@@ -44,12 +44,22 @@ spec:
             secretKeyRef:
               name: {{ template "patroni.fullname" . }}
               key: password-standby
-        {{if .Values.Etcd.Host }}
-        - name: ETCD_HOST
-          value: {{ .Values.Etcd.Host | quote }}
-        {{else}}
+        {{if .Values.Etcd.Enable }}
+        {{if .Values.Etcd.DeployChart }}
         - name: ETCD_DISCOVERY_DOMAIN
           value: {{default (printf "%s-etcd" .Release.Name | trunc 63) .Values.Etcd.Discovery }}
+        {{else}}
+        - name: ETCD_HOST
+          value: {{ .Values.Etcd.Host | quote }}
+        {{end}}
+        {{else if .Values.Zookeeper.Enable }}
+        {{if .Values.Zookeeper.DeployChart }}
+        - name: ZOOKEEPER_HOSTS
+          value: {{(printf "'hs-zk-%s:2181'" .Release.Name | trunc 63)}}
+        {{else}}
+        - name: ZOOKEEPER_HOSTS
+          value: {{ .Values.Zookeeper.Hosts | quote }}
+        {{end}}
         {{end}}
         - name: SCOPE
           value: {{ template "patroni.fullname" . }}

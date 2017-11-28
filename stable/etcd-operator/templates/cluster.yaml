@@ -1,6 +1,6 @@
 {{- if and .Values.cluster.enabled (not .Release.IsInstall) -}}
-apiVersion: "etcd.coreos.com/v1beta1"
-kind: "Cluster"
+apiVersion: "etcd.database.coreos.com/v1beta2"
+kind: "EtcdCluster"
 metadata:
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"

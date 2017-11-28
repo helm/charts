@@ -1,9 +1,9 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "phpbb.fullname" . }}
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "phpbb.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -12,28 +12,28 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "fullname" . }}
+        app: {{ template "phpbb.fullname" . }}
     spec:
       containers:
-      - name: {{ template "fullname" . }}
+      - name: {{ template "phpbb.fullname" . }}
         image: "{{ .Values.image }}"
         imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
         env:
         - name: MARIADB_HOST
-          value: {{ template "mariadb.fullname" . }}
+          value: {{ template "phpbb.mariadb.fullname" . }}
         - name: MARIADB_PORT_NUMBER
           value: "3306"
         - name: MARIADB_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "mariadb.fullname" . }}
+              name: {{ template "phpbb.mariadb.fullname" . }}
               key: mariadb-root-password
         - name: PHPBB_USERNAME
           value: {{ default "" .Values.phpbbUser | quote }}
         - name: PHPBB_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "phpbb.fullname" . }}
               key: phpbb-password
         - name: PHPBB_EMAIL
           value: {{ default "" .Values.phpbbEmail | quote }}
@@ -46,7 +46,7 @@ spec:
         - name: SMTP_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "phpbb.fullname" . }}
               key: smtp-password
         - name: SMTP_PROTOCOL
           value: {{ default "" .Values.smtpProtocol | quote }}
@@ -76,14 +76,14 @@ spec:
       - name: phpbb-data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ template "fullname" . }}-phpbb
+          claimName: {{ template "phpbb.fullname" . }}-phpbb
       {{- else }}
         emptyDir: {}
       {{- end }}
       - name: apache-data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ template "fullname" . }}-apache
+          claimName: {{ template "phpbb.fullname" . }}-apache
       {{- else }}
         emptyDir: {}
       {{- end }}
