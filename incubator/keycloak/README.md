@@ -87,6 +87,9 @@ Parameter | Description | Default
 `postgresql.postgresUser` | The PostgreSQL user (if `keycloak.persistence.deployPostgres=true`) | `keycloak`
 `postgresql.postgresPassword` | The PostgreSQL password (if `keycloak.persistence.deployPostgres=true`) | `""`
 `postgresql.postgresDatabase` | The PostgreSQL database (if `keycloak.persistence.deployPostgres=true`) | `keycloak`
+`test.image.repository` | Test image repository | `unguiculus/docker-python3-phantomjs-selenium`
+`test.image.tag` | Test image tag | `v1`
+`test.image.pullPolicy` | Test image pull policy | `IfNotPresent`
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
