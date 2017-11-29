@@ -51,6 +51,9 @@ The following tables lists the configurable parameters of the ownCloud chart and
 | `imagePullPolicy`                   | Image pull policy                         | `IfNotPresent`                              |
 | `ingress.enabled`                   | Enable use of ingress controllers         | `false`                                     |
 | `ingress.servicePort`               | Ingress' backend servicePort              | `http`                                      |
+| `ingress.annotations`               | An array of service annotations           | `nil`                                       |
+| `ingress.tls`                       | Ingress TLS configuration                 | `[]`                                        |
+| `networkPolicyApiVersion`           | The kubernetes network API version        | `extensions/v1beta1`                        |
 | `owncloudHost`                      | ownCloud host to create application URLs  | `nil`                                       |
 | `owncloudLoadBalancerIP`            | `loadBalancerIP` for the owncloud Service | `nil`                                       |
 | `owncloudUsername`                  | User of the application                   | `user`                                      |
