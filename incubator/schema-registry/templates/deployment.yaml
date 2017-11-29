@@ -8,7 +8,7 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
-  replicas: {{ .Values.ReplicaCount }}
+  replicas: {{ .Values.replicaCount }}
   template:
     metadata:
       labels:
@@ -17,20 +17,20 @@ spec:
     spec:
       containers:
         - name: {{ .Chart.Name }}
-          image: "{{ .Values.Image }}:{{ .Values.ImageTag }}"
-          imagePullPolicy: {{ .Values.ImagePullPolicy }}
+          image: "{{ .Values.image }}:{{ .Values.imageTag }}"
+          imagePullPolicy: {{ .Values.imagePullPolicy }}
           ports:
-            - containerPort: {{ .Values.ServicePort }}
+            - containerPort: {{ .Values.servicePort }}
           livenessProbe:
             httpGet:
               path: /
-              port: {{ .Values.ServicePort }}
+              port: {{ .Values.servicePort }}
             initialDelaySeconds: 10
             timeoutSeconds: 5
           readinessProbe:
             httpGet:
               path: /
-              port: {{ .Values.ServicePort }}
+              port: {{ .Values.servicePort }}
             initialDelaySeconds: 10
             timeoutSeconds: 5
           env:
@@ -40,7 +40,7 @@ spec:
                 fieldPath: metadata.name
           - name: SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL
             value: {{ template "kafka-zookeeper.url" . }}/
-          {{ range $configName, $configValue := .Values.ConfigurationOverrides }}
+          {{ range $configName, $configValue := .Values.configurationOverrides }}
           - name: SCHEMA_REGISTRY_{{ $configName | replace "." "_" | upper }}
             value: {{ $configValue }}
           {{ end }}

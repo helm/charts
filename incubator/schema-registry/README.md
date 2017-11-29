@@ -58,22 +58,15 @@ The following tables lists the configurable parameters of the SchemaRegistry cha
 
 | Parameter | Description | Default |
 | --------- | ----------- | ------- |
-| `Image` | The `SchemaRegistry` image repository | `confluentinc/cp-schema-registry` |
-| `ImageTag` | The `SchemaRegistry` image tag | `4.0.0` |
-| `ImagePullPolicy` | Image Pull Policy | `IfNotPresent` |
-| `ReplicaCount` | The number of `SchemaRegistry` Pods in the Deployment | `1` |
-| `ConfigurationOverrides` | `SchemaRegistry` [configuration setting](https://github.com/confluentinc/schema-registry/blob/master/docs/config.rst#configuration-options) overrides in the dictionary format `setting.name: value` | `{}` |
-| `Resources` | CPU/Memory resource requests/limits | `{}` |
-| `ServicePort` | The port on which the SchemaRegistry server will be exposed. | `8081` |
-| `kafka.Enabled` | If `true`, install Kafka/Zookeeper alongside the `SchemaRegistry`. This is intended for testing and argument-less helm installs of this chart only and should not be used in Production. | `true` |
-| `kafka.Replicas` | The number of Kafka Pods to install as part of the `StatefulSet` if `kafka.Enabled` is `true`| `1` |
-| `kafka.zookeeper.Servers` | The number of Zookeeper Pods to install as part of the `StatefulSet` if `kafka.Enabled` is `true`| `1` |
+| `image` | The `SchemaRegistry` image repository | `confluentinc/cp-schema-registry` |
+| `imageTag` | The `SchemaRegistry` image tag | `4.0.0` |
+| `imagePullPolicy` | Image Pull Policy | `IfNotPresent` |
+| `replicaCount` | The number of `SchemaRegistry` Pods in the Deployment | `1` |
+| `configurationOverrides` | `SchemaRegistry` [configuration setting](https://github.com/confluentinc/schema-registry/blob/master/docs/config.rst#configuration-options) overrides in the dictionary format `setting.name: value` | `{}` |
+| `resources` | CPU/Memory resource requests/limits | `{}` |
+| `servicePort` | The port on which the SchemaRegistry server will be exposed. | `8081` |
+| `kafka.enabled` | If `true`, install Kafka/Zookeeper alongside the `SchemaRegistry`. This is intended for testing and argument-less helm installs of this chart only and should not be used in Production. | `true` |
+| `kafka.replicas` | The number of Kafka Pods to install as part of the `StatefulSet` if `kafka.Enabled` is `true`| `1` |
+| `kafka.zookeeper.servers` | The number of Zookeeper Pods to install as part of the `StatefulSet` if `kafka.Enabled` is `true`| `1` |
 | `kafka.ZookeeperUrl` | The URL of the Zookeeper servicing the Kafka installation if `Kafka.Enabled` is `false` | `""` |
 | `kafka.ZookeeperPort` | The Port of the Zookeeper servicing the Kafka installation if `Kafka.Enabled` is `false` | `2181` |
-| `servers` | The number of ZooKeeper servers. This should always be (1,3,5, or 7) | `3` |
-| `minAvailable` | The minimum number of servers that must be available during evictions. This should in the interval `[(servers/2) + 1,(servers - 1)]`. | `servers-1` |
-| `resources.requests.cpu` | The amount of CPU to request. As ZooKeeper is not very CPU intensive, `2` is a good choice to start with for a production deployment. | `500m` |
-| `heap` | The amount of JVM heap that the ZooKeeper servers will use. As ZooKeeper stores all of its data in memory, this value should reflect the size of your working set. The JVM -Xms/-Xmx format is used. |`2G` |
-| `resources.requests.memory` | The amount of memory to request. This value should be at least 2 GiB larger than `heap` to avoid swapping. You many want to use `1.5 * heap` for values larger than 2GiB. The Kubernetes format is used. |`2Gi` |
-| `storage` | The amount of storage to request. Even though ZooKeeper keeps is working set in memory, it logs all transactions, and periodically snapshots, to storage media. The amount of storage required will vary with your workload, working memory size, and log and snapshot retention policy. Note that, on some cloud providers selecting a small volume size will result is sub-par I/O performance. 250 GiB is a good place to start for production workloads. | `50Gi`|
-| `storageClass` | The storage class of the storage allocated for the ensemble. If this value is present, it will add an annotation asking the PV Provisioner for that storage class. | `default` |

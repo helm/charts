@@ -10,7 +10,7 @@ metadata:
 spec:
   ports:
     - name: schema-registry
-      port: {{ .Values.ServicePort }}
+      port: {{ .Values.servicePort }}
   selector:
     app: {{ template "schema-registry.name" . }}
     release: {{ .Release.Name | quote}}

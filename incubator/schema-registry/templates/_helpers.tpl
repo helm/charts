@@ -20,10 +20,10 @@ Form the Kafka URL. If Kafka is installed as part of this chart, use k8s service
 else use user-provided URL
 */}}
 {{- define "kafka-zookeeper.url" }}
-{{- $port := .Values.kafka.ZookeeperPort | toString }}
-{{- if .Values.kafka.Enabled -}}
+{{- $port := .Values.kafka.zookeeperPort | toString }}
+{{- if .Values.kafka.enabled -}}
 {{- printf "%s-zookeeper:%s" .Release.Name $port }}
 {{- else -}}
-{{- printf "%s:%s" .Values.kafka.ZookeeperUrl $port }}
+{{- printf "%s:%s" .Values.kafka.zookeeperUrl $port }}
 {{- end -}}
 {{- end -}}
