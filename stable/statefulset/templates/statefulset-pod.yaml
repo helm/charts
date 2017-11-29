@@ -1,0 +1,65 @@
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  name: "{{.Values.container.name.primary}}"
+  labels:
+    name: "{{.Values.container.name.replica}}"
+    app: "{{.Values.container.name.primary}}"
+    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+  annotations:
+    "helm.sh/created": {{.Release.Time.Seconds | quote }}
+spec:
+  selector:
+    matchLabels:
+      app: "{{.Values.container.name.primary}}"
+  serviceName: "{{.Values.container.name.primary}}"
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: "{{.Values.container.name.primary}}"
+    spec:
+      serviceAccount: "{{.Values.container.serviceAccount}}"
+      terminationGracePeriodSeconds: 10
+      containers:
+      - name: {{.Values.container.name.primary}}
+        image: "{{.Values.image.repository}}/{{.Values.image.container}}:{{.Values.image.tag}}"
+        ports:
+        - containerPort: {{.Values.container.port}}
+          name: postgres
+        env:
+        - name: PGHOST
+          value: /tmp
+        - name: PG_PRIMARY_USER
+          value: primaryuser
+        - name: PG_MODE
+          value: set
+        - name: PG_PRIMARY_HOST
+          value: "{{.Values.container.name.primary}}"
+        - name: PG_PRIMARY_PORT
+          value: "{{.Values.container.port}}"
+        - name: PG_PRIMARY_PASSWORD
+          value: "{{.Values.credentials.primary}}"
+        - name: PG_USER
+          value: testuser
+        - name: PG_PASSWORD
+          value: "{{.Values.credentials.user}}"
+        - name: PG_DATABASE
+          value: userdb
+        - name: PG_ROOT_PASSWORD
+          value: "{{.Values.credentials.root}}"
+        resources:
+          requests:
+            cpu: {{ .Values.resources.cpu }}
+            memory: {{ .Values.resources.memory }}
+        volumeMounts:
+        - mountPath: /pgdata
+          name: pgdata
+        - mountPath: /backup
+          name: backup
+          readOnly: true
+      volumes:
+      - emptyDir: {}
+        name: pgdata
+      - emptyDir: {}
+        name: backup
