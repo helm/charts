@@ -8,7 +8,7 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 data:
-{{- if .Values.postgresql.enabled }}
+{{- if .Values.keycloak.persistence.deployPostgres }}
   wait_for_postgresql.sh: |
     #!/usr/bin/env bash
 

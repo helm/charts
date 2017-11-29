@@ -21,7 +21,7 @@ spec:
         app: {{ template "keycloak.name" . }}
         release: "{{ .Release.Name }}"
     spec:
-    {{- if .Values.postgresql.enabled }}
+    {{- if .Values.keycloak.persistence.deployPostgres }}
       initContainers:
         - name: wait-for-postgresql
           image: "{{ .Values.hyperkube.image.repository }}:{{ .Values.hyperkube.image.tag }}"
