@@ -1,0 +1,48 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "schema-registry.fullname" . }}
+  labels:
+    app: {{ template "schema-registry.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.ReplicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "schema-registry.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.Image }}:{{ .Values.ImageTag }}"
+          imagePullPolicy: {{ .Values.ImagePullPolicy }}
+          ports:
+            - containerPort: {{ .Values.ServicePort }}
+          livenessProbe:
+            httpGet:
+              path: /
+              port: {{ .Values.ServicePort }}
+            initialDelaySeconds: 10
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /
+              port: {{ .Values.ServicePort }}
+            initialDelaySeconds: 10
+            timeoutSeconds: 5
+          env:
+          - name: SCHEMA_REGISTRY_HOST_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL
+            value: {{ template "kafka-zookeeper.url" . }}/
+          {{ range $configName, $configValue := .Values.ConfigurationOverrides }}
+          - name: SCHEMA_REGISTRY_{{ $configName | replace "." "_" | upper }}
+            value: {{ $configValue }}
+          {{ end }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
