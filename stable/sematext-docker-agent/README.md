@@ -1,0 +1,63 @@
+# Sematext Docker Agent
+
+[Sematext](https://sematext.com/) Agent for Docker collects Metrics, Events, and Logs from the Docker API for SPM Docker Monitoring & Logsene / Hosted ELK Log Management.
+
+## Introduction
+
+This chart installs the Sematext Docker Agent to all nodes in your cluster via a `DaemonSet` resource.
+
+## Prerequisites
+
+- Kubernetes 1.2+
+
+## Installation
+
+To install the chart run the following command:
+
+```bash
+$ helm install --name release_name \
+    --set sematext.spmToken=YOUR_TOKEN,sematext.logseneToken=YOUR_TOKEN stable/sematext
+```
+
+After a few minutes, you should see logs and metrics being reported in Sematext web UI.
+
+## Deleting
+
+To uninstall the chart delete `release_name` deployment:
+
+```bash
+$ helm delete release_name
+```
+
+The command removes all the Kubernetes components associated with the chart and deletes the release.
+
+## Configuration
+
+The following table lists the configurable parameters of the sematext-docker-agent chart and their default values.
+
+|             Parameter       |            Description             |                    Default                |
+|-----------------------------|------------------------------------|-------------------------------------------|
+| `sematext.spmToken`         | Sematext SPM token                 | `Nil` You must provide your SPM token     |
+| `sematext.logseneToken`     | Sematext Logsene token             | `Nil` You must provide your Logsene token |
+| `image.repository`          | The image repository               | `sematext/sematext-agent-docker`          |
+| `image.tag`                 | The image tag                      | `latest`                                  |
+| `image.pullPolicy`          | Image pull policy                  | `Always`                                  |
+| `resources.requests.cpu`    | CPU resource requests              | `100m`                                    |
+| `resources.limits.cpu`      | CPU resource limits                | `256m`                                    |
+| `resources.requests.memory` | Memory resource requests           | `128Mi`                                   |
+| `resources.limits.memory`   | Memory resource limits             | `512Mi`                                   |
+| `sematext.useHostNetwork`   | Use the host networking            | `true`                                    |
+
+Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`:
+
+```bash
+$ helm install --name release_name \
+    --set sematext.spmToken=YOUR_TOKEN,sematext.useHostNetwork=false \
+    stable/sematext
+```
+
+Alternatively, you can use a YAML file that specifies the values and it can be provided while installing the chart:
+
+```bash
+$ helm install --name release_name -f custom_values.yaml stable/sematext
+```

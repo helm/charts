@@ -1,0 +1,50 @@
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: {{ template "sematext.fullname" . }}
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+spec:
+  template:
+    metadata:
+      labels:
+        app: {{ template "sematext.name" . }}
+      name: {{ template "sematext.name" . }}
+    spec:
+      nodeSelector: {}
+      {{- if .Values.sematext.useHostNetwork }}
+      hostNetwork: {{ .Values.sematext.useHostNetwork }}
+      {{- end }}
+      dnsPolicy: "ClusterFirst"
+      restartPolicy: "Always"
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: "{{ .Values.image.pullPolicy }}"
+        resources:
+{{ toYaml .Values.sematext.resources | indent 10 }}
+        env:
+        - name: SPM_TOKEN
+          value: {{ default "" .Values.sematext.spmToken | quote }}
+        - name: LOGSENE_TOKEN
+          value: {{ default "" .Values.sematext.logseneToken | quote }}
+        volumeMounts:
+          - mountPath: /var/run/docker.sock
+            name: docker-sock
+          - mountPath: /etc/localtime
+            name: localtime
+          - mountPath: /rootfs
+            name: rootfs
+            readOnly: true
+        securityContext:
+          privileged: true
+      volumes:
+        - name: docker-sock
+          hostPath:
+            path: /var/run/docker.sock
+        - name: localtime
+          hostPath:
+            path: /etc/localtime
+        - name: rootfs
+          hostPath:
+            path: /

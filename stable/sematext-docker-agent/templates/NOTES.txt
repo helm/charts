@@ -1,0 +1,17 @@
+{{- if and (not .Values.sematext.spmToken) (not .Values.sematext.logseneToken) -}}
+
+########### ERROR #############
+
+{{ else if not .Values.sematext.logseneToken -}}
+
+Missing logseneToken!
+
+{{ else if not .Values.sematext.spmToken -}}
+
+Missing spmToken!
+
+{{ else -}}
+
+You are all set! Check the...
+
+{{ end -}}
