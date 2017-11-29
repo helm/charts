@@ -1,5 +1,5 @@
 {{- if .Values.ingress.enabled -}}
-{{- $serviceName := include "jaeger.name" . -}}
+{{- $serviceName := printf "%s%s" (include "jaeger.fullname" .) "-query" -}}
 {{- $servicePort := .Values.query.service.queryPort -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
