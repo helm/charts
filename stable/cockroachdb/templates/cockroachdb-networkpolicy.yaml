@@ -1,7 +1,7 @@
 {{- if .Values.NetworkPolicy.Enabled }}
 ---
 kind: NetworkPolicy
-apiVersion: {{ template "networkPolicy.apiVersion" . }}
+apiVersion: {{ template "cockroachdb.networkPolicy.apiVersion" . }}
 metadata:
   name: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 56 }}"
   labels:

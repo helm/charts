@@ -1,0 +1,61 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-zeppelin
+  labels:
+    app: {{ template "zeppelin.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  strategy:
+    rollingUpdate:
+      maxUnavailable: 0
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: {{ template "zeppelin.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      terminationGracePeriodSeconds: 0
+      containers:
+        - name: zeppelin
+          image: {{ .Values.zeppelin.image }}
+          ports:
+            - containerPort: 8080
+              name: web
+          env:
+            - name: ZEPPELIN_PORT
+              value: "8080"
+            - name: ZEPPELIN_JAVA_OPTS
+              value: >-
+                -Dspark.driver.memory={{ .Values.spark.driverMemory }}
+                -Dspark.executor.memory={{ .Values.spark.executorMemory }}
+{{- if .Values.hadoop.useConfigMap }}
+            - name: MASTER
+              value: "yarn"
+            - name: SPARK_SUBMIT_OPTIONS
+              value: >-
+                --deploy-mode client
+                --num-executors {{ .Values.spark.numExecutors }}
+{{- end }}
+          volumeMounts:
+{{- if .Values.hadoop.useConfigMap }}
+            - mountPath: {{ .Values.hadoop.configPath }}
+              name: hadoop-config
+{{- end }}
+          resources:
+{{ toYaml .Values.zeppelin.resources | indent 12 }} 
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 20
+            timeoutSeconds: 1
+{{- if .Values.hadoop.useConfigMap }}
+      volumes:
+        - name: hadoop-config
+          configMap:
+            name: {{ .Values.hadoop.configMapName }}
+{{- end }}

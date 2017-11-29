@@ -13,9 +13,14 @@ service:
 ## Persist data to a persitent volume
 persistence:
   enabled: true
-  ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
-  ## Default: volume.alpha.kubernetes.io/storage-class: default
-  #  storageClass: generic
+  ## cassandra data Persistent Volume Storage Class
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  ##
+  # storageClass: "-"
   accessMode: ReadWriteOnce
   size: 10Gi
 
@@ -41,7 +46,7 @@ config:
   cluster_name: cassandra
   cluster_size: 3
   seed_size: 2
-  num_tokens: 256 
+  num_tokens: 256
   dc_name: DC1
   rack_name: RAC1
   endpoint_snitch: SimpleSnitch
@@ -56,3 +61,7 @@ config:
 # selector:
   # nodeSelector:
     # cloud.google.com/gke-nodepool: pool-db
+
+## Additional pod labels
+## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+podLabels: {}

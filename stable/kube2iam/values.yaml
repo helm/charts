@@ -14,6 +14,12 @@ image:
   tag: 0.7.0
   pullPolicy: IfNotPresent
 
+# AWS Access keys to inject as environment variables
+aws:
+  secret_key: ""
+  access_key: ""
+  region: ""
+
 ## Node labels for pod assignment
 ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
 ##
@@ -22,6 +28,8 @@ nodeSelector: {}
 ## Annotations to be added to pods
 ##
 podAnnotations: {}
+
+podLabels: {}
 
 rbac:
   ## If true, create & use RBAC resources

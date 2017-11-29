@@ -21,15 +21,24 @@ POD_NAME=$(kubectl get pods -l type=openvpn -o jsonpath='{.items[0].metadata.nam
 && kubectl log $POD_NAME --follow
 ```
 
-When ready generate a client key as follows:
+When all components of the openvpn chart have started use the following script to generate a client key:
 
 ```bash
-POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l type=openvpn -o jsonpath='{.items[0].metadata.name}')
-SERVICE_NAME=$(kubectl get svc --namespace {{ .Release.Namespace }} -l type=openvpn  -o jsonpath='{.items[0].metadata.name}')
-SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} $SERVICE_NAME -o go-template='{{range $k, $v := (index .status.loadBalancer.ingress 0)}}{{$v}}{{end}}')
-KEY_NAME=kubeVPN \
-kubectl --namespace {{ .Release.Namespace }} exec -it $POD_NAME /etc/openvpn/setup/newClientCert.sh $KEY_NAME $SERVICE_IP
-kubectl --namespace {{ .Release.Namespace }} exec -it $POD_NAME cat /etc/openvpn/certs/pki/$KEY_NAME.ovpn > $KEY_NAME.ovpn
+#!/bin/bash
+
+if [ $# -ne 1 ]
+then
+  echo "Usage: $0 <CLIENT_KEY_NAME>"
+  exit
+fi
+
+KEY_NAME=$1
+NAMESPACE=$(kubectl get pods --all-namespaces -l type=openvpn -o jsonpath='{.items[0].metadata.namespace}')
+POD_NAME=$(kubectl get pods -n $NAMESPACE -l type=openvpn -o jsonpath='{.items[0].metadata.name}')
+SERVICE_NAME=$(kubectl get svc -n $NAMESPACE -l type=openvpn  -o jsonpath='{.items[0].metadata.name}')
+SERVICE_IP=$(kubectl get svc -n $NAMESPACE $SERVICE_NAME -o go-template='{{range $k, $v := (index .status.loadBalancer.ingress 0)}}{{$v}}{{end}}')
+kubectl -n $NAMESPACE exec -it $POD_NAME /etc/openvpn/setup/newClientCert.sh $KEY_NAME $SERVICE_IP
+kubectl -n $NAMESPACE exec -it $POD_NAME cat /etc/openvpn/certs/pki/$KEY_NAME.ovpn > $KEY_NAME.ovpn
 ```
 
 Be sure to change `KEY_NAME` if generating additional keys.  Import the .ovpn file into your favorite openvpn tool like tunnelblick and verify connectivity.

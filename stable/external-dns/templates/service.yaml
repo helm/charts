@@ -6,7 +6,7 @@ metadata:
 {{ toYaml .Values.service.annotations | indent 4 }}
 {{- end }}
   labels:
-    app: {{ template "name" . }}
+    app: {{ template "external-dns.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
@@ -29,6 +29,6 @@ spec:
       protocol: TCP
       targetPort: 7979
   selector:
-    app: {{ template "name" . }}
+    app: {{ template "external-dns.name" . }}
     release: {{ .Release.Name }}
   type: "{{ .Values.service.type }}"

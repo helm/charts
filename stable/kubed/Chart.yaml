@@ -1,0 +1,12 @@
+apiVersion: v1
+description: 'Kubed by AppsCode - Kubernetes daemon'
+name: kubed
+version: 0.1.0
+appVersion: 0.3.0
+home: https://github.com/appscode/kubed
+icon: https://cdn.appscode.com/images/icon/kubed.png
+sources:
+  - https://github.com/appscode/kubed
+maintainers:
+  - name: appscode
+    email: support@appscode.com

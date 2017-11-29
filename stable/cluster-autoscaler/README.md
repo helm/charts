@@ -20,7 +20,7 @@ autoscalingGroups:
 ## Helm >= 2.5
 
 ```console
-$ helm install stable/cluster-autoscaler --name my-release autoscalingGroups[0].name=your-asg-name,autoscalingGroups[0].maxSize=10,autoscalingGroups[0].minSize=1
+$ helm install stable/cluster-autoscaler --name my-release --set "autoscalingGroups[0].name=your-asg-name,autoscalingGroups[0].maxSize=10,autoscalingGroups[0].minSize=1"
 ```
 
 ## Introduction
@@ -52,7 +52,7 @@ $ helm install stable/cluster-autoscaler --name my-release -f values.yaml
 ## Helm >= 2.5
 
 ```console
-$ helm install stable/cluster-autoscaler --name my-release autoscalingGroups[0].name=your-asg-name,autoscalingGroups[0].maxSize=10,autoscalingGroups[0].minSize=1
+$ helm install stable/cluster-autoscaler --name my-release --set "autoscalingGroups[0].name=your-asg-name,autoscalingGroups[0].maxSize=10,autoscalingGroups[0].minSize=1"
 ```
 
 The command deploys cluster-autoscaler on the Kubernetes cluster using the supplied configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
@@ -92,6 +92,7 @@ The following tables lists the configurable parameters of the cluster-autoscaler
 
 Parameter | Description | Default
 --- | --- | ---
+`affinity` | node/pod affinities | None
 `autoscalingGroups[].name` | autoscaling group name | None. You *must* supply at least one.
 `autoscalingGroups[].maxSize` | maximum autoscaling group size | None. You *must* supply at least one.
 `autoscalingGroups[].minSize` | minimum autoscaling group size | None. You *must* supply at least one.

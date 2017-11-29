@@ -1,7 +1,7 @@
 ## Bitnami WordPress image version
 ## ref: https://hub.docker.com/r/bitnami/wordpress/tags/
 ##
-image: bitnami/wordpress:4.8.1-r0
+image: bitnami/wordpress:4.9.0-r2
 
 ## Specify a imagePullPolicy
 ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -82,10 +82,14 @@ mariadb:
   ##
   persistence:
     enabled: true
-    ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
-    ## Default: volume.alpha.kubernetes.io/storage-class: default
+    ## mariadb data Persistent Volume Storage Class
+    ## If defined, storageClassName: <storageClass>
+    ## If set to "-", storageClassName: "", which disables dynamic provisioning
+    ## If undefined (the default) or set to null, no storageClassName spec is
+    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+    ##   GKE, AWS & OpenStack)
     ##
-    # storageClass:
+    # storageClass: "-"
     accessMode: ReadWriteOnce
     size: 8Gi
 
@@ -102,31 +106,60 @@ healthcheckHttps: false
 ## ref: http://kubernetes.io/docs/user-guide/ingress/
 ##
 ingress:
-    enabled: false
-    hostname: wordpress.local
+  ## Set to true to enable ingress record generation
+  enabled: false
 
-    ## Ingress annotations
-    ##
-    # annotations:
-    #   kubernetes.io/ingress.class: nginx
+  ## The list of hostnames to be covered with this ingress record.
+  ## Most likely this will be just one host, but in the event more hosts are needed, this is an array
+  hosts:
+  - name: wordpress.local
 
-    ## Ingress TLS configuration
-    ## Secrets must be manually created in the namespace
+    ## Set this to true in order to enable TLS on the ingress record
+    ## A side effect of this will be that the backend wordpress service will be connected at port 443
+    tls: false
+
+    ## If TLS is set to true, you must declare what secret will store the key/certificate for TLS
+    tlsSecret: wordpress.local-tls
+
+    ## Ingress annotations done as key:value pairs
+    ## If you're using kube-lego, you will want to add:
+    ## kubernetes.io/tls-acme: true
     ##
-    # tls:
-    #   - secretName: wordpress.local-tls
-    #     hosts:
-    #       - wordpress.local
+    ## For a full list of possible ingress annotations, please see
+    ## ref: https://github.com/kubernetes/ingress-nginx/blob/master/docs/annotations.md
+    ##
+    ## If tls is set to true, annotation ingress.kubernetes.io/secure-backends: "true" will automatically be set
+    annotations:
+    #  kubernetes.io/ingress.class: nginx
+    #  kubernetes.io/tls-acme: true
+
+  secrets:
+  ## If you're providing your own certificates, please use this to add the certificates as secrets
+  ## key and certificate should start with -----BEGIN CERTIFICATE----- or
+  ## -----BEGIN RSA PRIVATE KEY-----
+  ##
+  ## name should line up with a tlsSecret set further up
+  ## If you're using kube-lego, this is unneeded, as it will create the secret for you if it is not set
+  ##
+  ## It is also possible to create and manage the certificates outside of this helm chart
+  ## Please see README.md for more information
+  # - name: wordpress.local-tls
+  #   key:
+  #   certificate:
 
 ## Enable persistence using Persistent Volume Claims
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
 ##
 persistence:
   enabled: true
-  ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
-  ## Default: volume.alpha.kubernetes.io/storage-class: default
+  ## wordpress data Persistent Volume Storage Class
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
   ##
-  # storageClass:
+  # storageClass: "-"
   accessMode: ReadWriteOnce
   size: 10Gi
 
@@ -137,3 +170,8 @@ resources:
   requests:
     memory: 512Mi
     cpu: 300m
+
+## Node labels for pod assignment
+## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+##
+nodeSelector: {}

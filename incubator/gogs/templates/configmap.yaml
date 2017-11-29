@@ -2,12 +2,12 @@ kind: ConfigMap
 apiVersion: v1
 metadata:
   labels:
-    app: {{ template "fullname" . }}-config
+    app: {{ template "gogs.fullname" . }}-config
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     component: {{ default "gogs" .Values.service.nameOverride }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-  name: {{ template "gogs.fullname" . }}-config
+  name: {{ template "gogs.gogs.fullname" . }}-config
 data:
   app.ini: |-
     APP_NAME = {{ .Values.service.gogs.appName }}
@@ -24,6 +24,9 @@ data:
     DOMAIN = {{ .Values.service.gogs.serverDomain }}
     ROOT_URL = {{ .Values.service.gogs.serverRootUrl }}
     LANDING_PAGE = {{ .Values.service.gogs.serverLandingPage }}
+    SSH_DOMAIN = {{ default .Values.service.gogs.serverDomain .Values.service.sshDomain }}
+    SSH_PORT = {{ .Values.service.sshPort }}
+    SSH_LISTEN_PORT = {{ .Values.service.sshPort }}
 
     [service]
     ENABLE_CAPTCHA = {{ .Values.service.gogs.serviceEnableCaptcha }}
@@ -38,10 +41,10 @@ data:
 
     [database]
     DB_TYPE = {{ .Values.service.gogs.databaseType | quote }}
-    HOST = {{ template "database.host" . }}
-    NAME = {{ template "database.name" . }}
-    USER = {{ template "database.user" . }}
-    PASSWD = {{ template "database.password" . }}
+    HOST = {{ template "gogs.database.host" . }}
+    NAME = {{ template "gogs.database.name" . }}
+    USER = {{ template "gogs.database.user" . }}
+    PASSWD = {{ template "gogs.database.password" . }}
 
     [security]
     INSTALL_LOCK = true

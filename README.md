@@ -65,6 +65,12 @@ The following outlines the review procedure used by the Chart repository maintai
 
 After initial review feedback, if no updates have been made to the pull request for 1 week, the `stale` label will be added. If after another week there are still no updates it will be closed. Please re-open if/when you have made the proper adjustments.
 
+## Supported Kubernetes Versions
+
+This chart repository supports the latest and previous minor versions of Kubernetes. For example, if the latest minor release of Kubernetes is 1.8 then 1.7 and 1.8 are supported. Charts may still work on previous versions of Kubernertes even through they are outside the target supported window.
+
+To provide that support the API versions of objects should be those that work for both the latest minor release and the previous one.
+
 ## Status of the Project
 
 This project is still under active development, so you might run into [issues](https://github.com/kubernetes/charts/issues). If you do, please don't be shy about letting us know, or better yet, contribute a fix or feature.

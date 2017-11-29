@@ -1,7 +1,7 @@
 ## Bitnami Moodle` image version
 ## ref: https://hub.docker.com/r/bitnami/moodle/tags/
 ##
-image: bitnami/moodle:3.3.1-r1
+image: bitnami/moodle:3.4.0-r0
 
 ## Specify a imagePullPolicy
 ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
@@ -46,10 +46,14 @@ mariadb:
   ##
   persistence:
     enabled: true
-    ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
-    ## Default: volume.alpha.kubernetes.io/storage-class: default
+    ## mariadb data Persistent Volume Storage Class
+    ## If defined, storageClassName: <storageClass>
+    ## If set to "-", storageClassName: "", which disables dynamic provisioning
+    ## If undefined (the default) or set to null, no storageClassName spec is
+    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+    ##   GKE, AWS & OpenStack)
     ##
-    # storageClass:
+    # storageClass: "-"
     accessMode: ReadWriteOnce
     size: 8Gi
 #    existingClaim: ""
@@ -118,13 +122,17 @@ ingress:
 ##
 persistence:
   enabled: true
-  ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
-  ## Default: volume.alpha.kubernetes.io/storage-class: default
+  ## database data Persistent Volume Storage Class
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
   ##
-  # storageClass:
+  # storageClass: "-"
   accessMode: ReadWriteOnce
   size: 8Gi
-  #existingClaim: ""
+  # existingClaim: ""
 
 ## Define affinity for the moodle pod
 ## Sometimes required when persistent volumes are defined externally

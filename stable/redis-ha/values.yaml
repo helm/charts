@@ -1,0 +1,74 @@
+## Configure resource requests and limits
+## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+##
+resources:
+  master:
+    requests:
+      memory: 200Mi
+      cpu: 100m
+    limits:
+      memory: 700Mi
+  slave:
+    requests:
+      memory: 200Mi
+      cpu: 100m
+    limits:
+      memory: 200Mi
+  sentinel:
+    requests:
+      memory: 200Mi
+      cpu: 100m
+    limits:
+      memory: 200Mi
+
+## Node labels and tolerations for pod assignment
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
+nodeSelector: {}
+tolerations: []
+
+## Enable persistence using Persistent Volume Claims
+## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+##
+persistentVolume:
+  ## If true, redis will create/use a Persistent Volume Claim
+  ## If false, use emptyDir
+  ##
+  enabled: false
+  ## Redis data Persistent Volume access modes
+  ## Must match those of existing PV or dynamic provisioner
+  ## Ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+  ##
+  accessModes:
+    - ReadWriteOnce
+
+  ## Redis data Persistent Volume Claim annotations
+  ##
+  annotations: {}
+  ## Redis data Persistent Volume existing claim name
+  ## Requires alertmanager.persistentVolume.enabled: true
+  ## If defined, PVC must be created manually before volume will be bound
+  existingClaim: ""
+  ## Redis data Persistent Volume mount root path
+  ##
+  mountPath: /data
+  ## alertmanager data Persistent Volume size
+  ##
+  size: 8Gi
+
+  ## Redis data Persistent Volume Storage Class
+  ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
+  ## Default: volume.alpha.kubernetes.io/storage-class: default
+  ##
+  storageClass: ""
+  ## Subdirectory of redis data Persistent Volume to mount
+  ## Useful if the volume's root directory is not empty
+  ##
+  subPath: ""
+## Redis image version
+redis_image: quay.io/smile/redis:4.0.2
+## replicas number for each component
+replicas:
+  master: 1
+  slave: 1
+  sentinel: 3
