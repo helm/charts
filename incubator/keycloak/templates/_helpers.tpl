@@ -36,3 +36,62 @@ Create the name for the tls secret.
   {{- template "keycloak.fullname" . -}}-tls
 {{- end -}}
 {{- end -}}
+
+{{/*
+Create the name for the database secret.
+*/}}
+{{- define "keycloak.externalDbSecret" -}}
+{{- if .Values.keycloak.persistence.existingSecret -}}
+  {{- .Values.keycloak.persistence.existingSecret -}}
+{{- else -}}
+  {{- template "keycloak.fullname" . -}}-db
+{{- end -}}
+{{- end -}}
+
+{{/*
+Create the name for the password secret key.
+*/}}
+{{- define "keycloak.dbPasswordKey" -}}
+{{- if .Values.keycloak.persistence.existingSecret -}}
+  {{- .Values.keycloak.persistence.existingSecretKey -}}
+{{- else -}}
+  password
+{{- end -}}
+{{- end -}}
+
+{{/*
+Create environment variables for database configuration.
+*/}}
+{{- define "keycloak.externalDbConfig" -}}
+- name: DB_VENDOR
+  value: {{ .Values.keycloak.persistence.dbVendor | quote }}
+{{- if eq .Values.keycloak.persistence.dbVendor "POSTGRES" }}
+- name: POSTGRES_PORT_5432_TCP_ADDR
+  value: {{ .Values.keycloak.persistence.dbHost | quote }}
+- name: POSTGRES_PORT_5432_TCP_PORT
+  value: {{ .Values.keycloak.persistence.dbPort | quote }}
+- name: POSTGRES_USER
+  value: {{ .Values.keycloak.persistence.dbUser | quote }}
+- name: POSTGRES_PASSWORD
+  valueFrom:
+    secretKeyRef:
+      name: {{ template "keycloak.externalDbSecret" . }}
+      key: {{ include "keycloak.dbPasswordKey" . | quote }}
+- name: POSTGRES_DATABASE
+  value: {{ .Values.keycloak.persistence.dbName | quote }}
+{{- else if eq .Values.keycloak.persistence.dbVendor "MYSQL" }}
+- name: MYSQL_PORT_3306_TCP_ADDR
+  value: {{ .Values.keycloak.persistence.dbHost | quote }}
+- name: MYSQL_PORT_3306_TCP_PORT
+  value: {{ .Values.keycloak.persistence.dbPort | quote }}
+- name: MYSQL_USER
+  value: {{ .Values.keycloak.persistence.dbUser | quote }}
+- name: MYSQL_PASSWORD
+  valueFrom:
+    secretKeyRef:
+      name: {{ template "keycloak.externalDbSecret" . }}
+      key: {{ include "keycloak.dbPasswordKey" . | quote }}
+- name: MYSQL_DATABASE
+  value: {{ .Values.keycloak.persistence.dbName | quote }}
+{{- end }}
+{{- end -}}

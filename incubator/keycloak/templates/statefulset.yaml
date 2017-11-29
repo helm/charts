@@ -48,7 +48,7 @@ spec:
                 secretKeyRef:
                   name: {{ template "keycloak.fullname" . }}-http
                   key: password
-          {{- if .Values.postgresql.enabled }}
+          {{- if .Values.keycloak.persistence.deployPostgres }}
             - name: POSTGRES_PORT_5432_TCP_ADDR
               value: {{ template "keycloak.postgresql.fullname" . }}
             - name: POSTGRES_USER
@@ -60,11 +60,12 @@ spec:
                   key: postgres-password
             - name: POSTGRES_DATABASE
               value: {{ .Values.postgresql.postgresDatabase | quote }}
+          {{- else }}
+{{ include "keycloak.externalDbConfig" . | indent 12 }}
           {{- end }}
-          {{- range $key, $value := .Values.keycloak.additionalEnv }}
-            - name: {{ $key }}
-              value: {{ $value | quote }}
-          {{- end }}
+{{- if .Values.keycloak.additionalEnv }}
+{{ toYaml .Values.keycloak.additionalEnv | indent 12 }}
+{{- end }}
           volumeMounts:
             - name: scripts
               mountPath: /scripts

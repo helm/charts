@@ -136,13 +136,35 @@ keycloak:
     ## TLS configuration
     tls:
       enabled: false
-      existingSecret: false
+      existingSecret: ""
       secretContents: {}
       secretAnnotations: {}
 
-postgresql:
-  enabled: true
+  ## Persistence configuration
+  persistence:
+    # If true, the Postgres chart is deployed
+    deployPostgres: true
 
+    ## The following values only apply if "deployPostgres" is set to "false"
+
+    # Specifies an existing secret to be used for the database password
+    existingSecret: ""
+
+    # The key in the existing secret that stores the password
+    existingSecretKey: password
+
+    # The database vendor. Can be either "POSTGRES" or "MYSQL"
+    dbVendor: H2
+
+    dbName: keycloak
+    dbHost: mykeycloak
+    dbPort: 5432
+    dbUser: keycloak
+
+    # Only used if no existing secret is specified. In this case a new secret is created
+    dbPassword: keycloak
+
+postgresql:
   ### PostgreSQL User to create.
   ##
   postgresUser: keycloak
