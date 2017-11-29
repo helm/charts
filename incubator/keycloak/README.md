@@ -43,11 +43,11 @@ The following tables lists the configurable parameters of the Keycloak chart and
 Parameter | Description | Default
 --- | --- | ---
 `hyperkube.image.repository` | Hyperkube image repository | `quay.io/coreos/hyperkube`
-`hyperkube.image.tag` | Hyperkube image tasg | `v1.8.1_coreos.0`
+`hyperkube.image.tag` | Hyperkube image tag | `v1.8.1_coreos.0`
 `hyperkube.image.pullPolicy` | Hyperkube image pull policy | `IfNotPresent`
 `keycloak.replicas` | The number of Keycloak replicas | `1`
 `keycloak.image.repository` | The Keycloak image repository | `jboss/keycloak`
-`keycloak.image.tag` | The Keycloak imagfe tag | `3.4.0.Final`
+`keycloak.image.tag` | The Keycloak image tag | `3.4.0.Final`
 `keycloak.image.pullPolicy` | The Keycloak image pull policy | `IfNotPresent`
 `keycloak.username` | Username for the initial Keycloak admin user | `keycloak`
 `keycloak.password` | Password for the initial Keycloak admin user. If not set, a random 10 characters password is created | `""`
