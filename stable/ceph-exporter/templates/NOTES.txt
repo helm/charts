@@ -1,0 +1,6 @@
+{{- if not .Values.enabled }}
+Out of the box this chart is disabled and requires configuration. See
+the README.md document provided in this chart or at the following URL
+for instructions for how to configure this chart:
+https://github.com/kubernetes/charts/blob/master/stable/concourse/README.md
+{{- end }}

@@ -1,0 +1,11 @@
+dependencies:
+  - name: ceph-config
+    repository: file://../ceph-config
+    alias: configmap
+    version: 1.0.0
+    condition: config.manage
+  - name: ceph-secret
+    repository: file://../ceph-secret
+    alias: secret
+    version: 1.0.0
+    condition: secret.manage

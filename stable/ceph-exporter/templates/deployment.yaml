@@ -1,0 +1,48 @@
+{{- if .Values.enabled }}
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    app: {{ template "name" . }}
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+spec:
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "name" . }}
+        release: "{{ .Release.Name }}"
+      annotations:
+{{ toYaml .Values.annotations | indent 8 }}
+    spec:
+      hostNetwork: True
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 10 }}
+      containers:
+      - name: {{ template "fullname" . }}
+        image: "{{ .Values.image }}:{{ .Values.imageTag }}"
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        args: [-ceph.user, {{ .Values.secret.user }}]
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+        ports:
+        - containerPort: 9128
+          name: http
+        volumeMounts:
+        - name: secret
+          mountPath: /etc/ceph/ceph.client.{{ .Values.secret.user }}.keyring
+          subPath: key
+        - name: configmap
+          mountPath: /etc/ceph/ceph.conf
+          subPath: conf
+      volumes:
+        - name: secret
+          secret:
+            secretName: {{ .Values.secret.name }}
+        - name: configmap
+          configMap:
+            name: {{ .Values.configmap.name }}
+{{- end }}

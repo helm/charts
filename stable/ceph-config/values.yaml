@@ -1,0 +1,20 @@
+# Name of the configmap.
+name: ceph
+
+# Ceph authentication mode.
+auth: cephx
+
+# Monitors in your cluster
+monHost:
+- 1.1.1.1
+- 1.1.1.2
+- 1.1.1.3
+
+# Initial monitors
+monInitialMembers:
+- a
+- b
+- c
+
+# File system id of your cluster.
+fsid: 3107b187-1c16-4966-ae18-394c93e42583

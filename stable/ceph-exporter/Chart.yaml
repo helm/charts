@@ -1,0 +1,11 @@
+name: ceph-exporter
+version: 1.0.0
+appVersion: 1.0.0
+description: Prometheus ceph exporter module
+keywords:
+- prometheus
+- ceph
+maintainers:
+  - name: kfox1111
+    email: Kevin.Fox@pnnl.gov
+icon: https://upload.wikimedia.org/wikipedia/en/a/aa/Ceph_logo.png

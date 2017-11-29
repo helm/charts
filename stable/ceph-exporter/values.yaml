@@ -1,0 +1,36 @@
+# Default values for ceph-exporter.
+# This is a YAML-formatted file.
+# Declare name/value pairs to be passed into your templates.
+# name: value
+
+# The e2e tests do not support ceph or using alternate options
+# so this has to be defaulted to false. You must set enabled
+# to true to use this chart.
+enabled: false
+
+image: "digitalocean/ceph_exporter"
+imageTag: "1.0.0"
+imagePullPolicy: "IfNotPresent"
+replicaCount: 1
+
+nodeSelector: {}
+
+serviceType: ClusterIP
+
+httpPort: 8081
+
+configmap:
+  manage: true
+  name: ceph-read-only
+
+secret:
+  manage: true
+  name: ceph-read-only
+  user: read-only
+# key: xxxxx
+
+annotations: {}
+#  "prometheus.io/port": "9128"
+#  "prometheus.io/scrape": "true"
+
+resources: {}

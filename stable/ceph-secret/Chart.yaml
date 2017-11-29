@@ -1,0 +1,11 @@
+name: ceph-secret
+version: 1.0.0
+appVersion: 1.0.0
+description: Secret for Ceph
+keywords:
+- ceph
+- secret
+maintainers:
+  - name: kfox1111
+    email: Kevin.Fox@pnnl.gov
+icon: https://upload.wikimedia.org/wikipedia/en/a/aa/Ceph_logo.png
