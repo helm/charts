@@ -45,3 +45,11 @@ zookeeper:
   # If the Zookeeper Chart is disabled a URL and port are required to connect
   Url: ""
   Port: 2181
+
+# ------------------------------------------------------------------------------
+# Schema Registry:
+# ------------------------------------------------------------------------------
+
+## Install Confluent Schema Registry server alongside Kafka to track Avro Schemas
+schema-registry:
+  Enabled: false
