@@ -1,0 +1,19 @@
+{{- if .Values.persistence.enabled }}
+{{- if not .Values.persistence.existingClaim -}}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ include "common.fullname" . }}
+  labels:
+    app: {{ include "common.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  accessModes: {{ .Values.persistence.accessModes }}
+  storageClassName: {{ .Values.persistence.storageName }}
+  resources:
+     requests:
+       storage: {{ .Values.persistence.size }}
+{{- end }}
+{{- end }}

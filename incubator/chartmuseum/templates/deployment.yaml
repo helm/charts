@@ -14,8 +14,13 @@ spec:
         release: {{ .Release.Name | quote }}
     spec:
       volumes:
-      - name: storage-volume
+      - name: {{ .Values.persistence.name }}
+      {{- if .Values.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.persistence.name | quote }}
+      {{- else }}
         emptyDir: {}
+      {{- end }}
       containers:
       - name: {{ .Chart.Name }}
         image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
@@ -24,7 +29,7 @@ spec:
         - --port={{ .Values.service.internalPort }}
         - --debug
         - --storage=local
-        - --storage-local-rootdir=/storage
+        - --storage-local-rootdir={{ .Values.persistence.mountPath }}
         ports:
         - containerPort: {{ .Values.service.internalPort }}
         livenessProbe:
@@ -36,7 +41,7 @@ spec:
             path: /index.yaml
             port: {{ .Values.service.internalPort }}
         volumeMounts:
-        - mountPath: /storage
-          name: storage-volume
+        - mountPath: {{ .Values.persistence.mountPath | quote }}
+          name: {{ .Values.persistence.name }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
