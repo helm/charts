@@ -180,6 +180,12 @@ Parameter | Description | Default
 `serverFiles.alerts` | Prometheus server alerts configuration | `""`
 `serverFiles.rules` | Prometheus server rules configuration | `""`
 `serverFiles.prometheus.yml` | Prometheus server scrape configuration | example configuration
+`blackboxExporter.enabled` | If true, create blackbox exporter | `false`
+`blackboxExporter.name` | blackbox-exporter container name | `blackbox-exporter`
+`blackboxExporter.image.repository` | blackbox-exporter container image repository | `prom/blackbox-exporter`
+`blackboxExporter.image.tag` | blackbox-exporter container image tag | `v0.11.0`
+`blackboxExporter.image.pullPolicy` | blackbox-exporter container image pull policy | `IfNotPresent`
+`blackboxExporter.extraArgs` | Additional blackbox-exporter container arguments | `{}`
 `networkPolicy.enabled` | Enable NetworkPolicy | `false` |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,

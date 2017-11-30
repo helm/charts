@@ -312,6 +312,37 @@ nodeExporter:
     servicePort: 9100
     type: ClusterIP
 
+blackboxExporter:
+  ## If false, blackbox-exporter will not be installed
+  ##
+  enabled: false
+
+  ## Prometheus server container name
+  ##
+  name: blackbox-exporter
+
+  ## Prometheus server container image
+  ##
+  image:
+    repository: prom/blackbox-exporter
+    tag: v0.11.0
+    pullPolicy: IfNotPresent
+
+  ## Prometheus blackbox exporter resource requests and limits
+  ## Ref: http://kubernetes.io/docs/user-guide/compute-resources/
+  ##
+  resources: {}
+    # limits:
+    #   cpu: 500m
+    #   memory: 512Mi
+    # requests:
+    #   cpu: 500m
+    #   memory: 512Mi
+
+  ## Additional blackbox exporter container arguments
+  ##
+  extraArgs: {}
+
 server:
   ## Prometheus server container name
   ##
@@ -803,6 +834,51 @@ serverFiles:
           - source_labels: [__meta_kubernetes_pod_name]
             action: replace
             target_label: kubernetes_pod_name
+
+  blackbox.yml: |-
+    modules:
+      http_2xx:
+        prober: http
+        timeout: 5s
+        http:
+          valid_status_codes: []  # Defaults to 2xx
+          method: GET
+          headers: {}
+          no_follow_redirects: false
+          fail_if_ssl: false
+          fail_if_not_ssl: false
+          fail_if_matches_regexp: []
+          fail_if_not_matches_regexp: []
+      tcp_connect:
+        prober: tcp
+        timeout: 5s
+      pop3s_banner:
+        prober: tcp
+        tcp:
+          query_response:
+          - expect: "^+OK"
+          tls: true
+          tls_config:
+            insecure_skip_verify: false
+      ssh_banner:
+        prober: tcp
+        timeout: 5s
+        tcp:
+          query_response:
+          - expect: "^SSH-2.0-"
+      irc_banner:
+        prober: tcp
+        timeout: 5s
+        tcp:
+          query_response:
+          - send: "NICK prober"
+          - send: "USER prober prober prober :prober"
+          - expect: "PING :([^ ]+)"
+            send: "PONG ${1}"
+          - expect: "^:[^ ]+ 001"
+      icmp:
+        prober: icmp
+        timeout: 5s
 
 networkPolicy:
   ## Enable creation of NetworkPolicy resources.
