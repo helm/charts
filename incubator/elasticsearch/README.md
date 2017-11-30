@@ -60,6 +60,7 @@ The following tables lists the configurable parameters of the elasticsearch char
 | `image.tag`                          | Container image tag                                                 | `5.4`                                |
 | `image.pullPolicy`                   | Container pull policy                                               | `Always`                             |
 | `cluster.name`                       | Cluster name                                                        | `elasticsearch`                      |
+| `cluster.kubernetesDomain`           | Kubernetes cluster domain name                                      | `cluster.local`                      |
 | `cluster.config`                     | Additional cluster config appended                                  | `{}`                                 |
 | `cluster.env`                        | Cluster environment variables                                       | `{}`                                 |
 | `client.name`                        | Client component name                                               | `client`                             |

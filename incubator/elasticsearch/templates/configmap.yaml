@@ -10,7 +10,7 @@ metadata:
 data:
   elasticsearch.yml: |-
     cluster.name: {{ .Values.cluster.name }}
-    
+
     node.data: ${NODE_DATA:true}
     node.master: ${NODE_MASTER:true}
 {{- if hasPrefix "5." .Values.appVersion }}
@@ -20,18 +20,13 @@ data:
 
     network.host: 0.0.0.0
 
-    cloud:
-      kubernetes:
-        service: ${SERVICE}
-        namespace: ${KUBERNETES_NAMESPACE}
-
 {{- if hasPrefix "2." .Values.appVersion }}
     # see https://github.com/kubernetes/kubernetes/issues/3595
     bootstrap.mlockall: ${BOOTSTRAP_MLOCKALL:false}
 
     discovery:
-      type: kubernetes
       zen:
+        ping.unicast.hosts: ${DISCOVERY_SERVICE:}
         minimum_master_nodes: ${MINIMUM_MASTER_NODES:2}
 {{- end }}
 {{- if hasPrefix "5." .Values.appVersion }}
@@ -40,7 +35,7 @@ data:
 
     discovery:
       zen:
-        hosts_provider: kubernetes
+        ping.unicast.hosts: ${DISCOVERY_SERVICE:}
         minimum_master_nodes: ${MINIMUM_MASTER_NODES:2}
 
     # see https://www.elastic.co/guide/en/x-pack/current/xpack-settings.html

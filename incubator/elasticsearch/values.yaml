@@ -4,12 +4,13 @@
 appVersion: "5.4"
 
 image:
-  repository: "centerforopenscience/elasticsearch"
-  tag: "5.4"
+  repository: "blacktop/elasticsearch"
+  tag: "6.0"
   pullPolicy: "IfNotPresent"
 
 cluster:
   name: "elasticsearch"
+  kubernetesDomain: cluster.local
   config:
   env:
     # IMPORTANT: https://www.elastic.co/guide/en/elasticsearch/reference/current/important-settings.html#minimum_master_nodes
