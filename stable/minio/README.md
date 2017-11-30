@@ -90,6 +90,7 @@ The following tables lists the configurable parameters of the Minio chart and th
 | `persistence.storageClass` | Type of persistent volume claim     | `generic`                                               |
 | `persistence.accessMode`   | ReadWriteOnce or ReadOnly           | `ReadWriteOnce`                                         |
 | `resources`                | CPU/Memory resource requests/limits | Memory: `256Mi`, CPU: `100m`                            |
+| `nodeSelector`             | Node labels for pod assignment      | `{}`                                                    |
 | `defaultBucket.enabled`    | If true, a bucket will be created after minio
 install | `false` |
 | `defaultBucket.name`       | Bucket name | `nil` |

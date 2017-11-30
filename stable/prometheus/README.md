@@ -246,7 +246,3 @@ implements the Kubernetes NetworkPolicy spec, and set `networkPolicy.enabled` to
 
 If NetworkPolicy is enabled for Prometheus' scrape targets, you may also need
 to manually create a networkpolicy which allows it.
-
-For Kubernetes v1.5 & v1.6, you must also turn on NetworkPolicy by setting the DefaultDeny namespace annotation. Note: this will enforce policy for all pods in the namespace:
-
-    kubectl annotate namespace default "net.beta.kubernetes.io/network-policy={\"ingress\":{\"isolation\":\"DefaultDeny\"}}"
