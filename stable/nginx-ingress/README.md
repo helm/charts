@@ -82,6 +82,8 @@ Parameter | Description | Default
 `controller.stats.service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
 `controller.stats.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
 `controller.stats.service.type` | type of controller stats service to create | `ClusterIP`
+`controller.customTemplate.configMapName` | configMap containing a custom nginx template | `""`
+`controller.customTemplate.configMapKey` | configMap key containing the nginx template | `""`
 `defaultBackend.name` | name of the default backend component | `default-backend`
 `defaultBackend.image.repository` | default backend container image repository | `gcr.io/google_containers/defaultbackend`
 `defaultBackend.image.tag` | default backend container image tag | `1.3`
