@@ -35,8 +35,10 @@ spec:
       {{- end }}
       securityContext:
         runAsUser: {{ default 0 .Values.Master.RunAsUser }}
-{{- if (and (ne .Values.Master.RunAsUser 0.0) .Values.Master.FsGroup) }}
+{{- if and (.Values.Master.RunAsUser) (.Values.Master.FsGroup) }}
+{{- if not (eq .Values.Master.RunAsUser 0.0) }}
         fsGroup: {{ .Values.Master.FsGroup }}
+{{- end }}
 {{- end }}
       serviceAccountName: {{ if .Values.rbac.install }}{{ template "jenkins.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
       initContainers:
