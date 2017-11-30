@@ -1,0 +1,77 @@
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+metadata:
+  name: {{ template "amq.drainer.fullname" . }}
+  labels:
+    app: {{ template "amq.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    component: "{{ .Values.drainer.name }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+  annotations:
+    template.alpha.openshift.io/wait-for-ready: "true"
+spec:
+  replicas: {{ .Values.drainer.replicas }}
+  strategy:
+    type: Recreate
+  triggers:
+  - type: ImageChange
+    imageChangeParams:
+      automatic: true
+      containerNames:
+      - {{ template "amq.drainer.fullname" . }}
+      from:
+        kind: ImageStreamTag
+        namespace: "openshift"
+        name: "{{ .Values.drainer.image.stream }}:{{ .Values.drainer.image.tag }}"
+  - type: ConfigChange
+  template:
+    metadata:
+      labels:
+        app: {{ template "amq.name" . }}
+        component: "{{ .Values.drainer.name }}"
+        release: "{{ .Release.Name }}"
+    spec:
+      terminationGracePeriodSeconds: 60
+      containers:
+        - name: {{ template "amq.drainer.fullname" . }}
+          image: "{{ .Values.drainer.image.stream }}"
+          imagePullPolicy: "{{ .Values.drainer.image.pullPolicy }}"
+          command:
+            - /opt/amq/bin/drain.sh
+          ports:
+            - name: jolokia
+              containerPort: 8778
+              protocol: TCP
+              containerPort: 61616
+              protocol: TCP
+          env:
+            - name: AMQ_MESH_SERVICE_NAME
+              value: {{ template "amq.name" . }}
+            - name: AMQ_MESH_SERVICE_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: AMQ_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "amq.broker.fullname" . }}
+                  key: amq-username
+            - name: AMQ_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "amq.broker.fullname" . }}
+                  key: amq-password
+          volumeMounts:
+            - mountPath: "/opt/amq/data"
+              name: broker-storage-volume
+          resources:
+{{ toYaml .Values.drainer.resources | indent 12 }}
+      {{- if .Values.broker.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.drainer.nodeSelector | indent 8 }}
+      {{- end }}
+      volumes:
+        - name: broker-storage-volume
+          persistentVolumeClaim:
+            claimName: {{ template "amq.broker.fullname" . }}

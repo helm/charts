@@ -1,0 +1,14 @@
+apiVersion: v1
+description: Red Hat JBoss A-MQ for OpenShift is a JMS 1.1-compliant messaging system.
+    It consists of a broker and client-side libraries that enable remote communication
+    among distributed client applications.
+name: a-mq
+version: 0.1.0
+appVersion: v6.3
+keywords:
+- messaging
+- amq
+- jboss
+maintainers:
+- name: Salvatore Mazzarino
+  email: salvatore.mazzarino@nearform.com

@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "amq.broker.fullname" . }}-mqtt-ssl
+  labels:
+    app: {{ template "amq.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    release: "{{ .Release.Name }}"
+    component: "{{ .Values.broker.name }}"
+    heritage: "{{ .Release.Service }}"
+  annotations:
+    description: "The broker's MQTT SSL port"
+spec:
+  ports:
+    - port: 8883
+      targetPort: 8883
+  selector:
+    app: {{ template "amq.name" . }}
+    release: "{{ .Release.Name }}"
+    component: "{{ .Values.broker.name }}"
