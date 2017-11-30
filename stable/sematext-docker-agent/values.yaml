@@ -8,13 +8,16 @@ sematext:
 
   # spmToken:
   # logseneToken:
-  
+
+  # Depending on where you created your apps, choose US or EU region.
+  region: US
+
   useHostNetwork: true
   name: sematext-docker-agent
   resources:
     requests:
-      cpu: 100m
+      cpu: 500m
       memory: 128Mi
     limits:
-      cpu: 256m
-      memory: 512Mi
+      cpu: 1000m
+      memory: 1024Mi

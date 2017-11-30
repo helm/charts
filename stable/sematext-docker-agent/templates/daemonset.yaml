@@ -28,6 +28,14 @@ spec:
           value: {{ default "" .Values.sematext.spmToken | quote }}
         - name: LOGSENE_TOKEN
           value: {{ default "" .Values.sematext.logseneToken | quote }}
+{{- if eq .Values.sematext.region "EU" }}
+        - name: SPM_RECEIVER_URL
+          value: "https://spm-receiver.eu.sematext.com/receiver/v1"
+        - name: LOGSENE_RECEIVER_URL
+          value: "https://logsene-receiver.eu.sematext.com"
+        - name: EVENTS_RECEIVER_URL
+          value: "https://event-receiver.eu.sematext.com"
+{{- end }}
         volumeMounts:
           - mountPath: /var/run/docker.sock
             name: docker-sock
