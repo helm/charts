@@ -22,7 +22,6 @@ spec:
 {{ toYaml .Values.master.podAnnotations | indent 8 }}
         {{- end }}
     spec:
-      serviceAccountName: {{ template "elasticsearch.fullname" . }}
       securityContext:
         fsGroup: 1000
       {{- if eq .Values.master.antiAffinity "hard" }}

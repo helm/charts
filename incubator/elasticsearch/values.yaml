@@ -4,8 +4,8 @@
 appVersion: "5.4"
 
 image:
-  repository: "blacktop/elasticsearch"
-  tag: "6.0"
+  repository: "docker.elastic.co/elasticsearch/elasticsearch"
+  tag: "6.0.0"
   pullPolicy: "IfNotPresent"
 
 cluster:
@@ -85,11 +85,6 @@ data:
     requests:
       cpu: "25m"
       memory: "1536Mi"
-
   ## (dict) If specified, apply these annotations to each data Pod
   # podAnnotations:
   #   example: data-foo
-
-## Install Default RBAC roles and bindings
-rbac:
-  create: false

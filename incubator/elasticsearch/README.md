@@ -1,6 +1,7 @@
 # Elasticsearch Helm Chart
 
 This chart uses a standard Docker image of Elasticsearch (hub.docker.com/r/blacktop/elasticsearch) and uses a service pointing to the master's transport port for service discovery.
+Elasticsearch does not communicate with the Kubernetes API, hence no need for RBAC permissions.
 
 ## Warning for previous users
 If you are upgrading to Elasticsearch 6 from the 5.5 version used in this chart before, please note that your cluster needs to do a full cluster restart.
@@ -99,7 +100,6 @@ The following tables lists the configurable parameters of the elasticsearch char
 | `data.podAnnotations`                | Data StatefulSet annotations                                        | `{}`                                 |
 | `data.terminationGracePeriodSeconds` | Data termination grace period (seconds)                             | `3600`                               |
 | `data.antiAffinity`                  | Data anti-affinity policy                                           | `soft`                               |
-| `rbac.create`                        | Create service account and ClusterRoleBinding for Kubernetes plugin | `false`                              |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
