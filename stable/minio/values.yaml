@@ -3,7 +3,7 @@
 ## Distributed Minio ref: https://docs.minio.io/docs/distributed-minio-quickstart-guide
 ##
 image: "minio/minio"
-imageTag: "RELEASE.2017-10-27T18-59-02Z"
+imageTag: "RELEASE.2017-11-22T19-55-46Z"
 imagePullPolicy: "Always"
 mode: "standalone"
 
@@ -59,7 +59,6 @@ resources:
     memory: 256Mi
     cpu: 250m
 
-
 ## Create a bucket after minio install
 ##
 defaultBucket:
@@ -72,6 +71,15 @@ defaultBucket:
 ## https://docs.minio.io/docs/minio-bucket-notification-guide
 ##
 minioConfig:
+  region: "us-east-1"
+  browser: "on"
+  domain: ""
+  logger:
+    console:
+      enable: true
+    file:
+      enable: false
+      filename: ""
   aqmp:
     enable: false
     url: ""
