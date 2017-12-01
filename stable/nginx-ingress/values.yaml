@@ -10,7 +10,7 @@ controller:
 
   config: {}
   
-  # Will add custome header to Nginx https://github.com/kubernetes/ingress-nginx/tree/master/docs/examples/customization/custom-headers
+  # Will add custom header to Nginx https://github.com/kubernetes/ingress-nginx/tree/master/docs/examples/customization/custom-headers
   headers: {}
 
   # Required for use with CNI based kubernetes installations (such as ones set up by kubeadm),
