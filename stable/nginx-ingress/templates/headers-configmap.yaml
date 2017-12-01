@@ -1,4 +1,4 @@
-{{- if .Values.conroller.headers }}
+{{- if .Values.controller.headers }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -10,5 +10,5 @@ metadata:
     release: {{ .Release.Name }}
   name: {{ template "nginx-ingress.fullname" . }}-custom-headers
 data:
-{{ toYaml .Values.conroller.headers | indent 2 }}
+{{ toYaml .Values.controller.headers | indent 2 }}
 {{- end }}
