@@ -16,6 +16,14 @@ spec:
 {{ include "labels.standard" . | indent 8 }}
     spec:
       terminationGracePeriodSeconds: 10
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- end }}
+      {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+      {{- end }}
       containers:
         - name: redis
           image: "{{ .Values.redis_image }}"
