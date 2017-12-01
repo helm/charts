@@ -1,7 +1,7 @@
 replicaCount: 1
 image:
   repository: chartmuseum/chartmuseum
-  tag: v0.2.7
+  tag: v0.2.6
   pullPolicy: IfNotPresent
 service:
   type: ClusterIP
