@@ -43,7 +43,7 @@ The following tables lists the configurable parameters of the Datadog chart and 
 | `image.repository`          | The image repository to pull from  | `datadog/docker-dd-agent`                 |
 | `image.tag`                 | The image tag to pull              | `latest`                                  |
 | `image.pullPolicy`          | Image pull policy                  | `IfNotPresent`                            |
-| `rbac.create`               | If true, create & use RBAC resources | `true`                                  |
+| `rbac.create`               | If true, create & use RBAC resources | `false`                                  |
 | `rbac.serviceAccount`       | existing ServiceAccount to use (ignored if rbac.create=true) | `default`       |
 | `datadog.env`               | Additional Datadog environment variables | `nil`                               |
 | `datadog.apmEnabled`        | Enable tracing from the host       | `nil`                                     |

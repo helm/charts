@@ -149,7 +149,7 @@ datadog:
 
 rbac:
   ## If true, create & use RBAC resources
-  create: true
+  create: false
 
   ## Ignored if rbac.create is true
   serviceAccountName: default
