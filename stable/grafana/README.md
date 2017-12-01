@@ -49,3 +49,4 @@ The command removes all the Kubernetes components associated with the chart and 
 | `server.service.nodePort`                 | For service type "NodePort"         | null                                              |
 | `server.service.type`                     | ClusterIP, NodePort, or LoadBalancer| ClusterIP                                         |
 | `server.setDatasource.enabled`            | Creates grafana datasource with job | false                                             |
+| `server.extraEnv`                          | Extra environment variables to set in the server container | {} |
