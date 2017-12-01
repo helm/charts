@@ -9,7 +9,6 @@ controller:
     pullPolicy: IfNotPresent
 
   config: {}
-  
   # Will add custom header to Nginx https://github.com/kubernetes/ingress-nginx/tree/master/docs/examples/customization/custom-headers
   headers: {}
 
