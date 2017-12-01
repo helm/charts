@@ -77,6 +77,9 @@ spec:
           volumeMounts:
             - name: export
               mountPath: {{ .Values.mountPath }}
+              {{- if and .Values.persistence.enabled .Values.persistence.subPath }}
+              subPath: "{{ .Values.persistence.subPath }}"
+              {{- end }}
             - name: minio-server-config
               mountPath: {{ default "/root/.minio/" .Values.configPath | quote }}
             - name: podinfo
