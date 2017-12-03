@@ -17,6 +17,25 @@ Storage: "1Gi"
 # StorageClass: default
 DataDirectory: "/opt/kafka/data"
 
+## Attempt to prevent Kafka pods from being colocated with eachother.
+kafkaAntiAffinityEnabled: true
+## Prevent Kafka pods from being colocated on the same node.
+## Any value other than `hard` simply defaults to `soft` antiaffinity rules.
+## See: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#inter-pod-affinity-and-anti-affinity-beta-feature
+kafkaAntiAffinity: "hard"
+
+## Attempt to prevent Kafka and Zookeeper pods from being colocated.
+zookeeperAntiAffinityEnabled: true
+## Prevent Kafka and Zookeeper pods from being colocated.
+## Any value other than `hard` simply defaults to `soft` antiaffinity rules.
+## See: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#inter-pod-affinity-and-anti-affinity-beta-feature
+zookeeperAntiAffinity: "hard"
+## The zookeeper pod name which K8s will fuzzy-match against to prevent kafka
+## pods from being colocated with zookeeper. If you have more than one zookeeper
+## installation in your cluster, make sure to use a more specific pod name to
+## indicate which zookeeper pods should be filtered.
+zookeeperAntiAffinityPodName: "zookeeper"
+
 # ------------------------------------------------------------------------------
 # Zookeeper:
 # ------------------------------------------------------------------------------
