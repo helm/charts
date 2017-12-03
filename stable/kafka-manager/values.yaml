@@ -1,0 +1,36 @@
+replicaCount: 1
+image:
+  repository: sheepkiller/kafka-manager
+  tag: alpine
+  pullPolicy: IfNotPresent
+service:
+  name: http
+  type: ClusterIP
+  externalPort: 9000
+  internalPort: 9000
+ingress:
+  enabled: false
+  # Used to create an Ingress record.
+  hosts:
+    - chart-example.local
+  annotations:
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  tls:
+    # Secrets must be manually created in the namespace.
+    # - secretName: chart-example-tls
+    #   hosts:
+    #     - chart-example.local
+resources: {}
+# Zookeeper Hosts my.zookeeper.host1.com:2181,my.zookeeper.host2.com:2181,...
+zookeeperHosts: ""
+## Application secret
+## Defaults to a random 10-character alphanumeric string if not set
+applicationSecret: ""
+basicAuth:
+  enabled: false
+  username: "admin"
+  ## Defaults to a random 10-character alphanumeric string if not set
+  password: ""
+javaOptions: ""
+customArgs: ""
