@@ -96,11 +96,11 @@ collector:
     zipkinPort: 9411
   resources: {}
     # limits:
+    #   cpu: 1
+    #   memory: 1Gi
+    # requests:
     #   cpu: 500m
     #   memory: 512Mi
-    # requests:
-    #   cpu: 1024m
-    #   memory: 1024Mi
   nodeSelector: {}
   ## Additional pod labels
   ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
@@ -112,6 +112,7 @@ query:
   pullPolicy: IfNotPresent
   dnsPolicy: ClusterFirst
   cmdlineParams: {}
+  healthCheckPort: 16687
   service:
     annotations: {}
     type: NodePort
