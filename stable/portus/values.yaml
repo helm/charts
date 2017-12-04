@@ -50,8 +50,8 @@ portus:
       smtp:
         user_name: "username@example.com"
         password: "password"
-      ldap:
-        bind_password: ""
+    ldap:
+      bind_password: ""
 
     db:
       host: "example-mariadb.default.svc.cluster.local"
@@ -79,13 +79,14 @@ portus:
 
 docker-registry:
   replicaCount: 2
-  fqdn: "docker.registry.example.com"
+  storage: "filesystem"
+  tlsSecretName: "docker.registry.example.com"
   secrets:
     # https://github.com/docker/distribution/blob/master/docs/configuration.md#http
-    ha-shared-secret: ""  # Randomly generated if omitted
+    haSharedSecret: ""  # Randomly generated if omitted
     s3:
-      access-key: ""
-      secret-key: ""
+      accessKey: ""
+      secretKey: ""
   resources:
     limits:
       cpu: 100m

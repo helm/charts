@@ -131,6 +131,17 @@ helm install -n portus .
 | `portus.config.email.smtp.address`                | Email SMTP config               | `smtp.example.com`    |
 | `portus.config.email.smtp.domain`                 | Email SMTP config domain        | `example.com`         |
 | `portus.config.email.smtp.port`                   | Email SMTP config               | `587`                 |
+| `portus.config.ldap.enabled`                      | Enable LDAP config              | `false`               |
+| `portus.config.ldap.host`                         | LDAP host                       | `ldap.example.com`    |
+| `portus.config.ldap.port`                         | LDAP port                       | `389`                 |
+| `portus.config.ldap.method`                       | LDAP method                     | `plain`               |
+| `portus.config.ldap.base`                         | LDAP base                       | ``                    |
+| `portus.config.ldap.filter`                       | LDAP filter                     | ``                    |
+| `portus.config.ldap.uid`                          | LDAP UID attribute              | `uid`                 |
+| `portus.config.ldap.authentication.enabled`       | LDAP connection authentication  | `false`               |
+| `portus.config.ldap.authentication.bind_dn`       | LDAP Bind DN                    | ``                    |
+| `portus.config.ldap.guess_email.enabled`          | LDAP guess email                | `false`               |
+| `portus.config.ldap.guess_email=.attr`            | LDAP email attribute            | ``                    |
 | `portus.config.user_permission.change_visibility` | User Permissions                | `True`                |
 | `portus.config.user_permission.manage_namespace`  | User Permissions                | `True`                |
 | `portus.config.user_permission.manage_team`       | User Permissions                | `True`                |
@@ -139,15 +150,7 @@ helm install -n portus .
 | `portus.secrets.db.username` | Mysql username                       | `portus`                            |
 | `portus.secrets.email.smtp.user_name` | SMTP credentials if enabled | `-`                                 |
 | `portus.secrets.email.smtp.password`  | SMTP credentials if enabled | `-`                                 |
-| `registry.image.repository`  | Image and registry name              | `library/registry`                  |
-| `registry.image.tag`         | Container image tag                  | `2.6.1`                             |
-| `registry.image.pullPolicy`  | Container image pullPolicy           | `IfNotPresent`                      |
-| `registry.fqdn`              | Registry fully qualified domain name | `docker.registry.example.com`       |
-| `registry.config.s3.region`  | Registry s3 region for bucket        | `ap-southeast-1`                    |
-| `registry.config.s3.bucket`  | Registry s3 bucket name              | `docker-registry-example-com`       |
-| `registry.config.s3.rootDirectory`| Registry s3 directory in bucket | `/portus`                           |
-| `registry.secrets.s3.access-key`  | Registry s3 key                 | `-`                                 |
-| `registry.secrets.s3.secret-key`  | Registry s3 secret              | `-`                                 |
+| `portus.secrets.ldap.bind_password`   | LDAP credentials if enabled | `-`                                 |
 
 Specify parameters using `--set key=value[,key=value]` argument to `helm install` or pass in custom configuration with `-f` flag
 
