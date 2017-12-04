@@ -2,8 +2,8 @@ dependencies:
 - name: zookeeper
   version: 0.4.2
   repository: https://kubernetes-charts-incubator.storage.googleapis.com/
-  condition: zookeeper.Enabled
+  condition: zookeeper.enabled
 - name: schema-registry
   version: 0.1.0
   repository: https://kubernetes-charts-incubator.storage.googleapis.com/
-  condition: schema-registry.Enabled
+  condition: schema-registry.enabled
