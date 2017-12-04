@@ -8,7 +8,7 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 data:
-  postgresql-host: {{ template "concourse.postgresql.fullname" . }}
+  postgresql-host: {{ template "concourse.postgresql.secretname" . }}
   postgresql-database: {{ .Values.postgresql.postgresDatabase | quote }}
   concourse-atc-port: {{ .Values.concourse.atcPort | quote }}
   concourse-tsa-host: {{ template "concourse.web.fullname" . }}
