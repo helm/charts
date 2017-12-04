@@ -585,3 +585,11 @@ credentialManager:
     ## the value will be written to /concourse-vault/client.key
     ## make sure to also set authBackend to `cert`
     # clientKey: |-
+
+## For RBAC support:
+rbac:
+  create: false
+
+  ## Ignored if rbac.create is true
+  ##
+  serviceAccountName: default
