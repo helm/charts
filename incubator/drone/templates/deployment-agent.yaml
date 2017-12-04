@@ -1,0 +1,52 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "drone.fullname" . }}-agent
+  labels:
+    app: {{ template "drone.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+    component: agent
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: {{ template "drone.name" . }}
+        release: "{{ .Release.Name }}"
+        component: agent
+    spec:
+      containers:
+      - name: {{ template "drone.fullname" . }}-agent
+        image: "{{ .Values.agentImage.repository }}:{{ .Values.agentImage.tag }}"
+        imagePullPolicy: {{ .Values.agentImage.pullPolicy }}
+        env:
+          - name: DRONE_SERVER
+            value: {{ template "drone.fullname" . }}:9000
+          - name: DRONE_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "drone.fullname" . }}
+                key: secret
+          - name: DOCKER_HOST
+            value: tcp://localhost:2375
+          {{ range $key, $value := .Values.agent.env }}
+          - name: {{ $key }}
+            value: {{ $value | quote }}
+          {{ end }}
+        resources:
+{{ toYaml .Values.agent.resources | indent 10 }}
+      - name: {{ template "drone.fullname" . }}-dind
+        image: docker:17.05.0-ce-dind
+        env:
+        - name: DOCKER_DRIVER
+          value: overlay
+        securityContext:
+            privileged: true
+        volumeMounts:
+          - name: docker-graph-storage
+            mountPath: /var/lib/docker
+      volumes:
+      - name: docker-graph-storage
+        emptyDir: {}

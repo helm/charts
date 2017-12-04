@@ -1,6 +1,6 @@
 name: patroni
 description: 'Highly available elephant herd: HA PostgreSQL cluster.'
-version: 0.4.0
+version: 0.5
 appVersion: 1.2-p17
 home: https://github.com/zalando/patroni
 sources:

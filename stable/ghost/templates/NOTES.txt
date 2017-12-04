@@ -1,4 +1,4 @@
-{{- if empty (include "host" .) -}}
+{{- if empty (include "ghost.host" .) -}}
 ###############################################################################
 ### ERROR: You did not provide an external host in your 'helm install' call ###
 ###############################################################################
@@ -15,7 +15,7 @@ host. To configure Ghost with the URL of your service:
   {{- else if contains "LoadBalancer" .Values.serviceType }}
 
   NOTE: It may take a few minutes for the LoadBalancer IP to be available.
-        Watch the status with: 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "fullname" . }}'
+        Watch the status with: 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "ghost.fullname" . }}'
 
   export APP_HOST=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "fullname" . }} --template "{{ "{{ range (index .status.loadBalancer.ingress 0) }}{{ . }}{{ end }}" }}")
   {{- end }}
@@ -29,7 +29,7 @@ host. To configure Ghost with the URL of your service:
 
 {{- if eq .Values.serviceType "ClusterIP" }}
 
-  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "fullname" . }}" -o jsonpath="{.items[0].metadata.name}")
+  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "ghost.fullname" . }}" -o jsonpath="{.items[0].metadata.name}")
   echo Blog URL  :  http://127.0.0.1:{{ default "80" .Values.ghostPort }}/
   echo Admin URL : http://127.0.0.1:{{ default "80" .Values.ghostPort }}/ghost
   kubectl port-forward $POD_NAME {{ default "80" .Values.ghostPort }}:2368
@@ -43,12 +43,12 @@ host. To configure Ghost with the URL of your service:
 
 {{- else }}
 
-  Blog URL  : http://{{ include "host" . }}/
-  Admin URL : http://{{ include "host" . }}/ghost
+  echo Blog URL  : http://{{ include "host" . }}/
+  echo Admin URL : http://{{ include "host" . }}/ghost
 {{- end }}
 
 2. Get your Ghost login credentials by running:
 
   echo Email:    {{ .Values.ghostEmail }}
-  echo Password: $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath="{.data.ghost-password}" | base64 --decode)
+  echo Password: $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "ghost.fullname" . }} -o jsonpath="{.data.ghost-password}" | base64 --decode)
 {{- end }}
