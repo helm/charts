@@ -47,7 +47,8 @@ spec:
           - name: database-storage
             mountPath: /var/lib/couchdb
         - name: couchdb-statefulset-assembler
-          image: kocolosk/couchdb-statefulset-assembler:1.0.0
+          image: "{{ .Values.helperImage.repository }}:{{ .Values.helperImage.tag }}"
+          imagePullPolicy: {{ .Values.helperImage.pullPolicy }}
       volumes:
         - name: database-storage
           emptyDir: {}

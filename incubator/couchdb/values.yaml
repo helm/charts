@@ -2,10 +2,19 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 replicaCount: 3
+
+# The CouchDB image
 image:
   repository: couchdb
   tag: 2.1.1
   pullPolicy: IfNotPresent
+
+# Sidecar that connects the individual Pods into a cluster
+helperImage:
+  repository: kocolosk/couchdb-statefulset-assembler
+  tag: 1.0.0
+  pullPolicy: IfNotPresent
+
 service:
   name: couchdb
   type: ClusterIP
