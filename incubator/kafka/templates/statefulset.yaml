@@ -9,7 +9,7 @@ metadata:
     heritage: {{ .Release.Service | quote }}
 spec:
   serviceName: {{ template "kafka.fullname" . }}-headless
-  replicas: {{ default 3 .Values.Replicas }}
+  replicas: {{ default 3 .Values.replicas }}
   template:
     metadata:
       labels:
@@ -59,8 +59,8 @@ spec:
       {{ end }}
       containers:
       - name: {{ template "kafka.name" . }}-broker
-        image: "{{ .Values.Image }}:{{ .Values.ImageTag }}"
-        imagePullPolicy: "{{ .Values.ImagePullPolicy }}"
+        image: "{{ .Values.image }}:{{ .Values.imageTag }}"
+        imagePullPolicy: "{{ .Values.imagePullPolicy }}"
         livenessProbe:
           exec:
             command:
@@ -87,10 +87,10 @@ spec:
         command:
         - sh
         - -c
-        - "./bin/kafka-server-start.sh config/server.properties --override zookeeper.connect={{ template "zookeeper.url" . }}/ --override log.dirs={{ printf "%s/logs" .Values.DataDirectory }} --override broker.id=${HOSTNAME##*-}"
+        - "./bin/kafka-server-start.sh config/server.properties --override zookeeper.connect={{ template "zookeeper.url" . }}/ --override log.dirs={{ printf "%s/logs" .Values.dataDirectory }} --override broker.id=${HOSTNAME##*-}"
         volumeMounts:
         - name: datadir
-          mountPath: "{{ .Values.DataDirectory }}"
+          mountPath: "{{ .Values.dataDirectory }}"
   volumeClaimTemplates:
   - metadata:
       name: datadir
@@ -98,7 +98,7 @@ spec:
       accessModes: [ "ReadWriteOnce" ]
       resources:
         requests:
-          storage: {{ .Values.Storage }}
-      {{- if .Values.StorageClass }}
-      storageClassName: {{ .Values.StorageClass | quote }}
+          storage: {{ .Values.storage }}
+      {{- if .Values.storageClass }}
+      storageClassName: {{ .Values.storageClass | quote }}
       {{- end }}
