@@ -35,3 +35,11 @@ resources: {}
   # requests:
   #  cpu: 100m
   #  memory: 128Mi
+
+# The contents of this map are passed to the Erlang VM as flags using the
+# ERL_FLAGS env. `name` and `setcookie` flags are minimally required to
+# establish connectivity between cluster nodes. See
+# http://erlang.org/doc/man/erl.html#init_flags for the full list.
+erlangFlags:
+  name: couchdb
+  setcookie: monster

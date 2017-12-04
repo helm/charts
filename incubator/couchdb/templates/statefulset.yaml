@@ -32,7 +32,7 @@ spec:
             - containerPort: 9100
           env:
             - name: ERL_FLAGS
-              value: "-name couchdb -setcookie monster"
+              value: "{{ range $k, $v := .Values.erlangFlags }} -{{ $k }} {{ $v }} {{ end }}"
           livenessProbe:
             httpGet:
               path: /
