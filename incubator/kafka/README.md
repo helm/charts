@@ -53,18 +53,18 @@ following configurable parameters:
 
 | Parameter                 | Description                                                       | Default                                                    |
 | ------------------------- | ----------------------------------------------------------------- | ---------------------------------------------------------- |
-| `Image`                   | Kafka Container image name                                        | `solsson/kafka`                                            |
-| `ImageTag`                | Kafka Container image tag                                         | `0.11.0.0`                                                 |
-| `ImagePullPolicy`         | Kafka Container pull policy                                       | `Always`                                                   |
-| `Replicas`                | Kafka Brokers                                                     | `3`                                                        |
-| `Component`               | Kafka k8s selector key                                            | `kafka`                                                    |
+| `image`                   | Kafka Container image name                                        | `solsson/kafka`                                            |
+| `imageTag`                | Kafka Container image tag                                         | `0.11.0.0`                                                 |
+| `imagePullPolicy`         | Kafka Container pull policy                                       | `Always`                                                   |
+| `replicas`                | Kafka Brokers                                                     | `3`                                                        |
+| `component`               | Kafka k8s selector key                                            | `kafka`                                                    |
 | `resources`               | Kafka resource requests and limits                                | `{}`                                                       |
-| `DataDirectory`           | Kafka data directory                                              | `/opt/kafka/data`                                          |
-| `Storage`                 | Kafka Persistent volume size                                      | `1Gi`                                                      |
-| `schema-registry.Enabled` | If True, installs Schema Registry Chart                           | `false`                                                    |
-| `zookeeper.Enabled`       | If True, installs Zookeeper Chart                                 | `true`                                                     |
-| `zookeeper.Url`           | URL of Zookeeper Cluster (unneeded if installing Zookeeper Chart) | `""`                                                       |
-| `zookeeper.Port`          | Port of Zookeeper Cluster                                         | `2181`                                                     |
+| `dataDirectory`           | Kafka data directory                                              | `/opt/kafka/data`                                          |
+| `storage`                 | Kafka Persistent volume size                                      | `1Gi`                                                      |
+| `schema-registry.enabled` | If True, installs Schema Registry Chart                           | `false`                                                    |
+| `zookeeper.enabled`       | If True, installs Zookeeper Chart                                 | `true`                                                     |
+| `zookeeper.url`           | URL of Zookeeper Cluster (unneeded if installing Zookeeper Chart) | `""`                                                       |
+| `zookeeper.port`          | Port of Zookeeper Cluster                                         | `2181`                                                     |
 
 Specify parameters using `--set key=value[,key=value]` argument to `helm install`
 
