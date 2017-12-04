@@ -43,10 +43,10 @@ persistence:
 # set the type of filesystem to use
 storage: filesystem
 
-# Set this to secret
+# Set this to name of secret for tls certs
 # tlsSecretName: registry.docker.example.com
-# secrets:
-#   haSharedSecret: ""
+secrets:
+  haSharedSecret: ""
 # Secrets for S3 access and secret keys
 #   s3:
 #     accessKey: ""
