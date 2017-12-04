@@ -27,10 +27,16 @@ spec:
             - containerPort: {{ .Values.service.port }}
           livenessProbe:
             httpGet:
+{{- if .Values.tlsSecretName }}
+              scheme: HTTPS
+{{- end }}
               path: /
               port: {{ .Values.service.port }}
           readinessProbe:
             httpGet:
+{{- if .Values.tlsSecretName }}
+              scheme: HTTPS
+{{- end }}
               path: /
               port: {{ .Values.service.port }}
           resources:
