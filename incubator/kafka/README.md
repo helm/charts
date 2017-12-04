@@ -51,25 +51,25 @@ This chart includes a ZooKeeper chart as a dependency to the Kafka
 cluster in its `requirement.yaml` by default. The chart can be customized using the
 following configurable parameters:
 
-| Parameter                 | Description                                                       | Default                                                    |
-| ------------------------- | ----------------------------------------------------------------- | ---------------------------------------------------------- |
-| `image`                   | Kafka Container image name                                        | `solsson/kafka`                                            |
-| `imageTag`                | Kafka Container image tag                                         | `0.11.0.0`                                                 |
-| `imagePullPolicy`         | Kafka Container pull policy                                       | `Always`                                                   |
+| Parameter                      | Description                                                                                                            | Default                                                    |
+| ------------------------------ | ---------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------- |
+| `image`                        | Kafka Container image name                                                                                             | `solsson/kafka`                                            |
+| `imageTag`                     | Kafka Container image tag                                                                                              | `1.0.0`                                                    |
+| `imagePullPolicy`              | Kafka Container pull policy                                                                                            | `Always`                                                   |
 | `kafkaAntiAffinityEnabled`     | If `true`, apply anti-affinity rules between kafka pods.                                                               | `true`                                                     |
-| `kafkaAntiAffinity`            | If `hard` disallow colocation of Kafka pods, if `soft`, make a best effort-attempt to prevent colocation.              | `hard`                                                     |
-| `replicas`                | Kafka Brokers                                                     | `3`                                                        |
-| `component`               | Kafka k8s selector key                                            | `kafka`                                                    |
-| `resources`               | Kafka resource requests and limits                                | `{}`                                                       |
-| `dataDirectory`           | Kafka data directory                                              | `/opt/kafka/data`                                          |
-| `storage`                 | Kafka Persistent volume size                                      | `1Gi`                                                      |
-| `schema-registry.enabled` | If True, installs Schema Registry Chart                           | `false`                                                    |
+| `kafkaAntiAffinity`            | If `hard` disallow colocation of Kafka pods, if `soft`, make a best effort-attempt to prevent colocation.              | `soft`                                                     |
+| `replicas`                     | Kafka Brokers                                                                                                          | `3`                                                        |
+| `component`                    | Kafka k8s selector key                                                                                                 | `kafka`                                                    |
+| `resources`                    | Kafka resource requests and limits                                                                                     | `{}`                                                       |
+| `dataDirectory`                | Kafka data directory                                                                                                   | `/opt/kafka/data`                                          |
+| `storage`                      | Kafka Persistent volume size                                                                                           | `1Gi`                                                      |
+| `schema-registry.enabled`      | If True, installs Schema Registry Chart                                                                                | `false`                                                    |
 | `zookeeperAntiAffinityEnabled` | If `true`, apply anti-affinity rules between kafka and zookeeper pods.                                                 | `true`                                                     |
-| `zookeeperAntiAffinity`        | If `hard` disallow colocation of Kafka and Zookeeper pods, if `soft`, make a best effort-attempt to prevent colocation | `hard`                                                     |
+| `zookeeperAntiAffinity`        | If `hard` disallow colocation of Kafka and Zookeeper pods, if `soft`, make a best effort-attempt to prevent colocation | `soft`                                                     |
 | `zookeeperAntiAffinityPodName` | Pod Metadata app label of zookeeper pods for anti-affinity rules for use with `In` prefix of affinity rules.           | `zookeeper`                                                |
-| `zookeeper.enabled`       | If True, installs Zookeeper Chart                                 | `true`                                                     |
-| `zookeeper.url`           | URL of Zookeeper Cluster (unneeded if installing Zookeeper Chart) | `""`                                                       |
-| `zookeeper.port`          | Port of Zookeeper Cluster                                         | `2181`                                                     |
+| `zookeeper.enabled`            | If True, installs Zookeeper Chart                                                                                      | `true`                                                     |
+| `zookeeper.url`                | URL of Zookeeper Cluster (unneeded if installing Zookeeper Chart)                                                      | `""`                                                       |
+| `zookeeper.port`               | Port of Zookeeper Cluster                                                                                              | `2181`                                                     |
 
 Specify parameters using `--set key=value[,key=value]` argument to `helm install`
 
