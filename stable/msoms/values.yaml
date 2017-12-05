@@ -1,0 +1,33 @@
+## Default values for omsagent.
+
+## Microsoft OMS Agent image 
+## ref: https://github.com/Microsoft/OMS-docker/blob/master/ReleaseNote.md
+omsagent:
+  image:
+    tag: 1.4.1-45
+    pullPolicy: IfNotPresent
+## To get your workspace id and key do the following
+## - In the Azure Log Analytics portal, on the Overview page, click the Settings tile. Click the Connected Sources tab at the left and select "Linux Server" on the right hand side.
+## - On the right of Workspace ID, click the copy icon and paste the ID into Notepad.
+## - On the right of Primary Key, click the copy icon and paste the key into Notepad.
+## For more information, please go [here.](https://docs.microsoft.com/en-us/azure/log-analytics/log-analytics-windows-agents#download-the-agent-setup-file-from-oms)
+    
+  secret:
+   wsid: <your_workspace_id>
+   key: <your_workspace_key>
+  domain: opinsights.azure.com
+
+## Configure resource requests and limits
+## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+##
+resources:
+  requests:
+    cpu: 100m
+    memory: 512Mi
+  limits:
+    cpu: 500m
+    memory: 768Mi  
+
+# Node selector - default to Linux as cannot deploy OMS agent container to Windows nodes
+nodeSelector:
+  beta.kubernetes.io/os: linux

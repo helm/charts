@@ -2,9 +2,9 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: "{{- if not (empty .Values.persistence.name) }}{{ .Values.persistence.name }}{{- else }}{{ template "fullname" . }}{{- end }}"
+  name: "{{- if not (empty .Values.persistence.name) }}{{ .Values.persistence.name }}{{- else }}{{ template "influxdb.fullname" . }}{{- end }}"
   labels:
-    app: "{{- if not (empty .Values.persistence.name) }}{{ .Values.persistence.name }}{{- else }}{{ template "fullname" . }}{{- end }}"
+    app: "{{- if not (empty .Values.persistence.name) }}{{ .Values.persistence.name }}{{- else }}{{ template "influxdb.fullname" . }}{{- end }}"
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"

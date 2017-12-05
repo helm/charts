@@ -18,14 +18,14 @@ Not enabling cluster, the ThirdPartResource must be installed before you can cre
   (ctrl-D to exit)
 4. Optional
   Check the etcd-operator logs
-  export POD=$(kubectl get pods -l app={{ template "fullname" . }} --namespace {{ .Release.Namespace }} --output name)
+  export POD=$(kubectl get pods -l app={{ template "etcd-operator.fullname" . }} --namespace {{ .Release.Namespace }} --output name)
   kubectl logs $POD --namespace={{ .Release.Namespace }}
 
 {{- else -}}
 1. etcd-operator deployed.
   If you would like to deploy an etcd-cluster set cluster.enabled to true in values.yaml
   Check the etcd-operator logs
-    export POD=$(kubectl get pods -l app={{ template "fullname" . }} --namespace {{ .Release.Namespace }} --output name)
+    export POD=$(kubectl get pods -l app={{ template "etcd-operator.fullname" . }} --namespace {{ .Release.Namespace }} --output name)
     kubectl logs $POD --namespace={{ .Release.Namespace }}
 
 {{- end -}}

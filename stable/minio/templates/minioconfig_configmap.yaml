@@ -1,29 +1,30 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "fullname" . }}-config-cm
+  name: {{ template "minio.fullname" . }}-config-cm
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "minio.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 data:
   config.json: |-
     {
-      "version": "19",
+      "version": "20",
       "credential": {
         "accessKey": {{ .Values.accessKey | quote }},
         "secretKey": {{ .Values.secretKey | quote }}
       },
-      "region": "us-east-1",
-      "browser": "on",
+      "region": {{ .Values.minioConfig.region | quote }},
+      "browser": {{ .Values.minioConfig.browser | quote }},
+      "domain": {{ .Values.minioConfig.domain | quote }},
       "logger": {
         "console": {
-          "enable": true
+          "enable": {{ .Values.minioConfig.logger.console.enable }}
         },
         "file": {
-          "enable": false,
-          "fileName": ""
+          "enable": {{ .Values.minioConfig.logger.file.enable }},
+          "fileName": {{ .Values.minioConfig.logger.file.filename | quote }}
         }
       },
       "notify": {

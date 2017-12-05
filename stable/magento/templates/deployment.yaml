@@ -1,10 +1,10 @@
-{{- if include "host" . -}}
+{{- if include "magento.host" . -}}
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "magento.fullname" . }}
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "magento.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -12,30 +12,30 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "fullname" . }}
+        app: {{ template "magento.fullname" . }}
     spec:
       containers:
-      - name: {{ template "fullname" . }}
+      - name: {{ template "magento.fullname" . }}
         image: "{{ .Values.image }}"
         imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
         env:
         - name: MARIADB_HOST
-          value: {{ template "mariadb.fullname" . }}
+          value: {{ template "magento.mariadb.fullname" . }}
         - name: MARIADB_PORT_NUMBER
           value: "3306"
         - name: MARIADB_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "mariadb.fullname" . }}
+              name: {{ template "magento.mariadb.fullname" . }}
               key: mariadb-root-password
         - name: MAGENTO_HOST
-          value: {{ include "host" . | quote }}
+          value: {{ include "magento.host" . | quote }}
         - name: MAGENTO_USERNAME
           value: {{ default "" .Values.magentoUsername | quote }}
         - name: MAGENTO_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "magento.fullname" . }}
               key: magento-password
         - name: MAGENTO_EMAIL
           value: {{ default "" .Values.magentoEmail | quote }}
@@ -58,7 +58,7 @@ spec:
             port: http
             httpHeaders:
             - name: Host
-              value: {{ include "host" . | quote }}
+              value: {{ include "magento.host" . | quote }}
           initialDelaySeconds: 420
           timeoutSeconds: 5
           failureThreshold: 6
@@ -68,7 +68,7 @@ spec:
             port: http
             httpHeaders:
             - name: Host
-              value: {{ include "host" . | quote }}
+              value: {{ include "magento.host" . | quote }}
           initialDelaySeconds: 30
           timeoutSeconds: 3
           periodSeconds: 5
@@ -83,14 +83,14 @@ spec:
       - name: magento-data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ template "fullname" . }}-magento
+          claimName: {{ template "magento.fullname" . }}-magento
       {{- else }}
         emptyDir: {}
       {{- end }}
       - name: apache-data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ template "fullname" . }}-apache
+          claimName: {{ template "magento.fullname" . }}-apache
       {{- else }}
         emptyDir: {}
       {{- end }}

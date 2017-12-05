@@ -1,0 +1,9 @@
+mysql:
+  rootPassword: "Root Password here..."
+  user: owncloud
+  password: "User Password here..."
+  database: owncloud
+
+php:
+  repository: owncloud
+  tag: fpm
