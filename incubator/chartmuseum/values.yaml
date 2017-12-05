@@ -1,12 +1,20 @@
 replicaCount: 1
 image:
   repository: chartmuseum/chartmuseum
-  tag: v0.1.0
+  tag: v0.2.6
   pullPolicy: IfNotPresent
 service:
   type: ClusterIP
   externalPort: 8080
   internalPort: 8080
+persistence:
+  mountPath: "/storage"
+  name: "chartpvc"
+  storageName: "storage-volume"
+  enabled: false
+  accessModes:
+    - ReadWriteOnce
+  size: 8Gi
 resources:
   limits:
     cpu: 100m

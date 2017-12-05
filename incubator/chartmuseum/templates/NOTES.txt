@@ -1,0 +1,6 @@
+Chartmuseum is accessible within your cluster at the defined port. 
+
+If access from outside of the cluster is required update values.yaml 
+to use NodePort instead of ClusterIP, then your Chartmuseum will be 
+available at the port specified after helm install is issued.   
+
