@@ -1,7 +1,7 @@
 ## Bitnami Ghost image version
 ## ref: https://hub.docker.com/r/bitnami/ghost/tags/
 ##
-image: bitnami/ghost:1.17.3-r1
+image: bitnami/ghost:1.18.3-r0
 
 ## Busybox image used to configure volume permissions
 ##
@@ -25,7 +25,7 @@ volumePermissions:
 ## Ghost port to create application URLs along with host.
 ## ref: https://github.com/bitnami/bitnami-docker-ghost#configuration
 ##
-# ghostPort:
+ghostPort: 80
 
 ## loadBalancerIP for the Ghost Service (optional, cloud specific)
 ## ref: http://kubernetes.io/docs/user-guide/services/#type-loadbalancer
