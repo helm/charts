@@ -3,4 +3,16 @@ bitcoind RPC can be accessed via port {{ .Values.RPCPort }} on the following DNS
 
 To connect to bitcoind RPC:
 
-    kubectl run -ti kuberstack/bitcoind -- bitcoin-cli -rpcconnect={{ template "bitcoind.fullname" . }} -rpcport={{ .Values.RPCPort }} -rpcuser=<user> -rpcpassword=<pass>
+1. Run an Ubuntu pod that you can use as a client:
+
+    kubectl run -i --tty ubuntu --image=ubuntu:16.04 --restart=Never -- bash -il
+
+2. Install the bitcoind client:
+
+    $ apt-get update -y && \
+    apt-get install python-software-properties software-properties-common -y && \
+    apt-add-repository ppa:bitcoin/bitcoin && apt-get update -y && \
+    apt-get install -y bitcoind
+
+3. Connect using the bitcoind cli, then provide your password:
+    $ bitcoin-cli -rpcconnect={{ template "bitcoind.fullname" . }} -rpcport={{ .Values.RPCPort }} -rpcuser=<user> -rpcpassword=<pass>

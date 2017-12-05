@@ -5,7 +5,14 @@ To connect to geth RPC:
 
 1. Run an Ubuntu pod that you can use as a client:
 
-    kubectl run -i --tty geth-client --image=ethereum/client-go --restart=Never -- bash -il
+    kubectl run -i --tty ubuntu --image=ubuntu:16.04 --restart=Never -- bash -il
 
-2. Connect using the geth cli:
-    $ /geth attach http://{{ template "geth.fullname" . }}:{{ .Values.RPCPort }}
+2. Install the bitcoind client:
+
+    $ apt-get update -y && \
+    apt-get install python-software-properties software-properties-common -y && \
+    add-apt-repository -y ppa:ethereum/ethereum && apt-get update -y && \
+    apt-get install -y ethereum
+
+3. Connect using the geth cli:
+    $ geth attach http://{{ template "geth.fullname" . }}:{{ .Values.RPCPort }}
