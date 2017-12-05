@@ -43,8 +43,8 @@ host. To configure Ghost with the URL of your service:
 
 {{- else }}
 
-  echo Blog URL  : http://{{ include "host" . }}/
-  echo Admin URL : http://{{ include "host" . }}/ghost
+  echo Blog URL  : http://{{ include "ghost.host" . }}/
+  echo Admin URL : http://{{ include "ghost.host" . }}/ghost
 {{- end }}
 
 2. Get your Ghost login credentials by running:
