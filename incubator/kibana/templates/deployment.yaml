@@ -18,9 +18,6 @@ spec:
       labels:
         app: {{ template "kibana.name" . }}
         release: "{{ .Release.Name }}"
-      {{- if .Values.podLabels }}
-{{ toYaml .Values.podLabels | indent 8 }}
-      {{- end }}
     spec:
       containers:
       - name: {{ .Chart.Name }}

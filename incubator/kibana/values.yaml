@@ -1,11 +1,11 @@
 image:
   repository: "kibana"
-  tag: "5.4.2"
+  tag: "5.4.3"
   pullPolicy: "IfNotPresent"
 
 env:
-  # All Kibana configuration options are adjustable via env vars
-  # to adjust a config option to an env var uppercase + replace `.` with `_`
+  # All Kibana configuration options are adjustable via env vars.
+  # To adjust a config option to an env var uppercase + replace `.` with `_`
   # Ref: https://www.elastic.co/guide/en/kibana/current/settings.html
   #
   # ELASTICSEARCH_URL: http://elasticsearch-client:9200
@@ -20,23 +20,15 @@ service:
 
 ingress:
   enabled: false
-  # Used to create an Ingress record.
   # hosts:
     # - chart-example.local
   # annotations:
   #   kubernetes.io/ingress.class: nginx
   #   kubernetes.io/tls-acme: "true"
   # tls:
-    # Secrets must be manually created in the namespace.
     # - secretName: chart-example-tls
     #   hosts:
     #     - chart-example.local
-  auth:
-    enabled: false
-    annotations: {}
-    serviceName: ""
-    servicePort: 4180
-    authPath: /oauth2
 
 resources: {}
   # limits:
@@ -59,5 +51,4 @@ tolerations: []
 nodeSelector: {}
 
 podAnnotations: {}
-podLabels: {}
 replicaCount: 1

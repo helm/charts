@@ -22,8 +22,6 @@ $ helm install incubator/kibana --name my-release
 
 The command deploys kibana on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
 
-There is an additional authorization feature which leverages oauth-proxy. See more information below on how to run Kibana within the cluster behind an oauth-proxy used for easy authentication of selected users.
-
 ## Uninstalling the Chart
 
 To uninstall/delete the `my-release` deployment:
@@ -43,17 +41,14 @@ Parameter | Description | Default
 `affinity` | node/pod affinities | None
 `env` | Environment variables to configure Kibana | `{}`
 `image.pullPolicy` | Image pull policy | `IfNotPresent`
-`image.repository` | Image repository | `a5huynh/oauth2_proxy`
-`image.tag` | Image tag | `2.2`
-`ingress.auth.annotations` | annotations to add to the auth ingress resource | `{}`
-`ingress.auth.authPath` | http path to redirect to the oauth-proxy service | `/oauth2`
-`ingress.auth.enabled` | enable authentication on ingress using oauth-proxy | `false`
-`ingress.auth.serviceName` | name of the oauth-proxy service to utilize for authentication and login | `""`
-`ingress.auth.servicePort` | port for the oauth-proxy service | `4180`
-`ingress.enabled` | enable ingress | `false`
+`image.repository` | Image repository | `kibana`
+`image.tag` | Image tag | `5.4.3`
+`ingress.enabled` | Enables Ingress | `false`
+`ingress.annotations` | Ingress annotations | None:
+`ingress.hosts` | Ingress accepted hostnames | None:
+`ingress.tls` | Ingress TLS configuration | None:
 `nodeSelector` | node labels for pod assignment | `{}`
 `podAnnotations` | annotations to add to each pod | `{}`
-`podLabels` | additional labesl to add to each pod | `{}`
 `replicaCount` | desired number of pods | `1`
 `resources` | pod resource requests & limits | `{}`
 `service.externalPort` | external port for the service | `443`
