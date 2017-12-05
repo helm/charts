@@ -1,0 +1,20 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: spice-proxy
+spec:
+  template:
+    metadata:
+      labels:
+        app: spice-proxy
+    spec:
+      containers:
+        - name: spice-proxy
+          image: "{{ .Values.kubevirt.repository }}/spice-proxy:{{ .Values.kubevirt.tag }}"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 3128
+              name: "spice-proxy"
+              protocol: "TCP"
+      securityContext:
+        runAsNonRoot: true

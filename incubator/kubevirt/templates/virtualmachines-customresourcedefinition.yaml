@@ -1,0 +1,15 @@
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  name: virtualmachines.kubevirt.io
+spec:
+  group: kubevirt.io
+  version: v1alpha1
+  scope: Namespaced
+  names:
+    plural: virtualmachines
+    singular: virtualmachine
+    kind: VirtualMachine
+    shortNames:
+    - vm
+    - vms

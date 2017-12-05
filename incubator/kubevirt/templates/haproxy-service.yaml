@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: haproxy-service
+  namespace: kube-system
+spec:
+  ports:
+    - port: 8184
+      targetPort: haproxy
+  externalIPs :
+    {{- range .Values.kubevirt.apiserver.externalips }}
+    - {{ . }}
+    {{- end }}
+  selector:
+    app: haproxy

@@ -1,0 +1,78 @@
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: libvirt
+  namespace: kube-system
+spec:
+  template:
+    metadata:
+      name: libvirt
+      labels:
+        daemon: libvirt
+    spec:
+      serviceAccountName: kubevirt-infra
+      hostNetwork: true
+      hostPID: true
+      hostIPC: true
+      securityContext:
+        runAsUser: 0
+      containers:
+      - name: libvirtd
+        ports:
+          - containerPort: 16509
+            hostPort: 16509
+        image: "{{ .Values.kubevirt.repository }}/libvirt-kubevirt:{{ .Values.kubevirt.tag }}"
+        imagePullPolicy: IfNotPresent
+        securityContext:
+          privileged: true
+          runAsUser: 0
+        env:
+        - name: LIBVIRTD_DEFAULT_NETWORK_DEVICE
+          value: eth1
+        volumeMounts:
+          - mountPath: /host-dev
+            name: host-dev
+          - mountPath: /host-sys
+            name: host-sys
+          - name: libvirt-data
+            mountPath: /var/lib/libvirt
+          - name: libvirt-runtime
+            mountPath: /var/run/libvirt
+          - name: virt-share-dir
+            mountPath: /var/run/kubevirt
+        command: ["/libvirtd.sh"]
+      - name: virtlogd
+        image: "{{ .Values.kubevirt.repository }}/libvirt-kubevirt:{{ .Values.kubevirt.tag }}"
+        imagePullPolicy: IfNotPresent
+        volumeMounts:
+          - name: libvirt-runtime
+            mountPath: /var/run/libvirt
+        command: ["/usr/sbin/virtlogd", "-f", "/etc/libvirt/virtlogd.conf"]
+      - name: virt-dhcp
+        image: "{{ .Values.kubevirt.repository }}/virt-dhcp:{{ .Values.kubevirt.tag }}"
+        imagePullPolicy: IfNotPresent
+        securityContext:
+          privileged: true
+          runAsUser: 0
+        volumeMounts:
+          - name: libvirt-runtime
+            mountPath: /var/run/libvirt
+          - name: virt-share-dir
+            mountPath: /var/run/kubevirt
+        command: ["/virt-dhcp"]
+      volumes:
+      - name: libvirt-data
+        hostPath:
+          path: /var/lib/libvirt-container
+      - name: libvirt-runtime
+        hostPath:
+          path: /var/run/libvirt
+      - name: host-dev
+        hostPath:
+          path: /dev
+      - name: host-sys
+        hostPath:
+          path: /sys
+      - name: virt-share-dir
+        hostPath:
+          path: /var/run/kubevirt

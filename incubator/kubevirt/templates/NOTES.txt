@@ -1,0 +1,5 @@
+The KubeVirt components have been installed.
+
+The VM API can be accessed by {{ .Values.kubevirt.apiserver.externalips }}:8184.
+In the case you want to create VM via kubectl command, use
+kubectl -s {{ .Values.kubevirt.apiserver.externalips }}:8184 -f vm.yaml

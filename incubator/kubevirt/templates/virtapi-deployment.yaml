@@ -1,0 +1,28 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: virt-api
+  namespace: kube-system
+spec:
+  template:
+    metadata:
+      labels:
+        app: virt-api
+    spec:
+      serviceAccountName: kubevirt-infra
+      containers:
+      - name: virt-api
+        image: "{{ .Values.kubevirt.repository }}/virt-api:{{ .Values.kubevirt.tag }}"
+        imagePullPolicy: IfNotPresent
+        command:
+            - "/virt-api"
+            - "--port"
+            - "8183"
+            - "--spice-proxy"
+            - "{{ .Values.kubevirt.spiceproxy.externalip }}:3128"
+        ports:
+          - containerPort: 8183
+            name: "virt-api"
+            protocol: "TCP"
+      securityContext:
+        runAsNonRoot: true
