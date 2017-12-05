@@ -1,4 +1,4 @@
-## The initial size of the CouchDB cluster.
+## clusterSize is the initial size of the CouchDB cluster.
 clusterSize: 3
 
 ## The storage volume used by each Pod in the StatefulSet. If a
@@ -26,7 +26,8 @@ helperImage:
   pullPolicy: IfNotPresent
 
 ## CouchDB is happy to spin up cluster nodes in parallel, but if you encounter
-## problems you can try setting this to the StatefulSet default `OrderedReady`
+## problems you can try setting podManagementPolicy to the StatefulSet default
+## `OrderedReady`
 podManagementPolicy: Parallel
 
 ## A StatefulSet requires a headless Service to establish the stable network
@@ -65,7 +66,7 @@ resources: {}
   #  cpu: 56
   #  memory: 256Gi
 
-## The contents of this map are passed to the Erlang VM as flags using the
+## erlangFlags is a map that is passed to the Erlang VM as flags using the
 ## ERL_FLAGS env. `name` and `setcookie` flags are minimally required to
 ## establish connectivity between cluster nodes.
 ## ref: http://erlang.org/doc/man/erl.html#init_flags
