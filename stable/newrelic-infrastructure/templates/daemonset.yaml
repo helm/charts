@@ -2,7 +2,6 @@ apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
   labels: {{ include "newrelic-infra.labels" . | indent 4 }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
   name: {{ template "newrelic-infra.fullname" . }}
 spec:
   template:
@@ -11,7 +10,12 @@ spec:
       annotations:
 {{ toYaml .Values.podAnnotations | indent 8}}
     {{- end }}
-      labels: {{ include "newrelic-infra.labels" . | indent 8 }}
+      labels:
+        app: {{ template "newrelic-infra.name" . }}
+        release: {{.Release.Name }}
+        {{- if .Values.podLabels}}
+        {{ toYaml .Values.podLabels }}
+        {{- end }}
     spec:
       hostPID: true
       hostIPC: true
@@ -25,15 +29,15 @@ spec:
           command: [ "bash", "-c", "source /etc/kube-nr-infra/config && /usr/bin/newrelic-infra -config /etc/newrelic/newrelic-infra.yml" ]
           {{- if or (.Values.verboseLog) (.Values.logFile) }}
           env:
-          {{- if .Values.verboseLog }}
-          - name: NRIA_VERBOSE
-            value: 1
-          {{- end }}
-          {{- if .Values.logFile }}
-          - name: NRIA_LOG_FILE
-            value: {{ .Values.logFile }}
-          {{- end }}
-          {{- end }}
+            {{- if .Values.verboseLog }}
+            - name: NRIA_VERBOSE
+              value: 1
+            {{- end }}
+            {{- if .Values.logFile }}
+            - name: NRIA_LOG_FILE
+              value: {{ .Values.logFile }}
+            {{- end }}
+            {{- end }}
           volumeMounts:
             - name: config
               mountPath: /etc/newrelic/

@@ -8,7 +8,7 @@ verboseLog: false
 
 image:
   name: newrelic/infrastructure
-  tag: 0.0.11
+  tag: 0.0.12
   pullPolicy: IfNotPresent
 
 resources:
@@ -18,6 +18,10 @@ resources:
   requests:
     cpu: 100m
     memory: 128Mi
+
+# If you wish to provide additional labels to apply to the pod(s), specify
+# them here
+# podLabels:
 
 # If you wish to provide your own newrelic.yml file include it under config: 
 # the sample config file is included here as an example. Three options have 

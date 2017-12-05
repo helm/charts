@@ -22,9 +22,7 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{/* Generate basic labels */}}
 {{- define "newrelic-infra.labels" }}
 app: {{ template "newrelic-infra.name" . }}
+chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
 heritage: {{.Release.Service }}
 release: {{.Release.Name }}
-{{- if .Values.podLabels}}
-{{ toYaml .Values.podLabels }}
-{{- end }}
 {{- end }}
