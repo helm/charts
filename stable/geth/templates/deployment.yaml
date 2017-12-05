@@ -1,0 +1,38 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "geth.fullname" . }}
+  labels:
+    app: {{ template "geth.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  template:
+    metadata:
+      labels:
+        app: {{ template "geth.fullname" . }}
+    spec:
+      containers:
+      - name: {{ template "geth.fullname" . }}
+        image: "{{ .Values.image }}:{{ .Values.imageTag }}"
+        imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
+        command: ["/geth", "--networkid", "{{ .Values.NetworkID }}", "--syncmode", "{{ .Values.SyncMode }}", "--rpc", "--rpcapi", "{{ .Values.RPCApi }}", "--rpcaddr", "0.0.0.0", "--rpcport", "{{ .Values.RPCPort }}", "--ws", "--wsaddr", "0.0.0.0", "--wsport", "{{ .Values.WSPort }}", "--wsapi", "{{ .Values.WSApi }}", "--wsorigins", "{{ .Values.WSOrigins }}"]
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+        ports:
+        - name: rpc
+          containerPort: {{ .Values.RPCPort }}
+        - name: ws
+          containerPort: {{ .Values.WSPort }}
+        volumeMounts:
+        - name: data
+          mountPath: /root
+      volumes:
+      - name: data
+      {{- if .Values.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.persistence.existingClaim | default (include "geth.fullname" .) }}
+      {{- else }}
+        emptyDir: {}
+      {{- end -}}

@@ -1,0 +1,11 @@
+geth RPC can be accessed via port {{ .Values.RPCPort }} on the following DNS name from within your cluster:
+{{ template "geth.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
+
+To connect to geth RPC:
+
+1. Run an Ubuntu pod that you can use as a client:
+
+    kubectl run -i --tty geth-client --image=ethereum/client-go --restart=Never -- bash -il
+
+2. Connect using the geth cli:
+    $ /geth attach http://{{ template "geth.fullname" . }}:{{ .Values.RPCPort }}
