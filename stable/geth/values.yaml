@@ -1,5 +1,5 @@
-image: "ethereum/client-go:alpine"
-imageTag: "latest"
+image: "ethereum/client-go"
+imageTag: "alpine"
 imagePullPolicy: IfNotPresent
 
 RPCPort: 8545
