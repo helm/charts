@@ -22,12 +22,12 @@ spec:
         release: {{ .Release.Name }}
     spec:
       containers:
-        - name: {{ .Chart.Name }}
+        - name: couchdb
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: couchdb
-              containerPort: {{ .Values.service.internalPort }}
+              containerPort: 5984
             - name: epmd
               containerPort: 4369
             - containerPort: 9100
@@ -37,11 +37,11 @@ spec:
           livenessProbe:
             httpGet:
               path: /
-              port: {{ .Values.service.internalPort }}
+              port: 5984
           readinessProbe:
             httpGet:
               path: /_up
-              port: {{ .Values.service.internalPort }}
+              port: 5984
           resources:
 {{ toYaml .Values.resources | indent 12 }}
           volumeMounts:
