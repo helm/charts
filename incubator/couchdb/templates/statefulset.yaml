@@ -10,7 +10,7 @@ metadata:
 spec:
   replicas: {{ .Values.replicaCount }}
   serviceName: {{ template "couchdb.fullname" . }}
-  podManagementPolicy: Parallel
+  podManagementPolicy: {{ .Values.podManagementPolicy }}
   selector:
     matchLabels:
       app: {{ template "couchdb.name" . }}

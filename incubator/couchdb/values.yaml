@@ -15,6 +15,10 @@ helperImage:
   tag: 1.0.0
   pullPolicy: IfNotPresent
 
+# CouchDB is happy to spin up cluster nodes in parallel, but if you encounter
+# problems you can try setting this to the StatefulSet default `OrderedReady`
+podManagementPolicy: Parallel
+
 service:
   name: couchdb
   type: ClusterIP
