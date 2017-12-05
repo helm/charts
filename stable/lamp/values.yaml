@@ -1,0 +1,339 @@
+### CONTAINERS ###
+
+init:
+  clone:
+    ## init.clone.release Fullname of the release to clone
+    release: false
+    ## init.clone.hostPath If the release to clone uses hostPath instead of PVC, set
+    ## it here. This will only work if both releases are deployed on the same node
+    # hostPath: /path/to/volume
+
+  manually:
+    ## init.manually.enabled Enables container for manual initialization
+    enabled: false
+    ## init.manually.repository Containers repository
+    repository: lead4good/init-wp
+    ## init.manually.tag Repository tag
+    tag: latest
+    ## init.manually.pullPolicy Image pull policy
+    pullPolicy: Always
+
+  ## init.resources init containers resource requests/limits
+  resources: false
+
+php:
+  ## php.version default php repository version, you can specify a differnt version like 5 or 7.0
+  version: "7"
+
+  ## php.repository If not empty, repository is chosen over default php repo
+  # repository: php
+
+  ## php.tag Repository tag
+  # tag: fpm
+
+  ## php.pullPolicy Image pull policy
+  pullPolicy: Always
+
+  ## php.fpmEnabled Enables docker FPM repository, be sure to disable if working with
+  ## a custom repository based on the apache tag
+  fpmEnabled: true
+
+  ## php.sockets If FPM is enabled, enables communication between HTTPD and PHP via
+  ## sockets instead of TCP
+  sockets: true
+
+  ## php.oldHTTPRoot Additionaly mounts the webroot at `php.oldHTTPRoot` to compansate
+  ## for absolute path file links
+  # oldHTTPRoot: /var/www/html
+
+  ## php.ini additional PHP config values, see examples on how to use
+  # ini: |
+  #   short_open_tag=On
+
+  ## php.copyRoot if true, copies the containers web root `/var/www/html` into
+  copyRoot: false
+
+  ## persistent storage. This must be enabled, if the container already comes with
+  ## files installed to `/var/www/html`
+
+  ## php.persistentSubpaths instead of enabling persistence for the whole webroot,
+  ## only subpaths of webroot can be enabled for persistence. Have a look at the
+  ## github.com/kubernetes/charts/stable/lamp/examples/nextcloud.yaml to see how it works
+  persistentSubpaths: false
+
+  # persistentSubpaths:
+  # - subPath1
+  # - subPath2
+
+  ## php.resources PHP container resource requests/limits
+  resources: false
+  #  requests:
+  #    cpu: 1m
+  #    memory: 1Mi
+
+httpd:
+  ## httpd.resources HTTPD container resource requests/limits
+  resources: false
+  #  requests:
+  #    cpu: 1m
+  #    memory: 1Mi
+
+
+mysql:
+  ## mysql.rootPassword Sets the MySQL root password, enables MySQL service if not empty
+  # rootPassword: root_password
+
+  ## mysql.user MySQL user
+  # user: user
+
+  ## mysql.password MySQL user password
+  # password: user_password
+
+  ## mysql.database MySQL user database
+  # database: database
+
+  ## mysql.repository MySQL repository - choose one of the official images
+  ##     [mysql](https://hub.docker.com/_/mysql/)
+  ##     [mariadb](https://hub.docker.com/_/mariadb/)
+  ##     [percona](https://hub.docker.com/_/percona/)
+  repository: mysql
+
+  ## mysql.tag Repository tag
+  tag: 5.7
+
+  ## mysql.imagePullPolicy Image pull policy
+  imagePullPolicy: Always
+
+  ## mysql.sockets Enables communication between MySQL and PHP via sockets instead of TCP
+  sockets: true
+
+  ## mysql.resources Resource requests/limits
+  resources: false
+  #  requests:
+  #    cpu: 1m
+  #    memory: 1Mi
+
+sftp:
+  ## sftp.enabled Enables sftp service
+  enabled: false
+
+  ## sftp.port Port to advertise service in LoadBalancer mode
+  port: 22
+
+  ## sftp.nodePort  Port to advertise service in Ingress mode
+  # nodePort: 30111
+
+  ## sftp.user SFTP User
+  # user: user
+
+  ## sftp.password SFTP Password
+  # password: password
+
+  ## sftp.resources resource requests/limits
+  resources: false
+  #  requests:
+  #    cpu: 1m
+  #    memory: 1Mi
+
+webdav:
+  ## webdav.enabled Enables webdav service
+  enabled: false
+
+  ## webdav.port Port to advertise service in LoadBalancer mode
+  port: 8001
+
+  ## webdav.subdomain Subdomain to advertise service on if ingress is enabled
+  subdomain: webdav
+
+  ## webdav.user WebDAV User
+  # user:
+
+  ## webdav.password WebDAV Password
+  # password:
+
+  ## webdav.resources resource requests/limits
+  resources: false
+  #  requests:
+  #    cpu: 1m
+  #    memory: 1Mi
+
+git:
+  ## git.enabled Enables Git service
+  enabled: false
+
+  ## git.repoURL Git Repository URL
+  # repoURL:
+
+  ## git.branch Repository branch to sync
+  branch: master
+
+  ## git.revision Revision to sync
+  revision: FETCH_HEAD
+
+  ## git.wait Time between Git syncs
+  wait: 30
+
+  ## git.resources resource requests/limits
+  resources: false
+  #  requests:
+  #    cpu: 1m
+  #    memory: 1Mi
+
+svn:
+  ## svn.enabled Enables svn service
+  enabled: false
+
+  ## svn.user SVN User
+  # user: user
+
+  ## svn.password SVN Password
+  # password: password
+
+  ## svn.repoURL SVN Repository URL
+  # repoURL:
+
+  ## svn.allowOverwrite if disabled and files already exist in the web folder will
+  ## not create working clone or sync files
+  allowOverwrite: true
+
+  ## svn.resources resource requests/limits
+  resources: false
+  #  requests:
+  #    cpu: 1m
+  #    memory: 1Mi
+
+phpmyadmin:
+  ## phpmyadmin.enabled Enables phpmyadmin service
+  enabled: false
+
+  ## phpmyadmin.port Port to advertise service in LoadBalancer mode
+  port: 8080
+
+  ## phpmyadmin.subdomain Subdomain to advertise service on if ingress is enabled
+  subdomain: phpmyadmin
+
+  ## phpmyadmin.resources resource requests/limits
+  resources: false
+  #  requests:
+  #    cpu: 1m
+  #    memory: 1Mi
+
+resources:
+  requests:
+    ## resources.requests.cpu CPU resource requests
+    cpu: 1m
+
+    ## resources.requests.memory Memory resource requests
+    memory: 1Mi
+
+  # limits:
+  ## resources.limits.cpu CPU resource limits
+  #   cpu: 1000m
+
+  ## resources.limits.memory Memory resource limits
+  #   memory: 1024Mi
+
+
+### STORAGE ###
+
+persistence:
+  ## persistence.enabled Enables persistent volume - PV provisioner support necessary
+  enabled: true
+
+  ## persistence.keep Keep persistent volume after helm delete
+  keep: false
+
+  ## persistence.accessMode PVC Access Mode
+  accessMode: ReadWriteOnce
+
+  ## persistence.size PVC Size
+  size: 5Gi
+
+  ## persistence.storageClass PVC Storage Class
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  ##
+  # storageClass: "-"
+
+  ## persistence.hostPath if specified, used as persistent storage instead of PVC
+  # hostPath: /path/to/volume
+
+
+### NETWORKING ###
+
+service:
+  ## service.type Changes to ClusterIP automatically if ingress enabled
+  type: LoadBalancer
+
+  ## service.HTTPPort Port to advertise the main web service in LoadBalancer mode
+  HTTPPort: 80
+
+
+ingress:
+  ## ingress.enabled Enables ingress support - working ingress controller necessary
+  enabled: false
+
+  ## ingress.domain domain to advertise the services - A records need to point to
+  ## ingress controllers IP
+  # domain: example.com
+
+  ## ingress.subdomainWWW enables www subdomain and 301 redirect from domain
+  ## > NOTE: Requires nginx ingress controller
+  # subdomainWWW: false
+
+  ## ingress.ssl Enables [lego](https://github.com/jetstack/kube-lego) letsencrypt
+  ## ssl support - working lego container necessary
+  ## > NOTE: Requires nginx ingress controller
+  # ssl: false
+
+  ## ingress.htpasswdString if specified main web service requires authentication.
+  ## Format: _user:$apr1$F..._
+  ## > NOTE: Requires nginx ingress controller
+  # htpasswdString: "user:$apr1$FfVI2PRr$f9MW8rsr5RmmxbdV0Iipk1"
+
+  ## ingress.annotations specify custom ingress annotations such as e.g.
+  # annotations:
+  #   ingress.kubernetes.io/proxy-body-size: "50m"
+  #   kubernetes.io/ingress.class: nginx
+
+
+### WORDPRESS ###
+
+wordpress:
+  ## wordpress.enabled Enables wordpress normal mode
+  enabled: false
+
+  ## wordpress.gdriveRToken gdrive rtoken for authentication used for downloading
+  ## InfiniteWP backup from gdrive
+  # gdriveRToken:
+
+  ## wordpress.gdriveFolder gdrive backup folder - the latest backup inside of the
+  ## folder where the name includes the string `_full` will be downloaded
+  # gdriveFolder: example.com
+
+  ## wordpress.domain wordpress domain used in dev mode to be search replaced
+  # domain: "example.com"
+
+  develop:
+    ## wordpress.develop.enabled enables develop mode
+    enabled: false
+
+    ## wordpress.develop.deleteUploads deletes `wp_content/uploads` folder and links
+    ## to live site within htaccess
+    deleteUploads: false
+
+    ## wordpress.develop.devDomain used to search replace `wordpress.domain` to
+    ## `fullname of template`.`develop.devDomain` e.g `mysite-com-lamp.dev.example.com`
+    # devDomain: dev.example.com
+
+### OTHER ###
+
+## keepSecrets Keep secrets after helm delete
+keepSecrets: false
+
+## replicaCount > 1 will corrupt your database if one is used. Future releases
+## might enable elastic scaling via galeradb
+replicaCount: 1
