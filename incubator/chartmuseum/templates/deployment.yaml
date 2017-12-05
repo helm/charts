@@ -15,7 +15,12 @@ spec:
     spec:
       volumes:
       - name: storage-volume
+      {{- if .Values.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.persistence.existingClaim | default (include "common.fullname" .) }}
+      {{- else }}
         emptyDir: {}
+      {{- end }}
       containers:
       - name: {{ .Chart.Name }}
         image: {{ .Values.image.repository }}:{{ .Values.image.tag }}

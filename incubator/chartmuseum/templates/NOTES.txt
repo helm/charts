@@ -1,0 +1,15 @@
+1. Get the chartmuseum URL to visit by running these commands in the same shell:
+
+{{- if contains "ClusterIP"  .Values.service.type }}
+  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "component={{ include "common.fullname" . }}" -o jsonpath="{.items[0].metadata.name}")
+  echo http://127.0.0.1:{{ .Values.service.internalPort }}
+  kubectl port-forward $POD_NAME {{ .Values.service.externalPort }}:{{ .Values.service.internalPort }}
+{{- end }}
+
+{{- if .Values.persistence.enabled }}
+{{- else }}
+#################################################################################
+######   WARNING: Persistence is disabled!!! You will lose your data when   #####
+######            the {{ template "common.name" }} pod is terminated.       #####
+#################################################################################
+{{- end }}
