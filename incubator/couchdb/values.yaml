@@ -3,6 +3,18 @@
 # Declare variables to be passed into your templates.
 replicaCount: 3
 
+## Configures the storage volume used by each Pod in the StatefulSet. If a
+## persistentVolume is not enabled, the Pods will use `emptyDir` ephemeral
+## local storage. Setting the storageClass attribute to "-" disables dynamic
+## provisioning of Persistent Volumes; leaving it unset will invoke the default
+## provisioner.
+persistentVolume:
+  enabled: false
+  accessModes:
+    - ReadWriteOnce
+  size: 10Gi
+  # storageClass: "-"
+
 # The CouchDB image
 image:
   repository: couchdb

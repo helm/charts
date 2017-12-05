@@ -50,10 +50,36 @@ spec:
         - name: couchdb-statefulset-assembler
           image: "{{ .Values.helperImage.repository }}:{{ .Values.helperImage.tag }}"
           imagePullPolicy: {{ .Values.helperImage.pullPolicy }}
+{{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+{{- end }}
+{{- if not .Values.persistentVolume.enabled }}
       volumes:
         - name: database-storage
           emptyDir: {}
-    {{- if .Values.nodeSelector }}
-      nodeSelector:
-{{ toYaml .Values.nodeSelector | indent 8 }}
-    {{- end }}
+{{- else }}
+  volumeClaimTemplates:
+    - metadata:
+        name: database-storage
+        labels:
+          app: {{ template "couchdb.name" . }}
+          chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+          release: {{ .Release.Name }}
+          heritage: {{ .Release.Service }}
+      spec:
+        accessModes:
+        {{- range .Values.persistentVolume.accessModes }}
+          - {{ . | quote }}
+        {{- end }}
+        resources:
+          requests:
+            storage: {{ .Values.persistentVolume.size | quote }}
+      {{- if .Values.persistentVolume.storageClass }}
+      {{- if (eq "-" .Values.persistentVolume.storageClass) }}
+        storageClassName: ""
+      {{- else }}
+        storageClassName: "{{ .Values.persistentVolume.storageClass }}"
+      {{- end }}
+      {{- end }}
+{{- end }}
