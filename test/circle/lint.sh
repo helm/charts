@@ -115,7 +115,10 @@ for directory in ${CHANGED_FOLDERS}; do
   if [ "$directory" == "incubator/common" ]; then
     continue
   elif [ -d $directory ]; then
-    printf "\nRuning helm lint on the chart at ${directory}\n"
+    printf "\nRunning helm dep build on the chart at ${directory}\n"
+    run helm dep build ${directory}
+
+    printf "\nRunning helm lint on the chart at ${directory}\n"
     run helm lint ${directory}
 
     yamllinter ${directory}
