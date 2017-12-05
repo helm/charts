@@ -1,7 +1,7 @@
-## Sets the initial size of the CouchDB cluster.
+## The initial size of the CouchDB cluster.
 clusterSize: 3
 
-## Configures the storage volume used by each Pod in the StatefulSet. If a
+## The storage volume used by each Pod in the StatefulSet. If a
 ## persistentVolume is not enabled, the Pods will use `emptyDir` ephemeral
 ## local storage. Setting the storageClass attribute to "-" disables dynamic
 ## provisioning of Persistent Volumes; leaving it unset will invoke the default
@@ -13,20 +13,20 @@ persistentVolume:
   size: 10Gi
   # storageClass: "-"
 
-# The CouchDB image
+## The CouchDB image
 image:
   repository: couchdb
   tag: 2.1.1
   pullPolicy: IfNotPresent
 
-# Sidecar that connects the individual Pods into a cluster
+## Sidecar that connects the individual Pods into a cluster
 helperImage:
   repository: kocolosk/couchdb-statefulset-assembler
   tag: 1.0.0
   pullPolicy: IfNotPresent
 
-# CouchDB is happy to spin up cluster nodes in parallel, but if you encounter
-# problems you can try setting this to the StatefulSet default `OrderedReady`
+## CouchDB is happy to spin up cluster nodes in parallel, but if you encounter
+## problems you can try setting this to the StatefulSet default `OrderedReady`
 podManagementPolicy: Parallel
 
 service:
@@ -47,22 +47,21 @@ ingress:
     # - secretName: chart-example-tls
     #   hosts:
     #     - chart-example.local
+
+## Optional resource requests and limits for the CouchDB container
+## ref: http://kubernetes.io/docs/user-guide/compute-resources/
 resources: {}
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #  cpu: 100m
-  #  memory: 128Mi
   # requests:
   #  cpu: 100m
   #  memory: 128Mi
+  # limits:
+  #  cpu: 56
+  #  memory: 256Gi
 
-# The contents of this map are passed to the Erlang VM as flags using the
-# ERL_FLAGS env. `name` and `setcookie` flags are minimally required to
-# establish connectivity between cluster nodes. See
-# http://erlang.org/doc/man/erl.html#init_flags for the full list.
+## The contents of this map are passed to the Erlang VM as flags using the
+## ERL_FLAGS env. `name` and `setcookie` flags are minimally required to
+## establish connectivity between cluster nodes.
+## ref: http://erlang.org/doc/man/erl.html#init_flags
 erlangFlags:
   name: couchdb
   setcookie: monster
