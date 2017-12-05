@@ -52,7 +52,7 @@ The following tables lists the configurable parameters of the bitcoind chart and
 | `imageTag`                 | `bitcoind` image tag.                 | Most recent release                                        |
 | `imagePullPolicy`          | Image pull policy                  | `IfNotPresent`                                             |                                               |
 | `persistence.enabled`      | Create a volume to store data      | true                                                       |
-| `persistence.size`         | Size of persistent volume claim    | 20Gi RW                                                     |
+| `persistence.size`         | Size of persistent volume claim    | 300Gi RW                                                     |
 | `persistence.storageClass` | Type of persistent volume claim    | nil  (uses alpha storage class annotation)                 |
 | `persistence.accessMode`   | ReadWriteOnce or ReadOnly          | ReadWriteOnce                                              |
 | `persistence.existingClaim`| Name of existing persistent volume | `nil`
@@ -88,7 +88,6 @@ Please NOT use emptyDir for production cluster! Your wallets will be lost on con
 configurationFiles:
   bitcoind.conf: |-
     server=1
-    testnet=1
     rpcuser=rpcuser
     rpcpassword=rpcpassword
 ```

@@ -43,7 +43,7 @@ The following tables lists the configurable parameters of the geth chart and the
 | `imageTag`                 | `geth` image tag.                  | Most recent release                                        |
 | `imagePullPolicy`          | Image pull policy                  | `IfNotPresent`                                             |                                               |
 | `persistence.enabled`      | Create a volume to store data      | true                                                       |
-| `persistence.size`         | Size of persistent volume claim    | 20Gi RW                                                    |
+| `persistence.size`         | Size of persistent volume claim    | 300Gi RW                                                    |
 | `persistence.storageClass` | Type of persistent volume claim    | nil  (uses alpha storage class annotation)                 |
 | `persistence.accessMode`   | ReadWriteOnce or ReadOnly          | ReadWriteOnce                                              |
 | `persistence.existingClaim`| Name of existing persistent volume | `nil`                                                      |
