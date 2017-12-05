@@ -11,7 +11,7 @@ metadata:
   annotations:
     "helm.sh/hook": post-install
 spec:
-  activeDeadlineSeconds: {{ default 300 .Values.setDefaultUser.activeDeadlineSeconds }}
+  activeDeadlineSeconds: {{ .Values.setDefaultUser.activeDeadlineSeconds }}
   template:
     metadata:
       labels:

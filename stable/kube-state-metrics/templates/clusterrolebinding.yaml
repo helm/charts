@@ -13,7 +13,7 @@ roleRef:
   kind: ClusterRole
   name: {{ template "kube-state-metrics.fullname" . }}
 subjects:
-  - kind: ServiceAccount
-    name: {{ template "kube-state-metrics.fullname" . }}
-    namespace: {{ .Release.Namespace }}
+- kind: ServiceAccount
+  name: {{ template "kube-state-metrics.fullname" . }}
+  namespace: {{ .Release.Namespace }}
 {{- end -}}

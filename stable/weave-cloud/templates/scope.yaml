@@ -64,7 +64,7 @@ items:
                 - '--probe.docker=true'
                 - '--probe.kubernetes=true'
                 - '--service-token={{.Values.ServiceToken}}'
-              image: 'weaveworks/scope:1.6.2'
+              image: 'weaveworks/scope:1.6.5'
               imagePullPolicy: IfNotPresent
               securityContext:
                 privileged: true

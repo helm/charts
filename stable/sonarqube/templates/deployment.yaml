@@ -41,11 +41,14 @@ spec:
               port: {{ .Values.service.internalPort }}
           volumeMounts:
             - mountPath: /opt/sonarqube/conf
-              name: sonarqube-conf
+              name: sonarqube
+              subPath: conf
             - mountPath: /opt/sonarqube/data
-              name: sonarqube-data
+              name: sonarqube
+              subPath: data
             - mountPath: /opt/sonarqube/extensions
-              name: sonarqube-extensions
+              name: sonarqube
+              subPath: extensions
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- if .Values.nodeSelector }}
@@ -53,24 +56,10 @@ spec:
 {{ toYaml .Values.nodeSelector | indent 8 }}
     {{- end }}
       volumes:
-      - name: sonarqube-conf
+      - name: sonarqube
         {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ template "sonarqube.fullname" . }}-conf
+          claimName: {{ template "sonarqube.fullname" . }}
         {{- else }}
         emptyDir: {}
         {{- end  }}
-      - name: sonarqube-data
-        {{- if .Values.persistence.enabled }}
-        persistentVolumeClaim:
-          claimName: {{ template "sonarqube.fullname" . }}-data
-        {{- else }}
-        emptyDir: {}
-        {{- end  }}
-      - name: sonarqube-extensions
-        {{- if .Values.persistence.enabled }}
-        persistentVolumeClaim:
-          claimName: {{ template "sonarqube.fullname" . }}-extensions
-        {{- else }}
-        emptyDir: {}
-        {{- end -}}

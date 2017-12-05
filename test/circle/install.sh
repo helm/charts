@@ -14,13 +14,19 @@
 # limitations under the License.
 
 # Install Helm
-HELM_LATEST_VERSION="v2.6.2"
+HELM_LATEST_VERSION="v2.7.2"
 
 wget http://storage.googleapis.com/kubernetes-helm/helm-${HELM_LATEST_VERSION}-linux-amd64.tar.gz
 tar -xvf helm-${HELM_LATEST_VERSION}-linux-amd64.tar.gz
 sudo mv linux-amd64/helm /usr/local/bin
 rm -f helm-${HELM_LATEST_VERSION}-linux-amd64.tar.gz
 rm -rf linux-amd64
+
+# Setup Helm so that it will work with helm dep commands. Only the client
+# needs to be setup. In addition, the incubator repo needs to be
+# available for charts that depend on it.
+helm init -c
+helm repo add incubator https://kubernetes-charts-incubator.storage.googleapis.com/
 
 # Install A YAML Linter
 # Pinning to a version for consistency

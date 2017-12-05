@@ -1,0 +1,46 @@
+{{- if .Values.rbac.create -}}
+apiVersion: {{ template "rbac.apiVersion" . }}
+kind: ClusterRole
+metadata:
+  labels:
+    app: {{ template "datadog.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "datadog.fullname" . }}
+rules:
+- nonResourceURLs:
+  - "/version"  # Used to get apiserver version metadata
+  - "/healthz"  # Healthcheck
+  verbs: ["get"]
+- apiGroups: ["apps"]
+  resources:
+    - "deployments"
+  verbs: ["get", "list"]
+- apiGroups: ["batch"]
+  resources:
+    - "jobs"
+  verbs: ["get", "list"]
+- apiGroups: ["extensions"]
+  resources:
+    - "daemonsets"
+    - "replicasets"
+  verbs: ["get", "list"]
+- apiGroups: [""]
+  resources:
+    - "namespaces" #
+    - "events"     # Cluster events + kube_service cache invalidation
+    - "services"   # kube_service tag
+    - "nodes"
+    - "pods"
+  verbs: ["get", "list"]
+- apiGroups: [""]
+  resources:
+    - "configmaps"
+  resourceNames: ["datadog-leader-elector"]
+  verbs: ["get", "delete", "update"]
+- apiGroups: [""]
+  resources:
+    - "configmaps"
+  verbs: ["create"]
+{{- end -}}

@@ -42,6 +42,10 @@ spec:
           {{- range $key, $value := .Values.alertmanager.extraArgs }}
             - --{{ $key }}={{ $value }}
           {{- end }}
+          {{- if .Values.alertmanager.baseURL }}
+            - --web.external-url={{ .Values.alertmanager.baseURL }}
+          {{- end }}
+
           ports:
             - containerPort: 9093
           readinessProbe:
@@ -74,6 +78,10 @@ spec:
     {{- if .Values.alertmanager.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.alertmanager.nodeSelector | indent 8 }}
+    {{- end }}
+    {{- if .Values.alertmanager.affinity }}
+      affinity:
+{{ toYaml .Values.alertmanager.affinity | indent 8 }}
     {{- end }}
       volumes:
         - name: config-volume

@@ -21,7 +21,6 @@ spec:
       - name: {{ .Values.name }}
         image: {{ .Values.image }}:{{ .Values.imageTag }}
         args:
-        - --in-cluster
         - --interval={{ .Values.interval }}
         - --labels={{ .Values.labels }}
         - --annotations={{ .Values.annotations }}
