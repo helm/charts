@@ -10,10 +10,8 @@ metadata:
 spec:
   clusterIP: None
   ports:
-    - port: {{ .Values.service.externalPort }}
-      targetPort: {{ .Values.service.internalPort }}
-      protocol: TCP
-      name: {{ .Values.service.name }}
+    - name: couchdb
+      port: 5984
   selector:
     app: {{ template "couchdb.name" . }}
     release: {{ .Release.Name }}
