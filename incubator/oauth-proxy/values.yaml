@@ -23,6 +23,12 @@ service:
   externalPort: 443
   internalPort: 4180
 
+htpasswd:
+  enabled: false
+  file:
+    htpasswd: |-
+      prom:{SHA}XXXXXXXXXXXXXXXXXXXXXXXXX+s=
+
 ingress:
   enabled: false
   # Used to create an Ingress record.

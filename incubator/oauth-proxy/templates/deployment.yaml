@@ -58,6 +58,11 @@ spec:
             port: {{ .Values.service.internalPort }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
+        {{- if .Values.htpasswd.enabled }}
+        volumeMounts:
+          - name: htpasswd-volume
+            mountPath: /htpasswd
+        {{- end -}}
     {{- if .Values.affinity }}
       affinity:
 {{ toYaml .Values.affinity | indent 8 }}
@@ -68,3 +73,9 @@ spec:
     {{- end }}
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
+      {{- if .Values.htpasswd.enabled }}
+      volumes:
+        - name: htpasswd-volume
+          configMap:
+            name: {{ template "oauth-proxy.fullname" . }}
+      {{- end -}}
