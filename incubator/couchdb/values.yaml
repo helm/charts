@@ -29,14 +29,21 @@ helperImage:
 ## problems you can try setting this to the StatefulSet default `OrderedReady`
 podManagementPolicy: Parallel
 
+## A StatefulSet requires a headless Service to establish the stable network
+## identities of the Pods, and that Service is created automatically by this
+## chart without any additional configuration. The Service block below refers
+## to a second Service that governs how clients connect to the CouchDB cluster.
 service:
-  name: couchdb
+  enabled: true
   type: ClusterIP
   externalPort: 5984
-  internalPort: 5984
+
+## An Ingress resource can provide name-based virtual hosting and TLS
+## termination among other things for CouchDB deployments which are accessed
+## from outside the Kubernetes cluster.
+## ref: https://kubernetes.io/docs/concepts/services-networking/ingress/
 ingress:
   enabled: false
-  # Used to create an Ingress record.
   hosts:
     - chart-example.local
   annotations:
