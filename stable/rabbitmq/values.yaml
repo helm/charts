@@ -54,6 +54,12 @@ rabbitmqVhost: /
 ##
 rabbitmqManagerPort: 15672
 
+## RabbitMQ Disk free limit
+## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables
+## ref: https://www.rabbitmq.com/disk-alarms.html
+##
+rabbitmqDiskFreeLimit: '"8GiB"'
+
 ## Kubernetes service type
 serviceType: ClusterIP
 
@@ -74,6 +80,8 @@ persistence:
   ##
   # storageClass: "-"
   accessMode: ReadWriteOnce
+
+  # If you change this value, you might have to adjust `rabbitmqDiskFreeLimit` as well.
   size: 8Gi
 
 ## Configure resource requests and limits

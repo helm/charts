@@ -27,6 +27,9 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - containerPort: {{ .Values.service.internalPort }}
+            {{- if .Values.docker.enabled }}
+            - containerPort: {{ .Values.docker.port }}
+            {{- end }}
           livenessProbe:
             httpGet:
               path: /

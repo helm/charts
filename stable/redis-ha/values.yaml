@@ -20,6 +20,13 @@ resources:
       cpu: 100m
     limits:
       memory: 200Mi
+
+## Node labels and tolerations for pod assignment
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
+nodeSelector: {}
+tolerations: []
+
 ## Enable persistence using Persistent Volume Claims
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
 ##
@@ -47,7 +54,7 @@ persistentVolume:
   mountPath: /data
   ## alertmanager data Persistent Volume size
   ##
-  size: 2Gi
+  size: 8Gi
 
   ## Redis data Persistent Volume Storage Class
   ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
