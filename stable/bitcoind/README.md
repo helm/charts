@@ -71,7 +71,7 @@ $ helm install --name my-release -f values.yaml stable/bitcoind
 
 ## Persistence
 
-The bitcoind image stores the Bitcoind node data (Blochchain and wallet) and configurations at the `/srv/bitcoind` path of the container.
+The bitcoind image stores the Bitcoind node data (Blockchain and wallet) and configurations at the `/srv/bitcoind` path of the container.
 
 By default a PersistentVolumeClaim is created and mounted into that directory. In order to disable this functionality
 you can change the values.yaml to disable persistence and use an emptyDir instead.
@@ -80,13 +80,13 @@ you can change the values.yaml to disable persistence and use an emptyDir instea
 
 !!! WARNING !!!
 
-Please NOT use emptyDir for production cluster! Your wallets will bee lost on container restart!
+Please NOT use emptyDir for production cluster! Your wallets will be lost on container restart!
 
 ## Custom bitcoind configuration files
 
 ```yaml
 configurationFiles:
-  bitcoind.cnf: |-
+  bitcoind.conf: |-
     server=1
     testnet=1
     rpcuser=rpcuser
