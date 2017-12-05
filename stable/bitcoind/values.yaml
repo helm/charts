@@ -31,7 +31,7 @@ resources:
 
 # Custom bitcoind configuration files used to override default bitcoind settings
 configurationFiles:
-  bitcoin.cnf: |-
+  bitcoin.conf: |-
     server=1
     testnet=1
     rpcuser=rpcuser
