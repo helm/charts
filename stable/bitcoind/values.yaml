@@ -35,4 +35,4 @@ configurationFiles:
     server=1
     testnet=1
     rpcuser=rpcuser
-    rpcpassword=<change-me>
+    rpcpassword=rpcpassword
