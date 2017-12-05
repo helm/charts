@@ -4,11 +4,11 @@ imagePullPolicy: IfNotPresent
 
 RPCPort: 8545
 WSPort: 8546
-RPCApi: net,eth,personal,web3
-WSApi: net,eth,personal,web3
-WSOrigins: *
+RPCApi: "net,eth,personal,web3"
+WSApi: "net,eth,personal,web3"
+WSOrigins: "*"
 NetworkID: 1
-SyncMode: fast
+SyncMode: "fast"
 
 persistence:
   enabled: true
