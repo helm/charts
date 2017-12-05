@@ -33,6 +33,5 @@ resources:
 configurationFiles:
   bitcoin.conf: |-
     server=1
-    testnet=1
     rpcuser=rpcuser
     rpcpassword=rpcpassword
