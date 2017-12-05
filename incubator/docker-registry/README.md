@@ -38,6 +38,12 @@ their default values.
 | `replicaCount`             | k8s replicas                                | `1`                                                 |
 | `resources.limits.cpu`     | Container requested CPU                     | `nil`                                               |
 | `resources.limits.memory`  | Container requested memory                  | `nil`                                               |
+| `storage`                  | Storage system to use                       | `fileststem`                                        |
+| `tlsSecretName`            | Name of secret for TLS certs                | `nil`                                               |
+| `secrets.s3.accessKey`     | Access Key for S3 configuration             | `nil`                                               |
+| `secrets.s3.secretKey`     | Secret Key for S3 configuration             | `nil`                                               |
+| `haSharedSecret`           | Shared secret for Registry                  | `nil`                                               |
+| `configData`               | Configuration hash for docker               | `nil`                                               |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to
 `helm install`.
