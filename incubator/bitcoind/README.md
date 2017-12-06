@@ -25,7 +25,7 @@ Please update `ssl.secretName` value in `values.yaml`. In this example it is `"b
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm install --name my-release stable/bitcoind
+$ helm install --name my-release incubator/bitcoind
 ```
 
 The command deploys bitcoind on the Kubernetes cluster in the default configuration.
