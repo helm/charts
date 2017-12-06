@@ -47,6 +47,8 @@ spec:
           volumeMounts:
           - name: database-storage
             mountPath: /var/lib/couchdb
+          - name: config
+            mountPath: /opt/couchdb/etc/default.d
         - name: couchdb-statefulset-assembler
           image: "{{ .Values.helperImage.repository }}:{{ .Values.helperImage.tag }}"
           imagePullPolicy: {{ .Values.helperImage.pullPolicy }}
@@ -54,8 +56,14 @@ spec:
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
 {{- end }}
-{{- if not .Values.persistentVolume.enabled }}
       volumes:
+        - name: config
+          configMap:
+            name: {{ template "couchdb.fullname" . }}
+            items:
+              - key: inifile
+                path: chart.ini
+{{- if not .Values.persistentVolume.enabled }}
         - name: database-storage
           emptyDir: {}
 {{- else }}

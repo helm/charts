@@ -55,6 +55,7 @@ CouchDB chart and their default values:
 |           Parameter             |             Description                               |                Default                 |
 |---------------------------------|-------------------------------------------------------|----------------------------------------|
 | `clusterSize`                   | The initial number of nodes in the CouchDB cluster    | 3                                      |
+| `couchdbConfig`                 | Map allowing override elements of server .ini config  | {}                                     |
 | `erlangFlags`                   | Map of flags supplied to the underlying Erlang VM     | name: couchdb, setcookie: monster
 | `persistentVolume.enabled`      | Boolean determining whether to attach a PV to each node | false
 | `persistentVolume.size`         | If enabled, the size of the persistent volume to attach                          | 10Gi
@@ -84,5 +85,4 @@ A variety of other parameters are also configurable. See the comments in the
 
 ## TODO
 
-* Enable CouchDB ini file injection via ConfigMaps
 * Configure administrator account credentials using Secrets

@@ -73,3 +73,11 @@ resources: {}
 erlangFlags:
   name: couchdb
   setcookie: monster
+
+## couchdbConfig will override default CouchDB configuration settings.
+## The contents of this map are reformatted into a .ini file laid down
+## by a ConfigMap object.
+## ref: http://docs.couchdb.org/en/latest/config/index.html
+couchdbConfig:
+  # cluster:
+  #   q: 8 # Create 8 shards for each database
