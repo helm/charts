@@ -18,12 +18,23 @@ spec:
 
   containers:
   - name: joinchannel-org2peer1
-    image: ibmblockchain/fabric-peer:1.0.0
-    imagePullPolicy: {{.Values.blockchain.pullPolicy}}
-    command: ["sh", "-c", "while [ ! -f /shared/status_channelcreate_complete ]; do echo Waiting for createchannel; sleep 2; done; peer channel fetch newest -o ${ORDERER_URL} -c ${CHANNEL_NAME} && peer channel join -b ${CHANNEL_NAME}_newest.block && touch /shared/status_joinchannel_org2peer1_complete"]
+    image: {{ .Values.blockchain.peerImage }}
+    imagePullPolicy: {{ .Values.blockchain.pullPolicy }}
+    command:
+      - sh
+      - -c
+      - |
+        while [ ! -f /shared/status_channelcreate_complete ]; do
+          echo Waiting for createchannel
+          sleep 2
+        done
+        
+        peer channel fetch newest -o ${ORDERER_URL} -c ${CHANNEL_NAME}
+        peer channel join -b ${CHANNEL_NAME}_newest.block
+        touch /shared/status_joinchannel_org2peer1_complete"]
     env:
     - name: CHANNEL_NAME
-      value: {{.Values.blockchain.channelName}}
+      value: {{ .Values.blockchain.channelName }}
     - name: CORE_PEER_NETWORKID
       value: nid1
     - name: ORDERER_URL
