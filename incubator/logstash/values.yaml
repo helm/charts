@@ -1,0 +1,56 @@
+# Default values for logstash.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+replicaCount: 1
+image:
+  repository: docker.elastic.co/logstash/logstash-oss
+  tag: 6.0.0
+  pullPolicy: IfNotPresent
+service:
+  name: logstash
+  type: NodePort
+  internalPort: 1514
+  ports:
+    - name: "logstash-tcp"
+      protocol: TCP
+      containerPort: 1514
+    - name: "logstash-udp"
+      protocol: UDP
+      containerPort: 1514
+    - name: "netflow-udp"
+      protocol: UDP
+      containerPort: 2055
+    - name: "filebeat-udp"
+      protocol: UDP
+      containerPort: 5044
+
+ingress:
+  enabled: false
+  # Used to create an Ingress and Service record.
+  # hosts:
+  #   - name: "logstash-udp.local"
+  #     protocol: UDP
+  #     serviceName: logstash-udp
+  #     servicePort: 514
+  annotations:
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  tls:
+    # Secrets must be manually created in the namespace.
+    # - secretName: chart-example-tls
+    #   hosts:
+    #     - chart-example.local
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+
+elasticsearchHost: "elasticsearch-client.default.svc.cluster.local:9200"
+configData: {}

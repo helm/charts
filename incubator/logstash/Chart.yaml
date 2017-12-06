@@ -1,0 +1,9 @@
+apiVersion: v1
+description: A Helm chart for logstash
+name: logstash
+version: 0.1.0
+maintainers:
+- name: Pete Brown
+  email: pete.brown@powerhrg.com
+- name: Johnathan Rodgers
+  email: jrodgers@powerhrg.com
