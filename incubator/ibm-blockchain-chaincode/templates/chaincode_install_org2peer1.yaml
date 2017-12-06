@@ -18,7 +18,7 @@ spec:
 
   containers:
   - name: chaincodeinstall-org2peer1
-    image: {{ .Values.blockchain.image }}
+    image: {{ .Values.blockchain.toolsImage }}
     imagePullPolicy: {{ .Values.blockchain.pullPolicy }}
     command:
       - sh

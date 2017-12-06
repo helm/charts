@@ -44,7 +44,7 @@ The following table lists the configurable parameters of the IBM Blockchain Chai
 
 |             Parameter              |               Description                |                         Default                          |
 |------------------------------------|------------------------------------------|----------------------------------------------------------|
-| `blockchain.image`                 | Blockchain image                         | `ibmblockchain/fabric-tools:1.0.0`                       |
+| `blockchain.toolsImage`            | Blockchain tools image                   | `ibmblockchain/fabric-tools:1.0.0`                       |
 | `blockchain.pullPolicy`            | Blockchain image pull policy             | `IfNotPresent`                                           |
 | `blockchain.channelName`           | Blockchain channel name                  | `channel1`                                               |
 

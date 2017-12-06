@@ -37,6 +37,6 @@ resources: {}
   #  memory: 128Mi
 
 blockchain:
-  image: ibmblockchain/fabric-tools:1.0.0
+  toolsImage: ibmblockchain/fabric-tools:1.0.0
   pullPolicy: IfNotPresent
   channelName: channel1
