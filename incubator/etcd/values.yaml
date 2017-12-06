@@ -18,7 +18,7 @@ Image: "nearform/etcd"
 ImageTag: "latest"
 ImagePullPolicy: "Always"
 Cpu: "100m"
-Memory: "256Mi"
+Memory: "512Mi"
 Storage: "1Gi"
 ## etcd data Persistent Volume Storage Class
 ## If defined, StorageClassName: <storageClass>
