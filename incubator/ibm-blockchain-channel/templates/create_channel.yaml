@@ -34,10 +34,10 @@ spec:
         
         configtxgen -profile TwoOrgsChannel -outputCreateChannelTx ${CHANNEL_NAME}.tx -channelID ${CHANNEL_NAME} 
         touch /shared/status_channeltx_complete 
-        rm -f /shared/status_org1peer1_complete /shared/status_org2peer1_complete"]
+        rm -f /shared/status_org1peer1_complete /shared/status_org2peer1_complete
     env:
     - name: CHANNEL_NAME
-      value: {{.Values.blockchain.channelName}}
+      value: {{ .Values.blockchain.channelName }}
     - name: FABRIC_CFG_PATH
       value: /shared
     - name: GODEBUG
@@ -60,10 +60,10 @@ spec:
         
         peer channel create -o ${ORDERER_URL} -c ${CHANNEL_NAME} -f /shared/${CHANNEL_NAME}.tx 
         rm /shared/status_channeltx_complete 
-        touch /shared/status_channelcreate_complete"]
+        touch /shared/status_channelcreate_complete
     env:
     - name: CHANNEL_NAME
-      value: {{.Values.blockchain.channelName}}
+      value: {{ .Values.blockchain.channelName }}
     - name: ORDERER_URL
       value: blockchain-orderer:31010
     - name: CORE_PEER_ADDRESSAUTODETECT
