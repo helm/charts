@@ -16,6 +16,10 @@ spec:
         app: {{ template "fullname" . }}
         component: minio
     spec:
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- end }}
       restartPolicy: OnFailure
       containers:
       - name: post-install-job
