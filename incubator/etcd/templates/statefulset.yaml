@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
       - name: {{ template "etcd.fullname" . }}
-        image: nearform/etcd:latest
+        image: nearform/etcd:3.2.11
         imagePullPolicy: "{{ .Values.ImagePullPolicy }}"
         ports:
         - containerPort: {{ .Values.PeerPort }}
