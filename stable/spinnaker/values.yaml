@@ -112,22 +112,13 @@ gcs:
 #   https://www.spinnaker.io/setup/ci/jenkins/
 jenkins:
   Master:
-    ImageTag: 2.62
     Cpu: "500m"
     Memory: "512Mi"
     ServiceType: ClusterIP
     CustomConfigMap: true
-    InstallPlugins:
-      - kubernetes:0.11
-      - workflow-aggregator:2.5
-      - workflow-job:2.11
-      - credentials-binding:1.12
-      - git:3.2.0
     NodeSelector: {}
 
   Agent:
-    Image: viglesiasce/spinnaker-jenkins-agent
-    ImageTag: v0.2.0
     Cpu: "500m"
     Memory: "512Mi"
     NodeSelector: {}
