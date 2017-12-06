@@ -20,7 +20,7 @@ persistence:
   accessMode: ReadWriteOnce
   size: 8Gi
 storage:
-  provider: local # amazon, google, or local -- selecting local will then use the persistence settings to decide to use emptyDir or a StatefulSet
+  provider: local  # amazon, google, or local -- selecting local will then use the persistence settings to decide to use emptyDir or a StatefulSet
   bucket: my-bucket
   prefix: ""
 
