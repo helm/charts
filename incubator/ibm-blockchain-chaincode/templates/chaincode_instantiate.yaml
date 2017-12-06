@@ -31,7 +31,7 @@ spec:
         
         peer chaincode instantiate -o blockchain-orderer:31010 -C ${CHANNEL_NAME} -n ${CHAINCODE_NAME} -v ${CHAINCODE_VERSION} -c '{\"Args\":[\"init\",\"a\",\"100\",\"b\",\"200\"]}'
         touch /shared/status_chaincodeinstantiate_complete
-        rm -f /shared/status_chaincodeinstall_complete"]
+        rm -f /shared/status_chaincodeinstall_complete
     env:
     - name: CHANNEL_NAME
       value: {{ .Values.blockchain.channelName }}

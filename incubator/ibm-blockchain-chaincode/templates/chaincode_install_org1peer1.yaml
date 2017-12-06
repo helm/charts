@@ -31,7 +31,7 @@ spec:
         
         git clone -b v1.0.0 https://github.com/hyperledger/fabric $GOPATH/src/github.com/hyperledger/fabric/ 
         peer chaincode install -n ${CHAINCODE_NAME} -v ${CHAINCODE_VERSION} -p github.com/hyperledger/fabric/examples/chaincode/go/chaincode_example02/ 
-        touch /shared/status_chaincodeinstall_complete"]
+        touch /shared/status_chaincodeinstall_complete
     env:
     - name: CHAINCODE_NAME
       value: example02

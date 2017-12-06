@@ -14,7 +14,7 @@ This chart bootstraps a [ibm-blockchain](https://ibm-blockchain.github.io) deplo
 
 ## Prerequisites
 
-- Kubernetes 1.7+ with Beta APIs enabled
+- Kubernetes 1.7+
 
 ## Installing the Chart
 
