@@ -73,6 +73,12 @@ The following tables lists the configurable parameters of the PostgresSQL chart 
 | `nodeSelector`             | Node labels for pod assignment                  | {}                                                         |
 | `affinity`                 | Affinity settings for pod assignment            | {}                                                         |
 | `tolerations`              | Toleration labels for pod assignment            | []                                                         |
+| `probes.liveness.initialDelay`      | Liveness probe initial delay           | `60`                                                       |
+| `probes.liveness.timeoutSeconds`    | Liveness probe timeout seconds         | `5`                                                        |
+| `probes.liveness.failureThreshold`  | Liveness probe failure threshold       | `6`                                                        |
+| `probes.readiness.initialDelay`     | Readiness probe initial delay          | `5`                                                        |
+| `probes.readiness.timeoutSeconds`   | Readiness probe timeout seconds        | `3`                                                        |
+| `probes.readiness.failureThreshold` | Readiness probe failure threshold      | `5`                                                        |
 
 The above parameters map to the env variables defined in [postgres](http://github.com/docker-library/postgres). For more information please refer to the [postgres](http://github.com/docker-library/postgres) image documentation.
 
