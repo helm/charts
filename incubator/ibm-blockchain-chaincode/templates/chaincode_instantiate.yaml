@@ -18,12 +18,23 @@ spec:
 
   containers:
   - name: chaincodeinstantiate
-    image: ibmblockchain/fabric-tools:1.0.0
-    imagePullPolicy: {{.Values.blockchain.pullPolicy}}
-    command: ["sh", "-c", "while [ ! -f /shared/status_chaincodeinstall_complete ]; do echo Waiting for chaincodeinstall; sleep 2; done; peer chaincode instantiate -o blockchain-orderer:31010 -C ${CHANNEL_NAME} -n ${CHAINCODE_NAME} -v ${CHAINCODE_VERSION} -c '{\"Args\":[\"init\",\"a\",\"100\",\"b\",\"200\"]}' && touch /shared/status_chaincodeinstantiate_complete && rm -f /shared/status_chaincodeinstall_complete"]
+    image: {{ .Values.blockchain.image }}
+    imagePullPolicy: {{ .Values.blockchain.pullPolicy }}
+    command: 
+      - sh
+      - -c
+      - |
+        while [ ! -f /shared/status_chaincodeinstall_complete ]; do
+          echo Waiting for chaincodeinstall
+          sleep 2
+        done
+        
+        peer chaincode instantiate -o blockchain-orderer:31010 -C ${CHANNEL_NAME} -n ${CHAINCODE_NAME} -v ${CHAINCODE_VERSION} -c '{\"Args\":[\"init\",\"a\",\"100\",\"b\",\"200\"]}'
+        touch /shared/status_chaincodeinstantiate_complete
+        rm -f /shared/status_chaincodeinstall_complete"]
     env:
     - name: CHANNEL_NAME
-      value: {{.Values.blockchain.channelName}}
+      value: {{ .Values.blockchain.channelName }}
     - name: CHAINCODE_NAME
       value: example02
     - name: CHAINCODE_VERSION

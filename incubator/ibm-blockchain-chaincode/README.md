@@ -14,7 +14,7 @@ This chart bootstraps a [ibm-blockchain](https://ibm-blockchain.github.io) deplo
 
 ## Prerequisites
 
-- Kubernetes 1.4+ with Beta APIs enabled
+- Kubernetes 1.7+ with Beta APIs enabled
 
 ## Installing the Chart
 
@@ -40,11 +40,12 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the IBM Blockchain chart and their default values.
+The following table lists the configurable parameters of the IBM Blockchain Chaincode chart and their default values.
 
 |             Parameter              |               Description                |                         Default                          |
 |------------------------------------|------------------------------------------|----------------------------------------------------------|
-| `blockchain.pullPolicy`            | Blockchain image pull policy             | `Always`                                                 |
+| `blockchain.image`                 | Blockchain image                         | `ibmblockchain/fabric-tools:1.0.0`                       |
+| `blockchain.pullPolicy`            | Blockchain image pull policy             | `IfNotPresent`                                           |
 | `blockchain.channelName`           | Blockchain channel name                  | `channel1`                                               |
 
 The above parameters map to the env variables defined in [IBM-Blockchain/ibm-container-service](https://github.ibm.com/IBM-Blockchain/ibm-container-service). For more information please refer to the [IBM-Blockchain/ibm-container-service](https://github.ibm.com/IBM-Blockchain/ibm-container-service) documentation.

@@ -18,9 +18,20 @@ spec:
 
   containers:
   - name: chaincodeinstall-org1peer1
-    image: ibmblockchain/fabric-tools:1.0.0
-    imagePullPolicy: {{.Values.blockchain.pullPolicy}}
-    command: ["sh", "-c", "while [ ! -f /shared/status_joinchannel_org1peer1_complete ]; do echo Waiting for joinchannel; sleep 2; done; git clone -b v1.0.0 https://github.com/hyperledger/fabric $GOPATH/src/github.com/hyperledger/fabric/ && peer chaincode install -n ${CHAINCODE_NAME} -v ${CHAINCODE_VERSION} -p github.com/hyperledger/fabric/examples/chaincode/go/chaincode_example02/ && touch /shared/status_chaincodeinstall_complete"]
+    image: {{ .Values.blockchain.image }}
+    imagePullPolicy: {{ .Values.blockchain.pullPolicy }}
+    command: 
+      - sh
+      - -c
+      - |
+        while [ ! -f /shared/status_joinchannel_org1peer1_complete ]; do 
+          echo Waiting for joinchannel
+          sleep 2
+        done
+        
+        git clone -b v1.0.0 https://github.com/hyperledger/fabric $GOPATH/src/github.com/hyperledger/fabric/ 
+        peer chaincode install -n ${CHAINCODE_NAME} -v ${CHAINCODE_VERSION} -p github.com/hyperledger/fabric/examples/chaincode/go/chaincode_example02/ 
+        touch /shared/status_chaincodeinstall_complete"]
     env:
     - name: CHAINCODE_NAME
       value: example02
