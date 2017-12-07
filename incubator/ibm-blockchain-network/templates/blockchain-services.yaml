@@ -1,10 +1,4 @@
 ---
-name: {{ template "ibm-blockchain-network.fullname" . }}-services
-labels:
-  app: {{ template "ibm-blockchain-network.name" . }}
-  chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-  release: {{ .Release.Name }}
-  heritage: {{ .Release.Service }}
 apiVersion: v1
 kind: Service
 metadata:

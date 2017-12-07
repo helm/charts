@@ -3,7 +3,7 @@
 kind: PersistentVolume
 apiVersion: v1
 metadata:
-  name: shared
+  name: composer-pvc
   labels:
     type: local
 spec:
@@ -12,16 +12,16 @@ spec:
   accessModes:
     - ReadWriteMany
   hostPath:
-    path: "/tmp"
+    path: "/composer"
 {{- end }}
 ---
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: shared
+  name: composer-pvc
 {{- if .Values.persistence.storageClass }}
   annotations:
-    volume.beta.kubernetes.io/storage-class: {{ .Values.persistence.storageClass }}
+    volume.beta.kubernetes.io/storage-class: "{{ .Values.persistence.storageClass }}"
 {{- end }}
 spec:
   accessModes:

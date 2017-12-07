@@ -1,10 +1,4 @@
 ---
-name: {{ template "ibm-blockchain-network.fullname" . }}-blockchain
-labels:
-  app: {{ template "ibm-blockchain-network.name" . }}
-  chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-  release: {{ .Release.Name }}
-  heritage: {{ .Release.Service }}
 apiVersion: v1
 kind: Pod
 metadata:
@@ -280,12 +274,6 @@ spec:
           value: 0.0.0.0:5010
         - name: CORE_PEER_EVENTS_ADDRESS
           value: 0.0.0.0:5011
-        # - name: CORE_PEER_GOSSIP_BOOTSTRAP
-          # value: blockchain-org1peer1:5010
-        # - name: CORE_PEER_GOSSIP_ORGLEADER
-          # value: "true"
-        # - name: CORE_PEER_GOSSIP_SKIPHANDSHAKE
-          # value: "true"
         - name: CORE_PEER_COMMITTER_ENABLED
           value: "true"
         - name: CORE_PEER_PROFILE_ENABLED
@@ -380,12 +368,6 @@ spec:
           value: 0.0.0.0:5010
         - name: CORE_PEER_EVENTS_ADDRESS
           value: 0.0.0.0:5011
-        # - name: CORE_PEER_GOSSIP_BOOTSTRAP
-          # value: blockchain-org2peer1:5010
-        # - name: CORE_PEER_GOSSIP_ORGLEADER
-          # value: "true"
-        # - name: CORE_PEER_GOSSIP_SKIPHANDSHAKE
-          # value: "true"
         - name: CORE_PEER_COMMITTER_ENABLED
           value: "true"
         - name: CORE_PEER_PROFILE_ENABLED
