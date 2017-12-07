@@ -1,8 +1,0 @@
-# We alias the child chart names to avoid having to deal with hyphenated 
-# YAML keys.
-
-dependencies:
-  - name: weave-scope-agent
-    condition: weave-scope-agent.enabled
-  - name: weave-scope-frontend
-    condition: weave-scope-frontend.enabled

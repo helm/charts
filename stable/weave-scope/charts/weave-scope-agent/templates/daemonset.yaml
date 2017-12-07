@@ -1,3 +1,4 @@
+{{- if .Values.enabled -}}
 apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
@@ -65,3 +66,4 @@ spec:
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
       serviceAccountName: {{ .Values.rbac.serviceAccountName | default (include "toplevel.fullname" .) }}
+{{- end -}}

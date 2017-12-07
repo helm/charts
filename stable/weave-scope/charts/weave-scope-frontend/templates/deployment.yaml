@@ -1,3 +1,4 @@
+{{- if .Values.enabled -}}
 apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
@@ -32,3 +33,4 @@ spec:
               protocol: TCP
           resources:
 {{ toYaml .Values.resources | indent 12 }}
+{{- end -}}

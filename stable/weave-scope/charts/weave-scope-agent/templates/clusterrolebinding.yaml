@@ -1,3 +1,4 @@
+{{- if .Values.enabled -}}
 {{- if .Values.rbac.create }}
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRoleBinding
@@ -17,3 +18,4 @@ subjects:
     name: {{ .Values.rbac.serviceAccountName | default (include "toplevel.fullname" .) }}
     namespace: {{ .Release.Namespace }}
 {{- end }}
+{{- end -}}

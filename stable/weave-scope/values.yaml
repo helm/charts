@@ -9,9 +9,10 @@ global:
     pullPolicy: "IfNotPresent"
   # global.service.*: the configuration of the service used to access the frontend
   service:
-    # global.service.name: (required if frontend.enabled == true) the short name desired for the frontend service
+    # global.service.name: the short name desired for the frontend service
+    # global.service.name may be specified if you need to use a specific service name, but will be generated if not specified
     # global.service.name is a global so we can access its value easily from the agent subchart
-    name: "weave-scope-app"
+    # name: "weave-scope-app"
     # global.service.port: (required if frontend.enabled == true) the port exposed by the Scope frontend service
     # global.service.port is a global so we can access its value easily from the agent subchart
     port: 80
@@ -54,9 +55,10 @@ weave-scope-agent:
     # weave-scope-agent.rbac.create *may* be set to false in an RBAC-enabled cluster to allow for external management of RBAC
     create: true
     # weave-scope-agent.rbac.serviceAccountName: the service account name that the agent will use
-    # weave-scope-agent.rbac.serviceAccountName *must* already exist if rbac.create is false
-    # weave-scope-agent.rbac.serviceAccountName *must not* already exist and is required to be set if rbac.create is true (it will then be created/managed as part of the release)
-    serviceAccountName: "weave-scope"
+    # weave-scope-agent.rbac.serviceAccountName may be specified if you need to use a specific service account name, but will be generated if not specified and rbac.create is true
+    # weave-scope-agent.rbac.serviceAccountName *must* be specified and already exist if rbac.create is false
+    # weave-scope-agent.rbac.serviceAccountName *must not* already exist if rbac.create is true (it will then be created/managed as part of the release)
+    # serviceAccountName: "weave-scope"
     # weave-scope-agent.resources.*: controls requests/limits for the agent
     # weave-scope-agent.resources.* values are all optional but should not be set to empty values
     # resources:
