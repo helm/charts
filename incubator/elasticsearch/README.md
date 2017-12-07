@@ -67,6 +67,7 @@ The following tables lists the configurable parameters of the elasticsearch char
 | `image.pullPolicy`                   | Container pull policy                                               | `Always`                             |
 | `cluster.name`                       | Cluster name                                                        | `elasticsearch`                      |
 | `cluster.kubernetesDomain`           | Kubernetes cluster domain name                                      | `cluster.local`                      |
+| `cluster.xpackEnable`                | Writes the X-Pack configuration options to the configuration file   | `false`                              |
 | `cluster.config`                     | Additional cluster config appended                                  | `{}`                                 |
 | `cluster.env`                        | Cluster environment variables                                       | `{}`                                 |
 | `client.name`                        | Client component name                                               | `client`                             |

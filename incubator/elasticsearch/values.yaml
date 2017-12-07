@@ -5,12 +5,15 @@ appVersion: "5.4"
 
 image:
   repository: "docker.elastic.co/elasticsearch/elasticsearch-oss"
-  tag: "6.0.0"
+  tag: "6.0.1"
   pullPolicy: "IfNotPresent"
 
 cluster:
   name: "elasticsearch"
   kubernetesDomain: cluster.local
+  # If you want X-Pack installed, switch to an image that includes it, enable this option and toggle the features you want
+  # enabled in the environment variables outlined in the README
+  xpackEnable: false
   config:
   env:
     # IMPORTANT: https://www.elastic.co/guide/en/elasticsearch/reference/current/important-settings.html#minimum_master_nodes
