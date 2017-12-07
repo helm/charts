@@ -80,10 +80,6 @@ mariadb:
   ## If you want to use an external database set this to false and supply details to externalDatabase above
   enabled: true
 
-  ## MariaDB Hostname
-  ## If you would prefer to use a preexisting database host setdeployMariadb to false and then enter the hostname below
-  # mariadbHostname:
-
   ## MariaDB admin password
   ## ref: https://github.com/bitnami/bitnami-docker-mariadb/blob/master/README.md#setting-the-root-password-on-first-run
   ##

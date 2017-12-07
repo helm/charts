@@ -63,12 +63,11 @@ The following tables lists the configurable parameters of the WordPress chart an
 | `smtpUsername`                       | User name for SMTP emails                  | `nil`                                                      |
 | `smtpProtocol`                       | SMTP protocol [`tls`, `ssl`]               | `nil`                                                      |
 | `mariadb.enabled`                    | Deploy MariaDB container(s)                | `true`                                                     |
-| `mariadb.mariadbHostname`            | MariaDB Hostname if deployMariadb is false | `nil`                                                      |
 | `mariadb.mariadbRootPassword`        | MariaDB admin password                     | `nil`                                                      |
 | `mariadb.mariadbDatabase`            | Database name to create                    | `bitnami_wordpress`                                        |
 | `mariadb.mariadbUser`                | Database user to create                    | `bn_wordpress`                                             |
 | `mariadb.mariadbPassword`            | Password for the database                  | _random 10 character long alphanumeric string_             |
-| `externalDatabase.hostname`          | Host of the external database              | `localhost`                                                      |
+| `externalDatabase.hostname`          | Host of the external database              | `localhost`                                                |
 | `externalDatabase.rootPassword`      | DB Root users password (schema creation)   | `nil`                                                    |
 | `externalDatabase.username`          | Existing username in the external db       | `bn_wordpress`                                             |
 | `externalDatabase.password`          | Password for the above username            | `nil`                                                      |
