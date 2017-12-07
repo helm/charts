@@ -3,9 +3,9 @@ Apache CouchDB is starting. Check the status of the Pods using:
   kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "couchdb.name" . }},release={{ .Release.Name }}"
 
 Once all of the Pods are fully Ready, execute the following command to create
-necessary system databases:
+some required system databases:
 
-  kubectl exec {{ template "couchdb.fullname" . }}-0 -c couchdb -- curl -s \
+  kubectl exec {{ if not .Values.allowAdminParty }}-it {{ end }}{{ template "couchdb.fullname" . }}-0 -c couchdb -- curl -s \
     http://127.0.0.1:5984/_cluster_setup \
     -X POST \
     -H "Content-Type: application/json" \
@@ -13,7 +13,7 @@ necessary system databases:
     -d '{"action": "finish_cluster"}'
 {{- else }}
     -d '{"action": "finish_cluster"}' \
-    -u user:pass # replace with admin creds from {{ template "couchdb.fullname" . }} Secret
+    -u <adminUsername>
 {{- end }}
 
 Then it's time to relax.
