@@ -105,6 +105,7 @@ Parameter | Description | Default
 `defaultBackend.service.type` | type of default backend service to create | `ClusterIP`
 `rbac.create` | If true, create & use RBAC resources | `false`
 `rbac.serviceAccountName` | ServiceAccount to be used (ignored if rbac.create=true) | `default`
+`revisionHistoryLimit` | The number of old history to retain to allow rollback. | `10`
 `statsExporter.name` | name of the Prometheus metrics exporter component | `stats-exporter`
 `statsExporter.image.repository` | Prometheus metrics exporter container image repository | `sophos/nginx-vts-exporter`
 `statsExporter.image.tag` | Prometheus metrics exporter image tag | `v0.6`
