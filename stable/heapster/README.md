@@ -35,6 +35,7 @@ The default configuration values for this chart are listed in `values.yaml`.
 | `image.repository`                    | Repository for container image                               | gcr.io/google_containers/heapster                 |
 | `image.tag`                           | Container image tag                                          | v1.3.0                                            |
 | `image.pullPolicy`                    | Image pull policy                                            | IfNotPresent                                      |
+| `service.nameOverride`                | Service name                                                 | `.Chart.Name`                                      |
 | `service.name`                        | Service port name                                            | api                                               |
 | `service.type`                        | Type for the service                                         | ClusterIP                                         |
 | `service.externalPort`                | Service external port                                        | 8082                                              |
