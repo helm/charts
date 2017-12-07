@@ -17,8 +17,7 @@ This chart will do the following:
 To install the chart, use the following:
 
 ```console
-$ helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
-$ helm install incubator/docker-registry
+$ helm install stable/docker-registry
 ```
 
 ## Configuration
