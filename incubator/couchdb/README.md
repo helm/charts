@@ -14,7 +14,7 @@ storage volumes to each Pod in the deployment.
 ## TL;DR
 
 ```bash
-$ helm install incubator/couchdb
+$ helm install incubator/couchdb --set allowAdminParty=true
 ```
 
 ## Prerequisites
@@ -24,6 +24,14 @@ $ helm install incubator/couchdb
 ## Installing the Chart
 
 To install the chart with the release name `my-release`:
+
+First, create a Secret containing `adminUsername`, `adminPassword` and `cookieAuthSecret` keys:
+
+```bash
+$ kubectl create secret generic my-release-couchdb --from-literal=adminUsername=foo --from-literal=adminPassword=bar --from-literal=cookieAuthSecret=baz
+```
+
+Next, add the incubator repo to your helm configuration and install the chart:
 
 ```bash
 $ helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
@@ -56,6 +64,7 @@ CouchDB chart and their default values:
 |---------------------------------|-------------------------------------------------------|----------------------------------------|
 | `clusterSize`                   | The initial number of nodes in the CouchDB cluster    | 3                                      |
 | `couchdbConfig`                 | Map allowing override elements of server .ini config  | {}                                     |
+| `allowAdminParty`               | If enabled, start cluster without admin account       | false (requires creating a Secret)     |
 | `erlangFlags`                   | Map of flags supplied to the underlying Erlang VM     | name: couchdb, setcookie: monster
 | `persistentVolume.enabled`      | Boolean determining whether to attach a PV to each node | false
 | `persistentVolume.size`         | If enabled, the size of the persistent volume to attach                          | 10Gi
@@ -82,7 +91,3 @@ A variety of other parameters are also configurable. See the comments in the
 | `service.enabled`               | true                                   |
 | `service.type`                  | ClusterIP                              |
 | `service.externalPort`          | 5984                                   |
-
-## TODO
-
-* Configure administrator account credentials using Secrets

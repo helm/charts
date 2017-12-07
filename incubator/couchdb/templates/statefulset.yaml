@@ -32,6 +32,23 @@ spec:
               containerPort: 4369
             - containerPort: 9100
           env:
+{{- if not .Values.allowAdminParty }}
+            - name: COUCHDB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "couchdb.fullname" . }}
+                  key: adminUsername
+            - name: COUCHDB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "couchdb.fullname" . }}
+                  key: adminPassword
+            - name: COUCHDB_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "couchdb.fullname" . }}
+                  key: cookieAuthSecret
+{{- end }}
             - name: ERL_FLAGS
               value: "{{ range $k, $v := .Values.erlangFlags }} -{{ $k }} {{ $v }} {{ end }}"
           livenessProbe:
@@ -52,6 +69,19 @@ spec:
         - name: couchdb-statefulset-assembler
           image: "{{ .Values.helperImage.repository }}:{{ .Values.helperImage.tag }}"
           imagePullPolicy: {{ .Values.helperImage.pullPolicy }}
+{{- if not .Values.allowAdminParty }}
+          env:
+            - name: COUCHDB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "couchdb.fullname" . }}
+                  key: adminUsername
+            - name: COUCHDB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "couchdb.fullname" . }}
+                  key: adminPassword
+{{- end }}
 {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}

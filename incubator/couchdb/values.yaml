@@ -1,6 +1,14 @@
 ## clusterSize is the initial size of the CouchDB cluster.
 clusterSize: 3
 
+## If allowAdminParty is enabled the cluster will start up without any database
+## administrator account; i.e., all users will be granted administrative
+## access. Otherwise, the system will look for a Secret called
+## <ReleaseName>-couchdb containing `adminUsername`, `adminPassword` and
+## `cookieAuthSecret` keys.
+## ref: https://kubernetes.io/docs/concepts/configuration/secret/
+allowAdminParty: false
+
 ## The storage volume used by each Pod in the StatefulSet. If a
 ## persistentVolume is not enabled, the Pods will use `emptyDir` ephemeral
 ## local storage. Setting the storageClass attribute to "-" disables dynamic
@@ -22,7 +30,7 @@ image:
 ## Sidecar that connects the individual Pods into a cluster
 helperImage:
   repository: kocolosk/couchdb-statefulset-assembler
-  tag: 1.0.0
+  tag: 1.1.0
   pullPolicy: IfNotPresent
 
 ## CouchDB is happy to spin up cluster nodes in parallel, but if you encounter
