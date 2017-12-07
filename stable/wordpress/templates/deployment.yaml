@@ -28,25 +28,47 @@ spec:
         - name: MARIADB_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
+            {{- if .Values.mariadb.enabled }}
               name: {{ template "mariadb.fullname" . }}
               key: mariadb-root-password
+            {{- else }}
+              name: {{ printf "%s-%s" .Release.Name "externaldb" }}
+              key: db-root-password
+            {{- end }}
         - name: MARIADB_HOST
-{{- if .Values.deployMariadb }}
+        {{- if .Values.mariadb.enabled }}
           value: {{ template "mariadb.fullname" . }}
-{{- else }}
-          value: {{ default "" .Values.mariadb.mariadbHostname | quote }}
-{{- end }}
+        {{- else }}
+          value: {{ default "localhost" .Values.externalDatabase.hostname | quote }}
+        {{- end }}
         - name: MARIADB_PORT_NUMBER
+        {{- if .Values.mariadb.enabled }}
           value: "3306"
+        {{- else }}
+          value: {{ default "3306" .Values.externalDatabase.port | quote }}
+        {{- end }}
         - name: WORDPRESS_DATABASE_NAME
+        {{- if .Values.mariadb.enabled }}
           value: {{ default "" .Values.mariadb.mariadbDatabase | quote }}
+        {{- else }}
+          value: {{ default "bitnami_wordpress" .Values.externalDatabase.dbName | quote }}
+        {{- end }}
         - name: WORDPRESS_DATABASE_USER
+        {{- if .Values.mariadb.enabled }}
           value: {{ default "" .Values.mariadb.mariadbUser | quote }}
+        {{- else }}
+          value: {{ default "bn_wordpress" .Values.externalDatabase.username | quote }}
+        {{- end }}
         - name: WORDPRESS_DATABASE_PASSWORD
           valueFrom:
             secretKeyRef:
+            {{- if .Values.mariadb.enabled }}
               name: {{ template "mariadb.fullname" . }}
               key: mariadb-password
+            {{- else }}
+              name: {{ printf "%s-%s" .Release.Name "externaldb" }}
+              key: db-password
+            {{- end }}
         - name: WORDPRESS_USERNAME
           value: {{ default "" .Values.wordpressUsername | quote }}
         - name: WORDPRESS_PASSWORD
