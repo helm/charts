@@ -102,6 +102,12 @@ spec:
               path: /healthz
               port: 10254
               scheme: HTTP
+{{- if .Values.controller.customTemplate.configMapName }}
+          volumeMounts:
+            - mountPath: /etc/nginx/template
+              name: nginx-template-volume
+              readOnly: true
+{{- end }}
           resources:
 {{ toYaml .Values.controller.resources | indent 12 }}
       {{- if .Values.controller.stats.enabled }}
@@ -135,6 +141,15 @@ spec:
     {{- end }}
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "nginx-ingress.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
       terminationGracePeriodSeconds: 60
+{{- if .Values.controller.customTemplate.configMapName }}
+      volumes:
+        - name: nginx-template-volume
+          configMap:
+            name: {{ .Values.controller.customTemplate.configMapName }}
+            items:
+            - key: {{ .Values.controller.customTemplate.configMapKey }}
+              path: nginx.tmpl
+{{- end }}
   updateStrategy:
 {{ toYaml .Values.controller.updateStrategy | indent 4 }}
 {{- end }}

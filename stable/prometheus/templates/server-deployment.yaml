@@ -57,6 +57,9 @@ spec:
           {{- range $key, $value := .Values.server.extraArgs }}
             - --{{ $key }}={{ $value }}
           {{- end }}
+          {{- if .Values.server.baseURL }}
+            - --web.external-url={{ .Values.server.baseURL }}
+          {{- end }}
           ports:
             - containerPort: 9090
           readinessProbe:
