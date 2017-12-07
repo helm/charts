@@ -98,6 +98,8 @@ The following tables lists the configurable parameters of the Traefik chart and 
 | `rbac.enabled`                  | Whether to enable RBAC with a specific cluster role and binding for Traefik | `false`                            |
 | `nodeSelector`                  | Node labels for pod assignment                                       | `{}`                                      |
 | `tolerations`                   | List of node taints to tolerate                                      | `[]`                                      |
+| `proxyProtocol.enabled`         | Enable receiving the Proxy protocol instead http or https            | `false`                                   |
+| `proxyProtocol.trustedIPs`      | List of trusted ip (ranges) from which to allow Proxy protocol traffic | `["10.0.0.0/8"]`                        |
 | `debug.enabled`                 | Turn on/off Traefik's debug mode. Enabling it will override the logLevel to `DEBUG` and provide `/debug/vars` endpoint that allows Go runtime stats to be inspected, such as number of Goroutines and memory stats | `false`                                   |
 | `ssl.enabled`                   | Whether to enable HTTPS                                              | `false`                                   |
 | `ssl.enforced`                  | Whether to redirect HTTP requests to HTTPS                           | `false`                                   |
