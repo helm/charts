@@ -9,7 +9,7 @@ metadata:
     release: "{{ .Release.Name }}"
   name: {{ template "grafana.server.fullname" . }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.server.replicaCount }}
   template:
     metadata:
       annotations:
