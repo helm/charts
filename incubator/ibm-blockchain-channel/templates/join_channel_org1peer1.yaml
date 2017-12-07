@@ -1,10 +1,4 @@
 ---
-name: {{ template "ibm-blockchain-channel.fullname" . }}-join-org1peer1
-labels:
-  app: {{ template "ibm-blockchain-channel.name" . }}
-  chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-  release: {{ .Release.Name }}
-  heritage: {{ .Release.Service }}
 apiVersion: v1
 kind: Pod
 metadata:
