@@ -1,19 +1,19 @@
-1. Get the application URL by running these commands:
-{{- if .Values.ingress.enabled }}
-{{- range .Values.ingress.hosts }}
-  http://{{ . }}
+Apache CouchDB is starting. Check the status of the Pods using:
+
+  kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "couchdb.name" . }},release={{ .Release.Name }}"
+
+Once all of the Pods are fully Ready, execute the following command to create
+necessary system databases:
+
+  kubectl exec {{ template "couchdb.fullname" . }}-0 -c couchdb -- curl -s \
+    http://127.0.0.1:5984/_cluster_setup \
+    -X POST \
+    -H "Content-Type: application/json" \
+{{- if .Values.allowAdminParty }}
+    -d '{"action": "finish_cluster"}'
+{{- else }}
+    -d '{"action": "finish_cluster"}' \
+    -u user:pass # replace with admin creds from {{ template "couchdb.fullname" . }} Secret
 {{- end }}
-{{- else if contains "NodePort" .Values.service.type }}
-  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "couchdb.fullname" . }})
-  export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
-  echo http://$NODE_IP:$NODE_PORT
-{{- else if contains "LoadBalancer" .Values.service.type }}
-     NOTE: It may take a few minutes for the LoadBalancer IP to be available.
-           You can watch the status of by running 'kubectl get svc -w {{ template "couchdb.fullname" . }}'
-  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "couchdb.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-  echo http://$SERVICE_IP:{{ .Values.service.externalPort }}
-{{- else if contains "ClusterIP" .Values.service.type }}
-  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "couchdb.name" . }},release={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
-  echo "Visit http://127.0.0.1:5984 to reach CouchDB through port forwarding"
-  kubectl port-forward $POD_NAME 5984:5984
-{{- end }}
+
+Then it's time to relax.
