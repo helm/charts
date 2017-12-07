@@ -13,7 +13,8 @@ This chart bootstraps a single node Litecoin deployment on a [Kubernetes](http:/
 
 ## Generate SSL certificate and deploy as secret
 
-```openssl req -x509 -nodes -days 3650 -newkey rsa:2048 -keyout server.key -out server.crt
+```bash
+openssl req -x509 -nodes -days 3650 -newkey rsa:2048 -keyout server.key -out server.crt
 kubectl create secret generic litecoind-ssl --from-file=server.crt --from-file=server.key
 ```
 

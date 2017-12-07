@@ -14,7 +14,8 @@ This chart bootstraps a single node Bitcoin deployment on a [Kubernetes](http://
 
 ## Generate SSL certificate and deploy as secret
 
-```openssl req -x509 -nodes -days 3650 -newkey rsa:2048 -keyout server.key -out server.crt
+```bash
+openssl req -x509 -nodes -days 3650 -newkey rsa:2048 -keyout server.key -out server.crt
 kubectl create secret generic bitcoind-ssl --from-file=server.crt --from-file=server.key
 ```
 
