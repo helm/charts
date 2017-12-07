@@ -1,0 +1,42 @@
+image: "kuberstack/litecoind"
+imageTag: "latest"
+imagePullPolicy: IfNotPresent
+
+RPCPort: 443
+
+ssl:
+  enabled: true
+  secretName: litecoind-ssl
+
+persistence:
+  enabled: true
+  ## database data Persistent Volume Storage Class
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  ##
+  # storageClass: "-"
+  accessMode: ReadWriteOnce
+  size: 300Gi
+
+## Configure resource requests and limits
+## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+##
+resources:
+  requests:
+    memory: 512Mi
+    cpu: 300m
+
+# Custom litecoind configuration files used to override default litecoind settings
+configurationFiles:
+  litecoin.conf: |-
+    onlynet=IPv4
+    server=1
+    rpcuser=rpcuser
+    rpcpassword=rpcpassword
+    rpcport=9332
+    rpcconnect=127.0.0.1
+    disablewallet=0
+    printtoconsole=1

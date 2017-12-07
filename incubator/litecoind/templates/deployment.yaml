@@ -1,0 +1,53 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "litecoind.fullname" . }}
+  labels:
+    app: {{ template "litecoind.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  template:
+    metadata:
+      labels:
+        app: {{ template "litecoind.fullname" . }}
+    spec:
+      containers:
+      - name: {{ template "litecoind.fullname" . }}
+        image: "{{ .Values.image }}:{{ .Values.imageTag }}"
+        imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+        ports:
+        - name: rpc
+          containerPort: {{ .Values.RPCPort }}
+        volumeMounts:
+        - name: data
+          mountPath: /srv/litecoind
+        {{- if .Values.ssl.enabled }}
+        - name: ssl
+          mountPath: /etc/litecoind-ssl
+        {{- end }}
+        {{- if .Values.configurationFiles }}
+        - name: configurations
+          mountPath: /etc/litecoind
+        {{- end }}
+      volumes:
+      {{- if .Values.ssl.enabled }}
+      - name: ssl
+        secret:
+          secretName: {{ .Values.ssl.secretName  }}
+      {{- end }}
+      {{- if .Values.configurationFiles }}
+      - name: configurations
+        configMap:
+          name: {{ template "litecoind.fullname" . }}
+      {{- end }}
+      - name: data
+      {{- if .Values.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.persistence.existingClaim | default (include "litecoind.fullname" .) }}
+      {{- else }}
+        emptyDir: {}
+      {{- end -}}

@@ -1,0 +1,16 @@
+name: litecoind
+version: 0.1.0
+description: litecoin is an innovative payment network and a new kind of money.
+keywords:
+- litecoind
+- cryptocurrency
+- blockchain
+home: https://litecoin.org/
+icon: https://litecoin.org/img/litecoin.svg
+sources:
+- https://github.com/kubernetes/charts
+- https://github.com/kuberstack/litecoind
+maintainers:
+- name: Daniel Yavorovych
+  email: daniel@arilot.com
+engine: gotpl
