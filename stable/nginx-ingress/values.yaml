@@ -152,6 +152,8 @@ controller:
       servicePort: 18080
       type: ClusterIP
 
+  lifecycle: {}
+
 ## Rollback limit
 ##
 revisionHistoryLimit: 10

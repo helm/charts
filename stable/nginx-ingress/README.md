@@ -64,6 +64,7 @@ Parameter | Description | Default
 `controller.podAnnotations` | annotations to be added to pods | `{}`
 `controller.replicaCount` | desired number of controller pods | `1`
 `controller.resources` | controller pod resource requests & limits | `{}`
+`controller.lifecycle` | controller pod lifecycle hooks | `{}`
 `controller.service.annotations` | annotations for controller service | `{}`
 `controller.publishService.enabled` | if true, the controller will set the endpoint records on the ingress objects to reflect those on the service | `false`
 `controller.publishService.pathOverride` | override of the default publish-service name | `""`
