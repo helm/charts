@@ -36,8 +36,8 @@ resources: {}
   #  cpu: 100m
   #  memory: 128Mi
 
-blockchain: 
+blockchain:
   toolsImage: ibmblockchain/fabric-tools:1.0.0
   peerImage: ibmblockchain/fabric-peer:1.0.0
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
   channelName: channel1

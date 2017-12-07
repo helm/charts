@@ -2,7 +2,7 @@
 name: {{ template "ibm-blockchain-channel.fullname" . }}-create
 labels:
   app: {{ template "ibm-blockchain-channel.name" . }}
-  chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+  chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
   release: {{ .Release.Name }}
   heritage: {{ .Release.Service }}
 apiVersion: v1
