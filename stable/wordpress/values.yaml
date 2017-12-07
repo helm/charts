@@ -53,13 +53,33 @@ allowEmptyPassword: yes
 # smtpUsername:
 # smtpProtocol:
 
-## Deploy MariaDB containers
-deployMariadb: true
+externalDatabase:
+  ## Database host
+  # hostname:
+
+  ## Database Root User (so wordpress can create the db schema etc)
+  # rootPassword:
+
+  ## non-root Username for Wordpress Database
+  # username: bn_wordpress
+
+  ## Database password
+  # password:
+
+  ## Database name
+  # dbName: bitnami_wordpress
+
+  ## Database port number
+  # port: 3306
 
 ##
 ## MariaDB chart configuration
 ##
 mariadb:
+  ## Whether to use the database specified as a requirement or not.
+  ## If you want to use an external database set this to false and supply details to externalDatabase above
+  enabled: true
+
   ## MariaDB Hostname
   ## If you would prefer to use a preexisting database host setdeployMariadb to false and then enter the hostname below
   # mariadbHostname:
