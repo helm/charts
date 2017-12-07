@@ -179,3 +179,7 @@ dashboard:
     basic:
       test: $apr1$H6uskkkW$IgXLP6ewTrSuBkTrqE8wj/
 ```
+
+### Proxy Protocol
+
+Normally, when traefik lives behind a LoadBalancer (like an AWS ELB), incoming traffic is all originating from that LoadBalancer, from traefik's point of view.  By setting the ELB to `Proxy` ([via an annotation](https://kubernetes.io/docs/concepts/services-networking/service/#proxy-protocol-support-on-aws)) and telling traefik to expect the Proxy protocol, the ELB acts as a transparant proxy, ie. traefik will pass incoming traffic along like it originated from the actual visitor instead of the ELB. Basically, you get to see the actual remote IP address of the client that's making the request.
