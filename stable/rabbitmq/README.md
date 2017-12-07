@@ -98,5 +98,4 @@ The chart mounts a [Persistent Volume](http://kubernetes.io/docs/user-guide/pers
 1. Install the chart
 ```bash
 $ helm install --set persistence.existingClaim=PVC_NAME rabbitmq
-``
-
+```

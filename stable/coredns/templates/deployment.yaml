@@ -85,3 +85,7 @@ spec:
             items:
             - key: Corefile
               path: Corefile
+            {{ range .Values.zoneFiles }}
+            - key: {{ .filename }}
+              path: {{ .filename }}
+            {{ end }}
