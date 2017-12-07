@@ -5,7 +5,7 @@
 ## TL;DR;
 
 ```bash
-$ helm install incubator/neo4j
+$ helm install stable/neo4j
 ```
 
 ## Introduction
@@ -22,7 +22,7 @@ This chart bootstraps a [Neo4j](https://github.com/neo4j/docker-neo4j) deploymen
 To install the chart with the release name `neo4j-helm`:
 
 ```bash
-$ helm install --name neo4j-helm incubator/neo4j --set neo4jPassword=mySecretPassword
+$ helm install --name neo4j-helm stable/neo4j --set neo4jPassword=mySecretPassword
 ```
 
 The command deploys Neo4j on the Kubernetes cluster in the default configuration but with the password set to `mySecretPassword`. The [configuration](#configuration) section lists the parameters that can be configured during installation.
@@ -62,7 +62,7 @@ The above parameters map to the env variables defined in the [Neo4j docker image
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```bash
-$ helm install --name neo4j-helm --set core.numberOfServers=5,readReplica.numberOfServers=3 incubator/neo4j
+$ helm install --name neo4j-helm --set core.numberOfServers=5,readReplica.numberOfServers=3 stable/neo4j
 ```
 
 The above command creates a cluster containing 5 core servers and 3 read replicas.
@@ -70,7 +70,7 @@ The above command creates a cluster containing 5 core servers and 3 read replica
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```bash
-$ helm install --name neo4j-helm -f values.yaml incubator/neo4j
+$ helm install --name neo4j-helm -f values.yaml stable/neo4j
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
