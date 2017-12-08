@@ -162,5 +162,3 @@ kube-state-metrics:
 
     ## Ignored if rbac.create is true
     serviceAccountName: default
-
-
