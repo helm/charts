@@ -155,3 +155,12 @@ rbac:
   serviceAccountName: default
 
 tolerations: []
+
+kube-state-metrics:
+  rbac:
+    create: true
+
+    ## Ignored if rbac.create is true
+    serviceAccountName: default
+
+
