@@ -173,11 +173,16 @@ spec:
   volumeClaimTemplates:
   - metadata:
       name: datadir
-      annotations:
-        volume.alpha.kubernetes.io/storage-class: "{{ .Values.StorageClass }}"
     spec:
       accessModes:
         - "ReadWriteOnce"
       resources:
         requests:
           storage: "{{ .Values.Storage }}"
+    {{- if .Values.StorageClass }}
+    {{- if (eq "-" .Values.StorageClass) }}
+      storageClassName: ""
+    {{- else }}
+      storageClassName: "{{ .Values.StorageClass }}"
+    {{- end }}
+    {{- end }}
