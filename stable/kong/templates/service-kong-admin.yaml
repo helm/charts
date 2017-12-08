@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "kong.fullname" . }}-admin
+spec:
+  type: {{ .Values.admin.type }}
+  {{- if and (eq .Values.admin.type "LoadBalancer") .Values.admin.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.admin.loadBalancerIP }}
+  {{- end }}
+  ports:
+  {{- if .Values.admin.useTLS }}
+  - name: kong-admin-ssl
+    port: {{ default 8444 .Values.admin.serviceSSLPort }}
+    targetPort: {{ default 8444 .Values.admin.containerSSLPort }}
+    protocol: TCP
+  {{- else }}
+  - name: kong-admin
+    port: {{ default 8001 .Values.admin.servicePort }}
+    targetPort: {{ default 8001 .Values.admin.containerPort }}
+    protocol: TCP
+  {{- end }}
+  selector:
+    app: {{ template "kong.fullname" . }}
