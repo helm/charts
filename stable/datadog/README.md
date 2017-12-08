@@ -62,7 +62,7 @@ The following tables lists the configurable parameters of the Datadog chart and 
 | `daemonset.useHostNetwork`  | If true, use the host's network    | `nil`                                     |
 | `daemonset.useHostPort`     | If true, use the same ports for both host and container  | `nil`               |
 | `kube-state-metrics.rbac.create`| If true, create & use RBAC resources for kube-state-metrics | `true`       |
-| `kube-state-metricsrbac.serviceAccount` | existing ServiceAccount to use (ignored if rbac.create=true) for kube-state-metrics | `default` |
+| `kube-state-metricsrbac.rbac.serviceAccount` | existing ServiceAccount to use (ignored if rbac.create=true) for kube-state-metrics | `default` |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
