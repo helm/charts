@@ -98,8 +98,8 @@ The following tables lists the configurable parameters of the Traefik chart and 
 | `rbac.enabled`                  | Whether to enable RBAC with a specific cluster role and binding for Traefik | `false`                            |
 | `nodeSelector`                  | Node labels for pod assignment                                       | `{}`                                      |
 | `tolerations`                   | List of node taints to tolerate                                      | `[]`                                      |
-| `proxyProtocol.enabled`         | Enable receiving the Proxy protocol instead http or https            | `false`                                   |
-| `proxyProtocol.trustedIPs`      | List of trusted ip (ranges) from which to allow Proxy protocol traffic | `["10.0.0.0/8"]`                        |
+| `proxyProtocol.enabled`         | Enable PROXY protocol support.                                       | `false`                                   |
+| `proxyProtocol.trustedIPs`      | ist of proxy IPs (CIDR ranges) trusted to accurately convey the end-user IP. | `[]`                              |
 | `debug.enabled`                 | Turn on/off Traefik's debug mode. Enabling it will override the logLevel to `DEBUG` and provide `/debug/vars` endpoint that allows Go runtime stats to be inspected, such as number of Goroutines and memory stats | `false`                                   |
 | `ssl.enabled`                   | Whether to enable HTTPS                                              | `false`                                   |
 | `ssl.enforced`                  | Whether to redirect HTTP requests to HTTPS                           | `false`                                   |
@@ -184,4 +184,4 @@ dashboard:
 
 ### Proxy Protocol
 
-Normally, when traefik lives behind a LoadBalancer (like an AWS ELB), incoming traffic is all originating from that LoadBalancer, from traefik's point of view.  By setting the ELB to `Proxy` ([via an annotation](https://kubernetes.io/docs/concepts/services-networking/service/#proxy-protocol-support-on-aws)) and telling traefik to expect the Proxy protocol, the ELB acts as a transparant proxy, ie. traefik will pass incoming traffic along like it originated from the actual visitor instead of the ELB. Basically, you get to see the actual remote IP address of the client that's making the request.
+Normally, when Traefik lives behind a LoadBalancer (like an AWS ELB), incoming traffic is all originating from that LoadBalancer, from Traefik's point of view.  By setting the ELB to `Proxy` ([via an annotation](https://kubernetes.io/docs/concepts/services-networking/service/#proxy-protocol-support-on-aws)) and telling Traefik to expect the Proxy protocol, the ELB acts as a transparant proxy, ie. Traefik will pass incoming traffic along like it originated from the actual visitor instead of the ELB. Basically, you get to see the actual remote IP address of the client that's making the request.
