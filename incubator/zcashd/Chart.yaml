@@ -1,6 +1,6 @@
 name: zcashd
 version: 0.1.0
-description:  Zcash is the first open, permissionless cryptocurrency that can fully protect the privacy of transactions using zero-knowledge cryptography.
+description: Zcash is the first open, permissionless cryptocurrency that can fully protect the privacy of transactions using zero-knowledge cryptography.
 keywords:
 - zcashd
 - cryptocurrency
