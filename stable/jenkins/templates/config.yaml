@@ -94,7 +94,7 @@ data:
 {{- end -}}
           </templates>
           <serverUrl>https://kubernetes.default</serverUrl>
-          <skipTlsVerify>false</skipTlsVerify>
+          <skipTlsVerify>true</skipTlsVerify>
           <namespace>{{ .Release.Namespace }}</namespace>
           <jenkinsUrl>http://{{ template "jenkins.fullname" . }}:{{.Values.Master.ServicePort}}{{ default "" .Values.Master.JenkinsUriPrefix }}</jenkinsUrl>
           <jenkinsTunnel>{{ template "jenkins.fullname" . }}-agent:50000</jenkinsTunnel>
