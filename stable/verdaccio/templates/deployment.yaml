@@ -1,0 +1,68 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: {{ template "verdaccio.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "verdaccio.fullname" . }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+    {{- if .Values.podAnnotations }}
+      annotations:
+{{ toYaml .Values.podAnnotations | indent 8 }}
+    {{- end }}
+      labels:
+        app: {{ template "verdaccio.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ template "verdaccio.name" . }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: 4873
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 4873
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 4873
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+          volumeMounts:
+{{- if .Values.persistence.mounts }}
+{{ toYaml .Values.persistence.mounts | indent 12 }}
+{{- end }}
+            - mountPath: /verdaccio/storage
+              name: storage
+              readOnly: false
+            - mountPath: /verdaccio/conf
+              name: config
+              readOnly: true
+      # Allow non-root user to access PersistentVolume
+      securityContext:
+        fsGroup: 1000
+      volumes:
+      - name: config
+        configMap:
+          name: {{ template "verdaccio.fullname" . }}
+{{- if .Values.persistence.volumes }}
+{{ toYaml .Values.persistence.volumes | indent 6 }}
+{{- end }}
+      - name: storage
+      {{- if .Values.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.persistence.existingClaim | default (include "verdaccio.fullname" .) }}
+      {{- else }}
+        emptyDir: {}
+      {{- end -}}
+    {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}

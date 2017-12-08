@@ -40,7 +40,7 @@ spec:
               key: postgres-password
         - name: SENTRY_POSTGRES_HOST
           value: {{ template "postgresql.fullname" . }}
-        - name: SENTRY_POSTRGES_PORT
+        - name: SENTRY_POSTGRES_PORT
           value: "5432"
         - name: SENTRY_REDIS_PASSWORD
           valueFrom:

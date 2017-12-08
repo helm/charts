@@ -47,7 +47,7 @@ The following tables lists the configurable parameters of the Redis chart and th
 
 | Parameter                        | Description                                           | Default                                                   |
 | -------------------------------- | ----------------------------------------------------- | --------------------------------------------------------- |
-| `redis_image`                    | Redis image                                           | `gcr.io/google_containers/redis:v1`                       |
+| `redis_image`                    | Redis image                                           | `quay.io/smile/redis:4.0.2`                               |
 | `persistentVolume.enabled`       | Use a PVC to persist data                             | `false`                                                   |
 | `persistentVolume.storageClass`  | Storage class of backing PVC                          | `generic`                                                 |
 | `persistentVolume.accessMode`    | Use volume as ReadOnly or ReadWrite                   | `ReadWriteOnce`                                           |
@@ -62,6 +62,8 @@ The following tables lists the configurable parameters of the Redis chart and th
 | `replicas.master`                | Number of master pods                                 | 1                                                         |
 | `replicas.slave`                 | Number of slave pods                                  | 1                                                         |
 | `replicas.sentinel`              | Number of sentinel pods                               | 3                                                         |
+| `nodeSelector`                   | Node labels for pod assignment                        | {}                                                        |
+| `tolerations`                    | Toleration labels for pod assignment                  | []                                                        |
 
 
 
@@ -69,7 +71,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 
 ```bash
 $ helm install \
-  --set redis_image=gcr.io/google_containers/redis:v1 \
+  --set redis_image=quay.io/smile/redis:4.0.2 \
     stable/redis-ha
 ```
 

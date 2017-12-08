@@ -1,0 +1,62 @@
+# Oauth client configuration specifics
+config:
+  # OAuth client ID
+  clientID: "XXXXXXX"
+  # OAuth client secret
+  clientSecret: "XXXXXXXX"
+  # Create a new secret with the following command
+  # python -c 'import os,base64; print base64.b64encode(os.urandom(16))'
+  cookieSecret: "XXXXXXXXXX"
+
+image:
+  repository: "a5huynh/oauth2_proxy"
+  tag: "2.2"
+  pullPolicy: "IfNotPresent"
+
+extraArgs:
+  email-domain: "*"
+  upstream: "file:///dev/null"
+  http-address: "0.0.0.0:4180"
+
+service:
+  type: ClusterIP
+  externalPort: 443
+  internalPort: 4180
+
+ingress:
+  enabled: false
+  # Used to create an Ingress record.
+  # hosts:
+    # - chart-example.local
+  # annotations:
+  #   kubernetes.io/ingress.class: nginx
+  #   kubernetes.io/tls-acme: "true"
+  # tls:
+    # Secrets must be manually created in the namespace.
+    # - secretName: chart-example-tls
+    #   hosts:
+    #     - chart-example.local
+
+resources: {}
+  # limits:
+  #   cpu: 100m
+  #   memory: 300Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 300Mi
+
+# Affinity for pod assignment
+# Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+# affinity: {}
+
+# Tolerations for pod assignment
+# Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+tolerations: []
+
+# Node labels for pod assignment
+# Ref: https://kubernetes.io/docs/user-guide/node-selection/
+nodeSelector: {}
+
+podAnnotations: {}
+podLabels: {}
+replicaCount: 1
