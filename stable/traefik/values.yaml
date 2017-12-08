@@ -91,7 +91,7 @@ rbac:
 metrics:
   prometheus:
     enabled: false
-    buckets: 0.1,0.3,1.2,5
+    buckets: 0.1,0.3,1.2,5.0
   datadog:
     enabled: false
     # address: "localhost:8125"
