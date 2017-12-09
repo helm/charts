@@ -31,3 +31,28 @@ persistence:
   ##   GKE, AWS & OpenStack)
   ##
   # StorageClass: "-"
+
+ingress:
+  ## If true, chart museum Ingress will be created
+  ##
+  enabled: false
+
+  ## chart museum Ingress annotations
+  ##
+  # annotations:
+  #   kubernetes.io/ingress.class: nginx
+  #   kubernetes.io/tls-acme: 'true'
+
+  ## chart museum Ingress hostnames
+  ## Must be provided if Ingress is enabled
+  ##
+  # hosts:
+  #   - chartmuseum.domain.com
+
+  ## chart museum Ingress TLS configuration
+  ## Secrets must be manually created in the namespace
+  ##
+  # tls:
+  #   - secretName: chart-server-tls
+  #     hosts:
+  #       - chartmuseum.domain.com
