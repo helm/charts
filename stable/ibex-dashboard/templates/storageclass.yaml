@@ -1,0 +1,15 @@
+{{- if and .Values.persistence.enabled (not .Values.persistence.existingClassName) -}}
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+ name: "{{ .Values.persistence.storageClass }}"
+{{- if .Values.persistence.storage.provisionerEnabled }}
+provisioner: {{ .Values.persistence.storage.provisioner }}
+{{- else }}
+provisioner: ""
+{{- end }}
+parameters:
+  {{- range $key, $value := .Values.persistence.storage.parameters }}
+    {{ $key }}: {{ $value }}
+  {{- end }}
+ {{- end -}}
