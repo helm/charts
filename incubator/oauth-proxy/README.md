@@ -50,6 +50,8 @@ Parameter | Description | Default
 `image.repository` | Image repository | `a5huynh/oauth2_proxy`
 `image.tag` | Image tag | `2.2`
 `ingress.enabled` | enable ingress | `false`
+`htpasswd.enabled` | enable htpasswd support | `false`
+`htpasswd.file.htpasswd` | File definition with the list of SHA username/passwords to be used. One per line as per a standard htpasswd file. | `Bogus password hash.`
 `nodeSelector` | node labels for pod assignment | `{}`
 `podAnnotations` | annotations to add to each pod | `{}`
 `podLabels` | additional labesl to add to each pod | `{}`
@@ -72,5 +74,26 @@ Alternatively, a YAML file that specifies the values for the above parameters ca
 ```console
 $ helm install incubator/oauth-proxy --name my-release -f values.yaml
 ```
+
+### Configuration of htpasswd config file
+
+If you want to, in adition to oauth2, have some basic auth working, specify the `htpasswd` section. Basic auth works if you don't already have been authenticated with Oauth2, so the order is:
+
+ 1. Oauth2
+ 1. Basic Auth
+
+You can see an example of how to generate the contents of this file below.
+
+You will have to specify the `htpasswd-file` parameter pointing to the directory `/htpasswd/htpasswd` in the values.yaml:
+```
+extraArgs:
+  htpasswd-file: "/htpasswd/htpasswd"
+```
+
+You can generate a password file with:
+```
+htpasswd -sbc /tmp/pwfile username password
+```
+Which will add a username/password of `username/password` to the file `/tmp/pwfile`. The contents of this file will have to be added to the section `htpasswd.file.htpasswd`. You will also need to use option `-s` to generate a SHA password as per the documentation on https://github.com/bitly/oauth2_proxy.
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
