@@ -3,23 +3,14 @@ kind: Deployment
 metadata:
   name: {{ template "fullname" . }}-sentinel
 spec:
-  replicas: {{ .Values.replicas.sentinel }}
+  replicas: {{ .Values.replicas.sentinels }}
   template:
     metadata:
       labels:
-        name: redis-sentinel
-        redis-sentinel: "true"
-        role: sentinel
+        app: "redis-ha"
+        name: "redis-sentinel"
 {{ include "labels.standard" . | indent 8 }}
     spec:
-      {{- if .Values.nodeSelector }}
-      nodeSelector:
-{{ toYaml .Values.nodeSelector | indent 8 }}
-      {{- end }}
-      {{- if .Values.tolerations }}
-      tolerations:
-{{ toYaml .Values.tolerations | indent 8 }}
-      {{- end }}
       containers:
       - name: sentinel
         image: {{ .Values.redis_image }}

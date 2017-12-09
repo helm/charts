@@ -47,7 +47,7 @@ The following tables lists the configurable parameters of the Redis chart and th
 
 | Parameter                        | Description                                           | Default                                                   |
 | -------------------------------- | ----------------------------------------------------- | --------------------------------------------------------- |
-| `redis_image`                    | Redis image                                           | `quay.io/smile/redis:4.0.2`                               |
+| `redis_image`                    | Redis image                                           | `quay.io/ianmaddox/redis:4.0.6`                           |
 | `persistentVolume.enabled`       | Use a PVC to persist data                             | `false`                                                   |
 | `persistentVolume.storageClass`  | Storage class of backing PVC                          | `generic`                                                 |
 | `persistentVolume.accessMode`    | Use volume as ReadOnly or ReadWrite                   | `ReadWriteOnce`                                           |
@@ -59,9 +59,8 @@ The following tables lists the configurable parameters of the Redis chart and th
 | `resources.master`               | CPU/Memory for master nodes resource requests/limits  | Memory: `200Mi`, CPU: `100m`                              |
 | `resources.slave`                | CPU/Memory for slave nodes  resource requests/limits  | Memory: `200Mi`, CPU: `100m`                              |
 | `resources.sentinel`             | CPU/Memory for sentinel node resource requests/limits | Memory: `200Mi`, CPU: `100m`                              |
-| `replicas.master`                | Number of master pods                                 | 1                                                         |
-| `replicas.slave`                 | Number of slave pods                                  | 1                                                         |
-| `replicas.sentinel`              | Number of sentinel pods                               | 3                                                         |
+| `replicas.servers`               | Number of redis master/slave pods                     | 3                                                         |
+| `replicas.sentinels`             | Number of sentinel pods                               | 3                                                         |
 | `nodeSelector`                   | Node labels for pod assignment                        | {}                                                        |
 | `tolerations`                    | Toleration labels for pod assignment                  | []                                                        |
 
@@ -71,7 +70,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 
 ```bash
 $ helm install \
-  --set redis_image=quay.io/smile/redis:4.0.2 \
+  --set redis_image=quay.io/ianmaddox/redis:4.0.6 \
     stable/redis-ha
 ```
 

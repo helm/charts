@@ -1,32 +1,19 @@
-## Configure resource requests and limits
+ ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
 ##
 resources:
-  master:
+  server:
     requests:
       memory: 200Mi
       cpu: 100m
     limits:
       memory: 700Mi
-  slave:
-    requests:
-      memory: 200Mi
-      cpu: 100m
-    limits:
-      memory: 200Mi
   sentinel:
     requests:
       memory: 200Mi
       cpu: 100m
     limits:
       memory: 200Mi
-
-## Node labels and tolerations for pod assignment
-## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
-## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
-nodeSelector: {}
-tolerations: []
-
 ## Enable persistence using Persistent Volume Claims
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
 ##
@@ -66,9 +53,8 @@ persistentVolume:
   ##
   subPath: ""
 ## Redis image version
-redis_image: quay.io/smile/redis:4.0.2
+redis_image: quay.io/ianmaddox/redis-sentinel:4.0.6
 ## replicas number for each component
 replicas:
-  master: 1
-  slave: 1
-  sentinel: 3
+  servers: 3
+  sentinels: 3
