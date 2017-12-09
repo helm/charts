@@ -28,6 +28,12 @@ server:
     # hosts:
     #   - grafana.domain.com
 
+    ## Grafana Ingress path
+    ## Optional, allows specifying paths for more flexibility
+    ## E.g. Traefik ingress likes paths
+    ##
+    # path: /
+
     ## Grafana Ingress TLS configuration
     ## Secrets must be manually created in the namespace
     ##
