@@ -12,8 +12,11 @@ spec:
       labels:
         app: {{ template "datadog.fullname" . }}
       name: {{ template "datadog.fullname" . }}
-      {{- if .Values.daemonset.podAnnotations }}
       annotations:
+        checksum/autoconf-config: {{ toYaml .Values.datadog.autoconf | sha256sum }}
+        checksum/confd-config: {{ toYaml .Values.datadog.confd | sha256sum }}
+        checksum/checksd-config: {{ toYaml .Values.datadog.checksd | sha256sum }}
+      {{- if .Values.daemonset.podAnnotations }}
 {{ toYaml .Values.daemonset.podAnnotations | indent 8 }}
       {{- end }}
     spec:

@@ -75,6 +75,7 @@ The following tables lists the configurable parameters of the Cassandra chart an
 | `image.repo`               | `cassandra` image repository                    | `cassandra`                                                |
 | `image.tag`                | `cassandra` image tag                           | `3`                                                        |
 | `image.pullPolicy`         | Image pull policy                               | `Always` if `imageTag` is `latest`, else `IfNotPresent`    |
+| `image.pullSecrets`        | Image pull secrets                              | `nil`                                                      |
 | `config.cluster_name`      | Username of new user to create.                 | `cassandra`                                                |
 | `config.cluster_size`      | Password for the new user.                      | `3`                                                        |
 | `config.seed_size`         | Name for new database to create.                | `2`                                                        |
