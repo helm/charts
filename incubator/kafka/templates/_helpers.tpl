@@ -20,10 +20,10 @@ Form the Zookeeper URL. If zookeeper is installed as part of this chart, use k8s
 else use user-provided URL
 */}}
 {{- define "zookeeper.url" }}
-{{- $port := .Values.zookeeper.Port | toString }}
-{{- if .Values.zookeeper.Enabled -}}
+{{- $port := .Values.zookeeper.port | toString }}
+{{- if .Values.zookeeper.enabled -}}
 {{- printf "%s-zookeeper:%s" .Release.Name $port }}
 {{- else -}}
-{{- printf "%s:%s" .Values.zookeeper.Url $port }}
+{{- printf "%s:%s" .Values.zookeeper.url $port }}
 {{- end -}}
 {{- end -}}

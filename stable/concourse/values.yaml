@@ -518,3 +518,57 @@ postgresql:
     ## Enable PostgreSQL persistence using Persistent Volume Claims.
     ##
     enabled: true
+
+## Configuration values for the Credential Manager.
+## ref: https://concourse.ci/creds.html
+##
+credentialManager:
+  ## Enable Credential Manager using below configuration.
+  ##
+  enabled: false
+
+  ## use Hashicorp Vault for Credential Manager.
+  ##
+  # vault:
+    ## URL pointing to vault addr (i.e. http://vault:8200).
+    ##
+    # url:
+
+    ## vault path under which to namespace credential lookup, defaults to /concourse.
+    ##
+    # pathPrefix:
+
+    ## if the Vault server is using a self-signed certificate, provide the CA public key.
+    ## the value will be written to /concourse-vault/ca.cert
+    ##
+    # caCert: |-
+
+    ## vault authentication backend, leave this blank if using an intial periodic token
+    ## currently supported backends: token, approle, cert
+    ##
+    # authBackend:
+
+    ## initial periodic token issued for concourse
+    ## ref: https://www.vaultproject.io/docs/concepts/tokens.html#periodic-tokens
+    ##
+    # clientToken:
+
+    ## set role_id for [AppRole](https://www.vaultproject.io/docs/auth/approle.html) backend
+    ## make sure to also set authBackend to `approle`.
+    ##
+    # appRoleId:
+
+    ## set secret_id for [AppRole](https://www.vaultproject.io/docs/auth/approle.html) backend
+    ## make sure to also set authBackend to `approle`.
+    ##
+    # appRoleSecretId:
+
+    ## provide the client certificate for authenticating with the [TLS](https://www.vaultproject.io/docs/auth/cert.html) backend
+    ## the value will be written to /concourse-vault/client.cert
+    ## make sure to also set authBackend to `cert`
+    # clientCert: |-
+
+    ## provide the client key for authenticating with the [TLS](https://www.vaultproject.io/docs/auth/cert.html) backend
+    ## the value will be written to /concourse-vault/client.key
+    ## make sure to also set authBackend to `cert`
+    # clientKey: |-

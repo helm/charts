@@ -53,7 +53,7 @@ The following tables lists the configurable parameters of the etcd-operator char
 | ------------------------------------------------- | -------------------------------------------------------------------- | ---------------------------------------------- |
 | `replicaCount`                                    | Number of etcd-operator replicas to create (only 1 is supported)     | `1`                                            |
 | `image.repository`                                | etcd-operator container image                                        | `quay.io/coreos/etcd-operator`                 |
-| `image.tag`                                       | etcd-operator container image tag                                    | `v0.3.2`                                       |
+| `image.tag`                                       | etcd-operator container image tag                                    | `v0.6.1`                                       |
 | `image.pullPolicy`                                | etcd-operator container image pull policy                            | `IfNotPresent`                                 |
 | `resources.limits.cpu`                            | CPU limit per etcd-operator pod                                      | `100m`                                         |
 | `resources.limits.memory`                         | Memory limit per etcd-operator pod                                   | `128Mi`                                        |
