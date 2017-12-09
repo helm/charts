@@ -9,9 +9,9 @@ metadata:
     heritage: {{ .Release.Service | quote }}
 spec:
   ports:
-  - port: {{ .Values.ServerPort }}
+  - port: {{ .Values.serverPort }}
     name: server
-  - port: {{ .Values.LeaderElectionPort }}
+  - port: {{ .Values.leaderElectionPort }}
     name: leader-election
   clusterIP: None
   selector:

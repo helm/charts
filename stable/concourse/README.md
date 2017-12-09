@@ -55,27 +55,11 @@ $ kubectl scale statefulset my-release-worker --replicas=3
 
 ### Restarting workers
 
-If worker pods go down, their persistent volumes are changed, or if you're having other issues with them, you'll need to restart the workers. Concourse workers were designed to be deployed onto infrastructure VMs which are less "ephemeral" than pods, so it isn't good at detecting when a worker goes down and comes back under the same hostname.
+If a worker isn't taking on work, you can restart the worker with `kubectl delete pod`. This will initiate a graceful shutdown by "retiring" the worker, with some waiting time before the worker starts up again to ensure concourse doesn't try looking for old volumes on the new worker. The values `worker.postStopDelaySeconds` and `worker.terminationGracePeriodSeconds` can be used to tune this.
 
-Scale the workers down to 0:
+### Worker Liveness Probe
 
-```
-kubectl scale statefulset concourse-worker --replicas=0
-
-```
-
-And then `fly workers` until the workers are detected to be `stalled`. Then for each worker
-```
-fly prune-worker -w concourse-worker-0
-fly prune-worker -w concourse-worker-1
-...
-
-```
-And finally
-
-```
-kubectl scale statefulset concourse-worker --replicas=3
-```
+The worker's Liveness Probe will trigger a restart of the worker if it detects unrecoverable errors, by looking at the worker's logs. The set of strings used to identify such errors could change in the future, but can be tuned with `worker.fatalErrors`. See [values.yaml](values.yaml) for the defaults.
 
 ## Configuration
 
@@ -133,10 +117,16 @@ The following tables lists the configurable parameters of the Concourse chart an
 | `web.ingress.annotations` | Concourse Web Ingress annotations | `{}` |
 | `web.ingress.hosts` | Concourse Web Ingress Hostnames | `[]` |
 | `web.ingress.tls` | Concourse Web Ingress TLS configuration | `[]` |
+| `web.additionalAffinities` | Additional affinities to apply to web pods. E.g: node affinity | `nil` |
 | `worker.nameOverride` | Override the Concourse Worker components name| `worker` |
 | `worker.replicas` | Number of Concourse Worker replicas | `2` |
-| `worker.minAvailable` | Minimun number of workers available after an eviction | `1` |
+| `worker.minAvailable` | Minimum number of workers available after an eviction | `1` |
 | `worker.resources` | Concourse Worker resource requests and limits | `{requests: {cpu: "100m", memory: "512Mi"}}` |
+| `worker.additionalAffinities` | Additional affinities to apply to worker pods. E.g: node affinity | `nil` |
+| `worker.postStopDelaySeconds` | Time to wait after graceful shutdown of worker before starting up again | `60` |
+| `worker.terminationGracePeriodSeconds` | Upper bound for graceful shutdown, including `worker.postStopDelaySeconds` | `120` |
+| `worker.fatalErrors` | Newline delimited strings which, when logged, should trigger a restart of the worker | *See [values.yaml](values.yaml)* |
+| `worker.updateStrategy` | `OnDelete` or `RollingUpdate` (requires Kubernetes >= 1.7) | `RollingUpdate` |
 | `persistence.enabled` | Enable Concourse persistence using Persistent Volume Claims | `true` |
 | `persistence.worker.class` | Concourse Worker Persistent Volume Storage Class | `generic` |
 | `persistence.worker.accessMode` | Concourse Worker Persistent Volume Access Mode | `ReadWriteOnce` |
@@ -147,6 +137,16 @@ The following tables lists the configurable parameters of the Concourse chart an
 | `postgresql.postgresPassword` | PostgreSQL Password for the new user | `concourse` |
 | `postgresql.postgresDatabase` | PostgreSQL Database to create | `concourse` |
 | `postgresql.persistence.enabled` | Enable PostgreSQL persistence using Persistent Volume Claims | `true` |
+| `credentialManager.enabled` | Enable Credential Manager | `false` |
+| `credentialManager.vault.url` | Vault Server URL | `nil` |
+| `credentialManager.vault.pathPrefix` | Vault path to namespace secrets | `/concourse` |
+| `credentialManager.vault.caCert` | CA public certificate when using self-signed TLS with Vault | `nil` |
+| `credentialManager.vault.authBackend` | Vault Authentication Backend to use, leave blank when using clientToken | `nil` |
+| `credentialManager.vault.clientToken` | Vault periodic client token | `nil` |
+| `credentialManager.vault.appRoleId` | Vault AppRole RoleID | `nil` |
+| `credentialManager.vault.appRoleSecretId` | Vault AppRole SecretID | `nil` |
+| `credentialManager.vault.clientCert` | Vault Client Certificate | `nil` |
+| `credentialManager.vault.clientKey` | Vault Client Key | `nil` |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
@@ -299,4 +299,30 @@ postgresql:
   ##
   uri: postgres://concourse:changeme@my-postgres.com:5432/concourse?sslmode=require
 
+```
+
+### Credential Management
+
+By default, this chart will not use a [Credential Manager](https://concourse.ci/creds.html).
+
+```yaml
+## Configuration values for the Credential Manager.
+## ref: https://concourse.ci/creds.html
+##
+credentialManager:
+  ## Enable Credential Manager using below configuration.
+  ##
+  enabled: true
+
+  ## use Hashicorp Vault for Credential Manager.
+  ##
+  vault:
+    ## URL pointing to vault addr (i.e. http://vault:8200).
+    ##
+    url: http://vault:8200
+
+    ## initial periodic token issued for concourse
+    ## ref: https://www.vaultproject.io/docs/concepts/tokens.html#periodic-tokens
+    ##
+    clientToken: PERIODIC_VAULT_TOKEN 
 ```

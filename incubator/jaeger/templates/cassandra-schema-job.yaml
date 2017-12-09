@@ -1,0 +1,81 @@
+{{ if not (empty .Values.cassandra.config.host) }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: "{{ template "jaeger.fullname" . }}-cassandra-schema"
+  labels:
+    app: "{{ template "jaeger.name" . }}"
+    jaeger-infra: cassandra-schema-job
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    component: "cassandra-schema"
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+{{- if .Values.schema.annotations }}
+  annotations:
+{{ toYaml .Values.schema.annotations | indent 6 }}
+{{- end }}
+spec:
+  activeDeadlineSeconds: 120
+  template:
+    metadata:
+      name: "{{ template "jaeger.fullname" . }}-cassandra-schema"
+{{- if .Values.schema.podLabels }}
+      labels:
+{{ toYaml .Values.schema.podLabels | indent 8 }}
+{{- end }}
+    spec:
+      containers:
+      - name: "{{ template "jaeger.fullname" . }}-cassandra-schema"
+        image: "{{ .Values.schema.image }}:{{ .Values.schema.tag }}"
+        imagePullPolicy: {{ .Values.schema.pullPolicy }}
+        env:
+          - name: CQLSH_HOST
+            value: "{{ .Values.cassandra.config.host }}"
+          - name: MODE
+            value: "{{ .Values.schema.mode }}"
+          - name: DATACENTER
+            value: "{{ .Values.cassandra.config.dc_name }}"
+        resources:
+{{ toYaml .Values.schema.resources | indent 10 }}
+      restartPolicy: OnFailure
+{{ else if .Values.tags.cassandra }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: "{{ template "jaeger.fullname" . }}-cassandra-schema"
+  labels:
+    app: "{{ template "jaeger.name" . }}"
+    jaeger-infra: cassandra-schema-job
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    component: "cassandra-schema"
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+{{- if .Values.schema.annotations }}
+  annotations:
+{{ toYaml .Values.schema.annotations | indent 6 }}
+{{- end }}
+spec:
+  activeDeadlineSeconds: 120
+  template:
+    metadata:
+      name: "{{ template "jaeger.fullname" . }}-cassandra-schema"
+{{- if .Values.schema.podLabels }}
+      labels:
+{{ toYaml .Values.schema.podLabels | indent 8 }}
+{{- end }}
+    spec:
+      containers:
+      - name: "{{ template "jaeger.fullname" . }}-cassandra-schema"
+        image: "{{ .Values.schema.image }}:{{ .Values.schema.tag }}"
+        imagePullPolicy: {{ .Values.schema.pullPolicy }}
+        env:
+          - name: CQLSH_HOST
+            value: "{{ template "cassandra.fullname" . }}"
+          - name: MODE
+            value: "{{ .Values.schema.mode }}"
+          - name: DATACENTER
+            value: "{{ .Values.cassandra.config.dc_name }}"
+        resources:
+{{ toYaml .Values.schema.resources | indent 10 }}
+      restartPolicy: OnFailure
+{{ end }}

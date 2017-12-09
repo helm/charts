@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "gogs.fullname" . }}
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
 spec:
@@ -11,7 +11,7 @@ spec:
     targetPort: 3000
     name: {{ default "gogs" .Values.service.nameOverride }}-http
   - port: {{ .Values.service.sshPort | int }}
-    targetPort: 2222
+    targetPort:  {{ .Values.service.sshPort | int }}
     name: {{ default "gogs" .Values.service.nameOverride }}-ssh
   selector:
-    app: {{ template "fullname" . }}
+    app: {{ template "gogs.fullname" . }}

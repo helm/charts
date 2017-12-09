@@ -38,6 +38,9 @@ spec:
       port: {{ .Values.alertmanager.service.servicePort }}
       protocol: TCP
       targetPort: 9093
+    {{- if .Values.alertmanager.service.nodePort }}
+      nodePort: {{ .Values.alertmanager.service.nodePort }}
+    {{- end }}
   selector:
     app: {{ template "prometheus.name" . }}
     component: "{{ .Values.alertmanager.name }}"

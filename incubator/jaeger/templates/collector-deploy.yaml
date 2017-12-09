@@ -1,0 +1,68 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: "{{ template "jaeger.fullname" . }}-collector"
+  labels:
+    app: "{{ template "jaeger.name" . }}"
+    jaeger-infra: collector-deployment
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    component: "collector"
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+{{- if .Values.collector.annotations }}
+  annotations:
+{{ toYaml .Values.collector.annotations | indent 6 }}
+{{- end }}
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: "{{ template "jaeger.name" . }}"
+        component: "collector"
+        release: "{{ .Release.Name }}"
+        jaeger-infra: collector-pod
+{{- if .Values.collector.podLabels }}
+{{ toYaml .Values.collector.podLabels | indent 8 }}
+{{- end }}
+    spec:
+      nodeSelector:
+{{ toYaml .Values.collector.nodeSelector | indent 8 }}
+      containers:
+      - name: "{{ template "jaeger.fullname" . }}-collector"
+        image: "{{ .Values.collector.image }}:{{ .Values.collector.tag }}"
+        imagePullPolicy: {{ .Values.collector.pullPolicy }}
+        ports:
+        - containerPort: {{ .Values.collector.service.tchannelPort }}
+          protocol: TCP
+        - containerPort: {{ .Values.collector.service.httpPort }}
+          protocol: TCP
+        - containerPort: {{ .Values.collector.service.zipkinPort }}
+          protocol: TCP
+        resources:
+{{ toYaml .Values.collector.resources | indent 10 }}
+        command:
+        - "/go/bin/collector-linux"
+{{ if not (empty .Values.elasticsearch.config.host) }}
+        - "--span-storage.type=elasticsearch"
+        - "--es.server-urls={{ .Values.elasticsearch.config.host }}"
+        - "--es.username={{ .Values.elasticsearch.config.username }}"
+        - "--es.password={{ .Values.elasticsearch.config.password }}"
+{{ else if .Values.tags.elasticsearch }}
+        - "--span-storage.type=elasticsearch"
+        - "--es.server-urls=http://{{ template "elasticsearch.fullname" . }}-client:9200"
+{{ else if not (empty .Values.cassandra.config.host) }}
+        - "--cassandra.servers={{ .Values.cassandra.config.host }}"
+        - "--cassandra.keyspace=jaeger_v1_{{ .Values.cassandra.config.dc_name }}"
+{{ else }}
+        - "--cassandra.servers={{ template "cassandra.fullname" . }}"
+        - "--cassandra.keyspace=jaeger_v1_{{ .Values.cassandra.config.dc_name }}"
+{{ end }}
+        - "--collector.zipkin.http-port={{ .Values.collector.service.zipkinPort }}"
+{{- range $key, $value := .Values.collector.cmdlineParams }}
+        - "{{ $value }}"
+{{- end }}
+      dnsPolicy: {{ .Values.collector.dnsPolicy }}
+      restartPolicy: Always

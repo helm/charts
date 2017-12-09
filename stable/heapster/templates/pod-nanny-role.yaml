@@ -3,9 +3,9 @@
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: Role
 metadata:
-  name: {{ template "fullname" . }}-pod-nanny
+  name: {{ template "heapster.fullname" . }}-pod-nanny
   labels:
-    app: {{ template "name" . }}
+    app: {{ template "heapster.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}

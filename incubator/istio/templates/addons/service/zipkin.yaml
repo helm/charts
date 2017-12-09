@@ -1,0 +1,20 @@
+{{- if and .Values.istio.install (not .Release.IsInstall) -}}
+{{ if .Values.addons.zipkin.enabled }}
+{{- $serviceName := include "istio.name" . -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $serviceName }}-{{ .Values.addons.zipkin.deployment.name }}
+  labels:
+{{ include "istio.labels.standard" . | indent 4 }}
+spec:
+  type: {{ .Values.addons.zipkin.service.type }}
+  ports:
+  - name: http
+    port: {{ .Values.addons.zipkin.service.externalPort }}
+  selector:
+    app: {{ include "istio.name" . }}
+    component: {{ $serviceName }}-{{ .Values.addons.zipkin.deployment.name }}
+    release: {{ .Release.Name }}
+{{ end }}
+{{- end -}}

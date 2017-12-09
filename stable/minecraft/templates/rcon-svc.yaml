@@ -2,9 +2,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: "{{ template "fullname" . }}-rcon"
+  name: "{{ template "minecraft.fullname" . }}-rcon"
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "minecraft.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -16,5 +16,5 @@ spec:
     targetPort: rcon
     protocol: TCP
   selector:
-    app: {{ template "fullname" . }}
+    app: {{ template "minecraft.fullname" . }}
 {{- end }}

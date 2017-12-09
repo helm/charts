@@ -1,9 +1,9 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "mysql.fullname" . }}
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "mysql.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -11,7 +11,7 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "fullname" . }}
+        app: {{ template "mysql.fullname" . }}
     spec:
       initContainers:
       - name: "remove-lost-found"
@@ -25,7 +25,7 @@ spec:
           subPath: {{ .Values.persistence.subPath }}
           {{- end }}
       containers:
-      - name: {{ template "fullname" . }}
+      - name: {{ template "mysql.fullname" . }}
         image: "{{ .Values.image }}:{{ .Values.imageTag }}"
         imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
         resources:
@@ -38,12 +38,12 @@ spec:
         - name: MYSQL_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "mysql.fullname" . }}
               key: mysql-root-password
         - name: MYSQL_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "mysql.fullname" . }}
               key: mysql-password
         {{- end }}
         - name: MYSQL_USER
@@ -93,12 +93,12 @@ spec:
       {{- if .Values.configurationFiles }}
       - name: configurations
         configMap:
-          name: {{ template "fullname" . }}
+          name: {{ template "mysql.fullname" . }}
       {{- end }}
       - name: data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ .Values.persistence.existingClaim | default (include "fullname" .) }}
+          claimName: {{ .Values.persistence.existingClaim | default (include "mysql.fullname" .) }}
       {{- else }}
         emptyDir: {}
       {{- end -}}

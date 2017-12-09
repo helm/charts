@@ -20,7 +20,7 @@ helm delete  --purge "cassandra"
 ```
 
 ## Persist data
-You need to create `StorageClass` before able to persist data in persistent volume. 
+You need to create `StorageClass` before able to persist data in persistent volume.
 To create a `StorageClass` on Google Cloud, run the following
 
 ```bash
@@ -65,6 +65,34 @@ nodes:
     nodeSelector:
       cloud.google.com/gke-nodepool: pool-db
 ```
+
+## Configuration
+
+The following tables lists the configurable parameters of the Cassandra chart and their default values.
+
+| Parameter                  | Description                                     | Default                                                    |
+| -----------------------    | ---------------------------------------------   | ---------------------------------------------------------- |
+| `image.repo`               | `cassandra` image repository                    | `cassandra`                                                |
+| `image.tag`                | `cassandra` image tag                           | `3`                                                        |
+| `image.pullPolicy`         | Image pull policy                               | `Always` if `imageTag` is `latest`, else `IfNotPresent`    |
+| `image.pullSecrets`        | Image pull secrets                              | `nil`                                                      |
+| `config.cluster_name`      | Username of new user to create.                 | `cassandra`                                                |
+| `config.cluster_size`      | Password for the new user.                      | `3`                                                        |
+| `config.seed_size`         | Name for new database to create.                | `2`                                                        |
+| `config.num_tokens`        | Initdb Arguments                                | `256`                                                      |
+| `config.dc_name`           | Initdb Arguments                                | `DC1`                                                      |
+| `config.rack_name`         | Initdb Arguments                                | `RAC1`                                                     |
+| `config.endpoint_snitch`   | Initdb Arguments                                | `SimpleSnitch`                                             |
+| `config.max_heap_size`     | Initdb Arguments                                | `2048M`                                                    |
+| `config.heap_new_size`     | Initdb Arguments                                | `512M`                                                     |
+| `config.ports.cql`         | Initdb Arguments                                | `9042`                                                     |
+| `config.ports.thrift`      | Initdb Arguments                                | `9160`                                                     |
+| `persistence.enabled`      | Use a PVC to persist data                       | `true`                                                     |
+| `persistence.storageClass` | Storage class of backing PVC                    | `nil` (uses alpha storage class annotation)                |
+| `persistence.accessMode`   | Use volume as ReadOnly or ReadWrite             | `ReadWriteOnce`                                            |
+| `persistence.size`         | Size of data volume                             | `10Gi`                                                     |
+| `resources`                | CPU/Memory resource requests/limits             | Memory: `4Gi`, CPU: `2`                               |
+| `service.type`             | k8s service type exposing ports, e.g. `NodePort`| `ClusterIP`                                                |
 
 ## Scale cassandra
 When you want to change the cluster size of your cassandra, you can use the helm upgrade command.

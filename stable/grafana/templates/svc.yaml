@@ -23,6 +23,10 @@ spec:
       nodePort:  {{ .Values.server.service.nodePort }}
   {{- end }}
 {{- end }}
+{{- if .Values.server.service.externalIPs }}
+  externalIPs:
+{{ toYaml .Values.server.service.externalIPs | indent 4 }}
+{{- end }}
   selector:
     app: {{ template "grafana.fullname" . }}
     component: "{{ .Values.server.name }}"

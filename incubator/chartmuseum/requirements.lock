@@ -1,0 +1,6 @@
+dependencies:
+- name: common
+  repository: https://kubernetes-charts-incubator.storage.googleapis.com/
+  version: 0.0.1
+digest: sha256:306378be27e855f6823d057c0d90ba3be227d44dc75b2c70c484a03c2515511e
+generated: 2017-11-14T11:12:37.260876101Z
