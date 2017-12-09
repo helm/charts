@@ -42,6 +42,10 @@ spec:
           mountPath: /vault/config/
         - name: vault-root
           mountPath: /root/
+        {{- range .Values.vault.customSecrets }}
+        - name: {{ .secretName }}
+          mountPath: {{ .mountPath }}
+        {{- end }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
       affinity:
@@ -60,3 +64,8 @@ spec:
             name: "{{ template "vault.fullname" . }}-config-{{ .Release.Revision }}"
         - name: vault-root
           emptyDir: {}
+        {{- range .Values.vault.customSecrets }}
+        - name: {{ .secretName }}
+          secret:
+            secretName: {{ .secretName }}
+        {{- end }}
