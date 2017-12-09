@@ -19,15 +19,15 @@ provider: aws
 
 # AWS Access keys to inject as environment variables
 aws:
-  secret_key: ""
-  access_key: ""
+  secretKey: ""
+  accessKey: ""
   region: "us-east-1"
   # Filter for zones of this type (optional, options: public, private)
-  zone_type: ""
+  zoneType: ""
 
 # Cloudflare keys to inject as environment variables
 cloudflare:
-  api_key: ""
+  apiKey: ""
   email: ""
 
 ## Limit possible target zones by domain suffixes (optional)

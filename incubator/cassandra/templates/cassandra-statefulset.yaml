@@ -45,6 +45,9 @@ spec:
     metadata:
       labels:
         app: {{ template "cassandra.fullname" . }}
+{{- if .Values.podLabels }}
+{{ toYaml .Values.podLabels | indent 8 }}
+{{- end }}
     spec:
 {{- if .Values.selector }}
 {{ toYaml .Values.selector | indent 6 }}
@@ -100,6 +103,10 @@ spec:
         volumeMounts:
         - name: data
           mountPath: /var/lib/cassandra
+      {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+        - name: {{ .Values.image.pullSecrets }}
+      {{- end }}
 {{- if not .Values.persistence.enabled }}
       volumes:
       - name: data

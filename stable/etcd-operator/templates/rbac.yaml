@@ -17,9 +17,21 @@ rules:
   verbs:
   - "*"
 - apiGroups:
+  - etcd.database.coreos.com
+  resources:
+  - etcdclusters
+  verbs:
+  - "*"
+- apiGroups:
   - extensions
   resources:
   - thirdpartyresources
+  verbs:
+  - "*"
+- apiGroups:
+  - apiextensions.k8s.io
+  resources:
+  - customresourcedefinitions
   verbs:
   - "*"
 - apiGroups:

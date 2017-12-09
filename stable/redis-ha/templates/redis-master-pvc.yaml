@@ -1,0 +1,25 @@
+{{- if .Values.persistentVolume.enabled }}
+{{- if not .Values.persistentVolume.existingClaim -}}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ template "fullname" . }}-master
+  labels:
+{{ include "labels.standard" . | indent 4 }}
+  annotations:
+  {{- if .Values.persistentVolume.storageClass }}
+    volume.beta.kubernetes.io/storage-class: "{{ .Values.persistentVolume.storageClass }}"
+  {{- else }}
+    volume.alpha.kubernetes.io/storage-class: default
+  {{- end }}
+  {{- if .Values.persistentVolume.annotations }}
+{{ toYaml .Values.persistentVolume.annotations | indent 4 }}
+  {{- end }}
+spec:
+  accessModes:
+{{ toYaml .Values.persistentVolume.accessModes | indent 4 }}
+  resources:
+    requests:
+      storage: {{ .Values.persistentVolume.size | quote }}
+{{- end }}
+{{- end }}

@@ -2,10 +2,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "keel.fullname" . }}
   namespace: kube-system
   labels:
-    app: {{ template "name" . }}
+    app: {{ template "keel.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
@@ -17,7 +17,7 @@ spec:
       protocol: TCP
       name: keel
   selector:
-    app: {{ template "name" . }}
+    app: {{ template "keel.name" . }}
     release: {{ .Release.Name }}
   sessionAffinity: None
 {{- end }}

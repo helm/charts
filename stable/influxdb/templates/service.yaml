@@ -5,9 +5,9 @@ metadata:
   annotations:
 {{ toYaml .Values.service.annotations | indent 4 }}
 {{- end }}
-  name: {{ template "fullname" . }}
+  name: {{ template "influxdb.fullname" . }}
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "influxdb.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -45,4 +45,4 @@ spec:
     targetPort: {{ .Values.config.opentsdb.bind_address }}
   {{- end }}
   selector:
-    app: {{ template "fullname" . }}
+    app: {{ template "influxdb.fullname" . }}
