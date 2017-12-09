@@ -3,7 +3,7 @@
 ## Distributed Minio ref: https://docs.minio.io/docs/distributed-minio-quickstart-guide
 ##
 image: "minio/minio"
-imageTag: "RELEASE.2017-10-27T18-59-02Z"
+imageTag: "RELEASE.2017-11-22T19-55-46Z"
 imagePullPolicy: "Always"
 mode: "standalone"
 
@@ -39,12 +39,22 @@ persistence:
   accessMode: ReadWriteOnce
   size: 10Gi
 
+  ## If subPath is set mount a sub folder of a volume instead of the root of the volume.
+  ## This is especially handy for volume plugins that don't natively support sub mounting (like glusterfs).
+  ##
+  subPath: ""
+
 ## Expose the Minio service to be accessed from outside the cluster (LoadBalancer service).
 ## or access it from within the cluster (ClusterIP service). Set the service type and the port to serve it.
 ## ref: http://kubernetes.io/docs/user-guide/services/
 ##
 serviceType: LoadBalancer
 servicePort: 9000
+
+## Node labels for pod assignment
+## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+##
+nodeSelector: {}
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -53,7 +63,6 @@ resources:
   requests:
     memory: 256Mi
     cpu: 250m
-
 
 ## Create a bucket after minio install
 ##
@@ -67,6 +76,15 @@ defaultBucket:
 ## https://docs.minio.io/docs/minio-bucket-notification-guide
 ##
 minioConfig:
+  region: "us-east-1"
+  browser: "on"
+  domain: ""
+  logger:
+    console:
+      enable: true
+    file:
+      enable: false
+      filename: ""
   aqmp:
     enable: false
     url: ""
