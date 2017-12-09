@@ -8,9 +8,7 @@ data:
       {{- range $key, $plugin := .Values.plugins }}
       {{- if $plugin.enabled }}
       {{- if eq "kubernetes" $key }}
-        kubernetes {{ $plugin.clusterDomain }} {
-          cidrs {{ $plugin.clusterCidr }}
-        }
+        kubernetes {{ $plugin.clusterDomain }} {{ $plugin.clusterCidr }}
       {{- end }}
       {{- if eq "etcd" $key }}
         etcd {{ range $plugin.zones }}{{ . }} {{ end }}{
