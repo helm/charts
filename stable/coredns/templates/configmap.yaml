@@ -41,4 +41,10 @@ data:
       {{- end }}
       {{- end }}
       {{- end }}
+      {{- range .Values.zoneFiles }}
+        file /etc/coredns/{{ .filename }} {{ .domain }}
+      {{- end }}
     }
+  {{- range .Values.zoneFiles }}
+  {{ .filename }}: {{ toYaml .contents | indent 4 }}
+  {{- end }}

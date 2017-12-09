@@ -9,23 +9,64 @@ metadata:
     heritage: {{ .Release.Service | quote }}
 spec:
   serviceName: {{ template "kafka.fullname" . }}-headless
-  replicas: {{ default 3 .Values.Replicas }}
+  replicas: {{ default 3 .Values.replicas }}
   template:
     metadata:
       labels:
         app: {{ include "kafka.name" . | quote }}
         release: {{ .Release.Name | quote }}
     spec:
+      {{ if or .Values.kafkaAntiAffinityEnabled  .Values.zookeeperAntiAffinityEnabled  }}
+      affinity:
+        podAntiAffinity:
+          {{ if or (eq .Values.kafkaAntiAffinity "hard")  (eq .Values.zookeeperAntiAffinity "hard") }}
+          requiredDuringSchedulingIgnoredDuringExecution:
+            {{ if and .Values.kafkaAntiAffinityEnabled (eq .Values.kafkaAntiAffinity "hard") }}
+            - topologyKey: "kubernetes.io/hostname"
+              labelSelector:
+                matchLabels:
+                  app: {{ include "kafka.name" . | quote }}
+                  release: {{ .Release.Name | quote }}
+            {{ end }}
+            {{ if and .Values.zookeeperAntiAffinityEnabled (eq .Values.zookeeperAntiAffinity "hard") }}
+            - topologyKey: "kubernetes.io/hostname"
+              labelSelector:
+                matchLabels:
+                  app: {{ .Values.zookeeperAntiAffinityPodName }}
+                  release: {{ .Release.Name | quote }}
+            {{ end }}
+          {{ end }}
+          {{ if or (eq .Values.kafkaAntiAffinity "soft") (eq .Values.zookeeperAntiAffinity "soft") }}
+          preferredDuringSchedulingIgnoredDuringExecution:
+            {{ if and .Values.kafkaAntiAffinityEnabled (eq .Values.kafkaAntiAffinity "soft") }}
+            - weight: 1
+              podAffinityTerm:
+                topologyKey: "kubernetes.io/hostname"
+                labelSelector:
+                  matchLabels:
+                    app: {{ include "kafka.name" . | quote }}
+                    release: {{ .Release.Name | quote }}
+            {{ end }}
+            {{ if and .Values.zookeeperAntiAffinityEnabled (eq .Values.zookeeperAntiAffinity "soft") }}
+            - weight: 1
+              podAffinityTerm:
+                topologyKey: "kubernetes.io/hostname"
+                labelSelector:
+                  matchLabels:
+                    app: {{ .Values.zookeeperAntiAffinityPodName }}
+            {{ end }}
+          {{ end }}
+      {{ end }}
       containers:
       - name: {{ template "kafka.name" . }}-broker
-        image: "{{ .Values.Image }}:{{ .Values.ImageTag }}"
-        imagePullPolicy: "{{ .Values.ImagePullPolicy }}"
+        image: "{{ .Values.image }}:{{ .Values.imageTag }}"
+        imagePullPolicy: "{{ .Values.imagePullPolicy }}"
         livenessProbe:
           exec:
             command:
               - bin/kafka-topics.sh
               - --zookeeper
-              - "{{ .Release.Name }}-zookeeper:2181"
+              - {{ template "zookeeper.url" . }}
               - --list
           initialDelaySeconds: 30
           timeoutSeconds: 5
@@ -34,7 +75,7 @@ spec:
             command:
               - bin/kafka-topics.sh
               - --zookeeper
-              - "{{ .Release.Name }}-zookeeper:2181"
+              - {{ template "zookeeper.url" . }}
               - --list
           initialDelaySeconds: 30
           timeoutSeconds: 5
@@ -46,10 +87,10 @@ spec:
         command:
         - sh
         - -c
-        - "./bin/kafka-server-start.sh config/server.properties --override zookeeper.connect={{ .Release.Name }}-zookeeper:2181/ --override log.dirs={{ printf "%s/logs" .Values.DataDirectory }} --override broker.id=${HOSTNAME##*-}"
+        - "./bin/kafka-server-start.sh config/server.properties --override zookeeper.connect={{ template "zookeeper.url" . }}/ --override log.dirs={{ printf "%s/logs" .Values.dataDirectory }} --override broker.id=${HOSTNAME##*-}"
         volumeMounts:
         - name: datadir
-          mountPath: "{{ .Values.DataDirectory }}"
+          mountPath: "{{ .Values.dataDirectory }}"
   volumeClaimTemplates:
   - metadata:
       name: datadir
@@ -57,7 +98,7 @@ spec:
       accessModes: [ "ReadWriteOnce" ]
       resources:
         requests:
-          storage: {{ .Values.Storage }}
-      {{- if .Values.StorageClass }}
-      storageClassName: {{ .Values.StorageClass | quote }}
+          storage: {{ .Values.storage }}
+      {{- if .Values.storageClass }}
+      storageClassName: {{ .Values.storageClass | quote }}
       {{- end }}

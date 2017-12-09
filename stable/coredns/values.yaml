@@ -46,6 +46,7 @@ plugins:
     port: "9153"
   errors:
     enabled: true
+    file: "stdout"
   log:
     enabled: false
   health:
@@ -63,3 +64,13 @@ plugins:
       - "k8s.io"
     path: "/skydns"
     endpoint: "http://localhost:2379"
+# configure custom zone files as per https://coredns.io/2017/05/08/custom-dns-entries-for-kubernetes/
+zoneFiles: []
+#  - filename: example.db
+#    domain: example.com
+#    contents: |
+#      example.com.   IN SOA sns.dns.icann.com. noc.dns.icann.com. 2015082541 7200 3600 1209600 3600
+#      example.com.   IN NS  b.iana-servers.net.
+#      example.com.   IN NS  a.iana-servers.net.
+#      example.com.   IN A   192.168.99.102
+#      *.example.com. IN A   192.168.99.102

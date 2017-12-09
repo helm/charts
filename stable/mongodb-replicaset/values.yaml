@@ -35,6 +35,10 @@ resources: {}
 #   cpu: 100m
 #   memory: 256Mi
 
+## Node selector
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
+nodeSelector: {}
+
 persistentVolume:
   enabled: true
   ## mongodb-replicaset data Persistent Volume Storage Class
