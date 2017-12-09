@@ -4,6 +4,9 @@ image:
   repo: "cassandra"
   tag: "3"
   pullPolicy: IfNotPresent
+  ## Specify ImagePullSecrets for Pods
+  ## ref: https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
+  # pullSecrets: myregistrykey
 
 ## Specify a service type
 ## ref: http://kubernetes.io/docs/user-guide/services/
