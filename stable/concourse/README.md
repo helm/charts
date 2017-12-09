@@ -139,6 +139,7 @@ The following tables lists the configurable parameters of the Concourse chart an
 | `postgresql.persistence.enabled` | Enable PostgreSQL persistence using Persistent Volume Claims | `true` |
 | `credentialManager.kubernetes.enabled` | Enable Kubernetes Secrets Credential Manager | `true` |
 | `credentialManager.kubernetes.namespacePrefix` | Prefix for namespaces to look for secrets in | `concourse-` |
+| `credentialManager.kubernetes.teams` | Teams to allow secret access when rbac is enabled | `["main"]` |
 | `credentialManager.vault.enabled` | Enable Vault Credential Manager | `false` |
 | `credentialManager.vault.url` | Vault Server URL | `nil` |
 | `credentialManager.vault.pathPrefix` | Vault path to namespace secrets | `/concourse` |
@@ -309,7 +310,8 @@ Pipelines ususally need credentials to do things. Concourse supports the use of 
 
 #### Kubernetes Secrets
 
-By default, this chart will use Kubernetes Secrets as a credential manager. For a given Concourse *team*, a pipeline will look for secrets in a namespace named `[namespacePrefix][teamName]`, e.g. `concourse-main`. The service account used by Concourse must have `get` access to secrets in that namespace.
+By default, this chart will use Kubernetes Secrets as a credential manager. For a given Concourse *team*, a pipeline will look for secrets in a namespace named `[namespacePrefix][teamName]`, e.g. `concourse-main`. The service account used by Concourse must have `get` access to secrets in that namespace. When `rbac.create` is true, this access can be
+granted for each team listed under `credentialManager.kubernetes.teams`.
 
 Here are some examples of the lookup heuristics, given `credentialManager.kubernetes.namespacePrefix=concourse-`:
 

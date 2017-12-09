@@ -536,6 +536,11 @@ credentialManager:
     ##
     # namespacePrefix:
 
+    ## When rbac.create is true, get access to secrets can be granted for each team listed here.
+    ## Ignored if rbac.create is false.
+    teams:
+      - main
+
   ## Configuration for Hashicorp Vault as the Credential Manager.
   ##
   vault:
