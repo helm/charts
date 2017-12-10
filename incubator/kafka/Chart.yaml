@@ -2,7 +2,7 @@ apiVersion: v1
 description: Apache Kafka is publish-subscribe messaging rethought as a distributed
   commit log.
 name: kafka
-version: 0.2.5
+version: 0.2.6
 keywords:
 - kafka
 - zookeeper
@@ -17,4 +17,6 @@ maintainers:
   email: faraaz@rationalizeit.us
 - name: Marc Villacorta
   email: marc.villacorta@gmail.com
+- name: Ben Goldberg
+  email: ben@spothero.com
 icon: https://kafka.apache.org/images/logo.png
