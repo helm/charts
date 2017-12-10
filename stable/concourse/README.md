@@ -113,6 +113,7 @@ The following tables lists the configurable parameters of the Concourse chart an
 | `web.replicas` | Number of Concourse Web replicas | `1` |
 | `web.resources` | Concourse Web resource requests and limits | `{requests: {cpu: "100m", memory: "128Mi"}}` |
 | `web.service.type` | Concourse Web service type | `NodePort` |
+| `web.service.annotations` | Concourse Web Service annotations | `{}` |
 | `web.ingress.enabled` | Enable Concourse Web Ingress | `false` |
 | `web.ingress.annotations` | Concourse Web Ingress annotations | `{}` |
 | `web.ingress.hosts` | Concourse Web Ingress Hostnames | `[]` |
