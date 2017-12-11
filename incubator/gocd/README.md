@@ -58,6 +58,7 @@ The following tables lists the configurable parameters of the GoCD chart and the
 | `server.resources`                         | GoCD server resource requests and limits                                                                      | `{}`                |
 | `server.nodeSelector`                      | GoCD server nodeSelector for pod labels                                                                       | `{}`                |
 | `server.env.goServerSystemProperties`      | GoCD Server system properties                                                                                 | `nil`               |
+| `server.env.extraEnvVars`                  | GoCD Server extra Environment variables                                                                       | `nil`               |
 | `server.service.type`                      | Type of GoCD server Kubernetes service                                                                        | `NodePort`          |
 | `server.service.httpPort`                  | GoCD server service HTTP port                                                                                 | `8153`              |
 | `server.service.httpsPort`                 | GoCD server service HTTPS port                                                                                | `8154`              |  

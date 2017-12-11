@@ -38,6 +38,7 @@ spec:
             - name: GO_SERVER_SYSTEM_PROPERTIES
               value: {{ .Values.server.env.goServerSystemProperties }}
             {{- end }}
+{{ toYaml .Values.server.env.extraEnvVars | indent 12 }}
           ports:
             - containerPort: 8153
             - containerPort: 8154
