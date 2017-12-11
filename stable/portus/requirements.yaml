@@ -1,9 +1,9 @@
 dependencies:
 - name: docker-registry
-  version: 0.3.0
-  repository: https://kubernetes-charts-incubator.storage.googleapis.com/
+  version: 1.0.0
+  repository: https://kubernetes-charts.storage.googleapis.com/
 - name: mariadb
-  version: 0.7.0
+  version: 2.1.1
   repository: https://kubernetes-charts.storage.googleapis.com/
   condition: mariadb.enabled
 - name: minio
