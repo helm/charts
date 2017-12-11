@@ -1,9 +1,4 @@
-name: {{ template "ibm-blockchain-chaincode.fullname" . }}
-labels:
-  app: {{ template "ibm-blockchain-chaincode.name" . }}
-  chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-  release: {{ .Release.Name }}
-  heritage: {{ .Release.Service }}
+name: ibm-blockchain-chaincode
 version: 1.0.0
 appVersion: 1.0.0
 description: IBM Blockchain Chaincode Chart
@@ -12,7 +7,7 @@ keywords:
 home: https://ibm-blockchain.github.io
 sources:
   - https://github.ibm.com/IBM-Blockchain/ibm-container-service
-maintainers: 
+maintainers:
   - name: mrshah-at-ibm
     email: mrshah@us.ibm.com
   - name: dhyey20

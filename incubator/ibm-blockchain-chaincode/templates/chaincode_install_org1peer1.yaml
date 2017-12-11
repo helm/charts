@@ -1,10 +1,4 @@
 ---
-name: {{ template "ibm-blockchain-chaincode.fullname" . }}-install-org1peer1
-labels:
-  app: {{ template "ibm-blockchain-chaincode.name" . }}
-  chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-  release: {{ .Release.Name }}
-  heritage: {{ .Release.Service }}
 apiVersion: v1
 kind: Pod
 metadata:
@@ -20,18 +14,18 @@ spec:
   - name: chaincodeinstall-org1peer1
     image: {{ .Values.blockchain.toolsImage }}
     imagePullPolicy: {{ .Values.blockchain.pullPolicy }}
-    command: 
+    command:
       - sh
       - -c
       - |
-        while [ ! -f /shared/status_joinchannel_org1peer1_complete ]; do 
+        while [ ! -f /shared/status_joinchannel_org1peer1_complete ]; do
           echo Waiting for joinchannel
           sleep 2
         done
-        
-        git clone -b v1.0.0 https://github.com/hyperledger/fabric $GOPATH/src/github.com/hyperledger/fabric/ 
-        peer chaincode install -n ${CHAINCODE_NAME} -v ${CHAINCODE_VERSION} -p github.com/hyperledger/fabric/examples/chaincode/go/chaincode_example02/ 
-        touch /shared/status_chaincodeinstall_complete
+
+        git clone -b v1.0.0 https://github.com/hyperledger/fabric $GOPATH/src/github.com/hyperledger/fabric/ &&
+        peer chaincode install -n ${CHAINCODE_NAME} -v ${CHAINCODE_VERSION} -p github.com/hyperledger/fabric/examples/chaincode/go/chaincode_example02/ &&
+        touch /shared/status_chaincodeinstall_o1p1_complete
     env:
     - name: CHAINCODE_NAME
       value: example02
