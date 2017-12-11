@@ -7,6 +7,7 @@ spec:
   selector:
     matchLabels:
       app: {{ template "neo4j.name" . }}
+      release: {{ .Release.Name }}
       component: core
   replicas: {{ .Values.core.numberOfServers }}
   template:
