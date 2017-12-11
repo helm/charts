@@ -66,6 +66,7 @@ The following tables lists the configurable parameters of the WordPress chart an
 | `mariadb.mariadbDatabase`            | Database name to create                    | `bitnami_wordpress`                            |
 | `mariadb.mariadbUser`                | Database user to create                    | `bn_wordpress`                                 |
 | `mariadb.mariadbPassword`            | Password for the database                  | _random 10 character long alphanumeric string_ |
+| `mariadb.persistence.enabled`        | Enable persistence using PVC for the MariaDB database | `true` |
 | `serviceType`                        | Kubernetes Service type                    | `LoadBalancer`                                             |
 | `healthcheckHttps`                   | Use https for liveliness and readiness     | `false`                                             |
 | `ingress.enabled`                    | Enable ingress controller resource         | `false`                                                    |
