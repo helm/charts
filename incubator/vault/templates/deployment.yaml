@@ -28,9 +28,7 @@ spec:
         {{- if .Values.vault.dev }}
         command: ["vault", "server", "-dev", "-dev-listen-address", "[::]:8200"]
         {{- else }}
-        command: ["sh", "-c"]
-        args:
-          - export VAULT_CLUSTER_ADDR="http://$POD_IP:8201"; vault server -config /vault/config/config.json
+        command: ["vault", "server", "-config", "/vault/config/config.json"]
         {{- end }}
         ports:
         - containerPort: {{ .Values.service.port }}
@@ -47,6 +45,8 @@ spec:
             add:
             - IPC_LOCK
         env:
+          - name: VAULT_CLUSTER_ADDR
+            value: "http://$(POD_IP):8201"
           - name: POD_IP
             valueFrom:
               fieldRef:
