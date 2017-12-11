@@ -8,7 +8,6 @@ metadata:
     heritage: {{ .Release.Service | quote }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
 data:
-  advertised.listeners: "PLAINTEXT://{{ template "kafka.fullname" . }}:9092"
   zookeeper.connect: "{{ template "zookeeper.url" . }}"
   log.dirs: "{{ printf "%s/%s" .Values.dataDirectory .Values.logSubPath }}"
 {{- range $configName, $configValue := .Values.configurationOverrides }}
