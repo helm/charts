@@ -11,6 +11,8 @@ portus:
     repository: opensuse/portus
     tag: 2.2
     pullPolicy: IfNotPresent
+  cleanup:
+    enabled: true
   config:
     signup: true  # If enabled, then users can signup with the signup form
     first_user_admin: true  # First user signing up will be admin

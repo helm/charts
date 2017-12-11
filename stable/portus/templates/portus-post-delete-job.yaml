@@ -1,3 +1,4 @@
+{{- if .Values.portus.cleanup.enabled }}
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -31,3 +32,4 @@ spec:
         - sh
         - -c
         - "kubectl delete job --namespace {{ .Release.Namespace }} -l app={{ template "portus.fullname" . }}"
+{{- end }}
