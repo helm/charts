@@ -60,6 +60,9 @@ spec:
           - name: goserver-vol
             mountPath: /home/go
             subPath: {{ .Values.server.persistence.subpath.homego }}
+          - name: goserver-vol
+            mountPath: /docker-entrypoint.d
+            subPath: {{ .Values.server.persistence.subpath.dockerEntryPoint }}
           {{- end }}
           resources:
 {{ toYaml .Values.server.resources | indent 12 }}

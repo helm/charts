@@ -110,17 +110,16 @@ a previously configured Persistent Volume Claim can be used.
 
 ### Server persistence Values
 
-
-| Parameter                                | Description                               | Default              |
-| ---------------------------------------- | ----------------------------------------- | -------------------- |
-| `server.persistence.enabled`             | Enable the use of a GoCD server PVC       | `false`              |
-| `server.persistence.accessMode`          | The PVC access mode                       | `ReadWriteOnce`      |
-| `server.persistence.size`                | The size of the PVC                       | `1Gi`                |
-| `server.persistence.storageClass`        | The PVC storage class name                | `nil`                |
-| `server.persistence.pvSelector`          | The godata Persistence Volume Selectors   | `nil`                |
-| `server.persistence.subpath.godata`      | The /godata path on Persistence Volume    | `godata`             |
-| `server.persistence.subpath.homego`      | The /home/go path on Persistence Volume   | `homego`             |
-
+| Parameter                                     | Description                                         | Default              |
+| --------------------------------------------- | --------------------------------------------------- | -------------------- |
+| `server.persistence.enabled`                  | Enable the use of a GoCD server PVC                 | `false`              |
+| `server.persistence.accessMode`               | The PVC access mode                                 | `ReadWriteOnce`      |
+| `server.persistence.size`                     | The size of the PVC                                 | `1Gi`                |
+| `server.persistence.storageClass`             | The PVC storage class name                          | `nil`                |
+| `server.persistence.pvSelector`               | The godata Persistence Volume Selectors             | `nil`                |
+| `server.persistence.subpath.godata`           | The /godata path on Persistence Volume              | `godata`             |
+| `server.persistence.subpath.homego`           | The /home/go path on Persistence Volume             | `homego`             |
+| `server.persistence.subpath.dockerEntryPoint` | The /docker-entrypoint.d path on Persistence Volume | `scripts`            |
 
 ### Agent `/home/go` persistence Values
 

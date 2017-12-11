@@ -71,6 +71,7 @@ server:
     subpath:
       godata: godata
       homego: homego
+      dockerEntryPoint: scripts
 
 agent:
   # agent.replicaCount is the GoCD Agent replicas Count. Specify the number of GoCD agents to run
