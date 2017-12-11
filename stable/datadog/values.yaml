@@ -118,6 +118,14 @@ datadog:
       instances:
         - kube_state_url: http://%%host%%:%%port%%/metrics
 
+          ## Allow agents to elect a leader to collect agents. Requires
+          ## `datadog.collectEvents`, and an RBAC role that allows the
+          ## agents to talk to the API server.
+          ## ref:
+          #https://github.com/DataDog/integrations-core/tree/b7591f2ddec3b28a7eaa9e4d479b03784182d82c/kubernetes#gathering-kubernetes-events
+          ##
+          # leader_candidate: true
+
   ## Provide additonal service definitions
   ## Each key will become a file in /conf.d
   ## ref: https://github.com/DataDog/docker-dd-agent#configuration-files
