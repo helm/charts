@@ -33,7 +33,7 @@ spec:
           {{- end }}
           args:
             - /nginx-ingress-controller
-            - --default-backend-service={{ if .Values.defaultBackend.enabled }}{{ .Release.Namespace }}/{{ template "nginx-ingress.defaultBackend.fullname" . }}{{ else }}{{ .Values.controller.defaultBackendService }}{{ end }}
+            - --default-backend-service={{ if .Values.defaultBackend.enabled }}{{ template "nginx-ingress.defaultBackend.namespace" . }}/{{ template "nginx-ingress.defaultBackend.fullname" . }}{{ else }}{{ .Values.controller.defaultBackendService }}{{ end }}
           {{- if and (contains "0.9" .Values.controller.image.tag) .Values.controller.publishService.enabled }}
             - --publish-service={{ template "nginx-ingress.controller.publishServicePath" . }}
           {{- end }}
