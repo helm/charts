@@ -54,23 +54,24 @@ allowEmptyPassword: yes
 # smtpProtocol:
 
 externalDatabase:
+## All of these values are only used when mariadb.enabled is set to false
   ## Database host
-  # hostname:
+  host: localhost
 
   ## Database Root User (so wordpress can create the db schema etc)
   # rootPassword:
 
   ## non-root Username for Wordpress Database
-  # username: bn_wordpress
+  user: bn_wordpress
 
   ## Database password
   # password:
 
   ## Database name
-  # dbName: bitnami_wordpress
+  database: bitnami_wordpress
 
   ## Database port number
-  # port: 3306
+  port: 3306
 
 ##
 ## MariaDB chart configuration

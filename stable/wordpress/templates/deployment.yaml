@@ -39,25 +39,25 @@ spec:
         {{- if .Values.mariadb.enabled }}
           value: {{ template "mariadb.fullname" . }}
         {{- else }}
-          value: {{ default "localhost" .Values.externalDatabase.hostname | quote }}
+          value: {{ .Values.externalDatabase.host | quote }}
         {{- end }}
         - name: MARIADB_PORT_NUMBER
         {{- if .Values.mariadb.enabled }}
           value: "3306"
         {{- else }}
-          value: {{ default "3306" .Values.externalDatabase.port | quote }}
+          value: {{ .Values.externalDatabase.port | quote }}
         {{- end }}
         - name: WORDPRESS_DATABASE_NAME
         {{- if .Values.mariadb.enabled }}
-          value: {{ default "" .Values.mariadb.mariadbDatabase | quote }}
+          value: {{ .Values.mariadb.mariadbDatabase | quote }}
         {{- else }}
-          value: {{ default "bitnami_wordpress" .Values.externalDatabase.dbName | quote }}
+          value: {{ .Values.externalDatabase.database | quote }}
         {{- end }}
         - name: WORDPRESS_DATABASE_USER
         {{- if .Values.mariadb.enabled }}
-          value: {{ default "" .Values.mariadb.mariadbUser | quote }}
+          value: {{ .Values.mariadb.mariadbUser | quote }}
         {{- else }}
-          value: {{ default "bn_wordpress" .Values.externalDatabase.username | quote }}
+          value: {{ .Values.externalDatabase.user | quote }}
         {{- end }}
         - name: WORDPRESS_DATABASE_PASSWORD
           valueFrom:
