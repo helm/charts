@@ -23,8 +23,8 @@ spec:
           sleep 2
         done
         
-        peer channel fetch newest -o ${ORDERER_URL} -c ${CHANNEL_NAME}
-        peer channel join -b ${CHANNEL_NAME}_newest.block
+        peer channel fetch newest -o ${ORDERER_URL} -c ${CHANNEL_NAME} &&
+        peer channel join -b ${CHANNEL_NAME}_newest.block &&
         touch /shared/status_joinchannel_org1peer1_complete
     env:
     - name: CHANNEL_NAME

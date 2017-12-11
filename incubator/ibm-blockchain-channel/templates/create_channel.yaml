@@ -21,13 +21,14 @@ spec:
         cd /shared 
         pwd 
         ls 
+
         while [ ! -f /shared/status_org1peer1_complete ] || [ ! -f /shared/status_org2peer1_complete ] || [ ! -f /shared/status_fabricca_complete ] || [ ! -f /shared/status_orderer_complete ]; do
           echo Waiting for peers
           sleep 1
         done
         
-        configtxgen -profile TwoOrgsChannel -outputCreateChannelTx ${CHANNEL_NAME}.tx -channelID ${CHANNEL_NAME} 
-        touch /shared/status_channeltx_complete 
+        configtxgen -profile TwoOrgsChannel -outputCreateChannelTx ${CHANNEL_NAME}.tx -channelID ${CHANNEL_NAME} &&
+        touch /shared/status_channeltx_complete &&
         rm -f /shared/status_org1peer1_complete /shared/status_org2peer1_complete
     env:
     - name: CHANNEL_NAME
@@ -52,8 +53,8 @@ spec:
           sleep 2
         done
         
-        peer channel create -o ${ORDERER_URL} -c ${CHANNEL_NAME} -f /shared/${CHANNEL_NAME}.tx 
-        rm -f /shared/status_channeltx_complete 
+        peer channel create -o ${ORDERER_URL} -c ${CHANNEL_NAME} -f /shared/${CHANNEL_NAME}.tx &&
+        rm -f /shared/status_channeltx_complete &&
         touch /shared/status_channelcreate_complete
     env:
     - name: CHANNEL_NAME
