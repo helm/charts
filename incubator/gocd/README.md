@@ -122,23 +122,24 @@ a previously configured Persistent Volume Claim can be used.
 | `server.persistence.subpath.homego`           | The /home/go path on Persistence Volume             | `homego`             |
 | `server.persistence.subpath.dockerEntryPoint` | The /docker-entrypoint.d path on Persistence Volume | `scripts`            |
 
-### Agent `/home/go` persistence Values
+### Agent persistence Values
+
+| Parameter                                     | Description                                         | Default              |
+| --------------------------------------------- | --------------------------------------------------- | -------------------- |
+| `agent.persistence.enabled`                  | Enable the use of a GoCD agent PVC                   | `false`              |
+| `agent.persistence.accessMode`               | The PVC access mode                                  | `ReadWriteOnce`      |
+| `agent.persistence.size`                     | The size of the PVC                                  | `1Gi`                |
+| `agent.persistence.storageClass`             | The PVC storage class name                           | `nil`                |
+| `agent.persistence.pvSelector`               | The godata Persistence Volume Selectors              | `nil`                |
+| `agent.persistence.subpath.homego`           | The /home/go path on Persistence Volume              | `homego`             |
+| `agent.persistence.subpath.dockerEntryPoint` | The /docker-entrypoint.d path on Persistence Volume  | `scripts`            |
 
 ##### Note:
 
 `/home/go` directory shared between multiple agents implies:
 
 1. That packages being cached here is shared between all the agents.
-1. That all the agents sharing this directory are privy to all the secrets in `/home/go`
-
-| Parameter                                | Description                               | Default              |
-| ---------------------------------------- | ----------------------------------------- | -------------------- |
-| `agent.persistence.enabled`              | Enable the use of a GoCD agent PVC        | `false`              |
-| `agent.persistence.homego.accessMode`    | The PVC access mode                       | `ReadWriteOnce`      |
-| `agent.persistence.homego.size`          | The size of the PVC                       | `1Gi`                |
-| `agent.persistence.homego.storageClass`  | The PVC storage class name                | `nil`                |
-| `agent.persistence.homego.pvSelector`    | The homego Persistence Volume Selectors   | `nil`                |
-
+2. That all the agents sharing this directory are privy to all the secrets in `/home/go`
 
 ### Existing PersistentVolumeClaim
     

@@ -1,4 +1,4 @@
-{{- if and .Values.agent.persistence.enabled (not .Values.agent.persistence.homego.existingClaim) -}}
+{{- if and .Values.agent.persistence.enabled (not .Values.agent.persistence.existingClaim) -}}
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
@@ -11,17 +11,17 @@ metadata:
     component: {{ template "gocd.name" . }}-agent
 spec:
   accessModes:
-    - {{ .Values.agent.persistence.homego.accessMode | quote }}
+    - {{ .Values.agent.persistence.accessMode | quote }}
   resources:
     requests:
-      storage: {{ .Values.agent.persistence.homego.size | quote }}
-{{- if .Values.agent.persistence.homego.storageClass }}
-  storageClassName: {{ .Values.agent.persistence.homego.storageClass }}
+      storage: {{ .Values.agent.persistence.size | quote }}
+{{- if .Values.agent.persistence.storageClass }}
+  storageClassName: {{ .Values.agent.persistence.storageClass }}
 {{- else }}
   storageClassName: ""
 {{- end }}
-{{- if .Values.agent.persistence.homego.pvSelector }}
+{{- if .Values.agent.persistence.pvSelector }}
   selector:
-{{ toYaml .Values.agent.persistence.homego.pvSelector | indent 4 }}
+{{ toYaml .Values.agent.persistence.pvSelector | indent 4 }}
 {{- end }}
 {{- end }}

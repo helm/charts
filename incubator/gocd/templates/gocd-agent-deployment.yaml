@@ -19,7 +19,7 @@ spec:
     spec:
       {{- if .Values.agent.persistence.enabled }}
       volumes:
-        - name: homego-vol
+        - name: goagent-vol
           persistentVolumeClaim:
             claimName: {{ template "gocd.fullname" . }}-agent
       {{- end }}
@@ -85,8 +85,12 @@ spec:
           {{- end }}
           {{- if .Values.agent.persistence.enabled }}
           volumeMounts:
-          - name: homego-vol
+          - name: goagent-vol
             mountPath: /home/go
+            subPath: {{ .Values.agent.persistence.subpath.homego }}
+          - name: goagent-vol
+            mountPath: /docker-entrypoint.d
+            subPath: {{ .Values.agent.persistence.subpath.dockerEntryPoint }}
           {{- end }}
     {{- if .Values.nodeSelector }}
       nodeSelector:

@@ -63,7 +63,7 @@ server:
 #      - foo.go.cd
 
   persistence:
-    # server.persistence.enabled is the toggle for sever volume persistence. Change to true if a persistent volume is available and configured manually.
+    # server.persistence.enabled is the toggle for server volume persistence. Change to true if a persistent volume is available and configured manually.
     enabled: false
     accessMode: "ReadWriteOnce"
     size: 1Gi
@@ -106,16 +106,17 @@ agent:
     goAgentBootstrapperJvmArgs:
   persistence:
     # agent.persistence.enabled is the toggle for agent volume persistence. Change to true if a persistent volume is available and configured manually.
-    enabled: false
-     # server.persistence.homego is the GoCD agent `/home/go` volume configuration
-    homego:
-      accessMode: "ReadWriteOnce"
-      size: 1Gi
-      storageClass:
-      ExistingClaim:
-      pvSelector:
-#        matchLabels:
-#          volume-type: ssd
+    enabled: true
+    accessMode: "ReadWriteMany"
+    size: 1Gi
+    storageClass:
+    ExistingClaim:
+    pvSelector:
+      matchLabels:
+        app: godata-gocd-server
+    subpath:
+      homego: homego
+      dockerEntryPoint: scripts
 
   healthCheck:
    # agent.healthCheck.enable is the toggle for GoCD agent health checks
