@@ -1,0 +1,16 @@
+name: bitcoincashd
+version: 0.1.0
+description: Bitcoin Cash is Peer-to-Peer Electronic Cash
+keywords:
+- bitcoincashd
+- cryptocurrency
+- blockchain
+home: https://www.bitcoincash.org
+icon: https://www.bitcoincash.org/img/logo-dark.png
+sources:
+- https://github.com/kubernetes/charts
+- https://github.com/kuberstack/bitcoincashd
+maintainers:
+- name: Daniel Yavorovych
+  email: daniel@arilot.com
+engine: gotpl

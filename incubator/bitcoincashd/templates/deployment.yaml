@@ -1,0 +1,53 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "bitcoincashd.fullname" . }}
+  labels:
+    app: {{ template "bitcoincashd.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  template:
+    metadata:
+      labels:
+        app: {{ template "bitcoincashd.fullname" . }}
+    spec:
+      containers:
+      - name: {{ template "bitcoincashd.fullname" . }}
+        image: "{{ .Values.image }}:{{ .Values.imageTag }}"
+        imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+        ports:
+        - name: rpc
+          containerPort: {{ .Values.RPCPort }}
+        volumeMounts:
+        - name: data
+          mountPath: /data
+        {{- if .Values.ssl.enabled }}
+        - name: ssl
+          mountPath: /etc/bitcoincashd-ssl
+        {{- end }}
+        {{- if .Values.configurationFiles }}
+        - name: configurations
+          mountPath: /etc/bitcoincashd
+        {{- end }}
+      volumes:
+      {{- if .Values.ssl.enabled }}
+      - name: ssl
+        secret:
+          secretName: {{ .Values.ssl.secretName  }}
+      {{- end }}
+      {{- if .Values.configurationFiles }}
+      - name: configurations
+        configMap:
+          name: {{ template "bitcoincashd.fullname" . }}
+      {{- end }}
+      - name: data
+      {{- if .Values.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.persistence.existingClaim | default (include "bitcoincashd.fullname" .) }}
+      {{- else }}
+        emptyDir: {}
+      {{- end -}}
