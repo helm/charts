@@ -23,11 +23,11 @@ The following tables lists the configurable parameters of the external-dns chart
 
 | Parameter                          | Description                                                                                                                | Default                                            |
 | ---------------------------------- | -------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
-| `aws.access_key`                   | `AWS_ACCESS_KEY_ID` to set in the environment (optional).                                                                  | `""`                                               |
-| `aws.secret_key`                   | `AWS_SECRET_ACCESS_KEY` to set in the environment (optional).                                                              | `""`                                               |
+| `aws.accessKey`                    | `AWS_ACCESS_KEY_ID` to set in the environment (optional).                                                                  | `""`                                               |
+| `aws.secretKey`                    | `AWS_SECRET_ACCESS_KEY` to set in the environment (optional).                                                              | `""`                                               |
 | `aws.region`                       | `AWS_DEFAULT_REGION` to set in the environment (optional).                                                                 | `us-east-1`                                        |
-| `aws.zone_type`                    | Filter for zones of this type (optional, options: public, private).                                                        | `""`                                               |
-| `cloudflare.api_key`               | `CF_API_KEY` to set in the environment (optional).                                                                         | `""`                                               |
+| `aws.zoneType`                     | Filter for zones of this type (optional, options: public, private).                                                        | `""`                                               |
+| `cloudflare.apiKey`                | `CF_API_KEY` to set in the environment (optional).                                                                         | `""`                                               |
 | `cloudflare.email`                 | `CF_API_EMAIL` to set in the environment (optional).                                                                       | `""`                                               |
 | `domainFilters`                    | Limit possible target zones by domain suffixes (optional).                                                                 | `[]`                                               |
 | `extraArgs`                        | Optional object of extra args, as `name`: `value` pairs. Where the name is the command line arg to external-dns.           | `{}`                                               |
