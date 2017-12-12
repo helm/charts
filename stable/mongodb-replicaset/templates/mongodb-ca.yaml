@@ -1,0 +1,15 @@
+{{- if and (.Values.tls.enabled) -}}
+apiVersion: v1
+kind: Secret
+type: kubernetes.io/tls
+metadata:
+  labels:
+    app: {{ template "mongodb-replicaset.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "mongodb-replicaset.fullname" . }}-ca
+data:
+  tls.key: {{ .Values.tls.cakey }}
+  tls.crt: {{ .Values.tls.cacert }}
+{{- end -}}

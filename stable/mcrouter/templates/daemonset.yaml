@@ -1,0 +1,51 @@
+{{- if eq .Values.controller "daemonset" }}
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    app: {{ template "fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+  annotations:
+    checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+spec:
+  template:
+    metadata:
+      labels:
+        app: {{ template "fullname" . }}
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        release: "{{ .Release.Name }}"
+    spec:
+      containers:
+      - name: {{ template "fullname" . }}
+        image: {{ .Values.image }}
+        imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
+        command: ["mcrouter"]
+        args:
+        - -p {{ .Values.mcrouterCommandParams.port }}
+        - --config-file=/etc/mcrouter/config.json
+        volumeMounts:
+        - name: config
+          mountPath: /etc/mcrouter
+        ports:
+        - name: mcrouter-port
+          containerPort: {{ .Values.mcrouterCommandParams.port }}
+          hostPort: {{ .Values.daemonset.hostPort }}
+        livenessProbe:
+          tcpSocket:
+            port: mcrouter-port
+          initialDelaySeconds: 30
+          timeoutSeconds: 5
+        readinessProbe:
+          tcpSocket:
+            port: mcrouter-port
+          initialDelaySeconds: 5
+          timeoutSeconds: 1
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+      volumes:
+      - name: config
+        configMap:
+          name: {{ template "fullname" . }}
+{{- end -}}

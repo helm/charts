@@ -1,73 +1,83 @@
 apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
-  name: {{ template "worker.fullname" . }}
+  name: {{ template "concourse.worker.fullname" . }}
   labels:
-    app: {{ template "worker.fullname" . }}
+    app: {{ template "concourse.worker.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
+
 spec:
-  serviceName: {{ template "worker.fullname" . }}
+  serviceName: {{ template "concourse.worker.fullname" . }}
   replicas: {{ .Values.worker.replicas }}
   template:
     metadata:
       labels:
-        app: {{ template "worker.fullname" . }}
+        app: {{ template "concourse.worker.fullname" . }}
       annotations:
-        scheduler.alpha.kubernetes.io/affinity: >
-          {
-            "podAntiAffinity": {
-              "preferredDuringSchedulingIgnoredDuringExecution": [
-                {
-                  "weight": 100,
-                  "labelSelector": {
-                    "matchExpressions": [{
-                      "key": "app",
-                      "operator": "In",
-                      "values": ["{{ template "worker.fullname" . }}"]
-                    }]
-                  },
-                  "topologyKey": "kubernetes.io/hostname"
-                }
-              ]
-            }
-          }
+        {{- range $key, $value := .Values.worker.annotations }}
+        {{ $key }}: {{ $value | quote }}
+        {{- end }}
     spec:
-      terminationGracePeriodSeconds: 60
+      tolerations:
+{{ toYaml .Values.worker.tolerations | indent 8 }}
+      terminationGracePeriodSeconds: {{ .Values.worker.terminationGracePeriodSeconds }}
       containers:
-        - name: {{ template "worker.fullname" . }}
+        - name: {{ template "concourse.worker.fullname" . }}
           image: "{{ .Values.image }}:{{ .Values.imageTag }}"
           imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
+          command:
+            - /bin/sh
           args:
-            - "worker"
+            - -c
+            - |-
+              cp /dev/null /concourse-work-dir/.liveness_probe
+              concourse worker --name=${HOSTNAME} | tee -a /concourse-work-dir/.liveness_probe
+              sleep ${POST_STOP_DELAY_SECONDS}
+          livenessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - |-
+                  FATAL_ERRORS=$( echo "${LIVENESS_PROBE_FATAL_ERRORS}" | grep -q '\S' && \
+                      grep -F "${LIVENESS_PROBE_FATAL_ERRORS}" /concourse-work-dir/.liveness_probe )
+                  cp /dev/null /concourse-work-dir/.liveness_probe
+                  if [ ! -z "${FATAL_ERRORS}" ]; then
+                    >&2 echo "Fatal error detected: ${FATAL_ERRORS}"
+                    exit 1
+                  fi
+            failureThreshold: 1
+            initialDelaySeconds: 10
+            periodSeconds: 10
           lifecycle:
             preStop:
               exec:
                 command:
-                  - "concourse"
-                  - "land-worker"
-                  - "--name=${HOSTNAME}"
+                  - "/bin/sh"
+                  - "-c"
+                  - "concourse retire-worker --name=${HOSTNAME}"
           env:
             - name: CONCOURSE_TSA_HOST
               valueFrom:
                 configMapKeyRef:
-                  name: {{ template "concourse.fullname" . }}
+                  name: {{ template "concourse.concourse.fullname" . }}
                   key: concourse-tsa-host
             - name: CONCOURSE_TSA_PORT
               valueFrom:
                 configMapKeyRef:
-                  name: {{ template "concourse.fullname" . }}
+                  name: {{ template "concourse.concourse.fullname" . }}
                   key: concourse-tsa-port
             - name: CONCOURSE_GARDEN_DOCKER_REGISTRY
               valueFrom:
                 configMapKeyRef:
-                  name: {{ template "concourse.fullname" . }}
+                  name: {{ template "concourse.concourse.fullname" . }}
                   key: garden-docker-registry
             - name: CONCOURSE_GARDEN_INSECURE_DOCKER_REGISTRY
               valueFrom:
                 configMapKeyRef:
-                  name: {{ template "concourse.fullname" . }}
+                  name: {{ template "concourse.concourse.fullname" . }}
                   key: garden-insecure-docker-registry
             - name: CONCOURSE_TSA_PUBLIC_KEY
               value: "/concourse-keys/host_key.pub"
@@ -75,6 +85,24 @@ spec:
               value: "/concourse-keys/worker_key"
             - name: CONCOURSE_WORK_DIR
               value: "/concourse-work-dir"
+            - name: CONCOURSE_BAGGAGECLAIM_DRIVER
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: concourse-baggageclaim-driver
+            - name: POST_STOP_DELAY_SECONDS
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: worker-post-stop-delay-seconds
+            - name: LIVENESS_PROBE_FATAL_ERRORS
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: worker-fatal-errors
+{{- if .Values.worker.env }}
+{{ toYaml .Values.worker.env | indent 12 }}
+{{- end }}
           resources:
 {{ toYaml .Values.worker.resources | indent 12 }}
           securityContext:
@@ -85,10 +113,23 @@ spec:
               readOnly: true
             - name: concourse-work-dir
               mountPath: /concourse-work-dir
+      affinity:
+{{- if .Values.worker.additionalAffinities }}
+{{ toYaml .Values.worker.additionalAffinities | indent 8 }}
+{{- end }}
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              topologyKey: kubernetes.io/hostname
+              labelSelector:
+                matchLabels:
+                  app: {{ template "concourse.worker.fullname" . }}
+                  release: {{ .Release.Name | quote }}
       volumes:
         - name: concourse-keys
           secret:
-            secretName: {{ template "concourse.fullname" . }}
+            secretName: {{ template "concourse.concourse.fullname" . }}
             defaultMode: 0400
             items:
               - key: host-key-pub
@@ -101,19 +142,24 @@ spec:
   volumeClaimTemplates:
     - metadata:
         name: concourse-work-dir
-        annotations:
-          {{- if .Values.persistence.worker.class }}
-          volume.beta.kubernetes.io/storage-class: {{ .Values.persistence.worker.class | quote }}
-          {{- else }}
-          volume.alpha.kubernetes.io/storage-class: default
-          {{- end }}
       spec:
         accessModes:
           - {{ .Values.persistence.worker.accessMode | quote }}
         resources:
           requests:
             storage: {{ .Values.persistence.worker.size | quote }}
+      {{- if .Values.persistence.worker.storageClass }}
+      {{- if (eq "-" .Values.persistence.worker.storageClass) }}
+        storageClassName: ""
+      {{- else }}
+        storageClassName: "{{ .Values.persistence.worker.storageClass }}"
+      {{- end }}
+      {{- end }}
   {{- else }}
         - name: concourse-work-dir
           emptyDir: {}
   {{- end }}
+{{- if and (eq .Capabilities.KubeVersion.Major "1") (gt .Capabilities.KubeVersion.Minor "7") }}
+  updateStrategy:
+    type: {{ .Values.worker.updateStrategy }}
+{{- end }}

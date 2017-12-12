@@ -1,0 +1,24 @@
+{{- if .Values.nginx.persistence.enabled }}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ template "artifactory.nginx.fullname" . }}
+  labels:
+    app: {{ template "artifactory.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  accessModes:
+    - {{ .Values.nginx.persistence.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.nginx.persistence.size | quote }}
+{{- if .Values.nginx.persistence.storageClass }}
+{{- if (eq "-" .Values.nginx.persistence.storageClass) }}
+  storageClassName: ""
+{{- else }}
+  storageClassName: "{{ .Values.nginx.persistence.storageClass }}"
+{{- end }}
+{{- end }}
+{{- end }}

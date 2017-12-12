@@ -11,6 +11,7 @@ scheduler:
   imageTag: "latest"
   replicas: 1
   component: "dask-scheduler"
+  serviceType: "LoadBalancer"
   servicePort: 8786
   containerPort: 8786
   resources: {}
@@ -47,6 +48,7 @@ jupyter:
   imageTag: "11be019e4079"
   replicas: 1
   component: "jupyter-notebook"
+  serviceType: "LoadBalancer"
   servicePort: 80
   containerPort: 8888
   password: 'sha1:aae8550c0a44:9507d45e087d5ee481a5ce9f4f16f37a0867318c'  # 'dask'

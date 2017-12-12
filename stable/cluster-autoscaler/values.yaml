@@ -1,0 +1,76 @@
+autoscalingGroups: []
+  # - name: asg1
+  #   maxSize: 1
+  #   minSize: 1
+
+# Required if cloudProvider=aws
+awsRegion: us-east-1
+
+# Currently only `aws` & `spotinst` are supported
+cloudProvider: aws
+
+image:
+  repository: gcr.io/google_containers/cluster-autoscaler
+  tag: v1.0.3
+  pullPolicy: IfNotPresent
+
+tolerations: []
+
+extraArgs: {}
+  # scale-down-delay: 10m
+  # scale-down-unneeded-time: 10m
+  # skip-nodes-with-local-storage: false
+  # skip-nodes-with-system-pods: true
+
+## Affinity for pod assignment
+## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+## affinity: {}
+
+## Node labels for pod assignment
+## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+##
+nodeSelector: {}
+
+podAnnotations: {}
+podLabels: {}
+replicaCount: 1
+
+rbac:
+  ## If true, create & use RBAC resources
+  ##
+  create: false
+
+  ## Ignored if rbac.create is true
+  ##
+  serviceAccountName: default
+
+resources: {}
+  # limits:
+  #   cpu: 100m
+  #   memory: 300Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 300Mi
+
+service:
+  annotations: {}
+  clusterIP: ""
+
+  ## List of IP addresses at which the service is available
+  ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
+  ##
+  externalIPs: []
+
+  loadBalancerIP: ""
+  loadBalancerSourceRanges: []
+  servicePort: 8085
+  type: ClusterIP
+
+spotinst:
+  account: ""
+  token: ""
+
+  image:
+    repository: spotinst/kubernetes-cluster-autoscaler
+    tag: 0.6.0
+    pullPolicy: IfNotPresent

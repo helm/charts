@@ -1,0 +1,113 @@
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  name: {{ template "zookeeper.fullname" . }}
+  labels:
+    app: {{ include "zookeeper.name" . | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+spec:
+  serviceName: {{ template "zookeeper.fullname" . }}-headless
+  replicas: {{ .Values.servers }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "zookeeper.name" . | quote }}
+        release: {{ .Release.Name | quote }}
+    spec:
+      {{- if eq .Values.antiAffinity "hard" }}
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - topologyKey: "kubernetes.io/hostname"
+              labelSelector:
+                matchLabels:
+                  app: {{ include "zookeeper.name" . | quote }}
+                  release: {{ .Release.Name | quote }}
+      {{- else if eq .Values.antiAffinity "soft" }}
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 1
+              podAffinityTerm:
+                topologyKey: "kubernetes.io/hostname"
+                labelSelector:
+                  matchLabels:
+                    app: {{ include "zookeeper.name" . | quote }}
+                    release: {{ .Release.Name | quote }}
+      {{- end }}
+      containers:
+      - name: {{ template "zookeeper.name" . }}-server
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        image: gcr.io/google_samples/k8szk:v2
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+        ports:
+        - containerPort: {{ .Values.clientPort }}
+          name: client
+        - containerPort: {{ .Values.serverPort }}
+          name: server
+        - containerPort: {{ .Values.leaderElectionPort }}
+          name: leader-election
+        env:
+        - name : ZK_REPLICAS
+          value: "{{ .Values.servers }}"
+        - name : ZK_HEAP_SIZE
+          value: "{{ .Values.heap }}"
+        - name : ZK_TICK_TIME
+          value: "{{ .Values.tickTimeMs }}"
+        - name : ZK_INIT_LIMIT
+          value: "{{ .Values.initTicks }}"
+        - name : ZK_SYNC_LIMIT
+          value: "{{ .Values.syncTicks }}"
+        - name : ZK_MAX_CLIENT_CNXNS
+          value: "{{ .Values.clientCnxns }}"
+        - name: ZK_SNAP_RETAIN_COUNT
+          value: "{{ .Values.snapRetain }}"
+        - name: ZK_PURGE_INTERVAL
+          value: "{{ .Values.purgeHours }}"
+        - name: ZK_LOG_LEVEL
+          value: {{ .Values.logLevel }}
+        - name: ZK_CLIENT_PORT
+          value: "{{ .Values.clientPort }}"
+        - name: ZK_SERVER_PORT
+          value: "{{ .Values.serverPort }}"
+        - name: ZK_ELECTION_PORT
+          value: "{{ .Values.leaderElectionPort }}"
+        command:
+        - sh
+        - -c
+        - zkGenConfig.sh && exec zkServer.sh start-foreground
+        readinessProbe:
+          exec:
+            command:
+            - "zkOk.sh"
+          initialDelaySeconds: {{ .Values.probeInitialDelaySeconds }}
+          timeoutSeconds: {{ .Values.probeTimeoutSeconds }}
+        livenessProbe:
+          exec:
+            command:
+            - "zkOk.sh"
+          initialDelaySeconds: {{ .Values.probeInitialDelaySeconds }}
+          timeoutSeconds: {{ .Values.probeTimeoutSeconds }}
+        volumeMounts:
+        - name: datadir
+          mountPath: /var/lib/zookeeper
+          subPath: data
+      {{- if eq .Values.security.enabled true }}
+      securityContext:
+        runAsUser: {{ .Values.security.runAsUser }}
+        fsGroup: {{ .Values.security.fsGroup }}
+      {{- end }}
+  volumeClaimTemplates:
+  - metadata:
+      name: datadir
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: {{ .Values.storage }}
+      {{- if .Values.storageClass }}
+      storageClassName: {{ .Values.storageClass | quote }}
+      {{- end }}

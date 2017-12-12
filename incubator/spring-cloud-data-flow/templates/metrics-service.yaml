@@ -1,0 +1,21 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: {{ template "scdf.fullname" . }}-metrics
+  labels:
+    app: {{ template "name" . }}
+    component: metrics
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  type: {{ .Values.metrics.service.type }}
+  ports:
+    - port: {{ .Values.metrics.service.externalPort }}
+      targetPort: {{ .Values.metrics.service.internalPort }}
+      protocol: TCP
+      name: http
+  selector:
+    app: {{ template "name" . }}
+    component: metrics
+    release: {{ .Release.Name }}

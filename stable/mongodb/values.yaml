@@ -1,7 +1,7 @@
 ## Bitnami MongoDB image version
 ## ref: https://hub.docker.com/r/bitnami/mongodb/tags/
 ##
-image: bitnami/mongodb:3.4.5-r0
+image: bitnami/mongodb:3.6.0-r0
 
 ## Specify a imagePullPolicy
 ## 'Always' if imageTag is 'latest', else set to 'IfNotPresent'
@@ -21,15 +21,22 @@ image: bitnami/mongodb:3.4.5-r0
 # mongodbPassword:
 # mongodbDatabase:
 
+## Kubernetes service type
+serviceType: ClusterIP
+
 ## Enable persistence using Persistent Volume Claims
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
 ##
 persistence:
   enabled: true
-  ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
-  ## Default: volume.alpha.kubernetes.io/storage-class: default
+  ## mongodb data Persistent Volume Storage Class
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
   ##
-  # storageClass:
+  # storageClass: "-"
   accessMode: ReadWriteOnce
   size: 8Gi
 

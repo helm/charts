@@ -1,0 +1,101 @@
+{{- if include "host" . -}}
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    app: {{ template "name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  template:
+    metadata:
+      labels:
+        app: {{ template "name" . }}
+        release: "{{ .Release.Name }}"
+    spec:
+      containers:
+      - name: {{ template "fullname" . }}
+        image: "{{ .Values.image }}"
+        imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
+        env:
+        - name: MARIADB_HOST
+          value: {{ template "mariadb.fullname" . }}
+        - name: MARIADB_PORT_NUMBER
+          value: "3306"
+        - name: MARIADB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "mariadb.fullname" . }}
+              key: mariadb-root-password
+        - name: SUITECRM_HOST
+          value: {{ include "host" . | quote }}
+        - name: SUITECRM_USERNAME
+          value: {{ .Values.suitecrmUsername | quote }}
+        - name: SUITECRM_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "fullname" . }}
+              key: suitecrm-password
+        - name: SUITECRM_EMAIL
+          value: {{ .Values.suitecrmEmail | quote }}
+        - name: SUITECRM_LAST_NAME
+          value: {{ .Values.suitecrmLastName | quote }}
+        - name: SUITECRM_SMTP_HOST
+          value: {{ .Values.suitecrmSmtpHost | quote }}
+        - name: SUITECRM_SMTP_PORT
+          value: {{ .Values.suitecrmSmtpPort | quote }}
+        - name: SUITECRM_SMTP_USER
+          value: {{ .Values.suitecrmSmtpUser | quote }}
+        - name: SUITECRM_SMTP_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "fullname" . }}
+              key: suitecrm-smtp-password
+        - name: SUITECRM_SMTP_PROTOCOL
+          value: {{ .Values.suitecrmSmtpProtocol | quote }}
+        ports:
+        - name: http
+          containerPort: 80
+        - name: https
+          containerPort: 443
+        livenessProbe:
+          httpGet:
+            path: /index.php
+            port: http
+            httpHeaders:
+            - name: Host
+              value: {{ include "host" . | quote }}
+          initialDelaySeconds: 300
+        readinessProbe:
+          httpGet:
+            path: /index.php
+            port: http
+            httpHeaders:
+            - name: Host
+              value: {{ include "host" . | quote }}
+          initialDelaySeconds: 60
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+        volumeMounts:
+        - name: suitecrm-data
+          mountPath: /bitnami/suitecrm
+        - name: apache-data
+          mountPath: /bitnami/apache
+      volumes:
+      - name: suitecrm-data
+      {{- if .Values.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ template "fullname" . }}-suitecrm
+      {{- else }}
+        emptyDir: {}
+      {{- end }}
+      - name: apache-data
+      {{- if .Values.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ template "fullname" . }}-apache
+      {{- else }}
+        emptyDir: {}
+      {{- end }}
+{{- end -}}

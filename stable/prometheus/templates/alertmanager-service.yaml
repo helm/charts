@@ -4,7 +4,7 @@ kind: Service
 metadata:
 {{- if .Values.alertmanager.service.annotations }}
   annotations:
-{{ toYaml .Values.alertmanager.service.annotations | indent 4}}
+{{ toYaml .Values.alertmanager.service.annotations | indent 4 }}
 {{- end }}
   labels:
     app: {{ template "prometheus.name" . }}
@@ -13,7 +13,7 @@ metadata:
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
 {{- if .Values.alertmanager.service.labels }}
-{{ toYaml .Values.alertmanager.service.labels | indent 4}}
+{{ toYaml .Values.alertmanager.service.labels | indent 4 }}
 {{- end }}
   name: {{ template "prometheus.alertmanager.fullname" . }}
 spec:
@@ -38,6 +38,9 @@ spec:
       port: {{ .Values.alertmanager.service.servicePort }}
       protocol: TCP
       targetPort: 9093
+    {{- if .Values.alertmanager.service.nodePort }}
+      nodePort: {{ .Values.alertmanager.service.nodePort }}
+    {{- end }}
   selector:
     app: {{ template "prometheus.name" . }}
     component: "{{ .Values.alertmanager.name }}"

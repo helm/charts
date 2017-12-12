@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "voyager.fullname" . }}
+  labels:
+    app: "{{ template "voyager.name" . }}"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  ports:
+  - name: ops
+    port: 56790
+    targetPort: ops
+  - name: acme
+    port: 56791
+    targetPort: acme
+  selector:
+    app: "{{ template "voyager.name" . }}"
+    release: "{{ .Release.Name }}"

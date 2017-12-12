@@ -1,0 +1,10 @@
+apiVersion: v1
+description: Configure external DNS servers (AWS Route53, Google CloudDNS and others)
+  for Kubernetes Ingresses and Services
+name: external-dns
+version: 0.4.3
+appVersion: 0.4.5
+home: https://github.com/kubernetes-incubator/external-dns
+sources:
+- https://github.com/kubernetes-incubator/external-dns
+engine: gotpl

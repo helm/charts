@@ -1,0 +1,13 @@
+apiVersion: v1
+description: The easy, open source way for everyone in your company to ask questions
+  and learn from data.
+name: metabase
+version: 0.3.0
+appVersion: v0.26.2
+maintainers:
+- name: pmint93
+  email: phamminhthanh69@gmail.com
+home: http://www.metabase.com/
+icon: http://www.metabase.com/images/logo.svg
+sources:
+- https://github.com/metabase/metabase

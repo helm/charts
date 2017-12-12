@@ -9,7 +9,12 @@ image:
 # labels:
 #   kubernetes.io/cluster-service: "true"
 #   kubernetes.io/name: "Heapster"
-labels:
+labels: {}
+
+## Node labels for pod assignment
+## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+##
+nodeSelector: {}
 
 service:
   type: ClusterIP
@@ -44,6 +49,9 @@ command:
 - "/heapster"
 - "--source=kubernetes.summary_api:''"
 
+## heapster env variables
+env: []
+
 ## Resizer scales resources linearly with the number of nodes in the cluster
 ## Resizer is enabled by default
 ##
@@ -72,3 +80,45 @@ resizer:
   - "--extra-memory=6Mi"
   - "--threshold=5"
   - "--poll-period=300000"
+
+## For RBAC support:
+rbac:
+  create: false
+
+  ## Ignored if rbac.create is true
+  ##
+  serviceAccountName: default
+
+## eventer can send the kubernetes event logs to a remote destination
+## it uses the same image as heapster but has its own resizer nanny pod
+## eventer is disabled by default
+## see https://github.com/kubernetes/heapster/blob/master/docs/overview.md for the flags you can use
+## you will probably want to change the --sink parameter
+eventer:
+  enabled: false
+  flags:
+  - "--source=kubernetes:https://kubernetes.default"
+  - "--sink=log"
+  resources: {}
+#    limits:
+#      cpu: 100m
+#      memory: 250Mi
+#    requests:
+#      cpu: 100m
+#      memory: 250Mi
+  resizer:
+    enabled: true
+    resources: {}
+#      limits:
+#        cpu: 50m
+#        memory: 90Mi
+#      requests:
+#        cpu: 50m
+#        memory: 90Mi
+    flags:
+    - "--cpu=150m"
+    - "--extra-cpu=10m"
+    - "--memory=200Mi"
+    - "--extra-memory=6Mi"
+    - "--threshold=5"
+    - "--poll-period=300000"

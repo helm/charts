@@ -1,12 +1,17 @@
 ## Bitnami Odoo image version
 ## ref: https://hub.docker.com/r/bitnami/odoo/tags/
 ##
-image: bitnami/odoo:10.0.20170515-r2
+image: bitnami/odoo:10.0.20171202-r0
 
 ## Specify a imagePullPolicy
 ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
 ##
 imagePullPolicy: IfNotPresent
+
+## User of the application
+## ref: https://github.com/bitnami/bitnami-docker-odoo#configuration
+##
+odooUsername: user@example.com
 
 ## Admin email
 ## ref: https://github.com/bitnami/bitnami-docker-odoo#configuration
@@ -41,7 +46,14 @@ postgresql:
   ##
   persistence:
     enabled: true
-    # storageClass:
+    ## postgresql data Persistent Volume Storage Class
+    ## If defined, storageClassName: <storageClass>
+    ## If set to "-", storageClassName: "", which disables dynamic provisioning
+    ## If undefined (the default) or set to null, no storageClassName spec is
+    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+    ##   GKE, AWS & OpenStack)
+    ##
+    # storageClass: "-"
     accessMode: ReadWriteOnce
     size: 8Gi
 
@@ -55,10 +67,14 @@ serviceType: LoadBalancer
 ##
 persistence:
   enabled: true
-  ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
-  ## Default: volume.alpha.kubernetes.io/storage-class: default
+  ## odoo data Persistent Volume Storage Class
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
   ##
-  # storageClass:
+  # storageClass: "-"
   accessMode: ReadWriteOnce
   size: 8Gi
 
