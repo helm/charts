@@ -10,6 +10,7 @@ metadata:
     release: {{ .Release.Name }}
   name: {{ template "nginx-ingress.controller.fullname" . }}
 spec:
+  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
   template:
     metadata:
       annotations:
@@ -26,6 +27,10 @@ spec:
         - name: {{ template "nginx-ingress.name" . }}-{{ .Values.controller.name }}
           image: "{{ .Values.controller.image.repository }}:{{ .Values.controller.image.tag }}"
           imagePullPolicy: "{{ .Values.controller.image.pullPolicy }}"
+          {{- if .Values.controller.lifecycle }}
+          lifecycle:
+{{ toYaml .Values.controller.lifecycle | indent 12 }}
+          {{- end }}
           args:
             - /nginx-ingress-controller
             - --default-backend-service={{ if .Values.defaultBackend.enabled }}{{ .Release.Namespace }}/{{ template "nginx-ingress.defaultBackend.fullname" . }}{{ else }}{{ .Values.controller.defaultBackendService }}{{ end }}
@@ -68,6 +73,10 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.namespace
+          {{- range $key, $value := .Values.controller.extraEnvs }}
+            - name: {{ $key | upper | replace "." "_" }}
+              value: {{ $value }}
+          {{- end }}
           livenessProbe:
             httpGet:
               path: /healthz
@@ -102,6 +111,12 @@ spec:
               path: /healthz
               port: 10254
               scheme: HTTP
+{{- if .Values.controller.customTemplate.configMapName }}
+          volumeMounts:
+            - mountPath: /etc/nginx/template
+              name: nginx-template-volume
+              readOnly: true
+{{- end }}
           resources:
 {{ toYaml .Values.controller.resources | indent 12 }}
       {{- if .Values.controller.stats.enabled }}
@@ -135,6 +150,15 @@ spec:
     {{- end }}
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "nginx-ingress.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
       terminationGracePeriodSeconds: 60
+{{- if .Values.controller.customTemplate.configMapName }}
+      volumes:
+        - name: nginx-template-volume
+          configMap:
+            name: {{ .Values.controller.customTemplate.configMapName }}
+            items:
+            - key: {{ .Values.controller.customTemplate.configMapKey }}
+              path: nginx.tmpl
+{{- end }}
   updateStrategy:
 {{ toYaml .Values.controller.updateStrategy | indent 4 }}
 {{- end }}
