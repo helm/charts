@@ -39,3 +39,32 @@ persistence:
   enabled: false
   size: 10Gi
   # storageClass: '-'
+
+# set the type of filesystem to use
+storage: filesystem
+
+# Set this to name of secret for tls certs
+# tlsSecretName: registry.docker.example.com
+secrets:
+  haSharedSecret: ""
+# Secrets for S3 access and secret keys
+#   s3:
+#     accessKey: ""
+#     secretKey: ""
+configData:
+  version: 0.1
+  log:
+    fields:
+      service: registry
+  storage:
+    cache:
+      blobdescriptor: inmemory
+  http:
+    addr: :5000
+    headers:
+      X-Content-Type-Options: [nosniff]
+  health:
+    storagedriver:
+      enabled: true
+      interval: 10s
+      threshold: 3
