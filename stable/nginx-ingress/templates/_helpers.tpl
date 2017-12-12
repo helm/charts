@@ -27,16 +27,16 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{/*
 Construct the path for the publish-service.
 
-By convention this will simply use the <namesapce>/<controller-name> to match the name of the
+By convention this will simply use the <namespace>/<controller-name> to match the name of the
 service generated.
 
 Users can provide an override for an explicit service they want bound via `.Values.controller.publishService.pathOverride`
 
 */}}
 {{- define "nginx-ingress.controller.publishServicePath" -}}
-{{- $defServiceName := printf "%s/%s" .Release.Namespace (include "controller.fullname" .) -}}
+{{- $defServiceName := printf "%s/%s" .Release.Namespace (include "nginx-ingress.controller.fullname" .) -}}
 {{- $servicePath := default $defServiceName .Values.controller.publishService.pathOverride }}
-{{- print $servicePath | trunc 63 | trimSuffix "-" -}}
+{{- print $servicePath | trimSuffix "-" -}}
 {{- end -}}
 
 {{/*

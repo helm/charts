@@ -13,6 +13,10 @@ spec:
       labels:
         app: {{ template "postgresql.fullname" . }}
     spec:
+      {{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+      {{- end }}
       {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
@@ -106,4 +110,8 @@ spec:
           items:
             - key: custom-metrics.yaml
               path: custom-metrics.yaml
+      {{- end }}
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+        - name: {{ .Values.imagePullSecrets }}
       {{- end }}
