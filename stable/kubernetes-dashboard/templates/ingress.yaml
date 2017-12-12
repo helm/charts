@@ -16,9 +16,18 @@ metadata:
   name: {{ template "kubernetes-dashboard.fullname" . }}
 spec:
   rules:
+  {{- if .Values.ingress.hosts }}
   {{- range .Values.ingress.hosts }}
     - host: {{ . }}
       http:
+        paths:
+          - path: /
+            backend:
+              serviceName: {{ $fullName }}
+              servicePort: {{ $httpPort }}
+  {{- end -}}
+  {{- else }}
+    - http:
         paths:
           - path: /
             backend:

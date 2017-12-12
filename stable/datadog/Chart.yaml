@@ -1,6 +1,6 @@
 name: datadog
-version: 0.8.0
-description: DataDog Agent
+version: 0.9.2
+description: Datadog Agent
 keywords:
 - monitoring
 - alerting
@@ -11,7 +11,9 @@ sources:
 - https://app.datadoghq.com/account/settings#agent/kubernetes
 - https://github.com/DataDog/docker-dd-agent
 maintainers:
-- name: gtaylor
-  email: gtaylor@gc-taylor.com
 - name: hkaj
   email: haissam@datadoghq.com
+- name: irabinovitch
+  email: ilan@datadoghq.com
+- name: xvello
+  email: xavier.vello@datadoghq.com
