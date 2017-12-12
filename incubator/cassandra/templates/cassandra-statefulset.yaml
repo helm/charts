@@ -75,6 +75,8 @@ spec:
           value: {{ default "DC1" .Values.config.dc_name | quote }}
         - name: CASSANDRA_RACK
           value: {{ default "RAC1" .Values.config.rack_name | quote }}
+        - name: CASSANDRA_START_RPC
+          value: {{ default "false" .Values.config.start_rpc | quote }}
         - name: POD_IP
           valueFrom:
             fieldRef:

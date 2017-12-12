@@ -55,6 +55,7 @@ config:
   endpoint_snitch: SimpleSnitch
   max_heap_size: 2048M
   heap_new_size: 512M
+  start_rpc: false
   ports:
     cql: 9042
     thrift: 9160
