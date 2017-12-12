@@ -71,7 +71,7 @@ $ helm install --name my-release -f values.yaml stable/bitcoincashd
 
 ## Persistence
 
-The bitcoincashd image stores the BitcoinCashd node data (Blockchain and wallet) and configurations at the `/data` path of the container.
+The bitcoincashd image stores the BitcoinCashd node data (Blockchain and wallet) and configurations at the `/root` path of the container.
 
 By default a PersistentVolumeClaim is created and mounted into that directory. In order to disable this functionality
 you can change the values.yaml to disable persistence and use an emptyDir instead.

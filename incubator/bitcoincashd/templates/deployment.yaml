@@ -24,7 +24,7 @@ spec:
           containerPort: {{ .Values.RPCPort }}
         volumeMounts:
         - name: data
-          mountPath: /data
+          mountPath: /root
         {{- if .Values.ssl.enabled }}
         - name: ssl
           mountPath: /etc/bitcoincashd-ssl
