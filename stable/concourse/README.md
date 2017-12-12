@@ -126,7 +126,7 @@ The following tables lists the configurable parameters of the Concourse chart an
 | `worker.postStopDelaySeconds` | Time to wait after graceful shutdown of worker before starting up again | `60` |
 | `worker.terminationGracePeriodSeconds` | Upper bound for graceful shutdown, including `worker.postStopDelaySeconds` | `120` |
 | `worker.fatalErrors` | Newline delimited strings which, when logged, should trigger a restart of the worker | *See [values.yaml](values.yaml)* |
-| `worker.updateStrategy` | `OnDelete` or `RollingUpdate` (requires Kubernetes >= 1.6) | `RollingUpdate` |
+| `worker.updateStrategy` | `OnDelete` or `RollingUpdate` (requires Kubernetes >= 1.7) | `RollingUpdate` |
 | `persistence.enabled` | Enable Concourse persistence using Persistent Volume Claims | `true` |
 | `persistence.worker.class` | Concourse Worker Persistent Volume Storage Class | `generic` |
 | `persistence.worker.accessMode` | Concourse Worker Persistent Volume Access Mode | `ReadWriteOnce` |

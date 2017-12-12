@@ -1,0 +1,26 @@
+{{- if eq .Values.controller.kind "Deployment" }}
+{{- if .Values.controller.autoscaling.enabled }}
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  labels:
+    app: {{ template "name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: "{{ .Values.controller.name }}"
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "controller.fullname" . }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1beta1
+    kind: Deployment
+    name:  {{ template "controller.fullname" . }}
+  minReplicas: "{{ .Values.controller.autoscaling.minReplicas }}"
+  maxReplicas: "{{ .Values.controller.autoscaling.maxReplicas }}"
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      targetAverageUtilization: "{{ .Values.controller.autoscaling.targetAverageUtilization }}"
+{{- end }}
+{{- end }}
