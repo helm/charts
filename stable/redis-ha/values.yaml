@@ -59,7 +59,7 @@ persistentVolume:
   ##
   subPath: ""
 ## Redis image version
-redis_image: quay.io/smile/redis:4.0.2
+redis_image: quay.io/smile/redis:4.0.6
 ## replicas number for each component
 replicas:
   master: 1
