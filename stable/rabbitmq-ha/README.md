@@ -79,7 +79,7 @@ and their default values.
 | `service.loadBalancerIP`           | IP address to assign to load balancer (if supported)            | `""`                                                     |
 | `service.loadBalancerSourceRanges` | List of IP CIDRs allowed access to load balancer (if supported) | `[]`                                                     |
 | `service.type`                     | Type of service to create                                       | `ClusterIP`                                              |
-| `tolerations`                      | Toleration labels for pod assignment                            | `[]`                                                       |
+| `tolerations`                      | Toleration labels for pod assignment                            | `[]`                                                     |
 | `updateStrategy`                   | Statefulset update strategy                                     | `OnDelete`                                               |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,

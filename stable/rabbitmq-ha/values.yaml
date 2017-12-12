@@ -36,7 +36,7 @@ replicaCount: 3
 
 image:
   repository: rabbitmq
-  tag: 3.7
+  tag: 3.7-alpine
   pullPolicy: IfNotPresent
 
 service:

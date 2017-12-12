@@ -144,7 +144,3 @@ spec:
         - name: data
           emptyDir: {}
 {{- end }}
-
-
-
-
