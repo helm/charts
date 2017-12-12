@@ -72,6 +72,10 @@ spec:
           - name: JAVA_TOOL_OPTIONS
             value: {{ .Values.javaToolOptions | quote }}
           {{- end }}
+          {{- if .Values.pluginsDirectory }}
+          - name: MB_PLUGINS_DIR
+            value: {{ .Values.pluginsDirectory | quote }}
+          {{- end }}
           - name: MB_EMOJI_IN_LOGS
             value: {{ .Values.emojiLogging | quote }}
           ports:
