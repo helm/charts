@@ -5,7 +5,7 @@
 replicaCount: 1
 image:
   repository: metabase/metabase
-  tag: v0.24.2
+  tag: v0.26.2
   pullPolicy: IfNotPresent
 
 # Config Jetty web server
@@ -43,6 +43,7 @@ password:
 timeZone: UTC
 emojiLogging: true
 # javaToolOptions:
+# pluginsDirectory:
 
 service:
   name: metabase
@@ -63,13 +64,13 @@ ingress:
     #   hosts:
     #     - metabase.domain.com
 resources: {}
-  # We usually recommend not to specify default resources and to leave this as a conscious 
-  # choice for the user. This also increases chances charts run on environments with little 
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following 
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
   # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
   # limits:
   #  cpu: 100m
   #  memory: 128Mi
-  #requests:
+  # requests:
   #  cpu: 100m
   #  memory: 128Mi

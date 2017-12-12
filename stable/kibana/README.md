@@ -42,7 +42,7 @@ Parameter | Description | Default
 `env` | Environment variables to configure Kibana | `{}`
 `image.pullPolicy` | Image pull policy | `IfNotPresent`
 `image.repository` | Image repository | `kibana`
-`image.tag` | Image tag | `5.4.3`
+`image.tag` | Image tag | `6.0.0`
 `ingress.enabled` | Enables Ingress | `false`
 `ingress.annotations` | Ingress annotations | None:
 `ingress.hosts` | Ingress accepted hostnames | None:
