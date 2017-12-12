@@ -19,6 +19,7 @@ spec:
         release: {{ .Release.Name }}
     spec:
       terminationGracePeriodSeconds: 10
+      serviceAccountName: {{ if .Values.rbac.create }}{{ template "rabbitmq-ha.fullname" . }}{{ else }}"{{ .Values.serviceAccountName }}"{{ end }}
       containers:
         - name: {{ .Chart.Name }}
           image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
@@ -113,10 +114,6 @@ spec:
         - name: config
           configMap:
             name: {{ template "rabbitmq-ha.fullname" . }}
-        # - name: data
-        #   emptyDir:
-        #     sizeLimit: {{ .Values.persistentDiskSizeLimit | quote }}
-
 {{- if .Values.persistentVolume.enabled }}
   volumeClaimTemplates:
     - metadata:

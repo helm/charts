@@ -107,3 +107,9 @@ podAntiAffinity: soft
 ## Create default configMap
 ##
 customConfigMap: false
+
+rbac:
+  create: true
+
+# Defines the serviceAccountName to use when `rbac.create=false`
+serviceAccountName: default

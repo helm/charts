@@ -56,9 +56,9 @@ and their default values.
 | `image.pullPolicy`                 | Image pull policy                                               | `Always` if `image` tag is `latest`, else `IfNotPresent` |
 | `image.repository`                 | RabbitMQ container image repository                             | `rabbitmq`                                               |
 | `image.tag`                        | RabbitMQ container image tag                                    | `3.7-alpine`                                             |
-| `nodeSelector`                     | Node labels for pod assignment                                  | {}                                                       |
-| `persistentVolume.accessMode`      | Persistent volume access modes                                  | [ReadWriteOnce]                                          |
-| `persistentVolume.annotations`     | Persistent volume annotations                                   | {}                                                       |
+| `nodeSelector`                     | Node labels for pod assignment                                  | `{}`                                                     |
+| `persistentVolume.accessMode`      | Persistent volume access modes                                  | `[ReadWriteOnce]`                                        |
+| `persistentVolume.annotations`     | Persistent volume annotations                                   | `{}`                                                     |
 | `persistentVolume.enabled`         | If `true`, persistent volume claims are created                 | `false`                                                  |
 | `persistentVolume.size`            | Persistent volume size                                          | `8Gi`                                                    |
 | `persistentVolume.storageClass`    | Persistent volume storage class                                 | `-`                                                      |
@@ -71,9 +71,11 @@ and their default values.
 | `rabbitmqPassword`                 | RabbitMQ application password                                   | _random 10 character long alphanumeric string_           |
 | `rabbitmqUsername`                 | RabbitMQ application username                                   | `guest`                                                  |
 | `rabbitmqVhost`                    | RabbitMQ application vhost                                      | `/`                                                      |
+| `rbac.create`                      | If true, create & use RBAC resources                            | `true`                                                   |
 | `replicaCount`                     | Number of replica                                               | `3`                                                      |
 | `resources`                        | CPU/Memory resource requests/limits                             | `{}`                                                     |
-| `service.annotations`              | Annotations to add to service                                   | none                                                     |
+| `serviceAccountName`               | Service account name to use (ignored if rbac.create=true)       | `default`                                                |
+| `service.annotations`              | Annotations to add to service                                   | `none`                                                   |
 | `service.clusterIP`                | IP address to assign to service                                 | `""`                                                     |
 | `service.externalIPs`              | Service external IP addresses                                   | `[]`                                                     |
 | `service.loadBalancerIP`           | IP address to assign to load balancer (if supported)            | `""`                                                     |
