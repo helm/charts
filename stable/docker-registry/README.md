@@ -17,8 +17,7 @@ This chart will do the following:
 To install the chart, use the following:
 
 ```console
-$ helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
-$ helm install incubator/docker-registry
+$ helm install stable/docker-registry
 ```
 
 ## Configuration
@@ -31,7 +30,7 @@ their default values.
 | `image.pullPolicy`         | Container pull policy                       | `IfNotPresent`                                      |
 | `image.repository`         | Container image to use                      | `registry`                                          |
 | `image.tag`                | Container image tag to deploy               | `2.6.2`                                             |
-| `persistence.accessMode    | Access mode to use for PVC                  | `ReadWriteOnce`                                     |
+| `persistence.accessMode`   | Access mode to use for PVC                  | `ReadWriteOnce`                                     |
 | `persistence.enabled`      | Whether to use a PVC for the Docker storage | `false`                                             |
 | `persistence.size`         | Amount of space to claim for PVC            | `10Gi`                                              |
 | `persistence.storageClass` | Storage Class to use for PVC                | `-`                                                 |
