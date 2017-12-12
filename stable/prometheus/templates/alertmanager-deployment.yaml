@@ -11,6 +11,10 @@ metadata:
   name: {{ template "prometheus.alertmanager.fullname" . }}
 spec:
   replicas: {{ .Values.alertmanager.replicaCount }}
+  {{- if .Values.server.strategy }}
+  strategy:
+{{ toYaml .Values.server.strategy | indent 4 }}
+  {{- end }}
   template:
     metadata:
     {{- if .Values.alertmanager.podAnnotations }}
@@ -22,6 +26,7 @@ spec:
         component: "{{ .Values.alertmanager.name }}"
         release: {{ .Release.Name }}
     spec:
+      serviceAccountName: {{ if .Values.rbac.create }}{{ template "prometheus.alertmanager.fullname" . }}{{ else }}"{{ .Values.alertmanager.serviceAccountName }}"{{ end }}
       containers:
         - name: {{ template "prometheus.name" . }}-{{ .Values.alertmanager.name }}
           image: "{{ .Values.alertmanager.image.repository }}:{{ .Values.alertmanager.image.tag }}"
@@ -37,11 +42,15 @@ spec:
           {{- range $key, $value := .Values.alertmanager.extraArgs }}
             - --{{ $key }}={{ $value }}
           {{- end }}
+          {{- if .Values.alertmanager.baseURL }}
+            - --web.external-url={{ .Values.alertmanager.baseURL }}
+          {{- end }}
+
           ports:
             - containerPort: 9093
           readinessProbe:
             httpGet:
-              path: /#/status
+              path: {{ .Values.alertmanager.baseURL }}/#/status
               port: 9093
             initialDelaySeconds: 30
             timeoutSeconds: 30
@@ -59,7 +68,7 @@ spec:
           imagePullPolicy: "{{ .Values.configmapReload.image.pullPolicy }}"
           args:
             - --volume-dir=/etc/config
-            - --webhook-url=http://localhost:9093/-/reload
+            - --webhook-url=http://localhost:9093{{ .Values.alertmanager.baseURL }}/-/reload
           resources:
 {{ toYaml .Values.configmapReload.resources | indent 12 }}
           volumeMounts:
@@ -70,10 +79,14 @@ spec:
       nodeSelector:
 {{ toYaml .Values.alertmanager.nodeSelector | indent 8 }}
     {{- end }}
+    {{- if .Values.alertmanager.affinity }}
+      affinity:
+{{ toYaml .Values.alertmanager.affinity | indent 8 }}
+    {{- end }}
       volumes:
         - name: config-volume
           configMap:
-            name: {{ template "prometheus.alertmanager.fullname" . }}
+            name: {{ if .Values.alertmanager.configMapOverrideName }}{{ .Release.Name }}-{{ .Values.alertmanager.configMapOverrideName }}{{- else }}{{ template "prometheus.alertmanager.fullname" . }}{{- end }}
         - name: storage-volume
         {{- if .Values.alertmanager.persistentVolume.enabled }}
           persistentVolumeClaim:

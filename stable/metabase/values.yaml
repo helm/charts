@@ -1,0 +1,76 @@
+# Currently Metabase is not horizontly scalable. See
+# https://github.com/metabase/metabase/issues/1446 and
+# https://github.com/metabase/metabase/issues/2754
+# NOTE: Should remain 1
+replicaCount: 1
+image:
+  repository: metabase/metabase
+  tag: v0.26.2
+  pullPolicy: IfNotPresent
+
+# Config Jetty web server
+listen:
+  host: "0.0.0.0"
+  port: 3000
+ssl:
+  # If you have an ssl certificate and would prefer to have Metabase run over HTTPS
+  enabled: false
+  # port: 8443
+  # keyStore: |-
+  #   << JKS KEY STORE >>
+  # keyStorePassword: storepass
+
+# Backend database
+database:
+  # Database type (h2 / mysql / postgres), default: h2
+  type: h2
+  # encryptionKey: << YOUR ENCRYPTION KEY >>
+  ## Only need when you use mysql / postgres
+  # host:
+  # port:
+  # dbname:
+  # username:
+  # password:
+
+password:
+  # Changing Metabase password complexity:
+  # weak: no character constraints
+  # normal: at least 1 digit (default)
+  # strong: minimum 8 characters w/ 2 lowercase, 2 uppercase, 1 digit, and 1 special character
+  complexity: normal
+  length: 6
+
+timeZone: UTC
+emojiLogging: true
+# javaToolOptions:
+# pluginsDirectory:
+
+service:
+  name: metabase
+  type: ClusterIP
+  externalPort: 80
+  internalPort: 3000
+ingress:
+  enabled: false
+  # Used to create Ingress record (should used with service.type: ClusterIP).
+  hosts:
+    # - metabase.domain.com
+  annotations:
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  tls:
+    # Secrets must be manually created in the namespace.
+    # - secretName: metabase-tls
+    #   hosts:
+    #     - metabase.domain.com
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi

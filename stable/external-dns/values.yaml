@@ -1,0 +1,89 @@
+## Details about the image to be pulled.
+image:
+  name: registry.opensource.zalan.do/teapot/external-dns
+  tag: v0.4.5
+
+  pullPolicy: IfNotPresent
+
+## This controls which types of resource external-dns should 'watch' for new
+## DNS entries.
+sources:
+  - service
+  - ingress
+
+# Allow external-dns to publish DNS records for ClusterIP services (optional)
+publishInternalServices: false
+
+## The DNS provider where the DNS records will be created (options: aws, google, inmemory, azure )
+provider: aws
+
+# AWS Access keys to inject as environment variables
+aws:
+  secretKey: ""
+  accessKey: ""
+  region: "us-east-1"
+  # Filter for zones of this type (optional, options: public, private)
+  zoneType: ""
+
+# Cloudflare keys to inject as environment variables
+cloudflare:
+  apiKey: ""
+  email: ""
+
+## Limit possible target zones by domain suffixes (optional)
+domainFilters: []
+
+## Node labels for pod assignment
+## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+##
+nodeSelector: {}
+
+## List of node taints to tolerate (requires Kubernetes >= 1.6)
+tolerations: []
+
+## Modify how DNS records are sychronized between sources and providers (options: sync, upsert-only )
+policy: upsert-only
+
+## Annotations to be added to pods
+##
+podAnnotations: {}
+
+podLabels: {}
+
+# Verbosity of the logs (options: panic, debug, info, warn, error, fatal)
+logLevel: info
+
+extraArgs: {}
+
+extraEnv: {}
+
+## CPU and Memory limit and request for external-dns
+resources: {}
+#  limits:
+#    memory: 50Mi
+#  requests:
+#    memory: 50Mi
+#    cpu: 10m
+
+rbac:
+  ## If true, create & use RBAC resources
+  ##
+  create: false
+
+  ## Ignored if rbac.create is true
+  ##
+  serviceAccountName: default
+
+service:
+  annotations: {}
+  clusterIP: ""
+
+  ## List of IP addresses at which the service is available
+  ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
+  ##
+  externalIPs: []
+
+  loadBalancerIP: ""
+  loadBalancerSourceRanges: []
+  servicePort: 7979
+  type: ClusterIP

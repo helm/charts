@@ -1,0 +1,19 @@
+name: redis-ha
+home: http://redis.io/
+engine: gotpl
+keywords:
+- redis
+- keyvalue
+- database
+version: 1.0.1
+description: Highly available Redis cluster with multiple sentinels and standbys.
+icon: https://upload.wikimedia.org/wikipedia/en/thumb/6/6b/Redis_Logo.svg/1200px-Redis_Logo.svg.png
+maintainers:
+  - email: ikaboubi@gmail.com
+    name: smileisak
+details:
+  This package provides a highly available Redis cluster with multiple sentinels and standbys.
+  Note the `redis-master` pod is used for bootstrapping only and can be deleted once
+  the cluster is up and running.
+sources:
+  - https://github.com/smileisak/docker-images/tree/master/redis

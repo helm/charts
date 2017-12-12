@@ -1,0 +1,86 @@
+{{- if .Values.rbac.create -}}
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRole
+metadata:
+  labels:
+    app: {{ template "cluster-autoscaler.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "cluster-autoscaler.fullname" . }}
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - events
+      - endpoints
+    verbs:
+      - create
+      - patch
+  - apiGroups:
+    - ""
+    resources:
+    - pods/eviction
+    verbs:
+    - create
+  - apiGroups:
+      - ""
+    resources:
+      - pods/status
+    verbs:
+      - update
+  - apiGroups:
+      - ""
+    resources:
+      - endpoints
+    resourceNames:
+      - cluster-autoscaler
+    verbs:
+      - get
+      - update
+  - apiGroups:
+      - ""
+    resources:
+      - nodes
+    verbs:
+    - watch
+    - list
+    - get
+    - update
+  - apiGroups:
+    - ""
+    resources:
+      - pods
+      - services
+      - replicationcontrollers
+      - persistentvolumeclaims
+      - persistentvolumes
+    verbs:
+      - watch
+      - list
+      - get
+  - apiGroups:
+      - extensions
+    resources:
+      - replicasets
+      - daemonsets
+    verbs:
+      - watch
+      - list
+      - get
+  - apiGroups:
+      - policy
+    resources:
+      - poddisruptionbudgets
+    verbs:
+      - watch
+      - list
+  - apiGroups:
+    - apps
+    resources:
+    - statefulsets
+    verbs:
+    - watch
+    - list
+    - get
+{{- end -}}

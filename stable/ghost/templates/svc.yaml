@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "ghost.fullname" . }}
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "ghost.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -14,7 +14,7 @@ spec:
   {{- end }}
   ports:
   - name: http
-    port: 80
+    port: {{ default "80" .Values.ghostPort }}
     targetPort: http
   selector:
-    app: {{ template "fullname" . }}
+    app: {{ template "ghost.fullname" . }}

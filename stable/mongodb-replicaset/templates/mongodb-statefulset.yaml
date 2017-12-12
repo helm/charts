@@ -2,111 +2,87 @@ apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
   labels:
-    app: {{ template "name" . }}
+    app: {{ template "mongodb-replicaset.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-  name: {{ template "fullname" . }}
+  name: {{ template "mongodb-replicaset.fullname" . }}
 spec:
-  serviceName: {{ template "fullname" . }}
+  serviceName: {{ template "mongodb-replicaset.fullname" . }}
   replicas: {{ .Values.replicas }}
   template:
     metadata:
       labels:
-        app: {{ template "name" . }}
+        app: {{ template "mongodb-replicaset.name" . }}
         release: {{ .Release.Name }}
       annotations:
       {{- if .Values.podAnnotations }}
-{{ toYaml .Values.podAnnotations | indent 8}}
+{{ toYaml .Values.podAnnotations | indent 8 }}
       {{- end }}
-        pod.alpha.kubernetes.io/init-containers: '[
-            {
-                "name": "install",
-                "image": "{{ .Values.installImage.name }}:{{ .Values.installImage.tag }}",
-                "args": ["--work-dir=/work-dir"],
-                "imagePullPolicy": "{{ .Values.installImage.pullPolicy }}",
-                "volumeMounts": [
-                    {
-                        "name": "workdir",
-                        "mountPath": "/work-dir"
-                    },
-                    {
-                        "name": "config",
-                        "mountPath": "/config"
-                    }
-                ]
-            },
-            {
-                "name": "bootstrap",
-                "image": "{{ .Values.image.name }}:{{ .Values.image.tag }}",
-                "command": ["/work-dir/peer-finder"],
-                "args": ["-on-start=/work-dir/on-start.sh", "-service={{ template "fullname" . }}"],
-                "imagePullPolicy": "{{ .Values.image.pullPolicy }}",
-                "env": [
-                    {
-                        "name": "POD_NAMESPACE",
-                        "valueFrom": {
-                            "fieldRef": {
-                                "apiVersion": "v1",
-                                "fieldPath": "metadata.namespace"
-                            }
-                        }
-                    },
-                    {
-                        "name": "REPLICA_SET",
-                        "value": "{{ .Values.replicaSet }}"
-                    }
-                    {{- if .Values.auth.enabled }},
-                    {
-                        "name": "AUTH",
-                        "value": "true"
-                    },
-                    {
-                        "name": "ADMIN_USER",
-                        "valueFrom": {
-                            "secretKeyRef": {
-                                "name": "{{ template "adminSecret" . }}",
-                                "key": "user"
-                            }
-                        }
-                    },
-                    {
-                        "name": "ADMIN_PASSWORD",
-                        "valueFrom": {
-                            "secretKeyRef": {
-                                "name": "{{ template "adminSecret" . }}",
-                                "key": "password"
-                            }
-                        }
-                    }
-                    {{- end }}
-                ],
-                "volumeMounts": [
-                    {
-                        "name": "workdir",
-                        "mountPath": "/work-dir"
-                    },
-                    {
-                        "name": "config",
-                        "mountPath": "/config"
-                    },
-                    {
-                        "name": "datadir",
-                        "mountPath": "/data/db"
-                    }
-                    {{- if .Values.auth.enabled }},
-                    {
-                        "name": "keydir",
-                        "mountPath": "/keydir",
-                        "readOnly": true
-                    }
-                    {{- end }}
-                ]
-            }
-        ]'
     spec:
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- end }}
+      initContainers:
+        - name: install
+          image: "{{ .Values.installImage.name }}:{{ .Values.installImage.tag }}"
+          args:
+            - --work-dir=/work-dir
+          imagePullPolicy: "{{ .Values.installImage.pullPolicy }}"
+          volumeMounts:
+            - name: workdir
+              mountPath: /work-dir
+            - name: config
+              mountPath: /config
+        - name: bootstrap
+          image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
+          command:
+            - /work-dir/peer-finder
+          args:
+            - -on-start=/work-dir/on-start.sh
+            - "-service={{ template "mongodb-replicaset.fullname" . }}"
+          imagePullPolicy: "{{ .Values.image.pullPolicy }}"
+          env:
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.namespace
+            - name: REPLICA_SET
+              value: {{ .Values.replicaSet }}
+          {{- if .Values.auth.enabled }}
+            - name: AUTH
+              value: "true"
+            - name: ADMIN_USER
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ template "mongodb-replicaset.adminSecret" . }}"
+                  key: user
+            - name: ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ template "mongodb-replicaset.adminSecret" . }}"
+                  key: password
+          {{- end }}
+          volumeMounts:
+            - name: workdir
+              mountPath: /work-dir
+            - name: config
+              mountPath: /config
+          {{- if and (.Values.tls.enabled) }}
+            - name: ca
+              mountPath: /ca
+          {{- end }}
+            - name: datadir
+              mountPath: /data/db
+          {{- if .Values.auth.enabled }}
+            - name: keydir
+              mountPath: /keydir
+              readOnly: true
+          {{- end }}
       containers:
-        - name: {{ template "name" . }}
+        - name: {{ template "mongodb-replicaset.name" . }}
           image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
           imagePullPolicy: "{{ .Values.image.pullPolicy }}"
           ports:
@@ -124,18 +100,23 @@ spec:
             - name: ADMIN_USER
               valueFrom:
                 secretKeyRef:
-                  name: "{{ template "adminSecret" . }}"
+                  name: "{{ template "mongodb-replicaset.adminSecret" . }}"
                   key: user
             - name: ADMIN_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: "{{ template "adminSecret" . }}"
+                  name: "{{ template "mongodb-replicaset.adminSecret" . }}"
                   key: password
-            {{- end }}
+          {{- end }}
           livenessProbe:
             exec:
               command:
                 - mongo
+              {{- if and (.Values.tls.enabled) }}
+                - --ssl
+                - --sslCAFile=/ca/tls.crt
+                - --sslPEMKeyFile=/work-dir/mongo.pem
+              {{- end }}
                 - --eval
                 - "db.adminCommand('ping')"
             initialDelaySeconds: 30
@@ -144,6 +125,11 @@ spec:
             exec:
               command:
                 - mongo
+              {{- if and (.Values.tls.enabled) }}
+                - --ssl
+                - --sslCAFile=/ca/tls.crt
+                - --sslPEMKeyFile=/work-dir/mongo.pem
+              {{- end }}
                 - --eval
                 - "db.adminCommand('ping')"
             initialDelaySeconds: 5
@@ -153,6 +139,10 @@ spec:
               mountPath: /data/db
             - name: config
               mountPath: /config
+          {{- if and (.Values.tls.enabled) }}
+            - name: ca
+              mountPath: /ca
+          {{- end }}
             - name: workdir
               mountPath: /work-dir
           {{- if .Values.auth.enabled }}
@@ -160,15 +150,42 @@ spec:
               mountPath: /keydir
               readOnly: true
           {{- end }}
+      {{- if eq .Values.podAntiAffinity "hard" }}
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - topologyKey: "kubernetes.io/hostname"
+              labelSelector:
+                matchLabels:
+                  app: "{{ template "mongodb-replicaset.name" . }}"
+                  release: "{{ .Release.Name }}"
+      {{- else if eq .Values.podAntiAffinity "soft" }}
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 1
+              podAffinityTerm:
+                topologyKey: kubernetes.io/hostname
+                labelSelector:
+                  matchLabels:
+                    app: "{{ template "mongodb-replicaset.name" . }}"
+                    release: "{{ .Release.Name }}"
+      {{- end }}
       volumes:
         - name: config
           configMap:
-            name: {{ template "fullname" . }}
+            name: {{ template "mongodb-replicaset.fullname" . }}
+        {{- if and (.Values.tls.enabled) }}
+        - name: ca
+          secret:
+            defaultMode: 0400
+            secretName: {{ template "mongodb-replicaset.fullname" . }}-ca
+        {{- end }}
         {{- if .Values.auth.enabled }}
         - name: keydir
           secret:
             defaultMode: 0400
-            secretName: {{ template "keySecret" . }}
+            secretName: {{ template "mongodb-replicaset.keySecret" . }}
         {{- end }}
         - name: workdir
           emptyDir: {}
@@ -177,11 +194,6 @@ spec:
     - metadata:
         name: datadir
         annotations:
-        {{- if .Values.persistentVolume.storageClass | quote }}
-          volume.beta.kubernetes.io/storage-class: {{ .Values.persistentVolume.storageClass | quote }}
-        {{- else }}
-          volume.alpha.kubernetes.io/storage-class: default
-        {{- end }}
         {{- range $key, $value := .Values.persistentVolume.annotations }}
           {{ $key }}: {{ $value }}
         {{- end }}
@@ -193,6 +205,13 @@ spec:
         resources:
           requests:
             storage: {{ .Values.persistentVolume.size | quote }}
+      {{- if .Values.persistentVolume.storageClass }}
+      {{- if (eq "-" .Values.persistentVolume.storageClass) }}
+        storageClassName: ""
+      {{- else }}
+        storageClassName: "{{ .Values.persistentVolume.storageClass }}"
+      {{- end }}
+      {{- end }}
 {{- else }}
         - name: datadir
           emptyDir: {}

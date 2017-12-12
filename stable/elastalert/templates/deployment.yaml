@@ -1,0 +1,53 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "elastalert.fullname" . }}
+  labels:
+    app: {{ template "elastalert.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: 1
+  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
+  template:
+    metadata:
+      labels:
+        name: {{ template "elastalert.fullname" . }}-elastalert
+        app: {{ template "elastalert.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+      - name: elastalert
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        env:
+        - name: ELASTICSEARCH_HOST
+          value: {{ .Values.elasticsearch.host }}
+        - name: ELASTICSEARCH_PORT
+          value: {{ .Values.elasticsearch.port | quote }}
+        volumeMounts:
+          - name: config
+            mountPath: '/opt/config'
+          - name: rules
+            mountPath: '/opt/rules'
+        resources:
+{{ toYaml .Values.resources | indent 12 }}
+      restartPolicy: Always
+      volumes:
+        - name: rules
+          configMap:
+            name: {{ template "elastalert.fullname" . }}-rules
+            items:
+{{- range $key, $value := .Values.rules }}
+            - key: {{ $key }}
+              path: {{ $key}}.yaml
+{{- end }}
+        - name: config
+          configMap:
+            name: {{ template "elastalert.fullname" . }}-config
+            items:
+            - key: elastalert_config
+              path: elastalert_config.yaml
+            - key: elastalert_supervisord
+              path: elastalert_supervisord.conf

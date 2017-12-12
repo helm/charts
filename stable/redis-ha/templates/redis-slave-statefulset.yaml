@@ -1,0 +1,44 @@
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  labels:
+    name: {{ template "name" . }}-slave
+    redis-node: "true"
+{{ include "labels.standard" . | indent 4 }}
+  name: {{ template "fullname" . }}-slave
+spec:
+  serviceName: "redis"
+  replicas: {{ .Values.replicas.slave }}
+  template:
+    metadata:
+      labels:
+        role: slave
+{{ include "labels.standard" . | indent 8 }}
+    spec:
+      terminationGracePeriodSeconds: 10
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- end }}
+      {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+      {{- end }}
+      containers:
+        - name: redis
+          image: "{{ .Values.redis_image }}"
+          resources:
+{{ toYaml .Values.resources.slave | indent 12 }}
+          ports:
+            - containerPort: 6379
+          volumeMounts:
+            - mountPath: /redis-master-data
+              name: data
+      volumes:
+      - name: data
+      {{- if .Values.persistentVolume.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ template "fullname" . }}-slave
+      {{- else }}
+        emptyDir: {}
+      {{- end -}}

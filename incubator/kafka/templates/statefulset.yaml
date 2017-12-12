@@ -1,0 +1,130 @@
+{{- $configMapName := include "kafka.configmap" . -}}
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  name: {{ template "kafka.fullname" . }}
+  labels:
+    app: {{ include "kafka.name" . | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+spec:
+  serviceName: {{ template "kafka.fullname" . }}-headless
+  replicas: {{ default 3 .Values.replicas }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "kafka.name" . | quote }}
+        release: {{ .Release.Name | quote }}
+    spec:
+      {{- if or .Values.kafkaAntiAffinityEnabled  .Values.zookeeperAntiAffinityEnabled  }}
+      affinity:
+        podAntiAffinity:
+          {{- if or (eq .Values.kafkaAntiAffinity "hard")  (eq .Values.zookeeperAntiAffinity "hard") }}
+          requiredDuringSchedulingIgnoredDuringExecution:
+            {{- if and .Values.kafkaAntiAffinityEnabled (eq .Values.kafkaAntiAffinity "hard") }}
+            - topologyKey: "kubernetes.io/hostname"
+              labelSelector:
+                matchLabels:
+                  app: {{ include "kafka.name" . | quote }}
+                  release: {{ .Release.Name | quote }}
+            {{- end }}
+            {{- if and .Values.zookeeperAntiAffinityEnabled (eq .Values.zookeeperAntiAffinity "hard") }}
+            - topologyKey: "kubernetes.io/hostname"
+              labelSelector:
+                matchLabels:
+                  app: {{ .Values.zookeeperAntiAffinityPodName }}
+                  release: {{ .Release.Name | quote }}
+            {{- end }}
+          {{- end }}
+          {{- if or (eq .Values.kafkaAntiAffinity "soft") (eq .Values.zookeeperAntiAffinity "soft") }}
+          preferredDuringSchedulingIgnoredDuringExecution:
+            {{- if and .Values.kafkaAntiAffinityEnabled (eq .Values.kafkaAntiAffinity "soft") }}
+            - weight: 1
+              podAffinityTerm:
+                topologyKey: "kubernetes.io/hostname"
+                labelSelector:
+                  matchLabels:
+                    app: {{ include "kafka.name" . | quote }}
+                    release: {{ .Release.Name | quote }}
+            {{- end }}
+            {{- if and .Values.zookeeperAntiAffinityEnabled (eq .Values.zookeeperAntiAffinity "soft") }}
+            - weight: 1
+              podAffinityTerm:
+                topologyKey: "kubernetes.io/hostname"
+                labelSelector:
+                  matchLabels:
+                    app: {{ .Values.zookeeperAntiAffinityPodName }}
+            {{- end }}
+          {{- end }}
+      {{- end }}
+      containers:
+      - name: {{ template "kafka.name" . }}-broker
+        image: "{{ .Values.image }}:{{ .Values.imageTag }}"
+        imagePullPolicy: "{{ .Values.imagePullPolicy }}"
+        livenessProbe:
+          tcpSocket:
+            port: 9092
+          initialDelaySeconds: 30
+          timeoutSeconds: 5
+        readinessProbe:
+          exec:
+            command:
+              - kafka-topics
+              - --zookeeper
+              - {{ template "zookeeper.url" . }}
+              - --list
+          initialDelaySeconds: 30
+          timeoutSeconds: 5
+        ports:
+        - containerPort: 9092
+          name: kafka
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+        env:
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        - name: KAFKA_ZOOKEEPER_CONNECT
+          valueFrom:
+            configMapKeyRef:
+              name: "{{ $configMapName }}"
+              key: zookeeper.connect
+        - name: KAFKA_LOG_DIRS
+          valueFrom:
+            configMapKeyRef:
+              name: "{{ $configMapName }}"
+              key: log.dirs
+        {{- range $configName := (keys .Values.configurationOverrides) }}
+        - name: KAFKA_{{ $configName | replace "." "_" | upper }}
+          valueFrom:
+            configMapKeyRef:
+              name: "{{ $configMapName }}"
+              key: {{ $configName }}
+        {{- end }}
+        # This is required because the Downward API does not yet support identification of
+        # pod numbering in statefulsets. Thus, we are required to specify a command which
+        # allows us to extract the pod ID for usage as the Kafka Broker ID.
+        # See: https://github.com/kubernetes/kubernetes/issues/31218
+        command:
+        - sh
+        - -c
+        - |
+          export KAFKA_BROKER_ID=${HOSTNAME##*-} && \
+          export KAFKA_ADVERTISED_LISTENERS="PLAINTEXT://${POD_IP}:9092" && \
+          /etc/confluent/docker/run
+        volumeMounts:
+        - name: datadir
+          mountPath: "{{ .Values.dataDirectory }}"
+  volumeClaimTemplates:
+  - metadata:
+      name: datadir
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: {{ .Values.storage }}
+      {{- if .Values.storageClass }}
+      storageClassName: {{ .Values.storageClass | quote }}
+      {{- end }}

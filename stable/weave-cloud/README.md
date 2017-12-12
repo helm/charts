@@ -23,6 +23,11 @@ To view the pods installed:
 $ kubectl get pods -n kube-system -l weave-cloud-component
 ```
 
+To upgrade the chart:
+```console
+$ helm upgrade --reuse-values weave-cloud stable/weave-cloud
+```
+
 ## Uninstalling the Chart
 
 To uninstall/delete the `weave-cloud` chart:
@@ -35,7 +40,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the Prometheus chart and their default values.
+The following tables lists the configurable parameters of the Weave Cloud Agents chart and their default values.
 
 | Parameter | Description | Default |
 | --------- | ----------- | ------- |

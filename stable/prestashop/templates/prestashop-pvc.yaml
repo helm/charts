@@ -2,22 +2,23 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: {{ template "fullname" . }}-prestashop
+  name: {{ template "prestashop.fullname" . }}-prestashop
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "prestashop.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
-  annotations:
-  {{- if .Values.persistence.prestashop.storageClass }}
-    volume.beta.kubernetes.io/storage-class: {{ .Values.persistence.prestashop.storageClass | quote }}
-  {{- else }}
-    volume.alpha.kubernetes.io/storage-class: default
-  {{- end }}
 spec:
   accessModes:
     - {{ .Values.persistence.prestashop.accessMode | quote }}
   resources:
     requests:
       storage: {{ .Values.persistence.prestashop.size | quote }}
+{{- if .Values.persistence.prestashop.storageClass }}
+{{- if (eq "-" .Values.persistence.prestashop.storageClass) }}
+  storageClassName: ""
+{{- else }}
+  storageClassName: "{{ .Values.persistence.prestashop.storageClass }}"
+{{- end }}
+{{- end }}
 {{- end -}}

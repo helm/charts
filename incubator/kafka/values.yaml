@@ -1,16 +1,106 @@
-Name: "kf"
-Replicas: 3
-Image: "solsson/kafka"
-ImageTag: "0.10.0.1"
-ImagePullPolicy: "Always"
-Cpu: "100m"
-Memory: "512Mi"
-MaxCpu: "200m"
-MaxMemory: "1024Mi"
-Storage: "1Gi"
-DataDirectory: "/opt/kafka/data"
-Component: "kafka"
+# ------------------------------------------------------------------------------
+# Kafka:
+# ------------------------------------------------------------------------------
+
+## The StatefulSet installs 3 pods by default
+replicas: 3
+
+## The kafka image repository
+image: "confluentinc/cp-kafka"
+
+## The kafka image tag
+imageTag: "4.0.0"
+
+## Specify a imagePullPolicy
+## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+imagePullPolicy: "IfNotPresent"
+
+## Configure resource requests and limits
+## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+resources: {}
+  # limits:
+  #   cpu: 200m
+  #   memory: 1536Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 1024Mi
+  #
+## The size of the persistentVolume to allocate to each Kafka Pod in the StatefulSet. For
+## production servers this number should likely be much larger.
+storage: "1Gi"
+
+## The name of the storage class which the cluster should use.
+# storageClass: default
+
+## The location within the Kafka container where the PV will mount its storage and Kafka will store
+## its logs
+dataDirectory: "/opt/kafka/data"
+
+## The subpath within the Kafka container's PV where logs will be stored
+## This is combined with `dataDirectory` above, to create, by default: /opt/kafka/data/logs
+logSubPath: "logs"
+
+## Attempt to prevent Kafka pods from being colocated with eachother.
+kafkaAntiAffinityEnabled: true
+## Prevent Kafka pods from being colocated on the same node.
+## `hard` means the scheduler must satisfy the constraints or the pod fails to schedule
+## `soft` means the scheduler makes a best-effort to satisfy the constraint and schedules it where
+##   it can if the constraints cannot be met.
+## See: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#inter-pod-affinity-and-anti-affinity-beta-feature
+kafkaAntiAffinity: "soft"
+
+## Attempt to prevent Kafka and Zookeeper pods from being colocated.
+zookeeperAntiAffinityEnabled: true
+## Prevent Kafka and Zookeeper pods from being colocated.
+## `hard` means the scheduler must satisfy the constraints or the pod fails to schedule
+## `soft` means the scheduler makes a best-effort to satisfy the constraint and schedules it where
+##   it can if the constraints cannot be met.
+## See: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#inter-pod-affinity-and-anti-affinity-beta-feature
+zookeeperAntiAffinity: "soft"
+## The zookeeper pod name which K8s will fuzzy-match against to prevent kafka
+## pods from being colocated with zookeeper. If you have more than one zookeeper
+## installation in your cluster, make sure to use a more specific pod name to
+## indicate which zookeeper pods should be filtered.
+zookeeperAntiAffinityPodName: "zookeeper"
+
+## Configuration Overrides. Specify any Kafka settings you would like set on the StatefulSet
+## here in map format, as defined in the official docs:
+## ref: https://kafka.apache.org/documentation/#brokerconfigs
+configurationOverrides: {}
+
+# ------------------------------------------------------------------------------
+# Zookeeper:
+# ------------------------------------------------------------------------------
 
 zookeeper:
-  Name: "zk"
-  Component: "zk"
+  ## If true, install the Zookeeper chart alongside Kafka
+  ## ref: https://github.com/kubernetes/charts/tree/master/incubator/zookeeper
+  enabled: true
+
+  ## Configure Zookeeper resource requests and limits
+  ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+  resources: {}
+
+  ## The JVM heap size to allocate to Zookeeper
+  heap: "1G"
+
+  ## The amount of PV storage allocated to each Zookeeper pod in the statefulset
+  storage: "2Gi"
+
+  ## Specify a Zookeeper imagePullPolicy
+  ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+  imagePullPolicy: "IfNotPresent"
+
+  ## If the Zookeeper Chart is disabled a URL and port are required to connect
+  url: ""
+  port: 2181
+
+# ------------------------------------------------------------------------------
+# Schema Registry:
+# ------------------------------------------------------------------------------
+
+## Install Confluent Schema Registry server alongside Kafka to track Avro Schemas
+schema-registry:
+  ## If true, install the Schema-Registry chart alongside Kafka
+  ## ref: https://github.com/kubernetes/charts/tree/master/incubator/schema-registry
+  enabled: false

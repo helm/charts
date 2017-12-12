@@ -44,8 +44,11 @@ The following table lists the configurable parameters of the chart and their def
 Parameter | Description | Default
 --------- | ----------- | -------
 `config.LEGO_EMAIL` | email address to use for registration with Let's Encrypt | none
-`config.LEGO_URL` | Let's Encrypt API endpoint | `https://acme-staging.api.letsencrypt.org/directory` (staging)
+`config.LEGO_URL` | Let's Encrypt API endpoint. To get "real" certificates set to the production API of Let's Encrypt: https://acme-v01.api.letsencrypt.org/directory | `https://acme-staging.api.letsencrypt.org/directory` (staging)
 `config.LEGO_PORT` | kube-lego port | `8080`
+`config.LEGO_SUPPORTED_INGRESS_CLASS` | Which ingress class to watch | none
+`config.LEGO_SUPPORTED_INGRESS_PROVIDER` | Which ingress provider is being used | none
+`config.LEGO_DEFAULT_INGRESS_CLASS` | What ingress class should something be if no ingress class is specified | none
 `image.repository` | kube-lego container image repository | `jetstack/kube-lego`
 `image.tag` | kube-lego container image tag | `0.1.3`
 `image.pullPolicy` | kube-lego container image pull policy | `IfNotPresent`
@@ -53,6 +56,8 @@ Parameter | Description | Default
 `podAnnotations` | annotations to be added to pods | `{}`
 `replicaCount` | desired number of pods | `1`
 `resources` | kube-lego resource requests and limits (YAML) |`{}`
+`rbac.create` | Create a role and serviceaccount | `false`
+`rbac.serviceAccountName` | serviceaccount name to use if `rbac.create` is false | `default`
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

@@ -19,7 +19,8 @@ ingress:
   enabled: false
   annotations: {}
   path: /
-  host: mailhog.example.com
+  hosts: 
+    - mailhog.example.com
   tls:
     enabled: false
     existingSecret: false

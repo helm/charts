@@ -14,7 +14,7 @@ This chart bootstraps a [Concourse](https://concourse.ci/) deployment on a [Kube
 
 ## Prerequisites Details
 
-* Kubernetes 1.5 (for `StatefulSets` support)
+* Kubernetes 1.6 (for `pod affinity` support)
 * PV support on underlying infrastructure (if persistence is required)
 
 ## Installing the Chart
@@ -53,6 +53,14 @@ Scaling should typically be managed via the `helm upgrade` command, but `Statefu
 $ kubectl scale statefulset my-release-worker --replicas=3
 ```
 
+### Restarting workers
+
+If a worker isn't taking on work, you can restart the worker with `kubectl delete pod`. This will initiate a graceful shutdown by "retiring" the worker, with some waiting time before the worker starts up again to ensure concourse doesn't try looking for old volumes on the new worker. The values `worker.postStopDelaySeconds` and `worker.terminationGracePeriodSeconds` can be used to tune this.
+
+### Worker Liveness Probe
+
+The worker's Liveness Probe will trigger a restart of the worker if it detects unrecoverable errors, by looking at the worker's logs. The set of strings used to identify such errors could change in the future, but can be tuned with `worker.fatalErrors`. See [values.yaml](values.yaml) for the defaults.
+
 ## Configuration
 
 The following tables lists the configurable parameters of the Concourse chart and their default values.
@@ -60,7 +68,7 @@ The following tables lists the configurable parameters of the Concourse chart an
 | Parameter               | Description                           | Default                                                    |
 | ----------------------- | ----------------------------------    | ---------------------------------------------------------- |
 | `image` | Concourse image | `concourse/concourse` |
-| `imageTag` | Concourse image version | `2.6.0` |
+| `imageTag` | Concourse image version | `3.3.2` |
 | `imagePullPolicy` |Concourse image pull policy |  `Always` if `imageTag` is `latest`, else `IfNotPresent` |
 | `concourse.username` | Concourse Basic Authentication Username | `concourse` |
 | `concourse.password` | Concourse Basic Authentication Password | `concourse` |
@@ -76,6 +84,7 @@ The following tables lists the configurable parameters of the Concourse chart an
 | `concourse.resourceCheckingInterval` | Interval on which to check for new versions of resources | `1m` |
 | `concourse.oldResourceGracePeriod` | How long to cache the result of a get step after a newer version of the resource is found | `5m` |
 | `concourse.resourceCacheCleanupInterval` | The interval on which to check for and release old caches of resource versions | `30s` |
+| `concourse.baggageclaimDriver` | The filesystem driver used by baggageclaim | `naive` |
 | `concourse.externalURL` | URL used to reach any ATC from the outside world | `nil` |
 | `concourse.dockerRegistry` | An URL pointing to the Docker registry to use to fetch Docker images | `nil` |
 | `concourse.insecureDockerRegistry` | Docker registry(ies) (comma separated) to allow connecting to even if not secure | `nil` |
@@ -87,6 +96,12 @@ The following tables lists the configurable parameters of the Concourse chart an
 | `concourse.githubAuthAuthUrl` | Override default endpoint AuthURL for Github Enterprise | `nil` |
 | `concourse.githubAuthTokenUrl` | Override default endpoint TokenURL for Github Enterprise | `nil` |
 | `concourse.githubAuthApiUrl` | Override default API endpoint URL for Github Enterprise | `nil` |
+| `concourse.gitlabAuthClientId` | Application client ID for enabling GitLab OAuth | `nil` |
+| `concourse.gitlabAuthClientSecret` | Application client secret for enabling GitLab OAuth | `nil` |
+| `concourse.gitlabAuthGroup` | GitLab groups (comma separated) whose members will have access | `nil` |
+| `concourse.gitlabAuthAuthUrl` | Endpoint AuthURL for GitLab server | `nil` |
+| `concourse.gitlabAuthTokenUrl` | Endpoint TokenURL for GitLab server | `nil` |
+| `concourse.gitlabAuthApiUrl` | API endpoint URL for GitLab server | `nil` |
 | `concourse.genericOauthDisplayName` | Name for this auth method on the web UI | `nil` |
 | `concourse.genericOauthClientId` | Application client ID for enabling generic OAuth | `nil` |
 | `concourse.genericOauthClientSecret` | Application client secret for enabling generic OAuth | `nil` |
@@ -102,18 +117,36 @@ The following tables lists the configurable parameters of the Concourse chart an
 | `web.ingress.annotations` | Concourse Web Ingress annotations | `{}` |
 | `web.ingress.hosts` | Concourse Web Ingress Hostnames | `[]` |
 | `web.ingress.tls` | Concourse Web Ingress TLS configuration | `[]` |
+| `web.additionalAffinities` | Additional affinities to apply to web pods. E.g: node affinity | `nil` |
 | `worker.nameOverride` | Override the Concourse Worker components name| `worker` |
 | `worker.replicas` | Number of Concourse Worker replicas | `2` |
-| `worker.minAvailable` | Minimun number of workers available after an eviction | `1` |
+| `worker.minAvailable` | Minimum number of workers available after an eviction | `1` |
 | `worker.resources` | Concourse Worker resource requests and limits | `{requests: {cpu: "100m", memory: "512Mi"}}` |
+| `worker.additionalAffinities` | Additional affinities to apply to worker pods. E.g: node affinity | `nil` |
+| `worker.postStopDelaySeconds` | Time to wait after graceful shutdown of worker before starting up again | `60` |
+| `worker.terminationGracePeriodSeconds` | Upper bound for graceful shutdown, including `worker.postStopDelaySeconds` | `120` |
+| `worker.fatalErrors` | Newline delimited strings which, when logged, should trigger a restart of the worker | *See [values.yaml](values.yaml)* |
+| `worker.updateStrategy` | `OnDelete` or `RollingUpdate` (requires Kubernetes >= 1.7) | `RollingUpdate` |
 | `persistence.enabled` | Enable Concourse persistence using Persistent Volume Claims | `true` |
 | `persistence.worker.class` | Concourse Worker Persistent Volume Storage Class | `generic` |
 | `persistence.worker.accessMode` | Concourse Worker Persistent Volume Access Mode | `ReadWriteOnce` |
-| `persistence.worker.size` | Concourse Worker Persistent Volume Storage Size | `10Gi` |
+| `persistence.worker.size` | Concourse Worker Persistent Volume Storage Size | `20Gi` |
+| `postgresql.enabled` | Enable PostgreSQL as a chart dependency | `true` |
+| `postgresql.uri` | PostgreSQL connection URI | `nil` |
 | `postgresql.postgresUser` | PostgreSQL User to create | `concourse` |
 | `postgresql.postgresPassword` | PostgreSQL Password for the new user | `concourse` |
 | `postgresql.postgresDatabase` | PostgreSQL Database to create | `concourse` |
 | `postgresql.persistence.enabled` | Enable PostgreSQL persistence using Persistent Volume Claims | `true` |
+| `credentialManager.enabled` | Enable Credential Manager | `false` |
+| `credentialManager.vault.url` | Vault Server URL | `nil` |
+| `credentialManager.vault.pathPrefix` | Vault path to namespace secrets | `/concourse` |
+| `credentialManager.vault.caCert` | CA public certificate when using self-signed TLS with Vault | `nil` |
+| `credentialManager.vault.authBackend` | Vault Authentication Backend to use, leave blank when using clientToken | `nil` |
+| `credentialManager.vault.clientToken` | Vault periodic client token | `nil` |
+| `credentialManager.vault.appRoleId` | Vault AppRole RoleID | `nil` |
+| `credentialManager.vault.appRoleSecretId` | Vault AppRole SecretID | `nil` |
+| `credentialManager.vault.clientCert` | Vault Client Certificate | `nil` |
+| `credentialManager.vault.clientKey` | Vault Client Key | `nil` |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
@@ -203,7 +236,7 @@ persistence:
 
     ## Persistent Volume Storage Size.
     ##
-    size: "10Gi"
+    size: "20Gi"
 ```
 
 ### Ingress TLS
@@ -243,4 +276,53 @@ web:
       - secretName: concourse-web-tls
         hosts:
           - concourse.domain.com
+```
+
+
+### PostgreSQL
+
+By default, this chart will use a PostgreSQL database deployed as a chart dependency. You can also bring your own PostgreSQL. To do so, set the following in your custom `values.yaml` file:
+
+```yaml
+## Configuration values for the postgresql dependency.
+## ref: https://github.com/kubernetes/charts/blob/master/stable/postgresql/README.md
+##
+postgresql:
+
+  ## Use the PostgreSQL chart dependency.
+  ## Set to false if bringing your own PostgreSQL.
+  ##
+  enabled: false
+
+  ## If bringing your own PostgreSQL, the full uri to use
+  ## e.g. postgres://concourse:changeme@my-postgres.com:5432/concourse?sslmode=require
+  ##
+  uri: postgres://concourse:changeme@my-postgres.com:5432/concourse?sslmode=require
+
+```
+
+### Credential Management
+
+By default, this chart will not use a [Credential Manager](https://concourse.ci/creds.html).
+
+```yaml
+## Configuration values for the Credential Manager.
+## ref: https://concourse.ci/creds.html
+##
+credentialManager:
+  ## Enable Credential Manager using below configuration.
+  ##
+  enabled: true
+
+  ## use Hashicorp Vault for Credential Manager.
+  ##
+  vault:
+    ## URL pointing to vault addr (i.e. http://vault:8200).
+    ##
+    url: http://vault:8200
+
+    ## initial periodic token issued for concourse
+    ## ref: https://www.vaultproject.io/docs/concepts/tokens.html#periodic-tokens
+    ##
+    clientToken: PERIODIC_VAULT_TOKEN 
 ```

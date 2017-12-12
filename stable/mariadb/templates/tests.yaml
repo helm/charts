@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "mariadb.fullname" . }}-tests
+data:
+  run.sh: |-
+    @test "Testing MariaDB is accessible" {
+      mysql -h {{ template "mariadb.fullname" . }} -uroot {{- if .Values.usePassword }} -p$MARIADB_ROOT_PASSWORD{{ end }} -e 'show databases;'
+    }

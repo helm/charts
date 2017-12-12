@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: Secret
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "patroni.fullname" . }}
   labels:
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    component: "{{.Release.Name}}-{{.Values.Component}}"
+    component: "{{ .Release.Name }}-{{ .Values.Component }}"
 type: Opaque
 data:
   password-superuser: {{ .Values.Credentials.Superuser | b64enc }}

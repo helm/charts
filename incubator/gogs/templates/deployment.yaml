@@ -1,7 +1,7 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "gogs.fullname" . }}
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
 spec:
@@ -10,11 +10,11 @@ spec:
     type: RollingUpdate
   selector:
     matchLabels:
-      app: {{ template "fullname" . }}
+      app: {{ template "gogs.fullname" . }}
   template:
     metadata:
       labels:
-        app: {{ template "fullname" . }}
+        app: {{ template "gogs.fullname" . }}
     spec:
       containers:
         - name: {{ .Chart.Name }}
@@ -22,7 +22,7 @@ spec:
           imagePullPolicy: {{ .Values.imagePullPolicy }}
           ports:
             - containerPort: 3000
-            - containerPort: 2222
+            - containerPort: {{ .Values.service.sshPort | int }}
           livenessProbe:
             httpGet:
               path: /
@@ -46,11 +46,11 @@ spec:
       volumes:
         - name: config
           configMap:
-            name: {{ template "fullname" . }}-config
+            name: {{ template "gogs.fullname" . }}-config
         - name: data
       {{- if .Values.persistence.enabled }}
           persistentVolumeClaim:
-            claimName: {{ template "fullname" . }}
+            claimName: {{ template "gogs.fullname" . }}
       {{- else }}
           emptyDir: {}
       {{- end -}}

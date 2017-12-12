@@ -1,0 +1,69 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "stash.fullname" . }}
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app: "{{ template "stash.name" . }}"
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+spec:
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: "{{ template "stash.name" . }}"
+        release: "{{ .Release.Name }}"
+{{- if and .Values.criticalAddon (eq .Release.Namespace "kube-system") }}
+      annotations:
+        scheduler.alpha.kubernetes.io/critical-pod: ''
+{{- end }}
+    spec:
+      serviceAccountName: {{ if .Values.rbac.create }}{{ template "stash.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
+      containers:
+      - args:
+        - run
+        - --v=3
+        - --rbac={{ .Values.rbac.create }}
+        image: {{ .Values.operator.image }}:{{ .Values.operator.tag }}
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        {{- if .Values.imagePullSecrets }}
+        imagePullSecrets:
+{{ toYaml .Values.imagePullSecrets | indent 8 }}
+        {{- end }}
+        name: operator
+        ports:
+        - containerPort: 56790
+          name: http
+          protocol: TCP
+        terminationMessagePolicy: File
+      - args:
+        - -web.listen-address=:56789
+        - -persistence.file=/var/pv/pushgateway.dat
+        image: '{{ .Values.pushgateway.image }}:{{ .Values.pushgateway.tag }}'
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        {{- if .Values.imagePullSecrets }}
+        imagePullSecrets:
+{{ toYaml .Values.imagePullSecrets | indent 8 }}
+        {{- end }}
+        name: pushgateway
+        ports:
+        - containerPort: 56789
+          name: pushgateway
+          protocol: TCP
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /var/pv
+          name: data-volume
+        - mountPath: /tmp
+          name: stash-scratchdir
+      volumes:
+        - emptyDir: {}
+          name: data-volume
+        - emptyDir: {}
+          name: stash-scratchdir
+{{- if and .Values.criticalAddon (eq .Release.Namespace "kube-system") }}
+      tolerations:
+      - key: "CriticalAddonsOnly"
+        operator: "Exists"
+{{- end -}}
