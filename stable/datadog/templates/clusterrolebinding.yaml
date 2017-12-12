@@ -1,6 +1,3 @@
-# Your admin user needs the same permissions to be able to grant them
-# Easiest way is to bind your user to the cluster-admin role
-# See https://cloud.google.com/container-engine/docs/role-based-access-control#setting_up_role-based_access_control
 {{- if .Values.rbac.create -}}
 apiVersion: {{ template "rbac.apiVersion" . }}
 kind: ClusterRoleBinding
