@@ -16,6 +16,9 @@ rbac:
   # Ignored if rbac.create is true
   serviceAccountName: default
 
+# Annotations to be added to the pod
+podAnnotations: {}
+
 # Available collectors for kube-state-metrics. By default all available
 # collectors are enabled.
 collectors:

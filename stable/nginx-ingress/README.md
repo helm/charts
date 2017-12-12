@@ -53,6 +53,7 @@ Parameter | Description | Default
 `controller.hostNetwork` | If the nginx deployment / daemonset should run on the host's network namespace | false
 `controller.defaultBackendService` | default 404 backend service; required only if `defaultBackend.enabled = false` | `""`
 `controller.electionID` | election ID to use for the status update | `ingress-controller-leader`
+`controller.extraEnvs` | any additional environment variables to set in the pods | `{}`
 `controller.ingressClass` | name of the ingress class to route through this controller | `nginx`
 `controller.scope.enabled` | limit the scope of the ingress controller | `false` (watch all namespaces)
 `controller.scope.namespace` | namespace to watch for ingress | `""` (use the release namespace)
@@ -63,6 +64,7 @@ Parameter | Description | Default
 `controller.podAnnotations` | annotations to be added to pods | `{}`
 `controller.replicaCount` | desired number of controller pods | `1`
 `controller.resources` | controller pod resource requests & limits | `{}`
+`controller.lifecycle` | controller pod lifecycle hooks | `{}`
 `controller.service.annotations` | annotations for controller service | `{}`
 `controller.publishService.enabled` | if true, the controller will set the endpoint records on the ingress objects to reflect those on the service | `false`
 `controller.publishService.pathOverride` | override of the default publish-service name | `""`
@@ -104,6 +106,7 @@ Parameter | Description | Default
 `defaultBackend.service.type` | type of default backend service to create | `ClusterIP`
 `rbac.create` | If true, create & use RBAC resources | `false`
 `rbac.serviceAccountName` | ServiceAccount to be used (ignored if rbac.create=true) | `default`
+`revisionHistoryLimit` | The number of old history to retain to allow rollback. | `10`
 `statsExporter.name` | name of the Prometheus metrics exporter component | `stats-exporter`
 `statsExporter.image.repository` | Prometheus metrics exporter container image repository | `sophos/nginx-vts-exporter`
 `statsExporter.image.tag` | Prometheus metrics exporter image tag | `v0.6`
