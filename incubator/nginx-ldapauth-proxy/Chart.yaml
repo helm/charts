@@ -1,0 +1,10 @@
+apiVersion: v1
+description: nginx proxy with ldapauth
+name: nginx-ldapauth-proxy
+version: 0.1.1
+appVersion: 1.13.5
+maintainers:
+- name: Pete Brown
+  email: pete.brown@powerhrg.com
+- name: Johnathan Rodgers
+  email: jrodgers@powerhrg.com
