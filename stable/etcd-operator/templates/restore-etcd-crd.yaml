@@ -7,10 +7,9 @@ metadata:
   name: {{ .Values.etcdCluster.name }}
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    app: {{ template "etcd-restore-operator.fullname" . }}
+    app: {{ template "etcd-restore-operator.name" . }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-    component: "{{ .Release.Name }}-{{ .Values.component }}"
 spec:
   clusterSpec:
     size: {{ .Values.etcdCluster.size }}

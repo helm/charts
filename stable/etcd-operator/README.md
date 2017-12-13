@@ -51,7 +51,7 @@ The following tables lists the configurable parameters of the etcd-operator char
 
 | Parameter                                         | Description                                                          | Default                                        |
 | ------------------------------------------------- | -------------------------------------------------------------------- | ---------------------------------------------- |
-| `rbac.install`                                    | install required rbac service account, roles and rolebindings        | `false`                                         |
+| `rbac.create`                                     | install required rbac service account, roles and rolebindings        | `true`                                         |
 | `rbac.apiVersion`                                 | rbac api version `v1alpha1|v1beta1`                                  | `v1beta1`                                      |
 | `deployments.etcdOperator`                        | Deploy the etcd cluster operator                                     | `true`                                         |
 | `deployments.backupOperator`                      | Deploy the etcd backup operator                                      | `true`                                         |

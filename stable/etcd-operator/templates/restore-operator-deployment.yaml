@@ -6,10 +6,9 @@ metadata:
   name: {{ template "etcd-restore-operator.fullname" . }}
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    app: {{ template "etcd-restore-operator.fullname" . }}
+    app: {{ template "etcd-restore-operator.name" . }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-    component: "{{ .Release.Name }}-{{ .Values.component }}"
 spec:
   replicas: {{ .Values.restoreOperator.replicaCount }}
   template:
@@ -18,10 +17,9 @@ spec:
       labels:
         app: {{ template "etcd-restore-operator.fullname" . }}
         release: {{ .Release.Name }}
-        component: "{{ .Release.Name }}-{{ .Values.component }}"
     spec:
-      {{- if .Values.rbac.install }}
-      serviceAccountName: {{ template "etcd-restore-operator.fullname" . }}
+      {{- if .Values.rbac.create }}
+      serviceAccountName: {{ .Values.rbac.restoreOperatorServiceAccountName }}
       {{- end }}
       containers:
       - name: {{ .Values.restoreOperator.name }}

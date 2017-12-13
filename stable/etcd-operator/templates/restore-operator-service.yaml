@@ -6,16 +6,15 @@ metadata:
   name: {{ .Values.restoreOperator.name }}
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    app: {{ template "etcd-restore-operator.fullname" . }}
+    app: {{ template "etcd-restore-operator.name" . }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-    component: "{{ .Release.Name }}-{{ .Values.component }}"
 spec:
   ports:
   - protocol: TCP
     name: http-etcd-restore-port
     port: {{ .Values.restoreOperator.port }}
   selector:
-    app: {{ template "etcd-restore-operator.fullname" . }}
-    component: "{{ .Release.Name }}-{{ .Values.component }}"
+    app: {{ template "etcd-restore-operator.name" . }}
+    release: {{ .Release.Name }}
 {{- end}}

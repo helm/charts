@@ -1,4 +1,4 @@
-{{- if and .Values.rbac.install .Values.deployments.etcdOperator }}
+{{- if and .Values.rbac.create .Values.deployments.etcdOperator }}
 ---
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/{{ required "A valid .Values.rbac.apiVersion entry required!" .Values.rbac.apiVersion }}
@@ -6,13 +6,12 @@ metadata:
   name: {{ template "etcd-operator.fullname" . }}
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    app: {{ template "etcd-operator.fullname" . }}
+    app: {{ template "etcd-operator.name" . }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-    component: "{{ .Release.Name }}-{{ .Values.component }}"
 subjects:
 - kind: ServiceAccount
-  name: {{ template "etcd-operator.fullname" . }}
+  name: {{ .Values.rbac.etcdOperatorServiceAccountName }}
   namespace: {{ .Release.Namespace }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io

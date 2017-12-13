@@ -6,10 +6,9 @@ metadata:
   name: {{ template "etcd-backup-operator.fullname" . }}
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    app: {{ template "etcd-backup-operator.fullname" . }}
+    app: {{ template "etcd-backup-operator.name" . }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-    component: "{{ .Release.Name }}-{{ .Values.component }}"
 spec:
   replicas: {{ .Values.backupOperator.replicaCount }}
   template:
@@ -18,10 +17,9 @@ spec:
       labels:
         app: {{ template "etcd-backup-operator.fullname" . }}
         release: {{ .Release.Name }}
-        component: "{{ .Release.Name }}-{{ .Values.component }}"
     spec:
-      {{- if .Values.rbac.install }}
-      serviceAccountName: {{ template "etcd-backup-operator.fullname" . }}
+      {{- if .Values.rbac.create }}
+      serviceAccountName: {{ .Values.rbac.backupOperatorServiceAccountName }}
       {{- end }}
       containers:
       - name: {{ .Values.backupOperator.name }}

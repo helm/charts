@@ -1,12 +1,14 @@
 # Default values for etcd-operator.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
-component: etcd-operator
 
 ## Install Default RBAC roles and bindings
 rbac:
-  install: false
+  create: true
   apiVersion: v1beta1
+  etcdOperatorServiceAccountName: etcd-operator-sa
+  backupOperatorServiceAccountName: etcd-backup-operator-sa
+  restoreOperatorServiceAccountName: etcd-restore-operator-sa
 
 # Select what to deploy
 deployments:
