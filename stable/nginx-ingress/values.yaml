@@ -56,6 +56,10 @@ controller:
 
   extraArgs: {}
 
+  ## Additional environment variables to set
+  ##
+  extraEnvs: {}
+
   ## DaemonSet or Deployment
   ##
   kind: Deployment
@@ -94,6 +98,12 @@ controller:
   #  requests:
   #    cpu: 100m
   #    memory: 64Mi
+
+  autoscaling:
+    enabled: false
+  #  minReplicas: 1
+  #  maxReplicas: 11
+  #  targetAverageUtilization: 50
 
   ## Override NGINX template
   customTemplate:
@@ -149,6 +159,12 @@ controller:
       loadBalancerSourceRanges: []
       servicePort: 18080
       type: ClusterIP
+
+  lifecycle: {}
+
+## Rollback limit
+##
+revisionHistoryLimit: 10
 
 ## Default 404 backend
 ##

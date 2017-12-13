@@ -111,3 +111,7 @@ spec:
             - key: custom-metrics.yaml
               path: custom-metrics.yaml
       {{- end }}
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+        - name: {{ .Values.imagePullSecrets }}
+      {{- end }}
