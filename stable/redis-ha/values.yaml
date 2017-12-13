@@ -60,7 +60,7 @@ persistentVolume:
   ##
   subPath: ""
 ## Redis image version
-redis_image: quay.io/ianmaddox/redis-sentinel:redis-4.0.6
+redis_image: quay.io/ianmaddox/redis-sentinel:redis-4.0.6r0
 ## replicas number for each component
 replicas:
   servers: 3

@@ -47,7 +47,7 @@ The following tables lists the configurable parameters of the Redis chart and th
 
 | Parameter                        | Description                                           | Default                                                   |
 | -------------------------------- | ----------------------------------------------------- | --------------------------------------------------------- |
-| `redis_image`                    | Redis image                                           | `quay.io/ianmaddox/redis:4.0.6`                           |
+| `redis_image`                    | Redis image                                           | `quay.io/ianmaddox/redis:4.0.6r0`                           |
 | `persistentVolume.enabled`       | Use a PVC to persist data                             | `false`                                                   |
 | `persistentVolume.storageClass`  | Storage class of backing PVC                          | `generic`                                                 |
 | `persistentVolume.accessMode`    | Use volume as ReadOnly or ReadWrite                   | `ReadWriteOnce`                                           |
@@ -70,7 +70,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 
 ```bash
 $ helm install \
-  --set redis_image=quay.io/ianmaddox/redis:4.0.6 \
+  --set redis_image=quay.io/ianmaddox/redis:4.0.6r0 \
     stable/redis-ha
 ```
 
