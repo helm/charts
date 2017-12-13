@@ -108,8 +108,9 @@ var (
 	TEST_FAILURE_CODE         = 2
 
 	// File path constants
-	chartsBasePath    = path.Join(os.Getenv("GOPATH"), "/src/k8s.io/charts")
-	whiteListYamlPath = path.Join(chartsBasePath, "test/helm-test/whitelist.yaml")
+	artifactsPath     = filepath.Join(os.Getenv("WORKSPACE"), "_artifacts")
+	chartsBasePath    = filepath.Join(os.Getenv("GOPATH"), "src/k8s.io/charts")
+	whiteListYamlPath = filepath.Join(chartsBasePath, "test/helm-test/whitelist.yaml")
 	helmPath          = "linux-amd64/helm"
 	kubectlPath       = "/workspace/kubernetes/client/bin/kubectl"
 )
@@ -196,7 +197,7 @@ func doMain() int {
 	}
 
 	log.Printf("Charts for Testing: %+v", chartList)
-	defer writeXML("/go/src/k8s.io/charts/_artifacts", time.Now())
+	defer writeXML(artifactsPath, time.Now())
 	if !terminate.Stop() {
 		<-terminate.C // Drain the value if necessary.
 	}
