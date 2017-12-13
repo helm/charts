@@ -97,6 +97,12 @@ controller:
   #    cpu: 100m
   #    memory: 64Mi
 
+  autoscaling:
+    enabled: false
+  #  minReplicas: 1
+  #  maxReplicas: 11
+  #  targetAverageUtilization: 50
+
   ## Override NGINX template
   customTemplate:
     configMapName: ""
