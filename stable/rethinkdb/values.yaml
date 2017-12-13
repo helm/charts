@@ -74,8 +74,8 @@ proxy:
 # RethinkDB Ports
 ports:
   cluster: 29015
-  driver:  28015
-  admin:   8080
+  driver: 28015
+  admin: 8080
 
 # RethinkDB Admin Password
 rethinkdbPassword: rethinkdb
