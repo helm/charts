@@ -273,6 +273,14 @@ func doMain() int {
 		})
 	}
 
+	xmlWrap(fmt.Sprintf("Sleeping so that resources can be cleaned up"), func() error {
+		o, execErr := output(exec.Command("sleep", "120"))
+		if execErr != nil {
+			return fmt.Errorf("%s Command output: %s", execErr, string(o[:]))
+		}
+		return nil
+	})
+
 	if suite.Failures > 0 {
 		return TEST_FAILURE_CODE
 	}
