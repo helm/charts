@@ -57,6 +57,9 @@ spec:
           {{- range $key, $value := .Values.server.extraArgs }}
             - --{{ $key }}={{ $value }}
           {{- end }}
+          {{- if .Values.server.baseURL }}
+            - --web.external-url={{ .Values.server.baseURL }}
+          {{- end }}
           ports:
             - containerPort: 9090
           readinessProbe:
@@ -85,6 +88,10 @@ spec:
     {{- if .Values.server.tolerations }}
       tolerations:
 {{ toYaml .Values.server.tolerations | indent 8 }}
+    {{- end }}
+    {{- if .Values.server.affinity }}
+      affinity:
+{{ toYaml .Values.server.affinity | indent 8 }}
     {{- end }}
       terminationGracePeriodSeconds: {{ .Values.server.terminationGracePeriodSeconds }}
       volumes:

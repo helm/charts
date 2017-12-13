@@ -120,14 +120,24 @@ spec:
       - name: config
         configMap:
           name: {{ template "elasticsearch.fullname" . }}
+  {{- if not .Values.data.persistence.enabled }}
+      - name: data
+        emptyDir: {}
+  {{- else }}
   volumeClaimTemplates:
   - metadata:
-      name: data
+      name: {{ .Values.data.persistence.name }}
     spec:
-      accessModes: [ ReadWriteOnce ]
-    {{- if .Values.data.storageClass }}
-      storageClassName: "{{ .Values.data.storageClass }}"
+      accessModes:
+        - {{ .Values.data.persistence.accessMode | quote }}
+    {{- if .Values.data.persistence.storageClass }}
+    {{- if (eq "-" .Values.data.persistence.storageClass) }}
+      storageClassName: ""
+    {{- else }}
+      storageClassName: "{{ .Values.data.persistence.storageClass }}"
+    {{- end }}
     {{- end }}
       resources:
         requests:
-          storage: "{{ .Values.data.storage }}"
+          storage: "{{ .Values.data.persistence.size }}"
+  {{- end }}

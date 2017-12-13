@@ -4,11 +4,11 @@ kind: Secret
 type: kubernetes.io/tls
 metadata:
   labels:
-    app: {{ template "name" . }}
+    app: {{ template "mongodb-replicaset.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-  name: {{ template "fullname" . }}-ca
+  name: {{ template "mongodb-replicaset.fullname" . }}-ca
 data:
   tls.key: {{ .Values.tls.cakey }}
   tls.crt: {{ .Values.tls.cacert }}
