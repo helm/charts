@@ -125,7 +125,7 @@ $ helm install --name my-release --values values.yaml stable/etcd-operator
 ```
 
 ## RBAC
-By default the chart will not install the recommended RBAC roles and rolebindings.
+By default the chart will install the recommended RBAC roles and rolebindings.
 
 To determine if your cluster supports this running the following:
 
@@ -139,14 +139,14 @@ You also need to have the following parameter on the api server. See the followi
 --authorization-mode=RBAC
 ```
 
-If the output contains "beta" or both "alpha" and "beta" you can may install with enabling the creating of rbac resources (see below).
+If the output contains "beta" or both "alpha" and "beta" you can may install rbac by default, if not, you may turn rbac off as described below.
 
-### Enable RBAC role/rolebinding creation
+### RBAC role/rolebinding creation
 
-To enable the creation of RBAC resources (On clusters with RBAC). Do the following:
+RBAC resources are enabled by default. To disable rbac do the following:
 
 ```console
-$ helm install --name my-release stable/etcd-operator --set rbac.install=true
+$ helm install --name my-release stable/etcd-operator --set rbac.create=false
 ```
 
 ### Changing RBAC manifest apiVersion
