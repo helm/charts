@@ -48,8 +48,8 @@ The following tables lists the configurable parameters of the consul chart and t
 | `ConsulDnsPort`         | Container dns listening port          | `8600`                                                     |
 | `antiAffinity`          | Consul pod anti-affinity setting      | `hard`                                                     |
 | `maxUnavailable`        | Pod disruption Budget maxUnavailable  | `1`                                                        |
-| `ui.enabled`            | Enable Consul Web UI                  | `false`                                                    |
-| `uiService.enabled`     | Create dedicated Consul Web UI svc    | `false`                                                    |
+| `ui.enabled`            | Enable Consul Web UI                  | `true`                                                    |
+| `uiService.enabled`     | Create dedicated Consul Web UI svc    | `true`                                                    |
 | `uiService.type`        | Dedicate Consul Web UI svc type       | `NodePort`                                                 |
 | `test.image`            | Test container image requires kubectl + bash (used for helm test)      | `lachlanevenson/k8s-kubectl`                                                 |
 | `test.imageTag`         | Test container image tag  (used for helm test)     | `v1.4.8-bash`                                                 |
