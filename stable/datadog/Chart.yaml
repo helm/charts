@@ -1,6 +1,6 @@
 name: datadog
-version: 0.9.2
-description: Datadog Agent
+version: 0.10.0
+description: DataDog Agent
 keywords:
 - monitoring
 - alerting
