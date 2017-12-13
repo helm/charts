@@ -53,10 +53,13 @@ The following tables lists the configurable parameters of the etcd-operator char
 | ------------------------------------------------- | -------------------------------------------------------------------- | ---------------------------------------------- |
 | `rbac.create`                                     | install required rbac service account, roles and rolebindings        | `true`                                         |
 | `rbac.apiVersion`                                 | rbac api version `v1alpha1|v1beta1`                                  | `v1beta1`                                      |
+| `rbac.etcdOperatorServiceAccountName`             | Name of the service account resource when rbac is enabled            | `etcd-operator-sa`                                      |
+| `rbac.backupOperatorServiceAccountName`           | Name of the service account resource when rbac is enabled            | `etcd-backup-operator-sa`                                      |
+| `rbac.restoreOperatorServiceAccountName`          | Name of the service account resource when rbac is enabled            | `etcd-restore-operator-sa`                                      |
 | `deployments.etcdOperator`                        | Deploy the etcd cluster operator                                     | `true`                                         |
 | `deployments.backupOperator`                      | Deploy the etcd backup operator                                      | `true`                                         |
 | `deployments.restoreOperator`                     | Deploy the etcd restore operator                                     | `true`                                         |
-| `customResources.createEtcdClusterCRD`            | Create a custom resource: EtcdCluster                                | `false`                                         |
+| `customResources.createEtcdClusterCRD`            | Create a custom resource: EtcdCluster                                | `false`                                        |
 | `customResources.createBackupCRD`                 | Create an a custom resource: EtcdBackup                              | `false`                                        |
 | `customResources.createRestoreCRD`                | Create an a custom resource: EtcdRestore                             | `false`                                        |
 | `etcdOperator.name`                               | Etcd Operator name                                                   | `etcd-operator`                                |
@@ -95,12 +98,12 @@ The following tables lists the configurable parameters of the etcd-operator char
 | `etcdCluster.size`                                | etcd cluster size                                                    | `3`                                            |
 | `etcdCluster.version`                             | etcd cluster version                                                 | `3.2.10`                                       |
 | `etcdCluster.image.repository`                    | etcd container image                                                 | `quay.io/coreos/etcd-operator`                 |
-| `etcdCluster.image.tag`                           | etcd container image tag                                             | `v3.2.10`                                       |
-| `etcdCluster.image.pullPolicy`                    | etcd container image pull policy                                     | `Always`                                 |
-| `etcdCluster.enableTLS`                           | Enable use of TLS                                                    | `false`                                 |
-| `etcdCluster.tls.static.member.peerSecret`        | Kubernetes secret containing TLS peer certs                          | `etcd-peer-tls`                                 |
-| `etcdCluster.tls.static.member.serverSecret`      | Kubernetes secret containing TLS server certs                        | `etcd-server-tls`                                 |
-| `etcdCluster.tls.static.operatorSecret`           | Kubernetes secret containing TLS client certs                        | `etcd-client-tls`                                 |
+| `etcdCluster.image.tag`                           | etcd container image tag                                             | `v3.2.10`                                      |
+| `etcdCluster.image.pullPolicy`                    | etcd container image pull policy                                     | `Always`                                       |
+| `etcdCluster.enableTLS`                           | Enable use of TLS                                                    | `false`                                        |
+| `etcdCluster.tls.static.member.peerSecret`        | Kubernetes secret containing TLS peer certs                          | `etcd-peer-tls`                                |
+| `etcdCluster.tls.static.member.serverSecret`      | Kubernetes secret containing TLS server certs                        | `etcd-server-tls`                              |
+| `etcdCluster.tls.static.operatorSecret`           | Kubernetes secret containing TLS client certs                        | `etcd-client-tls`                              |
 | `etcdCluster.pod.antiAffinity`                    | Whether etcd cluster pods should have an antiAffinity                | `false`                                        |
 | `etcdCluster.pod.resources.limits.cpu`            | CPU limit per etcd cluster pod                                       | `100m`                                         |
 | `etcdCluster.pod.resources.limits.memory`         | Memory limit per etcd cluster pod                                    | `128Mi`                                        |
