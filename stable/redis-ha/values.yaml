@@ -65,3 +65,8 @@ redis_image: quay.io/ianmaddox/redis-sentinel:redis-4.0.6r0
 replicas:
   servers: 3
   sentinels: 3
+appliance:
+  # Set vpcMode to true to automatically open the master and slave load balancers to access from within the VPC
+  vpcMode: false
+  annotations:
+    cloud.google.com/load-balancer-type: "Internal"

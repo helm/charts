@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: {{ template "fullname" . }}-slave-appliance-vpc
   annotations:
-    cloud.google.com/load-balancer-type: "Internal"
+{{ toYaml .Values.appliance.annotations | indent 4 }}
 spec:
   ports:
   - port: 6379
@@ -14,4 +14,8 @@ spec:
     redis-node: "true"
     redis-role: "slave"
     release: "{{ .Release.Name }}"
+{{- if eq .Values.appliance.vpcMode true }}
   type: LoadBalancer
+{{- else }}
+  type: ClusterIP
+{{- end }}
