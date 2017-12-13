@@ -1,7 +1,7 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}-sentinel
+  name: {{ template "sentinel_service_name" . }}
 spec:
   replicas: {{ .Values.replicas.sentinel }}
   template:
@@ -26,6 +26,10 @@ spec:
         resources:
 {{ toYaml .Values.resources.sentinel | indent 10 }}
         env:
+          - name: REDIS_SENTINEL_SERVICE_HOST
+            value: {{ template "sentinel_service_hostname" . }}
+          - name: REDIS_SENTINEL_SERVICE_PORT
+            value: "26379"
           - name: SENTINEL
             value: "true"
         ports:

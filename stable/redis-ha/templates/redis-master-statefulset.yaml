@@ -35,6 +35,10 @@ spec:
           resources:
 {{ toYaml .Values.resources.master | indent 12 }}
           env:
+            - name: REDIS_SENTINEL_SERVICE_HOST
+              value: {{ template "sentinel_service_hostname" . }}
+            - name: REDIS_SENTINEL_SERVICE_PORT
+              value: "26379"
             - name: MASTER
               value: "true"
           ports:
@@ -48,6 +52,10 @@ spec:
           resources:
 {{ toYaml .Values.resources.sentinel | indent 12 }}
           env:
+            - name: REDIS_SENTINEL_SERVICE_HOST
+              value: {{ template "sentinel_service_hostname" . }}
+            - name: REDIS_SENTINEL_SERVICE_PORT
+              value: "26379"
             - name: SENTINEL
               value: "true"
           ports:
