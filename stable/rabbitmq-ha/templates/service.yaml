@@ -33,6 +33,10 @@ spec:
       protocol: TCP
       port: {{ .Values.rabbitmqNodePort }}
       targetPort: amqp
+    - name: epmd
+      protocol: TCP
+      port: {{ .Values.rabbitmqEpmdPort }}
+      targetPort: epmd
   selector:
     app: {{ template "rabbitmq-ha.name" . }}
     release: {{ .Release.Name }}

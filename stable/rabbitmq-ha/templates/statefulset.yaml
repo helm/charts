@@ -25,12 +25,15 @@ spec:
           image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            - name: http
+            - name: epmd
               protocol: TCP
-              containerPort: 15672
+              containerPort: 4369
             - name: amqp
               protocol: TCP
               containerPort: 5672
+            - name: http
+              protocol: TCP
+              containerPort: 15672
           livenessProbe:
             exec:
               command:

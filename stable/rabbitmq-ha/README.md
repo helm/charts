@@ -63,10 +63,11 @@ and their default values.
 | `persistentVolume.size`            | Persistent volume size                                          | `8Gi`                                                    |
 | `persistentVolume.storageClass`    | Persistent volume storage class                                 | `-`                                                      |
 | `podAntiAffinity`                  | Pod antiaffinity, `hard` or `soft`                              | `hard`                                                   |
+| `rabbitmqEpmdPort`                 | EPMD port used for cross cluster replication                    | `4369`                                                   |
 | `rabbitmqErlangCookie`             | Erlang cookie                                                   | _random 32 character long alphanumeric string_           |
 | `rabbitmqHipeCompile`              | Precompile parts of RabbitMQ using HiPE                         | `false`                                                  |
 | `rabbitmqManagerPort`              | RabbitMQ Manager port                                           | `15672`                                                  |
-| `rabbitmqMemoryHighWatermark`      | Memory high watermark                                           | `2GB`                                                    |
+| `rabbitmqMemoryHighWatermark`      | Memory high watermark                                           | `256MB`                                                  |
 | `rabbitmqNodePort`                 | Node port                                                       | `5672`                                                   |
 | `rabbitmqPassword`                 | RabbitMQ application password                                   | _random 10 character long alphanumeric string_           |
 | `rabbitmqUsername`                 | RabbitMQ application username                                   | `guest`                                                  |
