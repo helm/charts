@@ -1,9 +1,9 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "percona.fullname" . }}
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "percona.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -11,7 +11,7 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "fullname" . }}
+        app: {{ template "percona.fullname" . }}
     spec:
       initContainers:
       - name: "remove-lost-found"
@@ -25,7 +25,7 @@ spec:
         - name: data
           mountPath: /var/lib/mysql
       containers:
-      - name: {{ template "fullname" . }}
+      - name: {{ template "percona.fullname" . }}
         image: "mysql:{{ .Values.imageTag }}"
         imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
         resources:
@@ -38,12 +38,12 @@ spec:
         - name: MYSQL_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "percona.fullname" . }}
               key: mysql-root-password
         - name: MYSQL_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "percona.fullname" . }}
               key: mysql-password
         {{- end }}
         - name: MYSQL_USER
@@ -74,7 +74,7 @@ spec:
       - name: data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ template "fullname" . }}
+          claimName: {{ template "percona.fullname" . }}
       {{- else }}
         emptyDir: {}
       {{- end -}}

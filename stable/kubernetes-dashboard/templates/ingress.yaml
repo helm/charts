@@ -1,5 +1,5 @@
 {{- if .Values.ingress.enabled -}}
-{{- $fullName := include "fullname" . }}
+{{- $fullName := include "kubernetes-dashboard.fullname" . }}
 {{- $httpPort := .Values.httpPort }}
 apiVersion: extensions/v1beta1
 kind: Ingress
@@ -9,16 +9,25 @@ metadata:
     {{ $key }}: {{ $value | quote }}
   {{- end }}
   labels:
-    app: {{ template "name" . }}
+    app: {{ template "kubernetes-dashboard.name" . }}
     heritage: "{{ .Release.Service }}"
     release: "{{ .Release.Name }}"
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-  name: {{ template "fullname" . }}
+  name: {{ template "kubernetes-dashboard.fullname" . }}
 spec:
   rules:
+  {{- if .Values.ingress.hosts }}
   {{- range .Values.ingress.hosts }}
     - host: {{ . }}
       http:
+        paths:
+          - path: /
+            backend:
+              serviceName: {{ $fullName }}
+              servicePort: {{ $httpPort }}
+  {{- end -}}
+  {{- else }}
+    - http:
         paths:
           - path: /
             backend:

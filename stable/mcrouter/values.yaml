@@ -1,0 +1,49 @@
+## Container image
+image: jphalip/mcrouter:0.36.0
+
+## Memcached chart parameters
+memcached:
+  ## If true, the Memcached chart will be installed as a dependency
+  enabled: true
+  ## Number of Memcached replicas
+  replicaCount: 3
+
+## Configure resource requests and limits
+## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 256m
+    memory: 512Mi
+
+## Parameters for the mcrouter command
+mcrouterCommandParams:
+  port: 5000
+
+  ## Pass a custom JSON config, if not specified one will be generated per the number of memcached replicas
+  ## https://github.com/facebook/mcrouter/wiki/Config-Files
+  # configFile:
+
+## Information about the memcached service
+memcachedService:
+  # serviceName: "memcached"
+  # replicaCount: 3
+  port: 11211
+  namespace: "default"
+
+## Pod controller. Possible values: "daemonset", "statefulset".
+controller: "daemonset"
+
+## Values for the daemonset controller
+daemonset:
+  ## Host port for the mcrouter pod
+  hostPort: 5000
+
+## Values for the statefulset controller
+statefulset:
+  ## Number of replicas
+  replicas: 1
+  ## Select AntiAffinity as either hard or soft, default is hard
+  antiAffinity: "hard"

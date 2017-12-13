@@ -1,7 +1,7 @@
 ## Bitnami RabbitMQ image version
 ## ref: https://hub.docker.com/r/bitnami/rabbitmq/tags/
 ##
-image: bitnami/rabbitmq:3.6.11-r4
+image: bitnami/rabbitmq:3.6.14-r2
 
 ## Specify a imagePullPolicy
 ## 'Always' if imageTag is 'latest', else set to 'IfNotPresent'
@@ -54,6 +54,12 @@ rabbitmqVhost: /
 ##
 rabbitmqManagerPort: 15672
 
+## RabbitMQ Disk free limit
+## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables
+## ref: https://www.rabbitmq.com/disk-alarms.html
+##
+rabbitmqDiskFreeLimit: '"8GiB"'
+
 ## Kubernetes service type
 serviceType: ClusterIP
 
@@ -65,11 +71,17 @@ persistence:
   ## If defined, PVC must be created manually before volume will be bound
   # existingClaim:
 
-  ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
-  ## Default: volume.alpha.kubernetes.io/storage-class: default
+  ## rabbitmq data Persistent Volume Storage Class
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
   ##
-  # storageClass:
+  # storageClass: "-"
   accessMode: ReadWriteOnce
+
+  # If you change this value, you might have to adjust `rabbitmqDiskFreeLimit` as well.
   size: 8Gi
 
 ## Configure resource requests and limits

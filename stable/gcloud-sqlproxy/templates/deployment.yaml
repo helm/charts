@@ -2,9 +2,9 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "gcloud-sqlproxy.fullname" . }}
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "gcloud-sqlproxy.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -13,7 +13,7 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "fullname" . }}
+        app: {{ template "gcloud-sqlproxy.fullname" . }}
     spec:
       containers:
       - name: sqlproxy
@@ -37,7 +37,7 @@ spec:
       volumes:
       - name: cloudsql-oauth-credentials
         secret:
-          secretName: {{ template "fullname" . }}
+          secretName: {{ template "gcloud-sqlproxy.fullname" . }}
       - name: ssl-certs
         hostPath:
           path: /etc/ssl/certs

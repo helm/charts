@@ -2,22 +2,23 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: {{ template "fullname" . }}-magento
+  name: {{ template "magento.fullname" . }}-magento
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "magento.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
-  annotations:
-  {{- if .Values.persistence.magento.storageClass }}
-    volume.beta.kubernetes.io/storage-class: {{ .Values.persistence.magento.storageClass | quote }}
-  {{- else }}
-    volume.alpha.kubernetes.io/storage-class: default
-  {{- end }}
 spec:
   accessModes:
     - {{ .Values.persistence.magento.accessMode | quote }}
   resources:
     requests:
       storage: {{ .Values.persistence.magento.size | quote }}
+{{- if .Values.persistence.magento.storageClass }}
+{{- if (eq "-" .Values.persistence.magento.storageClass) }}
+  storageClassName: ""
+{{- else }}
+  storageClassName: "{{ .Values.persistence.magento.storageClass }}"
+{{- end }}
+{{- end }}
 {{- end -}}

@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "nginx.name" . }}
+  name: {{ template "artifactory.nginx.name" . }}
   labels:
-    app: {{ template "name" . }}
+    app: {{ template "artifactory.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     component: "{{ .Values.nginx.name }}"
     heritage: {{ .Release.Service }}
@@ -20,6 +20,6 @@ spec:
     protocol: TCP
     name: {{ .Release.Name }}https
   selector:
-    app: {{ template "name" . }}
+    app: {{ template "artifactory.name" . }}
     component: "{{ .Values.nginx.name }}"
     release: {{ .Release.Name }}

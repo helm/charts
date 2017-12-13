@@ -3,9 +3,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "minio.fullname" . }}
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "minio.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -17,39 +17,43 @@ spec:
       targetPort: {{ .Values.servicePort }}
       protocol: TCP
   selector:
-    app: {{ template "fullname" . }}
+    app: {{ template "minio.fullname" . }}
 ---
 apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "minio.fullname" . }}
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "minio.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
-  serviceName: {{ template "fullname" . }}
+  serviceName: {{ template "minio.fullname" . }}
   replicas: {{ .Values.replicas }}
   selector:
     matchLabels:
-      app: {{ template "fullname" . }}
+      app: {{ template "minio.fullname" . }}
   template:
     metadata:
-      name: {{ template "fullname" . }}
+      name: {{ template "minio.fullname" . }}
       labels:
-        app: {{ template "fullname" . }}
+        app: {{ template "minio.fullname" . }}
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         release: "{{ .Release.Name }}"
         heritage: "{{ .Release.Service }}"
     spec:
+{{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+{{- end }}
       volumes:
         - name: minio-user
           secret:
-            secretName: {{ template "fullname" . }}-user
+            secretName: {{ template "minio.fullname" . }}-user
         - name: minio-server-config
           configMap:
-            name: {{ template "fullname" . }}-config-cm
+            name: {{ template "minio.fullname" . }}-config-cm
         - name: podinfo
           downwardAPI:
             items:
@@ -67,12 +71,15 @@ spec:
           args:
             - server
             {{- range $i := until $nodeCount }}
-            - http://{{ template "fullname" $ }}-{{ $i }}.{{ template "fullname" $ }}.{{ $.Release.Namespace }}.svc.cluster.local{{ $.Values.mountPath }}
+            - http://{{ template "minio.fullname" $ }}-{{ $i }}.{{ template "minio.fullname" $ }}.{{ $.Release.Namespace }}.svc.cluster.local{{ $.Values.mountPath }}
             {{- end }}
             {{- end }}
           volumeMounts:
             - name: export
               mountPath: {{ .Values.mountPath }}
+              {{- if and .Values.persistence.enabled .Values.persistence.subPath }}
+              subPath: "{{ .Values.persistence.subPath }}"
+              {{- end }}
             - name: minio-server-config
               mountPath: {{ default "/root/.minio/" .Values.configPath | quote }}
             - name: podinfo
@@ -85,12 +92,12 @@ spec:
             - name: MINIO_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "fullname" . }}-user
+                  name: {{ template "minio.fullname" . }}-user
                   key: accesskey
             - name: MINIO_SECRET_KEY
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "fullname" . }}-user
+                  name: {{ template "minio.fullname" . }}-user
                   key: secretkey
           resources:
 {{ toYaml .Values.resources | indent 12 }}

@@ -1,0 +1,41 @@
+{{- if .Values.defaultBucket.enabled }}
+apiVersion: v1
+kind: Pod
+metadata:
+  name: {{ template "minio.fullname" . }}-create-bucket
+  labels:
+    app: {{ template "minio.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+  annotations:
+    "helm.sh/hook": post-install
+    "helm.sh/hook-delete-policy": hook-succeeded
+spec:
+  restartPolicy: OnFailure
+{{- if .Values.nodeSelector }}
+  nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 4 }}
+{{- end }}
+  containers:
+  - name: minio-mc
+    image: minio/mc
+    command: ["/bin/sh", "-c",
+    "/usr/bin/mc config host add myminio http://$MINIO_ENDPOINT:9000 $MINIO_ACCESS_KEY $MINIO_SECRET_KEY;
+    /usr/bin/mc rm -r --force myminio/{{ .Values.defaultBucket.name }};
+    /usr/bin/mc mb myminio/{{ .Values.defaultBucket.name }};
+    /usr/bin/mc policy {{ .Values.defaultBucket.policy }} myminio/{{ .Values.defaultBucket.name }};"]
+    env:
+      - name: MINIO_ACCESS_KEY
+        valueFrom:
+          secretKeyRef:
+            name: {{ template "minio.fullname" . }}-user
+            key: accesskey
+      - name: MINIO_SECRET_KEY
+        valueFrom:
+          secretKeyRef:
+            name: {{ template "minio.fullname" . }}-user
+            key: secretkey
+      - name: MINIO_ENDPOINT
+        value: {{ template "minio.fullname" . }}-svc
+{{- end }}

@@ -196,7 +196,7 @@ func doMain() int {
 	}
 
 	log.Printf("Charts for Testing: %+v", chartList)
-	defer writeXML("/workspace/_artifacts", time.Now())
+	defer writeXML("/go/src/k8s.io/charts/_artifacts", time.Now())
 	if !terminate.Stop() {
 		<-terminate.C // Drain the value if necessary.
 	}
@@ -272,6 +272,14 @@ func doMain() int {
 			return nil
 		})
 	}
+
+	xmlWrap(fmt.Sprintf("Sleeping so that resources can be cleaned up"), func() error {
+		o, execErr := output(exec.Command("sleep", "120"))
+		if execErr != nil {
+			return fmt.Errorf("%s Command output: %s", execErr, string(o[:]))
+		}
+		return nil
+	})
 
 	if suite.Failures > 0 {
 		return TEST_FAILURE_CODE

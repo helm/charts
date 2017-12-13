@@ -6,9 +6,9 @@ metadata:
   annotations:
 {{ toYaml .Values.ingress.annotations | indent 4 }}
 {{- end }}
-  name: {{ template "fullname" . }}
+  name: {{ template "gitlab-ce.fullname" . }}
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "gitlab-ce.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -20,14 +20,14 @@ spec:
       paths:
       - path: /
         backend:
-          serviceName: {{ template "fullname" . }}
+          serviceName: {{ template "gitlab-ce.fullname" . }}
           servicePort: {{ .Values.httpsPort }}
     {{- else }}
     http:
       paths:
       - path: /
         backend:
-          serviceName: {{ template "fullname" . }}
+          serviceName: {{ template "gitlab-ce.fullname" . }}
           servicePort: {{ .Values.httpPort }}
     {{- end }}
 

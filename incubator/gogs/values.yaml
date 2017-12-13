@@ -28,6 +28,11 @@ service:
   ##
   sshPort: 22
 
+  ## SSH_DOMAIN - Domain name to be exposed in SSH clone URL.
+  ## ref: https://gogs.io/docs/advanced/configuration_cheat_sheet
+  ##
+  sshDomain: localhost
+
   ## Gogs configuration values
   ## ref: https://gogs.io/docs/advanced/configuration_cheat_sheet
   ##
@@ -226,9 +231,14 @@ persistence:
   ##
   enabled: true
 
-  ## Persistent Volume Storage Class.
+  ## gogs data Persistent Volume Storage Class
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
   ##
-  # storageClass:
+  # storageClass: "-"
 
   ## Persistent Volume Access Mode.
   ##
