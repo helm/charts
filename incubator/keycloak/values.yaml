@@ -38,9 +38,6 @@ keycloak:
     #   cpu: "100m"
     #   memory: "1024Mi"
 
-  ##  Set to true for high availability. This will enable cluster discovery using JDBC_PING.
-  discovery: false
-
   ## WildFly CLI configurations. They all end up in the file 'keycloak.cli' configured in the configmap whichn is
   ## executed on server startup.
   cli:

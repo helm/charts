@@ -56,7 +56,6 @@ Parameter | Description | Default
 `keycloak.podAntiAffinity` | Pod anti-affinity (`soft` or `hard`) | `soft`
 `keycloak.nodeSelector` | Node labels for pod assignment | `{}`
 `keycloak.tolerations` | Node taints to tolerate | `[]`
-`keycloak.discovery` | Set to true for high availability. This enables cluster discovery using [JGroups JDBC_PING](http://www.jgroups.org/javadoc/org/jgroups/protocols/JDBC_PING.html). | `false`
 `keycloak.cli.nodeIdentifier` | WildFly CLI script for setting the node identifier | See `values.yaml`
 `keycloak.cli.logging` | WildFly CLI script for logging configuration | See `values.yaml`
 `keycloak.cli.reverseProxy` | WildFly CLI script for reverse proxy configuration | See `values.yaml`
@@ -162,11 +161,9 @@ which is empty by default.
 ### High Availability and Clustering
 
 For high availability, Keycloak should be run with multiple replicas (`keycloak.replicas > 1`). WildFly uses Infinispan
-for caching. These caches can be replicated across all instances forming a cluster. This can be enabled with `keycloak.discovery=true`).
-The CLI script `keycloak.cli.discovery` adds JGroups' [JDBC_PING](http://www.jgroups.org/javadoc/org/jgroups/protocols/JDBC_PING.html)
-for cluster discovery.
-
-If `keycloak.discovery=true`, Keycloak is started with `--server-config standalone-ha.xml`.
+for caching. These caches can be replicated across all instances forming a cluster. If `keycloak.replicas > 1`, the
+WildFly CLI script `keycloak.cli.discovery` adds JGroups' [JDBC_PING](http://www.jgroups.org/javadoc/org/jgroups/protocols/JDBC_PING.html)
+for cluster discovery and Keycloak is started with `--server-config standalone-ha.xml`.
 
 ## Why StatefulSet?
 
@@ -174,4 +171,4 @@ The chart sets node identifiers to the system property `jboss.node.name` which i
 must not be longer than 23 characters. This can be problematic because pod names are quite long. We would have to truncate
 the chart's fullname to six characters because pods get a 17-character suffix (e. g. `-697f8b7655-mf5ht`). Using a
 StatefulSet allows us to truncate to 20 characters leaving room for up to 99 replicas, which is much better.
-Additionally, we get stable values for `jboss.node.name` which may be advantageous for cluster discovery.
+Additionally, we get stable values for `jboss.node.name` which can be advantageous for cluster discovery.
