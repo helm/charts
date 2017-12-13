@@ -8,8 +8,9 @@
 ## Chart Details
 This chart will do the following:
 
-* Deploy Artifactory-Oss
-* Deploy Artifactory-Pro
+* Deploy Artifactory-Pro (or OSS if set custom image)
+* Deploy a PostgreSQL database
+* Deploy an Nginx server
 
 ## Installing the Chart
 
@@ -49,9 +50,21 @@ You can customise other parameters in the same way, by passing them on `helm ins
 ```bash
 $ helm delete --purge artifactory
 ```
-
 This will completely delete your Artifactory Pro deployment.  
 **IMPORTANT:** This will also delete your data volumes. You will loose all data!
+
+
+### Custom Docker registry for your images
+If you need to pull your Docker images from a private registry, you need to create a 
+[Kubernetes Docker registry secret](https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/) and pass it to helm
+```bash
+# Create a Docker registry secret called 'regsecret'
+$ kubectl create secret docker-registry regsecret --docker-server=<your-registry-server> --docker-username=<your-name> --docker-password=<your-pword> --docker-email=<your-email>
+```
+Once created, you pass it to `helm`
+```bash
+$ helm install --name artifactory --set imagePullSecrets=regsecret stable/artifactory
+```
 
 ## Configuration
 
@@ -59,12 +72,13 @@ The following tables lists the configurable parameters of the artifactory chart 
 
 |         Parameter         |           Description             |                         Default                          |
 |---------------------------|-----------------------------------|----------------------------------------------------------|
-| `database.name`          | Database name                     | `postgresql`                                                    |
-| `database.replicaCount` | Database replica count | `1`   |
-| `database.env.type`          | Database type                     | `postgresql`                                             |
-| `database.env.name`          | Database name                     | `artifactory`                                            |
-| `database.env.user`          | Database username                 | `artifactory`                                            |
-| `database.env.pass`          | Database password                 | `Randomly generated`                                     |
+| `imagePullSecrets`        | Docker registry pull secret       |                                                          |
+| `database.name`           | Database name                     | `postgresql`                                             |
+| `database.replicaCount`   | Database replica count            | `1`   |
+| `database.env.type`          | Database type                  | `postgresql`                                             |
+| `database.env.name`          | Database name                  | `artifactory`                                            |
+| `database.env.user`          | Database username              | `artifactory`                                            |
+| `database.env.pass`          | Database password              | `Randomly generated`                                     |
 | `database.image.repository`          | Database container image                     | `docker.bintray.io/postgres`             |
 | `database.image.version`          | Database container image tag                     | `9.5.2`                                 |
 | `database.image.pullPolicy`         | Container pull policy             | `IfNotPresent`                                           |
@@ -74,12 +88,17 @@ The following tables lists the configurable parameters of the artifactory chart 
 | `database.persistence.mountPath` | Database persistence volume mount path | `"/var/lib/postgresql/data"`   |
 | `database.persistence.enabled` | Database persistence volume enabled | `true`   |
 | `database.persistence.accessMode` | Database persistence volume access mode | `ReadWriteOnce`   |
-| `database.persistence.size` | Database persistence volume size | `10Gi`   |
+| `database.persistence.size`          | Database persistence volume size | `10Gi`  |
+| `database.resources.requests.memory` | Database initial memory request  | `512Mi` |
+| `database.resources.requests.cpu`    | Database initial cpu request     | `100m`  |
+| `database.resources.limits.memory`   | Database memory limit            | `1Gi`   |
+| `database.resources.limits.cpu`      | Database cpu limit               | `500m`  |
 | `artifactory.name` | Artifactory name | `artifactory`   |
 | `artifactory.replicaCount`            | Replica count for Artifactory deployment| `1`                                                |
 | `artifactory.image.pullPolicy`         | Container pull policy             | `IfNotPresent`                                           |
 | `artifactory.image.repository`    | Container image                   | `docker.bintray.io/jfrog/artifactory-pro`                |
 | `artifactory.image.version`       | Container image tag               | `5.5.2`                                                  |
+| `artifactory.service.name`| Artifactory service name to be set in Nginx configuration | `artifactory` |
 | `artifactory.service.type`| Artifactory service type | `ClusterIP` |
 | `artifactory.externalPort` | Artifactory service external port | `8081`   |
 | `artifactory.internalPort` | Artifactory service internal port | `8081`   |
@@ -87,12 +106,17 @@ The following tables lists the configurable parameters of the artifactory chart 
 | `artifactory.persistence.enabled` | Artifactory persistence volume enabled | `true`   |
 | `artifactory.persistence.accessMode` | Artifactory persistence volume access mode | `ReadWriteOnce`   |
 | `artifactory.persistence.size` | Artifactory persistence volume size | `20Gi`   |
+| `artifactory.resources.requests.memory` | Artifactory initial memory request (giga bytes only!) | `2`   |
+| `artifactory.resources.requests.cpu`    | Artifactory initial cpu request     | `500m`  |
+| `artifactory.resources.limits.memory`   | Artifactory memory limit (giga bytes only!) | `4`   |
+| `artifactory.resources.limits.cpu`      | Artifactory cpu limit               | `2`     |
 | `nginx.name` | Nginx name | `nginx`   |
 | `nginx.replicaCount` | Nginx replica count | `1`   |
 | `nginx.image.repository`    | Container image                   | `docker.bintray.io/jfrog/nginx-artifactory-pro`                |
 | `nginx.image.pullPolicy`    | Container pull policy                   | `IfNotPresent`                |
 | `nginx.image.version`       | Container image tag               | `5.5.2`                                                  |
 | `nginx.service.type`| Nginx service type | `LoadBalancer` |
+| `nginx.service.loadBalancerSourceRanges`| Nginx service array of IP CIDR ranges to whitelist (only when service type is LoadBalancer) |  |
 | `nginx.externalPortHttp` | Nginx service external port | `80`   |
 | `nginx.internalPortHttp` | Nginx service internal port | `80`   |
 | `nginx.externalPortHttps` | Nginx service external port | `443`   |
@@ -103,6 +127,10 @@ The following tables lists the configurable parameters of the artifactory chart 
 | `nginx.persistence.enabled` | Nginx persistence volume enabled | `true`   |
 | `nginx.persistence.accessMode` | Nginx persistence volume access mode | `ReadWriteOnce`   |
 | `nginx.persistence.size` | Nginx persistence volume size | `5Gi`   |
+| `nginx.resources.requests.memory` | Nginx initial memory request  | `250Mi`   |
+| `nginx.resources.requests.cpu`    | Nginx initial cpu request     | `100m`    |
+| `nginx.resources.limits.memory`   | Nginx memory limit            | `250Mi`   |
+| `nginx.resources.limits.cpu`      | Nginx cpu limit               | `500m`    |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
