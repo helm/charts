@@ -18,6 +18,14 @@ spec:
         redis-node: "true"
 {{ include "labels.standard" . | indent 8 }}
     spec:
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- end }}
+      {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+      {{- end }}
       containers:
       - name: redis
         image: {{ .Values.redis_image }}
@@ -25,7 +33,9 @@ spec:
 {{ toYaml .Values.resources.server | indent 10 }}
         env:
           - name: REDIS_SENTINEL_SERVICE_HOST
-            value: "redis-sentinel"    
+            value: "redis-sentinel"
+          - name: REDIS_CHART_PREFIX
+            value: {{ template "fullname" . }}-
         ports:
           - containerPort: 6379
         volumeMounts:
@@ -34,4 +44,6 @@ spec:
       volumes:
       - name: data
         emptyDir: {}
+#        persistentVolumeClaim:
+#          claimName: {{ if .Values.persistentVolume.existingClaim }}{{ .Values.persistentVolume.existingClaim }}{{- else }}{{ template "fullname" . }}{{- end }}
 

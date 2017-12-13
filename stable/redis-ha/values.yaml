@@ -1,4 +1,4 @@
- ## Configure resource requests and limits
+## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
 ##
 resources:
@@ -14,6 +14,13 @@ resources:
       cpu: 100m
     limits:
       memory: 200Mi
+
+## Node labels and tolerations for pod assignment
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
+nodeSelector: {}
+tolerations: []
+
 ## Enable persistence using Persistent Volume Claims
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
 ##
@@ -53,7 +60,7 @@ persistentVolume:
   ##
   subPath: ""
 ## Redis image version
-redis_image: quay.io/ianmaddox/redis-sentinel:4.0.6
+redis_image: quay.io/ianmaddox/redis-sentinel:redis-4.0.6
 ## replicas number for each component
 replicas:
   servers: 3

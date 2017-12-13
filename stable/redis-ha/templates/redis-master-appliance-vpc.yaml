@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: redis-master-appliance-vpc
+  name: {{ template "fullname" . }}-master-appliance-vpc
   annotations:
     cloud.google.com/load-balancer-type: "Internal"
 spec:
