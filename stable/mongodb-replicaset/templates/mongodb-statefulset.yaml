@@ -20,6 +20,10 @@ spec:
 {{ toYaml .Values.podAnnotations | indent 8 }}
       {{- end }}
     spec:
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- end }}
       initContainers:
         - name: install
           image: "{{ .Values.installImage.name }}:{{ .Values.installImage.tag }}"

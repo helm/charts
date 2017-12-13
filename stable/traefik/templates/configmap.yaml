@@ -92,7 +92,7 @@ data:
     {{- end }}
     {{ if .Values.metrics.prometheus.enabled }}
     [web.metrics.prometheus]
-      Buckets = {{ .Values.metrics.prometheus.buckets }}
+      Buckets = [{{ .Values.metrics.prometheus.buckets }}]
     {{- end }}
     {{ if .Values.metrics.datadog.enabled }}
     [web.metrics.datadog]
