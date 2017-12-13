@@ -23,7 +23,7 @@ host. To configure Ghost with the URL of your service:
 2. Complete your Ghost deployment by running:
 
   helm upgrade {{ .Release.Name }} \
-    --set ghostHost=$APP_HOST stable/ghost
+    --set serviceType={{ .Values.serviceType }},ghostHost=$APP_HOST stable/ghost
 {{- else -}}
 1. Get the Ghost URL by running:
 
