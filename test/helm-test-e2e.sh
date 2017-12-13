@@ -29,3 +29,8 @@ cd $GOPATH
 go get github.com/ghodss/yaml
 popd
 go run $GOPATH/src/k8s.io/charts/test/helm-test/main.go
+
+echo "#### Debugging ci-kubernetes-charts-gce ###"
+kubectl get pvc --all-namespaces -o wide
+kubectl get pv -o wide
+echo "####"
