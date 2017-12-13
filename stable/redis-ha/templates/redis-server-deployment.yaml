@@ -4,6 +4,7 @@ metadata:
   # Pay attention to the redis-role label at runtime. The self-determination logic in the image sets this value accordingly.
   name: {{ template "fullname" . }}-server
   labels:
+    release: "{{ .Release.Name }}"
     app: "redis-ha"
     name: "redis-server"
     redis-node: "true"

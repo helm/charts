@@ -13,4 +13,5 @@ spec:
     app: "redis-ha"
     redis-node: "true"
     redis-role: "slave"
+    release: "{{ .Release.Name }}"
   type: LoadBalancer
