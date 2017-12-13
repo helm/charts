@@ -460,7 +460,7 @@ worker:
   ##
   ## "OrderedReady" is default. "Parallel" means worker pods will launch or terminate
   ## in parallel.
-  podManagementPolicy: OrderedReady
+  podManagementPolicy: Parallel
 
 
 ## Persistent Volume Storage configuration.

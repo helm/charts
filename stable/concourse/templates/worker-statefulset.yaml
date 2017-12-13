@@ -164,5 +164,5 @@ spec:
     type: {{ .Values.worker.updateStrategy }}
 {{- end }}
 {{- if and (eq .Capabilities.KubeVersion.Major "1") (ge .Capabilities.KubeVersion.Minor "7") }}
-  podManagementPolicy: {{ default "OrderedReady" .Values.worker.podManagementPolicy }}
+  podManagementPolicy: {{ default "Parallel" .Values.worker.podManagementPolicy }}
 {{- end }}
