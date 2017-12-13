@@ -4,11 +4,11 @@ Anyone is welcome to review pull requests. Besides our [technical requirements](
 
 ## Process
 
-The process to get a pull request merged is fairly simple. First, all required tests need to pass and the contributor needs to have a signed CLA. If there is a problem with some part of the test, such as a timeout issue, please contact one of the charts repository maintainers.
+The process to get a pull request merged is fairly simple. First, all required tests need to pass and the contributor needs to have a signed CLA. If there is a problem with some part of the test, such as a timeout issue, please contact one of the charts repository maintainers by commenting `cc @kubernetes/charts-maintainers`.
 
-The charts repository uses the OWNERS files to provide merge access. If a chart has an OWNERS file an approver listed in that file can approve the pull request. If the chart does not have an OWNERS file an approver in the OWNERS file at the root of the repository can approve the pull request.
+The charts repository uses the OWNERS files to provide merge access. If a chart has an OWNERS file, an approver listed in that file can approve the pull request. If the chart does not have an OWNERS file, an approver in the OWNERS file at the root of the repository can approve the pull request.
 
-To approve the pull request an approver needs to leave a comment of `/lgtm` on the pull request. Once this is in place some tags (`lgtm` and `approved`) will be added to the pull request and a bot will come along and perform the merge.
+To approve the pull request, an approver needs to leave a comment of `/lgtm` on the pull request. Once this is in place some tags (`lgtm` and `approved`) will be added to the pull request and a bot will come along and perform the merge.
 
 Note, if a reviewer who is not an approver in an OWNERS file leaves a comment of `/lgtm` a `lgtm` label will be added but a merge will not happen.
 
