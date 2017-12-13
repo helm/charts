@@ -40,3 +40,14 @@ spec:
           name: storage-volume
         resources:
 {{ toYaml .Values.resources | indent 10 }}
+      volumes:
+{{- if .Values.persistence.volumes }}
+{{ toYaml .Values.persistence.volumes | indent 6 }}
+{{- end }}
+      - name: storage-volume
+      {{- if .Values.persistence.Enabled }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.persistence.ExistingClaim | default (include "common.fullname" .) }}
+      {{- else }}
+        emptyDir: {}
+      {{- end -}}
