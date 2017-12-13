@@ -92,7 +92,7 @@ nginx:
   replicaCount: 1
   image:
     repository: "docker.bintray.io/jfrog/nginx-artifactory-pro"
-    version: 5.5.2
+    version: 5.6.2
     pullPolicy: IfNotPresent
   service:
     ## For minikube, set this to NodePort, elsewhere use LoadBalancer

@@ -47,5 +47,6 @@ The command removes all the Kubernetes components associated with the chart and 
 | `server.service.loadBalancerIP`           | IP to assign to load balancer       | null                                              |
 | `server.service.loadBalancerSourceRanges` | List of IP CIDRs allowed access     | null                                              |
 | `server.service.nodePort`                 | For service type "NodePort"         | null                                              |
+| `server.service.externalIPs`              | External IP addresses               | null                                              |
 | `server.service.type`                     | ClusterIP, NodePort, or LoadBalancer| ClusterIP                                         |
 | `server.setDatasource.enabled`            | Creates grafana datasource with job | false                                             |

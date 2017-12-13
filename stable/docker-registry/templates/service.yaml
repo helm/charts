@@ -13,6 +13,7 @@ spec:
     - port: {{ .Values.service.port }}
       protocol: TCP
       name: {{ .Values.service.name }}
+      targetPort: {{ .Values.service.port }}
   selector:
     app: {{ template "docker-registry.name" . }}
     release: {{ .Release.Name }}
