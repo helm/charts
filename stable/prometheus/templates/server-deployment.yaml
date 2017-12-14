@@ -74,7 +74,7 @@ spec:
             - name: config-volume
               mountPath: /etc/config
             - name: storage-volume
-              mountPath: {{ .Values.alertmanager.persistentVolume.mountPath }}
+              mountPath: {{ .Values.server.persistentVolume.mountPath }}
               subPath: "{{ .Values.server.persistentVolume.subPath }}"
           {{- range .Values.server.extraHostPathMounts }}
             - name: {{ .name }}
