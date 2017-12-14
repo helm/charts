@@ -16,8 +16,8 @@ tar xzfv ${HELM_TARBALL}
 rm -f ${HELM_TARBALL}
 
 # Housekeeping
-kubectl -n kube-system create sa tiller
-kubectl create clusterrolebinding tiller --clusterrole cluster-admin --serviceaccount=kube-system:tiller
+kubernetes/client/bin/kubectl -n kube-system create sa tiller
+kubernetes/client/bin/kubectl create clusterrolebinding tiller --clusterrole cluster-admin --serviceaccount=kube-system:tiller
 linux-amd64/helm init --service-account tiller --upgrade
 
 linux-amd64/helm repo add stable https://kubernetes-charts.storage.googleapis.com/

@@ -112,7 +112,7 @@ var (
 	chartsBasePath    = filepath.Join(os.Getenv("GOPATH"), "src/k8s.io/charts")
 	whiteListYamlPath = filepath.Join(chartsBasePath, "test/helm-test/whitelist.yaml")
 	helmPath          = "linux-amd64/helm"
-	kubectlPath       = "/workspace/kubernetes/client/bin/kubectl"
+	kubectlPath       = "kubernetes/client/bin/kubectl"
 )
 
 func init() {
