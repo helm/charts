@@ -24,7 +24,7 @@ spec:
           containerPort: {{ .Values.RPCPort }}
         volumeMounts:
         - name: data
-          mountPath: /srv/dashd
+          mountPath: /dash
         {{- if .Values.ssl.enabled }}
         - name: ssl
           mountPath: /etc/dashd-ssl

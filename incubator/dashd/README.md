@@ -72,7 +72,7 @@ $ helm install --name my-release -f values.yaml stable/dashd
 
 ## Persistence
 
-The dashd image stores the Dashd node data (Blockchain and wallet) and configurations at the `/root` path of the container.
+The dashd image stores the Dashd node data (Blockchain and wallet) and configurations at the `/dash` path of the container.
 
 By default a PersistentVolumeClaim is created and mounted into that directory. In order to disable this functionality
 you can change the values.yaml to disable persistence and use an emptyDir instead.
