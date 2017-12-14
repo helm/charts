@@ -111,8 +111,8 @@ var (
 	artifactsPath     = filepath.Join(os.Getenv("WORKSPACE"), "_artifacts")
 	chartsBasePath    = filepath.Join(os.Getenv("GOPATH"), "src/k8s.io/charts")
 	whiteListYamlPath = filepath.Join(chartsBasePath, "test/helm-test/whitelist.yaml")
-	helmPath          = "linux-amd64/helm"
-	kubectlPath       = "kubernetes/client/bin/kubectl"
+	helmPath          = filepath.Join(os.Getenv("WORKSPACE"), "linux-amd64/helm")
+	kubectlPath       = "kubectl"
 )
 
 func init() {
