@@ -137,7 +137,10 @@ The following tables lists the configurable parameters of the Concourse chart an
 | `postgresql.postgresPassword` | PostgreSQL Password for the new user | `concourse` |
 | `postgresql.postgresDatabase` | PostgreSQL Database to create | `concourse` |
 | `postgresql.persistence.enabled` | Enable PostgreSQL persistence using Persistent Volume Claims | `true` |
-| `credentialManager.enabled` | Enable Credential Manager | `false` |
+| `credentialManager.kubernetes.enabled` | Enable Kubernetes Secrets Credential Manager | `true` |
+| `credentialManager.kubernetes.namespacePrefix` | Prefix for namespaces to look for secrets in | `concourse-` |
+| `credentialManager.kubernetes.teams` | Teams to allow secret access when rbac is enabled | `["main"]` |
+| `credentialManager.vault.enabled` | Enable Vault Credential Manager | `false` |
 | `credentialManager.vault.url` | Vault Server URL | `nil` |
 | `credentialManager.vault.pathPrefix` | Vault path to namespace secrets | `/concourse` |
 | `credentialManager.vault.caCert` | CA public certificate when using self-signed TLS with Vault | `nil` |
@@ -303,20 +306,46 @@ postgresql:
 
 ### Credential Management
 
-By default, this chart will not use a [Credential Manager](https://concourse.ci/creds.html).
+Pipelines ususally need credentials to do things. Concourse supports the use of a [Credential Manager](https://concourse.ci/creds.html) so your pipelines can contain references to secrets instead of the actual secret values. You can't use more than one credential manager at a time.
+
+#### Kubernetes Secrets
+
+By default, this chart will use Kubernetes Secrets as a credential manager. For a given Concourse *team*, a pipeline will look for secrets in a namespace named `[namespacePrefix][teamName]`, e.g. `concourse-main`. The service account used by Concourse must have `get` access to secrets in that namespace. When `rbac.create` is true, this access can be
+granted for each team listed under `credentialManager.kubernetes.teams`.
+
+Here are some examples of the lookup heuristics, given `credentialManager.kubernetes.namespacePrefix=concourse-`:
+
+In team `accounting-dev`, pipeline `my-app`; the expression `((api-key))` resolves to:
+
+1. the secret value in namespace: `concourse-accounting-dev` secret: `my-app.api-key`, key: `value`
+2. and if not found, is the value in namespace: `concourse-accounting-dev` secret: `api-key`, key: `value`
+
+In team accounting-dev, pipeline `my-app`, the expression `((common-secrets.api-key))` resolves to:
+
+1. the secret value in namespace: `concourse-accounting-dev` secret: `my-app.common-secrets`, key: `api-key`
+2. and if not found, is the value in namespace: `concourse-accounting-dev` secret: `common-secrets`, key: `api-key`
+
+Be mindful of your team and pipeline names, to ensure they can be used in namespace and secret names, e.g. no underscores.
+
+#### Hashicorp Vault
+
+To use Vault, set `credentialManager.kubernetes.enabled` to false, and set the following values:
+
 
 ```yaml
-## Configuration values for the Credential Manager.
+## Configuration values for using a Credential Manager. Only one can be enabled.
 ## ref: https://concourse.ci/creds.html
 ##
 credentialManager:
-  ## Enable Credential Manager using below configuration.
-  ##
-  enabled: true
 
-  ## use Hashicorp Vault for Credential Manager.
+  ## Configuration for Hashicorp Vault as the Credential Manager.
   ##
   vault:
+
+    ## Enable the use of Hashicorp Vault.
+    ##
+    enabled: true
+
     ## URL pointing to vault addr (i.e. http://vault:8200).
     ##
     url: http://vault:8200
@@ -324,5 +353,5 @@ credentialManager:
     ## initial periodic token issued for concourse
     ## ref: https://www.vaultproject.io/docs/concepts/tokens.html#periodic-tokens
     ##
-    clientToken: PERIODIC_VAULT_TOKEN 
+    clientToken: PERIODIC_VAULT_TOKEN
 ```

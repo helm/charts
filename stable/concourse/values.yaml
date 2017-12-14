@@ -13,7 +13,7 @@ image: concourse/concourse
 ## Concourse image version.
 ## ref: https://hub.docker.com/r/concourse/concourse/tags/
 ##
-imageTag: "3.5.0"
+imageTag: "3.7.0"
 
 ## Specify a imagePullPolicy: 'Always' if imageTag is 'latest', else set to 'IfNotPresent'.
 ## ref: https://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -519,17 +519,36 @@ postgresql:
     ##
     enabled: true
 
-## Configuration values for the Credential Manager.
+## Configuration values for using a Credential Manager. Only one can be enabled.
 ## ref: https://concourse.ci/creds.html
 ##
 credentialManager:
-  ## Enable Credential Manager using below configuration.
-  ##
-  enabled: false
 
-  ## use Hashicorp Vault for Credential Manager.
+  ## Configuration for Kubernetes Secrets as the Credential Manager. Supported in Concourse 3.7.0.
   ##
-  # vault:
+  kubernetes:
+
+    ## Enable the use of Kubernetes Secrets.
+    ##
+    enabled: true
+
+    ## Prefix to use for Kubernetes namespaces under which secrets will be looked up, defaults to 'concourse-'.
+    ##
+    # namespacePrefix:
+
+    ## When rbac.create is true, get access to secrets can be granted for each team listed here.
+    ## Ignored if rbac.create is false.
+    teams:
+      - main
+
+  ## Configuration for Hashicorp Vault as the Credential Manager.
+  ##
+  vault:
+
+    ## Enable the use of Hashicorp Vault.
+    ##
+    enabled: false
+
     ## URL pointing to vault addr (i.e. http://vault:8200).
     ##
     # url:

@@ -22,13 +22,16 @@ spec:
           imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
           args:
             - "web"
-            {{- if .Values.credentialManager.enabled }}
-            {{- if default "" .Values.credentialManager.vault.appRoleId }}
+            {{- if .Values.credentialManager.vault.enabled }}
+            {{- if .Values.credentialManager.vault.appRoleId }}
             - "--vault-auth-param"
             - "role_id=${CONCOURSE_VAULT_APPROLE_ID}"
             - "--vault-auth-param"
             - "secret_id=${CONCOURSE_VAULT_APPROLE_SECRET_ID}"
             {{- end }}
+            {{- end }}
+            {{- if .Values.credentialManager.kubernetes.enabled }}
+            - "--kubernetes-in-cluster"
             {{- end }}
           env:
             {{ if .Values.postgresql.enabled }}
@@ -252,7 +255,7 @@ spec:
               value: "/concourse-keys/session_signing_key"
             - name: CONCOURSE_TSA_AUTHORIZED_KEYS
               value: "/concourse-keys/worker_key.pub"
-            {{- if .Values.credentialManager.enabled }}
+            {{- if .Values.credentialManager.vault.enabled }}
             - name: CONCOURSE_VAULT_URL
               valueFrom:
                 configMapKeyRef:
@@ -296,6 +299,15 @@ spec:
                   key: vault-approle-secret-id
             {{- end }}
             {{- end }}
+            {{- if .Values.credentialManager.kubernetes.enabled }}
+            {{- if .Values.credentialManager.kubernetes.namespacePrefix }}
+            - name: CONCOURSE_KUBERNETES_NAMESPACE_PREFIX
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: kubernetes-namespace-prefix
+            {{- end }}
+            {{- end }}
           ports:
             - name: atc
               containerPort: {{ .Values.concourse.atcPort }}
@@ -319,7 +331,7 @@ spec:
             - name: concourse-keys
               mountPath: /concourse-keys
               readOnly: true
-            {{- if .Values.credentialManager.vault }}
+            {{- if .Values.credentialManager.vault.enabled }}
             - name: vault-keys
               mountPath: /concourse-vault
               readOnly: true
@@ -340,7 +352,7 @@ spec:
                 path: session_signing_key
               - key: worker-key-pub
                 path: worker_key.pub
-        {{- if .Values.credentialManager.vault }}
+        {{- if .Values.credentialManager.vault.enabled }}
         - name: vault-keys
           secret:
             secretName: {{ template "concourse.concourse.fullname" . }}
