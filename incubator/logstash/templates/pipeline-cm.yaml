@@ -9,24 +9,17 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 data:
-  logstash.conf: |-
-    input {
-      tcp {
-        port => 1514
-        type => syslog
-      }
-      udp {
-        port => 1514
-        type => syslog
-      }
-      beats {
-        port => 5044
-      }
-    }
+{{- range $key, $value := .Values.inputs }}
+  input_{{ $key }}: |-
+{{ $value | indent 4 }}
+{{- end }}
 
-    output {
-        elasticsearch {
-          hosts => ["{{ .Values.elasticsearchHost }}"]
-        }
-      }
-    }
+{{- range $key, $value := .Values.filters }}
+  filter_{{ $key }}: |-
+{{ $value | indent 4 }}
+{{- end }}
+
+{{- range $key, $value := .Values.outputs }}
+  output_{{ $key }}: |-
+{{ $value | indent 4 }}
+{{- end }}

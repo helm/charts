@@ -11,17 +11,14 @@ service:
   type: NodePort
   internalPort: 1514
   ports:
-    - name: "logstash-tcp"
+    - name: "syslog-tcp"
       protocol: TCP
       containerPort: 1514
-    - name: "logstash-udp"
+    - name: "syslog-udp"
       protocol: UDP
       containerPort: 1514
-    - name: "netflow-udp"
-      protocol: UDP
-      containerPort: 2055
-    - name: "filebeat-udp"
-      protocol: UDP
+    - name: "filebeat-tcp"
+      protocol: TCP
       containerPort: 5044
 
 ingress:
@@ -52,5 +49,40 @@ resources: {}
   #  cpu: 100m
   #  memory: 128Mi
 
-elasticsearchHost: "elasticsearch-client.default.svc.cluster.local:9200"
-configData: {}
+elasticsearchHost: "elasticsearch-client.default.svc.cluster.local"
+elasticsearchPort: 9200
+
+# patterns for filters
+# each element will be turned into it's own pattern file
+patterns:
+  # testpattern: |-
+  #     TESTING {"foo":.*}$
+
+inputs:
+  main: |-
+    input {
+      tcp {
+        port => "${SYSLOG_PORT}"
+        type => syslog
+      }
+      udp {
+        port => 1514
+        type => syslog
+      }
+      beats {
+        port => 5044
+      }
+    }
+
+filters:
+  # main: |-
+  #   filter {
+  #   }
+
+outputs:
+  main: |-
+    output {
+      elasticsearch {
+        hosts => ["${ELASTICSEARCH_HOST}:${ELASTICSEARCH_PORT}"]
+      }
+    }
