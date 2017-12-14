@@ -143,7 +143,7 @@ docker-registry:
 ## Minio chart configuration
 ##
 minio:
-  enabled: true
+  enabled: false
   imageTag: RELEASE.2017-07-24T18-27-35Z
   # Minio access/secret keys for the in-cluster S3 usage
   # Minio is not exposed publically
