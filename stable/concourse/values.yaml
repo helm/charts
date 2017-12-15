@@ -588,7 +588,11 @@ credentialManager:
 
 ## For RBAC support:
 rbac:
+  # true here enables creation of rbac resources
   create: true
+
+  # rbac version
+  apiVersion: v1beta1
 
   ## Ignored if rbac.create is true
   ##
