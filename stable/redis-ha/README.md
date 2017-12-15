@@ -47,7 +47,7 @@ The following tables lists the configurable parameters of the Redis chart and th
 
 | Parameter                        | Description                                           | Default                                                   |
 | -------------------------------- | ----------------------------------------------------- | --------------------------------------------------------- |
-| `redis_image`                    | Redis image                                           | `quay.io/smile/redis:4.0.2`                               |
+| `redis_image`                    | Redis image                                           | `quay.io/smile/redis:4.0.6`                               |
 | `persistentVolume.enabled`       | Use a PVC to persist data                             | `false`                                                   |
 | `persistentVolume.storageClass`  | Storage class of backing PVC                          | `generic`                                                 |
 | `persistentVolume.accessMode`    | Use volume as ReadOnly or ReadWrite                   | `ReadWriteOnce`                                           |
