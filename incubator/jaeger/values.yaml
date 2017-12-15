@@ -1,8 +1,10 @@
 # Default values for jaeger.
 # This is a YAML-formatted file.
-# Jaeger values are grouped by component. Cassandra values override subchart values
 
-# Begin: Override values on the Cassandra subchart to customize for Jaeger
+# Begin: Override values on the Cassandra/ElasticSearch subchart to customize for Jaeger
+# This chart has been based on the Kubernetes integration found in the following repo:
+# https://github.com/jaegertracing/jaeger-kubernetes/blob/master/production/cassandra.yml
+# https://github.com/jaegertracing/jaeger-kubernetes/blob/master/production-elasticsearch/elasticsearch.yml
 cassandra:
   image:
     tag: 3.11
@@ -10,19 +12,30 @@ cassandra:
     # To enable persistence, please see the documentation for the Cassandra chart
     enabled: false
   config:
+    # Change the host value to point to an existing Cassandra instance
+    # Be sure to set both tags.cassandra and tags.elasticsearch to false
+    host: ""
     cluster_name: jaeger
     seed_size: 1
     dc_name: dc1
     rack_name: rack1
     endpoint_snitch: GossipingPropertyFileSnitch
-# End: Override values on the Cassandra subchart to customize for Jaeger
+
+elasticsearch:
+  config:
+    # Change the host value to point to an existing ElasticSearch instance
+    # Be sure to set both tags.cassandra and tags.elasticsearch to false
+    host: ""
+    username: "elastic"
+    password: "changeme"
+# End: Override values on the Cassandra/ElasticSearch subchart to customize for Jaeger
 
 # Begin: Default values for the various components of Jaeger
-# This chart has been based on the Kubernetes integration found in the following repo:
-# https://github.com/jaegertracing/jaeger-kubernetes/blob/master/production/jaeger-production-template.yml
-#
-# This is the jaeger-cassandra-schema Job which sets up the Cassandra schema for
-# use by Jaeger
+tags:
+  # Chose which backing store to use. By default Cassandra is enabled.
+  cassandra: true
+  elasticsearch: false
+
 schema:
   annotations: {}
   image: jaegertracing/jaeger-cassandra-schema
