@@ -588,7 +588,7 @@ credentialManager:
 
 ## For RBAC support:
 rbac:
-  create: false
+  create: true
 
   ## Ignored if rbac.create is true
   ##
