@@ -26,16 +26,15 @@ snapRetain: 3
 purgeHours: 1
 probeInitialDelaySeconds: 15
 probeTimeoutSeconds: 5
-antiAffinity: "hard"
 logLevel: "INFO"
 security:
   enabled: false
   runAsUser: 1000
   fsGroup: 1000
-## Additional affinities to add to the worker pods.
+## Affinities to add to the worker pods.
 ## Useful if you prefer to run workers on non-spot instances, for example
 ##
-# additionalAffinities:
+# affinity:
 #   nodeAffinity:
 #     preferredDuringSchedulingIgnoredDuringExecution:
 #       - weight: 50
