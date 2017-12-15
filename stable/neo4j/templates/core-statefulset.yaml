@@ -79,12 +79,18 @@ spec:
         - name: datadir
           mountPath: "{{ .Values.core.persistentVolume.mountPath }}"
           subPath: "{{ .Values.core.persistentVolume.subPath }}"
+        volumeMounts:
+        - name: plugins
+          mountPath: /plugins
         resources:
 {{ toYaml .Values.resources | indent 10 }}
 {{- if .Values.core.sidecarContainers }}
 {{ toYaml .Values.core.sidecarContainers | indent 6}}
 {{- end }}
 
+      volumes:
+        - name: plugins
+          emptyDir: {}
   volumeClaimTemplates:
     - metadata:
         name: datadir
