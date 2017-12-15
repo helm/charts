@@ -13,13 +13,28 @@ rules:
   - "/version"  # Used to get apiserver version metadata
   - "/healthz"  # Healthcheck
   verbs: ["get"]
+- apiGroups: ["apps"]
+  resources:
+    - "deployments"
+  verbs: ["get", "list"]
+- apiGroups: ["batch"]
+  resources:
+    - "jobs"
+  verbs: ["get", "list"]
+- apiGroups: ["extensions"]
+  resources:
+    - "daemonsets"
+    - "replicasets"
+  verbs: ["get", "list"]
 - apiGroups: [""]
   resources:
+    - "namespaces" #
+    - "events"     # Cluster events + kube_service cache invalidation
+    - "services"   # kube_service tag
     - "nodes"
-    - "namespaces"  #
-    - "events"      # Cluster events + kube_service cache invalidation
-    - "services"    # kube_service tag
+    - "pods"
   verbs: ["get", "list"]
+{{- if .Values.datadog.leaderElection }}
 - apiGroups: [""]
   resources:
     - "configmaps"
@@ -29,4 +44,6 @@ rules:
   resources:
     - "configmaps"
   verbs: ["create"]
+{{- end }}
 {{- end -}}
+

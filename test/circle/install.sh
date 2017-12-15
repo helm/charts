@@ -22,6 +22,12 @@ sudo mv linux-amd64/helm /usr/local/bin
 rm -f helm-${HELM_LATEST_VERSION}-linux-amd64.tar.gz
 rm -rf linux-amd64
 
+# Setup Helm so that it will work with helm dep commands. Only the client
+# needs to be setup. In addition, the incubator repo needs to be
+# available for charts that depend on it.
+helm init -c
+helm repo add incubator https://kubernetes-charts-incubator.storage.googleapis.com/
+
 # Install A YAML Linter
 # Pinning to a version for consistency
 sudo pip install yamllint==1.8.1
