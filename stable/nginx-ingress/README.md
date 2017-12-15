@@ -122,6 +122,7 @@ Parameter | Description | Default
 `statsExporter.service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
 `statsExporter.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
 `statsExporter.service.servicePort` | Prometheus metrics exporter service port | `9913`
+`statsExporter.service.targetPort` | Prometheus metrics exporter target port | `9913`
 `statsExporter.service.type` | type of Prometheus metrics exporter service to create | `ClusterIP`
 `tcp` | TCP service key:value pairs | `{}`
 `udp` | UDP service key:value pairs | `{}`
