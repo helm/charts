@@ -1,10 +1,17 @@
-apiVersion: "apps/v1beta1"
+apiVersion: "apps/v1beta2"
 kind: StatefulSet
 metadata:
   name: "{{ template "neo4j.core.fullname" . }}"
 spec:
   serviceName: {{ template "neo4j.fullname" . }}
   replicas: {{ .Values.core.numberOfServers }}
+  selector:
+    matchLabels:
+      heritage: {{ .Release.Service | quote }}
+      release: {{ .Release.Name | quote }}
+      chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+      app: {{ template "neo4j.name" . }}
+      component: core
   template:
     metadata:
       labels:
