@@ -1,0 +1,18 @@
+mysql:
+  rootPassword: "Root Password here..."
+  user: wordpress
+  password: "User Password here..."
+  database: wordpress
+
+php:
+  repository: "wordpress"
+  tag: "php7.1-fpm"
+  envVars:
+  - name: WORDPRESS_DB_HOST
+    value: localhost
+  - name: WORDPRESS_DB_USER
+    value: wordpress
+  - name: WORDPRESS_DB_PASSWORD
+    value: "User Password here..."
+  - name: WORDPRESS_DB_DATABASE
+    value: wordpress
