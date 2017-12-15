@@ -328,6 +328,12 @@ web:
     ##
     type: ClusterIP
 
+    ## Annotations to be added to the web service.
+    ##
+    # annotations:
+    #   prometheus.io/probe: "true"
+    #   prometheus.io/probe_path: "/"
+
   # If you fix atc nodeport, this parameter set(web.service.atcNodePort)
   #  atcNodePort: 30150
   #
