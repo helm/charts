@@ -31,6 +31,10 @@ client:
       cpu: "25m"
       memory: "512Mi"
 
+  ## (dict) If specified, apply these annotations to each client Pod
+  # podAnnotations:
+  #   example: client-foo
+
 master:
   name: master
   replicas: 3
@@ -49,6 +53,10 @@ master:
     requests:
       cpu: "25m"
       memory: "512Mi"
+
+  ## (dict) If specified, apply these annotations to each master Pod
+  # podAnnotations:
+  #   example: master-foo
 
 data:
   name: data
@@ -69,6 +77,10 @@ data:
     requests:
       cpu: "25m"
       memory: "1536Mi"
+
+  ## (dict) If specified, apply these annotations to each data Pod
+  # podAnnotations:
+  #   example: data-foo
 
 ## Install Default RBAC roles and bindings
 rbac:
