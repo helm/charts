@@ -15,19 +15,21 @@ resources:
     cpu: 80m
     memory: 64Mi
 persistence:
-  Enabled: false
-  AccessMode: ReadWriteOnce
-  Size: 8Gi
-  ## A manually managed Persistent Volume and Claim
-  ## Requires Persistence.Enabled: true
-  ## If defined, PVC must be created manually before volume will be bound
-  # ExistingClaim:
+  enabled: false
+  storageClass: default
+  accessMode: ReadWriteOnce
+  size: 8Gi
+storage:
+  provider: local  # amazon, google, or local -- selecting local will then use the persistence settings to decide to use emptyDir or a StatefulSet
+  bucket: my-bucket
+  prefix: ""
 
-  ## jenkins data Persistent Volume Storage Class
-  ## If defined, storageClassName: <storageClass>
-  ## If set to "-", storageClassName: "", which disables dynamic provisioning
-  ## If undefined (the default) or set to null, no storageClassName spec is
-  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
-  ##   GKE, AWS & OpenStack)
-  ##
-  # StorageClass: "-"
+  # Amazon specific settings
+  amazon:
+    region: "us-west-2"
+    # endpoint: "Alternative S3 Endpoint"
+container:
+  # A dictionary of k,v that will become environment variables
+  environment:
+  # A list of strings that will be added to the args: section
+  extraArgs: []

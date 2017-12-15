@@ -1,3 +1,10 @@
 Thank you for installing {{ .Chart.Name }}.
 
 Your release is named {{ .Release.Name }}.
+
+To add {{ .Release.Name }} as a helm repo:
+
+`helm repo add chartmuseum http://<URL_TO_SERVICE>`
+
+To add a chart to the museum: `curl --data-binary "@mychart-0.1.0.tgz" http://<URL_TO_SERVICE>/api/charts`
+
