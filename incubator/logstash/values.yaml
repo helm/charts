@@ -7,7 +7,6 @@ image:
   tag: 6.0.0
   pullPolicy: IfNotPresent
 service:
-  name: logstash
   type: NodePort
   internalPort: 1514
   ports:
