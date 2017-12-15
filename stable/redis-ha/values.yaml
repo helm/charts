@@ -66,7 +66,7 @@ replicas:
   servers: 3
   sentinels: 3
 appliance:
-  # Set vpcMode to true to automatically open the master and slave load balancers to access from within the VPC
-  vpcMode: false
+  serviceType: ClusterIP #Restricts access to within the K8S cluster
+#  serviceType: LoadBalancer #Allows access to the local VPC
   annotations:
     cloud.google.com/load-balancer-type: "Internal"

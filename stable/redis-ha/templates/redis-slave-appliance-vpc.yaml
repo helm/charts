@@ -14,8 +14,4 @@ spec:
     redis-node: "true"
     redis-role: "slave"
     release: "{{ .Release.Name }}"
-{{- if eq .Values.appliance.vpcMode true }}
-  type: LoadBalancer
-{{- else }}
-  type: ClusterIP
-{{- end }}
+  type: "{{ .Values.appliance.serviceType }}"
