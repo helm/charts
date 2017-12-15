@@ -266,6 +266,7 @@ statsExporter:
     loadBalancerIP: ""
     loadBalancerSourceRanges: []
     servicePort: 9913
+    targetPort: 9913
     type: ClusterIP
 
 # TCP service key:value pairs
