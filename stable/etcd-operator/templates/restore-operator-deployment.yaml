@@ -18,9 +18,7 @@ spec:
         app: {{ template "etcd-restore-operator.fullname" . }}
         release: {{ .Release.Name }}
     spec:
-      {{- if .Values.rbac.create }}
-      serviceAccountName: {{ .Values.rbac.restoreOperatorServiceAccountName }}
-      {{- end }}
+      serviceAccountName: {{ if .Values.rbac.create }}{{ template "etcd-restore-operator.fullname" . }}{{ else }}{{ .Values.rbac.restoreOperatorServiceAccountName }}{{ end }}
       containers:
       - name: {{ .Values.restoreOperator.name }}
         image: "{{ .Values.restoreOperator.image.repository }}:{{ .Values.restoreOperator.image.tag }}"
