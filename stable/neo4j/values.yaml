@@ -49,11 +49,11 @@ core:
 
   ## Pass extra environment variables to the Neo4j container.
   ##
-  extraVars:
-  - name: EXTRA_VAR_1
-    value: extra-var-value-1
-  - name: EXTRA_VAR_2
-    value: extra-var-value-2
+  # extraVars:
+  # - name: EXTRA_VAR_1
+  #   value: extra-var-value-1
+  # - name: EXTRA_VAR_2
+  #   value: extra-var-value-2
 
   sidecarContainers: {}
   ## Additional containers to be added to the Neo4j core pod.
