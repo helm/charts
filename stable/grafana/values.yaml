@@ -8,6 +8,7 @@ server:
   ##
   image: "grafana/grafana:latest"
 
+  extraEnv: {}
   nodeSelector: {}
   tolerations: []
 
@@ -27,6 +28,12 @@ server:
     ##
     # hosts:
     #   - grafana.domain.com
+
+    ## Grafana Ingress path
+    ## Optional, allows specifying paths for more flexibility
+    ## E.g. Traefik ingress likes paths
+    ##
+    # path: /
 
     ## Grafana Ingress TLS configuration
     ## Secrets must be manually created in the namespace
@@ -137,6 +144,12 @@ server:
     ## serviceType NodePort.
     ## Default: nil
     # nodePort: 30000
+
+    ## External IP addresses of service
+    ## Default: nil
+    ##
+    # externalIPs:
+    # - 192.168.0.1
 
   ## Grafana local config path
   ## Default '/etc/grafana'
