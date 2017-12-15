@@ -3,8 +3,11 @@ description: nginx proxy with ldapauth
 name: nginx-ldapauth-proxy
 version: 0.1.1
 appVersion: 1.13.5
+sources:
+- https://github.com/dweomer/dockerfiles-nginx-auth-ldap
+- https://github.com/kvspb/nginx-auth-ldap
 maintainers:
-- name: Pete Brown
+- name: rendhalver
   email: pete.brown@powerhrg.com
-- name: Johnathan Rodgers
+- name: jar361
   email: jrodgers@powerhrg.com
