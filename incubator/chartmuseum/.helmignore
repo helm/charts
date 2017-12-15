@@ -19,5 +19,3 @@
 .project
 .idea/
 *.tmproj
-# OWNERS file for Kubernetes
-OWNERS
