@@ -1,3 +1,4 @@
+{{- if .Values.agent.enabled -}}
 apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
@@ -46,3 +47,4 @@ spec:
           protocol: UDP
         resources:
 {{ toYaml .Values.agent.resources | indent 10 }}
+{{- end -}}
