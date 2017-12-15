@@ -19,7 +19,7 @@ spec:
         release: {{ .Release.Name }}
     spec:
       terminationGracePeriodSeconds: 10
-      serviceAccountName: {{ if .Values.rbac.create }}{{ template "rabbitmq-ha.fullname" . }}{{ else }}"{{ .Values.serviceAccountName }}"{{ end }}
+      serviceAccountName: {{ if .Values.rbac.create }}{{ template "rabbitmq-ha.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
       containers:
         - name: {{ .Chart.Name }}
           image: {{ .Values.image.repository }}:{{ .Values.image.tag }}

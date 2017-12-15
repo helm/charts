@@ -73,9 +73,9 @@ and their default values.
 | `rabbitmqUsername`                 | RabbitMQ application username                                   | `guest`                                                  |
 | `rabbitmqVhost`                    | RabbitMQ application vhost                                      | `/`                                                      |
 | `rbac.create`                      | If true, create & use RBAC resources                            | `true`                                                   |
+| `rbac.serviceAccountName`          | Service account name to use (ignored if rbac.create=true)       | `default`                                                |
 | `replicaCount`                     | Number of replica                                               | `3`                                                      |
 | `resources`                        | CPU/Memory resource requests/limits                             | `{}`                                                     |
-| `serviceAccountName`               | Service account name to use (ignored if rbac.create=true)       | `default`                                                |
 | `service.annotations`              | Annotations to add to service                                   | `none`                                                   |
 | `service.clusterIP`                | IP address to assign to service                                 | `""`                                                     |
 | `service.externalIPs`              | Service external IP addresses                                   | `[]`                                                     |
