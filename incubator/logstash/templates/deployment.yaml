@@ -33,9 +33,9 @@ spec:
               port: {{ .Values.service.internalPort }}
           env:
             - name: ELASTICSEARCH_HOST
-              value: {{ .Values.elasticsearchHost | quote }}
+              value: {{ .Values.elasticsearch.host | quote }}
             - name: ELASTICSEARCH_PORT
-              value: {{ .Values.elasticsearchPort | quote }}
+              value: {{ .Values.elasticsearch.port | quote }}
             - name: SYSLOG_PORT
               value: {{ .Values.service.internalPort | quote }}
           volumeMounts:

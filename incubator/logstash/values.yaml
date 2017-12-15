@@ -49,8 +49,9 @@ resources: {}
   #  cpu: 100m
   #  memory: 128Mi
 
-elasticsearchHost: "elasticsearch-client.default.svc.cluster.local"
-elasticsearchPort: 9200
+elasticsearch
+  host: "elasticsearch-client.default.svc.cluster.local"
+  port: 9200
 
 # patterns for filters
 # each element will be turned into it's own pattern file
