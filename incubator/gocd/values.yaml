@@ -70,7 +70,7 @@ server:
     storageClass:
     ExistingClaim:
     pvSelector:
-      matchLabels:
+#      matchLabels:
 #        volume-type: ssd
     subpath:
       godata: godata
@@ -106,14 +106,14 @@ agent:
     goAgentBootstrapperJvmArgs:
   persistence:
     # agent.persistence.enabled is the toggle for agent volume persistence. Change to true if a persistent volume is available and configured manually.
-    enabled: true
-    accessMode: "ReadWriteMany"
+    enabled: false
+    accessMode: "ReadWriteOnce"
     size: 1Gi
     storageClass:
     ExistingClaim:
     pvSelector:
-      matchLabels:
-        app: godata-gocd-server
+#      matchLabels:
+#        app: godata-gocd-server
     subpath:
       homego: homego
       dockerEntryPoint: scripts
