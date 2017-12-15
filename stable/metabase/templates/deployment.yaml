@@ -1,0 +1,102 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "metabase.fullname" . }}
+  labels:
+    app: {{ template "metabase.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "metabase.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+          - name: MB_JETTY_HOST
+            value: {{ .Values.listen.host | quote }}
+          - name: MB_JETTY_PORT
+            value: {{ .Values.listen.port | quote }}
+          {{- if .Values.ssl.enabled }}
+          - name: MB_JETTY_SSL
+            value: true
+          - name: MB_JETTY_SSL_Port
+            value: {{ .Values.ssl.port | quote }}
+          - name: MB_JETTY_SSL_Keystore
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "metabase.fullname" . }}-ssl
+                key: keystore
+          - name: MB_JETTY_SSL_Keystore_Password
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "metabase.fullname" . }}-ssl
+                key: password
+          {{- end }}
+          - name: MB_DB_TYPE
+            value: {{ .Values.database.type | lower }}
+          - name: MB_ENCRYPTION_SECRET_KEY
+            value: {{ .Values.database.encryptionKey | quote }}
+          {{- if ne (.Values.database.type | lower) "h2" }}
+          - name: MB_DB_HOST
+            value: {{ .Values.database.host | quote }}
+          - name: MB_DB_PORT
+            value: {{ .Values.database.port | quote }}
+          - name: MB_DB_DBNAME
+            value: {{ .Values.database.dbname | quote }}
+          - name: MB_DB_USER
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "metabase.fullname" . }}-database
+                key: username
+          - name: MB_DB_PASS
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "metabase.fullname" . }}-database
+                key: password
+          {{- end }}
+          - name: MB_PASSWORD_COMPLEXITY
+            value: {{ .Values.password.complexity }}
+          - name: MB_PASSWORD_LENGTH
+            value: {{ .Values.password.length | quote }}
+          - name: JAVA_TIMEZONE
+            value: {{ .Values.timeZone }}
+          {{- if .Values.javaToolOptions }}
+          - name: JAVA_TOOL_OPTIONS
+            value: {{ .Values.javaToolOptions | quote }}
+          {{- end }}
+          {{- if .Values.pluginsDirectory }}
+          - name: MB_PLUGINS_DIR
+            value: {{ .Values.pluginsDirectory | quote }}
+          {{- end }}
+          - name: MB_EMOJI_IN_LOGS
+            value: {{ .Values.emojiLogging | quote }}
+          ports:
+            - containerPort: {{ .Values.service.internalPort }}
+          livenessProbe:
+            httpGet:
+              path: /
+              port: {{ .Values.service.internalPort }}
+            initialDelaySeconds: 120
+            timeoutSeconds: 5
+            failureThreshold: 6
+          readinessProbe:
+            httpGet:
+              path: /
+              port: {{ .Values.service.internalPort }}
+            initialDelaySeconds: 30
+            timeoutSeconds: 3
+            periodSeconds: 5
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}

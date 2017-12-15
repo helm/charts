@@ -1,0 +1,49 @@
+# Default values for Confluent Schema-Registry
+# This is a YAML-formatted file.
+# Declare name/value pairs to be passed into your templates.
+# name: value
+
+## schema-registry repository
+image: "confluentinc/cp-schema-registry"
+## The container tag to use
+imageTag: "4.0.0"
+## Specify a imagePullPolicy
+## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+imagePullPolicy: "IfNotPresent"
+
+## Number of Schema Registry Pods to Deploy
+replicaCount: 1
+
+## Schema Registry Settings Overrides
+## Configuration Options can be found here: https://docs.confluent.io/current/schema-registry/docs/config.html
+configurationOverrides: {}
+
+## Configure resource requests and limits
+## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+## Confluent has production deployment guidelines here:
+## ref: https://github.com/confluentinc/schema-registry/blob/master/docs/deployment.rst
+##
+resources: {}
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+
+## The port on which the SchemaRegistry will be available and serving requests
+servicePort: 8081
+
+## Kafka Settings
+kafka:
+  ## This is enabled only to allow installations of this chart without arguments
+  enabled: true
+  ## Install only a single Kafka pod in the StatefulSet
+  Replicas: 1
+  ## Install only a single Zookeeper pod in the StatefulSet
+  zookeeper:
+    Servers: 1
+  ## If `Kafka.Enabled` is `false`, the Zookeeper url servicing the Kafka cluster must be provided
+  zookeeperUrl: ""
+  ## If `Kafka.Enabled` is `false`, the Zookeeper port servicing the Kafka cluster must be provided
+  zookeeperPort: 2181

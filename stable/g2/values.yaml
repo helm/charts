@@ -1,0 +1,9 @@
+replicaCount: 1
+g2:
+  image: appscode/gearmand
+  pullPolicy: IfNotPresent
+  tag: 0.5.0
+  serviceType: ClusterIP
+rbac:
+  install: false
+  apiVersion: v1beta1

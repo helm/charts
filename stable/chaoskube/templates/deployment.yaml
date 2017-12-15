@@ -21,12 +21,11 @@ spec:
       - name: {{ .Values.name }}
         image: {{ .Values.image }}:{{ .Values.imageTag }}
         args:
-        - --in-cluster
         - --interval={{ .Values.interval }}
         - --labels={{ .Values.labels }}
         - --annotations={{ .Values.annotations }}
         - --namespaces={{ .Values.namespaces }}
-        {{- if not .Values.dryRun}}
+        {{- if not .Values.dryRun }}
         - --no-dry-run
         {{- end }}
         resources:
@@ -36,3 +35,4 @@ spec:
           limits:
             cpu: {{ .Values.resources.cpu }}
             memory: {{ .Values.resources.memory }}
+      serviceAccountName: {{ if .Values.rbac.create }}{{ printf "%s-%s" .Release.Name .Values.name }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}

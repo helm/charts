@@ -1,0 +1,24 @@
+{{- if .Values.networkPolicy.enabled }}
+kind: NetworkPolicy
+apiVersion: {{ template "minio.networkPolicy.apiVersion" . }}
+metadata:
+  name: {{ template "minio.fullname" . }}
+  labels:
+    app: {{ template "minio.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  podSelector:
+    matchLabels:
+      app: {{ template "minio.fullname" . }}
+  ingress:
+    - ports:
+        - port: {{ .Values.servicePort }}
+      {{- if not .Values.networkPolicy.allowExternal }}
+      from:
+        - podSelector:
+            matchLabels:
+              {{ template "minio.fullname" . }}-client: "true"
+      {{- end }}
+{{- end }}

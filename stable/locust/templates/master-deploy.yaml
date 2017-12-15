@@ -6,15 +6,15 @@ metadata:
     app: {{ template "locust.fullname" . }}
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
-    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     component: master
 spec:
   replicas: 1
   strategy:
     type: RollingUpdate
     rollingUpdate:
-      maxSurge: {{default 1 .Values.master.maxSurge}}
-      maxUnavailable: {{default 1 .Values.master.maxUnavailable}}
+      maxSurge: {{ default 1 .Values.master.maxSurge }}
+      maxUnavailable: {{ default 1 .Values.master.maxUnavailable }}
   template:
     metadata:
       labels:

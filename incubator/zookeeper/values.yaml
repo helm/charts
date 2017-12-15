@@ -2,23 +2,33 @@
 # This is a YAML-formatted file.
 # Declare name/value pairs to be passed into your templates.
 # name: value
-Servers: 3
-Cpu: "1"
-Memory: "4Gi"
-Heap: "2G"
-Storage: "50Gi"
-#StorageClass : default
-ServerPort: 2888
-LeaderElectionPort: 3888
-ClientPort: 2181
-ImagePullPolicy: "Always"
-TickTimeMs: 2000
-InitTicks: 10
-SyncTicks: 5
-ClientCnxns: 60
-SnapRetain: 3
-PurgeHours: 1
-ProbeInitialDelaySeconds : 15
-ProbeTimeoutSeconds : 5
-AntiAffinity : "hard"
-LogLevel : "INFO"
+servers: 3
+# minAvailable: 2
+resources:
+  requests:
+    cpu: 500m
+    memory: 2Gi
+  limits:
+    cpu: 1
+    memory: 4Gi
+heap: "2G"
+storage: "50Gi"
+# storageClass: default
+serverPort: 2888
+leaderElectionPort: 3888
+clientPort: 2181
+imagePullPolicy: "Always"
+tickTimeMs: 2000
+initTicks: 10
+syncTicks: 5
+clientCnxns: 60
+snapRetain: 3
+purgeHours: 1
+probeInitialDelaySeconds: 15
+probeTimeoutSeconds: 5
+antiAffinity: "hard"
+logLevel: "INFO"
+security:
+  enabled: false
+  runAsUser: 1000
+  fsGroup: 1000

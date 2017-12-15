@@ -5,74 +5,80 @@
 
 Master:
   Name: jenkins-master
-  Image: "jenkinsci/jenkins"
-  ImageTag: "2.67"
+  Image: "jenkins/jenkins"
+  ImageTag: "lts"
   ImagePullPolicy: "Always"
+# ImagePullSecret: jenkins
   Component: "jenkins-master"
   UseSecurity: true
   AdminUser: admin
-# AdminPassword: <defaults to random>
+  # AdminPassword: <defaults to random>
   Cpu: "200m"
   Memory: "256Mi"
-# Set min/max heap here if needed with:
-# JavaOpts: "-Xms512m -Xmx512m"
+  # Set min/max heap here if needed with:
+  # JavaOpts: "-Xms512m -Xmx512m"
+  # JenkinsOpts: ""
+  # JenkinsUriPrefix: "/jenkins"
   ServicePort: 8080
-# For minikube, set this to NodePort, elsewhere use LoadBalancer
-# Use ClusterIP if your setup includes ingress controller
+  # For minikube, set this to NodePort, elsewhere use LoadBalancer
+  # Use ClusterIP if your setup includes ingress controller
   ServiceType: LoadBalancer
-# Master Service annotations
+  # Master Service annotations
   ServiceAnnotations: {}
-    #   service.beta.kubernetes.io/aws-load-balancer-backend-protocol: https
-# Used to create Ingress record (should used with ServiceType: ClusterIP)
-# HostName: jenkins.cluster.local
-# NodePort: <to set explicitly, choose port between 30000-32767
+  #   service.beta.kubernetes.io/aws-load-balancer-backend-protocol: https
+  # Used to create Ingress record (should used with ServiceType: ClusterIP)
+  # HostName: jenkins.cluster.local
+  # NodePort: <to set explicitly, choose port between 30000-32767
   ContainerPort: 8080
   SlaveListenerPort: 50000
   LoadBalancerSourceRanges:
   - 0.0.0.0/0
-# Optionally configure a JMX port
-# requires additional JavaOpts, ie
-# JavaOpts: >
-#   -Dcom.sun.management.jmxremote.port=4000 
-#   -Dcom.sun.management.jmxremote.authenticate=false 
-#   -Dcom.sun.management.jmxremote.ssl=false 
-# JMXPort: 4000
-# List of plugins to be install during Jenkins master start
+  # Optionally assign a known public LB IP
+  # LoadBalancerIP: 1.2.3.4
+  # Optionally configure a JMX port
+  # requires additional JavaOpts, ie
+  # JavaOpts: >
+  #   -Dcom.sun.management.jmxremote.port=4000
+  #   -Dcom.sun.management.jmxremote.authenticate=false
+  #   -Dcom.sun.management.jmxremote.ssl=false
+  # JMXPort: 4000
+  # List of plugins to be install during Jenkins master start
   InstallPlugins:
-      - kubernetes:0.11 
-      - workflow-aggregator:2.5
-      - workflow-job:2.13
-      - credentials-binding:1.12
-      - git:3.3.1
-# Used to approve a list of groovy functions in pipelines used the script-security plugin. Can be viewed under /scriptApproval
+    - kubernetes:1.1
+    - workflow-aggregator:2.5
+    - workflow-job:2.15
+    - credentials-binding:1.13
+    - git:3.6.4
+  # Used to approve a list of groovy functions in pipelines used the script-security plugin. Can be viewed under /scriptApproval
   # ScriptApproval:
   #   - "method groovy.json.JsonSlurperClassic parseText java.lang.String"
   #   - "new groovy.json.JsonSlurperClassic"
-# List of groovy init scripts to be executed during Jenkins master start
+  # List of groovy init scripts to be executed during Jenkins master start
   InitScripts:
-#  - |
-#    print 'adding global pipeline libraries, register properties, bootstrap jobs...'
+  #  - |
+  #    print 'adding global pipeline libraries, register properties, bootstrap jobs...'
   CustomConfigMap: false
-# Node labels and tolerations for pod assignment
-# ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
-# ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
+  # Node labels and tolerations for pod assignment
+  # ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
+  # ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
   NodeSelector: {}
   Tolerations: {}
 
   Ingress:
     Annotations:
-      # kubernetes.io/ingress.class: nginx
-      # kubernetes.io/tls-acme: "true"
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
 
     TLS:
-      # - secretName: jenkins.cluster.local
-      #   hosts:
-      #     - jenkins.cluster.local
+    # - secretName: jenkins.cluster.local
+    #   hosts:
+    #     - jenkins.cluster.local
 
 Agent:
   Enabled: true
-  Image: jenkinsci/jnlp-slave
-  ImageTag: 2.62
+  Image: jenkins/jnlp-slave
+  ImageTag: 3.10-1
+# ImagePullSecret: jenkins
   Component: "jenkins-slave"
   Privileged: false
   Cpu: "200m"
@@ -87,6 +93,9 @@ Agent:
   # - type: Secret
   #   secretName: mysecret
   #   mountPath: /var/myapp/mysecret
+  NodeSelector: {}
+  # Key Value selectors. Ex:
+  # jenkins-agent: v1
 
 Persistence:
   Enabled: true
@@ -95,19 +104,25 @@ Persistence:
   ## If defined, PVC must be created manually before volume will be bound
   # ExistingClaim:
 
-  ## If defined, volume.beta.kubernetes.io/storage-class: <StorageClass>
-  ## Default: volume.alpha.kubernetes.io/storage-class: default
+  ## jenkins data Persistent Volume Storage Class
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
   ##
-  # StorageClass:
+  # StorageClass: "-"
+
+  Annotations: {}
   AccessMode: ReadWriteOnce
   Size: 8Gi
   volumes:
-#  - name: nothing
-#    emptyDir: {}
+  #  - name: nothing
+  #    emptyDir: {}
   mounts:
-#  - mountPath: /var/nothing
-#    name: nothing
-#    readOnly: true
+  #  - mountPath: /var/nothing
+  #    name: nothing
+  #    readOnly: true
 
 NetworkPolicy:
   # Enable creation of NetworkPolicy resources.
@@ -119,6 +134,7 @@ NetworkPolicy:
 ## Install Default RBAC roles and bindings
 rbac:
   install: false
+  serviceAccountName: default
   # RBAC api version (currently either v1beta1 or v1alpha1)
   apiVersion: v1beta1
   # Cluster role reference

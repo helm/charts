@@ -1,16 +1,16 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{template "fullname" . }}
+  name: {{template "jenkins.fullname" . }}
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "jenkins.fullname" . }}
     heritage: {{.Release.Service | quote }}
     release: {{.Release.Name | quote }}
     chart: "{{.Chart.Name}}-{{.Chart.Version}}"
     component: "{{.Release.Name}}-{{.Values.Master.Component}}"
 {{- if .Values.Master.ServiceAnnotations }}
   annotations:
-{{ toYaml .Values.Master.ServiceAnnotations | indent 4}}
+{{ toYaml .Values.Master.ServiceAnnotations | indent 4 }}
 {{- end }}
 spec:
   ports:
@@ -25,4 +25,7 @@ spec:
   type: {{.Values.Master.ServiceType}}
   {{if eq .Values.Master.ServiceType "LoadBalancer"}}
   loadBalancerSourceRanges: {{.Values.Master.LoadBalancerSourceRanges}}
+  {{if .Values.Master.LoadBalancerIP}}
+  loadBalancerIP: {{.Values.Master.LoadBalancerIP}}
+  {{end}}
   {{end}}

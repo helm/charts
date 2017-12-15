@@ -1,9 +1,9 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "mariadb.fullname" . }}
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "mariadb.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -11,49 +11,47 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "fullname" . }}
-      annotations:
-        pod.alpha.kubernetes.io/init-containers: '
-          [
-            {
-              "name": "copy-custom-config",
-              "image": "{{ .Values.image }}",
-              "imagePullPolicy": {{ .Values.imagePullPolicy | quote }},
-              "command": ["sh", "-c", "mkdir -p /bitnami/mariadb/conf && cp -n /bitnami/mariadb_config/my.cnf /bitnami/mariadb/conf/my_custom.cnf"],
-              "volumeMounts": [
-                {
-                  "name": "config",
-                  "mountPath": "/bitnami/mariadb_config"
-                },
-                {
-                  "name": "data",
-                  "mountPath": "/bitnami/mariadb"
-                }
-              ]
-            }
-          ]'
+        app: {{ template "mariadb.fullname" . }}
     spec:
+      securityContext:
+        runAsUser: 1001
+        fsGroup: 1001
+      initContainers:
+      - name: "copy-custom-config"
+        image: "busybox"
+        imagePullPolicy: "{{ .Values.imagePullPolicy }}"
+        command: ["sh", "-c", "mkdir -p /bitnami/mariadb/conf && cp /bitnami/mariadb_config/my.cnf /bitnami/mariadb/conf/my_custom.cnf"]
+        volumeMounts:
+        - name: config
+          mountPath: /bitnami/mariadb_config
+        - name: data
+          mountPath: /bitnami/mariadb
       containers:
-      - name: {{ template "fullname" . }}
+      - name: mariadb
         image: "{{ .Values.image }}"
         imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
         env:
+        {{- if .Values.usePassword }}
         - name: MARIADB_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "mariadb.fullname" . }}
               key: mariadb-root-password
-        - name: MARIADB_USER
-          value: {{ default "" .Values.mariadbUser | quote }}
+        {{- if .Values.mariadbUser }}
         - name: MARIADB_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "mariadb.fullname" . }}
               key: mariadb-password
-        - name: MARIADB_DATABASE
-          value: {{ default "" .Values.mariadbDatabase | quote }}
+        {{- end }}
+        {{- else }}
         - name: ALLOW_EMPTY_PASSWORD
           value: "yes"
+        {{- end }}
+        - name: MARIADB_USER
+          value: {{ default "" .Values.mariadbUser | quote }}
+        - name: MARIADB_DATABASE
+          value: {{ default "" .Values.mariadbDatabase | quote }}
         ports:
         - name: mysql
           containerPort: 3306
@@ -76,14 +74,45 @@ spec:
         volumeMounts:
         - name: data
           mountPath: /bitnami/mariadb
+{{- if .Values.metrics.enabled }}
+      - name: metrics
+        image: "{{ .Values.metrics.image }}:{{ .Values.metrics.imageTag }}"
+        imagePullPolicy: {{ .Values.metrics.imagePullPolicy | quote }}
+        env:
+        {{- if .Values.usePassword }}
+        - name: MARIADB_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "mariadb.fullname" . }}
+              key: mariadb-root-password
+        {{- end }}
+        command: [ 'sh', '-c', 'DATA_SOURCE_NAME="root:$MARIADB_ROOT_PASSWORD@(localhost:3306)/" /bin/mysqld_exporter' ]
+        ports:
+        - name: metrics
+          containerPort: 9104
+        livenessProbe:
+          httpGet:
+            path: /metrics
+            port: metrics
+          initialDelaySeconds: 15
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /metrics
+            port: metrics
+          initialDelaySeconds: 5
+          timeoutSeconds: 1
+        resources:
+{{ toYaml .Values.metrics.resources | indent 10 }}
+{{- end }}
       volumes:
       - name: config
         configMap:
-          name: {{ template "fullname" . }}
+          name: {{ template "mariadb.fullname" . }}
       - name: data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ .Values.persistence.existingClaim | default (include "fullname" .) }}
+          claimName: {{ .Values.persistence.existingClaim | default (include "mariadb.fullname" .) }}
       {{- else }}
         emptyDir: {}
       {{- end -}}

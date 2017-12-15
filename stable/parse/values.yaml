@@ -1,0 +1,123 @@
+## Kubernetes serviceType for Parse Deployment
+## ref: http://kubernetes.io/docs/user-guide/services/#publishing-services---service-types
+##
+serviceType: LoadBalancer
+
+## loadBalancerIP for the Parse Service (optional, cloud specific)
+## ref: http://kubernetes.io/docs/user-guide/services/#type-loadbalancer
+##
+# loadBalancerIP:
+
+server:
+  ## Bitnami Parse image version
+  ## ref: https://hub.docker.com/r/bitnami/parse/tags/
+  ##
+  image: bitnami/parse:2.7.1-r0
+
+  ## Specify a imagePullPolicy
+  ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+  ##
+  imagePullPolicy: IfNotPresent
+
+  ## Parse Server Port
+  ## ref: https://github.com/bitnami/bitnami-docker-parse#configuration
+  ##
+  port: 1337
+
+  ## Parse API mount path
+  ## ref: https://github.com/bitnami/bitnami-docker-parse#configuration
+  ##
+  mountPath: /parse
+
+  ## Parse Server App ID
+  ## ref: https://github.com/bitnami/bitnami-docker-parse#configuration
+  ##
+  appId: myappID
+
+  ## Parse Server Master Key
+  ## ref: https://github.com/bitnami/bitnami-docker-parse#configuration
+  ##
+  # masterKey:
+
+  ## Configure resource requests and limits
+  ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+  ##
+  resources:
+    # requests:
+    #   memory: 512Mi
+    #   cpu: 300m
+
+dashboard:
+  ## Enable deployment of Parse Dashboard
+  ##
+  enabled: true
+
+  ## Bitnami Parse Dashboard image version
+  ## ref: https://hub.docker.com/r/bitnami/parse-dashboard/tags/
+  ##
+  image: bitnami/parse-dashboard:1.1.2-r0
+
+  ## Specify a imagePullPolicy
+  ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+  ##
+  imagePullPolicy: IfNotPresent
+
+  ## Parse Dashboard application username
+  ## ref: https://github.com/bitnami/bitnami-docker-parse-dashboard#configuration
+  ##
+  username: user
+
+  ## Parse Dashboard application password
+  ## Defaults to a random 10-character alphanumeric string if not set
+  ## ref: https://github.com/bitnami/bitnami-docker-parse-dashboard#configuration
+  ##
+  # password:
+
+  ## Parse Dashboard application name
+  ## ref: https://github.com/bitnami/bitnami-docker-parse-dashboard#configuration
+  ##
+  appName: MyDashboard
+
+  ## Configure resource requests and limits
+  ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+  ##
+  resources: {}
+    # requests:
+    #   memory: 512Mi
+    #   cpu: 300m
+
+## Enable persistence using Persistent Volume Claims
+## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+##
+persistence:
+  enabled: true
+  ## parse data Persistent Volume Storage Class
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  ##
+  # storageClass: "-"
+  accessMode: ReadWriteOnce
+  size: 8Gi
+
+##
+## MongoDB chart configuration
+##
+mongodb:
+  ## Enable persistence using Persistent Volume Claims
+  ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+  ##
+  persistence:
+    enabled: true
+    ## mongodb data Persistent Volume Storage Class
+    ## If defined, storageClassName: <storageClass>
+    ## If set to "-", storageClassName: "", which disables dynamic provisioning
+    ## If undefined (the default) or set to null, no storageClassName spec is
+    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+    ##   GKE, AWS & OpenStack)
+    ##
+    # storageClass: "-"
+    accessMode: ReadWriteOnce
+    size: 8Gi

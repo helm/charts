@@ -1,0 +1,10 @@
+apiVersion: v1
+description: Common chartbuilding components and helpers
+name: common
+version: 0.0.2
+home: https://helm.sh
+maintainers:
+- name: technosophos
+  email: technosophos@gmail.com
+- name: prydonius
+  email: adnan@bitnami.com

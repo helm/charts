@@ -1,0 +1,98 @@
+# Default values for artifactory.
+# This is a YAML-formatted file.
+
+# Beware when changing values here. You should know what you are doing!
+# Access the values with {{ .Values.key.subkey }}
+
+# Common
+initContainerImage: "busybox:1.26.2"
+
+# Database
+database:
+  name: postgresql
+  replicaCount: 1
+  env:
+    type: postgresql
+    name: artifactory
+    user: artifactory
+#    pass: artXifactory1973
+  image:
+    repository: docker.bintray.io/postgres
+    version: 9.5.2
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+  externalPort: 5432
+  internalPort: 5432
+  persistence:
+    mountPath: "/var/lib/postgresql/data"
+    enabled: true
+    accessMode: ReadWriteOnce
+    size: 10Gi
+    ## database data Persistent Volume Storage Class
+    ## If defined, storageClassName: <storageClass>
+    ## If set to "-", storageClassName: "", which disables dynamic provisioning
+    ## If undefined (the default) or set to null, no storageClassName spec is
+    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+    ##   GKE, AWS & OpenStack)
+    ##
+    # storageClass: "-"
+
+# Artifactory
+artifactory:
+  name: artifactory
+  replicaCount: 1
+  image:
+    # repository: "docker.bintray.io/jfrog/artifactory-oss"
+    repository: "docker.bintray.io/jfrog/artifactory-pro"
+    version: 5.6.2
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+  externalPort: 8081
+  internalPort: 8081
+  persistence:
+    mountPath: "/var/opt/jfrog/artifactory"
+    enabled: true
+    accessMode: ReadWriteOnce
+    size: 20Gi
+    ## artifactory data Persistent Volume Storage Class
+    ## If defined, storageClassName: <storageClass>
+    ## If set to "-", storageClassName: "", which disables dynamic provisioning
+    ## If undefined (the default) or set to null, no storageClassName spec is
+    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+    ##   GKE, AWS & OpenStack)
+    ##
+    # storageClass: "-"
+
+# Nginx
+nginx:
+  name: nginx
+  replicaCount: 1
+  image:
+    repository: "docker.bintray.io/jfrog/nginx-artifactory-pro"
+    version: 5.6.2
+    pullPolicy: IfNotPresent
+  service:
+    ## For minikube, set this to NodePort, elsewhere use LoadBalancer
+    type: LoadBalancer
+  externalPortHttp: 80
+  internalPortHttp: 80
+  externalPortHttps: 443
+  internalPortHttps: 443
+  env:
+    artUrl: "http://artifactory:8081/artifactory"
+    ssl: true
+  persistence:
+    mountPath: "/var/opt/jfrog/nginx"
+    enabled: true
+    accessMode: ReadWriteOnce
+    size: 5Gi
+    ## nginx data Persistent Volume Storage Class
+    ## If defined, storageClassName: <storageClass>
+    ## If set to "-", storageClassName: "", which disables dynamic provisioning
+    ## If undefined (the default) or set to null, no storageClassName spec is
+    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+    ##   GKE, AWS & OpenStack)
+    ##
+    # storageClass: "-"

@@ -1,0 +1,79 @@
+# The base hadoop image to use for all components.
+# See this repo for image build details: https://github.com/Comcast/kube-yarn/tree/master/image
+image: danisla/hadoop:2.7.3
+imagePullPolicy: IfNotPresent
+
+# The version of the hadoop libraries being used in the image.
+hadoopVersion: 2.7.3
+
+# Select anitAffinity as either hard or soft, default is hard
+antiAffinity: "soft"
+
+hdfs:
+  nameNode:
+    pdbMinAvailable: 1
+
+    resources:
+      requests:
+        memory: "256Mi"
+        cpu: "10m"
+      limits:
+        memory: "2048Mi"
+        cpu: "1000m"
+
+  dataNode:
+    replicas: 1
+
+    pdbMinAvailable: 1
+
+    resources:
+      requests:
+        memory: "256Mi"
+        cpu: "10m"
+      limits:
+        memory: "2048Mi"
+        cpu: "1000m"
+
+yarn:
+  resourceManager:
+    pdbMinAvailable: 1
+
+    resources:
+      requests:
+        memory: "256Mi"
+        cpu: "10m"
+      limits:
+        memory: "2048Mi"
+        cpu: "2000m"
+
+  nodeManager:
+    pdbMinAvailable: 1
+
+    # The number of YARN NodeManager instances.
+    replicas: 2
+
+    # Create statefulsets in parallel (K8S 1.7+)
+    parallelCreate: false
+
+    # CPU and memory resources allocated to each node manager pod.
+    # This should be tuned to fit your workload.
+    resources:
+      requests:
+        memory: "2048Mi"
+        cpu: "1000m"
+      limits:
+        memory: "2048Mi"
+        cpu: "1000m"
+
+persistence:
+  nameNode:
+    enabled: false
+    storageClass: "-"
+    accessMode: ReadWriteOnce 
+    size: 50Gi
+
+  dataNode:
+    enabled: false
+    storageClass: "-"
+    accessMode: ReadWriteOnce 
+    size: 200Gi

@@ -1,0 +1,10 @@
+apiVersion: v1
+description: CoreOS zetcd Helm chart for Kubernetes
+name: zetcd
+version: 0.1.4
+appVersion: 0.0.3
+home: https://github.com/coreos/zetcd
+sources:
+  - https://github.com/coreos/zetcd
+maintainers:
+  - name: hunter

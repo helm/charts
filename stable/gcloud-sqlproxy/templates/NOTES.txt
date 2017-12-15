@@ -24,7 +24,7 @@ settings were not provided.
 
 The SQL server instance can be accessed via port {{ .Values.cloudsql.port }} on the
 following DNS name from within your cluster:
-- {{ template "fullname" . }}.{{ .Release.Namespace }}
+- {{ template "gcloud-sqlproxy.fullname" . }}.{{ .Release.Namespace }}
 
 {{- else -}}
 

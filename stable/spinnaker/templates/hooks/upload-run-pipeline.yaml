@@ -1,0 +1,43 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: "{{.Release.Name}}-upload-run-pipeline"
+  labels:
+    app: {{ template "fullname" . }}
+    component: jenkins
+  annotations:
+    "helm.sh/hook": post-install
+spec:
+  template:
+    metadata:
+      name: "{{.Release.Name}}"
+      labels:
+        app: {{ template "fullname" . }}
+        component: jenkins
+    spec:
+      restartPolicy: OnFailure
+      volumes:
+      - name: jenkins-jobs
+        configMap:
+          name: {{ .Release.Name }}-jenkins-jobs
+      containers:
+      - name: post-install-job
+        image: "viglesiasce/minio-client:v0.4.0"
+        command:
+        - curl
+        - -X
+        - POST
+        - -H
+        - "Content-Type: application/xml"
+        - --retry
+        - "20"
+        - --retry-delay
+        - "10"
+        - --max-time
+        - "3"
+        - --data-binary
+        - "@/jobs/run-pipeline.xml"
+        - "http://{{ .Release.Name }}-jenkins:8080/createItem?name=run-pipeline"
+        volumeMounts:
+        - name: jenkins-jobs
+          mountPath: /jobs
