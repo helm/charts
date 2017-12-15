@@ -1,7 +1,7 @@
 ## Bitnami WordPress image version
 ## ref: https://hub.docker.com/r/bitnami/wordpress/tags/
 ##
-image: bitnami/wordpress:4.9.0-r2
+image: bitnami/wordpress:4.9.1-r0
 
 ## Specify a imagePullPolicy
 ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -53,10 +53,34 @@ allowEmptyPassword: yes
 # smtpUsername:
 # smtpProtocol:
 
+externalDatabase:
+## All of these values are only used when mariadb.enabled is set to false
+  ## Database host
+  host: localhost
+
+  ## Database Root User (so wordpress can create the db schema etc)
+  # rootPassword:
+
+  ## non-root Username for Wordpress Database
+  user: bn_wordpress
+
+  ## Database password
+  # password:
+
+  ## Database name
+  database: bitnami_wordpress
+
+  ## Database port number
+  port: 3306
+
 ##
 ## MariaDB chart configuration
 ##
 mariadb:
+  ## Whether to use the database specified as a requirement or not.
+  ## If you want to use an external database set this to false and supply details to externalDatabase above
+  enabled: true
+
   ## MariaDB admin password
   ## ref: https://github.com/bitnami/bitnami-docker-mariadb/blob/master/README.md#setting-the-root-password-on-first-run
   ##

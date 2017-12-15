@@ -74,6 +74,9 @@ spec:
           subPath: "{{ .Values.core.persistentVolume.subPath }}"
         resources:
 {{ toYaml .Values.resources | indent 10 }}
+{{- if .Values.core.sidecarContainers }}
+{{ toYaml .Values.core.sidecarContainers | indent 6}}
+{{- end }}
 
   volumeClaimTemplates:
     - metadata:

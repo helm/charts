@@ -1,7 +1,7 @@
 ## Bitnami Ghost image version
 ## ref: https://hub.docker.com/r/bitnami/ghost/tags/
 ##
-image: bitnami/ghost:1.17.3-r0
+image: bitnami/ghost:1.19.0-r0
 
 ## Busybox image used to configure volume permissions
 ##
@@ -53,6 +53,10 @@ ghostEmail: user@example.com
 ##
 ghostBlogTitle: User's Blog
 
+## Set to `yes` to allow the container to be started with blank passwords
+## ref: https://github.com/bitnami/bitnami-docker-wordpress#environment-variables
+allowEmptyPassword: yes
+
 ## SMTP mail delivery configuration
 ## ref: https://github.com/bitnami/bitnami-docker-redmine/#smtp-configuration
 ##
@@ -63,13 +67,47 @@ ghostBlogTitle: User's Blog
 # smtpService:
 
 ##
+## External database configuration
+##
+externalDatabase:
+  ## Database host
+  # host:
+
+  ## Database user
+  # user: bn_ghost
+
+  ## Database password
+  # password:
+
+  ## Database name
+  # database: bitnami_ghost
+
+##
 ## MariaDB chart configuration
 ##
 mariadb:
+  ## Whether to use the database specified as a requirement or not. For example, to configure the chart with an existing database server.
+  enabled: true
+
   ## MariaDB admin password
   ## ref: https://github.com/bitnami/bitnami-docker-mariadb/blob/master/README.md#setting-the-root-password-on-first-run
   ##
   # mariadbRootPassword:
+  ## Create a database
+
+  ## ref: https://github.com/bitnami/bitnami-docker-mariadb/blob/master/README.md#creating-a-database-on-first-run
+  ##
+  mariadbDatabase: bitnami_ghost
+
+  ## Create a database user
+  ## ref: https://github.com/bitnami/bitnami-docker-mariadb/blob/master/README.md#creating-a-database-user-on-first-run
+  ##
+  mariadbUser: bn_ghost
+
+  ## Password for mariadbUser
+  ## ref: https://github.com/bitnami/bitnami-docker-mariadb/blob/master/README.md#creating-a-database-user-on-first-run
+  ##
+  # mariadbPassword:
 
   ## Enable persistence using Persistent Volume Claims
   ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/

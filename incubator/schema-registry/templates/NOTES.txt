@@ -1,0 +1,7 @@
+Confluent Schema-Registry is now installed on your Kubernetes cluster. For more information on
+Schema-Registry, please navigate to https://github.com/confluentinc/schema-registry
+
+1. Get the application URL by running these commands:
+  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "schema-registry.name" . }},release={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
+  echo "Visit http://127.0.0.1:8080 to use your application"
+  kubectl port-forward $POD_NAME 8080:{{ .Values.servicePort }}
