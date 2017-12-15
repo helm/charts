@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: {{ template "zcashd.fullname" . }}
   labels:
-    app: {{ template "zcashd.fullname" . }}
+    app: {{ template "zcashd.name" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -13,4 +13,4 @@ spec:
     port: {{ .Values.RPCPort }}
     targetPort: rpc
   selector:
-    app: {{ template "zcashd.fullname" . }}
+    app: {{ template "zcashd.name" . }}

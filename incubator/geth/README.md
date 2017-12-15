@@ -8,7 +8,7 @@ This chart bootstraps a single Ethereum node deployment on a [Kubernetes](http:/
 
 ## Prerequisites
 
-- Kubernetes 1.6+ with Beta APIs enabled
+- Kubernetes 1.7+ with Beta APIs enabled
 - PV provisioner support in the underlying infrastructure
 
 ## Installing the Chart

@@ -1,5 +1,6 @@
 name: litecoind
 version: 0.1.0
+appVersion: 0.13.2.1
 description: litecoin is an innovative payment network and a new kind of money.
 keywords:
 - litecoind
@@ -11,6 +12,6 @@ sources:
 - https://github.com/kubernetes/charts
 - https://github.com/kuberstack/litecoind
 maintainers:
-- name: Daniel Yavorovych
+- name: daniel-yavorovich
   email: daniel@arilot.com
 engine: gotpl

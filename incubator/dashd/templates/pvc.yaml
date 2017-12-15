@@ -4,7 +4,7 @@ apiVersion: v1
 metadata:
   name: {{ template "dashd.fullname" . }}
   labels:
-    app: {{ template "dashd.fullname" . }}
+    app: {{ template "dashd.name" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"

@@ -1,5 +1,6 @@
 name: bitcoind
 version: 0.1.0
+appVersion: 0.15.1.0
 description: Bitcoin is an innovative payment network and a new kind of money.
 keywords:
 - bitcoind
@@ -11,6 +12,6 @@ sources:
 - https://github.com/kubernetes/charts
 - https://github.com/kuberstack/bitcoind
 maintainers:
-- name: Daniel Yavorovych
+- name: daniel-yavorovich
   email: daniel@arilot.com
 engine: gotpl

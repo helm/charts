@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: {{ template "bitcoind.fullname" . }}
   labels:
-    app: {{ template "bitcoind.fullname" . }}
+    app: {{ template "bitcoind.name" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -11,7 +11,8 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "bitcoind.fullname" . }}
+        app: {{ template "bitcoind.name" . }}
+        release: "{{ .Release.Name }}"
     spec:
       containers:
       - name: {{ template "bitcoind.fullname" . }}

@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: {{ template "bitcoincashd.fullname" . }}
   labels:
-    app: {{ template "bitcoincashd.fullname" . }}
+    app: {{ template "bitcoincashd.name" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -13,4 +13,4 @@ spec:
     port: {{ .Values.RPCPort }}
     targetPort: rpc
   selector:
-    app: {{ template "bitcoincashd.fullname" . }}
+    app: {{ template "bitcoincashd.name" . }}

@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: {{ template "geth.fullname" . }}
   labels:
-    app: {{ template "geth.fullname" . }}
+    app: {{ template "geth.name" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -16,4 +16,4 @@ spec:
     port: {{ .Values.WSPort }}
     targetPort: ws
   selector:
-    app: {{ template "geth.fullname" . }}
+    app: {{ template "geth.name" . }}

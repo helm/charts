@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: {{ template "geth.fullname" . }}
   labels:
-    app: {{ template "geth.fullname" . }}
+    app: {{ template "geth.name" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -11,7 +11,8 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "geth.fullname" . }}
+        app: {{ template "geth.name" . }}
+        release: "{{ .Release.Name }}"
     spec:
       containers:
       - name: {{ template "geth.fullname" . }}

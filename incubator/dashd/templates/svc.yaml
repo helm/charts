@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: {{ template "dashd.fullname" . }}
   labels:
-    app: {{ template "dashd.fullname" . }}
+    app: {{ template "dashd.name" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -13,4 +13,4 @@ spec:
     port: {{ .Values.RPCPort }}
     targetPort: rpc
   selector:
-    app: {{ template "dashd.fullname" . }}
+    app: {{ template "dashd.name" . }}

@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: {{ template "litecoind.fullname" . }}
   labels:
-    app: {{ template "litecoind.fullname" . }}
+    app: {{ template "litecoind.name" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -13,4 +13,4 @@ spec:
     port: {{ .Values.RPCPort }}
     targetPort: rpc
   selector:
-    app: {{ template "litecoind.fullname" . }}
+    app: {{ template "litecoind.name" . }}

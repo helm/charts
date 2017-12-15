@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: {{ template "litecoind.fullname" . }}
   labels:
-    app: {{ template "litecoind.fullname" . }}
+    app: {{ template "litecoind.name" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -11,7 +11,8 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "litecoind.fullname" . }}
+        app: {{ template "litecoind.name" . }}
+        release: "{{ .Release.Name }}"
     spec:
       containers:
       - name: {{ template "litecoind.fullname" . }}

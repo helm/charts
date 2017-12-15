@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: {{ template "dashd.fullname" . }}
   labels:
-    app: {{ template "dashd.fullname" . }}
+    app: {{ template "dashd.name" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -11,7 +11,8 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "dashd.fullname" . }}
+        app: {{ template "dashd.name" . }}
+        release: "{{ .Release.Name }}"
     spec:
       containers:
       - name: {{ template "dashd.fullname" . }}

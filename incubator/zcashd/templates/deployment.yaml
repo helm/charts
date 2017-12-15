@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: {{ template "zcashd.fullname" . }}
   labels:
-    app: {{ template "zcashd.fullname" . }}
+    app: {{ template "zcashd.name" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -11,7 +11,8 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "zcashd.fullname" . }}
+        app: {{ template "zcashd.name" . }}
+        release: "{{ .Release.Name }}"
     spec:
       containers:
       - name: {{ template "zcashd.fullname" . }}

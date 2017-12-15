@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: {{ template "bitcoind.fullname" . }}
   labels:
-    app: {{ template "bitcoind.fullname" . }}
+    app: {{ template "bitcoind.name" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -13,4 +13,4 @@ spec:
     port: {{ .Values.RPCPort }}
     targetPort: rpc
   selector:
-    app: {{ template "bitcoind.fullname" . }}
+    app: {{ template "bitcoind.name" . }}

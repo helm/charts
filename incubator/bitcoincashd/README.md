@@ -8,7 +8,7 @@ This chart bootstraps a single node BitcoinCash deployment on a [Kubernetes](htt
 
 ## Prerequisites
 
-- Kubernetes 1.6+ with Beta APIs enabled
+- Kubernetes 1.7+ with Beta APIs enabled
 - PV provisioner support in the underlying infrastructure
 
 ## Generate SSL certificate and deploy as secret
