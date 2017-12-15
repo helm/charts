@@ -121,4 +121,3 @@ rbac:
 
   # Defines the serviceAccountName to use when `rbac.create=false`
   serviceAccountName: default
-
