@@ -61,5 +61,15 @@ spec:
           name: bolt
         - containerPort: 6000
           name: tx
+        volumeMounts:
+        - name: plugins
+          mountPath: /plugins
         securityContext:
           privileged: true
+{{- if .Values.readReplica.initContainers }}
+      initContainers:
+{{ toYaml .Values.readReplica.initContainers | indent 6}}
+{{- end }}
+      volumes:
+        - name: plugins
+          emptyDir: {}

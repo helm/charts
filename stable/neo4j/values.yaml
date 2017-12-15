@@ -87,6 +87,22 @@ readReplica:
   # - name: EXTRA_VAR_2
   #   value: extra-var-value-2
 
+  initContainers: {}
+  ## init containers to run before the Neo4j replica pod e.g. to install plugins
+
+  # - name: init-plugins
+  #   image: "octoberstorm/ubuntu-with-curl:latest"
+  #   imagePullPolicy: "IfNotPresent"
+  #   volumeMounts:
+  #   - name: plugins
+  #     mountPath: /plugins
+  #   command:
+  #     - "/bin/bash"
+  #     - "-c"
+  #     - |
+  #       curl -L https://github.com/neo4j-contrib/neo4j-apoc-procedures/releases/download/3.2.0.3/apoc-3.2.0.3-all.jar -O
+  #       sudo cp apoc-3.2.0.3-all.jar /plugins/
+
 resources: {}
 # limits:
 #   cpu: 100m
