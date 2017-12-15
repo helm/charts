@@ -47,6 +47,7 @@ The following tables lists the configurable parameters of the Jenkins chart and 
 | `Master.LoadBalancerSourceRanges` | Allowed inbound IP addresses         | `0.0.0.0/0`                                                                  |
 | `Master.LoadBalancerIP`           | Optional fixed external IP           | Not set                                                                      |
 | `Master.JMXPort`                  | Open a port, for JMX stats           | Not set                                                                      |
+| `Master.BuildInfoProxyPort`       | Open a port, for Artifactory plugin  | Not set                                                                      |
 | `Master.CustomConfigMap`          | Use a custom ConfigMap               | `false`                                                                      |
 | `Master.Ingress.Annotations`      | Ingress annotations                  | `{}`                                                                         |
 | `Master.Ingress.TLS`              | Ingress TLS configuration            | `[]`                                                                         |
@@ -63,17 +64,20 @@ The following tables lists the configurable parameters of the Jenkins chart and 
 
 ### Jenkins Agent
 
-| Parameter               | Description                                     | Default                |
-| ----------------------- | ----------------------------------------------- | ---------------------- |
-| `Agent.AlwaysPullImage` | Always pull agent container image before build  | `false`                |
-| `Agent.Enabled`         | Enable Kubernetes plugin jnlp-agent podTemplate | `true`                 |
-| `Agent.Image`           | Agent image name                                | `jenkinsci/jnlp-slave` |
-| `Agent.ImagePullSecret` | Agent image pull secret                         | Not set                |
-| `Agent.ImageTag`        | Agent image tag                                 | `2.62`                 |
-| `Agent.Privileged`      | Agent privileged container                      | `false`                |
-| `Agent.Cpu`             | Agent requested cpu                             | `200m`                 |
-| `Agent.Memory`          | Agent requested memory                          | `256Mi`                |
-| `Agent.volumes`         | Additional volumes                              | `nil`                  |
+| Parameter                     | Description                                     | Default                |
+| ----------------------------- | ----------------------------------------------- | ---------------------- |
+| `Agent.AlwaysPullImage`       | Always pull agent container image before build  | `false`                |
+| `Agent.Enabled`               | Enable Kubernetes plugin jnlp-agent podTemplate | `true`                 |
+| `Agent.Image`                 | Agent image name                                | `jenkinsci/jnlp-slave` |
+| `Agent.ImageTag`              | Agent image tag                                 | `2.62`                 |
+| `Agent.Privileged`            | Agent privileged container                      | `false`                |
+| `Agent.Cpu`                   | Agent requested cpu                             | `200m`                 |
+| `Agent.Memory`                | Agent requested memory                          | `256Mi`                |
+| `Agent.RetentionTimeout`      | Time until slave pod is recycled (minutes)      | `5`                    |
+| `Agent.ConnectAndReadTimeout` | Time for getting in contact with a slave (sec)  | `0`                    |
+| `Agent.envVars`               | Additional environment variables                | `nil`                  |
+| `Agent.imagePullSecrets`      | Image pull secrets for private Docker repos     | `nil`                  |
+| `Agent.volumes`               | Additional volumes                              | `nil`                  |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 

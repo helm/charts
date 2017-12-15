@@ -87,6 +87,10 @@ spec:
             - containerPort: {{ .Values.Master.JMXPort }}
               name: jmx
             {{- end }}
+            {{- if .Values.Master.BuildInfoProxyPort }}
+            - containerPort: {{ .Values.Master.BuildInfoProxyPort }}
+              name: arm-proxy
+            {{- end }}
           resources:
             requests:
               cpu: "{{ .Values.Master.Cpu }}"

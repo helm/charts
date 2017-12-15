@@ -26,15 +26,17 @@ data:
       <viewsTabBar class="hudson.views.DefaultViewsTabBar"/>
       <myViewsTabBar class="hudson.views.DefaultMyViewsTabBar"/>
       <clouds>
-        <org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud plugin="kubernetes@0.11">
+        <org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud plugin="kubernetes@0.12">
           <name>kubernetes</name>
           <templates>
 {{- if .Values.Agent.Enabled }}
             <org.csanchez.jenkins.plugins.kubernetes.PodTemplate>
               <inheritFrom></inheritFrom>
               <name>default</name>
+              <namespace>{{ .Release.Namespace }}</namespace>
               <instanceCap>2147483647</instanceCap>
-              <idleMinutes>0</idleMinutes>
+              <idleMinutes>{{ default 0 .Values.Agent.IdleMinutes }}</idleMinutes>
+              <slaveConnectTimeout>{{ default 100 .Values.Agent.ConnectTimeout }}</slaveConnectTimeout>              
               <label>{{ .Release.Name }}-{{ .Values.Agent.Component }}</label>
               <nodeSelector>
                 {{- $local := dict "first" true }}
@@ -43,6 +45,11 @@ data:
                   {{- $key }}={{ $value }}
                   {{- $_ := set $local "first" false }}
                 {{- end }}</nodeSelector>
+              <nodeUsageMode>NORMAL</nodeUsageMode>
+              <customWorkspaceVolumeEnabled>false</customWorkspaceVolumeEnabled>
+              <workspaceVolume class="org.csanchez.jenkins.plugins.kubernetes.volumes.workspace.EmptyDirWorkspaceVolume">
+                <memory>false</memory>
+              </workspaceVolume>
               <volumes>
 {{- range $index, $volume := .Values.Agent.volumes }}
                 <org.csanchez.jenkins.plugins.kubernetes.volumes.{{ $volume.type }}Volume>
@@ -78,17 +85,34 @@ data:
                   </envVars>
                 </org.csanchez.jenkins.plugins.kubernetes.ContainerTemplate>
               </containers>
-              <envVars/>
-              <annotations/>
-{{- if .Values.Agent.ImagePullSecret }}
-              <imagePullSecrets>
-                <org.csanchez.jenkins.plugins.kubernetes.PodImagePullSecret>
-                  <name>{{ .Values.Agent.ImagePullSecret }}</name>
-                </org.csanchez.jenkins.plugins.kubernetes.PodImagePullSecret>
-              </imagePullSecrets>
-{{- else }}
-              <imagePullSecrets/>
+              <envVars>
+{{- range $index, $var := .Values.Agent.envVars }}
+                <org.csanchez.jenkins.plugins.kubernetes.PodEnvVar>
+                  <key>{{ $var.name }}</key>
+                  <value>{{ $var.value }}</value>
+                </org.csanchez.jenkins.plugins.kubernetes.PodEnvVar>
 {{- end }}
+              </envVars>
+              <ports/>
+              <livenessProbe>
+                <execArgs></execArgs>
+                <timeoutSeconds>0</timeoutSeconds>
+                <initialDelaySeconds>0</initialDelaySeconds>
+                <failureThreshold>0</failureThreshold>
+                <periodSeconds>0</periodSeconds>
+                <successThreshold>0</successThreshold>
+              </livenessProbe>
+              <annotations/>
+              <imagePullSecrets>
+{{- range $index, $secret := .Values.Agent.imagePullSecrets }}
+                <org.csanchez.jenkins.plugins.kubernetes.PodImagePullSecret>
+                  <name>{{ $secret.name }}</name>
+{{- range $key, $value := $secret }}{{- if not (eq $key "name") }}
+                  <{{ $key }}>{{ $value }}</{{ $key }}>
+{{- end }}{{- end }}
+                </org.csanchez.jenkins.plugins.kubernetes.PodImagePullSecret>
+{{- end }}
+              </imagePullSecrets>
               <nodeProperties/>
             </org.csanchez.jenkins.plugins.kubernetes.PodTemplate>
 {{- end -}}
@@ -99,9 +123,10 @@ data:
           <jenkinsUrl>http://{{ template "jenkins.fullname" . }}:{{.Values.Master.ServicePort}}{{ default "" .Values.Master.JenkinsUriPrefix }}</jenkinsUrl>
           <jenkinsTunnel>{{ template "jenkins.fullname" . }}-agent:50000</jenkinsTunnel>
           <containerCap>10</containerCap>
-          <retentionTimeout>5</retentionTimeout>
-          <connectTimeout>0</connectTimeout>
-          <readTimeout>0</readTimeout>
+          <retentionTimeout>{{default 5 .Values.Agent.RetentionTimeout}}</retentionTimeout>
+          <connectTimeout>{{default 0 .Values.Agent.ConnectAndReadTimeout}}</connectTimeout>
+          <readTimeout>{{default 0 .Values.Agent.ConnectAndReadTimeout}}</readTimeout>
+          <defaultsProviderTemplate>default</defaultsProviderTemplate>
         </org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud>
       </clouds>
       <quietPeriod>5</quietPeriod>

@@ -33,16 +33,18 @@ Master:
   SlaveListenerPort: 50000
   LoadBalancerSourceRanges:
   - 0.0.0.0/0
-  # Optionally assign a known public LB IP
-  # LoadBalancerIP: 1.2.3.4
-  # Optionally configure a JMX port
-  # requires additional JavaOpts, ie
-  # JavaOpts: >
-  #   -Dcom.sun.management.jmxremote.port=4000
-  #   -Dcom.sun.management.jmxremote.authenticate=false
-  #   -Dcom.sun.management.jmxremote.ssl=false
-  # JMXPort: 4000
-  # List of plugins to be install during Jenkins master start
+# Optionally assign a known public LB IP
+# LoadBalancerIP: 1.2.3.4
+# Optionally configure a JMX port
+# requires additional JavaOpts, ie
+# JavaOpts: >
+#   -Dcom.sun.management.jmxremote.port=4000
+#   -Dcom.sun.management.jmxremote.authenticate=false
+#   -Dcom.sun.management.jmxremote.ssl=false
+# JMXPort: 4000
+# Optionally configure a BuildInfoProxy port for artifactory plugin
+# BuildInfoProxyPort: 9000
+# List of plugins to be install during Jenkins master start
   InstallPlugins:
     - kubernetes:1.1
     - workflow-aggregator:2.5
@@ -85,6 +87,20 @@ Agent:
   Memory: "256Mi"
   # You may want to change this to true while testing a new image
   AlwaysPullImage: false
+  # Time in minutes after which Jenkins kills the slaves. Defaults to 5min.
+  # For long-running jobs like building Docker images etc. 15min or more is recommendable.
+  # RetentionTimeout: 5
+  # Time in seconds to wait for a slave pod to reach the master. Defaults to 0.
+  # In our experience, if you don't set it to 100 or so slave pods never start.
+  # ConnectAndReadTimeout: 100
+  # Image pull secrets to use when pulling from private Docker registries.
+  # The secrets must be created in Jenkins by some other means.
+  imagePullSecrets:
+  # - name: my-secret
+  # Define environment variables as a list of name,value pairs
+  envVars:
+  # - name: FOO
+  #   value: bar
   # You can define the volumes that you want to mount for this container
   # Allowed types are: ConfigMap, EmptyDir, HostPath, Nfs, Pod, Secret
   # Configure the attributes as they appear in the corresponding Java class for that type
