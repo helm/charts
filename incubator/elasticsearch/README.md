@@ -1,10 +1,7 @@
 # Elasticsearch Helm Chart
 
-This image is using Fabric8's great [kubernetes discovery
-plugin](https://github.com/fabric8io/elasticsearch-cloud-kubernetes) for
-elasticsearch and their
-[image](https://hub.docker.com/r/jetstack/elasticsearch-pet/) as parent.
-
+This chart is based on the [centerforopenscience/elasticsearch](https://hub.docker.com/r/centerforopenscience/elasticsearch/) image which comes with Fabric8's great [kubernetes discovery plugin](https://github.com/fabric8io/elasticsearch-cloud-kubernetes) for Elasticsearch.
+ 
 ## Prerequisites Details
 
 * Kubernetes 1.6+
