@@ -11,7 +11,7 @@ cloudProvider: aws
 
 image:
   repository: gcr.io/google_containers/cluster-autoscaler
-  tag: v0.6.1
+  tag: v1.1.0
   pullPolicy: IfNotPresent
 
 tolerations: []
