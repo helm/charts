@@ -3,6 +3,8 @@ kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
   name: {{ template "geth.fullname" . }}
+  annotations:
+    "helm.sh/resource-policy": keep
   labels:
     app: {{ template "geth.name" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
