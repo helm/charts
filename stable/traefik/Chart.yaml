@@ -1,7 +1,7 @@
 apiVersion: v1
 name: traefik
-version: 1.14.3
-appVersion: 1.4.3
+version: 1.14.5
+appVersion: 1.4.5
 description: A Traefik based Kubernetes ingress controller with Let's Encrypt support
 keywords:
 - traefik

@@ -51,6 +51,10 @@ spec:
                   name: {{ template "grafana.server.fullname" . }}-config
                   key: grafana-install-plugins
             {{- end }}
+            {{- range $key, $value := .Values.server.extraEnv }}
+            - name: {{ $key | quote }}
+              value: {{ $value | quote }}
+            {{- end }}
           ports:
             - containerPort: 3000
           readinessProbe:

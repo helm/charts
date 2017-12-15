@@ -1,10 +1,7 @@
 # Elasticsearch Helm Chart
 
-This image is using Fabric8's great [kubernetes discovery
-plugin](https://github.com/fabric8io/elasticsearch-cloud-kubernetes) for
-elasticsearch and their
-[image](https://hub.docker.com/r/jetstack/elasticsearch-pet/) as parent.
-
+This chart is based on the [centerforopenscience/elasticsearch](https://hub.docker.com/r/centerforopenscience/elasticsearch/) image which comes with Fabric8's great [kubernetes discovery plugin](https://github.com/fabric8io/elasticsearch-cloud-kubernetes) for Elasticsearch.
+ 
 ## Prerequisites Details
 
 * Kubernetes 1.6+
@@ -69,10 +66,12 @@ The following tables lists the configurable parameters of the elasticsearch char
 | `client.replicas`                    | Client node replicas (deployment)                                   | `2`                                  |
 | `client.resources`                   | Client node resources requests & limits                             | `{} - cpu limit must be an integer`  |
 | `client.heapSize`                    | Client node heap size                                               | `512m`                               |
+| `client.podAnnotations`              | Client Deployment annotations                                       | `{}`                                 |
 | `client.serviceType`                 | Client service type                                                 | `ClusterIP`                          |
 | `master.name`                        | Master component name                                               | `master`                             |
 | `master.replicas`                    | Master node replicas (deployment)                                   | `2`                                  |
 | `master.resources`                   | Master node resources requests & limits                             | `{} - cpu limit must be an integer`  |
+| `master.podAnnotations`              | Master Deployment annotations                                       | `{}`                                 |
 | `master.heapSize`                    | Master node heap size                                               | `512m`                               |
 | `master.name`                        | Master component name                                               | `master`                             |
 | `master.persistence.enabled`         | Master persistent enabled/disabled                                  | `true`                               |
@@ -88,6 +87,7 @@ The following tables lists the configurable parameters of the elasticsearch char
 | `data.persistence.size`              | Data persistent volume size                                         | `30Gi`                               |
 | `data.persistence.storageClass`      | Data persistent volume Class                                        | `nil`                                |
 | `data.persistence.accessMode`        | Data persistent Access Mode                                         | `ReadWriteOnce`                      |
+| `data.podAnnotations`                | Data StatefulSet annotations                                        | `{}`                                 |
 | `data.terminationGracePeriodSeconds` | Data termination grace period (seconds)                             | `3600`                               |
 | `data.antiAffinity`                  | Data anti-affinity policy                                           | `soft`                               |
 | `rbac.create`                        | Create service account and ClusterRoleBinding for Kubernetes plugin | `false`                              |
