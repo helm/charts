@@ -45,7 +45,7 @@ spec:
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "concourse.postgresql.fullname" . }}
+                  name: {{ template "concourse.postgresql.secretname" . }}
                   key: postgres-password
             - name: POSTGRES_DATABASE
               valueFrom:
