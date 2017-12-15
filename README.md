@@ -61,9 +61,9 @@ The following outlines the review procedure used by the Chart repository maintai
 * ***UX REVIEWED*** - The chart installation UX has been reviewed and found to be satisfactory. (may happen in parallel to CODE REVIEWED)
 * ***LGTM*** - Added ONLY once both UX/CODE reviewed are both present. Merge must be handled by someone OTHER than the maintainer that added the LGTM label. This label indicates that given a quick pass of the comments this change is ready to merge
 
-### Stale Pull Requests
+### Stale Pull Requests and Issues
 
-After initial review feedback, if no updates have been made to the pull request for 1 week, the `stale` label will be added. If after another week there are still no updates it will be closed. Please re-open if/when you have made the proper adjustments.
+Pull Requests and Issues that have no activity for 30 days automatically become stale. After 30 days of being stale, without activity, they become rotten. Pull Requests and Issues can rot for 30 days and then are automatically closed. This is the standard stale process handling for all repositories on the Kubernetes GitHub organization.
 
 ## Supported Kubernetes Versions
 
