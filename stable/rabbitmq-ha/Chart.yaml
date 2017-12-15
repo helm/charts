@@ -14,5 +14,5 @@ sources:
 - https://github.com/rabbitmq/rabbitmq
 - https://github.com/docker-library/rabbitmq
 maintainers:
-- name: Etienne Tremel
+- name: etiennetremel
   email: etienne.tremel@container-solutions.com
