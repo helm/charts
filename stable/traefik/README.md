@@ -3,9 +3,6 @@
 [Traefik](http://traefik.io/) is a modern HTTP reverse proxy and load balancer made to deploy
 microservices with ease.
 
-__DISCLAIMER:__ While this chart has been well-tested, testers have encountered occasional issues
-with the Traefik software itself. Be advised that your mileage may vary.
-
 ## Introduction
 
 This chart bootstraps Traefik as a Kubernetes ingress controller with optional support for SSL and
@@ -89,8 +86,10 @@ The following tables lists the configurable parameters of the Traefik chart and 
 | Parameter                       | Description                                                          | Default                                   |
 | ------------------------------- | -------------------------------------------------------------------- | ----------------------------------------- |
 | `image`                         | Traefik image name                                                   | `traefik`                                 |
-| `imageTag`                      | The version of the official Traefik image to use                     | `1.3.1`                                  |
+| `imageTag`                      | The version of the official Traefik image to use                     | `1.4.5`                                  |
 | `serviceType`                   | A valid Kubernetes service type                                      | `LoadBalancer`                            |
+| `loadBalancerIP`                | An available static IP you have reserved on your cloud platform      | None                                      |
+| `loadBalancerSourceRanges`      | list of IP CIDRs allowed access to load balancer (if supported)      | None                                      |
 | `replicas`                      | The number of replicas to run; __NOTE:__ Full Traefik clustering with leader election is not yet supported, which can affect any configured Let's Encrypt setup; see Clustering section | `1` |
 | `cpuRequest`                    | Initial share of CPU requested per Traefik pod                       | `100m`                                    |
 | `memoryRequest`                 | Initial share of memory requested per Traefik pod                    | `20Mi`                                    |
@@ -99,6 +98,7 @@ The following tables lists the configurable parameters of the Traefik chart and 
 | `rbac.enabled`                  | Whether to enable RBAC with a specific cluster role and binding for Traefik | `false`                            |
 | `nodeSelector`                  | Node labels for pod assignment                                       | `{}`                                      |
 | `tolerations`                   | List of node taints to tolerate                                      | `[]`                                      |
+| `debug.enabled`                 | Turn on/off Traefik's debug mode. Enabling it will override the logLevel to `DEBUG` and provide `/debug/vars` endpoint that allows Go runtime stats to be inspected, such as number of Goroutines and memory stats | `false`                                   |
 | `ssl.enabled`                   | Whether to enable HTTPS                                              | `false`                                   |
 | `ssl.enforced`                  | Whether to redirect HTTP requests to HTTPS                           | `false`                                   |
 | `ssl.defaultCert`               | Base64 encoded default certficate                                    | A self-signed certificate                 |
@@ -113,12 +113,27 @@ The following tables lists the configurable parameters of the Traefik chart and 
 | `dashboard.enabled`             | Whether to enable the Traefik dashboard                              | `false`                                   |
 | `dashboard.domain`              | Domain for the Traefik dashboard                                     | `traefik.example.com`                     |
 | `dashboard.ingress.annotations` | Annotations for the Traefik dashboard Ingress definition, specified as a map | None                              |
+| `dashboard.ingress.labels`      | Labels for the Traefik dashboard Ingress definition, specified as a map      | None                              |
 | `dashboard.auth.basic`          | Basic auth for the Traefik dashboard specified as a map, see Authentication section | unset by default; this means basic auth is disabled |
+| `dashboard.statistics.recentErrors` | Number of recent errors to show in the ‘Health’ tab              | None                                      |
 | `service.annotations`           | Annotations for the Traefik Service definition, specified as a map   | None                                      |
 | `service.labels`                | Additional labels for the Traefik Service definition, specified as a map | None                                  |
+| `service.nodePorts.http`           | Desired nodePort for service of type NodePort used for http requests  |   blank ('') - will assign a dynamic node port                                      |
+| `service.nodePorts.https`           | Desired nodePort for service of type NodePort used for https requests  | blank ('') - will assign a dynamic node port                                      |
 | `gzip.enabled`                  | Whether to use gzip compression                                      | `true`                                    |
 | `kubernetes.namespaces`         | List of Kubernetes namespaces to watch                               | All namespaces                            |
 | `kubernetes.labelSelector`      | Valid Kubernetes ingress label selector to watch (e.g `realm=public`)| No label filter                           |
+| `accessLogs.enabled`            | Whether to enable Traefik's access logs                              | `false`                                   |
+| `accessLogs.filePath`           | The path to the log file. Logs to stdout if omitted                  | None                                      |
+| `accessLogs.format`             | What format the log entries should be in. Either `common` or `json`  | `common`                                  |
+| `metrics.prometheus.enabled`    | Whether to enable the `/metrics` endpoint for metric collection by Prometheus. | `false`                           |
+| `metrics.prometheus.buckets`    | A list of response times (in seconds) - for each list element, Traefik will report all response times less than the element. | `0.1,0.3,1.2,5` |
+| `metrics.datadog.enabled`       | Whether to enable pushing metrics to Datadog.                          | `false`                                   |
+| `metrics.datadog.address`       | Datadog host in the format <hostname>:<port>                         | `localhost:8125`                          |
+| `metrics.datadog.pushInterval`  | How often to push metrics to Datadog.                                | `10s`                                     |
+| `metrics.statsd.enabled`        | Whether to enable pushing metrics to Statsd.                           | `false`                                   |
+| `metrics.statsd.address`        | Statsd host in the format <hostname>:<port>                          | `localhost:8125`                          |
+| `metrics.statsd.pushInterval`   | How often to push metrics to Statsd.                                 | `10s`                                     |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
 

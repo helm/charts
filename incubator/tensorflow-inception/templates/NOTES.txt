@@ -2,8 +2,8 @@ Getting Started:
 
 1. Use the inception-client in a container to submit an image from a mounted volume on your system to the service by running these commands in the same shell:
 **** NOTE: It may take a few minutes for the LoadBalancer IP to be available.                                                                 ****
-****       You can watch the status of by running 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "fullname" . }}' ****
-  export INCEPTION_SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+****       You can watch the status of by running 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "tensorflow-inception.fullname" . }}' ****
+  export INCEPTION_SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "tensorflow-inception.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
   echo docker run -v ~/Downloads:/downloads quay.io/lachie83/inception_serving /serving/bazel-bin/tensorflow_serving/example/inception_client --server=$INCEPTION_SERVICE_IP:9090 --image=/downloads/dog.jpg
 
 

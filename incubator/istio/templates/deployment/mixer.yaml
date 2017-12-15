@@ -1,0 +1,64 @@
+{{- if and .Values.istio.install (not .Release.IsInstall) -}}
+{{- $serviceName := include "istio.name" . -}}
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ $serviceName }}-{{ .Values.mixer.deployment.name }}
+  labels:
+{{ include "istio.labels.standard" . | indent 4 }}
+    component: {{ $serviceName }}-{{ .Values.mixer.deployment.name }}
+    istio: {{ $serviceName }}-{{ .Values.mixer.deployment.name }}
+spec:
+  replicas: {{ .Values.mixer.deployment.replicas }}
+  template:
+    metadata:
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap/mixer-config.yaml") . | sha256sum }}
+      {{- range $key, $value := .Values.mixer.deployment.annotations }}
+        {{ $key }}: {{ $value | quote }}
+      {{- end }}
+      labels:
+{{ include "istio.labels.standard" . | indent 8 }}
+        component: {{ $serviceName }}-{{ .Values.mixer.deployment.name }}
+        istio: {{ $serviceName }}-{{ .Values.mixer.deployment.name }}
+    spec:
+    {{- if .Values.mixer.deployment.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
+      serviceAccountName: {{ $serviceName }}-{{ .Values.mixer.deployment.name }}-service-account
+      containers:
+      - name: statsd-to-prometheus
+        image: prom/statsd-exporter
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: {{ .Values.mixer.service.externalStatsdPromPort }}
+        - containerPort: {{ .Values.mixer.service.externalStatsdUdpPort }}
+          protocol: UDP
+        args:
+        - '-statsd.mapping-config=/etc/statsd/mapping.conf'
+        volumeMounts:
+        - name: config-volume
+          mountPath: /etc/statsd
+      - name: {{ $serviceName }}-{{ .Values.mixer.deployment.name }}
+        image: "{{ .Values.mixer.deployment.image }}:{{ .Values.istio.release }}"
+        imagePullPolicy: {{ .Values.mixer.deployment.imagePullPolicy }}
+        ports:
+        - containerPort: {{ .Values.mixer.service.externalTcpPort }}
+        - containerPort: {{ .Values.mixer.service.externalConfigApiPort }}
+        - containerPort: {{ .Values.mixer.service.externalPrometheusPort }}
+        args:
+          - --configStoreURL=fs:///etc/opt/mixer/configroot
+          - --configStore2URL=k8s://
+          - --configDefaultNamespace={{ .Release.Namespace }}
+          - --traceOutput=http://{{ $serviceName }}-{{ .Values.addons.zipkin.deployment.name }}.{{ .Release.Namespace }}:{{ .Values.addons.zipkin.service.externalPort }}/api/v1/spans
+          - --logtostderr
+          - -v
+          - "2"
+        resources:
+{{ toYaml .Values.mixer.deployment.resources | indent 10 }}
+      volumes:
+      - name: config-volume
+        configMap:
+          name: {{ $serviceName }}-{{ .Values.mixer.deployment.name }}
+{{- end -}}

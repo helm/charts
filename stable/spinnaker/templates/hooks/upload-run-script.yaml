@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: "{{.Release.Name}}-upload-run-script"
+  name: "{{ .Release.Name }}-upload-run-script"
   labels:
     app: {{ template "fullname" . }}
     component: jenkins
@@ -10,7 +10,7 @@ metadata:
 spec:
   template:
     metadata:
-      name: "{{.Release.Name}}"
+      name: "{{ .Release.Name }}"
       labels:
         app: {{ template "fullname" . }}
         component: jenkins
@@ -37,7 +37,7 @@ spec:
         - "3"
         - --data-binary
         - "@/jobs/run-script.xml"
-        - "http://{{ template "fullname" . }}-igor:8080/createItem?name=run-script"
+        - "http://{{ .Release.Name }}-jenkins:8080/createItem?name=run-script"
         volumeMounts:
         - name: jenkins-jobs
           mountPath: /jobs

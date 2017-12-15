@@ -1,9 +1,9 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "mediawiki.fullname" . }}
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "mediawiki.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -12,28 +12,28 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "fullname" . }}
+        app: {{ template "mediawiki.fullname" . }}
     spec:
       containers:
-      - name: {{ template "fullname" . }}
+      - name: {{ template "mediawiki.fullname" . }}
         image: "{{ .Values.image }}"
         imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
         env:
         - name: MARIADB_HOST
-          value: {{ template "mariadb.fullname" . }}
+          value: {{ template "mediawiki.mariadb.fullname" . }}
         - name: MARIADB_PORT_NUMBER
           value: "3306"
         - name: MARIADB_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "mariadb.fullname" . }}
+              name: {{ template "mediawiki.mariadb.fullname" . }}
               key: mariadb-root-password
         - name: MEDIAWIKI_USERNAME
           value: {{ default "" .Values.mediawikiUser | quote }}
         - name: MEDIAWIKI_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "mediawiki.fullname" . }}
               key: mediawiki-password
         - name: MEDIAWIKI_EMAIL
           value: {{ default "" .Values.mediawikiEmail | quote }}
@@ -50,7 +50,7 @@ spec:
         - name: SMTP_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "mediawiki.fullname" . }}
               key: smtp-password
         ports:
         - name: http
@@ -78,14 +78,14 @@ spec:
       - name: mediawiki-data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ template "fullname" . }}-mediawiki
+          claimName: {{ template "mediawiki.fullname" . }}-mediawiki
       {{- else }}
         emptyDir: {}
       {{- end }}
       - name: apache-data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ template "fullname" . }}-apache
+          claimName: {{ template "mediawiki.fullname" . }}-apache
       {{- else }}
         emptyDir: {}
       {{- end }}

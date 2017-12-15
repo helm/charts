@@ -1,0 +1,97 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels: {{ include "external-dns.labels" . | indent 4 }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+  name: {{ template "external-dns.fullname" . }}
+spec:
+  template:
+    metadata:
+    {{- if .Values.podAnnotations }}
+      annotations:
+{{ toYaml .Values.podAnnotations | indent 8}}
+    {{- end }}
+      labels: {{ include "external-dns.labels" . | indent 8 }}
+    spec:
+      containers:
+        - name: {{ template "external-dns.name" . }}
+          image: "{{.Values.image.name}}:{{ .Values.image.tag }}"
+          imagePullPolicy: "{{ .Values.image.pullPolicy }}"
+          args:
+          {{- if .Values.logLevel }}
+            - --log-level={{ .Values.logLevel }}
+          {{- end }}
+          {{- if .Values.publishInternalServices }}
+            - --publish-internal-services
+          {{- end }}
+          {{- range .Values.domainFilters }}
+            - --domain-filter={{ . }}
+          {{- end }}
+            - --policy={{ .Values.policy }}
+            - --provider={{ .Values.provider }}
+          {{- range .Values.sources }}
+            - --source={{ . }}
+          {{- end }}
+          {{- range $key, $value := .Values.extraArgs }}
+            {{- if $value }}
+            - --{{ $key }}={{ $value }}
+            {{- else }}
+            - --{{ $key }}
+            {{- end }}
+          {{- end }}
+          {{- if .Values.aws.zoneType }}
+            - --aws-zone-type={{ .Values.aws.zoneType }}
+          {{- end }}
+          env:
+        {{- if and .Values.aws.secretKey .Values.aws.accessKey }}
+          - name: AWS_ACCESS_KEY_ID
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "external-dns.fullname" . }}
+                key: aws_access_key_id
+          - name: AWS_SECRET_ACCESS_KEY
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "external-dns.fullname" . }}
+                key: aws_secret_access_key
+        {{- end }}
+        {{- if .Values.aws.region }}
+          - name: AWS_DEFAULT_REGION
+            value: {{ .Values.aws.region }}
+        {{- end }}
+        {{- if and .Values.cloudflare.apiKey .Values.cloudflare.email }}
+          - name: CF_API_KEY
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "external-dns.fullname" . }}
+                key: cloudflare_api_key
+          - name: CF_API_EMAIL
+            value: "{{ .Values.cloudflare.email }}"
+        {{- end }}
+        {{- $root := . -}}
+        {{- range $key, $value := .Values.extraEnv }}
+          - name: {{ $key }}
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "external-dns.fullname" $root }}
+                key: {{ $key }}
+        {{- end }}
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 7979
+          ports:
+            - containerPort: 7979
+        {{- if .Values.resources }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+        {{- end }}
+    {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
+    {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+    {{- end }}
+      serviceAccountName: {{ if .Values.rbac.create }}{{ template "external-dns.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}

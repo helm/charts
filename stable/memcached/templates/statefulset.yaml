@@ -1,37 +1,44 @@
 apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "memcached.fullname" . }}
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "memcached.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
-  serviceName: {{ template "fullname" . }}
+  serviceName: {{ template "memcached.fullname" . }}
   replicas: {{ .Values.replicaCount }}
   template:
     metadata:
       labels:
-        app: {{ template "fullname" . }}
+        app: {{ template "memcached.fullname" . }}
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         release: "{{ .Release.Name }}"
         heritage: "{{ .Release.Service }}"
     spec:
       affinity:
         podAntiAffinity:
+        {{- if eq .Values.AntiAffinity "hard" }}
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - topologyKey: "kubernetes.io/hostname"
+            labelSelector:
+              matchLabels:
+                app:  {{ template "memcached.fullname" . }}
+                release: {{ .Release.Name | quote }}
+        {{- else if eq .Values.AntiAffinity "soft" }}
           preferredDuringSchedulingIgnoredDuringExecution:
           - weight: 5
             podAffinityTerm:
+            - topologyKey: "kubernetes.io/hostname"
               labelSelector:
-                matchExpressions:
-                - key: app
-                  operator: In
-                  values:
-                  -  "{{ template "fullname" . }}"  
-              topologyKey: "kubernetes.io/hostname"
+                matchLabels:
+                  app:  {{ template "memcached.fullname" . }}
+                  release: {{ .Release.Name | quote }}
+        {{- end }}
       containers:
-      - name: {{ template "fullname" . }}
+      - name: {{ template "memcached.fullname" . }}
         image: {{ .Values.image }}
         imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
         command:

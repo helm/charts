@@ -1,5 +1,7 @@
 # aws-cluster-autoscaler
 
+**This chart has been deprecated as of version 0.3.1 and will not be updated. Please use the cluster-autoscaler chart instead.**
+
 [The cluster autoscaler on AWS](https://github.com/kubernetes/autoscaler/tree/master/cluster-autoscaler/cloudprovider/aws) scales worker nodes within an AWS autoscaling group.
 
 ## TL;DR:

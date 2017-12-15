@@ -7,133 +7,186 @@ metadata:
 data:
   run-script.xml: |-
     <?xml version='1.0' encoding='UTF-8'?>
-    <project>
-      <actions/>
-      <description></description>
-      <logRotator class="hudson.tasks.LogRotator">
-        <daysToKeep>10</daysToKeep>
-        <numToKeep>500</numToKeep>
-        <artifactDaysToKeep>-1</artifactDaysToKeep>
-        <artifactNumToKeep>-1</artifactNumToKeep>
-      </logRotator>
-      <keepDependencies>false</keepDependencies>
-      <properties>
-        <hudson.model.ParametersDefinitionProperty>
-          <parameterDefinitions>
-            <hudson.model.StringParameterDefinition>
-              <name>COMMAND</name>
-              <description>Executable script and parameters</description>
-              <defaultValue></defaultValue>
-            </hudson.model.StringParameterDefinition>
-            <hudson.model.StringParameterDefinition>
-              <name>REPO_URL</name>
-              <description>git repository url.</description>
-              <defaultValue></defaultValue>
-            </hudson.model.StringParameterDefinition>
-            <hudson.model.StringParameterDefinition>
-              <name>BRANCH</name>
-              <description>Branch or sha to build</description>
-              <defaultValue></defaultValue>
-            </hudson.model.StringParameterDefinition>
-          </parameterDefinitions>
-        </hudson.model.ParametersDefinitionProperty>
-      </properties>
-      <scm class="hudson.plugins.git.GitSCM" plugin="git@2.4.0">
-        <configVersion>2</configVersion>
-        <userRemoteConfigs>
-          <hudson.plugins.git.UserRemoteConfig>
-            <name>apidaemon</name>
-            <url>$REPO_URL</url>
-          </hudson.plugins.git.UserRemoteConfig>
-        </userRemoteConfigs>
-        <branches>
-          <hudson.plugins.git.BranchSpec>
-            <name>master</name>
-          </hudson.plugins.git.BranchSpec>
-        </branches>
-        <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
-        <submoduleCfg class="list"/>
-      </scm>
-      <concurrentBuild>true</concurrentBuild>
-      <builders>
-        <hudson.plugins.descriptionsetter.DescriptionSetterBuilder plugin="description-setter@1.10">
-          <description>${COMMAND}</description>
-        </hudson.plugins.descriptionsetter.DescriptionSetterBuilder>
-        <hudson.tasks.Shell>
-          <command>${COMMAND}</command>
-        </hudson.tasks.Shell>
-      </builders>
-      <publishers>
-        <hudson.tasks.ArtifactArchiver>
-          <artifacts>*.properties, *.json, *.yml</artifacts>
-          <allowEmptyArchive>true</allowEmptyArchive>
-          <onlyIfSuccessful>false</onlyIfSuccessful>
-          <fingerprint>false</fingerprint>
-          <defaultExcludes>true</defaultExcludes>
-        </hudson.tasks.ArtifactArchiver>
-      </publishers>
-      <buildWrappers/>
-    </project>
+      <flow-definition plugin="workflow-job@2.11">
+        <actions/>
+        <description></description>
+        <keepDependencies>false</keepDependencies>
+        <properties>
+          <hudson.model.ParametersDefinitionProperty>
+            <parameterDefinitions>
+              <hudson.model.StringParameterDefinition>
+                <name>EXECUTOR_IMAGE</name>
+                <description></description>
+                <defaultValue>jenkins/jnlp-slave:3.10-1</defaultValue>
+              </hudson.model.StringParameterDefinition>
+              <hudson.model.StringParameterDefinition>
+                <name>REPOSITORY_URL</name>
+                <description></description>
+                <defaultValue></defaultValue>
+              </hudson.model.StringParameterDefinition>
+              <hudson.model.StringParameterDefinition>
+                <name>BRANCH</name>
+                <description></description>
+                <defaultValue></defaultValue>
+              </hudson.model.StringParameterDefinition>
+              <hudson.model.StringParameterDefinition>
+                <name>COMMAND</name>
+                <description></description>
+                <defaultValue></defaultValue>
+              </hudson.model.StringParameterDefinition>
+            </parameterDefinitions>
+          </hudson.model.ParametersDefinitionProperty>
+          <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+            <triggers/>
+          </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+        </properties>
+        <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.36">
+          <script>podTemplate(label: &apos;jenkins-build-image&apos;, containers: [
+          containerTemplate(name: &apos;jenkins-executor&apos;, image: &apos;$EXECUTOR_IMAGE&apos;, ttyEnabled: true, command: &apos;cat&apos;),
+        ]) {
+
+          node {
+              checkout([$class: &apos;GitSCM&apos;,
+                    branches: [[name: &apos;$BRANCH&apos;]],
+                    doGenerateSubmoduleConfigurations: false,
+                    extensions: [],
+                    submoduleCfg: [],
+                    userRemoteConfigs: [[url: &apos;$REPOSITORY_URL&apos;]]]
+                    )
+
+              stage(&apos;run-command&apos;) {
+                  sh &apos;env &gt; properties&apos;
+                  sh &apos;$COMMAND&apos;
+              }
+
+              archiveArtifacts &apos;properties&apos;
+          }
+      }
+      </script>
+          <sandbox>true</sandbox>
+        </definition>
+        <triggers/>
+        <disabled>false</disabled>
+      </flow-definition>
   build-image.xml: |-
     <?xml version='1.0' encoding='UTF-8'?>
-    <flow-definition plugin="workflow-job@2.9">
-      <actions/>
-      <description></description>
-      <keepDependencies>false</keepDependencies>
-      <properties>
-        <hudson.model.ParametersDefinitionProperty>
-          <parameterDefinitions>
-            <hudson.model.StringParameterDefinition>
-              <name>REPOSITORY_URL</name>
-              <description></description>
-              <defaultValue></defaultValue>
-            </hudson.model.StringParameterDefinition>
-            <hudson.model.StringParameterDefinition>
-              <name>IMAGE_REPO</name>
-              <description></description>
-              <defaultValue></defaultValue>
-            </hudson.model.StringParameterDefinition>
-            <hudson.model.StringParameterDefinition>
-              <name>IMAGE_TAG</name>
-              <description></description>
-              <defaultValue></defaultValue>
-            </hudson.model.StringParameterDefinition>
-            <hudson.model.StringParameterDefinition>
-              <name>BRANCH</name>
-              <description></description>
-              <defaultValue></defaultValue>
-            </hudson.model.StringParameterDefinition>
-          </parameterDefinitions>
-        </hudson.model.ParametersDefinitionProperty>
-        <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
-          <triggers/>
-        </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
-      </properties>
-      <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.23">
-        <script>node {
-        checkout([$class: &apos;GitSCM&apos;,
-              branches: [[name: &apos;$BRANCH&apos;]],
-              doGenerateSubmoduleConfigurations: false,
-              extensions: [],
-              submoduleCfg: [],
-              userRemoteConfigs: [[url: &apos;$REPOSITORY_URL&apos;]]]
-              )
+      <flow-definition plugin="workflow-job@2.11">
+        <actions/>
+        <description></description>
+        <keepDependencies>false</keepDependencies>
+        <properties>
+          <hudson.model.ParametersDefinitionProperty>
+            <parameterDefinitions>
+              <hudson.model.StringParameterDefinition>
+                <name>REPOSITORY_URL</name>
+                <description></description>
+                <defaultValue></defaultValue>
+              </hudson.model.StringParameterDefinition>
+              <hudson.model.StringParameterDefinition>
+                <name>IMAGE_REPO</name>
+                <description></description>
+                <defaultValue></defaultValue>
+              </hudson.model.StringParameterDefinition>
+              <hudson.model.StringParameterDefinition>
+                <name>IMAGE_TAG</name>
+                <description></description>
+                <defaultValue></defaultValue>
+              </hudson.model.StringParameterDefinition>
+              <hudson.model.StringParameterDefinition>
+                <name>BRANCH</name>
+                <description></description>
+                <defaultValue></defaultValue>
+              </hudson.model.StringParameterDefinition>
+              <hudson.model.StringParameterDefinition>
+                <name>EXECUTOR_IMAGE</name>
+                <description></description>
+                <defaultValue>jenkins/jnlp-slave:3.10-1</defaultValue>
+              </hudson.model.StringParameterDefinition>
+            </parameterDefinitions>
+          </hudson.model.ParametersDefinitionProperty>
+          <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+            <triggers/>
+          </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+        </properties>
+        <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.36">
+          <script>podTemplate(label: &apos;jenkins-build-image&apos;, containers: [
+          containerTemplate(name: &apos;jenkins-executor&apos;, image: &apos;$EXECUTOR_IMAGE&apos;, ttyEnabled: true, command: &apos;cat&apos;),
+        ]) {
 
-        stage(&apos;save-env&apos;) {
-            sh &apos;env &gt; properties&apos;
-        }
+          node {
+              checkout([$class: &apos;GitSCM&apos;,
+                    branches: [[name: &apos;$BRANCH&apos;]],
+                    doGenerateSubmoduleConfigurations: false,
+                    extensions: [],
+                    submoduleCfg: [],
+                    userRemoteConfigs: [[url: &apos;$REPOSITORY_URL&apos;]]]
+                    )
 
-        stage(&apos;build-image&apos;) {
-            sh &apos;docker build -t $IMAGE_REPO:$IMAGE_TAG .&apos;
-        }
+              stage(&apos;save-env&apos;) {
+                  sh &apos;env &gt; properties&apos;
+              }
 
-        stage(&apos;push-image&apos;) {
-            sh &apos;gcloud docker -- push $IMAGE_REPO:$IMAGE_TAG&apos;
-        }
-        archiveArtifacts &apos;properties&apos;
-    }
-    </script>
-        <sandbox>true</sandbox>
-      </definition>
-      <triggers/>
-    </flow-definition>
+              stage(&apos;build-image&apos;) {
+                  sh &apos;docker build -t $IMAGE_REPO:$IMAGE_TAG .&apos;
+              }
+
+              stage(&apos;push-image&apos;) {
+                  sh &apos;gcloud docker -- push $IMAGE_REPO:$IMAGE_TAG&apos;
+              }
+              archiveArtifacts &apos;properties&apos;
+          }
+      }
+      </script>
+          <sandbox>true</sandbox>
+        </definition>
+        <triggers/>
+        <disabled>false</disabled>
+      </flow-definition>
+  run-pipeline.xml: |
+    <?xml version='1.0' encoding='UTF-8'?>
+      <flow-definition plugin="workflow-job@2.11">
+        <actions/>
+        <description></description>
+        <keepDependencies>false</keepDependencies>
+        <properties>
+          <hudson.model.ParametersDefinitionProperty>
+            <parameterDefinitions>
+              <hudson.model.StringParameterDefinition>
+                <name>REPOSITORY_URL</name>
+                <description></description>
+                <defaultValue></defaultValue>
+              </hudson.model.StringParameterDefinition>
+              <hudson.model.StringParameterDefinition>
+                <name>BRANCH</name>
+                <description></description>
+                <defaultValue></defaultValue>
+              </hudson.model.StringParameterDefinition>
+            </parameterDefinitions>
+          </hudson.model.ParametersDefinitionProperty>
+          <org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+            <triggers/>
+          </org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+        </properties>
+        <definition class="org.jenkinsci.plugins.workflow.cps.CpsScmFlowDefinition" plugin="workflow-cps@2.36">
+          <scm class="hudson.plugins.git.GitSCM" plugin="git@3.2.0">
+            <configVersion>2</configVersion>
+            <userRemoteConfigs>
+              <hudson.plugins.git.UserRemoteConfig>
+                <url>${REPOSITORY_URL}</url>
+              </hudson.plugins.git.UserRemoteConfig>
+            </userRemoteConfigs>
+            <branches>
+              <hudson.plugins.git.BranchSpec>
+                <name>*/${BRANCH}</name>
+              </hudson.plugins.git.BranchSpec>
+            </branches>
+            <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+            <submoduleCfg class="list"/>
+            <extensions/>
+          </scm>
+          <scriptPath>Jenkinsfile</scriptPath>
+          <lightweight>false</lightweight>
+        </definition>
+        <triggers/>
+        <disabled>false</disabled>
+      </flow-definition>

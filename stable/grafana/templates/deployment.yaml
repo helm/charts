@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   labels:
     app: {{ template "grafana.fullname" . }}
-    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     component: "{{ .Values.server.name }}"
     heritage: "{{ .Release.Service }}"
     release: "{{ .Release.Name }}"
@@ -13,6 +13,8 @@ spec:
   template:
     metadata:
       annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        checksum/dashboards-config: {{ include (print $.Template.BasePath "/dashboards-configmap.yaml") . | sha256sum }}
       {{- range $key, $value := .Values.server.annotations }}
         {{ $key }}: {{ $value }}
       {{- end }}
@@ -22,7 +24,11 @@ spec:
         release: "{{ .Release.Name }}"
     spec:
       nodeSelector:
-{{ toYaml .Values.server.nodeSelector | indent 12 }}
+{{ toYaml .Values.server.nodeSelector | indent 8 }}
+  {{- if .Values.server.tolerations }}
+      tolerations:
+{{ toYaml .Values.server.tolerations | indent 8 }}
+  {{- end }}
       containers:
         - name: {{ template "grafana.name" . }}
           image: "{{ .Values.server.image }}"
@@ -45,14 +51,14 @@ spec:
                   name: {{ template "grafana.server.fullname" . }}-config
                   key: grafana-install-plugins
             {{- end }}
+            {{- range $key, $value := .Values.server.extraEnv }}
+            - name: {{ $key | quote }}
+              value: {{ $value | quote }}
+            {{- end }}
           ports:
             - containerPort: 3000
           readinessProbe:
-            httpGet:
-              path: /login
-              port: 3000
-            initialDelaySeconds: 30
-            timeoutSeconds: 30
+{{ toYaml .Values.server.readinessProbe | indent 12 }}
           resources:
 {{ toYaml .Values.server.resources | indent 12 }}
           volumeMounts:
@@ -61,7 +67,7 @@ spec:
             - name: dashboard-volume
               mountPath: {{ default "/var/lib/grafana/dashboards" .Values.server.dashboardLocalPath | quote }}
             - name: storage-volume
-              mountPath: {{ default "/var/lib/grafana/data" .Values.server.storageLocalPath | quote }}
+              mountPath: {{ default "/var/lib/grafana" .Values.server.storageLocalPath | quote }}
               subPath: "{{ .Values.server.persistentVolume.subPath }}"
       terminationGracePeriodSeconds: {{ default 300 .Values.server.terminationGracePeriodSeconds }}
       volumes:

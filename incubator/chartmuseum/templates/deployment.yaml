@@ -1,0 +1,53 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ include "common.fullname" . }}
+  labels:
+{{ include "common.labels.standard" . | indent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      name: {{ include "common.fullname" . }}
+      labels:
+        app: {{ template "common.name" . }}
+        release: {{ .Release.Name | quote }}
+    spec:
+      volumes:
+      - name: storage-volume
+        emptyDir: {}
+      containers:
+      - name: {{ .Chart.Name }}
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        args:
+        - --port={{ .Values.service.internalPort }}
+        - --debug
+        - --storage=local
+        - --storage-local-rootdir=/storage
+        ports:
+        - containerPort: {{ .Values.service.internalPort }}
+        livenessProbe:
+          httpGet:
+            path: /index.yaml
+            port: {{ .Values.service.internalPort }}
+        readinessProbe:
+          httpGet:
+            path: /index.yaml
+            port: {{ .Values.service.internalPort }}
+        volumeMounts:
+        - mountPath: /storage
+          name: storage-volume
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+      volumes:
+{{- if .Values.persistence.volumes }}
+{{ toYaml .Values.persistence.volumes | indent 6 }}
+{{- end }}
+      - name: storage-volume
+      {{- if .Values.persistence.Enabled }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.persistence.ExistingClaim | default (include "common.fullname" .) }}
+      {{- else }}
+        emptyDir: {}
+      {{- end -}}

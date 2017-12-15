@@ -11,6 +11,11 @@ imageTag: "9.6.2"
 ##
 # imagePullPolicy:
 
+## Specify imagePullSecrets
+## ref: https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
+##
+# imagePullSecrets: myregistrykey
+
 ## Create a database user
 ## Default: postgres
 # postgresUser:
@@ -35,13 +40,19 @@ persistence:
   ## If defined, PVC must be created manually before volume will be bound
   # existingClaim:
 
-  ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
-  ## Default: volume.alpha.kubernetes.io/storage-class: default
+  ## database data Persistent Volume Storage Class
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
   ##
-  # storageClass:
+  # storageClass: "-"
   accessMode: ReadWriteOnce
   size: 8Gi
   subPath: "postgresql-db"
+
+  # annotations: {}
 
 metrics:
   enabled: false
@@ -52,18 +63,18 @@ metrics:
     requests:
       memory: 256Mi
       cpu: 100m
-  ## Define additional custom metrics
-  ## ref: https://github.com/wrouesnel/postgres_exporter#adding-new-metrics-via-a-config-file
-  #customMetrics:
-  #  pg_database:
-  #    query: "SELECT d.datname AS name, CASE WHEN pg_catalog.has_database_privilege(d.datname, 'CONNECT') THEN pg_catalog.pg_database_size(d.datname) ELSE 0 END AS size FROM pg_catalog.pg_database d where datname not in ('template0', 'template1', 'postgres')"
-  #    metrics:
-  #      - name:
-  #          usage: "LABEL"
-  #          description: "Name of the database"
-  #      - size_bytes:
-  #          usage: "GAUGE"
-  #          description: "Size of the database in bytes"
+    ## Define additional custom metrics
+    ## ref: https://github.com/wrouesnel/postgres_exporter#adding-new-metrics-via-a-config-file
+    # customMetrics:
+    #   pg_database:
+    #     query: "SELECT d.datname AS name, CASE WHEN pg_catalog.has_database_privilege(d.datname, 'CONNECT') THEN pg_catalog.pg_database_size(d.datname) ELSE 0 END AS size FROM pg_catalog.pg_database d where datname not in ('template0', 'template1', 'postgres')"
+    #     metrics:
+    #       - name:
+    #           usage: "LABEL"
+    #           description: "Name of the database"
+    #       - size_bytes:
+    #           usage: "GAUGE"
+    #           description: "Size of the database in bytes"
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -77,3 +88,22 @@ service:
   type: ClusterIP
   port: 5432
   externalIPs: []
+
+networkPolicy:
+  ## Enable creation of NetworkPolicy resources.
+  ##
+  enabled: false
+
+  ## The Policy model to apply. When set to false, only pods with the correct
+  ## client label will have network access to the port PostgreSQL is listening
+  ## on. When true, PostgreSQL will accept connections from any source
+  ## (with the correct destination port).
+  ##
+  allowExternal: true
+
+## Node labels and tolerations for pod assignment
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
+nodeSelector: {}
+tolerations: []
+affinity: {}

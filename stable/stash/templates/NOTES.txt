@@ -1,0 +1,3 @@
+To verify that Stash has started, run:
+
+  kubectl --namespace={{ .Release.Namespace }} get deployments -l "release={{ .Release.Name }}, app={{ template "stash.name" . }}"

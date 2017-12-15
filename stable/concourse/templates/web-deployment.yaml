@@ -1,9 +1,9 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "web.fullname" . }}
+  name: {{ template "concourse.web.fullname" . }}
   labels:
-    app: {{ template "web.fullname" . }}
+    app: {{ template "concourse.web.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -12,37 +12,69 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "web.fullname" . }}
+        app: {{ template "concourse.web.fullname" . }}
     spec:
+      tolerations:
+{{ toYaml .Values.web.tolerations | indent 8 }}
       containers:
-        - name: {{ template "web.fullname" . }}
+        - name: {{ template "concourse.web.fullname" . }}
           image: "{{ .Values.image }}:{{ .Values.imageTag }}"
           imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
           args:
             - "web"
+            {{- if .Values.credentialManager.enabled }}
+            {{- if default "" .Values.credentialManager.vault.appRoleId }}
+            - "--vault-auth-param"
+            - "role_id=${CONCOURSE_VAULT_APPROLE_ID}"
+            - "--vault-auth-param"
+            - "secret_id=${CONCOURSE_VAULT_APPROLE_SECRET_ID}"
+            {{- end }}
+            {{- end }}
           env:
+            {{ if .Values.postgresql.enabled }}
             - name: POSTGRES_HOST
               valueFrom:
                 configMapKeyRef:
-                  name: {{ template "concourse.fullname" . }}
+                  name: {{ template "concourse.concourse.fullname" . }}
                   key: postgresql-host
             - name: POSTGRES_USER
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "concourse.fullname" . }}
+                  name: {{ template "concourse.concourse.fullname" . }}
                   key: postgresql-user
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "postgresql.fullname" . }}
+                  name: {{ template "concourse.postgresql.fullname" . }}
                   key: postgres-password
             - name: POSTGRES_DATABASE
               valueFrom:
                 configMapKeyRef:
-                  name: {{ template "concourse.fullname" . }}
+                  name: {{ template "concourse.concourse.fullname" . }}
                   key: postgresql-database
             - name: CONCOURSE_POSTGRES_DATA_SOURCE
               value: postgres://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@$(POSTGRES_HOST)/$(POSTGRES_DATABASE)?sslmode=disable
+            {{ else }}
+            - name: CONCOURSE_POSTGRES_DATA_SOURCE
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: postgresql-uri
+            {{ end }}
+            {{ if .Values.encryptionKey }}
+            - name: CONCOURSE_ENCRYPTION_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: encryption-key
+            {{ end }}
+            {{ if .Values.oldEncryptionKey }}
+            - name: CONCOURSE_OLD_ENCRYPTION_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: old-encryption-key
+            {{ end }}
             - name: POD_IP
               valueFrom:
                 fieldRef:
@@ -50,137 +82,169 @@ spec:
             - name: CONCOURSE_BIND_PORT
               valueFrom:
                 configMapKeyRef:
-                  name: {{ template "concourse.fullname" . }}
+                  name: {{ template "concourse.concourse.fullname" . }}
                   key: concourse-atc-port
             - name: CONCOURSE_PEER_URL
               value: "http://$(POD_IP):$(CONCOURSE_BIND_PORT)"
             - name: CONCOURSE_BASIC_AUTH_USERNAME
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "concourse.fullname" . }}
+                  name: {{ template "concourse.concourse.fullname" . }}
                   key: basic-auth-username
             - name: CONCOURSE_BASIC_AUTH_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "concourse.fullname" . }}
+                  name: {{ template "concourse.concourse.fullname" . }}
                   key: basic-auth-password
             - name: CONCOURSE_TSA_BIND_PORT
               valueFrom:
                 configMapKeyRef:
-                  name: {{ template "concourse.fullname" . }}
+                  name: {{ template "concourse.concourse.fullname" . }}
                   key: concourse-tsa-port
             - name: CONCOURSE_ALLOW_SELF_SIGNED_CERTIFICATES
               valueFrom:
                 configMapKeyRef:
-                  name: {{ template "concourse.fullname" . }}
+                  name: {{ template "concourse.concourse.fullname" . }}
                   key: concourse-allow-self-signed-certificates
             - name: CONCOURSE_AUTH_DURATION
               valueFrom:
                 configMapKeyRef:
-                  name: {{ template "concourse.fullname" . }}
+                  name: {{ template "concourse.concourse.fullname" . }}
                   key: concourse-auth-duration
             - name: CONCOURSE_RESOURCE_CHECKING_INTERVAL
               valueFrom:
                 configMapKeyRef:
-                  name: {{ template "concourse.fullname" . }}
+                  name: {{ template "concourse.concourse.fullname" . }}
                   key: concourse-resource-checking-interval
             - name: CONCOURSE_OLD_RESOURCE_GRACE_PERIOD
               valueFrom:
                 configMapKeyRef:
-                  name: {{ template "concourse.fullname" . }}
+                  name: {{ template "concourse.concourse.fullname" . }}
                   key: concourse-old-resource-grace-period
             - name: CONCOURSE_RESOURCE_CACHE_CLEANUP_INTERVAL
               valueFrom:
                 configMapKeyRef:
-                  name: {{ template "concourse.fullname" . }}
+                  name: {{ template "concourse.concourse.fullname" . }}
                   key: concourse-resource-cache-cleanup-interval
             {{- if .Values.concourse.externalURL }}
             - name: CONCOURSE_EXTERNAL_URL
               valueFrom:
                 configMapKeyRef:
-                  name: {{ template "concourse.fullname" . }}
+                  name: {{ template "concourse.concourse.fullname" . }}
                   key: concourse-external-url
             {{- end }}
             - name: CONCOURSE_GITHUB_AUTH_CLIENT_ID
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "concourse.fullname" . }}
+                  name: {{ template "concourse.concourse.fullname" . }}
                   key: github-auth-client-id
             - name: CONCOURSE_GITHUB_AUTH_CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "concourse.fullname" . }}
+                  name: {{ template "concourse.concourse.fullname" . }}
                   key: github-auth-client-secret
             {{- if .Values.concourse.githubAuthOrganization }}
             - name: CONCOURSE_GITHUB_AUTH_ORGANIZATION
               valueFrom:
                 configMapKeyRef:
-                  name: {{ template "concourse.fullname" . }}
+                  name: {{ template "concourse.concourse.fullname" . }}
                   key: github-auth-organization
             {{- end }}
             {{- if .Values.concourse.githubAuthTeam }}
             - name: CONCOURSE_GITHUB_AUTH_TEAM
               valueFrom:
                 configMapKeyRef:
-                  name: {{ template "concourse.fullname" . }}
+                  name: {{ template "concourse.concourse.fullname" . }}
                   key: github-auth-team
             {{- end }}
             {{- if .Values.concourse.githubAuthUser }}
             - name: CONCOURSE_GITHUB_AUTH_USER
               valueFrom:
                 configMapKeyRef:
-                  name: {{ template "concourse.fullname" . }}
+                  name: {{ template "concourse.concourse.fullname" . }}
                   key: github-auth-user
             {{- end }}
             - name: CONCOURSE_GITHUB_AUTH_AUTH_URL
               valueFrom:
                 configMapKeyRef:
-                  name: {{ template "concourse.fullname" . }}
+                  name: {{ template "concourse.concourse.fullname" . }}
                   key: github-auth-auth-url
             - name: CONCOURSE_GITHUB_AUTH_TOKEN_URL
               valueFrom:
                 configMapKeyRef:
-                  name: {{ template "concourse.fullname" . }}
+                  name: {{ template "concourse.concourse.fullname" . }}
                   key: github-auth-token-url
             - name: CONCOURSE_GITHUB_AUTH_API_URL
               valueFrom:
                 configMapKeyRef:
-                  name: {{ template "concourse.fullname" . }}
+                  name: {{ template "concourse.concourse.fullname" . }}
                   key: github-auth-api-url
+            - name: CONCOURSE_GITLAB_AUTH_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: gitlab-auth-client-id
+            - name: CONCOURSE_GITLAB_AUTH_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: gitlab-auth-client-secret
+            {{- if .Values.concourse.gitlabAuthGroup }}
+            - name: CONCOURSE_GITLAB_AUTH_GROUP
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: gitlab-auth-group
+            {{- end }}
+            - name: CONCOURSE_GITLAB_AUTH_AUTH_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: gitlab-auth-auth-url
+            - name: CONCOURSE_GITLAB_AUTH_TOKEN_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: gitlab-auth-token-url
+            - name: CONCOURSE_GITLAB_AUTH_API_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: gitlab-auth-api-url
             - name: CONCOURSE_GENERIC_OAUTH_DISPLAY_NAME
               valueFrom:
                 configMapKeyRef:
-                  name: {{ template "concourse.fullname" . }}
+                  name: {{ template "concourse.concourse.fullname" . }}
                   key: generic-oauth-display-name
             - name: CONCOURSE_GENERIC_OAUTH_CLIENT_ID
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "concourse.fullname" . }}
+                  name: {{ template "concourse.concourse.fullname" . }}
                   key: generic-oauth-client-id
             - name: CONCOURSE_GENERIC_OAUTH_CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "concourse.fullname" . }}
+                  name: {{ template "concourse.concourse.fullname" . }}
                   key: generic-oauth-client-secret
             - name: CONCOURSE_GENERIC_OAUTH_AUTH_URL
               valueFrom:
                 configMapKeyRef:
-                  name: {{ template "concourse.fullname" . }}
+                  name: {{ template "concourse.concourse.fullname" . }}
                   key: generic-oauth-auth-url
             - name: CONCOURSE_GENERIC_OAUTH_AUTH_URL_PARAM
               valueFrom:
                 configMapKeyRef:
-                  name: {{ template "concourse.fullname" . }}
+                  name: {{ template "concourse.concourse.fullname" . }}
                   key: generic-oauth-auth-url-param
             - name: CONCOURSE_GENERIC_OAUTH_SCOPE
               valueFrom:
                 configMapKeyRef:
-                  name: {{ template "concourse.fullname" . }}
+                  name: {{ template "concourse.concourse.fullname" . }}
                   key: generic-oauth-scope
             - name: CONCOURSE_GENERIC_OAUTH_TOKEN_URL
               valueFrom:
                 configMapKeyRef:
-                  name: {{ template "concourse.fullname" . }}
+                  name: {{ template "concourse.concourse.fullname" . }}
                   key: generic-oauth-token-url
             - name: CONCOURSE_TSA_HOST_KEY
               value: "/concourse-keys/host_key"
@@ -188,6 +252,50 @@ spec:
               value: "/concourse-keys/session_signing_key"
             - name: CONCOURSE_TSA_AUTHORIZED_KEYS
               value: "/concourse-keys/worker_key.pub"
+            {{- if .Values.credentialManager.enabled }}
+            - name: CONCOURSE_VAULT_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: vault-url
+            - name: CONCOURSE_VAULT_PATH_PREFIX
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: vault-path-prefix
+            - name: CONCOURSE_VAULT_AUTH_BACKEND
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: vault-auth-backend
+            - name: CONCOURSE_VAULT_CLIENT_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: vault-client-token
+            {{- if .Values.credentialManager.vault.caCert }}
+            - name: CONCOURSE_VAULT_CA_CERT
+              value: "/concourse-vault/ca.crt"
+            {{- end }}
+            {{- if .Values.credentialManager.vault.clientCert }}
+            - name: CONCOURSE_VAULT_CLIENT_CERT
+              value: "/concourse-vault/client.crt"
+            - name: CONCOURSE_VAULT_CLIENT_KEY
+              value: "/concourse-vault/client.key"
+            {{- end }}
+            {{- if .Values.credentialManager.vault.appRoleId }}
+            - name: CONCOURSE_VAULT_APPROLE_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: vault-approle-id
+            - name: CONCOURSE_VAULT_APPROLE_SECRET_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: vault-approle-secret-id
+            {{- end }}
+            {{- end }}
           ports:
             - name: atc
               containerPort: {{ .Values.concourse.atcPort }}
@@ -211,10 +319,19 @@ spec:
             - name: concourse-keys
               mountPath: /concourse-keys
               readOnly: true
+            {{- if .Values.credentialManager.vault }}
+            - name: vault-keys
+              mountPath: /concourse-vault
+              readOnly: true
+            {{- end }}
+      affinity:
+{{- if .Values.web.additionalAffinities }}
+{{ toYaml .Values.web.additionalAffinities | indent 8 }}
+{{- end }}
       volumes:
         - name: concourse-keys
           secret:
-            secretName: {{ template "concourse.fullname" . }}
+            secretName: {{ template "concourse.concourse.fullname" . }}
             defaultMode: 0400
             items:
               - key: host-key
@@ -223,3 +340,16 @@ spec:
                 path: session_signing_key
               - key: worker-key-pub
                 path: worker_key.pub
+        {{- if .Values.credentialManager.vault }}
+        - name: vault-keys
+          secret:
+            secretName: {{ template "concourse.concourse.fullname" . }}
+            defaultMode: 0400
+            items:
+              - key: vault-ca-cert
+                path: ca.cert
+              - key: vault-client-cert
+                path: client.cert
+              - key: vault-client-key
+                path: client.key
+        {{- end }}

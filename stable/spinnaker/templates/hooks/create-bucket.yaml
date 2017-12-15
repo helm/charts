@@ -1,7 +1,8 @@
+{{- if .Values.minio.enabled }}
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: "{{.Release.Name}}-create-bucket"
+  name: "{{ .Release.Name }}-create-bucket"
   labels:
     app: {{ template "fullname" . }}
     component: minio
@@ -10,7 +11,7 @@ metadata:
 spec:
   template:
     metadata:
-      name: "{{.Release.Name}}"
+      name: "{{ .Release.Name }}"
       labels:
         app: {{ template "fullname" . }}
         component: minio
@@ -23,3 +24,4 @@ spec:
         - sh
         - -c
         - "mc config host add {{.Release.Name}}-minio http://{{.Release.Name}}-minio-svc:9000 {{ .Values.minio.accessKey }} {{ .Values.minio.secretKey }} S3v4 &&  mc mb {{.Release.Name}}-minio/spinnaker"
+{{- end }}

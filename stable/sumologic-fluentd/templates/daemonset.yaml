@@ -1,0 +1,150 @@
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    app: {{ template "name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  template:
+    metadata:
+      name: {{ template "fullname" . }}
+    {{- if .Values.podAnnotations }}
+      annotations:
+{{ toYaml .Values.podAnnotations | indent 8 }}
+    {{- end }}
+      labels:
+        app: {{ template "name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ template "fullname" . }}
+          image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{.Values.image.pullPolicy}}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+          volumeMounts:
+            - name: host-logs
+              mountPath: /mnt/log/
+              readOnly: true
+            - name: host-logs
+              mountPath: /var/log/
+              readOnly: true
+            - name: docker-logs
+              mountPath: /var/lib/docker/
+              readOnly: true
+            - name: pos-files
+              mountPath: /mnt/pos/
+            {{- if eq .Values.sumologic.fluentdSource "systemd" }}
+            - name: rkt-logs
+              mountPath: /var/lib/rkt/
+              readOnly: true
+            {{- end }}
+          env:
+            - name: COLLECTOR_URL
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ template "fullname-secrets" . }}"
+                  key: collector-url
+            - name: FLUENTD_SOURCE
+              value: {{ quote .Values.sumologic.fluentdSource }}
+            {{- if .Values.sumologic.flushInterval }}
+            - name: FLUSH_INTERVAL
+              value: {{ quote .Values.sumologic.flushInterval }}
+            {{- end }}
+            {{- if .Values.sumologic.numThreads }}
+            - name: NUM_THREADS
+              value: {{ quote .Values.sumologic.numThreads }}
+            {{- end }}
+            {{- if .Values.sumologic.sourceName }}
+            - name: SOURCE_NAME
+              value: {{ quote .Values.sumologic.sourceName }}
+            {{- end }}
+            {{- if .Values.sumologic.sourceCategory }}
+            - name: SOURCE_CATEGORY
+              value: {{ quote .Values.sumologic.sourceCategory }}
+            {{- end }}
+            {{- if .Values.sumologic.sourceCategoryPrefix }}
+            - name: SOURCE_CATEGORY_PREFIX
+              value: {{ quote .Values.sumologic.sourceCategoryPrefix }}
+            {{- end }}
+            {{- if .Values.sumologic.sourceCategoryReplaceDash }}
+            - name: SOURCE_CATEGORY_REPLACE_DASH
+              value: {{ quote .Values.sumologic.sourceCategoryReplaceDash }}
+            {{- end }}
+            {{- if .Values.sumologic.logFormat }}
+            - name: LOG_FORMAT
+              value: {{ quote .Values.sumologic.logFormat }}
+            {{- end }}
+            {{- if .Values.sumologic.kubernetesMeta }}
+            - name: KUBERNETES_META
+              value: {{ quote .Values.sumologic.kubernetesMeta }}
+            {{- end }}
+            {{- if .Values.sumologic.excludeContainerRegex }}
+            - name: EXCLUDE_CONTAINER_REGEX
+              value: {{ quote .Values.sumologic.excludeContainerRegex }}
+            {{- end }}
+            {{- if .Values.sumologic.excludeFacilityRegex }}
+            - name: EXCLUDE_FACILITY_REGEX
+              value: {{ quote .Values.sumologic.excludeFacilityRegex }}
+            {{- end }}
+            {{- if .Values.sumologic.excludeHostRegex }}
+            - name: EXCLUDE_HOST_REGEX
+              value: {{ quote .Values.sumologic.excludeHostRegex }}
+            {{- end }}
+            {{- if .Values.sumologic.excludeNamespaceRegex }}
+            - name: EXCLUDE_NAMESPACE_REGEX
+              value: {{ quote .Values.sumologic.excludeNamespaceRegex }}
+            {{- end }}
+            {{- if .Values.sumologic.excludePath }}
+            - name: EXCLUDE_PATH
+              value: {{ quote .Values.sumologic.excludePath }}
+            {{- end }}
+            {{- if .Values.sumologic.excludePodRegex }}
+            - name: EXCLUDE_POD_REGEX
+              value: {{ quote .Values.sumologic.excludePodRegex }}
+            {{- end }}
+            {{- if .Values.sumologic.excludePriorityRegex }}
+            - name: EXCLUDE_PRIORITY_REGEX
+              value: {{ quote .Values.sumologic.excludePriorityRegex }}
+            {{- end }}
+            {{- if .Values.sumologic.excludeUnitRegex }}
+            - name: EXCLUDE_UNIT_REGEX
+              value: {{ quote .Values.sumologic.excludeUnitRegex }}
+            {{- end }}
+            {{- if .Values.sumologic.fluentdOpt }}
+            - name: FLUENTD_OPT
+              value: {{ quote .Values.sumologic.fluentdOpt }}
+            {{- end }}
+            {{- if .Values.sumologic.verifySsl }}
+            - name: VERIFY_SSL
+              value: {{ quote .Values.sumologic.verifySsl }}
+            {{- end }}
+      serviceAccountName: {{ if .Values.rbac.create }}{{ template "fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
+      volumes:
+        - name: pos-files
+          {{- if .Values.persistence.enabled }}
+          hostPath:
+            path: {{ .Values.persistence.hostPath }}
+          {{- else }}
+          emptyDir: {}
+          {{- end }}
+        - name: host-logs
+          hostPath:
+            path: /var/log/
+        {{- if eq .Values.sumologic.fluentdSource "systemd" }}
+        - name: rkt-logs
+          hostPath:
+            path: /var/lib/rkt
+        {{- end }}
+        - name: docker-logs
+          hostPath:
+            path: /var/lib/docker
+    {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+    {{- end }}
+  updateStrategy:
+    type: "{{ .Values.updateStrategy }}"

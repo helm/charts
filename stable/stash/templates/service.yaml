@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "stash.fullname" . }}
+  labels:
+    app: "{{ template "stash.name" . }}"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  ports:
+  - name: pushgateway
+    port: 56789
+    protocol: TCP
+    targetPort: pushgateway
+  - name: http
+    port: 56790
+    protocol: TCP
+    targetPort: http
+  selector:
+    app: "{{ template "stash.name" . }}"
+    release: "{{ .Release.Name }}"

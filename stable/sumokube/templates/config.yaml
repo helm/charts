@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
 metadata:
-  name: "{{ template "fullname" . }}-config-{{.Release.Time.Seconds }}"
+  name: "{{ template "fullname" . }}-config-{{ .Release.Time.Seconds }}"
   labels:
     app: {{ template "fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"

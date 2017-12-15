@@ -108,10 +108,11 @@ var (
 	TEST_FAILURE_CODE         = 2
 
 	// File path constants
-	whiteListYamlPath = "/src/k8s.io/charts/test/helm-test/whitelist.yaml"
-	chartsBasePath    = "/src/k8s.io/charts"
-	helmPath          = "linux-amd64/helm"
-	kubectlPath       = "/workspace/kubernetes/client/bin/kubectl"
+	artifactsPath     = filepath.Join(os.Getenv("WORKSPACE"), "_artifacts")
+	chartsBasePath    = filepath.Join(os.Getenv("GOPATH"), "src/k8s.io/charts")
+	whiteListYamlPath = filepath.Join(chartsBasePath, "test/helm-test/whitelist.yaml")
+	helmPath          = filepath.Join(os.Getenv("WORKSPACE"), "linux-amd64/helm")
+	kubectlPath       = "kubectl"
 )
 
 func init() {
@@ -196,7 +197,7 @@ func doMain() int {
 	}
 
 	log.Printf("Charts for Testing: %+v", chartList)
-	defer writeXML("/workspace/_artifacts", time.Now())
+	defer writeXML(artifactsPath, time.Now())
 	if !terminate.Stop() {
 		<-terminate.C // Drain the value if necessary.
 	}
@@ -272,6 +273,14 @@ func doMain() int {
 			return nil
 		})
 	}
+
+	xmlWrap(fmt.Sprintf("Sleeping so that resources can be cleaned up"), func() error {
+		o, execErr := output(exec.Command("sleep", "120"))
+		if execErr != nil {
+			return fmt.Errorf("%s Command output: %s", execErr, string(o[:]))
+		}
+		return nil
+	})
 
 	if suite.Failures > 0 {
 		return TEST_FAILURE_CODE
