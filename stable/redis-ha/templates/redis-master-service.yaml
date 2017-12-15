@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "fullname" . }}-slave-appliance-vpc
+  name: {{ template "fullname" . }}-master-appliance-svc
   annotations:
 {{ toYaml .Values.appliance.annotations | indent 4 }}
 spec:
@@ -12,6 +12,6 @@ spec:
   selector:
     app: "redis-ha"
     redis-node: "true"
-    redis-role: "slave"
+    redis-role: "master"
     release: "{{ .Release.Name }}"
   type: "{{ .Values.appliance.serviceType }}"

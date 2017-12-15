@@ -41,13 +41,20 @@ $ helm delete <chart-name>
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
 
+## Appliance mode
+
+This chart can be used to launch Redis in a black box appliance mode that you can think of like a managed service. To run as an appliance, change the service type for the master and slave LBs to enable local access from within the K8S cluster.
+
+To launch in VPC-only appliance mode, set appliance.serviceType to "LoadBalancer". If using appliance mode in GPC, set appliance.annotations to:
+`cloud.google.com/load-balancer-type:Internal`
+
 ## Configuration
 
 The following tables lists the configurable parameters of the Redis chart and their default values.
 
 | Parameter                        | Description                                           | Default                                                   |
 | -------------------------------- | ----------------------------------------------------- | --------------------------------------------------------- |
-| `redis_image`                    | Redis image                                           | `quay.io/ianmaddox/redis:4.0.6r0`                           |
+| `redis_image`                    | Redis image                                           | `quay.io/ianmaddox/redis:4.0.6r0`                         |
 | `persistentVolume.enabled`       | Use a PVC to persist data                             | `false`                                                   |
 | `persistentVolume.storageClass`  | Storage class of backing PVC                          | `generic`                                                 |
 | `persistentVolume.accessMode`    | Use volume as ReadOnly or ReadWrite                   | `ReadWriteOnce`                                           |
@@ -63,6 +70,8 @@ The following tables lists the configurable parameters of the Redis chart and th
 | `replicas.sentinels`             | Number of sentinel pods                               | 3                                                         |
 | `nodeSelector`                   | Node labels for pod assignment                        | {}                                                        |
 | `tolerations`                    | Toleration labels for pod assignment                  | []                                                        |
+| `appliance.serviceType`          | Set to "LoadBalancer" to enable access from the VPC   | ClusterIP                                                 |
+| `appliance.annotations`          | See Appliance mode                                    | ``                                                        |
 
 
 
