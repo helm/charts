@@ -9,6 +9,8 @@ controller:
     pullPolicy: IfNotPresent
 
   config: {}
+  # Will add custom header to Nginx https://github.com/kubernetes/ingress-nginx/tree/master/docs/examples/customization/custom-headers
+  headers: {}
 
   # Required for use with CNI based kubernetes installations (such as ones set up by kubeadm),
   # since CNI and hostport don't mix yet. Can be deprecated once https://github.com/kubernetes/kubernetes/issues/23920
@@ -96,6 +98,12 @@ controller:
   #  requests:
   #    cpu: 100m
   #    memory: 64Mi
+
+  autoscaling:
+    enabled: false
+  #  minReplicas: 1
+  #  maxReplicas: 11
+  #  targetAverageUtilization: 50
 
   ## Override NGINX template
   customTemplate:
@@ -260,6 +268,7 @@ statsExporter:
     loadBalancerIP: ""
     loadBalancerSourceRanges: []
     servicePort: 9913
+    targetPort: 9913
     type: ClusterIP
 
 # TCP service key:value pairs

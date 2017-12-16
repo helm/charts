@@ -68,6 +68,13 @@ uiService:
   enabled: true
   type: "NodePort"
 
+## Create an Ingress for the Web UI
+uiIngress:
+  enabled: false
+  annotations: {}
+  hosts: []
+  tls: {}
+
 ## test container details
 test:
   image: lachlanevenson/k8s-kubectl
