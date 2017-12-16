@@ -461,6 +461,13 @@ worker:
   ##
   updateStrategy: RollingUpdate
 
+  ## Pod Management strategy (requires Kubernetes 1.7+)
+  ## Ref: https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#pod-management-policies
+  ##
+  ## "OrderedReady" is default. "Parallel" means worker pods will launch or terminate
+  ## in parallel.
+  podManagementPolicy: Parallel
+
 ## Persistent Volume Storage configuration.
 ## ref: https://kubernetes.io/docs/user-guide/persistent-volumes
 ##
