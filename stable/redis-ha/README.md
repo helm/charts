@@ -50,7 +50,7 @@ To launch in VPC-only appliance mode, set appliance.serviceType to "LoadBalancer
 
 ```bash
 $ helm install \
-  --set="servers.annotations={cloud.google.com/LoadBalancer},servers.serviceType=LoadBalancer" \
+  --set="servers.annotations.cloud\.google\.com/load-balancer-type=Internal,servers.serviceType=LoadBalancer" \
     stable/redis-ha
 ```
 
