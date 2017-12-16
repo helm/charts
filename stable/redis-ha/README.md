@@ -61,14 +61,6 @@ The following tables lists the configurable parameters of the Redis chart and th
 | Parameter                        | Description                                           | Default                                                   |
 | -------------------------------- | ----------------------------------------------------- | --------------------------------------------------------- |
 | `redis_image`                    | Redis image                                           | `quay.io/smile/redis:4.0.6r1`                             |
-| `persistentVolume.enabled`       | Use a PVC to persist data                             | `false`                                                   |
-| `persistentVolume.storageClass`  | Storage class of backing PVC                          | `generic`                                                 |
-| `persistentVolume.accessMode`    | Use volume as ReadOnly or ReadWrite                   | `ReadWriteOnce`                                           |
-| `persistentVolume.size`          | Size of data volume                                   | `8Gi`                                                     |
-| `persistentVolume.annotations`   | Redis data Persistent Volume Claim annotations        | `{}`                                                      |
-| `persistentVolume.existingClaim` | Redis data Persistent Volume existing claim name      | ``                                                        |
-| `persistentVolume.mountPath`     | Redis data Persistent Volume mount root path          | `/data`                                                   |
-| `persistentVolume.subPath`       | Subdirectory of redis data Persistent Volume to mount | ``                                                        |
 | `resources.master`               | CPU/Memory for master nodes resource requests/limits  | Memory: `200Mi`, CPU: `100m`                              |
 | `resources.slave`                | CPU/Memory for slave nodes  resource requests/limits  | Memory: `200Mi`, CPU: `100m`                              |
 | `resources.sentinel`             | CPU/Memory for sentinel node resource requests/limits | Memory: `200Mi`, CPU: `100m`                              |
@@ -98,10 +90,6 @@ $ helm install -f values.yaml stable/redis-ha
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
-
-## Persistence
-
-The chart mounts a [Persistent Volume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/) volume at this location. The volume is created using dynamic volume provisioning.
 
 ## Internals
 The customized Redis server image determines whether the pod that executes it will be a Redis Sentinel,
