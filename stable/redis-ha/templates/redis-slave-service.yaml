@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "fullname" . }}-slave-appliance-svc
+  name: {{ template "fullname" . }}-slave-svc
   annotations:
-{{ toYaml .Values.appliance.annotations | indent 4 }}
+{{ toYaml .Values.servers.annotations | indent 4 }}
 spec:
   ports:
   - port: 6379
@@ -14,4 +14,4 @@ spec:
     redis-node: "true"
     redis-role: "slave"
     release: "{{ .Release.Name }}"
-  type: "{{ .Values.appliance.serviceType }}"
+  type: "{{ .Values.servers.serviceType }}"
