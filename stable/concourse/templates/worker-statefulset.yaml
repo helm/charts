@@ -163,6 +163,4 @@ spec:
   updateStrategy:
     type: {{ .Values.worker.updateStrategy }}
 {{- end }}
-{{- if and (eq .Capabilities.KubeVersion.Major "1") (ge .Capabilities.KubeVersion.Minor "7") }}
   podManagementPolicy: {{ .Values.worker.podManagementPolicy }}
-{{- end }}
