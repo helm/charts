@@ -1,5 +1,5 @@
 name: selenium
-version: 0.2.4
+version: 0.2.5
 appVersion: 3.8.1
 description: Chart for selenium grid
 keywords:
@@ -9,6 +9,8 @@ icon: http://docs.seleniumhq.org/images/big-logo.png
 sources:
 - https://github.com/SeleniumHQ/docker-selenium
 maintainers:
+- name: flah00
+  email: techops@adaptly.com
 - name: diemol
   email: diemol@gmail.com
 engine: gotpl
