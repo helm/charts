@@ -462,7 +462,6 @@ worker:
   ## in parallel.
   podManagementPolicy: Parallel
 
-
 ## Persistent Volume Storage configuration.
 ## ref: https://kubernetes.io/docs/user-guide/persistent-volumes
 ##
