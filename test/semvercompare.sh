@@ -51,7 +51,7 @@ semvercompare() {
     # No pre-release was found so we increment the patch version and attach a
     # -0 to enable pre-releases being found.
     local ov=( ${semvercompareOldVer//./ } )  # Turn the version into an array
-    ((ov[2]++))                  # Increment the patch release
+    ((ov[2]+=1))                  # Increment the patch release
     out=$(vert ">${ov[0]}.${ov[1]}.${ov[2]}-0" $semvercompareNewVer)
     ret=$?
   fi
