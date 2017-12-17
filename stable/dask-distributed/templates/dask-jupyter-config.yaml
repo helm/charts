@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "jupyter-fullname" . }}-config
+  name: {{ template "dask-distributed.jupyter-fullname" . }}-config
   labels:
-    app: {{ template "name" . }}
+    app: {{ template "dask-distributed.name" . }}
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"

@@ -1,0 +1,57 @@
+{{- if and .Values.istio.install (not .Release.IsInstall) -}}
+{{ if .Values.initializer.enabled }}
+{{- $serviceName := include "istio.name" . -}}
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ $serviceName }}-{{ .Values.initializer.deployment.name }}
+  labels:
+{{ include "istio.labels.standard" . | indent 4 }}
+    component: {{ $serviceName }}-{{ .Values.initializer.deployment.name }}
+    istio: {{ $serviceName }}-{{ .Values.initializer.deployment.name }}
+  annotations:
+    {{- range $key, $value := .Values.initializer.annotations }}
+        {{ $key }}: {{ $value | quote }}
+    {{- end }}
+  initializers:
+    pending: []
+spec:
+  replicas: {{ .Values.initializer.deployment.replicas }}
+  template:
+    metadata:
+      annotations:
+        checksum/istio-config: {{ include (print $.Template.BasePath "/configmap/istio-config.yaml") . | sha256sum }}
+        checksum/initializer-config: {{ include (print $.Template.BasePath "/configmap/initializer-config.yaml") . | sha256sum }}
+        {{- range $key, $value := .Values.initializer.annotations }}
+          {{ $key }}: {{ $value | quote }}
+        {{- end }}
+      labels:
+{{ include "istio.labels.standard" . | indent 8 }}
+        component: {{ $serviceName }}-{{ .Values.initializer.deployment.name }}
+        istio: {{ $serviceName }}-{{ .Values.initializer.deployment.name }}
+    spec:
+    {{- if .Values.initializer.deployment.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
+      serviceAccountName: {{ $serviceName }}-{{ .Values.initializer.deployment.name }}-service-account
+      containers:
+      - name: {{ $serviceName }}-{{ .Values.initializer.deployment.name }}
+        image: "{{ .Values.initializer.deployment.image }}:{{ .Values.istio.release }}"
+        imagePullPolicy: {{ .Values.initializer.deployment.imagePullPolicy }}
+        args:
+          - --port=8083
+          - --namespace={{ .Release.Namespace }}
+          - -v=2
+        volumeMounts:
+        - name: config-volume
+          mountPath: /etc/istio/config
+        resources:
+{{ toYaml .Values.initializer.deployment.resources | indent 10 }}
+      volumes:
+      - name: config-volume
+        configMap:
+          name: {{ $serviceName }}
+{{ end }}
+{{- end -}}
+

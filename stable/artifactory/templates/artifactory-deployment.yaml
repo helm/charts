@@ -1,9 +1,9 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "artifactory.fullname" . }}
+  name: {{ template "artifactory.artifactory.fullname" . }}
   labels:
-    app: {{ template "name" . }}
+    app: {{ template "artifactory.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     component: "{{ .Values.artifactory.name }}"
     heritage: {{ .Release.Service }}
@@ -13,7 +13,7 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "name" . }}
+        app: {{ template "artifactory.name" . }}
         component: "{{ .Values.artifactory.name }}"
         release: {{ .Release.Name }}
     spec:
@@ -40,10 +40,10 @@ spec:
         - name: DB_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "artifactory.fullname" . }}
               key: artifactory-database-password
         - name: DB_HOST
-          value: {{ template "database.name" . }}
+          value: {{ template "artifactory.database.name" . }}
         ports:
         - containerPort: {{ .Values.artifactory.internalPort }}
         volumeMounts:
@@ -53,7 +53,7 @@ spec:
       - name: artifactory-volume
       {{- if .Values.artifactory.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ template "artifactory.fullname" . }}
+          claimName: {{ template "artifactory.artifactory.fullname" . }}
       {{- else }}
         emptyDir: {}
       {{- end -}}

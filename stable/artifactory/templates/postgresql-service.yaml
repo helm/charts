@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "database.name" . }}
+  name: {{ template "artifactory.database.name" . }}
   labels:
-    app: {{ template "name" . }}
+    app: {{ template "artifactory.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     component: "{{ .Values.database.name }}"
     heritage: {{ .Release.Service }}
@@ -16,6 +16,6 @@ spec:
     protocol: TCP
     name: {{ .Release.Name }}
   selector:
-    app: {{ template "name" . }}
+    app: {{ template "artifactory.name" . }}
     component: "{{ .Values.database.name }}"
     release: {{ .Release.Name }}

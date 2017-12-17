@@ -44,17 +44,59 @@ spec:
             secretKeyRef:
               name: {{ template "patroni.fullname" . }}
               key: password-standby
-        {{if .Values.Etcd.Host }}
-        - name: ETCD_HOST
-          value: {{ .Values.Etcd.Host | quote }}
-        {{else}}
+        {{if .Values.Etcd.Enable }}
+        {{if .Values.Etcd.DeployChart }}
         - name: ETCD_DISCOVERY_DOMAIN
           value: {{default (printf "%s-etcd" .Release.Name | trunc 63) .Values.Etcd.Discovery }}
+        {{else}}
+        - name: ETCD_HOST
+          value: {{ .Values.Etcd.Host | quote }}
+        {{end}}
+        {{else if .Values.Zookeeper.Enable }}
+        {{if .Values.Zookeeper.DeployChart }}
+        - name: ZOOKEEPER_HOSTS
+          value: {{(printf "'hs-zk-%s:2181'" .Release.Name | trunc 63)}}
+        {{else}}
+        - name: ZOOKEEPER_HOSTS
+          value: {{ .Values.Zookeeper.Hosts | quote }}
+        {{end}}
         {{end}}
         - name: SCOPE
           value: {{ template "patroni.fullname" . }}
+        {{if .Values.WalE.Enable }}
+        - name: USE_WALE
+          value: {{ .Values.WalE.Enable | quote }}
+        {{if .Values.WalE.Schedule_Cron_Job }}
+        - name: BACKUP_SCHEDULE
+          value: {{ .Values.WalE.Schedule_Cron_Job | quote}}
+        {{end}}
+        {{if .Values.WalE.Retain_Backups }}
+        - name: BACKUP_NUM_TO_RETAIN
+          value: {{ .Values.WalE.Retain_Backups | quote}}
+        {{end}}
+        {{if .Values.WalE.S3_Bucket }}
+        - name: WAL_S3_BUCKET
+          value: {{ .Values.WalE.S3_Bucket | quote }}
+        {{else if .Values.WalE.GCS_Bucket }}
+        - name: WAL_GCS_BUCKET
+          value: {{ .Values.WalE.GCS_Bucket | quote }}
+        {{if .Values.WalE.Kubernetes_Secret }}
+        - name: GOOGLE_APPLICATION_CREDENTIALS
+          value: "/etc/credentials/{{.Values.WalE.Kubernetes_Secret}}.json"
+        {{end}}
+        {{end}}
+        {{if .Values.WalE.Backup_Threshold_Megabytes }}
+        - name: WALE_BACKUP_THRESHOLD_MEGABYTES
+          value: {{ .Values.WalE.Backup_Threshold_Megabytes | quote }}
+        {{end}}
+        {{if .Values.WalE.Backup_Threshold_Percentage }}
+        - name: WALE_BACKUP_THRESHOLD_PERCENTAGE
+          value: {{ .Values.WalE.Backup_Threshold_Percentage | quote }}
+        {{end}}
+        {{else}}
         - name: USE_WALE
           value: ""
+        {{end}}
         - name: PGROOT
           value: "{{ .Values.persistentVolume.mountPath }}/pgroot"
         - name: POD_NAMESPACE
@@ -76,11 +118,24 @@ spec:
         - mountPath: /etc/patroni
           name: patroni-config
           readOnly: true
+        {{if .Values.WalE.Enable }}
+        {{if .Values.WalE.Kubernetes_Secret }}
+        - name: {{ .Values.WalE.Kubernetes_Secret }}
+          mountPath: /etc/credentials
+          readOnly: true
+        {{end}}
+        {{end}}
       volumes:
       - name: patroni-config
         secret:
           secretName: {{ template "patroni.fullname" . }}
-
+      {{if .Values.WalE.Enable }}
+      {{if .Values.WalE.Kubernetes_Secret }}
+      - name: {{ .Values.WalE.Kubernetes_Secret }}
+        secret:
+          secretName: {{ .Values.WalE.Kubernetes_Secret }}
+      {{end}}
+      {{end}}
   volumeClaimTemplates:
     - metadata:
         name: storage-volume

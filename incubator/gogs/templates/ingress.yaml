@@ -5,9 +5,9 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: {{ template "gogs.fullname" . }}
+  name: {{ template "gogs.gogs.fullname" . }}
   labels:
-    app: {{ template "gogs.fullname" . }}
+    app: {{ template "gogs.gogs.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"

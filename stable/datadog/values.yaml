@@ -12,6 +12,19 @@ image:
 # get guaranteed delivery of the metrics in Datadog-per-namespace setup!
 daemonset:
   enabled: true
+  ## Bind ports on the hostNetwork. Useful for CNI networking where hostPort might
+  ## not be supported. The ports will need to be available on all hosts. Can be
+  ## used for custom metrics instead of a service endpoint.
+  ## WARNING: Make sure that hosts using this are properly firewalled otherwise
+  ## metrics and traces will be accepted from any host able to connect to this host.
+  # useHostNetwork: true
+
+  ## Sets the hostPort to the same value of the container port. Can be used as
+  ## for sending custom metrics. The ports will need to be available on all
+  ## hosts.
+  ## WARNING: Make sure that hosts using this are properly firewalled otherwise
+  ## metrics and traces will be accepted from any host able to connect to this host.
+  # useHostPort: true
 
   ## Annotations to add to the DaemonSet's Pods
   # podAnnotations:
@@ -31,7 +44,7 @@ daemonset:
 deployment:
   enabled: false
   replicas: 1
- 
+
 ## deploy the kube-state-metrics deployment
 ## ref: https://github.com/kubernetes/charts/tree/master/stable/kube-state-metrics
 ##
@@ -65,7 +78,7 @@ datadog:
   ## Enables event collection from the kubernetes API
   ## ref: https://github.com/DataDog/docker-dd-agent#environment-variables
   ##
-  collectEvents: False
+  collectEvents: false
 
   ## Un-comment this to enable APM and tracing, on ports 7777 and 8126
   ## ref: https://github.com/DataDog/docker-dd-agent#tracing-from-the-host
@@ -78,6 +91,28 @@ datadog:
   # env:
   #   - name:
   #     value:
+
+  ## The dd-agent supports detailed process and container monitoring and
+  ## requires control over the volume and volumeMounts for the daemonset
+  ## or deployment.
+  ## ref: https://docs.datadoghq.com/guides/process/
+  ##
+  # volumes:
+  #  - hostPath:
+  #      path: /etc/passwd
+  #    name: passwd
+  # volumeMounts:
+  #   - name: passwd
+  #     mountPath: /etc/passwd
+  #     readOnly: true
+
+  ## Enable leader election mechanism for event collection
+  ##
+  leaderElection: false
+
+  ## Set the lease time for leader election
+  ##
+  # leaderLeaseDuration: 600
 
   ## Provide additonal service definitions
   ## Each key will become a file in /conf.d/auto_conf
@@ -119,3 +154,12 @@ datadog:
     limits:
       cpu: 256m
       memory: 512Mi
+
+rbac:
+  ## If true, create & use RBAC resources
+  create: true
+
+  ## Ignored if rbac.create is true
+  serviceAccountName: default
+
+tolerations: []

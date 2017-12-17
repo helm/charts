@@ -49,6 +49,11 @@ The following tables lists the configurable parameters of the ownCloud chart and
 |-------------------------------------|-------------------------------------------|---------------------------------------------|
 | `image`                             | ownCloud image                            | `bitnami/owncloud:{VERSION}`                |
 | `imagePullPolicy`                   | Image pull policy                         | `IfNotPresent`                              |
+| `ingress.enabled`                   | Enable use of ingress controllers         | `false`                                     |
+| `ingress.servicePort`               | Ingress' backend servicePort              | `http`                                      |
+| `ingress.annotations`               | An array of service annotations           | `nil`                                       |
+| `ingress.tls`                       | Ingress TLS configuration                 | `[]`                                        |
+| `networkPolicyApiVersion`           | The kubernetes network API version        | `extensions/v1beta1`                        |
 | `owncloudHost`                      | ownCloud host to create application URLs  | `nil`                                       |
 | `owncloudLoadBalancerIP`            | `loadBalancerIP` for the owncloud Service | `nil`                                       |
 | `owncloudUsername`                  | User of the application                   | `user`                                      |
@@ -58,9 +63,11 @@ The following tables lists the configurable parameters of the ownCloud chart and
 | `serviceType`                       | Kubernetes Service type                   | `LoadBalancer`                              |
 | `persistence.enabled`               | Enable persistence using PVC              | `true`                                      |
 | `persistence.apache.storageClass`   | PVC Storage Class for Apache volume       | `nil` (uses alpha storage class annotation) |
+| `persistence.apache.existingClaim`   | An Existing PVC name for Apache volume   | `nil` (uses alpha storage class annotation) |
 | `persistence.apache.accessMode`     | PVC Access Mode for Apache volume         | `ReadWriteOnce`                             |
 | `persistence.apache.size`           | PVC Storage Request for Apache volume     | `1Gi`                                       |
 | `persistence.owncloud.storageClass` | PVC Storage Class for ownCloud volume     | `nil` (uses alpha storage class annotation) |
+| `persistence.owncloud.existingClaim` | An Existing PVC name for ownCloud volume | `nil` (uses alpha storage class annotation) |
 | `persistence.owncloud.accessMode`   | PVC Access Mode for ownCloud volume       | `ReadWriteOnce`                             |
 | `persistence.owncloud.size`         | PVC Storage Request for ownCloud volume   | `8Gi`                                       |
 | `resources`                         | CPU/Memory resource requests/limits       | Memory: `512Mi`, CPU: `300m`                |

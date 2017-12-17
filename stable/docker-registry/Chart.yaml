@@ -1,0 +1,12 @@
+apiVersion: v1
+description: A Helm chart for Docker Registry
+name: docker-registry
+version: 1.0.0
+appVersion: 2.6.2
+home: https://hub.docker.com/_/registry/
+icon: https://hub.docker.com/public/images/logos/mini-logo.svg
+sources:
+  - https://github.com/docker/distribution-library-image
+maintainers:
+  - name: jpds
+    email: jpds@protonmail.com

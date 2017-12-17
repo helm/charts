@@ -32,9 +32,13 @@ The following tables lists the configurable parameters of the Jenkins chart and 
 | `Master.Image`                    | Master image name                    | `jenkinsci/jenkins`                                                          |
 | `Master.ImageTag`                 | Master image tag                     | `2.46.1`                                                                     |
 | `Master.ImagePullPolicy`          | Master image pull policy             | `Always`                                                                     |
+| `Master.ImagePullSecret`          | Master image pull secret             | Not set                                                                      |
 | `Master.Component`                | k8s selector key                     | `jenkins-master`                                                             |
+| `Master.UseSecurity`              | Use basic security                   | `true`                                                                       |
+| `Master.AdminUser`                | Admin username (and password) created as a secret if useSecurity is true | `admin`                                  |
 | `Master.Cpu`                      | Master requested cpu                 | `200m`                                                                       |
 | `Master.Memory`                   | Master requested memory              | `256Mi`                                                                      |
+| `Master.ServiceAnnotations`       | Service annotations                  | `{}`                                                                         |
 | `Master.ServiceType`              | k8s service type                     | `LoadBalancer`                                                               |
 | `Master.ServicePort`              | k8s service port                     | `8080`                                                                       |
 | `Master.NodePort`                 | k8s node port                        | Not set                                                                      |
@@ -51,9 +55,11 @@ The following tables lists the configurable parameters of the Jenkins chart and 
 | `Master.ScriptApproval`           | List of groovy functions to approve  | Not set                                                                      |
 | `Master.NodeSelector`             | Node labels for pod assignment       | `{}`                                                                         |
 | `Master.Tolerations`              | Toleration labels for pod assignment | `{}`                                                                         |
-| `rbac.install`           | Create service account and ClusterRoleBinding for Kubernetes plugin | `false`                                                                      |
-| `rbac.apiVersion`           | RBAC API version | `v1beta1`                                                                      |
-| `rbac.roleRef`           | Cluster role name to bind to | `cluster-admin`                                                                      |
+| `NetworkPolicy.Enabled`           | Enable creation of NetworkPolicy resources. | `false`                                                               |
+| `NetworkPolicy.ApiVersion`        | NetworkPolicy ApiVersion             | `extensions/v1beta1`                                                         |
+| `rbac.install`                    | Create service account and ClusterRoleBinding for Kubernetes plugin | `false`                                       |
+| `rbac.apiVersion`                 | RBAC API version                     | `v1beta1`                                                                    |
+| `rbac.roleRef`                    | Cluster role name to bind to         | `cluster-admin`                                                              |
 
 ### Jenkins Agent
 
@@ -62,6 +68,7 @@ The following tables lists the configurable parameters of the Jenkins chart and 
 | `Agent.AlwaysPullImage` | Always pull agent container image before build  | `false`                |
 | `Agent.Enabled`         | Enable Kubernetes plugin jnlp-agent podTemplate | `true`                 |
 | `Agent.Image`           | Agent image name                                | `jenkinsci/jnlp-slave` |
+| `Agent.ImagePullSecret` | Agent image pull secret                         | Not set                |
 | `Agent.ImageTag`        | Agent image tag                                 | `2.62`                 |
 | `Agent.Privileged`      | Agent privileged container                      | `false`                |
 | `Agent.Cpu`             | Agent requested cpu                             | `200m`                 |
@@ -102,6 +109,11 @@ For Kubernetes v1.5 & v1.6, you must also turn on NetworkPolicy by setting
 the DefaultDeny namespace annotation. Note: this will enforce policy for _all_ pods in the namespace:
 
     kubectl annotate namespace default "net.beta.kubernetes.io/network-policy={\"ingress\":{\"isolation\":\"DefaultDeny\"}}"
+
+
+Install helm chart with network policy enabled: 
+
+    $ helm install stable/jenkins --set NetworkPolicy.Enabled=true
 
 ## Persistence
 

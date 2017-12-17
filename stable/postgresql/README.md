@@ -48,6 +48,7 @@ The following tables lists the configurable parameters of the PostgresSQL chart 
 | `image`                    | `postgres` image repository                     | `postgres`                                                 |
 | `imageTag`                 | `postgres` image tag                            | `9.6.2`                                                    |
 | `imagePullPolicy`          | Image pull policy                               | `Always` if `imageTag` is `latest`, else `IfNotPresent`    |
+| `imagePullSecrets`         | Image pull secrets                              | `nil`                                                      |
 | `postgresUser`             | Username of new user to create.                 | `postgres`                                                 |
 | `postgresPassword`         | Password for the new user.                      | random 10 characters                                       |
 | `postgresDatabase`         | Name for new database to create.                | `postgres`                                                 |
@@ -56,6 +57,7 @@ The following tables lists the configurable parameters of the PostgresSQL chart 
 | `persistence.existingClaim`| Provide an existing PersistentVolumeClaim       | `nil`                                                      |
 | `persistence.storageClass` | Storage class of backing PVC                    | `nil` (uses alpha storage class annotation)                |
 | `persistence.accessMode`   | Use volume as ReadOnly or ReadWrite             | `ReadWriteOnce`                                            |
+| `persistence.annotations`  | Persistent Volume annotations                   | `{}`                                                       |
 | `persistence.size`         | Size of data volume                             | `8Gi`                                                      |
 | `persistence.subPath`      | Subdirectory of the volume to mount at          | `postgresql-db`                                            |
 | `resources`                | CPU/Memory resource requests/limits             | Memory: `256Mi`, CPU: `100m`                               |
@@ -71,6 +73,7 @@ The following tables lists the configurable parameters of the PostgresSQL chart 
 | `networkPolicy.enabled`    | Enable NetworkPolicy                            | `false`                                                    |
 | `networkPolicy.allowExternal` | Don't require client label for connections   | `true`                                                     |
 | `nodeSelector`             | Node labels for pod assignment                  | {}                                                         |
+| `affinity`                 | Affinity settings for pod assignment            | {}                                                         |
 | `tolerations`              | Toleration labels for pod assignment            | []                                                         |
 
 The above parameters map to the env variables defined in [postgres](http://github.com/docker-library/postgres). For more information please refer to the [postgres](http://github.com/docker-library/postgres) image documentation.

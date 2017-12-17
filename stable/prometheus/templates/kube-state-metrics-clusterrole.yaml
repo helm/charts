@@ -13,12 +13,15 @@ rules:
   - apiGroups:
       - ""
     resources:
+      - namespaces
       - nodes
+      - persistentvolumeclaims
       - pods
       - services
       - resourcequotas
       - replicationcontrollers
       - limitranges
+      - persistentvolumeclaims
     verbs:
       - list
       - watch
@@ -28,6 +31,22 @@ rules:
       - daemonsets
       - deployments
       - replicasets
+    verbs:
+      - list
+      - watch
+  - apiGroups:
+      - apps
+    resources:
+      - statefulsets
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - batch
+    resources:
+      - cronjobs
+      - jobs
     verbs:
       - list
       - watch

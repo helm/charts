@@ -458,8 +458,6 @@ Output:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  annotations:
-    volume.beta.kubernetes.io/storage-class: fast
   labels:
     app: persistentvolumeclaim
     chart: persistentvolumeclaim-0.1.0
@@ -472,6 +470,7 @@ spec:
   resources:
     requests:
       storage: 8Gi
+  storageClassName: "fast"
 ```
 
 ## Partial API Objects
