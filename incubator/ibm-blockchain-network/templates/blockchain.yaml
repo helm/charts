@@ -2,13 +2,18 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: utils
+  name: {{ template "ibm-blockchain-network.fullname" . }}-utils
+  labels:
+    app: {{ template "ibm-blockchain-network.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 spec:
   restartPolicy: "Never"
   volumes:
-  - name: shared
+  - name: {{ template "ibm-blockchain-shared-pvc.name" . }}
     persistentVolumeClaim:
-     claimName: shared
+     claimName: {{ template "ibm-blockchain-shared-pvc.name" . }}
   - name: dockersocket
     hostPath:
       path: /var/run/docker.sock
@@ -35,7 +40,7 @@ spec:
           touch /shared/status_cryptogen_complete
     volumeMounts:
     - mountPath: /shared
-      name: shared
+      name: {{ template "ibm-blockchain-shared-pvc.name" . }}
   - name: configtxgen
     image: {{ .Values.blockchain.toolsImage }}
     imagePullPolicy: {{ .Values.blockchain.pullPolicy }}
@@ -63,22 +68,22 @@ spec:
         rm -f /shared/status_cryptogen_complete
     env:
      - name: PEERHOST1
-       value: blockchain-org1peer1
+       value: {{ template "ibm-blockchain-network.name" . }}-org1peer1
      - name: PEERPORT1
        value: "5010"
      - name: PEERHOST2
-       value: blockchain-org2peer1
+       value: {{ template "ibm-blockchain-network.name" . }}-org2peer1
      - name: PEERPORT2
        value: "5010"
      - name: ORDERER_URL
-       value: blockchain-orderer:31010
+       value: {{ template "ibm-blockchain-network.name" . }}-orderer:31010
      - name: FABRIC_CFG_PATH
        value: /shared
     # - name: GODEBUG
     #   value: "netdns=go"
     volumeMounts:
     - mountPath: /shared
-      name: shared
+      name: {{ template "ibm-blockchain-shared-pvc.name" . }}
   - name: bootstrap
     image: {{ .Values.blockchain.toolsImage }}
     imagePullPolicy: {{ .Values.blockchain.pullPolicy }}
@@ -104,25 +109,35 @@ spec:
         echo 'Done with bootstrapping'
     volumeMounts:
     - mountPath: /shared
-      name: shared
+      name: {{ template "ibm-blockchain-shared-pvc.name" . }}
     - mountPath: /home
       name: composer-credentials
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: blockchain-orderer
+  name: {{ template "ibm-blockchain-network.fullname" . }}-orderer
+  labels:
+    app: {{ template "ibm-blockchain-network.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 spec:
   replicas: 1
   template:
     metadata:
+      name: {{ template "ibm-blockchain-network.fullname" . }}-orderer
       labels:
-        name: orderer
+        app: {{ template "ibm-blockchain-network.name" . }}
+        chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+        release: {{ .Release.Name }}
+        heritage: {{ .Release.Service }}
+        name: {{ template "ibm-blockchain-network.fullname" . }}-orderer
     spec:
       volumes:
-      - name: shared
+      - name: {{ template "ibm-blockchain-shared-pvc.name" . }}
         persistentVolumeClaim:
-         claimName: shared
+         claimName: {{ template "ibm-blockchain-shared-pvc.name" . }}
 
       containers:
       - name: orderer
@@ -178,24 +193,34 @@ spec:
           value: "netdns=go"
         volumeMounts:
         - mountPath: /shared
-          name: shared
+          name: {{ template "ibm-blockchain-shared-pvc.name" . }}
 
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: blockchain-ca
+  name: {{ template "ibm-blockchain-network.fullname" . }}-ca
+  labels:
+    app: {{ template "ibm-blockchain-network.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 spec:
   replicas: 1
   template:
     metadata:
+      name: {{ template "ibm-blockchain-network.fullname" . }}-ca
       labels:
-        name: ca
+        app: {{ template "ibm-blockchain-network.name" . }}
+        chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+        release: {{ .Release.Name }}
+        heritage: {{ .Release.Service }}
+        name: {{ template "ibm-blockchain-network.fullname" . }}-ca
     spec:
       volumes:
-      - name: shared
+      - name: {{ template "ibm-blockchain-shared-pvc.name" . }}
         persistentVolumeClaim:
-         claimName: shared
+         claimName: {{ template "ibm-blockchain-shared-pvc.name" . }}
 
       containers:
       - name: ca
@@ -206,7 +231,7 @@ spec:
         - -c
         - |
           sleep 1
-          
+
           while [ ! -f /shared/bootstrapped ]; do
             echo Waiting for bootstrap
             sleep 1
@@ -233,24 +258,34 @@ spec:
           value: "netdns=go"
         volumeMounts:
         - mountPath: /shared
-          name: shared
+          name: {{ template "ibm-blockchain-shared-pvc.name" . }}
 
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: blockchain-org1peer1
+  name: {{ template "ibm-blockchain-network.fullname" . }}-org1peer1
+  labels:
+    app: {{ template "ibm-blockchain-network.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 spec:
   replicas: 1
   template:
     metadata:
+      name: {{ template "ibm-blockchain-network.fullname" . }}-org1peer1
       labels:
-        name: org1peer1
+        app: {{ template "ibm-blockchain-network.name" . }}
+        chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+        release: {{ .Release.Name }}
+        heritage: {{ .Release.Service }}
+        name: {{ template "ibm-blockchain-network.fullname" . }}-org1peer1
     spec:
       volumes:
-      - name: shared
+      - name: {{ template "ibm-blockchain-shared-pvc.name" . }}
         persistentVolumeClaim:
-         claimName: shared
+         claimName: {{ template "ibm-blockchain-shared-pvc.name" . }}
       - name: dockersocket
         hostPath:
           path: /var/run/docker.sock
@@ -278,7 +313,7 @@ spec:
         - name: CORE_PEER_NETWORKID
           value: nid1
         - name: CORE_PEER_ADDRESS
-          value: blockchain-org1peer1:5010
+          value: {{ template "ibm-blockchain-network.name" . }}-org1peer1:5010
         - name: CORE_PEER_LISTENADDRESS
           value: 0.0.0.0:5010
         - name: CORE_PEER_EVENTS_ADDRESS
@@ -322,30 +357,40 @@ spec:
         - name: FABRIC_CFG_PATH
           value: /etc/hyperledger/fabric/
         - name: ORDERER_URL
-          value: blockchain-orderer:31010
+          value: {{ template "ibm-blockchain-network.name" . }}-orderer:31010
         - name: GODEBUG
           value: "netdns=go"
         volumeMounts:
         - mountPath: /shared
-          name: shared
+          name: {{ template "ibm-blockchain-shared-pvc.name" . }}
         - mountPath: /host/var/run/docker.sock
           name: dockersocket
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: blockchain-org2peer1
+  name: {{ template "ibm-blockchain-network.fullname" . }}-org2peer1
+  labels:
+    app: {{ template "ibm-blockchain-network.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 spec:
   replicas: 1
   template:
     metadata:
+      name: {{ template "ibm-blockchain-network.fullname" . }}-org2peer1
       labels:
-        name: org2peer1
+        app: {{ template "ibm-blockchain-network.name" . }}
+        chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+        release: {{ .Release.Name }}
+        heritage: {{ .Release.Service }}
+        name: {{ template "ibm-blockchain-network.fullname" . }}-org2peer1
     spec:
       volumes:
-      - name: shared
+      - name: {{ template "ibm-blockchain-shared-pvc.name" . }}
         persistentVolumeClaim:
-         claimName: shared
+         claimName: {{ template "ibm-blockchain-shared-pvc.name" . }}
       - name: dockersocket
         hostPath:
           path: /var/run/docker.sock
@@ -373,7 +418,7 @@ spec:
         - name: CORE_PEER_NETWORKID
           value: nid1
         - name: CORE_PEER_ADDRESS
-          value: blockchain-org2peer1:5010
+          value: {{ template "ibm-blockchain-network.name" . }}-org2peer1:5010
         - name: CORE_PEER_LISTENADDRESS
           value: 0.0.0.0:5010
         - name: CORE_PEER_EVENTS_ADDRESS
@@ -419,11 +464,11 @@ spec:
         - name: FABRIC_CFG_PATH
           value: /etc/hyperledger/fabric/
         - name: ORDERER_URL
-          value: blockchain-orderer:31010
+          value: {{ template "ibm-blockchain-network.name" . }}-orderer:31010
         - name: GODEBUG
           value: "netdns=go"
         volumeMounts:
         - mountPath: /shared
-          name: shared
+          name: {{ template "ibm-blockchain-shared-pvc.name" . }}
         - mountPath: /host/var/run/docker.sock
           name: dockersocket

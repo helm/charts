@@ -3,8 +3,12 @@
 kind: PersistentVolume
 apiVersion: v1
 metadata:
-  name: composer-pvc
+  name: {{ template "ibm-blockchain-composer-pvc.name" . }}
   labels:
+    app: {{ template "ibm-blockchain-composer-pvc.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
     type: local
 spec:
   capacity:
@@ -18,10 +22,15 @@ spec:
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: composer-pvc
+  name: {{ template "ibm-blockchain-composer-pvc.name" . }}
+  labels:
+    app: {{ template "ibm-blockchain-composer-pvc.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 {{- if .Values.persistence.storageClass }}
   annotations:
-    volume.beta.kubernetes.io/storage-class: "{{ .Values.persistence.storageClass }}"
+    volume.beta.kubernetes.io/storage-class: {{ .Values.persistence.storageClass }}
 {{- end }}
 spec:
   accessModes:
