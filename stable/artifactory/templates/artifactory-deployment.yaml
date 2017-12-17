@@ -55,19 +55,24 @@ spec:
         - name: DB_HOST
           value: {{ template "artifactory.database.name" . }}
         - name: EXTRA_JAVA_OPTIONS
-          value: "-Xms{{ .Values.artifactory.resources.requests.memory }}g -Xmx{{ .Values.artifactory.resources.limits.memory }}g"
+          value: "
+      {{- if .Values.artifactory.javaOpts.other }}
+          {{ .Values.artifactory.javaOpts.other }}
+      {{- end}}
+      {{- if .Values.artifactory.javaOpts.xms }}
+          -Xms{{ .Values.artifactory.javaOpts.xms }}
+      {{- end}}
+      {{- if .Values.artifactory.javaOpts.xmx }}
+          -Xmx{{ .Values.artifactory.javaOpts.xmx }}
+      {{- end}}
+            "
         ports:
         - containerPort: {{ .Values.artifactory.internalPort }}
         volumeMounts:
         - name: artifactory-volume
           mountPath: {{ .Values.artifactory.persistence.mountPath | quote }}
         resources:
-          requests:
-            memory: "{{ .Values.artifactory.resources.requests.memory }}Gi"
-            cpu: "{{ .Values.artifactory.resources.requests.cpu }}"
-          limits:
-            memory: "{{ .Values.artifactory.resources.limits.memory }}.5Gi"
-            cpu: "{{ .Values.artifactory.resources.limits.cpu }}"
+{{ toYaml .Values.artifactory.resources | indent 10 }}
         readinessProbe:
           httpGet:
             path: '/artifactory/webapp/#/login'

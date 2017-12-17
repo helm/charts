@@ -48,12 +48,7 @@ spec:
         - mountPath: {{ .Values.database.persistence.mountPath | quote }}
           name: postgresql-volume
         resources:
-          requests:
-            memory: "{{ .Values.database.resources.requests.memory }}"
-            cpu: "{{ .Values.database.resources.requests.cpu }}"
-          limits:
-            memory: "{{ .Values.database.resources.limits.memory }}"
-            cpu: "{{ .Values.database.resources.limits.cpu }}"
+{{ toYaml .Values.database.resources | indent 10 }}
         livenessProbe:
           exec:
             command:

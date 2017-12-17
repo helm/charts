@@ -38,6 +38,31 @@ $ helm upgrade artifactory --namespace artifactory stable/artifactory
 
 This will apply any configuration changes on your existing deployment.
 
+### Artifactory memory and CPU resources
+The Artifactory Helm chart comes with support for configured resource requests and limits to Artifactory, Nginx and PostgreSQL. By default, these settings are commented out.
+It is **highly** recommended to set these so you have full control of the allocated resources and limits.
+Artifactory java memory parameters can (and should) also be set to match the allocated resources with `artifactory.javaOpts.xms` and `artifactory.javaOpts.xmx`.
+```bash
+# Example of setting resource requests and limits to all pods (including passing java memory settings to Artifactory)
+$ helm install --name artifactory \
+               --set artifactory.resources.requests.cpu="500m" \
+               --set artifactory.resources.limits.cpu="2" \
+               --set artifactory.resources.requests.memory="1Gi" \
+               --set artifactory.resources.limits.memory="4Gi" \
+               --set artifactory.javaOpts.xms="1g" \
+               --set artifactory.javaOpts.xmx="4g" \
+               --set database.resources.requests.cpu="200m" \
+               --set database.resources.limits.cpu="1" \
+               --set database.resources.requests.memory="500Mi" \
+               --set database.resources.limits.memory="1Gi" \
+               --set nginx.resources.requests.cpu="100m" \
+               --set nginx.resources.limits.cpu="250m" \
+               --set nginx.resources.requests.memory="250Mi" \
+               --set nginx.resources.limits.memory="500Mi" \
+               stable/artifactory
+```
+Get more details on configuring Artifactory in the [official documentation](https://www.jfrog.com/confluence/).
+
 ### Customizing Database password
 You can override the specified database password (set in [values.yaml](values.yaml)), by passing it as a parameter in the install command line
 ```bash
@@ -89,10 +114,10 @@ The following tables lists the configurable parameters of the artifactory chart 
 | `database.persistence.enabled` | Database persistence volume enabled | `true`   |
 | `database.persistence.accessMode` | Database persistence volume access mode | `ReadWriteOnce`   |
 | `database.persistence.size`          | Database persistence volume size | `10Gi`  |
-| `database.resources.requests.memory` | Database initial memory request  | `512Mi` |
-| `database.resources.requests.cpu`    | Database initial cpu request     | `100m`  |
-| `database.resources.limits.memory`   | Database memory limit            | `1Gi`   |
-| `database.resources.limits.cpu`      | Database cpu limit               | `500m`  |
+| `database.resources.requests.memory` | Database initial memory request  |         |
+| `database.resources.requests.cpu`    | Database initial cpu request     |         |
+| `database.resources.limits.memory`   | Database memory limit            |         |
+| `database.resources.limits.cpu`      | Database cpu limit               |         |
 | `artifactory.name` | Artifactory name | `artifactory`   |
 | `artifactory.replicaCount`            | Replica count for Artifactory deployment| `1`                                                |
 | `artifactory.image.pullPolicy`         | Container pull policy             | `IfNotPresent`                                           |
@@ -106,10 +131,13 @@ The following tables lists the configurable parameters of the artifactory chart 
 | `artifactory.persistence.enabled` | Artifactory persistence volume enabled | `true`   |
 | `artifactory.persistence.accessMode` | Artifactory persistence volume access mode | `ReadWriteOnce`   |
 | `artifactory.persistence.size` | Artifactory persistence volume size | `20Gi`   |
-| `artifactory.resources.requests.memory` | Artifactory initial memory request (giga bytes only!) | `2`   |
-| `artifactory.resources.requests.cpu`    | Artifactory initial cpu request     | `500m`  |
-| `artifactory.resources.limits.memory`   | Artifactory memory limit (giga bytes only!) | `4`   |
-| `artifactory.resources.limits.cpu`      | Artifactory cpu limit               | `2`     |
+| `artifactory.resources.requests.memory` | Artifactory initial memory request  |      |
+| `artifactory.resources.requests.cpu`    | Artifactory initial cpu request     |      |
+| `artifactory.resources.limits.memory`   | Artifactory memory limit            |      |
+| `artifactory.resources.limits.cpu`      | Artifactory cpu limit               |      |
+| `artifactory.javaOpts.xms`              | Artifactory java Xms size           |      |
+| `artifactory.javaOpts.xmx`              | Artifactory java Xms size           |      |
+| `artifactory.javaOpts.other`            | Artifactory additional java options |      |
 | `nginx.name` | Nginx name | `nginx`   |
 | `nginx.replicaCount` | Nginx replica count | `1`   |
 | `nginx.image.repository`    | Container image                   | `docker.bintray.io/jfrog/nginx-artifactory-pro`                |

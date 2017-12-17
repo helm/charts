@@ -39,13 +39,13 @@ database:
     ##   GKE, AWS & OpenStack)
     ##
     # storageClass: "-"
-  resources:
-    requests:
-      memory: "512Mi"
-      cpu: "100m"
-    limits:
-      memory: "1Gi"
-      cpu: "500m"
+  resources: {}
+  #  requests:
+  #    memory: "512Mi"
+  #    cpu: "100m"
+  #  limits:
+  #    memory: "1Gi"
+  #    cpu: "500m"
 
 # Artifactory
 artifactory:
@@ -74,17 +74,21 @@ artifactory:
     ##   GKE, AWS & OpenStack)
     ##
     # storageClass: "-"
-  resources:
-    requests:
-      # Leave as plain numbers. Giga byte only!
-      # They are being used in multiple string formats by Artifactory deployment
-      memory: "2"
-      cpu: "500m"
-    limits:
-      # Leave as plain numbers. Giga byte only!
-      # They are being used in multiple string formats by Artifactory deployment
-      memory: "4"
-      cpu: "2"
+  ## Uncomment the following resources definitions or pass them from command line
+  ## to control the cpu and memory resources allocated by the Kubernetes cluster
+  resources: {}
+  #  requests:
+  #    memory: "1Gi"
+  #    cpu: "500m"
+  #  limits:
+  #    memory: "2Gi"
+  #    cpu: "1"
+  ## The following Java options are passed to the java process running Artifactory.
+  ## You should set them according to the resources set above
+  javaOpts: {}
+  #  xms: "1g"
+  #  xmx: "2g"
+  #  other: ""
 
 # Nginx
 nginx:
@@ -123,10 +127,10 @@ nginx:
     ##   GKE, AWS & OpenStack)
     ##
     # storageClass: "-"
-  resources:
-    requests:
-      memory: "250Mi"
-      cpu: "100m"
-    limits:
-      memory: "250Mi"
-      cpu: "500m"
+  resources: {}
+  #  requests:
+  #    memory: "250Mi"
+  #    cpu: "100m"
+  #  limits:
+  #    memory: "250Mi"
+  #    cpu: "500m"

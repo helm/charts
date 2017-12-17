@@ -60,12 +60,7 @@ spec:
         - name: nginx-volume
           mountPath: {{ .Values.nginx.persistence.mountPath | quote }}
         resources:
-          requests:
-            memory: "{{ .Values.nginx.resources.requests.memory }}"
-            cpu: "{{ .Values.nginx.resources.requests.cpu }}"
-          limits:
-            memory: "{{ .Values.nginx.resources.limits.memory }}"
-            cpu: "{{ .Values.nginx.resources.limits.cpu }}"
+{{ toYaml .Values.nginx.resources | indent 10 }}
       volumes:
       - name: nginx-volume
       {{- if .Values.nginx.persistence.enabled }}
