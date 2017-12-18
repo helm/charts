@@ -245,7 +245,7 @@ concourse:
   ##
   # gitlabAuthTokenUrl:
 
-  ## API endpoint URL for Github server.
+  ## API endpoint URL for Gitlab server.
   ##
   # gitlabAuthApiUrl:
 
