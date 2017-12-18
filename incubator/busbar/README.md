@@ -14,25 +14,27 @@ To install the Busbar Chart on your system, run the following command (the optio
 
 ```bash
 helm install busbar \
+  --set clusterName=<your_k8s_cluster_name> \
   --set privateDomainName=<your_private_dns_zone> \
-  --set registryStorageS3Accesskey=<your_private_registry_s3_buckey_access_key> \
-  --set registryStorageS3Secretkey=<your_private_registry_s3_buckey_secret_key> \
-  --set registryStorageS3Bucket=<your_private_registry_s3_buckey>
+  --set kubeRegistry.StorageS3Accesskey=<your_private_registry_s3_buckey_access_key> \
+  --set kubeRegistry.StorageS3Secretkey=<your_private_registry_s3_buckey_secret_key> \
+  --set kubeRegistry.StorageS3Bucket=<your_private_registry_s3_buckey>
 ```
 
 ## Available Options
 
-| Parameter                    | Description                              | Default                           |
-|------------------------------|------------------------------------------|-----------------------------------|
-| `image.name`                 | Busbar Docker registry/Image             | busbario/busbar                   |
-| `image.tag`                  | Busbar Image tag to use on installation  | 1.8.1                             |
-| `image.pullPolicy`           | Busbar Image pull policy                 | always                            |
-| `clusterName`                | Kubernetes Cluster Name                  | busbar_cluster                    |
-| `privateDomainName`          | Private Domain Name                      | private                           |
-| `publicDomainName`           | Public Domain Name                       | example.com                       |
-| `registryStorageS3Accesskey` | Private Registry S3 Bucket Access Key    | my_private_registry_s3_access_key |
-| `registryStorageS3Secretkey` | Private Registry S3 Bucket Secret Key    | my_private_registry_s3_secret_key |
-| `registryStorageS3Bucket`    | Private Registry S3 Bucket               | my_private_registry_s3_bucket     |
+| Parameter                         | Description                              | Default                           |
+|-----------------------------------|------------------------------------------|-----------------------------------|
+| `image.repository`                | Busbar Docker registry/Image             | busbario                          |
+| `image.name`                      | Busbar Docker registry/Image             | busbar                            |
+| `image.tag`                       | Busbar Image tag to use on installation  | 1.8.1                             |
+| `image.pullPolicy`                | Busbar Image pull policy                 | ifNotPresent                      |
+| `clusterName`                     | Kubernetes Cluster Name                  | busbar_cluster                    |
+| `privateDomainName`               | Private Domain Name                      | private                           |
+| `publicDomainName`                | Public Domain Name                       | example.com                       |
+| `kubeRegistry.StorageS3Accesskey` | Private Registry S3 Bucket Access Key    | my_private_registry_s3_access_key |
+| `kubeRegistry.StorageS3Secretkey` | Private Registry S3 Bucket Secret Key    | my_private_registry_s3_secret_key |
+| `kubeRegistry.StorageS3Bucket`    | Private Registry S3 Bucket               | my_private_registry_s3_bucket     |
 
 ## Image Repositories:
 
