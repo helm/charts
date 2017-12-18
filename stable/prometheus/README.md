@@ -49,7 +49,8 @@ Parameter | Description | Default
 `alertmanager.image.repository` | alertmanager container image repository | `prom/alertmanager`
 `alertmanager.image.tag` | alertmanager container image tag | `v0.5.1`
 `alertmanager.image.pullPolicy` | alertmanager container image pull policy | `IfNotPresent`
-`alertmanager.baseURL` | The prefix slug at which the server can be accessed | ``
+`alertmanager.prefixURL` | The prefix slug at which the server can be accessed | ``
+`alertmanager.baseURL` | The external url at which the server can be accessed | ``
 `alertmanager.extraArgs` | Additional alertmanager container arguments | `{}`
 `alertmanager.configMapOverrideName` | Prometheus alertmanager ConfigMap override where full-name is `{{.Release.Name}}-{{.Values.alertmanager.configMapOverrideName}}` and setting this value will prevent the default alertmanager ConfigMap from being generated | `""`
 `alertmanager.ingress.enabled` | If true, alertmanager Ingress will be created | `false`
@@ -146,7 +147,8 @@ Parameter | Description | Default
 `server.image.pullPolicy` | Prometheus server container image pull policy | `IfNotPresent`
 `server.alertmanagerURL` | (optional) alertmanager URL; only used if alertmanager.enabled = false | `""`
 `server.extraArgs` | Additional Prometheus server container arguments | `{}`
-`server.baseURL` | The prefix slug at which the server can be accessed | ``
+`server.prefixURL` | The prefix slug at which the server can be accessed | ``
+`server.baseURL` | The external url at which the server can be accessed | ``
 `server.extraHostPathMounts` | Additional Prometheus server hostPath mounts | `[]`
 `server.configMapOverrideName` | Prometheus server ConfigMap override where full-name is `{{.Release.Name}}-{{.Values.server.configMapOverrideName}}` and setting this value will prevent the default server ConfigMap from being generated | `""`
 `server.ingress.enabled` | If true, Prometheus server Ingress will be created | `false`
