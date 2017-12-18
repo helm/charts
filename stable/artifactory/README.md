@@ -155,10 +155,10 @@ The following tables lists the configurable parameters of the artifactory chart 
 | `nginx.persistence.enabled` | Nginx persistence volume enabled | `true`   |
 | `nginx.persistence.accessMode` | Nginx persistence volume access mode | `ReadWriteOnce`   |
 | `nginx.persistence.size` | Nginx persistence volume size | `5Gi`   |
-| `nginx.resources.requests.memory` | Nginx initial memory request  | `250Mi`   |
-| `nginx.resources.requests.cpu`    | Nginx initial cpu request     | `100m`    |
-| `nginx.resources.limits.memory`   | Nginx memory limit            | `250Mi`   |
-| `nginx.resources.limits.cpu`      | Nginx cpu limit               | `500m`    |
+| `nginx.resources.requests.memory` | Nginx initial memory request  |     |
+| `nginx.resources.requests.cpu`    | Nginx initial cpu request     |     |
+| `nginx.resources.limits.memory`   | Nginx memory limit            |     |
+| `nginx.resources.limits.cpu`      | Nginx cpu limit               |     |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
