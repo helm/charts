@@ -1,4 +1,4 @@
-apiVersion: apps/v1beta1
+apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
   name: {{ template "kubeRegistry.fullname" . }}-internal

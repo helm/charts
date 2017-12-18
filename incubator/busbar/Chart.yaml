@@ -1,6 +1,6 @@
 name: busbar
 version: 0.0.1
-appVersion: 1.5.0
+appVersion: 1.8.1
 description: A tool to build, deploy and control applications running on a Kubernetes cluster.
 keywords:
 - application hosting

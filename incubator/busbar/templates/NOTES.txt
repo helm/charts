@@ -2,7 +2,7 @@ The busbar CLI parameters for the newly created cluster are as follow:
 - default_git_branch: master
 - busbar_profile: {{ .Values.clusterName }}.{{ .Values.privateDomainName }}
 
-For the URL for the Busbar API, Kubecofig service and the private Docker Registry,
+For the URL for Busbar API, Kubecofig service and the private Docker Registry,
 run the following commands once the services are created:
 
 Busbar API

@@ -4,7 +4,7 @@
 ## Busbar Image
 image:
   name: busbario/busbar
-  tag: 1.5.1
+  tag: 1.8.1
   pullPolicy: Always
 
 ## Cluster Name
