@@ -1,0 +1,4 @@
+apiVersion: v1
+description: A Helm chart for sentry-kubernetes (https://github.com/getsentry/sentry-kubernetes)
+name: sentry-kubernetes
+version: 0.1.0

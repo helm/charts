@@ -1,0 +1,18 @@
+# Default values for sentry-kubernetes.
+
+sentry:
+  dsn: <your-dsn>
+image:
+  repository: bretthoerner/sentry-kubernetes
+  tag: latest
+  pullPolicy: Always
+resources: {}
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+rbac:
+  create: false
+  serviceAccountName: default
