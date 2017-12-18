@@ -46,14 +46,15 @@ spec:
           value: {{ default "" .Values.externalDatabase.user | quote }}
         {{- end }}
         - name: PHPBB_DATABASE_PASSWORD
-        {{- if .Values.mariadb.enabled }}
           valueFrom:
             secretKeyRef:
+            {{- if .Values.mariadb.enabled }}
               name: {{ template "phpbb.mariadb.fullname" . }}
               key: mariadb-password
-        {{- else }}
-          value: {{ default "" .Values.externalDatabase.password | quote }}
-        {{- end }}
+            {{- else }}
+              name: {{ printf "%s-%s" .Release.Name "externaldb" }}
+              key: db-password
+            {{- end }}
         - name: PHPBB_USERNAME
           value: {{ default "" .Values.phpbbUser | quote }}
         - name: PHPBB_PASSWORD
