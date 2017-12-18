@@ -60,7 +60,7 @@ The following tables lists the configurable parameters of the Redis chart and th
 
 | Parameter                        | Description                                           | Default                                                   |
 | -------------------------------- | ----------------------------------------------------- | --------------------------------------------------------- |
-| `redis_image`                    | Redis image                                           | `quay.io/smile/redis:4.0.6r1`                             |
+| `redis_image`                    | Redis image                                           | `quay.io/smile/redis:4.0.6r2`                             |
 | `resources.master`               | CPU/Memory for master nodes resource requests/limits  | Memory: `200Mi`, CPU: `100m`                              |
 | `resources.slave`                | CPU/Memory for slave nodes  resource requests/limits  | Memory: `200Mi`, CPU: `100m`                              |
 | `resources.sentinel`             | CPU/Memory for sentinel node resource requests/limits | Memory: `200Mi`, CPU: `100m`                              |
@@ -77,7 +77,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 
 ```bash
 $ helm install \
-  --set redis_image=quay.io/smile/redis:4.0.6r1 \
+  --set redis_image=quay.io/smile/redis:4.0.6r2 \
     stable/redis-ha
 ```
 
