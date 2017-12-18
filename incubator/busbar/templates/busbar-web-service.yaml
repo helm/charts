@@ -3,17 +3,18 @@ kind: Service
 metadata:
   name: {{ template "busbar.fullname" . }}-web
   labels:
-    app: {{ template "busbar.name" . }}-web
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app: {{ template "busbar.name" . }}
+    component: {{ template "busbar.name" . }}-web
     release: "{{ .Release.Name }}"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     heritage: "{{ .Release.Service }}"
   annotations:
     service.beta.kubernetes.io/aws-load-balancer-internal: 0.0.0.0/0
 spec:
   selector:
-    app: {{ template "busbar.name" . }}-web
+    app: {{ template "busbar.name" . }}
+    component: {{ template "busbar.name" . }}-web
     release: "{{ .Release.Name }}"
-    component: web
   type: LoadBalancer
   ports:
     - port: 80

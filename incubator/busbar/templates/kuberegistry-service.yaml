@@ -3,16 +3,19 @@ kind: Service
 metadata:
   name: {{ template "kubeRegistry.fullname" . }}-external
   labels:
-    app: {{ template "kubeRegistry.fullname" . }}-external
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app: {{ template "busbar.name" . }}
+    component: {{ template "kubeRegistry.fullname" . }}-external
     release: "{{ .Release.Name }}"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     heritage: "{{ .Release.Service }}"
     kubernetes.io/cluster-service: "true"
   annotations:
     service.beta.kubernetes.io/aws-load-balancer-internal: 0.0.0.0/0
 spec:
   selector:
-    app: {{ template "kubeRegistry.fullname" . }}-external
+    app: {{ template "busbar.name" . }}
+    component: {{ template "kubeRegistry.fullname" . }}-external
+    release: "{{ .Release.Name }}"
   type: LoadBalancer
   ports:
   - name: registry

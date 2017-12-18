@@ -3,15 +3,18 @@ kind: DaemonSet
 metadata:
   name: {{ template "kubeRegistry.fullname" . }}-internal
   labels:
-    app: {{ template "kubeRegistry.fullname" . }}-internal
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app: {{ template "busbar.name" . }}
+    component: {{ template "kubeRegistry.fullname" . }}-internal
     release: "{{ .Release.Name }}"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     heritage: "{{ .Release.Service }}"
 spec:
   template:
     metadata:
       labels:
-        app: {{ template "kubeRegistry.fullname" . }}-internal
+        app: {{ template "busbar.name" . }}
+        component: {{ template "kubeRegistry.fullname" . }}-internal
+        release: "{{ .Release.Name }}"
         kubernetes.io/cluster-service: "true"
     spec:
       containers:

@@ -3,16 +3,19 @@ apiVersion: apps/v1beta1
 metadata:
   name: {{ template "kubeRegistry.fullname" . }}-external
   labels:
-    app: {{ template "kubeRegistry.fullname" . }}-external
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app: {{ template "busbar.name" . }}
+    component: {{ template "kubeRegistry.fullname" . }}-external
     release: "{{ .Release.Name }}"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     heritage: "{{ .Release.Service }}"
 spec:
   replicas: 1
   template:
     metadata:
       labels:
-        app: {{ template "kubeRegistry.fullname" . }}-external
+        app: {{ template "busbar.name" . }}
+        component: {{ template "kubeRegistry.fullname" . }}-external
+        release: "{{ .Release.Name }}"
         kubernetes.io/cluster-service: "true"
     spec:
       containers:

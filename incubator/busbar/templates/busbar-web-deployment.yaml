@@ -3,17 +3,18 @@ kind: Deployment
 metadata:
   name: {{ template "busbar.fullname" . }}-web
   labels:
-    app: {{ template "busbar.name" . }}-web
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app: {{ template "busbar.name" . }}
+    component: {{ template "busbar.name" . }}-web
     release: "{{ .Release.Name }}"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     heritage: "{{ .Release.Service }}"
 spec:
   template:
     metadata:
       labels:
-        app: {{ template "busbar.name" . }}-web
+        app: {{ template "busbar.name" . }}
+        component: {{ template "busbar.name" . }}-web
         release: "{{ .Release.Name }}"
-        component: web
     spec:
       containers:
       - name: {{ template "busbar.fullname" . }}-web
