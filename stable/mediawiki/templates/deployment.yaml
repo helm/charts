@@ -46,14 +46,15 @@ spec:
           value: {{ default "" .Values.externalDatabase.user | quote }}
         {{- end }}
         - name: MEDIAWIKI_DATABASE_PASSWORD
-        {{- if .Values.mariadb.enabled }}
           valueFrom:
             secretKeyRef:
+            {{- if .Values.mariadb.enabled }}
               name: {{ template "mediawiki.mariadb.fullname" . }}
-              key: mariadb-root-password
-        {{- else }}
-          value: {{ default "" .Values.externalDatabase.password | quote }}
-        {{- end }}
+              key: mariadb-password
+            {{- else }}
+              name: {{ printf "%s-%s" .Release.Name "externaldb" }}
+              key: db-password
+            {{- end }}
         - name: MEDIAWIKI_USERNAME
           value: {{ default "" .Values.mediawikiUser | quote }}
         - name: MEDIAWIKI_PASSWORD
