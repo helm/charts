@@ -27,29 +27,29 @@ registryStorageS3Secretkey: my_private_registry_s3_secret_key
 registryStorageS3Bucket: my_private_registry_s3_bucket
 
 kubeRegistry:
-  resources:
-    limits:
-      cpu: "1"
-      memory: 256Mi
-    requests:
-      cpu: "0.5"
-      memory: 256Mi
+  resources: {}
+#    limits:
+#      cpu: "1"
+#      memory: 256Mi
+#    requests:
+#      cpu: "0.5"
+#      memory: 256Mi
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
 ##
 busbar:
   web:
-    resources:
-      requests:
-        cpu: 100m
-        memory: 256Mi
+    resources: {}
+#      requests:
+#        cpu: 100m
+#        memory: 256Mi
 
   worker:
-    resources:
-      requests:
-        cpu: 1
-        memory: 512Mi
+    resources: {}
+#      requests:
+#        cpu: 1
+#        memory: 512Mi
 
 ## Dependencies
 ## Redis
