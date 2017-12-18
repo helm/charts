@@ -6,10 +6,10 @@ image:
   tag: v1.3.0
   pullPolicy: IfNotPresent
 ## Here labels can be added to the heapster deployment
-##labels: {
-##	"kubernetes.io/cluster-service": "\"true\"",
-##	"kubernetes.io/name": "\"Heapster\""
-##}
+## labels: {
+##   "kubernetes.io/cluster-service": "\"true\"",
+##   "kubernetes.io/name": "\"Heapster\""
+## }
 labels: {}
 
 ## Node labels for pod assignment
@@ -26,10 +26,10 @@ service:
   # nameOverride:
 
   ## Here labels can be added to the heapster service
-  ##labels: {
-  ##	"kubernetes.io/cluster-service": "\"true\"",
-  ##	"kubernetes.io/name": "\"Heapster\""
-  ##}
+  ## labels: {
+  ##   "kubernetes.io/cluster-service": "\"true\"",
+  ##   "kubernetes.io/name": "\"Heapster\""
+  ## }
   labels:
 
 resources:
