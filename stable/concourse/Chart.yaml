@@ -1,5 +1,5 @@
 name: concourse
-version: 0.10.3
+version: 0.10.4
 appVersion: 3.6.0
 description: Concourse is a simple and scalable CI system.
 icon: https://avatars1.githubusercontent.com/u/7809479
@@ -18,4 +18,6 @@ maintainers:
   email: viglesias@google.com
 - name: william-tran
   email: will@autonomic.ai
+- name: nexeck
+  email: marcel@beck.im
 engine: gotpl
