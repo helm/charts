@@ -44,22 +44,32 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following tables lists the configurable parameters of the MySQL chart and their default values.
 
-| Parameter                  | Description                        | Default                                                    |
-| -----------------------    | ---------------------------------- | ---------------------------------------------------------- |
-| `imageTag`                 | `mysql` image tag.                 | Most recent release                                        |
-| `imagePullPolicy`          | Image pull policy                  | `IfNotPresent`                                             |
-| `mysqlRootPassword`        | Password for the `root` user.      | `nil`                                                      |
-| `mysqlUser`                | Username of new user to create.    | `nil`                                                      |
-| `mysqlPassword`            | Password for the new user.         | `nil`                                                      |
-| `mysqlDatabase`            | Name for new database to create.   | `nil`                                                      |
-| `persistence.enabled`      | Create a volume to store data      | true                                                       |
-| `persistence.size`         | Size of persistent volume claim    | 8Gi RW                                                     |
-| `persistence.storageClass` | Type of persistent volume claim    | nil  (uses alpha storage class annotation)                 |
-| `persistence.accessMode`   | ReadWriteOnce or ReadOnly          | ReadWriteOnce                                              |
-| `persistence.existingClaim`| Name of existing persistent volume | `nil`
-| `persistence.subPath`      | Subdirectory of the volume to mount | `nil`
-| `resources`                | CPU/Memory resource requests/limits | Memory: `256Mi`, CPU: `100m`                              |
-| `configurationFiles`       | List of mysql configuration files  | `nil`
+| Parameter                            | Description                               | Default                                              |
+| ------------------------------------ | ----------------------------------------- | ---------------------------------------------------- |
+| `imageTag`                           | `mysql` image tag.                        | Most recent release                                  |
+| `imagePullPolicy`                    | Image pull policy                         | `IfNotPresent`                                       |
+| `mysqlRootPassword`                  | Password for the `root` user.             | `nil`                                                |
+| `mysqlUser`                          | Username of new user to create.           | `nil`                                                |
+| `mysqlPassword`                      | Password for the new user.                | `nil`                                                |
+| `mysqlDatabase`                      | Name for new database to create.          | `nil`                                                |
+| `livenessProbe.initialDelaySeconds`  | Delay before liveness probe is initiated  | 30                                                   |
+| `livenessProbe.periodSeconds`        | How often to perform the probe            | 10                                                   |
+| `livenessProbe.timeoutSeconds`       | When the probe times out                  | 5                                                    |
+| `livenessProbe.successThreshold`     | Minimum consecutive successes for the probe to be considered successful after having failed. | 1 |
+| `livenessProbe.failureThreshold`     | Minimum consecutive failures for the probe to be considered failed after having succeeded.   | 3 |
+| `readinessProbe.initialDelaySeconds` | Delay before readiness probe is initiated | 5                                                    |
+| `readinessProbe.periodSeconds`       | How often to perform the probe            | 10                                                   |
+| `readinessProbe.timeoutSeconds`      | When the probe times out                  | 1                                                    |
+| `readinessProbe.successThreshold`    | Minimum consecutive successes for the probe to be considered successful after having failed. | 1 |
+| `readinessProbe.failureThreshold`    | Minimum consecutive failures for the probe to be considered failed after having succeeded.   | 3 |
+| `persistence.enabled`                | Create a volume to store data             | true                                                 |
+| `persistence.size`                   | Size of persistent volume claim           | 8Gi RW                                               |
+| `persistence.storageClass`           | Type of persistent volume claim           | nil  (uses alpha storage class annotation)           |
+| `persistence.accessMode`             | ReadWriteOnce or ReadOnly                 | ReadWriteOnce                                        |
+| `persistence.existingClaim`          | Name of existing persistent volume        | `nil`                                                |
+| `persistence.subPath`                | Subdirectory of the volume to mount       | `nil`                                                |
+| `resources`                          | CPU/Memory resource requests/limits       | Memory: `256Mi`, CPU: `100m`                         |
+| `configurationFiles`                 | List of mysql configuration files         | `nil`                                                |
 
 Some of the parameters above map to the env variables defined in the [MySQL DockerHub image](https://hub.docker.com/_/mysql/).
 

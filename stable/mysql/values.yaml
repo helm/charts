@@ -28,7 +28,21 @@ imageTag: "5.7.14"
 ##
 imagePullPolicy: IfNotPresent
 
-## Persist data to a persitent volume
+livenessProbe:
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  timeoutSeconds: 5
+  successThreshold: 1
+  failureThreshold: 3
+
+readinessProbe:
+  initialDelaySeconds: 5
+  periodSeconds: 10
+  timeoutSeconds: 1
+  successThreshold: 1
+  failureThreshold: 3
+
+## Persist data to a persistent volume
 persistence:
   enabled: true
   ## database data Persistent Volume Storage Class
