@@ -1,8 +1,9 @@
-image: "kuberstack/bitcoind"
-imageTag: "latest"
-imagePullPolicy: IfNotPresent
+image:
+  repository: "kuberstack/bitcoind"
+  tag: "latest"
+  pullPolicy: IfNotPresent
 
-RPCPort: 443
+rpcPort: 443
 
 ssl:
   enabled: true
@@ -24,10 +25,10 @@ persistence:
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
 ##
-resources:
-  requests:
-    memory: 512Mi
-    cpu: 300m
+resources: {}
+#  requests:
+#    memory: 512Mi
+#    cpu: 300m
 
 # Custom bitcoind configuration files used to override default bitcoind settings
 configurationFiles:

@@ -1,4 +1,4 @@
-bitcoincashd RPC can be accessed via port {{ .Values.RPCPort }} on the following DNS name from within your cluster:
+bitcoincashd RPC can be accessed via port {{ .Values.rpcPort }} on the following DNS name from within your cluster:
 {{ template "bitcoincashd.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
 
 To connect to bitcoincashd RPC:
@@ -12,4 +12,4 @@ To connect to bitcoincashd RPC:
     $ apt-get update -y && apt-get install -y curl
 
 3. Connect using the bitcoincashd cli, then provide your password:
-    $ curl --user <rpc_user>:<rpc_password> -k http{{- if .Values.ssl.enabled }}s{{- end }}://{{ template "bitcoincashd.fullname" . }}:{{ .Values.RPCPort }} --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "getinfo", "params": [] }' -H 'content-type: text/plain;'
+    $ curl --user <rpc_user>:<rpc_password> -k http{{- if .Values.ssl.enabled }}s{{- end }}://{{ template "bitcoincashd.fullname" . }}:{{ .Values.rpcPort }} --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "getinfo", "params": [] }' -H 'content-type: text/plain;'

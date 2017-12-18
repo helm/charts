@@ -1,8 +1,9 @@
-image: "kuberstack/dashd"
-imageTag: "latest"
-imagePullPolicy: IfNotPresent
+image:
+  repository: "kuberstack/dashd"
+  tag: "latest"
+  pullPolicy: IfNotPresent
 
-RPCPort: 443
+rpcPort: 443
 
 ssl:
   enabled: true

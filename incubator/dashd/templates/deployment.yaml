@@ -16,13 +16,13 @@ spec:
     spec:
       containers:
       - name: {{ template "dashd.fullname" . }}
-        image: "{{ .Values.image }}:{{ .Values.imageTag }}"
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         ports:
         - name: rpc
-          containerPort: {{ .Values.RPCPort }}
+          containerPort: {{ .Values.rpcPort }}
         volumeMounts:
         - name: data
           mountPath: /dash

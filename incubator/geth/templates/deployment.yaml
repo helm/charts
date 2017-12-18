@@ -16,16 +16,16 @@ spec:
     spec:
       containers:
       - name: {{ template "geth.fullname" . }}
-        image: "{{ .Values.image }}:{{ .Values.imageTag }}"
-        imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
-        command: ["/geth", "--networkid", "{{ .Values.NetworkID }}", "--syncmode", "{{ .Values.SyncMode }}", "--rpc", "--rpcapi", "{{ .Values.RPCApi }}", "--rpcaddr", "0.0.0.0", "--rpcport", "{{ .Values.RPCPort }}", "--ws", "--wsaddr", "0.0.0.0", "--wsport", "{{ .Values.WSPort }}", "--wsapi", "{{ .Values.WSApi }}", "--wsorigins", "{{ .Values.WSOrigins }}"]
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+        command: ["/geth", "--networkid", "{{ .Values.networkId }}", "--syncmode", "{{ .Values.syncMode }}", "--rpc", "--rpcapi", "{{ .Values.rpcApi }}", "--rpcaddr", "0.0.0.0", "--rpcport", "{{ .Values.rpcPort }}", "--ws", "--wsaddr", "0.0.0.0", "--wsport", "{{ .Values.wsPort }}", "--wsapi", "{{ .Values.wsApi }}", "--wsorigins", "{{ .Values.wsOrigins }}"]
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         ports:
         - name: rpc
-          containerPort: {{ .Values.RPCPort }}
+          containerPort: {{ .Values.rpcPort }}
         - name: ws
-          containerPort: {{ .Values.WSPort }}
+          containerPort: {{ .Values.wsPort }}
         volumeMounts:
         - name: data
           mountPath: /root

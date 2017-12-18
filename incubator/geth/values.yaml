@@ -1,14 +1,15 @@
-image: "ethereum/client-go"
-imageTag: "alpine"
-imagePullPolicy: IfNotPresent
+image:
+  repository: "ethereum/client-go"
+  tag: "alpine"
+  pullPolicy: IfNotPresent
 
-RPCPort: 8545
-WSPort: 8546
-RPCApi: "net,eth,personal,web3"
-WSApi: "net,eth,personal,web3"
-WSOrigins: "*"
-NetworkID: 1
-SyncMode: "fast"
+rpcPort: 8545
+wsPort: 8546
+rpcApi: "net,eth,personal,web3"
+wsApi: "net,eth,personal,web3"
+wsOrigins: "*"
+networkId: 1
+syncMode: "fast"
 
 persistence:
   enabled: true
@@ -26,7 +27,7 @@ persistence:
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
 ##
-resources:
-  requests:
-    memory: 512Mi
-    cpu: 300m
+resources: {}
+#  requests:
+#    memory: 512Mi
+#    cpu: 300m

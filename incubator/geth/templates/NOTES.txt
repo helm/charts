@@ -1,4 +1,4 @@
-geth RPC can be accessed via port {{ .Values.RPCPort }} on the following DNS name from within your cluster:
+geth RPC can be accessed via port {{ .Values.rpcPort }} on the following DNS name from within your cluster:
 {{ template "geth.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
 
 To connect to geth RPC:
@@ -15,4 +15,4 @@ To connect to geth RPC:
     apt-get install -y ethereum
 
 3. Connect using the geth cli:
-    $ geth attach http://{{ template "geth.fullname" . }}:{{ .Values.RPCPort }}
+    $ geth attach http://{{ template "geth.fullname" . }}:{{ .Values.rpcPort }}

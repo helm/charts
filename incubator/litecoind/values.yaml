@@ -1,8 +1,9 @@
-image: "kuberstack/litecoind"
-imageTag: "latest"
-imagePullPolicy: IfNotPresent
+image:
+  repository: "kuberstack/litecoind"
+  tag: "latest"
+  pullPolicy: IfNotPresent
 
-RPCPort: 443
+rpcPort: 443
 
 ssl:
   enabled: true
@@ -24,10 +25,10 @@ persistence:
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
 ##
-resources:
-  requests:
-    memory: 512Mi
-    cpu: 300m
+resources: {}
+#  requests:
+#    memory: 512Mi
+#    cpu: 300m
 
 # Custom litecoind configuration files used to override default litecoind settings
 configurationFiles:

@@ -16,13 +16,13 @@ spec:
     spec:
       containers:
       - name: {{ template "bitcoind.fullname" . }}
-        image: "{{ .Values.image }}:{{ .Values.imageTag }}"
-        imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         ports:
         - name: rpc
-          containerPort: {{ .Values.RPCPort }}
+          containerPort: {{ .Values.rpcPort }}
         volumeMounts:
         - name: data
           mountPath: /srv/bitcoind
