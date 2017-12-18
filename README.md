@@ -51,6 +51,15 @@ We'd love for you to contribute a Chart that provides a useful application or se
 Note: We use the same [workflow](https://github.com/kubernetes/community/blob/master/contributors/devel/development.md#workflow),
 [License](LICENSE) and [Contributor License Agreement](CONTRIBUTING.md) as the main Kubernetes repository.
 
+## Owning and Maintaining A Chart
+
+Individual charts can be maintained by one or more members of the Kubernetes community. When someone maintains a chart they have the access to merge changes for that chart. To have merge access for a chart someone first needs to be listed on the chart, in the `Chart.yaml` file, as a maintainer. If that is the case there are two steps that need to happen:
+
+1. Become a [member of the Kubernetes community](https://github.com/kubernetes/community/blob/master/community-membership.md). If you need sponsors and have contributed to charts please reach out to one of the [OWNERS](OWNERS) of the charts repository.
+2. An OWNERS file needs to be added for a chart. That OWNERS file should list the maintainers GitHub Login names for both the reviewers and approvers sections. For an example see the [Drupal chart](stable/drupal/OWNERS). The `OWNERS` file should also be appended to the `.helmignore` file.
+
+Once these two steps are done a chart approver can merge pull requests following the directions in the [REVIEW_GUIDELINES.md](REVIEW_GUIDELINES.md) file. 
+
 ## Review Process
 
 The following outlines the review procedure used by the Chart repository maintainers. Github labels are used to indicate state change during the review process. 
