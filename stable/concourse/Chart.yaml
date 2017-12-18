@@ -18,4 +18,6 @@ maintainers:
   email: viglesias@google.com
 - name: william-tran
   email: will@autonomic.ai
+- name: nexeck
+  email: marcel@beck.im
 engine: gotpl
