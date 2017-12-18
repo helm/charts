@@ -1,16 +1,16 @@
 dependencies:
 - name: elasticsearch
-  version: 0.5.0
+  version: ^0.5.0
   repository: https://kubernetes-charts-incubator.storage.googleapis.com/
 - name: kibana
-  version: 0.2.0
+  version: ^0.2.0
   repository: https://kubernetes-charts.storage.googleapis.com/
 - name: logstash
-  version: 0.3.1
+  version: ^0.3.1
   repository: https://kubernetes-charts-incubator.storage.googleapis.com/
 - name: nginx-ldapauth-proxy
-  version: 0.1.1
+  version: ^0.1.1
   repository: https://kubernetes-charts-incubator.storage.googleapis.com/
 - name: curator
-  version: 0.1.0
+  version: ^0.1.0
   repository: https://quay.io/application/samsung_cnct/curator

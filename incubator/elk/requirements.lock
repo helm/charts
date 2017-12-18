@@ -1,9 +1,0 @@
-dependencies:
-- name: kibana
-  repository: https://kubernetes-charts.storage.googleapis.com/
-  version: 0.2.0
-- name: logstash
-  repository: https://kubernetes-charts-incubator.storage.googleapis.com/
-  version: 0.3.0
-digest: sha256:099b1039a67fdc21ae33a6cda0d180d737cb66c92006c0cff1a3ae9846345a47
-generated: 2017-12-18T10:19:32.992032-05:00
