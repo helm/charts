@@ -1,11 +1,20 @@
 ## Busbar default Values
 ##
 
-## Busbar Image
+## Images
 image:
-  name: busbario/busbar
-  tag: 1.8.1
-  pullPolicy: Always
+  busbar:
+    name: busbario/busbar
+    tag: 1.8.1
+    pullPolicy: Always
+  kuberegistry:
+    name: registry
+    tag: 2.2.1
+    pullPolicy: Always
+  kubeconfig:
+    name: 127.0.0.1:5000/kubeconfig
+    tag: latest
+    pullPolicy: Always
 
 ## Cluster Name
 clusterName: busbar_cluster

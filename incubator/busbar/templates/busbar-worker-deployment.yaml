@@ -1,0 +1,50 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "busbar.fullname" . }}-worker
+  labels:
+    app: {{ template "busbar.name" . }}-worker
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  template:
+    metadata:
+      labels:
+        app: {{ template "busbar.name" . }}-worker
+        release: "{{ .Release.Name }}"
+        component: worker
+    spec:
+      containers:
+      - name: {{ template "busbar.fullname" . }}-worker
+        image: {{ .Values.image.busbar.name }}:{{ .Values.image.busbar.tag }}
+        imagePullPolicy: {{ .Values.image.busbar.pullPolicy }}
+        command:
+        - /bin/sh
+        - -c
+        - bundle exec sidekiq -e ${RAILS_ENV}
+        env:
+          - name: RAILS_ENV
+            value: production
+          - name: CLUSTER_NAME
+            value: {{ .Values.clusterName }}
+          - name: PRIVATE_DOMAIN_NAME
+            value: {{ .Values.privateDomainName }}
+          - name: PUBLIC_DOMAIN_NAME
+            value: {{ .Values.publicDomainName }}
+          - name: MONGODB_URL
+            value: mongodb://{{ template "mongodb.fullname" . }}/busbar
+          - name: REDIS_URL
+            value: redis://{{ template "redis.fullname" . }}:6379
+        resources:
+{{ toYaml .Values.busbar.web.resources | indent 10 }}
+        terminationMessagePath: /dev/termination-log
+        volumeMounts:
+        - mountPath: /var/run/docker.sock
+          name: docker-socket
+      volumes:
+      - hostPath:
+          path: /var/run/docker.sock
+        name: docker-socket
+
+

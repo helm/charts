@@ -1,0 +1,44 @@
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: {{ template "kubeRegistry.fullname" . }}-internal
+  labels:
+    app: {{ template "kubeRegistry.fullname" . }}-internal
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  template:
+    metadata:
+      labels:
+        app: {{ template "kubeRegistry.fullname" . }}-internal
+        kubernetes.io/cluster-service: "true"
+    spec:
+      containers:
+      - name: {{ template "kubeRegistry.fullname" . }}-internal
+        image: {{ .Values.image.kuberegistry.name }}:{{ .Values.image.kuberegistry.tag }}
+        imagePullPolicy: {{ .Values.image.kuberegistry.pullPolicy }}
+        env:
+        - name: REGISTRY_HTTP_ADDR
+          value: :5000
+        - name: REGISTRY_STORAGE
+          value: s3
+        - name: REGISTRY_STORAGE_S3_ACCESSKEY
+          value: {{ .Values.registryStorageS3Accesskey }}
+        - name: REGISTRY_STORAGE_S3_SECRETKEY
+          value: {{ .Values.registryStorageS3Secretkey }}
+        - name: REGISTRY_STORAGE_S3_REGION
+          value: us-east-1
+        - name: REGISTRY_STORAGE_S3_BUCKET
+          value: {{ .Values.registryStorageS3Bucket }}
+        - name: REGISTRY_STORAGE_S3_SECURE
+          value: "true"
+        ports:
+        - containerPort: 5000
+          hostPort: 5000
+          name: registry
+          protocol: TCP
+        resources:
+{{ toYaml .Values.kubeRegistry.resources | indent 10 }}
+
+

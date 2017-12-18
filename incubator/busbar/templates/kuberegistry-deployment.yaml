@@ -1,22 +1,24 @@
-apiVersion: extensions/v1beta1
-kind: DaemonSet
+kind: Deployment
+apiVersion: apps/v1beta1
 metadata:
-  name: {{ template "kubeRegistry.fullname" . }}-internal
+  name: {{ template "kubeRegistry.fullname" . }}-external
   labels:
-    app: {{ template "kubeRegistry.fullname" . }}-internal
+    app: {{ template "kubeRegistry.fullname" . }}-external
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
+  replicas: 1
   template:
     metadata:
       labels:
-        app: {{ template "kubeRegistry.fullname" . }}-internal
+        app: {{ template "kubeRegistry.fullname" . }}-external
         kubernetes.io/cluster-service: "true"
     spec:
       containers:
-      - name: {{ template "kubeRegistry.fullname" . }}-internal
-        image: registry:2.2.1
+      - name: {{ template "kubeRegistry.fullname" . }}-external
+        image: {{ .Values.image.kuberegistry.name }}:{{ .Values.image.kuberegistry.tag }}
+        imagePullPolicy: {{ .Values.image.kuberegistry.pullPolicy }}
         env:
         - name: REGISTRY_HTTP_ADDR
           value: :5000
@@ -34,7 +36,6 @@ spec:
           value: "true"
         ports:
         - containerPort: 5000
-          hostPort: 5000
           name: registry
           protocol: TCP
         resources:

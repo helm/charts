@@ -1,0 +1,50 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "busbar.fullname" . }}-web
+  labels:
+    app: {{ template "busbar.name" . }}-web
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  template:
+    metadata:
+      labels:
+        app: {{ template "busbar.name" . }}-web
+        release: "{{ .Release.Name }}"
+        component: web
+    spec:
+      containers:
+      - name: {{ template "busbar.fullname" . }}-web
+        image: {{ .Values.image.busbar.name }}:{{ .Values.image.busbar.tag }}
+        imagePullPolicy: {{ .Values.image.busbar.pullPolicy }}
+        command:
+        - /bin/sh
+        - -c
+        - bundle exec puma -e ${RAILS_ENV} -p ${PORT}
+        env:
+          - name: RAILS_ENV
+            value: production
+          - name: PORT
+            value: "8080"
+          - name: CLUSTER_NAME
+            value: {{ .Values.clusterName }}
+          - name: PRIVATE_DOMAIN_NAME
+            value: {{ .Values.privateDomainName }}
+          - name: PUBLIC_DOMAIN_NAME
+            value: {{ .Values.publicDomainName }}
+          - name: MONGODB_URL
+            value: mongodb://{{ template "mongodb.fullname" . }}/busbar
+          - name: REDIS_URL
+            value: redis://{{ template "redis.fullname" . }}:6379
+          - name: SECRET_KEY_BASE
+            value: {{ randAlphaNum 128 }}
+        ports:
+        - containerPort: 8080
+          name: web-port
+          protocol: TCP
+        resources:
+{{ toYaml .Values.busbar.web.resources | indent 10 }}
+
+
