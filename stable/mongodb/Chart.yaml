@@ -1,5 +1,5 @@
 name: mongodb
-version: 0.4.20
+version: 0.4.21
 appVersion: 3.6.0
 description: NoSQL document-oriented database that stores JSON-like documents with dynamic schemas, simplifying the integration of data in content-driven applications.
 keywords:
