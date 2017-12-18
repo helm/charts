@@ -33,19 +33,30 @@ fi
 # include the semvercompare function
 curDir="$(dirname "$0")"
 source "$curDir/semvercompare.sh"
+exitCode=0
 
 # Cleanup any releases and namespaces left over from the test
 function cleanup {
-    if [ $semvercomparePassed -eq 0 ]; then
-      echo "Error please increment the new chart version to be greater than the existing version of $semvercompareOldVer"
-    fi
-
     if [ -n "$CURRENT_RELEASE" ]; then
       helm delete --purge ${CURRENT_RELEASE} > cleanup_log 2>&1 || true
     fi
     kubectl delete ns ${NAMESPACE} >> cleanup_log 2>&1 || true
 }
 trap cleanup EXIT
+
+function dosemvercompare {
+  # Note, the trap and automatic exiting are disabled for the semver comparison
+  # because it catches its own errors. If the comparison fails exitCode is set
+  # to 1. So, trapping and exiting is re-enabled and then the exit is handled
+  trap - EXIT
+  set +e
+  semvercompare ${1}
+  trap cleanup EXIT
+  set -e
+  if [ $exitCode == 1 ]; then
+    exit 1
+  fi
+}
 
 if [ ! -f "${KUBECONFIG:=}" ];then
   # Get credentials for test cluster
@@ -87,11 +98,11 @@ for directory in ${CHANGED_FOLDERS}; do
   elif [ -d $directory ]; then
     CHART_NAME=`echo ${directory} | cut -d '/' -f2`
     
-    # semvercompare is here as well as in the circleci tests. The circleci tests
-    # provide almost immediate feedback to chart authors. This test is also
+    # A semver comparison is here as well as in the circleci tests. The circleci
+    # tests provide almost immediate feedback to chart authors. This test is also
     # re-run right before the bot merges a PR so we can make sure the chart
     # version is always incremented.
-    semvercompare ${directory}
+    dosemvercompare ${directory}
     RELEASE_NAME="${CHART_NAME:0:7}-${BUILD_NUMBER}"
     CURRENT_RELEASE=${RELEASE_NAME}
     helm dep build ${directory}
