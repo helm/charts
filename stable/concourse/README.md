@@ -68,7 +68,7 @@ The following tables lists the configurable parameters of the Concourse chart an
 | Parameter               | Description                           | Default                                                    |
 | ----------------------- | ----------------------------------    | ---------------------------------------------------------- |
 | `image` | Concourse image | `concourse/concourse` |
-| `imageTag` | Concourse image version | `3.3.2` |
+| `imageTag` | Concourse image version | `3.8.0` |
 | `imagePullPolicy` |Concourse image pull policy |  `Always` if `imageTag` is `latest`, else `IfNotPresent` |
 | `concourse.username` | Concourse Basic Authentication Username | `concourse` |
 | `concourse.password` | Concourse Basic Authentication Password | `concourse` |
@@ -326,5 +326,5 @@ credentialManager:
     ## initial periodic token issued for concourse
     ## ref: https://www.vaultproject.io/docs/concepts/tokens.html#periodic-tokens
     ##
-    clientToken: PERIODIC_VAULT_TOKEN 
+    clientToken: PERIODIC_VAULT_TOKEN
 ```
