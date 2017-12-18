@@ -48,13 +48,13 @@ The following tables lists the configurable parameters of the geth chart and the
 | `persistence.accessMode`   | ReadWriteOnce or ReadOnly          | ReadWriteOnce                                              |
 | `persistence.existingClaim`| Name of existing persistent volume | `nil`                                                      |
 | `resources`                | CPU/Memory resource requests/limits| Memory: `512Mi`, CPU: `300m`                               |
-| `RPCPort`                  | HTTP-RPC server listening port     | `8545`                                                     |
-| `WSPort`                   | WS-RPC server listening port       | `8546`                                                     |
-| `RPCApi`                   | API's offered over the HTTP-RPC interface | `net,eth,personal,web3`                             |
-| `WSApi`                    | API's offered over the WS-RPC interface   | `net,eth,personal,web3`                             |
-| `WSOrigins`                | Origins from which to accept websockets requests   | `*`                                        |
-| `NetworkID`                |  Network identifier (integer, 1=Frontier, 2=Morden (disused), 3=Ropsten, 4=Rinkeby) | `1`       |
-| `SyncMode`                 | Blockchain sync mode ("fast", "full", or "light")     | `fast`                                  |
+| `rpcPort`                  | HTTP-RPC server listening port     | `8545`                                                     |
+| `wsPort`                   | WS-RPC server listening port       | `8546`                                                     |
+| `rpcApi`                   | API's offered over the HTTP-RPC interface | `net,eth,personal,web3`                             |
+| `wsApi`                    | API's offered over the WS-RPC interface   | `net,eth,personal,web3`                             |
+| `wsOrigins`                | Origins from which to accept websockets requests   | `*`                                        |
+| `networkId`                | Network identifier (integer, 1=Frontier, 2=Morden (disused), 3=Ropsten, 4=Rinkeby) | `1`       |
+| `syncMode`                 | Blockchain sync mode ("fast", "full", or "light")     | `fast`                                  |
 
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,

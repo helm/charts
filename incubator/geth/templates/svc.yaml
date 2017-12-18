@@ -10,10 +10,10 @@ metadata:
 spec:
   ports:
   - name: rpc
-    port: {{ .Values.RPCPort }}
+    port: {{ .Values.rpcPort }}
     targetPort: rpc
   - name: ws
-    port: {{ .Values.WSPort }}
+    port: {{ .Values.wsPort }}
     targetPort: ws
   selector:
     app: {{ template "geth.name" . }}

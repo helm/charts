@@ -10,7 +10,7 @@ metadata:
 spec:
   ports:
   - name: rpc
-    port: {{ .Values.RPCPort }}
+    port: {{ .Values.rpcPort }}
     targetPort: rpc
   selector:
     app: {{ template "bitcoincashd.name" . }}
