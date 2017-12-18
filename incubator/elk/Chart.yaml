@@ -1,0 +1,9 @@
+apiVersion: v1
+description: A Helm chart for ELK
+name: elk
+version: 0.3.0
+maintainers:
+- name: rendhalver
+  email: pete.brown@powerhrg.com
+- name: jar361
+  email: jrodgers@powerhrg.com
