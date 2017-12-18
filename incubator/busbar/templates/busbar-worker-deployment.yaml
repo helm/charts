@@ -33,9 +33,9 @@ spec:
           - name: PUBLIC_DOMAIN_NAME
             value: {{ .Values.publicDomainName }}
           - name: MONGODB_URL
-            value: mongodb://{{ template "mongodb.fullname" . }}/busbar
+            value: mongodb://{{ template "busbar.mongodb.fullname" . }}/busbar
           - name: REDIS_URL
-            value: redis://{{ template "redis.fullname" . }}:6379
+            value: redis://{{ template "busbar.redis.fullname" . }}:6379
         resources:
 {{ toYaml .Values.busbar.web.resources | indent 10 }}
         terminationMessagePath: /dev/termination-log

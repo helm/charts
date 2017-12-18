@@ -19,7 +19,7 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 */}}
-{{- define "mongodb.fullname" -}}
+{{- define "busbar.mongodb.fullname" -}}
 {{- printf "%s-%s" .Release.Name "mongodb" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
@@ -27,7 +27,7 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 */}}
-{{- define "redis.fullname" -}}
+{{- define "busbar.redis.fullname" -}}
 {{- printf "%s-%s" .Release.Name "redis" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
