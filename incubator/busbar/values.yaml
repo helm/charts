@@ -4,7 +4,8 @@
 ## Images
 image:
   busbar:
-    name: busbario/busbar
+    repository: busbario
+    name: busbar
     tag: 1.8.1
     pullPolicy: IfNotPresent
   kuberegistry:

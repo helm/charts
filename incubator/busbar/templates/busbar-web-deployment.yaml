@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: {{ template "busbar.fullname" . }}-web
-        image: {{ .Values.image.busbar.name }}:{{ .Values.image.busbar.tag }}
+        image: {{ .Values.image.busbar.repository }}/{{ .Values.image.busbar.name }}:{{ .Values.image.busbar.tag }}
         imagePullPolicy: {{ .Values.image.busbar.pullPolicy }}
         command:
         - /bin/sh
