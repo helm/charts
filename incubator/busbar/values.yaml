@@ -6,11 +6,11 @@ image:
   busbar:
     name: busbario/busbar
     tag: 1.8.1
-    pullPolicy: Always
+    pullPolicy: IfNotPresent
   kuberegistry:
     name: registry
     tag: 2.2.1
-    pullPolicy: Always
+    pullPolicy: IfNotPresent
   kubeconfig:
     name: 127.0.0.1:5000/kubeconfig
     tag: latest
