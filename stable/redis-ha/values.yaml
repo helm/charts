@@ -29,4 +29,4 @@ replicas:
   sentinels: 3
 servers:
   serviceType: ClusterIP  # [ClusterIP|LoadBalancer]
-  annotations:
+  annotations: {}
