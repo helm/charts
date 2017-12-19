@@ -27,6 +27,11 @@ spec:
   externalIPs:
 {{ toYaml .Values.server.service.externalIPs | indent 4 }}
 {{- end }}
+{{- if contains "ClusterIP" .Values.server.service.type }}
+  {{- if .Values.server.service.clusterIP }}
+  clusterIP:  {{ .Values.server.service.clusterIP }}
+  {{- end }}
+{{- end }}  
   selector:
     app: {{ template "grafana.fullname" . }}
     component: "{{ .Values.server.name }}"
