@@ -1,0 +1,73 @@
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: {{ template "filebeat.fullname" . }}
+  labels:
+    app: {{ template "filebeat.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    k8s-app: filebeat
+    kubernetes.io/cluster-service: "true"
+spec:
+  minReadySeconds: 10
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+  template:
+    metadata:
+      labels:
+        k8s-app: filebeat
+        kubernetes.io/cluster-service: "true"
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        args: [
+          "-c", "/etc/filebeat.yml",
+          "-e",
+        ]
+        env:
+          - name: ELASTICSEARCH_HOST
+            value: {{ .Values.elasticsearch.host | quote }}
+          - name: ELASTICSEARCH_PORT
+            value: {{ .Values.elasticsearch.port | quote }}
+          - name: POD_NAMESPACE
+            value: {{ .Release.Namespace }}
+        securityContext:
+          runAsUser: 0
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+        volumeMounts:
+        - name: filebeat-config
+          mountPath: /etc/filebeat.yml
+          readOnly: true
+          subPath: filebeat.yml
+        - name: prospectors-config
+          mountPath: /usr/share/filebeat/prospectors.d
+          readOnly: true
+        - name: data
+          mountPath: /usr/share/filebeat/data
+        - name: varlibdockercontainers
+          mountPath: /var/lib/docker/containers
+          readOnly: true
+      volumes:
+      - name: varlibdockercontainers
+        hostPath:
+          path: /var/lib/docker/containers
+      - name: filebeat-config
+        configMap:
+          name: {{ template "filebeat.fullname" . }}
+      - name: prospectors-config
+        configMap:
+          name: {{ template "filebeat.fullname" . }}-prospecters
+      - name: data
+        emptyDir: {}
+      terminationGracePeriodSeconds: 60
+      serviceAccountName: {{ template "filebeat.fullname" . }}
+      tolerations:
+      - key: node-role.kubernetes.io/master
+        operator: Exists
+        effect: NoSchedule
