@@ -5,13 +5,13 @@ metadata:
     name: {{ template "name" . }}-sentinel-svc
     role: service
 {{ include "labels.standard" . | indent 4 }}
-  name: redis-sentinel
+  name: {{ template "fullname" . }}-sentinel
 spec:
   ports:
     - port: 26379
       targetPort: 26379
   selector:
-    redis-sentinel: "true"
+    redis-role: "sentinel"
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
