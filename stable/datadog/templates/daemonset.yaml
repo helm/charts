@@ -36,7 +36,6 @@ spec:
           {{- end }}
           name: dogstatsdport
           protocol: UDP
-          hostPort: 8125
         {{- if .Values.datadog.apmEnabled }}
         - containerPort: 8126
           {{- if .Values.daemonset.useHostPort }}

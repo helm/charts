@@ -109,6 +109,16 @@ server:
       cpu: 100m
       memory: 100Mi
 
+  ## Grafana readiness probe
+  ## Ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#container-probes
+  ##
+  readinessProbe:
+    httpGet:
+      path: /login
+      port: 3000
+    initialDelaySeconds: 30
+    timeoutSeconds: 30
+
   ## Grafana service
   service:
     ## Grafana service annotations
