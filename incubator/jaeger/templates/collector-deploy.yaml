@@ -35,11 +35,11 @@ spec:
         image: "{{ .Values.collector.image }}:{{ .Values.collector.tag }}"
         imagePullPolicy: {{ .Values.collector.pullPolicy }}
         ports:
-        - containerPort: {{ .Values.collector.service.tchannelPort }}
+        - containerPort: 14267
           protocol: TCP
-        - containerPort: {{ .Values.collector.service.httpPort }}
+        - containerPort: 14268
           protocol: TCP
-        - containerPort: {{ .Values.collector.service.zipkinPort }}
+        - containerPort: 9411
           protocol: TCP
         resources:
 {{ toYaml .Values.collector.resources | indent 10 }}
