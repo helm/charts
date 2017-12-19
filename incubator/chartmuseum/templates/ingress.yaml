@@ -1,17 +1,23 @@
-{{- if .Values.ingress.enabled -}}
+{{- $root := . -}}
 {{- $servicePort := .Values.service.externalPort -}}
 {{- $serviceName := include "common.labels.standard" . -}}
+{{- range .Values.ingress }}
+---
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   annotations:
-{{ toYaml .Values.ingress.annotations | indent 4 }}
+{{ toYaml .annotations | indent 4 }}
   labels:
-{{ include "common.labels.standard" . | indent 4 }}
-  name: {{ include "common.fullname" . }}
+{{- if .labels }}
+{{ toYaml .labels | indent 4 }}
+{{- end }}
+{{ include "common.labels.standard" $root | indent 4 }}
+    ingressName: {{ .name }}
+  name: {{ include "common.fullname" $root }}-{{ .name }}
 spec:
   rules:
-  {{- range $host, $path := .Values.ingress.hosts }}
+  {{- range $host, $path := .hosts }}
     - host: {{ $host }}
       http:
         paths:
@@ -20,8 +26,8 @@ spec:
               serviceName: {{ $serviceName }}
               servicePort: {{ $servicePort }}
   {{- end -}}
-  {{- if .Values.ingress.tls }}
+  {{- if .tls }}
   tls:
-{{ toYaml .Values.ingress.tls | indent 4 }}
+{{ toYaml .tls | indent 4 }}
   {{- end -}}
 {{- end -}}
