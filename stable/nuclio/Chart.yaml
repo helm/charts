@@ -1,0 +1,12 @@
+apiVersion: v1
+description: A Helm chart for installing nuclio
+name: nuclio
+version: 0.1.1
+appVersion: 0.2.0
+icon: https://github.com/nuclio/nuclio/raw/master/docs/assets/images/logo.png
+home: https://nuclio.io
+sources:
+  - https://github.com/nuclio/nuclio
+maintainers:
+  - name: Eliran Bivas
+    email: eliranb@iguazio.com
