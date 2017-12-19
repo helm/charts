@@ -245,7 +245,7 @@ concourse:
   ##
   # gitlabAuthTokenUrl:
 
-  ## API endpoint URL for Github server.
+  ## API endpoint URL for Gitlab server.
   ##
   # gitlabAuthApiUrl:
 
@@ -327,6 +327,12 @@ web:
     ## ref: https://kubernetes.io/docs/user-guide/services/#publishing-services---service-types
     ##
     type: ClusterIP
+
+    ## Annotations to be added to the web service.
+    ##
+    # annotations:
+    #   prometheus.io/probe: "true"
+    #   prometheus.io/probe_path: "/"
 
   # If you fix atc nodeport, this parameter set(web.service.atcNodePort)
   #  atcNodePort: 30150
@@ -455,6 +461,13 @@ worker:
   ##
   updateStrategy: RollingUpdate
 
+  ## Pod Management strategy (requires Kubernetes 1.7+)
+  ## Ref: https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#pod-management-policies
+  ##
+  ## "OrderedReady" is default. "Parallel" means worker pods will launch or terminate
+  ## in parallel.
+  podManagementPolicy: Parallel
+
 ## Persistent Volume Storage configuration.
 ## ref: https://kubernetes.io/docs/user-guide/persistent-volumes
 ##
@@ -572,3 +585,15 @@ credentialManager:
     ## the value will be written to /concourse-vault/client.key
     ## make sure to also set authBackend to `cert`
     # clientKey: |-
+
+## For RBAC support:
+rbac:
+  # true here enables creation of rbac resources
+  create: true
+
+  # rbac version
+  apiVersion: v1beta1
+
+  ## Ignored if rbac.create is true
+  ##
+  serviceAccountName: default

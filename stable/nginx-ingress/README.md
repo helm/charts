@@ -88,6 +88,7 @@ Parameter | Description | Default
 `controller.stats.service.type` | type of controller stats service to create | `ClusterIP`
 `controller.customTemplate.configMapName` | configMap containing a custom nginx template | `""`
 `controller.customTemplate.configMapKey` | configMap key containing the nginx template | `""`
+`controller.headers` | configMap key:value pairs containing the [custom headers](https://github.com/kubernetes/ingress-nginx/tree/master/docs/examples/customization/custom-headers) for Nginx | `{}`
 `defaultBackend.name` | name of the default backend component | `default-backend`
 `defaultBackend.image.repository` | default backend container image repository | `gcr.io/google_containers/defaultbackend`
 `defaultBackend.image.tag` | default backend container image tag | `1.3`
@@ -122,6 +123,7 @@ Parameter | Description | Default
 `statsExporter.service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
 `statsExporter.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
 `statsExporter.service.servicePort` | Prometheus metrics exporter service port | `9913`
+`statsExporter.service.targetPort` | Prometheus metrics exporter target port | `9913`
 `statsExporter.service.type` | type of Prometheus metrics exporter service to create | `ClusterIP`
 `tcp` | TCP service key:value pairs | `{}`
 `udp` | UDP service key:value pairs | `{}`
