@@ -4,63 +4,36 @@ kind: Job
 metadata:
   name: {{ template "kong.fullname" . }}-migrations
   labels:
-    app: "{{ template "kong.fullname" . }}"
+    app: "{{ template "kong.name" . }}"
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     heritage: "{{ .Release.Service }}"
     release: "{{ .Release.Name }}"
 spec:
   template:
     metadata:
-      name: {{ template "kong.fullname" . }}-migrations
+      name: {{ template "kong.name" . }}-migrations
       labels:
-        app: "{{ template "kong.fullname" . }}"
+        app: "{{ template "kong.name" . }}"
         chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
         heritage: "{{ .Release.Service }}"
         release: "{{ .Release.Name }}"
     spec:
       containers:
-      - name: {{ template "kong.fullname" . }}-migrations
+      - name: {{ template "kong.name" . }}-migrations
         image: "{{ .Values.image.repo }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         env:
           - name: KONG_NGINX_DAEMON
             value: "off"
-          - name: KONG_LOG_LEVEL
-            value: {{ .Values.logLevel }}
-        {{- if eq .Values.database.type "cassandra" }}
-          - name: KONG_DATABASE
-            value: "cassandra"
           {{- if .Values.cassandra.enabled }}
           - name: KONG_CASSANDRA_CONTACT_POINTS
             value: {{ template "kong.cassandra.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
-          {{- else }}
-          - name: KONG_CASSANDRA_CONTACT_POINTS
-            value: {{ .Values.database.cassandra.contactPoints }}
           {{- end }}
-          - name: KONG_CASSANDRA_PORT
-            value: {{ .Values.database.cassandra.port | quote }}
-          - name: KONG_CASSANDRA_KEYSPACE
-            value: {{ .Values.database.cassandra.keyspace}}
-          - name: KONG_CASSANDRA_REPL_FACTOR
-            value: {{ .Values.database.cassandra.replication | quote }}
-        {{- else if eq .Values.database.type "postgres" }}
-          - name: KONG_PG_DATABASE
-            value: {{ .Values.database.postgres.database }}
-          - name: KONG_PG_USER
-            value: {{ .Values.database.postgres.username }}
-          - name: KONG_PG_PASSWORD
-            value: {{ .Values.database.postgres.password }}
           {{- if .Values.postgresql.enabled }}
           - name: KONG_PG_HOST
             value: {{ template "kong.postgresql.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
-          {{- else }}
-          - name: KONG_PG_HOST
-            value: {{ .Values.database.postgres.host }}
           {{- end }}
-          - name: KONG_PG_PORT
-            value: {{ .Values.database.postgres.port | quote }}
-        {{- end }}
-        {{- range $key, $val := .Values.customConfig }}
+        {{- range $key, $val := .Values.env }}
           - name: KONG_{{ $key | upper}}
             value: {{ $val | quote }}
         {{- end}}

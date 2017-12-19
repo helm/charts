@@ -68,7 +68,6 @@ and their default values.
 | proxy.type                        | k8s service type. Options: NodePort, ClusterIP, LoadBalancer            | `NodePort`            |
 | proxy.loadBalancerIP              | Will reuse an existing ingress static IP for the admin service         | `null`                |
 | proxy.useTLS                      | Secure Proxy traffic                                                   | `true`                |
-| logLevel                          | Kong [log level](https://getorg/docs/latest/configuration/#log_level)  | `debug`               |
 | customConfig                      | Additional [Kong configurations](https://getkong.org/docs/latest/configuration/)               |
 | runMigrations                     | Run Kong migrations job                                                | `true`                |
 | readinessProbe                    | Kong readiness probe                                                   |                       |
@@ -88,7 +87,7 @@ parameter.  Postgres is chosen by default.
 Additionally, this chart allows you to use your own database or spin up a new
 instance by using the `postgres.enabled` or `cassandra.enabled` parameters.
 Enabling both will create both databases in your cluster, but only one
-will be used by Kong based on the `kong.database.type` parameter.
+will be used by Kong based on the `database.type` parameter.
 Postgres is enabled by default.
 
 | Parameter                         | Description                                                            | Default               |

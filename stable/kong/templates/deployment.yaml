@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: "{{ template "kong.fullname" . }}"
   labels:
-    app: "{{ template "kong.fullname" . }}"
+    app: "{{ template "kong.name" . }}"
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     heritage: "{{ .Release.Service }}"
     release: "{{ .Release.Name }}"
@@ -16,24 +16,24 @@ spec:
 {{ toYaml .Values.podAnnotations | indent 8 }}
     {{- end }}
       labels:
-        app: "{{ template "kong.fullname" . }}"
+        app: "{{ template "kong.name" . }}"
         chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
         heritage: "{{ .Release.Service }}"
         release: "{{ .Release.Name }}"
     spec:
       containers:
-      - name: {{ template "kong.fullname" . }}
-        image: "{{ .Values.image.repo }}:{{ .Values.image.tag }}"
+      - name: {{ template "kong.name" . }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         env:
           - name: KONG_ADMIN_LISTEN
-            value: 0.0.0.0:{{ default 8001 .Values.admin.containerPort }}
+            value: 0.0.0.0:{{ .Values.admin.containerPort }}
           - name: KONG_ADMIN_LISTEN_SSL
-            value: 0.0.0.0:{{ default 8444 .Values.admin.containerSSLPort }}
+            value: 0.0.0.0:{{ .Values.admin.containerSSLPort }}
           - name: KONG_PROXY_LISTEN
-            value: 0.0.0.0:{{ default 8000 .Values.proxy.containerPort }}
+            value: 0.0.0.0:{{ .Values.proxy.containerPort }}
           - name: KONG_PROXY_LISTEN_SSL
-            value: 0.0.0.0:{{ default 8443 .Values.proxy.containerSSLPort }}
+            value: 0.0.0.0:{{ .Values.proxy.containerSSLPort }}
           - name: KONG_NGINX_DAEMON
             value: "off"
           - name: KONG_PROXY_ACCESS_LOG
@@ -44,62 +44,35 @@ spec:
             value: "/dev/stderr"
           - name: KONG_ADMIN_ERROR_LOG
             value: "/dev/stderr"
-          - name: KONG_LOG_LEVEL
-            value: {{ .Values.logLevel }}
-        {{- if eq .Values.database.type "cassandra" }}
-          - name: KONG_DATABASE
-            value: "cassandra"
           {{- if .Values.cassandra.enabled }}
           - name: KONG_CASSANDRA_CONTACT_POINTS
             value: {{ template "kong.cassandra.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
-          {{- else }}
-          - name: KONG_CASSANDRA_CONTACT_POINTS
-            value: {{ .Values.database.cassandra.contactPoints }}
           {{- end }}
-          - name: KONG_CASSANDRA_PORT
-            value: {{ .Values.database.cassandra.port | quote }}
-          - name: KONG_CASSANDRA_KEYSPACE
-            value: {{ .Values.database.cassandra.keyspace}}
-          - name: KONG_CASSANDRA_REPL_FACTOR
-            value: {{ .Values.database.cassandra.replication | quote }}
-        {{- else if eq .Values.database.type "postgres" }}
-          - name: KONG_PG_DATABASE
-            value: {{ .Values.database.postgres.database }}
-          - name: KONG_PG_USER
-            value: {{ .Values.database.postgres.username }}
-          - name: KONG_PG_PASSWORD
-            value: {{ .Values.database.postgres.password }}
           {{- if .Values.postgresql.enabled }}
           - name: KONG_PG_HOST
             value: {{ template "kong.postgresql.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
-          {{- else }}
-          - name: KONG_PG_HOST
-            value: {{ .Values.database.postgres.host }}
           {{- end }}
-          - name: KONG_PG_PORT
-            value: {{ .Values.database.postgres.port | quote }}
-        {{- end }}
-        {{- range $key, $val := .Values.customConfig }}
+        {{- range $key, $val := .Values.env }}
           - name: KONG_{{ $key | upper}}
             value: {{ $val | quote }}
         {{- end}}
         ports:
         {{- if .Values.admin.useTLS }}
         - name: admin-ssl
-          containerPort: {{ default 8444 .Values.admin.containerSSLPort }}
+          containerPort: {{ .Values.admin.containerSSLPort }}
           protocol: TCP
         {{- else }}
         - name: admin
-          containerPort: {{ default 8001 .Values.admin.containerPort }}
+          containerPort: {{ .Values.admin.containerPort }}
           protocol: TCP
         {{ end }}
         {{- if .Values.proxy.useTLS }}
         - name: proxy-ssl
-          containerPort: {{ default 8443 .Values.proxy.containerSSLPort }}
+          containerPort: {{ .Values.proxy.containerSSLPort }}
           protocol: TCP
         {{- else}}
         - name: proxy
-          containerPort: {{ default 8000 .Values.proxy.containerPort }}
+          containerPort: {{ .Values.proxy.containerPort }}
           protocol: TCP
         {{- end }}
         readinessProbe:
