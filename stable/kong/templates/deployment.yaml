@@ -1,0 +1,93 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: "{{ template "kong.fullname" . }}"
+  labels:
+    app: "{{ template "kong.name" . }}"
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+spec:
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+    {{- if .Values.podAnnotations }}
+      annotations:
+{{ toYaml .Values.podAnnotations | indent 8 }}
+    {{- end }}
+      labels:
+        app: "{{ template "kong.name" . }}"
+        chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+        heritage: "{{ .Release.Service }}"
+        release: "{{ .Release.Name }}"
+    spec:
+      containers:
+      - name: {{ template "kong.name" . }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        env:
+          - name: KONG_ADMIN_LISTEN
+            value: 0.0.0.0:{{ .Values.admin.containerPort }}
+          - name: KONG_ADMIN_LISTEN_SSL
+            value: 0.0.0.0:{{ .Values.admin.containerSSLPort }}
+          - name: KONG_PROXY_LISTEN
+            value: 0.0.0.0:{{ .Values.proxy.containerPort }}
+          - name: KONG_PROXY_LISTEN_SSL
+            value: 0.0.0.0:{{ .Values.proxy.containerSSLPort }}
+          - name: KONG_NGINX_DAEMON
+            value: "off"
+          - name: KONG_PROXY_ACCESS_LOG
+            value: "/dev/stdout"
+          - name: KONG_ADMIN_ACCESS_LOG
+            value: "/dev/stdout"
+          - name: KONG_PROXY_ERROR_LOG
+            value: "/dev/stderr"
+          - name: KONG_ADMIN_ERROR_LOG
+            value: "/dev/stderr"
+          {{- if .Values.cassandra.enabled }}
+          - name: KONG_CASSANDRA_CONTACT_POINTS
+            value: {{ template "kong.cassandra.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
+          {{- end }}
+          {{- if .Values.postgresql.enabled }}
+          - name: KONG_PG_HOST
+            value: {{ template "kong.postgresql.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
+          {{- end }}
+        {{- range $key, $val := .Values.env }}
+          - name: KONG_{{ $key | upper}}
+            value: {{ $val | quote }}
+        {{- end}}
+        ports:
+        {{- if .Values.admin.https }}
+        - name: admin-ssl
+          containerPort: {{ .Values.admin.https.containerPort }}
+          protocol: TCP
+        {{- else }}
+        - name: admin
+          containerPort: {{ .Values.admin.http.containerPort }}
+          protocol: TCP
+        {{ end }}
+        {{- if .Values.proxy.https }}
+        - name: proxy-ssl
+          containerPort: {{ .Values.proxy.https.containerPort }}
+          protocol: TCP
+        {{- else}}
+        - name: proxy
+          containerPort: {{ .Values.proxy.http.containerPort }}
+          protocol: TCP
+        {{- end }}
+        readinessProbe:
+{{ toYaml .Values.readinessProbe | indent 10 }}
+        livenessProbe:
+{{ toYaml .Values.livenessProbe | indent 10 }}
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+    {{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+    {{- end }}
+    {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
