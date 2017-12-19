@@ -17,7 +17,7 @@ service:
   livenessProbe:
     initialDelaySeconds: 30
     periodSeconds: 30
-  annotations:
+  annotations: {}
   # foo.io/bar: "true"
 ingress:
   enabled: false
