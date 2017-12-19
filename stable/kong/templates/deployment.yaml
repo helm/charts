@@ -57,22 +57,22 @@ spec:
             value: {{ $val | quote }}
         {{- end}}
         ports:
-        {{- if .Values.admin.useTLS }}
+        {{- if .Values.admin.https }}
         - name: admin-ssl
-          containerPort: {{ .Values.admin.containerSSLPort }}
+          containerPort: {{ .Values.admin.https.containerPort }}
           protocol: TCP
         {{- else }}
         - name: admin
-          containerPort: {{ .Values.admin.containerPort }}
+          containerPort: {{ .Values.admin.http.containerPort }}
           protocol: TCP
         {{ end }}
-        {{- if .Values.proxy.useTLS }}
+        {{- if .Values.proxy.https }}
         - name: proxy-ssl
-          containerPort: {{ .Values.proxy.containerSSLPort }}
+          containerPort: {{ .Values.proxy.https.containerPort }}
           protocol: TCP
         {{- else}}
         - name: proxy
-          containerPort: {{ .Values.proxy.containerPort }}
+          containerPort: {{ .Values.proxy.http.containerPort }}
           protocol: TCP
         {{- end }}
         readinessProbe:

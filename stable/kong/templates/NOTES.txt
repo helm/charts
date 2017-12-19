@@ -1,4 +1,4 @@
-1. Kong Admin can be accessed via port {{ .Values.admin.servicePort }} or SSL port {{ .Values.admin.serviceSSLPort }} on the following DNS name from within your cluster:
+1. Kong Admin can be accessed via port {{ .Values.admin.http.servicePort }} or SSL port {{ .Values.admin.https.servicePort }} on the following DNS name from within your cluster:
      '{{ template "kong.name" . }}.{{ .Release.Namespace }}.svc.cluster.local'
 
 To connect from outside the K8s cluster:
@@ -13,19 +13,19 @@ To connect from outside the K8s cluster:
    {{- else if contains "ClusterIP" .Values.admin.type }}
      HOST=127.0.0.1
 
-     {{- if .Values.admin.useTLS }}
+     {{- if .Values.admin.https }}
      # Execute the following commands to route the connection to Admin SSL port:
      export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "kong.name" . }}" -o jsonpath="{.items[0].metadata.name}")
-     kubectl port-forward $POD_NAME {{ .Values.admin.serviceSSLPort }}:{{ .Values.admin.serviceSSLPort }}
+     kubectl port-forward $POD_NAME {{ .Values.admin.https.servicePort }}:{{ .Values.admin.https.servicePort }}
      {{- else }}
      # Execute the following commands to route the connection to Admin port:
      export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "kong.name" . }}" -o jsonpath="{.items[0].metadata.name}")
-     kubectl port-forward $POD_NAME {{ .Values.admin.servicePort }}:{{ .Values.admin.servicePort }}
+     kubectl port-forward $POD_NAME {{ .Values.admin.http.servicePort }}:{{ .Values.admin.http.servicePort }}
      {{- end }}
    {{- end }}
 
 
-2. Kong Proxy can be accessed via port {{ .Values.proxy.servicePort }} or SSL port {{ .Values.proxy.serviceSSLPort }} on the following DNS name from within your cluster:
+2. Kong Proxy can be accessed via port {{ .Values.proxy.http.servicePort }} or SSL port {{ .Values.proxy.https.servicePort }} on the following DNS name from within your cluster:
      '{{ template "kong.name" . }}.{{ .Release.Namespace }}.svc.cluster.local'
 
 To connect from outside the K8s cluster:
@@ -40,13 +40,13 @@ To connect from outside the K8s cluster:
    {{- else if contains "ClusterIP" .Values.proxy.type }}
      HOST=127.0.0.1
 
-     {{- if .Values.proxy.useTLS }}
+     {{- if .Values.proxy.https }}
      # Execute the following commands to route the connection to proxy SSL port:
      export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "kong.name" . }}" -o jsonpath="{.items[0].metadata.name}")
-     kubectl port-forward $POD_NAME {{ .Values.proxy.serviceSSLPort }}:{{ .Values.proxy.serviceSSLPort }}
+     kubectl port-forward $POD_NAME {{ .Values.proxy.https.servicePort }}:{{ .Values.proxy.https.servicePort }}
      {{- else }}
      # Execute the following commands to route the connection to proxy port:
      export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "kong.name" . }}" -o jsonpath="{.items[0].metadata.name}")
-     kubectl port-forward $POD_NAME {{ .Values.proxy.servicePort }}:{{ .Values.proxy.servicePort }}
+     kubectl port-forward $POD_NAME {{ .Values.proxy.http.servicePort }}:{{ .Values.proxy.http.servicePort }}
      {{- end }}
    {{- end }}

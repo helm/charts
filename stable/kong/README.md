@@ -54,20 +54,20 @@ and their default values.
 | image.tag                         | Kong image version                                                     | `latest`              |
 | image.pullPolicy                  | Image pull policy                                                      | `IfNotPresent`        |
 | replicaCount                      | Kong instance count                                                    | `1`                   |
-| admin.servicePort                 | TCP port on which the Kong admin service is exposed                    | `8001`                |
-| admin.serviceSSLPort              | Secure TCP port on which the Kong admin service is exposed             | `8444`                |
-| admin.containerPort               | TCP port on which Kong app listens for admin traffic                   | `8001`                |
-| admin.containerSSLPort            | Secure TCP port on which Kong app listens for admin traffic            | `8444`                |
+| admin.http.servicePort            | TCP port on which the Kong admin service is exposed                    | `8001`                |
+| admin.https.servicePort           | Secure TCP port on which the Kong admin service is exposed             | `8444`                |
+| admin.http.containerPort          | TCP port on which Kong app listens for admin traffic                   | `8001`                |
+| admin.https.containerPort         | Secure TCP port on which Kong app listens for admin traffic            | `8444`                |
+| admin.nodePort                    | NodePort when service type is `NodePort`                                 | `32444`                |
 | admin.type                        | k8s service type, Options: NodePort, ClusterIP, LoadBalancer                       | `NodePort`            |
 | admin.loadBalancerIP              | Will reuse an existing ingress static IP for the admin service         | `null`                |
-| admin.useTLS                      | Secure admin traffic                                                   | `true`                |
-| proxy.servicePort                 | TCP port on which the Kong proxy service is exposed                    | `8000`                |
-| proxy.serviceSSLPort              | Secure TCP port on which the Kong Proxy Service is exposed             | `8443`                |
-| proxy.containerPort               | TCP port on which the Kong app listens for Proxy traffic               | `8000`                |
-| proxy.containerSSLPort            | Secure TCP port on which the Kong app listens for Proxy traffic        | `8443`                |
-| proxy.type                        | k8s service type. Options: NodePort, ClusterIP, LoadBalancer            | `NodePort`            |
+| proxy.http.servicePort            | TCP port on which the Kong proxy service is exposed                    | `8000`                |
+| proxy.https.servicePort           | Secure TCP port on which the Kong Proxy Service is exposed             | `8443`                |
+| proxy.http.containerPort          | TCP port on which the Kong app listens for Proxy traffic               | `8000`                |
+| proxy.https.containerPort         | Secure TCP port on which the Kong app listens for Proxy traffic        | `8443`                |
+| proxy.nodePort                    | NodePort when service type is `NodePort`                               | `32443`                |
+| proxy.type                        | k8s service type. Options: NodePort, ClusterIP, LoadBalancer           | `NodePort`            |
 | proxy.loadBalancerIP              | Will reuse an existing ingress static IP for the admin service         | `null`                |
-| proxy.useTLS                      | Secure Proxy traffic                                                   | `true`                |
 | customConfig                      | Additional [Kong configurations](https://getkong.org/docs/latest/configuration/)               |
 | runMigrations                     | Run Kong migrations job                                                | `true`                |
 | readinessProbe                    | Kong readiness probe                                                   |                       |
@@ -78,7 +78,7 @@ and their default values.
 | resources                         | Pod resource requests & limits                                         | `{}`                  |
 | tolerations                       | List of node taints to tolerate                                        | `[]`                  |
 
-### Database-specific parameters
+### Kong-specific parameters
 
 Kong has a choice of either Postgres or Cassandra as a backend datatstore.
 This chart allows you to choose either of them with the `kong.database.type`
@@ -87,23 +87,25 @@ parameter.  Postgres is chosen by default.
 Additionally, this chart allows you to use your own database or spin up a new
 instance by using the `postgres.enabled` or `cassandra.enabled` parameters.
 Enabling both will create both databases in your cluster, but only one
-will be used by Kong based on the `database.type` parameter.
+will be used by Kong based on the `env.database` parameter.
 Postgres is enabled by default.
 
 | Parameter                         | Description                                                            | Default               |
 | ------------------------------    | --------------------------------------------------------------------   | -------------------   |
 | cassandra.enabled                 | Spin up a new cassandra cluster for Kong                               | `false`               |
 | postgres.enabled                  | Spin up a new postgres instance for Kong                               | `true `               |
-| database.type                     | Choose either `postgres` or `cassandra`                                | `postgres`               |
-| database.postgres.username        | Postgres username                                                      | `kong`                |
-| database.postgres.database        | Postgres database name                                                 | `kong`                |
-| database.postgres.password        | Postgres database password                                             | `kong`                |
-| database.postgres.host            | Postgres database host (required if you are using your own database)   | ``                    |
-| database.postgres.port            | Postgres database port                                                 | `5432`                |
-| database.cassandra.contactPoints  | Cassandra contact points (required if you are using your own database) | ``                    |
-| database.cassandra.port           | Cassandra query port                                                   | `9042`                |
-| database.cassandra.keyspace       | Cassandra keyspace                                                     | `kong`                |
-| database.cassandra.replication    | Replication factor for the Kong keyspace                               | `2`                   |
+| env.database                      | Choose either `postgres` or `cassandra`                                | `postgres`            |
+| env.pg_user                       | Postgres username                                                      | `kong`                |
+| env.pg_database                   | Postgres database name                                                 | `kong`                |
+| env.pg_password                   | Postgres database password                                             | `kong`                |
+| env.pg_host                       | Postgres database host (required if you are using your own database)   | ``                    |
+| env.pg_port                       | Postgres database port                                                 | `5432`                |
+| env.cassandra_contact_points      | Cassandra contact points (required if you are using your own database) | ``                    |
+| env.cassandra_port                | Cassandra query port                                                   | `9042`                |
+| env.cassandra_keyspace            | Cassandra keyspace                                                     | `kong`                |
+| env.cassandra_repl_factor         | Replication factor for the Kong keyspace                               | `2`                   |
+
+For complete list of Kong configurations please check https://getkong.org/docs/0.11.x/configuration/.
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

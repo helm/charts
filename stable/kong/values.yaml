@@ -6,32 +6,32 @@ image:
   tag: 0.11.2
   pullPolicy: IfNotPresent
 
-# Kong admin and proxy service configs
+# Specify Kong admin and proxy services configurations
 admin:
   # HTTPS traffic on the admin port
-  useTLS: true
-  # Kong admin external SSL port
-  serviceSSLPort: 8444
-  # Kong admin internal SSL port
-  containerSSLPort: 8444
-  # Kong admin service type
+  https:
+    # Kong admin external SSL port
+    servicePort: 8444
+    # Kong admin internal SSL port
+    containerPort: 8444
+    # Kong admin service type
   type: NodePort
+  nodePort: 32444
 proxy:
   # HTTPS traffic on the proxy port
-  useTLS: true
-  # Kong proxy external SSL port
-  serviceSSLPort: 8443
-  # Kong proxy internal SSL port
-  containerSSLPort: 8443
+  https:
+    # Kong proxy external SSL port
+    servicePort: 8443
+    # Kong proxy internal SSL port
+    containerPort: 8443
   # Kong proxy service type
   type: NodePort
+  nodePort: 32443
 
-
-# set it to run Kong migrations
+# Set runMigrations to run Kong migrations
 runMigrations: true
 
-# If you want to specify additional Kong configurations, you can define them
-# in here as yaml list.
+# Specify Kong configurations
 # Kong configurations guide https://getkong.org/docs/latest/configuration/
 env:
   database: postgres

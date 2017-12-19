@@ -1,24 +1,26 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "kong.name" . }}-proxy
+  name: {{ template "kong.fullname" . }}-proxy
 spec:
   type: {{ .Values.proxy.type }}
   {{- if and (eq .Values.proxy.type "LoadBalancer") .Values.proxy.loadBalancerIP }}
   loadBalancerIP: {{ .Values.proxy.loadBalancerIP }}
   {{- end }}
   ports:
-  {{- if .Values.proxy.useTLS }}
-  - name: kong-proxy-ssl
-    port: {{ default 8443 .Values.proxy.serviceSSLPort }}
-    targetPort: {{ .Values.proxy.containerSSLPort }}
-    protocol: TCP
-  {{ else }}
   - name: kong-proxy
-    port: {{ .Values.proxy.servicePort }}
-    targetPort: {{ .Values.proxy.containerPort }}
     protocol: TCP
-  {{ end }}
+  {{- if .Values.proxy.https }}
+    port: {{ .Values.proxy.https.servicePort }}
+    targetPort: {{ .Values.proxy.https.containerPort }}
+  {{- else }}
+    port: {{ .Values.proxy.http.servicePort }}
+    targetPort: {{ .Values.proxy.http.containerPort }}
+  {{- end }}
+  {{- if (and (eq .Values.proxy.type "NodePort") (not (empty .Values.proxy.nodePort))) }}
+    nodePort: {{ .Values.proxy.nodePort }}
+  {{- end }}
+  protocol: TCP
   selector:
     app: {{ template "kong.name" . }}
     release: {{ .Release.Name }}
