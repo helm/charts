@@ -79,30 +79,30 @@ persistence:
   # StorageClass: "-"
 
 ## Ingress for load balancer
-#ingress:
-#- name: "default"
+# ingress:
+# - name: "default"
 ## Chartmuseum Ingress labels
 ##
-#  labels:
-#    dns: "route53"
+#   labels:
+#     dns: "route53"
 
 ## Chartmuseum Ingress annotations
 ##
-#  annotations:
-#    kubernetes.io/ingress.class: nginx
-#    kubernetes.io/tls-acme: "true"
+#   annotations:
+#     kubernetes.io/ingress.class: nginx
+#     kubernetes.io/tls-acme: "true"
 
 ## Chartmuseum Ingress hostnames
 ## Must be provided if Ingress is enabled
 ##
-#  hosts:
-#    "chartmuseum.domain.com": /
-#    "www.chartmuseum.domain.com": /
+#   hosts:
+#     "chartmuseum.domain.com": /
+#     "www.chartmuseum.domain.com": /
 
 ## Chartmuseum Ingress TLS configuration
 ## Secrets must be manually created in the namespace
 ##
-#  tls:
-#  - secretName: chartmuseum-server-tls
-#    hosts:
-#    - chartmuseum.domain.com
+#   tls:
+#   - secretName: chartmuseum-server-tls
+#     hosts:
+#     - chartmuseum.domain.com
