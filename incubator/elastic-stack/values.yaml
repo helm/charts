@@ -9,7 +9,7 @@ kibana:
 logstash:
 
 nginx-ldapauth-proxy:
-  enabled: true
+  enabled: false
 
 curator:
-  enabled: true
+  enabled: false
