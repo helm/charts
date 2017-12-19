@@ -26,6 +26,10 @@ sumologic:
   ## The source of fluentd logs, either file or systemd
   fluentdSource: file
 
+  ## A directory of user-defined fluentd configuration files, which must be in the "*.conf" directory
+  ## in the container (Default "/fluentd/conf.d/user")
+  fluentdUserConfigDir: ""
+
   ## How frequently to push logs to SumoLogic (default 5s)
   ## ref: https://github.com/SumoLogic/fluentd-kubernetes-sumologic#options
   # flushInterval: 5
@@ -35,6 +39,9 @@ sumologic:
 
   ## Set the _sourceName metadata field in SumoLogic. (Default "%{namespace}.%{pod}.%{container}")
   sourceName: ""
+
+  ## Set the _sourceHost metadata field in SumoLogic. (Default Nil)
+  sourceHost: ""
 
   ## Set the _sourceCategory metadata field in SumoLogic. (Default "%{namespace}/%{pod_name}")
   sourceCategory: ""
@@ -102,6 +109,25 @@ sumologic:
   ## Fluentd command line options
   ## ref: http://docs.fluentd.org/v0.12/articles/command-line-option
   fluentdOpt: ""
+
+  ## Verify SumoLogic HTTPS certificates (Default true)
+  verifySsl: true
+
+  ## The regular expression for the "concat" plugin to use when merging multi-line messages
+  ## (Default "/^\w{3} \d{1,2}, \d{4}/", i.e. Julian dates)
+  multilineStartRegexp: ""
+
+  ## Start to read the logs from the head of file, not bottom.
+  ## Only applies to containers log files. See in_tail doc for more information (Default true)
+  readFromHead: true
+
+  ## The character to use to delimit lines within the final concatenated message.
+  ## Most multi-line messages contain a newline at the end of each line (Default Nil)
+  concatSeparator: ""
+
+  ## Define the path to the Kubernetes Audit Log (Default "/mnt/log/kube-apiserver-audit.log")
+  ## ref: https://kubernetes.io/docs/tasks/debug-application-cluster/audit/
+  auditLogPath: ""
 
 ## By default, the daemonset will store position files, for logs tailed, in an
 ## emptyDir. If you have a directory, on the host, to store pos files, specify
