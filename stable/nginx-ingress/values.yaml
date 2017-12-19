@@ -279,6 +279,13 @@ statsExporter:
     targetPort: 9913
     type: ClusterIP
 
+# Optionally specify an array of imagePullSecrets.
+# Secrets must be manually created in the namespace.
+# ref: https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
+#
+# imagePullSecrets:
+#   - name: myRegistryKeySecretName
+
 # TCP service key:value pairs
 # Ref: https://github.com/kubernetes/contrib/tree/master/ingress/controllers/nginx/examples/tcp
 ##
