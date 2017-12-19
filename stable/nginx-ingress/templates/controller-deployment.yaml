@@ -29,6 +29,31 @@ spec:
 {{ toYaml .Values.controller.podLabels | indent 8 }}
         {{- end }}
     spec:
+      {{- if .Values.controller.antiAffinity }}
+      {{- if eq .Values.controller.antiAffinity "hard" }}
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - topologyKey: "kubernetes.io/hostname"
+              labelSelector:
+                matchLabels:
+                  app: "{{ template "nginx-ingress.name" . }}"
+                  release: "{{ .Release.Name }}"
+                  component: "{{ .Values.controller.name }}"
+      {{- else if eq .Values.controller.antiAffinity "soft" }}
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 1
+            podAffinityTerm:
+              topologyKey: kubernetes.io/hostname
+              labelSelector:
+                matchLabels:
+                  app: "{{ template "nginx-ingress.name" . }}"
+                  release: "{{ .Release.Name }}"
+                  component: "{{ .Values.controller.name }}"
+      {{- end }}
+      {{- end }}
       containers:
         - name: {{ template "nginx-ingress.name" . }}-{{ .Values.controller.name }}
           image: "{{ .Values.controller.image.repository }}:{{ .Values.controller.image.tag }}"

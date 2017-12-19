@@ -49,6 +49,7 @@ Parameter | Description | Default
 `controller.image.repository` | controller container image repository | `gcr.io/google_containers/nginx-ingress-controller`
 `controller.image.tag` | controller container image tag | `0.9.0-beta.15`
 `controller.image.pullPolicy` | controller container image pull policy | `IfNotPresent`
+`controller.antiAffinity` | controller pod anti-affinity, hard or soft | `""`
 `controller.config` | nginx ConfigMap entries | none
 `controller.hostNetwork` | If the nginx deployment / daemonset should run on the host's network namespace | false
 `controller.defaultBackendService` | default 404 backend service; required only if `defaultBackend.enabled = false` | `""`
@@ -93,6 +94,7 @@ Parameter | Description | Default
 `defaultBackend.image.repository` | default backend container image repository | `gcr.io/google_containers/defaultbackend`
 `defaultBackend.image.tag` | default backend container image tag | `1.3`
 `defaultBackend.image.pullPolicy` | default backend container image pull policy | `IfNotPresent`
+`defaultBackend.antiAffinity` | default backend pod anti-affinity, hard or soft | `""`
 `defaultBackend.extraArgs` | Additional default backend container arguments | `{}`
 `defaultBackend.tolerations` | node taints to tolerate (requires Kubernetes >=1.6) | `[]`
 `defaultBackend.nodeSelector` | node labels for pod assignment | `{}`
