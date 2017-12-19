@@ -1,0 +1,54 @@
+slack:
+  # Slack channel to notify
+  channel: ""
+
+  # Slack bots token
+  # Ref: https://api.slack.com/docs/token-types#bot
+  token: ""
+
+# Resouces to watch
+resourcesToWatch: {}
+  # deployment: true
+  # replicationcontroller: true
+  # replicaset: true
+  # daemonset: true
+  # services: true
+  # pod: true
+
+image:
+  repository: "tuna/kubewatch"
+  tag: "v0.0.3"
+  pullPolicy: "IfNotPresent"
+
+rbac:
+  # If true, create & use RBAC resources
+  #
+  create: false
+
+  # Ignored if rbac.create is true
+  #
+  serviceAccountName: default
+
+resources: {}
+  # limits:
+  #   cpu: 100m
+  #   memory: 300Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 300Mi
+
+# Affinity for pod assignment
+# Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+# affinity: {}
+
+# Tolerations for pod assignment
+# Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+tolerations: []
+
+# Node labels for pod assignment
+# Ref: https://kubernetes.io/docs/user-guide/node-selection/
+nodeSelector: {}
+
+podAnnotations: {}
+podLabels: {}
+replicaCount: 1
