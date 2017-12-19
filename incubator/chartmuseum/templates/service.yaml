@@ -6,6 +6,10 @@ metadata:
 {{ toYaml .Values.service.annotations | indent 4 }}
   labels:
 {{ include "common.labels.standard" . | indent 4 }}
+{{- if .Values.service.annotations }}
+  annotations:
+{{ toYaml .Values.service.annotations | indent 4 }}
+{{- end }}
 spec:
   type: {{ .Values.service.type }}
   ports:

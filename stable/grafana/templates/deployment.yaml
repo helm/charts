@@ -58,11 +58,7 @@ spec:
           ports:
             - containerPort: 3000
           readinessProbe:
-            httpGet:
-              path: /login
-              port: 3000
-            initialDelaySeconds: 30
-            timeoutSeconds: 30
+{{ toYaml .Values.server.readinessProbe | indent 12 }}
           resources:
 {{ toYaml .Values.server.resources | indent 12 }}
           volumeMounts:
