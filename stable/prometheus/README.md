@@ -38,6 +38,10 @@ $ helm delete my-release
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
 
+## Upgrading from previous chart versions.
+
+As of Chart version 5.0 this chart uses Prometheus 2.0. This version of prometheus introduces a new data format and is not compatible with the old format. It is recommended to install this as a new release, as updating existing releases will not work. See the [prometheus docs](https://prometheus.io/docs/prometheus/latest/migration/#storage) for instructions on retaining your old data.
+
 ## Configuration
 
 The following tables lists the configurable parameters of the Prometheus chart and their default values.
@@ -146,7 +150,6 @@ Parameter | Description | Default
 `server.image.repository` | Prometheus server container image repository | `prom/prometheus`
 `server.image.tag` | Prometheus server container image tag | `v1.5.1`
 `server.image.pullPolicy` | Prometheus server container image pull policy | `IfNotPresent`
-`server.alertmanagerHostname` | (optional) alertmanager hostname; only used if alertmanager.enabled = false | `""`
 `server.extraArgs` | Additional Prometheus server container arguments | `{}`
 `server.prefixURL` | The prefix slug at which the server can be accessed | ``
 `server.baseURL` | The external url at which the server can be accessed | ``

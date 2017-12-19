@@ -335,10 +335,6 @@ server:
     tag: v2.0.0
     pullPolicy: IfNotPresent
 
-  ## (optional) alertmanager hostname
-  ## only used if alertmanager.enabled = false
-  alertmanagerHostname: ""
-
   ## The URL prefix at which the container can be accessed. Useful in the case the '-web.external-url' includes a slug
   ## so that the various internal URLs are still able to access as they are in the default case.
   ## (Optional)

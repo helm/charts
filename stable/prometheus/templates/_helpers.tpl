@@ -70,15 +70,3 @@ Return the appropriate apiVersion for networkpolicy.
 {{- print "networking.k8s.io/v1" -}}
 {{- end -}}
 {{- end -}}
-
-{{/*
-Return the alertmanager hostname and port, or empty if alertmanager is disabled and .Values.server.alertManagerHostname
-is not set.
-*/}}
-{{- define "prometheus.alertmanager.hostname" -}}
-{{- if .Values.alertmanager.enabled -}}
-{{ template "prometheus.alertmanager.fullname" .}}:{{.Values.alertmanager.service.servicePort}}
-{{- else if .Values.alertmanagerHostname}}
-{{- print .Values.server.alertmanagerHostname -}}
-{{- end }}
-{{- end }}
