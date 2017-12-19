@@ -2,17 +2,17 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: {{ template "fullname" . }}-ui
-  namespace: kubeless
   labels:
 {{ include "labels.standard" . | indent 4 }}
-    controller: {{ template "fullname" . }}-ui
+    component: ui
 spec:
   replicas: {{ .Values.controller.deployment.replicaCount }}
   template:
     metadata:
-      namespace: kubeless
       labels:
-        controller: {{ template "fullname" . }}-ui
+        component: ui
+        app: {{ template "fullname"  . }}
+        release: {{ .Release.Name | quote }}
     spec:
       containers:
       - name: ui

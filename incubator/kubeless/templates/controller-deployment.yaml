@@ -2,7 +2,6 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: {{ template "fullname" . }}-controller
-  namespace: kubeless
   labels:
 {{ include "labels.standard" . | indent 4 }}
     kubeless: controller
@@ -15,6 +14,7 @@ spec:
     metadata:
       labels:
         kubeless: controller
+        app: {{ template "fullname"  . }}
         release: {{ .Release.Name }}
     spec:
       containers:

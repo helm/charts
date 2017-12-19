@@ -8,8 +8,8 @@ controller:
   deployment:
     replicaCount: 1
     image:
-      repository: bitnami/kubeless-controller@sha256
-      tag: d07986d575a80179ae15205c6fa5eb3bf9f4f4f46235c79ad6b284e5d3df22d0
+      repository: bitnami/kubeless-controller
+      tag: v0.3.1
       pullPolicy: IfNotPresent
   ## Kubeless Controller resource requests and limits
   ## Ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -29,7 +29,7 @@ ui:
     ui:
       image:
         repository: bitnami/kubeless-ui
-        tag: development
+        tag: v0.1.0
         pullPolicy: IfNotPresent
     proxy:
       image:
@@ -47,8 +47,8 @@ zookeeper:
   statefulSet:
     replicaCount: 1
     image:
-      repository: bitnami/zookeeper@sha256
-      tag: f66625a8a25070bee18fddf42319ec58f0c49c376b19a5eb252e6a4814f07123
+      repository: bitnami/zookeeper
+      tag: 3.4.10-r6
       pullPolicy: IfNotPresent
   ## Zookeeper server resource requests and limits
   ## Ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -66,8 +66,8 @@ kafka:
   statefulSet:
     replicaCount: 1
     image:
-      repository: bitnami/kafka@sha256
-      tag: 44fbc18518e7028ce87d4bec276c54b6a2cd2c2ece0c8575418d35cad0270a9c
+      repository: bitnami/kafka
+      tag: 1.0.0-r2
       pullPolicy: IfNotPresent
   ## Kafka server resource requests and limits
   ## Ref: http://kubernetes.io/docs/user-guide/compute-resources/

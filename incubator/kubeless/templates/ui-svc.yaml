@@ -1,8 +1,8 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: ui
-  namespace: kubeless
+  name: {{ template "fullname" . }}-ui
+  #name: ui
   labels:
 {{ include "labels.standard" . | indent 4 }}
     controller: {{ template "fullname" . }}-ui
@@ -13,6 +13,8 @@ spec:
     protocol: TCP
     targetPort: 3000
   selector:
-    controller: {{ template "fullname" . }}-ui
+    component: ui
+    app: {{ template "fullname"  . }}
+    release: {{ .Release.Name | quote }}
   sessionAffinity: None
   type: {{ .Values.ui.service.type }}

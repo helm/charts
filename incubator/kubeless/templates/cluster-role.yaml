@@ -2,7 +2,7 @@
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRole
 metadata:
-  name: kubeless-controller-deployer
+  name: {{ template "fullname" . }}-controller-deployer
   labels:
 {{ include "labels.standard" . | indent 4 }}
 rules:

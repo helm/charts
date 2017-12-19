@@ -5,7 +5,8 @@
 ## TL;DR;
 
 ```bash
-$ helm install stable/kubeless --namespace kubeless
+$ helm repo add incubator https://kubernetes-charts-incubator.storage.googleapis.com/
+$ helm install --namespace kubeless incubator/kubeless
 ```
 
 ## Introduction
@@ -22,8 +23,12 @@ This chart bootstraps a [Kubeless](https://github.com/kubeless/kubeless) and a [
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm install --name my-release stable/kubeless --namespace kubeless
+$ helm install --name --namespace kubeless my-release stable/kubeless
 ```
+
+> **NOTE**
+>
+> While the chart supports deploying Kubeless to any namespace, Kubeless expects to be deployed under a namespace named `kubeless`.
 
 The command deploys Kubernetes on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
 
@@ -43,25 +48,25 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following tables lists the configurable parameters of the Kubeless chart and their default values.
 
-|         Parameter                       |             Description             |                         Default                          |
-|-----------------------------------------|-------------------------------------|----------------------------------------------------------|
-| `controller.deployment.image.repository`| Controller image                    | `bitnami/kubeless-controller@sha256`                     |
-| `controller.deployment.image.pullPolicy`| Controller image pull policy        | `IfNotPresent`                                           |
-| `controller.deployment.replicaCount`    | Number of replicas                  | `1`                                                      |
-| `ui.deployment.ui.image.repository`     | Kubeless UI image                   | `bitnami/kubeless-ui`                                    |
-| `ui.deployment.ui.image.pullPolicy`     | Kubeless UI image pull policy       | `IfNotPresent`                                           |
-| `ui.deployment.proxy.image.repository`  | Proxy image                         | `kelseyhightower/kubectl`                                |
-| `ui.deployment.proxy.image.pullPolicy`  | Proxy image pull policy             | `IfNotPresent`                                           |
-| `ui.deployment.replicaCount`            | Number of replicas                  | `1`                                                      |
-| `ui.service.name`                       | Service name                        | `ui-port`                                                |
-| `ui.service.type`                       | Kubernetes service name             | `NodePort`                                               |
-| `ui.service.externalPort`               | Service external port               | `3000`                                                   |
-| `zookeeper.statefulSet.image.repository`| Zookeeper image                     |  `bitnami/zookeeper@sha256`                              |
-| `zookeeper.statefulSet.image.pullPolicy`| Zookeeper image pull policy         | `IfNotPresent`                                           |
-| `zookeeper.statefulSet.replicaCount`    | Number of replicas                  | `1`                                                      |
-| `kafka.statefulSet.image.repository`    | Kafka image                         |  `bitnami/kafka@sha256`                                  |
-| `kafka.statefulSet.image.pullPolicy`    | Kafka image pull policy             | `IfNotPresent`                                           |
-| `kafka.statefulSet.replicaCount`        | Number of replicas                  | `1`                                                      |
+|                Parameter                 |          Description          |            Default            |
+|------------------------------------------|-------------------------------|-------------------------------|
+| `controller.deployment.image.repository` | Controller image              | `bitnami/kubeless-controller` |
+| `controller.deployment.image.pullPolicy` | Controller image pull policy  | `IfNotPresent`                |
+| `controller.deployment.replicaCount`     | Number of replicas            | `1`                           |
+| `ui.deployment.ui.image.repository`      | Kubeless UI image             | `bitnami/kubeless-ui`         |
+| `ui.deployment.ui.image.pullPolicy`      | Kubeless UI image pull policy | `IfNotPresent`                |
+| `ui.deployment.proxy.image.repository`   | Proxy image                   | `kelseyhightower/kubectl`     |
+| `ui.deployment.proxy.image.pullPolicy`   | Proxy image pull policy       | `IfNotPresent`                |
+| `ui.deployment.replicaCount`             | Number of replicas            | `1`                           |
+| `ui.service.name`                        | Service name                  | `ui-port`                     |
+| `ui.service.type`                        | Kubernetes service name       | `NodePort`                    |
+| `ui.service.externalPort`                | Service external port         | `3000`                        |
+| `zookeeper.statefulSet.image.repository` | Zookeeper image               | `bitnami/zookeeper`           |
+| `zookeeper.statefulSet.image.pullPolicy` | Zookeeper image pull policy   | `IfNotPresent`                |
+| `zookeeper.statefulSet.replicaCount`     | Number of replicas            | `1`                           |
+| `kafka.statefulSet.image.repository`     | Kafka image                   | `bitnami/kafka`               |
+| `kafka.statefulSet.image.pullPolicy`     | Kafka image pull policy       | `IfNotPresent`                |
+| `kafka.statefulSet.replicaCount`         | Number of replicas            | `1`                           |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

@@ -18,7 +18,7 @@
 
 {{- if contains "NodePort" .Values.ui.service.type }}
 
-  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services ui)
+  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "fullname" . }}-ui)
   export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
   echo http://$NODE_IP:$NODE_PORT
 
@@ -26,5 +26,7 @@
 
 == 2. Deploy function
 
-Check the kubeless repo for basic usage and some examples.
+In order to deploy a function you need the kubeless binary.
+You can download it from the kubeless repo:
+
 https://github.com/kubeless/kubeless
