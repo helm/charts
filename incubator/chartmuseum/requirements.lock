@@ -3,4 +3,4 @@ dependencies:
   repository: https://kubernetes-charts-incubator.storage.googleapis.com/
   version: 0.0.1
 digest: sha256:306378be27e855f6823d057c0d90ba3be227d44dc75b2c70c484a03c2515511e
-generated: 2017-12-14T17:49:53.558160058Z
+generated: 2017-12-18T13:10:38.704811234Z
