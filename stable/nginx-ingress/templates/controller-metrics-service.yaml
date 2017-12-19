@@ -29,7 +29,7 @@ spec:
   ports:
     - name: metrics
       port: {{ .Values.statsExporter.service.servicePort }}
-      targetPort: 9913
+      targetPort: {{ .Values.statsExporter.service.targetPort }}
   selector:
     app: {{ template "nginx-ingress.name" . }}
     component: "{{ .Values.controller.name }}"
