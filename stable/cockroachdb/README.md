@@ -1,7 +1,8 @@
 # CockroachDB Helm Chart
 
 ## Prerequisites Details
-* Kubernetes 1.5 (for StatefulSet support)
+* Kubernetes 1.7 (for PodDisruptionBudget `MaxUnavailable` support -- you can
+  run at Kubernetes 1.5 if you don't care about the PodDisruptionBudget)
 * PV support on the underlying infrastructure
 
 ## StatefulSet Details
@@ -38,7 +39,7 @@ The following tables lists the configurable parameters of the CockroachDB chart 
 | `ImageTag`                    | Container image tag                        | `v1.0`                                       |
 | `ImagePullPolicy`             | Container pull policy                      | `Always`                                     |
 | `Replicas`                    | k8s statefulset replicas                   | `3`                                          |
-| `MinAvailable`                | k8s PodDisruptionBudget parameter          | `67%`                                        |
+| `MaxUnavailable`              | k8s PodDisruptionBudget parameter          | `1`                                          |
 | `Component`                   | k8s selector key                           | `cockroachdb`                                |
 | `GrpcPort`                    | CockroachDB primary serving port           | `26257`                                      |
 | `HttpPort`                    | CockroachDB HTTP port                      | `8080`                                       |

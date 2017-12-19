@@ -73,7 +73,7 @@ spec:
   selector:
     matchLabels:
       component: "{{ .Release.Name }}-{{ .Values.Component }}"
-  minAvailable: {{ .Values.MinAvailable }}
+  maxUnavailable: {{ .Values.MaxUnavailable }}
 ---
 apiVersion: apps/v1beta1
 kind: StatefulSet

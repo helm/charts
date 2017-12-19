@@ -10,7 +10,7 @@ ImagePullPolicy: "Always"
 BootstrapImage: "cockroachdb/cockroach-k8s-init"
 BootstrapImageTag: "0.2"
 Replicas: 3
-MinAvailable: "67%"
+MaxUnavailable: 1
 Component: "cockroachdb"
 GrpcPort: 26257
 HttpPort: 8080
