@@ -20,6 +20,8 @@ Resources:
     memory: "512Mi"
 Storage: "1Gi"
 StorageClass: "anything"
+CacheSize: "25%"
+MaxSQLMemory: "25%"
 ClusterDomain: "cluster.local"
 NetworkPolicy:
   Enabled: false
