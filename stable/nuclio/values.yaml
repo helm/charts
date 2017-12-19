@@ -1,6 +1,6 @@
 # Nuclio release information
 Nuclio:
-  Version: 0.2.0
+  Version: 0.2.1
   Arch: amd64
 
 # Controller settings
@@ -16,4 +16,4 @@ Playground:
   Service:
     # Only `NodePort` is supported. Defaults to `None` if other value is provided
     Type: NodePort
-    NodePort: 30250
+    NodePort: 32050

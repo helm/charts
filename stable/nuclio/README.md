@@ -45,7 +45,7 @@ The following tables lists the configurable parameters of the Traefik chart and 
 
 | Parameter                       | Description                                                          | Default                                   |
 | ------------------------------- | -------------------------------------------------------------------- | ----------------------------------------- |
-| `Nuclio.Version`                | Nuclio's version                                                     | `0.2.0`                                   |
+| `Nuclio.Version`                | Nuclio's version                                                     | `0.2.1`                                   |
 | `Nuclio.Arch`                   | The version of the official Nuclio image architecture to use         | `amd64`                                   |
 | `Controller.Name`               | Provide controller name                                              | `controller`                              |
 | `Controller.Image`              | Nuclio's controller image                                            | `nuclio/controller`                       |
@@ -53,7 +53,7 @@ The following tables lists the configurable parameters of the Traefik chart and 
 | `Playground.Name`               | Provide playground name                                              | `playground`                              |
 | `Playground.Image`              | Nuclio's playground image                                            | `nuclio/playground`                       |
 | `Playground.Service.Type`       | If enabled, set the service type                                     | `NodePort`                                |
-| `Playground.Service.NodePort`   | If enabled, and set service type to `NodePort`, choose the port      | `30250`                                   |
+| `Playground.Service.NodePort`   | If enabled, and set service type to `NodePort`, choose the port      | `32050`                                   |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
