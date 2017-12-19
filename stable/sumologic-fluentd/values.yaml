@@ -58,7 +58,7 @@ sumologic:
   ## Include or exclude Kubernetes metadata such as namespace and pod_name if
   ## using json log format. (default true)
   kubernetesMeta: true
-  
+
   ## A ruby regex for containers. All matching containers will be excluded
   ## from Sumo Logic. The logs will still be sent to FluentD
   ## ref: http://rubular.com/
@@ -87,20 +87,20 @@ sumologic:
   ## ref: http://rubular.com/
   excludePodRegex: ""
 
-  ## A ruby regex for systemd units. All matching facilities will be excluded from 
+  ## A ruby regex for systemd units. All matching facilities will be excluded from
   ## Sumo Logic. The logs will still be sent to FluentD
   ## ref: http://rubular.com/
   ## ref: https://github.com/SumoLogic/fluentd-kubernetes-sumologic#options
   excludeFacilityRegex: ""
-  
+
   ## A ruby regex for syslog priorities, which are integers represented as
-  ## strings. All matching priorities will be excluded from 
+  ## strings. All matching priorities will be excluded from
   ## Sumo Logic. The logs will still be sent to FluentD
   ## ref: http://rubular.com/
   ## ref: https://github.com/SumoLogic/fluentd-kubernetes-sumologic#options
   excludePriorityRegex: ""
 
-  ## A ruby regex for systemd units. All matching hosts will be excluded from 
+  ## A ruby regex for systemd units. All matching hosts will be excluded from
   ## Sumo Logic. The logs will still be sent to FluentD
   ## ref: http://rubular.com/
   ## ref: https://github.com/SumoLogic/fluentd-kubernetes-sumologic#options
@@ -150,4 +150,3 @@ rbac:
 
   ## Ignored if rbac.create is true
   serviceAccountName: default
-
