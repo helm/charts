@@ -1,0 +1,123 @@
+## RabbitMQ application credentials
+## Ref: http://rabbitmq.com/access-control.html
+##
+rabbitmqUsername: guest
+# rabbitmqPassword:
+
+## RabbitMQ default VirtualHost
+## Ref: https://www.rabbitmq.com/vhosts.html
+##
+rabbitmqVhost: "/"
+
+## Erlang cookie to determine whether different nodes are allowed to communicate with each other
+## Ref: https://www.rabbitmq.com/clustering.html
+##
+# rabbitmqErlangCookie:
+
+## RabbitMQ Memory high watermark
+## Ref: http://www.rabbitmq.com/memory.html
+##
+rabbitmqMemoryHighWatermark: 256MB
+
+## EPMD port for peer discovery service used by RabbitMQ nodes and CLI tools
+## Ref: https://www.rabbitmq.com/clustering.html
+##
+rabbitmqEpmdPort: 4369
+
+## Node port
+rabbitmqNodePort: 5672
+
+## Manager port
+rabbitmqManagerPort: 15672
+
+## Set to true to precompile parts of RabbitMQ with HiPE, a just-in-time
+## compiler for Erlang. This will increase server throughput at the cost of
+## increased startup time. You might see 20-50% better performance at the cost
+## of a few minutes delay at startup.
+rabbitmqHipeCompile: false
+
+## Number of replicas
+replicaCount: 3
+
+image:
+  repository: rabbitmq
+  tag: 3.7-alpine
+  pullPolicy: IfNotPresent
+
+service:
+  annotations: {}
+  clusterIP: ""
+
+  ## List of IP addresses at which the service is available
+  ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
+  ##
+  externalIPs: []
+
+  loadBalancerIP: ""
+  loadBalancerSourceRanges: []
+  type: NodePort
+
+## Statefulsets rolling update update strategy
+## Ref: https://kubernetes.io/docs/tutorials/stateful-application/basic-stateful-set/#rolling-update
+##
+updateStrategy: OnDelete
+
+## We usually recommend not to specify default resources and to leave this as
+## a conscious choice for the user. This also increases chances charts run on
+## environments with little resources, such as Minikube. If you do want to
+## specify resources, uncomment the following lines, adjust them as necessary,
+## and remove the curly braces after 'resources:'.
+## If you decide to set the memory limit, make sure to also change the
+## rabbitmqMemoryHighWatermark following the formula:
+##   rabbitmqMemoryHighWatermark = 0.4 * resources.limits.memory
+##
+resources: {}
+# limits:
+#  cpu: 100m
+#  memory: 1Gi
+# requests:
+#  cpu: 100m
+#  memory: 1Gi
+
+
+## Data Persistency
+persistentVolume:
+  enabled: false
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  ##
+  # storageClass: "-"
+  accessModes:
+    - ReadWriteOnce
+  size: 8Gi
+  annotations: {}
+
+## Node labels for pod assignment
+## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
+##
+nodeSelector: {}
+
+## Node tolerations for pod assignment
+## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
+##
+tolerations: []
+
+## Pod affinity
+## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+podAntiAffinity: soft
+
+## Create default configMap
+##
+customConfigMap: false
+
+## Role Based Access
+## Ref: https://kubernetes.io/docs/admin/authorization/rbac/
+##
+rbac:
+  create: true
+
+  # Defines the serviceAccountName to use when `rbac.create=false`
+  serviceAccountName: default
