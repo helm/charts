@@ -34,5 +34,6 @@ resources: {}
 configurationFiles:
   bitcoin.conf: |-
     server=1
+    printtoconsole=1
     rpcuser=rpcuser
     rpcpassword=rpcpassword
