@@ -36,7 +36,7 @@ spec:
   volumes:
   - name: tests
     configMap:
-      name: "{{ template "gocd.name" . }}-tests"
+      name: {{ template "gocd.fullname" . }}-tests
   - name: tools
     emptyDir: {}
   restartPolicy: Never
