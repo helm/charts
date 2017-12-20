@@ -25,7 +25,7 @@ spec:
           containerPort: {{ .Values.rpcPort }}
         volumeMounts:
         - name: data
-          mountPath: /srv/bitcoind
+          mountPath: /root
         {{- if .Values.ssl.enabled }}
         - name: ssl
           mountPath: /etc/bitcoind-ssl
