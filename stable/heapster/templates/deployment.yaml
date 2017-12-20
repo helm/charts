@@ -94,7 +94,7 @@ spec:
                 fieldPath: metadata.namespace
         command:
           - /pod_nanny
-          - "--deployment={{ template "fullname" . }}"
+          - "--deployment={{ template "heapster.fullname" . }}"
           - "--container={{ .Chart.Name }}-eventer"
           {{- range .Values.eventer.resizer.flags }}
           - {{ . | quote }}
