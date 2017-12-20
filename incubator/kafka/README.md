@@ -64,6 +64,8 @@ following configurable parameters:
 | `dataDirectory`                | Kafka data directory                                                                                                   | `/opt/kafka/data`                                          |
 | `storage`                      | Kafka Persistent volume size                                                                                           | `1Gi`                                                      |
 | `schema-registry.enabled`      | If True, installs Schema Registry Chart                                                                                | `false`                                                    |
+| `updateStrategy`               | The type of StatefulSet update strategy to use. One of `OnDelete` or `RollingUpdate`                                   | `OnDelete`                                                 |
+| `rollingUpdatePartition`       | When `RollingUpdate` is the `updateStrategy`, which `partition` of the statefulset is updated first.                   | `0`                                                        |
 | `zookeeperAntiAffinityEnabled` | If `true`, apply anti-affinity rules between kafka and zookeeper pods.                                                 | `true`                                                     |
 | `zookeeperAntiAffinity`        | If `hard` disallow colocation of Kafka and Zookeeper pods, if `soft`, make a best effort-attempt to prevent colocation | `soft`                                                     |
 | `zookeeperAntiAffinityPodName` | Pod Metadata app label of zookeeper pods for anti-affinity rules for use with `In` prefix of affinity rules.           | `zookeeper`                                                |
