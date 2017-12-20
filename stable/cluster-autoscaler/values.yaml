@@ -64,6 +64,7 @@ service:
   loadBalancerIP: ""
   loadBalancerSourceRanges: []
   servicePort: 8085
+  portName: http
   type: ClusterIP
 
 spotinst:
