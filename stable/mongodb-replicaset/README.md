@@ -57,6 +57,7 @@ The following tables lists the configurable parameters of the mongodb chart and 
 | `auth.existingAdminSecret`      | If set, and existing secret with this name is used for the admin user     |                                                     |
 | `serviceAnnotations`            | Annotations to be added to the service                                    | {}                                                  |
 | `configmap`                     | Content of the MongoDB config file                                        | See below                                           |
+| `nodeSelector`                  | Node labels for pod assignment                                            | {}                                                  |
 
 *MongoDB config file*
 

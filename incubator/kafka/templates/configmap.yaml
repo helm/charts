@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "kafka.configmap" . }}
+  labels:
+    app: "{{ template "kafka.name" . }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+data:
+  zookeeper.connect: "{{ template "zookeeper.url" . }}"
+  log.dirs: "{{ printf "%s/%s" .Values.dataDirectory .Values.logSubPath }}"
+{{- range $configName, $configValue := .Values.configurationOverrides }}
+  {{ $configName }}: "{{ $configValue -}}"
+{{- end -}}

@@ -15,7 +15,7 @@ fi
 SUCCESS=0
 PODS_FOUND=0
 POD_RETRY_COUNT=0
-RETRY=18
+RETRY=36
 RETRY_DELAY=10
 while [ "$POD_RETRY_COUNT" -lt "$RETRY" ]; do
   POD_STATUS=`kubectl get pods --no-headers --namespace $NAMESPACE`
