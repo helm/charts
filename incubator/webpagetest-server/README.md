@@ -210,5 +210,4 @@ Ones to note are
 ```
 
 ## Future
-* Add persistant storage to buffer content between runs and s3 archiving
 * Add options for 'locations.ini' from configmap so you can use other agents
