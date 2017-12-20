@@ -41,7 +41,7 @@ of the `rabbitmqErlangCookie` amongst the releases. If you didn't define it at
 the first place, you can upgrade using the following command:
 
 ```
-$ export ERLANGCOOKIE=$(kubectl get secrets -n <NAMESPACE> <HELM_RELEASE_NAME>-rabbitmq-ha -o jsonpath={.data.rabbitmq-erlang-cookie}
+$ export ERLANGCOOKIE=$(kubectl get secrets -n <NAMESPACE> <HELM_RELEASE_NAME>-rabbitmq-ha -o jsonpath="{.data.rabbitmq-erlang-cookie}" | base64 --decode)
 $ helm upgrade --name <HELM_RELEASE_NAME> \
     --set rabbitmqErlangCookie=$ERLANGCOOKIE \
     stable/rabbitmq-ha
