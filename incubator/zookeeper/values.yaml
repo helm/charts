@@ -27,6 +27,7 @@ purgeHours: 1
 probeInitialDelaySeconds: 15
 probeTimeoutSeconds: 5
 antiAffinity: "hard"
+nodeAffinity: {}
 logLevel: "INFO"
 security:
   enabled: false
