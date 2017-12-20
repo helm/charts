@@ -52,7 +52,7 @@ resources: {}
   # limits:
   #  cpu: 100m
   #  memory: 128Mi
-  #requests:
+  # requests:
   #  cpu: 100m
   #  memory: 128Mi
 
@@ -62,7 +62,7 @@ ec2Locations:
   enabled: false
   # Used to create k8s secrets which will in turn be used to configure WPT. See README.md
   userData:
-    ec2_key:        ''
-    ec2_secret:     ''
-    headless:       0
-    'EC2.default':  'eu-west-1'
+    ec2_key: ''
+    ec2_secret: ''
+    headless: 0
+    'EC2.default': 'eu-west-1'
