@@ -36,7 +36,7 @@ spec:
           {{- end }}
           name: dogstatsdport
           protocol: UDP
-        {{- if .Values.datadog.apmEnabled }}
+        {{- if or .Values.daemonset.apmEnabled .Values.datadog.apmEnabled }}
         - containerPort: 8126
           {{- if .Values.daemonset.useHostPort }}
           hostPort: 8126
@@ -68,7 +68,7 @@ spec:
           - name: TAGS
             value: {{ default "" .Values.datadog.tags | quote }}
           - name: DD_APM_ENABLED
-            value: {{ default "" .Values.datadog.apmEnabled | quote }}
+            value: {{ default "" (or .Values.daemonset.apmEnabled .Values.datadog.apmEnabled) | quote }}
           - name: KUBERNETES
             value: "yes"
 {{- if .Values.datadog.env }}

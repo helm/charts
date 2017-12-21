@@ -29,7 +29,7 @@ spec:
         - containerPort: 8125
           name: dogstatsdport
           protocol: UDP
-        {{- if .Values.datadog.apmEnabled }}
+        {{- if or .Values.deployment.apmEnabled .Values.datadog.apmEnabled }}
         - containerPort: 8126
           name: traceport
           protocol: TCP
@@ -49,7 +49,7 @@ spec:
           - name: TAGS
             value: {{ default "" .Values.datadog.tags | quote }}
           - name: DD_APM_ENABLED
-            value: {{ default "" .Values.datadog.apmEnabled | quote }}
+            value: {{ default "" (or .Values.deployment.apmEnabled .Values.datadog.apmEnabled) | quote }}
           - name: KUBERNETES
             value: "yes"
           {{- if .Values.datadog.collectEvents }}
