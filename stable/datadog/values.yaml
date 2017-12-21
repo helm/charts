@@ -159,6 +159,9 @@ rbac:
   ## If true, create & use RBAC resources
   create: true
 
+  # rbac version
+  apiVersion: v1
+
   ## Ignored if rbac.create is true
   serviceAccountName: default
 
