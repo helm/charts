@@ -82,7 +82,7 @@ persistence:
 
 ## Ingress for load balancer
 ingress:
-  eabled: false
+  enabled: false
 ## Chartmuseum Ingress labels
 ##
 #   labels:
