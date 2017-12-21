@@ -213,8 +213,9 @@ spec:
         livenessProbe:
           exec:
             command:
-            - consul
-            - members
+            - "/bin/sh"
+            - "-ec"
+            - "curl -fsq localhost:{{ .Values.HttpPort }}/v1/status/peers|grep -q $(hostname -i)"
           initialDelaySeconds: 300
           timeoutSeconds: 5
         command:
@@ -238,10 +239,19 @@ spec:
                 done
             done
 
+            PEERS_JSON="[ "
             PEERS=""
             for i in $(seq 0 $((${INITIAL_CLUSTER_SIZE} - 1))); do
-                PEERS="${PEERS}${PEERS:+ } -retry-join $(ping -c 1 ${STATEFULSET_NAME}-${i}.${STATEFULSET_NAME}.${STATEFULSET_NAMESPACE}.svc | awk -F'[()]' '/PING/{print $2}')"
+                PEER_IP=$(ping -c 1 ${STATEFULSET_NAME}-${i}.${STATEFULSET_NAME}.${STATEFULSET_NAMESPACE}.svc | awk -F'[()]' '/PING/{print $2}')
+                PEERS="${PEERS}${PEERS:+ } -retry-join ${PEER_IP}"
+                PEERS_JSON="${PEERS_JSON} \"${PEER_IP}:{{ .Values.ServerPort }}\""
+                if [ "${i}" != "$((${INITIAL_CLUSTER_SIZE} - 1))" ]; then
+                  PEERS_JSON="${PEERS_JSON},"
+                fi
             done
+            PEERS_JSON="${PEERS_JSON} ]"
+            mkdir -p /var/lib/consul/raft/
+            echo ${PEERS_JSON} > /var/lib/consul/raft/peers.json
 
             exec /bin/consul agent \
             {{- if .Values.uiService.enabled }}
@@ -263,6 +273,7 @@ spec:
               ${GOSSIP_KEY} \
             {{- end }}
               -client=0.0.0.0 \
+              -raft-protocol 2 \
               -dns-port=${DNSPORT}
       volumes:
       - name: gossip-key
