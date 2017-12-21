@@ -16,5 +16,9 @@ keywords:
 sources:
 - https://github.com/gocd/gocd
 maintainers:
-- name: ThoughtWorks, Inc.
-  email: godev+k8s@thoughtworks.com
+- name: arvindsv
+  email: arvind@thoughtworks.com
+- name: GaneshSPatil
+  email: ganeshpl@thoughtworks.com
+- name: varshavaradarajan
+  email: varshavs@thoughtworks.com
