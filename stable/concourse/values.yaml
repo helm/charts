@@ -370,6 +370,18 @@ web:
     #
     #
 
+  ## Metric Configuration
+  ## ref: https://concourse.ci/metrics.html
+  ##
+  metrics:
+
+    ## Enable the prometheus metrics?
+    ## Port is per https://github.com/prometheus/prometheus/wiki/Default-port-allocations
+    ##
+    prometheus:
+      enabled: false
+      port: 9391
+
 ## Configuration values for Concourse Worker components.
 ##
 worker:
