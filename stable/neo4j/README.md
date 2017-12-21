@@ -61,6 +61,7 @@ their default values.
 | `core.numberOfServers`               | Number of machines in CORE mode                                                                                                         | `3`                                             |
 | `core.sideCarContainers`             | Sidecar containers to add to the core pod. Example use case is a sidecar which identifies and labels the leader when using the http API | `{}`                                            |
 | `core.initContainers`                | Init containers to add to the core pod. Example use case is a script that installs the APOC library                                     | `{}`                                            |
+| `core.persistentVolume.enabled`      | Is writing to a persistent volume required?                                                                                             | `true`                                          |
 | `core.persistentVolume.storageClass` | Storage class of backing PVC                                                                                                            | `standard` (uses beta storage class annotation) |
 | `core.persistentVolume.size`         | Size of data volume                                                                                                                     | `10Gi`                                          |
 | `core.persistentVolume.mountPath`    | Persistent Volume mount root path                                                                                                       | `/data`                                         |
@@ -72,8 +73,7 @@ their default values.
 The above parameters map to the env variables defined in the
 [Neo4j docker image](https://github.com/neo4j/docker-neo4j).
 
-Specify each parameter using the `--set key=value[,key=value]` argument to `helm
-install`. For example,
+Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```bash
 $ helm install --name neo4j-helm --set core.numberOfServers=5,readReplica.numberOfServers=3 stable/neo4j
@@ -109,5 +109,5 @@ define `persistence.existingClaim`.
 3. Install the chart
 
 ```bash
-$ helm install --set core.persistentVolume.existingClaim=PVC_NAME incubator/neo4j
+$ helm install --set core.persistentVolume.existingClaim=PVC_NAME stable/neo4j
 ```
