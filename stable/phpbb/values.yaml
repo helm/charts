@@ -26,7 +26,7 @@ phpbbEmail: user@example.com
 
 ## Set to `yes` to allow the container to be started with blank passwords
 ## ref: https://github.com/bitnami/bitnami-docker-wordpress#environment-variables
-allowEmptyPassword: yes
+allowEmptyPassword: "yes"
 
 ## SMTP mail delivery configuration
 ## ref: https://github.com/bitnami/bitnami-docker-phpbb#smtp-configuration
@@ -41,22 +41,25 @@ allowEmptyPassword: yes
 ##
 externalDatabase:
   ## Database host
-  # host:
+  host:
+
+  ## Database host
+  port: 3306
 
   ## Database user
-  # user: bn_mediawiki
+  user: bn_mediawiki
 
   ## Database password
-  # password:
+  password:
 
   ## Database name
-  # database: bitnami_mediawiki
+  database: bitnami_mediawiki
 
 ##
 ## MariaDB chart configuration
 ##
 mariadb:
-  ## Whether to use the database specified as a requirement or not. For example, to configure the chart with an existing database server.
+  ## Whether to deploy a mariadb server to satisfy the applications database requirements. To use an external database set this to false and configure the externalDatabase parameters
   enabled: true
 
   ## MariaDB admin password
