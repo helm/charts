@@ -4,7 +4,7 @@
 replicaCount: 1
 image:
   repository: webpagetest/server
-  tag: release
+  tag: latest
   pullPolicy: IfNotPresent
 service:
   name: webpagetest-server
