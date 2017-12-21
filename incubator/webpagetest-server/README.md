@@ -1,4 +1,4 @@
-# WebPageTest
+# WebPageTest Server
 
 [WebPageTest](https://webpagetest.org/) is a website testing tool
 
