@@ -27,6 +27,9 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - containerPort: {{ .Values.service.internalPort }}
+            {{- if .Values.docker.enabled }}
+            - containerPort: {{ .Values.docker.port }}
+            {{- end }}
           livenessProbe:
             httpGet:
               path: /
@@ -40,6 +43,8 @@ spec:
             initialDelaySeconds: {{ .Values.service.readinessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.service.readinessProbe.periodSeconds }}
             failureThreshold: {{ .Values.service.readinessProbe.failureThreshold }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
           volumeMounts:
             - mountPath: /nexus-data
               name: nexus-data-volume
