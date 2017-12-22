@@ -89,7 +89,7 @@ The following tables lists the configurable parameters of the sumologic-fluentd 
 | `sumologic.concatSeparator` | The character to use to delimit lines within the final concatenated message. Most multi-line messages contain a newline at the end of each line | `Nil` |
 | `sumologic.auditLogPath` | Define the path to the [Kubernetes Audit Log](https://kubernetes.io/docs/tasks/debug-application-cluster/audit/) | `/mnt/log/kube-apiserver-audit.log` |
 | `image.name` | The image repository and name to pull from | `sumologic/fluentd-kubernetes-sumologic` |
-| `image.tag` | The image tag to pull | `latest` |
+| `image.tag` | The image tag to pull | `v1.6` |
 | `imagePullPolicy` | Image pull policy | `IfNotPresent` |
 | `persistence.enabled` | Boolean value, used to turn on or off fluentd position file persistence, on nodes | `false` |
 | `persistence.hostPath` | The path, on each node, to a directory for fluentd pos files. You must create the directory on each node first. | `/var/run/fluentd-pos` |
