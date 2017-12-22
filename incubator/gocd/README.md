@@ -40,13 +40,6 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following tables lists the configurable parameters of the GoCD chart and their default values.
 
-### GoCD
-
-| Parameter    | Description  | Default             |
-| ------------ | ------------ | ------------------- |
-| `app.version`| GoCD version | `.Chart.appVersion` |
-
-
 ### GoCD Server
 
 | Parameter                                  | Description                                                                                                   | Default             |

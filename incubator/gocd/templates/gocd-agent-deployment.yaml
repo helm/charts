@@ -3,19 +3,19 @@ kind: Deployment
 metadata:
   name: {{ template "gocd.fullname" . }}-agent
   labels:
-    app: {{ template "gocd.name" . }}-agent
+    app: {{ template "gocd.name" . }}
     chart:  "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
-    component: {{ template "gocd.name" . }}-agent
+    component: agent
 spec:
   replicas: {{ .Values.agent.replicaCount }}
   template:
     metadata:
       labels:
-        app: {{ template "gocd.name" . }}-agent
+        app: {{ template "gocd.name" . }}
         release: {{ .Release.Name | quote }}
-        component: {{ template "gocd.name" . }}-agent
+        component: agent
     spec:
       {{- if .Values.agent.persistence.enabled }}
       volumes:
@@ -28,7 +28,7 @@ spec:
           {{- if .Values.agent.image.tag }}
           image: "{{ .Values.agent.image.repository }}:{{ .Values.agent.image.tag }}"
           {{- else }}
-          image: "{{ .Values.agent.image.repository }}:v{{default .Chart.AppVersion .Values.app.version}}"
+          image: "{{ .Values.agent.image.repository }}:v{{ .Chart.AppVersion }}"
           {{- end }}
           imagePullPolicy: {{ .Values.agent.image.pullPolicy }}
           resources:

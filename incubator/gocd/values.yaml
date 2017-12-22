@@ -1,9 +1,6 @@
 # Default values for gocd.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
-app:
-  # app.version is the version of GoCD app
-  version:
 
 server:
   # server.replicaCount is the GoCD Server replicas Count
