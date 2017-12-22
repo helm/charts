@@ -37,7 +37,7 @@ This deployment will be incomplete until you configure phpBB with a resolvable d
 host. To configure phpBB to use and external database host:
 
 
-1. Complete your Ghost deployment by running:
+1. Complete your phpBB deployment by running:
 
   helm upgrade {{ .Release.Name }} --set serviceType={{ .Values.serviceType }},mariadb.enabled=false,externalDatabase.host=YOUR_EXTERNAL_DATABASE_HOST stable/phpbb
 
