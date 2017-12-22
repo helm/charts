@@ -44,7 +44,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the WordPress chart and their default values.
+The following tables lists the configurable parameters of the WebPageTest chart and their default values.
 
 | Parameter                            | Description                                | Default                                                    |
 | -------------------------------      | -------------------------------            | ---------------------------------------------------------- |
@@ -90,7 +90,7 @@ $ helm install --name my-release -f values.yaml incubator/webpagetest-server
 This chart provides support for ingress resources. If you have an
 ingress controller installed on your cluster, such as [nginx-ingress](https://kubeapps.com/charts/stable/nginx-ingress)
 or [traefik](https://kubeapps.com/charts/stable/traefik) you can utilize
-the ingress controller to service your WordPress application.
+the ingress controller to service your WebPageTest application.
 
 To enable ingress integration, please set `ingress.enabled` to `true`
 
