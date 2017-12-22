@@ -14,12 +14,15 @@ spec:
       labels: {{ include "external-dns.labels" . | indent 8 }}
     spec:
       containers:
-        - name: {{ template "name" . }}
+        - name: {{ template "external-dns.name" . }}
           image: "{{.Values.image.name}}:{{ .Values.image.tag }}"
           imagePullPolicy: "{{ .Values.image.pullPolicy }}"
           args:
-          {{- if .Values.debug }}
-            - --debug
+          {{- if .Values.logLevel }}
+            - --log-level={{ .Values.logLevel }}
+          {{- end }}
+          {{- if .Values.publishInternalServices }}
+            - --publish-internal-services
           {{- end }}
           {{- range .Values.domainFilters }}
             - --domain-filter={{ . }}
@@ -30,10 +33,17 @@ spec:
             - --source={{ . }}
           {{- end }}
           {{- range $key, $value := .Values.extraArgs }}
+            {{- if $value }}
             - --{{ $key }}={{ $value }}
+            {{- else }}
+            - --{{ $key }}
+            {{- end }}
+          {{- end }}
+          {{- if .Values.aws.zoneType }}
+            - --aws-zone-type={{ .Values.aws.zoneType }}
           {{- end }}
           env:
-        {{- if and .Values.aws.secret_key .Values.aws.access_key }}
+        {{- if and .Values.aws.secretKey .Values.aws.accessKey }}
           - name: AWS_ACCESS_KEY_ID
             valueFrom:
               secretKeyRef:
@@ -49,7 +59,7 @@ spec:
           - name: AWS_DEFAULT_REGION
             value: {{ .Values.aws.region }}
         {{- end }}
-        {{- if and .Values.cloudflare.api_key .Values.cloudflare.email }}
+        {{- if and .Values.cloudflare.apiKey .Values.cloudflare.email }}
           - name: CF_API_KEY
             valueFrom:
               secretKeyRef:
@@ -57,6 +67,14 @@ spec:
                 key: cloudflare_api_key
           - name: CF_API_EMAIL
             value: "{{ .Values.cloudflare.email }}"
+        {{- end }}
+        {{- $root := . -}}
+        {{- range $key, $value := .Values.extraEnv }}
+          - name: {{ $key }}
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "external-dns.fullname" $root }}
+                key: {{ $key }}
         {{- end }}
           livenessProbe:
             httpGet:
@@ -71,5 +89,9 @@ spec:
     {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
+    {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
     {{- end }}
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "external-dns.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}

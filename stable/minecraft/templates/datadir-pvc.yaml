@@ -2,9 +2,9 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: {{ template "fullname" . }}-datadir
+  name: {{ template "minecraft.fullname" . }}-datadir
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "minecraft.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"

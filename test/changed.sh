@@ -18,10 +18,11 @@ set -o nounset
 set -o pipefail
 set -o xtrace
 
-git fetch --tags https://github.com/kubernetes/charts master
+git remote add k8s https://github.com/kubernetes/charts
+git fetch k8s master
 
 NAMESPACE="pr-${PULL_NUMBER}-${BUILD_NUMBER}"
-CHANGED_FOLDERS=`git diff --find-renames --name-only FETCH_HEAD stable/ incubator/ | awk -F/ '{print $1"/"$2}' | uniq`
+CHANGED_FOLDERS=`git diff --find-renames --name-only $(git merge-base k8s/master HEAD) stable/ incubator/ | awk -F/ '{print $1"/"$2}' | uniq`
 CURRENT_RELEASE=""
 
 # Exit early if no charts have changed
@@ -29,14 +30,33 @@ if [ -z "$CHANGED_FOLDERS" ]; then
   exit 0
 fi
 
+# include the semvercompare function
+curDir="$(dirname "$0")"
+source "$curDir/semvercompare.sh"
+exitCode=0
+
 # Cleanup any releases and namespaces left over from the test
 function cleanup {
-    if [ -n $CURRENT_RELEASE ];then
+    if [ -n "$CURRENT_RELEASE" ]; then
       helm delete --purge ${CURRENT_RELEASE} > cleanup_log 2>&1 || true
     fi
     kubectl delete ns ${NAMESPACE} >> cleanup_log 2>&1 || true
 }
 trap cleanup EXIT
+
+function dosemvercompare {
+  # Note, the trap and automatic exiting are disabled for the semver comparison
+  # because it catches its own errors. If the comparison fails exitCode is set
+  # to 1. So, trapping and exiting is re-enabled and then the exit is handled
+  trap - EXIT
+  set +e
+  semvercompare ${1}
+  trap cleanup EXIT
+  set -e
+  if [ $exitCode == 1 ]; then
+    exit 1
+  fi
+}
 
 if [ ! -f "${KUBECONFIG:=}" ];then
   # Get credentials for test cluster
@@ -46,7 +66,7 @@ fi
 
 # Install and initialize helm/tiller
 HELM_URL=https://storage.googleapis.com/kubernetes-helm
-HELM_TARBALL=helm-v2.5.1-linux-amd64.tar.gz
+HELM_TARBALL=helm-v2.7.2-linux-amd64.tar.gz
 INCUBATOR_REPO_URL=https://kubernetes-charts-incubator.storage.googleapis.com/
 pushd /opt
   wget -q ${HELM_URL}/${HELM_TARBALL}
@@ -57,6 +77,19 @@ popd
 helm init --client-only
 helm repo add incubator ${INCUBATOR_REPO_URL}
 
+mkdir /opt/bin
+pushd /opt/bin
+  # Install tools to check chart versions
+  # Install YAML Command line reader
+  wget -q -O yaml https://github.com/mikefarah/yaml/releases/download/1.13.1/yaml_linux_amd64
+  chmod +x yaml
+
+  # Install SemVer testing tool
+  wget -q -O vert https://github.com/Masterminds/vert/releases/download/v0.1.0/vert-v0.1.0-linux-amd64
+  chmod +x vert
+popd
+PATH=/opt/bin/:$PATH
+
 # Iterate over each of the changed charts
 #    Lint, install and delete
 for directory in ${CHANGED_FOLDERS}; do
@@ -64,10 +97,15 @@ for directory in ${CHANGED_FOLDERS}; do
     continue
   elif [ -d $directory ]; then
     CHART_NAME=`echo ${directory} | cut -d '/' -f2`
+    
+    # A semver comparison is here as well as in the circleci tests. The circleci
+    # tests provide almost immediate feedback to chart authors. This test is also
+    # re-run right before the bot merges a PR so we can make sure the chart
+    # version is always incremented.
+    dosemvercompare ${directory}
     RELEASE_NAME="${CHART_NAME:0:7}-${BUILD_NUMBER}"
     CURRENT_RELEASE=${RELEASE_NAME}
-    helm lint ${directory}
-    helm dep update ${directory}
+    helm dep build ${directory}
     helm install --timeout 600 --name ${RELEASE_NAME} --namespace ${NAMESPACE} ${directory} | tee install_output
     ./test/verify-release.sh ${NAMESPACE}
     kubectl get pods --namespace ${NAMESPACE}
@@ -82,3 +120,5 @@ for directory in ${CHANGED_FOLDERS}; do
     helm delete --purge ${RELEASE_NAME}
   fi
 done
+
+exit $exitCode

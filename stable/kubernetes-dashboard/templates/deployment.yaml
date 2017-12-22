@@ -1,9 +1,9 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "kubernetes-dashboard.fullname" . }}
   labels:
-    app: {{ template "name" . }}
+    app: {{ template "kubernetes-dashboard.name" . }}
     heritage: "{{ .Release.Service }}"
     release: "{{ .Release.Name }}"
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
@@ -18,13 +18,13 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "name" . }}
+        app: {{ template "kubernetes-dashboard.name" . }}
         heritage: "{{ .Release.Service }}"
         release: "{{ .Release.Name }}"
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         kubernetes.io/cluster-service: "true"
     spec:
-      serviceAccountName: {{ if .Values.rbac.create }}{{ template "fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
+      serviceAccountName: {{ if .Values.rbac.create }}{{ template "kubernetes-dashboard.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 10 }}
       containers:

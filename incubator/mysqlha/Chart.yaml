@@ -1,0 +1,14 @@
+name: mysqlha
+version: 0.1.0
+description: MySQL cluster with a single master and zero or more slave replicas
+keywords:
+  - mysql
+  - database
+  - sql
+home: https://www.mysql.com/
+icon: https://www.mysql.com/common/logos/logo-mysql-170x115.png
+maintainers:
+  - name: Jason Poon
+    email: jason.poon@microsoft.com
+  - name: Jon Hoare
+    email: jon.bitbucket@livewire-uk.co.uk

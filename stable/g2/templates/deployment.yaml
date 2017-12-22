@@ -1,10 +1,10 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "g2.fullname" . }}
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    app: "{{ template "name" . }}"
+    app: "{{ template "g2.name" . }}"
     heritage: "{{ .Release.Service }}"
     release: "{{ .Release.Name }}"
 spec:
@@ -12,11 +12,11 @@ spec:
   template:
     metadata:
       labels:
-        app: "{{ template "name" . }}"
+        app: "{{ template "g2.name" . }}"
         release: "{{ .Release.Name }}"
     spec:
 {{- if .Values.rbac.install }}
-      serviceAccountName: {{ template "fullname" . }}
+      serviceAccountName: {{ template "g2.fullname" . }}
 {{- end }}
       containers:
       - args:
