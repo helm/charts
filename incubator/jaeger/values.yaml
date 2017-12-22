@@ -54,6 +54,7 @@ schema:
   ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
   podLabels: {}
 agent:
+  enabled: true
   annotations: {}
   image: jaegertracing/jaeger-agent
   tag: 0.8

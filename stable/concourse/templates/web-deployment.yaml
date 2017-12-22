@@ -22,6 +22,14 @@ spec:
           imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
           args:
             - "web"
+            {{- if .Values.credentialManager.enabled }}
+            {{- if default "" .Values.credentialManager.vault.appRoleId }}
+            - "--vault-auth-param"
+            - "role_id=${CONCOURSE_VAULT_APPROLE_ID}"
+            - "--vault-auth-param"
+            - "secret_id=${CONCOURSE_VAULT_APPROLE_SECRET_ID}"
+            {{- end }}
+            {{- end }}
           env:
             {{ if .Values.postgresql.enabled }}
             - name: POSTGRES_HOST
@@ -244,6 +252,50 @@ spec:
               value: "/concourse-keys/session_signing_key"
             - name: CONCOURSE_TSA_AUTHORIZED_KEYS
               value: "/concourse-keys/worker_key.pub"
+            {{- if .Values.credentialManager.enabled }}
+            - name: CONCOURSE_VAULT_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: vault-url
+            - name: CONCOURSE_VAULT_PATH_PREFIX
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: vault-path-prefix
+            - name: CONCOURSE_VAULT_AUTH_BACKEND
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: vault-auth-backend
+            - name: CONCOURSE_VAULT_CLIENT_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: vault-client-token
+            {{- if .Values.credentialManager.vault.caCert }}
+            - name: CONCOURSE_VAULT_CA_CERT
+              value: "/concourse-vault/ca.crt"
+            {{- end }}
+            {{- if .Values.credentialManager.vault.clientCert }}
+            - name: CONCOURSE_VAULT_CLIENT_CERT
+              value: "/concourse-vault/client.crt"
+            - name: CONCOURSE_VAULT_CLIENT_KEY
+              value: "/concourse-vault/client.key"
+            {{- end }}
+            {{- if .Values.credentialManager.vault.appRoleId }}
+            - name: CONCOURSE_VAULT_APPROLE_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: vault-approle-id
+            - name: CONCOURSE_VAULT_APPROLE_SECRET_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: vault-approle-secret-id
+            {{- end }}
+            {{- end }}
           ports:
             - name: atc
               containerPort: {{ .Values.concourse.atcPort }}
@@ -267,6 +319,11 @@ spec:
             - name: concourse-keys
               mountPath: /concourse-keys
               readOnly: true
+            {{- if .Values.credentialManager.vault }}
+            - name: vault-keys
+              mountPath: /concourse-vault
+              readOnly: true
+            {{- end }}
       affinity:
 {{- if .Values.web.additionalAffinities }}
 {{ toYaml .Values.web.additionalAffinities | indent 8 }}
@@ -283,3 +340,16 @@ spec:
                 path: session_signing_key
               - key: worker-key-pub
                 path: worker_key.pub
+        {{- if .Values.credentialManager.vault }}
+        - name: vault-keys
+          secret:
+            secretName: {{ template "concourse.concourse.fullname" . }}
+            defaultMode: 0400
+            items:
+              - key: vault-ca-cert
+                path: ca.cert
+              - key: vault-client-cert
+                path: client.cert
+              - key: vault-client-key
+                path: client.key
+        {{- end }}
