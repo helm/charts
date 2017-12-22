@@ -17,6 +17,10 @@ spec:
         app: {{ template "elasticsearch.name" . }}
         component: "{{ .Values.master.name }}"
         release: {{ .Release.Name }}
+        {{- if .Values.master.podAnnotations }}
+      annotations:
+{{ toYaml .Values.master.podAnnotations | indent 8 }}
+        {{- end }}
     spec:
       serviceAccountName: {{ template "elasticsearch.fullname" . }}
       {{- if eq .Values.master.antiAffinity "hard" }}
@@ -116,14 +120,24 @@ spec:
       - name: config
         configMap:
           name: {{ template "elasticsearch.fullname" . }}
+  {{- if not .Values.master.persistence.enabled }}
+      - name: data
+        emptyDir: {}
+  {{- else }}
   volumeClaimTemplates:
   - metadata:
-      name: data
+      name: {{ .Values.master.persistence.name }}
     spec:
-      accessModes: [ ReadWriteOnce ]
-    {{- if .Values.master.storageClass }}
-      storageClassName: "{{ .Values.master.storageClass }}"
+      accessModes:
+        - {{ .Values.master.persistence.accessMode | quote }}
+    {{- if .Values.master.persistence.storageClass }}
+    {{- if (eq "-" .Values.master.persistence.storageClass) }}
+      storageClassName: ""
+    {{- else }}
+      storageClassName: "{{ .Values.master.persistence.storageClass }}"
+    {{- end }}
     {{- end }}
       resources:
         requests:
-          storage: "{{ .Values.master.storage }}"
+          storage: "{{ .Values.master.persistence.size }}"
+  {{ end }}

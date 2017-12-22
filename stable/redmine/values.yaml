@@ -1,7 +1,7 @@
 ## Bitnami Redmine image version
 ## ref: https://hub.docker.com/r/bitnami/redmine/tags/
 ##
-image: bitnami/redmine:3.4.2-r2
+image: bitnami/redmine:3.4.3-r0
 
 ## Specify a imagePullPolicy
 ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images

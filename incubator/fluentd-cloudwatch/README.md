@@ -67,5 +67,5 @@ $ helm install --name my-release \
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 
 ```console
-$ helm install --name my-release -f values.yaml stable/fluentd-cloudwatch
+$ helm install --name my-release -f values.yaml incubator/fluentd-cloudwatch
 ```
