@@ -47,13 +47,13 @@ externalDatabase:
   port: 3306
 
   ## Database user
-  user: bn_mediawiki
+  user: bn_phpbb
 
   ## Database password
   password:
 
   ## Database name
-  database: bitnami_mediawiki
+  database: bitnami_phpbb
 
 ##
 ## MariaDB chart configuration

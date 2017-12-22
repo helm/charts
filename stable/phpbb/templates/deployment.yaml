@@ -1,3 +1,4 @@
+{{- if or .Values.mariadb.enabled .Values.externalDatabase.host -}}
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
@@ -20,7 +21,7 @@ spec:
         imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
         env:
         - name: ALLOW_EMPTY_PASSWORD
-          value: "{{ .Values.allowEmptyPassword }}"
+          value: "{{ .Values.allowEmptyPassword | quote}}"
         - name: MARIADB_HOST
         {{- if .Values.mariadb.enabled }}
           value: {{ template "phpbb.mariadb.fullname" . }}
@@ -114,3 +115,4 @@ spec:
       {{- else }}
         emptyDir: {}
       {{- end }}
+{{- end }}
