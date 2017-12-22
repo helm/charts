@@ -34,3 +34,7 @@ rbac:
   create: false
   # Ignored if rbac.create is true
   serviceAccountName: default
+
+## Additional pod labels
+## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+podLabels: {}

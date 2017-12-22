@@ -46,9 +46,7 @@ The following table lists the configurable parameters of the Sonarqube chart and
 | `persistence.enabled`                       | Flag for enabling persistent storage| false                                      |
 | `persistence.storageClass`                  | Storage class to be used            | "-"                                        |
 | `persistence.accessMode`                    | Volumes access mode to be set       | `ReadWriteOnce`                            |
-| `persistence.dataVolumeSize`                | Size of the data volume             | `8Gi`                                      |
-| `persistence.confVolumeSize`                | Size of the conf volume             | `1Gi`                                      |
-| `persistence.extensionsVolumeSize`          | Size of the extension volume        | `2Gi`                                      |
+| `persistence.size`                          | Size of the volume                  | `10Gi`                                      |
 | `postgresql.postgresUser`                   | Postgresql database user            | `sonarUser`                                |
 | `postgresql.postgresPassword`               | Postgresql database password        | `sonarPass`                                |
 | `postgresql.postgresDatabase`               | Postgresql database name            | `sonarDB`                                  |

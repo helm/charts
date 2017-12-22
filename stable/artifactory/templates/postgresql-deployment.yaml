@@ -9,7 +9,7 @@ metadata:
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: 1
   template:
     metadata:
       labels:
@@ -22,9 +22,9 @@ spec:
         image: "{{ .Values.initContainerImage }}"
         imagePullPolicy: "{{ .Values.database.image.pullPolicy }}"
         command:
-        - "rm"
-        - "-rf"
-        - "{{ .Values.database.persistence.mountPath }}/lost+found"
+        - 'sh'
+        - '-c'
+        - 'rm -rf {{ .Values.database.persistence.mountPath }}/lost+found'
         volumeMounts:
         - mountPath: {{ .Values.database.persistence.mountPath | quote }}
           name: postgresql-volume
@@ -47,6 +47,26 @@ spec:
         volumeMounts:
         - mountPath: {{ .Values.database.persistence.mountPath | quote }}
           name: postgresql-volume
+        resources:
+{{ toYaml .Values.database.resources | indent 10 }}
+        livenessProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - exec pg_isready
+          initialDelaySeconds: 60
+          timeoutSeconds: 5
+          failureThreshold: 6
+        readinessProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - exec pg_isready
+          initialDelaySeconds: 30
+          timeoutSeconds: 3
+          periodSeconds: 5
       volumes:
       - name: postgresql-volume
       {{- if .Values.database.persistence.enabled }}
