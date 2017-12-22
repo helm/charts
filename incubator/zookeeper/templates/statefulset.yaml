@@ -16,8 +16,9 @@ spec:
         app: {{ include "zookeeper.name" . | quote }}
         release: {{ .Release.Name | quote }}
     spec:
-      {{- if eq .Values.antiAffinity "hard" }}
+      {{- if or .Values.antiAffinity .Values.nodeAffinity }}
       affinity:
+        {{- if eq .Values.antiAffinity "hard" }}
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             - topologyKey: "kubernetes.io/hostname"
@@ -25,8 +26,7 @@ spec:
                 matchLabels:
                   app: {{ include "zookeeper.name" . | quote }}
                   release: {{ .Release.Name | quote }}
-      {{- else if eq .Values.antiAffinity "soft" }}
-      affinity:
+        {{- else if eq .Values.antiAffinity "soft" }}
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
             - weight: 1
@@ -36,6 +36,11 @@ spec:
                   matchLabels:
                     app: {{ include "zookeeper.name" . | quote }}
                     release: {{ .Release.Name | quote }}
+        {{- end }}
+        {{- if .Values.nodeAffinity }}
+        nodeAffinity:
+{{ toYaml .Values.nodeAffinity | indent 10 }}
+        {{- end }}
       {{- end }}
       containers:
       - name: {{ template "zookeeper.name" . }}-server
