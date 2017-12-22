@@ -45,6 +45,9 @@ spec:
     metadata:
       labels:
         app: {{ template "cassandra.fullname" . }}
+{{- if .Values.podLabels }}
+{{ toYaml .Values.podLabels | indent 8 }}
+{{- end }}
     spec:
 {{- if .Values.selector }}
 {{ toYaml .Values.selector | indent 6 }}
@@ -72,6 +75,8 @@ spec:
           value: {{ default "DC1" .Values.config.dc_name | quote }}
         - name: CASSANDRA_RACK
           value: {{ default "RAC1" .Values.config.rack_name | quote }}
+        - name: CASSANDRA_START_RPC
+          value: {{ default "false" .Values.config.start_rpc | quote }}
         - name: POD_IP
           valueFrom:
             fieldRef:
@@ -100,6 +105,10 @@ spec:
         volumeMounts:
         - name: data
           mountPath: /var/lib/cassandra
+      {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+        - name: {{ .Values.image.pullSecrets }}
+      {{- end }}
 {{- if not .Values.persistence.enabled }}
       volumes:
       - name: data

@@ -5,7 +5,7 @@
 ## TL;DR;
 
 ```console
-$ helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
+$ helm repo add incubator https://kubernetes-charts-incubator.storage.googleapis.com
 $ helm install incubator/istio
 ```
 
@@ -115,7 +115,7 @@ Parameter | Description | Default
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```console
-$ helm install stable/istio --name my-release \
+$ helm install incubator/istio --name my-release \
     --set auth.enabled=false
 ```
 
@@ -148,5 +148,5 @@ These addons can be selectively installed by setting `addons.<addon-name>.enable
 If you are running a Kubernetes 1.7+ and have the Initializers api enabled you may choose to enable the Initializer to be installed. See the [docs](https://kubernetes.io/docs/admin/extensible-admission-controllers/) on how to enable.
 
 ```console
-helm install --name istio . --namespace istio-system --set istio.install=true,initializer.enabled=true
+helm install --name my-release --devel incubator/istio --namespace istio-system --set istio.install=true,initializer.enabled=true
 ```

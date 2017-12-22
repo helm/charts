@@ -5,7 +5,7 @@ hub:
 
   ## The tag for the image
   ## ref: https://hub.docker.com/r/selenium/hub/tags/
-  tag: "3.4.0"
+  tag: "3.8.1"
 
   ## Specify a imagePullPolicy
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -15,7 +15,7 @@ hub:
   port: 4444
 
   ## Timeout for probe Hub readiness via HTTP request on Hub console
-  readinessTimeout: 1  
+  readinessTimeout: 1
 
   ## Set the JAVA_OPTS environment variable
   ## If you find your selenium hub is OOMKilled, try adding -XX:+UseSerialGC
@@ -23,14 +23,14 @@ hub:
 
   ## Set the SE_OPTS environment variable
   ## ref: http://www.seleniumhq.org/docs/07_selenium_grid.jsp#node-configuration
-  # seOpts: 
+  # seOpts:
 
-  ## Defining a JMX port will open the port on the container, however, it 
+  ## Defining a JMX port will open the port on the container, however, it
   ## requires additional javaOpts, ie
   ## javaOpts: >
-  ##   -Dcom.sun.management.jmxremote.port=4000 
-  ##   -Dcom.sun.management.jmxremote.authenticate=false 
-  ##   -Dcom.sun.management.jmxremote.ssl=false 
+  ##   -Dcom.sun.management.jmxremote.port=4000
+  ##   -Dcom.sun.management.jmxremote.authenticate=false
+  ##   -Dcom.sun.management.jmxremote.ssl=false
   ## ref: http://openjdk.java.net/groups/jmx/
   # jmxPort: 4000
 
@@ -82,7 +82,7 @@ chrome:
 
   ## The tag for the image
   ## ref: https://hub.docker.com/r/selenium/hub/tags/
-  tag: "3.4.0"
+  tag: "3.8.1"
 
   ## Specify a imagePullPolicy
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -97,14 +97,14 @@ chrome:
 
   ## Set the SE_OPTS environment variable
   ## ref: http://www.seleniumhq.org/docs/07_selenium_grid.jsp#node-configuration
-  # seOpts: 
+  # seOpts:
 
-  ## Defining a JMX port will open the port on the container, however, it 
+  ## Defining a JMX port will open the port on the container, however, it
   ## requires additional javaOpts, ie
   ## javaOpts: >
-  ##   -Dcom.sun.management.jmxremote.port=4000 
-  ##   -Dcom.sun.management.jmxremote.authenticate=false 
-  ##   -Dcom.sun.management.jmxremote.ssl=false 
+  ##   -Dcom.sun.management.jmxremote.port=4000
+  ##   -Dcom.sun.management.jmxremote.authenticate=false
+  ##   -Dcom.sun.management.jmxremote.ssl=false
   ## ref: http://openjdk.java.net/groups/jmx/
   # jmxPort: 4000
 
@@ -153,7 +153,7 @@ chromeDebug:
 
   ## The tag for the image
   ## ref: https://hub.docker.com/r/selenium/hub/tags/
-  tag: "3.4.0"
+  tag: "3.8.1"
 
   ## Specify a imagePullPolicy
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -168,14 +168,14 @@ chromeDebug:
 
   ## Set the SE_OPTS environment variable
   ## ref: http://www.seleniumhq.org/docs/07_selenium_grid.jsp#node-configuration
-  # seOpts: 
+  # seOpts:
 
-  ## Defining a JMX port will open the port on the container, however, it 
+  ## Defining a JMX port will open the port on the container, however, it
   ## requires additional javaOpts, ie
   ## javaOpts: >
-  ##   -Dcom.sun.management.jmxremote.port=4000 
-  ##   -Dcom.sun.management.jmxremote.authenticate=false 
-  ##   -Dcom.sun.management.jmxremote.ssl=false 
+  ##   -Dcom.sun.management.jmxremote.port=4000
+  ##   -Dcom.sun.management.jmxremote.authenticate=false
+  ##   -Dcom.sun.management.jmxremote.ssl=false
   ## ref: http://openjdk.java.net/groups/jmx/
   # jmxPort: 4000
 
@@ -224,7 +224,7 @@ firefox:
 
   ## The tag for the image
   ## ref: https://hub.docker.com/r/selenium/hub/tags/
-  tag: "3.4.0"
+  tag: "3.8.1"
 
   ## Specify a imagePullPolicy
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -239,14 +239,14 @@ firefox:
 
   ## Set the SE_OPTS environment variable
   ## ref: http://www.seleniumhq.org/docs/07_selenium_grid.jsp#node-configuration
-  # seOpts: 
+  # seOpts:
 
-  ## Defining a JMX port will open the port on the container, however, it 
+  ## Defining a JMX port will open the port on the container, however, it
   ## requires additional javaOpts, ie
   ## javaOpts: >
-  ##   -Dcom.sun.management.jmxremote.port=4000 
-  ##   -Dcom.sun.management.jmxremote.authenticate=false 
-  ##   -Dcom.sun.management.jmxremote.ssl=false 
+  ##   -Dcom.sun.management.jmxremote.port=4000
+  ##   -Dcom.sun.management.jmxremote.authenticate=false
+  ##   -Dcom.sun.management.jmxremote.ssl=false
   ## ref: http://openjdk.java.net/groups/jmx/
   # jmxPort: 4000
 
@@ -282,7 +282,7 @@ firefoxDebug:
 
   ## The tag for the image
   ## ref: https://hub.docker.com/r/selenium/hub/tags/
-  tag: "3.4.0"
+  tag: "3.8.1"
 
   ## Specify a imagePullPolicy
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -297,14 +297,14 @@ firefoxDebug:
 
   ## Set the SE_OPTS environment variable
   ## ref: http://www.seleniumhq.org/docs/07_selenium_grid.jsp#node-configuration
-  # seOpts: 
+  # seOpts:
 
-  ## Defining a JMX port will open the port on the container, however, it 
+  ## Defining a JMX port will open the port on the container, however, it
   ## requires additional javaOpts, ie
   ## javaOpts: >
-  ##   -Dcom.sun.management.jmxremote.port=4000 
-  ##   -Dcom.sun.management.jmxremote.authenticate=false 
-  ##   -Dcom.sun.management.jmxremote.ssl=false 
+  ##   -Dcom.sun.management.jmxremote.port=4000
+  ##   -Dcom.sun.management.jmxremote.authenticate=false
+  ##   -Dcom.sun.management.jmxremote.ssl=false
   ## ref: http://openjdk.java.net/groups/jmx/
   # jmxPort: 4000
 
@@ -329,4 +329,3 @@ firefoxDebug:
   # nodeRegisterCycle: 5000
   # nodePort: 5555
   # timeZone: UTC
-

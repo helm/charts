@@ -39,4 +39,8 @@ data:
   generic-oauth-token-url: {{ default "" .Values.concourse.genericOauthTokenUrl | quote }}
   worker-post-stop-delay-seconds: {{ .Values.worker.postStopDelaySeconds | quote }}
   worker-fatal-errors: {{ default "" .Values.worker.fatalErrors | quote }}
-  
+  {{ if .Values.credentialManager.vault }}
+  vault-url: {{ default "" .Values.credentialManager.vault.url | quote }}
+  vault-path-prefix: {{ default "/concourse" .Values.credentialManager.vault.pathPrefix | quote }} 
+  vault-auth-backend: {{ default "" .Values.credentialManager.vault.authBackend | quote }}
+  {{ end }}

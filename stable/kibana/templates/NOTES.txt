@@ -1,0 +1,3 @@
+To verify that oauth-proxy has started, run:
+
+  kubectl --namespace={{ .Release.Namespace }} get pods -l "app={{ template "kibana.fullname" . }}"

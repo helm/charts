@@ -13,6 +13,19 @@ spec:
       labels:
         app: {{ template "mariadb.fullname" . }}
     spec:
+      securityContext:
+        runAsUser: 1001
+        fsGroup: 1001
+      initContainers:
+      - name: "copy-custom-config"
+        image: "busybox"
+        imagePullPolicy: "{{ .Values.imagePullPolicy }}"
+        command: ["sh", "-c", "mkdir -p /bitnami/mariadb/conf && cp /bitnami/mariadb_config/my.cnf /bitnami/mariadb/conf/my_custom.cnf"]
+        volumeMounts:
+        - name: config
+          mountPath: /bitnami/mariadb_config
+        - name: data
+          mountPath: /bitnami/mariadb
       containers:
       - name: mariadb
         image: "{{ .Values.image }}"
@@ -59,9 +72,6 @@ spec:
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
-        - name: config
-          mountPath: /bitnami/mariadb/conf/my_custom.cnf
-          subPath: my.cnf
         - name: data
           mountPath: /bitnami/mariadb
 {{- if .Values.metrics.enabled }}

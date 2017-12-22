@@ -17,8 +17,8 @@ spec:
     release: {{ .Release.Name }}
     app: {{ template "msoms.name" .   }}
    annotations:
-    agentVersion: 1.4.0-45
-    dockerProviderVersion: 10.0.0-27
+    agentVersion: {{ .Values.omsagent.image.tag }}
+    dockerProviderVersion: 10.0.0-28
   spec:
    containers:
      - name: {{ template "msoms.name" . }}
@@ -59,4 +59,14 @@ spec:
     - name: omsagent-secret
       secret:
        secretName: {{ template "msoms.fullname" .}}
+{{- if .Values.nodeSelector }}       
+   nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 4 }}     
+{{- end }}         
+   # Tolerate a NoSchedule taint on master that ACS Engine sets.
+   tolerations:
+    - key: "node-role.kubernetes.io/master"
+      operator: "Equal"
+      value: "true"
+      effect: "NoSchedule"
 {{- end }}               
