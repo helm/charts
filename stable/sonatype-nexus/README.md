@@ -43,7 +43,7 @@ The following tables lists the configurable parameters of the Nexus chart and th
 | ------------------------------------------  | ----------------------------------  | -------------------------------------------|
 | `image.tag`                                 | `nexus` image tag.                  | 3.5.1-02                                   |
 | `image.pullPolicy`                          | Image pull policy                   | `IfNotPresent`                             |
-| `nodeSelector`                              | node labels for [pod assignment](https://kubernetes.io/docs/concepts/configuration/assign-pod-node/)                  | {}                                       |
+| `nodeSelector`                              | node labels for pod assignment      | {}                                         |
 | `ingress.enabled`                           | Flag for enabling ingress           | false                                      |
 | `persistence.enabled`                       | Create a volume to store data       | true                                       |
 | `persistence.size`                          | Size of persistent volume to claim  | 8Gi RW                                     |
