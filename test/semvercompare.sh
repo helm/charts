@@ -13,11 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-exitCode=0
-
 semvercompareOldVer=""
 semvercompareNewVer=""
-semvercomparePassed=0
 
 # Verify that the semver for the chart was increased
 semvercompare() {
@@ -61,7 +58,6 @@ semvercompare() {
     exitCode=1
   else
     echo "New higher version $semvercompareNewVer found"
-    semvercomparePassed=1
   fi
 
   # Clean up
