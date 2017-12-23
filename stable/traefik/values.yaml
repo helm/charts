@@ -95,8 +95,8 @@ metrics:
   datadog:
     enabled: false
     # address: localhost:8125
-    # pushInterval: 10s
+    # pushinterval: 10s
   statsd:
     enabled: false
     # address: localhost:8125
-    # pushInterval: 10s
+    # pushinterval: 10s
