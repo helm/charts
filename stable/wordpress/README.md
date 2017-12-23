@@ -55,21 +55,29 @@ The following tables lists the configurable parameters of the WordPress chart an
 | `wordpressFirstName`                 | First name                                 | `FirstName`                                                |
 | `wordpressLastName`                  | Last name                                  | `LastName`                                                 |
 | `wordpressBlogName`                  | Blog name                                  | `User's Blog!`                                             |
-| `allowEmptyPassword`                 | Allow DB blank passwords                   | `yes`                                          |
+| `allowEmptyPassword`                 | Allow DB blank passwords                   | `yes`                                                      |
 | `smtpHost`                           | SMTP host                                  | `nil`                                                      |
 | `smtpPort`                           | SMTP port                                  | `nil`                                                      |
 | `smtpUser`                           | SMTP user                                  | `nil`                                                      |
 | `smtpPassword`                       | SMTP password                              | `nil`                                                      |
 | `smtpUsername`                       | User name for SMTP emails                  | `nil`                                                      |
 | `smtpProtocol`                       | SMTP protocol [`tls`, `ssl`]               | `nil`                                                      |
+| `mariadb.enabled`                    | Deploy MariaDB container(s)                | `true`                                                     |
 | `mariadb.mariadbRootPassword`        | MariaDB admin password                     | `nil`                                                      |
-| `mariadb.mariadbDatabase`            | Database name to create                    | `bitnami_wordpress`                            |
-| `mariadb.mariadbUser`                | Database user to create                    | `bn_wordpress`                                 |
-| `mariadb.mariadbPassword`            | Password for the database                  | _random 10 character long alphanumeric string_ |
+| `mariadb.mariadbDatabase`            | Database name to create                    | `bitnami_wordpress`                                        |
+| `mariadb.mariadbUser`                | Database user to create                    | `bn_wordpress`                                             |
+| `mariadb.mariadbPassword`            | Password for the database                  | _random 10 character long alphanumeric string_             |
+| `externalDatabase.host`              | Host of the external database              | `localhost`                                                |
+| `externalDatabase.rootPassword`      | DB Root users password (schema creation)   | `nil`                                                    |
+| `externalDatabase.user`              | Existing username in the external db       | `bn_wordpress`                                             |
+| `externalDatabase.password`          | Password for the above username            | `nil`                                                      |
+| `externalDatabase.database`          | Name of the existing database              | `bitnami_wordpress`                                        |
+| `externalDatabase.port`              | Database port number                       | `3306`                                        |
 | `serviceType`                        | Kubernetes Service type                    | `LoadBalancer`                                             |
-| `healthcheckHttps`                   | Use https for liveliness and readiness     | `false`                                             |
+| `healthcheckHttps`                   | Use https for liveliness and readiness     | `false`                                                    |
 | `ingress.enabled`                    | Enable ingress controller resource         | `false`                                                    |
 | `ingress.hosts[0].name`              | Hostname to your WordPress installation    | `wordpress.local`                                          |
+| `ingress.hosts[0].path`              | Path within the url structure              | `/`                                                        |
 | `ingress.hosts[0].tls`               | Utilize TLS backend in ingress             | `false`                                                    |
 | `ingress.hosts[0].tlsSecret`         | TLS Secret (certificates)                  | `wordpress.local-tls-secret`                               |
 | `ingress.hosts[0].annotations`       | Annotations for this host's ingress record | `[]`                                                       |
@@ -108,6 +116,17 @@ The [Bitnami WordPress](https://github.com/bitnami/bitnami-docker-wordpress) ima
 
 Persistent Volume Claims are used to keep the data across deployments. This is known to work in GCE, AWS, and minikube.
 See the [Configuration](#configuration) section to configure the PVC or to disable persistence.
+
+## Using an external database
+
+Sometimes you may want to have Wordpress connect to an external database rather than installing one inside your cluster, e.g. to use a managed database service, or use run a single database server for all your applications. To do this, the chart allows you to specify credentials for an external database under the [`externalDatabase` parameter](#configuration). You should also disable the MariaDB installation with the `mariadb.enabled` option. For example:
+
+```console
+$ helm install stable/wordpress \
+    --set mariadb.enabled=false,externalDatabase.host=myexternalhost,externalDatabase.rootPassword=rootpassword,externalDatabase.user=myuser,externalDatabase.password=mypassword,externalDatabase.database=mydatabase,externalDatabase.port=3306
+```
+Note also if you disable MariaDB per above you MUST supply values for externalDatabase.rootPassword & externalDatabase.password.
+
 
 ## Ingress
 

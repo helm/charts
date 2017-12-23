@@ -37,7 +37,7 @@ spec:
         scheduler.alpha.kubernetes.io/tolerations: '[{"key":"CriticalAddonsOnly", "operator":"Exists"}]'
         {{- end }}
     spec:
-      {{- if .Values.middleware.kubernetes.enabled }}
+      {{- if .Values.plugins.kubernetes.enabled }}
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "coredns.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
       {{- end }}
       {{- if .Values.isClusterService }}
@@ -64,8 +64,8 @@ spec:
           name: dns-tcp
           protocol: TCP
         {{- end }}
-        {{- if .Values.middleware.prometheus.enabled }}
-        - containerPort: {{ .Values.middleware.prometheus.port }}
+        {{- if .Values.plugins.prometheus.enabled }}
+        - containerPort: {{ .Values.plugins.prometheus.port }}
           name: metrics
           protocol: TCP
         {{- end }}
@@ -85,3 +85,7 @@ spec:
             items:
             - key: Corefile
               path: Corefile
+            {{ range .Values.zoneFiles }}
+            - key: {{ .filename }}
+              path: {{ .filename }}
+            {{ end }}
