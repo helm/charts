@@ -105,7 +105,7 @@ data:
       address = {{ .Values.metrics.datadog.address | quote }}
       {{- end}}
       {{- if .Values.metrics.datadog.pushInterval }}
-      pushInterval = {{ .Values.metrics.datadog.pushInterval | quote }}
+      pushinterval = {{ .Values.metrics.datadog.pushinterval | quote }}
       {{- end}}
     {{- end }}
     {{- if .Values.metrics.statsd.enabled }}
@@ -113,7 +113,7 @@ data:
       {{- if .Values.metrics.statsd.address }}
       address = {{ .Values.metrics.statsd.address | quote }}
       {{- end}}
-      {{- if .Values.metrics.statsd.pushInterval }}
-      pushInterval = {{ .Values.metrics.statsd.pushInterval | quote }}
+      {{- if .Values.metrics.statsd.pushinterval }}
+      pushinterval = {{ .Values.metrics.statsd.pushinterval | quote }}
       {{- end}}
     {{- end }}
