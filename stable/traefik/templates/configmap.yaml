@@ -104,7 +104,7 @@ data:
       {{- if .Values.metrics.datadog.address }}
       address = {{ .Values.metrics.datadog.address | quote }}
       {{- end}}
-      {{- if .Values.metrics.datadog.pushInterval }}
+      {{- if .Values.metrics.datadog.pushinterval }}
       pushinterval = {{ .Values.metrics.datadog.pushinterval | quote }}
       {{- end}}
     {{- end }}
