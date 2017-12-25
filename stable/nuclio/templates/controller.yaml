@@ -15,14 +15,17 @@
 apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "controllerName" . }}
+  name: {{ template "nuclio.controllerName" . }}
 spec:
   replicas: 1
   template:
     metadata:
       labels:
-        app: {{ template "controllerName" . }}
+        app: {{ template "nuclio.name" . }}
+        release: {{ .Release.Name }}
+        component: {{ template "nuclio.controllerName" . }}
     spec:
       containers:
-      - name: {{ template "controllerName" . }}
-        image: {{ template "controllerImage" . }}
+      - name: {{ template "nuclio.controllerName" . }}
+        image: {{ template "nuclio.controllerImage" . }}
+        imagePullPolicy: {{ .Values.Controller.PullPolicy }}

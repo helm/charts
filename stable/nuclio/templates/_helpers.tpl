@@ -1,19 +1,23 @@
 {{/* vim: set filetype=mustache: */}}
 
-{{- define "controllerName" -}}
+{{- define "nuclio.name" -}}
+{{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
+{{- define "nuclio.controllerName" -}}
 {{- $name := default .Chart.Name .Values.Controller.Name -}}
 {{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
-{{- define "controllerImage" -}}
+{{- define "nuclio.controllerImage" -}}
 {{- printf "%s:%s-%s" .Values.Controller.Image .Values.Nuclio.Version .Values.Nuclio.Arch -}}
 {{- end -}}
 
-{{- define "playgroundName" -}}
+{{- define "nuclio.playgroundName" -}}
 {{- $name := default .Chart.Name .Values.Playground.Name -}}
 {{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
-{{- define "playgroundImage" -}}
+{{- define "nuclio.playgroundImage" -}}
 {{- printf "%s:%s-%s" .Values.Playground.Image .Values.Nuclio.Version .Values.Nuclio.Arch -}}
 {{- end -}}

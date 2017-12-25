@@ -7,12 +7,14 @@ Nuclio:
 Controller:
   Name: controller
   Image: nuclio/controller
+  PullPolicy: IfNotPresent
 
 # Playground (nuclio's IDE) settings
 Playground:
   Enabled: true
   Name: playground
   Image: nuclio/playground
+  PullPolicy: IfNotPresent
   Service:
     # Only `NodePort` is supported. Defaults to `None` if other value is provided
     Type: NodePort

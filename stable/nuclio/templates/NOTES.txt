@@ -5,11 +5,11 @@
 {{- if .Values.Playground.Enabled }}
 2. Use these commands to access the playground:
 {{- if eq "NodePort" .Values.Playground.Service.Type }}
-    export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "playgroundName" . }})
+    export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "nuclio.playgroundName" . }})
     export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
     echo http://$NODE_IP:$NODE_PORT
 {{- else }}
-    export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "playgroundName" . }},release={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
+    export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "nuclio.name" . }},release={{ .Release.Name }},component={{ template "nuclio.playgroundName" . }}" -o jsonpath="{.items[0].metadata.name}")
     echo "Visit http://127.0.0.1:8080 to use Nuclio's playground"
     kubectl port-forward $POD_NAME 8080:8070
 {{- end }}

@@ -49,9 +49,11 @@ The following tables lists the configurable parameters of the Traefik chart and 
 | `Nuclio.Arch`                   | The version of the official Nuclio image architecture to use         | `amd64`                                   |
 | `Controller.Name`               | Provide controller name                                              | `controller`                              |
 | `Controller.Image`              | Nuclio's controller image                                            | `nuclio/controller`                       |
+| `Controller.PullPolicy`         | Nuclio's controller image pull policy                                | `IfNotPresent`                            |
 | `Playground.Enabled`            | Enable/Disable Nuclio's playground UI                                | `true`                                    |
 | `Playground.Name`               | Provide playground name                                              | `playground`                              |
 | `Playground.Image`              | Nuclio's playground image                                            | `nuclio/playground`                       |
+| `Playground.PullPolicy`         | Nuclio's playground image pull policy                                | `IfNotPresent`                            |
 | `Playground.Service.Type`       | If enabled, set the service type                                     | `NodePort`                                |
 | `Playground.Service.NodePort`   | If enabled, and set service type to `NodePort`, choose the port      | `32050`                                   |
 

@@ -15,17 +15,20 @@
 apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "playgroundName" . }}
+  name: {{ template "nuclio.playgroundName" . }}
 spec:
   replicas: 1
   template:
     metadata:
       labels:
-        app: {{ template "playgroundName" . }}
+        app: {{ template "nuclio.name" . }}
+        release: {{ .Release.Name }}
+        component: {{ template "nuclio.playgroundName" . }}
     spec:
       containers:
-      - name: {{ template "playgroundName" . }}
-        image: {{ template "playgroundImage" . }}
+      - name: {{ template "nuclio.playgroundName" . }}
+        image: {{ template "nuclio.playgroundImage" . }}
+        imagePullPolicy: {{ .Values.Playground.PullPolicy }}
         ports:
         - containerPort: 8070
         volumeMounts:
@@ -39,15 +42,17 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "playgroundName" . }}
+  name: {{ template "nuclio.playgroundName" . }}
 spec:
   selector:
-    app: {{ template "playgroundName" . }}
+    app: {{ template "nuclio.name" . }}
+    release: {{ .Release.Name }}
+    component: {{ template "nuclio.playgroundName" . }}
 {{- if eq .Values.Playground.Service.Type "NodePort" }}
   type: NodePort
 {{- end }}
   ports:
-  - name: {{ template "playgroundName" . }}
+  - name: {{ template "nuclio.playgroundName" . }}
     port: 8070
     protocol: TCP
 {{- if and (eq .Values.Playground.Service.Type "NodePort") .Values.Playground.Service.NodePort }}
