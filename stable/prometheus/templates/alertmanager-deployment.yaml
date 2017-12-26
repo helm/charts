@@ -42,11 +42,15 @@ spec:
           {{- range $key, $value := .Values.alertmanager.extraArgs }}
             - --{{ $key }}={{ $value }}
           {{- end }}
+          {{- if .Values.alertmanager.baseURL }}
+            - --web.external-url={{ .Values.alertmanager.baseURL }}
+          {{- end }}
+
           ports:
             - containerPort: 9093
           readinessProbe:
             httpGet:
-              path: {{ .Values.alertmanager.baseURL }}/#/status
+              path: {{ .Values.alertmanager.prefixURL }}/#/status
               port: 9093
             initialDelaySeconds: 30
             timeoutSeconds: 30
@@ -64,7 +68,7 @@ spec:
           imagePullPolicy: "{{ .Values.configmapReload.image.pullPolicy }}"
           args:
             - --volume-dir=/etc/config
-            - --webhook-url=http://localhost:9093{{ .Values.alertmanager.baseURL }}/-/reload
+            - --webhook-url=http://localhost:9093{{ .Values.alertmanager.prefixURL }}/-/reload
           resources:
 {{ toYaml .Values.configmapReload.resources | indent 12 }}
           volumeMounts:

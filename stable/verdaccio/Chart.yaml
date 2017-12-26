@@ -1,0 +1,15 @@
+apiVersion: v1
+description: A lightweight private npm proxy registry (sinopia fork)
+name: verdaccio
+version: 0.1.2
+appVersion: 2.7.1
+icon: https://raw.githubusercontent.com/verdaccio/verdaccio/master/assets/bitmap/logo/logo-twitter.png
+sources:
+- http://www.verdaccio.org
+- https://github.com/verdaccio/verdaccio
+keywords:
+- npm
+- nodejs
+maintainers:
+- name: etiennetremel
+  email: etienne.tremel@container-solutions.com

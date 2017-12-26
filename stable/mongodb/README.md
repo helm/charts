@@ -47,9 +47,9 @@ The following tables lists the configurable parameters of the MongoDB chart and 
 |----------------------------|-------------------------------------|----------------------------------------------------------|
 | `image`                    | MongoDB image                       | `bitnami/mongodb:{VERSION}`                              |
 | `imagePullPolicy`          | Image pull policy                   | `Always` if `imageTag` is `latest`, else `IfNotPresent`. |
-| `mongodbRootPassword`      | MongoDB admin password              | `nil`                                                    |
+| `mongodbRootPassword`      | MongoDB admin password              | `random alhpanumeric string (10)`                                                    |
 | `mongodbUsername`          | MongoDB custom user                 | `nil`                                                    |
-| `mongodbPassword`          | MongoDB custom user password        | `nil`                                                    |
+| `mongodbPassword`          | MongoDB custom user password        | `random alhpanumeric string (10)`                                                    |
 | `mongodbDatabase`          | Database to create                  | `nil`                                                    |
 | `serviceType`              | Kubernetes Service type             | `ClusterIP`                                              |
 | `persistence.enabled`      | Use a PVC to persist data           | `true`                                                   |

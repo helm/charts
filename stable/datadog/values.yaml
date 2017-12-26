@@ -78,7 +78,7 @@ datadog:
   ## Enables event collection from the kubernetes API
   ## ref: https://github.com/DataDog/docker-dd-agent#environment-variables
   ##
-  collectEvents: False
+  collectEvents: false
 
   ## Un-comment this to enable APM and tracing, on ports 7777 and 8126
   ## ref: https://github.com/DataDog/docker-dd-agent#tracing-from-the-host
@@ -97,14 +97,22 @@ datadog:
   ## or deployment.
   ## ref: https://docs.datadoghq.com/guides/process/
   ##
-  # volume:
+  # volumes:
   #  - hostPath:
   #      path: /etc/passwd
   #    name: passwd
-  # volumeMount:
+  # volumeMounts:
   #   - name: passwd
   #     mountPath: /etc/passwd
   #     readOnly: true
+
+  ## Enable leader election mechanism for event collection
+  ##
+  leaderElection: false
+
+  ## Set the lease time for leader election
+  ##
+  # leaderLeaseDuration: 600
 
   ## Provide additonal service definitions
   ## Each key will become a file in /conf.d/auto_conf
@@ -155,3 +163,10 @@ rbac:
   serviceAccountName: default
 
 tolerations: []
+
+kube-state-metrics:
+  rbac:
+    create: true
+
+    ## Ignored if rbac.create is true
+    serviceAccountName: default
