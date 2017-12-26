@@ -82,6 +82,13 @@ resources:
 ##
 nodeSelector: {}
 
+## The InfluxDB image uses several environment variables to automatically
+## configure certain parts of the server.
+## Ref: https://hub.docker.com/_/influxdb/
+env:
+  # - name: INFLUXDB_DB
+  #   value: "demo"
+
 ## Change InfluxDB configuration paramaters below:
 ## Defaults are indicated
 ## ref: https://docs.influxdata.com/influxdb/v1.1/administration/config/

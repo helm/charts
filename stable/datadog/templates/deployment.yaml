@@ -12,6 +12,7 @@ spec:
     metadata:
       labels:
         app: {{ template "datadog.fullname" . }}
+        type: deployment
       name: {{ template "datadog.fullname" . }}
       annotations:
         checksum/autoconf-config: {{ toYaml .Values.datadog.autoconf | sha256sum }}

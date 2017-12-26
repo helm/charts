@@ -1,6 +1,6 @@
 name: selenium
-version: 0.2.3
-appVersion: 3.7.1
+version: 0.2.5
+appVersion: 3.8.1
 description: Chart for selenium grid
 keywords:
 - qa
@@ -11,4 +11,6 @@ sources:
 maintainers:
 - name: flah00
   email: techops@adaptly.com
+- name: diemol
+  email: diemol@gmail.com
 engine: gotpl

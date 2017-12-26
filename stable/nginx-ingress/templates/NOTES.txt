@@ -33,7 +33,7 @@ An example Ingress that makes use of the controller:
   kind: Ingress
   metadata:
     annotations:
-      kubernetes.io/ingress.class: nginx
+      kubernetes.io/ingress.class: {{ .Values.controller.ingressClass }}
     name: example
     namespace: foo
   spec:
