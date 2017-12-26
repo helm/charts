@@ -22,13 +22,22 @@ data:
         # Reload module configs as they change:
         reload.enabled: false
 
+{{- if .Values.output.cloud.enabled }}
     processors:
       - add_cloud_metadata:
 
-    cloud.id: ${ELASTIC_CLOUD_ID}
-    cloud.auth: ${ELASTIC_CLOUD_AUTH}
+    cloud.id: ${OUTPUT_CLOUD_ID}
+    cloud.auth: ${OUTPUT_CLOUD_AUTH}
+{{- end }}
 
+{{- if eq .Values.output.type "logstash" }}
+    output.logstash:
+      hosts: ["127.0.0.1:5044"]
+{{- else if eq .Values.storage "elasticsearch" }}
     output.elasticsearch:
-      hosts: ['${ELASTICSEARCH_HOST:elasticsearch}:${ELASTICSEARCH_PORT:9200}']
-      username: ${ELASTICSEARCH_USERNAME}
-      password: ${ELASTICSEARCH_PASSWORD}
+      hosts: ['${OUTPUT_HOST:logstash}:${OUTPUT_PORT:5044}']
+  {{- if .Values.output.auth.enabled }}
+      username: ${OUTPUT_USERNAME}
+      password: ${OUTPUT_PASSWORD}
+  {{- end }}
+{{- end }}

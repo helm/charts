@@ -7,6 +7,7 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
+    k8s-app: filebeat
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole

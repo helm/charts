@@ -3,13 +3,23 @@
 # Declare variables to be passed into your templates.
 replicaCount: 1
 image:
-  repository: docker.elastic.co/beats/filebeat-oss
+  repository: docker.elastic.co/beats/filebeat
   tag: 6.0.1
   pullPolicy: IfNotPresent
 
-elasticsearch:
-  host: test-elk-elasticsearch-client.test-elk.svc.cluster.local
-  port: 9200
+
+output:
+  type: "logstash"
+  host: logstash.default.svc.cluster.local
+  port: 5044
+  cloud:
+    enabled: false
+    cloud_id: ''
+    cloud_auth: ''
+  auth:
+    enabled: false
+    username: ''
+    password: ''
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious

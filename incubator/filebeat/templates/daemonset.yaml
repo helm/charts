@@ -30,12 +30,24 @@ spec:
           "-e",
         ]
         env:
-          - name: ELASTICSEARCH_HOST
-            value: {{ .Values.elasticsearch.host | quote }}
-          - name: ELASTICSEARCH_PORT
-            value: {{ .Values.elasticsearch.port | quote }}
+          - name: OUTPUT_HOST
+            value: {{ .Values.output.host | quote }}
+          - name: OUTPUT_PORT
+            value: {{ .Values.output.port | quote }}
           - name: POD_NAMESPACE
             value: {{ .Release.Namespace }}
+{{- if .Values.output.cloud.enabled }}
+          - name: ELASTIC_CLOUD_ID
+            value {{ .Values.output.cloud.cloud_id }}
+          - name: ELASTIC_CLOUD_AUTH
+            value {{ .Values.output.cloud.cloud_auth }}
+{{- end }}
+{{- if .Values.output.auth.enabled }}
+          - name: OUTPUT_USERNAME
+            value {{ .Values.output.auth.username }}
+          - name: OUTPUT_PASSWORD
+            value {{ .Values.output.auth.password }}
+{{- end }}
         securityContext:
           runAsUser: 0
         resources:
