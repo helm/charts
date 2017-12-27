@@ -8,6 +8,7 @@ sources:
   - https://github.com/prometheus/prometheus
   - https://github.com/prometheus/pushgateway
   - https://github.com/kubernetes/kube-state-metrics
+  - https://github.com/sylr/alertmanager-splunkbot
 maintainers:
   - name: mgoodness
     email: mgoodness@gmail.com
