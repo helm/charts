@@ -25,7 +25,7 @@ spec:
             secretKeyRef:
               name: {{ template "rabbitmq.fullname" . }}
               key: rabbitmq-password
-        - name: RABBITMQ_ERLANG_COOKIE
+        - name: RABBITMQ_ERL_COOKIE
           valueFrom:
             secretKeyRef:
               name: {{ template "rabbitmq.fullname" . }}
