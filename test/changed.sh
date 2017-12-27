@@ -140,7 +140,9 @@ for directory in ${CHANGED_FOLDERS}; do
       sleep $VERIFICATION_PAUSE
     fi
     helm delete --purge ${RELEASE_NAME}
+    
+    # Setting the current release to none to avoid the cleanup and error
+    # handling for a release that no longer exists.
+    CURRENT_RELEASE=""
   fi
 done
-
-exit $exitCode
