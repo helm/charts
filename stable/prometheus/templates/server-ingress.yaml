@@ -1,4 +1,4 @@
-{{- if .Values.server.ingress.enabled -}}
+{{- if and .Values.server.enabled .Values.server.ingress.enabled -}}
 {{- $releaseName := .Release.Name -}}
 {{- $serviceName := include "prometheus.server.fullname" . }}
 {{- $servicePort := .Values.server.service.servicePort -}}

@@ -317,6 +317,10 @@ nodeExporter:
     type: ClusterIP
 
 server:
+  ## If false, prometheus server will not be installed
+  ##
+
+  enabled: true
   ## Prometheus server container name
   ##
   name: server
