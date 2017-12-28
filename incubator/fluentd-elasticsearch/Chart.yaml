@@ -1,0 +1,11 @@
+apiVersion: v1
+description: A Fluentd Elasticsearch Helm chart for Kubernetes.
+name: fluentd-elasticsearch
+version: 0.1.0
+appVersion: 0.12
+sources:
+- https://quay.io/repository/coreos/fluentd-kubernetes
+- https://www.elastic.co/guide/en/elasticsearch/reference/current/index.html
+maintainers:
+- name: rendhalver
+  email: pete.brown@powerhrg.com

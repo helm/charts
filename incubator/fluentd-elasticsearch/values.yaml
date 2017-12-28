@@ -1,0 +1,32 @@
+# Default values for fluentd-elasticsearch.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+image:
+  repository: fluent/fluentd-kubernetes-daemonset #quay.io/coreos/fluentd-kubernetes
+  tag: v0.12-debian-elasticsearch
+  pullPolicy: IfNotPresent
+
+configFile: fluentd-standalone.conf
+elasticsearch:
+  host: elasticsearch-client.default.svc.cluster.local
+  port: 9200
+
+service:
+  type: ClusterIP
+  metrics:
+    name: prometheus-metrics
+    port: 24231
+  agent:
+    port: 24220
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 500m
+  #  memory: 200Mi
+  # requests:
+  #  cpu: 500m
+  #  memory: 200Mi

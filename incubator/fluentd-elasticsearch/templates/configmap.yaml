@@ -1,0 +1,384 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "fluentd-elasticsearch.fullname" . }}
+  labels:
+    app: {{ template "fluentd-elasticsearch.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+data:
+  fluentd.conf: |
+    # Use the config specified by the FLUENTD_CONFIG environment variable, or
+    # default to fluentd-standalone.conf
+    @include "#{ENV['FLUENTD_CONFIG'] || 'fluentd-standalone.conf'}"
+
+  # A config for running Fluentd as a daemon which collects, filters, parses,
+  # and sends log to storage. No extra fluentd processes required.
+  fluentd-onlycontainters.conf: |
+    # Common config
+    @include general.conf
+    @include prometheus.conf
+
+    # Input sources
+    @include kubernetes-input.conf
+
+    # Parsing/Filtering
+    @include kubernetes-filter.conf
+
+    # Send to storage
+    @include output.conf
+
+  # A config for running Fluentd as a daemon which collects, filters, parses,
+  # and sends log to storage. No extra fluentd processes required.
+  fluentd-standalone.conf: |
+    # Common config
+    @include general.conf
+    @include prometheus.conf
+
+    # Input sources
+    @include systemd-input.conf
+    @include kubernetes-input.conf
+    @include apiserver-audit-input.conf
+
+    # Parsing/Filtering
+    @include systemd-filter.conf
+    @include kubernetes-filter.conf
+    @include extra.conf
+
+    # Send to storage
+    @include output.conf
+
+  # A config for running Fluentd as a daemon which collects logs and forwards
+  # the logs using a forward_output to a Fluentd configured as an aggregator,
+  # with a forward_input.
+  fluentd-forwarder.conf: |
+    @include general.conf
+    @include prometheus.conf
+
+    @include apiserver-audit-input.conf
+    @include systemd-input.conf
+    @include kubernetes-input.conf
+
+    # Send to the aggregator
+    @include forward-output.conf
+
+  # A config for running Fluentd as HA ready deployment for receiving forwarded
+  # logs, and then applying filtering, and parsing before sending them to
+  # storage.
+  fluentd-aggregator.conf: |
+    # Receive from the forwarder
+    @include forward-input.conf
+
+    @include general.conf
+    @include prometheus.conf
+
+    @include systemd-filter.conf
+    @include kubernetes-filter.conf
+    @include extra.conf
+
+    # Send to storage
+    @include output.conf
+
+  forward-input.conf: |
+    <source>
+      @type forward
+      port 24224
+      bind 0.0.0.0
+    </source>
+
+  forward-output.conf: |
+    <match **>
+      @type forward
+      require_ack_response true
+      ack_response_timeout 30
+      recover_wait 10s
+      heartbeat_interval 1s
+      phi_threshold 16
+      send_timeout 10s
+      hard_timeout 10s
+      expire_dns_cache 15
+
+      heartbeat_type tcp
+
+      buffer_chunk_limit 2M
+      buffer_queue_limit 32
+      flush_interval 5s
+      max_retry_wait 15
+      disable_retry_limit
+      num_threads 8
+
+      <server>
+        name fluentd-aggregator
+        host fluentd-aggregator.{{ .Release.Namespace }}.svc.cluster.local
+        weight 60
+      </server>
+    </match>
+
+  general.conf: |
+    # Prevent fluentd from handling records containing its own logs. Otherwise
+    # it can lead to an infinite loop, when error in sending one message generates
+    # another message which also fails to be sent and so on.
+    <match fluent.**>
+      type null
+    </match>
+
+    # Used for health checking
+    <source>
+      @type http
+      port 9880
+      bind 0.0.0.0
+    </source>
+
+    # Emits internal metrics to every minute, and also exposes them on port
+    # 24220. Useful for determining if an output plugin is retryring/erroring,
+    # or determining the buffer queue length.
+    <source>
+      @type monitor_agent
+      bind 0.0.0.0
+      port 24220
+      tag fluentd.monitor.metrics
+    </source>
+
+  prometheus.conf: |
+    # input plugin that is required to expose metrics by other prometheus
+    # plugins, such as the prometheus_monitor input below.
+    <source>
+      @type prometheus
+      bind 0.0.0.0
+      port 24231
+      metrics_path /metrics
+    </source>
+
+    # input plugin that collects metrics from MonitorAgent and exposes them
+    # as prometheus metrics
+    <source>
+      @type prometheus_monitor
+      # update the metrics every 5 seconds
+      interval 5
+    </source>
+
+    <source>
+      @type prometheus_output_monitor
+      interval 5
+    </source>
+
+    <source>
+      @type prometheus_tail_monitor
+      interval 5
+    </source>
+
+  systemd.conf: |
+    @include systemd-input.conf
+    @include systemd-filter.conf
+
+  systemd-input.conf: |
+    <source>
+      @type systemd
+      pos_file /var/log/fluentd-journald-systemd.pos
+      read_from_head true
+      strip_underscores true
+      tag systemd
+    </source>
+
+  systemd-filter.conf: |
+    <match systemd>
+      @type rewrite_tag_filter
+      rewriterule1 SYSTEMD_UNIT   ^(.+).service$  systemd.$1
+      rewriterule2 SYSTEMD_UNIT   !^(.+).service$ systemd.unmatched
+    </match>
+
+    <filter systemd.kubelet>
+      type parser
+      format kubernetes
+      reserve_data true
+      key_name MESSAGE
+      suppress_parse_error_log true
+    </filter>
+
+    <filter systemd.docker>
+      type parser
+      format /^time="(?<time>[^)]*)" level=(?<severity>[^ ]*) msg="(?<message>[^"]*)"( err="(?<error>[^"]*)")?( statusCode=($<status_code>\d+))?/
+      reserve_data true
+      key_name MESSAGE
+      suppress_parse_error_log true
+    </filter>
+
+    # Filter filter ssh logs since it's mostly bots trying to login
+    <filter systemd.**>
+      @type grep
+      <exclude>
+          key SYSTEMD_UNIT
+          pattern (sshd@.*\.service)
+      </exclude>
+      # exclude1 SYSTEMD_UNIT (sshd@.*\.service)
+    </filter>
+
+  kubernetes.conf: |
+    @include kubernetes-input.conf
+    @include kubernetes-filter.conf
+
+  kubernetes-input.conf: |
+    # Capture Kubernetes pod logs
+    # The kubelet creates symlinks that capture the pod name, namespace,
+    # container name & Docker container ID to the docker logs for pods in the
+    # /var/log/containers directory on the host.
+    <source>
+      type tail
+      path /var/log/containers/*.log
+      pos_file /var/log/fluentd-containers.log.pos
+      time_format %Y-%m-%dT%H:%M:%S.%NZ
+      tag kubernetes.*
+      format json
+      read_from_head true
+    </source>
+
+  kubernetes-filter.conf: |
+    # Query the API for extra metadata.
+    <filter kubernetes.**>
+      type kubernetes_metadata
+      # If the logs begin with '{' and end with '}' then it's JSON so merge
+      # the JSON log field into the log event
+      merge_json_log true
+      preserve_json_log true
+    </filter>
+
+    # rewrite_tag_filter does not support nested fields like
+    # kubernetes.container_name, so this exists to flatten the fields
+    # so we can use them in our rewrite_tag_filter
+    <filter kubernetes.**>
+      @type record_transformer
+      enable_ruby true
+      <record>
+        kubernetes_namespace_container_name ${record["kubernetes"]["namespace_name"]}.${record["kubernetes"]["container_name"]}
+      </record>
+    </filter>
+
+    # retag based on the container name of the log message
+    <match kubernetes.**>
+      @type rewrite_tag_filter
+      rewriterule1 kubernetes_namespace_container_name  ^(.+)$ kube.$1
+    </match>
+
+    # Remove the unnecessary field as the information is already available on
+    # other fields.
+    <filter kube.**>
+      @type record_transformer
+      remove_keys kubernetes_namespace_container_name
+    </filter>
+
+    <filter kube.kube-system.**>
+      type parser
+      format kubernetes
+      reserve_data true
+      key_name log
+      suppress_parse_error_log true
+    </filter>
+
+  apiserver-audit-input.conf: |
+    # Example:
+    # 2017-02-09T00:15:57.992775796Z AUDIT: id="90c73c7c-97d6-4b65-9461-f94606ff825f" ip="104.132.1.72" method="GET" user="kubecfg" as="<self>" asgroups="<lookup>" namespace="default" uri="/api/v1/namespaces/default/pods"
+    # 2017-02-09T00:15:57.993528822Z AUDIT: id="90c73c7c-97d6-4b65-9461-f94606ff825f" response="200"
+    <source>
+      type tail
+      format multiline
+      multiline_flush_interval 5s
+      format_firstline /^\S+\s+AUDIT:/
+      # Fields must be explicitly captured by name to be parsed into the record.
+      # Fields may not always be present, and order may change, so this just looks
+      # for a list of key="\"quoted\" value" pairs separated by spaces.
+      # Unknown fields are ignored.
+      # Note: We can't separate query/response lines as format1/format2 because
+      #       they don't always come one after the other for a given query.
+      format1 /^(?<time>\S+) AUDIT:(?: (?:id="(?<id>(?:[^"\\]|\\.)*)"|ip="(?<ip>(?:[^"\\]|\\.)*)"|method="(?<method>(?:[^"\\]|\\.)*)"|user="(?<user>(?:[^"\\]|\\.)*)"|groups="(?<groups>(?:[^"\\]|\\.)*)"|as="(?<as>(?:[^"\\]|\\.)*)"|asgroups="(?<asgroups>(?:[^"\\]|\\.)*)"|namespace="(?<namespace>(?:[^"\\]|\\.)*)"|uri="(?<uri>(?:[^"\\]|\\.)*)"|response="(?<response>(?:[^"\\]|\\.)*)"|\w+="(?:[^"\\]|\\.)*"))*/
+      time_format %FT%T.%L%Z
+      path /var/log/kubernetes/kube-apiserver-audit.log
+      pos_file /var/log/kube-apiserver-audit.log.pos
+      tag kube-apiserver-audit
+    </source>
+
+  output.conf: |
+    <match **>
+      type elasticsearch
+      log_level info
+      include_tag_key true
+      # Replace with the host/port to your Elasticsearch cluster.
+      # This assumes a service `elasticsearch` exists in the default namespace
+      host {{ .Values.elasticsearch.host }}
+      port {{ .Values.elasticsearch.port }}
+      scheme http
+      ssl_verify false
+
+      logstash_format true
+      template_file /fluentd/etc/elasticsearch-template-es6x.json
+      template_name elasticsearch-template-es6x.json
+
+      buffer_chunk_limit 2M
+      buffer_queue_limit 32
+      flush_interval 10s
+      max_retry_wait 30
+      disable_retry_limit
+      num_threads 8
+
+    </match>
+
+  elasticsearch-template-es6x.json: |
+    {
+      "template" : "logstash-*",
+      "version" : 60001,
+      "settings" : {
+        "index.refresh_interval" : "5s"
+      },
+      "mappings" : {
+        "_default_" : {
+          "dynamic_templates" : [ {
+            "message_field" : {
+              "path_match" : "message",
+              "match_mapping_type" : "string",
+              "mapping" : {
+                "type" : "text",
+                "norms" : false
+              }
+            }
+          }, {
+            "string_fields" : {
+              "match" : "*",
+              "match_mapping_type" : "string",
+              "mapping" : {
+                "type" : "text", "norms" : false,
+                "fields" : {
+                  "keyword" : { "type": "keyword", "ignore_above": 256 }
+                }
+              }
+            }
+          } ],
+          "properties" : {
+            "@timestamp": { "type": "date"},
+            "@version": { "type": "keyword"},
+            "geoip"  : {
+              "dynamic": true,
+              "properties" : {
+                "ip": { "type": "ip" },
+                "location" : { "type" : "geo_point" },
+                "latitude" : { "type" : "half_float" },
+                "longitude" : { "type" : "half_float" }
+              }
+            }
+          }
+        }
+      }
+    }
+
+  extra.conf: |
+    # Example filter that adds an extra field "cluster_name" to all log
+    # messages:
+    # <filter **>
+    #   @type record_transformer
+    #   <record>
+    #     cluster_name "your_cluster_name"
+    #   </record>
+    # </filter>
+    #<system>
+    # equal to -qq option
+    #    log_level debug
+    #</system>
