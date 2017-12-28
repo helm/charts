@@ -15,7 +15,7 @@ $ helm install stable/kube-state-metrics
 | Parameter                           | Description                                             | Default                                     |
 |-------------------------------------|---------------------------------------------------------|---------------------------------------------|
 | `image.repository`                  | The image repository to pull from                       | k8s.gcr.io/kube-state-metrics               |
-| `image.tag`                         | The image tag to pull from                              | v1.0.1                                      |
+| `image.tag`                         | The image tag to pull from                              | <latest version>                                      |
 | `image.pullPolicy`                  | Image pull policy                                       | IfNotPresent                                |
 | `service.port`                      | The port of the container                               | 8080                                        |
 | `prometheusScrape`                  | Whether or not enable prom scrape                       | True                                        |
