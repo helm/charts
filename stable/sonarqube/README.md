@@ -46,10 +46,22 @@ The following table lists the configurable parameters of the Sonarqube chart and
 | `persistence.enabled`                       | Flag for enabling persistent storage| false                                      |
 | `persistence.storageClass`                  | Storage class to be used            | "-"                                        |
 | `persistence.accessMode`                    | Volumes access mode to be set       | `ReadWriteOnce`                            |
-| `persistence.size`                          | Size of the volume                  | `10Gi`                                      |
+| `persistence.size`                          | Size of the volume                  | `10Gi`                                     |
 | `postgresql.postgresUser`                   | Postgresql database user            | `sonarUser`                                |
 | `postgresql.postgresPassword`               | Postgresql database password        | `sonarPass`                                |
 | `postgresql.postgresDatabase`               | Postgresql database name            | `sonarDB`                                  |
+| `sonarProperties`                           | Additional sonar properties         | {}                                         |
+
+You can also supply sonarProperties with a file, let's call it myValues.yaml with the content as follows:
+```yaml
+sonarProperties:
+  sonar.security.realm: LDAP
+```
+
+and then add this to your helm command:
+```bash
+helm install stable/sonarqube --values=myValues.yaml
+```
 
 You can also configure values for the PostgreSQL database via the Postgresql [README.md](https://github.com/kubernetes/charts/blob/master/stable/postgresql/README.md)
 
