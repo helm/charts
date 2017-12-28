@@ -35,7 +35,9 @@ spec:
           - name: OUTPUT_PORT
             value: {{ .Values.output.port | quote }}
           - name: POD_NAMESPACE
-            value: {{ .Release.Namespace }}
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
 {{- if .Values.output.cloud.enabled }}
           - name: ELASTIC_CLOUD_ID
             value {{ .Values.output.cloud.cloud_id }}
@@ -83,3 +85,7 @@ spec:
       - key: node-role.kubernetes.io/master
         operator: Exists
         effect: NoSchedule
+{{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+{{- end }}

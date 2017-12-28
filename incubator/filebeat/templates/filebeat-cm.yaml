@@ -32,10 +32,10 @@ data:
 
 {{- if eq .Values.output.type "logstash" }}
     output.logstash:
-      hosts: ["127.0.0.1:5044"]
+      hosts: ["${OUTPUT_HOST}:${OUTPUT_PORT}"]
 {{- else if eq .Values.storage "elasticsearch" }}
     output.elasticsearch:
-      hosts: ['${OUTPUT_HOST:logstash}:${OUTPUT_PORT:5044}']
+      hosts: ["${OUTPUT_HOST}:${OUTPUT_PORT}"]
   {{- if .Values.output.auth.enabled }}
       username: ${OUTPUT_USERNAME}
       password: ${OUTPUT_PASSWORD}
