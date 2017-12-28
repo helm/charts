@@ -8,6 +8,10 @@ metadata:
     component: "{{ .Values.database.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
+{{- if .Values.database.service.annotations }}
+  annotations:
+{{ toYaml .Values.database.service.annotations | indent 4 }}
+{{- end }}
 spec:
   type: {{ .Values.database.service.type }}
   ports:
