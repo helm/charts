@@ -24,6 +24,9 @@ spec:
         component: "{{ .Release.Name }}-{{ .Values.Master.Component }}"
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/config.yaml") . | sha256sum }}
+        {{ if .Values.Master.CustomConfigMap }}
+        helm/revision: "{{ .Release.Revision }}"
+        {{ end }}
     spec:
       {{- if .Values.Master.NodeSelector }}
       nodeSelector:
