@@ -146,38 +146,16 @@ $ helm install --name my-release --set Persistence.ExistingClaim=PVC_NAME stable
 
 ## Custom ConfigMap
 
-When creating a new parent chart with this chart as a dependency, the CustomConfigMap parameter can be used to override the default config.xml provided. It also allows for providing additional xml configuration files that will be copied into `/var/jenkins_home`, by modifying the `apply_config.sh` section of in the parent charts values.yaml. To enable CustomConfigMap, in the parent charts values.yaml, set the value of the CustomConfigMap parameter to true and provide the file `templates/config.yaml` for your use case.
+When creating a new chart with this chart as a dependency, CustomConfigMap can be used to override the default config.xml provided.
+It also allows for providing additional xml configuration files that will be copied into `/var/jenkins_home`. In the parent chart's values.yaml,
+set the value to true and provide the file `templates/config.yaml` for your use case. If you start by copying `config.yaml` from this chart and
+want to access values from this chart you must change all references from `.Values` to `.Values.jenkins`.
 
-```yaml
-# parentchartname/values.yaml contents
+```
 jenkins:
   Master:
     CustomConfigMap: true
 ```
-
-If you start by copying `config.yaml` from this chart and want to access values from this chart you must change all references from `.Values` to `.Values.jenkins`.
-
-Additionally, when copying the `config.yaml` from this chart for use in the
-parent chart as a bassis for customization, it is necessary to change the name of the config map to match
-what this chart (now acting as a subchart) expects, which is `<RELEASENAME>-CHARTNAME>`, where the chart name is expected to be `jenkins` in the subchart. However, when relying on the default `__helpers.tpl` provided name, the parent chart's generated configmap name  will not match and look like: `<RELEASENAME>-<PARENT_CHARTNAME>`. To fix this, update your parent charts `__helpers.tpl` or inline something to the effect of this into the name portion of your parent charts `templates/config.yaml`:
-
-```yaml
-# parentchartname/templates/config.yaml snippet
-metadata:
-  name: {{- printf " %s-%s" .Release.Name "jenkins\n" | trunc 63 | trimSuffix "-" -}}
-```
-
-:exclamation: **Warning!** when CustomConfigMap is set to true, the jenkins
-master pod will be recreated on every `helm update` no matter if there is
-a value or template change. This is necessary because
-usually the pod restart is only done when the compiled templates/config.yaml
-changes (see the sha256 annotation of it in
-templates/jenkins-master-deployment.yaml). When running as a subchart, this
-file never changes. Conditionally changing this to work off of
-the parent charts compiled templates/config.yaml won't work either because the
-subchart isn't aware of `.Values.jenkins` values, so the parent chart won't
-compile from the subchart.
-
 
 ## RBAC
 
