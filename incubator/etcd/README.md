@@ -38,7 +38,7 @@ The following tables lists the configurable parameters of the etcd chart and the
 | Parameter               | Description                        | Default                                                    |
 | ----------------------- | ---------------------------------- | ---------------------------------------------------------- |
 | `Name`                  | Spark master name                  | `etcd`                                                     |
-| `Image`                 | Container image name               | `nearform/docker-etcd`                      |
+| `Image`                 | Container image name               | `nearform/etcd`                      |
 | `ImageTag`              | Container image tag                | `2.3.10`                                                    |
 | `ImagePullPolicy`       | Container pull policy              | `Always`                                                   |
 | `Replicas`              | k8s statefulset replicas           | `3`                                                        |
