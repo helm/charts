@@ -21,7 +21,7 @@ spec:
   - host: {{ .name }}
     http:
       paths:
-        - path: /
+        - path: {{ default "/" .path }}
           backend:
             serviceName: {{ template "fullname" $ }}
             servicePort: {{ if .tls }}443{{ else }}80{{end}}

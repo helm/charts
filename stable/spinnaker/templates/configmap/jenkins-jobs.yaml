@@ -17,7 +17,7 @@ data:
               <hudson.model.StringParameterDefinition>
                 <name>EXECUTOR_IMAGE</name>
                 <description></description>
-                <defaultValue>viglesiasce/spinnaker-jenkins-agent:v0.2.0</defaultValue>
+                <defaultValue>jenkins/jnlp-slave:3.10-1</defaultValue>
               </hudson.model.StringParameterDefinition>
               <hudson.model.StringParameterDefinition>
                 <name>REPOSITORY_URL</name>
@@ -100,7 +100,7 @@ data:
               <hudson.model.StringParameterDefinition>
                 <name>EXECUTOR_IMAGE</name>
                 <description></description>
-                <defaultValue>viglesiasce/spinnaker-jenkins-agent:v0.2.0</defaultValue>
+                <defaultValue>jenkins/jnlp-slave:3.10-1</defaultValue>
               </hudson.model.StringParameterDefinition>
             </parameterDefinitions>
           </hudson.model.ParametersDefinitionProperty>
