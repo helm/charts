@@ -1,23 +1,29 @@
-appVersion: "0.8.1"
+appVersion: "0.8.2"
 
-## The official drone image, change tag to use a different version.
-## https://hub.docker.com/r/drone/drone/tags/
-##
-image:
-  repository: "docker.io/drone/drone"
-  tag: "0.8.1"
-  pullPolicy: "IfNotPresent"
+images:
+  ## The official drone (server) image, change tag to use a different version.
+  ## ref: https://hub.docker.com/r/drone/drone/tags/
+  ##
+  server:
+    repository: "docker.io/drone/drone"
+    tag: 0.8.2
+    pullPolicy: IfNotPresent
 
-## Since version 8.x drone splitted agent and server into two
-## different images.
-##
-## NOTE: Older versions of drone are **not** supported.
-## https://hub.docker.com/r/drone/agent/tags/
-##
-agentImage:
-  repository: "docker.io/drone/agent"
-  tag: "0.8.1"
-  pullPolicy: "IfNotPresent"
+  ## The official drone (agent) image, change tag to use a different version.
+  ## ref: https://hub.docker.com/r/drone/agent/tags/
+  ##
+  agent:
+    repository: "docker.io/drone/agent"
+    tag: 0.8.2
+    pullPolicy: IfNotPresent
+
+  ## The official docker (dind) image, change tag to use a different version.
+  ## ref: https://hub.docker.com/r/library/docker/tags/
+  ##
+  dind:
+    repository: "docker.io/library/docker"
+    tag: 17.12.0-ce-dind
+    pullPolicy: IfNotPresent
 
 service:
   httpPort: 80
