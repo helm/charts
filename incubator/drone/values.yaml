@@ -68,12 +68,12 @@ server:
 
   ## Drone server configuration.
   ## Values in here get injected as environment variables.
-  ## http://readme.drone.io/admin/installation-reference
+  ## ref: http://readme.drone.io/admin/installation-reference
   ##
   env:
     DRONE_DEBUG: "false"
     DRONE_DATABASE_DRIVER: "sqlite3"
-    DRONE_DATABASE_DATASOURCE: "drone.sqlite"
+    DRONE_DATABASE_DATASOURCE: "/var/lib/drone/drone.sqlite"
 
     ## Drone requires some environment variables to bootstrap the
     ## git service or it won't start up.
@@ -100,7 +100,7 @@ server:
 agent:
   ## Drone agent configuration.
   ## Values in here get injected as environment variables.
-  ## http://readme.drone.io/admin/installation-reference
+  ## ref: http://readme.drone.io/admin/installation-reference
   ##
   env:
     DRONE_DEBUG: "false"
@@ -114,6 +114,28 @@ agent:
   #  limits:
   #    memory: 2Gi
   #    cpu: 1
+
+## Enable persistence using Persistent Volume Claims
+## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+##
+persistence:
+  enabled: true
+
+  ## A manually managed Persistent Volume and Claim
+  ## Requires persistence.enabled: true
+  ## If defined, PVC must be created manually before volume will be bound
+  # existingClaim:
+
+  ## rabbitmq data Persistent Volume Storage Class
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  ##
+  # storageClass: "-"
+  accessMode: ReadWriteOnce
+  size: 1Gi
 
 ## Uncomment this if you want to set a specific shared secret between
 ## the agents and servers, otherwise this will be auto-generated.
