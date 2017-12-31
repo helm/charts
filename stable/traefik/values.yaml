@@ -1,6 +1,8 @@
 ## Default values for Traefik
 image: traefik
 imageTag: 1.4.5
+## can switch the deploy type to Deployment if you prefer
+deployType: Daemonset
 ## can switch the service type to NodePort if required
 serviceType: LoadBalancer
 loadBalancerIP:
