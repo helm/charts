@@ -14,13 +14,13 @@ data:
     #!/bin/sh
     cd /var/lib/grafana/import
     {{- range $i, $val := .Values.dashboardImports.dashboards }}
-      echo curl -O $val
-    {{ end -}}
+      curl -O $val
+    {{- end }}
     for dashboard in $(ls); do
-      echo curl "http://$(ADMIN_USER):$(ADMIN_PASSWORD)@{{ template "grafana.fullname" . }}:{{ .Values.server.service.httpPort }}/api/dashboards/db" \
+      curl "http://${ADMIN_USER}:${ADMIN_PASSWORD}@{{ template "grafana.fullname" . }}:{{ .Values.server.service.httpPort }}/api/dashboards/db" \
       --max-time 10 \
       --header "Content-Type: application/json;charset=UTF-8" \
-      --data-binary "{ \"dashboard\":$(dashboard), \"overwrite\":false }" ;
+      --data-binary "{ \"dashboard\":$(cat $dashboard), \"overwrite\":false }" ;
     done;
 
 ---
