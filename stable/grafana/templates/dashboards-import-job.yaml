@@ -1,0 +1,74 @@
+{{- if .Values.dashboardImports.enabled -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app: {{ template "grafana.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    component: "{{ .Values.server.name }}"
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+  name: {{ template "grafana.server.fullname" . }}-import-script
+data:
+  init.sh: |
+    #!/bin/sh
+    cd /var/lib/grafana/import
+    {{- range $i, $val := .Values.dashboardImports.dashboards }}
+      echo curl -O $val
+    {{ end -}}
+    for dashboard in $(ls); do
+      echo curl "http://$(ADMIN_USER):$(ADMIN_PASSWORD)@{{ template "grafana.fullname" . }}:{{ .Values.server.service.httpPort }}/api/dashboards/db" \
+      --max-time 10 \
+      --header "Content-Type: application/json;charset=UTF-8" \
+      --data-binary "{ \"dashboard\":$(dashboard), \"overwrite\":false }" ;
+    done;
+
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  labels:
+    app: {{ template "grafana.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    component: "{{ .Values.server.name }}"
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+  name: {{ template "grafana.server.fullname" . }}-import-dashboards
+spec:
+  activeDeadlineSeconds: {{ default 300 .Values.dashboardImports.activeDeadlineSeconds }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "grafana.fullname" . }}
+        component: "{{ .Values.server.name }}"
+        release: "{{ .Release.Name }}"
+    spec:
+      volumes:
+        - name: dashboards-import-volume
+          configMap:
+            name: {{ template "grafana.server.fullname" . }}-dashboardimport
+        - name: dashboards-script-volume
+          configMap:
+            name: {{ template "grafana.server.fullname" . }}-import-script
+      containers:
+      - name: {{ template "grafana.server.fullname" . }}-dashboardimport
+        image: "{{ .Values.dashboardImports.image }}"
+        volumeMounts:
+            - name: dashboards-import-volume
+              mountPath: "/var/lib/grafana/import"
+            - name: dashboards-script-volume
+              mountPath: "/var/lib/grafana/script"
+        env:
+        - name: ADMIN_USER
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "grafana.server.fullname" . }}
+              key: grafana-admin-user
+        - name: ADMIN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "grafana.server.fullname" . }}
+              key: grafana-admin-password
+        command: ["/bin/sh", "-x", "/var/lib/grafana/script/init.sh"]
+      restartPolicy: {{ .Values.dashboardImports.restartPolicy }}
+{{- end -}}
