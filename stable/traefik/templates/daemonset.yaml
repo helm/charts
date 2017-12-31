@@ -1,24 +1,17 @@
-{{- if eq .Values.deployType "Deployment" }}
+{{- if eq .Values.deployType "Daemonset" }}
+kind: DaemonSet
 apiVersion: extensions/v1beta1
-kind: Deployment
 metadata:
   name: {{ template "fullname" . }}
+  namespace: kube-system
   labels:
     app: {{ template "fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
-  replicas: {{ default 1 .Values.replicas }}
-  selector:
-    matchLabels:
-      app: {{ template "fullname" . }}
   template:
     metadata:
-      {{- if and (.Values.tolerations) (le .Capabilities.KubeVersion.Minor "5") }}
-      annotations:
-        scheduler.alpha.kubernetes.io/tolerations: '{{ toJson .Values.tolerations }}'
-      {{- end }}
       labels:
         app: {{ template "fullname" . }}
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
@@ -31,10 +24,7 @@ spec:
       serviceAccountName: default
       {{- end }}
       terminationGracePeriodSeconds: 60
-      {{- if .Values.nodeSelector }}
-      nodeSelector:
-{{ toYaml .Values.nodeSelector | indent 8 }}
-      {{- end }}
+      hostNetwork: true
       containers:
       - image: {{ .Values.image }}:{{ .Values.imageTag }}
         name: {{ template "fullname" . }}
@@ -89,6 +79,9 @@ spec:
         {{- end }}
         args:
         - --configfile=/config/traefik.toml
+        securityContext:
+          privileged: true
+
       volumes:
       - name: config
         configMap:
