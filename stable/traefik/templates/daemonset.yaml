@@ -1,6 +1,6 @@
-{{- if eq .Values.deployType "Daemonset" }}
-kind: DaemonSet
+{{- if eq .Values.deployType "DaemonSet" }}
 apiVersion: extensions/v1beta1
+kind: DaemonSet
 metadata:
   name: {{ template "fullname" . }}
   namespace: kube-system
