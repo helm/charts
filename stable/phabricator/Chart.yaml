@@ -1,6 +1,6 @@
 name: phabricator
-version: 0.5.4
-appVersion: 2017.50.0
+version: 0.5.5
+appVersion: 2017.52.0
 description: Collection of open source web applications that help software companies build better software.
 keywords:
 - phabricator
