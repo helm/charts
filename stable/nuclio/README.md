@@ -45,7 +45,7 @@ The following tables lists the configurable parameters of the Traefik chart and 
 
 | Parameter                       | Description                                                          | Default                                   |
 | ------------------------------- | -------------------------------------------------------------------- | ----------------------------------------- |
-| `Nuclio.Version`                | Nuclio's version                                                     | `0.2.1`                                   |
+| `Nuclio.Version`                | Nuclio's version                                                     | `0.2.2`                                   |
 | `Nuclio.Arch`                   | The version of the official Nuclio image architecture to use         | `amd64`                                   |
 | `Controller.Name`               | Provide controller name                                              | `controller`                              |
 | `Controller.Image`              | Nuclio's controller image                                            | `nuclio/controller`                       |
