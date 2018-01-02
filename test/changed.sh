@@ -38,6 +38,27 @@ exitCode=0
 # Cleanup any releases and namespaces left over from the test
 function cleanup {
     if [ -n "$CURRENT_RELEASE" ]; then
+
+      # Capture logs from test pods
+      kubectl get po --namespace ${NAMESPACE} --show-all -o go-template='{{range .items}}{{ $hook := print (index .metadata.annotations "helm.sh/hook") }}{{ if or (eq $hook "test-success") (eq $hook "test-failure") }}{{printf "%s\n" .metadata.name}}{{end}}{{end}}' | while read line; do
+        if [[ $line != "" ]]; then
+          echo "Logs from test pod $line:"
+          kubectl logs --namespace ${NAMESPACE} ${line}
+          printf "End of logs for $line\n\n"
+        fi
+      done
+
+      # Capture logs from application pods
+      helm status ${CURRENT_RELEASE}
+      helm status ${CURRENT_RELEASE} | sed -n '/Pod(related)/,/^$/p' | sed -e '1,2d' | awk '{ print $1 }' | while read line; do
+        if [[ $line != "" ]]; then
+          echo "logs for app pod $line:"
+          kubectl logs ${line}
+          printf "End of logs for $line\n\n"
+        fi
+      done
+
+
       helm delete --purge ${CURRENT_RELEASE} > cleanup_log 2>&1 || true
     fi
     kubectl delete ns ${NAMESPACE} >> cleanup_log 2>&1 || true
@@ -113,12 +134,15 @@ for directory in ${CHANGED_FOLDERS}; do
     kubectl get deployments --namespace ${NAMESPACE}
     kubectl get endpoints --namespace ${NAMESPACE}
     helm test ${RELEASE_NAME}
+
     if [ -n $VERIFICATION_PAUSE ]; then
       cat install_output
       sleep $VERIFICATION_PAUSE
     fi
     helm delete --purge ${RELEASE_NAME}
+    
+    # Setting the current release to none to avoid the cleanup and error
+    # handling for a release that no longer exists.
+    CURRENT_RELEASE=""
   fi
 done
-
-exit $exitCode
