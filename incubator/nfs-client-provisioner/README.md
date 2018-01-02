@@ -14,7 +14,7 @@ This charts installs custom [storage class](https://kubernetes.io/docs/concepts/
 
 ## Prerequisites
 
-- Kubernetes 1.6+
+- Kubernetes 1.7+
 - NFS Share
 
 ## Installing the Chart
@@ -22,7 +22,7 @@ This charts installs custom [storage class](https://kubernetes.io/docs/concepts/
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm install --name my-release -e storageclass.name=nfs incubator/nfs-client-provisioner
+$ helm install --name my-release --set storageclass.name=nfs incubator/nfs-client-provisioner
 ```
 
 The command deploys the given storage class in the default configuration. It can be used afterswards to provision persistent volumes. The [configuration](#configuration) section lists the parameters that can be configured during installation.
@@ -43,14 +43,14 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following tables lists the configurable parameters of this chart and their default values.
 
-| Parameter                         | Description                                 | Default                                                     |
-| --------------------------------- | -------------------------------------       | ---------------------------------------------------------   |
-| `replicaCount`                    | number of provisioner instances to deployed | 1                                                           |
-| `image.repository`                | provisioner image                           | `quay.io/external_storage/nfs-client-provisioner:{VERSION}` |
-| `image.tag`                       | version of provisioner image                | `v2.0.1`                                                    |
-| `image.pullPolicy`                | image pull policy                           | `IfNotPresent`                                              |
-| `storageclass.nane`               | name of the storageclass                    | `nfs`                                                       |
-| `nfs.provisionerName`             | name of the provisionerName                 | `fuseim.pri/ifs`                                            |
-| `nfs.server`                      | hostname of the NFS server                  | `10.10.10.60`                                               |
-| `nfs.path`                        | basepath of the mount point to be used      | `/ifs/kubernetes`                                           |
-| `resources`                       | Resources required (e.g. CPU, memory)       | `{}`                                                        |
+| Parameter                         | Description                                 | Default                                                   |
+| --------------------------------- | -------------------------------------       | --------------------------------------------------------- |
+| `replicaCount`                    | number of provisioner instances to deployed | 1                                                         |
+| `image.repository`                | provisioner image                           | `quay.io/external_storage/nfs-client-provisioner`         |
+| `image.tag`                       | version of provisioner image                | `v2.0.1`                                                  |
+| `image.pullPolicy`                | image pull policy                           | `IfNotPresent`                                            |
+| `storageclass.nane`               | name of the storageclass                    | `nfs`                                                     |
+| `nfs.provisionerName`             | name of the provisionerName                 | `fuseim.pri/ifs`                                          |
+| `nfs.server`                      | hostname of the NFS server                  | `10.10.10.60`                                             |
+| `nfs.path`                        | basepath of the mount point to be used      | `/ifs/kubernetes`                                         |
+| `resources`                       | Resources required (e.g. CPU, memory)       | `{}`                                                      |
