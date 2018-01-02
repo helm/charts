@@ -11,7 +11,7 @@ spec:
     metadata:
       labels:
         kubeless: zookeeper
-        app: {{ template "fullname"  . }}
+        app: {{ template "name"  . }}
         release: {{ .Release.Name | quote }}
     spec:
       terminationGracePeriodSeconds: 10

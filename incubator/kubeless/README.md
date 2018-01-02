@@ -23,7 +23,7 @@ This chart bootstraps a [Kubeless](https://github.com/kubeless/kubeless) and a [
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm install --name --namespace kubeless my-release stable/kubeless
+$ helm install --name my-release --namespace kubeless incubator/kubeless
 ```
 
 > **NOTE**
@@ -71,7 +71,7 @@ The following tables lists the configurable parameters of the Kubeless chart and
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```bash
-$ helm install --name my-release --set service.name=ui-service,service,externalPort=4000 --namespace kubeless stable/kubeless
+$ helm install --name my-release --set service.name=ui-service,service,externalPort=4000 --namespace kubeless incubator/kubeless
 ```
 
 The above command sets the Kubeless service name to `ui-service` and the external port to `4000`.
@@ -79,7 +79,7 @@ The above command sets the Kubeless service name to `ui-service` and the externa
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```bash
-$ helm install --name my-release -f values.yaml --namespace kubeless stable/kubeless
+$ helm install --name my-release -f values.yaml --namespace kubeless incubator/kubeless
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)

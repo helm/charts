@@ -11,5 +11,5 @@ spec:
   clusterIP: None
   selector:
     kubeless: kafka
-    app: {{ template "fullname"  . }}
+    app: {{ template "name"  . }}
     release: {{ .Release.Name | quote }}

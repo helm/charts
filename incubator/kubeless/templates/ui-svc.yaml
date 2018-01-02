@@ -14,7 +14,7 @@ spec:
     targetPort: 3000
   selector:
     component: ui
-    app: {{ template "fullname"  . }}
+    app: {{ template "name"  . }}
     release: {{ .Release.Name | quote }}
   sessionAffinity: None
   type: {{ .Values.ui.service.type }}

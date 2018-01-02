@@ -13,5 +13,5 @@ spec:
   clusterIP: None
   selector:
     kubeless: zookeeper
-    app: {{ template "fullname"  . }}
+    app: {{ template "name"  . }}
     release: {{ .Release.Name | quote }}

@@ -11,7 +11,7 @@ spec:
     metadata:
       labels:
         component: ui
-        app: {{ template "fullname"  . }}
+        app: {{ template "name"  . }}
         release: {{ .Release.Name | quote }}
     spec:
       containers:

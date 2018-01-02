@@ -14,7 +14,7 @@ spec:
     metadata:
       labels:
         kubeless: controller
-        app: {{ template "fullname"  . }}
+        app: {{ template "name"  . }}
         release: {{ .Release.Name }}
     spec:
       containers:
