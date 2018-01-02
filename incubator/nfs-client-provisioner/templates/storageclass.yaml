@@ -3,7 +3,7 @@ kind: StorageClass
 metadata:
   name: {{ .Values.storageclass.name }}
   labels:
-    app: {{ template "name" . }}
+    app: {{ template "nfs-client-provisioner.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
