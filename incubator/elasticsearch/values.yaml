@@ -37,6 +37,7 @@ client:
 
 master:
   name: master
+  exposeHttp: false
   replicas: 3
   heapSize: "512m"
   persistence:
@@ -60,6 +61,7 @@ master:
 
 data:
   name: data
+  exposeHttp: false
   replicas: 2
   heapSize: "1536m"
   persistence:
