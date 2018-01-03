@@ -24,6 +24,10 @@ spec:
       serviceAccountName: default
       {{- end }}
       terminationGracePeriodSeconds: 60
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- end }}
       hostNetwork: true
       containers:
       - image: {{ .Values.image }}:{{ .Values.imageTag }}
