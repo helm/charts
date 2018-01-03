@@ -20,10 +20,10 @@ The following table lists the configurable parameters of `pachd` and their defau
 | Parameter                | Description           | Default           |
 |--------------------------|-----------------------|-------------------|
 | `pachd.image.repository` | Container image name  | `pachyderm/pachd` |
-| `*.image.tag`            | Container image tag   | `1.6.6`           |
+| `*.image.tag`            | Container image tag   | `<latest version>`|
 | `*.image.pullPolicy`     | Image pull policy     | `Always`          |
 | `*.worker.repository`    | Worker image name     | `pachyderm/worker`|
-| `*.worker.tag`           | Worker image tag      | `1.6.6`           |
+| `*.worker.tag`           | Worker image tag      | `<latest version>`|
 | `*.replicaCount`         | Number of pachds      | `1`               |
 | `*.resources.requests`   | Memory and cpu request| `{512M,250m}`     |
 
@@ -33,7 +33,7 @@ Next table lists the configurable parameters of `etcd` and their default values:
 | Parameter                   | Description           | Default           |
 |-----------------------------|-----------------------|-------------------|
 | `etcd.image.repository`     | Container image name  | `pachyderm/etcd`  |
-| `*.image.tag`               | Container image tag   | `v3.2.7`          |
+| `*.image.tag`               | Container image tag   | `<latest version>`|
 | `*.image.pullPolicy`        | Image pull policy     | `IfNotPresent`    |
 | `*.resources.requests`      | Memory and cpu request| `{250M,250m}`     |
 | `*.persistence.enabled`     | Enable persistence    | `false`           |
@@ -99,7 +99,7 @@ Based on the storage credentials used, fill in the corresponding parameters for 
 How to install the chart
 ------------------------
 
-The default installation will deploy Pachyderm on your local Kubernetes cluster:
+We strongly suggest that the installation of Pachyderm should be performed in its own namespace. The default installation will deploy Pachyderm on your local Kubernetes cluster:
 
 ```console
 $ helm install --name my-release stable/pachyderm
@@ -129,7 +129,7 @@ In order to use Pachyderm, please login through ssh to the master node and insta
 $ curl -o /tmp/pachctl.deb -L https://github.com/pachyderm/pachyderm/releases/download/v1.6.6/pachctl_1.6.6_amd64.deb && sudo dpkg -i /tmp/pachctl.deb
 ```
 
-Please note that the client version should correspond with the pachd service version. For more information please consult: http://pachyderm.readthedocs.io/en/latest/index.html. Also, if you have your kubernetes client properly configured to talk with your remote cluster, you can simply install `pachctl` on your local machine and execute: `pachctl port-forward &`.
+Please note that the client version should correspond with the pachd service version. For more information please consult: http://pachyderm.readthedocs.io/en/latest/index.html. Also, if you have your kubernetes client properly configured to talk with your remote cluster, you can simply install `pachctl` on your local machine and execute: `pachctl -k '-n=<namespace>' port-forward &`.
 
 Clean-up
 -------
