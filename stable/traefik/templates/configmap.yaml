@@ -10,6 +10,7 @@ metadata:
 data:
   traefik.toml: |
     # traefik.toml
+{{ .Values.extraConfig | indent 4 }}
     logLevel = "INFO"
     {{- if .Values.debug.enabled }}
     debug = true

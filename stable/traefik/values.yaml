@@ -24,6 +24,8 @@ tolerations: []
   # namespaces:
   # - default
   # labelSelector:
+extraConfig: |
+  # extra configuration from values.yaml
 ssl:
   enabled: false
   enforced: false
