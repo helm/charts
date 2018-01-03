@@ -8,9 +8,10 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
+  type: {{ .Values.service.type }}
   ports:
   - name: mysql
-    port: 3306
+    port: {{ .Values.service.port }}
     targetPort: mysql
   selector:
     app: {{ template "mysql.fullname" . }}
