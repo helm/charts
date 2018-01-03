@@ -23,13 +23,8 @@ data:
       [entryPoints.http]
       address = ":80"
       {{- if .Values.proxyProtocol.enabled }}
-      [entryPoints.http.proxyProtocol]
-        trustedIPs = [
-          {{- range $idx, $element := .Values.proxyProtocol.trustedIPs }}
-              {{- if $idx }}, {{ end }}
-              {{- $element | quote }}
-          {{- end -}}
-          ]
+        [entryPoints.http.proxyProtocol]
+        {{ template "trustedips" . }}
       {{- end }}
       compress = {{ .Values.gzip.enabled }}
         {{- if .Values.ssl.enforced }}
@@ -41,13 +36,8 @@ data:
       [entryPoints.https]
       address = ":443"
       {{- if .Values.proxyProtocol.enabled }}
-      [entryPoints.http.proxyProtocol]
-        trustedIPs = [
-          {{- range $idx, $element := .Values.proxyProtocol.trustedIPs }}
-              {{- if $idx }}, {{ end }}
-              {{- $element | quote }}
-          {{- end -}}
-          ]
+        [entryPoints.https.proxyProtocol]
+        {{ template "proxyprotocol" . }}
       {{- end }}
       compress = {{ .Values.gzip.enabled }}
         [entryPoints.https.tls]

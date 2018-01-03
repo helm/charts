@@ -7,3 +7,16 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- define "fullname" -}}
 {{- printf "%s-%s" .Release.Name .Chart.Name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
+
+{{/*
+Create the block for the ProxyProtocol's Trusted IPs.
+This simplifies some duplicate code.
+*/}}
+{{- define "trustedips" -}}
+         trustedIPs = [
+	   {{- range $idx, $ips := .Values.proxyProtocol.trustedIPs }}
+	     {{- if $idx }}, {{ end }}
+	     {{- $ips | quote }}
+	   {{- end -}}
+         ]
+{{- end -}}
