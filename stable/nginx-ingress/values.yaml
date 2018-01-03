@@ -73,7 +73,7 @@ controller:
 
   # minReadySeconds to avoid killing pods before we are ready
   ##
-  minReadySeconds: 15
+  minReadySeconds: 0
 
 
   ## Node tolerations for server scheduling to nodes with taints
