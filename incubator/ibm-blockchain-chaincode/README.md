@@ -59,3 +59,4 @@ $ helm install --name my-release -f values.yaml stable/ibm-blockchain-chaincode
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
