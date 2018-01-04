@@ -38,6 +38,8 @@ The following tables lists the configurable parameters of the Jenkins chart and 
 | `Master.AdminUser`                | Admin username (and password) created as a secret if useSecurity is true | `admin`                                  |
 | `Master.Cpu`                      | Master requested cpu                 | `200m`                                                                       |
 | `Master.Memory`                   | Master requested memory              | `256Mi`                                                                      |
+| `Master.RunAsUser`                | uid that jenkins runs with           | `0`                                                                          |
+| `Master.FsGroup`                  | uid that will be used for persistent volume | `0`                                                                   |
 | `Master.ServiceAnnotations`       | Service annotations                  | `{}`                                                                         |
 | `Master.ServiceType`              | k8s service type                     | `LoadBalancer`                                                               |
 | `Master.ServicePort`              | k8s service port                     | `8080`                                                                       |
@@ -164,3 +166,20 @@ If running upon a cluster with RBAC enabled you will need to do the following:
 * `helm install stable/jenkins --set rbac.install=true`
 * Create a Jenkins credential of type Kubernetes service account with service account name provided in the `helm status` output.
 * Under configure Jenkins -- Update the credentials config in the cloud section to use the service account credential you created in the step above.
+
+## Run Jenkins as non root user
+
+The default settings of this helm chart let Jenkins run as root user with uid `0`.
+Due to security reasons you may want to run Jenkins as a non root user. 
+Fortunately the default jenkins docker image `jenkins/jenkins` contains a user `jenkins` with uid `1000` that can be used for this purpose.  
+
+Simply use the following settings to run Jenkins as `jenkins` user with uid `1000`.
+```
+jenkins:
+  Master:
+    RunAsUser: 1000
+    FsGroup: 1000
+```
+
+Docs taken from https://github.com/jenkinsci/docker/blob/master/Dockerfile:
+*Jenkins is run with user `jenkins`, uid = 1000. If you bind mount a volume from the host or a data container,ensure you use the same uid*
