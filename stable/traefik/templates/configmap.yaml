@@ -23,9 +23,10 @@ data:
       [entryPoints.http]
       address = ":80"
       compress = {{ .Values.gzip.enabled }}
-        {{- if and .Values.ssl.enabled .Values.ssl.enforced }}
+        {{- if .Values.ssl.enforced }}
         [entryPoints.http.redirect]
-          entryPoint = "https"
+          regex = "^http://(.*)"
+          replacement = "https://$1"
         {{- end }}
       {{- if .Values.ssl.enabled }}
       [entryPoints.https]

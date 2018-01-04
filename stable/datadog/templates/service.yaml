@@ -1,4 +1,4 @@
-{{- if .Values.deployment.enabled }}
+{{ if .Values.deployment.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -11,9 +11,9 @@ spec:
   type: {{ .Values.serviceType }}
   selector:
     app: {{ template "datadog.fullname" . }}
+    type: deployment
   ports:
   - port: 8125
-    hostPort: 8125
     name: dogstatsdport
     protocol: UDP
   {{- if .Values.datadog.apmEnabled }}
