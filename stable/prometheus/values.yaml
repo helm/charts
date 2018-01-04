@@ -233,6 +233,10 @@ kubeStateMetrics:
     servicePort: 80
     type: ClusterIP
 
+  ## Additional kube-state-metrics container arguments
+  ##
+  extraArgs: {}
+
 nodeExporter:
   ## If false, node-exporter will not be installed
   ##
