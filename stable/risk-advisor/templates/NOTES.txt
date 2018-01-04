@@ -5,7 +5,7 @@ To get the risk advisor service URL, run these commands:
 {{- if (not (empty .Values.service.nodePort)) }}
   export NODE_PORT={{ .Values.service.nodePort }}
 {{- else }}
-  export NODE_PORT=$(kubectl get services -o jsonpath="{.spec.ports[0].nodePort}" {{ template "fullname" . }})
+  export NODE_PORT=$(kubectl get services -o jsonpath="{.spec.ports[0].nodePort}" {{ template "risk-advisor.fullname" . }})
 {{- end }}
   export NODE_IP=$(kubectl get nodes -o jsonpath="{.items[0].status.addresses[1].address}")
   echo "Check how the cluster state would change after adding provided pods to the cluster by sending HTTP POST request to http://$NODE_IP:$NODE_PORT/advise with array of pod definitions"

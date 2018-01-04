@@ -7,12 +7,12 @@ metadata:
 {{ toYaml .Values.statsExporter.service.annotations | indent 4 }}
 {{- end }}
   labels:
-    app: {{ template "name" . }}
+    app: {{ template "nginx-ingress.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     component: "{{ .Values.controller.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-  name: {{ template "controller.fullname" . }}-metrics
+  name: {{ template "nginx-ingress.controller.fullname" . }}-metrics
 spec:
   clusterIP: "{{ .Values.statsExporter.service.clusterIP }}"
 {{- if .Values.statsExporter.service.externalIPs }}
@@ -29,9 +29,9 @@ spec:
   ports:
     - name: metrics
       port: {{ .Values.statsExporter.service.servicePort }}
-      targetPort: 9913
+      targetPort: {{ .Values.statsExporter.service.targetPort }}
   selector:
-    app: {{ template "name" . }}
+    app: {{ template "nginx-ingress.name" . }}
     component: "{{ .Values.controller.name }}"
     release: {{ .Release.Name }}
   type: "{{ .Values.statsExporter.service.type }}"

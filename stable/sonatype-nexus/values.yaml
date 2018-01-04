@@ -17,6 +17,8 @@ service:
   livenessProbe:
     initialDelaySeconds: 30
     periodSeconds: 30
+  annotations: {}
+  # foo.io/bar: "true"
 ingress:
   enabled: false
   # Used to create an Ingress record.
@@ -30,6 +32,12 @@ ingress:
   #  - secretName: nexus-tls
   #    hosts:
   #      - nexus.local
+## Configuration if choosing to host docker registry
+docker:
+  enabled: false
+  # Used to enable a docker registry
+  # port: 5509
+  # host: docker.local
 ## Persist data to a persitent volume
 persistence:
   enabled: true
@@ -48,8 +56,8 @@ resources: {}
   # resources, such as Minikube. If you do want to specify resources, uncomment the following
   # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
   # limits:
-  #  cpu: 100m
-  #  memory: 128Mi
+  #  cpu: "1"
+  #  memory: "1Gi"
   # requests:
-  #  cpu: 100m
-  #  memory: 128Mi
+  #  cpu: "100m"
+  #  memory: "128Mi"

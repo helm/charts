@@ -1,0 +1,107 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "sonarqube.fullname" . }}
+  labels:
+    app: {{ template "sonarqube.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "sonarqube.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      {{- if .Values.plugins.install }}
+      initContainers:
+        - name: install-plugins
+          image: joosthofman/wget:1.0
+          env:
+            {{- range $key, $value := .Values.extraEnv }}
+            - name: {{ $key }}
+              value: {{ $value }}
+            {{- end }}
+          command: ["sh", "-c", "'/opt/sonarqube/extensions/plugins/install_plugins.sh'"]
+          volumeMounts:
+            - mountPath: /opt/sonarqube/extensions
+              name: sonarqube
+              subPath: extensions
+            - name: install-plugins
+              mountPath: /opt/sonarqube/extensions/plugins/install_plugins.sh
+              subPath: install_plugins.sh
+      {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.service.internalPort }}
+          env:
+            {{- range $key, $value := .Values.extraEnv }}
+            - name: {{ $key }}
+              value: {{ $value }}
+            {{- end }}
+            - name: SONARQUBE_JDBC_USERNAME
+              value: {{.Values.postgresql.postgresUser | quote }}
+            - name: SONARQUBE_JDBC_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "postgresql.fullname" .}}
+                  key: postgres-password
+            - name: SONARQUBE_JDBC_URL
+              value: "jdbc:postgresql://{{ template "postgresql.fullname" .}}:5432/{{.Values.postgresql.postgresDatabase}}"
+          livenessProbe:
+            httpGet:
+              path: /
+              port: {{ .Values.service.internalPort }}
+            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+          readinessProbe:
+            httpGet:
+              path: /
+              port: {{ .Values.service.internalPort }}
+            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+            failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
+          volumeMounts:
+            - mountPath: /opt/sonarqube/conf
+              name: sonarqube
+              subPath: conf
+            {{- if .Values.sonarProperties }}
+            - name: config
+              mountPath: /opt/sonarqube/conf/sonar.properties
+              subPath: sonar.properties
+            {{- end}}
+            - mountPath: /opt/sonarqube/data
+              name: sonarqube
+              subPath: data
+            - mountPath: /opt/sonarqube/extensions
+              name: sonarqube
+              subPath: extensions
+            - name: install-plugins
+              mountPath: /opt/sonarqube/extensions/plugins/install_plugins.sh
+              subPath: install_plugins.sh
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
+      volumes:
+      - name: config
+        configMap:
+          name: {{ template "sonarqube.fullname" . }}-config
+      - name: install-plugins
+        configMap:
+          name: {{ template "sonarqube.fullname" . }}-install-plugins
+          defaultMode: 0775
+      - name: sonarqube
+        {{- if .Values.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ if .Values.persistence.existingClaim }}{{ .Values.persistence.existingClaim }}{{- else }}{{ template "sonarqube.fullname" . }}{{- end }}
+        {{- else }}
+        emptyDir: {}
+        {{- end  }}

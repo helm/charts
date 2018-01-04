@@ -1,3 +1,4 @@
+{{- if .Values.agent.enabled -}}
 apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
@@ -21,6 +22,9 @@ spec:
         component: "agent"
         release: "{{ .Release.Name }}"
         jaeger-infra: agent-instance
+{{- if .Values.agent.podLabels }}
+{{ toYaml .Values.agent.podLabels | indent 8 }}
+{{- end }}
     spec:
       nodeSelector:
 {{ toYaml .Values.agent.nodeSelector | indent 8 }}
@@ -43,3 +47,4 @@ spec:
           protocol: UDP
         resources:
 {{ toYaml .Values.agent.resources | indent 10 }}
+{{- end -}}

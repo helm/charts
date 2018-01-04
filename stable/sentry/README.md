@@ -48,7 +48,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 > **Warning**: Jobs are not deleted automatically. They need to be manually deleted
 ```consule
-$ helm delete job/sentry-db-init job/sentry-user-create
+$ kubectl delete job/sentry-db-init job/sentry-user-create
 ```
 
 ## Configuration
@@ -70,7 +70,6 @@ The following tables lists the configurable parameters of the Sentry chart and t
 | `email.use_tls`                      | SMTP TLS for security                      | `false`                                                    |
 | `email.enable_replies`               | Allow email replies                        | `false`                                                    |
 | `service.type`                       | Kubernetes service type                    | `LoadBalancer`                                             |
-| `service.name`                       | Kubernetes service name                    | `sentry`                                                   |
 | `service.name`                       | Kubernetes service name                    | `sentry`                                                   |
 | `service.externalPort`               | Kubernetes external service port           | `9000`                                                     |
 | `service.internalPort`               | Kubernetes internal service port           | `9000`                                                     |

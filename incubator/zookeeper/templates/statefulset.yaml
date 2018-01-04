@@ -16,27 +16,10 @@ spec:
         app: {{ include "zookeeper.name" . | quote }}
         release: {{ .Release.Name | quote }}
     spec:
-      {{- if eq .Values.antiAffinity "hard" }}
+{{- if .Values.affinity }}
       affinity:
-        podAntiAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            - topologyKey: "kubernetes.io/hostname"
-              labelSelector:
-                matchLabels:
-                  app: {{ include "zookeeper.name" . | quote }}
-                  release: {{ .Release.Name | quote }}
-      {{- else if eq .Values.antiAffinity "soft" }}
-      affinity:
-        podAntiAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-            - weight: 1
-              podAffinityTerm:
-                topologyKey: "kubernetes.io/hostname"
-                labelSelector:
-                  matchLabels:
-                    app: {{ include "zookeeper.name" . | quote }}
-                    release: {{ .Release.Name | quote }}
-      {{- end }}
+{{ toYaml .Values.affinity | indent 8 }}
+{{- end }}
       containers:
       - name: {{ template "zookeeper.name" . }}-server
         imagePullPolicy: {{ .Values.imagePullPolicy }}
@@ -94,9 +77,12 @@ spec:
         volumeMounts:
         - name: datadir
           mountPath: /var/lib/zookeeper
+          subPath: data
+      {{- if eq .Values.security.enabled true }}
       securityContext:
-        runAsUser: 1000
-        fsGroup: 1000
+        runAsUser: {{ .Values.security.runAsUser }}
+        fsGroup: {{ .Values.security.fsGroup }}
+      {{- end }}
   volumeClaimTemplates:
   - metadata:
       name: datadir

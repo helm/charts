@@ -2,11 +2,11 @@ apiVersion: v1
 kind: Pod
 metadata:
   labels:
-    app: {{ template "name" . }}
+    app: {{ template "mongodb-replicaset.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-  name: {{ template "fullname" . }}-test
+  name: {{ template "mongodb-replicaset.fullname" . }}-test
   annotations:
     "helm.sh/hook": test-success
 spec:
@@ -32,7 +32,7 @@ spec:
         - /tests/mongodb-up-test.sh
       env:
         - name: FULL_NAME
-          value: {{ template "fullname" . }}
+          value: {{ template "mongodb-replicaset.fullname" . }}
         - name: REPLICAS
           value: "{{ .Values.replicas }}"
       volumeMounts:
@@ -45,5 +45,5 @@ spec:
       emptyDir: {}
     - name: tests
       configMap:
-        name: {{ template "fullname" . }}-tests
+        name: {{ template "mongodb-replicaset.fullname" . }}-tests
   restartPolicy: Never

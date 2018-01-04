@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Secret
 metadata:
-  name: {{ template "fullname" . }}-gossip-key
+  name: {{ template "consul.fullname" . }}-gossip-key
 type: Opaque
 data:
   gossip-key: {{ randAlphaNum 24 | b64enc }}
@@ -10,7 +10,7 @@ data:
 apiVersion: v1
 kind: Service
 metadata:
-  name: "{{ template "fullname" . }}-ui"
+  name: "{{ template "consul.fullname" . }}-ui"
   labels:
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
@@ -25,10 +25,54 @@ spec:
   type: "{{ .Values.uiService.type }}"
 {{- end }}
 ---
+{{- if .Values.maxUnavailable }}
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: "{{ template "consul.fullname" . }}-pdb"
+spec:
+  maxUnavailable: {{ .Values.maxUnavailable }}
+  selector:
+    matchLabels:
+      component: "{{ .Release.Name }}-{{ .Values.Component }}"
+{{- end }}
+---
+{{- if .Values.uiIngress.enabled -}}
+{{- $releaseName := .Release.Name -}}
+{{- $servicePort := .Values.HttpPort -}}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+  {{- range $key, $value := .Values.uiIngress.annotations }}
+    {{ $key }}: {{ $value | quote }}
+  {{- end }}
+  labels:
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    component: "{{ .Release.Name }}-{{ .Values.Component }}"
+  name: "{{ template "fullname" . }}-ui"
+spec:
+  rules:
+  {{- range .Values.uiIngress.hosts }}
+    - host: {{ . }}
+      http:
+        paths:
+          - backend:
+              serviceName: {{ printf "%s-%s" $releaseName "consul-ui" | trunc 63 }}
+              servicePort: {{ $servicePort }}
+  {{- end -}}
+  {{- if .Values.uiIngress.tls }}
+  tls:
+{{ toYaml .Values.uiIngress.tls | indent 4 }}
+  {{- end -}}
+{{- end }}
+---
 apiVersion: v1
 kind: Service
 metadata:
-  name: "{{ template "fullname" . }}"
+  name: "{{ template "consul.fullname" . }}"
   labels:
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
@@ -68,30 +112,55 @@ spec:
 apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
-  name: "{{ template "fullname" . }}"
+  name: "{{ template "consul.fullname" . }}"
   labels:
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     component: "{{ .Release.Name }}-{{ .Values.Component }}"
 spec:
-  serviceName: "{{ template "fullname" . }}"
+  serviceName: "{{ template "consul.fullname" . }}"
   replicas: {{ default 3 .Values.Replicas }}
+  updateStrategy:
+    type: RollingUpdate
   template:
     metadata:
-      name: "{{ template "fullname" . }}"
+      name: "{{ template "consul.fullname" . }}"
       labels:
         heritage: {{ .Release.Service | quote }}
         release: {{ .Release.Name | quote }}
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         component: "{{ .Release.Name }}-{{ .Values.Component }}"
-      annotations:
-        pod.alpha.kubernetes.io/initialized: "true"
     spec:
       securityContext:
         fsGroup: 1000
+      {{- if eq .Values.antiAffinity "hard" }}
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: component
+                operator: In
+                values:
+                - "{{ .Release.Name }}-{{ .Values.Component }}"
+            topologyKey: kubernetes.io/hostname
+      {{- else if eq .Values.antiAffinity "soft" }}
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 1
+            podAffinityTerm:
+              topologyKey: kubernetes.io/hostname
+              labelSelector:
+                matchExpressions:
+                - key: component
+                  operator: In
+                  values:
+                  - "{{ .Release.Name }}-{{ .Values.Component }}"
+      {{- end }}
       containers:
-      - name: "{{ template "fullname" . }}"
+      - name: "{{ template "consul.fullname" . }}"
         image: "{{ .Values.Image }}:{{ .Values.ImageTag }}"
         imagePullPolicy: "{{ .Values.ImagePullPolicy }}"
         ports:
@@ -124,7 +193,7 @@ spec:
         - name: INITIAL_CLUSTER_SIZE
           value: {{ default 3 .Values.Replicas | quote }}
         - name: STATEFULSET_NAME
-          value: "{{ template "fullname" . }}"
+          value: "{{ template "consul.fullname" . }}"
         - name: POD_IP
           valueFrom:
             fieldRef:
@@ -198,7 +267,7 @@ spec:
       volumes:
       - name: gossip-key
         secret:
-          secretName: {{ template "fullname" . }}-gossip-key
+          secretName: {{ template "consul.fullname" . }}-gossip-key
   volumeClaimTemplates:
   - metadata:
       name: datadir
