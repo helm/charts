@@ -21,6 +21,11 @@ client:
   name: client
   replicas: 2
   serviceType: ClusterIP
+
+## (dict) If specified, apply these annotations to the client service
+#  serviceAnnotations:
+#    example: client-svc-foo
+
   heapSize: "512m"
   antiAffinity: "soft"
   resources:
