@@ -16,9 +16,9 @@ home: "https://pachyderm.io"
 sources:
   - "https://github.com/pachyderm/pachyderm"
 maintainers:
-  - name: Jon Ander Novella
+  - name: jonandernovella
     email: novella.uu@gmail.com
-  - name: Daniel Whitenack
+  - name: dwhitena
     email: whitenack.daniel@gmail.com
-  - name: Joe Doliner
+  - name: jdoliner
     email: jdoliner@pachyderm.io
