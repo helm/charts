@@ -10,6 +10,10 @@ $ brew tap pachyderm/tap && brew install pachyderm/tap/pachctl@1.6
 
 To check that installation was successful, you can try running pachctl help, which should return a list of Pachyderm commands.  
 
-If you install the client on your master node, you should already be able to interact with the service. Also, if you have your kubernetes client properly configured to talk with your remote cluster, you can simply install `pachctl` on your local machine and execute: `pachctl -k ‘-n={{ .Release.Namespace }}’ port-forward &`.
+If you install the client on your master node, you should already be able to interact with the service. Also, if you have your kubernetes client properly configured to talk with your remote cluster, you can simply install pachctl on your local machine and execute: 
 
-To check if port forwarding was successfully completed, try `pachctl version` to make sure everything is working.
+$ pachctl -k '-n={{ .Release.Namespace }}' port-forward & .
+
+To check if port forwarding was successfully completed, try:
+
+$ pachctl version
