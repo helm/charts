@@ -36,7 +36,7 @@ The following tables lists the configurable parameters of the Spark chart and th
 | Parameter               | Description                        | Default                                                    |
 | ----------------------- | ---------------------------------- | ---------------------------------------------------------- |
 | `Master.Name`           | Spark master name                  | `spark-master`                                             |
-| `Master.Image`          | Container image name               | `gcr.io/google_containers/spark`                           |
+| `Master.Image`          | Container image name               | `k8s.gcr.io/spark`                                         |
 | `Master.ImageTag`       | Container image tag                | `1.5.1_v3`                                                 |
 | `Master.Replicas`       | k8s deployment replicas            | `1`                                                        |
 | `Master.Component`      | k8s selector key                   | `spark-master`                                             |
@@ -59,7 +59,7 @@ The following tables lists the configurable parameters of the Spark chart and th
 | Parameter                    | Description                        | Default                                                    |
 | -----------------------      | ---------------------------------- | ---------------------------------------------------------- |
 | `Worker.Name`                | Spark worker name                  | `spark-worker`                                             |
-| `Worker.Image`               | Container image name               | `gcr.io/google_containers/spark`                           |
+| `Worker.Image`               | Container image name               | `k8s.gcr.io/spark`                                         |
 | `Worker.ImageTag`            | Container image tag                | `1.5.1_v3`                                                 |
 | `Worker.Replicas`            | k8s hpa and deployment replicas    | `3`                                                        |
 | `Worker.ReplicasMax`         | k8s hpa max replicas               | `10`                                                       |
@@ -78,7 +78,7 @@ The following tables lists the configurable parameters of the Spark chart and th
 |       Parameter         |           Description            |                         Default                          |
 |-------------------------|----------------------------------|----------------------------------------------------------|
 | `Zeppelin.Name`         | Zeppelin name                    | `zeppelin-controller`                                    |
-| `Zeppelin.Image`        | Container image name             | `gcr.io/google_containers/zeppelin`                      |
+| `Zeppelin.Image`        | Container image name             | `k8s.gcr.io/zeppelin`                      |
 | `Zeppelin.ImageTag`     | Container image tag              | `v0.5.5_v2`                                              |
 | `Zeppelin.Replicas`     | k8s deployment replicas          | `1`                                                      |
 | `Zeppelin.Component`    | k8s selector key                 | `zeppelin`                                               |
