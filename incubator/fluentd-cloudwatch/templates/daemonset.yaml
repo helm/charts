@@ -30,7 +30,7 @@ spec:
           value: {{ .Values.awsRegion }}
         - name: LOG_GROUP_NAME
           value: {{ .Values.logGroupName }}
-{{- if eq .Values.awsRole "" }}
+{{- if not .Values.awsRole }}
         - name: AWS_ACCESS_KEY_ID
           valueFrom:
             secretKeyRef:
