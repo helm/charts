@@ -35,12 +35,12 @@ spec:
           valueFrom:
             secretKeyRef:
               key: aws_access_key_id
-              name: {{ template "fluentd-cloudwatch.fullname" . }}
+              name: {{ template "fullname" . }}
         - name: AWS_SECRET_ACCESS_KEY
           valueFrom:
             secretKeyRef:
               key: aws_secret_access_key
-              name: {{ template "fluentd-cloudwatch.fullname" . }}
+              name: {{ template "fullname" . }}
 {{- end }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
