@@ -11,6 +11,7 @@ metadata:
   name: {{ template "nginx-ingress.defaultBackend.fullname" . }}
 spec:
   replicas: {{ .Values.defaultBackend.replicaCount }}
+  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
   template:
     metadata:
     {{- if .Values.defaultBackend.podAnnotations }}

@@ -27,6 +27,10 @@ alertmanager:
   ## The URL prefix at which the container can be accessed. Useful in the case the '-web.external-url' includes a slug
   ## so that the various internal URLs are still able to access as they are in the default case.
   ## (Optional)
+  prefixURL: ""
+
+  ## External URL which can access alertmanager
+  ## Maybe same with Ingress host name
   baseURL: ""
 
   ## Additional alertmanager container environment variable
@@ -186,7 +190,7 @@ kubeStateMetrics:
   ## kube-state-metrics container image
   ##
   image:
-    repository: gcr.io/google_containers/kube-state-metrics
+    repository: k8s.gcr.io/kube-state-metrics
     tag: v1.1.0-rc.0
     pullPolicy: IfNotPresent
 
@@ -334,6 +338,10 @@ server:
   ## The URL prefix at which the container can be accessed. Useful in the case the '-web.external-url' includes a slug
   ## so that the various internal URLs are still able to access as they are in the default case.
   ## (Optional)
+  prefixURL: ""
+
+  ## External URL which can access alertmanager
+  ## Maybe same with Ingress host name
   baseURL: ""
 
   ## Additional Prometheus server container arguments
