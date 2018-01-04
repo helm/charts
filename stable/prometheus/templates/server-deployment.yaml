@@ -27,6 +27,37 @@ spec:
     spec:
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "prometheus.server.fullname" . }}{{ else }}"{{ .Values.server.serviceAccountName }}"{{ end }}
       containers:
+        {{- if .Values.blackboxExporter.enabled }}
+        - name: {{ template "prometheus.name" . }}-{{ .Values.blackboxExporter.name }}-{{ .Values.configmapReload.name }}
+          image: "{{ .Values.configmapReload.image.repository }}:{{ .Values.configmapReload.image.tag }}"
+          imagePullPolicy: "{{ .Values.configmapReload.image.pullPolicy }}"
+          args:
+            - --volume-dir=/etc/config
+            - --webhook-url=http://localhost:9115/-/reload
+          resources:
+{{ toYaml .Values.configmapReload.resources | indent 12 }}
+          volumeMounts:
+            - name: config-volume
+              mountPath: /etc/config
+              readOnly: true
+
+        - name: {{ template "prometheus.name" . }}-{{ .Values.blackboxExporter.name }}
+          image: "{{ .Values.blackboxExporter.image.repository }}:{{ .Values.blackboxExporter.image.tag }}"
+          imagePullPolicy: "{{ .Values.blackboxExporter.image.pullPolicy }}"
+          ports:
+            - containerPort: 9115
+          args:
+            - --config.file=/etc/config/blackbox.yml
+          {{- range $key, $value := .Values.blackboxExporter.extraArgs }}
+            - --{{ $key }}={{ $value }}
+          {{- end }}
+          resources:
+{{ toYaml .Values.blackboxExporter.resources | indent 12 }}
+          volumeMounts:
+            - name: config-volume
+              mountPath: /etc/config
+        {{- end }}
+
         - name: {{ template "prometheus.name" . }}-{{ .Values.server.name }}-{{ .Values.configmapReload.name }}
           image: "{{ .Values.configmapReload.image.repository }}:{{ .Values.configmapReload.image.tag }}"
           imagePullPolicy: "{{ .Values.configmapReload.image.pullPolicy }}"
