@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "ethereum.fullname" . }}-bootnode-service
+  labels:
+    app: {{ template "ethereum.name" . }}-bootnode-service
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  selector:
+    app: {{ template "ethereum.name" . }}-bootnode
+    release: {{ .Release.Name }}
+  clusterIP: None
+  ports:
+  - name: discovery
+    port: 30301
+    protocol: UDP
+  - name: http
+    port: 80

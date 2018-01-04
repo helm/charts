@@ -1,0 +1,16 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: {{ template "ethereum.fullname" . }}-ethstats-service
+  labels:
+    app: {{ template "ethereum.name" . }}-ethstats-service
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  selector:
+    app: {{ template "ethereum.name" . }}-ethstats
+  type: {{ .Values.ethstats.service.type }}
+  ports:
+  - port: 80
+    targetPort: http

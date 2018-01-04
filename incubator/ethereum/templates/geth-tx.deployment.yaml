@@ -1,0 +1,87 @@
+apiVersion: apps/v1beta2 
+kind: Deployment
+metadata:
+  name: {{ template "ethereum.fullname" . }}-geth-tx-deployment
+  labels:
+    app: {{ template "ethereum.name" . }}-geth-tx-deployment
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.geth.tx.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "ethereum.name" . }}-geth-tx
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "ethereum.name" . }}-geth-tx
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+      - name: geth-tx
+        image: {{ .Values.geth.image.repository }}:{{ .Values.geth.image.tag }}
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        command: ["/bin/sh"]
+        args: 
+        - "-c"
+        - "geth --bootnodes=`cat /root/.ethereum/bootnodes` --rpc --rpcapi=eth,net,web3 --rpccorsdomain='*' --ws --networkid=${NETWORK_ID} --ethstats=${HOSTNAME}:${ETHSTATS_SECRET}@${ETHSTATS_SVC} --verbosity=5"
+        env:
+        - name: ETHSTATS_SVC
+          value: {{ template "ethereum.fullname" . }}-ethstats-service.{{ .Release.Namespace }}
+        - name: ETHSTATS_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "ethereum.fullname" . }}-ethstats-secret
+              key: WS_SECRET
+        - name: NETWORK_ID
+          valueFrom:
+            configMapKeyRef:
+              name: {{ template "ethereum.fullname" . }}-geth-config
+              key: networkid
+        ports:
+        - name: rpc
+          containerPort: 8545
+        - name: ws
+          containerPort: 8546
+        - name: discovery-udp
+          containerPort: 30303
+          protocol: UDP
+        - name: discovery-tcp
+          containerPort: 30303
+        volumeMounts:
+        - name: data
+          mountPath: /root/.ethereum
+      initContainers:
+      - name: init-genesis
+        image: {{ .Values.geth.image.repository }}:{{ .Values.geth.image.tag }}
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        args:
+        - "init"
+        - "/var/geth/genesis.json"
+        volumeMounts:
+        - name: data
+          mountPath: /root/.ethereum
+        - name: config
+          mountPath: /var/geth
+      - name: get-bootnodes
+        image: {{ .Values.geth.image.repository }}:{{ .Values.geth.image.tag }}
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        command: ["/bin/sh"]
+        args:
+        - "-c"
+        - |-
+{{ .Files.Get "scripts/get-bootnode.sh" | indent 10 }}
+        env:
+        - name: BOOTNODE_SVC
+          value: {{ template "ethereum.fullname" . }}-bootnode-service.{{ .Release.Namespace }}
+        volumeMounts:
+        - name: data
+          mountPath: /geth
+      volumes:
+      - name: data
+        emptyDir: {}
+      - name: config 
+        configMap:
+          name: {{ template "ethereum.fullname" . }}-geth-config
