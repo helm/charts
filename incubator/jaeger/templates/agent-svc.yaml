@@ -1,3 +1,4 @@
+{{- if .Values.agent.enabled -}}
 apiVersion: v1
 kind: Service
 metadata:
@@ -33,3 +34,4 @@ spec:
     component: "agent"
     release: "{{ .Release.Name }}"
     jaeger-infra: agent-instance
+{{- end -}}

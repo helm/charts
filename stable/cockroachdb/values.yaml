@@ -5,12 +5,12 @@
 
 Name: "cockroachdb"
 Image: "cockroachdb/cockroach"
-ImageTag: "v1.1.0"
+ImageTag: "v1.1.3"
 ImagePullPolicy: "Always"
 BootstrapImage: "cockroachdb/cockroach-k8s-init"
 BootstrapImageTag: "0.2"
 Replicas: 3
-MinAvailable: "67%"
+MaxUnavailable: 1
 Component: "cockroachdb"
 GrpcPort: 26257
 HttpPort: 8080
@@ -20,6 +20,8 @@ Resources:
     memory: "512Mi"
 Storage: "1Gi"
 StorageClass: "anything"
+CacheSize: "25%"
+MaxSQLMemory: "25%"
 ClusterDomain: "cluster.local"
 NetworkPolicy:
   Enabled: false

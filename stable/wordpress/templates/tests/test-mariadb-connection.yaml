@@ -1,3 +1,4 @@
+{{- if .Values.mariadb.enabled }}
 apiVersion: v1
 kind: Pod
 metadata:
@@ -24,4 +25,4 @@ spec:
             key: mariadb-password
     command: ["sh", "-c", "mysql --host=$MARIADB_HOST --port=$MARIADB_PORT --user=$WORDPRESS_DATABASE_USER --password=$WORDPRESS_DATABASE_PASSWORD"]
   restartPolicy: Never
-
+{{- end }}

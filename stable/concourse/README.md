@@ -113,6 +113,7 @@ The following tables lists the configurable parameters of the Concourse chart an
 | `web.replicas` | Number of Concourse Web replicas | `1` |
 | `web.resources` | Concourse Web resource requests and limits | `{requests: {cpu: "100m", memory: "128Mi"}}` |
 | `web.service.type` | Concourse Web service type | `NodePort` |
+| `web.service.annotations` | Concourse Web Service annotations | `{}` |
 | `web.ingress.enabled` | Enable Concourse Web Ingress | `false` |
 | `web.ingress.annotations` | Concourse Web Ingress annotations | `{}` |
 | `web.ingress.hosts` | Concourse Web Ingress Hostnames | `[]` |
@@ -126,7 +127,8 @@ The following tables lists the configurable parameters of the Concourse chart an
 | `worker.postStopDelaySeconds` | Time to wait after graceful shutdown of worker before starting up again | `60` |
 | `worker.terminationGracePeriodSeconds` | Upper bound for graceful shutdown, including `worker.postStopDelaySeconds` | `120` |
 | `worker.fatalErrors` | Newline delimited strings which, when logged, should trigger a restart of the worker | *See [values.yaml](values.yaml)* |
-| `worker.updateStrategy` | `OnDelete` or `RollingUpdate` (requires Kubernetes >= 1.6) | `RollingUpdate` |
+| `worker.updateStrategy` | `OnDelete` or `RollingUpdate` (requires Kubernetes >= 1.7) | `RollingUpdate` |
+| `worker.podManagementPolicy` | `OrderedReady` or `Parallel` (requires Kubernetes >= 1.7) | `Parallel` |
 | `persistence.enabled` | Enable Concourse persistence using Persistent Volume Claims | `true` |
 | `persistence.worker.class` | Concourse Worker Persistent Volume Storage Class | `generic` |
 | `persistence.worker.accessMode` | Concourse Worker Persistent Volume Access Mode | `ReadWriteOnce` |
