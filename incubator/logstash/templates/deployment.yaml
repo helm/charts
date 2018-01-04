@@ -7,6 +7,11 @@ metadata:
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+  annotations:
+{{- if .Values.configMapRestart }}
+    checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+{{- end }}
+{{ toYaml .Values.deployment.annotations | indent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   template:

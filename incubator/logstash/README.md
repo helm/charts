@@ -31,24 +31,26 @@ chart and deletes the release.
 
 The following tables lists the configurable parameters of the drone charts and their default values.
 
-| Parameter              | Description                                        | Default                                          |
-| ---------------------- | -------------------------------------------------- | ------------------------------------------------ |
-| `replicaCount`         | Number of replicas                                 | `1`                                              |
-| `nodeSelector`         | Node selectors                                     | `{}`                                             |
-| `image.repository`     | Container image name                               | `docker.elastic.co/logstash/logstash-oss`        |
-| `image.tag`            | Container image tag                                | `6.0.0`                                          |
-| `image.pullPolicy`     | Container image pull policy                        | `IfNotPresent`                                   |
-| `service.type`         | Service type (ClusterIP, NodePort or LoadBalancer) | `ClusterIP`                                       |
-| `service.internalPort` | Logstash internal port                             | `1514`                                           |
-| `service.ports`        | Service open ports                                 | `[TCP/1514, UDP/1514, TCP/5044]`                 |
-| `ingress.enabled`      | Enables Ingress                                    | `false`                                          |
-| `ingress.annotations`  | Ingress annotations                                | `{}`                                             |
-| `ingress.hosts`        | Ingress accepted hostnames                         | `[]`                                             |
-| `ingress.tls`          | Ingress TLS configuration                          | `nil`                                            |
-| `resources`            | Pod resource requests & limits                     | `{}`                                             |
-| `elasticsearch.host`   | ElasticSearch hostname                             | `elasticsearch-client.default.svc.cluster.local` |
-| `elasticsearch.port`   | ElasticSearch port                                 | `9200`                                           |
-| `patterns`             | Logstash patterns configuration                    | `nil`                                            |
-| `inputs`               | Logstash inputs configuration                      | `(basic)`                                        |
-| `filters`              | Logstash filters configuration                     | `nil`                                            |
-| `outputs`              | Logstash outputs configuration                     | `(basic)`                                        |
+| Parameter                | Description                                        | Default                                          |
+| ------------------------ | -------------------------------------------------- | ------------------------------------------------ |
+| `replicaCount`           | Number of replicas                                 | `1`                                              |
+| `configMapRestart`       | Whether to restart on ConfigMap changes            | `false`                                          |
+| `nodeSelector`           | Node selectors                                     | `{}`                                             |
+| `image.repository`       | Container image name                               | `docker.elastic.co/logstash/logstash-oss`        |
+| `image.tag`              | Container image tag                                | `6.0.0`                                          |
+| `image.pullPolicy`       | Container image pull policy                        | `IfNotPresent`                                   |
+| `service.type`           | Service type (ClusterIP, NodePort or LoadBalancer) | `ClusterIP`                                      |
+| `service.internalPort`   | Logstash internal port                             | `1514`                                           |
+| `service.ports`          | Service open ports                                 | `[TCP/1514, UDP/1514, TCP/5044]`                 |
+| `deployment.annotations` | Deployment annotations                             | `{}`                                             |
+| `ingress.enabled`        | Enables Ingress                                    | `false`                                          |
+| `ingress.annotations`    | Ingress annotations                                | `{}`                                             |
+| `ingress.hosts`          | Ingress accepted hostnames                         | `[]`                                             |
+| `ingress.tls`            | Ingress TLS configuration                          | `nil`                                            |
+| `resources`              | Pod resource requests & limits                     | `{}`                                             |
+| `elasticsearch.host`     | ElasticSearch hostname                             | `elasticsearch-client.default.svc.cluster.local` |
+| `elasticsearch.port`     | ElasticSearch port                                 | `9200`                                           |
+| `patterns`               | Logstash patterns configuration                    | `nil`                                            |
+| `inputs`                 | Logstash inputs configuration                      | `(basic)`                                        |
+| `filters`                | Logstash filters configuration                     | `nil`                                            |
+| `outputs`                | Logstash outputs configuration                     | `(basic)`                                        |
