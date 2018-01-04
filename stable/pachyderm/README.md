@@ -102,14 +102,14 @@ How to install the chart
 We strongly suggest that the installation of Pachyderm should be performed in its own namespace. The default installation will deploy Pachyderm on your local Kubernetes cluster:
 
 ```console
-$ helm install --name my-release stable/pachyderm
+$ helm install --namespace pachyderm --name my-release stable/pachyderm
 ```
 
 You should install the chart specifying each parameter using the `--set key=value[,key=value]` argument to helm install. Please consult the `values.yaml` file for more information regarding the parameters. For example:
 
 
 ```console
-$ helm install --name my-release \
+$ helm install --namespace pachyderm --name my-release \
 --set credentials=s3,s3.accessKey=myaccesskey,s3.secretKey=mysecretkey,s3.bucketName=default_bucket,s3.endpoint=domain.subdomain:8080,etcd.persistence.enabled=true,etcd.persistence.accessMode=ReadWriteMany,"signature=\"1\"","secure=\"1\"" \
 stable/pachyderm
 ```
@@ -117,7 +117,7 @@ stable/pachyderm
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart:
 
 ```console
-$ helm install --name my-release -f values.yaml stable/pachyderm
+$ helm install --namespace pachyderm --name my-release -f values.yaml stable/pachyderm
 ```
 
 Accessing the pachd service
