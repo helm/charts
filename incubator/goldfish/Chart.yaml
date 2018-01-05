@@ -3,7 +3,7 @@ description: A Helm chart for Goldfish - Vault UI
 name: goldfish
 version: 0.2.4
 icon: https://github.com/Caiyeon/goldfish/blob/master/frontend/client/assets/logo@2x.png?raw=true
-home: https://vault-ui.io/#/
+home: https://vault-ui.io
 appVersion: v0.7.3
 keywords:
 - goldfish
