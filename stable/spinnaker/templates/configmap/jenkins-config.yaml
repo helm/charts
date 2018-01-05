@@ -28,6 +28,7 @@ data:
         <org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud plugin="kubernetes@0.8">
           <name>kubernetes</name>
           <templates>
+{{- if .Values.jenkins.Agent.Enabled }}
             <org.csanchez.jenkins.plugins.kubernetes.PodTemplate>
               <name>jnlp</name>
               <image>{{ .Values.jenkins.Agent.Image }}:{{ .Values.jenkins.Agent.ImageTag }}</image>
@@ -63,6 +64,7 @@ data:
               <annotations/>
               <imagePullSecrets/>
             </org.csanchez.jenkins.plugins.kubernetes.PodTemplate>
+{{- end -}}
           </templates>
           <serverUrl>https://kubernetes.default</serverUrl>
           <skipTlsVerify>false</skipTlsVerify>
