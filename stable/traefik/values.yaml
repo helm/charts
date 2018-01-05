@@ -100,3 +100,8 @@ metrics:
     enabled: false
     # address: "localhost:8125"
     # pushInterval: 30s
+deployment:
+  hostPort:
+    httpEnabled: false
+    httpsEnabled: false
+    dashboardEnabled: false
