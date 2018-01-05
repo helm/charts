@@ -1,0 +1,52 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "mssql.fullname" . }}
+  labels:
+    app: {{ template "mssql.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "mssql.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: ACCEPT_EULA
+              value: "{{ .Values.ACCEPT_EULA.value }}"
+            - name: MSSQL_PID
+              value: "{{ .Values.edition.value }}"
+            - name: SA_PASSWORD
+              value: "{{ .Values.sapassword }}"
+              #TODO - Issue - When using Secret for SA Password the environment variable has additional characters.
+              #Keeping the secrets.yaml, however, using variable in values.yaml for now.
+              #valueFrom:
+               #secretKeyRef:
+                 #name: {{ template "mssql.fullname" . }}-secret
+                 #key: password
+          ports:
+            - containerPort: {{ .Values.service.internalPort }}
+          livenessProbe:
+             tcpSocket:
+               port: {{ .Values.service.internalPort }}
+             initialDelaySeconds: {{ .Values.livenessprobe.initialDelaySeconds }}
+             periodSeconds: {{ .Values.livenessprobe.periodSeconds }}
+          readinessProbe:
+             tcpSocket:
+               port: {{ .Values.service.internalPort }}
+             initialDelaySeconds: {{ .Values.readinessprobe.initialDelaySeconds }}
+             periodSeconds: {{ .Values.readinessprobe.periodSeconds }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
