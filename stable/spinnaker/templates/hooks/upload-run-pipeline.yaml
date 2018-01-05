@@ -14,6 +14,10 @@ spec:
         app: {{ template "fullname" . }}
         component: jenkins
     spec:
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- end }}
       restartPolicy: OnFailure
       volumes:
       - name: jenkins-jobs
