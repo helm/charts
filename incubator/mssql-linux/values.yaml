@@ -1,0 +1,32 @@
+ACCEPT_EULA:
+  value: Y
+edition:
+  value: Express
+sapassword: MyPassword123456?
+replicaCount: 1
+image:
+  repository: microsoft/mssql-server-linux
+  tag: latest
+  pullPolicy: IfNotPresent
+service:
+  name: mssqlsrvr
+  type: ClusterIP
+  externalPort: 1433
+  internalPort: 1433
+ingress:
+  enabled: false
+  hosts:
+    - mymssqlsrv.local
+livenessprobe:
+  initialDelaySeconds: 15
+  periodSeconds: 20
+readinessprobe:
+  initialDelaySeconds: 5
+  periodSeconds: 10
+resources:
+  limits:
+   cpu: 1
+   memory: 2Gi
+  requests:
+   cpu: 0.5
+   memory: 2Gi
