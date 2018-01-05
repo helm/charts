@@ -55,7 +55,7 @@ $ kubectl scale statefulset my-release-worker --replicas=3
 
 ### Restarting workers
 
-If a worker isn't taking on work, you can restart the worker with `kubectl delete pod`. This will initiate a graceful shutdown by "retiring" the worker, to ensure Concourse doesn't try looking for old volumes on the new worker. The value`worker.terminationGracePeriodSeconds` can be used to provide an upper limit on graceful shutdown time before forcefully terminating the container.
+If a worker isn't taking on work, you can restart the worker with `kubectl delete pod`. This will initiate a graceful shutdown by "retiring" the worker, to ensure Concourse doesn't try looking for old volumes on the new worker. The value`worker.terminationGracePeriodSeconds` can be used to provide an upper limit on graceful shutdown time before forcefully terminating the container. Check the output of `fly workers`, and if a worker is `stalled`, you'll also need to run `fly prune-worker` to allow the new incarnation of the worker can start.
 
 ### Worker Liveness Probe
 
@@ -162,57 +162,42 @@ $ helm install --name my-release -f values.yaml stable/concourse
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
-### SSH Keys
+### Secrets
 
-To run Concourse securely you'll need [3 private keys](https://concourse.ci/binaries.html#generating-keys). For your convenience, this chart provides some [default keys](concourse-keys), but it is recommended that you generate your own keys by running:
-
-```console
-$ mkdir -p concourse-keys
-$ ssh-keygen -t rsa -f concourse-keys/host_key -N '' -C concourse
-$ ssh-keygen -t rsa -f concourse-keys/session_signing_key -N '' -C concourse
-$ ssh-keygen -t rsa -f concourse-keys/worker_key -N '' -C concourse
-```
-
-And update the `values.yaml` file with the generated keys:
-
-```yaml
-## Configuration values for Concourse.
-## ref: https://concourse.ci/setting-up.html
-##
-concourse:
-  ## Concourse Host Keys.
-  ## ref: https://concourse.ci/binaries.html#generating-keys
-  ##
-  hostKey: |-
-    < Insert the contents of your concourse-keys/host_key file >
-
-  hostKeyPub: |-
-    < Insert the contents of your concourse-keys/host_key.pub file >
-
-  ## Concourse Session Signing Keys.
-  ## ref: https://concourse.ci/binaries.html#generating-keys
-  ##
-  sessionSigningKey: |-
-    < Insert the contents of your concourse-keys/session_signing_key file >
-
-  ## Concourse Worker Keys.
-  ## ref: https://concourse.ci/binaries.html#generating-keys
-  ##
-  workerKey: |-
-    < Insert the contents of your concourse-keys/worker_key file >
-
-  workerKeyPub: |-
-    < Insert the contents of your concourse-keys/worker_key.pub file >
-```
-
-Alternatively, you can provide those keys to `helm install` via parameters:
-
+For your convenience, this chart provides some default values for secrets, but it is recommended that you generate and manage these secrets outside the Helm chart. To do this, set `secrets.create` to `false`, create files for each secret value, and turn it all into a k8s secret. Be careful with introducing trailing newline characters; following the steps below ensures none will end up in your secrets. First, perform the following to create the manditory secret values:
 
 ```console
-$ helm install --name my-release \
-  --set "concourse.hostKey=`cat concourse-keys/host_key`,concourse.hostKeyPub=`cat concourse-keys/host_key.pub`,concourse.sessionSigningKey=`cat concourse-keys/session_signing_key`,concourse.workerKey=`cat concourse-keys/worker_key`,concourse.workerKeyPub=`cat concourse-keys/worker_key.pub`" \
-  stable/concourse
+mkdir concourse-secrets
+cd concourse-secrets
+ssh-keygen -t rsa -f host-key  -N ''
+mv host-key.pub host-key-pub
+ssh-keygen -t rsa -f worker-key  -N ''
+mv worker-key.pub worker-key-pub
+ssh-keygen -t rsa -f session-signing-key  -N ''
+rm session-signing-key.pub
+printf "%s" "concourse" > basic-auth-username
+printf "%s" "$(openssl rand -base64 24)" > basic-auth-password
 ```
+
+You'll also need to create/copy secret values for postgres, and any other optional values. See [templates/secrets.yaml](templates/secrets.yaml) for possible values. E.g.
+
+```console
+# copy a posgres URI to clipboard and paste it to file
+printf "%s" "$(pbpaste)" > postgresql-uri
+# copy Github client id and secrets to clipboard and paste to files
+printf "%s" "$(pbpaste)" > github-auth-client-id
+printf "%s" "$(pbpaste)" > github-auth-client-secret
+# set an encryption key for DB encryption at rest
+printf "%s" "$(openssl rand -base64 24)" > encryption-key
+```
+
+Then create a secret called [release-name]-concourse from all the secret value files in the current folder:
+
+```console
+kubectl create secret generic my-release-concourse --from-file=.
+```
+
+Make sure you clean up after yourself.
 
 ### Persistence
 
@@ -243,7 +228,7 @@ persistence:
     size: "20Gi"
 ```
 
-It is highly recommended to use Persistent Volumes for Concourse Workers; otherwise container images managed by the Worker is stored in an `emptyDir` volume on the node's disk. This will interfere with k8s ImageGC and the node's disk will fill up as a result. This will be fixed in a future release of k8s: https://github.com/kubernetes/kubernetes/pull/57020
+It is highly recommended to use Persistent Volumes for Concourse Workers; otherwise the container images managed by the Worker are stored in an `emptyDir` volume on the node's disk. This will interfere with k8s ImageGC and the node's disk will fill up as a result. This will be fixed in a future release of k8s: https://github.com/kubernetes/kubernetes/pull/57020
 
 ### Ingress TLS
 
@@ -316,19 +301,18 @@ By default, this chart will not use a [Credential Manager](https://concourse.ci/
 ## ref: https://concourse.ci/creds.html
 ##
 credentialManager:
-  ## Enable Credential Manager using below configuration.
-  ##
-  enabled: true
 
-  ## use Hashicorp Vault for Credential Manager.
-  ##
   vault:
+    ## Use Hashicorp Vault for the Credential Manager.
+    ##
+    enabled: false
+
     ## URL pointing to vault addr (i.e. http://vault:8200).
     ##
-    url: http://vault:8200
+    # url:
 
-    ## initial periodic token issued for concourse
-    ## ref: https://www.vaultproject.io/docs/concepts/tokens.html#periodic-tokens
+    ## vault path under which to namespace credential lookup, defaults to /concourse.
     ##
-    clientToken: PERIODIC_VAULT_TOKEN
+    # pathPrefix:
+
 ```

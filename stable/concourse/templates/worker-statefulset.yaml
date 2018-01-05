@@ -73,25 +73,13 @@ spec:
                     done
           env:
             - name: CONCOURSE_TSA_HOST
-              valueFrom:
-                configMapKeyRef:
-                  name: {{ template "concourse.concourse.fullname" . }}
-                  key: concourse-tsa-host
+              value: {{ template "concourse.web.fullname" . }}
             - name: CONCOURSE_TSA_PORT
-              valueFrom:
-                configMapKeyRef:
-                  name: {{ template "concourse.concourse.fullname" . }}
-                  key: concourse-tsa-port
+              value: {{ .Values.concourse.tsaPort | quote }}
             - name: CONCOURSE_GARDEN_DOCKER_REGISTRY
-              valueFrom:
-                configMapKeyRef:
-                  name: {{ template "concourse.concourse.fullname" . }}
-                  key: garden-docker-registry
+              value: {{ default "" .Values.concourse.dockerRegistry | quote }}
             - name: CONCOURSE_GARDEN_INSECURE_DOCKER_REGISTRY
-              valueFrom:
-                configMapKeyRef:
-                  name: {{ template "concourse.concourse.fullname" . }}
-                  key: garden-insecure-docker-registry
+              value: {{ default "" .Values.concourse.insecureDockerRegistry | quote }}
             - name: CONCOURSE_TSA_PUBLIC_KEY
               value: "/concourse-keys/host_key.pub"
             - name: CONCOURSE_TSA_WORKER_PRIVATE_KEY
@@ -99,15 +87,9 @@ spec:
             - name: CONCOURSE_WORK_DIR
               value: "/concourse-work-dir"
             - name: CONCOURSE_BAGGAGECLAIM_DRIVER
-              valueFrom:
-                configMapKeyRef:
-                  name: {{ template "concourse.concourse.fullname" . }}
-                  key: concourse-baggageclaim-driver
+              value: {{ .Values.concourse.baggageclaimDriver | quote }}
             - name: LIVENESS_PROBE_FATAL_ERRORS
-              valueFrom:
-                configMapKeyRef:
-                  name: {{ template "concourse.concourse.fullname" . }}
-                  key: worker-fatal-errors
+              value: {{ default "" .Values.worker.fatalErrors | quote }}
 {{- if .Values.worker.env }}
 {{ toYaml .Values.worker.env | indent 12 }}
 {{- end }}
