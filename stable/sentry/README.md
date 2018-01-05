@@ -48,7 +48,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 > **Warning**: Jobs are not deleted automatically. They need to be manually deleted
 ```consule
-$ helm delete job/sentry-db-init job/sentry-user-create
+$ kubectl delete job/sentry-db-init job/sentry-user-create
 ```
 
 ## Configuration

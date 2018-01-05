@@ -10,7 +10,6 @@ metadata:
 spec:
   template:
     metadata:
-      name: "{{ .Release.Name }}"
       labels:
         app: {{ template "fullname" . }}
         component: spinnaker
