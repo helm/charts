@@ -1,0 +1,4 @@
+apiVersion: v1
+description: SQL Server 2017 Linux Helm Chart for Kubernetes
+name: mssql
+version: 0.1.0
