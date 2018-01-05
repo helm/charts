@@ -107,6 +107,10 @@ spec:
         ports:
         - containerPort: 9300
           name: transport
+{{ if .Values.master.exposeHttp }}
+        - containerPort: 9200
+          name: http
+{{ end }}
         volumeMounts:
         - mountPath: /usr/share/elasticsearch/data
           name: data
