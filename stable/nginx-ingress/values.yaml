@@ -8,6 +8,10 @@ controller:
     tag: "0.9.0-beta.15"
     pullPolicy: IfNotPresent
 
+  # Antiaffinity for controller pod assignment
+  # Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+  antiAffinity: ""
+
   config: {}
   # Will add custom header to Nginx https://github.com/kubernetes/ingress-nginx/tree/master/docs/examples/customization/custom-headers
   headers: {}
@@ -180,6 +184,10 @@ defaultBackend:
     tag: "1.3"
     pullPolicy: IfNotPresent
 
+  # Antiaffinity for default backend pod assignment
+  # Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+  antiAffinity: ""
+
   extraArgs: {}
 
   ## Node tolerations for server scheduling to nodes with taints
@@ -270,6 +278,13 @@ statsExporter:
     servicePort: 9913
     targetPort: 9913
     type: ClusterIP
+
+# Optionally specify an array of imagePullSecrets.
+# Secrets must be manually created in the namespace.
+# ref: https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
+#
+# imagePullSecrets:
+#   - name: myRegistryKeySecretName
 
 # TCP service key:value pairs
 # Ref: https://github.com/kubernetes/contrib/tree/master/ingress/controllers/nginx/examples/tcp
