@@ -21,8 +21,8 @@ spec:
       {{- end }}
     spec:
       securityContext:
-        runAsUser: 1001
-        fsGroup: 1001
+        fsGroup: {{ .Values.securityContext.fsGroup }}
+        runAsUser: {{ .Values.securityContext.runAsUser }}
       {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
