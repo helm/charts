@@ -10,15 +10,15 @@ image: memcached:1.4.36-alpine
 # imagePullPolicy:
 #
 
-##Replica count 
+## Replica count
 replicaCount: 3
 
-##Pod disruption budget minAvailable count
+## Pod disruption budget minAvailable count
 pdbMinAvailable: 3
 
 ## Select AnitAffinity as either hard or soft, default is hard
 AntiAffinity: "hard"
-  
+
 memcached:
   ## Various values that get set as command-line flags.
   ## ref: https://github.com/memcached/memcached/wiki/ConfiguringServer#commandline-arguments
