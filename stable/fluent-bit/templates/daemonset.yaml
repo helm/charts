@@ -10,6 +10,7 @@ spec:
       labels:
         app: {{ template "fluent-bit.fullname" . }}
     spec:
+      serviceAccountName: {{ if .Values.rbac.create }}{{ template "fluent-bit.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
       containers:
       - name: fluent-bit
         image: "{{ .Values.image.fluent_bit.repository }}:{{ .Values.image.fluent_bit.tag }}"
