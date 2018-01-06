@@ -38,9 +38,53 @@ $ helm delete my-release
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
 
+## Prometheus 2.0
+
+Prometheus version 2.0 has made changes to alertmanager, storage and recording rules. Check out the migration guide [here](https://prometheus.io/docs/prometheus/2.0/migration/)
+
+Users of this chart will need to update their alerting rules to the new format before they can upgrade.
+
 ## Upgrading from previous chart versions.
 
-As of Chart version 5.0 this chart uses Prometheus 2.0. This version of prometheus introduces a new data format and is not compatible with the old format. It is recommended to install this as a new release, as updating existing releases will not work. See the [prometheus docs](https://prometheus.io/docs/prometheus/latest/migration/#storage) for instructions on retaining your old data.
+As of version 5.0, this chart uses Prometheus 2.0. This version of prometheus introduces a new data format and is not compatible with prometheus 1.x. It is recommended to install this as a new release, as updating existing releases will not work. See the [prometheus docs](https://prometheus.io/docs/prometheus/latest/migration/#storage) for instructions on retaining your old data.
+
+### Example migration
+
+Assuming you have an existing release of the prometheus chart, named `prometheus-old`. In order to update to prometheus 2.0 while keeping your old data do the following:
+
+1. Update the `prometheus-old` release. Disable scraping and every component besides the prometheus server, similar to the configuration below:
+
+	```
+	alertmanager:
+	  enabled: false
+	alertmanagerFiles:
+	  alertmanager.yml: ""
+	kubeStateMetrics:
+	  enabled: false
+	nodeExporter:
+	  enabled: false
+	pushgateway:
+	  enabled: false
+	server:
+	  extraArgs:
+	    storage.local.retention: 720h
+	serverFiles:
+	  alerts: ""
+	  prometheus.yml: ""
+	  rules: ""
+	```
+	
+1. Deploy a new release of the chart with version 5.0+ using prometheus 2.0. In the values.yaml set the scrape config as usual, and also add the `prometheus-old` instance as a remote-read target.
+
+   ```
+	  prometheus.yml: |
+	    ...
+	    remote_read:
+	    - url: http://prometheus-old/api/v1/read
+	    ...
+   ```
+   
+   Old data will be available when you query the new prometheus instance. 
 
 ## Configuration
 
@@ -202,12 +246,6 @@ $ helm install stable/prometheus --name my-release -f values.yaml
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
-
-### Prometheus 2.0
-
-Prometheus version 2.0 has made changes to alertmanager, storage and recording rules. Check out the migration guide [here](https://prometheus.io/docs/prometheus/2.0/migration/)
-
-Users of this chart will need to update their alerting rules to the new format before they can upgrade.
 
 ### ConfigMap Files
 AlertManager is configured through [alertmanager.yml](https://prometheus.io/docs/alerting/configuration/). This file (and any others listed in `alertmanagerFiles`) will be mounted into the `alertmanager` pod.
