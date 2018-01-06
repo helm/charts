@@ -134,6 +134,9 @@ The following tables lists the configurable parameters of the Traefik chart and 
 | `metrics.statsd.enabled`        | Whether to enable pushing metrics to Statsd.                           | `false`                                   |
 | `metrics.statsd.address`        | Statsd host in the format <hostname>:<port>                          | `localhost:8125`                          |
 | `metrics.statsd.pushInterval`   | How often to push metrics to Statsd.                                 | `10s`                                     |
+| `deployment.hostPort.httpEnabled`      | Whether to enable hostPort binding to host for http.          | `false`                                   |
+| `deployment.hostPort.httpsEnabled`     | Whether to enable hostPort binding to host for https.         | `false`                                   |
+| `deployment.hostPort.dashboardEnabled` | Whether to enable hostPort binding to host for dashboard.     | `false`                                   |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
 
