@@ -5,7 +5,7 @@
 
 Master:
   Name: master
-  Image: "gcr.io/google_containers/spark"
+  Image: "k8s.gcr.io/spark"
   ImageTag: "1.5.1_v3"
   Replicas: 1
   Component: "spark-master"
@@ -14,7 +14,7 @@ Master:
   ServicePort: 7077
   ContainerPort: 7077
   # Set Master JVM memory. Default 1g
-  #DaemonMemory: 1g
+  # DaemonMemory: 1g
 
 WebUi:
   Name: webui
@@ -23,7 +23,7 @@ WebUi:
 
 Worker:
   Name: worker
-  Image: "gcr.io/google_containers/spark"
+  Image: "k8s.gcr.io/spark"
   ImageTag: "1.5.1_v3"
   Replicas: 3
   Component: "spark-worker"
@@ -31,13 +31,13 @@ Worker:
   Memory: "512Mi"
   ContainerPort: 8081
   # Set Worker JVM memory. Default 1g
-  #DaemonMemory: 1g
+  # DaemonMemory: 1g
   # Set how much total memory workers have to give executors
-  #ExecutorMemory: 1g
+  # ExecutorMemory: 1g
 
 Zeppelin:
   Name: zeppelin
-  Image: "gcr.io/google_containers/zeppelin"
+  Image: "k8s.gcr.io/zeppelin"
   ImageTag: "v0.5.5_v2"
   Replicas: 1
   Component: "zeppelin"
