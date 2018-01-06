@@ -30,7 +30,7 @@ resources:
 ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
 ##
 tolerations: []
-#- key: "key"
+# - key: "key"
 #  operator: "Equal|Exists"
 #  value: "value"
 #  effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
@@ -39,3 +39,10 @@ tolerations: []
 ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
 ##
 nodeSelector: {}
+
+## Install Default RBAC roles and bindings
+rbac:
+  ## If true, create & use RBAC resources
+  create: false
+  ## Ignored if rbac.create is true
+  serviceAccountName: default
