@@ -68,7 +68,7 @@ data:
 To install the chart with the release name `myrel`, run the following command:
 
 ```bash
-$ helm install --name myrel
+$ helm install incubator/jaeger --name myrel
 ```
 
 After a few minutes, you should see a 3 node Cassandra instance, a Jaeger DaemonSet, a Jaeger Collector, and a Jaeger Query (UI) pod deployed into your Kubernetes cluster.

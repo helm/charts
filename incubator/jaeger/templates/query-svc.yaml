@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: "{{ template "jaeger.fullname" . }}-query"
+  name: "{{ template "jaeger.query.fullname" . }}"
   labels:
     app: "{{ template "jaeger.name" . }}"
     jaeger-infra: query-service
