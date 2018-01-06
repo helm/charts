@@ -101,3 +101,14 @@ resources: #{}
  * Enterprise : This will run the container using the Enterprise Edition
  * EnterpriseCore : This will run the container using the Enterprise Edition Core
  * <valid product id> : This will run the container with the edition that is associated with the PID
+
+## Creating Secrets for SA Password
+It is important to change the BASE64 text in the templates/secret.yaml file to your own password.  By default, the password is `MySaPassword123`.  The instructions below are how to change the password via terminal window.
+1.  Open a terminal session/window
+2.  Type in the following
+```console
+$ echo -n "<MyNewStrongSaPassword>"| base64
+$ <base 64 output>
+```
+3.  Copy the Base64 output in step 2 into the templates/secret.yaml in the `password` field
+> Note - The `echo -n` in important to ensure no new lines are added at the end of the password

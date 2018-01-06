@@ -25,13 +25,10 @@ spec:
             - name: MSSQL_PID
               value: "{{ .Values.edition.value }}"
             - name: SA_PASSWORD
-              value: "{{ .Values.sapassword }}"
-              #TODO - Issue - When using Secret for SA Password the environment variable has additional characters.
-              #Keeping the secrets.yaml, however, using variable in values.yaml for now.
-              #valueFrom:
-               #secretKeyRef:
-                 #name: {{ template "mssql.fullname" . }}-secret
-                 #key: password
+              valueFrom:
+               secretKeyRef:
+                 name: {{ template "mssql.fullname" . }}-secret
+                 key: password
           ports:
             - containerPort: {{ .Values.service.internalPort }}
           livenessProbe:
