@@ -4,7 +4,7 @@
  * This chart requires Docker Engine 1.8+ in any of their supported platforms.
  * At least 2GB of RAM (3.25 GB prior to 2017-CU2). Make sure to assign enough memory to the Docker VM if you're running on Docker for Mac or Windows.
  * Requires the following environment flags
-   - ACCEPT_EULA=Y
+   - You must change the ACCEPT_EULA in the values.yaml file to `Y`
    - Update the template/secret.yaml with your Base64 SA Password
    - MSSQL_PID=<your_product_id | edition_name> (default: Express)
    - A strong system administrator (SA) password: At least 8 characters including uppercase, lowercase letters, base-10 digits and/or non-alphanumeric symbols.

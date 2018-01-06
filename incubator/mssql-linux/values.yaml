@@ -1,8 +1,7 @@
 ACCEPT_EULA:
-  value: Y
+  value: N
 edition:
   value: Express
-sapassword: MyPassword123456?
 replicaCount: 1
 image:
   repository: microsoft/mssql-server-linux
