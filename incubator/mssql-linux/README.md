@@ -4,7 +4,7 @@
  * This chart requires Docker Engine 1.8+ in any of their supported platforms.
  * At least 2GB of RAM (3.25 GB prior to 2017-CU2). Make sure to assign enough memory to the Docker VM if you're running on Docker for Mac or Windows.
  * Requires the following environment flags
-   - You must change the ACCEPT_EULA in the values.yaml file to `Y`
+   - You must change the ACCEPT_EULA in the values.yaml file to `Y` or include `--set ACCEPT_EULA.value=Y` in the command line of `helm install`
    - Update the template/secret.yaml with your Base64 SA Password
    - MSSQL_PID=<your_product_id | edition_name> (default: Express)
    - A strong system administrator (SA) password: At least 8 characters including uppercase, lowercase letters, base-10 digits and/or non-alphanumeric symbols.
@@ -14,15 +14,25 @@
  * Creates a Kubernetes Service on specified port (default: 1433)
  * Creates a Secert to hold SA_PASSWORD
 
- ## Installing the Chart
-You can install the chart with the release name `mymssql` as below.
+## Installing the Chart
 
+### Creating Secrets for SA Password
+It is important to change the BASE64 text in the templates/secret.yaml file to your own password.  By default, the password is `MySaPassword123`.  The instructions below are how to change the password via terminal window.
+1.  Open a terminal session/window
+2.  Type in the following
+```console
+$ echo -n "<MyNewStrongSaPassword>"| base64
+$ <base 64 output>
+```
+3.  Copy the Base64 output in step 2 into the templates/secret.yaml in the `password` field
+> Note - The `echo -n` in important to ensure no new lines are added at the end of the password
+
+You can install the chart with the release name `mymssql` as below.
 ```console
 $ helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
-$ helm install --name mymssql incubator/mssql
+$ helm install --name mymssql incubator/mssql --set ACCEPT_EULA.value=Y
 ```
-
-If you do not specify a name, helm will select a name for you.
+> Note - If you do not specify a name, helm will select a name for you.
 
 ### Installed Components
 You can use `kubectl get` to view all of the installed components.
@@ -52,7 +62,9 @@ svc/mymssql-mssql   ClusterIP   10.104.152.61   <none>        1433/TCP   9m
 ## Connecting to SQL Server Instance
 1.  Run the following command
 ```console
-$ 
+$ kubectl run dbatoolbox --image=microsoft/mssql-tools -ti --restart=Never --rm=true -- /bin/bash
+$ sqlcmd -S {{ template "mssql.fullname" . }}.{{ .Release.Namespace }} -U sa
+Password: <Enter SA Password>
 ```
 
 ## Values
@@ -60,7 +72,7 @@ The configuration parameters in this section control the resources requested and
 
 | Parameter | Description | Default |
 | --------- | ----------- | ------- |
-| ACCEPT_EULA | EULA that needs to be accepted.  It will need to be changed. | N |
+| ACCEPT_EULA | EULA that needs to be accepted.  It will need to be changed via commandline or values.yaml. | N |
 | edition | The edition of SQL Server to install | Express |
 | image | |  |
 | repository | The docker hub repo for SQL Server | microsoft/mssql-server-linux |
