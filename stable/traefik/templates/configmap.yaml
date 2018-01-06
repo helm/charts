@@ -23,9 +23,10 @@ data:
       [entryPoints.http]
       address = ":80"
       compress = {{ .Values.gzip.enabled }}
-        {{- if and .Values.ssl.enabled .Values.ssl.enforced }}
+        {{- if .Values.ssl.enforced }}
         [entryPoints.http.redirect]
-          entryPoint = "https"
+          regex = "^http://(.*)"
+          replacement = "https://$1"
         {{- end }}
       {{- if .Values.ssl.enabled }}
       [entryPoints.https]
@@ -70,6 +71,9 @@ data:
     {{- if .Values.acme.staging }}
     caServer = "https://acme-staging.api.letsencrypt.org/directory"
     {{- end }}
+    {{- if .Values.acme.logging }}
+    acmeLogging = true
+    {{- end }}
     {{- end }}
     {{- if .Values.dashboard.enabled }}
     [web]
@@ -89,7 +93,7 @@ data:
     {{- end }}
     {{ if .Values.metrics.prometheus.enabled }}
     [web.metrics.prometheus]
-      Buckets = {{ .Values.metrics.prometheus.buckets }}
+      Buckets = [{{ .Values.metrics.prometheus.buckets }}]
     {{- end }}
     {{ if .Values.metrics.datadog.enabled }}
     [web.metrics.datadog]

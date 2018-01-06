@@ -1,7 +1,7 @@
 ## Bitnami RabbitMQ image version
 ## ref: https://hub.docker.com/r/bitnami/rabbitmq/tags/
 ##
-image: bitnami/rabbitmq:3.6.14-r2
+image: bitnami/rabbitmq:3.7.2-r0
 
 ## Specify a imagePullPolicy
 ## 'Always' if imageTag is 'latest', else set to 'IfNotPresent'
@@ -58,7 +58,7 @@ rabbitmqManagerPort: 15672
 ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq#environment-variables
 ## ref: https://www.rabbitmq.com/disk-alarms.html
 ##
-rabbitmqDiskFreeLimit: '"8GiB"'
+rabbitmqDiskFreeLimit: '"6GiB"'
 
 ## Kubernetes service type
 serviceType: ClusterIP
