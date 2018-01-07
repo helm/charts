@@ -19,5 +19,5 @@ spec:
       # Produce a test message to the topic
       echo $MESSAGE | kafka-console-producer --broker-list {{ template "kafka.fullname" . }}:9092 --topic helm-test-topic-create-consume-produce && \
       # Consume a test message from the topic
-      kafka-console-consumer --bootstrap-server {{ template "kafka.fullname" . }}:9092 --topic helm-test-topic-create-consume-produce --from-beginning --timeout-ms 2000 | grep "$MESSAGE"
+      kafka-console-consumer --bootstrap-server {{ template "kafka.fullname" . }}:9092 --topic helm-test-topic-create-consume-produce --from-beginning --timeout-ms 2000 --max-messages 1 | grep "$MESSAGE"
   restartPolicy: Never
