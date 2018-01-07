@@ -51,6 +51,10 @@ spec:
           value: {{ template "redis.fullname" . }}
         - name: SENTRY_REDIS_PORT
           value: "6379"
+        - name: SENTRY_SERVER_EMAIL
+          value: {{ default "" .Values.email.from_address | quote }}
+        - name: SENTRY_EMAIL_USE_TLS
+          value: {{ default "" .Values.email.use_tls | quote }}
         - name: SENTRY_EMAIL_HOST
           value: {{ default "" .Values.email.host | quote }}
         - name: SENTRY_EMAIL_PORT
