@@ -1,3 +1,4 @@
+{{- if .Values.licenseKey }}
 apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
@@ -39,8 +40,10 @@ spec:
             {{- end }}
             {{- end }}
           volumeMounts:
+            {{- if .Values.config }}
             - name: config
               mountPath: /etc/newrelic/
+            {{- end }}
             - name: newrelic-config
               mountPath: /etc/kube-nr-infra
               readOnly: true
@@ -73,9 +76,12 @@ spec:
         - name: host-root
           hostPath:
               path: /
+        {{- if .Values.config }}
         - name: config
           configMap:
             name: {{ template "newrelic-infra.fullname" . }}
             items:
             - key: newrelic-infra.yml
               path: newrelic-infra.yml
+        {{- end }}
+{{- end }}
