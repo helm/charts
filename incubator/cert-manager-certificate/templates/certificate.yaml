@@ -1,0 +1,19 @@
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Certificate
+metadata:
+  name: {{ template "cert-manager-certificate.fullname" . }}
+  namespace: {{ .Values.namespace }}
+spec:
+  secretName: {{ .Values.secretName }}
+  issuerRef:
+    name: {{ .Values.issuerRef.name }}
+    kind: {{ .Values.issuerRef.kind }}
+  commonName: {{ .Values.commonName }}
+  dnsNames:
+    - {{ .Values.commonName }}
+  acme:
+    config:
+    - dns01:
+        provider: {{ .Values.provider }}
+      domains:
+      - {{ .Values.commonName }}
