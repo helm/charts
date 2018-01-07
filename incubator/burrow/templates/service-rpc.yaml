@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: {{ template "burrow.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+  name:  {{ template "burrow.fullname" . }}-rpc
+spec:
+  type: {{ .Values.service.rpc.type }}
+  ports:
+    - name: rpc
+      port: {{ .Values.service.rpc.port }}
+      targetPort: rpc
+      protocol: TCP
+  selector:
+    app: {{ template "burrow.name" $ }}
+    release: {{ .Release.Name }}
+  {{- if not .Values.service.rpc.loadBalance }}
+    nodeNumber: {{ .Values.service.rpc.node | quote }}
+  {{- end }}
