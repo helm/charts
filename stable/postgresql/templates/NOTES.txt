@@ -7,7 +7,7 @@ To get your user password run:
 
 To connect to your database run the following command (using the env variable from above):
 
-   kubectl run --namespace {{ .Release.Namespace }}{{ template "postgresql.fullname" . }}-client --rm --tty -i --image postgres \
+   kubectl run --namespace {{ .Release.Namespace }} {{ template "postgresql.fullname" . }}-client --rm --tty -i --image postgres \
    --env "PGPASSWORD=$PGPASSWORD" \{{- if and (.Values.networkPolicy.enabled) (not .Values.networkPolicy.allowExternal) }}
    --labels="{{ template "postgresql.fullname" . }}-client=true" \{{- end }}
    --command -- psql -U {{ default "postgres" .Values.postgresUser }} \
