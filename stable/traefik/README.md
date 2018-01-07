@@ -128,7 +128,7 @@ The following tables lists the configurable parameters of the Traefik chart and 
 | `accessLogs.filePath`           | The path to the log file. Logs to stdout if omitted                  | None                                      |
 | `accessLogs.format`             | What format the log entries should be in. Either `common` or `json`  | `common`                                  |
 | `metrics.prometheus.enabled`    | Whether to enable the `/metrics` endpoint for metric collection by Prometheus. | `false`                           |
-| `metrics.prometheus.buckets`    | A list of response times (in seconds) - for each list element, Traefik will report all response times less than the element. | `0.1,0.3,1.2,5` |
+| `metrics.prometheus.buckets`    | A list of response times (in seconds) - for each list element, Traefik will report all response times less than the element. | `[0.1,0.3,1.2,5]` |
 | `metrics.datadog.enabled`       | Whether to enable pushing metrics to Datadog.                          | `false`                                   |
 | `metrics.datadog.address`       | Datadog host in the format <hostname>:<port>                         | `localhost:8125`                          |
 | `metrics.datadog.pushInterval`  | How often to push metrics to Datadog.                                | `10s`                                     |
