@@ -13,8 +13,8 @@ data:
   init.sh: |
     #!/bin/sh
     cd /var/lib/grafana/import
-    {{- range $i, $val := .Values.dashboardImports.dashboards }}
-      curl -O $val
+    {{- range $name, $val := .Values.dashboardImports.dashboards }}
+      curl -o {{ $name }} {{ $val }}
     {{- end }}
     for dashboard in $(ls); do
       curl "http://${ADMIN_USER}:${ADMIN_PASSWORD}@{{ template "grafana.fullname" . }}:{{ .Values.server.service.httpPort }}/api/dashboards/db" \
