@@ -4,7 +4,7 @@ Your deployment of the New Relic Infrastructure agent is complete. You can check
     kubectl get daemonset -o wide -w --namespace {{ .Release.Namespace }} {{ template "newrelic-infra.fullname" . }}
 {{- else -}}
 ##############################################################################
-####               ERROR: You did not set a licenseKey.                   ####
+####             WARNING: You did not set a licenseKey.                   ####
 ##############################################################################
 
 This deployment will be incomplete until you get your API key from New Relic. 
