@@ -9,7 +9,7 @@ source:
 engine: gotpl
 icon: https://newrelic.com/assets/newrelic/source/NewRelic-logo-square.svg
 maintainers:
-  - name: Robin Kearney
+  - name: rk295
     email: robin@kearney.co.uk
 keywords:
   - infrastructure
