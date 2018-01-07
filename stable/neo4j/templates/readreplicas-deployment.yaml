@@ -9,6 +9,11 @@ metadata:
     app: {{ template "neo4j.name" . }}
     component: replica
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "neo4j.name" . }}
+      release: {{ .Release.Name }}
+      component: replica
   replicas: {{ .Values.readReplica.numberOfServers }}
   template:
     metadata:
