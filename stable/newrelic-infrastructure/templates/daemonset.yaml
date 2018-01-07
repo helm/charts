@@ -23,7 +23,7 @@ spec:
       hostNetwork: true
       containers:
         - name: {{ template "newrelic-infra.name" . }}
-          image: "{{.Values.image.name}}:{{ .Values.image.tag }}"
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: "{{ .Values.image.pullPolicy }}"
           securityContext:
             privileged: true

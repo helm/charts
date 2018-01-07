@@ -7,7 +7,7 @@ verboseLog: false
 # logFile: /var/log/nr-infra.log
 
 image:
-  name: newrelic/infrastructure
+  repository: newrelic/infrastructure
   tag: 0.0.12
   pullPolicy: IfNotPresent
 
