@@ -96,6 +96,10 @@ spec:
         ports:
         - containerPort: 9300
           name: transport
+{{ if .Values.data.exposeHttp }}
+        - containerPort: 9200
+          name: http
+{{ end }}
         resources:
 {{ toYaml .Values.data.resources | indent 12 }}
         readinessProbe:

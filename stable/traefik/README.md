@@ -106,6 +106,7 @@ The following tables lists the configurable parameters of the Traefik chart and 
 | `acme.enabled`                  | Whether to use Let's Encrypt to obtain certificates                  | `false`                                   |
 | `acme.email`                    | Email address to be used in certificates obtained from Let's Encrypt | `admin@example.com`                       |
 | `acme.staging`                  | Whether to get certs from Let's Encrypt's staging environment        | `true`                                    |
+| `acme.logging`                  | display debug log messages from the acme client library              | `false`                                   |
 | `acme.persistence.enabled`      | Create a volume to store ACME certs (if ACME is enabled)             | `true`                                    |
 | `acme.persistence.storageClass` | Type of `StorageClass` to request-- will be cluster-specific         | `nil` (uses alpha storage class annotation) |
 | `acme.persistence.accessMode`   | `ReadWriteOnce` or `ReadOnly`                                        | `ReadWriteOnce`                           |
@@ -134,6 +135,9 @@ The following tables lists the configurable parameters of the Traefik chart and 
 | `metrics.statsd.enabled`        | Whether to enable pushing metrics to Statsd.                           | `false`                                   |
 | `metrics.statsd.address`        | Statsd host in the format <hostname>:<port>                          | `localhost:8125`                          |
 | `metrics.statsd.pushInterval`   | How often to push metrics to Statsd.                                 | `10s`                                     |
+| `deployment.hostPort.httpEnabled`      | Whether to enable hostPort binding to host for http.          | `false`                                   |
+| `deployment.hostPort.httpsEnabled`     | Whether to enable hostPort binding to host for https.         | `false`                                   |
+| `deployment.hostPort.dashboardEnabled` | Whether to enable hostPort binding to host for dashboard.     | `false`                                   |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
 
