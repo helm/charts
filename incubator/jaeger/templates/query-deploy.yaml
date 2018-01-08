@@ -54,11 +54,21 @@ spec:
                 key: cassandra.keyspace
           {{- end }}
           {{- if eq .Values.storage.type "elasticsearch" }}
+          - name: ES_PASSWORD
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "jaeger.fullname" . }}
+                key: es.password
           - name: ES_SERVER_URLS
             valueFrom:
               configMapKeyRef:
                 name: {{ template "jaeger.fullname" . }}
                 key: es.server-urls
+          - name: ES_USERNAME
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "jaeger.fullname" . }}
+                key: es.username
           {{- end }}
           - name: QUERY_PORT
             valueFrom:
