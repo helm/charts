@@ -3,8 +3,8 @@
 # Declare variables to be passed into your templates.
 replicaCount: 1
 image:
-  repository: webpagetest/agent
-  tag: latest
+  repository: timothyclarke/wptagent
+  tag: 2018-01-08
   pullPolicy: IfNotPresent
 
 agent:
