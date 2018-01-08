@@ -57,18 +57,18 @@ spec:
             - sh
             - -c
             - exec pg_isready --host $POD_IP
-          initialDelaySeconds: {{ default "60" .Values.probes.liveness.initialDelay | quote }}
-          timeoutSeconds: {{ default "5" .Values.probes.liveness.timeoutSeconds | quote }}
-          failureThreshold: {{ default "6" .Values.probes.liveness.failureThreshold | quote }}
+          initialDelaySeconds: {{ .Values.probes.liveness.initialDelay | quote }}
+          timeoutSeconds: {{ .Values.probes.liveness.timeoutSeconds | quote }}
+          failureThreshold: {{ .Values.probes.liveness.failureThreshold | quote }}
         readinessProbe:
           exec:
             command:
             - sh
             - -c
             - exec pg_isready --host $POD_IP
-          initialDelaySeconds: {{ default "5" .Values.probes.readiness.initialDelay | quote }}
-          timeoutSeconds: {{ default "3" .Values.probes.readiness.timeoutSeconds | quote }}
-          periodSeconds: {{ default "5" .Values.probes.readiness.periodSeconds | quote }}
+          initialDelaySeconds: {{ .Values.probes.readiness.initialDelay | quote }}
+          timeoutSeconds: {{ .Values.probes.readiness.timeoutSeconds | quote }}
+          periodSeconds: {{ .Values.probes.readiness.periodSeconds | quote }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
