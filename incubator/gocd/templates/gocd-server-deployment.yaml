@@ -9,7 +9,7 @@ metadata:
     heritage: {{ .Release.Service | quote }}
     component: server
 spec:
-  {{- if le .Values.server.replicaCount 1.0 }}
+  {{- if le (int .Values.server.replicaCount) 1 }}
   replicas: {{ .Values.server.replicaCount }}
   {{- end }}
   template:
@@ -57,15 +57,15 @@ spec:
             initialDelaySeconds: {{ .Values.server.healthCheck.initialDelaySeconds }}
           {{- if .Values.server.persistence.enabled }}
           volumeMounts:
-          - name: goserver-vol
-            mountPath: /godata
-            subPath: {{ .Values.server.persistence.subpath.godata }}
-          - name: goserver-vol
-            mountPath: /home/go
-            subPath: {{ .Values.server.persistence.subpath.homego }}
-          - name: goserver-vol
-            mountPath: /docker-entrypoint.d
-            subPath: {{ .Values.server.persistence.subpath.dockerEntryPoint }}
+            - name: goserver-vol
+              mountPath: /godata
+              subPath: {{ .Values.server.persistence.subpath.godata }}
+            - name: goserver-vol
+              mountPath: /home/go
+              subPath: {{ .Values.server.persistence.subpath.homego }}
+            - name: goserver-vol
+              mountPath: /docker-entrypoint.d
+              subPath: {{ .Values.server.persistence.subpath.dockerEntryPoint }}
           {{- end }}
           resources:
 {{ toYaml .Values.server.resources | indent 12 }}

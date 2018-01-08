@@ -34,41 +34,41 @@ spec:
           resources:
 {{ toYaml .Values.server.resources | indent 12 }}
           env:
-          - name: GO_SERVER_URL
-          {{- if .Values.agent.env.goServerUrl }}
-            value: {{ .Values.agent.env.goServerUrl }}
-          {{- else }}
-            value: "https://{{ template "gocd.fullname" . }}-server:{{ .Values.server.service.httpsPort }}/go"
-          {{- end }}
+            - name: GO_SERVER_URL
+            {{- if .Values.agent.env.goServerUrl }}
+              value: {{ .Values.agent.env.goServerUrl }}
+            {{- else }}
+              value: "https://{{ template "gocd.fullname" . }}-server:{{ .Values.server.service.httpsPort }}/go"
+            {{- end }}
 
-          {{- if .Values.agent.env.agentAutoRegisterKey }}
-          - name: AGENT_AUTO_REGISTER_KEY
-            value: {{ .Values.agent.env.agentAutoRegisterKey }}
-          {{- end }}
-          {{- if .Values.agent.env.agentAutoRegisterResources }}
-          - name: AGENT_AUTO_REGISTER_RESOURCES
-            value: {{ .Values.agent.env.agentAutoRegisterResources }}
-          {{- end }}
-          {{- if .Values.agent.env.agentAutoRegisterEnvironemnts }}
-          - name: AGENT_AUTO_REGISTER_ENVIRONMENTS
-            value: {{ .Values.agent.env.agentAutoRegisterEnvironemnts }}
-          {{- end }}
-          {{- if .Values.agent.env.agentAutoRegisterHostname }}
-          - name: AGENT_AUTO_REGISTER_HOSTNAME
-            value: {{ .Values.agent.env.agentAutoRegisterHostname }}
-          {{- end }}
-          {{- if .Values.agent.env.goAgentSystemProperties }}
-          - name: GO_AGENT_SYSTEM_PROPERTIES
-            value: {{ .Values.agent.env.goAgentSystemProperties }}
-          {{- end }}
-          {{- if .Values.agent.env.goAgentBootstrapperJvmArgs }}
-          - name: AGENT_BOOTSTRAPPER_JVM_ARGS
-            value: {{ .Values.agent.env.goAgentBootstrapperJvmArgs }}
-          {{- end }}
-          {{- if .Values.agent.env.goAgentBootstrapperArgs }}
-          - name: AGENT_BOOTSTRAPPER_ARGS
-            value: {{ .Values.agent.env.goAgentBootstrapperArgs }}
-          {{- end }}
+            {{- if .Values.agent.env.agentAutoRegisterKey }}
+            - name: AGENT_AUTO_REGISTER_KEY
+              value: {{ .Values.agent.env.agentAutoRegisterKey }}
+            {{- end }}
+            {{- if .Values.agent.env.agentAutoRegisterResources }}
+            - name: AGENT_AUTO_REGISTER_RESOURCES
+              value: {{ .Values.agent.env.agentAutoRegisterResources }}
+            {{- end }}
+            {{- if .Values.agent.env.agentAutoRegisterEnvironemnts }}
+            - name: AGENT_AUTO_REGISTER_ENVIRONMENTS
+              value: {{ .Values.agent.env.agentAutoRegisterEnvironemnts }}
+            {{- end }}
+            {{- if .Values.agent.env.agentAutoRegisterHostname }}
+            - name: AGENT_AUTO_REGISTER_HOSTNAME
+              value: {{ .Values.agent.env.agentAutoRegisterHostname }}
+            {{- end }}
+            {{- if .Values.agent.env.goAgentSystemProperties }}
+            - name: GO_AGENT_SYSTEM_PROPERTIES
+              value: {{ .Values.agent.env.goAgentSystemProperties }}
+            {{- end }}
+            {{- if .Values.agent.env.goAgentBootstrapperJvmArgs }}
+            - name: AGENT_BOOTSTRAPPER_JVM_ARGS
+              value: {{ .Values.agent.env.goAgentBootstrapperJvmArgs }}
+            {{- end }}
+            {{- if .Values.agent.env.goAgentBootstrapperArgs }}
+            - name: AGENT_BOOTSTRAPPER_ARGS
+              value: {{ .Values.agent.env.goAgentBootstrapperArgs }}
+            {{- end }}
           {{- if .Values.agent.healthCheck.enabled }}
           livenessProbe:
             httpGet:
@@ -85,12 +85,12 @@ spec:
           {{- end }}
           {{- if .Values.agent.persistence.enabled }}
           volumeMounts:
-          - name: goagent-vol
-            mountPath: /home/go
-            subPath: {{ .Values.agent.persistence.subpath.homego }}
-          - name: goagent-vol
-            mountPath: /docker-entrypoint.d
-            subPath: {{ .Values.agent.persistence.subpath.dockerEntryPoint }}
+            - name: goagent-vol
+              mountPath: /home/go
+              subPath: {{ .Values.agent.persistence.subpath.homego }}
+            - name: goagent-vol
+              mountPath: /docker-entrypoint.d
+              subPath: {{ .Values.agent.persistence.subpath.dockerEntryPoint }}
           {{- end }}
     {{- if .Values.nodeSelector }}
       nodeSelector:
