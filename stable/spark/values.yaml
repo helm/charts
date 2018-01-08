@@ -5,8 +5,8 @@
 
 Master:
   Name: master
-  Image: "k8s.gcr.io/spark"
-  ImageTag: "1.5.1_v3"
+  Image: "p7hb/docker-spark"
+  ImageTag: "2.2.0"
   Replicas: 1
   Component: "spark-master"
   Cpu: "100m"
@@ -23,8 +23,8 @@ WebUi:
 
 Worker:
   Name: worker
-  Image: "k8s.gcr.io/spark"
-  ImageTag: "1.5.1_v3"
+  Image: "p7hb/docker-spark"
+  ImageTag: "2.2.0"
   Replicas: 3
   Component: "spark-worker"
   Cpu: "100m"
