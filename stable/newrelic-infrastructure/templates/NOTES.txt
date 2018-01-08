@@ -1,0 +1,17 @@
+{{- if .Values.licenseKey -}}
+Your deployment of the New Relic Infrastructure agent is complete. You can check on the progress of this by running the following command:
+
+    kubectl get daemonset -o wide -w --namespace {{ .Release.Namespace }} {{ template "newrelic-infra.fullname" . }}
+{{- else -}}
+##############################################################################
+####             ERROR: You did not set a licenseKey.                     ####
+##############################################################################
+
+This deployment will be incomplete until you get your API key from New Relic. 
+
+Then run:
+
+    helm upgrade {{ .Release.Name }} \
+        --set licenseKey=YOUR-KEY-HERE stable/newrelic-infrastructure
+
+{{- end -}}
