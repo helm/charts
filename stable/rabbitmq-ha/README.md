@@ -34,6 +34,19 @@ that can be configured during installation.
 
 > **Tip**: List all releases using `helm list`
 
+## Upgrading the Chart
+
+To upgrade the chart, you need to make sure that you are using the same value
+of the `rabbitmqErlangCookie` amongst the releases. If you didn't define it at
+the first place, you can upgrade using the following command:
+
+```
+$ export ERLANGCOOKIE=$(kubectl get secrets -n <NAMESPACE> <HELM_RELEASE_NAME>-rabbitmq-ha -o jsonpath="{.data.rabbitmq-erlang-cookie}" | base64 --decode)
+$ helm upgrade --name <HELM_RELEASE_NAME> \
+    --set rabbitmqErlangCookie=$ERLANGCOOKIE \
+    stable/rabbitmq-ha
+```
+
 ## Uninstalling the Chart
 
 To uninstall/delete the `my-release` deployment:

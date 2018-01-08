@@ -23,47 +23,10 @@ spec:
         app: {{ include "kafka.name" . | quote }}
         release: {{ .Release.Name | quote }}
     spec:
-      {{- if or .Values.kafkaAntiAffinityEnabled  .Values.zookeeperAntiAffinityEnabled  }}
+{{- if .Values.affinity }}
       affinity:
-        podAntiAffinity:
-          {{- if or (eq .Values.kafkaAntiAffinity "hard")  (eq .Values.zookeeperAntiAffinity "hard") }}
-          requiredDuringSchedulingIgnoredDuringExecution:
-            {{- if and .Values.kafkaAntiAffinityEnabled (eq .Values.kafkaAntiAffinity "hard") }}
-            - topologyKey: "kubernetes.io/hostname"
-              labelSelector:
-                matchLabels:
-                  app: {{ include "kafka.name" . | quote }}
-                  release: {{ .Release.Name | quote }}
-            {{- end }}
-            {{- if and .Values.zookeeperAntiAffinityEnabled (eq .Values.zookeeperAntiAffinity "hard") }}
-            - topologyKey: "kubernetes.io/hostname"
-              labelSelector:
-                matchLabels:
-                  app: {{ .Values.zookeeperAntiAffinityPodName }}
-                  release: {{ .Release.Name | quote }}
-            {{- end }}
-          {{- end }}
-          {{- if or (eq .Values.kafkaAntiAffinity "soft") (eq .Values.zookeeperAntiAffinity "soft") }}
-          preferredDuringSchedulingIgnoredDuringExecution:
-            {{- if and .Values.kafkaAntiAffinityEnabled (eq .Values.kafkaAntiAffinity "soft") }}
-            - weight: 1
-              podAffinityTerm:
-                topologyKey: "kubernetes.io/hostname"
-                labelSelector:
-                  matchLabels:
-                    app: {{ include "kafka.name" . | quote }}
-                    release: {{ .Release.Name | quote }}
-            {{- end }}
-            {{- if and .Values.zookeeperAntiAffinityEnabled (eq .Values.zookeeperAntiAffinity "soft") }}
-            - weight: 1
-              podAffinityTerm:
-                topologyKey: "kubernetes.io/hostname"
-                labelSelector:
-                  matchLabels:
-                    app: {{ .Values.zookeeperAntiAffinityPodName }}
-            {{- end }}
-          {{- end }}
-      {{- end }}
+{{ toYaml .Values.affinity | indent 8 }}
+{{- end }}
       containers:
       - name: {{ template "kafka.name" . }}-broker
         image: "{{ .Values.image }}:{{ .Values.imageTag }}"

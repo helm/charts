@@ -28,7 +28,21 @@ imageTag: "5.7.14"
 ##
 imagePullPolicy: IfNotPresent
 
-## Persist data to a persitent volume
+livenessProbe:
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  timeoutSeconds: 5
+  successThreshold: 1
+  failureThreshold: 3
+
+readinessProbe:
+  initialDelaySeconds: 5
+  periodSeconds: 10
+  timeoutSeconds: 1
+  successThreshold: 1
+  failureThreshold: 3
+
+## Persist data to a persistent volume
 persistence:
   enabled: true
   ## database data Persistent Volume Storage Class
@@ -55,3 +69,12 @@ configurationFiles:
 #  mysql.cnf: |-
 #    [mysqld]
 #    skip-name-resolve
+
+
+## Configure the service
+## ref: http://kubernetes.io/docs/user-guide/services/
+service:
+  ## Specify a service type
+  ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services---service-types
+  type: ClusterIP
+  port: 3306

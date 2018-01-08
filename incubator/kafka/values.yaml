@@ -49,28 +49,10 @@ dataDirectory: "/opt/kafka/data"
 ## This is combined with `dataDirectory` above, to create, by default: /opt/kafka/data/logs
 logSubPath: "logs"
 
-## Attempt to prevent Kafka pods from being colocated with eachother.
-kafkaAntiAffinityEnabled: true
-## Prevent Kafka pods from being colocated on the same node.
-## `hard` means the scheduler must satisfy the constraints or the pod fails to schedule
-## `soft` means the scheduler makes a best-effort to satisfy the constraint and schedules it where
-##   it can if the constraints cannot be met.
-## See: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#inter-pod-affinity-and-anti-affinity-beta-feature
-kafkaAntiAffinity: "soft"
-
-## Attempt to prevent Kafka and Zookeeper pods from being colocated.
-zookeeperAntiAffinityEnabled: true
-## Prevent Kafka and Zookeeper pods from being colocated.
-## `hard` means the scheduler must satisfy the constraints or the pod fails to schedule
-## `soft` means the scheduler makes a best-effort to satisfy the constraint and schedules it where
-##   it can if the constraints cannot be met.
-## See: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#inter-pod-affinity-and-anti-affinity-beta-feature
-zookeeperAntiAffinity: "soft"
-## The zookeeper pod name which K8s will fuzzy-match against to prevent kafka
-## pods from being colocated with zookeeper. If you have more than one zookeeper
-## installation in your cluster, make sure to use a more specific pod name to
-## indicate which zookeeper pods should be filtered.
-zookeeperAntiAffinityPodName: "zookeeper"
+## Pod scheduling preferences.
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+##
+affinity: {}
 
 ## Configuration Overrides. Specify any Kafka settings you would like set on the StatefulSet
 ## here in map format, as defined in the official docs:
