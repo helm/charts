@@ -20,8 +20,8 @@ spec:
     spec:
       containers:
       - name: {{ template "drone.fullname" . }}-server
-        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        image: "{{ .Values.images.server.repository }}:{{ .Values.images.server.tag }}"
+        imagePullPolicy: {{ .Values.images.server.pullPolicy }}
         env:
           - name: DRONE_SECRET
             valueFrom:
@@ -51,4 +51,15 @@ spec:
             port: http
         resources:
 {{ toYaml .Values.server.resources | indent 10 }}
+        volumeMounts:
+          - name: data
+            mountPath: /var/lib/drone
+      volumes:
+      - name: data
+      {{- if .Values.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.persistence.existingClaim | default (include "drone.fullname" .) }}
+      {{- else }}
+        emptyDir: {}
+      {{- end -}}
 {{ end }}

@@ -16,6 +16,10 @@ spec:
         app: {{ template "elasticsearch.name" . }}
         component: "{{ .Values.client.name }}"
         release: {{ .Release.Name }}
+        {{- if .Values.client.podAnnotations }}
+      annotations:
+{{ toYaml .Values.client.podAnnotations | indent 8 }}
+        {{- end }}
     spec:
       serviceAccountName: {{ template "elasticsearch.fullname" . }}
       {{- if eq .Values.client.antiAffinity "hard" }}

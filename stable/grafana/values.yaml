@@ -6,8 +6,9 @@ server:
 
   ## Grafana Docker image
   ##
-  image: "grafana/grafana:latest"
+  image: "grafana/grafana:4.6.3"
 
+  extraEnv: {}
   nodeSelector: {}
   tolerations: []
 
@@ -27,6 +28,12 @@ server:
     ##
     # hosts:
     #   - grafana.domain.com
+
+    ## Grafana Ingress path
+    ## Optional, allows specifying paths for more flexibility
+    ## E.g. Traefik ingress likes paths
+    ##
+    # path: /
 
     ## Grafana Ingress TLS configuration
     ## Secrets must be manually created in the namespace
@@ -102,6 +109,16 @@ server:
       cpu: 100m
       memory: 100Mi
 
+  ## Grafana readiness probe
+  ## Ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#container-probes
+  ##
+  readinessProbe:
+    httpGet:
+      path: /login
+      port: 3000
+    initialDelaySeconds: 30
+    timeoutSeconds: 30
+
   ## Grafana service
   service:
     ## Grafana service annotations
@@ -137,6 +154,12 @@ server:
     ## serviceType NodePort.
     ## Default: nil
     # nodePort: 30000
+
+    ## External IP addresses of service
+    ## Default: nil
+    ##
+    # externalIPs:
+    # - 192.168.0.1
 
   ## Grafana local config path
   ## Default '/etc/grafana'
