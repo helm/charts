@@ -60,7 +60,7 @@ Parameter | Description | Default
 `controller.extraArgs` | Additional controller container arguments | `{}`
 `controller.kind` | install as Deployment or DaemonSet | `Deployment`
 `controller.tolerations` | node taints to tolerate (requires Kubernetes >=1.6) | `[]`
-`controller.minReadySeconds` | how many seconds a pod needs to be ready before killing the next, during update | `15`
+`controller.minReadySeconds` | how many seconds a pod needs to be ready before killing the next, during update | `0`
 `controller.nodeSelector` | node labels for pod assignment | `{}`
 `controller.podAnnotations` | annotations to be added to pods | `{}`
 `controller.replicaCount` | desired number of controller pods | `1`
