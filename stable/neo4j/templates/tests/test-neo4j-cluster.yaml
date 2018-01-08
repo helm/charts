@@ -16,6 +16,8 @@ spec:
       env:
         - name: "STATEFULSET_NAME"
           value: "{{ template "neo4j.fullname" . }}"
+        - name: "NAMESPACE"
+          value: {{ .Release.Namespace }}
         - name: NEO4J_SECRETS_PASSWORD
           valueFrom:
             secretKeyRef:
