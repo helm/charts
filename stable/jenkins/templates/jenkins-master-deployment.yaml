@@ -92,6 +92,18 @@ spec:
             - containerPort: {{ .Values.Master.JMXPort }}
               name: jmx
             {{- end }}
+{{- if .Values.Master.HealthProbes }}
+          livenessProbe:
+            httpGet:
+              path: /login
+              port: http
+            initialDelaySeconds: {{ .Values.Master.HealthProbesTimeout }}
+          readinessProbe:
+            httpGet:
+              path: /login
+              port: http
+            initialDelaySeconds: {{ .Values.Master.HealthProbesTimeout }}
+{{- end }}
           resources:
             requests:
               cpu: "{{ .Values.Master.Cpu }}"
