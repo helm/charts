@@ -45,6 +45,11 @@ spec:
             configMapKeyRef:
               name: {{ template "jaeger.fullname" . }}
               key: cassandra.datacenter.name
+        - name: CASSANDRA_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: {{ template "jaeger.fullname" . }}
+              key: cassandra.port
         resources:
 {{ toYaml .Values.schema.resources | indent 10 }}
       restartPolicy: OnFailure

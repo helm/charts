@@ -47,6 +47,11 @@ spec:
               configMapKeyRef:
                 name: {{ template "jaeger.fullname" . }}
                 key: cassandra.servers
+          - name: CASSANDRA_PORT
+            valueFrom:
+              configMapKeyRef:
+                name: {{ template "jaeger.fullname" . }}
+                key: cassandra.port
           - name: CASSANDRA_KEYSPACE
             valueFrom:
               configMapKeyRef:

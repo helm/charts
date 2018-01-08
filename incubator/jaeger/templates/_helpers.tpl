@@ -53,18 +53,22 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- end -}}
 {{- end -}}
 
-{{/*
-Create a default fully qualified app name.
-We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
-*/}}
-{{- define "cassandra.fullname" -}}
+{{- define "cassandra.host" -}}
+{{- if .Values.provisionDataStore.cassandra -}}
 {{- printf "%s-%s" .Release.Name "cassandra" | trunc 63 | trimSuffix "-" -}}
+{{- else }}
+{{- .Values.storage.cassandra.host }}
+{{- end -}}
 {{- end -}}
 
 {{- define "cassandra.contact_points" -}}
-{{- $host := printf "%s-%s" .Release.Name "cassandra" | trunc 63 | trimSuffix "-" -}}
 {{- $port := .Values.storage.cassandra.port | toString }}
+{{- if .Values.provisionDataStore.cassandra -}}
+{{- $host := printf "%s-%s" .Release.Name "cassandra" | trunc 63 | trimSuffix "-" -}}
 {{- printf "%s:%s" $host $port }}
+{{- else }}
+{{- printf "%s:%s" .Values.storage.cassandra.host $port }}
+{{- end -}}
 {{- end -}}
 
 {{/*
