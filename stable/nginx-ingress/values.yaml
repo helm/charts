@@ -71,6 +71,11 @@ controller:
   #    maxUnavailable: 1
   #  type: RollingUpdate
 
+  # minReadySeconds to avoid killing pods before we are ready
+  ##
+  minReadySeconds: 0
+
+
   ## Node tolerations for server scheduling to nodes with taints
   ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
   ##

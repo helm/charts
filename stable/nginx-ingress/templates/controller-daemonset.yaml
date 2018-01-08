@@ -11,6 +11,9 @@ metadata:
   name: {{ template "nginx-ingress.controller.fullname" . }}
 spec:
   revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
+  updateStrategy:
+{{ toYaml .Values.controller.updateStrategy | indent 4 }}
+  minReadySeconds: {{ .Values.controller.minReadySeconds }}
   template:
     metadata:
       annotations:
