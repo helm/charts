@@ -10,6 +10,12 @@ metadata:
     heritage: {{ .Release.Service | quote }}
 spec:
   serviceName: {{ template "kafka.fullname" . }}-headless
+  updateStrategy:
+    type: {{ .Values.updateStrategy }}
+    {{ if eq .Values.updateStrategy "RollingUpdate" -}}
+    rollingUpdate:
+      partition: {{ .Values.rollingUpdatePartition }}
+    {{- end }}
   replicas: {{ default 3 .Values.replicas }}
   template:
     metadata:
