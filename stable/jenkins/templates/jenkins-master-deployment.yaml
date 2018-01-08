@@ -97,12 +97,12 @@ spec:
             httpGet:
               path: /login
               port: http
-            initialDelaySeconds: {{ .Values.Master.HealthProbesTimeout | default 120 }}
+            initialDelaySeconds: {{ .Values.Master.HealthProbesTimeout }}
           readinessProbe:
             httpGet:
               path: /login
               port: http
-            initialDelaySeconds: {{ .Values.Master.HealthProbesTimeout | default 120 }}
+            initialDelaySeconds: {{ .Values.Master.HealthProbesTimeout }}
 {{- end }}
           resources:
             requests:
