@@ -1,0 +1,115 @@
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: {{ template "ibm-blockchain-network.fullname" . }}-utils
+  labels:
+    app: {{ template "ibm-blockchain-network.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  restartPolicy: "Never"
+  volumes:
+  - name: {{ template "ibm-blockchain-shared-pvc.name" . }}
+    persistentVolumeClaim:
+     claimName: {{ template "ibm-blockchain-shared-pvc.name" . }}
+  - name: dockersocket
+    hostPath:
+      path: /var/run/docker.sock
+  - name: composer-credentials
+    hostPath:
+      path: /composer
+  containers:
+  - name: cryptogen
+    image: {{ .Values.blockchain.toolsImage }}
+    imagePullPolicy: {{ .Values.blockchain.pullPolicy }}
+    command:
+        - sh
+        - -c
+        - |
+          cryptogen generate --config /sampleconfig/crypto-config.yaml &&
+          cp -r crypto-config /shared/
+
+          for file in $(find /shared/ -iname *_sk); do
+            dir=$(dirname $file); mv ${dir}/*_sk ${dir}/key.pem
+          done
+
+          find /shared -type d | xargs chmod a+rx &&
+          find /shared -type f | xargs chmod a+r &&
+          touch /shared/status_cryptogen_complete
+    volumeMounts:
+    - mountPath: /shared
+      name: {{ template "ibm-blockchain-shared-pvc.name" . }}
+  - name: configtxgen
+    image: {{ .Values.blockchain.toolsImage }}
+    imagePullPolicy: {{ .Values.blockchain.pullPolicy }}
+    command:
+      - sh
+      - -c
+      - |
+        sleep 1
+
+        while [ ! -f /shared/status_cryptogen_complete ]; do
+          echo Waiting for cryptogen
+          sleep 1
+        done
+
+        echo 'sample config is =>' &&
+        ls /sampleconfig &&
+        cp /sampleconfig/configtx.yaml /shared/configtx.yaml &&
+        echo 'shared after copy is =>' &&
+        ls /shared &&
+        cd /shared/ &&
+        configtxgen -profile TwoOrgsOrdererGenesis -outputBlock orderer.block &&
+        find /shared -type d | xargs chmod a+rx &&
+        find /shared -type f | xargs chmod a+r &&
+        touch /shared/status_configtxgen_complete &&
+        rm -f /shared/status_cryptogen_complete
+    env:
+     - name: PEERHOST1
+       value: {{ template "ibm-blockchain-network.name" . }}-org1peer1
+     - name: PEERPORT1
+       value: "5010"
+     - name: PEERHOST2
+       value: {{ template "ibm-blockchain-network.name" . }}-org2peer1
+     - name: PEERPORT2
+       value: "5010"
+     - name: ORDERER_URL
+       value: {{ template "ibm-blockchain-network.name" . }}-orderer:31010
+     - name: FABRIC_CFG_PATH
+       value: /shared
+    # - name: GODEBUG
+    #   value: "netdns=go"
+    volumeMounts:
+    - mountPath: /shared
+      name: {{ template "ibm-blockchain-shared-pvc.name" . }}
+  - name: bootstrap
+    image: {{ .Values.blockchain.toolsImage }}
+    imagePullPolicy: {{ .Values.blockchain.pullPolicy }}
+    command:
+      - sh
+      - -c
+      - |
+        sleep 1
+        echo "Starting bootstrap"
+
+        while [ ! -f /shared/status_configtxgen_complete ]; do
+          echo Waiting for configtxgen
+          sleep 1
+        done
+
+        echo \"Starting bootstrap\" &&
+        cp -r /sampleconfig/cas /shared &&
+        echo \"Done copying\" &&
+        touch /shared/bootstrapped &&
+        rm -f /shared/status_configtxgen_complete &&
+        mkdir -p /home/composer/.composer &&
+        chown 1000 /home/composer/.composer &&
+        echo 'Done with bootstrapping'
+    volumeMounts:
+    - mountPath: /shared
+      name: {{ template "ibm-blockchain-shared-pvc.name" . }}
+    - mountPath: /home
+      name: composer-credentials
+
