@@ -23,6 +23,7 @@ service:
 
 # Extra config options
 configData: {}
+heapSize: "1g"
 
 ingress:
   enabled: false
