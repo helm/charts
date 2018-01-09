@@ -15,35 +15,31 @@ data:
 
   # A config for running Fluentd as a daemon which collects, filters, parses,
   # and sends log to storage. No extra fluentd processes required.
-  fluentd-onlycontainters.conf: |
-    # Common config
-    @include general.conf
-    @include prometheus.conf
-
-    # Input sources
-    @include kubernetes-input.conf
-
-    # Parsing/Filtering
-    @include kubernetes-filter.conf
-
-    # Send to storage
-    @include output.conf
-
-  # A config for running Fluentd as a daemon which collects, filters, parses,
-  # and sends log to storage. No extra fluentd processes required.
   fluentd-standalone.conf: |
     # Common config
     @include general.conf
+
+{{- if .Values.prometheus.enabled }}
+    # Prometheus
     @include prometheus.conf
+{{- end }}
 
-    # Input sources
-    @include systemd-input.conf
-    @include kubernetes-input.conf
+{{- if .Values.kubernetes.enabled }}
+    # Kubernetes
+    @include kubernetes.conf
+{{- end }}
+
+{{- if .Values.systemd.enabled }}
+    # SystemD
+    @include systemd.conf
+{{- end }}
+
+{{- if .Values.apiserverAudit.enabled }}
+    # API server
     @include apiserver-audit-input.conf
+{{- end }}
 
-    # Parsing/Filtering
-    @include systemd-filter.conf
-    @include kubernetes-filter.conf
+    # include extra config
     @include extra.conf
 
     # Send to storage
@@ -54,11 +50,19 @@ data:
   # with a forward_input.
   fluentd-forwarder.conf: |
     @include general.conf
+{{- if .Values.prometheus.enabled }}
     @include prometheus.conf
+{{- end }}
 
+{{- if .Values.apiserverAudit.enabled }}
     @include apiserver-audit-input.conf
+{{- end }}
+{{- if .Values.systemd.enabled }}
     @include systemd-input.conf
+{{- end }}
+{{- if .Values.kubernetes.enabled }}
     @include kubernetes-input.conf
+{{- end }}
 
     # Send to the aggregator
     @include forward-output.conf
@@ -71,10 +75,16 @@ data:
     @include forward-input.conf
 
     @include general.conf
+{{- if .Values.prometheus.enabled }}
     @include prometheus.conf
+{{- end }}
 
+{{- if .Values.systemd.enabled }}
     @include systemd-filter.conf
+{{- end }}
+{{- if .Values.kubernetes.enabled }}
     @include kubernetes-filter.conf
+{{- end }}
     @include extra.conf
 
     # Send to storage
@@ -303,7 +313,6 @@ data:
       log_level info
       include_tag_key true
       # Replace with the host/port to your Elasticsearch cluster.
-      # This assumes a service `elasticsearch` exists in the default namespace
       host {{ .Values.elasticsearch.host }}
       port {{ .Values.elasticsearch.port }}
       scheme http

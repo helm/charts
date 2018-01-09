@@ -5,6 +5,7 @@ version: 0.1.0-beta
 appVersion: 0.12
 sources:
 - https://quay.io/repository/coreos/fluentd-kubernetes
+- https://github.com/coreos/fluentd-kubernetes-daemonset
 - https://www.elastic.co/guide/en/elasticsearch/reference/current/index.html
 maintainers:
 - name: rendhalver
