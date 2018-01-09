@@ -1,17 +1,21 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1beta2
 kind: DaemonSet
 metadata:
   name: {{ template "sematext.fullname" . }}
   labels:
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app: {{ template "sematext.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "sematext.name" . }}
   template:
     metadata:
       labels:
         app: {{ template "sematext.name" . }}
       name: {{ template "sematext.name" . }}
     spec:
-      nodeSelector: {}
       {{- if .Values.sematext.useHostNetwork }}
       hostNetwork: {{ .Values.sematext.useHostNetwork }}
       {{- end }}

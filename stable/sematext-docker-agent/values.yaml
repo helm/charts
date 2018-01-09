@@ -14,10 +14,10 @@ sematext:
 
   useHostNetwork: true
   name: sematext-docker-agent
-  resources:
-    requests:
-      cpu: 500m
-      memory: 128Mi
-    limits:
-      cpu: 1000m
-      memory: 1024Mi
+  resources: {}
+  #  requests:
+  #    cpu: 500m
+  #    memory: 128Mi
+  #  limits:
+  #    cpu: 1000m
+  #    memory: 1024Mi
