@@ -16,9 +16,9 @@ You will need to give additional permissions to the user `system:serviceaccount:
 $ kubectl create clusterrolebinding --user system:serviceaccount:kube-system:default kube-system-cluster-admin --clusterrole cluster-admin
 ```
 
-You will need to specify KubeVirt API server external IP's under `kubevirt.apiserver.externalips` variable to have possibility to connect to KubeVirt API and SPICE proxy exteral IP under `kubevirt.spiceproxy.externalip` variable if you want to have access to VM via SPICE.
+Deploy KubeVirt chart.
 ```
-$ helm install --name my-release incubator/kubevirt --set kubevirt.apiserver.externalips={10.10.10.10} --set kubevirt.spiceproxy.externalip=10.10.10.10
+$ helm install --name my-release incubator/kubevirt
 ```
 
 After installation finish, it better to remove extra permissions from the system.
@@ -41,7 +41,5 @@ The following tables lists the configurable parameters of the kubevirt chart and
 
 |                Parameter                  |            Description              |          Default           |
 | ----------------------------------------- | ------------------------------------| -------------------------- |
-| `kubevirt.apiserver.externalips`          |KubeVirt API server external IP's    | `[10.10.10.10]`            |
-| `kubevirt.spiceproxy.externalip`          |KubeVirt SPICE proxy external IP     | `10.10.10.10`              |
-| `kubevirt.repository`                     |haproxy container name               | `kubevirt`                 |
-| `kubevirt.tag`                            |haproxy container tag                | `latest`                   |
+| `kubevirt.repository`                     |KubeVirt containers repository       | `kubevirt`                 |
+| `kubevirt.tag`                            |KubeVirt containers tag              | `v0.2.0`                   |

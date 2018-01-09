@@ -15,13 +15,13 @@ rules:
       - list
       - watch
       - delete
-      - update
-      - create
+      - update  
+      - create  
   - apiGroups:
       - ''
     resources:
       - nodes
-      - persistentvolumeclaims
+      - persistentvolumeclaims  
     verbs:
       - get
       - list
@@ -30,13 +30,13 @@ rules:
       - kubevirt.io
     resources:
       - virtualmachines
-      - migrations
-      - virtualmachinereplicasets
+      - migrations  
+      - virtualmachinereplicasets  
     verbs:
       - get
       - list
       - watch
       - delete
-      - update
-      - create
+      - update  
+      - create  
       - deletecollection
