@@ -32,9 +32,9 @@ The command removes all the Kubernetes components associated with the chart and 
 
 | Parameter                 | Description                                         | Default                           |
 |---------------------------|-----------------------------------------------------|-----------------------------------|
-| `image.repository`        | docker image                                        | quay.io/pickledrick/elastaler     |
+| `image.repository`        | docker image                                        | quay.io/pickledrick/elastalert    |
 | `image.tag`               | docker image tag                                    | latest                            |
-| `image.pullPolicy         | image pull policy                                   | IfNotPresent                      |
+| `image.pullPolicy`        | image pull policy                                   | IfNotPresent                      |
 | `replicaCount`            | number of replicas to run                           | 1                                 |
 | `elasticsearch.host`      | elasticsearch endpoint to use                       | elasticsearch                     |
 | `elasticsearch.port`      | elasticsearch port to use                           | 80                                |
