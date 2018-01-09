@@ -187,7 +187,7 @@ spark:
   image: jaegertracing/spark-dependencies
   tag: latest
   pullPolicy: Always
-  schedule: "*/12 * * * *"
+  schedule: "49 23 * * *"
   resources: {}
     # limits:
     #   cpu: 500m
