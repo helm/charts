@@ -36,8 +36,8 @@ The following tables lists the configurable parameters of the Spark chart and th
 | Parameter               | Description                        | Default                                                    |
 | ----------------------- | ---------------------------------- | ---------------------------------------------------------- |
 | `Master.Name`           | Spark master name                  | `spark-master`                                             |
-| `Master.Image`          | Container image name               | `k8s.gcr.io/spark`                                         |
-| `Master.ImageTag`       | Container image tag                | `1.5.1_v3`                                                 |
+| `Master.Image`          | Container image name               | `p7hb/docker-spark`                                         |
+| `Master.ImageTag`       | Container image tag                | `2.2.0`                                                 |
 | `Master.Replicas`       | k8s deployment replicas            | `1`                                                        |
 | `Master.Component`      | k8s selector key                   | `spark-master`                                             |
 | `Master.Cpu`            | container requested cpu            | `100m`                                                     |
@@ -59,8 +59,8 @@ The following tables lists the configurable parameters of the Spark chart and th
 | Parameter                    | Description                        | Default                                                    |
 | -----------------------      | ---------------------------------- | ---------------------------------------------------------- |
 | `Worker.Name`                | Spark worker name                  | `spark-worker`                                             |
-| `Worker.Image`               | Container image name               | `k8s.gcr.io/spark`                                         |
-| `Worker.ImageTag`            | Container image tag                | `1.5.1_v3`                                                 |
+| `Worker.Image`               | Container image name               | `p7hb/docker-spark`                                         |
+| `Worker.ImageTag`            | Container image tag                | `2.2.0`                                                 |
 | `Worker.Replicas`            | k8s hpa and deployment replicas    | `3`                                                        |
 | `Worker.ReplicasMax`         | k8s hpa max replicas               | `10`                                                       |
 | `Worker.Component`           | k8s selector key                   | `spark-worker`                                             |
