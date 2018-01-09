@@ -19,22 +19,22 @@ data:
     # Common config
     @include general.conf
 
-{{- if .Values.prometheus.enabled }}
+{{- if .Values.config.prometheus.enabled }}
     # Prometheus
     @include prometheus.conf
 {{- end }}
 
-{{- if .Values.kubernetes.enabled }}
+{{- if .Values.config.kubernetes.enabled }}
     # Kubernetes
     @include kubernetes.conf
 {{- end }}
 
-{{- if .Values.systemd.enabled }}
+{{- if .Values.config.systemd.enabled }}
     # SystemD
     @include systemd.conf
 {{- end }}
 
-{{- if .Values.apiserverAudit.enabled }}
+{{- if .Values.config.apiserverAudit.enabled }}
     # API server
     @include apiserver-audit-input.conf
 {{- end }}
@@ -50,17 +50,17 @@ data:
   # with a forward_input.
   fluentd-forwarder.conf: |
     @include general.conf
-{{- if .Values.prometheus.enabled }}
+{{- if .Values.config.prometheus.enabled }}
     @include prometheus.conf
 {{- end }}
 
-{{- if .Values.apiserverAudit.enabled }}
+{{- if .Values.config.apiserverAudit.enabled }}
     @include apiserver-audit-input.conf
 {{- end }}
-{{- if .Values.systemd.enabled }}
+{{- if .Values.config.systemd.enabled }}
     @include systemd-input.conf
 {{- end }}
-{{- if .Values.kubernetes.enabled }}
+{{- if .Values.config.kubernetes.enabled }}
     @include kubernetes-input.conf
 {{- end }}
 
@@ -75,14 +75,14 @@ data:
     @include forward-input.conf
 
     @include general.conf
-{{- if .Values.prometheus.enabled }}
+{{- if .Values.config.prometheus.enabled }}
     @include prometheus.conf
 {{- end }}
 
-{{- if .Values.systemd.enabled }}
+{{- if .Values.config.systemd.enabled }}
     @include systemd-filter.conf
 {{- end }}
-{{- if .Values.kubernetes.enabled }}
+{{- if .Values.config.kubernetes.enabled }}
     @include kubernetes-filter.conf
 {{- end }}
     @include extra.conf
