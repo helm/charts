@@ -18,8 +18,8 @@ storage:
     scheme: http
     host: elasticsearch
     port: 9200
-    user: user
-    password: password
+    user: elastic
+    password: changeme
 
 # Begin: Override values on the Cassandra subchart to customize for Jaeger
 cassandra:
