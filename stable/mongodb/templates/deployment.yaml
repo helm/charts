@@ -60,7 +60,8 @@ spec:
       - name: data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ template "mongodb.fullname" . }}
+          claimName: {{ if .Values.persistence.existingClaim }}{{ .Values.persistence.existingClaim }}{{- else }}{{ template "mongodb.fullname" . }}{{- end }}
+
       {{- else }}
         emptyDir: {}
       {{- end -}}
