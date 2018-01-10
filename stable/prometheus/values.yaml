@@ -194,6 +194,10 @@ kubeStateMetrics:
     tag: v1.1.0-rc.0
     pullPolicy: IfNotPresent
 
+  ## kube-state-metrics container arguments
+  ##
+  args: {}
+
   ## Node labels for kube-state-metrics pod assignment
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
   ##
