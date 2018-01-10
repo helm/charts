@@ -150,15 +150,22 @@ $ helm install --name my-release --set Persistence.ExistingClaim=PVC_NAME stable
 
 ## Custom ConfigMap
 
-When creating a new chart with this chart as a dependency, CustomConfigMap can be used to override the default config.xml provided.
+When creating a new parent chart with this chart as a dependency, the `CustomConfigMap` parameter can be used to override the default config.xml provided.
 It also allows for providing additional xml configuration files that will be copied into `/var/jenkins_home`. In the parent chart's values.yaml,
-set the value to true and provide the file `templates/config.yaml` for your use case. If you start by copying `config.yaml` from this chart and
-want to access values from this chart you must change all references from `.Values` to `.Values.jenkins`.
+set the `jenkins.Master.CustomConfigMap` value to true like so
 
 ```
 jenkins:
   Master:
     CustomConfigMap: true
+```
+
+and provide the file `templates/config.tpl` in your parent chart for your use case. You can start by copying the contents of `config.yaml` from this chart into your parent charts `templates/config.tpl` as a basis for customization. Finally, you'll need to wrap the contents of `templates/config.tpl` like so:
+
+```yaml
+{{- define "override_config_map" }}
+    <CONTENTS_HERE>
+{{ end }}
 ```
 
 ## RBAC
