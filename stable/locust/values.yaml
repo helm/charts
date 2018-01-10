@@ -3,7 +3,9 @@ image:
   tag: 0.7.5
   pullPolicy: IfNotPresent
 
-#labels:
+#
+# Labels applied to locust obejects
+labels: {}
 
 service:
   name: master-web
