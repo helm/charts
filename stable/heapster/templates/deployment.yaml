@@ -3,9 +3,7 @@ kind: Deployment
 metadata:
   name: {{ template "heapster.fullname" . }}
   annotations:
-    {{- range $key, $value := .Values.annotations }}
-      {{ $key }}: {{ $value }}
-    {{- end }}
+{{ toYaml .Values.annotations | indent 4 }}
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     {{- range $key, $value := .Values.labels }}
