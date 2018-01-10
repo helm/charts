@@ -14,13 +14,6 @@ Expand the name artifactory service.
 {{- end -}}
 
 {{/*
-Set the artifactory version.
-*/}}
-{{- define "artifactory.artifactory.version" -}}
-{{- default .Chart.AppVersion .Values.artifactory.image.version -}}
-{{- end -}}
-
-{{/*
 Expand the name database service.
 */}}
 {{- define "artifactory.database.name" -}}

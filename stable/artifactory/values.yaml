@@ -55,7 +55,7 @@ artifactory:
   image:
     # repository: "docker.bintray.io/jfrog/artifactory-oss"
     repository: "docker.bintray.io/jfrog/artifactory-pro"
-    version:
+    version: 5.8.2
     pullPolicy: IfNotPresent
   service:
     name: artifactory
