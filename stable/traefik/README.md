@@ -105,6 +105,7 @@ The following tables lists the configurable parameters of the Traefik chart and 
 | `ssl.defaultKey`                | Base64 encoded private key for the certificate above                 | The private key for the certificate above |
 | `acme.enabled`                  | Whether to use Let's Encrypt to obtain certificates                  | `false`                                   |
 | `acme.email`                    | Email address to be used in certificates obtained from Let's Encrypt | `admin@example.com`                       |
+| `acme.onDemand`                 | This will request a certificate from Let's Encrypt during the first TLS handshake for a hostname that does not yet have a certificate. Note that this is in addition to certificates created ahead of time for configured Ingress objects | `false`                                   |
 | `acme.staging`                  | Whether to get certs from Let's Encrypt's staging environment        | `true`                                    |
 | `acme.logging`                  | display debug log messages from the acme client library              | `false`                                   |
 | `acme.persistence.enabled`      | Create a volume to store ACME certs (if ACME is enabled)             | `true`                                    |
