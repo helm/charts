@@ -115,6 +115,23 @@ agent:
   #    memory: 2Gi
   #    cpu: 1
 
+dind:
+  ## Docker storage driver.
+  ## Your DinD instance should be using the same driver as your host.
+  ## ref: https://docs.docker.com/engine/userguide/storagedriver/selectadriver/
+  ##
+  driver: overlay2
+
+  ## CPU and memory limits for dind
+  ##
+  resources: {}
+  #  requests:
+  #    memory: 32Mi
+  #    cpu: 40m
+  #  limits:
+  #    memory: 2Gi
+  #    cpu: 1
+
 ## Enable persistence using Persistent Volume Claims
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
 ##

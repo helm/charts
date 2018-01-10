@@ -55,6 +55,8 @@ The following tables lists the configurable parameters of the drone charts and t
 | `server.resources`          | Drone **server** pod resource requests & limits                                               | `{}`                        |
 | `agent.env`                 | Drone **agent** environment variables                                                         | `(default values)`          |
 | `agent.resources`           | Drone **agent** pod resource requests & limits                                                | `{}`                        |
+| `dind.driver`               | **DinD** storage driver                                                                       | `overlay2`                  |
+| `dind.resources`            | **DinD** pod resource requests & limits                                                       | `{}`                        |
 | `persistence.enabled`       | Use a PVC to persist data                                                                     | `true`                      |
 | `persistence.existingClaim` | Use an existing PVC to persist data                                                           | `nil`                       |
 | `persistence.storageClass`  | Storage class of backing PVC                                                                  | `nil`                       |
