@@ -1,0 +1,20 @@
+To use Anchore Engine you need the URL, username, and password to access the API.
+
+Here are the steps to configure the anchore-cli (`pip install anchorecli`). Use these same values for direct API access as well.
+
+To configure your anchore-cli run:
+
+    ANCHORE_CLI_USER=admin
+    ANCHORE_CLI_PASS=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath="{.data.adminPassword}" | base64 --decode; echo)
+
+To get the service endpoint:
+
+If using an ingress:
+    ANCHORE_CLI_URL=$(kubectl get ingress --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath="{.status.loadBalancer.ingress[0].ip}")
+
+If not using ingress, but using ClusterIP or NodePort, then from within the cluster you can use:
+    ANCHORE_CLI_URL={{ template "fullname" . }}:{{ .Values.service.ports.api}}/v1/
+
+or to use the IP instead of service dns name:
+
+    ANCHORE_CLI_URL=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath="{.spec.clusterIP}")":{{.Values.service.ports.api}}/v1/"
