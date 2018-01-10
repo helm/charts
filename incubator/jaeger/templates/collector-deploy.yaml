@@ -36,10 +36,13 @@ spec:
         imagePullPolicy: {{ .Values.collector.pullPolicy }}
         ports:
         - containerPort: 14267
+          name: tchannel
           protocol: TCP
         - containerPort: 14268
+          name: http
           protocol: TCP
         - containerPort: 9411
+          name: zipkin
           protocol: TCP
         resources:
 {{ toYaml .Values.collector.resources | indent 10 }}
