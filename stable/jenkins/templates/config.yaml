@@ -165,4 +165,6 @@ data:
 {{ $val | indent 4 }}
 {{- end }}
 {{- end }}
+{{ else }}
+{{ include "override_config_map" . }}
 {{- end -}}

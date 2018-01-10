@@ -19,4 +19,7 @@ spec:
   storageClassName: "{{ .Values.persistence.StorageClass }}"
 {{- end }}
 {{- end }}
+{{- if .Values.persistence.VolumeName }}
+  volumeName: "{{ .Values.persistence.VolumeName }}"
+{{- end }}
 {{- end }}
