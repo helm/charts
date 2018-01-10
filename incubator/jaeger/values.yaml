@@ -115,7 +115,6 @@ collector:
   pullPolicy: IfNotPresent
   dnsPolicy: ClusterFirst
   cmdlineParams: {}
-  useNodePort: false
   replicaCount: 1
   service:
     annotations: {}
