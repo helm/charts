@@ -44,9 +44,11 @@ spec:
         imagePullPolicy: {{ .Values.images.dind.pullPolicy }}
         env:
         - name: DOCKER_DRIVER
-          value: overlay
+          value: {{ .Values.dind.driver }}
         securityContext:
             privileged: true
+        resources:
+{{ toYaml .Values.dind.resources | indent 10 }}
         volumeMounts:
           - name: docker-graph-storage
             mountPath: /var/lib/docker
