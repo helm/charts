@@ -2,6 +2,8 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 replicaCount: 1
+# whether to restart deployment on ConfigMap changes
+configMapRestart: false
 nodeSelector: {}
 image:
   repository: docker.elastic.co/logstash/logstash-oss
@@ -20,6 +22,9 @@ service:
     - name: "filebeat-tcp"
       protocol: TCP
       containerPort: 5044
+
+deployment:
+  annotations:
 
 ingress:
   enabled: false
