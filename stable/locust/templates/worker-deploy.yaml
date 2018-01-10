@@ -8,6 +8,9 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     app: {{ template "locust.fullname" . }}
     component: worker
+    {{- if .Values.labels }}
+    {{ toYaml .Values.labels | indent 4 }}
+    {{- end }}
 spec:
   replicas: {{ default 2 .Values.worker.replicaCount }}
   strategy:
@@ -20,29 +23,30 @@ spec:
       labels:
         app: {{ template "locust.fullname" . }}
         component: worker
+        role: worker
     spec:
       containers:
       - name: locust
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         volumeMounts:
-          - name: locust-tasks
-            mountPath: /locust-tasks/
+          - name: "locust-tasks"
+            mountPath: "/locust-tasks/"
         env:
         {{- range $key, $value :=  .Values.worker.config }}
-        - name: {{ $key | upper | replace "-" "_" }}
-          value: {{ $value | quote }}
+          - name: {{ $key | upper | replace "-" "_" }}
+            value: {{ $value | quote }}
         {{- end }}
-        - name: LOCUST_MODE
-          value: "worker"
-        - name: LOCUST_MASTER
-          value: {{ template "locust.master-svc" . }}
-        - name: LOCUST_MASTER_WEB
-          value: "{{ .Values.service.internalPort }}"
-        - name: TARGET_HOST
-          value: {{ index .Values.master.config "target-host" | quote }}
+          - name: LOCUST_MODE
+            value: "worker"
+          - name: LOCUST_MASTER
+            value: {{ template "locust.master-svc" . }}
+          - name: LOCUST_MASTER_WEB
+            value: "{{ .Values.service.internalPort }}"
+          - name: TARGET_HOST
+            value: {{ index .Values.master.config "target-host" | quote }}
         resources:
-{{ toYaml .Values.worker.resources | indent 10 }}
+{{ toYaml .Values.worker.resources | indent 12 }}
       restartPolicy: Always
       volumes:
         - name: "locust-tasks"

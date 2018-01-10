@@ -1,9 +1,9 @@
-Name: locust
-
 image:
   repository: quay.io/honestbee/locust
   tag: 0.7.5
   pullPolicy: IfNotPresent
+
+#labels:
 
 service:
   name: master-web
@@ -11,6 +11,16 @@ service:
   externalPort: 8089
   internalPort: 8089
   nodePort: 0
+
+ingress:
+  enabled: true
+
+  annotations: {}
+#   kubernetes.io/ingress.class: nginx
+#   external-dns.alpha.kubernetes.io/hostname: locust.host.com
+
+  host: locust.master.host.com
+
 master:
   config:
     target-host: https://site.example.com
@@ -21,6 +31,7 @@ master:
     requests:
       cpu: 100m
       memory: 128Mi
+
 worker:
   config:
 

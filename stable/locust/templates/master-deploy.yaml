@@ -6,8 +6,11 @@ metadata:
     app: {{ template "locust.fullname" . }}
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     component: master
+  {{- if .Values.labels }}
+  {{ toYaml .Values.labels | indent 4 }}
+  {{- end }}
 spec:
   replicas: 1
   strategy:
@@ -20,48 +23,49 @@ spec:
       labels:
         release: {{ .Release.Name | quote }}
         app: {{ template "locust.fullname" . }}
-        component: "master"
+        role: master
+        component: master
     spec:
       containers:
-      - name: locust
-        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-        imagePullPolicy: {{ .Values.image.pullPolicy }}
-        resources:
-{{ toYaml .Values.worker.resources | indent 10 }}
-        env:
-        {{- range $key, $value :=  .Values.master.config }}
-        - name: {{ $key | upper | replace "-" "_" }}
-          value: {{ $value | quote }}
-        {{- end }}
-        - name: LOCUST_MODE
-          value: "master"
-        - name: LOCUST_SCRIPT
-          value: {{ index .Values.worker.config "locust-script" | quote }}
-        ports:
-        - containerPort: {{ .Values.service.internalPort }}
-          name: loc-master-web
-          protocol: TCP
-        - containerPort: 5557
-          name: loc-master-p1
-          protocol: TCP
-        - containerPort: 5558
-          name: loc-master-p2
-          protocol: TCP
-        volumeMounts:
-          - name: locust-tasks
-            mountPath: /locust-tasks/
-        livenessProbe:
-          periodSeconds: 30
-          httpGet:
-            path: /
-            port: {{ .Values.service.internalPort }}
-        readinessProbe:
-          periodSeconds: 30
-          httpGet:
-            path: /
-            port: {{ .Values.service.internalPort }}
+        - name: locust
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+          {{- range $key, $value :=  .Values.master.config }}
+            - name: {{ $key | upper | replace "-" "_" }}
+              value: {{ $value | quote }}
+          {{- end }}
+            - name: LOCUST_MODE
+              value: master
+            - name: LOCUST_SCRIPT
+              value: {{ index .Values.worker.config "locust-script" | quote }}
+          ports:
+            - containerPort: {{ .Values.service.internalPort }}
+              name: loc-master-web
+              protocol: TCP
+            - containerPort: 5557
+              name: loc-master-p1
+              protocol: TCP
+            - containerPort: 5558
+              name: loc-master-p2
+              protocol: TCP
+          resources:
+{{ toYaml .Values.master.resources | indent 12 }}
+          volumeMounts:
+            - name: "locust-tasks"
+              mountPath: "/locust-tasks/"
+          livenessProbe:
+            periodSeconds: 30
+            httpGet:
+              path: /
+              port: {{ .Values.service.internalPort }}
+          readinessProbe:
+            periodSeconds: 30
+            httpGet:
+              path: /
+              port: {{ .Values.service.internalPort }}
       volumes:
-      - name: "locust-tasks"
-        configMap:
-          name: {{ template "locust.worker-configmap" . }}
+        - name: "locust-tasks"
+          configMap:
+            name: {{ template "locust.worker-configmap" . }}
       restartPolicy: Always
