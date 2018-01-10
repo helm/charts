@@ -54,10 +54,11 @@ The following tables lists the configurable parameters of the drone charts and t
 | `server.env`                | Drone **server** environment variables                                                        | `(default values)`          |
 | `server.resources`          | Drone **server** pod resource requests & limits                                               | `{}`                        |
 | `agent.env`                 | Drone **agent** environment variables                                                         | `(default values)`          |
+| `agent.replicas`            | Drone **agent** replicas                                                                      | `1`                         |
 | `agent.resources`           | Drone **agent** pod resource requests & limits                                                | `{}`                        |
 | `persistence.enabled`       | Use a PVC to persist data                                                                     | `true`                      |
 | `persistence.existingClaim` | Use an existing PVC to persist data                                                           | `nil`                       |
 | `persistence.storageClass`  | Storage class of backing PVC                                                                  | `nil`                       |
 | `persistence.accessMode`    | Use volume as ReadOnly or ReadWrite                                                           | `ReadWriteOnce`             |
 | `persistence.size`          | Size of data volume                                                                           | `1Gi`                       |
-| `sharedSecret`              | Drone server and agent shared secret                                                          | `(random value)`            |
+| `sharedSecret`              | Drone server and agent shared secret (Note: The Default random value changes on every `helm upgrade` causing a rolling update of server and agents) | `(random value)`            |
