@@ -1,7 +1,7 @@
 ## Bitnami MongoDB image version
 ## ref: https://hub.docker.com/r/bitnami/mongodb/tags/
 ##
-image: bitnami/mongodb:3.6.0-r1
+image: bitnami/mongodb:3.6.1-r0
 
 ## Specify a imagePullPolicy
 ## 'Always' if imageTag is 'latest', else set to 'IfNotPresent'
@@ -29,6 +29,11 @@ serviceType: ClusterIP
 ##
 persistence:
   enabled: true
+  ## A manually managed Persistent Volume and Claim
+  ## Requires persistence.enabled: true
+  ## If defined, PVC must be created manually before volume will be bound
+  # existingClaim:
+
   ## mongodb data Persistent Volume Storage Class
   ## If defined, storageClassName: <storageClass>
   ## If set to "-", storageClassName: "", which disables dynamic provisioning

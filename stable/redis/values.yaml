@@ -11,6 +11,11 @@ imagePullPolicy: IfNotPresent
 ## Kubernetes service type
 serviceType: ClusterIP
 
+## Pod Security Context
+securityContext:
+  fsGroup: 1001
+  runAsUser: 1001
+
 ## Use password authentication
 usePassword: true
 
