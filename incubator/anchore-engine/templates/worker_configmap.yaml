@@ -42,7 +42,7 @@ data:
            #  anchoreio:
            #    anchorecli:
            #      auth: 'myanchoreiouser:myanchoreiopass'
-           #auto_policy_sync: True
+           #auto_policy_sync: true
 
       database:
         db_connect: "postgresql+pg8000://${ANCHORE_DB_USER}:${ANCHORE_DB_PASSWORD}@${ANCHORE_DB_HOST}:5432/${ANCHORE_DB}"
@@ -53,7 +53,7 @@ data:
         db_pool_max_overflow: {{ .Values.globalConfig.dbConfig.connectionPoolSize }}
     services:
       analyzer:
-        enabled: True
+        enabled: true
         cycle_timer_seconds: {{ .Values.workerConfig.cycleTimerSeconds }}
         max_threads: {{ .Values.workerConfig.concurrentTasksPerWorker }}
         analyzer_driver: {{ .Values.workerConfig.analyzerMode }}

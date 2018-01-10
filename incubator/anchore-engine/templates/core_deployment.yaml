@@ -68,7 +68,7 @@ spec:
         {{- if .Values.globalConfig.internalServicesSslEnabled }}
         - name: certs
           mountPath: {{ default "/certs" .Values.coreConfig.ssl.certDir }}
-          readOnly: True
+          readOnly: true
         {{- end }}
         readinessProbe:
           httpGet:
