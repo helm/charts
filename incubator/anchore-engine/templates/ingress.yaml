@@ -9,13 +9,17 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
     component: core
+{{- if .Values.ingress.annotations }}
   annotations:
 {{ toYaml .Values.ingress.annotations | indent 4 }}
+{{- end }}
 spec:
   backend:
     serviceName: {{ template "fullname" . }}
     servicePort: {{ .Values.service.ports.api }}
+{{- if .Values.ingress.tls }}
   tls:
 {{ toYaml .Values.ingress.tls | indent 2 }}
+{{- end }}
 
 {{- end -}}

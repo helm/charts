@@ -18,7 +18,7 @@ image:
 # Used to create Ingress record (should used with service.type: ClusterIP or NodePort depending on platform)
 ingress:
   enabled: false
-  annotations: {}
+  annotations:
     # kubernetes.io/ingress.allow-http: False
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: true
