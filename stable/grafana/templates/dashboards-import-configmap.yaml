@@ -1,5 +1,4 @@
 {{- if .Values.dashboardImports.enabled -}}
-{{- if .Values.dashboardImports.files -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -12,5 +11,4 @@ metadata:
   name: {{ template "grafana.server.fullname" . }}-dashboardimport
 data:
 {{ toYaml .Values.dashboardImports.files | indent 2 }}
-{{- end -}}
 {{- end -}}
