@@ -1,6 +1,6 @@
 ## Google Cloud Endpoints Runtime image
 ## ref: https://cloud.google.com/endpoints/docs/quickstart-container-engine#deploying_the_sample_api_to_the_cluster
-image: b.gcr.io/endpoints/endpoints-runtime:1
+image: gcr.io/endpoints/endpoints-runtime:1
 
 ## Specify a imagePullPolicy
 ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
