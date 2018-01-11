@@ -69,6 +69,7 @@ The following tables lists the configurable parameters of the elasticsearch char
 | `client.podAnnotations`              | Client Deployment annotations                                       | `{}`                                 |
 | `client.serviceAnnotations`          | Client Service annotations                                          | `{}`                                 |
 | `client.serviceType`                 | Client service type                                                 | `ClusterIP`                          |
+| `master.exposeHttp`                 | Expose http port 9200 on master Pods for monitoring, etc           | `false`                              |
 | `master.name`                        | Master component name                                               | `master`                             |
 | `master.replicas`                    | Master node replicas (deployment)                                   | `2`                                  |
 | `master.resources`                   | Master node resources requests & limits                             | `{} - cpu limit must be an integer`  |
@@ -80,6 +81,7 @@ The following tables lists the configurable parameters of the elasticsearch char
 | `master.persistence.size`            | Master persistent volume size                                       | `4Gi`                                |
 | `master.persistence.storageClass`    | Master persistent volume Class                                      | `nil`                                |
 | `master.persistence.accessMode`      | Master persistent Access Mode                                       | `ReadWriteOnce`                      |
+| `data.exposeHttp`                   | Expose http port 9200 on data Pods for monitoring, etc              | `false`                              |
 | `data.replicas`                      | Data node replicas (statefulset)                                    | `3`                                  |
 | `data.resources`                     | Data node resources requests & limits                               | `{} - cpu limit must be an integer`  |
 | `data.heapSize`                      | Data node heap size                                                 | `1536m`                              |
