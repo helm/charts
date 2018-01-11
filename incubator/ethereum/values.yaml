@@ -34,4 +34,6 @@ geth:
   genesis:
     networkId: 98052
     accountsToFund:
-      - da1e55471ded03adadee63ac658b671277a6c7d1
+      # private key for default account is located in /key/privateKey.txt
+      # or create new accounts using `geth account new`
+      - 975aafe74baa1978c6aabd457cf8d90ee3252db0

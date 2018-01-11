@@ -1,6 +1,6 @@
 # ethereum
 
-[Ethereum](https://www.ethereum.org/) is a decentralized platform for building applications on the blockchain.
+[Ethereum](https://www.ethereum.org/) is a decentralized platform for building applications using blockchain.
 
 ## TL;DR;
 
@@ -10,12 +10,12 @@ $ helm install incubator/ethereum
 
 ## Introduction
 
-This chart deploys a private [Ethereum](https://www.ethereum.org/) network onto a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager. For more information on running a private network, refer to [this](https://github.com/ethereum/go-ethereum/wiki/Private-network). The private Ethereum network deployed with this chart is comprised of 4 different components: 
+This chart deploys a **private** [Ethereum](https://www.ethereum.org/) network onto a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager. This network is **not** connected to MainNet; for more information on running a private network, refer to [this](https://github.com/ethereum/go-ethereum/wiki/Private-network). This chart is comprised of 4 components: 
 
-1. bootnode: used for node discovery
-2. ethstats: [Ethereum Network Stats](https://github.com/cubedro/eth-netstats)
-3. geth-miner: Geth miner nodes
-3. geth-tx: Geth transaction nodes with mining disabled whose responsbility is to respond to API (websocket, rpc) queries
+1. *bootnode*: used for Geth node discovery
+2. *ethstats*: [Ethereum Network Stats](https://github.com/cubedro/eth-netstats)
+3. *geth-miner*: Geth miner nodes
+3. *geth-tx*: Geth transaction nodes with mining disabled whose responsbility is to respond to API (websocket, rpc) queries
 
 ## Prerequisites
 
@@ -28,10 +28,6 @@ The chart can be installed as follows:
 ```console
 $ helm install --name my-release incubator/ethereum
 ```
-
-The command deploys a private Ethereum network in the default configuration. The configuration](#configuration) section lists various ways to override default configuration during deployment.
-
-> **Tip**: List all releases using `helm list`
 
 ## Uninstalling the Chart
 
@@ -63,12 +59,12 @@ The following tables lists the configurable parameters of the vault chart and th
 | `geth.miner.replicaCount`         | geth miner nodes replica count                | `3`                                   |
 | `geth.miner.account.secret`       | geth account secret                           | `my-secret-account-password`          |
 | `geth.genesis.networkId`          | Ethereum network id                           | `98052`                               |
-| `geth.genesis.accountsToFund`     | Array of accounts to initially fund           | `da1e55471ded03adadee63ac658b671277a6c7d1`|
+| `geth.genesis.accountsToFund`     | Array of accounts to initially fund. The key for the default account is located at `/key/privateKey.txt` | `da1e55471ded03adadee63ac658b671277a6c7d1`|
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example, to configure the networkid:
 
 ```console
-$ helm install kubernetes-ethereum-chart --name ethereum --set geth.genesis.networkid=98052 
+$ helm install incubator/ethereum --name ethereum --set geth.genesis.networkid=98052 
 ```
 
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
@@ -76,5 +72,3 @@ Alternatively, a YAML file that specifies the values for the above parameters ca
 ```console
 $ helm install incubator/ethereum -f values.yaml 
 ```
-
-> **Tip**: You can use the default [values.yaml](values.yaml)
