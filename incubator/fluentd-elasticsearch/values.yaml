@@ -18,10 +18,10 @@ resources:
     memory: 200Mi
 
 elasticsearch:
-  host: 'http://elasticsearch-client'
+  host: 'elasticsearch-client'
   port: 9200
   buffer_chunk_limit: 2M
   buffer_queue_limit: 8
 
 rbac:
-  create: false
+  create: true

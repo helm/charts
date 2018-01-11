@@ -1,9 +1,9 @@
 apiVersion: apps/v1beta2
 kind: DaemonSet
 metadata:
-  name: {{ template "fluentd-elasticsearch .fullname" . }}
+  name: {{ template "fluentd-elasticsearch.fullname" . }}
   labels:
-    app: {{ template "fluentd-elasticsearch .fullname" . }}
+    app: {{ template "fluentd-elasticsearch.fullname" . }}
     version: {{ .Values.imageTag }}
     kubernetes.io/cluster-service: "true"
     addonmanager.kubernetes.io/mode: Reconcile
@@ -13,15 +13,17 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app: {{ template "fluentd-elasticsearch .fullname" . }}
+      app: {{ template "fluentd-elasticsearch.fullname" . }}
       version: {{ .Values.imageTag }}
       chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
       heritage: "{{ .Release.Service }}"
-      release: "{{ .Release.Name }}"
   template:
     metadata:
       labels:
-        app: {{ template "fluentd-elasticsearch .fullname" . }}
+        app: {{ template "fluentd-elasticsearch.fullname" . }}
+        version: {{ .Values.imageTag }}
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        heritage: "{{ .Release.Service }}"
         kubernetes.io/cluster-service: "true"
         version: {{ .Values.imageTag }}
       # This annotation ensures that fluentd does not get evicted if the node
@@ -30,9 +32,9 @@ spec:
       annotations:
         scheduler.alpha.kubernetes.io/critical-pod: ''
     spec:
-      serviceAccountName: {{ template "fluentd-elasticsearch .fullname" . }}
+      serviceAccountName: {{ template "fluentd-elasticsearch.fullname" . }}
       containers:
-      - name: {{ template "fluentd-elasticsearch .fullname" . }}
+      - name: {{ template "fluentd-elasticsearch.fullname" . }}
         image:  "{{ .Values.image }}:{{ .Values.imageTag }}"
         imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
         env:
@@ -49,10 +51,8 @@ spec:
         - name: libsystemddir
           mountPath: /host/lib
           readOnly: true
-        - name: config-volume-{{ template "fluentd-elasticsearch .fullname" . }}
+        - name: config-volume-{{ template "fluentd-elasticsearch.fullname" . }}
           mountPath: /etc/fluent/config.d
-      nodeSelector:
-        beta.kubernetes.io/fluentd-ds-ready: "true"
       terminationGracePeriodSeconds: 30
       volumes:
       - name: varlog
@@ -65,6 +65,6 @@ spec:
       - name: libsystemddir
         hostPath:
           path: /usr/lib64
-      - name: config-volume-{{ template "fluentd-elasticsearch .fullname" . }}
+      - name: config-volume-{{ template "fluentd-elasticsearch.fullname" . }}
         configMap:
-          name: {{ template "fluentd-elasticsearch .fullname" . }}-{{.Chart.Version}}
+          name: {{ template "fluentd-elasticsearch.fullname" . }}
