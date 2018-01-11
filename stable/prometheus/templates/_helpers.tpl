@@ -72,7 +72,7 @@ Return the appropriate apiVersion for networkpolicy.
 {{- end -}}
 
 {{/*
-Retrieves a scrape interval from the Prometheus config file.
+Combines global server params and prometheus.yml into the final startup config file.
 */}}
 {{- define "prometheus.server.config" -}}
 {{- $global_config := dict "global" .Values.server.global | toYaml -}}
