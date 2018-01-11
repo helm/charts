@@ -1,0 +1,18 @@
+name: fluentd-elasticsearch
+version: 0.0.1
+appVersion: 0.0.1
+description: A Fluentd Helm chart for Kubernetes with Elasticsearch output
+icon: https://raw.githubusercontent.com/fluent/fluentd-docs/master/public/logo/Fluentd_square.png
+keywords:
+- fluentd
+- elasticsearch
+- multiline
+- detect-exceptions
+- logging
+sources:
+- https://github.com/kubernetes/charts
+- https://github.com/fluent/fluentd-kubernetes-daemonset
+maintainers:
+- name: monotek
+  email: monotek23@gmail.com
+engine: gotpl

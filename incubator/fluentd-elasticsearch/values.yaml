@@ -1,0 +1,27 @@
+image: gcr.io/google-containers/fluentd-elasticsearch
+imageTag: v2.0.3
+
+## Specify an imagePullPolicy (Required)
+## It's recommended to change this to 'Always' if the image tag is 'latest'
+## ref: http://kubernetes.io/docs/user-guide/images/#updating-images
+imagePullPolicy: IfNotPresent
+
+## Configure resource requests and limits
+## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+##
+resources:
+  limits:
+    cpu: 100m
+    memory: 500Mi
+  requests:
+    cpu: 100m
+    memory: 200Mi
+
+elasticsearch:
+  host: 'http://elasticsearch-client'
+  port: 9200
+  buffer_chunk_limit: 2M
+  buffer_queue_limit: 8
+
+rbac:
+  create: false
