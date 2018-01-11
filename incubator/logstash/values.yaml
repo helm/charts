@@ -21,6 +21,9 @@ service:
       protocol: TCP
       containerPort: 5044
 
+# Extra config options
+configData: {}
+
 ingress:
   enabled: false
   # Used to create an Ingress and Service record.
