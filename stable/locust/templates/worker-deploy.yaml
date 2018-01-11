@@ -9,7 +9,7 @@ metadata:
     app: {{ template "locust.fullname" . }}
     component: worker
     {{- if .Values.labels }}
-    {{ toYaml .Values.labels | indent 4 }}
+{{ toYaml .Values.labels | indent 4 }}
     {{- end }}
 spec:
   replicas: {{ default 2 .Values.worker.replicaCount }}

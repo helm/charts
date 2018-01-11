@@ -9,7 +9,7 @@ metadata:
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     component: master
   {{- if .Values.labels }}
-  {{ toYaml .Values.labels | indent 4 }}
+{{ toYaml .Values.labels | indent 4 }}
   {{- end }}
 spec:
   replicas: 1
