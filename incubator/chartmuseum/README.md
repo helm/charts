@@ -2,7 +2,7 @@
 
 Deploy your own private ChartMuseum.   
 
-Please also see https://github.com/chartmuseum/chartmuseum   
+Please also see https://github.com/kubernetes-helm/chartmuseum   
 
 ## Prerequisites
 
@@ -20,8 +20,8 @@ You are also required to create the StorageClass resource ahead of time:
 kubectl create -f /path/to/storage_class.yaml
 ```
 
-The following tables lists the configurable parameters of the vault chart and
-their default values.
+The following tables lists common configurable parameters of the chart and
+their default values. See values.yaml for all available options. 
 
 |       Parameter              |           Description                       |                         Default                     |
 |------------------------------|---------------------------------------------|-----------------------------------------------------|
@@ -45,7 +45,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to
 ## Installation
 
 ```shell
-helm install --name my-chartmuseum -f values.yaml incubator/chartmuseum
+helm install --name my-chartmuseum -f custom.yaml incubator/chartmuseum
 ```
 
 ## Uninstall 
@@ -55,6 +55,11 @@ claim being deleted.
 
 ```shell
 helm delete my-chartmuseum
+```
+
+To delete the deployment and its history:
+```shell
+helm delete --purge my-chartmuseum
 ```
 
 ## Example storage
