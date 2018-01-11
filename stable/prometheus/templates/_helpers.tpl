@@ -70,3 +70,11 @@ Return the appropriate apiVersion for networkpolicy.
 {{- print "networking.k8s.io/v1" -}}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Retrieves a scrape interval from the Prometheus config file.
+*/}}
+{{- define "prometheus.server.config" -}}
+{{- $global_config := dict "global" .Values.server.global | toYaml -}}
+{{- index .Values.serverFiles "prometheus.yml" | printf "%s\n%s" $global_config -}}
+{{- end -}}
