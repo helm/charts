@@ -1,3 +1,5 @@
++{{- if or .Values.mariadb.enabled .Values.externalDatabase.host -}}
+
 {{- if empty (include "magento.host" .) -}}
 ###############################################################################
 ### ERROR: You did not provide an external host in your 'helm install' call ###
@@ -49,3 +51,20 @@ host. To configure Magento with the URL of your service:
   echo Username: {{ .Values.magentoUsername }}
   echo Password: $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "magento.fullname" . }} -o jsonpath="{.data.magento-password}" | base64 --decode)
 {{- end }}
+
+
+ {{- else -}}
+
+ ########################################################################################
+ ### ERROR: You did not provide an external database host in your 'helm install' call ###
+ ########################################################################################
+
+ This deployment will be incomplete until you configure Magento with a resolvable database
+ host. To configure Magento to use and external database host:
+
+
+ 1. Complete your phpBB deployment by running:
+
+   helm upgrade {{ .Release.Name }} --set magentoHost=YOUR_MAGENTO_HOST,serviceType={{ .Values.serviceType }},mariadb.enabled=false,externalDatabase.host=YOUR_EXTERNAL_DATABASE_HOST stable/magento
+
+ {{- end }}
