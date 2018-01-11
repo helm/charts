@@ -18,15 +18,15 @@ spec:
   - name: jaeger-collector-tchannel
     port: {{ .Values.collector.service.tchannelPort }}
     protocol: TCP
-    targetPort: {{ .Values.collector.service.tchannelPort }}
+    targetPort: tchannel
   - name: jaeger-collector-http
     port: {{ .Values.collector.service.httpPort }}
     protocol: TCP
-    targetPort: {{ .Values.collector.service.httpPort }}
+    targetPort: http
   - name: jaeger-collector-zipkin
     port: {{ .Values.collector.service.zipkinPort }}
     protocol: TCP
-    targetPort: {{ .Values.collector.service.zipkinPort }}
+    targetPort: zipkin
   selector:
     app: "{{ template "jaeger.name" . }}"
     component: "collector"
