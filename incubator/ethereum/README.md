@@ -59,7 +59,9 @@ The following tables lists the configurable parameters of the vault chart and th
 | `geth.miner.replicaCount`         | geth miner nodes replica count                | `3`                                   |
 | `geth.miner.account.secret`       | geth account secret                           | `my-secret-account-password`          |
 | `geth.genesis.networkId`          | Ethereum network id                           | `98052`                               |
-| `geth.genesis.accountsToFund`     | Array of accounts to initially fund. The key for the default account is located at `/key/privateKey.txt` | `da1e55471ded03adadee63ac658b671277a6c7d1`|
+| `geth.account.publicKey`          | Geth Account to be initially funded and deposited with mined Ether | `0x975aafe74baa1978c6aabd457cf8d90ee3252db0` |
+| `geth.account.privateKey`         | Geth Private Key                              | `5c539529553e68af419860c617e20f604bd92a6f0c212b3671e0ee1312a33748` |
+| `geth.account.secret`             | Geth Account Secret                           | `MyAccountSecret`                     | 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example, to configure the networkid:
 

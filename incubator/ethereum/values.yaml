@@ -29,11 +29,10 @@ geth:
   miner:
     # miner nodes
     replicaCount: 3
-    account:
-      secret: my-secret-account-password
   genesis:
     networkId: 98052
-    accountsToFund:
-      # private key for default account is located in /key/privateKey.txt
-      # or create new accounts using `geth account new`
-      - 975aafe74baa1978c6aabd457cf8d90ee3252db0
+  account:
+    # account to seed and where mined Ether will be deposited
+    publicKey: 0x975aafe74baa1978c6aabd457cf8d90ee3252db0
+    privateKey: 5c539529553e68af419860c617e20f604bd92a6f0c212b3671e0ee1312a33748
+    secret: MyAccountSecret

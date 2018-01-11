@@ -65,6 +65,19 @@ spec:
           mountPath: /root/.ethereum
         - name: config
           mountPath: /var/geth
+      - name: import-geth-account
+        image: {{ .Values.geth.image.repository }}:{{ .Values.geth.image.tag }}
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        command: ["/bin/sh"]
+        args:
+        - "-c"
+        - "geth account import --password /root/.ethereum/account/accountSecret /root/.ethereum/account/accountPrivateKey"
+        volumeMounts:
+        - name: data
+          mountPath: /root/.ethereum
+        - name: account
+          readOnly: true
+          mountPath: /root/.ethereum/account
       - name: get-bootnodes
         image: {{ .Values.geth.image.repository }}:{{ .Values.geth.image.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
@@ -85,3 +98,6 @@ spec:
       - name: config 
         configMap:
           name: {{ template "ethereum.fullname" . }}-geth-config
+      - name: account
+        secret:
+          secretName: {{ template "ethereum.fullname" . }}-geth-account-secret
