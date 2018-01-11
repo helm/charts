@@ -63,7 +63,7 @@ spec:
 {{ toYaml .Values.resources | indent 12 }}
           volumeMounts:
           - name: database-storage
-            mountPath: /var/lib/couchdb
+            mountPath: /opt/couchdb/data
           - name: config
             mountPath: /opt/couchdb/etc/default.d
         - name: couchdb-statefulset-assembler
