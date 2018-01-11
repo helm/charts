@@ -10,5 +10,7 @@ metadata:
     release: {{ .Release.Name }}
   name: {{ template "prometheus.server.fullname" . }}
 data:
-{{ toYaml .Values.serverFiles | indent 2 }}
+  alerts: {{ .Values.serverFiles.alerts | quote }}
+  rules: {{ .Values.serverFiles.rules | quote }}
+  prometheus.yml: {{ include "prometheus.server.config" . | toYaml | indent 2 | trim }}
 {{- end }}
