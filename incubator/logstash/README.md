@@ -38,7 +38,7 @@ The following tables lists the configurable parameters of the drone charts and t
 | `image.repository`     | Container image name                               | `docker.elastic.co/logstash/logstash-oss`        |
 | `image.tag`            | Container image tag                                | `6.0.0`                                          |
 | `image.pullPolicy`     | Container image pull policy                        | `IfNotPresent`                                   |
-| `service.type`         | Service type (ClusterIP, NodePort or LoadBalancer) | `ClusterIP`                                       |
+| `service.type`         | Service type (ClusterIP, NodePort or LoadBalancer) | `ClusterIP`                                      |
 | `service.internalPort` | Logstash internal port                             | `1514`                                           |
 | `service.ports`        | Service open ports                                 | `[TCP/1514, UDP/1514, TCP/5044]`                 |
 | `ingress.enabled`      | Enables Ingress                                    | `false`                                          |
@@ -48,6 +48,7 @@ The following tables lists the configurable parameters of the drone charts and t
 | `resources`            | Pod resource requests & limits                     | `{}`                                             |
 | `elasticsearch.host`   | ElasticSearch hostname                             | `elasticsearch-client.default.svc.cluster.local` |
 | `elasticsearch.port`   | ElasticSearch port                                 | `9200`                                           |
+| `configData`           | Extra logstash config                              | `{}`                                             |
 | `patterns`             | Logstash patterns configuration                    | `nil`                                            |
 | `inputs`               | Logstash inputs configuration                      | `(basic)`                                        |
 | `filters`              | Logstash filters configuration                     | `nil`                                            |
