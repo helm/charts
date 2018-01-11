@@ -147,6 +147,9 @@ Parameter | Description | Default
 `server.image.tag` | Prometheus server container image tag | `v1.5.1`
 `server.image.pullPolicy` | Prometheus server container image pull policy | `IfNotPresent`
 `server.alertmanagerURL` | (optional) alertmanager URL; only used if alertmanager.enabled = false | `""`
+`server.global.scrape_interval` | How frequently to scrape targets by default | `1m`
+`server.global.scrape_timeout` | How long until a scrape request times out | `10s`
+`server.global.evaluation_interval` | How frequently to evaluate rules | `1m`
 `server.extraArgs` | Additional Prometheus server container arguments | `{}`
 `server.prefixURL` | The prefix slug at which the server can be accessed | ``
 `server.baseURL` | The external url at which the server can be accessed | ``
