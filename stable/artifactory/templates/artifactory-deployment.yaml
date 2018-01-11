@@ -40,7 +40,7 @@ spec:
         - 'until nc -z -w 2 {{ template "artifactory.database.name" . }} {{ .Values.database.externalPort }} && echo database ok; do sleep 2; done'
       containers:
       - name: {{ .Values.artifactory.name }}
-        image: '{{ .Values.artifactory.image.repository }}:{{ .Values.artifactory.image.version }}'
+        image: "{{ .Values.artifactory.image.repository }}:{{ .Values.artifactory.image.version }}"
         imagePullPolicy: {{ .Values.artifactory.image.pullPolicy }}
         env:
         - name: DB_TYPE

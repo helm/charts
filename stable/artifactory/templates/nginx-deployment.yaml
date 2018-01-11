@@ -34,7 +34,7 @@ spec:
           name: nginx-volume
       containers:
       - name: {{ .Values.nginx.name }}
-        image: '{{ .Values.nginx.image.repository }}:{{ .Values.artifactory.image.version }}'
+        image: "{{ .Values.nginx.image.repository }}:{{ .Values.artifactory.image.version }}"
         imagePullPolicy: {{ .Values.nginx.image.pullPolicy }}
         lifecycle:
           postStart:
