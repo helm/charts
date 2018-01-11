@@ -1,17 +1,17 @@
 apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
-  name: {{ template "fullname" . }}-zoo
+  name: {{ template "kubeless.fullname" . }}-zoo
   labels:
 {{ include "labels.standard" . | indent 4 }}
 spec:
-  serviceName: "{{ template "fullname" . }}-zoo"
+  serviceName: "{{ template "kubeless.fullname" . }}-zoo"
   replicas: {{ .Values.zookeeper.statefulSet.replicaCount }}
   template:
     metadata:
       labels:
         kubeless: zookeeper
-        app: {{ template "name"  . }}
+        app: {{ template "kubeless.name"  . }}
         release: {{ .Release.Name | quote }}
     spec:
       terminationGracePeriodSeconds: 10

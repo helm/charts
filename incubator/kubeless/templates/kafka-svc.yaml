@@ -11,5 +11,5 @@ spec:
     targetPort: kafka-port
   selector:
     kubeless: kafka
-    app: {{ template "name"  . }}
+    app: {{ template "kubeless.name"  . }}
     release: {{ .Release.Name | quote }}

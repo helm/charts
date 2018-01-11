@@ -24,6 +24,7 @@ controller:
 
 ## UI configuration
 ui:
+  enabled: true
   deployment:
     replicaCount: 1
     ui:

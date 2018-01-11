@@ -1,17 +1,17 @@
 apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
-  name: {{ template "fullname" . }}-kafka
+  name: {{ template "kubeless.fullname" . }}-kafka
   labels:
 {{ include "labels.standard" . | indent 4 }}
 spec:
-  serviceName: "{{ template "fullname" . }}-broker"
+  serviceName: "{{ template "kubeless.fullname" . }}-broker"
   replicas: {{ .Values.kafka.statefulSet.replicaCount }}
   template:
     metadata:
       labels:
         kubeless: kafka
-        app: {{ template "name"  . }}
+        app: {{ template "kubeless.name"  . }}
         release: {{ .Release.Name | quote }}
     spec:
       terminationGracePeriodSeconds: 10
