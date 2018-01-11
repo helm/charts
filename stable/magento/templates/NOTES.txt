@@ -63,7 +63,7 @@ host. To configure Magento with the URL of your service:
  host. To configure Magento to use and external database host:
 
 
- 1. Complete your phpBB deployment by running:
+ 1. Complete your Magento deployment by running:
 
    helm upgrade {{ .Release.Name }} --set magentoHost=YOUR_MAGENTO_HOST,serviceType={{ .Values.serviceType }},mariadb.enabled=false,externalDatabase.host=YOUR_EXTERNAL_DATABASE_HOST stable/magento
 
