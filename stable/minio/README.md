@@ -75,7 +75,7 @@ The following tables lists the configurable parameters of the Minio chart and th
 | Parameter                  | Description                         | Default                                                 |
 |----------------------------|-------------------------------------|---------------------------------------------------------|
 | `image`                    | Minio image name                    | `minio/minio`                                           |
-| `imageTag`                 | Minio image tag. Possible values listed [here](https://hub.docker.com/r/minio/minio/tags/).| `RELEASE.2017-10-27T18-59-02Z`|
+| `imageTag`                 | Minio image tag. Possible values listed [here](https://hub.docker.com/r/minio/minio/tags/).| `RELEASE.2017-12-28T01-21-00Z`|
 | `imagePullPolicy`          | Image pull policy                   | `Always`                                                |
 | `mode`                     | Minio server mode (`standalone`, `shared` or `distributed`)| `standalone`                     |
 | `replicas`                 | Number of nodes (applicable only for Minio distributed mode). Should be 4 <= x <= 16 | `4`    |
@@ -89,7 +89,9 @@ The following tables lists the configurable parameters of the Minio chart and th
 | `persistence.size`         | Size of persistent volume claim     | `10Gi`                                                  |
 | `persistence.storageClass` | Type of persistent volume claim     | `generic`                                               |
 | `persistence.accessMode`   | ReadWriteOnce or ReadOnly           | `ReadWriteOnce`                                         |
+| `persistence.subPath`      | Mount a sub directory of the persistent volume if set | `""`                                  |
 | `resources`                | CPU/Memory resource requests/limits | Memory: `256Mi`, CPU: `100m`                            |
+| `nodeSelector`             | Node labels for pod assignment      | `{}`                                                    |
 | `defaultBucket.enabled`    | If true, a bucket will be created after minio
 install | `false` |
 | `defaultBucket.name`       | Bucket name | `nil` |

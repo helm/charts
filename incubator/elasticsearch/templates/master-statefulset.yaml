@@ -17,6 +17,10 @@ spec:
         app: {{ template "elasticsearch.name" . }}
         component: "{{ .Values.master.name }}"
         release: {{ .Release.Name }}
+        {{- if .Values.master.podAnnotations }}
+      annotations:
+{{ toYaml .Values.master.podAnnotations | indent 8 }}
+        {{- end }}
     spec:
       serviceAccountName: {{ template "elasticsearch.fullname" . }}
       {{- if eq .Values.master.antiAffinity "hard" }}
@@ -103,6 +107,10 @@ spec:
         ports:
         - containerPort: 9300
           name: transport
+{{ if .Values.master.exposeHttp }}
+        - containerPort: 9200
+          name: http
+{{ end }}
         volumeMounts:
         - mountPath: /usr/share/elasticsearch/data
           name: data

@@ -26,7 +26,7 @@ data:
       <viewsTabBar class="hudson.views.DefaultViewsTabBar"/>
       <myViewsTabBar class="hudson.views.DefaultMyViewsTabBar"/>
       <clouds>
-        <org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud plugin="kubernetes@0.11">
+        <org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud plugin="kubernetes@{{ template "jenkins.kubernetes-version" . }}">
           <name>kubernetes</name>
           <templates>
 {{- if .Values.Agent.Enabled }}
@@ -80,7 +80,15 @@ data:
               </containers>
               <envVars/>
               <annotations/>
+{{- if .Values.Agent.ImagePullSecret }}
+              <imagePullSecrets>
+                <org.csanchez.jenkins.plugins.kubernetes.PodImagePullSecret>
+                  <name>{{ .Values.Agent.ImagePullSecret }}</name>
+                </org.csanchez.jenkins.plugins.kubernetes.PodImagePullSecret>
+              </imagePullSecrets>
+{{- else }}
               <imagePullSecrets/>
+{{- end }}
               <nodeProperties/>
             </org.csanchez.jenkins.plugins.kubernetes.PodTemplate>
 {{- end -}}
@@ -137,7 +145,7 @@ data:
     cp -n /var/jenkins_config/config.xml /var/jenkins_home;
 {{- if .Values.Master.InstallPlugins }}
     cp /var/jenkins_config/plugins.txt /var/jenkins_home;
-    rm /usr/share/jenkins/ref/plugins/*.lock
+    rm -rf /usr/share/jenkins/ref/plugins/*.lock
     /usr/local/bin/install-plugins.sh `echo $(cat /var/jenkins_home/plugins.txt)`;
 {{- end }}
 {{- if .Values.Master.ScriptApproval }}
@@ -157,4 +165,6 @@ data:
 {{ $val | indent 4 }}
 {{- end }}
 {{- end }}
+{{ else }}
+{{ include "override_config_map" . }}
 {{- end -}}

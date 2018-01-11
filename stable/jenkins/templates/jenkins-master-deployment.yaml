@@ -34,7 +34,12 @@ spec:
 {{ toYaml .Values.Master.Tolerations | indent 8 }}
       {{- end }}
       securityContext:
-        runAsUser: 0
+        runAsUser: {{ default 0 .Values.Master.RunAsUser }}
+{{- if and (.Values.Master.RunAsUser) (.Values.Master.FsGroup) }}
+{{- if not (eq .Values.Master.RunAsUser 0.0) }}
+        fsGroup: {{ .Values.Master.FsGroup }}
+{{- end }}
+{{- end }}
       serviceAccountName: {{ if .Values.rbac.install }}{{ template "jenkins.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
       initContainers:
         - name: "copy-default-config"
@@ -87,6 +92,18 @@ spec:
             - containerPort: {{ .Values.Master.JMXPort }}
               name: jmx
             {{- end }}
+{{- if .Values.Master.HealthProbes }}
+          livenessProbe:
+            httpGet:
+              path: /login
+              port: http
+            initialDelaySeconds: {{ .Values.Master.HealthProbesTimeout }}
+          readinessProbe:
+            httpGet:
+              path: /login
+              port: http
+            initialDelaySeconds: {{ .Values.Master.HealthProbesTimeout }}
+{{- end }}
           resources:
             requests:
               cpu: "{{ .Values.Master.Cpu }}"
@@ -129,3 +146,7 @@ spec:
       {{- else }}
         emptyDir: {}
       {{- end -}}
+{{- if .Values.Master.ImagePullSecret }}
+      imagePullSecrets:
+      - name: {{ .Values.Master.ImagePullSecret }}
+{{- end -}}

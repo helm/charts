@@ -15,10 +15,14 @@ spec:
 {{- if .Values.podLabels }}
 {{ toYaml .Values.podLabels | indent 8 }}
 {{- end }}
+      {{- if .Values.podAnnotations }}
+      annotations:
+{{ toYaml .Values.podAnnotations | indent 8 }}
+      {{- end }}
     spec:
       securityContext:
-        runAsUser: 1001
-        fsGroup: 1001
+        fsGroup: {{ .Values.securityContext.fsGroup }}
+        runAsUser: {{ .Values.securityContext.runAsUser }}
       {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
@@ -67,7 +71,7 @@ spec:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
         - name: redis-data
-          mountPath: /bitnami
+          mountPath: {{ .Values.persistence.path }}
 {{- if .Values.metrics.enabled }}
       - name: metrics
         image: "{{ .Values.metrics.image }}:{{ .Values.metrics.imageTag }}"

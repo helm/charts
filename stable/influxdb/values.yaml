@@ -2,7 +2,7 @@
 ## ref: https://hub.docker.com/r/library/influxdb/tags/
 image:
   repo: "influxdb"
-  tag: "1.2-alpine"
+  tag: "1.4-alpine"
   pullPolicy: IfNotPresent
 
 ## Specify a service type
@@ -42,22 +42,22 @@ setDefaultUser:
   ## Image of the container used for job
   ## Default: appropriate/curl:latest
   ##
-  # image: appropriate/curl:latest
+  image: appropriate/curl:latest
 
   ## Deadline for job so it does not retry forever.
   ## Default: activeDeadline: 300
   ##
-  # activeDeadline: 300
+  activeDeadline: 300
 
   ## Restart policy for job
   ## Default: OnFailure
-  # restartPolicy: OnFailure
+  restartPolicy: OnFailure
 
-  # user:
+  user:
 
     ## The user name
     ## Default: "admin"
-    # username: "admin"
+    username: "admin"
 
     ## User password
     ## Default: (Randomly generated 10 characters of Ascii)
@@ -65,7 +65,7 @@ setDefaultUser:
 
     ## User privileges
     ## Default: "WITH ALL PRIVILEGES"
-    # privileges: "WITH ALL PRIVILEGES"
+    privileges: "WITH ALL PRIVILEGES"
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -76,7 +76,19 @@ resources:
   limits:
     memory: 16Gi
     cpu: 8
-    
+
+## Node labels for pod assignment
+## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+##
+nodeSelector: {}
+
+## The InfluxDB image uses several environment variables to automatically
+## configure certain parts of the server.
+## Ref: https://hub.docker.com/_/influxdb/
+env:
+  # - name: INFLUXDB_DB
+  #   value: "demo"
+
 ## Change InfluxDB configuration paramaters below:
 ## Defaults are indicated
 ## ref: https://docs.influxdata.com/influxdb/v1.1/administration/config/

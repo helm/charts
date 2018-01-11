@@ -113,11 +113,14 @@ The following tables lists the configurable parameters of the Concourse chart an
 | `web.replicas` | Number of Concourse Web replicas | `1` |
 | `web.resources` | Concourse Web resource requests and limits | `{requests: {cpu: "100m", memory: "128Mi"}}` |
 | `web.service.type` | Concourse Web service type | `NodePort` |
+| `web.service.annotations` | Concourse Web Service annotations | `{}` |
 | `web.ingress.enabled` | Enable Concourse Web Ingress | `false` |
 | `web.ingress.annotations` | Concourse Web Ingress annotations | `{}` |
 | `web.ingress.hosts` | Concourse Web Ingress Hostnames | `[]` |
 | `web.ingress.tls` | Concourse Web Ingress TLS configuration | `[]` |
 | `web.additionalAffinities` | Additional affinities to apply to web pods. E.g: node affinity | `nil` |
+| `web.metrics.prometheus.enabled` | Enable Prometheus metrics exporter | `false` |
+| `web.metrics.prometheus.port` | Port for exporting Prometeus metrics | `9391` |
 | `worker.nameOverride` | Override the Concourse Worker components name| `worker` |
 | `worker.replicas` | Number of Concourse Worker replicas | `2` |
 | `worker.minAvailable` | Minimum number of workers available after an eviction | `1` |
@@ -126,7 +129,8 @@ The following tables lists the configurable parameters of the Concourse chart an
 | `worker.postStopDelaySeconds` | Time to wait after graceful shutdown of worker before starting up again | `60` |
 | `worker.terminationGracePeriodSeconds` | Upper bound for graceful shutdown, including `worker.postStopDelaySeconds` | `120` |
 | `worker.fatalErrors` | Newline delimited strings which, when logged, should trigger a restart of the worker | *See [values.yaml](values.yaml)* |
-| `worker.updateStrategy` | `OnDelete` or `RollingUpdate` (requires Kubernetes >= 1.6) | `RollingUpdate` |
+| `worker.updateStrategy` | `OnDelete` or `RollingUpdate` (requires Kubernetes >= 1.7) | `RollingUpdate` |
+| `worker.podManagementPolicy` | `OrderedReady` or `Parallel` (requires Kubernetes >= 1.7) | `Parallel` |
 | `persistence.enabled` | Enable Concourse persistence using Persistent Volume Claims | `true` |
 | `persistence.worker.class` | Concourse Worker Persistent Volume Storage Class | `generic` |
 | `persistence.worker.accessMode` | Concourse Worker Persistent Volume Access Mode | `ReadWriteOnce` |
@@ -137,6 +141,16 @@ The following tables lists the configurable parameters of the Concourse chart an
 | `postgresql.postgresPassword` | PostgreSQL Password for the new user | `concourse` |
 | `postgresql.postgresDatabase` | PostgreSQL Database to create | `concourse` |
 | `postgresql.persistence.enabled` | Enable PostgreSQL persistence using Persistent Volume Claims | `true` |
+| `credentialManager.enabled` | Enable Credential Manager | `false` |
+| `credentialManager.vault.url` | Vault Server URL | `nil` |
+| `credentialManager.vault.pathPrefix` | Vault path to namespace secrets | `/concourse` |
+| `credentialManager.vault.caCert` | CA public certificate when using self-signed TLS with Vault | `nil` |
+| `credentialManager.vault.authBackend` | Vault Authentication Backend to use, leave blank when using clientToken | `nil` |
+| `credentialManager.vault.clientToken` | Vault periodic client token | `nil` |
+| `credentialManager.vault.appRoleId` | Vault AppRole RoleID | `nil` |
+| `credentialManager.vault.appRoleSecretId` | Vault AppRole SecretID | `nil` |
+| `credentialManager.vault.clientCert` | Vault Client Certificate | `nil` |
+| `credentialManager.vault.clientKey` | Vault Client Key | `nil` |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
@@ -289,4 +303,30 @@ postgresql:
   ##
   uri: postgres://concourse:changeme@my-postgres.com:5432/concourse?sslmode=require
 
+```
+
+### Credential Management
+
+By default, this chart will not use a [Credential Manager](https://concourse.ci/creds.html).
+
+```yaml
+## Configuration values for the Credential Manager.
+## ref: https://concourse.ci/creds.html
+##
+credentialManager:
+  ## Enable Credential Manager using below configuration.
+  ##
+  enabled: true
+
+  ## use Hashicorp Vault for Credential Manager.
+  ##
+  vault:
+    ## URL pointing to vault addr (i.e. http://vault:8200).
+    ##
+    url: http://vault:8200
+
+    ## initial periodic token issued for concourse
+    ## ref: https://www.vaultproject.io/docs/concepts/tokens.html#periodic-tokens
+    ##
+    clientToken: PERIODIC_VAULT_TOKEN 
 ```

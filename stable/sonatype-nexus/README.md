@@ -41,14 +41,15 @@ The following tables lists the configurable parameters of the Nexus chart and th
 
 | Parameter                                   | Description                         | Default                                    |
 | ------------------------------------------  | ----------------------------------  | -------------------------------------------|
-| `imageTag`                                  | `nexus` image tag.                  | 3.5.1-02                                   |
-| `imagePullPolicy`                           | Image pull policy                   | `IfNotPresent`                             |
+| `image.tag`                                 | `nexus` image tag.                  | 3.5.1-02                                   |
+| `image.pullPolicy`                          | Image pull policy                   | `IfNotPresent`                             |
+| `nodeSelector`                              | node labels for pod assignment      | {}                                        |
 | `ingress.enabled`                           | Flag for enabling ingress           | false                                      |
 | `persistence.enabled`                       | Create a volume to store data       | true                                       |
 | `persistence.size`                          | Size of persistent volume to claim  | 8Gi RW                                     |
 | `persistence.storageClass`                  | Type of persistent volume claim     | nil  (uses alpha storage class annotation) |
 | `persistence.accessMode`                    | ReadWriteOnce or ReadOnly           | ReadWriteOnce                              |
-| `service.type`                              | Kubernetes Service type             | `ClusterIP`                                |
+| `service.type`                              | Kubernetes Service type             | `LoadBalancer`                             |
 | `service.readinessProbe.initialDelaySeconds`| ReadinessProbe initial delay        | 30                                         |
 | `service.readinessProbe.periodSeconds`      | Seconds between polls               | 30                                         |
 | `service.readinessProbe.failureThreshold`   | Number of attempts before failure   | 6                                          |

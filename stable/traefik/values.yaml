@@ -1,6 +1,6 @@
 ## Default values for Traefik
 image: traefik
-imageTag: 1.4.1
+imageTag: 1.4.5
 ## can switch the service type to NodePort if required
 serviceType: LoadBalancer
 loadBalancerIP:
@@ -19,6 +19,11 @@ tolerations: []
 #   operator: "Equal|Exists"
 #   value: "value"
 #   effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
+## Kubernetes ingress filters
+# kubernetes:
+  # namespaces:
+  # - default
+  # labelSelector:
 ssl:
   enabled: false
   enforced: false
@@ -28,6 +33,7 @@ acme:
   enabled: false
   email: admin@example.com
   staging: true
+  logging: false
   ## Save ACME certs to a persistent volume. WARNING: If you do not do this, you will re-request
   ## certs every time a pod (re-)starts and you WILL be rate limited!
   persistence:
@@ -79,11 +85,6 @@ accessLogs:
   ## Path to the access logs file. If not provided, Traefik defaults it to stdout.
   # filePath: ""
   format: common  # choices are: common, json
-  ## Kubernetes ingress filters
-  # kubernetes:
-  #   namespaces:
-  #   - default
-  #   labelSelector:
 rbac:
   enabled: false
 ## Enable the /metrics endpoint, for now only supports prometheus
@@ -91,12 +92,17 @@ rbac:
 metrics:
   prometheus:
     enabled: false
-    buckets: 0.1,0.3,1.2,5
+    # buckets: [0.1,0.3,1.2,5]
   datadog:
     enabled: false
-    # address: "localhost:8125"
-    # pushInterval: 30s
+    # address: localhost:8125
+    # pushinterval: 10s
   statsd:
     enabled: false
-    # address: "localhost:8125"
-    # pushInterval: 30s
+    # address: localhost:8125
+    # pushinterval: 10s
+deployment:
+  hostPort:
+    httpEnabled: false
+    httpsEnabled: false
+    dashboardEnabled: false
