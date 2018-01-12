@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
   name: {{ template "gocd.fullname" . }}-server
@@ -12,6 +12,10 @@ spec:
   {{- if le (int .Values.server.replicaCount) 1 }}
   replicas: {{ .Values.server.replicaCount }}
   {{- end }}
+  selector:
+    matchLabels:
+      app: {{ template "gocd.name" . }}
+      component: server
   template:
     metadata:
       labels:

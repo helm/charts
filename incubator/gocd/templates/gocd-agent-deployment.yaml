@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
   name: {{ template "gocd.fullname" . }}-agent
@@ -10,6 +10,10 @@ metadata:
     component: agent
 spec:
   replicas: {{ .Values.agent.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "gocd.name" . }}
+      component: agent
   template:
     metadata:
       labels:

@@ -34,9 +34,9 @@ spec:
       - mountPath: /tools
         name: tools
   volumes:
-  - name: tests
-    configMap:
-      name: {{ template "gocd.fullname" . }}-tests
-  - name: tools
-    emptyDir: {}
+    - name: tests
+      configMap:
+        name: {{ template "gocd.fullname" . }}-tests
+    - name: tools
+      emptyDir: {}
   restartPolicy: Never
