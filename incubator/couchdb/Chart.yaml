@@ -8,6 +8,6 @@ sources:
   - https://github.com/apache/couchdb
   - https://github.com/kocolosk/couchdb-statefulset-assembler
 maintainers:
-  - name: Adam Kocoloski
+  - name: kocolosk
     email: kocolosk@apache.org
 icon: http://couchdb.apache.org/CouchDB-visual-identity/logo/CouchDB-couch-symbol.svg
