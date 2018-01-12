@@ -51,6 +51,7 @@ The following tables lists the configurable parameters of the WebPageTest chart 
 | `image`                              | WebPageTest server image                   | `webpagetest/server:{VERSION}`                              |
 | `imagePullPolicy`                    | Image pull policy                          | `IfNotPresent`                                             |
 | `ec2Locations.enabled`               | Enables use of EC2 AMI's                   | `false`                                                     |
+| `ec2Locations.customUserDataSecret`  | Controlls if this chart should use an externally created secret | `false` |
 | `ec2Locations.userData`              | Data Structure which is used to generate settings | sample data only                                    |
 | `ec2Locations.userData.ec2_key`      | EC2 API key with create permissions        | `nil`                                                      |
 | `ec2Locations.userData.ec2_secret`   | Secret portion of the above key            | `nil`                                                      |
@@ -208,6 +209,9 @@ Ones to note are
 ;archive_s3_bucket=<bucket>
 ;archive_s3_url=http://s3.amazonaws.com/
 ```
+
+## ec2Locations.customUserDataSecret
+If you would like to use ec2 AMI's but would prefer to create the secret outside of the chart then supply the name of the secret here
 
 ## Future
 * Add options for 'locations.ini' from configmap so you can use other agents

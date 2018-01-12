@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
   name: {{ template "webpagetest.fullname" . }}
@@ -9,6 +9,9 @@ metadata:
     heritage: {{ .Release.Service }}
 spec:
   replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "webpagetest.name" . }}
   template:
     metadata:
       labels:
@@ -54,7 +57,11 @@ spec:
       {{- if .Values.ec2Locations.enabled }}
       - name: wpt-user-data
         secret:
+        {{- if not .Values.ec2Locations.customUserDataSecret }}
           secretName: {{ printf "%s-%s" .Release.Name "user-data"  }}
+        {{ else }}
+          secretName: {{ .Values.ec2Locations.customUserDataSecret }}
+        {{- end }}
       {{- end }}
       {{- if .Values.persistence.enabled }}
       - name: wpt-local-archive

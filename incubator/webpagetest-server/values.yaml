@@ -78,7 +78,9 @@ resources: {}
 ec2Locations:
   # This enables ec2 setup and locations
   enabled: false
-  # Used to create k8s secrets which will in turn be used to configure WPT. See README.md
+  # Create secret from the data below, or use custom name instead. See README.md
+  customUserDataSecret: false
+  # Content of the secret
   userData:
     ec2_key: ''
     ec2_secret: ''
