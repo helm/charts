@@ -33,4 +33,4 @@ spec:
       protocol: TCP
   selector:
     app: {{ template "fullname" . }}
-    role: core
+    component: core

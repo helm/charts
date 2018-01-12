@@ -13,8 +13,8 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "fullname" . }}
-        role: core
+        app: "{{ template "fullname" . }}"
+        component: core
     spec:
       volumes:
         - name: config-volume

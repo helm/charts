@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: "{{ template "worker.fullname" . }}"
   labels:
-    app: "{{ template "fullname" . }}"
+    app: "{{ template "worker.fullname" . }}"
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -13,8 +13,8 @@ spec:
   template:
     metadata:
       labels:
-        app: anchore-engine-analyzer
-        role: worker
+        app: "{{ template "worker.fullname" . }}"
+        component: worker
     spec:
       containers:
       - name: {{ .Chart.Name }}-worker
