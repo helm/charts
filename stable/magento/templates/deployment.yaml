@@ -50,7 +50,7 @@ spec:
               name: {{ template "magento.mariadb.fullname" . }}
               key: mariadb-password
               {{- else }}
-              name: {{ printf "%s-%s" .Release.Name "externaldb" }}
+              name: {{ template "magento.fullname" . }}-externaldb
               key: db-password
               {{- end }}
         - name: MAGENTO_HOST
