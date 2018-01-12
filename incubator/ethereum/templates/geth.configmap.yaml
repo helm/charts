@@ -18,8 +18,8 @@ data:
             "eip155Block": 0,
             "eip158Block": 0
         },
-        "difficulty": "0x0400",
-        "gasLimit": "0x8000000",
+        "difficulty":  {{ .Values.geth.genesis.difficulty | quote }},
+        "gasLimit": {{ .Values.geth.genesis.gasLimit | quote }},
         "alloc": {
             {{ .Values.geth.account.publicKey | quote }}: {
                 "balance": "1000000000000000000000000"

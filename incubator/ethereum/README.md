@@ -13,9 +13,9 @@ $ helm install incubator/ethereum
 This chart deploys a **private** [Ethereum](https://www.ethereum.org/) network onto a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager. This network is **not** connected to MainNet; for more information on running a private network, refer to [this](https://github.com/ethereum/go-ethereum/wiki/Private-network). This chart is comprised of 4 components: 
 
 1. *bootnode*: used for Geth node discovery
-2. *ethstats*: [Ethereum Network Stats](https://github.com/cubedro/eth-netstats)
-3. *geth-miner*: Geth miner nodes
-3. *geth-tx*: Geth transaction nodes with mining disabled whose responsbility is to respond to API (websocket, rpc) queries
+1. *ethstats*: [Ethereum Network Stats](https://github.com/cubedro/eth-netstats)
+1. *geth-miner*: Geth miner nodes
+1. *geth-tx*: Geth transaction nodes with mining disabled whose responsbility is to respond to API (websocket, rpc) queries
 
 ## Prerequisites
 
@@ -59,6 +59,8 @@ The following tables lists the configurable parameters of the vault chart and th
 | `geth.miner.replicaCount`         | geth miner nodes replica count                | `3`                                   |
 | `geth.miner.account.secret`       | geth account secret                           | `my-secret-account-password`          |
 | `geth.genesis.networkId`          | Ethereum network id                           | `98052`                               |
+| `geth.genesis.difficulty`         | Ethereum network difficulty                   | `0x0400`                              |
+| `geth.genesis.gasLimit`           | Ethereum network gas limit                    | `0x0x8000000`                         |
 | `geth.account.publicKey`          | Geth Account to be initially funded and deposited with mined Ether | `0x975aafe74baa1978c6aabd457cf8d90ee3252db0` |
 | `geth.account.privateKey`         | Geth Private Key                              | `5c539529553e68af419860c617e20f604bd92a6f0c212b3671e0ee1312a33748` |
 | `geth.account.secret`             | Geth Account Secret                           | `MyAccountSecret`                     | 
