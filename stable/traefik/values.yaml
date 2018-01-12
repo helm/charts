@@ -182,7 +182,7 @@ deployment:
 ## Environment variables for the Traefik pod
 env:
 # Kubernetes ingress filters
-#kubernetes:
-#  namespaces:
-#  - default
-#  labelSelector:
+# kubernetes:
+#   namespaces:
+#   - default
+#   labelSelector:
