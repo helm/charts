@@ -45,7 +45,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to
 ## Installation
 
 ```shell
-helm install --name my-chartmuseum -f custom.yaml incubator/chartmuseum
+helm install --name my-chartmuseum -f custom.yaml stable/chartmuseum
 ```
 
 ## Uninstall 
