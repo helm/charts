@@ -5,9 +5,25 @@ clusterSize: 3
 ## administrator account; i.e., all users will be granted administrative
 ## access. Otherwise, the system will look for a Secret called
 ## <ReleaseName>-couchdb containing `adminUsername`, `adminPassword` and
-## `cookieAuthSecret` keys.
+## `cookieAuthSecret` keys. See the `createAdminSecret` flag.
 ## ref: https://kubernetes.io/docs/concepts/configuration/secret/
 allowAdminParty: false
+
+## If createAdminSecret is enabled a Secret called <ReleaseName>-couchdb will
+## be created containing auto-generated credentials. Users who prefer to set
+## these values themselves have a couple of options:
+##
+## 1) The `adminUsername`, `adminPassword`, and `cookieAuthSecret` can be
+##    defined directly in the chart's values. Note that all of a chart's values
+##    are currently stored in plaintext in a ConfigMap in the tiller namespace.
+##
+## 2) This flag can be disabled and a Secret with the required keys can be
+##    created ahead of time.
+createAdminSecret: true
+
+adminUsername: admin
+# adminPassword: this_is_not_secure
+# cookieAuthSecret: neither_is_this
 
 ## The storage volume used by each Pod in the StatefulSet. If a
 ## persistentVolume is not enabled, the Pods will use `emptyDir` ephemeral

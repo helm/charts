@@ -23,3 +23,14 @@ ensure that the latter gets a unique name.
 {{- $name := default .Chart.Name .Values.nameOverride -}}
 {{- printf "%s-svc-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
+
+{{/*
+Create a random string if the supplied key does not exist
+*/}}
+{{- define "couchdb.defaultsecret" -}}
+{{- if . -}}
+{{- . | b64enc | quote -}}
+{{- else -}}
+{{- randAlphaNum 10 | b64enc | quote -}}
+{{- end -}}
+{{- end -}}
