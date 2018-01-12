@@ -2,7 +2,6 @@ ACCEPT_EULA:
   value: N
 edition:
   value: Express
-replicaCount: 1
 image:
   repository: microsoft/mssql-server-linux
   tag: latest
@@ -12,10 +11,6 @@ service:
   type: ClusterIP
   externalPort: 1433
   internalPort: 1433
-ingress:
-  enabled: false
-  hosts:
-    - mymssqlsrv.local
 livenessprobe:
   initialDelaySeconds: 15
   periodSeconds: 20
