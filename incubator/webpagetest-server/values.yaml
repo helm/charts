@@ -3,8 +3,8 @@
 # Declare variables to be passed into your templates.
 replicaCount: 1
 image:
-  repository: webpagetest/server
-  tag: latest
+  repository: timothyclarke/wptserver
+  tag: 2018-01-12
   pullPolicy: IfNotPresent
 service:
   name: webpagetest-server
