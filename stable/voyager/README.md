@@ -43,11 +43,11 @@ The following tables lists the configurable parameters of the Voyager chart and 
 | Parameter                 | Description                                                   | Default            |
 | --------------------------| ------------------------------------------------------------- | ------------------ |
 | `operator.image`          | Name of Voyager operator image                                | `appscode/voyager` |
-| `operator.imageTag`       | Tag of Voyager operator image                                 | `5.0.0-rc.3`       |
+| `operator.imageTag`       | Tag of Voyager operator image                                 | `5.0.0-rc.11`       |
 | `haproxy.image`           | Name of HAProxy container image                               | `appscode/haproxy` |
-| `haproxy.imageTag`        | Tag of HAProxy container image                                | `1.7.9-5.0.0-rc.3` |
+| `haproxy.imageTag`        | Tag of HAProxy container image                                | `1.7.9-5.0.0-rc.11` |
 | `exporter.image`          | Name of Prometheus exporter sidecar image                     | `appscode/voyager` |
-| `exporter.imageTag`       | Tag of Prometheus exporter sidecar image                      | `5.0.0-rc.3`       |
+| `exporter.imageTag`       | Tag of Prometheus exporter sidecar image                      | `5.0.0-rc.11`       |
 | `imagePullSecrets`        | Specify image pull secrets                                    | `nil` (does not add image pull secrets to deployed pods) |
 | `imagePullPolicy`         | Image pull policy                                             | `IfNotPresent`     |
 | `cloudProvider`           | Name of cloud provider                                        | `nil`              |
