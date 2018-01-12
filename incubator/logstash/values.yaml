@@ -2,12 +2,13 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 replicaCount: 1
+nodeSelector: {}
 image:
   repository: docker.elastic.co/logstash/logstash-oss
   tag: 6.0.0
   pullPolicy: IfNotPresent
 service:
-  type: NodePort
+  type: ClusterIP
   internalPort: 1514
   ports:
     - name: "syslog-tcp"
@@ -19,6 +20,9 @@ service:
     - name: "filebeat-tcp"
       protocol: TCP
       containerPort: 5044
+
+# Extra config options
+configData: {}
 
 ingress:
   enabled: false

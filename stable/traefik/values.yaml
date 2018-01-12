@@ -33,79 +33,80 @@ acme:
   enabled: false
   email: admin@example.com
   staging: true
+  logging: false
   ## Set dnsProvider to perform domain verification using dns challenge
   dnsProvider:
     name: nil
     auroradns:
-      - AURORA_USER_ID: ""
-      - AURORA_KEY: ""
-      - AURORA_ENDPOINT: ""
+      AURORA_USER_ID: ""
+      AURORA_KEY: ""
+      AURORA_ENDPOINT: ""
     azure:
-      - AZURE_CLIENT_ID: ""
-      - AZURE_CLIENT_SECRET: ""
-      - AZURE_SUBSCRIPTION_ID: ""
-      - AZURE_TENANT_ID: ""
-      - AZURE_RESOURCE_GROUP: ""
+      AZURE_CLIENT_ID: ""
+      AZURE_CLIENT_SECRET: ""
+      AZURE_SUBSCRIPTION_ID: ""
+      AZURE_TENANT_ID: ""
+      AZURE_RESOURCE_GROUP: ""
     cloudflare:
-      - CLOUDFLARE_EMAIL: ""
-      - CLOUDFLARE_API_KEY: ""
+      CLOUDFLARE_EMAIL: ""
+      CLOUDFLARE_API_KEY: ""
     digitalocean:
-      - DO_AUTH_TOKEN: ""
+      DO_AUTH_TOKEN: ""
     dnsimple:
-      - DNSIMPLE_OAUTH_TOKEN: ""
-      - DNSIMPLE_BASE_URL: ""
+      DNSIMPLE_OAUTH_TOKEN: ""
+      DNSIMPLE_BASE_URL: ""
     dnsmadeeasy:
-      - DNSMADEEASY_API_KEY: ""
-      - DNSMADEEASY_API_SECRET: ""
-      - DNSMADEEASY_SANDBOX: ""
+      DNSMADEEASY_API_KEY: ""
+      DNSMADEEASY_API_SECRET: ""
+      DNSMADEEASY_SANDBOX: ""
     dnspod:
-      - DNSPOD_API_KEY: ""
+      DNSPOD_API_KEY: ""
     dyn:
-      - DYN_CUSTOMER_NAME: ""
-      - DYN_USER_NAME: ""
-      - DYN_PASSWORD: ""
+      DYN_CUSTOMER_NAME: ""
+      DYN_USER_NAME: ""
+      DYN_PASSWORD: ""
     exoscale:
-      - EXOSCALE_API_KEY: ""
-      - EXOSCALE_API_SECRET: ""
-      - EXOSCALE_ENDPOINT: ""
+      EXOSCALE_API_KEY: ""
+      EXOSCALE_API_SECRET: ""
+      EXOSCALE_ENDPOINT: ""
     gandi:
-      - GANDI_API_KEY: ""
+      GANDI_API_KEY: ""
     godaddy:
-      - GODADDY_API_KEY: ""
-      - GODADDY_API_SECRET: ""
+      GODADDY_API_KEY: ""
+      GODADDY_API_SECRET: ""
     googlecloud:
-      - GCE_PROJECT: ""
-      - GCE_SERVICE_ACCOUNT_FILE: ""
+      GCE_PROJECT: ""
+      GCE_SERVICE_ACCOUNT_FILE: ""
     linode:
-      - LINODE_API_KEY: ""
+      LINODE_API_KEY: ""
     namecheap:
-      - NAMECHEAP_API_USER: ""
-      - NAMECHEAP_API_KEY: ""
+      NAMECHEAP_API_USER: ""
+      NAMECHEAP_API_KEY: ""
     ns1:
-      - NS1_API_KEY: ""
+      NS1_API_KEY: ""
     otc:
-      - OTC_DOMAIN_NAME: ""
-      - OTC_USER_NAME: ""
-      - OTC_PASSWORD: ""
-      - OTC_PROJECT_NAME: ""
-      - OTC_IDENTITY_ENDPOINT: ""
+      OTC_DOMAIN_NAME: ""
+      OTC_USER_NAME: ""
+      OTC_PASSWORD: ""
+      OTC_PROJECT_NAME: ""
+      OTC_IDENTITY_ENDPOINT: ""
     pdns:
-      - PDNS_API_URL: ""
+      PDNS_API_URL: ""
     rackspace:
-      - RACKSPACE_USER: ""
-      - RACKSPACE_API_KEY: ""
+      RACKSPACE_USER: ""
+      RACKSPACE_API_KEY: ""
     rfc2136:
-      - RFC2136_NAMESERVER: ""
-      - RFC2136_TSIG_ALGORITHM: ""
-      - RFC2136_TSIG_KEY: ""
-      - RFC2136_TSIG_SECRET: ""
-      - RFC2136_TIMEOUT: ""
+      RFC2136_NAMESERVER: ""
+      RFC2136_TSIG_ALGORITHM: ""
+      RFC2136_TSIG_KEY: ""
+      RFC2136_TSIG_SECRET: ""
+      RFC2136_TIMEOUT: ""
     route53:
-      - AWS_REGION: ""
-      - AWS_ACCESS_KEY_ID: ""
-      - AWS_SECRET_ACCESS_KEY: ""
+      AWS_REGION: ""
+      AWS_ACCESS_KEY_ID: ""
+      AWS_SECRET_ACCESS_KEY: ""
     vultr:
-      - VULTR_API_KEY: ""
+      VULTR_API_KEY: ""
   ## Save ACME certs to a persistent volume. WARNING: If you do not do this, you will re-request
   ## certs every time a pod (re-)starts and you WILL be rate limited!
   persistence:
@@ -164,12 +165,24 @@ rbac:
 metrics:
   prometheus:
     enabled: false
-    buckets: 0.1,0.3,1.2,5.0
+    # buckets: [0.1,0.3,1.2,5]
   datadog:
     enabled: false
-    # address: "localhost:8125"
-    # pushInterval: 30s
+    # address: localhost:8125
+    # pushinterval: 10s
   statsd:
     enabled: false
-    # address: "localhost:8125"
-    # pushInterval: 30s
+    # address: localhost:8125
+    # pushinterval: 10s
+deployment:
+  hostPort:
+    httpEnabled: false
+    httpsEnabled: false
+    dashboardEnabled: false
+## Environment variables for the Traefik pod
+env:
+# Kubernetes ingress filters
+#kubernetes:
+#  namespaces:
+#  - default
+#  labelSelector:

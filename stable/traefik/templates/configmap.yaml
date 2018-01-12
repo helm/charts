@@ -74,6 +74,9 @@ data:
     {{- if .Values.acme.staging }}
     caServer = "https://acme-staging.api.letsencrypt.org/directory"
     {{- end }}
+    {{- if .Values.acme.logging }}
+    acmeLogging = true
+    {{- end }}
     {{- end }}
     {{- if .Values.dashboard.enabled }}
     [web]
@@ -91,17 +94,32 @@ data:
       {{- end}}
       {{- end}}
     {{- end }}
-    {{ if .Values.metrics.prometheus.enabled }}
+    {{- if .Values.metrics.prometheus.enabled }}
     [web.metrics.prometheus]
-      Buckets = [{{ .Values.metrics.prometheus.buckets }}]
+      {{- if .Values.metrics.prometheus.buckets }}
+      buckets = [
+        {{- range $idx, $element := .Values.metrics.prometheus.buckets }}
+            {{- if $idx }},{{ end }}
+            {{- printf "%.1f" $element }}
+        {{- end -}}
+        ]
+        {{- end -}}
     {{- end }}
-    {{ if .Values.metrics.datadog.enabled }}
+    {{- if .Values.metrics.datadog.enabled }}
     [web.metrics.datadog]
-      Address = {{ .Values.metrics.datadog.address }}
-      PushInterval = "{{ .Values.metrics.datadog.pushInterval }}"
+      {{- if .Values.metrics.datadog.address }}
+      address = {{ .Values.metrics.datadog.address | quote }}
+      {{- end}}
+      {{- if .Values.metrics.datadog.pushinterval }}
+      pushinterval = {{ .Values.metrics.datadog.pushinterval | quote }}
+      {{- end}}
     {{- end }}
-    {{ if .Values.metrics.statsd.enabled }}
+    {{- if .Values.metrics.statsd.enabled }}
     [web.metrics.statsd]
-      Address = {{ .Values.metrics.statsd.address }}
-      PushInterval = "{{ .Values.metrics.statsd.pushInterval }}"
+      {{- if .Values.metrics.statsd.address }}
+      address = {{ .Values.metrics.statsd.address | quote }}
+      {{- end}}
+      {{- if .Values.metrics.statsd.pushinterval }}
+      pushinterval = {{ .Values.metrics.statsd.pushinterval | quote }}
+      {{- end}}
     {{- end }}
