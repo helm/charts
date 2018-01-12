@@ -166,3 +166,4 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 ## Useful links
 https://www.jfrog.com
 https://www.jfrog.com/confluence/
+
