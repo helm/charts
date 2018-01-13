@@ -8,11 +8,11 @@ image:
     tag: 1.8.1
     pullPolicy: IfNotPresent
   kuberegistry:
-    name: registry
+    repository: registry
     tag: 2.2.1
     pullPolicy: IfNotPresent
   kubeconfig:
-    name: 127.0.0.1:5000/kubeconfig
+    repository: 127.0.0.1:5000/kubeconfig
     tag: latest
     pullPolicy: Always
 

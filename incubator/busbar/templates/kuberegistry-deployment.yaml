@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
       - name: {{ template "kubeRegistry.fullname" . }}-external
-        image: {{ .Values.image.kuberegistry.name }}:{{ .Values.image.kuberegistry.tag }}
+        image: {{ .Values.image.kuberegistry.repository }}:{{ .Values.image.kuberegistry.tag }}
         imagePullPolicy: {{ .Values.image.kuberegistry.pullPolicy }}
         env:
         - name: REGISTRY_HTTP_ADDR
