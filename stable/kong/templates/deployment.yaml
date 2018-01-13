@@ -12,6 +12,7 @@ spec:
   selector:
     matchLabels:
       app: {{ template "kong.name" . }}
+      release: {{ .Release.Name }}
   template:
     metadata:
     {{- if .Values.podAnnotations }}
@@ -19,8 +20,8 @@ spec:
 {{ toYaml .Values.podAnnotations | indent 8 }}
     {{- end }}
       labels:
-        app: "{{ template "kong.name" . }}"
-        release: "{{ .Release.Name }}"
+        app: {{ template "kong.name" . }}
+        release: {{ .Release.Name }}
     spec:
       containers:
       - name: {{ template "kong.name" . }}
