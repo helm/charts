@@ -4,7 +4,7 @@ metadata:
   name: {{ template "busbar.fullname" . }}-web
   labels:
     app: {{ template "busbar.name" . }}
-    component: {{ template "busbar.name" . }}-web
+    component: web
     release: "{{ .Release.Name }}"
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     heritage: "{{ .Release.Service }}"
@@ -13,7 +13,7 @@ metadata:
 spec:
   selector:
     app: {{ template "busbar.name" . }}
-    component: {{ template "busbar.name" . }}-web
+    component: web
     release: "{{ .Release.Name }}"
   type: LoadBalancer
   ports:

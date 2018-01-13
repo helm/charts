@@ -4,7 +4,7 @@ metadata:
   name: {{ template "busbar.fullname" . }}-worker
   labels:
     app: {{ template "busbar.name" . }}
-    component: {{ template "busbar.name" . }}-worker
+    component: worker
     release: "{{ .Release.Name }}"
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     heritage: "{{ .Release.Service }}"
@@ -13,7 +13,7 @@ spec:
     metadata:
       labels:
         app: {{ template "busbar.name" . }}
-        component: {{ template "busbar.name" . }}-worker
+        component: worker
         release: "{{ .Release.Name }}"
     spec:
       containers:
