@@ -107,7 +107,6 @@ cassandra:
 postgresql:
   enabled: true
   postgresUser: kong
-  postgresPassword: kong
   postgresDatabase: kong
   persistence:
     enabled: false
