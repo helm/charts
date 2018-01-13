@@ -17,6 +17,10 @@ controller:
   # is merged
   hostNetwork: false
 
+  ## Use host ports 80 and 443
+  daemonset:
+    useHostPort: false
+
   ## Required only if defaultBackend.enabled = false
   ## Must be <namespace>/<service_name>
   ##
