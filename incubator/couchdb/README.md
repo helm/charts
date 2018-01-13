@@ -19,7 +19,7 @@ $ helm install incubator/couchdb --set allowAdminParty=true
 
 ## Prerequisites
 
-- Kubernetes 1.6+ with Beta APIs enabled
+- Kubernetes 1.8+ with Beta APIs enabled
 
 ## Installing the Chart
 
