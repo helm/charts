@@ -19,6 +19,10 @@ Master:
   # JavaOpts: "-Xms512m -Xmx512m"
   # JenkinsOpts: ""
   # JenkinsUriPrefix: "/jenkins"
+  # Set RunAsUser to 1000 to let Jenkins run as non-root user 'jenkins' which exists in 'jenkins/jenkins' docker image.
+  # When setting RunAsUser to a different value than 0 also set FsGroup to the same value:
+  # RunAsUser: <defaults to 0>
+  # FsGroup: <will be omitted in deployment if RunAsUser is 0>
   ServicePort: 8080
   # For minikube, set this to NodePort, elsewhere use LoadBalancer
   # Use ClusterIP if your setup includes ingress controller
@@ -30,6 +34,9 @@ Master:
   # HostName: jenkins.cluster.local
   # NodePort: <to set explicitly, choose port between 30000-32767
   ContainerPort: 8080
+  # Enable Kubernetes Liveness and Readiness Probes
+  HealthProbes: true
+  HealthProbesTimeout: 120
   SlaveListenerPort: 50000
   LoadBalancerSourceRanges:
   - 0.0.0.0/0

@@ -50,6 +50,10 @@ spec:
                   key: collector-url
             - name: FLUENTD_SOURCE
               value: {{ quote .Values.sumologic.fluentdSource }}
+            {{- if .Values.sumologic.fluentdUserConfigDir }}
+            - name: FLUENTD_USER_CONFIG_DIR
+              value: {{ quote .Values.sumologic.fluentdUserConfigDir }}
+            {{- end }}
             {{- if .Values.sumologic.flushInterval }}
             - name: FLUSH_INTERVAL
               value: {{ quote .Values.sumologic.flushInterval }}
@@ -61,6 +65,10 @@ spec:
             {{- if .Values.sumologic.sourceName }}
             - name: SOURCE_NAME
               value: {{ quote .Values.sumologic.sourceName }}
+            {{- end }}
+            {{- if .Values.sumologic.sourceHost }}
+            - name: SOURCE_HOST
+              value: {{ quote .Values.sumologic.sourceHost }}
             {{- end }}
             {{- if .Values.sumologic.sourceCategory }}
             - name: SOURCE_CATEGORY
@@ -78,7 +86,7 @@ spec:
             - name: LOG_FORMAT
               value: {{ quote .Values.sumologic.logFormat }}
             {{- end }}
-            {{- if .Values.sumologic.kubernetesMeta }}
+            {{- if quote .Values.sumologic.kubernetesMeta }}
             - name: KUBERNETES_META
               value: {{ quote .Values.sumologic.kubernetesMeta }}
             {{- end }}
@@ -118,9 +126,25 @@ spec:
             - name: FLUENTD_OPT
               value: {{ quote .Values.sumologic.fluentdOpt }}
             {{- end }}
-            {{- if .Values.sumologic.verifySsl }}
+            {{- if quote .Values.sumologic.verifySsl }}
             - name: VERIFY_SSL
               value: {{ quote .Values.sumologic.verifySsl }}
+            {{- end }}
+            {{- if .Values.sumologic.multilineStartRegexp }}
+            - name: MULTILINE_START_REGEXP
+              value: {{ quote .Values.sumologic.multilineStartRegexp }}
+            {{- end }}
+            {{- if quote .Values.sumologic.readFromHead }}
+            - name: READ_FROM_HEAD
+              value: {{ quote .Values.sumologic.readFromHead }}
+            {{- end }}
+            {{- if .Values.sumologic.concatSeparator }}
+            - name: CONCAT_SEPARATOR
+              value: {{ quote .Values.sumologic.concatSeparator }}
+            {{- end }}
+            {{- if .Values.sumologic.auditLogPath }}
+            - name: AUDIT_LOG_PATH
+              value: {{ quote .Values.sumologic.auditLogPath }}
             {{- end }}
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
       volumes:
