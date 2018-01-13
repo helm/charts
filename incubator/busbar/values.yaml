@@ -23,9 +23,9 @@ publicDomainName: example.com
 
 ## Private Registry
 kubeRegistry:
-  StorageS3Accesskey: my_private_registry_s3_access_key
-  StorageS3Secretkey: my_private_registry_s3_secret_key
-  StorageS3Bucket: my_private_registry_s3_bucket
+  storageS3Accesskey: my_private_registry_s3_access_key
+  storageS3Secretkey: my_private_registry_s3_secret_key
+  storageS3Bucket: my_private_registry_s3_bucket
 
   resources: {}
 #    limits:
