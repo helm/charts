@@ -9,6 +9,8 @@ metadata:
   name: {{ template "verdaccio.fullname" . }}
 spec:
   replicas: {{ .Values.replicaCount }}
+  strategy:
+    type: Recreate
   template:
     metadata:
     {{- if .Values.podAnnotations }}
