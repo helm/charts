@@ -12,6 +12,8 @@ nodeSelector: {}
 httpPort: 80
 
 serviceType: ClusterIP
+serviceAnnotations: {}
+  # foo.io/bar: "true"
 
 resources:
   limits:
