@@ -6,7 +6,7 @@ server:
 
   ## Grafana Docker image
   ##
-  image: "grafana/grafana:latest"
+  image: "grafana/grafana:4.6.3"
 
   extraEnv: {}
   nodeSelector: {}

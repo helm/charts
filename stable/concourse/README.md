@@ -119,6 +119,8 @@ The following tables lists the configurable parameters of the Concourse chart an
 | `web.ingress.hosts` | Concourse Web Ingress Hostnames | `[]` |
 | `web.ingress.tls` | Concourse Web Ingress TLS configuration | `[]` |
 | `web.additionalAffinities` | Additional affinities to apply to web pods. E.g: node affinity | `nil` |
+| `web.metrics.prometheus.enabled` | Enable Prometheus metrics exporter | `false` |
+| `web.metrics.prometheus.port` | Port for exporting Prometeus metrics | `9391` |
 | `worker.nameOverride` | Override the Concourse Worker components name| `worker` |
 | `worker.replicas` | Number of Concourse Worker replicas | `2` |
 | `worker.minAvailable` | Minimum number of workers available after an eviction | `1` |

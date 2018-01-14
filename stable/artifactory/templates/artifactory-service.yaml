@@ -8,6 +8,10 @@ metadata:
     component: "{{ .Values.artifactory.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
+{{- if .Values.artifactory.service.annotations }}
+  annotations:
+{{ toYaml .Values.artifactory.service.annotations | indent 4 }}
+{{- end }}
 spec:
   type: {{ .Values.artifactory.service.type }}
   ports:

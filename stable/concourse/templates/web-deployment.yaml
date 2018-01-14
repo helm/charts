@@ -296,11 +296,21 @@ spec:
                   key: vault-approle-secret-id
             {{- end }}
             {{- end }}
+            {{- if .Values.web.metrics.prometheus.enabled }}
+            - name: CONCOURSE_PROMETHEUS_BIND_IP
+              value: "0.0.0.0"
+            - name: CONCOURSE_PROMETHEUS_BIND_PORT
+              value: {{ .Values.web.metrics.prometheus.port | quote }}
+            {{- end }}
           ports:
             - name: atc
               containerPort: {{ .Values.concourse.atcPort }}
             - name: tsa
               containerPort: {{ .Values.concourse.tsaPort }}
+            {{- if .Values.web.metrics.prometheus.enabled }}
+            - name: prometheus
+              containerPort: {{ .Values.web.metrics.prometheus.port }}
+            {{- end }}
           livenessProbe:
             httpGet:
               path: /
