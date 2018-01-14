@@ -3,8 +3,8 @@
 # Declare variables to be passed into your templates.
 
 server:
-  # server.replicaCount is the GoCD Server replicas Count
-  replicaCount: 1
+  # server.enabled is the toggle to run GoCD Server. Change to false for Agent Only Deployment.
+  enabled: true
   image:
     # server.image.repository is the GoCD Server image name
     repository: "gocd/gocd-server"

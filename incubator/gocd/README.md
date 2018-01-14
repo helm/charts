@@ -44,7 +44,7 @@ The following tables lists the configurable parameters of the GoCD chart and the
 
 | Parameter                                  | Description                                                                                                   | Default             |
 | ------------------------------------------ | ------------------------------------------------------------------------------------------------------------- | ------------------- |
-| `server.replicaCount`                      | GoCD Server replicas Count. Supported values are `0`: `Agent Only Deployment`, `1`: `Agent-Server Deployment` | `1`                 |
+| `server.enabled`                           | Enable GoCD Server. Supported values are `true`: `Agent-Server Deployment`, `false`: `Agent Only Deployment`  | `true`              |
 | `server.image.repository`                  | GoCD server image                                                                                             | `gocd/gocd-server`  |
 | `server.image.tag`                         | GoCD server image tag                                                                                         | `.Chart.appVersion` |
 | `server.image.pullPolicy`                  | Image pull policy                                                                                             | `IfNotPresent`      |

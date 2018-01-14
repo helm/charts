@@ -1,3 +1,4 @@
+{{- if .Values.server.enabled }}
 apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
@@ -9,12 +10,11 @@ metadata:
     heritage: {{ .Release.Service | quote }}
     component: server
 spec:
-  {{- if le (int .Values.server.replicaCount) 1 }}
-  replicas: {{ .Values.server.replicaCount }}
-  {{- end }}
+  replicas: 1
   selector:
     matchLabels:
       app: {{ template "gocd.name" . }}
+      release: {{ .Release.Name | quote }}
       component: server
   template:
     metadata:
@@ -77,3 +77,4 @@ spec:
       nodeSelector:
 {{ toYaml .Values.server.nodeSelector | indent 8 }}
     {{- end }}
+{{- end}}
