@@ -65,7 +65,7 @@ Based on the storage credentials used, fill in the corresponding parameters for 
 | `s3.bucketName`          | S3 bucket name        | `""`              |
 | `s3.endpoint`            | S3 endpoint           | `""`              |
 | `s3.secure`              | S3 secure             | `"0"`             |
-| `s3.signature`           | S3 signature          | `"0"`             |
+| `s3.signature`           | S3 signature          | `"1"`             |
 
 
 -	With `Google Cloud` credentials, you must define your `GCS bucket name`:
@@ -110,7 +110,7 @@ You should install the chart specifying each parameter using the `--set key=valu
 
 ```console
 $ helm install --namespace pachyderm --name my-release \
---set credentials=s3,s3.accessKey=myaccesskey,s3.secretKey=mysecretkey,s3.bucketName=default_bucket,s3.endpoint=domain.subdomain:8080,etcd.persistence.enabled=true,etcd.persistence.accessMode=ReadWriteMany,"signature=\"1\"","secure=\"1\"" \
+--set credentials=s3,s3.accessKey=myaccesskey,s3.secretKey=mysecretkey,s3.bucketName=default_bucket,s3.endpoint=domain.subdomain:8080,etcd.persistence.enabled=true,etcd.persistence.accessMode=ReadWriteMany \
 stable/pachyderm
 ```
 
