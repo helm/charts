@@ -69,3 +69,8 @@ config:
 ## Additional pod labels
 ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
 podLabels: {}
+
+## Additional pod-level settings
+# podSettings:
+  # # Change this to give pods more time to properly leave the cluster when not using persistent storage.
+  # terminationGracePeriodSeconds: 30

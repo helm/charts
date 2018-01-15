@@ -105,6 +105,15 @@ spec:
         volumeMounts:
         - name: data
           mountPath: /var/lib/cassandra
+        {{- if not .Values.persistence.enabled }}
+        lifecycle:
+          preStop:
+            exec:
+              command: ["/bin/sh", "-c", "exec nodetool decommission"]
+        {{- end }}
+      {{- if .Values.podSettings.terminationGracePeriodSeconds }}
+      terminationGracePeriodSeconds: {{ .Values.podSettings.terminationGracePeriodSeconds }}
+      {{- end }}
       {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
         - name: {{ .Values.image.pullSecrets }}
