@@ -1,7 +1,12 @@
 1. Get the application URL by running these commands:
+{{- $tls := .Values.ingress.tls }}
 {{- if .Values.ingress.enabled }}
-{{- range .Values.ingress.hosts }}
-  http://{{ . }}
+  {{- range $host := .Values.ingress.hosts }}
+  {{- if $tls }}
+  https://{{ $host }}
+  {{- else }}
+  http://{{ $host }}
+  {{- end }}
 {{- end }}
 {{- else if contains "NodePort" .Values.service.type }}
   export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "verdaccio.fullname" . }})
