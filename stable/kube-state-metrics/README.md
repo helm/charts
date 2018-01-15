@@ -21,6 +21,7 @@ $ helm install stable/kube-state-metrics
 | `prometheusScrape`                  | Whether or not enable prom scrape                       | True                                        |
 | `rbac.create`                       | If true, create & use RBAC resources                    | False                                       |
 | `rbac.serviceAccountName`           | ServiceAccount to be used (ignored if rbac.create=true) | default                                     |
+| `nodeSelector`                      | Node labels for pod assignment	                        | {}                                     |
 | `podAnnotations`                    | Annotations to be added to the pod                      | {}                                     |
 | `resources`                         | kube-state-metrics resource requests and limits         | {}                                          |
 | `collectors.daemonsets`             | Enable the daemonsets collector.                        | true                                        |
