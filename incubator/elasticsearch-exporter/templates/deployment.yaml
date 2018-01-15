@@ -1,20 +1,18 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "elasticsearch-exporter.fullname" . }}
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
-    app: {{ template "fullname" . }}
+    app: {{ template "elasticsearch-exporter.name" . }}
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
-    component: elasticsearch-exporter
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {{ template "fullname" . }}
+      app: {{ template "elasticsearch-exporter.name" . }}
       release: "{{ .Release.Name }}"
-      component: elasticsearch-exporter
   strategy:
     rollingUpdate:
       maxSurge: 1
@@ -23,9 +21,8 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "fullname" . }}
+        app: {{ template "elasticsearch-exporter.name" . }}
         release: "{{ .Release.Name }}"
-        component: elasticsearch-exporter
     spec:
       restartPolicy: {{ .Values.restartPolicy }}
       securityContext:
@@ -45,7 +42,7 @@ spec:
                   "-es.client-cert=/ssl/client.pem",
                   "-es.client-private-key=/ssl/client.key",
                   {{- end }}
-                  "-web.listen-address=:{{ .Values.service.externalPort }}",
+                  "-web.listen-address=:{{ .Values.service.internalPort }}",
                   "-web.telemetry-path={{ .Values.web.path }}"]
         securityContext:
           capabilities:
@@ -91,5 +88,5 @@ spec:
       {{- if .Values.es.ssl.enabled }}
       - name: ssl
         secret:
-          secretName: {{ template "fullname" . }}-cert
+          secretName: {{ template "elasticsearch-exporter.fullname" . }}-cert
       {{- end }}

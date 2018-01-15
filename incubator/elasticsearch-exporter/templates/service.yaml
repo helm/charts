@@ -1,21 +1,19 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "elasticsearch-exporter.fullname" . }}
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
-    app: {{ template "fullname" . }}
+    app: {{ template "elasticsearch-exporter.name" . }}
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
-    component: elasticsearch-exporter
 spec:
   type: {{ .Values.service.type }}
   ports:
     - name: http-service
       port: {{ .Values.service.externalPort }}
-      targetPort: {{ .Values.service.externalPort }}
+      targetPort: {{ .Values.service.internalPort }}
       protocol: TCP
   selector:
-    app: {{ template "fullname" . }}
+    app: {{ template "elasticsearch-exporter.name" . }}
     release: "{{ .Release.Name }}"
-    component: elasticsearch-exporter
