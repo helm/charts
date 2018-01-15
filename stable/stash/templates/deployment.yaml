@@ -7,6 +7,8 @@ metadata:
     app: "{{ template "stash.name" . }}"
     heritage: "{{ .Release.Service }}"
     release: "{{ .Release.Name }}"
+  initializers:
+    pending: []
 spec:
   replicas: {{ .Values.replicaCount }}
   template:
