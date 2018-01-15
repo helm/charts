@@ -12,7 +12,7 @@ s3:
  ## For 'true' set the value to 1
  secure: "0"
  ## For 'S3v2' signature, set the value to 1. For 'S3v4', set this value to 0
- signature: "0"
+ signature: "1"
 
 ## Google Cloud credentials
 google:
