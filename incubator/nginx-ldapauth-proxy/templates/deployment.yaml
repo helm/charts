@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
   name: {{ template "nginx-ldapauth-proxy.fullname" . }}
@@ -8,6 +8,9 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "nginx-ldapauth-proxy.fullname" . }}
   replicas: {{ .Values.replicaCount }}
   template:
     metadata:
