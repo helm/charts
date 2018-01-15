@@ -58,13 +58,23 @@ The following tables lists the configurable parameters of the Magento chart and 
 | `magentoLastName`                  | Magento Admin Last Name                  | `LastName`                                               |
 | `magentoMode`                      | Magento mode                             | `developer`                                              |
 | `magentoAdminUri`                  | Magento prefix to access Magento Admin   | `admin`                                                  |
+| `allowEmptyPassword`               | Allow DB blank passwords                 | `yes`                                                    |
+| `externalDatabase.host`            | Host of the external database            | `nil`                                                    |
+| `externalDatabase.port`            | Port of the external database            | `3306`                                                   |
+| `externalDatabase.user`            | Existing username in the external db     | `bn_magento`                                             |
+| `externalDatabase.password`        | Password for the above username          | `nil`                                                    |
+| `externalDatabase.database`        | Name of the existing databse             | `bitnami_magento`                                        |
+| `mariadb.enabled`                  | Use or not the mariadb chart             | `true`                                                   |
 | `mariadb.mariadbRootPassword`      | MariaDB admin password                   | `nil`                                                    |
+| `mariadb.mariadbDatabase`          | Database name to create                  | `bitnami_magento`                                        |
+| `mariadb.mariadbUser`              | Database user to create                  | `bn_magento`                                             |
+| `mariadb.mariadbPassword`          | Password for the database                | _random 10 character long alphanumeric string_           |
 | `serviceType`                      | Kubernetes Service type                  | `LoadBalancer`                                           |
 | `persistence.enabled`              | Enable persistence using PVC             | `true`                                                   |
-| `persistence.apache.storageClass`  | PVC Storage Class for Apache volume      | `nil`  (uses alpha storage annotation)                                              |
+| `persistence.apache.storageClass`  | PVC Storage Class for Apache volume      | `nil`  (uses alpha storage annotation)                   |
 | `persistence.apache.accessMode`    | PVC Access Mode for Apache volume        | `ReadWriteOnce`                                          |
 | `persistence.apache.size`          | PVC Storage Request for Apache volume    | `1Gi`                                                    |
-| `persistence.magento.storageClass` | PVC Storage Class for Magento volume     | `nil`  (uses alpha storage annotation)                                                |
+| `persistence.magento.storageClass` | PVC Storage Class for Magento volume     | `nil`  (uses alpha storage annotation)                   |
 | `persistence.magento.accessMode`   | PVC Access Mode for Magento volume       | `ReadWriteOnce`                                          |
 | `persistence.magento.size`         | PVC Storage Request for Magento volume   | `8Gi`                                                    |
 | `resources`                        | CPU/Memory resource requests/limits      | Memory: `512Mi`, CPU: `300m`                             |
