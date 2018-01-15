@@ -168,8 +168,8 @@ config:
     separator: .
     udp_read_buffer: 0
     # Uncomment to define graphite templates
-    #templates:
-    #  - "graphite.metric.*.*.* measurement.run"
+    # templates:
+    #   - "graphite.metric.*.*.* measurement.run"
   collectd:
     enabled: false
     bind_address: 25826
