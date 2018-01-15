@@ -33,6 +33,7 @@ acme:
   enabled: false
   email: admin@example.com
   staging: true
+  logging: false
   ## Save ACME certs to a persistent volume. WARNING: If you do not do this, you will re-request
   ## certs every time a pod (re-)starts and you WILL be rate limited!
   persistence:
@@ -91,15 +92,15 @@ rbac:
 metrics:
   prometheus:
     enabled: false
-    buckets: 0.1,0.3,1.2,5.0
+    # buckets: [0.1,0.3,1.2,5]
   datadog:
     enabled: false
-    # address: "localhost:8125"
-    # pushInterval: 30s
+    # address: localhost:8125
+    # pushinterval: 10s
   statsd:
     enabled: false
-    # address: "localhost:8125"
-    # pushInterval: 30s
+    # address: localhost:8125
+    # pushinterval: 10s
 deployment:
   hostPort:
     httpEnabled: false
