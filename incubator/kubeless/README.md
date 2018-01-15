@@ -53,6 +53,7 @@ The following tables lists the configurable parameters of the Kubeless chart and
 | `controller.deployment.image.repository` | Controller image              | `bitnami/kubeless-controller` |
 | `controller.deployment.image.pullPolicy` | Controller image pull policy  | `IfNotPresent`                |
 | `controller.deployment.replicaCount`     | Number of replicas            | `1`                           |
+| `ui.enabled`                             | Kubeless UI component         | `false`                       |
 | `ui.deployment.ui.image.repository`      | Kubeless UI image             | `bitnami/kubeless-ui`         |
 | `ui.deployment.ui.image.pullPolicy`      | Kubeless UI image pull policy | `IfNotPresent`                |
 | `ui.deployment.proxy.image.repository`   | Proxy image                   | `kelseyhightower/kubectl`     |
@@ -83,6 +84,14 @@ $ helm install --name my-release -f values.yaml --namespace kubeless incubator/k
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
+## Kubeless UI
+
+The [Kubeless UI](https://github.com/kubeless/kubeless-ui) component is disabled by default. In order to enable it set the ui.enabled property to true. For example,
+
+```bash
+$ helm install --name my-release --set ui.enabled=true --namespace kubeless incubator/kubeless
+```
 
 ## Persistence
 
