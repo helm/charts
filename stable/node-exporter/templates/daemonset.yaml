@@ -1,0 +1,74 @@
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: {{template "fullname" .}}
+  labels:
+    app: {{ template "fullname" . }}
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+spec:
+  template:
+    metadata:
+      labels:
+        app: {{template "fullname" .}}
+        release: {{.Release.Name | quote }}
+      annotations:
+        "prometheus.io/port": "9100"
+        "prometheus.io/scrape": "true"
+    spec:
+      hostNetwork: True
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 10 }}
+      containers:
+      - name: {{ template "fullname" . }}
+        image: "{{default "quay.io/prometheus/node-exporter" .Values.image}}:{{default "v0.13.0" .Values.imageTag}}"
+        imagePullPolicy: {{default "IfNotPresent" .Values.ImagePullPolicy}}
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+        ports:
+          - containerPort: 9100
+            name: main
+        command:
+          - node_exporter
+          - '-collector.procfs'
+          - /host/proc
+          - '-collector.sysfs'
+          - /host/sys
+          - '-collector.filesystem.ignored-mount-points'
+          - '^/(sys|proc|dev|host|etc)($|/)'
+          - '-collector.textfile.directory'
+          - /srv/txt_collector
+        volumeMounts:
+          - mountPath: /host/proc
+            name: proc
+          - mountPath: /host/sys
+            name: sys
+          - mountPath: /rootfs
+            name: root
+          - mountPath: /srv/txt_collector
+            name: srv
+        securityContext:
+          privileged: true
+      - name: smartd
+        image: kfox1111/node-exporter-smartd:latest
+        imagePullPolicy: {{default "IfNotPresent" .Values.ImagePullPolicy}}
+        volumeMounts:
+          - mountPath: /srv/txt_collector
+            name: srv
+        securityContext:
+          privileged: true
+      volumes:
+        - name: proc
+          hostPath:
+            path: /proc
+        - name: srv
+          hostPath:
+            path: /var/lib/node-exporter
+        - name: sys
+          hostPath:
+            path: /sys
+        - name: root
+          hostPath:
+            path: /
+

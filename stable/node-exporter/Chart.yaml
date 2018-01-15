@@ -1,0 +1,9 @@
+name: node-exporter
+version: 0.13.0
+description: Prometheus node exporter module
+keywords:
+- prometheus
+- node
+maintainers:
+  - name: Kevin Fox
+    email: Kevin.Fox@pnnl.gov
