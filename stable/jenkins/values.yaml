@@ -34,6 +34,9 @@ Master:
   # HostName: jenkins.cluster.local
   # NodePort: <to set explicitly, choose port between 30000-32767
   ContainerPort: 8080
+  # Enable Kubernetes Liveness and Readiness Probes
+  HealthProbes: true
+  HealthProbesTimeout: 120
   SlaveListenerPort: 50000
   LoadBalancerSourceRanges:
   - 0.0.0.0/0
