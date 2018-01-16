@@ -1,0 +1,3 @@
+To verify the certificate is installed run:
+
+  kubectl --namespace={{ .Release.Namespace }} get certificate -l "app={{ template "cert-manager-certificate.name" . }},release={{ .Release.Name }}"

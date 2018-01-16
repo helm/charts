@@ -1,0 +1,9 @@
+# Default values for cert-manager-certificate.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+provider: 'default'
+commonName: 'default.example.com'
+secretName: 'default-tls'
+issuerRef:
+  name: default-certs
+  kind: ClusterIssuer
