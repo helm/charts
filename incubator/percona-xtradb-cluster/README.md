@@ -23,7 +23,7 @@ To install the chart with the release name `my-release`:
 $ helm install --name my-release incubator/percona-xtradb-cluster
 ```
 
-The command deploys Percona Server on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
+The command deploys a Percona XtraDB Cluster on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
 
 The root password can only be used inside each `pod`.  You should set a default `mysqlDatabase`, `mysqlUser` and `mysqlPassword` in the values.yaml file.
 
@@ -55,7 +55,7 @@ The following tables lists the configurable parameters of the Percona chart and 
 | `image.repository`         | `percona-xtradb-cluster` image Repo.                 | 5.7.19 release                                        |
 | `image.tag`                 | `percona-xtradb-cluster` image tag.                 | `percona/percona-xtradb-cluster` |
 | `image.pullPolicy`          | Image pull policy                  | `IfNotPresent`                                             
-| `replicas` | Number of pods to join the Percona XtraDB Cluster | 3 |
+| `replicas`                 | Number of pods to join the Percona XtraDB Cluster   | 3                                         |
 | `mysqlRootPassword`        | Password for the `root` user.      | `not-a-secure-password`                                                      |
 | `xtraBackupPassword`       | Password for the `xtrabackup` user. | `replicate-my-data` |
 | `mysqlUser`                | Username of new user to create.    | `nil`                                                      |
@@ -71,14 +71,14 @@ The following tables lists the configurable parameters of the Percona chart and 
 | `metricsExporter` | if set to true runs a [mysql metrics exporter](https://github.com/prometheus/mysqld_exporter) container in the pod | false |
 
 
-Some of the parameters above map to the env variables defined in the [Percona Server DockerHub image](https://hub.docker.com/_/percona/).
+Some of the parameters above map to the env variables defined in the [Percona XtraDB Cluster DockerHub image](https://hub.docker.com/r/percona/percona-xtradb-cluster/).
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```bash
 $ helm install --name my-release \
   --set mysqlRootPassword=secretpassword,mysqlUser=my-user,mysqlPassword=my-password,mysqlDatabase=my-database \
-    stable/percona
+    incubator/percona-xtradb-cluster
 ```
 
 The above command sets the MySQL `root` account password to `secretpassword`. Additionally it creates a standard database user named `my-user`, with the password `my-password`, who has access to a database named `my-database`.
@@ -86,14 +86,14 @@ The above command sets the MySQL `root` account password to `secretpassword`. Ad
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```bash
-$ helm install --name my-release -f values.yaml stable/percona
+$ helm install --name my-release -f values.yaml incubator/percona-xtradb-cluster
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
 ## Persistence
 
-The [Percona Server](https://hub.docker.com/_/percona/) image stores the MySQL data and configurations at the `/var/lib/mysql` path of the container.
+The [Percona XtraDB Cluster DockerHub image](https://hub.docker.com/r/percona/percona-xtradb-cluster/) image stores the MySQL data and configurations at the `/var/lib/mysql` path of the container.
 
 By default, an emptyDir volume is mounted at that location.
 
