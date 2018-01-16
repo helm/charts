@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "fluentd-cloudwatch.fullname" . }}
   labels:
-    app: {{ template "name" . }}
+    app: {{ template "fluentd-cloudwatch.name" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}

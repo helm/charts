@@ -2,14 +2,14 @@
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRole
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "fluentd-cloudwatch.fullname" . }}
   labels:
-    app: {{ template "name" . }}
+    app: {{ template "fluentd-cloudwatch.name" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 rules:
 - apiGroups: [""]
-  resources: ["namespaces", "pods"]
+  resources: ["fluentd-cloudwatch.namespaces", "pods"]
   verbs: ["get", "list", "watch"]
 {{- end }}
