@@ -10,7 +10,7 @@ metadata:
     release: "{{ .Release.Name }}"
   name: {{ template "grafana.server.fullname" . }}-set-datasource
 spec:
-  activeDeadlineSeconds: {{ default 300 .Values.server.setDatasource.activeDeadlineSeconds }}
+  activeDeadlineSeconds: {{ .Values.server.setDatasource.activeDeadlineSeconds }}
   template:
     metadata:
       labels:

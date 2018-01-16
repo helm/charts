@@ -197,60 +197,60 @@ server:
     ## How long should it take to commit failure
     ## Default: 300
     ##
-    # activeDeadlineSeconds: 300
+    activeDeadlineSeconds: 300
 
     ## Curl Docker image
     ## Default: appropriate/curl:latest
     ##
-    # image: appropriate/curl:latest
+    image: appropriate/curl:latest
 
     ## This assembles how curl post into Grafana
     ## Ref1: http://docs.grafana.org/reference/http_api/#create-data-source
     ## Ref2: https://github.com/grafana/grafana/issues/1789
     ##
-    # datasource:
+    datasource:
       ## The datasource name.
       ## Default: default
-      # name: default
+      name: default
 
       ## Type of datasource
       ## Default: prometheus
       ##
-      # type: prometheus
+      type: prometheus
 
       ## The url of the datasource. To set correctly you need to know
       ## the right datasource name and its port ahead. Check kubernetes
       ## dashboard or describe the service should fulfill the requirements.
       ## Synatx like `http://<release name>-<server name>:<port number>
-      ## Default: "http://limping-tiger-server"
+      ## Default: <empty>
       ##
-      # url: "http://limping-tiger-server"
+      url:
 
       ## The name of the database at the datasource.
       ## Required parameter when used with elasticsearch, which refers to the index_name
       ## Default: <empty>
-      # database:
+      database:
 
       ## Additional JSON data to be passed to the configuration of the datasource.
       ## The JSON data is passed to curl, therefore it needs proper quoting and
       ## escaping and needs to be on a single line. For example:
       ##  '\"esVersion\": 2, \"interval\": \"Daily\", \"timeField\": \"@timestamp\"'
-      # jsonData: null
+      jsonData: null
 
       ## Specify if Grafana has to go thru proxy to reach datasource
       ## Default: proxy
       ##
-      # access: proxy
+      access: proxy
 
       ## Specify should Grafana use this datasource as default
       ## Default: true
       ##
-      # isDefault: true
+      isDefault: true
 
     ## Specify the job policy
     ## Default: OnFailure
     ##
-    # restartPolicy: OnFailure
+    restartPolicy: OnFailure
 
 ## Grafana config file ConfigMap entry
 ##
