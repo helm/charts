@@ -11,6 +11,11 @@ imagePullPolicy: IfNotPresent
 ## Kubernetes service type
 serviceType: ClusterIP
 
+## Pod Security Context
+securityContext:
+  fsGroup: 1001
+  runAsUser: 1001
+
 ## Use password authentication
 usePassword: true
 
@@ -34,6 +39,10 @@ args:
 ##
 persistence:
   enabled: true
+
+  ## The path the volume will be mounted at, useful when using different
+  ## Redis images.
+  path: /bitnami
 
   ## A manually managed Persistent Volume and Claim
   ## Requires persistence.enabled: true

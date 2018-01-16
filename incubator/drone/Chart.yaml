@@ -1,8 +1,9 @@
 name: drone
 home: https://drone.io/
-version: 0.1.0
-appVersion: 0.8.1
-description: Drone CI
+icon: http://docs.drone.io/logo.svg
+version: 0.2.1
+appVersion: 0.8.2
+description: Drone is a Continuous Delivery system built on container technology
 keywords:
 - continuous-delivery
 - continuous-deployment

@@ -28,7 +28,11 @@ spec:
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         args:
         {{- range $key, $value := .Values.extraArgs }}
+          {{- if $value }}
           - --{{ $key }}={{ $value }}
+          {{- else }}
+          - --{{ $key }}
+          {{- end }}
         {{- end }}
         env:
         - name: OAUTH2_PROXY_CLIENT_ID
