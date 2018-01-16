@@ -113,8 +113,9 @@ The following tables lists the configurable parameters of the Traefik chart and 
 | `acme.persistence.accessMode`   | `ReadWriteOnce` or `ReadOnly`                                        | `ReadWriteOnce`                           |
 | `acme.persistence.size`         | Minimum size of the volume requested                                 | `1Gi`                                     |
 | `dashboard.enabled`             | Whether to enable the Traefik dashboard                              | `false`                                   |
-| `dashboard.domain`              | Domain for the Traefik dashboard                                     | `traefik.example.com`                     |
-| `dashboard.ingress.annotations` | Annotations for the Traefik dashboard Ingress definition, specified as a map | None                              |
+| `dashboard.domain`              | Domain for the Traefik dashboard                                     | `traefik.example.com`                     |               
+| `dashboard.service.annotations` | Annotations for the Traefik dashboard Service definition, specified as a map | None                |
+| `dashboard.ingress.annotations` | Annotations for the Traefik dashboard Ingress definition, specified as a map | None                |
 | `dashboard.ingress.labels`      | Labels for the Traefik dashboard Ingress definition, specified as a map      | None                              |
 | `dashboard.auth.basic`          | Basic auth for the Traefik dashboard specified as a map, see Authentication section | unset by default; this means basic auth is disabled |
 | `dashboard.statistics.recentErrors` | Number of recent errors to show in the ‘Health’ tab              | None                                      |
