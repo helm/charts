@@ -15,7 +15,7 @@
 apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "nuclio.controllerName" . }}
+  name: {{ template "nuclio.fullname" . }}-controller
 spec:
   replicas: 1
   template:

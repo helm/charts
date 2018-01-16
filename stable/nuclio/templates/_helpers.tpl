@@ -13,5 +13,5 @@
 {{- end -}}
 
 {{- define "nuclio.playground.image" -}}
-{{- printf "%s:%s-%s" .Values.Playground.image .Values.nuclio.version .Values.nuclio.arch -}}
+{{- printf "%s:%s-%s" .Values.playground.image .Values.nuclio.version .Values.nuclio.arch -}}
 {{- end -}}
