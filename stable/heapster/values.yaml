@@ -2,7 +2,7 @@
 ##
 replicaCount: 1
 image:
-  repository: gcr.io/google_containers/heapster
+  repository: k8s.gcr.io/heapster
   tag: v1.3.0
   pullPolicy: IfNotPresent
 ## Here labels can be added to the heapster deployment
@@ -10,6 +10,11 @@ image:
 #   kubernetes.io/cluster-service: "true"
 #   kubernetes.io/name: "Heapster"
 labels: {}
+
+## Here labels can be added to the heapster deployment
+# annotations:
+#   scheduler.alpha.kubernetes.io/critical-pod: ''
+annotations: {}
 
 ## Node labels for pod assignment
 ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
@@ -58,7 +63,7 @@ env: []
 resizer:
   enabled: true
   image:
-    repository: gcr.io/google_containers/addon-resizer
+    repository: k8s.gcr.io/addon-resizer
     tag: 1.7
     pullPolicy: IfNotPresent
   resources:

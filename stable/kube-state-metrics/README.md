@@ -14,13 +14,14 @@ $ helm install stable/kube-state-metrics
 
 | Parameter                           | Description                                             | Default                                     |
 |-------------------------------------|---------------------------------------------------------|---------------------------------------------|
-| `image.repository`                  | The image repository to pull from                       | gcr.io/google_containers/kube-state-metrics |
-| `image.tag`                         | The image tag to pull from                              | v1.0.1                                      |
+| `image.repository`                  | The image repository to pull from                       | k8s.gcr.io/kube-state-metrics               |
+| `image.tag`                         | The image tag to pull from                              | <latest version>                                      |
 | `image.pullPolicy`                  | Image pull policy                                       | IfNotPresent                                |
 | `service.port`                      | The port of the container                               | 8080                                        |
 | `prometheusScrape`                  | Whether or not enable prom scrape                       | True                                        |
 | `rbac.create`                       | If true, create & use RBAC resources                    | False                                       |
 | `rbac.serviceAccountName`           | ServiceAccount to be used (ignored if rbac.create=true) | default                                     |
+| `nodeSelector`                      | Node labels for pod assignment	                        | {}                                     |
 | `podAnnotations`                    | Annotations to be added to the pod                      | {}                                     |
 | `resources`                         | kube-state-metrics resource requests and limits         | {}                                          |
 | `collectors.daemonsets`             | Enable the daemonsets collector.                        | true                                        |

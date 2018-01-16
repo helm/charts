@@ -1,7 +1,7 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: "{{ template "jaeger.fullname" . }}-query"
+  name: "{{ template "jaeger.query.fullname" . }}"
   labels:
     app: "{{ template "jaeger.name" . }}"
     jaeger-infra: query-deployment
@@ -31,7 +31,7 @@ spec:
       nodeSelector:
 {{ toYaml .Values.query.nodeSelector | indent 8 }}
       containers:
-      - name: "{{ template "jaeger.fullname" . }}-query"
+      - name: "{{ template "jaeger.query.fullname" . }}"
         image: "{{ .Values.query.image }}:{{ .Values.query.tag }}"
         imagePullPolicy: {{ .Values.query.pullPolicy }}
         ports:
@@ -57,12 +57,14 @@ spec:
         - "--cassandra.keyspace=jaeger_v1_{{ .Values.cassandra.config.dc_name }}"
 {{ end }}
         - "--query.static-files=/go/jaeger-ui/"
+        - "--query.port={{ .Values.query.service.targetPort }}"
+        - "--query.health-check-http-port={{ .Values.query.healthCheckPort }}"
 {{- range $key, $value := .Values.query.cmdlineParams }}
         - "{{ $value }}"
 {{- end }}
         readinessProbe:
           httpGet:
             path: "/"
-            port: {{ .Values.query.service.targetPort }}
+            port: {{ .Values.query.healthCheckPort }}
       dnsPolicy: {{ .Values.query.dnsPolicy }}
       restartPolicy: Always

@@ -46,7 +46,7 @@ The following tables lists the configurable parameters of the nginx-ingress char
 Parameter | Description | Default
 --- | --- | ---
 `controller.name` | name of the controller component | `controller`
-`controller.image.repository` | controller container image repository | `gcr.io/google_containers/nginx-ingress-controller`
+`controller.image.repository` | controller container image repository | `k8s.gcr.io/nginx-ingress-controller`
 `controller.image.tag` | controller container image tag | `0.9.0-beta.15`
 `controller.image.pullPolicy` | controller container image pull policy | `IfNotPresent`
 `controller.config` | nginx ConfigMap entries | none
@@ -60,6 +60,7 @@ Parameter | Description | Default
 `controller.extraArgs` | Additional controller container arguments | `{}`
 `controller.kind` | install as Deployment or DaemonSet | `Deployment`
 `controller.tolerations` | node taints to tolerate (requires Kubernetes >=1.6) | `[]`
+`controller.minReadySeconds` | how many seconds a pod needs to be ready before killing the next, during update | `0`
 `controller.nodeSelector` | node labels for pod assignment | `{}`
 `controller.podAnnotations` | annotations to be added to pods | `{}`
 `controller.replicaCount` | desired number of controller pods | `1`
@@ -89,8 +90,9 @@ Parameter | Description | Default
 `controller.customTemplate.configMapName` | configMap containing a custom nginx template | `""`
 `controller.customTemplate.configMapKey` | configMap key containing the nginx template | `""`
 `controller.headers` | configMap key:value pairs containing the [custom headers](https://github.com/kubernetes/ingress-nginx/tree/master/docs/examples/customization/custom-headers) for Nginx | `{}`
+`controller.updateStrategy` | allows setting of RollingUpdate strategy | `{}`
 `defaultBackend.name` | name of the default backend component | `default-backend`
-`defaultBackend.image.repository` | default backend container image repository | `gcr.io/google_containers/defaultbackend`
+`defaultBackend.image.repository` | default backend container image repository | `k8s.gcr.io/defaultbackend`
 `defaultBackend.image.tag` | default backend container image tag | `1.3`
 `defaultBackend.image.pullPolicy` | default backend container image pull policy | `IfNotPresent`
 `defaultBackend.extraArgs` | Additional default backend container arguments | `{}`

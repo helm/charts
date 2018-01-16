@@ -24,6 +24,7 @@ database:
     pullPolicy: IfNotPresent
   service:
     type: ClusterIP
+    annotations: {}
   externalPort: 5432
   internalPort: 5432
   persistence:
@@ -54,11 +55,12 @@ artifactory:
   image:
     # repository: "docker.bintray.io/jfrog/artifactory-oss"
     repository: "docker.bintray.io/jfrog/artifactory-pro"
-    version: 5.6.3
+    version: 5.8.3
     pullPolicy: IfNotPresent
   service:
     name: artifactory
     type: ClusterIP
+    annotations: {}
   externalPort: 8081
   internalPort: 8081
   persistence:
@@ -96,7 +98,7 @@ nginx:
   replicaCount: 1
   image:
     repository: "docker.bintray.io/jfrog/nginx-artifactory-pro"
-    version: 5.6.3
+    version: 5.8.3
     pullPolicy: IfNotPresent
   service:
     ## For minikube, set this to NodePort, elsewhere use LoadBalancer
@@ -107,6 +109,7 @@ nginx:
     ## or pass from helm command line
     ## Example: helm install ... --set nginx.service.loadBalancerSourceRanges='{10.10.10.5/32,10.11.10.5/32}'
     loadBalancerSourceRanges: []
+    annotations: {}
   externalPortHttp: 80
   internalPortHttp: 80
   externalPortHttps: 443
