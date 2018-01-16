@@ -302,6 +302,11 @@ spec:
             - name: CONCOURSE_PROMETHEUS_BIND_PORT
               value: {{ .Values.web.metrics.prometheus.port | quote }}
             {{- end }}
+            - name: CONCOURSE_CONTAINER_PLACEMENT_STRATEGY
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: container-placement-strategy
           ports:
             - name: atc
               containerPort: {{ .Values.concourse.atcPort }}
