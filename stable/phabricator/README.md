@@ -56,6 +56,7 @@ The following tables lists the configurable parameters of the Phabricator chart 
 | `phabricatorEmail`                     | Admin email                                  | `user@example.com`                                       |
 | `phabricatorFirstName`                 | First name                                   | `First Name`                                             |
 | `phabricatorLastName`                  | Last name                                    | `Last Name`                                              |
+| `phabricatorPreamble   `               | PHP preamble                                 | `nil`                                                    |
 | `smtpHost`                             | SMTP host                                    | `nil`                                                    |
 | `smtpPort`                             | SMTP port                                    | `nil`                                                    |
 | `smtpUser`                             | SMTP user                                    | `nil`                                                    |
@@ -71,6 +72,7 @@ The following tables lists the configurable parameters of the Phabricator chart 
 | `persistence.phabricator.accessMode`   | PVC Access Mode for Phabricator volume       | `ReadWriteOnce`                                          |
 | `persistence.phabricator.size`         | PVC Storage Request for Phabricator volume   | `8Gi`                                                    |
 | `resources`                            | CPU/Memory resource requests/limits          | Memory: `512Mi`, CPU: `300m`                             |
+| `ingress.enabled`                      | Expose ingress for service                   | `false`                                                  |
 
 The above parameters map to the env variables defined in [bitnami/phabricator](http://github.com/bitnami/bitnami-docker-phabricator). For more information please refer to the [bitnami/phabricator](http://github.com/bitnami/bitnami-docker-phabricator) image documentation.
 
@@ -112,3 +114,32 @@ The [Bitnami Phabricator](https://github.com/bitnami/bitnami-docker-phabricator)
 
 Persistent Volume Claims are used to keep the data across deployments. This is known to work in GCE, AWS, and minikube.
 See the [Configuration](#configuration) section to configure the PVC or to disable persistence.
+
+## Preamble
+Phabricator supports defining a [preamble php script](https://secure.phabricator.com/book/phabricator/article/configuring_preamble/), which is useful for adjusting ssl or client ips when running behind a load balancer. For example,
+
+```yaml
+phabricatorPreamble: |-
+  <?php
+  // Set if using a load balancer with SSL termination
+  $_SERVER['HTTPS'] = true;
+
+  // Overwrite REMOTE_ADDR with the value in the "X-Forwarded-For" HTTP header.
+
+  // Only do this if you're certain the request is coming from a loadbalancer!
+  // If the request came directly from a client, doing this will allow them to
+  // them spoof any remote address.
+
+  // The header may contain a list of IPs, like "1.2.3.4, 4.5.6.7", if the
+  // request the load balancer received also had this header.
+
+  if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+    $forwarded_for = $_SERVER['HTTP_X_FORWARDED_FOR'];
+    if ($forwarded_for) {
+      $forwarded_for = explode(',', $forwarded_for);
+      $forwarded_for = end($forwarded_for);
+      $forwarded_for = trim($forwarded_for);
+      $_SERVER['REMOTE_ADDR'] = $forwarded_for;
+    }
+  }
+```
