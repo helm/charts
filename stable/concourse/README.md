@@ -55,7 +55,7 @@ $ kubectl scale statefulset my-release-worker --replicas=3
 
 ### Restarting workers
 
-If a worker isn't taking on work, you can restart the worker with `kubectl delete pod`. This will initiate a graceful shutdown by "retiring" the worker, with some waiting time before the worker starts up again to ensure concourse doesn't try looking for old volumes on the new worker. The values `worker.postStopDelaySeconds` and `worker.terminationGracePeriodSeconds` can be used to tune this.
+If a worker isn't taking on work, you can restart the worker with `kubectl delete pod`. This will initiate a graceful shutdown by "retiring" the worker, to ensure Concourse doesn't try looking for old volumes on the new worker. The value`worker.terminationGracePeriodSeconds` can be used to provide an upper limit on graceful shutdown time before forcefully terminating the container.
 
 ### Worker Liveness Probe
 
@@ -68,7 +68,7 @@ The following tables lists the configurable parameters of the Concourse chart an
 | Parameter               | Description                           | Default                                                    |
 | ----------------------- | ----------------------------------    | ---------------------------------------------------------- |
 | `image` | Concourse image | `concourse/concourse` |
-| `imageTag` | Concourse image version | `3.3.2` |
+| `imageTag` | Concourse image version | `3.8.0` |
 | `imagePullPolicy` |Concourse image pull policy |  `Always` if `imageTag` is `latest`, else `IfNotPresent` |
 | `concourse.username` | Concourse Basic Authentication Username | `concourse` |
 | `concourse.password` | Concourse Basic Authentication Password | `concourse` |
@@ -85,6 +85,7 @@ The following tables lists the configurable parameters of the Concourse chart an
 | `concourse.oldResourceGracePeriod` | How long to cache the result of a get step after a newer version of the resource is found | `5m` |
 | `concourse.resourceCacheCleanupInterval` | The interval on which to check for and release old caches of resource versions | `30s` |
 | `concourse.baggageclaimDriver` | The filesystem driver used by baggageclaim | `naive` |
+| `concourse.containerPlacementStrategy` | The selection strategy for placing containers onto workers | `random` |
 | `concourse.externalURL` | URL used to reach any ATC from the outside world | `nil` |
 | `concourse.dockerRegistry` | An URL pointing to the Docker registry to use to fetch Docker images | `nil` |
 | `concourse.insecureDockerRegistry` | Docker registry(ies) (comma separated) to allow connecting to even if not secure | `nil` |
@@ -126,8 +127,7 @@ The following tables lists the configurable parameters of the Concourse chart an
 | `worker.minAvailable` | Minimum number of workers available after an eviction | `1` |
 | `worker.resources` | Concourse Worker resource requests and limits | `{requests: {cpu: "100m", memory: "512Mi"}}` |
 | `worker.additionalAffinities` | Additional affinities to apply to worker pods. E.g: node affinity | `nil` |
-| `worker.postStopDelaySeconds` | Time to wait after graceful shutdown of worker before starting up again | `60` |
-| `worker.terminationGracePeriodSeconds` | Upper bound for graceful shutdown, including `worker.postStopDelaySeconds` | `120` |
+| `worker.terminationGracePeriodSeconds` | Upper bound for graceful shutdown to allow the worker to drain its tasks | `60` |
 | `worker.fatalErrors` | Newline delimited strings which, when logged, should trigger a restart of the worker | *See [values.yaml](values.yaml)* |
 | `worker.updateStrategy` | `OnDelete` or `RollingUpdate` (requires Kubernetes >= 1.7) | `RollingUpdate` |
 | `worker.podManagementPolicy` | `OrderedReady` or `Parallel` (requires Kubernetes >= 1.7) | `Parallel` |
@@ -205,7 +205,7 @@ concourse:
     < Insert the contents of your concourse-keys/worker_key.pub file >
 ```
 
-Alternativelly, you can provide those keys to `helm install` via parameters:
+Alternatively, you can provide those keys to `helm install` via parameters:
 
 
 ```console
@@ -242,6 +242,8 @@ persistence:
     ##
     size: "20Gi"
 ```
+
+It is highly recommended to use Persistent Volumes for Concourse Workers; otherwise container images managed by the Worker is stored in an `emptyDir` volume on the node's disk. This will interfere with k8s ImageGC and the node's disk will fill up as a result. This will be fixed in a future release of k8s: https://github.com/kubernetes/kubernetes/pull/57020
 
 ### Ingress TLS
 
@@ -328,5 +330,5 @@ credentialManager:
     ## initial periodic token issued for concourse
     ## ref: https://www.vaultproject.io/docs/concepts/tokens.html#periodic-tokens
     ##
-    clientToken: PERIODIC_VAULT_TOKEN 
+    clientToken: PERIODIC_VAULT_TOKEN
 ```

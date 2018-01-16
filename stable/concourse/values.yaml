@@ -13,7 +13,7 @@ image: concourse/concourse
 ## Concourse image version.
 ## ref: https://hub.docker.com/r/concourse/concourse/tags/
 ##
-imageTag: "3.5.0"
+imageTag: "3.8.0"
 
 ## Specify a imagePullPolicy: 'Always' if imageTag is 'latest', else set to 'IfNotPresent'.
 ## ref: https://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -183,6 +183,12 @@ concourse:
   ## https://github.com/concourse/concourse/issues/1230.
   ##
   baggageclaimDriver: naive
+
+  ## The selection strategy for placing containers onto workers, as of Concourse 3.7 this can be
+  ## "volume-locality" or "random". Random can better spread load across workers, see
+  ## https://github.com/concourse/atc/pull/219 for background.
+  ##
+  containerPlacementStrategy: random
 
   ## An URL pointing to the Docker registry to use to fetch Docker images.
   ## If unset, this will default to the Docker default
@@ -449,24 +455,18 @@ worker:
   #    value: "value"
   #    effect: "NoSchedule"
 
-  ## Time to delay after the worker process shuts down. This inserts time between shutdown and startup
-  ## to avoid errors caused by a worker restart.
-  postStopDelaySeconds: 60
-
-  ## Time to allow the pod to terminate before being forcefully terminated. This should include
-  ## postStopDelaySeconds, and should additionally provide time for the worker to retire, e.g.
-  ## = postStopDelaySeconds + max time to allow the worker to drain its tasks. See
-  ## https://concourse.ci/worker-internals.html for worker lifecycle semantics.
-  terminationGracePeriodSeconds: 120
+  ## Time to allow the pod to terminate before being forcefully terminated. This should provide time for
+  ## the worker to retire, i.e. drain its tasks. See https://concourse.ci/worker-internals.html for worker
+  ## lifecycle semantics.
+  terminationGracePeriodSeconds: 60
 
   ## If any of the strings are found in logs, the worker's livenessProbe will fail and trigger a pod restart.
   ## Specify one string per line, exact matching is used.
   ##
-  ## "guardian.api.garden-server.create.failed" appears when the worker's filesystem has issues.
-  ## "unknown handle" appears if a worker didn't cleanly restart.
   fatalErrors: |-
     guardian.api.garden-server.create.failed
-    unknown handle
+    guardian.api.garden-server.run.failed
+    baggageclaim.api.volume-server.create-volume-async.failed-to-create
 
   ## Strategy for StatefulSet updates (requires Kubernetes 1.6+)
   ## Ref: https://kubernetes.io/docs/concepts/workloads/controllers/statefulset
