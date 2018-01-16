@@ -32,6 +32,7 @@ ssl:
 acme:
   enabled: false
   email: admin@example.com
+  onDemand: false
   staging: true
   logging: false
   ## Save ACME certs to a persistent volume. WARNING: If you do not do this, you will re-request
