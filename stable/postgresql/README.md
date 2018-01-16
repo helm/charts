@@ -70,6 +70,7 @@ The following tables lists the configurable parameters of the PostgresSQL chart 
 | `service.externalIPs`      | External IPs to listen on                       | `[]`                                                       |
 | `service.port`             | TCP port                                        | `5432`                                                     |
 | `service.type`             | k8s service type exposing ports, e.g. `NodePort`| `ClusterIP`                                                |
+| `service.nodePort`         | NodePort value if service.type is `NodePort`    | `nil`                                                      |
 | `networkPolicy.enabled`    | Enable NetworkPolicy                            | `false`                                                    |
 | `networkPolicy.allowExternal` | Don't require client label for connections   | `true`                                                     |
 | `nodeSelector`             | Node labels for pod assignment                  | {}                                                         |

@@ -88,6 +88,9 @@ service:
   type: ClusterIP
   port: 5432
   externalIPs: []
+  ## Manually set NodePort value
+  ## Requires service.type: NodePort
+  # nodePort:
 
 networkPolicy:
   ## Enable creation of NetworkPolicy resources.
