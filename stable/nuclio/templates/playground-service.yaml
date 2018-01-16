@@ -12,30 +12,23 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 {{- if .Values.Playground.Enabled }}
-apiVersion: apps/v1beta1
-kind: Deployment
+apiVersion: v1
+kind: Service
 metadata:
   name: {{ template "nuclio.fullname" . }}-playground
 spec:
-  replicas: 1
-  template:
-    metadata:
-      labels:
-        app: {{ template "nuclio.name" . }}
-        release: {{ .Release.Name }}
-        component: playground
-    spec:
-      containers:
-      - name: {{ template "nuclio.fullname" . }}-playground
-        image: {{ template "nuclio.playgroundImage" . }}
-        imagePullPolicy: {{ .Values.playground.pullPolicy }}
-        ports:
-        - containerPort: 8070
-        volumeMounts:
-        - mountPath: /var/run/docker.sock
-          name: docker-sock
-      volumes:
-      - name: docker-sock
-        hostPath:
-          path: /var/run/docker.sock
+  selector:
+    app: {{ template "nuclio.name" . }}
+    release: {{ .Release.Name }}
+    component: playground
+{{- if eq .Values.playground.service.type "NodePort" }}
+  type: NodePort
+{{- end }}
+  ports:
+  - name: playground
+    port: 8070
+    protocol: TCP
+{{- if and (eq .Values.playground.service.type "NodePort") .Values.playground.service.nodePort }}
+    nodePort: {{ .Values.playground.service.nodePort }}
+{{- end }}
 {{- end }}

@@ -23,9 +23,9 @@ spec:
       labels:
         app: {{ template "nuclio.name" . }}
         release: {{ .Release.Name }}
-        component: {{ template "nuclio.controllerName" . }}
+        component: controller
     spec:
       containers:
-      - name: {{ template "nuclio.controllerName" . }}
-        image: {{ template "nuclio.controllerImage" . }}
-        imagePullPolicy: {{ .Values.Controller.PullPolicy }}
+      - name: {{ template "nuclio.fullname" . }}-controller
+        image: {{ template "nuclio.controller.image" . }}
+        imagePullPolicy: {{ .Values.controller.pullPolicy }}

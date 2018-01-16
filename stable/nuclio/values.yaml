@@ -1,21 +1,19 @@
 # Nuclio release information
-Nuclio:
-  Version: 0.2.2
-  Arch: amd64
+nuclio:
+  version: 0.2.2
+  arch: amd64
 
 # Controller settings
-Controller:
-  Name: controller
-  Image: nuclio/controller
-  PullPolicy: IfNotPresent
+controller:
+  image: nuclio/controller
+  pullPolicy: IfNotPresent
 
 # Playground (nuclio's IDE) settings
-Playground:
-  Enabled: true
-  Name: playground
-  Image: nuclio/playground
-  PullPolicy: IfNotPresent
-  Service:
+playground:
+  enabled: true
+  image: nuclio/playground
+  pullPolicy: IfNotPresent
+  service:
     # Only `NodePort` is supported. Defaults to `None` if other value is provided
-    Type: NodePort
-    NodePort: 32050
+    type: NodePort
+    nodePort: 32050
