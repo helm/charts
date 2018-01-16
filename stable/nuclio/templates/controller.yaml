@@ -12,10 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-apiVersion: apps/v1beta1
+apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
   name: {{ template "nuclio.fullname" . }}-controller
+  labels:
+    app: {{ template "nuclio.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 spec:
   replicas: 1
   template:
@@ -27,5 +32,5 @@ spec:
     spec:
       containers:
       - name: {{ template "nuclio.fullname" . }}-controller
-        image: {{ template "nuclio.controller.image" . }}
+        image: "{{ .Values.controller.image }}:{{ .Values.nuclio.version }}-{{ .Values.nuclio.arch }}"
         imagePullPolicy: {{ .Values.controller.pullPolicy }}

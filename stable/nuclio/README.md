@@ -45,23 +45,23 @@ The following tables lists the configurable parameters of the Traefik chart and 
 
 | Parameter                       | Description                                                          | Default                                   |
 | ------------------------------- | -------------------------------------------------------------------- | ----------------------------------------- |
-| `Nuclio.Version`                | Nuclio's version                                                     | `0.2.2`                                   |
-| `Nuclio.Arch`                   | The version of the official Nuclio image architecture to use         | `amd64`                                   |
-| `Controller.Name`               | Provide controller name                                              | `controller`                              |
-| `Controller.Image`              | Nuclio's controller image                                            | `nuclio/controller`                       |
-| `Controller.PullPolicy`         | Nuclio's controller image pull policy                                | `IfNotPresent`                            |
-| `Playground.Enabled`            | Enable/Disable Nuclio's playground UI                                | `true`                                    |
-| `Playground.Name`               | Provide playground name                                              | `playground`                              |
-| `Playground.Image`              | Nuclio's playground image                                            | `nuclio/playground`                       |
-| `Playground.PullPolicy`         | Nuclio's playground image pull policy                                | `IfNotPresent`                            |
-| `Playground.Service.Type`       | If enabled, set the service type                                     | `NodePort`                                |
-| `Playground.Service.NodePort`   | If enabled, and set service type to `NodePort`, choose the port      | `32050`                                   |
+| `nuclio.version`                | Nuclio's version                                                     | `0.2.2`                                   |
+| `nuclio.arch`                   | The version of the official Nuclio image architecture to use         | `amd64`                                   |
+| `controller.name`               | Provide controller name                                              | `controller`                              |
+| `controller.image`              | Nuclio's controller image                                            | `nuclio/controller`                       |
+| `controller.pullPolicy`         | Nuclio's controller image pull policy                                | `IfNotPresent`                            |
+| `playground.enabled`            | Enable/Disable Nuclio's playground UI                                | `true`                                    |
+| `playground.name`               | Provide playground name                                              | `playground`                              |
+| `playground.image`              | Nuclio's playground image                                            | `nuclio/playground`                       |
+| `playground.pullPolicy`         | Nuclio's playground image pull policy                                | `IfNotPresent`                            |
+| `playground.service.type`       | If enabled, set the service type                                     | `NodePort`                                |
+| `playground.service.nodePort`   | If enabled, and set service type to `NodePort`, choose the port      | `32050`                                   |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```bash
 $ helm install --name my-release \
-  --set Playground.Enabled=true,Playground.Service.NodePort=42080 \
+  --set playground.enabled=true,playground.service.nodePort=42080 \
     stable/nuclio
 ```
 

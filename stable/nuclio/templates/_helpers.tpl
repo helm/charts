@@ -7,11 +7,3 @@
 {{- define "nuclio.fullname" -}}
 {{- printf "%s-%s" .Release.Name .Chart.Name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
-
-{{- define "nuclio.controller.image" -}}
-{{- printf "%s:%s-%s" .Values.controller.image .Values.nuclio.version .Values.nuclio.arch -}}
-{{- end -}}
-
-{{- define "nuclio.playground.image" -}}
-{{- printf "%s:%s-%s" .Values.playground.image .Values.nuclio.version .Values.nuclio.arch -}}
-{{- end -}}
