@@ -1,23 +1,26 @@
 apiVersion: apps/v1beta2 
 kind: Deployment
 metadata:
-  name: {{ template "ethereum.fullname" . }}-bootnode-deployment
+  name: {{ template "ethereum.fullname" . }}-bootnode
   labels:
-    app: {{ template "ethereum.name" . }}-bootnode-deployment
+    app: {{ template "ethereum.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+    component: bootnode
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: {{ template "ethereum.name" . }}-bootnode
+      app: {{ template "ethereum.name" . }}
       release: {{ .Release.Name }}
+      component: bootnode
   template:
     metadata:
       labels:
-        app: {{ template "ethereum.name" . }}-bootnode
+        app: {{ template "ethereum.name" . }}
         release: {{ .Release.Name }}
+        component: bootnode
     spec:
       containers:
       - name: bootnode

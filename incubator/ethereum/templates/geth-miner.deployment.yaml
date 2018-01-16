@@ -1,23 +1,26 @@
 apiVersion: apps/v1beta2 
 kind: Deployment
 metadata:
-  name: {{ template "ethereum.fullname" . }}-geth-miner-deployment
+  name: {{ template "ethereum.fullname" . }}-geth-miner
   labels:
-    app: {{ template "ethereum.name" . }}-geth-miner-deployment
+    app: {{ template "ethereum.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+    component: geth-miner
 spec:
   replicas: {{ .Values.geth.miner.replicaCount }}
   selector:
     matchLabels:
-      app: {{ template "ethereum.name" . }}-geth-miner
+      app: {{ template "ethereum.name" . }}
       release: {{ .Release.Name }}
+      component: geth-miner
   template:
     metadata:
       labels:
-        app: {{ template "ethereum.name" . }}-geth-miner
+        app: {{ template "ethereum.name" . }}
         release: {{ .Release.Name }}
+        component: geth-miner
     spec:
       containers:
       - name: geth-miner
@@ -29,11 +32,11 @@ spec:
         - "geth --bootnodes=`cat /root/.ethereum/bootnodes` --mine --etherbase=0 --networkid=${NETWORK_ID} --ethstats=${HOSTNAME}:${ETHSTATS_SECRET}@${ETHSTATS_SVC} --verbosity=5"
         env:
         - name: ETHSTATS_SVC
-          value: {{ template "ethereum.fullname" . }}-ethstats-service.{{ .Release.Namespace }}
+          value: {{ template "ethereum.fullname" . }}-ethstats.{{ .Release.Namespace }}
         - name: ETHSTATS_SECRET
           valueFrom:
             secretKeyRef:
-              name: {{ template "ethereum.fullname" . }}-ethstats-secret
+              name: {{ template "ethereum.fullname" . }}-ethstats
               key: WS_SECRET
         - name: NETWORK_ID
           valueFrom:
@@ -84,7 +87,7 @@ spec:
 {{ .Files.Get "scripts/get-bootnode.sh" | indent 10 }}
         env:
         - name: BOOTNODE_SVC
-          value: {{ template "ethereum.fullname" . }}-bootnode-service.{{ .Release.Namespace }}
+          value: {{ template "ethereum.fullname" . }}-bootnode.{{ .Release.Namespace }}
         volumeMounts:
         - name: data
           mountPath: /geth
@@ -96,4 +99,4 @@ spec:
           name: {{ template "ethereum.fullname" . }}-geth-config
       - name: account
         secret:
-          secretName: {{ template "ethereum.fullname" . }}-geth-account-secret
+          secretName: {{ template "ethereum.fullname" . }}-geth-account

@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: {{ template "ethereum.fullname" . }}-geth-config
   labels:
-    app: {{ template "ethereum.name" . }}-geth-config
+    app: {{ template "ethereum.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
