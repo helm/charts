@@ -1,0 +1,13 @@
+INFO:
+name: {{ template "kube-slack.name" . }}
+app: {{ template "kube-slack.name" . }}
+chart: {{ .Chart.Name }}
+release: {{ .Release.Name }}
+heritage: {{ .Release.Service }}
+{{- if not .Values.slackUrl }}
+
+WARNING:
+Create an incoming webhook in slack:
+In the Slack interface, add a new "Incoming WebHooks" app configuration.
+Insert the "Webhook URL" in your values as "slackUrl".
+{{- end }}

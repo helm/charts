@@ -1,0 +1,11 @@
+name: kube-slack
+version: 0.1.0
+apiVersion: v3.1.1
+description: Chart for kube-slack, a monitoring service for Kubernetes
+keywords:
+- kubernetes
+- monitoring
+- slack
+icon: https://upload.wikimedia.org/wikipedia/commons/1/1f/Echo_%28Notifications%29_logo.svg
+sources:
+  - https://github.com/wongnai/kube-slack

@@ -1,0 +1,19 @@
+# URL of your incoming webhook in Slack:
+slackUrl: ""
+
+image:
+  repository: willwill/kube-slack
+  tag: v3.1.1
+  pullPolicy: IfNotPresent
+
+rbac:
+  create: true
+  serviceAccountName: ""
+
+resources: {}
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
