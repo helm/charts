@@ -1,0 +1,52 @@
+functionNamespace:
+async: false
+armhf: false
+exposeServices: true
+serviceType: NodePort
+rbac: true
+
+# images
+images:
+  controller: functions/faas-netesd:0.3.4
+  controllerArmhf: functions/faas-netesd-armhf
+
+  gateway: functions/gateway:0.6.9
+  gatewayArmhf: functions/gateway:0.6.7-armhf
+
+  prometheus: prom/prometheus:v1.5.2
+  prometheusArmhf: alexellis2/prometheus-armhf:1.5.2
+
+  alertmanager: prom/alertmanager:v0.7.1
+  alertmanagerArmhf: alexellis2/alertmanager-armhf:0.5.1
+
+  nats: nats-streaming:0.5.0
+  natsArmhf:
+
+  queueWorker: functions/queue-worker:0.1
+  queueWorkerArmhf:
+
+# ingress configuration
+ingress:
+  enabled: false
+  # Used to create Ingress record (should be used with exposeServices: false).
+  hosts:
+    - host: faas-netesd.openfaas.local
+      serviceName: faas-netesd
+      servicePort: 8080
+      path: /
+    - host: gateway.openfaas.local
+      serviceName: gateway
+      servicePort: 8080
+      path: /
+    - host: prometheus.openfaas.local
+      serviceName: prometheus
+      servicePort: 9090
+      path: /
+    - host: alertmanager.openfaas.local
+      serviceName: alertmanager
+      servicePort: 9093
+      path: /
+  annotations:
+    kubernetes.io/ingress.class: nginx
+  tls:
+    # Secrets must be manually created in the namespace.

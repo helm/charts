@@ -1,0 +1,139 @@
+{{- $functionNs := default .Release.Namespace .Values.functionNamespace }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: {{ template "faas-netesd.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: faas-netesd
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: faas-netesd
+  namespace: {{ .Release.Namespace | quote }}
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: faas-netesd
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    app: {{ template "faas-netesd.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: faas-controller
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: faas-controller
+  namespace: {{ .Release.Namespace | quote }}
+---
+{{- if (ne .Release.Namespace $functionNs) }}
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    app: {{ template "faas-netesd.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: faas-controller
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: faas-controller
+  namespace: {{ $functionNs | quote }}
+{{- end }}
+---
+apiVersion: apps/v1beta1 # for versions before 1.6.0 use extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: {{ template "faas-netesd.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: faas-netesd
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: faas-netesd
+  namespace: {{ .Release.Namespace | quote }}
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: faas-netesd
+    spec:
+      serviceAccountName: faas-controller
+      containers:
+      - name: faas-netesd
+        {{- if .Values.armhf }}
+        image: {{ .Values.images.controllerArmhf }}
+        {{- else }}
+        image: {{ .Values.images.controller }}
+        {{- end }}
+        imagePullPolicy: Always
+        env:
+        - name: function_namespace
+          value: {{ $functionNs | quote }}
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: {{ template "faas-netesd.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: gateway
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: gateway
+  namespace: {{ .Release.Namespace | quote }}
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      protocol: TCP
+  selector:
+    app: gateway
+---
+apiVersion: apps/v1beta1 # for versions before 1.6.0 use extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: {{ template "faas-netesd.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: gateway
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: gateway
+  namespace: {{ .Release.Namespace | quote }}
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: gateway
+    spec:
+      containers:
+      - name: gateway
+        {{- if .Values.armhf }}
+        image: {{ .Values.images.gatewayArmhf }}
+        {{- else }}
+        image: {{ .Values.images.gateway }}
+        {{- end }}
+        imagePullPolicy: Always
+        env:
+        - name: functions_provider_url
+          value: "http://faas-netesd.{{ .Release.Namespace }}:8080/"
+        {{- if .Values.async }}
+        - name: faas_nats_address
+          value: "nats.{{ .Release.Namespace }}"
+        - name: faas_nats_port
+          value: "4222"
+        {{- end }}
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+---

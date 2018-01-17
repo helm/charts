@@ -1,0 +1,120 @@
+{{- if .Values.exposeServices }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: {{ template "faas-netesd.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: faas-netesd
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: faas-netesd-external
+  namespace: {{ .Release.Namespace | quote }}
+spec:
+  type: {{ .Values.serviceType }}
+  ports:
+    - port: 8080
+      protocol: TCP
+      targetPort: 8080
+      {{- if contains "NodePort" .Values.serviceType }}
+      nodePort: 31111
+      {{- end }}
+  selector:
+    app: faas-netesd
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: {{ template "faas-netesd.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: gateway
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: gateway-external
+  namespace: {{ .Release.Namespace | quote }}
+spec:
+  type: {{ .Values.serviceType }}
+  ports:
+    - port: 8080
+      protocol: TCP
+      targetPort: 8080
+      {{- if contains "NodePort" .Values.serviceType }}
+      nodePort: 31112
+      {{- end }}
+  selector:
+    app: gateway
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: {{ template "faas-netesd.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: prometheus
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: prometheus-external
+  namespace: {{ .Release.Namespace | quote }}
+spec:
+  type: {{ .Values.serviceType }}
+  ports:
+    - port: 9090
+      protocol: TCP
+      targetPort: 9090
+      {{- if contains "NodePort" .Values.serviceType }}
+      nodePort: 31119
+      {{- end }}
+  selector:
+    app: prometheus
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: {{ template "faas-netesd.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: alertmanager
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: alertmanager-external
+  namespace: {{ .Release.Namespace | quote }}
+spec:
+  type: {{ .Values.serviceType }}
+  ports:
+    - port: 9093
+      protocol: TCP
+      targetPort: 9093
+      {{- if contains "NodePort" .Values.serviceType }}
+      nodePort: 31113
+      {{- end }}
+  selector:
+    app: alertmanager
+---
+{{- if .Values.async }}
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: {{ template "faas-netesd.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: nats
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: nats-external
+  namespace: {{ .Release.Namespace | quote }}
+spec:
+  type: {{ .Values.serviceType }}
+  ports:
+    - port: 4222
+      protocol: TCP
+      targetPort: 4222
+      {{- if contains "NodePort" .Values.serviceType }}
+      nodePort: 31114
+      {{- end }}
+  selector:
+    app: nats
+{{- end }}
+---
+{{- end }}

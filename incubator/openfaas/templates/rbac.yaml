@@ -1,0 +1,80 @@
+{{- $functionNs := default .Release.Namespace .Values.functionNamespace }}
+{{- if .Values.rbac }}
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRole
+metadata:
+  labels:
+    app: {{ template "faas-netesd.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: faas-controller
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: faas-controller
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - services
+    verbs:
+      - get
+      - list
+      - watch
+      - create
+      - delete
+      - update
+  - apiGroups:
+    - extensions
+    resources:
+      - deployments
+    verbs:
+      - get
+      - list
+      - watch
+      - create
+      - delete
+      - update
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  labels:
+    app: {{ template "faas-netesd.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: faas-controller
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: faas-controller
+  namespace: {{ .Release.Namespace | quote }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: faas-controller
+subjects:
+  - kind: ServiceAccount
+    name: faas-controller
+    namespace: {{ .Release.Namespace | quote }}
+---
+{{- if (ne .Release.Namespace $functionNs) }}
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  labels:
+    app: {{ template "faas-netesd.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: faas-controller
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: faas-controller-fn
+  namespace: {{ $functionNs | quote }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: faas-controller
+subjects:
+  - kind: ServiceAccount
+    name: faas-controller
+    namespace: {{ .Release.Namespace | quote }}
+{{- end }}
+---
+{{- end }}
