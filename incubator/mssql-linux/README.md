@@ -4,7 +4,7 @@
  * This chart requires Docker Engine 1.8+ in any of their supported platforms.  Please see vendor requirements [here for more information](https://docs.microsoft.com/en-us/sql/linux/quickstart-install-connect-docker).
  * At least 2GB of RAM (3.25 GB prior to 2017-CU2). Make sure to assign enough memory to the Docker VM if you're running on Docker for Mac or Windows.
  * Requires the following variables
-   - You must change the ACCEPT_EULA in the values.yaml file to `Y` or include `--set ACCEPT_EULA.value=Y` in the command line of `helm install`
+   - You must change the ACCEPT_EULA.value in the values.yaml file to `Y` or include `--set ACCEPT_EULA.value=Y` in the command line of `helm install` to override the default value of `N`.
    - You must change the editions variable in the values.yaml file to include the edition of SQL Server or include `--set edition.value=<your_product_id | edition_name>` in the command line of `helm install`.
 
 ## Chart Components
@@ -53,19 +53,18 @@ $ kubectl exec mymssql-mssql-linux-8688756468 -- env | grep SA_PASSWORD
 
 ## Connecting to SQL Server Instance
 1.  Run the following command
-This command will create a pod called `dbatoolbox` that will include the SQL Server Commandline `sqlcmd` and start at a bash prompt.
+This command will create a pod called `mssqlcli` that will include the SQL Server Commandline `sqlcmd` and start at a bash prompt.
 ```console
-$ kubectl run dbatoolbox --image=microsoft/mssql-tools -ti --restart=Never --rm=true -- /bin/bash
+$ kubectl run mssqlcli --image=microsoft/mssql-tools -ti --restart=Never --rm=true -- /bin/bash
 $ sqlcmd -S mymssql-mssql-linux -U sa
 Password: <Enter SA Password>
 $ 1> select @@VERSION;
 $ 2> go
-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------
 Microsoft SQL Server 2017 (RTM-CU3-GDR) (KB4052987) - 14.0.3015.40 (X64) 
 	Dec 22 2017 16:13:22 
 	Copyright (C) 2017 Microsoft Corporation
-	Express Edition (64-bit) on Linux (Ubuntu 16.04.3 LTS)                                                                                                          
-
+	Express Edition (64-bit) on Linux (Ubuntu 16.04.3 LTS)
 (1 rows affected)
 
 ```
@@ -75,8 +74,9 @@ The configuration parameters in this section control the resources requested and
 
 | Parameter | Description | Default |
 | --------- | ----------- | ------- |
-| ACCEPT_EULA | EULA that needs to be accepted.  It will need to be changed via commandline or values.yaml. | N |
-| edition | The edition of SQL Server to install.  See section [Editions](#sql-server-for-linux-editions). | Express |
+| ACCEPT_EULA.value | EULA that needs to be accepted.  It will need to be changed via commandline or values.yaml. | N |
+| edition.value | The edition of SQL Server to install.  See section [Editions](#sql-server-for-linux-editions). | Express |
+| sapassword | Overrides the randomly created password with a default password.  [Please read password requirements](https://docs.microsoft.com/en-us/sql/relational-databases/security/password-policy). | Random (20-AlphNum) |
 | image.repository | The docker hub repo for SQL Server | microsoft/mssql-server-linux |
 | image.tag | The tag for the image | latest |
 | image.pullPolicy | The pull policy for the deployment | IfNotPresent |

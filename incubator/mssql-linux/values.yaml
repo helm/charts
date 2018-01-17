@@ -1,7 +1,9 @@
-ACCEPT_EULA:
-  value: N
-edition:
+ACCEPT_EULA: 
+  value: "N"
+edition: 
   value: Express
+# Override sapassword in templates/secret.yaml
+#sapassword: "MyStrongPassword1234"
 image:
   repository: microsoft/mssql-server-linux
   tag: latest
@@ -24,3 +26,4 @@ resources: {}
   # requests:
   #  cpu: 100m
   #  memory: 2Gi
+nodeSelector: {}

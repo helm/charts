@@ -9,6 +9,10 @@ metadata:
     heritage: {{ .Release.Service }}
 spec:
   replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "mssql.name" . }}
+      release: {{ .Release.Name }}
   template:
     metadata:
       labels:
@@ -28,7 +32,7 @@ spec:
               valueFrom:
                secretKeyRef:
                  name: {{ template "mssql.fullname" . }}-secret
-                 key: password
+                 key: sapassword
           ports:
             - containerPort: {{ .Values.service.internalPort }}
           livenessProbe:
