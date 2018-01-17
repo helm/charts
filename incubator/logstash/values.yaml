@@ -23,6 +23,7 @@ service:
 
 # Extra config options
 configData: {}
+initialHeapSize: "256m"
 heapSize: "1g"
 
 ingress:
