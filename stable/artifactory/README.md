@@ -11,6 +11,7 @@ This chart will do the following:
 * Deploy Artifactory-Pro (or OSS if set custom image)
 * Deploy a PostgreSQL database using the stable/postgresql chart
 * Deploy an optional Nginx server
+* Optionally expose Artifactory with Ingress [Ingress documentation](https://kubernetes.io/docs/concepts/services-networking/ingress/)
 
 ## Installing the Chart
 
@@ -114,6 +115,10 @@ The following tables lists the configurable parameters of the artifactory chart 
 | `artifactory.javaOpts.xms`              | Artifactory java Xms size           |      |
 | `artifactory.javaOpts.xmx`              | Artifactory java Xms size           |      |
 | `artifactory.javaOpts.other`            | Artifactory additional java options |      |
+| `ingress.enabled`           | If true, Artifactory Ingress will be created | `false` |
+| `ingress.annotations`       | Artifactory Ingress annotations     | `{}` |
+| `ingress.hosts`             | Artifactory Ingress hostnames       | `[]` |
+| `ingress.tls`               | Artifactory Ingress TLS configuration (YAML) | `[]` |
 | `nginx.name` | Nginx name | `nginx`   |
 | `nginx.enabled` | Deploy nginx server | `false`   |
 | `nginx.replicaCount` | Nginx replica count | `1`   |
@@ -139,8 +144,38 @@ The following tables lists the configurable parameters of the artifactory chart 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
+### Ingress TLS
+If your cluster allows automatic creation/retrieval of TLS certificates (e.g. [kube-lego](https://github.com/jetstack/kube-lego)), please refer to the documentation for that mechanism.
+
+To manually configure TLS, first create/retrieve a key & certificate pair for the address(es) you wish to protect. Then create a TLS secret in the namespace:
+
+```console
+kubectl create secret tls artifactory-tls --cert=path/to/tls.cert --key=path/to/tls.key
+```
+
+Include the secret's name, along with the desired hostnames, in the Artifactory Ingress TLS section of your custom `values.yaml` file:
+
+```
+  ingress:
+    ## If true, Artifactory Ingress will be created
+    ##
+    enabled: true
+
+    ## Artifactory Ingress hostnames
+    ## Must be provided if Ingress is enabled
+    ##
+    hosts:
+      - artifactory.domain.com
+
+    ## Artifactory Ingress TLS configuration
+    ## Secrets must be manually created in the namespace
+    ##
+    tls:
+      - secretName: artifactory-tls
+        hosts:
+          - artifactory.domain.com
+```
 
 ## Useful links
 https://www.jfrog.com
 https://www.jfrog.com/confluence/
-

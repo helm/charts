@@ -41,7 +41,7 @@ artifactory:
   internalPort: 8081
   persistence:
     mountPath: "/var/opt/jfrog/artifactory"
-    enabled: false
+    enabled: true
     accessMode: ReadWriteOnce
     size: 20Gi
     ## artifactory data Persistent Volume Storage Class
@@ -70,7 +70,7 @@ artifactory:
 
 # Nginx
 nginx:
-  enabled: false
+  enabled: true
   name: nginx
   replicaCount: 1
   image:
@@ -123,4 +123,4 @@ postgresql:
   postgresPassword: "artifactory"
   postgresDatabase: "artifactory"
   persistence:
-    enabled: false
+    enabled: true
