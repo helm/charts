@@ -20,7 +20,7 @@ spec:
 {{ toYaml .Values.podAnnotations | indent 8 }}
       {{- end }}
     spec:
-      {{- if .Values.securityContext.val }}
+      {{- if .Values.securityContext.isEnabled }}
       securityContext:
         fsGroup: {{ .Values.securityContext.fsGroup }}
         runAsUser: {{ .Values.securityContext.runAsUser }}
