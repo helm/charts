@@ -106,13 +106,15 @@ The following tables lists the configurable parameters of the Traefik chart and 
 | `acme.enabled`                  | Whether to use Let's Encrypt to obtain certificates                  | `false`                                   |
 | `acme.email`                    | Email address to be used in certificates obtained from Let's Encrypt | `admin@example.com`                       |
 | `acme.staging`                  | Whether to get certs from Let's Encrypt's staging environment        | `true`                                    |
+| `acme.logging`                  | display debug log messages from the acme client library              | `false`                                   |
 | `acme.persistence.enabled`      | Create a volume to store ACME certs (if ACME is enabled)             | `true`                                    |
 | `acme.persistence.storageClass` | Type of `StorageClass` to request-- will be cluster-specific         | `nil` (uses alpha storage class annotation) |
 | `acme.persistence.accessMode`   | `ReadWriteOnce` or `ReadOnly`                                        | `ReadWriteOnce`                           |
 | `acme.persistence.size`         | Minimum size of the volume requested                                 | `1Gi`                                     |
 | `dashboard.enabled`             | Whether to enable the Traefik dashboard                              | `false`                                   |
-| `dashboard.domain`              | Domain for the Traefik dashboard                                     | `traefik.example.com`                     |
-| `dashboard.ingress.annotations` | Annotations for the Traefik dashboard Ingress definition, specified as a map | None                              |
+| `dashboard.domain`              | Domain for the Traefik dashboard                                     | `traefik.example.com`                     |               
+| `dashboard.service.annotations` | Annotations for the Traefik dashboard Service definition, specified as a map | None                |
+| `dashboard.ingress.annotations` | Annotations for the Traefik dashboard Ingress definition, specified as a map | None                |
 | `dashboard.ingress.labels`      | Labels for the Traefik dashboard Ingress definition, specified as a map      | None                              |
 | `dashboard.auth.basic`          | Basic auth for the Traefik dashboard specified as a map, see Authentication section | unset by default; this means basic auth is disabled |
 | `dashboard.statistics.recentErrors` | Number of recent errors to show in the ‘Health’ tab              | None                                      |
@@ -127,7 +129,7 @@ The following tables lists the configurable parameters of the Traefik chart and 
 | `accessLogs.filePath`           | The path to the log file. Logs to stdout if omitted                  | None                                      |
 | `accessLogs.format`             | What format the log entries should be in. Either `common` or `json`  | `common`                                  |
 | `metrics.prometheus.enabled`    | Whether to enable the `/metrics` endpoint for metric collection by Prometheus. | `false`                           |
-| `metrics.prometheus.buckets`    | A list of response times (in seconds) - for each list element, Traefik will report all response times less than the element. | `0.1,0.3,1.2,5` |
+| `metrics.prometheus.buckets`    | A list of response times (in seconds) - for each list element, Traefik will report all response times less than the element. | `[0.1,0.3,1.2,5]` |
 | `metrics.datadog.enabled`       | Whether to enable pushing metrics to Datadog.                          | `false`                                   |
 | `metrics.datadog.address`       | Datadog host in the format <hostname>:<port>                         | `localhost:8125`                          |
 | `metrics.datadog.pushInterval`  | How often to push metrics to Datadog.                                | `10s`                                     |
