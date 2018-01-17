@@ -1,15 +1,11 @@
-# URL of your incoming webhook in Slack:
+## URL of your Incoming Webhook in Slack:
 slackUrl: ""
 
+## Configuration for the deployment:
 image:
   repository: willwill/kube-slack
   tag: v3.1.1
   pullPolicy: IfNotPresent
-
-rbac:
-  create: true
-  serviceAccountName: ""
-
 resources: {}
   # limits:
   #  cpu: 100m
@@ -17,3 +13,9 @@ resources: {}
   # requests:
   #  cpu: 100m
   #  memory: 128Mi
+
+rbac:
+  ## Create a ClusterRole, ClusterRoleBinding and a ServiceAccount:
+  create: true
+  ## This is used, if rbac.create is false:
+  serviceAccountName: default
