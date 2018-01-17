@@ -51,6 +51,9 @@ acme:
 dashboard:
   enabled: false
   domain: traefik.example.com
+  service:
+    # annotations:
+    #   key: value
   ingress:
     # annotations:
     #   key: value
