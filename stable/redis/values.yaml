@@ -13,6 +13,7 @@ serviceType: ClusterIP
 
 ## Pod Security Context
 securityContext:
+  isEnabled: true
   fsGroup: 1001
   runAsUser: 1001
 
