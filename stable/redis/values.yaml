@@ -44,6 +44,9 @@ persistence:
   ## Redis images.
   path: /bitnami
 
+  ## The subdirectory of the volume to mount to, useful in dev environments and one PV for multiple services.
+  supPath: ""
+
   ## A manually managed Persistent Volume and Claim
   ## Requires persistence.enabled: true
   ## If defined, PVC must be created manually before volume will be bound
