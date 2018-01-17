@@ -18,13 +18,13 @@ metadata:
 spec:
   type: {{ .Values.web.service.type }}
   ports:
-    - name: atc
+    - name: {{ .Values.concourse.atcPortName }}
       port: {{ .Values.concourse.atcPort }}
       targetPort: atc
       {{ if and (eq "NodePort" .Values.web.service.type) .Values.web.service.atcNodePort }}
       nodePort: {{ .Values.web.service.atcNodePort}}
       {{ end }}
-    - name: tsa
+    - name: {{ .Values.concourse.tsaPortName }}
       port: {{ .Values.concourse.tsaPort }}
       targetPort: tsa
       {{ if and (eq "NodePort" .Values.web.service.type) .Values.web.service.tsaNodePort }}

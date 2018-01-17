@@ -139,10 +139,20 @@ concourse:
   oldEncryptionKey:
   encryptionKey:
 
+  ## Name of ATC listen port.
+  ## ref: https://concourse.ci/architecture.html
+  ##
+  atcPortName: atc
+
   ## ATC listen port.
   ## ref: https://concourse.ci/architecture.html
   ##
   atcPort: 8080
+
+  ## Name of TSA listen port.
+  ## ref: https://concourse.ci/architecture.html
+  ##
+  tsaPortName: tsa
 
   ## TSA listen port.
   ## ref: https://concourse.ci/architecture.html
