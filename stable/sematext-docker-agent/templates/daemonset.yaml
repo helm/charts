@@ -1,5 +1,5 @@
 {{- if or (.Values.sematext.spmToken) (.Values.sematext.logseneToken) }}
-apiVersion: apps/v1beta2
+apiVersion: {{ .Values.apiVersion }}
 kind: DaemonSet
 metadata:
   name: {{ template "sematext.fullname" . }}
