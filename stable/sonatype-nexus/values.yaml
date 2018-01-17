@@ -41,7 +41,7 @@ ingress:
 docker:
   enabled: false
   # Used to enable a docker registry
-  # port: 5509
+  port: 5509
   # host: docker.local
 ## Persist data to a persitent volume
 persistence:
