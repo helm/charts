@@ -20,7 +20,7 @@ spec:
   ports:
     - name: {{ .Values.concourse.atcPortName }}
       port: {{ .Values.concourse.atcPort }}
-      targetPort: atc
+      targetPort: {{ .Values.concourse.atcPortName }}
       {{ if and (eq "NodePort" .Values.web.service.type) .Values.web.service.atcNodePort }}
       nodePort: {{ .Values.web.service.atcNodePort}}
       {{ end }}

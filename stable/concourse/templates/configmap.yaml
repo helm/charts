@@ -10,6 +10,7 @@ metadata:
 data:
   postgresql-host: {{ template "concourse.postgresql.fullname" . }}
   postgresql-database: {{ .Values.postgresql.postgresDatabase | quote }}
+  concourse-atc-port-name: {{ .Values.concourse.atcPortName | quote }}
   concourse-atc-port: {{ .Values.concourse.atcPort | quote }}
   concourse-tsa-host: {{ template "concourse.web.fullname" . }}
   concourse-tsa-port: {{ .Values.concourse.tsaPort | quote }}
