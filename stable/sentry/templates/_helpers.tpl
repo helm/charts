@@ -28,3 +28,14 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- define "smtp.fullname" -}}
 {{- printf "%s-%s" .Release.Name "smtp" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
+
+{{/*
+Set postgres host
+*/}}
+{{- define "postgresql.host" -}}
+{{- if .Values.postgresql.enabled -}}
+{{- template "postgresql.fullname" . -}}
+{{- else -}}
+{{- .Values.postgresHost | quote -}}
+{{- end -}}
+{{- end -}}
