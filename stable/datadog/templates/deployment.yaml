@@ -24,7 +24,7 @@ spec:
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         resources:
-{{ toYaml .Values.resources | indent 12 }}
+{{ toYaml .Values.datadog.resources | indent 12 }}
         ports:
         - containerPort: 8125
           name: dogstatsdport
