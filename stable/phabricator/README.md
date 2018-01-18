@@ -112,3 +112,31 @@ The [Bitnami Phabricator](https://github.com/bitnami/bitnami-docker-phabricator)
 
 Persistent Volume Claims are used to keep the data across deployments. This is known to work in GCE, AWS, and minikube.
 See the [Configuration](#configuration) section to configure the PVC or to disable persistence.
+
+## Ingress With Reverse Proxy
+
+You can define a custom ingress following the config values in values.yaml This will require including the preamble.php file to allow ssl termination as mentioned in the phabricator docs.
+https://secure.phabricator.com/book/phabricator/article/configuring_preamble/
+
+To avoid `Error executing 'postInstallation'` You'll have to update the preamble.php in three steps.
+
+`helm install stable/phabricator/ --name my-release --set phabricatorHost=phab.k8.getpolymorph.com `
+
+Once you get a 2xx response you'll need to update the preamble.php file and two config settings. with somethin like this.
+
+`kubectl exec <pod name>  /opt/bitnami/phabricator/bin/config set security.require-https 'true'`
+`kubectl exec phab-phabricator-1424042508-p42xw  /opt/bitnami/phabricator/bin/config set phabricator.base-uri https://example.com`
+`kubectl edit cm <your preamble.php config map>`
+```
+data:
+  preamble.php: |+
+    <?php
+    $_SERVER['HTTPS'] = true; 
+    ?>
+```
+
+
+There are several things you may want to change depending on your setup. Once done you'll need to re-build the pod to mount the changes by deleting it.
+
+`kubectl delete po <your preamble.php config map>`
+

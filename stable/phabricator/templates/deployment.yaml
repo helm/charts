@@ -88,7 +88,16 @@ spec:
           mountPath: /bitnami/phabricator
         - name: apache-data
           mountPath: /bitnami/apache
+        - name: phabricator-preamble
+          mountPath: /opt/bitnami/phabricator/support/preamble.php
+          subPath: preamble.php
       volumes:
+      - name: phabricator-preamble
+        configMap:
+          name: {{ template "phabricator.fullname" . }}
+          items:
+          - key: preamble.php
+            path: preamble.php
       - name: phabricator-data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:

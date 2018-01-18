@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "phabricator.fullname" . }}
+  labels:
+    app: {{ template "phabricator.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+  preamble.php: |+
+    <?php
+    // update preamble.php here
+    // https://secure.phabricator.com/book/phabricator/article/configuring_preamble/
+    ?>
+
