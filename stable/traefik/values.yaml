@@ -105,6 +105,8 @@ metrics:
     # address: localhost:8125
     # pushinterval: 10s
 deployment:
+  # podAnnotations:
+  #   key: value
   hostPort:
     httpEnabled: false
     httpsEnabled: false
