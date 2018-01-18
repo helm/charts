@@ -51,8 +51,7 @@ Parameter | Description | Default
 `image.pullPolicy` | container image pull policy | `IfNotPresent`
 `resources` | resource requests & limits | requests: `cpu: 100m, memory: 128Mi`, limits: `cpu: 100m, memory: 128Mi`
 `service.type` | type of service to create | `ClusterIP`
-`service.externalPort` | external port for the service | `9108`
-`service.internalPort` | internal port for the service | `9108`
+`service.httpPort` | port for the http service | `9108`
 `es.uri` | address of the Elasticsearch node to connect to | `localhost:9200`
 `es.all` | if `true`, query stats for all nodes in the cluster, rather than just the node we connect to | `true`
 `es.indices` | if true, query stats for all indices in the cluster | `true`

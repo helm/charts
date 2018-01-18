@@ -10,9 +10,7 @@ metadata:
 spec:
   type: {{ .Values.service.type }}
   ports:
-    - name: http-service
-      port: {{ .Values.service.externalPort }}
-      targetPort: {{ .Values.service.internalPort }}
+    - port: http
       protocol: TCP
   selector:
     app: {{ template "elasticsearch-exporter.name" . }}

@@ -21,8 +21,7 @@ resources:
 
 service:
   type: ClusterIP
-  externalPort: 9108
-  internalPort: 9108
+  httpPort: 9108
 
 es:
   ## Address (host and port) of the Elasticsearch node we should connect to.
