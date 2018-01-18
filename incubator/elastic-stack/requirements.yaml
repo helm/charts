@@ -6,8 +6,9 @@ dependencies:
   version: ^0.2.0
   repository: https://kubernetes-charts.storage.googleapis.com/
 - name: logstash
-  version: ^0.3.1
+  version: ^0.5.0
   repository: https://kubernetes-charts-incubator.storage.googleapis.com/
+  condition: logstash.enabled
 - name: nginx-ldapauth-proxy
   version: ^0.1.1
   repository: https://kubernetes-charts-incubator.storage.googleapis.com/

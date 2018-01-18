@@ -7,6 +7,7 @@ kibana:
     ELASTICSEARCH_URL: http://http.default.svc.cluster.local:9200
 
 logstash:
+  enabled: true
 
 nginx-ldapauth-proxy:
   enabled: false
