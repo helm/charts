@@ -40,6 +40,8 @@ spec:
           value: {{ default "" .Values.rabbitmqClusterNodeName | quote }}
         - name: RABBITMQ_DEFAULT_VHOST
           value: {{ default "/" .Values.rabbitmqVhost | quote }}
+        - name: RABBITMQ_VHOST
+          value: {{ default "/" .Values.rabbitmqVhost | quote }}
         - name: RABBITMQ_MANAGER_PORT_NUMBER
           value: {{ default "15672" .Values.rabbitmqManagerPort | quote }}
         - name: RABBITMQ_DISK_FREE_LIMIT
