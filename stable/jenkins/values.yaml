@@ -13,8 +13,9 @@ Master:
   UseSecurity: true
   Env:
     Open:
-      JAVA_OPTS: "-Xms512m -Xmx512m"   # Set min/max heap here if needed
-      JENKINS_OPTS: "" # Set jenkins options
+      # Set min/max heap here if needed
+      JAVA_OPTS: "-Xms512m -Xmx512m"
+      JENKINS_OPTS: ""
     Secret:
       ADMIN_USER: "admin"
       ADMIN_PASSWORD: "changeme"
