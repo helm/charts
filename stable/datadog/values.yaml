@@ -1,9 +1,9 @@
 # Default values for datadog.
 image:
   # This chart is compatible with different images, please choose one
-  repository: datadog/docker-dd-agent # Agent5
-  # repository: datadog/agent # Agent6 (beta)
-  # repository: datadog/dogstatsd # Standalone DogStatsD6 (beta)
+  repository: datadog/docker-dd-agent  # Agent5
+  # repository: datadog/agent          # Agent6 (beta)
+  # repository: datadog/dogstatsd      # Standalone DogStatsD6 (beta)
   tag: latest
   pullPolicy: IfNotPresent
 
