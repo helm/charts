@@ -49,7 +49,8 @@ The following tables lists the configurable parameters of the drone charts and t
 | `elasticsearch.host`   | ElasticSearch hostname                             | `elasticsearch-client.default.svc.cluster.local` |
 | `elasticsearch.port`   | ElasticSearch port                                 | `9200`                                           |
 | `configData`           | Extra logstash config                              | `{}`                                             |
-| `heapSize`             | logstash Heapsize                                  | `1g`                                             |
+| `heapSize`             | logstash maximum Heapsize                          | `1g`                                             |
+| `initialHeapSize`      | initial value for logstash Heapsize                | `1g`                                             |
 | `patterns`             | Logstash patterns configuration                    | `nil`                                            |
 | `inputs`               | Logstash inputs configuration                      | `(basic)`                                        |
 | `filters`              | Logstash filters configuration                     | `nil`                                            |
