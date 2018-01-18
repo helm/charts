@@ -74,6 +74,10 @@ data:
     {{- if .Values.acme.logging }}
     acmeLogging = true
     {{- end }}
+    {{- if eq .Values.acme.challenge "http" }}
+    [acme.httpChallenge]
+    entryPoint = "http"
+    {{- end }}
     {{- end }}
     {{- if .Values.dashboard.enabled }}
     [web]
