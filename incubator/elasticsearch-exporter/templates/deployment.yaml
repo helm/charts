@@ -63,7 +63,7 @@ spec:
                 - SETFCAP
             readOnlyRootFilesystem: true
           resources:
-  {{ toYaml .Values.resources | indent 10 }}
+  {{ toYaml .Values.resources | indent 12 }}
           ports:
             - containerPort: {{ .Values.service.httpPort }}
               name: http
