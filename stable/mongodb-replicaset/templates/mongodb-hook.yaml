@@ -1,0 +1,27 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: "{{.Release.Name}}"
+  labels:
+    heritage: {{.Release.Service | quote }}
+    release: {{.Release.Name | quote }}
+    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+  annotations:
+    "helm.sh/hook": {{ .Values.hook.type }}
+    "helm.sh/hook-weight": "{{ .Values.hook.weight }}"
+    "helm.sh/hook-delete-policy": {{ .Values.hook.deletePolicy }}
+spec:
+  template:
+    metadata:
+      name: "{{.Release.Name}}"
+      labels:
+        heritage: {{.Release.Service | quote }}
+        release: {{.Release.Name | quote }}
+        chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: post-install-job
+        imagePullPolicy: {{ .Values.hook.imagePullPolicy }}
+        image: {{ .Values.hook.image }}
+        command: [ {{ .Values.hook.command }} ]
