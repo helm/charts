@@ -28,6 +28,14 @@ spec:
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         env:
+        - name: KONG_ADMIN_LISTEN
+          value: 0.0.0.0:{{ default 8001 .Values.admin.http.containerPort }}
+        - name: KONG_ADMIN_LISTEN_SSL
+          value: 0.0.0.0:{{ default 8444 .Values.admin.https.containerPort }}
+        - name: KONG_PROXY_LISTEN
+          value: 0.0.0.0:{{ default 8000 .Values.proxy.http.containerPort }}
+        - name: KONG_PROXY_LISTEN_SSL
+          value: 0.0.0.0:{{ default 8443 .Values.proxy.https.containerPort }}
         - name: KONG_NGINX_DAEMON
           value: "off"
         - name: KONG_PROXY_ACCESS_LOG
