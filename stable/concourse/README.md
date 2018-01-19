@@ -77,7 +77,9 @@ The following tables lists the configurable parameters of the Concourse chart an
 | `concourse.sessionSigningKey` | Concourse Session Signing Private Key | *See [#ssh-keys](#ssh-keys)* |
 | `concourse.workerKey` | Concourse Worker Private Key | *See [#ssh-keys](#ssh-keys)* |
 | `concourse.workerKeyPub` | Concourse Worker Public Key | *See [#ssh-keys](#ssh-keys)* |
+| `concourse.atcPortName` | Name of Concourse ATC listen port | `atc` |
 | `concourse.atcPort` | Concourse ATC listen port | `8080` |
+| `concourse.tsaPortName` | Name of Concourse TSA listen port | `tsa` |
 | `concourse.tsaPort` | Concourse TSA listen port | `2222` |
 | `concourse.allowSelfSignedCertificates` | Allow self signed certificates | `true` |
 | `concourse.authDuration` | Length of time for which tokens are valid | `24h` |

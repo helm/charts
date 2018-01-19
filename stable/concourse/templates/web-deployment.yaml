@@ -308,7 +308,7 @@ spec:
                   name: {{ template "concourse.concourse.fullname" . }}
                   key: container-placement-strategy
           ports:
-            - name: atc
+            - name: {{ .Values.concourse.atcPortName }}
               containerPort: {{ .Values.concourse.atcPort }}
             - name: tsa
               containerPort: {{ .Values.concourse.tsaPort }}
@@ -319,13 +319,13 @@ spec:
           livenessProbe:
             httpGet:
               path: /
-              port: atc
+              port: {{ .Values.concourse.atcPortName }}
             initialDelaySeconds: 120
             timeoutSeconds: 5
           readinessProbe:
             httpGet:
               path: /
-              port: atc
+              port: {{ .Values.concourse.atcPortName }}
             initialDelaySeconds: 5
             timeoutSeconds: 1
           resources:
