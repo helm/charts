@@ -36,6 +36,17 @@ Set postgres host
 {{- if .Values.postgresql.enabled -}}
 {{- template "postgresql.fullname" . -}}
 {{- else -}}
-{{- .Values.postgresHost | quote -}}
+{{- .Values.postgresql.postgresHost | quote -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Set postgres secret
+*/}}
+{{- define "postgresql.secret" -}}
+{{- if .Values.postgresql.enabled -}}
+{{- template "postgresql.fullname" . -}}
+{{- else -}}
+{{- template "fullname" . -}}
 {{- end -}}
 {{- end -}}

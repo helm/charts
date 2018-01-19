@@ -32,13 +32,13 @@ spec:
               name: {{ template "fullname" . }}
               key: sentry-secret
         - name: SENTRY_DB_USER
-          value: {{ default "sentry" .Values.postgresUser | quote }}
+          value: {{ default "sentry" .Values.postgresql.postgresUser | quote }}
         - name: SENTRY_DB_NAME
-          value: {{ default "sentry" .Values.postgresDatabase | quote }}
+          value: {{ default "sentry" .Values.postgresql.postgresDatabase | quote }}
         - name: SENTRY_DB_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "postgresql.fullname" . }}
+              name: {{ template "postgresql.secret" . }}
               key: postgres-password
         - name: SENTRY_POSTGRES_HOST
           value: {{ template "postgresql.host" . }}
