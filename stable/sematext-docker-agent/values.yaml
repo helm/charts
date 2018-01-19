@@ -1,6 +1,3 @@
-# For Kubernetes 1.8+ use apps/v1beta2
-apiVersion: extensions/v1beta1
-
 image:
   repository: sematext/sematext-agent-docker
   # For all available tags check here https://hub.docker.com/r/sematext/sematext-agent-docker/tags/

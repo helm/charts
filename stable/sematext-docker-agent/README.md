@@ -39,7 +39,6 @@ The following table lists the configuration parameters of the sematext-docker-ag
 
 |             Parameter       |            Description             |                    Default                |
 |-----------------------------|------------------------------------|-------------------------------------------|
-| `apiVersion`                | K8s api version to use             | `extensions/v1beta1`                      |
 | `sematext.spmToken`         | Sematext SPM token                 | `Nil` You must provide your SPM token     |
 | `sematext.logseneToken`     | Sematext Logsene token             | `Nil` You must provide your Logsene token |
 | `sematext.region`           | Sematext region                    | `US` Sematext US or EU region             |
