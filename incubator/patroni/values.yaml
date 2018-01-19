@@ -16,9 +16,9 @@ Replicas: 5
 Resources:
   Cpu: 100m
   Memory: 512Mi
-  
+
 # Node selector for Patroni pods
-#NodeSelector:
+# NodeSelector:
 #  cloud.google.com/gke-nodepool: highmem-pool
 
 # Credentials used by Patroni
@@ -28,10 +28,19 @@ Credentials:
   Admin: cola
   Standby: pinacolada
 
-# Patroni depends on etcd, configure it here
+## Distribution Configuration stores. Please note that only one of the following stores should be selected.
 Etcd:
-  Host: # fill-in value for etcd host (etcd.default.svc.cluster.local), leave blank to use the discovery parameter
-  Discovery: # leave blank to use vendored etcd chart
+  Enable: true
+  DeployChart: true
+  # if not deploying etcd chart, fill-in value for etcd host (etcd.default.svc.cluster.local)
+  Host:
+  # leave blank to use vendored etcd chart
+  Discovery:
+Zookeeper:
+  Enable: false
+  DeployChart: false
+  # if not deploying etcd chart, fill-in list of ZooKeeper cluster members in format: 'host1:port1','host2:port2','etc...'
+  Hosts:
 
 WalE:
   Enable: false

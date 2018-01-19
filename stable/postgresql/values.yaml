@@ -11,6 +11,11 @@ imageTag: "9.6.2"
 ##
 # imagePullPolicy:
 
+## Specify imagePullSecrets
+## ref: https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
+##
+# imagePullSecrets: myregistrykey
+
 ## Create a database user
 ## Default: postgres
 # postgresUser:
@@ -47,6 +52,8 @@ persistence:
   size: 8Gi
   subPath: "postgresql-db"
 
+  # annotations: {}
+
 metrics:
   enabled: false
   image: wrouesnel/postgres_exporter
@@ -56,18 +63,18 @@ metrics:
     requests:
       memory: 256Mi
       cpu: 100m
-  ## Define additional custom metrics
-  ## ref: https://github.com/wrouesnel/postgres_exporter#adding-new-metrics-via-a-config-file
-  #customMetrics:
-  #  pg_database:
-  #    query: "SELECT d.datname AS name, CASE WHEN pg_catalog.has_database_privilege(d.datname, 'CONNECT') THEN pg_catalog.pg_database_size(d.datname) ELSE 0 END AS size FROM pg_catalog.pg_database d where datname not in ('template0', 'template1', 'postgres')"
-  #    metrics:
-  #      - name:
-  #          usage: "LABEL"
-  #          description: "Name of the database"
-  #      - size_bytes:
-  #          usage: "GAUGE"
-  #          description: "Size of the database in bytes"
+    ## Define additional custom metrics
+    ## ref: https://github.com/wrouesnel/postgres_exporter#adding-new-metrics-via-a-config-file
+    # customMetrics:
+    #   pg_database:
+    #     query: "SELECT d.datname AS name, CASE WHEN pg_catalog.has_database_privilege(d.datname, 'CONNECT') THEN pg_catalog.pg_database_size(d.datname) ELSE 0 END AS size FROM pg_catalog.pg_database d where datname not in ('template0', 'template1', 'postgres')"
+    #     metrics:
+    #       - name:
+    #           usage: "LABEL"
+    #           description: "Name of the database"
+    #       - size_bytes:
+    #           usage: "GAUGE"
+    #           description: "Size of the database in bytes"
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -99,3 +106,4 @@ networkPolicy:
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
 nodeSelector: {}
 tolerations: []
+affinity: {}

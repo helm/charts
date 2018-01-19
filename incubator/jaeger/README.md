@@ -4,7 +4,7 @@
 
 ## Introduction
 
-This chart adds all components required to run Jaeger as described in the [jaeger-kubernetes](https://github.com/jaegertracing/jaeger-kubernetes) GitHub page for a production-like deployment. The chart will initialize Cassandra using the cassandra-schema Job, deploy jaeger-agent as a DaemonSet and deploy the jaeger-collector and jaeger-query components as standard individual deployments. This chart also depends on the [cassandra chart](https://github.com/kubernetes/charts/tree/master/incubator/cassandra).
+This chart adds all components required to run Jaeger as described in the [jaeger-kubernetes](https://github.com/jaegertracing/jaeger-kubernetes) GitHub page for a production-like deployment. The chart default will deploy a new Cassandra cluster, but also supports using an existing Cassandra cluster, deploying a new ElasticSearch cluster, or connecting to an existing ElasticSearch cluster. Once the back storage available, the chart will deploy jaeger-agent as a DaemonSet and deploy the jaeger-collector and jaeger-query components as standard individual deployments.
 
 ## Prerequisites
 
@@ -30,12 +30,45 @@ resources:
     cpu: 2
 ```
 
+- The ElasticSearch chart calls out the following requirements for a production environment:
+```
+client:
+  ...
+  resources:
+    limits:
+      cpu: "1"
+      # memory: "1024Mi"
+    requests:
+      cpu: "25m"
+      memory: "512Mi"
+
+master:
+  ...
+  resources:
+    limits:
+      cpu: "1"
+      # memory: "1024Mi"
+    requests:
+      cpu: "25m"
+      memory: "512Mi"
+
+data:
+  ...
+  resources:
+    limits:
+      cpu: "1"
+      # memory: "2048Mi"
+    requests:
+      cpu: "25m"
+      memory: "1536Mi"
+```
+
 ## Installing the Chart
 
 To install the chart with the release name `myrel`, run the following command:
 
 ```bash
-$ helm install --name myrel
+$ helm install incubator/jaeger --name myrel
 ```
 
 After a few minutes, you should see a 3 node Cassandra instance, a Jaeger DaemonSet, a Jaeger Collector, and a Jaeger Query (UI) pod deployed into your Kubernetes cluster.
@@ -47,6 +80,38 @@ helm install incubator/jaeger --name myrel --set cassandra.config.max_heap_size=
 ```
 
 > **Tip**: List all releases using `helm list`
+
+## Installing the Chart using an Existing Cassandra Cluster
+
+If you already have an existing running Cassandra cluster, you can configure the chart as follows to use it as your backing store (replace `cassandra` with whatever hostname the cluster has been configured with):
+
+```bash
+helm install incubator/jaeger --name myrel --set tags.cassandra=false --set tags.elasticsearch=false --set cassandra.config.host=cassandra
+```
+
+> **Tip**: It is highly encouraged to run the Cassandra cluster with storage persistence.
+
+## Installing the Chart using a New ElasticSearch Cluster
+
+To install the chart with the release name `myrel` using a new ElasticSearch cluster instead of Cassandra (default), run the following command:
+
+```bash
+$ helm install incubator/jaeger --name myrel --set tags.cassandra=false --set tags.elasticsearch=true
+```
+
+After a few minutes, you should see 2 ElasticSearch client nodes, 2 ElasticSearch data nodes, 3 ElasticSearch master nodes, a Jaeger DaemonSet, a Jaeger Collector, and a Jaeger Query (UI) pod deployed into your Kubernetes cluster.
+
+> **Tip**: If the ElasticSearch client nodes do not enter the running state, try --set elasticsearch.rbac.create=true
+
+## Installing the Chart using an Existing ElasticSearch Cluster
+
+If you already have an existing running ElasticSearch cluster, you can configure the chart as follows to use it as your backing store (replace `http://elasticsearch:9200` with whatever hostname the cluster has been configured with):
+
+```bash
+helm install incubator/jaeger --name myrel --set tags.cassandra=false --set tags.elasticsearch=false --set elasticsearch.config.host=http://elasticsearch:9200
+```
+
+> **Tip**: It is highly encouraged to run the ElasticSearch cluster with storage persistence.
 
 ## Uninstalling the Chart
 
@@ -68,11 +133,15 @@ The following tables lists the configurable parameters of the Jaeger chart and t
 |-----------------------------------|------------------------------------|----------------------------------------|
 | `cassandra.image.tag`             | The image tag/version              |  3.11                                  |
 | `cassandra.persistence.enabled`   | To enable storage persistence      |  false (Highly recommended to enable)  |
+| `cassandra.config.host`           | Existing Cassandra hostname        |  ""                                    |
 | `cassandra.config.cluster_name`   | Cluster name                       |  jaeger                                |
 | `cassandra.config.seed_size`      | Seed size                          |  1                                     |
 | `cassandra.config.dc_name`        | Datacenter name                    |  dc1                                   |
 | `cassandra.config.rack_name`      | Rack name                          |  rack1                                 |
 | `cassandra.config.endpoint_snitch`| Node discovery method              |  GossipingPropertyFileSnitch           |
+| `elasticsearch.config.host`       | Existing ElasticSearch hostname    |  ""                                    |
+| `elasticsearch.config.username`   | Existing ElasticSearch username    |  "elastic"                             |
+| `elasticsearch.config.password`   | Existing ElasticSearch password    |  "changeme"                            |
 | `schema.annotations`              | Annotations for the schema job     |  nil                                   |
 | `schema.image`                    | Image to setup cassandra schema    |  jaegertracing/jaeger-cassandra-schema |
 | `schema.tag`                      | Image tag/version                  |  0.6                                   |
@@ -132,3 +201,7 @@ Override any required configuration options in the Cassandra chart that is requi
 ### Image tags
 
 Jaeger offers a multitude of [tags](https://hub.docker.com/u/jaegertracing/) for the various components used in this chart.
+
+### Pending enhancements
+- Moving configurable parameters to use ConfigMap
+- Sidecar deployment support

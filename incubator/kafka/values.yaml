@@ -1,11 +1,22 @@
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # Kafka:
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
-Replicas: 3
-Image: "solsson/kafka"
-ImageTag: "0.11.0.0"
-ImagePullPolicy: "IfNotPresent"
+## The StatefulSet installs 3 pods by default
+replicas: 3
+
+## The kafka image repository
+image: "confluentinc/cp-kafka"
+
+## The kafka image tag
+imageTag: "4.0.0"
+
+## Specify a imagePullPolicy
+## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+imagePullPolicy: "IfNotPresent"
+
+## Configure resource requests and limits
+## ref: http://kubernetes.io/docs/user-guide/compute-resources/
 resources: {}
   # limits:
   #   cpu: 200m
@@ -13,29 +24,74 @@ resources: {}
   # requests:
   #   cpu: 100m
   #   memory: 1024Mi
-Storage: "1Gi"
-DataDirectory: "/opt/kafka/data"
+  #
+## The size of the persistentVolume to allocate to each Kafka Pod in the StatefulSet. For
+## production servers this number should likely be much larger.
+storage: "1Gi"
 
-#------------------------------------------------------------------------------
+## The StatefulSet Update Strategy which Kafka will use when changes are applied.
+## ref: https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#update-strategies
+updateStrategy: "OnDelete"
+
+## If `updateStrategy` is set to "RollingUpdate", you may optionally specify which partition
+## should be updated first.
+## ref: https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#partitions
+rollingUpdatePartition: 0
+
+## The name of the storage class which the cluster should use.
+# storageClass: default
+
+## The location within the Kafka container where the PV will mount its storage and Kafka will store
+## its logs
+dataDirectory: "/opt/kafka/data"
+
+## The subpath within the Kafka container's PV where logs will be stored
+## This is combined with `dataDirectory` above, to create, by default: /opt/kafka/data/logs
+logSubPath: "logs"
+
+## Pod scheduling preferences.
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+##
+affinity: {}
+
+## Configuration Overrides. Specify any Kafka settings you would like set on the StatefulSet
+## here in map format, as defined in the official docs:
+## ref: https://kafka.apache.org/documentation/#brokerconfigs
+configurationOverrides: {}
+
+# ------------------------------------------------------------------------------
 # Zookeeper:
-#------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 zookeeper:
-  Servers: 3
-  Resources: {}
-  Heap: "1G"
-  Storage: "2Gi"
-  ServerPort: 2888
-  LeaderElectionPort: 3888
-  ClientPort: 2181
-  ImagePullPolicy: "IfNotPresent"
-  TickTimeMs: 2000
-  InitTicks: 10
-  SyncTicks: 5
-  ClientCnxns: 60
-  SnapRetain: 3
-  PurgeHours: 1
-  ProbeInitialDelaySeconds : 15
-  ProbeTimeoutSeconds : 5
-  AntiAffinity : "hard"
-  LogLevel : "INFO"
+  ## If true, install the Zookeeper chart alongside Kafka
+  ## ref: https://github.com/kubernetes/charts/tree/master/incubator/zookeeper
+  enabled: true
+
+  ## Configure Zookeeper resource requests and limits
+  ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+  resources: {}
+
+  ## The JVM heap size to allocate to Zookeeper
+  heap: "1G"
+
+  ## The amount of PV storage allocated to each Zookeeper pod in the statefulset
+  storage: "2Gi"
+
+  ## Specify a Zookeeper imagePullPolicy
+  ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+  imagePullPolicy: "IfNotPresent"
+
+  ## If the Zookeeper Chart is disabled a URL and port are required to connect
+  url: ""
+  port: 2181
+
+# ------------------------------------------------------------------------------
+# Schema Registry:
+# ------------------------------------------------------------------------------
+
+## Install Confluent Schema Registry server alongside Kafka to track Avro Schemas
+schema-registry:
+  ## If true, install the Schema-Registry chart alongside Kafka
+  ## ref: https://github.com/kubernetes/charts/tree/master/incubator/schema-registry
+  enabled: false

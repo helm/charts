@@ -20,6 +20,10 @@ spec:
 {{ include "istio.labels.standard" . | indent 8 }}
         component: {{ $serviceName }}-{{ .Values.addons.grafana.deployment.name }}
     spec:
+    {{- if .Values.addons.grafana.deployment.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
       containers:
       - name: {{ .Values.addons.grafana.deployment.name }}
         image:  "{{ .Values.addons.grafana.deployment.image }}:{{ .Values.istio.release }}"

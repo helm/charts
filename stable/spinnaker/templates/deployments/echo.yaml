@@ -18,6 +18,10 @@ spec:
         app: {{ template "fullname" . }}
         component: echo
     spec:
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- end }}
       containers:
         - image: {{ .Values.images.echo }}
           name: echo
@@ -29,7 +33,7 @@ spec:
               name: {{ template "fullname" . }}-spinnaker-config
           readinessProbe:
             httpGet:
-              path: /env
+              path: /health
               port: 8089
             initialDelaySeconds: 20
             timeoutSeconds: 1

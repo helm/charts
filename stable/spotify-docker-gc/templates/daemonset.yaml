@@ -12,6 +12,10 @@ spec:
       labels:
         daemonset: {{ template "name" . }}
     spec:
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.imagePullSecrets | indent 8 }}
+      {{- end }}
       containers:
       - name: {{ template "name" . }}
         image: "{{ .Values.image.registry }}/{{ .Values.image.org }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"

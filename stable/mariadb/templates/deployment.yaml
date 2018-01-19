@@ -1,9 +1,9 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "mariadb.fullname" . }}
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "mariadb.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -11,8 +11,21 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "fullname" . }}
+        app: {{ template "mariadb.fullname" . }}
     spec:
+      securityContext:
+        runAsUser: 1001
+        fsGroup: 1001
+      initContainers:
+      - name: "copy-custom-config"
+        image: "busybox"
+        imagePullPolicy: "{{ .Values.imagePullPolicy }}"
+        command: ["sh", "-c", "mkdir -p /bitnami/mariadb/conf && cp /bitnami/mariadb_config/my.cnf /bitnami/mariadb/conf/my_custom.cnf"]
+        volumeMounts:
+        - name: config
+          mountPath: /bitnami/mariadb_config
+        - name: data
+          mountPath: /bitnami/mariadb
       containers:
       - name: mariadb
         image: "{{ .Values.image }}"
@@ -22,13 +35,13 @@ spec:
         - name: MARIADB_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "mariadb.fullname" . }}
               key: mariadb-root-password
         {{- if .Values.mariadbUser }}
         - name: MARIADB_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "mariadb.fullname" . }}
               key: mariadb-password
         {{- end }}
         {{- else }}
@@ -59,9 +72,6 @@ spec:
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
-        - name: config
-          mountPath: /bitnami/mariadb/conf/my_custom.cnf
-          subPath: my.cnf
         - name: data
           mountPath: /bitnami/mariadb
 {{- if .Values.metrics.enabled }}
@@ -73,7 +83,7 @@ spec:
         - name: MARIADB_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "mariadb.fullname" . }}
               key: mariadb-root-password
         {{- end }}
         command: [ 'sh', '-c', 'DATA_SOURCE_NAME="root:$MARIADB_ROOT_PASSWORD@(localhost:3306)/" /bin/mysqld_exporter' ]
@@ -98,11 +108,11 @@ spec:
       volumes:
       - name: config
         configMap:
-          name: {{ template "fullname" . }}
+          name: {{ template "mariadb.fullname" . }}
       - name: data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ .Values.persistence.existingClaim | default (include "fullname" .) }}
+          claimName: {{ .Values.persistence.existingClaim | default (include "mariadb.fullname" .) }}
       {{- else }}
         emptyDir: {}
       {{- end -}}

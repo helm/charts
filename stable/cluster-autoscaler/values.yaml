@@ -10,8 +10,8 @@ awsRegion: us-east-1
 cloudProvider: aws
 
 image:
-  repository: gcr.io/google_containers/cluster-autoscaler
-  tag: v0.6.0
+  repository: k8s.gcr.io/cluster-autoscaler
+  tag: v1.1.0
   pullPolicy: IfNotPresent
 
 tolerations: []
@@ -21,6 +21,10 @@ extraArgs: {}
   # scale-down-unneeded-time: 10m
   # skip-nodes-with-local-storage: false
   # skip-nodes-with-system-pods: true
+
+## Affinity for pod assignment
+## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+## affinity: {}
 
 ## Node labels for pod assignment
 ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
