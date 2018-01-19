@@ -36,8 +36,8 @@ Credentials:
 # ```
 # SecretKeyRefs:
 #   <container-env-var-name>:
-#     name: <secret resource name> (optional, defaults to patroni.fullname as secret resource name)
-#     key: <which secret resource entry should be used
+#     name: <secret resource name> (optional, defaults to patroni charts secret as resource name)
+#     key: <secret resource entry>
 # ```
 SecretKeyRefs:
   PGPASSWORD_SUPERUSER:
