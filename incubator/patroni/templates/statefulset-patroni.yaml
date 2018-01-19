@@ -29,7 +29,7 @@ spec:
       - name: spilo
         image: "{{ .Values.Spilo.Image }}:{{ .Values.Spilo.Version }}"
         env:
-        {{- if $.Values.SecretKeyRefs }}
+        {{- if .Values.SecretKeyRefs }}
         {{- include "patroni.secretKeyRefs" . | indent 8 }}
         {{- end }}
         {{if .Values.Etcd.Enable }}
