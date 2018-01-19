@@ -46,7 +46,7 @@ The following tables lists the configurable parameters of the CockroachDB chart 
 | `Cpu`                         | Container requested cpu                    | `100m`                                       |
 | `Memory`                      | Container requested memory                 | `512Mi`                                      |
 | `Storage`                     | Persistent volume size                     | `1Gi`                                        |
-| `StorageClass`                | Persistent volume class                    | `anything`                                   |
+| `StorageClass`                | Persistent volume class                    | `null`                                       |
 | `CacheSize`                   | Size of CockroachDB's in-memory cache      | `25%`                                        |
 | `MaxSQLMemory`                | Max memory to use processing SQL queries   | `25%`                                        |
 | `ClusterDomain`               | Cluster's default DNS domain               | `cluster.local`                              |

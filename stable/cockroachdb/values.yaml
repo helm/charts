@@ -19,7 +19,14 @@ Resources:
     cpu: "100m"
     memory: "512Mi"
 Storage: "1Gi"
-StorageClass: "anything"
+## Persistent Volume Storage Class for database data
+## If defined, storageClassName: <StorageClass>
+## If set to "-", storageClassName: "", which disables dynamic provisioning
+## If undefined or set to null, no storageClassName spec is
+##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+##   GKE, AWS & OpenStack)
+##
+StorageClass: null
 CacheSize: "25%"
 MaxSQLMemory: "25%"
 ClusterDomain: "cluster.local"
