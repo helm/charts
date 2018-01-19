@@ -1,0 +1,61 @@
+apiVersion: apps/v1beta2
+kind: StatefulSet
+metadata:
+  name: "{{ template "harbor.fullname" . }}-mysql"
+  labels:
+    app: "{{ template "harbor.fullname" . }}-mysql"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  replicas: 1
+  serviceName: "{{ template "harbor.fullname" . }}-mysql"
+  selector:
+    matchLabels:
+      app: "{{ template "harbor.fullname" . }}-mysql"
+      release: "{{ .Release.Name }}"
+  template:
+    metadata:
+      labels:
+        app: "{{ template "harbor.fullname" . }}-mysql"
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        release: "{{ .Release.Name }}"
+        heritage: "{{ .Release.Service }}"
+    spec:
+      containers:
+      - name: mysql
+        image: {{ .Values.mysql.image.repository }}:{{ .Values.mysql.image.tag }}
+        imagePullPolicy: {{ .Values.mysql.image.pullPolicy }}
+        resources:
+{{ toYaml .Values.mysql.resources | indent 10 }}
+        env:
+          - name: MYSQL_ROOT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+               name: "{{ template "harbor.fullname" . }}-mysql"
+               key: mysqlRootPassword
+        volumeMounts:
+        - name: mysql-data
+          mountPath: /var/lib/mysql
+      {{- if not .Values.persistence.enabled }}
+      volumes:
+      - name: "mysql-data"
+        emptyDir: {}
+      {{- end -}}
+  {{- if .Values.persistence.enabled }}
+  volumeClaimTemplates:
+  - metadata:
+      name: "mysql-data"
+    spec:
+      accessModes: [{{ .Values.mysql.volumes.data.accessMode | quote }}]
+      {{- if .Values.mysql.volumes.data.storageClass }}
+      {{- if (eq "-" .Values.mysql.volumes.data.storageClass) }}
+      storageClassName: ""
+      {{- else }}
+      storageClassName: "{{ .Values.mysql.volumes.data.storageClass }}"
+      {{- end }}
+      {{- end }}
+      resources:
+        requests:
+          storage: {{ .Values.mysql.volumes.data.size | quote }}
+  {{- end -}}

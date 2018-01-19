@@ -1,0 +1,73 @@
+{{ if .Values.clair.enabled }}
+apiVersion: apps/v1beta2
+kind: StatefulSet
+metadata:
+  name: {{ template "harbor.fullname" . }}-clair-pg
+  labels:
+    app: {{ template "harbor.fullname" . }}-clair-pg
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  serviceName: "{{ template "harbor.fullname" . }}-clair-pg"
+  selector:
+    matchLabels:
+      app: "{{ template "harbor.fullname" . }}-clair-pg"
+      release: "{{ .Release.Name }}"
+  template:
+    metadata:
+      name: {{ template "harbor.fullname" . }}-clair-pg
+      labels:
+        app: {{ template "harbor.fullname" . }}-clair-pg
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        release: "{{ .Release.Name }}"
+        heritage: "{{ .Release.Service }}"
+    spec:
+      containers:
+      - name: postgres
+        image: postgres:9.6.4
+        resources:
+{{ toYaml .Values.clair.pgResources | indent 10 }}
+        env:
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "harbor.fullname" . }}-clair-pg-config
+              key: POSTGRES_PASSWORD
+        resources:
+          limits:
+            cpu: 1000m
+            memory: 1Gi
+          requests:
+            cpu: 100m
+            memory: 512Mi
+        volumeMounts:
+        - name: pgdata
+          mountPath: /var/lib/postgresql
+        ports:
+        - containerPort: 5432
+          name: postgres-port
+          protocol: TCP
+{{- if not .Values.persistence.enabled }}
+      volumes:
+      - name: pgdata
+        emptyDir: {}
+{{- end }}
+  {{- if .Values.persistence.enabled }}
+  volumeClaimTemplates:
+  - metadata:
+      name: pgdata
+    spec:
+      accessModes: [{{ .Values.clair.volumes.pgData.accessMode | quote }}]
+      {{- if .Values.clair.volumes.pgData.storageClass }}
+      {{- if (eq "-" .Values.clair.volumes.pgData.storageClass) }}
+      storageClassName: ""
+      {{- else }}
+      storageClassName: "{{ .Values.clair.volumes.pgData.storageClass }}"
+      {{- end }}
+      {{- end }}
+      resources:
+        requests:
+          storage: {{ .Values.clair.volumes.pgData.size | quote }}
+  {{- end -}}
+{{- end -}}

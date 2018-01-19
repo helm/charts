@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "{{ template "harbor.fullname" . }}-jobservice"
+data:
+  app.conf: |+
+    appname = jobservice
+    runmode = prod
+
+    [prod]
+    httpport = 8080

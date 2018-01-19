@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: "{{ template "harbor.fullname" . }}-jobservice"
+spec:
+  ports:
+    - port: 80
+      targetPort: 8080
+  selector:
+    app: "{{ template "harbor.fullname" . }}-jobservice"
