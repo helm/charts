@@ -22,7 +22,7 @@ spec:
     spec:
       restartPolicy: Never
       containers:
-      - name: post-install-job
+      - name: hook-job
         imagePullPolicy: {{ .Values.hook.imagePullPolicy }}
         image: {{ .Values.hook.image }}
         command: [ {{ .Values.hook.command }} ]
