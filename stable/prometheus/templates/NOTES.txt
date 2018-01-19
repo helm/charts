@@ -91,7 +91,7 @@ Get the PushGateway URL by running these commands in the same shell:
   echo http://$SERVICE_IP:{{ .Values.pushgateway.service.servicePort }}
 {{- else if contains "ClusterIP"  .Values.pushgateway.service.type }}
   export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "prometheus.name" . }},component={{ .Values.pushgateway.name }}" -o jsonpath="{.items[0].metadata.name}")
-  kubectl --namespace {{ .Release.Namespace }} port-forward $POD_NAME 9093
+  kubectl --namespace {{ .Release.Namespace }} port-forward $POD_NAME 9091
 {{- end }}
 {{- end }}
 {{- end }}
