@@ -1,0 +1,26 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+{{ include "helm.labels" . | indent 4 }}
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+{{ include "helm.labels" . | indent 8}}
+    spec:
+{{- if .Values.rbac.serviceAccountName }}
+      serviceAccountName: {{ .Values.rbac.serviceAccountName }}
+{{- else if .Values.rbac.create }}      
+      serviceAccountName: {{ template "fullname" . }}-sa
+{{- end }}
+      containers:
+      - name: {{ template "fullname" . }}
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+{{- if .Values.resources }}
+        resources:
+{{ toYaml .Values.resources | indent 12 }}
+{{- end }}

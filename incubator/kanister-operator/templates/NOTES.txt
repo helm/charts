@@ -1,0 +1,9 @@
+Kanister-operator is intalled.
+
+Getting Started is avalible: https://github.com/kanisterio/kanister
+
+Documentation is avalible: https://docs.kanister.io/
+
+Please report any issues: https://github.com/kanisterio/kanister/issues
+
+Thank you for trying Kanister.
