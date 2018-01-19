@@ -78,8 +78,8 @@ The following tables lists the configurable parameters of the Spark chart and th
 |       Parameter         |           Description            |                         Default                          |
 |-------------------------|----------------------------------|----------------------------------------------------------|
 | `Zeppelin.Name`         | Zeppelin name                    | `zeppelin-controller`                                    |
-| `Zeppelin.Image`        | Container image name             | `k8s.gcr.io/zeppelin`                      |
-| `Zeppelin.ImageTag`     | Container image tag              | `v0.5.5_v2`                                              |
+| `Zeppelin.Image`        | Container image name             | `apache/zeppelin`                                        |
+| `Zeppelin.ImageTag`     | Container image tag              | `0.7.3`                                                  |
 | `Zeppelin.Replicas`     | k8s deployment replicas          | `1`                                                      |
 | `Zeppelin.Component`    | k8s selector key                 | `zeppelin`                                               |
 | `Zeppelin.Cpu`          | container requested cpu          | `100m`                                                   |
