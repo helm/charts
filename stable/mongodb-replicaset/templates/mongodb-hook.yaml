@@ -1,3 +1,4 @@
+{{- if and (.Values.hook.enabled) -}}
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -25,3 +26,5 @@ spec:
         imagePullPolicy: {{ .Values.hook.imagePullPolicy }}
         image: {{ .Values.hook.image }}
         command: [ {{ .Values.hook.command }} ]
+{{- end -}}
+
