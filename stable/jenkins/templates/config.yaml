@@ -156,6 +156,18 @@ data:
     mkdir -p /var/jenkins_home/init.groovy.d/;
     cp -n /var/jenkins_config/*.groovy /var/jenkins_home/init.groovy.d/
 {{- end }}
+{{- if .Values.Master.CredentialsXmlSecret }}
+    cp -n /var/jenkins_credentials/credentials.xml /var/jenkins_home;
+{{- end }}
+{{- if .Values.Master.SecretsFilesSecret }}
+    cp -n /var/jenkins_secrets/* /usr/share/jenkins/ref/secrets;
+{{- end }}
+{{- if .Values.Master.Jobs }}
+    for job in $(ls /var/jenkins_jobs); do
+      mkdir -p /var/jenkins_home/jobs/$job
+      cp -n /var/jenkins_jobs/$job /var/jenkins_home/jobs/$job/config.xml
+    done
+{{- end }}
 {{- range $key, $val := .Values.Master.InitScripts }}
   init{{ $key }}.groovy: |-
 {{ $val | indent 4 }}
