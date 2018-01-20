@@ -24,7 +24,7 @@ service:
 # Extra config options
 configData: {}
 initialHeapSize: "1g"
-heapSize: "1g"
+maxHeapSize: "1g"
 
 ingress:
   enabled: false
