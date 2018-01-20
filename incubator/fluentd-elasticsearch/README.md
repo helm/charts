@@ -21,7 +21,6 @@ This chart bootstraps a [Fluentd](https://www.fluentd.org/) deployment on a [Kub
 To install the chart with the release name `my-release`:
 
 ```console
-$ # edit secrets/aws_access_key_id and secrets/aws_access_key_id with the key/password of a AWS user with a policy to access  elasticsearch
 $ helm install --name my-release incubator/fluentd-elasticsearch
 ```
 
