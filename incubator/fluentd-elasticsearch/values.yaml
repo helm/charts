@@ -1,5 +1,5 @@
 image: gcr.io/google-containers/fluentd-elasticsearch
-imageTag: v2.0.3
+imageTag: v2.0.4
 
 ## Specify an imagePullPolicy (Required)
 ## It's recommended to change this to 'Always' if the image tag is 'latest'
