@@ -37,8 +37,8 @@ Worker:
 
 Zeppelin:
   Name: zeppelin
-  Image: "k8s.gcr.io/zeppelin"
-  ImageTag: "v0.5.5_v2"
+  Image: "apache/zeppelin"
+  ImageTag: "0.7.3"
   Replicas: 1
   Component: "zeppelin"
   Cpu: "100m"
