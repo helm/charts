@@ -57,9 +57,11 @@ email:
 
 # Name of the service and what port to expose on the pod
 # Don't change these unless you know what you're doing
+# Internal Loadbalancer only support azure right now.
 service:
   name: sentry
   type: LoadBalancer
+  # enableInternalLB: false
   externalPort: 9000
   internalPort: 9000
 
