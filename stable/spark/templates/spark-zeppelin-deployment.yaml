@@ -9,11 +9,12 @@ metadata:
     component: "{{ .Release.Name }}-{{ .Values.Zeppelin.Component }}"
 spec:
   ports:
-    - port: {{ .Values.Zeppelin.ServicePort }}
+    - name: http
+      port: {{ .Values.Zeppelin.ServicePort }}
       targetPort: {{ .Values.Zeppelin.ContainerPort }}
   selector:
     component: "{{ .Release.Name }}-{{ .Values.Zeppelin.Component }}"
-  type: "LoadBalancer"
+  type: {{ .Values.Zeppelin.ServiceType }}
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
@@ -44,6 +45,7 @@ spec:
           image: "{{ .Values.Zeppelin.Image }}:{{ .Values.Zeppelin.ImageTag }}"
           ports:
             - containerPort: {{ .Values.Zeppelin.ContainerPort }}
+              name: http
           resources:
             requests:
               cpu: "{{ .Values.Zeppelin.Cpu }}"
