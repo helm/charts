@@ -75,6 +75,7 @@ The following tables lists the configurable parameters of the Spark chart and th
 
 
 ### Zeppelin
+
 |       Parameter                |           Description            |                         Default                          |
 |--------------------------------|----------------------------------|----------------------------------------------------------|
 | `Zeppelin.Name`                | Zeppelin name                    | `zeppelin-controller`                                    |
@@ -91,6 +92,7 @@ The following tables lists the configurable parameters of the Spark chart and th
 | `Zeppelin.Ingress.Hosts`       | a list of ingress hosts          | `[zeppelin.example.com]`                                 |
 | `Zeppelin.Ingress.Tls`         | a list of [IngressTLS](https://v1-8.docs.kubernetes.io/docs/api-reference/v1.8/#ingresstls-v1beta1-extensions) items | `[]`
 | `Zeppelin.ServiceType `        | Kubernetes Service type          | `LoadBalancer`                                           |
+
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
