@@ -49,6 +49,7 @@ Parameter | Description | Default
 `image.pullPolicy` | Image pull policy | `IfNotPresent`
 `image.repository` | Image repository | `a5huynh/oauth2_proxy`
 `image.tag` | Image tag | `2.2`
+`imagePullSecrets` | Specify image pull secrets | `nil` (does not add image pull secrets to deployed pods)
 `ingress.enabled` | enable ingress | `false`
 `nodeSelector` | node labels for pod assignment | `{}`
 `podAnnotations` | annotations to add to each pod | `{}`
