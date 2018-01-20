@@ -25,7 +25,7 @@ data:
         bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
         relabel_configs:
         - source_labels: [__meta_kubernetes_namespace]
-          regex: {{ $root.Release.Namespace }} ## maybe not works in configmap, you need assigned to 1 variable first.
+          regex: {{ $root.Release.Namespace }}
           action: keep
         - source_labels: [__meta_kubernetes_pod_label_app]
           regex: prometheus

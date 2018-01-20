@@ -25,9 +25,16 @@ spec:
         component: "{{ .Values.server.name }}"
         release: {{ .Release.Name }}
     spec:
-      securityContext:
-        runAsUser: 0
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "prometheus.server.fullname" . }}{{ else }}"{{ .Values.server.serviceAccountName }}"{{ end }}
+      initContainers:
+      - name: "init-chown-data"
+        image: "busybox"
+        # 65534 is the nobody user that prometheus uses.
+        command: ["chown", "-R", "65534:65534", "{{ .Values.server.persistentVolume.mountPath }}"]
+        volumeMounts:
+        - name: storage-volume
+          mountPath: {{ .Values.server.persistentVolume.mountPath }}
+          subPath: "{{ .Values.server.persistentVolume.subPath }}"
       containers:
         - name: {{ template "prometheus.name" . }}-{{ .Values.server.name }}-{{ .Values.configmapReload.name }}
           image: "{{ .Values.configmapReload.image.repository }}:{{ .Values.configmapReload.image.tag }}"

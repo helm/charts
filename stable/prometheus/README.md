@@ -95,10 +95,10 @@ Parameter | Description | Default
 `alertmanager.enabled` | If true, create alertmanager | `true`
 `alertmanager.name` | alertmanager container name | `alertmanager`
 `alertmanager.image.repository` | alertmanager container image repository | `prom/alertmanager`
-`alertmanager.image.tag` | alertmanager container image tag | `v0.5.1`
+`alertmanager.image.tag` | alertmanager container image tag | `v0.13.0`
 `alertmanager.image.pullPolicy` | alertmanager container image pull policy | `IfNotPresent`
 `alertmanager.prefixURL` | The prefix slug at which the server can be accessed | ``
-`alertmanager.baseURL` | The external url at which the server can be accessed | ``
+`alertmanager.baseURL` | The external url at which the server can be accessed | `/`
 `alertmanager.extraArgs` | Additional alertmanager container arguments | `{}`
 `alertmanager.configMapOverrideName` | Prometheus alertmanager ConfigMap override where full-name is `{{.Release.Name}}-{{.Values.alertmanager.configMapOverrideName}}` and setting this value will prevent the default alertmanager ConfigMap from being generated | `""`
 `alertmanager.ingress.enabled` | If true, alertmanager Ingress will be created | `false`
@@ -134,7 +134,7 @@ Parameter | Description | Default
 `kubeStateMetrics.enabled` | If true, create kube-state-metrics | `true`
 `kubeStateMetrics.name` | kube-state-metrics container name | `kube-state-metrics`
 `kubeStateMetrics.image.repository` | kube-state-metrics container image repository| `k8s.gcr.io/kube-state-metrics`
-`kubeStateMetrics.image.tag` | kube-state-metrics container image tag | `v0.4.1`
+`kubeStateMetrics.image.tag` | kube-state-metrics container image tag | `v1.1.0`
 `kubeStateMetrics.image.pullPolicy` | kube-state-metrics container image pull policy | `IfNotPresent`
 `kubeStateMetrics.args` | kube-state-metrics container arguments | `{}`
 `kubeStateMetrics.nodeSelector` | node labels for kube-state-metrics pod assignment | `{}`
@@ -152,7 +152,7 @@ Parameter | Description | Default
 `nodeExporter.enabled` | If true, create node-exporter | `true`
 `nodeExporter.name` | node-exporter container name | `node-exporter`
 `nodeExporter.image.repository` | node-exporter container image repository| `prom/node-exporter`
-`nodeExporter.image.tag` | node-exporter container image tag | `v0.13.0`
+`nodeExporter.image.tag` | node-exporter container image tag | `v0.15.2`
 `nodeExporter.image.pullPolicy` | node-exporter container image pull policy | `IfNotPresent`
 `nodeExporter.extraArgs` | Additional node-exporter container arguments | `{}`
 `nodeExporter.extraHostPathMounts` | Additional node-exporter hostPath mounts | `[]`
@@ -192,7 +192,7 @@ Parameter | Description | Default
 `rbac.create` | If true, create & use RBAC resources | `false`
 `server.name` | Prometheus server container name | `server`
 `server.image.repository` | Prometheus server container image repository | `prom/prometheus`
-`server.image.tag` | Prometheus server container image tag | `v1.5.1`
+`server.image.tag` | Prometheus server container image tag | `v2.0.0`
 `server.image.pullPolicy` | Prometheus server container image pull policy | `IfNotPresent`
 `server.extraArgs` | Additional Prometheus server container arguments | `{}`
 `server.prefixURL` | The prefix slug at which the server can be accessed | ``
