@@ -263,7 +263,8 @@ spec:
               ${GOSSIP_KEY} \
             {{- end }}
               -client=0.0.0.0 \
-              -dns-port=${DNSPORT}
+              -dns-port=${DNSPORT} \
+              -http-port={{ .Values.HttpPort }}
       volumes:
       - name: gossip-key
         secret:
