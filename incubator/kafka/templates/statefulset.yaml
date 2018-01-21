@@ -12,7 +12,7 @@ spec:
   serviceName: {{ template "kafka.fullname" . }}-headless
   updateStrategy:
     type: {{ .Values.updateStrategy }}
-    {{ if eq .Values.updateStrategy "RollingUpdate" -}}
+    {{ if and (eq .Values.updateStrategy "RollingUpdate") (hasKey .Values "rollingUpdatePartition") -}}
     rollingUpdate:
       partition: {{ .Values.rollingUpdatePartition }}
     {{- end }}
