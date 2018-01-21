@@ -17,15 +17,14 @@ controller:
   # is merged
   hostNetwork: false
 
+  ## Use host ports 80 and 443
+  daemonset:
+    useHostPort: false
+
   ## Required only if defaultBackend.enabled = false
   ## Must be <namespace>/<service_name>
   ##
   defaultBackendService: ""
-
-  ## Optionally specify the secret name for default SSL certificate
-  ## Must be <namespace>/<secret_name>
-  ##
-  defaultSSLCertificate: ""
 
   ## Election ID to use for status update
   ##
@@ -54,6 +53,10 @@ controller:
     enabled: false
     namespace: ""   # defaults to .Release.Namespace
 
+  ## Additional command line arguments to pass to nginx-ingress-controller
+  ## E.g. to specify the default SSL certificate you can use
+  ## extraArgs:
+  ##   default-ssl-certificate: "<namespace>/<secret_name>"
   extraArgs: {}
 
   ## Additional environment variables to set
