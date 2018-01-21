@@ -1,0 +1,63 @@
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  name: {{ template "redisCluster.name" . }}
+  labels:
+    app: {{ template "redisCluster.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  serviceName: {{ template "redisCluster.name" . }}
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "redisCluster.name" . }}
+        chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+        release: {{ .Release.Name }}
+        heritage: {{ .Release.Service }}
+    spec:
+      containers:
+      - name: {{ template "redisCluster.name" . }}
+        image: "{{ .Values.registry }}{{ .Values.image.repository }}{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - containerPort: {{ .Values.service.client.externalPort }}
+          name: {{ .Values.service.client.name }}
+        - containerPort: {{ .Values.service.gossip.externalPort }}
+          name: {{ .Values.service.gossip.name }}
+        command: ["redis-server"]
+        args: ["/conf/redis.conf"]
+        {{- if .Values.probes.enabled }}
+        readinessProbe:
+{{ toYaml .Values.probes.readinessProbe | indent 10 }}
+        livenessProbe:
+{{ toYaml .Values.probes.livenessProbe | indent 10 }}
+        {{- end }}
+        volumeMounts:
+        - name: conf
+          mountPath: /conf
+          readOnly: false
+        - name: data
+          mountPath: /data
+          readOnly: false
+      volumes:
+      - name: conf
+        configMap:
+          name: {{ template "redisCluster.name" . }}
+          items: 
+          - key: redis.conf
+            path: redis.conf
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+      labels:
+        name: redis-cluster
+      annotations:
+        volume.alpha.kubernetes.io/storage-class: anything
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 100Mi
