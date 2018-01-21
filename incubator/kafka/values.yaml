@@ -36,7 +36,7 @@ updateStrategy: "OnDelete"
 ## If `updateStrategy` is set to "RollingUpdate", you may optionally specify which partition
 ## should be updated first.
 ## ref: https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#partitions
-#rollingUpdatePartition: 1
+# rollingUpdatePartition: 1
 
 ## The name of the storage class which the cluster should use.
 # storageClass: default
