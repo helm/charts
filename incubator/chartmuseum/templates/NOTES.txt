@@ -1,0 +1,5 @@
+NOTE: this chart has been DEPRECATED. Please see stable/chartmuseum.
+
+Thank you for installing {{ .Chart.Name }}.
+
+Your release is named {{ .Release.Name }}.
