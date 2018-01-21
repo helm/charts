@@ -1,0 +1,49 @@
+# Default values for redisCluster.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+replicaCount: 6
+registry:  
+image:
+  repository: ofaraggi/
+  tag: rediscluster:latest
+  pullPolicy: Always
+service:
+  type: NodePort
+  client:
+    name: client
+    externalPort: 6379
+    internalPort: 6379
+  gossip:
+    name: gossip
+    externalPort: 16379
+    internalPort: 16379
+probes:
+  enabled: true
+  readinessProbe:
+    exec:
+      command:
+      - sh
+      - -c
+      - "redis-cli -h $(hostname) ping"
+    initialDelaySeconds: 15
+    timeoutSeconds: 5
+  livenessProbe:
+    exec:
+      command:
+      - sh
+      - -c
+      - "redis-cli -h $(hostname) ping"
+    initialDelaySeconds: 20
+    periodSeconds: 3
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi

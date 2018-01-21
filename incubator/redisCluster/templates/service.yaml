@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    service.alpha.kubernetes.io/tolerate-unready-endpoints: "false"
+  name: {{ template "redisCluster.name" . }}
+  labels:
+    app: {{ template "redisCluster.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.client.externalPort }}
+      targetPort: {{ .Values.service.client.internalPort }}
+      name: {{ .Values.service.client.name }}
+    - port: {{ .Values.service.gossip.externalPort }}
+      targetPort: {{ .Values.service.gossip.internalPort }}
+      name: {{ .Values.service.gossip.name }}
+  selector:
+    app: {{ template "redisCluster.name" . }}
+    release: {{ .Release.Name }}
