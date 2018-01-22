@@ -416,3 +416,7 @@ data:
         overflow_action block
       </buffer>
     </match>
+
+{{ if .Values.fluentdcustomconfig }}
+  custom.conf: {{ toYaml .Values.fluentdcustomconfig | indent 2 }}
+{{ end }}

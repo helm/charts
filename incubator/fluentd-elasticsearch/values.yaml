@@ -25,3 +25,6 @@ elasticsearch:
 
 rbac:
   create: true
+
+fluentdcustomconfig: |
+  # add fluentd custom configs here
