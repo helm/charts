@@ -22,7 +22,23 @@ imageTag: "9.6.2"
 ## Default: random 10 character string
 # postgresPassword:
 
+# Define where postgresql should get its secrets from.
+# On default, it uses the generated secret by itself, but changing `secretKeyRefs` allows you
+# to get the data from your own secret resource.
+#
+# Syntax:
+# ```
+# secretKeyRefs:
+#   <container-env-var-name>:
+#     name: <secret resource name> (optional, defaults to postgresqls charts secret as resource name)
+#     key: <secret resource entry>
+# ```
+secretKeyRefs: {}
+#  POSTGRES_PASSWORD:
+#    key: postgres-password
+
 ## Inject postgresPassword via a volume mount instead of environment variable
+# Be aware, that you need to drop the above secretKeyRefs.POSTGRES_PASSWORD as well!
 usePasswordFile: false
 
 ## Create a database

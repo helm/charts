@@ -52,13 +52,8 @@ spec:
         {{- if .Values.usePasswordFile }}
         - name: POSTGRES_PASSWORD_FILE
           value: /conf/postgres-password
-        {{- else }}
-        - name: POSTGRES_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: {{ template "postgresql.fullname" . }}
-              key: postgres-password
         {{- end }}
+        {{- include "postgresql.secretKeyRefs" . | indent 8 }}
         - name: POD_IP
           valueFrom: { fieldRef: { fieldPath: status.podIP } }
         ports:
