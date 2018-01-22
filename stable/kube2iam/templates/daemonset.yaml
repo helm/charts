@@ -37,6 +37,7 @@ spec:
           {{- if .Values.verbose }}
             - --verbose
           {{- end }}
+            - --app-port={{ .Values.host.port }}
           env:
             - name: HOST_IP
               valueFrom:
