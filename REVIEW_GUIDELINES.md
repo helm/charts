@@ -86,16 +86,16 @@ We officially support compatibility with the current and the previous minor vers
 
 ## Kubernetes Native Workloads.
 
-While reviewing Charts that contains workloads such as [Deployment](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/), [Statefulset](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/), [Daemonset](https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/) and [Jobs](https://kubernetes.io/docs/concepts/workloads/controllers/jobs-run-to-completion/) below points should be considered.  These are to seen as best practises rather than strict enforcement.
+While reviewing Charts that contain workloads such as [Deployment](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/), [Statefulset](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/), [Daemonset](https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/) and [Jobs](https://kubernetes.io/docs/concepts/workloads/controllers/jobs-run-to-completion/) the below points should be considered.  These are to be seen as best practices rather than strict enforcement.
   
 1. Any workload that are stateless and long running (servers) in nature are to be created as deployments.  Deployments in turn creates replica sets.
-2. Unless there is a compelling reason replica sets or replica controllers are are to be avoided as workload types. 
-3. Workloads that are stateful in nature such as Databases, Key Value Store, Messages Queues , In-memory caches are to be created as statefulsets
-4. It is recommended that Deployments and Statefulsets configure their workloads with [Pod Disruption Budget](https://kubernetes.io/docs/concepts/workloads/pods/disruptions/) for high availability.
+2. Unless there is a compelling reason replica sets or replication controllers are are to be avoided as workload types. 
+3. Workloads that are stateful in nature such as Databases, Key Value Store, Messages Queues, In-memory caches are to be created as StatefulSets
+4. It is recommended that Deployments and Statefulsets configure their workloads with a [Pod Disruption Budget](https://kubernetes.io/docs/concepts/workloads/pods/disruptions/) for high availability.
 5. For workloads such as databases, KV store, etc., that replicates data it is recommended to configure interpod anti-affinity.
-6. It is recommended to have default workload update strategy configured that is suitable for this chart
+6. It is recommended to have a default workload update strategy configured that is suitable for this chart
 7. Batch workloads are to be created using Jobs. 
-8. It is best to always create workload with latest supported [api version](    https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.9/#statefulset-v1-apps) as older version are either depcicated or soon to be depreciated. 
+8. It is best to always create workload with latest supported [api version](https://v1-8.docs.kubernetes.io/docs/api-reference/v1.8/) as older version are either depcicated or soon to be depreciated. 
 9. It is generally not advisable to provide hard [resource limits](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/#resource-requests-and-limits-of-pod-and-container) to workloads and leave it configurable unless the workload requires such quantity bare minimum to function. 
 10. As much as possible complex pre-app setups are configured using [init contianers](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/). 
 
