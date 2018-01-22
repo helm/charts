@@ -1,12 +1,12 @@
-{{- if .Values.ingress.enabled -}}
-{{- $serviceName := include "sonarqube.fullname" . -}}
-{{- $servicePort := .Values.service.externalPort -}}
+{{- if .Values.ingress.enabled }}
+{{- $serviceName := include "verdaccio.fullname" . -}}
+{{- $servicePort := .Values.service.port -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: {{ template "sonarqube.fullname" . }}
+  name: {{ template "verdaccio.fullname" . }}
   labels:
-    app: {{ template "sonarqube.name" . }}
+    app: {{ template "verdaccio.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
@@ -20,7 +20,7 @@ spec:
     - host: {{ $host }}
       http:
         paths:
-          - path: /*
+          - path: /
             backend:
               serviceName: {{ $serviceName }}
               servicePort: {{ $servicePort }}
@@ -29,4 +29,4 @@ spec:
   tls:
 {{ toYaml .Values.ingress.tls | indent 4 }}
   {{- end -}}
-{{- end -}}
+{{- end}}
