@@ -4,7 +4,7 @@
 Return the appropriate apiVersion for cronjob APIs.
 */}}
 {{- define "cronjob.apiVersion" -}}
-{{- if ge .Capabilities.KubeVersion.Minor "8" -}}
+{{- if .Capabilities.APIVersions.Has "batch/v1beta1" -}}
 "batch/v1beta1"
 {{- else -}}
 "batch/v2alpha1"
