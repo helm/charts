@@ -70,6 +70,7 @@ The following tables lists the configurable parameters of the Redis chart and th
 | `tolerations`                    | Toleration labels for pod assignment                  | []                                                        |
 | `servers.serviceType`            | Set to "LoadBalancer" to enable access from the VPC   | ClusterIP                                                 |
 | `servers.annotations`            | See Appliance mode                                    | ``                                                        |
+| `rbac.create`                    | create rbac resources                                 | false                                                     |
 
 
 

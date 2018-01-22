@@ -30,3 +30,6 @@ replicas:
 servers:
   serviceType: ClusterIP  # [ClusterIP|LoadBalancer]
   annotations: {}
+
+rbac:
+  create: false

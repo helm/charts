@@ -11,6 +11,9 @@ spec:
         name: {{ template "fullname" . }}-sentinel
 {{ include "labels.standard" . | indent 8 }}
     spec:
+      {{- if .Values.rbac.create }}
+      serviceAccountName: {{ template "fullname" . }}
+      {{- end }}
       {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
