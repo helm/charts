@@ -69,6 +69,8 @@ rbac:
   ## If true, create & use RBAC resources
   ##
   create: false
+  # Beginning with Kubernetes 1.8, the api is stable and v1 can be used.
+  apiVersion: v1beta
 
   ## Ignored if rbac.create is true
   ##
