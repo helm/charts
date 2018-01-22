@@ -61,14 +61,29 @@ networkPolicy:
   ##
   # allowExternal: true
 
+# Disable redis auth for master and slave by setting this to false
+usePassword: true
+
 ## Redis password (both master and slave)
-## Defaults to a random 10-character alphanumeric string if not set and usePassword is true
+## Defaults to a random 10-character alphanumeric string - not used if `usePassword` is set to false
 ## ref: https://github.com/bitnami/bitnami-docker-redis#setting-the-server-password-on-first-run
 ##
-usePassword: true
 password:
-## Use existing secret (ignores previous password)
-# existingSecret:
+
+# Define where redis should get its secrets from.
+# On default, it uses the generated secret by itself, but changing `secretKeyRefs` allows you
+# to get the data from your own secret resource. Won't be used if `usePassword == false`
+#
+# Syntax:
+# ```
+# secretKeyRefs:
+#   <container-env-var-name>:
+#     name: <secret resource name> (optional, defaults to redis' charts secret as resource name)
+#     key: <secret resource entry>
+# ```
+secretKeyRefs:
+  REDIS_PASSWORD:
+    key: redis-password
 
 ##
 ## Redis Master parameters
