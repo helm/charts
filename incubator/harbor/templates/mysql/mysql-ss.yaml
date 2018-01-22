@@ -3,7 +3,8 @@ kind: StatefulSet
 metadata:
   name: "{{ template "harbor.fullname" . }}-mysql"
   labels:
-    app: "{{ template "harbor.fullname" . }}-mysql"
+    app: "{{ template "harbor.fullname" . }}"
+    component: mysql
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -12,12 +13,14 @@ spec:
   serviceName: "{{ template "harbor.fullname" . }}-mysql"
   selector:
     matchLabels:
-      app: "{{ template "harbor.fullname" . }}-mysql"
+      app: "{{ template "harbor.fullname" . }}"
+      component: mysql
       release: "{{ .Release.Name }}"
   template:
     metadata:
       labels:
-        app: "{{ template "harbor.fullname" . }}-mysql"
+        app: "{{ template "harbor.fullname" . }}"
+        component: mysql
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         release: "{{ .Release.Name }}"
         heritage: "{{ .Release.Service }}"

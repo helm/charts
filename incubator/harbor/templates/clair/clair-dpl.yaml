@@ -4,7 +4,8 @@ kind: Deployment
 metadata:
   name: {{ template "harbor.fullname" . }}-clair
   labels:
-    app: {{ template "harbor.fullname" . }}-clair
+    app: {{ template "harbor.fullname" . }}
+    component: clair
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -13,7 +14,8 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "harbor.fullname" . }}-clair
+        app: {{ template "harbor.fullname" . }}
+        component: clair
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         release: "{{ .Release.Name }}"
         heritage: "{{ .Release.Service }}"

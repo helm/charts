@@ -3,13 +3,12 @@ apiVersion: v1
 kind: Service
 metadata:
   name: {{ template "harbor.fullname" . }}-clair-pg
-  labels:
-    app: {{ template "harbor.fullname" . }}-clair-pg
 spec:
   ports:
     - port: 5432
   selector:
-    app: {{ template "harbor.fullname" . }}-clair-pg
+    app: {{ template "harbor.fullname" . }}
+    component: clair-pg
     release: {{ .Release.Name }}
 ---
 # clairdb host isn't configurable yet.  this creates a service
@@ -19,12 +18,11 @@ apiVersion: v1
 kind: Service
 metadata:
   name: postgres
-  labels:
-    app: {{ template "harbor.fullname" . }}-clair-pg
 spec:
   ports:
     - port: 5432
   selector:
-    app: {{ template "harbor.fullname" . }}-clair-pg
+    app: {{ template "harbor.fullname" . }}
+    component: clair-pg
     release: {{ .Release.Name }}
 {{ end }}

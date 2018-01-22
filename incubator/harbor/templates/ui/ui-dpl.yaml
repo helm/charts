@@ -3,7 +3,8 @@ kind: Deployment
 metadata:
   name: "{{ template "harbor.fullname" . }}-ui"
   labels:
-    app: "{{ template "harbor.fullname" . }}-ui"
+    app: "{{ template "harbor.fullname" . }}"
+    component: ui
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -12,7 +13,8 @@ spec:
   template:
     metadata:
       labels:
-        app: "{{ template "harbor.fullname" . }}-ui"
+        app: "{{ template "harbor.fullname" . }}"
+        component: ui
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         release: "{{ .Release.Name }}"
         heritage: "{{ .Release.Service }}"

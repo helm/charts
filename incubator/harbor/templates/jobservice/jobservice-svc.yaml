@@ -7,4 +7,6 @@ spec:
     - port: 80
       targetPort: 8080
   selector:
-    app: "{{ template "harbor.fullname" . }}-jobservice"
+    app: "{{ template "harbor.fullname" . }}"
+    component: jobservice
+    release: "{{ .Release.Name }}"

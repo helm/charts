@@ -3,7 +3,8 @@ kind: StatefulSet
 metadata:
   name: "{{ template "harbor.fullname" . }}-registry"
   labels:
-    app: "{{ template "harbor.fullname" . }}-registry"
+    app: "{{ template "harbor.fullname" . }}"
+    component: registry
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -12,12 +13,14 @@ spec:
   serviceName: "{{ template "harbor.fullname" . }}-registry"
   selector:
     matchLabels:
-      app: "{{ template "harbor.fullname" . }}-registry"
+      app: "{{ template "harbor.fullname" . }}"
+      component: registry
       release: "{{ .Release.Name }}"
   template:
     metadata:
       labels:
-        app: "{{ template "harbor.fullname" . }}-registry"
+        app: "{{ template "harbor.fullname" . }}"
+        component: registry
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         release: "{{ .Release.Name }}"
         heritage: "{{ .Release.Service }}"

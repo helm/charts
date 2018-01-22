@@ -1,23 +1,26 @@
 apiVersion: apps/v1beta2
 kind: StatefulSet
 metadata:
-  name: "{{ template "harbor.fullname" . }}"
+  name: "{{ template "harbor.fullname" . }}-adminserver"
   labels:
-    app: "{{ template "harbor.fullname" . }}-adminserver"
+    app: "{{ template "harbor.fullname" . }}"
+    component: adminserver
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
   replicas: 1
-  serviceName: "{{ template "harbor.fullname" . }}-adminserver"
+  serviceName: "{{ template "harbor.fullname" . }}"
   selector:
     matchLabels:
-      app: "{{ template "harbor.fullname" . }}-adminserver"
+      app: "{{ template "harbor.fullname" . }}"
       release: "{{ .Release.Name }}"
+      component: adminserver
   template:
     metadata:
       labels:
-        app: "{{ template "harbor.fullname" . }}-adminserver"
+        app: "{{ template "harbor.fullname" . }}"
+        component: adminserver
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         release: "{{ .Release.Name }}"
         heritage: "{{ .Release.Service }}"

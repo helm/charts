@@ -7,4 +7,5 @@ spec:
     - port: 80
       targetPort: 8080
   selector:
-    app: "{{ template "harbor.fullname" . }}-ui"
+    app: "{{ template "harbor.fullname" . }}"
+    component: ui

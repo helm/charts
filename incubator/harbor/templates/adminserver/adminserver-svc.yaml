@@ -7,5 +7,6 @@ spec:
     - port: 80
       targetPort: 8080
   selector:
-    app: "{{ template "harbor.fullname" . }}-adminserver"
+    app: "{{ template "harbor.fullname" . }}"
+    component: adminserver
     release: {{ .Release.Name }}
