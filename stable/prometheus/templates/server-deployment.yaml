@@ -25,6 +25,9 @@ spec:
         component: "{{ .Values.server.name }}"
         release: {{ .Release.Name }}
     spec:
+      securityContext:
+        runAsUser: 1000
+        fsGroup: 2000
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "prometheus.server.fullname" . }}{{ else }}"{{ .Values.server.serviceAccountName }}"{{ end }}
       containers:
         - name: {{ template "prometheus.name" . }}-{{ .Values.server.name }}-{{ .Values.configmapReload.name }}
@@ -35,6 +38,8 @@ spec:
             - --webhook-url=http://localhost:9090{{ .Values.server.prefixURL }}/-/reload
           resources:
 {{ toYaml .Values.configmapReload.resources | indent 12 }}
+          securityContext:
+            privileged: true
           volumeMounts:
             - name: config-volume
               mountPath: /etc/config
@@ -44,9 +49,6 @@ spec:
           image: "{{ .Values.server.image.repository }}:{{ .Values.server.image.tag }}"
           imagePullPolicy: "{{ .Values.server.image.pullPolicy }}"
           args:
-          {{- if or .Values.alertmanager.enabled .Values.server.alertmanagerURL }}
-            - --alertmanager.url={{- if .Values.alertmanager.enabled }}http://{{ template "prometheus.alertmanager.fullname" . }}:{{ .Values.alertmanager.service.servicePort }}{{ .Values.alertmanager.prefixURL }}{{- else }}{{ .Values.server.alertmanagerURL }}{{- end }}
-          {{- end }}
           {{- if .Values.server.retention }}
             - --storage.local.retention={{ .Values.server.retention }}
           {{- end }}
