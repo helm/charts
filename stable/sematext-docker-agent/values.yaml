@@ -2,7 +2,7 @@ image:
   repository: sematext/sematext-agent-docker
   # For all available tags check here https://hub.docker.com/r/sematext/sematext-agent-docker/tags/
   tag: 1.31.48
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
 
 sematext:
   # You will need to Create and Set at least one token before starting this agent!

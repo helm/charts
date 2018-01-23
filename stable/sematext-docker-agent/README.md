@@ -43,12 +43,12 @@ The following table lists the configuration parameters of the sematext-docker-ag
 | `sematext.logseneToken`     | Sematext Logsene token             | `Nil` You must provide your Logsene token |
 | `sematext.region`           | Sematext region                    | `US` Sematext US or EU region             |
 | `image.repository`          | The image repository               | `sematext/sematext-agent-docker`          |
-| `image.tag`                 | The image tag                      | `latest`                                  |
-| `image.pullPolicy`          | Image pull policy                  | `Always`                                  |
-| `resources.requests.cpu`    | CPU resource requests              | `100m`                                    |
-| `resources.limits.cpu`      | CPU resource limits                | `256m`                                    |
-| `resources.requests.memory` | Memory resource requests           | `128Mi`                                   |
-| `resources.limits.memory`   | Memory resource limits             | `512Mi`                                   |
+| `image.tag`                 | The image tag                      | `1.31.48`                                 |
+| `image.pullPolicy`          | Image pull policy                  | `IfNotPresent`                            |
+| `resources.requests.cpu`    | CPU resource requests              | `Nil`                                     |
+| `resources.limits.cpu`      | CPU resource limits                | `Nil`                                     |
+| `resources.requests.memory` | Memory resource requests           | `Nil`                                     |
+| `resources.limits.memory`   | Memory resource limits             | `Nil`                                     |
 | `sematext.useHostNetwork`   | Use the host networking            | `true`                                    |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
