@@ -1,3 +1,4 @@
+{{- if or (.Values.sematext.spmToken) (.Values.sematext.logseneToken) }}
 {{- if .Capabilities.APIVersions.Has "apps/v1beta2" }}
 apiVersion: apps/v1beta2
 {{- else }}
@@ -33,9 +34,15 @@ spec:
 {{ toYaml .Values.sematext.resources | indent 10 }}
         env:
         - name: SPM_TOKEN
-          value: {{ default "" .Values.sematext.spmToken | quote }}
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "sematext.fullname" . }}
+              key: spm-token
         - name: LOGSENE_TOKEN
-          value: {{ default "" .Values.sematext.logseneToken | quote }}
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "sematext.fullname" . }}
+              key: logsene-token
 {{- if eq .Values.sematext.region "EU" }}
         - name: SPM_RECEIVER_URL
           value: "https://spm-receiver.eu.sematext.com/receiver/v1"
@@ -64,3 +71,4 @@ spec:
         - name: rootfs
           hostPath:
             path: /
+{{- end }}
