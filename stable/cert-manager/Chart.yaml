@@ -10,3 +10,6 @@ keywords:
   - tls
 sources:
   - https://github.com/jetstack/cert-manager
+maintainers:
+  - name: James Munnelly
+    email: james@jetstack.io

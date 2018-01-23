@@ -27,10 +27,10 @@ extraArgs: []
   # supporting resources required for each ClusterIssuer (default is kube-system)
   # - --cluster-resource-namespace=kube-system
 
-resources:
-  requests:
-    cpu: 10m
-    memory: 32Mi
+resources: {}
+  # requests:
+  #   cpu: 10m
+  #   memory: 32Mi
 
 nodeSelector: {}
 
@@ -40,10 +40,10 @@ ingressShim:
   # Optional additional arguments for ingress-shim
   extraArgs: []
 
-  resources:
-    requests:
-      cpu: 10m
-      memory: 32Mi
+  resources: {}
+    # requests:
+    #   cpu: 10m
+    #   memory: 32Mi
 
   image:
     repository: quay.io/jetstack/cert-manager-ingress-shim

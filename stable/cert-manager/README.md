@@ -6,10 +6,13 @@ TLS certificates from various issuing sources.
 It will ensure certificates are valid and up to date periodically, and attempt
 to renew certificates at an appropriate time before expiry.
 
+Changes to this chart are tested and version in the [upstream cert-manager repository](https://github.com/jetstack/cert-manager).
+Changes to this chart should be made as pull requests upstream, to be versioned and copied across to this repo.
+
 ## TL;DR;
 
 ```console
-$ helm install .
+$ helm install stable/cert-manager
 ```
 
 ## Introduction
