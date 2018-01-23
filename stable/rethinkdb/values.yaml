@@ -73,3 +73,7 @@ ports:
 
 # RethinkDB Admin Password
 rethinkdbPassword: rethinkdb
+
+rbac:
+  create: false
+  serviceAccountName: default
