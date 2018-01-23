@@ -1,4 +1,3 @@
-{{- if or (.Values.sematext.spmToken) (.Values.sematext.logseneToken) }}
 {{- if .Capabilities.APIVersions.Has "apps/v1beta2" }}
 apiVersion: apps/v1beta2
 {{- else }}
@@ -65,4 +64,3 @@ spec:
         - name: rootfs
           hostPath:
             path: /
-{{- end }}
