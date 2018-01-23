@@ -16,7 +16,7 @@ spec:
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
         checksum/dashboards-config: {{ include (print $.Template.BasePath "/dashboards-configmap.yaml") . | sha256sum }}
       {{- range $key, $value := .Values.server.annotations }}
-        {{ $key }}: {{ $value }}
+        {{ $key }}: {{ $value | quote }}
       {{- end }}
       labels:
         app: {{ template "grafana.fullname" . }}
