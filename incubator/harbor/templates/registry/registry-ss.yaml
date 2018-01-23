@@ -3,27 +3,20 @@ kind: StatefulSet
 metadata:
   name: "{{ template "harbor.fullname" . }}-registry"
   labels:
-    app: "{{ template "harbor.fullname" . }}"
+{{ include "helm.labels" . | indent 4 }}
     component: registry
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
 spec:
   replicas: 1
   serviceName: "{{ template "harbor.fullname" . }}-registry"
   selector:
     matchLabels:
-      app: "{{ template "harbor.fullname" . }}"
+{{ include "helm.matchLabels" . | indent 6 }}
       component: registry
-      release: "{{ .Release.Name }}"
   template:
     metadata:
       labels:
-        app: "{{ template "harbor.fullname" . }}"
+{{ include "helm.labels" . | indent 8 }}
         component: registry
-        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-        release: "{{ .Release.Name }}"
-        heritage: "{{ .Release.Service }}"
     spec:
       containers:
       - name: registry
@@ -68,6 +61,8 @@ spec:
   volumeClaimTemplates:
   - metadata:
       name: "registry-data"
+      labels:
+        {{ include "helm.labels" . | indent 8 }}
     spec:
       accessModes: [{{ .Values.registry.volumes.data.accessMode | quote }}]
       {{- if .Values.registry.volumes.data.storageClass }}

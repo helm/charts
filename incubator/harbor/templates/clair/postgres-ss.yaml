@@ -4,27 +4,20 @@ kind: StatefulSet
 metadata:
   name: {{ template "harbor.fullname" . }}-clair-pg
   labels:
-    app: {{ template "harbor.fullname" . }}
+{{ include "helm.labels" . | indent 4 }}
     component: clair-pg
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
 spec:
   serviceName: "{{ template "harbor.fullname" . }}-clair-pg"
   selector:
     matchLabels:
-      app: "{{ template "harbor.fullname" . }}"
+{{ include "helm.matchLabels" . | indent 6 }}
       component: clair-pg
-      release: "{{ .Release.Name }}"
   template:
     metadata:
       name: {{ template "harbor.fullname" . }}-clair-pg
       labels:
-        app: {{ template "harbor.fullname" . }}
+{{ include "helm.labels" . | indent 8 }}
         component: clair-pg
-        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-        release: "{{ .Release.Name }}"
-        heritage: "{{ .Release.Service }}"
     spec:
       containers:
       - name: postgres
@@ -60,6 +53,8 @@ spec:
   volumeClaimTemplates:
   - metadata:
       name: pgdata
+      labels:
+{{ include "helm.labels" . | indent 8 }}
     spec:
       accessModes: [{{ .Values.clair.volumes.pgData.accessMode | quote }}]
       {{- if .Values.clair.volumes.pgData.storageClass }}

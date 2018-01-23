@@ -3,9 +3,7 @@ kind: Ingress
 metadata:
   name: "{{ template "harbor.fullname" . }}-ingress"
   labels:
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+{{ include "helm.labels" . | indent 4 }}
   annotations:
     ingress.kubernetes.io/ssl-redirect: "true"
     ingress.kubernetes.io/body-size: "0"

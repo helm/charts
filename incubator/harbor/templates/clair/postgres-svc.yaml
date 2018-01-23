@@ -3,13 +3,14 @@ apiVersion: v1
 kind: Service
 metadata:
   name: {{ template "harbor.fullname" . }}-clair-pg
+  labels:
+{{ include "helm.labels" . | indent 4 }}
 spec:
   ports:
     - port: 5432
   selector:
-    app: {{ template "harbor.fullname" . }}
+{{ include "helm.matchLabels" . | indent 4 }}
     component: clair-pg
-    release: {{ .Release.Name }}
 ---
 # clairdb host isn't configurable yet.  this creates a service
 # to get it working for now.
@@ -18,11 +19,12 @@ apiVersion: v1
 kind: Service
 metadata:
   name: postgres
+  labels:
+{{ include "helm.labels" . | indent 4 }}
 spec:
   ports:
     - port: 5432
   selector:
-    app: {{ template "harbor.fullname" . }}
+{{ include "helm.matchLabels" . | indent 4 }}
     component: clair-pg
-    release: {{ .Release.Name }}
 {{ end }}

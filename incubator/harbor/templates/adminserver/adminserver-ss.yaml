@@ -3,27 +3,20 @@ kind: StatefulSet
 metadata:
   name: "{{ template "harbor.fullname" . }}-adminserver"
   labels:
-    app: "{{ template "harbor.fullname" . }}"
+{{ include "helm.labels" . | indent 4 }}
     component: adminserver
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
 spec:
   replicas: 1
   serviceName: "{{ template "harbor.fullname" . }}"
   selector:
     matchLabels:
-      app: "{{ template "harbor.fullname" . }}"
-      release: "{{ .Release.Name }}"
+{{ include "helm.matchLabels" . | indent 6 }}
       component: adminserver
   template:
     metadata:
       labels:
-        app: "{{ template "harbor.fullname" . }}"
+{{ include "helm.labels" . | indent 8 }}
         component: adminserver
-        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-        release: "{{ .Release.Name }}"
-        heritage: "{{ .Release.Service }}"
     spec:
       containers:
       - name: adminserver

@@ -2,6 +2,8 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: "{{ template "harbor.fullname" . }}-adminserver"
+  labels:
+{{ include "helm.labels" . | indent 4 }}
 data:
   {{ if .Values.mysql.host -}}
   MYSQL_HOST: "{{ .Values.mysql.host }}"

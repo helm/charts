@@ -3,27 +3,20 @@ kind: StatefulSet
 metadata:
   name: "{{ template "harbor.fullname" . }}-mysql"
   labels:
-    app: "{{ template "harbor.fullname" . }}"
+{{ include "helm.labels" . | indent 4 }}
     component: mysql
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
 spec:
   replicas: 1
   serviceName: "{{ template "harbor.fullname" . }}-mysql"
   selector:
     matchLabels:
-      app: "{{ template "harbor.fullname" . }}"
+{{ include "helm.matchLabels" . | indent 6 }}
       component: mysql
-      release: "{{ .Release.Name }}"
   template:
     metadata:
       labels:
-        app: "{{ template "harbor.fullname" . }}"
+{{ include "helm.labels" . | indent 8 }}
         component: mysql
-        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-        release: "{{ .Release.Name }}"
-        heritage: "{{ .Release.Service }}"
     spec:
       containers:
       - name: mysql
@@ -49,6 +42,8 @@ spec:
   volumeClaimTemplates:
   - metadata:
       name: "mysql-data"
+      labels:
+{{ include "helm.labels" . | indent 8 }}
     spec:
       accessModes: [{{ .Values.mysql.volumes.data.accessMode | quote }}]
       {{- if .Values.mysql.volumes.data.storageClass }}
