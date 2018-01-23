@@ -70,3 +70,16 @@ $ kubectl port-forward vault-pod 8200
 $ export VAULT_ADDR=http://127.0.0.1:8200
 $ vault status
 ```
+
+Try the Kubernetes authentication backend:
+
+```console
+export VAULT_ADDR=http://vault-service:8200
+
+# With the CLI
+vault write auth/kubernetes/login role=demo jwt=@/var/run/secrets/kubernetes.io/serviceaccount/token
+
+# Or with cURL
+curl -s $VAULT_ADDR/v1/auth/kubernetes/login -d \
+"{ \"jwt\": \"$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)\", \"role\": \"default\" }" | jq
+ ```
