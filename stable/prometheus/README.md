@@ -38,19 +38,19 @@ $ helm delete my-release
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
 
-## Prometheus 2.0
+## Prometheus 2.x
 
-Prometheus version 2.0 has made changes to alertmanager, storage and recording rules. Check out the migration guide [here](https://prometheus.io/docs/prometheus/2.0/migration/)
+Prometheus version 2.x has made changes to alertmanager, storage and recording rules. Check out the migration guide [here](https://prometheus.io/docs/prometheus/2.0/migration/)
 
 Users of this chart will need to update their alerting rules to the new format before they can upgrade.
 
 ## Upgrading from previous chart versions.
 
-As of version 5.0, this chart uses Prometheus 2.0. This version of prometheus introduces a new data format and is not compatible with prometheus 1.x. It is recommended to install this as a new release, as updating existing releases will not work. See the [prometheus docs](https://prometheus.io/docs/prometheus/latest/migration/#storage) for instructions on retaining your old data.
+As of version 5.0, this chart uses Prometheus 2.1. This version of prometheus introduces a new data format and is not compatible with prometheus 1.x. It is recommended to install this as a new release, as updating existing releases will not work. See the [prometheus docs](https://prometheus.io/docs/prometheus/latest/migration/#storage) for instructions on retaining your old data.
 
 ### Example migration
 
-Assuming you have an existing release of the prometheus chart, named `prometheus-old`. In order to update to prometheus 2.0 while keeping your old data do the following:
+Assuming you have an existing release of the prometheus chart, named `prometheus-old`. In order to update to prometheus 2.1 while keeping your old data do the following:
 
 1. Update the `prometheus-old` release. Disable scraping and every component besides the prometheus server, similar to the configuration below:
 
@@ -74,7 +74,7 @@ Assuming you have an existing release of the prometheus chart, named `prometheus
 	  rules: ""
 	```
 	
-1. Deploy a new release of the chart with version 5.0+ using prometheus 2.0. In the values.yaml set the scrape config as usual, and also add the `prometheus-old` instance as a remote-read target.
+1. Deploy a new release of the chart with version 5.0+ using prometheus 2.x. In the values.yaml set the scrape config as usual, and also add the `prometheus-old` instance as a remote-read target.
 
    ```
 	  prometheus.yml: |
@@ -192,7 +192,7 @@ Parameter | Description | Default
 `rbac.create` | If true, create & use RBAC resources | `false`
 `server.name` | Prometheus server container name | `server`
 `server.image.repository` | Prometheus server container image repository | `prom/prometheus`
-`server.image.tag` | Prometheus server container image tag | `v2.0.0`
+`server.image.tag` | Prometheus server container image tag | `v2.1.0`
 `server.image.pullPolicy` | Prometheus server container image pull policy | `IfNotPresent`
 `server.extraArgs` | Additional Prometheus server container arguments | `{}`
 `server.prefixURL` | The prefix slug at which the server can be accessed | ``
