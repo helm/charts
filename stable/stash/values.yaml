@@ -4,7 +4,7 @@
 replicaCount: 1
 operator:
   image: appscode/stash
-  tag: 0.5.1
+  tag: 0.6.2
 pushgateway:
   image: prom/pushgateway
   tag: v0.4.0

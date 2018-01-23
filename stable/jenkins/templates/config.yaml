@@ -43,6 +43,7 @@ data:
                   {{- $key }}={{ $value }}
                   {{- $_ := set $local "first" false }}
                 {{- end }}</nodeSelector>
+                <nodeUsageMode>NORMAL</nodeUsageMode>
               <volumes>
 {{- range $index, $volume := .Values.Agent.volumes }}
                 <org.csanchez.jenkins.plugins.kubernetes.volumes.{{ $volume.type }}Volume>
@@ -155,6 +156,18 @@ data:
     mkdir -p /var/jenkins_home/init.groovy.d/;
     cp -n /var/jenkins_config/*.groovy /var/jenkins_home/init.groovy.d/
 {{- end }}
+{{- if .Values.Master.CredentialsXmlSecret }}
+    cp -n /var/jenkins_credentials/credentials.xml /var/jenkins_home;
+{{- end }}
+{{- if .Values.Master.SecretsFilesSecret }}
+    cp -n /var/jenkins_secrets/* /usr/share/jenkins/ref/secrets;
+{{- end }}
+{{- if .Values.Master.Jobs }}
+    for job in $(ls /var/jenkins_jobs); do
+      mkdir -p /var/jenkins_home/jobs/$job
+      cp -n /var/jenkins_jobs/$job /var/jenkins_home/jobs/$job/config.xml
+    done
+{{- end }}
 {{- range $key, $val := .Values.Master.InitScripts }}
   init{{ $key }}.groovy: |-
 {{ $val | indent 4 }}
@@ -165,4 +178,6 @@ data:
 {{ $val | indent 4 }}
 {{- end }}
 {{- end }}
+{{ else }}
+{{ include "override_config_map" . }}
 {{- end -}}

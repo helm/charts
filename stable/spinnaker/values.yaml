@@ -80,10 +80,16 @@ resources:
     cpu: 1000m
     memory: 1280Mi
 
+# Node labels for pod assignment
+# Ref: https://kubernetes.io/docs/user-guide/node-selection/
+# nodeSelector to provide to each of the Spinnaker components
+nodeSelector: {}
+
 # Redis password to use for the in-cluster redis service
 # Redis is not exposed publically
 redis:
   redisPassword: password
+  nodeSelector: {}
 
 # Minio access/secret keys for the in-cluster S3 usage
 # Minio is not exposed publically
@@ -93,6 +99,7 @@ minio:
   serviceType: ClusterIP
   accessKey: spinnakeradmin
   secretKey: spinnakeradmin
+  nodeSelector: {}
 
 gcs:
   enabled: false
@@ -109,7 +116,9 @@ jenkins:
     Memory: "512Mi"
     ServiceType: ClusterIP
     CustomConfigMap: true
+    NodeSelector: {}
 
   Agent:
     Cpu: "500m"
     Memory: "512Mi"
+    NodeSelector: {}

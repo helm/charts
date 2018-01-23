@@ -1,6 +1,6 @@
 ## Default values for Traefik
 image: traefik
-imageTag: 1.4.5
+imageTag: 1.4.6
 ## can switch the service type to NodePort if required
 serviceType: LoadBalancer
 loadBalancerIP:
@@ -33,6 +33,7 @@ acme:
   enabled: false
   email: admin@example.com
   staging: true
+  logging: false
   ## Save ACME certs to a persistent volume. WARNING: If you do not do this, you will re-request
   ## certs every time a pod (re-)starts and you WILL be rate limited!
   persistence:
@@ -50,6 +51,9 @@ acme:
 dashboard:
   enabled: false
   domain: traefik.example.com
+  service:
+    # annotations:
+    #   key: value
   ingress:
     # annotations:
     #   key: value
@@ -91,16 +95,18 @@ rbac:
 metrics:
   prometheus:
     enabled: false
-    buckets: 0.1,0.3,1.2,5.0
+    # buckets: [0.1,0.3,1.2,5]
   datadog:
     enabled: false
-    # address: "localhost:8125"
-    # pushInterval: 30s
+    # address: localhost:8125
+    # pushinterval: 10s
   statsd:
     enabled: false
-    # address: "localhost:8125"
-    # pushInterval: 30s
+    # address: localhost:8125
+    # pushinterval: 10s
 deployment:
+  # podAnnotations:
+  #   key: value
   hostPort:
     httpEnabled: false
     httpsEnabled: false
