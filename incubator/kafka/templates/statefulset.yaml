@@ -81,7 +81,9 @@ spec:
         - -c
         - |
           export KAFKA_BROKER_ID=${HOSTNAME##*-} && \
+          {{- if not (hasKey .Values.configurationOverrides "advertised.listeners") }}
           export KAFKA_ADVERTISED_LISTENERS="PLAINTEXT://${POD_IP}:9092" && \
+          {{- end }}
           /etc/confluent/docker/run
         volumeMounts:
         - name: datadir
