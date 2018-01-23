@@ -296,7 +296,7 @@ registry:
 ## Enabling it will just break things.
 #
 clair:
-  enabled: true
+  enabled: false
   postgresPassword: not-a-secure-password
 # resources:
 #  requests:
