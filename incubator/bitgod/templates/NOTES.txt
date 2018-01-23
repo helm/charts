@@ -1,0 +1,10 @@
+To connect to bitgod:
+
+1. Run an Alpine pod that you can use as a client:
+  $ kubectl run -i --tty alpine --image=alpine --restart=Never -- sh
+
+2. Install the CURL:
+  $ apk update && apk upgrade && apk add --no-cache bitcoin-cli
+
+3. Connect using the bitgod cli, then provide your password:
+  $ bitcoin-cli -rpcuser=<rpc_user> -rpcpassword=<rpc_password> -rpcport={{ .Values.service.port }} -rpcconnect={{ template "bitgod.service" . }} getbalance

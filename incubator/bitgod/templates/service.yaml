@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "bitgod.service" . }}
+  labels:
+{{ include "bitgod.labels.standard" . | indent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+  - port: {{ .Values.service.port }}
+    targetPort: {{ .Values.service.port }}
+    protocol: TCP
+    name: {{ .Values.service.name }}
+  selector:
+{{ include "bitgod.labels.standard" . | indent 4 }}

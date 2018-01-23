@@ -1,0 +1,16 @@
+name: bitgod
+version: 0.0.1
+description: Drop-in replacement for bitcoind JSON-RPC which proxies to the BitGo API
+keywords:
+- bitgod
+- cryptocurrencies
+- blockchain
+home: https://www.bitgo.com
+icon: http://www.bitcoinx.com/wp-content/uploads/2014/06/bitgo-icon.png
+sources:
+- https://github.com/kubernetes/charts
+- https://github.com/BitGo/bitgod
+maintainers:
+- name: Ali Shanaakh
+  email: ashanaakh@gmail.com
+engine: gotpl

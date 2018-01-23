@@ -1,0 +1,38 @@
+{{- if .Values.bitgo.enabled -}}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: "{{ .Release.Name }}-set-credentials-{{ randNumeric 5 }}"
+  labels:
+{{ include "bitgod.labels.standard" . | indent 4 }}
+  annotations:
+    "helm.sh/hook": post-install, post-upgrade
+    "helm.sh/hook-delete-policy": hook-succeeded
+spec:
+  template:
+    metadata:
+      name: {{ .Release.Name | quote }}
+      labels:
+{{ include "bitgod.labels.standard" . | indent 8 }}
+    spec:
+      restartPolicy: OnFailure
+      containers:
+      - name: set-credentials
+        image: {{ template "bitgod.image" . }}
+        command:
+        - "/bin/sh"
+        - "-c"
+        - |
+          bitcoin-cli -rpcport={{ .Values.service.port }} \
+          -rpcconnect={{ template "bitgod.service" . }} \
+          -rpcuser={{ .Values.rpc.user }} \
+          -rpcpassword={{ .Values.rpc.password }} \
+          settoken {{ .Values.bitgo.accessToken }} && \
+          bitcoin-cli -rpcport={{ .Values.service.port }} \
+          -rpcconnect={{ template "bitgod.service" . }} \
+          -rpcuser={{ .Values.rpc.user }} \
+          -rpcpassword={{ .Values.rpc.password }} \
+          setwallet {{ .Values.bitgo.wallet }}
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+{{- end -}}
