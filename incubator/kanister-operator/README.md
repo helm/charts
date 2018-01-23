@@ -46,7 +46,7 @@ The following tables lists the configurable parameters of the nginx-ingress char
 Parameter | Description | Default
 --- | --- | ---
 `rbac.create` | all required roles and SA will be created | `true`
-`rback.service_account`| porvided service account name will be used | `None`
+`rbac.service_account`| porvided service account name will be used | `None`
 `image.repository` | controller container image repository | `kanisterio/controller`
 `image.tag` | controller container image tag | `0.1.1`
 `image.pullPolicy` | controller container image pull policy | `IfNotPresent`
