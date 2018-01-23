@@ -111,7 +111,7 @@ controller:
     enabled: false
   #  minReplicas: 1
   #  maxReplicas: 11
-  #  targetAverageUtilization: 50
+  #  targetCPUUtilizationPercentage: 50
 
   ## Override NGINX template
   customTemplate:
