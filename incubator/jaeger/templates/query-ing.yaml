@@ -1,22 +1,24 @@
-{{- if .Values.ingress.enabled -}}
+{{- if .Values.query.ingress.enabled -}}
 {{- $serviceName := include "jaeger.query.fullname" . -}}
 {{- $servicePort := .Values.query.service.queryPort -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: {{ template "jaeger.name" . }}
+  name: {{ template "jaeger.fullname" . }}-query
   labels:
-    app: "{{ template "jaeger.name" . }}"
+    app: {{ template "jaeger.name" . }}
+    jaeger-infra: query-ingress
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-    release: {{ .Release.Name }}
+    component: query
     heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  {{- if .Values.query.ingress.annotations }}
   annotations:
-    {{- range $key, $value := .Values.ingress.annotations }}
-      {{ $key }}: {{ $value | quote }}
-    {{- end }}
+{{ toYaml .Values.query.ingress.annotations | indent 4 }}
+  {{- end }}
 spec:
   rules:
-    {{- range $host := .Values.ingress.hosts }}
+    {{- range $host := .Values.query.ingress.hosts }}
     - host: {{ $host }}
       http:
         paths:
@@ -25,8 +27,8 @@ spec:
               serviceName: {{ $serviceName }}
               servicePort: {{ $servicePort }}
     {{- end -}}
-  {{- if .Values.ingress.tls }}
+  {{- if .Values.query.ingress.tls }}
   tls:
-{{ toYaml .Values.ingress.tls | indent 4 }}
+{{ toYaml .Values.query.ingress.tls | indent 4 }}
   {{- end -}}
 {{- end -}}
