@@ -1,5 +1,5 @@
 name: postgresql
-version: 0.8.7
+version: 0.8.8
 description: Object-relational database management system (ORDBMS) with an emphasis on extensibility and on standards-compliance.
 keywords:
 - postgresql
