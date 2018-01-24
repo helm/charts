@@ -55,7 +55,11 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 
 {{- define "cassandra.host" -}}
 {{- if .Values.provisionDataStore.cassandra -}}
+{{- if .Values.storage.cassandra.nameOverride }}
+{{- printf "%s" .Values.storage.cassandra.nameOverride | trunc 63 | trimSuffix "-" }}
+{{- else }}
 {{- printf "%s-%s" .Release.Name "cassandra" | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
 {{- else }}
 {{- .Values.storage.cassandra.host }}
 {{- end -}}
@@ -64,8 +68,13 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- define "cassandra.contact_points" -}}
 {{- $port := .Values.storage.cassandra.port | toString }}
 {{- if .Values.provisionDataStore.cassandra -}}
+{{- if .Values.storage.cassandra.nameOverride }}
+{{- $host := printf "%s" .Values.storage.cassandra.nameOverride | trunc 63 | trimSuffix "-" -}}
+{{- printf "%s:%s" $host $port }}
+{{- else }}
 {{- $host := printf "%s-%s" .Release.Name "cassandra" | trunc 63 | trimSuffix "-" -}}
 {{- printf "%s:%s" $host $port }}
+{{- end -}}
 {{- else }}
 {{- printf "%s:%s" .Values.storage.cassandra.host $port }}
 {{- end -}}
@@ -78,8 +87,13 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- define "elasticsearch.client.url" -}}
 {{- $port := .Values.storage.elasticsearch.port | toString -}}
 {{- if .Values.provisionDataStore.elasticsearch -}}
+{{- if .Values.storage.elasticsearch.nameOverride }}
+{{- $host := printf "%s" .Values.storage.elasticsearch.nameOverride | trunc 63 | trimSuffix "-" -}}
+{{- printf "%s://%s:%s" .Values.storage.elasticsearch.scheme $host $port }}
+{{- else }}
 {{- $host := printf "%s-%s-%s" .Release.Name "elasticsearch" "client" | trunc 63 | trimSuffix "-" -}}
 {{- printf "%s://%s:%s" .Values.storage.elasticsearch.scheme $host $port }}
+{{- end -}}
 {{- else }}
 {{- printf "%s://%s:%s" .Values.storage.elasticsearch.scheme .Values.storage.elasticsearch.host $port }}
 {{- end -}}
