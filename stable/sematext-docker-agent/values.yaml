@@ -1,0 +1,24 @@
+image:
+  repository: sematext/sematext-agent-docker
+  # For all available tags check here https://hub.docker.com/r/sematext/sematext-agent-docker/tags/
+  tag: 1.31.48
+  pullPolicy: IfNotPresent
+
+sematext:
+  # You will need to Create and Set at least one token before starting this agent!
+
+  # spmToken:
+  # logseneToken:
+
+  # Depending on where you created your apps, choose US or EU region.
+  region: US
+
+  useHostNetwork: true
+  name: sematext-docker-agent
+  resources: {}
+  #  requests:
+  #    cpu: 500m
+  #    memory: 128Mi
+  #  limits:
+  #    cpu: 1000m
+  #    memory: 1024Mi

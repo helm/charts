@@ -1,0 +1,74 @@
+{{- if or (.Values.sematext.spmToken) (.Values.sematext.logseneToken) }}
+{{- if .Capabilities.APIVersions.Has "apps/v1beta2" }}
+apiVersion: apps/v1beta2
+{{- else }}
+apiVersion: extensions/v1beta1
+{{- end }}
+kind: DaemonSet
+metadata:
+  name: {{ template "sematext.fullname" . }}
+  labels:
+    app: {{ template "sematext.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "sematext.name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "sematext.name" . }}
+      name: {{ template "sematext.name" . }}
+    spec:
+      {{- if .Values.sematext.useHostNetwork }}
+      hostNetwork: {{ .Values.sematext.useHostNetwork }}
+      {{- end }}
+      dnsPolicy: "ClusterFirst"
+      restartPolicy: "Always"
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: "{{ .Values.image.pullPolicy }}"
+        resources:
+{{ toYaml .Values.sematext.resources | indent 10 }}
+        env:
+        - name: SPM_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "sematext.fullname" . }}
+              key: spm-token
+        - name: LOGSENE_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "sematext.fullname" . }}
+              key: logsene-token
+{{- if eq .Values.sematext.region "EU" }}
+        - name: SPM_RECEIVER_URL
+          value: "https://spm-receiver.eu.sematext.com/receiver/v1"
+        - name: LOGSENE_RECEIVER_URL
+          value: "https://logsene-receiver.eu.sematext.com"
+        - name: EVENTS_RECEIVER_URL
+          value: "https://event-receiver.eu.sematext.com"
+{{- end }}
+        volumeMounts:
+          - mountPath: /var/run/docker.sock
+            name: docker-sock
+          - mountPath: /etc/localtime
+            name: localtime
+          - mountPath: /rootfs
+            name: rootfs
+            readOnly: true
+        securityContext:
+          privileged: true
+      volumes:
+        - name: docker-sock
+          hostPath:
+            path: /var/run/docker.sock
+        - name: localtime
+          hostPath:
+            path: /etc/localtime
+        - name: rootfs
+          hostPath:
+            path: /
+{{- end }}
