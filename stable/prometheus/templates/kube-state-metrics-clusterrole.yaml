@@ -15,13 +15,14 @@ rules:
     resources:
       - namespaces
       - nodes
-      - persistentvolumeclaims
+      - persistentvolumes
       - pods
       - services
       - resourcequotas
       - replicationcontrollers
       - limitranges
       - persistentvolumeclaims
+      - endpoints
     verbs:
       - list
       - watch
@@ -47,6 +48,13 @@ rules:
     resources:
       - cronjobs
       - jobs
+    verbs:
+      - list
+      - watch
+  - apiGroups:
+      - autoscaling
+    resources:
+      - horizontalpodautoscalers
     verbs:
       - list
       - watch
