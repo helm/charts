@@ -15,6 +15,9 @@ The chart is split into three primary sections: GlobalConfig, CoreConfig, Worker
 the GlobalConfig is for configuration values that all components require, while the Core and Worker sections are
 tier-specific and allow customization for each role.
 
+NOTE: It is highly recommended to set a non-default password when deploying. The admin password is set to a default in the chart. To customize it use:
+ `--set globalConfig.users.admin.password=<pass>` or set it in the values.yaml locally.
+
 
 ### Core Role
 The core services provide the apis and state management for the system. Core services must be available within the cluster
@@ -35,12 +38,18 @@ Installing the Chart
 
 Deploying PostgreSQL as a dependency managed in the chart:
 
-`helm install .`
+`helm install stable/anchore-engine`
 
 
 Using and existing/external PostgreSQL service:
 
-`helm install --name <name> --set postgresql.enabled=False .`
+`helm install --name <name> --set postgresql.enabled=False stable/anchore-engine`
+
+
+This installs the chart in cluster-local mode. To expose the service outside the chart there are two options:
+1. Use a LoadBalancer service type by setting the `service.type=LoadBalancer` in the values.yaml or on CLI
+2. Use an ingress by setting `ingress.enabled=True` in the values.yaml or on CLI
+
 
 
 Configuration
@@ -75,9 +84,14 @@ Adding Workers
 
 To set a specific number of workers once the service is running:
 
-`helm upgrade --set workerConfig.replicaCount=2`
+If using defaults from the chart:
+
+`helm upgrade --set workerConfig.replicaCount=2 <releasename> stable/anchore-engine`
+
+If customized values, use the local directory for the chart values:
+
+`helm upgrade --est workerConfig.replicaCount=2 <releasename> ./anchore-engine`
 
 To launch with more than one worker you can either modify values.yaml or run with:
 
-`helm install --set workerConfig.replicaCount=2 <chart location>`
-
+`helm install --set workerConfig.replicaCount=2 stable/anchore-engine`
