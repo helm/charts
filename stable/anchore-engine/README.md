@@ -57,6 +57,15 @@ Configuration
 
 While the configuration options of Anchore Engine are extensive, the options provided by the chart are:
 
+### Exposing the service outside the cluster:
+
+* Use ingress, which enables SSL termination at the LB:
+  * ingress.enabled=True (may require service.type=NodePort for some K8s installations e.g. GKE)
+
+* Use a LoadBalancer service type:
+  * service.type=LoadBalancer 
+
+
 ### Database
 
 * External Postgres (not managed by helm)
