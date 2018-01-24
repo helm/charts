@@ -152,6 +152,7 @@ spec:
           {{- if .Values.persistence.enabled }}
           hostPath:
             path: {{ .Values.persistence.hostPath }}
+            type: {{ if .Values.persistence.createPath }}"DirectoryOrCreate"{{else}}""{{end}}
           {{- else }}
           emptyDir: {}
           {{- end }}
