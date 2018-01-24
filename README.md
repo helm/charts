@@ -3,6 +3,13 @@
 Use this repository to submit official Charts for Kubernetes Helm. Charts are curated application definitions for Kubernetes Helm. For more information about installing and using Helm, see its
 [README.md](https://github.com/kubernetes/helm/tree/master/README.md). To get a quick introduction to Charts see this [chart document](https://github.com/kubernetes/helm/blob/master/docs/charts.md).
 
+## Where to find us
+
+For general Helm Chart discussions join the Helm Charts (#charts) room in the [Kubernetes](http://slack.kubernetes.io/).
+
+For issues and support for Helm and Charts see [Support Channels](CONTRIBUTING.md#support-channels).
+
+
 ## How do I install these charts?
 
 Just `helm install stable/<chart>`. This is the default repository for Helm which is located at https://kubernetes-charts.storage.googleapis.com/ and is installed by default.
