@@ -69,6 +69,7 @@ The following tables lists the configurable parameters of the Redis chart and th
 | `networkPolicy.allowExternal` | Don't require client label for connections       | `true`                       |
 | `service.annotations`         | annotations for redis service                    | {}                           |
 | `service.loadBalancerIP`      | loadBalancerIP if service type is `LoadBalancer` | ``                           |
+| `securityContext.enabled`     | Enable security context                          | `true`                       |
 
 The above parameters map to the env variables defined in [bitnami/redis](http://github.com/bitnami/bitnami-docker-redis). For more information please refer to the [bitnami/redis](http://github.com/bitnami/bitnami-docker-redis) image documentation.
 
