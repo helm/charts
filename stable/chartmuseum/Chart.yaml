@@ -6,7 +6,8 @@ appVersion: 0.2.7
 home: https://github.com/chartmuseum/chartmuseum
 icon: https://raw.githubusercontent.com/chartmuseum/chartmuseum/master/logo.png
 maintainers:
-- name: ChartMuseum
+- name: chartmuseum
   email: chartmuseum@gmail.com
-- name: Cloud Posse
+- name: cloudposse
   email: hello@cloudposse.com
+- name: jdolitsky
