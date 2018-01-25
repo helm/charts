@@ -11,5 +11,5 @@ keywords:
 sources:
   - https://github.com/jetstack/cert-manager
 maintainers:
-  - name: James Munnelly
+  - name: munnerz
     email: james@jetstack.io
