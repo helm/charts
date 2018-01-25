@@ -1,0 +1,98 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "docker-registry.fullname" . }}
+  labels:
+    app: {{ template "docker-registry.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "docker-registry.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+          - /bin/registry
+          - serve
+          - /etc/docker/registry/config.yml
+          ports:
+            - containerPort: {{ .Values.service.port }}
+          livenessProbe:
+            httpGet:
+{{- if .Values.tlsSecretName }}
+              scheme: HTTPS
+{{- end }}
+              path: /
+              port: {{ .Values.service.port }}
+          readinessProbe:
+            httpGet:
+{{- if .Values.tlsSecretName }}
+              scheme: HTTPS
+{{- end }}
+              path: /
+              port: {{ .Values.service.port }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+          env:
+            - name: REGISTRY_HTTP_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "docker-registry.fullname" . }}-secret
+                  key: haSharedSecret
+{{- if eq .Values.storage "filesystem" }}
+            - name: REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY
+              value: "/var/lib/registry"
+{{- else if eq .Values.storage "s3" }}
+            - name: REGISTRY_STORAGE_S3_ACCESSKEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "docker-registry.fullname" . }}-secret
+                  key: s3AccessKey
+            - name: REGISTRY_STORAGE_S3_SECRETKEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "docker-registry.fullname" . }}-secret
+                  key: s3SecretKey
+{{- end }}
+          volumeMounts:
+{{- if eq .Values.storage "filesystem" }}
+            - name: data
+              mountPath: /var/lib/registry/
+{{- end }}
+            - name: "{{ template "docker-registry.fullname" . }}-config"
+              mountPath: "/etc/docker/registry"
+{{- if .Values.tlsSecretName }}
+            - mountPath: /etc/ssl/docker
+              name: tls-cert
+              readOnly: true
+{{- end }}
+{{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+{{- end }}
+      volumes:
+{{- if eq .Values.storage "filesystem" }}
+        - name: data
+      {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ template "docker-registry.fullname" . }}
+      {{- else }}
+          emptyDir: {}
+      {{- end -}}
+{{- end }}
+        - name: {{ template "docker-registry.fullname" . }}-config
+          configMap:
+            name: {{ template "docker-registry.fullname" . }}-config
+{{- if .Values.tlsSecretName }}
+        - name: tls-cert
+          secret:
+            secretName: {{ .Values.tlsSecretName }}.tls
+{{- end }}

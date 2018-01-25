@@ -1,0 +1,56 @@
+#TODO custom hcl, vault token in cmd
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: "{{ template "goldfish.fullname" . }}"
+  labels:
+    app: "{{ template "goldfish.name" . }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+spec:
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "goldfish.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.service.internalPort }}
+          env:
+          {{- range $key, $value :=  .Values.secrets }}
+          - name: {{ $key | upper | replace "-" "_" }}
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "goldfish.fullname" $ }}
+                key: {{ $key }}
+          {{- end }}
+          command:
+          - /app/entrypoint.sh
+          livenessProbe:
+            httpGet:
+              path: /
+              port: {{ .Values.service.internalPort }}
+          readinessProbe:
+            httpGet:
+              path: /
+              port: {{ .Values.service.internalPort }}
+          volumeMounts:
+          - name: goldfish-config
+            mountPath: /app/docker.json
+            subPath: docker.json
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
+      volumes:
+        - name: goldfish-config
+          configMap:
+            name: "{{ template "goldfish.fullname" . }}"

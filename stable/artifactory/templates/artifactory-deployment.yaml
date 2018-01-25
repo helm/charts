@@ -1,33 +1,43 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "artifactory.fullname" . }}
+  name: {{ template "artifactory.artifactory.fullname" . }}
   labels:
-    app: {{ template "name" . }}
+    app: {{ template "artifactory.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     component: "{{ .Values.artifactory.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
 spec:
-  replicas: {{ .Values.artReplicaCount }}
+  replicas: {{ .Values.artifactory.replicaCount }}
   template:
     metadata:
       labels:
-        app: {{ template "name" . }}
+        app: {{ template "artifactory.name" . }}
         component: "{{ .Values.artifactory.name }}"
         release: {{ .Release.Name }}
     spec:
+    {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+      - name: {{ .Values.imagePullSecrets }}
+    {{- end }}
       initContainers:
       - name: "remove-lost-found"
         image: "{{ .Values.initContainerImage }}"
         imagePullPolicy: {{ .Values.artifactory.image.pullPolicy }}
         command:
-        - "rm"
-        - "-rf"
-        - "{{ .Values.artifactory.persistence.mountPath }}/lost+found"
+        - 'sh'
+        - '-c'
+        - 'rm -rfv {{ .Values.artifactory.persistence.mountPath }}/lost+found'
         volumeMounts:
         - mountPath: {{ .Values.artifactory.persistence.mountPath | quote }}
           name: artifactory-volume
+      - name: "wait-for-db"
+        image: "{{ .Values.initContainerImage }}"
+        command:
+        - 'sh'
+        - '-c'
+        - 'until nc -z -w 2 {{ template "artifactory.database.name" . }} {{ .Values.database.externalPort }} && echo database ok; do sleep 2; done'
       containers:
       - name: {{ .Values.artifactory.name }}
         image: "{{ .Values.artifactory.image.repository }}:{{ .Values.artifactory.image.version }}"
@@ -40,20 +50,47 @@ spec:
         - name: DB_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "artifactory.fullname" . }}
               key: artifactory-database-password
         - name: DB_HOST
-          value: {{ template "database.name" . }}
+          value: {{ template "artifactory.database.name" . }}
+        - name: EXTRA_JAVA_OPTIONS
+          value: "
+      {{- if .Values.artifactory.javaOpts.other }}
+          {{ .Values.artifactory.javaOpts.other }}
+      {{- end}}
+      {{- if .Values.artifactory.javaOpts.xms }}
+          -Xms{{ .Values.artifactory.javaOpts.xms }}
+      {{- end}}
+      {{- if .Values.artifactory.javaOpts.xmx }}
+          -Xmx{{ .Values.artifactory.javaOpts.xmx }}
+      {{- end}}
+            "
         ports:
         - containerPort: {{ .Values.artifactory.internalPort }}
         volumeMounts:
-        - mountPath: {{ .Values.artifactory.persistence.mountPath | quote }}
-          name: artifactory-volume
+        - name: artifactory-volume
+          mountPath: {{ .Values.artifactory.persistence.mountPath | quote }}
+        resources:
+{{ toYaml .Values.artifactory.resources | indent 10 }}
+        readinessProbe:
+          httpGet:
+            path: '/artifactory/webapp/#/login'
+            port: 8081
+          initialDelaySeconds: 60
+          periodSeconds: 10
+          failureThreshold: 10
+        livenessProbe:
+          httpGet:
+            path: '/artifactory/webapp/#/login'
+            port: 8081
+          initialDelaySeconds: 180
+          periodSeconds: 10
       volumes:
       - name: artifactory-volume
       {{- if .Values.artifactory.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ template "artifactory.fullname" . }}
+          claimName: {{ template "artifactory.artifactory.fullname" . }}
       {{- else }}
         emptyDir: {}
       {{- end -}}

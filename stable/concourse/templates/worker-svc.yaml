@@ -4,9 +4,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "worker.fullname" . }}
+  name: {{ template "concourse.worker.fullname" . }}
   labels:
-    app: {{ template "worker.fullname" . }}
+    app: {{ template "concourse.worker.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -18,4 +18,4 @@ spec:
   ##
   ports: []
   selector:
-    app: {{ template "worker.fullname" . }}
+    app: {{ template "concourse.worker.fullname" . }}

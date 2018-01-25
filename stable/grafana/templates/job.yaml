@@ -10,7 +10,7 @@ metadata:
     release: "{{ .Release.Name }}"
   name: {{ template "grafana.server.fullname" . }}-set-datasource
 spec:
-  activeDeadlineSeconds: {{ default 300 .Values.server.setDatasource.activeDeadlineSeconds }}
+  activeDeadlineSeconds: {{ .Values.server.setDatasource.activeDeadlineSeconds }}
   template:
     metadata:
       labels:
@@ -33,7 +33,7 @@ spec:
               name: {{ template "grafana.server.fullname" . }}
               key: grafana-admin-password
         args:
-          - "http://$(ADMIN_USER):$(ADMIN_PASSWORD)@{{ template "grafana.fullname" . }}:{{ .Values.server.httpPort }}/api/datasources"
+          - "http://$(ADMIN_USER):$(ADMIN_PASSWORD)@{{ template "grafana.fullname" . }}:{{ .Values.server.service.httpPort }}/api/datasources"
           - "--max-time"
           - "10"
           - "-H"

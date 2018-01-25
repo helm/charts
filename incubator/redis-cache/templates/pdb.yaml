@@ -1,11 +1,11 @@
 apiVersion: policy/v1beta1
 kind: PodDisruptionBudget
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "redis-cache.fullname" . }}
 spec:
   selector:
     matchLabels:
-      app: {{ template "name" . }}
+      app: {{ template "redis-cache.name" . }}
       chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
       release: "{{ .Release.Name }}"
       heritage: "{{ .Release.Service }}"

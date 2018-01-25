@@ -1,0 +1,48 @@
+# Default values for spring-cloud-data-flow.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+dataflowUsername: user
+dataflowPassword: password
+dataflowRoles: ROLE_VIEW, ROLE_CREATE
+dataflowAdminUsername: admin
+dataflowAdminPassword: admin
+dataflowAdminRoles: ROLE_MANAGE, ROLE_VIEW
+server:
+  image: springcloud/spring-cloud-dataflow-server-kubernetes
+  version: 1.2.2.RELEASE
+  imagePullPolicy: IfNotPresent
+  service:
+    type: LoadBalancer
+    externalPort: 80
+    internalPort: 80
+  resources: {}
+  #  limits:
+  #    cpu: 1.0
+  #    memory: 2048Mi
+  #  requests:
+  #    cpu: 0.5
+  #    memory: 640Mi
+metrics:
+  image: springcloud/metrics-collector-rabbit
+  version: 1.0.0.RELEASE
+  imagePullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    externalPort: 80
+    internalPort: 80
+  resources: {}
+  #  limits:
+  #    cpu: 1.0
+  #    memory: 1024Mi
+  #  requests:
+  #    cpu: 0.5
+  #    memory: 640Mi
+deployer:
+  readinessProbe:
+    initialDelaySeconds: 120
+  livenessProbe:
+    initialDelaySeconds: 90
+rabbitmq:
+  rabbitmqUsername: user
+mysql:
+  mysqlDatabase: dataflow

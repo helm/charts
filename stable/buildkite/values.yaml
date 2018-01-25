@@ -1,0 +1,54 @@
+# Default values for bk-agent.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: buildkite/agent
+  tag: 3.0
+  pullPolicy: IfNotPresent
+
+# Buildkite Agent settings
+agent:
+  # Your Buildkite agent token, it must be set
+  token: ""
+  # Agent meta-data, which can be used to assign jobs
+  meta: "role=agent"
+
+# Extra env vars to be passed
+# If you do want to xxtra env vars to pass to agent, uncomment the following
+# lines, adjust them as necessary.
+#extraEnv:
+#  - name: test1
+#    value: "test1"
+#  - name: test2
+#    value: "test2"
+
+# Your ssh private key if you want to access private git repository
+privateSshKey: ""
+
+# Docker registries credentials
+registryCreds:
+  # GCP credentials for GCR
+  # base64 encoded GCP Service account json key file
+  gcrServiceAccountKey: ""
+  # base64 encoded private registry docker config.json file
+  # for quay.io, docker hub, ecr and etc
+  dockerConfig: ""
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 500m
+  #  memory: 1024Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+
+## Node labels for pod assignment
+## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+nodeSelector: {}

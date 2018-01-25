@@ -39,8 +39,8 @@ The following tables lists the configurable parameters of the kubernetes-dashboa
 
 | Parameter             | Description                        | Default                                                                  |
 |-----------------------|------------------------------------|--------------------------------------------------------------------------|
-| `image`               | Image                              | `gcr.io/google_containers/kubernetes-dashboard-amd64`                    |
-| `imageTag`            | Image tag                          | `v1.6.1`                                                                 |
+| `image`               | Image                              | `k8s.gcr.io/kubernetes-dashboard-amd64`                                  |
+| `imageTag`            | Image tag                          | `v1.7.0`                                                                 |
 | `imagePullPolicy`     | Image pull policy                  | `IfNotPresent`                                                           |
 | `nodeSelector`        | node labels for pod assignment     | `{}`                                                                     |
 | `httpPort`            | Dashboard port                     | 80                                                                       |

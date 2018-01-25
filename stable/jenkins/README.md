@@ -32,12 +32,20 @@ The following tables lists the configurable parameters of the Jenkins chart and 
 | `Master.Image`                    | Master image name                    | `jenkinsci/jenkins`                                                          |
 | `Master.ImageTag`                 | Master image tag                     | `2.46.1`                                                                     |
 | `Master.ImagePullPolicy`          | Master image pull policy             | `Always`                                                                     |
+| `Master.ImagePullSecret`          | Master image pull secret             | Not set                                                                      |
 | `Master.Component`                | k8s selector key                     | `jenkins-master`                                                             |
+| `Master.UseSecurity`              | Use basic security                   | `true`                                                                       |
+| `Master.AdminUser`                | Admin username (and password) created as a secret if useSecurity is true | `admin`                                  |
 | `Master.Cpu`                      | Master requested cpu                 | `200m`                                                                       |
 | `Master.Memory`                   | Master requested memory              | `256Mi`                                                                      |
+| `Master.RunAsUser`                | uid that jenkins runs with           | `0`                                                                          |
+| `Master.FsGroup`                  | uid that will be used for persistent volume | `0`                                                                   |
+| `Master.ServiceAnnotations`       | Service annotations                  | `{}`                                                                         |
 | `Master.ServiceType`              | k8s service type                     | `LoadBalancer`                                                               |
 | `Master.ServicePort`              | k8s service port                     | `8080`                                                                       |
 | `Master.NodePort`                 | k8s node port                        | Not set                                                                      |
+| `Master.HealthProbes`             | Enable k8s liveness and readiness probes | `true`                                                                   |
+| `Master.HealthProbesTimeout`      | Set the timeout for the liveness and readiness probes | `120`                                                       |
 | `Master.ContainerPort`            | Master listening port                | `8080`                                                                       |
 | `Master.SlaveListenerPort`        | Listening port for agents            | `50000`                                                                      |
 | `Master.LoadBalancerSourceRanges` | Allowed inbound IP addresses         | `0.0.0.0/0`                                                                  |
@@ -47,13 +55,18 @@ The following tables lists the configurable parameters of the Jenkins chart and 
 | `Master.Ingress.Annotations`      | Ingress annotations                  | `{}`                                                                         |
 | `Master.Ingress.TLS`              | Ingress TLS configuration            | `[]`                                                                         |
 | `Master.InitScripts`              | List of Jenkins init scripts         | Not set                                                                      |
+| `Master.CredentialsXmlSecret`     | Kubernetes secret that contains a 'credentials.xml' file | Not set                                                  |
+| `Master.SecretsFilesSecret`       | Kubernetes secret that contains 'secrets' files | Not set                                                           |
+| `Master.Jobs`                     | Jenkins XML job configs              | Not set                                                                      |
 | `Master.InstallPlugins`           | List of Jenkins plugins to install   | `kubernetes:0.11 workflow-aggregator:2.5 credentials-binding:1.11 git:3.2.0` |
 | `Master.ScriptApproval`           | List of groovy functions to approve  | Not set                                                                      |
 | `Master.NodeSelector`             | Node labels for pod assignment       | `{}`                                                                         |
 | `Master.Tolerations`              | Toleration labels for pod assignment | `{}`                                                                         |
-| `rbac.install`           | Create service account and ClusterRoleBinding for Kubernetes plugin | `false`                                                                      |
-| `rbac.apiVersion`           | RBAC API version | `v1beta1`                                                                      |
-| `rbac.roleRef`           | Cluster role name to bind to | `cluster-admin`                                                                      |
+| `NetworkPolicy.Enabled`           | Enable creation of NetworkPolicy resources. | `false`                                                               |
+| `NetworkPolicy.ApiVersion`        | NetworkPolicy ApiVersion             | `extensions/v1beta1`                                                         |
+| `rbac.install`                    | Create service account and ClusterRoleBinding for Kubernetes plugin | `false`                                       |
+| `rbac.apiVersion`                 | RBAC API version                     | `v1beta1`                                                                    |
+| `rbac.roleRef`                    | Cluster role name to bind to         | `cluster-admin`                                                              |
 
 ### Jenkins Agent
 
@@ -62,6 +75,7 @@ The following tables lists the configurable parameters of the Jenkins chart and 
 | `Agent.AlwaysPullImage` | Always pull agent container image before build  | `false`                |
 | `Agent.Enabled`         | Enable Kubernetes plugin jnlp-agent podTemplate | `true`                 |
 | `Agent.Image`           | Agent image name                                | `jenkinsci/jnlp-slave` |
+| `Agent.ImagePullSecret` | Agent image pull secret                         | Not set                |
 | `Agent.ImageTag`        | Agent image tag                                 | `2.62`                 |
 | `Agent.Privileged`      | Agent privileged container                      | `false`                |
 | `Agent.Cpu`             | Agent requested cpu                             | `200m`                 |
@@ -103,6 +117,11 @@ the DefaultDeny namespace annotation. Note: this will enforce policy for _all_ p
 
     kubectl annotate namespace default "net.beta.kubernetes.io/network-policy={\"ingress\":{\"isolation\":\"DefaultDeny\"}}"
 
+
+Install helm chart with network policy enabled: 
+
+    $ helm install stable/jenkins --set NetworkPolicy.Enabled=true
+
 ## Persistence
 
 The Jenkins image stores persistence under `/var/jenkins_home` path of the container. A dynamically managed Persistent Volume
@@ -134,15 +153,22 @@ $ helm install --name my-release --set Persistence.ExistingClaim=PVC_NAME stable
 
 ## Custom ConfigMap
 
-When creating a new chart with this chart as a dependency, CustomConfigMap can be used to override the default config.xml provided.
+When creating a new parent chart with this chart as a dependency, the `CustomConfigMap` parameter can be used to override the default config.xml provided.
 It also allows for providing additional xml configuration files that will be copied into `/var/jenkins_home`. In the parent chart's values.yaml,
-set the value to true and provide the file `templates/config.yaml` for your use case. If you start by copying `config.yaml` from this chart and
-want to access values from this chart you must change all references from `.Values` to `.Values.jenkins`.
+set the `jenkins.Master.CustomConfigMap` value to true like so
 
 ```
 jenkins:
   Master:
     CustomConfigMap: true
+```
+
+and provide the file `templates/config.tpl` in your parent chart for your use case. You can start by copying the contents of `config.yaml` from this chart into your parent charts `templates/config.tpl` as a basis for customization. Finally, you'll need to wrap the contents of `templates/config.tpl` like so:
+
+```yaml
+{{- define "override_config_map" }}
+    <CONTENTS_HERE>
+{{ end }}
 ```
 
 ## RBAC
@@ -152,3 +178,20 @@ If running upon a cluster with RBAC enabled you will need to do the following:
 * `helm install stable/jenkins --set rbac.install=true`
 * Create a Jenkins credential of type Kubernetes service account with service account name provided in the `helm status` output.
 * Under configure Jenkins -- Update the credentials config in the cloud section to use the service account credential you created in the step above.
+
+## Run Jenkins as non root user
+
+The default settings of this helm chart let Jenkins run as root user with uid `0`.
+Due to security reasons you may want to run Jenkins as a non root user. 
+Fortunately the default jenkins docker image `jenkins/jenkins` contains a user `jenkins` with uid `1000` that can be used for this purpose.  
+
+Simply use the following settings to run Jenkins as `jenkins` user with uid `1000`.
+```
+jenkins:
+  Master:
+    RunAsUser: 1000
+    FsGroup: 1000
+```
+
+Docs taken from https://github.com/jenkinsci/docker/blob/master/Dockerfile:
+*Jenkins is run with user `jenkins`, uid = 1000. If you bind mount a volume from the host or a data container,ensure you use the same uid*

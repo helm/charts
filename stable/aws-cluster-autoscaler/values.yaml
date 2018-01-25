@@ -6,8 +6,8 @@ autoscalingGroups: []
 awsRegion: us-east-1
 
 image:
-  repository: gcr.io/google_containers/cluster-autoscaler
-  tag: v0.6.0
+  repository: k8s.gcr.io/cluster-autoscaler
+  tag: v0.6.1
   pullPolicy: IfNotPresent
 
 extraArgs: {}

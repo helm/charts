@@ -43,11 +43,15 @@ The following tables lists the configurable parameters of the Datadog chart and 
 | `image.repository`          | The image repository to pull from  | `datadog/docker-dd-agent`                 |
 | `image.tag`                 | The image tag to pull              | `latest`                                  |
 | `image.pullPolicy`          | Image pull policy                  | `IfNotPresent`                            |
+| `rbac.create`               | If true, create & use RBAC resources | `true`                                  |
+| `rbac.serviceAccount`       | existing ServiceAccount to use (ignored if rbac.create=true) | `default`       |
 | `datadog.env`               | Additional Datadog environment variables | `nil`                               |
 | `datadog.apmEnabled`        | Enable tracing from the host       | `nil`                                     |
 | `datadog.autoconf`          | Additional Datadog service discovery configurations | `nil`                    |
 | `datadog.checksd`           | Additional Datadog service checks  | `nil`                                     |
 | `datadog.confd`             | Additional Datadog service configurations | `nil`                              |
+| `datadog.volumes`           | Additional volumes for the daemonset or deployment | `nil`                     |
+| `datadog.volumeMounts`      | Additional volumeMounts for the daemonset or deployment | `nil`                |
 | `resources.requests.cpu`    | CPU resource requests              | `100m`                                    |
 | `resources.limits.cpu`      | CPU resource limits                | `256m`                                    |
 | `resources.requests.memory` | Memory resource requests           | `128Mi`                                   |
@@ -55,6 +59,12 @@ The following tables lists the configurable parameters of the Datadog chart and 
 | `kubeStateMetrics.enabled`  | If true, create kube-state-metrics | `true`                                    |
 | `daemonset.podAnnotations`  | Annotations to add to the DaemonSet's Pods | `nil`                             |
 | `daemonset.tolerations`     | List of node taints to tolerate (requires Kubernetes >= 1.6) | `nil`           |
+| `daemonset.useHostNetwork`  | If true, use the host's network    | `nil`                                     |
+| `daemonset.useHostPort`     | If true, use the same ports for both host and container  | `nil`               |
+| `datadog.leaderElection`    | Adds the leader Election feature   | `false`                                   |
+| `datadog.leaderLeaseDuration`| The duration for which a leader stays elected.| `nil`                         |
+| `kube-state-metrics.rbac.create`| If true, create & use RBAC resources for kube-state-metrics | `true`       |
+| `kube-state-metrics.rbac.serviceAccount` | existing ServiceAccount to use (ignored if rbac.create=true) for kube-state-metrics | `default` |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
@@ -112,3 +122,18 @@ datadog:
           port: 6379
 ```
 
+### leader election
+
+The Datadog Agent supports built in leader election option for the Kubernetes event collector As of 5.17.
+
+This feature relies on ConfigMaps, enabling this flag will grant Datadog Agent get, list, delete and create access to the ConfigMap resource.
+See the full [RBAC](https://github.com/DataDog/integrations-core/tree/master/kubernetes#gathering-kubernetes-events) and keep in mind that these RBAC entities **will need** to be created before the option is set.
+
+Agents coordinate by performing a leader election among members of the Datadog DaemonSet through kubernetes to ensure only one leader agent instance is gathering events at a given time.
+
+**This functionality is disabled by default.**
+
+The `datadog.leaderLeaseDuration` is the duration for which a leader stays elected. It should be > 30 seconds. The longer it is, the less frequently your agents hit the apiserver with requests, but it also means that if the leader dies (and under certain conditions), events can be missed until the lease expires and a new leader takes over.
+
+
+Make sure the `rbac.create` is enable as well to ensure the feature to work properly.

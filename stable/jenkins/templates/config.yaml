@@ -3,7 +3,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "jenkins.fullname" . }}
 data:
   config.xml: |-
     <?xml version='1.0' encoding='UTF-8'?>
@@ -26,7 +26,7 @@ data:
       <viewsTabBar class="hudson.views.DefaultViewsTabBar"/>
       <myViewsTabBar class="hudson.views.DefaultMyViewsTabBar"/>
       <clouds>
-        <org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud plugin="kubernetes@0.11">
+        <org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud plugin="kubernetes@{{ template "jenkins.kubernetes-version" . }}">
           <name>kubernetes</name>
           <templates>
 {{- if .Values.Agent.Enabled }}
@@ -43,6 +43,7 @@ data:
                   {{- $key }}={{ $value }}
                   {{- $_ := set $local "first" false }}
                 {{- end }}</nodeSelector>
+                <nodeUsageMode>NORMAL</nodeUsageMode>
               <volumes>
 {{- range $index, $volume := .Values.Agent.volumes }}
                 <org.csanchez.jenkins.plugins.kubernetes.volumes.{{ $volume.type }}Volume>
@@ -73,14 +74,22 @@ data:
                   <envVars>
                     <org.csanchez.jenkins.plugins.kubernetes.ContainerEnvVar>
                       <key>JENKINS_URL</key>
-                      <value>http://{{ template "fullname" . }}:{{.Values.Master.ServicePort}}{{ default "" .Values.Master.JenkinsUriPrefix }}</value>
+                      <value>http://{{ template "jenkins.fullname" . }}:{{.Values.Master.ServicePort}}{{ default "" .Values.Master.JenkinsUriPrefix }}</value>
                     </org.csanchez.jenkins.plugins.kubernetes.ContainerEnvVar>
                   </envVars>
                 </org.csanchez.jenkins.plugins.kubernetes.ContainerTemplate>
               </containers>
               <envVars/>
               <annotations/>
+{{- if .Values.Agent.ImagePullSecret }}
+              <imagePullSecrets>
+                <org.csanchez.jenkins.plugins.kubernetes.PodImagePullSecret>
+                  <name>{{ .Values.Agent.ImagePullSecret }}</name>
+                </org.csanchez.jenkins.plugins.kubernetes.PodImagePullSecret>
+              </imagePullSecrets>
+{{- else }}
               <imagePullSecrets/>
+{{- end }}
               <nodeProperties/>
             </org.csanchez.jenkins.plugins.kubernetes.PodTemplate>
 {{- end -}}
@@ -88,8 +97,8 @@ data:
           <serverUrl>https://kubernetes.default</serverUrl>
           <skipTlsVerify>false</skipTlsVerify>
           <namespace>{{ .Release.Namespace }}</namespace>
-          <jenkinsUrl>http://{{ template "fullname" . }}:{{.Values.Master.ServicePort}}{{ default "" .Values.Master.JenkinsUriPrefix }}</jenkinsUrl>
-          <jenkinsTunnel>{{ template "fullname" . }}-agent:50000</jenkinsTunnel>
+          <jenkinsUrl>http://{{ template "jenkins.fullname" . }}:{{.Values.Master.ServicePort}}{{ default "" .Values.Master.JenkinsUriPrefix }}</jenkinsUrl>
+          <jenkinsTunnel>{{ template "jenkins.fullname" . }}-agent:50000</jenkinsTunnel>
           <containerCap>10</containerCap>
           <retentionTimeout>5</retentionTimeout>
           <connectTimeout>0</connectTimeout>
@@ -137,7 +146,7 @@ data:
     cp -n /var/jenkins_config/config.xml /var/jenkins_home;
 {{- if .Values.Master.InstallPlugins }}
     cp /var/jenkins_config/plugins.txt /var/jenkins_home;
-    rm /usr/share/jenkins/ref/plugins/*.lock
+    rm -rf /usr/share/jenkins/ref/plugins/*.lock
     /usr/local/bin/install-plugins.sh `echo $(cat /var/jenkins_home/plugins.txt)`;
 {{- end }}
 {{- if .Values.Master.ScriptApproval }}
@@ -146,6 +155,18 @@ data:
 {{- if .Values.Master.InitScripts }}
     mkdir -p /var/jenkins_home/init.groovy.d/;
     cp -n /var/jenkins_config/*.groovy /var/jenkins_home/init.groovy.d/
+{{- end }}
+{{- if .Values.Master.CredentialsXmlSecret }}
+    cp -n /var/jenkins_credentials/credentials.xml /var/jenkins_home;
+{{- end }}
+{{- if .Values.Master.SecretsFilesSecret }}
+    cp -n /var/jenkins_secrets/* /usr/share/jenkins/ref/secrets;
+{{- end }}
+{{- if .Values.Master.Jobs }}
+    for job in $(ls /var/jenkins_jobs); do
+      mkdir -p /var/jenkins_home/jobs/$job
+      cp -n /var/jenkins_jobs/$job /var/jenkins_home/jobs/$job/config.xml
+    done
 {{- end }}
 {{- range $key, $val := .Values.Master.InitScripts }}
   init{{ $key }}.groovy: |-
@@ -157,4 +178,6 @@ data:
 {{ $val | indent 4 }}
 {{- end }}
 {{- end }}
+{{ else }}
+{{ include "override_config_map" . }}
 {{- end -}}

@@ -1,40 +1,47 @@
+{{- $configMapName := include "kafka.configmap" . -}}
 apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "kafka.fullname" . }}
   labels:
-    app: {{ include "name" . | quote }}
+    app: {{ include "kafka.name" . | quote }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: {{ .Release.Name | quote }}
     heritage: {{ .Release.Service | quote }}
 spec:
-  serviceName: {{ template "fullname" . }}-headless
-  replicas: {{ default 3 .Values.Replicas }}
+  serviceName: {{ template "kafka.fullname" . }}-headless
+  updateStrategy:
+    type: {{ .Values.updateStrategy }}
+    {{ if eq .Values.updateStrategy "RollingUpdate" -}}
+    rollingUpdate:
+      partition: {{ .Values.rollingUpdatePartition }}
+    {{- end }}
+  replicas: {{ default 3 .Values.replicas }}
   template:
     metadata:
       labels:
-        app: {{ include "name" . | quote }}
+        app: {{ include "kafka.name" . | quote }}
         release: {{ .Release.Name | quote }}
     spec:
+{{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+{{- end }}
       containers:
-      - name: {{ template "name" . }}-broker
-        image: "{{ .Values.Image }}:{{ .Values.ImageTag }}"
-        imagePullPolicy: "{{ .Values.ImagePullPolicy }}"
+      - name: {{ template "kafka.name" . }}-broker
+        image: "{{ .Values.image }}:{{ .Values.imageTag }}"
+        imagePullPolicy: "{{ .Values.imagePullPolicy }}"
         livenessProbe:
-          exec:
-            command:
-              - bin/kafka-topics.sh
-              - --zookeeper
-              - "{{ .Release.Name }}-zookeeper:2181"
-              - --list
+          tcpSocket:
+            port: 9092
           initialDelaySeconds: 30
           timeoutSeconds: 5
         readinessProbe:
           exec:
             command:
-              - bin/kafka-topics.sh
+              - kafka-topics
               - --zookeeper
-              - "{{ .Release.Name }}-zookeeper:2181"
+              - {{ template "zookeeper.url" . }}
               - --list
           initialDelaySeconds: 30
           timeoutSeconds: 5
@@ -42,26 +49,51 @@ spec:
         - containerPort: 9092
           name: kafka
         resources:
-          limits:
-            cpu: "{{ .Values.MaxCpu }}"
-            memory: "{{ .Values.MaxMemory }}"
-          requests:
-            cpu: "{{ .Values.Cpu }}"
-            memory: "{{ .Values.Memory }}"
+{{ toYaml .Values.resources | indent 10 }}
+        env:
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        - name: KAFKA_ZOOKEEPER_CONNECT
+          valueFrom:
+            configMapKeyRef:
+              name: "{{ $configMapName }}"
+              key: zookeeper.connect
+        - name: KAFKA_LOG_DIRS
+          valueFrom:
+            configMapKeyRef:
+              name: "{{ $configMapName }}"
+              key: log.dirs
+        {{- range $configName := (keys .Values.configurationOverrides) }}
+        - name: KAFKA_{{ $configName | replace "." "_" | upper }}
+          valueFrom:
+            configMapKeyRef:
+              name: "{{ $configMapName }}"
+              key: {{ $configName }}
+        {{- end }}
+        # This is required because the Downward API does not yet support identification of
+        # pod numbering in statefulsets. Thus, we are required to specify a command which
+        # allows us to extract the pod ID for usage as the Kafka Broker ID.
+        # See: https://github.com/kubernetes/kubernetes/issues/31218
         command:
         - sh
         - -c
-        - "./bin/kafka-server-start.sh config/server.properties --override zookeeper.connect={{ .Release.Name }}-zookeeper:2181/ --override broker.id=${HOSTNAME##*-}"
+        - |
+          export KAFKA_BROKER_ID=${HOSTNAME##*-} && \
+          export KAFKA_ADVERTISED_LISTENERS="PLAINTEXT://${POD_IP}:9092" && \
+          /etc/confluent/docker/run
         volumeMounts:
         - name: datadir
-          mountPath: "{{ .Values.DataDirectory }}"
+          mountPath: "{{ .Values.dataDirectory }}"
   volumeClaimTemplates:
   - metadata:
       name: datadir
-      annotations:
-        volume.alpha.kubernetes.io/storage-class: anything
     spec:
       accessModes: [ "ReadWriteOnce" ]
       resources:
         requests:
-          storage: {{ .Values.Storage }}
+          storage: {{ .Values.storage }}
+      {{- if .Values.storageClass }}
+      storageClassName: {{ .Values.storageClass | quote }}
+      {{- end }}

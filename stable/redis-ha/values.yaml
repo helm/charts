@@ -1,0 +1,32 @@
+## Configure resource requests and limits
+## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+##
+resources:
+  server:
+    requests:
+      memory: 200Mi
+      cpu: 100m
+    limits:
+      memory: 700Mi
+  sentinel:
+    requests:
+      memory: 200Mi
+      cpu: 100m
+    limits:
+      memory: 200Mi
+
+## Node labels and tolerations for pod assignment
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
+nodeSelector: {}
+tolerations: []
+
+## Redis image version
+redis_image: quay.io/smile/redis:4.0.6r2
+## replicas number for each component
+replicas:
+  servers: 3
+  sentinels: 3
+servers:
+  serviceType: ClusterIP  # [ClusterIP|LoadBalancer]
+  annotations: {}

@@ -1,9 +1,9 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "nginx.fullname" . }}
+  name: {{ template "artifactory.nginx.fullname" . }}
   labels:
-    app: {{ template "name" . }}
+    app: {{ template "artifactory.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     component: "{{ .Values.nginx.name }}"
     heritage: {{ .Release.Service }}
@@ -13,18 +13,22 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "name" . }}
+        app: {{ template "artifactory.name" . }}
         component: "{{ .Values.nginx.name }}"
         release: {{ .Release.Name }}
     spec:
+    {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+      - name: {{ .Values.imagePullSecrets }}
+    {{- end }}
       initContainers:
       - name: "remove-lost-found"
         image: "{{ .Values.initContainerImage }}"
         imagePullPolicy: {{ .Values.nginx.image.pullPolicy }}
         command:
-        - "rm"
-        - "-rf"
-        - "{{ .Values.nginx.persistence.mountPath }}/lost+found"
+        - '/bin/sh'
+        - '-c'
+        - 'rm -rfv {{ .Values.nginx.persistence.mountPath }}/lost+found'
         volumeMounts:
         - mountPath: {{ .Values.nginx.persistence.mountPath | quote }}
           name: nginx-volume
@@ -32,22 +36,36 @@ spec:
       - name: {{ .Values.nginx.name }}
         image: "{{ .Values.nginx.image.repository }}:{{ .Values.nginx.image.version }}"
         imagePullPolicy: {{ .Values.nginx.image.pullPolicy }}
+        lifecycle:
+          postStart:
+            exec:
+              command:
+              - '/bin/sh'
+              - '-c'
+              - >
+                until [ -f /etc/nginx/conf.d/artifactory.conf ]; do sleep 1; done;
+                sed -i -e 's,proxy_pass .*,proxy_pass     {{ .Values.nginx.env.artUrl }}/;,g' \
+                    -e 's,server_name .*,server_name ~(?<repo>.+)\\.{{ .Values.artifactory.service.name }} {{ .Values.artifactory.service.name }};,g' \
+                    /etc/nginx/conf.d/artifactory.conf;
+                sleep 5; nginx -s reload; touch /var/log/nginx/conf.done
         env:
         - name: ART_BASE_URL
-          value: {{ .Values.nginx.env.artUrl }}
+          value: "{{ .Values.nginx.env.artUrl }}"
         - name: SSL
           value: "{{ .Values.nginx.env.ssl }}"
         ports:
         - containerPort: {{ .Values.nginx.internalPortHttp }}
         - containerPort: {{ .Values.nginx.internalPortHttps }}
         volumeMounts:
-        - mountPath: {{ .Values.nginx.persistence.mountPath | quote }}
-          name: nginx-volume
+        - name: nginx-volume
+          mountPath: {{ .Values.nginx.persistence.mountPath | quote }}
+        resources:
+{{ toYaml .Values.nginx.resources | indent 10 }}
       volumes:
       - name: nginx-volume
       {{- if .Values.nginx.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ template "nginx.fullname" . }}
+          claimName: {{ template "artifactory.nginx.fullname" . }}
       {{- else }}
         emptyDir: {}
       {{- end -}}

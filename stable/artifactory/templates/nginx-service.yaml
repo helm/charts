@@ -1,15 +1,26 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "nginx.name" . }}
+  name: {{ template "artifactory.nginx.name" . }}
   labels:
-    app: {{ template "name" . }}
+    app: {{ template "artifactory.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     component: "{{ .Values.nginx.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
+{{- if .Values.nginx.service.annotations }}
+  annotations:
+{{ toYaml .Values.nginx.service.annotations | indent 4 }}
+{{- end }}
 spec:
   type: {{ .Values.nginx.service.type }}
+{{- if eq .Values.nginx.service.type "LoadBalancer" }}
+  externalTrafficPolicy: Local
+{{- end }}
+{{- if .Values.nginx.service.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+{{ toYaml .Values.nginx.service.loadBalancerSourceRanges | indent 4 }}
+{{- end }}
   ports:
   - port: {{ .Values.nginx.externalPortHttp }}
     targetPort: {{ .Values.nginx.internalPortHttp }}
@@ -20,6 +31,6 @@ spec:
     protocol: TCP
     name: {{ .Release.Name }}https
   selector:
-    app: {{ template "name" . }}
+    app: {{ template "artifactory.name" . }}
     component: "{{ .Values.nginx.name }}"
     release: {{ .Release.Name }}

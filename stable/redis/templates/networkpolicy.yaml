@@ -1,0 +1,30 @@
+{{- if .Values.networkPolicy.enabled }}
+kind: NetworkPolicy
+apiVersion: {{ template "networkPolicy.apiVersion" . }}
+metadata:
+  name: "{{ template "redis.fullname" . }}"
+  labels:
+    app: {{ template "redis.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  podSelector:
+    matchLabels:
+      app: {{ template "redis.fullname" . }}
+  ingress:
+    # Allow inbound connections
+    - ports:
+      - port: 6379
+      {{- if not .Values.networkPolicy.allowExternal }}
+      from:
+        - podSelector:
+            matchLabels:
+              {{ template "redis.fullname" . }}-client: "true"
+      {{- end }}
+    {{- if .Values.metrics.enabled }}
+    # Allow prometheus scrapes for metrics
+    - ports:
+      - port: 9121
+    {{- end }}
+{{- end }}

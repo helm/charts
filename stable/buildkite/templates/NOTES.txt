@@ -1,0 +1,22 @@
+{{- if .Values.agent.token }}
+
+The {{ template "buildkite.fullname" . }} is getting provisioned in your cluster. After a few minutes, you can run the following to verify.
+
+To verify that {{ template "buildkite.fullname" . }} has started, run:
+
+  kubectl --namespace={{ .Release.Namespace }} get pods -l "app={{ template "buildkite.name" . }},release={{ .Release.Name }}"
+
+{{- else }}
+
+##############################################################################
+####   ERROR: You did not provide Buildkite Agent Token.                  ####
+##############################################################################
+
+Pods will not go to the running state if the Buildkite Agent Token was not provided.
+
+This deployment will be incomplete until you provide Buildkite Agent Token:
+
+  helm upgrade {{ template "buildkite.fullname" . }} stable/builkite \
+      --set agent.token="YOUR_BUILKITE_TOKEN"
+
+{{- end }}

@@ -1,9 +1,9 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "postgresql.fullname" . }}
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "postgresql.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -11,10 +11,22 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "fullname" . }}
+        app: {{ template "postgresql.fullname" . }}
     spec:
+      {{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+      {{- end }}
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- end }}
+      {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+      {{- end }}
       containers:
-      - name: {{ template "fullname" . }}
+      - name: {{ template "postgresql.fullname" . }}
         image: "{{ .Values.image }}:{{ .Values.imageTag }}"
         imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
         env:
@@ -32,7 +44,7 @@ spec:
         - name: POSTGRES_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "postgresql.fullname" . }}
               key: postgres-password
         - name: POD_IP
           valueFrom: { fieldRef: { fieldPath: status.podIP } }
@@ -61,7 +73,7 @@ spec:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
         - name: data
-          mountPath: /var/lib/postgresql/data/pgdata
+          mountPath: {{ .Values.persistence.mountPath }}
           subPath: {{ .Values.persistence.subPath }}
 {{- if .Values.metrics.enabled }}
       - name: metrics
@@ -87,15 +99,19 @@ spec:
       - name: data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ .Values.persistence.existingClaim | default (include "fullname" .) }}
+          claimName: {{ .Values.persistence.existingClaim | default (include "postgresql.fullname" .) }}
       {{- else }}
         emptyDir: {}
       {{- end }}
       {{- if and .Values.metrics.enabled .Values.metrics.customMetrics }}
       - name: custom-metrics
         secret:
-          secretName: {{ template "fullname" . }}
+          secretName: {{ template "postgresql.fullname" . }}
           items:
             - key: custom-metrics.yaml
               path: custom-metrics.yaml
+      {{- end }}
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+        - name: {{ .Values.imagePullSecrets }}
       {{- end }}

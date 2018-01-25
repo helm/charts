@@ -1,7 +1,7 @@
 {{- if .Values.lego.enabled }}
 apiVersion: v1
 metadata:
-  name: {{ template "fullname" . }}-lego
+  name: {{ template "nginx-lego.fullname" . }}-lego
 data:
   # modify this to specify your address
   lego.email: {{ .Values.lego.configmap.email | quote }}

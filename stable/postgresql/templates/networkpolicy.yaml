@@ -1,17 +1,17 @@
 {{- if .Values.networkPolicy.enabled }}
 kind: NetworkPolicy
-apiVersion: {{ template "networkPolicy.apiVersion" . }}
+apiVersion: {{ template "postgresql.networkPolicy.apiVersion" . }}
 metadata:
-  name: "{{ template "fullname" . }}"
+  name: "{{ template "postgresql.fullname" . }}"
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "postgresql.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
   podSelector:
     matchLabels:
-      app: "{{ template "fullname" . }}"
+      app: "{{ template "postgresql.fullname" . }}"
   ingress:
     # Allow inbound connections
     - ports:
@@ -20,7 +20,7 @@ spec:
       from:
       - podSelector:
           matchLabels:
-            {{ template "fullname" . }}-client: "true"
+            {{ template "postgresql.fullname" . }}-client: "true"
     {{- end }}
     # Allow prometheus scrapes
     - ports:

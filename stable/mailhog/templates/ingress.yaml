@@ -1,5 +1,5 @@
 {{- if .Values.ingress.enabled }}
-{{- $fullName := include "fullname" . -}}
+{{- $fullName := include "mailhog.fullname" . -}}
 {{- $path := .Values.ingress.path -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
@@ -9,19 +9,21 @@ metadata:
 {{ toYaml .Values.ingress.annotations | indent 4 }}
 {{- end }}
   labels:
-    app: {{ template "name" . }}
+    app: {{ template "mailhog.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
   name: {{ $fullName }}
 spec:
-{{- if .Values.ingress.tls.enabled }}
+{{- if .Values.ingress.tls }}
   tls:
+  {{- range .Values.ingress.tls }}
     - hosts:
-      {{- range .Values.ingress.hosts }}
+      {{- range .hosts }}
         - {{ . }}
       {{- end }}
-      secretName: {{ template "tlsSecret" . }}
+      secretName: {{ .secretName }}
+  {{- end }}
 {{- end }}
   rules:
   {{- range .Values.ingress.hosts }}

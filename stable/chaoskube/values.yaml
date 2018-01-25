@@ -5,7 +5,7 @@ name: chaoskube
 image: quay.io/linki/chaoskube
 
 # docker image tag
-imageTag: v0.5.0
+imageTag: v0.6.1
 
 # number of replicas to run
 replicas: 1
@@ -29,3 +29,14 @@ dryRun: true
 resources:
   cpu: 10m
   memory: 16Mi
+
+# create service account with permission to list and kill pods
+rbac:
+  create: false
+
+  # only used when create is false
+  serviceAccountName: default
+
+# Node labels for pod assignment
+# Ref: https://kubernetes.io/docs/user-guide/node-selection/
+nodeSelector: {}

@@ -28,13 +28,31 @@ imageTag: "5.7.14"
 ##
 imagePullPolicy: IfNotPresent
 
-## Persist data to a persitent volume
+livenessProbe:
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  timeoutSeconds: 5
+  successThreshold: 1
+  failureThreshold: 3
+
+readinessProbe:
+  initialDelaySeconds: 5
+  periodSeconds: 10
+  timeoutSeconds: 1
+  successThreshold: 1
+  failureThreshold: 3
+
+## Persist data to a persistent volume
 persistence:
   enabled: true
-  ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
-  ## Default: volume.alpha.kubernetes.io/storage-class: default
+  ## database data Persistent Volume Storage Class
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
   ##
-  # storageClass:
+  # storageClass: "-"
   accessMode: ReadWriteOnce
   size: 8Gi
 
@@ -51,3 +69,12 @@ configurationFiles:
 #  mysql.cnf: |-
 #    [mysqld]
 #    skip-name-resolve
+
+
+## Configure the service
+## ref: http://kubernetes.io/docs/user-guide/services/
+service:
+  ## Specify a service type
+  ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services---service-types
+  type: ClusterIP
+  port: 3306

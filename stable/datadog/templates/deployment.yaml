@@ -3,7 +3,7 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "datadog.fullname" . }}
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
 spec:
@@ -11,8 +11,13 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "fullname" . }}
-      name: {{ template "fullname" . }}
+        app: {{ template "datadog.fullname" . }}
+        type: deployment
+      name: {{ template "datadog.fullname" . }}
+      annotations:
+        checksum/autoconf-config: {{ toYaml .Values.datadog.autoconf | sha256sum }}
+        checksum/confd-config: {{ toYaml .Values.datadog.confd | sha256sum }}
+        checksum/checksd-config: {{ toYaml .Values.datadog.checksd | sha256sum }}
     spec:
       containers:
       - name: {{ .Chart.Name }}
@@ -33,7 +38,7 @@ spec:
           - name: API_KEY
             valueFrom:
               secretKeyRef:
-                name: {{ template "fullname" . }}
+                name: {{ template "datadog.fullname" . }}
                 key: api-key
           - name: LOG_LEVEL
             value: {{ .Values.datadog.logLevel | quote }}
@@ -72,6 +77,9 @@ spec:
           - name: checksd
             mountPath: /checks.d
             readOnly: true
+{{- if .Values.datadog.volumeMounts }}
+{{ toYaml .Values.datadog.volumeMounts | indent 10 }}
+{{- end }}
       volumes:
         - hostPath:
             path: /var/run/docker.sock
@@ -84,12 +92,16 @@ spec:
           name: cgroups
         - name: confd
           configMap:
-            name: {{ template "confd.fullname" . }}
+            name: {{ template "datadog.confd.fullname" . }}
         - name: checksd
           configMap:
-            name: {{ template "checksd.fullname" . }}
+            name: {{ template "datadog.checksd.fullname" . }}
         - name: autoconf
           configMap:
-            name: {{ template "autoconf.fullname" . }}
+            name: {{ template "datadog.autoconf.fullname" . }}
+{{- if .Values.datadog.volumes }}
+{{ toYaml .Values.datadog.volumes | indent 8 }}
+{{- end }}
+      serviceAccountName: {{ if .Values.rbac.create }}{{ template "datadog.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
 {{ end }}
 {{ end }}

@@ -1,19 +1,19 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "database.fullname" . }}
+  name: {{ template "artifactory.database.fullname" . }}
   labels:
-    app: {{ template "name" . }}
+    app: {{ template "artifactory.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     component: "{{ .Values.database.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: 1
   template:
     metadata:
       labels:
-        app: {{ template "name" . }}
+        app: {{ template "artifactory.name" . }}
         component: "{{ .Values.database.name }}"
         release: {{ .Release.Name }}
     spec:
@@ -22,9 +22,9 @@ spec:
         image: "{{ .Values.initContainerImage }}"
         imagePullPolicy: "{{ .Values.database.image.pullPolicy }}"
         command:
-        - "rm"
-        - "-rf"
-        - "{{ .Values.database.persistence.mountPath }}/lost+found"
+        - 'sh'
+        - '-c'
+        - 'rm -rf {{ .Values.database.persistence.mountPath }}/lost+found'
         volumeMounts:
         - mountPath: {{ .Values.database.persistence.mountPath | quote }}
           name: postgresql-volume
@@ -40,18 +40,38 @@ spec:
         - name: POSTGRES_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "artifactory.fullname" . }}
               key: artifactory-database-password
         ports:
         - containerPort: {{ .Values.database.internalPort }}
         volumeMounts:
         - mountPath: {{ .Values.database.persistence.mountPath | quote }}
           name: postgresql-volume
+        resources:
+{{ toYaml .Values.database.resources | indent 10 }}
+        livenessProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - exec pg_isready
+          initialDelaySeconds: 60
+          timeoutSeconds: 5
+          failureThreshold: 6
+        readinessProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - exec pg_isready
+          initialDelaySeconds: 30
+          timeoutSeconds: 3
+          periodSeconds: 5
       volumes:
       - name: postgresql-volume
       {{- if .Values.database.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ template "database.fullname" . }}
+          claimName: {{ template "artifactory.database.fullname" . }}
       {{- else }}
         emptyDir: {}
       {{- end -}}

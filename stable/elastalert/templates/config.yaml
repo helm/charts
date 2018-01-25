@@ -1,0 +1,53 @@
+kind: ConfigMap
+metadata:
+  name: {{ template "elastalert.fullname" . }}-config
+  labels:
+    app: {{ template "elastalert.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+  elastalert_config: |-
+    ---
+    rules_folder: /opt/rules
+    scan_subdirectories: false
+    run_every:
+      minutes: 1
+    buffer_time:
+      minutes: 15
+    es_host: {{ .Values.elasticsearch.host }}
+    es_port: {{ .Values.elasticsearch.port }}
+    writeback_index: elastalert_status
+    alert_time_limit:
+      days: 2
+  elastalert_supervisord: |-
+    [unix_http_server]
+    file=/var/run/elastalert_supervisor.sock
+
+    [supervisord]
+    logfile=/opt/logs/elastalert_supervisord.log
+    logfile_maxbytes=1MB
+    logfile_backups=2
+    loglevel=debug
+    nodaemon=false
+    directory=%(here)s
+
+    [rpcinterface:supervisor]
+    supervisor.rpcinterface_factory = supervisor.rpcinterface:make_main_rpcinterface
+
+    [supervisorctl]
+    serverurl=unix:///var/run/elastalert_supervisor.sock
+
+    [program:elastalert]
+    # running globally
+    command = elastalert --config /opt/config/elastalert_config.yaml --verbose
+    # (alternative) using virtualenv
+    # command=/path/to/venv/bin/elastalert --config /path/to/config.yaml --verbose
+    process_name=elastalert
+    autorestart=true
+    startsecs=15
+    stopsignal=INT
+    stopasgroup=true
+    killasgroup=true
+    stderr_logfile=/opt/logs/elastalert_stderr.log
+    stderr_logfile_maxbytes=5MB

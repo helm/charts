@@ -1,24 +1,22 @@
 apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
-  name: "{{ template "fullname" . }}"
+  name: "{{ template "redis-cache.fullname" . }}"
   labels:
-     app: {{ template "name" . }}
+     app: {{ template "redis-cache.name" . }}
      chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
      release: "{{ .Release.Name }}"
      heritage: "{{ .Release.Service }}"
 spec:
-  serviceName: "{{ template "fullname" . }}"
+  serviceName: "{{ template "redis-cache.fullname" . }}"
   replicas: {{ .Values.replicaCount }}
   template:
     metadata:
       labels:
-        app: {{ template "name" . }}
+        app: {{ template "redis-cache.name" . }}
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         release: "{{ .Release.Name }}"
         heritage: "{{ .Release.Service }}"
-      annotations:
-        pod.alpha.kubernetes.io/initialized: "true"
     spec:
       terminationGracePeriodSeconds: 60 
       affinity:
@@ -28,7 +26,7 @@ spec:
           - topologyKey: "kubernetes.io/hostname"
             labelSelector:
               matchLabels:
-                app:  {{ template "name" . }}
+                app:  {{ template "redis-cache.name" . }}
                 release: {{ .Release.Name | quote }}
          {{- else if eq .Values.antiAffinity "soft" }}
           preferredDuringSchedulingIgnoredDuringExecution:
@@ -36,7 +34,7 @@ spec:
             podAffinityTerm:
               labelSelector:
                 matchLabels:
-                  app: {{  template "name" . }}
+                  app: {{  template "redis-cache.name" . }}
                   release: {{ .Release.Name | quote }}
               topologyKey: "kubernetes.io/hostname"
          {{- end }}
@@ -44,7 +42,7 @@ spec:
       - name: sentinel-micro 
         image: {{ .Values.microSentinel.image.repository }}:{{ .Values.microSentinel.image.tag }}
         imagePullPolicy: {{ .Values.microSentinel.image.pullPolicy }}
-        args: ["-service",{{ template "fullname" . }}]
+        args: ["-service",{{ template "redis-cache.fullname" . }}]
         resources:
 {{ toYaml .Values.microSentinel.resources | indent 12 }}
         env:

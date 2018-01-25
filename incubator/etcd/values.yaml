@@ -8,11 +8,17 @@ PeerPort: 2380
 ClientPort: 2379
 Component: "etcd"
 Replicas: 3
-Image: "gcr.io/google_containers/etcd-amd64"
+Image: "k8s.gcr.io/etcd-amd64"
 ImageTag: "2.2.5"
 ImagePullPolicy: "Always"
 Cpu: "100m"
 Memory: "512Mi"
 Storage: "1Gi"
-# Uncomment to set the class
-# StorageClass: "anything"
+## etcd data Persistent Volume Storage Class
+## If defined, StorageClassName: <storageClass>
+## If set to "-", StorageClassName: "", which disables dynamic provisioning
+## If undefined (the default) or set to null, no storageClassName spec is
+##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+##   GKE, AWS & OpenStack)
+##
+# storageClass: "-"
