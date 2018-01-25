@@ -1,0 +1,28 @@
+{{- if .Values.createCustomResource -}}
+{{- if .Capabilities.APIVersions.Has "apiextensions.k8s.io/v1beta1" -}}
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  name: certificates.certmanager.k8s.io
+  labels:
+    app: {{ template "cert-manager.name" . }}
+    chart: {{ template "cert-manager.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  group: certmanager.k8s.io
+  version: v1alpha1
+  names:
+    kind: Certificate
+    plural: certificates
+  scope: Namespaced
+{{ else if .Capabilities.APIVersions.Has "extensions/v1beta1"  }}
+apiVersion: extensions/v1beta1
+kind: ThirdPartyResource
+metadata:
+  name: certificate.certmanager.k8s.io
+description: "A specification for a cert-manager certificate"
+versions:
+  - name: v1alpha1
+{{- end -}}
+{{- end -}}

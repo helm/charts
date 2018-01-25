@@ -1,0 +1,5 @@
+cert-manager has been deployed successfully!
+
+You may now go ahead and create issuers and certificates.
+
+See https://github.com/jetstack/cert-manager/blob/v0.2.3/docs/README.md
