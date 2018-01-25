@@ -11,7 +11,7 @@ cloudProvider: aws
 
 image:
   repository: k8s.gcr.io/cluster-autoscaler
-  tag: v1.0.3
+  tag: v1.1.0
   pullPolicy: IfNotPresent
 
 tolerations: []

@@ -113,7 +113,8 @@ The following tables lists the configurable parameters of the Traefik chart and 
 | `acme.persistence.size`         | Minimum size of the volume requested                                 | `1Gi`                                     |
 | `dashboard.enabled`             | Whether to enable the Traefik dashboard                              | `false`                                   |
 | `dashboard.domain`              | Domain for the Traefik dashboard                                     | `traefik.example.com`                     |
-| `dashboard.ingress.annotations` | Annotations for the Traefik dashboard Ingress definition, specified as a map | None                              |
+| `dashboard.service.annotations` | Annotations for the Traefik dashboard Service definition, specified as a map | None                |
+| `dashboard.ingress.annotations` | Annotations for the Traefik dashboard Ingress definition, specified as a map | None                |
 | `dashboard.ingress.labels`      | Labels for the Traefik dashboard Ingress definition, specified as a map      | None                              |
 | `dashboard.auth.basic`          | Basic auth for the Traefik dashboard specified as a map, see Authentication section | unset by default; this means basic auth is disabled |
 | `dashboard.statistics.recentErrors` | Number of recent errors to show in the ‘Health’ tab              | None                                      |
@@ -135,6 +136,7 @@ The following tables lists the configurable parameters of the Traefik chart and 
 | `metrics.statsd.enabled`        | Whether to enable pushing metrics to Statsd.                           | `false`                                   |
 | `metrics.statsd.address`        | Statsd host in the format <hostname>:<port>                          | `localhost:8125`                          |
 | `metrics.statsd.pushInterval`   | How often to push metrics to Statsd.                                 | `10s`                                     |
+| `deployment.podAnnotations`            | Annotations for the Traefik pod definition                    | None                                      |
 | `deployment.hostPort.httpEnabled`      | Whether to enable hostPort binding to host for http.          | `false`                                   |
 | `deployment.hostPort.httpsEnabled`     | Whether to enable hostPort binding to host for https.         | `false`                                   |
 | `deployment.hostPort.dashboardEnabled` | Whether to enable hostPort binding to host for dashboard.     | `false`                                   |
