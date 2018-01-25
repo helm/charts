@@ -52,7 +52,7 @@ metadata:
     release: {{ .Release.Name | quote }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     component: "{{ .Release.Name }}-{{ .Values.Component }}"
-  name: "{{ template "fullname" . }}-ui"
+  name: "{{ template "consul.fullname" . }}-ui"
 spec:
   rules:
   {{- range .Values.uiIngress.hosts }}
@@ -263,7 +263,8 @@ spec:
               ${GOSSIP_KEY} \
             {{- end }}
               -client=0.0.0.0 \
-              -dns-port=${DNSPORT}
+              -dns-port=${DNSPORT} \
+              -http-port={{ .Values.HttpPort }}
       volumes:
       - name: gossip-key
         secret:

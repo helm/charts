@@ -1,0 +1,46 @@
+{{- if .Values.agentIngress.enabled -}}
+{{- $serviceName := include "webpagetest.fullname" . -}}
+{{- $servicePort := .Values.service.externalPort -}}
+{{- $rejectSvcName := .Values.agentIngress.rejectServiceName -}}
+{{- $rejectSvcPort := .Values.agentIngress.rejectServicePort -}}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ template "webpagetest.fullname" . }}-agent
+  labels:
+    app: {{ template "webpagetest.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+  annotations:
+    {{- range $key, $value := .Values.agentIngress.annotations }}
+      {{ $key }}: {{ $value | quote }}
+    {{- end }}
+spec:
+  rules:
+    {{- range $host := .Values.agentIngress.hosts }}
+    - host: {{ $host }}
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: {{ $rejectSvcName }}
+              servicePort: {{ $rejectSvcPort }}
+          - path: /work
+            backend:
+              serviceName: {{ $serviceName }}
+              servicePort: {{ $servicePort }}
+          - path: /cron
+            backend:
+              serviceName: {{ $serviceName }}
+              servicePort: {{ $servicePort }}
+          - path: /jpeginfo
+            backend:
+              serviceName: {{ $serviceName }}
+              servicePort: {{ $servicePort }}
+    {{- end -}}
+  {{- if .Values.agentIngress.tls }}
+  tls:
+{{ toYaml .Values.agentIngress.tls | indent 4 }}
+  {{- end -}}
+{{- end -}}

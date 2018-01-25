@@ -1,0 +1,26 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 56 }}-init"
+  labels:
+    heritage: {{.Release.Service | quote }}
+    release: {{.Release.Name | quote }}
+    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+  annotations:
+    # This is what defines this resource as a hook. Without this line, the
+    # job is considered part of the release.
+    "helm.sh/hook": post-install
+    "helm.sh/hook-delete-policy": hook-succeeded
+spec:
+  template:
+    spec:
+      containers:
+      - name: cluster-init
+        image: "{{ .Values.Image }}:{{ .Values.ImageTag }}"
+        imagePullPolicy: "{{ .Values.ImagePullPolicy }}"
+        command:
+          - "/cockroach/cockroach"
+          - "init"
+          - "--insecure"
+          - "--host={{ printf "%s-%s" .Release.Name .Values.Name | trunc 56 }}-0.{{ printf "%s-%s" .Release.Name .Values.Name | trunc 56 }}"
+      restartPolicy: OnFailure
