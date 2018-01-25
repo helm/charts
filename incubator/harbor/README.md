@@ -90,7 +90,7 @@ The following tables lists the configurable parameters of the Percona chart and 
 | **Registry** |
 | `registry.image.repository` | Repository for registry image | `vmware/harbor-registry` |
 | `registry.image.tag` | Tag for registry image | `v1.3.0` |
-| `registry.image.pullPolicy` | Pull Policy for admregistryinserver image | `IfNotPresent` |
+| `registry.image.pullPolicy` | Pull Policy for registry image | `IfNotPresent` |
 | `registry.rootCrt` | registry root cert | see values.yaml |
 | `registry.httpSecret` | registry secret | `not-a-secure-secret` |
 | `registry.resources` | [resources](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/) to allocate for container   | undefined |
@@ -98,6 +98,12 @@ The following tables lists the configurable parameters of the Percona chart and 
 | **Clair** |
 | `clair.enabled` | Enable clair? | `false` |
 | `clair.postgresPassword` | password for clair postgres | see values.yaml |
+| `clair.image.repository` | Repository for clair image | `vmware/clair` |
+| `clair.image.tag` | Tag for clair image | `v2.0.1-photon` |
+| `clair.image.pullPolicy` | Pull Policy for clair image | `IfNotPresent` |
+| `clair.pgImage.repository` | Repository for clair postgres image | `postgres` |
+| `clair.pgImage.tag` | Tag for clair postgres image | `9.6.4` |
+| `clair.pgImage.pullPolicy` | Pull Policy for clair postgres image | `IfNotPresent` |
 | `clair.resources` | [resources](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/) to allocate for container   | undefined | `clair.pgResources` | [resources](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/) to allocate for container   | undefined |
 | | | |
 

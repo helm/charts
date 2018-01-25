@@ -21,7 +21,8 @@ spec:
     spec:
       containers:
       - name: postgres
-        image: postgres:9.6.4
+        image: {{ .Values.clair.pgImage.repository }}:{{ .Values.clair.pgImage.tag }}
+        imagePullPolicy: {{ .Values.clair.pgImage.pullPolicy }}
         resources:
 {{ toYaml .Values.clair.pgResources | indent 10 }}
         env:

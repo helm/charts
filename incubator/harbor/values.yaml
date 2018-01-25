@@ -298,6 +298,14 @@ registry:
 clair:
   enabled: false
   postgresPassword: not-a-secure-password
+  image:
+    repository: vmware/clair
+    tag: v2.0.1-photon
+    pullPolicy: IfNotPresent
+  pgImage:
+    repository: postgres
+    tag: "9.6.4"
+    pullPolicy: IfNotPresent
 # resources:
 #  requests:
 #    memory: 256Mi
