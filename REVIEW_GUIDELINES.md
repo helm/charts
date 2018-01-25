@@ -100,5 +100,3 @@ While reviewing Charts that contain workloads such as [Deployment](https://kuber
 10. As much as possible complex pre-app setups are configured using [init contianers](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/). 
 
 More [configuration](https://kubernetes.io/docs/concepts/configuration/overview/) best practises.  
-
-Example Charts that follow above best practices: [Statefulset](https://github.com/kubernetes/charts/tree/master/incubator/zookeeper), [Deployment](), [DaemonSet]() and [Jobs]().
