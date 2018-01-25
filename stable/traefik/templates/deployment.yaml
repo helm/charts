@@ -14,9 +14,13 @@ spec:
       app: {{ template "fullname" . }}
   template:
     metadata:
-      {{- if and (.Values.tolerations) (le .Capabilities.KubeVersion.Minor "5") }}
       annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+      {{- if and (.Values.tolerations) (le .Capabilities.KubeVersion.Minor "5") }}
         scheduler.alpha.kubernetes.io/tolerations: '{{ toJson .Values.tolerations }}'
+      {{- end }}
+      {{- range $key, $value := .Values.deployment.podAnnotations }}
+        {{ $key }}: {{ $value | quote }}
       {{- end }}
       labels:
         app: {{ template "fullname" . }}
