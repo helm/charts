@@ -15,40 +15,40 @@ spec:
         release: "{{ .Release.Name }}"
     spec:
       containers:
-      - name: {{ template "bitcoind.fullname" . }}
-        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-        imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
-        resources:
-{{ toYaml .Values.resources | indent 10 }}
-        ports:
-        - name: rpc
-          containerPort: {{ .Values.rpcPort }}
-        volumeMounts:
-        - name: data
-          mountPath: /root
+        - name: {{ template "bitcoind.fullname" . }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+          resources:
+  {{ toYaml .Values.resources | indent 10 }}
+          ports:
+            - name: rpc
+              containerPort: {{ .Values.rpcPort }}
+          volumeMounts:
+            - name: data
+              mountPath: /root
+            {{- if .Values.ssl.enabled }}
+            - name: ssl
+              mountPath: /etc/bitcoind-ssl
+            {{- end }}
+            {{- if .Values.configurationFiles }}
+            - name: configurations
+              mountPath: /etc/bitcoind
+            {{- end }}
+      volumes:
         {{- if .Values.ssl.enabled }}
         - name: ssl
-          mountPath: /etc/bitcoind-ssl
+          secret:
+            secretName: {{ .Values.ssl.secretName  }}
         {{- end }}
         {{- if .Values.configurationFiles }}
         - name: configurations
-          mountPath: /etc/bitcoind
+          configMap:
+            name: {{ template "bitcoind.fullname" . }}
         {{- end }}
-      volumes:
-      {{- if .Values.ssl.enabled }}
-      - name: ssl
-        secret:
-          secretName: {{ .Values.ssl.secretName  }}
-      {{- end }}
-      {{- if .Values.configurationFiles }}
-      - name: configurations
-        configMap:
-          name: {{ template "bitcoind.fullname" . }}
-      {{- end }}
-      - name: data
-      {{- if .Values.persistence.enabled }}
-        persistentVolumeClaim:
-          claimName: {{ .Values.persistence.existingClaim | default (include "bitcoind.fullname" .) }}
-      {{- else }}
-        emptyDir: {}
-      {{- end -}}
+        - name: data
+        {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.existingClaim | default (include "bitcoind.fullname" .) }}
+        {{- else }}
+          emptyDir: {}
+        {{- end -}}

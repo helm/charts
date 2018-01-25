@@ -9,11 +9,11 @@ metadata:
     heritage: "{{ .Release.Service }}"
 spec:
   ports:
-  - name: rpc
-    port: {{ .Values.rpcPort }}
-    targetPort: rpc
-  - name: ws
-    port: {{ .Values.wsPort }}
-    targetPort: ws
+    - name: rpc
+      port: {{ .Values.rpcPort }}
+      targetPort: rpc
+    - name: ws
+      port: {{ .Values.wsPort }}
+      targetPort: ws
   selector:
     app: {{ template "geth.name" . }}

@@ -9,8 +9,8 @@ metadata:
     heritage: "{{ .Release.Service }}"
 spec:
   ports:
-  - name: rpc
-    port: {{ .Values.rpcPort }}
-    targetPort: rpc
+    - name: rpc
+      port: {{ .Values.rpcPort }}
+      targetPort: rpc
   selector:
     app: {{ template "zcashd.name" . }}

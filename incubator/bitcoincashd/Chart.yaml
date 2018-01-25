@@ -3,15 +3,15 @@ version: 0.1.0
 appVersion: 0.16.1.0
 description: Bitcoin Cash is Peer-to-Peer Electronic Cash
 keywords:
-- bitcoincashd
-- cryptocurrency
-- blockchain
+  - bitcoincashd
+  - cryptocurrency
+  - blockchain
 home: https://www.bitcoincash.org
 icon: https://www.bitcoincash.org/img/logo-dark.png
 sources:
-- https://github.com/kubernetes/charts
-- https://github.com/kuberstack/bitcoincashd
+  - https://github.com/kubernetes/charts
+  - https://github.com/kuberstack/bitcoincashd
 maintainers:
-- name: daniel-yavorovich
-  email: daniel@arilot.com
+  - name: daniel-yavorovich
+    email: daniel@arilot.com
 engine: gotpl
