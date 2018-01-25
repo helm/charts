@@ -1,12 +1,12 @@
 {{- if .Values.ingress.enabled -}}
-{{- $serviceName := printf "%s%s" (include "jaeger.fullname" .) "-query" -}}
-{{- $servicePort := .Values.query.service.queryPort -}}
+{{- $serviceName := include "webpagetest.fullname" . -}}
+{{- $servicePort := .Values.service.externalPort -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: {{ template "jaeger.name" . }}
+  name: {{ template "webpagetest.fullname" . }}
   labels:
-    app: "{{ template "jaeger.name" . }}"
+    app: {{ template "webpagetest.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}

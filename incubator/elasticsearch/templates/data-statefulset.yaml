@@ -96,6 +96,10 @@ spec:
         ports:
         - containerPort: 9300
           name: transport
+{{ if .Values.data.exposeHttp }}
+        - containerPort: 9200
+          name: http
+{{ end }}
         resources:
 {{ toYaml .Values.data.resources | indent 12 }}
         readinessProbe:
@@ -109,9 +113,16 @@ spec:
         - mountPath: /usr/share/elasticsearch/config/elasticsearch.yml
           name: config
           subPath: elasticsearch.yml
+{{- if hasPrefix "2." .Values.image.tag }}
         - mountPath: /usr/share/elasticsearch/config/logging.yml
           name: config
           subPath: logging.yml
+{{- end }}
+{{- if hasPrefix "5." .Values.image.tag }}
+        - mountPath: /usr/share/elasticsearch/config/log4j2.properties
+          name: config
+          subPath: log4j2.properties
+{{- end }}
         - name: config
           mountPath: /pre-stop-hook.sh
           subPath: pre-stop-hook.sh
