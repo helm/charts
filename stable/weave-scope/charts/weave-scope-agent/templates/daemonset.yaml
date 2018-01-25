@@ -65,5 +65,7 @@ spec:
       hostPID: true
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
+{{- if .Values.rbac.create }}
       serviceAccountName: {{ .Values.rbac.serviceAccountName | default (include "toplevel.fullname" .) }}
+{{- end -}}
 {{- end -}}
