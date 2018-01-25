@@ -11,7 +11,7 @@ keywords:
   - distributed
   - processing
 version: 0.1.4
-appVersion: 1.6.6
+appVersion: 1.6.7
 home: "https://pachyderm.io"
 sources:
   - "https://github.com/pachyderm/pachyderm"
