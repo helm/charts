@@ -29,21 +29,9 @@ spec:
       - name: spilo
         image: "{{ .Values.Spilo.Image }}:{{ .Values.Spilo.Version }}"
         env:
-        - name: PGPASSWORD_SUPERUSER
-          valueFrom:
-            secretKeyRef:
-              name: {{ template "patroni.fullname" . }}
-              key: password-superuser
-        - name: PGPASSWORD_ADMIN
-          valueFrom:
-            secretKeyRef:
-              name: {{ template "patroni.fullname" . }}
-              key: password-admin
-        - name: PGPASSWORD_STANDBY
-          valueFrom:
-            secretKeyRef:
-              name: {{ template "patroni.fullname" . }}
-              key: password-standby
+        {{- if .Values.SecretKeyRefs }}
+        {{- include "patroni.secretKeyRefs" . | indent 8 }}
+        {{- end }}
         {{if .Values.Etcd.Enable }}
         {{if .Values.Etcd.DeployChart }}
         - name: ETCD_DISCOVERY_DOMAIN
