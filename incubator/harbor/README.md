@@ -16,9 +16,8 @@ This chart installs and configures VMWare Harbor.
 To install the chart with the release name `my-release`:
 
 ```bash
-$ git clone https://github.com/paulczar/helm-harbor.git harbor
-$ cd harbor
-$ helm install --name my-release .
+$ helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
+$ helm install --name my-release incubator/harbor
 ```
 
 The command deploys Harbor on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
@@ -81,7 +80,7 @@ The following tables lists the configurable parameters of the Percona chart and 
 | `mysql.image.repository` | Repository for mysql image | `vmware/harbor-mysql` |
 | `mysql.image.tag` | Tag for mysql image | `v1.3.0` |
 | `mysql.image.pullPolicy` | Pull Policy for mysql image | `IfNotPresent` |
-| `mysql.host` | MySQL Server | `~` | 
+| `mysql.host` | MySQL Server | `~` |
 | `mysql.port` | MySQL Port | `3306` |
 | `mysql.user` | MySQL Username | `root` |
 | `mysql.pass` | MySQL Password | `registry` |
