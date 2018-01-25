@@ -31,7 +31,7 @@ spec:
   {{- end }}
       containers:
         - name: {{ template "grafana.name" . }}
-          image: "{{ .Values.server.image }}"
+          image: "{{ default "grafana/grafana:4.6.3" .Values.server.image }}"
           imagePullPolicy: {{ default "Always" .Values.server.imagePullPolicy }}
           env:
             - name: GF_SECURITY_ADMIN_USER
