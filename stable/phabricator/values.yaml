@@ -45,6 +45,11 @@ phabricatorFirstName: First Name
 ##
 phabricatorLastName: Last Name
 
+## Preamble
+## ref: https://secure.phabricator.com/book/phabricator/article/configuring_preamble/
+##
+phabricatorPreamble:
+
 ## SMTP mail delivery configuration
 ## ref: https://github.com/bitnami/bitnami-docker-phabricator/#smtp-configuration
 ##
@@ -80,7 +85,7 @@ mariadb:
     size: 8Gi
 
 ## Kubernetes configuration
-## For minikube, set this to NodePort, elsewhere use LoadBalancer
+## For minikube, or if using the Ingress controller, set this to NodePort, elsewhere use LoadBalancer
 ##
 serviceType: LoadBalancer
 
@@ -111,6 +116,11 @@ persistence:
     # storageClass: "-"
     accessMode: ReadWriteOnce
     size: 8Gi
+
+ingress:
+  enabled: false
+  annotations: {}
+  labels: {}
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
