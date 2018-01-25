@@ -10,7 +10,6 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 
 {{/*
 Create the block for the ProxyProtocol's Trusted IPs.
-This simplifies some duplicate code.
 */}}
 {{- define "trustedips" -}}
          trustedIPs = [
