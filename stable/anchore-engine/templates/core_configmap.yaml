@@ -60,9 +60,9 @@ data:
           email: {{ .Values.globalConfig.users.admin.email }}
           external_service_auths:
           {{ if not .Values.globalConfig.users.admin.anchoreIOCredentials.useAnonymous }}
-          anchoreio:
-            anchorecli:
-              auth: "${ANCHORE_IO_USER}:${ANCHORE_IO_PASSWORD}"
+            anchoreio:
+              anchorecli:
+                auth: "${ANCHORE_IO_USER}:${ANCHORE_IO_PASSWORD}"
           {{ end }}
           auto_policy_sync: {{ .Values.coreConfig.policyBundleSyncEnabled }}
 
