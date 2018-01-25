@@ -30,8 +30,9 @@ This chart bootstraps a kube-lego deployment on a [Kubernetes](http://kubernetes
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm install --name my-release stable/kube-lego
+$ helm install --name my-release stable/kube-lego --set config.LEGO_EMAIL=my@email.tld
 ```
+**NOTE:** `config.LEGO_EMAIL` is required
 
 The command deploys kube-lego on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
 
