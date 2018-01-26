@@ -40,9 +40,6 @@ spec:
           args:
             - /nginx-ingress-controller
             - --default-backend-service={{ if .Values.defaultBackend.enabled }}{{ .Release.Namespace }}/{{ template "nginx-ingress.defaultBackend.fullname" . }}{{ else }}{{ .Values.controller.defaultBackendService }}{{ end }}
-          {{- if (semverCompare ">= 0.9.0" .Values.controller.image.tag) }}
-            - --annotations-prefix=ingress.kubernetes.io
-          {{- end }}
           {{- if and (contains "0.9" .Values.controller.image.tag) .Values.controller.publishService.enabled }}
             - --publish-service={{ template "nginx-ingress.controller.publishServicePath" . }}
           {{- end }}
