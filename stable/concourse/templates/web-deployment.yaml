@@ -39,10 +39,7 @@ spec:
             - name: POSTGRES_HOST
               value: {{ template "concourse.postgresql.fullname" . }}
             - name: POSTGRES_USER
-              valueFrom:
-                secretKeyRef:
-                  name: {{ template "concourse.concourse.fullname" . }}
-                  key: postgresql-user
+              value: {{ .Values.postgresql.postgresUser }}
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
