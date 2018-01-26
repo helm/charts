@@ -181,7 +181,7 @@ server:
   ##
   # terminationGracePeriodSeconds: 300
 
-  ## Pass the plugins you want installed as a comma seperated list.
+  ## Pass the plugins you want installed as a comma separated list.
   ## This will pass each plugin name to `grafana-cli plugins install ${plugin}`.
   ## Ref: https://github.com/grafana/grafana-docker#installing-plugins-for-grafana-3
   ##
