@@ -12,7 +12,7 @@ items:
       component: "{{ $.Values.server.name }}"
       heritage: "{{ $.Release.Service }}"
       release: "{{ $.Release.Name }}"
-    name: {{ template "grafana.server.fullname" $ }}-{{ $val.name }}-set-datasource
+    name: {{ template "grafana.server.fullname" $ }}-{{ $key }}-set-datasource
   spec:
     activeDeadlineSeconds: {{ $.Values.server.setDatasource.activeDeadlineSeconds }}
     template:
@@ -44,7 +44,7 @@ items:
             - "Content-Type: application/json;charset=UTF-8"
             - "--data-binary"
             {{- with $val }}
-            - "{\"name\":\"{{ .name }}\",\"type\":\"{{ .type }}\",\"url\":\"{{ .url }}\",\"database\":\"{{ .database }}\",\"jsonData\":{ {{ .jsonData }} },\"access\":\"{{ .access }}\",\"isDefault\":{{ .isDefault }}}"
+            - "{\"name\":\"{{ $key }}\",\"type\":\"{{ .type }}\",\"url\":\"{{ .url }}\",\"database\":\"{{ .database }}\",\"jsonData\":{ {{ .jsonData }} },\"access\":\"{{ .access }}\",\"isDefault\":{{ .isDefault }}}"
             {{- end }}
         restartPolicy: {{ default "OnFailure" $val.restartPolicy }}
 {{- end -}}

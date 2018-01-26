@@ -211,7 +211,7 @@ server:
     datasource:
         ## The datasource name.
         ## Default: default
-      - name: default
+      default:
 
         ## Type of datasource
         ## Default: prometheus
