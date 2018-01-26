@@ -32,19 +32,9 @@ spec:
         image: "{{ .Values.image }}:{{ .Values.imageTag }}"
         imagePullPolicy: "{{ .Values.imagePullPolicy }}"
         livenessProbe:
-          tcpSocket:
-            port: 9092
-          initialDelaySeconds: 30
-          timeoutSeconds: 5
+{{ toYaml .Values.livenessProbe | indent 10 }}
         readinessProbe:
-          exec:
-            command:
-              - kafka-topics
-              - --zookeeper
-              - {{ template "zookeeper.url" . }}
-              - --list
-          initialDelaySeconds: 30
-          timeoutSeconds: 5
+{{ toYaml .Values.readinessProbe | indent 10 }}
         ports:
         - containerPort: 9092
           name: kafka
@@ -56,10 +46,7 @@ spec:
             fieldRef:
               fieldPath: status.podIP
         - name: KAFKA_ZOOKEEPER_CONNECT
-          valueFrom:
-            configMapKeyRef:
-              name: "{{ $configMapName }}"
-              key: zookeeper.connect
+          value: {{ template "zookeeper.url" . }}
         - name: KAFKA_LOG_DIRS
           valueFrom:
             configMapKeyRef:
