@@ -34,12 +34,7 @@ acme:
   email: admin@example.com
   staging: true
   logging: false
-  ## Enable httpChallenge http://v1-5.archive.docs.traefik.io/configuration/acme/#acmehttpchallenge
-  ## Only available in Traefik >=1.5.
-  ## To use it change:
-  ##  imageTag: 1.5
-  ## This is needed until Let's Encrypt enables back the TLS-SNI-01 challenge.
-  ## https://community.letsencrypt.org/t/2018-01-09-issue-with-tls-sni-01-and-shared-hosting-infrastructure/49996
+  challengeType: "HTTP-01"
   httpChallenge: false
   ## Save ACME certs to a persistent volume. WARNING: If you do not do this, you will re-request
   ## certs every time a pod (re-)starts and you WILL be rate limited!

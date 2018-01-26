@@ -68,7 +68,7 @@ data:
     storage = "/acme/acme.json"
     entryPoint = "https"
     onHostRule = true
-    {{- if .Values.acme.httpChallenge }}
+    {{- if eq .Values.acme.challengeType "HTTP-01" }}
     [acme.httpChallenge]
       entryPoint = "http"
     {{- end }}
