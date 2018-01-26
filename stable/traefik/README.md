@@ -107,7 +107,7 @@ The following tables lists the configurable parameters of the Traefik chart and 
 | `acme.email`                    | Email address to be used in certificates obtained from Let's Encrypt | `admin@example.com`                       |
 | `acme.staging`                  | Whether to get certs from Let's Encrypt's staging environment        | `true`                                    |
 | `acme.logging`                  | display debug log messages from the acme client library              | `false`                                   |
-| `acme.httpChallenge`                  | enables HTTP-01 challenge to generate the certificates              | `false`                                   |
+| `acme.challengeType`            | ACME challenge type selector                                         | `HTTP-01`                                       |
 | `acme.persistence.enabled`      | Create a volume to store ACME certs (if ACME is enabled)             | `true`                                    |
 | `acme.persistence.storageClass` | Type of `StorageClass` to request-- will be cluster-specific         | `nil` (uses alpha storage class annotation) |
 | `acme.persistence.accessMode`   | `ReadWriteOnce` or `ReadOnly`                                        | `ReadWriteOnce`                           |
