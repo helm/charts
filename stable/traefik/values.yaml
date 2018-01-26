@@ -35,7 +35,6 @@ acme:
   staging: true
   logging: false
   challengeType: "HTTP-01"
-  httpChallenge: false
   ## Save ACME certs to a persistent volume. WARNING: If you do not do this, you will re-request
   ## certs every time a pod (re-)starts and you WILL be rate limited!
   persistence:
