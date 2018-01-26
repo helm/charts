@@ -195,7 +195,7 @@ data:
         },
         hipchat: {
           enabled: false,
-          botName: 'Skynet T-800'
+          botName: 'Spinnaker Bot'
         },
         sms: {
           enabled: false,
