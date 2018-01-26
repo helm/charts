@@ -26,4 +26,10 @@ spec:
     component: hotrod
     release: {{ .Release.Name }}
     jaeger-infra: hotrod-instance
+{{- if .Values.hotrod.service.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+  {{- range $cidr := .Values.hotrod.service.loadBalancerSourceRanges }}
+    - {{ $cidr }}
+  {{- end }}
+{{- end }}
 {{- end -}}

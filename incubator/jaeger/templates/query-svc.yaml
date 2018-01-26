@@ -26,4 +26,10 @@ spec:
     release: {{ .Release.Name }}
     jaeger-infra: query-pod
   type: {{ .Values.query.service.type }}
+{{- if .Values.query.service.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+  {{- range $cidr := .Values.query.service.loadBalancerSourceRanges }}
+    - {{ $cidr }}
+  {{- end }}
+{{- end }}
 {{- end -}}
