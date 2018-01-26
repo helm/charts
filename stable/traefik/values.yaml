@@ -1,6 +1,6 @@
 ## Default values for Traefik
 image: traefik
-imageTag: 1.4.5
+imageTag: 1.4.6
 ## can switch the service type to NodePort if required
 serviceType: LoadBalancer
 loadBalancerIP:
@@ -112,6 +112,8 @@ metrics:
     # address: localhost:8125
     # pushinterval: 10s
 deployment:
+  # podAnnotations:
+  #   key: value
   hostPort:
     httpEnabled: false
     httpsEnabled: false
