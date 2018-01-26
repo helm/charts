@@ -37,6 +37,14 @@ daemonset:
   ## ref: https://kubernetes.io/docs/tasks/manage-daemon/update-daemon-set/
   # updateStrategy: RollingUpdate
 
+  ## Un-comment this to enable APM and tracing for the daemon set
+  ## only, on ports 7777 and 8126. Note that if `datadog.apmEnabled:
+  ## true` is set, then setting `datadog.daemonset.apmEnabled: false`
+  ## will not override it.
+  ## ref: https://github.com/DataDog/docker-dd-agent#tracing-from-the-host
+  ##
+  # apmEnabled: true
+
 # Apart from DaemonSet, deploy Datadog agent pods and related service for
 # applications that want to send custom metrics. Provides DogStasD service.
 #
@@ -44,6 +52,14 @@ daemonset:
 deployment:
   enabled: false
   replicas: 1
+
+  ## Un-comment this to enable APM and tracing for the deployment
+  ## only, on ports 7777 and 8126. Note that if `datadog.apmEnabled:
+  ## true` is set, then setting `datadog.deployment.apmEnabled: false`
+  ## will not override it.
+  ## ref: https://github.com/DataDog/docker-dd-agent#tracing-from-the-host
+  ##
+  # apmEnabled: true
 
 ## deploy the kube-state-metrics deployment
 ## ref: https://github.com/kubernetes/charts/tree/master/stable/kube-state-metrics
