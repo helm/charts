@@ -181,7 +181,7 @@ server:
   ##
   # terminationGracePeriodSeconds: 300
 
-  ## Pass the plugins you want installed as a comma seperated list.
+  ## Pass the plugins you want installed as a comma separated list.
   ## This will pass each plugin name to `grafana-cli plugins install ${plugin}`.
   ## Ref: https://github.com/grafana/grafana-docker#installing-plugins-for-grafana-3
   ##
@@ -221,7 +221,7 @@ server:
       ## The url of the datasource. To set correctly you need to know
       ## the right datasource name and its port ahead. Check kubernetes
       ## dashboard or describe the service should fulfill the requirements.
-      ## Synatx like `http://<release name>-<server name>:<port number>
+      ## Syntax like `http://<release name>-<server name>:<port number>
       ## Default: <empty>
       ##
       url:
