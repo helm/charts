@@ -14,6 +14,7 @@ spec:
   revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
   strategy:
 {{ toYaml .Values.controller.updateStrategy | indent 4 }}
+  minReadySeconds: {{ .Values.controller.minReadySeconds }}
   template:
     metadata:
       annotations:
