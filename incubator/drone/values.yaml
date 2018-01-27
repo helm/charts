@@ -85,7 +85,17 @@ server:
     # DRONE_ORGS: "my-github-org,my-other-github-org"
     # DRONE_ADMIN:"admin-1,admin-2"
     # DRONE_GITHUB_CLIENT: "github-oauth2-client-id"
-    # DRONE_GITHUB_SECRET: "github-oauth2-client-secret"
+
+  ## Secret environment variables are configured in `server.envSecret`.
+  ## Each item in `server.envSecret` references a Kubernetes Secret.
+  ## These Secrets should be created before they are referenced.
+  ##
+  # envSecret:
+  #   # The name of the Kubernetes Secret
+  # - name: drone-server-secrets
+  #   # A mapping of environment variables to data keys in the Kubernetes Secret
+  #   data:
+  #     DRONE_GITHUB_SECRET: drone-github-secret
 
   ## CPU and memory limits for drone server
   ##

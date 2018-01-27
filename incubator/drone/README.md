@@ -52,6 +52,7 @@ The following tables lists the configurable parameters of the drone charts and t
 | `ingress.tls`               | Ingress TLS configuration                                                                     | `[]`                        |
 | `server.host`               | Drone **server** hostname                                                                     | `(internal hostname)`       |
 | `server.env`                | Drone **server** environment variables                                                        | `(default values)`          |
+| `server.envSecret`          | Drone **server** secret environment variables                                                 | `(default values)`          |
 | `server.resources`          | Drone **server** pod resource requests & limits                                               | `{}`                        |
 | `agent.env`                 | Drone **agent** environment variables                                                         | `(default values)`          |
 | `agent.replicas`            | Drone **agent** replicas                                                                      | `1`                         |
