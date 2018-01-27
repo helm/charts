@@ -34,6 +34,7 @@ acme:
   email: admin@example.com
   staging: true
   logging: false
+  challengeType: "http-01"  # http-01 or dns-01
   ## Set dnsProvider to perform domain verification using dns challenge
   dnsProvider:
     name: nil

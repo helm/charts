@@ -68,7 +68,7 @@ data:
     storage = "/acme/acme.json"
     entryPoint = "https"
     onHostRule = true
-    {{- if .Values.acme.dnsProvider.name }}
+    {{- if eq .Values.acme.challengeType "dns-01" }}
     dnsProvider = "{{ .Values.acme.dnsProvider.name }}"
     {{- end }}
     {{- if .Values.acme.staging }}
