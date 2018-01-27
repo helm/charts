@@ -36,7 +36,7 @@ Master:
   ContainerPort: 8080
   # Enable Kubernetes Liveness and Readiness Probes
   HealthProbes: true
-  HealthProbesTimeout: 120
+  HealthProbesTimeout: 60
   SlaveListenerPort: 50000
   LoadBalancerSourceRanges:
   - 0.0.0.0/0
