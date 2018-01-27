@@ -74,6 +74,7 @@ spec:
         volumeMounts:
         - name: redis-data
           mountPath: {{ .Values.persistence.path }}
+          subPath: {{ .Values.persistence.subPath }}
 {{- if .Values.metrics.enabled }}
       - name: metrics
         image: "{{ .Values.metrics.image }}:{{ .Values.metrics.imageTag }}"

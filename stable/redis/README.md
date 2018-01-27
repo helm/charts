@@ -53,6 +53,7 @@ The following tables lists the configurable parameters of the Redis chart and th
 | `args`                        | Redis command-line args                          | []                           |
 | `persistence.enabled`         | Use a PVC to persist data                        | `true`                       |
 | `persistence.path`            | Path to mount the volume at, to use other images | `/bitnami`                   |
+| `persistence.subPath`         | Subdirectory of the volume to mount at           | `""`                        |
 | `persistence.existingClaim`   | Use an existing PVC to persist data              | `nil`                        |
 | `persistence.storageClass`    | Storage class of backing PVC                     | `generic`                    |
 | `persistence.accessMode`      | Use volume as ReadOnly or ReadWrite              | `ReadWriteOnce`              |
