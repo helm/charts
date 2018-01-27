@@ -113,30 +113,21 @@ The [Bitnami Phabricator](https://github.com/bitnami/bitnami-docker-phabricator)
 Persistent Volume Claims are used to keep the data across deployments. This is known to work in GCE, AWS, and minikube.
 See the [Configuration](#configuration) section to configure the PVC or to disable persistence.
 
-## Ingress With Reverse Proxy
+## Ingress With Reverse Proxy And Kube Lego
 
-You can define a custom ingress following the config values in values.yaml This will require including the preamble.php file to allow ssl termination as mentioned in the phabricator docs.
-https://secure.phabricator.com/book/phabricator/article/configuring_preamble/
+You can define a custom ingress following the example config in values.yaml 
 
-To avoid `Error executing 'postInstallation'` You'll have to update the preamble.php in three steps.
+`helm install stable/phabricator/ --name my-release --set phabricatorHost=example.com`
 
-`helm install stable/phabricator/ --name my-release --set phabricatorHost=phab.k8.getpolymorph.com `
+Everything looks great but requests over https will cause asset requests to fail. Assuming you want to use HTTPS/TLS you will need to set a few config values. Wailt for the pod to come up and run the following two commands. They will cause the kubernetes readinessProbe and livenessProbe to fail.
 
-Once you get a 2xx response you'll need to update the preamble.php file and two config settings. with somethin like this.
+`kubectl exec <pod name> /opt/bitnami/phabricator/bin/config set security.require-https 'true'`
+`kubectl exec <pod name> /opt/bitnami/phabricator/bin/config set phabricator.base-uri https://example.com`
 
-`kubectl exec <pod name>  /opt/bitnami/phabricator/bin/config set security.require-https 'true'`
-`kubectl exec phab-phabricator-1424042508-p42xw  /opt/bitnami/phabricator/bin/config set phabricator.base-uri https://example.com`
-`kubectl edit cm <your preamble.php config map>`
-```
-data:
-  preamble.php: |+
-    <?php
-    $_SERVER['HTTPS'] = true; 
-    ?>
-```
+once phabricator.base.uri is set the health checks will start failing. You will have to then delete both config entries to get a functioning UI.
 
+`kubectl exec <pod name> /opt/bitnami/phabricator/bin/config delete security.require-https`
+`kubectl exec <pod name> /opt/bitnami/phabricator/bin/config delete phabricator.base-uri`
 
-There are several things you may want to change depending on your setup. Once done you'll need to re-build the pod to mount the changes by deleting it.
-
-`kubectl delete po <your preamble.php config map>`
+NOTE: if not done quick enough you'll have to wait for a pod restart.
 
