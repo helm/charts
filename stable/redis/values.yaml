@@ -1,7 +1,7 @@
 ## Bitnami Redis image version
 ## ref: https://hub.docker.com/r/bitnami/redis/tags/
 ##
-image: bitnami/redis:4.0.6-r1
+image: bitnami/redis:4.0.7-r0
 
 ## Specify a imagePullPolicy
 ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -13,6 +13,7 @@ serviceType: ClusterIP
 
 ## Pod Security Context
 securityContext:
+  enabled: true
   fsGroup: 1001
   runAsUser: 1001
 
@@ -39,6 +40,10 @@ args:
 ##
 persistence:
   enabled: true
+
+  ## The path the volume will be mounted at, useful when using different
+  ## Redis images.
+  path: /bitnami
 
   ## A manually managed Persistent Volume and Claim
   ## Requires persistence.enabled: true
