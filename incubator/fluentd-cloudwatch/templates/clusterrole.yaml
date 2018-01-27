@@ -10,6 +10,6 @@ metadata:
     heritage: "{{ .Release.Service }}"
 rules:
 - apiGroups: [""]
-  resources: ["fluentd-cloudwatch.namespaces", "pods"]
+  resources: ["namespaces", "pods"]
   verbs: ["get", "list", "watch"]
 {{- end }}
