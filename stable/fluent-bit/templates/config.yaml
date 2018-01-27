@@ -45,4 +45,15 @@ data:
         Port  {{ .Values.backend.es.port }}
         Logstash_Format On
         Retry_Limit False
+{{ else if eq .Values.backend.type "http" }}
+    [OUTPUT]
+        Name  http
+        Match *
+        Host {{ .Values.backend.http.host }}
+        Port {{ .Values.backend.http.port }}
+        URI {{ .Values.backend.http.uri }}
+{{- if .Values.backend.http.proxy }}
+        Proxy {{ .Values.backend.http.proxy }}
+{{- end }}
+        Format {{ .Values.backend.http.format }}
 {{- end }}
