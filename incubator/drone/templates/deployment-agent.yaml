@@ -9,9 +9,11 @@ metadata:
     heritage: "{{ .Release.Service }}"
     component: agent
 spec:
-  replicas: 1
+  replicas: {{ .Values.agent.replicas }}
   template:
     metadata:
+      annotations:
+        checksum/secrets: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
       labels:
         app: {{ template "drone.name" . }}
         release: "{{ .Release.Name }}"
