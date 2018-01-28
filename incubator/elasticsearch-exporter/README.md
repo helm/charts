@@ -49,7 +49,7 @@ Parameter | Description | Default
 `image.repository` | container image repository | `justwatch/elasticsearch_exporter`
 `image.tag` | container image tag | `1.0.2rc1`
 `image.pullPolicy` | container image pull policy | `IfNotPresent`
-`resources` | resource requests & limits | requests: `cpu: 100m, memory: 128Mi`, limits: `cpu: 100m, memory: 128Mi`
+`resources` | resource requests & limits | `{}`
 `service.type` | type of service to create | `ClusterIP`
 `service.httpPort` | port for the http service | `9108`
 `es.uri` | address of the Elasticsearch node to connect to | `localhost:9200`
