@@ -1,12 +1,12 @@
-{{- if .Values.ingress.enabled -}}
-{{- $serviceName := include "jaeger.query.fullname" . -}}
-{{- $servicePort := .Values.query.service.queryPort -}}
+{{- if .Values.ingress.enabled }}
+{{- $serviceName := include "verdaccio.fullname" . -}}
+{{- $servicePort := .Values.service.port -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: {{ template "jaeger.name" . }}
+  name: {{ template "verdaccio.fullname" . }}
   labels:
-    app: "{{ template "jaeger.name" . }}"
+    app: {{ template "verdaccio.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
@@ -29,4 +29,4 @@ spec:
   tls:
 {{ toYaml .Values.ingress.tls | indent 4 }}
   {{- end -}}
-{{- end -}}
+{{- end}}
