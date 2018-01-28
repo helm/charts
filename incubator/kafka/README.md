@@ -48,19 +48,28 @@ $ helm install --name my-kafka --set global.namespace=kafka incubator/kafka
 ```
 
 This chart includes a ZooKeeper chart as a dependency to the Kafka
-cluster in its `requirement.yaml`. The chart can be customized using the
+cluster in its `requirement.yaml` by default. The chart can be customized using the
 following configurable parameters:
 
-| Parameter               | Description                        | Default                                                    |
-| ----------------------- | ---------------------------------- | ---------------------------------------------------------- |
-| `Image`                 | Kafka Container image name         | `solsson/kafka`                                            |
-| `ImageTag`              | Kafka Container image tag          | `0.11.0.0`                                                 |
-| `ImagePullPolicy`       | Kafka Container pull policy        | `Always`                                                   |
-| `Replicas`              | Kafka Brokers                      | `3`                                                        |
-| `Component`             | Kafka k8s selector key             | `kafka`                                                    |
-| `resources`             | Kafka resource requests and limits | `{}`                                                       |
-| `DataDirectory`         | Kafka data directory               | `/opt/kafka/data`                                          |
-| `Storage`               | Kafka Persistent volume size       | `1Gi`                                                      |
+| Parameter                      | Description                                                                                                                                      | Default                                                    |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------- |
+| `image`                        | Kafka Container image name                                                                                                                       | `solsson/kafka`                                            |
+| `imageTag`                     | Kafka Container image tag                                                                                                                        | `1.0.0`                                                    |
+| `imagePullPolicy`              | Kafka Container pull policy                                                                                                                      | `Always`                                                   |
+| `replicas`                     | Kafka Brokers                                                                                                                                    | `3`                                                        |
+| `component`                    | Kafka k8s selector key                                                                                                                           | `kafka`                                                    |
+| `resources`                    | Kafka resource requests and limits                                                                                                               | `{}`                                                       |
+| `dataDirectory`                | Kafka data directory                                                                                                                             | `/opt/kafka/data`                                          |
+| `logSubPath`                   | Subpath under `dataDirectory` where kafka logs will be placed. `logs/`                                                                           | `logs`                                                     |
+| `affinity`                     | Pod scheduling preferences                                                                                                                       | `{}`                                                       |
+| `storage`                      | Kafka Persistent volume size                                                                                                                     | `1Gi`                                                      |
+| `configurationOverrides`       | `Kafka ` [configuration setting](https://kafka.apache.org/documentation/#brokerconfigs) overrides in the dictionary format `setting.name: value` | `{}`                                                       |
+| `schema-registry.enabled`      | If True, installs Schema Registry Chart                                                                                                          | `false`                                                    |
+| `updateStrategy`               | The type of StatefulSet update strategy to use. One of `OnDelete` or `RollingUpdate`                                   | `OnDelete`                                                 |
+| `rollingUpdatePartition`       | When `RollingUpdate` is the `updateStrategy`, which `partition` of the statefulset is updated first.                   | `0`                                                        |
+| `zookeeper.enabled`            | If True, installs Zookeeper Chart                                                                                                                | `true`                                                     |
+| `zookeeper.url`                | URL of Zookeeper Cluster (unneeded if installing Zookeeper Chart)                                                                                | `""`                                                       |
+| `zookeeper.port`               | Port of Zookeeper Cluster                                                                                                                        | `2181`                                                     |
 
 Specify parameters using `--set key=value[,key=value]` argument to `helm install`
 

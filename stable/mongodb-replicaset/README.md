@@ -33,7 +33,7 @@ The following tables lists the configurable parameters of the mongodb chart and 
 | `replicaSet`                    | Name of the replica set                                                   | rs0                                                 |
 | `replicas`                      | Number of replicas in the replica set                                     | 3                                                   |
 | `port`                          | MongoDB port                                                              | 27017                                               |
-| `installImage.name`             | Image name for the init container that establishes the replica set        | gcr.io/google_containers/mongodb-install            |
+| `installImage.name`             | Image name for the init container that establishes the replica set        | k8s.gcr.io/mongodb-install                          |
 | `installImage.tag`              | Image tag for the init container that establishes the replica set         | 0.3                                                 |
 | `installImage.pullPolicy`       | Image pull policy for the init container that establishes the replica set | IfNotPresent                                        |
 | `image.name`                    | MongoDB image name                                                        | mongo                                               |
@@ -57,6 +57,7 @@ The following tables lists the configurable parameters of the mongodb chart and 
 | `auth.existingAdminSecret`      | If set, and existing secret with this name is used for the admin user     |                                                     |
 | `serviceAnnotations`            | Annotations to be added to the service                                    | {}                                                  |
 | `configmap`                     | Content of the MongoDB config file                                        | See below                                           |
+| `nodeSelector`                  | Node labels for pod assignment                                            | {}                                                  |
 
 *MongoDB config file*
 

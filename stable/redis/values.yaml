@@ -1,7 +1,7 @@
 ## Bitnami Redis image version
 ## ref: https://hub.docker.com/r/bitnami/redis/tags/
 ##
-image: bitnami/redis:3.2.9-r2
+image: bitnami/redis:4.0.7-r0
 
 ## Specify a imagePullPolicy
 ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -10,6 +10,12 @@ imagePullPolicy: IfNotPresent
 
 ## Kubernetes service type
 serviceType: ClusterIP
+
+## Pod Security Context
+securityContext:
+  enabled: true
+  fsGroup: 1001
+  runAsUser: 1001
 
 ## Use password authentication
 usePassword: true
@@ -34,6 +40,13 @@ args:
 ##
 persistence:
   enabled: true
+
+  ## The path the volume will be mounted at, useful when using different
+  ## Redis images.
+  path: /bitnami
+
+  ## The subdirectory of the volume to mount to, useful in dev environments and one PV for multiple services.
+  subPath: ""
 
   ## A manually managed Persistent Volume and Claim
   ## Requires persistence.enabled: true
@@ -75,15 +88,25 @@ resources:
 nodeSelector: {}
 tolerations: []
 
+## Additional pod labels
+## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+podLabels: {}
+
+## annotations for redis pods
+podAnnotations: {}
+
 networkPolicy:
   ## Enable creation of NetworkPolicy resources.
   ##
   enabled: false
 
   ## The Policy model to apply. When set to false, only pods with the correct
-  ## client label will have network access to the port PostgreSQL is listening
+  ## client label will have network access to the port Redis is listening
   ## on. When true, Redis will accept connections from any source
   ## (with the correct destination port).
   ##
   allowExternal: true
 
+service:
+  annotations: {}
+  loadBalancerIP:

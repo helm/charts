@@ -18,6 +18,10 @@ spec:
         app: {{ template "fullname" . }}
         component: orca
     spec:
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- end }}
       containers:
         - image: {{ .Values.images.orca }}
           name: orca
@@ -29,7 +33,7 @@ spec:
               name: {{ template "fullname" . }}-spinnaker-config
           readinessProbe:
             httpGet:
-              path: /env
+              path: /health
               port: 8083
             initialDelaySeconds: 20
             timeoutSeconds: 1

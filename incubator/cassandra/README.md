@@ -75,9 +75,10 @@ The following tables lists the configurable parameters of the Cassandra chart an
 | `image.repo`               | `cassandra` image repository                    | `cassandra`                                                |
 | `image.tag`                | `cassandra` image tag                           | `3`                                                        |
 | `image.pullPolicy`         | Image pull policy                               | `Always` if `imageTag` is `latest`, else `IfNotPresent`    |
-| `config.cluster_name`      | Username of new user to create.                 | `cassandra`                                                |
-| `config.cluster_size`      | Password for the new user.                      | `3`                                                        |
-| `config.seed_size`         | Name for new database to create.                | `2`                                                        |
+| `image.pullSecrets`        | Image pull secrets                              | `nil`                                                      |
+| `config.cluster_name`      | The name of the cluster.                        | `cassandra`                                                |
+| `config.cluster_size`      | The nubmer of nodes in the cluster.             | `3`                                                        |
+| `config.seed_size`         | The number of seed nodes used to bootstrap new clients joining the cluster.                | `2`                                                        |
 | `config.num_tokens`        | Initdb Arguments                                | `256`                                                      |
 | `config.dc_name`           | Initdb Arguments                                | `DC1`                                                      |
 | `config.rack_name`         | Initdb Arguments                                | `RAC1`                                                     |
@@ -86,12 +87,15 @@ The following tables lists the configurable parameters of the Cassandra chart an
 | `config.heap_new_size`     | Initdb Arguments                                | `512M`                                                     |
 | `config.ports.cql`         | Initdb Arguments                                | `9042`                                                     |
 | `config.ports.thrift`      | Initdb Arguments                                | `9160`                                                     |
+| `config.ports.agent`       | The port of the JVM Agent (if any)              | `nil`                                                      |
+| `config.start_rpc`         | Initdb Arguments                                | `false`                                                    |
 | `persistence.enabled`      | Use a PVC to persist data                       | `true`                                                     |
 | `persistence.storageClass` | Storage class of backing PVC                    | `nil` (uses alpha storage class annotation)                |
 | `persistence.accessMode`   | Use volume as ReadOnly or ReadWrite             | `ReadWriteOnce`                                            |
 | `persistence.size`         | Size of data volume                             | `10Gi`                                                     |
-| `resources`                | CPU/Memory resource requests/limits             | Memory: `4Gi`, CPU: `2`                               |
+| `resources`                | CPU/Memory resource requests/limits             | Memory: `4Gi`, CPU: `2`                                    |
 | `service.type`             | k8s service type exposing ports, e.g. `NodePort`| `ClusterIP`                                                |
+| `updateStrategy.type`      | UpdateStrategy of the StatefulSet               | `OnDelete`                                                 |
 
 ## Scale cassandra
 When you want to change the cluster size of your cassandra, you can use the helm upgrade command.

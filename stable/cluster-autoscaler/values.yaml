@@ -10,8 +10,8 @@ awsRegion: us-east-1
 cloudProvider: aws
 
 image:
-  repository: gcr.io/google_containers/cluster-autoscaler
-  tag: v0.6.0
+  repository: k8s.gcr.io/cluster-autoscaler
+  tag: v1.1.0
   pullPolicy: IfNotPresent
 
 tolerations: []

@@ -1,7 +1,8 @@
 # CockroachDB Helm Chart
 
 ## Prerequisites Details
-* Kubernetes 1.5 (for StatefulSet support)
+* Kubernetes 1.7 (for PodDisruptionBudget `MaxUnavailable` support -- you can
+  run at Kubernetes 1.5 if you don't care about the PodDisruptionBudget)
 * PV support on the underlying infrastructure
 
 ## StatefulSet Details
@@ -31,23 +32,25 @@ helm install --name my-release incubator/cockroachdb
 
 The following tables lists the configurable parameters of the CockroachDB chart and their default values.
 
-| Parameter               | Description                        | Default                                                    |
-| ----------------------- | ---------------------------------- | ---------------------------------------------------------- |
-| `Name`                  | Chart name                         | `cockroachdb`                                              |
-| `Image`                 | Container image name               | `cockroachdb/cockroach`                                    |
-| `ImageTag`              | Container image tag                | `v1.0`                                                     |
-| `ImagePullPolicy`       | Container pull policy              | `Always`                                                   |
-| `Replicas`              | k8s statefulset replicas           | `3`                                                        |
-| `MinAvailable`          | k8s PodDisruptionBudget parameter  | `67%`                                                      |
-| `Component`             | k8s selector key                   | `cockroachdb`                                              |
-| `GrpcPort`              | CockroachDB primary serving port   | `26257`                                                    |
-| `HttpPort`              | CockroachDB HTTP port              | `8080`                                                     |
-| `Cpu`                   | Container requested cpu            | `100m`                                                     |
-| `Memory`                | Container requested memory         | `512Mi`                                                    |
-| `Storage`               | Persistent volume size             | `1Gi`                                                      |
-| `StorageClass`          | Persistent volume class            | `anything`                                                 |
-| `ClusterDomain`         | Cluster's default DNS domain       | `cluster.local`                                            |
-| `NetworkPolicy.Enabled` | Enable NetworkPolicy               | `false`                                                    |
+| Parameter                     | Description                                | Default                                      |
+| ----------------------------- | ------------------------------------------ | -------------------------------------------- |
+| `Name`                        | Chart name                                 | `cockroachdb`                                |
+| `Image`                       | Container image name                       | `cockroachdb/cockroach`                      |
+| `ImageTag`                    | Container image tag                        | `v1.1.4`                                     |
+| `ImagePullPolicy`             | Container pull policy                      | `Always`                                     |
+| `Replicas`                    | k8s statefulset replicas                   | `3`                                          |
+| `MaxUnavailable`              | k8s PodDisruptionBudget parameter          | `1`                                          |
+| `Component`                   | k8s selector key                           | `cockroachdb`                                |
+| `GrpcPort`                    | CockroachDB primary serving port           | `26257`                                      |
+| `HttpPort`                    | CockroachDB HTTP port                      | `8080`                                       |
+| `Cpu`                         | Container requested cpu                    | `100m`                                       |
+| `Memory`                      | Container requested memory                 | `512Mi`                                      |
+| `Storage`                     | Persistent volume size                     | `1Gi`                                        |
+| `StorageClass`                | Persistent volume class                    | `null`                                       |
+| `CacheSize`                   | Size of CockroachDB's in-memory cache      | `25%`                                        |
+| `MaxSQLMemory`                | Max memory to use processing SQL queries   | `25%`                                        |
+| `ClusterDomain`               | Cluster's default DNS domain               | `cluster.local`                              |
+| `NetworkPolicy.Enabled`       | Enable NetworkPolicy                       | `false`                                      |
 | `NetworkPolicy.AllowExternal` | Don't require client label for connections | `true`                                       |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.

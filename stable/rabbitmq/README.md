@@ -56,6 +56,7 @@ The following tables lists the configurable parameters of the RabbitMQ chart and
 | `rabbitmqClusterNodeName`   | Node name to cluster with. e.g.: `clusternode@hostname` | `nil`                                                    |
 | `rabbitmqVhost`             | RabbitMQ application vhost                              | `/`                                                      |
 | `rabbitmqManagerPort`       | RabbitMQ Manager port                                   | `15672`                                                  |
+| `rabbitmqDiskFreeLimit`     | Disk free limit                                         | `"6GiB"`                                    |
 | `serviceType`               | Kubernetes Service type                                 | `ClusterIP`                                              |
 | `persistence.enabled`       | Use a PVC to persist data                               | `true`                                                   |
 | `persistence.existingClaim` | Use an existing PVC to persist data                     | `nil`                                                    |
@@ -97,5 +98,4 @@ The chart mounts a [Persistent Volume](http://kubernetes.io/docs/user-guide/pers
 1. Install the chart
 ```bash
 $ helm install --set persistence.existingClaim=PVC_NAME rabbitmq
-``
-
+```

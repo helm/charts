@@ -14,9 +14,13 @@ spec:
       app: {{ template "fullname" . }}
   template:
     metadata:
-      {{- if and (.Values.tolerations) (le .Capabilities.KubeVersion.Minor "5") }}
       annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+      {{- if and (.Values.tolerations) (le .Capabilities.KubeVersion.Minor "5") }}
         scheduler.alpha.kubernetes.io/tolerations: '{{ toJson .Values.tolerations }}'
+      {{- end }}
+      {{- range $key, $value := .Values.deployment.podAnnotations }}
+        {{ $key }}: {{ $value | quote }}
       {{- end }}
       labels:
         app: {{ template "fullname" . }}
@@ -72,10 +76,28 @@ spec:
           name: acme
         {{- end }}
         ports:
-        - containerPort: 80
-        - containerPort: 443
+        - name: http
+          containerPort: 80
+          {{- if .Values.deployment.hostPort.httpEnabled }}
+          hostPort: 80
+          {{- end }}
+          protocol: TCP
+        - name: httpn
+          containerPort: 8880
+          protocol: TCP
+        - name: https
+          containerPort: 443
+          {{- if .Values.deployment.hostPort.httpsEnabled }}
+          hostPort: 443
+          {{- end }}
+          protocol: TCP
         {{- if .Values.dashboard.enabled }}
-        - containerPort: 8080
+        - name: dash
+          containerPort: 8080
+          {{- if .Values.deployment.hostPort.dashboardEnabled }}
+          hostPort: 8080
+          {{- end }}
+          protocol: TCP
         {{- end }}
         args:
         - --configfile=/config/traefik.toml

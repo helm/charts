@@ -1,0 +1,32 @@
+# Default values for kubed.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+replicaCount: 1
+kubed:
+  image: appscode/kubed
+  tag: 0.4.0
+## Optionally specify an array of imagePullSecrets.
+## Secrets must be manually created in the namespace.
+## ref: https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
+##
+# imagePullSecrets:
+#   - name: myRegistryKeySecretName
+## Specify a imagePullPolicy
+## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+##
+imagePullPolicy: IfNotPresent
+## Installs Searchlight operator as critical addon
+## https://kubernetes.io/docs/tasks/administer-cluster/guaranteed-scheduling-critical-addon-pods/
+criticalAddon: false
+## Log level for kubed
+logLevel: 3
+## Node labels for pod assignment
+## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+##
+nodeSelector: {}
+## Install Default RBAC roles and bindings
+rbac:
+  ## If true, create & use RBAC resources
+  create: false
+  ## Ignored if rbac.create is true
+  serviceAccountName: default

@@ -18,12 +18,20 @@ resources:
     cpu: 100m
     memory: 200Mi
 
-#hostNetwork: false
+# hostNetwork: false
 
 annotations: {}
 
 awsRegion: us-east-1
+awsRole:
 logGroupName: kubernetes
+
+rbac:
+  ## If true, create and use RBAC resources
+  create: false
+
+  ## Ignored if rbac.create is true
+  serviceAccountName: default
 
 fluentdConfig: |
   <match fluent.**>
