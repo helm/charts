@@ -6,9 +6,9 @@ appVersion: 1.0.2
 sources:
   - https://github.com/justwatchcom/elasticsearch_exporter
 keywords:
-- metrics
-- elasticsearch
-- monitoring
+  - metrics
+  - elasticsearch
+  - monitoring
 maintainers:
   - name: svenmueller
     email: sven.mueller@commercetools.com
