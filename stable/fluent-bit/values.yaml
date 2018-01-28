@@ -5,7 +5,7 @@ on_minikube: false
 image:
   fluent_bit:
     repository: fluent/fluent-bit
-    tag: 0.12.7
+    tag: 0.12.11
   pullPolicy: Always
 
 backend:
@@ -16,6 +16,16 @@ backend:
   es:
     host: elasticsearch
     port: 9200
+  ##
+  ## Ref: http://fluentbit.io/documentation/current/output/http.html
+  ##
+  http:
+    host: 127.0.0.1
+    port: 80
+    uri: "/"
+    ## Specify the data format to be used in the HTTP request body
+    ## Can be either 'msgpack' or 'json'
+    format: msgpack
 
 env: []
 
