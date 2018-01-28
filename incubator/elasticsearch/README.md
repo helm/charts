@@ -4,7 +4,7 @@ This chart is based on the [centerforopenscience/elasticsearch](https://hub.dock
  
 ## Prerequisites Details
 
-* Kubernetes 1.6+
+* Kubernetes 1.7+ (for PodDisruptionBudget MaxUnavailable support -- otherwise you can run at Kubernetes 1.6)
 * PV dynamic provisioning support on the underlying infrastructure
 
 ## StatefulSets Details
@@ -60,7 +60,7 @@ The following tables lists the configurable parameters of the elasticsearch char
 | `image.tag`                          | Container image tag                                                 | `5.4`                                |
 | `image.pullPolicy`                   | Container pull policy                                               | `Always`                             |
 | `cluster.name`                       | Cluster name                                                        | `elasticsearch`                      |
-| `cluster.config`                     | Additional cluster config appended                                  | `{}`                                 |
+| `cluster.config`                     | Cluster additional config appended                                  | `{}`                                 |
 | `cluster.env`                        | Cluster environment variables                                       | `{}`                                 |
 | `client.name`                        | Client component name                                               | `client`                             |
 | `client.replicas`                    | Client node replicas (deployment)                                   | `2`                                  |
@@ -69,30 +69,35 @@ The following tables lists the configurable parameters of the elasticsearch char
 | `client.podAnnotations`              | Client Deployment annotations                                       | `{}`                                 |
 | `client.serviceAnnotations`          | Client Service annotations                                          | `{}`                                 |
 | `client.serviceType`                 | Client service type                                                 | `ClusterIP`                          |
-| `master.exposeHttp`                 | Expose http port 9200 on master Pods for monitoring, etc           | `false`                              |
+| `client.antiAffinity`                | Client anti-affinity policy                                         | `soft`                               |
+| `client.budget.maxUnavailable`       | Client pod disruption budget max unavailable                        | `1`                                  |
 | `master.name`                        | Master component name                                               | `master`                             |
 | `master.replicas`                    | Master node replicas (deployment)                                   | `2`                                  |
 | `master.resources`                   | Master node resources requests & limits                             | `{} - cpu limit must be an integer`  |
 | `master.podAnnotations`              | Master Deployment annotations                                       | `{}`                                 |
 | `master.heapSize`                    | Master node heap size                                               | `512m`                               |
-| `master.name`                        | Master component name                                               | `master`                             |
+| `master.antiAffinity`                | Master anti-affinity policy                                         | `soft`                               |
+| `master.exposeHttp`                  | Master expose http port 9200 on master Pods for monitoring, etc     | `false`                              |
+| `master.budget.maxUnavailable`       | Master pod disruption budget max unavailable                        | `1`                                  |
 | `master.persistence.enabled`         | Master persistent enabled/disabled                                  | `true`                               |
 | `master.persistence.name`            | Master statefulset PVC template name                                | `data`                               |
 | `master.persistence.size`            | Master persistent volume size                                       | `4Gi`                                |
 | `master.persistence.storageClass`    | Master persistent volume Class                                      | `nil`                                |
 | `master.persistence.accessMode`      | Master persistent Access Mode                                       | `ReadWriteOnce`                      |
-| `data.exposeHttp`                   | Expose http port 9200 on data Pods for monitoring, etc              | `false`                              |
+| `data.name`                          | Data component name                                                 | `data`                               |
 | `data.replicas`                      | Data node replicas (statefulset)                                    | `3`                                  |
 | `data.resources`                     | Data node resources requests & limits                               | `{} - cpu limit must be an integer`  |
+| `data.podAnnotations`                | Data StatefulSet annotations                                        | `{}`                                 |
 | `data.heapSize`                      | Data node heap size                                                 | `1536m`                              |
+| `data.antiAffinity`                  | Data anti-affinity policy                                           | `soft`                               |
+| `data.exposeHttp`                    | Data expose http port 9200 on data Pods for monitoring, etc         | `false`                              |
+| `data.budget.maxUnavailable`         | Data pod disruption budget max unavailable                          | `1`                                  |
 | `data.persistence.enabled`           | Data persistent enabled/disabled                                    | `true`                               |
 | `data.persistence.name`              | Data statefulset PVC template name                                  | `data`                               |
 | `data.persistence.size`              | Data persistent volume size                                         | `30Gi`                               |
 | `data.persistence.storageClass`      | Data persistent volume Class                                        | `nil`                                |
 | `data.persistence.accessMode`        | Data persistent Access Mode                                         | `ReadWriteOnce`                      |
-| `data.podAnnotations`                | Data StatefulSet annotations                                        | `{}`                                 |
 | `data.terminationGracePeriodSeconds` | Data termination grace period (seconds)                             | `3600`                               |
-| `data.antiAffinity`                  | Data anti-affinity policy                                           | `soft`                               |
 | `rbac.create`                        | Create service account and ClusterRoleBinding for Kubernetes plugin | `false`                              |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.

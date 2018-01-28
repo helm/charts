@@ -1,19 +1,19 @@
-{{- if .Values.master.budget.maxUnavailable -}}
+{{- if .Values.client.budget.maxUnavailable -}}
 apiVersion: policy/v1beta1
 kind: PodDisruptionBudget
 metadata:
-  name: "{{ template "elasticsearch.master.fullname" . }}"
+  name: "{{ template "elasticsearch.client.fullname" . }}"
   labels:
     app: {{ template "elasticsearch.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    component: "{{ .Values.master.name }}"
+    component: "{{ .Values.client.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
 spec:
   selector:
     matchLabels:
       app: {{ template "elasticsearch.name" . }}
-      component: "{{ .Values.master.name }}"
+      component: "{{ .Values.client.name }}"
       release: {{ .Release.Name }}
-  maxUnavailable: {{ .Values.master.budget.maxUnavailable }}
+  maxUnavailable: {{ .Values.client.budget.maxUnavailable }}
 {{- end -}}

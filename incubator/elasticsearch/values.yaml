@@ -28,6 +28,8 @@ client:
 
   heapSize: "512m"
   antiAffinity: "soft"
+  budget:
+    maxUnavailable: 1
   resources:
     limits:
       cpu: "1"
@@ -53,7 +55,7 @@ master:
     # storageClass: "ssd"
   antiAffinity: "soft"
   budget:
-    minAvailable: 1
+    maxUnavailable: 1
   resources:
     limits:
       cpu: "1"
@@ -80,7 +82,7 @@ data:
   terminationGracePeriodSeconds: 3600
   antiAffinity: "soft"
   budget:
-    minAvailable: 1
+    maxUnavailable: 1
   resources:
     limits:
       cpu: "1"
