@@ -39,7 +39,7 @@ spec:
             - --nodes={{ .minSize }}:{{ .maxSize }}:{{ .name }}
           {{- end }}
           {{- range $key, $value := .Values.extraArgs }}
-            - --{{ $key }}={{ $value }}
+            - --{{ $key }}{{ if $value }}={{ $value }}{{ end }}
           {{- end }}
           env:
           {{- if eq .Values.cloudProvider "aws" }}

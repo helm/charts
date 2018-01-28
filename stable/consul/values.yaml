@@ -51,6 +51,16 @@ EncryptGossip: true
 ## to set maxUnavailable to 1.
 maxUnavailable: 1
 
+## nodeAffinity settings
+# nodeAffinity:
+#   requiredDuringSchedulingIgnoredDuringExecution:
+#     nodeSelectorTerms:
+#     - matchExpressions:
+#       - key: cloud.google.com/gke-preemptible
+#         operator: NotIn
+#         values:
+#         - true
+
 ## Anti-Affinity setting. The default "hard" will use pod anti-affinity that is
 ## requiredDuringSchedulingIgnoredDuringExecution to ensure 2 services don't
 ## end up on the same node. Setting this to "soft" will use
