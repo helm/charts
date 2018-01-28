@@ -55,6 +55,7 @@ The following tables lists the configurable parameters of the drone charts and t
 | `server.resources`          | Drone **server** pod resource requests & limits                                               | `{}`                        |
 | `server.afinity`            | Drone **server** scheduling preferences                                                       | `{}`                        |
 | `agent.env`                 | Drone **agent** environment variables                                                         | `(default values)`          |
+| `agent.replicas`            | Drone **agent** replicas                                                                      | `1`                         |
 | `agent.resources`           | Drone **agent** pod resource requests & limits                                                | `{}`                        |
 | `agent.afinity`             | Drone **agent** scheduling preferences                                                        | `{}`                        |
 | `dind.driver`               | **DinD** storage driver                                                                       | `overlay2`                  |
@@ -64,4 +65,4 @@ The following tables lists the configurable parameters of the drone charts and t
 | `persistence.storageClass`  | Storage class of backing PVC                                                                  | `nil`                       |
 | `persistence.accessMode`    | Use volume as ReadOnly or ReadWrite                                                           | `ReadWriteOnce`             |
 | `persistence.size`          | Size of data volume                                                                           | `1Gi`                       |
-| `sharedSecret`              | Drone server and agent shared secret                                                          | `(random value)`            |
+| `sharedSecret`              | Drone server and agent shared secret (Note: The Default random value changes on every `helm upgrade` causing a rolling update of server and agents) | `(random value)`            |

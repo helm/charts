@@ -13,6 +13,8 @@ spec:
   replicas: 1
   template:
     metadata:
+      annotations:
+        checksum/secrets: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
       labels:
         app: {{ template "drone.name" . }}
         release: "{{ .Release.Name }}"
