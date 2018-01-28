@@ -105,6 +105,9 @@ agent:
   env:
     DRONE_DEBUG: "false"
 
+  ## Number of drone agent replicas
+  replicas: 1
+
   ## CPU and memory limits for drone agent
   ##
   resources: {}
