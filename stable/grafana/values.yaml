@@ -410,3 +410,44 @@ serverConfigFile:
 ## and add it below.
 ##
 serverDashboardFiles: {}
+
+## Grafana dashboard files to import ConfigMap entries
+## The behaviuor is different then 'serverDashboardFiles' in that, this flow will create a Job to import using the API.
+## If you'd like to preinstall prometheus dashboard on the same namespace as example, get it from:
+##
+## https://grafana.net/dashboards/2
+##
+## and add it below.
+##
+dashboardImports:
+  ## If true, a Job will be created to import dashboards
+  ## Default: false
+  ##
+  enabled: false
+
+  ## How long should it take to commit failure
+  ## Default: 300
+  ##
+  # activeDeadlineSeconds: 300
+
+  ## Docker image to run import process
+  ## Default: appropriate/curl:latest
+  ##
+  # image: appropriate/curl:latest
+
+  ## Grafana dashboard files to import as ConfigMap entries
+  # files: {}
+
+  ## Grafana dashboard URL to import (this should be a JSON file, not the HTML page)
+  # Example:
+  # dashboards: {
+  #   Prometheus_Stats.json: https://grafana.com/api/dashboards/2/revisions/2/download,
+  #   Docker_Dashboard.json: https://grafana.com/api/dashboards/179/revisions/5/download,
+  #   MyPrivateDashboard.json: http://example.com/dashboard.json
+  # }
+  # dashboards: {}
+
+  ## Specify the Job policy
+  ## Default: OnFailure
+  ##
+  # restartPolicy: OnFailure
