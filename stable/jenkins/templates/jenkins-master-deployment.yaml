@@ -53,6 +53,24 @@ spec:
             -
               mountPath: /var/jenkins_config
               name: jenkins-config
+            {{- if .Values.Master.CredentialsXmlSecret }}
+            -
+              mountPath: /var/jenkins_credentials
+              name: jenkins-credentials
+              readOnly: true
+            {{- end }}
+            {{- if .Values.Master.SecretsFilesSecret }}
+            -
+              mountPath: /var/jenkins_secrets
+              name: jenkins-secrets
+              readOnly: true
+            {{- end }}
+            {{- if .Values.Master.Jobs }}
+            -
+              mountPath: /var/jenkins_jobs
+              name: jenkins-jobs
+              readOnly: true
+            {{- end }}
             -
               mountPath: /usr/share/jenkins/ref/plugins/
               name: plugin-dir
@@ -120,6 +138,24 @@ spec:
               mountPath: /var/jenkins_config
               name: jenkins-config
               readOnly: true
+            {{- if .Values.Master.CredentialsXmlSecret }}
+            -
+              mountPath: /var/jenkins_credentials
+              name: jenkins-credentials
+              readOnly: true
+            {{- end }}
+            {{- if .Values.Master.SecretsFilesSecret }}
+            -
+              mountPath: /var/jenkins_secrets
+              name: jenkins-secrets
+              readOnly: true
+            {{- end }}
+            {{- if .Values.Master.Jobs }}
+            -
+              mountPath: /var/jenkins_jobs
+              name: jenkins-jobs
+              readOnly: true
+            {{- end }}
             -
               mountPath: /usr/share/jenkins/ref/plugins/
               name: plugin-dir
@@ -135,6 +171,21 @@ spec:
       - name: jenkins-config
         configMap:
           name: {{ template "jenkins.fullname" . }}
+      {{- if .Values.Master.CredentialsXmlSecret }}
+      - name: jenkins-credentials
+        secret:
+          secretName: {{ .Values.Master.CredentialsXmlSecret }}
+      {{- end }}
+      {{- if .Values.Master.SecretsFilesSecret }}
+      - name: jenkins-secrets
+        secret:
+          secretName: {{ .Values.Master.SecretsFilesSecret }}
+      {{- end }}
+      {{- if .Values.Master.Jobs }}
+      - name: jenkins-jobs
+        configMap:
+          name: {{ template "jenkins.fullname" . }}-jobs
+      {{- end }}
       - name: plugin-dir
         emptyDir: {}
       - name: secrets-dir

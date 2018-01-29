@@ -136,6 +136,10 @@ spec:
         fsGroup: 1000
       {{- if eq .Values.antiAffinity "hard" }}
       affinity:
+        {{- if .Values.nodeAffinity }}
+        nodeAffinity:
+{{ toYaml .Values.nodeAffinity | indent 10 }}
+        {{- end }}
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
           - labelSelector:
@@ -147,6 +151,10 @@ spec:
             topologyKey: kubernetes.io/hostname
       {{- else if eq .Values.antiAffinity "soft" }}
       affinity:
+        {{- if .Values.nodeAffinity }}
+        nodeAffinity:
+{{ toYaml .Values.nodeAffinity | indent 10 }}
+        {{- end }}
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
           - weight: 1
@@ -263,7 +271,8 @@ spec:
               ${GOSSIP_KEY} \
             {{- end }}
               -client=0.0.0.0 \
-              -dns-port=${DNSPORT}
+              -dns-port=${DNSPORT} \
+              -http-port={{ .Values.HttpPort }}
       volumes:
       - name: gossip-key
         secret:
