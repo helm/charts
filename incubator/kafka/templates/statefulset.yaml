@@ -1,4 +1,5 @@
 {{- $configMapName := include "kafka.configmap" . -}}
+{{- $advertisedListenersOverride := first (pluck "advertised.listeners" .Values.configurationOverrides) }}
 apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
@@ -11,11 +12,7 @@ metadata:
 spec:
   serviceName: {{ template "kafka.fullname" . }}-headless
   updateStrategy:
-    type: {{ .Values.updateStrategy }}
-    {{ if eq .Values.updateStrategy "RollingUpdate" -}}
-    rollingUpdate:
-      partition: {{ .Values.rollingUpdatePartition }}
-    {{- end }}
+{{ toYaml .Values.updateStrategy | indent 4 }}
   replicas: {{ default 3 .Values.replicas }}
   template:
     metadata:
@@ -68,7 +65,7 @@ spec:
         - -c
         - |
           export KAFKA_BROKER_ID=${HOSTNAME##*-} && \
-          export KAFKA_ADVERTISED_LISTENERS="PLAINTEXT://${POD_IP}:9092" && \
+          export KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://${POD_IP}:9092{{ if kindIs "string" $advertisedListenersOverride }}{{ printf ",%s" $advertisedListenersOverride }}{{ end }} && \
           /etc/confluent/docker/run
         volumeMounts:
         - name: datadir
