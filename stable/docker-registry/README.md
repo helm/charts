@@ -39,6 +39,7 @@ their default values.
 | `resources.limits.memory`  | Container requested memory                  | `nil`                                               |
 | `storage`                  | Storage system to use                       | `fileststem`                                        |
 | `tlsSecretName`            | Name of secret for TLS certs                | `nil`                                               |
+| `secrets.htpasswd`         | Htpasswd authentication                     | `nil`                                               |
 | `secrets.s3.accessKey`     | Access Key for S3 configuration             | `nil`                                               |
 | `secrets.s3.secretKey`     | Secret Key for S3 configuration             | `nil`                                               |
 | `haSharedSecret`           | Shared secret for Registry                  | `nil`                                               |
@@ -46,3 +47,6 @@ their default values.
 
 Specify each parameter using the `--set key=value[,key=value]` argument to
 `helm install`.
+
+To generate htpasswd file, run this docker command:
+`docker run --entrypoint htpasswd registry:2 -Bbn user password > ./htpasswd`.
