@@ -12,11 +12,7 @@ metadata:
 spec:
   serviceName: {{ template "kafka.fullname" . }}-headless
   updateStrategy:
-    type: {{ .Values.updateStrategy }}
-    {{ if eq .Values.updateStrategy "RollingUpdate" -}}
-    rollingUpdate:
-      partition: {{ .Values.rollingUpdatePartition }}
-    {{- end }}
+{{ toYaml .Values.updateStrategy | indent 4 }}
   replicas: {{ default 3 .Values.replicas }}
   template:
     metadata:
