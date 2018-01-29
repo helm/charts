@@ -1,7 +1,7 @@
 ## Bitnami Redis image version
 ## ref: https://hub.docker.com/r/bitnami/redis/tags/
 ##
-image: bitnami/redis:4.0.6-r1
+image: bitnami/redis:4.0.7-r0
 
 ## Specify a imagePullPolicy
 ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -44,6 +44,9 @@ persistence:
   ## The path the volume will be mounted at, useful when using different
   ## Redis images.
   path: /bitnami
+
+  ## The subdirectory of the volume to mount to, useful in dev environments and one PV for multiple services.
+  subPath: ""
 
   ## A manually managed Persistent Volume and Claim
   ## Requires persistence.enabled: true
