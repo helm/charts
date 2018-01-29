@@ -10,6 +10,8 @@ metadata:
 spec:
   serviceName: {{ template "zookeeper.fullname" . }}-headless
   replicas: {{ .Values.servers }}
+  updateStrategy:
+{{ toYaml .Values.updateStrategy | indent 4 }}
   template:
     metadata:
       labels:
