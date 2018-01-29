@@ -119,11 +119,16 @@ spec:
                     - key: key-{{ $nodeNumber }}
                       path: priv_validator.json
         - name: work-dir
+        {{- if $.Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ template "burrow.fullname" $ }}-work
+        {{- else }}
           emptyDir: {}
+        {{- end }}
         - name: data-dir
         {{- if $.Values.persistence.enabled }}
           persistentVolumeClaim:
-            claimName: {{ template "burrow.fullname" $ }}
+            claimName: {{ template "burrow.fullname" $ }}-data
         {{- else }}
           emptyDir: {}
         {{- end }}

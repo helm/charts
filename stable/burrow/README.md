@@ -2,12 +2,10 @@
 
 [burrow](https://github.com/hyperledger/burrow) is a permissioned Ethereum smart-contract blockchain node. It executes Ethereum smart contract code on a permissioned virtual machine. Burrow provides transaction finality and high transaction throughput on a proof-of-stake Tendermint consensus engine.
 
-**Note - this chart has been deprecated and [moved to stable](../../stable/burrow)**.
-
 ## TL;DR;
 
 ```console
-$ helm install incubator/burrow
+$ helm install stable/burrow
 ```
 
 ## Introduction
@@ -19,7 +17,7 @@ This chart bootstraps a burrow network on a [Kubernetes](http://kubernetes.io) c
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm install incubator/burrow --name my-release
+$ helm install stable/burrow --name my-release
 ```
 
 The command deploys burrow on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
@@ -38,7 +36,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following table lists the configurable parameters of the kibana chart and their default values.
+The following tables lists the configurable parameters of the kibana chart and their default values.
 
 Parameter | Description | Default
 --- | --- | ---
@@ -84,14 +82,14 @@ Parameter | Description | Default
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```console
-$ helm install incubator/burrow --name my-release \
+$ helm install stable/burrow --name my-release \
   --set=image.tag=0.16.0,resources.limits.cpu=200m
 ```
 
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 
 ```console
-$ helm install incubator/burrow --name my-release -f values.yaml
+$ helm install stable/burrow --name my-release -f values.yaml
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
@@ -159,7 +157,7 @@ There are a few other considerations underpinning how this chart was developed.
 
 ### Deployments versus StatefulSets
 
-The first consideration is whether to utilize multiple deployments or a statefulSet. The chart maintainer has (to date) found it significantly easier to work with multiple deployments than with a statefulSet because the config files and keys differ subtly between and across each blockchain node. StatefulSets are currently not able to as elegantly handle the 1-to-1 linkages between the various key secrets and config files that are necessary to operate each blockchain node within the cluster.
+The first consideration is whether to utilize multiple deployments or a statefulSet. The chart maintainer has (to date) found it significantly easier to work with multiple deployments than with a statefulSet because the config files and keys differ subltely between and across each blockchain node. StatefulSets are currently not able to as elegantly handle the 1-to-1 linkages between the various key secrets and config files that are necessary to operate each blockchain node within the cluster.
 
 ### Running multiple chains within your cluster
 
