@@ -1,0 +1,17 @@
+1. You can now deploy functions using 'nuctl' command line tool
+
+   Refer to https://nuclio.io to learn how to write and deploy function
+   
+{{- if .Values.playground.enabled }}
+2. Use these commands to access the playground:
+{{- if eq "NodePort" .Values.playground.service.type }}
+    export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ template "nuclio.fullname" . }}-playground)
+    export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+    echo http://$NODE_IP:$NODE_PORT
+{{- else }}
+    export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "nuclio.name" . }},release={{ .Release.Name }},component={{ template "nuclio.fullname" . }}-playground" -o jsonpath="{.items[0].metadata.name}")
+    echo "Visit http://127.0.0.1:8080 to use Nuclio's playground"
+    kubectl port-forward $POD_NAME 8080:8070
+{{- end }}
+    
+{{- end }}
