@@ -15,7 +15,7 @@ sources:
 publishInternalServices: false
 
 ## The DNS provider where the DNS records will be created (options: aws, google, inmemory, azure )
-provider: azure
+provider: aws
 
 # AWS Access keys to inject as environment variables
 aws:
