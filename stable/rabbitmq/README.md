@@ -56,13 +56,16 @@ The following tables lists the configurable parameters of the RabbitMQ chart and
 | `rabbitmqClusterNodeName`   | Node name to cluster with. e.g.: `clusternode@hostname` | `nil`                                                    |
 | `rabbitmqVhost`             | RabbitMQ application vhost                              | `/`                                                      |
 | `rabbitmqManagerPort`       | RabbitMQ Manager port                                   | `15672`                                                  |
-| `rabbitmqDiskFreeLimit`     | Disk free limit                                         | `"6GiB"`                                    |
+| `rabbitmqDiskFreeLimit`     | Disk free limit                                         | `"6GiB"`                                                 |
 | `serviceType`               | Kubernetes Service type                                 | `ClusterIP`                                              |
 | `persistence.enabled`       | Use a PVC to persist data                               | `true`                                                   |
 | `persistence.existingClaim` | Use an existing PVC to persist data                     | `nil`                                                    |
 | `persistence.storageClass`  | Storage class of backing PVC                            | `nil` (uses alpha storage class annotation)              |
 | `persistence.accessMode`    | Use volume as ReadOnly or ReadWrite                     | `ReadWriteOnce`                                          |
 | `persistence.size`          | Size of data volume                                     | `8Gi`                                                    |
+| `nodeSelector`              | Node labels for pod assignment                          | {}                                                       |
+| `affinity`                  | Affinity settings for pod assignment                    | {}                                                       |
+| `tolerations`               | Toleration labels for pod assignment                    | []                                                       |
 
 The above parameters map to the env variables defined in [bitnami/rabbitmq](http://github.com/bitnami/bitnami-docker-rabbitmq). For more information please refer to the [bitnami/rabbitmq](http://github.com/bitnami/bitnami-docker-rabbitmq) image documentation.
 
