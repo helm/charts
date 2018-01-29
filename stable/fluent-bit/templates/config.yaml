@@ -24,7 +24,9 @@ data:
     [FILTER]
         Name   kubernetes
         Match  kube.*
-
+{{- if .Values.filter.mergeJSONLog }}
+        Merge_JSON_Log   On
+{{- end }}
 {{ if eq .Values.backend.type "test" }}
     [OUTPUT]
         Name  file
