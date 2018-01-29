@@ -10,10 +10,10 @@ metadata:
 spec:
   type: {{ .Values.service.type }}
   ports:
-    - port: 1433
-      targetPort: 1433
-      protocol: TCP
-      name: {{ .Values.service.name }}
+  - name: db
+    port: 1433
+    targetPort: db
+    protocol: TCP
   selector:
     app: {{ template "mssql.name" . }}
     release: {{ .Release.Name }}

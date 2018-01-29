@@ -9,7 +9,6 @@ image:
   tag: 2017-CU3
   pullPolicy: IfNotPresent
 service:
-  name: mssqlsrvr
   type: ClusterIP
 livenessprobe:
   initialDelaySeconds: 15

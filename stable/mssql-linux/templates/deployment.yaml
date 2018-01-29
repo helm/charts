@@ -34,15 +34,16 @@ spec:
                  name: {{ template "mssql.fullname" . }}-secret
                  key: sapassword
           ports:
-            - containerPort: 1433
+            - name: db
+              containerPort: 1433
           livenessProbe:
              tcpSocket:
-               port: 1433
+               port: db
              initialDelaySeconds: {{ .Values.livenessprobe.initialDelaySeconds }}
              periodSeconds: {{ .Values.livenessprobe.periodSeconds }}
           readinessProbe:
              tcpSocket:
-               port: 1433
+               port: db
              initialDelaySeconds: {{ .Values.readinessprobe.initialDelaySeconds }}
              periodSeconds: {{ .Values.readinessprobe.periodSeconds }}
           resources:
