@@ -16,6 +16,16 @@ backend:
   es:
     host: elasticsearch
     port: 9200
+  ##
+  ## Ref: http://fluentbit.io/documentation/current/output/http.html
+  ##
+  http:
+    host: 127.0.0.1
+    port: 80
+    uri: "/"
+    ## Specify the data format to be used in the HTTP request body
+    ## Can be either 'msgpack' or 'json'
+    format: msgpack
 
 env: []
 
