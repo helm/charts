@@ -12,7 +12,7 @@ Edition for this installation: {{ .Values.edition.value }}
 1. You can test that SQL Server is available by the service port with with the following set of command:
 (Note: You will be prompted for the SA password)
 $ kubectl run mssqlcli --image=microsoft/mssql-tools -ti --restart=Never --rm=true -- /bin/bash
-$ sqlcmd -S {{ template "mssql.fullname" . }}.{{ .Release.Namespace }},{{ .Values.service.internalPort }} -U sa 
+$ sqlcmd -S {{ template "mssql.fullname" . }}.{{ .Release.Namespace }},1433 -U sa 
 $ Password: <Enter Password for SA>
 
 2.  Connection Library Information
@@ -22,4 +22,4 @@ https://docs.microsoft.com/en-us/sql/connect/sql-connection-libraries
 https://docs.microsoft.com/en-us/sql/connect/jdbc/connecting-to-sql-server-with-the-jdbc-driver
 
 SQL Server Name: {{ template "mssql.fullname" . }}.{{ .Release.Namespace }}
-Port: {{ .Values.service.internalPort }}
+Port: 1433

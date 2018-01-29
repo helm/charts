@@ -1,18 +1,16 @@
-ACCEPT_EULA:
-  value: "N"
+acceptEula:
+  value: "n"
 edition:
   value: Express
 # Override sapassword in templates/secret.yaml
 # sapassword: "MyStrongPassword1234"
 image:
   repository: microsoft/mssql-server-linux
-  tag: latest
+  tag: 2017-CU3
   pullPolicy: IfNotPresent
 service:
   name: mssqlsrvr
   type: ClusterIP
-  externalPort: 1433
-  internalPort: 1433
 livenessprobe:
   initialDelaySeconds: 15
   periodSeconds: 20

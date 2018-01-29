@@ -25,7 +25,7 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
             - name: ACCEPT_EULA
-              value: "{{ .Values.ACCEPT_EULA.value }}"
+              value: "{{ .Values.acceptEula.value | upper }}"
             - name: MSSQL_PID
               value: "{{ .Values.edition.value }}"
             - name: SA_PASSWORD
@@ -34,15 +34,15 @@ spec:
                  name: {{ template "mssql.fullname" . }}-secret
                  key: sapassword
           ports:
-            - containerPort: {{ .Values.service.internalPort }}
+            - containerPort: 1433
           livenessProbe:
              tcpSocket:
-               port: {{ .Values.service.internalPort }}
+               port: 1433
              initialDelaySeconds: {{ .Values.livenessprobe.initialDelaySeconds }}
              periodSeconds: {{ .Values.livenessprobe.periodSeconds }}
           readinessProbe:
              tcpSocket:
-               port: {{ .Values.service.internalPort }}
+               port: 1433
              initialDelaySeconds: {{ .Values.readinessprobe.initialDelaySeconds }}
              periodSeconds: {{ .Values.readinessprobe.periodSeconds }}
           resources:

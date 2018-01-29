@@ -4,7 +4,7 @@
  * This chart requires Docker Engine 1.8+ in any of their supported platforms.  Please see vendor requirements [here for more information](https://docs.microsoft.com/en-us/sql/linux/quickstart-install-connect-docker).
  * At least 2GB of RAM (3.25 GB prior to 2017-CU2). Make sure to assign enough memory to the Docker VM if you're running on Docker for Mac or Windows.
  * Requires the following variables
-   - You must change the ACCEPT_EULA.value in the values.yaml file to `Y` or include `--set ACCEPT_EULA.value=Y` in the command line of `helm install` to override the default value of `N`.
+   - You must change the acceptEula.value in the values.yaml file to `Y` or include `--set acceptEula.value=Y` in the command line of `helm install` to override the default value of `N`.
    - You must change the editions variable in the values.yaml file to include the edition of SQL Server or include `--set edition.value=<your_product_id | edition_name>` in the command line of `helm install`.
 
 ## Chart Components
@@ -16,7 +16,7 @@
 You can install the chart with the release name `mymssql` as below.
 ```console
 $ helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
-$ helm install --name mymssql incubator/mssql-linux --set ACCEPT_EULA.value=Y --set edition.value=Developer
+$ helm install --name mymssql incubator/mssql-linux --set acceptEula.value=Y --set edition.value=Developer
 ```
 > Note - If you do not specify a name, helm will select a name for you.
 
@@ -74,16 +74,14 @@ The configuration parameters in this section control the resources requested and
 
 | Parameter | Description | Default |
 | --------- | ----------- | ------- |
-| ACCEPT_EULA.value | EULA that needs to be accepted.  It will need to be changed via commandline or values.yaml. | N |
+| acceptEula.value | EULA that needs to be accepted.  It will need to be changed via commandline or values.yaml. | N |
 | edition.value | The edition of SQL Server to install.  See section [Editions](#sql-server-for-linux-editions). | Express |
 | sapassword | Overrides the randomly created password with a default password.  [Please read password requirements](https://docs.microsoft.com/en-us/sql/relational-databases/security/password-policy). | Random (20-AlphNum) |
 | image.repository | The docker hub repo for SQL Server | microsoft/mssql-server-linux |
-| image.tag | The tag for the image | latest |
+| image.tag | The tag for the image | 2017-CU3 |
 | image.pullPolicy | The pull policy for the deployment | IfNotPresent |
 | service.name | Service Name | mssqlsrvr |
 | service.type | Service Type | ClusterIP |
-| externalPort | External Port | 1433 |
-| internalPort | Internal Port | 1433 |
 
 ## Liveness and Readiness
 The SQL Server instance has liveness and readiness checks specified. These parameters can be used to tune the sensitivity of the liveness and readiness checks.
@@ -100,14 +98,14 @@ The SQL Server instance has liveness and readiness checks specified. These param
 | readinessprobe.periodSeconds | Field specifies that the kubelet should perform a liveness probe every XX second(s) | 10 | 
 
 ## Resources
-You can specify the resource limits for this chart in the values.yaml file.
+You can specify the resource limits for this chart in the values.yaml file.  Make sure you comment out or remove the curly brackets from the values.yaml file before specifying resource limits.
 Example:
 ```yaml
 resources:
-   limits:
+  limits:
     cpu: 1
     memory: 2Gi
-   requests:
+  requests:
     cpu: 0.5
     memory: 2Gi
 ```
