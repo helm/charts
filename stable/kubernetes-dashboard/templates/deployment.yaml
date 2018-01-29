@@ -21,7 +21,7 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "kubernetes-dashboard.name" . }}
+        app: {{ template "kubernetes-dashboard.fullname" . }}
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         heritage: "{{ .Release.Service }}"
         release: "{{ .Release.Name }}"
