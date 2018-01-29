@@ -18,7 +18,7 @@ spec:
       port: {{ .Values.server.service.httpPort }}
       protocol: TCP
       targetPort: 3000
-{{- if contains "NodePort" .Values.server.service.type }}
+{{- if eq "NodePort" .Values.server.service.type }}
   {{- if .Values.server.service.nodePort }}
       nodePort:  {{ .Values.server.service.nodePort }}
   {{- end }}
@@ -27,11 +27,16 @@ spec:
   externalIPs:
 {{ toYaml .Values.server.service.externalIPs | indent 4 }}
 {{- end }}
+{{- if eq "ClusterIP" .Values.server.service.type }}
+  {{- if .Values.server.service.clusterIP }}
+  clusterIP:  {{ .Values.server.service.clusterIP }}
+  {{- end }}
+{{- end }}  
   selector:
     app: {{ template "grafana.fullname" . }}
     component: "{{ .Values.server.name }}"
   type: "{{ .Values.server.service.type }}"
-{{- if contains "LoadBalancer" .Values.server.service.type }}
+{{- if eq "LoadBalancer" .Values.server.service.type }}
   {{- if .Values.server.service.loadBalancerIP }}
   loadBalancerIP: {{ .Values.server.service.loadBalancerIP }}
   {{- end -}}

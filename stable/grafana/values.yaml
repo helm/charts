@@ -133,6 +133,9 @@ server:
     ##
     httpPort: 80
 
+    ## ClusterIP to use for service
+    ## clusterIP: None
+
     ## Load balancer IP address
     ## Is not required, but allows for static address with
     ## serviceType LoadBalancer.
@@ -160,6 +163,7 @@ server:
     ##
     # externalIPs:
     # - 192.168.0.1
+
 
   ## Grafana local config path
   ## Default '/etc/grafana'
