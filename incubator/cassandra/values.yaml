@@ -59,6 +59,8 @@ config:
   ports:
     cql: 9042
     thrift: 9160
+    # If a JVM Agent is in place
+    # agent: 61621
 
 ## Configure node selector. Edit code below for adding selector to pods
 ## ref: https://kubernetes.io/docs/user-guide/node-selection/
@@ -74,3 +76,6 @@ podLabels: {}
 podSettings:
   # Change this to give pods more time to properly leave the cluster when not using persistent storage.
   terminationGracePeriodSeconds: 30
+
+updateStrategy:
+  type: OnDelete

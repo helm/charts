@@ -95,6 +95,7 @@ The following tables lists the configurable parameters of the Cassandra chart an
 | `config.heap_new_size`     | Initdb Arguments                                | `512M`                                                     |
 | `config.ports.cql`         | Initdb Arguments                                | `9042`                                                     |
 | `config.ports.thrift`      | Initdb Arguments                                | `9160`                                                     |
+| `config.ports.agent`       | The port of the JVM Agent (if any)              | `nil`                                                      |
 | `config.start_rpc`         | Initdb Arguments                                | `false`                                                    |
 | `persistence.enabled`      | Use a PVC to persist data                       | `true`                                                     |
 | `persistence.storageClass` | Storage class of backing PVC                    | `nil` (uses alpha storage class annotation)                |
@@ -102,6 +103,7 @@ The following tables lists the configurable parameters of the Cassandra chart an
 | `persistence.size`         | Size of data volume                             | `10Gi`                                                     |
 | `resources`                | CPU/Memory resource requests/limits             | Memory: `4Gi`, CPU: `2`                                    |
 | `service.type`             | k8s service type exposing ports, e.g. `NodePort`| `ClusterIP`                                                |
+| `updateStrategy.type`      | UpdateStrategy of the StatefulSet               | `OnDelete`                                                 |
 
 ## Scale cassandra
 When you want to change the cluster size of your cassandra, you can use the helm upgrade command.

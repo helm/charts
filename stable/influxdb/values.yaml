@@ -167,6 +167,9 @@ config:
     consistency_level: one
     separator: .
     udp_read_buffer: 0
+    # Uncomment to define graphite templates
+    # templates:
+    #   - "graphite.metric.*.*.* measurement.run"
   collectd:
     enabled: false
     bind_address: 25826

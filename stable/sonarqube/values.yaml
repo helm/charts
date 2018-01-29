@@ -67,6 +67,13 @@ persistence:
 plugins:
   install: []
 
+# A custom sonar.properties file can be provided using a multiline YAML string.
+# For example:
+# sonarProperties: |
+#   sonar.forceAuthentication=true
+#   sonar.security.realm=LDAP
+#   ldap.url=ldaps://organization.com
+
 ## Configuration values for the postgresql dependency
 ## ref: https://github.com/kubernetes/charts/blob/master/stable/postgressql/README.md
 ##
