@@ -4,8 +4,8 @@
 controller:
   name: controller
   image:
-    repository: k8s.gcr.io/nginx-ingress-controller
-    tag: "0.9.0-beta.15"
+    repository: quay.io/kubernetes-ingress-controller/nginx-ingress-controller
+    tag: "0.10.2"
     pullPolicy: IfNotPresent
 
   config: {}

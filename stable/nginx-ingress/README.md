@@ -46,8 +46,8 @@ The following tables lists the configurable parameters of the nginx-ingress char
 Parameter | Description | Default
 --- | --- | ---
 `controller.name` | name of the controller component | `controller`
-`controller.image.repository` | controller container image repository | `k8s.gcr.io/nginx-ingress-controller`
-`controller.image.tag` | controller container image tag | `0.9.0-beta.15`
+`controller.image.repository` | controller container image repository | `quay.io/kubernetes-ingress-controller/nginx-ingress-controller`
+`controller.image.tag` | controller container image tag | `0.10.2`
 `controller.image.pullPolicy` | controller container image pull policy | `IfNotPresent`
 `controller.config` | nginx ConfigMap entries | none
 `controller.hostNetwork` | If the nginx deployment / daemonset should run on the host's network namespace | false
