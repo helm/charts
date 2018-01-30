@@ -15,7 +15,6 @@
 ## Installing the Chart
 You can install the chart with the release name `mymssql` as below.
 ```console
-$ helm repo add stable https://kubernetes-charts.storage.googleapis.com/
 $ helm install --name mymssql stable/mssql-linux --set acceptEula.value=Y --set edition.value=Developer
 ```
 > Note - If you do not specify a name, helm will select a name for you.
