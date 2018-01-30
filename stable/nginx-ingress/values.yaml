@@ -4,8 +4,8 @@
 controller:
   name: controller
   image:
-    repository: k8s.gcr.io/nginx-ingress-controller
-    tag: "0.9.0-beta.15"
+    repository: quay.io/kubernetes-ingress-controller/nginx-ingress-controller
+    tag: "0.10.2"
     pullPolicy: IfNotPresent
 
   config: {}
@@ -25,11 +25,6 @@ controller:
   ## Must be <namespace>/<service_name>
   ##
   defaultBackendService: ""
-
-  ## Optionally specify the secret name for default SSL certificate
-  ## Must be <namespace>/<secret_name>
-  ##
-  defaultSSLCertificate: ""
 
   ## Election ID to use for status update
   ##
@@ -58,6 +53,10 @@ controller:
     enabled: false
     namespace: ""   # defaults to .Release.Namespace
 
+  ## Additional command line arguments to pass to nginx-ingress-controller
+  ## E.g. to specify the default SSL certificate you can use
+  ## extraArgs:
+  ##   default-ssl-certificate: "<namespace>/<secret_name>"
   extraArgs: {}
 
   ## Additional environment variables to set
@@ -112,7 +111,7 @@ controller:
     enabled: false
   #  minReplicas: 1
   #  maxReplicas: 11
-  #  targetAverageUtilization: 50
+  #  targetCPUUtilizationPercentage: 50
 
   ## Override NGINX template
   customTemplate:

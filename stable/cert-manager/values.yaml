@@ -1,0 +1,55 @@
+# Default values for cert-manager.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+replicaCount: 1
+
+image:
+  repository: quay.io/jetstack/cert-manager-controller
+  tag: v0.2.3
+  pullPolicy: IfNotPresent
+
+createCustomResource: true
+
+rbac:
+  # Specifies whether RBAC resources should be created
+  create: true
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+
+# Optional additional arguments
+extraArgs: []
+  # Use this flag to set a namespace that cert-manager will use to store
+  # supporting resources required for each ClusterIssuer (default is kube-system)
+  # - --cluster-resource-namespace=kube-system
+
+resources: {}
+  # requests:
+  #   cpu: 10m
+  #   memory: 32Mi
+
+nodeSelector: {}
+
+ingressShim:
+  enabled: true
+
+  # Optional additional arguments for ingress-shim
+  extraArgs: []
+
+  resources: {}
+    # requests:
+    #   cpu: 10m
+    #   memory: 32Mi
+
+  image:
+    repository: quay.io/jetstack/cert-manager-ingress-shim
+
+    # Defaults to image.tag.
+    # You should only change this if you know what you are doing!
+    # tag: v0.2.3
+
+    pullPolicy: IfNotPresent
