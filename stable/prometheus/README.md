@@ -52,7 +52,7 @@ As of version 5.0, this chart uses Prometheus 2.1. This version of prometheus in
 
 Assuming you have an existing release of the prometheus chart, named `prometheus-old`. In order to update to prometheus 2.1 while keeping your old data do the following:
 
-1. Update the `prometheus-old` release. Disable scraping and every component besides the prometheus server, similar to the configuration below:
+1. Update the `prometheus-old` release. Disable scraping on every component besides the prometheus server, similar to the configuration below:
 
 	```
 	alertmanager:
