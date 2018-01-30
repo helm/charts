@@ -34,7 +34,7 @@ The following tables lists the configurable parameters of the mongodb chart and 
 | `replicas`                      | Number of replicas in the replica set                                     | 3                                                   |
 | `port`                          | MongoDB port                                                              | 27017                                               |
 | `installImage.name`             | Image name for the init container that establishes the replica set        | k8s.gcr.io/mongodb-install                          |
-| `installImage.tag`              | Image tag for the init container that establishes the replica set         | 0.3                                                 |
+| `installImage.tag`              | Image tag for the init container that establishes the replica set         | 0.5                                                 |
 | `installImage.pullPolicy`       | Image pull policy for the init container that establishes the replica set | IfNotPresent                                        |
 | `image.name`                    | MongoDB image name                                                        | mongo                                               |
 | `image.tag`                     | MongoDB image tag                                                         | 3.4                                                 |
@@ -42,7 +42,7 @@ The following tables lists the configurable parameters of the mongodb chart and 
 | `podAnnotations`                | Annotations to be added to MongoDB pods                                   | {}                                                  |
 | `resources`                     | Pod resource requests and limits                                          | {}                                                  |
 | `persistentVolume.enabled`      | If `true`, persistent volume claims are created                           | `true`                                              |
-| `persistentVolume.storageClass` | Persistent volume storage class                                           | `volume.alpha.kubernetes.io/storage-class: default` |
+| `persistentVolume.storageClass` | Persistent volume storage class                                           | ``                                                  |
 | `persistentVolume.accessMode`   | Persistent volume access modes                                            | [ReadWriteOnce]                                     |
 | `persistentVolume.size`         | Persistent volume size                                                    | 10Gi                                                |
 | `persistentVolume.annotations`  | Persistent volume annotations                                             | {}                                                  |
@@ -50,7 +50,7 @@ The following tables lists the configurable parameters of the mongodb chart and 
 | `tls.cacert`                    | The CA certificate used for the members                                   | Our self signed CA certificate                      |
 | `tls.cakey`                     | The CA key used for the members                                           | Our key for the self signed CA certificate          |
 | `auth.enabled`                  | If `true`, keyfile access control is enabled                              | `false`                                             |
-| `auth.key`                      | key for internal authentication                                           |                                                     |
+| `auth.key`                      | Key for internal authentication                                           |                                                     |
 | `auth.existingKeySecret`        | If set, an existing secret with this name for the key is used             |                                                     |
 | `auth.adminUser`                | MongoDB admin user                                                        |                                                     |
 | `auth.adminPassword`            | MongoDB admin password                                                    |                                                     |
@@ -58,6 +58,8 @@ The following tables lists the configurable parameters of the mongodb chart and 
 | `serviceAnnotations`            | Annotations to be added to the service                                    | {}                                                  |
 | `configmap`                     | Content of the MongoDB config file                                        | See below                                           |
 | `nodeSelector`                  | Node labels for pod assignment                                            | {}                                                  |
+| `affinity`                      | Node/pod affinities                                                       | {}                                                  |
+| `tolerations`                   | List of node taints to tolerate                                           | []                                                  |
 
 *MongoDB config file*
 
