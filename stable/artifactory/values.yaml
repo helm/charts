@@ -10,43 +10,19 @@ initContainerImage: "alpine:3.6"
 # For supporting pulling from private registries
 imagePullSecrets:
 
-# Database
-database:
-  name: postgresql
-  env:
-    type: postgresql
-    name: artifactory
-    user: artifactory
-#    pass: artXifactory1973
-  image:
-    repository: docker.bintray.io/postgres
-    version: 9.5.2
-    pullPolicy: IfNotPresent
-  service:
-    type: ClusterIP
-    annotations: {}
-  externalPort: 5432
-  internalPort: 5432
-  persistence:
-    mountPath: "/var/lib/postgresql/data"
-    enabled: true
-    accessMode: ReadWriteOnce
-    size: 10Gi
-    ## database data Persistent Volume Storage Class
-    ## If defined, storageClassName: <storageClass>
-    ## If set to "-", storageClassName: "", which disables dynamic provisioning
-    ## If undefined (the default) or set to null, no storageClassName spec is
-    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
-    ##   GKE, AWS & OpenStack)
-    ##
-    # storageClass: "-"
-  resources: {}
-  #  requests:
-  #    memory: "512Mi"
-  #    cpu: "100m"
-  #  limits:
-  #    memory: "1Gi"
-  #    cpu: "500m"
+ingress:
+  enabled: false
+  # Used to create an Ingress record.
+  hosts:
+    - artifactory.domain.example
+  annotations:
+  # kubernetes.io/ingress.class: nginx
+  # kubernetes.io/tls-acme: "true"
+  tls:
+  # Secrets must be manually created in the namespace.
+  # - secretName: chart-example-tls
+  #   hosts:
+  #     - artifactory.domain.example
 
 # Artifactory
 artifactory:
@@ -94,6 +70,7 @@ artifactory:
 
 # Nginx
 nginx:
+  enabled: true
   name: nginx
   replicaCount: 1
   image:
@@ -119,7 +96,7 @@ nginx:
     ssl: true
   persistence:
     mountPath: "/var/opt/jfrog/nginx"
-    enabled: true
+    enabled: false
     accessMode: ReadWriteOnce
     size: 5Gi
     ## nginx data Persistent Volume Storage Class
@@ -137,3 +114,13 @@ nginx:
   #  limits:
   #    memory: "250Mi"
   #    cpu: "500m"
+
+## Configuration values for the postgresql dependency
+## ref: https://github.com/kubernetes/charts/blob/master/stable/postgressql/README.md
+##
+postgresql:
+  postgresUser: "artifactory"
+  postgresPassword: "artifactory"
+  postgresDatabase: "artifactory"
+  persistence:
+    enabled: true
