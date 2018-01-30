@@ -1,0 +1,15 @@
+operator:
+  image:
+    repository: quay.io/coreos/prometheus-operator
+    tag: latest
+
+configReloader:
+  image:
+    repository: quay.io/coreos/configmap-reload
+    tag: latest
+
+rbac:
+  create: true
+  serviceAccountName: default
+
+resources: {}

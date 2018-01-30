@@ -1,0 +1,10 @@
+description: The Prometheus Operator makes the Prometheus configuration Kubernetes native and manages and operates Prometheus and Alertmanager clusters. It is a piece of the puzzle regarding full end-to-end monitoring.
+name: prometheus-operator
+version: 0.1.0
+appVersion: latest
+sources:
+- https://github.com/coreos/prometheus-operator
+maintainers:
+  - name: pickledrick
+    email: 9246508+pickledrick@users.noreply.github.com
+engine: gotpl
