@@ -4,7 +4,7 @@
 
 ## Introduction
 
-This chart installs and configures VMWare Harbor.
+This is an experimental monolithic chart that installs and configures VMWare Harbor and its dependencies. The initial implementation of this includes all of the components required to run Harbor. As upstream harbor becomes more cloud native we will be able to break apart the monolith and utitlize helm dependencies.
 
 ## Prerequisites
 
