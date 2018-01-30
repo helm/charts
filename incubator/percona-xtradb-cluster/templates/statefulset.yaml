@@ -20,7 +20,7 @@ spec:
         app: {{ template "percona-xtradb-cluster.fullname" . }}
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         release: "{{ .Release.Name }}"
-        heritage: "{{ .Release.Service }}"        
+        heritage: "{{ .Release.Service }}"
     spec:
       initContainers:
       - name: "remove-lost-found"
@@ -38,8 +38,8 @@ spec:
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         command:
-          - "/bin/bash"
-          - "/startup-scripts/entrypoint.sh"
+        - "/bin/bash"
+        - "/startup-scripts/entrypoint.sh"
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         env:
