@@ -65,3 +65,7 @@ spec:
             secretKeyRef:
               name: {{ template "fullname" . }}
               key: smtp-password
+        - name: SENTRY_EMAIL_USE_TLS
+          value: {{ .Values.email.use_tls | quote }}
+        - name: SENTRY_SERVER_EMAIL
+          value: {{ .Values.email.from_address | quote }}

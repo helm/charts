@@ -5,6 +5,11 @@ replicaCount: 1
 image:
   repository: clearent/nexus
   tag: 3.5.1-02
+
+# node labels for node selection
+# nodeSelector:
+#   cloud.google.com/gke-nodepool: default-pool
+
 service:
   name: nexus
   type: LoadBalancer
@@ -17,7 +22,7 @@ service:
   livenessProbe:
     initialDelaySeconds: 30
     periodSeconds: 30
-  annotations:
+  annotations: {}
   # foo.io/bar: "true"
 ingress:
   enabled: false

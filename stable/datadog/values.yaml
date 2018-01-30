@@ -1,6 +1,9 @@
 # Default values for datadog.
 image:
-  repository: datadog/docker-dd-agent
+  # This chart is compatible with different images, please choose one
+  repository: datadog/docker-dd-agent  # Agent5
+  # repository: datadog/agent          # Agent6 (beta)
+  # repository: datadog/dogstatsd      # Standalone DogStatsD6 (beta)
   tag: latest
   pullPolicy: IfNotPresent
 
@@ -118,13 +121,13 @@ datadog:
   ## Each key will become a file in /conf.d/auto_conf
   ## ref: https://github.com/DataDog/docker-dd-agent#configuration-files
   ##
-  autoconf:
-    kubernetes_state.yaml: |-
-      docker_images:
-        - kube-state-metrics
-      init_config:
-      instances:
-        - kube_state_url: http://%%host%%:%%port%%/metrics
+  # autoconf:
+  #   kubernetes_state.yaml: |-
+  #     docker_images:
+  #       - kube-state-metrics
+  #     init_config:
+  #     instances:
+  #       - kube_state_url: http://%%host%%:%%port%%/metrics
 
   ## Provide additonal service definitions
   ## Each key will become a file in /conf.d
@@ -163,3 +166,10 @@ rbac:
   serviceAccountName: default
 
 tolerations: []
+
+kube-state-metrics:
+  rbac:
+    create: true
+
+    ## Ignored if rbac.create is true
+    serviceAccountName: default

@@ -50,6 +50,9 @@ $ helm install stable/chaoskube --set dryRun=false
 | `dryRun`                  | don't kill pods, only log what would have been done | true                              |
 | `resources.cpu`           | cpu resource requests and limits                    | 10m                               |
 | `resources.memory`        | memory resource requests and limits                 | 16Mi                              |
+| `rbac.create`             | create rbac service account and roles               | false                             |
+| `rbac.serviceAccountName` | name of serviceAccount to use when create is false  | default                           |
+| `nodeSelector`            | node labels for pod assignment                      | `{}`                              |
 
 Setting label and namespaces selectors from the shell can be tricky but is possible (example with zsh):
 

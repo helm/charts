@@ -52,7 +52,7 @@ metadata:
     release: {{ .Release.Name | quote }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     component: "{{ .Release.Name }}-{{ .Values.Component }}"
-  name: "{{ template "fullname" . }}-ui"
+  name: "{{ template "consul.fullname" . }}-ui"
 spec:
   rules:
   {{- range .Values.uiIngress.hosts }}
@@ -136,6 +136,10 @@ spec:
         fsGroup: 1000
       {{- if eq .Values.antiAffinity "hard" }}
       affinity:
+        {{- if .Values.nodeAffinity }}
+        nodeAffinity:
+{{ toYaml .Values.nodeAffinity | indent 10 }}
+        {{- end }}
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
           - labelSelector:
@@ -147,6 +151,10 @@ spec:
             topologyKey: kubernetes.io/hostname
       {{- else if eq .Values.antiAffinity "soft" }}
       affinity:
+        {{- if .Values.nodeAffinity }}
+        nodeAffinity:
+{{ toYaml .Values.nodeAffinity | indent 10 }}
+        {{- end }}
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
           - weight: 1
@@ -263,7 +271,8 @@ spec:
               ${GOSSIP_KEY} \
             {{- end }}
               -client=0.0.0.0 \
-              -dns-port=${DNSPORT}
+              -dns-port=${DNSPORT} \
+              -http-port={{ .Values.HttpPort }}
       volumes:
       - name: gossip-key
         secret:
@@ -271,12 +280,6 @@ spec:
   volumeClaimTemplates:
   - metadata:
       name: datadir
-      annotations:
-      {{- if .Values.StorageClass }}
-        volume.beta.kubernetes.io/storage-class: {{ .Values.StorageClass | quote }}
-      {{- else }}
-        volume.alpha.kubernetes.io/storage-class: default
-      {{- end }}
     spec:
       accessModes:
         - "ReadWriteOnce"
@@ -284,3 +287,10 @@ spec:
         requests:
           # upstream recommended max is 700M
           storage: "{{ .Values.Storage }}"
+    {{- if .Values.StorageClass }}
+    {{- if (eq "-" .Values.StorageClass) }}
+      storageClassName: ""
+    {{- else }}
+      storageClassName: "{{ .Values.StorageClass }}"
+    {{- end }}
+    {{- end }}

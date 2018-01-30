@@ -18,6 +18,9 @@ spec:
   - name: postgresql
     port: {{ .Values.service.port }}
     targetPort: postgresql
+  {{- if (and (eq .Values.service.type "NodePort") (not (empty .Values.service.nodePort))) }}
+    nodePort: {{ .Values.service.nodePort }}
+  {{- end }}
 {{- if .Values.service.externalIPs }}
   externalIPs:
 {{ toYaml .Values.service.externalIPs | indent 4 }}

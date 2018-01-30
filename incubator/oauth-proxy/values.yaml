@@ -13,6 +13,12 @@ image:
   tag: "2.2"
   pullPolicy: "IfNotPresent"
 
+# Optionally specify an array of imagePullSecrets.
+# Secrets must be manually created in the namespace.
+# ref: https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
+# imagePullSecrets:
+  # - name: myRegistryKeySecretName
+
 extraArgs:
   email-domain: "*"
   upstream: "file:///dev/null"
@@ -25,6 +31,7 @@ service:
 
 ingress:
   enabled: false
+  path: /
   # Used to create an Ingress record.
   # hosts:
     # - chart-example.local

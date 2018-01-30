@@ -2,7 +2,7 @@
 ## ref: https://hub.docker.com/r/library/influxdb/tags/
 image:
   repo: "influxdb"
-  tag: "1.2-alpine"
+  tag: "1.4-alpine"
   pullPolicy: IfNotPresent
 
 ## Specify a service type
@@ -82,6 +82,13 @@ resources:
 ##
 nodeSelector: {}
 
+## The InfluxDB image uses several environment variables to automatically
+## configure certain parts of the server.
+## Ref: https://hub.docker.com/_/influxdb/
+env:
+  # - name: INFLUXDB_DB
+  #   value: "demo"
+
 ## Change InfluxDB configuration paramaters below:
 ## Defaults are indicated
 ## ref: https://docs.influxdata.com/influxdb/v1.1/administration/config/
@@ -160,6 +167,9 @@ config:
     consistency_level: one
     separator: .
     udp_read_buffer: 0
+    # Uncomment to define graphite templates
+    # templates:
+    #   - "graphite.metric.*.*.* measurement.run"
   collectd:
     enabled: false
     bind_address: 25826
