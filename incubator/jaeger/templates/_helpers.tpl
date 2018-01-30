@@ -20,16 +20,19 @@ Expand the name of the chart.
 
 {{/*
 Create a default fully qualified app name.
-We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
+We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec)
+If release name contains chart name it will be used as a full name.
 */}}
 {{- define "jaeger.fullname" -}}
-{{- $name := default "jaeger" .Values.nameOverride -}}
-{{- if .Values.nameComponentOverride }}
-{{- printf "%s" .Values.nameComponentOverride | trunc 63 | trimSuffix "-" -}}
-{{- else if eq .Chart.Name .Release.Name -}}
-{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
+{{- if .Values.fullnameOverride -}}
+{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
 {{- else -}}
-{{- printf "%s" $name | trunc 63 | trimSuffix "-" -}}
+{{- $name := default .Chart.Name .Values.nameOverride -}}
+{{- if contains $name .Release.Name -}}
+{{- .Release.Name | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
 {{- end -}}
 {{- end -}}
 
@@ -39,8 +42,8 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 */}}
 {{- define "jaeger.query.name" -}}
 {{- $nameGlobalOverride := printf "%s" (include "jaeger.fullname" .) -}}
-{{- if .Values.query.nameOverride -}}
-{{- printf "%s" .Values.query.nameOverride | trunc 63 | trimSuffix "-" -}}
+{{- if .Values.query.fullnameOverride -}}
+{{- printf "%s" .Values.query.fullnameOverride | trunc 63 | trimSuffix "-" -}}
 {{- else -}}
 {{- printf "%s" $nameGlobalOverride | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
@@ -52,8 +55,8 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 */}}
 {{- define "jaeger.agent.name" -}}
 {{- $nameGlobalOverride := printf "%s" (include "jaeger.fullname" .) -}}
-{{- if .Values.agent.nameOverride -}}
-{{- printf "%s" .Values.agent.nameOverride | trunc 63 | trimSuffix "-" -}}
+{{- if .Values.agent.fullnameOverride -}}
+{{- printf "%s" .Values.agent.fullnameOverride | trunc 63 | trimSuffix "-" -}}
 {{- else -}}
 {{- printf "%s" $nameGlobalOverride | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
@@ -65,8 +68,8 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 */}}
 {{- define "jaeger.collector.name" -}}
 {{- $nameGlobalOverride := printf "%s" (include "jaeger.fullname" .) -}}
-{{- if .Values.collector.nameOverride -}}
-{{- printf "%s" .Values.collector.nameOverride | trunc 63 | trimSuffix "-" -}}
+{{- if .Values.collector.fullnameOverride -}}
+{{- printf "%s" .Values.collector.fullnameOverride | trunc 63 | trimSuffix "-" -}}
 {{- else -}}
 {{- printf "%s" $nameGlobalOverride | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
