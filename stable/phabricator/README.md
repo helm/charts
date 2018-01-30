@@ -119,15 +119,7 @@ You can define a custom ingress following the example config in values.yaml
 
 `helm install stable/phabricator/ --name my-release --set phabricatorHost=example.com`
 
-Everything looks great but requests over https will cause asset requests to fail. Assuming you want to use HTTPS/TLS you will need to set a few config values. Wailt for the pod to come up and run the following two commands. They will cause the kubernetes readinessProbe and livenessProbe to fail.
+Everything looks great but requests over https will cause asset requests to fail. Assuming you want to use HTTPS/TLS you will need to set the base-uri to an https schema.
 
-`kubectl exec <pod name> /opt/bitnami/phabricator/bin/config set security.require-https 'true'`
 `kubectl exec <pod name> /opt/bitnami/phabricator/bin/config set phabricator.base-uri https://example.com`
-
-once phabricator.base.uri is set the health checks will start failing. You will have to then delete both config entries to get a functioning UI.
-
-`kubectl exec <pod name> /opt/bitnami/phabricator/bin/config delete security.require-https`
-`kubectl exec <pod name> /opt/bitnami/phabricator/bin/config delete phabricator.base-uri`
-
-NOTE: if not done quick enough you'll have to wait for a pod restart.
 
