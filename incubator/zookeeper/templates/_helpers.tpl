@@ -3,7 +3,7 @@
 Expand the name of the chart.
 */}}
 {{- define "zookeeper.name" -}}
-{{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" -}}
+{{- default .Chart.Name .Values.nameOverride | lower | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
 {{/*
@@ -12,5 +12,5 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 */}}
 {{- define "zookeeper.fullname" -}}
 {{- $name := default .Chart.Name .Values.nameOverride -}}
-{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
+{{- printf "%s-%s" .Release.Name $name | lower | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
