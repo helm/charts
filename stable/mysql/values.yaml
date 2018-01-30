@@ -4,12 +4,12 @@
 image: "mysql"
 imageTag: "5.7.14"
 
-## Specify password for root user
+## Specify base64 encoded password for root user
 ##
 ## Default: random 10 character string
 # mysqlRootPassword: testing
 
-## Create a database user
+## Create a database user with base64 encoded password
 ##
 # mysqlUser:
 # mysqlPassword:
