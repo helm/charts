@@ -85,12 +85,21 @@ concourse:
   ##
   # insecureDockerRegistry:
 
+  ## Enable encryption of pipeline configuration. Encryption keys can be set via secrets.
+  ## See https://concourse.ci/encryption.html
+  ##
   encryption:
     enabled: false
 
+  ## Enable basic auth for the "main" Concourse team.
+  ## See https://concourse.ci/teams.html#basic-auth
+  ##
   basicAuth:
     enabled: true
 
+  ## Enable GitHub auth for the "main" Concourse team.
+  ## See https://concourse.ci/teams.html#github-auth
+  ##
   githubAuth:
     enabled: false
 
@@ -118,6 +127,8 @@ concourse:
     ##
     # apiUrl:
 
+  ## Enable Gitlab auth for the "main" Concourse team.
+  ##
   gitlabAuth:
     enabled: false
 
@@ -137,6 +148,9 @@ concourse:
     ##
     # apiUrl:
 
+  ## Enable generic OAuth for the "main" Concourse team.
+  ## See https://concourse.ci/teams.html#generic-oauth
+  ##
   genericOauth:
     enabled: false
 
@@ -171,8 +185,15 @@ web:
   ##
   replicas: 1
 
+  ## Configure resource requests and limits.
+  ## ref: https://kubernetes.io/docs/user-guide/compute-resources/
+  ##
+  resources:
+    requests:
+      cpu: "100m"
+      memory: "128Mi"
+
   ## Additional affinities to add to the web pods.
-  ## Useful if you prefer to run workers on non-spot instances, for example
   ##
   # additionalAffinities:
   #   nodeAffinity:
@@ -185,7 +206,7 @@ web:
   #               values:
   #                 - "true"
 
-  ## Tolerations for the worker nodes.
+  ## Tolerations for the web nodes.
   ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
   tolerations: []
   # tolerations:
@@ -194,19 +215,11 @@ web:
   #    value: "value"
   #    effect: "NoSchedule"
 
-  ## Configure resource requests and limits.
-  ## ref: https://kubernetes.io/docs/user-guide/compute-resources/
-  ##
-  resources:
-    requests:
-      cpu: "100m"
-      memory: "128Mi"
-
   ## Service configuration.
   ## ref: https://kubernetes.io/docs/user-guide/services/
   ##
   service:
-    ## For minikube, set this to ClusterIP, elsewhere use LoadBalancer.
+    ## For minikube, set this to ClusterIP, elsewhere use LoadBalancer or NodePort
     ## ref: https://kubernetes.io/docs/user-guide/services/#publishing-services---service-types
     ##
     type: ClusterIP
@@ -217,10 +230,10 @@ web:
     #   prometheus.io/probe: "true"
     #   prometheus.io/probe_path: "/"
 
-  # If you fix atc nodeport, this parameter set(web.service.atcNodePort)
+  # When using web.service.type: NodePort, sets the nodePort for atc
   #  atcNodePort: 30150
   #
-  # If you fix tsa nodeport, this parameter set(web.service.tsaNodePort)
+  # When using web.service.type: NodePort, sets the nodePort for tsa
   #  tsaNodePort: 30151
 
   ## Ingress configuration.
@@ -419,11 +432,9 @@ postgresql:
 ## ref: https://concourse.ci/creds.html
 ##
 credentialManager:
-  ## use Hashicorp Vault for Credential Manager.
+  ## use Hashicorp Vault as a Credential Manager.
   ##
   vault:
-    ## Enable Credential Manager using below configuration.
-    ##
     enabled: false
 
     ## URL pointing to vault addr (i.e. http://vault:8200).
@@ -452,17 +463,21 @@ rbac:
   # rbac version
   apiVersion: v1beta1
 
-  ## Ignored if rbac.create is true
+  ## The name of the service account to use if rbac.create is false
   ##
   serviceAccountName: default
 
 ## For managing secrets using Helm
+##
 secrets:
 
   ## Create the secret resource from the following values. Set this to
   ## false to manage these secrets outside Helm.
+  ##
   create: true
 
+  ## Secrets for core features
+  ##
   concourse:
 
     ## Concourse Host Keys.
@@ -570,11 +585,11 @@ secrets:
     ## Secrets for DB encryption
     ##
     # encryption:
-      # oldEncryptionKey:
-      # encryptionKey:
+      # key:
+      # oldKey:
 
-    ## Concourse Basic Authentication Credentials
-    ## ref: https://concourse.ci/teams.html#authentication
+    ## Secrets for Concourse basic auth
+    ##
     basicAuth:
       username: concourse
       password: concourse
@@ -597,6 +612,8 @@ secrets:
       # clientId:
       # clientSecret:
 
+  ## Secrets for using PostgreSQL
+  ##
   # postgresql:
 
     ## If bringing your own PostgreSQL, set this to the full uri to use
@@ -604,9 +621,11 @@ secrets:
     ##
     # uri:
 
+  ## Secrets for using a credential manager
+  ##
   # credentialManager:
 
-    ## Secrets for Hashcorp Vault Credential Manager.
+    ## Secrets for using Hashcorp Vault as a credential manager.
     ##
     # vault:
 
@@ -621,21 +640,23 @@ secrets:
       # clientToken:
 
       ## set role_id for [AppRole](https://www.vaultproject.io/docs/auth/approle.html) backend
-      ## make sure to also set authBackend to `approle`.
+      ## make sure to also set credentialManager.vault.authBackend to `approle`.
       ##
       # appRoleId:
 
       ## set secret_id for [AppRole](https://www.vaultproject.io/docs/auth/approle.html) backend
-      ## make sure to also set authBackend to `approle`.
+      ## make sure to also set credentialManager.vault.authBackend to `approle`.
       ##
       # appRoleSecretId:
 
       ## provide the client certificate for authenticating with the [TLS](https://www.vaultproject.io/docs/auth/cert.html) backend
       ## the value will be written to /concourse-vault/client.cert
-      ## make sure to also set authBackend to `cert`
+      ## make sure to also set credentialManager.vault.authBackend to `cert`
+      ##
       # clientCert: |-
 
       ## provide the client key for authenticating with the [TLS](https://www.vaultproject.io/docs/auth/cert.html) backend
       ## the value will be written to /concourse-vault/client.key
-      ## make sure to also set authBackend to `cert`
+      ## make sure to also set credentialManager.vault.authBackend to `cert`
+      ##
       # clientKey: |-

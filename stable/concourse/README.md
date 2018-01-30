@@ -55,7 +55,7 @@ $ kubectl scale statefulset my-release-worker --replicas=3
 
 ### Restarting workers
 
-If a worker isn't taking on work, you can restart the worker with `kubectl delete pod`. This will initiate a graceful shutdown by "retiring" the worker, to ensure Concourse doesn't try looking for old volumes on the new worker. The value`worker.terminationGracePeriodSeconds` can be used to provide an upper limit on graceful shutdown time before forcefully terminating the container. Check the output of `fly workers`, and if a worker is `stalled`, you'll also need to run `fly prune-worker` to allow the new incarnation of the worker can start.
+If a worker isn't taking on work, you can restart the worker with `kubectl delete pod`. This will initiate a graceful shutdown by "retiring" the worker, to ensure Concourse doesn't try looking for old volumes on the new worker. The value`worker.terminationGracePeriodSeconds` can be used to provide an upper limit on graceful shutdown time before forcefully terminating the container. Check the output of `fly workers`, and if a worker is `stalled`, you'll also need to run `fly prune-worker` to allow the new incarnation of the worker to start.
 
 ### Worker Liveness Probe
 
@@ -70,13 +70,7 @@ The following tables lists the configurable parameters of the Concourse chart an
 | `image` | Concourse image | `concourse/concourse` |
 | `imageTag` | Concourse image version | `3.8.0` |
 | `imagePullPolicy` |Concourse image pull policy |  `Always` if `imageTag` is `latest`, else `IfNotPresent` |
-| `concourse.username` | Concourse Basic Authentication Username | `concourse` |
-| `concourse.password` | Concourse Basic Authentication Password | `concourse` |
-| `concourse.hostKey` | Concourse Host Private Key | *See [#ssh-keys](#ssh-keys)* |
-| `concourse.hostKeyPub` | Concourse Host Public Key | *See [#ssh-keys](#ssh-keys)* |
-| `concourse.sessionSigningKey` | Concourse Session Signing Private Key | *See [#ssh-keys](#ssh-keys)* |
-| `concourse.workerKey` | Concourse Worker Private Key | *See [#ssh-keys](#ssh-keys)* |
-| `concourse.workerKeyPub` | Concourse Worker Public Key | *See [#ssh-keys](#ssh-keys)* |
+| `concourse.externalURL` | URL used to reach any ATC from the outside world | `nil` |
 | `concourse.atcPort` | Concourse ATC listen port | `8080` |
 | `concourse.tsaPort` | Concourse TSA listen port | `2222` |
 | `concourse.allowSelfSignedCertificates` | Allow self signed certificates | `true` |
@@ -86,71 +80,98 @@ The following tables lists the configurable parameters of the Concourse chart an
 | `concourse.resourceCacheCleanupInterval` | The interval on which to check for and release old caches of resource versions | `30s` |
 | `concourse.baggageclaimDriver` | The filesystem driver used by baggageclaim | `naive` |
 | `concourse.containerPlacementStrategy` | The selection strategy for placing containers onto workers | `random` |
-| `concourse.externalURL` | URL used to reach any ATC from the outside world | `nil` |
 | `concourse.dockerRegistry` | An URL pointing to the Docker registry to use to fetch Docker images | `nil` |
 | `concourse.insecureDockerRegistry` | Docker registry(ies) (comma separated) to allow connecting to even if not secure | `nil` |
-| `concourse.githubAuthClientId` | Application client ID for enabling GitHub OAuth | `nil` |
-| `concourse.githubAuthClientSecret` | Application client secret for enabling GitHub OAuth | `nil` |
-| `concourse.githubAuthOrganization` | GitHub organizations (comma separated) whose members will have access | `nil` |
-| `concourse.githubAuthTeam` | GitHub teams (comma separated) whose members will have access | `nil` |
-| `concourse.githubAuthUser` | GitHub users (comma separated) to permit access | `nil` |
-| `concourse.githubAuthAuthUrl` | Override default endpoint AuthURL for Github Enterprise | `nil` |
-| `concourse.githubAuthTokenUrl` | Override default endpoint TokenURL for Github Enterprise | `nil` |
-| `concourse.githubAuthApiUrl` | Override default API endpoint URL for Github Enterprise | `nil` |
-| `concourse.gitlabAuthClientId` | Application client ID for enabling GitLab OAuth | `nil` |
-| `concourse.gitlabAuthClientSecret` | Application client secret for enabling GitLab OAuth | `nil` |
-| `concourse.gitlabAuthGroup` | GitLab groups (comma separated) whose members will have access | `nil` |
-| `concourse.gitlabAuthAuthUrl` | Endpoint AuthURL for GitLab server | `nil` |
-| `concourse.gitlabAuthTokenUrl` | Endpoint TokenURL for GitLab server | `nil` |
-| `concourse.gitlabAuthApiUrl` | API endpoint URL for GitLab server | `nil` |
-| `concourse.genericOauthDisplayName` | Name for this auth method on the web UI | `nil` |
-| `concourse.genericOauthClientId` | Application client ID for enabling generic OAuth | `nil` |
-| `concourse.genericOauthClientSecret` | Application client secret for enabling generic OAuth | `nil` |
-| `concourse.genericOauthAuthUrl` | Generic OAuth provider AuthURL endpoint | `nil` |
-| `concourse.genericOauthAuthUrlParam` | Parameters (comma separated) to pass to the authentication server AuthURL | `nil` |
-| `concourse.genericOauthScope` | Optional scope required to authorize user | `nil` |
-| `concourse.genericOauthTokenUrl` | Generic OAuth provider TokenURL endpoint | `nil` |
+| `concourse.encryption.enabled` | Enable encryption of pipeline configuration | `false` |
+| `concourse.basicAuth.enabled` | Enable basic auth for the "main" Concourse team| `true` |
+| `concourse.githubAuth.enabled` | Enable Github auth for the "main" Concourse team| `false` |
+| `concourse.githubAuth.organization` | GitHub organizations (comma separated) whose members will have access | `nil` |
+| `concourse.githubAuth.team` | GitHub teams (comma separated) whose members will have access | `nil` |
+| `concourse.githubAuth.user` | GitHub users (comma separated) to permit access | `nil` |
+| `concourse.githubAuth.authUrl` | Override default endpoint AuthURL for Github Enterprise | `nil` |
+| `concourse.githubAuth.tokenUrl` | Override default endpoint TokenURL for Github Enterprise | `nil` |
+| `concourse.githubAuth.apiUrl` | Override default API endpoint URL for Github Enterprise | `nil` |
+| `concourse.gitlabAuth.enabled` | Enable Gitlab auth for the "main" Concourse team| `false` |
+| `concourse.gitlabAuth.group` | GitLab groups (comma separated) whose members will have access | `nil` |
+| `concourse.gitlabAuth.authUrl` | Endpoint AuthURL for GitLab server | `nil` |
+| `concourse.gitlabAuth.tokenUrl` | Endpoint TokenURL for GitLab server | `nil` |
+| `concourse.gitlabAuth.apiUrl` | API endpoint URL for GitLab server | `nil` |
+| `concourse.genericOauth.enabled` | Enable generic OAuth for the "main" Concourse team| `false` |
+| `concourse.genericOauth.displayName` | Name for this auth method on the web UI | `nil` |
+| `concourse.genericOauth.authUrl` | Generic OAuth provider AuthURL endpoint | `nil` |
+| `concourse.genericOauth.authUrlParam` | Parameters (comma separated) to pass to the authentication server AuthURL | `nil` |
+| `concourse.genericOauth.scope` | Optional scope required to authorize user | `nil` |
+| `concourse.genericOauth.tokenUrl` | Generic OAuth provider TokenURL endpoint | `nil` |
 | `web.nameOverride` | Override the Concourse Web components name | `web` |
 | `web.replicas` | Number of Concourse Web replicas | `1` |
 | `web.resources` | Concourse Web resource requests and limits | `{requests: {cpu: "100m", memory: "128Mi"}}` |
-| `web.service.type` | Concourse Web service type | `NodePort` |
-| `web.service.annotations` | Concourse Web Service annotations | `{}` |
+| `web.additionalAffinities` | Additional affinities to apply to web pods. E.g: node affinity | `{}` |
+| `web.tolerations` | Tolerations for the web nodes | `[]` |
+| `web.service.type` | Concourse Web service type | `ClusterIP` |
+| `web.service.annotations` | Concourse Web Service annotations | `nil` |
+| `web.service.atcNodePort` | Sets the nodePort for atc when using `NodePort` | `nil` |
+| `web.service.tsaNodePort` | Sets the nodePort for tsa when using `NodePort` | `nil` |
 | `web.ingress.enabled` | Enable Concourse Web Ingress | `false` |
 | `web.ingress.annotations` | Concourse Web Ingress annotations | `{}` |
 | `web.ingress.hosts` | Concourse Web Ingress Hostnames | `[]` |
 | `web.ingress.tls` | Concourse Web Ingress TLS configuration | `[]` |
-| `web.additionalAffinities` | Additional affinities to apply to web pods. E.g: node affinity | `nil` |
 | `web.metrics.prometheus.enabled` | Enable Prometheus metrics exporter | `false` |
 | `web.metrics.prometheus.port` | Port for exporting Prometeus metrics | `9391` |
-| `worker.nameOverride` | Override the Concourse Worker components name| `worker` |
+| `worker.nameOverride` | Override the Concourse Worker components name | `nil` |
 | `worker.replicas` | Number of Concourse Worker replicas | `2` |
 | `worker.minAvailable` | Minimum number of workers available after an eviction | `1` |
 | `worker.resources` | Concourse Worker resource requests and limits | `{requests: {cpu: "100m", memory: "512Mi"}}` |
-| `worker.additionalAffinities` | Additional affinities to apply to worker pods. E.g: node affinity | `nil` |
+| `worker.env` | Configure additional environment variables for the worker container(s) | `[]` |
+| `worker.anotations` | Annotations to be added to the worker pods | `{}` |
+| `worker.additionalAffinities` | Additional affinities to apply to worker pods. E.g: node affinity | `{}` |
+| `web.tolerations` | Tolerations for the web nodes | `[]` |
 | `worker.terminationGracePeriodSeconds` | Upper bound for graceful shutdown to allow the worker to drain its tasks | `60` |
 | `worker.fatalErrors` | Newline delimited strings which, when logged, should trigger a restart of the worker | *See [values.yaml](values.yaml)* |
 | `worker.updateStrategy` | `OnDelete` or `RollingUpdate` (requires Kubernetes >= 1.7) | `RollingUpdate` |
 | `worker.podManagementPolicy` | `OrderedReady` or `Parallel` (requires Kubernetes >= 1.7) | `Parallel` |
 | `persistence.enabled` | Enable Concourse persistence using Persistent Volume Claims | `true` |
-| `persistence.worker.class` | Concourse Worker Persistent Volume Storage Class | `generic` |
+| `persistence.worker.storageClass` | Concourse Worker Persistent Volume Storage Class | `generic` |
 | `persistence.worker.accessMode` | Concourse Worker Persistent Volume Access Mode | `ReadWriteOnce` |
 | `persistence.worker.size` | Concourse Worker Persistent Volume Storage Size | `20Gi` |
 | `postgresql.enabled` | Enable PostgreSQL as a chart dependency | `true` |
-| `postgresql.uri` | PostgreSQL connection URI | `nil` |
 | `postgresql.postgresUser` | PostgreSQL User to create | `concourse` |
 | `postgresql.postgresPassword` | PostgreSQL Password for the new user | `concourse` |
 | `postgresql.postgresDatabase` | PostgreSQL Database to create | `concourse` |
 | `postgresql.persistence.enabled` | Enable PostgreSQL persistence using Persistent Volume Claims | `true` |
-| `credentialManager.enabled` | Enable Credential Manager | `false` |
+| `credentialManager.vault.enabled` | Uuse Hashicorp Vault as a Credential Manager | `false` |
 | `credentialManager.vault.url` | Vault Server URL | `nil` |
 | `credentialManager.vault.pathPrefix` | Vault path to namespace secrets | `/concourse` |
 | `credentialManager.vault.caCert` | CA public certificate when using self-signed TLS with Vault | `nil` |
 | `credentialManager.vault.authBackend` | Vault Authentication Backend to use, leave blank when using clientToken | `nil` |
-| `credentialManager.vault.clientToken` | Vault periodic client token | `nil` |
-| `credentialManager.vault.appRoleId` | Vault AppRole RoleID | `nil` |
-| `credentialManager.vault.appRoleSecretId` | Vault AppRole SecretID | `nil` |
-| `credentialManager.vault.clientCert` | Vault Client Certificate | `nil` |
-| `credentialManager.vault.clientKey` | Vault Client Key | `nil` |
+| `rbac.create` | Enables creation of RBAC resources | `true` |
+| `rbac.apiVersion` | RBAC version | `v1beta1` |
+| `rbac.serviceAccountName` | Name of the service account to use if `rbac.create` is `false` | `v1beta1` |
+| `secrets.create` | Create the secret resource from the following values. *See [Secrets](#Secrets)* | `true` |
+| `secrets.concourse.hostKey` | Concourse Host Private Key | *See [values.yaml](values.yaml)* |
+| `secrets.concourse.hostKeyPub` | Concourse Host Public Key | *See [values.yaml](values.yaml)* |
+| `secrets.concourse.sessionSigningKey` | Concourse Session Signing Private Key | *See [values.yaml](values.yaml)* |
+| `secrets.concourse.workerKey` | Concourse Worker Private Key | *See [values.yaml](values.yaml)* |
+| `secrets.concourse.workerKeyPub` | Concourse Worker Public Key | *See [values.yaml](values.yaml)* |
+| `secrets.concourse.encryption.key` | current encryption key | `nil` |
+| `secrets.concourse.encryption.oldKey` | old encryption key, used for key rotation | `nil` |
+| `secrets.concourse.basicAuth.username` | Concourse Basic Authentication Username | `concourse` |
+| `secrets.concourse.basicAuth.password` | Concourse Basic Authentication Password | `concourse` |
+| `secrets.concourse.githubAuth.clientId` | Application client ID for GitHub OAuth | `nil` |
+| `secrets.concourse.githubAuth.clientSecret` | Application client secret
+for GitHub OAuth | `nil` |
+| `secrets.concourse.gitlabAuth.clientId` | Application client ID for GitLab OAuth | `nil` |
+| `secrets.concourse.gitlabAuth.clientSecret` | Application client secret
+for GitLab OAuth | `nil` |
+| `secrets.concourse.genericOauth.clientId` | Application client ID for Generic OAuth | `nil` |
+| `secrets.concourse.genericOauth.clientSecret` | Application client secret
+for Generic OAuth | `nil` |
+| `secrets.postgresql.uri` | PostgreSQL connection URI when `postgres.enabled` is `false` | `nil` |
+| `secrets.credentialManager.vault.caCert` | CA certificate   use to verify the vault server SSL cert. | `nil` |
+| `secrets.credentialManager.vault.clientToken` | Vault periodic client token | `nil` |
+| `secrets.credentialManager.vault.appRoleId` | Vault AppRole RoleID | `nil` |
+| `secrets.credentialManager.vault.appRoleSecretId` | Vault AppRole SecretID | `nil` |
+| `secrets.credentialManager.vault.clientCert` | Vault Client Certificate | `nil` |
+| `secrets.credentialManager.vault.clientKey` | Vault Client Key | `nil` |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
@@ -179,7 +200,7 @@ printf "%s" "concourse" > basic-auth-username
 printf "%s" "$(openssl rand -base64 24)" > basic-auth-password
 ```
 
-You'll also need to create/copy secret values for postgres, and any other optional values. See [templates/secrets.yaml](templates/secrets.yaml) for possible values. E.g.
+You'll also need to create/copy secret values for optional features. See [templates/secrets.yaml](templates/secrets.yaml) for possible values. In the example below, we are not using the [PostgreSQL](#PostgreSQL) chart dependency, and so we must set a `postgresql-uri` secret.
 
 ```console
 # copy a posgres URI to clipboard and paste it to file
@@ -269,28 +290,17 @@ web:
           - concourse.domain.com
 ```
 
-
 ### PostgreSQL
 
-By default, this chart will use a PostgreSQL database deployed as a chart dependency. You can also bring your own PostgreSQL. To do so, set the following in your custom `values.yaml` file:
+By default, this chart will use a PostgreSQL database deployed as a chart dependency, with default values for username, password, and database name. These can be modified by setting the `postgresql.*` values.
 
-```yaml
-## Configuration values for the postgresql dependency.
-## ref: https://github.com/kubernetes/charts/blob/master/stable/postgresql/README.md
-##
-postgresql:
+You can also bring your own PostgreSQL. To do so, set `postgresql.enabled` to false. You'll then need to specify the full uri to the database, including the username and password, e.g. `postgres://concourse:changeme@my-postgres.com:5432/concourse?sslmode=require`. You can do this one of two ways:
 
-  ## Use the PostgreSQL chart dependency.
-  ## Set to false if bringing your own PostgreSQL.
-  ##
-  enabled: false
+1. Set `secrets.postgresql.uri` in your values
 
-  ## If bringing your own PostgreSQL, the full uri to use
-  ## e.g. postgres://concourse:changeme@my-postgres.com:5432/concourse?sslmode=require
-  ##
-  uri: postgres://concourse:changeme@my-postgres.com:5432/concourse?sslmode=require
+2. Set `postgresql-uri` in your release's secrets as described in [Secrets](#Secrets).
 
-```
+The only way to completely avoid putting secrets in Helm is to bring your own PostgreSQL, and use option 2 above.
 
 ### Credential Management
 

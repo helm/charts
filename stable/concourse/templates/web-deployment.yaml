@@ -184,7 +184,7 @@ spec:
                 secretKeyRef:
                   name: {{ template "concourse.concourse.fullname" . }}
                   key: vault-client-token
-            {{- if .Values.credentialManager.vault.caCert }}
+            {{- if .Values.credentialManager.vault.useCaCert }}
             - name: CONCOURSE_VAULT_CA_CERT
               value: "/concourse-vault/ca.cert"
             {{- end }}
@@ -265,7 +265,7 @@ spec:
             secretName: {{ template "concourse.concourse.fullname" . }}
             defaultMode: 0400
             items:
-            {{- if .Values.credentialManager.vault.caCert }}
+            {{- if .Values.credentialManager.vault.useCaCert }}
               - key: vault-ca-cert
                 path: ca.cert
             {{- end }}
