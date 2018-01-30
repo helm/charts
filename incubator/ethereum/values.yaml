@@ -35,7 +35,10 @@ geth:
     gasLimit: '0x8000000'
     networkId: 98052
   account:
-    # account to seed and where mined Ether will be deposited
-    publicKey: 0x975aafe74baa1978c6aabd457cf8d90ee3252db0
-    privateKey: 5c539529553e68af419860c617e20f604bd92a6f0c212b3671e0ee1312a33748
-    secret: MyAccountSecret
+    # You will need to configure an Ethereum account before this
+    # network will run. The Ethereum account will be used to seed
+    # Ether and mined Ether will be deposited into this account.
+    # ref: https://github.com/ethereum/go-ethereum/wiki/Managing-your-accounts
+    publicKey:
+    privateKey:
+    secret:

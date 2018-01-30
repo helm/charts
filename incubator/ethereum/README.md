@@ -61,9 +61,9 @@ The following tables lists the configurable parameters of the vault chart and th
 | `geth.genesis.networkId`          | Ethereum network id                           | `98052`                               |
 | `geth.genesis.difficulty`         | Ethereum network difficulty                   | `0x0400`                              |
 | `geth.genesis.gasLimit`           | Ethereum network gas limit                    | `0x0x8000000`                         |
-| `geth.account.publicKey`          | Geth Account to be initially funded and deposited with mined Ether | `0x975aafe74baa1978c6aabd457cf8d90ee3252db0` |
-| `geth.account.privateKey`         | Geth Private Key                              | `5c539529553e68af419860c617e20f604bd92a6f0c212b3671e0ee1312a33748` |
-| `geth.account.secret`             | Geth Account Secret                           | `MyAccountSecret`                     | 
+| `geth.account.publicKey`          | Geth Account to be initially funded and deposited with mined Ether |                  |
+| `geth.account.privateKey`         | Geth Private Key                              |                                       |
+| `geth.account.secret`             | Geth Account Secret                           |                                       | 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example, to configure the networkid:
 
