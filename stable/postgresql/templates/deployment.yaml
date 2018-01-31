@@ -57,7 +57,7 @@ spec:
             - sh
             - -c
             - exec pg_isready --host $POD_IP
-          initialDelaySeconds: 60
+          initialDelaySeconds: 120
           timeoutSeconds: 5
           failureThreshold: 6
         readinessProbe:
