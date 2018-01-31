@@ -69,6 +69,12 @@ $ helm install --name my-release -f values.yaml stable/external-dns
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
+## Using a Google Cloud Service Account Json File
+
+```
+helm install . --values values.yaml --set external-dns.google.applicationCredentials="$(cat serviceaccount-key-dns-read-write.json | openssl base64 -A)"
+```
+
 ## IAM Permissions
 
 ```json
