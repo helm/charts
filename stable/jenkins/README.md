@@ -40,6 +40,7 @@ The following tables lists the configurable parameters of the Jenkins chart and 
 | `Master.Cpu`                      | Master requested cpu                                                     | `200m`                                                                       |
 | `Master.Memory`                   | Master requested memory                                                  | `256Mi`                                                                      |
 | `Master.InitContainerEnv`         | Environment variables for Init Container                                 | Not set                                                                      |
+| `Master.ContainerEnv`             | Environment variables for Jenkins Container                              | Not set                                                                      |
 | `Master.RunAsUser`                | uid that jenkins runs with                                               | `0`                                                                          |
 | `Master.FsGroup`                  | uid that will be used for persistent volume                              | `0`                                                                          |
 | `Master.ServiceAnnotations`       | Service annotations                                                      | `{}`                                                                         |
@@ -214,10 +215,15 @@ jenkins:
         value: ""
 ```
 
-Additionally, you may want to add the proxy details to `Master.JavaOpts`:
+Additionally, you may want to add env vars for the Jenkins container, and the JVM (`Master.JavaOpts`):
 
 ```yaml
 jenkins:
   Master:
+    ContainerEnv:
+      - name: http_proxy
+        value: "http://192.168.64.1:3128"
+      - name: https_proxy
+        value: "http://192.168.64.1:3128"
     JavaOpts: "-Dhttp.proxyHost=192.168.64.1 -Dhttp.proxyPort=3128 -Dhttps.proxyHost=192.168.64.1 -Dhttps.proxyPort=3128"
 ```
