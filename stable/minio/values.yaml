@@ -3,7 +3,7 @@
 ## Distributed Minio ref: https://docs.minio.io/docs/distributed-minio-quickstart-guide
 ##
 image: "minio/minio"
-imageTag: "RELEASE.2017-12-28T01-21-00Z"
+imageTag: "RELEASE.2018-01-18T20-33-21Z"
 imagePullPolicy: "Always"
 mode: "standalone"
 
@@ -39,10 +39,10 @@ persistence:
   accessMode: ReadWriteOnce
   size: 10Gi
 
-  ## If subPath is set mount a sub folder of a volume instead of the root of the volume.
-  ## This is especially handy for volume plugins that don't natively support sub mounting (like glusterfs).
-  ##
-  subPath: ""
+## If subPath is set mount a sub folder of a volume instead of the root of the volume.
+## This is especially handy for volume plugins that don't natively support sub mounting (like glusterfs).
+##
+subPath: ""
 
 ## Expose the Minio service to be accessed from outside the cluster (LoadBalancer service).
 ## or access it from within the cluster (ClusterIP service). Set the service type and the port to serve it.
@@ -69,9 +69,11 @@ resources:
 defaultBucket:
   enabled: false
   ## If enabled, must be a string with length > 0
-  # name: example
+  name: bucket
   ## Can be one of none|download|upload|public
-  # policy: download
+  policy: none
+  ## Purge if bucket exists already
+  purge: false
 
 ## https://docs.minio.io/docs/minio-bucket-notification-guide
 ##
@@ -79,12 +81,8 @@ minioConfig:
   region: "us-east-1"
   browser: "on"
   domain: ""
-  logger:
-    console:
-      enable: true
-    file:
-      enable: false
-      filename: ""
+  standardStorageClass: ""
+  reducedRedundancyStorageClass: ""
   aqmp:
     enable: false
     url: ""
