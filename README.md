@@ -71,19 +71,19 @@ Once these two steps are done a chart approver can merge pull requests following
 
 The following outlines the review procedure used by the Chart repository maintainers. Github labels are used to indicate state change during the review process. 
 
-* ***AWAITING REVIEW*** - Initial triage which indicates that the PR is ready for review by the maintainers team. The CLA must be signed and e2e tests must pass in-order to move to this state
+* ***AWAITING REVIEW*** - Initial triage which indicates that the PR is ready for review by the maintainers team. The CLA must be signed and e2e tests must pass in order to move to this state
 * ***CHANGES NEEDED*** - Review completed by at least one maintainer and changes needed by contributor (explicit even when using the review feature of Github)
 * ***CODE REVIEWED*** - The chart structure has been reviewed and found to be satisfactory given the [technical requirements](CONTRIBUTING.md#technical-requirements) (may happen in parallel to UX REVIEWED)
 * ***UX REVIEWED*** - The chart installation UX has been reviewed and found to be satisfactory. (may happen in parallel to CODE REVIEWED)
-* ***LGTM*** - Added ONLY once both UX/CODE reviewed are both present. Merge must be handled by someone OTHER than the maintainer that added the LGTM label. This label indicates that given a quick pass of the comments this change is ready to merge
+* ***LGTM*** - Added ONLY once both UX/CODE reviewed are both presents. Merge must be handled by someone OTHER than the maintainer that added the LGTM label. This label indicates that given a quick pass of the comments this change is ready to merge
 
 ### Stale Pull Requests and Issues
 
-Pull Requests and Issues that have no activity for 30 days automatically become stale. After 30 days of being stale, without activity, they become rotten. Pull Requests and Issues can rot for 30 days and then are automatically closed. This is the standard stale process handling for all repositories on the Kubernetes GitHub organization.
+Pull Requests and Issues that have no activity for 30 days automatically become stale. After 30 days of being stale, without activity, they become rotten. Pull Requests and Issues can rot for 30 days and they are automatically closed. This is the standard stale process handling for all repositories on the Kubernetes GitHub organization.
 
 ## Supported Kubernetes Versions
 
-This chart repository supports the latest and previous minor versions of Kubernetes. For example, if the latest minor release of Kubernetes is 1.8 then 1.7 and 1.8 are supported. Charts may still work on previous versions of Kubernertes even through they are outside the target supported window.
+This chart repository supports the latest and previous minor versions of Kubernetes. For example, if the latest minor release of Kubernetes is 1.8 then 1.7 and 1.8 are supported. Charts may still work on previous versions of Kubernertes even though they are outside the target supported window.
 
 To provide that support the API versions of objects should be those that work for both the latest minor release and the previous one.
 
