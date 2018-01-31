@@ -15,8 +15,6 @@ image:
   tag: 0.9.0
   pullPolicy: IfNotPresent
 
-livenessProbeEnabled: true
-
 # AWS Access keys to inject as environment variables
 aws:
   secret_key: ""
