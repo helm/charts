@@ -45,7 +45,7 @@ spec:
         - name: SPRING_RABBITMQ_HOST
           value: '${{ printf "{%s" .Release.Name | upper }}_RABBITMQ_SERVICE_HOST}'
         - name: SPRING_RABBITMQ_PORT
-          value: '${{ printf "{%s" .Release.Name | upper }}_RABBITMQ_SERVICE_PORT_AMPQ}'
+          value: '${{ printf "{%s" .Release.Name | upper }}_RABBITMQ_SERVICE_PORT_AMQP}'
         - name: SPRING_RABBITMQ_USERNAME
           value: '{{ .Values.rabbitmq.rabbitmqUsername }}'
         - name: SPRING_RABBITMQ_PASSWORD
@@ -53,3 +53,4 @@ spec:
             secretKeyRef:
               name: {{ printf "%s-%s" .Release.Name "rabbitmq" | trunc 63 | trimSuffix "-" }}
               key: rabbitmq-password
+      serviceAccountName: {{ template "fullname" . }}-sa

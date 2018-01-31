@@ -80,8 +80,10 @@ spec:
           value: 'true'
         - name: SPRING_CLOUD_DEPLOYER_KUBERNETES_CREATE_DEPLOYMENT
           value: 'true'
+        - name: SPRING_CLOUD_DEPLOYER_KUBERNETES_CPU
+          value: '{{ .Values.deployer.resourceLimits.cpu }}'
         - name: SPRING_CLOUD_DEPLOYER_KUBERNETES_MEMORY
-          value: 640Mi
+          value: '{{ .Values.deployer.resourceLimits.memory }}'
         - name: SPRING_CLOUD_DEPLOYER_KUBERNETES_READINESS_PROBE_DELAY
           value: '{{ .Values.deployer.readinessProbe.initialDelaySeconds }}'
         - name: SPRING_CLOUD_DEPLOYER_KUBERNETES_LIVENESS_PROBE_DELAY
@@ -92,6 +94,10 @@ spec:
           value: 'true'
         - name: SPRING_CLOUD_KUBERNETES_SECRETS_PATHS
           value: /etc/secrets
+        - name: SPRING_CLOUD_DATAFLOW_FEATURES_SKIPPER_ENABLED
+          value: 'true'
+        - name: SPRING_CLOUD_SKIPPER_CLIENT_SERVER_URI
+          value: 'http://${{ printf "{" }}{{ template "scdf.envname" . }}_SKIPPER_SERVICE_HOST}/api'
         - name: SPRING_CLOUD_DATAFLOW_METRICS_COLLECTOR_URI
           value: 'http://${{ printf "{" }}{{ template "scdf.envname" . }}_METRICS_SERVICE_HOST}'
         - name: SPRING_CLOUD_DATAFLOW_SERVER_URI
@@ -125,3 +131,4 @@ spec:
           }
         }
       ]
+      serviceAccountName: {{ template "fullname" . }}-sa

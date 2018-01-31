@@ -1,0 +1,60 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "scdf.fullname" . }}-skipper
+  labels:
+    app: {{ template "name" . }}
+    component: skipper
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: {{ template "name" . }}
+        component: skipper
+        release: "{{ .Release.Name }}"
+    spec:
+      containers:
+      - name: {{ template "scdf.fullname" . }}-skipper
+        image: {{ .Values.skipper.image }}:{{ .Values.skipper.version }}
+        imagePullPolicy: {{ .Values.skipper.imagePullPolicy }}
+        ports:
+        - containerPort: {{ .Values.skipper.service.internalPort }}
+        resources:
+{{ toYaml .Values.skipper.resources | indent 10 }}
+        env:
+        - name: SPRING_DATASOURCE_URL
+          value: 'jdbc:mysql://${{ printf "{%s" .Release.Name | upper }}_MYSQL_SERVICE_HOST}:3306/skipper'
+        - name: SPRING_DATASOURCE_USERNAME
+          value: root
+        - name: SPRING_DATASOURCE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ printf "%s-%s" .Release.Name "mysql" | trunc 63 | trimSuffix "-" }}
+              key: mysql-root-password
+        - name: SPRING_DATASOURCE_DRIVER_CLASS_NAME
+          value: org.mariadb.jdbc.Driver
+        - name: RABBITMQ_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ printf "%s-%s" .Release.Name "rabbitmq" | trunc 63 | trimSuffix "-" }}
+              key: rabbitmq-password
+        - name: SPRING_APPLICATION_JSON
+          value: '{"spring.cloud.skipper.server.enableLocalPlatform" : false, "spring.cloud.skipper.server.platform.kubernetes.accounts.{{ .Values.skipper.platformName }}.environmentVariables" : "SPRING_RABBITMQ_HOST=${{ printf "{%s" .Release.Name | upper }}_RABBITMQ_SERVICE_HOST},SPRING_RABBITMQ_PORT=${{ printf "{%s" .Release.Name | upper }}_RABBITMQ_SERVICE_PORT_AMQP},SPRING_RABBITMQ_USERNAME={{ .Values.rabbitmq.rabbitmqUsername }},SPRING_RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}","spring.cloud.skipper.server.platform.kubernetes.accounts.{{ .Values.skipper.platformName }}.memory" : "{{ .Values.deployer.resourceLimits.memory }}","spring.cloud.skipper.server.platform.kubernetes.accounts.{{ .Values.skipper.platformName }}.cpu" : "{{ .Values.deployer.resourceLimits.cpu }}","spring.cloud.skipper.server.platform.kubernetes.accounts.{{ .Values.skipper.platformName }}.createDeployment" : true}'
+      initContainers:
+      - name: init-wait-mysql
+        image: busybox
+        command: ['sh', '-c', 'until nslookup {{ printf "%s-%s" .Release.Name "mysql" | trunc 63 | trimSuffix "-" }}; do echo waiting for mysql; sleep 2; done;']
+      - name: init-mysql-database
+        image: mysql:5.7.14
+        env:
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ printf "%s-%s" .Release.Name "mysql" | trunc 63 | trimSuffix "-" }}
+              key: mysql-root-password
+        command: ['sh', '-c', 'mysql -h ${{ printf "{%s" .Release.Name | upper }}_MYSQL_SERVICE_HOST} -u root --password=${MYSQL_PASSWORD} -e "CREATE DATABASE IF NOT EXISTS skipper;"']
+      serviceAccountName: {{ template "fullname" . }}-sa

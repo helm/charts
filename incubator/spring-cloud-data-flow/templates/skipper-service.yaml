@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "scdf.fullname" . }}-skipper
+  labels:
+    app: {{ template "name" . }}
+    component: skipper
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  type: {{ .Values.skipper.service.type }}
+  ports:
+    - port: {{ .Values.skipper.service.externalPort }}
+      targetPort: {{ .Values.skipper.service.internalPort }}
+      protocol: TCP
+      name: http
+  selector:
+    app: {{ template "name" . }}
+    component: skipper
+    release: {{ .Release.Name }}
