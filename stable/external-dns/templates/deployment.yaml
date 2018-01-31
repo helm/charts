@@ -13,6 +13,12 @@ spec:
     {{- end }}
       labels: {{ include "external-dns.labels" . | indent 8 }}
     spec:
+      volumes:
+      {{- if .Values.google.applicationCredentials }}
+        - name: {{ template "external-dns.google.volumeMountName" .}}
+          secret:
+            secretName: {{ template "external-dns.fullname" . }}
+      {{- end }}
       containers:
         - name: {{ template "external-dns.name" . }}
           image: "{{.Values.image.name}}:{{ .Values.image.tag }}"
@@ -57,6 +63,10 @@ spec:
             mountPath: /etc/kubernetes/azure.json
             readOnly: true
           {{- end }}
+          {{- if .Values.google.applicationCredentials }}
+          - name: {{ template "external-dns.google.volumeMountName" . }}
+            mountPath: {{ template "external-dns.google.applicationCredentialVolumePath" . }}
+          {{- end }}
           env:
         {{- if eq .Values.provider "aws" }}
         {{- if and .Values.aws.secretKey .Values.aws.accessKey }}
@@ -85,6 +95,10 @@ spec:
           - name: CF_API_EMAIL
             value: "{{ .Values.cloudflare.email }}"
         {{- end }}
+        {{- if .Values.google.applicationCredentials }}
+          - name: GOOGLE_APPLICATION_CREDENTIALS
+            value: {{ template "external-dns.google.applicationCredentialVolumePath" . }}/{{ template "external-dns.google.applicationCredentialPath" . }}
+        {{- end }}        
         {{- $root := . -}}
         {{- range $key, $value := .Values.extraEnv }}
           - name: {{ $key }}

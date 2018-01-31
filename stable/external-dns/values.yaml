@@ -25,6 +25,11 @@ aws:
   # Filter for zones of this type (optional, options: public, private)
   zoneType: ""
 
+# Google specific settings
+google:
+  ## Add the content of a json credentials file to the environment variable GOOGLE_APPLICATION_CREDENTIALS
+  applicationCredentials: ""
+
 # Cloudflare keys to inject as environment variables
 cloudflare:
   apiKey: ""

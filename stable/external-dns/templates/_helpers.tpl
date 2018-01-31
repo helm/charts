@@ -28,3 +28,12 @@ release: {{.Release.Name }}
 {{ toYaml .Values.podLabels }}
 {{- end }}
 {{- end }}
+
+{{/* Google application credentials volumemount name */}}
+{{define "external-dns.google.volumeMountName"}}google-cloud-key{{end}}
+
+{{/* Google application credentials volume path */}}
+{{define "external-dns.google.applicationCredentialVolumePath"}}/var/secrets/google{{end}}
+
+{{/* Google application credentials directory */}}
+{{define "external-dns.google.applicationCredentialPath"}}google-appplication-credentials{{end}}
