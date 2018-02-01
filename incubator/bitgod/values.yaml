@@ -1,0 +1,32 @@
+image:
+  repository: ashanaakh/bitgod
+  tag: latest
+  pullPolicy: Always
+
+service:
+  type: ClusterIP
+  name: bitgod
+  port: 19332
+
+# Comment to disable wallet and token initialization
+bitgo:
+  enabled: false
+#  wallet:
+#  accessToken:
+# bitgo:
+#   enabled: false
+
+# Use 'testnet: false' for production mode
+testnet: true
+
+rpc:
+  user: bitgod
+  password: changeme
+
+resources: {}
+
+# Additional configurations
+config:
+  bitcoind: {}
+  #  printtoconsole: 1
+  bitgod: {}

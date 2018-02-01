@@ -1,0 +1,35 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "bitgod.fullname" . }}
+  labels:
+{{ include "bitgod.labels.standard" . | indent 4 }}
+spec:
+  template:
+    metadata:
+      labels:
+{{ include "bitgod.labels.standard" . | indent 8 }}
+    spec:
+      containers:
+      - name: {{ template "bitgod.fullname" . }}
+        image: {{ template "bitgod.image" . }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - containerPort: {{ .Values.service.port }}
+        env:
+        - name: PORT
+          value: "{{ .Values.service.port }}"
+        volumeMounts:
+        - name: bitcoind-config
+          mountPath: /home/node/.bitcoin
+        - name: bitgod-config
+          mountPath: /home/node/.bitgod
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+      volumes:
+      - name: bitcoind-config
+        configMap:
+          name: {{ template "bitgod.config.bitcoind" . }}
+      - name: bitgod-config
+        configMap:
+          name: {{ template "bitgod.config.bitgod" . }}
