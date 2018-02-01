@@ -15,8 +15,9 @@ metadata:
 spec:
   type: {{ .Values.service.type }}
   ports:
-  - name: postgresql
-    port: {{ .Values.service.port }}
+  - port: {{ .Values.service.port }}
+{{- if not .Values.postgresHostIp }}
+    name: postgresql
     targetPort: postgresql
   {{- if (and (eq .Values.service.type "NodePort") (not (empty .Values.service.nodePort))) }}
     nodePort: {{ .Values.service.nodePort }}
@@ -27,3 +28,4 @@ spec:
 {{- end }}
   selector:
     app: {{ template "postgresql.fullname" . }}
+{{- end }}

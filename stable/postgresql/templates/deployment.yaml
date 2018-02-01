@@ -1,3 +1,4 @@
+{{- if not .Values.postgresHostIp }}
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
@@ -115,3 +116,4 @@ spec:
       imagePullSecrets:
         - name: {{ .Values.imagePullSecrets }}
       {{- end }}
+{{- end -}}

@@ -1,0 +1,17 @@
+{{- if .Values.postgresHostIp -}}
+kind: Endpoints
+apiVersion: v1
+metadata:
+  name: {{ template "postgresql.fullname" . }}
+  labels:
+    app: {{ template "postgresql.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+subsets:
+  - addresses:
+      - ip: {{ .Values.postgresHostIp }}
+    ports:
+      - port: {{ .Values.service.port }}
+        protocol: TCP
+{{- end -}}

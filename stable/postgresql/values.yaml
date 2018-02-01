@@ -16,6 +16,11 @@ imageTag: "9.6.2"
 ##
 # imagePullSecrets: myregistrykey
 
+## If your database is outside the cluster.
+## Enable the following 2 values.
+## Only a Service and Endpoint will be deployed.
+# postgresHostIp: 111.11.111.11
+
 ## Create a database user
 ## Default: postgres
 # postgresUser:
@@ -27,11 +32,13 @@ imageTag: "9.6.2"
 # postgresDatabase:
 
 ## Specify initdb arguments, e.g. --data-checksums
+## Ignored if postgresHostIp is enabled
 ## ref: https://github.com/docker-library/docs/blob/master/postgres/content.md#postgres_initdb_args
 ## ref: https://www.postgresql.org/docs/current/static/app-initdb.html
 # postgresInitdbArgs:
 
 ## Persist data to a persitent volume
+## Ignored if postgresHostIp is enabled
 persistence:
   enabled: true
 
@@ -78,6 +85,7 @@ metrics:
     #           description: "Size of the database in bytes"
 
 ## Configure resource requests and limits
+## Ignored if postgresHostIp is enabled
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
 ##
 resources:
@@ -106,6 +114,7 @@ networkPolicy:
   allowExternal: true
 
 ## Node labels and tolerations for pod assignment
+## Ignored if postgresHostIp is enabled
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
 nodeSelector: {}

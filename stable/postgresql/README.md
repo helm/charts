@@ -10,7 +10,9 @@ $ helm install stable/postgresql
 
 ## Introduction
 
-This chart bootstraps a [PostgreSQL](https://github.com/docker-library/postgres) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
+This chart either:
+* bootstraps a [PostgreSQL](https://github.com/docker-library/postgres) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
+* creates a Service with an Endpoint to a [PostgreSQL](https://github.com/docker-library/postgres) instance outside the [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
 ## Prerequisites
 
@@ -53,7 +55,8 @@ The following tables lists the configurable parameters of the PostgresSQL chart 
 | `postgresPassword`         | Password for the new user.                      | random 10 characters                                       |
 | `postgresDatabase`         | Name for new database to create.                | `postgres`                                                 |
 | `postgresInitdbArgs`       | Initdb Arguments                                | `nil`                                                      |
-| `persistence.enabled`      | Use a PVC to persist data                       | `true`                                                     |
+| `postgresHostIp`           | The Ip address of the host, outside the cluster | `nil`                                                      |
+| `persistence.enabled`      | Use a PVC to persist data (Ignored if postgresHostIp is enabled) | `true`                                    |
 | `persistence.existingClaim`| Provide an existing PersistentVolumeClaim       | `nil`                                                      |
 | `persistence.storageClass` | Storage class of backing PVC                    | `nil` (uses alpha storage class annotation)                |
 | `persistence.accessMode`   | Use volume as ReadOnly or ReadWrite             | `ReadWriteOnce`                                            |
@@ -61,7 +64,7 @@ The following tables lists the configurable parameters of the PostgresSQL chart 
 | `persistence.size`         | Size of data volume                             | `8Gi`                                                      |
 | `persistence.subPath`      | Subdirectory of the volume to mount at          | `postgresql-db`                                            |
 | `persistence.mountPath`    | Mount path of data volume                       | `/var/lib/postgresql/data/pgdata`                          |
-| `resources`                | CPU/Memory resource requests/limits             | Memory: `256Mi`, CPU: `100m`                               |
+| `resources`                | CPU/Memory resource requests/limits (Ignored if postgresHostIp is enabled) | Memory: `256Mi`, CPU: `100m`    |
 | `metrics.enabled`          | Start a side-car prometheus exporter            | `false`                                                    |
 | `metrics.image`            | Exporter image                                  | `wrouesnel/postgres_exporter`                              |
 | `metrics.imageTag`         | Exporter image                                  | `v0.1.1`                                                   |
@@ -72,11 +75,11 @@ The following tables lists the configurable parameters of the PostgresSQL chart 
 | `service.port`             | TCP port                                        | `5432`                                                     |
 | `service.type`             | k8s service type exposing ports, e.g. `NodePort`| `ClusterIP`                                                |
 | `service.nodePort`         | NodePort value if service.type is `NodePort`    | `nil`                                                      |
-| `networkPolicy.enabled`    | Enable NetworkPolicy                            | `false`                                                    |
+| `networkPolicy.enabled`    | Enable NetworkPolicy (Ignored if postgresHostIp is enabled) | `false`                                        |
 | `networkPolicy.allowExternal` | Don't require client label for connections   | `true`                                                     |
-| `nodeSelector`             | Node labels for pod assignment                  | {}                                                         |
-| `affinity`                 | Affinity settings for pod assignment            | {}                                                         |
-| `tolerations`              | Toleration labels for pod assignment            | []                                                         |
+| `nodeSelector`             | Node labels for pod assignment (Ignored if postgresHostIp is enabled) | {}                                   |
+| `affinity`                 | Affinity settings for pod assignment (Ignored if postgresHostIp is enabled) | {}                             |
+| `tolerations`              | Toleration labels for pod assignment (Ignored if postgresHostIp is enabled) | []                             |
 
 The above parameters map to the env variables defined in [postgres](http://github.com/docker-library/postgres). For more information please refer to the [postgres](http://github.com/docker-library/postgres) image documentation.
 
