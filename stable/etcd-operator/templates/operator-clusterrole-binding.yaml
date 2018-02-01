@@ -11,7 +11,11 @@ metadata:
     release: {{ .Release.Name }}
 subjects:
 - kind: ServiceAccount
+{{- if .Values.rbac.etcdOperatorServiceAccountName }}
   name: {{ .Values.rbac.etcdOperatorServiceAccountName }}
+{{- else }}
+  name: {{ template "etcd-operator.fullname" . }}
+{{- end }}
   namespace: {{ .Release.Namespace }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io

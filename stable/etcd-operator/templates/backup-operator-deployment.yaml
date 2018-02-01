@@ -18,7 +18,11 @@ spec:
         app: {{ template "etcd-backup-operator.fullname" . }}
         release: {{ .Release.Name }}
     spec:
-      serviceAccountName: {{ if .Values.rbac.create }}{{ template "etcd-backup-operator.fullname" . }}{{ else }}{{ .Values.rbac.backupOperatorServiceAccountName }}{{ end }}
+    {{- if .Values.rbac.backupOperatorServiceAccountName }}
+      serviceAccountName: {{ .Values.rbac.backupOperatorServiceAccountName }}
+    {{- else }}
+      serviceAccountName: {{ template "etcd-backup-operator.fullname" . }}
+    {{- end }}
       containers:
       - name: {{ .Values.backupOperator.name }}
         image: "{{ .Values.backupOperator.image.repository }}:{{ .Values.backupOperator.image.tag }}"
