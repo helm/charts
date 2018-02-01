@@ -12,10 +12,10 @@ metadata:
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: {{ .Values.rbac.serviceAccountName | default (include "toplevel.fullname" .) }}
+  name: {{ template "weave-scope-agent.serviceAccountName" . }}
 subjects:
   - kind: ServiceAccount
-    name: {{ .Values.rbac.serviceAccountName | default (include "toplevel.fullname" .) }}
+    name: {{ template "weave-scope-agent.serviceAccountName" . }}
     namespace: {{ .Release.Namespace }}
 {{- end }}
 {{- end -}}

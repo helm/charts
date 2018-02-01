@@ -65,5 +65,5 @@ spec:
       hostPID: true
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
-      serviceAccountName: {{ .Values.rbac.serviceAccountName | default (include "toplevel.fullname" .) }}
+      serviceAccountName: {{ template "weave-scope-agent.serviceAccountName" . }}
 {{- end -}}
