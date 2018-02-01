@@ -267,6 +267,7 @@ spec:
               -data-dir=/var/lib/consul \
               -server \
               -bootstrap-expect=${INITIAL_CLUSTER_SIZE} \
+              -disable-keyring-file \
               -bind=0.0.0.0 \
               -advertise=${IP} \
               ${PEERS} \
