@@ -4,22 +4,25 @@ metadata:
   name: {{ template "kubernetes-dashboard.fullname" . }}
   labels:
     app: {{ template "kubernetes-dashboard.name" . }}
-    heritage: "{{ .Release.Service }}"
-    release: "{{ .Release.Name }}"
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
     kubernetes.io/cluster-service: "true"
-{{- if .Values.serviceAnnotations }}
+{{- if .Values.service.labels }}
+{{ toYaml .Values.service.labels | indent 4 }}
+{{- end }}
+{{- if .Values.service.annotations }}
   annotations:
-{{ toYaml .Values.serviceAnnotations | indent 4 }}
+{{ toYaml .Values.service.annotations | indent 4 }}
 {{- end }}
 spec:
-  type: {{ .Values.serviceType }}
+  type: {{ .Values.service.type }}
   ports:
-  - port: {{ .Values.httpPort }}
+  - port: {{ .Values.service.externalPort }}
     targetPort: http
-{{- if hasKey .Values "nodePort" }}
-    nodePort: {{ .Values.nodePort }}
+{{- if hasKey .Values.service "nodePort" }}
+    nodePort: {{ .Values.service.nodePort }}
 {{- end }}
   selector:
     app: {{ template "kubernetes-dashboard.name" . }}
-    release: {{ .Release.Name | quote }}
+    release: {{ .Release.Name }}
