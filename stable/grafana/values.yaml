@@ -189,6 +189,11 @@ server:
   ##
   # storageLocalPath: /var/lib/grafana/data
 
+  ## Grafana local provisioning path
+  ## Default: '/var/lib/grafana/provisioning'
+  ##
+  # provisioningLocalPath: /var/lib/grafana/provisioning
+
   ## Grafana Pod termination grace period
   ## Default: 300s (5m)
   ##
@@ -274,6 +279,7 @@ serverConfigFile:
     data = /var/lib/grafana/data
     logs = /var/log/grafana
     plugins = /var/lib/grafana/plugins
+    provisioning = /var/lib/grafana/provisioning
 
     [server]
     ;protocol = http
@@ -473,3 +479,14 @@ dashboardImports:
   ## Default: post-install,post-upgrade
   ##
   hook: post-install,post-upgrade
+  # restartPolicy: OnFailure
+
+
+## Grafana dashboard/datasource provisioner configuration
+##
+## If you'd like to use the provisioners to pull in dashboards from an external
+## source, add the configuration files below.
+##
+## See: http://docs.grafana.org/administration/provisioning/
+provisioningDashboardsFiles: {}
+provisioningDatasourcesFiles: {}
