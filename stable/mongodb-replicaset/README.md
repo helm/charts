@@ -32,6 +32,7 @@ The following tables lists the configurable parameters of the mongodb chart and 
 | ------------------------------- | ------------------------------------------------------------------------- | --------------------------------------------------- |
 | `replicaSet`                    | Name of the replica set                                                   | rs0                                                 |
 | `replicas`                      | Number of replicas in the replica set                                     | 3                                                   |
+| `minAvailable`                  | Minimum number of available pods for PodDisruptionBudget                  | 1                                                   |
 | `port`                          | MongoDB port                                                              | 27017                                               |
 | `installImage.name`             | Image name for the init container that establishes the replica set        | k8s.gcr.io/mongodb-install                          |
 | `installImage.tag`              | Image tag for the init container that establishes the replica set         | 0.5                                                 |

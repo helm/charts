@@ -1,5 +1,6 @@
 replicaSet: rs0
 replicas: 3
+minAvailable: 1
 port: 27017
 
 auth:
