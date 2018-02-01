@@ -39,25 +39,28 @@ exitCode=0
 function cleanup {
     if [ -n "$CURRENT_RELEASE" ]; then
 
-      # Capture logs from test pods
-      kubectl get po --namespace ${NAMESPACE} --show-all -o go-template='{{range .items}}{{ $hook := print (index .metadata.annotations "helm.sh/hook") }}{{ if or (eq $hook "test-success") (eq $hook "test-failure") }}{{printf "%s\n" .metadata.name}}{{end}}{{end}}' | while read line; do
-        if [[ $line != "" ]]; then
-          echo "Logs from test pod $line:"
-          kubectl logs --namespace ${NAMESPACE} ${line}
-          printf "End of logs for $line\n\n"
-        fi
-      done
-
-      # Capture logs from application pods
+      # Before reporting the logs from all pods provide a helm status for
+      # the release
       helm status ${CURRENT_RELEASE}
-      helm status ${CURRENT_RELEASE} | sed -n '/Pod(related)/,/^$/p' | sed -e '1,2d' | awk '{ print $1 }' | while read line; do
+
+      # List all logs for all containers in all pods for the namespace which was
+      # created for this PR test run
+      kubectl get pods --show-all --no-headers --namespace ${NAMESPACE} | awk '{ print $1 }' | while read line; do
         if [[ $line != "" ]]; then
-          echo "logs for app pod $line:"
-          kubectl logs ${line}
-          printf "End of logs for $line\n\n"
+            echo "===Logs from pod $line:==="
+
+            # There can be multiple containers within a pod. We need to iterate
+            # over each of those
+            containers=`kubectl get pods --show-all -o jsonpath="{.spec.containers[*].name}" --namespace ${NAMESPACE} $line`
+            for cname in ${containers}; do
+                echo "---Logs from container $cname in pod $line:---"
+                kubectl logs --namespace ${NAMESPACE} -c ${cname} ${line}
+                echo "---End of logs for container $cname in pod $line---\n"
+            done
+
+            echo "===End of logs for pod $line===\n"
         fi
       done
-
 
       helm delete --purge ${CURRENT_RELEASE} > cleanup_log 2>&1 || true
     fi
@@ -118,7 +121,7 @@ for directory in ${CHANGED_FOLDERS}; do
     continue
   elif [ -d $directory ]; then
     CHART_NAME=`echo ${directory} | cut -d '/' -f2`
-    
+
     # A semver comparison is here as well as in the circleci tests. The circleci
     # tests provide almost immediate feedback to chart authors. This test is also
     # re-run right before the bot merges a PR so we can make sure the chart
@@ -140,7 +143,7 @@ for directory in ${CHANGED_FOLDERS}; do
       sleep $VERIFICATION_PAUSE
     fi
     helm delete --purge ${RELEASE_NAME}
-    
+
     # Setting the current release to none to avoid the cleanup and error
     # handling for a release that no longer exists.
     CURRENT_RELEASE=""

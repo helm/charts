@@ -13,11 +13,17 @@ spec:
   replicas: 1
   template:
     metadata:
+      annotations:
+        checksum/secrets: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
       labels:
         app: {{ template "drone.name" . }}
         release: "{{ .Release.Name }}"
         component: server
     spec:
+{{- if .Values.server.affinity }}
+      affinity:
+{{ toYaml .Values.server.affinity | indent 8 }}
+{{- end }}
       containers:
       - name: {{ template "drone.fullname" . }}-server
         image: "{{ .Values.images.server.repository }}:{{ .Values.images.server.tag }}"
