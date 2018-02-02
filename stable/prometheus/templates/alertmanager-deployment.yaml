@@ -11,6 +11,10 @@ metadata:
   name: {{ template "prometheus.alertmanager.fullname" . }}
 spec:
   replicas: {{ .Values.alertmanager.replicaCount }}
+  {{- if .Values.server.strategy }}
+  strategy:
+{{ toYaml .Values.server.strategy | indent 4 }}
+  {{- end }}
   template:
     metadata:
     {{- if .Values.alertmanager.podAnnotations }}
@@ -38,11 +42,15 @@ spec:
           {{- range $key, $value := .Values.alertmanager.extraArgs }}
             - --{{ $key }}={{ $value }}
           {{- end }}
+          {{- if .Values.alertmanager.baseURL }}
+            - --web.external-url={{ .Values.alertmanager.baseURL }}
+          {{- end }}
+
           ports:
             - containerPort: 9093
           readinessProbe:
             httpGet:
-              path: {{ .Values.alertmanager.baseURL }}/#/status
+              path: {{ .Values.alertmanager.prefixURL }}/#/status
               port: 9093
             initialDelaySeconds: 30
             timeoutSeconds: 30
@@ -60,7 +68,7 @@ spec:
           imagePullPolicy: "{{ .Values.configmapReload.image.pullPolicy }}"
           args:
             - --volume-dir=/etc/config
-            - --webhook-url=http://localhost:9093{{ .Values.alertmanager.baseURL }}/-/reload
+            - --webhook-url=http://localhost:9093{{ .Values.alertmanager.prefixURL }}/-/reload
           resources:
 {{ toYaml .Values.configmapReload.resources | indent 12 }}
           volumeMounts:
@@ -70,6 +78,10 @@ spec:
     {{- if .Values.alertmanager.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.alertmanager.nodeSelector | indent 8 }}
+    {{- end }}
+    {{- if .Values.alertmanager.affinity }}
+      affinity:
+{{ toYaml .Values.alertmanager.affinity | indent 8 }}
     {{- end }}
       volumes:
         - name: config-volume

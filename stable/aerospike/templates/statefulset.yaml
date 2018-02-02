@@ -1,0 +1,64 @@
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  name: {{ template "aerospike.fullname" . }}
+  labels:
+    app: {{ template "aerospike.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  serviceName: {{ template "aerospike.fullname" . }}-mesh
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "aerospike.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
+      containers:
+      - name: {{ template "aerospike.fullname" . }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - containerPort: 3000
+          name: aero-clients
+        - containerPort: 3002
+          name: aero-mesh
+        - containerPort: 3003
+          name: aero-info
+        readinessProbe:
+          tcpSocket:
+              port: 3000
+          initialDelaySeconds: 15
+          timeoutSeconds: 1
+        volumeMounts:
+        - name: config-volume
+          mountPath: /etc/aerospike
+        {{- range $pv := .Values.persistentVolume }}
+        - name: {{ $pv.name | quote }}
+          mountPath: {{ $pv.mountPath | quote }}
+        {{- end }}
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+      {{- end }}
+      volumes:
+      - name: config-volume
+        configMap:
+          name: {{ template "aerospike.fullname" . }}
+          items:
+          - key: aerospike.conf
+            path: aerospike.conf
+  volumeClaimTemplates:
+  {{- range $pv := .Values.persistentVolume }}
+  - metadata:
+      name: {{ $pv.name | quote }}
+    spec:
+{{ toYaml $pv.template | indent 6 }}
+  {{- end }}

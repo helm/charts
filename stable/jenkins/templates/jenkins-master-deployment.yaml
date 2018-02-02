@@ -34,7 +34,12 @@ spec:
 {{ toYaml .Values.Master.Tolerations | indent 8 }}
       {{- end }}
       securityContext:
-        runAsUser: 0
+        runAsUser: {{ default 0 .Values.Master.RunAsUser }}
+{{- if and (.Values.Master.RunAsUser) (.Values.Master.FsGroup) }}
+{{- if not (eq .Values.Master.RunAsUser 0.0) }}
+        fsGroup: {{ .Values.Master.FsGroup }}
+{{- end }}
+{{- end }}
       serviceAccountName: {{ if .Values.rbac.install }}{{ template "jenkins.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
       initContainers:
         - name: "copy-default-config"
@@ -48,6 +53,24 @@ spec:
             -
               mountPath: /var/jenkins_config
               name: jenkins-config
+            {{- if .Values.Master.CredentialsXmlSecret }}
+            -
+              mountPath: /var/jenkins_credentials
+              name: jenkins-credentials
+              readOnly: true
+            {{- end }}
+            {{- if .Values.Master.SecretsFilesSecret }}
+            -
+              mountPath: /var/jenkins_secrets
+              name: jenkins-secrets
+              readOnly: true
+            {{- end }}
+            {{- if .Values.Master.Jobs }}
+            -
+              mountPath: /var/jenkins_jobs
+              name: jenkins-jobs
+              readOnly: true
+            {{- end }}
             -
               mountPath: /usr/share/jenkins/ref/plugins/
               name: plugin-dir
@@ -87,6 +110,18 @@ spec:
             - containerPort: {{ .Values.Master.JMXPort }}
               name: jmx
             {{- end }}
+{{- if .Values.Master.HealthProbes }}
+          livenessProbe:
+            httpGet:
+              path: /login
+              port: http
+            initialDelaySeconds: {{ .Values.Master.HealthProbesTimeout }}
+          readinessProbe:
+            httpGet:
+              path: /login
+              port: http
+            initialDelaySeconds: {{ .Values.Master.HealthProbesTimeout }}
+{{- end }}
           resources:
             requests:
               cpu: "{{ .Values.Master.Cpu }}"
@@ -103,6 +138,24 @@ spec:
               mountPath: /var/jenkins_config
               name: jenkins-config
               readOnly: true
+            {{- if .Values.Master.CredentialsXmlSecret }}
+            -
+              mountPath: /var/jenkins_credentials
+              name: jenkins-credentials
+              readOnly: true
+            {{- end }}
+            {{- if .Values.Master.SecretsFilesSecret }}
+            -
+              mountPath: /var/jenkins_secrets
+              name: jenkins-secrets
+              readOnly: true
+            {{- end }}
+            {{- if .Values.Master.Jobs }}
+            -
+              mountPath: /var/jenkins_jobs
+              name: jenkins-jobs
+              readOnly: true
+            {{- end }}
             -
               mountPath: /usr/share/jenkins/ref/plugins/
               name: plugin-dir
@@ -118,6 +171,21 @@ spec:
       - name: jenkins-config
         configMap:
           name: {{ template "jenkins.fullname" . }}
+      {{- if .Values.Master.CredentialsXmlSecret }}
+      - name: jenkins-credentials
+        secret:
+          secretName: {{ .Values.Master.CredentialsXmlSecret }}
+      {{- end }}
+      {{- if .Values.Master.SecretsFilesSecret }}
+      - name: jenkins-secrets
+        secret:
+          secretName: {{ .Values.Master.SecretsFilesSecret }}
+      {{- end }}
+      {{- if .Values.Master.Jobs }}
+      - name: jenkins-jobs
+        configMap:
+          name: {{ template "jenkins.fullname" . }}-jobs
+      {{- end }}
       - name: plugin-dir
         emptyDir: {}
       - name: secrets-dir
@@ -129,3 +197,7 @@ spec:
       {{- else }}
         emptyDir: {}
       {{- end -}}
+{{- if .Values.Master.ImagePullSecret }}
+      imagePullSecrets:
+      - name: {{ .Values.Master.ImagePullSecret }}
+{{- end -}}

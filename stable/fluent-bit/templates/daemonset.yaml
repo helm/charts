@@ -3,13 +3,14 @@ kind: DaemonSet
 metadata:
   name: fluent-bit
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "fluent-bit.fullname" . }}
 spec:
   template:
     metadata:
       labels:
-        app: {{ template "fullname" . }}
+        app: {{ template "fluent-bit.fullname" . }}
     spec:
+      serviceAccountName: {{ if .Values.rbac.create }}{{ template "fluent-bit.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
       containers:
       - name: fluent-bit
         image: "{{ .Values.image.fluent_bit.repository }}:{{ .Values.image.fluent_bit.tag }}"
@@ -50,7 +51,7 @@ spec:
           path: /var/lib/docker/containers
       - name: config
         configMap:
-          name: {{ template "fullname" . }}-config
+          name: {{ template "fluent-bit.fullname" . }}-config
 {{ if .Values.on_minikube }}
       - name: mnt
         hostPath:

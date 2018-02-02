@@ -13,7 +13,7 @@ image: concourse/concourse
 ## Concourse image version.
 ## ref: https://hub.docker.com/r/concourse/concourse/tags/
 ##
-imageTag: "3.3.2"
+imageTag: "3.8.0"
 
 ## Specify a imagePullPolicy: 'Always' if imageTag is 'latest', else set to 'IfNotPresent'.
 ## ref: https://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -184,6 +184,12 @@ concourse:
   ##
   baggageclaimDriver: naive
 
+  ## The selection strategy for placing containers onto workers, as of Concourse 3.7 this can be
+  ## "volume-locality" or "random". Random can better spread load across workers, see
+  ## https://github.com/concourse/atc/pull/219 for background.
+  ##
+  containerPlacementStrategy: random
+
   ## An URL pointing to the Docker registry to use to fetch Docker images.
   ## If unset, this will default to the Docker default
   ##
@@ -245,7 +251,7 @@ concourse:
   ##
   # gitlabAuthTokenUrl:
 
-  ## API endpoint URL for Github server.
+  ## API endpoint URL for Gitlab server.
   ##
   # gitlabAuthApiUrl:
 
@@ -288,6 +294,29 @@ web:
   ##
   replicas: 1
 
+  ## Additional affinities to add to the web pods.
+  ## Useful if you prefer to run workers on non-spot instances, for example
+  ##
+  # additionalAffinities:
+  #   nodeAffinity:
+  #     preferredDuringSchedulingIgnoredDuringExecution:
+  #       - weight: 50
+  #         preference:
+  #           matchExpressions:
+  #             - key: spot
+  #               operator: NotIn
+  #               values:
+  #                 - "true"
+
+  ## Tolerations for the worker nodes.
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  tolerations: []
+  # tolerations:
+  #  - key: "toleration=key"
+  #    operator: "Equal"
+  #    value: "value"
+  #    effect: "NoSchedule"
+
   ## Configure resource requests and limits.
   ## ref: https://kubernetes.io/docs/user-guide/compute-resources/
   ##
@@ -304,6 +333,18 @@ web:
     ## ref: https://kubernetes.io/docs/user-guide/services/#publishing-services---service-types
     ##
     type: ClusterIP
+
+    ## Annotations to be added to the web service.
+    ##
+    # annotations:
+    #   prometheus.io/probe: "true"
+    #   prometheus.io/probe_path: "/"
+
+  # If you fix atc nodeport, this parameter set(web.service.atcNodePort)
+  #  atcNodePort: 30150
+  #
+  # If you fix tsa nodeport, this parameter set(web.service.tsaNodePort)
+  #  tsaNodePort: 30151
 
   ## Ingress configuration.
   ## ref: https://kubernetes.io/docs/user-guide/ingress/
@@ -332,6 +373,20 @@ web:
     #   - secretName: concourse-web-tls
     #     hosts:
     #       - concourse.domain.com
+    #
+    #
+
+  ## Metric Configuration
+  ## ref: https://concourse.ci/metrics.html
+  ##
+  metrics:
+
+    ## Enable the prometheus metrics?
+    ## Port is per https://github.com/prometheus/prometheus/wiki/Default-port-allocations
+    ##
+    prometheus:
+      enabled: false
+      port: 9391
 
 ## Configuration values for Concourse Worker components.
 ##
@@ -357,10 +412,73 @@ worker:
       cpu: "100m"
       memory: "512Mi"
 
+  ## Configure additional environment variables for the
+  ## worker container(s)
+  # env:
+  #   - name: http_proxy
+  #     value: "http://proxy.your-domain.com:3128"
+  #   - name: https_proxy
+  #     value: "http://proxy.your-domain.com:3128"
+  #   - name: no_proxy
+  #     value: "your-domain.com"
+  #   - name: CONCOURSE_GARDEN_DNS_SERVER
+  #     value: "8.8.8.8"
+  #   - name: CONCOURSE_GARDEN_DNS_PROXY_ENABLE
+  #     value: "true"
+
   ## Annotations to be added to the worker pods.
   ##
   # annotations:
   #   iam.amazonaws.com/role: arn:aws:iam::123456789012:role/concourse
+  #
+
+  ## Additional affinities to add to the worker pods.
+  ## Useful if you prefer to run workers on non-spot instances, for example
+  ##
+  # additionalAffinities:
+  #   nodeAffinity:
+  #     preferredDuringSchedulingIgnoredDuringExecution:
+  #       - weight: 50
+  #         preference:
+  #           matchExpressions:
+  #             - key: spot
+  #               operator: NotIn
+  #               values:
+  #                 - "true"
+
+  ## Tolerations for the worker nodes.
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  tolerations: []
+  # tolerations:
+  #  - key: "toleration=key"
+  #    operator: "Equal"
+  #    value: "value"
+  #    effect: "NoSchedule"
+
+  ## Time to allow the pod to terminate before being forcefully terminated. This should provide time for
+  ## the worker to retire, i.e. drain its tasks. See https://concourse.ci/worker-internals.html for worker
+  ## lifecycle semantics.
+  terminationGracePeriodSeconds: 60
+
+  ## If any of the strings are found in logs, the worker's livenessProbe will fail and trigger a pod restart.
+  ## Specify one string per line, exact matching is used.
+  ##
+  fatalErrors: |-
+    guardian.api.garden-server.create.failed
+    guardian.api.garden-server.run.failed
+    baggageclaim.api.volume-server.create-volume-async.failed-to-create
+
+  ## Strategy for StatefulSet updates (requires Kubernetes 1.6+)
+  ## Ref: https://kubernetes.io/docs/concepts/workloads/controllers/statefulset
+  ##
+  updateStrategy: RollingUpdate
+
+  ## Pod Management strategy (requires Kubernetes 1.7+)
+  ## Ref: https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#pod-management-policies
+  ##
+  ## "OrderedReady" is default. "Parallel" means worker pods will launch or terminate
+  ## in parallel.
+  podManagementPolicy: Parallel
 
 ## Persistent Volume Storage configuration.
 ## ref: https://kubernetes.io/docs/user-guide/persistent-volumes
@@ -425,3 +543,69 @@ postgresql:
     ## Enable PostgreSQL persistence using Persistent Volume Claims.
     ##
     enabled: true
+
+## Configuration values for the Credential Manager.
+## ref: https://concourse.ci/creds.html
+##
+credentialManager:
+  ## Enable Credential Manager using below configuration.
+  ##
+  enabled: false
+
+  ## use Hashicorp Vault for Credential Manager.
+  ##
+  # vault:
+    ## URL pointing to vault addr (i.e. http://vault:8200).
+    ##
+    # url:
+
+    ## vault path under which to namespace credential lookup, defaults to /concourse.
+    ##
+    # pathPrefix:
+
+    ## if the Vault server is using a self-signed certificate, provide the CA public key.
+    ## the value will be written to /concourse-vault/ca.cert
+    ##
+    # caCert: |-
+
+    ## vault authentication backend, leave this blank if using an intial periodic token
+    ## currently supported backends: token, approle, cert
+    ##
+    # authBackend:
+
+    ## initial periodic token issued for concourse
+    ## ref: https://www.vaultproject.io/docs/concepts/tokens.html#periodic-tokens
+    ##
+    # clientToken:
+
+    ## set role_id for [AppRole](https://www.vaultproject.io/docs/auth/approle.html) backend
+    ## make sure to also set authBackend to `approle`.
+    ##
+    # appRoleId:
+
+    ## set secret_id for [AppRole](https://www.vaultproject.io/docs/auth/approle.html) backend
+    ## make sure to also set authBackend to `approle`.
+    ##
+    # appRoleSecretId:
+
+    ## provide the client certificate for authenticating with the [TLS](https://www.vaultproject.io/docs/auth/cert.html) backend
+    ## the value will be written to /concourse-vault/client.cert
+    ## make sure to also set authBackend to `cert`
+    # clientCert: |-
+
+    ## provide the client key for authenticating with the [TLS](https://www.vaultproject.io/docs/auth/cert.html) backend
+    ## the value will be written to /concourse-vault/client.key
+    ## make sure to also set authBackend to `cert`
+    # clientKey: |-
+
+## For RBAC support:
+rbac:
+  # true here enables creation of rbac resources
+  create: true
+
+  # rbac version
+  apiVersion: v1beta1
+
+  ## Ignored if rbac.create is true
+  ##
+  serviceAccountName: default

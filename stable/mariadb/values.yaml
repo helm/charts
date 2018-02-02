@@ -2,7 +2,7 @@
 ## ref: https://hub.docker.com/r/bitnami/mariadb/tags/
 ##
 ## Default: none
-image: bitnami/mariadb:10.1.26-r2
+image: bitnami/mariadb:10.1.30-r1
 
 ## Specify an imagePullPolicy (Required)
 ## It's recommended to change this to 'Always' if the image tag is 'latest'
@@ -31,8 +31,20 @@ usePassword: true
 # mariadbDatabase:
 
 
-## Kubernetes service type
-serviceType: ClusterIP
+service:
+  ## Kubernetes service type
+  type: ClusterIP
+
+  ## Specify the nodePort value for the LoadBalancer and NodePort service types.
+  ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport
+  ##
+  # nodePort:
+
+  ## Provide any additonal annotations which may be required. This can be used to
+  ## set the LoadBalancer service type to internal only.
+  ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#internal-load-balancer
+  ##
+  # annotations:
 
 ## Enable persistence using Persistent Volume Claims
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
@@ -60,8 +72,8 @@ persistence:
 ## ref: https://mariadb.com/kb/en/mariadb/configuring-mariadb-with-mycnf/#example-of-configuration-file
 ##
 # config: |-
-  # [mysqld]
-  # innodb_buffer_pool_size=2G
+#   [mysqld]
+#   innodb_buffer_pool_size=2G
 
 metrics:
   enabled: false

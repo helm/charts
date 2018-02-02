@@ -1,10 +1,14 @@
 name: mongodb-replicaset
 home: https://github.com/mongodb/mongo
-version: 1.4.1
-description: NoSQL document-oriented database that stores JSON-like documents with dynamic schemas, simplifying the integration of data in content-driven applications.
+version: 2.2.1
+appVersion: 3.4
+description: NoSQL document-oriented database that stores JSON-like documents with
+  dynamic schemas, simplifying the integration of data in content-driven applications.
 icon: https://webassets.mongodb.com/_com_assets/cms/mongodb-logo-rgb-j6w271g1xn.jpg
 sources:
   - https://github.com/mongodb/mongo
 maintainers:
-  - name: Anirudh Ramanathan
+  - name: foxish
     email: ramanathana@google.com
+  - name: unguiculus
+    email: unguiculus@gmail.com

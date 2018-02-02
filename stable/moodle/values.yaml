@@ -1,7 +1,7 @@
 ## Bitnami Moodle` image version
 ## ref: https://hub.docker.com/r/bitnami/moodle/tags/
 ##
-image: bitnami/moodle:3.3.2-r0
+image: bitnami/moodle:3.4.1-r0
 
 ## Specify a imagePullPolicy
 ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
@@ -132,7 +132,7 @@ persistence:
   # storageClass: "-"
   accessMode: ReadWriteOnce
   size: 8Gi
-  #existingClaim: ""
+  # existingClaim: ""
 
 ## Define affinity for the moodle pod
 ## Sometimes required when persistent volumes are defined externally

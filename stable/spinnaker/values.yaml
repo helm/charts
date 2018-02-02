@@ -1,7 +1,7 @@
 # Define which registries and repositories you want available in your
 # Spinnaker pipeline definitions
 # For more info visit:
-#   http://www.spinnaker.io/v1.0/docs/target-deployment-configuration#section-docker-registry
+#   https://www.spinnaker.io/setup/providers/docker-registry/
 
 # Configure your Docker registries here
 accounts:
@@ -20,7 +20,7 @@ accounts:
 
 # Settings for notifications via email
 # For more info visit:
-#   http://www.spinnaker.io/docs/notifications-and-events-guide#section-email
+#   https://www.spinnaker.io/setup/features/notifications/#email
 mail:
   enabled: false
   host: smtp.example.org
@@ -28,6 +28,11 @@ mail:
   password: admin
   fromAddress: spinnaker@example.org
   port: 25
+
+slack:
+  enabled: false
+  token:
+  botName: 'spinnakerbot'
 
 # Images for each component
 images:
@@ -45,6 +50,16 @@ deck:
   host: localhost
   port: 9000
   protocol: http
+  ingress:
+    enabled: false
+    # annotations:
+      # ingress.kubernetes.io/ssl-redirect: 'true'
+      # kubernetes.io/ingress.class: nginx
+      # kubernetes.io/tls-acme: "true"
+    # tls:
+    #  - secretName: -tls
+    #    hosts:
+    #      - domain.com
 
 gate:
   allowedOriginsPattern: '^https?://(?:localhost|127.0.0.1|[^/]+\.example\.com)(?::[1-9]\d*)?/?$'
@@ -65,10 +80,16 @@ resources:
     cpu: 1000m
     memory: 1280Mi
 
+# Node labels for pod assignment
+# Ref: https://kubernetes.io/docs/user-guide/node-selection/
+# nodeSelector to provide to each of the Spinnaker components
+nodeSelector: {}
+
 # Redis password to use for the in-cluster redis service
 # Redis is not exposed publically
 redis:
   redisPassword: password
+  nodeSelector: {}
 
 # Minio access/secret keys for the in-cluster S3 usage
 # Minio is not exposed publically
@@ -78,6 +99,7 @@ minio:
   serviceType: ClusterIP
   accessKey: spinnakeradmin
   secretKey: spinnakeradmin
+  nodeSelector: {}
 
 gcs:
   enabled: false
@@ -87,23 +109,16 @@ gcs:
 # Configuration for the Jenkins instance that is attached to the
 # igor component of Spinnaker. For more info about the Jenkins integration
 # with Spinnaker, visit:
-#   http://www.spinnaker.io/docs/jenkins-script-execution-stage
+#   https://www.spinnaker.io/setup/ci/jenkins/
 jenkins:
   Master:
-    ImageTag: 2.62
     Cpu: "500m"
     Memory: "512Mi"
     ServiceType: ClusterIP
     CustomConfigMap: true
-    InstallPlugins:
-      - kubernetes:0.11 
-      - workflow-aggregator:2.5
-      - workflow-job:2.11
-      - credentials-binding:1.12
-      - git:3.2.0
+    NodeSelector: {}
 
   Agent:
-    Image: viglesiasce/spinnaker-jenkins-agent
-    ImageTag: v0.2.0
     Cpu: "500m"
     Memory: "512Mi"
+    NodeSelector: {}

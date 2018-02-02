@@ -1,9 +1,9 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "metabase.fullname" . }}
   labels:
-    app: {{ template "name" . }}
+    app: {{ template "metabase.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
@@ -12,7 +12,7 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "name" . }}
+        app: {{ template "metabase.name" . }}
         release: {{ .Release.Name }}
     spec:
       containers:
@@ -32,19 +32,31 @@ spec:
           - name: MB_JETTY_SSL_Keystore
             valueFrom:
               secretKeyRef:
-                name: {{ template "fullname" . }}-ssl
+                name: {{ template "metabase.fullname" . }}-ssl
                 key: keystore
           - name: MB_JETTY_SSL_Keystore_Password
             valueFrom:
               secretKeyRef:
-                name: {{ template "fullname" . }}-ssl
+                name: {{ template "metabase.fullname" . }}-ssl
                 key: password
           {{- end }}
           - name: MB_DB_TYPE
             value: {{ .Values.database.type | lower }}
+          {{- if .Values.database.encryptionKey }}
           - name: MB_ENCRYPTION_SECRET_KEY
-            value: {{ .Values.database.encryptionKey | quote }}
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "metabase.fullname" . }}-database
+                key: encryptionKey
+          {{- end }}
           {{- if ne (.Values.database.type | lower) "h2" }}
+            {{- if .Values.database.connectionURI }}
+          - name: MB_DB_CONNECTION_URI
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "metabase.fullname" . }}-database
+                key: connectionURI
+            {{- else }}
           - name: MB_DB_HOST
             value: {{ .Values.database.host | quote }}
           - name: MB_DB_PORT
@@ -54,13 +66,14 @@ spec:
           - name: MB_DB_USER
             valueFrom:
               secretKeyRef:
-                name: {{ template "fullname" . }}-database
+                name: {{ template "metabase.fullname" . }}-database
                 key: username
           - name: MB_DB_PASS
             valueFrom:
               secretKeyRef:
-                name: {{ template "fullname" . }}-database
+                name: {{ template "metabase.fullname" . }}-database
                 key: password
+            {{- end }}
           {{- end }}
           - name: MB_PASSWORD_COMPLEXITY
             value: {{ .Values.password.complexity }}
@@ -71,6 +84,10 @@ spec:
           {{- if .Values.javaToolOptions }}
           - name: JAVA_TOOL_OPTIONS
             value: {{ .Values.javaToolOptions | quote }}
+          {{- end }}
+          {{- if .Values.pluginsDirectory }}
+          - name: MB_PLUGINS_DIR
+            value: {{ .Values.pluginsDirectory | quote }}
           {{- end }}
           - name: MB_EMOJI_IN_LOGS
             value: {{ .Values.emojiLogging | quote }}

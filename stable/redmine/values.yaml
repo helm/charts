@@ -1,7 +1,7 @@
 ## Bitnami Redmine image version
 ## ref: https://hub.docker.com/r/bitnami/redmine/tags/
 ##
-image: bitnami/redmine:3.4.2-r2
+image: bitnami/redmine:3.4.4-r0
 
 ## Specify a imagePullPolicy
 ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -37,6 +37,12 @@ redmineLanguage: en
 # smtpUser:
 # smtpPassword:
 # smtpTls:
+
+## Environment variables, to pass to the entry point
+##
+# extraVars:
+#   - name: NAMI_DEBUG
+#     value: --log-level trace
 
 ## Database configuration. Please note that only one of the following databases should be selected.
 ## ref: https://github.com/bitnami/bitnami-docker-redmine#run-the-application-using-postgresql-database

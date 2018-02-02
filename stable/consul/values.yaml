@@ -16,7 +16,7 @@ ConsulDnsPort: 8600
 Component: "consul"
 Replicas: 3
 Image: "consul"
-ImageTag: "0.8.3"
+ImageTag: "1.0.0"
 ImagePullPolicy: "Always"
 Resources: {}
  # requests:
@@ -40,8 +40,39 @@ DisableHostNodeId: false
 ## Encrypt Gossip traffic
 EncryptGossip: true
 
-## StorageClass name for use with Persistent Volume Claim (PVC) using beta notations
-# StorageClass:
+## consul data Persistent Volume Storage Class
+## If defined, StorageClassName: <storageClass>
+## If set to "-", StorageClassName: "", which disables dynamic provisioning
+## If undefined (the default) or set to null, no storageClassName spec is
+##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+##   GKE, AWS & OpenStack)
+##
+# StorageClass: "-"
+
+## Setting maxUnavailable will create a pod disruption budget that will prevent
+## voluntarty cluster administration from taking down too many consul pods. If
+## you set maxUnavailable, you should set it to ceil((n/2) - 1), where
+## n = Replicas. For example, if you have 5 or 6 Replicas, you'll want to set
+## maxUnavailable = 2. If you are using the default of 3 Replicas, you'll want
+## to set maxUnavailable to 1.
+maxUnavailable: 1
+
+## nodeAffinity settings
+# nodeAffinity:
+#   requiredDuringSchedulingIgnoredDuringExecution:
+#     nodeSelectorTerms:
+#     - matchExpressions:
+#       - key: cloud.google.com/gke-preemptible
+#         operator: NotIn
+#         values:
+#         - true
+
+## Anti-Affinity setting. The default "hard" will use pod anti-affinity that is
+## requiredDuringSchedulingIgnoredDuringExecution to ensure 2 services don't
+## end up on the same node. Setting this to "soft" will use
+## preferredDuringSchedulingIgnoredDuringExecution. If set to anything else,
+## no anti-affinity rules will be configured.
+antiAffinity: "hard"
 
 ## Enable Consul Web UI
 ##
@@ -52,6 +83,13 @@ ui:
 uiService:
   enabled: true
   type: "NodePort"
+
+## Create an Ingress for the Web UI
+uiIngress:
+  enabled: false
+  annotations: {}
+  hosts: []
+  tls: {}
 
 ## test container details
 test:

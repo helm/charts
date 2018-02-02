@@ -1,7 +1,9 @@
 name: moodle
-version: 0.3.0
-appVersion: 3.3.2
-description: Moodle is a learning platform designed to provide educators, administrators and learners with a single robust, secure and integrated system to create personalised learning environments
+version: 0.4.3
+appVersion: 3.4.1
+description: Moodle is a learning platform designed to provide educators, administrators
+  and learners with a single robust, secure and integrated system to create personalised
+  learning environments
 keywords:
 - moodle
 - learning

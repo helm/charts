@@ -191,18 +191,18 @@ data:
       },
       notifications: {
         email: {
-          enabled: true,
+          enabled: {{ .Values.mail.enabled }},
         },
         hipchat: {
           enabled: false,
-          botName: 'Skynet T-800'
+          botName: 'Spinnaker Bot'
         },
         sms: {
           enabled: false,
         },
         slack: {
-          enabled: false,
-          botName: 'spinnakerbot'
+          enabled: {{ .Values.slack.enabled }},
+          botName: '{{ .Values.slack.botName }}'
         }
       },
       whatsNew: {
@@ -316,8 +316,8 @@ data:
             token: # twilio auth token
             from: # phone number by which sms messages are sent
           slack:
-            enabled: false
-            token: # the part after http://hooks.slack.com/services/
+            enabled: {{ .Values.slack.enabled }}
+            token: {{ .Values.slack.token }}
 
       deck:
         host: {{ template "fullname" . }}-deck

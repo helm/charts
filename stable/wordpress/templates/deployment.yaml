@@ -28,21 +28,47 @@ spec:
         - name: MARIADB_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
+            {{- if .Values.mariadb.enabled }}
               name: {{ template "mariadb.fullname" . }}
               key: mariadb-root-password
+            {{- else }}
+              name: {{ printf "%s-%s" .Release.Name "externaldb" }}
+              key: db-root-password
+            {{- end }}
         - name: MARIADB_HOST
+        {{- if .Values.mariadb.enabled }}
           value: {{ template "mariadb.fullname" . }}
+        {{- else }}
+          value: {{ .Values.externalDatabase.host | quote }}
+        {{- end }}
         - name: MARIADB_PORT_NUMBER
+        {{- if .Values.mariadb.enabled }}
           value: "3306"
+        {{- else }}
+          value: {{ .Values.externalDatabase.port | quote }}
+        {{- end }}
         - name: WORDPRESS_DATABASE_NAME
-          value: {{ default "" .Values.mariadb.mariadbDatabase | quote }}
+        {{- if .Values.mariadb.enabled }}
+          value: {{ .Values.mariadb.mariadbDatabase | quote }}
+        {{- else }}
+          value: {{ .Values.externalDatabase.database | quote }}
+        {{- end }}
         - name: WORDPRESS_DATABASE_USER
-          value: {{ default "" .Values.mariadb.mariadbUser | quote }}
+        {{- if .Values.mariadb.enabled }}
+          value: {{ .Values.mariadb.mariadbUser | quote }}
+        {{- else }}
+          value: {{ .Values.externalDatabase.user | quote }}
+        {{- end }}
         - name: WORDPRESS_DATABASE_PASSWORD
           valueFrom:
             secretKeyRef:
+            {{- if .Values.mariadb.enabled }}
               name: {{ template "mariadb.fullname" . }}
               key: mariadb-password
+            {{- else }}
+              name: {{ printf "%s-%s" .Release.Name "externaldb" }}
+              key: db-password
+            {{- end }}
         - name: WORDPRESS_USERNAME
           value: {{ default "" .Values.wordpressUsername | quote }}
         - name: WORDPRESS_PASSWORD
@@ -87,9 +113,7 @@ spec:
             port: https
             scheme: HTTPS
           {{- end }}
-          initialDelaySeconds: 120
-          timeoutSeconds: 5
-          failureThreshold: 6
+{{ toYaml .Values.livenessProbe | indent 10 }}
         readinessProbe:
           httpGet:
             path: /wp-login.php
@@ -99,9 +123,7 @@ spec:
             port: https
             scheme: HTTPS
           {{- end }}
-          initialDelaySeconds: 30
-          timeoutSeconds: 3
-          periodSeconds: 5
+{{ toYaml .Values.readinessProbe | indent 10 }}
         volumeMounts:
         - mountPath: /bitnami/apache
           name: wordpress-data
@@ -122,3 +144,7 @@ spec:
       {{- else }}
         emptyDir: {}
       {{ end }}
+    {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- end -}}

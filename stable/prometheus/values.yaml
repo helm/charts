@@ -17,7 +17,7 @@ alertmanager:
   ##
   image:
     repository: prom/alertmanager
-    tag: v0.5.1
+    tag: v0.13.0
     pullPolicy: IfNotPresent
 
   ## Additional alertmanager container arguments
@@ -27,7 +27,11 @@ alertmanager:
   ## The URL prefix at which the container can be accessed. Useful in the case the '-web.external-url' includes a slug
   ## so that the various internal URLs are still able to access as they are in the default case.
   ## (Optional)
-  baseURL: ""
+  prefixURL: ""
+
+  ## External URL which can access alertmanager
+  ## Maybe same with Ingress host name
+  baseURL: "/"
 
   ## Additional alertmanager container environment variable
   ## For instance to add a http_proxy
@@ -64,6 +68,10 @@ alertmanager:
     #   - secretName: prometheus-alerts-tls
     #     hosts:
     #       - alertmanager.domain.com
+
+  ## Alertmanager Deployment Strategy type
+  # strategy:
+  #   type: Recreate
 
   ## Node labels for alertmanager pod assignment
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
@@ -144,6 +152,7 @@ alertmanager:
     loadBalancerIP: ""
     loadBalancerSourceRanges: []
     servicePort: 80
+    # nodePort: 30000
     type: ClusterIP
 
 ## Monitors ConfigMap changes and POSTs to a URL
@@ -181,9 +190,13 @@ kubeStateMetrics:
   ## kube-state-metrics container image
   ##
   image:
-    repository: gcr.io/google_containers/kube-state-metrics
-    tag: v0.4.1
+    repository: k8s.gcr.io/kube-state-metrics
+    tag: v1.1.0
     pullPolicy: IfNotPresent
+
+  ## kube-state-metrics container arguments
+  ##
+  args: {}
 
   ## Node labels for kube-state-metrics pod assignment
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
@@ -240,8 +253,13 @@ nodeExporter:
   ##
   image:
     repository: prom/node-exporter
-    tag: v0.14.0
+    tag: v0.15.2
     pullPolicy: IfNotPresent
+
+  ## Custom Update Strategy
+  ##
+  updateStrategy:
+    type: OnDelete
 
   ## Additional node-exporter container arguments
   ##
@@ -259,10 +277,10 @@ nodeExporter:
   ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
   ##
   tolerations: []
-  #- key: "key"
-  #  operator: "Equal|Exists"
-  #  value: "value"
-  #  effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
+    # - key: "key"
+    #   operator: "Equal|Exists"
+    #   value: "value"
+    #   effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
 
   ## Node labels for node-exporter pod assignment
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
@@ -314,16 +332,16 @@ server:
   ##
   image:
     repository: prom/prometheus
-    tag: v1.5.2
+    tag: v2.1.0
     pullPolicy: IfNotPresent
-
-  ## (optional) alertmanager URL
-  ## only used if alertmanager.enabled = false
-  alertmanagerURL: ""
 
   ## The URL prefix at which the container can be accessed. Useful in the case the '-web.external-url' includes a slug
   ## so that the various internal URLs are still able to access as they are in the default case.
   ## (Optional)
+  prefixURL: ""
+
+  ## External URL which can access alertmanager
+  ## Maybe same with Ingress host name
   baseURL: ""
 
   ## Additional Prometheus server container arguments
@@ -369,14 +387,18 @@ server:
     #     hosts:
     #       - prometheus.domain.com
 
+  ## Server Deployment Strategy type
+  # strategy:
+  #   type: Recreate
+
   ## Node tolerations for server scheduling to nodes with taints
   ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
   ##
   tolerations: []
-  #- key: "key"
-  #  operator: "Equal|Exists"
-  #  value: "value"
-  #  effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
+    # - key: "key"
+    #   operator: "Equal|Exists"
+    #   value: "value"
+    #   effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
 
   ## Node labels for Prometheus server pod assignment
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
@@ -462,6 +484,10 @@ server:
   ## Prometheus server pod termination grace period
   ##
   terminationGracePeriodSeconds: 300
+
+  ## Prometheus data retention period (i.e 360h)
+  ##
+  retention: ""
 
 pushgateway:
   ## If false, pushgateway will not be installed
@@ -568,10 +594,10 @@ alertmanagerFiles:
 ## Prometheus server ConfigMap entries
 ##
 serverFiles:
-  alerts: ""
-  rules: ""
+  alerts: {}
+  rules: {}
 
-  prometheus.yml: |-
+  prometheus.yml:
     rule_files:
       - /etc/config/rules
       - /etc/config/alerts
@@ -665,6 +691,43 @@ serverFiles:
             regex: (.+)
             target_label: __metrics_path__
             replacement: /api/v1/nodes/${1}/proxy/metrics
+
+
+      - job_name: 'kubernetes-nodes-cadvisor'
+
+        # Default to scraping over https. If required, just disable this or change to
+        # `http`.
+        scheme: https
+
+        # This TLS & bearer token file config is used to connect to the actual scrape
+        # endpoints for cluster components. This is separate to discovery auth
+        # configuration because discovery & scraping are two separate concerns in
+        # Prometheus. The discovery auth config is automatic if Prometheus runs inside
+        # the cluster. Otherwise, more config options have to be provided within the
+        # <kubernetes_sd_config>.
+        tls_config:
+          ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+          # If your node certificates are self-signed or use a different CA to the
+          # master CA, then disable certificate verification below. Note that
+          # certificate verification is an integral part of a secure infrastructure
+          # so this should only be disabled in a controlled environment. You can
+          # disable certificate verification by uncommenting the line below.
+          #
+          insecure_skip_verify: true
+        bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+
+        kubernetes_sd_configs:
+          - role: node
+
+        relabel_configs:
+          - action: labelmap
+            regex: __meta_kubernetes_node_label_(.+)
+          - target_label: __address__
+            replacement: kubernetes.default.svc:443
+          - source_labels: [__meta_kubernetes_node_name]
+            regex: (.+)
+            target_label: __metrics_path__
+            replacement: /api/v1/nodes/${1}:4194/proxy/metrics
 
       # Scrape config for service endpoints.
       #

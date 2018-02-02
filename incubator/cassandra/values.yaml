@@ -4,6 +4,9 @@ image:
   repo: "cassandra"
   tag: "3"
   pullPolicy: IfNotPresent
+  ## Specify ImagePullSecrets for Pods
+  ## ref: https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
+  # pullSecrets: myregistrykey
 
 ## Specify a service type
 ## ref: http://kubernetes.io/docs/user-guide/services/
@@ -46,18 +49,28 @@ config:
   cluster_name: cassandra
   cluster_size: 3
   seed_size: 2
-  num_tokens: 256 
+  num_tokens: 256
   dc_name: DC1
   rack_name: RAC1
   endpoint_snitch: SimpleSnitch
   max_heap_size: 2048M
   heap_new_size: 512M
+  start_rpc: false
   ports:
     cql: 9042
     thrift: 9160
+    # If a JVM Agent is in place
+    # agent: 61621
 
 ## Configure node selector. Edit code below for adding selector to pods
 ## ref: https://kubernetes.io/docs/user-guide/node-selection/
 # selector:
   # nodeSelector:
     # cloud.google.com/gke-nodepool: pool-db
+
+## Additional pod labels
+## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+podLabels: {}
+
+updateStrategy:
+  type: OnDelete

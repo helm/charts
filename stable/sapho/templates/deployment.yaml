@@ -1,24 +1,26 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "sapho.fullname" . }}
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "sapho.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
 spec:
   replicas: {{ .Values.replicaCount }}
   template:
     metadata:
       labels:
-        app: {{ template "fullname" . }}
+        app: {{ template "sapho.fullname" . }}
     spec:
       containers:
-      - name: {{ template "fullname" . }}
+      - name: {{ template "sapho.fullname" . }}
         image: "{{ .Values.image }}"
         imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
         env:
+        - name: SAPHO_VERSION
+          value: {{ .Values.saphoVersion }}
         - name: SAPHO_DB_HOSTNAME
-          value: {{ template "mysql.fullname" . }}
+          value: {{ template "sapho.mysql.fullname" . }}
         - name: SAPHO_DB_PORT
           value: {{ .Values.saphoDBport | quote }}
         - name: SAPHO_DB_TYPE
@@ -28,7 +30,7 @@ spec:
         - name: SAPHO_DB_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "mysql.fullname" . }}
+              name: {{ template "sapho.mysql.fullname" . }}
               key: mysql-root-password
         ports:
         - name: http

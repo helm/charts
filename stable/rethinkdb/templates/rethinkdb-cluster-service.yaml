@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: "{{ template "fullname" . }}-cluster"
+  name: "{{ template "rethinkdb.fullname" . }}-cluster"
   labels:
-    app: "{{ template "name" . }}-cluster"
+    app: "{{ template "rethinkdb.name" . }}-cluster"
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
@@ -18,5 +18,5 @@ spec:
     - port: {{ .Values.ports.cluster }}
       targetPort: cluster
   selector:
-    app: "{{ template "name" . }}-cluster"
+    app: "{{ template "rethinkdb.name" . }}-cluster"
     release: {{ .Release.Name | quote }}

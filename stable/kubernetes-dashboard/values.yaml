@@ -3,15 +3,40 @@
 # Declare name/value pairs to be passed into your templates.
 # name: value
 
-image: gcr.io/google_containers/kubernetes-dashboard-amd64
-imageTag: "v1.6.3"
-imagePullPolicy: "IfNotPresent"
+image:
+  repository: k8s.gcr.io/kubernetes-dashboard-amd64
+  tag: v1.8.1
+  pullPolicy: IfNotPresent
 
+## Here labels can be added to the kubernets dashboard deployment
+##
+labels: {}
+# kubernetes.io/cluster-service: "true"
+# kubernetes.io/name: "Kuberetes Dashboard"
+
+## Node labels for pod assignment
+## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+##
 nodeSelector: {}
 
-httpPort: 80
+service:
+  type: ClusterIP
+  externalPort: 80
 
-serviceType: ClusterIP
+  ## This allows an overide of the heapster service name
+  ## Default: {{ .Chart.Name }}
+  ##
+  # nameOverride:
+
+  ## Kubernetes Dashboard Service annotations
+  ##
+  annotations: {}
+  # foo.io/bar: "true"
+
+  ## Here labels can be added to the Kubernetes Dashboard service
+  ##
+  labels: {}
+  # kubernetes.io/name: "Kubernetes Dashboard"
 
 resources:
   limits:
