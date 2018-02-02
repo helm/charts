@@ -50,6 +50,7 @@ spec:
           {{- end }}
           {{- if .Values.google.project }}
             - --google-project={{ .Values.google.project }}
+          {{- end }}
           volumeMounts:
           {{- if eq .Values.provider "azure" }}
           - name: azure-config-file
