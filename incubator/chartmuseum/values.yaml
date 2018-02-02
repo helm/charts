@@ -44,6 +44,9 @@ deployment:
   ## Chartmuseum Deployment annotations
   annotations: {}
   #   name: value
+  ## Additional arguments for the chartmuseum deployment - see the image documentation for available options
+  additionalArguments: {}
+  # --allow-overwrite
 replica:
   ## Chartmuseum Replicas annotations
   annotations: {}
