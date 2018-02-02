@@ -11,13 +11,17 @@ Master:
 # ImagePullSecret: jenkins
   Component: "jenkins-master"
   UseSecurity: true
-  AdminUser: admin
-  # AdminPassword: <defaults to random>
+  Env:
+    Open:
+      # Set min/max heap here if needed
+      JAVA_OPTS: "-Xms512m -Xmx512m"
+      JENKINS_OPTS: ""
+    Secret:
+      ADMIN_USER: "admin"
+      ADMIN_PASSWORD: "changeme"
+
   Cpu: "200m"
   Memory: "256Mi"
-  # Set min/max heap here if needed with:
-  # JavaOpts: "-Xms512m -Xmx512m"
-  # JenkinsOpts: ""
   # JenkinsUriPrefix: "/jenkins"
   # Set RunAsUser to 1000 to let Jenkins run as non-root user 'jenkins' which exists in 'jenkins/jenkins' docker image.
   # When setting RunAsUser to a different value than 0 also set FsGroup to the same value:

@@ -85,21 +85,21 @@ spec:
           args: [ "--argumentsRealm.passwd.$(ADMIN_USER)=$(ADMIN_PASSWORD)",  "--argumentsRealm.roles.$(ADMIN_USER)=admin"]
           {{- end }}
           env:
-            - name: JAVA_OPTS
-              value: "{{ default "" .Values.Master.JavaOpts}}"
-            - name: JENKINS_OPTS
-              value: "{{ if .Values.Master.JenkinsUriPrefix }}--prefix={{ .Values.Master.JenkinsUriPrefix }} {{ end }}{{ default "" .Values.Master.JenkinsOpts}}"
-            {{- if .Values.Master.UseSecurity }}
-            - name: ADMIN_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ template "jenkins.fullname" . }}
-                  key: jenkins-admin-password
-            - name: ADMIN_USER
-              valueFrom:
-                secretKeyRef:
-                  name: {{ template "jenkins.fullname" . }}
-                  key: jenkins-admin-user
+            {{- range $name, $value := .Values.Master.Env.Open }}
+            {{- if not (empty $value) }}
+                    - name: {{ $name | quote }}
+                      value: {{ $value | quote }}
+            {{- end }}
+            {{- end }}
+            {{- $jenkinsFullName := (include "jenkins.fullname" .)}}
+            {{- range $name, $value := .Values.Master.Env.Secret }}
+            {{- if not ( empty $value) }}
+                    - name: {{ $name | quote }}
+                      valueFrom:
+                        secretKeyRef:
+                          name: {{ $jenkinsFullName }}
+                          key: {{ $name | quote }}
+            {{- end }}
             {{- end }}
           ports:
             - containerPort: {{ .Values.Master.ContainerPort }}
