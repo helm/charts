@@ -58,22 +58,22 @@ portus:
         domain: "example.com"
     gravatar: true  # If enabled, then the profile picture will be picked from the Gravatar
     delete: true  # Allow admins and owners to delete images and tags
-    first_user_admin: true # First user signing up will be admin
+    first_user_admin: true  # First user signing up will be admin
     signup: true  # If enabled, then users can signup with the signup form
     display_name: false  # Allow users to have different display names on the web site
     user_permission:
       change_visibility: true  # Allow users to change the visibility or their personal namespace
-      create_team: true # Allow users to create teams
+      create_team: true  # Allow users to create teams
       manage_team: true  # Allow users to create/modify teams if they are an owner of it
-      create_namespace: true # Allow users to create namespaces
+      create_namespace: true  # Allow users to create namespaces
       manage_namespace: true  # Allow users to create/modify namespaces if they are an owner of it
     security:
       clair:
-        server: "" # This is only guaranteed to work for v2.0.x releases of Clair
-        health_port: 6061 # Port being used by Clair to report its status
+        server: ""  # This is only guaranteed to work for v2.0.x releases of Clair
+        health_port: 6061  # Port being used by Clair to report its status
       zypper:
-        server: "" #  support for this is experimental since this functionality has not been merged into master yet in zypper-docker
-    anonymous_browsing: true # Allow anonymous (non-logged-in) users to explore the images available in your Docker Registry
+        server: ""  #  support for this is experimental since this functionality has not been merged into master yet in zypper-docker
+    anonymous_browsing: true  # Allow anonymous (non-logged-in) users to explore the images available in your Docker Registry
 
   ## TLS configuration
   ## the internal host names of the portus, registry and nginx service must be covered by the key/cert in order for TLS to work properly
@@ -146,7 +146,7 @@ nginx:
   ## Service configuration.
   ##
   service:
-    ## Set to ClusterIP if using ingress, or NodePort if using minikube 
+    ## Set to ClusterIP if using ingress, or NodePort if using minikube
     ##
     type: "ClusterIP"
 
