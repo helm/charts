@@ -18,8 +18,8 @@ spec:
         app: {{ template "etcd-restore-operator.fullname" . }}
         release: {{ .Release.Name }}
     spec:
-    {{- if .Values.rbac.restoreOperatorServiceAccountName }}
-      serviceAccountName: {{ .Values.rbac.restoreOperatorServiceAccountName }}
+    {{- if .Values.serviceAccount.restoreOperatorServiceAccount.name }}
+      serviceAccountName: {{ .Values.serviceAccount.restoreOperatorServiceAccount.name }}
     {{- else }}
       serviceAccountName: {{ template "etcd-restore-operator.fullname" . }}
     {{- end }}

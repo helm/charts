@@ -11,8 +11,8 @@ metadata:
     release: {{ .Release.Name }}
 subjects:
 - kind: ServiceAccount
-{{- if .Values.rbac.etcdOperatorServiceAccountName }}
-  name: {{ .Values.rbac.etcdOperatorServiceAccountName }}
+{{- if .Values.serviceAccount.etcdOperatorServiceAccount.name }}
+  name: {{ .Values.serviceAccount.etcdOperatorServiceAccount.name }}
 {{- else }}
   name: {{ template "etcd-operator.fullname" . }}
 {{- end }}
