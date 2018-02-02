@@ -47,7 +47,7 @@ Parameter | Description | Default
 `replicaCount` | desired number of pods | `1`
 `restartPolicy` | container restart policy | `Always`
 `image.repository` | container image repository | `justwatch/elasticsearch_exporter`
-`image.tag` | container image tag | `1.0.2rc1`
+`image.tag` | container image tag | `1.0.2`
 `image.pullPolicy` | container image pull policy | `IfNotPresent`
 `resources` | resource requests & limits | `{}`
 `service.type` | type of service to create | `ClusterIP`
