@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "mssql.fullname" . }}
+  labels:
+    app: {{ template "mssql.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+  - name: db
+    port: 1433
+    targetPort: db
+    protocol: TCP
+  selector:
+    app: {{ template "mssql.name" . }}
+    release: {{ .Release.Name }}
