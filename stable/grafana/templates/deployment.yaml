@@ -16,7 +16,7 @@ spec:
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
         checksum/dashboards-config: {{ include (print $.Template.BasePath "/dashboards-configmap.yaml") . | sha256sum }}
       {{- range $key, $value := .Values.server.annotations }}
-        {{ $key }}: {{ $value }}
+        {{ $key }}: {{ $value | quote }}
       {{- end }}
       labels:
         app: {{ template "grafana.fullname" . }}
@@ -51,14 +51,14 @@ spec:
                   name: {{ template "grafana.server.fullname" . }}-config
                   key: grafana-install-plugins
             {{- end }}
+            {{- range $key, $value := .Values.server.extraEnv }}
+            - name: {{ $key | quote }}
+              value: {{ $value | quote }}
+            {{- end }}
           ports:
             - containerPort: 3000
           readinessProbe:
-            httpGet:
-              path: /login
-              port: 3000
-            initialDelaySeconds: 30
-            timeoutSeconds: 30
+{{ toYaml .Values.server.readinessProbe | indent 12 }}
           resources:
 {{ toYaml .Values.server.resources | indent 12 }}
           volumeMounts:

@@ -15,7 +15,7 @@
 all: push
 
 TAG = 0.5
-PREFIX = gcr.io/google_containers/mongodb-install
+PREFIX = staging-k8s.gcr.io/mongodb-install
 
 container:
 	docker build -t $(PREFIX):$(TAG) .

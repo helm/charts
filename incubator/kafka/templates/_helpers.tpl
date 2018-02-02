@@ -16,14 +16,30 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- end -}}
 
 {{/*
+Create a default fully qualified zookeeper name.
+We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
+*/}}
+{{- define "kafka.zookeeper.fullname" -}}
+{{- $name := default "zookeeper" .Values.zookeeper.nameOverride -}}
+{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
+{{/*
+Create the name for our kafka configmap.
+*/}}
+{{- define "kafka.configmap" -}}
+{{- printf "%s-configmap-%d" (include "kafka.fullname" .) .Release.Revision -}}
+{{- end -}}
+
+{{/*
 Form the Zookeeper URL. If zookeeper is installed as part of this chart, use k8s service discovery,
 else use user-provided URL
 */}}
 {{- define "zookeeper.url" }}
-{{- $port := .Values.zookeeper.Port | toString }}
-{{- if .Values.zookeeper.Enabled -}}
-{{- printf "%s-zookeeper:%s" .Release.Name $port }}
+{{- $port := .Values.zookeeper.port | toString }}
+{{- if .Values.zookeeper.enabled -}}
+{{- printf "%s:%s" (include "kafka.zookeeper.fullname" .) $port }}
 {{- else -}}
-{{- printf "%s:%s" .Values.zookeeper.Url $port }}
+{{- printf "%s:%s" .Values.zookeeper.url $port }}
 {{- end -}}
 {{- end -}}

@@ -11,6 +11,11 @@ imageTag: "9.6.2"
 ##
 # imagePullPolicy:
 
+## Specify imagePullSecrets
+## ref: https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
+##
+# imagePullSecrets: myregistrykey
+
 ## Create a database user
 ## Default: postgres
 # postgresUser:
@@ -46,6 +51,9 @@ persistence:
   accessMode: ReadWriteOnce
   size: 8Gi
   subPath: "postgresql-db"
+  mountPath: /var/lib/postgresql/data/pgdata
+
+  # annotations: {}
 
 metrics:
   enabled: false
@@ -81,6 +89,9 @@ service:
   type: ClusterIP
   port: 5432
   externalIPs: []
+  ## Manually set NodePort value
+  ## Requires service.type: NodePort
+  # nodePort:
 
 networkPolicy:
   ## Enable creation of NetworkPolicy resources.

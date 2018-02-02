@@ -73,7 +73,7 @@ spec:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
         - name: data
-          mountPath: /var/lib/postgresql/data/pgdata
+          mountPath: {{ .Values.persistence.mountPath }}
           subPath: {{ .Values.persistence.subPath }}
 {{- if .Values.metrics.enabled }}
       - name: metrics
@@ -110,4 +110,8 @@ spec:
           items:
             - key: custom-metrics.yaml
               path: custom-metrics.yaml
+      {{- end }}
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+        - name: {{ .Values.imagePullSecrets }}
       {{- end }}

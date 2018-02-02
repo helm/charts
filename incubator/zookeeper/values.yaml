@@ -3,6 +3,8 @@
 # Declare name/value pairs to be passed into your templates.
 # name: value
 servers: 3
+updateStrategy:
+  type: "OnDelete"
 # minAvailable: 2
 resources:
   requests:
@@ -26,9 +28,22 @@ snapRetain: 3
 purgeHours: 1
 probeInitialDelaySeconds: 15
 probeTimeoutSeconds: 5
-antiAffinity: "hard"
 logLevel: "INFO"
 security:
   enabled: false
   runAsUser: 1000
   fsGroup: 1000
+
+
+# Affinities to add to the worker pods.
+# Useful if you prefer to run workers on non-spot instances, for example
+affinity: {}
+# nodeAffinity:
+#   preferredDuringSchedulingIgnoredDuringExecution:
+#     - weight: 50
+#       preference:
+#         matchExpressions:
+#           - key: spot
+#             operator: NotIn
+#             values:
+#               - "true"

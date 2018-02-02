@@ -21,6 +21,11 @@ client:
   name: client
   replicas: 2
   serviceType: ClusterIP
+
+## (dict) If specified, apply these annotations to the client service
+#  serviceAnnotations:
+#    example: client-svc-foo
+
   heapSize: "512m"
   antiAffinity: "soft"
   resources:
@@ -31,8 +36,13 @@ client:
       cpu: "25m"
       memory: "512Mi"
 
+  ## (dict) If specified, apply these annotations to each client Pod
+  # podAnnotations:
+  #   example: client-foo
+
 master:
   name: master
+  exposeHttp: false
   replicas: 3
   heapSize: "512m"
   persistence:
@@ -50,8 +60,13 @@ master:
       cpu: "25m"
       memory: "512Mi"
 
+  ## (dict) If specified, apply these annotations to each master Pod
+  # podAnnotations:
+  #   example: master-foo
+
 data:
   name: data
+  exposeHttp: false
   replicas: 2
   heapSize: "1536m"
   persistence:
@@ -69,6 +84,10 @@ data:
     requests:
       cpu: "25m"
       memory: "1536Mi"
+
+  ## (dict) If specified, apply these annotations to each data Pod
+  # podAnnotations:
+  #   example: data-foo
 
 ## Install Default RBAC roles and bindings
 rbac:

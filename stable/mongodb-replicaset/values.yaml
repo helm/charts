@@ -1,5 +1,6 @@
 replicaSet: rs0
 replicas: 3
+minAvailable: 1
 port: 27017
 
 auth:
@@ -12,7 +13,7 @@ auth:
 
 # Specs for the Docker image for the init container that establishes the replica set
 installImage:
-  name: gcr.io/google_containers/mongodb-install
+  name: k8s.gcr.io/mongodb-install
   tag: 0.5
   pullPolicy: IfNotPresent
 
@@ -25,8 +26,6 @@ image:
 # Annotations to be added to MongoDB pods
 podAnnotations: {}
 
-podAntiAffinity: "soft"
-
 resources: {}
 # limits:
 #   cpu: 500m
@@ -34,6 +33,14 @@ resources: {}
 # requests:
 #   cpu: 100m
 #   memory: 256Mi
+
+## Node selector
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
+nodeSelector: {}
+
+affinity: {}
+
+tolerations: []
 
 persistentVolume:
   enabled: true

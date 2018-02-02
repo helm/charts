@@ -5,6 +5,11 @@ replicaCount: 1
 image:
   repository: clearent/nexus
   tag: 3.5.1-02
+
+# node labels for node selection
+# nodeSelector:
+#   cloud.google.com/gke-nodepool: default-pool
+
 service:
   name: nexus
   type: LoadBalancer
@@ -17,6 +22,8 @@ service:
   livenessProbe:
     initialDelaySeconds: 30
     periodSeconds: 30
+  annotations: {}
+  # foo.io/bar: "true"
 ingress:
   enabled: false
   # Used to create an Ingress record.
@@ -54,8 +61,8 @@ resources: {}
   # resources, such as Minikube. If you do want to specify resources, uncomment the following
   # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
   # limits:
-  #  cpu: 100m
-  #  memory: 128Mi
+  #  cpu: "1"
+  #  memory: "1Gi"
   # requests:
-  #  cpu: 100m
-  #  memory: 128Mi
+  #  cpu: "100m"
+  #  memory: "128Mi"

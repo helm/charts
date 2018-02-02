@@ -37,12 +37,6 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     component: "{{ .Release.Name }}-{{ .Values.Component }}"
   annotations:
-    # This is needed to make the peer-finder work properly and to help avoid
-    # edge cases where instance 0 comes up after losing its data and needs to
-    # decide whether it should create a new cluster or try to join an existing
-    # one. If it creates a new cluster when it should have joined an existing
-    # one, we'd end up with two separate clusters listening at the same service
-    # endpoint, which would be very bad.
     service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
     # Enable automatic monitoring of all instances when Prometheus is running in the cluster.
     prometheus.io/scrape: "true"
@@ -73,7 +67,7 @@ spec:
   selector:
     matchLabels:
       component: "{{ .Release.Name }}-{{ .Values.Component }}"
-  minAvailable: {{ .Values.MinAvailable }}
+  maxUnavailable: {{ .Values.MaxUnavailable }}
 ---
 apiVersion: apps/v1beta1
 kind: StatefulSet
@@ -90,34 +84,6 @@ spec:
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         component: "{{ .Release.Name }}-{{ .Values.Component }}"
     spec:
-      # Init containers are run only once in the lifetime of a pod, before
-      # it's started up for the first time. It has to exit successfully
-      # before the pod's main containers are allowed to start.
-      # This particular init container does a DNS lookup for other pods in
-      # the set to help determine whether or not a cluster already exists.
-      # If any other pods exist, it creates a file in the cockroach-data
-      # directory to pass that information along to the primary container that
-      # has to decide what command-line flags to use when starting CockroachDB.
-      # This only matters when a pod's persistent volume is empty - if it has
-      # data from a previous execution, that data will always be used.
-      # The cockroachdb/cockroach-k8s-init image is defined at
-      # github.com/cockroachdb/cockroach/blob/master/cloud/kubernetes/init
-      initContainers:
-      - name: bootstrap
-        image: "{{ .Values.BootstrapImage }}:{{ .Values.BootstrapImageTag }}"
-        imagePullPolicy: "{{ .Values.ImagePullPolicy }}"
-        args:
-        - "-on-start=/on-start.sh"
-        - "-service={{ printf "%s-%s" .Release.Name .Values.Name | trunc 56 }}"
-        - "-domain={{ .Values.ClusterDomain }}"
-        env:
-        - name: POD_NAMESPACE
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.namespace
-        volumeMounts:
-        - name: datadir
-          mountPath: "/cockroach/cockroach-data"
       affinity:
         podAntiAffinity:
           preferredDuringSchedulingIgnoredDuringExecution:
@@ -150,34 +116,25 @@ spec:
         command:
           - "/bin/bash"
           - "-ecx"
-          - |
             # The use of qualified `hostname -f` is crucial:
             # Other nodes aren't able to look up the unqualified hostname.
-            CRARGS=("start" "--logtostderr" "--insecure" "--host" "$(hostname -f)" "--http-host" "0.0.0.0")
-            # We only want to initialize a new cluster (by omitting the join flag)
-            # if we're sure that we're the first node (i.e. index 0) and that
-            # there aren't any other nodes running as part of the cluster that
-            # this is supposed to be a part of (which indicates that a cluster
-            # already exists and we should make sure not to create a new one).
-            # It's fine to run without --join on a restart if there aren't any
-            # other nodes.
-            if [ ! "$(hostname)" == "${STATEFULSET_NAME}-0" ] || \
-               [ -e "/cockroach/cockroach-data/cluster_exists_marker" ]
-            then
-              CRARGS+=("--join" "${STATEFULSET_NAME}-public")
-            fi
-            exec /cockroach/cockroach ${CRARGS[*]}
+          - "exec /cockroach/cockroach start --logtostderr --insecure --advertise-host $(hostname -f) --http-host 0.0.0.0 --cache {{ .Values.CacheSize }} --max-sql-memory {{ .Values.MaxSQLMemory }} --join ${STATEFULSET_NAME}-0.${STATEFULSET_NAME},${STATEFULSET_NAME}-1.${STATEFULSET_NAME},${STATEFULSET_NAME}-2.${STATEFULSET_NAME}"
       # No pre-stop hook is required, a SIGTERM plus some time is all that's
       # needed for graceful shutdown of a node.
       terminationGracePeriodSeconds: 60
   volumeClaimTemplates:
   - metadata:
       name: datadir
-      annotations:
-        volume.alpha.kubernetes.io/storage-class: "{{ .Values.StorageClass }}"
     spec:
       accessModes:
         - "ReadWriteOnce"
+{{- if .Values.StorageClass }}
+{{- if (eq "-" .Values.StorageClass) }}
+      storageClassName: ""
+{{- else }}
+      storageClassName: "{{ .Values.StorageClass }}"
+{{- end }}
+{{- end }}
       resources:
         requests:
           storage: "{{ .Values.Storage }}"
