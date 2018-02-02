@@ -20,5 +20,5 @@ spec:
   rules:
     {{- range $host := .Values.server.ingress.hosts }}
     - host: {{ $host }}
-  {{- end -}}
+    {{- end -}}
 {{- end -}}

@@ -38,8 +38,8 @@ server:
     goServerSystemProperties:
     #  server.env.extraEnvVars is the list of environment variables passed to GoCD Server
     extraEnvVars:
-#      - name: GOCD_PLUGIN_INSTALL_kubernetes-elastic-agents
-#        value: https://github.com/gocd/kubernetes-elastic-agents/releases/download/v0.0.1/kubernetes-elastic-agent-0.0.1-0.jar
+      - name: GOCD_PLUGIN_INSTALL_kubernetes-elastic-agents
+        value: https://github.com/gocd/kubernetes-elastic-agents/releases/download/v0.0.1/kubernetes-elastic-agent-0.0.1-0.jar
   service:
     # server.service.type is the GoCD Server service type
     type: "NodePort"
@@ -110,7 +110,7 @@ agent:
     ExistingClaim:
     pvSelector:
 #      matchLabels:
-#        app: godata-gocd-server
+#        app: godata-gocd-agent
     subpath:
       homego: homego
       dockerEntryPoint: scripts

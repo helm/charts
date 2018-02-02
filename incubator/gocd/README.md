@@ -2,9 +2,7 @@
 
 [![Join the chat at https://gitter.im/gocd/gocd](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/gocd/gocd?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-A GoCD Helm chart for Kubernetes. [GoCD](https://www.gocd.org/) is an Open source continuous delivery server to model and visualize complex workflows with ease.
-
-> ### **Warning**: GoCD helm chart is still under development. Users are not expected to use it in production!
+A GoCD Helm chart for Kubernetes. [GoCD](https://www.gocd.org/) is an Open source continuous delivery server to model and visualize complex workflow with ease.
 
 # Introduction
 This chart bootstraps a single node GoCD server and a GoCD Agent deployment with configurable agent count on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
@@ -147,7 +145,7 @@ $ helm install --name my-release --set server.persistence.godata.existingClaim=P
 # License
 
 ```plain
-Copyright 2017 ThoughtWorks, Inc.
+Copyright 2018 ThoughtWorks, Inc.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
