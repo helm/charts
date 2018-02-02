@@ -85,11 +85,11 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.namespace
-          {{- if or .Values.nginxTemplateFile }}
           {{- range $key, $value := .Values.controller.extraEnvs }}
             - name: {{ $key | upper | replace "." "_" }}
               value: {{ $value }}
           {{- end }}
+          {{- if or .Values.nginxTemplateFile }}
           volumeMounts:
             - name: custom-template
               mountPath: /etc/nginx/template
