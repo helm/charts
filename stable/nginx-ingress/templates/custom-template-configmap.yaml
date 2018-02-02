@@ -1,0 +1,15 @@
+{{- if .Values.nginxTemplateFile }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app: {{ template "name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: "{{ .Values.controller.name }}"
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "fullname" . }}-custom-template
+data:
+  nginx.tmpl: |-
+{{ .Values.nginxTemplateFile | indent 4 }}
+{{- end }}

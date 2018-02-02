@@ -18,6 +18,12 @@ spec:
     metadata:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/controller-configmap.yaml") . | sha256sum }}
+        {{- if .Values.nginxTemplateFile }}
+        checksum/custom-template: {{ (print .Values.nginxTemplateFile) . | sha256sum }}
+        {{- end }}
+        {{- if .Values.dhparamFile }}
+        checksum/dhparam: {{ (print .Values.dhparamFile) . | sha256sum }}
+        {{- end }}
     {{- if .Values.controller.podAnnotations }}
 {{ toYaml .Values.controller.podAnnotations | indent 8}}
     {{- end }}
@@ -82,6 +88,12 @@ spec:
           {{- range $key, $value := .Values.controller.extraEnvs }}
             - name: {{ $key | upper | replace "." "_" }}
               value: {{ $value }}
+          {{- end }}
+          {{- if or .Values.nginxTemplateFile }}
+          volumeMounts:
+            - name: custom-template
+              mountPath: /etc/nginx/template
+              readOnly: true
           {{- end }}
           livenessProbe:
             httpGet:
@@ -150,6 +162,15 @@ spec:
               protocol: TCP
           resources:
 {{ toYaml .Values.statsExporter.resources | indent 12 }}
+      {{- end }}
+      {{- if or .Values.nginxTemplateFile }}
+      volumes:
+        - name: custom-template
+          configMap:
+            name: {{ template "fullname" . }}-custom-template
+            items:
+            - key: nginx.tmpl
+              path: nginx.tmpl
       {{- end }}
       hostNetwork: {{ .Values.controller.hostNetwork }}
     {{- if .Values.controller.nodeSelector }}

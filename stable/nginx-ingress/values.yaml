@@ -283,10 +283,22 @@ statsExporter:
 # Ref: https://github.com/kubernetes/contrib/tree/master/ingress/controllers/nginx/examples/tcp
 ##
 tcp: {}
-#  8080: "default/example-tcp-svc:9000"
+# 8080: "default/example-tcp-svc:9000"
 
 # UDP service key:value pairs
 # Ref: https://github.com/kubernetes/contrib/tree/master/ingress/controllers/nginx/examples/udp
 ##
 udp: {}
-#  53: "kube-system/kube-dns:53"
+# 53: "kube-system/kube-dns:53"
+
+## Enables DHParam.
+## Provide a file in PEM format
+## http://nginx.org/en/docs/http/ngx_http_ssl_module.html#ssl_dhparam
+##
+# dhparamFile: |-
+
+## Enables Nginx Custom Template.
+## Provide template file to use instead of default one
+## https://github.com/kubernetes/ingress/blob/master/controllers/nginx/configuration.md#custom-nginx-template
+##
+# nginxTemplateFile: |-
