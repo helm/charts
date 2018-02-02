@@ -1,0 +1,184 @@
+apiVersion: apps/v1beta2
+kind: StatefulSet
+metadata:
+  name: {{ template "artifactory.primary.name" . }}
+  labels:
+    app: {{ template "artifactory.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: {{ .Values.artifactory.name }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+spec:
+  serviceName: "{{ template "artifactory.primary.name" . }}"
+  replicas: 1
+  updateStrategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      role: {{ template "artifactory.primary.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "artifactory.name" . }}
+        role: {{ template "artifactory.primary.name" . }}
+        component: {{ .Values.artifactory.name }}
+        release: {{ .Release.Name }}
+    spec:
+    {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+      - name: {{ .Values.imagePullSecrets }}
+    {{- end }}
+      initContainers:
+    {{- if .Values.artifactory.persistence.enabled }}
+      - name: "remove-lost-found"
+        image: "{{ .Values.initContainerImage }}"
+        imagePullPolicy: {{ .Values.artifactory.image.pullPolicy }}
+        command:
+        - 'sh'
+        - '-c'
+        - 'rm -rfv {{ .Values.artifactory.persistence.mountPath }}/lost+found'
+        volumeMounts:
+        - mountPath: {{ .Values.artifactory.persistence.mountPath | quote }}
+          name: volume
+    {{- end }}
+      - name: "wait-for-db"
+        image: "{{ .Values.initContainerImage }}"
+        command:
+        - 'sh'
+        - '-c'
+        - >
+      {{- if .Values.postgresql.enabled }}
+          until nc -z -w 2 {{ .Release.Name }}-postgresql {{ .Values.postgresql.service.port }} && echo database ok; do
+      {{- else }}
+          until nc -z -w 2 {{ .Values.database.host }} {{ .Values.database.port }} && echo database ok; do
+      {{- end }}
+            sleep 2;
+          done;
+      containers:
+      - name: {{ .Values.artifactory.name }}
+        image: '{{ .Values.artifactory.image.repository }}:{{ .Values.artifactory.image.version }}'
+        imagePullPolicy: {{ .Values.artifactory.image.pullPolicy }}
+        env:
+      {{- if .Values.postgresql.enabled }}
+        - name: DB_TYPE
+          value: 'postgresql'
+        - name: DB_HOST
+          value: '{{ .Release.Name }}-postgresql'
+        - name: DB_PORT
+          value: '{{ .Values.postgresql.service.port }}'
+        - name: DB_USER
+          value: '{{.Values.postgresql.postgresUser }}'
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Release.Name }}-postgresql
+              key: postgres-password
+      {{- else }}
+        - name: DB_TYPE
+          value: '{{ .Values.database.type }}'
+        - name: DB_HOST
+          value: '{{ .Values.database.host }}'
+        - name: DB_PORT
+          value: '{{ .Values.database.port }}'
+        - name: DB_USER
+          value: '{{ .Values.database.user }}'
+        - name: DB_PASSWORD
+          value: '{{ .Values.database.password }}'
+      {{- end }}
+        - name: EXTRA_JAVA_OPTIONS
+          value: "
+      {{- if .Values.artifactory.javaOpts.other }}
+          {{ .Values.artifactory.javaOpts.other }}
+      {{- end}}
+      {{- if .Values.artifactory.primary.javaOpts.other }}
+          {{ .Values.artifactory.primary.javaOpts.other }}
+      {{- end}}
+      {{- if .Values.artifactory.primary.javaOpts.xms }}
+          -Xms{{ .Values.artifactory.primary.javaOpts.xms }}
+      {{- end}}
+      {{- if .Values.artifactory.primary.javaOpts.xmx }}
+          -Xmx{{ .Values.artifactory.primary.javaOpts.xmx }}
+      {{- end}}
+            "
+        - name: ARTIFACTORY_MASTER_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "artifactory.name" . }}-master-key
+              key: master-key
+        - name: HA_IS_PRIMARY
+          value: "true"
+        - name: HA_MEMBERSHIP_PORT
+          value: "{{ .Values.artifactory.membershipPort }}"
+      {{- if eq .Values.artifactory.persistence.type "nfs" }}
+        - name: HA_DATA_DIR
+          value: "{{ .Values.artifactory.persistence.nfs.dataDir }}"
+        - name: HA_BACKUP_DIR
+          value: "{{ .Values.artifactory.persistence.nfs.backupDir }}"
+      {{- end }}
+        ports:
+        - containerPort: {{ .Values.artifactory.internalPort }}
+        volumeMounts:
+        - name: volume
+          mountPath: "{{ .Values.artifactory.persistence.mountPath }}"
+        - name: artifactory-inactiveservercleaner
+          mountPath: "{{ .Values.artifactory.persistence.mountPath }}/etc/plugins/inactiveServerCleaner.groovy"
+          subPath: inactiveServerCleaner.groovy
+      {{- if eq .Values.artifactory.persistence.type "nfs" }}
+        - name: artifactory-ha-data
+          mountPath: "{{ .Values.artifactory.persistence.nfs.dataDir }}"
+        - name: artifactory-ha-backup
+          mountPath: "{{ .Values.artifactory.persistence.nfs.backupDir }}"
+      {{- else }}
+        - name: binarystore-xml
+          mountPath: "{{ .Values.artifactory.persistence.mountPath }}/etc/binarystore.xml"
+          subPath: binarystore.xml
+      {{- end }}
+      {{- if .Values.artifactory.license.secret }}
+        - name: artifactory-license
+          mountPath: "{{ .Values.artifactory.persistence.mountPath }}/etc/artifactory.cluster.license"
+          subPath: {{ .Values.artifactory.license.dataKey }}
+      {{- end }}
+        resources:
+{{ toYaml .Values.artifactory.primary.resources | indent 10 }}
+        readinessProbe:
+          httpGet:
+            path: '/artifactory/webapp/#/login'
+            port: 8081
+          initialDelaySeconds: 60
+          periodSeconds: 10
+          failureThreshold: 10
+        livenessProbe:
+          httpGet:
+            path: '/artifactory/webapp/#/login'
+            port: 8081
+          initialDelaySeconds: 180
+          periodSeconds: 10
+      volumes:
+      - name: binarystore-xml
+        configMap:
+          name: artifactory-binarystore
+      - name: artifactory-inactiveservercleaner
+        configMap:
+          name: artifactory-inactiveservercleaner
+      {{- if .Values.artifactory.license.secret }}
+      - name: artifactory-license
+        secret:
+          secretName: {{ .Values.artifactory.license.secret }}
+      {{- end }}
+      {{- if eq .Values.artifactory.persistence.type "nfs" }}
+      - name: artifactory-ha-data
+        persistentVolumeClaim:
+          claimName: {{ template "artifactory.name" . }}-data-pvc
+      - name: artifactory-ha-backup
+        persistentVolumeClaim:
+          claimName: {{ template "artifactory.name" . }}-backup-pvc
+      {{- end }}
+  volumeClaimTemplates:
+  - metadata:
+      name: volume
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: {{ .Values.artifactory.persistence.size }}
