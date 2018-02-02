@@ -131,4 +131,4 @@ spec:
           }
         }
       ]
-      serviceAccountName: {{ template "fullname" . }}-sa
+      serviceAccountName: {{ template "serviceAccountName" . }}

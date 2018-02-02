@@ -57,4 +57,4 @@ spec:
               name: {{ printf "%s-%s" .Release.Name "mysql" | trunc 63 | trimSuffix "-" }}
               key: mysql-root-password
         command: ['sh', '-c', 'mysql -h ${{ printf "{%s" .Release.Name | upper }}_MYSQL_SERVICE_HOST} -u root --password=${MYSQL_PASSWORD} -e "CREATE DATABASE IF NOT EXISTS skipper;"']
-      serviceAccountName: {{ template "fullname" . }}-sa
+      serviceAccountName: {{ template "serviceAccountName" . }}

@@ -32,3 +32,14 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- $name := default "data-flow" .Values.appNameOverride -}}
 {{- printf "%s_%s" .Release.Name $name | upper | replace "-" "_" | trunc 63 | trimSuffix "_" -}}
 {{- end -}}
+
+{{/*
+Create the name of the service account to use
+*/}}
+{{- define "serviceAccountName" -}}
+{{- if .Values.serviceAccount.create -}}
+    {{ default (include "fullname" .) .Values.serviceAccount.name }}
+{{- else -}}
+    {{ default "default" .Values.serviceAccount.name }}
+{{- end -}}
+{{- end -}}

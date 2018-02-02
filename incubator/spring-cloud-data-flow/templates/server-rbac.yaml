@@ -2,8 +2,13 @@
 kind: Role
 apiVersion: rbac.authorization.k8s.io/{{ required "A valid .Values.rbac.apiVersion entry required!" .Values.rbac.apiVersion }}
 metadata:
-  name: {{ template "fullname" . }}-role
+  name: {{ template "fullname" . }}
   namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ template "name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
 rules:
   - apiGroups: [""]
     resources: ["services", "pods", "replicationcontrollers", "persistentvolumeclaims"]
@@ -21,12 +26,17 @@ rules:
 kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/{{ required "A valid .Values.rbac.apiVersion entry required!" .Values.rbac.apiVersion }}
 metadata:
-  name: {{ template "fullname" . }}-rb
-subjects:
-- kind: ServiceAccount
-  name: {{ template "fullname" . }}-sa
+  name: {{ template "fullname" . }}
+  labels:
+    app: {{ template "name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
 roleRef:
   kind: Role
-  name: {{ template "fullname" . }}-role
+  name: {{ template "fullname" . }}
   apiGroup: rbac.authorization.k8s.io
+subjects:
+- kind: ServiceAccount
+  name: {{ template "serviceAccountName" . }}
 {{- end -}}

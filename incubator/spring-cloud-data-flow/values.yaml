@@ -7,9 +7,19 @@ dataflowRoles: ROLE_VIEW, ROLE_CREATE
 dataflowAdminUsername: admin
 dataflowAdminPassword: admin
 dataflowAdminRoles: ROLE_MANAGE, ROLE_VIEW
+
 rbac:
-  create: false
+  # Specifies whether RBAC resources should be created
+  create: true
   apiVersion: v1beta1
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+
 server:
   image: springcloud/spring-cloud-dataflow-server-kubernetes
   version: 1.3.0.RELEASE
@@ -25,6 +35,7 @@ server:
   #  requests:
   #    cpu: 0.5
   #    memory: 640Mi
+
 skipper:
   image: springcloud/spring-cloud-skipper-server
   version: 1.0.0.RELEASE
@@ -41,6 +52,7 @@ skipper:
   #  requests:
   #    cpu: 0.5
   #    memory: 640Mi
+
 metrics:
   image: springcloud/metrics-collector-rabbit
   version: 1.0.0.RELEASE
@@ -56,6 +68,7 @@ metrics:
   #  requests:
   #    cpu: 0.5
   #    memory: 640Mi
+
 deployer:
   resourceLimits:
     cpu: 500m
@@ -64,7 +77,9 @@ deployer:
     initialDelaySeconds: 120
   livenessProbe:
     initialDelaySeconds: 90
+
 rabbitmq:
   rabbitmqUsername: user
+
 mysql:
   mysqlDatabase: dataflow

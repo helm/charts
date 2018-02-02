@@ -53,4 +53,4 @@ spec:
             secretKeyRef:
               name: {{ printf "%s-%s" .Release.Name "rabbitmq" | trunc 63 | trimSuffix "-" }}
               key: rabbitmq-password
-      serviceAccountName: {{ template "fullname" . }}-sa
+      serviceAccountName: {{ template "serviceAccountName" . }}
