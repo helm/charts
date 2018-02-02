@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "registry.fullname" . }}
+  labels:
+    app: {{ template "name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  selector:
+    name: {{ template "registry.fullname" . }}
+  ports:
+    - name: repo
+      port: {{ .Values.registry.service.port }} 
+    - name: debug
+      port: {{ .Values.registry.service.debugPort }} 

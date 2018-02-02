@@ -1,0 +1,174 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "portus.fullname" . }} 
+  labels:
+    name: {{ template "portus.fullname" . }}
+    app: {{ template "name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.portus.replicas }}
+  selector:
+    matchLabels:
+      name: {{ template "portus.fullname" . }}
+  template:
+    metadata:
+      labels:
+        name: {{ template "portus.fullname" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: "portus"
+          image: "{{ .Values.portus.image.repository }}:{{ .Values.portus.image.tag }}"
+          imagePullPolicy: {{ .Values.portus.image.pullPolicy }}
+          {{- if eq false .Values.portus.tls.enabled }}
+          command: ["/bin/bash"]
+          args: ["-c", "openssl genrsa -out /secrets/portus.key 3072;/init"]
+          {{- end }}
+          ports:
+            - containerPort: {{ .Values.portus.service.port }}
+          env:
+            - name: PORTUS_MACHINE_FQDN_VALUE
+              value: {{ template "portus.fullname" . }}
+            - name: PORTUS_DB_ADAPTER
+              value: {{ .Values.portus.dbAdapter }}
+            {{- if .Values.mariadb.enabled }}
+            - name: PORTUS_DB_HOST
+              value: {{ template "mariadb.fullname" . }}
+            - name: PORTUS_DB_DATABASE
+              value: {{ .Values.mariadb.mariadbDatabase | quote }}
+            - name: PORTUS_DB_USERNAME
+              value: {{ .Values.mariadb.mariadbUser | quote }}
+            - name: PORTUS_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "mariadb.fullname" . }}
+                  key: mariadb-password
+            # - name: PORTUS_DB_PASSWORD
+            #   value: {{ .Values.mariadb.password }}
+            {{- else }}
+            - name: PORTUS_DB_HOST
+              value: {{ .Values.portus.dbHost }}
+            - name: PORTUS_DB_DATABASE
+              value: {{ .Values.portus.dbDatabase }}
+            - name: PORTUS_DB_USERNAME
+              value: {{ .Values.portus.dbUsername }}
+            - name: PORTUS_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "portus.fullname" . }}  
+                  key: PORTUS_PRODUCTION_PASSWORD
+            {{- end }}
+            - name: PORTUS_KEY_PATH
+              value: "/secrets/portus.key"
+            {{- if .Values.portus.tls.enabled }}
+            - name: PORTUS_CERT_PATH
+              value: "/certificates/portus.crt"
+            - name: PORTUS_PUMA_TLS_KEY
+              value: "/secrets/portus.key"
+            - name: PORTUS_PUMA_TLS_CERT
+              value: "/certificates/portus.crt"
+            {{- end }}
+            - name: PORTUS_PUMA_HOST
+              value: {{ template "portus.fullname" . }} # :{{ .Values.portus.service.port }}
+            - name: RAILS_SERVE_STATIC_FILES
+              value: "true"
+            - name: PORTUS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "portus.fullname" . }}
+                  key: PORTUS_PASSWORD
+            - name: PORTUS_SECRET_KEY_BASE
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "portus.fullname" . }}
+                  key: PORTUS_SECRET_KEY_BASE
+          resources:
+{{ toYaml .Values.portus.resources | indent 12 }}
+          volumeMounts:
+            - name: secrets
+              mountPath: /secrets
+            - name: certificates
+              mountPath: /certificates
+            - name: config
+              mountPath: /srv/Portus/config/config-local.yml
+              subPath: etc/config-local.yml
+              readOnly: true
+        - name: "portus-background"
+          image: "{{ .Values.portus.image.repository }}:{{ .Values.portus.image.tag }}"
+          imagePullPolicy: {{ .Values.portus.image.pullPolicy }}
+          env:
+            - name: PORTUS_BACKGROUND
+              value: "true"
+            - name: PORTUS_DB_ADAPTER
+              value: {{ .Values.portus.dbAdapter | quote }}
+            {{- if .Values.mariadb.enabled }}
+            - name: PORTUS_DB_HOST
+              value: {{ template "mariadb.fullname" . }}
+            - name: PORTUS_DB_DATABASE
+              value: {{ .Values.mariadb.mariadbDatabase | quote }}
+            - name: PORTUS_DB_USERNAME
+              value: {{ .Values.mariadb.mariadbUser | quote }}
+            - name: PORTUS_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "mariadb.fullname" . }}
+                  key: mariadb-password
+            {{- else }}
+            - name: PORTUS_DB_HOST
+              value: {{ .Values.portus.dbHost }}
+            - name: PORTUS_DB_DATABASE
+              value: {{ .Values.portus.dbDatabase }}
+            - name: PORTUS_DB_USERNAME
+              value: {{ .Values.portus.dbUsername }}
+            - name: PORTUS_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "portus.fullname" . }}
+                  key: PORTUS_PRODUCTION_PASSWORD
+            {{- end }}
+            - name: PORTUS_KEY_PATH
+              value: "/secrets/portus.key"
+            - name: PORTUS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "portus.fullname" . }}
+                  key: PORTUS_PASSWORD
+            - name: PORTUS_SECRET_KEY_BASE
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "portus.fullname" . }}
+                  key: PORTUS_SECRET_KEY_BASE
+          resources:
+{{ toYaml .Values.portus.background.resources | indent 12 }}
+          volumeMounts:
+            - name: secrets
+              mountPath: /secrets
+      volumes:
+        {{- if .Values.portus.tls.enabled }}
+        - name: secrets
+          secret:
+            secretName: {{ template "portus.fullname" . }}
+            items:
+              - key: key
+                path: portus.key
+        - name: certificates
+          secret:
+            secretName: {{ template "portus.fullname" . }}
+            items:
+              - key: cert
+                path: portus.crt
+        {{- else }}
+        - name: secrets
+          emptyDir: {}
+        - name: certificates
+          emptyDir: {}
+        {{- end }}
+        - name: config
+          configMap:
+            name: {{ template "portus.fullname" . }}
+            items:
+              - key: config
+                path: etc/config-local.yml

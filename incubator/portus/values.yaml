@@ -1,0 +1,211 @@
+## Default values for Portus Helm Chart.
+## This is a YAML-formatted file.
+## Declare variables to be passed into your templates.
+
+## Default values for Portus
+##
+portus:
+  replicas: 1
+
+  ## Image configuration.
+  ##
+  image:
+    repository: "opensuse/portus"
+    tag: "2.3"
+    pullPolicy: "IfNotPresent"
+
+  ## Service configuration.
+  ##
+  service:
+    port: "3000"
+
+  ## Resource configuration.
+  ##
+  resources:
+    requests:
+      memory: "512Mi"
+      cpu: "300m"
+
+  ## Portus database configuration.
+  dbAdapter: "mysql2"
+
+  ## only set db values if using existing database deployment
+  ##
+  # dbHost
+  # dbDatabase:
+  # dbUsername:
+  # dbPassword:
+
+  ## Defaults to a random 10-character alphanumeric string if not set
+  ##
+  # password:
+
+  ## Defaults to a random 128-character alphanumeric string if not set
+  ##
+  # secretKeyBase:
+
+  ## config
+  ##
+  config:
+    email:
+      from: "portus@example.com"
+      name: "Portus"
+      reply_to: "no-reply@example.com"
+      smtp:
+        enabled: false
+        address: "smtp.example.com"
+        port: 587
+        domain: "example.com"
+    gravatar: true  # If enabled, then the profile picture will be picked from the Gravatar
+    delete: true  # Allow admins and owners to delete images and tags
+    first_user_admin: true # First user signing up will be admin
+    signup: true  # If enabled, then users can signup with the signup form
+    display_name: false  # Allow users to have different display names on the web site
+    user_permission:
+      change_visibility: true  # Allow users to change the visibility or their personal namespace
+      create_team: true # Allow users to create teams
+      manage_team: true  # Allow users to create/modify teams if they are an owner of it
+      create_namespace: true # Allow users to create namespaces
+      manage_namespace: true  # Allow users to create/modify namespaces if they are an owner of it
+    security:
+      clair:
+        server: "" # This is only guaranteed to work for v2.0.x releases of Clair
+        health_port: 6061 # Port being used by Clair to report its status
+      zypper:
+        server: "" #  support for this is experimental since this functionality has not been merged into master yet in zypper-docker
+    anonymous_browsing: true # Allow anonymous (non-logged-in) users to explore the images available in your Docker Registry
+
+  ## TLS configuration
+  ## the internal host names of the portus, registry and nginx service must be covered by the key/cert in order for TLS to work properly
+  ##
+  tls:
+    enabled: false
+
+    ## must include key if using tls
+    ##
+    # key:
+
+    ## must include certificate if using tls
+    ##
+    # cert:
+
+  ## background processing
+  ##
+  background:
+    enabled: true
+    resources:
+      requests:
+        memory: "512Mi"
+        cpu: "300m"
+
+## Default values for Docker Registry.
+##
+registry:
+  replicas: 1
+  mountPath: "/storage"
+
+  ## persistence configuration.
+  ##
+  persistence:
+    enabled: false
+    accessMode: "ReadWriteOnce"
+    size: "10Gi"
+
+  ## image configuration.
+  # #
+  image:
+    repository: "library/registry"
+    tag: "2.5.2"
+    pullPolicy: "IfNotPresent"
+
+  ## Service configuration.
+  ##
+  service:
+    port: "5000"
+    debugPort: "5001"
+
+  ## Resource configuration.
+  ##
+  resources:
+    requests:
+      memory: "512Mi"
+      cpu: "300m"
+
+## Default values for Nginx.
+##
+nginx:
+  replicas: 1
+
+  ## image configuration.
+  ##
+  image:
+    repository: "library/nginx"
+    tag: "alpine"
+    pullPolicy: "IfNotPresent"
+
+  ## Service configuration.
+  ##
+  service:
+    ## Set to ClusterIP if using ingress, or NodePort if using minikube 
+    ##
+    type: "ClusterIP"
+
+    port: "80"
+    # nodePort:
+
+  ## in order to access the docker registry from outside of the cluster
+  ## if ingress is enabled set host to the domain you are using
+  ## if NodePort is being used set host to the ip address of a cluster node
+  ##
+  # host:
+
+  ## ingress configuration.
+  ##
+  ingress:
+    enabled: false
+
+    ## Anntations to be added to the web ingress
+    ##
+    # annotations:
+    #   kubernetes.io/ingress.class: "nginx"
+    #   nginx.ingress.kubernetes.io/proxy-body-size: "0"
+    #   kubernetes.io/ingress.allow-http: "false"
+    #   ingress.kubernetes.io/ssl-passthrough: "true"
+
+    ## TLS configuration
+    ## the ingress host must be covered by the key/cert in order for TLS to work properly
+    ##
+    # tls:
+    #   enabled: false
+
+      ## Secrets containing SSL key and cert must be manually created in the namespace
+      ##
+      # secretName: "portus-tls"
+
+  ## Resource configuration.
+  ##
+  resources:
+    requests:
+      memory: "512Mi"
+      cpu: "300m"
+
+## Default values for Mariadb.
+##
+mariadb:
+  ## Use Mariadb chart dependency
+  ## Set to false if using your own Mariadb
+  ##
+  enabled: true
+
+  ## persistence configuration.
+  ##
+  persistence:
+    enabled: false
+    accessMode: "ReadWriteOnce"
+    size: "8Gi"
+
+  ## Configuration values for Mariadb.
+  ##
+  mariadbUser: "portus"
+  mariadbDatabase: "portus"
+  mariadbPassword: "portus"

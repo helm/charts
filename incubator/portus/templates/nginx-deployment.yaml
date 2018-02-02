@@ -1,0 +1,54 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "nginx.fullname" . }} 
+  labels:
+    name: {{ template "nginx.fullname" . }}
+    app: {{ template "name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.nginx.replicas }} 
+  selector:
+    matchLabels:
+      name: {{ template "nginx.fullname" . }}
+  template:
+    metadata:
+      labels:
+        name: {{ template "nginx.fullname" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ template "nginx.fullname" . }}
+          image: "{{ .Values.nginx.image.repository }}:{{ .Values.nginx.image.tag }}" 
+          imagePullPolicy: {{ .Values.nginx.image.pullPolicy }} 
+          resources:
+{{ toYaml .Values.nginx.resources | indent 12 }}
+          volumeMounts:
+            {{- if .Values.portus.tls.enabled }}
+            - name: certvol
+              mountPath: /certificates
+              readOnly: true
+            {{- end }}
+            - name: conf
+              mountPath: /etc/nginx
+          ports:
+            - containerPort: {{ .Values.nginx.service.port }}
+      volumes:
+        {{- if .Values.portus.tls.enabled }}
+        - name: certvol
+          secret:
+            secretName: {{ template "portus.fullname" . }}
+            items:
+            - key: key
+              path: portus.key
+            - key: cert
+              path: portus.crt
+        {{- end }}
+        - name: conf
+          configMap:
+            name: {{ template "nginx.fullname" . }}
+            items:
+            - key: conf
+              path: nginx.conf
