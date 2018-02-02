@@ -50,8 +50,14 @@ spec:
           {{- end }}
           {{- if .Values.google.project }}
             - --google-project={{ .Values.google.project }}
+          volumeMounts:
+          {{- if eq .Values.provider "azure" }}
+          - name: azure-config-file
+            mountPath: /etc/kubernetes/azure.json
+            readOnly: true
           {{- end }}
           env:
+        {{- if eq .Values.provider "aws" }}
         {{- if and .Values.aws.secretKey .Values.aws.accessKey }}
           - name: AWS_ACCESS_KEY_ID
             valueFrom:
@@ -77,6 +83,7 @@ spec:
           - name: CF_API_EMAIL
             value: "{{ .Values.cloudflare.email }}"
         {{- end }}
+        {{- end }}
         {{- $root := . -}}
         {{- range $key, $value := .Values.extraEnv }}
           - name: {{ $key }}
@@ -95,6 +102,13 @@ spec:
           resources:
 {{ toYaml .Values.resources | indent 12 }}
         {{- end }}
+      volumes:
+      {{- if eq .Values.provider "azure" }}
+      - name: azure-config-file
+        hostPath:
+          path: /etc/kubernetes/azure.json
+          type: File
+      {{- end }}
     {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
