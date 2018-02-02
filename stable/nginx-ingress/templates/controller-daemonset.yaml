@@ -86,14 +86,14 @@ spec:
                 fieldRef:
                   fieldPath: metadata.namespace
           {{- if or .Values.nginxTemplateFile }}
+          {{- range $key, $value := .Values.controller.extraEnvs }}
+            - name: {{ $key | upper | replace "." "_" }}
+              value: {{ $value }}
+          {{- end }}
           volumeMounts:
             - name: custom-template
               mountPath: /etc/nginx/template
               readOnly: true
-          {{- end }}
-          {{- range $key, $value := .Values.controller.extraEnvs }}
-            - name: {{ $key | upper | replace "." "_" }}
-              value: {{ $value }}
           {{- end }}
           livenessProbe:
             httpGet:
