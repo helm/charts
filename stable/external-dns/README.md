@@ -23,6 +23,7 @@ The following tables lists the configurable parameters of the external-dns chart
 
 | Parameter                          | Description                                                                                                                | Default                                            |
 | ---------------------------------- | -------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
+| `annotationFilter`                 | Filter sources managed by external-dns via annotation using label selector semantics (default: all sources) (optional).    | `""`                                               |
 | `aws.accessKey`                    | `AWS_ACCESS_KEY_ID` to set in the environment (optional).                                                                  | `""`                                               |
 | `aws.secretKey`                    | `AWS_SECRET_ACCESS_KEY` to set in the environment (optional).                                                              | `""`                                               |
 | `aws.region`                       | `AWS_DEFAULT_REGION` to set in the environment (optional).                                                                 | `us-east-1`                                        |
@@ -32,6 +33,7 @@ The following tables lists the configurable parameters of the external-dns chart
 | `domainFilters`                    | Limit possible target zones by domain suffixes (optional).                                                                 | `[]`                                               |
 | `extraArgs`                        | Optional object of extra args, as `name`: `value` pairs. Where the name is the command line arg to external-dns.           | `{}`                                               |
 | `extraEnv`                         | Optional object of extra environment variables, as `name`: `value` pairs.                                                  | `{}`                                               |
+| `google.project`                   | When using the Google provider, specify the Google project (required when provider=google).                                | `""`                                               |
 | `image.name`                       | Container image name (Including repository name if not `hub.docker.com`).                                                  | `registry.opensource.zalan.do/teapot/external-dns` |
 | `image.pullPolicy`                 | Container pull policy.                                                                                                     | `IfNotPresent`                                     |
 | `image.tag`                        | Container image tag.                                                                                                       | `v0.4.5`                                           |
@@ -53,6 +55,7 @@ The following tables lists the configurable parameters of the external-dns chart
 | `service.type`                     | Type of service to create                                                                                                  | `ClusterIP`                                        |
 | `sources`                          | List of resource types to monitor, possible values are fake, service or ingress.                                           | `[service, ingress]`                               |
 | `tolerations`                      | List of node taints to tolerate (requires Kubernetes >= 1.6)                                                               | `[]`                                               |
+| `txtOwnerId`                       | When using the TXT registry, a name that identifies this instance of ExternalDNS (optional)                                | `"default"`                                        |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
