@@ -29,6 +29,12 @@ spec:
           {{- end }}
             - --policy={{ .Values.policy }}
             - --provider={{ .Values.provider }}
+          {{- if .Values.txtOwnerId }}
+            - --txt-owner-id={{ .Values.txtOwnerId }}
+          {{- end }}
+          {{- if .Values.annotationFilter }}
+            - --annotation-filter={{ .Values.annotationFilter }}
+          {{- end }}
           {{- range .Values.sources }}
             - --source={{ . }}
           {{- end }}
@@ -41,6 +47,9 @@ spec:
           {{- end }}
           {{- if .Values.aws.zoneType }}
             - --aws-zone-type={{ .Values.aws.zoneType }}
+          {{- end }}
+          {{- if .Values.google.project }}
+            - --google-project={{ .Values.google.project }}
           {{- end }}
           volumeMounts:
           {{- if eq .Values.provider "azure" }}
