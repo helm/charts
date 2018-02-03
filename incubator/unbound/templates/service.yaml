@@ -1,0 +1,17 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    app: {{ template "fullname" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+spec:
+  selector:
+    app: {{ template "fullname" . }}
+  ports:
+    - name: dns
+      protocol: UDP
+      port: 53
+      targetPort: dns

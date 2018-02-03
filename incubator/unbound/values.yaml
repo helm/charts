@@ -1,0 +1,11 @@
+replicas: 2
+image: "markbnj/unbound:490d1cb"
+imagePullPolicy: "IfNotPresent"
+memRequest: "32Mi"
+memLimit: "64Mi"
+cpuRequest: "100m"
+verbosity: 1
+numThreads: 1
+statsInterval: 0
+statsCumulative: "no"
+serverPort: 53

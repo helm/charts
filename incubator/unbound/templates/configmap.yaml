@@ -1,0 +1,48 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    app: {{ template "fullname" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name  }}
+data:
+  unbound.conf: |-
+    server:
+        chroot: ""
+        num-threads: {{ .Values.numThreads }}
+        directory: "/etc/unbound"
+        {{- if .Values.allowedIpRanges }}
+        interface: 0.0.0.0
+        {{- end }}
+        interface: 127.0.0.1
+        access-control: 127.0.0.1/32 allow
+        {{- range .Values.allowedIpRanges }}
+        access-control: {{ . }} allow
+        {{- end }}
+        port: {{ .Values.serverPort }}
+        so-reuseport: yes
+        do-daemonize: no
+        logfile: ""
+        use-syslog: no
+        auto-trust-anchor-file: "/var/lib/unbound/root.key"
+        verbosity: {{ .Values.verbosity }}
+        statistics-interval: {{ .Values.statsInterval }}
+        statistics-cumulative: {{ .Values.statsCumulative }}
+
+        # record used for the liveness/readiness probes
+        local-data: "health.check.unbound A 10.10.10.10"
+        local-data-ptr: "10.10.10.10 health.check.unbound"
+
+    {{- range .Values.forwardZones }}
+
+    forward-zone:
+        name: {{ .name }}
+        {{- range .forwardHosts }}
+        forward-host: {{ . }}
+        {{- end }}
+        {{- range .forwardIps }}
+        forward-addr: {{ . }}
+        {{- end }}
+    {{- end }}

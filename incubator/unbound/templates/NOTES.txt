@@ -1,0 +1,3 @@
+NOTES.txt placeholder.
+
+1. Explain the installation of unbound as an upstream resolver for kube-dns

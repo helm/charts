@@ -1,0 +1,62 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    app: {{ template "fullname" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+spec:
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels:
+      app: {{ template "fullname" . }}
+  template:
+    metadata:
+      labels:
+        chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+        app: {{ template "fullname" . }}
+        heritage: {{ .Release.Service }}
+        release: {{ .Release.Name }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+    spec:
+      containers:
+      - name: "unbound"
+        image: {{ .Values.image | quote }}
+        imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
+        resources:
+          requests:
+            memory: {{ .Values.memRequest | quote }}
+            cpu: {{ .Values.cpuRequest | quote }}
+          limits:
+            memory: {{ .Values.memLimit | quote }}
+        ports:
+        - name: "dns-udp"
+          containerPort: {{ .Values.serverPort }}
+          protocol: "UDP"
+        volumeMounts:
+        - name: "unbound-conf"
+          mountPath: "/etc/unbound/"
+          readOnly: true
+        livenessProbe:
+          exec:
+            command:
+              - "nslookup"
+              - "health.check.unbound"
+              - "127.0.0.1"
+          initialDelaySeconds: 10
+          timeoutSeconds: 2
+        readinessProbe:
+          exec:
+            command:
+              - "nslookup"
+              - "health.check.unbound"
+              - "127.0.0.1"
+          initialDelaySeconds: 10
+          timeoutSeconds: 2
+      volumes:
+      - name: "unbound-conf"
+        configMap:
+          name: {{ template "fullname" . }}
