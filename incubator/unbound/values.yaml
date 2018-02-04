@@ -1,5 +1,5 @@
 replicas: 2
-image: "markbnj/unbound:490d1cb"
+image: "markbnj/unbound-docker:0.1.0"
 imagePullPolicy: "IfNotPresent"
 memRequest: "32Mi"
 memLimit: "64Mi"
