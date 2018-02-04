@@ -203,27 +203,25 @@ _Jenkins is run with user `jenkins`, uid = 1000. If you bind mount a volume from
 
 The master pod uses an Init Container to install plugins etc. If you are behind a corporate proxy it may be useful to set `Master.InitContainerEnv` to add environment variables such as `http_proxy`, so that these can be downloaded.
 
-```yaml
-jenkins:
-  Master:
-    InitContainerEnv:
-      - name: http_proxy
-        value: "http://192.168.64.1:3128"
-      - name: https_proxy
-        value: "http://192.168.64.1:3128"
-      - name: no_proxy
-        value: ""
-```
-
-Additionally, you may want to add env vars for the Jenkins container, and the JVM (`Master.JavaOpts`):
+Additionally, you may want to add env vars for the Jenkins container, and the JVM (`Master.JavaOpts`).
 
 ```yaml
-jenkins:
-  Master:
-    ContainerEnv:
-      - name: http_proxy
-        value: "http://192.168.64.1:3128"
-      - name: https_proxy
-        value: "http://192.168.64.1:3128"
-    JavaOpts: "-Dhttp.proxyHost=192.168.64.1 -Dhttp.proxyPort=3128 -Dhttps.proxyHost=192.168.64.1 -Dhttps.proxyPort=3128"
+Master:
+  InitContainerEnv:
+    - name: http_proxy
+      value: "http://192.168.64.1:3128"
+    - name: https_proxy
+      value: "http://192.168.64.1:3128"
+    - name: no_proxy
+      value: ""
+  ContainerEnv:
+    - name: http_proxy
+      value: "http://192.168.64.1:3128"
+    - name: https_proxy
+      value: "http://192.168.64.1:3128"
+  JavaOpts: >-
+    -Dhttp.proxyHost=192.168.64.1
+    -Dhttp.proxyPort=3128
+    -Dhttps.proxyHost=192.168.64.1
+    -Dhttps.proxyPort=3128
 ```
