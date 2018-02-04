@@ -13,14 +13,6 @@ data:
         chroot: ""
         num-threads: {{ .Values.numThreads }}
         directory: "/etc/unbound"
-        {{- if .Values.allowedIpRanges }}
-        interface: 0.0.0.0
-        {{- end }}
-        interface: 127.0.0.1
-        access-control: 127.0.0.1/32 allow
-        {{- range .Values.allowedIpRanges }}
-        access-control: {{ . }} allow
-        {{- end }}
         port: {{ .Values.serverPort }}
         so-reuseport: yes
         do-daemonize: no
@@ -31,7 +23,22 @@ data:
         statistics-interval: {{ .Values.statsInterval }}
         statistics-cumulative: {{ .Values.statsCumulative }}
 
-        # record used for the liveness/readiness probes
+        interface: 127.0.0.1
+        {{- if .Values.allowedIpRanges }}
+        interface: 0.0.0.0
+        {{- end }}
+
+        access-control: 127.0.0.1/32 allow
+
+        {{- range .Values.allowedIpRanges }}
+        access-control: {{ . }} allow
+        {{- end }}
+
+        {{- range .Values.localRecords }}
+        local-data: "{{ .name }} A {{ .ip }}"
+        local-data-ptr: "{{ .ip }} {{ .name }}"
+        {{- end }}
+
         local-data: "health.check.unbound A 127.0.0.1"
         local-data-ptr: "127.0.0.1 health.check.unbound"
 
