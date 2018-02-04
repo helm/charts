@@ -7,6 +7,7 @@ appVersion: 1.6.7
 sources:
 - http://unbound.nlnetlabs.nl/svn/
 - https://github.com/Markbnj/unbound-docker
+- https://github.com/kubernetes/contrib/tree/master/exec-healthz
 maintainers:
 - name: Mark Betz
   email: betz.mark@gmail.com
