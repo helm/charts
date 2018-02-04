@@ -24,9 +24,7 @@ data:
         statistics-cumulative: {{ .Values.statsCumulative }}
 
         interface: 127.0.0.1
-        {{- if .Values.allowedIpRanges }}
         interface: 0.0.0.0
-        {{- end }}
 
         access-control: 127.0.0.1/32 allow
 
