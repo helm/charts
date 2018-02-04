@@ -41,21 +41,26 @@ spec:
           mountPath: "/etc/unbound/"
           readOnly: true
         livenessProbe:
-          exec:
-            command:
-              - "nslookup"
-              - "health.check.unbound"
-              - "127.0.0.1"
+          httpGet:
+            path: "/healthz"
+            port: 8080
           initialDelaySeconds: 10
           timeoutSeconds: 2
         readinessProbe:
           exec:
-            command:
-              - "nslookup"
-              - "health.check.unbound"
-              - "127.0.0.1"
+          httpGet:
+            path: "/healthz"
+            port: 8080
           initialDelaySeconds: 10
           timeoutSeconds: 2
+      - name: "healthz"
+        image: "gcr.io/google_containers/exechealthz-amd64:1.2"
+        args:
+          - "-cmd=nslookup health.check.unbound 127.0.0.1 > /dev/null"
+        ports:
+        - name: healthz
+          containerPort: 8080
+          protocol: TCP
       volumes:
       - name: "unbound-conf"
         configMap:
