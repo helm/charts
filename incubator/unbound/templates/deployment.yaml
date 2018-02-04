@@ -54,7 +54,7 @@ spec:
           initialDelaySeconds: 10
           timeoutSeconds: 2
       - name: "healthz"
-        image: "gcr.io/google_containers/exechealthz-amd64:1.2"
+        image: {{ .Values.healthzImage | quote }}
         args:
           - "-cmd=nslookup health.check.unbound 127.0.0.1 > /dev/null"
         ports:
