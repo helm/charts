@@ -11,7 +11,7 @@ spec:
   selector:
     app: {{ template "fullname" . }}
   ports:
-    - name: dns
+    - name: dns-udp
       protocol: UDP
-      port: 53
-      targetPort: dns
+      port: {{ .Values.serverPort }}
+      targetPort: dns-udp
