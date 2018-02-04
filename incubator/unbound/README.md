@@ -48,3 +48,21 @@ localRecords:
 
 ## Configuring as an upstream resolver for kube-dns
 
+To configure unbound to act as an upstream resolver for kube-dns edit the `kube-dns` configmap in the kube-system namespace to add the `stubDomains` value as shown below:
+
+```yaml
+apiVersion: v1
+data:
+  stubDomains: |
+    {"fake.net": ["10.59.248.82"]}
+kind: ConfigMap
+metadata:
+  creationTimestamp: 2018-01-04T18:09:38Z
+  labels:
+    addonmanager.kubernetes.io/mode: EnsureExists
+  name: kube-dns
+  namespace: kube-system
+  resourceVersion: "1825"
+  selfLink: /api/v1/namespaces/kube-system/configmaps/kube-dns
+  uid: 6d759f7d-f17a-11e7-898d-42010a800159
+```
