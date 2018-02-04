@@ -32,8 +32,8 @@ data:
         statistics-cumulative: {{ .Values.statsCumulative }}
 
         # record used for the liveness/readiness probes
-        local-data: "health.check.unbound A 10.10.10.10"
-        local-data-ptr: "10.10.10.10 health.check.unbound"
+        local-data: "health.check.unbound A 127.0.0.1"
+        local-data-ptr: "127.0.0.1 health.check.unbound"
 
     {{- range .Values.forwardZones }}
 
