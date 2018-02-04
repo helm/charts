@@ -9,3 +9,4 @@ numThreads: 1
 statsInterval: 0
 statsCumulative: "no"
 serverPort: 53
+healthzImage: "googlecontainer/exechealthz:1.2"
