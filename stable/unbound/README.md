@@ -46,6 +46,30 @@ localRecords:
   ip: "10.13.10.10"
 ```
 
+### Other configurable properties
+
+The following properties in values.yaml configure additional aspects of the unbound server. For more information see the [unbound documentation](http://unbound.net/documentation/unbound.conf.html).
+
+```
+verbosity
+numThreads
+statsInterval
+statsCumulative
+serverPort
+```
+
+The following properties in values.yaml affect the behavior of the deployment and pods. These are mostly self-explanatory.
+
+```
+replicas
+image
+imagePullPolicy
+memRequest
+memLimit
+cpuRequest
+healthzImage
+```
+
 ### Configuration changes
 
 The unbound deployment template includes the sha256 hash of the configmap as an annotation. This will cause the deployment to update if the configuration is changed. For more information on this and other useful stuff see [chart tips and tricks](https://github.com/kubernetes/helm/blob/master/docs/charts_tips_and_tricks.md).
