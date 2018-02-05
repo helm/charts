@@ -20,7 +20,7 @@ allowedIpRanges:
 
 ### Forward zones
 
-You can set as many forward zones as needed by speciying the zone name and forward hosts. Forward hosts can be set by hostname or ip.
+You can set as many forward zones as needed by specifying the zone name and forward hosts. Forward hosts can be set by hostname or ip.
 
 ```yaml
 forwardZones:
