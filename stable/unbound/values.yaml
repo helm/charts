@@ -1,6 +1,10 @@
 replicas: 2
-image: "markbnj/unbound-docker:0.1.0"
-imagePullPolicy: "IfNotPresent"
+unboundImageRepo: "markbnj/unbound-docker"
+unboundImageTag: "0.1.0"
+unboundImagePullPolicy: "IfNotPresent"
+healthzImageRepo: "googlecontainer/exechealthz"
+healthzImageTag: "1.2"
+healthzImagePullPolicy: "IfNotPresent"
 memRequest: "32Mi"
 memLimit: "64Mi"
 cpuRequest: "100m"
@@ -9,4 +13,3 @@ numThreads: 1
 statsInterval: 0
 statsCumulative: "no"
 serverPort: 53
-healthzImage: "googlecontainer/exechealthz:1.2"

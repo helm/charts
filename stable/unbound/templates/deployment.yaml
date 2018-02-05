@@ -13,6 +13,11 @@ spec:
     matchLabels:
       app: {{ template "unbound.name" . }}
       release: {{ .Release.Name }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
   template:
     metadata:
       labels:
@@ -25,8 +30,10 @@ spec:
     spec:
       containers:
       - name: "unbound"
-        image: {{ .Values.image | quote }}
-        imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
+        image:
+          repository: {{ .Values.unboundImageRepo | quote }}
+          tag: {{ .Values.unboundImageTag | quote }}
+          pullPolicy: {{ .Values.unboundImagePullPolicy | quote }}
         resources:
           requests:
             memory: {{ .Values.memRequest | quote }}
@@ -55,7 +62,10 @@ spec:
           initialDelaySeconds: 5
           timeoutSeconds: 2
       - name: "healthz"
-        image: {{ .Values.healthzImage | quote }}
+        image:
+          repository: {{ .Values.healthzImageRepo | quote }}
+          tag: {{ .Values.healthzImageTag | quote }}
+          pullPolicy: {{ .Values.healthzImagePullPolicy | quote }}
         args:
           - "-cmd=nslookup health.check.unbound 127.0.0.1:{{ .Values.serverPort }} > /dev/null"
         ports:
