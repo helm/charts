@@ -1,0 +1,125 @@
+# Default values for fluentd-ds.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+image:
+  repository: quay.io/coreos/fluentd-kubernetes
+  tag: v0.12-debian-elasticsearch
+  pullPolicy: IfNotPresent
+
+config:
+  systemd:
+    enabled: true
+  prometheus:
+    enabled: false
+  kubernetes:
+    enabled: true
+  apiserverAudit:
+    enabled: true
+
+output:
+  host: elasticsearch-client.default.svc.cluster.local
+  port: 9200
+
+service:
+  type: ClusterIP
+  metrics:
+    name: prometheus-metrics
+    port: 24231
+  agent:
+    port: 24220
+
+configMaps:
+  output.conf: |
+    <match **>
+      type elasticsearch
+      log_level info
+      include_tag_key true
+      # Replace with the host/port to your Elasticsearch cluster.
+      host "#{ENV['OUTPUT_HOST']}"
+      port "#{ENV['OUTPUT_PORT']}"
+      scheme http
+      ssl_verify false
+
+      logstash_format true
+      index_name logstash-
+      template_file /fluentd/etc/elasticsearch-template-es6x.json
+      template_name elasticsearch-template-es6x.json
+
+      buffer_chunk_limit 2M
+      buffer_queue_limit 32
+      flush_interval 10s
+      max_retry_wait 30
+      disable_retry_limit
+      num_threads 8
+    </match>
+  elasticsearch-template-es6x.json: |
+    {
+      "template" : "logstash-*",
+      "version" : 60001,
+      "settings" : {
+        "index.refresh_interval" : "5s"
+      },
+      "mappings" : {
+        "_default_" : {
+          "dynamic_templates" : [ {
+            "message_field" : {
+              "path_match" : "message",
+              "match_mapping_type" : "string",
+              "mapping" : {
+                "type" : "text",
+                "norms" : false
+              }
+            }
+          }, {
+            "string_fields" : {
+              "match" : "*",
+              "match_mapping_type" : "string",
+              "mapping" : {
+                "type" : "text", "norms" : false,
+                "fields" : {
+                  "keyword" : { "type": "keyword", "ignore_above": 256 }
+                }
+              }
+            }
+          } ],
+          "properties" : {
+            "@timestamp": { "type": "date"},
+            "@version": { "type": "keyword"},
+            "geoip"  : {
+              "dynamic": true,
+              "properties" : {
+                "ip": { "type": "ip" },
+                "location" : { "type" : "geo_point" },
+                "latitude" : { "type" : "half_float" },
+                "longitude" : { "type" : "half_float" }
+              }
+            }
+          }
+        }
+      }
+    }
+  extra.conf: |
+    # Example filter that adds an extra field "cluster_name" to all log
+    # messages:
+    # <filter **>
+    #   @type record_transformer
+    #   <record>
+    #     cluster_name "your_cluster_name"
+    #   </record>
+    # </filter>
+    #<system>
+    # equal to -qq option
+    #    log_level debug
+    #</system>
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 500m
+  #  memory: 200Mi
+  # requests:
+  #  cpu: 500m
+  #  memory: 200Mi
