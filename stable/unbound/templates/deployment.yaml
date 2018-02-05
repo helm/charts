@@ -40,6 +40,7 @@ spec:
             cpu: {{ .Values.cpuRequest | quote }}
           limits:
             memory: {{ .Values.memLimit | quote }}
+            cpu: {{  .Values.cpuLimit | quote }}
         ports:
         - name: "dns-udp"
           containerPort: {{ .Values.serverPort }}
