@@ -30,10 +30,8 @@ spec:
     spec:
       containers:
       - name: "unbound"
-        image:
-          repository: {{ .Values.unboundImageRepo | quote }}
-          tag: {{ .Values.unboundImageTag | quote }}
-          pullPolicy: {{ .Values.unboundImagePullPolicy | quote }}
+        image: {{ .Values.unboundImageRepo }}:{{ .Values.unboundImageTag }}
+        imagePullPolicy: {{ .Values.unboundImagePullPolicy | quote }}
         resources:
           requests:
             memory: {{ .Values.memRequest | quote }}
@@ -63,10 +61,8 @@ spec:
           initialDelaySeconds: 5
           timeoutSeconds: 2
       - name: "healthz"
-        image:
-          repository: {{ .Values.healthzImageRepo | quote }}
-          tag: {{ .Values.healthzImageTag | quote }}
-          pullPolicy: {{ .Values.healthzImagePullPolicy | quote }}
+        image: {{ .Values.healthzImageRepo }}:{{ .Values.healthzImageTag }}
+        imagePullPolicy: {{ .Values.healthzImagePullPolicy | quote }}
         args:
           - "-cmd=nslookup health.check.unbound 127.0.0.1:{{ .Values.serverPort }} > /dev/null"
         ports:
