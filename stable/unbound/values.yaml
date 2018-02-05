@@ -8,7 +8,7 @@ healthzImagePullPolicy: "IfNotPresent"
 memRequest: "32Mi"
 memLimit: "64Mi"
 cpuRequest: "100m"
-cpuLimit: "1"
+cpuLimit: "500m"
 verbosity: 1
 numThreads: 1
 statsInterval: 0
