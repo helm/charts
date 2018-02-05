@@ -46,6 +46,14 @@ localRecords:
   ip: "10.13.10.10"
 ```
 
+### Configuration changes
+
+The unbound deployment template includes the sha256 hash of the configmap as an annotation. This will cause the deployment to update if the configuration is changed. For more information on this and other useful stuff see [chart tips and tricks](https://github.com/kubernetes/helm/blob/master/docs/charts_tips_and_tricks.md).
+
+### Health checks
+
+Liveness and readiness probes are implemented by a side-car [healthz container](https://github.com/kubernetes/contrib/tree/master/exec-healthz). When a http GET is made to port 8080 healthz runs an nslookup against the unbound server on localhost querying for the name `health.check.unbound` which is stored as a local record in the configuration.
+
 ## Configuring as an upstream resolver for kube-dns
 
 To configure unbound to act as an upstream resolver for kube-dns edit the `kube-dns` configmap in the kube-system namespace to add the `stubDomains` value as shown below. The forwarding address for the domain should be set to the cluster IP of the unbound service.
@@ -54,7 +62,7 @@ To configure unbound to act as an upstream resolver for kube-dns edit the `kube-
 apiVersion: v1
 data:
   stubDomains: |
-    {"fake.net": ["10.59.248.82"]}
+    {"fake.net": ["10.10.10.10"]}
 kind: ConfigMap
 metadata:
   creationTimestamp: 2018-01-04T18:09:38Z
