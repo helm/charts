@@ -1,22 +1,23 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "unbound.fullname" . }}
   labels:
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    app: {{ template "fullname" . }}
+    app: {{ template "unbound.name" . }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
 spec:
   replicas: {{ .Values.replicas }}
   selector:
     matchLabels:
-      app: {{ template "fullname" . }}
+      app: {{ template "unbound.name" . }}
+      release: {{ .Release.Name }}
   template:
     metadata:
       labels:
         chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-        app: {{ template "fullname" . }}
+        app: {{ template "unbound.name" . }}
         heritage: {{ .Release.Service }}
         release: {{ .Release.Name }}
       annotations:
@@ -64,4 +65,4 @@ spec:
       volumes:
       - name: "unbound-conf"
         configMap:
-          name: {{ template "fullname" . }}
+          name: {{ template "unbound.fullname" . }}

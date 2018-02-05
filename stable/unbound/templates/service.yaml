@@ -1,15 +1,16 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "unbound.fullname" . }}
   labels:
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    app: {{ template "fullname" . }}
+    app: {{ template "unbound.name" . }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
 spec:
   selector:
-    app: {{ template "fullname" . }}
+    app: {{ template "unbound.name" . }}
+    release: {{ .Release.Name }}
   ports:
     - name: dns-udp
       protocol: UDP
