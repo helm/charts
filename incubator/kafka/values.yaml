@@ -93,3 +93,45 @@ schema-registry:
   ## If true, install the Schema-Registry chart alongside Kafka
   ## ref: https://github.com/kubernetes/charts/tree/master/incubator/schema-registry
   enabled: false
+
+# ------------------------------------------------------------------------------
+# REST proxy
+# ------------------------------------------------------------------------------
+
+restProxy:
+  ## If true, install the rest-proxy alongside Kafka
+  enabled: true
+
+  image: "confluentinc/cp-kafka-rest"
+  imageTag: "4.0.0"
+
+  service:
+    name: http
+    servicePort: 80
+    internalPort: 8082
+
+  ingress:
+    enabled: true
+    annotations: {}
+
+    # The host name used to generate absolute URLs for consumers.
+    # Ref: https://docs.confluent.io/current/kafka-rest/docs/deployment.html#important-configuration-options
+    host: example.local
+
+  ## Configuration Overrides. Specify any Kafka REST proxy settings you would like set on the pod
+  ## here in map format, as defined in the official docs.
+  ## ref: https://docs.confluent.io/current/installation/docker/docs/configuration.html#kafka-rest-proxy
+  ##
+  configurationOverrides: {}
+
+  ## Configure resource requests and limits
+  ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+  resources: {}
+    # limits:
+    #   cpu: 200m
+    #   memory: 1536Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 1024Mi
+    #
+

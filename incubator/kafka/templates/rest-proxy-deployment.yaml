@@ -1,0 +1,46 @@
+{{- if .Values.restProxy.enabled }}
+
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "kafka.fullname" . }}-rest-proxy
+  labels:
+    app: {{ template "kafka.name" . }}
+    role: rest-proxy
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "kafka.name" . }}
+        role: rest-proxy
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}-rest-proxy
+          image: "{{ .Values.restProxy.image }}:{{ .Values.restProxy.imageTag }}"
+          imagePullPolicy: {{ .Values.restProxy.imagePullPolicy }}
+          ports:
+            - containerPort: {{ .Values.restProxy.service.internalPort }}
+          envFrom:
+          - configMapRef:
+              name: {{ template "kafka.fullname" . }}-rest-proxy
+          livenessProbe:
+            httpGet:
+              path: /
+              port: {{ .Values.restProxy.service.internalPort }}
+          readinessProbe:
+            httpGet:
+              path: /
+              port: {{ .Values.restProxy.service.internalPort }}
+          resources:
+{{ toYaml .Values.restProxy.resources | indent 12 }}
+    {{- if .Values.restProxy.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.restProxy.nodeSelector | indent 8 }}
+    {{- end }}
+
+{{ end }}

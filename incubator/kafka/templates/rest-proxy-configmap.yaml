@@ -1,0 +1,20 @@
+{{- if .Values.restProxy.enabled }}
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "kafka.fullname" . }}-rest-proxy
+  labels:
+    app: {{ include "kafka.name" . | quote }}
+    role: rest-proxy
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+data:
+  KAFKA_REST_HOST_NAME: {{ .Values.restProxy.ingress.host }}
+  KAFKA_REST_ZOOKEEPER_CONNECT: {{ template "zookeeper.url" . }}
+{{- range $configName, $configValue := .Values.restProxy.configurationOverrides }}
+  {{ $configName }}: "{{ $configValue }}"
+{{- end -}}
+
+{{ end }}
