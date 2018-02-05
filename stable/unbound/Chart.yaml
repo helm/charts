@@ -9,5 +9,5 @@ sources:
 - https://github.com/Markbnj/unbound-docker
 - https://github.com/kubernetes/contrib/tree/master/exec-healthz
 maintainers:
-- name: Mark Betz
+- name: Markbnj
   email: betz.mark@gmail.com
