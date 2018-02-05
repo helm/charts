@@ -48,7 +48,7 @@ localRecords:
 
 ## Configuring as an upstream resolver for kube-dns
 
-To configure unbound to act as an upstream resolver for kube-dns edit the `kube-dns` configmap in the kube-system namespace to add the `stubDomains` value as shown below:
+To configure unbound to act as an upstream resolver for kube-dns edit the `kube-dns` configmap in the kube-system namespace to add the `stubDomains` value as shown below. The forwarding address for the domain should be set to the cluster IP of the unbound service.
 
 ```yaml
 apiVersion: v1
