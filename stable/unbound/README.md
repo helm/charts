@@ -51,23 +51,26 @@ localRecords:
 The following properties in values.yaml configure additional aspects of the unbound server. For more information see the [unbound documentation](http://unbound.net/documentation/unbound.conf.html).
 
 ```
-verbosity
-numThreads
-statsInterval
-statsCumulative
-serverPort
+verbosity: 1
+numThreads: 1
+statsInterval: 0
+statsCumulative: "no"
+serverPort: 53
 ```
 
 The following properties in values.yaml affect the behavior of the deployment and pods. These are mostly self-explanatory.
 
 ```
-replicas
-image
-imagePullPolicy
-memRequest
-memLimit
-cpuRequest
-healthzImage
+unboundImageRepo: "markbnj/unbound-docker"
+unboundImageTag: "0.1.0"
+unboundImagePullPolicy: "IfNotPresent"
+healthzImageRepo: "googlecontainer/exechealthz"
+healthzImageTag: "1.2"
+healthzImagePullPolicy: "IfNotPresent"
+memRequest: "32Mi"
+memLimit: "64Mi"
+cpuRequest: "100m"
+cpuLimit: "500m"
 ```
 
 ### Configuration changes
