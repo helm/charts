@@ -44,14 +44,14 @@ spec:
           httpGet:
             path: "/healthz"
             port: 8080
-          initialDelaySeconds: 10
+          initialDelaySeconds: 5
           timeoutSeconds: 2
         readinessProbe:
           exec:
           httpGet:
             path: "/healthz"
             port: 8080
-          initialDelaySeconds: 10
+          initialDelaySeconds: 5
           timeoutSeconds: 2
       - name: "healthz"
         image: {{ .Values.healthzImage | quote }}
