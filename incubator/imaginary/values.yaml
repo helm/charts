@@ -1,0 +1,144 @@
+---
+# How many instances of Imaginary you desire to spin up.
+replicaCount: 1
+
+# A node selector label.
+nodeSelector: {}
+
+# Docker image repository, tag and a policy for Kubernetes to pull it.
+image:
+  repo: h2non/imaginary
+  tag: 1.0.15
+  pullPolicy: IfNotPresent
+
+# Kubernetes API version to use for Imaginary Deployment
+apiVersion: apps/v1
+
+# Set kubernetes specific resource limits
+resources: {}
+  # limits:
+  #   cpu: 700m
+  #   memory: 700Mi
+  # requests:
+  #   cpu: 700m
+  #   memory: 700Mi
+
+# Which port should Imaginary and its Kubernetes service listen
+httpPort: 80
+
+# Kubernetes service type
+serviceType: "ClusterIP"
+
+# Timeuouts and counters options for Liveness & Readiness probes for Imaginary
+# Kubernets Deployment
+readinessProbe:
+  initialDelaySeconds: 5
+  timeoutSeconds: 5
+  successThreshold: 1
+  failureThreshold: 5
+livenessProbe:
+  initialDelaySeconds: 50
+  timeoutSeconds: 5
+  successThreshold: 1
+  failureThreshold: 5
+
+
+# Imaginary application configuration:
+config: {}
+  ## Url path prefix to listen to [default: "/"]
+  # pathPrefix: "/nya"
+
+  ## Enable CORS support
+  # cors: true
+
+  ## Enable gzip compression (deprecated)
+  # gzip: true
+
+  ## Comma separated endpoints to disable. E.g: form,crop,rotate,health
+  # disableEndpoints: "form,crop,rotate,health"
+
+  ## Define API key for authorization
+  # key: "ChangeMePlease"
+
+  ## Mount server local directory
+  # mount: "/mount/dir"
+
+  ## The TTL in seconds. Adds caching headers to locally served files.
+  # httpCacheTTL: 300
+
+  ## HTTP read timeout in seconds [default: 30]
+  # httpReadTimeout: "23"
+
+  ## HTTP write timeout in seconds [default: 30]
+  # httpWriteTimeout: "42"
+
+  ## Restrict remote image source processing to certain origins (separated by commas)
+  # enableURLSource: true
+
+  ## Enable image response placeholder to be used in case of error
+  # enablePlaceholder: true
+
+  ## Forwards X-Forward-Authorization or Authorization header to the image
+  ## source server. -enable-url-source flag must be defined.
+  ## Tip: secure your server from public access to prevent attack vectors
+  # enableAuthForwarding: true
+
+  ## Enable URL signature (URL-safe Base64-encoded HMAC digest) [default: false]
+  # enableURLSignature: true
+
+  ## The URL signature key (32 characters minimum)
+  # urlSignatureKey: EXAMPLEaeth7aiphopoo7laezohtai9M
+
+  ## Restrict remote image source processing to certain origins (separated by commas)
+  # allowedOrigins: "http://localhost,http://example.com"
+
+  ## Restrict maximum size of http image source (in bytes)
+  # maxAllowedSize: 31337
+
+  ## Defines a constant Authorization header value passed to all the image
+  ## source servers. -enable-url-source flag must be defined. This overwrites
+  ## authorization headers forwarding behavior via X-Forward-Authorization
+  # authorization: "Basic AwDJdL2DbwrD=="
+
+  ## Image path to image custom placeholder to be used in case of error.
+  ## Recommended minimum image size is: 1200x1200
+  # placeholder: "/neko.jpg"
+
+  ## Throttle concurrency limit per second
+  # concurrency: "13"
+
+  ## Throttle burst max cache size [default: 100]
+  # burst: "23"
+
+  ## OS memory release interval in seconds [default: 30]
+  # mrelease: "42"
+
+  ## Number of used cpu cores.
+  # cpus: "32"
+
+# Values to configure Ingress Kubernetes resource for Imaginary
+ingress:
+  # Enable or disable Ingress resource creation
+  enabled: false
+
+  # Enable or disable Let's Encrypt certificate
+  acme: false
+
+  # Enable or disable HTTPS for this Ingress resource at all
+  tls: false
+
+  # Add some custom Ingress resource annotations for Ingress Controller fine-tuning
+  annotations: {}
+
+  # Host to publish Imaginary application on
+  host: example.com
+
+# Base64 encoded SSL certificate & key for Ingress. Fill it if you want to
+# enable HTTPS and have your own certifiacte. Otherwise you may use SSL
+# certificates from Let's Encrypt
+tls: {}
+  ## Base64 encoded private key file for TLS certificate.
+  # privateKey: ""
+
+  ## Base64 encoded TLS certificate file
+  # certificate: ""
