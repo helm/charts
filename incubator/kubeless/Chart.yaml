@@ -9,10 +9,10 @@ engine: gotpl
 sources:
 - https://github.com/kubeless/kubeless
 keywords:
-  - kubeless
-  - serverless
-  - function-as-a-service
-  - faas
+- kubeless
+- serverless
+- function-as-a-service
+- faas
 maintainers:
 - name: Bitnami
   email: containers@bitnami.com
