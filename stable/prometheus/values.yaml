@@ -191,7 +191,7 @@ kubeStateMetrics:
   ##
   image:
     repository: k8s.gcr.io/kube-state-metrics
-    tag: v1.1.0
+    tag: v1.2.0
     pullPolicy: IfNotPresent
 
   ## kube-state-metrics container arguments
