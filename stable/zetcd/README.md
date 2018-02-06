@@ -1,6 +1,6 @@
 # CoreOS zetcd chart
 
-This charts runs zetcd, a ZooKeeper "personality" for etcd.
+This chart runs zetcd, a ZooKeeper "personality" for etcd.
 
 ## Introduction
 
