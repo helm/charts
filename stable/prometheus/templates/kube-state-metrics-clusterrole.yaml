@@ -22,6 +22,8 @@ rules:
       - replicationcontrollers
       - limitranges
       - persistentvolumeclaims
+      - persistentvolumes
+      - endpoints
     verbs:
       - list
       - watch
@@ -50,4 +52,11 @@ rules:
     verbs:
       - list
       - watch
+	- apiGroups:
+			- autoscaling
+		resources:
+			- horizontalpodautoscalers
+		verbs:
+			- list
+			- watch
 {{- end }}
