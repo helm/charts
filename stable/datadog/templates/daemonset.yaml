@@ -104,7 +104,11 @@ spec:
           {{- end }}
           {{- if .Values.datadog.autoconf }}
           - name: autoconf
+            {{- if hasSuffix "-alpine" .Values.image.tag }}
+            mountPath: /opt/datadog-agent/agent/conf.d/auto_conf
+            {{- else }}
             mountPath: /etc/dd-agent/conf.d/auto_conf
+            {{- end }}
             readOnly: true
           {{- end }}
 {{- if .Values.datadog.volumeMounts }}
