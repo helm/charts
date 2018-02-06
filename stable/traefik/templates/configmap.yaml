@@ -66,7 +66,7 @@ data:
     [acme]
     email = "{{ .Values.acme.email }}"
     storage = "/acme/acme.json"
-    entryPoint = "https"
+    entryPoint = "{{ .Values.acme.entryPoint }}"
     onHostRule = true
     {{- if .Values.acme.staging }}
     caServer = "https://acme-staging.api.letsencrypt.org/directory"

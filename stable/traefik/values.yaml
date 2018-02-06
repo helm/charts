@@ -34,6 +34,7 @@ acme:
   email: admin@example.com
   staging: true
   logging: false
+  entryPoint: "https"
   ## Save ACME certs to a persistent volume. WARNING: If you do not do this, you will re-request
   ## certs every time a pod (re-)starts and you WILL be rate limited!
   persistence:
