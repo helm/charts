@@ -40,12 +40,14 @@ data:
 
 {{- if .Values.config.kubernetes.enabled }}
     # Kubernetes
-    @include kubernetes.conf
+    @include kubernetes-input.conf
+    @include kubernetes-filter.conf
 {{- end }}
 
 {{- if .Values.config.systemd.enabled }}
     # SystemD
-    @include systemd.conf
+    @include systemd-input.conf
+    @include systemd-filter.conf
 {{- end }}
 
 {{- if .Values.config.apiserverAudit.enabled }}

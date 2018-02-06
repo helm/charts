@@ -5,7 +5,9 @@ image:
   repository: quay.io/coreos/fluentd-kubernetes
   tag: v0.12-debian-elasticsearch
   pullPolicy: IfNotPresent
-
+  # pullSecrets:
+  #   - secret1
+  #   - secret2
 config:
   systemd:
     enabled: true
@@ -41,7 +43,6 @@ configMaps:
       ssl_verify false
 
       logstash_format true
-      index_name logstash-
       template_file /fluentd/etc/elasticsearch-template-es6x.json
       template_name elasticsearch-template-es6x.json
 
