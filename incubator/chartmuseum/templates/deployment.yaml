@@ -48,6 +48,9 @@ spec:
 {{- if eq .Values.env.open.STORAGE "local" }}
         - --storage-local-rootdir=/storage
 {{- end }}
+        {{- if .Values.deployment.additionalArguments }}
+{{ toYaml .Values.deployment.additionalArguments | indent 8}}
+{{- end }}
         ports:
         - containerPort: {{ .Values.service.internalPort }}
         livenessProbe:
