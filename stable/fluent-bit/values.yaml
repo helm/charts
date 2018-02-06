@@ -29,6 +29,12 @@ backend:
 
 env: []
 
+## ConfigMap override where fullname is {{.Release.Name}}-{{.Values.configMapOverrideName}}
+## Defining configMapOverrideName will cause templates/config.yaml
+## to NOT generate a ConfigMap resource
+##
+configMapOverrideName: ""
+
 resources:
   limits:
     memory: 100Mi
