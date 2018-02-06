@@ -16,13 +16,13 @@ spec:
     spec:
       terminationGracePeriodSeconds: 10
       initContainers:
-        - name: "fix-non-root-permissions"
-          image: "busybox"
-          imagePullPolicy: "Always"
-          command: [ "chmod", "-R", "g+rwX", "/bitnami" ]
-          volumeMounts:
-            - name: datadir
-              mountPath: /bitnami
+      - name: "fix-non-root-permissions"
+        image: "busybox"
+        imagePullPolicy: "Always"
+        command: [ "chmod", "-R", "g+rwX", "/bitnami" ]
+        volumeMounts:
+        - name: datadir
+          mountPath: /bitnami
       containers:
       - name: broker
         image: "{{ .Values.kafka.statefulSet.image.repository }}:{{ .Values.kafka.statefulSet.image.tag }}"
