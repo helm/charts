@@ -64,6 +64,9 @@ while (("$POD_RETRY_COUNT" < "$RETRY")); do
         exit 0
       fi
     done
+  else
+    echo "INFO: Waiting for pods to enter running state"
+    sleep "$RETRY_DELAY"
   fi
 done
 
