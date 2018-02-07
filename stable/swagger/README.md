@@ -5,6 +5,11 @@ Swagger UI is a collection of HTML, Javascript, and CSS assets that dynamically 
 
 This chart allows for setting the Swagger UI behind basic auth or oauth, by taking advantage of the [`nginx-ingress`](https://github.com/kubernetes/charts/tree/master/stable/nginx-ingress) and [`oath-proxy`](https://github.com/kubernetes/charts/tree/master/incubator/oauth-proxy) charts.
 
+
+### Prerequisites
+
+- Kubernetes 1.8+
+
 ### Install
 
 To install the chart with the release name `my-release`:
