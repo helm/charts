@@ -1,0 +1,15 @@
+dependencies:
+- name: cert-manager
+  version: ^0.2.1
+  repository: https://kubernetes-charts.storage.googleapis.com
+  condition: cert-manager.enabled
+
+- name: nginx-ingress
+  version: ^0.9.1
+  repository: https://kubernetes-charts.storage.googleapis.com
+  condition: nginx-ingress.enabled
+
+- name: oauth-proxy
+  version: ^0.1.5
+  repository: https://kubernetes-charts-incubator.storage.googleapis.com
+  condition: oauth-proxy.enabled
