@@ -275,11 +275,11 @@ spec:
                   key: vault-client-token
             {{- if .Values.credentialManager.vault.caCert }}
             - name: CONCOURSE_VAULT_CA_CERT
-              value: "/concourse-vault/ca.crt"
+              value: "/concourse-vault/ca.cert"
             {{- end }}
             {{- if .Values.credentialManager.vault.clientCert }}
             - name: CONCOURSE_VAULT_CLIENT_CERT
-              value: "/concourse-vault/client.crt"
+              value: "/concourse-vault/client.cert"
             - name: CONCOURSE_VAULT_CLIENT_KEY
               value: "/concourse-vault/client.key"
             {{- end }}
