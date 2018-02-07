@@ -14,3 +14,4 @@ spec:
       targetPort: rpc
   selector:
     app: {{ template "bitcoincashd.name" . }}
+    release: "{{ .Release.Name }}"
