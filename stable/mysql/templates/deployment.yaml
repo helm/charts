@@ -12,6 +12,8 @@ spec:
     metadata:
       labels:
         app: {{ template "mysql.fullname" . }}
+      annotations:
+        checksum/secrets: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
     spec:
       initContainers:
       - name: "remove-lost-found"
@@ -24,10 +26,37 @@ spec:
           {{- if .Values.persistence.subPath }}
           subPath: {{ .Values.persistence.subPath }}
           {{- end }}
+      {{- if not .Values.mysqlAllowEmptyPassword }}
+      - name: "update-mysql-init"
+        image: "busybox:1.25.0"
+        imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
+        command: [
+            "sh",
+            "-ce",
+            "sed -i \"s/MYSQL_ROOT_PASSWORD/$MYSQL_ROOT_PASSWORD/g\" /tmp/mysql-init &&
+             sed -i \"s/MYSQL_PASSWORD/$MYSQL_PASSWORD/g\" /tmp/mysql-init" ]
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "mysql.fullname" . }}
+              key: mysql-root-password
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "mysql.fullname" . }}
+              key: mysql-password
+        volumeMounts:
+        - name: mysql-init
+          mountPath: /tmp
+      {{- end }}
       containers:
       - name: {{ template "mysql.fullname" . }}
         image: "{{ .Values.image }}:{{ .Values.imageTag }}"
         imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
+        {{- if not .Values.mysqlAllowEmptyPassword }}
+        args: [ "--init-file=/tmp/mysql-init" ]
+        {{- end }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         env:
@@ -95,12 +124,20 @@ spec:
         - name: configurations
           mountPath: /etc/mysql/conf.d
         {{- end }}
+        - name: mysql-init
+          mountPath: /tmp
       volumes:
       {{- if .Values.configurationFiles }}
       - name: configurations
         configMap:
           name: {{ template "mysql.fullname" . }}
       {{- end }}
+      - name: mysql-init
+        configMap:
+          name: {{ template "mysql.fullname" . }}
+          items:
+          - key: mysql-init
+            path: mysql-init
       - name: data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
