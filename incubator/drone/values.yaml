@@ -1,4 +1,4 @@
-appVersion: "0.8.2"
+appVersion: "0.8.4"
 
 images:
   ## The official drone (server) image, change tag to use a different version.
