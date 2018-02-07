@@ -51,7 +51,7 @@ spec:
           path: /var/lib/docker/containers
       - name: config
         configMap:
-          name: {{ if .Values.existingConfigMap }}{{ .Release.Name }}-{{ .Values.existingConfigMap }}{{- else }}{{ template "fluent-bit.fullname" . }}-config{{- end }}
+          name: {{ if .Values.existingConfigMap }}{{ .Values.existingConfigMap }}{{- else }}{{ template "fluent-bit.fullname" . }}-config{{- end }}
 {{ if .Values.on_minikube }}
       - name: mnt
         hostPath:
