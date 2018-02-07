@@ -29,11 +29,11 @@ backend:
 
 env: []
 
-## ConfigMap override where fullname is {{.Release.Name}}-{{.Values.configMapOverrideName}}
-## Defining configMapOverrideName will cause templates/config.yaml
+## ConfigMap override where fullname is {{.Release.Name}}-{{.Values.existingConfigMap}}
+## Defining existingConfigMap will cause templates/config.yaml
 ## to NOT generate a ConfigMap resource
 ##
-configMapOverrideName: ""
+existingConfigMap: ""
 
 resources:
   limits:
