@@ -64,4 +64,3 @@ ingress:
       nginx.ingress.kubernetes.io/auth-url: https://$host/oauth2/auth
 
 resources: {}
-
