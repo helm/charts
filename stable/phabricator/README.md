@@ -121,5 +121,8 @@ You can define a custom ingress following the example config in values.yaml
 
 Everything looks great but requests over https will cause asset requests to fail. Assuming you want to use HTTPS/TLS you will need to set the base-uri to an https schema.
 
-`kubectl exec <pod name> /opt/bitnami/phabricator/bin/config set phabricator.base-uri https://example.com`
+```
+export POD_NAME=$(kubectl get pods -l "app=my-release-phabricator" -o jsonpath="{.items[0].metadata.name}")
+kubectl exec $POD_NAME /opt/bitnami/phabricator/bin/config set phabricator.base-uri https://example.com
+```
 
