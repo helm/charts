@@ -89,7 +89,7 @@ persistence:
   filestore_dir: /var/lib/sentry/files
 
 ## Configure ingress resource that allow you to access the
-## Sentry instalation. Set up the URL
+## Sentry installation. Set up the URL
 ## ref: http://kubernetes.io/docs/user-guide/ingress/
 ##
 ingress:
