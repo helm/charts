@@ -29,9 +29,17 @@ aws:
 cloudflare:
   apiKey: ""
   email: ""
+# When using the Google provider, specify the Google project (required when provider=google)
+google:
+  project: ""
 
 ## Limit possible target zones by domain suffixes (optional)
 domainFilters: []
+# Filter sources managed by external-dns via annotation using label selector semantics (default: all sources)
+annotationFilter: ""
+
+# When using the TXT registry, a name that identifies this instance of ExternalDNS
+txtOwnerId: ""
 
 ## Node labels for pod assignment
 ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
