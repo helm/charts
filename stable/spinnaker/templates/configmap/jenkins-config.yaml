@@ -1,3 +1,4 @@
+{{ if .Values.jenkins.enabled -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -116,5 +117,6 @@ data:
 {{- if .Values.jenkins.Master.InstallPlugins }}
 {{- range $index, $val := .Values.jenkins.Master.InstallPlugins }}
 {{ $val | indent 4 }}
+{{- end }}
 {{- end }}
 {{- end }}

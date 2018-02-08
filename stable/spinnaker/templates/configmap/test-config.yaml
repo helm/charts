@@ -7,6 +7,8 @@ data:
     @test "Testing Spinnaker UI is accessible" {
       curl --retry 12 --retry-delay 10 {{ template "fullname" . }}-deck:9000
     }
+{{- if .Values.jenkins.enabled -}}
     @test "Testing Jenkins UI is accessible" {
       curl --retry 12 --retry-delay 10 {{.Release.Name}}-jenkins:8080/login
     }
+{{- end }}
