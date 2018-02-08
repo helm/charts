@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "nexus.fullname" . }}
+  labels:
+{{ include "nexus.labels" . | indent 4 }}
+spec:
+  ports:
+    - name: {{ .Values.nexusProxy.name }}
+      port: {{ .Values.nexus.externalPort }}
+      protocol: TCP
+      targetPort: {{ .Values.nexus.externalPort }}
+  selector:
+    app: {{ template "nexus.fullname" . }}
+  type: {{ .Values.nexus.serviceType }}
