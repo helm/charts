@@ -1,6 +1,6 @@
 ## Default values for Traefik
 image: traefik
-imageTag: 1.4.6
+imageTag: 1.5.1
 ## can switch the service type to NodePort if required
 serviceType: LoadBalancer
 loadBalancerIP:
@@ -34,6 +34,7 @@ acme:
   email: admin@example.com
   staging: true
   logging: false
+  challengeType: "HTTP-01"
   ## Save ACME certs to a persistent volume. WARNING: If you do not do this, you will re-request
   ## certs every time a pod (re-)starts and you WILL be rate limited!
   persistence:
