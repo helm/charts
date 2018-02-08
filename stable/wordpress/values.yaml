@@ -141,7 +141,7 @@ readinessProbe:
   successThreshold: 1
 
 ## Configure ingress resource that allow you to access the
-## Wordpress instalation. Set up the URL
+## Wordpress installation. Set up the URL
 ## ref: http://kubernetes.io/docs/user-guide/ingress/
 ##
 ingress:
