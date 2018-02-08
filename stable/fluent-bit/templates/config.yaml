@@ -1,4 +1,3 @@
-{{- if (empty .Values.existingConfigMap) -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -60,4 +59,3 @@ data:
 {{- end }}
         Format {{ .Values.backend.http.format }}
 {{- end }}
-{{- end -}}

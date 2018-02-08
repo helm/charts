@@ -29,12 +29,6 @@ backend:
 
 env: []
 
-## ConfigMap override where fullname is {{.Release.Name}}-{{.Values.existingConfigMap}}
-## Defining existingConfigMap will cause templates/config.yaml
-## to NOT generate a ConfigMap resource
-##
-existingConfigMap: ""
-
 resources:
   limits:
     memory: 100Mi

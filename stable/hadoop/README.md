@@ -41,7 +41,7 @@ The following tables lists the configurable parameters of the Hadoop chart and t
 | ------------------------------------------------- | -------------------------------                                                    | ---------------------------------------------------------------- |
 | `image`                                           | Hadoop image ([source](https://github.com/Comcast/kube-yarn/tree/master/image))    | `danisla/hadoop:{VERSION}`                                       |
 | `imagePullPolicy`                                 | Pull policy for the images                                                         | `IfNotPresent`                                                   |
-| `hadoopVersion`                                   | Version of hadoop libraries being used                                              | `{VERSION}`                                                      |
+| `hadoopVersion`                                   | Version of hadoop libaries being used                                              | `{VERSION}`                                                      |
 | `antiAffinity`                                    | Pod antiaffinity, `hard` or `soft`                                                 | `hard`                                                           |
 | `hdfs.nameNode.podMinAvailable`                   | PDB for HDFS NameNode                                                              | `1`                                                              |
 | `hdfs.nameNode.resources`                         | resources for the HDFS NameNode                                                    | `requests:memory=256Mi,cpu=10m,limits:memory=2048Mi,cpu=1000m`   |
