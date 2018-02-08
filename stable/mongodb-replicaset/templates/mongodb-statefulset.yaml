@@ -1,13 +1,17 @@
-apiVersion: apps/v1beta1
+apiVersion: apps/v1beta2
 kind: StatefulSet
 metadata:
   labels:
     app: {{ template "mongodb-replicaset.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    chart: {{ template "mongodb-replicaset.chart" . }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
   name: {{ template "mongodb-replicaset.fullname" . }}
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "mongodb-replicaset.name" . }}
+      release: {{ .Release.Name }}
   serviceName: {{ template "mongodb-replicaset.fullname" . }}
   replicas: {{ .Values.replicas }}
   template:
@@ -20,10 +24,6 @@ spec:
 {{ toYaml .Values.podAnnotations | indent 8 }}
       {{- end }}
     spec:
-      {{- if .Values.nodeSelector }}
-      nodeSelector:
-{{ toYaml .Values.nodeSelector | indent 8 }}
-      {{- end }}
       initContainers:
         - name: install
           image: "{{ .Values.installImage.name }}:{{ .Values.installImage.tag }}"
@@ -150,27 +150,18 @@ spec:
               mountPath: /keydir
               readOnly: true
           {{- end }}
-      {{- if eq .Values.podAntiAffinity "hard" }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
       affinity:
-        podAntiAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            - topologyKey: "kubernetes.io/hostname"
-              labelSelector:
-                matchLabels:
-                  app: "{{ template "mongodb-replicaset.name" . }}"
-                  release: "{{ .Release.Name }}"
-      {{- else if eq .Values.podAntiAffinity "soft" }}
-      affinity:
-        podAntiAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-            - weight: 1
-              podAffinityTerm:
-                topologyKey: kubernetes.io/hostname
-                labelSelector:
-                  matchLabels:
-                    app: "{{ template "mongodb-replicaset.name" . }}"
-                    release: "{{ .Release.Name }}"
-      {{- end }}
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
       volumes:
         - name: config
           configMap:

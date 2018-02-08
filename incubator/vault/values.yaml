@@ -10,6 +10,7 @@ service:
   name: vault
   type: ClusterIP
   port: 8200
+  # clusterIP: None
   # annotations:
   #   cloud.google.com/load-balancer-type: "Internal"
 ingress:
