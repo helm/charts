@@ -11,7 +11,7 @@ spec:
       labels:
 {{ include "helm.labels" . | indent 8}}
     spec:
-{{- if .Values.rbac.serviceAccountName }}
+{{- if .Values.rbac.service_account }}
       serviceAccountName: {{ .Values.rbac.service_account }}
 {{- else if .Values.rbac.create }}
       serviceAccountName: {{ template "fullname" . }}-sa
