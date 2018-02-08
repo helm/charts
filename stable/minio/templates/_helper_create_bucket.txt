@@ -63,7 +63,7 @@ createBucket() {
     echo "Bucket '$BUCKET' already exists."
   fi
 
-  # At this point, the bucket should exist, skip checking for existance
+  # At this point, the bucket should exist, skip checking for existence
   # Set policy on the bucket
   echo "Setting policy of bucket '$BUCKET' to '$POLICY'."
   /usr/bin/mc policy $POLICY myminio/$BUCKET
