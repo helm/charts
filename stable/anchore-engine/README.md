@@ -2,7 +2,7 @@ Anchore Engine Helm Chart
 =========================
 
 This chart deploys the Anchore Engine docker container image analysis system. Anchore Engine
-requires a PostgresSQL database (>=9.6) which may be handled by the chart or supplied externally,
+requires a PostgreSQL database (>=9.6) which may be handled by the chart or supplied externally,
 and executes in a 2-tier architecture with an api/control layer and a batch execution worker pool layer.
 
 See [Anchore Engine](https://github.com/anchore/anchore-engine) for more project details.
