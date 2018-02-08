@@ -1,4 +1,4 @@
-geth RPC can be accessed via port {{ .Values.rpcPort }} on the following DNS name from within your cluster:
+Igeth RPC can be accessed via port {{ .Values.rpcPort }} on the following DNS name from within your cluster:
 {{ template "geth.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
 
 To connect to geth RPC:
@@ -7,7 +7,7 @@ To connect to geth RPC:
 
     kubectl run -i --tty ubuntu --image=ubuntu:16.04 --restart=Never -- bash -il
 
-2. Install the bitcoind client:
+2. Install the ethereum client:
 
     $ apt-get update -y && \
     apt-get install python-software-properties software-properties-common -y && \
