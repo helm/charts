@@ -17,6 +17,12 @@ resources:
     cpu: 100m
     memory: 200Mi
 
+## Add tolerations if specified
+# tolerations:
+#   - key: node-role.kubernetes.io/master
+#     operator: Exists
+#     effect: NoSchedule
+
 elasticsearch:
   host: 'elasticsearch-client'
   port: 9200
