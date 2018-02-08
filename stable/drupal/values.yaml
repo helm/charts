@@ -156,7 +156,7 @@ persistence:
     ##
     # existingClaim:
 
-    ## If defined, the drupal-data volume will mount to the speficied hostPath.
+    ## If defined, the drupal-data volume will mount to the specified hostPath.
     ## Requires persistence.enabled: true
     ## Requires persistence.existingClaim: nil|false
     ## Default: nil.
