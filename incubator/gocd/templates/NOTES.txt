@@ -1,5 +1,8 @@
 1. Get the application URL by running these commands:
 {{- if .Values.server.ingress.enabled }}
+    It may take a few minutes before the IP is available to access the GoCD server.
+    ip=$(kubectl get ingress {{ template "gocd.fullname" . }}-server -o jsonpath="{.status.loadBalancer.ingress[0].ip}")
+    echo "http://$ip"
 {{- range .Values.server.ingress.hosts }}
   http://{{ . }}
 {{- end }}

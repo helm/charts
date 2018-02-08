@@ -2,10 +2,11 @@
 
 [![Join the chat at https://gitter.im/gocd/gocd](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/gocd/gocd?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-A GoCD Helm chart for Kubernetes. [GoCD](https://www.gocd.org/) is an Open source continuous delivery server to model and visualize complex workflow with ease.
+[GoCD](https://www.gocd.org/) is an open-source continuous delivery server to model and visualize complex workflow with ease.
 
 # Introduction
-This chart bootstraps a single node GoCD server and a GoCD Agent deployment with configurable agent count on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
+
+This chart bootstraps a single node GoCD server and GoCD agents on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
 ## Prerequisites
 
@@ -14,10 +15,11 @@ This chart bootstraps a single node GoCD server and a GoCD Agent deployment with
 
 ## Installing the Chart
 
-To install the chart with the release name `my-release`:
+To install the chart with the release name `gocd-app`:
 
 ```bash
-$ helm install --name my-release incubator/gocd
+$ helm repo add incubator https://kubernetes-charts-incubator.storage.googleapis.com/
+$ helm install --name gocd-app incubator/gocd
 ```
 
 The command deploys GoCD on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
@@ -26,10 +28,10 @@ The command deploys GoCD on the Kubernetes cluster in the default configuration.
 
 ## Uninstalling the Chart
 
-To uninstall/delete the `my-release` deployment:
+To uninstall/delete the `gocd-app` deployment:
 
 ```bash
-$ helm delete my-release
+$ helm delete --purge gocd-app
 ```
 The command removes all the Kubernetes components associated with the chart and deletes the release.
 
@@ -42,7 +44,7 @@ The following tables lists the configurable parameters of the GoCD chart and the
 
 | Parameter                                  | Description                                                                                                   | Default             |
 | ------------------------------------------ | ------------------------------------------------------------------------------------------------------------- | ------------------- |
-| `server.enabled`                           | Enable GoCD Server. Supported values are `true`: `Agent-Server Deployment`, `false`: `Agent Only Deployment`  | `true`              |
+| `server.enabled`                           | Enable GoCD Server. Supported values are `true`, `false`. When enabled, the GoCD server deployment is done on helm install.  | `true`              |
 | `server.image.repository`                  | GoCD server image                                                                                             | `gocd/gocd-server`  |
 | `server.image.tag`                         | GoCD server image tag                                                                                         | `.Chart.appVersion` |
 | `server.image.pullPolicy`                  | Image pull policy                                                                                             | `IfNotPresent`      |
@@ -55,22 +57,23 @@ The following tables lists the configurable parameters of the GoCD chart and the
 | `server.service.httpsPort`                 | GoCD server service HTTPS port                                                                                | `8154`              |  
 | `server.service.nodeHttpPort`              | GoCD server service node HTTP port. **Note**: A random nodePort will get assigned if not specified            | `nil`               |  
 | `server.service.nodeHttpsPort`             | GoCD server service node HTTPS port. **Note**: A random nodePort will get assigned if not specified           | `nil`               |  
-| `server.ingress.enabled`                   | Enable GoCD ingress.                                                                                          | `false`             |  
+| `server.ingress.enabled`                   | Enable/disable GoCD ingress. Allow traffic from outside the cluster via http. Do `kubectl describe ing` to get the public ip to access the gocd server.                                | `true`              |                                                                                     
 | `server.ingress.hosts`                     | GoCD ingress hosts records.                                                                                   | `nil`               |
-| `server.healthCheck.initialDelaySeconds`   | Initial delays in seconds to start the health checks. **Note**:GoCD server start up time.                     | `180`               |
-| `server.healthCheck.periodSeconds`         | GoCD server heath check interval period.                                                                      | `5`                 |
+| `server.healthCheck.initialDelaySeconds`   | Initial delays in seconds to start the health checks. **Note**:GoCD server start up time.                     | `90`                |
+| `server.healthCheck.periodSeconds`         | GoCD server heath check interval period.                                                                      | `15`                |
+| `server.healthCheck.failureThreshold`      | Number of unsuccessful attempts made to the GoCD server health check endpoint before restarting.              | `10`                |
 
 ### GoCD Agent
 
 | Parameter                                 | Description                                                                                                                                                                      | Default                      |
 | ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------- |
-| `agent.replicaCount`                      | GoCD Agent replicas Count                                                                                                                                                        | `1`                          |
+| `agent.replicaCount`                      | GoCD Agent replicas Count. By default, no agents are provided.                                                                                                                   | `0`                          |
 | `agent.image.repository`                  | GoCD agent image                                                                                                                                                                 | `gocd/gocd-agent-alpine-3.6` |
 | `agent.image.tag`                         | GoCD agent image tag                                                                                                                                                             | `.Chart.appVersion`          |
 | `agent.image.pullPolicy`                  | Image pull policy                                                                                                                                                                | `IfNotPresent`               |
 | `agent.resources`                         | GoCD agent resource requests and limits                                                                                                                                          | `{}`                |
 | `agent.nodeSelector`                      | GoCD agent nodeSelector for pod labels                                                                                                                                           | `{}`                |
-| `agent.env.goServerUrl`                   | GoCD Server Url                                                                                                                                                                  | `nil`                        |
+| `agent.env.goServerUrl`                   | GoCD Server Url. If nil, discovers the GoCD server service if its available on the Kubernetes cluster                                                                            | `nil`                        |
 | `agent.env.agentAutoRegisterKey`          | GoCD Agent autoregister key                                                                                                                                                      | `nil`                        |
 | `agent.env.agentAutoRegisterResources`    | Comma separated list of GoCD Agent resources                                                                                                                                     | `nil`                        |
 | `agent.env.agentAutoRegisterEnvironemnts` | Comma separated list of GoCD Agent environments                                                                                                                                  | `nil`                        |
@@ -78,35 +81,57 @@ The following tables lists the configurable parameters of the GoCD chart and the
 | `agent.env.goAgentBootstrapperArgs`       | GoCD Agent Bootstrapper Args. It can be used to [Configure end-to-end transport security](https://docs.gocd.org/current/installation/ssl_tls/end_to_end_transport_security.html) | `nil`                        |
 | `agent.env.goAgentBootstrapperJvmArgs`    | GoCD Agent Bootstrapper JVM Args.                                                                                                                                                | `nil`                        |
 | `agent.healthCheck.enabled`               | Enable use of GoCD agent health checks.                                                                                                                                          | `false`                      |
-| `agent.healthCheck.initialDelaySeconds`   | GoCD agent start up time.                                                                                                                                                        | `180`                        |
+| `agent.healthCheck.initialDelaySeconds`   | GoCD agent start up time.                                                                                                                                                        | `60`                         |
 | `agent.healthCheck.periodSeconds`         | GoCD agent heath check interval period.                                                                                                                                          | `60`                         |
-| `agent.healthCheck.failureThreshold`      | GoCD agent heath check failure threshold. After failure threshold timeout, agent will be restarted.                                                                              | `60`                         |
+| `agent.healthCheck.failureThreshold`      | GoCD agent heath check failure threshold. Number of unsuccessful attempts made to the GoCD server health check endpoint before restarting.                                       | `60`                         |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```bash
-$ helm install --name my-release -f values.yaml incubator/gocd
+$ helm install --name gocd-app -f values.yaml incubator/gocd
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
 
-## persistence
+## Persistence
 
-The GoCD server image stores persistence under `/godata` path of the container. A dynamically managed Persistent Volume
-Claim is used to keep the data across deployments, by default. This is known to work in minikube. Alternatively,
-a previously configured Persistent Volume Claim can be used.
+By default, the GoCD helm chart supports dynamic volume provisioning. This means that the standard storage class with a default provisioner provided by various cloud platforms used. 
+Refer to the [Kubernetes blog](http://blog.kubernetes.io/2017/03/dynamic-provisioning-and-storage-classes-kubernetes.html) to know more about the default provisioners across platforms.
 
+> **Note**: The recalim policy for most default volume provisioners is `delete`. This means that, the persistent volume provisioned using the default provisioner will be deleted along with the data when the PVC gets deleted.
+
+One can change the storage class to be used by overriding `server.persistence.storageClass` and `agent.persistence.storageClass` like below:
+
+```bash
+$ helm install --name gocd-app --set server.persistence.stoageClass=STORAGE_CLASS_NAME incubator/gocd
+```
+
+#### Static Volumes
+
+Alternatively, a static persistent volume can be specified. This must be manually managed by the cluster admin outside of the helm scope.
+For binding with a static persistent volume, dynamic volume provisioning must be **disabled** by setting `server.persistence.storageClass` or `agent.persistence.storageClass` to `-` .
+The value pvSelector must be specified so that the right persistence volume will be bound.
+
+#### Existing PersistentVolumeClaim
+
+1. Create the PersistentVolume
+2. Create the PersistentVolumeClaim
+3. Install the chart
+
+```
+$ helm install --name gocd-app --set server.persistence.existingClaim=PVC_NAME incubator/gocd
+```
 
 ### Server persistence Values
 
 | Parameter                                     | Description                                         | Default              |
 | --------------------------------------------- | --------------------------------------------------- | -------------------- |
-| `server.persistence.enabled`                  | Enable the use of a GoCD server PVC                 | `false`              |
+| `server.persistence.enabled`                  | Enable the use of a GoCD server PVC                 | `true`              |
 | `server.persistence.accessMode`               | The PVC access mode                                 | `ReadWriteOnce`      |
-| `server.persistence.size`                     | The size of the PVC                                 | `1Gi`                |
+| `server.persistence.size`                     | The size of the PVC                                 | `2Gi`                |
 | `server.persistence.storageClass`             | The PVC storage class name                          | `nil`                |
 | `server.persistence.pvSelector`               | The godata Persistence Volume Selectors             | `nil`                |
 | `server.persistence.subpath.godata`           | The /godata path on Persistence Volume              | `godata`             |
@@ -131,16 +156,6 @@ a previously configured Persistent Volume Claim can be used.
 
 1. That packages being cached here is shared between all the agents.
 2. That all the agents sharing this directory are privy to all the secrets in `/home/go`
-
-### Existing PersistentVolumeClaim
-    
-1. Create the PersistentVolume
-2. Create the PersistentVolumeClaim
-3. Install the chart
-
-```
-$ helm install --name my-release --set server.persistence.godata.existingClaim=PVC_NAME incubator/gocd
-```
 
 # License
 
