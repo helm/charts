@@ -41,7 +41,7 @@ The following tables lists the configurable parameters of the Sentry chart and t
 | -------------------------------      | -------------------------------            | ---------------------------------------------------------- |
 | `image.repository`                   | Luigi image                                | `getpolymorph/luigi`                                       |
 | `image.tag`                          | Luigi image tag                            | `2.7.2`                                                    |
-| `image.pullPolicy`                   | Luigi image pull policy                    | `Always`                                                   |
+| `image.pullPolicy`                   | Luigi image pull policy                    | `IfNotPresent`                                                   |
 | `service.name`                       | Luigi service name                         | `luigi`                                                    |
 | `service.type`                       | The kube service type                      | `LoadBalancer`                                             |
 | `service.externalPort`               | The service external port                  | `3000`                                                     |

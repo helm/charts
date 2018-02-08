@@ -5,7 +5,7 @@ replicaCount: 1
 image:
   repository: getpolymorph/luigi
   tag: 2.7.2
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
 
 service:
   name: luigi
