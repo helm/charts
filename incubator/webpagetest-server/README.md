@@ -51,7 +51,7 @@ The following tables lists the configurable parameters of the WebPageTest chart 
 | `image`                              | WebPageTest server image                   | `webpagetest/server:{VERSION}`                              |
 | `imagePullPolicy`                    | Image pull policy                          | `IfNotPresent`                                             |
 | `ec2Locations.enabled`               | Enables use of EC2 AMI's                   | `false`                                                     |
-| `ec2Locations.customUserDataSecret`  | Controlls if this chart should use an externally created secret | `false` |
+| `ec2Locations.customUserDataSecret`  | Controls if this chart should use an externally created secret | `false` |
 | `ec2Locations.userData`              | Data Structure which is used to generate settings | sample data only                                    |
 | `ec2Locations.userData.ec2_key`      | EC2 API key with create permissions        | `nil`                                                      |
 | `ec2Locations.userData.ec2_secret`   | Secret portion of the above key            | `nil`                                                      |
@@ -98,7 +98,7 @@ To enable ingress integration, please set `ingress.enabled` to `true`
 ### Hosts
 Most likely you will only want to have one hostname that maps to this
 WebPageTest installation for scripts or end users to interact, then a
-seperate instance for the AMI's to operate on (see AgentIngress below).
+separate instance for the AMI's to operate on (see AgentIngress below).
 It is however possible to have more than one host.
 To facilitate this, the `ingress.hosts` object is an array.
 
