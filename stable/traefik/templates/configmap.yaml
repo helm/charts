@@ -74,9 +74,9 @@ data:
     {{- if .Values.acme.logging }}
     acmeLogging = true
     {{- end }}
-    {{- if eq .Values.acme.httpChallenge.entryPoint "http" }}
+    {{- if and .Values.acme.httpChallenge .Values.acme.httpChallenge.entryPoint }}
     [acme.httpChallenge]
-      entryPoint = "http"
+      entryPoint = {{ .Values.acme.httpChallenge.entryPoint }}
     {{- end }}
     {{- end }}
     {{- if or .Values.dashboard.enabled .Values.metrics.prometheus.enabled .Values.metrics.statsd.enabled .Values.metrics.datadog.enabled }}
