@@ -26,8 +26,7 @@ spec:
           mountPath: /var/lib/docker/containers
           readOnly: true
         - name: config
-          mountPath: /fluent-bit/etc/fluent-bit.conf
-          subPath: fluent-bit.conf
+          mountPath: /fluent-bit/etc/
 {{ if .Values.on_minikube }}
         - name: mnt
           mountPath: /mnt
