@@ -114,7 +114,7 @@ server:
   ##
   readinessProbe:
     httpGet:
-      path: /login
+      path: /api/health
       port: 3000
     initialDelaySeconds: 30
     timeoutSeconds: 30
