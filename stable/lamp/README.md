@@ -170,7 +170,7 @@ FPM is enabled by default, this creates an additional HTTPD container which rout
 
 ### MySQL Container
 
-The MySQL container is disabled by default, any container with the base image of the offical [mysql](https://hub.docker.com/_/mysql/), [mariadb](https://hub.docker.com/_/mariadb/) or [percona](https://hub.docker.com/_/percona/) should work.
+The MySQL container is disabled by default, any container with the base image of the official [mysql](https://hub.docker.com/_/mysql/), [mariadb](https://hub.docker.com/_/mariadb/) or [percona](https://hub.docker.com/_/percona/) should work.
 
 | Parameter | Description | Default |
 | - | - | - |
@@ -279,7 +279,7 @@ If `persistence` is enabled, PVC's will be used to store the web root and the db
 
 To be able to connect to the services provided by the LAMP chart, a Kubernetes cluster with working LoadBalancer or Ingress Controller support is necessary.
 By default the chart will create a LoadBalancer Service, all services will be available via LoadBalancer IP through differnt ports. You can set `service.type` to ClusterIP if you do not want your chart to be exposed at all.
-If `ingress.enabled` is set to true, the LAMP charts services are made accessible via ingress rules. Those services which are not provided by HTTP protocol via `nodePorts`. In ingress mode the LAMP chart also supports ssl wiht certificates signed by lets encrypt. This requires a working [lego](https://github.com/jetstack/kube-lego) container running on the cluster.
+If `ingress.enabled` is set to true, the LAMP charts services are made accessible via ingress rules. Those services which are not provided by HTTP protocol via `nodePorts`. In ingress mode the LAMP chart also supports ssl with certificates signed by lets encrypt. This requires a working [lego](https://github.com/jetstack/kube-lego) container running on the cluster.
 
 > **Note**: In ingress mode it is mandatory to set `ingress.domain`, otherwise the ingress rules won't know how to route the traffic to the services.
 
@@ -297,7 +297,7 @@ If `ingress.enabled` is set to true, the LAMP charts services are made accessibl
 ### Wordpress
 
 
-The LAMP chart offers additional wordpress features during the init stage. It supports two modes, normal mode sets up the chart completely automatic by downloading an InfiniteWP backup from google drive, while the other mode gets executed when in manual mode (see: `init.manually`). While in manual mode, the web files and db backup need to be manually downloaded and stashed in the appropriate folders (`/var/www/html` <-- web root, `/var/www/mysql` <-- sql backup). The automatic mode does this automatically. Both modes then import the backup and do some necesssary config file changes. So even in manual mode it is not necessary to import the db backup.
+The LAMP chart offers additional wordpress features during the init stage. It supports two modes, normal mode sets up the chart completely automatic by downloading an InfiniteWP backup from google drive, while the other mode gets executed when in manual mode (see: `init.manually`). While in manual mode, the web files and db backup need to be manually downloaded and stashed in the appropriate folders (`/var/www/html` <-- web root, `/var/www/mysql` <-- sql backup). The automatic mode does this automatically. Both modes then import the backup and do some necessary config file changes. So even in manual mode it is not necessary to import the db backup.
 
 In development mode everything that gets executed in normal mode will also get executed. Additionally the wordpress domain is automatically search replaced inside the database. Also the `wp_content/uploads` and `wp_content/cache` directories are deleted. The `.htaccess` file is modified to redirect requests to the uploads directory to the uploads directory of `wordpress.domain`.
 
