@@ -80,6 +80,16 @@ Parameter | Description | Default
 `controller.service.type` | type of controller service to create | `LoadBalancer`
 `controller.service.nodePorts.http` | If `controller.service.type` is `NodePort` and this is non-empty, it sets the nodePort that maps to the Ingress' port 80 | `""`
 `controller.service.nodePorts.https` | If `controller.service.type` is `NodePort` and this is non-empty, it sets the nodePort that maps to the Ingress' port 443 | `""`
+`controller.livenessProbe.initialDelaySeconds` | Delay before liveness probe is initiated | 10
+`controller.livenessProbe.periodSeconds` | How often to perform the probe | 10
+`controller.livenessProbe.timeoutSeconds` | When the probe times out | 5
+`controller.livenessProbe.successThreshold` | Minimum consecutive successes for the probe to be considered successful after having failed. | 1
+`controller.livenessProbe.failureThreshold` | Minimum consecutive failures for the probe to be considered failed after having succeeded. | 3
+`controller.readinessProbe.initialDelaySeconds` | Delay before readiness probe is initiated | 10
+`controller.readinessProbe.periodSeconds` | How often to perform the probe | 10
+`controller.readinessProbe.timeoutSeconds` | When the probe times out | 1
+`controller.readinessProbe.successThreshold` | Minimum consecutive successes for the probe to be considered successful after having failed. | 1
+`controller.readinessProbe.failureThreshold` | Minimum consecutive failures for the probe to be considered failed after having succeeded. | 3
 `controller.stats.enabled` | if true, enable "vts-status" page & Prometheus metrics | `false`
 `controller.stats.service.annotations` | annotations for controller stats service | `{}`
 `controller.stats.service.clusterIP` | internal controller stats cluster service IP | `""`
