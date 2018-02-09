@@ -24,6 +24,10 @@ service:
 # Extra config options
 configData: {}
 
+livenessProbe:
+  initialDelaySeconds: 60
+  periodSeconds: 20
+
 ingress:
   enabled: false
   # Used to create an Ingress and Service record.

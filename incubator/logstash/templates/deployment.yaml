@@ -27,6 +27,8 @@ spec:
     {{- end }}
           livenessProbe:
             tcpSocket:
+              initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+              periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
               port: {{ .Values.service.internalPort }}
           readinessProbe:
             tcpSocket:
