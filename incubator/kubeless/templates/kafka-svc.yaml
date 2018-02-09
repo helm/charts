@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka
+  labels:
+{{ include "labels.standard" . | indent 4 }}
+spec:
+  ports:
+  - name: kafka-port
+    port: 9092
+    targetPort: kafka-port
+  selector:
+    kubeless: kafka
+    app: {{ template "kubeless.name"  . }}
+    release: {{ .Release.Name | quote }}

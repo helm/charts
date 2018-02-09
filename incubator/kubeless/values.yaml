@@ -1,0 +1,82 @@
+# Default values for kubeless.
+## RBAC configuration
+rbac:
+  create: false
+
+## Controller configuration
+controller:
+  deployment:
+    replicaCount: 1
+    image:
+      repository: bitnami/kubeless-controller
+      tag: v0.3.1
+      pullPolicy: IfNotPresent
+  ## Kubeless Controller resource requests and limits
+  ## Ref: http://kubernetes.io/docs/user-guide/compute-resources/
+  ##
+  resources: {}
+    # limits:
+    #   cpu: 500m
+    #   memory: 512Mi
+    # requests:
+    #   cpu: 500m
+    #   memory: 512Mi
+
+## UI configuration
+ui:
+  enabled: false
+  deployment:
+    replicaCount: 1
+    ui:
+      image:
+        repository: bitnami/kubeless-ui
+        tag: v0.1.0
+        pullPolicy: IfNotPresent
+    proxy:
+      image:
+        repository: kelseyhightower/kubectl
+        tag: 1.4.0
+        pullPolicy: IfNotPresent
+
+  service:
+    name: ui-port
+    type: NodePort
+    externalPort: 3000
+
+## Zookeeper configuration
+zookeeper:
+  statefulSet:
+    replicaCount: 1
+    image:
+      repository: bitnami/zookeeper
+      tag: 3.4.10-r6
+      pullPolicy: IfNotPresent
+  ## Zookeeper server resource requests and limits
+  ## Ref: http://kubernetes.io/docs/user-guide/compute-resources/
+  ##
+  resources: {}
+    # limits:
+    #   cpu: 500m
+    #   memory: 512Mi
+    # requests:
+    #   cpu: 500m
+    #   memory: 512Mi
+
+## Kafka configuration
+kafka:
+  statefulSet:
+    replicaCount: 1
+    image:
+      repository: bitnami/kafka
+      tag: 1.0.0-r2
+      pullPolicy: IfNotPresent
+  ## Kafka server resource requests and limits
+  ## Ref: http://kubernetes.io/docs/user-guide/compute-resources/
+  ##
+  resources: {}
+    # limits:
+    #   cpu: 500m
+    #   memory: 512Mi
+    # requests:
+    #   cpu: 500m
+    #   memory: 512Mi
