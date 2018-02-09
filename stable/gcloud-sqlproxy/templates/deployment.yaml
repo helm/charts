@@ -30,17 +30,12 @@ spec:
         volumeMounts:
         - name: cloudsql-oauth-credentials
           mountPath: /secrets/cloudsql
-        - name: ssl-certs
-          mountPath: /etc/ssl/certs
         - name: cloudsql
           mountPath: /cloudsql
       volumes:
       - name: cloudsql-oauth-credentials
         secret:
           secretName: {{ template "gcloud-sqlproxy.fullname" . }}
-      - name: ssl-certs
-        hostPath:
-          path: /etc/ssl/certs
       - name: cloudsql
         emptyDir: {}
       nodeSelector:
