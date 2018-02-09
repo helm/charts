@@ -99,7 +99,7 @@ If using defaults from the chart:
 
 If customized values, use the local directory for the chart values:
 
-`helm upgrade --est workerConfig.replicaCount=2 <releasename> ./anchore-engine`
+`helm upgrade --set workerConfig.replicaCount=2 <releasename> ./anchore-engine`
 
 To launch with more than one worker you can either modify values.yaml or run with:
 
