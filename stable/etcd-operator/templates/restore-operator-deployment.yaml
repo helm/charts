@@ -18,11 +18,7 @@ spec:
         app: {{ template "etcd-restore-operator.fullname" . }}
         release: {{ .Release.Name }}
     spec:
-    {{- if .Values.serviceAccount.restoreOperatorServiceAccount.name }}
-      serviceAccountName: {{ .Values.serviceAccount.restoreOperatorServiceAccount.name }}
-    {{- else }}
-      serviceAccountName: {{ template "etcd-restore-operator.fullname" . }}
-    {{- end }}
+      serviceAccountName: {{ template "restoreOperator.serviceAccountName" . }}
       containers:
       - name: {{ .Values.restoreOperator.name }}
         image: "{{ .Values.restoreOperator.image.repository }}:{{ .Values.restoreOperator.image.tag }}"

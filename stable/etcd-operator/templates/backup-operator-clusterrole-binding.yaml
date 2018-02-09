@@ -11,11 +11,7 @@ metadata:
     release: {{ .Release.Name }}
 subjects:
 - kind: ServiceAccount
-{{- if .Values.serviceAccount.backupOperatorServiceAccount.name }}
-  name: {{ .Values.serviceAccount.backupOperatorServiceAccount.name }}
-{{- else }}
-  name: {{ template "etcd-backup-operator.fullname" . }}
-{{- end }}
+  name: {{ template "backupOperator.serviceAccountName" . }}
   namespace: {{ .Release.Namespace }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io

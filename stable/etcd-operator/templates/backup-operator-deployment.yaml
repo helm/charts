@@ -18,11 +18,7 @@ spec:
         app: {{ template "etcd-backup-operator.fullname" . }}
         release: {{ .Release.Name }}
     spec:
-    {{- if .Values.serviceAccount.backupOperatorServiceAccount.name }}
-      serviceAccountName: {{ .Values.serviceAccount.backupOperatorServiceAccount.name }}
-    {{- else }}
-      serviceAccountName: {{ template "etcd-backup-operator.fullname" . }}
-    {{- end }}
+      serviceAccountName: {{ template "backupOperator.serviceAccountName" . }}
       containers:
       - name: {{ .Values.backupOperator.name }}
         image: "{{ .Values.backupOperator.image.repository }}:{{ .Values.backupOperator.image.tag }}"
