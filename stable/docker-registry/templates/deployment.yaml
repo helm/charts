@@ -42,6 +42,14 @@ spec:
           resources:
 {{ toYaml .Values.resources | indent 12 }}
           env:
+{{- if .Values.secrets.htpasswd }}
+            - name: REGISTRY_AUTH
+              value: "htpasswd"
+            - name: REGISTRY_AUTH_HTPASSWD_REALM
+              value: "Registry Realm"
+            - name: REGISTRY_AUTH_HTPASSWD_PATH
+              value: "/auth/htpasswd"
+{{- end }}
             - name: REGISTRY_HTTP_SECRET
               valueFrom:
                 secretKeyRef:
@@ -63,6 +71,11 @@ spec:
                   key: s3SecretKey
 {{- end }}
           volumeMounts:
+{{- if .Values.secrets.htpasswd }}
+            - name: auth
+              mountPath: /auth
+              readOnly: true
+{{- end }}
 {{- if eq .Values.storage "filesystem" }}
             - name: data
               mountPath: /var/lib/registry/
@@ -79,6 +92,14 @@ spec:
 {{ toYaml .Values.nodeSelector | indent 8 }}
 {{- end }}
       volumes:
+{{- if .Values.secrets.htpasswd }}
+        - name: auth
+          secret:
+            secretName: {{ template "docker-registry.fullname" . }}-secret
+            items:
+            - key: htpasswd
+              path: htpasswd
+{{- end }}
 {{- if eq .Values.storage "filesystem" }}
         - name: data
       {{- if .Values.persistence.enabled }}
