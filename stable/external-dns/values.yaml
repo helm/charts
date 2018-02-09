@@ -78,7 +78,7 @@ rbac:
   ##
   create: false
   # Beginning with Kubernetes 1.8, the api is stable and v1 can be used.
-  apiVersion: v1beta
+  apiVersion: v1beta1
 
   ## Ignored if rbac.create is true
   ##
