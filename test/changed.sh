@@ -41,7 +41,7 @@ function cleanup {
 
       # Before reporting the logs from all pods provide a helm status for
       # the release
-      helm status ${CURRENT_RELEASE}
+      helm status ${CURRENT_RELEASE} || true
 
       # List all logs for all containers in all pods for the namespace which was
       # created for this PR test run
@@ -54,7 +54,7 @@ function cleanup {
             containers=`kubectl get pods --show-all -o jsonpath="{.spec.containers[*].name}" --namespace ${NAMESPACE} $line`
             for cname in ${containers}; do
                 echo "---Logs from container $cname in pod $line:---"
-                kubectl logs --namespace ${NAMESPACE} -c ${cname} ${line}
+                kubectl logs --namespace ${NAMESPACE} -c ${cname} ${line} || true
                 echo "---End of logs for container $cname in pod $line---\n"
             done
 
