@@ -5,7 +5,7 @@ on_minikube: false
 image:
   fluent_bit:
     repository: fluent/fluent-bit
-    tag: 0.12.7
+    tag: 0.12.11
   pullPolicy: Always
 
 backend:
@@ -16,8 +16,24 @@ backend:
   es:
     host: elasticsearch
     port: 9200
+  ##
+  ## Ref: http://fluentbit.io/documentation/current/output/http.html
+  ##
+  http:
+    host: 127.0.0.1
+    port: 80
+    uri: "/"
+    ## Specify the data format to be used in the HTTP request body
+    ## Can be either 'msgpack' or 'json'
+    format: msgpack
 
 env: []
+
+## ConfigMap override where fullname is {{.Release.Name}}-{{.Values.existingConfigMap}}
+## Defining existingConfigMap will cause templates/config.yaml
+## to NOT generate a ConfigMap resource
+##
+existingConfigMap: ""
 
 resources:
   limits:
@@ -39,6 +55,11 @@ tolerations: []
 ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
 ##
 nodeSelector: {}
+
+filter: {}
+# If true, check to see if the log field content is a JSON string map, if so,
+# it append the map fields as part of the log structure.
+#  mergeJSONLog: true
 
 ## Install Default RBAC roles and bindings
 rbac:

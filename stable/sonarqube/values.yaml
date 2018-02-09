@@ -25,11 +25,11 @@ ingress:
   #     - chart-example.local
 
 readinessProbe:
-  initialDelaySeconds: 30
+  initialDelaySeconds: 120
   periodSeconds: 30
   failureThreshold: 6
 livenessProbe:
-  initialDelaySeconds: 30
+  initialDelaySeconds: 120
   periodSeconds: 30
 
 # Set extra env variables. Like proxy settings.
@@ -66,6 +66,13 @@ persistence:
 #    - "https://github.com/SonarSource/sonar-ldap/releases/download/2.2-RC3/sonar-ldap-plugin-2.2.0.601.jar"
 plugins:
   install: []
+
+# A custom sonar.properties file can be provided using a multiline YAML string.
+# For example:
+# sonarProperties: |
+#   sonar.forceAuthentication=true
+#   sonar.security.realm=LDAP
+#   ldap.url=ldaps://organization.com
 
 ## Configuration values for the postgresql dependency
 ## ref: https://github.com/kubernetes/charts/blob/master/stable/postgressql/README.md
