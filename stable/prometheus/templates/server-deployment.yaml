@@ -71,13 +71,13 @@ spec:
             - containerPort: 9090
           readinessProbe:
             httpGet:
-              path: /-/ready
+              path: {{ .Values.server.prefixURL }}/-/ready
               port: 9090
             initialDelaySeconds: 30
             timeoutSeconds: 30
           livenessProbe:
             httpGet:
-              path: /-/healthy
+              path: {{ .Values.server.prefixURL }}/-/healthy
               port: 9090
             initialDelaySeconds: 30
             timeoutSeconds: 30
