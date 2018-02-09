@@ -6,7 +6,7 @@ image:
   tag: "1.5-alpine"
   pullPolicy: IfNotPresent
 ## Configure the telegraf daemonset here.
-## Resource limits and outputs can be set seperately
+## Resource limits and outputs can be set separately
 daemonset:
   enabled: true
   ## Configure resource requests and limits
@@ -129,7 +129,7 @@ daemonset:
         bearer_token: "/var/run/secrets/kubernetes.io/serviceaccount/token"
         insecure_skip_verify: true
 ## Configure the telegraf single instance here.
-## Resource limits and outputs can be set seperately
+## Resource limits and outputs can be set separately
 single:
   enabled: true
   ## Configure resource requests and limits
