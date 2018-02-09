@@ -465,7 +465,6 @@ worker:
   ##
   fatalErrors: |-
     guardian.api.garden-server.create.failed
-    guardian.api.garden-server.run.failed
     baggageclaim.api.volume-server.create-volume-async.failed-to-create
 
   ## Strategy for StatefulSet updates (requires Kubernetes 1.6+)
