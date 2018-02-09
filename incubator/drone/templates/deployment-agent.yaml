@@ -19,6 +19,10 @@ spec:
         release: "{{ .Release.Name }}"
         component: agent
     spec:
+{{- if .Values.agent.affinity }}
+      affinity:
+{{ toYaml .Values.agent.affinity | indent 8 }}
+{{- end }}
       containers:
       - name: {{ template "drone.fullname" . }}-agent
         image: "{{ .Values.images.agent.repository }}:{{ .Values.images.agent.tag }}"
