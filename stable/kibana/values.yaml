@@ -17,6 +17,11 @@ service:
   type: ClusterIP
   externalPort: 443
   internalPort: 5601
+  ## External IP addresses of service
+  ## Default: nil
+  ##
+  # externalIPs:
+  # - 192.168.0.1
 
 ingress:
   enabled: false
