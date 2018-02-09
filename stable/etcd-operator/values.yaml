@@ -10,14 +10,14 @@ rbac:
 ## Service account names and whether to create them
 serviceAccount:
   etcdOperatorServiceAccount:
-    name: etcd-operator-sa
     create: true
+    name:
   backupOperatorServiceAccount:
-    name: backup-operator-sa
     create: true
+    name:
   restoreOperatorServiceAccount:
-    name: restore-operator-sa
     create: true
+    name:
 
 # Select what to deploy
 deployments:
