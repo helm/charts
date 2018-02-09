@@ -236,6 +236,7 @@ data:
       enabled: true
       accounts:
         - name: local
+          serviceAccount: true
           dockerRegistries:
             {{- range $index, $account := .Values.accounts }}
             - accountName: {{ $account.name }}
