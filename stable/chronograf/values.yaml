@@ -64,7 +64,7 @@ oauth:
     enabled: false
     client_id: CHANGE_ME
     client_secret: CHANGE_ME
-    # This is a comma seperated list of GH organizations (OPTIONAL)
+    # This is a comma separated list of GH organizations (OPTIONAL)
     gh_orgs: ""
   google:
     enabled: false
