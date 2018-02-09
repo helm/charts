@@ -1,0 +1,54 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ template "mssql.fullname" . }}
+  labels:
+    app: {{ template "mssql.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "mssql.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "mssql.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: ACCEPT_EULA
+              value: "{{ .Values.acceptEula.value | upper }}"
+            - name: MSSQL_PID
+              value: "{{ .Values.edition.value }}"
+            - name: SA_PASSWORD
+              valueFrom:
+               secretKeyRef:
+                 name: {{ template "mssql.fullname" . }}-secret
+                 key: sapassword
+          ports:
+            - name: db
+              containerPort: 1433
+          livenessProbe:
+             tcpSocket:
+               port: db
+             initialDelaySeconds: {{ .Values.livenessprobe.initialDelaySeconds }}
+             periodSeconds: {{ .Values.livenessprobe.periodSeconds }}
+          readinessProbe:
+             tcpSocket:
+               port: db
+             initialDelaySeconds: {{ .Values.readinessprobe.initialDelaySeconds }}
+             periodSeconds: {{ .Values.readinessprobe.periodSeconds }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
