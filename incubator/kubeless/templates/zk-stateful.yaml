@@ -1,0 +1,64 @@
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  name: {{ template "kubeless.fullname" . }}-zoo
+  labels:
+{{ include "labels.standard" . | indent 4 }}
+spec:
+  serviceName: "{{ template "kubeless.fullname" . }}-zoo"
+  replicas: {{ .Values.zookeeper.statefulSet.replicaCount }}
+  template:
+    metadata:
+      labels:
+        kubeless: zookeeper
+        app: {{ template "kubeless.name"  . }}
+        release: {{ .Release.Name | quote }}
+    spec:
+      terminationGracePeriodSeconds: 10
+      initContainers:
+      - name: "fix-non-root-permissions"
+        image: "busybox"
+        imagePullPolicy: "Always"
+        command: [ "chmod", "-R", "g+rwX", "/bitnami" ]
+        volumeMounts:
+        - name: datadir
+          mountPath: /bitnami
+      containers:
+      - name: zookeeper
+        image: "{{ .Values.zookeeper.statefulSet.image.repository }}:{{ .Values.zookeeper.statefulSet.image.tag }}"
+        imagePullPolicy: {{ .Values.zookeeper.statefulSet.image.pullPolicy }}
+        resources:
+{{ toYaml .Values.zookeeper.resources | indent 10 }}
+        env:
+        - name: ZOO_SERVERS
+          value: server.1=zoo-0.zoo:2888:3888:participant
+        - name: ALLOW_ANONYMOUS_LOGIN
+          value: "yes"
+        ports:
+        - containerPort: 2181
+          name: client
+        - containerPort: 2888
+          name: peer
+        - containerPort: 3888
+          name: leader-election
+        readinessProbe:
+          tcpSocket:
+            port: client
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          tcpSocket:
+            port: client
+          initialDelaySeconds: 15
+          periodSeconds: 20
+        volumeMounts:
+        - name: datadir
+          mountPath: /bitnami/zookeeper
+  volumeClaimTemplates:
+  - metadata:
+      name: datadir
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 1Gi
