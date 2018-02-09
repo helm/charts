@@ -89,7 +89,7 @@ env:
   # - name: INFLUXDB_DB
   #   value: "demo"
 
-## Change InfluxDB configuration paramaters below:
+## Change InfluxDB configuration parameters below:
 ## Defaults are indicated
 ## ref: https://docs.influxdata.com/influxdb/v1.1/administration/config/
 config:
