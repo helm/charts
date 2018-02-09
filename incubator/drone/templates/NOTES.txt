@@ -41,6 +41,8 @@ control provider:
 
     helm upgrade {{ .Release.Name }} \
       --reuse-values \
+      --set server.host="<scheme>://<hostname>" \
+      --set server.env.DRONE_OPEN="true" \ 
       --set server.env.DRONE_PROVIDER="github" \
       --set server.env.DRONE_GITHUB="true" \
       --set server.env.DRONE_ORGS="my-github-org" \
