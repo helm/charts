@@ -51,7 +51,8 @@ deployment:
 ## deploy the kube-state-metrics deployment
 ## ref: https://github.com/kubernetes/charts/tree/master/stable/kube-state-metrics
 ##
-kubeStateMetrics.enabled: true
+kubeStateMetrics:
+  enabled: true
 
 datadog:
   ## You'll need to set this to your Datadog API key before the agent will run.
