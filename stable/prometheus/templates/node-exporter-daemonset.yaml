@@ -34,7 +34,11 @@ spec:
             - --path.procfs=/host/proc
             - --path.sysfs=/host/sys
           {{- range $key, $value := .Values.nodeExporter.extraArgs }}
+          {{- if $value }}
             - --{{ $key }}={{ $value }}
+          {{- else }}
+            - --{{ $key }}
+          {{- end }}
           {{- end }}
           ports:
             - name: metrics
