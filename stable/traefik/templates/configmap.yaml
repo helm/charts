@@ -22,6 +22,10 @@ data:
     [entryPoints]
       [entryPoints.http]
       address = ":80"
+      {{- if .Values.proxyProtocol.enabled }}
+        [entryPoints.http.proxyProtocol]
+        {{ template "trustedips" . }}
+      {{- end }}
       compress = {{ .Values.gzip.enabled }}
         {{- if .Values.ssl.enforced }}
         [entryPoints.http.redirect]
@@ -31,6 +35,10 @@ data:
       {{- if .Values.ssl.enabled }}
       [entryPoints.https]
       address = ":443"
+      {{- if .Values.proxyProtocol.enabled }}
+        [entryPoints.https.proxyProtocol]
+        {{ template "proxyprotocol" . }}
+      {{- end }}
       compress = {{ .Values.gzip.enabled }}
         [entryPoints.https.tls]
           [[entryPoints.https.tls.certificates]]
