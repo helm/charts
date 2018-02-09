@@ -1,4 +1,4 @@
-# Minikube stores its logs in a seperate directory.
+# Minikube stores its logs in a separate directory.
 # enable if started in minikube.
 on_minikube: false
 
