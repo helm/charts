@@ -29,6 +29,8 @@ This chart will do the following:
 
 * Implement a dynamically scalable zookeeper cluster as another Kubernetes StatefulSet required for the Kafka cluster above
 
+* Expose Kafka protocol endpoints via NodePort services (optional)
+
 ### Installing the Chart
 
 To install the chart with the release name `my-kafka` in the default
@@ -62,6 +64,11 @@ following configurable parameters:
 | `logSubPath`                   | Subpath under `persistence.mountPath` where kafka logs will be placed.                                          | `logs`                                                     |
 | `schedulerName`                | Name of Kubernetes scheduler (other than the default)                                                           | `nil`                                                      |
 | `affinity`                     | Pod scheduling preferences                                                                                      | `{}`                                                       |
+| `external.enabled`             | If True, exposes Kafka brokers via NodePort (PLAINTEXT by default)                                              | `false`                                                    |
+| `external.servicePort`         | TCP port configured at external services (one per pod) to relay from NodePort to the external listener port.    | '19092'                                                    |
+| `external.firstListenerPort`   | TCP port which is added pod index number to arrive at the port used for NodePort and external listener port.    | '31090'                                                    |
+| `external.domain`              | Domain in which to advertise Kafka external listeners.                                                          | `cluster.local`                                            |
+| `external.init`                | External init container settings.                                                                               | (see `values.yaml`)                                        |
 | `configurationOverrides`       | `Kafka ` [configuration setting][brokerconfigs] overrides in the dictionary format                              | `{ offsets.topic.replication.factor: 3 }`                  |
 | `updateStrategy`               | StatefulSet update strategy to use.                                                                             | `{ type: "OnDelete" }`                                     |
 | `persistence.enabled`          | Use a PVC to persist data                                                                                       | `true`                                                     |
@@ -76,7 +83,6 @@ following configurable parameters:
 | `zookeeper.url`                | URL of Zookeeper Cluster (unneeded if installing Zookeeper Chart)                                               | `""`                                                       |
 | `zookeeper.port`               | Port of Zookeeper Cluster                                                                                       | `2181`                                                     |
 
-
 Specify parameters using `--set key=value[,key=value]` argument to `helm install`
 
 Alternatively a YAML file that specifies the values for the parameters can be provided like this:
@@ -85,7 +91,7 @@ Alternatively a YAML file that specifies the values for the parameters can be pr
 $ helm install --name my-kafka -f values.yaml incubator/kafka
 ```
 
-### Connecting to Kafka
+### Connecting to Kafka from inside Kubernetes
 
 You can connect to Kafka by running a simple pod in the K8s cluster like this with a configuration like this:
 
@@ -119,11 +125,34 @@ Kafka has a rich ecosystem, with lots of tools. This sections is intended to com
 
 - [Schema-registry](https://github.com/kubernetes/charts/tree/master/incubator/schema-registry) -  A confluent project that provides a serving layer for your metadata. It provides a RESTful interface for storing and retrieving Avro schemas. 
 
+### Connecting to Kafka from outside Kubernetes
+
+Review and optionally override to enable the example text concerned with external access in `values.yaml`.
+
+Once configured, you should be able to reach Kafka via NodePorts, one per replica. In kops where private,
+topology is enabled, this feature publishes an internal round-robin DNS record using the following naming
+scheme. The external access feature of this chart was tested with kops on AWS using flannel networking.
+If you wish to enable external access to Kafka running in kops, your security groups will likely need to
+be adjusted to allow non-Kubernetes nodes (e.g. bastion) to access the Kafka external listener port range.
+
+```
+{{ .Release.Name }}.{{ .Values.external.domain }}
+```
+
+Port numbers for external access used at container and NodePort are unique to each container in the StatefulSet.
+Using the default `external.firstListenerPort` number with a `replicas` value of `3`, the following
+container and NodePorts will be opened for external access: `31090`, `31091`, `31092`. All of these ports should
+be reachable from any host to NodePorts are exposed because Kubernetes routes each NodePort from entry node
+to pod/container listening on the same port (e.g. `31091`).
+
+The `external.servicePort` at each external access service (one such service per pod) is a relay toward
+the a `containerPort` with a number matching its respective `NodePort`. The range of NodePorts is set, but
+should not actually listen, on all Kafka pods in the StatefulSet. As any given pod will listen only one
+such port at a time, setting the range at every Kafka pod is a reasonably safe configuration.
 
 ## Known Limitations
 
 * Topic creation is not automated
 * Only supports storage options that have backends for persistent volume claims (tested mostly on AWS)
-* Kafka cluster is not accessible via an external endpoint
 
 [brokerconfigs]: https://kafka.apache.org/documentation/#brokerconfigs
