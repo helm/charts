@@ -1,0 +1,214 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "nginx.fullname" . }}
+  labels:
+    app: {{ template "name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+  conf: |
+    # This file is largely based on the one written by @Djelibeybi in:
+    #      https://github.com/Djelibeybi/Portus-On-OracleLinux7/
+
+    events {
+      worker_connections 1024;
+    }
+
+    http {
+      default_type  application/octet-stream;
+      charset       UTF-8;
+
+      # Some basic config.
+      server_tokens off;
+      sendfile      on;
+      tcp_nopush    on;
+      tcp_nodelay   on;
+
+      # On timeouts.
+      keepalive_timeout     65;
+      client_header_timeout 240;
+      client_body_timeout   240;
+      fastcgi_read_timeout  249;
+      reset_timedout_connection on;
+
+      ## Set a variable to help us decide if we need to add the
+      ## 'Docker-Distribution-Api-Version' header.
+      ## The registry always sets this header.
+      ## In the case of nginx performing auth, the header will be unset
+      ## since nginx is auth-ing before proxying.
+      map $upstream_http_docker_distribution_api_version $docker_distribution_api_version {
+        '' 'registry/2.0';
+      }
+
+      upstream {{ template "portus.fullname" . }} {
+        least_conn;
+        server {{ template "portus.fullname" . }}:{{ .Values.portus.service.port }} max_fails=3 fail_timeout=15s;
+      }
+
+      upstream {{ template "registry.fullname" . }}:{{ .Values.registry.service.port }} {
+        least_conn;
+        server {{ template "registry.fullname" . }}:{{ .Values.registry.service.port }} max_fails=3 fail_timeout=15s;
+      }
+
+      server {
+        server_name {{ template "nginx.fullname" . }}
+
+        {{- if .Values.portus.tls.enabled }}
+        listen {{ .Values.nginx.service.port }} ssl http2;
+
+        ##
+        # SSL
+
+        ssl on;
+
+        # Certificates
+        ssl_certificate /certificates/portus.crt;
+        ssl_certificate_key /certificates/portus.key;
+
+        # Enable session resumption to improve https performance
+        #
+        # http://vincent.bernat.im/en/blog/2011-ssl-session-reuse-rfc5077.html
+        ssl_session_cache shared:SSL:10m;
+        ssl_session_timeout 10m;
+
+        # Enables server-side protection from BEAST attacks
+        # http://blog.ivanristic.com/2013/09/is-beast-still-a-threat.html
+        ssl_prefer_server_ciphers on;
+
+        # Disable SSLv3 (enabled by default since nginx 0.8.19)
+        # since it's less secure than TLS
+        # http://en.wikipedia.org/wiki/Secure_Sockets_Layer#SSL_3.0
+        ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+
+        # Ciphers chosen for forward secrecy and compatibility.
+        #
+        # http://blog.ivanristic.com/2013/08/configuring-apache-nginx-and-openssl-for-forward-secrecy.html
+        ssl_ciphers 'ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256';
+        {{- else }}
+        listen {{ .Values.nginx.service.port }} http2;
+        {{- end }}
+
+        ##
+        # Docker-specific stuff.
+
+        proxy_set_header Host $http_host;   # required for Docker client sake
+        proxy_set_header X-Forwarded-Host $http_host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Scheme $scheme;
+
+        # disable any limits to avoid HTTP 413 for large image uploads
+        client_max_body_size 0;
+
+        # required to avoid HTTP 411: see Issue #1486
+        # (https://github.com/docker/docker/issues/1486)
+        chunked_transfer_encoding on;
+
+        ##
+        # Custom headers.
+
+        # Adding HSTS[1] (HTTP Strict Transport Security) to avoid SSL stripping[2].
+        #
+        # [1] https://developer.mozilla.org/en-US/docs/Security/HTTP_Strict_Transport_Security
+        # [2] https://en.wikipedia.org/wiki/SSL_stripping#SSL_stripping
+        add_header Strict-Transport-Security "max-age=31536000; includeSubDomains";
+
+        # Don't allow the browser to render the page inside a frame or iframe
+        # and avoid Clickjacking. More in the following link:
+        #
+        # https://developer.mozilla.org/en-US/docs/HTTP/X-Frame-Options
+        add_header X-Frame-Options DENY;
+
+        # Disable content-type sniffing on some browsers.
+        add_header X-Content-Type-Options nosniff;
+
+        # This header enables the Cross-site scripting (XSS) filter built into
+        # most recent web browsers. It's usually enabled by default anyway, so the
+        # role of this header is to re-enable the filter for this particular
+        # website if it was disabled by the user.
+        add_header X-XSS-Protection "1; mode=block";
+
+        # Add header for IE in compatibility mode.
+        add_header X-UA-Compatible "IE=edge";
+
+        # Redirect (most) requests to /v2/* to the Docker Registry
+        location /v2/ {
+          # Do not allow connections from docker 1.5 and earlier
+          # docker pre-1.6.0 did not properly set the user agent on ping, catch "Go *" user agents
+          if ($http_user_agent ~ "^(docker\/1\.(3|4|5(?!\.[0-9]-dev))|Go ).*$" ) {
+            return 404;
+          }
+
+          ## If $docker_distribution_api_version is empty, the header will not be added.
+          ## See the map directive above where this variable is defined.
+          add_header 'Docker-Distribution-Api-Version' $docker_distribution_api_version always;
+
+          {{- if .Values.portus.tls.enabled }}
+          proxy_pass https://{{ template "registry.fullname" . }}:{{ .Values.registry.service.port }};
+          {{- else }}
+          proxy_pass http://{{ template "registry.fullname" . }}:{{ .Values.registry.service.port }};
+          {{- end }}
+
+          proxy_set_header Host $http_host;   # required for docker client's sake
+          proxy_set_header X-Real-IP $remote_addr; # pass on real client's IP
+          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+          proxy_set_header X-Forwarded-Proto $scheme;
+          proxy_read_timeout 900;
+          proxy_buffering on;
+        }
+
+        # Portus needs to handle /v2/token for authentication
+        location = /v2/token {
+          {{- if .Values.portus.tls.enabled }}
+          proxy_pass https://{{ template "portus.fullname" . }};
+          {{- else }}
+          proxy_pass http://{{ template "portus.fullname" . }};
+          {{- end }}
+
+          proxy_set_header Host $http_host;   # required for docker client's sake
+          proxy_set_header X-Real-IP $remote_addr; # pass on real client's IP
+          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+          proxy_set_header X-Forwarded-Proto $scheme;
+          proxy_read_timeout 900;
+          proxy_buffering on;
+        }
+
+        # Portus needs to handle /v2/webhooks/events for notifications
+        location = /v2/webhooks/events {
+          {{- if .Values.portus.tls.enabled }}
+          proxy_pass https://{{ template "portus.fullname" . }};
+          {{- else }}
+          proxy_pass http://{{ template "portus.fullname" . }};
+          {{- end }}
+
+          proxy_set_header Host $http_host;   # required for docker client's sake
+          proxy_set_header X-Real-IP $remote_addr; # pass on real client's IP
+          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+          proxy_set_header X-Forwarded-Proto $scheme;
+          proxy_read_timeout 900;
+          proxy_buffering on;
+        }
+
+        # Portus handles everything else for the UI
+        location / {
+          try_files $uri/index.html $uri.html $uri @{{ template "portus.fullname" . }};
+        }
+
+        location @{{ template "portus.fullname" . }} {
+          {{- if .Values.portus.tls.enabled }}
+          proxy_pass https://{{ template "portus.fullname" . }};
+          {{- else }}
+          proxy_pass http://{{ template "portus.fullname" . }};
+          {{- end }}
+
+          proxy_set_header Host $http_host;   # required for docker client's sake
+          proxy_set_header X-Real-IP $remote_addr; # pass on real client's IP
+          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+          proxy_set_header X-Forwarded-Proto $scheme;
+          proxy_read_timeout 900;
+          proxy_buffering on;
+        }
+      }
+    }
