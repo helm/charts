@@ -119,7 +119,7 @@ datadog:
   ##
   # leaderLeaseDuration: 600
 
-  ## Provide additonal service definitions
+  ## Provide additional service definitions
   ## Each key will become a file in /conf.d/auto_conf
   ## ref: https://github.com/DataDog/docker-dd-agent#configuration-files
   ##
@@ -131,7 +131,7 @@ datadog:
   #     instances:
   #       - kube_state_url: http://%%host%%:%%port%%/metrics
 
-  ## Provide additonal service definitions
+  ## Provide additional service definitions
   ## Each key will become a file in /conf.d
   ## ref: https://github.com/DataDog/docker-dd-agent#configuration-files
   ##
@@ -142,7 +142,7 @@ datadog:
   #       - host: "name"
   #         port: "6379"
 
-  ## Provide additonal service checks
+  ## Provide additional service checks
   ## Each key will become a file in /checks.d
   ## ref: https://github.com/DataDog/docker-dd-agent#configuration-files
   ##
