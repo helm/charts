@@ -718,7 +718,7 @@ serverFiles:
 
         kubernetes_sd_configs:
           - role: node
-          
+
         # This configuration will work only on kubelet 1.7.3+
         # As the scrape endpoints for cAdvisor have changed
         # if you are using older version you need to change the replacement to
