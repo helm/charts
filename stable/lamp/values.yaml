@@ -42,7 +42,7 @@ php:
   ## sockets instead of TCP
   sockets: true
 
-  ## php.oldHTTPRoot Additionaly mounts the webroot at `php.oldHTTPRoot` to compansate
+  ## php.oldHTTPRoot Additionally mounts the webroot at `php.oldHTTPRoot` to compansate
   ## for absolute path file links
   # oldHTTPRoot: /var/www/html
 
