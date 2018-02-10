@@ -11,8 +11,8 @@ image:
 service:
   type: ClusterIP
 persistence:
-  enabled: true
-  existingDataClaim: pvc-mssql-data
+  enabled: false
+  # existingDataClaim:
   # existingLogClaim:
   # storageClass: "-"
   dataAccessMode: ReadWriteOnce
