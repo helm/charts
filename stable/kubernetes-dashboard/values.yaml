@@ -17,8 +17,8 @@ labels: {}
 ## Additional container arguments
 ##
 # extraArgs:
-#   enable-insecure-login: true
-#   auto-generate-certificates: true
+#   - --enable-insecure-login
+#   - --system-banner="Welcome to Kubernetes"
 
 ## Node labels for pod assignment
 ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
