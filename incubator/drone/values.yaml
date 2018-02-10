@@ -63,6 +63,7 @@ ingress:
 
 server:
   ## If not set, it will be autofilled with the cluster host.
+  ## Host must be in "<scheme>://<hostname>" format.
   ##
   # host: "https://drone.domain.io"
 

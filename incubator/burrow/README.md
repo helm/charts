@@ -157,7 +157,7 @@ There are a few other considerations underpinning how this chart was developed.
 
 ### Deployments versus StatefulSets
 
-The first consideration is whether to utilize multiple deployments or a statefulSet. The chart maintainer has (to date) found it significantly easier to work with multiple deployments than with a statefulSet because the config files and keys differ subltely between and across each blockchain node. StatefulSets are currently not able to as elegantly handle the 1-to-1 linkages between the various key secrets and config files that are necessary to operate each blockchain node within the cluster.
+The first consideration is whether to utilize multiple deployments or a statefulSet. The chart maintainer has (to date) found it significantly easier to work with multiple deployments than with a statefulSet because the config files and keys differ subtly between and across each blockchain node. StatefulSets are currently not able to as elegantly handle the 1-to-1 linkages between the various key secrets and config files that are necessary to operate each blockchain node within the cluster.
 
 ### Running multiple chains within your cluster
 

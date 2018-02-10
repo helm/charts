@@ -14,6 +14,12 @@ labels: {}
 # kubernetes.io/cluster-service: "true"
 # kubernetes.io/name: "Kuberetes Dashboard"
 
+## Additional container arguments
+##
+# extraArgs:
+#   enable-insecure-login: true
+#   auto-generate-certificates: true
+
 ## Node labels for pod assignment
 ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
 ##
