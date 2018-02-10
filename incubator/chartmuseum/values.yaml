@@ -55,7 +55,7 @@ service:
   type: ClusterIP
   externalPort: 8080
   internalPort: 8080
-  nodePort: 
+  nodePort:
   annotations: {}
 
 resources:
