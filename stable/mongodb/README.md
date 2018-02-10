@@ -43,19 +43,29 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following tables lists the configurable parameters of the MongoDB chart and their default values.
 
-|         Parameter          |             Description             |                         Default                          |
-|----------------------------|-------------------------------------|----------------------------------------------------------|
-| `image`                    | MongoDB image                       | `bitnami/mongodb:{VERSION}`                              |
-| `imagePullPolicy`          | Image pull policy                   | `Always` if `imageTag` is `latest`, else `IfNotPresent`. |
-| `mongodbRootPassword`      | MongoDB admin password              | `random alhpanumeric string (10)`                                                    |
-| `mongodbUsername`          | MongoDB custom user                 | `nil`                                                    |
-| `mongodbPassword`          | MongoDB custom user password        | `random alhpanumeric string (10)`                                                    |
-| `mongodbDatabase`          | Database to create                  | `nil`                                                    |
-| `serviceType`              | Kubernetes Service type             | `ClusterIP`                                              |
-| `persistence.enabled`      | Use a PVC to persist data           | `true`                                                   |
-| `persistence.storageClass` | Storage class of backing PVC        | `nil` (uses alpha storage class annotation)              |
-| `persistence.accessMode`   | Use volume as ReadOnly or ReadWrite | `ReadWriteOnce`                                          |
-| `persistence.size`         | Size of data volume                 | `8Gi`                                                    |
+|         Parameter                   |             Description                    |                         Default                          |
+|----------------------------         |-------------------------------------       |----------------------------------------------------------|
+| `image`                             | MongoDB image                              | `bitnami/mongodb:{VERSION}`                              |
+| `imagePullPolicy`                   | Image pull policy                          | `Always` if `imageTag` is `latest`, else `IfNotPresent`. |
+| `mongodbRootPassword`               | MongoDB admin password                     | `random alhpanumeric string (10)`                        |
+| `mongodbUsername`                   | MongoDB custom user                        | `nil`                                                    |
+| `mongodbPassword`                   | MongoDB custom user password               | `random alhpanumeric string (10)`                        |
+| `mongodbDatabase`                   | Database to create                         | `nil`                                                    |
+| `serviceType`                       | Kubernetes Service type                    | `ClusterIP`                                              |
+| `persistence.enabled`               | Use a PVC to persist data                  | `true`                                                   |
+| `persistence.storageClass`          | Storage class of backing PVC               | `nil` (uses alpha storage class annotation)              |
+| `persistence.accessMode`            | Use volume as ReadOnly or ReadWrite        | `ReadWriteOnce`                                          |
+| `persistence.size`                  | Size of data volume                        | `8Gi`                                                    |
+| `livenessProbe.initialDelaySeconds` | Delay before liveness probe is initiated   | 30                                                       |
+| `livenessProbe.periodSeconds`       | How often to perform the probe             | 10                                                       |
+| `livenessProbe.timeoutSeconds`      | When the probe times out                   | 5                                                        |
+| `livenessProbe.successThreshold`    | Minimum consecutive successes for the probe to be considered successful after having failed.     |  1 |
+| `livenessProbe.failureThreshold`    | Minimum consecutive failures for the probe to be considered failed after having succeeded.       |  6 |
+| `readinessProbe.initialDelaySeconds`| Delay before readiness probe is initiated                                                        |  5 |
+| `readinessProbe.periodSeconds`      | How often to perform the probe                                                                   | 10 |
+| `readinessProbe.timeoutSeconds`     | When the probe times out                                                                         |  5 |
+| `readinessProbe.successThreshold`   | Minimum consecutive successes for the probe to be considered successful after having failed.     |  1 |
+| `readinessProbe.failureThreshold`   | Minimum consecutive failures for the probe to be considered failed after having succeeded.       |  6 |
 
 The above parameters map to the env variables defined in [bitnami/mongodb](http://github.com/bitnami/bitnami-docker-mongodb). For more information please refer to the [bitnami/mongodb](http://github.com/bitnami/bitnami-docker-mongodb) image documentation.
 
