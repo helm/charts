@@ -1,4 +1,4 @@
-# Minikube stores its logs in a seperate directory.
+# Minikube stores its logs in a separate directory.
 # enable if started in minikube.
 on_minikube: false
 
@@ -28,6 +28,12 @@ backend:
     format: msgpack
 
 env: []
+
+## ConfigMap override where fullname is {{.Release.Name}}-{{.Values.existingConfigMap}}
+## Defining existingConfigMap will cause templates/config.yaml
+## to NOT generate a ConfigMap resource
+##
+existingConfigMap: ""
 
 resources:
   limits:
