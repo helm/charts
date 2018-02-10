@@ -10,6 +10,15 @@ image:
   pullPolicy: IfNotPresent
 service:
   type: ClusterIP
+persistence:
+  enabled: true
+  existingDataClaim: pvc-mssql-data
+  # existingLogClaim:
+  # storageClass: "-"
+  dataAccessMode: ReadWriteOnce
+  dataSize: 1Gi
+  logAccessMode: ReadWriteOnce
+  logSize: 1Gi
 livenessprobe:
   initialDelaySeconds: 15
   periodSeconds: 20
@@ -24,3 +33,4 @@ resources: {}
   #  cpu: 100m
   #  memory: 2Gi
 nodeSelector: {}
+  # kubernetes.io/hostname: minikube
