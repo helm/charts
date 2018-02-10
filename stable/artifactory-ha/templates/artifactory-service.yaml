@@ -1,0 +1,50 @@
+# Service for all Artifactory cluster nodes.
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.artifactory.service.name }}
+  labels:
+    app: {{ template "artifactory.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: "{{ .Values.artifactory.name }}"
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+spec:
+  type: {{ .Values.artifactory.service.type }}
+  ports:
+  - port: {{ .Values.artifactory.externalPort }}
+    targetPort: {{ .Values.artifactory.internalPort }}
+    protocol: TCP
+    name: {{ .Release.Name }}
+  selector:
+{{- if eq .Values.artifactory.service.pool "all" }}
+    app: {{ template "artifactory.name" . }}
+{{- else }}
+    role: {{ template "artifactory.node.name" . }}
+{{- end }}
+    component: "{{ .Values.artifactory.name }}"
+    release: {{ .Release.Name }}
+---
+# Internal service for Artifactory primary node only!
+# Used by member nodes to check readiness of primary node before starting up
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "artifactory.primary.name" . }}
+  labels:
+    app: {{ template "artifactory.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: "{{ .Values.artifactory.name }}"
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+spec:
+  type: {{ .Values.artifactory.service.type }}
+  ports:
+  - port: {{ .Values.artifactory.externalPort }}
+    targetPort: {{ .Values.artifactory.internalPort }}
+    protocol: TCP
+    name: {{ .Release.Name }}
+  selector:
+    role: {{ template "artifactory.primary.name" . }}
+    component: "{{ .Values.artifactory.name }}"
+    release: {{ .Release.Name }}

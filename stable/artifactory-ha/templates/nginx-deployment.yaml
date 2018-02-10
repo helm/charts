@@ -1,0 +1,49 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "artifactory.nginx.name" . }}
+  labels:
+    app: {{ template "artifactory.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+    component: {{ .Values.nginx.name }}
+spec:
+  replicas: {{ .Values.nginx.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "artifactory.name" . }}
+        component: "{{ .Values.nginx.name }}"
+        release: {{ .Release.Name }}
+    spec:
+    {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+      - name: {{ .Values.imagePullSecrets }}
+    {{- end }}
+      containers:
+      - name: {{ .Values.nginx.name }}
+        image: '{{ .Values.nginx.image.repository }}:{{ .Values.nginx.image.version }}'
+        imagePullPolicy: {{ .Values.nginx.image.pullPolicy }}
+        lifecycle:
+          postStart:
+            exec:
+              command:
+              - '/bin/sh'
+              - '-c'
+              - >
+                until [ -f /etc/nginx/conf.d/artifactory.conf ]; do sleep 1; done;
+                sed -i -e 's,proxy_pass .*,proxy_pass     {{ .Values.nginx.env.artUrl }}/;,g' \
+                    -e 's,server_name .*,server_name ~(?<repo>.+)\\.{{ .Values.artifactory.service.name }} {{ .Values.artifactory.service.name }};,g' \
+                    /etc/nginx/conf.d/artifactory.conf;
+                sleep 5; nginx -s reload; touch /var/log/nginx/conf.done
+        env:
+        - name: ART_BASE_URL
+          value: "{{ .Values.nginx.env.artUrl }}"
+        - name: SSL
+          value: "{{ .Values.nginx.env.ssl }}"
+        ports:
+        - containerPort: {{ .Values.nginx.internalPortHttp }}
+        - containerPort: {{ .Values.nginx.internalPortHttps }}
+        resources:
+{{ toYaml .Values.nginx.resources | indent 10 }}
