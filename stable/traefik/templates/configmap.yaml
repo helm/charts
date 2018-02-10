@@ -68,14 +68,15 @@ data:
     storage = "/acme/acme.json"
     entryPoint = "https"
     onHostRule = true
-    {{- if eq .Values.acme.challengeType "dns-01" }}
-    dnsProvider = "{{ .Values.acme.dnsProvider.name }}"
-    {{- end }}
     {{- if .Values.acme.staging }}
     caServer = "https://acme-staging.api.letsencrypt.org/directory"
     {{- end }}
     {{- if .Values.acme.logging }}
     acmeLogging = true
+    {{- end }}
+    {{- if eq .Values.acme.challengeType "dns-01" }}
+      [acme.dnsChallenge]
+      provider = "{{ .Values.acme.dnsProvider.name }}"
     {{- end }}
     {{- end }}
     {{- if or .Values.dashboard.enabled .Values.metrics.prometheus.enabled .Values.metrics.statsd.enabled .Values.metrics.datadog.enabled }}

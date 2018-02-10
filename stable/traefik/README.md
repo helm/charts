@@ -104,7 +104,7 @@ The following tables lists the configurable parameters of the Traefik chart and 
 | `ssl.defaultCert`               | Base64 encoded default certficate                                    | A self-signed certificate                 |
 | `ssl.defaultKey`                | Base64 encoded private key for the certificate above                 | The private key for the certificate above |
 | `acme.enabled`                  | Whether to use Let's Encrypt to obtain certificates                  | `false`                                   |
-| `acme.challengeType`            | Type of ACME challenge to perform domain validation. `http-01` or `dns-01` | `http-01`                                 |
+| `acme.challengeType`            | Type of ACME challenge to perform domain validation. `tls-sni-01` or `dns-01` | `tls-sni-01`                     |
 | `acme.dnsProvider.name`         | Which DNS provider to use. See [here](https://github.com/xenolf/lego/tree/master/providers/dns) for the list of possible values. | `nil`                                     |
 | `acme.dnsProvider.$name`        | The configuration environment variables (encoded as a secret) needed for the DNS provider to do DNS challenge. See [here](#example-aws-route-53). | `{}`                     |
 | `acme.email`                    | Email address to be used in certificates obtained from Let's Encrypt | `admin@example.com`                       |
