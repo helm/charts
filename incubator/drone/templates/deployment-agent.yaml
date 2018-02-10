@@ -28,21 +28,21 @@ spec:
         image: "{{ .Values.images.agent.repository }}:{{ .Values.images.agent.tag }}"
         imagePullPolicy: {{ .Values.images.agent.pullPolicy }}
         env:
-        - name: DRONE_SERVER
-          value: {{ template "drone.fullname" . }}:9000
-        - name: DRONE_SECRET
-          valueFrom:
-            secretKeyRef:
-              name: {{ template "drone.fullname" . }}
-              key: secret
+          - name: DRONE_SERVER
+            value: {{ template "drone.fullname" . }}:9000
+          - name: DRONE_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "drone.fullname" . }}
+                key: secret
 {{- if .Values.dind.enabled }}
-        - name: DOCKER_HOST
-          value: tcp://localhost:2375
+          - name: DOCKER_HOST
+            value: tcp://localhost:2375
 {{- end }}
-        {{ range $key, $value := .Values.agent.env }}
-        - name: {{ $key }}
-          value: {{ $value | quote }}
-        {{ end }}
+          {{ range $key, $value := .Values.agent.env }}
+          - name: {{ $key }}
+            value: {{ $value | quote }}
+          {{ end }}
         resources:
 {{ toYaml .Values.agent.resources | indent 10 }}
 {{- if not .Values.dind.enabled }}
