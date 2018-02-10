@@ -131,7 +131,8 @@ agent:
 
 dind:
   ## Enable or disable DinD
-  ## If disabled, the drone agent will spawn docker containers on the host.
+  ## If disabled, the drone agent will spawn docker containers on the host. Pay
+  ## attention to the fact that we can't enforce resource constraints in that case.
   ##
   enabled: true
 
