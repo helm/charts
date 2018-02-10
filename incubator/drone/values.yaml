@@ -1,4 +1,4 @@
-appVersion: "0.8.2"
+appVersion: "0.8.4"
 
 images:
   ## The official drone (server) image, change tag to use a different version.
@@ -129,6 +129,11 @@ agent:
   affinity: {}
 
 dind:
+  ## Enable or disable DinD
+  ## If disabled, the drone agent will spawn docker containers on the host.
+  ##
+  enabled: true
+
   ## Docker storage driver.
   ## Your DinD instance should be using the same driver as your host.
   ## ref: https://docs.docker.com/engine/userguide/storagedriver/selectadriver/
