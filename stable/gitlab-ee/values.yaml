@@ -54,10 +54,14 @@ persistence:
   gitlabEtc:
     enabled: true
     size: 1Gi
-    ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
-    ## Default: volume.alpha.kubernetes.io/storage-class: default
+    ## gitlabEtc data Persistent Volume Storage Class
+    ## If defined, storageClassName: <storageClass>
+    ## If set to "-", storageClassName: "", which disables dynamic provisioning
+    ## If undefined (the default) or set to null, no storageClassName spec is
+    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+    ##   GKE, AWS & OpenStack)
     ##
-    # storageClass:
+    # storageClass: "-"
     accessMode: ReadWriteOnce
   ## This volume is used to store git data and other project files.
   ## ref: https://docs.gitlab.com/omnibus/settings/configuration.html#storing-git-data-in-an-alternative-directory
@@ -65,10 +69,14 @@ persistence:
   gitlabData:
     enabled: true
     size: 10Gi
-    ## If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
-    ## Default: volume.alpha.kubernetes.io/storage-class: default
+    ## gitlabData data Persistent Volume Storage Class
+    ## If defined, storageClassName: <storageClass>
+    ## If set to "-", storageClassName: "", which disables dynamic provisioning
+    ## If undefined (the default) or set to null, no storageClassName spec is
+    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+    ##   GKE, AWS & OpenStack)
     ##
-    # storageClass:
+    # storageClass: "-"
     accessMode: ReadWriteOnce
 
 ## Configuration values for the postgresql dependency.

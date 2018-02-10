@@ -3,16 +3,17 @@ kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
   name: {{ template "gitlab-ee.fullname" . }}-etc
-  annotations:
-  {{- if .Values.persistence.gitlabEtc.storageClass }}
-    volume.beta.kubernetes.io/storage-class: {{ .Values.persistence.gitlabEtc.storageClass | quote }}
-  {{- else }}
-    volume.alpha.kubernetes.io/storage-class: default
-  {{- end }}
 spec:
   accessModes:
     - {{ .Values.persistence.gitlabEtc.accessMode | quote }}
   resources:
     requests:
       storage: {{ .Values.persistence.gitlabEtc.size | quote }}
+{{- if .Values.persistence.gitlabEtc.storageClass }}
+{{- if (eq "-" .Values.persistence.gitlabEtc.storageClass) }}
+  storageClassName: ""
+{{- else }}
+  storageClassName: "{{ .Values.persistence.gitlabEtc.storageClass }}"
+{{- end }}
+{{- end }}
 {{- end }}
