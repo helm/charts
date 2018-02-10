@@ -19,7 +19,7 @@ controller:
 
   # Optionally use this DNS Policy if you have 'hostNetwork: true'
   # Without this, pods running with host network access will not be able to resolve names in K8S' internal DNS
-  #dnsPolicy: ClusterFirstWithHostNet
+  # dnsPolicy: ClusterFirstWithHostNet
 
   ## Use host ports 80 and 443
   daemonset:
