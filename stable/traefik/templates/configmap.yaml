@@ -37,7 +37,7 @@ data:
       address = ":443"
       {{- if .Values.proxyProtocol.enabled }}
         [entryPoints.https.proxyProtocol]
-        {{ template "proxyprotocol" . }}
+        {{ template "trustedips" . }}
       {{- end }}
       compress = {{ .Values.gzip.enabled }}
         [entryPoints.https.tls]
