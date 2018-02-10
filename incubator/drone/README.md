@@ -50,7 +50,7 @@ The following tables lists the configurable parameters of the drone charts and t
 | `ingress.annotations`       | Ingress annotations                                                                           | `{}`                        |
 | `ingress.hosts`             | Ingress accepted hostnames                                                                    | `nil`                       |
 | `ingress.tls`               | Ingress TLS configuration                                                                     | `[]`                        |
-| `server.host`               | Drone **server** hostname                                                                     | `(internal hostname)`       |
+| `server.host`               | Drone **server** scheme and hostname                                                          | `(internal hostname)`       |
 | `server.env`                | Drone **server** environment variables                                                        | `(default values)`          |
 | `server.resources`          | Drone **server** pod resource requests & limits                                               | `{}`                        |
 | `server.afinity`            | Drone **server** scheduling preferences                                                       | `{}`                        |

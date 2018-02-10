@@ -63,6 +63,7 @@ ingress:
 
 server:
   ## If not set, it will be autofilled with the cluster host.
+  ## Should include a scheme
   ##
   # host: "https://drone.domain.io"
 
