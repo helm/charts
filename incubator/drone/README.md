@@ -43,14 +43,13 @@ The following tables lists the configurable parameters of the drone charts and t
 | `images.dind.tag`           | Docker **dind** image tag                                                                     | `17.12.0-ce-dind`           |
 | `images.dind.pullPolicy`    | Docker **dind** image pull policy                                                             | `IfNotPresent`              |
 | `service.httpPort`          | Drone's Web GUI HTTP port                                                                     | `80`                        |
-| `service.httpPort`          | Drone's Web GUI HTTP port                                                                     | `80`                        |
 | `service.nodePort`          | If `service.type` is `NodePort` and this is non-empty, sets the http node port of the service | `32015`                     |
 | `service.type`              | Service type (ClusterIP, NodePort or LoadBalancer)                                            | `ClusterIP`                 |
 | `ingress.enabled`           | Enables Ingress for Drone                                                                     | `false`                     |
 | `ingress.annotations`       | Ingress annotations                                                                           | `{}`                        |
 | `ingress.hosts`             | Ingress accepted hostnames                                                                    | `nil`                       |
 | `ingress.tls`               | Ingress TLS configuration                                                                     | `[]`                        |
-| `server.host`               | Drone **server** hostname                                                                     | `(internal hostname)`       |
+| `server.host`               | Drone **server** scheme and hostname                                                          | `(internal hostname)`       |
 | `server.env`                | Drone **server** environment variables                                                        | `(default values)`          |
 | `server.resources`          | Drone **server** pod resource requests & limits                                               | `{}`                        |
 | `server.afinity`            | Drone **server** scheduling preferences                                                       | `{}`                        |
