@@ -42,7 +42,7 @@ The following tables lists the configurable parameters of the kubernetes-dashboa
 | `image.repository`     | Repository for container image     | `gcr.io/google_containers/kubernetes-dashboard-amd64`                    |
 | `image.tag`            | Image tag                          | `v1.8.1`                                                                 |
 | `image.pullPolicy`     | Image pull policy                  | `IfNotPresent`                                                           |
-| `extraArgs`            | Additional container arguments     | `{}`                                                                     |
+| `extraArgs`            | Additional container arguments     | `[]`                                                                     |
 | `nodeSelector`         | node labels for pod assignment     | `{}`                                                                     |
 | `service.externalPort` | Dashboard internal port            | 80                                                                       |
 | `service.internalPort` | Dashboard external port            | 80                                                                       |
