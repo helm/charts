@@ -2,7 +2,7 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-#imagePullSecrets:
+# imagePullSecrets:
 
 image:
   repository: linuxserver/quassel-core
@@ -16,7 +16,7 @@ gid: 1000
 service:
   port: 4242
   type: ClusterIP
-  #nodePort:
+  # nodePort:
   externalIPs: []
 
 persistence:
@@ -68,7 +68,7 @@ postgresql:
   ## PostgreSQL Password for the new user.
   ## If not set, a random 10 characters password will be used.
   ##
-  #postgresPassword: quassel
+  # postgresPassword: quassel
 
   ## PostgreSQL Database to create.
   ##
