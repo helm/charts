@@ -65,4 +65,4 @@ to update the public repositories. The procedure is as follows:
    - Run `helm dep build` on all the charts in the current repository
    - Run `helm package` on each chart
    - Recreate the index using `helm repo index`
-   - Upload the repostory using `gsutil rsync`
+   - Upload the repository using `gsutil rsync`
