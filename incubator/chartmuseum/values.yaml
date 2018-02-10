@@ -55,8 +55,9 @@ service:
   type: ClusterIP
   externalPort: 8080
   internalPort: 8080
+  nodePort:
   annotations: {}
-    # foo.io/bar: "true"
+
 resources:
   limits:
     cpu: 100m
