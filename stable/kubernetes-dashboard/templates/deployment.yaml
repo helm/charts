@@ -30,6 +30,10 @@ spec:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
+{{- if .Values.extraArgs }}
+        args:
+{{ toYaml .Values.extraArgs | indent 10 }}
+{{- end }}
         ports:
         - name: http
           containerPort: 9090
