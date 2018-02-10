@@ -62,6 +62,9 @@ spec:
 {{  if .Values.collectors.persistentvolumeclaims  }}
         - --collectors=persistentvolumeclaims
 {{  end  }}
+{{ if .Values.namespace }}
+        - --namespace={{ .Values.namespace }}
+{{ end }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         ports:
@@ -74,3 +77,8 @@ spec:
           timeoutSeconds: 5
         resources:
 {{ toYaml .Values.resources | indent 12 }}
+    {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
+

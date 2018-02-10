@@ -49,6 +49,7 @@ storage: filesystem
 # tlsSecretName: registry.docker.example.com
 secrets:
   haSharedSecret: ""
+  htpasswd: ""
 # Secrets for S3 access and secret keys
 #   s3:
 #     accessKey: ""

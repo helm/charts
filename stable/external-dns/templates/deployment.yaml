@@ -29,6 +29,12 @@ spec:
           {{- end }}
             - --policy={{ .Values.policy }}
             - --provider={{ .Values.provider }}
+          {{- if .Values.txtOwnerId }}
+            - --txt-owner-id={{ .Values.txtOwnerId }}
+          {{- end }}
+          {{- if .Values.annotationFilter }}
+            - --annotation-filter={{ .Values.annotationFilter }}
+          {{- end }}
           {{- range .Values.sources }}
             - --source={{ . }}
           {{- end }}
@@ -42,7 +48,17 @@ spec:
           {{- if .Values.aws.zoneType }}
             - --aws-zone-type={{ .Values.aws.zoneType }}
           {{- end }}
+          {{- if .Values.google.project }}
+            - --google-project={{ .Values.google.project }}
+          {{- end }}
+          volumeMounts:
+          {{- if eq .Values.provider "azure" }}
+          - name: azure-config-file
+            mountPath: /etc/kubernetes/azure.json
+            readOnly: true
+          {{- end }}
           env:
+        {{- if eq .Values.provider "aws" }}
         {{- if and .Values.aws.secretKey .Values.aws.accessKey }}
           - name: AWS_ACCESS_KEY_ID
             valueFrom:
@@ -58,6 +74,7 @@ spec:
         {{- if .Values.aws.region }}
           - name: AWS_DEFAULT_REGION
             value: {{ .Values.aws.region }}
+        {{- end }}
         {{- end }}
         {{- if and .Values.cloudflare.apiKey .Values.cloudflare.email }}
           - name: CF_API_KEY
@@ -86,6 +103,13 @@ spec:
           resources:
 {{ toYaml .Values.resources | indent 12 }}
         {{- end }}
+      volumes:
+      {{- if eq .Values.provider "azure" }}
+      - name: azure-config-file
+        hostPath:
+          path: /etc/kubernetes/azure.json
+          type: File
+      {{- end }}
     {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
