@@ -1,6 +1,5 @@
 # Default values for artifactory-ha.
 # This is a YAML-formatted file.
-
 # Beware when changing values here. You should know what you are doing!
 # Access the values with {{ .Values.key.subkey }}
 
@@ -62,9 +61,7 @@ artifactory:
   license:
     secret:
     dataKey:
-
   membershipPort: 10017
-
   externalPort: 8081
   internalPort: 8081
 
@@ -95,7 +92,6 @@ artifactory:
       dataDir: "/var/opt/jfrog/artifactory-ha"
       backupDir: "/var/opt/jfrog/artifactory-backup"
       capacity: 200Gi
-
     ## For artifactory.persistence.type google-storage
     googleStorage:
       # Set a unique bucket name
@@ -103,7 +99,6 @@ artifactory:
       identity:
       credential:
       path: "artifactory-ha/filestore"
-
     ## For artifactory.persistence.type aws-s3
     awsS3:
       # Set a unique bucket name
@@ -112,7 +107,6 @@ artifactory:
       identity:
       credential:
       path: "artifactory-ha/filestore"
-
   service:
     name: artifactory
     type: ClusterIP
@@ -140,14 +134,12 @@ artifactory:
     #  limits:
     #    memory: "2Gi"
     #    cpu: "1"
-
     ## The following Java options are passed to the java process running Artifactory primary node.
     ## You should set them according to the resources set above
     javaOpts: {}
     #  xms: "1g"
     #  xmx: "2g"
     #  other:
-
   node:
     name: artifactory-node
     replicaCount: 2
@@ -159,14 +151,12 @@ artifactory:
     #  limits:
     #    memory: "2Gi"
     #    cpu: "1"
-
     ## The following Java options are passed to the java process running Artifactory member nodes.
     ## You should set them according to the resources set above
     javaOpts: {}
     #  xms: "1g"
     #  xmx: "2g"
     #  other:
-
 
 # Nginx
 nginx:
@@ -199,4 +189,3 @@ nginx:
   #  limits:
   #    memory: "250Mi"
   #    cpu: "500m"
-
