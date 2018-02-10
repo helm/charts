@@ -98,10 +98,12 @@ The following tables lists the configurable parameters of the Traefik chart and 
 | `rbac.enabled`                  | Whether to enable RBAC with a specific cluster role and binding for Traefik | `false`                            |
 | `nodeSelector`                  | Node labels for pod assignment                                       | `{}`                                      |
 | `tolerations`                   | List of node taints to tolerate                                      | `[]`                                      |
+| `proxyProtocol.enabled`         | Enable PROXY protocol support.                                       | `false`                                   |
+| `proxyProtocol.trustedIPs`      | List of proxy IPs (CIDR ranges) trusted to accurately convey the end-user IP. | `[]`                              |
 | `debug.enabled`                 | Turn on/off Traefik's debug mode. Enabling it will override the logLevel to `DEBUG` and provide `/debug/vars` endpoint that allows Go runtime stats to be inspected, such as number of Goroutines and memory stats | `false`                                   |
 | `ssl.enabled`                   | Whether to enable HTTPS                                              | `false`                                   |
 | `ssl.enforced`                  | Whether to redirect HTTP requests to HTTPS                           | `false`                                   |
-| `ssl.defaultCert`               | Base64 encoded default certficate                                    | A self-signed certificate                 |
+| `ssl.defaultCert`               | Base64 encoded default certificate                                    | A self-signed certificate                 |
 | `ssl.defaultKey`                | Base64 encoded private key for the certificate above                 | The private key for the certificate above |
 | `acme.enabled`                  | Whether to use Let's Encrypt to obtain certificates                  | `false`                                   |
 | `acme.email`                    | Email address to be used in certificates obtained from Let's Encrypt | `admin@example.com`                       |
@@ -185,3 +187,13 @@ dashboard:
     basic:
       test: $apr1$H6uskkkW$IgXLP6ewTrSuBkTrqE8wj/
 ```
+
+### Proxy Protocol
+
+In situations where Traefik lives behind an Internet-facing loadbalancer (like an AWS ELB) and you still want it to see the actual source IP of the visitor instead of the internal IP of the loadbalancer, you can enable the loadbalancer to use the Proxy protocol to talk to Traefik. This effectively makes the loadbalancer transparant, as Traefik will still get the actual visitor IP address for each request. This only works if Traefik knows it's receiving traffic via the Proxy Protocol and the loadbalancer IP addresses need to be whitelisted as well.
+
+How to set this up on AWS is described in the Kubernetes documentation [here](https://kubernetes.io/docs/concepts/services-networking/service/#proxy-protocol-support-on-aws), it can easily be done by adding an annotation to the Service definition.
+
+**Caution**
+
+If only one of the components (either the loadbalancer or traefik) is set to use the Proxy protocol and the other is not, this will break badly as they will not be able to communicate with each other.
