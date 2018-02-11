@@ -92,6 +92,8 @@ The following tables lists the configurable parameters of the Minio chart and th
 | `persistence.subPath`      | Mount a sub directory of the persistent volume if set | `""`                                  |
 | `resources`                | CPU/Memory resource requests/limits | Memory: `256Mi`, CPU: `100m`                            |
 | `nodeSelector`             | Node labels for pod assignment      | `{}`                                                    |
+| `affinity`                 | Affinity settings for pod assignment | `{}`                                                   |
+| `tolerations`              | Toleration labels for pod assignment | `[]`                                                   |
 | `defaultBucket.enabled`    | If set to true, a bucket will be created after minio install | `false`                        |
 | `defaultBucket.name`       | Bucket name                         | `bucket`                                                |
 | `defaultBucket.policy`     | Bucket policy                       | `none`                                                  |
