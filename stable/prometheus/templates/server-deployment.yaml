@@ -64,6 +64,9 @@ spec:
           {{- range $key, $value := .Values.server.extraArgs }}
             - --{{ $key }}={{ $value }}
           {{- end }}
+          {{- range $extraFlag := .Values.server.extraFlags }}
+            - --{{ $extraFlag }}
+          {{- end }}
           {{- if .Values.server.baseURL }}
             - --web.external-url={{ .Values.server.baseURL }}
           {{- end }}

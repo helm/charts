@@ -348,6 +348,10 @@ server:
   ##
   extraArgs: {}
 
+  ## Additional Prometheus server container flags
+  ##
+  extraFlags: []
+
   ## Additional Prometheus server hostPath mounts
   ##
   extraHostPathMounts: []
