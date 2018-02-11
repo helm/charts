@@ -45,7 +45,7 @@ svc/mymssql-mssql-linux   ClusterIP   10.104.152.61   <none>        1433/TCP   9
 ```
 
 ### SA Password Retrieval
-The sa password is a randonmized in the secret.yaml file.  To retrieve the password, perform the following steps once you install the helm chart.
+The sa password is a randomized in the secret.yaml file.  To retrieve the password, perform the following steps once you install the helm chart.
 ```console
 $ kubectl exec mymssql-mssql-linux-8688756468 -- env | grep SA_PASSWORD
 ```
