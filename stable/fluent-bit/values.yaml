@@ -35,6 +35,17 @@ env: []
 ##
 existingConfigMap: ""
 
+## Extra volumes containing additional files required for fluent-bit to work
+## (eg. CA certificates)
+## Ref: https://kubernetes.io/docs/concepts/storage/volumes/
+##
+extraVolumes: []
+
+## Extra volume mounts for the fluent-bit pod.
+## Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-volume-storage/
+##
+extraVolumeMounts: []
+
 resources:
   limits:
     memory: 100Mi
