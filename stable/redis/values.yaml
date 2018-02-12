@@ -13,7 +13,7 @@ serviceType: ClusterIP
 
 ## If serviceType is NodePort and nodePort.enabled = true
 ## than user can pass param nodePort.port = <port>
-nodePort
+nodePort:
   enabled: false
 
 ## Pod Security Context
