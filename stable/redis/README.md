@@ -69,6 +69,7 @@ The following tables lists the configurable parameters of the Redis chart and th
 | `networkPolicy.allowExternal` | Don't require client label for connections       | `true`                       |
 | `service.annotations`         | annotations for redis service                    | {}                           |
 | `service.loadBalancerIP`      | loadBalancerIP if service type is `LoadBalancer` | ``                           |
+| `securityContext.enabled`     | Enable security context                          | `true`                       |
 | `nodePort.enabled`            | Pass true if user wants to set nodePort value    | `false`                      |
 | `nodePort.port`               | Pass nodePort value                              | ``                           |
 
