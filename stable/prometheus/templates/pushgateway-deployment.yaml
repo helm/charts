@@ -44,6 +44,10 @@ spec:
       nodeSelector:
 {{ toYaml .Values.pushgateway.nodeSelector | indent 8 }}
     {{- end }}
+    {{- if .Values.pushgateway.tolerations }}
+      tolerations:
+{{ toYaml .Values.pushgateway.tolerations | indent 8 }}
+    {{- end }}
     {{- if .Values.pushgateway.affinity }}
       affinity:
 {{ toYaml .Values.pushgateway.affinity | indent 8 }}
