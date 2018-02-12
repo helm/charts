@@ -11,6 +11,10 @@ imagePullPolicy: IfNotPresent
 ## Kubernetes service type
 serviceType: ClusterIP
 
+## If service is nodeport pass port
+nodePort
+  enabled: false
+
 ## Pod Security Context
 securityContext:
   fsGroup: 1001
