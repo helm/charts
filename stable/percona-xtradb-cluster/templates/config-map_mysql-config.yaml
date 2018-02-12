@@ -8,4 +8,15 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 data:
+{{- if .Values.configFiles }}
 {{ toYaml .Values.configFiles | indent 2 }}
+{{ if not (index .Values.configFiles "node.cnf") }}
+  node.cnf: |
+  {{- range .Files.Lines "files/node.cnf" }}
+  {{ . | indent 2 }}{{ end }}
+{{ end }}
+{{ else }}
+  node.cnf: |
+  {{- range .Files.Lines "files/node.cnf" }}
+  {{ . | indent 2 }}{{ end }}
+{{ end }}
