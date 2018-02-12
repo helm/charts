@@ -144,6 +144,10 @@ alertmanager:
     labels: {}
     clusterIP: ""
 
+    ## Enabling peer mesh service end points for enabling the HA alert manager
+    ## Ref: https://github.com/prometheus/alertmanager/blob/master/README.md
+    # enableMeshPeer : true
+
     ## List of IP addresses at which the alertmanager service is available
     ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
     ##
