@@ -13,12 +13,12 @@ service:
 persistence:
   enabled: false
   # existingDataClaim:
-  # existingLogClaim:
+  # existingTransactionLogClaim:
   # storageClass: "-"
   dataAccessMode: ReadWriteOnce
   dataSize: 1Gi
-  logAccessMode: ReadWriteOnce
-  logSize: 1Gi
+  transactionLogAccessMode: ReadWriteOnce
+  transactionLogSize: 1Gi
 livenessprobe:
   initialDelaySeconds: 15
   periodSeconds: 20
