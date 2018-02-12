@@ -19,7 +19,7 @@ spec:
       containers:
         - name: {{ template "concourse.web.fullname" . }}
           image: "{{ .Values.image }}:{{ .Values.imageTag }}"
-          imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
+          imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
           args:
             - "web"
             {{- if eq (default "" .Values.credentialManager.vault.authBackend) "approle" }}
@@ -70,7 +70,7 @@ spec:
             {{- end }}
             {{- if .Values.concourse.externalURL }}
             - name: CONCOURSE_EXTERNAL_URL
-              value: {{ default "" .Values.concourse.externalURL | quote }}
+              value: {{ .Values.concourse.externalURL | quote }}
             {{- end }}
             - name: POD_IP
               valueFrom:
@@ -118,17 +118,17 @@ spec:
                   name: {{ template "concourse.concourse.fullname" . }}
                   key: github-auth-client-secret
             - name: CONCOURSE_GITHUB_AUTH_ORGANIZATION
-              value: {{ default "" .Values.concourse.githubAuth.organization | quote }}
+              value: {{ .Values.concourse.githubAuth.organization | quote }}
             - name: CONCOURSE_GITHUB_AUTH_TEAM
-              value: {{ default "" .Values.concourse.githubAuth.team | quote }}
+              value: {{ .Values.concourse.githubAuth.team | quote }}
             - name: CONCOURSE_GITHUB_AUTH_USER
-              value: {{ default "" .Values.concourse.githubAuth.user | quote }}
+              value: {{ .Values.concourse.githubAuth.user | quote }}
             - name: CONCOURSE_GITHUB_AUTH_AUTH_URL
-              value: {{ default "" .Values.concourse.githubAuth.authUrl | quote }}
+              value: {{ .Values.concourse.githubAuth.authUrl | quote }}
             - name: CONCOURSE_GITHUB_AUTH_TOKEN_URL
-              value: {{ default "" .Values.concourse.githubAuth.tokenUrl | quote }}
+              value: {{ .Values.concourse.githubAuth.tokenUrl | quote }}
             - name: CONCOURSE_GITHUB_AUTH_API_URL
-              value: {{ default "" .Values.concourse.githubAuth.apiUrl | quote }}
+              value: {{ .Values.concourse.githubAuth.apiUrl | quote }}
             {{- end }}
             {{- if .Values.concourse.gitlabAuth.enabled }}
             - name: CONCOURSE_GITLAB_AUTH_CLIENT_ID
@@ -142,13 +142,13 @@ spec:
                   name: {{ template "concourse.concourse.fullname" . }}
                   key: gitlab-auth-client-secret
             - name: CONCOURSE_GITLAB_AUTH_GROUP
-              value: {{ default "" .Values.concourse.gitlabAuth.group | quote }}
+              value: {{ .Values.concourse.gitlabAuth.group | quote }}
             - name: CONCOURSE_GITLAB_AUTH_AUTH_URL
-              value: {{ default "" .Values.concourse.gitlabAuth.authUrl | quote }}
+              value: {{ .Values.concourse.gitlabAuth.authUrl | quote }}
             - name: CONCOURSE_GITLAB_AUTH_TOKEN_URL
-              value: {{ default "" .Values.concourse.gitlabAuth.tokenUrl | quote }}
+              value: {{ .Values.concourse.gitlabAuth.tokenUrl | quote }}
             - name: CONCOURSE_GITLAB_AUTH_API_URL
-              value: {{ default "" .Values.concourse.gitlabAuth.apiUrl | quote }}
+              value: {{ .Values.concourse.gitlabAuth.apiUrl | quote }}
             {{- end }}
             {{- if .Values.concourse.genericOauth.enabled }}
             - name: CONCOURSE_GENERIC_OAUTH_CLIENT_ID
@@ -162,23 +162,23 @@ spec:
                   name: {{ template "concourse.concourse.fullname" . }}
                   key: generic-oauth-client-secret
             - name: CONCOURSE_GENERIC_OAUTH_DISPLAY_NAME
-              value: {{ default "" .Values.concourse.genericOauth.displayName | quote }}
+              value: {{ .Values.concourse.genericOauth.displayName | quote }}
             - name: CONCOURSE_GENERIC_OAUTH_AUTH_URL
-              value: {{ default "" .Values.concourse.genericOauth.authUrl | quote }}
+              value: {{ .Values.concourse.genericOauth.authUrl | quote }}
             - name: CONCOURSE_GENERIC_OAUTH_AUTH_URL_PARAM
-              value: {{ default "" .Values.concourse.genericOauth.authUrlParam | quote }}
+              value: {{ .Values.concourse.genericOauth.authUrlParam | quote }}
             - name: CONCOURSE_GENERIC_OAUTH_SCOPE
-              value: {{ default "" .Values.concourse.genericOauth.scope | quote }}
+              value: {{ .Values.concourse.genericOauth.scope | quote }}
             - name: CONCOURSE_GENERIC_OAUTH_TOKEN_URL
-              value: {{ default "" .Values.concourse.genericOauth.tokenUrl | quote }}
+              value: {{ .Values.concourse.genericOauth.tokenUrl | quote }}
             {{- end }}
             {{- if .Values.credentialManager.vault.enabled }}
             - name: CONCOURSE_VAULT_URL
-              value: {{ default "" .Values.credentialManager.vault.url | quote }}
+              value: {{ .Values.credentialManager.vault.url | quote }}
             - name: CONCOURSE_VAULT_PATH_PREFIX
-              value: {{ default "/concourse" .Values.credentialManager.vault.pathPrefix | quote }}
+              value: {{ .Values.credentialManager.vault.pathPrefix | quote }}
             - name: CONCOURSE_VAULT_AUTH_BACKEND
-              value: {{ default "" .Values.credentialManager.vault.authBackend | quote }}
+              value: {{ .Values.credentialManager.vault.authBackend | quote }}
             - name: CONCOURSE_VAULT_CLIENT_TOKEN
               valueFrom:
                 secretKeyRef:

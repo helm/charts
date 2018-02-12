@@ -18,7 +18,7 @@ imageTag: "3.8.0"
 ## Specify a imagePullPolicy: 'Always' if imageTag is 'latest', else set to 'IfNotPresent'.
 ## ref: https://kubernetes.io/docs/user-guide/images/#pre-pulling-images
 ##
-# imagePullPolicy:
+imagePullPolicy: IfNotPresent
 
 ## Configuration values for Concourse.
 ## ref: https://concourse.ci/setting-up.html
@@ -289,7 +289,7 @@ worker:
   ##
   replicas: 2
 
-  ## Minimun number of workers available after an eviction
+  ## Minimum number of workers available after an eviction
   ## ref: https://kubernetes.io/docs/admin/disruptions/
   ##
   minAvailable: 1
@@ -443,14 +443,14 @@ credentialManager:
 
     ## vault path under which to namespace credential lookup, defaults to /concourse.
     ##
-    # pathPrefix:
+    pathPrefix: /concourse
 
     ## if the Vault server is using a self-signed certificate, set this to true,
     ## and provide a value for the cert in secrets.
     ##
     # caCert:
 
-    ## vault authentication backend, leave this blank if using an intial periodic token
+    ## vault authentication backend, leave this blank if using an initial periodic token
     ## currently supported backends: token, approle, cert.
     ##
     # authBackend:

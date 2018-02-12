@@ -27,7 +27,7 @@ spec:
       containers:
         - name: {{ template "concourse.worker.fullname" . }}
           image: "{{ .Values.image }}:{{ .Values.imageTag }}"
-          imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
+          imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
           command:
             - /bin/sh
           args:
@@ -77,9 +77,9 @@ spec:
             - name: CONCOURSE_TSA_PORT
               value: {{ .Values.concourse.tsaPort | quote }}
             - name: CONCOURSE_GARDEN_DOCKER_REGISTRY
-              value: {{ default "" .Values.concourse.dockerRegistry | quote }}
+              value: {{ .Values.concourse.dockerRegistry | quote }}
             - name: CONCOURSE_GARDEN_INSECURE_DOCKER_REGISTRY
-              value: {{ default "" .Values.concourse.insecureDockerRegistry | quote }}
+              value: {{ .Values.concourse.insecureDockerRegistry | quote }}
             - name: CONCOURSE_TSA_PUBLIC_KEY
               value: "/concourse-keys/host_key.pub"
             - name: CONCOURSE_TSA_WORKER_PRIVATE_KEY
@@ -89,7 +89,7 @@ spec:
             - name: CONCOURSE_BAGGAGECLAIM_DRIVER
               value: {{ .Values.concourse.baggageclaimDriver | quote }}
             - name: LIVENESS_PROBE_FATAL_ERRORS
-              value: {{ default "" .Values.worker.fatalErrors | quote }}
+              value: {{ .Values.worker.fatalErrors | quote }}
 {{- if .Values.worker.env }}
 {{ toYaml .Values.worker.env | indent 12 }}
 {{- end }}

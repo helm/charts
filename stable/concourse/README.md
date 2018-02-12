@@ -69,7 +69,7 @@ The following tables lists the configurable parameters of the Concourse chart an
 | ----------------------- | ----------------------------------    | ---------------------------------------------------------- |
 | `image` | Concourse image | `concourse/concourse` |
 | `imageTag` | Concourse image version | `3.8.0` |
-| `imagePullPolicy` |Concourse image pull policy |  `Always` if `imageTag` is `latest`, else `IfNotPresent` |
+| `imagePullPolicy` | Concourse image pull policy | `IfNotPresent` |
 | `concourse.externalURL` | URL used to reach any ATC from the outside world | `nil` |
 | `concourse.atcPort` | Concourse ATC listen port | `8080` |
 | `concourse.tsaPort` | Concourse TSA listen port | `2222` |
