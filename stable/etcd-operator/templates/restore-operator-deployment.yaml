@@ -17,6 +17,13 @@ spec:
       labels:
         app: {{ template "etcd-restore-operator.fullname" . }}
         release: {{ .Release.Name }}
+{{- if .Values.restoreOperator.podLabels }}
+{{ toYaml .Values.restoreOperator.podLabels | indent 8 }}
+{{- end }}
+      annotations:
+{{- if .Values.restoreOperator.podAnnotations }}
+{{ toYaml .Values.restoreOperator.podAnnotations | indent 8 }}
+{{- end }}
     spec:
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "etcd-restore-operator.fullname" . }}{{ else }}{{ .Values.rbac.restoreOperatorServiceAccountName }}{{ end }}
       containers:

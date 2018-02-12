@@ -45,6 +45,10 @@ etcdOperator:
   ## additional command arguments go here; will be translated to `--key=value` form
   ## e.g., analytics: true
   commandArgs: {}
+  ## extra labels to be added to the operator pods
+  podLabels: {}
+  ## extra annotations to be added to the operator pods
+  podAnnotations: {}
 
 # backup spec
 backupOperator:
@@ -68,6 +72,10 @@ backupOperator:
   ## additional command arguments go here; will be translated to `--key=value` form
   ## e.g., analytics: true
   commandArgs: {}
+  ## extra labels to be added to the backup operator pods
+  podLabels: {}
+  ## extra annotations to be added to the backup operator pods
+  podAnnotations: {}
 
 # restore spec
 restoreOperator:
@@ -93,6 +101,10 @@ restoreOperator:
   ## additional command arguments go here; will be translated to `--key=value` form
   ## e.g., analytics: true
   commandArgs: {}
+  ## extra labels to be added to the backup operator pods
+  podLabels: {}
+  ## extra annotations to be added to the backup operator pods
+  podAnnotations: {}
 
 ## etcd-cluster specific values
 etcdCluster:
