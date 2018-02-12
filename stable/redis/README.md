@@ -53,6 +53,7 @@ The following tables lists the configurable parameters of the Redis chart and th
 | `args`                        | Redis command-line args                          | []                           |
 | `persistence.enabled`         | Use a PVC to persist data                        | `true`                       |
 | `persistence.path`            | Path to mount the volume at, to use other images | `/bitnami`                   |
+| `persistence.subPath`         | Subdirectory of the volume to mount at           | `""`                        |
 | `persistence.existingClaim`   | Use an existing PVC to persist data              | `nil`                        |
 | `persistence.storageClass`    | Storage class of backing PVC                     | `generic`                    |
 | `persistence.accessMode`      | Use volume as ReadOnly or ReadWrite              | `ReadWriteOnce`              |
@@ -92,6 +93,8 @@ $ helm install --name my-release -f values.yaml stable/redis
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
+> **Note for minikube users**: Current versions of minikube (v0.24.1 at the time of writing) provision `hostPath` persistent volumes that are only writable by root. Using chart defaults cause pod failure for the redis pod as it attempts to write to the `/bitnami` directory. Consider installing redis with `--set persistence.enabled=false`. See minikube issue [1990](https://github.com/kubernetes/minikube/issues/1990) for more information.
 
 ## NetworkPolicy
 
