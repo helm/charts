@@ -9,6 +9,6 @@ roleRef:
   name: {{ template "rethinkdb.fullname" . }}
 subjects:
   - kind: ServiceAccount
-    name: {{ template "rethinkdb.fullname" . }}
+    name: {{ template "rethinkdb.serviceAccountName" . }}
     namespace: {{ .Release.Namespace }}
 {{- end -}}

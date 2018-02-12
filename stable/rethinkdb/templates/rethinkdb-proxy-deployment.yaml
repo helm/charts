@@ -22,7 +22,7 @@ spec:
 {{ toYaml .Values.proxy.podAnnotations | indent 8 }}
       {{- end }}
     spec:
-      serviceAccountName: {{ if .Values.rbac.create }}{{ template "rethinkdb.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
+      serviceAccountName: {{ template "rethinkdb.serviceAccountName" . }}
       containers:
         - name: {{ template "rethinkdb.name" . }}-proxy
           image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
