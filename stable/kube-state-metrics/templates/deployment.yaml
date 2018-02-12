@@ -62,6 +62,9 @@ spec:
 {{  if .Values.collectors.persistentvolumeclaims  }}
         - --collectors=persistentvolumeclaims
 {{  end  }}
+{{ if .Values.namespace }}
+        - --namespace={{ .Values.namespace }}
+{{ end }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         ports:
