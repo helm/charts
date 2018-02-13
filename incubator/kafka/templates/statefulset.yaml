@@ -85,9 +85,9 @@ spec:
           mountPath: {{ .Values.persistence.mountPath | quote }}
       volumes:
       - name: datadir
-      {{- if .Values.persistence.enabled }}
+        {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
           claimName: {{ .Values.persistence.existingClaim | default (include "kafka.fullname" .) }}
-      {{- else }}
+        {{- else }}
         emptyDir: {}
       {{- end }}

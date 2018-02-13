@@ -1,10 +1,10 @@
 {{- if and .Values.persistence.enabled (not .Values.persistence.existingClaim) -}}
-kind: PersistentVolumeClaim
-apiVersion: v1
+kind: "PersistentVolumeClaim"
+apiVersion: "v1"
 metadata:
-  name: {{ template "kafka.fullname" . }}
+  name: {{ include "kafka.fullname" . | quote }}
   labels:
-    app: {{ template "kafka.fullname" . }}
+    app: {{ include "kafka.fullname" . | quote }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"

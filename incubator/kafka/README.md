@@ -59,10 +59,8 @@ following configurable parameters:
 | `replicas`                     | Kafka Brokers                                                                                                   | `3`                                                        |
 | `component`                    | Kafka k8s selector key                                                                                          | `kafka`                                                    |
 | `resources`                    | Kafka resource requests and limits                                                                              | `{}`                                                       |
-| `dataDirectory`                | Kafka data directory                                                                                            | `/opt/kafka/data`                                          |
-| `logSubPath`                   | Subpath under `dataDirectory` where kafka logs will be placed. `logs/`                                          | `logs`                                                     |
+| `logSubPath`                   | Subpath under `persistence.mountPath` where kafka logs will be placed.                                          | `logs`                                                     |
 | `affinity`                     | Pod scheduling preferences                                                                                      | `{}`                                                       |
-| `storage`                      | Kafka Persistent volume size                                                                                    | `1Gi`                                                      |
 | `configurationOverrides`       | `Kafka ` [configuration setting][brokerconfigs] overrides in the dictionary format                              | `setting.name: value` | `{}`                               |
 | `persistence.enabled`          | Use a PVC to persist data                                                                                       | `true`                                                     |
 | `persistence.existingClaim`    | Provide an existing PersistentVolumeClaim                                                                       | `nil`                                                      |
