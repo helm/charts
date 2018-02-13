@@ -388,34 +388,10 @@ data:
       </labels>
     </source>
 
-  output.conf: |-
-    # Enriches records with Kubernetes metadata
-    <filter kubernetes.**>
-      @type kubernetes_metadata
-    </filter>
-
-    <match **>
-      @id elasticsearch
-      @type elasticsearch
-      @log_level info
-      include_tag_key true
-      host {{ .Values.elasticsearch.host }}
-      port {{ .Values.elasticsearch.port }}
-      logstash_format true
-      <buffer>
-        @type file
-        path /var/log/fluentd-buffers/kubernetes.system.buffer
-        flush_mode interval
-        retry_type exponential_backoff
-        flush_thread_count 2
-        flush_interval 5s
-        retry_forever
-        retry_max_interval 30
-        chunk_limit_size {{ .Values.elasticsearch.buffer_chunk_limit }}
-        queue_limit_length {{ .Values.elasticsearch.buffer_queue_limit }}
-        overflow_action block
-      </buffer>
-    </match>
+{{- range $key, $value := .Values.configMaps }}
+  {{ $key }}: |-
+{{ $value | indent 4 }}
+{{- end }}
 
 {{ if .Values.fluentdcustomconfig }}
   custom.conf: {{ toYaml .Values.fluentdcustomconfig | indent 2 }}
