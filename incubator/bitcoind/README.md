@@ -1,6 +1,6 @@
 # Bitcoind
 
-[Bitcoin](https://bitcoin.org/) uses peer-to-peer technology to operate with no central authority or banks; 
+[Bitcoin](https://bitcoin.org/) uses peer-to-peer technology to operate with no central authority or banks;
 managing transactions and the issuing of bitcoins is carried out collectively by the network.
 
 ## Introduction
@@ -11,15 +11,6 @@ This chart bootstraps a single node Bitcoin deployment on a [Kubernetes](http://
 
 - Kubernetes 1.7+ with Beta APIs enabled
 - PV provisioner support in the underlying infrastructure
-
-## Generate SSL certificate and deploy as secret
-
-```bash
-openssl req -x509 -nodes -days 3650 -newkey rsa:2048 -keyout server.key -out server.crt
-kubectl create secret generic bitcoind-ssl --from-file=server.crt --from-file=server.key
-```
-
-Please update `ssl.secretName` value in `values.yaml`. In this example it is `"bitcoind-ssl"`
 
 ## Installing the Chart
 
@@ -48,24 +39,23 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following tables lists the configurable parameters of the bitcoind chart and their default values.
 
-| Parameter                  | Description                        | Default                                                    |
-| -----------------------    | ---------------------------------- | ---------------------------------------------------------- |
-| `imageTag`                 | `bitcoind` image tag.                 | Most recent release                                        |
-| `imagePullPolicy`          | Image pull policy                  | `IfNotPresent`                                             |                                               |
-| `persistence.enabled`      | Create a volume to store data      | true                                                       |
-| `persistence.size`         | Size of persistent volume claim    | 300Gi RW                                                     |
-| `persistence.storageClass` | Type of persistent volume claim    | nil  (uses alpha storage class annotation)                 |
-| `persistence.accessMode`   | ReadWriteOnce or ReadOnly          | ReadWriteOnce                                              |
-| `persistence.existingClaim`| Name of existing persistent volume | `nil`
-| `resources`                | CPU/Memory resource requests/limits | Memory: `512Mi`, CPU: `300m`                              |
-| `configurationFiles`       | List of bitcoind configuration files  | `nil`
+Parameter                  | Description                        | Default
+-----------------------    | ---------------------------------- | ----------------------------------------------------------
+`imageTag`                 | `bitcoind` image tag.              | Most recent release
+`imagePullPolicy`          | Image pull policy                  | `IfNotPresent`
+`persistence.enabled`      | Create a volume to store data      | true
+`persistence.size`         | Size of persistent volume claim    | 300Gi RW
+`persistence.storageClass` | Type of persistent volume claim    | nil  (uses alpha storage class annotation)
+`persistence.accessMode`   | ReadWriteOnce or ReadOnly          | ReadWriteOnce
+`persistence.existingClaim`| Name of existing persistent volume | `nil`
+`resources`                | CPU/Memory resource requests/limits | `{}`
 
 For more information about Bitcoin configuration please see [Bitcoin.conf_Configuration_File](https://en.bitcoin.it/wiki/Running_Bitcoin#Bitcoin.conf_Configuration_File).
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```bash
-$ helm install --name my-release -f values.yaml stable/bitcoind
+$ helm install --name my-release -f values.yaml incubator/bitcoind
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
@@ -83,10 +73,10 @@ you can change the values.yaml to disable persistence and use an emptyDir instea
 
 Please NOT use emptyDir for production cluster! Your wallets will be lost on container restart!
 
-## Custom bitcoind configuration files
+## Customize bitcoind configuration file
 
 ```yaml
-configurationFiles:
+configurationFile:
   bitcoind.conf: |-
     server=1
     printtoconsole=1

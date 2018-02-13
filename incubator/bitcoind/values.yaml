@@ -3,11 +3,11 @@ image:
   tag: "latest"
   pullPolicy: IfNotPresent
 
-rpcPort: 443
-
-ssl:
-  enabled: true
-  secretName: bitcoind-ssl
+service:
+  rpcPort: 8332
+  p2pPort: 8333
+  testnetPort: 18332
+  selector: tx-broadcast-svc
 
 persistence:
   enabled: true
@@ -30,8 +30,8 @@ resources: {}
 #    memory: 512Mi
 #    cpu: 300m
 
-# Custom bitcoind configuration files used to override default bitcoind settings
-configurationFiles:
+# Custom bitcoind configuration file used to override default bitcoind settings
+configurationFile:
   bitcoin.conf: |-
     server=1
     printtoconsole=1
