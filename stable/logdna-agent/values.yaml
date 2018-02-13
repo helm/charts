@@ -1,0 +1,22 @@
+image:
+  name: logdna/logdna-agent
+  tag: latest
+  pullPolicy: Always
+
+logdna:
+  ## Please follow directions from https://app.logdna.com/pages/add-source
+
+  ## An ingestion key is required for this chart to run
+  # key:
+
+  ## Optional settings
+  # tags:
+
+  name: logdna-agent
+
+resources:
+  limits:
+    memory: 500Mi
+
+daemonset:
+  tolerations: []
