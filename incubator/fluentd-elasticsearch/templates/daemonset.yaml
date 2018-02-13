@@ -31,6 +31,7 @@ spec:
       # Note that this does not guarantee admission on the nodes (#40573).
       annotations:
         scheduler.alpha.kubernetes.io/critical-pod: ''
+        checksum/config: {{ include (print $.Chart.Name "/templates/configmap.yaml") . | sha256sum }}
     spec:
       serviceAccountName: {{ template "fluentd-elasticsearch.fullname" . }}
       containers:
@@ -40,6 +41,14 @@ spec:
         env:
         - name: FLUENTD_ARGS
           value: --no-supervisor -q
+        - name: OUTPUT_HOST
+          value: {{ .Values.elasticsearch.host | quote }}
+        - name: OUTPUT_PORT
+          value: {{ .Values.elasticsearch.port | quote }}
+        - name: OUTPUT_BUFFER_CHUNK_LIMIT
+          value: {{ .Values.elasticsearch.buffer_chunk_limit | quote }}
+        - name: OUTPUT_BUFFER_QUEUE_LIMIT
+          value: {{ .Values.elasticsearch.buffer_queue_limit | quote }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
@@ -68,3 +77,7 @@ spec:
       - name: config-volume-{{ template "fluentd-elasticsearch.fullname" . }}
         configMap:
           name: {{ template "fluentd-elasticsearch.fullname" . }}
+{{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 6 }}
+{{- end }}
