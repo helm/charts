@@ -39,7 +39,7 @@ The following tables lists the configurable parameters of the drone charts and t
 | `livenessProbe.periodSeconds`       | periodSeconds of Pod livenessProbe                 | `20`                                             |
 | `nodeSelector`                      | Node selectors                                     | `{}`                                             |
 | `image.repository`                  | Container image name                               | `docker.elastic.co/logstash/logstash-oss`        |
-| `image.tag`                         | Container image tag                                | `6.0.0`                                          |
+| `image.tag`                         | Container image tag                                | `6.2.1`                                          |
 | `image.pullPolicy`                  | Container image pull policy                        | `IfNotPresent`                                   |
 | `service.type`                      | Service type (ClusterIP, NodePort or LoadBalancer) | `ClusterIP`                                      |
 | `service.internalPort`              | Logstash internal port                             | `1514`                                           |
