@@ -132,6 +132,11 @@ Parameter | Description | Default
 `configmapReload.image.tag` | configmap-reload container image tag | `v0.1`
 `configmapReload.image.pullPolicy` | configmap-reload container image pull policy | `IfNotPresent`
 `configmapReload.resources` | configmap-reload pod resource requests & limits | `{}`
+`initChownData.name` | init-chown-data container name | `init-chown-data`
+`initChownData.image.repository` | init-chown-data container image repository | `busybox`
+`initChownData.image.tag` | init-chown-data container image tag | `latest`
+`initChownData.image.pullPolicy` | init-chown-data container image pull policy | `IfNotPresent`
+`initChownData.resources` | init-chown-data pod resource requests & limits | `{}`
 `kubeStateMetrics.enabled` | If true, create kube-state-metrics | `true`
 `kubeStateMetrics.name` | kube-state-metrics container name | `kube-state-metrics`
 `kubeStateMetrics.image.repository` | kube-state-metrics container image repository| `k8s.gcr.io/kube-state-metrics`
