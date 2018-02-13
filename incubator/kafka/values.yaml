@@ -24,10 +24,6 @@ resources: {}
   # requests:
   #   cpu: 100m
   #   memory: 1024Mi
-  #
-## The size of the persistentVolume to allocate to each Kafka Pod in the StatefulSet. For
-## production servers this number should likely be much larger.
-storage: "1Gi"
 
 ## The StatefulSet Update Strategy which Kafka will use when changes are applied.
 ## ref: https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#update-strategies
@@ -36,10 +32,6 @@ updateStrategy:
 
 ## The name of the storage class which the cluster should use.
 # storageClass: default
-
-## The location within the Kafka container where the PV will mount its storage and Kafka will store
-## its logs
-dataDirectory: "/opt/kafka/data"
 
 ## The subpath within the Kafka container's PV where logs will be stored
 ## This is combined with `dataDirectory` above, to create, by default: /opt/kafka/data/logs
@@ -56,6 +48,36 @@ affinity: {}
 ##
 configurationOverrides:
   "offsets.topic.replication.factor": 3
+
+## Persistence configuration. Specify if and how to persist data to a persistent volume.
+##
+persistence:
+  enabled: true
+
+  ## A manually managed Persistent Volume and Claim. Requires persistence.enabled: true.
+  ## If defined, PVC must be created manually before volume will be bound
+  ##
+  # existingClaim:
+
+  ## The size of the PersistentVolume to allocate to each Kafka Pod in the StatefulSet. For
+  ## production servers this number should likely be much larger.
+  ##
+  size: "1Gi"
+
+  ## The location within the Kafka container where the PV will mount its storage and Kafka will store
+  ## its logs
+  mountPath: "/opt/kafka/data"
+
+  ## The storageClass to use for Kafka's PersistentVolume
+  ## - If defined, storageClassName: <storageClass>
+  ## - If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## - If undefined (the default) or set to null, no storageClassName spec is
+  ##     set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##     GKE, AWS & OpenStack)
+  ##
+  # storageClass: "-"
+
+  annotations: {}
 
 # ------------------------------------------------------------------------------
 # Zookeeper:
