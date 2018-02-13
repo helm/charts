@@ -82,15 +82,12 @@ spec:
           /etc/confluent/docker/run
         volumeMounts:
         - name: datadir
-          mountPath: "{{ .Values.dataDirectory }}"
-  volumeClaimTemplates:
-  - metadata:
-      name: datadir
-    spec:
-      accessModes: [ "ReadWriteOnce" ]
-      resources:
-        requests:
-          storage: {{ .Values.storage }}
-      {{- if .Values.storageClass }}
-      storageClassName: {{ .Values.storageClass | quote }}
-      {{- end }}
+          mountPath: {{ .Values.persistence.mountPath | quote }}
+      volumes:
+      - name: datadir
+        {{- if .Values.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.persistence.existingClaim | default (include "kafka.fullname" .) }}
+        {{- else }}
+        emptyDir: {}
+        {{- end }}
