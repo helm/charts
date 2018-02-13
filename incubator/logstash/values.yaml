@@ -27,6 +27,8 @@ configData: {}
 livenessProbe:
   initialDelaySeconds: 60
   periodSeconds: 20
+readinessProbe:
+  initialDelaySeconds: 120
 
 ingress:
   enabled: false
