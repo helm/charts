@@ -90,4 +90,4 @@ spec:
           claimName: {{ .Values.persistence.existingClaim | default (include "kafka.fullname" .) }}
         {{- else }}
         emptyDir: {}
-      {{- end }}
+        {{- end }}
