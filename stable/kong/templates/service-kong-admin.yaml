@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: {{ template "kong.fullname" . }}-admin
   annotations:
-    {{- range $key, $value := .Values.proxy.annotations }}
+    {{- range $key, $value := .Values.admin.annotations }}
       {{ $key }}: {{ $value | quote }}
     {{- end }}
   labels:
