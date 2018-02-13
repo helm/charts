@@ -106,6 +106,7 @@ Parameter | Description | Default
 `alertmanager.ingress.hosts` | alertmanager Ingress hostnames | `[]`
 `alertmanager.ingress.tls` | alertmanager Ingress TLS configuration (YAML) | `[]`
 `alertmanager.nodeSelector` | node labels for alertmanager pod assignment | `{}`
+`alertmanager.tolerations` | node taints to tolerate (requires Kubernetes >=1.6) | `[]`
 `alertmanager.persistentVolume.enabled` | If true, alertmanager will create a Persistent Volume Claim | `true`
 `alertmanager.persistentVolume.accessModes` | alertmanager data Persistent Volume access modes | `[ReadWriteOnce]`
 `alertmanager.persistentVolume.annotations` | Annotations for alertmanager Persistent Volume Claim` | `{}`
@@ -144,6 +145,7 @@ Parameter | Description | Default
 `kubeStateMetrics.args` | kube-state-metrics container arguments | `{}`
 `kubeStateMetrics.nodeSelector` | node labels for kube-state-metrics pod assignment | `{}`
 `kubeStateMetrics.podAnnotations` | annotations to be added to kube-state-metrics pods | `{}`
+`kubeStateMetrics.tolerations` | node taints to tolerate (requires Kubernetes >=1.6) | `[]`
 `kubeStateMetrics.replicaCount` | desired number of kube-state-metrics pods | `1`
 `kubeStateMetrics.resources` | kube-state-metrics resource requests and limits (YAML) | `{}`
 `kubeStateMetrics.serviceAccountName` | service account name for kube-state-metrics to use (ignored if rbac.create=true) | `default`
@@ -185,6 +187,7 @@ Parameter | Description | Default
 `pushgateway.ingress.tls` | pushgateway Ingress TLS configuration (YAML) | `[]`
 `pushgateway.nodeSelector` | node labels for pushgateway pod assignment | `{}`
 `pushgateway.podAnnotations` | annotations to be added to pushgateway pods | `{}`
+`pushgateway.tolerations` | node taints to tolerate (requires Kubernetes >=1.6) | `[]`
 `pushgateway.replicaCount` | desired number of pushgateway pods | `1`
 `pushgateway.resources` | pushgateway pod resource requests & limits | `{}`
 `pushgateway.service.annotations` | annotations for pushgateway service | `{}`
