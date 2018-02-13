@@ -11,11 +11,6 @@ imagePullPolicy: IfNotPresent
 ## Kubernetes service type
 serviceType: ClusterIP
 
-## If serviceType is NodePort and nodePort.enabled = true
-## than User can pass param nodePort.port = <port>
-nodePort:
-  enabled: false
-
 ## Pod Security Context
 securityContext:
   enabled: true
