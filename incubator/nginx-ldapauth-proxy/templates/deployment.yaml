@@ -11,6 +11,7 @@ spec:
   selector:
     matchLabels:
       app: {{ template "nginx-ldapauth-proxy.fullname" . }}
+      release: {{ .Release.Name }}
   replicas: {{ .Values.replicaCount }}
   template:
     metadata:
