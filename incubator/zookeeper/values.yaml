@@ -14,8 +14,6 @@ resources:
     cpu: 1
     memory: 4Gi
 heap: "2G"
-storage: "50Gi"
-# storageClass: default
 serverPort: 2888
 leaderElectionPort: 3888
 clientPort: 2181
@@ -47,3 +45,31 @@ affinity: {}
 #             operator: NotIn
 #             values:
 #               - "true"
+
+## Persistence configuration. Specify if and how to persist data to a persistent volume.
+##
+persistence:
+  enabled: true
+
+  ## A manually managed Persistent Volume and Claim. Requires persistence.enabled: true.
+  ## If defined, PVC must be created manually before volume will be bound.
+  ##
+  # existingClaim: "my-pvc-name"
+
+  ## The size of the PersistentVolume to allocate to each Zookeeper Pod in the StatefulSet. For
+  ## production servers this number should likely be much larger.
+  ##
+  size: "5Gi"
+
+  ## The storageClass to use for Zookeeper's PersistentVolume
+  ## - If defined, storageClassName: <storageClass>
+  ## - If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## - If undefined (the default) or set to null, no storageClassName spec is
+  ##     set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##     GKE, AWS & OpenStack)
+  ##
+  # storageClass: "-"
+
+  ## Custom PVC annotations.
+  ##
+  # annotations: {}

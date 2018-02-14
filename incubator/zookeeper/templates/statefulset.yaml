@@ -80,19 +80,16 @@ spec:
         - name: datadir
           mountPath: /var/lib/zookeeper
           subPath: data
+      volumes:
+      - name: datadir
+        {{- if .Values.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.persistence.existingClaim | default (include "zookeeper.fullname" .) }}
+        {{- else }}
+        emptyDir: {}
+        {{- end }}
       {{- if eq .Values.security.enabled true }}
       securityContext:
         runAsUser: {{ .Values.security.runAsUser }}
         fsGroup: {{ .Values.security.fsGroup }}
-      {{- end }}
-  volumeClaimTemplates:
-  - metadata:
-      name: datadir
-    spec:
-      accessModes: [ "ReadWriteOnce" ]
-      resources:
-        requests:
-          storage: {{ .Values.storage }}
-      {{- if .Values.storageClass }}
-      storageClassName: {{ .Values.storageClass | quote }}
       {{- end }}
