@@ -1,6 +1,6 @@
 {{- if .Values.deployments.backupOperator }}
 ---
-apiVersion: apps/v1beta1
+apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: {{ template "etcd-backup-operator.fullname" . }}
@@ -13,8 +13,15 @@ spec:
   replicas: {{ .Values.backupOperator.replicaCount }}
   template:
     metadata:
+    {{- if .Values.backupOperator.podAnnotations }}
+      annotations:
+{{ toYaml .Values.backupOperator.podAnnotations | indent 8 }}
+    {{- end }}
       name: {{ template "etcd-backup-operator.fullname" . }}
       labels:
+      {{- if .Values.backupOperator.podLabels }}
+{{ toYaml .Values.backupOperator.podLabels | indent 8 }}
+      {{- end }}
         app: {{ template "etcd-backup-operator.fullname" . }}
         release: {{ .Release.Name }}
     spec:
@@ -24,10 +31,10 @@ spec:
         image: "{{ .Values.backupOperator.image.repository }}:{{ .Values.backupOperator.image.tag }}"
         imagePullPolicy: {{ .Values.backupOperator.image.pullPolicy }}
         command:
-         - etcd-backup-operator
-{{- range $key, $value := .Values.backupOperator.commandArgs }}
+        - etcd-backup-operator
+        {{- range $key, $value := .Values.backupOperator.commandArgs }}
         - "--{{ $key }}={{ $value }}"
-{{- end }}
+        {{- end }}
         env:
         - name: MY_POD_NAMESPACE
           valueFrom:

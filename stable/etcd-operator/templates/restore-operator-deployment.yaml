@@ -1,6 +1,6 @@
 {{- if .Values.deployments.restoreOperator }}
 ---
-apiVersion: apps/v1beta1
+apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: {{ template "etcd-restore-operator.fullname" . }}
@@ -13,8 +13,15 @@ spec:
   replicas: {{ .Values.restoreOperator.replicaCount }}
   template:
     metadata:
+    {{- if .Values.restoreOperator.podAnnotations }}
+      annotations:
+{{ toYaml .Values.restoreOperator.podAnnotations | indent 8 }}
+    {{- end }}
       name: {{ template "etcd-restore-operator.fullname" . }}
       labels:
+      {{- if .Values.restoreOperator.podLabels }}
+{{ toYaml .Values.restoreOperator.podLabels | indent 8 }}
+      {{- end }}
         app: {{ template "etcd-restore-operator.fullname" . }}
         release: {{ .Release.Name }}
     spec:
@@ -23,13 +30,11 @@ spec:
       - name: {{ .Values.restoreOperator.name }}
         image: "{{ .Values.restoreOperator.image.repository }}:{{ .Values.restoreOperator.image.tag }}"
         imagePullPolicy: {{ .Values.restoreOperator.image.pullPolicy }}
-        ports:
-        - containerPort: {{ .Values.restoreOperator.port }}
         command:
-         - etcd-restore-operator
-{{- range $key, $value := .Values.restoreOperator.commandArgs }}
+        - etcd-restore-operator
+        {{- range $key, $value := .Values.restoreOperator.commandArgs }}
         - "--{{ $key }}={{ $value }}"
-{{- end }}
+        {{- end }}
         env:
         - name: MY_POD_NAMESPACE
           valueFrom:
@@ -39,8 +44,6 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.name
-        - name: SERVICE_ADDR
-          value: "{{ .Values.restoreOperator.name }}:{{ .Values.restoreOperator.port }}"
         resources:
           limits:
             cpu: {{ .Values.restoreOperator.resources.cpu }}

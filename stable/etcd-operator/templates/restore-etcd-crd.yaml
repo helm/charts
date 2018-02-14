@@ -11,15 +11,7 @@ metadata:
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
 spec:
-  clusterSpec:
-    size: {{ .Values.etcdCluster.size }}
-    baseImage: "{{ .Values.etcdCluster.image.repository }}"
-    version: {{ .Values.etcdCluster.image.tag }}
-    pod:
-{{ toYaml .Values.etcdCluster.pod | indent 6 }}
-    {{- if .Values.etcdCluster.enableTLS }}
-    TLS:
-{{ toYaml .Values.etcdCluster.tls | indent 6 }}
-    {{- end }}
+  etcdCluster:
+    name: {{ .Values.etcdCluster.name }}
 {{ toYaml .Values.restoreOperator.spec | indent 2 }}
 {{- end}}

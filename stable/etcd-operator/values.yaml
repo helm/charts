@@ -34,7 +34,7 @@ etcdOperator:
   replicaCount: 1
   image:
     repository: quay.io/coreos/etcd-operator
-    tag: v0.7.0
+    tag: v0.9.0
     pullPolicy: Always
   resources:
     cpu: 100m
@@ -45,6 +45,10 @@ etcdOperator:
   ## additional command arguments go here; will be translated to `--key=value` form
   ## e.g., analytics: true
   commandArgs: {}
+  ## extra annotations to be added to the operator pods
+  podAnnotations: {}
+  ## extra labels to be added to the operator pods
+  podLabels: {}
 
 # backup spec
 backupOperator:
@@ -52,39 +56,19 @@ backupOperator:
   replicaCount: 1
   image:
     repository: quay.io/coreos/etcd-operator
-    tag: v0.7.0
+    tag: v0.9.0
     pullPolicy: Always
   resources:
     cpu: 100m
     memory: 128Mi
   spec:
+    clientTLSSecret:
+    etcdEndpoints: []
     storageType: S3
+    abs:
+      path:
+      absSecret:
     s3:
-      s3Bucket:
-      awsSecret:
-  ## Node labels for etcd pod assignment
-  ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
-  nodeSelector: {}
-  ## additional command arguments go here; will be translated to `--key=value` form
-  ## e.g., analytics: true
-  commandArgs: {}
-
-# restore spec
-restoreOperator:
-  name: etcd-restore-operator
-  replicaCount: 1
-  image:
-    repository: quay.io/coreos/etcd-operator
-    tag: v0.7.0
-    pullPolicy: Always
-  port: 19999
-  resources:
-    cpu: 100m
-    memory: 128Mi
-  spec:
-    s3:
-      # The format of "path" must be: "<s3-bucket-name>/<path-to-backup-file>"
-      # e.g: "etcd-snapshot-bucket/v1/default/example-etcd-cluster/3.2.10_0000000000000001_etcd.backup"
       path:
       awsSecret:
   ## Node labels for etcd pod assignment
@@ -93,6 +77,42 @@ restoreOperator:
   ## additional command arguments go here; will be translated to `--key=value` form
   ## e.g., analytics: true
   commandArgs: {}
+  ## extra annotations to be added to the operator pods
+  podAnnotations: {}
+  ## extra labels to be added to the operator pods
+  podLabels: {}
+
+# restore spec
+restoreOperator:
+  name: etcd-restore-operator
+  replicaCount: 1
+  image:
+    repository: quay.io/coreos/etcd-operator
+    tag: v0.9.0
+    pullPolicy: Always
+  resources:
+    cpu: 100m
+    memory: 128Mi
+  spec:
+    storageType: S3
+    abs:
+      path:
+      absSecret:
+    s3:
+      # The format of "path" must be: "<s3-bucket-name>/<path-to-backup-file>"
+      # e.g: "mybucket/etcd.backup"
+      path:
+      awsSecret:
+  ## Node labels for etcd pod assignment
+  ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+  nodeSelector: {}
+  ## additional command arguments go here; will be translated to `--key=value` form
+  ## e.g., analytics: true
+  commandArgs: {}
+  ## extra annotations to be added to the operator pods
+  podAnnotations: {}
+  ## extra labels to be added to the operator pods
+  podLabels: {}
 
 ## etcd-cluster specific values
 etcdCluster:
@@ -117,6 +137,8 @@ etcdCluster:
     ## Antiaffinity for etcd pod assignment
     ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
     antiAffinity: false
+    annotations: {}
+    etcdEnv: {}
     resources:
       limits:
         cpu: 100m

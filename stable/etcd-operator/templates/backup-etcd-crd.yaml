@@ -11,6 +11,5 @@ metadata:
     release: {{ .Release.Name }}
 
 spec:
-  clusterName: {{ .Values.etcdCluster.name }}
 {{ toYaml .Values.backupOperator.spec | indent 2 }}
 {{- end}}

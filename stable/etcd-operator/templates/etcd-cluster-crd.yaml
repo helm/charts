@@ -14,6 +14,32 @@ spec:
   version: "{{ .Values.etcdCluster.version }}"
   pod:
 {{ toYaml .Values.etcdCluster.pod | indent 4 }}
+  {{- if .Values.etcdCluster.pod.antiAffinity }}
+    affinity:
+      podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+        - labelSelector:
+            matchExpressions:
+            - key: etcd_cluster
+              operator: In
+              values: ["{{ .Values.etcdCluster.name }}"]
+          topologyKey: kubernetes.io/hostname
+  {{- end }}
+  {{- if .Values.etcdCluster.pod.annotations }}
+    annotations:
+{{ toYaml .Values.etcdCluster.pod.annotations | indent 6 }}
+  {{- end }}
+  {{- if .Values.etcdCluster.pod.etcdEnv }}
+    etcdEnv:
+{{ toYaml .Values.etcdCluster.pod.etcdEnv | indent 6 }}
+  {{- end }}
+    resources:
+      limits:
+        cpu: {{ .Values.etcdCluster.pod.resources.limits.cpu }}
+        memory: {{ .Values.etcdCluster.pod.resources.limits.memory }}
+      requests:
+        cpu: {{ .Values.etcdCluster.pod.resources.requests.cpu }}
+        memory: {{ .Values.etcdCluster.pod.resources.requests.memory }}
   {{- if .Values.etcdCluster.enableTLS }}
   TLS:
 {{ toYaml .Values.etcdCluster.tls | indent 4 }}
