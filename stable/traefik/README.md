@@ -87,6 +87,7 @@ The following tables lists the configurable parameters of the Traefik chart and 
 | ------------------------------- | -------------------------------------------------------------------- | ----------------------------------------- |
 | `image`                         | Traefik image name                                                   | `traefik`                                 |
 | `imageTag`                      | The version of the official Traefik image to use                     | `1.4.5`                                  |
+| `deployType`                    | Deploy Traefik as Deployment or DaemonSet([official doc](https://docs.traefik.io/user-guide/kubernetes/#deploy-trfik-using-a-deployment-or-daemonset))                           | `LoadBalancer`                            |
 | `serviceType`                   | A valid Kubernetes service type                                      | `LoadBalancer`                            |
 | `loadBalancerIP`                | An available static IP you have reserved on your cloud platform      | None                                      |
 | `loadBalancerSourceRanges`      | list of IP CIDRs allowed access to load balancer (if supported)      | None                                      |
