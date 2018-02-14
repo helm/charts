@@ -1,0 +1,36 @@
+{{- if .Values.autoCluster.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ template "redis-auto-cluster.fullname" . }}-builder
+  labels:
+    app: {{ template "redis-auto-cluster.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+  annotations:
+    "helm.sh/hook": post-install
+    "helm.sh/hook-weight": "0"
+#    "helm.sh/hook-delete-policy": hook-succeeded
+spec:
+  completions: 1
+  parallelism: 1
+  backoffLimit: 0
+  template:
+    spec:
+      containers:
+      - name: {{ template "redis-auto-cluster.fullname" . }}-builder
+        image: "{{ .Values.autoCluster.image }}:{{ .Values.autoCluster.tag }}"
+        imagePullPolicy: {{ .Values.autoCluster.imagePullPolicy }}
+        command: ["./setup.sh"]
+        env:
+        - name: REDIS_SERVICE
+        {{- if .Values.serviceNameOverride }}
+          value: {{ .Values.serviceNameOverride }}
+        {{- else }}
+          value: {{ template "redis-auto-cluster.fullname" . }}
+        {{- end }}
+        - name: REPLICATION_FACTOR
+          value: {{ .Values.shards.replicationFactor | quote }}
+      restartPolicy: Never
+{{- end }}

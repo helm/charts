@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: Service
+metadata:
+{{- if .Values.serviceNameOverride }}
+  name: {{ .Values.serviceNameOverride }}
+{{- else }}
+  name: {{ template "redis-auto-cluster.fullname" . }}
+{{- end }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ template "redis-auto-cluster.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+  annotations:
+    service.alpha.kubernetes.io/tolerate-unready-endpoints: "false"
+spec:
+  type: ClusterIP
+  ports:
+  - port: 6379
+    targetPort: 6379
+    name: client
+  - port: 26379
+    targetPort: 26379
+    name: gossip
+  clusterIP: None
+  selector:
+    app: {{ template "redis-auto-cluster.name" . }}
+    release: {{ .Release.Name }}

@@ -1,0 +1,125 @@
+apiVersion: apps/v1beta2
+kind: StatefulSet
+metadata:
+  name: {{ template "redis-auto-cluster.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ template "redis-auto-cluster.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ add .Values.shards.replicationFactor 1 | mul .Values.shards.count  }}
+  serviceName: redis-cluster
+  selector:
+    matchLabels:
+      app: {{ template "redis-auto-cluster.name" . }}
+      chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "redis-auto-cluster.name" . }}
+        chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+        release: {{ .Release.Name }}
+        checksum/config: {{ include (print $.Template.BasePath "/config.yaml") . |  sha256sum | trunc 63 }}
+    spec:
+      terminationGracePeriodSeconds: 15
+      nodeSelector:
+        cloud.google.com/gke-nodepool: {{ .Values.nodePool }}
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - topologyKey: "kubernetes.io/hostname"
+            labelSelector:
+              matchLabels:
+                app: {{ template "redis-auto-cluster.name" . }}
+                chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+                release: {{ .Release.Name }}
+{{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 6 -}}
+{{- end }}
+      initContainers:
+      - name: init-sysctl
+        image: busybox
+        command:
+        - "/bin/sh"
+        - "-c"
+        - "sysctl -w net.core.somaxconn=65535"
+        securityContext:
+          privileged: true
+      - name: disable-thp
+        image: busybox
+        volumeMounts:
+        - name: host-sys
+          mountPath: /host-sys
+        command:
+        - "/bin/sh"
+        - "-c"
+        - "echo never >/host-sys/kernel/mm/transparent_hugepage/enabled"
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 6379
+          name: client
+        - containerPort: 26379
+          name: gossip
+        command:
+        - redis-server
+        args:
+        - /conf/redis.conf
+        readinessProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - redis-cli -h $(hostname) ping
+          initialDelaySeconds: 15
+          timeoutSeconds: 5
+        livenessProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - redis-cli -h $(hostname) ping
+          initialDelaySeconds: 20
+          periodSeconds: 3
+        resources:
+          limits:
+            cpu: 1
+            memory: {{ .Values.shards.sizeGb }}Gi
+          requests:
+            cpu: 100m
+            memory: {{ .Values.shards.sizeGb }}Gi
+        volumeMounts:
+        - name: config
+          mountPath: /conf
+          readOnly: false
+        - name: data
+          mountPath: /data
+          readOnly: false
+
+      volumes:
+      - name: host-sys
+        hostPath:
+          path: /sys
+      - name: config
+        configMap:
+          name: {{ .Release.Name }}-config
+          items:
+          - key: redis.conf
+            path: redis.conf
+
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: {{ mul .Values.shards.sizeGb 3 }}Gi
+      storageClassName: {{ .Values.persistence.storageClassName }}
