@@ -1,0 +1,32 @@
+nameOverride: ""
+serviceNameOverride: ""
+
+shards:
+  count: 3
+  replicationFactor: 1
+  sizeGb: 1
+
+nodePool: "default"
+tolerations: []
+
+persistence:
+  storageClassName: standard
+
+image:
+  repository: "redis"
+  tag: "4.0.8-alpine"
+
+config:
+  appendOnly: "yes"
+  clusterNodeTimeout: 15000
+  maxMemoryPolicy: "noeviction"
+  saveOptions: |
+    save 900 1
+    save 300 10
+    save 60 10000
+
+autoCluster:
+  enabled: true
+  image: "uenicontrib/redis-auto-cluster-builder"
+  imagePullPolicy: "IfNotPresent"
+  tag: "0.1.1"
