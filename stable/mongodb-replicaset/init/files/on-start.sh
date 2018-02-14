@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-replica_set=$REPLICA_SET
+replica_set="$REPLICA_SET"
 script_name=${0##*/}
 
 if [[ "$AUTH" == "true" ]]; then
@@ -25,7 +25,8 @@ fi
 
 function log() {
     local msg="$1"
-    local timestamp=$(date --iso-8601=ns)
+    local timestamp
+    timestamp=$(date --iso-8601=ns)
     echo "[$timestamp] [$script_name] $msg" >> /work-dir/log.txt
 }
 
@@ -53,11 +54,11 @@ done
 
 # Generate the ca cert
 ca_crt=/ca/tls.crt
-if [ -f $ca_crt  ]; then
+if [ -f "$ca_crt"  ]; then
     log "Generating certificate"
     ca_key=/ca/tls.key
     pem=/work-dir/mongo.pem
-    ssl_args=(--ssl --sslCAFile $ca_crt --sslPEMKeyFile $pem)
+    ssl_args=(--ssl --sslCAFile "$ca_crt" --sslPEMKeyFile "$pem")
 
 cat >openssl.cnf <<EOL
 [req]
@@ -80,7 +81,7 @@ EOL
     openssl genrsa -out mongo.key 2048
     openssl req -new -key mongo.key -out mongo.csr -subj "/CN=$my_hostname" -config openssl.cnf
     openssl x509 -req -in mongo.csr \
-        -CA $ca_crt -CAkey $ca_key -CAcreateserial \
+        -CA "$ca_crt" -CAkey "$ca_key" -CAcreateserial \
         -out mongo.crt -days 3650 -extensions v3_req -extfile openssl.cnf
 
     rm mongo.csr
@@ -89,10 +90,10 @@ EOL
 fi
 
 
-log "Peers: ${peers[@]}"
+log "Peers: ${peers[*]}"
 
 log "Starting a MongoDB instance..."
-mongod --config /config/mongod.conf >> /work-dir/log.txt 2>&1 &
+mongod --config /data/configdb/mongod.conf >> /work-dir/log.txt 2>&1 &
 
 log "Waiting for MongoDB to be ready..."
 until mongo "${ssl_args[@]}" --eval "db.adminCommand('ping')"; do
@@ -104,8 +105,7 @@ log "Initialized."
 
 # try to find a master and add yourself to its replica set.
 for peer in "${peers[@]}"; do
-    mongo admin --host "$peer" "${admin_auth[@]}" "${ssl_args[@]}" --eval "rs.isMaster()" | grep '"ismaster" : true'
-    if [[ $? -eq 0 ]]; then
+    if mongo admin --host "$peer" "${admin_auth[@]}" "${ssl_args[@]}" --eval "rs.isMaster()" | grep '"ismaster" : true'; then
         log "Found master: $peer"
         log "Adding myself ($service_name) to replica set..."
         mongo admin --host "$peer" "${admin_auth[@]}" "${ssl_args[@]}" --eval "rs.add('$service_name')"
@@ -118,8 +118,7 @@ for peer in "${peers[@]}"; do
 done
 
 # else initiate a replica set with yourself.
-mongo "${ssl_args[@]}" --eval "rs.status()" | grep "no replset config has been received"
-if [[ $? -eq 0 ]]; then
+if mongo "${ssl_args[@]}" --eval "rs.status()" | grep "no replset config has been received"; then
     log "Initiating a new replica set with myself ($service_name)..."
     mongo "${ssl_args[@]}" --eval "rs.initiate({'_id': '$replica_set', 'members': [{'_id': 0, 'host': '$service_name'}]})"
 

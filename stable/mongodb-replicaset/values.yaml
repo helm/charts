@@ -1,4 +1,3 @@
-replicaSet: rs0
 replicas: 3
 minAvailable: 1
 port: 27017
@@ -25,6 +24,10 @@ image:
 
 # Annotations to be added to MongoDB pods
 podAnnotations: {}
+
+securityContext:
+  runAsUser: 999
+  runAsGroup: 999
 
 resources: {}
 # limits:

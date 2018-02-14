@@ -1,3 +1,5 @@
+{{ $user := .Values.securityContext.runAsUser }}
+{{ $group := .Values.securityContext.runAsGroup }}
 apiVersion: apps/v1beta2
 kind: StatefulSet
 metadata:
@@ -34,7 +36,7 @@ spec:
             - name: workdir
               mountPath: /work-dir
             - name: config
-              mountPath: /config
+              mountPath: /data/configdb
         - name: bootstrap
           image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
           command:
@@ -50,7 +52,7 @@ spec:
                   apiVersion: v1
                   fieldPath: metadata.namespace
             - name: REPLICA_SET
-              value: {{ .Values.replicaSet }}
+              value: {{ required "'configmap.replication.replSetName' is required!" .Values.configmap.replication.replSetName }}
           {{- if .Values.auth.enabled }}
             - name: AUTH
               value: "true"
@@ -69,8 +71,8 @@ spec:
             - name: workdir
               mountPath: /work-dir
             - name: config
-              mountPath: /config
-          {{- if and (.Values.tls.enabled) }}
+              mountPath: /data/configdb
+          {{- if .Values.tls.enabled }}
             - name: ca
               mountPath: /ca
           {{- end }}
@@ -81,10 +83,34 @@ spec:
               mountPath: /keydir
               readOnly: true
           {{- end }}
+        - name: permissions
+          image: busybox
+          command:
+            - "sh"
+          args:
+            - "-c"
+            - "chown -R '{{ $user }}:{{ $group }}' /work-dir /data{{ if .Values.tls.enabled }} /ca{{ end }}{{ if .Values.auth.enabled }} /keydir{{ end }}"
+          volumeMounts:
+            - name: workdir
+              mountPath: /work-dir
+            - name: datadir
+              mountPath: /data
+          {{- if .Values.tls.enabled }}
+            - name: ca
+              mountPath: /ca
+          {{- end }}
+          {{- if .Values.auth.enabled }}
+            - name: keydir
+              mountPath: /keydir
+          {{- end }}
       containers:
         - name: {{ template "mongodb-replicaset.name" . }}
           image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
           imagePullPolicy: "{{ .Values.image.pullPolicy }}"
+          securityContext:
+            runAsUser: {{ $user }}
+            runAsGroup: {{ $group }}
+            allowPrivilegeEscalation: false
           ports:
             - name: peer
               containerPort: {{ .Values.port }}
@@ -92,7 +118,7 @@ spec:
 {{ toYaml .Values.resources | indent 12 }}
           command:
             - mongod
-            - --config=/config/mongod.conf
+            - --config=/data/configdb/mongod.conf
           {{- if .Values.auth.enabled }}
           env:
             - name: AUTH
@@ -112,7 +138,7 @@ spec:
             exec:
               command:
                 - mongo
-              {{- if and (.Values.tls.enabled) }}
+              {{- if .Values.tls.enabled }}
                 - --ssl
                 - --sslCAFile=/ca/tls.crt
                 - --sslPEMKeyFile=/work-dir/mongo.pem
@@ -125,7 +151,7 @@ spec:
             exec:
               command:
                 - mongo
-              {{- if and (.Values.tls.enabled) }}
+              {{- if .Values.tls.enabled }}
                 - --ssl
                 - --sslCAFile=/ca/tls.crt
                 - --sslPEMKeyFile=/work-dir/mongo.pem
@@ -138,8 +164,8 @@ spec:
             - name: datadir
               mountPath: /data/db
             - name: config
-              mountPath: /config
-          {{- if and (.Values.tls.enabled) }}
+              mountPath: /data/configdb
+          {{- if .Values.tls.enabled }}
             - name: ca
               mountPath: /ca
           {{- end }}
@@ -166,7 +192,7 @@ spec:
         - name: config
           configMap:
             name: {{ template "mongodb-replicaset.fullname" . }}
-        {{- if and (.Values.tls.enabled) }}
+        {{- if .Values.tls.enabled }}
         - name: ca
           secret:
             defaultMode: 0400

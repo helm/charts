@@ -1,4 +1,4 @@
-{{- if and (.Values.tls.enabled) -}}
+{{- if .Values.tls.enabled -}}
 apiVersion: v1
 kind: Secret
 type: kubernetes.io/tls

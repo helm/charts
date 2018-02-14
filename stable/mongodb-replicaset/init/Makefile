@@ -14,7 +14,7 @@
 
 all: push
 
-TAG = 0.5
+TAG = 0.6
 PREFIX = staging-k8s.gcr.io/mongodb-install
 
 container:

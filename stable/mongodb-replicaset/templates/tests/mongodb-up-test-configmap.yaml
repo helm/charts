@@ -8,5 +8,5 @@ metadata:
     release: {{ .Release.Name }}
   name: {{ template "mongodb-replicaset.fullname" . }}-tests
 data:
-  mongodb-up-test.sh: |-
-    {{ .Files.Get "mongodb-up-test.sh" }}
+  mongodb-up-test.sh: |
+{{ .Files.Get "tests/mongodb-up-test.sh" | indent 4 }}
