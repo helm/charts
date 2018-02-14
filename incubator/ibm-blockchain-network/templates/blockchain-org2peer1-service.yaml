@@ -1,0 +1,26 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "ibm-blockchain-network.name" . }}-org2peer1
+  labels:
+    app: {{ template "ibm-blockchain-network.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    run: {{ template "ibm-blockchain-network.name" . }}-org2peer1
+spec:
+  type: NodePort
+  selector:
+    name: {{ template "ibm-blockchain-network.name" . }}-org2peer1
+    app: {{ template "ibm-blockchain-network.name" . }}
+    release: {{ .Release.Name }}
+  ports:
+  - protocol: TCP
+    port: 5010
+    nodePort: 30210
+    name: grpc
+  - protocol: TCP
+    port: 5011
+    nodePort: 30211
+    name: events

@@ -1,0 +1,18 @@
+name: ibm-blockchain-network
+version: 1.0.0
+appVersion: 1.0.0
+description: IBM Blockchain Network Chart
+keywords:
+  - blockchain
+home: https://ibm-blockchain.github.io
+sources:
+  - https://github.ibm.com/IBM-Blockchain/ibm-container-service
+maintainers:
+  - name: mrshah-at-ibm
+    email: mrshah@us.ibm.com
+  - name: dhyey20
+    email: dbshah@us.ibm.com
+  - name: eddie-at-ibm
+    email: deallen@us.ibm.com
+engine: gotpl
+icon: https://www.ibm.com/blogs/bluemix/wp-content/uploads/2016/02/IBM_Blockchain_Hero.png

@@ -1,0 +1,64 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "ibm-blockchain-network.fullname" . }}-ca
+  labels:
+    app: {{ template "ibm-blockchain-network.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: 1
+  template:
+    metadata:
+      name: {{ template "ibm-blockchain-network.fullname" . }}-ca
+      labels:
+        app: {{ template "ibm-blockchain-network.name" . }}
+        chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+        release: {{ .Release.Name }}
+        heritage: {{ .Release.Service }}
+        name: {{ template "ibm-blockchain-network.fullname" . }}-ca
+    spec:
+      volumes:
+      - name: {{ template "ibm-blockchain-shared-pvc.name" . }}
+        persistentVolumeClaim:
+         claimName: {{ template "ibm-blockchain-shared-pvc.name" . }}
+
+      containers:
+      - name: ca
+        image: {{ .Values.blockchain.caImage }}
+        imagePullPolicy: {{ .Values.blockchain.pullPolicy }}
+        command:
+        - sh
+        - -c
+        - |
+          sleep 1
+
+          while [ ! -f /shared/bootstrapped ]; do
+            echo Waiting for bootstrap
+            sleep 1
+          done
+
+          touch /shared/status_fabricca_complete &&
+          fabric-ca-server start -c ${CONFIGYAML}
+        env:
+        - name: CONFIGYAML
+          value: /shared/cas/ca.yaml
+        - name: FABRIC_CA_SERVER_CA_CERTFILE
+          value: /shared/crypto-config/ordererOrganizations/example.com/ca/ca.example.com-cert.pem
+        - name: FABRIC_CA_SERVER_CA_KEYFILE
+          value: /mnt/crypto-config/ordererOrganizations/example.com/ca/948030ba41c19d662d767eb6f0d8196ff95c87f8f838fc4b8951f886357d82e8_sk
+        - name: FABRIC_CA_SERVER_DEBUG
+          value: "true"
+        - name: FABRIC_CA_SERVER_TLS_ENABLED
+          value: "false"
+        - name: FABRIC_CA_SERVER_TLS_CERTFILE
+          value: /certs/ca0a-cert.pem
+        - name: FABRIC_CA_SERVER_TLS_KEYFILE
+          value: /certs/ca0a-key.pem
+        - name: GODEBUG
+          value: "netdns=go"
+        volumeMounts:
+        - mountPath: /shared
+          name: {{ template "ibm-blockchain-shared-pvc.name" . }}

@@ -1,0 +1,83 @@
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "ibm-blockchain-network.fullname" . }}-orderer
+  labels:
+    app: {{ template "ibm-blockchain-network.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: 1
+  template:
+    metadata:
+      name: {{ template "ibm-blockchain-network.fullname" . }}-orderer
+      labels:
+        app: {{ template "ibm-blockchain-network.name" . }}
+        chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+        release: {{ .Release.Name }}
+        heritage: {{ .Release.Service }}
+        name: {{ template "ibm-blockchain-network.fullname" . }}-orderer
+    spec:
+      volumes:
+      - name: {{ template "ibm-blockchain-shared-pvc.name" . }}
+        persistentVolumeClaim:
+         claimName: {{ template "ibm-blockchain-shared-pvc.name" . }}
+
+      containers:
+      - name: orderer
+        image: {{ .Values.blockchain.ordererImage }}
+        imagePullPolicy: {{ .Values.blockchain.pullPolicy }}
+        command:
+          - sh
+          - -c
+          - |
+            sleep 1
+
+            while [ ! -f /shared/bootstrapped ]; do
+              echo Waiting for bootstrap
+              sleep 1
+            done
+
+            touch /shared/status_orderer_complete &&
+            orderer
+        env:
+        - name: ORDERER_CFG_PATH
+          value: /shared/
+        - name: ORDERER_GENERAL_LEDGERTYPE
+          value: file
+        - name: ORDERER_FILELEDGER_LOCATION
+          value: /mnt/ledger/orderer1
+        - name: ORDERER_GENERAL_BATCHTIMEOUT
+          value: 1s
+        - name: ORDERER_GENERAL_BATCHSIZE_MAXMESSAGECOUNT
+          value: "10"
+        - name: ORDERER_GENERAL_MAXWINDOWSIZE
+          value: "1000"
+        - name: ORDERER_GENERAL_ORDERERTYPE
+          value: solo
+        - name: ORDERER_GENERAL_LISTENADDRESS
+          value: 0.0.0.0
+        - name: ORDERER_GENERAL_LISTENPORT
+          value: "31010"
+        - name: ORDERER_GENERAL_LOGLEVEL
+          value: debug
+        - name: ORDERER_GENERAL_LOCALMSPDIR
+          value: /shared/crypto-config/ordererOrganizations/example.com/orderers/orderer.example.com/msp
+        - name: ORDERER_GENERAL_LOCALMSPID
+          value: OrdererMSP
+        - name: ORDERER_GENERAL_GENESISMETHOD
+          value: file
+        - name: ORDERER_GENERAL_GENESISFILE
+          value: /shared/orderer.block
+        - name: ORDERER_GENERAL_GENESISPROFILE
+          value: initial
+        - name: ORDERER_GENERAL_TLS_ENABLED
+          value: "false"
+        - name: GODEBUG
+          value: "netdns=go"
+        volumeMounts:
+        - mountPath: /shared
+          name: {{ template "ibm-blockchain-shared-pvc.name" . }}
+
