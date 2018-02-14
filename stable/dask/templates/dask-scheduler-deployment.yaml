@@ -1,0 +1,36 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "dask.scheduler-fullname" . }}
+  labels:
+    app: {{ template "dask.name" . }}
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    component: "{{ .Release.Name }}-{{ .Values.scheduler.component }}"
+spec:
+  replicas: {{ .Values.scheduler.replicas }}
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: {{ template "dask.name" . }}
+        release: {{ .Release.Name | quote }}
+        component: "{{ .Release.Name }}-{{ .Values.scheduler.component }}"
+    spec:
+      containers:
+        - name: {{ template "dask.scheduler-fullname" . }}
+          image: "{{ .Values.scheduler.image }}:{{ .Values.scheduler.imageTag }}"
+          args: ["dask-scheduler", "--port", "{{ .Values.scheduler.servicePort }}", "--bokeh-port", "{{ .Values.webUI.containerPort }}"]
+          ports:
+            - containerPort: {{ .Values.scheduler.containerPort }}
+            - containerPort: {{ .Values.webUI.containerPort }}
+          resources: {{ toYaml .Values.scheduler.resources | indent 12 }}
+          env:
+          - name: EXTRA_CONDA_PACKAGES
+            value: {{ .Values.scheduler.condaPackages }}
+          - name: EXTRA_PIP_PACKAGES
+            value: {{ .Values.scheduler.pipPackages }}
+          - name: EXTRA_APT_PACKAGES
+            value: {{ .Values.scheduler.aptPackages }}

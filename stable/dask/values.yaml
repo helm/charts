@@ -1,0 +1,82 @@
+# Default values for dask.
+# This is a YAML-formatted file.
+# Declare name/value pairs to be passed into your templates.
+# name: value
+
+# nameOverride: dask
+
+scheduler:
+  name: scheduler
+  image: "daskdev/dask"
+  imageTag: "0.17.0"
+  replicas: 1
+  component: "dask-scheduler"
+  serviceType: "LoadBalancer"
+  servicePort: 8786
+  containerPort: 8786
+  resources: {}
+  aptPackages: >-
+  condaPackages: >-
+  pipPackages: >-
+  limits:
+    cpu: 1.8
+    memory: 6G
+  requests:
+    cpu: 1.8
+    memory: 6G
+
+webUI:
+  name: webui
+  servicePort: 80
+  containerPort: 8787
+
+worker:
+  name: worker
+  image: "daskdev/dask"
+  imageTag: "0.17.0"
+  replicas: 3
+  component: "dask-worker"
+  containerPort: 8081
+  resources: {}
+  aptPackages: >-
+  condaPackages: >-
+    # numba
+    # xarray
+  pipPackages: >-
+    # gcsfs
+    # s3fs
+    # adlfs
+    # dask-ml
+  limits:
+    cpu: 1
+    memory: 3G
+  requests:
+    cpu: 1
+    memory: 3G
+
+jupyter:
+  name: jupyter
+  image: "daskdev/dask-notebook"
+  imageTag: "0.17.0"
+  replicas: 1
+  component: "jupyter-notebook"
+  serviceType: "LoadBalancer"
+  servicePort: 80
+  containerPort: 8888
+  password: 'sha1:aae8550c0a44:9507d45e087d5ee481a5ce9f4f16f37a0867318c'  # 'dask'
+  resources: {}
+  aptPackages: >-
+  condaPackages: >-
+    # numba
+    # xarray
+  pipPackages: >-
+    # gcsfs
+    # s3fs
+    # adlfs
+    # dask-ml
+  limits:
+    cpu: 2
+    memory: 6G
+  requests:
+    cpu: 2
+    memory: 6G

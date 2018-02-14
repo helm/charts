@@ -1,0 +1,44 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "dask.jupyter-fullname" . }}
+  labels:
+    app: {{ template "dask.name" . }}
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    component: "{{ .Release.Name }}-{{ .Values.jupyter.component }}"
+spec:
+  replicas: {{ .Values.jupyter.replicas }}
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: {{ template "dask.name" . }}
+        release: {{ .Release.Name | quote }}
+        component: "{{ .Release.Name }}-{{ .Values.jupyter.component }}"
+    spec:
+      containers:
+        - name: {{ template "dask.jupyter-fullname" . }}
+          image: "{{ .Values.jupyter.image }}:{{ .Values.jupyter.imageTag }}"
+          ports:
+            - containerPort: {{ .Values.jupyter.containerPort }}
+          resources:
+{{ toYaml .Values.jupyter.resources | indent 12 }}
+          volumeMounts:
+          - name: config-volume
+            mountPath: /home/jovyan/.jupyter
+          env:
+          - name: EXTRA_CONDA_PACKAGES
+            value: {{ .Values.jupyter.condaPackages }}
+          - name: EXTRA_PIP_PACKAGES
+            value: {{ .Values.jupyter.pipPackages }}
+          - name: EXTRA_APT_PACKAGES
+            value: {{ .Values.jupyter.aptPackages }}
+          - name: DASK_SCHEDULER_ADDRESS
+            value: {{ template "dask.scheduler-fullname" . }}:{{ .Values.scheduler.servicePort }}
+      volumes:
+      - name: config-volume
+        configMap:
+          name: {{ template "dask.jupyter-fullname" . }}-config
