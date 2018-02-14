@@ -61,7 +61,7 @@ spec:
 {{ toYaml .Values.resources | indent 12 }}
           volumeMounts:
             - name: ssl-certs
-              mountPath: /etc/ssl/certs/ca-certificates.crt
+              mountPath: {{ .Values.sslCertPath }}
               readOnly: true
     {{- if .Values.affinity }}
       affinity:
@@ -77,4 +77,4 @@ spec:
       volumes:
         - name: ssl-certs
           hostPath:
-            path: /etc/ssl/certs/ca-certificates.crt
+            path: {{ .Values.sslCertPath }}

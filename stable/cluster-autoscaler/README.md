@@ -97,6 +97,7 @@ Parameter | Description | Default
 `autoscalingGroups[].maxSize` | maximum autoscaling group size | None. You *must* supply at least one.
 `autoscalingGroups[].minSize` | minimum autoscaling group size | None. You *must* supply at least one.
 `awsRegion` | AWS region (required if `cloudProvider=aws`) | `us-east-1`
+`sslCertPath` | Path on the host where ssl ca cert exists | `/etc/ssl/certs/ca-certificates.crt`
 `cloudProvider` | `aws` or `spotinst` are currently supported | `aws`
 `image.repository` | Image (used if `cloudProvider=aws`) | `k8s.gcr.io/cluster-autoscaler`
 `image.tag` | Image tag (used if `cloudProvider=aws`) | `v0.6.0`
