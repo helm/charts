@@ -1,0 +1,51 @@
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: {{ template "ibm-blockchain-chaincode.fullname" . }}-install-org1peer1
+  labels:
+    app: {{ template "ibm-blockchain-chaincode.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  restartPolicy: "Never"
+  volumes:
+  - name: {{ template "ibm-blockchain-shared-pvc.name" . }}
+    persistentVolumeClaim:
+     claimName: {{ template "ibm-blockchain-shared-pvc.name" . }}
+
+  containers:
+  - name: chaincodeinstall-org1peer1
+    image: {{ .Values.blockchain.toolsImage }}
+    imagePullPolicy: {{ .Values.blockchain.pullPolicy }}
+    command:
+      - sh
+      - -c
+      - |
+        while [ ! -f /shared/status_joinchannel_org1peer1_complete ]; do
+          echo Waiting for joinchannel
+          sleep 2
+        done
+
+        git clone -b v1.0.0 https://github.com/hyperledger/fabric $GOPATH/src/github.com/hyperledger/fabric/ &&
+        peer chaincode install -n ${CHAINCODE_NAME} -v ${CHAINCODE_VERSION} -p github.com/hyperledger/fabric/examples/chaincode/go/chaincode_example02/ &&
+        touch /shared/status_chaincodeinstall_o1p1_complete
+    env:
+    - name: CHAINCODE_NAME
+      value: example02
+    - name: CHAINCODE_VERSION
+      value: "v1"
+    - name: FABRIC_CFG_PATH
+      value: /etc/hyperledger/fabric
+    - name: CORE_PEER_MSPCONFIGPATH
+      value: /shared/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
+    - name: CORE_PEER_LOCALMSPID
+      value: Org1MSP
+    - name: CORE_PEER_ADDRESS
+      value: {{ template "ibm-blockchain-network.name" . }}-org1peer1:5010
+    - name: GODEBUG
+      value: "netdns=go"
+    volumeMounts:
+    - mountPath: /shared
+      name: {{ template "ibm-blockchain-shared-pvc.name" . }}
