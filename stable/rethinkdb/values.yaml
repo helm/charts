@@ -24,8 +24,14 @@ cluster:
     #   type: pd-ssd
   persistentVolume:
     enabled: true
-    # If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
-    #storageClass: fast
+    ## rethinkdb data Persistent Volume Storage Class
+    ## If defined, storageClassName: <storageClass>
+    ## If set to "-", storageClassName: "", which disables dynamic provisioning
+    ## If undefined (the default) or set to null, no storageClassName spec is
+    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+    ##   GKE, AWS & OpenStack)
+    ##
+    # storageClass: "-"
     accessModes:
       - ReadWriteOnce
     size: 1Gi
@@ -68,8 +74,8 @@ proxy:
 # RethinkDB Ports
 ports:
   cluster: 29015
-  driver:  28015
-  admin:   8080
+  driver: 28015
+  admin: 8080
 
 # RethinkDB Admin Password
 rethinkdbPassword: rethinkdb
