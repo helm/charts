@@ -71,6 +71,8 @@ The following tables lists the configurable parameters of the etcd-operator char
 | `etcdOperator.resources.memory`                   | Memory limit per etcd-operator pod                                   | `128Mi`                                        |
 | `etcdOperator.nodeSelector`                       | Node labels for etcd operator pod assignment                         | `{}`                                           |
 | `etcdOperator.commandArgs`                        | Additional command arguments                                         | `{}`                                           |
+| `etcdOperator.podLabels`                          | Additional labels to be added to the etcd-operator pods              | `{}`                                           |
+| `etcdOperator.podAnnotations`                     | Additional annotations to be added to the etcd-operator pods         | `{}`                                           |
 | `backupOperator.name`                             | Backup operator name                                                 | `etcd-backup-operator`                         |
 | `backupOperator.replicaCount`                     | Number of operator replicas to create (only 1 is supported)          | `1`                                            |
 | `backupOperator.image.repository`                 | Operator container image                                             | `quay.io/coreos/etcd-operator`                 |
@@ -83,6 +85,8 @@ The following tables lists the configurable parameters of the etcd-operator char
 | `backupOperator.spec.s3.awsSecret`                | Name of kubernetes secrete containing aws credentials                |                                                |
 | `backupOperator.nodeSelector`                     | Node labels for etcd operator pod assignment                         | `{}`                                           |
 | `backupOperator.commandArgs`                      | Additional command arguments                                         | `{}`                                           |
+| `backupOperator.podLabels`                        | Additional labels to be added to the etcd-backup-operator pods       | `{}`                                           |
+| `backupOperator.podAnnotations`                   | Additional annotations to be added to the etcd-backup-operator pods  | `{}`                                           |
 | `restoreOperator.name`                            | Restore operator name                                                | `etcd-backup-operator`                         |
 | `restoreOperator.replicaCount`                    | Number of operator replicas to create (only 1 is supported)          | `1`                                            |
 | `restoreOperator.image.repository`                | Operator container image                                             | `quay.io/coreos/etcd-operator`                 |
@@ -94,6 +98,8 @@ The following tables lists the configurable parameters of the etcd-operator char
 | `restoreOperator.spec.s3.awsSecret`               | Name of kubernetes secrete containing aws credentials                |                                                |
 | `restoreOperator.nodeSelector`                    | Node labels for etcd operator pod assignment                         | `{}`                                           |
 | `restoreOperator.commandArgs`                     | Additional command arguments                                         | `{}`                                           |
+| `restoreOperator.podLabels`                      | Additional labels to be added to the etcd-restore-operator pods      | `{}`                                           |
+| `restoreOperator.podAnnotations`                 | Additional annotations to be added to the etcd-restore-operator pods | `{}`                                           |
 | `etcdCluster.name`                                | etcd cluster name                                                    | `etcd-cluster`                                 |
 | `etcdCluster.size`                                | etcd cluster size                                                    | `3`                                            |
 | `etcdCluster.version`                             | etcd cluster version                                                 | `3.2.10`                                       |
