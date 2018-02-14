@@ -27,12 +27,13 @@ spec:
     {{- end }}
           livenessProbe:
             tcpSocket:
-              initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
-              periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
               port: {{ .Values.service.internalPort }}
+            initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
           readinessProbe:
             tcpSocket:
               port: {{ .Values.service.internalPort }}
+            initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
           env:
             - name: ELASTICSEARCH_HOST
               value: {{ .Values.elasticsearch.host | quote }}
