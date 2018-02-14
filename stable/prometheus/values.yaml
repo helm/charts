@@ -341,6 +341,11 @@ nodeExporter:
     #   cpu: 100m
     #   memory: 30Mi
 
+  ## Security context to be added to node-exporter pods
+  ##
+  securityContext: {}
+    # runAsUser: 0
+
   service:
     annotations:
       prometheus.io/scrape: "true"
