@@ -1,0 +1,52 @@
+{{- if .Values.config.prometheus.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "fluentd-ds.fullname" . }}
+  labels:
+    app: {{ template "fluentd-ds.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    k8s-app: fluentd
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    # - port: {{ .Values.service.externalPort }}
+    #   targetPort: {{ .Values.service.internalPort }}
+    #   protocol: TCP
+    #   name: {{ .Values.service.name }}
+    # Exposes Prometheus metrics
+    - name: prometheus-metrics
+      port: 24231
+      targetPort: prom-metrics
+      protocol: TCP
+    # Can be accessed using "kubectl proxy" at:
+    # http://127.0.0.1:8001/api/v1/proxy/namespaces/kube-system/services/fluentd:monitor-agent/api/plugins.json
+    - name: monitor-agent
+      port: 24220
+      targetPort: monitor-agent
+      protocol: TCP
+  selector:
+    k8s-app: fluentd
+    app: {{ template "fluentd-ds.name" . }}
+    release: {{ .Release.Name }}
+
+spec:
+  type: ClusterIP
+  clusterIP: None
+  selector:
+    k8s-app: fluentd
+  ports:
+  # Exposes Prometheus metrics
+  - name: prometheus-metrics
+    port: 24231
+    targetPort: prom-metrics
+    protocol: TCP
+  # Can be accessed using "kubectl proxy" at:
+  # http://127.0.0.1:8001/api/v1/proxy/namespaces/kube-system/services/fluentd:monitor-agent/api/plugins.json
+  - name: monitor-agent
+    port: 24220
+    targetPort: monitor-agent
+    protocol: TCP
+{{- end }}
