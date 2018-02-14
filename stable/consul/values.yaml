@@ -40,8 +40,14 @@ DisableHostNodeId: false
 ## Encrypt Gossip traffic
 EncryptGossip: true
 
-## StorageClass name for use with Persistent Volume Claim (PVC) using beta notations
-# StorageClass:
+## consul data Persistent Volume Storage Class
+## If defined, StorageClassName: <storageClass>
+## If set to "-", StorageClassName: "", which disables dynamic provisioning
+## If undefined (the default) or set to null, no storageClassName spec is
+##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+##   GKE, AWS & OpenStack)
+##
+# StorageClass: "-"
 
 ## Setting maxUnavailable will create a pod disruption budget that will prevent
 ## voluntarty cluster administration from taking down too many consul pods. If
@@ -50,6 +56,16 @@ EncryptGossip: true
 ## maxUnavailable = 2. If you are using the default of 3 Replicas, you'll want
 ## to set maxUnavailable to 1.
 maxUnavailable: 1
+
+## nodeAffinity settings
+# nodeAffinity:
+#   requiredDuringSchedulingIgnoredDuringExecution:
+#     nodeSelectorTerms:
+#     - matchExpressions:
+#       - key: cloud.google.com/gke-preemptible
+#         operator: NotIn
+#         values:
+#         - true
 
 ## Anti-Affinity setting. The default "hard" will use pod anti-affinity that is
 ## requiredDuringSchedulingIgnoredDuringExecution to ensure 2 services don't

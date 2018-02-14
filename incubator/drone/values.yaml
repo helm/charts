@@ -1,4 +1,4 @@
-appVersion: "0.8.2"
+appVersion: "0.8.4"
 
 images:
   ## The official drone (server) image, change tag to use a different version.
@@ -6,7 +6,7 @@ images:
   ##
   server:
     repository: "docker.io/drone/drone"
-    tag: 0.8.2
+    tag: 0.8.4
     pullPolicy: IfNotPresent
 
   ## The official drone (agent) image, change tag to use a different version.
@@ -14,7 +14,7 @@ images:
   ##
   agent:
     repository: "docker.io/drone/agent"
-    tag: 0.8.2
+    tag: 0.8.4
     pullPolicy: IfNotPresent
 
   ## The official docker (dind) image, change tag to use a different version.
@@ -63,6 +63,7 @@ ingress:
 
 server:
   ## If not set, it will be autofilled with the cluster host.
+  ## Host must be in "<scheme>://<hostname>" format.
   ##
   # host: "https://drone.domain.io"
 
@@ -97,6 +98,11 @@ server:
   #    memory: 2Gi
   #    cpu: 1
 
+  ## Pod scheduling preferences.
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+  ##
+  affinity: {}
+
 agent:
   ## Drone agent configuration.
   ## Values in here get injected as environment variables.
@@ -104,6 +110,9 @@ agent:
   ##
   env:
     DRONE_DEBUG: "false"
+
+  ## Number of drone agent replicas
+  replicas: 1
 
   ## CPU and memory limits for drone agent
   ##
@@ -114,6 +123,11 @@ agent:
   #  limits:
   #    memory: 2Gi
   #    cpu: 1
+
+  ## Pod scheduling preferences.
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+  ##
+  affinity: {}
 
 dind:
   ## Docker storage driver.

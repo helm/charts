@@ -9,14 +9,20 @@ metadata:
     heritage: "{{ .Release.Service }}"
     component: agent
 spec:
-  replicas: 1
+  replicas: {{ .Values.agent.replicas }}
   template:
     metadata:
+      annotations:
+        checksum/secrets: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
       labels:
         app: {{ template "drone.name" . }}
         release: "{{ .Release.Name }}"
         component: agent
     spec:
+{{- if .Values.agent.affinity }}
+      affinity:
+{{ toYaml .Values.agent.affinity | indent 8 }}
+{{- end }}
       containers:
       - name: {{ template "drone.fullname" . }}-agent
         image: "{{ .Values.images.agent.repository }}:{{ .Values.images.agent.tag }}"

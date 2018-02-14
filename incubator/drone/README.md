@@ -34,15 +34,14 @@ The following tables lists the configurable parameters of the drone charts and t
 | Parameter                   | Description                                                                                   | Default                     |
 |-----------------------------|-----------------------------------------------------------------------------------------------|-----------------------------|
 | `images.server.repository`  | Drone **server** image                                                                        | `docker.io/drone/drone`     |
-| `images.server.tag`         | Drone **server** image tag                                                                    | `0.8.2`                     |
+| `images.server.tag`         | Drone **server** image tag                                                                    | `0.8.4`                     |
 | `images.server.pullPolicy`  | Drone **server** image pull policy                                                            | `IfNotPresent`              |
 | `images.agent.repository`   | Drone **agent** image                                                                         | `docker.io/drone/agent`     |
-| `images.agent.tag`          | Drone **agent** image tag                                                                     | `0.8.2`                     |
+| `images.agent.tag`          | Drone **agent** image tag                                                                     | `0.8.4`                     |
 | `images.agent.pullPolicy`   | Drone **agent** image pull policy                                                             | `IfNotPresent`              |
 | `images.dind.repository`    | Docker **dind** image                                                                         | `docker.io/library/docker`  |
 | `images.dind.tag`           | Docker **dind** image tag                                                                     | `17.12.0-ce-dind`           |
 | `images.dind.pullPolicy`    | Docker **dind** image pull policy                                                             | `IfNotPresent`              |
-| `service.httpPort`          | Drone's Web GUI HTTP port                                                                     | `80`                        |
 | `service.httpPort`          | Drone's Web GUI HTTP port                                                                     | `80`                        |
 | `service.nodePort`          | If `service.type` is `NodePort` and this is non-empty, sets the http node port of the service | `32015`                     |
 | `service.type`              | Service type (ClusterIP, NodePort or LoadBalancer)                                            | `ClusterIP`                 |
@@ -50,11 +49,14 @@ The following tables lists the configurable parameters of the drone charts and t
 | `ingress.annotations`       | Ingress annotations                                                                           | `{}`                        |
 | `ingress.hosts`             | Ingress accepted hostnames                                                                    | `nil`                       |
 | `ingress.tls`               | Ingress TLS configuration                                                                     | `[]`                        |
-| `server.host`               | Drone **server** hostname                                                                     | `(internal hostname)`       |
+| `server.host`               | Drone **server** scheme and hostname                                                          | `(internal hostname)`       |
 | `server.env`                | Drone **server** environment variables                                                        | `(default values)`          |
 | `server.resources`          | Drone **server** pod resource requests & limits                                               | `{}`                        |
+| `server.afinity`            | Drone **server** scheduling preferences                                                       | `{}`                        |
 | `agent.env`                 | Drone **agent** environment variables                                                         | `(default values)`          |
+| `agent.replicas`            | Drone **agent** replicas                                                                      | `1`                         |
 | `agent.resources`           | Drone **agent** pod resource requests & limits                                                | `{}`                        |
+| `agent.afinity`             | Drone **agent** scheduling preferences                                                        | `{}`                        |
 | `dind.driver`               | **DinD** storage driver                                                                       | `overlay2`                  |
 | `dind.resources`            | **DinD** pod resource requests & limits                                                       | `{}`                        |
 | `persistence.enabled`       | Use a PVC to persist data                                                                     | `true`                      |
@@ -62,4 +64,4 @@ The following tables lists the configurable parameters of the drone charts and t
 | `persistence.storageClass`  | Storage class of backing PVC                                                                  | `nil`                       |
 | `persistence.accessMode`    | Use volume as ReadOnly or ReadWrite                                                           | `ReadWriteOnce`             |
 | `persistence.size`          | Size of data volume                                                                           | `1Gi`                       |
-| `sharedSecret`              | Drone server and agent shared secret                                                          | `(random value)`            |
+| `sharedSecret`              | Drone server and agent shared secret (Note: The Default random value changes on every `helm upgrade` causing a rolling update of server and agents) | `(random value)`            |

@@ -83,7 +83,7 @@ Pull Requests and Issues that have no activity for 30 days automatically become 
 
 ## Supported Kubernetes Versions
 
-This chart repository supports the latest and previous minor versions of Kubernetes. For example, if the latest minor release of Kubernetes is 1.8 then 1.7 and 1.8 are supported. Charts may still work on previous versions of Kubernertes even through they are outside the target supported window.
+This chart repository supports the latest and previous minor versions of Kubernetes. For example, if the latest minor release of Kubernetes is 1.8 then 1.7 and 1.8 are supported. Charts may still work on previous versions of Kubernertes even though they are outside the target supported window.
 
 To provide that support the API versions of objects should be those that work for both the latest minor release and the previous one.
 
