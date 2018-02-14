@@ -1,0 +1,41 @@
+nameOverride: "cluster"
+serviceNameOverride: "dev"
+
+shards:
+  count: 3
+  replicationFactor: 1
+  sizeGb: 2
+
+persistence:
+  storageClassName: "redis-standard"
+
+nodePool: "n1-highmem-4"
+
+#tolerations:
+#- key: "dedicated"
+#  operator: "Equal"
+#  value: "redis-auto-cluster"
+#  effect: "NoSchedule"
+#- key: "dedicated"
+#  operator: "Equal"
+#  value: "redis-auto-cluster"
+#  effect: "NoExecute"
+
+image:
+  repository: "redis"
+  tag: "4.0.8-alpine"
+
+config:
+  appendOnly: "yes"
+  clusterNodeTimeout: 15000
+  maxMemoryPolicy: "volatile-lru"
+  saveOptions: |
+    save 900 1
+    save 300 10
+    save 60 10000
+
+autoCluster:
+  enabled: true
+  image: "uenicontrib/redis-auto-cluster-builder"
+  tag: "0.1.1"
+  imagePullPolicy: "Always"
