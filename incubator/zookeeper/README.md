@@ -76,7 +76,7 @@ The configuration parameters in this section control the resources requested and
 | Parameter | Description | Default |
 | --------- | ----------- | ------- |
 | `enabled` | Whether to create a PVC. If `false`, an `emptyDir` on the host will be used. | `true` |
-| `existingClaim` | If defined, and `persistence.enabled` is `true`, use an existing PVC with this name. | `nil` |
+| `existingClaim` | If defined, and `persistence.enabled` is `true`, use an existing PVC with this name. The PVC must be created separately. | `null` |
 | `size` | Size of PVC that gets created. For production deployments this value should likely be much larger. | `5Gi` |
 | `storageClass` | If defined, the created PVC will use this StorageClass. If set to `"-"`, dynamic provisioning gets disabled. If `null` or `""`, the default StorageClass will be used. | `null` |
 | `annotations` | Custom annotations for the created PVC. | `{}` |
