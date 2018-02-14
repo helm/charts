@@ -47,7 +47,7 @@ spec:
 {{ toYaml .Values.agent.resources | indent 10 }}
 {{- if not .Values.dind.enabled }}
         securityContext:
-            privileged: true
+          privileged: true
         volumeMounts:
           - mountPath: /var/run/docker.sock
             name: docker-socket
@@ -63,7 +63,7 @@ spec:
         - name: DOCKER_DRIVER
           value: {{ .Values.dind.driver }}
         securityContext:
-            privileged: true
+          privileged: true
         resources:
 {{ toYaml .Values.dind.resources | indent 10 }}
         volumeMounts:
