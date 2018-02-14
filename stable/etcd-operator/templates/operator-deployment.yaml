@@ -1,6 +1,6 @@
 {{- if .Values.deployments.etcdOperator }}
 ---
-apiVersion: apps/v1beta1
+apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: {{ template "etcd-operator.fullname" . }}
@@ -13,8 +13,15 @@ spec:
   replicas: {{ .Values.replicaCount }}
   template:
     metadata:
+    {{- if .Values.etcdOperator.podAnnotations }}
+      annotations:
+{{ toYaml .Values.etcdOperator.podAnnotations | indent 8 }}
+    {{- end }}
       name: {{ template "etcd-operator.fullname" . }}
       labels:
+      {{- if .Values.etcdOperator.podLabels }}
+{{ toYaml .Values.etcdOperator.podLabels | indent 8 }}
+      {{- end }}
         app: {{ template "etcd-operator.fullname" . }}
         release: {{ .Release.Name }}
     spec:
@@ -24,10 +31,10 @@ spec:
         image: "{{ .Values.etcdOperator.image.repository }}:{{ .Values.etcdOperator.image.tag }}"
         imagePullPolicy: {{ .Values.etcdOperator.image.pullPolicy }}
         command:
-         - etcd-operator
-{{- range $key, $value := .Values.etcdOperator.commandArgs }}
+        - etcd-operator
+        {{- range $key, $value := .Values.etcdOperator.commandArgs }}
         - "--{{ $key }}={{ $value }}"
-{{- end }}
+        {{- end }}
         env:
         - name: MY_POD_NAMESPACE
           valueFrom:

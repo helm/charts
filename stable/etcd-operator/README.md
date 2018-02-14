@@ -18,6 +18,9 @@ Official project documentation found [here](https://github.com/coreos/etcd-opera
 
 - Kubernetes 1.4+ with Beta APIs enabled
 - __Suggested:__ PV provisioner support in the underlying infrastructure to support backups
+- __Optional__: If using the backup or restore operator with ABS storage, setup an [ABS secret](https://github.com/coreos/etcd-operator/blob/master/doc/user/walkthrough/backup-operator.md#setup-abs-secret).
+- __Optional__: If using the backup or restore operator with S3 storage, setup an [AWS secret](https://github.com/coreos/etcd-operator/blob/master/doc/user/walkthrough/backup-operator.md#setup-aws-secret).
+- __Optional__: If using the backup operator, setup an [etcd client secret](https://github.com/coreos/etcd-operator/blob/v0.9.0/pkg/apis/etcd/v1beta2/backup_types.go#L61-L66)
 
 ## Installing the Chart
 
@@ -60,40 +63,52 @@ The following tables lists the configurable parameters of the etcd-operator char
 | `deployments.backupOperator`                      | Deploy the etcd backup operator                                      | `true`                                         |
 | `deployments.restoreOperator`                     | Deploy the etcd restore operator                                     | `true`                                         |
 | `customResources.createEtcdClusterCRD`            | Create a custom resource: EtcdCluster                                | `false`                                        |
-| `customResources.createBackupCRD`                 | Create an a custom resource: EtcdBackup                              | `false`                                        |
-| `customResources.createRestoreCRD`                | Create an a custom resource: EtcdRestore                             | `false`                                        |
+| `customResources.createBackupCRD`                 | Create a custom resource: EtcdBackup                                 | `false`                                        |
+| `customResources.createRestoreCRD`                | Create a custom resource: EtcdRestore                                | `false`                                        |
 | `etcdOperator.name`                               | Etcd Operator name                                                   | `etcd-operator`                                |
 | `etcdOperator.replicaCount`                       | Number of operator replicas to create (only 1 is supported)          | `1`                                            |
 | `etcdOperator.image.repository`                   | etcd-operator container image                                        | `quay.io/coreos/etcd-operator`                 |
-| `etcdOperator.image.tag`                          | etcd-operator container image tag                                    | `v0.7.0`                                       |
-| `etcdOperator.image.pullpolicy`                   | etcd-operator container image pull policy                            | `Always`                                       |
+| `etcdOperator.image.tag`                          | etcd-operator container image tag                                    | `v0.9.0`                                       |
+| `etcdOperator.image.pullPolicy`                   | etcd-operator container image pull policy                            | `Always`                                       |
 | `etcdOperator.resources.cpu`                      | CPU limit per etcd-operator pod                                      | `100m`                                         |
 | `etcdOperator.resources.memory`                   | Memory limit per etcd-operator pod                                   | `128Mi`                                        |
 | `etcdOperator.nodeSelector`                       | Node labels for etcd operator pod assignment                         | `{}`                                           |
 | `etcdOperator.commandArgs`                        | Additional command arguments                                         | `{}`                                           |
+| `etcdOperator.podAnnotations`                     | Extra annotations to be added to the operator pods                   | `{}`                                           |
+| `etcdOperator.podLabels`                          | Extra labels to be added to the operator pods                        | `{}`                                           |
 | `backupOperator.name`                             | Backup operator name                                                 | `etcd-backup-operator`                         |
 | `backupOperator.replicaCount`                     | Number of operator replicas to create (only 1 is supported)          | `1`                                            |
 | `backupOperator.image.repository`                 | Operator container image                                             | `quay.io/coreos/etcd-operator`                 |
-| `backupOperator.image.tag`                        | Operator container image tag                                         | `v0.7.0`                                       |
-| `backupOperator.image.pullpolicy`                 | Operator container image pull policy                                 | `Always`                                       |
+| `backupOperator.image.tag`                        | Operator container image tag                                         | `v0.9.0`                                       |
+| `backupOperator.image.pullPolicy`                 | Operator container image pull policy                                 | `Always`                                       |
 | `backupOperator.resources.cpu`                    | CPU limit per etcd-operator pod                                      | `100m`                                         |
 | `backupOperator.resources.memory`                 | Memory limit per etcd-operator pod                                   | `128Mi`                                        |
-| `backupOperator.spec.storageType`                 | Storage to use for backup file, currently only S3 supported          | `S3`                                           |
-| `backupOperator.spec.s3.s3Bucket`                 | Bucket in S3 to store backup file                                    |                                                |
-| `backupOperator.spec.s3.awsSecret`                | Name of kubernetes secrete containing aws credentials                |                                                |
+| `backupOperator.spec.clientTLSSecret`             | Name of kubernetes secret containing the etcd TLS client certs       |                                                |
+| `backupOperator.spec.storageType`                 | Storage to use for backup file, currently only ABS and S3 supported  | `S3`                                           |
+| `backupOperator.spec.abs.path`                    | Path in ABS to store backup file                                     |                                                |
+| `backupOperator.spec.abs.absSecret`               | Name of kubernetes secret containing abs storage-account/storage-key |                                                |
+| `backupOperator.spec.s3.path`                     | Path in S3 to store backup file                                      |                                                |
+| `backupOperator.spec.s3.awsSecret`                | Name of kubernetes secret containing aws config and credentials      |                                                |
 | `backupOperator.nodeSelector`                     | Node labels for etcd operator pod assignment                         | `{}`                                           |
 | `backupOperator.commandArgs`                      | Additional command arguments                                         | `{}`                                           |
+| `backupOperator.podAnnotations`                   | Extra annotations to be added to the operator pods                   | `{}`                                           |
+| `backupOperator.podLabels`                        | Extra labels to be added to the operator pods                        | `{}`                                           |
 | `restoreOperator.name`                            | Restore operator name                                                | `etcd-backup-operator`                         |
+| `restoreOperator.port`                            | Restore operator service port                                        | `19999`                                        |
 | `restoreOperator.replicaCount`                    | Number of operator replicas to create (only 1 is supported)          | `1`                                            |
 | `restoreOperator.image.repository`                | Operator container image                                             | `quay.io/coreos/etcd-operator`                 |
-| `restoreOperator.image.tag`                       | Operator container image tag                                         | `v0.7.0`                                       |
-| `restoreOperator.image.pullpolicy`                | Operator container image pull policy                                 | `Always`                                       |
+| `restoreOperator.image.tag`                       | Operator container image tag                                         | `v0.9.0`                                       |
+| `restoreOperator.image.pullPolicy`                | Operator container image pull policy                                 | `Always`                                       |
 | `restoreOperator.resources.cpu`                   | CPU limit per etcd-operator pod                                      | `100m`                                         |
 | `restoreOperator.resources.memory`                | Memory limit per etcd-operator pod                                   | `128Mi`                                        |
+| `restoreOperator.spec.abs.path`                   | Path in ABS bucket containing the backup file                         |                                                |
+| `restoreOperator.spec.abs.awsSecret`              | Name of kubernetes secret containing abs storage-account/storage-key |                                                |
 | `restoreOperator.spec.s3.path`                    | Path in S3 bucket containing the backup file                         |                                                |
-| `restoreOperator.spec.s3.awsSecret`               | Name of kubernetes secrete containing aws credentials                |                                                |
+| `restoreOperator.spec.s3.awsSecret`               | Name of kubernetes secret containing aws config and credentials      |                                                |
 | `restoreOperator.nodeSelector`                    | Node labels for etcd operator pod assignment                         | `{}`                                           |
 | `restoreOperator.commandArgs`                     | Additional command arguments                                         | `{}`                                           |
+| `restoreOperator.podAnnotations`                  | Extra annotations to be added to the operator pods                   | `{}`                                           |
+| `restoreOperator.podLabels`                       | Extra labels to be added to the operator pods                        | `{}`                                           |
 | `etcdCluster.name`                                | etcd cluster name                                                    | `etcd-cluster`                                 |
 | `etcdCluster.size`                                | etcd cluster size                                                    | `3`                                            |
 | `etcdCluster.version`                             | etcd cluster version                                                 | `3.2.10`                                       |
@@ -105,6 +120,8 @@ The following tables lists the configurable parameters of the etcd-operator char
 | `etcdCluster.tls.static.member.serverSecret`      | Kubernetes secret containing TLS server certs                        | `etcd-server-tls`                              |
 | `etcdCluster.tls.static.operatorSecret`           | Kubernetes secret containing TLS client certs                        | `etcd-client-tls`                              |
 | `etcdCluster.pod.antiAffinity`                    | Whether etcd cluster pods should have an antiAffinity                | `false`                                        |
+| `etcdCluster.pod.annotations`                     | Annotations per etcd cluster pod                                     | `{}`                                           |
+| `etcdCluster.pod.etcdEnv`                         | Environment variables per etcd cluster pod                           | `{}`                                           |
 | `etcdCluster.pod.resources.limits.cpu`            | CPU limit per etcd cluster pod                                       | `100m`                                         |
 | `etcdCluster.pod.resources.limits.memory`         | Memory limit per etcd cluster pod                                    | `128Mi`                                        |
 | `etcdCluster.pod.resources.requests.cpu`          | CPU request per etcd cluster pod                                     | `100m`                                         |
