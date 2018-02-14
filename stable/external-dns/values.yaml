@@ -1,7 +1,7 @@
 ## Details about the image to be pulled.
 image:
   name: registry.opensource.zalan.do/teapot/external-dns
-  tag: v0.4.8
+  tag: v0.4.9
 
   pullPolicy: IfNotPresent
 
@@ -25,18 +25,19 @@ aws:
   # Filter for zones of this type (optional, options: public, private)
   zoneType: ""
 
-# Google specific settings
+# When using the Google provider, specify the Google project (required when provider=google)
 google:
-  ## Add the content of a json credentials file to the environment variable GOOGLE_APPLICATION_CREDENTIALS
+  project: ""
+  # Add the content of a json credentials file to the environment variable GOOGLE_APPLICATION_CREDENTIALS
   applicationCredentials: ""
+  # Provide credentials not by value but by reference to an existing secret instead
+  applicationSecret: ""
+  applicationSecretKey: ""
 
 # Cloudflare keys to inject as environment variables
 cloudflare:
   apiKey: ""
   email: ""
-# When using the Google provider, specify the Google project (required when provider=google)
-google:
-  project: ""
 
 ## Limit possible target zones by domain suffixes (optional)
 domainFilters: []

@@ -36,4 +36,4 @@ release: {{.Release.Name }}
 {{define "external-dns.google.applicationCredentialVolumePath"}}/var/secrets/google{{end}}
 
 {{/* Google application credentials directory */}}
-{{define "external-dns.google.applicationCredentialPath"}}google-appplication-credentials{{end}}
+{{define "external-dns.google.applicationCredentialPath"}}{{ .Values.google.applicationSecretKey | default "google-appplication-credentials" }}{{end}}
