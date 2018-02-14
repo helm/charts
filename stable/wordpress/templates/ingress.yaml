@@ -3,7 +3,7 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: "{{- printf "%s-%s" .name $.Release.Name | trunc 63 | trimSuffix "-" -}}"
+  name: "{{- printf "%s-%s" .name $.Release.Name | trunc 63 | replace "." "_" | trimSuffix "-" -}}"
   labels:
     app: {{ template "fullname" $ }}
     chart: "{{ $.Chart.Name }}-{{ $.Chart.Version }}"
