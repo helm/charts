@@ -37,8 +37,8 @@
 
 * Login with the following credentials
   {{ if .Values.secrets.create }}
-  Username: {{ .Values.secrets.concourse.basicAuth.username }}
-  Password: {{ .Values.secrets.concourse.basicAuth.password }}
+  Username: {{ .Values.secrets.basicAuthUsername }}
+  Password: {{ .Values.secrets.basicAuthPassword }}
   {{ else }}
   Username: see basic-auth-username in secret {{ template "concourse.concourse.fullname" . }}
   Password: see basic-auth-password in secret {{ template "concourse.concourse.fullname" . }}

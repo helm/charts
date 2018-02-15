@@ -147,31 +147,28 @@ The following tables lists the configurable parameters of the Concourse chart an
 | `rbac.apiVersion` | RBAC version | `v1beta1` |
 | `rbac.serviceAccountName` | Name of the service account to use if `rbac.create` is `false` | `v1beta1` |
 | `secrets.create` | Create the secret resource from the following values. *See [Secrets](#Secrets)* | `true` |
-| `secrets.concourse.hostKey` | Concourse Host Private Key | *See [values.yaml](values.yaml)* |
-| `secrets.concourse.hostKeyPub` | Concourse Host Public Key | *See [values.yaml](values.yaml)* |
-| `secrets.concourse.sessionSigningKey` | Concourse Session Signing Private Key | *See [values.yaml](values.yaml)* |
-| `secrets.concourse.workerKey` | Concourse Worker Private Key | *See [values.yaml](values.yaml)* |
-| `secrets.concourse.workerKeyPub` | Concourse Worker Public Key | *See [values.yaml](values.yaml)* |
-| `secrets.concourse.encryption.key` | current encryption key | `nil` |
-| `secrets.concourse.encryption.oldKey` | old encryption key, used for key rotation | `nil` |
-| `secrets.concourse.basicAuth.username` | Concourse Basic Authentication Username | `concourse` |
-| `secrets.concourse.basicAuth.password` | Concourse Basic Authentication Password | `concourse` |
-| `secrets.concourse.githubAuth.clientId` | Application client ID for GitHub OAuth | `nil` |
-| `secrets.concourse.githubAuth.clientSecret` | Application client secret
-for GitHub OAuth | `nil` |
-| `secrets.concourse.gitlabAuth.clientId` | Application client ID for GitLab OAuth | `nil` |
-| `secrets.concourse.gitlabAuth.clientSecret` | Application client secret
-for GitLab OAuth | `nil` |
-| `secrets.concourse.genericOauth.clientId` | Application client ID for Generic OAuth | `nil` |
-| `secrets.concourse.genericOauth.clientSecret` | Application client secret
-for Generic OAuth | `nil` |
-| `secrets.postgresql.uri` | PostgreSQL connection URI when `postgres.enabled` is `false` | `nil` |
-| `secrets.credentialManager.vault.caCert` | CA certificate   use to verify the vault server SSL cert. | `nil` |
-| `secrets.credentialManager.vault.clientToken` | Vault periodic client token | `nil` |
-| `secrets.credentialManager.vault.appRoleId` | Vault AppRole RoleID | `nil` |
-| `secrets.credentialManager.vault.appRoleSecretId` | Vault AppRole SecretID | `nil` |
-| `secrets.credentialManager.vault.clientCert` | Vault Client Certificate | `nil` |
-| `secrets.credentialManager.vault.clientKey` | Vault Client Key | `nil` |
+| `secrets.hostKey` | Concourse Host Private Key | *See [values.yaml](values.yaml)* |
+| `secrets.hostKeyPub` | Concourse Host Public Key | *See [values.yaml](values.yaml)* |
+| `secrets.sessionSigningKey` | Concourse Session Signing Private Key | *See [values.yaml](values.yaml)* |
+| `secrets.workerKey` | Concourse Worker Private Key | *See [values.yaml](values.yaml)* |
+| `secrets.workerKeyPub` | Concourse Worker Public Key | *See [values.yaml](values.yaml)* |
+| `secrets.encryptionKey` | current encryption key | `nil` |
+| `secrets.oldEncryptionKey` | old encryption key, used for key rotation | `nil` |
+| `secrets.basicAuthUsername` | Concourse Basic Authentication Username | `concourse` |
+| `secrets.basicAuthPassword` | Concourse Basic Authentication Password | `concourse` |
+| `secrets.githubAuthClientId` | Application client ID for GitHub OAuth | `nil` |
+| `secrets.githubAuthClientSecret` | Application client secret for GitHub OAuth | `nil` |
+| `secrets.gitlabAuthClientId` | Application client ID for GitLab OAuth | `nil` |
+| `secrets.gitlabAuthClientSecret` | Application client secret for GitLab OAuth | `nil` |
+| `secrets.genericOauthClientId` | Application client ID for Generic OAuth | `nil` |
+| `secrets.genericOauthClientSecret` | Application client secret for Generic OAuth | `nil` |
+| `secrets.postgresqlUri` | PostgreSQL connection URI when `postgres.enabled` is `false` | `nil` |
+| `secrets.vaultCaCert` | CA certificate   use to verify the vault server SSL cert. | `nil` |
+| `secrets.vaultClientToken` | Vault periodic client token | `nil` |
+| `secrets.vaultAppRoleId` | Vault AppRole RoleID | `nil` |
+| `secrets.vaultAppRoleSecretId` | Vault AppRole SecretID | `nil` |
+| `secrets.vaultClientCert` | Vault Client Certificate | `nil` |
+| `secrets.vaultClientKey` | Vault Client Key | `nil` |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
@@ -296,7 +293,7 @@ By default, this chart will use a PostgreSQL database deployed as a chart depend
 
 You can also bring your own PostgreSQL. To do so, set `postgresql.enabled` to false. You'll then need to specify the full uri to the database, including the username and password, e.g. `postgres://concourse:changeme@my-postgres.com:5432/concourse?sslmode=require`. You can do this one of two ways:
 
-1. Set `secrets.postgresql.uri` in your values
+1. Set `secrets.postgresqlUri` in your values
 
 2. Set `postgresql-uri` in your release's secrets as described in [Secrets](#Secrets).
 
