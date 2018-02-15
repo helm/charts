@@ -12,6 +12,7 @@ This chart bootstraps a single node GoCD server and GoCD agents on a [Kubernetes
 
 - Kubernetes 1.8+ with Beta APIs enabled
 - PV provisioner support in the underlying infrastructure
+- LoadBalancer support or Ingress Controller
 
 ## Installing the Chart
 
@@ -19,7 +20,7 @@ To install the chart with the release name `gocd-app`:
 
 ```bash
 $ helm repo add incubator https://kubernetes-charts-incubator.storage.googleapis.com/
-$ helm install --name gocd-app incubator/gocd
+$ helm install --name gocd-app --namespace gocd incubator/gocd
 ```
 
 The command deploys GoCD on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.

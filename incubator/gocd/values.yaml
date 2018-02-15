@@ -2,6 +2,11 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+rbac:
+  install: true
+  apiVersion: v1beta1
+  roleRef:
+
 server:
   # server.enabled is the toggle to run GoCD Server. Change to false for Agent Only Deployment.
   enabled: true

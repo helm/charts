@@ -1,0 +1,16 @@
+{{ if and .Values.rbac.install (not .Values.rbac.roleRef) }}
+apiVersion: rbac.authorization.k8s.io/{{ required "A valid .Values.rbac.apiVersion entry required!" .Values.rbac.apiVersion }}
+kind: Role
+metadata:
+  name: {{ template "gocd.fullname" . }}
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app: "{{ template "gocd.fullname" . }}"
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+rules:
+- apiGroups: [""]
+  resources:
+  - pods
+  verbs: ["list", "create", "update", "delete"]
+{{ end }}
