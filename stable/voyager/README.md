@@ -14,7 +14,7 @@ This chart bootstraps an [ingress controller](https://github.com/appscode/voyage
 
 ## Prerequisites
 
-- Kubernetes 1.7+
+- Kubernetes 1.8+
 
 ## Installing the Chart
 To install the chart with the release name `my-release`:
@@ -40,27 +40,27 @@ The command removes all the Kubernetes components associated with the chart and 
 The following tables lists the configurable parameters of the Voyager chart and their default values.
 
 
-| Parameter                 | Description                                                   | Default            |
-| --------------------------| ------------------------------------------------------------- | ------------------ |
-| `operator.image`          | Name of Voyager operator image                                | `appscode/voyager` |
-| `operator.imageTag`       | Tag of Voyager operator image                                 | `5.0.0-rc.11`       |
-| `haproxy.image`           | Name of HAProxy container image                               | `appscode/haproxy` |
-| `haproxy.imageTag`        | Tag of HAProxy container image                                | `1.7.9-5.0.0-rc.11` |
-| `exporter.image`          | Name of Prometheus exporter sidecar image                     | `appscode/voyager` |
-| `exporter.imageTag`       | Tag of Prometheus exporter sidecar image                      | `5.0.0-rc.11`       |
-| `imagePullSecrets`        | Specify image pull secrets                                    | `nil` (does not add image pull secrets to deployed pods) |
-| `imagePullPolicy`         | Image pull policy                                             | `IfNotPresent`     |
-| `cloudProvider`           | Name of cloud provider                                        | `nil`              |
-| `cloudConfig`             | Path to cloud config                                          | ``                 |
-| `criticalAddon`           | If true, installs voyager operator as critical addon          | `false`            |
-| `logLevel`                | Log level for operator                                        | `3`                |
-| `persistence.enabled`     | Enable mounting cloud config                                  | `false`            |
-| `persistence.hostPath`    | Host mount path for cloud config                              | `/etc/kubernetes`  |
-| `nodeSelector`            | Node labels for pod assignment                                | `{}`               |
-| `rbac.create`             | install required rbac service account, roles and rolebindings | `false`            |
-| `rbac.serviceAccountName` | ServiceAccount Voyager will use (ignored if rbac.create=true) | `default`          |
-| `ingressClass`            | Ingress class to watch for. If empty, it handles all ingress  | ``                 |
-
+| Parameter                          | Description                                                   | Default               |
+| -----------------------------------| ------------------------------------------------------------- | ----------------------|
+| `dockerRegistry`                   | Docker registry used to pull Voyager related images           | `appscode`            |
+| `imageTags.voyager`                | Tag of Voyager operator image                                 | `6.0.0-rc.0`       |
+| `imageTags.haproxy`                | Tag of HAProxy container image                                | `1.7.9-6.0.0-rc.0` |
+| `imagePullSecrets`                 | Specify image pull secrets                                    | `nil` (does not add image pull secrets to deployed pods) |
+| `imagePullPolicy`                  | Image pull policy                                             | `IfNotPresent`        |
+| `cloudProvider`                    | Name of cloud provider                                        | `nil`                 |
+| `cloudConfig`                      | Path to cloud config                                          | ``                    |
+| `criticalAddon`                    | If true, installs voyager operator as critical addon          | `false`               |
+| `logLevel`                         | Log level for operator                                        | `3`                   |
+| `persistence.enabled`              | Enable mounting cloud config                                  | `false`               |
+| `persistence.hostPath`             | Host mount path for cloud config                              | `/etc/kubernetes`     |
+| `nodeSelector`                     | Node labels for pod assignment                                | `{}`                  |
+| `rbac.create`                      | install required rbac service account, roles and rolebindings | `false`               |
+| `rbac.serviceAccountName`          | ServiceAccount Voyager will use (ignored if rbac.create=true) | `default`             |
+| `ingressClass`                     | Ingress class to watch for. If empty, it handles all ingress  | ``                    |
+| `apiserver.groupPriorityMinimum`   | The minimum priority the group should have.                   | 10000                 |
+| `apiserver.versionPriority`        | The ordering of this API inside of the group.                 | 15                    |
+| `apiserver.enableAdmissionWebhook` | Configure apiserver as adission webhooks for Voyager CRDs     | false                 |
+| `apiserver.ca`                     | CA certificate used by main Kubernetes api server             | ``                    |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
 
