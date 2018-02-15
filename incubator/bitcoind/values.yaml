@@ -1,5 +1,5 @@
 image:
-  repository: "kuberstack/bitcoind"
+  repository: "kylemanna/bitcoind"
   tag: "latest"
   pullPolicy: IfNotPresent
 

@@ -29,10 +29,11 @@ spec:
               containerPort: {{ .Values.service.testnetPort }}
           volumeMounts:
             - name: data
-              mountPath: /root
+              mountPath: /bitcoin
             {{- if .Values.configurationFile }}
             - name: config
-              mountPath: /etc/bitcoind
+              mountPath: /bitcoin/.bitcoin/bitcoin.conf
+              subPath: bitcoin.conf
             {{- end }}
       volumes:
         {{- if .Values.configurationFile }}
