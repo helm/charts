@@ -1,8 +1,8 @@
-Kanister-operator is intalled.
+Kanister-operator is installed.
 
-Getting Started is avalible: https://github.com/kanisterio/kanister
+Getting Started is available: https://github.com/kanisterio/kanister
 
-Documentation is avalible: https://docs.kanister.io/
+Documentation is available: https://docs.kanister.io/
 
 Please report any issues: https://github.com/kanisterio/kanister/issues
 
