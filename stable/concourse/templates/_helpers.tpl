@@ -41,3 +41,7 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- required (printf "secrets.%s is required because secrets.create is true and %s isnt true" .key .isnt) (index .root.Values.secrets .key ) | b64enc | quote }}
 {{- end -}}
 {{- end -}}
+
+{{- define "concourse.namespacePrefix" -}}
+{{- default (printf "%s-" .Release.Name ) .Values.credentialManager.kubernetes.namespacePrefix -}}
+{{- end -}}

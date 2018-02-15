@@ -138,6 +138,9 @@ The following tables lists the configurable parameters of the Concourse chart an
 | `postgresql.postgresPassword` | PostgreSQL Password for the new user | `concourse` |
 | `postgresql.postgresDatabase` | PostgreSQL Database to create | `concourse` |
 | `postgresql.persistence.enabled` | Enable PostgreSQL persistence using Persistent Volume Claims | `true` |
+| `credentialManager.kubernetes.enabled` | Enable Kubernetes Secrets Credential Manager | `true` |
+| `credentialManager.kubernetes.namespacePrefix` | Prefix for namespaces to look for secrets in | `.Release.Name-` |
+| `credentialManager.kubernetes.teams` | Teams to allow secret access when rbac is enabled | `["main"]` |
 | `credentialManager.vault.enabled` | Uuse Hashicorp Vault as a Credential Manager | `false` |
 | `credentialManager.vault.url` | Vault Server URL | `nil` |
 | `credentialManager.vault.pathPrefix` | Vault path to namespace secrets | `/concourse` |
@@ -301,7 +304,55 @@ The only way to completely avoid putting secrets in Helm is to bring your own Po
 
 ### Credential Management
 
-By default, this chart will not use a [Credential Manager](https://concourse.ci/creds.html).
+Pipelines ususally need credentials to do things. Concourse supports the use of a [Credential Manager](https://concourse.ci/creds.html) so your pipelines can contain references to secrets instead of the actual secret values. You can't use more than one credential manager at a time.
+
+#### Kubernetes Secrets
+
+By default, this chart will use Kubernetes Secrets as a credential manager. For a given Concourse *team*, a pipeline will look for secrets in a namespace named `[namespacePrefix][teamName]`. The namespace prefix is the release name hyphen by default, and can be overridden with the value `credentialManager.kubernetes.namespacePrefix`. The service account used by Concourse must have `get` access to secrets in that namespace. When `rbac.create` is true, this access is granted for each team listed under `credentialManager.kubernetes.teams`.
+
+Here are some examples of the lookup heuristics, given release name `concourse`:
+
+In team `accounting-dev`, pipeline `my-app`; the expression `((api-key))` resolves to:
+
+1. the secret value in namespace: `concourse-accounting-dev` secret: `my-app.api-key`, key: `value`
+2. and if not found, is the value in namespace: `concourse-accounting-dev` secret: `api-key`, key: `value`
+
+In team accounting-dev, pipeline `my-app`, the expression `((common-secrets.api-key))` resolves to:
+
+1. the secret value in namespace: `concourse-accounting-dev` secret: `my-app.common-secrets`, key: `api-key`
+2. and if not found, is the value in namespace: `concourse-accounting-dev` secret: `common-secrets`, key: `api-key`
+
+Be mindful of your team and pipeline names, to ensure they can be used in namespace and secret names, e.g. no underscores.
+
+To test, create a secret in namespace `concourse-main`:
+
+```console
+kubectl create secret generic hello --from-literal 'value=Hello world!'
+```
+
+Then `fly set-pipeline` with the following pipeline, and trigger it:
+
+```yaml
+jobs:
+- name: hello-world
+  plan:
+  - task: say-hello
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source: {repository: alpine}
+      params:
+        HELLO: ((hello))
+      run:
+        path: /bin/sh
+        args: ["-c", "echo $HELLO"]
+```
+
+#### Hashicorp Vault
+
+To use Vault, set `credentialManager.kubernetes.enabled` to false, and set the following values:
+
 
 ```yaml
 ## Configuration values for the Credential Manager.

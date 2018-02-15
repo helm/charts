@@ -13,7 +13,7 @@ image: concourse/concourse
 ## Concourse image version.
 ## ref: https://hub.docker.com/r/concourse/concourse/tags/
 ##
-imageTag: "3.8.0"
+imageTag: "3.9.0"
 
 ## Specify a imagePullPolicy: 'Always' if imageTag is 'latest', else set to 'IfNotPresent'.
 ## ref: https://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -428,11 +428,30 @@ postgresql:
     ##
     enabled: true
 
-## Configuration values for the Credential Manager.
+## Configuration values for using a Credential Manager. Only one can be enabled.
 ## ref: https://concourse.ci/creds.html
 ##
 credentialManager:
-  ## use Hashicorp Vault as a Credential Manager.
+
+  ## Configuration for Kubernetes Secrets as the Credential Manager. Supported in Concourse 3.7.0.
+  ##
+  kubernetes:
+
+    ## Enable the use of Kubernetes Secrets.
+    ##
+    enabled: true
+
+    ## Prefix to use for Kubernetes namespaces under which secrets will be looked up. Defaults to
+    ## the Release name hyphen, e.g. "my-release-" produces namespace "my-release-main" for the
+    ## "main" Concourse team.
+    ##
+    ## namespacePrefix:
+
+    ## Teams to create namespaces for to hold secrets.
+    teams:
+      - main
+
+  ## Configuration for Hashicorp Vault as the Credential Manager.
   ##
   vault:
     enabled: false
@@ -463,9 +482,13 @@ rbac:
   # rbac version
   apiVersion: v1beta1
 
-  ## The name of the service account to use if rbac.create is false
+  ## The name of the service account to use for web pods if rbac.create is false
   ##
-  serviceAccountName: default
+  webServiceAccountName: default
+
+  ## The name of the service account to use for worker pods if rbac.create is false
+  ##
+  workerServiceAccountName: default
 
 ## For managing secrets using Helm
 ##

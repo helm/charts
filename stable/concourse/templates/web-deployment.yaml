@@ -14,6 +14,7 @@ spec:
       labels:
         app: {{ template "concourse.web.fullname" . }}
     spec:
+      serviceAccountName: {{ if .Values.rbac.create }}{{ template "concourse.web.fullname" . }}{{ else }}{{ .Values.rbac.webServiceAccountName }}{{ end }}
       tolerations:
 {{ toYaml .Values.web.tolerations | indent 8 }}
       containers:
@@ -27,6 +28,9 @@ spec:
             - "role_id=$(CONCOURSE_VAULT_APPROLE_ID)"
             - "--vault-auth-param"
             - "secret_id=$(CONCOURSE_VAULT_APPROLE_SECRET_ID)"
+            {{- end }}
+            {{- if .Values.credentialManager.kubernetes.enabled }}
+            - "--kubernetes-in-cluster"
             {{- end }}
           env:
             - name: CONCOURSE_TSA_HOST_KEY
@@ -171,6 +175,10 @@ spec:
               value: {{ .Values.concourse.genericOauth.scope | quote }}
             - name: CONCOURSE_GENERIC_OAUTH_TOKEN_URL
               value: {{ .Values.concourse.genericOauth.tokenUrl | quote }}
+            {{- end }}
+            {{- if .Values.credentialManager.kubernetes.enabled }}
+            - name: CONCOURSE_KUBERNETES_NAMESPACE_PREFIX
+              value: {{ template "concourse.namespacePrefix" . }}
             {{- end }}
             {{- if .Values.credentialManager.vault.enabled }}
             - name: CONCOURSE_VAULT_URL
