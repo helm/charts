@@ -54,7 +54,6 @@ spec:
           {{- if .Values.aws.zoneType }}
             - --aws-zone-type={{ .Values.aws.zoneType }}
           {{- end }}
-<<<<<<< HEAD
           {{- if .Values.google.project }}
             - --google-project={{ .Values.google.project }}
           {{- end }}
@@ -67,12 +66,6 @@ spec:
           {{- if or .Values.google.applicationCredentials .Values.google.applicationSecret }}
           - name: {{ template "external-dns.google.volumeMountName" . }}
             mountPath: {{ template "external-dns.google.applicationCredentialVolumePath" . }}
-=======
-          volumeMounts:
-          {{- if .Values.google.applicationCredentials }}
-            - name: {{ template "external-dns.google.volumeMountName" . }}
-              mountPath: {{ template "external-dns.google.applicationCredentialVolumePath" . }}
->>>>>>> Support for using Google Cloud service accounts with Kubernetes secrets.
           {{- end }}
           env:
         {{- if eq .Values.provider "aws" }}
@@ -102,11 +95,7 @@ spec:
           - name: CF_API_EMAIL
             value: "{{ .Values.cloudflare.email }}"
         {{- end }}
-<<<<<<< HEAD
         {{- if or .Values.google.applicationCredentials .Values.google.applicationSecret }}
-=======
-        {{- if .Values.google.applicationCredentials }}
->>>>>>> Support for using Google Cloud service accounts with Kubernetes secrets.
           - name: GOOGLE_APPLICATION_CREDENTIALS
             value: {{ template "external-dns.google.applicationCredentialVolumePath" . }}/{{ template "external-dns.google.applicationCredentialPath" . }}
         {{- end }}        
