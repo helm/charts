@@ -9,7 +9,7 @@ metadata:
     release: "{{ .Release.Name }}"
   name: {{ template "grafana.server.fullname" . }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.server.replicaCount }}
   template:
     metadata:
       annotations:
@@ -29,6 +29,27 @@ spec:
       tolerations:
 {{ toYaml .Values.server.tolerations | indent 8 }}
   {{- end }}
+      {{- if .Values.server.antiAffinity.enabled }}
+      affinity:
+        podAntiAffinity:
+          {{- $antiAffinityType := default "hard" .Values.server.antiAffinity.type | lower }}
+          {{- if eq $antiAffinityType "hard" }}
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - topologyKey: "kubernetes.io/hostname"
+            labelSelector:
+              matchLabels:
+                app: {{ template "grafana.server.fullname" . }}
+          {{- end }}
+          {{- if eq $antiAffinityType "soft" }}
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 1
+            podAffinityTerm:
+              topologyKey: "kubernetes.io/hostname"
+              labelSelector:
+                matchLabels:
+                  app: {{ template "grafana.server.fullname" . }}
+          {{- end }}
+      {{- end }}
       containers:
         - name: {{ template "grafana.name" . }}
           image: "{{ .Values.server.image }}"

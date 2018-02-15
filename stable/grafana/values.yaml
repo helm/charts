@@ -12,6 +12,14 @@ server:
   nodeSelector: {}
   tolerations: []
 
+  # Multiple replicas do not work with the default sqlite database,
+  # see http://docs.grafana.org/tutorials/ha_setup/.
+  replicaCount: 1
+
+  antiAffinity:
+    enabled: false
+    type: hard
+
   ingress:
     ## If true, Grafana Ingress will be created
     ##
