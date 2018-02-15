@@ -88,23 +88,6 @@ helm install . --values values.yaml --set external-dns.google.applicationSecret=
 
 [Service account documentation](https://cloud.google.com/compute/docs/access/service-accounts)
 
-=======
-## Using a Google Cloud Service Account Json File
-=======
-## Using the chart with a Google Cloud Service Account
-
-To use `external-dns` with Google Kuberentes Engine the deployment needs to create an environment variable called `GOOGLE_APPLICATION_CREDENTIALS` for the `external-dns` pod containing a base64 encoded representation of a service account credentials, this is need to give the pod access rights to Google Cloud DNS. 
-
-Below is an example on how to read the service account json file and encoding it on the command line when running `helm install`. The reason for doing this from the command line is to separate the highly sensitive information in the exported service account credentials file from the values.yaml file that may be accidentally stored elsewhere.
-
-This example requires that you have `openssl` installed.
-
-```
-helm install . --values values.yaml --set external-dns.google.applicationCredentials="$(cat serviceaccount-key-dns-read-write.json | openssl base64 -A)"
-```
-
-[Service account documentation](https://cloud.google.com/compute/docs/access/service-accounts)
-
 ## IAM Permissions
 
 ```json
