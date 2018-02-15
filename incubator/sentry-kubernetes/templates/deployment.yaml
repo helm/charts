@@ -1,27 +1,28 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "sentry-kubernetes.fullname" . }}
-  labels: {{ include "sentry-kubernetes.labels" . | indent 4 }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    labels: {{ include "sentry-kubernetes.labels" . | indent 4 }}
+    name: {{ template "sentry-kubernetes.fullname" . }}
 spec:
   replicas: {{ .Values.replicaCount }}
   template:
     metadata:
-      labels: {{ include "sentry-kubernetes.labels" . | indent 8 }}
+      labels:
+        app: {{ template "sentry-kubernetes.name" . }}
+        release: {{.Release.Name }}    
     spec:
       containers:
-        - name: {{ .Chart.Name }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
-          env:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        env:
           - name: DSN
             valueFrom:
               secretKeyRef:
                 name: {{ template "sentry-kubernetes.fullname" . }}
                 key: sentry.dsn
-          resources:
-{{ toYaml .Values.resources | indent 12 }}
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
     {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}

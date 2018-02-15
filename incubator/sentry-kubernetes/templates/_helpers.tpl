@@ -20,7 +20,12 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 app: {{ template "sentry-kubernetes.name" . }}
 heritage: {{.Release.Service }}
 release: {{.Release.Name }}
+chart: {{ template "sentry-kubernetes.chartref" . }}
 {{- if .Values.podLabels}}
 {{ toYaml .Values.podLabels }}
 {{- end }}
 {{- end }}
+
+{{- define "sentry-kubernetes.chartref" -}}
+  {{- replace "+" "_" .Chart.Version | printf "%s-%s" .Chart.Name -}}
+{{- end -}}
