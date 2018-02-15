@@ -56,7 +56,7 @@ spec:
             - name: RABBITMQ_USE_LONGNAME
               value: "true"
             - name: RABBITMQ_NODENAME
-              value: "rabbit@$(MY_POD_IP)"
+              value: "rabbit@$(HOSTNAME)"
             - name: K8S_SERVICE_NAME
               value: {{ template "rabbitmq-ha.fullname" . }}
             - name: RABBITMQ_ERLANG_COOKIE
