@@ -6,6 +6,7 @@ image:
 rpcPort: 8545
 wsPort: 8546
 rpcApi: "net,eth,personal,web3"
+rpcVhosts: "*"
 wsApi: "net,eth,personal,web3"
 wsOrigins: "*"
 networkId: 1
