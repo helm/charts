@@ -5,7 +5,9 @@ version: 0.2.0
 home: https://kanister.io/
 maintainers:
   - email: ilya@kasten.io
-    name: Ilya Kislenko
+    name: depohmel
   - email: tom@kasten.io
-    name: Tom Manville
+    name: tdmanv
 icon: https://avatars3.githubusercontent.com/u/30535216?s=200&v=4
+appVersion: 0.2.0
+source: https://github.com/kanisterio/kanister
