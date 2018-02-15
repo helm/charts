@@ -27,8 +27,11 @@ spec:
     spec:
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "prometheus.server.fullname" . }}{{ else }}"{{ .Values.server.serviceAccountName }}"{{ end }}
       initContainers:
-      - name: "init-chown-data"
-        image: "busybox"
+      - name: "{{ .Values.initChownData.name }}"
+        image: "{{ .Values.initChownData.image.repository }}:{{ .Values.initChownData.image.tag }}"
+        imagePullPolicy: "{{ .Values.initChownData.image.pullPolicy }}"
+        resources:
+{{ toYaml .Values.initChownData.resources | indent 12 }}
         # 65534 is the nobody user that prometheus uses.
         command: ["chown", "-R", "65534:65534", "{{ .Values.server.persistentVolume.mountPath }}"]
         volumeMounts:
@@ -71,13 +74,13 @@ spec:
             - containerPort: 9090
           readinessProbe:
             httpGet:
-              path: /-/ready
+              path: {{ .Values.server.prefixURL }}/-/ready
               port: 9090
             initialDelaySeconds: 30
             timeoutSeconds: 30
           livenessProbe:
             httpGet:
-              path: /-/healthy
+              path: {{ .Values.server.prefixURL }}/-/healthy
               port: 9090
             initialDelaySeconds: 30
             timeoutSeconds: 30

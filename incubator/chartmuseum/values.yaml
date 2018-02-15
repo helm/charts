@@ -35,6 +35,8 @@ env:
     ALLOW_OVERWRITE: false
     # absolute url for .tgzs in index.yaml
     CHART_URL:
+    # allow annonymous GET operations when auth is used
+    AUTH_ANONYMOUS_GET: false
   secret:
     # username for basic http authentication
     BASIC_AUTH_USER:
@@ -53,8 +55,9 @@ service:
   type: ClusterIP
   externalPort: 8080
   internalPort: 8080
+  nodePort:
   annotations: {}
-    # foo.io/bar: "true"
+
 resources:
   limits:
     cpu: 100m
