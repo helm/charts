@@ -49,7 +49,7 @@ The following tables lists the configurable parameters of the Parse chart and th
 | `loadBalancerIP`                   | `loadBalancerIP` for the Parse Service | `nil`                                       |
 | `server.image`                     | Parse server image                     | `bitnami/parse:{VERSION}`                   |
 | `server.imagePullPolicy`           | Parse server image pull policy         | `IfNotPresent`                              |
-| `server.port`                      | Parse server server port               | `1337`                                      |
+| `server.port`                      | Parse server port               | `1337`                                      |
 | `server.mountPath`                 | Parse server API mount path            | `/parse`                                    |
 | `server.appId`                     | Parse server App Id                    | `myappID`                                   |
 | `server.masterKey`                 | Parse server Master Key                | `random 10 character alphanumeric string`   |
