@@ -1,23 +1,23 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "kanister-operator.fullname" . }}
   labels:
-{{ include "helm.labels" . | indent 4 }}
+{{ include "kanister-operator.helmLabels" . | indent 4 }}
 spec:
   replicas: 1
   template:
     metadata:
       labels:
-{{ include "helm.labels" . | indent 8}}
+{{ include "kanister-operator.helmLabels" . | indent 8}}
     spec:
 {{- if .Values.rbac.service_account }}
       serviceAccountName: {{ .Values.rbac.service_account }}
 {{- else if .Values.rbac.create }}
-      serviceAccountName: {{ template "fullname" . }}-sa
+      serviceAccountName: {{ template "kanister-operator.fullname" . }}-sa
 {{- end }}
       containers:
-      - name: {{ template "fullname" . }}
+      - name: {{ template "kanister-operator.fullname" . }}
         image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
         imagePullPolicy: {{ .Values.image.pullPolicy }}
 {{- if .Values.resources }}

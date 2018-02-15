@@ -3,8 +3,8 @@ kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1beta1
 metadata:
   labels:
-{{ include "helm.labels" . | indent 4 }}
-  name: {{ template "fullname" . }}-cluster-role
+{{ include "kanister-operator.helmLabels" . | indent 4 }}
+  name: {{ template "kanister-operator.fullname" . }}-cluster-role
 rules:
 - apiGroups:
   - cr.kanister.io
@@ -17,36 +17,36 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   labels:
-{{ include "helm.labels" . | indent 4 }}
-  name: {{ template "fullname" . }}-sa
+{{ include "kanister-operator.helmLabels" . | indent 4 }}
+  name: {{ template "kanister-operator.fullname" . }}-sa
 ---
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1beta1
 metadata:
   labels:
-{{ include "helm.labels" . | indent 4 }}
-  name: {{ template "fullname" . }}-edit-role
+{{ include "kanister-operator.helmLabels" . | indent 4 }}
+  name: {{ template "kanister-operator.fullname" . }}-edit-role
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
   name: edit
 subjects:
 - kind: ServiceAccount
-  name: {{ template "fullname" . }}-sa
+  name: {{ template "kanister-operator.fullname" . }}-sa
   namespace: {{ .Release.Namespace }}
 ---
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1beta1
 metadata:
   labels:
-{{ include "helm.labels" . | indent 4 }}
-  name: {{ template "fullname" . }}-cr-role
+{{ include "kanister-operator.helmLabels" . | indent 4 }}
+  name: {{ template "kanister-operator.fullname" . }}-cr-role
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: {{ template "fullname" . }}-cluster-role
+  name: {{ template "kanister-operator.fullname" . }}-cluster-role
 subjects:
 - kind: ServiceAccount
-  name: {{ template "fullname" . }}-sa
+  name: {{ template "kanister-operator.fullname" . }}-sa
   namespace: {{ .Release.Namespace }}
 {{- end }}
