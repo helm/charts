@@ -32,9 +32,20 @@ Create chart name and version as used by the chart label.
 {{- end -}}
 
 {{/* Helm required labels */}}
-{{- define "kanister-operator.labels" -}}
+{{- define "kanister-operator.helmLabels" -}}
 heritage: {{ .Release.Service }}
 release: {{ .Release.Name }}
 chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-app: {{ template "name" . }}
+app: {{ template "kanister-operator.name" . }}
+{{- end -}}
+
+{{/*
+Create the name of the service account to use
+*/}}
+{{- define "kanister-operator.serviceAccountName" -}}
+{{- if .Values.serviceAccount.create -}}
+    {{ default (include "kanister-operator.fullname" .) .Values.serviceAccount.name }}
+{{- else -}}
+    {{ default "default" .Values.serviceAccount.name }}
+{{- end -}}
 {{- end -}}

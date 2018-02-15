@@ -7,7 +7,9 @@ image:
   pullPolicy: IfNotPresent
 rbac:
   create: true
-  serviceAccountName:
+serviceAccount:
+  create: true
+  name:
 
 resources:
 # We usually recommend not to specify default resources and to leave this as a conscious

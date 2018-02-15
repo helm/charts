@@ -11,11 +11,7 @@ spec:
       labels:
 {{ include "kanister-operator.helmLabels" . | indent 8}}
     spec:
-{{- if .Values.rbac.service_account }}
-      serviceAccountName: {{ .Values.rbac.service_account }}
-{{- else if .Values.rbac.create }}
-      serviceAccountName: {{ template "kanister-operator.fullname" . }}-sa
-{{- end }}
+      serviceAccountName: {{ template "kanister-operator.serviceAccountName" . }}
       containers:
       - name: {{ template "kanister-operator.fullname" . }}
         image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
