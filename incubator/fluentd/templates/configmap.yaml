@@ -13,7 +13,7 @@ data:
     # it can lead to an infinite loop, when error in sending one message generates
     # another message which also fails to be sent and so on.
     <match fluent.**>
-      type null
+      @type null
     </match>
 
     # Used for health checking
