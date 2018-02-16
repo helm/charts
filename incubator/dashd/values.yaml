@@ -1,13 +1,13 @@
 image:
-  repository: "kuberstack/dashd"
+  repository: "dashpay/dashd"
   tag: "latest"
   pullPolicy: IfNotPresent
 
-rpcPort: 443
-
-ssl:
-  enabled: true
-  secretName: dashd-ssl
+service:
+  rpcPort: 9998
+  p2pPort: 9999
+  testnetPort: 19998
+  selector: tx-broadcast-svc
 
 persistence:
   enabled: true
@@ -25,19 +25,18 @@ persistence:
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
 ##
-resources:
-  requests:
-    memory: 512Mi
-    cpu: 300m
+resources: {}
+  # requests:
+  #   memory: 512Mi
+  #   cpu: 300m
 
-# Custom dashd configuration files used to override default dashd settings
-configurationFiles:
+# Custom dashd configuration file used to override default dashd settings
+configurationFile:
   dash.conf: |-
     onlynet=IPv4
     server=1
     rpcuser=rpcuser
     rpcpassword=rpcpassword
-    rpcport=9332
     rpcconnect=127.0.0.1
     disablewallet=0
     printtoconsole=1

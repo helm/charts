@@ -11,6 +11,7 @@ icon: https://www.dash.org/assets/img/logo-white.png
 sources:
   - https://github.com/kubernetes/charts
   - https://github.com/kuberstack/dashd
+  - https://github.com/dashpay/docker-dashd
 maintainers:
   - name: daniel-yavorovich
     email: daniel@arilot.com

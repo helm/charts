@@ -1,6 +1,6 @@
 # Dashd
 
-[Dash](https://www.dash.org/) is an experimental new digital currency that enables anonymous, instant payments to anyone, anywhere in the world. 
+[Dash](https://www.dash.org/) is an experimental new digital currency that enables anonymous, instant payments to anyone, anywhere in the world.
 
 ## Introduction
 
@@ -10,15 +10,6 @@ This chart bootstraps a single node Dash deployment on a [Kubernetes](http://kub
 
 - Kubernetes 1.7+ with Beta APIs enabled
 - PV provisioner support in the underlying infrastructure
-
-## Generate SSL certificate and deploy as secret
-
-```bash
-openssl req -x509 -nodes -days 3650 -newkey rsa:2048 -keyout server.key -out server.crt
-kubectl create secret generic dashd-ssl --from-file=server.crt --from-file=server.key
-```
-
-Please update `ssl.secretName` value in `values.yaml`. In this example it is `"dashd-ssl"`
 
 ## Installing the Chart
 
@@ -47,17 +38,19 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following tables lists the configurable parameters of the dashd chart and their default values.
 
-| Parameter                  | Description                        | Default                                                    |
-| -----------------------    | ---------------------------------- | ---------------------------------------------------------- |
-| `imageTag`                 | `dashd` image tag.                 | Most recent release                                        |
-| `imagePullPolicy`          | Image pull policy                  | `IfNotPresent`                                             |                                               |
-| `persistence.enabled`      | Create a volume to store data      | true                                                       |
-| `persistence.size`         | Size of persistent volume claim    | 300Gi RW                                                     |
-| `persistence.storageClass` | Type of persistent volume claim    | nil  (uses alpha storage class annotation)                 |
-| `persistence.accessMode`   | ReadWriteOnce or ReadOnly          | ReadWriteOnce                                              |
-| `persistence.existingClaim`| Name of existing persistent volume | `nil`
-| `resources`                | CPU/Memory resource requests/limits | Memory: `512Mi`, CPU: `300m`                              |
-| `configurationFiles`       | List of dashd configuration files  | `nil`
+Parameter                  | Description                        | Default
+-----------------------    | ---------------------------------- | ----------------------------------------------------------
+`imageTag`                 | `bitcoind` image tag.              | Most recent release
+`imagePullPolicy`          | Image pull policy                  | `IfNotPresent`
+`service.rpcPort`          | RPC port                           | `9998`
+`service.p2pPort`          | P2P port                           | `9999`
+`service.testnetPort`      | Testnet port                       | `19998`
+`service.selector`         | Node selector                      | `tx-broadcast-svc`
+`persistence.enabled`      | Create a volume to store data      | `true`
+`persistence.accessMode`   | ReadWriteOnce or ReadOnly          | `ReadWriteOnce`
+`persistence.size`         | Size of persistent volume claim    | `300Gi`
+`resources`                | CPU/Memory resource requests/limits| `{}`
+`configurationFile`        | Config file ConfigMap entry        |
 
 
 Dash is Bitcoin fork. For more information about Dash configuration please see example [bitcoin.conf](https://github.com/dash-project/dash/blob/master/contrib/debian/examples/bitcoin.conf).
@@ -65,7 +58,7 @@ Dash is Bitcoin fork. For more information about Dash configuration please see e
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```bash
-$ helm install --name my-release -f values.yaml stable/dashd
+$ helm install --name my-release -f values.yaml incubator/dashd
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
@@ -83,16 +76,15 @@ you can change the values.yaml to disable persistence and use an emptyDir instea
 
 Please NOT use emptyDir for production cluster! Your wallets will be lost on container restart!
 
-## Custom dashd configuration files
+## Custom dashd configuration file
 
 ```yaml
-configurationFiles:
+configurationFile:
   dash.conf: |-
     onlynet=IPv4
     server=1
     rpcuser=rpcuser
     rpcpassword=rpcpassword
-    rpcport=9332
     rpcconnect=127.0.0.1
     disablewallet=0
     printtoconsole=1
