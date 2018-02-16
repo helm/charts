@@ -27,7 +27,8 @@ spec:
             - "-endpoints"
             - "{{ index .Values "etcd-operator" "cluster" "name" }}-client:2379"
 {{- else }}
-            - "-endpoints {{ .Values.etcd.endpoints }}"
+            - "-endpoints" 
+            - "{{ .Values.etcd.endpoints }}"
 {{- end }}
           ports:
             - containerPort: {{ .Values.service.internalPort }}
