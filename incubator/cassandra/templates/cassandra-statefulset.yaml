@@ -56,6 +56,18 @@ spec:
 {{ toYaml .Values.podLabels | indent 8 }}
 {{- end }}
     spec:
+{{- if .Values.podAntiAffinity.enabled }}
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - {{ template "cassandra.fullname" . }}
+            topologyKey: "{{ .Values.podAntiAffinity.topologyKey }}"
+{{- end }}
 {{- if .Values.selector }}
 {{ toYaml .Values.selector | indent 6 }}
 {{- end }}

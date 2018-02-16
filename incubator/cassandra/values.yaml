@@ -62,6 +62,12 @@ config:
     # If a JVM Agent is in place
     # agent: 61621
 
+# Enable pod anti-affinity.
+# ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#inter-pod-affinity-and-anti-affinity-beta-feature
+podAntiAffinity:
+  enabled: false
+  topologyKey: "kubernetes.io/hostname"
+
 ## Configure node selector. Edit code below for adding selector to pods
 ## ref: https://kubernetes.io/docs/user-guide/node-selection/
 # selector:
