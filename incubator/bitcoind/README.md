@@ -44,12 +44,15 @@ Parameter                  | Description                        | Default
 -----------------------    | ---------------------------------- | ----------------------------------------------------------
 `imageTag`                 | `bitcoind` image tag.              | Most recent release
 `imagePullPolicy`          | Image pull policy                  | `IfNotPresent`
-`persistence.enabled`      | Create a volume to store data      | true
-`persistence.size`         | Size of persistent volume claim    | 300Gi RW
-`persistence.storageClass` | Type of persistent volume claim    | nil  (uses alpha storage class annotation)
-`persistence.accessMode`   | ReadWriteOnce or ReadOnly          | ReadWriteOnce
-`persistence.existingClaim`| Name of existing persistent volume | `nil`
-`resources`                | CPU/Memory resource requests/limits | `{}`
+`service.rpcPort`          | RPC port                           | `8332`
+`service.p2pPort`          | P2P port                           | `8333`
+`service.testnetPort`      | Testnet port                       | `18332`
+`service.selector`         | Node selector                      | `tx-broadcast-svc`
+`persistence.enabled`      | Create a volume to store data      | `true`
+`persistence.accessMode`   | ReadWriteOnce or ReadOnly          | `ReadWriteOnce`
+`persistence.size`         | Size of persistent volume claim    | `300Gi`
+`resources`                | CPU/Memory resource requests/limits| `{}`
+`configurationFile`        | Config file ConfigMap entry        |
 
 For more information about Bitcoin configuration please see [Bitcoin.conf_Configuration_File](https://en.bitcoin.it/wiki/Running_Bitcoin#Bitcoin.conf_Configuration_File).
 

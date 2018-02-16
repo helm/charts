@@ -1,4 +1,4 @@
-bitcoind RPC can be accessed via port {{ .Values.rpcPort }} on the following DNS name from within your cluster:
+bitcoind RPC can be accessed via port {{ .Values.service.rpcPort }} on the following DNS name from within your cluster:
 {{ template "bitcoind.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
 
 To connect to bitcoind RPC:
