@@ -22,26 +22,22 @@ spec:
   {{ toYaml .Values.resources | indent 10 }}
           ports:
             - name: rpc
-              containerPort: {{ .Values.rpcPort }}
+              containerPort: {{ .Values.service.rpcPort }}
+            - name: p2p
+              containerPort: {{ .Values.service.p2pPort }}
+            - name: testnet
+              containerPort: {{ .Values.service.testnetPort }}
           volumeMounts:
             - name: data
               mountPath: /root
-            {{- if .Values.ssl.enabled }}
-            - name: ssl
-              mountPath: /etc/bitcoincashd-ssl
-            {{- end }}
-            {{- if .Values.configurationFiles }}
-            - name: configurations
-              mountPath: /etc/bitcoincashd
+            {{- if .Values.configurationFile }}
+            - name: config
+              mountPath: /root/.bitcoin/bitcoincash.conf
+              subPath: bitcoincash.conf
             {{- end }}
       volumes:
-        {{- if .Values.ssl.enabled }}
-        - name: ssl
-          secret:
-            secretName: {{ .Values.ssl.secretName  }}
-        {{- end }}
-        {{- if .Values.configurationFiles }}
-        - name: configurations
+        {{- if .Values.configurationFile }}
+        - name: config
           configMap:
             name: {{ template "bitcoincashd.fullname" . }}
         {{- end }}

@@ -1,6 +1,6 @@
 name: bitcoincashd
 version: 0.1.0
-appVersion: 0.16.1.0
+appVersion: 0.16.2
 description: Bitcoin Cash is Peer-to-Peer Electronic Cash
 keywords:
   - bitcoincashd

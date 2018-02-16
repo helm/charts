@@ -1,13 +1,13 @@
 image:
   repository: "kuberstack/bitcoincashd"
-  tag: "latest"
+  tag: "1.0"
   pullPolicy: IfNotPresent
 
-rpcPort: 443
-
-ssl:
-  enabled: true
-  secretName: bitcoincashd-ssl
+service:
+  rpcPort: 8332
+  p2pPort: 8333
+  testnetPort: 18332
+  selector: tx-broadcast-svc
 
 persistence:
   enabled: true
@@ -30,8 +30,8 @@ resources: {}
 #    memory: 512Mi
 #    cpu: 300m
 
-# Custom bitcoincashd configuration files used to override default bitcoincashd settings
-configurationFiles:
+# Custom bitcoincashd configuration file used to override default bitcoincashd settings
+configurationFile:
   bitcoincash.conf: |-
     server=1
     rpcuser=rpcuser
