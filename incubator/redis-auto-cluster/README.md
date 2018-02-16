@@ -67,12 +67,12 @@ helm install --namespace redis-prod -n prod -f prod.yaml --wait incubator/redis-
 helm upgrade will not try to rebuild the cluster. 
 
 
-##Important notes
+## Important notes
 
 - You must have (.Values.shards.replicationFactor + 1) x .Values.shards.count nodes available
 - You must have .Values.shards.sizeGb available on each node
 
-#####Only 1 pod will be allowed per node, in order to keep the cluster highly available.
+##### Only 1 pod will be allowed per node, in order to keep the cluster highly available.
 
 I would recommend using a dedicated node pool in your cluster and taint the nodes as below:
 
