@@ -13,6 +13,26 @@ This chart bootstraps a single node GoCD server and GoCD agents on a [Kubernetes
 - Kubernetes 1.8+ with Beta APIs enabled
 - PV provisioner support in the underlying infrastructure
 - LoadBalancer support or Ingress Controller
+- Ensure that the service account used for starting tiller has enough permissions to create a role. 
+
+## Setup
+
+Because of the [known issue] (https://github.com/kubernetes/helm/issues/2224) while creating a role, in order for the `helm install` to work, please ensure to do the following:
+
+- On minikube
+
+```bash
+$ minikube start --bootstrapper kubeadm
+```
+
+- On GKE, if tiller's in the kube-system namespace
+
+```bash
+
+$ kubectl create clusterrolebinding clusterRoleBinding \                                                                                                               1 ↵
+  --clusterrole=cluster-admin \
+  --serviceaccount=kube-system:default
+```
 
 ## Installing the Chart
 
@@ -91,7 +111,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```bash
-$ helm install --name gocd-app -f values.yaml incubator/gocd
+$ helm install --namespace gocd --name gocd-app -f values.yaml incubator/gocd
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
@@ -107,7 +127,7 @@ Refer to the [Kubernetes blog](http://blog.kubernetes.io/2017/03/dynamic-provisi
 One can change the storage class to be used by overriding `server.persistence.storageClass` and `agent.persistence.storageClass` like below:
 
 ```bash
-$ helm install --name gocd-app --set server.persistence.stoageClass=STORAGE_CLASS_NAME incubator/gocd
+$ helm install --namespace gocd --name gocd-app --set server.persistence.stoageClass=STORAGE_CLASS_NAME incubator/gocd
 ```
 
 #### Static Volumes
@@ -141,15 +161,15 @@ $ helm install --name gocd-app --set server.persistence.existingClaim=PVC_NAME i
 
 ### Agent persistence Values
 
-| Parameter                                     | Description                                         | Default              |
-| --------------------------------------------- | --------------------------------------------------- | -------------------- |
-| `agent.persistence.enabled`                  | Enable the use of a GoCD agent PVC                   | `false`              |
-| `agent.persistence.accessMode`               | The PVC access mode                                  | `ReadWriteOnce`      |
-| `agent.persistence.size`                     | The size of the PVC                                  | `1Gi`                |
-| `agent.persistence.storageClass`             | The PVC storage class name                           | `nil`                |
-| `agent.persistence.pvSelector`               | The godata Persistence Volume Selectors              | `nil`                |
-| `agent.persistence.subpath.homego`           | The /home/go path on Persistence Volume              | `homego`             |
-| `agent.persistence.subpath.dockerEntryPoint` | The /docker-entrypoint.d path on Persistence Volume  | `scripts`            |
+| Parameter                                     | Description                                          | Default              |
+| --------------------------------------------- | ---------------------------------------------------- | -------------------- |
+| `agent.persistence.enabled`                   | Enable the use of a GoCD agent PVC                   | `false`              |
+| `agent.persistence.accessMode`                | The PVC access mode                                  | `ReadWriteOnce`      |
+| `agent.persistence.size`                      | The size of the PVC                                  | `1Gi`                |
+| `agent.persistence.storageClass`              | The PVC storage class name                           | `nil`                |
+| `agent.persistence.pvSelector`                | The godata Persistence Volume Selectors              | `nil`                |
+| `agent.persistence.subpath.homego`            | The /home/go path on Persistence Volume              | `homego`             |
+| `agent.persistence.subpath.dockerEntryPoint`  | The /docker-entrypoint.d path on Persistence Volume  | `scripts`            |
 
 ##### Note:
 
@@ -157,6 +177,27 @@ $ helm install --name gocd-app --set server.persistence.existingClaim=PVC_NAME i
 
 1. That packages being cached here is shared between all the agents.
 2. That all the agents sharing this directory are privy to all the secrets in `/home/go`
+
+## RBAC
+
+The RBAC section is for users who want to use the Kubernetes Elastic Agent Plugin with GoCD. The Kubernetes elastic agent plugin for GoCD brings up pods on demand while running a job. 
+If RBAC is enabled,
+ 1. A namespaced role is created by default and pod privileges are provided. 
+ 2. A gocd service account is created. This service account is bound to a role within the namespace.
+
+| Parameter                                     | Description                                                                         | Default              |
+| --------------------------------------------- | ----------------------------------------------------------------------------------- | -------------------- |
+| `rbac.install`                                | If true, a gocd service account, role, and role binding is created.                 | `true`               |
+| `rbac.apiVersion`                             | The Kubernetes API version                                                          | `v1beta1`            |
+| `rbac.roleRef`                                | An existing role that can be bound to the gocd service account.                     | `nil`                |
+ 
+#### Existing role references:
+
+The gocd service account can be associated with an existing role in the namespace that has privileges to create and delete pods. To use an existing role,
+
+```bash
+helm install --namespace gocd --name gocd-app --set rbac.roleRef=ROLE_NAME incubator/gocd
+```
 
 # License
 

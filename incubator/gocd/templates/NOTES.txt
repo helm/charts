@@ -25,7 +25,7 @@
 {{- if .Values.rbac.install -}}
     {{- if .Values.rbac.roleRef -}}
     {{ else }}
-        A default role {{ template "gocd.fullname" . }} with pod write privileges has been configured.
+    A default role {{ template "gocd.fullname" . }} with pod write privileges has been configured.
     {{ end }}
     A service account called {{ template "gocd.fullname" . }} has been created and associated with the role. To check,
     secret_name=$(kubectl --namespace={{ .Release.Namespace }} get serviceaccount {{ template "gocd.fullname" . }} -o jsonpath="{.secrets[0].name}")

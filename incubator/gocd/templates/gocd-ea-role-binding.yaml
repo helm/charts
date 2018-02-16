@@ -14,6 +14,6 @@ subjects:
   namespace: {{ .Release.Namespace }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
+  kind: Role
   name: {{ .Values.rbac.roleRef | default (printf "%s" (include "gocd.fullname" .)) }}
 {{ end }}
