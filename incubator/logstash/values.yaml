@@ -24,6 +24,10 @@ service:
 # Extra config options
 configData: {}
 
+podAnnotations: {}
+  # Add custom annotations to pods
+  # iam.amazonaws.com/role: "example-role"
+
 ingress:
   enabled: false
   # Used to create an Ingress and Service record.
