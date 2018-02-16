@@ -15,7 +15,7 @@ spec:
         app: {{ template "logstash.name" . }}
         release: {{ .Release.Name }}
       {{- if .Values.podLabels }}
-        # Allows custom annotations to be specified
+        # Allows custom labels to be specified
         {{- range $key, $val := .Values.podLabels }}
         {{ $key }}: {{ $val | quote }}
         {{- end }}
