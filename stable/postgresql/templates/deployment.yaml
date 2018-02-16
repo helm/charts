@@ -56,7 +56,7 @@ spec:
             command:
             - sh
             - -c
-            - exec pg_isready --host $POD_IP
+            - exec pg_isready --host 127.0.0.1
           initialDelaySeconds: 120
           timeoutSeconds: 5
           failureThreshold: 6
@@ -65,7 +65,7 @@ spec:
             command:
             - sh
             - -c
-            - exec pg_isready --host $POD_IP
+            - exec pg_isready --host 127.0.0.1
           initialDelaySeconds: 5
           timeoutSeconds: 3
           periodSeconds: 5
