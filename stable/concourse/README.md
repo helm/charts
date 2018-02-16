@@ -102,7 +102,7 @@ The following tables lists the configurable parameters of the Concourse chart an
 | `concourse.genericOauth.authUrlParam` | Parameters (comma separated) to pass to the authentication server AuthURL | `nil` |
 | `concourse.genericOauth.scope` | Optional scope required to authorize user | `nil` |
 | `concourse.genericOauth.tokenUrl` | Generic OAuth provider TokenURL endpoint | `nil` |
-| `web.nameOverride` | Override the Concourse Web components name | `web` |
+| `web.nameOverride` | Override the Concourse Web components name | `nil` |
 | `web.replicas` | Number of Concourse Web replicas | `1` |
 | `web.resources` | Concourse Web resource requests and limits | `{requests: {cpu: "100m", memory: "128Mi"}}` |
 | `web.additionalAffinities` | Additional affinities to apply to web pods. E.g: node affinity | `{}` |
@@ -124,7 +124,7 @@ The following tables lists the configurable parameters of the Concourse chart an
 | `worker.env` | Configure additional environment variables for the worker container(s) | `[]` |
 | `worker.anotations` | Annotations to be added to the worker pods | `{}` |
 | `worker.additionalAffinities` | Additional affinities to apply to worker pods. E.g: node affinity | `{}` |
-| `web.tolerations` | Tolerations for the web nodes | `[]` |
+| `worker.tolerations` | Tolerations for the worker nodes | `[]` |
 | `worker.terminationGracePeriodSeconds` | Upper bound for graceful shutdown to allow the worker to drain its tasks | `60` |
 | `worker.fatalErrors` | Newline delimited strings which, when logged, should trigger a restart of the worker | *See [values.yaml](values.yaml)* |
 | `worker.updateStrategy` | `OnDelete` or `RollingUpdate` (requires Kubernetes >= 1.7) | `RollingUpdate` |
@@ -148,7 +148,8 @@ The following tables lists the configurable parameters of the Concourse chart an
 | `credentialManager.vault.authBackend` | Vault Authentication Backend to use, leave blank when using clientToken | `nil` |
 | `rbac.create` | Enables creation of RBAC resources | `true` |
 | `rbac.apiVersion` | RBAC version | `v1beta1` |
-| `rbac.serviceAccountName` | Name of the service account to use if `rbac.create` is `false` | `v1beta1` |
+| `rbac.webServiceAccountName` | Name of the service account to use for web pods if `rbac.create` is `false` | `default` |
+| `rbac.workerServiceAccountName` | Name of the service account to use for workers if `rbac.create` is `false` | `default` |
 | `secrets.create` | Create the secret resource from the following values. *See [Secrets](#Secrets)* | `true` |
 | `secrets.hostKey` | Concourse Host Private Key | *See [values.yaml](values.yaml)* |
 | `secrets.hostKeyPub` | Concourse Host Public Key | *See [values.yaml](values.yaml)* |
