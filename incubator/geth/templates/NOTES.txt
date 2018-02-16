@@ -1,18 +1,11 @@
-Igeth RPC can be accessed via port {{ .Values.rpcPort }} on the following DNS name from within your cluster:
+geth RPC can be accessed via port {{ .Values.rpcPort }} on the following DNS name from within your cluster:
 {{ template "geth.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
 
 To connect to geth RPC:
 
-1. Run an Ubuntu pod that you can use as a client:
+1. Forward the port for the node:
 
-    kubectl run -i --tty ubuntu --image=ubuntu:16.04 --restart=Never -- bash -il
+  $ kubectl port-forward --namespace {{ .Release.Namespace }} $(kubectl get pods --namespace {{ .Release.Namespace }} -l app={{ template "geth.name" . }} -o jsonpath='{ .items[0].metadata.name }') {{ .Values.rpcPort }}
 
-2. Install the ethereum client:
-
-    $ apt-get update -y && \
-    apt-get install python-software-properties software-properties-common -y && \
-    add-apt-repository -y ppa:ethereum/ethereum && apt-get update -y && \
-    apt-get install -y ethereum
-
-3. Connect using the geth cli:
-    $ geth attach http://{{ template "geth.fullname" . }}:{{ .Values.rpcPort }}
+2. Connect using the geth cli:
+  $ geth attach http://{{ template "geth.fullname" . }}:{{ .Values.rpcPort }}
