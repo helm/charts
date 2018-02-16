@@ -30,9 +30,9 @@ spec:
           volumeMounts:
             - name: data
               mountPath: /dash
-            {{- if .Values.configurationFiles }}
+            {{- if .Values.configurationFile }}
             - name: config
-              mountPath: /dash/.dash/dash.conf
+              mountPath: /dash/.dashcore/dash.conf
               subPath: dash.conf
             {{- end }}
       volumes:
