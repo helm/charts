@@ -63,12 +63,13 @@ concourse:
   ##
   # externalURL:
 
-  ## The filesystem driver used by baggageclaim on workers, as of Concourse 3.1 can be values
-  ## "overlay", "btrfs", or "naive". "overlay" is more stable than "btrfs" but is not supported
-  ## on some Linux kernels, while "naive" is most supported but least space efficient. For background see
-  ## https://github.com/concourse/concourse/issues/1230.
+  ## The filesystem driver used by baggageclaim on workers, can be values
+  ## "btrfs", "overlay", or "naive". As of 3.9 "btrfs" is recommended, while "naive" is most
+  ## supported but least space efficient. For background see
+  ## https://github.com/concourse/concourse/issues/1230 and
+  ## https://github.com/concourse/concourse/issues/1966
   ##
-  baggageclaimDriver: btrfs
+  baggageclaimDriver: naive
 
   ## The selection strategy for placing containers onto workers, as of Concourse 3.7 this can be
   ## "volume-locality" or "random". Random can better spread load across workers, see
