@@ -68,7 +68,7 @@ concourse:
   ## on some Linux kernels, while "naive" is most supported but least space efficient. For background see
   ## https://github.com/concourse/concourse/issues/1230.
   ##
-  baggageclaimDriver: naive
+  baggageclaimDriver: btrfs
 
   ## The selection strategy for placing containers onto workers, as of Concourse 3.7 this can be
   ## "volume-locality" or "random". Random can better spread load across workers, see
