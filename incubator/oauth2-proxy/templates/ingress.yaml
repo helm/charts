@@ -1,16 +1,16 @@
 {{- if .Values.ingress.enabled -}}
-{{- $serviceName := include "oauth-proxy.fullname" . -}}
+{{- $serviceName := include "oauth2-proxy.fullname" . -}}
 {{- $servicePort := .Values.service.externalPort -}}
 {{- $ingressPath := .Values.ingress.path -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   labels:
-    app: {{ template "oauth-proxy.name" . }}
+    app: {{ template "oauth2-proxy.name" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-  name: {{ template "oauth-proxy.fullname" . }}
+  name: {{ template "oauth2-proxy.fullname" . }}
   annotations:
     {{- range $key, $value := .Values.ingress.annotations }}
       {{ $key }}: {{ $value | quote }}
