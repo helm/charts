@@ -15,6 +15,7 @@ spec:
     type: RollingUpdate
   selector:
     matchLabels:
+      app: {{ template "artifactory.name" . }}
       role: {{ template "artifactory.primary.name" . }}
       release: {{ .Release.Name }}
   template:
@@ -157,10 +158,10 @@ spec:
       volumes:
       - name: binarystore-xml
         configMap:
-          name: artifactory-binarystore
+          name: {{ template "artifactory.fullname" . }}-bs
       - name: artifactory-inactiveservercleaner
         configMap:
-          name: artifactory-inactiveservercleaner
+          name: {{ template "artifactory.fullname" . }}-isc
       {{- if .Values.artifactory.license.secret }}
       - name: artifactory-license
         secret:

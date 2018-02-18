@@ -15,6 +15,7 @@ spec:
     type: RollingUpdate
   selector:
     matchLabels:
+      app: {{ template "artifactory.name" . }}
       role: {{ template "artifactory.node.name" . }}
       release: {{ .Release.Name }}
   template:
@@ -151,7 +152,7 @@ spec:
       volumes:
       - name: binarystore-xml
         configMap:
-          name: artifactory-binarystore
+          name: {{ template "artifactory.fullname" . }}-bs
       {{- if eq .Values.artifactory.persistence.type "nfs" }}
       - name: artifactory-ha-data
         persistentVolumeClaim:

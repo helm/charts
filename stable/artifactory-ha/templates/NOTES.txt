@@ -33,8 +33,8 @@ SETUP:
 
    {{- else if contains "ClusterIP" .Values.nginx.service.type }}
    export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "component={{ .Values.nginx.name }}" -o jsonpath="{.items[0].metadata.name}")
-   echo http://127.0.0.1:{{ .Values.nginx.externalPortHttp }}
-   kubectl port-forward --namespace {{ .Release.Namespace }} $POD_NAME {{ .Values.nginx.externalPortHttp }}:{{ .Values.nginx.internalPortHttp }}
+   kubectl port-forward --namespace {{ .Release.Namespace }} $POD_NAME 8080:80
+   echo http://127.0.0.1:8080
 
    {{- end }}
 

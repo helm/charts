@@ -15,7 +15,7 @@ spec:
   - port: {{ .Values.artifactory.externalPort }}
     targetPort: {{ .Values.artifactory.internalPort }}
     protocol: TCP
-    name: {{ .Release.Name }}
+    name: http
   selector:
 {{- if eq .Values.artifactory.service.pool "all" }}
     app: {{ template "artifactory.name" . }}
@@ -43,7 +43,7 @@ spec:
   - port: {{ .Values.artifactory.externalPort }}
     targetPort: {{ .Values.artifactory.internalPort }}
     protocol: TCP
-    name: {{ .Release.Name }}
+    name: http
   selector:
     role: {{ template "artifactory.primary.name" . }}
     component: "{{ .Values.artifactory.name }}"

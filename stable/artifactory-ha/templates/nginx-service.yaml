@@ -18,14 +18,14 @@ spec:
 {{ toYaml .Values.nginx.service.loadBalancerSourceRanges | indent 4 }}
 {{- end }}
   ports:
-  - port: {{ .Values.nginx.externalPortHttp }}
-    targetPort: {{ .Values.nginx.internalPortHttp }}
+  - port: 80
+    targetPort: 80
     protocol: TCP
-    name: {{ .Values.nginx.name }}http
-  - port: {{ .Values.nginx.externalPortHttps }}
-    targetPort: {{ .Values.nginx.internalPortHttps }}
+    name: http
+  - port: 443
+    targetPort: 443
     protocol: TCP
-    name: {{ .Release.Name }}https
+    name: https
   selector:
     app: {{ template "artifactory.name" . }}
     component: "{{ .Values.nginx.name }}"

@@ -175,10 +175,6 @@ nginx:
     ## or pass from helm command line
     ## Example: helm install ... --set nginx.service.loadBalancerSourceRanges='{10.10.10.5/32,10.11.10.5/32}'
     loadBalancerSourceRanges: []
-  externalPortHttp: 80
-  internalPortHttp: 80
-  externalPortHttps: 443
-  internalPortHttps: 443
   env:
     artUrl: "http://artifactory:8081/artifactory"
     ssl: true

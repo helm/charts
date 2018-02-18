@@ -43,7 +43,7 @@ spec:
         - name: SSL
           value: "{{ .Values.nginx.env.ssl }}"
         ports:
-        - containerPort: {{ .Values.nginx.internalPortHttp }}
-        - containerPort: {{ .Values.nginx.internalPortHttps }}
+        - containerPort: 80
+        - containerPort: 443
         resources:
 {{ toYaml .Values.nginx.resources | indent 10 }}
