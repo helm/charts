@@ -1,15 +1,15 @@
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRoleBinding
 metadata:
-  name: kubevirt-infra
+  name: kubevirt-privileged-cluster-admin
   namespace: kube-system
   labels:
     kubevirt.io: ""
 roleRef:
   kind: ClusterRole
-  name: kubevirt-infra
+  name: cluster-admin
   apiGroup: rbac.authorization.k8s.io
 subjects:
   - kind: ServiceAccount
-    name: kubevirt-infra
+    name: kubevirt-privileged
     namespace: kube-system

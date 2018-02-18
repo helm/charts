@@ -42,4 +42,4 @@ The following tables lists the configurable parameters of the kubevirt chart and
 |                Parameter                  |            Description              |          Default           |
 | ----------------------------------------- | ------------------------------------| -------------------------- |
 | `kubevirt.repository`                     |KubeVirt containers repository       | `kubevirt`                 |
-| `kubevirt.tag`                            |KubeVirt containers tag              | `v0.2.0`                   |
+| `kubevirt.tag`                            |KubeVirt containers tag              | `v0.3.0-alpha.2`                   |

@@ -12,7 +12,7 @@ spec:
       labels:
         kubevirt.io: virt-handler
     spec:
-      serviceAccountName: kubevirt-infra
+      serviceAccountName: kubevirt-privileged
       hostPID: true
       containers:
         - name: virt-handler
@@ -25,8 +25,6 @@ spec:
             - "/virt-handler"
             - "-v"
             - "3"
-            - "--libvirt-uri"
-            - "qemu:///system"
             - "--hostname-override"
             - "$(NODE_NAME)"
           securityContext:

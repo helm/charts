@@ -12,7 +12,7 @@ spec:
       labels:
         kubevirt.io: virt-controller
     spec:
-      serviceAccountName: kubevirt-infra
+      serviceAccountName: kubevirt-controller
       containers:
         - name: virt-controller
           image: "{{ .Values.kubevirt.repository }}/virt-controller:{{ .Values.kubevirt.tag }}"
@@ -21,8 +21,6 @@ spec:
               - "/virt-controller"
               - "--launcher-image"
               - "{{ .Values.kubevirt.repository }}/virt-launcher:{{ .Values.kubevirt.tag }}"
-              - "--migrator-image"
-              - "{{ .Values.kubevirt.repository }}/virt-migrator:{{ .Values.kubevirt.tag }}"
               - "--port"
               - "8182"
           ports:
