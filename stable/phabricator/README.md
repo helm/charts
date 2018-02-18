@@ -71,6 +71,15 @@ The following tables lists the configurable parameters of the Phabricator chart 
 | `persistence.phabricator.accessMode`   | PVC Access Mode for Phabricator volume       | `ReadWriteOnce`                                          |
 | `persistence.phabricator.size`         | PVC Storage Request for Phabricator volume   | `8Gi`                                                    |
 | `resources`                            | CPU/Memory resource requests/limits          | Memory: `512Mi`, CPU: `300m`                             |
+| `ingress.enabled`                      | enable ingress                               | `false`                                                  |
+| `ingress.path`                         | path to expose on ingress                    | unused                                                   |
+| `ingress.hosts`                        | listss of accepted hostnames                 | unused                                                   |
+| `ingress.annotations`                  | annotations to use on the ingress            | unused                                                   |
+| `ingress.annotations`                  | annotations to use on the ingress            | unused                                                   |
+| `ingress.tls.secretName`               | tls secret name                              | unused                                                   |
+| `ingress.tls.hosts`                    | hostnames the secret applies to              | unused                                                   |
+
+
 
 The above parameters map to the env variables defined in [bitnami/phabricator](http://github.com/bitnami/bitnami-docker-phabricator). For more information please refer to the [bitnami/phabricator](http://github.com/bitnami/bitnami-docker-phabricator) image documentation.
 

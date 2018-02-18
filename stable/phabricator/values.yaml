@@ -114,7 +114,7 @@ persistence:
 
 ingress:
   enabled: false
-  path: /
+  # path: /
   # Used to create an Ingress record.
   # hosts:
     # - chart-example.local
