@@ -47,6 +47,7 @@ worker:
     # s3fs
     # adlfs
     # dask-ml
+  workerArgs: "--nthreads 1 --memory-limit 3GiB"
   # limits:
   #   cpu: 1
   #   memory: 3G
