@@ -23,7 +23,7 @@ spec:
         {{- end }}
     spec:
       terminationGracePeriodSeconds: 10
-      serviceAccountName: {{ if .Values.rbac.create }}{{ template "rabbitmq-ha.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
+      serviceAccountName: {{ template "rabbitmq-ha.serviceAccountName" . }}
       containers:
         - name: {{ .Chart.Name }}
           image: {{ .Values.image.repository }}:{{ .Values.image.tag }}

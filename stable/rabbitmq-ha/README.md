@@ -94,7 +94,8 @@ and their default values.
 | `rabbitmqWebSTOMPPlugin.config`    | STOMP over websocket configuration                              | ``                                                       |
 | `rabbitmqWebSTOMPPlugin.enabled`   | Enable STOMP over websocket plugin                              | `false`                                                  |
 | `rbac.create`                      | If true, create & use RBAC resources                            | `true`                                                   |
-| `rbac.serviceAccountName`          | Service account name to use (ignored if rbac.create=true)       | `default`                                                |
+| `serviceAccount.create`            | Create service account                                          | `true`                                                   |
+| `serviceAccount.name`              | Service account name to use                                     | _name of the release_                                    |
 | `replicaCount`                     | Number of replica                                               | `3`                                                      |
 | `resources`                        | CPU/Memory resource requests/limits                             | `{}`                                                     |
 | `service.annotations`              | Annotations to add to service                                   | `none`                                                   |
