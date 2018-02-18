@@ -1,17 +1,19 @@
-# Dask Distributed Helm Chart
+# Dask Helm Chart
 
-Dask Distributed allows distributed computation in Python the chart also includes a single user Jupyter Notebook.
+Dask allows distributed computation in Python.
 
-* https://github.com/dask/distributed
-* http://jupyter.org/
+-  https://dask.pydata.org
+-  http://jupyter.org/
+
 
 ## Chart Details
-This chart will do the following:
 
-* 1 x Dask scheduler with port 8786 (scheduler) and 80 (Web UI) exposed on an external LoadBalancer
-* 3 x Dask workers that connect to the scheduler
-* 1 x Jupyter notebook with port 80 exposed on an external LoadBalancer
-* All using Kubernetes Deployments
+This chart will deploy the following:
+
+-   1 x Dask scheduler with port 8786 (scheduler) and 80 (Web UI) exposed on an external LoadBalancer
+-   3 x Dask workers that connect to the scheduler
+-   1 x Jupyter notebook with port 80 exposed on an external LoadBalancer
+-   All using Kubernetes Deployments
 
 ## Installing the Chart
 
