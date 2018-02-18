@@ -8,6 +8,7 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
+  selector:
   replicas: {{ .Values.replicaCount }}
   template:
     metadata:
@@ -21,7 +22,7 @@ spec:
           command: ["/bin/sh", "-c", "luigid"]
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            - containerPort: {{ .Values.service.internalPort }}
+            - containerPort: 8082
           livenessProbe:
             httpGet:
               path: /static/visualiser/index.html
@@ -40,7 +41,7 @@ spec:
             mountPath: /etc/luigi/logging.cfg
             subPath: logging.cfg
           - name: luigi-state
-            mountPath: /mnt/luigistate/
+            mountPath: /luigi/state/
 
     {{- if .Values.nodeSelector }}
       nodeSelector:

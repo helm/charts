@@ -13,7 +13,6 @@ data:
 {{ printf .Values.service.config | indent 4 }}
 
   logging.cfg: |
-    # FROM: https://github.com/axiom-data-science/docker-luigi/blob/master/logging.conf
     [loggers]
     keys=root,tornado,client,scheduler,server
 

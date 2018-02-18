@@ -3,15 +3,14 @@
 # Declare variables to be passed into your templates.
 replicaCount: 1
 image:
-  repository: getpolymorph/luigi
-  tag: 2.7.2
+  repository: axiom/docker-luigi
+  tag: 2.7.2-alpine
   pullPolicy: IfNotPresent
 
 service:
   name: luigi
   type: LoadBalancer
-  externalPort: 3000
-  internalPort: 8082
+  externalPort: 30050
 
   # Luigi config: these values should mattch the luigi documentation
   # https://luigi.readthedocs.io/en/stable/configuration.html
@@ -21,7 +20,7 @@ service:
 
     [scheduler]
     record_task_history=true
-    state-path=/mnt/luigistate/luigi-state.pickle
+    state-path=/luigi/state/luigi-state.pickle
 
     [task_history]
     db_connection=mysql://luigi-mysql/luigidb
