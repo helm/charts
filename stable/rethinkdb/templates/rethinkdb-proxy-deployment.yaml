@@ -4,7 +4,7 @@ metadata:
   name: "{{ template "rethinkdb.fullname" . }}-proxy"
   labels:
     app: "{{ template "rethinkdb.name" . }}-proxy"
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    chart: {{ template "rethinkdb.chart" . }}
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
 spec:
@@ -16,7 +16,7 @@ spec:
         app: {{ template "rethinkdb.name" . }}-proxy
         heritage: {{ .Release.Service | quote }}
         release: {{ .Release.Name | quote }}
-        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        chart: {{ template "rethinkdb.chart" . }}
       annotations:
       {{- if .Values.proxy.podAnnotations }}
 {{ toYaml .Values.proxy.podAnnotations | indent 8 }}
