@@ -18,12 +18,12 @@ scheduler:
   aptPackages: >-
   condaPackages: >-
   pipPackages: >-
-  limits:
-    cpu: 1.8
-    memory: 6G
-  requests:
-    cpu: 1.8
-    memory: 6G
+  # limits:
+  #   cpu: 1.8
+  #   memory: 6G
+  # requests:
+  #   cpu: 1.8
+  #   memory: 6G
 
 webUI:
   name: webui
@@ -47,12 +47,12 @@ worker:
     # s3fs
     # adlfs
     # dask-ml
-  limits:
-    cpu: 1
-    memory: 3G
-  requests:
-    cpu: 1
-    memory: 3G
+  # limits:
+  #   cpu: 1
+  #   memory: 3G
+  # requests:
+  #   cpu: 1
+  #   memory: 3G
 
 jupyter:
   name: jupyter
@@ -74,9 +74,9 @@ jupyter:
     # s3fs
     # adlfs
     # dask-ml
-  limits:
-    cpu: 2
-    memory: 6G
-  requests:
-    cpu: 2
-    memory: 6G
+  # limits:
+  #   cpu: 2
+  #   memory: 6G
+  # requests:
+  #   cpu: 2
+  #   memory: 6G
