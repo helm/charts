@@ -14,3 +14,10 @@ spec:
   selector:
     app: {{ include "kafka.name" . | quote }}
     release: {{ .Release.Name | quote }}
+  type: {{.Values.serviceType}}
+  {{if eq .Values.serviceType "LoadBalancer"}}
+  loadBalancerSourceRanges: {{.Values.loadBalancerSourceRanges}}
+  {{if .Values.loadBalancerIP}}
+  loadBalancerIP: {{.Values.loadBalancerIP}}
+  {{end}}
+  {{end}}

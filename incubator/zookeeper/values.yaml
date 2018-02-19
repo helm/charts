@@ -34,6 +34,11 @@ security:
   runAsUser: 1000
   fsGroup: 1000
 
+serviceType: ClusterIP
+loadBalancerSourceRanges:
+- 0.0.0.0/0
+# Optionally assign a known public LB IP
+# loadBalancerIP: 1.2.3.4
 
 # Affinities to add to the worker pods.
 # Useful if you prefer to run workers on non-spot instances, for example
