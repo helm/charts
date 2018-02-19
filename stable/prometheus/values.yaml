@@ -188,6 +188,23 @@ configmapReload:
   ##
   resources: {}
 
+initChownData:
+  ## initChownData container name
+  ##
+  name: init-chown-data
+
+  ## initChownData container image
+  ##
+  image:
+    repository: busybox
+    tag: latest
+    pullPolicy: IfNotPresent
+
+  ## initChownData resource requests and limits
+  ## Ref: http://kubernetes.io/docs/user-guide/compute-resources/
+  ##
+  resources: {}
+
 kubeStateMetrics:
   ## If false, kube-state-metrics will not be installed
   ##
