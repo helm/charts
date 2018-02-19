@@ -362,7 +362,7 @@ spec:
       containers:
       {{- if .Values.php.fpmEnabled }}
       - name: "httpd"
-        image: "httpd:2.4-alpine"
+        image: "httpd:2.4.29-alpine"
         imagePullPolicy: "Always"
         ports:
         - containerPort: 80
