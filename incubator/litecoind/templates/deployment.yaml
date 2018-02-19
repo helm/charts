@@ -22,26 +22,22 @@ spec:
   {{ toYaml .Values.resources | indent 10 }}
           ports:
             - name: rpc
-              containerPort: {{ .Values.rpcPort }}
+              containerPort: {{ .Values.service.rpcPort }}
+            - name: p2p
+              containerPort: {{ .Values.service.p2pPort }}
+            - name: testnet
+              containerPort: {{ .Values.service.testnetPort }}
           volumeMounts:
             - name: data
-              mountPath: /srv/litecoind
-            {{- if .Values.ssl.enabled }}
-            - name: ssl
-              mountPath: /etc/litecoind-ssl
-            {{- end }}
-            {{- if .Values.configurationFiles }}
-            - name: configurations
-              mountPath: /etc/litecoind
+              mountPath: /home/litecoin/.litecoin
+            {{- if .Values.configurationFile }}
+            - name: config
+              mountPath: /home/litecoin/.litecoin/litecoin.conf
+              subPath: litecoin.conf
             {{- end }}
       volumes:
-        {{- if .Values.ssl.enabled }}
-        - name: ssl
-          secret:
-            secretName: {{ .Values.ssl.secretName  }}
-        {{- end }}
-        {{- if .Values.configurationFiles }}
-        - name: configurations
+        {{- if .Values.configurationFile }}
+        - name: config
           configMap:
             name: {{ template "litecoind.fullname" . }}
         {{- end }}

@@ -1,13 +1,13 @@
 image:
-  repository: "kuberstack/litecoind"
+  repository: "uphold/litecoin-core"
   tag: "latest"
   pullPolicy: IfNotPresent
 
-rpcPort: 443
-
-ssl:
-  enabled: true
-  secretName: litecoind-ssl
+service:
+  rpcPort: 9332
+  p2pPort: 9338
+  testnetPort: 19333
+  selector: tx-broadcast-svc
 
 persistence:
   enabled: true
@@ -31,13 +31,11 @@ resources: {}
 #    cpu: 300m
 
 # Custom litecoind configuration files used to override default litecoind settings
-configurationFiles:
+configurationFile:
   litecoin.conf: |-
     onlynet=IPv4
     server=1
     rpcuser=rpcuser
     rpcpassword=rpcpassword
-    rpcport=9332
-    rpcconnect=127.0.0.1
     disablewallet=0
     printtoconsole=1
