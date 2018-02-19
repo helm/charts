@@ -17,5 +17,6 @@ The following tables lists the configurable parameters of the sentry-kubernetes 
 | `sentry.dsn`            | Sentry dsn                          | Empty                                               |
 | `image.repository`      | Container image name                | `getsentry/sentry-kubernetes`                       |
 | `image.tag    `         | Container image tag                 | `latest`                                            |
-| `rbac.create`                        | Create service account and ClusterRoleBinding for sentry | `true`|
-| `rbac.serviceAccountName` | Existing ServiceAccount to use (ignored if rbac.create=true)| `default`    
+| `rbac.create`                        | If `true`, create and use RBAC resources	 | `true`|
+| `serviceAccount.name` | Service account to be used. If not set and serviceAccount.create is `true`, a name is generated using the fullname template	| ``    
+| `serviceAccount.create` | If true, create a new service account	| `true`    
