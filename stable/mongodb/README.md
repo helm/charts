@@ -56,6 +56,7 @@ The following tables lists the configurable parameters of the MongoDB chart and 
 | `persistence.storageClass`          | Storage class of backing PVC               | `nil` (uses alpha storage class annotation)              |
 | `persistence.accessMode`            | Use volume as ReadOnly or ReadWrite        | `ReadWriteOnce`                                          |
 | `persistence.size`                  | Size of data volume                        | `8Gi`                                                    |
+| `nodeSelector`                      | Node labels for pod assignment             | {}                                                       |
 | `livenessProbe.initialDelaySeconds` | Delay before liveness probe is initiated   | 30                                                       |
 | `livenessProbe.periodSeconds`       | How often to perform the probe             | 10                                                       |
 | `livenessProbe.timeoutSeconds`      | When the probe times out                   | 5                                                        |
