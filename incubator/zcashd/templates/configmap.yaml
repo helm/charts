@@ -1,4 +1,3 @@
-{{- if .Values.configurationFiles }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -6,8 +5,4 @@ metadata:
   labels:
 {{ include "zcashd.labels.standard" . | indent 4 }}
 data:
-{{- range $key, $val := .Values.configurationFiles }}
-  {{ $key }}: |-
-{{ $val | indent 4}}
-{{- end }}
-{{- end -}}
+{{ toYaml .Values.configurationFile | indent 2 }}

@@ -10,8 +10,14 @@ metadata:
 spec:
   ports:
     - name: rpc
-      port: {{ .Values.rpcPort }}
+      port: {{ .Values.service.rpcPort }}
       targetPort: rpc
+    - name: p2p
+      port: {{ .Values.service.p2pPort }}
+      targetPort: p2p
+    - name: testnet
+      port: {{ .Values.service.testnetPort }}
   selector:
     app: {{ template "zcashd.name" . }}
     release: "{{ .Release.Name }}"
+    zcashd-rotation: {{ .Values.service.selector }}
