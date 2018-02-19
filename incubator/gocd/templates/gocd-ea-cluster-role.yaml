@@ -1,6 +1,6 @@
-{{ if .Values.rbac.install }}
+{{ if and .Values.rbac.install (not .Values.rbac.roleRef) }}
 apiVersion: rbac.authorization.k8s.io/{{ required "A valid .Values.rbac.apiVersion entry required!" .Values.rbac.apiVersion }}
-kind: RoleBinding
+kind: ClusterRole
 metadata:
   name: {{ template "gocd.fullname" . }}
   labels:
@@ -8,12 +8,18 @@ metadata:
     app: "{{ template "gocd.fullname" . }}"
     heritage: "{{ .Release.Service }}"
     release: "{{ .Release.Name }}"
-subjects:
-- kind: ServiceAccount
-  name: {{ template "gocd.fullname" . }}
-  namespace: {{ .Release.Namespace }}
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: Role
-  name: {{ .Values.rbac.roleRef | default (printf "%s" (include "gocd.fullname" .)) }}
+rules:
+- apiGroups: [""]
+  resources:
+  - pods
+  - pods/log
+  verbs: ["*"]
+- apiGroups: [""]
+  resources:
+  - nodes
+  verbs: ["get", "list"]
+- apiGroups: [""]
+  resources:
+  - events
+  verbs: ["list","watch"]
 {{ end }}
