@@ -10,13 +10,17 @@ metadata:
     heritage: {{ .Release.Service }}
   annotations:
     "helm.sh/hook": post-install
-    "helm.sh/hook-weight": "0"
-#    "helm.sh/hook-delete-policy": hook-succeeded
+    "helm.sh/hook-weight": "-50"
 spec:
   completions: 1
   parallelism: 1
   backoffLimit: 0
   template:
+    metadata:
+      labels:
+        app: {{ template "redis-auto-cluster.name" . }}
+        chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+        release: {{ .Release.Name }}
     spec:
       containers:
       - name: {{ template "redis-auto-cluster.fullname" . }}-builder

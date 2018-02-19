@@ -30,3 +30,6 @@ autoCluster:
   image: "uenicontrib/redis-auto-cluster-builder"
   imagePullPolicy: "IfNotPresent"
   tag: "0.1.1"
+
+security:
+  enabled: true

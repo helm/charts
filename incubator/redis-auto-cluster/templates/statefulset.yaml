@@ -13,12 +13,14 @@ spec:
   serviceName: redis-cluster
   selector:
     matchLabels:
+      role: redis-node
       app: {{ template "redis-auto-cluster.name" . }}
       chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
       release: {{ .Release.Name }}
   template:
     metadata:
       labels:
+        role: redis-node
         app: {{ template "redis-auto-cluster.name" . }}
         chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
         release: {{ .Release.Name }}
@@ -59,7 +61,7 @@ spec:
         - "-c"
         - "echo never >/host-sys/kernel/mm/transparent_hugepage/enabled"
       containers:
-      - name: {{ .Chart.Name }}
+      - name: redis
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: Always
         ports:
