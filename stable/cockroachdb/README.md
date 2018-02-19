@@ -36,7 +36,7 @@ The following tables lists the configurable parameters of the CockroachDB chart 
 | ----------------------------- | ------------------------------------------ | -------------------------------------------- |
 | `Name`                        | Chart name                                 | `cockroachdb`                                |
 | `Image`                       | Container image name                       | `cockroachdb/cockroach`                      |
-| `ImageTag`                    | Container image tag                        | `v1.1.4`                                     |
+| `ImageTag`                    | Container image tag                        | `v1.1.5`                                     |
 | `ImagePullPolicy`             | Container pull policy                      | `Always`                                     |
 | `Replicas`                    | k8s statefulset replicas                   | `3`                                          |
 | `MaxUnavailable`              | k8s PodDisruptionBudget parameter          | `1`                                          |
