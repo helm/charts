@@ -17,6 +17,8 @@ spec:
       targetPort: p2p
     - name: testnet
       port: {{ .Values.service.testnetPort }}
+    - name: testnet-p2p
+      port: {{ .Values.service.testnetP2pPort }}
   selector:
     app: {{ template "bitcoind.name" . }}
     release: "{{ .Release.Name }}"

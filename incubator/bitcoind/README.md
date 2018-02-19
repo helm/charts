@@ -47,6 +47,7 @@ Parameter                  | Description                        | Default
 `service.rpcPort`          | RPC port                           | `8332`
 `service.p2pPort`          | P2P port                           | `8333`
 `service.testnetPort`      | Testnet port                       | `18332`
+`service.testnetP2pPort`   | Testnet p2p ports                  | `18333`
 `service.selector`         | Node selector                      | `tx-broadcast-svc`
 `persistence.enabled`      | Create a volume to store data      | `true`
 `persistence.accessMode`   | ReadWriteOnce or ReadOnly          | `ReadWriteOnce`

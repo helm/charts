@@ -27,6 +27,8 @@ spec:
               containerPort: {{ .Values.service.p2pPort }}
             - name: testnet
               containerPort: {{ .Values.service.testnetPort }}
+            - name: testnetp2pport
+              containerPort: {{ .Values.service.testnetP2pPort }}
           volumeMounts:
             - name: data
               mountPath: /bitcoin
