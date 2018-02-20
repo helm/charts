@@ -168,6 +168,7 @@ Parameter | Description | Default
 `nodeExporter.podAnnotations` | annotations to be added to node-exporter pods | `{}`
 `nodeExporter.tolerations` | node taints to tolerate (requires Kubernetes >=1.6) | `[]`
 `nodeExporter.resources` | node-exporter resource requests and limits (YAML) | `{}`
+`nodeExporter.securityContext` | securityContext for containers in pod | `{}`
 `nodeExporter.serviceAccountName` | service account name for node-exporter to use (ignored if rbac.create=true) | `default`
 `nodeExporter.service.annotations` | annotations for node-exporter service | `{prometheus.io/scrape: "true"}`
 `nodeExporter.service.clusterIP` | internal node-exporter cluster service IP | `None`
