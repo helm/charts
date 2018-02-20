@@ -15,7 +15,7 @@ $ helm install stable/kanister-operator
 This chart bootstraps a kanister-operator deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
 ## Prerequisites
-  - Kubernetes 1.7+ with Beta APIs enabled
+  - Kubernetes 1.8+ with Beta APIs enabled
 
 ## Installing the Chart
 

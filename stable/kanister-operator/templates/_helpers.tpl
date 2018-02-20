@@ -35,7 +35,7 @@ Create chart name and version as used by the chart label.
 {{- define "kanister-operator.helmLabels" -}}
 heritage: {{ .Release.Service }}
 release: {{ .Release.Name }}
-chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+chart: {{ template "kanister-operator.chart" . }}
 app: {{ template "kanister-operator.name" . }}
 {{- end -}}
 
