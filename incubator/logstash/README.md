@@ -54,7 +54,7 @@ The following tables lists the configurable parameters of the drone charts and t
 | `podLabels`                          | Pod labels                                         | `{}`                                             |
 | `elasticsearch.host`                 | ElasticSearch hostname                             | `elasticsearch-client.default.svc.cluster.local` |
 | `elasticsearch.port`                 | ElasticSearch port                                 | `9200`                                           |
-| `configData`                         | Extra logstash config                              | `{}`                                             |
+| `configData`                         | logstash.yml settings file                         | `{}`                                             |
 | `patterns`                           | Logstash patterns configuration                    | `nil`                                            |
 | `inputs`                             | Logstash inputs configuration                      | `(basic)`                                        |
 | `filters`                            | Logstash filters configuration                     | `nil`                                            |
