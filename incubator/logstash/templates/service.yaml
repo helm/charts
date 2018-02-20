@@ -16,6 +16,11 @@ spec:
       protocol: {{ $port.protocol }}
       targetPort: {{ $port.containerPort }}
   {{- end }}
+    - name: "logstash-monitoring"
+      port: {{ .Values.service.internalPort }}
+      protocol: "TCP"
+      targetPort: {{ .Values.service.internalPort }}
+
   selector:
     app: {{ template "logstash.name" . }}
     release: {{ .Release.Name }}
