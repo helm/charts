@@ -43,7 +43,7 @@ The following tables lists the configurable parameters of the drone charts and t
 | `image.tag`                          | Container image tag                                | `6.2.1`                                          |
 | `image.pullPolicy`                   | Container image pull policy                        | `IfNotPresent`                                   |
 | `service.type`                       | Service type (ClusterIP, NodePort or LoadBalancer) | `ClusterIP`                                      |
-| `service.internalPort`               | Logstash internal port                             | `1514`                                           |
+| `service.internalPort`               | Logstash monitoring port                           | `9600`                                           |
 | `service.ports`                      | Service open ports                                 | `[TCP/1514, UDP/1514, TCP/5044]`                 |
 | `ingress.enabled`                    | Enables Ingress                                    | `false`                                          |
 | `ingress.annotations`                | Ingress annotations                                | `{}`                                             |

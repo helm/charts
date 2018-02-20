@@ -9,7 +9,7 @@ image:
   pullPolicy: IfNotPresent
 service:
   type: ClusterIP
-  internalPort: 1514
+  internalPort: 9600
   ports:
     - name: "syslog-tcp"
       protocol: TCP
@@ -81,7 +81,7 @@ inputs:
   main: |-
     input {
       tcp {
-        port => "${SYSLOG_PORT}"
+        port => "1514"
         type => syslog
       }
       udp {
