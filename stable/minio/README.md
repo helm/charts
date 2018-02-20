@@ -87,6 +87,7 @@ The following tables lists the configurable parameters of the Minio chart and th
 | `servicePort`              | Kubernetes port where service is exposed| `9000`                                              |
 | `persistence.enabled`      | Use persistent volume to store data | `true`                                                  |
 | `persistence.size`         | Size of persistent volume claim     | `10Gi`                                                  |
+| `persistence.existingClaim`| Use an existing PVC to persist data | `nil`                                                   |
 | `persistence.storageClass` | Type of persistent volume claim     | `generic`                                               |
 | `persistence.accessMode`   | ReadWriteOnce or ReadOnly           | `ReadWriteOnce`                                         |
 | `persistence.subPath`      | Mount a sub directory of the persistent volume if set | `""`                                  |
@@ -175,6 +176,19 @@ $ helm install --set persistence.enabled=false stable/minio
 ```
 
 > *"An emptyDir volume is first created when a Pod is assigned to a Node, and exists as long as that Pod is running on that node. When a Pod is removed from a node for any reason, the data in the emptyDir is deleted forever."*
+
+Existing PersistentVolumeClaim
+------------------------------
+
+If a Persistent Volume Claim already exists, specify it during installation.
+
+1. Create the PersistentVolume
+1. Create the PersistentVolumeClaim
+1. Install the chart
+
+```bash
+$ helm install --set persistence.existingClaim=PVC_NAME stable/minio
+```
 
 NetworkPolicy
 -------------
