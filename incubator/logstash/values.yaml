@@ -5,7 +5,7 @@ replicaCount: 1
 nodeSelector: {}
 image:
   repository: docker.elastic.co/logstash/logstash-oss
-  tag: 6.0.0
+  tag: 6.2.1
   pullPolicy: IfNotPresent
 service:
   type: ClusterIP
@@ -23,6 +23,12 @@ service:
 
 # Extra config options
 configData: {}
+
+livenessProbe:
+  initialDelaySeconds: 60
+  periodSeconds: 20
+readinessProbe:
+  initialDelaySeconds: 120
 
 ingress:
   enabled: false
