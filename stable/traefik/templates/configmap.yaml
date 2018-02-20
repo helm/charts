@@ -37,7 +37,7 @@ data:
       address = ":443"
       {{- if .Values.proxyProtocol.enabled }}
         [entryPoints.https.proxyProtocol]
-        {{ template "proxyprotocol" . }}
+        {{ template "trustedips" . }}
       {{- end }}
       compress = {{ .Values.gzip.enabled }}
         [entryPoints.https.tls]
@@ -81,6 +81,10 @@ data:
     {{- end }}
     {{- if .Values.acme.logging }}
     acmeLogging = true
+    {{- end }}
+    {{- if eq .Values.acme.challengeType "dns-01" }}
+      [acme.dnsChallenge]
+      provider = "{{ .Values.acme.dnsProvider.name }}"
     {{- end }}
     {{- end }}
     {{- if or .Values.dashboard.enabled .Values.metrics.prometheus.enabled .Values.metrics.statsd.enabled .Values.metrics.datadog.enabled }}

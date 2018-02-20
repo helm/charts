@@ -55,11 +55,12 @@ alertmanager:
     #   kubernetes.io/ingress.class: nginx
     #   kubernetes.io/tls-acme: 'true'
 
-    ## alertmanager Ingress hostnames
+    ## alertmanager Ingress hostnames with optinal path
     ## Must be provided if Ingress is enabled
     ##
     hosts: []
     #   - alertmanager.domain.com
+    #   - domain.com/alertmanager
 
     ## alertmanager Ingress TLS configuration
     ## Secrets must be manually created in the namespace
@@ -72,6 +73,15 @@ alertmanager:
   ## Alertmanager Deployment Strategy type
   # strategy:
   #   type: Recreate
+
+  ## Node tolerations for alertmanager scheduling to nodes with taints
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+  ##
+  tolerations: []
+    # - key: "key"
+    #   operator: "Equal|Exists"
+    #   value: "value"
+    #   effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
 
   ## Node labels for alertmanager pod assignment
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
@@ -144,6 +154,10 @@ alertmanager:
     labels: {}
     clusterIP: ""
 
+    ## Enabling peer mesh service end points for enabling the HA alert manager
+    ## Ref: https://github.com/prometheus/alertmanager/blob/master/README.md
+    # enableMeshPeer : true
+
     ## List of IP addresses at which the alertmanager service is available
     ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
     ##
@@ -175,6 +189,23 @@ configmapReload:
   ##
   resources: {}
 
+initChownData:
+  ## initChownData container name
+  ##
+  name: init-chown-data
+
+  ## initChownData container image
+  ##
+  image:
+    repository: busybox
+    tag: latest
+    pullPolicy: IfNotPresent
+
+  ## initChownData resource requests and limits
+  ## Ref: http://kubernetes.io/docs/user-guide/compute-resources/
+  ##
+  resources: {}
+
 kubeStateMetrics:
   ## If false, kube-state-metrics will not be installed
   ##
@@ -197,6 +228,15 @@ kubeStateMetrics:
   ## kube-state-metrics container arguments
   ##
   args: {}
+
+  ## Node tolerations for kube-state-metrics scheduling to nodes with taints
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+  ##
+  tolerations: []
+    # - key: "key"
+    #   operator: "Equal|Exists"
+    #   value: "value"
+    #   effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
 
   ## Node labels for kube-state-metrics pod assignment
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
@@ -273,6 +313,12 @@ nodeExporter:
     #   hostPath: /var/lib/node-exporter
     #   readOnly: true
 
+  extraConfigmapMounts: []
+    # - name: certs-configmap
+    #   mountPath: /prometheus
+    #   configMap: certs-configmap
+    #   readOnly: true
+
   ## Node tolerations for node-exporter scheduling to nodes with taints
   ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
   ##
@@ -301,6 +347,11 @@ nodeExporter:
     # requests:
     #   cpu: 100m
     #   memory: 30Mi
+
+  ## Security context to be added to node-exporter pods
+  ##
+  securityContext: {}
+    # runAsUser: 0
 
   service:
     annotations:
@@ -356,6 +407,12 @@ server:
     #   hostPath: /etc/kubernetes/certs
     #   readOnly: true
 
+  extraConfigmapMounts: []
+    # - name: certs-configmap
+    #   mountPath: /prometheus
+    #   configMap: certs-configmap
+    #   readOnly: true
+
   ## ConfigMap override where fullname is {{.Release.Name}}-{{.Values.server.configMapOverrideName}}
   ## Defining configMapOverrideName will cause templates/server-configmap.yaml
   ## to NOT generate a ConfigMap resource
@@ -373,11 +430,12 @@ server:
     #   kubernetes.io/ingress.class: nginx
     #   kubernetes.io/tls-acme: 'true'
 
-    ## Prometheus server Ingress hostnames
+    ## Prometheus server Ingress hostnames with optinal path
     ## Must be provided if Ingress is enabled
     ##
     hosts: []
     #   - prometheus.domain.com
+    #   - domain.com/prometheus
 
     ## Prometheus server Ingress TLS configuration
     ## Secrets must be manually created in the namespace
@@ -402,6 +460,7 @@ server:
 
   ## Node labels for Prometheus server pod assignment
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+  ##
   nodeSelector: {}
 
   persistentVolume:
@@ -516,15 +575,16 @@ pushgateway:
 
     ## pushgateway Ingress annotations
     ##
-    annotations:
+    annotations: {}
     #   kubernetes.io/ingress.class: nginx
     #   kubernetes.io/tls-acme: 'true'
 
-    ## pushgateway Ingress hostnames
+    ## pushgateway Ingress hostnames with optinal path
     ## Must be provided if Ingress is enabled
     ##
     hosts: []
     #   - pushgateway.domain.com
+    #   - domain.com/pushgateway
 
     ## pushgateway Ingress TLS configuration
     ## Secrets must be manually created in the namespace
@@ -533,6 +593,15 @@ pushgateway:
     #   - secretName: prometheus-alerts-tls
     #     hosts:
     #       - pushgateway.domain.com
+
+  ## Node tolerations for pushgateway scheduling to nodes with taints
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+  ##
+  tolerations: []
+    # - key: "key"
+    #   operator: "Equal|Exists"
+    #   value: "value"
+    #   effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
 
   ## Node labels for pushgateway pod assignment
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
@@ -719,6 +788,11 @@ serverFiles:
         kubernetes_sd_configs:
           - role: node
 
+        # This configuration will work only on kubelet 1.7.3+
+        # As the scrape endpoints for cAdvisor have changed
+        # if you are using older version you need to change the replacement to
+        # replacement: /api/v1/nodes/${1}:4194/proxy/metrics
+        # more info here https://github.com/coreos/prometheus-operator/issues/633
         relabel_configs:
           - action: labelmap
             regex: __meta_kubernetes_node_label_(.+)
@@ -727,7 +801,7 @@ serverFiles:
           - source_labels: [__meta_kubernetes_node_name]
             regex: (.+)
             target_label: __metrics_path__
-            replacement: /api/v1/nodes/${1}:4194/proxy/metrics
+            replacement: /api/v1/nodes/${1}/proxy/metrics/cadvisor
 
       # Scrape config for service endpoints.
       #
