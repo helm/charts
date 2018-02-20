@@ -1,7 +1,7 @@
 replicaCount: 1
 image:
   repository: chartmuseum/chartmuseum
-  tag: v0.2.7
+  tag: v0.3.1
   pullPolicy: IfNotPresent
 env:
   open:
@@ -15,10 +15,16 @@ env:
     STORAGE_AMAZON_REGION:
     # alternative s3 endpoint
     STORAGE_AMAZON_ENDPOINT:
+    # server side encryption algorithm
+    STORAGE_AMAZON_SSE:
     # gcs bucket to store charts for google storage backend
     STORAGE_GOOGLE_BUCKET:
     # prefix to store charts for google storage backend
     STORAGE_GOOGLE_PREFIX:
+    # container to store charts for microsoft storage backend
+    STORAGE_MICROSOFT_CONTAINER:
+    # prefix to store charts for microsoft storage backend
+    STORAGE_MICROSOFT_PREFIX:
     # form field which will be queried for the chart file content
     CHART_POST_FORM_FIELD_NAME: chart
     # form field which will be queried for the provenance file content
