@@ -93,7 +93,7 @@ Postgres is enabled by default.
 | Parameter                         | Description                                                            | Default               |
 | ------------------------------    | --------------------------------------------------------------------   | -------------------   |
 | cassandra.enabled                 | Spin up a new cassandra cluster for Kong                               | `false`               |
-| postgres.enabled                  | Spin up a new postgres instance for Kong                               | `true `               |
+| postgresql.enabled                  | Spin up a new postgres instance for Kong                               | `true `               |
 | env.database                      | Choose either `postgres` or `cassandra`                                | `postgres`            |
 | env.pg_user                       | Postgres username                                                      | `kong`                |
 | env.pg_database                   | Postgres database name                                                 | `kong`                |
@@ -111,7 +111,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 
 ```console
 $ helm install stable/kong --name my-release \
-  --set=image.tag=0.11.2,database.type=caasandra,cassandra.enabled=true
+  --set=image.tag=0.11.2,env.database=cassandra,cassandra.enabled=true
 ```
 
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
