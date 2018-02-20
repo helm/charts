@@ -50,6 +50,8 @@ The following tables lists the configurable parameters of the drone charts and t
 | `ingress.hosts`                      | Ingress accepted hostnames                         | `[]`                                             |
 | `ingress.tls`                        | Ingress TLS configuration                          | `nil`                                            |
 | `resources`                          | Pod resource requests & limits                     | `{}`                                             |
+| `podAnnotations`                     | Pod annotations                                    | `{}`                                             |
+| `podLabels`                          | Pod labels                                         | `{}`                                             |
 | `elasticsearch.host`                 | ElasticSearch hostname                             | `elasticsearch-client.default.svc.cluster.local` |
 | `elasticsearch.port`                 | ElasticSearch port                                 | `9200`                                           |
 | `configData`                         | Extra logstash config                              | `{}`                                             |
