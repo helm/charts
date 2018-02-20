@@ -29,6 +29,12 @@ spec:
           {{- end }}
             - --policy={{ .Values.policy }}
             - --provider={{ .Values.provider }}
+          {{- if .Values.txtOwnerId }}
+            - --txt-owner-id={{ .Values.txtOwnerId }}
+          {{- end }}
+          {{- if .Values.annotationFilter }}
+            - --annotation-filter={{ .Values.annotationFilter }}
+          {{- end }}
           {{- range .Values.sources }}
             - --source={{ . }}
           {{- end }}
@@ -41,6 +47,9 @@ spec:
           {{- end }}
           {{- if .Values.aws.zoneType }}
             - --aws-zone-type={{ .Values.aws.zoneType }}
+          {{- end }}
+          {{- if .Values.google.project }}
+            - --google-project={{ .Values.google.project }}
           {{- end }}
           volumeMounts:
           {{- if eq .Values.provider "azure" }}
@@ -66,6 +75,7 @@ spec:
           - name: AWS_DEFAULT_REGION
             value: {{ .Values.aws.region }}
         {{- end }}
+        {{- end }}
         {{- if and .Values.cloudflare.apiKey .Values.cloudflare.email }}
           - name: CF_API_KEY
             valueFrom:
@@ -74,7 +84,6 @@ spec:
                 key: cloudflare_api_key
           - name: CF_API_EMAIL
             value: "{{ .Values.cloudflare.email }}"
-        {{- end }}
         {{- end }}
         {{- $root := . -}}
         {{- range $key, $value := .Values.extraEnv }}

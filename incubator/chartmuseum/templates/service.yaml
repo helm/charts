@@ -14,7 +14,11 @@ spec:
   type: {{ .Values.service.type }}
   ports:
   - port: {{ .Values.service.externalPort }}
+{{- if (and (eq .Values.service.type "NodePort") (not (empty .Values.service.nodePort))) }}
+    nodePort: {{.Values.service.nodePort}}
+{{- else }}
     targetPort: {{ .Values.service.internalPort }}
+{{- end }}
     protocol: TCP
     name: {{ .Release.Name }}
   selector:
