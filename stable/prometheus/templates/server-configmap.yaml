@@ -23,6 +23,9 @@ data:
         tls_config:
           ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
         bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+        {{- if $root.Values.alertmanager.prefixURL }}
+        path_prefix: {{ $root.Values.alertmanager.prefixURL }}
+        {{- end }}
         relabel_configs:
         - source_labels: [__meta_kubernetes_namespace]
           regex: {{ $root.Release.Namespace }}
