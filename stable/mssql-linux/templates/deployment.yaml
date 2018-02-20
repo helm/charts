@@ -33,9 +33,18 @@ spec:
                secretKeyRef:
                  name: {{ template "mssql.fullname" . }}-secret
                  key: sapassword
+            - name: MSSQL_DATA_DIR
+              value: /mssql-data/data
+            - name: MSSQL_LOG_DIR
+              value: /mssql-translog/translog
           ports:
             - name: db
               containerPort: 1433
+          volumeMounts:
+            - name: data
+              mountPath: /mssql-data/data
+            - name: transactionlog
+              mountPath: /mssql-translog/translog
           livenessProbe:
              tcpSocket:
                port: db
@@ -52,3 +61,26 @@ spec:
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
     {{- end }}
+      volumes:
+      - name: data
+      {{- if .Values.persistence.enabled }}
+        persistentVolumeClaim:
+          {{- if .Values.persistence.existingDataClaim }}
+          claimName: {{ .Values.persistence.existingDataClaim }}
+          {{- else }}
+          claimName: {{ template "mssql.fullname" . }}-data
+          {{- end -}}
+      {{- else }}
+        emptyDir: {}
+      {{- end }}
+      - name: transactionlog
+      {{- if .Values.persistence.enabled }}
+        persistentVolumeClaim:
+          {{- if .Values.persistence.existingLogClaim }}
+          claimName: {{ .Values.persistence.existingLogClaim }}
+          {{- else }}
+          claimName: {{ template "mssql.fullname" . }}-translog
+          {{- end }}
+      {{- else }}
+        emptyDir: {}
+      {{- end }}

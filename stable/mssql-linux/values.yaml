@@ -10,6 +10,15 @@ image:
   pullPolicy: IfNotPresent
 service:
   type: ClusterIP
+persistence:
+  enabled: false
+  # existingDataClaim:
+  # existingTransactionLogClaim:
+  # storageClass: "-"
+  dataAccessMode: ReadWriteOnce
+  dataSize: 1Gi
+  transactionLogAccessMode: ReadWriteOnce
+  transactionLogSize: 1Gi
 livenessprobe:
   initialDelaySeconds: 15
   periodSeconds: 20
@@ -24,3 +33,4 @@ resources: {}
   #  cpu: 100m
   #  memory: 2Gi
 nodeSelector: {}
+  # kubernetes.io/hostname: minikube
