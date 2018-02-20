@@ -1,5 +1,5 @@
 {{- if eq .Values.mode "standalone" "shared" }}
-{{- if .Values.persistence.enabled }}
+{{- if and .Values.persistence.enabled (not .Values.persistence.existingClaim) }}
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:

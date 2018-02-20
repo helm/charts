@@ -46,7 +46,7 @@ spec:
         - name: export
         {{- if .Values.persistence.enabled }}
           persistentVolumeClaim:
-            claimName: {{ template "minio.fullname" . }}
+            claimName: {{ .Values.persistence.existingClaim | default (include "minio.fullname" .) }}
         {{- else }}
           emptyDir: {}
         {{- end }}
