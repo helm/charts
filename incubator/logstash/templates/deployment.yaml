@@ -14,6 +14,19 @@ spec:
       labels:
         app: {{ template "logstash.name" . }}
         release: {{ .Release.Name }}
+      {{- if .Values.podLabels }}
+        # Allows custom labels to be specified
+        {{- range $key, $val := .Values.podLabels }}
+        {{ $key }}: {{ $val | quote }}
+        {{- end }}
+      {{- end }}
+      annotations:
+      {{- if .Values.podAnnotations }}
+        # Allows custom annotations to be specified
+        {{- range $key, $val := .Values.podAnnotations }}
+        {{ $key }}: {{ $val | quote }}
+        {{- end }}
+      {{- end }}
     spec:
       containers:
         - name: {{ .Chart.Name }}

@@ -24,6 +24,15 @@ service:
 # Extra config options
 configData: {}
 
+podAnnotations: {}
+  # Add custom annotations to pods
+  # iam.amazonaws.com/role: "example-role"
+
+podLabels: {}
+  # Add custom labels to pods
+  # team: "developers"
+  # service: "logstash"
+
 livenessProbe:
   initialDelaySeconds: 60
   periodSeconds: 20
