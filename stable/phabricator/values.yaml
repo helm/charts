@@ -1,7 +1,7 @@
 ## Bitnami Phabricator image version
 ## ref: https://hub.docker.com/r/bitnami/phabricator/tags/
 ##
-image: bitnami/phabricator:2018.5.0-r0
+image: bitnami/phabricator:2018.7.0-r0
 
 ## Specify a imagePullPolicy
 ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
