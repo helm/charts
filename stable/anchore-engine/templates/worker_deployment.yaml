@@ -85,3 +85,15 @@ spec:
         {{- end }}
         - name: analysis-scratch
           {{ toYaml .Values.workerConfig.analysisScratchVolume.details -}}
+    {{- if .Values.workerConfig.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.workerConfig.nodeSelector | indent 8 }}
+    {{- end }}
+    {{- with .Values.workerConfig.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.workerConfig.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
