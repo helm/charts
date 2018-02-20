@@ -73,7 +73,7 @@ The following tables lists the configurable parameters of the Uchiwa chart and t
 | `loglevel` | Level of logging to show after Uchiwa has started | `info` |
 
 
-Detailed documentaion for the `config` json can be found at [Uchiwa/Docs](https://docs.uchiwa.io/getting-started/configuration/)
+Detailed documentation for the `config` json can be found at [Uchiwa/Docs](https://docs.uchiwa.io/getting-started/configuration/)
 
 ```console
 $ helm install --name my-release \
