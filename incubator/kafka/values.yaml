@@ -50,6 +50,27 @@ logSubPath: "logs"
 ##
 affinity: {}
 
+## Liveness probe config.
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes
+##
+livenessProbe:
+  tcpSocket:
+    port: 9092
+  initialDelaySeconds: 30
+  timeoutSeconds: 5
+
+## Readiness probe config.
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes
+##
+readinessProbe:
+  exec:
+  - "kafka-topics"
+  - "--zookeeper"
+  - "${KAFKA_ZOOKEEPER_CONNECT}"
+  - "--list"
+  initialDelaySeconds: 30
+  timeoutSeconds: 5
+
 ## Configuration Overrides. Specify any Kafka settings you would like set on the StatefulSet
 ## here in map format, as defined in the official docs.
 ## ref: https://kafka.apache.org/documentation/#brokerconfigs
