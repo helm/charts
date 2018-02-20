@@ -57,6 +57,7 @@ The following tables lists the configurable parameters of the drone charts and t
 | `agent.replicas`            | Drone **agent** replicas                                                                      | `1`                         |
 | `agent.resources`           | Drone **agent** pod resource requests & limits                                                | `{}`                        |
 | `agent.afinity`             | Drone **agent** scheduling preferences                                                        | `{}`                        |
+| `dind.enabled`              | Enable or disable **DinD**                                                                    | `true`                      |
 | `dind.driver`               | **DinD** storage driver                                                                       | `overlay2`                  |
 | `dind.resources`            | **DinD** pod resource requests & limits                                                       | `{}`                        |
 | `persistence.enabled`       | Use a PVC to persist data                                                                     | `true`                      |
