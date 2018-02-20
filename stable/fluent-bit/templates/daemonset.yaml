@@ -5,10 +5,14 @@ metadata:
   labels:
     app: {{ template "fluent-bit.fullname" . }}
 spec:
+  updateStrategy:
+    type: RollingUpdate
   template:
     metadata:
       labels:
         app: {{ template "fluent-bit.fullname" . }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/config.yaml") . | sha256sum }}
     spec:
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "fluent-bit.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
       containers:
