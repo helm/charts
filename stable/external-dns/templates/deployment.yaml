@@ -32,6 +32,9 @@ spec:
           {{- if .Values.txtOwnerId }}
             - --txt-owner-id={{ .Values.txtOwnerId }}
           {{- end }}
+          {{- if .Values.txtPrefix }}
+            - --txt-prefix={{ .Values.txtPrefix }}
+          {{- end }}
           {{- if .Values.annotationFilter }}
             - --annotation-filter={{ .Values.annotationFilter }}
           {{- end }}
