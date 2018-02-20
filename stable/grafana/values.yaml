@@ -12,6 +12,14 @@ server:
   nodeSelector: {}
   tolerations: []
 
+  # Multiple replicas do not work with the default sqlite database,
+  # see http://docs.grafana.org/tutorials/ha_setup/.
+  replicaCount: 1
+
+  antiAffinity:
+    enabled: false
+    type: hard
+
   ingress:
     ## If true, Grafana Ingress will be created
     ##
@@ -114,7 +122,7 @@ server:
   ##
   readinessProbe:
     httpGet:
-      path: /login
+      path: /api/health
       port: 3000
     initialDelaySeconds: 30
     timeoutSeconds: 30
@@ -132,6 +140,9 @@ server:
     ## Grafana service port
     ##
     httpPort: 80
+
+    ## ClusterIP to use for service
+    ## clusterIP: None
 
     ## Load balancer IP address
     ## Is not required, but allows for static address with
@@ -160,6 +171,7 @@ server:
     ##
     # externalIPs:
     # - 192.168.0.1
+
 
   ## Grafana local config path
   ## Default '/etc/grafana'

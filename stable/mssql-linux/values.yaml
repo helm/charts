@@ -1,0 +1,36 @@
+acceptEula:
+  value: "n"
+edition:
+  value: Express
+# Override sapassword in templates/secret.yaml
+# sapassword: "MyStrongPassword1234"
+image:
+  repository: microsoft/mssql-server-linux
+  tag: 2017-CU3
+  pullPolicy: IfNotPresent
+service:
+  type: ClusterIP
+persistence:
+  enabled: false
+  # existingDataClaim:
+  # existingTransactionLogClaim:
+  # storageClass: "-"
+  dataAccessMode: ReadWriteOnce
+  dataSize: 1Gi
+  transactionLogAccessMode: ReadWriteOnce
+  transactionLogSize: 1Gi
+livenessprobe:
+  initialDelaySeconds: 15
+  periodSeconds: 20
+readinessprobe:
+  initialDelaySeconds: 5
+  periodSeconds: 10
+resources: {}
+  # limits:
+  #  cpu: 100m
+  #  memory: 2Gi
+  # requests:
+  #  cpu: 100m
+  #  memory: 2Gi
+nodeSelector: {}
+  # kubernetes.io/hostname: minikube

@@ -28,6 +28,9 @@ spec:
         - name: config
           mountPath: /fluent-bit/etc/fluent-bit.conf
           subPath: fluent-bit.conf
+{{- if .Values.extraVolumeMounts }}
+{{ toYaml .Values.extraVolumeMounts | indent 8 }}
+{{- end }}
 {{ if .Values.on_minikube }}
         - name: mnt
           mountPath: /mnt
@@ -51,7 +54,10 @@ spec:
           path: /var/lib/docker/containers
       - name: config
         configMap:
-          name: {{ template "fluent-bit.fullname" . }}-config
+          name: {{ if .Values.existingConfigMap }}{{ .Values.existingConfigMap }}{{- else }}{{ template "fluent-bit.fullname" . }}-config{{- end }}
+{{- if .Values.extraVolumes }}
+{{ toYaml .Values.extraVolumes | indent 6 }}
+{{- end }}
 {{ if .Values.on_minikube }}
       - name: mnt
         hostPath:

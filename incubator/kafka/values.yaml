@@ -31,12 +31,8 @@ storage: "1Gi"
 
 ## The StatefulSet Update Strategy which Kafka will use when changes are applied.
 ## ref: https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#update-strategies
-updateStrategy: "OnDelete"
-
-## If `updateStrategy` is set to "RollingUpdate", you may optionally specify which partition
-## should be updated first.
-## ref: https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#partitions
-rollingUpdatePartition: 0
+updateStrategy:
+  type: "OnDelete"
 
 ## The name of the storage class which the cluster should use.
 # storageClass: default

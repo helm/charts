@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: {{ template "kubernetes-dashboard.fullname" . }}
   labels:
-    app: {{ template "kubernetes-dashboard.fullname" . }}
+    app: {{ template "kubernetes-dashboard.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
@@ -22,9 +22,7 @@ spec:
     metadata:
       labels:
         app: {{ template "kubernetes-dashboard.name" . }}
-        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-        heritage: "{{ .Release.Service }}"
-        release: "{{ .Release.Name }}"
+        release: {{ .Release.Name }}
         kubernetes.io/cluster-service: "true"
     spec:
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "kubernetes-dashboard.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
@@ -32,6 +30,10 @@ spec:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
+{{- if .Values.extraArgs }}
+        args:
+{{ toYaml .Values.extraArgs | indent 10 }}
+{{- end }}
         ports:
         - name: http
           containerPort: 9090

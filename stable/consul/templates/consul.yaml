@@ -248,7 +248,10 @@ spec:
 
             PEERS=""
             for i in $(seq 0 $((${INITIAL_CLUSTER_SIZE} - 1))); do
-                PEERS="${PEERS}${PEERS:+ } -retry-join $(ping -c 1 ${STATEFULSET_NAME}-${i}.${STATEFULSET_NAME}.${STATEFULSET_NAMESPACE}.svc | awk -F'[()]' '/PING/{print $2}')"
+              NEXT_PEER="$(ping -c 1 ${STATEFULSET_NAME}-${i}.${STATEFULSET_NAME}.${STATEFULSET_NAMESPACE}.svc | awk -F'[()]' '/PING/{print $2}')"
+              if [ "${NEXT_PEER}" != "${POD_IP}" ]; then
+                PEERS="${PEERS}${PEERS:+ } -retry-join ${STATEFULSET_NAME}-${i}.${STATEFULSET_NAME}.${STATEFULSET_NAMESPACE}.svc"
+              fi
             done
 
             exec /bin/consul agent \
@@ -264,6 +267,7 @@ spec:
               -data-dir=/var/lib/consul \
               -server \
               -bootstrap-expect=${INITIAL_CLUSTER_SIZE} \
+              -disable-keyring-file \
               -bind=0.0.0.0 \
               -advertise=${IP} \
               ${PEERS} \
@@ -280,12 +284,6 @@ spec:
   volumeClaimTemplates:
   - metadata:
       name: datadir
-      annotations:
-      {{- if .Values.StorageClass }}
-        volume.beta.kubernetes.io/storage-class: {{ .Values.StorageClass | quote }}
-      {{- else }}
-        volume.alpha.kubernetes.io/storage-class: default
-      {{- end }}
     spec:
       accessModes:
         - "ReadWriteOnce"
@@ -293,3 +291,10 @@ spec:
         requests:
           # upstream recommended max is 700M
           storage: "{{ .Values.Storage }}"
+    {{- if .Values.StorageClass }}
+    {{- if (eq "-" .Values.StorageClass) }}
+      storageClassName: ""
+    {{- else }}
+      storageClassName: "{{ .Values.StorageClass }}"
+    {{- end }}
+    {{- end }}

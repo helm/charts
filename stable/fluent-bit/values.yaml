@@ -1,4 +1,4 @@
-# Minikube stores its logs in a seperate directory.
+# Minikube stores its logs in a separate directory.
 # enable if started in minikube.
 on_minikube: false
 
@@ -29,6 +29,23 @@ backend:
 
 env: []
 
+## ConfigMap override where fullname is {{.Release.Name}}-{{.Values.existingConfigMap}}
+## Defining existingConfigMap will cause templates/config.yaml
+## to NOT generate a ConfigMap resource
+##
+existingConfigMap: ""
+
+## Extra volumes containing additional files required for fluent-bit to work
+## (eg. CA certificates)
+## Ref: https://kubernetes.io/docs/concepts/storage/volumes/
+##
+extraVolumes: []
+
+## Extra volume mounts for the fluent-bit pod.
+## Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-volume-storage/
+##
+extraVolumeMounts: []
+
 resources:
   limits:
     memory: 100Mi
@@ -49,6 +66,11 @@ tolerations: []
 ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
 ##
 nodeSelector: {}
+
+filter: {}
+# If true, check to see if the log field content is a JSON string map, if so,
+# it append the map fields as part of the log structure.
+#  mergeJSONLog: true
 
 ## Install Default RBAC roles and bindings
 rbac:

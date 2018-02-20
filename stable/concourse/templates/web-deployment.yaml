@@ -25,9 +25,9 @@ spec:
             {{- if .Values.credentialManager.enabled }}
             {{- if default "" .Values.credentialManager.vault.appRoleId }}
             - "--vault-auth-param"
-            - "role_id=${CONCOURSE_VAULT_APPROLE_ID}"
+            - "role_id=$(CONCOURSE_VAULT_APPROLE_ID)"
             - "--vault-auth-param"
-            - "secret_id=${CONCOURSE_VAULT_APPROLE_SECRET_ID}"
+            - "secret_id=$(CONCOURSE_VAULT_APPROLE_SECRET_ID)"
             {{- end }}
             {{- end }}
           env:
@@ -275,11 +275,11 @@ spec:
                   key: vault-client-token
             {{- if .Values.credentialManager.vault.caCert }}
             - name: CONCOURSE_VAULT_CA_CERT
-              value: "/concourse-vault/ca.crt"
+              value: "/concourse-vault/ca.cert"
             {{- end }}
             {{- if .Values.credentialManager.vault.clientCert }}
             - name: CONCOURSE_VAULT_CLIENT_CERT
-              value: "/concourse-vault/client.crt"
+              value: "/concourse-vault/client.cert"
             - name: CONCOURSE_VAULT_CLIENT_KEY
               value: "/concourse-vault/client.key"
             {{- end }}
