@@ -38,6 +38,8 @@ spec:
               value: {{ .Values.elasticsearch.port | quote }}
             - name: SYSLOG_PORT
               value: {{ .Values.service.internalPort | quote }}
+            - name: LS_JAVA_OPTS
+              value: "-Xms{{ .Values.initialHeapSize }} -Xmx{{ .Values.maxHeapSize }}"
           volumeMounts:
             - name: config
               mountPath: /usr/share/logstash/config/logstash.yml
