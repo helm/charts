@@ -17,7 +17,7 @@ postgresql:
   enabled: true
   postgresDatabase: "artifactory"
   postgresUser: "artifactory"
-  postgresPassword: "artIfakt0ri1973"
+  postgresPassword:
   service:
     port: 5432
   persistence:

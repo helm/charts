@@ -15,6 +15,13 @@ Congratulations. You have just deployed JFrog Artifactory HA!
 ********************************************************************************************
 {{- end }}
 
+{{- if .Values.postgresql.enabled }}
+
+DATABASE:
+To extract the database password, run the following
+export DB_PASSWORD=$(kubectl get --namespace {{ .Release.Namespace }} $(kubectl get secret --namespace {{ .Release.Namespace }} -o name | grep postgresql) -o jsonpath="{.data.postgres-password}" | base64 --decode)
+echo ${DB_PASSWORD}
+{{- end }}
 
 SETUP:
 1. Get the Artifactory IP and URL
