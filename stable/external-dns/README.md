@@ -56,6 +56,7 @@ The following tables lists the configurable parameters of the external-dns chart
 | `sources`                          | List of resource types to monitor, possible values are fake, service or ingress.                                           | `[service, ingress]`                               |
 | `tolerations`                      | List of node taints to tolerate (requires Kubernetes >= 1.6)                                                               | `[]`                                               |
 | `txtOwnerId`                       | When using the TXT registry, a name that identifies this instance of ExternalDNS (optional)                                | `"default"`                                        |
+| `txtPrefix`                        | When using the TXT registry, a prefix for ownership records that avoids collision with CNAME entries (optional)            | `""`                                        |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
