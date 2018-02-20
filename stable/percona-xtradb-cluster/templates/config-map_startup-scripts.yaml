@@ -9,8 +9,6 @@ metadata:
     heritage: "{{ .Release.Service }}"
 data:
   entrypoint.sh: |
-  {{- range .Files.Lines "files/entrypoint.sh" }}
-  {{ . | indent 2 }}{{ end }}
+{{ .Files.Get "files/entrypoint.sh" | indent 4 }}
   functions.sh: |
-  {{- range .Files.Lines "files/functions.sh" }}
-  {{ . | indent 2 }}{{ end }}
+{{ .Files.Get "files/functions.sh" | indent 4 }}
