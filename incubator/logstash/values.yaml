@@ -9,7 +9,7 @@ image:
   pullPolicy: IfNotPresent
 service:
   type: ClusterIP
-  internalPort: 9600
+  internalPort: 9600 # logstash monitoring port
   ports:
     - name: "syslog-tcp"
       protocol: TCP
