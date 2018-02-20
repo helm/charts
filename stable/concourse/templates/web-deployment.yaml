@@ -25,9 +25,9 @@ spec:
             {{- if .Values.credentialManager.enabled }}
             {{- if default "" .Values.credentialManager.vault.appRoleId }}
             - "--vault-auth-param"
-            - "role_id=${CONCOURSE_VAULT_APPROLE_ID}"
+            - "role_id=$(CONCOURSE_VAULT_APPROLE_ID)"
             - "--vault-auth-param"
-            - "secret_id=${CONCOURSE_VAULT_APPROLE_SECRET_ID}"
+            - "secret_id=$(CONCOURSE_VAULT_APPROLE_SECRET_ID)"
             {{- end }}
             {{- end }}
           env:
