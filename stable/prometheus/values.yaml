@@ -55,11 +55,12 @@ alertmanager:
     #   kubernetes.io/ingress.class: nginx
     #   kubernetes.io/tls-acme: 'true'
 
-    ## alertmanager Ingress hostnames
+    ## alertmanager Ingress hostnames with optinal path
     ## Must be provided if Ingress is enabled
     ##
     hosts: []
     #   - alertmanager.domain.com
+    #   - domain.com/alertmanager
 
     ## alertmanager Ingress TLS configuration
     ## Secrets must be manually created in the namespace
@@ -424,11 +425,12 @@ server:
     #   kubernetes.io/ingress.class: nginx
     #   kubernetes.io/tls-acme: 'true'
 
-    ## Prometheus server Ingress hostnames
+    ## Prometheus server Ingress hostnames with optinal path
     ## Must be provided if Ingress is enabled
     ##
     hosts: []
     #   - prometheus.domain.com
+    #   - domain.com/prometheus
 
     ## Prometheus server Ingress TLS configuration
     ## Secrets must be manually created in the namespace
@@ -572,11 +574,12 @@ pushgateway:
     #   kubernetes.io/ingress.class: nginx
     #   kubernetes.io/tls-acme: 'true'
 
-    ## pushgateway Ingress hostnames
+    ## pushgateway Ingress hostnames with optinal path
     ## Must be provided if Ingress is enabled
     ##
     hosts: []
     #   - pushgateway.domain.com
+    #   - domain.com/pushgateway
 
     ## pushgateway Ingress TLS configuration
     ## Secrets must be manually created in the namespace
