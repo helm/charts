@@ -1,10 +1,9 @@
 {{- if .Values.query.ingress.enabled -}}
-{{- $serviceName := include "jaeger.query.fullname" . -}}
 {{- $servicePort := .Values.query.service.queryPort -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: {{ template "jaeger.fullname" . }}-query
+  name: {{ template "jaeger.query.name" . }}-query
   labels:
     app: {{ template "jaeger.name" . }}
     jaeger-infra: query-ingress
@@ -24,7 +23,7 @@ spec:
         paths:
           - path: /
             backend:
-              serviceName: {{ $serviceName }}
+              serviceName: {{ template "jaeger.query.name" $ }}-query
               servicePort: {{ $servicePort }}
     {{- end -}}
   {{- if .Values.query.ingress.tls }}
