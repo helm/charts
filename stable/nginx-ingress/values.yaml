@@ -17,9 +17,10 @@ controller:
   # is merged
   hostNetwork: false
 
-  # Optionally use this DNS Policy if you have 'hostNetwork: true'
-  # Without this, pods running with host network access will not be able to resolve names in K8S' internal DNS
-  # dnsPolicy: ClusterFirstWithHostNet
+  # Optionally change this to ClusterFirstWithHostNet in case you have 'hostNetwork: true'.
+  # By default, while using host network, name resolution uses the host's DNS. If you wish nginx-controller
+  # to keep resolving names inside the k8s network, use ClusterFirstWithHostNet.
+  dnsPolicy: ClusterFirst
 
   ## Use host ports 80 and 443
   daemonset:
