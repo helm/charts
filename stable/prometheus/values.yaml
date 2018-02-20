@@ -644,7 +644,7 @@ pushgateway:
 ## alertmanager ConfigMap entries
 ##
 alertmanagerFiles:
-  alertmanager.yml: |-
+  alertmanager.yml:
     global:
       # slack_api_url: ''
 
