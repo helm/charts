@@ -34,7 +34,11 @@ spec:
             - --path.procfs=/host/proc
             - --path.sysfs=/host/sys
           {{- range $key, $value := .Values.nodeExporter.extraArgs }}
+          {{- if $value }}
             - --{{ $key }}={{ $value }}
+          {{- else }}
+            - --{{ $key }}
+          {{- end }}
           {{- end }}
           ports:
             - name: metrics
@@ -50,6 +54,11 @@ spec:
               mountPath: /host/sys
               readOnly: true
           {{- range .Values.nodeExporter.extraHostPathMounts }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+              readOnly: {{ .readOnly }}
+          {{- end }}
+          {{- range .Values.nodeExporter.extraConfigmapMounts }}
             - name: {{ .name }}
               mountPath: {{ .mountPath }}
               readOnly: {{ .readOnly }}
@@ -76,4 +85,10 @@ spec:
           hostPath:
             path: {{ .hostPath }}
       {{- end }}
+      {{- range .Values.nodeExporter.extraConfigmapMounts }}
+        - name: {{ .name }}
+          configMap:
+            name: {{ .configMap }}
+      {{- end }}
+
 {{- end -}}
