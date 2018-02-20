@@ -18,6 +18,7 @@ rules:
       - services
       - endpoints
       - pods
+      - ingresses
     verbs:
       - get
       - list
@@ -28,6 +29,15 @@ rules:
       - configmaps
     verbs:
       - get
+  - apiGroups:
+      - "extensions"
+    resources:
+      - ingresses/status
+      - ingresses
+    verbs:
+      - get
+      - list
+      - watch
   - nonResourceURLs:
       - "/metrics"
     verbs:
