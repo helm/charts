@@ -50,6 +50,10 @@ logSubPath: "logs"
 ##
 affinity: {}
 
+## Node labels for pod assignment
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
+nodeSelector: {}
+
 ## Configuration Overrides. Specify any Kafka settings you would like set on the StatefulSet
 ## here in map format, as defined in the official docs.
 ## ref: https://kafka.apache.org/documentation/#brokerconfigs
