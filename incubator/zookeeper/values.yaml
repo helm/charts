@@ -47,3 +47,8 @@ affinity: {}
 #             operator: NotIn
 #             values:
 #               - "true"
+
+## Node labels for pod assignment
+## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+##
+nodeSelector: {}
