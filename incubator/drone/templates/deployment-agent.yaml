@@ -35,14 +35,27 @@ spec:
               secretKeyRef:
                 name: {{ template "drone.fullname" . }}
                 key: secret
+{{- if .Values.dind.enabled }}
           - name: DOCKER_HOST
             value: tcp://localhost:2375
+{{- end }}
           {{ range $key, $value := .Values.agent.env }}
           - name: {{ $key }}
             value: {{ $value | quote }}
           {{ end }}
         resources:
 {{ toYaml .Values.agent.resources | indent 10 }}
+{{- if not .Values.dind.enabled }}
+        securityContext:
+          privileged: true
+        volumeMounts:
+          - mountPath: /var/run/docker.sock
+            name: docker-socket
+      volumes:
+        - name: docker-socket
+          hostPath:
+            path: /var/run/docker.sock
+{{- else }}
       - name: {{ template "drone.fullname" . }}-dind
         image: "{{ .Values.images.dind.repository }}:{{ .Values.images.dind.tag }}"
         imagePullPolicy: {{ .Values.images.dind.pullPolicy }}
@@ -50,7 +63,7 @@ spec:
         - name: DOCKER_DRIVER
           value: {{ .Values.dind.driver }}
         securityContext:
-            privileged: true
+          privileged: true
         resources:
 {{ toYaml .Values.dind.resources | indent 10 }}
         volumeMounts:
@@ -59,3 +72,4 @@ spec:
       volumes:
       - name: docker-graph-storage
         emptyDir: {}
+{{- end }}
