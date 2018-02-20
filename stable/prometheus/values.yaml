@@ -360,6 +360,10 @@ nodeExporter:
     type: ClusterIP
 
 server:
+  ## If false, alertmanager will not be installed
+  ##
+  enabled: true
+  
   ## Prometheus server container name
   ##
   name: server
