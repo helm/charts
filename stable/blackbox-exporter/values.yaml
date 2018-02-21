@@ -1,0 +1,37 @@
+## number of exporter instances
+##
+apiVersion: apps/v1
+#or apps/v1beta2
+#or apps/v1beta1
+
+restartPolicy: Always
+
+user: prometheus
+#set to a crypted password, such as can be generated like:
+#openssl passwd -crypt <password>
+#For testing, 'FAJzAuOSlGGT6' is 'password'
+password:
+
+image:
+  repository: prom/blackbox-exporter
+  tag: v0.11.0
+  pullPolicy: IfNotPresent
+proxyImage:
+  repository: nginx
+  tag: 1.13.8-alpine
+  pullPolicy: IfNotPresent
+
+config: {}
+
+resources: {}
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+service:
+  type: ClusterIP
+  httpPort: 9108
+  externalIPs: []

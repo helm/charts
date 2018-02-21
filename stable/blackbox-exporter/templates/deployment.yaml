@@ -1,0 +1,110 @@
+{{- $local := dict }}
+{{- if .Values.password -}}
+{{- $_ := set $local "bind" (printf "127.0.0.1:%d" (add1 .Values.service.httpPort)) -}}
+{{- else -}}
+{{ $_ := set $local "bind" (printf ":%0.f" .Values.service.httpPort) -}}
+{{- end -}}
+apiVersion: {{ .Values.apiVersion }}
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    app: {{ template "name" . }}
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ template "name" . }}
+      release: "{{ .Release.Name }}"
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+
+      labels:
+        app: {{ template "name" . }}
+        release: "{{ .Release.Name }}"
+      annotations:
+{{ toYaml .Values.annotations | indent 8 }}
+    spec:
+      restartPolicy: {{ .Values.restartPolicy }}
+      containers:
+{{- if .Values.password }}
+        - name: nginx
+          image: "{{ .Values.proxyImage.repository }}:{{ .Values.proxyImage.tag }}"
+          imagePullPolicy: {{ .Values.proxyImage.pullPolicy }}
+          args:
+            - /bin/sh
+            - -ec
+            - |
+              cat > /etc/nginx/conf.d/default.conf << "EOF"
+              server {
+                listen {{ .Values.service.httpPort }};
+                auth_basic "Protected Blackbox Exporter";
+                auth_basic_user_file /secret/htpassword;
+                location / {
+                  proxy_pass http://{{ $local.bind }};
+                }
+              }
+              EOF
+              nginx -g "daemon off;"
+          volumeMounts:
+            - mountPath: /secret
+              name: secret
+{{- end }}
+        - name: main
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+          args:
+{{- if gt (len .Values.config) 0 }}
+            - "--config.file=/config/blackbox.yaml"
+{{- else }}
+            - "--config.file=/etc/blackbox_exporter/config.yml"
+{{- end }}
+            - "--web.listen-address={{ $local.bind }}"
+          securityContext:
+            readOnlyRootFilesystem: true
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+          ports:
+            - containerPort: {{ .Values.service.httpPort }}
+              name: http
+{{- if not .Values.password}}
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 30
+            timeoutSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 10
+            timeoutSeconds: 10
+{{- end }}
+          volumeMounts:
+{{- if gt (len .Values.config) 0 }}
+            - mountPath: /config
+              name: config
+{{- end }}
+      volumes:
+{{- if gt (len .Values.config) 0 }}
+        - name: config
+          configMap:
+            name: {{ template "fullname" . }}
+{{- end }}
+{{- if .Values.password}}
+        - name: secret
+          secret:
+            secretName: {{ template "fullname" . }}
+{{- end }}

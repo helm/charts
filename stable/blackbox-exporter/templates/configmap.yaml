@@ -1,0 +1,14 @@
+{{- if gt (len .Values.config) 0 }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    app: {{ template "name" . }}
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+data:
+  blackbox.yaml:
+{{ toYaml .Values.config | indent 4 }}
+{{- end }}

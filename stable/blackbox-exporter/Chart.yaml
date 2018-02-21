@@ -1,0 +1,14 @@
+apiVersion: v1
+description: Prometheus Blackbox Exporter
+name: blackbox-exporter
+version: 0.1.0
+appVersion: 0.11.0
+sources:
+  - https://github.com/prometheus/blackbox_exporter
+keywords:
+  - metrics
+  - blackbox
+  - monitoring
+maintainers:
+  - name: kfox1111
+    email: Kevin.Fox@pnnl.gov
