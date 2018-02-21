@@ -10,7 +10,7 @@ image:
 service:
   name: luigi
   type: LoadBalancer
-  externalPort: 30050
+  externalPort: 80
 
   # Luigi config: these values should mattch the luigi documentation
   # https://luigi.readthedocs.io/en/stable/configuration.html

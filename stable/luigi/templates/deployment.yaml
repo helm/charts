@@ -9,6 +9,9 @@ metadata:
     heritage: {{ .Release.Service }}
 spec:
   selector:
+    matchLabels:
+      app: {{ template "luigi.name" . }}
+      release: {{ .Release.Name }}
   replicas: {{ .Values.replicaCount }}
   template:
     metadata:
@@ -26,11 +29,11 @@ spec:
           livenessProbe:
             httpGet:
               path: /static/visualiser/index.html
-              port: {{ .Values.service.internalPort }}
+              port: 8082
           readinessProbe:
             httpGet:
               path: /static/visualiser/index.html
-              port: {{ .Values.service.internalPort }}
+              port: 8082
           resources:
 {{ toYaml .Values.resources | indent 12 }}
           volumeMounts:
