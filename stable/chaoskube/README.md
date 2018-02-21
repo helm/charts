@@ -41,13 +41,16 @@ $ helm install stable/chaoskube --set dryRun=false
 |---------------------------|-----------------------------------------------------|-----------------------------------|
 | `name`                    | container name                                      | chaoskube                         |
 | `image`                   | docker image                                        | quay.io/linki/chaoskube           |
-| `imageTag`                | docker image tag                                    | v0.6.1                            |
+| `imageTag`                | docker image tag                                    | v0.7.1                            |
 | `replicas`                | number of replicas to run                           | 1                                 |
 | `interval`                | interval between pod terminations                   | 10m                               |
 | `labels`                  | label selector to filter pods by                    | "" (matches everything)           |
 | `annotations`             | annotation selector to filter pods by               | "" (matches everything)           |
 | `namespaces`              | namespace selector to filter pods by                | "" (all namespaces)               |
 | `dryRun`                  | don't kill pods, only log what would have been done | true                              |
+| `timezone`                | Set timezone for running actions (Optional)         | "" (UTC)                          |
+| `excludedWeekdays`        | Set Days of the Week to avoid actions (Optional)    | "" (Don't skip any days)          |
+| `excludedTimesOfDay`      | Set Time Range to avoid actions  (Optional)         | "" (Don't skip any time)          |
 | `resources.cpu`           | cpu resource requests and limits                    | 10m                               |
 | `resources.memory`        | memory resource requests and limits                 | 16Mi                              |
 | `rbac.create`             | create rbac service account and roles               | false                             |
@@ -65,4 +68,7 @@ $ helm install \
     - --interval=10m
     - --labels=app=foo,stage!=prod
     - --namespaces=!kube-system,!production
+    - --timezone=America/New_York
+    - --excludedWeekdays="Sat,Tue"
+    - --excludedTimesOfDay="12:00-18:00"
 ```
