@@ -49,9 +49,9 @@ The following tables lists the configurable parameters of the etcd chart and the
 | `PeerPorts`             | Container listening port             | `2380`                                             |
 | `Storage`               | Persistent volume size               | `1Gi`                                              |
 | `StorageClass`          | Persistent volume storage class      | `anything`                                         |
-| `affinity`              | Affinity settings for pod assignment | `{}`                                               |
-| `nodeSelector`          | Node labels for pod assignment       | `{}`                                               |
-| `tolerations`           | Toleration labels for pod assignment | `[]`                                               |
+| `Affinity`              | Affinity settings for pod assignment | `{}`                                               |
+| `NodeSelector`          | Node labels for pod assignment       | `{}`                                               |
+| `Tolerations`           | Toleration labels for pod assignment | `[]`                                               |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 

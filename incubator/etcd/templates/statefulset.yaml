@@ -19,17 +19,17 @@ spec:
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         component: "{{ .Release.Name }}-{{ .Values.Component }}"
     spec:
-{{- if .Values.affinity }}
+{{- if .Values.Affinity }}
       affinity:
-{{ toYaml .Values.affinity | indent 8 }}
+{{ toYaml .Values.Affinity | indent 8 }}
 {{- end }}
-{{- if .Values.nodeSelector }}
+{{- if .Values.NodeSelector }}
       nodeSelector:
-{{ toYaml .Values.nodeSelector | indent 8 }}
+{{ toYaml .Values.NodeSelector | indent 8 }}
 {{- end }}
-{{- if .Values.tolerations }}
+{{- if .Values.Tolerations }}
       tolerations:
-{{ toYaml .Values.tolerations | indent 8 }}
+{{ toYaml .Values.Tolerations | indent 8 }}
 {{- end }}
       containers:
       - name: {{ template "etcd.fullname" . }}
