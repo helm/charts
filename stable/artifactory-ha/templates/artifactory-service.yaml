@@ -4,7 +4,7 @@ kind: Service
 metadata:
   name: {{ .Values.artifactory.service.name }}
   labels:
-    app: {{ template "artifactory.name" . }}
+    app: {{ template "artifactory-ha.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     component: "{{ .Values.artifactory.name }}"
     heritage: {{ .Release.Service }}
@@ -18,9 +18,9 @@ spec:
     name: http
   selector:
 {{- if eq .Values.artifactory.service.pool "all" }}
-    app: {{ template "artifactory.name" . }}
+    app: {{ template "artifactory-ha.name" . }}
 {{- else }}
-    role: {{ template "artifactory.node.name" . }}
+    role: {{ template "artifactory-ha.node.name" . }}
 {{- end }}
     component: "{{ .Values.artifactory.name }}"
     release: {{ .Release.Name }}
@@ -30,9 +30,9 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "artifactory.primary.name" . }}
+  name: {{ template "artifactory-ha.primary.name" . }}
   labels:
-    app: {{ template "artifactory.name" . }}
+    app: {{ template "artifactory-ha.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     component: "{{ .Values.artifactory.name }}"
     heritage: {{ .Release.Service }}
@@ -45,6 +45,6 @@ spec:
     protocol: TCP
     name: http
   selector:
-    role: {{ template "artifactory.primary.name" . }}
+    role: {{ template "artifactory-ha.primary.name" . }}
     component: "{{ .Values.artifactory.name }}"
     release: {{ .Release.Name }}

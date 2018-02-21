@@ -1,9 +1,9 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "artifactory.nginx.name" . }}
+  name: {{ template "artifactory-ha.nginx.name" . }}
   labels:
-    app: {{ template "artifactory.name" . }}
+    app: {{ template "artifactory-ha.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
@@ -13,7 +13,7 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "artifactory.name" . }}
+        app: {{ template "artifactory-ha.name" . }}
         component: "{{ .Values.nginx.name }}"
         release: {{ .Release.Name }}
     spec:

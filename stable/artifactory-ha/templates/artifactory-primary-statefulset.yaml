@@ -1,28 +1,28 @@
 apiVersion: apps/v1beta2
 kind: StatefulSet
 metadata:
-  name: {{ template "artifactory.primary.name" . }}
+  name: {{ template "artifactory-ha.primary.name" . }}
   labels:
-    app: {{ template "artifactory.name" . }}
+    app: {{ template "artifactory-ha.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     component: {{ .Values.artifactory.name }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
 spec:
-  serviceName: "{{ template "artifactory.primary.name" . }}"
+  serviceName: "{{ template "artifactory-ha.primary.name" . }}"
   replicas: 1
   updateStrategy:
     type: RollingUpdate
   selector:
     matchLabels:
-      app: {{ template "artifactory.name" . }}
-      role: {{ template "artifactory.primary.name" . }}
+      app: {{ template "artifactory-ha.name" . }}
+      role: {{ template "artifactory-ha.primary.name" . }}
       release: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app: {{ template "artifactory.name" . }}
-        role: {{ template "artifactory.primary.name" . }}
+        app: {{ template "artifactory-ha.name" . }}
+        role: {{ template "artifactory-ha.primary.name" . }}
         component: {{ .Values.artifactory.name }}
         release: {{ .Release.Name }}
     spec:
@@ -105,7 +105,7 @@ spec:
         - name: ARTIFACTORY_MASTER_KEY
           valueFrom:
             secretKeyRef:
-              name: {{ template "artifactory.name" . }}-master-key
+              name: {{ template "artifactory-ha.name" . }}-master-key
               key: master-key
         - name: HA_IS_PRIMARY
           value: "true"
@@ -158,10 +158,10 @@ spec:
       volumes:
       - name: binarystore-xml
         configMap:
-          name: {{ template "artifactory.fullname" . }}-bs
+          name: {{ template "artifactory-ha.fullname" . }}-bs
       - name: artifactory-inactiveservercleaner
         configMap:
-          name: {{ template "artifactory.fullname" . }}-isc
+          name: {{ template "artifactory-ha.fullname" . }}-isc
       {{- if .Values.artifactory.license.secret }}
       - name: artifactory-license
         secret:
@@ -170,10 +170,10 @@ spec:
       {{- if eq .Values.artifactory.persistence.type "nfs" }}
       - name: artifactory-ha-data
         persistentVolumeClaim:
-          claimName: {{ template "artifactory.name" . }}-data-pvc
+          claimName: {{ template "artifactory-ha.name" . }}-data-pvc
       - name: artifactory-ha-backup
         persistentVolumeClaim:
-          claimName: {{ template "artifactory.name" . }}-backup-pvc
+          claimName: {{ template "artifactory-ha.name" . }}-backup-pvc
       {{- end }}
   volumeClaimTemplates:
   - metadata:
