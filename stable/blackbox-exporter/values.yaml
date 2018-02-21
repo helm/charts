@@ -1,15 +1,15 @@
 ## number of exporter instances
 ##
 apiVersion: apps/v1
-#or apps/v1beta2
-#or apps/v1beta1
+# or apps/v1beta2
+# or apps/v1beta1
 
 restartPolicy: Always
 
 user: prometheus
-#set to a crypted password, such as can be generated like:
-#openssl passwd -crypt <password>
-#For testing, 'FAJzAuOSlGGT6' is 'password'
+# set to a crypted password, such as can be generated like:
+# openssl passwd -crypt <password>
+# For testing, 'FAJzAuOSlGGT6' is 'password'
 password:
 
 image:
