@@ -112,7 +112,7 @@ Parameter | Description | Default
 `caprivatekey`| The key passed to the `caPrivateKey` parameter in your `azuredeploy.parameters.json` generated with `acs-engine` | None. You *must* supply one.
 `acsdeployment`| [OPTIONAL] The name of the deployment used to deploy the kubernetes cluster initially. | `azuredeploy`.
 `sleeptime`| [OPTIONAL] The number of seconds to sleep between scaling loops. | 60
-`ignorepools`| [OPTIONAL] A list of comma seperated pool names the autoscaler should ignore. | None.
+`ignorepools`| [OPTIONAL] A list of comma separated pool names the autoscaler should ignore. | None.
 `spareagents`| [OPTIONAL] Number of agents per pool that should always remain up. | 1
 `idlethreshold`| [OPTIONAL] Maximum duration (in seconds) an agent can stay idle before being deleted. | 1800 (30 minutes)
 `overprovision`| [OPTIONAL] Number of extra agents to create when scaling out. | 0

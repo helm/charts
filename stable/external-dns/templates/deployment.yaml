@@ -32,6 +32,9 @@ spec:
           {{- if .Values.txtOwnerId }}
             - --txt-owner-id={{ .Values.txtOwnerId }}
           {{- end }}
+          {{- if .Values.txtPrefix }}
+            - --txt-prefix={{ .Values.txtPrefix }}
+          {{- end }}
           {{- if .Values.annotationFilter }}
             - --annotation-filter={{ .Values.annotationFilter }}
           {{- end }}
@@ -75,6 +78,7 @@ spec:
           - name: AWS_DEFAULT_REGION
             value: {{ .Values.aws.region }}
         {{- end }}
+        {{- end }}
         {{- if and .Values.cloudflare.apiKey .Values.cloudflare.email }}
           - name: CF_API_KEY
             valueFrom:
@@ -83,7 +87,6 @@ spec:
                 key: cloudflare_api_key
           - name: CF_API_EMAIL
             value: "{{ .Values.cloudflare.email }}"
-        {{- end }}
         {{- end }}
         {{- $root := . -}}
         {{- range $key, $value := .Values.extraEnv }}

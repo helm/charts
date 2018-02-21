@@ -69,11 +69,11 @@ persistence:
   nameNode:
     enabled: false
     storageClass: "-"
-    accessMode: ReadWriteOnce 
+    accessMode: ReadWriteOnce
     size: 50Gi
 
   dataNode:
     enabled: false
     storageClass: "-"
-    accessMode: ReadWriteOnce 
+    accessMode: ReadWriteOnce
     size: 200Gi
