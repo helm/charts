@@ -72,12 +72,11 @@ The following tables lists the configurable parameters of the Phabricator chart 
 | `persistence.phabricator.size`         | PVC Storage Request for Phabricator volume   | `8Gi`                                                    |
 | `resources`                            | CPU/Memory resource requests/limits          | Memory: `512Mi`, CPU: `300m`                             |
 | `ingress.enabled`                      | enable ingress                               | `false`                                                  |
-| `ingress.path`                         | path to expose on ingress                    | unused                                                   |
-| `ingress.hosts`                        | listss of accepted hostnames                 | unused                                                   |
-| `ingress.annotations`                  | annotations to use on the ingress            | unused                                                   |
-| `ingress.annotations`                  | annotations to use on the ingress            | unused                                                   |
-| `ingress.tls.secretName`               | tls secret name                              | unused                                                   |
-| `ingress.tls.hosts`                    | hostnames the secret applies to              | unused                                                   |
+| `ingress.path`                         | path to expose on ingress                    | `nil`                                                    |
+| `ingress.hosts`                        | listss of accepted hostnames                 | `nil`                                                    |
+| `ingress.annotations`                  | annotations to use on the ingress            | `nil`                                                    |
+| `ingress.tls.secretName`               | tls secret name                              | `nil`                                                    |
+| `ingress.tls.hosts`                    | hostnames the secret applies to              | `nil`                                                    |
 
 
 
