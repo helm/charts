@@ -23,7 +23,10 @@ Since we want to have a customizable chart it's important that the configmap is 
 To do this we add the keyword `tpl` when reading the file
 - {{ (tpl (.Files.Glob "static/*").AsConfig .) | indent 2 }}
 
-## Heptio Secret
+
+## Prerequisites
+
+### Heptio Secret
 Ark server needs a IAM service accoutn in order to run, if you don't have it you must create it: 
 https://github.com/heptio/ark/blob/v0.6.0/docs/cloud-provider-specifics.md#gcp
 
@@ -32,6 +35,9 @@ And then
 ```
 kubectl create secret generic cloud-credentials --namespace heptio-ark --from-file cloud=credentials-ark
 ```
+
+### Bucket and Project name
+Please change bucket and project name in the values.yaml file
 
 ## How to
 ```
