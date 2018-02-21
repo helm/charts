@@ -85,7 +85,10 @@ spec:
         - name: DB_USER
           value: '{{ .Values.database.user }}'
         - name: DB_PASSWORD
-          value: '{{ .Values.database.password }}'
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "artifactory-ha.fullname" . }}
+              key: db-password
       {{- end }}
         - name: EXTRA_JAVA_OPTIONS
           value: "
@@ -105,7 +108,7 @@ spec:
         - name: ARTIFACTORY_MASTER_KEY
           valueFrom:
             secretKeyRef:
-              name: {{ template "artifactory-ha.name" . }}-master-key
+              name: {{ template "artifactory-ha.fullname" . }}
               key: master-key
         - name: HA_IS_PRIMARY
           value: "false"
