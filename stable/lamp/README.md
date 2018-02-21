@@ -115,7 +115,7 @@ After setting up your DB backup you can stop the database by executing
 $ mysqladmin -uroot -p$MYSQL_ROOT_PASSWORD shutdown
 ```
 
-Now copy all necessary files into the web directory, but do not forget to recursivly chown the webroot to the `www-data` user ( id 33 ) by executing
+Now copy all necessary files into the web directory, but do not forget to recursively chown the webroot to the `www-data` user ( id 33 ) by executing
 
 ```console
 $ chown -R 33:33 /var/www/html
@@ -155,7 +155,7 @@ FPM is enabled by default, this creates an additional HTTPD container which rout
 
 | Parameter | Description | Default |
 | - | - | - |
-| `php.version` | default php repository version, you can specify a differnt version like 5 or 7.0 | 7 |
+| `php.version` | default php repository version, you can specify a different version like 5 or 7.0 | 7 |
 | `php.repository` | If not empty, repository is chosen over default php repo | _empty_ |
 | `php.tag` | Repository tag | _empty_ |
 | `php.pullPolicy` | Image pull policy | Always |
@@ -278,7 +278,7 @@ If `persistence` is enabled, PVC's will be used to store the web root and the db
 ### Network
 
 To be able to connect to the services provided by the LAMP chart, a Kubernetes cluster with working LoadBalancer or Ingress Controller support is necessary.
-By default the chart will create a LoadBalancer Service, all services will be available via LoadBalancer IP through differnt ports. You can set `service.type` to ClusterIP if you do not want your chart to be exposed at all.
+By default the chart will create a LoadBalancer Service, all services will be available via LoadBalancer IP through different ports. You can set `service.type` to ClusterIP if you do not want your chart to be exposed at all.
 If `ingress.enabled` is set to true, the LAMP charts services are made accessible via ingress rules. Those services which are not provided by HTTP protocol via `nodePorts`. In ingress mode the LAMP chart also supports ssl wiht certificates signed by lets encrypt. This requires a working [lego](https://github.com/jetstack/kube-lego) container running on the cluster.
 
 > **Note**: In ingress mode it is mandatory to set `ingress.domain`, otherwise the ingress rules won't know how to route the traffic to the services.
