@@ -2,13 +2,15 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-#replicaCount: 1
-
 configuration:
   cloudprovider: gcp
   project: platforms-spielwiese
   bucket: pamamoto-bucket
   credentials: GOOGLE_APPLICATION_CREDENTIALS
+  backupSyncPeriod: 30m
+  gcSyncPeriod: 30m
+  scheduleSyncPeriod: 1m
+  restoreOnlyMode: false
 
 namespace:
   create: true
@@ -22,10 +24,6 @@ image:
 # this must be created manually before helm install, see README
 secret:
   name: cloud-credentials
-
-service:
-  type: ClusterIP
-  port: 80
 
 rbac:
   create: true

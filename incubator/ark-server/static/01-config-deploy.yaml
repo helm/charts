@@ -2,25 +2,25 @@
 apiVersion: ark.heptio.com/v1
 kind: Config
 metadata:
-  namespace: heptio-ark
+  namespace: {{ .Values.namespace.name }}
   name: default
 persistentVolumeProvider:
-  name: {{ required "PLEASE CHANGE VALUE" .Values.configuration.cloudprovider  }}
+  name: {{ required "PLEASE SET VALUE" .Values.configuration.cloudprovider  }}
   config:
-    project: {{ required "PLEASE CHANGE VALUE" .Values.configuration.project  }}
+    project: {{ required "PLEASE SET VALUE" .Values.configuration.project  }}
 backupStorageProvider:
-  name: {{ required "PLEASE CHANGE VALUE" .Values.configuration.cloudprovider  }}
-  bucket: {{ required "PLEASE CHANGE VALUE" .Values.configuration.bucket  }}
-backupSyncPeriod: 30m
-gcSyncPeriod: 30m
-scheduleSyncPeriod: 1m
-restoreOnlyMode: false
+  name: {{ required "PLEASE SET VALUE" .Values.configuration.cloudprovider  }}
+  bucket: {{ required "PLEASE SET VALUE" .Values.configuration.bucket  }}
+backupSyncPeriod: {{ .Values.configuration.backupSyncPeriod }}
+gcSyncPeriod: {{ .Values.configuration.gcSyncPerios }}
+scheduleSyncPeriod: {{ .Values.configuration.scheduleSyncPeriod }}
+restoreOnlyMode: {{ .Values.configuration.restoreOnlyMode }}
 
 ---
 apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
-  namespace: heptio-ark
+  namespace: {{ .Values.namespace.name }}
   name: ark
 spec:
   replicas: 1
