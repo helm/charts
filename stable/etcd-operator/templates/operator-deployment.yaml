@@ -18,7 +18,7 @@ spec:
         app: {{ template "etcd-operator.fullname" . }}
         release: {{ .Release.Name }}
     spec:
-      serviceAccountName: {{ if .Values.rbac.create }}{{ template "etcd-operator.fullname" . }}{{ else }}{{ .Values.rbac.etcdOperatorServiceAccountName }}{{ end }}
+      serviceAccountName: {{ template "etcd-operator.serviceAccountName" . }}
       containers:
       - name: {{ template "etcd-operator.fullname" . }}
         image: "{{ .Values.etcdOperator.image.repository }}:{{ .Values.etcdOperator.image.tag }}"

@@ -46,6 +46,11 @@ affinity: {}
 #             values:
 #               - "true"
 
+## Node labels for pod assignment
+## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+##
+nodeSelector: {}
+
 ## Persistence configuration. Specify if and how to persist data to a persistent volume.
 ##
 persistence:

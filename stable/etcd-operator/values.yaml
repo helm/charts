@@ -6,9 +6,18 @@
 rbac:
   create: true
   apiVersion: v1beta1
-  etcdOperatorServiceAccountName: default
-  backupOperatorServiceAccountName: default
-  restoreOperatorServiceAccountName: default
+
+## Service account names and whether to create them
+serviceAccount:
+  etcdOperatorServiceAccount:
+    create: true
+    name:
+  backupOperatorServiceAccount:
+    create: true
+    name:
+  restoreOperatorServiceAccount:
+    create: true
+    name:
 
 # Select what to deploy
 deployments:
