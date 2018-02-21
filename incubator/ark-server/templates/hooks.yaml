@@ -85,15 +85,20 @@ metadata:
     app: {{ template "ark-server.name" . }}
   name: deploy-ark
 rules:
-- apiGroups: ['*']
-  resources: ['*']
+- apiGroups: ['']
+  resources: ['pods','deployments']
   verbs: ['*']
+- apiGroups: ['extensions','apps']
+  resources: ['deployments','replicasets']
+  verbs: ['*']
+- apiGroups: ['ark.heptio.com']
+  verbs: ["*"]
+  resources: ["*"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRoleBinding
 metadata:
   name: deploy-ark
-  namespace: {{ .Values.namespace.name }}
   labels:
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     heritage: {{ .Release.Service }}
