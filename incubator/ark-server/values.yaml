@@ -4,8 +4,8 @@
 
 configuration:
   cloudprovider: gcp
-  project: platforms-spielwiese
-  bucket: pamamoto-bucket
+  project:
+  bucket:
   credentials: GOOGLE_APPLICATION_CREDENTIALS
   backupSyncPeriod: 30m
   gcSyncPeriod: 30m
