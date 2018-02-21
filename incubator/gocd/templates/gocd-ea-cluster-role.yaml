@@ -21,5 +21,9 @@ rules:
 - apiGroups: [""]
   resources:
   - events
-  verbs: ["list","watch"]
+  verbs: ["list", "watch"]
+- apiGroups: [""]
+  resources:
+  - namespaces
+  verbs: ["list", "get"]
 {{ end }}

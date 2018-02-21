@@ -1,7 +1,7 @@
 1. Get the GoCD server URL by running these commands:
 {{- if .Values.server.ingress.enabled }}
     It may take a few minutes before the IP is available to access the GoCD server.
-    ip=$(kubectl get ingress {{ template "gocd.fullname" . }}-server -o jsonpath="{.status.loadBalancer.ingress[0].ip}")
+    ip=$(kubectl get ingress --namespace {{ .Release.Namespace }} {{ template "gocd.fullname" . }}-server -o jsonpath="{.status.loadBalancer.ingress[0].ip}")
     echo "http://$ip"
 {{- range .Values.server.ingress.hosts }}
   http://{{ . }}
@@ -21,23 +21,38 @@
   kubectl port-forward $POD_NAME 8080:{{ .Values.server.service.httpPort }}
 {{- end }}
 
-2. Get the service account token to configure the elastic agent plugin by doing the following:
-{{- if .Values.rbac.install -}}
-    {{- if .Values.rbac.roleRef -}}
-    {{ else }}
-    A default role {{ template "gocd.fullname" . }} with pod write privileges has been configured.
-    {{ end }}
-    A service account called {{ template "gocd.fullname" . }} has been created and associated with the role. To check,
-    secret_name=$(kubectl --namespace={{ .Release.Namespace }} get serviceaccount {{ template "gocd.fullname" . }} -o jsonpath="{.secrets[0].name}")
-    $ kubectl --namespace={{ .Release.Namespace }} get secret $secret_name -o jsonpath="{.data['token']}"
-{{ else }}
-    Looks like rbac was disabled during installation. For configuring the plugin settings for the kubernetes elastic agent plugin, ensure that the service account has pod privileges for creation and deletion.
-{{ end }}
-
+2. Persistence
 {{- if .Values.server.persistence.enabled -}}
+{{ if not .Values.server.persistence.storageClass }}
+################################################################################################
+WARNING: The default storage class will be used. The reclaim policy for this is usually `Delete`.
+You will lose all data at the time of pod termination!
+################################################################################################
+{{ end }}
 {{ else }}
-3. Persistence
 ################################################################################################
 WARNING: Persistence is disabled. You will lose all data at the time of pod termination!
 ################################################################################################
 {{ end }}
+
+3. Get the service account token to configure the elastic agent plugin by doing the following:
+{{- if .Values.rbac.install -}}
+    {{- if .Values.rbac.roleRef -}}
+    {{ else }}
+    A default role {{ template "gocd.fullname" . }} with cluster scoped privileges has been configured.
+    {{ end }}
+    A service account called {{ template "gocd.fullname" . }} has been created and associated with the role. To check,
+    secret_name=$(kubectl --namespace={{ .Release.Namespace }} get serviceaccount {{ template "gocd.fullname" . }} -o jsonpath="{.secrets[0].name}")
+    $ kubectl --namespace={{ .Release.Namespace }} get secret $secret_name -o jsonpath="{.data['token']}" | base64 --decode
+
+    To obtain the CA certificate, do
+    $ kubectl --namespace={{ .Release.Namespace }} get secret $secret_name -o jsonpath="{.data['ca\.crt']}" | base64 --decode
+{{ else }}
+    Looks like rbac was disabled during installation. For configuring the plugin settings for the kubernetes elastic agent plugin, ensure that the service account has pod privileges for creation and deletion.
+{{ end }}
+
+4. The GoCD server URL for configuring the Kubernetes elastic agent plugin settings:
+echo "https://$(kubectl --namespace --namespace={{ .Release.Namespace }} get service {{ template "gocd.fullname" . }}-server -o jsonpath='{.spec.clusterIP}'):8154/go"
+
+5. The cluster URL for configuring the Kubernetes elastic agent plugin settings can be obtained by
+$ kubectl cluster-info
