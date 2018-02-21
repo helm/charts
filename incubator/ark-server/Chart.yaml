@@ -1,0 +1,8 @@
+apiVersion: v1
+appVersion: "1.0"
+description: A Helm chart for ark-server
+name: ark-server
+version: 0.6.0
+maintainers:
+- name: domcar
+  email: domenico.caruso@de.clara.net

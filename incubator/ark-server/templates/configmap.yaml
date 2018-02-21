@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ark-server-config
+  namespace: {{ .Values.namespace.name }}
+data:
+{{ (tpl (.Files.Glob "static/*").AsConfig .) | indent 2 }}

@@ -1,0 +1,176 @@
+{{- if .Values.namespace.create }}
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ .Values.namespace.name }}
+{{- end }}
+
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  name: backups.ark.heptio.com
+  labels:
+    component: ark
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+    app: {{ template "ark-server.name" . }}
+spec:
+  group: ark.heptio.com
+  version: v1
+  scope: Namespaced
+  names:
+    plural: backups
+    kind: Backup
+
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  name: schedules.ark.heptio.com
+  labels:
+    component: ark
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+    app: {{ template "ark-server.name" . }}
+spec:
+  group: ark.heptio.com
+  version: v1
+  scope: Namespaced
+  names:
+    plural: schedules
+    kind: Schedule
+
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  name: restores.ark.heptio.com
+  labels:
+    component: ark
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+    app: {{ template "ark-server.name" . }}
+spec:
+  group: ark.heptio.com
+  version: v1
+  scope: Namespaced
+  names:
+    plural: restores
+    kind: Restore
+
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  name: configs.ark.heptio.com
+  labels:
+    component: ark
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+    app: {{ template "ark-server.name" . }}
+spec:
+  group: ark.heptio.com
+  version: v1
+  scope: Namespaced
+  names:
+    plural: configs
+    kind: Config
+
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  name: downloadrequests.ark.heptio.com
+  labels:
+    component: ark
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+    app: {{ template "ark-server.name" . }}
+spec:
+  group: ark.heptio.com
+  version: v1
+  scope: Namespaced
+  names:
+    plural: downloadrequests
+    kind: DownloadRequest
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: ark
+  namespace: {{ .Values.namespace.name }}
+  labels:
+    component: ark
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+    app: {{ template "ark-server.name" . }}
+
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  name: ark
+  labels:
+    component: ark
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+    app: {{ template "ark-server.name" . }}
+subjects:
+  - kind: ServiceAccount
+    namespace: {{ .Values.namespace.name }}
+    name: ark
+roleRef:
+  kind: ClusterRole
+  name: cluster-admin
+  apiGroup: rbac.authorization.k8s.io
+
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: Role
+metadata:
+  namespace: {{ .Values.namespace.name }}
+  name: ark
+  labels:
+    component: ark
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+    app: {{ template "ark-server.name" . }}
+rules:
+  - apiGroups:
+      - ark.heptio.com
+    verbs:
+      - "*"
+    resources:
+      - "*"
+
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: RoleBinding
+metadata:
+  namespace: {{ .Values.namespace.name }}
+  name: ark
+  labels:
+    component: ark
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+    app: {{ template "ark-server.name" . }}
+subjects:
+  - kind: ServiceAccount
+    namespace: {{ .Values.namespace.name }}
+    name: ark
+roleRef:
+  kind: Role
+  name: ark
+  apiGroup: rbac.authorization.k8s.io
+

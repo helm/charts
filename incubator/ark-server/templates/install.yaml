@@ -1,0 +1,107 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: deploy-ark
+  namespace: {{ .Values.namespace.name }}
+  annotations:
+    "helm.sh/hook": post-install
+    "helm.sh/hook-delete-policy": hook-succeeded
+spec:
+  template:
+    metadata:
+      name: deploy-ark
+      namespace: {{ .Values.namespace.name }}
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: deploy-ark
+        image: claranet/gcloud-kubectl-docker
+        imagePullPolicy: Always
+        command: ["kubectl","create","-f","/tmp/"]
+        volumeMounts:
+          - name: ark-server-config
+            mountPath: /tmp
+      volumes:
+        - name: ark-server-config
+          configMap:
+            name: ark-server-config
+      serviceAccountName: {{ template "ark-server.deploySA" . }}
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: delete-ark
+  namespace: {{ .Values.namespace.name }}
+  annotations:
+    "helm.sh/hook": pre-delete
+    "helm.sh/hook-delete-policy": hook-succeeded
+spec:
+  template:
+    metadata:
+      name: delete-ark
+      namespace: {{ .Values.namespace.name }}
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: delete-ark
+        image: claranet/gcloud-kubectl-docker
+        imagePullPolicy: Always
+        command: ["kubectl","delete","-f","/tmp/"]
+        volumeMounts:
+          - name: ark-server-config
+            mountPath: /tmp
+      volumes:
+        - name: ark-server-config
+          configMap:
+            name: ark-server-config
+      serviceAccountName: {{ template "ark-server.deploySA" . }}
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ template "ark-server.deploySA" . }}
+  namespace: {{ .Values.namespace.name }}
+  labels:
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+    app: {{ template "ark-server.name" . }}
+
+{{- if .Values.rbac.create }}
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRole
+metadata:
+  annotations:
+    rbac.authorization.kubernetes.io/autoupdate: "true"
+  labels:
+    kubernetes.io/bootstrapping: rbac-defaults
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+    app: {{ template "ark-server.name" . }}
+  name: deploy-ark
+rules:
+- apiGroups: ['*']
+  resources: ['*']
+  verbs: ['*']
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  name: deploy-ark
+  namespace: {{ .Values.namespace.name }}
+  labels:
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+    app: {{ template "ark-server.name" . }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: deploy-ark
+subjects:
+- kind: ServiceAccount
+  name: {{ template "ark-server.deploySA" . }}
+  namespace: {{ .Values.namespace.name }}
+{{- end }}
