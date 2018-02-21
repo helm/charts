@@ -1,0 +1,11 @@
+Check that the ark-server is up and running:
+kubectl get pod --namespace {{ .Values.namespace.name }}
+
+Check that the secret has been created:
+kubectl get secret --namespace {{ .Values.namespace.name }} {{ .Values.secret.name }}
+
+Once ark server is up and running you need the client before you can use it
+1. wget https://github.com/heptio/ark/releases/download/v0.6.0/ark-v0.6.0-darwin-amd64.tar.gz
+2. tar -xvf ark-v0.6.0-darwin-amd64.tar.gz -C ark-client
+
+More info on the official site: https://github.com/heptio/ark#install-client
