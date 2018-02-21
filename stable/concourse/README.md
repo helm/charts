@@ -73,7 +73,7 @@ The following tables lists the configurable parameters of the Concourse chart an
 | `concourse.externalURL` | URL used to reach any ATC from the outside world | `nil` |
 | `concourse.atcPort` | Concourse ATC listen port | `8080` |
 | `concourse.tsaPort` | Concourse TSA listen port | `2222` |
-| `concourse.allowSelfSignedCertificates` | Allow self signed certificates | `true` |
+| `concourse.allowSelfSignedCertificates` | Allow self signed certificates | `false` |
 | `concourse.authDuration` | Length of time for which tokens are valid | `24h` |
 | `concourse.resourceCheckingInterval` | Interval on which to check for new versions of resources | `1m` |
 | `concourse.oldResourceGracePeriod` | How long to cache the result of a get step after a newer version of the resource is found | `5m` |
