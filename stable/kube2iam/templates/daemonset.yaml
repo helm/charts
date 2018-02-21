@@ -32,7 +32,11 @@ spec:
           {{- end }}
             - --iptables={{ .Values.host.iptables }}
           {{- range $key, $value := .Values.extraArgs }}
+            {{- if $value }}
             - --{{ $key }}={{ $value }}
+            {{- else }}
+            - --{{ $key }}
+            {{- end }}
           {{- end }}
           {{- if .Values.verbose }}
             - --verbose
