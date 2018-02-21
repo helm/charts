@@ -31,7 +31,7 @@ rbac:
   create: true
 
 serviceAccount:
-  deploy:
+  hook:
     create: true
     name: deploy-ark
   server:

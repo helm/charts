@@ -25,7 +25,7 @@ spec:
         - name: ark-server-config
           configMap:
             name: ark-server-config
-      serviceAccountName: {{ template "ark-server.deploySA" . }}
+      serviceAccountName: {{ template "ark-server.hookSA" . }}
 ---
 apiVersion: batch/v1
 kind: Job
@@ -54,18 +54,21 @@ spec:
         - name: ark-server-config
           configMap:
             name: ark-server-config
-      serviceAccountName: {{ template "ark-server.deploySA" . }}
+      serviceAccountName: {{ template "ark-server.hookSA" . }}
+
+{{- if .Values.serviceAccount.hook.create }}
 ---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: {{ template "ark-server.deploySA" . }}
+  name: {{ template "ark-server.hookSA" . }}
   namespace: {{ .Values.namespace.name }}
   labels:
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
     app: {{ template "ark-server.name" . }}
+{{- end }}
 
 {{- if .Values.rbac.create }}
 ---
@@ -102,6 +105,6 @@ roleRef:
   name: deploy-ark
 subjects:
 - kind: ServiceAccount
-  name: {{ template "ark-server.deploySA" . }}
+  name: {{ template "ark-server.hookSA" . }}
   namespace: {{ .Values.namespace.name }}
 {{- end }}

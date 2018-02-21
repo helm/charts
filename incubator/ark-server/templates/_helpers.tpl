@@ -32,12 +32,12 @@ Create chart name and version as used by the chart label.
 {{- end -}}
 
 {{/*
-Create the name of the service account to use for deploying
+Create the name of the service account to use for deploying or deleting
 */}}
-{{- define "ark-server.deploySA" -}}
-{{- if .Values.serviceAccount.deploy.create -}}
-    {{ default (include "ark-server.fullname" .) .Values.serviceAccount.deploy.name }}
+{{- define "ark-server.hookSA" -}}
+{{- if .Values.serviceAccount.hook.create -}}
+    {{ default (include "ark-server.fullname" .) .Values.serviceAccount.hook.name }}
 {{- else -}}
-    {{ default "default" .Values.serviceAccount.deploy.name }}
+    {{ default "default" .Values.serviceAccount.hook.name }}
 {{- end -}}
 {{- end -}}
