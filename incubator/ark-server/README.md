@@ -13,10 +13,10 @@ At the same time the resources created with the hook are completely transparent 
 chart those resources remain there. Hence we need a sencond hook for deleting them (see delete.yaml)
 
 ## Content
-- `templates/00-prereqs.yaml` this file contains the CRD needed by ARK
-- `install.yaml` This is the container that will deploy ark-server and its configuration
-- `configmap.yaml` Configmap will be mounted to the container as a file and subsequently used as k8s manifest for deploy
-- `delete.yaml` Deletes the resources created by `install.yaml`
+- `templates/prerequisites.yaml` this file contains the CRD and SA needed by Ark Server
+- `hook.yaml` This is the container that will deploy or delete ark-server and its configuration
+   it creates also the necessary SA and RBAC
+- `configmap.yaml` Configmap will be mounted to the hook container as a file and subsequently used as k8s manifest for deploy or deletion
 
 ## ConfigMap customization
 Since we want to have a customizable chart it's important that the configmap is a template and not a static file.
