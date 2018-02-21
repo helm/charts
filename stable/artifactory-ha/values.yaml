@@ -42,7 +42,7 @@ database:
 
 # Artifactory
 artifactory:
-  name: artifactory
+  name: artifactory-ha
   image:
     repository: "docker.bintray.io/jfrog/artifactory-pro"
     version: 5.8.4
@@ -125,7 +125,7 @@ artifactory:
   ## There is a difference between the primary and the member nodes.
   ## Customising their resources and java parameters is done here.
   primary:
-    name: artifactory-primary
+    name: artifactory-ha-primary
     ## Resources for the primary node
     resources: {}
     #  requests:
@@ -141,7 +141,7 @@ artifactory:
     #  xmx: "2g"
     #  other:
   node:
-    name: artifactory-node
+    name: artifactory-ha-node
     replicaCount: 2
     ## Resources for the member nodes
     resources: {}
@@ -160,7 +160,7 @@ artifactory:
 
 # Nginx
 nginx:
-  name: artifactory-nginx
+  name: artifactory-ha-nginx
   replicaCount: 1
   image:
     repository: "docker.bintray.io/jfrog/nginx-artifactory-pro"
