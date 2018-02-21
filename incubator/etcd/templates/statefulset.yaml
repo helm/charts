@@ -34,28 +34,36 @@ spec:
             memory: "{{ .Values.Memory }}"
         env:
         - name: INITIAL_CLUSTER_SIZE
-          value: {{ default 3 .Values.Replicas | quote }}
+          value: "1"
         - name: SET_NAME
           value: {{ template "etcd.fullname" . }}
         volumeMounts:
         - name: datadir
-          mountPath: /var/run/etcd
+          mountPath: /etcd
         lifecycle:
           preStop:
             exec:
               command:
                 - "/bin/sh"
-                - "-ec"
+                - "-ecx"
                 - |
+                  # Cleaning up after a controlled stop, like a scale down of the cluster
+                  # is needed so the member is removed and could be started fresh
+                  {{- if .Values.PeerTLS }}
+                  PROTO=https
+                  {{- else }}
+                  PROTO=http
+                  {{- end }}
                   EPS=""
                   for i in $(seq 0 $((${INITIAL_CLUSTER_SIZE} - 1))); do
                       EPS="${EPS}${EPS:+,}http://${SET_NAME}-${i}.${SET_NAME}:2379"
                   done
 
                   HOSTNAME=$(hostname)
+                  ETCD_DIR="/etcd"
 
                   member_hash() {
-                      etcdctl member list | grep http://${HOSTNAME}.${SET_NAME}:2380 | cut -d':' -f1 | cut -d'[' -f1
+                      etcdctl member list | grep ${PROTO}://${HOSTNAME}.${SET_NAME}:2380 | cut -d':' -f1 | cut -d'[' -f1
                   }
 
                   echo "Removing ${HOSTNAME} from etcd cluster"
@@ -63,112 +71,179 @@ spec:
                   ETCDCTL_ENDPOINT=${EPS} etcdctl member remove $(member_hash)
                   if [ $? -eq 0 ]; then
                       # Remove everything otherwise the cluster will no longer scale-up
-                      rm -rf /var/run/etcd/*
+                      rm -rf $ETCD_DIR
                   fi
         command:
           - "/bin/sh"
-          - "-ec"
+          - "-ecx"
           - |
             HOSTNAME=$(hostname)
+            export ETCD_DATA_DIR="/etcd/default.etcd"
+            IP=$(ip addr | grep 'state UP' -A2 | tail -n1 | awk '{print $2}' | cut -f1  -d'/')
+            {{- if .Values.PeerTLS }}
+            PROTO=https
+            {{- else }}
+            PROTO=http
+            {{- end }}
 
             # store member id into PVC for later member replacement
             collect_member() {
                 while ! etcdctl member list &>/dev/null; do sleep 1; done
-                etcdctl member list | grep http://${HOSTNAME}.${SET_NAME}:2380 | cut -d':' -f1 | cut -d'[' -f1 > /var/run/etcd/member_id
+                etcdctl member list | grep http://${HOSTNAME}.${SET_NAME}:2379 | cut -d':' -f1 | cut -d'[' -f1 > /etcd/member_id
                 exit 0
             }
 
             eps() {
+                SKIP_SELF=$1
                 EPS=""
                 for i in $(seq 0 $((${INITIAL_CLUSTER_SIZE} - 1))); do
-                    EPS="${EPS}${EPS:+,}http://${SET_NAME}-${i}.${SET_NAME}:2379"
+                    if [ "$SKIP_SELF" = true ]; then
+                      [ "$SET_ID" != "$i" ] && EPS="${EPS}${EPS:+,}http://${SET_NAME}-${i}.${SET_NAME}:2379"
+                    else
+                      EPS="${EPS}${EPS:+,}http://${SET_NAME}-${i}.${SET_NAME}:2379"
+                    fi
                 done
                 echo ${EPS}
             }
 
+
             member_hash() {
-                etcdctl member list | grep http://${HOSTNAME}.${SET_NAME}:2380 | cut -d':' -f1 | cut -d'[' -f1
+                etcdctl member list | grep http://${HOSTNAME}.${SET_NAME}:2379 | cut -d':' -f1 | cut -d'[' -f1
             }
 
-            # re-joining after failure?
-            if [ -e /var/run/etcd/default.etcd ]; then
-                echo "Re-joining etcd member"
-                member_id=$(cat /var/run/etcd/member_id)
+            wait_member() {
+                echo -n "Waiting for ${1} to come up "
+                while true; do
+                    echo -n '.'
+                    ping -W 1 -c 1 ${1} > /dev/null && break
+                    sleep 1s
+                done
+                echo " done"
+            }
 
-                # re-join member
-                ETCDCTL_ENDPOINT=$(eps) etcdctl member update ${member_id} http://${HOSTNAME}.${SET_NAME}:2380
-                exec etcd --name ${HOSTNAME} \
-                    --listen-peer-urls http://${HOSTNAME}.${SET_NAME}:2380 \
-                    --listen-client-urls http://${HOSTNAME}.${SET_NAME}:2379,http://127.0.0.1:2379 \
-                    --advertise-client-urls http://${HOSTNAME}.${SET_NAME}:2379 \
-                    --data-dir /var/run/etcd/default.etcd
-            fi
+            add_to_cluster() {
+                EPS=$(eps true)
+                MEMBER_LIST=$(etcdctl --endpoints ${EPS} member list)
 
-            # etcd-SET_ID
-            SET_ID=${HOSTNAME:5:${#HOSTNAME}}
-
-            # adding a new member to existing cluster (assuming all initial pods are available)
-            if [ "${SET_ID}" -ge ${INITIAL_CLUSTER_SIZE} ]; then
-                export ETCDCTL_ENDPOINT=$(eps)
-
-                # member already added?
-                MEMBER_HASH=$(member_hash)
-                if [ -n "${MEMBER_HASH}" ]; then
-                    # the member hash exists but for some reason etcd failed
-                    # as the datadir has not be created, we can remove the member
-                    # and retrieve new hash
-                    etcdctl member remove ${MEMBER_HASH}
+                if echo "${MEMBER_LIST}" | grep ${IP}; then
+                  echo "Removing member with this IP [${IP}] address"
+                  MEMBER_IP=$(echo "$MEMBER_LIST" | grep ${IP} | cut -d'[' -f1)
+                  etcdctl --endpoints ${EPS} member remove ${MEMBER_IP}
                 fi
 
-                echo "Adding new member"
-                etcdctl member add ${HOSTNAME} http://${HOSTNAME}.${SET_NAME}:2380 | grep "^ETCD_" > /var/run/etcd/new_member_envs
-
-                if [ $? -ne 0 ]; then
-                    echo "Exiting"
-                    rm -f /var/run/etcd/new_member_envs
-                    exit 1
+                if [ -e $ETCD_DATA_DIR ]; then
+                    echo "Removing old data dir [${ETCD_DATA_DIR}] "
+                    rm -Rf $ETCD_DATA_DIR
                 fi
 
-                cat /var/run/etcd/new_member_envs
-                source /var/run/etcd/new_member_envs
+                echo "Adding [${HOSTNAME}] as new member"
+
+                STR_ENV="ETCD_"
+                ETCD_PREFIX=$(etcdctl --endpoints ${EPS} member add ${HOSTNAME} ${PROTO}://${HOSTNAME}.${SET_NAME}:2380 | \
+                {
+                  while read i
+                    do
+                      if test "${i#*$STR_ENV}" != "$i"; then
+                        ETCD_PREFIX="$ETCD_PREFIX $i"
+                      fi
+                    done
+                  echo "export $ETCD_PREFIX" | sed 's/"//g'
+                })
+
+                eval \${ETCD_PREFIX}
 
                 collect_member &
 
-                exec etcd --name ${HOSTNAME} \
-                    --listen-peer-urls http://${HOSTNAME}.${SET_NAME}:2380 \
-                    --listen-client-urls http://${HOSTNAME}.${SET_NAME}:2379,http://127.0.0.1:2379 \
-                    --advertise-client-urls http://${HOSTNAME}.${SET_NAME}:2379 \
-                    --data-dir /var/run/etcd/default.etcd \
-                    --initial-advertise-peer-urls http://${HOSTNAME}.${SET_NAME}:2380 \
-                    --initial-cluster ${ETCD_INITIAL_CLUSTER} \
-                    --initial-cluster-state ${ETCD_INITIAL_CLUSTER_STATE}
+                echo "Start etcd daemon"
+                exec etcd \
+                  --listen-peer-urls ${PROTO}://${IP}:2380 \
+                  --initial-advertise-peer-urls ${PROTO}://${HOSTNAME}.${SET_NAME}:2380 \
+                  --listen-client-urls http://${IP}:2379,http://127.0.0.1:2379 \
+                  {{- if .Values.PeerTLS }}
+                  --peer-auto-tls \
+                  {{- end }}
+                  --advertise-client-urls http://${HOSTNAME}.${SET_NAME}:2379
+
+
+            }
+
+            # etcd-SET_ID
+            SET_ID=${HOSTNAME##*-}
+
+            # re-joining after failure?
+            if [ -e /etcd/member_id ]; then
+                echo "Found old member_id re-joining etcd cluster"
+
+                member_id=$(cat /etcd/member_id)
+
+                wait_member ${HOSTNAME}.${SET_NAME}
+
+                EPS=$(eps true)
+                set +e
+                MEMBER_LIST=$(etcdctl --endpoints ${EPS} member list)
+                if [ "$?" -ne 0 ]; then
+                    echo "Removing old data dir [${ETCD_DATA_DIR}] from cluster that is gone"
+                    echo "On next restart this will cause the creation of a new cluster"
+                    rm -Rf /etcd/*
+                    exit 0
+                fi
+                set -e
+
+                if [ ! -z ${member_id+x} ] && echo "$MEMBER_LIST" | grep ${member_id}; then
+
+                  echo "This member_id is still listed in the cluster, join with member_id and existing data"
+
+                  etcdctl --endpoints ${EPS} member update ${member_id} ${PROTO}://${HOSTNAME}.${SET_NAME}:2380
+
+                  exec etcd --name ${HOSTNAME} \
+                    --listen-peer-urls ${PROTO}://${IP}:2380 \
+                    --initial-advertise-peer-urls ${PROTO}://${IP}:2380 \
+                    --listen-client-urls http://${IP}:2379,http://127.0.0.1:2379 \
+                    --debug=true \
+                    {{- if .Values.PeerTLS }}
+                    --peer-auto-tls \
+                    {{- end }}
+                    --advertise-client-urls http://${HOSTNAME}.${SET_NAME}:2379
+
+
+                else
+
+                    echo "This member_id is not listed in the cluster"
+                    add_to_cluster
+
+                fi
+
+            fi
+
+            # adding a new member to existing cluster (assuming all initial pods are available)
+            if [ "${SET_ID}" -ge ${INITIAL_CLUSTER_SIZE} ]; then
+                echo "Adding an extra member.."
+                wait_member ${HOSTNAME}.${SET_NAME}
+                add_to_cluster
             fi
 
             for i in $(seq 0 $((${INITIAL_CLUSTER_SIZE} - 1))); do
-                while true; do
-                    echo "Waiting for ${SET_NAME}-${i}.${SET_NAME} to come up"
-                    ping -W 1 -c 1 ${SET_NAME}-${i}.${SET_NAME} > /dev/null && break
-                    sleep 1s
-                done
+                wait_member ${SET_NAME}-${i}.${SET_NAME}
             done
-
             PEERS=""
             for i in $(seq 0 $((${INITIAL_CLUSTER_SIZE} - 1))); do
-                PEERS="${PEERS}${PEERS:+,}${SET_NAME}-${i}=http://${SET_NAME}-${i}.${SET_NAME}:2380"
+                PEERS="${PEERS}${PEERS:+,}${SET_NAME}-${i}=${PROTO}://${SET_NAME}-${i}.${SET_NAME}:2380"
             done
-
             collect_member &
 
-            # join member
+            echo "Add [${HOSTNAME}] as member to a NEW cluster"
+            rm -Rf /etcd/*
             exec etcd --name ${HOSTNAME} \
-                --initial-advertise-peer-urls http://${HOSTNAME}.${SET_NAME}:2380 \
-                --listen-peer-urls http://${HOSTNAME}.${SET_NAME}:2380 \
-                --listen-client-urls http://${HOSTNAME}.${SET_NAME}:2379,http://127.0.0.1:2379 \
+                --initial-advertise-peer-urls ${PROTO}://${HOSTNAME}.${SET_NAME}:2380 \
+                --listen-peer-urls ${PROTO}://${IP}:2380 \
+                --listen-client-urls http://${IP}:2379,http://127.0.0.1:2379 \
                 --advertise-client-urls http://${HOSTNAME}.${SET_NAME}:2379 \
-                --initial-cluster-token etcd-cluster-1 \
                 --initial-cluster ${PEERS} \
-                --initial-cluster-state new \
-                --data-dir /var/run/etcd/default.etcd
+                {{- if .Values.PeerTLS }}
+                --peer-auto-tls \
+                {{- end }}
+                --initial-cluster-state new
+
   volumeClaimTemplates:
   - metadata:
       name: datadir

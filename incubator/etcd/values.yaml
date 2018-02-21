@@ -7,9 +7,15 @@ Name: etcd
 PeerPort: 2380
 ClientPort: 2379
 Component: "etcd"
+PeerTLS: true
+# Replicas scales the cluster with the "helm upgrade" command
+# The recommended etcd cluster size is 3, 5 or 7, which is decided by the fault tolerance requirement.
+# A 7-member cluster can provide enough fault tolerance in most cases.
+# While larger cluster provides better fault tolerance the write performance reduces since data needs to
+# be replicated to more machines.
 Replicas: 3
-Image: "k8s.gcr.io/etcd-amd64"
-ImageTag: "2.2.5"
+Image: "nearform/etcd"
+ImageTag: "3.2.11"
 ImagePullPolicy: "Always"
 Cpu: "100m"
 Memory: "512Mi"
@@ -21,4 +27,4 @@ Storage: "1Gi"
 ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
 ##   GKE, AWS & OpenStack)
 ##
-# storageClass: "-"
+storageClass: "-"
