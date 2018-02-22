@@ -8,6 +8,7 @@ host:
   ip: $(HOST_IP)
   iptables: false
   interface: docker0
+  port: 8181
 
 image:
   repository: jtblin/kube2iam

@@ -1,5 +1,6 @@
 replicaSet: rs0
 replicas: 3
+minAvailable: 1
 port: 27017
 
 auth:
@@ -25,8 +26,6 @@ image:
 # Annotations to be added to MongoDB pods
 podAnnotations: {}
 
-podAntiAffinity: "soft"
-
 resources: {}
 # limits:
 #   cpu: 500m
@@ -38,6 +37,10 @@ resources: {}
 ## Node selector
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
 nodeSelector: {}
+
+affinity: {}
+
+tolerations: []
 
 persistentVolume:
   enabled: true

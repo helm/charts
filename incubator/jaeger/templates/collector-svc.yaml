@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "jaeger.fullname" . }}-collector
+  name: {{ template "jaeger.collector.name" . }}-collector
   labels:
     app: {{ template "jaeger.name" . }}
     jaeger-infra: collector-service

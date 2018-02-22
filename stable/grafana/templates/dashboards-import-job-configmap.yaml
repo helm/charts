@@ -1,0 +1,25 @@
+{{- if .Values.dashboardImports.enabled -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app: {{ template "grafana.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+  name: {{ template "grafana.server.fullname" . }}-import-script
+data:
+  init.sh: |
+    #!/bin/sh
+    cd /var/lib/grafana/import
+    {{- range $name, $val := .Values.dashboardImports.dashboards }}
+      curl -o {{ $name }} {{ $val }}
+    {{- end }}
+    for dashboard in $(ls); do
+      curl "http://${ADMIN_USER}:${ADMIN_PASSWORD}@{{ template "grafana.fullname" . }}:{{ .Values.server.service.httpPort }}/api/dashboards/db" \
+      --max-time 10 \
+      --header "Content-Type: application/json;charset=UTF-8" \
+      --data-binary "{ \"dashboard\":$(cat $dashboard), \"overwrite\":false }" ;
+    done;
+
+{{- end -}}

@@ -4,8 +4,8 @@
 controller:
   name: controller
   image:
-    repository: k8s.gcr.io/nginx-ingress-controller
-    tag: "0.9.0-beta.15"
+    repository: quay.io/kubernetes-ingress-controller/nginx-ingress-controller
+    tag: "0.10.2"
     pullPolicy: IfNotPresent
 
   config: {}
@@ -16,6 +16,11 @@ controller:
   # since CNI and hostport don't mix yet. Can be deprecated once https://github.com/kubernetes/kubernetes/issues/23920
   # is merged
   hostNetwork: false
+
+  # Optionally change this to ClusterFirstWithHostNet in case you have 'hostNetwork: true'.
+  # By default, while using host network, name resolution uses the host's DNS. If you wish nginx-controller
+  # to keep resolving names inside the k8s network, use ClusterFirstWithHostNet.
+  dnsPolicy: ClusterFirst
 
   ## Use host ports 80 and 443
   daemonset:
@@ -93,6 +98,22 @@ controller:
   ##
   nodeSelector: {}
 
+  ## Liveness and readiness probe values
+  ## Ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#container-probes
+  ##
+  livenessProbe:
+    failureThreshold: 3
+    initialDelaySeconds: 10
+    periodSeconds: 10
+    successThreshold: 1
+    timeoutSeconds: 1
+  readinessProbe:
+    failureThreshold: 3
+    initialDelaySeconds: 10
+    periodSeconds: 10
+    successThreshold: 1
+    timeoutSeconds: 1
+
   ## Annotations to be added to controller pods
   ##
   podAnnotations: {}
@@ -111,7 +132,7 @@ controller:
     enabled: false
   #  minReplicas: 1
   #  maxReplicas: 11
-  #  targetAverageUtilization: 50
+  #  targetCPUUtilizationPercentage: 50
 
   ## Override NGINX template
   customTemplate:

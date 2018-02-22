@@ -20,6 +20,7 @@ The following table lists the configurable parameters of `pachd` and their defau
 | Parameter                | Description           | Default           |
 |--------------------------|-----------------------|-------------------|
 | `pachd.image.repository` | Container image name  | `pachyderm/pachd` |
+| `pachd.pfsCache`         | File System cache size| `0G`              |
 | `*.image.tag`            | Container image tag   | `<latest version>`|
 | `*.image.pullPolicy`     | Image pull policy     | `Always`          |
 | `*.worker.repository`    | Worker image name     | `pachyderm/worker`|
@@ -126,7 +127,7 @@ Accessing the pachd service
 In order to use Pachyderm, please login through ssh to the master node and install the Pachyderm client:
 
 ```console
-$ curl -o /tmp/pachctl.deb -L https://github.com/pachyderm/pachyderm/releases/download/v1.6.6/pachctl_1.6.6_amd64.deb && sudo dpkg -i /tmp/pachctl.deb
+$ curl -o /tmp/pachctl.deb -L https://github.com/pachyderm/pachyderm/releases/download/v1.6.7/pachctl_1.6.7_amd64.deb && sudo dpkg -i /tmp/pachctl.deb
 ```
 
 Please note that the client version should correspond with the pachd service version. For more information please consult: http://pachyderm.readthedocs.io/en/latest/index.html. Also, if you have your kubernetes client properly configured to talk with your remote cluster, you can simply install `pachctl` on your local machine and execute: `pachctl -k '-n=<namespace>' port-forward &`.

@@ -16,7 +16,7 @@ To install the chart run the following command:
 
 ```bash
 $ helm install --name release_name \
-    --set sematext.spmToken=YOUR_SPM_TOKEN,sematext.logseneToken=YOUR_LOGS_TOKEN stable/sematext
+    --set sematext.spmToken=YOUR_SPM_TOKEN,sematext.logseneToken=YOUR_LOGS_TOKEN stable/sematext-docker-agent
 ```
 
 After a few minutes, you should see logs, metrics and events being reported in Sematext web UI.
@@ -56,11 +56,11 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 ```bash
 $ helm install --name release_name \
     --set sematext.spmToken=YOUR_SPM_TOKEN,sematext.region=EU \
-    stable/sematext
+    stable/sematext-docker-agent
 ```
 
 Alternatively, you can use a YAML file that specifies the values and it can be provided while installing the chart. For example:
 
 ```bash
-$ helm install --name release_name -f custom_values.yaml stable/sematext
+$ helm install --name release_name -f custom_values.yaml stable/sematext-docker-agent
 ```

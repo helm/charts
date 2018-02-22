@@ -4,7 +4,7 @@ kind: ClusterRoleBinding
 metadata:
   labels:
     app: {{ template "kubernetes-dashboard.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
   name: {{ template "kubernetes-dashboard.fullname" . }}

@@ -1,0 +1,14 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: {{ template "percona-xtradb-cluster.fullname" . }}-startup-scripts
+  labels:
+    app: {{ template "percona-xtradb-cluster.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+data:
+  entrypoint.sh: |
+{{ .Files.Get "files/entrypoint.sh" | indent 4 }}
+  functions.sh: |
+{{ .Files.Get "files/functions.sh" | indent 4 }}
