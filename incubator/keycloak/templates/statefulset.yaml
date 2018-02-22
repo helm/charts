@@ -21,9 +21,7 @@ spec:
         app: {{ template "keycloak.name" . }}
         release: "{{ .Release.Name }}"
     spec:
-    {{- if .Values.rbac.create }}
-      serviceAccountName: {{ template "keycloak.fullname" . }}
-    {{- end }}
+      serviceAccountName: {{ template "keycloak.serviceAccountName" . }}
     {{- if .Values.keycloak.persistence.deployPostgres }}
       initContainers:
         - name: wait-for-postgresql
