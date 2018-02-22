@@ -3,6 +3,8 @@ appVersion: "1.0"
 description: A Helm chart for ark-server
 name: ark-server
 version: 0.7.0
+sources:
+- https://github.com/heptio/ark
 maintainers:
 - name: domcar
   email: d-caruso@hotmail.it
