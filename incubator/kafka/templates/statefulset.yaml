@@ -87,7 +87,7 @@ spec:
         volumeMounts:
         - name: datadir
           mountPath: {{ .Values.persistence.mountPath | quote }}
-      {{ if not .Values.persistence.enabled }}
+      {{- if not .Values.persistence.enabled }}
       volumes:
       - name: datadir
         emptyDir: {}
