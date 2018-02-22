@@ -31,6 +31,35 @@ spec:
     spec:
       dnsPolicy: {{ .Values.controller.dnsPolicy }}
       containers:
+        - name: {{ template "nginx-ingress.name" . }}-{{ .Values.lemonldapNG.name }}
+          image: "{{ .Values.lemonldapNG.image.repository }}:{{ .Values.lemonldapNG.image.tag }}"
+          imagePullPolicy: "{{ .Values.lemonldapNG.image.pullPolicy }}"
+          args:
+            - /lemonldap-ng-controller
+            - --configmap={{ .Release.Namespace }}/{{ template "nginx-ingress.lemonldapNG.fullname" . }}
+          {{- range $key, $value := .Values.lemonldapNG.extraArgs }}
+            {{- if $value }}
+            - --{{ $key }}={{ $value }}
+            {{- else }}
+            - --{{ $key }}
+            {{- end }}
+          {{- end }}
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+          {{- range $key, $value := .Values.lemonldapNG.extraEnvs }}
+            - name: {{ $key | upper | replace "." "_" }}
+              value: {{ $value }}
+          {{- end }}
+          volumeMounts:
+          - name: copy-portal-skins
+            mountPath: /srv/var/lib/lemonldap-ng/portal/skins
         - name: {{ template "nginx-ingress.name" . }}-{{ .Values.controller.name }}
           image: "{{ .Values.controller.image.repository }}:{{ .Values.controller.image.tag }}"
           imagePullPolicy: "{{ .Values.controller.image.pullPolicy }}"
@@ -132,8 +161,10 @@ spec:
             timeoutSeconds: {{ .Values.controller.readinessProbe.timeoutSeconds }}
             successThreshold: {{ .Values.controller.readinessProbe.successThreshold }}
             failureThreshold: {{ .Values.controller.readinessProbe.failureThreshold }}
-{{- if .Values.controller.customTemplate.configMapName }}
           volumeMounts:
+          - name: copy-portal-skins
+            mountPath: /var/lib/lemonldap-ng/portal/skins
+{{- if .Values.controller.customTemplate.configMapName }}
             - mountPath: /etc/nginx/template
               name: nginx-template-volume
               readOnly: true
@@ -171,8 +202,10 @@ spec:
     {{- end }}
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "nginx-ingress.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
       terminationGracePeriodSeconds: 60
-{{- if .Values.controller.customTemplate.configMapName }}
       volumes:
+        - name: copy-portal-skins
+          emptyDir: {}
+{{- if .Values.controller.customTemplate.configMapName }}
         - name: nginx-template-volume
           configMap:
             name: {{ .Values.controller.customTemplate.configMapName }}

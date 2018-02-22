@@ -1,4 +1,4 @@
-The nginx-ingress controller has been installed.
+The LemonLDAP::NG ingress controller has been installed.
 
 {{- if contains "NodePort" .Values.controller.service.type }}
 Get the application URL by running these commands:

@@ -1,18 +1,18 @@
-# nginx-ingress
+# LemonLDAP::NG ingress controller
 
-[nginx-ingress](https://github.com/kubernetes/ingress-nginx) is an Ingress controller that uses ConfigMap to store the nginx configuration.
+This chart is a superset of the [nginx-ingress](https://hub.kubeapps.com/charts/stable/nginx-ingress) with the addition of authentication and authorization with the [LemonLDAP::NG controller](https://github.com/lemonldap-ng-controller/lemonldap-ng-controller/).
 
 To use, add the `kubernetes.io/ingress.class: nginx` annotation to your Ingress resources.
 
 ## TL;DR;
 
 ```console
-$ helm install stable/nginx-ingress
+$ helm install stable/lemonldap-ng-ingress
 ```
 
 ## Introduction
 
-This chart bootstraps an nginx-ingress deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
+This chart bootstraps an lemonldap-ng-ingress deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
 ## Prerequisites
   - Kubernetes 1.4+ with Beta APIs enabled
@@ -22,10 +22,10 @@ This chart bootstraps an nginx-ingress deployment on a [Kubernetes](http://kuber
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm install --name my-release stable/nginx-ingress
+$ helm install --name my-release stable/lemonldap-ng-ingress
 ```
 
-The command deploys nginx-ingress on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
+The command deploys lemonldap-ng-ingress on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
 
 > **Tip**: List all releases using `helm list`
 
@@ -39,7 +39,19 @@ $ helm delete my-release
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
 
-## Configuration
+## LemonLDAP::NG Configuration
+
+Parameter | Description | Default
+--- | --- | ---
+`lemonldapNG.name` | name of the lemonldap-ng-controller component | `lemonldap-ng-controller`
+`lemonldapNG.image.repository` | lemonldap-ng-controller container image repository | `lemonldapng/lemonldap-ng-controller`
+`lemonldapNG.image.tag` | lemonldap-ng-controller container image tag | `0.2.0`
+`lemonldapNG.image.pullPolicy` | lemonldap-ng-controller container image pull policy | `IfNotPresent`
+`lemonldapNG.config` | LemonLDAP::NG ConfigMap entries | See [here](https://github.com/lemonldap-ng-controller/lemonldap-ng-controller/blob/master/deploy/llng-configmap.yaml)
+
+## Other Configuration
+
+Except for the default of `controller.config`, those parameters are identical to those of [stable/nginx-ingress](https://hub.kubeapps.com/charts/stable/nginx-ingress).
 
 The following tables lists the configurable parameters of the nginx-ingress chart and their default values.
 
@@ -49,7 +61,7 @@ Parameter | Description | Default
 `controller.image.repository` | controller container image repository | `quay.io/kubernetes-ingress-controller/nginx-ingress-controller`
 `controller.image.tag` | controller container image tag | `0.10.2`
 `controller.image.pullPolicy` | controller container image pull policy | `IfNotPresent`
-`controller.config` | nginx ConfigMap entries | none
+`controller.config` | nginx ConfigMap entries | See [here](https://github.com/lemonldap-ng-controller/lemonldap-ng-controller/blob/master/deploy/llng-nginx-configmap.yaml)
 `controller.hostNetwork` | If the nginx deployment / daemonset should run on the host's network namespace. Do not set this when `controller.service.externalIPs` is set and `kube-proxy` is used as there will be a port-conflict for port `80` | false
 `controller.defaultBackendService` | default 404 backend service; required only if `defaultBackend.enabled = false` | `""`
 `controller.electionID` | election ID to use for the status update | `ingress-controller-leader`
@@ -141,14 +153,14 @@ Parameter | Description | Default
 `udp` | UDP service key:value pairs | `{}`
 
 ```console
-$ helm install stable/nginx-ingress --name my-release \
+$ helm install stable/lemonldap-ng-ingress --name my-release \
     --set controller.stats.enabled=true
 ```
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```console
-$ helm install stable/nginx-ingress --name my-release -f values.yaml
+$ helm install stable/lemonldap-ng-ingress --name my-release -f values.yaml
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)

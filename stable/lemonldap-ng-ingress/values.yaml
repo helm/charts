@@ -1,3 +1,103 @@
+## LemonLDAP::NG configuration
+## Ref: https://github.com/lemonldap-ng-controller/lemonldap-ng-controller#config-map
+##
+lemonldapNG:
+  name: lemonldap-ng-controller
+  image:
+    repository: lemonldapng/lemonldap-ng-controller
+    tag: "0.2.0"
+    pullPolicy: IfNotPresent
+
+  config:
+    # SSO Cookie
+    domain: example.org
+    cookieName: lemonldap
+    securedCookie: "0"  # 0=unsecuredCookie, 1=securedCookie, 2=doubleCookie, 3=doubleCookieForSingleSession
+    # cda: "1"  # for Cross domain authentication
+
+    # Portal URL
+    portal: http://auth.example.org/
+    mailUrl: http://auth.example.org/mail.pl
+    registerUrl: http://auth.example.org/register.pl
+    # https: "1" # recommended, to force HTTPs
+
+    # Authentification, user and password backends
+    # authentication: LDAP # Default Demo
+    # userDB: LDAP # Default Demo
+    # passwordDB: LDAP # Default Demo
+    # ldapServer: ldap://ldap.example.org
+    # ldapBase: dc=example,dc=org
+
+    # Session database
+    # globalStorage: Apache::Session::Browseable::Postgres # Default Apache::Session::File
+    # globalStorageOptions.yaml: |
+    #   DataSource: dbi:Pg:dbname=sessions;host=10.2.3.1
+    #   UserName: lemonldapng
+    #   Password: mysuperpassword
+    #   TableName: sessions
+    #   Commit: "1"
+    #   Index: _whatToTrace ipAddr
+
+    # Portal Menu
+    applicationList.yaml: |
+      "2administration":
+        type: category
+        catname: "Administration"
+        "manager":
+          type: application
+          options:
+            description: "Configure LemonLDAP::NG WebSSO"
+            display: auto
+            logo: "configure.png"
+            name: "WebSSO Manager"
+            uri: "http://manager.example.org/manager.html"
+        "notifications":
+          type: application
+          options:
+            description: "Explore WebSSO notifications"
+            display: auto
+            logo: "database.png"
+            name: "Notifications explorer"
+            uri: "http://manager.example.org/notifications.html"
+        "sessions":
+          type: application
+          options:
+            description: "Explore WebSSO sessions"
+            display: auto
+            logo: "database.png"
+            name: "Sessions explorer"
+            uri: "http://manager.example.org/sessions.html"
+      "3documentation":
+        type: category
+        catname: "Documentation"
+        "localdoc":
+          type: application
+          options:
+            description: "Documentation supplied with LemonLDAP::NG"
+            display: on
+            logo: "help.png"
+            name: "Local documentation"
+            uri: "http://manager.example.org/doc/"
+        "officialwebsite":
+          type: application
+          options:
+            description: "Official LemonLDAP::NG Website"
+            display: on
+            logo: "network.png"
+            name: "Offical Website"
+            uri: "http://lemonldap-ng.org/"
+
+  ## Additional command line arguments to pass to lemonldap-ng-controller
+  ## E.g. to specify the default SSL certificate you can use
+  ## extraArgs:
+  ##   default-ssl-certificate: "<namespace>/<secret_name>"
+  extraArgs: {}
+
+  ## Additional environment variables to set
+  ##
+  extraEnvs: {}
+
+
 ## nginx configuration
 ## Ref: https://github.com/kubernetes/ingress/blob/master/controllers/nginx/configuration.md
 ##
@@ -8,7 +108,209 @@ controller:
     tag: "0.10.2"
     pullPolicy: IfNotPresent
 
-  config: {}
+  config:
+    http-snippet: |
+      log_format lm_combined '$remote_addr - $lmremote_user [$time_local] "$request" $status $body_bytes_sent "$http_referer" "$http_user_agent"';
+
+      server {
+        listen 80;
+        server_name localhost;
+        root /var/www/html;
+
+        location = /reload {
+          allow 127.0.0.1;
+          deny all;
+          include /etc/nginx/fastcgi_params;
+          fastcgi_pass localhost:9000;
+          fastcgi_param LLTYPE reload;
+        }
+
+        location / {
+          deny all;
+        }
+
+        location = /status {
+          allow 127.0.0.1;
+          deny all;
+          include /etc/nginx/fastcgi_params;
+          fastcgi_pass localhost:9000;
+          fastcgi_param LLTYPE status;
+        }
+      }
+
+      server {
+        listen 80;
+        server_name auth.example.org;
+        root /var/lib/lemonldap-ng/portal/;
+
+        location ~ \.pl(?:$|/) {
+          include /etc/nginx/fastcgi_params;
+          fastcgi_pass localhost:9000;
+          fastcgi_param LLTYPE cgi;
+          fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+          set $sn $request_uri;
+          if ($sn ~ "^(.*)\?") {
+            set $sn $1;
+          }
+          if ($sn ~ "^/index.pl") {
+            set $sn "/index.pl";
+          }
+          fastcgi_param SCRIPT_NAME $sn;
+          fastcgi_split_path_info ^(.*\.pl)(/.*)$;
+          fastcgi_param PATH_INFO       $fastcgi_path_info;
+          # Uncomment this if you use Auth SSL:
+          #map $ssl_client_s_dn  $ssl_client_s_dn_cn {
+          #  default           "";
+          #  ~/CN=(?<CN>[^/]+) $CN;
+          #}
+          #fastcgi_param  SSL_CLIENT_S_DN_CN $ssl_client_s_dn_cn
+        }
+
+        #index index.pl;
+        rewrite ^/$ /index.pl;
+
+        location / {
+          try_files $uri $uri/ =404;
+
+          # Uncomment this if you use https only
+          #add_header Strict-Transport-Security "15768000";
+        }
+
+        # SOAP functions for sessions management (disabled by default)
+        location /index.pl/adminSessions {
+          deny all;
+        }
+
+        # SOAP functions for sessions access (disabled by default)
+        location /index.pl/sessions {
+          deny all;
+        }
+
+        # SOAP functions for configuration access (disabled by default)
+        location /index.pl/config {
+          deny all;
+        }
+
+        # SOAP functions for notification insertion (disabled by default)
+        location /index.pl/notification {
+          deny all;
+        }
+        # SAML2 Issuer
+        rewrite ^/saml/metadata /metadata.pl last;
+        rewrite ^/saml/.* /index.pl last;
+
+        # CAS Issuer
+        rewrite ^/cas/.* /index.pl;
+
+        # OpenID Issuer
+        rewrite ^/openidserver/.* /index.pl last;
+
+        # OpenID Connect Issuer
+        rewrite ^/oauth2/.* /index.pl last;
+        rewrite ^/.well-known/openid-configuration$ /openid-configuration.pl last;
+
+        # Get Issuer
+        rewrite ^/get/.* /index.pl;
+
+        # Public pages
+        rewrite ^/public.* /public.pl;
+
+        # DEBIAN
+        # If install was made with USEDEBIANLIBS (official releases), uncomment this
+        #location /javascript/ {
+        #  alias /usr/share/javascript/;
+        #}
+      }
+      server {
+        listen 80;
+        server_name manager.example.org;
+        root /usr/share/lemonldap-ng/manager/;
+
+        if ($uri !~ ^/(manager\.psgi|static|doc|fr-doc|lib|javascript|favicon)) {
+          rewrite ^/(.*)$ /manager.psgi/$1 break;
+        }
+
+        location /manager.psgi {
+          include /etc/nginx/fastcgi_params;
+          fastcgi_pass localhost:9000;
+          fastcgi_param LLTYPE manager;
+          fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+          fastcgi_split_path_info ^(.*\.psgi)(/.*)$;
+          fastcgi_param PATH_INFO  $fastcgi_path_info;
+          # Uncomment this if you use https only
+          #add_header Strict-Transport-Security "15768000";
+        }
+
+        location / {
+          index manager.psgi;
+          allow 127.0.0.0/8;
+          deny all;
+          try_files $uri $uri/ =404;
+        }
+
+        location /doc/ {
+          alias /usr/share/doc/lemonldap-ng-doc/;
+          index index.html start.html;
+        }
+        location /lib/ {
+          alias /usr/share/doc/lemonldap-ng-doc/pages/documentation/current/lib/;
+        }
+        location /fr-doc/ {
+          alias /usr/share/doc/lemonldap-ng-fr-doc/;
+          index index.html start.html;
+        }
+        location /static/ {
+          alias /usr/share/lemonldap-ng/manager/static/;
+        }
+
+        # DEBIAN
+        # If install was made with USEDEBIANLIBS (official releases), uncomment this
+        #location /javascript/ {
+        #  alias /usr/share/javascript/;
+        #}
+
+      }
+    server-snippet: |
+      location = /lmauth {
+        internal;
+        include /etc/nginx/fastcgi_params;
+        fastcgi_pass localhost:9000;
+        # To use AuthBasic handler, uncomment this and remove "error_page 401"
+        # fastcgi_param LLTYPE authbasic;
+
+        # Drop post datas
+        fastcgi_pass_request_body  off;
+        fastcgi_param CONTENT_LENGTH "";
+
+        # Keep original hostname
+        fastcgi_param HOST $http_host;
+
+        # Keep original request (LLNG server will received /llauth)
+        fastcgi_param X_ORIGINAL_URI  $request_uri;
+      }
+    location-snippet: |
+      ##################################
+      # CALLING AUTHENTICATION         #
+      ##################################
+      auth_request /lmauth;
+      auth_request_set $lmremote_user $upstream_http_lm_remote_user;
+      auth_request_set $lmlocation $upstream_http_location;
+      # Uncomment this if CDA is used
+      #auth_request_set $cookie_value $upstream_http_set_cookie;
+      #add_header Set-Cookie $cookie_value;
+      # Remove this for AuthBasic handler
+      error_page 401 $lmlocation;
+
+      ##################################
+      # PASSING HEADERS TO APPLICATION #
+      ##################################
+      auth_request_set $authuser $upstream_http_auth_user;
+      proxy_set_header Auth-User $authuser;
+
+      # Change cookie header to hide LLNG cookie
+      auth_request_set $lmcookie $upstream_http_cookie;
+      proxy_set_header Cookie: $lmcookie;
+
   # Will add custom header to Nginx https://github.com/kubernetes/ingress-nginx/tree/master/docs/examples/customization/custom-headers
   headers: {}
 
