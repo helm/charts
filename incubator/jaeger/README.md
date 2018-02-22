@@ -162,7 +162,7 @@ The following tables lists the configurable parameters of the Jaeger chart and t
 | `collector.type`                         | Service type                        |  ClusterIP                             |
 | `collector.zipkinPort`                   | Zipkin port for JSON/thrift HTTP    |  9411                                  |
 | `elasticsearch.cluster.name`             | Elasticsearch cluster name          |  "tracing"                             |
-| `elasticsearch.data.persistance.enabled` | To enable storage persistence       |  false (Highly recommended to enable)  |
+| `elasticsearch.data.persistence.enabled` | To enable storage persistence       |  false (Highly recommended to enable)  |
 | `elasticsearch.image.tag`                | Elasticsearch image tag             |  "5.4"                                 |
 | `elasticsearch.rbac.create`              | To enable RBAC                      |  false                                 |
 | `hotrod.enabled`                         | Enables the Hotrod demo app         |  false                                 |

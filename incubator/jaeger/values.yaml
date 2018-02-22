@@ -67,7 +67,7 @@ elasticsearch:
   cluster:
     name: "tracing"
   data:
-    persistance:
+    persistence:
       enabled: false
   rbac:
     create: false
