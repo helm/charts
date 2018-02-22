@@ -15,6 +15,18 @@ imageTag: "4.0.0"
 ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
 imagePullPolicy: "IfNotPresent"
 
+livenessProbe:
+  ## Specify liveness probe initial delay
+  initialDelaySeconds: 30
+  ## Specify liveness probe timeout
+  timeoutSeconds: 5
+
+readinessProbe:
+  ## Specify readiness probe initial delay
+  initialDelaySeconds: 30
+  ## Specify readiness probe timeout
+  timeoutSeconds: 5
+
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
 resources: {}
