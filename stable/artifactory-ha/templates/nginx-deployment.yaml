@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
   name: {{ template "artifactory-ha.nginx.name" . }}
@@ -10,6 +10,10 @@ metadata:
     component: {{ .Values.nginx.name }}
 spec:
   replicas: {{ .Values.nginx.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "artifactory-ha.name" . }}
+      release: {{ .Release.Name }}
   template:
     metadata:
       labels:
