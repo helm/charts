@@ -83,11 +83,21 @@ spec:
         volumeMounts:
         - name: datadir
           mountPath: {{ .Values.persistence.mountPath | quote }}
+      {{ if not .Values.persistence.enabled }}
       volumes:
       - name: datadir
-        {{- if .Values.persistence.enabled }}
-        persistentVolumeClaim:
-          claimName: {{ .Values.persistence.existingClaim | default (include "kafka.fullname" .) }}
-        {{- else }}
         emptyDir: {}
-        {{- end }}
+      {{- end }}
+  {{- if .Values.persistence.enabled }}
+  volumeClaimTemplates:
+  - metadata:
+      name: datadir
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: {{ .Values.persistence.size }}
+      {{- if .Values.persistence.storageClass }}
+      storageClassName: {{ .Values.persistence.storageClass | quote }}
+      {{- end }}
+  {{- end }}

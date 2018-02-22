@@ -63,11 +63,9 @@ following configurable parameters:
 | `affinity`                     | Pod scheduling preferences                                                                                      | `{}`                                                       |
 | `configurationOverrides`       | `Kafka ` [configuration setting][brokerconfigs] overrides in the dictionary format                              | `setting.name: value` | `{}`                               |
 | `persistence.enabled`          | Use a PVC to persist data                                                                                       | `true`                                                     |
-| `persistence.existingClaim`    | Provide an existing PersistentVolumeClaim                                                                       | `nil`                                                      |
 | `persistence.size`             | Size of data volume                                                                                             | `1Gi`                                                      |
 | `persistence.mountPath`        | Mount path of data volume                                                                                       | `/opt/kafka/data`                                          |
 | `persistence.storageClass`     | Storage class of backing PVC                                                                                    | `nil`                                                      |
-| `persistence.annotations`      | Persistent Volume annotations                                                                                   | `{}`                                                       |
 | `schema-registry.enabled`      | If True, installs Schema Registry Chart                                                                         | `false`                                                    |
 | `updateStrategy`               | StatefulSet update strategy to use.                                                                             | `{ type: "OnDelete" }`                                     |
 | `zookeeper.enabled`            | If True, installs Zookeeper Chart                                                                               | `true`                                                     |
