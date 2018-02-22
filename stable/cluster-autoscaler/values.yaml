@@ -9,6 +9,8 @@ awsRegion: us-east-1
 # Currently only `aws` & `spotinst` are supported
 cloudProvider: aws
 
+sslCertPath: /etc/ssl/certs/ca-certificates.crt
+
 image:
   repository: k8s.gcr.io/cluster-autoscaler
   tag: v1.1.0
