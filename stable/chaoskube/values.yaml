@@ -5,7 +5,7 @@ name: chaoskube
 image: quay.io/linki/chaoskube
 
 # docker image tag
-imageTag: v0.7.1
+imageTag: v0.8.0
 
 # number of replicas to run
 replicas: 1
@@ -25,14 +25,14 @@ namespaces:
 # don't kill pods, only log what would have been done
 dryRun: true
 
-# Uncomment to set values for exempting specific week days from Chaoskube Actions
-# excludedWeekdays: Sat,Sun
+# Set values for exempting specific week days from Chaoskube Actions
+excludedWeekdays:
 
-# Uncomment to set values for excluding specific times of day from Chaoskube Actions
-# excludedTimesOfDay: 22:00-08:00
+# Set values for exempting specific times of day from Chaoskube Actions
+excludedTimesOfDay:
 
-# Uncomment to set specific Timezone
-# timezone: America/New_York
+# Set specific Timezone for Actions to take place
+timezone: UTC
 
 # resource requests and limits
 resources:

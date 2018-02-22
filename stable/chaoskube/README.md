@@ -41,7 +41,7 @@ $ helm install stable/chaoskube --set dryRun=false
 |---------------------------|-----------------------------------------------------|-----------------------------------|
 | `name`                    | container name                                      | chaoskube                         |
 | `image`                   | docker image                                        | quay.io/linki/chaoskube           |
-| `imageTag`                | docker image tag                                    | v0.7.1                            |
+| `imageTag`                | docker image tag                                    | v0.8.0                            |
 | `replicas`                | number of replicas to run                           | 1                                 |
 | `interval`                | interval between pod terminations                   | 10m                               |
 | `labels`                  | label selector to filter pods by                    | "" (matches everything)           |
@@ -64,7 +64,6 @@ $ helm install \
   --set labels='app=mate\,stage!=prod',namespaces='!kube-system\,!production' \
   stable/chaoskube --debug --dry-run | grep -A4 args
     args:
-    - --in-cluster
     - --interval=10m
     - --labels=app=foo,stage!=prod
     - --namespaces=!kube-system,!production
