@@ -1,5 +1,5 @@
 rbac:
-  create: false
+  create: true
 
 alertmanager:
   ## If false, alertmanager will not be installed
