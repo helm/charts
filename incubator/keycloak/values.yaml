@@ -185,7 +185,7 @@ postgresql:
 
 rbac:
   ## If true, create Default RBAC roles and bindings
-  create: false
+  create: true
   apiVersion: v1beta1
 
 test:
