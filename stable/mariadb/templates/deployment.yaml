@@ -58,23 +58,17 @@ spec:
         livenessProbe:
           exec:
             command:
-            - mysqladmin
-            - ping
-          {{- if .Values.usePassword }}
-            - -uroot
-            - -p$MARIADB_ROOT_PASSWORD
-          {{- end }}
+            - bash
+            - -c
+            - mysqladmin ping{{ if .Values.usePassword }} -uroot -p$MARIADB_ROOT_PASSWORD{{ end }}
           initialDelaySeconds: 30
           timeoutSeconds: 5
         readinessProbe:
           exec:
             command:
-            - mysqladmin
-            - ping
-          {{- if .Values.usePassword }}
-            - -uroot
-            - -p$MARIADB_ROOT_PASSWORD
-          {{- end }}
+            - bash
+            - -c
+            - mysqladmin ping{{ if .Values.usePassword }} -uroot -p$MARIADB_ROOT_PASSWORD{{ end }}
           initialDelaySeconds: 5
           timeoutSeconds: 1
         resources:
