@@ -3,10 +3,14 @@
 # Declare variables to be passed into your templates.
 
 configuration:
-  cloudprovider: gcp
-  project:
+  cloudprovider:
   bucket:
-  credentials: GOOGLE_APPLICATION_CREDENTIALS
+  # project is gcp only
+  project:
+  # region is aws only
+  region:
+  credentials:
+  # following are default values 
   backupSyncPeriod: 30m
   gcSyncPeriod: 30m
   scheduleSyncPeriod: 1m

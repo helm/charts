@@ -7,10 +7,18 @@ metadata:
 persistentVolumeProvider:
   name: {{ required "PLEASE SET VALUE" .Values.configuration.cloudprovider  }}
   config:
+    {{- if eq .Values.configuration.cloudprovider "gcp" }}
     project: {{ required "PLEASE SET VALUE" .Values.configuration.project  }}
+    {{- else if eq .Values.configuration.cloudprovider "aws" }}
+    region: {{ required "PLEASE SET VALUE" .Values.configuration.region  }}
+    {{- end }}
 backupStorageProvider:
   name: {{ required "PLEASE SET VALUE" .Values.configuration.cloudprovider  }}
   bucket: {{ required "PLEASE SET VALUE" .Values.configuration.bucket  }}
+  {{- if eq .Values.configuration.cloudprovider "aws" }}
+  config:
+    region: {{ required "PLEASE SET VALUE" .Values.configuration.region  }}
+  {{- end }}
 backupSyncPeriod: {{ .Values.configuration.backupSyncPeriod }}
 gcSyncPeriod: {{ .Values.configuration.gcSyncPeriod }}
 scheduleSyncPeriod: {{ .Values.configuration.scheduleSyncPeriod }}
