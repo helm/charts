@@ -20,6 +20,9 @@ spec:
         app: {{ include "kafka.name" . | quote }}
         release: {{ .Release.Name | quote }}
     spec:
+{{- if .Values.schedulerName }}
+      schedulerName: "{{ .Values.schedulerName }}"
+{{- end }}
 {{- if .Values.affinity }}
       affinity:
 {{ toYaml .Values.affinity | indent 8 }}
