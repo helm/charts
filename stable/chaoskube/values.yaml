@@ -36,3 +36,7 @@ rbac:
 
   # only used when create is false
   serviceAccountName: default
+
+# Node labels for pod assignment
+# Ref: https://kubernetes.io/docs/user-guide/node-selection/
+nodeSelector: {}

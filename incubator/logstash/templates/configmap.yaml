@@ -12,3 +12,6 @@ data:
   logstash.yml: |-
     http.host: "0.0.0.0"
     path.config: /usr/share/logstash/pipeline
+{{- if .Values.configData }}
+{{ toYaml .Values.configData | indent 4 }}
+{{- end }}

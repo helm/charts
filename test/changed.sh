@@ -38,6 +38,30 @@ exitCode=0
 # Cleanup any releases and namespaces left over from the test
 function cleanup {
     if [ -n "$CURRENT_RELEASE" ]; then
+
+      # Before reporting the logs from all pods provide a helm status for
+      # the release
+      helm status ${CURRENT_RELEASE} || true
+
+      # List all logs for all containers in all pods for the namespace which was
+      # created for this PR test run
+      kubectl get pods --show-all --no-headers --namespace ${NAMESPACE} | awk '{ print $1 }' | while read line; do
+        if [[ $line != "" ]]; then
+            echo "===Logs from pod $line:==="
+
+            # There can be multiple containers within a pod. We need to iterate
+            # over each of those
+            containers=`kubectl get pods --show-all -o jsonpath="{.spec.containers[*].name}" --namespace ${NAMESPACE} $line`
+            for cname in ${containers}; do
+                echo "---Logs from container $cname in pod $line:---"
+                kubectl logs --namespace ${NAMESPACE} -c ${cname} ${line} || true
+                echo "---End of logs for container $cname in pod $line---\n"
+            done
+
+            echo "===End of logs for pod $line===\n"
+        fi
+      done
+
       helm delete --purge ${CURRENT_RELEASE} > cleanup_log 2>&1 || true
     fi
     kubectl delete ns ${NAMESPACE} >> cleanup_log 2>&1 || true
@@ -97,7 +121,7 @@ for directory in ${CHANGED_FOLDERS}; do
     continue
   elif [ -d $directory ]; then
     CHART_NAME=`echo ${directory} | cut -d '/' -f2`
-    
+
     # A semver comparison is here as well as in the circleci tests. The circleci
     # tests provide almost immediate feedback to chart authors. This test is also
     # re-run right before the bot merges a PR so we can make sure the chart
@@ -113,12 +137,15 @@ for directory in ${CHANGED_FOLDERS}; do
     kubectl get deployments --namespace ${NAMESPACE}
     kubectl get endpoints --namespace ${NAMESPACE}
     helm test ${RELEASE_NAME}
+
     if [ -n $VERIFICATION_PAUSE ]; then
       cat install_output
       sleep $VERIFICATION_PAUSE
     fi
     helm delete --purge ${RELEASE_NAME}
+
+    # Setting the current release to none to avoid the cleanup and error
+    # handling for a release that no longer exists.
+    CURRENT_RELEASE=""
   fi
 done
-
-exit $exitCode

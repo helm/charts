@@ -1,3 +1,4 @@
+{{- if or .Values.mariadb.enabled .Values.externalDatabase.host -}}
 
 1. Get the MediaWiki URL by running:
 
@@ -25,3 +26,19 @@
 
     echo Username: {{ .Values.mediawikiUser }}
     echo Password: $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "mediawiki.fullname" . }} -o jsonpath="{.data.mediawiki-password}" | base64 --decode)
+
+{{- else -}}
+
+########################################################################################
+### ERROR: You did not provide an external database host in your 'helm install' call ###
+########################################################################################
+
+This deployment will be incomplete until you configure MediaWiki with a resolvable database
+host. To configure MediaWiki to use and external database host:
+
+
+1. Complete your MediaWiki deployment by running:
+
+  helm upgrade {{ .Release.Name }} --set serviceType={{ .Values.serviceType }},mariadb.enabled=false,externalDatabase.host=YOUR_EXTERNAL_DATABASE_HOST stable/mediawiki
+
+{{- end}}

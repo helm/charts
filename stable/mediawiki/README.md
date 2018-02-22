@@ -53,15 +53,24 @@ The following tables lists the configurable parameters of the MediaWiki chart an
 | `mediawikiPassword`                  | Application password                     | _random 10 character long alphanumeric string_          |
 | `mediawikiEmail`                     | Admin email                              | `user@example.com`                                      |
 | `mediawikiName`                      | Name for the wiki                        | `My Wiki`                                               |
+| `allowEmptyPassword`                 | Allow DB blank passwords                 | `yes`                                                   |
 | `smtpHost`                           | SMTP host                                | `nil`                                                   |
 | `smtpPort`                           | SMTP port                                | `nil`                                                   |
 | `smtpHostID`                         | SMTP host ID                             | `nil`                                                   |
 | `smtpUser`                           | SMTP user                                | `nil`                                                   |
 | `smtpPassword`                       | SMTP password                            | `nil`                                                   |
+| `externalDatabase.host`              | Host of the external database            | `nil`                                                   |
+| `externalDatabase.user`              | Existing username in the external db     | `bn_mediawiki`                                          |
+| `externalDatabase.password`          | Password for the above username          | `nil`                                                   |
+| `externalDatabase.database`          | Name of the existing databse             | `bitnami_mediawiki`                                     |
+| `mariadb.enabled`                    | Use or not the mariadb chart             | `true`                                                  |
 | `mariadb.mariadbRootPassword`        | MariaDB admin password                   | `nil`                                                   |
+| `mariadb.mariadbDatabase`            | Database name to create                  | `bitnami_mediawiki`                                     |
+| `mariadb.mariadbUser`                | Database user to create                  | `bn_mediawiki`                                          |
+| `mariadb.mariadbPassword`            | Password for the database                | _random 10 character long alphanumeric string_          |
 | `serviceType`                        | Kubernetes Service type                  | `LoadBalancer`                                          |
 | `persistence.enabled`                | Enable persistence using PVC             | `true`                                                  |
-| `persistence.apache.storageClass`    | PVC Storage Class for Apache volume      | `nil` (uses alpha storage class annotation)  |
+| `persistence.apache.storageClass`    | PVC Storage Class for Apache volume      | `nil` (uses alpha storage class annotation)             |
 | `persistence.apache.accessMode`      | PVC Access Mode for Apache volume        | `ReadWriteOnce`                                         |
 | `persistence.apache.size`            | PVC Storage Request for Apache volume    | `1Gi`                                                   |
 | `persistence.mediawiki.storageClass` | PVC Storage Class for MediaWiki volume   | `nil` (uses alpha storage class annotation)   |

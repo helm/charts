@@ -33,7 +33,7 @@ The default configuration values for this chart are listed in `values.yaml`.
 
 | Parameter                             | Description                                                  | Default                                           |
 |---------------------------------------|-------------------------------------                         |---------------------------------------------------|
-| `image.repository`                    | Repository for container image                               | gcr.io/google_containers/heapster                 |
+| `image.repository`                    | Repository for container image                               | k8s.gcr.io/heapster                 |
 | `image.tag`                           | Container image tag                                          | v1.3.0                                            |
 | `image.pullPolicy`                    | Image pull policy                                            | IfNotPresent                                      |
 | `service.name`                        | Service port name                                            | api                                               |
@@ -53,7 +53,7 @@ The table below is only applicable if `resizer.enabled` is `true`. More informat
 
 | Parameter                             | Description                         | Default                                           |
 |---------------------------------------|-------------------------------------|---------------------------------------------------|
-| `resizer.image.repository`            | Repository for container image      | gcr.io/google_containers/addon-resizer            |
+| `resizer.image.repository`            | Repository for container image      | k8s.gcr.io/addon-resizer            |
 | `resizer.image.tag`                   | Container image tag                 | 1.7                                               |
 | `resizer.image.pullPolicy`            | Image pull policy                   | IfNotPresent                                      |
 | `resizer.resources.limits`            | Server resource  limits             | limits: {cpu: 50m, memory: 90Mi}                |

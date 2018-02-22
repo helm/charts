@@ -41,7 +41,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the PostgresSQL chart and their default values.
+The following tables lists the configurable parameters of the PostgreSQL chart and their default values.
 
 | Parameter                  | Description                                     | Default                                                    |
 | -----------------------    | ---------------------------------------------   | ---------------------------------------------------------- |
@@ -60,6 +60,7 @@ The following tables lists the configurable parameters of the PostgresSQL chart 
 | `persistence.annotations`  | Persistent Volume annotations                   | `{}`                                                       |
 | `persistence.size`         | Size of data volume                             | `8Gi`                                                      |
 | `persistence.subPath`      | Subdirectory of the volume to mount at          | `postgresql-db`                                            |
+| `persistence.mountPath`    | Mount path of data volume                       | `/var/lib/postgresql/data/pgdata`                          |
 | `resources`                | CPU/Memory resource requests/limits             | Memory: `256Mi`, CPU: `100m`                               |
 | `metrics.enabled`          | Start a side-car prometheus exporter            | `false`                                                    |
 | `metrics.image`            | Exporter image                                  | `wrouesnel/postgres_exporter`                              |
@@ -70,6 +71,7 @@ The following tables lists the configurable parameters of the PostgresSQL chart 
 | `service.externalIPs`      | External IPs to listen on                       | `[]`                                                       |
 | `service.port`             | TCP port                                        | `5432`                                                     |
 | `service.type`             | k8s service type exposing ports, e.g. `NodePort`| `ClusterIP`                                                |
+| `service.nodePort`         | NodePort value if service.type is `NodePort`    | `nil`                                                      |
 | `networkPolicy.enabled`    | Enable NetworkPolicy                            | `false`                                                    |
 | `networkPolicy.allowExternal` | Don't require client label for connections   | `true`                                                     |
 | `nodeSelector`             | Node labels for pod assignment                  | {}                                                         |
@@ -86,7 +88,7 @@ $ helm install --name my-release \
     stable/postgresql
 ```
 
-The above command creates a PostgresSQL user named `root` with password `secretpassword`. Additionally it creates a database named `my-database`.
+The above command creates a PostgreSQL user named `root` with password `secretpassword`. Additionally it creates a database named `my-database`.
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 

@@ -3,7 +3,7 @@ extraArgs: {}
 ## Container image
 ##
 image:
-  repository: gcr.io/google_containers/spartakus-amd64
+  repository: k8s.gcr.io/spartakus-amd64
   tag: v1.0.0
   pullPolicy: IfNotPresent
 

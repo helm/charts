@@ -10,42 +10,19 @@ initContainerImage: "alpine:3.6"
 # For supporting pulling from private registries
 imagePullSecrets:
 
-# Database
-database:
-  name: postgresql
-  env:
-    type: postgresql
-    name: artifactory
-    user: artifactory
-#    pass: artXifactory1973
-  image:
-    repository: docker.bintray.io/postgres
-    version: 9.5.2
-    pullPolicy: IfNotPresent
-  service:
-    type: ClusterIP
-  externalPort: 5432
-  internalPort: 5432
-  persistence:
-    mountPath: "/var/lib/postgresql/data"
-    enabled: true
-    accessMode: ReadWriteOnce
-    size: 10Gi
-    ## database data Persistent Volume Storage Class
-    ## If defined, storageClassName: <storageClass>
-    ## If set to "-", storageClassName: "", which disables dynamic provisioning
-    ## If undefined (the default) or set to null, no storageClassName spec is
-    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
-    ##   GKE, AWS & OpenStack)
-    ##
-    # storageClass: "-"
-  resources: {}
-  #  requests:
-  #    memory: "512Mi"
-  #    cpu: "100m"
-  #  limits:
-  #    memory: "1Gi"
-  #    cpu: "500m"
+ingress:
+  enabled: false
+  # Used to create an Ingress record.
+  hosts:
+    - artifactory.domain.example
+  annotations:
+  # kubernetes.io/ingress.class: nginx
+  # kubernetes.io/tls-acme: "true"
+  tls:
+  # Secrets must be manually created in the namespace.
+  # - secretName: chart-example-tls
+  #   hosts:
+  #     - artifactory.domain.example
 
 # Artifactory
 artifactory:
@@ -54,11 +31,12 @@ artifactory:
   image:
     # repository: "docker.bintray.io/jfrog/artifactory-oss"
     repository: "docker.bintray.io/jfrog/artifactory-pro"
-    version: 5.6.3
+    version: 5.8.4
     pullPolicy: IfNotPresent
   service:
     name: artifactory
     type: ClusterIP
+    annotations: {}
   externalPort: 8081
   internalPort: 8081
   persistence:
@@ -92,11 +70,12 @@ artifactory:
 
 # Nginx
 nginx:
+  enabled: true
   name: nginx
   replicaCount: 1
   image:
     repository: "docker.bintray.io/jfrog/nginx-artifactory-pro"
-    version: 5.6.3
+    version: 5.8.4
     pullPolicy: IfNotPresent
   service:
     ## For minikube, set this to NodePort, elsewhere use LoadBalancer
@@ -107,6 +86,7 @@ nginx:
     ## or pass from helm command line
     ## Example: helm install ... --set nginx.service.loadBalancerSourceRanges='{10.10.10.5/32,10.11.10.5/32}'
     loadBalancerSourceRanges: []
+    annotations: {}
   externalPortHttp: 80
   internalPortHttp: 80
   externalPortHttps: 443
@@ -116,7 +96,7 @@ nginx:
     ssl: true
   persistence:
     mountPath: "/var/opt/jfrog/nginx"
-    enabled: true
+    enabled: false
     accessMode: ReadWriteOnce
     size: 5Gi
     ## nginx data Persistent Volume Storage Class
@@ -134,3 +114,13 @@ nginx:
   #  limits:
   #    memory: "250Mi"
   #    cpu: "500m"
+
+## Configuration values for the postgresql dependency
+## ref: https://github.com/kubernetes/charts/blob/master/stable/postgressql/README.md
+##
+postgresql:
+  postgresUser: "artifactory"
+  postgresPassword: "artifactory"
+  postgresDatabase: "artifactory"
+  persistence:
+    enabled: true
