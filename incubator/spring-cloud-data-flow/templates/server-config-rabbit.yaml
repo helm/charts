@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: {{ template "scdf.fullname" . }}-server
   labels:
-    app: {{ template "name" . }}
+    app: {{ template "scdf.name" . }}
     component: server
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"

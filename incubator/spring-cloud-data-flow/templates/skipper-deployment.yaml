@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: {{ template "scdf.fullname" . }}-skipper
   labels:
-    app: {{ template "name" . }}
+    app: {{ template "scdf.name" . }}
     component: skipper
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
@@ -13,7 +13,7 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "name" . }}
+        app: {{ template "scdf.name" . }}
         component: skipper
         release: "{{ .Release.Name }}"
     spec:
@@ -57,4 +57,4 @@ spec:
               name: {{ printf "%s-%s" .Release.Name "mysql" | trunc 63 | trimSuffix "-" }}
               key: mysql-root-password
         command: ['sh', '-c', 'mysql -h ${{ printf "{%s" .Release.Name | upper }}_MYSQL_SERVICE_HOST} -u root --password=${MYSQL_PASSWORD} -e "CREATE DATABASE IF NOT EXISTS skipper;"']
-      serviceAccountName: {{ template "serviceAccountName" . }}
+      serviceAccountName: {{ template "scdf.serviceAccountName" . }}

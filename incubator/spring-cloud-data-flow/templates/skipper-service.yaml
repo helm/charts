@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: {{ template "scdf.fullname" . }}-skipper
   labels:
-    app: {{ template "name" . }}
+    app: {{ template "scdf.name" . }}
     component: skipper
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
@@ -16,6 +16,6 @@ spec:
       protocol: TCP
       name: http
   selector:
-    app: {{ template "name" . }}
+    app: {{ template "scdf.name" . }}
     component: skipper
     release: {{ .Release.Name }}

@@ -3,7 +3,7 @@ apiVersion: v1
 metadata:
   name: {{ template "scdf.fullname" . }}-server
   labels:
-    app: {{ template "name" . }}
+    app: {{ template "scdf.name" . }}
     component: server
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
@@ -17,6 +17,6 @@ spec:
       protocol: TCP
       name: http
   selector:
-    app: {{ template "name" . }}
+    app: {{ template "scdf.name" . }}
     component: server
     release: {{ .Release.Name }}
