@@ -37,7 +37,8 @@ kubectl create secret generic cloud-credentials --namespace heptio-ark --from-fi
 ```
 
 ### Bucket and Project name
-Please change bucket and project name in the values.yaml file
+Please change bucket and project/region name in the values.yaml file
+See here for possible values: https://github.com/heptio/ark/blob/v0.6.0/docs/cloud-provider-specifics.md
 
 ## How to
 ```
