@@ -183,6 +183,11 @@ postgresql:
     ##
     enabled: true
 
+rbac:
+  ## If true, create Default RBAC roles and bindings
+  create: false
+  apiVersion: v1beta1
+
 test:
   image:
     repository: unguiculus/docker-python3-phantomjs-selenium
