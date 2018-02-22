@@ -14,6 +14,9 @@ data:
     {{- if .Values.debug.enabled }}
     debug = true
     {{- end }}
+    {{- if .Values.sendAnonymousUsage }}
+    sendAnonymousUsage = true
+    {{- end }}
     {{- if .Values.ssl.enabled }}
     defaultEntryPoints = ["http","https"]
     {{- else }}

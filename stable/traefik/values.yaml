@@ -197,3 +197,4 @@ deployment:
     httpEnabled: false
     httpsEnabled: false
     dashboardEnabled: false
+sendAnonymousUsage: false
