@@ -12,7 +12,7 @@ backupStorageProvider:
   name: {{ required "PLEASE SET VALUE" .Values.configuration.cloudprovider  }}
   bucket: {{ required "PLEASE SET VALUE" .Values.configuration.bucket  }}
 backupSyncPeriod: {{ .Values.configuration.backupSyncPeriod }}
-gcSyncPeriod: {{ .Values.configuration.gcSyncPerios }}
+gcSyncPeriod: {{ .Values.configuration.gcSyncPeriod }}
 scheduleSyncPeriod: {{ .Values.configuration.scheduleSyncPeriod }}
 restoreOnlyMode: {{ .Values.configuration.restoreOnlyMode }}
 
