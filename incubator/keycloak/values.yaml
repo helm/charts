@@ -186,7 +186,6 @@ postgresql:
 rbac:
   # Specifies whether RBAC resources should be created
   create: true
-  apiVersion: v1beta1
 
 serviceAccount:
   # Specifies whether a ServiceAccount should be created
