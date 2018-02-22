@@ -25,6 +25,12 @@ spec:
         {{- else }}
           value: "no"
         {{- end }}
+        - name: MARIADB_ROOT_USER
+        {{- if .Values.mariadb.enabled }}
+          value: "root"
+        {{- else }}
+          value: {{ .Values.externalDatabase.rootUser | quote }}
+        {{- end }}
         - name: MARIADB_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
