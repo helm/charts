@@ -56,11 +56,6 @@ nodeSelector: {}
 persistence:
   enabled: true
 
-  ## A manually managed Persistent Volume and Claim. Requires persistence.enabled: true.
-  ## If defined, PVC must be created manually before volume will be bound.
-  ##
-  # existingClaim: "my-pvc-name"
-
   ## The size of the PersistentVolume to allocate to each Zookeeper Pod in the StatefulSet. For
   ## production servers this number should likely be much larger.
   ##
@@ -74,7 +69,3 @@ persistence:
   ##     GKE, AWS & OpenStack)
   ##
   # storageClass: "-"
-
-  ## Custom PVC annotations.
-  ##
-  # annotations: {}
