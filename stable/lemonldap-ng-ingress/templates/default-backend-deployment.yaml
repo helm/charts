@@ -1,0 +1,62 @@
+{{- if .Values.defaultBackend.enabled }}
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: {{ template "nginx-ingress.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: "{{ .Values.defaultBackend.name }}"
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "nginx-ingress.defaultBackend.fullname" . }}
+spec:
+  replicas: {{ .Values.defaultBackend.replicaCount }}
+  revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
+  template:
+    metadata:
+    {{- if .Values.defaultBackend.podAnnotations }}
+      annotations:
+{{ toYaml .Values.defaultBackend.podAnnotations | indent 8 }}
+    {{- end }}
+      labels:
+        app: {{ template "nginx-ingress.name" . }}
+        component: "{{ .Values.defaultBackend.name }}"
+        release: {{ .Release.Name }}
+        {{- if .Values.defaultBackend.podLabels }}
+{{ toYaml .Values.defaultBackend.podLabels | indent 8 }}
+        {{- end }}
+    spec:
+      containers:
+        - name: {{ template "nginx-ingress.name" . }}-{{ .Values.defaultBackend.name }}
+          image: "{{ .Values.defaultBackend.image.repository }}:{{ .Values.defaultBackend.image.tag }}"
+          imagePullPolicy: "{{ .Values.defaultBackend.image.pullPolicy }}"
+          args:
+          {{- range $key, $value := .Values.defaultBackend.extraArgs }}
+            {{- if $value }}
+            - --{{ $key }}={{ $value }}
+            {{- else }}
+            - --{{ $key }}
+            {{- end }}
+          {{- end }}
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 30
+            timeoutSeconds: 5
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          resources:
+{{ toYaml .Values.defaultBackend.resources | indent 12 }}
+    {{- if .Values.defaultBackend.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.defaultBackend.nodeSelector | indent 8 }}
+    {{- end }}
+    {{- if .Values.defaultBackend.tolerations }}
+      tolerations:
+{{ toYaml .Values.defaultBackend.tolerations | indent 8 }}
+    {{- end }}
+      terminationGracePeriodSeconds: 60
+{{- end }}
