@@ -1,6 +1,6 @@
 # Ark-server
 
-This helm chart install ark-server version v0.6.0
+This helm chart install ark-server version v0.7.0
 
 ## Premise
 Helm cannot handle properly CRD becauses it has a validation mechanism that checks the installation before the CRD are actually created,
