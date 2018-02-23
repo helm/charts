@@ -31,14 +31,14 @@ Ark server needs a IAM service accoutn in order to run, if you don't have it you
 https://github.com/heptio/ark/blob/v0.7.1/docs/cloud-common.md
 
 
-And then
+And then create a secret
 ```
 kubectl create secret generic cloud-credentials --namespace heptio-ark --from-file cloud=credentials-ark
 ```
 
-### Bucket and Project name
-Please change bucket and project/region name in the values.yaml file
-Bucket is common to gcp and aws. Instead project is for gcp only and region for aws.
+### Configuration
+Ark configuration can be changed in values.yaml.
+See here for details: https://github.com/heptio/ark/blob/v0.7.1/docs/config-definition.md
 
 ## How to
 ```

@@ -11,7 +11,7 @@ spec:
         component: ark
     spec:
       restartPolicy: Always
-      serviceAccountName: ark
+      serviceAccountName: {{ template "ark-server.sa" . }}
       containers:
         - name: ark
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"

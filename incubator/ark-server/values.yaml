@@ -40,5 +40,5 @@ serviceAccount:
     name: deploy-ark
   server:
     create: true
-    name: heptio-ark
+    name: ark
 
