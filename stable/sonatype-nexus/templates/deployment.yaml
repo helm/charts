@@ -1,16 +1,20 @@
-apiVersion: apps/v1beta1
-kind: StatefulSet
+apiVersion: apps/v1beta2
+kind: Deployment
 metadata:
   name: {{ template "nexus.fullname" . }}
   labels:
 {{ include "nexus.labels" . | indent 4 }}
 spec:
-  replicas: {{ .Values.replicas }}
-  serviceName: {{ .Values.nexus.name }}
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "nexus.name" . }}
+      release: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app: {{ template "nexus.fullname" . }}
+        app: {{ template "nexus.name" . }}
+        release: {{ .Release.Name }}
     spec:
       {{- if .Values.nexus.nodeSelector }}
       nodeSelector:
@@ -117,7 +121,6 @@ spec:
               name: nexus-data
             - mountPath: /nexus-data/backup
               name: nexus-backup
-      terminationGracePeriodSeconds: 10
       volumes:
         {{- if .Values.nexusProxy.env.cloudIamAuthEnabled }}
         - name: {{ template "nexus.proxy-ks.name" . }}

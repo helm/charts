@@ -1,4 +1,4 @@
-replicas: 1
+replicaCount: 1
 
 nexus:
   imageName: quay.io/travelaudience/docker-nexus
