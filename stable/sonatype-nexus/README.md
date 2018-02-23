@@ -13,7 +13,7 @@ There is also the option of using a [proxy for Nexus](https://github.com/travela
 
 ## Prerequisites
 
-- Kubernetes 1.7+ with Beta APIs enabled
+- Kubernetes 1.8+ with Beta APIs enabled
 - PV provisioner support in the underlying infrastructure
 - [Fulfill Nexus kubernetes requirements](https://github.com/travelaudience/kubernetes-nexus#pre-requisites)
 
