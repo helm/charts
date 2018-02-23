@@ -39,9 +39,9 @@ The following tables lists the configurable parameters of the chart and its defa
 | `image.repository`               | Container image name                               | `docker.elastic.co/logstash/logstash-oss`        |
 | `image.tag`                      | Container image tag                                | `6.2.2`                                          |
 | `image.pullPolicy`               | Container image pull policy                        | `IfNotPresent`                                   |
-| `serviceAwsLoadBalancerInternal.enabled      | Enables `aws-load-balancer-internal`   | `false`                                          |
-| `serviceAwsLoadBalancerInternal.annotations  | Extra annotations for the internal ELB | `false`                                          |
-| `serviceAwsLoadBalancerInternal.exposedPorts | TCP port names exposed by internal ELB | `["beats"]`                                      |
+| `serviceAwsLoadBalancerInternal.enabled`      | Enables `aws-load-balancer-internal`   | `false`                                         |
+| `serviceAwsLoadBalancerInternal.annotations`  | Extra annotations for the internal ELB | `false`                                         |
+| `serviceAwsLoadBalancerInternal.exposedPorts` | TCP port names exposed by internal ELB | `["beats"]`                                     |
 | `service.type`                   | Service type (ClusterIP, NodePort or LoadBalancer) | `ClusterIP`                                      |
 | `service.ports`                  | Ports exposed by service                           | `["beats", "http"]`                              |
 | `ports`                          | Input ports exposed by logstash container          | beats, http                                      |
