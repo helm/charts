@@ -107,6 +107,17 @@ persistence:
   ##
   # storageClass:
 
+## Metrics
+##
+metrics:
+  enabled: true
+
+  # The image to use for the metrics collector
+  image: solsson/kafka-prometheus-jmx-exporter@sha256
+
+  # The image tag to use for the metrics collector
+  imageTag: a23062396cd5af1acdf76512632c20ea6be76885dfc20cd9ff40fb23846557e8
+
 # ------------------------------------------------------------------------------
 # Zookeeper:
 # ------------------------------------------------------------------------------
