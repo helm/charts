@@ -21,6 +21,7 @@ spec:
         app: {{ template "keycloak.name" . }}
         release: "{{ .Release.Name }}"
     spec:
+      serviceAccountName: {{ template "keycloak.serviceAccountName" . }}
     {{- if .Values.keycloak.persistence.deployPostgres }}
       initContainers:
         - name: wait-for-postgresql
