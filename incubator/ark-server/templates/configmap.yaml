@@ -4,4 +4,4 @@ metadata:
   name: ark-server-config
   namespace: {{ .Values.namespace.name }}
 data:
-{{ (tpl (.Files.Glob "static/*").AsConfig .) | indent 2 }}
+{{ (tpl (.Files.Glob "configuration/*").AsConfig .) | indent 2 }}
