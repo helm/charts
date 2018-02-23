@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: deploy-ark
+  name: deploy-ark-config
   namespace: {{ .Values.namespace.name }}
   annotations:
     "helm.sh/hook": post-install
@@ -9,12 +9,12 @@ metadata:
 spec:
   template:
     metadata:
-      name: deploy-ark
+      name: deploy-ark-config
       namespace: {{ .Values.namespace.name }}
     spec:
       restartPolicy: Never
       containers:
-      - name: deploy-ark
+      - name: deploy-ark-config
         image: claranet/gcloud-kubectl-docker
         imagePullPolicy: Always
         command: ["kubectl","create","-f","/tmp/"]
@@ -30,7 +30,7 @@ spec:
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: delete-ark
+  name: delete-ark-config
   namespace: {{ .Values.namespace.name }}
   annotations:
     "helm.sh/hook": pre-delete
@@ -38,12 +38,12 @@ metadata:
 spec:
   template:
     metadata:
-      name: delete-ark
+      name: delete-ark-config
       namespace: {{ .Values.namespace.name }}
     spec:
       restartPolicy: Never
       containers:
-      - name: delete-ark
+      - name: delete-ark-config
         image: claranet/gcloud-kubectl-docker
         imagePullPolicy: Always
         command: ["kubectl","delete","-f","/tmp/"]

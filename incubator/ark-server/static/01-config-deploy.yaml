@@ -1,4 +1,3 @@
----
 apiVersion: ark.heptio.com/v1
 kind: Config
 metadata:
@@ -24,39 +23,3 @@ gcSyncPeriod: {{ .Values.configuration.gcSyncPeriod }}
 scheduleSyncPeriod: {{ .Values.configuration.scheduleSyncPeriod }}
 restoreOnlyMode: {{ .Values.configuration.restoreOnlyMode }}
 
----
-apiVersion: apps/v1beta1
-kind: Deployment
-metadata:
-  namespace: {{ .Values.namespace.name }}
-  name: ark
-spec:
-  replicas: 1
-  template:
-    metadata:
-      labels:
-        component: ark
-    spec:
-      restartPolicy: Always
-      serviceAccountName: ark
-      containers:
-        - name: ark
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          command:
-            - /ark
-          args:
-            - server
-          volumeMounts:
-            - name: cloud-credentials
-              mountPath: /credentials
-            - name: plugins
-              mountPath: /plugins
-          env:
-            - name: {{ required "PLEASE CHANGE VALUE" .Values.configuration.credentials }}
-              value: /credentials/cloud
-      volumes:
-        - name: cloud-credentials
-          secret:
-            secretName: {{ .Values.secret.name }}
-        - name: plugins
-          emptyDir: {}
