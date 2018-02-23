@@ -27,6 +27,28 @@ $ helm delete my-release
 The command removes nearly all the Kubernetes components associated with the
 chart and deletes the release.
 
+## Best Practices
+
+### Release and tune this chart once per Logstash pipeline
+
+To achieve multiple pipelines with this chart, current best practice is to
+maintain one pipeline per chart release. In this way configuration is
+simplified and pipelines are more isolated from one another.
+
+### Default Pipeline: Beats Input -> Elasticsearch Output
+
+Current best practice for ELK logging is to ship logs from hosts using Filebeat
+to logstash where persistent queues are enabled. Filebeat supports structured
+(e.g. JSON) and unstructured (e.g. log lines) log shipment.
+
+### Links
+
+Please review the following links that expound on current best practices.
+
+- https://www.elastic.co/blog/structured-logging-filebeat
+- https://www.elastic.co/guide/en/logstash/current/deploying-and-scaling.html
+- https://www.elastic.co/guide/en/logstash/current/persistent-queues.html
+
 ## Configuration
 
 The following tables lists the configurable parameters of the chart and its default values.
@@ -43,8 +65,8 @@ The following tables lists the configurable parameters of the chart and its defa
 | `serviceAwsLoadBalancerInternal.annotations`  | Extra annotations for the internal ELB | `false`                                         |
 | `serviceAwsLoadBalancerInternal.exposedPorts` | TCP port names exposed by internal ELB | `["beats"]`                                     |
 | `service.type`                   | Service type (ClusterIP, NodePort or LoadBalancer) | `ClusterIP`                                      |
-| `service.ports`                  | Ports exposed by service                           | `["beats", "http"]`                              |
-| `ports`                          | Input ports exposed by logstash container          | beats, http                                      |
+| `service.ports`                  | Ports exposed by service                           | `["beats"]`                                      |
+| `ports`                          | Input ports exposed by logstash container          | beats                                            |
 | `ingress.enabled`                | Enables Ingress                                    | `false`                                          |
 | `ingress.annotations`            | Ingress annotations                                | `{}`                                             |
 | `ingress.path`                   | Ingress path                                       | `/`                                              |

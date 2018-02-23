@@ -14,6 +14,8 @@ image:
 serviceAwsLoadBalancerInternal:
   enabled: false
   annotations: {}
+    # external-dns.alpha.kubernetes.io/hostname: logstash-tcp.cluster.local
+    # service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled: "true"
   exposedPorts:
     - beats
 
@@ -32,10 +34,10 @@ service:
       port: 5044
       targetPort: beats
       protocol: TCP
-    http:
-      port: 8080
-      targetPort: http
-      protocol: TCP
+    # http:
+    #  port: 8080
+    #  targetPort: http
+    #  protocol: TCP
 
 ports:
   # - name: syslog-udp
@@ -47,9 +49,9 @@ ports:
   - name: beats
     containerPort: 5044
     protocol: TCP
-  - name: http
-    containerPort: 8080
-    protocol: TCP
+  # - name: http
+  #   containerPort: 8080
+  #   protocol: TCP
 
 ingress:
   enabled: false
@@ -176,11 +178,15 @@ config:
   queue.max_bytes: 1gb  # disk capacity must be greater than the value of `queue.max_bytes`
   queue.type: persisted
 
-# Patterns for filters.
-# Each YAML heredoc will become a separate pattern file.
+## Patterns for filters.
+## Each YAML heredoc will become a separate pattern file.
 patterns:
   # main: |-
   #   TESTING {"foo":.*}$
+
+## NOTE: To achieve multiple pipelines with this chart, current best practice
+## is to maintain one pipeline per chart release. In this way configuration is
+## simplified and pipelines are more isolated from one another.
 
 inputs:
   main: |-
@@ -196,9 +202,9 @@ inputs:
       beats {
         port => 5044
       }
-      http {
-        port => 8080
-      }
+      # http {
+      #   port => 8080
+      # }
       # kafka {
       #   ## ref: https://www.elastic.co/guide/en/logstash/current/plugins-inputs-kafka.html
       #   bootstrap_servers => "kafka-input:9092"
@@ -217,10 +223,13 @@ filters:
 outputs:
   main: |-
     output {
-      stdout { codec => rubydebug }
-      # elasticsearch {
-      #   hosts => ["${ELASTICSEARCH_HOST}:${ELASTICSEARCH_PORT}"]
-      # }
+      # stdout { codec => rubydebug }
+      elasticsearch {
+        hosts => ["${ELASTICSEARCH_HOST}:${ELASTICSEARCH_PORT}"]
+        manage_template => false
+        index => "%{[@metadata][beat]}-%{+YYYY.MM.dd}"
+        document_type => "%{[@metadata][type]}"
+      }
       # kafka {
       #   ## ref: https://www.elastic.co/guide/en/logstash/current/plugins-outputs-kafka.html
       #   bootstrap_servers => "kafka-output:9092"
