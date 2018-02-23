@@ -41,16 +41,14 @@ spec:
             - mongo
             - --eval
             - "db.adminCommand('ping')"
-          initialDelaySeconds: 30
-          timeoutSeconds: 5
+{{ toYaml .Values.livenessProbe | indent 10 }}
         readinessProbe:
           exec:
             command:
             - mongo
             - --eval
             - "db.adminCommand('ping')"
-          initialDelaySeconds: 5
-          timeoutSeconds: 1
+{{ toYaml .Values.readinessProbe | indent 10 }}
         volumeMounts:
         - name: data
           mountPath: /bitnami/mongodb

@@ -97,6 +97,6 @@ spec:
         imagePullPolicy: {{ .Values.pachd.image.pullPolicy }}
         securityContext:
           privileged: true
-      serviceAccountName: {{ template "fullname" . }}-sa
+      serviceAccountName: pachyderm
   strategy: {}
 status: {}

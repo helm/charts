@@ -87,15 +87,19 @@ The following tables lists the configurable parameters of the Minio chart and th
 | `servicePort`              | Kubernetes port where service is exposed| `9000`                                              |
 | `persistence.enabled`      | Use persistent volume to store data | `true`                                                  |
 | `persistence.size`         | Size of persistent volume claim     | `10Gi`                                                  |
+| `persistence.existingClaim`| Use an existing PVC to persist data | `nil`                                                   |
 | `persistence.storageClass` | Type of persistent volume claim     | `generic`                                               |
 | `persistence.accessMode`   | ReadWriteOnce or ReadOnly           | `ReadWriteOnce`                                         |
 | `persistence.subPath`      | Mount a sub directory of the persistent volume if set | `""`                                  |
 | `resources`                | CPU/Memory resource requests/limits | Memory: `256Mi`, CPU: `100m`                            |
 | `nodeSelector`             | Node labels for pod assignment      | `{}`                                                    |
+| `affinity`                 | Affinity settings for pod assignment | `{}`                                                   |
+| `tolerations`              | Toleration labels for pod assignment | `[]`                                                   |
 | `defaultBucket.enabled`    | If set to true, a bucket will be created after minio install | `false`                        |
 | `defaultBucket.name`       | Bucket name                         | `bucket`                                                |
 | `defaultBucket.policy`     | Bucket policy                       | `none`                                                  |
-| `defaultBucket.purge`      | Purge the bucket if already exists  | `false`                                                  |
+| `defaultBucket.purge`      | Purge the bucket if already exists  | `false`                                                 |
+| `azuregateway.enabled`     | Use minio as an [azure gateway](https://docs.minio.io/docs/minio-gateway-for-azure)| `false`  |
 
 Some of the parameters above map to the env variables defined in the [Minio DockerHub image](https://hub.docker.com/r/minio/minio/).
 
@@ -173,6 +177,19 @@ $ helm install --set persistence.enabled=false stable/minio
 ```
 
 > *"An emptyDir volume is first created when a Pod is assigned to a Node, and exists as long as that Pod is running on that node. When a Pod is removed from a node for any reason, the data in the emptyDir is deleted forever."*
+
+Existing PersistentVolumeClaim
+------------------------------
+
+If a Persistent Volume Claim already exists, specify it during installation.
+
+1. Create the PersistentVolume
+1. Create the PersistentVolumeClaim
+1. Install the chart
+
+```bash
+$ helm install --set persistence.existingClaim=PVC_NAME stable/minio
+```
 
 NetworkPolicy
 -------------

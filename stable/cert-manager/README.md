@@ -6,30 +6,34 @@ TLS certificates from various issuing sources.
 It will ensure certificates are valid and up to date periodically, and attempt
 to renew certificates at an appropriate time before expiry.
 
-Changes to this chart are tested and version in the [upstream cert-manager repository](https://github.com/jetstack/cert-manager).
-Changes to this chart should be made as pull requests upstream, to be versioned and copied across to this repo.
-
-## TL;DR;
-
-```console
-$ helm install stable/cert-manager
-```
-
-## Introduction
-
-This chart creates a cert-manager deployment on a Kubernetes cluster using the Helm package manager.
-
 ## Prerequisites
 
-- Kubernetes cluster with support for CustomResourceDefinition or ThirdPartyResource
+- Kubernetes 1.7+
 
 ## Installing the Chart
+
+Full installation instructions, including details on how to configure extra
+functionality in cert-manager can be found in the [official deploying docs](https://github.com/jetstack/cert-manager/blob/master/docs/user-guides/deploying.md#addendum).
 
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm install --name my-release .
+$ helm install --name my-release stable/cert-manager
 ```
+
+In order to begin issuing certificates, you will need to set up a ClusterIssuer
+or Issuer resource (for example, by creating a 'letsencrypt-staging' issuer).
+
+More information on the different types of issuers and how to configure them
+can be found in our documentation:
+
+https://github.com/jetstack/cert-manager/tree/master/docs/api-types/issuer
+
+For information on how to configure cert-manager to automatically provision
+Certificates for Ingress resources, take a look at the `ingress-shim`
+documentation:
+
+https://github.com/jetstack/cert-manager/blob/master/docs/user-guides/ingress-shim.md
 
 > **Tip**: List all releases using `helm list`
 

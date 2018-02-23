@@ -1,0 +1,20 @@
+{{- if .Values.rbac.create }}
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRole
+metadata:
+  name: {{ template "kubeless.fullname" . }}-controller-deployer
+  labels:
+{{ include "labels.standard" . | indent 4 }}
+rules:
+- apiGroups:
+  - '*'
+  resources:
+  - services
+  - deployments
+  - functions
+  - configmaps
+  - pods
+  - replicasets
+  verbs:
+  - '*'
+{{- end}}

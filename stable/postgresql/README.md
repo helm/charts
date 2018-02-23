@@ -41,7 +41,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the PostgresSQL chart and their default values.
+The following tables lists the configurable parameters of the PostgreSQL chart and their default values.
 
 | Parameter                  | Description                                     | Default                                                    |
 | -----------------------    | ---------------------------------------------   | ---------------------------------------------------------- |
@@ -88,7 +88,7 @@ $ helm install --name my-release \
     stable/postgresql
 ```
 
-The above command creates a PostgresSQL user named `root` with password `secretpassword`. Additionally it creates a database named `my-database`.
+The above command creates a PostgreSQL user named `root` with password `secretpassword`. Additionally it creates a database named `my-database`.
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 

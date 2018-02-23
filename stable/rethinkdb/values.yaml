@@ -25,7 +25,7 @@ cluster:
   persistentVolume:
     enabled: true
     # If defined, volume.beta.kubernetes.io/storage-class: <storageClass>
-    #storageClass: fast
+    # storageClass: fast
     accessModes:
       - ReadWriteOnce
     size: 1Gi
@@ -68,8 +68,19 @@ proxy:
 # RethinkDB Ports
 ports:
   cluster: 29015
-  driver:  28015
-  admin:   8080
+  driver: 28015
+  admin: 8080
 
 # RethinkDB Admin Password
 rethinkdbPassword: rethinkdb
+
+rbac:
+  # Specifies whether RBAC resources should be created
+  create: true
+
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:

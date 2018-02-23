@@ -73,7 +73,7 @@ Assuming you have an existing release of the prometheus chart, named `prometheus
 	  prometheus.yml: ""
 	  rules: ""
 	```
-	
+
 1. Deploy a new release of the chart with version 5.0+ using prometheus 2.x. In the values.yaml set the scrape config as usual, and also add the `prometheus-old` instance as a remote-read target.
 
    ```
@@ -83,8 +83,8 @@ Assuming you have an existing release of the prometheus chart, named `prometheus
 	    - url: http://prometheus-old/api/v1/read
 	    ...
    ```
-   
-   Old data will be available when you query the new prometheus instance. 
+
+   Old data will be available when you query the new prometheus instance.
 
 ## Configuration
 
@@ -106,6 +106,7 @@ Parameter | Description | Default
 `alertmanager.ingress.hosts` | alertmanager Ingress hostnames | `[]`
 `alertmanager.ingress.tls` | alertmanager Ingress TLS configuration (YAML) | `[]`
 `alertmanager.nodeSelector` | node labels for alertmanager pod assignment | `{}`
+`alertmanager.tolerations` | node taints to tolerate (requires Kubernetes >=1.6) | `[]`
 `alertmanager.persistentVolume.enabled` | If true, alertmanager will create a Persistent Volume Claim | `true`
 `alertmanager.persistentVolume.accessModes` | alertmanager data Persistent Volume access modes | `[ReadWriteOnce]`
 `alertmanager.persistentVolume.annotations` | Annotations for alertmanager Persistent Volume Claim` | `{}`
@@ -131,6 +132,11 @@ Parameter | Description | Default
 `configmapReload.image.tag` | configmap-reload container image tag | `v0.1`
 `configmapReload.image.pullPolicy` | configmap-reload container image pull policy | `IfNotPresent`
 `configmapReload.resources` | configmap-reload pod resource requests & limits | `{}`
+`initChownData.name` | init-chown-data container name | `init-chown-data`
+`initChownData.image.repository` | init-chown-data container image repository | `busybox`
+`initChownData.image.tag` | init-chown-data container image tag | `latest`
+`initChownData.image.pullPolicy` | init-chown-data container image pull policy | `IfNotPresent`
+`initChownData.resources` | init-chown-data pod resource requests & limits | `{}`
 `kubeStateMetrics.enabled` | If true, create kube-state-metrics | `true`
 `kubeStateMetrics.name` | kube-state-metrics container name | `kube-state-metrics`
 `kubeStateMetrics.image.repository` | kube-state-metrics container image repository| `k8s.gcr.io/kube-state-metrics`
@@ -139,6 +145,7 @@ Parameter | Description | Default
 `kubeStateMetrics.args` | kube-state-metrics container arguments | `{}`
 `kubeStateMetrics.nodeSelector` | node labels for kube-state-metrics pod assignment | `{}`
 `kubeStateMetrics.podAnnotations` | annotations to be added to kube-state-metrics pods | `{}`
+`kubeStateMetrics.tolerations` | node taints to tolerate (requires Kubernetes >=1.6) | `[]`
 `kubeStateMetrics.replicaCount` | desired number of kube-state-metrics pods | `1`
 `kubeStateMetrics.resources` | kube-state-metrics resource requests and limits (YAML) | `{}`
 `kubeStateMetrics.serviceAccountName` | service account name for kube-state-metrics to use (ignored if rbac.create=true) | `default`
@@ -156,10 +163,12 @@ Parameter | Description | Default
 `nodeExporter.image.pullPolicy` | node-exporter container image pull policy | `IfNotPresent`
 `nodeExporter.extraArgs` | Additional node-exporter container arguments | `{}`
 `nodeExporter.extraHostPathMounts` | Additional node-exporter hostPath mounts | `[]`
+`nodeExporter.extraConfigmapMounts` | Additional node-exporter configMap mounts | `[]`
 `nodeExporter.nodeSelector` | node labels for node-exporter pod assignment | `{}`
 `nodeExporter.podAnnotations` | annotations to be added to node-exporter pods | `{}`
 `nodeExporter.tolerations` | node taints to tolerate (requires Kubernetes >=1.6) | `[]`
 `nodeExporter.resources` | node-exporter resource requests and limits (YAML) | `{}`
+`nodeExporter.securityContext` | securityContext for containers in pod | `{}`
 `nodeExporter.serviceAccountName` | service account name for node-exporter to use (ignored if rbac.create=true) | `default`
 `nodeExporter.service.annotations` | annotations for node-exporter service | `{prometheus.io/scrape: "true"}`
 `nodeExporter.service.clusterIP` | internal node-exporter cluster service IP | `None`
@@ -180,6 +189,7 @@ Parameter | Description | Default
 `pushgateway.ingress.tls` | pushgateway Ingress TLS configuration (YAML) | `[]`
 `pushgateway.nodeSelector` | node labels for pushgateway pod assignment | `{}`
 `pushgateway.podAnnotations` | annotations to be added to pushgateway pods | `{}`
+`pushgateway.tolerations` | node taints to tolerate (requires Kubernetes >=1.6) | `[]`
 `pushgateway.replicaCount` | desired number of pushgateway pods | `1`
 `pushgateway.resources` | pushgateway pod resource requests & limits | `{}`
 `pushgateway.service.annotations` | annotations for pushgateway service | `{}`
@@ -198,6 +208,7 @@ Parameter | Description | Default
 `server.prefixURL` | The prefix slug at which the server can be accessed | ``
 `server.baseURL` | The external url at which the server can be accessed | ``
 `server.extraHostPathMounts` | Additional Prometheus server hostPath mounts | `[]`
+`server.extraConfigmapMounts` | Additional Prometheus server configMap mounts | `[]`
 `server.configMapOverrideName` | Prometheus server ConfigMap override where full-name is `{{.Release.Name}}-{{.Values.server.configMapOverrideName}}` and setting this value will prevent the default server ConfigMap from being generated | `""`
 `server.ingress.enabled` | If true, Prometheus server Ingress will be created | `false`
 `server.ingress.annotations` | Prometheus server Ingress annotations | `[]`
