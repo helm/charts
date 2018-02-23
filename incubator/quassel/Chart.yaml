@@ -6,7 +6,7 @@ version: 0.2.0
 icon: https://avatars3.githubusercontent.com/u/2965670
 home: https://quassel-irc.org/
 maintainers:
-- name: Kiall Mac Innes
+- name: kiall
   email: kiall@macinnes.ie
 sources:
 - https://github.com/quassel/quassel
