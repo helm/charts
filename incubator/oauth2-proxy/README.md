@@ -1,29 +1,29 @@
-# oauth-proxy
+# oauth2-proxy
 
-[oauth-proxy](https://github.com/bitly/oauth2_proxy) is a reverse proxy and static file server that provides authentication using Providers (Google, GitHub, and others) to validate accounts by email, domain or group.
+[oauth2-proxy](https://github.com/bitly/oauth2_proxy) is a reverse proxy and static file server that provides authentication using Providers (Google, GitHub, and others) to validate accounts by email, domain or group.
 
 
-**Note - at this time, there is a known incompatibility between `oauth-proxy` version 2.2 (which is it's latest release) and `nginx-ingress` versions >= 0.9beta12. To utilize this chart at this time please use nginx-ingress version 0.9beta11**
+**Note - at this time, there is a known incompatibility between `oauth2-proxy` version 2.2 (which is it's latest release) and `nginx-ingress` versions >= 0.9beta12. To utilize this chart at this time please use nginx-ingress version 0.9beta11**
 
 ## TL;DR;
 
 ```console
-$ helm install incubator/oauth-proxy
+$ helm install incubator/oauth2-proxy
 ```
 
 ## Introduction
 
-This chart bootstraps a oauth-proxy deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
+This chart bootstraps a oauth2-proxy deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
 ## Installing the Chart
 
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm install incubator/oauth-proxy --name my-release
+$ helm install incubator/oauth2-proxy --name my-release
 ```
 
-The command deploys oauth-proxy on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
+The command deploys oauth2-proxy on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
 
 ## Uninstalling the Chart
 
@@ -37,7 +37,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the oauth-proxy chart and their default values.
+The following tables lists the configurable parameters of the oauth2-proxy chart and their default values.
 
 Parameter | Description | Default
 --- | --- | ---
@@ -64,14 +64,14 @@ Parameter | Description | Default
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```console
-$ helm install incubator/oauth-proxy --name my-release \
+$ helm install incubator/oauth2-proxy --name my-release \
   --set=image.tag=v0.0.2,resources.limits.cpu=200m
 ```
 
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 
 ```console
-$ helm install incubator/oauth-proxy --name my-release -f values.yaml
+$ helm install incubator/oauth2-proxy --name my-release -f values.yaml
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
