@@ -1,7 +1,7 @@
 ## Bitnami Ghost image version
 ## ref: https://hub.docker.com/r/bitnami/ghost/tags/
 ##
-image: bitnami/ghost:1.21.3-r3
+image: bitnami/ghost:1.21.3-r2
 
 ## Busybox image used to configure volume permissions
 ##
