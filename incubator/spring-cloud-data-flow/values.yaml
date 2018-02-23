@@ -17,7 +17,7 @@ serviceAccount:
   # Specifies whether a service account should be created
   create: true
   # The name of the service account to use.
-  # If not set and create is true, a name is generated using the fullname template
+  # If not set and create is true, a name is generated using the serviceAccountName template
   name:
 
 server:
@@ -27,7 +27,6 @@ server:
   service:
     type: LoadBalancer
     externalPort: 80
-    internalPort: 80
   resources: {}
   #  limits:
   #    cpu: 1.0
@@ -43,8 +42,6 @@ skipper:
   platformName: minikube
   service:
     type: ClusterIP
-    externalPort: 80
-    internalPort: 7577
   resources: {}
   #  limits:
   #    cpu: 1.0
@@ -59,8 +56,6 @@ metrics:
   imagePullPolicy: IfNotPresent
   service:
     type: ClusterIP
-    externalPort: 80
-    internalPort: 80
   resources: {}
   #  limits:
   #    cpu: 1.0

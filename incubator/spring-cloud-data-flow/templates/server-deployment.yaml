@@ -44,13 +44,13 @@ spec:
           }
         ]
         ports:
-        - containerPort: {{ .Values.server.service.internalPort }}
+        - containerPort: 8080
         resources:
 {{ toYaml .Values.server.resources | indent 10 }}
         livenessProbe:
           httpGet:
             path: /management/health
-            port: {{ .Values.server.service.internalPort }}
+            port: 8080
             httpHeaders:
             - name: Authorization
               value: 'Basic {{ printf "%s:%s" .Values.dataflowAdminUsername .Values.dataflowAdminPassword | b64enc }}'
@@ -60,7 +60,7 @@ spec:
         readinessProbe:
           httpGet:
             path: /management/health
-            port: {{ .Values.server.service.internalPort }}
+            port: 8080
             httpHeaders:
             - name: Authorization
               value: 'Basic {{ printf "%s:%s" .Values.dataflowAdminUsername .Values.dataflowAdminPassword | b64enc }}'
@@ -73,7 +73,7 @@ spec:
             fieldRef:
               fieldPath: "metadata.namespace"
         - name: SERVER_PORT
-          value: '{{ .Values.server.service.internalPort }}'
+          value: '8080'
         - name: SPRING_CLOUD_CONFIG_ENABLED
           value: 'false'
         - name: SPRING_CLOUD_DATAFLOW_FEATURES_ANALYTICS_ENABLED

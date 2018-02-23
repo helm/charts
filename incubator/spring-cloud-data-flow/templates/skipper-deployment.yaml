@@ -22,7 +22,7 @@ spec:
         image: {{ .Values.skipper.image }}:{{ .Values.skipper.version }}
         imagePullPolicy: {{ .Values.skipper.imagePullPolicy }}
         ports:
-        - containerPort: {{ .Values.skipper.service.internalPort }}
+        - containerPort: 7577
         resources:
 {{ toYaml .Values.skipper.resources | indent 10 }}
         env:
@@ -43,7 +43,11 @@ spec:
               name: {{ printf "%s-%s" .Release.Name "rabbitmq" | trunc 63 | trimSuffix "-" }}
               key: rabbitmq-password
         - name: SPRING_APPLICATION_JSON
-          value: '{"spring.cloud.skipper.server.enableLocalPlatform" : false, "spring.cloud.skipper.server.platform.kubernetes.accounts.{{ .Values.skipper.platformName }}.environmentVariables" : "SPRING_RABBITMQ_HOST=${{ printf "{%s" .Release.Name | upper }}_RABBITMQ_SERVICE_HOST},SPRING_RABBITMQ_PORT=${{ printf "{%s" .Release.Name | upper }}_RABBITMQ_SERVICE_PORT_AMQP},SPRING_RABBITMQ_USERNAME={{ .Values.rabbitmq.rabbitmqUsername }},SPRING_RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}","spring.cloud.skipper.server.platform.kubernetes.accounts.{{ .Values.skipper.platformName }}.memory" : "{{ .Values.deployer.resourceLimits.memory }}","spring.cloud.skipper.server.platform.kubernetes.accounts.{{ .Values.skipper.platformName }}.cpu" : "{{ .Values.deployer.resourceLimits.cpu }}","spring.cloud.skipper.server.platform.kubernetes.accounts.{{ .Values.skipper.platformName }}.createDeployment" : true}'
+          valueFrom:
+            configMapKeyRef:
+              name: {{ template "scdf.fullname" . }}-skipper
+              key: spring.application.json
+          value: 
       initContainers:
       - name: init-wait-mysql
         image: busybox

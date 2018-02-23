@@ -40,7 +40,14 @@ The following tables lists the configurable parameters and their default values.
 
 | Parameter     | Description                 | Default                   |
 | ------------- | --------------------------- | ------------------------- |
-| rbac.create   | Create RBAC configurations  | false
+| rbac.create   | Create RBAC configurations  | true
+
+### ServiceAccount Configuration
+
+| Parameter             | Description            | Default                     |
+| --------------------- | ---------------------- | --------------------------- |
+| serviceAccount.create | Create ServiceAccount  | true
+| serviceAccount.name   | ServiceAccount name    | (generated if not specified)
 
 ### Data Flow User Accounts
 
@@ -61,7 +68,6 @@ The following tables lists the configurable parameters and their default values.
 | server.imagePullPolicy            | The imagePullPolicy of the Data Flow server        | IfNotPresent
 | server.service.type               | The service type for the Data Flow server          | LoadBalancer
 | server.service.externalPort       | The external port for the Data Flow server         | 80
-| server.service.internalPort       | The internal port for the Data Flow server         | 80
 
 ### Skipper Server Configuration
 
@@ -71,8 +77,6 @@ The following tables lists the configurable parameters and their default values.
 | skipper.imagePullPolicy            | The imagePullPolicy of the Skipper server         | IfNotPresent
 | skipper.platformName               | The name of the configured platform account       | minikube
 | skipper.service.type               | The service type for the Skipper server           | ClusterIP
-| skipper.service.externalPort       | The external port for the Skipper server          | 80
-| skipper.service.internalPort       | The internal port for the Skipper server          | 7577
 
 ### Metrics Server Configuration
 
@@ -81,8 +85,6 @@ The following tables lists the configurable parameters and their default values.
 | metrics.version                    | The version/tag of the Metrics server             | 1.0.0.RELEASE
 | metrics.imagePullPolicy            | The imagePullPolicy of the Metrics server         | IfNotPresent
 | metrics.service.type               | The service type for the Metrics server           | ClusterIP
-| metrics.service.externalPort       | The external port for the Metrics server          | 80
-| metrics.service.internalPort       | The internal port for the Metrics server          | 80
 
 ### Spring Cloud Deployer Configuration
 

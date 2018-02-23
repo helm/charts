@@ -11,8 +11,8 @@ metadata:
 spec:
   type: {{ .Values.skipper.service.type }}
   ports:
-    - port: {{ .Values.skipper.service.externalPort }}
-      targetPort: {{ .Values.skipper.service.internalPort }}
+    - port: 80
+      targetPort: 7577
       protocol: TCP
       name: http
   selector:
