@@ -71,6 +71,13 @@ resources:
   requests:
     cpu: 80m
     memory: 64Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
 persistence:
   Enabled: false
   AccessMode: ReadWriteOnce

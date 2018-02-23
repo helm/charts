@@ -37,6 +37,9 @@ their default values. See values.yaml for all available options.
 | `resources.limits.memory`    | Container maximum memory                    | `128Mi`                                             |
 | `resources.requests.cpu`     | Container requested CPU                     | `80m`                                               |
 | `resources.requests.memory`  | Container requested memory                  | `64Mi`                                              |
+| `nodeSelector`               | Map of node labels for pod assignment       | `{}`                                                |
+| `tolerations`                | List of node taints to tolerate             | `[]`                                                |
+| `affinity`                   | Map of node/pod affinities                  | `{}`                                                |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to
 `helm install`.
