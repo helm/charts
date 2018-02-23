@@ -60,10 +60,14 @@ spec:
         - name: minio
           image: {{ .Values.image }}:{{ .Values.imageTag }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
+          {{- if .Values.azuregateway.enabled }}
+          args: ["gateway", "azure"]
+          {{- else }}
           {{- if .Values.configPath }}
           args: ["-C", "{{ .Values.configPath }}", "server", "{{ .Values.mountPath }}"]
           {{- else }}
           args: ["server", "{{ .Values.mountPath }}"]
+          {{- end }}
           {{- end }}
           volumeMounts:
             - name: export

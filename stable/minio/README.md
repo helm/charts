@@ -98,7 +98,8 @@ The following tables lists the configurable parameters of the Minio chart and th
 | `defaultBucket.enabled`    | If set to true, a bucket will be created after minio install | `false`                        |
 | `defaultBucket.name`       | Bucket name                         | `bucket`                                                |
 | `defaultBucket.policy`     | Bucket policy                       | `none`                                                  |
-| `defaultBucket.purge`      | Purge the bucket if already exists  | `false`                                                  |
+| `defaultBucket.purge`      | Purge the bucket if already exists  | `false`                                                 |
+| `azuregateway.enabled`     | Use minio as an [azure gateway](https://docs.minio.io/docs/minio-gateway-for-azure)| `false`  |
 
 Some of the parameters above map to the env variables defined in the [Minio DockerHub image](https://hub.docker.com/r/minio/minio/).
 
