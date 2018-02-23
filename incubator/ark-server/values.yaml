@@ -24,7 +24,7 @@ namespace:
 
 image:
   repository: gcr.io/heptio-images/ark
-  tag: v0.7.0
+  tag: v0.7.1
   pullPolicy: IfNotPresent
 
 # this must be created manually before helm install, see README

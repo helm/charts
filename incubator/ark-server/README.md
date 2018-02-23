@@ -1,6 +1,6 @@
 # Ark-server
 
-This helm chart install ark-server version v0.7.0
+This helm chart install ark-server version v0.7.1
 
 ## Premise
 Helm cannot handle properly CRD becauses it has a validation mechanism that checks the installation before the CRD are actually created,
@@ -21,14 +21,14 @@ chart those resources remain there. Hence we need a sencond hook for deleting th
 ## ConfigMap customization
 Since we want to have a customizable chart it's important that the configmap is a template and not a static file.
 To do this we add the keyword `tpl` when reading the file
-- {{ (tpl (.Files.Glob "static/*").AsConfig .) | indent 2 }}
+- {{ (tpl (.Files.Glob "configuration/*").AsConfig .) | indent 2 }}
 
 
 ## Prerequisites
 
 ### Heptio Secret
 Ark server needs a IAM service accoutn in order to run, if you don't have it you must create it: 
-https://github.com/heptio/ark/blob/v0.6.0/docs/cloud-provider-specifics.md#gcp
+https://github.com/heptio/ark/blob/v0.7.1/docs/cloud-common.md
 
 
 And then
@@ -38,7 +38,7 @@ kubectl create secret generic cloud-credentials --namespace heptio-ark --from-fi
 
 ### Bucket and Project name
 Please change bucket and project/region name in the values.yaml file
-See here for possible values: https://github.com/heptio/ark/blob/v0.6.0/docs/cloud-provider-specifics.md
+Bucket is common to gcp and aws. Instead project is for gcp only and region for aws.
 
 ## How to
 ```
