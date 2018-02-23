@@ -3,7 +3,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: {{ template "ark-server.sa" . }}
-  namespace: {{ .Values.namespace.name }}
+  namespace: {{ .Values.namespace.server.name }}
   labels:
     component: ark
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
@@ -27,52 +27,11 @@ metadata:
     app: {{ template "ark-server.name" . }}
 subjects:
   - kind: ServiceAccount
-    namespace: {{ .Values.namespace.name }}
+    namespace: {{ .Values.namespace.server.name }}
     name: {{ template "ark-server.sa" . }}
 roleRef:
   kind: ClusterRole
   name: cluster-admin
-  apiGroup: rbac.authorization.k8s.io
-
----
-apiVersion: rbac.authorization.k8s.io/v1beta1
-kind: Role
-metadata:
-  namespace: {{ .Values.namespace.name }}
-  name: ark
-  labels:
-    component: ark
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
-    app: {{ template "ark-server.name" . }}
-rules:
-  - apiGroups:
-      - ark.heptio.com
-    verbs:
-      - "*"
-    resources:
-      - "*"
-
----
-apiVersion: rbac.authorization.k8s.io/v1beta1
-kind: RoleBinding
-metadata:
-  namespace: {{ .Values.namespace.name }}
-  name: ark
-  labels:
-    component: ark
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
-    app: {{ template "ark-server.name" . }}
-subjects:
-  - kind: ServiceAccount
-    namespace: {{ .Values.namespace.name }}
-    name: {{ template "ark-server.sa" . }}
-roleRef:
-  kind: Role
-  name: ark
   apiGroup: rbac.authorization.k8s.io
 {{- end }}
 

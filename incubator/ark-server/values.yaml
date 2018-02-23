@@ -16,11 +16,16 @@ configuration:
   scheduleSyncPeriod: 1m
   restoreOnlyMode: false
 
-# the namespache where ark will run
-# from version 0.7 can be custom
 namespace:
-  create: true
-  name: heptio-ark
+  # the namespace where ark server runs
+  # from version 0.7 can be custom
+  server:
+    create: true
+    name: heptio-ark-server
+  # the namespace where ark resources (backup, schedules, config...) live
+  backup:
+    create: true
+    name: heptio-ark
 
 image:
   repository: gcr.io/heptio-images/ark

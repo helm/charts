@@ -2,7 +2,7 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: deploy-ark-config
-  namespace: {{ .Values.namespace.name }}
+  namespace: {{ .Values.namespace.backup.name }}
   annotations:
     "helm.sh/hook": post-install
     "helm.sh/hook-delete-policy": hook-succeeded
@@ -10,7 +10,7 @@ spec:
   template:
     metadata:
       name: deploy-ark-config
-      namespace: {{ .Values.namespace.name }}
+      namespace: {{ .Values.namespace.backup.name }}
     spec:
       restartPolicy: Never
       containers:
@@ -31,7 +31,7 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: delete-ark-config
-  namespace: {{ .Values.namespace.name }}
+  namespace: {{ .Values.namespace.backup.name }}
   annotations:
     "helm.sh/hook": pre-delete
     "helm.sh/hook-delete-policy": hook-succeeded
@@ -39,7 +39,7 @@ spec:
   template:
     metadata:
       name: delete-ark-config
-      namespace: {{ .Values.namespace.name }}
+      namespace: {{ .Values.namespace.backup.name }}
     spec:
       restartPolicy: Never
       containers:

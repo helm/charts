@@ -3,7 +3,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: {{ template "ark-server.hookSA" . }}
-  namespace: {{ .Values.namespace.name }}
+  namespace: {{ .Values.namespace.backup.name }}
   labels:
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     heritage: {{ .Release.Service }}
@@ -26,12 +26,6 @@ metadata:
     app: {{ template "ark-server.name" . }}
   name: deploy-ark
 rules:
-#- apiGroups: ['']
-#  resources: ['pods','deployments']
-#  verbs: ['*']
-#- apiGroups: ['extensions','apps']
-#  resources: ['deployments','replicasets']
-#  verbs: ['*']
 - apiGroups: ['ark.heptio.com']
   verbs: ["*"]
   resources: ["*"]
@@ -52,5 +46,5 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: {{ template "ark-server.hookSA" . }}
-  namespace: {{ .Values.namespace.name }}
+  namespace: {{ .Values.namespace.backup.name }}
 {{- end }}

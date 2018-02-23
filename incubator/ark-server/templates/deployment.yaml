@@ -1,7 +1,7 @@
 apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
-  namespace: {{ .Values.namespace.name }}
+  namespace: {{ .Values.namespace.server.name }}
   name: ark
 spec:
   replicas: 1
@@ -19,6 +19,8 @@ spec:
             - /ark
           args:
             - server
+            - --namespace
+            - {{ .Values.namespace.backup.name }}
           volumeMounts:
             - name: cloud-credentials
               mountPath: /credentials

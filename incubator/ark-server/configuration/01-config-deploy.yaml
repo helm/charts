@@ -1,7 +1,7 @@
 apiVersion: ark.heptio.com/v1
 kind: Config
 metadata:
-  namespace: {{ .Values.namespace.name }}
+  namespace: {{ .Values.namespace.backup.name }}
   name: default
 persistentVolumeProvider:
   name: {{ required "PLEASE SET VALUE" .Values.configuration.cloudprovider  }}
