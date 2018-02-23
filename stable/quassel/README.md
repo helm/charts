@@ -7,7 +7,7 @@ and detach from a central core.
 ## TL;DR;
 
 ```console
-$ helm install incubator/quassel
+$ helm install stable/quassel
 ```
 
 ## Introduction
@@ -21,7 +21,7 @@ package manager.
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm install incubator/quassel --name my-release
+$ helm install stable/quassel --name my-release
 ```
 
 The command deploys Quassel on the Kubernetes cluster in the default
@@ -78,7 +78,7 @@ their default values.
 [PostgreSQL chart](../../stable/postgresql) for more details.
 
 ```console
-$ helm install incubator/quassel --name my-release \
+$ helm install stable/quassel --name my-release \
   --set=image.tag=86,resources.limits.cpu=200m
 ```
 
@@ -86,7 +86,7 @@ Alternatively, a YAML file that specifies the values for the above parameters
 can be provided while installing the chart. For example,
 
 ```console
-$ helm install incubator/quassel --name my-release -f values.yaml
+$ helm install stable/quassel --name my-release -f values.yaml
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml) as an example
@@ -108,7 +108,7 @@ If the PersistentVolumeClaim should not be managed by the chart, define
 1. Create the PersistentVolumeClaim
 1. Install the chart
 ```bash
-$ helm install incubator/quassel --set persistence.existingClaim=PVC_NAME
+$ helm install stable/quassel --set persistence.existingClaim=PVC_NAME
 ```
 
 > This process can be repeated for the PostgreSQL volume if desired
