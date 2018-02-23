@@ -82,6 +82,12 @@ defaultBucket:
   ## Purge if bucket exists already
   purge: false
 
+## Use minio as an azure blob gateway, you should disable data persistence so no volume claim are created.
+## https://docs.minio.io/docs/minio-gateway-for-azure
+azuregateway:
+  enabled: false
+
+
 ## https://docs.minio.io/docs/minio-bucket-notification-guide
 ##
 minioConfig:
