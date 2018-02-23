@@ -11,5 +11,6 @@ spec:
       protocol: TCP
       targetPort: {{ .Values.nexus.externalPort }}
   selector:
-    app: {{ template "nexus.fullname" . }}
+    app: {{ template "nexus.name" . }}
+    release: {{ .Release.Name }}
   type: {{ .Values.nexus.serviceType }}

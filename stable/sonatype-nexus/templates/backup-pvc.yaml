@@ -10,7 +10,13 @@ spec:
     - {{ .Values.nexusBackup.persistence.accessMode }}
   resources:
     requests:
-      storage: {{ .Values.nexusBackup.persistence.storageSize }}
+      storage: {{ .Values.nexusBackup.persistence.storageSize | quote }}
+{{- if .Values.nexusBackup.persistence.storageClass }}
+{{- if (eq "-" .Values.nexusBackup.persistence.storageClass) }}
+  storageClassName: ""
+{{- else }}
   storageClassName: "{{ .Values.nexusBackup.persistence.storageClass }}"
+{{- end }}
+{{- end }}
 {{- end }}
 

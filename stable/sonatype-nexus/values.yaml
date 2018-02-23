@@ -46,11 +46,13 @@ nexusProxy:
 persistence:
   enabled: true
   accessMode: ReadWriteOnce
-  ## If `storageClass` is empty (the default) no storageClassName spec is set,
-  ##   thereby choosing the default provisioner.  (gp2 on AWS, standard on
+  ## If defined, storageClass: <storageClass>
+  ## If set to "-", storageClass: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClass spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
   ##   GKE, AWS & OpenStack)
   ##
-  storageClass: ""
+  # storageClass: "-"
   storageSize: 8Gi
 
 nexusBackup:
@@ -63,7 +65,8 @@ nexusBackup:
   persistence:
     enabled: true
     accessMode: ReadWriteOnce
-    storageClass: ""
+    # See comment above for information on setting the backup storageClass
+    # storageClass: "-"
     storageSize: 8Gi
 
 ingress:

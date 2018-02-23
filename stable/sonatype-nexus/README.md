@@ -62,7 +62,7 @@ The following table lists the configurable parameters of the Nexus chart and the
 
 | Parameter                                   | Description                         | Default                                 |
 | ------------------------------------------  | ----------------------------------  | ----------------------------------------|
-| `replicas`                                  | Number of Nexus service replicas    | `1`                                     |
+| `replicaCount`                              | Number of Nexus service replicas    | `1`                                     |
 | `nexus.imageName`                           | Nexus image                         | `quay.io/travelaudience/docker-nexus`   |
 | `nexus.imageTag`                            | Version of Nexus                    | `3.7.1`                                 |
 | `nexus.imagePullPolicy`                     | Nexus image pull policy             | `IfNotPresent`                          |
