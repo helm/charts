@@ -75,9 +75,9 @@ The configuration parameters in this section control the resources requested and
 ### Persistence
 | Parameter | Description | Default |
 | --------- | ----------- | ------- |
-| `enabled` | Whether to create a PVC. If `false`, an `emptyDir` on the host will be used. | `true` |
-| `size` | Size of PVC that gets created. For production deployments this value should likely be much larger. | `5Gi` |
-| `storageClass` | If defined, the created PVC will use this StorageClass. If set to `"-"`, dynamic provisioning gets disabled. If `null` or `""`, the default StorageClass will be used. | `null` |
+| `persistence.enabled` | Whether to create a PVC. If `false`, an `emptyDir` on the host will be used. | `true` |
+| `persistence.size` | Size of PVC that gets created. For production deployments this value should likely be much larger. | `5Gi` |
+| `persistence.storageClass` | If defined, the PVC gets created from this StorageClass. | `nil` |
 
 ### Network
 These parameters control the network ports on which the ensemble communicates.
