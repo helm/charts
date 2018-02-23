@@ -67,8 +67,23 @@ spec:
         - mountPath: /storage
           name: storage-volume
 {{- end }}
+      {{- with .Values.resources }}
         resources:
-{{ toYaml .Values.resources | indent 10 }}
+{{ toYaml . | indent 10 }}
+      {{- end }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+
       volumes:
       - name: storage-volume
       {{- if .Values.persistence.Enabled }}
