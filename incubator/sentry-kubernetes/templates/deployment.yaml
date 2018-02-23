@@ -1,8 +1,8 @@
-apiVersion: extensions/v1beta1
+apiVersion: extensions/v1beta2
 kind: Deployment
 metadata:
-    labels: {{ include "sentry-kubernetes.labels" . | indent 4 }}
-    name: {{ template "sentry-kubernetes.fullname" . }}
+  labels: {{ include "sentry-kubernetes.labels" . | indent 4 }}
+  name: {{ template "sentry-kubernetes.fullname" . }}
 spec:
   replicas: {{ .Values.replicaCount }}
   template:
