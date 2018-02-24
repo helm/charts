@@ -13,11 +13,13 @@ admin:
   annotations: {}
   #  service.beta.kubernetes.io/aws-load-balancer-proxy-protocol: "*"
 
-  useTLS: true
   # HTTPS traffic on the admin port
+  # Port 8444 over HTTPS is the default for the admin port
+  useTLS: true
   https:
     servicePort: 8444
     containerPort: 8444
+  # HTTP Port 8001 is used for the admin port when admin.useTLS is false
   http:
     servicePort: 8001
     containerPort: 8001
@@ -30,11 +32,13 @@ proxy:
   annotations: {}
   #  service.beta.kubernetes.io/aws-load-balancer-proxy-protocol: "*"
 
-  useTLS: true
   # HTTPS traffic on the proxy port
+  # Port 8443 over HTTPS is the default for the proxy port
+  useTLS: true
   https:
     servicePort: 8443
     containerPort: 8443
+  # HTTP Port 8000 is used for the proxy port when proxy.useTLS is false
   http:
     servicePort: 8000
     containerPort: 8000
