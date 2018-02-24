@@ -69,44 +69,42 @@ Please review the following links that expound on current best practices.
 
 The following tables lists the configurable parameters of the chart and its default values.
 
-|              Parameter             |                    Description                     |                     Default                      |
-| ---------------------------------- | -------------------------------------------------- | ------------------------------------------------ |
-| `replicaCount`                     | Number of replicas                                 | `1`                                              |
-| `podDisruptionBudget`              | Pod disruption budget                              | `maxUnavailable: 1`                              |
-| `updateStrategy`                   | Update strategy                                    | `type: RollingUpdate`                            |
-| `image.repository`                 | Container image name                               | `docker.elastic.co/logstash/logstash-oss`        |
-| `image.tag`                        | Container image tag                                | `6.2.2`                                          |
-| `image.pullPolicy`                 | Container image pull policy                        | `IfNotPresent`                                   |
-| `serviceLoadBalancer.enabled`      | Enables a load balancer service                    | `false`                                          |
-| `serviceLoadBalancer.annotations`  | Extra annotations for LoadBalancer service         | `{}`                                             |
-| `serviceLoadBalancer.exposedPorts` | TCP ports exposed by the LoadBalancer service      | `["beats"]`                                      |
-| `service.type`                     | Service type (ClusterIP, NodePort or LoadBalancer) | `ClusterIP`                                      |
-| `service.ports`                    | Ports exposed by service                           | `["beats"]`                                      |
-| `ports`                            | Input ports exposed by logstash container          | beats                                            |
-| `ingress.enabled`                  | Enables Ingress                                    | `false`                                          |
-| `ingress.annotations`              | Ingress annotations                                | `{}`                                             |
-| `ingress.path`                     | Ingress path                                       | `/`                                              |
-| `ingress.hosts`                    | Ingress accepted hostnames                         | `["logstash.cluster.local"]`                     |
-| `ingress.tls`                      | Ingress TLS configuration                          | `[]`                                             |
-| `resources`                        | Pod resource requests & limits                     | `{}`                                             |
-| `nodeSelector`                     | Node selector                                      | `{}`                                             |
-| `tolerations`                      | Tolerations                                        | `[]`                                             |
-| `affinity`                         | Affinity or Anti-Affinity                          | `{}`                                             |
-| `podAnnotations`                   | Pod annotations                                    | `{}`                                             |
-| `podLabels`                        | Pod labels                                         | `{}`                                             |
-| `livenessProbe`                    | Liveness probe settings for logstash container     | (see `values.yaml`)                              |
-| `readinessProbe`                   | Readiness probe settings for logstash container    | (see `values.yaml`)                              |
-| `persistence.enabled`              | Enable persistence                                 | `true`                                           |
-| `persistence.storageClass`         | Storage class for PVCs                             | unset                                            |
-| `persistence.accessMode`           | Access mode for PVCs                               | `ReadWriteOnce`                                  |
-| `persistence.size`                 | Size for PVCs                                      | `2Gi`                                            |
-| `volumeMounts`                     | Volume mounts to configure for logstash container  | (see `values.yaml`)                              |
-| `exporter.logstash`                | Prometheus logstash-exporter settings              | (see `values.yaml`)                              |
-| `exporter.logstash.enabled`        | Enables Prometheus logstash-exporter               | `false`                                          |
-| `elasticsearch.host`               | ElasticSearch hostname                             | `elasticsearch-client.default.svc.cluster.local` |
-| `elasticsearch.port`               | ElasticSearch port                                 | `9200`                                           |
-| `config`                           | Logstash configuration key-values                  | (see `values.yaml`)                              |
-| `patterns`                         | Logstash patterns configuration                    | `nil`                                            |
-| `inputs`                           | Logstash inputs configuration                      | beats                                            |
-| `filters`                          | Logstash filters configuration                     | `nil`                                            |
-| `outputs`                          | Logstash outputs configuration                     | elasticsearch                                    |
+|              Parameter      |                    Description                     |                     Default                      |
+| --------------------------- | -------------------------------------------------- | ------------------------------------------------ |
+| `replicaCount`              | Number of replicas                                 | `1`                                              |
+| `podDisruptionBudget`       | Pod disruption budget                              | `maxUnavailable: 1`                              |
+| `updateStrategy`            | Update strategy                                    | `type: RollingUpdate`                            |
+| `image.repository`          | Container image name                               | `docker.elastic.co/logstash/logstash-oss`        |
+| `image.tag`                 | Container image tag                                | `6.2.2`                                          |
+| `image.pullPolicy`          | Container image pull policy                        | `IfNotPresent`                                   |
+| `service.type`              | Service type (ClusterIP, NodePort or LoadBalancer) | `ClusterIP`                                      |
+| `service.annotations`       | Service annotations                                | `{}`                                             |
+| `service.ports`             | Ports exposed by service                           | beats                                            |
+| `ports`                     | Ports exposed by logstash container                | beats                                            |
+| `ingress.enabled`           | Enables Ingress                                    | `false`                                          |
+| `ingress.annotations`       | Ingress annotations                                | `{}`                                             |
+| `ingress.path`              | Ingress path                                       | `/`                                              |
+| `ingress.hosts`             | Ingress accepted hostnames                         | `["logstash.cluster.local"]`                     |
+| `ingress.tls`               | Ingress TLS configuration                          | `[]`                                             |
+| `resources`                 | Pod resource requests & limits                     | `{}`                                             |
+| `nodeSelector`              | Node selector                                      | `{}`                                             |
+| `tolerations`               | Tolerations                                        | `[]`                                             |
+| `affinity`                  | Affinity or Anti-Affinity                          | `{}`                                             |
+| `podAnnotations`            | Pod annotations                                    | `{}`                                             |
+| `podLabels`                 | Pod labels                                         | `{}`                                             |
+| `livenessProbe`             | Liveness probe settings for logstash container     | (see `values.yaml`)                              |
+| `readinessProbe`            | Readiness probe settings for logstash container    | (see `values.yaml`)                              |
+| `persistence.enabled`       | Enable persistence                                 | `true`                                           |
+| `persistence.storageClass`  | Storage class for PVCs                             | unset                                            |
+| `persistence.accessMode`    | Access mode for PVCs                               | `ReadWriteOnce`                                  |
+| `persistence.size`          | Size for PVCs                                      | `2Gi`                                            |
+| `volumeMounts`              | Volume mounts to configure for logstash container  | (see `values.yaml`)                              |
+| `exporter.logstash`         | Prometheus logstash-exporter settings              | (see `values.yaml`)                              |
+| `exporter.logstash.enabled` | Enables Prometheus logstash-exporter               | `false`                                          |
+| `elasticsearch.host`        | ElasticSearch hostname                             | `elasticsearch-client.default.svc.cluster.local` |
+| `elasticsearch.port`        | ElasticSearch port                                 | `9200`                                           |
+| `config`                    | Logstash configuration key-values                  | (see `values.yaml`)                              |
+| `patterns`                  | Logstash patterns configuration                    | `nil`                                            |
+| `inputs`                    | Logstash inputs configuration                      | beats                                            |
+| `filters`                   | Logstash filters configuration                     | `nil`                                            |
+| `outputs`                   | Logstash outputs configuration                     | elasticsearch                                    |

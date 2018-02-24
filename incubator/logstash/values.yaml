@@ -11,18 +11,13 @@ image:
   tag: 6.2.2
   pullPolicy: IfNotPresent
 
-serviceLoadBalancer:
-  enabled: false
-  annotations: {}
-    ## AWS example
-    # external-dns.alpha.kubernetes.io/hostname: logstash-tcp.cluster.local
-    # service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled: "true"
-    # service.beta.kubernetes.io/aws-load-balancer-internal: "true"
-  exposedPorts:
-    - beats
-
 service:
   type: ClusterIP
+  annotations: {}
+    ## AWS example for use with LoadBalancer service type.
+    # external-dns.alpha.kubernetes.io/hostname: logstash.cluster.local
+    # service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled: "true"
+    # service.beta.kubernetes.io/aws-load-balancer-internal: "true"
   ports:
     # syslog-udp:
     #   port: 1514
