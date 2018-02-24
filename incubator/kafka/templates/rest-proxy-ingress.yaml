@@ -1,0 +1,35 @@
+{{- if .Values.restProxy.enabled }}
+
+{{- if .Values.restProxy.ingress.enabled -}}
+{{- $serviceName := include "kafka.fullname" . }}
+{{- $serviceName := (print $serviceName "-rest-proxy") }}
+{{- $servicePort := .Values.restProxy.service.servicePort -}}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ template "kafka.fullname" . }}-rest-proxy
+{{- if .Values.restProxy.ingress.annotations }}
+  annotations:
+{{ toYaml .Values.restProxy.ingress.annotations | indent 4}}
+{{- end }}
+  labels:
+    app: {{ template "kafka.fullname" . }}
+    role: rest-proxy
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  rules:
+    - host: {{ .Values.restProxy.ingress.host }}
+      http:
+        paths:
+          - backend:
+              serviceName: {{ $serviceName }}
+              servicePort: {{ $servicePort }}
+{{- if .Values.restProxy.ingress.tls }}
+  tls:
+{{ toYaml .Values.restProxy.ingress.tls | indent 4 }}
+{{- end -}}
+{{- end -}}
+
+{{ end }}

@@ -1,0 +1,24 @@
+{{- if .Values.restProxy.enabled }}
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "kafka.fullname" . }}-rest-proxy
+  namespace: {{ .Values.brand }}
+  labels:
+    app: {{ include "kafka.name" . | quote }}
+    role: rest-proxy
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: {{ .Release.Name | quote }}
+    heritage: {{ .Release.Service | quote }}
+spec:
+  ports:
+  - name: {{ .Values.restProxy.service.name }}
+    port: {{ .Values.restProxy.service.servicePort }}
+    targetPort: {{ .Values.restProxy.service.internalPort }}
+  selector:
+    app: "{{ .Chart.Name }}"
+    role: rest-proxy
+    release: {{ .Release.Namespace }}
+
+{{ end }}
