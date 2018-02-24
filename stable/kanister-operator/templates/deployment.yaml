@@ -1,0 +1,22 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "kanister-operator.fullname" . }}
+  labels:
+{{ include "kanister-operator.helmLabels" . | indent 4 }}
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+{{ include "kanister-operator.helmLabels" . | indent 8}}
+    spec:
+      serviceAccountName: {{ template "kanister-operator.serviceAccountName" . }}
+      containers:
+      - name: {{ template "kanister-operator.fullname" . }}
+        image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+{{- if .Values.resources }}
+        resources:
+{{ toYaml .Values.resources | indent 12 }}
+{{- end }}
