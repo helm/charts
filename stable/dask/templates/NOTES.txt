@@ -1,25 +1,24 @@
-1. Get the Dask Scheduler connection string by running this commands in the same shell:
+Thank you for installing {{ .Chart.Name | upper }}, released at name: {{ .Release.Name }}.
 
-  NOTE: It may take a few minutes for the LoadBalancer IP to be available, until that the commands below will not work.  
-  You can watch the status by running 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "dask.scheduler-fullname" . }}'
+To learn more about the release, try:
+
+  $ helm status {{ .Release.Name }}  # information about running pods and this message
+  $ helm get {{ .Release.Name }}     # get full Kubernetes specification
+
+This release includes a Dask scheduler, {{ .Values.worker.replicas }} Dask workers, and {{ .Values.jupyter.replicas }} Jupyter servers.  
+
+The Jupyter notebook server and Dask scheduler expose external services to
+which you can connect to manage notebooks, or connect directly to the Dask
+cluster.   You can get these addresses by running the following:
 
   export DASK_SCHEDULER=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "dask.scheduler-fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-  echo http://$DASK_SCHEDULER:{{ .Values.scheduler.servicePort }}
-
-2. Get the Dask Scheduler Web UI by running this commands in the same shell:
-
-  NOTE: It may take a few minutes for the LoadBalancer IP to be available, until that the commands below will not work.  
-  You can watch the status by running 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "dask.scheduler-fullname" . }}'
-
   export DASK_SCHEDULER_UI_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "dask.scheduler-fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-  echo http://$DASK_SCHEDULER_UI_IP:{{ .Values.webUI.servicePort }}
+  export JUPYTER_NOTEBOOK_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "dask.jupyter-fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+  echo http://$JUPYTER_NOTEBOOK_IP:{{ .Values.jupyter.servicePort }} -- Jupyter notebook
+  echo http://$DASK_SCHEDULER_UI_IP:{{ .Values.webUI.servicePort }}  -- Dask dashboard
+  echo http://$DASK_SCHEDULER:{{ .Values.scheduler.servicePort }}    -- Dask Client connection
 
-3. Get the Jupyter Notebook URL to visit by running these commands in the same shell:
+  NOTE: The default password to login to the notebook server is `dask`.
 
   NOTE: It may take a few minutes for the LoadBalancer IP to be available, until that the commands below will not work.  
   You can watch the status by running 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "dask.jupyter-fullname" . }}'
-
-  NOTE: The default password to login is `dask`.
-  
-  export JUPYTER_NOTEBOOK_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "dask.jupyter-fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-  echo http://$JUPYTER_NOTEBOOK_IP:{{ .Values.jupyter.servicePort }}
