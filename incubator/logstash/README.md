@@ -78,7 +78,7 @@ The following tables lists the configurable parameters of the chart and its defa
 | `image.tag`                        | Container image tag                                | `6.2.2`                                          |
 | `image.pullPolicy`                 | Container image pull policy                        | `IfNotPresent`                                   |
 | `serviceLoadBalancer.enabled`      | Enables a load balancer service                    | `false`                                          |
-| `serviceLoadBalancer.annotations`  | Extra annotations for LoadBalancer servie          | `{}`                                             |
+| `serviceLoadBalancer.annotations`  | Extra annotations for LoadBalancer service         | `{}`                                             |
 | `serviceLoadBalancer.exposedPorts` | TCP ports exposed by the LoadBalancer service      | `["beats"]`                                      |
 | `service.type`                     | Service type (ClusterIP, NodePort or LoadBalancer) | `ClusterIP`                                      |
 | `service.ports`                    | Ports exposed by service                           | `["beats"]`                                      |
@@ -97,7 +97,7 @@ The following tables lists the configurable parameters of the chart and its defa
 | `livenessProbe`                    | Liveness probe settings for logstash container     | (see `values.yaml`)                              |
 | `readinessProbe`                   | Readiness probe settings for logstash container    | (see `values.yaml`)                              |
 | `persistence.enabled`              | Enable persistence                                 | `true`                                           |
-| `persistence.storageClass`         | Storage class for PVCs                             | `nil`                                            |
+| `persistence.storageClass`         | Storage class for PVCs                             | unset                                            |
 | `persistence.accessMode`           | Access mode for PVCs                               | `ReadWriteOnce`                                  |
 | `persistence.size`                 | Size for PVCs                                      | `2Gi`                                            |
 | `volumeMounts`                     | Volume mounts to configure for logstash container  | (see `values.yaml`)                              |
