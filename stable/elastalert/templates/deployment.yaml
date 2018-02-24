@@ -21,11 +21,6 @@ spec:
       - name: elastalert
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
-        env:
-        - name: ELASTICSEARCH_HOST
-          value: {{ .Values.elasticsearch.host }}
-        - name: ELASTICSEARCH_PORT
-          value: {{ .Values.elasticsearch.port | quote }}
         volumeMounts:
           - name: config
             mountPath: '/opt/config'
@@ -49,5 +44,3 @@ spec:
             items:
             - key: elastalert_config
               path: elastalert_config.yaml
-            - key: elastalert_supervisord
-              path: elastalert_supervisord.conf
