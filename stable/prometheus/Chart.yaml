@@ -13,4 +13,4 @@ maintainers:
   - name: mgoodness
     email: mgoodness@gmail.com
 engine: gotpl
-tillerVersion: ">2.8.0"
+tillerVersion: ">=2.8.0"
