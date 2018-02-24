@@ -11,11 +11,13 @@ image:
   tag: 6.2.2
   pullPolicy: IfNotPresent
 
-serviceAwsLoadBalancerInternal:
+serviceLoadBalancer:
   enabled: false
   annotations: {}
+    ## AWS example
     # external-dns.alpha.kubernetes.io/hostname: logstash-tcp.cluster.local
     # service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled: "true"
+    # service.beta.kubernetes.io/aws-load-balancer-internal: "true"
   exposedPorts:
     - beats
 
@@ -91,11 +93,12 @@ affinity: {}
   #           release: logstash
 
 podAnnotations: {}
-  # Add custom annotations to pods.
   # iam.amazonaws.com/role: "logstash-role"
+  # prometheus.io/scrape: "true"
+  # prometheus.io/path: "/metrics"
+  # prometheus.io/port: "9198"
 
 podLabels: {}
-  # Add custom labels to pods.
   # team: "developers"
   # service: "logstash"
 
@@ -119,8 +122,17 @@ readinessProbe:
   # failureThreshold: 6
   # successThreshold: 1
 
-persistentVolumes:
-  storageClass: default
+persistence:
+  enabled: true
+  ## logstash data Persistent Volume Storage Class
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  ##
+  # storageClass: "-"
+  accessMode: ReadWriteOnce
   size: 2Gi
 
 volumeMounts:

@@ -1,23 +1,22 @@
-{{- if .Values.serviceAwsLoadBalancerInternal.enabled }}
+{{- if .Values.serviceLoadBalancer.enabled }}
 {{- $root := .Values }}
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "logstash.fullname" . }}-aws-load-balancer-internal
+  name: {{ template "logstash.fullname" . }}-lb
   labels:
     app: {{ template "logstash.name" . }}
     chart: {{ template "logstash.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
   annotations:
-    service.beta.kubernetes.io/aws-load-balancer-internal: "true"
-{{- with .Values.serviceAwsLoadBalancerInternal.annotations }}
+{{- with .Values.serviceLoadBalancer.annotations }}
 {{ toYaml . | indent 4 }}
 {{- end }}
 spec:
   type: LoadBalancer
   ports:
-  {{- range .Values.serviceAwsLoadBalancerInternal.exposedPorts }}
+  {{- range .Values.serviceLoadBalancer.exposedPorts }}
     {{- $portProperties := pluck . $root.service.ports | first }}
     - name: {{ . }}
 {{ toYaml $portProperties | indent 6 }}
