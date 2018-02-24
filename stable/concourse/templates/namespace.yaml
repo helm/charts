@@ -1,0 +1,14 @@
+{{- if .Values.credentialManager.kubernetes.enabled -}}
+{{- range .Values.credentialManager.kubernetes.teams }}
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ template "concourse.namespacePrefix" $ }}{{ . }}
+  labels:
+    app: {{ template "concourse.concourse.fullname" $ }}
+    chart: "{{ $.Chart.Name }}-{{ $.Chart.Version }}"
+    release: "{{ $.Release.Name }}"
+    heritage: "{{ $.Release.Service }}"
+{{- end }}
+{{- end -}}
