@@ -13,6 +13,7 @@ admin:
   annotations: {}
   #  service.beta.kubernetes.io/aws-load-balancer-proxy-protocol: "*"
 
+  useTLS: true
   # HTTPS traffic on the admin port
   https:
     servicePort: 8444
@@ -29,6 +30,7 @@ proxy:
   annotations: {}
   #  service.beta.kubernetes.io/aws-load-balancer-proxy-protocol: "*"
 
+  useTLS: true
   # HTTPS traffic on the proxy port
   https:
     servicePort: 8443
@@ -58,6 +60,7 @@ resources: {}
   #  memory: 128Mi
 
 # readinessProbe for Kong pods
+# you will need to change the port and scheme when admin.useTLS is false
 readinessProbe:
   httpGet:
     path: "/status"
@@ -70,6 +73,7 @@ readinessProbe:
   failureThreshold: 5
 
 # livenessProbe for Kong pods
+# you will need to change the port and scheme when admin.useTLS is false
 livenessProbe:
   httpGet:
     path: "/status"

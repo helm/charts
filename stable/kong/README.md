@@ -54,6 +54,7 @@ and their default values.
 | image.tag                         | Kong image version                                                     | `0.11.2`              |
 | image.pullPolicy                  | Image pull policy                                                      | `IfNotPresent`        |
 | replicaCount                      | Kong instance count                                                    | `1`                   |
+| admin.useTLS                      | Determines if Kong admin is configured to respond on secure TCP port   | `true`                  |
 | admin.http.servicePort            | TCP port on which the Kong admin service is exposed                    | `8001`                |
 | admin.https.servicePort           | Secure TCP port on which the Kong admin service is exposed             | `8444`                |
 | admin.http.containerPort          | TCP port on which Kong app listens for admin traffic                   | `8001`                |
@@ -61,6 +62,7 @@ and their default values.
 | admin.nodePort                    | Node port when service type is `NodePort`                              | `32444`               |
 | admin.type                        | k8s service type, Options: NodePort, ClusterIP, LoadBalancer           | `NodePort`            |
 | admin.loadBalancerIP              | Will reuse an existing ingress static IP for the admin service         | `null`                |
+| proxy.useTLS                      | Determines if Kong proxy is configured to respond on secure TCP port   | `true`                  |
 | proxy.http.servicePort            | TCP port on which the Kong proxy service is exposed                    | `8000`                |
 | proxy.https.servicePort           | Secure TCP port on which the Kong Proxy Service is exposed             | `8443`                |
 | proxy.http.containerPort          | TCP port on which the Kong app listens for Proxy traffic               | `8000`                |
