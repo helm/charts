@@ -8,7 +8,7 @@
 scheduler:
   name: scheduler
   image: "daskdev/dask"
-  imageTag: "0.17.0"
+  imageTag: "0.17.1"
   replicas: 1
   component: "dask-scheduler"
   serviceType: "LoadBalancer"
@@ -18,10 +18,10 @@ scheduler:
   aptPackages: >-
   condaPackages: >-
   pipPackages: >-
-  # limits:
+  limits:
   #   cpu: 1.8
   #   memory: 6G
-  # requests:
+  requests:
   #   cpu: 1.8
   #   memory: 6G
 
@@ -33,7 +33,7 @@ webUI:
 worker:
   name: worker
   image: "daskdev/dask"
-  imageTag: "0.17.0"
+  imageTag: "0.17.1"
   replicas: 3
   component: "dask-worker"
   containerPort: 8081
@@ -47,18 +47,17 @@ worker:
     # s3fs
     # adlfs
     # dask-ml
-  workerArgs: "--nthreads 1 --memory-limit 3GiB"
-  # limits:
+  limits:
   #   cpu: 1
   #   memory: 3G
-  # requests:
+  requests:
   #   cpu: 1
   #   memory: 3G
 
 jupyter:
   name: jupyter
   image: "daskdev/dask-notebook"
-  imageTag: "0.17.0"
+  imageTag: "0.17.1"
   replicas: 1
   component: "jupyter-notebook"
   serviceType: "LoadBalancer"

@@ -23,14 +23,16 @@ spec:
         - name: {{ template "dask.worker-fullname" . }}
           image: "{{ .Values.worker.image }}:{{ .Values.worker.imageTag }}"
           args: ["dask-worker",
-                 "--no-bokeh",
-                 {{ .Values.worker.workerArgs }}]
+                 '{{ template "dask.scheduler-fullname" . }}:{{ .Values.scheduler.servicePort }}',
+                 {{- if .Values.worker.limits -}}
+                 "--nthreads", {{ default .Values.worker.limits.cpu 1 | quote }},
+                 "--memory-limit", {{ default .Values.worker.limits.memory "4GiB" | quote }},
+                 {{- end -}}
+                 "--no-bokeh"]
           ports:
             - containerPort: {{ .Values.worker.containerPort }}
           resources: {{ toYaml .Values.worker.resources | indent 12 }}
           env:
-          - name: DASK_SCHEDULER_ADDRESS
-            value: {{ template "dask.scheduler-fullname" . }}:{{ .Values.scheduler.servicePort }}
           - name: EXTRA_CONDA_PACKAGES
             value: {{ .Values.worker.condaPackages }}
           - name: EXTRA_PIP_PACKAGES
