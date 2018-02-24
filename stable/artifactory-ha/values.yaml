@@ -141,7 +141,7 @@ artifactory:
     #  xmx: "2g"
     #  other:
   node:
-    name: artifactory-ha-node
+    name: artifactory-ha-member
     replicaCount: 2
     ## Resources for the member nodes
     resources: {}
@@ -160,7 +160,7 @@ artifactory:
 
 # Nginx
 nginx:
-  name: artifactory-ha-nginx
+  name: nginx
   replicaCount: 1
   image:
     repository: "docker.bintray.io/jfrog/nginx-artifactory-pro"
@@ -176,7 +176,6 @@ nginx:
     ## Example: helm install ... --set nginx.service.loadBalancerSourceRanges='{10.10.10.5/32,10.11.10.5/32}'
     loadBalancerSourceRanges: []
   env:
-    artUrl: "http://artifactory:8081/artifactory"
     ssl: true
   resources: {}
   #  requests:

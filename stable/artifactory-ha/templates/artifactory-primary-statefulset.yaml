@@ -173,10 +173,10 @@ spec:
       {{- if eq .Values.artifactory.persistence.type "nfs" }}
       - name: artifactory-ha-data
         persistentVolumeClaim:
-          claimName: {{ template "artifactory-ha.name" . }}-data-pvc
+          claimName: {{ template "artifactory-ha.fullname" . }}-data-pvc
       - name: artifactory-ha-backup
         persistentVolumeClaim:
-          claimName: {{ template "artifactory-ha.name" . }}-backup-pvc
+          claimName: {{ template "artifactory-ha.fullname" . }}-backup-pvc
       {{- end }}
   volumeClaimTemplates:
   - metadata:
