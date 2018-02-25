@@ -24,8 +24,7 @@ This chart will do the following:
 To install the chart with the release name `my-release`:
 
 ```shell
-helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
-helm install --name my-release incubator/cockroachdb
+helm install --name my-release stable/cockroachdb
 ```
 
 ## Configuration
@@ -58,7 +57,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```shell
-helm install --name my-release -f values.yaml incubator/cockroachdb
+helm install --name my-release -f values.yaml stable/cockroachdb
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
