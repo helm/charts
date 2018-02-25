@@ -41,7 +41,7 @@ deletes the release.
 
 ## Configuration
 
-The following tables lists the configurable parameters of the kibana chart and
+The following tables lists the configurable parameters of the quassel chart and
 their default values.
 
 | Parameter                              | Description                                                                                      | Default                                                  |
