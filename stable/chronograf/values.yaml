@@ -64,7 +64,7 @@ oauth:
     enabled: false
     client_id: CHANGE_ME
     client_secret: CHANGE_ME
-    # This is a comma seperated list of GH organizations (OPTIONAL)
+    # This is a comma separated list of GH organizations (OPTIONAL)
     gh_orgs: ""
   google:
     enabled: false
@@ -72,11 +72,11 @@ oauth:
     client_secret: CHANGE_ME
     # eg. http://chronograf.foobar.com
     public_url: ""
-    # This is a comma seperated list of Google Apps domains (OPTIONAL)
+    # This is a comma separated list of Google Apps domains (OPTIONAL)
     google_domains: ""
   heroku:
     enabled: false
     client_id: CHANGE_ME
     client_secret: CHANGE_ME
-    # This is a comma seperated list of Heroku organizations (OPTIONAL)
+    # This is a comma separated list of Heroku organizations (OPTIONAL)
     he_orgs: ""

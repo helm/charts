@@ -36,9 +36,9 @@ spec:
                 key: secret
           - name: DRONE_HOST
           {{- if hasKey .Values.server "host" }}
-            value: {{ .Values.server.host }}
+            value: "{{ .Values.server.host }}"
           {{- else }}
-            value: {{ template "drone.fullname" . }}
+            value: "http://{{ template "drone.fullname" . }}"
           {{- end }}
           {{ range $key, $value := .Values.server.env }}
           - name: {{ $key }}

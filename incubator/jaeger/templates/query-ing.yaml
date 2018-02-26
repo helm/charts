@@ -23,7 +23,7 @@ spec:
         paths:
           - path: /
             backend:
-              serviceName: {{ template "jaeger.query.name" . }}-query
+              serviceName: {{ template "jaeger.query.name" $ }}-query
               servicePort: {{ $servicePort }}
     {{- end -}}
   {{- if .Values.query.ingress.tls }}
