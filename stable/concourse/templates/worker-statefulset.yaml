@@ -20,6 +20,9 @@ spec:
         {{ $key }}: {{ $value | quote }}
         {{- end }}
     spec:
+{{- if .Values.worker.additionalSpec }}
+{{ toYaml .Values.worker.additionalSpec | indent 6 }}
+{{- end }}
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "concourse.worker.fullname" . }}{{ else }}{{ .Values.rbac.serviceAccountName }}{{ end }}
       tolerations:
 {{ toYaml .Values.worker.tolerations | indent 8 }}

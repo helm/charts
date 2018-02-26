@@ -432,6 +432,12 @@ worker:
   #   iam.amazonaws.com/role: arn:aws:iam::123456789012:role/concourse
   #
 
+  # Additional spec used to add custom settings to the podspec of the statefulset, for example
+  # nodeselectors for our workers
+  #additionalSpec:
+  #  nodeSelector:
+  #    type: concourse
+
   ## Additional affinities to add to the worker pods.
   ## Useful if you prefer to run workers on non-spot instances, for example
   ##
