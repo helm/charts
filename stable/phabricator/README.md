@@ -71,6 +71,14 @@ The following tables lists the configurable parameters of the Phabricator chart 
 | `persistence.phabricator.accessMode`   | PVC Access Mode for Phabricator volume       | `ReadWriteOnce`                                          |
 | `persistence.phabricator.size`         | PVC Storage Request for Phabricator volume   | `8Gi`                                                    |
 | `resources`                            | CPU/Memory resource requests/limits          | Memory: `512Mi`, CPU: `300m`                             |
+| `ingress.enabled`                      | enable ingress                               | `false`                                                  |
+| `ingress.path`                         | path to expose on ingress                    | `nil`                                                    |
+| `ingress.hosts`                        | listss of accepted hostnames                 | `nil`                                                    |
+| `ingress.annotations`                  | annotations to use on the ingress            | `nil`                                                    |
+| `ingress.tls.secretName`               | tls secret name                              | `nil`                                                    |
+| `ingress.tls.hosts`                    | hostnames the secret applies to              | `nil`                                                    |
+
+
 
 The above parameters map to the env variables defined in [bitnami/phabricator](http://github.com/bitnami/bitnami-docker-phabricator). For more information please refer to the [bitnami/phabricator](http://github.com/bitnami/bitnami-docker-phabricator) image documentation.
 
@@ -112,3 +120,17 @@ The [Bitnami Phabricator](https://github.com/bitnami/bitnami-docker-phabricator)
 
 Persistent Volume Claims are used to keep the data across deployments. This is known to work in GCE, AWS, and minikube.
 See the [Configuration](#configuration) section to configure the PVC or to disable persistence.
+
+## Ingress With Reverse Proxy And Kube Lego
+
+You can define a custom ingress following the example config in values.yaml 
+
+`helm install stable/phabricator/ --name my-release --set phabricatorHost=example.com`
+
+Everything looks great but requests over https will cause asset requests to fail. Assuming you want to use HTTPS/TLS you will need to set the base-uri to an https schema.
+
+```
+export POD_NAME=$(kubectl get pods -l "app=my-release-phabricator" -o jsonpath="{.items[0].metadata.name}")
+kubectl exec $POD_NAME /opt/bitnami/phabricator/bin/config set phabricator.base-uri https://example.com
+```
+
