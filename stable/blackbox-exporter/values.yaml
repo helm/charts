@@ -23,6 +23,8 @@ proxyImage:
 
 nodeSelector: {}
 
+hostNetwork: false
+
 config: {}
 
 resources: {}

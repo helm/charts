@@ -26,7 +26,6 @@ spec:
     type: RollingUpdate
   template:
     metadata:
-
       labels:
         app: {{ template "name" . }}
         release: "{{ .Release.Name }}"
@@ -38,6 +37,7 @@ spec:
 {{ toYaml .Values.nodeSelector | indent 8 }}
     {{- end }}
       restartPolicy: {{ .Values.restartPolicy }}
+      hostNetwork: {{ .Values.hostNetwork }}
       containers:
 {{- if .Values.password }}
         - name: nginx
