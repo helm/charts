@@ -20,15 +20,16 @@ nexus:
       ##     to use all the available memory.
       # cpu: 250m
       # memory: 4800Mi
+  # The ports should only be changed if the nexus image uses a different port
   dockerPort: 5003
-  internalPort: 8081
-  externalPort: 8080
+  nexusPort: 8081
   serviceType: NodePort
 
 nexusProxy:
   imageName: quay.io/travelaudience/docker-nexus-proxy
   imageTag: 2.1.0
   imagePullPolicy: IfNotPresent
+  port: 8080
   env:
     nexusDockerHost:
     nexusHttpHost:

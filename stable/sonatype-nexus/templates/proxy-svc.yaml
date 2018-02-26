@@ -7,9 +7,9 @@ metadata:
 spec:
   ports:
     - name: {{ .Values.nexusProxy.name }}
-      port: {{ .Values.nexus.externalPort }}
+      port: {{ .Values.nexusProxy.port }}
       protocol: TCP
-      targetPort: {{ .Values.nexus.externalPort }}
+      targetPort: {{ .Values.nexusProxy.port }}
   selector:
     app: {{ template "nexus.name" . }}
     release: {{ .Release.Name }}

@@ -32,7 +32,7 @@ spec:
           ports:
             - containerPort: {{ .Values.nexus.dockerPort }}
               name: nexus-docker-g
-            - containerPort: {{ .Values.nexus.internalPort }}
+            - containerPort: {{ .Values.nexus.nexusPort }}
               name: nexus-http
           volumeMounts:
             - mountPath: /nexus-data
@@ -48,7 +48,7 @@ spec:
             - name: CLOUD_IAM_AUTH_ENABLED
               value: {{ .Values.nexusProxy.env.cloudIamAuthEnabled | quote }}
             - name: BIND_PORT
-              value: {{ .Values.nexus.externalPort | quote }}
+              value: {{ .Values.nexusProxy.port | quote }}
             - name: ENFORCE_HTTPS
               value: {{ .Values.nexusProxy.env.enforceHttps | quote }}
             - name: NEXUS_DOCKER_HOST
@@ -58,7 +58,7 @@ spec:
             - name: UPSTREAM_DOCKER_PORT
               value: {{ .Values.nexus.dockerPort | quote }}
             - name: UPSTREAM_HTTP_PORT
-              value: {{ .Values.nexus.internalPort | quote }}
+              value: {{ .Values.nexus.nexusPort | quote }}
             - name: UPSTREAM_HOST
               value: "localhost"
             {{- if .Values.nexusProxy.env.cloudIamAuthEnabled }}
@@ -85,7 +85,7 @@ spec:
               value: "86400000"
             {{- end }}
           ports:
-            - containerPort: {{ .Values.nexus.externalPort }}
+            - containerPort: {{ .Values.nexusProxy.port }}
               name: nexus-proxy
           {{- if .Values.nexusProxy.env.cloudIamAuthEnabled }}
           volumeMounts:
@@ -107,7 +107,7 @@ spec:
             - name: NEXUS_DATA_DIRECTORY
               value: /nexus-data
             - name: NEXUS_LOCAL_HOST_PORT
-              value: "localhost:{{ .Values.nexus.internalPort }}"
+              value: "localhost:{{ .Values.nexus.nexusPort }}"
             - name: OFFLINE_REPOS
               value: "maven-central maven-public maven-releases maven-snapshots"
             - name: TARGET_BUCKET

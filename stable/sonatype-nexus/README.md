@@ -69,9 +69,9 @@ The following table lists the configurable parameters of the Nexus chart and the
 | `nexus.env.install4jAddVmParams`            | JVM options                         | `-Xms1200M -Xmx1200M -XX:MaxDirectMemorySize=2G -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap`  |
 | `nexus.resources`                           | Nexus resource requests and limits  | `{}`                                    |
 | `nexus.dockerPort`                          | Port to access docker               | `5003`                                  |
-| `nexus.internalPort`                        | Internal port for Nexus service     | `8081`                                  |
-| `nexus.externalPort`                        | External port for Nexus service     | `8080`                                  |
+| `nexus.nexusPort`                           | Internal port for Nexus service     | `8081`                                  |
 | `nexus.serviceType`                         | Service for Nexus                   | `NodePort`                              |
+| `nexusProxy.port`                           | Port for exposing Nexus             | `8080`                                  |
 | `nexusProxy.imageName`                      | Proxy image                         | `quay.io/travelaudience/docker-nexus-proxy` |
 | `nexusProxy.imageTag`                       | Proxy image verion                  | `2.1.0`                                 |
 | `nexusProxy.imagePullPolicy`                | Proxy image pull policy             | `IfNotPresent`                          |
