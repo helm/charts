@@ -325,16 +325,10 @@ worker:
   #
 
 
-  # Additional settings to be added to statefulset template spec. Can be used for tolerations, node selectors etc.
-  # This way you can dedicate a complete node for a worker
+  # Additional settings to be added to statefulset template spec. Can be used for for example node selector
   #additionalSpec:
-  #  tolerations:
-  #  - key: "key"
-  #    operator: "Equal"
-  #    value: "value"
-  #    effect: "NoSchedule"
   #  nodeSelector:
-  #      type: concourse
+  #    type: concourse
 
   ## Additional affinities to add to the worker pods.
   ## Useful if you prefer to run workers on non-spot instances, for example
