@@ -2,6 +2,8 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: {{ template "heapster.fullname" . }}
+  annotations:
+{{ toYaml .Values.annotations | indent 4 }}
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     {{- range $key, $value := .Values.labels }}

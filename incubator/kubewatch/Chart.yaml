@@ -1,5 +1,5 @@
 name: kubewatch
-version: 0.2.0
+version: 0.2.1
 appVersion: v0.0.3
 description: Kubewatch notifies your slack rooms when changes to your cluster occur
 keywords:

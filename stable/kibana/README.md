@@ -53,6 +53,7 @@ Parameter | Description | Default
 `resources` | pod resource requests & limits | `{}`
 `service.externalPort` | external port for the service | `443`
 `service.internalPort` | internal port for the service | `4180`
+`service.externalIPs` | external IP addresses | None:
 `service.type` | type of service | `ClusterIP`
 `tolerations` | List of node taints to tolerate | `[]`
 

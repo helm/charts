@@ -222,6 +222,12 @@ service:
     #     hosts:
     #       - gogs.domain.com
 
+  ## Service annotations.
+  ## Allows attaching metadata to services for kubernetes components to act on.
+  ##
+  # annotations:
+  #   service.beta.kubernetes.io/aws-load-balancer-backend-protocol: http
+
 
 ## Persistent Volume Storage configuration.
 ## ref: https://kubernetes.io/docs/user-guide/persistent-volumes

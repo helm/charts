@@ -3,6 +3,8 @@
 # Declare name/value pairs to be passed into your templates.
 # name: value
 servers: 3
+updateStrategy:
+  type: "OnDelete"
 # minAvailable: 2
 resources:
   requests:
@@ -45,3 +47,8 @@ affinity: {}
 #             operator: NotIn
 #             values:
 #               - "true"
+
+## Node labels for pod assignment
+## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+##
+nodeSelector: {}

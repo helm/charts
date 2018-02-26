@@ -5,10 +5,8 @@
 
 Name: "cockroachdb"
 Image: "cockroachdb/cockroach"
-ImageTag: "v1.1.3"
+ImageTag: "v1.1.5"
 ImagePullPolicy: "Always"
-BootstrapImage: "cockroachdb/cockroach-k8s-init"
-BootstrapImageTag: "0.2"
 Replicas: 3
 MaxUnavailable: 1
 Component: "cockroachdb"
@@ -19,7 +17,14 @@ Resources:
     cpu: "100m"
     memory: "512Mi"
 Storage: "1Gi"
-StorageClass: "anything"
+## Persistent Volume Storage Class for database data
+## If defined, storageClassName: <StorageClass>
+## If set to "-", storageClassName: "", which disables dynamic provisioning
+## If undefined or set to null, no storageClassName spec is
+##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+##   GKE, AWS & OpenStack)
+##
+StorageClass: null
 CacheSize: "25%"
 MaxSQLMemory: "25%"
 ClusterDomain: "cluster.local"

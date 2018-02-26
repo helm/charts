@@ -1,0 +1,87 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: "{{ template "worker.fullname" . }}"
+  labels:
+    app: "{{ template "worker.fullname" . }}"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+    component: worker
+spec:
+  replicas: {{ .Values.workerConfig.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: "{{ template "worker.fullname" . }}"
+        component: worker
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}-worker
+        image: {{ .Values.image.tag }}
+        {{- if eq .Values.workerConfig.analyzerMode "localanchore" }}
+        securityContext:
+          privileged: true
+        {{- end }}
+        env:
+        - name: ANCHORE_ENGINE_SERVICES
+          value: anchore-worker
+        - name: ANCHORE_DB
+          value: {{ .Values.postgresql.postgresDatabase }}
+        - name: ANCHORE_DB_HOST
+          value: {{ template "postgres.fullname" . }}
+        - name: ANCHORE_DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "fullname" . }}
+              key: dbUser
+        - name: ANCHORE_DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "fullname" . }}
+              key: dbPassword
+        - name: ANCHORE_ADMIN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "fullname" . }}
+              key: adminPassword
+        volumeMounts:
+        - name: config-volume
+          mountPath: /config
+        {{- if eq .Values.workerConfig.analyzerMode "localanchore" -}}
+        - name: docker-sock
+          mountPath: /var/run/docker.sock
+        {{- end -}}
+        {{- if .Values.globalConfig.internalServicesSslEnabled }}
+        - name: certs
+          mountPath: {{ default "/certs" .Values.workerConfig.ssl.CertDir }}
+          readOnly: true
+        {{- end }}
+        - name: analysis-scratch
+          mountPath: {{ .Values.workerConfig.analysisScratchVolume.mountPath }}
+        livenessProbe:
+          exec:
+            command:
+            - pgrep
+            - twistd
+          initialDelaySeconds: 60
+          periodSeconds: 60
+          failureThreshold: 5
+        resources:
+{{ toYaml .Values.workerConfig.resources | indent 10 }}
+      volumes:
+        - name: config-volume
+          configMap:
+            name: {{ template "worker.fullname" .}}
+        {{- if eq .Values.workerConfig.analyzerMode "localanchore" }}
+        - name: docker-sock
+          hostPath:
+            path: /var/run/docker.sock
+        {{- end }}
+        {{- if .Values.globalConfig.internalServicesSslEnabled }}
+        - name: certs
+          secret:
+            secretName: {{ .Values.workerConfig.ssl.certSecret }}
+        {{- end }}
+        - name: analysis-scratch
+          {{ toYaml .Values.workerConfig.analysisScratchVolume.details -}}

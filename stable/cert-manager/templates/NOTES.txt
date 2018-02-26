@@ -1,0 +1,15 @@
+cert-manager has been deployed successfully!
+
+In order to begin issuing certificates, you will need to set up a ClusterIssuer
+or Issuer resource (for example, by creating a 'letsencrypt-staging' issuer).
+
+More information on the different types of issuers and how to configure them
+can be found in our documentation:
+
+https://github.com/jetstack/cert-manager/tree/v0.2.3/docs/api-types/issuer
+
+For information on how to configure cert-manager to automatically provision
+Certificates for Ingress resources, take a look at the `ingress-shim`
+documentation:
+
+https://github.com/jetstack/cert-manager/blob/v0.2.3/docs/user-guides/ingress-shim.md

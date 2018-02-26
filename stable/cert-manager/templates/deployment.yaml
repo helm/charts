@@ -1,0 +1,43 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "cert-manager.fullname" . }}
+  labels:
+    app: {{ template "cert-manager.name" . }}
+    chart: {{ template "cert-manager.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "cert-manager.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      serviceAccountName: {{ template "cert-manager.serviceAccountName" . }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+        {{- if .Values.extraArgs }}
+          args:
+{{ toYaml .Values.extraArgs | indent 12 }}
+        {{- end }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+{{- if .Values.ingressShim.enabled }}
+        - name: ingress-shim
+          image: "{{ .Values.ingressShim.image.repository }}:{{ default .Values.ingressShim.image.tag .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.ingressShim.image.pullPolicy }}
+        {{- if .Values.ingressShim.extraArgs }}
+          args:
+{{ toYaml .Values.ingressShim.extraArgs | indent 12 }}
+        {{- end }}
+          resources:
+{{ toYaml .Values.ingressShim.resources | indent 12 }}
+{{- end }}
+{{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+{{- end }}

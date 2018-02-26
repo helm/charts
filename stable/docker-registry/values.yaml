@@ -10,6 +10,8 @@ service:
   name: registry
   type: ClusterIP
   port: 5000
+  annotations: {}
+  # foo.io/bar: "true"
 ingress:
   enabled: false
   # Used to create an Ingress record.
@@ -47,6 +49,7 @@ storage: filesystem
 # tlsSecretName: registry.docker.example.com
 secrets:
   haSharedSecret: ""
+  htpasswd: ""
 # Secrets for S3 access and secret keys
 #   s3:
 #     accessKey: ""

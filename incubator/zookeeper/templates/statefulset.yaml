@@ -10,6 +10,8 @@ metadata:
 spec:
   serviceName: {{ template "zookeeper.fullname" . }}-headless
   replicas: {{ .Values.servers }}
+  updateStrategy:
+{{ toYaml .Values.updateStrategy | indent 4 }}
   template:
     metadata:
       labels:
@@ -19,6 +21,10 @@ spec:
 {{- if .Values.affinity }}
       affinity:
 {{ toYaml .Values.affinity | indent 8 }}
+{{- end }}
+{{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
 {{- end }}
       containers:
       - name: {{ template "zookeeper.name" . }}-server
