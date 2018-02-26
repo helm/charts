@@ -62,3 +62,6 @@ resources:
   #  service: login service
   #  team: alpha-team
   #
+
+daemonset:
+  tolerations: []
