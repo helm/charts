@@ -81,6 +81,3 @@ ingress:
   tls:
     enabled: true
     secretName: nexus-tls
-
-cert-manager:
-  enabled: false
