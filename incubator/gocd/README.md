@@ -17,7 +17,7 @@ This chart bootstraps a single node GoCD server and a GoCD Agent deployment with
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm install --name my-release stable/gocd
+$ helm install --name my-release incubator/gocd
 ```
 
 The command deploys GoCD on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
@@ -87,7 +87,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```bash
-$ helm install --name my-release -f values.yaml stable/gocd
+$ helm install --name my-release -f values.yaml incubator/gocd
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
@@ -139,7 +139,7 @@ a previously configured Persistent Volume Claim can be used.
 3. Install the chart
 
 ```
-$ helm install --name my-release --set server.persistence.godata.existingClaim=PVC_NAME stable/gocd
+$ helm install --name my-release --set server.persistence.godata.existingClaim=PVC_NAME incubator/gocd
 ```
 
 # License
