@@ -28,6 +28,8 @@ The following tables lists the configurable parameters of the Jenkins chart and 
 
 | Parameter                         | Description                          | Default                                                                      |
 | --------------------------------- | ------------------------------------ | ---------------------------------------------------------------------------- |
+| `nameOverride`                    | Override the resource name prefix    | `jenkins`                                                                    |
+| `fullnameOverride`                | Override the full resource names     | `jenkins-{release-name}` (or `jenkins` if release-name is `jenkins`)         |
 | `Master.Name`                     | Jenkins master name                  | `jenkins-master`                                                             |
 | `Master.Image`                    | Master image name                    | `jenkinsci/jenkins`                                                          |
 | `Master.ImageTag`                 | Master image tag                     | `2.46.1`                                                                     |
