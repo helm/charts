@@ -1,6 +1,6 @@
 ## Default values for Traefik
 image: traefik
-imageTag: 1.5.1
+imageTag: v1.5.2
 ## can switch the service type to NodePort if required
 serviceType: LoadBalancer
 loadBalancerIP:
@@ -39,12 +39,12 @@ acme:
   email: admin@example.com
   staging: true
   logging: false
-  ## ACME challenge type: "tls-sni-01" or "dns-01"
+  ## ACME challenge type: "tls-sni-01", "http-01" or "dns-01"
   ## Note the chart's default of tls-sni-01 has been DEPRECATED and (except in
   ## certain circumstances) DISABLED by Let's Encrypt. It remains as a default
   ## value in this chart to preserve legacy behavior and avoid a breaking
   ## change. Users of this chart should strongly consider making the switch to
-  ## the dns-01 challenge.
+  ## the dns-01 or http-01 (available since v1.5) challenge.
   challengeType: tls-sni-01
   ## Configure dnsProvider to perform domain verification using dns challenge
   ## Applicable only if using the dns-01 challenge type
@@ -197,3 +197,4 @@ deployment:
     httpEnabled: false
     httpsEnabled: false
     dashboardEnabled: false
+sendAnonymousUsage: false

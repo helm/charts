@@ -14,6 +14,9 @@ data:
     {{- if .Values.debug.enabled }}
     debug = true
     {{- end }}
+    {{- if .Values.sendAnonymousUsage }}
+    sendAnonymousUsage = true
+    {{- end }}
     {{- if .Values.ssl.enabled }}
     defaultEntryPoints = ["http","https"]
     {{- else }}
@@ -85,6 +88,9 @@ data:
     {{- if eq .Values.acme.challengeType "dns-01" }}
       [acme.dnsChallenge]
       provider = "{{ .Values.acme.dnsProvider.name }}"
+    {{- else if eq .Values.acme.challengeType "http-01" }}
+      [acme.httpChallenge]
+      entryPoint = "http"
     {{- end }}
     {{- end }}
     {{- if or .Values.dashboard.enabled .Values.metrics.prometheus.enabled .Values.metrics.statsd.enabled .Values.metrics.datadog.enabled }}
