@@ -194,6 +194,7 @@ web:
       cpu: "100m"
       memory: "128Mi"
 
+
   ## Additional affinities to add to the web pods.
   ##
   # additionalAffinities:
@@ -322,6 +323,18 @@ worker:
   # annotations:
   #   iam.amazonaws.com/role: arn:aws:iam::123456789012:role/concourse
   #
+
+
+  # Additional settings to be added to statefulset template spec. Can be used for tolerations, node selectors etc.
+  # This way you can dedicate a complete node for a worker
+  #additionalSpec:
+  #  tolerations:
+  #  - key: "key"
+  #    operator: "Equal"
+  #    value: "value"
+  #    effect: "NoSchedule"
+  #  nodeSelector:
+  #      type: concourse
 
   ## Additional affinities to add to the worker pods.
   ## Useful if you prefer to run workers on non-spot instances, for example
