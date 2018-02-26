@@ -325,9 +325,10 @@ worker:
 
   # Additional spec used to add custom settings to the podspec of the statefulset, for example
   # nodeselectors for our workers
-  #additionalSpec:
-  #  nodeSelector:
-  #    type: concourse
+  ##
+  # additionalSpec:
+  #   nodeSelector:
+  #     type: concourse
 
   ## Additional affinities to add to the worker pods.
   ## Useful if you prefer to run workers on non-spot instances, for example
