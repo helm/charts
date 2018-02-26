@@ -323,6 +323,12 @@ worker:
   #   iam.amazonaws.com/role: arn:aws:iam::123456789012:role/concourse
   #
 
+
+  # Additional settings to be added to statefulset template spec. Can be used for for example node selector
+  #additionalSpec:
+  #  nodeSelector:
+  #    type: concourse
+
   ## Additional affinities to add to the worker pods.
   ## Useful if you prefer to run workers on non-spot instances, for example
   ##
