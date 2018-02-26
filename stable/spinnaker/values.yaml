@@ -111,6 +111,7 @@ gcs:
 # with Spinnaker, visit:
 #   https://www.spinnaker.io/setup/ci/jenkins/
 jenkins:
+  enabled: true
   Master:
     Cpu: "500m"
     Memory: "512Mi"

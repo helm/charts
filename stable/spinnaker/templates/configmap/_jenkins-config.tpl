@@ -1,9 +1,10 @@
+{{- define "override_config_map" -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{.Release.Name}}-jenkins
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "jenkins.fullname" . }}
 data:
   config.xml: |-
     <?xml version='1.0' encoding='UTF-8'?>
@@ -28,10 +29,10 @@ data:
         <org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud plugin="kubernetes@0.8">
           <name>kubernetes</name>
           <templates>
-{{- if .Values.jenkins.Agent.Enabled }}
+{{- if .Values.Agent.Enabled }}
             <org.csanchez.jenkins.plugins.kubernetes.PodTemplate>
               <name>jnlp</name>
-              <image>{{ .Values.jenkins.Agent.Image }}:{{ .Values.jenkins.Agent.ImageTag }}</image>
+              <image>{{ .Values.Agent.Image }}:{{ .Values.Agent.ImageTag }}</image>
               <privileged>false</privileged>
               <alwaysPullImage>false</alwaysPullImage>
               <command></command>
@@ -41,15 +42,15 @@ data:
               <label></label>
               <nodeSelector>
                 {{- $local := dict "first" true }}
-                {{- range $key, $value := .Values.jenkins.Agent.NodeSelector }}
+                {{- range $key, $value := .Values.Agent.NodeSelector }}
                   {{- if not $local.first }},{{- end }}
                   {{- $key }}={{ $value }}
                   {{- $_ := set $local "first" false }}
                 {{- end }}</nodeSelector>
-              <resourceRequestCpu>{{ .Values.jenkins.Agent.Cpu }}</resourceRequestCpu>
-              <resourceRequestMemory>{{ .Values.jenkins.Agent.Memory }}</resourceRequestMemory>
-              <resourceLimitCpu>{{ .Values.jenkins.Agent.Cpu }}</resourceLimitCpu>
-              <resourceLimitMemory>{{ .Values.jenkins.Agent.Memory }}</resourceLimitMemory>
+              <resourceRequestCpu>{{ .Values.Agent.Cpu }}</resourceRequestCpu>
+              <resourceRequestMemory>{{ .Values.Agent.Memory }}</resourceRequestMemory>
+              <resourceLimitCpu>{{ .Values.Agent.Cpu }}</resourceLimitCpu>
+              <resourceLimitMemory>{{ .Values.Agent.Memory }}</resourceLimitMemory>
               <volumes>
                 <org.csanchez.jenkins.plugins.kubernetes.PodVolumes_-HostPathVolume>
                   <mountPath>/usr/bin/docker</mountPath>
@@ -97,24 +98,25 @@ data:
     mkdir -p /usr/share/jenkins/ref/secrets/;
     echo "false" > /usr/share/jenkins/ref/secrets/slave-to-master-security-kill-switch;
     cp -n /var/jenkins_config/config.xml /var/jenkins_home;
-{{- if .Values.jenkins.Master.InstallPlugins }}
+{{- if .Values.Master.InstallPlugins }}
     cp -n /var/jenkins_config/plugins.txt /var/jenkins_home;
     /usr/local/bin/install-plugins.sh `echo $(cat /var/jenkins_home/plugins.txt)`;
 {{- end }}
-{{- if .Values.jenkins.Master.ScriptApproval }}
+{{- if .Values.Master.ScriptApproval }}
     cp -n /var/jenkins_config/scriptapproval.xml /var/jenkins_home/scriptApproval.xml;
 {{- end }}
-{{- if .Values.jenkins.Master.InitScripts }}
+{{- if .Values.Master.InitScripts }}
     mkdir -p /var/jenkins_home/init.groovy.d/;
     cp -n /var/jenkins_config/*.groovy /var/jenkins_home/init.groovy.d/
 {{- end }}
-{{- range $key, $val := .Values.jenkins.Master.InitScripts }}
+{{- range $key, $val := .Values.Master.InitScripts }}
   init{{ $key }}.groovy: |-
 {{ $val | indent 4}}
 {{- end }}
   plugins.txt: |-
-{{- if .Values.jenkins.Master.InstallPlugins }}
-{{- range $index, $val := .Values.jenkins.Master.InstallPlugins }}
+{{- if .Values.Master.InstallPlugins }}
+{{- range $index, $val := .Values.Master.InstallPlugins }}
 {{ $val | indent 4 }}
+{{- end }}
 {{- end }}
 {{- end }}
