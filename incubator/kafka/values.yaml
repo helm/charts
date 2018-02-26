@@ -88,16 +88,3 @@ zookeeper:
   url: ""
   port: 2181
 
-# ------------------------------------------------------------------------------
-# Schema Registry:
-# ------------------------------------------------------------------------------
-
-## Install Confluent Schema Registry server alongside Kafka to track Avro Schemas
-schema-registry:
-  ## If true, install the Schema-Registry chart alongside Kafka
-  ## ref: https://github.com/kubernetes/charts/tree/master/incubator/schema-registry
-  enabled: false
-# Avoid installing kafka dependency of schema-registry, otherwise we will have a
-# collision of services at release time
-kafka:
-  enabled: false
