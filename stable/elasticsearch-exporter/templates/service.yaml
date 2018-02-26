@@ -7,6 +7,10 @@ metadata:
     app: {{ template "elasticsearch-exporter.name" . }}
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "{{ .Values.service.httpPort }}"
+    prometheus.io/path: "{{ .Values.web.path }}"
 spec:
   type: {{ .Values.service.type }}
   ports:
