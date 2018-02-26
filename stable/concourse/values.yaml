@@ -194,7 +194,6 @@ web:
       cpu: "100m"
       memory: "128Mi"
 
-
   ## Additional affinities to add to the web pods.
   ##
   # additionalAffinities:
