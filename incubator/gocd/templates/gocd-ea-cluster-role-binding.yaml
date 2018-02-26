@@ -1,4 +1,4 @@
-{{ if .Values.rbac.install }}
+{{ if .Values.rbac.create }}
 apiVersion: rbac.authorization.k8s.io/{{ required "A valid .Values.rbac.apiVersion entry required!" .Values.rbac.apiVersion }}
 kind: ClusterRoleBinding
 metadata:
@@ -10,7 +10,7 @@ metadata:
     release: "{{ .Release.Name }}"
 subjects:
 - kind: ServiceAccount
-  name: {{ template "gocd.fullname" . }}
+  name: {{ template "gocd.serviceAccountName" . }}
   namespace: {{ .Release.Namespace }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io

@@ -178,19 +178,41 @@ $ helm install --name gocd-app --set server.persistence.existingClaim=PVC_NAME i
 1. That packages being cached here is shared between all the agents.
 2. That all the agents sharing this directory are privy to all the secrets in `/home/go`
 
-## RBAC
+## RBAC and Service Accounts
 
-The RBAC section is for users who want to use the Kubernetes Elastic Agent Plugin with GoCD. The Kubernetes elastic agent plugin for GoCD brings up pods on demand while running a job. 
+The RBAC section is for users who want to use the Kubernetes Elastic Agent Plugin with GoCD. The Kubernetes elastic agent plugin for GoCD brings up pods on demand while running a job.
 If RBAC is enabled,
- 1. A namespaced role is created by default and pod privileges are provided. 
- 2. A gocd service account is created. This service account is bound to a role within the namespace.
+ 1. A cluster role is created by default and the following privileges are provided.
+    Privileges:
+      - nodes: list, get
+      - events: list, watch
+      - namespace: list, get
+      - pods, pods/log: *
+
+ 2. A cluster role binding to bind the specified service account with the cluster role.
+
+ 3. A gocd service account . This service account is bound to a cluster role.
+ If `rbac.create=true` and `serviceAccount.create=false`, the `default` service account in the namespace will be used for cluster role binding.
+
 
 | Parameter                                     | Description                                                                         | Default              |
 | --------------------------------------------- | ----------------------------------------------------------------------------------- | -------------------- |
-| `rbac.install`                                | If true, a gocd service account, role, and role binding is created.                 | `true`               |
+| `rbac.create`                                 | If true, a gocd service account, role, and role binding is created.                 | `true`               |
 | `rbac.apiVersion`                             | The Kubernetes API version                                                          | `v1beta1`            |
 | `rbac.roleRef`                                | An existing role that can be bound to the gocd service account.                     | `nil`                |
+| `serviceAccount.create`                       | Specifies whether a service account should be created.                              | `true`               |
+| `serviceAccount.name`                         | Name of the service account.                                                        | `gocd template`      |
  
+If `rbac.create=false`, the service account that will be used, either the default or one that's created, will not have the cluster scope or pod privileges to use with the Kubernetes EA plugin.
+A cluster role binding must be created like below:
+
+```
+kubectl create clusterrolebinding clusterRoleBinding \
+--clusterrole=CLUSTER_ROLE_WITH_NECESSARY_PRIVILEGES \
+--serviceaccount=NAMESPACED_SERVICE_ACCOUNT
+
+```
+
 #### Existing role references:
 
 The gocd service account can be associated with an existing role in the namespace that has privileges to create and delete pods. To use an existing role,

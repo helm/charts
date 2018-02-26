@@ -1,4 +1,4 @@
-{{ if and .Values.rbac.install (not .Values.rbac.roleRef) }}
+{{ if and .Values.rbac.create (not .Values.rbac.roleRef) }}
 apiVersion: rbac.authorization.k8s.io/{{ required "A valid .Values.rbac.apiVersion entry required!" .Values.rbac.apiVersion }}
 kind: ClusterRole
 metadata:

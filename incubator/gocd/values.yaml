@@ -3,9 +3,20 @@
 # Declare variables to be passed into your templates.
 
 rbac:
-  install: true
+  # Specifies whether rbac resources must be created.
+  create: true
+  # The API version to use while creating the rbac resources. Use `kubectl api-versions | grep rbac` to find which abi versions are supported for your cluster.
   apiVersion: v1beta1
+  # Create a cluster role binding with the existing role, do not create a new one. If left blank, a new cluster role is created.
   roleRef:
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  # If create if false and a name is not specified, the default service account is used for the cluster role binding.
+  name:
 
 server:
   # server.enabled is the toggle to run GoCD Server. Change to false for Agent Only Deployment.
