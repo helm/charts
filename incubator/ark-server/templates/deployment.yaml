@@ -1,10 +1,15 @@
-apiVersion: apps/v1beta1
+apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
   namespace: {{ .Values.namespace.server.name }}
-  name: ark
+  name: {{ template "ark-server.fullname" . }}
+  release: {{ .Release.Name }}
+  app: {{ template "ark-server.name" . }}
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      component: ark
   template:
     metadata:
       labels:
@@ -27,7 +32,7 @@ spec:
             - name: plugins
               mountPath: /plugins
           env:
-            - name: {{ required "PLEASE CHANGE VALUE" .Values.configuration.credentials }}
+            - name: {{ .Values.configuration.credentials }}
               value: /credentials/cloud
       volumes:
         - name: cloud-credentials

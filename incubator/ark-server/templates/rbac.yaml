@@ -1,14 +1,21 @@
-{{- if .Values.serviceAccount.hook.create }}
-apiVersion: v1
-kind: ServiceAccount
+{{- if .Values.rbac.create }}
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
 metadata:
-  name: {{ template "ark-server.hookSA" . }}
-  namespace: {{ .Values.namespace.backup.name }}
+  name: ark
   labels:
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
     app: {{ template "ark-server.name" . }}
+subjects:
+  - kind: ServiceAccount
+    namespace: {{ .Values.namespace.server.name }}
+    name: {{ template "ark-server.sa" . }}
+roleRef:
+  kind: ClusterRole
+  name: cluster-admin
+  apiGroup: rbac.authorization.k8s.io
 {{- end }}
 
 {{- if .Values.rbac.create }}

@@ -1,0 +1,12 @@
+{{- if .Values.serviceAccount.server.create }}
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ template "ark-server.sa" . }}
+  namespace: {{ .Values.namespace.server.name }}
+  labels:
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+    app: {{ template "ark-server.name" . }}
+{{- end }}

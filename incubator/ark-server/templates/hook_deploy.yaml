@@ -1,0 +1,28 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: deploy-ark-config
+  namespace: {{ .Values.namespace.backup.name }}
+  annotations:
+    "helm.sh/hook": post-install
+    "helm.sh/hook-delete-policy": hook-succeeded
+spec:
+  template:
+    metadata:
+      name: deploy-ark-config
+      namespace: {{ .Values.namespace.backup.name }}
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: deploy-ark-config
+        image: claranet/gcloud-kubectl-docker
+        imagePullPolicy: Always
+        command: ["kubectl","create","-f","/tmp/"]
+        volumeMounts:
+          - name: ark-server-config
+            mountPath: /tmp
+      volumes:
+        - name: ark-server-config
+          configMap:
+            name: ark-server-config
+      serviceAccountName: {{ template "ark-server.hookSA" . }}

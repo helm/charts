@@ -1,6 +1,7 @@
 # Ark-server
 
 This helm chart install ark-server version v0.7.1
+https://github.com/heptio/ark/tree/v0.7.1
 
 ## Premise
 Helm cannot handle properly CRD becauses it has a validation mechanism that checks the installation before the CRD are actually created,
@@ -13,15 +14,17 @@ At the same time the resources created with the hook are completely transparent 
 chart those resources remain there. Hence we need a sencond hook for deleting them (see delete.yaml)
 
 ## Content
-- `templates/prerequisites.yaml` this file contains the CRD and SA needed by Ark Server
-- `hook.yaml` This is the container that will deploy or delete ark-server and its configuration
-   it creates also the necessary SA and RBAC
+- `templates/backups.yaml`
+  `configs`
+  `schedules`
+  `downloadrequest`  these files contain the custom resouces needed by Ark Server
+- `hook_delete.yaml` and `hook_deploy.yaml` are the containers that will deploy or delete ark-server configuration
 - `configmap.yaml` Configmap will be mounted to the hook container as a file and subsequently used as k8s manifest for deploy or deletion
 
 ## ConfigMap customization
 Since we want to have a customizable chart it's important that the configmap is a template and not a static file.
 To do this we add the keyword `tpl` when reading the file
-- {{ (tpl (.Files.Glob "configuration/*").AsConfig .) | indent 2 }}
+- {{ (tpl (.Files.Glob "configuration/").AsConfig .) | indent 2 }}
 
 
 ## Prerequisites
@@ -37,8 +40,10 @@ kubectl create secret generic cloud-credentials --namespace heptio-ark --from-fi
 ```
 
 ### Configuration
-Ark configuration can be changed in values.yaml.
-See here for details: https://github.com/heptio/ark/blob/v0.7.1/docs/config-definition.md
+PLease change thevalues.yaml according to your setup
+See here https://github.com/heptio/ark/blob/v1.7.1/docs/config-definition.md
+and here for detail and examples on how to set the correct values:
+https://github.com/heptio/ark/blob/v0.7.1/docs/gcp-config.md#credentials-and-configuration
 
 ## How to
 ```

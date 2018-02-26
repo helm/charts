@@ -4,19 +4,19 @@ metadata:
   namespace: {{ .Values.namespace.backup.name }}
   name: default
 persistentVolumeProvider:
-  name: {{ required "PLEASE SET VALUE" .Values.configuration.cloudprovider  }}
+  name: {{ .Values.configuration.cloudprovider  }}
   config:
     {{- if eq .Values.configuration.cloudprovider "gcp" }}
-    project: {{ required "PLEASE SET VALUE" .Values.configuration.project  }}
+    project: {{ .Values.configuration.project  }}
     {{- else if eq .Values.configuration.cloudprovider "aws" }}
-    region: {{ required "PLEASE SET VALUE" .Values.configuration.region  }}
+    region: {{ .Values.configuration.region  }}
     {{- end }}
 backupStorageProvider:
-  name: {{ required "PLEASE SET VALUE" .Values.configuration.cloudprovider  }}
-  bucket: {{ required "PLEASE SET VALUE" .Values.configuration.bucket  }}
+  name: {{ .Values.configuration.cloudprovider  }}
+  bucket: {{ .Values.configuration.bucket  }}
   {{- if eq .Values.configuration.cloudprovider "aws" }}
   config:
-    region: {{ required "PLEASE SET VALUE" .Values.configuration.region  }}
+    region: {{ .Values.configuration.region  }}
   {{- end }}
 backupSyncPeriod: {{ .Values.configuration.backupSyncPeriod }}
 gcSyncPeriod: {{ .Values.configuration.gcSyncPeriod }}

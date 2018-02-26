@@ -1,0 +1,13 @@
+{{- if .Values.serviceAccount.hook.create }}
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ template "ark-server.hookSA" . }}
+  namespace: {{ .Values.namespace.backup.name }}
+  labels:
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+    app: {{ template "ark-server.name" . }}
+{{- end }}
+

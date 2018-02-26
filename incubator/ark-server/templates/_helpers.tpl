@@ -47,7 +47,7 @@ Create the name of the service account to use for creating or deleting the ark s
 */}}
 {{- define "ark-server.sa" -}}
 {{- if .Values.serviceAccount.server.create -}}
-    {{ default "ark" .Values.serviceAccount.server.name }}
+    {{ default (include "ark-server.fullname" .) .Values.serviceAccount.server.name }}
 {{- else -}}
     {{ default "default" .Values.serviceAccount.server.name }}
 {{- end -}}
