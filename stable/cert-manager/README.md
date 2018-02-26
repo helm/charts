@@ -64,6 +64,8 @@ The following tables lists the configurable parameters of the cert-manager chart
 | `serviceAccount.name` | Service account to be used. If not set and `serviceAccount.create` is `true`, a name is generated using the fullname template | ``
 | `resources` | CPU/memory resource requests/limits | `requests: {cpu: 10m, memory: 32Mi}` |
 | `nodeSelector` | Node labels for pod assignment | `{}` |
+| `affinity` | Node affinity for pod assignment | `{}` |
+| `tolerations` | Node tolerations for pod assignment | `[]` |
 | `ingressShim.enabled` | Enable ingress-shim for automatic ingress integration | `true`|
 | `ingressShim.extraArgs` | Optional flags for ingress-shim | `[]` |
 | `ingressShim.resources` | CPU/memory resource requests/limits for ingress-shim | `requests: {cpu: 10m, memory: 32Mi}` |
