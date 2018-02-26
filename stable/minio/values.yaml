@@ -3,8 +3,8 @@
 ## Distributed Minio ref: https://docs.minio.io/docs/distributed-minio-quickstart-guide
 ##
 image: "minio/minio"
-imageTag: "RELEASE.2018-01-18T20-33-21Z"
-imagePullPolicy: "Always"
+imageTag: "RELEASE.2018-02-09T22-40-05Z"
+imagePullPolicy: "IfNotPresent"
 mode: "standalone"
 
 ## Set default accesskey, secretkey, Minio config file path, volume mount path and
