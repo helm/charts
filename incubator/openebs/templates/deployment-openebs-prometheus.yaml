@@ -1,0 +1,77 @@
+{{- if .Values.policies.monitoring.enabled }}
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "openebs.fullname" . }}-prometheus
+{{- if .Values.rbacEnable }}
+  namespace: {{ .Values.rbac.namespace }}
+{{- end }}
+  labels:
+    app: {{ template "openebs.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: {{ template "openebs.fullname" . }}
+    role: prometheus
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: {{ template "openebs.name" . }}
+        release: {{ .Release.Name }}
+        component: {{ template "openebs.fullname" . }}
+        role: prometheus
+    spec:
+      serviceAccountName: {{ .Values.operator.name }}
+      containers:
+        - name: {{ template "openebs.name" . }}-prometheus
+          image: "{{ .Values.prometheus.image }}:{{ .Values.prometheus.imageTag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args:
+            - "--config.file=/etc/prometheus/conf/prometheus.yml"
+            # Metrics are stored in an emptyDir volume which
+            # exists as long as the Pod is running on that Node.
+            # The data in an emptyDir volume is safe across container crashes.
+            - "--storage.tsdb.path=/prometheus"
+            # How long to retain samples in the local storage.
+            - "--storage.tsdb.retention=$(STORAGE_RETENTION)"
+          ports:
+            - containerPort: {{ .Values.prometheus.ports.internalPort }}
+          env:
+            # environment vars are stored in prometheus-env configmap.
+            - name: STORAGE_RETENTION
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "openebs.fullname" . }}-prometheus-tunables
+                  key: storage-retention
+          resources:
+            requests:
+              # A memory request of 250M means it will try to ensure minimum
+              # 250MB RAM .
+              memory: "128M"
+              # A cpu request of 128m means it will try to ensure minimum
+              # .125 CPU; where 1 CPU means :
+              # 1 *Hyperthread* on a bare-metal Intel processor with Hyperthreading
+              cpu: "128m"
+            limits:
+              memory: "700M"
+              cpu: "500m"
+          
+          volumeMounts:
+            # prometheus config file stored in the given mountpath
+            - name: prometheus-server-volume
+              mountPath: /etc/prometheus/conf
+            # metrics collected by prometheus will be stored at the given mountpath.
+            - name: prometheus-storage-volume
+              mountPath: /prometheus
+      volumes:
+        # Prometheus Config file will be stored in this volume 
+        - name: prometheus-server-volume
+          configMap:
+            name: {{ template "openebs.fullname" . }}-prometheus-config
+        # All the time series stored in this volume in form of .db file.
+        - name: prometheus-storage-volume
+          # containers in the Pod can all read and write the same files here.
+          emptyDir: {}
+{{- end }}

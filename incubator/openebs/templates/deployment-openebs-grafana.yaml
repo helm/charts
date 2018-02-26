@@ -1,0 +1,43 @@
+{{- if .Values.policies.monitoring.enabled }}
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "openebs.fullname" . }}-grafana
+{{- if .Values.rbacEnable }}
+  namespace: {{ .Values.rbac.namespace }}
+{{- end }}
+  labels:
+    app: {{ template "openebs.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: {{ template "openebs.fullname" . }}
+    role: grafana
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  template:
+    metadata:
+      labels:
+        app: {{ template "openebs.name" . }}
+        release: {{ .Release.Name }}
+        component: {{ template "openebs.fullname" . }}
+        role: grafana
+    spec:
+      containers:
+      - name: {{ template "openebs.name" . }}-grafana
+        image: "{{ .Values.grafana.image }}:{{ .Values.grafana.imageTag }}"
+        ports:
+        - containerPort: {{ .Values.grafana.ports.internalPort }}
+        env:
+          - name: GF_AUTH_BASIC_ENABLED
+            value: "true"
+          - name: GF_AUTH_ANONYMOUS_ENABLED
+            value: "false"
+        livenessProbe:
+          httpGet:
+            path: /
+            port: {{ .Values.grafana.ports.internalPort }}
+          initialDelaySeconds: 30
+          timeoutSeconds: 1
+{{- end }}

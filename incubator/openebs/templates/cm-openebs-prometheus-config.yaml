@@ -1,0 +1,60 @@
+{{- if .Values.policies.monitoring.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "openebs.fullname" . }}-prometheus-config
+{{- if .Values.rbacEnable }}
+  namespace: {{ .Values.rbac.namespace }}
+{{- end }}
+  labels:
+    app: {{ template "openebs.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: {{ template "openebs.fullname" . }}
+    role: prometheus-config
+data:
+  prometheus.yml: |-
+    global:
+      external_labels:
+        slave: slave1
+      scrape_interval: 5s
+      evaluation_interval: 5s
+    scrape_configs:
+    #- job_name: 'prometheus'
+      #static_configs:
+      # Added this to allow for federation collection
+      # Replace localhost with the nodeIP
+      #  - targets: ['localhost:32514']
+    - job_name: 'openebs-prometheus-server'
+      scheme: http
+      kubernetes_sd_configs:
+      - role: pod
+      relabel_configs:
+      - source_labels: [__meta_kubernetes_pod_label_name]
+        regex: openebs-prometheus-server
+        action: keep
+      - source_labels: [__meta_kubernetes_pod_name]
+        action: replace
+        target_label: kubernetes_pod_name
+    - job_name: 'openebs-volumes'
+      scheme: http
+      kubernetes_sd_configs:
+      - role: pod
+      relabel_configs:
+      - source_labels: [__meta_kubernetes_pod_label_monitoring]
+        regex: volume_exporter_prometheus
+        action: keep
+      - source_labels: [__meta_kubernetes_pod_name]
+        action: replace
+        target_label: kubernetes_pod_name
+      - source_labels: [__meta_kubernetes_pod_label_vsm]
+        action: replace
+        target_label: openebs_pv
+      - source_labels: [__meta_kubernetes_pod_container_port_number]
+        action: drop
+        regex: '(.*)9501'
+      - source_labels: [__meta_kubernetes_pod_container_port_number]
+        action: drop
+        regex: '(.*)3260'
+{{- end }}

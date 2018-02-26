@@ -1,0 +1,26 @@
+{{- if .Values.policies.monitoring.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "openebs.fullname" . }}-grafana
+{{- if .Values.rbacEnable }}
+  namespace: {{ .Values.rbac.namespace }}
+{{- end }}
+  labels:
+    app: {{ template "openebs.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    role: grafana
+spec:
+  type: NodePort
+  ports:
+  - port: {{ .Values.grafana.ports.externalPort }}
+    targetPort: {{ .Values.grafana.ports.internalPort }}
+    nodePort: {{ .Values.grafana.ports.nodePort }}
+  selector:
+    app: {{ template "openebs.name" . }}
+    release: {{ .Release.Name }}
+    component: {{ template "openebs.fullname" . }}
+    role: grafana
+{{- end }}

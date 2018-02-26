@@ -1,0 +1,18 @@
+{{- if .Values.policies.monitoring.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "openebs.fullname" . }}-prometheus-tunables
+{{- if .Values.rbacEnable }}
+  namespace: {{ .Values.rbac.namespace }}
+{{- end }}
+  labels:
+    app: {{ template "openebs.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: {{ template "openebs.fullname" . }}
+    role: prometheus-tunables
+data:
+  storage-retention: 24h
+{{- end }}

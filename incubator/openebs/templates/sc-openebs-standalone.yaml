@@ -1,0 +1,13 @@
+# Define a storage classes supported by OpenEBS
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: openebs-standalone
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+provisioner: openebs.io/provisioner-iscsi
+parameters:
+  openebs.io/storage-pool: "default"
+  openebs.io/jiva-replica-count: "1"
+  openebs.io/volume-monitor: "true"
+  openebs.io/capacity: 5G

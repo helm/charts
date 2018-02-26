@@ -1,0 +1,6 @@
+{{- if .Values.rbacEnable }}
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ .Values.rbac.namespace }}
+{{- end }}

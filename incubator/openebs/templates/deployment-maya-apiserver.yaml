@@ -1,0 +1,81 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "openebs.fullname" . }}-maya-apiserver
+{{- if .Values.rbacEnable }}
+  namespace: {{ .Values.rbac.namespace }}
+{{- end }}
+  labels:
+    app: {{ template "openebs.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: {{ template "openebs.fullname" . }}
+    role: apiserver
+spec:
+  replicas: {{ .Values.apiserver.replicas }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "openebs.name" . }}
+        release: {{ .Release.Name }}
+        component: {{ template "openebs.fullname" . }}
+        role: apiserver
+    spec:
+      serviceAccountName: {{ .Values.operator.name }}
+      containers:
+      - name: {{ template "openebs.name" . }}-maya-apiserver
+        image: "{{ .Values.apiserver.image }}:{{ .Values.apiserver.imageTag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - containerPort: {{ .Values.apiserver.ports.internalPort }}
+        env:
+        # OPENEBS_IO_KUBE_CONFIG enables maya api service to connect to K8s
+        # based on this config. This is ignored if empty.
+        # This is supported for maya api server version 0.5.2 onwards
+        #- name: OPENEBS_IO_KUBE_CONFIG
+        #  value: "/home/ubuntu/.kube/config"
+        # OPENEBS_IO_K8S_MASTER enables maya api service to connect to K8s
+        # based on this address. This is ignored if empty.
+        # This is supported for maya api server version 0.5.2 onwards
+        #- name: OPENEBS_IO_K8S_MASTER
+        #  value: "http://172.28.128.3:8080"
+        - name: OPENEBS_IO_JIVA_CONTROLLER_IMAGE
+          value: "{{ .Values.jiva.image }}:{{ .Values.jiva.imageTag }}"
+        - name: OPENEBS_IO_JIVA_REPLICA_IMAGE
+          value: "{{ .Values.jiva.image }}:{{ .Values.jiva.imageTag }}"
+        - name: OPENEBS_IO_VOLUME_MONITOR_IMAGE
+          value: "{{ .Values.policies.monitoring.image }}:{{ .Values.policies.monitoring.imageTag }}"
+        - name: OPENEBS_IO_JIVA_REPLICA_COUNT
+          value: "{{ .Values.jiva.replicas }}"
+
+{{- if .Values.apiserver.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.apiserver.nodeSelector | indent 8 }}
+{{- end }}
+
+{{- if .Values.apiserver.tolerations }}
+      tolerations:
+{{ toYaml .Values.apiserver.tolerations | indent 8 }}
+{{- end }}
+
+{{- if .Values.apiserver.antiAffinity.enabled }}
+      affinity:
+        podAntiAffinity:
+  {{- $antiAffinityType := .Values.apiserver.antiAffinity.type | lower -}}
+  {{- if eq $antiAffinityType "hard" }}
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - topologyKey: "kubernetes.io/hostname"
+              labelSelector:
+                matchLabels:
+                  name: {{ template "openebs.fullname" . }}-maya-apiserver
+  {{- else if eq $antiAffinityType "soft" }}
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 1
+              podAffinityTerm:
+                topologyKey: "kubernetes.io/hostname"
+                labelSelector:
+                  matchLabels:
+                    name: {{ template "openebs.fullname" . }}-maya-apiserver
+  {{- end }}
+{{- end }}

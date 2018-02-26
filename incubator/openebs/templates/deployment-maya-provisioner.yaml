@@ -1,0 +1,95 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "openebs.fullname" . }}-provisioner
+{{- if .Values.rbacEnable }}
+  namespace: {{ .Values.rbac.namespace }}
+{{- end }}
+  labels:
+    app: {{ template "openebs.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: {{ template "openebs.fullname" . }}
+    role: provisioner
+spec:
+  replicas: {{ .Values.provisioner.replicas }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "openebs.name" . }}
+        release: {{ .Release.Name }}
+        component: {{ template "openebs.fullname" . }}
+        role: provisioner
+    spec:
+      serviceAccountName: {{ .Values.operator.name }}
+      containers:
+      - name: {{ template "openebs.name" . }}-provisioner
+        image: "{{ .Values.provisioner.image }}:{{ .Values.provisioner.imageTag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        env:
+        # OPENEBS_IO_K8S_MASTER enables openebs provisioner to connect to K8s
+        # based on this address. This is ignored if empty.
+        # This is supported for openebs provisioner version 0.5.2 onwards
+        #- name: OPENEBS_IO_K8S_MASTER
+        #  value: "http://10.128.0.12:8080"
+        # OPENEBS_IO_KUBE_CONFIG enables openebs provisioner to connect to K8s
+        # based on this config. This is ignored if empty.
+        # This is supported for openebs provisioner version 0.5.2 onwards
+        #- name: OPENEBS_IO_KUBE_CONFIG
+        #  value: "/home/ubuntu/.kube/config"
+        # OPENEBS_NAMESPACE is the namespace that this provisioner will
+        # lookup to find maya api service
+{{- if .Values.rbacEnable }}
+        - name: OPENEBS_NAMESPACE
+          value: "{{ .Values.rbac.namespace }}"
+{{- end }}
+        - name: NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+        # OPENEBS_MAYA_SERVICE_NAME provides the maya-apiserver K8s service name,
+        # that provisioner should forward the volume creaet/delete requests.
+        # If not present, "maya-apiserver-service" will be used for lookup.
+        # This is supported for openebs provisioner version 0.5.3-RC1 onwards
+        - name: OPENEBS_MAYA_SERVICE_NAME
+          value: "{{ template "openebs.fullname" . }}-maya-apiservice"
+        # The following values will be set as annotations to the PV object.
+        # Refer : https://github.com/openebs/external-storage/pull/15
+        #- name: OPENEBS_MONITOR_URL
+        #  value: "{{ .Values.provisioner.monitorurl }}"
+        #- name: OPENEBS_MONITOR_VOLKEY
+        #  value: "{{ .Values.provisioner.monitorvolkey }}"
+        #- name: MAYA_PORTAL_URL
+        #  value: "{{ .Values.provisioner.mayaportalurl }}"
+
+{{- if .Values.provisioner.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.provisioner.nodeSelector | indent 8 }}
+{{- end }}
+
+{{- if .Values.provisioner.tolerations }}
+      tolerations:
+{{ toYaml .Values.provisioner.tolerations | indent 8 }}
+{{- end }}
+
+{{- if .Values.provisioner.antiAffinity.enabled }}
+      affinity:
+        podAntiAffinity:
+  {{- $antiAffinityType := .Values.provisioner.antiAffinity.type | lower -}}
+  {{- if eq $antiAffinityType "hard" }}
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - topologyKey: "kubernetes.io/hostname"
+              labelSelector:
+                matchLabels:
+                  name: {{ template "openebs.fullname" . }}-provisioner
+  {{- else if eq $antiAffinityType "soft" }}
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 1
+              podAffinityTerm:
+                topologyKey: "kubernetes.io/hostname"
+                labelSelector:
+                  matchLabels:
+                    name: {{ template "openebs.fullname" . }}-provisioner
+  {{- end }}
+{{- end }}

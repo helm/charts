@@ -1,0 +1,27 @@
+{{- if .Values.policies.monitoring.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "openebs.fullname" . }}-prometheus-service
+{{- if .Values.rbacEnable }}
+  namespace: {{ .Values.rbac.namespace }}
+{{- end }}
+  labels:
+    app: {{ template "openebs.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    role: prometheus
+spec:
+  type: NodePort
+  ports:
+  - port: {{ .Values.prometheus.ports.externalPort }} # this Service's port (cluster-internal IP clusterIP)
+    targetPort: {{ .Values.prometheus.ports.internalPort }} # pods expose this port
+    nodePort: {{ .Values.prometheus.ports.nodePort }}
+    # Note that this Service will be visible as both NodeIP:nodePort and clusterIp:Port
+  selector:
+    app: {{ template "openebs.name" . }}
+    release: {{ .Release.Name }}
+    component: {{ template "openebs.fullname" . }}
+    role: prometheus
+{{- end }}
