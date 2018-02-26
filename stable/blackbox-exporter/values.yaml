@@ -21,6 +21,8 @@ proxyImage:
   tag: 1.13.8-alpine
   pullPolicy: IfNotPresent
 
+nodeSelector: {}
+
 config: {}
 
 resources: {}

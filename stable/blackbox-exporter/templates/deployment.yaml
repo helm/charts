@@ -33,6 +33,10 @@ spec:
       annotations:
 {{ toYaml .Values.annotations | indent 8 }}
     spec:
+    {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
       restartPolicy: {{ .Values.restartPolicy }}
       containers:
 {{- if .Values.password }}
