@@ -34,6 +34,10 @@ security:
   runAsUser: 1000
   fsGroup: 1000
 
+## Use an alternate scheduler, e.g. "stork".
+## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+##
+# schedulerName:
 
 # Affinities to add to the worker pods.
 # Useful if you prefer to run workers on non-spot instances, for example
