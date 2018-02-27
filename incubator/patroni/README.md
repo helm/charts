@@ -86,6 +86,7 @@ The following tables lists the configurable parameters of the patroni chart and 
 | `persistentVolume.size` | Persistent Volume size | `2Gi` |
 | `persistentVolume.storageClass` | Persistent Volume Storage Class | `volume.alpha.kubernetes.io/storage-class: default` |
 | `persistentVolume.subPath` | Subdirectory of Persistent Volume to mount | `""` |
+| `Rbac.Create` | create role and rolebindings for default service account | `false` |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
