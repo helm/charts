@@ -29,7 +29,6 @@ The following tables lists the configurable parameters of the external-dns chart
 | `aws.zone_type`           | Filter for zones of this type (optional, options: public, private).                                                        | `""`                                               |
 | `cloudflare.email`        | `CF_API_EMAIL` to set in the environment (optional).                                                                       | `""`                                               |
 | `cloudflare.apiKey`       | `CF_API_KEY` to set in the environment (optional).                                                                         | `""`                                               |
-| `cloudflare.email`        | `CF_API_EMAIL` to set in the environment (optional).                                                                       | `""`                                               |
 | `domainFilters`           | Limit possible target zones by domain suffixes (optional).                                                                 | `[]`                                               |
 | `extraArgs`               | Optional object of extra args, as `name`: `value` pairs. Where the name is the command line arg to external-dns.           | `{}`                                               |
 | `image.name`              | Container image name (Including repository name if not `hub.docker.com`).                                                  | `registry.opensource.zalan.do/teapot/external-dns` |
