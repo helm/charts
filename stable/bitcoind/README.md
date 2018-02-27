@@ -10,7 +10,7 @@ Docker image was taken from [Bitcoind for Docker](https://github.com/kylemanna/d
 
 ## Prerequisites
 
-- Kubernetes 1.7+ with Beta APIs enabled
+- Kubernetes 1.8+
 - PV provisioner support in the underlying infrastructure
 
 ## Installing the Chart
@@ -18,7 +18,7 @@ Docker image was taken from [Bitcoind for Docker](https://github.com/kylemanna/d
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm install --name my-release incubator/bitcoind
+$ helm install --name my-release stable/bitcoind
 ```
 
 The command deploys bitcoind on the Kubernetes cluster in the default configuration.
@@ -42,8 +42,9 @@ The following tables lists the configurable parameters of the bitcoind chart and
 
 Parameter                  | Description                        | Default
 -----------------------    | ---------------------------------- | ----------------------------------------------------------
-`imageTag`                 | `bitcoind` image tag.              | `stable`
-`imagePullPolicy`          | Image pull policy                  | `IfNotPresent`
+`image.repository`         | Image source repository name       | `kuberstack/bitcoind`
+`image.tag`                | `bitcoind` release tag.            | `0.15.1`
+`image.PullPolicy`         | Image pull policy                  | `IfNotPresent`
 `service.rpcPort`          | RPC port                           | `8332`
 `service.p2pPort`          | P2P port                           | `8333`
 `service.testnetPort`      | Testnet port                       | `18332`
@@ -60,7 +61,7 @@ For more information about Bitcoin configuration please see [Bitcoin.conf_Config
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```bash
-$ helm install --name my-release -f values.yaml incubator/bitcoind
+$ helm install --name my-release -f values.yaml stable/bitcoind
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
