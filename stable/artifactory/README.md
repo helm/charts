@@ -120,7 +120,7 @@ The following tables lists the configurable parameters of the artifactory chart 
 | `ingress.hosts`             | Artifactory Ingress hostnames       | `[]` |
 | `ingress.tls`               | Artifactory Ingress TLS configuration (YAML) | `[]` |
 | `nginx.name` | Nginx name | `nginx`   |
-| `nginx.enabled` | Deploy nginx server | `false`   |
+| `nginx.enabled` | Deploy nginx server | `true`   |
 | `nginx.replicaCount` | Nginx replica count | `1`   |
 | `nginx.image.repository`    | Container image                   | `docker.bintray.io/jfrog/nginx-artifactory-pro`                |
 | `nginx.image.version`       | Container tag                     | `5.8.4`                                                |
