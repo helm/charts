@@ -4,7 +4,10 @@ metadata:
   # name must match the spec fields below, and be in the form: <plural>.<group>
   name: storagepoolclaims.openebs.io
   labels:
+    app: {{ template "openebs.name" . }}
     chart: {{ template "openebs.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 spec:
   # group name to use for REST API: /apis/<group>/<version>
   group: openebs.io

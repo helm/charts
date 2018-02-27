@@ -11,8 +11,7 @@ metadata:
     chart: {{ template "openebs.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
-    component: {{ template "openebs.fullname" . }}
-    role: prometheus
+    component: prometheus
 spec:
   replicas: 1
   template:
@@ -20,8 +19,7 @@ spec:
       labels:
         app: {{ template "openebs.name" . }}
         release: {{ .Release.Name }}
-        component: {{ template "openebs.fullname" . }}
-        role: prometheus
+        component: prometheus
     spec:
       serviceAccountName: {{ .Values.operator.name }}
       containers:

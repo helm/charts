@@ -11,7 +11,6 @@ metadata:
     chart: {{ template "openebs.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
-    role: prometheus
 spec:
   type: NodePort
   ports:
@@ -22,6 +21,5 @@ spec:
   selector:
     app: {{ template "openebs.name" . }}
     release: {{ .Release.Name }}
-    component: {{ template "openebs.fullname" . }}
-    role: prometheus
+    component: prometheus
 {{- end }}

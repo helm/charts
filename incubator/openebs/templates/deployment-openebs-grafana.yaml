@@ -11,8 +11,7 @@ metadata:
     chart: {{ template "openebs.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
-    component: {{ template "openebs.fullname" . }}
-    role: grafana
+    component: grafana
 spec:
   replicas: 1
   revisionHistoryLimit: 2
@@ -21,8 +20,7 @@ spec:
       labels:
         app: {{ template "openebs.name" . }}
         release: {{ .Release.Name }}
-        component: {{ template "openebs.fullname" . }}
-        role: grafana
+        component: grafana
     spec:
       containers:
       - name: {{ template "openebs.name" . }}-grafana

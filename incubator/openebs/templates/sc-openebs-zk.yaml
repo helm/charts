@@ -4,7 +4,10 @@ kind: StorageClass
 metadata:
   name: openebs-zk
   labels:
+    app: {{ template "openebs.name" . }}
     chart: {{ template "openebs.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 provisioner: openebs.io/provisioner-iscsi
 parameters:
   openebs.io/storage-pool: "default"

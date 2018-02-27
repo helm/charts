@@ -10,8 +10,7 @@ metadata:
     chart: {{ template "openebs.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
-    component: {{ template "openebs.fullname" . }}
-    role: provisioner
+    component: provisioner
 spec:
   replicas: {{ .Values.provisioner.replicas }}
   template:
@@ -19,8 +18,7 @@ spec:
       labels:
         app: {{ template "openebs.name" . }}
         release: {{ .Release.Name }}
-        component: {{ template "openebs.fullname" . }}
-        role: provisioner
+        component: provisioner
     spec:
       serviceAccountName: {{ .Values.operator.name }}
       containers:

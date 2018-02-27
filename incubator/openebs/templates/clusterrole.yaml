@@ -4,7 +4,10 @@ kind: ClusterRole
 metadata:
   name: {{ .Values.operator.name }}
   labels:
+    app: {{ template "openebs.name" . }}
     chart: {{ template "openebs.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 rules:
 - apiGroups: ["*"]
   resources: ["nodes","nodes/proxy"]

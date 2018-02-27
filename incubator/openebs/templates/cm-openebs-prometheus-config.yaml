@@ -11,8 +11,6 @@ metadata:
     chart: {{ template "openebs.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
-    component: {{ template "openebs.fullname" . }}
-    role: prometheus-config
 data:
   prometheus.yml: |-
     global:

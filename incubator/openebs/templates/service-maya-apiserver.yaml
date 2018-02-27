@@ -10,7 +10,6 @@ metadata:
     chart: {{ template "openebs.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
-    role: apiserver
 spec:
   ports:
   - name: api
@@ -20,6 +19,5 @@ spec:
   selector:
     app: {{ template "openebs.name" . }}
     release: {{ .Release.Name }}
-    component: {{ template "openebs.fullname" . }}
-    role: apiserver
+    component: apiserver
   sessionAffinity: None
