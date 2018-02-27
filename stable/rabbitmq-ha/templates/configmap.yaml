@@ -1,0 +1,33 @@
+{{- if not .Values.customConfigMap }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "rabbitmq-ha.fullname" . }}
+  labels:
+    app: {{ template "rabbitmq-ha.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+  enabled_plugins: |
+    [rabbitmq_consistent_hash_exchange,rabbitmq_federation,rabbitmq_federation_management,rabbitmq_management,rabbitmq_mqtt,rabbitmq_peer_discovery_k8s,rabbitmq_shovel,rabbitmq_shovel_management,rabbitmq_stomp,rabbitmq_web_stomp].
+
+  rabbitmq.conf: |
+    ## RabbitMQ configuration
+    ## Ref: https://github.com/rabbitmq/rabbitmq-server/blob/master/docs/rabbitmq.conf.example
+
+    ## Clustering
+    cluster_formation.peer_discovery_backend  = rabbit_peer_discovery_k8s
+    cluster_formation.k8s.host = kubernetes.default.svc.cluster.local
+    cluster_formation.k8s.address_type = ip
+    cluster_formation.node_cleanup.interval = 10
+    cluster_formation.node_cleanup.only_log_warning = false
+    cluster_partition_handling = autoheal
+
+    ## The default "guest" user is only permitted to access the server
+    ## via a loopback interface (e.g. localhost)
+    loopback_users.guest = false
+
+    ## Memory-based Flow Control threshold
+    vm_memory_high_watermark.absolute = {{ .Values.rabbitmqMemoryHighWatermark }}
+{{- end }}

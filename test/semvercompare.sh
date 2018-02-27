@@ -13,11 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-exitCode=0
-
 semvercompareOldVer=""
 semvercompareNewVer=""
-semvercomparePassed=0
 
 # Verify that the semver for the chart was increased
 semvercompare() {
@@ -51,7 +48,7 @@ semvercompare() {
     # No pre-release was found so we increment the patch version and attach a
     # -0 to enable pre-releases being found.
     local ov=( ${semvercompareOldVer//./ } )  # Turn the version into an array
-    ((ov[2]++))                  # Increment the patch release
+    ((ov[2]+=1))                  # Increment the patch release
     out=$(vert ">${ov[0]}.${ov[1]}.${ov[2]}-0" $semvercompareNewVer)
     ret=$?
   fi
@@ -61,7 +58,6 @@ semvercompare() {
     exitCode=1
   else
     echo "New higher version $semvercompareNewVer found"
-    semvercomparePassed=1
   fi
 
   # Clean up

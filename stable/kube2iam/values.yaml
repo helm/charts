@@ -8,10 +8,11 @@ host:
   ip: $(HOST_IP)
   iptables: false
   interface: docker0
+  port: 8181
 
 image:
   repository: jtblin/kube2iam
-  tag: 0.7.0
+  tag: 0.9.0
   pullPolicy: IfNotPresent
 
 # AWS Access keys to inject as environment variables

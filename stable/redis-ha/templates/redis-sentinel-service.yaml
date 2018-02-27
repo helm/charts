@@ -11,7 +11,7 @@ spec:
     - port: 26379
       targetPort: 26379
   selector:
-    redis-sentinel: "true"
+    redis-role: "sentinel"
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"

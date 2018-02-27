@@ -1,5 +1,5 @@
 image:
-  repository: gcr.io/google_containers/kube-registry-proxy
+  repository: k8s.gcr.io/kube-registry-proxy
   tag: 0.4
   pullPolicy: IfNotPresent
 

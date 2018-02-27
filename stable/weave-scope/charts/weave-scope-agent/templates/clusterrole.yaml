@@ -6,7 +6,7 @@ metadata:
   labels:
     {{- include "weave-scope.helm_std_labels" . | indent 4 }}
     component: agent
-  name: {{ .Values.rbac.serviceAccountName | default (include "toplevel.fullname" .) }} 
+  name: {{ template "weave-scope-agent.serviceAccountName" . }} 
   annotations:
     {{- include "weave-scope.annotations" . | indent 4 }}
 rules:

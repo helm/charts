@@ -1,0 +1,51 @@
+{{- if .Values.deployments.etcdOperator }}
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "etcd-operator.fullname" . }}
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app: {{ template "etcd-operator.name" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      name: {{ template "etcd-operator.fullname" . }}
+      labels:
+        app: {{ template "etcd-operator.fullname" . }}
+        release: {{ .Release.Name }}
+    spec:
+      serviceAccountName: {{ template "etcd-operator.serviceAccountName" . }}
+      containers:
+      - name: {{ template "etcd-operator.fullname" . }}
+        image: "{{ .Values.etcdOperator.image.repository }}:{{ .Values.etcdOperator.image.tag }}"
+        imagePullPolicy: {{ .Values.etcdOperator.image.pullPolicy }}
+        command:
+         - etcd-operator
+{{- range $key, $value := .Values.etcdOperator.commandArgs }}
+        - "--{{ $key }}={{ $value }}"
+{{- end }}
+        env:
+        - name: MY_POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: MY_POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        resources:
+          limits:
+            cpu: {{ .Values.etcdOperator.resources.cpu }}
+            memory: {{ .Values.etcdOperator.resources.memory }}
+          requests:
+            cpu: {{ .Values.etcdOperator.resources.cpu }}
+            memory: {{ .Values.etcdOperator.resources.memory }}
+    {{- if .Values.etcdOperator.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.etcdOperator.nodeSelector | indent 8 }}
+    {{- end }}
+{{- end }}

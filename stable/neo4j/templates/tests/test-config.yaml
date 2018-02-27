@@ -28,7 +28,7 @@ data:
       }
 
       for id in {0..2}; do
-        name="${STATEFULSET_NAME}-core-$id.${STATEFULSET_NAME}.default.svc.cluster.local"
+        name="${STATEFULSET_NAME}-core-$id.${STATEFULSET_NAME}.${NAMESPACE}.svc.cluster.local"
         echo "checking $name"
         run check_machine $name
         echo $status
