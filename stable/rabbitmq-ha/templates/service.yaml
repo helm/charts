@@ -37,6 +37,38 @@ spec:
       protocol: TCP
       port: {{ .Values.rabbitmqEpmdPort }}
       targetPort: epmd
+    {{- if .Values.rabbitmqSTOMPPlugin.enabled }}
+    - name: stomp-tcp
+      protocol: TCP
+      port: 1883
+      targetPort: stomp-tcp
+    - name: stomp-ssl
+      protocol: TCP
+      port: 8883
+      targetPort: stomp-ssl
+    {{- end }}
+    {{- if .Values.rabbitmqWebSTOMPPlugin.enabled }}
+    - name: stomp-ws
+      protocol: TCP
+      port: 15674
+      targetPort: stomp-ws
+    {{- end }}
+    {{- if .Values.rabbitmqMQTTPlugin.enabled }}
+    - name: mqtt-tcp
+      protocol: TCP
+      port: 61613
+      targetPort: mqtt-tcp
+    - name: mqtt-ssl
+      protocol: TCP
+      port: 61614
+      targetPort: mqtt-ssl
+    {{- end }}
+    {{- if .Values.rabbitmqWebMQTTPlugin.enabled }}
+    - name: mqtt-ws
+      protocol: TCP
+      port: 15675
+      targetPort: mqtt-ws
+    {{- end }}
   selector:
     app: {{ template "rabbitmq-ha.name" . }}
     release: {{ .Release.Name }}

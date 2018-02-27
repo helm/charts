@@ -17,9 +17,13 @@ spec:
       labels:
         app: {{ template "rabbitmq-ha.name" . }}
         release: {{ .Release.Name }}
+      annotations:
+        {{- if not .Values.customConfigMap }}
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        {{- end }}
     spec:
       terminationGracePeriodSeconds: 10
-      serviceAccountName: {{ if .Values.rbac.create }}{{ template "rabbitmq-ha.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
+      serviceAccountName: {{ template "rabbitmq-ha.serviceAccountName" . }}
       containers:
         - name: {{ .Chart.Name }}
           image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
@@ -34,6 +38,32 @@ spec:
             - name: http
               protocol: TCP
               containerPort: 15672
+            {{- if .Values.rabbitmqSTOMPPlugin.enabled }}
+            - name: stomp-tcp
+              protocol: TCP
+              containerPort: 61613
+            - name: stomp-ssl
+              protocol: TCP
+              containerPort: 61614
+            {{- end }}
+            {{- if .Values.rabbitmqWebSTOMPPlugin.enabled }}
+            - name: stomp-ws
+              protocol: TCP
+              containerPort: 15674
+            {{- end }}
+            {{- if .Values.rabbitmqMQTTPlugin.enabled }}
+            - name: mqtt-tcp
+              protocol: TCP
+              containerPort: 1883
+            - name: mqtt-ssl
+              protocol: TCP
+              containerPort: 8883
+            {{- end }}
+            {{- if .Values.rabbitmqWebMQTTPlugin.enabled }}
+            - name: mqtt-ws
+              protocol: TCP
+              containerPort: 15675
+            {{- end }}
           livenessProbe:
             exec:
               command:

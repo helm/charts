@@ -36,6 +36,65 @@ rabbitmqManagerPort: 15672
 ## of a few minutes delay at startup.
 rabbitmqHipeCompile: false
 
+## LDAP Plugin
+## Ref: http://www.rabbitmq.com/ldap.html
+rabbitmqLDAPPlugin:
+  enabled: false
+
+  ## LDAP configuration:
+  config: |
+    # auth_backends.1 = ldap
+    # auth_ldap.servers.1  = my-ldap-server
+    # auth_ldap.user_dn_pattern = cn=${username},ou=People,dc=example,dc=com
+    # auth_ldap.use_ssl    = false
+    # auth_ldap.port       = 389
+    # auth_ldap.log        = false
+
+## MQTT Plugin
+## Ref: http://www.rabbitmq.com/mqtt.html
+rabbitmqMQTTPlugin:
+  enabled: false
+
+  ## MQTT configuration:
+  config: |
+    # mqtt.default_user     = guest
+    # mqtt.default_pass     = guest
+    # mqtt.allow_anonymous  = true
+
+## Web MQTT Plugin
+## Ref: http://www.rabbitmq.com/web-mqtt.html
+rabbitmqWebMQTTPlugin:
+  enabled: false
+
+  ## Web MQTT configuration:
+  config: |
+    # web_mqtt.ssl.port       = 12345
+    # web_mqtt.ssl.backlog    = 1024
+    # web_mqtt.ssl.certfile   = path/to/certs/client/cert.pem
+    # web_mqtt.ssl.keyfile    = path/to/certs/client/key.pem
+    # web_mqtt.ssl.cacertfile = path/to/certs/testca/cacert.pem
+    # web_mqtt.ssl.password   = changeme
+
+## STOMP Plugin
+## Ref: http://www.rabbitmq.com/stomp.html
+rabbitmqSTOMPPlugin:
+  enabled: false
+
+  ## STOMP configuration:
+  config: |
+    # stomp.default_user = guest
+    # stomp.default_pass = guest
+
+## Web STOMP Plugin
+## Ref: http://www.rabbitmq.com/web-stomp.html
+rabbitmqWebSTOMPPlugin:
+  enabled: false
+
+  ## Web STOMP configuration:
+  config: |
+    # web_stomp.ws_frame = binary
+    # web_stomp.cowboy_opts.max_keepalive = 10
+
 ## Number of replicas
 replicaCount: 3
 
@@ -119,5 +178,12 @@ customConfigMap: false
 rbac:
   create: true
 
-  # Defines the serviceAccountName to use when `rbac.create=false`
-  serviceAccountName: default
+## Service Account
+## Ref: https://kubernetes.io/docs/admin/service-accounts-admin/
+##
+serviceAccount:
+  create: true
+
+  ## The name of the ServiceAccount to use.
+  ## If not set and create is true, a name is generated using the fullname template
+  # name:

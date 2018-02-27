@@ -10,7 +10,35 @@ metadata:
     heritage: {{ .Release.Service }}
 data:
   enabled_plugins: |
-    [rabbitmq_consistent_hash_exchange,rabbitmq_federation,rabbitmq_federation_management,rabbitmq_management,rabbitmq_mqtt,rabbitmq_peer_discovery_k8s,rabbitmq_shovel,rabbitmq_shovel_management,rabbitmq_stomp,rabbitmq_web_stomp].
+    [
+      {{- if .Values.rabbitmqLDAPPlugin.enabled }}
+      rabbitmq_auth_backend_ldap,
+      {{- end }}
+
+      {{- if .Values.rabbitmqMQTTPlugin.enabled }}
+      rabbitmq_mqtt,
+      {{- end }}
+
+      {{- if .Values.rabbitmqWebMQTTPlugin.enabled }}
+      rabbitmq_web_mqtt,
+      {{- end }}
+
+      {{- if .Values.rabbitmqSTOMPPlugin.enabled }}
+      rabbitmq_stomp,
+      {{- end }}
+
+      {{- if .Values.rabbitmqWebSTOMPPlugin.enabled }}
+      rabbitmq_web_stomp,
+      {{- end }}
+
+      rabbitmq_consistent_hash_exchange,
+      rabbitmq_federation,
+      rabbitmq_federation_management,
+      rabbitmq_management,
+      rabbitmq_peer_discovery_k8s,
+      rabbitmq_shovel,
+      rabbitmq_shovel_management
+    ].
 
   rabbitmq.conf: |
     ## RabbitMQ configuration
@@ -30,4 +58,29 @@ data:
 
     ## Memory-based Flow Control threshold
     vm_memory_high_watermark.absolute = {{ .Values.rabbitmqMemoryHighWatermark }}
+
+    ## LDAP Plugin
+    {{- if .Values.rabbitmqLDAPPlugin.enabled }}
+{{ .Values.rabbitmqLDAPPlugin.config | indent 4 }}
+    {{- end }}
+
+    ## MQTT Plugin
+    {{- if .Values.rabbitmqMQTTPlugin.enabled }}
+{{ .Values.rabbitmqMQTTPlugin.config | indent 4 }}
+    {{- end }}
+
+    ## Web MQTT Plugin
+    {{- if .Values.rabbitmqWebMQTTPlugin.enabled }}
+{{ .Values.rabbitmqWebMQTTPlugin.config | indent 4 }}
+    {{- end }}
+
+    ## STOMP Plugin
+    {{- if .Values.rabbitmqSTOMPPlugin.enabled }}
+{{ .Values.rabbitmqSTOMPPlugin.config | indent 4 }}
+    {{- end }}
+
+    ## Web STOMP Plugin
+    {{- if .Values.rabbitmqWebSTOMPPlugin.enabled }}
+{{ .Values.rabbitmqWebSTOMPPlugin.config | indent 4 }}
+    {{- end }}
 {{- end }}
