@@ -21,6 +21,7 @@ spec:
         - run
         - --v={{ .Values.logLevel }}
         - --connector=incluster
+        - --tiller-insecure-skip-verify=true
         image: {{ .Values.swift.image }}:{{ .Values.swift.tag }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         {{- if .Values.imagePullSecrets }}
