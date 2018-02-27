@@ -55,11 +55,11 @@ spec:
         # The following values will be set as annotations to the PV object.
         # Refer : https://github.com/openebs/external-storage/pull/15
         #- name: OPENEBS_MONITOR_URL
-        #  value: "{{ .Values.provisioner.monitorurl }}"
+        #  value: "{{ .Values.provisioner.monitorUrl }}"
         #- name: OPENEBS_MONITOR_VOLKEY
-        #  value: "{{ .Values.provisioner.monitorvolkey }}"
+        #  value: "{{ .Values.provisioner.monitorVolumeKey }}"
         #- name: MAYA_PORTAL_URL
-        #  value: "{{ .Values.provisioner.mayaportalurl }}"
+        #  value: "{{ .Values.provisioner.mayaPortalUrl }}"
 
 {{- if .Values.provisioner.nodeSelector }}
       nodeSelector:
