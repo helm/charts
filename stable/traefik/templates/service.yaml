@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: {{ template "traefik.fullname" . }}
   labels:
-    app: {{ template "traefik.fullname" . }}
+    app: {{ template "traefik.name" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -30,7 +30,8 @@ spec:
     {{- end }}
   {{- end }}
   selector:
-    app: {{ template "traefik.fullname" . }}
+    app: {{ template "traefik.name" . }}
+    release: {{ .Release.Name }}     
   ports:
   - port: 80
     name: http

@@ -4,7 +4,7 @@ kind: Service
 metadata:
   name: {{ template "traefik.fullname" . }}-dashboard
   labels:
-    app: {{ template "traefik.fullname" . }}
+    app: {{ template "traefik.name" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -16,7 +16,8 @@ metadata:
   {{- end }}
 spec:
   selector:
-    app: {{ template "traefik.fullname" . }}
+    app: {{ template "traefik.name" . }}
+    release: {{ .Release.Name }}
   ports:
   - port: 80
     targetPort: 8080

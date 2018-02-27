@@ -4,7 +4,7 @@ kind: Ingress
 metadata:
   name: {{ template "traefik.fullname" . }}-dashboard
   labels:
-    app: {{ template "traefik.fullname" . }}
+    app: {{ template "traefik.name" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"

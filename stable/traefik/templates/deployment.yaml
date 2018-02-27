@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: {{ template "traefik.fullname" . }}
   labels:
-    app: {{ template "traefik.fullname" . }}
+    app: {{ template "traefik.name" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -11,7 +11,8 @@ spec:
   replicas: {{ default 1 .Values.replicas }}
   selector:
     matchLabels:
-      app: {{ template "traefik.fullname" . }}
+      app: {{ template "traefik.name" . }}
+      release: {{ .Release.Name }}
   template:
     metadata:
       annotations:
@@ -23,7 +24,7 @@ spec:
         {{ $key }}: {{ $value | quote }}
       {{- end }}
       labels:
-        app: {{ template "traefik.fullname" . }}
+        app: {{ template "traefik.name" . }}
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         release: "{{ .Release.Name }}"
         heritage: "{{ .Release.Service }}"
