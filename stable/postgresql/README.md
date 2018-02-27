@@ -88,7 +88,7 @@ $ helm install --name my-release \
     stable/postgresql
 ```
 
-The above command creates a PostgresSQL user named `root` with password `secretpassword`. Additionally it creates a database named `my-database`.
+The above command creates a PostgreSQL user named `root` with password `secretpassword`. Additionally it creates a database named `my-database`.
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 

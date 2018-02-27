@@ -279,6 +279,7 @@ If `persistence` is enabled, PVC's will be used to store the web root and the db
 
 To be able to connect to the services provided by the LAMP chart, a Kubernetes cluster with working LoadBalancer or Ingress Controller support is necessary.
 By default the chart will create a LoadBalancer Service, all services will be available via LoadBalancer IP through different ports. You can set `service.type` to ClusterIP if you do not want your chart to be exposed at all.
+
 If `ingress.enabled` is set to true, the LAMP charts services are made accessible via ingress rules. Those services which are not provided by HTTP protocol via `nodePorts`. In ingress mode the LAMP chart also supports ssl with certificates signed by lets encrypt. This requires a working [lego](https://github.com/jetstack/kube-lego) container running on the cluster.
 
 > **Note**: In ingress mode it is mandatory to set `ingress.domain`, otherwise the ingress rules won't know how to route the traffic to the services.

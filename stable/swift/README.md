@@ -42,7 +42,7 @@ The following tables lists the configurable parameters of the swift chart and th
 | --------------------------| --------------------------------------------------------------| -----------------|
 | `replicaCount`            | Number of swift replicas to create (only 1 is supported)      | `1`              |
 | `swift.image`             | swift container image                                         | `appscode/swift` |
-| `swift.tag`               | swift container image tag                                     | `0.5.2`          |
+| `swift.tag`               | swift container image tag                                     | `0.7.2`          |
 | `imagePullSecrets`        | Specify image pull secrets                                    | `nil` (does not add image pull secrets to deployed pods) |
 | `imagePullPolicy`         | Image pull policy                                             | `IfNotPresent`   |
 | `logLevel`                | Log level for proxy                                           | `3`              |

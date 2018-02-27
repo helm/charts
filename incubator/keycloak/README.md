@@ -86,6 +86,9 @@ Parameter | Description | Default
 `postgresql.postgresUser` | The PostgreSQL user (if `keycloak.persistence.deployPostgres=true`) | `keycloak`
 `postgresql.postgresPassword` | The PostgreSQL password (if `keycloak.persistence.deployPostgres=true`) | `""`
 `postgresql.postgresDatabase` | The PostgreSQL database (if `keycloak.persistence.deployPostgres=true`) | `keycloak`
+`rbac.create` | Specifies whether RBAC resources should be created | `true`
+`serviceAccount.create` | Specifies whether a ServiceAccount should be created | `true`
+`serviceAccount.name` | The name of the ServiceAccount to use. If not set and create is true, a name is generated using the fullname template | `""`
 `test.image.repository` | Test image repository | `unguiculus/docker-python3-phantomjs-selenium`
 `test.image.tag` | Test image tag | `v1`
 `test.image.pullPolicy` | Test image pull policy | `IfNotPresent`

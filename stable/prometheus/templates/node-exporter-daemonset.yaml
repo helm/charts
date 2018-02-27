@@ -58,6 +58,11 @@ spec:
               mountPath: {{ .mountPath }}
               readOnly: {{ .readOnly }}
           {{- end }}
+          {{- range .Values.nodeExporter.extraConfigmapMounts }}
+            - name: {{ .name }}
+              mountPath: {{ .mountPath }}
+              readOnly: {{ .readOnly }}
+          {{- end }}
       hostNetwork: true
       hostPID: true
     {{- if .Values.nodeExporter.tolerations }}
@@ -67,6 +72,10 @@ spec:
     {{- if .Values.nodeExporter.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeExporter.nodeSelector | indent 8 }}
+    {{- end }}
+    {{- if .Values.nodeExporter.securityContext }}
+      securityContext:
+{{ toYaml .Values.nodeExporter.securityContext | indent 8 }}
     {{- end }}
       volumes:
         - name: proc
@@ -80,4 +89,10 @@ spec:
           hostPath:
             path: {{ .hostPath }}
       {{- end }}
+      {{- range .Values.nodeExporter.extraConfigmapMounts }}
+        - name: {{ .name }}
+          configMap:
+            name: {{ .configMap }}
+      {{- end }}
+
 {{- end -}}
