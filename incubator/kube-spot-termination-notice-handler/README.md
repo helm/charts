@@ -26,5 +26,6 @@ You may set these options in your values file:
 
 * `slackUrl` - optional - put a slack webhook URL here to get messaged when a termination notice is received.
 
-* `pollInterval` - how often to query the EC2 metadata for termination notices. Defaults to every `5` seconds.
+* `clusterName` - optional - when slack is configured use this cluster name for reports
 
+* `pollInterval` - how often to query the EC2 metadata for termination notices. Defaults to every `5` seconds.

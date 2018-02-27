@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "jaeger.agent.service.name" . }}-agent
+  name: {{ template "jaeger.agent.name" . }}-agent
   labels:
     app: {{ template "jaeger.name" . }}
     jaeger-infra: agent-service
