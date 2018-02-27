@@ -40,15 +40,15 @@ spec:
         - name: TESTLINK_LANGUAGE
           value: {{ default "" .Values.testlinkLanguage | quote }}
         - name: SMTP_ENABLE
-          value: {{ default "" .Values.smtpEnable | quote }}
+          value: {{ .Values.smtpEnable | quote }}
         - name: SMTP_CONNECTION_MODE
-          value: {{ default "" .Values.smtpConnectionMode | quote }}
+          value: {{ .Values.smtpConnectionMode | quote }}
         - name: SMTP_HOST
-          value: {{ default "" .Values.smtpHost | quote }}
+          value: {{ .Values.smtpHost | quote }}
         - name: SMTP_PORT
-          value: {{ default "" .Values.smtpPort | quote }}
+          value: {{ .Values.smtpPort | quote }}
         - name: SMTP_USER
-          value: {{ default "" .Values.smtpUser | quote }}
+          value: {{ .Values.smtpUser | quote }}
         - name: SMTP_PASSWORD
           valueFrom:
             secretKeyRef:
