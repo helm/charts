@@ -2,7 +2,7 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: {{ template "gocd.fullname" . }}
+  name: {{ template "gocd.fullname" . }}-server
   labels:
     app: {{ template "gocd.name" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
@@ -16,9 +16,11 @@ spec:
     requests:
       storage: {{ .Values.server.persistence.size | quote }}
 {{- if .Values.server.persistence.storageClass }}
-  storageClassName: {{ .Values.server.persistence.storageClass }}
-{{- else }}
+{{- if (eq "-" .Values.server.persistence.storageClass) }}
   storageClassName: ""
+{{- else }}
+  storageClassName: {{ .Values.server.persistence.storageClass }}
+{{- end }}
 {{- end }}
 {{- if .Values.server.persistence.pvSelector }}
   selector:

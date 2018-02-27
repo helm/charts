@@ -26,7 +26,7 @@ spec:
       volumes:
         - name: goagent-vol
           persistentVolumeClaim:
-            claimName: {{ template "gocd.fullname" . }}-agent
+            claimName: {{ .Values.agent.persistence.existingClaim | default (printf "%s-%s" (include "gocd.fullname" .) "agent")  }}
       {{- end }}
       containers:
         - name: {{ template "gocd.name" . }}-agent
