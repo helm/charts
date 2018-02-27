@@ -11,6 +11,8 @@ metadata:
     component: server
 spec:
   replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: {{ template "gocd.name" . }}
@@ -27,7 +29,7 @@ spec:
       volumes:
         - name: goserver-vol
           persistentVolumeClaim:
-            claimName: {{ template "gocd.fullname" . }}
+            claimName: {{ .Values.server.persistence.existingClaim | default (printf "%s-%s" (include "gocd.fullname" .) "server") }}
       {{- end }}
       containers:
         - name: {{ template "gocd.name" . }}-server
@@ -54,11 +56,14 @@ spec:
               port: 8153
             initialDelaySeconds: {{ .Values.server.healthCheck.initialDelaySeconds }}
             periodSeconds: {{ .Values.server.healthCheck.periodSeconds }}
+            failureThreshold: {{ .Values.server.healthCheck.failureThreshold }}
           readinessProbe:
             httpGet:
               path: /go/api/v1/health
               port: 8153
             initialDelaySeconds: {{ .Values.server.healthCheck.initialDelaySeconds }}
+            periodSeconds: {{ .Values.server.healthCheck.periodSeconds }}
+            failureThreshold: {{ .Values.server.healthCheck.failureThreshold }}
           {{- if .Values.server.persistence.enabled }}
           volumeMounts:
             - name: goserver-vol
