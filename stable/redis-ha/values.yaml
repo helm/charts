@@ -15,8 +15,10 @@ resources:
     limits:
       memory: 200Mi
 
-# On GKE we need to set service account or change the default
-#serviceAccountName: redis
+## On GKE we need to set service account or change the default
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
+## ref: https://kubernetes.io/docs/admin/service-accounts-admin/
+serviceAccountName: default
 
 ## Node labels and tolerations for pod assignment
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
