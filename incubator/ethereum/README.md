@@ -27,7 +27,12 @@ The chart can be installed as follows:
 
 ```console
 $ helm install --name my-release incubator/ethereum
+   --set geth.account.publicKey=[PUBLIC_KEY]
+   --set geth.account.privateKey=[PRIVATE_KEY]
+   --set geth.account.secret=[SECRET]
 ```
+
+Although the chart can be installed without specifying any additional configurations, in order to have a working Ethereum network, a Geth account (public key, private key, secret) must be configured. To create a new account, refer to [Managing Your Account](https://github.com/ethereum/go-ethereum/wiki/Managing-your-accounts).
 
 ## Uninstalling the Chart
 
@@ -76,3 +81,4 @@ Alternatively, a YAML file that specifies the values for the above parameters ca
 ```console
 $ helm install incubator/ethereum -f values.yaml 
 ```
+
