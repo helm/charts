@@ -71,8 +71,13 @@ The configuration parameters in this section control the resources requested and
 | `resources.requests.cpu` | The amount of CPU to request. As ZooKeeper is not very CPU intensive, `2` is a good choice to start with for a production deployment. | `500m` |
 | `heap` | The amount of JVM heap that the ZooKeeper servers will use. As ZooKeeper stores all of its data in memory, this value should reflect the size of your working set. The JVM -Xms/-Xmx format is used. |`2G` |
 | `resources.requests.memory` | The amount of memory to request. This value should be at least 2 GiB larger than `heap` to avoid swapping. You may want to use `1.5 * heap` for values larger than 2GiB. The Kubernetes format is used. |`2Gi` |
-| `storage` | The amount of storage to request. Even though ZooKeeper keeps is working set in memory, it logs all transactions, and periodically snapshots, to storage media. The amount of storage required will vary with your workload, working memory size, and log and snapshot retention policy. Note that, on some cloud providers selecting a small volume size will result is sub-par I/O performance. 250 GiB is a good place to start for production workloads. | `50Gi`|
-| `storageClass` | The storage class of the storage allocated for the ensemble. If this value is present, it will add an annotation asking the PV Provisioner for that storage class. | `default` |
+
+### Persistence
+| Parameter | Description | Default |
+| --------- | ----------- | ------- |
+| `persistence.enabled` | Whether to create a PVC. If `false`, an `emptyDir` on the host will be used. | `true` |
+| `persistence.size` | Size of PVC that gets created. For production deployments this value should likely be much larger. | `5Gi` |
+| `persistence.storageClass` | Valid options: `nil`, `"-"`, or storage class name. See values.yaml for details. | `nil` |
 
 ### Network
 These parameters control the network ports on which the ensemble communicates.
