@@ -1,8 +1,8 @@
-{{- if .Values.rbacEnable }}
+{{- if .Values.rbac.create }}
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRole
 metadata:
-  name: {{ .Values.operator.name }}
+  name: {{ .Values.serviceAccount.name }}
   labels:
     app: {{ template "openebs.name" . }}
     chart: {{ template "openebs.chart" . }}

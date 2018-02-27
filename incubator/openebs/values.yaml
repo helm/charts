@@ -2,13 +2,14 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-## If true, create & use RBAC resources
-##
-rbacEnable: true
 rbac:
+  # Specifies whether RBAC resources should be created
+  create: true
+  # Specifies the namespace that will containe openebs control plane components
   namespace: "openebs"
 
-operator:
+serviceAccount:
+  create: true
   name: "openebs-maya-operator"
 
 image:

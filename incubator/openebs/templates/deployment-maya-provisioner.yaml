@@ -2,7 +2,7 @@ apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
   name: {{ template "openebs.fullname" . }}-provisioner
-{{- if .Values.rbacEnable }}
+{{- if .Values.rbac.create }}
   namespace: {{ .Values.rbac.namespace }}
 {{- end }}
   labels:
@@ -20,7 +20,7 @@ spec:
         release: {{ .Release.Name }}
         component: provisioner
     spec:
-      serviceAccountName: {{ .Values.operator.name }}
+      serviceAccountName: {{ .Values.serviceAccount.name }}
       containers:
       - name: {{ template "openebs.name" . }}-provisioner
         image: "{{ .Values.provisioner.image }}:{{ .Values.provisioner.imageTag }}"
@@ -38,7 +38,7 @@ spec:
         #  value: "/home/ubuntu/.kube/config"
         # OPENEBS_NAMESPACE is the namespace that this provisioner will
         # lookup to find maya api service
-{{- if .Values.rbacEnable }}
+{{- if .Values.rbac.create }}
         - name: OPENEBS_NAMESPACE
           value: "{{ .Values.rbac.namespace }}"
 {{- end }}

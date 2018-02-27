@@ -3,7 +3,7 @@ apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
   name: {{ template "openebs.fullname" . }}-grafana
-{{- if .Values.rbacEnable }}
+{{- if .Values.rbac.create }}
   namespace: {{ .Values.rbac.namespace }}
 {{- end }}
   labels:
