@@ -1,5 +1,5 @@
 The OpenEBS has been installed. Check its status by running:
-  kubectl get pods -l "name=maya-apiserver"
+  kubectl get pod -n openebs
 
 To use OpenEBS Volumes, your nodes should have the iSCSI initiator installed. 
 Please visit http://openebs.readthedocs.io/en/latest/getting_started/quick_install.html for instructions
