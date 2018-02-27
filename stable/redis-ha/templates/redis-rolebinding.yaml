@@ -4,7 +4,7 @@ kind: RoleBinding
 metadata:
   name: {{ template "fullname" . }}
   labels:
-    app: "redis-ha"
+    app: {{ .Chart.Name }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
@@ -14,5 +14,5 @@ roleRef:
   name: {{ template "fullname" . }}
 subjects:
 - kind: ServiceAccount
-  name: {{ template "fullname" . }}
+  name: {{ template "redis-ha.serviceAccountName" . }}
 {{- end -}}
