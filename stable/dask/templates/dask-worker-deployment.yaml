@@ -21,7 +21,10 @@ spec:
     spec:
       containers:
         - name: {{ template "dask.worker-fullname" . }}
-          image: "{{ .Values.worker.image }}:{{ .Values.worker.imageTag }}"
+          image: 
+            repository: {{ .Values.worker.image | quote }}
+            tag: {{ .Values.worker.imageTag | quote }}
+            pullPolicy: IfNotPresent
           args: ["dask-worker",
                  '{{ template "dask.scheduler-fullname" . }}:{{ .Values.scheduler.servicePort }}',
                  {{- if .Values.worker.limits -}}

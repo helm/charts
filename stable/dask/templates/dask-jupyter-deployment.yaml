@@ -21,7 +21,10 @@ spec:
     spec:
       containers:
         - name: {{ template "dask.jupyter-fullname" . }}
-          image: "{{ .Values.jupyter.image }}:{{ .Values.jupyter.imageTag }}"
+          image: 
+            repository: {{ .Values.jupyter.image | quote }}
+            tag: {{ .Values.jupyter.imageTag | quote }}
+            pullPolicy: IfNotPresent
           ports:
             - containerPort: {{ .Values.jupyter.containerPort }}
           resources:
