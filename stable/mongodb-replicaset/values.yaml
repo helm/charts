@@ -11,9 +11,12 @@ auth:
   enabled: false
   # adminUser: username
   # adminPassword: password
+  # metricsUser: metrics
+  # metricsPassword: password
   # key: keycontent
   # existingKeySecret:
   # existingAdminSecret:
+  # exisitingMetricsSecret:
 
 # Specs for the Docker image for the init container that establishes the replica set
 installImage:
@@ -31,6 +34,19 @@ image:
 extraVars: {}
 # - name: TCMALLOC_AGGRESSIVE_DECOMMIT
 #   value: "true"
+
+# Prometheus Metrics Exporter
+metrics:
+  enabled: false
+  # repository: ssalaues/mongodb-exporter
+  # tag: 0.5
+  # imagePullPolicy: IfNotPresent
+  # resources: {}
+  # Prometheus annotations not necessary with prometheus-operator
+  # annotations:
+  #   prometheus.io/scrape: "true"
+  #   prometheus.io/port: "9216"
+  #   prometheus.io/path: "/metrics"
 
 # Annotations to be added to MongoDB pods
 podAnnotations: {}

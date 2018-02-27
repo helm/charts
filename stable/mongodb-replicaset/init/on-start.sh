@@ -21,6 +21,11 @@ if [[ "$AUTH" == "true" ]]; then
     admin_user="$ADMIN_USER"
     admin_password="$ADMIN_PASSWORD"
     admin_creds=(-u "$admin_user" -p "$admin_password")
+    if [[ "$METRICS" == "true" ]]; then
+        metrics_user="$METRICS_USER"
+        metrics_password="$METRICS_PASSWORD"
+        monitor_creds=(-u "$monitor_user" -p "$admin_password")
+    fi
     auth_args=(--auth --keyFile=/data/configdb/key.txt)
 fi
 
@@ -143,6 +148,10 @@ if mongo "${ssl_args[@]}" --eval "rs.status()" | grep "no replset config has bee
     if [[ "$AUTH" == "true" ]]; then
         log "Creating admin user..."
         mongo admin "${ssl_args[@]}" --eval "db.createUser({user: '$admin_user', pwd: '$admin_password', roles: [{role: 'root', db: 'admin'}]})"
+        if [[ "$METRICS" == "true" ]]; then
+            log "Creating cluterMonitor user..."
+            mongo admin "${ssl_args[@]}" --eval "db.auth('$admin_user', '$admin_password'); db.createUser({user: '$metrics_user', pwd: '$metrics_password', roles: [{role: 'clusterMonitor', db: 'admin'}]})"
+        fi
     fi
 
     log "Done."
