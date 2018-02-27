@@ -14,8 +14,6 @@ resources:
     cpu: 1
     memory: 4Gi
 heap: "2G"
-storage: "50Gi"
-# storageClass: default
 serverPort: 2888
 leaderElectionPort: 3888
 clientPort: 2181
@@ -56,3 +54,22 @@ affinity: {}
 ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
 ##
 nodeSelector: {}
+
+## Persistence configuration. Specify if and how to persist data to a persistent volume.
+##
+persistence:
+  enabled: true
+
+  ## The size of the PersistentVolume to allocate to each Zookeeper Pod in the StatefulSet. For
+  ## production servers this number should likely be much larger.
+  ##
+  size: "5Gi"
+
+  ## Zookeeper data Persistent Volume Storage Class
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  ##
+  # storageClass:
