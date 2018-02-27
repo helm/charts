@@ -66,6 +66,7 @@ The following tables lists the configurable parameters of the Redis chart and th
 | `resources.sentinel`             | CPU/Memory for sentinel node resource requests/limits | Memory: `200Mi`, CPU: `100m`                              |
 | `replicas.servers`               | Number of redis master/slave pods                     | 3                                                         |
 | `replicas.sentinels`             | Number of sentinel pods                               | 3                                                         |
+| `serviceAccountName`             | Service account which allows pod to set tags          | default                                                   |
 | `nodeSelector`                   | Node labels for pod assignment                        | {}                                                        |
 | `tolerations`                    | Toleration labels for pod assignment                  | []                                                        |
 | `servers.serviceType`            | Set to "LoadBalancer" to enable access from the VPC   | ClusterIP                                                 |
