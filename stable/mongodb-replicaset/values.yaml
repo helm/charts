@@ -20,7 +20,7 @@ installImage:
 # Specs for the MongoDB image
 image:
   name: mongo
-  tag: 3.4
+  tag: 3.6
   pullPolicy: IfNotPresent
 
 # Annotations to be added to MongoDB pods
@@ -77,6 +77,8 @@ configmap:
     dbPath: /data/db
   net:
     port: 27017
+    # For Mongo 3.6 we also need to bind to outside world
+    bindIpAll: true
     # Uncomment for TLS support
     # ssl:
     #   mode: requireSSL
