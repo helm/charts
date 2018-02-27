@@ -42,7 +42,7 @@ The following tables lists the configurable parameters of the bitcoind chart and
 
 Parameter                  | Description                        | Default
 -----------------------    | ---------------------------------- | ----------------------------------------------------------
-`imageTag`                 | `bitcoind` image tag.              | Most recent release
+`imageTag`                 | `bitcoind` image tag.              | `stable`
 `imagePullPolicy`          | Image pull policy                  | `IfNotPresent`
 `service.rpcPort`          | RPC port                           | `8332`
 `service.p2pPort`          | P2P port                           | `8333`

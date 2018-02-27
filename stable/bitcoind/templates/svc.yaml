@@ -4,9 +4,9 @@ metadata:
   name: {{ template "bitcoind.fullname" . }}
   labels:
     app: {{ template "bitcoind.name" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    chart: {{ template "bitcoind.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 spec:
   ports:
     - name: rpc
@@ -21,5 +21,5 @@ spec:
       port: {{ .Values.service.testnetP2pPort }}
   selector:
     app: {{ template "bitcoind.name" . }}
-    release: "{{ .Release.Name }}"
+    release: {{ .Release.Name }}
     bitcoind-rotation: {{ .Values.service.selector }}

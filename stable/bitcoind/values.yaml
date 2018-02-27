@@ -1,6 +1,10 @@
+# Default values for bitcoind.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
 image:
-  repository: "kylemanna/bitcoind"
-  tag: "latest"
+  repository: kuberstack/bitcoind
+  tag: stable
   pullPolicy: IfNotPresent
 
 service:
