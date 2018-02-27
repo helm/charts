@@ -2,9 +2,9 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: {{ template "fullname" . }}-dashboard
+  name: {{ template "traefik.fullname" . }}-dashboard
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "traefik.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -25,6 +25,6 @@ spec:
     http:
       paths:
       - backend:
-          serviceName: {{ template "fullname" . }}-dashboard
+          serviceName: {{ template "traefik.fullname" . }}-dashboard
           servicePort: 80
 {{- end }}
