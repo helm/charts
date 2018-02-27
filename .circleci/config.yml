@@ -2,8 +2,7 @@ version: 2
 jobs:
    build:
      docker:
-       # TODO: Update to 3.6.3 when the image become available
-       - image: circleci/python:3.6.2
+       - image: circleci/python:3.6.4
      steps:
        - checkout
        - run:
