@@ -4,7 +4,7 @@ kind: StorageClass
 metadata:
   name: openebs-percona
   labels:
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    chart: {{ template "openebs.chart" . }}
 provisioner: openebs.io/provisioner-iscsi
 parameters:
   openebs.io/storage-pool: "default"

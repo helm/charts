@@ -4,7 +4,7 @@ kind: ClusterRole
 metadata:
   name: {{ .Values.operator.name }}
   labels:
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    chart: {{ template "openebs.chart" . }}
 rules:
 - apiGroups: ["*"]
   resources: ["nodes","nodes/proxy"]
