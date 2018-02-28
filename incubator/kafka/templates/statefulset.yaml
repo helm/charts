@@ -86,7 +86,13 @@ spec:
           /etc/confluent/docker/run
         volumeMounts:
         - name: datadir
-          mountPath: "{{ .Values.dataDirectory }}"
+          mountPath: {{ .Values.persistence.mountPath | quote }}
+      {{- if not .Values.persistence.enabled }}
+      volumes:
+      - name: datadir
+        emptyDir: {}
+      {{- end }}
+  {{- if .Values.persistence.enabled }}
   volumeClaimTemplates:
   - metadata:
       name: datadir
@@ -94,7 +100,12 @@ spec:
       accessModes: [ "ReadWriteOnce" ]
       resources:
         requests:
-          storage: {{ .Values.storage }}
-      {{- if .Values.storageClass }}
-      storageClassName: {{ .Values.storageClass | quote }}
+          storage: {{ .Values.persistence.size }}
+      {{- if .Values.persistence.storageClass }}
+      {{- if (eq "-" .Values.persistence.storageClass) }}
+      storageClassName: ""
+      {{- else }}
+      storageClassName: "{{ .Values.persistence.storageClass }}"
       {{- end }}
+      {{- end }}
+  {{- end }}
