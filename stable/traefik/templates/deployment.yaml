@@ -1,9 +1,9 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "traefik.fullname" . }}
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "traefik.name" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -11,7 +11,8 @@ spec:
   replicas: {{ default 1 .Values.replicas }}
   selector:
     matchLabels:
-      app: {{ template "fullname" . }}
+      app: {{ template "traefik.name" . }}
+      release: {{ .Release.Name }}
   template:
     metadata:
       annotations:
@@ -23,13 +24,13 @@ spec:
         {{ $key }}: {{ $value | quote }}
       {{- end }}
       labels:
-        app: {{ template "fullname" . }}
+        app: {{ template "traefik.name" . }}
         chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         release: "{{ .Release.Name }}"
         heritage: "{{ .Release.Service }}"
     spec:
       {{- if .Values.rbac.enabled }}
-      serviceAccountName: {{ template "fullname" . }}
+      serviceAccountName: {{ template "traefik.fullname" . }}
       {{- else }}
       serviceAccountName: default
       {{- end }}
@@ -40,7 +41,7 @@ spec:
       {{- end }}
       containers:
       - image: {{ .Values.image }}:{{ .Values.imageTag }}
-        name: {{ template "fullname" . }}
+        name: {{ template "traefik.fullname" . }}
         resources:
           requests:
             cpu: "{{ .Values.cpuRequest }}"
@@ -70,7 +71,7 @@ spec:
           - name: {{ $k }}
             valueFrom:
               secretKeyRef:
-                name: {{ template "fullname" $ }}-dnsprovider-config
+                name: {{ template "traefik.fullname" $ }}-dnsprovider-config
                 key: {{ $k }}
         {{- end }}
         {{- end }}
@@ -114,17 +115,17 @@ spec:
       volumes:
       - name: config
         configMap:
-          name: {{ template "fullname" . }}
+          name: {{ template "traefik.fullname" . }}
       {{- if .Values.ssl.enabled }}
       - name: ssl
         secret:
-          secretName: {{ template "fullname" . }}-default-cert
+          secretName: {{ template "traefik.fullname" . }}-default-cert
       {{- end }}
       {{- if .Values.acme.enabled }}
       - name: acme
       {{- if .Values.acme.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ template "fullname" . }}-acme
+          claimName: {{ template "traefik.fullname" . }}-acme
       {{- else }}
         emptyDir: {}
       {{- end }}
