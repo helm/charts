@@ -93,6 +93,10 @@ service:
   ## Requires service.type: NodePort
   # nodePort:
 
+  ## Manually set loadBalancerIP value
+  ## Requires service.type: LoadBalancer
+  # loadBalancerIP:
+
 networkPolicy:
   ## Enable creation of NetworkPolicy resources.
   ##
