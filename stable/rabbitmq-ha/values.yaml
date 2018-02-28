@@ -41,9 +41,9 @@ rabbitmqHipeCompile: false
 rabbitmqCert:
   enabled: false
 
-  cacertfile: ""
-  certfile: ""
-  keyfile: ""
+  cacertfile: |
+  certfile: |
+  keyfile: |
 
 ## Authentification mecanism
 ## Ref: http://www.rabbitmq.com/authentication.html
