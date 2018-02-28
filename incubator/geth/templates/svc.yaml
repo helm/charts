@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "geth.fullname" . }}
+  labels:
+    app: {{ template "geth.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  ports:
+    - name: rpc
+      port: {{ .Values.rpcPort }}
+      targetPort: rpc
+    - name: ws
+      port: {{ .Values.wsPort }}
+      targetPort: ws
+  selector:
+    app: {{ template "geth.name" . }}
+    release: "{{ .Release.Name }}"

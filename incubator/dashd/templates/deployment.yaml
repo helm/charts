@@ -1,0 +1,54 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "dashd.fullname" . }}
+  labels:
+    app: {{ template "dashd.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  template:
+    metadata:
+      labels:
+        app: {{ template "dashd.name" . }}
+        release: "{{ .Release.Name }}"
+    spec:
+      containers:
+        - name: {{ template "dashd.fullname" . }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
+          resources:
+  {{ toYaml .Values.resources | indent 10 }}
+          ports:
+            - name: rpc
+              containerPort: {{ .Values.rpcPort }}
+          volumeMounts:
+            - name: data
+              mountPath: /dash
+            {{- if .Values.ssl.enabled }}
+            - name: ssl
+              mountPath: /etc/dashd-ssl
+            {{- end }}
+            {{- if .Values.configurationFiles }}
+            - name: configurations
+              mountPath: /etc/dashd
+            {{- end }}
+      volumes:
+        {{- if .Values.ssl.enabled }}
+        - name: ssl
+          secret:
+            secretName: {{ .Values.ssl.secretName  }}
+        {{- end }}
+        {{- if .Values.configurationFiles }}
+        - name: configurations
+          configMap:
+            name: {{ template "dashd.fullname" . }}
+        {{- end }}
+        - name: data
+        {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.existingClaim | default (include "dashd.fullname" .) }}
+        {{- else }}
+          emptyDir: {}
+        {{- end -}}
