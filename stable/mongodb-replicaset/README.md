@@ -34,7 +34,7 @@ The following tables lists the configurable parameters of the mongodb chart and 
 | `minAvailable`                      | Minimum number of available pods for PodDisruptionBudget                  | 1                                                   |
 | `port`                              | MongoDB port                                                              | 27017                                               |
 | `installImage.name`                 | Image name for the init container that establishes the replica set        | k8s.gcr.io/mongodb-install                          |
-| `installImage.tag`                  | Image tag for the init container that establishes the replica set         | 0.5                                                 |
+| `installImage.tag`                  | Image tag for the init container that establishes the replica set         | 0.6                                                 |
 | `installImage.pullPolicy`           | Image pull policy for the init container that establishes the replica set | IfNotPresent                                        |
 | `image.name`                        | MongoDB image name                                                        | mongo                                               |
 | `image.tag`                         | MongoDB image tag                                                         | 3.4                                                 |
@@ -64,7 +64,7 @@ The following tables lists the configurable parameters of the mongodb chart and 
 
 *MongoDB config file*
 
-The MongoDB config file `mongod.conf` is configured via the `configmap` configuration value. The defaults from 
+The MongoDB config file `mongod.conf` is configured via the `configmap` configuration value. The defaults from
 `values.yaml` are the following:
 
 ```yaml
