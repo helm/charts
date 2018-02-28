@@ -45,8 +45,8 @@ data:
     ## Ref: https://github.com/rabbitmq/rabbitmq-server/blob/master/docs/rabbitmq.conf.example
     
     ## Authentification
-    {{- if .Values.rabbitmqAuthentification.enabled }}
-{{ .Values.rabbitmqAuthentification.config | indent 4 }}
+    {{- if .Values.rabbitmqAuth.enabled }}
+{{ .Values.rabbitmqAuth.config | indent 4 }}
     {{- end }}
 
     ## Clustering
@@ -89,9 +89,9 @@ data:
 {{ .Values.rabbitmqWebSTOMPPlugin.config | indent 4 }}
     {{- end }}
 
-    ## SSL support
-    {{- if .Values.rabbitmqSSLSupport.enabled }}
-{{ .Values.rabbitmqSSLSupport.config | indent 4 }}
+    ## AMQPS support
+    {{- if .Values.rabbitmqAmqpsSupport.enabled }}
+{{ .Values.rabbitmqAmqpsSupport.config | indent 4 }}
     {{- end }}
 
 {{- end }}

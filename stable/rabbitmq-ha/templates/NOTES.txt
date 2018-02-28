@@ -14,7 +14,7 @@
 
     export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
     export NODE_PORT_AMQP=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[1].nodePort}" services {{ template "rabbitmq-ha.fullname" . }})
-    {{- if .Values.rabbitmqSSLSupport.enabled }}
+    {{- if .Values.rabbitmqAmqpsSupport.enabled }}
     export NODE_PORT_AMQPS=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[4].nodePort}" services {{ template "rabbitmq-ha.fullname" . }})
     {{- end }}
     export NODE_PORT_STATS=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[3].nodePort}" services {{ template "rabbitmq-ha.fullname" . }})
@@ -23,7 +23,7 @@
 
     echo amqp://$NODE_IP:$NODE_PORT_AMQP/
 
-{{- if .Values.rabbitmqSSLSupport.enabled }}
+{{- if .Values.rabbitmqAmqpsSupport.enabled }}
   To Access the RabbitMQ AMQPS port:
 
     echo amqps://$NODE_IP:$NODE_PORT_AMQPS/
@@ -39,7 +39,7 @@
         Watch the status with: 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "rabbitmq-ha.name" . }}'
 
     export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "rabbitmq-ha.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-    {{- if .Values.rabbitmqSSLSupport.enabled }}
+    {{- if .Values.rabbitmqAmqpsSupport.enabled }}
     export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "rabbitmq-ha.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[1].ip}')
     {{- end }}
 
@@ -47,10 +47,10 @@
 
     echo amqp://$SERVICE_IP:{{ .Values.rabbitmqNodePort }}/
 
-{{- if .Values.rabbitmqSSLSupport.enabled }}
+{{- if .Values.rabbitmqAmqpsSupport.enabled }}
   To Access the RabbitMQ AMQPS port:
 
-    echo amqps://$SERVICE_IP:{{ .Values.rabbitmqSSLSupport.amqpsNodePort }}/
+    echo amqps://$SERVICE_IP:{{ .Values.rabbitmqAmqpsSupport.amqpsNodePort }}/
 {{- end }}
 
   To Access the RabbitMQ Management interface:
@@ -61,18 +61,18 @@
 
     export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "rabbitmq-ha.name" . }}" -o jsonpath="{.items[0].metadata.name}")
     kubectl port-forward $POD_NAME --namespace {{ .Release.Namespace }} {{ .Values.rabbitmqNodePort }}:{{ .Values.rabbitmqNodePort }} {{ .Values.rabbitmqManagerPort }}:{{ .Values.rabbitmqManagerPort }}
-    {{- if .Values.rabbitmqSSLSupport.enabled }}
-    kubectl port-forward $POD_NAME --namespace {{ .Release.Namespace }} {{ .Values.rabbitmqSSLSupport.amqpsNodePort }}:{{ .Values.rabbitmqSSLSupport.amqpsNodePort }} 
+    {{- if .Values.rabbitmqAmqpsSupport.enabled }}
+    kubectl port-forward $POD_NAME --namespace {{ .Release.Namespace }} {{ .Values.rabbitmqAmqpsSupport.amqpsNodePort }}:{{ .Values.rabbitmqAmqpsSupport.amqpsNodePort }} 
     {{- end }}
 
   To Access the RabbitMQ AMQP port:
 
     echo amqp://127.0.0.1:{{ .Values.rabbitmqNodePort }}/
 
-{{- if .Values.rabbitmqSSLSupport.enabled }}
+{{- if .Values.rabbitmqAmqpsSupport.enabled }}
   To Access the RabbitMQ AMQPS port:
 
-    echo amqps://127.0.0.1:{{ .Values.rabbitmqSSLSupport.amqpsNodePort }}/
+    echo amqps://127.0.0.1:{{ .Values.rabbitmqAmqpsSupport.amqpsNodePort }}/
 {{- end }}
 
   To Access the RabbitMQ Management interface:

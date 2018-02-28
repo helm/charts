@@ -36,9 +36,18 @@ rabbitmqManagerPort: 15672
 ## of a few minutes delay at startup.
 rabbitmqHipeCompile: false
 
+## SSL certificates
+## Red: http://www.rabbitmq.com/ssl.html
+rabbitmqCert:
+  enabled: false
+
+  cacertfile: ""
+  certfile: ""
+  keyfile: ""
+
 ## Authentification mecanism
 ## Ref: http://www.rabbitmq.com/authentication.html
-rabbitmqAuthentification:
+rabbitmqAuth:
   enabled: false
 
   config: |
@@ -80,9 +89,9 @@ rabbitmqWebMQTTPlugin:
   config: |
     # web_mqtt.ssl.port       = 12345
     # web_mqtt.ssl.backlog    = 1024
-    # web_mqtt.ssl.certfile   = path/to/certs/client/cert.pem
-    # web_mqtt.ssl.keyfile    = path/to/certs/client/key.pem
-    # web_mqtt.ssl.cacertfile = path/to/certs/testca/cacert.pem
+    # web_mqtt.ssl.certfile   = /etc/cert/cacert.pem
+    # web_mqtt.ssl.keyfile    = /etc/cert/cert.pem
+    # web_mqtt.ssl.cacertfile = /etc/cert/key.pem
     # web_mqtt.ssl.password   = changeme
 
 ## STOMP Plugin
@@ -107,16 +116,11 @@ rabbitmqWebSTOMPPlugin:
 
 ## SSL support
 ## REf: http://www.rabbitmq.com/ssl.html
-rabbitmqSSLSupport:
+rabbitmqAmqpsSupport:
   enabled: false
 
   # NodePort
   amqpsNodePort: 5671 
-
-  # SSL certificate
-  cacertfile: ""
-  certfile: ""
-  keyfile: ""
 
   # SSL configuration
   config: |

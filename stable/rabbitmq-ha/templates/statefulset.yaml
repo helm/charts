@@ -64,7 +64,7 @@ spec:
               protocol: TCP
               containerPort: 15675
             {{- end }}
-            {{- if .Values.rabbitmqSSLSupport.enabled }}
+            {{- if .Values.rabbitmqAmqpsSupport.enabled }}
             - name: amqps
               protocol: TCP
               containerPort: 5671
@@ -119,7 +119,7 @@ spec:
               mountPath: /var/lib/rabbitmq
             - name: config
               mountPath: /etc/rabbitmq
-            {{- if .Values.rabbitmqSSLSupport.enabled }}
+            {{- if .Values.rabbitmqCert.enabled }}
             - name: cert
               mountPath: /etc/cert
             {{- end }}
@@ -156,7 +156,7 @@ spec:
         - name: config
           configMap:
             name: {{ template "rabbitmq-ha.fullname" . }}
-        {{- if .Values.rabbitmqSSLSupport.enabled }}
+        {{- if .Values.rabbitmqCert.enabled }}
         - name: cert
           secret:
             defaultMode: 420
