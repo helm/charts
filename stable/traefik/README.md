@@ -85,6 +85,7 @@ The following tables lists the configurable parameters of the Traefik chart and 
 
 | Parameter                       | Description                                                          | Default                                   |
 | ------------------------------- | -------------------------------------------------------------------- | ----------------------------------------- |
+| `fullnameOverride`              | Override the full resource names                                     | `{release-name}-traefik (or traefik if release-name is traefik`|
 | `image`                         | Traefik image name                                                   | `traefik`                                 |
 | `imageTag`                      | The version of the official Traefik image to use                     | `1.5.2`                                  |
 | `deployType`                    | Deploy Traefik as Deployment or DaemonSet([official doc](https://docs.traefik.io/user-guide/kubernetes/#deploy-trfik-using-a-deployment-or-daemonset))                           | `LoadBalancer`                            |
