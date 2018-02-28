@@ -36,6 +36,16 @@ rabbitmqManagerPort: 15672
 ## of a few minutes delay at startup.
 rabbitmqHipeCompile: false
 
+## Authentification mecanism
+## Ref: http://www.rabbitmq.com/authentication.html
+rabbitmqAuthentification:
+  enabled: false
+
+  config: |
+    # auth_mechanisms.1 = PLAIN
+    # auth_mechanisms.2 = AMQPLAIN
+    # auth_mechanisms.3 = EXTERNAL
+
 ## LDAP Plugin
 ## Ref: http://www.rabbitmq.com/ldap.html
 rabbitmqLDAPPlugin:
@@ -94,6 +104,28 @@ rabbitmqWebSTOMPPlugin:
   config: |
     # web_stomp.ws_frame = binary
     # web_stomp.cowboy_opts.max_keepalive = 10
+
+## SSL support
+## REf: http://www.rabbitmq.com/ssl.html
+rabbitmqSSLSupport:
+  enabled: false
+
+  # NodePort
+  amqpsNodePort: 5671 
+
+  # SSL certificate
+  cacertfile: ""
+  certfile: ""
+  keyfile: ""
+
+  # SSL configuration
+  config: |
+    # listeners.ssl.default             = 5671
+    # ssl_options.cacertfile            = /etc/cert/cacert.pem
+    # ssl_options.certfile              = /etc/cert/cert.pem
+    # ssl_options.keyfile               = /etc/cert/key.pem
+    # ssl_options.verify                = verify_peer
+    # ssl_options.fail_if_no_peer_cert  = false
 
 ## Number of replicas
 replicaCount: 3
