@@ -44,7 +44,7 @@ Parameter                  | Description                        | Default
 -----------------------    | ---------------------------------- | ----------------------------------------------------------
 `image.repository`         | Image source repository name       | `kuberstack/bitcoind`
 `image.tag`                | `bitcoind` release tag.            | `0.15.1`
-`image.PullPolicy`         | Image pull policy                  | `IfNotPresent`
+`image.pullPolicy`         | Image pull policy                  | `IfNotPresent`
 `service.rpcPort`          | RPC port                           | `8332`
 `service.p2pPort`          | P2P port                           | `8333`
 `service.testnetPort`      | Testnet port                       | `18332`
