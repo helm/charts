@@ -84,4 +84,7 @@ spec:
             - key: newrelic-infra.yml
               path: newrelic-infra.yml
         {{- end }}
+      tolerations:
+        tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
 {{- end }}
