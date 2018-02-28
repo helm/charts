@@ -1,5 +1,5 @@
 rbac:
-  create: false
+  create: true
 
 alertmanager:
   ## If false, alertmanager will not be installed
@@ -644,7 +644,7 @@ pushgateway:
 ## alertmanager ConfigMap entries
 ##
 alertmanagerFiles:
-  alertmanager.yml: |-
+  alertmanager.yml:
     global:
       # slack_api_url: ''
 
