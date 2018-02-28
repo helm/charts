@@ -9,7 +9,7 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
 data:
   zookeeper.connect: "{{ template "zookeeper.url" . }}"
-  log.dirs: "{{ printf "%s/%s" .Values.dataDirectory .Values.logSubPath }}"
+  log.dirs: "{{ printf "%s/%s" .Values.persistence.mountPath .Values.logSubPath }}"
 {{- range $configName, $configValue := .Values.configurationOverrides }}
   {{ $configName }}: "{{ $configValue -}}"
 {{- end -}}

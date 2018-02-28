@@ -51,27 +51,29 @@ This chart includes a ZooKeeper chart as a dependency to the Kafka
 cluster in its `requirement.yaml` by default. The chart can be customized using the
 following configurable parameters:
 
-| Parameter                      | Description                                                                                                                                      | Default                                                    |
-| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------- |
-| `image`                        | Kafka Container image name                                                                                                                       | `confluentinc/cp-kafka`                                            |
-| `imageTag`                     | Kafka Container image tag                                                                                                                        | `4.0.0`                                                    |
-| `imagePullPolicy`              | Kafka Container pull policy                                                                                                                      | `IfNotPresent`                                                   |
-| `replicas`                     | Kafka Brokers                                                                                                                                    | `3`                                                        |
-| `component`                    | Kafka k8s selector key                                                                                                                           | `kafka`                                                    |
-| `resources`                    | Kafka resource requests and limits                                                                                                               | `{}`                                                       |
-| `dataDirectory`                | Kafka data directory                                                                                                                             | `/opt/kafka/data`                                          |
-| `logSubPath`                   | Subpath under `dataDirectory` where kafka logs will be placed. `logs/`                                                                           | `logs`                                                     |
-| `affinity`                     | Pod scheduling preferences                                                                                                                       | `{}`                                                       |
-| `storage`                      | Kafka Persistent volume size                                                                                                                     | `1Gi`                                                      |
-| `configurationOverrides`       | `Kafka ` [configuration setting](https://kafka.apache.org/documentation/#brokerconfigs) overrides in the dictionary format `setting.name: value` | `{ offsets.topic.replication.factor: 3 }`                                                       |
-| `updateStrategy`               | StatefulSet update strategy to use.                                                                                                              | `{ type: "OnDelete" }`                                     |
-| `zookeeper.enabled`            | If True, installs Zookeeper Chart                                                                                                                | `true`                                                     |
-| `zookeeper.resources`               | Zookeeper resource requests and limits                                                                                                                        | `{}`                                                     |
-| `zookeeper.heap`               | JVM heap size to allocate to Zookeeper                                                                                                                       | `1G`                                                     |
-| `zookeeper.storage`               | Zookeeper Persistent volume size                                                                                                                        | `2Gi`                                                     |
-| `zookeeper.imagePullPolicy`               | Zookeeper Container pull policy                                                                                                                        | `IfNotPresent`                                                     |
-| `zookeeper.url`                | URL of Zookeeper Cluster (unneeded if installing Zookeeper Chart)                                                                                | `""`                                                       |
-| `zookeeper.port`               | Port of Zookeeper Cluster                                                                                                                        | `2181`                                                     |
+| Parameter                      | Description                                                                                                     | Default                                                    |
+| ------------------------------ | --------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------- |
+| `image`                        | Kafka Container image name                                                                                      | `confluentinc/cp-kafka`                                    |
+| `imageTag`                     | Kafka Container image tag                                                                                       | `4.0.0`                                                    |
+| `imagePullPolicy`              | Kafka Container pull policy                                                                                     | `IfNotPresent`                                             |
+| `replicas`                     | Kafka Brokers                                                                                                   | `3`                                                        |
+| `component`                    | Kafka k8s selector key                                                                                          | `kafka`                                                    |
+| `resources`                    | Kafka resource requests and limits                                                                              | `{}`                                                       |
+| `logSubPath`                   | Subpath under `persistence.mountPath` where kafka logs will be placed.                                          | `logs`                                                     |
+| `affinity`                     | Pod scheduling preferences                                                                                      | `{}`                                                       |
+| `configurationOverrides`       | `Kafka ` [configuration setting][brokerconfigs] overrides in the dictionary format                              | `{ offsets.topic.replication.factor: 3 }`                  |
+| `updateStrategy`               | StatefulSet update strategy to use.                                                                             | `{ type: "OnDelete" }`                                     |
+| `persistence.enabled`          | Use a PVC to persist data                                                                                       | `true`                                                     |
+| `persistence.size`             | Size of data volume                                                                                             | `1Gi`                                                      |
+| `persistence.mountPath`        | Mount path of data volume                                                                                       | `/opt/kafka/data`                                          |
+| `persistence.storageClass`     | Storage class of backing PVC                                                                                    | `nil`                                                      |
+| `zookeeper.enabled`            | If True, installs Zookeeper Chart                                                                               | `true`                                                     |
+| `zookeeper.resources`          | Zookeeper resource requests and limits                                                                          | `{}`                                                       |
+| `zookeeper.heap`               | JVM heap size to allocate to Zookeeper                                                                          | `1G`                                                       |
+| `zookeeper.storage`            | Zookeeper Persistent volume size                                                                                | `2Gi`                                                      |
+| `zookeeper.imagePullPolicy`    | Zookeeper Container pull policy                                                                                 | `IfNotPresent`                                             |
+| `zookeeper.url`                | URL of Zookeeper Cluster (unneeded if installing Zookeeper Chart)                                               | `""`                                                       |
+| `zookeeper.port`               | Port of Zookeeper Cluster                                                                                       | `2181`                                                     |
 
 
 Specify parameters using `--set key=value[,key=value]` argument to `helm install`
@@ -122,3 +124,5 @@ Kafka has a rich ecosystem, with lots of tools. This sections is intended to com
 * Topic creation is not automated
 * Only supports storage options that have backends for persistent volume claims (tested mostly on AWS)
 * Kafka cluster is not accessible via an external endpoint
+
+[brokerconfigs]: https://kafka.apache.org/documentation/#brokerconfigs
