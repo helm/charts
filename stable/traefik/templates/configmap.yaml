@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "traefik.fullname" . }}
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "traefik.name" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -13,6 +13,9 @@ data:
     logLevel = "INFO"
     {{- if .Values.debug.enabled }}
     debug = true
+    {{- end }}
+    {{- if .Values.sendAnonymousUsage }}
+    sendAnonymousUsage = true
     {{- end }}
     {{- if .Values.ssl.enabled }}
     defaultEntryPoints = ["http","https"]
@@ -24,7 +27,7 @@ data:
       address = ":80"
       {{- if .Values.proxyProtocol.enabled }}
         [entryPoints.http.proxyProtocol]
-        {{ template "trustedips" . }}
+        {{ template "traefik.trustedips" . }}
       {{- end }}
       compress = {{ .Values.gzip.enabled }}
         {{- if .Values.ssl.enforced }}
@@ -37,7 +40,7 @@ data:
       address = ":443"
       {{- if .Values.proxyProtocol.enabled }}
         [entryPoints.https.proxyProtocol]
-        {{ template "trustedips" . }}
+        {{ template "traefik.trustedips" . }}
       {{- end }}
       compress = {{ .Values.gzip.enabled }}
         [entryPoints.https.tls]
@@ -85,6 +88,9 @@ data:
     {{- if eq .Values.acme.challengeType "dns-01" }}
       [acme.dnsChallenge]
       provider = "{{ .Values.acme.dnsProvider.name }}"
+    {{- else if eq .Values.acme.challengeType "http-01" }}
+      [acme.httpChallenge]
+      entryPoint = "http"
     {{- end }}
     {{- end }}
     {{- if or .Values.dashboard.enabled .Values.metrics.prometheus.enabled .Values.metrics.statsd.enabled .Values.metrics.datadog.enabled }}
