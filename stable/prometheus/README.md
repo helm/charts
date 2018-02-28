@@ -77,7 +77,7 @@ Assuming you have an existing release of the prometheus chart, named `prometheus
 1. Deploy a new release of the chart with version 5.0+ using prometheus 2.x. In the values.yaml set the scrape config as usual, and also add the `prometheus-old` instance as a remote-read target.
 
    ```
-	  prometheus.yml: |
+	  prometheus.yml:
 	    ...
 	    remote_read:
 	    - url: http://prometheus-old/api/v1/read
@@ -126,7 +126,7 @@ Parameter | Description | Default
 `alertmanager.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
 `alertmanager.service.servicePort` | alertmanager service port | `80`
 `alertmanager.service.type` | type of alertmanager service to create | `ClusterIP`
-`alertmanagerFiles` | alertmanager ConfigMap entries | `alertmanager.yml`
+`alertmanagerFiles.alertmanager.yml` | Prometheus alertmanager configuration | example configuration
 `configmapReload.name` | configmap-reload container name | `configmap-reload`
 `configmapReload.image.repository` | configmap-reload container image repository | `jimmidyson/configmap-reload`
 `configmapReload.image.tag` | configmap-reload container image tag | `v0.1`
