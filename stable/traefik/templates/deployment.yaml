@@ -39,6 +39,10 @@ spec:
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
       {{- end }}
+      {{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+      {{- end }}
       containers:
       - image: {{ .Values.image }}:{{ .Values.imageTag }}
         name: {{ template "traefik.fullname" . }}

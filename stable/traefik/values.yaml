@@ -14,6 +14,8 @@ debug:
   enabled: false
 nodeSelector: {}
   # key: value
+affinity: {}
+  # key: value
 tolerations: []
 # - key: "key"
 #   operator: "Equal|Exists"
