@@ -64,20 +64,20 @@ spec:
           value: {{ template "kong.cassandra.fullname" . }}
         {{- end }}
         ports:
-        {{- if .Values.admin.https }}
+        {{- if .Values.admin.useTLS }}
         - name: admin-ssl
           containerPort: {{ .Values.admin.https.containerPort }}
           protocol: TCP
-        {{- else if .Values.admin.http }}
+        {{- else }}
         - name: admin
           containerPort: {{ .Values.admin.http.containerPort }}
           protocol: TCP
         {{ end }}
-        {{- if .Values.proxy.https }}
+        {{- if .Values.proxy.useTLS }}
         - name: proxy-ssl
           containerPort: {{ .Values.proxy.https.containerPort }}
           protocol: TCP
-        {{- else if .Values.proxy.http }}
+        {{- else }}
         - name: proxy
           containerPort: {{ .Values.proxy.http.containerPort }}
           protocol: TCP
