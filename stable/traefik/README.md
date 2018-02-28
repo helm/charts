@@ -85,6 +85,7 @@ The following tables lists the configurable parameters of the Traefik chart and 
 
 | Parameter                       | Description                                                          | Default                                   |
 | ------------------------------- | -------------------------------------------------------------------- | ----------------------------------------- |
+| `fullnameOverride`              | Override the full resource names                                     | `{release-name}-traefik (or traefik if release-name is traefik`|
 | `image`                         | Traefik image name                                                   | `traefik`                                 |
 | `imageTag`                      | The version of the official Traefik image to use                     | `1.5.2`                                  |
 | `serviceType`                   | A valid Kubernetes service type                                      | `LoadBalancer`                            |
@@ -97,6 +98,7 @@ The following tables lists the configurable parameters of the Traefik chart and 
 | `memoryLimit`                   | Memory limit per Traefik pod                                         | `30Mi`                                    |
 | `rbac.enabled`                  | Whether to enable RBAC with a specific cluster role and binding for Traefik | `false`                            |
 | `nodeSelector`                  | Node labels for pod assignment                                       | `{}`                                      |
+| `affinity`                      | Affinity settings                                                    | `{}`                                      |
 | `tolerations`                   | List of node taints to tolerate                                      | `[]`                                      |
 | `proxyProtocol.enabled`         | Enable PROXY protocol support.                                       | `false`                                   |
 | `proxyProtocol.trustedIPs`      | List of proxy IPs (CIDR ranges) trusted to accurately convey the end-user IP. | `[]`                              |
