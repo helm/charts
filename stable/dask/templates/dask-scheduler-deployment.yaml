@@ -1,12 +1,12 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
-  name: {{ template "dask.scheduler-fullname" . }}
+  name: {{ template "dask.fullname" . }}-scheduler
   labels:
     app: {{ template "dask.name" . }}
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    chart: {{ template "dask.chart" . }}
     component: "{{ .Release.Name }}-{{ .Values.scheduler.component }}"
 spec:
   replicas: {{ .Values.scheduler.replicas }}
@@ -20,16 +20,22 @@ spec:
         component: "{{ .Release.Name }}-{{ .Values.scheduler.component }}"
     spec:
       containers:
-        - name: {{ template "dask.scheduler-fullname" . }}
-          image: 
+        - name: {{ template "dask.fullname" . }}-scheduler
+          image:
             repository: {{ .Values.scheduler.image | quote }}
             tag: {{ .Values.scheduler.imageTag | quote }}
-            pullPolicy: IfNotPresent
-          args: ["dask-scheduler", "--port", "{{ .Values.scheduler.servicePort }}", "--bokeh-port", "{{ .Values.webUI.containerPort }}"]
+            pullPolicy: {{ .Values.pullPolicy }}
+          args:
+            - dask-scheduler
+            - --port
+            - {{ .Values.scheduler.servicePort }}
+            - --bokeh-port
+            - {{ .Values.webUI.containerPort }}
           ports:
             - containerPort: {{ .Values.scheduler.containerPort }}
             - containerPort: {{ .Values.webUI.containerPort }}
-          resources: {{ toYaml .Values.scheduler.resources | indent 12 }}
+          resources:
+{{ toYaml .Values.scheduler.resources | indent 12 }}
           env:
           - name: EXTRA_CONDA_PACKAGES
             value: {{ .Values.scheduler.condaPackages }}

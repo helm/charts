@@ -1,12 +1,12 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
-  name: {{ template "dask.jupyter-fullname" . }}
+  name: {{ template "dask.fullname" . }}-jupyter
   labels:
     app: {{ template "dask.name" . }}
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    chart: {{ template "dask.chart" . }}
     component: "{{ .Release.Name }}-{{ .Values.jupyter.component }}"
 spec:
   replicas: {{ .Values.jupyter.replicas }}
@@ -20,11 +20,11 @@ spec:
         component: "{{ .Release.Name }}-{{ .Values.jupyter.component }}"
     spec:
       containers:
-        - name: {{ template "dask.jupyter-fullname" . }}
-          image: 
+        - name: {{ template "dask.fullname" . }}-jupyter
+          image:
             repository: {{ .Values.jupyter.image | quote }}
             tag: {{ .Values.jupyter.imageTag | quote }}
-            pullPolicy: IfNotPresent
+            pullPolicy: {{ .Values.pullPolicy }}
           ports:
             - containerPort: {{ .Values.jupyter.containerPort }}
           resources:
@@ -40,8 +40,8 @@ spec:
           - name: EXTRA_APT_PACKAGES
             value: {{ .Values.jupyter.aptPackages }}
           - name: DASK_SCHEDULER_ADDRESS
-            value: {{ template "dask.scheduler-fullname" . }}:{{ .Values.scheduler.servicePort }}
+            value: {{ template "dask.fullname" . }}-scheduler:{{ .Values.scheduler.servicePort }}
       volumes:
       - name: config-volume
         configMap:
-          name: {{ template "dask.jupyter-fullname" . }}-config
+          name: {{ template "dask.fullname" . }}-scheduler-config

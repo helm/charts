@@ -11,9 +11,9 @@ The Jupyter notebook server and Dask scheduler expose external services to
 which you can connect to manage notebooks, or connect directly to the Dask
 cluster.   You can get these addresses by running the following:
 
-  export DASK_SCHEDULER=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "dask.scheduler-fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-  export DASK_SCHEDULER_UI_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "dask.scheduler-fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-  export JUPYTER_NOTEBOOK_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "dask.jupyter-fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+  export DASK_SCHEDULER=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "dask.fullname" . }}-scheduler -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+  export DASK_SCHEDULER_UI_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "dask.fullname" . }}-scheduler -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+  export JUPYTER_NOTEBOOK_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "dask.fullname" . }}-jupyter -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
   echo http://$JUPYTER_NOTEBOOK_IP:{{ .Values.jupyter.servicePort }} -- Jupyter notebook
   echo http://$DASK_SCHEDULER_UI_IP:{{ .Values.webUI.servicePort }}  -- Dask dashboard
   echo http://$DASK_SCHEDULER:{{ .Values.scheduler.servicePort }}    -- Dask Client connection
@@ -21,4 +21,4 @@ cluster.   You can get these addresses by running the following:
   NOTE: The default password to login to the notebook server is `dask`.
 
   NOTE: It may take a few minutes for the LoadBalancer IP to be available, until that the commands below will not work.  
-  You can watch the status by running 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "dask.jupyter-fullname" . }}'
+  You can watch the status by running 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "dask.fullname" . }}-jupyter'

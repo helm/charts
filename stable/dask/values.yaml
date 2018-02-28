@@ -39,6 +39,9 @@ worker:
   containerPort: 8081
   resources: {}
   aptPackages: >-
+  default_resources: # overwritten by resource limits if they exist
+      cpu: 1
+      memory: "4GiB"
   condaPackages: >-
     # numba
     # xarray
@@ -80,3 +83,5 @@ jupyter:
   # requests:
   #   cpu: 2
   #   memory: 6G
+
+pullPolicy: IfNotPresent
