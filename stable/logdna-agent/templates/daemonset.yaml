@@ -28,8 +28,8 @@ spec:
           - name: LOGDNA_PLATFORM
             value: k8s
 {{- if .Values.logdna.tags }}
-           - name: LOGDNA_TAGS
-             value: {{ .Values.logdna.tags }}
+          - name: LOGDNA_TAGS
+            value: {{ .Values.logdna.tags }}
 {{- end }}
         resources:
 {{ toYaml .Values.resources | indent 12 }}
