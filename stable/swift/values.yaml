@@ -4,7 +4,7 @@
 replicaCount: 1
 swift:
   image: appscode/swift
-  tag: 0.5.2
+  tag: 0.7.2
 ## Optionally specify an array of imagePullSecrets.
 ## Secrets must be manually created in the namespace.
 ## ref: https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
