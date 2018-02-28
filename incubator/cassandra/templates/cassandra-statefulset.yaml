@@ -60,6 +60,11 @@ spec:
 {{- if .Values.selector }}
 {{ toYaml .Values.selector | indent 6 }}
 {{- end }}
+      {{- if .Values.securityContext.enabled }}
+      securityContext:
+        fsGroup: {{ .Values.securityContext.fsGroup }}
+        runAsUser: {{ .Values.securityContext.runAsUser }}
+      {{- end }}
       containers:
       - name: {{ template "cassandra.fullname" . }}
         image: "{{ .Values.image.repo }}:{{ .Values.image.tag }}"

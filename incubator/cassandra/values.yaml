@@ -75,3 +75,9 @@ podLabels: {}
 podManagementPolicy: OrderedReady
 updateStrategy:
   type: OnDelete
+
+## Pod Security Context
+securityContext:
+  enabled: false
+  fsGroup: 999
+  runAsUser: 999
