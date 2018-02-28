@@ -36,9 +36,9 @@ worker:
   component: "dask-worker"
   resources: {}
   aptPackages: >-
-  default_resources: # overwritten by resource limits if they exist
-      cpu: 1
-      memory: "4GiB"
+  default_resources:  # overwritten by resource limits if they exist
+    cpu: 1
+    memory: "4GiB"
   condaPackages: >-
     # numba
     # xarray
