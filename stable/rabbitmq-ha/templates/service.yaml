@@ -69,10 +69,10 @@ spec:
       port: 15675
       targetPort: mqtt-ws
     {{- end }}
-    {{- if .Values.rabbitmqSSLSupport.enabled }}
+    {{- if .Values.rabbitmqAmqpsSupport.enabled }}
     - name: amqps
       protocol: TCP
-      port: {{ .Values.rabbitmqSSLSupport.amqpsNodePort }}
+      port: {{ .Values.rabbitmqAmqpsSupport.amqpsNodePort }}
       targetPort: amqps
     {{- end }}
   selector:

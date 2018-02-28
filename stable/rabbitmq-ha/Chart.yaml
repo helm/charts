@@ -8,6 +8,7 @@ keywords:
 - rabbitmq
 - message queue
 - AMQP
+- AMQPS
 - MQTT
 - STOMP
 home: https://www.rabbitmq.com
