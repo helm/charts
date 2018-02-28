@@ -11,7 +11,7 @@ metadata:
 spec:
   ports:
     - port: {{ .Values.jupyter.servicePort }}
-      targetPort: {{ .Values.jupyter.containerPort }}
+      targetPort: 8888
   selector:
     app: {{ template "dask.name" . }}
     release: {{ .Release.Name | quote }}

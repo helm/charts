@@ -26,7 +26,7 @@ spec:
             tag: {{ .Values.jupyter.imageTag | quote }}
             pullPolicy: {{ .Values.pullPolicy }}
           ports:
-            - containerPort: {{ .Values.jupyter.containerPort }}
+            - containerPort: 8888
           resources:
 {{ toYaml .Values.jupyter.resources | indent 12 }}
           volumeMounts:

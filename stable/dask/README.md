@@ -37,7 +37,6 @@ The following tables lists the configurable parameters of the Dask chart and the
 | `scheduler.replicas`       | k8s deployment replicas            | `1`                                                        |
 | `scheduler.component`      | k8s selector key                   | `dask-scheduler`                                           |
 | `scheduler.cpu`            | container requested cpu            | `500m`                                                     |
-| `scheduler.containerPort`  | Container listening port           | `8786`                                                     |
 | `scheduler.resources`      | Container resources                | `{}`                                                       |
 
 ### Dask webUI
@@ -46,7 +45,6 @@ The following tables lists the configurable parameters of the Dask chart and the
 |-----------------------|----------------------------------|----------------------------------------------------------|
 | `webUI.name`          | Dask webui name                  | `dask-webui`                                             |
 | `webUI.servicePort`   | k8s service port                 | `8787`                                                   |
-| `webUI.containerPort` | Container listening port         | `8787`                                                   |
 
 ### Dask worker
 
@@ -58,7 +56,6 @@ The following tables lists the configurable parameters of the Dask chart and the
 | `worker.replicas`            | k8s hpa and deployment replicas      | `3`                                                        |
 | `worker.replicasMax`         | k8s hpa max replicas                 | `10`                                                       |
 | `worker.component`           | k8s selector key                     | `dask-worker`                                              |
-| `worker.containerPort`       | Container listening port             | `7077`                                                     |
 | `worker.resources`           | Container resources                  | `{}`                                                       |
 
 ### jupyter
@@ -71,7 +68,6 @@ The following tables lists the configurable parameters of the Dask chart and the
 | `jupyter.replicas`      | k8s deployment replicas          | `1`                                                      |
 | `jupyter.component`     | k8s selector key                 | `jupyter`                                                |
 | `jupyter.servicePort`   | k8s service port                 | `80`                                                     |
-| `jupyter.containerPort` | Container listening port         | `8888`                                                   |
 | `jupyter.resources`     | Container resources              | `{}`                                                     |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.

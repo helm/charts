@@ -36,7 +36,7 @@ spec:
           {{- end -}}
             - --no-bokeh
           ports:
-            - containerPort: {{ .Values.worker.containerPort }}
+            - containerPort: 8789
           resources:
 {{ toYaml .Values.worker.resources | indent 12 }}
           env:

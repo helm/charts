@@ -12,10 +12,10 @@ spec:
   ports:
     - name: {{ template "dask.fullname" . }}-scheduler
       port: {{ .Values.scheduler.servicePort }}
-      targetPort: {{ .Values.scheduler.containerPort }}
+      targetPort: 8786
     - name: {{ template "dask.fullname" . }}-webui
       port: {{ .Values.webUI.servicePort }}
-      targetPort: {{ .Values.webUI.containerPort }}
+      targetPort: 8787
   selector:
     app: {{ template "dask.name" . }}
     release: {{ .Release.Name | quote }}
