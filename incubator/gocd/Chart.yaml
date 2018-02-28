@@ -1,8 +1,8 @@
 name: gocd
 home: https://www.gocd.org/
-version: 0.2.1
+version: 0.2.2
 appVersion: 18.1.0
-description: A GoCD Helm chart for Kubernetes. GoCD is an Open source continuous delivery server to model and visualize complex workflows with ease.
+description: GoCD is an open-source continuous delivery server to model and visualize complex workflows with ease.
 icon: https://gocd.github.io/assets/images/go-icon-black-192x192.svg
 keywords:
 - gocd
@@ -21,4 +21,4 @@ maintainers:
 - name: ganeshspatil
   email: ganeshpl@thoughtworks.com
 - name: varshavaradarajan
-  email: varshavs@thoughtworks.com
+  email: varshasvaradarajan@gmail.com

@@ -12,6 +12,5 @@ sources:
 - https://github.com/kubernetes/charts
 - https://github.com/docker-library/postgres
 maintainers:
-- name: swordbeta
 - name: databus23
 engine: gotpl
