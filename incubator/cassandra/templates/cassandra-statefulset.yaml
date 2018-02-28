@@ -46,6 +46,7 @@ metadata:
 spec:
   serviceName: {{ template "cassandra.fullname" . }}
   replicas: {{ .Values.config.cluster_size }}
+  podManagementPolicy: {{ .Values.podManagementPolicy }}
   updateStrategy:
     type: {{ .Values.updateStrategy.type }}
   template:
