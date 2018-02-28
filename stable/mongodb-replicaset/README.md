@@ -1,7 +1,7 @@
 # MongoDB Helm Chart
 
 ## Prerequisites Details
-* Kubernetes 1.6+ with Beta APIs enabled.
+* Kubernetes 1.8+ with Beta APIs enabled.
 * PV support on the underlying infrastructure.
 
 ## StatefulSet Details
@@ -37,7 +37,7 @@ The following tables lists the configurable parameters of the mongodb chart and 
 | `installImage.tag`                  | Image tag for the init container that establishes the replica set         | 0.6                                                 |
 | `installImage.pullPolicy`           | Image pull policy for the init container that establishes the replica set | IfNotPresent                                        |
 | `image.name`                        | MongoDB image name                                                        | mongo                                               |
-| `image.tag`                         | MongoDB image tag                                                         | 3.4                                                 |
+| `image.tag`                         | MongoDB image tag                                                         | 3.6                                                 |
 | `image.pullPolicy`                  | MongoDB image pull policy                                                 | IfNotPresent                                        |
 | `podAnnotations`                    | Annotations to be added to MongoDB pods                                   | {}                                                  |
 | `resources`                         | Pod resource requests and limits                                          | {}                                                  |
