@@ -62,3 +62,5 @@ resources:
   #  service: login service
   #  team: alpha-team
   #
+
+tolerations: []
