@@ -114,8 +114,8 @@ rabbitmqWebSTOMPPlugin:
     # web_stomp.ws_frame = binary
     # web_stomp.cowboy_opts.max_keepalive = 10
 
-## SSL support
-## REf: http://www.rabbitmq.com/ssl.html
+## AMQPS support
+## Ref: http://www.rabbitmq.com/ssl.html
 rabbitmqAmqpsSupport:
   enabled: false
 
