@@ -76,6 +76,7 @@ following configurable parameters:
 | `zookeeper.url`                | URL of Zookeeper Cluster (unneeded if installing Zookeeper Chart)                                               | `""`                                                       |
 | `zookeeper.port`               | Port of Zookeeper Cluster                                                                                       | `2181`                                                     |
 
+
 Specify parameters using `--set key=value[,key=value]` argument to `helm install`
 
 Alternatively a YAML file that specifies the values for the parameters can be provided like this:
