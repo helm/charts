@@ -29,6 +29,7 @@ spec:
 {{ toYaml .Values.controller.podLabels | indent 8}}
         {{- end }}
     spec:
+      dnsPolicy: {{ .Values.controller.dnsPolicy }}
       containers:
         - name: {{ template "nginx-ingress.name" . }}-{{ .Values.controller.name }}
           image: "{{ .Values.controller.image.repository }}:{{ .Values.controller.image.tag }}"
@@ -88,8 +89,11 @@ spec:
               path: /healthz
               port: 10254
               scheme: HTTP
-            initialDelaySeconds: 10
-            timeoutSeconds: 1
+            initialDelaySeconds: {{ .Values.controller.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.controller.livenessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.controller.livenessProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.controller.livenessProbe.successThreshold }}
+            failureThreshold: {{ .Values.controller.livenessProbe.failureThreshold }}
           ports:
             - name: http
               containerPort: 80
@@ -123,6 +127,11 @@ spec:
               path: /healthz
               port: 10254
               scheme: HTTP
+            initialDelaySeconds: {{ .Values.controller.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.controller.readinessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.controller.readinessProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.controller.readinessProbe.successThreshold }}
+            failureThreshold: {{ .Values.controller.readinessProbe.failureThreshold }}
 {{- if .Values.controller.customTemplate.configMapName }}
           volumeMounts:
             - mountPath: /etc/nginx/template
@@ -159,6 +168,10 @@ spec:
     {{- if .Values.controller.tolerations }}
       tolerations:
 {{ toYaml .Values.controller.tolerations | indent 8 }}
+    {{- end }}
+    {{- if .Values.controller.affinity }}
+      affinity:
+{{ toYaml .Values.controller.affinity | indent 8 }}
     {{- end }}
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "nginx-ingress.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
       terminationGracePeriodSeconds: 60

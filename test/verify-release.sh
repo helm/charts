@@ -18,11 +18,11 @@ RETRY=54
 RETRY_DELAY=10
 
 while (("$POD_RETRY_COUNT" < "$RETRY")); do
+  POD_RETRY_COUNT=$((POD_RETRY_COUNT + 1))
   POD_STATUS=$(kubectl get pods --no-headers --namespace "$NAMESPACE")
 
   if [[ -z "$POD_STATUS" ]];then
     echo "INFO: No pods found for this release, retrying after sleep"
-    POD_RETRY_COUNT=$((POD_RETRY_COUNT + 1))
 
     sleep "$RETRY_DELAY"
     continue
@@ -64,6 +64,9 @@ while (("$POD_RETRY_COUNT" < "$RETRY")); do
         exit 0
       fi
     done
+  else
+    echo "INFO: Waiting for pods to enter running state"
+    sleep "$RETRY_DELAY"
   fi
 done
 

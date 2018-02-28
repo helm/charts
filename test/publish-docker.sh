@@ -19,7 +19,7 @@ usage() {
   echo "Usage: $0 [-p]" 1>&2;
   echo " -p PROJECT_ID"
   echo " -d will deploy to gcr.io"
-  echo " -r REPO_IP will overide gcr.io and deploy docker to local repo"
+  echo " -r REPO_IP will override gcr.io and deploy docker to local repo"
   exit 1;
 }
 
