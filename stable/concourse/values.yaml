@@ -323,6 +323,11 @@ worker:
   #   iam.amazonaws.com/role: arn:aws:iam::123456789012:role/concourse
   #
 
+  ## Node selector for the worker nodes.
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
+  nodeSelector: {}
+  # nodeSelector: {type: concourse}
+
   ## Additional affinities to add to the worker pods.
   ## Useful if you prefer to run workers on non-spot instances, for example
   ##
