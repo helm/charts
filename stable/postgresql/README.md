@@ -53,6 +53,7 @@ The following tables lists the configurable parameters of the PostgreSQL chart a
 | `postgresPassword`         | Password for the new user.                      | random 10 characters                                       |
 | `postgresDatabase`         | Name for new database to create.                | `postgres`                                                 |
 | `postgresInitdbArgs`       | Initdb Arguments                                | `nil`                                                      |
+| `postgresConfig`           | Runtime Config Parameters                       | `nil`                                                      |
 | `persistence.enabled`      | Use a PVC to persist data                       | `true`                                                     |
 | `persistence.existingClaim`| Provide an existing PersistentVolumeClaim       | `nil`                                                      |
 | `persistence.storageClass` | Storage class of backing PVC                    | `nil` (uses alpha storage class annotation)                |

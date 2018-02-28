@@ -31,6 +31,11 @@ imageTag: "9.6.2"
 ## ref: https://www.postgresql.org/docs/current/static/app-initdb.html
 # postgresInitdbArgs:
 
+## Specify runtime config parameters as a dict, using camelCase, e.g.
+## {"sharedBuffers": "500MB"}
+## ref: https://www.postgresql.org/docs/current/static/runtime-config.html
+# postgresConfig:
+
 ## Persist data to a persitent volume
 persistence:
   enabled: true
