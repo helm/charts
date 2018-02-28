@@ -164,6 +164,10 @@ spec:
       tolerations:
 {{ toYaml .Values.controller.tolerations | indent 8 }}
     {{- end }}
+    {{- if .Values.controller.affinity }}
+      affinity:
+{{ toYaml .Values.controller.affinity | indent 8 }}
+    {{- end }}
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "nginx-ingress.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
       terminationGracePeriodSeconds: 60
 {{- if .Values.controller.customTemplate.configMapName }}
