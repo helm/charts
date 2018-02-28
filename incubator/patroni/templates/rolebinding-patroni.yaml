@@ -10,7 +10,7 @@ metadata:
     component: "{{ .Release.Name }}-{{ .Values.Component }}"
 subjects:
   - kind: ServiceAccount
-    name: default
+    name: {{ template "patroni.serviceAccountName" . }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
