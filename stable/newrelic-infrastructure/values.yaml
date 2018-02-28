@@ -63,5 +63,4 @@ resources:
   #  team: alpha-team
   #
 
-daemonset:
-  tolerations: []
+tolerations: []
