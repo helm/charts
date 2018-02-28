@@ -19,6 +19,7 @@ spec:
         redis-node: "true"
 {{ include "labels.standard" . | indent 8 }}
     spec:
+      serviceAccountName: {{ template "redis-ha.serviceAccountName" . }}
       {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
