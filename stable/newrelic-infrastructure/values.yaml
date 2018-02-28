@@ -19,6 +19,10 @@ resources:
     cpu: 100m
     memory: 128Mi
 
+# Tolerations for pod assignment
+# Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+tolerations: []
+
 # If you wish to provide additional labels to apply to the pod(s), specify
 # them here
 # podLabels:
