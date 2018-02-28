@@ -6,15 +6,16 @@ This chart will deploy the New Relic Infrastructure agent as a Daemonset.
 
 ## Configuration
 
-| Parameter          | Description                                         | Default                    |
-| ------------------ | --------------------------------------------------- | -------------------------- |
-| `config`           | A `newrelic-infra.yml` file if you wish to provide. | ` `                 |
-| `image.name`       | The container to pull.                              | `newrelic/infrastructure`  |
-| `image.pullPolicy` | The pull policy.                                    | `IfNotPresent`             |
-| `image.tag`        | The version of the container to pull.               | `0.0.11`                   |
-| `licenseKey`       | The license key for your New Relic Account.         | ``                         |
-| `resources`        | Any resources you wish to assign to the pod.        | See Resources below        |
-| `verboseLog`       | Should the agent log verbosely. (Boolean)           | `false`                    |
+| Parameter          | Description                                                  | Default                    |
+| ------------------ | ------------------------------------------------------------ | -------------------------- |
+| `config`           | A `newrelic-infra.yml` file if you wish to provide.          | ` `                        |
+| `image.name`       | The container to pull.                                       | `newrelic/infrastructure`  |
+| `image.pullPolicy` | The pull policy.                                             | `IfNotPresent`             |
+| `image.tag`        | The version of the container to pull.                        | `0.0.11`                   |
+| `licenseKey`       | The license key for your New Relic Account.                  | ``                         |
+| `resources`        | Any resources you wish to assign to the pod.                 | See Resources below        |
+| `verboseLog`       | Should the agent log verbosely. (Boolean)                    | `false`                    |
+| `tolerations`      | List of node taints to tolerate (requires Kubernetes >= 1.6) | `nil`                      |
 
 ## Resources
 
