@@ -53,24 +53,28 @@ following configurable parameters:
 
 | Parameter                      | Description                                                                                                     | Default                                                    |
 | ------------------------------ | --------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------- |
-| `image`                        | Kafka Container image name                                                                                      | `solsson/kafka`                                            |
-| `imageTag`                     | Kafka Container image tag                                                                                       | `1.0.0`                                                    |
-| `imagePullPolicy`              | Kafka Container pull policy                                                                                     | `Always`                                                   |
+| `image`                        | Kafka Container image name                                                                                      | `confluentinc/cp-kafka`                                    |
+| `imageTag`                     | Kafka Container image tag                                                                                       | `4.0.0`                                                    |
+| `imagePullPolicy`              | Kafka Container pull policy                                                                                     | `IfNotPresent`                                             |
 | `replicas`                     | Kafka Brokers                                                                                                   | `3`                                                        |
 | `component`                    | Kafka k8s selector key                                                                                          | `kafka`                                                    |
 | `resources`                    | Kafka resource requests and limits                                                                              | `{}`                                                       |
 | `logSubPath`                   | Subpath under `persistence.mountPath` where kafka logs will be placed.                                          | `logs`                                                     |
 | `affinity`                     | Pod scheduling preferences                                                                                      | `{}`                                                       |
-| `configurationOverrides`       | `Kafka ` [configuration setting][brokerconfigs] overrides in the dictionary format                              | `setting.name: value` | `{}`                               |
+| `configurationOverrides`       | `Kafka ` [configuration setting][brokerconfigs] overrides in the dictionary format                              | `{ offsets.topic.replication.factor: 3 }`                  |
+| `updateStrategy`               | StatefulSet update strategy to use.                                                                             | `{ type: "OnDelete" }`                                     |
 | `persistence.enabled`          | Use a PVC to persist data                                                                                       | `true`                                                     |
 | `persistence.size`             | Size of data volume                                                                                             | `1Gi`                                                      |
 | `persistence.mountPath`        | Mount path of data volume                                                                                       | `/opt/kafka/data`                                          |
 | `persistence.storageClass`     | Storage class of backing PVC                                                                                    | `nil`                                                      |
-| `schema-registry.enabled`      | If True, installs Schema Registry Chart                                                                         | `false`                                                    |
-| `updateStrategy`               | StatefulSet update strategy to use.                                                                             | `{ type: "OnDelete" }`                                     |
 | `zookeeper.enabled`            | If True, installs Zookeeper Chart                                                                               | `true`                                                     |
+| `zookeeper.resources`          | Zookeeper resource requests and limits                                                                          | `{}`                                                       |
+| `zookeeper.heap`               | JVM heap size to allocate to Zookeeper                                                                          | `1G`                                                       |
+| `zookeeper.storage`            | Zookeeper Persistent volume size                                                                                | `2Gi`                                                      |
+| `zookeeper.imagePullPolicy`    | Zookeeper Container pull policy                                                                                 | `IfNotPresent`                                             |
 | `zookeeper.url`                | URL of Zookeeper Cluster (unneeded if installing Zookeeper Chart)                                               | `""`                                                       |
 | `zookeeper.port`               | Port of Zookeeper Cluster                                                                                       | `2181`                                                     |
+
 
 Specify parameters using `--set key=value[,key=value]` argument to `helm install`
 
@@ -107,6 +111,13 @@ topics with:
 my-release-zookeeper:2181 --list`
 
 Where `my-release` is the name of your helm release.
+
+## Extensions
+
+Kafka has a rich ecosystem, with lots of tools. This sections is intended to compile all of those tools for which a corresponding Helm chart has already been created. 
+
+- [Schema-registry](https://github.com/kubernetes/charts/tree/master/incubator/schema-registry) -  A confluent project that provides a serving layer for your metadata. It provides a RESTful interface for storing and retrieving Avro schemas. 
+
 
 ## Known Limitations
 
