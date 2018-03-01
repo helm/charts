@@ -120,7 +120,7 @@ rabbitmqAmqpsSupport:
   enabled: false
 
   # NodePort
-  amqpsNodePort: 5671 
+  amqpsNodePort: 5671
 
   # SSL configuration
   config: |
