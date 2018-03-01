@@ -39,18 +39,26 @@ spec:
               name: {{ template "postgresql.fullname" . }}
               key: postgres-password
         - name: SENTRY_POSTGRES_HOST
+          {{- if .Values.postgresql.remoteHost }}
+          value: {{ .Values.postgresql.remoteHost }}
+          {{- else }}
           value: {{ template "postgresql.fullname" . }}
-        - name: SENTRY_POSTGRES_PORT
-          value: "5432"
+          {{- end }}
+        - name: SENTRY_POSTRGES_PORT
+          value: {{ .Values.postgresql.postgresPort | quote }}
         - name: SENTRY_REDIS_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ template "redis.fullname" . }}
               key: redis-password
         - name: SENTRY_REDIS_HOST
+          {{- if .Values.redis.remoteHost }}
+          value: {{ .Values.redis.remoteHost }}
+          {{- else }}
           value: {{ template "redis.fullname" . }}
+          {{- end }}
         - name: SENTRY_REDIS_PORT
-          value: "6379"
+          value: {{ .Values.redis.redisPort | quote }}
         - name: SENTRY_EMAIL_HOST
           value: {{ default "" .Values.email.host | quote }}
         - name: SENTRY_EMAIL_PORT
@@ -62,12 +70,5 @@ spec:
             secretKeyRef:
               name: {{ template "fullname" . }}
               key: smtp-password
-        - name: SENTRY_EMAIL_USE_TLS
-          value: {{ .Values.email.use_tls | quote }}
-        - name: SENTRY_SERVER_EMAIL
-          value: {{ .Values.email.from_address | quote }}
-{{- if .Values.cron.env }}
-{{ toYaml .Values.cron.env | indent 8 }}
-{{- end }}
         resources:
 {{ toYaml .Values.cron.resources | indent 12 }}

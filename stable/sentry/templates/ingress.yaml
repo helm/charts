@@ -1,4 +1,5 @@
 {{- if .Values.ingress.enabled -}}
+{{- $serviceName := include "fullname" . -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
@@ -24,5 +25,13 @@ spec:
 {{- if .Values.ingress.tls }}
   tls:
 {{ toYaml .Values.ingress.tls | indent 4 }}
+{{- end -}}
+{{- if .Values.ingress.tlsHosts }}
+  tls:
+  {{- range $host := .Values.ingress.tlsHosts }}
+  - hosts:
+    - {{ $host }}
+    secretName: {{ $serviceName }}-tls
+  {{- end }}
 {{- end -}}
 {{- end -}}
