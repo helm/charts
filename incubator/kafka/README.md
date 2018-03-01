@@ -60,6 +60,7 @@ following configurable parameters:
 | `component`                    | Kafka k8s selector key                                                                                          | `kafka`                                                    |
 | `resources`                    | Kafka resource requests and limits                                                                              | `{}`                                                       |
 | `logSubPath`                   | Subpath under `persistence.mountPath` where kafka logs will be placed.                                          | `logs`                                                     |
+| `schedulerName`                | Name of Kubernetes scheduler (other than the default)                                                           | `nil`                                                      |
 | `affinity`                     | Pod scheduling preferences                                                                                      | `{}`                                                       |
 | `configurationOverrides`       | `Kafka ` [configuration setting][brokerconfigs] overrides in the dictionary format                              | `{ offsets.topic.replication.factor: 3 }`                  |
 | `updateStrategy`               | StatefulSet update strategy to use.                                                                             | `{ type: "OnDelete" }`                                     |
