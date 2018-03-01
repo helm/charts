@@ -22,7 +22,7 @@ resources: {}
 service:
   type: ClusterIP
   httpPort: 9108
-  scrape: true
+  annotations: {}
 
 es:
   ## Address (host and port) of the Elasticsearch node we should connect to.
