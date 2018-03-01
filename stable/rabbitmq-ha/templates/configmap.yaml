@@ -31,6 +31,10 @@ data:
       rabbitmq_web_stomp,
       {{- end }}
 
+      {{- if .Values.rabbitmqAuth.enabled }}
+      rabbitmq_auth_mechanism_ssl,
+      {{- end }}
+
       rabbitmq_consistent_hash_exchange,
       rabbitmq_federation,
       rabbitmq_federation_management,
