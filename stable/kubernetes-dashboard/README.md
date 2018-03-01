@@ -40,7 +40,7 @@ It is highly recommended to use RBAC with minimal privileges needed for Dashboar
 
 ## Configuration
 
-The following tables lists the configurable parameters of the kubernetes-dashboard chart and their default values.
+The following table lists the configurable parameters of the kubernetes-dashboard chart and their default values.
 
 | Parameter                 | Description                                                                             | Default                                                                  |
 |---------------------------|-----------------------------------------------------------------------------------------|--------------------------------------------------------------------------|
