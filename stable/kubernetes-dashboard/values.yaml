@@ -5,7 +5,7 @@
 
 image:
   repository: k8s.gcr.io/kubernetes-dashboard-amd64
-  tag: v1.8.1
+  tag: v1.8.3
   pullPolicy: IfNotPresent
 
 ## Here labels can be added to the kubernets dashboard deployment
@@ -25,9 +25,16 @@ labels: {}
 ##
 nodeSelector: {}
 
+## List of node taints to tolerate (requires Kubernetes >= 1.6)
+tolerations: []
+#  - key: "key"
+#    operator: "Equal|Exists"
+#    value: "value"
+#    effect: "NoSchedule|PreferNoSchedule|NoExecute"
+
 service:
   type: ClusterIP
-  externalPort: 80
+  externalPort: 443
 
   ## This allows an overide of the heapster service name
   ## Default: {{ .Chart.Name }}
@@ -81,6 +88,10 @@ rbac:
   ## If true, create & use RBAC resources
   #
   create: false
+  ## If true, cluster-admin ClusterRole will be used for dashboard ServiceAccount (NOT RECOMMENDED)
+  ## If false, only minimal recommended role will be used.
+  #
+  clusterAdminRole: false
 
   ## Ignored if rbac.create is true
   #
