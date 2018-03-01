@@ -45,8 +45,12 @@ worker:
       memory: 100Mi
 
 # Initial admin user to create
+# an empty password issues random; any helm upgrade replaces it
+# after an initial installation, setting exists to true will skip
 user:
+  exists: false
   email: admin@sentry.local
+  password:
 
 # BYO Email server
 # TODO: Add exim4 template
@@ -110,9 +114,32 @@ ingress:
   #     hosts:
   #       - sentry.local
 
+  ## or, if using tlsSecret, enumerate the cert hostnames here
+  tlsHosts: []
+
+## tlsSecret allows a cert to be used for ingress
+#  consider putting this w/ other secrets in seperate encrypted values file
+# tlsSecret:
+#    key:  |
+#    ---BEGIN
+#    ...
+#    ---END
+#    crt: |
+#    ...
+
 # TODO: add support for plugins https://docs.sentry.io/server/plugins/
 
+## allow these chart requirements to be omitted
+## and replaced with external services (using remoteHost)
+requiredBackend:
+    postgresql: true
+    redis: true
+
 postgresql:
+  ## to use remoteHost, set this requiredBackend to false
+  # remoteHost:
+  # postgresPassword:
+  postgresPort: 5432
   postgresDatabase: sentry
   postgresUser: sentry
   imageTag: "9.5"
@@ -120,5 +147,10 @@ postgresql:
     enabled: true
 
 redis:
+  ## to use remoteHost, set this requiredBackend to false
+  # remoteHost:
+  # redisPassowrd:
+  ## redisPort need only change for use with remoteHost
+  redisPort: 6379
   persistence:
     enabled: true
