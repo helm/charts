@@ -1,0 +1,21 @@
+{{- if .Values.rbac.create -}}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: signalfx-agent
+  labels:
+      app: signalfx-agent
+      {{ if ne .Release.Name "RELEASE-NAME" -}}
+      heritage: {{ .Release.Service }}
+      release: {{ .Release.Name }}
+      chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+      {{- end}}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: signalfx-agent
+subjects:
+- kind: ServiceAccount
+  name: "{{ .Values.rbac.serviceAccountName }}"
+  namespace: {{ .Release.Namespace }}
+{{- end -}}

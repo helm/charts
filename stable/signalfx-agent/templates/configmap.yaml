@@ -1,0 +1,118 @@
+{{- if and .Values.clusterName .Values.signalFxAccessToken -}}
+apiVersion: v1
+data:
+  agent.yaml: |
+{{- if .Values.agentConfig }}
+{{ toYaml .Values.agentConfig | indent 4 }}
+{{- else }}
+    signalFxAccessToken: ${SFX_ACCESS_TOKEN}
+
+    intervalSeconds: {{ .Values.metricIntervalSeconds }}
+
+    logging:
+      level: {{ .Values.logLevel | default "info" }}
+
+    globalDimensions:
+      kubernetes_cluster: {{ .Values.clusterName }}
+
+    sendMachineID: true
+
+    observers:
+    - type: k8s-api
+      {{- if .Values.apiServerSkipVerify }}
+      kubernetesAPI:
+        skipVerify: true
+      {{- end }}
+
+    monitors:
+    - type: collectd/cpu
+    - type: collectd/cpufreq
+    - type: collectd/df
+      hostFSPath: /hostfs
+    - type: collectd/disk
+    - type: collectd/interface
+    - type: collectd/load
+    - type: collectd/memory
+    - type: collectd/protocols
+    - type: collectd/signalfx-metadata
+      procFSPath: /hostfs/proc
+      etcPath: /hostfs/etc
+      persistencePath: /run
+    - type: collectd/uptime
+    - type: collectd/vmem
+
+    - type: collectd/processes
+      processes:
+      - collectd
+      - signalfx-agent
+
+    - type: kubelet-stats
+      {{- if .Values.containerStatsIntervalSeconds }}
+      intervalSeconds: {{ .Values.containerStatsIntervalSeconds }}
+      {{- end }}
+      {{- if .Values.kubeletAPI }}
+      kubeletAPI:
+        {{ toYaml .Values.kubeletAPI | indent 8 | trim }}
+      {{- end }}
+
+    {{ if .Values.gatherClusterMetrics -}}
+    # Collects k8s cluster-level metrics
+    - type: kubernetes-cluster
+    {{- end }}
+
+    {{ if .Values.gatherDockerMetrics -}}
+    - type: collectd/docker
+      dockerURL: unix:///var/run/docker.sock
+      excludedImages:
+        - ".*pause-amd64.*"
+      dimensions:
+        container_image: inspect:Config.Image
+        container_id: inspect:Id
+        container_spec_name: inspect:Config.Labels['io.kubernetes.container.name']
+        # Duplicated for backwards compatibility
+        container_name: inspect:Config.Labels['io.kubernetes.container.name']
+        kubernetes_pod_name: inspect:Config.Labels['io.kubernetes.pod.name']
+        kubernetes_pod_uid: inspect:Config.Labels['io.kubernetes.pod.uid']
+        kubernetes_namespace: inspect:Config.Labels['io.kubernetes.pod.namespace']
+    {{- end }}
+
+    {{ range .Values.monitors -}}
+    - type: {{ .type }}
+      {{- with .discoveryRule }}
+      discoveryRule: {{ . }}
+      {{- end }}
+      {{- if (omit . "type" "discoveryRule") }}
+      {{ toYaml (omit . "type" "discoveryRule") | indent 6 | trim }}
+      {{- end }}
+
+    {{ end }}
+
+    collectd:
+      readThreads: {{ .Values.readThreads | default 5 }}
+      writeQueueLimitHigh: {{ .Values.writeQueueLimitHigh | default 500000 }}
+      writeQueueLimitLow: {{ .Values.writeQueueLimitLow | default 400000 }}
+      timeout: {{ .Values.timeout | default 40 }}
+      logLevel: {{ .Values.logLevel | default "notice" }}
+
+    metricsToExclude:
+      {{- if .Values.metricNamesToExclude }}
+      - metricNames:
+       {{- range .Values.metricNamesToExclude }}
+        - "{{ . }}"
+       {{- end }}
+      {{- end }}
+      {{- with .Values.metricsToExclude }}
+{{ toYaml . | indent 6 }}
+      {{- end }}
+{{- end }}
+kind: ConfigMap
+metadata:
+  name: signalfx-agent
+  labels:
+    app: signalfx-agent
+    {{ if ne .Release.Name "RELEASE-NAME" -}}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    {{- end}}
+{{- end -}}
