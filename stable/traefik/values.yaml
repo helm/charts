@@ -136,6 +136,11 @@ acme:
     # storageClass: "-"
     accessMode: ReadWriteOnce
     size: 1Gi
+    ## A manually managed Persistent Volume Claim
+    ## Requires persistence.enabled: true
+    ## If defined, PVC must be created manually before volume will be bound
+    ##
+    # existingClaim:
 dashboard:
   enabled: false
   domain: traefik.example.com
