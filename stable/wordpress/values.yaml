@@ -62,7 +62,7 @@ externalDatabase:
   user: bn_wordpress
 
   ## Database password
-  # password:
+  password: ""
 
   ## Database name
   database: bitnami_wordpress
