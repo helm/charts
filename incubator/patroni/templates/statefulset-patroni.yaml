@@ -25,6 +25,7 @@ spec:
           {{ $key }}: {{ $value | quote }}
         {{ end }}
       {{ end }}
+      serviceAccountName: {{ template "patroni.serviceAccountName" . }}
       containers:
       - name: spilo
         image: "{{ .Values.Spilo.Image }}:{{ .Values.Spilo.Version }}"
