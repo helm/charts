@@ -10,7 +10,7 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app: {{ template "nginx-ldapauth-proxy.fullname" . }}
+      app: {{ template "nginx-ldapauth-proxy.name" . }}
       release: {{ .Release.Name }}
   replicas: {{ .Values.replicaCount }}
   template:
