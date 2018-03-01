@@ -37,6 +37,11 @@ updateStrategy:
 ## This is combined with `persistence.mountPath`, to create, by default: /opt/kafka/data/logs
 logSubPath: "logs"
 
+## Use an alternate scheduler, e.g. "stork".
+## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
+##
+# schedulerName:
+
 ## Pod scheduling preferences.
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
 ##
