@@ -28,6 +28,25 @@ Credentials:
   Admin: cola
   Standby: pinacolada
 
+# Define where patroni should get its secrets from.
+# On default, it uses the generated secret by itself, but changing `SecretKeyRefs` allows you
+# to get the data from your own secret resource.
+#
+# Syntax:
+# ```
+# SecretKeyRefs:
+#   <container-env-var-name>:
+#     name: <secret resource name> (optional, defaults to patroni charts secret as resource name)
+#     key: <secret resource entry>
+# ```
+SecretKeyRefs:
+  PGPASSWORD_SUPERUSER:
+    key: password-superuser
+  PGPASSWORD_ADMIN:
+    key: password-admin
+  PGPASSWORD_STANDBY:
+    key: password-standby
+
 ## Distribution Configuration stores. Please note that only one of the following stores should be selected.
 Etcd:
   Enable: true

@@ -65,6 +65,7 @@ The following tables lists the configurable parameters of the patroni chart and 
 | `Credentials.Superuser` | password for the superuser          | `tea`                                               |
 | `Credentials.Admin`     | password for the admin user         | `cola`                                              |
 | `Credentials.Standby`   | password for the replication user   | `pinacolada`                                        |
+| `SecretKeyRefs`         | defines secret resources to env mapping | defaults to load `Credentials` from our own secret resource |
 | `Etcd.Enable`           | using etcd as DCS                   | `true`                                              |
 | `Etcd.DeployChart`      | deploy etcd chart                   | `true`                                              |
 | `Etcd.Host`             | host name of etcd cluster           | not used (Etcd.Discovery is used instead)           |
