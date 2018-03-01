@@ -30,18 +30,13 @@ spec:
           resources:
 {{ toYaml .Values.jupyter.resources | indent 12 }}
           volumeMounts:
-          - name: config-volume
-            mountPath: /home/jovyan/.jupyter
+            - name: config-volume
+              mountPath: /home/jovyan/.jupyter
           env:
-          - name: EXTRA_CONDA_PACKAGES
-            value: {{ .Values.jupyter.condaPackages }}
-          - name: EXTRA_PIP_PACKAGES
-            value: {{ .Values.jupyter.pipPackages }}
-          - name: EXTRA_APT_PACKAGES
-            value: {{ .Values.jupyter.aptPackages }}
-          - name: DASK_SCHEDULER_ADDRESS
-            value: {{ template "dask.fullname" . }}-scheduler:{{ .Values.scheduler.servicePort }}
+            - name: DASK_SCHEDULER_ADDRESS
+              value: {{ template "dask.fullname" . }}-scheduler:{{ .Values.scheduler.servicePort }}
+{{ toYaml .Values.jupyter.env | indent 12 }}
       volumes:
-      - name: config-volume
-        configMap:
-          name: {{ template "dask.fullname" . }}-scheduler-config
+        - name: config-volume
+          configMap:
+            name: {{ template "dask.fullname" . }}-scheduler-config

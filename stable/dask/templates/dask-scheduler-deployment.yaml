@@ -37,9 +37,4 @@ spec:
           resources:
 {{ toYaml .Values.scheduler.resources | indent 12 }}
           env:
-          - name: EXTRA_CONDA_PACKAGES
-            value: {{ .Values.scheduler.condaPackages }}
-          - name: EXTRA_PIP_PACKAGES
-            value: {{ .Values.scheduler.pipPackages }}
-          - name: EXTRA_APT_PACKAGES
-            value: {{ .Values.scheduler.aptPackages }}
+{{ toYaml .Values.scheduler.env | indent 12 }}

@@ -55,9 +55,6 @@ The following tables lists the configurable parameters of the Dask chart and the
 | `worker.replicas`            | k8s hpa and deployment replicas  | `3`            |
 | `worker.component`           | k8s selector key                 | `dask-worker`  |
 | `worker.resources`           | Container resources              | `{}`           |
-| `worker.pipPackages`         | Extra pip packages to install    | ``             |
-| `worker.aptPackages`         | Extra apt packages to install    | ``             |
-| `worker.condaPackages`       | Extra conda packages to install  | ``             |
 |
 
 ### jupyter
@@ -71,9 +68,6 @@ The following tables lists the configurable parameters of the Dask chart and the
 | `jupyter.component`     | k8s selector key                 | `jupyter`                |
 | `jupyter.servicePort`   | k8s service port                 | `80`                     |
 | `jupyter.resources`     | Container resources              | `{}`                     |
-| `jupyter.pipPackages`   | Extra pip packages to install    | ``                       |
-| `jupyter.aptPackages`   | Extra apt packages to install    | ``                       |
-| `jupyter.condaPackages` | Extra conda packages to install  | ``                       |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
@@ -84,11 +78,3 @@ $ helm install --name my-release -f values.yaml stable/dask
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
-
-### Extra Packages
-
-You can install extra packages in your Jupyter notebook and Dask workers by
-using the  `apt/pip/condaPackages` variables.  These should match for any
-Python libraries that are likely to be called on the workers (like numpy,
-pandas, and so on).  These variables only work when using Docker images that
-extend the default images `daskdev/dask` and `daskdev/dask-notebook`.

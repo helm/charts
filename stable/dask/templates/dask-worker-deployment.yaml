@@ -40,9 +40,4 @@ spec:
           resources:
 {{ toYaml .Values.worker.resources | indent 12 }}
           env:
-          - name: EXTRA_CONDA_PACKAGES
-            value: {{ .Values.worker.condaPackages }}
-          - name: EXTRA_PIP_PACKAGES
-            value: {{ .Values.worker.pipPackages }}
-          - name: EXTRA_APT_PACKAGES
-            value: {{ .Values.worker.aptPackages }}
+{{ toYaml .Values.worker.env | indent 12 }}
