@@ -63,6 +63,11 @@ following configurable parameters:
 | `schedulerName`                | Name of Kubernetes scheduler (other than the default)                                                           | `nil`                                                      |
 | `affinity`                     | Pod scheduling preferences                                                                                      | `{}`                                                       |
 | `configurationOverrides`       | `Kafka ` [configuration setting][brokerconfigs] overrides in the dictionary format                              | `{ offsets.topic.replication.factor: 3 }`                  |
+| `readinessProbe.initialDelaySeconds` | Number of seconds before probe is initiated.                                                              | `30`                                                       |
+| `readinessProbe.periodSeconds`       | How often (in seconds) to perform the probe.                                                              | `10`                                                       |
+| `readinessProbe.timeoutSeconds`      | Number of seconds after which the probe times out.                                                        | `5`                                                        |
+| `readinessProbe.successThreshold`    | Minimum consecutive successes for the probe to be considered successful after having failed.              | `1`                                                        |
+| `readinessProbe.failureThreshold`    | After the probe fails this many times, pod will be marked Unready.                                        | `3`                                                        |
 | `updateStrategy`               | StatefulSet update strategy to use.                                                                             | `{ type: "OnDelete" }`                                     |
 | `persistence.enabled`          | Use a PVC to persist data                                                                                       | `true`                                                     |
 | `persistence.size`             | Size of data volume                                                                                             | `1Gi`                                                      |
