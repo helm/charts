@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: {{ template "patroni.fullname" . }}
   labels:
+    app: {{ template "patroni.fullname" . }}
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
@@ -14,9 +15,10 @@ spec:
     metadata:
       name: {{ template "patroni.fullname" . }}
       labels:
-        heritage: {{.Release.Service | quote }}
-        release: {{.Release.Name | quote }}
-        chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+        app: {{ template "patroni.fullname" . }}
+        heritage: {{ .Release.Service | quote }}
+        release: {{ .Release.Name | quote }}
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         component: "{{.Release.Name}}-{{.Values.component}}"
     spec:
       {{ if .Values.nodeSelector }}

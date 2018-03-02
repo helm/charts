@@ -3,8 +3,9 @@ kind: Endpoints
 metadata:
   name: {{ template "patroni.fullname" . }}
   labels:
+    app: {{ template "patroni.fullname" . }}
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    component: "{{ .Release.Name }}-{{ .Values.component }}"
+    component: "{{.Release.Name}}-{{.Values.component}}"
 subsets: []
