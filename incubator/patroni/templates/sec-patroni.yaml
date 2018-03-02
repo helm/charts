@@ -11,4 +11,5 @@ metadata:
 type: Opaque
 data:
   password-superuser: {{ .Values.credentials.superuser | b64enc }}
+  password-admin: {{ .Values.credentials.admin | b64enc }}
   password-standby: {{ .Values.credentials.standby | b64enc }}

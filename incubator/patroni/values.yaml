@@ -27,6 +27,7 @@ resources:
 # https://github.com/zalando/spilo/blob/master/ENVIRONMENT.rst
 credentials:
   superuser: tea
+  admin: cola
   standby: pinacolada
 
 # Distribution Configuration stores

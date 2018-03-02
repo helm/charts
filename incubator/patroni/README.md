@@ -35,13 +35,12 @@ $ helm install --name my-release incubator/patroni
 Your access point is a cluster IP. In order to access it spin up another pod:
 
 ```console
-$ kubectl run -i --tty ubuntu --image=ubuntu:16.04 --restart=Never -- bash -il
+$ kubectl run -i --tty psql --image=postgres --restart=Never -- bash -il
 ```
 
 Then, from inside the pod, connect to postgres:
 
 ```console
-$ apt-get update && apt-get install postgresql-client -y
 $ psql -U admin -h my-release-patroni.default.svc.cluster.local postgres
 <admin password from values.yaml>
 postgres=>
@@ -63,6 +62,7 @@ The following tables lists the configurable parameters of the patroni chart and 
 | `resources.cpu`                   | Container requested CPU                   | `100m`                                              |
 | `resources.memory`                | Container requested memory                | `512Mi`                                             |
 | `credentials.superuser`           | Password for the superuser                | `tea`                                               |
+| `credentials.admin`               | Password for the admin                    | `cola`                                              |
 | `credentials.standby`             | password for the replication user         | `pinacolada`                                        |
 | `etcd.enable`                     | Using etcd as DCS                         | `true`                                              |
 | `etcd.deployChart`                | Deploy etcd chart                         | `true`                                              |
