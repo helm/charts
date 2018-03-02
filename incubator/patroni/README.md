@@ -53,32 +53,32 @@ The following tables lists the configurable parameters of the patroni chart and 
 
 |       Parameter         |           Description               |                         Default                     |
 |-------------------------|-------------------------------------|-----------------------------------------------------|
-| `Name`                  | Service name                        | `patroni`                                           |
-| `Spilo.Image`           | Container image name                | `registry.opensource.zalan.do/acid/spilo-9.5`       |
-| `Spilo.Version`         | Container image tag                 | `1.0-p5`                                            |
-| `ImagePullPolicy`       | Container pull policy               | `IfNotPresent`                                      |
-| `Replicas`              | k8s statefulset replicas            | `5`                                                 |
-| `NodeSelector`          | nodeSelector map                    | Empty                                               |
-| `Component`             | k8s selector key                    | `patroni`                                           |
-| `Resources.Cpu`         | container requested cpu             | `100m`                                              |
-| `Resources.Memory`      | container requested memory          | `512Mi`                                             |
-| `Credentials.Superuser` | password for the superuser          | `tea`                                               |
-| `Credentials.Standby`   | password for the replication user   | `pinacolada`                                        |
-| `Etcd.Enable`           | using etcd as DCS                   | `true`                                              |
-| `Etcd.DeployChart`      | deploy etcd chart                   | `true`                                              |
-| `Etcd.Host`             | host name of etcd cluster           | not used (Etcd.Discovery is used instead)           |
-| `Etcd.Discovery`        | domain name of etcd cluster         | `<release-name>-etcd.<namespace>.svc.cluster.local` |
-| `Zookeeper.Enable`      | using zookeeper as DCS              | `false`                                             |
-| `Zookeeper.DeployChart` | deploy zookeeper chart              | `false`                                             |
-| `Zookeeper.Hosts`       | list of zookeeper cluster members   | 'host1:port1','host2:port2','etc...'                |
-| `WalE.Enable`           | use of wal-e tool for base backup/restore | `false` |
-| `WalE.Schedule_Cron_Job` | schedule of wal-e backups          | `00 01 * * *` |
-| `WalE.Retain_Backups`   | number of backups to retain         | `2` |
-| `WalE.S3_Bucket:`       | Amazon S3 bucket used for wal-e backups | `` |
-| `WalE.GCS_Bucket`       | Google cloud plataform storage used for wal-e backups | `` |
-| `WalE.Kubernetes_Secret` | kubernetes secret for provider bucket | `` |
-| `WalE.Backup_Threshold_Megabytes` | maximum size of the WAL segments accumulated after the base backup to consider WAL-E restore instead of pg_basebackup | `1024` |
-| `WalE.Backup_Threshold_Percentage` | maximum ratio (in percents) of the accumulated WAL files to the base backup to consider WAL-E restore instead of pg_basebackup | `30` |
+| `name`                  | Service name                        | `patroni`                                           |
+| `spilo.image`           | Container image name                | `registry.opensource.zalan.do/acid/spilo-9.5`       |
+| `spilo.version`         | Container image tag                 | `1.0-p5`                                            |
+| `imagePullPolicy`       | Container pull policy               | `IfNotPresent`                                      |
+| `replicas`              | k8s statefulset replicas            | `5`                                                 |
+| `nodeSelector`          | nodeSelector map                    | Empty                                               |
+| `component`             | k8s selector key                    | `patroni`                                           |
+| `resources.cpu`         | container requested cpu             | `100m`                                              |
+| `resources.memory`      | container requested memory          | `512Mi`                                             |
+| `credentials.superuser` | password for the superuser          | `tea`                                               |
+| `credentials.standby`   | password for the replication user   | `pinacolada`                                        |
+| `etcd.enable`           | using etcd as DCS                   | `true`                                              |
+| `etcd.deployChart`      | deploy etcd chart                   | `true`                                              |
+| `etcd.host`             | host name of etcd cluster           | not used (Etcd.Discovery is used instead)           |
+| `etcd.discovery`        | domain name of etcd cluster         | `<release-name>-etcd.<namespace>.svc.cluster.local` |
+| `zookeeper.enable`      | using zookeeper as DCS              | `false`                                             |
+| `zookeeper.deployChart` | deploy zookeeper chart              | `false`                                             |
+| `zookeeper.hosts`       | list of zookeeper cluster members   | 'host1:port1','host2:port2','etc...'                |
+| `walE.enable`           | use of wal-e tool for base backup/restore | `false` |
+| `walE.scheduleCronJob`  | schedule of wal-e backups          | `00 01 * * *` |
+| `walE.retainBackups`   | number of backups to retain         | `2` |
+| `walE.s3Bucket:`       | Amazon S3 bucket used for wal-e backups | `` |
+| `walE.gcsBucket`       | Google cloud plataform storage used for wal-e backups | `` |
+| `walE.kubernetesSecret` | kubernetes secret for provider bucket | `` |
+| `walE.backupThresholdMegabytes` | maximum size of the WAL segments accumulated after the base backup to consider WAL-E restore instead of pg_basebackup | `1024` |
+| `walE.backupThresholdPercentage` | maximum ratio (in percents) of the accumulated WAL files to the base backup to consider WAL-E restore instead of pg_basebackup | `30` |
 | `persistentVolume.accessModes` | Persistent Volume access modes | `[ReadWriteOnce]` |
 | `persistentVolume.annotations` | Annotations for Persistent Volume Claim` | `{}` |
 | `persistentVolume.mountPath` | Persistent Volume mount root path | `/home/postgres/pgdata` |
