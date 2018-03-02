@@ -13,6 +13,10 @@ spec:
       labels:
         app: {{ template "mongodb.fullname" . }}
     spec:
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- end }}
       containers:
       - name: {{ template "mongodb.fullname" . }}
         image: "{{ .Values.image }}"
