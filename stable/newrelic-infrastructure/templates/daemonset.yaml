@@ -84,6 +84,10 @@ spec:
             - key: newrelic-infra.yml
               path: newrelic-infra.yml
         {{- end }}
+      {{- if $.Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml $.Values.nodeSelector | indent 8 }}
+      {{- end }}
       {{- if .Values.tolerations }}
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
