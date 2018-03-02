@@ -29,6 +29,7 @@ spec:
       containers:
       - name: spilo
         image: "{{ .Values.spilo.image }}:{{ .Values.spilo.version }}"
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
         env:
         - name: PGPASSWORD_SUPERUSER
           valueFrom:
