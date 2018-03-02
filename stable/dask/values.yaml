@@ -50,6 +50,7 @@ worker:
 
 jupyter:
   name: jupyter
+  enabled: true
   image: "daskdev/dask-notebook"
   imageTag: "0.17.1"
   replicas: 1
