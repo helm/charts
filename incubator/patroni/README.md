@@ -1,6 +1,6 @@
 # Patroni Helm Chart
 
-This directory contains a Kubernetes chart to deploy a five node patroni cluster using a statefulset.
+This directory contains a Kubernetes chart to deploy a five node [Patroni](https://github.com/zalando/patroni/) cluster using a [Spilo](https://github.com/zalando/spilo) and a StatefulSet.
 
 ## Prerequisites Details
 * Kubernetes 1.5
@@ -18,7 +18,7 @@ This directory contains a Kubernetes chart to deploy a five node patroni cluster
 ## Chart Details
 This chart will do the following:
 
-* Implement a HA scalable PostgreSQL cluster using Kubernetes PetSets
+* Implement a HA scalable PostgreSQL cluster using a Kubernetes StatefulSet.
 
 ## Installing the Chart
 
@@ -30,7 +30,7 @@ $ helm dependency update
 $ helm install --name my-release incubator/patroni
 ```
 
-## Connecting to Postgres
+## Connecting to PostgreSQL
 
 Your access point is a cluster IP. In order to access it spin up another pod:
 
@@ -51,43 +51,43 @@ postgres=>
 
 The following tables lists the configurable parameters of the patroni chart and their default values.
 
-|       Parameter         |           Description               |                         Default                     |
-|-------------------------|-------------------------------------|-----------------------------------------------------|
-| `name`                  | Service name                        | `patroni`                                           |
-| `spilo.image`           | Container image name                | `registry.opensource.zalan.do/acid/spilo-9.5`       |
-| `spilo.version`         | Container image tag                 | `1.0-p5`                                            |
-| `imagePullPolicy`       | Container pull policy               | `IfNotPresent`                                      |
-| `replicas`              | k8s statefulset replicas            | `5`                                                 |
-| `nodeSelector`          | nodeSelector map                    | Empty                                               |
-| `component`             | k8s selector key                    | `patroni`                                           |
-| `resources.cpu`         | container requested cpu             | `100m`                                              |
-| `resources.memory`      | container requested memory          | `512Mi`                                             |
-| `credentials.superuser` | password for the superuser          | `tea`                                               |
-| `credentials.standby`   | password for the replication user   | `pinacolada`                                        |
-| `etcd.enable`           | using etcd as DCS                   | `true`                                              |
-| `etcd.deployChart`      | deploy etcd chart                   | `true`                                              |
-| `etcd.host`             | host name of etcd cluster           | not used (Etcd.Discovery is used instead)           |
-| `etcd.discovery`        | domain name of etcd cluster         | `<release-name>-etcd.<namespace>.svc.cluster.local` |
-| `zookeeper.enable`      | using zookeeper as DCS              | `false`                                             |
-| `zookeeper.deployChart` | deploy zookeeper chart              | `false`                                             |
-| `zookeeper.hosts`       | list of zookeeper cluster members   | 'host1:port1','host2:port2','etc...'                |
-| `walE.enable`           | use of wal-e tool for base backup/restore | `false` |
-| `walE.scheduleCronJob`  | schedule of wal-e backups          | `00 01 * * *` |
-| `walE.retainBackups`   | number of backups to retain         | `2` |
-| `walE.s3Bucket:`       | Amazon S3 bucket used for wal-e backups | `` |
-| `walE.gcsBucket`       | Google cloud plataform storage used for wal-e backups | `` |
-| `walE.kubernetesSecret` | kubernetes secret for provider bucket | `` |
-| `walE.backupThresholdMegabytes` | maximum size of the WAL segments accumulated after the base backup to consider WAL-E restore instead of pg_basebackup | `1024` |
-| `walE.backupThresholdPercentage` | maximum ratio (in percents) of the accumulated WAL files to the base backup to consider WAL-E restore instead of pg_basebackup | `30` |
-| `persistentVolume.accessModes` | Persistent Volume access modes | `[ReadWriteOnce]` |
-| `persistentVolume.annotations` | Annotations for Persistent Volume Claim` | `{}` |
-| `persistentVolume.mountPath` | Persistent Volume mount root path | `/home/postgres/pgdata` |
-| `persistentVolume.size` | Persistent Volume size | `2Gi` |
-| `persistentVolume.storageClass` | Persistent Volume Storage Class | `volume.alpha.kubernetes.io/storage-class: default` |
-| `persistentVolume.subPath` | Subdirectory of Persistent Volume to mount | `""` |
-| `rbac.create` | create required role and rolebindings | `true` |
-| `serviceAccount.create` | If true, create a new service account	| `true`
-| `serviceAccount.name` | Service account to be used. If not set and serviceAccount.create is `true`, a name is generated using the fullname template | ``  
+|       Parameter                   |           Description                     |                         Default                     |
+|-----------------------------------|-------------------------------------------|-----------------------------------------------------|
+| `name`                            | Service name                              | `patroni`                                           |
+| `spilo.image`                     | Container image name                      | `registry.opensource.zalan.do/acid/spilo-9.5`       |
+| `spilo.version`                   | Container image tag                       | `1.0-p5`                                            |
+| `imagePullPolicy`                 | Container pull policy                     | `IfNotPresent`                                      |
+| `replicas`                        | k8s statefulset replicas                  | `5`                                                 |
+| `nodeSelector`                    | NodeSelector map                          | Empty                                               |
+| `component`                       | k8s selector key                          | `patroni`                                           |
+| `resources.cpu`                   | Container requested CPU                   | `100m`                                              |
+| `resources.memory`                | Container requested memory                | `512Mi`                                             |
+| `credentials.superuser`           | Password for the superuser                | `tea`                                               |
+| `credentials.standby`             | password for the replication user         | `pinacolada`                                        |
+| `etcd.enable`                     | Using etcd as DCS                         | `true`                                              |
+| `etcd.deployChart`                | Deploy etcd chart                         | `true`                                              |
+| `etcd.host`                       | Host name of etcd cluster                 | not used (`etcd.discovery`) is used instead)        |
+| `etcd.discovery`                  | Domain name of etcd cluster               | `<release-name>-etcd.<namespace>.svc.cluster.local` |
+| `zookeeper.enable`                | Using ZooKeeper as DCS                    | `false`                                             |
+| `zookeeper.deployChart`           | Deploy ZooKeeper chart                    | `false`                                             |
+| `zookeeper.hosts`                 | List of ZooKeeper cluster members         | 'host1:port1','host2:port2','etc...'                |
+| `walE.enable`                     | Use of Wal-E tool for base backup/restore | `false`                                             |
+| `walE.scheduleCronJob`            | Schedule of Wal-E backups                 | `00 01 * * *`                                       |
+| `walE.retainBackups`              | Number of base backups to retain          | `2`                                                 |
+| `walE.s3Bucket:`                  | Amazon S3 bucket used for wal-e backups   | ``                                                  |
+| `walE.gcsBucket`                  | GCS storage used for Wal-E backups        | ``                                                  |
+| `walE.kubernetesSecret`           | K8s secret name for provider bucket       | ``                                                  |
+| `walE.backupThresholdMegabytes`   | Maximum size of the WAL segments accumulated after the base backup to consider WAL-E restore instead of pg_basebackup | `1024` |
+| `walE.backupThresholdPercentage`  | Maximum ratio (in percents) of the accumulated WAL files to the base backup to consider WAL-E restore instead of pg_basebackup | `30` |
+| `persistentVolume.accessModes`    | Persistent Volume access modes            | `[ReadWriteOnce]`                                   |
+| `persistentVolume.annotations`    | Annotations for Persistent Volume Claim`  | `{}`                                                |
+| `persistentVolume.mountPath`      | Persistent Volume mount root path         | `/home/postgres/pgdata`                             |
+| `persistentVolume.size`           | Persistent Volume size                    | `2Gi`                                               |
+| `persistentVolume.storageClass`   | Persistent Volume Storage Class           | `volume.alpha.kubernetes.io/storage-class: default` |
+| `persistentVolume.subPath`        | Subdirectory of Persistent Volume to mount | `""` |
+| `rbac.create`                     | Create required role and rolebindings     | `true`                                              |
+| `serviceAccount.create`           | If true, create a new service account	    | `true`                                              |
+| `serviceAccount.name`             | Service account to be used. If not set and serviceAccount.create is `true`, a name is generated using the fullname template | ``  
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
@@ -114,7 +114,7 @@ $ kubectl delete pvc -l release=$release
 
 ## Internals
 
-Patroni is responsible for electing a Postgres master pod by leveraging etcd.
+Patroni is responsible for electing a PostgreSQL master pod by leveraging etcd.
 It then exports this master via a Kubernetes service and a label query that filters for `spilo-role=master`.
 This label is dynamically set on the pod that acts as the master and removed from all other pods.
 Consequently, the service endpoint will point to the current master.
