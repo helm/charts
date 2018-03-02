@@ -1,4 +1,8 @@
 replicaCount: 1
+strategy:
+  type: RollingUpdate
+  rollingUpdate:
+    maxUnavailable: 0
 image:
   repository: chartmuseum/chartmuseum
   tag: v0.3.1
