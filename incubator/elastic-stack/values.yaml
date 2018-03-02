@@ -9,6 +9,9 @@ kibana:
 logstash:
   enabled: true
 
+fluentd:
+  enabled: false
+
 nginx-ldapauth-proxy:
   enabled: false
 

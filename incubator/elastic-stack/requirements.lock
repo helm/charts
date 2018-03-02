@@ -1,6 +1,15 @@
 dependencies:
+- name: elasticsearch
+  repository: https://kubernetes-charts-incubator.storage.googleapis.com/
+  version: 0.4.7
 - name: kibana
   repository: https://kubernetes-charts.storage.googleapis.com/
-  version: 0.2.0
-digest: sha256:8f36c88fbe0dc5b7b83aeffb738ccaa9b35213ebc8361bf6d9980dc2b252d4bf
-generated: 2017-12-18T14:28:30.584882-05:00
+  version: 0.2.2
+- name: logstash
+  repository: https://kubernetes-charts-incubator.storage.googleapis.com/
+  version: 0.6.0
+- name: fluentd
+  repository: https://kubernetes-charts-incubator.storage.googleapis.com/
+  version: 0.1.3
+digest: sha256:07b1ceb06d38c99bd50108678fc8e5a951026b3282b8c86221cdae5cb1ccbd82
+generated: 2018-03-01T19:09:06.508421-05:00
