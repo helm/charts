@@ -16,6 +16,7 @@ spec:
     matchLabels:
       app: {{ template "artifactory-ha.name" . }}
       release: {{ .Release.Name }}
+      component: {{ .Values.nginx.name }}
   template:
     metadata:
       labels:

@@ -42,6 +42,8 @@ spec:
   selector:
     matchLabels:
       id: {{ template "artifactory-ha.name" . }}-data-pv
+      app: {{ template "artifactory-ha.name" . }}
+      release: {{ .Release.Name }}
 ---
 ### Artifactory HA backup
 apiVersion: v1
@@ -86,4 +88,6 @@ spec:
   selector:
     matchLabels:
       id: {{ template "artifactory-ha.name" . }}-backup-pv
+      app: {{ template "artifactory-ha.name" . }}
+      release: {{ .Release.Name }}
 {{- end }}

@@ -17,11 +17,10 @@ spec:
     protocol: TCP
     name: http
   selector:
-{{- if eq .Values.artifactory.service.pool "all" }}
-    app: {{ template "artifactory-ha.name" . }}
-{{- else }}
+{{- if eq .Values.artifactory.service.pool "members" }}
     role: {{ template "artifactory-ha.node.name" . }}
 {{- end }}
+    app: {{ template "artifactory-ha.name" . }}
     component: "{{ .Values.artifactory.name }}"
     release: {{ .Release.Name }}
 ---
@@ -46,5 +45,6 @@ spec:
     name: http
   selector:
     role: {{ template "artifactory-ha.primary.name" . }}
+    app: {{ template "artifactory-ha.name" . }}
     component: "{{ .Values.artifactory.name }}"
     release: {{ .Release.Name }}
