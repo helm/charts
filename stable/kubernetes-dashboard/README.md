@@ -33,26 +33,34 @@ $ helm delete my-release
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
 
+## Access control
+It is critical for the Kubernetes custer to correctly setup access control of Kubernetes Dashboard. See this [guide](https://github.com/kubernetes/dashboard/wiki/Access-control) for best practises.
+
+It is highly recommended to use RBAC with minimal privileges needed for Dashboard to run.  
+
 ## Configuration
 
-The following tables lists the configurable parameters of the kubernetes-dashboard chart and their default values.
+The following table lists the configurable parameters of the kubernetes-dashboard chart and their default values.
 
-| Parameter              | Description                        | Default                                                                  |
-|------------------------|------------------------------------|--------------------------------------------------------------------------|
-| `image.repository`     | Repository for container image     | `gcr.io/google_containers/kubernetes-dashboard-amd64`                    |
-| `image.tag`            | Image tag                          | `v1.8.1`                                                                 |
-| `image.pullPolicy`     | Image pull policy                  | `IfNotPresent`                                                           |
-| `extraArgs`            | Additional container arguments     | `[]`                                                                     |
-| `nodeSelector`         | node labels for pod assignment     | `{}`                                                                     |
-| `service.externalPort` | Dashboard internal port            | 80                                                                       |
-| `service.internalPort` | Dashboard external port            | 80                                                                       |
-| `ingress.annotations`  | Specify ingress class              | `kubernetes.io/ingress.class: nginx`                                     |
-| `ingress.enabled`      | Enable ingress controller resource | `false`                                                                  |
-| `ingress.hosts`        | Dashboard Hostnames                | `nil`                                                                    |
-| `ingress.tls`          | Ingress TLS configuration          | `[]`                                                                     |
-| `resources`            | Pod resource requests & limits     | `limits: {cpu: 100m, memory: 50Mi}, requests: {cpu: 100m, memory: 50Mi}` |
-| `rbac.create`          | Create & use RBAC resources        | `false`                                                                  |
-| `rbac.serviceAccountName` |  ServiceAccount kubernetes-dashboard will use (ignored if rbac.create=true) | `default`        |
+| Parameter                 | Description                                                                                                                 | Default                                                                  |
+|---------------------------|-----------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------|
+| `image.repository`        | Repository for container image                                                                                              | `k8s.gcr.io/kubernetes-dashboard-amd64`                                  |
+| `image.tag`               | Image tag                                                                                                                   | `v1.8.3`                                                                 |
+| `image.pullPolicy`        | Image pull policy                                                                                                           | `IfNotPresent`                                                           |
+| `extraArgs`               | Additional container arguments                                                                                              | `[]`                                                                     |
+| `nodeSelector`            | node labels for pod assignment                                                                                              | `{}`                                                                     |
+| `tolerations`             | List of node taints to tolerate (requires Kubernetes >= 1.6)                                                                | `[]`                                                                     |
+| `service.externalPort`    | Dashboard internal port                                                                                                     | 443                                                                      |
+| `service.internalPort`    | Dashboard external port                                                                                                     | 443                                                                      |
+| `ingress.annotations`     | Specify ingress class                                                                                                       | `kubernetes.io/ingress.class: nginx`                                     |
+| `ingress.enabled`         | Enable ingress controller resource                                                                                          | `false`                                                                  |
+| `ingress.hosts`           | Dashboard Hostnames                                                                                                         | `nil`                                                                    |
+| `ingress.tls`             | Ingress TLS configuration                                                                                                   | `[]`                                                                     |
+| `resources`               | Pod resource requests & limits                                                                                              | `limits: {cpu: 100m, memory: 50Mi}, requests: {cpu: 100m, memory: 50Mi}` |
+| `rbac.create`             | Create & use RBAC resources                                                                                                 | `true`                                                                   |
+| `rbac.clusterAdminRole`   | "cluster-admin" ClusterRole will be used for dashboard ServiceAccount ([NOT RECOMMENDED](#access-control))                  | `false`                                                                  |
+| `serviceAccount.create`   | Whether a new service account name that the agent will use should be created.                                               | `true`                                                                   |
+| `serviceAccount.name`     | Service account to be used. If not set and serviceAccount.create is `true` a name is generated using the fullname template. |                                                                          |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
