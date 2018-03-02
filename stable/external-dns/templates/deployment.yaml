@@ -13,12 +13,6 @@ spec:
     {{- end }}
       labels: {{ include "external-dns.labels" . | indent 8 }}
     spec:
-      volumes:
-      {{- if .Values.google.applicationCredentials }}
-        - name: {{ template "external-dns.google.volumeMountName" .}}
-          secret:
-            secretName: {{ template "external-dns.fullname" . }}
-      {{- end }}
       containers:
         - name: {{ template "external-dns.name" . }}
           image: "{{.Values.image.name}}:{{ .Values.image.tag }}"
