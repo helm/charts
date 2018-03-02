@@ -93,6 +93,8 @@ controller:
   #    value: "value"
   #    effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
 
+  affinity: {}
+
   ## Node labels for controller pod assignment
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
   ##
@@ -119,6 +121,8 @@ controller:
   podAnnotations: {}
 
   replicaCount: 1
+
+  minAvailable: 1
 
   resources: {}
   #  limits:
@@ -220,6 +224,8 @@ defaultBackend:
   #    value: "value"
   #    effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
 
+  affinity: {}
+
   # labels to add to the pod container metadata
   podLabels: {}
   #  key: value
@@ -234,6 +240,8 @@ defaultBackend:
   podAnnotations: {}
 
   replicaCount: 1
+
+  minAvailable: 1
 
   resources: {}
   # limits:
