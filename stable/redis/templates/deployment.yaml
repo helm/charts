@@ -52,6 +52,10 @@ spec:
         - name: ALLOW_EMPTY_PASSWORD
           value: "yes"
         {{- end }}
+        {{- if .Values.redisExtraFlags }}
+        - name: REDIS_EXTRA_FLAGS
+          value: {{ .Values.redisExtraFlags | join " " }}
+        {{- end }}
         ports:
         - name: redis
           containerPort: 6379
