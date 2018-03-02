@@ -15,6 +15,7 @@ This chart will deploy the New Relic Infrastructure agent as a Daemonset.
 | `licenseKey`       | The license key for your New Relic Account.                  | ``                         |
 | `resources`        | Any resources you wish to assign to the pod.                 | See Resources below        |
 | `verboseLog`       | Should the agent log verbosely. (Boolean)                    | `false`                    |
+| `nodeSelector`     | Node label to use for scheduling                             | `nil`                      |
 | `tolerations`      | List of node taints to tolerate (requires Kubernetes >= 1.6) | `nil`                      |
 
 ## Resources
