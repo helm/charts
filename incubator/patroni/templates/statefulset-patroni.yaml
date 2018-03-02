@@ -10,7 +10,7 @@ metadata:
     component: "{{.Release.Name}}-{{.Values.component}}"
 spec:
   serviceName: {{ template "patroni.fullname" . }}
-  replicas: {{default 5 .Values.replicas }}
+  replicas: {{ .Values.replicas }}
   template:
     metadata:
       name: {{ template "patroni.fullname" . }}
