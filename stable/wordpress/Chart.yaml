@@ -1,5 +1,5 @@
 name: wordpress
-version: 0.8.7
+version: 0.8.8
 appVersion: 4.9.4
 description: Web publishing platform for building blogs and websites.
 icon: https://bitnami.com/assets/stacks/wordpress/img/wordpress-stack-220x234.png

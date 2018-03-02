@@ -68,7 +68,6 @@ The following tables lists the configurable parameters of the WordPress chart an
 | `mariadb.mariadbUser`                | Database user to create                    | `bn_wordpress`                                             |
 | `mariadb.mariadbPassword`            | Password for the database                  | _random 10 character long alphanumeric string_             |
 | `externalDatabase.host`              | Host of the external database              | `localhost`                                                |
-| `externalDatabase.rootPassword`      | DB Root users password (schema creation)   | `nil`                                                    |
 | `externalDatabase.user`              | Existing username in the external db       | `bn_wordpress`                                             |
 | `externalDatabase.password`          | Password for the above username            | `nil`                                                      |
 | `externalDatabase.database`          | Name of the existing database              | `bitnami_wordpress`                                        |
@@ -123,10 +122,10 @@ Sometimes you may want to have Wordpress connect to an external database rather 
 
 ```console
 $ helm install stable/wordpress \
-    --set mariadb.enabled=false,externalDatabase.host=myexternalhost,externalDatabase.rootPassword=rootpassword,externalDatabase.user=myuser,externalDatabase.password=mypassword,externalDatabase.database=mydatabase,externalDatabase.port=3306
+    --set mariadb.enabled=false,externalDatabase.host=myexternalhost,externalDatabase.user=myuser,externalDatabase.password=mypassword,externalDatabase.database=mydatabase,externalDatabase.port=3306
 ```
-Note also if you disable MariaDB per above you MUST supply values for externalDatabase.rootPassword & externalDatabase.password.
 
+Note also if you disable MariaDB per above you MUST supply values for the `externalDatabase` connection.
 
 ## Ingress
 
