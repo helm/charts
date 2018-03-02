@@ -1,19 +1,22 @@
 apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
-  name: signalfx-agent
+  name: {{ template "signalfx-agent.fullname" . }}
   labels:
-      app: signalfx-agent
-      version: {{ .Values.agentVersion }}
-      {{ if ne .Release.Name "RELEASE-NAME" -}}
-      heritage: {{ .Release.Service }}
-      release: {{ .Release.Name }}
-      chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-      {{- end}}
+    app: {{ template "signalfx-agent.name" . }}
+    version: {{ .Values.agentVersion }}
+    {{ if ne .Release.Name "RELEASE-NAME" -}}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+    chart: {{ template "signalfx-agent.chart" . }}
+    {{- end}}
 spec:
   selector:
     matchLabels:
-      app: signalfx-agent
+      app: {{ template "signalfx-agent.name" . }}
+      {{ if ne .Release.Name "RELEASE-NAME" -}}
+      release: {{ .Release.Name }}
+      {{- end }}
   updateStrategy:
     rollingUpdate:
       maxUnavailable: "100%"
@@ -21,8 +24,11 @@ spec:
   template:
     metadata:
       labels:
-        app: signalfx-agent
+        app: {{ template "signalfx-agent.name" . }}
         version: {{ .Values.agentVersion }}
+        {{ if ne .Release.Name "RELEASE-NAME" -}}
+        release: {{ .Release.Name }}
+        {{- end}}
         {{ with .Values.extraPodLabels -}}
         {{ toYaml . | indent 8 | trim }}
         {{- end }}
@@ -70,7 +76,7 @@ spec:
         - name: SFX_ACCESS_TOKEN
           valueFrom:
             secretKeyRef:
-              name: signalfx
+              name: {{ template "signalfx-agent.fullname" . }}
               key: access-token
         - name: MY_POD_NAME
           valueFrom:
@@ -89,7 +95,7 @@ spec:
       volumes:
       - name: config
         configMap:
-          name: signalfx-agent
+          name: {{ template "signalfx-agent.fullname" . }}
       - name: hostfs
         hostPath:
           path: /

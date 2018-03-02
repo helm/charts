@@ -94,28 +94,28 @@ gatherDockerMetrics: true
 # cAdvisor metrics that cause a large increase in DPM for little value for most
 # customers.
 metricNamesToExclude:
- - container_cpu_user_seconds_total
- - container_cpu_system_seconds_total
- - container_cpu_usage_seconds_total
- - container_cpu_utilization_per_core
- - container_fs_reads_total
- - container_fs_sector_reads_total
- - container_fs_reads_merged_total
- - container_fs_read_seconds_total
- - container_fs_writes_total
- - container_fs_sector_writes_total
- - container_fs_writes_merged_total
- - container_fs_write_seconds_total
- - container_fs_io_current
- - container_fs_io_time_seconds_total
- - container_fs_io_time_weighted_seconds_total
- - container_last_seen
- - container_tasks_state
- - pod_network_receive_packets_total
- - pod_network_receive_packets_dropped_total
- - pod_network_transmit_packets_total
- - pod_network_transmit_packets_dropped_total
- - machine_cpu_frequency_khz
+  - container_cpu_user_seconds_total
+  - container_cpu_system_seconds_total
+  - container_cpu_usage_seconds_total
+  - container_cpu_utilization_per_core
+  - container_fs_reads_total
+  - container_fs_sector_reads_total
+  - container_fs_reads_merged_total
+  - container_fs_read_seconds_total
+  - container_fs_writes_total
+  - container_fs_sector_writes_total
+  - container_fs_writes_merged_total
+  - container_fs_write_seconds_total
+  - container_fs_io_current
+  - container_fs_io_time_seconds_total
+  - container_fs_io_time_weighted_seconds_total
+  - container_last_seen
+  - container_tasks_state
+  - pod_network_receive_packets_total
+  - pod_network_receive_packets_dropped_total
+  - pod_network_transmit_packets_total
+  - pod_network_transmit_packets_dropped_total
+  - machine_cpu_frequency_khz
 
 # A list of monitor configurations to include in the agent config.  These
 # values correspond exactly to what goes under 'monitors' in the agent config.
@@ -123,68 +123,67 @@ metricNamesToExclude:
 # many standard deployments.  Most users will want to override this with their
 # own monitors and discovery rules.
 monitors:
- - type: collectd/activemq
-   discoveryRule: container_image =~ "activemq" && private_port == 1099
+  - type: collectd/activemq
+    discoveryRule: container_image =~ "activemq" && private_port == 1099
 
- - type: collectd/apache
-   discoveryRule: container_image =~ "apache" && private_port == 80
+  - type: collectd/apache
+    discoveryRule: container_image =~ "apache" && private_port == 80
 
- - type: collectd/cassandra
-   discoveryRule: container_image =~ "cassandra" && private_port == 7199
+  - type: collectd/cassandra
+    discoveryRule: container_image =~ "cassandra" && private_port == 7199
 
- - type: collectd/consul
-   discoveryRule: container_image =~ "consul" && private_port == 8500
+  - type: collectd/consul
+    discoveryRule: container_image =~ "consul" && private_port == 8500
 
- - type: collectd/elasticsearch
-   discoveryRule: container_image =~ "elasticsearch" && port == 9200
+  - type: collectd/elasticsearch
+    discoveryRule: container_image =~ "elasticsearch" && port == 9200
 
- - type: collectd/etcd
-   discoveryRule: container_image =~ "etcd" && port == 2379
-   # REQUIRED
-   clusterName: my-cluster
+  - type: collectd/etcd
+    discoveryRule: container_image =~ "etcd" && port == 2379
+    # REQUIRED
+    clusterName: my-cluster
 
- - type: collectd/haproxy
-   discoveryRule: container_image =~ "haproxy" && port == 9000
+  - type: collectd/haproxy
+    discoveryRule: container_image =~ "haproxy" && port == 9000
 
- - type: collectd/kafka
-   discoveryRule: container_image =~ "kafka" && private_port == 9092
+  - type: collectd/kafka
+    discoveryRule: container_image =~ "kafka" && private_port == 9092
 
- - type: collectd/memcached
-   discoveryRule: container_image =~ "memcache" && private_port == 11211
+  - type: collectd/memcached
+    discoveryRule: container_image =~ "memcache" && private_port == 11211
 
- - type: collectd/mongodb
-   discoveryRule: container_image =~ "mongo" && private_port == 27017
-   # REQUIRED
-   databases:
-   - mydatabase
+  - type: collectd/mongodb
+    discoveryRule: container_image =~ "mongo" && private_port == 27017
+    # REQUIRED
+    databases:
+    - mydatabase
 
- - type: collectd/mysql
-   discoveryRule: container_image =~ "mysql" && private_port == 3306
-   # REQUIRED
-   username: admin
-   databases:
-   - name: mydb
+  - type: collectd/mysql
+    discoveryRule: container_image =~ "mysql" && private_port == 3306
+    # REQUIRED
+    username: admin
+    databases:
+    - name: mydb
 
- - type: collectd/nginx
-   discoveryRule: container_image =~ "nginx" && private_port == 80
+  - type: collectd/nginx
+    discoveryRule: container_image =~ "nginx" && private_port == 80
 
- - type: collectd/rabbitmq
-   discoveryRule: container_image =~ "rabbitmq" && private_port == 15672
+  - type: collectd/rabbitmq
+    discoveryRule: container_image =~ "rabbitmq" && private_port == 15672
 
- - type: collectd/redis
-   discoveryRule: container_image =~ "redis" && private_port == 6379
+  - type: collectd/redis
+    discoveryRule: container_image =~ "redis" && private_port == 6379
 
- - type: collectd/spark
-   discoveryRule: container_image =~ "spark" && private_port == 8080
-   isMaster: true
-   collectApplicationMetrics: true
-   clusterType: Standalone
+  - type: collectd/spark
+    discoveryRule: container_image =~ "spark" && private_port == 8080
+    isMaster: true
+    collectApplicationMetrics: true
+    clusterType: Standalone
 
- - type: collectd/spark
-   discoveryRule: container_image =~ "spark" && private_port >= 8081
-   isMaster: false
-   clusterType: Standalone
+  - type: collectd/spark
+    discoveryRule: container_image =~ "spark" && private_port >= 8081
+    isMaster: false
+    clusterType: Standalone
 
- - type: collectd/zookeeper
-   discoveryRule: container_image =~ "zookeeper" && private_port == 2181
-
+  - type: collectd/zookeeper
+    discoveryRule: container_image =~ "zookeeper" && private_port == 2181

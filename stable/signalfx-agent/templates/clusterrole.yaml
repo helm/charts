@@ -2,14 +2,14 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: signalfx-agent
+  name: {{ template "signalfx-agent.fullname" . }}
   labels:
-      app: signalfx-agent
-      {{ if ne .Release.Name "RELEASE-NAME" -}}
-      heritage: {{ .Release.Service }}
-      release: {{ .Release.Name }}
-      chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-      {{- end}}
+    app: {{ template "signalfx-agent.name" . }}
+    {{ if ne .Release.Name "RELEASE-NAME" -}}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+    chart: {{ template "signalfx-agent.chart" . }}
+    {{- end}}
 rules:
 - apiGroups:
   - ""

@@ -1,5 +1,15 @@
 {{- if and .Values.clusterName .Values.signalFxAccessToken -}}
 apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "signalfx-agent.fullname" . }}
+  labels:
+    app: {{ template "signalfx-agent.name" . }}
+    {{ if ne .Release.Name "RELEASE-NAME" -}}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+    chart: {{ template "signalfx-agent.chart" . }}
+    {{- end}}
 data:
   agent.yaml: |
 {{- if .Values.agentConfig }}
@@ -105,14 +115,4 @@ data:
 {{ toYaml . | indent 6 }}
       {{- end }}
 {{- end }}
-kind: ConfigMap
-metadata:
-  name: signalfx-agent
-  labels:
-    app: signalfx-agent
-    {{ if ne .Release.Name "RELEASE-NAME" -}}
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
-    {{- end}}
 {{- end -}}
