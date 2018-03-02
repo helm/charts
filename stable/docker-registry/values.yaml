@@ -10,6 +10,7 @@ service:
   name: registry
   type: ClusterIP
   port: 5000
+  # nodePort:
   annotations: {}
   # foo.io/bar: "true"
 ingress:
