@@ -85,14 +85,16 @@ ingress:
   #       - kubernetes-dashboard.domain.com
 
 rbac:
-  ## If true, create & use RBAC resources
-  #
-  create: false
-  ## If true, cluster-admin ClusterRole will be used for dashboard ServiceAccount (NOT RECOMMENDED)
-  ## If false, only minimal recommended role will be used.
-  #
+  # Specifies whether RBAC resources should be created
+  create: true
+
+  # Specifies whether cluster-admin ClusterRole will be used for dashboard
+  # ServiceAccount (NOT RECOMMENDED).
   clusterAdminRole: false
 
-  ## Ignored if rbac.create is true
-  #
-  serviceAccountName: default
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:

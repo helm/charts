@@ -4,7 +4,7 @@ metadata:
   name: {{ template "kubernetes-dashboard.fullname" . }}
   labels:
     app: {{ template "kubernetes-dashboard.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    chart: {{ template "kubernetes-dashboard.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
     kubernetes.io/cluster-service: "true"
