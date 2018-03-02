@@ -13,6 +13,19 @@ data:
         Log_Level    info
         Parsers_File parsers.conf
 
+{{- if .Values.audit.enable }}
+    [INPUT]
+        Name             tail
+        Path             {{ default "/var/log/kube-apiserver-audit.log" .Values.audit.filepath }}
+        DB               /var/log/audit.db
+        Tag              audit.*
+        Refresh_Interval 5
+        Mem_Buf_Limit    {{ default "35MB" .Values.audit.Mem_Buf_Limit }}
+        Buffer_Chunk_Size {{ default "2MB" .Values.audit.Buffer_Chunk_Size }}
+        Buffer_Max_Size   {{ default "10MB" .Values.audit.Buffer_Chunk_Size }}
+        Skip_Long_Lines  On
+{{- end }}
+
     [INPUT]
         Name             tail
         Path             /var/log/containers/*.log
