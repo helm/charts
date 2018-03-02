@@ -58,7 +58,7 @@ The following table lists the configurable parameters of the kubernetes-dashboar
 | `ingress.tls`             | Ingress TLS configuration                                                                                                   | `[]`                                                                     |
 | `resources`               | Pod resource requests & limits                                                                                              | `limits: {cpu: 100m, memory: 50Mi}, requests: {cpu: 100m, memory: 50Mi}` |
 | `rbac.create`             | Create & use RBAC resources                                                                                                 | `true`                                                                   |
-| `rbac.clusterAdminRole`   | "cluster-admin" ClusterRole will be used for dashboard ServiceAccount ([NOT RECOMMENDED](#access-control)                   | `false`                                                                  |
+| `rbac.clusterAdminRole`   | "cluster-admin" ClusterRole will be used for dashboard ServiceAccount ([NOT RECOMMENDED](#access-control))                  | `false`                                                                  |
 | `serviceAccount.create`   | Whether a new service account name that the agent will use should be created.                                               | `true`                                                                   |
 | `serviceAccount.name`     | Service account to be used. If not set and serviceAccount.create is `true` a name is generated using the fullname template. |                                                                          |
 
