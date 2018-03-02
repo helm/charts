@@ -104,7 +104,7 @@ spec:
         - name: data
       {{- if .Values.persistence.enabled }}
           persistentVolumeClaim:
-            claimName: {{ template "docker-registry.fullname" . }}
+            claimName: {{ if .Values.persistence.existingClaim }}{{ .Values.persistence.existingClaim }}{{- else }}{{ template "docker-registry.fullname" . }}{{- end }}
       {{- else }}
           emptyDir: {}
       {{- end -}}
