@@ -9,7 +9,7 @@ metadata:
 spec:
   replicas: {{ .Values.replicaCount }}
   strategy:
-{{ toYaml .Values.stategy | indent 4 }}
+{{ toYaml .Values.strategy | indent 4 }}
   revisionHistoryLimit: 10
   template:
     metadata:
