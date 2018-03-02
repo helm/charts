@@ -35,6 +35,15 @@ usePassword: true
 ##  - "--maxmemory-policy volatile-ttl"
 args:
 
+## Redis additional command line flags
+##
+## Can be used to specify command line flags, for example:
+##
+## redisExtraFlags:
+##  - "--maxmemory-policy volatile-ttl"
+##  - "--repl-backlog-size 1024mb"
+redisExtraFlags:
+
 ## Enable persistence using Persistent Volume Claims
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
 ##
