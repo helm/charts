@@ -1,4 +1,4 @@
-{{ if .Values.jupyter.enabled }}
+{{ if .Values.jupyter.enabled -}}
 
 apiVersion: v1
 kind: ConfigMap
@@ -81,3 +81,4 @@ spec:
         - name: config-volume
           configMap:
             name: {{ template "dask.fullname" . }}-scheduler-config
+{{ end }}
