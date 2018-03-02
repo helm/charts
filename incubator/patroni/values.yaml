@@ -7,8 +7,8 @@ imagePullPolicy: IfNotPresent
 spilo:
   # Image was built from
   # https://github.com/zalando/spilo/tree/master/postgres-appliance
-  image: registry.opensource.zalan.do/acid/spilo-9.6
-  version: 1.3-p4
+  image: registry.opensource.zalan.do/acid/spilo-10
+  version: 1.4-p4
 
 # How many postgres containers to spawn
 replicas: 5

@@ -18,7 +18,7 @@ This directory contains a Kubernetes chart to deploy a five node [Patroni](https
 ## Chart Details
 This chart will do the following:
 
-* Implement a HA scalable PostgreSQL cluster using a Kubernetes StatefulSet.
+* Implement a HA scalable PostgreSQL 10 cluster using a Kubernetes StatefulSet.
 
 ## Installing the Chart
 
@@ -54,8 +54,8 @@ The following tables lists the configurable parameters of the patroni chart and 
 |       Parameter                   |           Description                     |                         Default                     |
 |-----------------------------------|-------------------------------------------|-----------------------------------------------------|
 | `name`                            | Service name                              | `patroni`                                           |
-| `spilo.image`                     | Container image name                      | `registry.opensource.zalan.do/acid/spilo-9.5`       |
-| `spilo.version`                   | Container image tag                       | `1.0-p5`                                            |
+| `spilo.image`                     | Container image name                      | `registry.opensource.zalan.do/acid/spilo-10`        |
+| `spilo.version`                   | Container image tag                       | `1.4-p4`                                            |
 | `imagePullPolicy`                 | Container pull policy                     | `IfNotPresent`                                      |
 | `replicas`                        | k8s statefulset replicas                  | `5`                                                 |
 | `nodeSelector`                    | NodeSelector map                          | Empty                                               |
