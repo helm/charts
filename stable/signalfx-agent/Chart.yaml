@@ -12,6 +12,6 @@ home: https://signalfx.com
 sources:
 - https://github.com/signalfx/signalfx-agent
 maintainers:
-- name: Ben Keith
+- name: keitwb
   email: bkeith@signalfx.com
 icon: https://signalfx-82c9.kxcdn.com/wp-content/uploads/2015/12/signalfx-main-logo1.png
