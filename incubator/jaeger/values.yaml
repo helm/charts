@@ -187,6 +187,8 @@ spark:
   tag: latest
   pullPolicy: Always
   schedule: "49 23 * * *"
+  successfulJobsHistoryLimit: 5
+  failedJobsHistoryLimit: 5
   resources: {}
     # limits:
     #   cpu: 500m

@@ -187,6 +187,8 @@ The following tables lists the configurable parameters of the Jaeger chart and t
 | `spark.image`                            | Image for the dependencies job      |  jaegertracing/spark-dependencies      |
 | `spark.pullPolicy`                       | Image pull policy of the deps image |  Always                                |
 | `spark.schedule`                         | Schedule of the cron job            |  "49 23 * * *"                         |
+| `spark.successfulJobsHistoryLimit`       | Cron job successfulJobsHistoryLimit |  5                                     |
+| `spark.failedJobsHistoryLimit`           | Cron job failedJobsHistoryLimit     |  5                                     |
 | `spark.tag`                              | Tag of the dependencies job image   |  latest                                |
 | `storage.cassandra.host`                 | Provisioned cassandra host          |  cassandra                             |
 | `storage.cassandra.password`             | Provisioned cassandra password      |  password                              |
