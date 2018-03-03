@@ -8,7 +8,7 @@ replicaCount: 1
 
 image:
   repository: quay.io/kubernetes_incubator/nfs-provisioner
-  tag: v1.0.8
+  tag: v1.0.9
   pullPolicy: IfNotPresent
 
 service:
