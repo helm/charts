@@ -1,0 +1,13 @@
+{{- if .Values.config.configFile }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app: {{ template "oauth-proxy.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "oauth-proxy.fullname" . }}
+data:
+  oauth2_proxy.cfg: {{ .Values.config.configFile | quote }}
+{{- end }}
