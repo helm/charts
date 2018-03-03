@@ -1,44 +1,5 @@
 {{ if .Values.jupyter.enabled -}}
 
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: {{ template "dask.fullname" . }}-jupyter-config
-  labels:
-    app: {{ template "dask.name" . }}
-    heritage: {{ .Release.Service | quote }}
-    release: {{ .Release.Name | quote }}
-    chart: {{ template "dask.chart" . }}
-    component: "{{ .Release.Name }}-{{ .Values.jupyter.component }}"
-data:
-  jupyter_notebook_config.py: |
-    c = get_config()
-    c.NotebookApp.password = '{{ .Values.jupyter.password }}'
-
----
-
-apiVersion: v1
-kind: Service
-metadata:
-  name: {{ template "dask.fullname" . }}-jupyter
-  labels:
-    app: {{ template "dask.name" . }}
-    heritage: {{ .Release.Service | quote }}
-    release: {{ .Release.Name | quote }}
-    chart: {{ template "dask.chart" . }}
-    component: "{{ .Release.Name }}-{{ .Values.jupyter.component }}"
-spec:
-  ports:
-    - port: {{ .Values.jupyter.servicePort }}
-      targetPort: 8888
-  selector:
-    app: {{ template "dask.name" . }}
-    release: {{ .Release.Name | quote }}
-    component: "{{ .Release.Name }}-{{ .Values.jupyter.component }}"
-  type: {{ .Values.jupyter.serviceType }}
-
----
-
 apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
@@ -81,4 +42,5 @@ spec:
         - name: config-volume
           configMap:
             name: {{ template "dask.fullname" . }}-scheduler-config
+
 {{ end }}
