@@ -17,6 +17,8 @@ metadata:
 {{- end }}
 spec:
   schedule: {{ .Values.spark.schedule | quote }}
+  successfulJobsHistoryLimit: {{ .Values.spark.successfulJobsHistoryLimit }}
+  failedJobsHistoryLimit: {{ .Values.spark.failedJobsHistoryLimit }}
   jobTemplate:
     spec:
       template:
