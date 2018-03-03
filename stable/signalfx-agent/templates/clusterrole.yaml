@@ -5,11 +5,9 @@ metadata:
   name: {{ template "signalfx-agent.fullname" . }}
   labels:
     app: {{ template "signalfx-agent.name" . }}
-    {{ if ne .Release.Name "RELEASE-NAME" -}}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
     chart: {{ template "signalfx-agent.chart" . }}
-    {{- end}}
 rules:
 - apiGroups:
   - ""
