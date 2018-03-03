@@ -63,7 +63,7 @@ spec:
       volumes:
         - name: newrelic-config
           secret:
-            secretName: newrelic-config
+            secretName: {{ template "newrelic-infra.fullname" . }}-config
         - name: dev
           hostPath:
             path: /dev
