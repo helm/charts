@@ -16,6 +16,6 @@ roleRef:
   name: {{ template "signalfx-agent.fullname" . }}
 subjects:
 - kind: ServiceAccount
-  name: "{{ .Values.rbac.serviceAccountName }}"
+  name: {{ template "signalfx-agent.serviceAccountName" . }}
   namespace: {{ .Release.Namespace }}
 {{- end -}}

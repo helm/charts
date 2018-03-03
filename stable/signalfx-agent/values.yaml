@@ -20,10 +20,17 @@ imagePullSecret:
 # RBAC config for the agent
 rbac:
   create: true
-  serviceAccountName: signalfx-agent
   # You might need custom rules if you are pulling secrets to configure
   # monitors.
   customRules: []
+
+# Service account config for the agent pods
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
 
 # This adds some tolerations to the pods that the DaemonSet creates that
 # should allow the agent to run on the master nodes of newer versions of K8s

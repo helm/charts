@@ -36,9 +36,7 @@ spec:
       # Use host network so we can access kubelet directly
       hostNetwork: true
       restartPolicy: Always
-      {{ if .Values.rbac.create -}}
-      serviceAccountName: "{{ .Values.rbac.serviceAccountName }}"
-      {{- end }}
+      serviceAccountName: {{ template "signalfx-agent.serviceAccountName" . }}
       {{ with .Values.imagePullSecret -}}
       imagePullSecrets:
       - name: {{ . }}
