@@ -67,7 +67,9 @@ The following tables lists the configurable parameters of the WordPress chart an
 | `mariadb.mariadbUser`                | Database user to create                    | `bn_wordpress`                                 |
 | `mariadb.mariadbPassword`            | Password for the database                  | _random 10 character long alphanumeric string_ |
 | `serviceType`                        | Kubernetes Service type                    | `LoadBalancer`                                             |
-| `healthcheckHttps`                   | Use https for liveliness and readiness     | `false`                                             |
+| `nodePorts.http`                     | Kubernetes http node port                  | `""`                                                       |
+| `nodePorts.https`                    | Kubernetes https node port                 | `""`                                                       |
+| `healthcheckHttps`                   | Use https for liveliness and readiness     | `false`                                                    |
 | `ingress.enabled`                    | Enable ingress controller resource         | `false`                                                    |
 | `ingress.hosts[0].name`              | Hostname to your WordPress installation    | `wordpress.local`                                          |
 | `ingress.hosts[0].tls`               | Utilize TLS backend in ingress             | `false`                                                    |
