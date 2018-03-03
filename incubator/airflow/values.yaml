@@ -1,7 +1,9 @@
 # Duplicate this file and put your customization here
 
+##
 ## common settings and setting for the webserver
 airflow:
+  ##
   ## You will need to define your frenet key:
   ## Generate fernet_key with:
   ##    python -c "from cryptography.fernet import Fernet; FERNET_KEY = Fernet.generate_key().decode(); print(FERNET_KEY)"
@@ -9,90 +11,153 @@ airflow:
   fernet_key: ""
   service:
     type: ClusterIP
+  ##
   ## mount path for persistant volume
   dag_path: /dags
+  ##
   ## set the max number of retries during container initialization
   init_retry_loop:
+  ##
   ## base image for webserver/scheduler/workers
   ## Note: If you want to use airflow HEAD (2.0dev), use the following image:
   # image
   #   repository: stibbons31/docker-airflow-dev
   #   tag: 2.0dev
+  ## Airflow 2.0 allows changing the value ingress.web.path (see bellow). In version < 2.0,
+  ## changing the mount point of the web server won't have any effect.
   image:
+    ##
+    ## docker-airflow image
     repository: puckel/docker-airflow
+    ##
+    ## image tag
     tag: 1.9.0
-    ## image_pull_policy: Always or IfNotPresent
+    ##
+    ## Image pull policy
+    ## values: Always or IfNotPresent
     pull_policy: IfNotPresent
+  ##
   ## Set scheduler_num_runs to control how the schduler behaves:
   ##   -1 will let him looping indefinitively but it will never update the DAG
   ##   1 will have the scheduler quit after each refresh, but kubernetes will restart it
   scheduler_num_runs: "-1"
-  ## prefix to the endpoint of the webserver
-  ## Ex: http://mycompany.com/airflow
-  ## url_prefix is "/airflow"
-  ## If mount at root, leave to a single slash: "/"
-  ## If mounted at a sub-path, do not add trailing slash
-  url_prefix: "/"
-  ## Custom airflow configuration
+  ##
+  ## how many replicas for web server
+  ## For the moment, we recommend to leave this value to 1, since the webserver instance performs
+  ## the 'initdb' operation, starting more replicas will cause all the web containers to execute
+  ## it, which may cause unwanted issues on the database.
+  web_replicas: 1
+  ##
+  ## Number of replicas for the flower server. Usually 1 is enough
+  flower_replicas: 1
+  ##
+  ## Custom airflow configuration environment variables
+  ## NOTE: Unfortunately, changing these value won't cause a reployment, despite the trick described
+  ## at:
+  ##   https://github.com/kubernetes/helm/blob/master/docs/charts_tips_and_tricks.md#automatically-roll-deployments-when-configmaps-or-secrets-change
+  ## To force redeployment after configuration change, you need to use either `--recreate-pods`
+  ## either the Fabric8 configmap controller (This helm chart already carries the annotation).
+  ## See:
+  ##   https://github.com/fabric8io/configmapcontroller/
   config: {}
 
+##
+## Configuration for celery workers
 celery:
+  ##
   ## Number of celery workers to initialize
   num_workers: 1
 
+##
+## Ingress configuration
 ingress:
+  ##
   ## enable ingress
+  ## Note: If you want to change url prefix for web ui or flower even if you do not use ingress,
+  ## you can still change ingress.web.path and ingress.flower.path
   enabled: false
-  annotations:
-    ## Define the annotation here to configure rewriting rules related to your Load balancer
-    #
+  ##
+  ## Configure the webserver endpoint
+  web:
+    ##
+    ## if web is '/airflow':
+    ##  - UI will be accessible at 'http://mycompany.com/airflow/admin'
+    ##  - Healthcheck is at 'http://mycompany.com/airflow/health'
+    ##  - api is at 'http://mycompany.com/airflow/api'
+    ## NOTE: This requires an airflow version > 1.9.x
+    ## For the moment (March 2018) this is **not** available on official package, you will have
+    ## to use an image where airflow has been updated to its current HEAD.
+    ## You can use the following one:
+    ##  stibbons31/docker-airflow-dev:2.0dev
+    ## NOTE: do NOT keep trailing slash. For root configuration, set and empty string
+    path: ""
+    ##
+    ## hostname for the webserver
+    host: ""
+    ##
+    ## Annotations for the webserver
+    ## Airflow webserver handles relative path completely, just let your load balancer give the HTTP
+    ## header like the requested URL (no special configuration neeed)
+    annotations:
+      ##
+      ## Example for Traefik:
+      # traefik.frontend.rule.type: PathPrefix
+      # kubernetes.io/ingress.class: traefik
+  ##
+  ## Configure the flower endpoind
+  flower:
+    ##
+    ## if flower is '/airflow/flower':
+    ##  - Flower UI is at 'http://mycompany.com/airflow/flower'
+    ## NOTE: you need to have a reverse proxy/load balancer able to do URL rewrite in order to have
+    ## flower mounted on other path than root. Flower only does half the job in url prefixing: it
+    ## only generates the right URL/relative paths in the **returned HTML files**, but expects the
+    ## request to have been be at the root.
+    ## That's why we need a reverse proxy/load balancer that is able to strip the path
+    ## NOTE: do NOT keep trailing slash. For root configuration, set and empty string
+    path: /flower
+    ##
+    ## hostname for flower
+    host: ""
+    ##
+    ## Annotation for the Flower endpoint  ##
     ## Please note their is a small difference between the way Airflow Web server and Flower handles
-    ## url_prefix in HTTP requests:
-    ##  - airflow webserver handles it completely, just let your load balancer to give the HTTP
-    ##    header like the requested URL (no special configuration neeed)
-    ##  - Flower wants HTTP header to behave like there was no URL prefix, and but still generates
-    ##    the right URL in html pages.
-    #
+    ## URL prefixes in HTTP requests:
+    ## Flower wants HTTP header to behave like there was no URL prefix, and but still generates
+    ## the right URL in html pages thanks to its `--url-prefix` parameter
+    ##
     ##    Extracted from the Flower documentation:
     ##    (https://github.com/mher/flower/blob/master/docs/config.rst#url_prefix)
-    #
+    ##
     ##        To access Flower on http://example.com/flower run it with:
-    ##            flower --url_prefix=flower
-    #
+    ##            flower --url-prefix=/flower
+    ##
     ##        Use the following nginx configuration:
     ##            server {
     ##              listen 80;
     ##              server_name example.com;
-    #
+    ##
     ##              location /flower/ {
     ##                rewrite ^/flower/(.*)$ /$1 break;
     ##                proxy_pass http://example.com:5555;
     ##                proxy_set_header Host $host;
     ##              }
     ##            }
-    web:
+    annotations:
+      ##
+      ## NOTE: it is important here to have your reverse proxy strip the path/rewrite the URL
       ## Example for Traefik:
-      ## traefik.frontend.rule.type: PathPrefix
-      ## kubernetes.io/ingress.class: traefik
-    flower:
-      ## Example for Traefik:
-      ## traefik.frontend.rule.type: PathPrefixStrip
-      ## kubernetes.io/ingress.class: traefik
-  ## hostname for both endpoint
-  host: ""
-  path:
-    ## if web is '/airflow':
-    ##  - UI will be accessible to '/airflow/admin'
-    ##  - Healthcheck is at 'http://mycompany.com/airflow/health'
-    ##  - api is at 'http://mycompany.com/airflow/api'
-    web: /
-    ## if flower is '/airflow/flower':
-    ##  - api is at 'http://mycompany.com/airflow/flower'
-    flower: /flower
+      # traefik.frontend.rule.type: PathPrefixStrip
+      # kubernetes.io/ingress.class: traefik
 
+##
+## Storage configuration
 persistence:
+  ##
+  ## enable persistance storage
   enabled: false
-  ## storageClass: Persistent Volume Storage Class
+  ##
+  ## Persistent Volume Storage Class
   ## If defined, storageClassName: <storageClass>
   ## If set to "-", storageClassName: "", which disables dynamic provisioning
   ## If undefined (the default) or set to null, no storageClassName spec is
@@ -100,18 +165,23 @@ persistence:
   ##   GKE, AWS & OpenStack)
   # storageClass: default
   accessMode: ReadWriteOnce
+  ##
+  ## Persistant storage size request
   size: 1Gi
 
-
-flower:
-  ## Url prefix for the endpoint of Flower
-  ## Ex: http://mycompany.com/airflow/flower
-  ## url_prefix is /airflow/flower
-  url_prefix: "/flower"
-
+##
+## Configure DAGs deployment and update
 dags:
+  ##
   ## pickle_dag: send DAG using pickle from the scheduler to the worker
   pickle_dag: true
+  ##
+  ## Force a requirements.txt file to be present at the root of the image so these Python packages
+  ## will be installed
+  ## Should be a multiline text respecting the requirements.txt format (pip compatible)
+  requirements: |
+    yaml
+  ##
   ## Use of git-sync: beware when using git-sync and airflow. If the scheduler reloads a dag in the
   ## middle of a dagrun then the dagrun will actually start using the new version of the dag in the
   ## middle of execution.
@@ -120,13 +190,19 @@ dags:
   ## - using explicit locking, ie never pull down a new dag if a dagrun is in progress
   ## - make dags immutable, never modify your dag always make a new one
   git_sync_enabled: false
+  ##
   ## url to clone the git repository
   git_repo:
-  ## branch name
+  ##
+  ## branch name to clone
   git_branch: master
+  ##
+  ## poll interval in seconds between two refreshes
   poll_interval_sec: 60
+  ##
   ## print debug logs
   git_sync_debug: false
+  ##
   ## Disable Load examples as soon as you enable git_repo
   load_examples: true
 
@@ -134,34 +210,43 @@ dags:
 ## ref: https://github.com/kubernetes/charts/blob/master/stable/postgresql/README.md
 ##
 postgresql:
+  ##
   ## Use the PostgreSQL chart dependency.
   ## Set to false if bringing your own PostgreSQL.
-  ##
   enabled: true
+  ##
   ## If bringing your own PostgreSQL, the full uri to use
   ## e.g. postgres://airflow:changeme@my-postgres.com:5432/airflow?sslmode=disable
-  ##
   # uri:
-  ### PostgreSQL User to create.
   ##
+  ### PostgreSQL User to create.
   postgresUser: airflow
+  ##
   ## PostgreSQL Password for the new user.
   ## If not set, a random 10 characters password will be used.
-  ##
   postgresPassword: airflow
-  ## PostgreSQL Database to create.
   ##
+  ## PostgreSQL Database to create.
   postgresDatabase: airflow
+  ##
   ## Persistent Volume Storage configuration.
   ## ref: https://kubernetes.io/docs/user-guide/persistent-volumes
-  ##
   persistence:
-    ## Enable PostgreSQL persistence using Persistent Volume Claims.
     ##
+    ## Enable PostgreSQL persistence using Persistent Volume Claims.
     enabled: true
 
+## Configuration values for the postgresql dependency.
+## ref: https://github.com/kubernetes/charts/blob/master/stable/redis/README.md
 redis:
+  ##
+  ## Use the redis chart dependency.
+  ## Set to false if bringing your own redis.
   enabled: true
+  ##
+  ## Redis password
   redisPassword: redis
   persistence:
+    ##
+    ## Use a PVC to persist data
     enabled: true

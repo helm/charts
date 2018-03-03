@@ -18,6 +18,7 @@ spec:
     metadata:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmaps.yaml") . | sha256sum }}
+        configmap.fabric8.io/update-on-change: "{{ template "airflow.fullname" . }}-env"
       labels:
         app: {{ template "airflow.name" . }}-scheduler
         release: {{ .Release.Name }}
@@ -30,6 +31,11 @@ spec:
           envFrom:
             - configMapRef:
                 name: "{{ template "airflow.fullname" . }}-env"
+          {{- if .Values.persistence.enabled }}
+          volumeMounts:
+            - name: dags-data
+              mountPath: {{ .Values.airflow.dag_path }}
+          {{- end }}
           args: ["scheduler", "-n", "{{ .Values.airflow.scheduler_num_runs }}", "-p"]
       volumes:
         - name: dags-data

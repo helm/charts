@@ -3,14 +3,21 @@ kind: ConfigMap
 metadata:
   name: "{{ template "airflow.fullname" . }}-env"
 data:
+  ## Force UTC timezone
+  TZ: Etc/UTC
+  ## Postgres DB configuration
   POSTGRES_HOST: "{{ template "airflow.postgresql.fullname" . }}"
   POSTGRES_DB: "{{ .Values.postgresql.postgresDatabase }}"
   POSTGRES_USER: "{{ .Values.postgresql.postgresUser }}"
   POSTGRES_PASSWORD: "{{ .Values.postgresql.postgresPassword }}"
+  ## Redis DB configuration
   REDIS_HOST: "{{ template "airflow.redis.fullname" . }}"
   REDIS_PASSWORD: "{{ .Values.redis.redisPassword }}"
+  ## Flower PORT
   FLOWER_PORT: "5555"
-  AIRFLOW__WEBSERVER__BASE_URL: "http://localhost:8080{{ .Values.airflow.url_prefix }}"
+  ## Custom Airflow settings
+  AIRFLOW__WEBSERVER__BASE_URL: "http://localhost:8080{{ .Values.ingress.web.path }}"
+  AIRFLOW__CELERY__FLOWER_URL_PREFIX: {{ .Values.ingress.flower.path }}
   # Note: changing `Values.airflow.config` won't change the configmap checksum and so won't make
   # the pods to restart
   {{- range $setting, $option := .Values.airflow.config }}

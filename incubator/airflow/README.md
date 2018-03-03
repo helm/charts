@@ -23,38 +23,47 @@ If you want to delete your Chart, use this command:
 helm delete  --purge "airflow"
 ```
 
+The deployment uses the
+[Helm's Trick decribed here](https://github.com/kubernetes/helm/blob/master/docs/charts_tips_and_tricks.md#automatically-roll-deployments-when-configmaps-or-secrets-change)
+to force reployment when the configmap template file change.
 
-## DAGs deployment: embedded DAGs or git-sync
+But this does not trigger a redeployment when any of the values templated inside this configmap
+changes (see issue [#3601](https://github.com/kubernetes/helm/issues/3601)).
 
-This chart provide basically two way of deploying DAGs in your Airflow installation:
+If you want to automatize the reployment when the configmap change, you need to use the
+[Fabric8's Configmap controller](https://github.com/fabric8io/configmapcontroller/).
+This Helm already carries these annotations.
 
-- embedded DAGs
-- Git-Sync
+### Helm ingresses
 
-This helm chart provide support for Persistant Storage but not for sidecar git-sync pod.
-If you are willing to contribute, do not hesitate to do a Pull Request !
+The Chart provides ingress configuration to allow customization the installation by adapting
+the `config.yaml` depending on your setup. Please read the comments in the value.yaml file for more
+detail on how to configure your reverse proxy.
 
-### Using embedded Git-Sync
+### Prefix
 
-Git-sync is the easiest way to automatically update your DAGs. It simply checks periodically (by
-default every minute) a Git project on a given branch and check this new version out when available.
-Scheduler and worker see changes almost real-time. There is no need to other tool and complex
-rolling-update procedure.
+This Helm automatically prefixes all names using the release name to avoid collisions.
 
-While it is extremely cool to see its DAG appears on Airflow 60s after merge on this project, you should be aware of some limitations Airflow has with dynamic DAG updates:
+### Airflow configuration
 
-    If the scheduler reloads a dag in the middle of a dagrun then the dagrun will actually start
-    using the new version of the dag in the middle of execution.
+`airflow.cfg` configuration can be changed by defining environment variables in the following form:
+`AIRFLOW__<section>__<key>`.
 
-This is a known issue with airflow and it means it's unsafe in general to use a git-sync
-like solution with airflow without:
+See the
+[Airflow documentation for more information](http://airflow.readthedocs.io/en/latest/configuration.html?highlight=__CORE__#setting-configuration-options)
 
- - using explicit locking, ie never pull down a new dag if a dagrun is in progress
- - make dags immutable, never modify your dag always make a new one
+This helm chart allows you to add these additional settings with the value key `airflow.config`.
+But beware changing these values won't trigger a redeployment automatically (see the section above
+"Helm Deployment"). You may need to force the redeployment in this case (`--recreate-pods`) or
+use the [Configmap Controller](https://github.com/fabric8io/configmapcontroller/).
 
-Also keep in mind using git-sync may not be scalable at all in production if you have lot of DAGs.
-The best way to deploy you DAG is to build a new docker image containing all the DAG and their
-dependencies. To do so, fork this project
+### Worker Statefulset
+
+Celery workers uses StatefulSet instead of deployment.
+It is used to freeze their DNS using a Kubernetes Headless Service, and allow the webserver to
+requests the logs from each workers individually.
+This requires to expose a port (8793) and ensure the pod DNS is accessible to the web server pod,
+which is why StatefulSet is for.
 
 ### Embedded DAGs
 
@@ -67,44 +76,21 @@ Be aware this requirement more heavy tooling than using git-sync, especially if 
 - your CI/CD should be able to control the deployment of this new image in your kubernetes cluster
 
 Example of procedure:
+
 - Fork this project
-- Place your DAG inside the `dags` folder of this project, update `requirements-dags.txt` to
+- Place your DAG inside the `dags` folder of this project, update `/requirements.txt` to
   install new dependencies if needed (see bellow)
 - Add build script connected to your CI that will build the new docker image
 - Deploy on your Kubernetes cluster
 
-You can avoid forking this project by:
+### Python dependencies
 
-- keep a git-project dedicated to storing only your DAGs + dedicated `requirements.txt`
-- you can gate any change to DAGs in your CI (unittest, `pip install -r requirements-dags.txt`,.. )
-- have your CI/CD makes a new docker image after each successful merge using
+If you want to add specific python dependencies to use in your DAGs, you need to mount a
+`/requirements.txt` file at the root of the image.
+See the
+[docker-airflow readme](https://github.com/puckel/docker-airflow#install-custom-python-package) for
+more information.
 
-      DAG_PATH=$PWD
-      cd /path/to/kube-aiflow
-      make ENBEDDED_DAGS_LOCATION=$DAG_PATH
+## Helm chart Configuration
 
-- trigger the deployment on this new image on your Kubernetes infrastructure
-
-## Worker Statefulset
-
-As you can see, Celery workers uses StatefulSet instead of deployment. It is used to freeze their
-DNS using a Kubernetes Headless Service, and allow the webserver to requests the logs from each
-workers individually. This requires to expose a port (8793) and ensure the pod DNS is accessible to
-the web server pod, which is why StatefulSet is for.
-
-## Python dependencies
-
-If you want to add specific python dependencies to use in your DAGs, you simply declare them inside
-the `requirements/dags.txt` file. They will be automatically installed inside the container during
-build, so you can directly use these library in your DAGs.
-
-To use another file, call:
-
-    make REQUIREMENTS_TXT_LOCATION=/path/to/you/dags/requirements.txt
-
-Please note this requires you set up the same tooling environment in your CI/CD that when using
-Embedded DAGs.
-
-## Documentation
-
-Check [Airflow Documentation](http://pythonhosted.org/airflow/)
+Full documentation can be found the comments in the `values.yaml` file.

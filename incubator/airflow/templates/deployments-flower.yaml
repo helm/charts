@@ -8,11 +8,17 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.airflow.flower_replicas }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 2
+      maxUnavailable: 0
   template:
     metadata:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmaps.yaml") . | sha256sum }}
+        configmap.fabric8.io/update-on-change: "{{ template "airflow.fullname" . }}-env"
       labels:
         app: {{ template "airflow.name" . }}-flower
         release: {{ .Release.Name }}
@@ -30,3 +36,7 @@ spec:
               containerPort: 5555
               protocol: TCP
           args: ["flower"]
+          livenessprobe:
+            httpGet:
+              path: "{{ .Values.ingress.flower.path }}/"
+              port: flower

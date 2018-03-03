@@ -22,6 +22,7 @@ spec:
     metadata:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmaps.yaml") . | sha256sum }}
+        configmap.fabric8.io/update-on-change: "{{ template "airflow.fullname" . }}-env"
       labels:
         app: {{ template "airflow.name" . }}-worker
         release: {{ .Release.Name }}

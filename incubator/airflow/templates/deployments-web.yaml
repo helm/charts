@@ -8,16 +8,17 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
-  replicas: 2
+  replicas: {{ .Values.airflow.web_replicas }}
   strategy:
     type: RollingUpdate
     rollingUpdate:
-      maxSurge: 1
-      maxUnavailable: 2
+      maxSurge: 2
+      maxUnavailable: 0
   template:
     metadata:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmaps.yaml") . | sha256sum }}
+        configmap.fabric8.io/update-on-change: "{{ template "airflow.fullname" . }}-env"
       labels:
         app: {{ template "airflow.name" . }}-web
         release: {{ .Release.Name }}
@@ -37,7 +38,11 @@ spec:
           args: ["webserver"]
           livenessProbe:
             httpGet:
-              path: "{{ .Values.airflow.url_prefix }}health"
+              path: "{{ .Values.ingress.web.path }}/health"
               port: web
-            initialDelaySeconds: 120
-            periodSeconds: 10
+            ## Keep 3 minutes the delay to allow clean wait of postgres and redis containers
+            initialDelaySeconds: 180
+            periodSeconds: 60
+            timeoutSeconds: 1
+            successThreshold: 1
+            failureThreshold: 5

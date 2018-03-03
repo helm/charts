@@ -9,18 +9,18 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
   annotations:
-    {{ range $key, $value := .Values.ingress.annotations.web }}
+    {{ range $key, $value := .Values.ingress.web.annotations }}
     {{ $key }}: {{ $value | quote }}
     {{- end }}
 spec:
   rules:
     - http:
         paths:
-          - path: /
+          - path: {{ .Values.ingress.web.path }}
             backend:
               serviceName: {{ template "airflow.fullname" . }}-web
               servicePort: web
-      host: {{ .Values.ingress.host }}
+      host: {{ .Values.ingress.web.host }}
 ---
 apiVersion: extensions/v1beta1
 kind: Ingress
@@ -32,16 +32,16 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
   annotations:
-    {{ range $key, $value := .Values.ingress.annotations.flower }}
+    {{ range $key, $value := .Values.ingress.flower.annotations }}
     {{ $key }}: {{ $value | quote }}
     {{- end }}
 spec:
   rules:
     - http:
         paths:
-          - path: /
+          - path: {{ .Values.ingress.flower.path }}
             backend:
               serviceName: {{ template "airflow.fullname" . }}-flower
               servicePort: flower
-      host: flower.{{ .Values.ingress.host }}
+      host: {{ .Values.ingress.flower.host }}
 {{- end }}
