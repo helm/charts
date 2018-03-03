@@ -97,6 +97,7 @@ Parameter | Description | Default
 `alertmanager.image.repository` | alertmanager container image repository | `prom/alertmanager`
 `alertmanager.image.tag` | alertmanager container image tag | `v0.13.0`
 `alertmanager.image.pullPolicy` | alertmanager container image pull policy | `IfNotPresent`
+`alertmanager.imagePullSecrets` | alertmanager container image pull Secrets | `IfNotPresent`
 `alertmanager.prefixURL` | The prefix slug at which the server can be accessed | ``
 `alertmanager.baseURL` | The external url at which the server can be accessed | `/`
 `alertmanager.extraArgs` | Additional alertmanager container arguments | `{}`
@@ -204,6 +205,7 @@ Parameter | Description | Default
 `server.image.repository` | Prometheus server container image repository | `prom/prometheus`
 `server.image.tag` | Prometheus server container image tag | `v2.1.0`
 `server.image.pullPolicy` | Prometheus server container image pull policy | `IfNotPresent`
+`server.imagePullSecrets` | Prometheus server container image pull Secrets | `IfNotPresent`
 `server.extraArgs` | Additional Prometheus server container arguments | `{}`
 `server.prefixURL` | The prefix slug at which the server can be accessed | ``
 `server.baseURL` | The external url at which the server can be accessed | ``

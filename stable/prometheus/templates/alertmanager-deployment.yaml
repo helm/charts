@@ -27,6 +27,10 @@ spec:
         release: {{ .Release.Name }}
     spec:
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "prometheus.alertmanager.fullname" . }}{{ else }}"{{ .Values.alertmanager.serviceAccountName }}"{{ end }}
+    {{- if .Values.alertmanager.imagePullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.alertmanager.imagePullSecrets | indent 8 }}
+    {{- end }}
       containers:
         - name: {{ template "prometheus.name" . }}-{{ .Values.alertmanager.name }}
           image: "{{ .Values.alertmanager.image.repository }}:{{ .Values.alertmanager.image.tag }}"
