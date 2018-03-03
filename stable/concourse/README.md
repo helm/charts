@@ -141,7 +141,11 @@ The following tables lists the configurable parameters of the Concourse chart an
 | `credentialManager.kubernetes.enabled` | Enable Kubernetes Secrets Credential Manager | `true` |
 | `credentialManager.kubernetes.namespacePrefix` | Prefix for namespaces to look for secrets in | `.Release.Name-` |
 | `credentialManager.kubernetes.teams` | Teams to allow secret access when rbac is enabled | `["main"]` |
-| `credentialManager.vault.enabled` | Uuse Hashicorp Vault as a Credential Manager | `false` |
+| `credentialManager.ssm.enabled` | Use AWS SSM as a Credential Manager | `false` |
+| `credentialManager.ssm.region` | AWS Region to use for SSM | `nil` |
+| `credentialManager.ssm.pipelineSecretsTemplate` | Pipeline secrets template | `nil` |
+| `credentialManager.ssm.teamSecretsTemplate` | Team secrets template | `nil` |
+| `credentialManager.vault.enabled` | Use Hashicorp Vault as a Credential Manager | `false` |
 | `credentialManager.vault.url` | Vault Server URL | `nil` |
 | `credentialManager.vault.pathPrefix` | Vault path to namespace secrets | `/concourse` |
 | `credentialManager.vault.caCert` | CA public certificate when using self-signed TLS with Vault | `nil` |
@@ -158,6 +162,10 @@ The following tables lists the configurable parameters of the Concourse chart an
 | `secrets.workerKeyPub` | Concourse Worker Public Key | *See [values.yaml](values.yaml)* |
 | `secrets.encryptionKey` | current encryption key | `nil` |
 | `secrets.oldEncryptionKey` | old encryption key, used for key rotation | `nil` |
+| `secrets.awsSsmAccessKey` | AWS Access Key ID for SSM access | `nil` |
+| `secrets.awsSsmSecretKey` | AWS Secret Access Key ID for SSM access | `nil` |
+| `secrets.awsSsmSessionToken` | AWS Session Token for SSM access | `nil` |
+
 | `secrets.basicAuthUsername` | Concourse Basic Authentication Username | `concourse` |
 | `secrets.basicAuthPassword` | Concourse Basic Authentication Password | `concourse` |
 | `secrets.githubAuthClientId` | Application client ID for GitHub OAuth | `nil` |
