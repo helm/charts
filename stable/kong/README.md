@@ -57,13 +57,13 @@ and their default values.
 | admin.useTLS                      | Secure Admin traffic                                                   | `true`                |
 | admin.servicePort                 | TCP port on which the Kong admin service is exposed                    | `8444`                |
 | admin.containerPort               | TCP port on which Kong app listens for admin traffic                   | `8444`                |
-| admin.nodePort                    | Node port when service type is `NodePort`                              | `32444`               |
+| admin.nodePort                    | Node port when service type is `NodePort`                              |                       |
 | admin.type                        | k8s service type, Options: NodePort, ClusterIP, LoadBalancer           | `NodePort`            |
 | admin.loadBalancerIP              | Will reuse an existing ingress static IP for the admin service         | `null`                |
 | proxy.useTLS                      | Secure Proxy traffic                                                   | `true`                |
 | proxy.servicePort                 | TCP port on which the Kong Proxy Service is exposed                    | `8443`                |
 | proxy.containerPort               | TCP port on which the Kong app listens for Proxy traffic               | `8443`                |
-| proxy.nodePort                    | Node port when service type is `NodePort`                              | `32443`               |
+| proxy.nodePort                    | Node port when service type is `NodePort`                              |                       |
 | proxy.type                        | k8s service type. Options: NodePort, ClusterIP, LoadBalancer           | `NodePort`            |
 | proxy.loadBalancerIP              | To reuse an existing ingress static IP for the admin service           |                       |
 | env                               | Additional [Kong configurations](https://getkong.org/docs/latest/configuration/)               |

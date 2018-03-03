@@ -19,7 +19,8 @@ admin:
   containerPort: 8444
   # Kong admin service type
   type: NodePort
-  nodePort: 32444
+  # Set a nodePort which is available
+  # nodePort: 32444
 proxy:
   # If you want to specify annotations for the proxy service, uncomment the following
   # line, add additional or adjust as needed, and remove the curly braces after 'annotations:'.
@@ -31,7 +32,8 @@ proxy:
   servicePort: 8443
   containerPort: 8443
   type: NodePort
-  nodePort: 32443
+  # Set a nodePort which is available
+  # nodePort: 32443
 
 # Set runMigrations to run Kong migrations
 runMigrations: true
