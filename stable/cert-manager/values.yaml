@@ -53,3 +53,7 @@ ingressShim:
     # tag: v0.2.3
 
     pullPolicy: IfNotPresent
+clusterIssuer:
+  name: letsencrypt
+  server: https://acme-v01.api.letsencrypt.org/directory
+  email:
