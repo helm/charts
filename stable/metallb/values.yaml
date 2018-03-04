@@ -22,7 +22,7 @@ rbac:
 controller:
   image:
     repository: metallb/controller
-    tag: v0.4.0
+    tag: v0.4.1
     pullPolicy: IfNotPresent
   resources:
     #limits:
@@ -34,7 +34,7 @@ controller:
 speaker:
   image:
     repository: metallb/speaker
-    tag: v0.4.0
+    tag: v0.4.1
     pullPolicy: IfNotPresent
   resources:
     #limits:
