@@ -25,9 +25,9 @@ controller:
     tag: v0.4.0
     pullPolicy: IfNotPresent
   resources:
-    limits:
-      cpu: 100m
-      memory: 100Mi
+    #limits:
+      #cpu: 100m
+      #memory: 100Mi
 
 # controller contains configuration specific to the MetalLB speaker
 # daemonset.
@@ -37,9 +37,9 @@ speaker:
     tag: v0.4.0
     pullPolicy: IfNotPresent
   resources:
-    limits:
-      cpu: 100m
-      memory: 100Mi
+    #limits:
+      #cpu: 100m
+      #memory: 100Mi
 
 # helmLabels specifies whether to include Helm-specific labels in
 # manifests. This is used when generating the non-Helm manifest files
