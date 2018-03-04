@@ -114,6 +114,10 @@ spec:
           value: "true"
         - name: HA_MEMBERSHIP_PORT
           value: "{{ .Values.artifactory.membershipPort }}"
+        - name: HA_NODE_ID
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
       {{- if eq .Values.artifactory.persistence.type "nfs" }}
         - name: HA_DATA_DIR
           value: "{{ .Values.artifactory.persistence.nfs.dataDir }}"

@@ -114,6 +114,10 @@ spec:
           value: "false"
         - name: HA_MEMBERSHIP_PORT
           value: "{{ .Values.artifactory.membershipPort }}"
+        - name: HA_NODE_ID
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
         - name: ART_PRIMARY_BASE_URL
           value: 'http://{{ template "artifactory-ha.primary.name" . }}:8081/artifactory'
       {{- if eq .Values.artifactory.persistence.type "nfs" }}
