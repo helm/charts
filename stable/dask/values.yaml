@@ -1,25 +1,23 @@
-# Default values for dask.
-# This is a YAML-formatted file.
-# Declare name/value pairs to be passed into your templates.
-# name: value
-
 # nameOverride: dask
+# fullnameOverride: dask
 
 scheduler:
   name: scheduler
-  image: "daskdev/dask"
-  imageTag: "0.17.1"
+  image:
+    repository: "daskdev/dask"
+    tag: "0.17.1"
+    pullPolicy: IfNotPresent
   replicas: 1
   component: "dask-scheduler"
   serviceType: "LoadBalancer"
   servicePort: 8786
   resources: {}
-  limits:
-  #   cpu: 1.8
-  #   memory: 6G
-  requests:
-  #   cpu: 1.8
-  #   memory: 6G
+    # limits:
+    #   cpu: 1.8
+    #   memory: 6G
+    # requests:
+    #   cpu: 1.8
+    #   memory: 6G
 
 webUI:
   name: webui
@@ -27,8 +25,10 @@ webUI:
 
 worker:
   name: worker
-  image: "daskdev/dask"
-  imageTag: "0.17.1"
+  image:
+    repository: "daskdev/dask"
+    tag: "0.17.1"
+    pullPolicy: IfNotPresent
   replicas: 3
   component: "dask-worker"
   resources: {}
@@ -41,34 +41,36 @@ worker:
     #   value: numba xarray -c conda-forge
     # - name: EXTRA_PIP_PACKAGES
     #   value: s3fs dask-ml --upgrade
-  limits:
-  #   cpu: 1
-  #   memory: 3G
-  requests:
-  #   cpu: 1
-  #   memory: 3G
+  resources: {}
+    # limits:
+    #   cpu: 1
+    #   memory: 3G
+    # requests:
+    #   cpu: 1
+    #   memory: 3G
 
 jupyter:
   name: jupyter
   enabled: true
-  image: "daskdev/dask-notebook"
-  imageTag: "0.17.1"
+  image:
+    repository: "daskdev/dask-notebook"
+    tag: "0.17.1"
+    pullPolicy: IfNotPresent
   replicas: 1
   component: "jupyter-notebook"
   serviceType: "LoadBalancer"
   servicePort: 80
   password: 'sha1:aae8550c0a44:9507d45e087d5ee481a5ce9f4f16f37a0867318c'  # 'dask'
-  resources: {}
   env:
     # - name: EXTRA_CONDA_PACKAGES
     #   value: numba xarray -c conda-forge
     # - name: EXTRA_PIP_PACKAGES
     #   value: s3fs dask-ml --upgrade
-  # limits:
-  #   cpu: 2
-  #   memory: 6G
-  # requests:
-  #   cpu: 2
-  #   memory: 6G
+  resources: {}
+    # limits:
+    #   cpu: 2
+    #   memory: 6G
+    # requests:
+    #   cpu: 2
+    #   memory: 6G
 
-pullPolicy: IfNotPresent

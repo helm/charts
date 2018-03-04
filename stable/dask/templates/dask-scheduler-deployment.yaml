@@ -10,6 +10,11 @@ metadata:
     component: "{{ .Release.Name }}-{{ .Values.scheduler.component }}"
 spec:
   replicas: {{ .Values.scheduler.replicas }}
+  selector:
+    matchLabels:
+      app: {{ template "dask.name" . }}
+      release: {{ .Release.Name | quote }}
+      component: "{{ .Release.Name }}-{{ .Values.scheduler.component }}"
   strategy:
     type: RollingUpdate
   template:
@@ -21,16 +26,14 @@ spec:
     spec:
       containers:
         - name: {{ template "dask.fullname" . }}-scheduler
-          image:
-            repository: {{ .Values.scheduler.image | quote }}
-            tag: {{ .Values.scheduler.imageTag | quote }}
-            pullPolicy: {{ .Values.pullPolicy }}
+          image: "{{ .Values.scheduler.image.repository }}:{{ .Values.scheduler.image.tag }}"
+          imagePullPolicy: {{ .Values.scheduler.image.pullPolicy }}
           args:
             - dask-scheduler
             - --port
-            - {{ .Values.scheduler.servicePort }}
+            - "{{ .Values.scheduler.servicePort }}"
             - --bokeh-port
-            - 8787
+            - "8787"
           ports:
             - containerPort: 8786
             - containerPort: 8787

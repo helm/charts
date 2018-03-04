@@ -10,6 +10,11 @@ metadata:
     component: "{{ .Release.Name }}-{{ .Values.worker.component }}"
 spec:
   replicas: {{ .Values.worker.replicas }}
+  selector:
+    matchLabels:
+      app: {{ template "dask.name" . }}
+      release: {{ .Release.Name | quote }}
+      component: "{{ .Release.Name }}-{{ .Values.worker.component }}"
   strategy:
     type: RollingUpdate
   template:
@@ -21,19 +26,17 @@ spec:
     spec:
       containers:
         - name: {{ template "dask.fullname" . }}-worker
-          image:
-            repository: {{ .Values.worker.image | quote }}
-            tag: {{ .Values.worker.imageTag | quote }}
-            pullPolicy: {{ .Values.pullPolicy }}
+          image: "{{ .Values.worker.image.repository }}:{{ .Values.worker.image.tag }}"
+          imagePullPolicy: {{ .Values.worker.image.pullPolicy }}
           args:
             - dask-worker
             - {{ template "dask.fullname" . }}-scheduler:{{ .Values.scheduler.servicePort }}
-          {{- if .Values.worker.limits -}}
+          {{- if .Values.worker.limits }}
             - --nthreads
             - {{ default .Values.worker.limits.cpu .Values.workers.default_resources.cpu | quote }}
             - --memory-limit
             - {{ default .Values.worker.limits.memory .Values.workers.default_resources.memory | quote }}
-          {{- end -}}
+          {{- end }}
             - --no-bokeh
           ports:
             - containerPort: 8789

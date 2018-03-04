@@ -12,6 +12,11 @@ metadata:
     component: "{{ .Release.Name }}-{{ .Values.jupyter.component }}"
 spec:
   replicas: {{ .Values.jupyter.replicas }}
+  selector:
+    matchLabels:
+      app: {{ template "dask.name" . }}
+      release: {{ .Release.Name | quote }}
+      component: "{{ .Release.Name }}-{{ .Values.jupyter.component }}"
   strategy:
     type: RollingUpdate
   template:
@@ -23,10 +28,8 @@ spec:
     spec:
       containers:
         - name: {{ template "dask.fullname" . }}-jupyter
-          image:
-            repository: {{ .Values.jupyter.image | quote }}
-            tag: {{ .Values.jupyter.imageTag | quote }}
-            pullPolicy: {{ .Values.pullPolicy }}
+          image: "{{ .Values.jupyter.image.repository }}:{{ .Values.jupyter.image.tag }}"
+          imagePullPolicy: {{ .Values.jupyter.image.pullPolicy }}
           ports:
             - containerPort: 8888
           resources:
@@ -37,10 +40,12 @@ spec:
           env:
             - name: DASK_SCHEDULER_ADDRESS
               value: {{ template "dask.fullname" . }}-scheduler:{{ .Values.scheduler.servicePort }}
+{{- if .Values.jupyter.env }}
 {{ toYaml .Values.jupyter.env | indent 12 }}
+{{- end }}
       volumes:
         - name: config-volume
           configMap:
-            name: {{ template "dask.fullname" . }}-scheduler-config
+            name: {{ template "dask.fullname" . }}-jupyter-config
 
 {{ end }}
