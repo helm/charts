@@ -31,7 +31,6 @@ worker:
     pullPolicy: IfNotPresent
   replicas: 3
   component: "dask-worker"
-  resources: {}
   aptPackages: >-
   default_resources:  # overwritten by resource limits if they exist
     cpu: 1
@@ -73,4 +72,3 @@ jupyter:
     # requests:
     #   cpu: 2
     #   memory: 6G
-
