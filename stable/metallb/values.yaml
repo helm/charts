@@ -1,0 +1,47 @@
+# Default values for metallb.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# config is the MetalLB configuration, in YAML format. Refer to
+# https://metallb.universe.tf/configuration/ for available options.
+config:
+
+# load-balancers. When arpCIDR is specified instead of config, the
+# chart will install a trivial "quick start" MetalLB configuration
+# that uses ARP mode. Refer to https://metallb.universe.tf/ for more
+# information. For production configurations, use of the `config`
+# field is recommended instead of arpCIDR.
+arpCIDR:
+
+rbac:
+  # create specifies whether to install and use RBAC rules.
+  create: true
+
+# controller contains configuration specific to the MetalLB cluster
+# controller.
+controller:
+  image:
+    repository: metallb/controller
+    tag: v0.4.0
+    pullPolicy: IfNotPresent
+  resources:
+    limits:
+      cpu: 100m
+      memory: 100Mi
+
+# controller contains configuration specific to the MetalLB speaker
+# daemonset.
+speaker:
+  image:
+    repository: metallb/speaker
+    tag: v0.4.0
+    pullPolicy: IfNotPresent
+  resources:
+    limits:
+      cpu: 100m
+      memory: 100Mi
+
+# helmLabels specifies whether to include Helm-specific labels in
+# manifests. This is used when generating the non-Helm manifest files
+# during MetalLB development, and should be left alone otherwise.
+helmLabels: true

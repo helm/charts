@@ -1,0 +1,18 @@
+{{- if (or .Values.config .Values.arpCIDR) }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: metallb-system
+  name: config
+data:
+  config: |
+{{- if .Values.config }}
+{{ toYaml .Values.override_config | indent 4 }}
+{{- else }}
+    address-pools:
+    - name: default
+      protocol: arp
+      cidr:
+      - {{ .Values.arpCIDR }}
+{{- end }}
+{{- end }}
