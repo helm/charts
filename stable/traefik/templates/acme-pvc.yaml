@@ -1,10 +1,10 @@
-{{- if and .Values.acme.enabled .Values.acme.persistence.enabled }}
+{{- if and .Values.acme.enabled .Values.acme.persistence.enabled (not .Values.acme.persistence.existingClaim) }}
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: {{ template "fullname" . }}-acme
+  name: {{ template "traefik.fullname" . }}-acme
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "traefik.name" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"

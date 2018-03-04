@@ -56,6 +56,8 @@ The following tables lists the configurable parameters of the PostgreSQL chart a
 | `postgresDatabase`         | Name for new database to create.                | `postgres`                                                 |
 | `postgresInitdbArgs`       | Initdb Arguments                                | `nil`                                                      |
 | `postgresHostIp`           | The Ip address of the host, outside the cluster | `nil`                                                      |
+| `schedulerName`            | Name of an alternate scheduler                  | `nil`                                                      |
+| `postgresConfig`           | Runtime Config Parameters                       | `nil`                                                      |
 | `persistence.enabled`      | Use a PVC to persist data (Ignored if postgresHostIp is enabled) | `true`                                    |
 | `persistence.existingClaim`| Provide an existing PersistentVolumeClaim       | `nil`                                                      |
 | `persistence.storageClass` | Storage class of backing PVC                    | `nil` (uses alpha storage class annotation)                |
