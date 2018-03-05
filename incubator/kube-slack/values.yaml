@@ -6,6 +6,7 @@ image:
   repository: willwill/kube-slack
   tag: v3.1.1
   pullPolicy: IfNotPresent
+
 resources: {}
   # limits:
   #  cpu: 100m
@@ -19,3 +20,9 @@ rbac:
   create: true
   ## This is used, if rbac.create is false:
   serviceAccountName: default
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

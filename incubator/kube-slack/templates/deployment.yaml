@@ -1,14 +1,18 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
   name: {{ template "kube-slack.fullname" . }}
   labels:
     app: {{ template "kube-slack.name" . }}
-    chart: {{ .Chart.Name }}
+    chart: {{ template "kube-slack.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
   replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "kube-slack.name" . }}
+      release: {{ .Release.Name }}
   template:
     metadata:
       labels:
@@ -24,12 +28,20 @@ spec:
               value: {{ .Values.slackUrl }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
-      {{- if .Values.rbac.create }}
+    {{- if .Values.rbac.create }}
       serviceAccountName: {{ template "kube-slack.fullname" . }}
-      {{- else }}
+    {{- else }}
       serviceAccountName: "{{ .Values.rbac.serviceAccountName }}"
-      {{- end }}
-    {{- if .Values.nodeSelector }}
+    {{- end }}
+    {{- with .Values.nodeSelector }}
       nodeSelector:
-{{ toYaml .Values.nodeSelector | indent 8 }}
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
     {{- end }}
