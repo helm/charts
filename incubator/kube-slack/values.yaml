@@ -1,5 +1,7 @@
 ## URL of your Incoming Webhook in Slack:
 slackUrl: ""
+## Time to wait after pod becomes not ready before notifying
+notReadyMinTime: 60000 # in ms
 
 ## Configuration for the deployment:
 image:
