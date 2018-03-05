@@ -1,0 +1,65 @@
+apiVersion: v1
+kind: Service
+metadata:
+{{- if .Values.controller.service.annotations }}
+  annotations:
+{{ toYaml .Values.controller.service.annotations | indent 4 }}
+{{- end }}
+  labels:
+    app: {{ template "nginx-ingress.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: "{{ .Values.controller.name }}"
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "nginx-ingress.controller.fullname" . }}
+spec:
+  clusterIP: "{{ .Values.controller.service.clusterIP }}"
+{{- if .Values.controller.service.externalIPs }}
+  externalIPs:
+{{ toYaml .Values.controller.service.externalIPs | indent 4 }}
+{{- end }}
+{{- if .Values.controller.service.loadBalancerIP }}
+  loadBalancerIP: "{{ .Values.controller.service.loadBalancerIP }}"
+{{- end }}
+{{- if .Values.controller.service.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+{{ toYaml .Values.controller.service.loadBalancerSourceRanges | indent 4 }}
+{{- end }}
+{{- if and (ge .Capabilities.KubeVersion.Minor "7") (.Values.controller.service.externalTrafficPolicy) }}
+  externalTrafficPolicy: "{{ .Values.controller.service.externalTrafficPolicy }}"
+{{- end }}
+{{- if and (ge .Capabilities.KubeVersion.Minor "7") (.Values.controller.service.healthCheckNodePort) }}
+  healthCheckNodePort: {{ .Values.controller.service.healthCheckNodePort }}
+{{- end }}
+  ports:
+    - name: http
+      port: 80
+      protocol: TCP
+      targetPort: {{ .Values.controller.service.targetPorts.http }}
+      {{- if (and (eq .Values.controller.service.type "NodePort") (not (empty .Values.controller.service.nodePorts.http))) }}
+      nodePort: {{ .Values.controller.service.nodePorts.http }}
+      {{- end }}
+    - name: https
+      port: 443
+      protocol: TCP
+      targetPort: {{ .Values.controller.service.targetPorts.https }}
+      {{- if (and (eq .Values.controller.service.type "NodePort") (not (empty .Values.controller.service.nodePorts.https))) }}
+      nodePort: {{ .Values.controller.service.nodePorts.https }}
+      {{- end }}
+  {{- range $key, $value := .Values.tcp }}
+    - name: "{{ $key }}-tcp"
+      port: {{ $key }}
+      protocol: TCP
+      targetPort: {{ $key }}
+  {{- end }}
+  {{- range $key, $value := .Values.udp }}
+    - name: "{{ $key }}-udp"
+      port: {{ $key }}
+      protocol: UDP
+      targetPort: {{ $key }}
+  {{- end }}
+  selector:
+    app: {{ template "nginx-ingress.name" . }}
+    component: "{{ .Values.controller.name }}"
+    release: {{ .Release.Name }}
+  type: "{{ .Values.controller.service.type }}"

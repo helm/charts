@@ -1,0 +1,37 @@
+{{- if .Values.defaultBackend.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+{{- if .Values.defaultBackend.service.annotations }}
+  annotations:
+{{ toYaml .Values.defaultBackend.service.annotations | indent 4 }}
+{{- end }}
+  labels:
+    app: {{ template "nginx-ingress.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: "{{ .Values.defaultBackend.name }}"
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "nginx-ingress.defaultBackend.fullname" . }}
+spec:
+  clusterIP: "{{ .Values.defaultBackend.service.clusterIP }}"
+{{- if .Values.defaultBackend.service.externalIPs }}
+  externalIPs:
+{{ toYaml .Values.defaultBackend.service.externalIPs | indent 4 }}
+{{- end }}
+{{- if .Values.defaultBackend.service.loadBalancerIP }}
+  loadBalancerIP: "{{ .Values.defaultBackend.service.loadBalancerIP }}"
+{{- end }}
+{{- if .Values.defaultBackend.service.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+{{ toYaml .Values.defaultBackend.service.loadBalancerSourceRanges | indent 4 }}
+{{- end }}
+  ports:
+    - port: {{ .Values.defaultBackend.service.servicePort }}
+      targetPort: 8080
+  selector:
+    app: {{ template "nginx-ingress.name" . }}
+    component: "{{ .Values.defaultBackend.name }}"
+    release: {{ .Release.Name }}
+  type: "{{ .Values.defaultBackend.service.type }}"
+{{- end }}

@@ -1,0 +1,20 @@
+name: lemonldap-ng-ingress
+version: 0.1.0
+appVersion: 0.2.0
+description: An LemonLDAP::NG and nginx Ingress controller.
+icon: https://lemonldap-ng.org/welcome/logo_llng_600px.png
+keywords:
+  - ingress
+  - nginx
+  - lemonldap-ng
+  - authentication
+  - autorization
+  - oauth
+  - openid-connect
+  - saml
+sources:
+  - https://github.com/lemonldap-ng-controller/lemonldap-ng-controller
+maintainers:
+  - name: sathieu
+    email: math.parent@gmail.com
+engine: gotpl

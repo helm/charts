@@ -1,0 +1,615 @@
+## LemonLDAP::NG configuration
+## Ref: https://github.com/lemonldap-ng-controller/lemonldap-ng-controller#config-map
+##
+lemonldapNG:
+  name: lemonldap-ng-controller
+  image:
+    repository: lemonldapng/lemonldap-ng-controller
+    tag: "0.2.0"
+    pullPolicy: IfNotPresent
+
+  config:
+    # SSO Cookie
+    domain: example.org
+    cookieName: lemonldap
+    securedCookie: "0"  # 0=unsecuredCookie, 1=securedCookie, 2=doubleCookie, 3=doubleCookieForSingleSession
+    # cda: "1"  # for Cross domain authentication
+
+    # Portal URL
+    portal: http://auth.example.org/
+    mailUrl: http://auth.example.org/mail.pl
+    registerUrl: http://auth.example.org/register.pl
+    # https: "1" # recommended, to force HTTPs
+
+    # Authentification, user and password backends
+    # authentication: LDAP # Default Demo
+    # userDB: LDAP # Default Demo
+    # passwordDB: LDAP # Default Demo
+    # ldapServer: ldap://ldap.example.org
+    # ldapBase: dc=example,dc=org
+
+    # Session database
+    # globalStorage: Apache::Session::Browseable::Postgres # Default Apache::Session::File
+    # globalStorageOptions.yaml: |
+    #   DataSource: dbi:Pg:dbname=sessions;host=10.2.3.1
+    #   UserName: lemonldapng
+    #   Password: mysuperpassword
+    #   TableName: sessions
+    #   Commit: "1"
+    #   Index: _whatToTrace ipAddr
+
+    # Portal Menu
+    applicationList.yaml: |
+      "2administration":
+        type: category
+        catname: "Administration"
+        "manager":
+          type: application
+          options:
+            description: "Configure LemonLDAP::NG WebSSO"
+            display: auto
+            logo: "configure.png"
+            name: "WebSSO Manager"
+            uri: "http://manager.example.org/manager.html"
+        "notifications":
+          type: application
+          options:
+            description: "Explore WebSSO notifications"
+            display: auto
+            logo: "database.png"
+            name: "Notifications explorer"
+            uri: "http://manager.example.org/notifications.html"
+        "sessions":
+          type: application
+          options:
+            description: "Explore WebSSO sessions"
+            display: auto
+            logo: "database.png"
+            name: "Sessions explorer"
+            uri: "http://manager.example.org/sessions.html"
+      "3documentation":
+        type: category
+        catname: "Documentation"
+        "localdoc":
+          type: application
+          options:
+            description: "Documentation supplied with LemonLDAP::NG"
+            display: on
+            logo: "help.png"
+            name: "Local documentation"
+            uri: "http://manager.example.org/doc/"
+        "officialwebsite":
+          type: application
+          options:
+            description: "Official LemonLDAP::NG Website"
+            display: on
+            logo: "network.png"
+            name: "Offical Website"
+            uri: "http://lemonldap-ng.org/"
+
+  ## Additional command line arguments to pass to lemonldap-ng-controller
+  ## E.g. to specify the default SSL certificate you can use
+  ## extraArgs:
+  ##   default-ssl-certificate: "<namespace>/<secret_name>"
+  extraArgs: {}
+
+  ## Additional environment variables to set
+  ##
+  extraEnvs: {}
+
+
+## nginx configuration
+## Ref: https://github.com/kubernetes/ingress/blob/master/controllers/nginx/configuration.md
+##
+controller:
+  name: controller
+  image:
+    repository: quay.io/kubernetes-ingress-controller/nginx-ingress-controller
+    tag: "0.10.2"
+    pullPolicy: IfNotPresent
+
+  config:
+    http-snippet: |
+      log_format lm_combined '$remote_addr - $lmremote_user [$time_local] "$request" $status $body_bytes_sent "$http_referer" "$http_user_agent"';
+
+      server {
+        listen 80;
+        server_name localhost;
+        root /var/www/html;
+
+        location = /reload {
+          allow 127.0.0.1;
+          deny all;
+          include /etc/nginx/fastcgi_params;
+          fastcgi_pass localhost:9000;
+          fastcgi_param LLTYPE reload;
+        }
+
+        location / {
+          deny all;
+        }
+
+        location = /status {
+          allow 127.0.0.1;
+          deny all;
+          include /etc/nginx/fastcgi_params;
+          fastcgi_pass localhost:9000;
+          fastcgi_param LLTYPE status;
+        }
+      }
+
+      server {
+        listen 80;
+        server_name auth.example.org;
+        root /var/lib/lemonldap-ng/portal/;
+
+        location ~ \.pl(?:$|/) {
+          include /etc/nginx/fastcgi_params;
+          fastcgi_pass localhost:9000;
+          fastcgi_param LLTYPE cgi;
+          fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+          set $sn $request_uri;
+          if ($sn ~ "^(.*)\?") {
+            set $sn $1;
+          }
+          if ($sn ~ "^/index.pl") {
+            set $sn "/index.pl";
+          }
+          fastcgi_param SCRIPT_NAME $sn;
+          fastcgi_split_path_info ^(.*\.pl)(/.*)$;
+          fastcgi_param PATH_INFO       $fastcgi_path_info;
+          # Uncomment this if you use Auth SSL:
+          #map $ssl_client_s_dn  $ssl_client_s_dn_cn {
+          #  default           "";
+          #  ~/CN=(?<CN>[^/]+) $CN;
+          #}
+          #fastcgi_param  SSL_CLIENT_S_DN_CN $ssl_client_s_dn_cn
+        }
+
+        #index index.pl;
+        rewrite ^/$ /index.pl;
+
+        location / {
+          try_files $uri $uri/ =404;
+
+          # Uncomment this if you use https only
+          #add_header Strict-Transport-Security "15768000";
+        }
+
+        # SOAP functions for sessions management (disabled by default)
+        location /index.pl/adminSessions {
+          deny all;
+        }
+
+        # SOAP functions for sessions access (disabled by default)
+        location /index.pl/sessions {
+          deny all;
+        }
+
+        # SOAP functions for configuration access (disabled by default)
+        location /index.pl/config {
+          deny all;
+        }
+
+        # SOAP functions for notification insertion (disabled by default)
+        location /index.pl/notification {
+          deny all;
+        }
+        # SAML2 Issuer
+        rewrite ^/saml/metadata /metadata.pl last;
+        rewrite ^/saml/.* /index.pl last;
+
+        # CAS Issuer
+        rewrite ^/cas/.* /index.pl;
+
+        # OpenID Issuer
+        rewrite ^/openidserver/.* /index.pl last;
+
+        # OpenID Connect Issuer
+        rewrite ^/oauth2/.* /index.pl last;
+        rewrite ^/.well-known/openid-configuration$ /openid-configuration.pl last;
+
+        # Get Issuer
+        rewrite ^/get/.* /index.pl;
+
+        # Public pages
+        rewrite ^/public.* /public.pl;
+
+        # DEBIAN
+        # If install was made with USEDEBIANLIBS (official releases), uncomment this
+        #location /javascript/ {
+        #  alias /usr/share/javascript/;
+        #}
+      }
+      server {
+        listen 80;
+        server_name manager.example.org;
+        root /usr/share/lemonldap-ng/manager/;
+
+        if ($uri !~ ^/(manager\.psgi|static|doc|fr-doc|lib|javascript|favicon)) {
+          rewrite ^/(.*)$ /manager.psgi/$1 break;
+        }
+
+        location /manager.psgi {
+          include /etc/nginx/fastcgi_params;
+          fastcgi_pass localhost:9000;
+          fastcgi_param LLTYPE manager;
+          fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+          fastcgi_split_path_info ^(.*\.psgi)(/.*)$;
+          fastcgi_param PATH_INFO  $fastcgi_path_info;
+          # Uncomment this if you use https only
+          #add_header Strict-Transport-Security "15768000";
+        }
+
+        location / {
+          index manager.psgi;
+          allow 127.0.0.0/8;
+          deny all;
+          try_files $uri $uri/ =404;
+        }
+
+        location /doc/ {
+          alias /usr/share/doc/lemonldap-ng-doc/;
+          index index.html start.html;
+        }
+        location /lib/ {
+          alias /usr/share/doc/lemonldap-ng-doc/pages/documentation/current/lib/;
+        }
+        location /fr-doc/ {
+          alias /usr/share/doc/lemonldap-ng-fr-doc/;
+          index index.html start.html;
+        }
+        location /static/ {
+          alias /usr/share/lemonldap-ng/manager/static/;
+        }
+
+        # DEBIAN
+        # If install was made with USEDEBIANLIBS (official releases), uncomment this
+        #location /javascript/ {
+        #  alias /usr/share/javascript/;
+        #}
+
+      }
+    server-snippet: |
+      location = /lmauth {
+        internal;
+        include /etc/nginx/fastcgi_params;
+        fastcgi_pass localhost:9000;
+        # To use AuthBasic handler, uncomment this and remove "error_page 401"
+        # fastcgi_param LLTYPE authbasic;
+
+        # Drop post datas
+        fastcgi_pass_request_body  off;
+        fastcgi_param CONTENT_LENGTH "";
+
+        # Keep original hostname
+        fastcgi_param HOST $http_host;
+
+        # Keep original request (LLNG server will received /llauth)
+        fastcgi_param X_ORIGINAL_URI  $request_uri;
+      }
+    location-snippet: |
+      ##################################
+      # CALLING AUTHENTICATION         #
+      ##################################
+      auth_request /lmauth;
+      auth_request_set $lmremote_user $upstream_http_lm_remote_user;
+      auth_request_set $lmlocation $upstream_http_location;
+      # Uncomment this if CDA is used
+      #auth_request_set $cookie_value $upstream_http_set_cookie;
+      #add_header Set-Cookie $cookie_value;
+      # Remove this for AuthBasic handler
+      error_page 401 $lmlocation;
+
+      ##################################
+      # PASSING HEADERS TO APPLICATION #
+      ##################################
+      auth_request_set $authuser $upstream_http_auth_user;
+      proxy_set_header Auth-User $authuser;
+
+      # Change cookie header to hide LLNG cookie
+      auth_request_set $lmcookie $upstream_http_cookie;
+      proxy_set_header Cookie: $lmcookie;
+
+  # Will add custom header to Nginx https://github.com/kubernetes/ingress-nginx/tree/master/docs/examples/customization/custom-headers
+  headers: {}
+
+  # Required for use with CNI based kubernetes installations (such as ones set up by kubeadm),
+  # since CNI and hostport don't mix yet. Can be deprecated once https://github.com/kubernetes/kubernetes/issues/23920
+  # is merged
+  hostNetwork: false
+
+  # Optionally change this to ClusterFirstWithHostNet in case you have 'hostNetwork: true'.
+  # By default, while using host network, name resolution uses the host's DNS. If you wish nginx-controller
+  # to keep resolving names inside the k8s network, use ClusterFirstWithHostNet.
+  dnsPolicy: ClusterFirst
+
+  ## Use host ports 80 and 443
+  daemonset:
+    useHostPort: false
+
+  ## Required only if defaultBackend.enabled = false
+  ## Must be <namespace>/<service_name>
+  ##
+  defaultBackendService: ""
+
+  ## Election ID to use for status update
+  ##
+  electionID: ingress-controller-leader
+
+  ## Name of the ingress class to route through this controller
+  ##
+  ingressClass: nginx
+
+  # labels to add to the pod container metadata
+  podLabels: {}
+  #  key: value
+
+  ## Allows customization of the external service
+  ## the ingress will be bound to via DNS
+  publishService:
+    enabled: false
+    ## Allows overriding of the publish service to bind to
+    ## Must be <namespace>/<service_name>
+    ##
+    pathOverride: ""
+
+  ## Limit the scope of the controller
+  ##
+  scope:
+    enabled: false
+    namespace: ""   # defaults to .Release.Namespace
+
+  ## Additional command line arguments to pass to nginx-ingress-controller
+  ## E.g. to specify the default SSL certificate you can use
+  ## extraArgs:
+  ##   default-ssl-certificate: "<namespace>/<secret_name>"
+  extraArgs: {}
+
+  ## Additional environment variables to set
+  ##
+  extraEnvs: {}
+
+  ## DaemonSet or Deployment
+  ##
+  kind: Deployment
+
+  # The update strategy to apply to the Deployment or DaemonSet
+  ##
+  updateStrategy: {}
+  #  rollingUpdate:
+  #    maxUnavailable: 1
+  #  type: RollingUpdate
+
+  # minReadySeconds to avoid killing pods before we are ready
+  ##
+  minReadySeconds: 0
+
+
+  ## Node tolerations for server scheduling to nodes with taints
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+  ##
+  tolerations: []
+  #  - key: "key"
+  #    operator: "Equal|Exists"
+  #    value: "value"
+  #    effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
+
+  ## Node labels for controller pod assignment
+  ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+  ##
+  nodeSelector: {}
+
+  ## Liveness and readiness probe values
+  ## Ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#container-probes
+  ##
+  livenessProbe:
+    failureThreshold: 3
+    initialDelaySeconds: 10
+    periodSeconds: 10
+    successThreshold: 1
+    timeoutSeconds: 1
+  readinessProbe:
+    failureThreshold: 3
+    initialDelaySeconds: 10
+    periodSeconds: 10
+    successThreshold: 1
+    timeoutSeconds: 1
+
+  ## Annotations to be added to controller pods
+  ##
+  podAnnotations: {}
+
+  replicaCount: 1
+
+  resources: {}
+  #  limits:
+  #    cpu: 100m
+  #    memory: 64Mi
+  #  requests:
+  #    cpu: 100m
+  #    memory: 64Mi
+
+  autoscaling:
+    enabled: false
+  #  minReplicas: 1
+  #  maxReplicas: 11
+  #  targetCPUUtilizationPercentage: 50
+
+  ## Override NGINX template
+  customTemplate:
+    configMapName: ""
+    configMapKey: ""
+
+  service:
+    annotations: {}
+    clusterIP: ""
+
+    ## List of IP addresses at which the controller services are available
+    ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
+    ##
+    externalIPs: []
+
+    loadBalancerIP: ""
+    loadBalancerSourceRanges: []
+
+    ## Set external traffic policy to: "Local" to preserve source IP on
+    ## providers supporting it
+    ## Ref: https://kubernetes.io/docs/tutorials/services/source-ip/#source-ip-for-services-with-typeloadbalancer
+    externalTrafficPolicy: ""
+
+    healthCheckNodePort: 0
+
+    targetPorts:
+      http: 80
+      https: 443
+
+    type: LoadBalancer
+
+    # type: NodePort
+    # nodePorts:
+    #   http: 32080
+    #   https: 32443
+    nodePorts:
+      http: ""
+      https: ""
+
+  stats:
+    enabled: false
+
+    service:
+      annotations: {}
+      clusterIP: ""
+
+      ## List of IP addresses at which the stats service is available
+      ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
+      ##
+      externalIPs: []
+
+      loadBalancerIP: ""
+      loadBalancerSourceRanges: []
+      servicePort: 18080
+      type: ClusterIP
+
+  lifecycle: {}
+
+## Rollback limit
+##
+revisionHistoryLimit: 10
+
+## Default 404 backend
+##
+defaultBackend:
+
+  ## If false, controller.defaultBackendService must be provided
+  ##
+  enabled: true
+
+  name: default-backend
+  image:
+    repository: k8s.gcr.io/defaultbackend
+    tag: "1.3"
+    pullPolicy: IfNotPresent
+
+  extraArgs: {}
+
+  ## Node tolerations for server scheduling to nodes with taints
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+  ##
+  tolerations: []
+  #  - key: "key"
+  #    operator: "Equal|Exists"
+  #    value: "value"
+  #    effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
+
+  # labels to add to the pod container metadata
+  podLabels: {}
+  #  key: value
+
+  ## Node labels for default backend pod assignment
+  ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+  ##
+  nodeSelector: {}
+
+  ## Annotations to be added to default backend pods
+  ##
+  podAnnotations: {}
+
+  replicaCount: 1
+
+  resources: {}
+  # limits:
+  #   cpu: 10m
+  #   memory: 20Mi
+  # requests:
+  #   cpu: 10m
+  #   memory: 20Mi
+
+  service:
+    annotations: {}
+    clusterIP: ""
+
+    ## List of IP addresses at which the default backend service is available
+    ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
+    ##
+    externalIPs: []
+
+    loadBalancerIP: ""
+    loadBalancerSourceRanges: []
+    servicePort: 80
+    type: ClusterIP
+
+## Enable RBAC as per https://github.com/kubernetes/ingress/tree/master/examples/rbac/nginx and https://github.com/kubernetes/ingress/issues/266
+rbac:
+  create: false
+  serviceAccountName: default
+
+## If controller.stats.enabled = true, Prometheus metrics will be exported
+## Ref: https://github.com/hnlq715/nginx-vts-exporter
+##
+statsExporter:
+  name: stats-exporter
+  image:
+    repository: sophos/nginx-vts-exporter
+    tag: v0.6
+    pullPolicy: IfNotPresent
+
+  endpoint: /metrics
+  extraArgs: {}
+  metricsNamespace: nginx
+  statusPage: http://localhost:18080/nginx_status/format/json
+
+  resources: {}
+  # limits:
+  #   cpu: 10m
+  #   memory: 20Mi
+  # requests:
+  #   cpu: 10m
+  #   memory: 20Mi
+
+  service:
+    annotations: {}
+    clusterIP: ""
+
+    ## List of IP addresses at which the stats-exporter service is available
+    ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
+    ##
+    externalIPs: []
+
+    loadBalancerIP: ""
+    loadBalancerSourceRanges: []
+    servicePort: 9913
+    targetPort: 9913
+    type: ClusterIP
+
+# TCP service key:value pairs
+# Ref: https://github.com/kubernetes/contrib/tree/master/ingress/controllers/nginx/examples/tcp
+##
+tcp: {}
+#  8080: "default/example-tcp-svc:9000"
+
+# UDP service key:value pairs
+# Ref: https://github.com/kubernetes/contrib/tree/master/ingress/controllers/nginx/examples/udp
+##
+udp: {}
+#  53: "kube-system/kube-dns:53"
