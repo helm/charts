@@ -26,7 +26,7 @@ operator, it's _not_ suitable for use by other teams, as it presents them with
 an easy avenue for escalating their privileges.
 
 To compensate for this, a pattern that has emmerged to complement the
-namespace-per-team pattern is the _tiller-per-namespace_ patterm. This has been
+namespace-per-team pattern is the _tiller-per-namespace_ pattern. This has been
 widely adopted in multi-tenant, RBAC-enabled clusters. Until now, cluster
 operators have tended to create their own bespoke scripts for performing all
 requisite setup to implement these patterns.
