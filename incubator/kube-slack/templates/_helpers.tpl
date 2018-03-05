@@ -35,7 +35,7 @@ Create chart name and version as used by the chart label.
 Return the appropriate apiVersion for RBAC APIs.
 */}}
 {{- define "rbac.apiVersion" -}}
-{{- if ge .Capabilities.KubeVersion.Minor "8" -}}
+{{- if semverCompare ">= 1.8" .Capabilities.KubeVersion.GitVersion -}}
 "rbac.authorization.k8s.io/v1"
 {{- else -}}
 "rbac.authorization.k8s.io/v1beta1"
