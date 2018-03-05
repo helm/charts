@@ -29,6 +29,9 @@ isClusterService: true
 # serviceType specifies type of service to be created for this chart.
 serviceType: "ClusterIP"
 
+# cluster IP to use
+# clusterIP: ""
+
 # serviceProtocol specifies the protocol on which to expose the CoreDNS service.
 # Can be one of three options: "UDPNTCP" (default), "UDP" or "TCP"
 serviceProtocol: "UDPNTCP"
