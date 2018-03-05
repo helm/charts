@@ -27,7 +27,7 @@ spec:
             - name: SLACK_URL
               value: {{ .Values.slackUrl }}
             - name: NOT_READY_MIN_TIME
-              value: {{ .Values.notReadyMinTime }}
+              value: {{ .Values.notReadyMinTime | quote }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- if .Values.rbac.create }}
