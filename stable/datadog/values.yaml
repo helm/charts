@@ -1,10 +1,10 @@
 # Default values for datadog.
 image:
   # This chart is compatible with different images, please choose one
-  repository: datadog/docker-dd-agent  # Agent5
-  # repository: datadog/agent          # Agent6 (beta)
-  # repository: datadog/dogstatsd      # Standalone DogStatsD6 (beta)
-  tag: latest
+  repository: datadog/agent               # Agent6
+  # repository: datadog/dogstatsd         # Standalone DogStatsD6
+  # repository: datadog/docker-dd-agent   # Agent5
+  tag: 6.0.0  # Use 6.0.0-jmx to enable jmx fetch collection
   pullPolicy: IfNotPresent
 
 # NB! Normally you need to keep Datadog DaemonSet enabled!
