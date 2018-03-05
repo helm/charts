@@ -42,6 +42,17 @@ spec:
               mountPath: /var/lib/rkt/
               readOnly: true
             {{- end }}
+            {{- if .Values.sumologic.fluentdUserConfig }}
+              {{- if .Values.sumologic.fluentdUserConfigDir }}
+            - name: fluentd-user-conf
+              mountPath: {{ quote .Values.sumologic.fluentdUserConfigDir }}
+              readOnly: true
+              {{- else }}
+            - name: fluentd-user-conf
+              mountPath: /fluentd/conf.d/user
+              readOnly: true           
+              {{- end }}
+            {{- end }}
           env:
             - name: COLLECTOR_URL
               valueFrom:
@@ -166,6 +177,11 @@ spec:
         - name: docker-logs
           hostPath:
             path: /var/lib/docker
+        {{- if .Values.sumologic.fluentdUserConfig }}
+        - name: fluentd-user-conf
+          configMap:
+            name: {{ template "sumologic.fluentdUserConfig.fullname" . }}
+        {{- end }}
     {{- if .Values.tolerations }}
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}

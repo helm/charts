@@ -21,3 +21,11 @@ A uniquely named secret, which includes the install time
 {{- define "fullname-secrets" -}}
 {{- printf "%s-secrets-%d" (include "fullname" .) .Release.Time.Seconds -}}
 {{- end -}}
+
+{{/*
+Create a default fully qualified fluentd user conf name.
+We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
+*/}}
+{{- define "sumologic.fluentdUserConfig.fullname" -}}
+{{- printf "%s-datadog-confd" .Release.Name | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
