@@ -50,8 +50,9 @@ The following tables lists the configurable parameters of the KubeDB chart and t
 | `imagePullSecrets`                 | Specify image pull secrets                                         | `nil` (does not add image pull secrets to deployed pods) |
 | `imagePullPolicy`                  | Image pull policy                                                  | `IfNotPresent`     |
 | `criticalAddon`                    | If true, installs KubeDB operator as critical addon                | `false`            |
-| `rbac.create`                      | install required rbac service account, roles and rolebindings      | `false`            |
-| `rbac.serviceAccountName`          | ServiceAccount KubeDB will use (ignored if rbac.create=true)       | `default`          |
+| `rbac.create`                      | If `true`, create and use RBAC resources                           | `true`             |
+| `serviceAccount.create`            | If `true`, create a new service account                            | `true`             |
+| `serviceAccount.name`              | Service account to be used. If not set and `serviceAccount.create` is `true`, a name is generated using the fullname template | `` |
 | `apiserver.groupPriorityMinimum`   | The minimum priority the group should have.                        | 10000              |
 | `apiserver.versionPriority`        | The ordering of this API inside of the group.                      | 15                 |
 | `apiserver.enableAdmissionWebhook` | Configure apiserver as admission webhooks for KubeDB CRDs          | false              |

@@ -1,6 +1,5 @@
 {{- $ca := genCA "svc-cat-ca" 3650 }}
-{{- $name := default .Chart.Name .Values.nameOverride -}}
-{{- $cn := printf "%s-%s" .Release.Name $name | trunc 63 -}}
+{{- $cn := include "kubedb.fullname" . -}}
 {{- $altName1 := printf "%s.%s" $cn .Release.Namespace }}
 {{- $altName2 := printf "%s.%s.svc" $cn .Release.Namespace }}
 {{- $cert := genSignedCert $cn nil (list $altName1 $altName2) 3650 $ca }}
@@ -55,7 +54,7 @@ roleRef:
   name: extension-apiserver-authentication-reader
 subjects:
 - kind: ServiceAccount
-  name: {{ template "kubedb.fullname" . }}
+  name: {{ template "kubedb.serviceAccountName" . }}
   namespace: {{ .Release.Namespace }}
 ---
 # to delegate authentication and authorization
@@ -74,6 +73,6 @@ roleRef:
   name: system:auth-delegator
 subjects:
 - kind: ServiceAccount
-  name: {{ template "kubedb.fullname" . }}
+  name: {{ template "kubedb.serviceAccountName" . }}
   namespace: {{ .Release.Namespace }}
 {{ end }}
