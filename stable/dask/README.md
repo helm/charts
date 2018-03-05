@@ -12,7 +12,7 @@ This chart will deploy the following:
 
 -   1 x Dask scheduler with port 8786 (scheduler) and 80 (Web UI) exposed on an external LoadBalancer
 -   3 x Dask workers that connect to the scheduler
--   1 x Jupyter notebook with port 80 exposed on an external LoadBalancer
+-   1 x Jupyter notebook (optional) with port 80 exposed on an external LoadBalancer
 -   All using Kubernetes Deployments
 
 ## Installing the Chart
@@ -79,3 +79,28 @@ $ helm install --name my-release -f values.yaml stable/dask
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
+
+### Customizing Python Environment
+
+The default `daskdev/dask` images have a standard Miniconda installation along
+with some common packages like NumPy and Pandas.  You can install custom packages
+with either Conda or Pip using optional environment variables.  This happens
+when your container starts up.  Consider the following config.yaml file as an
+example:
+
+```yaml
+jupyter:
+  env:
+    -  EXTRA_PIP_PACKAGES: s3fs git+https://github.com/user/repo.git --upgrade
+    -  EXTRA_CONDA_PACKAGES: scipy matplotlib -c conda-forge
+
+worker:
+  env:
+    -  EXTRA_PIP_PACKAGES: s3fs git+https://github.com/user/repo.git --upgrade
+    -  EXTRA_CONDA_PACKAGES: scipy -c conda-forge
+```
+
+Note that the Jupyter and Dask worker environments should have matching
+software environments, at least where a user is likely to distribute that
+functionality.
