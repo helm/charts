@@ -12,7 +12,9 @@ Please also see https://github.com/kubernetes-helm/chartmuseum
 
 ## Configuration
 
-By default this chart will not have persistent storage.   
+By default this chart will not have persistent storage, and the API service
+will be *DISABLED*.  This protects against unauthorized access to the API
+with default configuration values.
 
 For a more robust solution supply helm install with a custom values.yaml   
 You are also required to create the StorageClass resource ahead of time:   
