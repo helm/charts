@@ -34,7 +34,7 @@ requisite setup to implement these patterns.
 Magic Namespace takes the pain out of this setup. It offers cluster operators an
 easy, comprehensive avenue for using _their_ Tiller to manage namespaces,
 service accounts, _other Tillers_, and role bindings for their consituent
-teams. _Magic Chart_ permits cluster operators to manage all of this using
+teams. _Magic Namespace_ permits cluster operators to manage all of this using
 familiar Helm-based workflows.
 
 ## How it Works
@@ -62,7 +62,7 @@ To install the chart to create the `foo` namespace (if it doesn't already exist)
 and useful resources (Tiller, service accounts, etc.) within that namespace:
 
 ```bash
-$ helm install incubator/magic-namespaxce --name foo --namespace foo
+$ helm install incubator/magic-namespace --name foo --namespace foo
 ```
 
 Typically, you will want to bind at least one user or group to the `admin` role
@@ -71,7 +71,7 @@ in this namespace. Here are steps to follow:
 First, make a copy of the default `values.yaml`:
 
 ```bash
-$ helm inspect values incubator/magic-namespaxce > ~/my-values.yaml
+$ helm inspect values incubator/magic-namespace > ~/my-values.yaml
 ```
 
 Edit `~/my-values.yaml` accordingly. Here is a sample role binding:
@@ -96,7 +96,7 @@ roleBindings:
 Deploy as follows:
 
 ```bash
-$ helm install incubator/magic-namespaxce \
+$ helm install incubator/magic-namespace \
   --name foo \
   --namespace foo \
   --values ~/my-values.yaml
