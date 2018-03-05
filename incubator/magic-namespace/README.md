@@ -34,7 +34,7 @@ requisite setup to implement these patterns.
 Magic Namespace takes the pain out of this setup. It offers cluster operators an
 easy, comprehensive avenue for using _their_ Tiller to manage namespaces,
 service accounts, _other Tillers_, and role bindings for their consituent
-teams. _Magic Namespace_ permits cluster operators to manage all of this using
+teams. Magic Namespace permits cluster operators to manage all of this using
 familiar Helm-based workflows.
 
 ## How it Works
