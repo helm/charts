@@ -55,12 +55,20 @@ spec:
             - --google-project={{ .Values.google.project }}
           {{- end }}
           volumeMounts:
+          {{- if .Values.google.serviceAccountSecret }}
+          - name: google-service-account
+            mountPath: /etc/secrets/service-account/
+          {{- end}}
           {{- if eq .Values.provider "azure" }}
           - name: azure-config-file
             mountPath: /etc/kubernetes/azure.json
             readOnly: true
           {{- end }}
           env:
+        {{- if .Values.google.serviceAccountSecret }}
+          - name: GOOGLE_APPLICATION_CREDENTIALS
+            value: /etc/secrets/service-account/credentials.json
+        {{- end }}
         {{- if eq .Values.provider "aws" }}
         {{- if and .Values.aws.secretKey .Values.aws.accessKey }}
           - name: AWS_ACCESS_KEY_ID
@@ -107,6 +115,11 @@ spec:
 {{ toYaml .Values.resources | indent 12 }}
         {{- end }}
       volumes:
+      {{- if .Values.google.serviceAccountSecret }}
+      - name: google-service-account
+        secret:
+          secretName: "{{.Values.google.serviceAccountSecret}}"
+      {{- end}}
       {{- if eq .Values.provider "azure" }}
       - name: azure-config-file
         hostPath:
