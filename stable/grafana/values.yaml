@@ -8,7 +8,8 @@ server:
   ##
   image: "grafana/grafana:4.6.3"
 
-  extraEnv: {}
+  extraEnv: []
+
   nodeSelector: {}
   tolerations: []
 
