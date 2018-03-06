@@ -27,8 +27,11 @@ spec:
         checksum/config: {{ include (print $.Template.BasePath "/config.yaml") . |  sha256sum | trunc 63 }}
     spec:
       terminationGracePeriodSeconds: 15
+{{- if .Values.nodePool }}
       nodeSelector:
         cloud.google.com/gke-nodepool: {{ .Values.nodePool }}
+{{- end }}
+{{- if .Values.podAntiAffinity }}
       affinity:
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -38,10 +41,12 @@ spec:
                 app: {{ template "redis-auto-cluster.name" . }}
                 chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
                 release: {{ .Release.Name }}
+{{- end }}
 {{- if .Values.tolerations }}
       tolerations:
 {{ toYaml .Values.tolerations | indent 6 -}}
 {{- end }}
+{{- if .Values.tuning }}
       initContainers:
       - name: init-sysctl
         image: busybox
@@ -60,6 +65,7 @@ spec:
         - "/bin/sh"
         - "-c"
         - "echo never >/host-sys/kernel/mm/transparent_hugepage/enabled"
+{{- end }}
       containers:
       - name: redis
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"

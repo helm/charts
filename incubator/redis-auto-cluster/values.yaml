@@ -6,11 +6,14 @@ shards:
   replicationFactor: 1
   sizeGb: 1
 
-nodePool: "default"
+nodePool: ""
 tolerations: []
 
 persistence:
   storageClassName: standard
+
+podAntiAffinity: false
+
 
 image:
   repository: "redis"
@@ -32,4 +35,6 @@ autoCluster:
   tag: "0.1.1"
 
 security:
-  enabled: true
+  enabled: false
+
+tuning: false
