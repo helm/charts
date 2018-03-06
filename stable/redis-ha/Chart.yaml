@@ -19,3 +19,4 @@ details:
   the cluster is up and running.
 sources:
   - https://github.com/smileisak/docker-images/tree/master/redis
+  - https://github.com/diegocn/docker-images/tree/master/redis

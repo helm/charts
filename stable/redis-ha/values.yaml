@@ -22,7 +22,7 @@ nodeSelector: {}
 tolerations: []
 
 ## Redis image version
-redis_image: quay.io/smile/redis:4.0.6r2
+redis_image: diegocn/redis-auth
 ## replicas number for each component
 replicas:
   servers: 3
@@ -31,13 +31,17 @@ servers:
   serviceType: ClusterIP  # [ClusterIP|LoadBalancer]
   annotations: {}
 
+## Configures redis with AUTH (requirepass & masterauth conf params)
+## Creates a random kubernetes secret which is used as redis AUTH
+auth: true
+
 rbac:
   # Specifies whether RBAC resources should be created
-  create: true
+  create: false
 
 serviceAccount:
   # Specifies whether a ServiceAccount should be created
-  create: true
+  create: false
   # The name of the ServiceAccount to use.
   # If not set and create is true, a name is generated using the fullname template
   name:
