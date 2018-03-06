@@ -5,12 +5,21 @@ strategy:
     maxUnavailable: 0
 image:
   repository: chartmuseum/chartmuseum
-  tag: v0.3.1
+  tag: v0.4.0
   pullPolicy: IfNotPresent
 env:
   open:
-    # storage backend, can be one of: local, amazon, google
+    # storage backend, can be one of: local, alibaba, amazon, google, microsoft
     STORAGE: local
+    # oss bucket to store charts for alibaba storage backend
+    STORAGE_ALIBABA_BUCKET:
+    # prefix to store charts for alibaba storage backend
+    STORAGE_ALIBABA_PREFIX:
+    # oss endpoint to store charts for alibaba storage backend
+    STORAGE_ALIBABA_ENDPOINT:
+    # server side encryption algorithm for alibaba storage backend, can be one
+    # of: AES256 or KMS
+    STORAGE_ALIBABA_SSE:
     # s3 bucket to store charts for amazon storage backend
     STORAGE_AMAZON_BUCKET:
     # prefix to store charts for amazon storage backend
