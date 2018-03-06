@@ -3,11 +3,11 @@ kind: StatefulSet
 metadata:
   name: {{ template "patroni.fullname" . }}
   labels:
-    app: {{ template "patroni.fullname" . }}
-    heritage: {{ .Release.Service | quote }}
-    release: {{ .Release.Name | quote }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    component: "{{ .Release.Name }}-{{ .Values.component }}"
+    app: {{ template "patroni.name" . }}
+    chart: {{ template "patroni.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: {{ .Values.component }}
 spec:
   serviceName: {{ template "patroni.fullname" . }}
   replicas: {{ .Values.replicas }}
@@ -15,11 +15,11 @@ spec:
     metadata:
       name: {{ template "patroni.fullname" . }}
       labels:
-        app: {{ template "patroni.fullname" . }}
-        heritage: {{ .Release.Service | quote }}
-        release: {{ .Release.Name | quote }}
-        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-        component: "{{ .Release.Name }}-{{ .Values.component }}"
+        app: {{ template "patroni.name" . }}
+        chart: {{ template "patroni.chart" . }}
+        release: {{ .Release.Name }}
+        heritage: {{ .Release.Service }}
+        component: {{ .Values.component }}
     spec:
       {{ if .Values.nodeSelector }}
       nodeSelector:
@@ -148,10 +148,11 @@ spec:
 {{ toYaml .Values.persistentVolume.annotations | indent 8 }}
         {{- end }}
         labels:
-          heritage: {{.Release.Service | quote }}
-          release: {{.Release.Name | quote }}
-          chart: "{{.Chart.Name}}-{{.Chart.Version}}"
-          component: "{{ .Release.Name }}-{{ .Values.component }}"
+          app: {{ template "patroni.name" . }}
+          chart: {{ template "patroni.chart" . }}
+          release: {{ .Release.Name }}
+          heritage: {{ .Release.Service }}
+          component: {{ .Values.component }}
       spec:
         accessModes:
 {{ toYaml .Values.persistentVolume.accessModes | indent 8 }}
