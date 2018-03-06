@@ -70,10 +70,10 @@ spec:
       - name: init-mysql-database
         image: mysql:5.7.14
         env:
-        - name: MYSQL_PASSWORD
+        - name: MYSQL_PWD
           valueFrom:
             secretKeyRef:
               name: {{ printf "%s-%s" .Release.Name "mysql" | trunc 63 | trimSuffix "-" }}
               key: mysql-root-password
-        command: ['sh', '-c', 'mysql -h ${{ printf "{%s" .Release.Name | upper }}_MYSQL_SERVICE_HOST} -u root --password=${MYSQL_PASSWORD} -e "CREATE DATABASE IF NOT EXISTS skipper;"']
+        command: ['sh', '-c', 'mysql -h ${{ printf "{%s" .Release.Name | upper }}_MYSQL_SERVICE_HOST} -u root -e "CREATE DATABASE IF NOT EXISTS skipper;"']
       serviceAccountName: {{ template "scdf.serviceAccountName" . }}
