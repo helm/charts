@@ -47,33 +47,25 @@ The following tables lists the configurable parameters of the Cloudwatch Exporte
 | ------------------------------- | ------------------------------------------ | ---------------------------------------------------------- |
 | `image`                         | Image                                      | `prom/cloudwatch-exporter`                      |
 | `imageTag`                      | Image tag                                  | `latest`                                      |
-| `imagePullPolicy`               | Image pull policy                          | `IfNotPresent`
-              |
-| `service.port`                      | The service port                               | 80                                        |
-| `service.targetPort`                      | The target port of the container                               | 9100                                        |
-
-              
-| `resources.limits.cpu`          | CPU limit                                  | ``                                                     |
-| `resources.limits.memory`       | Memory limit                               | ``                                                    |
-| `resources.requests.cpu`        | CPU request                                | ``                                                     |
-| `resources.requests.memory`     | Memory request                             | ``                                                    |
-| `annotations` (removed for now) | Annotations                                | `nil`                                                      |
+| `imagePullPolicy`               | Image pull policy                          | `IfNotPresent` |
+| `service.type`      | Service type |  `ClusterIP` | 
+| `service.port`                      | The service port                               | `80`                                     |
+| `service.targetPort`                      | The target port of the container                               | `9100`                                        |
+| `resources.limits.cpu`          | CPU limit                                  | `100m`                                                     |
+| `resources.limits.memory`       | Memory limit                               | `128Mi`                                                    |
+| `resources.requests.cpu`        | CPU request                                | `100m`                                                     |
+| `resources.requests.memory`     | Memory request                             | `128Mi`                                                    |
 | `aws.region`                     | AWS Cloudwatch region                      | `eu-west-1`                                                |
-| `aws.role`                       | AWS IAM Role To Use                        | `nil`                                                      |
-| `aws.aws_access_key_id`                       | AWS access key id                        | `nil`                                                      |
-| `aws.aws_secret_access_key`                       | AWS secret access key                     | `nil`                                                      |
+| `aws.role`                       | AWS IAM Role To Use                        |                                                      |
+| `aws.aws_access_key_id`                       | AWS access key id                        |                                                       |
+| `aws.aws_secret_access_key`                       | AWS secret access key                     |                                                       |
 | `config`                 | Cloudwatch exporter configuration                      | `example configuration`                                    |
 | `rbac.create`                   | If true, create & use RBAC resources       | `false`                                                    |
-| `serviceAccount.create`         | Specifies whether a service account should be created.| `true`
-              |
-| `serviceAccount.name`           | Name of the service account.| `nil`                
-              |
-| `tolerations`                   | Add tolerations                            | `[]`
-              |
-|`nodeSelector`                    | node labels for pod assignment | `{}`
-              |
-|`affinity`                       |     node/pod affinities | None
-              |
+| `serviceAccount.create`         | Specifies whether a service account should be created.| `true` |
+| `serviceAccount.name`           | Name of the service account.|        |
+| `tolerations`                   | Add tolerations                            | `[]`  |
+|`nodeSelector`                    | node labels for pod assignment | `{}`  |
+|`affinity`                       |     node/pod affinities | `{}` |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
