@@ -50,6 +50,13 @@ spec:
           image: "{{ .Values.Master.Image }}:{{ .Values.Master.ImageTag }}"
           imagePullPolicy: "{{ .Values.Master.ImagePullPolicy }}"
           command: [ "sh", "/var/jenkins_config/apply_config.sh" ]
+          {{- if .Values.Master.InstallPluginsProxy }}
+          env:
+            - name: http_proxy
+              value: "{{ .Values.Master.InstallPluginsProxy }}"
+            - name: https_proxy
+              value: "{{ .Values.Master.InstallPluginsProxy }}"
+          {{- end }}
           volumeMounts:
             -
               mountPath: /var/jenkins_home

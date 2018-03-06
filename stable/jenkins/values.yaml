@@ -61,6 +61,9 @@ Master:
     - workflow-job:2.15
     - credentials-binding:1.13
     - git:3.6.4
+  # Optionally specify proxy for plugin download
+  # InstallPluginsProxy: 10.10.10.10:3128
+
   # Used to approve a list of groovy functions in pipelines used the script-security plugin. Can be viewed under /scriptApproval
   # ScriptApproval:
   #   - "method groovy.json.JsonSlurperClassic parseText java.lang.String"
