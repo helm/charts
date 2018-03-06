@@ -457,6 +457,26 @@ credentialManager:
     teams:
       - main
 
+  ## Configuration for AWS SSM as the Credential Manager. Supported in Concourse 3.9.0.
+  ##
+  ssm:
+
+    ## Enable the use of AWS SSM.
+    ##
+    enabled: false
+
+    ## AWS region to use when reading from SSM
+    ##
+    # region:
+
+    ## pipeline-specific template for SSM parameters, defaults to: /concourse/{team}/{pipeline}/{secret}
+    ##
+    # pipelineSecretTemplate:
+
+    ## team-specific template for SSM parameters, defaults to: /concourse/{team}/{secret}
+    ##
+    # teamSecretTemplate: ''
+
   ## Configuration for Hashicorp Vault as the Credential Manager.
   ##
   vault:
@@ -611,6 +631,11 @@ secrets:
   ##
   # encryptionKey:
   # oldEncryptionKey:
+
+  ## Secrets for SSM AWS access
+  # awsSsmAccessKey:
+  # awsSsmSecretKey:
+  # awsSsmSessionToken:
 
   ## Secrets for Concourse basic auth
   ##
