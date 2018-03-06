@@ -1,0 +1,12 @@
+apiVersion: v1
+appVersion: "0.1.0"
+description: A Helm chart for prometheus cloudwatch-exporter 
+name: cloudwatch-exporter
+version: 0.1.0
+sources:
+- https://github.com/prometheus/cloudwatch_exporter
+keywords:
+- aws 
+- cloudwatch 
+- prometheus
+- exporter
