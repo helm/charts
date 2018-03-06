@@ -23,8 +23,23 @@ spec:
         imagePullPolicy: {{ .Values.skipper.imagePullPolicy }}
         ports:
         - containerPort: 7577
+          name: http
         resources:
 {{ toYaml .Values.skipper.resources | indent 10 }}
+        livenessProbe:
+          httpGet:
+            path: /api/about
+            port: http
+          initialDelaySeconds: 90
+          periodSeconds: 15
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /api/about
+            port: http
+          initialDelaySeconds: 30
+          periodSeconds: 15
+          timeoutSeconds: 5
         env:
         - name: SPRING_DATASOURCE_URL
           value: 'jdbc:mysql://${{ printf "{%s" .Release.Name | upper }}_MYSQL_SERVICE_HOST}:3306/skipper'

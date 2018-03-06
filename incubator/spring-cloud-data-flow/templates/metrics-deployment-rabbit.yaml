@@ -23,19 +23,20 @@ spec:
         imagePullPolicy: {{ .Values.metrics.imagePullPolicy }}
         ports:
         - containerPort: 8080
+          name: http
         resources:
 {{ toYaml .Values.metrics.resources | indent 10 }}
         livenessProbe:
           httpGet:
             path: /health
-            port: 8080
+            port: http
           initialDelaySeconds: 90
           periodSeconds: 15
           timeoutSeconds: 5
         readinessProbe:
           httpGet:
             path: /health
-            port: 8080
+            port: http
           initialDelaySeconds: 60
           periodSeconds: 15
           timeoutSeconds: 5

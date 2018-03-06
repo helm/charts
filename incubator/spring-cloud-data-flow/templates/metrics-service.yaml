@@ -12,8 +12,7 @@ spec:
   type: {{ .Values.metrics.service.type }}
   ports:
     - port: 80
-      targetPort: 8080
-      protocol: TCP
+      targetPort: http
       name: http
   selector:
     app: {{ template "scdf.name" . }}

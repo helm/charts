@@ -13,8 +13,7 @@ spec:
   type: {{ .Values.server.service.type }}
   ports:
     - port: {{ .Values.server.service.externalPort }}
-      targetPort: 8080
-      protocol: TCP
+      targetPort: http
       name: http
   selector:
     app: {{ template "scdf.name" . }}

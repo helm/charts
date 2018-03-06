@@ -45,12 +45,13 @@ spec:
         ]
         ports:
         - containerPort: 8080
+          name: http
         resources:
 {{ toYaml .Values.server.resources | indent 10 }}
         livenessProbe:
           httpGet:
             path: /management/health
-            port: 8080
+            port: http
             httpHeaders:
             - name: Authorization
               value: 'Basic {{ printf "%s:%s" .Values.dataflowAdminUsername .Values.dataflowAdminPassword | b64enc }}'
@@ -60,7 +61,7 @@ spec:
         readinessProbe:
           httpGet:
             path: /management/health
-            port: 8080
+            port: http
             httpHeaders:
             - name: Authorization
               value: 'Basic {{ printf "%s:%s" .Values.dataflowAdminUsername .Values.dataflowAdminPassword | b64enc }}'
