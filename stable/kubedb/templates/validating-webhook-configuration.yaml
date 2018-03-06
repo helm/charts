@@ -1,0 +1,103 @@
+{{- if .Values.apiserver.enableAdmissionWebhook }}
+apiVersion: admissionregistration.k8s.io/v1beta1
+kind: ValidatingWebhookConfiguration
+metadata:
+  name: admission.kubedb.com
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app: "{{ template "kubedb.name" . }}"
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+webhooks:
+- name: elasticsearch.admission.kubedb.com
+  clientConfig:
+    service:
+      namespace: default
+      name: kubernetes
+      path: /apis/admission.kubedb.com/v1alpha1/elasticsearchreviews
+    caBundle: {{ b64enc .Values.apiserver.ca }}
+  rules:
+  - apiGroups: ["kubedb.com"]
+    apiVersions: ["*"]
+    resources: ["elasticsearches"]
+    operations: ["CREATE", "UPDATE", "DELETE"]
+  failurePolicy: Fail
+- name: postgres.admission.kubedb.com
+  clientConfig:
+    service:
+      namespace: default
+      name: kubernetes
+      path: /apis/admission.kubedb.com/v1alpha1/postgresreviews
+    caBundle: {{ b64enc .Values.apiserver.ca }}
+  rules:
+  - apiGroups: ["kubedb.com"]
+    apiVersions: ["*"]
+    resources: ["postgreses"]
+    operations: ["CREATE", "UPDATE", "DELETE"]
+  failurePolicy: Fail
+- name: mysql.admission.kubedb.com
+  clientConfig:
+    service:
+      namespace: default
+      name: kubernetes
+      path: /apis/admission.kubedb.com/v1alpha1/mysqlreviews
+    caBundle: {{ b64enc .Values.apiserver.ca }}
+  rules:
+  - apiGroups: ["kubedb.com"]
+    apiVersions: ["*"]
+    resources: ["mysqls"]
+    operations: ["CREATE", "UPDATE", "DELETE"]
+  failurePolicy: Fail
+- name: mongodb.admission.kubedb.com
+  clientConfig:
+    service:
+      namespace: default
+      name: kubernetes
+      path: /apis/admission.kubedb.com/v1alpha1/mongodbreviews
+    caBundle: {{ b64enc .Values.apiserver.ca }}
+  rules:
+  - apiGroups: ["kubedb.com"]
+    apiVersions: ["*"]
+    resources: ["mongodbs"]
+    operations: ["CREATE", "UPDATE", "DELETE"]
+  failurePolicy: Fail
+- name: redis.admission.kubedb.com
+  clientConfig:
+    service:
+      namespace: default
+      name: kubernetes
+      path: /apis/admission.kubedb.com/v1alpha1/redisreviews
+    caBundle: {{ b64enc .Values.apiserver.ca }}
+  rules:
+  - apiGroups: ["kubedb.com"]
+    apiVersions: ["*"]
+    resources: ["redises"]
+    operations: ["CREATE", "UPDATE", "DELETE"]
+  failurePolicy: Fail
+- name: memcached.admission.kubedb.com
+  clientConfig:
+    service:
+      namespace: default
+      name: kubernetes
+      path: /apis/admission.kubedb.com/v1alpha1/memcachedreviews
+    caBundle: {{ b64enc .Values.apiserver.ca }}
+  rules:
+  - apiGroups: ["kubedb.com"]
+    apiVersions: ["*"]
+    resources: ["memcacheds"]
+    operations: ["CREATE", "UPDATE", "DELETE"]
+  failurePolicy: Fail
+- name: snapshot.admission.kubedb.com
+  clientConfig:
+    service:
+      namespace: default
+      name: kubernetes
+      path: /apis/admission.kubedb.com/v1alpha1/snapshotreviews
+    caBundle: {{ b64enc .Values.apiserver.ca }}
+  rules:
+  - apiGroups: ["kubedb.com"]
+    apiVersions: ["*"]
+    resources: ["snapshots"]
+    operations: ["CREATE", "UPDATE"]
+  failurePolicy: Fail
+{{ end }}
