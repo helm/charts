@@ -35,7 +35,6 @@ The following tables lists the configurable parameters of the Dask chart and the
 | `scheduler.image`          | Container image name     | `daskdev/dask`   |
 | `scheduler.imageTag`       | Container image tag      | `latest`         |
 | `scheduler.replicas`       | k8s deployment replicas  | `1`              |
-| `scheduler.component`      | k8s selector key         | `dask-scheduler` |
 | `scheduler.resources`      | Container resources      | `{}`             |
 
 ### Dask webUI
@@ -53,7 +52,6 @@ The following tables lists the configurable parameters of the Dask chart and the
 | `worker.image`               | Container image name             | `daskdev/dask` |
 | `worker.imageTag`            | Container image tag              | `0.17.1`       |
 | `worker.replicas`            | k8s hpa and deployment replicas  | `3`            |
-| `worker.component`           | k8s selector key                 | `dask-worker`  |
 | `worker.resources`           | Container resources              | `{}`           |
 |
 
@@ -66,7 +64,6 @@ The following tables lists the configurable parameters of the Dask chart and the
 | `jupyter.image`         | Container image name             | `daskdev/dask-notebook`  |
 | `jupyter.imageTag`      | Container image tag              | `0.17.1`                 |
 | `jupyter.replicas`      | k8s deployment replicas          | `1`                      |
-| `jupyter.component`     | k8s selector key                 | `jupyter`                |
 | `jupyter.servicePort`   | k8s service port                 | `80`                     |
 | `jupyter.resources`     | Container resources              | `{}`                     |
 

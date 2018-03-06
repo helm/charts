@@ -9,7 +9,7 @@ metadata:
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
     chart: {{ template "dask.chart" . }}
-    component: "{{ .Release.Name }}-{{ .Values.jupyter.component }}"
+    component: jupyter
 data:
   jupyter_notebook_config.py: |
     c = get_config()

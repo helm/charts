@@ -9,7 +9,7 @@ metadata:
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
     chart: {{ template "dask.chart" . }}
-    component: "{{ .Release.Name }}-{{ .Values.jupyter.component }}"
+    component: jupyter
 spec:
   ports:
     - port: {{ .Values.jupyter.servicePort }}
@@ -17,7 +17,7 @@ spec:
   selector:
     app: {{ template "dask.name" . }}
     release: {{ .Release.Name | quote }}
-    component: "{{ .Release.Name }}-{{ .Values.jupyter.component }}"
+    component: jupyter
   type: {{ .Values.jupyter.serviceType }}
 
 {{ end }}

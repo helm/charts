@@ -8,7 +8,6 @@ scheduler:
     tag: "0.17.1"
     pullPolicy: IfNotPresent
   replicas: 1
-  component: "dask-scheduler"
   serviceType: "LoadBalancer"
   servicePort: 8786
   resources: {}
@@ -30,7 +29,6 @@ worker:
     tag: "0.17.1"
     pullPolicy: IfNotPresent
   replicas: 3
-  component: "dask-worker"
   aptPackages: >-
   default_resources:  # overwritten by resource limits if they exist
     cpu: 1
@@ -56,7 +54,6 @@ jupyter:
     tag: "0.17.1"
     pullPolicy: IfNotPresent
   replicas: 1
-  component: "jupyter-notebook"
   serviceType: "LoadBalancer"
   servicePort: 80
   password: 'sha1:aae8550c0a44:9507d45e087d5ee481a5ce9f4f16f37a0867318c'  # 'dask'

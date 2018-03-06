@@ -9,14 +9,14 @@ metadata:
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
     chart: {{ template "dask.chart" . }}
-    component: "{{ .Release.Name }}-{{ .Values.jupyter.component }}"
+    component: jupyter
 spec:
   replicas: {{ .Values.jupyter.replicas }}
   selector:
     matchLabels:
       app: {{ template "dask.name" . }}
       release: {{ .Release.Name | quote }}
-      component: "{{ .Release.Name }}-{{ .Values.jupyter.component }}"
+      component: jupyter
   strategy:
     type: RollingUpdate
   template:
@@ -24,7 +24,7 @@ spec:
       labels:
         app: {{ template "dask.name" . }}
         release: {{ .Release.Name | quote }}
-        component: "{{ .Release.Name }}-{{ .Values.jupyter.component }}"
+        component: jupyter
     spec:
       containers:
         - name: {{ template "dask.fullname" . }}-jupyter

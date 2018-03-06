@@ -7,14 +7,14 @@ metadata:
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
     chart: {{ template "dask.chart" . }}
-    component: "{{ .Release.Name }}-{{ .Values.scheduler.component }}"
+    component: scheduler
 spec:
   replicas: {{ .Values.scheduler.replicas }}
   selector:
     matchLabels:
       app: {{ template "dask.name" . }}
       release: {{ .Release.Name | quote }}
-      component: "{{ .Release.Name }}-{{ .Values.scheduler.component }}"
+      component: scheduler
   strategy:
     type: RollingUpdate
   template:
@@ -22,7 +22,7 @@ spec:
       labels:
         app: {{ template "dask.name" . }}
         release: {{ .Release.Name | quote }}
-        component: "{{ .Release.Name }}-{{ .Values.scheduler.component }}"
+        component: scheduler
     spec:
       containers:
         - name: {{ template "dask.fullname" . }}-scheduler
