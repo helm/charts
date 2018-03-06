@@ -13,7 +13,13 @@ spec:
     - -c
     - |
       # Create the topic
-      kafka-topics --zookeeper {{ template "zookeeper.url" . }} --topic helm-test-topic-create-consume-produce --create --partitions 1 --replication-factor 1 --if-not-exists && \
+      kafka-topics --zookeeper \
+{{- if not ( index .Values "configurationOverrides" "zookeeper.connect" ) }}
+      {{ template "zookeeper.url" . }} \
+{{- else }}
+      {{ index .Values "configurationOverrides" "zookeeper.connect" }} \
+{{- end }}
+      --topic helm-test-topic-create-consume-produce --create --partitions 1 --replication-factor 1 --if-not-exists && \
       # Create a message
       MESSAGE="`date -u`" && \
       # Produce a test message to the topic

@@ -8,7 +8,9 @@ metadata:
     heritage: {{ .Release.Service | quote }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
 data:
+{{- if not ( index .Values "configurationOverrides" "zookeeper.connect" ) }}
   zookeeper.connect: "{{ template "zookeeper.url" . }}"
+{{- end }}
   log.dirs: "{{ printf "%s/%s" .Values.persistence.mountPath .Values.logSubPath }}"
 {{- range $configName, $configValue := .Values.configurationOverrides }}
   {{ $configName }}: "{{ $configValue -}}"

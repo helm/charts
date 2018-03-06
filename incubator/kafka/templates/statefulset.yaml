@@ -63,7 +63,11 @@ spec:
             command:
               - kafka-topics
               - --zookeeper
+              {{- if not ( index .Values "configurationOverrides" "zookeeper.connect" ) }}
               - {{ template "zookeeper.url" . }}
+              {{- else }}
+              - {{ index .Values "configurationOverrides" "zookeeper.connect" }}
+              {{- end }}
               - --list
           initialDelaySeconds: 30
           timeoutSeconds: 5
