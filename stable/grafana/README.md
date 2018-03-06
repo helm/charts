@@ -55,4 +55,4 @@ The command removes all the Kubernetes components associated with the chart and 
 | `server.service.clusterIP`                | Custom clusterIP to use for service | null                                         |
 | `server.service.type`                     | ClusterIP, NodePort, or LoadBalancer| ClusterIP                                         |
 | `server.setDatasource.enabled`            | Creates grafana datasource with job | false                                             |
-| `server.extraEnv`                          | Extra environment variables to set in the server container | {} |
+| `server.extraEnv`                          | Extra environment variables to set in the server container. List of [EnvVar](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.9/#envvar-v1-core) values | [] |
