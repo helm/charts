@@ -32,6 +32,10 @@ spec:
             {{- if .Values.credentialManager.kubernetes.enabled }}
             - "--kubernetes-in-cluster"
             {{- end }}
+            {{- if .Values.credentialManager.ssm.enabled }}
+            - "--aws-ssm-region"
+            - "$(CONCOURSE_AWS_SSM_REGION)"
+            {{- end }}
           env:
             - name: CONCOURSE_TSA_HOST_KEY
               value: "/concourse-keys/host_key"
@@ -211,6 +215,37 @@ spec:
                 secretKeyRef:
                   name: {{ template "concourse.concourse.fullname" . }}
                   key: vault-approle-secret-id
+            {{- end }}
+            {{- end }}
+            {{- if .Values.credentialManager.ssm.enabled }}
+            - name: CONCOURSE_AWS_SSM_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: aws-ssm-access-key
+            - name: CONCOURSE_AWS_SSM_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: aws-ssm-secret-key
+            {{- if .Values.secrets.awsSsmSessionToken }}
+            - name: CONCOURSE_AWS_SSM_SESSION_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "concourse.concourse.fullname" . }}
+                  key: aws-ssm-session-token
+            {{- end }}
+            {{- if .Values.credentialManager.ssm.region }}
+            - name: CONCOURSE_AWS_SSM_REGION
+              value: {{ .Values.credentialManager.ssm.region | quote }}
+            {{- end }}
+            {{- if .Values.credentialManager.ssm.pipelineSecretTemplate }}
+            - name: CONCOURSE_AWS_SSM_PIPELINE_SECRET_TEMPLATE
+              value: {{ .Values.credentialManager.ssm.pipelineSecretTemplate | quote }}
+            {{- end }}
+            {{- if .Values.credentialManager.ssm.teamSecretTemplate }}
+            - name: CONCOURSE_AWS_SSM_TEAM_SECRET_TEMPLATE
+              value: {{ .Values.credentialManager.ssm.teamSecretTemplate | quote }}
             {{- end }}
             {{- end }}
             {{- if .Values.web.metrics.prometheus.enabled }}
