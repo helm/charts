@@ -19,7 +19,9 @@ Master:
   AdminUser: admin
   # AdminPassword: <defaults to random>
   Cpu: "200m"
+  # CpuLimit: "250m"
   Memory: "256Mi"
+  # MemoryLimit: "2Gi"
   # Set min/max heap here if needed with:
   # JavaOpts: "-Xms512m -Xmx512m"
   # JenkinsOpts: ""
