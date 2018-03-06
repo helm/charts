@@ -15,17 +15,17 @@ service:
   targetPort: 9100
 
 resources:
-  # limits:
-   cpu: 100m
-   memory: 128Mi
+  limits:
+    cpu: 100m
+    memory: 128Mi
   requests:
-   cpu: 100m
-   memory: 128Mi
+    cpu: 100m
+    memory: 128Mi
 
 aws:
   region: eu-west-1
-  role: 
-  # Note: Do not specify the aws_access_key_id abd aws_secret_access_key if you specified role
+  role:
+  # Note: Do not specify the aws_access_key_id abd aws_secret_access_key if you specified role before
   aws_access_key_id:
   aws_secret_access_key:
 
