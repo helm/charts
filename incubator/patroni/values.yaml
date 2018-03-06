@@ -25,7 +25,6 @@ Resources:
 # * more information: https://github.com/zalando/patroni/blob/master/docs/SETTINGS.rst#postgresql
 Credentials:
   Superuser: tea
-  Admin: cola
   Standby: pinacolada
 
 ## Distribution Configuration stores. Please note that only one of the following stores should be selected.
