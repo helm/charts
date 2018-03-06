@@ -1,5 +1,5 @@
 name: oauth-proxy
-version: 0.1.5
+version: 0.1.6
 appVersion: 2.2
 description: A reverse proxy that provides authentication with Google, Github or other providers
 keywords:

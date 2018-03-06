@@ -51,6 +51,10 @@ Parameter | Description | Default
 `image.tag` | Image tag | `2.2`
 `imagePullSecrets` | Specify image pull secrets | `nil` (does not add image pull secrets to deployed pods)
 `ingress.enabled` | enable ingress | `false`
+`ingress.path` | ingress base path | `/`
+`ingress.host` | Ingress accepted hostnames | `nil`
+`ingress.tls` | Ingress TLS configuration| `[]`
+`ingress.annotations` | Ingress annotations | `{}`
 `nodeSelector` | node labels for pod assignment | `{}`
 `podAnnotations` | annotations to add to each pod | `{}`
 `podLabels` | additional labesl to add to each pod | `{}`
