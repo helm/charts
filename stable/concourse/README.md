@@ -383,3 +383,33 @@ credentialManager:
     # pathPrefix:
 
 ```
+
+#### AWS Systems Manager Paramter Store (SSM)
+
+To use SSM, set `credentialManager.kubernetes.enabled` to false, and set `credentialManager.ssm.enabled` to true.
+
+For a given Concourse *team*, a pipeline will look for secrets in SSM using either `/concourse/{team}/{secret}` or `/concourse/{team}/{pipeline}/{secret}`; the patterns can be overridden using the `credentialManager.ssm.teamSecretTemplate` and `credentialManager.ssm.pipelineSecretTemplate` settings.
+
+Concourse requires AWS credentials which are able to read from SSM for this feature to function. Credentials can be set in the `secrets.awsSsm*` settings; if your cluster is running in a different AWS region, you may also need to set `credentialManager.ssm.region`.
+
+The minimum IAM policy you need to use SSM with Concourse is:
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": "kms:Decrypt",
+      "Resource": "<kms-key-arn>",
+      "Effect": "Allow"
+    },
+    {
+      "Action": "ssm:GetParameter*",
+      "Resource": "<...arn...>:parameter/concourse/*",
+      "Effect": "Allow"
+    }
+  ]
+}
+```
+
+Where `<kms-key-arn>` is the ARN of the KMS key used to encrypt the secrets in Paraemter Store, and the `<...arn...>` should be replaced with a correct ARN for your account and region's Parameter Store.
