@@ -33,6 +33,10 @@ spec:
       tolerations:
 {{ toYaml .Values.Master.Tolerations | indent 8 }}
       {{- end }}
+      {{- if .Values.Master.Affinity }}
+      affinity:
+{{ toYaml .Values.Master.Affinity | indent 8 }}
+      {{- end }}
       securityContext:
         runAsUser: {{ default 0 .Values.Master.RunAsUser }}
 {{- if and (.Values.Master.RunAsUser) (.Values.Master.FsGroup) }}
