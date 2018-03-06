@@ -13,4 +13,4 @@ spec:
       name: slavelistener
   selector:
     component: "{{ .Release.Name }}-{{ .Values.Master.Component }}"
-  type: ClusterIP
+  type: {{ .Values.Master.SlaveListenerServiceType }}
