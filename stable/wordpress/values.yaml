@@ -58,14 +58,11 @@ externalDatabase:
   ## Database host
   host: localhost
 
-  ## Database Root User (so wordpress can create the db schema etc)
-  # rootPassword:
-
   ## non-root Username for Wordpress Database
   user: bn_wordpress
 
   ## Database password
-  # password:
+  password: ""
 
   ## Database name
   database: bitnami_wordpress
