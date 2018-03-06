@@ -17,7 +17,7 @@ spec:
       containers:
       - name: {{ template "prestashop.fullname" . }}
         image: "{{ .Values.image }}"
-        imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
+        imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
         env:
         - name: MARIADB_HOST
           value: {{ template "prestashop.mariadb.fullname" . }}
@@ -31,31 +31,33 @@ spec:
         - name: PRESTASHOP_HOST
           value: {{ include "prestashop.host" . | quote }}
         - name: PRESTASHOP_USERNAME
-          value: {{ default "" .Values.prestashopUsername | quote }}
+          value: {{ .Values.prestashopUsername | quote }}
         - name: PRESTASHOP_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ template "prestashop.fullname" . }}
               key: prestashop-password
         - name: PRESTASHOP_EMAIL
-          value: {{ default "" .Values.prestashopEmail | quote }}
+          value: {{ .Values.prestashopEmail | quote }}
         - name: PRESTASHOP_FIRST_NAME
-          value: {{ default "" .Values.prestashopFirstName | quote }}
+          value: {{ .Values.prestashopFirstName | quote }}
         - name: PRESTASHOP_LAST_NAME
-          value: {{ default "" .Values.prestashopLastName | quote }}
+          value: {{ .Values.prestashopLastName | quote }}
+        - name: PRESTASHOP_COOKIE_CHECK_IP
+          value: "no"
         - name: SMTP_HOST
-          value: {{ default "" .Values.smtpHost | quote }}
+          value: {{ .Values.smtpHost | quote }}
         - name: SMTP_PORT
-          value: {{ default "" .Values.smtpPort | quote }}
+          value: {{ .Values.smtpPort | quote }}
         - name: SMTP_USER
-          value: {{ default "" .Values.smtpUser | quote }}
+          value: {{ .Values.smtpUser | quote }}
         - name: SMTP_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ template "prestashop.fullname" . }}
               key: smtp-password
         - name: SMTP_PROTOCOL
-          value: {{ default "" .Values.smtpProtocol | quote }}
+          value: {{ .Values.smtpProtocol | quote }}
         ports:
         - name: http
           containerPort: 80
