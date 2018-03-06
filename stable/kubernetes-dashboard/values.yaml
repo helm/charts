@@ -36,7 +36,7 @@ service:
   type: ClusterIP
   externalPort: 443
 
-  ## This allows an overide of the heapster service name
+  ## This allows an override of the heapster service name
   ## Default: {{ .Chart.Name }}
   ##
   # nameOverride:
