@@ -1,0 +1,11 @@
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ template "fullname" . }}-server-pdb
+spec:
+  minAvailable: 2
+  selector:
+    matchLabels:
+      app: "redis-ha"
+      redis-node: "true"
+      release: "{{ .Release.Name }}"

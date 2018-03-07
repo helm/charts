@@ -22,7 +22,7 @@ nodeSelector: {}
 tolerations: []
 
 ## Redis image version
-redis_image: quay.io/smile/redis:4.0.8r0
+redis_image: quay.io/bzumhagen/kube-redis-ha:4.0.6-2
 ## replicas number for each component
 replicas:
   servers: 3
@@ -32,15 +32,11 @@ servers:
   annotations: {}
 
 rbac:
-  # Specifies whether RBAC resources should be created
+  # If true, create & use RBAC resources
   create: true
 
-serviceAccount:
-  # Specifies whether a ServiceAccount should be created
-  create: true
-  # The name of the ServiceAccount to use.
-  # If not set and create is true, a name is generated using the fullname template
-  name:
+## Max memory to use for each redis instance. Default is unlimited.
+max_memory: ""
 
 ## Configures redis with AUTH (requirepass & masterauth conf params)
 auth: false
