@@ -30,3 +30,25 @@ Create chart name and version as used by the chart label.
 {{- define "metallb.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
+
+{{/*
+Create the name of the controller service account to use
+*/}}
+{{- define "metallb.controllerServiceAccountName" -}}
+{{- if .Values.serviceAccounts.controller.create -}}
+    {{ default (printf "%s-controller" (include "metallb.fullname" .)) .Values.serviceAccounts.controller.name }}
+{{- else -}}
+    {{ default "default" .Values.serviceAccounts.controller.name }}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Create the name of the speaker service account to use
+*/}}
+{{- define "metallb.speakerServiceAccountName" -}}
+{{- if .Values.serviceAccounts.speaker.create -}}
+    {{ default (printf "%s-speaker" (include "metallb.fullname" .)) .Values.serviceAccounts.speaker.name }}
+{{- else -}}
+    {{ default "default" .Values.serviceAccounts.speaker.name }}
+{{- end -}}
+{{- end -}}

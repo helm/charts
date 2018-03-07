@@ -6,9 +6,9 @@
 # https://metallb.universe.tf/configuration/ for available options.
 config:
 
-# load-balancers. When arpCIDR is specified instead of config, the
-# chart will install a trivial "quick start" MetalLB configuration
-# that uses ARP mode. Refer to https://metallb.universe.tf/ for more
+# When arpCIDR is specified instead of config, the chart will install
+# a trivial "quick start" MetalLB configuration that uses ARP
+# mode. Refer to https://metallb.universe.tf/ for more
 # information. For production configurations, use of the `config`
 # field is recommended instead of arpCIDR.
 arpCIDR:
@@ -27,6 +27,20 @@ prometheus:
   # monitoring configuration. If you use the Prometheus operator, this
   # can be left at false.
   scrapeAnnotations: false
+
+serviceAccounts:
+  controller:
+    # Specifies whether a ServiceAccount should be created
+    create: true
+    # The name of the ServiceAccount to use.  If not set and create is
+    # true, a name is generated using the fullname template
+    name:
+  speaker:
+    # Specifies whether a ServiceAccount should be created
+    create: true
+    # The name of the ServiceAccount to use.  If not set and create is
+    # true, a name is generated using the fullname template
+    name:
 
 # controller contains configuration specific to the MetalLB cluster
 # controller.

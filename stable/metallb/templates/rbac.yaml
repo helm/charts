@@ -53,20 +53,6 @@ rules:
   verbs: ["create"]
 ---
 
-## Service accounts
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  namespace: metallb-system
-  name: controller
----
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  namespace: metallb-system
-  name: speaker
----
-
 ## Role bindings
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
@@ -75,7 +61,7 @@ metadata:
 subjects:
 - kind: ServiceAccount
   namespace: metallb-system
-  name: controller
+  name: {{ template "metallb.controllerServiceAccountName" . }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
@@ -88,7 +74,7 @@ metadata:
 subjects:
 - kind: ServiceAccount
   namespace: metallb-system
-  name: speaker
+  name: {{ template "metallb.speakerServiceAccountName" . }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
@@ -101,9 +87,9 @@ metadata:
   name: config-watcher
 subjects:
 - kind: ServiceAccount
-  name: controller
+  name: {{ template "metallb.controllerServiceAccountName" . }}
 - kind: ServiceAccount
-  name: speaker
+  name: {{ template "metallb.speakerServiceAccountName" . }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
@@ -116,7 +102,7 @@ metadata:
   name: leader-election
 subjects:
 - kind: ServiceAccount
-  name: speaker
+  name: {{ template "metallb.speakerServiceAccountName" . }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role

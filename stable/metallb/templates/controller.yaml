@@ -30,9 +30,7 @@ spec:
         prometheus.io/port: "7472"
 {{- end }}
     spec:
-{{- if .Values.rbac.create }}
-      serviceAccountName: controller
-{{- end }}
+      serviceAccountName: {{ template "metallb.controllerServiceAccountName" . }}
       terminationGracePeriodSeconds: 0
       securityContext:
         runAsNonRoot: true

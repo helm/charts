@@ -29,9 +29,7 @@ spec:
         prometheus.io/port: "7472"
 {{- end }}
     spec:
-{{- if .Values.rbac.create }}
-      serviceAccountName: speaker
-{{- end }}
+      serviceAccountName: {{ template "metallb.speakerServiceAccountName" . }}
       terminationGracePeriodSeconds: 0
       hostNetwork: true
       containers:
