@@ -8,5 +8,5 @@ keywords: ["load-balancer", "balancer", "lb", "bgp", "arp", "vrrp", "vip"]
 home: https://metallb.universe.tf
 icon: https://metallb.universe.tf/images/logo.png
 maintainers:
-- name: David Anderson
+- name: danderson
   email: dave@natulte.net
