@@ -64,6 +64,11 @@ spec:
               protocol: TCP
               containerPort: 15675
             {{- end }}
+            {{- if .Values.rabbitmqAmqpsSupport.enabled }}
+            - name: amqps
+              protocol: TCP
+              containerPort: 5671
+            {{- end }}
           livenessProbe:
             exec:
               command:
@@ -114,6 +119,10 @@ spec:
               mountPath: /var/lib/rabbitmq
             - name: config
               mountPath: /etc/rabbitmq
+            {{- if .Values.rabbitmqCert.enabled }}
+            - name: cert
+              mountPath: /etc/cert
+            {{- end }}
       {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
@@ -147,6 +156,12 @@ spec:
         - name: config
           configMap:
             name: {{ template "rabbitmq-ha.fullname" . }}
+        {{- if .Values.rabbitmqCert.enabled }}
+        - name: cert
+          secret:
+            defaultMode: 420
+            secretName: {{ template "rabbitmq-ha.fullname" . }}-cert
+        {{- end }}
 {{- if .Values.persistentVolume.enabled }}
   volumeClaimTemplates:
     - metadata:

@@ -31,6 +31,10 @@ data:
       rabbitmq_web_stomp,
       {{- end }}
 
+      {{- if .Values.rabbitmqAuth.enabled }}
+      rabbitmq_auth_mechanism_ssl,
+      {{- end }}
+
       rabbitmq_consistent_hash_exchange,
       rabbitmq_federation,
       rabbitmq_federation_management,
@@ -43,6 +47,11 @@ data:
   rabbitmq.conf: |
     ## RabbitMQ configuration
     ## Ref: https://github.com/rabbitmq/rabbitmq-server/blob/master/docs/rabbitmq.conf.example
+    
+    ## Authentification
+    {{- if .Values.rabbitmqAuth.enabled }}
+{{ .Values.rabbitmqAuth.config | indent 4 }}
+    {{- end }}
 
     ## Clustering
     cluster_formation.peer_discovery_backend  = rabbit_peer_discovery_k8s
@@ -83,4 +92,10 @@ data:
     {{- if .Values.rabbitmqWebSTOMPPlugin.enabled }}
 {{ .Values.rabbitmqWebSTOMPPlugin.config | indent 4 }}
     {{- end }}
+
+    ## AMQPS support
+    {{- if .Values.rabbitmqAmqpsSupport.enabled }}
+{{ .Values.rabbitmqAmqpsSupport.config | indent 4 }}
+    {{- end }}
+
 {{- end }}
