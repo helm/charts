@@ -5,10 +5,8 @@
 
 Name: "cockroachdb"
 Image: "cockroachdb/cockroach"
-ImageTag: "v1.1.4"
+ImageTag: "v1.1.5"
 ImagePullPolicy: "Always"
-BootstrapImage: "cockroachdb/cockroach-k8s-init"
-BootstrapImageTag: "0.2"
 Replicas: 3
 MaxUnavailable: 1
 Component: "cockroachdb"
