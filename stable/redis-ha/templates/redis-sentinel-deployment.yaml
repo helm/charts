@@ -11,7 +11,9 @@ spec:
         name: {{ template "fullname" . }}-sentinel
 {{ include "labels.standard" . | indent 8 }}
     spec:
-      serviceAccountName: {{ template "redis-ha.serviceAccountName" . }}
+      {{ if .Values.rbac.create }}
+      serviceAccountName: {{ template "fullname" . }}-svcacct
+      {{- end }}
       {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
@@ -23,6 +25,11 @@ spec:
       containers:
       - name: sentinel
         image: {{ .Values.redis_image }}
+        livenessProbe:
+          exec:
+            command: ["redis-cli", "-p", "26379", "ping"]
+          initialDelaySeconds: 5
+          periodSeconds: 5
         resources:
 {{ toYaml .Values.resources.sentinel | indent 10 }}
         env:

@@ -1,5 +1,19 @@
-apiVersion: extensions/v1beta1
-kind: Deployment
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "fullname" . }}-server-svc
+  annotations:
+{{ toYaml .Values.servers.annotations | indent 4 }}
+spec:
+  selector:
+    app: "redis-ha"
+    redis-node: "true"
+    release: "{{ .Release.Name }}"
+  type: "{{ .Values.servers.serviceType }}"
+  clusterIP: None
+---
+apiVersion: apps/v1beta1
+kind: StatefulSet
 metadata:
   # Pay attention to the redis-role label at runtime. The self-determination logic in the image sets this value accordingly.
   name: {{ template "fullname" . }}-server
@@ -10,6 +24,7 @@ metadata:
     redis-node: "true"
 {{ include "labels.standard" . | indent 4 }}
 spec:
+  serviceName: {{ template "fullname" . }}-server-svc
   replicas: {{ .Values.replicas.servers }}
   template:
     metadata:
@@ -19,7 +34,9 @@ spec:
         redis-node: "true"
 {{ include "labels.standard" . | indent 8 }}
     spec:
-      serviceAccountName: {{ template "redis-ha.serviceAccountName" . }}
+      {{ if .Values.rbac.create }}
+      serviceAccountName: {{ template "fullname" . }}-svcacct
+      {{- end }}
       {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
@@ -31,9 +48,16 @@ spec:
       containers:
       - name: redis
         image: {{ .Values.redis_image }}
+        livenessProbe:
+          exec:
+            command: ["redis-cli", "ping"]
+          initialDelaySeconds: 5
+          periodSeconds: 5
         resources:
 {{ toYaml .Values.resources.server | indent 10 }}
         env:
+          - name: MAX_MEMORY
+            value: {{ .Values.max_memory }}
           - name: REDIS_SENTINEL_SERVICE_HOST
             value: "redis-sentinel"
           - name: REDIS_CHART_PREFIX
@@ -41,8 +65,7 @@ spec:
         ports:
           - containerPort: 6379
         volumeMounts:
-          - mountPath: /redis-master-data 
+          - mountPath: /redis-master-data
             name: data
       volumes:
       - name: data
-
