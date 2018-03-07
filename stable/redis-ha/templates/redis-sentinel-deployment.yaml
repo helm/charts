@@ -34,7 +34,7 @@ spec:
           - name: REDIS_PASS
             valueFrom:
               secretKeyRef:
-                name: redis-secret
+                name: {{ template "fullname" . }}
                 key: auth
 {{- end }}
         ports:

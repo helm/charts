@@ -6,7 +6,7 @@ To connect to your Redis server:
 {{- if .Values.auth }}
 1. Get the randomly generated redis password:
    
-   echo $(kubectl get secret redis-secret -o "jsonpath={.data['auth']}" | base64 -D)
+   echo $(kubectl get secret {{ template "fullname" . }} -o "jsonpath={.data['auth']}" | base64 -D)
 
 2. Connect to the Redis master pod that you can use as a client:
 
