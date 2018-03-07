@@ -43,7 +43,7 @@ serviceAccount:
   name:
 
 ## Configures redis with AUTH (requirepass & masterauth conf params)
-auth: true
+auth: false
 
 ## Redis password
 ## Defaults to a random 10-character alphanumeric string if not set and auth is true
