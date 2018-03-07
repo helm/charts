@@ -50,9 +50,9 @@ controller:
     tag: v0.4.3
     pullPolicy: IfNotPresent
   resources:
-    #limits:
-      #cpu: 100m
-      #memory: 100Mi
+    # limits:
+      # cpu: 100m
+      # memory: 100Mi
 
 # controller contains configuration specific to the MetalLB speaker
 # daemonset.
@@ -62,6 +62,6 @@ speaker:
     tag: v0.4.3
     pullPolicy: IfNotPresent
   resources:
-    #limits:
-      #cpu: 100m
-      #memory: 100Mi
+    # limits:
+      # cpu: 100m
+      # memory: 100Mi
