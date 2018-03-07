@@ -4,11 +4,9 @@ metadata:
   namespace: metallb-system
   name: controller
   labels:
-    {{- if .Values.helmLabels }}
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
     chart: {{ template "metallb.chart" . }}
-    {{- end }}
     app: {{ template "metallb.name" . }}
     component: controller
   annotations:
@@ -20,17 +18,13 @@ spec:
     matchLabels:
       app: {{ template "metallb.name" . }}
       component: controller
-      {{- if .Values.helmLabels }}
       release: {{ .Release.Name | quote }}
-      {{- end }}
   template:
     metadata:
       labels:
-        {{- if .Values.helmLabels }}
         heritage: {{ .Release.Service | quote }}
         release: {{ .Release.Name | quote }}
         chart: {{ template "metallb.chart" . }}
-        {{- end }}
         app: {{ template "metallb.name" . }}
         component: controller
     spec:

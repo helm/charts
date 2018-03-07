@@ -40,8 +40,3 @@ speaker:
     #limits:
       #cpu: 100m
       #memory: 100Mi
-
-# helmLabels specifies whether to include Helm-specific labels in
-# manifests. This is used when generating the non-Helm manifest files
-# during MetalLB development, and should be left alone otherwise.
-helmLabels: true

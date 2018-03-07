@@ -4,11 +4,9 @@ metadata:
   namespace: metallb-system
   name: speaker
   labels:
-    {{- if .Values.helmLabels }}
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
     chart: {{ template "metallb.chart" . }}
-    {{- end }}
     app: {{ template "metallb.name" . }}
     component: speaker
 spec:
@@ -16,17 +14,13 @@ spec:
     matchLabels:
       app: {{ template "metallb.name" . }}
       component: speaker
-      {{- if .Values.helmLabels }}
       release: {{ .Release.Name | quote }}
-      {{- end }}
   template:
     metadata:
       labels:
-        {{- if .Values.helmLabels }}
         heritage: {{ .Release.Service | quote }}
         release: {{ .Release.Name | quote }}
         chart: {{ template "metallb.chart" . }}
-        {{- end }}
         app: {{ template "metallb.name" . }}
         component: speaker
       annotations:
