@@ -1,0 +1,46 @@
+{{- if .Values.blackboxExporter.enabled -}}
+apiVersion: v1
+kind: Service
+metadata:
+{{- if .Values.blackboxExporter.service.annotations }}
+  annotations:
+{{ toYaml .Values.blackboxExporter.service.annotations | indent 4}}
+{{- end }}
+  labels:
+    app: {{ template "prometheus.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: "{{ .Values.blackboxExporter.name }}"
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+{{- if .Values.blackboxExporter.service.labels }}
+{{ toYaml .Values.blackboxExporter.service.labels | indent 4}}
+{{- end }}
+  name: {{ template "prometheus.blackboxExporter.fullname" . }}
+spec:
+{{- if .Values.blackboxExporter.service.clusterIP }}
+  clusterIP: {{ .Values.blackboxExporter.service.clusterIP }}
+{{- end }}
+{{- if .Values.blackboxExporter.service.externalIPs }}
+  externalIPs:
+{{ toYaml .Values.blackboxExporter.service.externalIPs | indent 4 }}
+{{- end }}
+{{- if .Values.blackboxExporter.service.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.blackboxExporter.service.loadBalancerIP }}
+{{- end }}
+{{- if .Values.blackboxExporter.service.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+  {{- range $cidr := .Values.blackboxExporter.service.loadBalancerSourceRanges }}
+    - {{ $cidr }}
+  {{- end }}
+{{- end }}
+  ports:
+    - name: http
+      port: {{ .Values.blackboxExporter.service.servicePort }}
+      protocol: TCP
+      targetPort: 9091
+  selector:
+    app: {{ template "prometheus.name" . }}
+    component: "{{ .Values.blackboxExporter.name }}"
+    release: {{ .Release.Name }}
+  type: "{{ .Values.blackboxExporter.service.type }}"
+{{- end }}

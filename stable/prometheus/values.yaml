@@ -548,6 +548,101 @@ server:
   ##
   retention: ""
 
+blackboxExporter:
+  ## If false, blackbox exporter will not be installed
+  ##
+  enabled: true
+
+  ## blackbox exporter container name
+  ##
+  name: blackbox-exporter
+
+  ## blackbox exporter container image
+  ##
+  image:
+    repository: prom/blackbox-exporter
+    tag: v0.12.0
+    pullPolicy: IfNotPresent
+
+  ## Additional blackbox exporter container arguments
+  ##
+  extraArgs: {}
+
+  ingress:
+    ## If true, blackbox exporter Ingress will be created
+    ##
+    enabled: false
+
+    ## blackbox exporter Ingress annotations
+    ##
+    annotations: {}
+    #   kubernetes.io/ingress.class: nginx
+    #   kubernetes.io/tls-acme: 'true'
+
+    ## blackbox exporter Ingress hostnames with optinal path
+    ## Must be provided if Ingress is enabled
+    ##
+    hosts: []
+    #   - blackbox.domain.com
+    #   - domain.com/blackbox
+
+    ## blackbox exporter Ingress TLS configuration
+    ## Secrets must be manually created in the namespace
+    ##
+    tls: []
+    #   - secretName: prometheus-alerts-tls
+    #     hosts:
+    #       - blackbox.domain.com
+
+  ## Node tolerations for blackbox exporter scheduling to nodes with taints
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
+  ##
+  tolerations: []
+    # - key: "key"
+    #   operator: "Equal|Exists"
+    #   value: "value"
+    #   effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
+
+  ## Node labels for blackbox exporter pod assignment
+  ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+  ##
+  nodeSelector: {}
+
+  ## Annotations to be added to blackbox exporter pods
+  ##
+  podAnnotations: {}
+
+  replicaCount: 1
+
+  ## blackbox exporter resource requests and limits
+  ## Ref: http://kubernetes.io/docs/user-guide/compute-resources/
+  ##
+  resources: {}
+    # limits:
+    #   cpu: 10m
+    #   memory: 32Mi
+    # requests:
+    #   cpu: 10m
+    #   memory: 32Mi
+
+  service:
+    annotations:
+      prometheus.io/probe: blackbox-exporter
+      prometheus.io/scrape: "true"
+    labels: {}
+    clusterIP: ""
+
+    ## List of IP addresses at which the pushgateway service is available
+    ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
+    ##
+    externalIPs: []
+
+    loadBalancerIP: ""
+    loadBalancerSourceRanges: []
+    servicePort: 9115
+    type: ClusterIP
+
+
 pushgateway:
   ## If false, pushgateway will not be installed
   ##

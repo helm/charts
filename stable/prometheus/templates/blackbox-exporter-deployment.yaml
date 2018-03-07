@@ -1,0 +1,55 @@
+{{- if .Values.blackboxExporter.enabled -}}
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    app: {{ template "prometheus.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    component: "{{ .Values.blackboxExporter.name }}"
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "prometheus.blackboxExporter.fullname" . }}
+spec:
+  replicas: {{ .Values.blackboxExporter.replicaCount }}
+  template:
+    metadata:
+    {{- if .Values.blackboxExporter.podAnnotations }}
+      annotations:
+{{ toYaml .Values.blackboxExporter.podAnnotations | indent 8 }}
+    {{- end }}
+      labels:
+        app: {{ template "prometheus.name" . }}
+        component: "{{ .Values.blackboxExporter.name }}"
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ template "prometheus.name" . }}-{{ .Values.blackboxExporter.name }}
+          image: "{{ .Values.blackboxExporter.image.repository }}:{{ .Values.blackboxExporter.image.tag }}"
+          imagePullPolicy: "{{ .Values.blackboxExporter.image.pullPolicy }}"
+          args:
+          {{- range $key, $value := .Values.blackboxExporter.extraArgs }}
+            - --{{ $key }}={{ $value }}
+          {{- end }}
+          ports:
+            - containerPort: 9115
+          readinessProbe:
+            httpGet:
+              path: /metrics
+              port: 9115
+            initialDelaySeconds: 10
+            timeoutSeconds: 10
+          resources:
+{{ toYaml .Values.blackboxExporter.resources | indent 12 }}
+    {{- if .Values.blackboxExporter.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.blackboxExporter.nodeSelector | indent 8 }}
+    {{- end }}
+    {{- if .Values.blackboxExporter.tolerations }}
+      tolerations:
+{{ toYaml .Values.blackboxExporter.tolerations | indent 8 }}
+    {{- end }}
+    {{- if .Values.blackboxExporter.affinity }}
+      affinity:
+{{ toYaml .Values.blackboxExporter.affinity | indent 8 }}
+    {{- end }}
+{{- end }}
