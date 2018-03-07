@@ -9,9 +9,6 @@ metadata:
     chart: {{ template "metallb.chart" . }}
     app: {{ template "metallb.name" . }}
     component: controller
-  annotations:
-    prometheus.io/scrape: "true"
-    prometheus.io/port: "7472"
 spec:
   revisionHistoryLimit: 3
   selector:
@@ -27,6 +24,11 @@ spec:
         chart: {{ template "metallb.chart" . }}
         app: {{ template "metallb.name" . }}
         component: controller
+{{- if .Values.prometheus.scrapeAnnotations }}
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "7472"
+{{- end }}
     spec:
 {{- if .Values.rbac.create }}
       serviceAccountName: controller

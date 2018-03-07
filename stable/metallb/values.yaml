@@ -17,6 +17,17 @@ rbac:
   # create specifies whether to install and use RBAC rules.
   create: true
 
+prometheus:
+  # scrape annotations specifies whether to add Prometheus metric
+  # auto-collection annotations to pods. See
+  # https://github.com/prometheus/prometheus/blob/release-2.1/documentation/examples/prometheus-kubernetes.yml
+  # for a corresponding Prometheus configuration.  Alternatively, you
+  # may want to use the Prometheus Operator
+  # (https://github.com/coreos/prometheus-operator) for more powerful
+  # monitoring configuration. If you use the Prometheus operator, this
+  # can be left at false.
+  scrapeAnnotations: false
+
 # controller contains configuration specific to the MetalLB cluster
 # controller.
 controller:

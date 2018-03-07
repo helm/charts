@@ -23,9 +23,11 @@ spec:
         chart: {{ template "metallb.chart" . }}
         app: {{ template "metallb.name" . }}
         component: speaker
+{{- if .Values.prometheus.scrapeAnnotations }}
       annotations:
         prometheus.io/scrape: "true"
         prometheus.io/port: "7472"
+{{- end }}
     spec:
 {{- if .Values.rbac.create }}
       serviceAccountName: speaker
