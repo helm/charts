@@ -6,10 +6,10 @@ This directory contains a Kubernetes chart to deploy a five node [Patroni](https
 * Kubernetes 1.5
 * PV support on the underlying infrastructure
 
-## Statefulset Details
+## StatefulSet Details
 * https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/
 
-## Statefulset Caveats
+## StatefulSet Caveats
 * https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#limitations
 
 ## Todo
@@ -60,6 +60,8 @@ The following tables lists the configurable parameters of the patroni chart and 
 
 |       Parameter                   |           Description                       |                         Default                     |
 |-----------------------------------|---------------------------------------------|-----------------------------------------------------|
+| `nameOverride`                    | Override the name of the chart              | `nil`                                               |
+| `fullnameOverride`                | Override the fullname of the chart          | `nil`                                               |
 | `replicaCount`                    | Amount of pods to spawn                     | `5`                                                 |
 | `image.repository`                | The container to pull                       | `registry.opensource.zalan.do/acid/spilo-10`        |
 | `image.tag`                       | The version of the container to pull        | `1.4-p4`                                            |
@@ -73,7 +75,7 @@ The following tables lists the configurable parameters of the patroni chart and 
 | `etcd.discovery`                  | Domain name of etcd cluster                 | `nil`                                               |
 | `zookeeper.enable`                | Using ZooKeeper as DCS                      | `false`                                             |
 | `zookeeper.deployChart`           | Deploy ZooKeeper chart                      | `false`                                             |
-| `zookeeper.hosts`                 | List of ZooKeeper cluster members           | 'host1:port1','host2:port2','etc...'                |
+| `zookeeper.hosts`                 | List of ZooKeeper cluster members           | `host1:port1,host2:port,etc...`                     |
 | `walE.enable`                     | Use of Wal-E tool for base backup/restore   | `false`                                             |
 | `walE.scheduleCronJob`            | Schedule of Wal-E backups                   | `00 01 * * *`                                       |
 | `walE.retainBackups`              | Number of base backups to retain            | `2`                                                 |
