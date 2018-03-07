@@ -30,15 +30,22 @@ $ helm dependency update
 $ helm install --name my-release incubator/patroni
 ```
 
+To install the chart with randomly generated passwords:
+
+```console
+$ helm install --name my-release incubator/patroni \
+  --set credentials.superuser="$(< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c32)",credentials.admin="$(< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c32)",credentials.standby="$(< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c32)"
+```
+
 ## Connecting to PostgreSQL
 
 Your access point is a cluster IP. In order to access it spin up another pod:
 
 ```console
-$ kubectl run -i --tty psql --image=postgres --restart=Never -- bash -il
+$ kubectl run -i --tty --rm psql --image=postgres --restart=Never -- bash -il
 ```
 
-Then, from inside the pod, connect to postgres:
+Then, from inside the pod, connect to PostgreSQL:
 
 ```console
 $ psql -U admin -h my-release-patroni.default.svc.cluster.local postgres
@@ -57,7 +64,7 @@ The following tables lists the configurable parameters of the patroni chart and 
 | `image.tag`                       | The version of the container to pull        | `1.4-p4`                                            |
 | `image.pullPolicy`                | The pull policy                             | `IfNotPresent`                                      |
 | `credentials.superuser`           | Password of the superuser                   | `tea`                                               |
-| `credentials.admin`               | Password of the  admin                      | `cola`                                              |
+| `credentials.admin`               | Password of the admin                       | `cola`                                              |
 | `credentials.standby`             | Password fo the replication user            | `pinacolada`                                        |
 | `etcd.enable`                     | Using etcd as DCS                           | `true`                                              |
 | `etcd.deployChart`                | Deploy etcd chart                           | `true`                                              |
@@ -86,7 +93,7 @@ The following tables lists the configurable parameters of the patroni chart and 
 | `persistentVolume.subPath`        | Subdirectory of Persistent Volume to mount  | `""`                                                |
 | `rbac.create`                     | Create required role and rolebindings       | `true`                                              |
 | `serviceAccount.create`           | If true, create a new service account	      | `true`                                              |
-| `serviceAccount.name`             | Service account to be used. If not set and `serviceAccount.create` is `true`, a name is generated using the fullname template | `` |
+| `serviceAccount.name`             | Service account to be used. If not set and `serviceAccount.create` is `true`, a name is generated using the fullname template | `nil` |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
@@ -100,23 +107,24 @@ $ helm install --name my-release -f values.yaml incubator/patroni
 
 ## Cleanup
 
-In order to remove everything you created a simple `helm delete <release-name>` isn't enough (as of now), but you can do the following:
+To remove the spawned pods you can run a simple `helm delete <release-name>`.
+
+Helm will however preserve created persistent volume claims,
+to also remove them execute the commands below.
 
 ```console
 $ release=<release-name>
 $ helm delete $release
-$ grace=$(kubectl get po $release-patroni-0 --template '{{.spec.terminationGracePeriodSeconds}}')
-$ kubectl delete statefulset,po -l release=$release
-$ sleep $grace
 $ kubectl delete pvc -l release=$release
 ```
 
 ## Internals
 
-Patroni is responsible for electing a PostgreSQL master pod by leveraging etcd.
-It then exports this master via a Kubernetes service and a label query that filters for `spilo-role=master`.
-This label is dynamically set on the pod that acts as the master and removed from all other pods.
-Consequently, the service endpoint will point to the current master.
+Patroni is responsible for electing a PostgreSQL master pod by leveraging the
+DCS of your choice. After election it adds a `spilo-role=master` label to the
+elected master and set the label to `spilo-role=replica` for all replicas.
+Simultaneously it will update the `<release-name>-patroni` endpoint to let the
+service route traffic to the elected master.
 
 ```console
 $ kubectl get pods -l spilo-role -L spilo-role
