@@ -64,7 +64,7 @@ The following tables lists the configurable parameters of the patroni chart and 
 | `fullnameOverride`                | Override the fullname of the chart          | `nil`                                               |
 | `replicaCount`                    | Amount of pods to spawn                     | `5`                                                 |
 | `image.repository`                | The container to pull                       | `registry.opensource.zalan.do/acid/spilo-10`        |
-| `image.tag`                       | The version of the container to pull        | `1.4-p4`                                            |
+| `image.tag`                       | The version of the container to pull        | `1.4-p6`                                            |
 | `image.pullPolicy`                | The pull policy                             | `IfNotPresent`                                      |
 | `credentials.superuser`           | Password of the superuser                   | `tea`                                               |
 | `credentials.admin`               | Password of the admin                       | `cola`                                              |
