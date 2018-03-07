@@ -1,7 +1,7 @@
 ## Bitnami Drupal image version
 ## ref: https://hub.docker.com/r/bitnami/drupal/tags/
 ##
-image: bitnami/drupal:8.4.5-r1
+image: bitnami/drupal:8.4.5-r2
 
 ## Optionally specify an array of imagePullSecrets.
 ## Secrets must be manually created in the namespace.
