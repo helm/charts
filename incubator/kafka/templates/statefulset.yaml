@@ -20,9 +20,34 @@ spec:
         app: {{ include "kafka.name" . | quote }}
         release: {{ .Release.Name | quote }}
     spec:
+{{- if .Values.schedulerName }}
+      schedulerName: "{{ .Values.schedulerName }}"
+{{- end }}
+    {{- if .Values.external.enabled }}
+      ## ref: https://github.com/Yolean/kubernetes-kafka/blob/master/kafka/50kafka.yml
+      initContainers:
+      - name: init-ext
+        image: "{{ .Values.external.init.image }}:{{ .Values.external.init.imageTag }}"
+        imagePullPolicy: "{{ .Values.external.init.imagePullPolicy }}"
+        args:
+        - -n ${POD_NAMESPACE} label pods ${POD_NAME} pod=${POD_NAME}
+        env:
+          - name: POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: POD_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+    {{- end }}
 {{- if .Values.affinity }}
       affinity:
 {{ toYaml .Values.affinity | indent 8 }}
+{{- end }}
+{{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
 {{- end }}
       containers:
       - name: {{ template "kafka.name" . }}-broker
@@ -45,6 +70,14 @@ spec:
         ports:
         - containerPort: 9092
           name: kafka
+        {{- if .Values.external.enabled }}
+          {{- $replicas := .Values.replicas | int }}
+          {{- $root := . }}
+          {{- range $i, $e := until $replicas }}
+        - containerPort: {{ add $root.Values.external.firstListenerPort $i }}
+          name: external-{{ $i }}
+          {{- end }}
+        {{- end }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         env:
@@ -75,14 +108,20 @@ spec:
         # See: https://github.com/kubernetes/kubernetes/issues/31218
         command:
         - sh
-        - -c
+        - -exc
         - |
           export KAFKA_BROKER_ID=${HOSTNAME##*-} && \
           export KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://${POD_IP}:9092{{ if kindIs "string" $advertisedListenersOverride }}{{ printf ",%s" $advertisedListenersOverride }}{{ end }} && \
           /etc/confluent/docker/run
         volumeMounts:
         - name: datadir
-          mountPath: "{{ .Values.dataDirectory }}"
+          mountPath: {{ .Values.persistence.mountPath | quote }}
+      {{- if not .Values.persistence.enabled }}
+      volumes:
+      - name: datadir
+        emptyDir: {}
+      {{- end }}
+  {{- if .Values.persistence.enabled }}
   volumeClaimTemplates:
   - metadata:
       name: datadir
@@ -90,7 +129,12 @@ spec:
       accessModes: [ "ReadWriteOnce" ]
       resources:
         requests:
-          storage: {{ .Values.storage }}
-      {{- if .Values.storageClass }}
-      storageClassName: {{ .Values.storageClass | quote }}
+          storage: {{ .Values.persistence.size }}
+      {{- if .Values.persistence.storageClass }}
+      {{- if (eq "-" .Values.persistence.storageClass) }}
+      storageClassName: ""
+      {{- else }}
+      storageClassName: "{{ .Values.persistence.storageClass }}"
       {{- end }}
+      {{- end }}
+  {{- end }}

@@ -77,7 +77,7 @@ Assuming you have an existing release of the prometheus chart, named `prometheus
 1. Deploy a new release of the chart with version 5.0+ using prometheus 2.x. In the values.yaml set the scrape config as usual, and also add the `prometheus-old` instance as a remote-read target.
 
    ```
-	  prometheus.yml: |
+	  prometheus.yml:
 	    ...
 	    remote_read:
 	    - url: http://prometheus-old/api/v1/read
@@ -126,7 +126,7 @@ Parameter | Description | Default
 `alertmanager.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
 `alertmanager.service.servicePort` | alertmanager service port | `80`
 `alertmanager.service.type` | type of alertmanager service to create | `ClusterIP`
-`alertmanagerFiles` | alertmanager ConfigMap entries | `alertmanager.yml`
+`alertmanagerFiles.alertmanager.yml` | Prometheus alertmanager configuration | example configuration
 `configmapReload.name` | configmap-reload container name | `configmap-reload`
 `configmapReload.image.repository` | configmap-reload container image repository | `jimmidyson/configmap-reload`
 `configmapReload.image.tag` | configmap-reload container image tag | `v0.1`
@@ -163,10 +163,12 @@ Parameter | Description | Default
 `nodeExporter.image.pullPolicy` | node-exporter container image pull policy | `IfNotPresent`
 `nodeExporter.extraArgs` | Additional node-exporter container arguments | `{}`
 `nodeExporter.extraHostPathMounts` | Additional node-exporter hostPath mounts | `[]`
+`nodeExporter.extraConfigmapMounts` | Additional node-exporter configMap mounts | `[]`
 `nodeExporter.nodeSelector` | node labels for node-exporter pod assignment | `{}`
 `nodeExporter.podAnnotations` | annotations to be added to node-exporter pods | `{}`
 `nodeExporter.tolerations` | node taints to tolerate (requires Kubernetes >=1.6) | `[]`
 `nodeExporter.resources` | node-exporter resource requests and limits (YAML) | `{}`
+`nodeExporter.securityContext` | securityContext for containers in pod | `{}`
 `nodeExporter.serviceAccountName` | service account name for node-exporter to use (ignored if rbac.create=true) | `default`
 `nodeExporter.service.annotations` | annotations for node-exporter service | `{prometheus.io/scrape: "true"}`
 `nodeExporter.service.clusterIP` | internal node-exporter cluster service IP | `None`
@@ -197,7 +199,7 @@ Parameter | Description | Default
 `pushgateway.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
 `pushgateway.service.servicePort` | pushgateway service port | `9091`
 `pushgateway.service.type` | type of pushgateway service to create | `ClusterIP`
-`rbac.create` | If true, create & use RBAC resources | `false`
+`rbac.create` | If true, create & use RBAC resources | `true`
 `server.name` | Prometheus server container name | `server`
 `server.image.repository` | Prometheus server container image repository | `prom/prometheus`
 `server.image.tag` | Prometheus server container image tag | `v2.1.0`
@@ -206,6 +208,7 @@ Parameter | Description | Default
 `server.prefixURL` | The prefix slug at which the server can be accessed | ``
 `server.baseURL` | The external url at which the server can be accessed | ``
 `server.extraHostPathMounts` | Additional Prometheus server hostPath mounts | `[]`
+`server.extraConfigmapMounts` | Additional Prometheus server configMap mounts | `[]`
 `server.configMapOverrideName` | Prometheus server ConfigMap override where full-name is `{{.Release.Name}}-{{.Values.server.configMapOverrideName}}` and setting this value will prevent the default server ConfigMap from being generated | `""`
 `server.ingress.enabled` | If true, Prometheus server Ingress will be created | `false`
 `server.ingress.annotations` | Prometheus server Ingress annotations | `[]`
@@ -254,6 +257,13 @@ $ helm install stable/prometheus --name my-release -f values.yaml
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
+### RBAC Configuration
+Roles and RoleBindings resources will be created automatically for each service
+
+To manually setup RBAC you need to set the parameter `rbac.create=false` and specify the service account to be used for each service by setting the parameters: `alertmanager.serviceAccountName`, `kubeStateMetrics.serviceAccountName`, `nodeExporter.serviceAccountName`, `server.serviceAccountName`.
+
+> **Tip**: You can refer to the default `*-clusterrole.yaml` and `*-clusterrolebinding.yaml` files in [templates](templates/) to customize your own.
 
 ### ConfigMap Files
 AlertManager is configured through [alertmanager.yml](https://prometheus.io/docs/alerting/configuration/). This file (and any others listed in `alertmanagerFiles`) will be mounted into the `alertmanager` pod.

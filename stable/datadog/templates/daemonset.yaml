@@ -58,7 +58,9 @@ spec:
             value: {{ .Values.datadog.logLevel | quote }}
           {{- end }}
           {{- if .Values.datadog.nonLocalTraffic }}
-          - name: NON_LOCAL_TRAFFIC
+          - name: NON_LOCAL_TRAFFIC # agent5
+            value: {{ .Values.datadog.nonLocalTraffic | quote }}
+          - name: DD_DOGSTATSD_NON_LOCAL_TRAFFIC # agent6
             value: {{ .Values.datadog.nonLocalTraffic | quote }}
           {{- end }}
           {{- if .Values.datadog.tags }}
@@ -69,16 +71,31 @@ spec:
           - name: DD_APM_ENABLED
             value: {{ .Values.datadog.apmEnabled | quote }}
           {{- end }}
-          - name: KUBERNETES_LEADER_CANDIDATE
+          - name: KUBERNETES_LEADER_CANDIDATE # agent5
+            value: {{ .Values.datadog.leaderElection | quote}}
+          - name: DD_LEADER_ELECTION  # agent6
             value: {{ .Values.datadog.leaderElection | quote}}
           {{- if .Values.datadog.leaderElection }}
-          - name: KUBERNETES_LEADER_LEASE_DURATION
+          - name: KUBERNETES_LEADER_LEASE_DURATION # agent5
             value: {{ default "600" .Values.datadog.leaderLeaseDuration | quote }}
+          - name: DD_LEADER_LEASE_DURATION # agent6
+            value: {{ default "60" .Values.datadog.leaderLeaseDuration | quote }}
           {{- end }}
-          - name: SD_BACKEND
+          {{- if .Values.datadog.collectEvents }}
+          - name: DD_COLLECT_KUBERNETES_EVENTS # agent6
+            value: {{.Values.datadog.collectEvents | quote}}
+          {{- end }}
+          - name: SD_BACKEND  # agent5
             value: docker
           - name: KUBERNETES
             value: "yes"
+          {{- if (semverCompare ">=1" .Capabilities.KubeVersion.Major) and (semverCompare ">=7" .Capabilities.KubeVersion.Minor) }}
+          - name: DD_KUBERNETES_KUBELET_HOST
+            valueFrom:
+              fieldRef:
+                fieldPath: status.hostIP
+          {{- end }}
+
 {{- if .Values.datadog.env }}
 {{ toYaml .Values.datadog.env | indent 10 }}
 {{- end }}
