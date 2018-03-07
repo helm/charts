@@ -7,31 +7,25 @@ metadata:
     chart: {{ template "patroni.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
-    component: {{ .Values.component }}
 spec:
   serviceName: {{ template "patroni.fullname" . }}
-  replicas: {{ .Values.replicas }}
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "patroni.name" . }}
+      release: {{ .Release.Name }}
   template:
     metadata:
       name: {{ template "patroni.fullname" . }}
       labels:
         app: {{ template "patroni.name" . }}
-        chart: {{ template "patroni.chart" . }}
         release: {{ .Release.Name }}
-        heritage: {{ .Release.Service }}
-        component: {{ .Values.component }}
     spec:
-      {{ if .Values.nodeSelector }}
-      nodeSelector:
-        {{ range $key, $value := .Values.nodeSelector }}
-          {{ $key }}: {{ $value | quote }}
-        {{ end }}
-      {{ end }}
       serviceAccountName: {{ template "patroni.serviceAccountName" . }}
       containers:
-      - name: spilo
-        image: "{{ .Values.spilo.image }}:{{ .Values.spilo.version }}"
-        imagePullPolicy: {{ .Values.imagePullPolicy }}
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
         env:
         - name: PGPASSWORD_SUPERUSER
           valueFrom:
@@ -106,10 +100,6 @@ spec:
         ports:
         - containerPort: 8008
         - containerPort: 5432
-        resources:
-          requests:
-            cpu: "{{.Values.resources.cpu}}"
-            memory: "{{.Values.resources.memory}}"
         volumeMounts:
         - name: storage-volume
           mountPath: "{{ .Values.persistentVolume.mountPath }}"
@@ -124,6 +114,20 @@ spec:
           readOnly: true
         {{end}}
         {{end}}
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
       volumes:
       - name: patroni-config
         secret:
@@ -152,7 +156,6 @@ spec:
           chart: {{ template "patroni.chart" . }}
           release: {{ .Release.Name }}
           heritage: {{ .Release.Service }}
-          component: {{ .Values.component }}
       spec:
         accessModes:
 {{ toYaml .Values.persistentVolume.accessModes | indent 8 }}

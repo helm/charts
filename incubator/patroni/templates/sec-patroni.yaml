@@ -7,7 +7,6 @@ metadata:
     chart: {{ template "patroni.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
-    component: {{ .Values.component }}
 type: Opaque
 data:
   password-superuser: {{ .Values.credentials.superuser | b64enc }}

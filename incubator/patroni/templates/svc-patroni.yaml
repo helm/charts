@@ -7,10 +7,10 @@ metadata:
     chart: {{ template "patroni.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
-    component: {{ .Values.component }}
 spec:
   type: ClusterIP
   ports:
   - name: postgresql
     port: 5432
-    targetPort: 5432
+    targetPort: postgresql
+    protocol: TCP

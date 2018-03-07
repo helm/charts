@@ -50,44 +50,43 @@ postgres=>
 
 The following tables lists the configurable parameters of the patroni chart and their default values.
 
-|       Parameter                   |           Description                     |                         Default                     |
-|-----------------------------------|-------------------------------------------|-----------------------------------------------------|
-| `name`                            | Service name                              | `patroni`                                           |
-| `spilo.image`                     | Container image name                      | `registry.opensource.zalan.do/acid/spilo-10`        |
-| `spilo.version`                   | Container image tag                       | `1.4-p4`                                            |
-| `imagePullPolicy`                 | Container pull policy                     | `IfNotPresent`                                      |
-| `replicas`                        | k8s statefulset replicas                  | `5`                                                 |
-| `nodeSelector`                    | NodeSelector map                          | Empty                                               |
-| `component`                       | k8s selector key                          | `patroni`                                           |
-| `resources.cpu`                   | Container requested CPU                   | `100m`                                              |
-| `resources.memory`                | Container requested memory                | `512Mi`                                             |
-| `credentials.superuser`           | Password for the superuser                | `tea`                                               |
-| `credentials.admin`               | Password for the admin                    | `cola`                                              |
-| `credentials.standby`             | password for the replication user         | `pinacolada`                                        |
-| `etcd.enable`                     | Using etcd as DCS                         | `true`                                              |
-| `etcd.deployChart`                | Deploy etcd chart                         | `true`                                              |
-| `etcd.host`                       | Host name of etcd cluster                 | not used (`etcd.discovery`) is used instead)        |
-| `etcd.discovery`                  | Domain name of etcd cluster               | `<release-name>-etcd.<namespace>.svc.cluster.local` |
-| `zookeeper.enable`                | Using ZooKeeper as DCS                    | `false`                                             |
-| `zookeeper.deployChart`           | Deploy ZooKeeper chart                    | `false`                                             |
-| `zookeeper.hosts`                 | List of ZooKeeper cluster members         | 'host1:port1','host2:port2','etc...'                |
-| `walE.enable`                     | Use of Wal-E tool for base backup/restore | `false`                                             |
-| `walE.scheduleCronJob`            | Schedule of Wal-E backups                 | `00 01 * * *`                                       |
-| `walE.retainBackups`              | Number of base backups to retain          | `2`                                                 |
-| `walE.s3Bucket:`                  | Amazon S3 bucket used for wal-e backups   | ``                                                  |
-| `walE.gcsBucket`                  | GCS storage used for Wal-E backups        | ``                                                  |
-| `walE.kubernetesSecret`           | K8s secret name for provider bucket       | ``                                                  |
+|       Parameter                   |           Description                       |                         Default                     |
+|-----------------------------------|---------------------------------------------|-----------------------------------------------------|
+| `replicaCount`                    | Amount of pods to spawn                     | `5`                                                 |
+| `image.repository`                | The container to pull                       | `registry.opensource.zalan.do/acid/spilo-10`        |
+| `image.tag`                       | The version of the container to pull        | `1.4-p4`                                            |
+| `image.pullPolicy`                | The pull policy                             | `IfNotPresent`                                      |
+| `credentials.superuser`           | Password of the superuser                   | `tea`                                               |
+| `credentials.admin`               | Password of the  admin                      | `cola`                                              |
+| `credentials.standby`             | Password fo the replication user            | `pinacolada`                                        |
+| `etcd.enable`                     | Using etcd as DCS                           | `true`                                              |
+| `etcd.deployChart`                | Deploy etcd chart                           | `true`                                              |
+| `etcd.host`                       | Host name of etcd cluster                   | `nil`                                               |
+| `etcd.discovery`                  | Domain name of etcd cluster                 | `nil`                                               |
+| `zookeeper.enable`                | Using ZooKeeper as DCS                      | `false`                                             |
+| `zookeeper.deployChart`           | Deploy ZooKeeper chart                      | `false`                                             |
+| `zookeeper.hosts`                 | List of ZooKeeper cluster members           | 'host1:port1','host2:port2','etc...'                |
+| `walE.enable`                     | Use of Wal-E tool for base backup/restore   | `false`                                             |
+| `walE.scheduleCronJob`            | Schedule of Wal-E backups                   | `00 01 * * *`                                       |
+| `walE.retainBackups`              | Number of base backups to retain            | `2`                                                 |
+| `walE.s3Bucket:`                  | Amazon S3 bucket used for wal-e backups     | `nil`                                               |
+| `walE.gcsBucket`                  | GCS storage used for Wal-E backups          | `nil`                                               |
+| `walE.kubernetesSecret`           | K8s secret name for provider bucket         | `nil`                                               |
 | `walE.backupThresholdMegabytes`   | Maximum size of the WAL segments accumulated after the base backup to consider WAL-E restore instead of pg_basebackup | `1024` |
 | `walE.backupThresholdPercentage`  | Maximum ratio (in percents) of the accumulated WAL files to the base backup to consider WAL-E restore instead of pg_basebackup | `30` |
-| `persistentVolume.accessModes`    | Persistent Volume access modes            | `[ReadWriteOnce]`                                   |
-| `persistentVolume.annotations`    | Annotations for Persistent Volume Claim`  | `{}`                                                |
-| `persistentVolume.mountPath`      | Persistent Volume mount root path         | `/home/postgres/pgdata`                             |
-| `persistentVolume.size`           | Persistent Volume size                    | `2Gi`                                               |
-| `persistentVolume.storageClass`   | Persistent Volume Storage Class           | `volume.alpha.kubernetes.io/storage-class: default` |
-| `persistentVolume.subPath`        | Subdirectory of Persistent Volume to mount | `""` |
-| `rbac.create`                     | Create required role and rolebindings     | `true`                                              |
-| `serviceAccount.create`           | If true, create a new service account	    | `true`                                              |
-| `serviceAccount.name`             | Service account to be used. If not set and serviceAccount.create is `true`, a name is generated using the fullname template | ``  
+| `resources`                       | Any resources you wish to assign to the pod | `{}`                                                |
+| `nodeSelector`                    | Node label to use for scheduling            | `{}`                                                |
+| `tolerations`                     | List of node taints to tolerate             | `[]`                                                |
+| `affinity`                        | Affinity or anti-affinity rules             | `{}`                                                |
+| `persistentVolume.accessModes`    | Persistent Volume access modes              | `[ReadWriteOnce]`                                   |
+| `persistentVolume.annotations`    | Annotations for Persistent Volume Claim`    | `{}`                                                |
+| `persistentVolume.mountPath`      | Persistent Volume mount root path           | `/home/postgres/pgdata`                             |
+| `persistentVolume.size`           | Persistent Volume size                      | `2Gi`                                               |
+| `persistentVolume.storageClass`   | Persistent Volume Storage Class             | `volume.alpha.kubernetes.io/storage-class: default` |
+| `persistentVolume.subPath`        | Subdirectory of Persistent Volume to mount  | `""`                                                |
+| `rbac.create`                     | Create required role and rolebindings       | `true`                                              |
+| `serviceAccount.create`           | If true, create a new service account	      | `true`                                              |
+| `serviceAccount.name`             | Service account to be used. If not set and `serviceAccount.create` is `true`, a name is generated using the fullname template | `` |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
