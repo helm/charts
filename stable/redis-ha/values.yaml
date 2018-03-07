@@ -33,11 +33,11 @@ servers:
 
 rbac:
   # Specifies whether RBAC resources should be created
-  create: false
+  create: true
 
 serviceAccount:
   # Specifies whether a ServiceAccount should be created
-  create: false
+  create: true
   # The name of the ServiceAccount to use.
   # If not set and create is true, a name is generated using the fullname template
   name:
@@ -47,7 +47,6 @@ auth: false
 
 ## Redis password
 ## Defaults to a random 10-character alphanumeric string if not set and auth is true
-## ref: https://github.com/bitnami/bitnami-docker-redis#setting-the-server-password-on-first-run
-## ref: https://github.com/kubernetes/charts/blob/master/stable/redis/templates/secrets.yaml
+## ref: https://github.com/kubernetes/charts/blob/master/stable/redis-ha/templates/redis-auth-secret.yaml
 ##
 ## redisPassword:
