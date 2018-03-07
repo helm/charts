@@ -663,8 +663,8 @@ alertmanagerFiles:
 ## Prometheus server ConfigMap entries
 ##
 serverFiles:
-  alerts: ""
-  rules: ""
+  alerts: {}
+  rules: {}
 
   prometheus.yml: |-
     rule_files:
