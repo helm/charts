@@ -1,7 +1,7 @@
 ## Bitnami TestLink image version
 ## ref: https://hub.docker.com/r/bitnami/testlink/tags/
 ##
-image: bitnami/testlink:1.9.16-r8
+image: bitnami/testlink:1.9.16-r10
 
 ## Specify a imagePullPolicy
 ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
@@ -33,12 +33,12 @@ testlinkLanguage: en_US
 ## SMTP mail delivery configuration
 ## ref: https://github.com/bitnami/bitnami-docker-testlink#smtp-configuration
 ##
-# smtpEnable: true
-# smtpHost: smtp.example.com
-# smtpPort: 587
-# smtpUser: mailer@example.com
-# smtpPassword: mailerpassword
-# smtpConnectionMode: tls
+smtpEnable: false
+smtpHost:
+smtpPort:
+smtpUser:
+smtpPassword:
+smtpConnectionMode:
 
 ##
 ## MariaDB chart configuration
