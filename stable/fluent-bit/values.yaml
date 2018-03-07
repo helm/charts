@@ -67,6 +67,14 @@ tolerations: []
 ##
 nodeSelector: {}
 
+audit:
+  enable: false
+  filepath: /var/log/kube-apiserver-audit.log
+  # Mem_Buf_Limit: 35MB
+  # Buffer_Chunk_Size: 2MB
+  # Buffer_Max_Size: 10MB
+
+
 filter: {}
 # If true, check to see if the log field content is a JSON string map, if so,
 # it append the map fields as part of the log structure.
