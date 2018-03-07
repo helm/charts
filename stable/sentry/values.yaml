@@ -112,7 +112,14 @@ ingress:
 
 # TODO: add support for plugins https://docs.sentry.io/server/plugins/
 
+externalDatabase:
+ host: 
+ user: sentry
+ password:
+ database:
+
 postgresql:
+  enabled: true
   postgresDatabase: sentry
   postgresUser: sentry
   imageTag: "9.5"
@@ -120,5 +127,6 @@ postgresql:
     enabled: true
 
 redis:
+  enabled: true
   persistence:
     enabled: true
