@@ -2,7 +2,7 @@ apiVersion: apps/v1beta2
 kind: DaemonSet
 metadata:
   namespace: metallb-system
-  name: speaker
+  name: {{ template "metallb.fullname" . }}
   labels:
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}

@@ -3,7 +3,12 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   namespace: metallb-system
-  name: config
+  name: {{ template "metallb.fullname" . }}
+  labels:
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: {{ template "metallb.chart" . }}
+    app: {{ template "metallb.name" . }}
 data:
   config: |
 {{- if .Values.config }}
