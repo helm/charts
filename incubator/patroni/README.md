@@ -14,6 +14,7 @@ This directory contains a Kubernetes chart to deploy a five node [Patroni](https
 
 ## Todo
 * Make namespace configurable
+* K8S native DCS
 
 ## Chart Details
 This chart will do the following:
