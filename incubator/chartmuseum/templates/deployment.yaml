@@ -9,9 +9,7 @@ metadata:
 spec:
   replicas: {{ .Values.replicaCount }}
   strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxUnavailable: 0
+{{ toYaml .Values.strategy | indent 4 }}
   revisionHistoryLimit: 10
   template:
     metadata:

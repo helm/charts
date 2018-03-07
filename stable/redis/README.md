@@ -51,6 +51,7 @@ The following tables lists the configurable parameters of the Redis chart and th
 | `usePassword`                 | Use password                                     | `true`                       |
 | `redisPassword`               | Redis password                                   | Randomly generated           |
 | `args`                        | Redis command-line args                          | []                           |
+| `redisExtraFlags`             | Redis additional command line flags              | []                           |
 | `persistence.enabled`         | Use a PVC to persist data                        | `true`                       |
 | `persistence.path`            | Path to mount the volume at, to use other images | `/bitnami`                   |
 | `persistence.subPath`         | Subdirectory of the volume to mount at           | `""`                        |
