@@ -38,7 +38,7 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  namespace: metallb-system
+  namespace: {{ .Release.Namespace | quote }}
   name: {{ template "metallb.fullname" . }}-leader-election
   labels:
     heritage: {{ .Release.Service | quote }}
@@ -57,7 +57,7 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  namespace: metallb-system
+  namespace: {{ .Release.Namespace | quote }}
   name: {{ template "metallb.fullname" . }}-config-watcher
   labels:
     heritage: {{ .Release.Service | quote }}
@@ -85,7 +85,7 @@ metadata:
     app: {{ template "metallb.name" . }}
 subjects:
 - kind: ServiceAccount
-  namespace: metallb-system
+  namespace: {{ .Release.Namespace | quote }}
   name: {{ template "metallb.controllerServiceAccountName" . }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -103,7 +103,7 @@ metadata:
     app: {{ template "metallb.name" . }}
 subjects:
 - kind: ServiceAccount
-  namespace: metallb-system
+  namespace: {{ .Release.Namespace | quote }}
   name: {{ template "metallb.speakerServiceAccountName" . }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -113,7 +113,7 @@ roleRef:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  namespace: metallb-system
+  namespace: {{ .Release.Namespace | quote }}
   name: {{ template "metallb.fullname" . }}-config-watcher
   labels:
     heritage: {{ .Release.Service | quote }}
@@ -133,7 +133,7 @@ roleRef:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  namespace: metallb-system
+  namespace: {{ .Release.Namespace | quote }}
   name: {{ template "metallb.fullname" . }}-leader-election
   labels:
     heritage: {{ .Release.Service | quote }}

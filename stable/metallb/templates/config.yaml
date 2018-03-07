@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  namespace: metallb-system
+  namespace: {{ .Release.Namespace | quote }}
   name: {{ template "metallb.fullname" . }}
   labels:
     heritage: {{ .Release.Service | quote }}
