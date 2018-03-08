@@ -5,17 +5,16 @@ agentVersion: 3.0.0
 # The access token for SignalFx.  REQUIRED
 signalFxAccessToken:
 
-# Image pull policy for the agent pod
-pullPolicy: IfNotPresent
-
-# The docker image to use for the agent
-imageRepository: quay.io/signalfx/signalfx-agent
-
-# imageTag defaults to the agentVersion but can be overridden
-imageTag:
-
-# imagePullSecret is not needed for our standard image
-imagePullSecret:
+# Docker image configuration
+image:
+  # Image pull policy for the agent pod
+  pullPolicy: IfNotPresent
+  # The docker image to use for the agent
+  repository: quay.io/signalfx/signalfx-agent
+  # tag defaults to the agentVersion but can be overridden
+  tag:
+  # pullSecret is not needed for our standard image
+  pullSecret:
 
 # RBAC config for the agent
 rbac:

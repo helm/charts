@@ -31,7 +31,7 @@ spec:
       hostNetwork: true
       restartPolicy: Always
       serviceAccountName: {{ template "signalfx-agent.serviceAccountName" . }}
-      {{ with .Values.imagePullSecret -}}
+      {{ with .Values.image.pullSecret -}}
       imagePullSecrets:
       - name: {{ . }}
       {{- end }}
@@ -49,8 +49,8 @@ spec:
       {{ end }}
       containers:
       - name: signalfx-agent
-        image: "{{ .Values.imageRepository }}:{{ .Values.imageTag | default .Values.agentVersion }}"
-        imagePullPolicy: {{ .Values.pullPolicy }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Values.agentVersion }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
         command:
         - /bin/signalfx-agent
         volumeMounts:
