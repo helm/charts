@@ -16,12 +16,18 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- end -}}
 
 {{/*
-Create a default short app name to use for environment variables.
-We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
+Create an uppercase app name to use for environment variables.
 */}}
 {{- define "scdf.envname" -}}
 {{- $name := default "data-flow" .Values.appNameOverride -}}
-{{- printf "%s_%s" .Release.Name $name | upper | replace "-" "_" | trunc 63 | trimSuffix "_" -}}
+{{- printf "%s_%s" .Release.Name $name | upper | replace "-" "_" | trimSuffix "_" -}}
+{{- end -}}
+
+{{/*
+Create an uppercase release prefix to use for environment variables.
+*/}}
+{{- define "scdf.envrelease" -}}
+{{- printf "%s" .Release.Name | upper | replace "-" "_" | trimSuffix "_" -}}
 {{- end -}}
 
 {{/*

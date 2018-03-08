@@ -48,9 +48,9 @@ spec:
         - name: SECURITY_BASIC_ENABLED
           value: 'false'
         - name: SPRING_RABBITMQ_HOST
-          value: '${{ printf "{%s" .Release.Name | upper }}_RABBITMQ_SERVICE_HOST}'
+          value: '${{ printf "{" }}{{ template "scdf.envrelease" . }}_RABBITMQ_SERVICE_HOST}'
         - name: SPRING_RABBITMQ_PORT
-          value: '${{ printf "{%s" .Release.Name | upper }}_RABBITMQ_SERVICE_PORT_AMQP}'
+          value: '${{ printf "{" }}{{ template "scdf.envrelease" . }}_RABBITMQ_SERVICE_PORT_AMQP}'
         - name: SPRING_RABBITMQ_USERNAME
           value: '{{ .Values.rabbitmq.rabbitmqUsername }}'
         - name: SPRING_RABBITMQ_PASSWORD
