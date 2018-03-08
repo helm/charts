@@ -44,6 +44,13 @@ args:
 ##  - "--repl-backlog-size 1024mb"
 redisExtraFlags:
 
+## Comma-separated list of Redis commands to disable
+##
+## Can be used to disable Redis commands for security reasons.
+## ref: https://github.com/bitnami/bitnami-docker-redis#disabling-redis-commands
+##
+redisDisableCommands: "FLUSHDB,FLUSHALL"
+
 ## Enable persistence using Persistent Volume Claims
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
 ##
