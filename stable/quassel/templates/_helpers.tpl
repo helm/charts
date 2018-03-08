@@ -30,3 +30,19 @@ Create chart name and version as used by the chart label.
 {{- define "quassel.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
+
+{{/*
+Create a default fully qualified app name for the postgres requirement.
+*/}}
+{{- define "quassel.postgresql.fullname" -}}
+{{- if .Values.postgresql.fullnameOverride -}}
+{{- .Values.postgresql.fullnameOverride | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- $name := default "postgresql" .Values.postgresql.nameOverride -}}
+{{- if contains $name .Release.Name -}}
+{{- .Release.Name | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
