@@ -1,6 +1,6 @@
 name: rabbitmq
-version: 0.6.23
-appVersion: 3.7.3
+version: 0.6.24
+appVersion: 3.7.4
 description: Open source message broker software that implements the Advanced Message Queuing Protocol (AMQP)
 keywords:
 - rabbitmq
