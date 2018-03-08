@@ -1,0 +1,79 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "scdf.fullname" . }}-skipper
+  labels:
+    app: {{ template "scdf.name" . }}
+    component: skipper
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: {{ template "scdf.name" . }}
+        component: skipper
+        release: "{{ .Release.Name }}"
+    spec:
+      containers:
+      - name: {{ template "scdf.fullname" . }}-skipper
+        image: {{ .Values.skipper.image }}:{{ .Values.skipper.version }}
+        imagePullPolicy: {{ .Values.skipper.imagePullPolicy }}
+        ports:
+        - containerPort: 7577
+          name: http
+        resources:
+{{ toYaml .Values.skipper.resources | indent 10 }}
+        livenessProbe:
+          httpGet:
+            path: /api/about
+            port: http
+          initialDelaySeconds: 90
+          periodSeconds: 15
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /api/about
+            port: http
+          initialDelaySeconds: 30
+          periodSeconds: 15
+          timeoutSeconds: 5
+        env:
+        - name: SPRING_DATASOURCE_URL
+          value: 'jdbc:mysql://${{ printf "{" }}{{ template "scdf.envrelease" . }}_MYSQL_SERVICE_HOST}:3306/skipper'
+        - name: SPRING_DATASOURCE_USERNAME
+          value: root
+        - name: SPRING_DATASOURCE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ printf "%s-%s" .Release.Name "mysql" | trunc 63 | trimSuffix "-" }}
+              key: mysql-root-password
+        - name: SPRING_DATASOURCE_DRIVER_CLASS_NAME
+          value: org.mariadb.jdbc.Driver
+        - name: RABBITMQ_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ printf "%s-%s" .Release.Name "rabbitmq" | trunc 63 | trimSuffix "-" }}
+              key: rabbitmq-password
+        - name: SPRING_APPLICATION_JSON
+          valueFrom:
+            configMapKeyRef:
+              name: {{ template "scdf.fullname" . }}-skipper
+              key: spring.application.json
+          value: 
+      initContainers:
+      - name: init-mysql-wait
+        image: busybox
+        command: ['sh', '-c', 'until nc -w3 -z {{ printf "%s-%s" .Release.Name "mysql" | trunc 63 | trimSuffix "-" }} 3306; do echo waiting for mysql; sleep 3; done;']
+      - name: init-mysql-database
+        image: mysql:5.7.14
+        env:
+        - name: MYSQL_PWD
+          valueFrom:
+            secretKeyRef:
+              name: {{ printf "%s-%s" .Release.Name "mysql" | trunc 63 | trimSuffix "-" }}
+              key: mysql-root-password
+        command: ['sh', '-c', 'mysql -h {{ printf "%s-%s" .Release.Name "mysql" | trunc 63 | trimSuffix "-" }} -u root -e "CREATE DATABASE IF NOT EXISTS skipper;"']
+      serviceAccountName: {{ template "scdf.serviceAccountName" . }}

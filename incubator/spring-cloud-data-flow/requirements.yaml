@@ -1,10 +1,10 @@
 dependencies:
 - name:  mysql
-  version: 0.2.6
+  version: 0.3.4
   repository: https://kubernetes-charts.storage.googleapis.com/
 - name:  redis
-  version: 0.7.0
+  version: 1.1.11
   repository: https://kubernetes-charts.storage.googleapis.com/
 - name:  rabbitmq
-  version: 0.5.3
+  version: 0.6.16
   repository: https://kubernetes-charts.storage.googleapis.com/
