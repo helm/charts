@@ -56,6 +56,7 @@ The following tables lists the configurable parameters of the Percona chart and 
 | `image.tag`                 | `percona-xtradb-cluster` image tag.                 | `percona/percona-xtradb-cluster` |
 | `image.pullPolicy`          | Image pull policy                  | `IfNotPresent` |
 | `replicas`                 | Number of pods to join the Percona XtraDB Cluster   | 3                                         |
+| `allowRootFrom`            | Remote hosts to allow root access, set to `127.0.0.1` to disable remote root  | `%` |
 | `mysqlRootPassword`        | Password for the `root` user.      | `not-a-secure-password`                                                      |
 | `xtraBackupPassword`       | Password for the `xtrabackup` user. | `replicate-my-data` |
 | `mysqlUser`                | Username of new user to create.    | `nil`                                                      |
