@@ -34,6 +34,9 @@ The following tables lists the configurable parameters of the external-dns chart
 | `extraArgs`                        | Optional object of extra args, as `name`: `value` pairs. Where the name is the command line arg to external-dns.           | `{}`                                               |
 | `extraEnv`                         | Optional object of extra environment variables, as `name`: `value` pairs.                                                  | `{}`                                               |
 | `google.project`                   | When using the Google provider, specify the Google project (required when provider=google).                                | `""`                                               |
+| `google.applicationCredentials`    | Create Secret for this Google Cloud service account. Should contain the GC service account json. Will be base64 encoded by the template. | `""`                                 |
+| `google.applicationSecret`         | Provide a secret by reference to an already existing one instead proding one by value via the `google.applicationCredentials` param. | `""`                                     |
+| `google.applicationSecretKey`      | Define key of already given secret.                                                                                        | `""`                                               |
 | `image.name`                       | Container image name (Including repository name if not `hub.docker.com`).                                                  | `registry.opensource.zalan.do/teapot/external-dns` |
 | `image.pullPolicy`                 | Container pull policy.                                                                                                     | `IfNotPresent`                                     |
 | `image.tag`                        | Container image tag.                                                                                                       | `v0.4.5`                                           |
@@ -68,6 +71,23 @@ $ helm install --name my-release -f values.yaml stable/external-dns
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
+## Using the chart with a Google Cloud Service Account
+
+To use `external-dns` with Google Kubernetes Engine the deployment needs to create an environment variable called `GOOGLE_APPLICATION_CREDENTIALS` for the `external-dns` pod pointing to a secret mapped as a volume that contains a file with service account credentials, this is need to give the pod access rights to Google Cloud DNS.
+
+Below is an example on how to read the service account json file and encoding it on the command line when running `helm install`. The reason for doing this from the command line is to separate the highly sensitive information in the exported service account credentials file from the values.yaml file that may be accidentally stored elsewhere.
+
+```
+helm install . --values values.yaml --set external-dns.google.applicationCredentials="$(cat serviceaccount-key-dns-read-write.json )"
+```
+
+Or if you want to reference an pre-existing secret:
+```
+helm install . --values values.yaml --set external-dns.google.applicationSecret="k8s-dns-updater" --set external-dns.google.applicationSecretKey="key.json"
+```
+
+[Service account documentation](https://cloud.google.com/compute/docs/access/service-accounts)
 
 ## IAM Permissions
 
