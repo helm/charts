@@ -50,13 +50,13 @@ spec:
         - containerPort: {{ .Values.service.internalPort }}
         livenessProbe:
           httpGet:
-            path: /health
+            path: {{ .Values.env.open.CONTEXT_PATH }}/health
             port: {{ .Values.service.internalPort }}
           initialDelaySeconds: 5
           periodSeconds: 10
         readinessProbe:
           httpGet:
-            path: /health
+            path: {{ .Values.env.open.CONTEXT_PATH }}/health
             port: {{ .Values.service.internalPort }}
           initialDelaySeconds: 5
           periodSeconds: 10
