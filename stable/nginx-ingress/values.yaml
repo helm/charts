@@ -193,6 +193,28 @@ controller:
       servicePort: 18080
       type: ClusterIP
 
+  ## If controller.stats.enabled = true and controller.metrics.enabled = true, Prometheus metrics will be exported
+  ##
+  metrics:
+    enabled: false
+
+    service:
+      annotations: {}
+      # prometheus.io/scrape: "true"
+      # prometheus.io/port: "10254"
+
+      clusterIP: ""
+
+      ## List of IP addresses at which the stats-exporter service is available
+      ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
+      ##
+      externalIPs: []
+
+      loadBalancerIP: ""
+      loadBalancerSourceRanges: []
+      servicePort: 9913
+      type: ClusterIP
+
   lifecycle: {}
 
 ## Rollback limit
@@ -269,44 +291,6 @@ defaultBackend:
 rbac:
   create: false
   serviceAccountName: default
-
-## If controller.stats.enabled = true, Prometheus metrics will be exported
-## Ref: https://github.com/hnlq715/nginx-vts-exporter
-##
-statsExporter:
-  name: stats-exporter
-  image:
-    repository: sophos/nginx-vts-exporter
-    tag: v0.6
-    pullPolicy: IfNotPresent
-
-  endpoint: /metrics
-  extraArgs: {}
-  metricsNamespace: nginx
-  statusPage: http://localhost:18080/nginx_status/format/json
-
-  resources: {}
-  # limits:
-  #   cpu: 10m
-  #   memory: 20Mi
-  # requests:
-  #   cpu: 10m
-  #   memory: 20Mi
-
-  service:
-    annotations: {}
-    clusterIP: ""
-
-    ## List of IP addresses at which the stats-exporter service is available
-    ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
-    ##
-    externalIPs: []
-
-    loadBalancerIP: ""
-    loadBalancerSourceRanges: []
-    servicePort: 9913
-    targetPort: 9913
-    type: ClusterIP
 
 # TCP service key:value pairs
 # Ref: https://github.com/kubernetes/contrib/tree/master/ingress/controllers/nginx/examples/tcp

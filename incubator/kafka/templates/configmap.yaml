@@ -11,5 +11,7 @@ data:
   zookeeper.connect: "{{ template "zookeeper.url" . }}"
   log.dirs: "{{ printf "%s/%s" .Values.persistence.mountPath .Values.logSubPath }}"
 {{- range $configName, $configValue := .Values.configurationOverrides }}
+{{- if not ( eq $configName "zookeeper.connect" ) }}
   {{ $configName }}: "{{ $configValue -}}"
+{{- end -}}
 {{- end -}}
