@@ -22,7 +22,7 @@ $ helm install stable/docker-registry
 
 ## Configuration
 
-The following tables lists the configurable parameters of the vault chart and
+The following tables lists the configurable parameters of the docker-registry chart and
 their default values.
 
 | Parameter                   | Description                                                                              | Default         |
