@@ -1,24 +1,12 @@
 dependencies:
-- condition: ""
-  enabled: false
-  import-values: null
-  name: mysql
+- name: mysql
   repository: https://kubernetes-charts.storage.googleapis.com/
-  tags: null
-  version: 0.2.6
-- condition: ""
-  enabled: false
-  import-values: null
-  name: redis
+  version: 0.3.4
+- name: redis
   repository: https://kubernetes-charts.storage.googleapis.com/
-  tags: null
-  version: 0.7.0
-- condition: ""
-  enabled: false
-  import-values: null
-  name: rabbitmq
+  version: 1.1.11
+- name: rabbitmq
   repository: https://kubernetes-charts.storage.googleapis.com/
-  tags: null
-  version: 0.5.3
-digest: sha256:49551c5220854587689ffacf8ff53167aec2dd302593d163dcea2f6eb412b5a5
-generated: 2017-07-05T15:31:20.67673899-04:00
+  version: 0.6.16
+digest: sha256:b16ffdc5da316b3a7e677d3a83670341b13670d7e59f8ce74d023a01df05f135
+generated: 2018-01-31T09:21:26.470351-05:00
