@@ -68,6 +68,8 @@ Assuming you have an existing release of the prometheus chart, named `prometheus
 	server:
 	  extraArgs:
 	    storage.local.retention: 720h
+	  extraFlags:
+	  	- "web.enable-admin-api"
 	serverFiles:
 	  alerts: ""
 	  prometheus.yml: ""
@@ -205,6 +207,7 @@ Parameter | Description | Default
 `server.image.tag` | Prometheus server container image tag | `v2.1.0`
 `server.image.pullPolicy` | Prometheus server container image pull policy | `IfNotPresent`
 `server.extraArgs` | Additional Prometheus server container arguments | `{}`
+`server.extraFlags` | Additional Prometheus server container flags | `[]`
 `server.prefixURL` | The prefix slug at which the server can be accessed | ``
 `server.baseURL` | The external url at which the server can be accessed | ``
 `server.extraHostPathMounts` | Additional Prometheus server hostPath mounts | `[]`
