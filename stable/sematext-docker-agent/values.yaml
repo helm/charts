@@ -15,6 +15,13 @@ sematext:
 
   useHostNetwork: true
   name: sematext-docker-agent
+
+  # Support for custom URLs
+  # url:
+  #   spmReceiver: http://spm-receiver:8080
+  #   logseneReceiver: http://logsene-receiver:8080
+  #   eventsReceiver: http://events-receiver:8080
+
   resources: {}
   #  requests:
   #    cpu: 500m
