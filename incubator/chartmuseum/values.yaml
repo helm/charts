@@ -5,7 +5,7 @@ strategy:
     maxUnavailable: 0
 image:
   repository: chartmuseum/chartmuseum
-  tag: v0.4.0
+  tag: v0.4.1
   pullPolicy: IfNotPresent
 env:
   open:
@@ -56,6 +56,10 @@ env:
     CHART_URL:
     # allow annonymous GET operations when auth is used
     AUTH_ANONYMOUS_GET: false
+    # sets the base context path
+    CONTEXT_PATH:
+    # parallel scan limit for the repo indexer
+    INDEX_LIMIT: 0
   secret:
     # username for basic http authentication
     BASIC_AUTH_USER:
