@@ -42,13 +42,13 @@ spec:
               value: {{ .Values.gid | quote }}
 {{- if .Values.postgresql.enabled }}
             - name: POSTGRESQL_HOST
-              value: {{ template "quassel.fullname" . }}-postgresql
+              value: {{ template "quassel.postgresql.fullname" . }}
             - name: POSTGRESQL_PORT
               value: "3306"
             - name: POSTGRESQL_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "quassel.fullname" . }}-postgresql
+                  name: {{ template "quassel.postgresql.fullname" . }}
                   key: postgres-password
 {{- end }}
           volumeMounts:
