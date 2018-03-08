@@ -2,7 +2,7 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "jaeger.query.name" . }}-query
+  name: {{ template "jaeger.query.name" . }}
   labels:
     app: {{ template "jaeger.name" . }}
     jaeger-infra: query-deployment
@@ -32,7 +32,7 @@ spec:
       nodeSelector:
 {{ toYaml .Values.query.nodeSelector | indent 8 }}
       containers:
-      - name: {{ template "jaeger.query.name" . }}-query
+      - name: {{ template "jaeger.query.name" . }}
         image: {{ .Values.query.image }}:{{ .Values.query.tag }}
         imagePullPolicy: {{ .Values.query.pullPolicy }}
         env:
