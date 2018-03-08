@@ -41,7 +41,7 @@ Create a fully qualified query name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 */}}
 {{- define "jaeger.query.name" -}}
-{{- $nameGlobalOverride := printf "%s" (include "jaeger.fullname" .) -}}
+{{- $nameGlobalOverride := printf "%s-query" (include "jaeger.fullname" .) -}}
 {{- if .Values.query.fullnameOverride -}}
 {{- printf "%s" .Values.query.fullnameOverride | trunc 63 | trimSuffix "-" -}}
 {{- else -}}
@@ -54,7 +54,7 @@ Create a fully qualified agent name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 */}}
 {{- define "jaeger.agent.name" -}}
-{{- $nameGlobalOverride := printf "%s" (include "jaeger.fullname" .) -}}
+{{- $nameGlobalOverride := printf "%s-agent" (include "jaeger.fullname" .) -}}
 {{- if .Values.agent.fullnameOverride -}}
 {{- printf "%s" .Values.agent.fullnameOverride | trunc 63 | trimSuffix "-" -}}
 {{- else -}}
@@ -67,7 +67,7 @@ Create a fully qualified collector name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 */}}
 {{- define "jaeger.collector.name" -}}
-{{- $nameGlobalOverride := printf "%s" (include "jaeger.fullname" .) -}}
+{{- $nameGlobalOverride := printf "%s-collector" (include "jaeger.fullname" .) -}}
 {{- if .Values.collector.fullnameOverride -}}
 {{- printf "%s" .Values.collector.fullnameOverride | trunc 63 | trimSuffix "-" -}}
 {{- else -}}

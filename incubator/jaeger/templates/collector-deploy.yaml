@@ -2,7 +2,7 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "jaeger.collector.name" . }}-collector
+  name: {{ template "jaeger.collector.name" . }}
   labels:
     app: {{ template "jaeger.name" . }}
     jaeger-infra: collector-deployment
@@ -32,7 +32,7 @@ spec:
       nodeSelector:
 {{ toYaml .Values.collector.nodeSelector | indent 8 }}
       containers:
-      - name: {{ template "jaeger.collector.name" . }}-collector
+      - name: {{ template "jaeger.collector.name" . }}
         image: {{ .Values.collector.image }}:{{ .Values.collector.tag }}
         imagePullPolicy: {{ .Values.collector.pullPolicy }}
         env:

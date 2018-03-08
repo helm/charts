@@ -2,7 +2,7 @@
 apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
-  name: {{ template "jaeger.agent.name" . }}-agent
+  name: {{ template "jaeger.agent.name" . }}
   labels:
     app: {{ template "jaeger.name" . }}
     jaeger-infra: agent-daemonset
@@ -29,7 +29,7 @@ spec:
       nodeSelector:
 {{ toYaml .Values.agent.nodeSelector | indent 8 }}
       containers:
-      - name: {{ template "jaeger.agent.name" . }}-agent
+      - name: {{ template "jaeger.agent.name" . }}
         image: {{ .Values.agent.image }}:{{ .Values.agent.tag }}
         imagePullPolicy: {{ .Values.agent.pullPolicy }}
         env:
