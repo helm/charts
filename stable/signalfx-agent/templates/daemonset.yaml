@@ -12,9 +12,7 @@ spec:
   selector:
     matchLabels:
       app: {{ template "signalfx-agent.name" . }}
-      {{ if ne .Release.Name "RELEASE-NAME" -}}
       release: {{ .Release.Name }}
-      {{- end }}
   updateStrategy:
     rollingUpdate:
       maxUnavailable: "100%"
@@ -24,9 +22,7 @@ spec:
       labels:
         app: {{ template "signalfx-agent.name" . }}
         version: {{ .Values.agentVersion }}
-        {{ if ne .Release.Name "RELEASE-NAME" -}}
         release: {{ .Release.Name }}
-        {{- end}}
         {{ with .Values.extraPodLabels -}}
         {{ toYaml . | indent 8 | trim }}
         {{- end }}
