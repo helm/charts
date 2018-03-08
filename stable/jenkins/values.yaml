@@ -43,6 +43,10 @@ Master:
   HealthProbes: true
   HealthProbesTimeout: 60
   SlaveListenerPort: 50000
+  # Kubernetes service type for the JNLP slave service
+  # SETTING THIS TO "LoadBalancer" IS A HUGE SECURITY RISK: https://github.com/kubernetes/charts/issues/1341
+  SlaveListenerServiceType: ClusterIP
+  SlaveListenerServiceAnnotations: {}
   LoadBalancerSourceRanges:
   - 0.0.0.0/0
   # Optionally assign a known public LB IP

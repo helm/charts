@@ -1,0 +1,56 @@
+{{- $serviceName := include "artifactory-ha.fullname" . -}}
+{{- $servicePort := .Values.artifactory.externalPort -}}
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ template "artifactory-ha.nginx.fullname" . }}
+  labels:
+    app: {{ template "artifactory-ha.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+    component: {{ .Values.nginx.name }}
+spec:
+  replicas: {{ .Values.nginx.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "artifactory-ha.name" . }}
+      release: {{ .Release.Name }}
+      component: {{ .Values.nginx.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "artifactory-ha.name" . }}
+        component: "{{ .Values.nginx.name }}"
+        release: {{ .Release.Name }}
+    spec:
+    {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+      - name: {{ .Values.imagePullSecrets }}
+    {{- end }}
+      containers:
+      - name: {{ .Values.nginx.name }}
+        image: '{{ .Values.nginx.image.repository }}:{{ .Values.nginx.image.version }}'
+        imagePullPolicy: {{ .Values.nginx.image.pullPolicy }}
+        lifecycle:
+          postStart:
+            exec:
+              command:
+              - '/bin/sh'
+              - '-c'
+              - >
+                until [ -f /etc/nginx/conf.d/artifactory.conf ]; do sleep 1; done;
+                sed -i -e 's,proxy_pass .*,proxy_pass     http://{{ $serviceName }}:{{ $servicePort }}/artifactory/;,g' \
+                    -e 's,server_name .*,server_name ~(?<repo>.+)\\.{{ $serviceName }} {{ $serviceName }};,g' \
+                    /etc/nginx/conf.d/artifactory.conf;
+                sleep 5; nginx -s reload; touch /var/log/nginx/conf.done
+        env:
+        - name: ART_BASE_URL
+          value: 'http://{{ $serviceName }}:{{ $servicePort }}/artifactory'
+        - name: SSL
+          value: "{{ .Values.nginx.env.ssl }}"
+        ports:
+        - containerPort: 80
+        - containerPort: 443
+        resources:
+{{ toYaml .Values.nginx.resources | indent 10 }}

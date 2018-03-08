@@ -13,5 +13,8 @@ spec:
   - name: mysql
     port: {{ .Values.service.port }}
     targetPort: mysql
+    {{- if .Values.service.nodePort }}
+    nodePort: {{ .Values.service.nodePort }}
+    {{- end }}
   selector:
     app: {{ template "mysql.fullname" . }}
