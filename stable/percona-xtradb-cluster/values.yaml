@@ -31,6 +31,10 @@ replicas: 3
 ##
 # mysqlDatabase: test
 
+## hosts to allow root user access from
+# set to "127.0.0.1" to deny remote root.
+allowRootFrom: "%"
+
 ## Persist data to a persitent volume
 persistence:
   enabled: false
