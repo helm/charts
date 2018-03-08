@@ -43,7 +43,7 @@ spec:
             secretKeyRef:
               name: {{ template "sematext.fullname" . }}
               key: logsene-token
-        - envFrom:
+        envFrom:
           - configMapRef:
               name: {{ template "sematext.fullname" . }}
         volumeMounts:
