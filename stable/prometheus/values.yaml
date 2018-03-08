@@ -644,7 +644,7 @@ pushgateway:
 ## alertmanager ConfigMap entries
 ##
 alertmanagerFiles:
-  alertmanager.yml:
+  alertmanager.yml: |-
     global:
       # slack_api_url: ''
 
@@ -666,7 +666,7 @@ serverFiles:
   alerts: {}
   rules: {}
 
-  prometheus.yml:
+  prometheus.yml: |-
     rule_files:
       - /etc/config/rules
       - /etc/config/alerts
