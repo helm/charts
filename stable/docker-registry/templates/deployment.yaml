@@ -69,6 +69,14 @@ spec:
                 secretKeyRef:
                   name: {{ template "docker-registry.fullname" . }}-secret
                   key: s3SecretKey
+            - name: REGISTRY_STORAGE_S3_REGION
+              value: {{ required ".Values.s3.region is required" .Values.s3.region }}
+            - name: REGISTRY_STORAGE_S3_BUCKET
+              value: {{ required ".Values.s3.bucket is required" .Values.s3.bucket }}
+            - name: REGISTRY_STORAGE_S3_ENCRYPT
+              value: {{ .Values.s3.encrypt }}
+            - name: REGISTRY_STORAGE_S3_SECURE
+              value: {{ .Values.s3.secure }}
 {{- end }}
           volumeMounts:
 {{- if .Values.secrets.htpasswd }}
