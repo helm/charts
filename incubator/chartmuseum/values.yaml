@@ -58,6 +58,8 @@ env:
     AUTH_ANONYMOUS_GET: false
     # sets the base context path
     CONTEXT_PATH:
+    # parallel scan limit for the repo indexer   
+    INDEX_LIMIT: 0
   secret:
     # username for basic http authentication
     BASIC_AUTH_USER:
