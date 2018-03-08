@@ -30,3 +30,11 @@ Create chart name and version as used by the chart label.
 {{- define "quassel.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
+
+{{/*
+Create a default fully qualified app name for the postgres requirement.
+*/}}
+{{- define "quassel.postgresql.fullname" -}}
+{{- $postgresContext := dict "Values" .Values.postgresql "Release" .Release "Chart" (dict "Name" "postgresql") -}}
+{{ template "postgresql.fullname" $postgresContext }}
+{{- end -}}
