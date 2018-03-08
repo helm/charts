@@ -54,7 +54,7 @@ env:
     ALLOW_OVERWRITE: false
     # absolute url for .tgzs in index.yaml
     CHART_URL:
-    # allow annonymous GET operations when auth is used
+    # allow anonymous GET operations when auth is used
     AUTH_ANONYMOUS_GET: false
     # sets the base context path
     CONTEXT_PATH:
