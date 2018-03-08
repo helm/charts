@@ -15,7 +15,7 @@ server:
       maxMemoryPerNode: "1GB"
   jvm:
     maxHeapSize: "8G"
-    gcMethod: 
+    gcMethod:
       type: "UseG1GC"
       g1:
         heapRegionSize: "32M"
