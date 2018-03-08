@@ -84,10 +84,14 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: status.podIP
+        {{- if not (hasKey .Values.configurationOverrides "zookeeper.connect") }}
         - name: KAFKA_ZOOKEEPER_CONNECT
           value: {{ include "zookeeper.url" . | quote }}
+        {{- end }}
+        {{- if not (hasKey .Values.configurationOverrides "log.dirs") }}
         - name: KAFKA_LOG_DIRS
           value: {{ printf "%s/%s" .Values.persistence.mountPath .Values.logSubPath | quote }}
+        {{- end }}
         {{- range $key, $value := .Values.configurationOverrides }}
         - name: {{ printf "KAFKA_%s" $key | replace "." "_" | upper | quote }}
           value: {{ $value | quote }}
