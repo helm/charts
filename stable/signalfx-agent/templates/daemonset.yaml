@@ -15,7 +15,7 @@ spec:
       release: {{ .Release.Name }}
   updateStrategy:
     rollingUpdate:
-      maxUnavailable: "100%"
+      maxUnavailable: {{ .Values.rollingUpdateMaxUnavailable | default 1 }}
     type: RollingUpdate
   template:
     metadata:

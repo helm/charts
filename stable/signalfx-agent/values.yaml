@@ -16,6 +16,10 @@ image:
   # pullSecret is not needed for our standard image
   pullSecret:
 
+# How many agent pods can be unavailable at a time when rolling out a new
+# version of the agent
+rollingUpdateMaxUnavailable: 1
+
 # RBAC config for the agent
 rbac:
   create: true
