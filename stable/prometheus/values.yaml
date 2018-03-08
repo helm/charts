@@ -20,6 +20,11 @@ alertmanager:
     tag: v0.13.0
     pullPolicy: IfNotPresent
 
+  ## imagePullSecrets for pulling images
+  ##
+  imagePullSecrets: []
+    # - name: awsregistry
+
   ## Additional alertmanager container arguments
   ##
   extraArgs: {}
@@ -385,6 +390,11 @@ server:
     repository: prom/prometheus
     tag: v2.1.0
     pullPolicy: IfNotPresent
+
+  ## imagePullSecrets for pulling images
+  ##
+  imagePullSecrets: []
+    # - name: awsregistry
 
   ## The URL prefix at which the container can be accessed. Useful in the case the '-web.external-url' includes a slug
   ## so that the various internal URLs are still able to access as they are in the default case.
