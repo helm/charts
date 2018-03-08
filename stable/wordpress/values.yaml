@@ -1,7 +1,7 @@
 ## Bitnami WordPress image version
 ## ref: https://hub.docker.com/r/bitnami/wordpress/tags/
 ##
-image: bitnami/wordpress:4.9.4-r3
+image: bitnami/wordpress:4.9.4-r4
 
 ## Specify a imagePullPolicy
 ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
