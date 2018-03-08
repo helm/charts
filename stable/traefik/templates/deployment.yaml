@@ -129,7 +129,7 @@ spec:
       - name: acme
       {{- if .Values.acme.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ template "traefik.fullname" . }}-acme
+          claimName: {{ .Values.acme.persistence.existingClaim | default (printf "%s-acme" (include "traefik.fullname" .)) }}
       {{- else }}
         emptyDir: {}
       {{- end }}
