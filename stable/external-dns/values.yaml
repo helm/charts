@@ -32,6 +32,7 @@ cloudflare:
 # When using the Google provider, specify the Google project (required when provider=google)
 google:
   project: ""
+  serviceAccountSecret: ""
 
 ## Limit possible target zones by domain suffixes (optional)
 domainFilters: []
