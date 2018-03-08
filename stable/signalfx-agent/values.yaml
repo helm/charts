@@ -3,7 +3,7 @@
 agentVersion: 3.0.0
 
 # The access token for SignalFx.  REQUIRED
-signalFxAccessToken:
+signalFxAccessToken: ""
 
 # Docker image configuration
 image:
