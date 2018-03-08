@@ -1,0 +1,23 @@
+{{ if .Values.jupyter.enabled -}}
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "dask.fullname" . }}-jupyter
+  labels:
+    app: {{ template "dask.name" . }}
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: {{ template "dask.chart" . }}
+    component: jupyter
+spec:
+  ports:
+    - port: {{ .Values.jupyter.servicePort }}
+      targetPort: 8888
+  selector:
+    app: {{ template "dask.name" . }}
+    release: {{ .Release.Name | quote }}
+    component: jupyter
+  type: {{ .Values.jupyter.serviceType }}
+
+{{ end }}
