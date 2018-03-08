@@ -1,0 +1,27 @@
+{{ if ne .Values.schedule "now" }}
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: {{ template "mysqldump.fullname" . }}
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  schedule: "{{ .Values.schedule }}"
+  successfulJobsHistoryLimit: {{ .Values.successfulJobsHistoryLimit }}
+  failedJobsHistoryLimit: {{ .Values.failedJobsHistoryLimit }}
+  backoffLimit: 1
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    metadata:
+      labels:
+        cronjob-name: {{ template "mysqldump.fullname" . }}
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+        release: "{{ .Release.Name }}"
+        heritage: "{{ .Release.Service }}"
+    spec:
+      template:
+{{- $file := .Files.Get "files/job.tpl" }}
+{{ tpl $file . | indent 8 }}
+{{- end -}}
