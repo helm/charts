@@ -2,28 +2,28 @@
 apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "logdna.name" . }}
   labels:
-    app: {{ template "name" . }}
-    chart: {{ template "chart" . }}
+    app: {{ template "logdna.name" . }}
+    chart: {{ template "logdna.chart" . }}
     release: {{ .Release.Name }}
 spec:
   template:
     metadata:
       labels:
-        app: {{ template "fullname" . }}
-        chart: {{ template "chart" . }}
+        app: {{ template "logdna.name" . }}
+        chart: {{ template "logdna.chart" . }}
         release: {{ .Release.Name }}
     spec:
       containers:
-      - name: {{ template "fullname" . }}
+      - name: {{ template "logdna.name" . }}
         image: "{{.Values.image.name}}:{{.Values.image.tag}}"
         imagePullPolicy: "{{.Values.image.pullPolicy}}"
         env:
           - name: LOGDNA_AGENT_KEY
             valueFrom:
               secretKeyRef:
-                name: {{ template "fullname" . }}
+                name: {{ template "logdna.name" . }}
                 key: logdna-agent-key
           - name: LOGDNA_PLATFORM
             value: k8s
