@@ -26,6 +26,7 @@ spec:
         release: {{ .Release.Name }}
     spec:
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "prometheus.server.fullname" . }}{{ else }}"{{ .Values.server.serviceAccountName }}"{{ end }}
+      {{- if .Values.initChownData.enabled }}
       initContainers:
       - name: "{{ .Values.initChownData.name }}"
         image: "{{ .Values.initChownData.image.repository }}:{{ .Values.initChownData.image.tag }}"
@@ -38,6 +39,7 @@ spec:
         - name: storage-volume
           mountPath: {{ .Values.server.persistentVolume.mountPath }}
           subPath: "{{ .Values.server.persistentVolume.subPath }}"
+      {{- end }}
       containers:
         - name: {{ template "prometheus.name" . }}-{{ .Values.server.name }}-{{ .Values.configmapReload.name }}
           image: "{{ .Values.configmapReload.image.repository }}:{{ .Values.configmapReload.image.tag }}"
