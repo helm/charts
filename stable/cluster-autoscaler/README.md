@@ -100,7 +100,7 @@ Parameter | Description | Default
 `sslCertPath` | Path on the host where ssl ca cert exists | `/etc/ssl/certs/ca-certificates.crt`
 `cloudProvider` | `aws` or `spotinst` are currently supported | `aws`
 `image.repository` | Image (used if `cloudProvider=aws`) | `k8s.gcr.io/cluster-autoscaler`
-`image.tag` | Image tag (used if `cloudProvider=aws`) | `v0.6.0`
+`image.tag` | Image tag (used if `cloudProvider=aws`) | `v1.1.0`
 `image.pullPolicy` | Image pull policy (used if `cloudProvider=aws`) | `IfNotPresent`
 `extraArgs` | additional container arguments | `{}`
 `nodeSelector` | node labels for pod assignment | `{}`
