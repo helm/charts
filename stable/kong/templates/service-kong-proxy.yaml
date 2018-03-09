@@ -18,10 +18,10 @@ spec:
   {{- end }}
   ports:
   - name: kong-proxy
-  {{- if .Values.proxy.https }}
+  {{- if .Values.proxy.ssl }}
     port: {{ .Values.proxy.https.servicePort }}
     targetPort: {{ .Values.proxy.https.containerPort }}
-  {{- else if .Values.proxy.http }}
+  {{- else }}
     port: {{ .Values.proxy.http.servicePort }}
     targetPort: {{ .Values.proxy.http.containerPort }}
   {{- end }}

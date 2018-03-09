@@ -18,10 +18,10 @@ spec:
   {{- end }}
   ports:
   - name: kong-admin
-  {{- if .Values.admin.https }}
+  {{- if .Values.admin.ssl }}
     port: {{ .Values.admin.https.servicePort }}
     targetPort: {{ .Values.admin.https.containerPort }}
-  {{- else if .Values.admin.http }}
+  {{- else }}
     port: {{ .Values.admin.http.servicePort }}
     targetPort: {{ .Values.admin.http.containerPort }}
   {{- end }}
