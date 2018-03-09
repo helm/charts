@@ -153,6 +153,9 @@ spec:
             {{- if .Values.DatacenterName }}
               -datacenter {{ .Values.DatacenterName }} \
             {{- end }}
+            {{- if .Values.Domain }}
+              -domain={{ .Values.Domain }} \
+            {{- end }}
               -data-dir=/var/lib/consul \
               -server \
               -bootstrap-expect=${INITIAL_CLUSTER_SIZE} \
