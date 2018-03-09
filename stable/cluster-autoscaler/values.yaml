@@ -1,3 +1,9 @@
+autoDiscovery:
+# Only cloudProvider `aws` is supported by auto-discovery at this time
+# Set tags as described in https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/cloudprovider/aws/README.md#auto-discovery-setup
+  clusterName: default
+  enabled: true
+
 autoscalingGroups: []
   # - name: asg1
   #   maxSize: 1
