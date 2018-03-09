@@ -43,8 +43,6 @@ spec:
           value: {{ .Values.prestashopFirstName | quote }}
         - name: PRESTASHOP_LAST_NAME
           value: {{ .Values.prestashopLastName | quote }}
-        - name: PRESTASHOP_COOKIE_CHECK_IP
-          value: "no"
         - name: SMTP_HOST
           value: {{ .Values.smtpHost | quote }}
         - name: SMTP_PORT
