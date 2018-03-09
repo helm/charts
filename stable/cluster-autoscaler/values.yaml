@@ -5,9 +5,13 @@ autoDiscovery:
   enabled: true
 
 autoscalingGroups: []
+# At least one element is required if not using autoDiscovery
   # - name: asg1
   #   maxSize: 1
-  #   minSize: 1
+  #   minSize: 2
+  # - name: asg2
+  #   maxSize: 1
+  #   minSize: 2
 
 # Required if cloudProvider=aws
 awsRegion: us-east-1
@@ -36,7 +40,6 @@ extraArgs: {}
 
 ## Node labels for pod assignment
 ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
-##
 nodeSelector: {}
 
 podAnnotations: {}
@@ -77,7 +80,6 @@ service:
 spotinst:
   account: ""
   token: ""
-
   image:
     repository: spotinst/kubernetes-cluster-autoscaler
     tag: 0.6.0
