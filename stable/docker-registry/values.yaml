@@ -43,7 +43,7 @@ persistence:
   size: 10Gi
   # storageClass: '-'
 
-# set the type of filesystem to use
+# set the type of filesystem to use: filesystem, s3
 storage: filesystem
 
 # Set this to name of secret for tls certs
@@ -55,6 +55,14 @@ secrets:
 #   s3:
 #     accessKey: ""
 #     secretKey: ""
+
+# Options for s3 storage type:
+# s3:
+#  region: us-east-1
+#  bucket: my-bucket
+#  encrypt: false
+#  secure: true
+
 configData:
   version: 0.1
   log:
