@@ -5,7 +5,8 @@ kind: PersistentVolumeClaim
 metadata:
   name: {{ template "mysqldump.fullname" . }}
   labels:
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app: {{ template "mysqldump.name" . }}
+    chart: {{ template "mysqldump.chart" . }}
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:

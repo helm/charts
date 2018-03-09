@@ -16,8 +16,9 @@ spec:
   jobTemplate:
     metadata:
       labels:
+        app: {{ template "mysqldump.name" . }}
+        chart: {{ template "mysqldump.chart" . }}
         cronjob-name: {{ template "mysqldump.fullname" . }}
-        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
         release: "{{ .Release.Name }}"
         heritage: "{{ .Release.Service }}"
     spec:
