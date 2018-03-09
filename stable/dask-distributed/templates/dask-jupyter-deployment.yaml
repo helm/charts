@@ -33,3 +33,7 @@ spec:
       - name: config-volume
         configMap:
           name: {{ template "dask-distributed.jupyter-fullname" . }}-config
+    {{- if .Values.jupyter.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.jupyter.nodeSelector | indent 8 }}
+      {{- end -}}

@@ -28,3 +28,7 @@ spec:
             - containerPort: {{ .Values.webUI.containerPort }}
           resources:
 {{ toYaml .Values.scheduler.resources | indent 12 }}
+    {{- if .Values.scheduler.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.scheduler.nodeSelector | indent 8 }}
+      {{- end -}}
