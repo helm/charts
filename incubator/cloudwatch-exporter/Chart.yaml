@@ -10,3 +10,6 @@ keywords:
 - cloudwatch
 - prometheus
 - exporter
+maintainers:
+- email: gianrubio@gmail.com
+  name: Giancarlo Rubio

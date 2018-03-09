@@ -59,8 +59,8 @@ spec:
           resources:
 {{ toYaml .Values.resources | indent 12 }}
           volumeMounts:
-          - name: vol-cloudwatch-exporter
-            mountPath: /config
+            - name: vol-cloudwatch-exporter
+              mountPath: /config
      {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
