@@ -12,6 +12,11 @@ SerfwanPort: 8302
 SerfwanUdpPort: 8302
 ServerPort: 8300
 ConsulDnsPort: 8600
+
+## Specify the domain with which consul should run with
+## This will be passed as a -domain parameter
+Domain: consul
+
 ## Used as selector
 Component: "consul"
 Replicas: 3
