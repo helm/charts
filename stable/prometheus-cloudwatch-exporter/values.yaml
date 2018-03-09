@@ -1,4 +1,4 @@
-# Default values for cloudwatch-exporter.
+# Default values for prometheus-cloudwatch-exporter.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
@@ -45,7 +45,7 @@ rbac:
   create: true
 
 config: |-
-  # This is the default configuration for cloudwatch-exporter
+  # This is the default configuration for prometheus-cloudwatch-exporter
   region: eu-west-1
   period_seconds: 240
   metrics:

@@ -5,7 +5,7 @@
 ## TL;DR;
 
 ```console
-$ helm install incubator/cloudwatch-exporter
+$ helm install stable/prometheus-cloudwatch-exporter
 ```
 
 ## Introduction
@@ -22,9 +22,9 @@ To install the chart with the release name `my-release`:
 
 ```console
 $ # edit aws.aws_access_key_id and aws.aws_access_key_id with the key/password of a AWS user with a policy to access  Cloudwatch
-$ helm install --name my-release incubator/cloudwatch-exporter
+$ helm install --name my-release stable/prometheus-cloudwatch-exporter
 $ # or add a role to aws with the [correct policy](https://github.com/prometheus/cloudwatch_exporter#credentials-and-permissions) to add to cloud watch
-$ helm install --name my-release incubator/cloudwatch-exporter --set awsRole=roll_name_here
+$ helm install --name my-release stable/prometheus-cloudwatch-exporter --set awsRole=roll_name_here
 ```
 
 The command deploys Cloudwatch exporter on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
@@ -70,11 +70,11 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 ```console
 $ helm install --name my-release \
   --set aws.region=us-east-1 --set aws.role=my-aws-role \
-    incubator/cloudwatch-exporter
+    stable/prometheus-cloudwatch-exporter
 ```
 
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 
 ```console
-$ helm install --name my-release -f values.yaml incubator/cloudwatch-exporter
+$ helm install --name my-release -f values.yaml stable/prometheus-cloudwatch-exporter
 ```

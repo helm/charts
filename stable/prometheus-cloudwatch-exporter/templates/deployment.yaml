@@ -1,22 +1,22 @@
 apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
-  name: {{ template "cloudwatch-exporter.fullname" . }}
+  name: {{ template "prometheus-cloudwatch-exporter.fullname" . }}
   labels:
-    app: {{ template "cloudwatch-exporter.name" . }}
-    chart: {{ template "cloudwatch-exporter.chart" . }}
+    app: {{ template "prometheus-cloudwatch-exporter.name" . }}
+    chart: {{ template "prometheus-cloudwatch-exporter.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {{ template "cloudwatch-exporter.name" . }}
+      app: {{ template "prometheus-cloudwatch-exporter.name" . }}
       release: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app: {{ template "cloudwatch-exporter.name" . }}
+        app: {{ template "prometheus-cloudwatch-exporter.name" . }}
         release: {{ .Release.Name }}
       annotations:
         {{ if .Values.aws.role}}iam.amazonaws.com/role: {{ .Values.aws.role }}{{ end }}
@@ -35,12 +35,12 @@ spec:
               valueFrom:
                 secretKeyRef:
                   key: aws_access_key_id
-                  name: {{ template "cloudwatch-exporter.fullname" . }}
+                  name: {{ template "prometheus-cloudwatch-exporter.fullname" . }}
             - name: AWS_SECRET_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
                   key: aws_secret_access_key
-                  name: {{ template "cloudwatch-exporter.fullname" . }}
+                  name: {{ template "prometheus-cloudwatch-exporter.fullname" . }}
 {{- end }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
@@ -59,7 +59,7 @@ spec:
           resources:
 {{ toYaml .Values.resources | indent 12 }}
           volumeMounts:
-            - name: vol-cloudwatch-exporter
+            - name: vol-prometheus-cloudwatch-exporter
               mountPath: /config
      {{- with .Values.nodeSelector }}
       nodeSelector:
@@ -76,5 +76,5 @@ spec:
       volumes:
       - configMap:
           defaultMode: 420
-          name: {{ template "cloudwatch-exporter.fullname" . }}
-        name: vol-cloudwatch-exporter
+          name: {{ template "prometheus-cloudwatch-exporter.fullname" . }}
+        name: vol-prometheus-cloudwatch-exporter
