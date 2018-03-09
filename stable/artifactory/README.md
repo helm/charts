@@ -100,7 +100,7 @@ The following tables lists the configurable parameters of the artifactory chart 
 | `artifactory.replicaCount`            | Replica count for Artifactory deployment| `1`                                                |
 | `artifactory.image.pullPolicy`         | Container pull policy             | `IfNotPresent`                                           |
 | `artifactory.image.repository`    | Container image                   | `docker.bintray.io/jfrog/artifactory-pro`                |
-| `artifactory.image.version`       | Container tag                     |  `5.8.4`                                         |
+| `artifactory.image.version`       | Container tag                     |  `5.9.1`                                         |
 | `artifactory.service.name`| Artifactory service name to be set in Nginx configuration | `artifactory` |
 | `artifactory.service.type`| Artifactory service type | `ClusterIP` |
 | `artifactory.externalPort` | Artifactory service external port | `8081`   |
@@ -124,7 +124,7 @@ The following tables lists the configurable parameters of the artifactory chart 
 | `nginx.enabled` | Deploy nginx server | `true`   |
 | `nginx.replicaCount` | Nginx replica count | `1`   |
 | `nginx.image.repository`    | Container image                   | `docker.bintray.io/jfrog/nginx-artifactory-pro`                |
-| `nginx.image.version`       | Container tag                     | `5.8.4`                                                |
+| `nginx.image.version`       | Container tag                     | `5.9.1`                                                |
 | `nginx.image.pullPolicy`    | Container pull policy                   | `IfNotPresent`                |
 | `nginx.service.type`| Nginx service type | `LoadBalancer` |
 | `nginx.service.loadBalancerSourceRanges`| Nginx service array of IP CIDR ranges to whitelist (only when service type is LoadBalancer) |  |
