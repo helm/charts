@@ -9,7 +9,6 @@ metadata:
     release: {{ .Release.Name }}
   name: {{ template "elasticsearch.master.fullname" . }}
 spec:
-  clusterIP: None
   ports:
     - port: 9300
       targetPort: transport
