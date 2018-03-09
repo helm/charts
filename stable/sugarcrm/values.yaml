@@ -1,7 +1,7 @@
 ## Bitnami SugarCRM image version
 ## ref: https://hub.docker.com/r/bitnami/sugarcrm/tags/
 ##
-image: bitnami/sugarcrm:6.5.26-r1
+image: bitnami/sugarcrm:6.5.26-r2
 
 ## Specify a imagePullPolicy
 ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
