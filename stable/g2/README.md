@@ -72,7 +72,7 @@ You need to have the following parameter on the api server. See the following do
 --authorization-mode=RBAC
 ```
 
-To determine if your cluster supports RBAC, run the the following command:
+To determine if your cluster supports RBAC, run the following command:
 
 ```console
 $ kubectl api-versions | grep rbac
