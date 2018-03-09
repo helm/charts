@@ -70,6 +70,8 @@ following configurable parameters:
 | `external.domain`              | Domain in which to advertise Kafka external listeners.                                                          | `cluster.local`                                            |
 | `external.init`                | External init container settings.                                                                               | (see `values.yaml`)                                        |
 | `configurationOverrides`       | `Kafka ` [configuration setting][brokerconfigs] overrides in the dictionary format                              | `{ offsets.topic.replication.factor: 3 }`                  |
+| `jmxPort`                      | The jmx port to use for brokers.  Will expose both the port and set the KAFKA_JMX_PORT env variable.            | blank                                                      |
+| `additionsPorts`               | Additional ports to expose on brokers.  Useful when the image exposes metrics (like prometheus, etc.) through a javaagent instead of a sidecar   | `{}`                                  |
 | `updateStrategy`               | StatefulSet update strategy to use.                                                                             | `{ type: "OnDelete" }`                                     |
 | `persistence.enabled`          | Use a PVC to persist data                                                                                       | `true`                                                     |
 | `persistence.size`             | Size of data volume                                                                                             | `1Gi`                                                      |
