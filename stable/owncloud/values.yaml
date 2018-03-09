@@ -1,7 +1,7 @@
 ## Bitnami ownCloud image version
 ## ref: https://hub.docker.com/r/bitnami/owncloud/tags/
 ##
-image: bitnami/owncloud:10.0.7-r2
+image: bitnami/owncloud:10.0.7-r3
 
 ## Specify a imagePullPolicy
 ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
