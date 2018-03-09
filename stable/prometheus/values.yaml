@@ -190,6 +190,11 @@ configmapReload:
   resources: {}
 
 initChownData:
+  ## If false, data ownership will not be reset at startup
+  ## This allows the prometheus-server to be run with an arbitrary user
+  ##
+  enabled: true
+
   ## initChownData container name
   ##
   name: init-chown-data
