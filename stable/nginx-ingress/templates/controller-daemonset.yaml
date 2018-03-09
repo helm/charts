@@ -98,13 +98,13 @@ spec:
             - name: http
               containerPort: 80
               protocol: TCP
-              {{- if .Values.controller.daemonset.useHostPorts }}
+              {{- if .Values.controller.daemonset.useHostPort }}
               hostPort: 80
               {{- end }}
             - name: https
               containerPort: 443
               protocol: TCP
-              {{- if .Values.controller.daemonset.useHostPorts }}
+              {{- if .Values.controller.daemonset.useHostPort }}
               hostPort: 443
               {{- end }}
           {{- if .Values.controller.stats.enabled }}
