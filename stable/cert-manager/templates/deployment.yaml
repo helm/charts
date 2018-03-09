@@ -14,6 +14,10 @@ spec:
       labels:
         app: {{ template "cert-manager.name" . }}
         release: {{ .Release.Name }}
+      annotations:
+      {{- if .Values.podAnnotations }}
+{{ toYaml .Values.podAnnotations | indent 8 }}
+      {{- end }}
     spec:
       serviceAccountName: {{ template "cert-manager.serviceAccountName" . }}
       containers:
