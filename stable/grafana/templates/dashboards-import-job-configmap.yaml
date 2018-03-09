@@ -11,15 +11,22 @@ metadata:
 data:
   init.sh: |
     #!/bin/sh
+    set -e
     cd /var/lib/grafana/import
     {{- range $name, $val := .Values.dashboardImports.dashboards }}
-      curl -o {{ $name }} {{ $val }}
+      wget -O {{ $name }} {{ $val }}
     {{- end }}
     for dashboard in $(ls); do
-      curl "http://${ADMIN_USER}:${ADMIN_PASSWORD}@{{ template "grafana.fullname" . }}:{{ .Values.server.service.httpPort }}/api/dashboards/db" \
-      --max-time 10 \
-      --header "Content-Type: application/json;charset=UTF-8" \
-      --data-binary "{ \"dashboard\":$(cat $dashboard), \"overwrite\":false }" ;
+      wget \
+      "http://{{ template "grafana.fullname" . }}:{{ .Values.server.service.httpPort }}/api/dashboards/db" \
+      --user=${ADMIN_USER} \
+      --password=${ADMIN_PASSWORD} \
+      --auth-no-challenge \
+      --content-on-error \
+      -O- \
+      --timeout=10 \
+      --header="Content-Type: application/json;charset=UTF-8" \
+      --post-data="{ \"dashboard\":$(cat $dashboard), \"overwrite\":true }" ;
     done;
 
 {{- end -}}
