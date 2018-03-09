@@ -9,8 +9,8 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 rules:
-- apiGroups: [""]
-  resources: ["secrets","configmap"]
-  resourceNames: ["{{ template "cloudwatch-exporter.fullname" . }}"]
-  verbs: ["get"]
+  - apiGroups: [""]
+    resources: ["secrets","configmap"]
+    resourceNames: ["{{ template "cloudwatch-exporter.fullname" . }}"]
+    verbs: ["get"]
 {{- end }}

@@ -51,10 +51,7 @@ The following tables lists the configurable parameters of the Cloudwatch Exporte
 | `service.type`      | Service type |  `ClusterIP` | 
 | `service.port`                      | The service port                               | `80`                                     |
 | `service.targetPort`                      | The target port of the container                               | `9100`                                        |
-| `resources.limits.cpu`          | CPU limit                                  |                                                     |
-| `resources.limits.memory`       | Memory limit                               |                                                     |
-| `resources.requests.cpu`        | CPU request                                |                                                    |
-| `resources.requests.memory`     | Memory request                             |                                                  |
+| `resources`          |                                  |                    `{}`                                  |
 | `aws.region`                     | AWS Cloudwatch region                      | `eu-west-1`                                                |
 | `aws.role`                       | AWS IAM Role To Use                        |                                                      |
 | `aws.aws_access_key_id`                       | AWS access key id                        |                                                       |
