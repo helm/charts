@@ -1,3 +1,10 @@
+# Deprecated
+
+This chart has been deprecated.
+
+See the chart in `stable/dask` instead.
+
+
 # Dask Distributed Helm Chart
 
 Dask Distributed allows distributed computation in Python the chart also includes a single user Jupyter Notebook.
