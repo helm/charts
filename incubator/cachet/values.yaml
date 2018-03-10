@@ -53,7 +53,7 @@ redis:
 service:
   type: ClusterIP
   port: 80
-  nodePort: 
+  nodePort:
 
 ingress:
   enabled: false
