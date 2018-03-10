@@ -31,7 +31,7 @@ spec:
       # Note that this does not guarantee admission on the nodes (#40573).
       annotations:
         scheduler.alpha.kubernetes.io/critical-pod: ''
-        checksum/config: {{ include (print $.Chart.Name "/templates/configmap.yaml") . | sha256sum }}
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
     spec:
       serviceAccountName: {{ template "fluentd-elasticsearch.fullname" . }}
       containers:
