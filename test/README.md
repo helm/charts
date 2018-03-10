@@ -21,13 +21,13 @@ The static analysis currently:
 
 #### Procedure
 
-Pull requests testing is run via the [Kuberentes Test Infrastructure](https://github.com/kubernetes/test-infra).
+Pull requests testing is run via the [Kubernetes Test Infrastructure](https://github.com/kubernetes/test-infra).
 
 The configuration of the Pull Request trigger is [in the config.json](https://github.com/kubernetes/test-infra/blob/827797c54b48295045698465b437f463ca9276c2/jobs/config.json#L10285).
 
 This snippet tells Test Infra to run the [test/e2e.sh](https://github.com/kubernetes/charts/blob/master/test/e2e.sh)
 when testing is triggered on a pull request. The e2e.sh script will use the [Charts test image](https://github.com/kubernetes/charts/blob/master/test/Dockerfile)
-to run the [test/changed.sh](https://github.com/kubernetes/charts/blob/master/test/changed.sh) script. This script 
+to run the [test/changed.sh](https://github.com/kubernetes/charts/blob/master/test/changed.sh) script. This script
 is the main logic for validation of a pull request. It intends to only test charts that have changed in this PR.
 
 The logic is as follows:
@@ -43,9 +43,9 @@ The logic is as follows:
 
 #### Triggering
 
-In order for the tests to be kicked off one of the 
-[Kubernetes member](https://github.com/orgs/kubernetes/people) must add the 
-"ok-to-test" label. This can also be done by commenting "/ok-to-test" on the pull request. 
+In order for the tests to be kicked off one of the
+[Kubernetes member](https://github.com/orgs/kubernetes/people) must add the
+"ok-to-test" label. This can also be done by commenting "/ok-to-test" on the pull request.
 
 This check is there to ensure that PRs are spot checked for any nefarious code. There are 2 things to check for:
 
