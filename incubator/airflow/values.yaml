@@ -79,16 +79,16 @@ ingress:
   ##
   ## Configure the webserver endpoint
   web:
-    ##
-    ## if web is '/airflow':
-    ##  - UI will be accessible at 'http://mycompany.com/airflow/admin'
-    ##  - Healthcheck is at 'http://mycompany.com/airflow/health'
-    ##  - api is at 'http://mycompany.com/airflow/api'
     ## NOTE: This requires an airflow version > 1.9.x
     ## For the moment (March 2018) this is **not** available on official package, you will have
     ## to use an image where airflow has been updated to its current HEAD.
     ## You can use the following one:
     ##  stibbons31/docker-airflow-dev:2.0dev
+    ##
+    ## if web is '/airflow':
+    ##  - UI will be accessible at 'http://mycompany.com/airflow/admin'
+    ##  - Healthcheck is at 'http://mycompany.com/airflow/health'
+    ##  - api is at 'http://mycompany.com/airflow/api'
     ## NOTE: do NOT keep trailing slash. For root configuration, set and empty string
     path: ""
     ##
@@ -115,7 +115,7 @@ ingress:
     ## request to have been be at the root.
     ## That's why we need a reverse proxy/load balancer that is able to strip the path
     ## NOTE: do NOT keep trailing slash. For root configuration, set and empty string
-    path: /flower
+    path: /
     ##
     ## hostname for flower
     host: ""
@@ -202,9 +202,6 @@ dags:
   ##
   ## print debug logs
   git_sync_debug: false
-  ##
-  ## Disable Load examples as soon as you enable git_repo
-  load_examples: true
 
 ## Configuration values for the postgresql dependency.
 ## ref: https://github.com/kubernetes/charts/blob/master/stable/postgresql/README.md

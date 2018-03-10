@@ -27,13 +27,6 @@ The deployment uses the
 [Helm's Trick decribed here](https://github.com/kubernetes/helm/blob/master/docs/charts_tips_and_tricks.md#automatically-roll-deployments-when-configmaps-or-secrets-change)
 to force reployment when the configmap template file change.
 
-But this does not trigger a redeployment when any of the values templated inside this configmap
-changes (see issue [#3601](https://github.com/kubernetes/helm/issues/3601)).
-
-If you want to automatize the reployment when the configmap change, you need to use the
-[Fabric8's Configmap controller](https://github.com/fabric8io/configmapcontroller/).
-This Helm already carries these annotations.
-
 ### Helm ingresses
 
 The Chart provides ingress configuration to allow customization the installation by adapting
@@ -43,6 +36,30 @@ detail on how to configure your reverse proxy.
 ### Prefix
 
 This Helm automatically prefixes all names using the release name to avoid collisions.
+
+### URL prefix
+
+This chart exposes 2 endpoints:
+
+- Airflow Web UI
+- Flower, a debug UI for Celery
+
+Both can be placed either at the root of a domain or at a sub path, for example:
+
+```
+http://mycompany.com/airflow/
+http://mycompany.com/airflow/flower
+```
+
+NOTE: Mounting the Airflow UI under a subpath requires an airflow version > 1.9.x. For the moment
+(March 2018) this is **not** available on official package, you will have to use an image where 
+airflow has been updated to its current HEAD. You can use the following one: 
+`stibbons31/docker-airflow-dev:2.0dev`
+
+Please also note than Airflow UI and Flower do not behave the same:
+
+- Airflow Web UI behave transparently, to configure it one just need to specify the `ingress.web.path` value.
+- Flower cannot handle this scheme directly and requires to use an URL rewrite mechanism in front of it. In short, it is able to generate the right URLs in the returned HTML file but cannot respond to these URL. It is commonly found in software that wasn't intended to work under something else than a root URL or localhost port. To use it, see the `value.yaml` in detail on how to configure your ingress controller to rewrite the URL (or "strip" the prefix path)
 
 ### Airflow configuration
 

@@ -9,10 +9,11 @@ metadata:
     heritage: {{ .Release.Service }}
 spec:
   replicas: {{ .Values.airflow.flower_replicas }}
+  minReadySeconds: 10
   strategy:
     type: RollingUpdate
     rollingUpdate:
-      maxSurge: 2
+      maxSurge: 4
       maxUnavailable: 0
   template:
     metadata:
@@ -36,7 +37,12 @@ spec:
               containerPort: 5555
               protocol: TCP
           args: ["flower"]
-          livenessprobe:
+          livenessProbe:
             httpGet:
-              path: "{{ .Values.ingress.flower.path }}/"
+              path: "/"
               port: flower
+            initialDelaySeconds: 60
+            periodSeconds: 60
+            timeoutSeconds: 1
+            successThreshold: 1
+            failureThreshold: 5

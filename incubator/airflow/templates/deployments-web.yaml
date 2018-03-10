@@ -9,6 +9,7 @@ metadata:
     heritage: {{ .Release.Service }}
 spec:
   replicas: {{ .Values.airflow.web_replicas }}
+  minReadySeconds: 120
   strategy:
     type: RollingUpdate
     rollingUpdate:
