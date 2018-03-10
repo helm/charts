@@ -165,7 +165,6 @@ The following tables lists the configurable parameters of the Concourse chart an
 | `secrets.awsSsmAccessKey` | AWS Access Key ID for SSM access | `nil` |
 | `secrets.awsSsmSecretKey` | AWS Secret Access Key ID for SSM access | `nil` |
 | `secrets.awsSsmSessionToken` | AWS Session Token for SSM access | `nil` |
-
 | `secrets.basicAuthUsername` | Concourse Basic Authentication Username | `concourse` |
 | `secrets.basicAuthPassword` | Concourse Basic Authentication Password | `concourse` |
 | `secrets.githubAuthClientId` | Application client ID for GitHub OAuth | `nil` |
