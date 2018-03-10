@@ -51,6 +51,7 @@ The following tables lists the configurable parameters of the CockroachDB chart 
 | `ClusterDomain`               | Cluster's default DNS domain               | `cluster.local`                              |
 | `NetworkPolicy.Enabled`       | Enable NetworkPolicy                       | `false`                                      |
 | `NetworkPolicy.AllowExternal` | Don't require client label for connections | `true`                                       |
+| `Service.Type`                | Public service type                        | `ClusterIP`                                  |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
