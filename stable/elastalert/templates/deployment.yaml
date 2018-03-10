@@ -1,3 +1,4 @@
+{{ if .Values.elasticsearch.host }}
 apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
@@ -44,3 +45,4 @@ spec:
             items:
             - key: elastalert_config
               path: elastalert_config.yaml
+{{- end }}

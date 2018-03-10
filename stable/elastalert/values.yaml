@@ -19,7 +19,7 @@ resources: {}
 
 elasticsearch:
   # elasticsearch endpoint e.g. (svc.namespace||svc)
-  host: elasticsearch
+  host: 
   # elasticsearch port
   port: 80
 
