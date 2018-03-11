@@ -202,7 +202,7 @@ Parameter | Description | Default
 `pushgateway.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
 `pushgateway.service.servicePort` | pushgateway service port | `9091`
 `pushgateway.service.type` | type of pushgateway service to create | `ClusterIP`
-`blackboxExporter.enabled` | If true, create blackbox exporter | `false`
+`blackboxExporter.enabled` | If true, create blackbox exporter | `true`
 `blackboxExporter.name` | blackbox exporter container name | `blackbox-exporter`
 `blackboxExporter.image.repository` | blackbox exporter container image repository | `prom/blackbox-exporter`
 `blackboxExporter.image.tag` | blackbox exporter container image tag | `v0.12.0`
@@ -341,7 +341,7 @@ to manually create a networkpolicy which allows it.
 
 ### Blackbox exporter configuration
 
-Blackbox expoorter if it's enabled deployed with static URL within cluster http://blackbox:9115, this was done because it should be known by different services.
+Blackbox expoorter, if it's enabled, deployed with static URL within cluster http://blackbox:9115, this was done because it should be known by different services.
 
 In order to enable probe for your service using blackbox exporter simply add `prometheus.io/probe: true` annotation. By default it will use service fqdn and port `80` to execute probe. Probe port can be specified by `prometheus.io/probe_port: 8080` service annotation.
 #### Example
