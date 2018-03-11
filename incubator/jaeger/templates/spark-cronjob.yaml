@@ -1,5 +1,5 @@
 {{- if .Values.spark.enabled -}}
-{{- if or .Capabilities.APIVersions.Has "batch/v1beta1" .Capabilities.APIVersions.Has "batch/v2alpha1" -}}
+{{- if or (.Capabilities.APIVersions.Has "batch/v1beta1") (.Capabilities.APIVersions.Has "batch/v2alpha1") -}}
 apiVersion: {{ template "cronjob.apiVersion" $ }}
 kind: CronJob
 metadata:
