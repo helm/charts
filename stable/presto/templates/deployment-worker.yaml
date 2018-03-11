@@ -1,4 +1,4 @@
-{{- if gt .Values.server.workers 0.0 }}
+{{- if gt (int .Values.server.workers) 0 }}
 apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
@@ -40,15 +40,15 @@ spec:
           livenessProbe:
             exec:
               command:
-              - /bin/bash
-              - {{ .Values.server.config.path }}/health_check.sh
+                - /bin/bash
+                - {{ .Values.server.config.path }}/health_check.sh
               initialDelaySeconds: 10
               periodSeconds: 25
           readinessProbe:
             exec:
               command:
-              - /bin/bash
-              - {{ .Values.server.config.path }}/health_check.sh
+                - /bin/bash
+                - {{ .Values.server.config.path }}/health_check.sh
               initialDelaySeconds: 5
               periodSeconds: 10
           resources:

@@ -25,7 +25,7 @@ data:
 
   config.properties: |
     coordinator=true
-{{- if gt .Values.server.workers 0.0 }}
+{{- if gt (int .Values.server.workers) 0 }}
     node-scheduler.include-coordinator=false
 {{- else }}
     node-scheduler.include-coordinator=true

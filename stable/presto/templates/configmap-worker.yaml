@@ -1,4 +1,4 @@
-{{- if gt .Values.server.workers 0.0 }}
+{{- if gt (int .Values.server.workers) 0 }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
