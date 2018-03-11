@@ -263,6 +263,8 @@ kubeStateMetrics:
   service:
     annotations:
       prometheus.io/scrape: "true"
+      prometheus.io/probe: "true"
+      prometheus.io/probe_port: "80"
     labels: {}
 
     clusterIP: None
@@ -356,6 +358,8 @@ nodeExporter:
   service:
     annotations:
       prometheus.io/scrape: "true"
+      prometheus.io/probe: "true"
+      prometheus.io/probe_port: "9100"
     labels: {}
 
     clusterIP: None
@@ -627,8 +631,10 @@ blackboxExporter:
 
   service:
     annotations:
-      prometheus.io/probe: blackbox-exporter
       prometheus.io/scrape: "true"
+      prometheus.io/probe: "true"
+      prometheus.io/probe_port: "9115"
+
     labels: {}
     clusterIP: ""
 
@@ -639,7 +645,6 @@ blackboxExporter:
 
     loadBalancerIP: ""
     loadBalancerSourceRanges: []
-    servicePort: 9115
     type: ClusterIP
 
 
@@ -970,10 +975,15 @@ serverFiles:
           - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_probe]
             action: keep
             regex: true
+          - source_labels: [__address__, __meta_kubernetes_service_annotation_prometheus_io_probe_port]
+            action: replace
+            target_label: __address__
+            regex: ([^:]+)(?::\d+)?;(\d+)
+            replacement: $1:$2
           - source_labels: [__address__]
             target_label: __param_target
           - target_label: __address__
-            replacement: blackbox
+            replacement: blackbox:9115
           - source_labels: [__param_target]
             target_label: instance
           - action: labelmap
@@ -1017,6 +1027,36 @@ serverFiles:
           - source_labels: [__meta_kubernetes_pod_name]
             action: replace
             target_label: kubernetes_pod_name
+
+      # Example Blackbox Exporter probe
+      #
+      #- job_name: 'blackbox'
+      #  metrics_path: /probe
+      #  params:
+      #    module: [http_2xx]  # Look for a HTTP 200 response.
+      #  static_configs:
+      #    - targets:
+      #      - http://example.com    # Target to probe with http.
+      #      - https://example.com   # Target to probe with https.
+      #  relabel_configs:
+      #    - source_labels: [__address__]
+      #      target_label: __param_target
+      #    - source_labels: [__param_target]
+      #      target_label: instance
+      #    - target_label: __address__
+      #      replacement: blackbox:9115  # The blackbox exporter's real hostname:port.
+
+## Blackbox Exporter configuration files
+##
+# blackboxExporterFiles:
+#  blackbox.yaml:
+#    modules:
+#      http_2xx:
+#        prober: http
+#        timeout: 5s
+#        http:
+#          method: GET
+#          preferred_ip_protocol: "ip4"
 
 networkPolicy:
   ## Enable creation of NetworkPolicy resources.

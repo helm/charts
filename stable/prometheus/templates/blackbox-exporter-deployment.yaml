@@ -27,6 +27,8 @@ spec:
           image: "{{ .Values.blackboxExporter.image.repository }}:{{ .Values.blackboxExporter.image.tag }}"
           imagePullPolicy: "{{ .Values.blackboxExporter.image.pullPolicy }}"
           args:
+          - "--config.file"
+          - /config/blackbox.yaml
           {{- range $key, $value := .Values.blackboxExporter.extraArgs }}
             - --{{ $key }}={{ $value }}
           {{- end }}
@@ -38,6 +40,9 @@ spec:
               port: 9115
             initialDelaySeconds: 10
             timeoutSeconds: 10
+          volumeMounts:
+            - name: config-volume
+              mountPath: /config
           resources:
 {{ toYaml .Values.blackboxExporter.resources | indent 12 }}
     {{- if .Values.blackboxExporter.nodeSelector }}
@@ -52,4 +57,8 @@ spec:
       affinity:
 {{ toYaml .Values.blackboxExporter.affinity | indent 8 }}
     {{- end }}
+      volumes:
+        - name: config-volume
+          configMap:
+            name: {{ template "prometheus.blackboxExporter.fullname" . }}
 {{- end }}

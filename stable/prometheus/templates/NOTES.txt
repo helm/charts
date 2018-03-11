@@ -116,7 +116,7 @@ Get the Blackbox Exporter URL by running these commands in the same shell:
         You can watch the status of by running 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "prometheus.blackboxExporter.fullname" . }}'
 
   export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "prometheus.blackboxExporter.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
-  echo http://$SERVICE_IP:{{ .Values.pushgateway.service.servicePort }}
+  echo http://$SERVICE_IP:{{ .Values.blackboxExporter.service.servicePort }}
 {{- else if contains "ClusterIP"  .Values.blackboxExporter.service.type }}
   export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "prometheus.name" . }},component={{ .Values.blackboxExporter.name }}" -o jsonpath="{.items[0].metadata.name}")
   kubectl --namespace {{ .Release.Namespace }} port-forward $POD_NAME 9091

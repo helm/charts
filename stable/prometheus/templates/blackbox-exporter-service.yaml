@@ -15,7 +15,8 @@ metadata:
 {{- if .Values.blackboxExporter.service.labels }}
 {{ toYaml .Values.blackboxExporter.service.labels | indent 4}}
 {{- end }}
-  name: {{ template "prometheus.blackboxExporter.fullname" . }}
+  # Name here is hardcoded
+  name: blackbox
 spec:
 {{- if .Values.blackboxExporter.service.clusterIP }}
   clusterIP: {{ .Values.blackboxExporter.service.clusterIP }}
@@ -35,9 +36,9 @@ spec:
 {{- end }}
   ports:
     - name: http
-      port: {{ .Values.blackboxExporter.service.servicePort }}
+      port: 9115
       protocol: TCP
-      targetPort: 9091
+      targetPort: 9115
   selector:
     app: {{ template "prometheus.name" . }}
     component: "{{ .Values.blackboxExporter.name }}"
