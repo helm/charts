@@ -21,17 +21,17 @@ imageTag: "3.9.0"
 imagePullPolicy: IfNotPresent
 
 ## Configuration values for Concourse.
-## ref: https://concourse.ci/setting-up.html
+## ref: https://concourse-ci.org/setting-up.html
 ##
 concourse:
 
   ## ATC listen port.
-  ## ref: https://concourse.ci/architecture.html
+  ## ref: https://concourse-ci.org/architecture.html
   ##
   atcPort: 8080
 
   ## TSA listen port.
-  ## ref: https://concourse.ci/architecture.html
+  ## ref: https://concourse-ci.org/architecture.html
   ##
   tsaPort: 2222
 
@@ -87,19 +87,19 @@ concourse:
   # insecureDockerRegistry:
 
   ## Enable encryption of pipeline configuration. Encryption keys can be set via secrets.
-  ## See https://concourse.ci/encryption.html
+  ## See https://concourse-ci.org/encryption.html
   ##
   encryption:
     enabled: false
 
   ## Enable basic auth for the "main" Concourse team.
-  ## See https://concourse.ci/teams.html#basic-auth
+  ## See https://concourse-ci.org/teams.html#basic-auth
   ##
   basicAuth:
     enabled: true
 
   ## Enable GitHub auth for the "main" Concourse team.
-  ## See https://concourse.ci/teams.html#github-auth
+  ## See https://concourse-ci.org/teams.html#github-auth
   ##
   githubAuth:
     enabled: false
@@ -150,7 +150,7 @@ concourse:
     # apiUrl:
 
   ## Enable generic OAuth for the "main" Concourse team.
-  ## See https://concourse.ci/teams.html#generic-oauth
+  ## See https://concourse-ci.org/teams.html#generic-oauth
   ##
   genericOauth:
     enabled: false
@@ -268,7 +268,7 @@ web:
     #
 
   ## Metric Configuration
-  ## ref: https://concourse.ci/metrics.html
+  ## ref: https://concourse-ci.org/metrics.html
   ##
   metrics:
 
@@ -352,7 +352,7 @@ worker:
   #    effect: "NoSchedule"
 
   ## Time to allow the pod to terminate before being forcefully terminated. This should provide time for
-  ## the worker to retire, i.e. drain its tasks. See https://concourse.ci/worker-internals.html for worker
+  ## the worker to retire, i.e. drain its tasks. See https://concourse-ci.org/worker-internals.html for worker
   ## lifecycle semantics.
   terminationGracePeriodSeconds: 60
 
@@ -435,7 +435,7 @@ postgresql:
     enabled: true
 
 ## Configuration values for using a Credential Manager. Only one can be enabled.
-## ref: https://concourse.ci/creds.html
+## ref: https://concourse-ci.org/creds.html
 ##
 credentialManager:
 
@@ -526,7 +526,7 @@ secrets:
   create: true
 
   ## Concourse Host Keys.
-  ## ref: https://concourse.ci/binaries.html#generating-keys
+  ## ref: https://concourse-ci.org/binaries.html#generating-keys
   ##
   hostKey: |-
     -----BEGIN RSA PRIVATE KEY-----
@@ -561,7 +561,7 @@ secrets:
     ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDYBQ9fG6IML+qsFaMh1Pl+81wyUwRilHdfhItAiAsLVQsOwI5+V4pn5aLhHPBuRQqIqYmbkZ7I1VUIN1+90PVJ3X7l9qqanb85AHMtLujw1j9u0zDyH2XHgpUloknUQzUSLIZjjU3Hn3Uo/XikF+vT8104isO7Ym8Xp7sIcRuvOQ3nuRsFVCRogxpLTVHD/k57rwYVqWWLaKLwvx01ZVXOq4GHk/BVaKa9ODC/dNgbZMfwvVVXuf7/NFGmSMyXb49Si4aoP4Gn7jAX6GngBbm/bgKqO0skQy/ggQm/YVF+s5q4EhleMBLVJKD1VpM5LeLDFpiu/y4bVd8wUcgK+QQ9 Concourse
 
   ## Concourse Session Signing Keys.
-  ## ref: https://concourse.ci/binaries.html#generating-keys
+  ## ref: https://concourse-ci.org/binaries.html#generating-keys
   ##
   sessionSigningKey: |-
     -----BEGIN RSA PRIVATE KEY-----
@@ -593,7 +593,7 @@ secrets:
     -----END RSA PRIVATE KEY-----
 
   ## Concourse Worker Keys.
-  ## ref: https://concourse.ci/binaries.html#generating-keys
+  ## ref: https://concourse-ci.org/binaries.html#generating-keys
   ##
   workerKey: |-
     -----BEGIN RSA PRIVATE KEY-----
