@@ -1,6 +1,6 @@
 # Concourse Helm Chart
 
-[Concourse](https://concourse.ci/) is a simple and scalable CI system.
+[Concourse](https://concourse-ci.org/) is a simple and scalable CI system.
 
 ## TL;DR;
 
@@ -10,7 +10,7 @@ $ helm install stable/concourse
 
 ## Introduction
 
-This chart bootstraps a [Concourse](https://concourse.ci/) deployment on a [Kubernetes](https://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
+This chart bootstraps a [Concourse](https://concourse-ci.org/) deployment on a [Kubernetes](https://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
 ## Prerequisites Details
 
@@ -68,7 +68,7 @@ The following tables lists the configurable parameters of the Concourse chart an
 | Parameter               | Description                           | Default                                                    |
 | ----------------------- | ----------------------------------    | ---------------------------------------------------------- |
 | `image` | Concourse image | `concourse/concourse` |
-| `imageTag` | Concourse image version | `3.8.0` |
+| `imageTag` | Concourse image version | `3.9.0` |
 | `imagePullPolicy` | Concourse image pull policy | `IfNotPresent` |
 | `concourse.externalURL` | URL used to reach any ATC from the outside world | `nil` |
 | `concourse.atcPort` | Concourse ATC listen port | `8080` |
@@ -165,7 +165,6 @@ The following tables lists the configurable parameters of the Concourse chart an
 | `secrets.awsSsmAccessKey` | AWS Access Key ID for SSM access | `nil` |
 | `secrets.awsSsmSecretKey` | AWS Secret Access Key ID for SSM access | `nil` |
 | `secrets.awsSsmSessionToken` | AWS Session Token for SSM access | `nil` |
-
 | `secrets.basicAuthUsername` | Concourse Basic Authentication Username | `concourse` |
 | `secrets.basicAuthPassword` | Concourse Basic Authentication Password | `concourse` |
 | `secrets.githubAuthClientId` | Application client ID for GitHub OAuth | `nil` |
@@ -313,7 +312,7 @@ The only way to completely avoid putting secrets in Helm is to bring your own Po
 
 ### Credential Management
 
-Pipelines ususally need credentials to do things. Concourse supports the use of a [Credential Manager](https://concourse.ci/creds.html) so your pipelines can contain references to secrets instead of the actual secret values. You can't use more than one credential manager at a time.
+Pipelines ususally need credentials to do things. Concourse supports the use of a [Credential Manager](https://concourse-ci.org/creds.html) so your pipelines can contain references to secrets instead of the actual secret values. You can't use more than one credential manager at a time.
 
 #### Kubernetes Secrets
 
@@ -365,7 +364,7 @@ To use Vault, set `credentialManager.kubernetes.enabled` to false, and set the f
 
 ```yaml
 ## Configuration values for the Credential Manager.
-## ref: https://concourse.ci/creds.html
+## ref: https://concourse-ci.org/creds.html
 ##
 credentialManager:
 
