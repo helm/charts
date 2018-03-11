@@ -21,6 +21,7 @@ spec:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
     spec:
+      serviceAccountName: {{ template "prometheus-postgres-exporter.serviceAccountName" . }}
       containers:
         - name: {{ .Chart.Name }}
           env:          
