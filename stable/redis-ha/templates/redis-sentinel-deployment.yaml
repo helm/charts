@@ -11,9 +11,7 @@ spec:
         name: {{ template "fullname" . }}-sentinel
 {{ include "labels.standard" . | indent 8 }}
     spec:
-      {{ if .Values.serviceAccount.create }}
       serviceAccountName: {{ template "redis-ha.serviceAccountName" . }}
-      {{- end }}
       {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
