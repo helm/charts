@@ -1,0 +1,40 @@
+{{- if .Values.ExternalIPs }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: "{{ template "consul.fullname" . }}-external"
+  labels:
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    component: "{{ .Release.Name }}-{{ .Values.Component }}"
+spec:
+  ports:
+  - name: http
+    port: {{ .Values.HttpPort }}
+  - name: rpc
+    port: {{ .Values.RpcPort }}
+  - name: serflan-tcp
+    protocol: "TCP"
+    port: {{ .Values.SerflanPort }}
+  - name: serflan-udp
+    protocol: "UDP"
+    port: {{ .Values.SerflanUdpPort }}
+  - name: serfwan-tcp
+    protocol: "TCP"
+    port: {{ .Values.SerfwanPort }}
+  - name: serfwan-udp
+    protocol: "UDP"
+    port: {{ .Values.SerfwanUdpPort }}
+  - name: server
+    port: {{.Values.ServerPort}}
+  - name: consuldns-tcp
+    port: {{.Values.ConsulDnsPort}}
+  - name: consuldns-udp
+    protocol: "UDP"
+    port: {{.Values.ConsulDnsPort}}
+  externalIPs:
+{{ toYaml .Values.ExternalIPs | indent 4 }}
+  selector:
+    component: "{{ .Release.Name }}-{{ .Values.Component }}"
+{{- end }}
