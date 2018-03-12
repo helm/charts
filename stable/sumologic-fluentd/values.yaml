@@ -30,9 +30,9 @@ sumologic:
   ## in the container (Default "/fluentd/conf.d/user")
   fluentdUserConfigDir: ""
 
-  ## How frequently to push logs to SumoLogic (default 5s)
+  ## How frequently to push logs to SumoLogic (default 30s)
   ## ref: https://github.com/SumoLogic/fluentd-kubernetes-sumologic#options
-  # flushInterval: 5
+  flushInterval: 5
 
   ## Increase number of http threads to Sumo. May be required in heavy logging clusters (default 1)
   # numThreads: 1
