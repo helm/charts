@@ -6,6 +6,7 @@ keywords:
 - keyvalue
 - database
 version: 2.1.0
+appVersion: 4.0.8-r0
 description: Highly available Redis cluster with multiple sentinels and standbys.
 icon: https://upload.wikimedia.org/wikipedia/en/thumb/6/6b/Redis_Logo.svg/1200px-Redis_Logo.svg.png
 maintainers:
