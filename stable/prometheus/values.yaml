@@ -1035,33 +1035,33 @@ serverFiles:
 
       # Example Blackbox Exporter probe
       #
-      #- job_name: 'blackbox'
-      #  metrics_path: /probe
-      #  params:
-      #    module: [http_2xx]  # Look for a HTTP 200 response.
-      #  static_configs:
-      #    - targets:
-      #      - http://example.com    # Target to probe with http.
-      #      - https://example.com   # Target to probe with https.
-      #  relabel_configs:
-      #    - source_labels: [__address__]
-      #      target_label: __param_target
-      #    - source_labels: [__param_target]
-      #      target_label: instance
-      #    - target_label: __address__
-      #      replacement: blackbox:9115  # The blackbox exporter's real hostname:port.
+      # - job_name: 'blackbox'
+      #   metrics_path: /probe
+      #   params:
+      #     module: [http_2xx]  # Look for a HTTP 200 response.
+      #   static_configs:
+      #     - targets:
+      #       - http://example.com    # Target to probe with http.
+      #       - https://example.com   # Target to probe with https.
+      #   relabel_configs:
+      #     - source_labels: [__address__]
+      #       target_label: __param_target
+      #     - source_labels: [__param_target]
+      #       target_label: instance
+      #     - target_label: __address__
+      #       replacement: blackbox:9115  # The blackbox exporter's real hostname:port.
 
 ## Blackbox Exporter configuration files
 ##
 blackboxExporterFiles:
- blackbox.yaml:
-   modules:
-     http_2xx:
-       prober: http
-       timeout: 5s
-       http:
-         method: GET
-         preferred_ip_protocol: "ip4"
+  blackbox.yaml:
+    modules:
+      http_2xx:
+        prober: http
+        timeout: 5s
+        http:
+          method: GET
+          preferred_ip_protocol: "ip4"
 
 networkPolicy:
   ## Enable creation of NetworkPolicy resources.
