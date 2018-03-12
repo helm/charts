@@ -69,7 +69,7 @@ The following table lists the configurable parameters of the Redis chart and the
 | `tolerations`                    | Toleration labels for pod assignment                  | []                                                        |
 | `servers.serviceType`            | Set to "LoadBalancer" to enable access from the VPC   | ClusterIP                                                 |
 | `servers.annotations`            | See Appliance mode                                    | ``                                                        |
-| `rbac.create`                    | If true, create & use RBAC resources                  | `false`                                                   |
+| `serviceAccount.create`                    | If true, create & use RBAC resources                  | `false`                                                   |
 | `max_memory`                     | Sets the maximum memory redis can allocate            | "" This defaults to the maximum memory allowed               |
 
 

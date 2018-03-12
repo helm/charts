@@ -14,8 +14,8 @@ spec:
         component: sentinel
         name: {{ template "redis-ha.fullname" . }}-sentinel
     spec:
-      {{ if .Values.rbac.create }}
-      serviceAccountName: {{ template "fullname" . }}-svcacct
+      {{ if .Values.serviceAccount.create }}
+      serviceAccountName: {{ template "redis-ha.serviceAccountName" . }}
       {{- end }}
       {{- if .Values.nodeSelector }}
       nodeSelector:
