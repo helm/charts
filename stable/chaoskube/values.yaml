@@ -31,8 +31,8 @@ excludedWeekdays:
 # Set values for exempting specific times of day from Chaoskube Actions
 excludedTimesOfDay:
 
-# Exclude Specific days of the year from Tests (Dec24,Jan1)
-exckydedDaysOfYear:
+# Set values for exempting specific days of the year from Chaoskube Actions (Dec24,Jan1)
+excludedDaysOfYear:
 
 # Set specific Timezone for Actions to take place
 timezone: UTC
