@@ -3,9 +3,7 @@ apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
   name: {{ template "openebs.fullname" . }}-prometheus
-{{- if .Values.rbac.create }}
   namespace: {{ .Values.rbac.namespace }}
-{{- end }}
   labels:
     app: {{ template "openebs.name" . }}
     chart: {{ template "openebs.chart" . }}
@@ -21,7 +19,9 @@ spec:
         release: {{ .Release.Name }}
         component: prometheus
     spec:
+{{- if .Values.rbac.create }}
       serviceAccountName: {{ .Values.serviceAccount.name }}
+{{- end }}
       containers:
         - name: {{ template "openebs.name" . }}-prometheus
           image: "{{ .Values.prometheus.image }}:{{ .Values.prometheus.imageTag }}"

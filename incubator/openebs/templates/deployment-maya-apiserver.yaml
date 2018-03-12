@@ -2,9 +2,7 @@ apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
   name: {{ template "openebs.fullname" . }}-maya-apiserver
-{{- if .Values.rbac.create }}
   namespace: {{ .Values.rbac.namespace }}
-{{- end }}
   labels:
     app: {{ template "openebs.name" . }}
     chart: {{ template "openebs.chart" . }}
@@ -20,7 +18,9 @@ spec:
         release: {{ .Release.Name }}
         component: apiserver
     spec:
+{{- if .Values.rbac.create }}
       serviceAccountName: {{ .Values.serviceAccount.name }}
+{{- end }}
       containers:
       - name: {{ template "openebs.name" . }}-maya-apiserver
         image: "{{ .Values.apiserver.image }}:{{ .Values.apiserver.imageTag }}"

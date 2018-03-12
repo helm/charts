@@ -17,7 +17,7 @@ image:
 
 apiserver:
   image: "openebs/m-apiserver"
-  imageTag: "0.5.2"
+  imageTag: "0.5.3"
   replicas: 2
   ports:
     externalPort: 5656
@@ -59,11 +59,11 @@ prometheus:
 
 jiva:
   image: "openebs/jiva"
-  imageTag: "0.5.2"
+  imageTag: "0.5.3"
   replicas: 3
 
 policies:
   monitoring:
     enabled: true
     image: "openebs/m-exporter"
-    imageTag: "0.5.2"
+    imageTag: "0.5.3"

@@ -1,4 +1,3 @@
-{{- if .Values.rbac.create }}
 apiVersion: v1
 kind: Namespace
 metadata:
@@ -8,4 +7,3 @@ metadata:
     chart: {{ template "openebs.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
-{{- end }}

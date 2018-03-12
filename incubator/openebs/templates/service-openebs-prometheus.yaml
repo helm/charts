@@ -3,9 +3,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: {{ template "openebs.fullname" . }}-prometheus-service
-{{- if .Values.rbac.create }}
   namespace: {{ .Values.rbac.namespace }}
-{{- end }}
   labels:
     app: {{ template "openebs.name" . }}
     chart: {{ template "openebs.chart" . }}
