@@ -30,6 +30,7 @@ spec:
         {{- end }}
         - --excluded-weekdays={{ .Values.excludedWeekdays }}
         - --excluded-times-of-day={{ .Values.excludedTimesOfDay }}
+        - --excluded-days-of-year={{ .Values.excludedDaysOfYear }}
         - --timezone={{ .Values.timezone }}
         resources:
           requests:
