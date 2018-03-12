@@ -46,7 +46,7 @@ statefulsets/myzk-zookeeper   3         3         2m
 
 1. `statefulsets/myzk-zookeeper` is the StatefulSet created by the chart.
 1. `po/myzk-zookeeper-<0|1|2>` are the Pods created by the StatefulSet. Each Pod has a single container running a ZooKeeper server.
-1. `svc/myzk-zookeeper-headless` is the Headless Server used to control the network domain of the ZooKeeper ensemble.
+1. `svc/myzk-zookeeper-headless` is the Headless Service used to control the network domain of the ZooKeeper ensemble.
 1. `svc/myzk-zookeeper` is a Service that can be used by clients to connect to an available ZooKeeper server.
 
 ## Configuration
