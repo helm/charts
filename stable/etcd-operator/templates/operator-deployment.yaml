@@ -10,7 +10,7 @@ metadata:
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: {{ .Values.etcdOperator.replicaCount }}
   template:
     metadata:
       name: {{ template "etcd-operator.fullname" . }}
