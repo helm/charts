@@ -38,6 +38,12 @@ spec:
           {{- range .Values.autoscalingGroups }}
             - --nodes={{ .minSize }}:{{ .maxSize }}:{{ .name }}
           {{- end }}
+          {{- if eq .Values.cloudProvider "aws" }}
+            {{- if .Values.autoDiscovery.enabled }}
+            - --node-group-auto-discovery=asg:tag=k8s.io/cluster-autoscaler/enabled,kubernetes.io/cluster/
+              {{- .Values.autoDiscovery.clusterName }}
+            {{- end }}
+          {{- end }}
           {{- range $key, $value := .Values.extraArgs }}
             - --{{ $key }}{{ if $value }}={{ $value }}{{ end }}
           {{- end }}
