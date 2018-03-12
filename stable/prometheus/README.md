@@ -222,7 +222,7 @@ Parameter | Description | Default
 `blackboxExporter.service.externalIPs` | blackbox exporter service external IP addresses | `[]`
 `blackboxExporter.service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
 `blackboxExporter.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
-`blackboxExporter.service.type` | type of pushgateway service to create | `ClusterIP`
+`blackboxExporter.service.type` | type of blackbox exporter service to create | `ClusterIP`
 `rbac.create` | If true, create & use RBAC resources | `true`
 `server.name` | Prometheus server container name | `server`
 `server.image.repository` | Prometheus server container image repository | `prom/prometheus`
