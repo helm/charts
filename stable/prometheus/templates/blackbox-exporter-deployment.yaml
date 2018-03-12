@@ -23,6 +23,18 @@ spec:
         release: {{ .Release.Name }}
     spec:
       containers:
+        - name: {{ template "prometheus.name" . }}-{{ .Values.blackboxExporter.name }}-{{ .Values.configmapReload.name }}
+          image: "{{ .Values.configmapReload.image.repository }}:{{ .Values.configmapReload.image.tag }}"
+          imagePullPolicy: "{{ .Values.configmapReload.image.pullPolicy }}"
+          args:
+            - --volume-dir=/etc/config
+            - --webhook-url=http://localhost:9115/-/reload
+          resources:
+{{ toYaml .Values.configmapReload.resources | indent 12 }}
+          volumeMounts:
+            - name: config-volume
+              mountPath: /etc/config
+              readOnly: true
         - name: {{ template "prometheus.name" . }}-{{ .Values.blackboxExporter.name }}
           image: "{{ .Values.blackboxExporter.image.repository }}:{{ .Values.blackboxExporter.image.tag }}"
           imagePullPolicy: "{{ .Values.blackboxExporter.image.pullPolicy }}"

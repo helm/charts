@@ -1053,15 +1053,15 @@ serverFiles:
 
 ## Blackbox Exporter configuration files
 ##
-# blackboxExporterFiles:
-#  blackbox.yaml:
-#    modules:
-#      http_2xx:
-#        prober: http
-#        timeout: 5s
-#        http:
-#          method: GET
-#          preferred_ip_protocol: "ip4"
+blackboxExporterFiles:
+ blackbox.yaml:
+   modules:
+     http_2xx:
+       prober: http
+       timeout: 5s
+       http:
+         method: GET
+         preferred_ip_protocol: "ip4"
 
 networkPolicy:
   ## Enable creation of NetworkPolicy resources.
