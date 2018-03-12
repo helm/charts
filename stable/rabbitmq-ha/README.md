@@ -76,6 +76,11 @@ and their default values.
 | `persistentVolume.size`            | Persistent volume size                                          | `8Gi`                                                    |
 | `persistentVolume.storageClass`    | Persistent volume storage class                                 | `-`                                                      |
 | `podAntiAffinity`                  | Pod antiaffinity, `hard` or `soft`                              | `hard`                                                   |
+| `rabbitmqCert.enabled`             | Mount a Secret container certificates                           | `false`                                                  |
+| `rabbitmqCert.secretName`          | Name ofo the secret container certificates                      | _name of the release_-cert                               |
+| `rabbitmqCert.cacertfile`          | base64 encoded CA certificate (overwrites existing Secret)      | ``                                                       |
+| `rabbitmqCert.certfile`            | base64 encoded server certificate (overwrites existing Secret)  | ``                                                       |
+| `rabbitmqCert.keyfile`             | base64 encoded server private key (overwrites existing Secret)  | ``                                                       |
 | `rabbitmqEpmdPort`                 | EPMD port used for cross cluster replication                    | `4369`                                                   |
 | `rabbitmqErlangCookie`             | Erlang cookie                                                   | _random 32 character long alphanumeric string_           |
 | `rabbitmqHipeCompile`              | Precompile parts of RabbitMQ using HiPE                         | `false`                                                  |
@@ -170,4 +175,3 @@ Then, install the chart with the above configuration:
 ```
 $ helm install --name my-release --set customConfigMap=true stable/rabbitmq-ha
 ```
-
