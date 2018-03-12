@@ -53,6 +53,8 @@ persistence:
   ##   GKE, AWS & OpenStack)
   ##
   # storageClass: "-"
+  # annotations:
+  #  "helm.sh/resource-policy": keep
   accessMode: ReadWriteOnce
   size: 8Gi
 resources: {}
