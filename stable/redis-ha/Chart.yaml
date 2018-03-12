@@ -20,4 +20,4 @@ details:
   Note the `redis-master` pod is used for bootstrapping only and can be deleted once
   the cluster is up and running.
 sources:
-  - https://github.com/bzumhagen/docker-images
+  - https://github.com/bzumhagen/docker-images/tree/master/redis
