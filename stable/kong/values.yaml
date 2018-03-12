@@ -14,6 +14,7 @@ admin:
   #  service.beta.kubernetes.io/aws-load-balancer-proxy-protocol: "*"
 
   # HTTPS traffic on the admin port
+  ssl: true
   https:
     servicePort: 8444
     containerPort: 8444
@@ -30,6 +31,7 @@ proxy:
   #  service.beta.kubernetes.io/aws-load-balancer-proxy-protocol: "*"
 
   # HTTPS traffic on the proxy port
+  ssl: true
   https:
     servicePort: 8443
     containerPort: 8443
