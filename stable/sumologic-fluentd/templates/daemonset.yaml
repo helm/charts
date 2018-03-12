@@ -1,26 +1,26 @@
 apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "sumologic-fluentd.fullname" . }}
   labels:
-    app: {{ template "name" . }}
+    app: {{ template "sumologic-fluentd.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
   template:
     metadata:
-      name: {{ template "fullname" . }}
+      name: {{ template "sumologic-fluentd.fullname" . }}
     {{- if .Values.podAnnotations }}
       annotations:
 {{ toYaml .Values.podAnnotations | indent 8 }}
     {{- end }}
       labels:
-        app: {{ template "name" . }}
+        app: {{ template "sumologic-fluentd.name" . }}
         release: {{ .Release.Name }}
     spec:
       containers:
-        - name: {{ template "fullname" . }}
+        - name: {{ template "sumologic-fluentd.fullname" . }}
           image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{.Values.image.pullPolicy}}
           resources:
@@ -57,7 +57,7 @@ spec:
             - name: COLLECTOR_URL
               valueFrom:
                 secretKeyRef:
-                  name: "{{ template "fullname-secrets" . }}"
+                  name: "{{ template "sumologic-fluentd.fullname-secrets" . }}"
                   key: collector-url
             - name: FLUENTD_SOURCE
               value: {{ quote .Values.sumologic.fluentdSource }}
@@ -157,7 +157,7 @@ spec:
             - name: AUDIT_LOG_PATH
               value: {{ quote .Values.sumologic.auditLogPath }}
             {{- end }}
-      serviceAccountName: {{ if .Values.rbac.create }}{{ template "fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
+      serviceAccountName: {{ if .Values.rbac.create }}{{ template "sumologic-fluentd.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
       volumes:
         - name: pos-files
           {{- if .Values.persistence.enabled }}
@@ -180,7 +180,7 @@ spec:
         {{- if .Values.sumologic.fluentdUserConfig }}
         - name: fluentd-user-conf
           configMap:
-            name: {{ template "sumologic.fluentdUserConfig.fullname" . }}
+            name: {{ template "sumologic-fluentd.fluentdUserConfig.fullname" . }}
         {{- end }}
     {{- if .Values.tolerations }}
       tolerations:
