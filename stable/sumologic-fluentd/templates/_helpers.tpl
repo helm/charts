@@ -27,5 +27,5 @@ Create a default fully qualified fluentd user conf name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 */}}
 {{- define "sumologic-fluentd.fluentdUserConfig.fullname" -}}
-{{- printf "%s-fluentd-confd" .Release.Name | trunc 63 | trimSuffix "-" -}}
+{{- printf "%s-confd" (include "sumologic-fluentd.fullname" .) | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
