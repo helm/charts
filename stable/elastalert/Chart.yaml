@@ -9,5 +9,6 @@ sources:
 maintainers:
   - name: pickledrick
     email: 9246508+pickledrick@users.noreply.github.com
-  - name: Jason Ertel
+  - name: jertel
+    email: jertel@codesim.com
 engine: gotpl
