@@ -7,7 +7,7 @@ keywords:
 - ci
 - concourse
 - concourse.ci
-home: https://concourse.ci/
+home: https://concourse-ci.org/
 sources:
 - https://github.com/concourse/bin
 - https://github.com/kubernetes/charts

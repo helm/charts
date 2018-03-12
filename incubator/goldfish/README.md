@@ -15,7 +15,7 @@ This Helm chart simplifies the deployment of [goldfish](https://github.com/Caiye
      https://github.com/tuannvm/charts/raw/tuan-vault-implementation/binary/vault-0.1.0.tgz
     ```
 
-    Alternatively Vault endpoint is provided. For more information on howto install Vault, check [here](https://www.vaultproject.io/docs/install/index.html)
+    Alternatively Vault endpoint is provided. For more information on how to install Vault, check [here](https://www.vaultproject.io/docs/install/index.html)
 
 ## Chart details
 
