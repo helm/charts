@@ -1,6 +1,7 @@
 {{- if .Values.server.ingress.enabled -}}
 {{- $releaseName := .Release.Name -}}
 {{- $servicePort := .Values.server.service.httpPort -}}
+{{- $serviceName := include "grafana.server.fullname" . -}}
 {{- $path := .Values.server.ingress.path -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
@@ -23,7 +24,7 @@ spec:
       http:
         paths:
           - backend:
-              serviceName: {{ printf "%s-%s" $releaseName "grafana" | trunc 63 }}
+              serviceName: {{ $serviceName }}
               servicePort: {{ $servicePort }}
             {{- if $path }}
             path: {{ $path }}
