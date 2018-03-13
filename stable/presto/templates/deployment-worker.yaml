@@ -42,15 +42,15 @@ spec:
               command:
                 - /bin/bash
                 - {{ .Values.server.config.path }}/health_check.sh
-              initialDelaySeconds: 10
-              periodSeconds: 25
+            initialDelaySeconds: 10
+            periodSeconds: 25
           readinessProbe:
             exec:
               command:
                 - /bin/bash
                 - {{ .Values.server.config.path }}/health_check.sh
-              initialDelaySeconds: 5
-              periodSeconds: 10
+            initialDelaySeconds: 5
+            periodSeconds: 10
           resources:
 {{ toYaml .Values.resources | indent 12 }}
     {{- with .Values.nodeSelector }}
