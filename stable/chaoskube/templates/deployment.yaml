@@ -28,6 +28,10 @@ spec:
         {{- if not .Values.dryRun }}
         - --no-dry-run
         {{- end }}
+        - --excluded-weekdays={{ .Values.excludedWeekdays }}
+        - --excluded-times-of-day={{ .Values.excludedTimesOfDay }}
+        - --excluded-days-of-year={{ .Values.excludedDaysOfYear }}
+        - --timezone={{ .Values.timezone }}
         resources:
           requests:
             cpu: {{ .Values.resources.cpu }}
