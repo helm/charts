@@ -130,6 +130,12 @@ agent:
   affinity: {}
 
 dind:
+  ## Enable or disable DinD
+  ## If disabled, the drone agent will spawn docker containers on the host. Pay
+  ## attention to the fact that we can't enforce resource constraints in that case.
+  ##
+  enabled: true
+
   ## Docker storage driver.
   ## Your DinD instance should be using the same driver as your host.
   ## ref: https://docs.docker.com/engine/userguide/storagedriver/selectadriver/

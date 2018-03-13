@@ -60,6 +60,7 @@ $ helm install --name artifactory \
 ```
 Get more details on configuring Artifactory in the [official documentation](https://www.jfrog.com/confluence/).
 
+
 ### Customizing Database password
 You can override the specified database password (set in [values.yaml](values.yaml)), by passing it as a parameter in the install command line
 ```bash
@@ -99,7 +100,7 @@ The following tables lists the configurable parameters of the artifactory chart 
 | `artifactory.replicaCount`            | Replica count for Artifactory deployment| `1`                                                |
 | `artifactory.image.pullPolicy`         | Container pull policy             | `IfNotPresent`                                           |
 | `artifactory.image.repository`    | Container image                   | `docker.bintray.io/jfrog/artifactory-pro`                |
-| `artifactory.image.version`       | Container tag                     |  `5.8.3`                                         |
+| `artifactory.image.version`       | Container tag                     |  `5.9.1`                                         |
 | `artifactory.service.name`| Artifactory service name to be set in Nginx configuration | `artifactory` |
 | `artifactory.service.type`| Artifactory service type | `ClusterIP` |
 | `artifactory.externalPort` | Artifactory service external port | `8081`   |
@@ -120,10 +121,10 @@ The following tables lists the configurable parameters of the artifactory chart 
 | `ingress.hosts`             | Artifactory Ingress hostnames       | `[]` |
 | `ingress.tls`               | Artifactory Ingress TLS configuration (YAML) | `[]` |
 | `nginx.name` | Nginx name | `nginx`   |
-| `nginx.enabled` | Deploy nginx server | `false`   |
+| `nginx.enabled` | Deploy nginx server | `true`   |
 | `nginx.replicaCount` | Nginx replica count | `1`   |
 | `nginx.image.repository`    | Container image                   | `docker.bintray.io/jfrog/nginx-artifactory-pro`                |
-| `nginx.image.version`       | Container tag                     | `5.8.3`                                                |
+| `nginx.image.version`       | Container tag                     | `5.9.1`                                                |
 | `nginx.image.pullPolicy`    | Container pull policy                   | `IfNotPresent`                |
 | `nginx.service.type`| Nginx service type | `LoadBalancer` |
 | `nginx.service.loadBalancerSourceRanges`| Nginx service array of IP CIDR ranges to whitelist (only when service type is LoadBalancer) |  |
@@ -144,7 +145,14 @@ The following tables lists the configurable parameters of the artifactory chart 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
-### Ingress TLS
+### Ingress and TLS
+To get Helm to create an ingress object with a hostname, add these two lines to your Helm command:
+```
+helm install --name artifactory \
+  --set ingress.enabled=true \
+  --set ingress.hosts[0]="artifactory.company.com" \
+```
+
 If your cluster allows automatic creation/retrieval of TLS certificates (e.g. [kube-lego](https://github.com/jetstack/kube-lego)), please refer to the documentation for that mechanism.
 
 To manually configure TLS, first create/retrieve a key & certificate pair for the address(es) you wish to protect. Then create a TLS secret in the namespace:
