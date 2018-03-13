@@ -123,7 +123,7 @@ metrics:
     lowercaseOutputName: true
     jmxUrl: service:jmx:rmi:///jndi/rmi://127.0.0.1:5555/jmxrmi
     ssl: false
-    whitelistObjectNames: ["kafka.server:*","kafka.controller:*","java.lang:*"]
+    whitelistObjectNames: ["kafka.server:*", "kafka.controller:*", "java.lang:*"]
     # rules:
     #   - pattern : kafka.server<type=ReplicaFetcherManager, name=MaxLag, clientId=(.+)><>Value
     #   - pattern : kafka.server<type=BrokerTopicMetrics, name=(BytesInPerSec|BytesOutPerSec|MessagesInPerSec), topic=(.+)><>OneMinuteRate
