@@ -11,11 +11,11 @@ metadata:
 data:
   jmx-kafka-prometheus.yml: |+
 {{- if .Values.metrics.kafkaConfig }}
-{{ toYaml .Values.metrics.kafkaRules | indent 4 }}
+{{ toYaml .Values.metrics.kafkaConfig | indent 4 }}
 {{- end }}
   jmx-zookeeper-prometheus.yaml: |+
 {{- if .Values.metrics.zookeeperConfig }}
-{{ toYaml .Values.metrics.zookeeperRules | indent 4 }}
+{{ toYaml .Values.metrics.zookeeperConfig | indent 4 }}
 {{- end }}
 
 {{- end }}
