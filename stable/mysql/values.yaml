@@ -78,3 +78,4 @@ service:
   ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services---service-types
   type: ClusterIP
   port: 3306
+  # nodePort: 32000

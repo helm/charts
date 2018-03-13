@@ -1,6 +1,6 @@
 ## Default values for Traefik
 image: traefik
-imageTag: v1.5.2
+imageTag: 1.5.3
 ## can switch the service type to NodePort if required
 serviceType: LoadBalancer
 loadBalancerIP:
@@ -13,6 +13,8 @@ memoryLimit: 30Mi
 debug:
   enabled: false
 nodeSelector: {}
+  # key: value
+affinity: {}
   # key: value
 tolerations: []
 # - key: "key"
@@ -134,6 +136,11 @@ acme:
     # storageClass: "-"
     accessMode: ReadWriteOnce
     size: 1Gi
+    ## A manually managed Persistent Volume Claim
+    ## Requires persistence.enabled: true
+    ## If defined, PVC must be created manually before volume will be bound
+    ##
+    # existingClaim:
 dashboard:
   enabled: false
   domain: traefik.example.com
