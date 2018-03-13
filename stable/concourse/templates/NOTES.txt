@@ -44,7 +44,7 @@
   Password: see basic-auth-password in secret {{ template "concourse.concourse.fullname" . }}
   {{ end }}
 {{- end }}
-* If this is your first time using Concourse, follow the tutorial at https://concourse.ci/hello-world.html
+* If this is your first time using Concourse, follow the tutorial at https://concourse-ci.org/hello-world.html
 {{- if contains "naive" .Values.concourse.baggageclaimDriver }}
 
 *******************
