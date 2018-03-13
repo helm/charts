@@ -33,9 +33,9 @@ metadata:
     app: {{ template "ark-server.name" . }}
   name: deploy-ark
 rules:
-- apiGroups: ['ark.heptio.com']
-  verbs: ["*"]
-  resources: ["*"]
+  - apiGroups: ['ark.heptio.com']
+    verbs: ["*"]
+    resources: ["*"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRoleBinding
@@ -51,7 +51,7 @@ roleRef:
   kind: ClusterRole
   name: deploy-ark
 subjects:
-- kind: ServiceAccount
-  name: {{ template "ark-server.hookSA" . }}
-  namespace: {{ .Values.namespace.backup.name }}
+  - kind: ServiceAccount
+    name: {{ template "ark-server.hookSA" . }}
+    namespace: {{ .Values.namespace.backup.name }}
 {{- end }}

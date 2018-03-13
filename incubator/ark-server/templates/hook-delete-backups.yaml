@@ -1,26 +1,27 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: deploy-ark-config
+  name: delete-ark-backups
   namespace: {{ .Values.namespace.backup.name }}
   annotations:
-    "helm.sh/hook": post-install
+    "helm.sh/hook": pre-delete
     "helm.sh/hook-delete-policy": hook-succeeded
+    "helm.sh/hook-weight": "1"
 spec:
   template:
     metadata:
-      name: deploy-ark-config
+      name: delete-ark-backups
       namespace: {{ .Values.namespace.backup.name }}
     spec:
       restartPolicy: Never
       containers:
-      - name: deploy-ark-config
-        image: claranet/gcloud-kubectl-docker
-        imagePullPolicy: Always
-        command: ["kubectl","create","-f","/tmp/"]
-        volumeMounts:
-          - name: ark-server-config
-            mountPath: /tmp
+        - name: delete-ark-backups
+          image: claranet/gcloud-kubectl-docker
+          imagePullPolicy: Always
+          command: ["kubectl", "delete", "-n", {{ .Values.namespace.backup.name | quote }}, "backup", "--all"]
+          volumeMounts:
+            - name: ark-server-config
+              mountPath: /tmp
       volumes:
         - name: ark-server-config
           configMap:

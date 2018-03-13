@@ -10,10 +10,14 @@ spec:
   selector:
     matchLabels:
       component: ark
+      release: {{ .Release.Name }}
+      app: {{ template "ark-server.name" . }}
   template:
     metadata:
       labels:
         component: ark
+        release: {{ .Release.Name }}
+        app: {{ template "ark-server.name" . }}
     spec:
       restartPolicy: Always
       serviceAccountName: {{ template "ark-server.sa" . }}
