@@ -28,8 +28,6 @@ spec:
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         args: 
-        - "-c"
-        - "/etc/filebeat.yml"
         - "-e"
         env:
         - name: POD_NAMESPACE
@@ -42,7 +40,7 @@ spec:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
         - name: filebeat-config
-          mountPath: /etc/filebeat.yml
+          mountPath: /usr/share/filebeat/filebeat.yml
           readOnly: true
           subPath: filebeat.yml
         - name: prospectors-config
@@ -64,7 +62,9 @@ spec:
         configMap:
           name: {{ template "filebeat.fullname" . }}-prospectors
       - name: data
-        emptyDir: {}
+        hostPath:
+          path: /var/lib/filebeat
+          type: DirectoryOrCreate    
       terminationGracePeriodSeconds: 60
       serviceAccountName: {{ template "filebeat.fullname" . }}
       tolerations:
