@@ -113,6 +113,7 @@ Spreading allows you specify an anti-affinity between ZooKeeper servers in the e
 | --------- | ----------- | ------- |
 | `schedulerName` | Name of scheduler to use (other than the default). | `nil` |
 | `antiAffinity` | If present it must take the values 'hard' or 'soft'. 'hard' will cause the Kubernetes scheduler to not schedule the Pods on the same physical node under any circumstances 'soft' will cause the Kubernetes scheduler to make a best effort to not co-locate the Pods, but, if the only available resources are on the same node, the scheduler will co-locate them. | `hard` |
+| `tolerations` | An optional list of tolerations for the zookeeper pods. https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/ | `[]` |
 
 ### Logging
 In order to allow for the default installation to work well with the log rolling and retention policy of Kubernetes, all logs are written to stdout. This should also be compatible with logging integrations such as Google Cloud Logging and ELK.
