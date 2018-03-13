@@ -62,7 +62,9 @@ This repository is used by Chart developers for maintaining the official charts 
 * Must include a short `NOTES.txt`, including:
     * Any relevant post-installation information for the Chart
     * Instructions on how to access the application or service provided by the Chart
-
+* Must include an `OWNERS`, including:
+    * A list of approvers and reviewers to enable the automated review process. See this [example](https://github.com/kubernetes/charts/blob/master/stable/traefik/OWNERS) for formatting
+    
 #### Merge approval and release process
 
 A Kubernetes Charts maintainer will review the Chart submission, and start a validation job in the CI to verify the technical requirements of the Chart. A maintainer may add "LGTM" (Looks Good To Me) or an equivalent comment to indicate that a PR is acceptable. Any change requires at least one LGTM. No pull requests can be merged until at least one maintainer signs off with an LGTM.
