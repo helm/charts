@@ -119,38 +119,44 @@ metrics:
   imageTag: a23062396cd5af1acdf76512632c20ea6be76885dfc20cd9ff40fb23846557e8
 
   # Rules to apply to the Kafka JMX Exporter
-  # kafkaRules:
-  #   - pattern : kafka.server<type=ReplicaFetcherManager, name=MaxLag, clientId=(.+)><>Value
-  #   - pattern : kafka.server<type=BrokerTopicMetrics, name=(BytesInPerSec|BytesOutPerSec|MessagesInPerSec), topic=(.+)><>OneMinuteRate
-  #   - pattern : kafka.server<type=KafkaRequestHandlerPool, name=RequestHandlerAvgIdlePercent><>OneMinuteRate
-  #   - pattern : kafka.server<type=Produce><>queue-size
-  #   - pattern : kafka.server<type=ReplicaManager, name=(PartitionCount|UnderReplicatedPartitions)><>(Value|OneMinuteRate)
-  #   - pattern : kafka.server<type=controller-channel-metrics, broker-id=(.+)><>(.*)
-  #   - pattern : kafka.server<type=socket-server-metrics, networkProcessor=(.+)><>(.*)
-  #   - pattern : kafka.server<type=Fetch><>queue-size
-  #   - pattern : kafka.server<type=SessionExpireListener, name=(.+)><>OneMinuteRate
-  #   - pattern : kafka.controller<type=KafkaController, name=(.+)><>Value
-  #   - pattern : java.lang<type=OperatingSystem><>SystemCpuLoad
-  #   - pattern : java.lang<type=Memory><HeapMemoryUsage>used
-  #   - pattern : java.lang<type=OperatingSystem><>FreePhysicalMemorySize
+  kafkaConfig:
+    lowercaseOutputName: true
+    jmxUrl: service:jmx:rmi:///jndi/rmi://127.0.0.1:5555/jmxrmi
+    ssl: false
+    whitelistObjectNames: ["kafka.server:*","kafka.controller:*","java.lang:*"]
+    # rules:
+    #   - pattern : kafka.server<type=ReplicaFetcherManager, name=MaxLag, clientId=(.+)><>Value
+    #   - pattern : kafka.server<type=BrokerTopicMetrics, name=(BytesInPerSec|BytesOutPerSec|MessagesInPerSec), topic=(.+)><>OneMinuteRate
+    #   - pattern : kafka.server<type=KafkaRequestHandlerPool, name=RequestHandlerAvgIdlePercent><>OneMinuteRate
+    #   - pattern : kafka.server<type=Produce><>queue-size
+    #   - pattern : kafka.server<type=ReplicaManager, name=(PartitionCount|UnderReplicatedPartitions)><>(Value|OneMinuteRate)
+    #   - pattern : kafka.server<type=controller-channel-metrics, broker-id=(.+)><>(.*)
+    #   - pattern : kafka.server<type=socket-server-metrics, networkProcessor=(.+)><>(.*)
+    #   - pattern : kafka.server<type=Fetch><>queue-size
+    #   - pattern : kafka.server<type=SessionExpireListener, name=(.+)><>OneMinuteRate
+    #   - pattern : kafka.controller<type=KafkaController, name=(.+)><>Value
+    #   - pattern : java.lang<type=OperatingSystem><>SystemCpuLoad
+    #   - pattern : java.lang<type=Memory><HeapMemoryUsage>used
+    #   - pattern : java.lang<type=OperatingSystem><>FreePhysicalMemorySize
 
-  # zookeeperRules:
-  #   - pattern: "org.apache.ZooKeeperService<name0=ReplicatedServer_id(\\d)><>(\\w+)"
-  #       name: "zookeeper_$2"
-  #   - pattern: "org.apache.ZooKeeperService<name0=ReplicatedServer_id(\\d), name1=replica.(\\d)><>(\\w+)"
-  #     name: "zookeeper_$3"
-  #     labels:
-  #       replicaId: "$2"
-  #   - pattern: "org.apache.ZooKeeperService<name0=ReplicatedServer_id(\\d), name1=replica.(\\d), name2=(\\w+)><>(\\w+)"
-  #     name: "zookeeper_$4"
-  #     labels:
-  #       replicaId: "$2"
-  #       memberType: "$3"
-  #   - pattern: "org.apache.ZooKeeperService<name0=ReplicatedServer_id(\\d), name1=replica.(\\d), name2=(\\w+), name3=(\\w+)><>(\\w+)"
-  #     name: "zookeeper_$4_$5"
-  #     labels:
-  #       replicaId: "$2"
-  #       memberType: "$3"
+  # zookeeperConfig:
+  #   rules:
+  #     - pattern: "org.apache.ZooKeeperService<name0=ReplicatedServer_id(\\d)><>(\\w+)"
+  #         name: "zookeeper_$2"
+  #     - pattern: "org.apache.ZooKeeperService<name0=ReplicatedServer_id(\\d), name1=replica.(\\d)><>(\\w+)"
+  #       name: "zookeeper_$3"
+  #       labels:
+  #         replicaId: "$2"
+  #     - pattern: "org.apache.ZooKeeperService<name0=ReplicatedServer_id(\\d), name1=replica.(\\d), name2=(\\w+)><>(\\w+)"
+  #       name: "zookeeper_$4"
+  #       labels:
+  #         replicaId: "$2"
+  #         memberType: "$3"
+  #     - pattern: "org.apache.ZooKeeperService<name0=ReplicatedServer_id(\\d), name1=replica.(\\d), name2=(\\w+), name3=(\\w+)><>(\\w+)"
+  #       name: "zookeeper_$4_$5"
+  #       labels:
+  #         replicaId: "$2"
+  #         memberType: "$3"
 
 # ------------------------------------------------------------------------------
 # Zookeeper:

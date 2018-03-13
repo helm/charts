@@ -10,18 +10,12 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
 data:
   jmx-kafka-prometheus.yml: |+
-    lowercaseOutputName: true
-    jmxUrl: service:jmx:rmi:///jndi/rmi://127.0.0.1:5555/jmxrmi
-    ssl: false
-    whitelistObjectNames: ["kafka.server:*","kafka.controller:*","java.lang:*"]
-{{- if .Values.metrics.kafkaRules }}
-    rules:
-{{ toYaml .Values.metrics.kafkaRules | indent 6 }}
+{{- if .Values.metrics.kafkaConfig }}
+{{ toYaml .Values.metrics.kafkaRules | indent 4 }}
 {{- end }}
   jmx-zookeeper-prometheus.yaml: |+
-{{- if .Values.metrics.zookeeperRules }}
-    rules:
-{{ toYaml .Values.metrics.zookeeperRules | indent 6 }}
+{{- if .Values.metrics.zookeeperConfig }}
+{{ toYaml .Values.metrics.zookeeperRules | indent 4 }}
 {{- end }}
 
 {{- end }}
