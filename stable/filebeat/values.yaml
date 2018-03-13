@@ -17,7 +17,7 @@ config:
 
   processors:
     - add_cloud_metadata:
-            
+
   filebeat.prospectors:
   - type: log
     enabled: true
