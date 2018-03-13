@@ -10,6 +10,6 @@ keywords:
 - nosql
 home: http://cassandra.apache.org
 maintainers:
-- name: Siri C
+- name: KongZ
   email: goonohc@gmail.com
 engine: gotpl
