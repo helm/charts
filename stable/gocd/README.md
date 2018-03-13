@@ -36,6 +36,8 @@ $ kubectl create clusterrolebinding clusterRoleBinding \                        
 
 ## Installing the Chart
 
+Refer the [GoCD website](https://www.gocd.org/kubernetes) for getting started with GoCD on Helm.
+ 
 To install the chart with the release name `gocd-app`:
 
 ```bash
