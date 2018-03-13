@@ -49,6 +49,11 @@ persistence:
   accessMode: ReadWriteOnce
   size: 8Gi
 
+## Node labels for pod assignment
+## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+##
+nodeSelector: {}
+
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
 ##
