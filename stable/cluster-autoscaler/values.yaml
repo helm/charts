@@ -1,7 +1,16 @@
+autoDiscovery:
+# Only cloudProvider `aws` is supported by auto-discovery at this time
+# Set tags as described in https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/cloudprovider/aws/README.md#auto-discovery-setup
+  clusterName:  # cluster.local
+
 autoscalingGroups: []
+# At least one element is required if not using autoDiscovery
   # - name: asg1
   #   maxSize: 1
-  #   minSize: 1
+  #   minSize: 2
+  # - name: asg2
+  #   maxSize: 1
+  #   minSize: 2
 
 # Required if cloudProvider=aws
 awsRegion: us-east-1
@@ -30,7 +39,6 @@ extraArgs: {}
 
 ## Node labels for pod assignment
 ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
-##
 nodeSelector: {}
 
 podAnnotations: {}
@@ -71,7 +79,6 @@ service:
 spotinst:
   account: ""
   token: ""
-
   image:
     repository: spotinst/kubernetes-cluster-autoscaler
     tag: 0.6.0
