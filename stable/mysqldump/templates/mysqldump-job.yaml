@@ -1,4 +1,4 @@
-{{ if eq .Values.schedule "now" }}
+{{- if eq .Values.schedule "now" -}}
 apiVersion: batch/v1
 kind: Job
 metadata:

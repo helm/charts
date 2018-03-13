@@ -8,7 +8,9 @@ image:
   pullPolicy: IfNotPresent
 
 mysql:
-  host: mysql
+## Without a host set, this chart will not do anything as it is expected
+## to be used only when there's an existing database to backup.
+  host:
   username: root
   password:
   port: 3306

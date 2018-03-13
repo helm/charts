@@ -1,4 +1,4 @@
-{{ if ne .Values.schedule "now" }}
+{{- if ne .Values.schedule "now" -}}
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:

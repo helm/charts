@@ -12,6 +12,10 @@ data:
 {{- if .Values.debug }}
     set -x
 {{- end }}
+    if [[ -z ${MYSQL_HOST} ]]; then
+      echo "no MySQL host specified.  Nothing to do here."
+      exit 0
+    fi
     echo "Backing up database"
     DATE=$(date +%Y%m%d%H%M%S)
     echo "started" > /backup/${DATE}.state
@@ -34,4 +38,4 @@ data:
     echo "backup complete - /backup/${DATE}.sql"
 {{- if .Values.debug }}
     ls -alh /backup
-{{- end }}
+{{- end -}}
