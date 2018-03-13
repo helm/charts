@@ -32,6 +32,7 @@ security:
   runAsUser: 1000
   fsGroup: 1000
 
+serviceType: ClusterIP
 ## Use an alternate scheduler, e.g. "stork".
 ## ref: https://kubernetes.io/docs/tasks/administer-cluster/configure-multiple-schedulers/
 ##
