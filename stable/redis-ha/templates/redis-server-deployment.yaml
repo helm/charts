@@ -38,6 +38,13 @@ spec:
             value: "redis-sentinel"
           - name: REDIS_CHART_PREFIX
             value: {{ template "fullname" . }}-
+{{- if .Values.auth }}
+          - name: REDIS_PASS
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "fullname" . }}
+                key: auth
+{{- end }}
         ports:
           - containerPort: 6379
         volumeMounts:
