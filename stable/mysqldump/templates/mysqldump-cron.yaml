@@ -12,7 +12,6 @@ spec:
   schedule: "{{ .Values.schedule }}"
   successfulJobsHistoryLimit: {{ .Values.successfulJobsHistoryLimit }}
   failedJobsHistoryLimit: {{ .Values.failedJobsHistoryLimit }}
-  backoffLimit: 1
   concurrencyPolicy: Forbid
   jobTemplate:
     metadata:
@@ -23,6 +22,7 @@ spec:
         release: "{{ .Release.Name }}"
         heritage: "{{ .Release.Service }}"
     spec:
+      backoffLimit: 1
       template:
 {{- $file := .Files.Get "files/job.tpl" }}
 {{ tpl $file . | indent 8 }}
