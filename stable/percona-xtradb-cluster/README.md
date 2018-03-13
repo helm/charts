@@ -66,6 +66,7 @@ The following tables lists the configurable parameters of the Percona chart and 
 | `persistence.size`         | Size of persistent volume claim    | 8Gi RW                                                     |
 | `persistence.storageClass` | Type of persistent volume claim    | nil  (uses alpha storage class annotation)                 |
 | `persistence.accessMode`   | ReadWriteOnce or ReadOnly          | ReadWriteOnce                                              |
+| `nodeSelector`             | Node labels for pod assignment     | `{}`							|
 | `resources`                | CPU/Memory resource requests/limits | Memory: `256Mi`, CPU: `100m`                              |
 | `configFiles` | files to write to /etc/mysql/conf.d | see values.yaml |
 | `logTail` | if set to true runs a container to tail /var/log/mysqld.log in the pod | true |
