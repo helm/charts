@@ -55,6 +55,16 @@ affinity: {}
 ##
 nodeSelector: {}
 
+# Tolerations for nodes that have taints on them.
+# Useful if you want to dedicate nodes to just run kafka
+# https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+tolerations: []
+# tolerations:
+# - key: "key"
+#   operator: "Equal"
+#   value: "value"
+#   effect: "NoSchedule"
+#
 ## Persistence configuration. Specify if and how to persist data to a persistent volume.
 ##
 persistence:
