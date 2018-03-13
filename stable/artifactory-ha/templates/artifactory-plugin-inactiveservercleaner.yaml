@@ -1,9 +1,9 @@
 kind: ConfigMap
 apiVersion: v1
 metadata:
-  name: artifactory-inactiveservercleaner
+  name: {{ template "artifactory-ha.fullname" . }}-isc
   labels:
-    app: {{ template "artifactory.name" . }}
+    app: {{ template "artifactory-ha.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
@@ -42,8 +42,7 @@ data:
                 def noHeartbeat = heartbeat > ConstantValues.haHeartbeatStaleIntervalSecs.getInt()
                 if (member.getServerState() == ArtifactoryServerState.UNAVAILABLE || noHeartbeat) {
                     try {
-                        log.info "Running inactive artifactory servers cleaning task, found ${member.serverId} inactive servers to " +
-                                "remove"
+                        log.info "Inactive artifactory servers cleaning task found server ${member.serverId} to remove"
                         artifactoryServersCommonService.removeServer(member.serverId)
 
                     }catch (Exception e){

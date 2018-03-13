@@ -1,27 +1,28 @@
 apiVersion: apps/v1beta2
 kind: StatefulSet
 metadata:
-  name: {{ template "artifactory.node.name" . }}
+  name: {{ template "artifactory-ha.node.name" . }}
   labels:
-    app: {{ template "artifactory.name" . }}
+    app: {{ template "artifactory-ha.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     component: {{ .Values.artifactory.name }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
 spec:
-  serviceName: "{{ template "artifactory.node.name" . }}"
+  serviceName: "{{ template "artifactory-ha.node.name" . }}"
   replicas: {{ .Values.artifactory.node.replicaCount }}
   updateStrategy:
     type: RollingUpdate
   selector:
     matchLabels:
-      role: {{ template "artifactory.node.name" . }}
+      app: {{ template "artifactory-ha.name" . }}
+      role: {{ template "artifactory-ha.node.name" . }}
       release: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app: {{ template "artifactory.name" . }}
-        role: {{ template "artifactory.node.name" . }}
+        app: {{ template "artifactory-ha.name" . }}
+        role: {{ template "artifactory-ha.node.name" . }}
         component: {{ .Values.artifactory.name }}
         release: {{ .Release.Name }}
     spec:
@@ -84,7 +85,10 @@ spec:
         - name: DB_USER
           value: '{{ .Values.database.user }}'
         - name: DB_PASSWORD
-          value: '{{ .Values.database.password }}'
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "artifactory-ha.fullname" . }}
+              key: db-password
       {{- end }}
         - name: EXTRA_JAVA_OPTIONS
           value: "
@@ -104,14 +108,18 @@ spec:
         - name: ARTIFACTORY_MASTER_KEY
           valueFrom:
             secretKeyRef:
-              name: {{ template "artifactory.name" . }}-master-key
+              name: {{ template "artifactory-ha.fullname" . }}
               key: master-key
         - name: HA_IS_PRIMARY
           value: "false"
         - name: HA_MEMBERSHIP_PORT
           value: "{{ .Values.artifactory.membershipPort }}"
+        - name: HA_NODE_ID
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
         - name: ART_PRIMARY_BASE_URL
-          value: "http://artifactory-primary:8081/artifactory"
+          value: 'http://{{ template "artifactory-ha.primary.name" . }}:8081/artifactory'
       {{- if eq .Values.artifactory.persistence.type "nfs" }}
         - name: HA_DATA_DIR
           value: "{{ .Values.artifactory.persistence.nfs.dataDir }}"
@@ -130,7 +138,7 @@ spec:
           mountPath: "{{ .Values.artifactory.persistence.nfs.backupDir }}"
       {{- else }}
         - name: binarystore-xml
-          mountPath: "{{ .Values.artifactory.persistence.mountPath }}/etc/binarystore.xml"
+          mountPath: "/artifactory_extra_conf/binarystore.xml"
           subPath: binarystore.xml
       {{- end }}
         resources:
@@ -151,14 +159,14 @@ spec:
       volumes:
       - name: binarystore-xml
         configMap:
-          name: artifactory-binarystore
+          name: {{ template "artifactory-ha.fullname" . }}-bs
       {{- if eq .Values.artifactory.persistence.type "nfs" }}
       - name: artifactory-ha-data
         persistentVolumeClaim:
-          claimName: {{ template "artifactory.name" . }}-data-pvc
+          claimName: {{ template "artifactory-ha.fullname" . }}-data-pvc
       - name: artifactory-ha-backup
         persistentVolumeClaim:
-          claimName: {{ template "artifactory.name" . }}-backup-pvc
+          claimName: {{ template "artifactory-ha.fullname" . }}-backup-pvc
       {{- end }}
   volumeClaimTemplates:
   - metadata:
