@@ -56,6 +56,7 @@ The following tables lists the configurable parameters of the vault chart and th
 | `replicaCount`          | k8s replicas                        | `1`                                                 |
 | `resources.limits.cpu`  | Container requested CPU             | `nil`                                               |
 | `resources.limits.memory` | Container requested memory        | `nil`                                               |
+| `affinity`              | Affinity settings                   | See values.yaml                                               |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 

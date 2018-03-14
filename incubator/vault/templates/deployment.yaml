@@ -48,16 +48,10 @@ spec:
         {{- end }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
+      {{- if .Values.affinity }}
       affinity:
-        podAntiAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-          - weight: 100
-            podAffinityTerm:
-              topologyKey: kubernetes.io/hostname
-              labelSelector:
-                matchLabels:
-                  app: {{ template "vault.fullname" . }}
-                  release: {{ .Release.Name | quote }}
+{{ tpl .Values.affinity . | indent 8 }}
+      {{- end }}
       volumes:
         - name: vault-config
           configMap:
