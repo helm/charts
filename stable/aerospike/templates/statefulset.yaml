@@ -21,6 +21,14 @@ spec:
       - name: {{ template "aerospike.fullname" . }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
+{{ if .Values.command }}
+        command:
+{{ toYaml .Values.command | indent 10 }}
+{{ end }}
+{{ if .Values.args }}
+        args:
+{{ toYaml .Values.args | indent 10 }}
+{{ end }}
         ports:
         - containerPort: 3000
           name: aero-clients

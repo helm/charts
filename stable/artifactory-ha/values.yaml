@@ -1,0 +1,186 @@
+# Default values for artifactory-ha.
+# This is a YAML-formatted file.
+# Beware when changing values here. You should know what you are doing!
+# Access the values with {{ .Values.key.subkey }}
+
+# Common
+initContainerImage: "alpine:3.6"
+
+# For supporting pulling from private registries
+imagePullSecrets:
+
+# Database
+## Configuration values for the postgresql dependency
+## ref: https://github.com/kubernetes/charts/blob/master/stable/postgressql/README.md
+##
+postgresql:
+  enabled: true
+  postgresDatabase: "artifactory"
+  postgresUser: "artifactory"
+  postgresPassword:
+  service:
+    port: 5432
+  persistence:
+    enabled: true
+    size: 50Gi
+  resources: {}
+  #  requests:
+  #    memory: "512Mi"
+  #    cpu: "100m"
+  #  limits:
+  #    memory: "1Gi"
+  #    cpu: "500m"
+
+## If NOT using the PostgreSQL in this chart (postgresql.enabled=false),
+## you must specify the following database details
+database:
+  type:
+  host:
+  port:
+  user:
+  password:
+
+# Artifactory
+artifactory:
+  name: artifactory-ha
+  image:
+    repository: "docker.bintray.io/jfrog/artifactory-pro"
+    version: 5.9.1
+    pullPolicy: IfNotPresent
+  ## Artifactory requires a unique master key
+  ## You can generate one with the command:
+  ## 'openssl rand -hex 32'
+  ## Pass it to helm with '--set artifactory.masterKey=${MASTER_KEY}'
+  ## IMPORTANT: You should NOT use the example masterKey for a production deployment!
+  masterKey: FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
+
+  ## Artifactory license secret.
+  ## If artifactory.license.secret is passed, it will be mounted as
+  ## ARTIFACTORY_HOME/etc/artifactory.cluster.license and loaded at run time.
+  ## The dataKey should be the name of the secret data key created.
+  license:
+    secret:
+    dataKey:
+  membershipPort: 10017
+  externalPort: 8081
+  internalPort: 8081
+
+  persistence:
+    redundancy: 3
+    mountPath: "/var/opt/jfrog/artifactory"
+    enabled: true
+    accessMode: ReadWriteOnce
+    size: 200Gi
+
+    ## Set the persistence storage type. This will apply the matching binarystore.xml to Artifactory config
+    ## Supported types are:
+    ## file-system (default)
+    ## nfs
+    ## google-storage
+    ## aws-s3
+    type: file-system
+
+    ## For artifactory.persistence.type nfs
+    ## If using NFS as the shared storage, you must have a running NFS server that is accessible by your Kubernetes
+    ## cluster nodes.
+    ## Need to have the following set
+    nfs:
+      # Must pass actual IP of NFS server with '--set For artifactory.persistence.nfs.ip=${NFS_IP}'
+      ip:
+      haDataMount: "/data"
+      haBackupMount: "/backup"
+      dataDir: "/var/opt/jfrog/artifactory-ha"
+      backupDir: "/var/opt/jfrog/artifactory-backup"
+      capacity: 200Gi
+    ## For artifactory.persistence.type google-storage
+    googleStorage:
+      # Set a unique bucket name
+      bucketName: "artifactory-ha-gcp"
+      identity:
+      credential:
+      path: "artifactory-ha/filestore"
+    ## For artifactory.persistence.type aws-s3
+    awsS3:
+      # Set a unique bucket name
+      bucketName: "artifactory-ha-aws"
+      region:
+      identity:
+      credential:
+      path: "artifactory-ha/filestore"
+  service:
+    name: artifactory
+    type: ClusterIP
+    ## Which nodes in the cluster should be in the external load balancer pool (have external traffic routed to them)
+    ## Supported pool values
+    ## members
+    ## all
+    pool: members
+
+  ## The following Java options are passed to the java process running Artifactory.
+  ## This will be passed to all cluster members. Primary and member nodes.
+  javaOpts:
+    other: "-Dartifactory.locking.provider.type=db"
+
+  ## Type specific configurations.
+  ## There is a difference between the primary and the member nodes.
+  ## Customising their resources and java parameters is done here.
+  primary:
+    name: artifactory-ha-primary
+    ## Resources for the primary node
+    resources: {}
+    #  requests:
+    #    memory: "1Gi"
+    #    cpu: "500m"
+    #  limits:
+    #    memory: "2Gi"
+    #    cpu: "1"
+    ## The following Java options are passed to the java process running Artifactory primary node.
+    ## You should set them according to the resources set above
+    javaOpts: {}
+    #  xms: "1g"
+    #  xmx: "2g"
+    #  other:
+  node:
+    name: artifactory-ha-member
+    replicaCount: 2
+    ## Resources for the member nodes
+    resources: {}
+    #  requests:
+    #    memory: "1Gi"
+    #    cpu: "500m"
+    #  limits:
+    #    memory: "2Gi"
+    #    cpu: "1"
+    ## The following Java options are passed to the java process running Artifactory member nodes.
+    ## You should set them according to the resources set above
+    javaOpts: {}
+    #  xms: "1g"
+    #  xmx: "2g"
+    #  other:
+
+# Nginx
+nginx:
+  name: nginx
+  replicaCount: 1
+  image:
+    repository: "docker.bintray.io/jfrog/nginx-artifactory-pro"
+    version: 5.9.1
+    pullPolicy: IfNotPresent
+  service:
+    ## For minikube, set this to NodePort, elsewhere use LoadBalancer
+    type: LoadBalancer
+    ## For supporting whitelist on the Nginx LoadBalancer service
+    ## Set this to a list of IP CIDR ranges
+    ## Example: loadBalancerSourceRanges: ['10.10.10.5/32', '10.11.10.5/32']
+    ## or pass from helm command line
+    ## Example: helm install ... --set nginx.service.loadBalancerSourceRanges='{10.10.10.5/32,10.11.10.5/32}'
+    loadBalancerSourceRanges: []
+  env:
+    ssl: true
+  resources: {}
+  #  requests:
+  #    memory: "250Mi"
+  #    cpu: "100m"
+  #  limits:
+  #    memory: "250Mi"
+  #    cpu: "500m"

@@ -1,7 +1,7 @@
 ## Bitnami WordPress image version
 ## ref: https://hub.docker.com/r/bitnami/wordpress/tags/
 ##
-image: bitnami/wordpress:4.9.4-r0
+image: bitnami/wordpress:4.9.4-r5
 
 ## Specify a imagePullPolicy
 ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -68,7 +68,7 @@ externalDatabase:
   user: bn_wordpress
 
   ## Database password
-  # password:
+  password: ""
 
   ## Database name
   database: bitnami_wordpress
@@ -124,6 +124,14 @@ mariadb:
 ## For minikube, set this to NodePort, elsewhere use LoadBalancer
 ##
 serviceType: LoadBalancer
+##
+## serviceType: NodePort
+## nodePorts:
+##   http: <to set explicitly, choose port between 30000-32767>
+##   https: <to set explicitly, choose port between 30000-32767>
+nodePorts:
+  http: ""
+  https: ""
 
 ## Allow health checks to be pointed at the https port
 healthcheckHttps: false
