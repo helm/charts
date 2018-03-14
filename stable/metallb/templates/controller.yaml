@@ -1,8 +1,7 @@
 apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
-  namespace: {{ .Release.Namespace | quote }}
-  name: {{ template "metallb.fullname" . }}
+  name: {{ template "metallb.fullname" . }}-controller
   labels:
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
@@ -41,8 +40,8 @@ spec:
         imagePullPolicy: {{ .Values.controller.image.pullPolicy }}
         args:
         - --port=7472
-        - --config-ns={{ .Release.Namespace | quote }}
-        - --config="{{ template "metallb.fullname" . }}"
+        - --config-ns={{ .Release.Namespace }}
+        - --config={{ template "metallb.fullname" . }}
         ports:
         - name: monitoring
           containerPort: 7472
