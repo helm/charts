@@ -13,7 +13,7 @@ $ helm install stable/risk-advisor
 This is a tool for operators of large Kubernetes cluster to help them foresee how adding new pods to the cluster will change the cluster state, especially which nodes will they be scheduled on and if there's enough resources in the cluster.
 
 ## Prerequisites
-  - Kuberentes 1.5, no guarantees for other versions, however it should work properly
+  - Kubernetes 1.5, no guarantees for other versions, however it should work properly
 
 ## Installing the Chart
 
