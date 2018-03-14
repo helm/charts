@@ -13,6 +13,12 @@ spec:
     {{- end }}
       labels: {{ include "external-dns.labels" . | indent 8 }}
     spec:
+      {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range $sec := .Values.image.pullSecrets }}
+        - name: {{$sec | quote }}
+      {{- end }}
+      {{- end }}
       containers:
         - name: {{ template "external-dns.name" . }}
           image: "{{.Values.image.name}}:{{ .Values.image.tag }}"
@@ -64,24 +70,17 @@ spec:
             mountPath: /etc/kubernetes/azure.json
             readOnly: true
           {{- end }}
+          {{- if (and .Values.aws.secretKey .Values.aws.accessKey) }}
+          - name: aws-credentials
+            mountPath: /root/.aws
+            readOnly: true
+          {{- end }}
           env:
         {{- if .Values.google.serviceAccountSecret }}
           - name: GOOGLE_APPLICATION_CREDENTIALS
             value: /etc/secrets/service-account/credentials.json
         {{- end }}
         {{- if eq .Values.provider "aws" }}
-        {{- if and .Values.aws.secretKey .Values.aws.accessKey }}
-          - name: AWS_ACCESS_KEY_ID
-            valueFrom:
-              secretKeyRef:
-                name: {{ template "external-dns.fullname" . }}
-                key: aws_access_key_id
-          - name: AWS_SECRET_ACCESS_KEY
-            valueFrom:
-              secretKeyRef:
-                name: {{ template "external-dns.fullname" . }}
-                key: aws_secret_access_key
-        {{- end }}
         {{- if .Values.aws.region }}
           - name: AWS_DEFAULT_REGION
             value: {{ .Values.aws.region }}
@@ -125,6 +124,11 @@ spec:
         hostPath:
           path: /etc/kubernetes/azure.json
           type: File
+      {{- end }}
+      {{- if (and .Values.aws.secretKey .Values.aws.accessKey) }}
+      - name: aws-credentials
+        secret:
+          secretName: {{ template "external-dns.fullname" . }}
       {{- end }}
     {{- if .Values.nodeSelector }}
       nodeSelector:
