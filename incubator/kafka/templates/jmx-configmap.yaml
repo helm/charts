@@ -1,4 +1,4 @@
-{{- if .Values.metrics.enabled }}
+{{- if .Values.metrics.jmx.enabled }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -10,12 +10,12 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
 data:
   jmx-kafka-prometheus.yml: |+
-{{- if .Values.metrics.kafkaConfig }}
-{{ toYaml .Values.metrics.kafkaConfig | indent 4 }}
+{{- if .Values.metrics.jmx.kafkaConfig }}
+{{ toYaml .Values.metrics.jmx.kafkaConfig | indent 4 }}
 {{- end }}
   jmx-zookeeper-prometheus.yaml: |+
-{{- if .Values.metrics.zookeeperConfig }}
-{{ toYaml .Values.metrics.zookeeperConfig | indent 4 }}
+{{- if .Values.metrics.jmx.zookeeperConfig }}
+{{ toYaml .Values.metrics.jmx.zookeeperConfig | indent 4 }}
 {{- end }}
 
 {{- end }}

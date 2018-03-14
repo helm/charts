@@ -16,7 +16,7 @@ spec:
   replicas: {{ default 3 .Values.replicas }}
   template:
     metadata:
-      {{- if .Values.metrics.enabled }}
+      {{- if .Values.metrics.jmx.enabled }}
       annotations:
         prometheus.io/scrape: "true"
         prometheus.io/port: "5556"
@@ -55,9 +55,9 @@ spec:
 {{ toYaml .Values.nodeSelector | indent 8 }}
 {{- end }}
       containers:
-      {{- if .Values.metrics.enabled }}
+      {{- if .Values.metrics.jmx.enabled }}
       - name: metrics
-        image: "{{ .Values.metrics.image }}:{{ .Values.metrics.imageTag }}"
+        image: "{{ .Values.metrics.jmx.image }}:{{ .Values.metrics.jmx.imageTag }}"
         command:
         - java
         - -XX:+UnlockExperimentalVMOptions
@@ -106,14 +106,14 @@ spec:
           name: external-{{ $i }}
           {{- end }}
         {{- end }}
-        {{- if .Values.metrics.enabled }}
+        {{- if .Values.metrics.jmx.enabled }}
         - containerPort: 5555
           name: jmx
         {{- end }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         env:
-        {{- if .Values.metrics.enabled }}
+        {{- if .Values.metrics.jmx.enabled }}
         - name: JMX_PORT
           value: "5555"
         {{- end }}
@@ -157,7 +157,7 @@ spec:
       - name: datadir
         emptyDir: {}
       {{- end }}
-      {{- if .Values.metrics.enabled }}
+      {{- if .Values.metrics.jmx.enabled }}
       - name: jmx-config
         configMap:
           name: {{ template "kafka.configmap" . }}-metrics
