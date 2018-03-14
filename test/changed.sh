@@ -17,6 +17,7 @@ set -o errexit
 set -o nounset
 set -o pipefail
 set -o xtrace
+shopt -s nullglob
 
 git remote add k8s https://github.com/kubernetes/charts
 git fetch k8s master
@@ -32,11 +33,13 @@ fi
 # include the semvercompare function
 readonly CURRENT_DIR="$(dirname "$0")"
 source "$CURRENT_DIR/semvercompare.sh"
-exit_code=0
+
+release_index=1
+exitCode=0
 current_release=""
 
 # Cleanup any releases and namespaces left over from the test
-cleanup() {
+cleanup_release() {
     if [[ -n "$current_release" ]]; then
 
         # Before reporting the logs from all pods provide a helm status for
@@ -64,10 +67,14 @@ cleanup() {
 
         helm delete --purge "$current_release" > cleanup_log 2>&1 || true
     fi
+}
 
+# Cleanup any namespace left over from the test
+cleanup_namespace() {
     kubectl delete ns "$NAMESPACE" >> cleanup_log 2>&1 || true
 }
-trap cleanup EXIT
+
+trap 'cleanup_release; cleanup_namespace' EXIT
 
 dosemvercompare() {
     # Note, the trap and automatic exiting are disabled for the semver comparison
@@ -76,11 +83,45 @@ dosemvercompare() {
     trap - EXIT
     set +e
     semvercompare "$1"
-    trap cleanup EXIT
+    trap 'cleanup_release; cleanup_namespace' EXIT
     set -e
-    if [[ "$exit_code" == 1 ]]; then
+    if [[ "$exitCode" == 1 ]]; then
         exit 1
     fi
+}
+
+test_release() {
+    values_file="${1:-}"
+    current_release="$release_name-$release_index"
+    release_index=$((release_index + 1))
+
+    if [[ -n "$values_file" ]]; then
+        echo "Testing chart with values file: $values_file..."
+        helm install --timeout 600 --name "$current_release" --namespace "$NAMESPACE" --values "$values_file" . | tee install_output
+    else
+        echo "Chart does not provide test values. Testing chart with defaults..."
+        helm install --timeout 600 --name "$current_release" --namespace "$NAMESPACE" . | tee install_output
+    fi
+
+    "$CURRENT_DIR/verify-release.sh" "$NAMESPACE"
+
+    kubectl get pods --namespace "$NAMESPACE"
+    kubectl get svc --namespace "$NAMESPACE"
+    kubectl get deployments --namespace "$NAMESPACE"
+    kubectl get endpoints --namespace "$NAMESPACE"
+
+    helm test "$current_release"
+
+    if [[ -n "${VERIFICATION_PAUSE:-}" ]]; then
+        cat install_output
+        sleep "$VERIFICATION_PAUSE"
+    fi
+
+    cleanup_release
+
+    # Setting the current release to none to avoid the cleanup and error
+    # handling for a release that no longer exists.
+    current_release=""
 }
 
 if [ ! -f "${KUBECONFIG:=}" ];then
@@ -117,7 +158,7 @@ popd
 PATH="/opt/bin/:$PATH"
 
 # Iterate over each of the changed charts
-#    Lint, install and delete
+#    Install, install and delete
 for directory in $CHANGED_FOLDERS; do
     if [[ "$directory" == "incubator/common" ]]; then
         continue
@@ -130,30 +171,23 @@ for directory in $CHANGED_FOLDERS; do
         # version is always incremented.
         dosemvercompare "$directory"
 
-        release_name="${chart_name:0:7}-${BUILD_NUMBER}"
-        current_release="$release_name"
-
         helm dep build "$directory"
-        helm install --timeout 600 --name "$release_name" --namespace "$NAMESPACE" "$directory" | tee install_output
 
-        ./test/verify-release.sh "$NAMESPACE"
+        release_name="${chart_name:0:7}-${BUILD_NUMBER}"
 
-        kubectl get pods --namespace "$NAMESPACE"
-        kubectl get svc --namespace "$NAMESPACE"
-        kubectl get deployments --namespace "$NAMESPACE"
-        kubectl get endpoints --namespace "$NAMESPACE"
+        pushd "$directory"
+            has_test_values=
 
-        helm test "$release_name"
+            for values_file in ./ci/*-values.yaml; do
+                test_release "$values_file"
+                has_test_values=true
+            done
 
-        if [[ -n "${VERIFICATION_PAUSE:-}" ]]; then
-            cat install_output
-            sleep "$VERIFICATION_PAUSE"
-        fi
-
-        helm delete --purge "$release_name"
-
-        # Setting the current release to none to avoid the cleanup and error
-        # handling for a release that no longer exists.
-        current_release=""
+            if [[ -z "$has_test_values" ]]; then
+                test_release
+            fi
+        popd
     fi
 done
+
+cleanup_namespace
