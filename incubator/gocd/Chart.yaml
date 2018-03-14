@@ -1,8 +1,8 @@
 name: gocd
 home: https://www.gocd.org/
-version: 0.2.2
+version: 0.2.3
 appVersion: 18.1.0
-description: GoCD is an open-source continuous delivery server to model and visualize complex workflows with ease.
+description: DEPRECATED GoCD is an open-source continuous delivery server to model and visualize complex workflows with ease.
 icon: https://gocd.github.io/assets/images/go-icon-black-192x192.svg
 keywords:
 - gocd
@@ -15,10 +15,5 @@ keywords:
 - continuous-testing
 sources:
 - https://github.com/gocd/gocd
-maintainers:
-- name: arvindsv
-  email: arvind@thoughtworks.com
-- name: ganeshspatil
-  email: ganeshpl@thoughtworks.com
-- name: varshavaradarajan
-  email: varshasvaradarajan@gmail.com
+# The chart has been moved to stable. Please refer to the deprecation policy - https://github.com/kubernetes/charts/blob/master/PROCESSES.md#deprecating-a-chart
+deprecated: true

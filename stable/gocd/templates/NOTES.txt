@@ -1,7 +1,3 @@
-#############################################################################################################
-DEPRECATION NOTICE: The GoCD Helm Chart is moved to stable. This chart in incubator is no longer maintained.
-#############################################################################################################
-
 1. Get the GoCD server URL by running these commands:
 {{- if .Values.server.ingress.enabled }}
     It may take a few minutes before the IP is available to access the GoCD server.

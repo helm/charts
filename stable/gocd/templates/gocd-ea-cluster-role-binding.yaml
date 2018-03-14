@@ -1,0 +1,19 @@
+{{ if .Values.rbac.create }}
+apiVersion: rbac.authorization.k8s.io/{{ required "A valid .Values.rbac.apiVersion entry required!" .Values.rbac.apiVersion }}
+kind: ClusterRoleBinding
+metadata:
+  name: {{ template "gocd.fullname" . }}
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app: "{{ template "gocd.name" . }}"
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+subjects:
+- kind: ServiceAccount
+  name: {{ template "gocd.serviceAccountName" . }}
+  namespace: {{ .Release.Namespace }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ .Values.rbac.roleRef | default (printf "%s" (include "gocd.fullname" .)) }}
+{{ end }}
