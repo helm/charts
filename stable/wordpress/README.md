@@ -73,6 +73,8 @@ The following tables lists the configurable parameters of the WordPress chart an
 | `externalDatabase.database`          | Name of the existing database              | `bitnami_wordpress`                                        |
 | `externalDatabase.port`              | Database port number                       | `3306`                                        |
 | `serviceType`                        | Kubernetes Service type                    | `LoadBalancer`                                             |
+| `nodePorts.http`                     | Kubernetes http node port                  | `""`                                                       |
+| `nodePorts.https`                    | Kubernetes https node port                 | `""`                                                       |
 | `healthcheckHttps`                   | Use https for liveliness and readiness     | `false`                                                    |
 | `ingress.enabled`                    | Enable ingress controller resource         | `false`                                                    |
 | `ingress.hosts[0].name`              | Hostname to your WordPress installation    | `wordpress.local`                                          |
