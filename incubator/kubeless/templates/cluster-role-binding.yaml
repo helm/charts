@@ -8,7 +8,7 @@ metadata:
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: kubeless-controller-deployer
+  name: {{ template "kubeless.fullname" . }}-controller-deployer
 subjects:
 - kind: ServiceAccount
   name: controller-acct
