@@ -23,9 +23,9 @@ config:
     enabled: true
     paths:
     - /var/log/**
-    exclude_files: 
+    exclude_files:
     - '(\.[0-9]{1,})$'
-    - '.gz$'
+    - templates/clusterrolebinding.yaml'.gz$'
 
   output.file:
     path: "/usr/share/filebeat/data"
