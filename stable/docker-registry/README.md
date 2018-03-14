@@ -41,7 +41,7 @@ their default values.
 | `replicaCount`              | k8s replicas                                                                             | `1`             |
 | `resources.limits.cpu`      | Container requested CPU                                                                  | `nil`           |
 | `resources.limits.memory`   | Container requested memory                                                               | `nil`           |
-| `storage`                   | Storage system to use                                                                    | `fileststem`    |
+| `storage`                   | Storage system to use                                                                    | `filesystem`    |
 | `tlsSecretName`             | Name of secret for TLS certs                                                             | `nil`           |
 | `secrets.htpasswd`          | Htpasswd authentication                                                                  | `nil`           |
 | `secrets.s3.accessKey`      | Access Key for S3 configuration                                                          | `nil`           |
