@@ -4,10 +4,6 @@
 
 [GoCD](https://www.gocd.org/) is an open-source continuous delivery server to model and visualize complex workflow with ease.
 
-# Deprecation
-
-The GoCD Helm chart has been moved the stable. This chart in incubator will no longer be maintained. Please switch to the stable GoCD Helm chart.
-
 # Introduction
 
 This chart bootstraps a single node GoCD server and GoCD agents on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
@@ -40,11 +36,13 @@ $ kubectl create clusterrolebinding clusterRoleBinding \                        
 
 ## Installing the Chart
 
+Refer the [GoCD website](https://www.gocd.org/kubernetes) for getting started with GoCD on Helm.
+ 
 To install the chart with the release name `gocd-app`:
 
 ```bash
-$ helm repo add incubator https://kubernetes-charts-incubator.storage.googleapis.com/
-$ helm install --name gocd-app --namespace gocd incubator/gocd
+$ helm repo add stable https://kubernetes-charts.storage.googleapis.com
+$ helm install --name gocd-app --namespace gocd stable/gocd
 ```
 
 The command deploys GoCD on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
@@ -115,7 +113,7 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```bash
-$ helm install --namespace gocd --name gocd-app -f values.yaml incubator/gocd
+$ helm install --namespace gocd --name gocd-app -f values.yaml stable/gocd
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
@@ -131,7 +129,7 @@ Refer to the [Kubernetes blog](http://blog.kubernetes.io/2017/03/dynamic-provisi
 One can change the storage class to be used by overriding `server.persistence.storageClass` and `agent.persistence.storageClass` like below:
 
 ```bash
-$ helm install --namespace gocd --name gocd-app --set server.persistence.stoageClass=STORAGE_CLASS_NAME incubator/gocd
+$ helm install --namespace gocd --name gocd-app --set server.persistence.stoageClass=STORAGE_CLASS_NAME stable/gocd
 ```
 
 #### Static Volumes
@@ -147,7 +145,7 @@ The value pvSelector must be specified so that the right persistence volume will
 3. Install the chart
 
 ```
-$ helm install --name gocd-app --set server.persistence.existingClaim=PVC_NAME incubator/gocd
+$ helm install --name gocd-app --set server.persistence.existingClaim=PVC_NAME stable/gocd
 ```
 
 ### Server persistence Values
@@ -222,7 +220,7 @@ kubectl create clusterrolebinding clusterRoleBinding \
 The gocd service account can be associated with an existing role in the namespace that has privileges to create and delete pods. To use an existing role,
 
 ```bash
-helm install --namespace gocd --name gocd-app --set rbac.roleRef=ROLE_NAME incubator/gocd
+helm install --namespace gocd --name gocd-app --set rbac.roleRef=ROLE_NAME stable/gocd
 ```
 
 # License

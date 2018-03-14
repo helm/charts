@@ -1,0 +1,181 @@
+# Default values for gocd.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+rbac:
+  # Specifies whether rbac resources must be created.
+  create: true
+  # The API version to use while creating the rbac resources. Use `kubectl api-versions | grep rbac` to find which abi versions are supported for your cluster.
+  apiVersion: v1beta1
+  # Create a cluster role binding with the existing role, do not create a new one. If left blank, a new cluster role is created.
+  roleRef:
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  # If create if false and a name is not specified, the default service account is used for the cluster role binding.
+  name:
+
+server:
+  # server.enabled is the toggle to run GoCD Server. Change to false for Agent Only Deployment.
+  enabled: true
+  image:
+    # server.image.repository is the GoCD Server image name
+    repository: "gocd/gocd-server"
+    # server.image.tag is the GoCD Server image's tag
+    tag:
+    # server.image.pullPolicy is the GoCD Server image's pull policy
+    pullPolicy: "IfNotPresent"
+
+  ## Configure GoCD server resource requests and limits
+  ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+  ##
+  resources: {}
+  #   requests:
+  #     memory: 512Mi
+  #     cpu: 300m
+  #   limits:
+  #     cpu: 100m
+  #     memory: 1024Mi
+
+  ## Additional GoCD server pod labels
+  ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+  nodeSelector: {}
+
+  healthCheck:
+    # server.healthCheck.initialDelaySeconds is the initial delays in seconds to start the health checks
+    initialDelaySeconds: 90
+    # server.healthCheck.periodSeconds is the health check interval duration
+    periodSeconds: 15
+    # server.healthCheck.failureThreshold is the number of unsuccessful attempts made to the GoCD server health check endpoint before the container is restarted (for liveness) or marked as unready (for readiness)
+    failureThreshold: 10
+  env:
+    # server.env.goServerSystemProperties is a list of Java system properties, which needs to be provided to the GoCD Server, typically prefixed with -D unless otherwise stated.
+    # Example: "-Xmx4096mb -Dfoo=bar"
+    goServerSystemProperties:
+    #  server.env.extraEnvVars is the list of environment variables passed to GoCD Server
+    extraEnvVars:
+      - name: GOCD_PLUGIN_INSTALL_kubernetes-elastic-agents
+        value: https://github.com/gocd/kubernetes-elastic-agents/releases/download/v0.0.1/kubernetes-elastic-agent-0.0.1-0.jar
+  service:
+    # server.service.type is the GoCD Server service type
+    type: "NodePort"
+    # server.service.httpPort is the GoCD Server HTTP port
+    httpPort: 8153
+    # server.service.httpPort is the GoCD Server HTTPS port
+    httpsPort: 8154
+    # Provide the nodeHttpPort and nodeHttpsPort if you want the service to be exposed on specific ports. Without this, random node ports will be assigned.
+    # server.service.nodeHttpPort is the GoCD Server Service Node HTTP port
+    nodeHttpPort:
+    # server.service.nodeHttpPort is the GoCD Server Service Node HTTPS port
+    nodeHttpsPort:
+  ingress:
+    # server.ingress.enabled is the toggle to enable/disable GoCD Server Ingress
+    enabled: true
+    # server.ingress.hosts is used to create an Ingress record.
+#    hosts:
+#      - ci.example.com
+
+  persistence:
+    # server.persistence.enabled is the toggle for server volume persistence.
+    enabled: true
+    accessMode: "ReadWriteOnce"
+    # The storage space that should be claimed from the persistent volume
+    size: 2Gi
+    # If defined, storageClassName: <storageClass>
+    # If set to "-", storageClassName: "", which disables dynamic provisioning
+    # If undefined (the default) or set to null, no storageClassName spec is
+    # set, choosing 'standard' storage class available with the default provisioner (gcd-pd on GKE, hostpath on minikube, etc).
+
+#    storageClass: "-"
+
+    # A manually managed Persistent Volume and Claim
+    # If defined, PVC must be created manually before volume will be bound
+    existingClaim:
+    # To choose a suitable persistent volume from available static persistent volumes, selectors are used.
+    pvSelector:
+#      matchLabels:
+#        volume-type: ssd
+    subpath:
+      # godata is where the config, db, plugins are stored
+      godata: godata
+      # homego can be used for storing and mounting secrets
+      homego: homego
+      # custom entrypoint scripts that should be run before starting the GoCD server inside the container.
+      dockerEntryPoint: scripts
+
+agent:
+  # agent.replicaCount is the GoCD Agent replicas Count. Specify the number of GoCD agents to run
+  replicaCount: 0
+  image:
+    # agent.image.repository is the GoCD Agent image name
+    repository: "gocd/gocd-agent-alpine-3.6"
+    # agent.image.tag is the GoCD Agent image's tag
+    tag:
+    # agent.image.pullPolicy is the GoCD Agent image's pull policy
+    pullPolicy: "IfNotPresent"
+  env:
+    # agent.env.goServerUrl is the GoCD Server Url
+    goServerUrl:
+    # agent.env.agentAutoRegisterKey is the GoCD Agent auto-register key
+    agentAutoRegisterKey:
+    # agent.env.agentAutoRegisterResources is the GoCD Agent auto-register resources
+    agentAutoRegisterResources:
+    # agent.env.agentAutoRegisterEnvironments is the GoCD Agent auto-register Environments
+    agentAutoRegisterEnvironemnts:
+    # agent.env.agentAutoRegisterHostname is the GoCD Agent auto-register hostname
+    agentAutoRegisterHostname:
+    # agent.env.goAgentSystemProperties is the GoCD Agent system properties
+    goAgentSystemProperties:
+    # agent.env.goAgentBootstrapperArgs is the GoCD Agent bootstrapper args
+    goAgentBootstrapperArgs:
+    # agent.env.goAgentBootstrapperJvmArgs is the GoCD Agent bootstrapper JVM args
+    goAgentBootstrapperJvmArgs:
+  persistence:
+    # agent.persistence.enabled is the toggle for agent volume persistence. Change to true if a persistent volume is available and configured manually.
+    enabled: false
+    accessMode: "ReadWriteOnce"
+    size: 1Gi
+    # If defined, storageClassName: <storageClass>
+    # If set to "-", storageClassName: "", which disables dynamic provisioning
+    # If undefined (the default) or set to null, no storageClassName spec is
+    # set, choosing 'standard' storage class available with the default provisioner (gcd-pd on GKE, hostpath on minikube, etc).
+
+#   storageClass: "-"
+
+    # A manually managed Persistent Volume and Claim
+    # If defined, PVC must be created manually before volume will be bound
+    existingClaim:
+    pvSelector:
+#      matchLabels:
+#        app: godata-gocd-agent
+    subpath:
+      homego: homego
+      dockerEntryPoint: scripts
+
+  healthCheck:
+   # agent.healthCheck.enable is the toggle for GoCD agent health checks
+    enabled: false
+    # agent.healthCheck.initialDelaySeconds is the initial delays in seconds to start the health checks
+    initialDelaySeconds: 60
+    # agent.healthCheck.periodSeconds is the health check interval duration
+    periodSeconds: 60
+    # agent.healthCheck.failureThreshold is the health check failure threshold of GoCD agent
+    failureThreshold: 60
+
+  ## Configure GoCD agent resource requests and limits
+  ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+  ##
+  resources: {}
+  #   requests:
+  #     memory: 512Mi
+  #     cpu: 300m
+  #   limits:
+  #     cpu: 100m
+  #     memory: 1024Mi
+
+  ## Additional GoCD agent pod labels
+  ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+  nodeSelector: {}
