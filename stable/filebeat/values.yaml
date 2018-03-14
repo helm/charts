@@ -16,14 +16,16 @@ config:
       reload.enabled: false
 
   processors:
-    - add_cloud_metadata:
+  - add_cloud_metadata:
 
   filebeat.prospectors:
   - type: log
     enabled: true
     paths:
-      - /var/log/**
-    exclude_files: ['(\.[0-9]{1,})$', '.gz$']
+    - /var/log/**
+    exclude_files: 
+    - '(\.[0-9]{1,})$'
+    - '.gz$'
 
   output.file:
     path: "/usr/share/filebeat/data"
