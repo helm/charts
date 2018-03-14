@@ -1,0 +1,13 @@
+name: str()
+home: str()
+version: str()
+appVersion: any(str(), num())
+description: str()
+keywords: list(str(), required=False)
+sources: list(str(), required=False)
+maintainers: list(include('maintainer'))
+icon: str(required=False)
+---
+maintainer:
+  name: str()
+  email: str(required=False)
