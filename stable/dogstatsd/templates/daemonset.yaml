@@ -1,0 +1,59 @@
+# https://github.com/DataDog/datadog-agent/tree/master/Dockerfiles/dogstatsd/alpine
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: {{ template "dogstatsd.fullname" . }}
+  labels:
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+spec:
+  template:
+    metadata:
+      labels:
+        app: {{ template "dogstatsd.fullname" . }}
+      name: {{ template "dogstatsd.fullname" . }}
+    spec:
+      {{- if .Values.useHostNetwork }}
+      hostNetwork: {{ .Values.daemonset.useHostNetwork }}
+      {{- end }}
+      containers:
+      - image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        name: {{ .Chart.Name }}
+        resources:
+{{ toYaml .Values.resources | indent 12 }}
+{{- if not .Values.socket.enable }}
+        ports:
+          - containerPort: 8125
+            name: dogstatsdport
+            protocol: UDP
+{{- end }}
+        env:
+          - name: DD_API_KEY
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "dogstatsd.fullname" . }}
+                key: dd-api-key
+{{- if .Values.socket.enable }}
+          - name: DD_DOGSTATSD_SOCKET
+            value: {{ .Values.socket.path }} # "/socket/statsd.socket"
+{{- end }}
+          - name: DD_SEND_HOST_METADATA
+            # Legacy option name, to keep during beta phase
+            value: "false"
+          - name: DD_ENABLE_METADATA_COLLECTION
+            value: "false"
+          - name: DD_HOSTNAME
+            valueFrom:
+              fieldRef:
+                fieldPath: spec.nodeName
+{{- if .Values.socket.enable }}
+        volumeMounts:
+          - name: dsdsocket
+            mountPath: /socket
+      volumes:
+        - hostPath:
+          path: /var/run/dogstatsd
+          name: dsdsocket
+{{- end }}
+  updateStrategy:
+    type: {{ .Values.updateStrategy | quote }}
