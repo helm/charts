@@ -103,14 +103,14 @@ spec:
       - name: gitlab-etc
       {{- if .Values.persistence.gitlabEtc.enabled }}
         persistentVolumeClaim:
-          claimName: {{ template "gitlab-ce.fullname" . }}-etc
+          claimName: {{ .Values.persistence.gitlabEtc.existingClaim | default (printf "%s-etc" (include "gitlab-ce.fullname" .)) }}
       {{- else }}
         emptyDir: {}
       {{- end }}
       - name: gitlab-data
       {{- if .Values.persistence.gitlabData.enabled }}
         persistentVolumeClaim:
-          claimName: {{ template "gitlab-ce.fullname" . }}-data
+          claimName: {{ .Values.persistence.gitlabData.existingClaim | default (printf "%s-data" (include "gitlab-ce.fullname" .)) }}
       {{- else }}
         emptyDir: {}
       {{- end }}
