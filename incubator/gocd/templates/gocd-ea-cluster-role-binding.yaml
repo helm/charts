@@ -5,7 +5,7 @@ metadata:
   name: {{ template "gocd.fullname" . }}
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    app: "{{ template "gocd.name" . }}"
+    app: "{{ template "gocd.fullname" . }}"
     heritage: "{{ .Release.Service }}"
     release: "{{ .Release.Name }}"
 subjects:
