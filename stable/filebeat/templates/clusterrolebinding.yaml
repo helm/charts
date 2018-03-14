@@ -14,6 +14,6 @@ roleRef:
   name: {{ template "filebeat.fullname" . }}
 subjects:
 - kind: ServiceAccount
-  name: {{ template "filebeat.fullname" . }}
+  name: {{ template "filebeat.serviceAccountName" . }}
   namespace: {{ .Release.Namespace }}
 {{- end -}}
