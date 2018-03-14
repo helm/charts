@@ -64,6 +64,7 @@ following configurable parameters:
 | `logSubPath`                   | Subpath under `persistence.mountPath` where kafka logs will be placed.                                          | `logs`                                                     |
 | `schedulerName`                | Name of Kubernetes scheduler (other than the default)                                                           | `nil`                                                      |
 | `affinity`                     | Pod scheduling preferences                                                                                      | `{}`                                                       |
+| `tolerations`                  | List of node tolerations for the pods. https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/  | `[]`                                                       |
 | `external.enabled`             | If True, exposes Kafka brokers via NodePort (PLAINTEXT by default)                                              | `false`                                                    |
 | `external.servicePort`         | TCP port configured at external services (one per pod) to relay from NodePort to the external listener port.    | '19092'                                                    |
 | `external.firstListenerPort`   | TCP port which is added pod index number to arrive at the port used for NodePort and external listener port.    | '31090'                                                    |

@@ -51,6 +51,16 @@ affinity: {}
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
 nodeSelector: {}
 
+# Tolerations for nodes that have taints on them.
+# Useful if you want to dedicate nodes to just run kafka
+# https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+tolerations: []
+# tolerations:
+# - key: "key"
+#   operator: "Equal"
+#   value: "value"
+#   effect: "NoSchedule"
+
 ## External access.
 ##
 external:
