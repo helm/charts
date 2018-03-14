@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "filebeat.fullname" . }}-prospecters
+  labels:
+    app: {{ template "filebeat.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    k8s-app: filebeat
+    kubernetes.io/cluster-service: "true"
+data:
+  kubernetes.yml: |-
+    - type: log
+      paths:
+        - /var/lib/docker/containers/*/*.log
+      json.message_key: log
+      json.keys_under_root: true
+      processors:
+        - add_kubernetes_metadata:
+            in_cluster: true
+            namespace: ${POD_NAMESPACE}

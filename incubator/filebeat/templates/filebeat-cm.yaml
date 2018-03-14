@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "filebeat.fullname" . }}
+  labels:
+    app: {{ template "filebeat.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    k8s-app: filebeat
+    kubernetes.io/cluster-service: "true"
+data:
+  filebeat.yml: |-
+    filebeat.config:
+      prospectors:
+        # Mounted `filebeat-prospectors` configmap:
+        path: ${path.config}/prospectors.d/*.yml
+        # Reload prospectors configs as they change:
+        reload.enabled: false
+      modules:
+        path: ${path.config}/modules.d/*.yml
+        # Reload module configs as they change:
+        reload.enabled: false
+
+{{- if .Values.output.cloud.enabled }}
+    processors:
+      - add_cloud_metadata:
+
+    cloud.id: ${OUTPUT_CLOUD_ID}
+    cloud.auth: ${OUTPUT_CLOUD_AUTH}
+{{- end }}
+
+{{- if eq .Values.output.type "logstash" }}
+    output.logstash:
+      hosts: ["${OUTPUT_HOST}:${OUTPUT_PORT}"]
+{{- else if eq .Values.storage "elasticsearch" }}
+    output.elasticsearch:
+      hosts: ["${OUTPUT_HOST}:${OUTPUT_PORT}"]
+  {{- if .Values.output.auth.enabled }}
+      username: ${OUTPUT_USERNAME}
+      password: ${OUTPUT_PASSWORD}
+  {{- end }}
+{{- end }}
