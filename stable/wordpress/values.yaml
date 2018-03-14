@@ -118,6 +118,14 @@ mariadb:
 ## For minikube, set this to NodePort, elsewhere use LoadBalancer
 ##
 serviceType: LoadBalancer
+##
+## serviceType: NodePort
+## nodePorts:
+##   http: <to set explicitly, choose port between 30000-32767>
+##   https: <to set explicitly, choose port between 30000-32767>
+nodePorts:
+  http: ""
+  https: ""
 
 ## Allow health checks to be pointed at the https port
 healthcheckHttps: false
