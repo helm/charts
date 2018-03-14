@@ -2,7 +2,7 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: etcd
+  name: {{ template "etcd.fullname" . }}
   labels:
     app: {{ template "etcd.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
@@ -17,7 +17,7 @@ spec:
       suite: pachyderm
   template:
     metadata:
-      name: etcd
+      name: {{ template "etcd.fullname" . }}
       labels:
         app: {{ template "etcd.fullname" . }}
         suite: pachyderm
@@ -32,7 +32,7 @@ spec:
            path: "/var/pachyderm/etcd"
         {{- end }}
       containers:
-        - name: etcd
+        - name: {{ template "etcd.fullname" . }}
           image: '{{ .Values.etcd.image.repository }}:{{ .Values.etcd.image.tag }}'
           command:
           - "/usr/local/bin/etcd"

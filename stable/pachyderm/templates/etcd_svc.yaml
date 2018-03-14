@@ -2,7 +2,7 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: etcd
+  name: {{ template "etcd.fullname" . }}
   labels:
     app: {{ template "etcd.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"

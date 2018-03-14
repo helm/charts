@@ -2,9 +2,9 @@
 kind: Deployment
 apiVersion: extensions/v1beta1
 metadata:
-  name: pachd
+  name: {{ template "pachd.fullname" . }}
   labels:
-    app: pachd
+    app: {{ template "pachd.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -13,13 +13,13 @@ spec:
   replicas: {{ .Values.pachd.replicaCount }}
   selector:
     matchLabels:
-      app: pachd
+      app: {{ template "pachd.fullname" . }}
       suite: pachyderm
   template:
     metadata:
-      name: pachd
+      name: {{ template "pachd.fullname" . }}
       labels:
-        app: pachd
+        app: {{ template "pachd.fullname" . }}
         suite: pachyderm
     spec:
       volumes:
@@ -30,9 +30,9 @@ spec:
         {{- end }}
       - name: pachyderm-storage-secret
         secret:
-          secretName: pachyderm-storage-secret
+          secretName: {{ template "pachd.fullname" . }}-storage
       containers:
-      - name: pachd
+      - name: {{ template "pachd.fullname" . }}
         image: '{{ .Values.pachd.image.repository }}:{{ .Values.pachd.image.tag }}'
         ports:
         - name: api-grpc-port
@@ -81,10 +81,12 @@ spec:
         - name: LOG_LEVEL
           value: info
         - name: BLOCK_CACHE_BYTES
-          value: '{{ .Values.pachd.pfsCache }}'
+          value: 0G
         - name: IAM_ROLE
         - name: PACHYDERM_AUTHENTICATION_DISABLED_FOR_TESTING
           value: 'false'
+        - name: ETCD_PORT_2379_TCP_ADDR
+          value: {{ template "etcd.fullname" . }}.{{ .Release.Namespace }}.svc
         resources:
           requests:
             cpu: '{{ .Values.pachd.resources.requests.cpu }}'
@@ -97,6 +99,6 @@ spec:
         imagePullPolicy: {{ .Values.pachd.image.pullPolicy }}
         securityContext:
           privileged: true
-      serviceAccountName: pachyderm
+      serviceAccountName: {{ template "fullname" . }}-sa
   strategy: {}
 status: {}

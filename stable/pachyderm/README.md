@@ -20,7 +20,6 @@ The following table lists the configurable parameters of `pachd` and their defau
 | Parameter                | Description           | Default           |
 |--------------------------|-----------------------|-------------------|
 | `pachd.image.repository` | Container image name  | `pachyderm/pachd` |
-| `pachd.pfsCache`         | File System cache size| `0G`              |
 | `*.image.tag`            | Container image tag   | `<latest version>`|
 | `*.image.pullPolicy`     | Image pull policy     | `Always`          |
 | `*.worker.repository`    | Worker image name     | `pachyderm/worker`|
@@ -55,7 +54,7 @@ In order to set which object store credentials you want to use, please set the f
 
 Based on the storage credentials used, fill in the corresponding parameters for your object store.
 
--	The `local` installation will deploy Pachyderm on your local Kubernetes cluster (i.e: minikube) backed by your local storage unit. 
+-	The `local` installation will deploy Pachyderm on your local Kubernetes cluster (i.e: minikube) backed by your local storage unit.
 
 -	With `S3 endpoint` credentials (such as Minio credentials), these are the configurable parameters:
 
@@ -127,7 +126,7 @@ Accessing the pachd service
 In order to use Pachyderm, please login through ssh to the master node and install the Pachyderm client:
 
 ```console
-$ curl -o /tmp/pachctl.deb -L https://github.com/pachyderm/pachyderm/releases/download/v1.6.7/pachctl_1.6.7_amd64.deb && sudo dpkg -i /tmp/pachctl.deb
+$ curl -o /tmp/pachctl.deb -L https://github.com/pachyderm/pachyderm/releases/download/v1.6.9/pachctl_1.6.9_amd64.deb && sudo dpkg -i /tmp/pachctl.deb
 ```
 
 Please note that the client version should correspond with the pachd service version. For more information please consult: http://pachyderm.readthedocs.io/en/latest/index.html. Also, if you have your kubernetes client properly configured to talk with your remote cluster, you can simply install `pachctl` on your local machine and execute: `pachctl -k '-n=<namespace>' port-forward &`.

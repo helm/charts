@@ -2,9 +2,9 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: pachd
+  name: {{ template "pachd.fullname" . }}
   labels:
-    app: pachd
+    app: {{ template "pachd.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -14,15 +14,12 @@ spec:
     - name: api-grpc-port
       port: 650
       targetPort: 650
-      nodePort: 30650
     - name: trace-port
       port: 651
       targetPort: 651
-      nodePort: 30651
     - name: api-http-port
       port: 652
       targetPort: 652
-      nodePort: 30652
   selector:
-    app: pachd
+    app: {{ template "pachd.fullname" . }}
   type: NodePort
