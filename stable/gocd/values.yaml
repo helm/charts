@@ -38,7 +38,7 @@ server:
   #     cpu: 300m
   #   limits:
   #     cpu: 100m
-  #     memory: 128Mi
+  #     memory: 1024Mi
 
   ## Additional GoCD server pod labels
   ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
@@ -76,7 +76,7 @@ server:
     enabled: true
     # server.ingress.hosts is used to create an Ingress record.
 #    hosts:
-#      - foo.go.cd
+#      - ci.example.com
 
   persistence:
     # server.persistence.enabled is the toggle for server volume persistence.
@@ -174,7 +174,7 @@ agent:
   #     cpu: 300m
   #   limits:
   #     cpu: 100m
-  #     memory: 128Mi
+  #     memory: 1024Mi
 
   ## Additional GoCD agent pod labels
   ## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
