@@ -25,7 +25,7 @@ spec:
           imagePullPolicy: "{{ .Values.image.pullPolicy }}"
           args:
             - volunteer
-            - --cluster-id="{{ uuidv4 | default .Values.uuid }}"
+            - --cluster-id="{{ .Values.uuid | default uuidv4 }}"
           {{- range $key, $value := .Values.extraArgs }}
             - --{{ $key }}={{ $value }}
           {{- end }}

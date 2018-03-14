@@ -1,5 +1,10 @@
 This chart installs kube-lego to generate TLS certs for Ingresses.
 
+NOTE:
+> kube-lego is in maintenance mode only. There is no plan to support any new
+>  features. The officially endorsed successor is cert-manager
+>  https://hub.kubeapps.com/charts/stable/cert-manager
+
 EXAMPLE INGRESS YAML:
 
 apiVersion: extensions/v1beta1

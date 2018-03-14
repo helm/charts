@@ -8,23 +8,21 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 data:
+  initialize: |-
+{{ include (print $.Template.BasePath "/_helper_create_bucket.txt") . | indent 4 }}
   config.json: |-
     {
-      "version": "19",
+      "version": "22",
       "credential": {
         "accessKey": {{ .Values.accessKey | quote }},
         "secretKey": {{ .Values.secretKey | quote }}
       },
-      "region": "us-east-1",
-      "browser": "on",
-      "logger": {
-        "console": {
-          "enable": true
-        },
-        "file": {
-          "enable": false,
-          "fileName": ""
-        }
+      "region": {{ .Values.minioConfig.region | quote }},
+      "browser": {{ .Values.minioConfig.browser | quote }},
+      "domain": {{ .Values.minioConfig.domain | quote }},
+      "storageclass": {
+        "standard": {{ .Values.minioConfig.standardStorageClass | quote }},
+        "rrs": {{ .Values.minioConfig.reducedRedundancyStorageClass | quote }}
       },
       "notify": {
         "amqp": {

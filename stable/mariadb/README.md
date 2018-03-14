@@ -48,6 +48,9 @@ The following tables lists the configurable parameters of the MariaDB chart and 
 |          Parameter          |                Description                 |                   Default                   |
 | --------------------------- | ------------------------------------------ | ------------------------------------------- |
 | `image`                     | MariaDB image                              | `bitnami/mariadb:{VERSION}`                 |
+| `service.type`              | Kubernetes service type to expose          | `ClusterIP`                                 |
+| `service.nodePort`          | Port to bind to for NodePort service type  | `nil`                                       |
+| `service.annotations`       | Additional annotations to add to service   | `nil`                                       |
 | `imagePullPolicy`           | Image pull policy.                         | `IfNotPresent`                              |
 | `usePassword`               | Enable password authentication             | `true`                                      |
 | `mariadbRootPassword`       | Password for the `root` user.              | Randomly generated                          |

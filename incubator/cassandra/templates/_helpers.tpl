@@ -3,7 +3,7 @@
 Expand the name of the chart.
 */}}
 {{- define "cassandra.name" -}}
-{{- default .Chart.Name .Values.nameOverride | trunc 21 -}}
+{{- default .Chart.Name .Values.nameOverride | trunc 63 -}}
 {{- end -}}
 
 {{/*
@@ -13,5 +13,5 @@ and Statefulset will append -xx at the end of name.
 */}}
 {{- define "cassandra.fullname" -}}
 {{- $name := default .Chart.Name .Values.nameOverride -}}
-{{- printf "%s-%s" .Release.Name $name | trunc 21 -}}
+{{- printf "%s-%s" .Release.Name $name | trunc 63 -}}
 {{- end -}}

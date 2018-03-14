@@ -5,6 +5,8 @@ metadata:
   name: {{ template "acs-engine-autoscaler.fullname" . }}
   labels:
 {{ include "acs-engine-autoscaler.labels.standard" . | indent 4 }}
+  annotations:
+    description: {{ .Chart.Description }}
 spec:
   replicas: {{ .Values.replicaCount }}
   template:

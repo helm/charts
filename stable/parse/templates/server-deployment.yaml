@@ -1,9 +1,9 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}-server
+  name: {{ template "parse.fullname" . }}-server
   labels:
-    app: {{ template "name" . }}
+    app: {{ template "parse.name" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -13,12 +13,12 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "name" . }}
+        app: {{ template "parse.name" . }}
         release: "{{ .Release.Name }}"
         component: "server"
     spec:
       containers:
-      - name: {{ template "fullname" . }}
+      - name: {{ template "parse.fullname" . }}
         image: "{{ .Values.server.image }}"
         imagePullPolicy: {{ .Values.server.imagePullPolicy | quote }}
         env:
@@ -33,10 +33,10 @@ spec:
         - name: PARSE_MASTER_KEY
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "parse.fullname" . }}
               key: master-key
         - name: MONGODB_HOST
-          value: {{ template "mongodb.fullname" . }}
+          value: {{ template "parse.mongodb.fullname" . }}
         - name: MONGODB_PORT
           value: "27017"
         ports:
@@ -67,7 +67,7 @@ spec:
       - name: parse-data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ template "fullname" . }}
+          claimName: {{ template "parse.fullname" . }}
       {{- else }}
         emptyDir: {}
       {{- end }}

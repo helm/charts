@@ -17,6 +17,9 @@ spec:
         app: {{ template "fullname" . }}
     spec:
       volumes:
+      - name: dshm
+        emptyDir:
+          medium: Memory
       - name: docker-sock
         hostPath:
          path: /var/run/docker.sock
@@ -61,6 +64,15 @@ spec:
               secretKeyRef:
                 name: {{ template "fullname" . }}
                 key: tags
+{{- $additionalconf := .Values.sysdig.AdditionalConf -}}
+{{- if .Values.secure.enable }}
+{{- $additionalconf := printf "%s%s" .Values.secure.SecureConf .Values.sysdig.AdditionalConf -}}
+{{- end }}
+          - name: ADDITIONAL_CONF
+            value: {{ $additionalconf | quote }}
+{{- if .Values.sysdig.env }}
+{{ toYaml .Values.sysdig.env | indent 10 }}
+{{- end }}
         volumeMounts:
         - mountPath: /host/var/run/docker.sock
           name: docker-sock
@@ -80,4 +92,6 @@ spec:
         - mountPath: /host/usr
           name: usr-vol
           readOnly: true
+        - mountPath: /dev/shm
+          name: dshm
 {{- end }}

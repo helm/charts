@@ -1,9 +1,9 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "moodle.fullname" . }}
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "moodle.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -11,32 +11,32 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "fullname" . }}
+        app: {{ template "moodle.fullname" . }}
     spec:
       {{- if .Values.affinity }}
       affinity:
 {{ toYaml .Values.affinity | indent 8 }}
       {{- end }}
       containers:
-      - name: {{ template "fullname" . }}
+      - name: {{ template "moodle.fullname" . }}
         image: "{{ .Values.image }}"
         imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
         env:
         - name: MARIADB_HOST
-          value: {{ template "mariadb.fullname" . }}
+          value: {{ template "moodle.mariadb.fullname" . }}
         - name: MARIADB_PORT_NUMBER
           value: "3306"
         - name: MARIADB_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "mariadb.fullname" . }}
+              name: {{ template "moodle.mariadb.fullname" . }}
               key: mariadb-root-password
         - name: MOODLE_USERNAME
           value: {{ default "" .Values.moodleUsername | quote }}
         - name: MOODLE_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "moodle.fullname" . }}
               key: moodle-password
         - name: MOODLE_EMAIL
           value: {{ default "" .Values.moodleEmail | quote }}
@@ -49,7 +49,7 @@ spec:
         - name: SMTP_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "moodle.fullname" . }}
               key: smtp-password
         - name: SMTP_PROTOCOL
           value: {{ default "" .Values.smtpProtocol | quote }}
@@ -81,7 +81,7 @@ spec:
       - name: moodle-data
       {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ .Values.persistence.existingClaim | default (include "moodle.fullname" . ) }}
+          claimName: {{ .Values.persistence.existingClaim | default (include "moodle.moodle.fullname" . ) }}
       {{- else }}
         emptyDir: {}
       {{- end }}

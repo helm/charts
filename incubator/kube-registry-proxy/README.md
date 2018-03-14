@@ -15,7 +15,7 @@ $ helm install --name my-release incubator/kube-registry-proxy
 
 | Parameter          | Description                         | Default                                      |
 |--------------------|-------------------------------------|----------------------------------------------|
-| `image.repository` | The image repository to pull from   | gcr.io/google_containers/kube-registry-proxy |
+| `image.repository` | The image repository to pull from   | k8s.gcr.io/kube-registry-proxy               |
 | `image.tag`        | The image tag to pull from          | 0.4                                          |
 | `image.pullPolicy` | Image pull policy                   | IfNotPresent                                 |
 | `registry.host`    | The hostname of the target registry | "gcr.io"                                     |

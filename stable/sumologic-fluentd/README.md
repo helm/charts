@@ -64,9 +64,11 @@ The following tables lists the configurable parameters of the sumologic-fluentd 
 | `updateStrategy` | `OnDelete` or `RollingUpdate` (requires Kubernetes >= 1.6) | `OnDelete` |
 | `sumologic.collectorUrl` | An HTTP collector in SumoLogic that the container can send logs to via HTTP | `Nil` You must provide your own |
 | `sumologic.fluentdSource` | The fluentd input source, `file` or `systemd` | `file` |
+| `sumologic.fluentdUserConfigDir` | A directory of user-defined fluentd configuration files, which must be in the `*.conf` directory in the container | `/fluentd/conf.d/user` |
 | `sumologic.flushInterval` | How frequently to push logs to sumo, in seconds | `5` |
 | `sumologic.numThreads` | The number of http threads sending data to sumo | `1` |
 | `sumologic.sourceName` | Set the sumo `_sourceName` | `%{namespace}.%{pod}.%{container}` |
+| `sumologic.sourceHost` | Set the sumo `_sourceHost` | `Nil` |
 | `sumologic.sourceCategory` | Set the sumo `_sourceCategory` | `%{namespace}/%{pod_name}` |
 | `sumologic.sourceCategoryPrefix` | Define a prefix, for `_sourceCategory` | `Nil` |
 | `sumologic.sourceCategoryReplaceDash` | Used to replace `-` with another character | `/` |
@@ -82,8 +84,12 @@ The following tables lists the configurable parameters of the sumologic-fluentd 
 | `sumologic.excludeUnitRegex` | All matching systemd units will not be sent to sumo | `Nil` |
 | `sumologic.fluentdOpt` | Additional command line options, sent to fluentd | `Nil` |
 | `sumologic.verifySsl` | Verify SumoLogic HTTPS certificates | `true` |
+| `sumologic.multilineStartRegexp` | The regular expression for the `concat` plugin to use when merging multi-line messages | `/^\w{3} \d{1,2}, \d{4}/`, i.e. Julian dates |
+| `sumologic.readFromHead` | Start to read the logs from the head of file, not bottom. Only applies to containers log files. See in_tail doc for more information | `true` |
+| `sumologic.concatSeparator` | The character to use to delimit lines within the final concatenated message. Most multi-line messages contain a newline at the end of each line | `Nil` |
+| `sumologic.auditLogPath` | Define the path to the [Kubernetes Audit Log](https://kubernetes.io/docs/tasks/debug-application-cluster/audit/) | `/mnt/log/kube-apiserver-audit.log` |
 | `image.name` | The image repository and name to pull from | `sumologic/fluentd-kubernetes-sumologic` |
-| `image.tag` | The image tag to pull | `latest` |
+| `image.tag` | The image tag to pull | `v1.6` |
 | `imagePullPolicy` | Image pull policy | `IfNotPresent` |
 | `persistence.enabled` | Boolean value, used to turn on or off fluentd position file persistence, on nodes | `false` |
 | `persistence.hostPath` | The path, on each node, to a directory for fluentd pos files. You must create the directory on each node first. | `/var/run/fluentd-pos` |

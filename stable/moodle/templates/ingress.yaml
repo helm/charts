@@ -1,6 +1,6 @@
 {{- if .Values.ingress.enabled -}}
 {{- $releaseName := .Release.Name -}}
-{{- $serviceName := include "fullname" . }}
+{{- $serviceName := include "moodle.fullname" . }}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
@@ -9,12 +9,12 @@ metadata:
 {{ toYaml .Values.ingress.annotations | indent 4}}
 {{- end }}
   labels:
-    app: {{ template "fullname" . }}
+    app: {{ template "moodle.fullname" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     component: "{{ .Values.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-  name: {{ template "fullname" . }}
+  name: {{ template "moodle.fullname" . }}
 spec:
   rules:
   {{- range .Values.ingress.hosts }}

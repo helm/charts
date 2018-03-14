@@ -16,6 +16,11 @@ web:
     requests:
       cpu: 300m
       memory: 300Mi
+  env:
+    - name: GITHUB_APP_ID
+      value:
+    - name: GITHUB_API_SECRET
+      value:
 
 # How many cron instances to run
 cron:
@@ -39,7 +44,7 @@ worker:
       cpu: 100m
       memory: 100Mi
 
-# Initial admin user to create 
+# Initial admin user to create
 user:
   email: admin@sentry.local
 
@@ -84,11 +89,11 @@ persistence:
   filestore_dir: /var/lib/sentry/files
 
 ## Configure ingress resource that allow you to access the
-## Sentry instalation. Set up the URL
+## Sentry installation. Set up the URL
 ## ref: http://kubernetes.io/docs/user-guide/ingress/
 ##
 ingress:
-  enabled: true
+  enabled: false
   hostname: sentry.local
 
   ## Ingress annotations
@@ -113,7 +118,7 @@ postgresql:
   imageTag: "9.5"
   persistence:
     enabled: true
-      
+
 redis:
   persistence:
     enabled: true

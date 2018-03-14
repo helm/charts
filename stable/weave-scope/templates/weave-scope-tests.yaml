@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ .Release.Name }}-ui-test-{{ randAlphaNum 5 | lower }}"
+  annotations:
+    "helm.sh/hook": test-success
+  labels:
+    {{- include "weave-scope.helm_std_labels" . | indent 4 }}
+spec:
+  initContainers:
+    - name: "test-framework"
+      image: "dduportal/bats:0.4.0"
+      command:
+      - "bash"
+      - "-c"
+      - |
+        set -ex
+        # copy bats to tools dir
+        cp -R /usr/local/libexec/ /tools/bats/
+      volumeMounts:
+      - mountPath: /tools
+        name: tools
+  containers:
+    - name: {{ .Release.Name }}-ui-test
+      image: dduportal/bats:0.4.0
+      command: ["/tools/bats/bats", "-t", "/tests/run.sh"]
+      volumeMounts:
+      - mountPath: /tests
+        name: tests
+        readOnly: true
+      - mountPath: /tools
+        name: tools
+  volumes:
+  - name: tests
+    configMap:
+      name: {{ template "weave-scope.fullname" . }}-tests
+  - name: tools
+    emptyDir: {}
+  restartPolicy: Never

@@ -1,0 +1,19 @@
+{{- if .Values.rbac.create -}}
+apiVersion: {{ template "rbac.apiVersion" . }}
+kind: ClusterRoleBinding
+metadata:
+  labels:
+    app: {{ template "datadog.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "datadog.fullname" . }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ template "datadog.fullname" . }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ template "datadog.fullname" . }}
+    namespace: {{ .Release.Namespace }}
+{{- end -}}

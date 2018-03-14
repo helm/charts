@@ -1,3 +1,5 @@
+{{- if or .Values.autoDiscovery.clusterName .Values.autoscalingGroups }}
+{{/* one of the above is required */}}
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
@@ -35,11 +37,19 @@ spec:
             - ./cluster-autoscaler
             - --cloud-provider={{ .Values.cloudProvider }}
             - --namespace={{ .Release.Namespace }}
-          {{- range .Values.autoscalingGroups }}
+          {{- if .Values.autoscalingGroups }}
+            {{- range .Values.autoscalingGroups }}
             - --nodes={{ .minSize }}:{{ .maxSize }}:{{ .name }}
+            {{- end }}
+          {{- end }}
+          {{- if eq .Values.cloudProvider "aws" }}
+            {{- if .Values.autoDiscovery.clusterName }}
+            - --node-group-auto-discovery=asg:tag=k8s.io/cluster-autoscaler/enabled,kubernetes.io/cluster/
+              {{- .Values.autoDiscovery.clusterName }}
+            {{- end }}
           {{- end }}
           {{- range $key, $value := .Values.extraArgs }}
-            - --{{ $key }}={{ $value }}
+            - --{{ $key }}{{ if $value }}={{ $value }}{{ end }}
           {{- end }}
           env:
           {{- if eq .Values.cloudProvider "aws" }}
@@ -61,7 +71,7 @@ spec:
 {{ toYaml .Values.resources | indent 12 }}
           volumeMounts:
             - name: ssl-certs
-              mountPath: /etc/ssl/certs/ca-certificates.crt
+              mountPath: {{ .Values.sslCertPath }}
               readOnly: true
     {{- if .Values.affinity }}
       affinity:
@@ -77,4 +87,5 @@ spec:
       volumes:
         - name: ssl-certs
           hostPath:
-            path: /etc/ssl/certs/ca-certificates.crt
+            path: {{ .Values.sslCertPath }}
+{{- end}}

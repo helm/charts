@@ -53,12 +53,21 @@ The following tables lists the configurable parameters of the Drupal chart and t
 | `drupalUsername`                  | User of the application               | `user`                                                    |
 | `drupalPassword`                  | Application password                  | _random 10 character long alphanumeric string_            |
 | `drupalEmail`                     | Admin email                           | `user@example.com`                                        |
+| `allowEmptyPassword`              | Allow DB blank passwords              | `yes`                                                     |
 | `extraVars`                       | Extra environment variables           | `nil`                                                     |
 | `ingress.annotations`             | Specify ingress class                 | `kubernetes.io/ingress.class: nginx`                      |
 | `ingress.enabled`                 | Enable ingress controller resource    | `false`                                                   |
 | `ingress.hostname`                | URL for your Drupal installation      | `drupal.local`                                            |
 | `ingress.tls`                     | Ingress TLS configuration             | `[]`                                                      |
+| `externalDatabase.host`           | Host of the external database         | `nil`                                                     |
+| `externalDatabase.user`           | Existing username in the external db  | `bn_drupal`                                               |
+| `externalDatabase.password`       | Password for the above username       | `nil`                                                     |
+| `externalDatabase.database`       | Name of the existing databse          | `bitnami_drupal`                                          |
+| `mariadb.enabled`                 | Use or not the mariadb chart          | `true`                                                    |
 | `mariadb.mariadbRootPassword`     | MariaDB admin password                | `nil`                                                     |
+| `mariadb.mariadbDatabase`         | Database name to create               | `bitnami_drupal`                                          |
+| `mariadb.mariadbUser`             | Database user to create               | `bn_drupal`                                               |
+| `mariadb.mariadbPassword`         | Password for the database             | _random 10 character long alphanumeric string_            |
 | `serviceType`                     | Kubernetes Service type               | `LoadBalancer`                                            |
 | `persistence.enabled`             | Enable persistence using PVC          | `true`                                                    |
 | `persistence.apache.storageClass` | PVC Storage Class for Apache volume   | `nil` (uses alpha storage class annotation)               |

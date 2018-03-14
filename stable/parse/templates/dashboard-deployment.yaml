@@ -1,10 +1,10 @@
-{{- if and (include "host" .) .Values.dashboard.enabled -}}
+{{- if and (include "parse.host" .) .Values.dashboard.enabled -}}
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}-dashboard
+  name: {{ template "parse.fullname" . }}-dashboard
   labels:
-    app: {{ template "name" . }}
+    app: {{ template "parse.name" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -14,12 +14,12 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "name" . }}
+        app: {{ template "parse.name" . }}
         release: "{{ .Release.Name }}"
         component: "dashboard"
     spec:
       containers:
-      - name: {{ template "fullname" . }}
+      - name: {{ template "parse.fullname" . }}
         image: "{{ .Values.dashboard.image }}"
         imagePullPolicy: {{ .Values.dashboard.imagePullPolicy | quote }}
         env:
@@ -28,10 +28,10 @@ spec:
         - name: PARSE_DASHBOARD_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "parse.fullname" . }}
               key: parse-dashboard-password
         - name: PARSE_HOST
-          value: {{ include "host" . | quote }}
+          value: {{ include "parse.host" . | quote }}
         - name: PARSE_PORT_NUMBER
           value: {{ .Values.server.port | quote }}
         - name: PARSE_APP_ID
@@ -39,7 +39,7 @@ spec:
         - name: PARSE_MASTER_KEY
           valueFrom:
             secretKeyRef:
-              name: {{ template "fullname" . }}
+              name: {{ template "parse.fullname" . }}
               key: master-key
         - name: PARSE_DASHBOARD_APP_NAME
           value: {{ .Values.dashboard.appName | quote }}

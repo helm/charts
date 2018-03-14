@@ -29,6 +29,15 @@ spec:
           {{- end }}
             - --policy={{ .Values.policy }}
             - --provider={{ .Values.provider }}
+          {{- if .Values.txtOwnerId }}
+            - --txt-owner-id={{ .Values.txtOwnerId }}
+          {{- end }}
+          {{- if .Values.txtPrefix }}
+            - --txt-prefix={{ .Values.txtPrefix }}
+          {{- end }}
+          {{- if .Values.annotationFilter }}
+            - --annotation-filter={{ .Values.annotationFilter }}
+          {{- end }}
           {{- range .Values.sources }}
             - --source={{ . }}
           {{- end }}
@@ -39,11 +48,29 @@ spec:
             - --{{ $key }}
             {{- end }}
           {{- end }}
-          {{- if .Values.aws.zone_type }}
-            - --zone-type={{ .Values.aws.zone_type }}
+          {{- if .Values.aws.zoneType }}
+            - --aws-zone-type={{ .Values.aws.zoneType }}
+          {{- end }}
+          {{- if .Values.google.project }}
+            - --google-project={{ .Values.google.project }}
+          {{- end }}
+          volumeMounts:
+          {{- if .Values.google.serviceAccountSecret }}
+          - name: google-service-account
+            mountPath: /etc/secrets/service-account/
+          {{- end}}
+          {{- if eq .Values.provider "azure" }}
+          - name: azure-config-file
+            mountPath: /etc/kubernetes/azure.json
+            readOnly: true
           {{- end }}
           env:
-        {{- if and .Values.aws.secret_key .Values.aws.access_key }}
+        {{- if .Values.google.serviceAccountSecret }}
+          - name: GOOGLE_APPLICATION_CREDENTIALS
+            value: /etc/secrets/service-account/credentials.json
+        {{- end }}
+        {{- if eq .Values.provider "aws" }}
+        {{- if and .Values.aws.secretKey .Values.aws.accessKey }}
           - name: AWS_ACCESS_KEY_ID
             valueFrom:
               secretKeyRef:
@@ -59,7 +86,8 @@ spec:
           - name: AWS_DEFAULT_REGION
             value: {{ .Values.aws.region }}
         {{- end }}
-        {{- if and .Values.cloudflare.api_key .Values.cloudflare.email }}
+        {{- end }}
+        {{- if and .Values.cloudflare.apiKey .Values.cloudflare.email }}
           - name: CF_API_KEY
             valueFrom:
               secretKeyRef:
@@ -67,6 +95,14 @@ spec:
                 key: cloudflare_api_key
           - name: CF_API_EMAIL
             value: "{{ .Values.cloudflare.email }}"
+        {{- end }}
+        {{- $root := . -}}
+        {{- range $key, $value := .Values.extraEnv }}
+          - name: {{ $key }}
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "external-dns.fullname" $root }}
+                key: {{ $key }}
         {{- end }}
           livenessProbe:
             httpGet:
@@ -78,6 +114,18 @@ spec:
           resources:
 {{ toYaml .Values.resources | indent 12 }}
         {{- end }}
+      volumes:
+      {{- if .Values.google.serviceAccountSecret }}
+      - name: google-service-account
+        secret:
+          secretName: "{{.Values.google.serviceAccountSecret}}"
+      {{- end}}
+      {{- if eq .Values.provider "azure" }}
+      - name: azure-config-file
+        hostPath:
+          path: /etc/kubernetes/azure.json
+          type: File
+      {{- end }}
     {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}

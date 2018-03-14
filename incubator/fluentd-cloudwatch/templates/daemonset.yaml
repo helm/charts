@@ -14,8 +14,12 @@ spec:
         app: {{ template "fluentd-cloudwatch.name" . }}
         release: "{{ .Release.Name }}"
       annotations:
+        {{ if .Values.awsRole }}iam.amazonaws.com/role: {{ .Values.awsRole }}{{ end }}
+{{- if .Values.podAnnotations }}
 {{ toYaml .Values.annotations | indent 8 }}
+{{- end }}
     spec:
+      serviceAccountName: {{ if .Values.rbac.create }}{{ template "fluentd-cloudwatch.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
       containers:
       - name: {{ template "fluentd-cloudwatch.fullname" . }}
         image: "{{ .Values.image }}:{{ .Values.imageTag }}"
@@ -26,7 +30,7 @@ spec:
           value: {{ .Values.awsRegion }}
         - name: LOG_GROUP_NAME
           value: {{ .Values.logGroupName }}
-
+{{- if not .Values.awsRole }}
         - name: AWS_ACCESS_KEY_ID
           valueFrom:
             secretKeyRef:
@@ -37,7 +41,7 @@ spec:
             secretKeyRef:
               key: aws_secret_access_key
               name: {{ template "fluentd-cloudwatch.fullname" . }}
-
+{{- end }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
@@ -59,3 +63,7 @@ spec:
       - name: config-volume
         configMap:
           name: {{ template "fluentd-cloudwatch.fullname" . }}
+{{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 6 }}
+{{- end }}

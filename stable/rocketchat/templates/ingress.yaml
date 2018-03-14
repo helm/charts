@@ -18,7 +18,9 @@ spec:
   tls:
   - hosts:
     - {{ .Values.host }}
-    secretName: {{ template "rocketchat.fullname" . }}-tls
+{{- if (ne "-" .Values.ingress.secretName) }}
+    secretName: {{ .Values.ingress.secretName | default (printf "%s-tls" (include "rocketchat.fullname" .)) }}
+{{- end }}
 {{- end }}
   rules:
   - host: {{ .Values.host }}

@@ -7,12 +7,12 @@ metadata:
 {{ toYaml .Values.defaultBackend.service.annotations | indent 4 }}
 {{- end }}
   labels:
-    app: {{ template "name" . }}
+    app: {{ template "nginx-ingress.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     component: "{{ .Values.defaultBackend.name }}"
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-  name: {{ template "defaultBackend.fullname" . }}
+  name: {{ template "nginx-ingress.defaultBackend.fullname" . }}
 spec:
   clusterIP: "{{ .Values.defaultBackend.service.clusterIP }}"
 {{- if .Values.defaultBackend.service.externalIPs }}
@@ -30,7 +30,7 @@ spec:
     - port: {{ .Values.defaultBackend.service.servicePort }}
       targetPort: 8080
   selector:
-    app: {{ template "name" . }}
+    app: {{ template "nginx-ingress.name" . }}
     component: "{{ .Values.defaultBackend.name }}"
     release: {{ .Release.Name }}
   type: "{{ .Values.defaultBackend.service.type }}"

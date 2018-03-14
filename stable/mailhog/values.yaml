@@ -2,6 +2,7 @@ image:
   repository: mailhog/mailhog
   tag: v1.0.0
   pullPolicy: IfNotPresent
+
 service:
   annotations: {}
   clusterIP: ""
@@ -15,22 +16,24 @@ service:
   nodePort:
     http: ""
     smtp: ""
+
 ingress:
   enabled: false
   annotations: {}
   path: /
-  hosts: 
+  hosts:
     - mailhog.example.com
-  tls:
-    enabled: false
-    existingSecret: false
-    secretContents: {}
-    secretAnnotations: {}
+  tls: []
+  #  - hosts:
+  #      - mailhog.example.com
+  #    secretName: tls-mailhog
+
 auth:
   enabled: false
   existingSecret: ""
   fileName: auth.txt
   fileContents: ""
+
 podAnnotations: {}
 resources: {}
 env: {}

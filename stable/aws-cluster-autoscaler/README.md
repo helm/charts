@@ -83,7 +83,7 @@ Parameter | Description | Default
 `autoscalingGroups[].maxSize` | maximum autoscaling group size | None. You *must* supply at least one.
 `autoscalingGroups[].minSize` | minimum autoscaling group size | None. You *must* supply at least one.
 `awsRegion` | AWS region | `us-east-1`
-`image.repository` | Image | `gcr.io/google_containers/cluster-autoscaler`
+`image.repository` | Image | `k8s.gcr.io/cluster-autoscaler`
 `image.tag` | Image tag | `v0.5.4`
 `image.pullPolicy` | Image pull policy | `IfNotPresent`
 `extraArgs` | additional container arguments | `{}`

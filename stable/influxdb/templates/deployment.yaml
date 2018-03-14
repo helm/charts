@@ -43,6 +43,10 @@ spec:
         - name: opentsdb
           containerPort: {{ .Values.config.opentsdb.bind_address }}
         {{- end }}
+        {{ if .Values.env }}
+        env:
+{{ toYaml .Values.env | indent 10 }}
+        {{- end }}
         livenessProbe:
           httpGet:
             path: /ping
@@ -76,3 +80,7 @@ spec:
       - name: config
         configMap:
           name: {{ template "influxdb.fullname" . }}
+    {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- end -}}

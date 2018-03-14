@@ -1,0 +1,79 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    app: {{ template "name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      initContainers:
+        - name: prep-volume
+          image: busybox
+          command: 
+            - chown
+            - -R
+            - 1000:1000
+            - /puppet
+          volumeMounts:
+{{- if .Values.persistence.enabled }}
+            - mountPath: /puppet/modules
+              name: {{ .Release.Name }}-volume
+              readOnly: false
+{{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: PUPPET_FORGE_PROXY
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "fullname" . }}-config
+                  key: puppet_forge_proxy
+            - name: PUPPET_FORGE_CACHE_TTL
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "fullname" . }}-config
+                  key: puppet_forge_cache_ttl
+            - name: PUPPET_FORGE_CACHE_SIZE
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ template "fullname" . }}-config
+                  key: puppet_forge_cache_size
+          ports:
+            - containerPort: {{ .Values.service.internalPort }}
+          livenessProbe:
+            httpGet:
+              path: /
+              port: {{ .Values.service.internalPort }}
+          readinessProbe:
+            httpGet:
+              path: /
+              port: {{ .Values.service.internalPort }}
+          volumeMounts:
+{{- if .Values.persistence.enabled }}
+            - mountPath: /puppet/modules
+              name: {{ .Release.Name }}-volume
+              readOnly: false
+{{- end }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+    {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
+      volumes:
+{{- if .Values.persistence.enabled }}
+        - name: {{ .Release.Name }}-volume
+          persistentVolumeClaim:
+            claimName: {{ .Release.Name }}-claim
+{{- end }}

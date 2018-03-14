@@ -1,0 +1,24 @@
+{{- if and .Values.sftp.enabled .Values.ingress.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "lamp.fullname" . }}-sftp
+  labels:
+    app: {{ template "lamp.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+spec:
+  type: NodePort
+  ports:
+  - targetPort: 22
+    port: {{ .Values.sftp.port }}
+    {{- if .Values.sftp.nodePort }}
+    nodePort: {{ .Values.sftp.nodePort }}
+    {{- end }}
+    protocol: TCP
+    name: sftp
+  selector:
+    app: {{ template "lamp.name" . }}
+    release: {{ .Release.Name }}
+{{- end -}}

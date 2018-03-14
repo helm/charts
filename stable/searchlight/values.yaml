@@ -4,7 +4,7 @@
 
 operator:
   image: appscode/searchlight
-  tag: 4.0.0
+  tag: 5.0.0
 
 ido:
   image: appscode/postgres
@@ -12,7 +12,7 @@ ido:
 
 icinga:
   image: appscode/icinga
-  tag: 4.0.0-k8s
+  tag: 5.0.0-k8s
 
 ## Optionally specify an array of imagePullSecrets.
 ## Secrets must be manually created in the namespace.

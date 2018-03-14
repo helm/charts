@@ -1,0 +1,21 @@
+{{- if .Values.enabled -}}
+{{- if .Values.rbac.create }}
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  labels:
+    {{- include "weave-scope.helm_std_labels" . | indent 4 }}
+    component: agent
+  name: {{ include "toplevel.fullname" . }}
+  annotations:
+    {{- include "weave-scope.annotations" . | indent 4 }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ template "weave-scope-agent.serviceAccountName" . }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ template "weave-scope-agent.serviceAccountName" . }}
+    namespace: {{ .Release.Namespace }}
+{{- end }}
+{{- end -}}

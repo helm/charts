@@ -1,0 +1,1 @@
+1. Elastalert is now running against: {{ .Values.elasticsearch.host }}:{{ .Values.elasticsearch.port }}

@@ -1,0 +1,17 @@
+mysql:
+  rootPassword: "Root Password here..."
+  user: drupal
+  password: "User Password here..."
+  database: drupal
+
+php:
+  repository: drupal
+  tag: 7-fpm
+  persistentSubpaths:
+  - modules
+  - profiles
+  - sites
+  - themes
+  # copies web root to persistent storage upon creation. remember to disable on subsequent
+  # upgrades of the chart, otherwise your storage might get overwritten...
+  copyRoot: true

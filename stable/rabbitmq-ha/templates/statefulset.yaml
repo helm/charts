@@ -1,0 +1,191 @@
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  name: {{ template "rabbitmq-ha.fullname" . }}
+  labels:
+    app: {{ template "rabbitmq-ha.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  serviceName: {{ template "rabbitmq-ha.fullname" . }}
+  replicas: {{ .Values.replicaCount }}
+  updateStrategy:
+    type: {{ .Values.updateStrategy }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "rabbitmq-ha.name" . }}
+        release: {{ .Release.Name }}
+      annotations:
+        {{- if not .Values.customConfigMap }}
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        {{- end }}
+    spec:
+      terminationGracePeriodSeconds: 10
+      serviceAccountName: {{ template "rabbitmq-ha.serviceAccountName" . }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: epmd
+              protocol: TCP
+              containerPort: 4369
+            - name: amqp
+              protocol: TCP
+              containerPort: 5672
+            - name: http
+              protocol: TCP
+              containerPort: 15672
+            {{- if .Values.rabbitmqSTOMPPlugin.enabled }}
+            - name: stomp-tcp
+              protocol: TCP
+              containerPort: 61613
+            - name: stomp-ssl
+              protocol: TCP
+              containerPort: 61614
+            {{- end }}
+            {{- if .Values.rabbitmqWebSTOMPPlugin.enabled }}
+            - name: stomp-ws
+              protocol: TCP
+              containerPort: 15674
+            {{- end }}
+            {{- if .Values.rabbitmqMQTTPlugin.enabled }}
+            - name: mqtt-tcp
+              protocol: TCP
+              containerPort: 1883
+            - name: mqtt-ssl
+              protocol: TCP
+              containerPort: 8883
+            {{- end }}
+            {{- if .Values.rabbitmqWebMQTTPlugin.enabled }}
+            - name: mqtt-ws
+              protocol: TCP
+              containerPort: 15675
+            {{- end }}
+            {{- if .Values.rabbitmqAmqpsSupport.enabled }}
+            - name: amqps
+              protocol: TCP
+              containerPort: 5671
+            {{- end }}
+          livenessProbe:
+            exec:
+              command:
+                - rabbitmqctl
+                - status
+            initialDelaySeconds: 30
+            timeoutSeconds: 5
+          readinessProbe:
+            exec:
+              command:
+                - rabbitmqctl
+                - status
+            initialDelaySeconds: 10
+            timeoutSeconds: 5
+          env:
+            - name: MY_POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: RABBITMQ_USE_LONGNAME
+              value: "true"
+            - name: RABBITMQ_NODENAME
+              value: "rabbit@$(MY_POD_IP)"
+            - name: K8S_SERVICE_NAME
+              value: {{ template "rabbitmq-ha.fullname" . }}
+            - name: RABBITMQ_ERLANG_COOKIE
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "rabbitmq-ha.fullname" . }}
+                  key: rabbitmq-erlang-cookie
+            {{- if .Values.rabbitmqHipeCompile }}
+            - name: RABBITMQ_HIPE_COMPILE
+              value: {{ .Values.rabbitmqHipeCompile | quote }}
+            {{- end }}
+            - name: RABBITMQ_DEFAULT_USER
+              value: {{ .Values.rabbitmqUsername | quote }}
+            - name: RABBITMQ_DEFAULT_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "rabbitmq-ha.fullname" . }}
+                  key: rabbitmq-password
+            - name: RABBITMQ_DEFAULT_VHOST
+              value: {{ .Values.rabbitmqVhost | quote }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/rabbitmq
+            - name: config
+              mountPath: /etc/rabbitmq
+            {{- if .Values.rabbitmqCert.enabled }}
+            - name: cert
+              mountPath: /etc/cert
+            {{- end }}
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- end }}
+      {{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+      {{- end }}
+      {{- if eq .Values.podAntiAffinity "hard" }}
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - topologyKey: "kubernetes.io/hostname"
+              labelSelector:
+                matchLabels:
+                  app: {{ template "rabbitmq-ha.name" . }}
+                  release: {{ .Release.Name }}
+      {{- else if eq .Values.podAntiAffinity "soft" }}
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 1
+              podAffinityTerm:
+                topologyKey: kubernetes.io/hostname
+                labelSelector:
+                  matchLabels:
+                    app: {{ template "rabbitmq-ha.name" . }}
+                    release: {{ .Release.Name }}
+      {{- end }}
+      volumes:
+        - name: config
+          configMap:
+            name: {{ template "rabbitmq-ha.fullname" . }}
+        {{- if .Values.rabbitmqCert.enabled }}
+        - name: cert
+          secret:
+            defaultMode: 420
+            secretName: {{ template "rabbitmq-ha.fullname" . }}-cert
+        {{- end }}
+{{- if .Values.persistentVolume.enabled }}
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+        annotations:
+        {{- range $key, $value := .Values.persistentVolume.annotations }}
+          {{ $key }}: {{ $value }}
+        {{- end }}
+      spec:
+        accessModes:
+        {{- range .Values.persistentVolume.accessModes }}
+          - {{ . | quote }}
+        {{- end }}
+        resources:
+          requests:
+            storage: {{ .Values.persistentVolume.size | quote }}
+      {{- if .Values.persistentVolume.storageClass }}
+      {{- if (eq "-" .Values.persistentVolume.storageClass) }}
+        storageClassName: ""
+      {{- else }}
+        storageClassName: "{{ .Values.persistentVolume.storageClass }}"
+      {{- end }}
+      {{- end }}
+{{- else }}
+        - name: data
+          emptyDir: {}
+{{- end }}

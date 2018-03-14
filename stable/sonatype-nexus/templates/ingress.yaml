@@ -16,6 +16,15 @@ metadata:
     {{- end }}
 spec:
   rules:
+    {{- if .Values.docker.enabled }}
+    - host: {{ .Values.docker.host }}
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: {{ $serviceName }}
+              servicePort: {{ .Values.docker.port }}
+    {{- end }}
     {{- range $host := .Values.ingress.hosts }}
     - host: {{ $host }}
       http:

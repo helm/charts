@@ -17,6 +17,8 @@ spec:
         image: "{{ .Values.image }}"
         imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
         env:
+        - name: SAPHO_VERSION
+          value: {{ .Values.saphoVersion }}
         - name: SAPHO_DB_HOSTNAME
           value: {{ template "sapho.mysql.fullname" . }}
         - name: SAPHO_DB_PORT

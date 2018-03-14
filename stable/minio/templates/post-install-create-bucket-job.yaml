@@ -1,0 +1,46 @@
+{{- if .Values.defaultBucket.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ template "minio.fullname" . }}-make-bucket-job
+  labels:
+    app: {{ template "minio.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook-delete-policy": hook-succeeded
+spec:
+  template:
+    metadata:
+      labels:
+        app: {{ template "minio.fullname" . }}
+        release: {{ .Release.Name }}
+    spec:
+      restartPolicy: OnFailure
+{{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+{{- end }}
+      volumes:
+        - name: minio-configuration
+          projected:
+            sources:
+            - configMap:
+                name: {{ template "minio.fullname" . }}-config-cm
+            - secret:
+                name: {{ template "minio.fullname" . }}-user
+      containers:
+      - name: minio-mc
+        image: minio/mc
+        command: ["/bin/sh", "/config/initialize"]
+        env:
+          - name: MINIO_ENDPOINT
+            value: {{ template "minio.fullname" . }}-svc
+          - name: MINIO_PORT
+            value: {{ .Values.servicePort | quote }}
+        volumeMounts:
+          - name: minio-configuration
+            mountPath: /config
+{{- end }}
