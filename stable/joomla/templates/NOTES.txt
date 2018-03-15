@@ -38,6 +38,6 @@ host. To configure Joomla! to use and external database host:
 
 1. Complete your Joomla! deployment by running:
 
-  helm upgrade {{ .Release.Name }} --set serviceType={{ .Values.serviceType }},mariadb.enabled=false,externalDatabase.host=YOUR_EXTERNAL_DATABASE_HOST stable/Joomla!
+  helm upgrade {{ .Release.Name }} --set serviceType={{ .Values.serviceType }},mariadb.enabled=false,externalDatabase.host=YOUR_EXTERNAL_DATABASE_HOST stable/joomla
 
 {{- end }}
