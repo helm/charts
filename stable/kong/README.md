@@ -69,7 +69,9 @@ and their default values.
 | env                               | Additional [Kong configurations](https://getkong.org/docs/latest/configuration/)               |
 | runMigrations                     | Run Kong migrations job                                                | `true`                |
 | readinessProbe                    | Kong readiness probe                                                   |                       |
+| readinessProbe.httpGet.schema     | Schema used by readyness probe. Set to HTTP if admin.useTLS = false    | `HTTPS`               |
 | livenessProbe                     | Kong liveness probe                                                    |                       |
+| livenessProbe.httpGet.schema      | Schema used by liveness probe. Set to HTTP if admin.useTLS = false     | `HTTPS`               |
 | affinity                          | Node/pod affinities                                                    |                       |
 | nodeSelector                      | Node labels for pod assignment                                         | `{}`                  |
 | podAnnotations                    | Annotations to add to each pod                                         | `{}`                  |
