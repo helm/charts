@@ -71,7 +71,7 @@ The following tables lists the configurable parameters of the Moodle chart and t
 | `persistence.existingClaim`         | If PVC exists&bounded for Moodle        | `nil` (when nil, new one is requested)      |
 | `allowEmptyPassword`                | Allow DB blank passwords                | `yes`                                       |
 | `externalDatabase.host`             | Host of the external database           | `nil`                                       |
-| `externalDatabase.port`             | SMTP protocol [`ssl`, `none`]           | `3306`                                      |
+| `externalDatabase.port`             | Port of the external database           | `3306`                                      |
 | `externalDatabase.user`             | Existing username in the external db    | `bn_moodle`                                 |
 | `externalDatabase.password`         | Password for the above username         | `nil`                                       |
 | `externalDatabase.database`         | Name of the existing databse            | `bitnami_moodle`                            |
