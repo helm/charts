@@ -73,7 +73,7 @@ The following tables lists the configurable parameters of the Osclass chart and 
 | `persistence.moodle.size`          | PVC Storage Request for OSClass volume   | `8Gi`                                       |
 | `allowEmptyPassword`               | Allow DB blank passwords                 | `yes`                                       |
 | `externalDatabase.host`            | Host of the external database            | `nil`                                       |
-| `externalDatabase.port`            | SMTP protocol [`ssl`, `none`]            | `3306`                                      |
+| `externalDatabase.port`            | Port of the external database            | `3306`                                      |
 | `externalDatabase.user`            | Existing username in the external db     | `bn_osclass`                                |
 | `externalDatabase.password`        | Password for the above username          | `nil`                                       |
 | `externalDatabase.database`        | Name of the existing databse             | `bitnami_osclass`                           |
