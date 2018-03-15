@@ -15,6 +15,6 @@ spec:
     name: http-etcd-restore-port
     port: {{ .Values.restoreOperator.port }}
   selector:
-    app: {{ template "etcd-restore-operator.fullname" . }}
+    app: {{ template "etcd-restore-operator.name" . }}
     release: {{ .Release.Name }}
-{{- end}}
+{{- end }}

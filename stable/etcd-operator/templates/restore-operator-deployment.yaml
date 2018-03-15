@@ -15,7 +15,7 @@ spec:
     metadata:
       name: {{ template "etcd-restore-operator.fullname" . }}
       labels:
-        app: {{ template "etcd-restore-operator.fullname" . }}
+        app: {{ template "etcd-restore-operator.name" . }}
         release: {{ .Release.Name }}
     spec:
       serviceAccountName: {{ template "etcd-restore-operator.serviceAccountName" . }}
@@ -56,4 +56,4 @@ spec:
       tolerations:
 {{ toYaml .Values.restoreOperator.tolerations | indent 8 }}
     {{- end }}
-{{- end}}
+{{- end }}
