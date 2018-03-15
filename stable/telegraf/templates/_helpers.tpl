@@ -50,9 +50,12 @@ We truncate at 24 chars because some Kubernetes name fields are limited to this 
 {{- end -}}
 
 {{- define "outputs" -}}
+{{- range $outputIdx, $configObject := . -}}
 {{- range $output, $config := . }}
     [[outputs.{{ $output }}]]
   {{- if $config }}
+  {{- $tp := typeOf $config -}}
+  {{- if eq $tp "map[string]interface {}" -}}
     {{- range $key, $value := $config -}}
       {{- $tp := typeOf $value }}
       {{- if eq $tp "string"}}
@@ -83,13 +86,19 @@ We truncate at 24 chars because some Kubernetes name fields are limited to this 
       {{- end }}
     {{- end }}
   {{- end }}
+  {{- end }}
+  {{- end }}
 {{- end }}
 {{- end -}}
 
 {{- define "inputs" -}}
-{{- range $input, $config := . -}}
+{{- range $inputIdx, $configObject := . -}}
+    {{- range $input, $config := . -}}
+      
     [[inputs.{{- $input }}]]
-      {{- if $config -}}
+    {{- if $config -}}
+    {{- $tp := typeOf $config -}}
+    {{- if eq $tp "map[string]interface {}" -}}
         {{- range $key, $value := $config -}}
           {{- $tp := typeOf $value -}}
           {{- if eq $tp "string" }}
@@ -158,7 +167,9 @@ We truncate at 24 chars because some Kubernetes name fields are limited to this 
               {{- end }}
             {{- end }}
           {{- end }}
-        {{- end }}
-      {{- end }}
+          {{- end }}
+    {{- end }}
+    {{- end }}
     {{ end }}
+{{- end }}
 {{- end -}}

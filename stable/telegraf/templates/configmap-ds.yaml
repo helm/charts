@@ -1,4 +1,3 @@
-{{- if gt (len .Values.daemonset.config.outputs.influxdb.urls) 0 }}
 {{- if .Values.daemonset.enabled -}}
 apiVersion: v1
 kind: ConfigMap
@@ -15,5 +14,4 @@ data:
     {{ template "agent" .Values.daemonset.config.agent }}
     {{ template "outputs" .Values.daemonset.config.outputs }}
     {{ template "inputs" .Values.daemonset.config.inputs -}}
-{{- end -}}
 {{- end -}}
