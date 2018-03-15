@@ -43,6 +43,8 @@ spec:
           value: --no-supervisor -q
         - name: OUTPUT_HOST
           value: {{ .Values.elasticsearch.host | quote }}
+        - name: OUTPUT_SCHEME
+          value: {{ default "http" .Values.elasticsearch.scheme | quote }}
         - name: OUTPUT_PORT
           value: {{ .Values.elasticsearch.port | quote }}
         - name: OUTPUT_BUFFER_CHUNK_LIMIT
