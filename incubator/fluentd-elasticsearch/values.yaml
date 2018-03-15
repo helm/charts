@@ -46,6 +46,7 @@ configMaps:
       include_tag_key true
       host "#{ENV['OUTPUT_HOST']}"
       port "#{ENV['OUTPUT_PORT']}"
+      scheme "#{ENV['OUTPUT_SCHEME']}"
       logstash_format true
       <buffer>
         @type file
