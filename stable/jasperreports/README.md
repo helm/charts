@@ -69,6 +69,7 @@ The following tables lists the configurable parameters of the JasperReports char
 | `mariadb.mariadbDatabase`     | Database name to create                      | `bitnami_jasperreports`                                  |
 | `mariadb.mariadbUser`         | Database user to create                      | `bn_jasperreports`                                       |
 | `mariadb.mariadbPassword`     | Password for the database                    | `nil`                                                    |
+| `mariadb.mariadbRootPassword` | MariaDB admin password                       | `nil`                                                    |
 | `serviceType`                 | Kubernetes Service type                      | `LoadBalancer`                                           |
 | `persistence.enabled`         | Enable persistence using PVC                 | `true`                                                   |
 | `persistence.storageClass`    | PVC Storage Class for JasperReports volume   | `nil` (uses alpha storage annotation)                    |
