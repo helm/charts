@@ -68,6 +68,7 @@ The following tables lists the configurable parameters of the Joomla! chart and 
 | `mariadb.mariadbDatabase`         | Database name to create                | `bitnami_joomla`                                          |
 | `mariadb.mariadbUser`             | Database user to create                | `bn_joomla`                                               |
 | `mariadb.mariadbPassword`         | Password for the database              | `nil`                                                     |
+| `mariadb.mariadbRootPassword`     | MariaDB admin password                 | `nil`                                                     |
 | `serviceType`                     | Kubernetes Service type                | `LoadBalancer`                                            |
 | `persistence.enabled`             | Enable persistence using PVC           | `true`                                                    |
 | `persistence.apache.storageClass` | PVC Storage Class for Apache volume    | `nil` (uses alpha storage annotation)                     |
