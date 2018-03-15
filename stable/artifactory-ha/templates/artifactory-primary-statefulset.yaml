@@ -194,7 +194,6 @@ spec:
       storageClassName: "{{ .Values.artifactory.persistence.storageClass }}"
       {{- end }}
       {{- end }}
-      {{- end }}
       resources:
         requests:
           storage: {{ .Values.artifactory.persistence.size }}
