@@ -79,6 +79,7 @@ The following tables lists the configurable parameters of the Moodle chart and t
 | `mariadb.mariadbDatabase`           | Database name to create                 | `bitnami_moodle`                            |
 | `mariadb.mariadbUser`               | Database user to create                 | `bn_moodle`                                 |
 | `mariadb.mariadbPassword`           | Password for the database               | `nil`                                       |
+| `mariadb.mariadbRootPassword`       | MariaDB admin password                  | `nil`                                       |
 | `mariadb.persistence.enabled`       | Enable MariaDB persistence using PVC    | `true`                                      |
 | `mariadb.persistence.storageClass`  | PVC Storage Class for MariaDB volume    | `generic`                                   |
 | `mariadb.persistence.accessMode`    | PVC Access Mode for MariaDB volume      | `ReadWriteOnce`                             |
