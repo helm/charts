@@ -124,10 +124,10 @@ spec:
           resources:
 {{ toYaml .Values.resources | indent 12 }}
           volumeMounts:
-            - name: config
-              mountPath: /etc/rabbitmq
             - name: data
               mountPath: /var/lib/rabbitmq
+            - name: config
+              mountPath: /etc/rabbitmq
             {{- if .Values.rabbitmqCert.enabled }}
             - name: cert
               mountPath: /etc/cert
