@@ -34,7 +34,7 @@ spec:
         - name: SUGARCRM_DATABASE_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "jasperreports.mariadb.fullname" . }}
+              name: {{ template "sugarcrm.mariadb.fullname" . }}
               key: mariadb-password
         {{- else }}
         - name: MARIADB_HOST
