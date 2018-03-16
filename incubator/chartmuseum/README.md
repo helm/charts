@@ -22,7 +22,7 @@ You are also required to create the StorageClass resource ahead of time:
 kubectl create -f /path/to/storage_class.yaml
 ```
 
-The following tables lists common configurable parameters of the chart and
+The following table lists common configurable parameters of the chart and
 their default values. See values.yaml for all available options. 
 
 |       Parameter                        |           Description                       |                         Default                     |
