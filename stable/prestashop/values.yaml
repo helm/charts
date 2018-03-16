@@ -1,7 +1,7 @@
 ## Bitnami PrestaShop image version
 ## ref: https://hub.docker.com/r/bitnami/prestashop/tags/
 ##
-image: bitnami/prestashop:1.7.3-0-r0
+image: bitnami/prestashop:1.7.3-0-r1
 
 ## Specify a imagePullPolicy
 ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
@@ -45,6 +45,30 @@ prestashopFirstName: Bitnami
 ##
 prestashopLastName: User
 
+## Set to `yes` to allow the container to be started with blank passwords
+## ref: https://github.com/bitnami/bitnami-docker-prestashop#environment-variables
+allowEmptyPassword: "yes"
+
+##
+## External database configuration
+##
+externalDatabase:
+  ## Database host
+  host:
+
+  ## Database host
+  port: 3306
+
+  ## Database user
+  user: bn_jasperreports
+
+  ## Database password
+  password:
+
+  ## Database name
+  database: bitnami_prestashop
+
+
 ## SMTP mail delivery configuration
 ## ref: https://github.com/bitnami/bitnami-docker-prestashop/#smtp-configuration
 ##
@@ -58,6 +82,24 @@ prestashopLastName: User
 ## MariaDB chart configuration
 ##
 mariadb:
+  ## Whether to deploy a mariadb server to satisfy the applications database requirements. To use an external database set this to false and configure the externalDatabase parameters
+  enabled: true
+
+  ## Create a database
+  ## ref: https://github.com/bitnami/bitnami-docker-mariadb/blob/master/README.md#creating-a-database-on-first-run
+  ##
+  mariadbDatabase: bitnami_prestashop
+
+  ## Create a database user
+  ## ref: https://github.com/bitnami/bitnami-docker-mariadb/blob/master/README.md#creating-a-database-user-on-first-run
+  ##
+  mariadbUser: bn_prestashop
+
+  ## Password for mariadbUser
+  ## ref: https://github.com/bitnami/bitnami-docker-mariadb/blob/master/README.md#creating-a-database-user-on-first-run
+  ##
+  # mariadbPassword:
+
   ## MariaDB admin password
   ## ref: https://github.com/bitnami/bitnami-docker-mariadb/blob/master/README.md#setting-the-root-password-on-first-run
   ##
