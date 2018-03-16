@@ -2,7 +2,6 @@ apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
   name: {{ template "openebs.fullname" . }}-provisioner
-  namespace: {{ .Values.rbac.namespace }}
   labels:
     app: {{ template "openebs.name" . }}
     chart: {{ template "openebs.chart" . }}
@@ -19,7 +18,7 @@ spec:
         component: provisioner
     spec:
 {{- if .Values.rbac.create }}
-      serviceAccountName: {{ .Values.serviceAccount.name }}
+      serviceAccountName: {{ template "openebs.serviceAccountName". }}
 {{- end }}
       containers:
       - name: {{ template "openebs.name" . }}-provisioner
@@ -39,7 +38,7 @@ spec:
         # OPENEBS_NAMESPACE is the namespace that this provisioner will
         # lookup to find maya api service
         - name: OPENEBS_NAMESPACE
-          value: "{{ .Values.rbac.namespace }}"
+          value: "{{ .Release.Namespace }}"
         - name: NODE_NAME
           valueFrom:
             fieldRef:
@@ -49,7 +48,7 @@ spec:
         # If not present, "maya-apiserver-service" will be used for lookup.
         # This is supported for openebs provisioner version 0.5.3-RC1 onwards
         - name: OPENEBS_MAYA_SERVICE_NAME
-          value: "{{ template "openebs.fullname" . }}-maya-apiservice"
+          value: "{{ template "openebs.fullname" . }}-apiservice"
         # The following values will be set as annotations to the PV object.
         # Refer : https://github.com/openebs/external-storage/pull/15
         #- name: OPENEBS_MONITOR_URL

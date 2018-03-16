@@ -1,8 +1,7 @@
 apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "openebs.fullname" . }}-maya-apiserver
-  namespace: {{ .Values.rbac.namespace }}
+  name: {{ template "openebs.fullname" . }}-apiserver
   labels:
     app: {{ template "openebs.name" . }}
     chart: {{ template "openebs.chart" . }}
@@ -19,10 +18,10 @@ spec:
         component: apiserver
     spec:
 {{- if .Values.rbac.create }}
-      serviceAccountName: {{ .Values.serviceAccount.name }}
+      serviceAccountName: {{ template "openebs.serviceAccountName". }}
 {{- end }}
       containers:
-      - name: {{ template "openebs.name" . }}-maya-apiserver
+      - name: {{ template "openebs.name" . }}-apiserver
         image: "{{ .Values.apiserver.image }}:{{ .Values.apiserver.imageTag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         ports:
@@ -66,7 +65,7 @@ spec:
             - topologyKey: "kubernetes.io/hostname"
               labelSelector:
                 matchLabels:
-                  name: {{ template "openebs.fullname" . }}-maya-apiserver
+                  name: {{ template "openebs.fullname" . }}-apiserver
   {{- else if eq $antiAffinityType "soft" }}
           preferredDuringSchedulingIgnoredDuringExecution:
             - weight: 1
@@ -74,6 +73,6 @@ spec:
                 topologyKey: "kubernetes.io/hostname"
                 labelSelector:
                   matchLabels:
-                    name: {{ template "openebs.fullname" . }}-maya-apiserver
+                    name: {{ template "openebs.fullname" . }}-apiserver
   {{- end }}
 {{- end }}

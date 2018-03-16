@@ -1,6 +1,6 @@
 The OpenEBS has been installed. Check its status by running:
-  kubectl get pod -n openebs
+  kubectl get pods -n {{ .Release.Namespace }}
 
 To use OpenEBS Volumes, your nodes should have the iSCSI initiator installed. 
-Please visit http://openebs.readthedocs.io/en/latest/getting_started/quick_install.html for instructions
+Please visit http://docs.openebs.io/ for instructions
 

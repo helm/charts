@@ -5,8 +5,6 @@
 rbac:
   # Specifies whether RBAC resources should be created
   create: true
-  # Specifies the namespace that will containe openebs control plane components
-  namespace: "openebs"
 
 serviceAccount:
   create: true
@@ -30,7 +28,7 @@ apiserver:
 
 provisioner:
   image: "openebs/openebs-k8s-provisioner"
-  imageTag: "0.5.3-RC1"
+  imageTag: "0.5.3"
   replicas: 2
   mayaPortalUrl: "https://mayaonline.io/"
   monitorUrl: "http://127.0.0.1:32515/dashboard/db/openebs-volume-stats?orgId=1"
