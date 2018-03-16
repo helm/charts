@@ -1,3 +1,4 @@
+{{- if or .Values.mariadb.enabled .Values.externalDatabase.host -}}
 1. Get the Joomla! URL by running:
 
 {{- if contains "NodePort" .Values.serviceType }}
@@ -24,3 +25,19 @@
 
     echo Username: {{ .Values.joomlaUsername }}
     echo Password: $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "joomla.fullname" . }} -o jsonpath="{.data.joomla-password}" | base64 --decode)
+
+{{- else -}}
+
+########################################################################################
+### ERROR: You did not provide an external database host in your 'helm install' call ###
+########################################################################################
+
+This deployment will be incomplete until you configure Joomla! with a resolvable database
+host. To configure Joomla! to use and external database host:
+
+
+1. Complete your Joomla! deployment by running:
+
+  helm upgrade {{ .Release.Name }} --set serviceType={{ .Values.serviceType }},mariadb.enabled=false,externalDatabase.host=YOUR_EXTERNAL_DATABASE_HOST stable/joomla
+
+{{- end }}
