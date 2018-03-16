@@ -46,7 +46,6 @@ configMaps:
       include_tag_key true
       host "#{ENV['OUTPUT_HOST']}"
       port "#{ENV['OUTPUT_PORT']}"
-      scheme "#{ENV['OUTPUT_SCHEME']}"
       logstash_format true
       <buffer>
         @type file
@@ -65,3 +64,13 @@ configMaps:
 
 # fluentdcustomconfig: |
 #   # add fluentd custom configs here
+
+extraVolumes: {}
+  # - name: es-certs
+  #   secret:
+  #     defaultMode: 420
+  #     secretName: es-certs
+extraVolumeMounts: {}
+  # - name: es-certs
+  #   mountPath: /certs
+  #   readOnly: true

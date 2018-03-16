@@ -45,6 +45,8 @@ The following tables lists the configurable parameters of the Fluentd elasticsea
 | `image`                         | Image                                      | `gcr.io/google-containers/fluentd-elasticsearch`           |
 | `imageTag`                      | Image tag                                  | `v2.0.3                                                    |
 | `imagePullPolicy`               | Image pull policy                          | `Always` if `imageTag` is `imagePullPolicy`                |
+| `extraVolumeMounts`             | Mount an extra volume, required to mount ssl certificates when elasticsearch has tls enabled |             |
+| `extraVolume`                   | Extra volume                               | 
 | `resources.limits.cpu`          | CPU limit                                  | `100m`                                                     |
 | `resources.limits.memory`       | Memory limit                               | `500Mi`                                                    |
 | `resources.requests.cpu`        | CPU request                                | `100m`                                                     |

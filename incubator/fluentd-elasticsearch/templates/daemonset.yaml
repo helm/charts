@@ -43,8 +43,6 @@ spec:
           value: --no-supervisor -q
         - name: OUTPUT_HOST
           value: {{ .Values.elasticsearch.host | quote }}
-        - name: OUTPUT_SCHEME
-          value: {{ default "http" .Values.elasticsearch.scheme | quote }}
         - name: OUTPUT_PORT
           value: {{ .Values.elasticsearch.port | quote }}
         - name: OUTPUT_BUFFER_CHUNK_LIMIT
@@ -64,6 +62,7 @@ spec:
           readOnly: true
         - name: config-volume-{{ template "fluentd-elasticsearch.fullname" . }}
           mountPath: /etc/fluent/config.d
+{{ toYaml .Values.extraVolumeMounts | indent 8 }}
       terminationGracePeriodSeconds: 30
       volumes:
       - name: varlog
@@ -79,6 +78,7 @@ spec:
       - name: config-volume-{{ template "fluentd-elasticsearch.fullname" . }}
         configMap:
           name: {{ template "fluentd-elasticsearch.fullname" . }}
+{{ toYaml .Values.extraVolumes | indent 6 }}
 {{- if .Values.tolerations }}
       tolerations:
 {{ toYaml .Values.tolerations | indent 6 }}
