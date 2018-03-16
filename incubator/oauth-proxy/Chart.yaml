@@ -9,9 +9,6 @@ keywords:
 - authentication
 - google
 - github
-maintainers:
-- name: compleatang
-  email: casey@monax.io
 sources:
 - https://github.com/bitly/oauth2_proxy
 engine: gotpl
