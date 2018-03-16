@@ -2,7 +2,7 @@
 
 [MariaDB](https://mariadb.org) is one of the most popular database servers in the world. It’s made by the original developers of MySQL and guaranteed to stay open source. Notable users include Wikipedia, Facebook and Google.
 
-MariaDB is developed as open source software and as a relational database it provides an SQL interface for accessing data. The latest versions of MariaDB also include GIS and JSON features.
+MariaDB is developed as open source software and as a relational database, it provides an SQL interface for accessing data. The latest versions of MariaDB also include GIS and JSON features.
 
 ## TL;DR;
 
@@ -43,7 +43,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the MariaDB chart and their default values.
+The following tables list the configurable parameters of the MariaDB chart and their default values.
 
 |          Parameter          |                Description                 |                   Default                   |
 | --------------------------- | ------------------------------------------ | ------------------------------------------- |
@@ -80,7 +80,7 @@ $ helm install --name my-release \
     stable/mariadb
 ```
 
-The above command sets the MariaDB `root` account password to `secretpassword`. Additionally it creates a standard database user named `my-user`, with the password `my-password`, who has access to a database named `my-database`.
+The above command sets the MariaDB `root` account password to `secretpassword`. Additionally, it creates a standard database user named `my-user`, with the password `my-password`, who has access to a database named `my-database`.
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
@@ -149,6 +149,7 @@ The chart mounts a [Persistent Volume](http://kubernetes.io/docs/user-guide/pers
 1. Create the PersistentVolume
 1. Create the PersistentVolumeClaim
 1. Install the chart
+
 ```bash
 $ helm install --set persistence.existingClaim=PVC_NAME postgresql
 ```
