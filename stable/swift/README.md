@@ -42,13 +42,14 @@ The following tables lists the configurable parameters of the swift chart and th
 | --------------------------| --------------------------------------------------------------| -----------------|
 | `replicaCount`            | Number of swift replicas to create (only 1 is supported)      | `1`              |
 | `swift.image`             | swift container image                                         | `appscode/swift` |
-| `swift.tag`               | swift container image tag                                     | `0.7.2`          |
+| `swift.tag`               | swift container image tag                                     | `0.7.3`          |
 | `imagePullSecrets`        | Specify image pull secrets                                    | `nil` (does not add image pull secrets to deployed pods) |
 | `imagePullPolicy`         | Image pull policy                                             | `IfNotPresent`   |
 | `logLevel`                | Log level for proxy                                           | `3`              |
 | `nodeSelector`            | Node labels for pod assignment                                | `{}`             |
-| `rbac.create`             | install required rbac service account, roles and rolebindings | `false`          |
-| `rbac.serviceAccountName` | ServiceAccount swift will use (ignored if rbac.create=true)   | `default`        |
+| `rbac.create`             | If `true`, create and use RBAC resources                      | `true`           |
+| `serviceAccount.create`   | If `true`, create a new service account                       | `true`           |
+| `serviceAccount.name`     | Service account to be used. If not set and `serviceAccount.create` is `true`, a name is generated using the fullname template | `` |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:

@@ -71,6 +71,7 @@ The following tables lists the configurable parameters of the Metabase chart and
 | service.type           | ClusterIP, NodePort, or LoadBalancer                       | ClusterIP         |
 | service.externalPort   | Service external port                                      | 80                |
 | service.internalPort   | Service internal port, should be the same as `listen.port` | 3000              |
+| service.annotations    | Service annotations                                        | {}                |
 | ingress.enabled        | Enable ingress controller resource                         | false             |
 | ingress.hosts          | Ingress resource hostnames                                 | null              |
 | ingress.annotations    | Ingress annotations configuration                          | null              |

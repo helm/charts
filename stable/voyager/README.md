@@ -43,8 +43,8 @@ The following tables lists the configurable parameters of the Voyager chart and 
 | Parameter                          | Description                                                   | Default               |
 | -----------------------------------| ------------------------------------------------------------- | ----------------------|
 | `dockerRegistry`                   | Docker registry used to pull Voyager related images           | `appscode`            |
-| `imageTags.voyager`                | Tag of Voyager operator image                                 | `6.0.0-rc.0`       |
-| `imageTags.haproxy`                | Tag of HAProxy container image                                | `1.7.9-6.0.0-rc.0` |
+| `imageTags.voyager`                | Tag of Voyager operator image                                 | `6.0.0`       |
+| `imageTags.haproxy`                | Tag of HAProxy container image                                | `1.7.10-6.0.0` |
 | `imagePullSecrets`                 | Specify image pull secrets                                    | `nil` (does not add image pull secrets to deployed pods) |
 | `imagePullPolicy`                  | Image pull policy                                             | `IfNotPresent`        |
 | `cloudProvider`                    | Name of cloud provider                                        | `nil`                 |
@@ -54,8 +54,9 @@ The following tables lists the configurable parameters of the Voyager chart and 
 | `persistence.enabled`              | Enable mounting cloud config                                  | `false`               |
 | `persistence.hostPath`             | Host mount path for cloud config                              | `/etc/kubernetes`     |
 | `nodeSelector`                     | Node labels for pod assignment                                | `{}`                  |
-| `rbac.create`                      | install required rbac service account, roles and rolebindings | `false`               |
-| `rbac.serviceAccountName`          | ServiceAccount Voyager will use (ignored if rbac.create=true) | `default`             |
+| `rbac.create`                      | If `true`, create and use RBAC resources                      | `true`                |
+| `serviceAccount.create`            | If `true`, create a new service account                       | `true`                |
+| `serviceAccount.name`              | Service account to be used. If not set and `serviceAccount.create` is `true`, a name is generated using the fullname template | `` |
 | `ingressClass`                     | Ingress class to watch for. If empty, it handles all ingress  | ``                    |
 | `apiserver.groupPriorityMinimum`   | The minimum priority the group should have.                   | 10000                 |
 | `apiserver.versionPriority`        | The ordering of this API inside of the group.                 | 15                    |

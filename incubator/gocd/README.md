@@ -4,6 +4,10 @@
 
 [GoCD](https://www.gocd.org/) is an open-source continuous delivery server to model and visualize complex workflow with ease.
 
+# Deprecation
+
+The GoCD Helm chart has been moved the stable. This chart in incubator will no longer be maintained. Please switch to the stable GoCD Helm chart.
+
 # Introduction
 
 This chart bootstraps a single node GoCD server and GoCD agents on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
