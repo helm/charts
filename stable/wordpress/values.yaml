@@ -3,7 +3,7 @@
 ##
 image: bitnami/wordpress:4.9.4-r5
 
-## Specify a imagePullPolicy
+## Specify an imagePullPolicy
 ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
 ##
 imagePullPolicy: IfNotPresent
@@ -75,7 +75,7 @@ externalDatabase:
 ##
 mariadb:
   ## Whether to use the database specified as a requirement or not.
-  ## If you want to use an external database set this to false and supply details to externalDatabase above
+  ## If you want to use an external database, set this to false and supply details to externalDatabase above
   enabled: true
 
   ## MariaDB admin password
@@ -145,8 +145,8 @@ readinessProbe:
   failureThreshold: 6
   successThreshold: 1
 
-## Configure ingress resource that allow you to access the
-## Wordpress instalation. Set up the URL
+## Configure the ingress resource that allows you to access the
+## Wordpress installation. Set up the URL
 ## ref: http://kubernetes.io/docs/user-guide/ingress/
 ##
 ingress:
