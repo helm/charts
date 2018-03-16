@@ -1,0 +1,22 @@
+{{- if (or .Values.config .Values.arpCIDR) }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "metallb.fullname" . }}
+  labels:
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: {{ template "metallb.chart" . }}
+    app: {{ template "metallb.name" . }}
+data:
+  config: |
+{{- if .Values.config }}
+{{ toYaml .Values.config | indent 4 }}
+{{- else }}
+    address-pools:
+    - name: default
+      protocol: arp
+      cidr:
+      - {{ .Values.arpCIDR }}
+{{- end }}
+{{- end }}
