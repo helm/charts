@@ -29,7 +29,7 @@ chart and deletes the release.
 
 ## Configuration
 
-The following tables lists the configurable parameters of the drone charts and their default values.
+The following table lists the configurable parameters of the drone charts and their default values.
 
 | Parameter                   | Description                                                                                   | Default                     |
 |-----------------------------|-----------------------------------------------------------------------------------------------|-----------------------------|
