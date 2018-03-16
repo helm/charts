@@ -1,3 +1,5 @@
+{{- if or .Values.mariadb.enabled .Values.externalDatabase.host -}}
+
 {{- if empty (include "host" .) -}}
 ###############################################################################
 ### ERROR: You did not provide an external host in your 'helm install' call ###
@@ -27,8 +29,17 @@ host. To configure SugarCRM with the URL of your service:
 
 2. Complete your SugarCRM deployment by running:
 
-  helm upgrade {{ .Release.Name }} \
-    --set sugarcrmHost=$APP_HOST,sugarcrmPassword=$APP_PASSWORD{{ if .Values.mariadb.mariadbRootPassword }},mariadb.mariadbRootPassword=$APP_DATABASE_PASSWORD{{ end }} stable/sugarcrm
+{{- if .Values.mariadb.enabled }}
+
+  helm upgrade {{ .Release.Name }} stable/sugarcrm \
+    --set sugarcrmHost=$APP_HOST,sugarcrmPassword=$APP_PASSWORD{{ if .Values.mariadb.mariadbRootPassword }},mariadb.mariadbRootPassword=$APP_DATABASE_PASSWORD{{ end }}
+{{- else }}
+
+  ## PLEASE UPDATE THE EXTERNAL DATABASE CONNECTION PARAMETERS IN THE FOLLOWING COMMAND AS NEEDED ##
+
+  helm upgrade {{ .Release.Name }} stable/sugarcrm \
+    --set sugarcrmPassword=$APP_PASSWORD,sugarcrmHost=$APP_HOST,serviceType={{ .Values.serviceType }},mariadb.enabled=false{{- if not (empty .Values.externalDatabase.host) }},externalDatabase.host={{ .Values.externalDatabase.host }}{{- end }}{{- if not (empty .Values.externalDatabase.user) }},externalDatabase.user={{ .Values.externalDatabase.user }}{{- end }}{{- if not (empty .Values.externalDatabase.password) }},externalDatabase.password={{ .Values.externalDatabase.password }}{{- end }}{{- if not (empty .Values.externalDatabase.database) }},externalDatabase.database={{ .Values.externalDatabase.database }}{{- end }}
+{{- end }}
 
 {{- else -}}
 1. Get the SugarCRM URL by running:
@@ -47,4 +58,36 @@ host. To configure SugarCRM with the URL of your service:
 
   echo Username: {{ .Values.sugarcrmUsername }}
   echo Password: $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "fullname" . }} -o jsonpath="{.data.sugarcrm-password}" | base64 --decode)
+{{- end }}
+
+{{- else -}}
+
+########################################################################################
+### ERROR: You did not provide an external database host in your 'helm install' call ###
+########################################################################################
+
+This deployment will be incomplete until you configure SugarCRM with a resolvable database
+host. To configure SugarCRM to use and external database host:
+
+
+1. Complete your SugarCRM deployment by running:
+
+{{- if contains "NodePort" .Values.serviceType }}
+  export APP_HOST=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+{{- else if contains "LoadBalancer" .Values.serviceType }}
+
+  NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+        Watch the status with: 'kubectl get svc --namespace {{ .Release.Namespace }} -w {{ template "sugarcrm.fullname" . }}'
+
+  export APP_HOST=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ template "sugarcrm.fullname" . }} --template "{{ "{{ range (index .status.loadBalancer.ingress 0) }}{{ . }}{{ end }}" }}")
+{{- else }}
+
+  export APP_HOST=127.0.0.1
+{{- end }}
+  export APP_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "sugarcrm.fullname" . }} -o jsonpath="{.data.sugarcrm-password}" | base64 --decode)
+
+  ## PLEASE UPDATE THE EXTERNAL DATABASE CONNECTION PARAMETERS IN THE FOLLOWING COMMAND AS NEEDED ##
+
+  helm upgrade {{ .Release.Name }} stable/sugarcrm \
+    --set sugarcrmPassword=$APP_PASSWORD,sugarcrmHost=$APP_HOST,serviceType={{ .Values.serviceType }},mariadb.enabled=false{{- if not (empty .Values.externalDatabase.user) }},externalDatabase.user={{ .Values.externalDatabase.user }}{{- end }}{{- if not (empty .Values.externalDatabase.password) }},externalDatabase.password={{ .Values.externalDatabase.password }}{{- end }}{{- if not (empty .Values.externalDatabase.database) }},externalDatabase.database={{ .Values.externalDatabase.database }}{{- end }},externalDatabase.host=YOUR_EXTERNAL_DATABASE_HOST
 {{- end }}
