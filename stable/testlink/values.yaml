@@ -1,7 +1,7 @@
 ## Bitnami TestLink image version
 ## ref: https://hub.docker.com/r/bitnami/testlink/tags/
 ##
-image: bitnami/testlink:1.9.16-r10
+image: bitnami/testlink:1.9.16-r11
 
 ## Specify a imagePullPolicy
 ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
@@ -30,6 +30,29 @@ testlinkEmail: user@example.com
 ##
 testlinkLanguage: en_US
 
+## Set to `yes` to allow the container to be started with blank passwords
+## ref: https://github.com/bitnami/bitnami-docker-testlink#environment-variables
+allowEmptyPassword: "yes"
+
+##
+## External database configuration
+##
+externalDatabase:
+  ## Database host
+  host:
+
+  ## Database host
+  port: 3306
+
+  ## Database user
+  user: bn_testlink
+
+  ## Database password
+  password:
+
+  ## Database name
+  database: bitnami_testlink
+
 ## SMTP mail delivery configuration
 ## ref: https://github.com/bitnami/bitnami-docker-testlink#smtp-configuration
 ##
@@ -44,6 +67,24 @@ smtpConnectionMode:
 ## MariaDB chart configuration
 ##
 mariadb:
+  ## Whether to deploy a mariadb server to satisfy the applications database requirements. To use an external database set this to false and configure the externalDatabase parameters
+  enabled: true
+
+  ## Create a database
+  ## ref: https://github.com/bitnami/bitnami-docker-mariadb/blob/master/README.md#creating-a-database-on-first-run
+  ##
+  mariadbDatabase: bitnami_testlink
+
+  ## Create a database user
+  ## ref: https://github.com/bitnami/bitnami-docker-mariadb/blob/master/README.md#creating-a-database-user-on-first-run
+  ##
+  mariadbUser: bn_testlink
+
+  ## Password for mariadbUser
+  ## ref: https://github.com/bitnami/bitnami-docker-mariadb/blob/master/README.md#creating-a-database-user-on-first-run
+  ##
+  # mariadbPassword:
+
   ## MariaDB admin password
   ## ref: https://github.com/bitnami/bitnami-docker-mariadb/blob/master/README.md#setting-the-root-password-on-first-run
   ##
