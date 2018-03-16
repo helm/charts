@@ -60,6 +60,16 @@ The following tables lists the configurable parameters of the SuiteCRM chart and
 | `suitecrmSmtpUser`                  | SMTP user                                 | `nil`                                       |
 | `suitecrmSmtpPassword`              | SMTP password                             | `nil`                                       |
 | `suitecrmSmtpProtocol`              | SMTP protocol [`ssl`, `tls`]              | `nil`                                       |
+| `allowEmptyPassword`                | Allow DB blank passwords                  | `yes`                                       |
+| `externalDatabase.host`             | Host of the external database             | `nil`                                       |
+| `externalDatabase.port`             | Port of the external database             | `3306`                                      |
+| `externalDatabase.user`             | Existing username in the external db      | `bn_suitecrm`                               |
+| `externalDatabase.password`         | Password for the above username           | `nil`                                       |
+| `externalDatabase.database`         | Name of the existing databse              | `bitnami_suitecrm`                          |
+| `mariadb.enabled`                   | Wheter to use or not the mariadb chart    | `true`                                      |
+| `mariadb.mariadbDatabase`           | Database name to create                   | `bitnami_suitecrm`                          |
+| `mariadb.mariadbUser`               | Database user to create                   | `bn_suitecrm`                               |
+| `mariadb.mariadbPassword`           | Password for the database                 | `nil`                                       |
 | `mariadb.mariadbRootPassword`       | MariaDB admin password                    | `nil`                                       |
 | `serviceType`                       | Kubernetes Service type                   | `LoadBalancer`                              |
 | `persistence.enabled`               | Enable persistence using PVC              | `true`                                      |
