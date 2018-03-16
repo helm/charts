@@ -43,18 +43,19 @@ The following tables lists the configurable parameters of the Nexus chart and th
 | ------------------------------------------  | ----------------------------------  | -------------------------------------------|
 | `image.tag`                                 | `nexus` image tag.                  | 3.5.1-02                                   |
 | `image.pullPolicy`                          | Image pull policy                   | `IfNotPresent`                             |
-| `nodeSelector`                              | node labels for pod assignment      | {}                                        |
+| `nodeSelector`                              | node labels for pod assignment      | {}                                         |
 | `ingress.enabled`                           | Flag for enabling ingress           | false                                      |
 | `persistence.enabled`                       | Create a volume to store data       | true                                       |
 | `persistence.size`                          | Size of persistent volume to claim  | 8Gi RW                                     |
 | `persistence.storageClass`                  | Type of persistent volume claim     | nil  (uses alpha storage class annotation) |
 | `persistence.accessMode`                    | ReadWriteOnce or ReadOnly           | ReadWriteOnce                              |
+| `persistence.annotations`                   | Persistent Volume annotations       | {}                                         |
 | `service.type`                              | Kubernetes Service type             | `LoadBalancer`                             |
 | `service.readinessProbe.initialDelaySeconds`| ReadinessProbe initial delay        | 30                                         |
 | `service.readinessProbe.periodSeconds`      | Seconds between polls               | 30                                         |
 | `service.readinessProbe.failureThreshold`   | Number of attempts before failure   | 6                                          |
 | `service.livenessProbe.initialDelaySeconds` | livenessProbe initial delay         | 30                                         |
-| `service.livenessProbe.periodSeconds`       | Seconds between polls               | 30                                         |                
+| `service.livenessProbe.periodSeconds`       | Seconds between polls               | 30                                         |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
