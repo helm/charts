@@ -85,7 +85,7 @@ mariadb:
   ##
   # mariadbRootPassword:
   
-    ## Enable persistence using Persistent Volume Claims
+  ## Enable persistence using Persistent Volume Claims
   ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
   ##
   persistence:
