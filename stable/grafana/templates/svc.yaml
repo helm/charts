@@ -11,6 +11,9 @@ metadata:
     component: "{{ .Values.server.name }}"
     heritage: "{{ .Release.Service }}"
     release: "{{ .Release.Name }}"
+{{- if .Values.server.service.labels }}
+{{ toYaml .Values.server.service.labels | indent 4 }}
+{{- end }}
   name: {{ template "grafana.server.fullname" . }}
 spec:
   ports:
@@ -31,7 +34,7 @@ spec:
   {{- if .Values.server.service.clusterIP }}
   clusterIP:  {{ .Values.server.service.clusterIP }}
   {{- end }}
-{{- end }}  
+{{- end }}
   selector:
     app: {{ template "grafana.fullname" . }}
     component: "{{ .Values.server.name }}"
