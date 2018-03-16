@@ -1,0 +1,18 @@
+name: oauth2-proxy
+version: 0.2.0
+apiVersion: v1
+appVersion: 2.2
+description: A reverse proxy that provides authentication with Google, Github or other providers
+keywords:
+- kubernetes
+- oauth
+- oauth2
+- authentication
+- google
+- github
+maintainers:
+- name: compleatang
+  email: casey@monax.io
+sources:
+- https://github.com/bitly/oauth2_proxy
+engine: gotpl

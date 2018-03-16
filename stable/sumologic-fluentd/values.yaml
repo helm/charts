@@ -30,6 +30,15 @@ sumologic:
   ## in the container (Default "/fluentd/conf.d/user")
   fluentdUserConfigDir: ""
 
+  ## Provide user-defined fluentd configuration files
+  ## Each key will become a file in `fluentdUserConfigDir`
+  ##
+  # fluentdUserConfig:
+  #   source.systemd.conf: |-
+  #     <source>
+  #        ...
+  #     </source>
+
   ## How frequently to push logs to SumoLogic (default 5s)
   ## ref: https://github.com/SumoLogic/fluentd-kubernetes-sumologic#options
   # flushInterval: 5
