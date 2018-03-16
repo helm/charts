@@ -32,6 +32,7 @@ spec:
       annotations:
         scheduler.alpha.kubernetes.io/critical-pod: ''
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+{{ toYaml .Values.annotations | indent 8 }}
     spec:
       serviceAccountName: {{ template "fluentd-elasticsearch.fullname" . }}
       containers:
