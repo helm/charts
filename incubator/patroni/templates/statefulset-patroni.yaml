@@ -64,11 +64,11 @@ spec:
         {{if .Values.walE.enable }}
         - name: USE_WALE
           value: {{ .Values.walE.enable | quote }}
-        {{if .Values.WalE.Schedule_Cron_Job }}
+        {{if .Values.walE.scheduleCronJob }}
         - name: BACKUP_SCHEDULE
           value: {{ .Values.walE.scheduleCronJob | quote}}
         {{end}}
-        {{if .Values.WalE.Retain_Backups }}
+        {{if .Values.walE.retainBackups }}
         - name: BACKUP_NUM_TO_RETAIN
           value: {{ .Values.walE.retainBackups | quote}}
         {{end}}
@@ -138,7 +138,7 @@ spec:
         secret:
           secretName: {{ template "patroni.fullname" . }}
       {{if .Values.walE.enable }}
-      {{if .Values.WalE.kubernetesSecret }}
+      {{if .Values.walE.kubernetesSecret }}
       - name: {{ .Values.walE.kubernetesSecret }}
         secret:
           secretName: {{ .Values.walE.kubernetesSecret }}
