@@ -17,9 +17,7 @@ spec:
         release: {{ .Release.Name }}
         component: apiserver
     spec:
-{{- if .Values.rbac.create }}
       serviceAccountName: {{ template "openebs.serviceAccountName". }}
-{{- end }}
       containers:
       - name: {{ template "openebs.name" . }}-apiserver
         image: "{{ .Values.apiserver.image }}:{{ .Values.apiserver.imageTag }}"
