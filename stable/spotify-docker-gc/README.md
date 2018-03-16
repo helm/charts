@@ -29,6 +29,7 @@ See the [spotify/docker-gc GitHub repository][] for more settings which may be a
 | `env.dockerAPIVersion`            | Docker API Version for docker-gc client  | Not set                                 |
 | `exclude.images`                  | images to be excluded                    | Not set                                 |
 | `exclude.containers`              | containers to be excluded                | Not set                                 |
+| `serviceAccount`                  | service account to attach to deamonset   | Not set                                 |
 | `imagePullSecrets`                | Specify image pull secrets               | Not set                                 |
 
 ## Design/Evolution

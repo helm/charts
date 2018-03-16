@@ -2,6 +2,10 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
+  annotations:
+    "helm.sh/hook": {{ .Values.dashboardImports.hook }}
+    "helm.sh/hook-weight": "0"
+    "helm.sh/hook-delete-policy": hook-succeeded
   labels:
     app: {{ template "grafana.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
@@ -10,6 +14,7 @@ metadata:
   name: {{ template "grafana.server.fullname" . }}-import-dashboards
 spec:
   activeDeadlineSeconds: {{ .Values.dashboardImports.activeDeadlineSeconds }}
+  backoffLimit: {{ .Values.dashboardImports.backoffLimit }}
   template:
     metadata:
       labels:
