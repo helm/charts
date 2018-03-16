@@ -38,20 +38,15 @@ The following tables lists the configurable parameters of the OpenEBS chart and 
 | Parameter                            | Description                                   | Default                           |
 | ------------------------------------ | --------------------------------------------- | --------------------------------- |
 | `rbac.create`                        | Enable RBAC Resources                         | `true`                            |
-| `rbac.namespace`                     | Specify the namespace to install              | `openebs`                         |
 | `serviceAccount.create`              | Specify if Service Account should be created  | `true`                            |
 | `serviceAccount.name`                | Specify the name of service account           | `openebs-maya-operator`           |
 | `image.pullPolicy`                   | Container pull policy                         | `IfNotPresent`                    |
 | `apiserver.image`                    | Docker Image for API Server                   | `openebs/m-apiserver`             |
 | `apiserver.imageTag`                 | Docker Image Tag for API Server               | `0.5.3`                           |
-| `apiserver.replicas`                 | Number of API Server Replicas                 | `2`                               |
-| `apiserver.antiAffinity.enabled`     | Enable anti-affinity for API Server Replicas  | `true`                            |
-| `apiserver.antiAffinity.type`        | Anti-affinity type for API Server             | `Hard`                            |
+| `apiserver.replicas`                 | Number of API Server Replicas                 | `1`                               |
 | `provisioner.image`                  | Docker Image for Provisioner                  | `openebs/openebs-k8s-provisioner` |
 | `provisioner.imageTag`               | Docker Image Tag for Provisioner              | `0.5.3`                           |
-| `provisioner.replicas`               | Number of Provisioner Replicas                | `2`                               |
-| `provisioner.antiAffinity.enabled`   | Enable anti-affinity for API Server Replicas  | `true`                            |
-| `provisioner.antiAffinity.type`      | Anti-affinity type for Provisioner            | `Hard`                            |
+| `provisioner.replicas`               | Number of Provisioner Replicas                | `1`                               |
 | `jiva.image`                         | Docker Image for Jiva                         | `openebs/jiva`                    |
 | `jiva.imageTag`                      | Docker Image Tag for Jiva                     | `0.5.3`                           |
 | `jiva.replicas`                      | Number of Jiva Replicas                       | `3`                               |

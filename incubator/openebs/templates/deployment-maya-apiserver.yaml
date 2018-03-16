@@ -56,23 +56,7 @@ spec:
 {{ toYaml .Values.apiserver.tolerations | indent 8 }}
 {{- end }}
 
-{{- if .Values.apiserver.antiAffinity.enabled }}
+{{- if .Values.apiserver.affinity }}
       affinity:
-        podAntiAffinity:
-  {{- $antiAffinityType := .Values.apiserver.antiAffinity.type | lower -}}
-  {{- if eq $antiAffinityType "hard" }}
-          requiredDuringSchedulingIgnoredDuringExecution:
-            - topologyKey: "kubernetes.io/hostname"
-              labelSelector:
-                matchLabels:
-                  name: {{ template "openebs.fullname" . }}-apiserver
-  {{- else if eq $antiAffinityType "soft" }}
-          preferredDuringSchedulingIgnoredDuringExecution:
-            - weight: 1
-              podAffinityTerm:
-                topologyKey: "kubernetes.io/hostname"
-                labelSelector:
-                  matchLabels:
-                    name: {{ template "openebs.fullname" . }}-apiserver
-  {{- end }}
+{{ toYaml .Values.apiserver.affinity | indent 8 }}
 {{- end }}
