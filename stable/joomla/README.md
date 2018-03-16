@@ -58,13 +58,23 @@ The following tables lists the configurable parameters of the Joomla! chart and 
 | `smtpPassword`                    | SMTP password                          | `nil`                                                     |
 | `smtpUsername`                    | User name for SMTP emails              | `nil`                                                     |
 | `smtpProtocol`                    | SMTP protocol [`tls`, `ssl`]           | `nil`                                                     |
+| `allowEmptyPassword`              | Allow DB blank passwords               | `yes`                                                     |
+| `externalDatabase.host`           | Host of the external database          | `nil`                                                     |
+| `externalDatabase.port`           | Port of the external database          | `3306`                                                    |
+| `externalDatabase.user`           | Existing username in the external db   | `bn_joomla`                                               |
+| `externalDatabase.password`       | Password for the above username        | `nil`                                                     |
+| `externalDatabase.database`       | Name of the existing databse           | `bitnami_joomla`                                          |
+| `mariadb.enabled`                 | Wheter to use or not the mariadb chart | `true`                                                    |
+| `mariadb.mariadbDatabase`         | Database name to create                | `bitnami_joomla`                                          |
+| `mariadb.mariadbUser`             | Database user to create                | `bn_joomla`                                               |
+| `mariadb.mariadbPassword`         | Password for the database              | `nil`                                                     |
 | `mariadb.mariadbRootPassword`     | MariaDB admin password                 | `nil`                                                     |
 | `serviceType`                     | Kubernetes Service type                | `LoadBalancer`                                            |
 | `persistence.enabled`             | Enable persistence using PVC           | `true`                                                    |
-| `persistence.apache.storageClass` | PVC Storage Class for Apache volume    | `nil` (uses alpha storage annotation)                                                |
+| `persistence.apache.storageClass` | PVC Storage Class for Apache volume    | `nil` (uses alpha storage annotation)                     |
 | `persistence.apache.accessMode`   | PVC Access Mode for Apache volume      | `ReadWriteOnce`                                           |
 | `persistence.apache.size`         | PVC Storage Request for Apache volume  | `1Gi`                                                     |
-| `persistence.joomla.storageClass` | PVC Storage Class for Joomla! volume   | `nil` (uses alpha storage annotation)                                                |
+| `persistence.joomla.storageClass` | PVC Storage Class for Joomla! volume   | `nil` (uses alpha storage annotation)                     |
 | `persistence.joomla.accessMode`   | PVC Access Mode for Joomla! volume     | `ReadWriteOnce`                                           |
 | `persistence.joomla.size`         | PVC Storage Request for Joomla! volume | `8Gi`                                                     |
 | `resources`                       | CPU/Memory resource requests/limits    | Memory: `512Mi`, CPU: `300m`                              |
