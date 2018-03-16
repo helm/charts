@@ -65,6 +65,16 @@ The following tables lists the configurable parameters of the OrangeHRM chart an
 | `persistence.orangehrm.storageClass` | PVC Storage Class for OrangeHRM volume   | `nil` (uses alpha storage class annotation)    |
 | `persistence.orangehrm.accessMode`   | PVC Access Mode for OrangeHRM volume     | `ReadWriteOnce`                                |
 | `persistence.orangehrm.size`         | PVC Storage Request for OrangeHRM volume | `8Gi`                                          |
+| `allowEmptyPassword`                 | Allow DB blank passwords                 | `yes`                                          |
+| `externalDatabase.host`              | Host of the external database            | `nil`                                          |
+| `externalDatabase.port`              | Port of the external database            | `3306`                                         |
+| `externalDatabase.user`              | Existing username in the external db     | `bn_orangehrm`                                 |
+| `externalDatabase.password`          | Password for the above username          | `nil`                                          |
+| `externalDatabase.database`          | Name of the existing databse             | `bitnami_orangehrm`                            |
+| `mariadb.enabled`                    | Wheter to use or not the mariadb chart   | `true`                                         |
+| `mariadb.mariadbDatabase`            | Database name to create                  | `bitnami_orangehrm`                            |
+| `mariadb.mariadbUser`                | Database user to create                  | `bn_orangehrm`                                 |
+| `mariadb.mariadbPassword`            | Password for the database                | `nil`                                          |
 | `mariadb.mariadbRootPassword`        | MariaDB admin password                   | `nil`                                          |
 | `mariadb.persistence.enabled`        | Enable MariaDB persistence using PVC     | `true`                                         |
 | `mariadb.persistence.storageClass`   | PVC Storage Class for MariaDB volume     | `nil` (uses alpha storage class annotation)    |
