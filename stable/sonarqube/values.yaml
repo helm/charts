@@ -10,6 +10,9 @@ service:
   type: LoadBalancer
   externalPort: 9000
   internalPort: 9000
+  annotations:
+  # May be used in example for internal load balancing in GCP:
+  # cloud.google.com/load-balancer-type: Internal
 ingress:
   enabled: false
   # Used to create an Ingress record.
