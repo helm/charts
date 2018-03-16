@@ -59,10 +59,20 @@ The following tables lists the configurable parameters of the JasperReports char
 | `smtpUser`                    | SMTP user                                    | `nil`                                                    |
 | `smtpPassword`                | SMTP password                                | `nil`                                                    |
 | `smtpProtocol`                | SMTP protocol [`ssl`, `none`]                | `nil`                                                    |
+| `allowEmptyPassword`          | Allow DB blank passwords                     | `yes`                                                    |
+| `externalDatabase.host`       | Host of the external database                | `nil`                                                    |
+| `externalDatabase.port`       | Port of the external database                | `3306`                                                   |
+| `externalDatabase.user`       | Existing username in the external db         | `bn_jasperreports`                                       |
+| `externalDatabase.password`   | Password for the above username              | `nil`                                                    |
+| `externalDatabase.database`   | Name of the existing databse                 | `bitnami_jasperreports`                                  |
+| `mariadb.enabled`             | Wheter to use or not the mariadb chart       | `true`                                                   |
+| `mariadb.mariadbDatabase`     | Database name to create                      | `bitnami_jasperreports`                                  |
+| `mariadb.mariadbUser`         | Database user to create                      | `bn_jasperreports`                                       |
+| `mariadb.mariadbPassword`     | Password for the database                    | `nil`                                                    |
 | `mariadb.mariadbRootPassword` | MariaDB admin password                       | `nil`                                                    |
 | `serviceType`                 | Kubernetes Service type                      | `LoadBalancer`                                           |
 | `persistence.enabled`         | Enable persistence using PVC                 | `true`                                                   |
-| `persistence.storageClass`    | PVC Storage Class for JasperReports volume   | `nil` (uses alpha storage annotation)                     |
+| `persistence.storageClass`    | PVC Storage Class for JasperReports volume   | `nil` (uses alpha storage annotation)                    |
 | `persistence.accessMode`      | PVC Access Mode for JasperReports volume     | `ReadWriteOnce`                                          |
 | `persistence.size`            | PVC Storage Request for JasperReports volume | `8Gi`                                                    |
 | `resources`                   | CPU/Memory resource requests/limits          | Memory: `512Mi`, CPU: `300m`                             |
