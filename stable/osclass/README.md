@@ -71,6 +71,16 @@ The following tables lists the configurable parameters of the Osclass chart and 
 | `persistence.moodle.storageClass`  | PVC Storage Class for OSClass volume     | `nil` (uses alpha storage class annotation) |
 | `persistence.moodle.accessMode`    | PVC Access Mode for OSClass volume       | `ReadWriteOnce`                             |
 | `persistence.moodle.size`          | PVC Storage Request for OSClass volume   | `8Gi`                                       |
+| `allowEmptyPassword`               | Allow DB blank passwords                 | `yes`                                       |
+| `externalDatabase.host`            | Host of the external database            | `nil`                                       |
+| `externalDatabase.port`            | Port of the external database            | `3306`                                      |
+| `externalDatabase.user`            | Existing username in the external db     | `bn_osclass`                                |
+| `externalDatabase.password`        | Password for the above username          | `nil`                                       |
+| `externalDatabase.database`        | Name of the existing databse             | `bitnami_osclass`                           |
+| `mariadb.enabled`                  | Wheter to use or not the mariadb chart   | `true`                                      |
+| `mariadb.mariadbDatabase`          | Database name to create                  | `bitnami_osclass`                           |
+| `mariadb.mariadbUser`              | Database user to create                  | `bn_osclass`                                |
+| `mariadb.mariadbPassword`          | Password for the database                | `nil`                                       |
 | `mariadb.mariadbRootPassword`      | MariaDB admin password                   | `nil`                                       |
 | `mariadb.persistence.enabled`      | Enable MariaDB persistence using PVC     | `true`                                      |
 | `mariadb.persistence.storageClass` | PVC Storage Class for MariaDB volume     | `generic`                                   |
