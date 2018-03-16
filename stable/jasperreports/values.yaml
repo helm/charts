@@ -1,7 +1,7 @@
 ## Bitnami JasperReports image version
 ## ref: https://hub.docker.com/r/bitnami/jasperreports/tags/
 ##
-image: bitnami/jasperreports:6.4.2-r3
+image: bitnami/jasperreports:6.4.2-r4
 
 ## Specify a imagePullPolicy
 ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -24,6 +24,30 @@ jasperreportsUsername: user
 ##
 jasperreportsEmail: user@example.com
 
+## Set to `yes` to allow the container to be started with blank passwords
+## ref: https://github.com/bitnami/bitnami-docker-jasperreports#environment-variables
+allowEmptyPassword: "yes"
+
+##
+## External database configuration
+##
+externalDatabase:
+  ## Database host
+  host:
+
+  ## Database host
+  port: 3306
+
+  ## Database user
+  user: bn_jasperreports
+
+  ## Database password
+  password:
+
+  ## Database name
+  database: bitnami_jasperreports
+
+
 ## SMTP mail delivery configuration
 ## ref: https://github.com/bitnami/bitnami-docker-jasperreports#smtp-configuration
 ##
@@ -38,6 +62,24 @@ jasperreportsEmail: user@example.com
 ## MariaDB chart configuration
 ##
 mariadb:
+  ## Whether to deploy a mariadb server to satisfy the applications database requirements. To use an external database set this to false and configure the externalDatabase parameters
+  enabled: true
+
+  ## Create a database
+  ## ref: https://github.com/bitnami/bitnami-docker-mariadb/blob/master/README.md#creating-a-database-on-first-run
+  ##
+  mariadbDatabase: bitnami_jasperreports
+
+  ## Create a database user
+  ## ref: https://github.com/bitnami/bitnami-docker-mariadb/blob/master/README.md#creating-a-database-user-on-first-run
+  ##
+  mariadbUser: bn_jasperreports
+
+  ## Password for mariadbUser
+  ## ref: https://github.com/bitnami/bitnami-docker-mariadb/blob/master/README.md#creating-a-database-user-on-first-run
+  ##
+  # mariadbPassword:
+
   ## MariaDB admin password
   ## ref: https://github.com/bitnami/bitnami-docker-mariadb/blob/master/README.md#setting-the-root-password-on-first-run
   ##
