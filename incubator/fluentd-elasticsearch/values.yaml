@@ -32,9 +32,10 @@ elasticsearch:
 rbac:
   create: true
 
-annotations: {}
-# prometheus.io/scrape: "true"
-# prometheus.io/port: "24231"
+## Add annotations if specified
+# annotations:
+#   prometheus.io/scrape: "true"
+#   prometheus.io/port: "24231"
 
 configMaps:
   output.conf: |
