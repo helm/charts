@@ -1,4 +1,3 @@
-{{- $configMapName := include "kafka.configmap" . -}}
 {{- $advertisedListenersOverride := first (pluck "advertised.listeners" .Values.configurationOverrides) }}
 apiVersion: apps/v1beta1
 kind: StatefulSet
@@ -89,22 +88,17 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: status.podIP
+        {{- if not (hasKey .Values.configurationOverrides "zookeeper.connect") }}
         - name: KAFKA_ZOOKEEPER_CONNECT
-          valueFrom:
-            configMapKeyRef:
-              name: "{{ $configMapName }}"
-              key: zookeeper.connect
+          value: {{ include "zookeeper.url" . | quote }}
+        {{- end }}
+        {{- if not (hasKey .Values.configurationOverrides "log.dirs") }}
         - name: KAFKA_LOG_DIRS
-          valueFrom:
-            configMapKeyRef:
-              name: "{{ $configMapName }}"
-              key: log.dirs
-        {{- range $configName := (keys .Values.configurationOverrides) }}
-        - name: KAFKA_{{ $configName | replace "." "_" | upper }}
-          valueFrom:
-            configMapKeyRef:
-              name: "{{ $configMapName }}"
-              key: {{ $configName }}
+          value: {{ printf "%s/%s" .Values.persistence.mountPath .Values.logSubPath | quote }}
+        {{- end }}
+        {{- range $key, $value := .Values.configurationOverrides }}
+        - name: {{ printf "KAFKA_%s" $key | replace "." "_" | upper | quote }}
+          value: {{ $value | quote }}
         {{- end }}
         # This is required because the Downward API does not yet support identification of
         # pod numbering in statefulsets. Thus, we are required to specify a command which
