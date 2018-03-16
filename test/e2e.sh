@@ -40,7 +40,7 @@ fi
 # part of a batch job (e.g., batch merge) the PULL_NUMBER is not available. Pull
 # numbers are useful for some debugging. When no PULL_NUMBER is supplied we build
 # from other info.
-PULL_INFO=${PULL_NUMBER}
+PULL_INFO=${PULL_NUMBER:-}
 if [ -z "$PULL_INFO" ]; then
   PULL_INFO=${PULL_BASE_SHA}
 fi
