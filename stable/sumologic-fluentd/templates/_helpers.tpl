@@ -2,7 +2,7 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "name" -}}
+{{- define "sumologic-fluentd.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end -}}
 
@@ -10,7 +10,7 @@ Expand the name of the chart.
 Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 */}}
-{{- define "fullname" -}}
+{{- define "sumologic-fluentd.fullname" -}}
 {{- $name := default .Chart.Name .Values.nameOverride -}}
 {{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" }}
 {{- end -}}
@@ -18,6 +18,14 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{/*
 A uniquely named secret, which includes the install time
 */}}
-{{- define "fullname-secrets" -}}
-{{- printf "%s-secrets-%d" (include "fullname" .) .Release.Time.Seconds -}}
+{{- define "sumologic-fluentd.fullname-secrets" -}}
+{{- printf "%s-secrets-%d" (include "sumologic-fluentd.fullname" .) .Release.Time.Seconds -}}
+{{- end -}}
+
+{{/*
+Create a default fully qualified fluentd user conf name.
+We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
+*/}}
+{{- define "sumologic-fluentd.fluentdUserConfig.fullname" -}}
+{{- printf "%s-confd" (include "sumologic-fluentd.fullname" .) | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
