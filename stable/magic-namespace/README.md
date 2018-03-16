@@ -62,7 +62,7 @@ To install the chart to create the `foo` namespace (if it doesn't already exist)
 and useful resources (Tiller, service accounts, etc.) within that namespace:
 
 ```bash
-$ helm install incubator/magic-namespace --name foo --namespace foo
+$ helm install stable/magic-namespace --name foo --namespace foo
 ```
 
 Typically, you will want to bind at least one user or group to the `admin` role
@@ -71,7 +71,7 @@ in this namespace. Here are steps to follow:
 First, make a copy of the default `values.yaml`:
 
 ```bash
-$ helm inspect values incubator/magic-namespace > ~/my-values.yaml
+$ helm inspect values stable/magic-namespace > ~/my-values.yaml
 ```
 
 Edit `~/my-values.yaml` accordingly. Here is a sample role binding:
@@ -96,7 +96,7 @@ roleBindings:
 Deploy as follows:
 
 ```bash
-$ helm install incubator/magic-namespace \
+$ helm install stable/magic-namespace \
   --name foo \
   --namespace foo \
   --values ~/my-values.yaml
