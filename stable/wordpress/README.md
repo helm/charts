@@ -68,10 +68,12 @@ The following tables lists the configurable parameters of the WordPress chart an
 | `mariadb.mariadbUser`                | Database user to create                    | `bn_wordpress`                                             |
 | `mariadb.mariadbPassword`            | Password for the database                  | _random 10 character long alphanumeric string_             |
 | `externalDatabase.host`              | Host of the external database              | `localhost`                                                |
+| `externalDatabase.rootUser`          | DB Root username (schema creation)         | `root`                                                     |
+| `externalDatabase.rootPassword`      | DB Root users password (schema creation)   | `nil`                                                      |
 | `externalDatabase.user`              | Existing username in the external db       | `bn_wordpress`                                             |
 | `externalDatabase.password`          | Password for the above username            | `nil`                                                      |
 | `externalDatabase.database`          | Name of the existing database              | `bitnami_wordpress`                                        |
-| `externalDatabase.port`              | Database port number                       | `3306`                                        |
+| `externalDatabase.port`              | Database port number                       | `3306`                                                     |
 | `serviceType`                        | Kubernetes Service type                    | `LoadBalancer`                                             |
 | `nodePorts.http`                     | Kubernetes http node port                  | `""`                                                       |
 | `nodePorts.https`                    | Kubernetes https node port                 | `""`                                                       |
