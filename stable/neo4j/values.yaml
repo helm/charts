@@ -26,6 +26,8 @@ core:
   numberOfServers: 3
   persistentVolume:
 
+    enabled: true
+
     ## core server data Persistent Volume mount root path
     ##
     mountPath: /data
