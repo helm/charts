@@ -21,22 +21,22 @@ set -o xtrace
 git remote add k8s https://github.com/kubernetes/charts
 git fetch k8s master
 
-namespace="pr-${PULL_NUMBER}-${BUILD_NUMBER}"
-changed_folders=$(git diff --find-renames --name-only "$(git merge-base k8s/master HEAD)" stable/ incubator/ | awk -F/ '{ print $1"/"$2 }' | uniq)
-current_release=""
+readonly NAMESPACE="pr-${PULL_NUMBER}-${BUILD_NUMBER}"
+readonly CHANGED_FOLDERS=$(git diff --find-renames --name-only "$(git merge-base k8s/master HEAD)" stable/ incubator/ | awk -F/ '{ print $1"/"$2 }' | uniq)
 
 # Exit early if no charts have changed
-if [[ -z "$changed_folders" ]]; then
+if [[ -z "$CHANGED_FOLDERS" ]]; then
     exit 0
 fi
 
 # include the semvercompare function
-curDir="$(dirname "$0")"
-source "$curDir/semvercompare.sh"
-exitCode=0
+readonly CURRENT_DIR="$(dirname "$0")"
+source "$CURRENT_DIR/semvercompare.sh"
+exit_code=0
+current_release=""
 
 # Cleanup any releases and namespaces left over from the test
-function cleanup {
+cleanup() {
     if [[ -n "$current_release" ]]; then
 
         # Before reporting the logs from all pods provide a helm status for
@@ -45,16 +45,16 @@ function cleanup {
 
         # List all logs for all containers in all pods for the namespace which was
         # created for this PR test run
-        kubectl get pods --show-all --no-headers --namespace "$namespace" | awk '{ print $1 }' | while read -r pod; do
+        kubectl get pods --show-all --no-headers --namespace "$NAMESPACE" | awk '{ print $1 }' | while read -r pod; do
             if [[ -n "$pod" ]]; then
                 printf '===Logs from pod %s:===\n' "$pod"
 
                 # There can be multiple containers within a pod. We need to iterate
                 # over each of those
-                containers=$(kubectl get pods --show-all -o jsonpath="{.spec.containers[*].name}" --namespace "$namespace" "$pod")
+                containers=$(kubectl get pods --show-all -o jsonpath="{.spec.containers[*].name}" --namespace "$NAMESPACE" "$pod")
                 for container in $containers; do
                     printf -- '---Logs from container %s in pod %s:---\n' "$container" "$pod"
-                    kubectl logs --namespace "$namespace" -c "$container" "$pod" || true
+                    kubectl logs --namespace "$NAMESPACE" -c "$container" "$pod" || true
                     printf -- '---End of logs for container %s in pod %s---\n\n' "$container" "$pod"
                 done
 
@@ -65,11 +65,11 @@ function cleanup {
         helm delete --purge "$current_release" > cleanup_log 2>&1 || true
     fi
 
-    kubectl delete ns "$namespace" >> cleanup_log 2>&1 || true
+    kubectl delete ns "$NAMESPACE" >> cleanup_log 2>&1 || true
 }
 trap cleanup EXIT
 
-function dosemvercompare {
+dosemvercompare() {
     # Note, the trap and automatic exiting are disabled for the semver comparison
     # because it catches its own errors. If the comparison fails exitCode is set
     # to 1. So, trapping and exiting is re-enabled and then the exit is handled
@@ -78,7 +78,7 @@ function dosemvercompare {
     semvercompare "$1"
     trap cleanup EXIT
     set -e
-    if [[ "$exitCode" == 1 ]]; then
+    if [[ "$exit_code" == 1 ]]; then
         exit 1
     fi
 }
@@ -90,18 +90,18 @@ if [ ! -f "${KUBECONFIG:=}" ];then
 fi
 
 # Install and initialize helm/tiller
-helm_url=https://storage.googleapis.com/kubernetes-helm
-helm_tarball=helm-v2.7.2-linux-amd64.tar.gz
-incubator_repo_url=https://kubernetes-charts-incubator.storage.googleapis.com/
+readonly HELM_URL=https://storage.googleapis.com/kubernetes-helm
+readonly HELM_TARBALL=helm-v2.7.2-linux-amd64.tar.gz
+readonly INCUBATOR_REPO_URL=https://kubernetes-charts-incubator.storage.googleapis.com/
 
 pushd /opt
-    wget -q "$helm_url/$helm_tarball"
-    tar xzfv "$helm_tarball"
+    wget -q "$HELM_URL/$HELM_TARBALL"
+    tar xzfv "$HELM_TARBALL"
     PATH="/opt/linux-amd64/:$PATH"
 popd
 
 helm init --client-only
-helm repo add incubator "$incubator_repo_url"
+helm repo add incubator "$INCUBATOR_REPO_URL"
 
 mkdir /opt/bin
 pushd /opt/bin
@@ -118,7 +118,7 @@ PATH="/opt/bin/:$PATH"
 
 # Iterate over each of the changed charts
 #    Lint, install and delete
-for directory in $changed_folders; do
+for directory in $CHANGED_FOLDERS; do
     if [[ "$directory" == "incubator/common" ]]; then
         continue
     elif [[ -d "$directory" ]]; then
@@ -134,14 +134,14 @@ for directory in $changed_folders; do
         current_release="$release_name"
 
         helm dep build "$directory"
-        helm install --timeout 600 --name "$release_name" --namespace "$namespace" "$directory" | tee install_output
+        helm install --timeout 600 --name "$release_name" --namespace "$NAMESPACE" "$directory" | tee install_output
 
-        ./test/verify-release.sh "$namespace"
+        ./test/verify-release.sh "$NAMESPACE"
 
-        kubectl get pods --namespace "$namespace"
-        kubectl get svc --namespace "$namespace"
-        kubectl get deployments --namespace "$namespace"
-        kubectl get endpoints --namespace "$namespace"
+        kubectl get pods --namespace "$NAMESPACE"
+        kubectl get svc --namespace "$NAMESPACE"
+        kubectl get deployments --namespace "$NAMESPACE"
+        kubectl get endpoints --namespace "$NAMESPACE"
 
         helm test "$release_name"
 
