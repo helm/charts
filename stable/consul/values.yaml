@@ -45,6 +45,10 @@ DisableHostNodeId: false
 ## Encrypt Gossip traffic
 EncryptGossip: true
 
+## predefined value for gossip key.
+## Will use a generated random alpha numeric if not provided
+# GossipKey: key
+
 ## consul data Persistent Volume Storage Class
 ## If defined, StorageClassName: <storageClass>
 ## If set to "-", StorageClassName: "", which disables dynamic provisioning
