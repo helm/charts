@@ -34,7 +34,7 @@ Note that this chart pulls in many different Docker images so can take a while t
 
 ## Configuration
 
-The following tables lists the configurable parameters and their default values.
+The following tables list the configurable parameters and their default values.
 
 ### RBAC Configuration
 
