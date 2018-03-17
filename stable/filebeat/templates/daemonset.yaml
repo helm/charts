@@ -1,0 +1,77 @@
+apiVersion: apps/v1beta2
+kind: DaemonSet
+metadata:
+  name: {{ template "filebeat.fullname" . }}
+  labels:
+    app: {{ template "filebeat.name" . }}
+    chart: {{ template "filebeat.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}   
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "filebeat.name" . }}
+      release: {{ .Release.Name }}
+  minReadySeconds: 10
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+  template:
+    metadata:
+      labels:
+        app: {{ template "filebeat.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        args: 
+        - "-e"
+        env:
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        securityContext:
+          runAsUser: 0
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+        volumeMounts:
+        - name: filebeat-config
+          mountPath: /usr/share/filebeat/filebeat.yml
+          readOnly: true
+          subPath: filebeat.yml
+        - name: prospectors-config
+          mountPath: /usr/share/filebeat/prospectors.d
+          readOnly: true
+        - name: data
+          mountPath: /usr/share/filebeat/data
+        - name: varlibdockercontainers
+          mountPath: /var/lib/docker/containers
+          readOnly: true
+      volumes:
+      - name: varlibdockercontainers
+        hostPath:
+          path: /var/lib/docker/containers
+      - name: filebeat-config
+        secret:
+          secretName: {{ template "filebeat.fullname" . }}
+      - name: prospectors-config
+        configMap:
+          name: {{ template "filebeat.fullname" . }}-prospectors
+      - name: data
+        hostPath:
+          path: /var/lib/filebeat
+          type: DirectoryOrCreate    
+      terminationGracePeriodSeconds: 60
+      serviceAccountName: {{ template "filebeat.serviceAccountName" . }}
+      tolerations:
+      - key: node-role.kubernetes.io/master
+        operator: Exists
+        effect: NoSchedule
+{{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+{{- end }}
