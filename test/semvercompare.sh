@@ -55,7 +55,7 @@ semvercompare() {
 
   if [ $ret -ne 0 ]; then
     echo "Error please increment the new chart version to be greater than the existing version of $semvercompareOldVer"
-    exit_code=1
+    exitCode=1
   else
     echo "New higher version $semvercompareNewVer found"
   fi

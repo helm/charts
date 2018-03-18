@@ -22,7 +22,7 @@ shopt -s nullglob
 git remote add k8s https://github.com/kubernetes/charts
 git fetch k8s master
 
-readonly NAMESPACE="pr-${PULL_NUMBER}-${BUILD_NUMBER}"
+readonly NAMESPACE="${JOB_TYPE}-${PULL_INFO}-${BUILD_ID}"
 readonly CHANGED_FOLDERS=$(git diff --find-renames --name-only "$(git merge-base k8s/master HEAD)" stable/ incubator/ | awk -F/ '{ print $1"/"$2 }' | uniq)
 
 # Exit early if no charts have changed
@@ -132,7 +132,7 @@ fi
 
 # Install and initialize helm/tiller
 readonly HELM_URL=https://storage.googleapis.com/kubernetes-helm
-readonly HELM_TARBALL=helm-v2.7.2-linux-amd64.tar.gz
+readonly HELM_TARBALL=helm-v2.8.2-linux-amd64.tar.gz
 readonly INCUBATOR_REPO_URL=https://kubernetes-charts-incubator.storage.googleapis.com/
 
 pushd /opt
@@ -173,7 +173,7 @@ for directory in $CHANGED_FOLDERS; do
 
         helm dep build "$directory"
 
-        release_name="${chart_name:0:7}-${BUILD_NUMBER}"
+        release_name="${chart_name:0:7}-${BUILD_ID}"
 
         pushd "$directory"
             has_test_values=
