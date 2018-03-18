@@ -37,7 +37,6 @@ spec:
         imagePullPolicy: {{ .Values.speaker.image.pullPolicy }}
         args:
         - --port=7472
-        - --config-ns={{ .Release.Namespace }}
         - --config={{ template "metallb.fullname" . }}
         env:
         - name: METALLB_NODE_IP

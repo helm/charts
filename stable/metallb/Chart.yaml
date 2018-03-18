@@ -1,8 +1,8 @@
 apiVersion: v1
-version: 0.1.0
+version: 0.2.0
 
 name: metallb
-appVersion: 0.4.3
+appVersion: 0.4.6
 description: MetalLB is a load-balancer implementation for bare metal Kubernetes clusters
 keywords: ["load-balancer", "balancer", "lb", "bgp", "arp", "vrrp", "vip"]
 home: https://metallb.universe.tf
