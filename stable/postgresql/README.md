@@ -53,6 +53,8 @@ The following tables lists the configurable parameters of the PostgreSQL chart a
 | `postgresPassword`         | Password for the new user.                      | random 10 characters                                       |
 | `postgresDatabase`         | Name for new database to create.                | `postgres`                                                 |
 | `postgresInitdbArgs`       | Initdb Arguments                                | `nil`                                                      |
+| `schedulerName`            | Name of an alternate scheduler                  | `nil`                                                      |
+| `postgresConfig`           | Runtime Config Parameters                       | `nil`                                                      |
 | `persistence.enabled`      | Use a PVC to persist data                       | `true`                                                     |
 | `persistence.existingClaim`| Provide an existing PersistentVolumeClaim       | `nil`                                                      |
 | `persistence.storageClass` | Storage class of backing PVC                    | `nil` (uses alpha storage class annotation)                |
@@ -88,7 +90,7 @@ $ helm install --name my-release \
     stable/postgresql
 ```
 
-The above command creates a PostgreSQL user named `root` with password `secretpassword`. Additionally it creates a database named `my-database`.
+The above command creates a PostgreSQL user named `my-user` with password `secretpassword`. Additionally it creates a database named `my-database`.
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 

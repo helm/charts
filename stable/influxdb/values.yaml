@@ -60,7 +60,8 @@ setDefaultUser:
     username: "admin"
 
     ## User password
-    ## Default: (Randomly generated 10 characters of Ascii)
+    ## single quotes must be escaped (\')
+    ## Default: (Randomly generated 10 characters of AlphaNum)
     # password:
 
     ## User privileges

@@ -26,50 +26,52 @@ $ helm install --name my-release stable/jenkins
 The following tables lists the configurable parameters of the Jenkins chart and their default values.
 
 ### Jenkins Master
-
-| Parameter                         | Description                                                              | Default                                                                      |
-| --------------------------------- | ------------------------------------------------------------------------ | ---------------------------------------------------------------------------- |
-| `Master.Name`                     | Jenkins master name                                                      | `jenkins-master`                                                             |
-| `Master.Image`                    | Master image name                                                        | `jenkinsci/jenkins`                                                          |
-| `Master.ImageTag`                 | Master image tag                                                         | `2.46.1`                                                                     |
-| `Master.ImagePullPolicy`          | Master image pull policy                                                 | `Always`                                                                     |
-| `Master.ImagePullSecret`          | Master image pull secret                                                 | Not set                                                                      |
-| `Master.Component`                | k8s selector key                                                         | `jenkins-master`                                                             |
-| `Master.UseSecurity`              | Use basic security                                                       | `true`                                                                       |
-| `Master.AdminUser`                | Admin username (and password) created as a secret if useSecurity is true | `admin`                                                                      |
-| `Master.Cpu`                      | Master requested cpu                                                     | `200m`                                                                       |
-| `Master.Memory`                   | Master requested memory                                                  | `256Mi`                                                                      |
-| `Master.InitContainerEnv`         | Environment variables for Init Container                                 | Not set                                                                      |
-| `Master.ContainerEnv`             | Environment variables for Jenkins Container                              | Not set                                                                      |
-| `Master.RunAsUser`                | uid that jenkins runs with                                               | `0`                                                                          |
-| `Master.FsGroup`                  | uid that will be used for persistent volume                              | `0`                                                                          |
-| `Master.ServiceAnnotations`       | Service annotations                                                      | `{}`                                                                         |
-| `Master.ServiceType`              | k8s service type                                                         | `LoadBalancer`                                                               |
-| `Master.ServicePort`              | k8s service port                                                         | `8080`                                                                       |
-| `Master.NodePort`                 | k8s node port                                                            | Not set                                                                      |
-| `Master.HealthProbes`             | Enable k8s liveness and readiness probes                                 | `true`                                                                       |
-| `Master.HealthProbesTimeout`      | Set the timeout for the liveness and readiness probes                    | `120`                                                                        |
-| `Master.ContainerPort`            | Master listening port                                                    | `8080`                                                                       |
-| `Master.SlaveListenerPort`        | Listening port for agents                                                | `50000`                                                                      |
-| `Master.LoadBalancerSourceRanges` | Allowed inbound IP addresses                                             | `0.0.0.0/0`                                                                  |
-| `Master.LoadBalancerIP`           | Optional fixed external IP                                               | Not set                                                                      |
-| `Master.JMXPort`                  | Open a port, for JMX stats                                               | Not set                                                                      |
-| `Master.CustomConfigMap`          | Use a custom ConfigMap                                                   | `false`                                                                      |
-| `Master.Ingress.Annotations`      | Ingress annotations                                                      | `{}`                                                                         |
-| `Master.Ingress.TLS`              | Ingress TLS configuration                                                | `[]`                                                                         |
-| `Master.InitScripts`              | List of Jenkins init scripts                                             | Not set                                                                      |
-| `Master.CredentialsXmlSecret`     | Kubernetes secret that contains a 'credentials.xml' file                 | Not set                                                                      |
-| `Master.SecretsFilesSecret`       | Kubernetes secret that contains 'secrets' files                          | Not set                                                                      |
-| `Master.Jobs`                     | Jenkins XML job configs                                                  | Not set                                                                      |
-| `Master.InstallPlugins`           | List of Jenkins plugins to install                                       | `kubernetes:0.11 workflow-aggregator:2.5 credentials-binding:1.11 git:3.2.0` |
-| `Master.ScriptApproval`           | List of groovy functions to approve                                      | Not set                                                                      |
-| `Master.NodeSelector`             | Node labels for pod assignment                                           | `{}`                                                                         |
-| `Master.Tolerations`              | Toleration labels for pod assignment                                     | `{}`                                                                         |
-| `NetworkPolicy.Enabled`           | Enable creation of NetworkPolicy resources.                              | `false`                                                                      |
-| `NetworkPolicy.ApiVersion`        | NetworkPolicy ApiVersion                                                 | `extensions/v1beta1`                                                         |
-| `rbac.install`                    | Create service account and ClusterRoleBinding for Kubernetes plugin      | `false`                                                                      |
-| `rbac.apiVersion`                 | RBAC API version                                                         | `v1beta1`                                                                    |
-| `rbac.roleRef`                    | Cluster role name to bind to                                             | `cluster-admin`                                                              |
+| Parameter                         | Description                          | Default                                                                      |
+| --------------------------------- | ------------------------------------ | ---------------------------------------------------------------------------- |
+| `nameOverride`                    | Override the resource name prefix    | `jenkins`                                                                    |
+| `fullnameOverride`                | Override the full resource names     | `jenkins-{release-name}` (or `jenkins` if release-name is `jenkins`)         |
+| `Master.Name`                     | Jenkins master name                  | `jenkins-master`                                                             |
+| `Master.Image`                    | Master image name                    | `jenkinsci/jenkins`                                                          |
+| `Master.ImageTag`                 | Master image tag                     | `2.46.1`                                                                     |
+| `Master.ImagePullPolicy`          | Master image pull policy             | `Always`                                                                     |
+| `Master.ImagePullSecret`          | Master image pull secret             | Not set                                                                      |
+| `Master.Component`                | k8s selector key                     | `jenkins-master`                                                             |
+| `Master.UseSecurity`              | Use basic security                   | `true`                                                                       |
+| `Master.AdminUser`                | Admin username (and password) created as a secret if useSecurity is true | `admin`                                  |
+| `Master.Cpu`                      | Master requested cpu                 | `200m`                                                                       |
+| `Master.Memory`                   | Master requested memory              | `256Mi`                                                                      |
+| `Master.InitContainerEnv`         | Environment variables for Init Container                                 | Not set                                  |
+| `Master.ContainerEnv`             | Environment variables for Jenkins Container                              | Not set                                  |
+| `Master.RunAsUser`                | uid that jenkins runs with           | `0`                                                                          |
+| `Master.FsGroup`                  | uid that will be used for persistent volume | `0`                                                                   |
+| `Master.ServiceAnnotations`       | Service annotations                  | `{}`                                                                         |
+| `Master.ServiceType`              | k8s service type                     | `LoadBalancer`                                                               |
+| `Master.ServicePort`              | k8s service port                     | `8080`                                                                       |
+| `Master.NodePort`                 | k8s node port                        | Not set                                                                      |
+| `Master.HealthProbes`             | Enable k8s liveness and readiness probes | `true`                                                                   |
+| `Master.HealthProbesTimeout`      | Set the timeout for the liveness and readiness probes | `120`                                                       |
+| `Master.ContainerPort`            | Master listening port                | `8080`                                                                       |
+| `Master.SlaveListenerPort`        | Listening port for agents            | `50000`                                                                      |
+| `Master.LoadBalancerSourceRanges` | Allowed inbound IP addresses         | `0.0.0.0/0`                                                                  |
+| `Master.LoadBalancerIP`           | Optional fixed external IP           | Not set                                                                      |
+| `Master.JMXPort`                  | Open a port, for JMX stats           | Not set                                                                      |
+| `Master.CustomConfigMap`          | Use a custom ConfigMap               | `false`                                                                      |
+| `Master.Ingress.Annotations`      | Ingress annotations                  | `{}`                                                                         |
+| `Master.Ingress.TLS`              | Ingress TLS configuration            | `[]`                                                                         |
+| `Master.InitScripts`              | List of Jenkins init scripts         | Not set                                                                      |
+| `Master.CredentialsXmlSecret`     | Kubernetes secret that contains a 'credentials.xml' file | Not set                                                  |
+| `Master.SecretsFilesSecret`       | Kubernetes secret that contains 'secrets' files | Not set                                                           |
+| `Master.Jobs`                     | Jenkins XML job configs              | Not set                                                                      |
+| `Master.InstallPlugins`           | List of Jenkins plugins to install   | `kubernetes:0.11 workflow-aggregator:2.5 credentials-binding:1.11 git:3.2.0` |
+| `Master.ScriptApproval`           | List of groovy functions to approve  | Not set                                                                      |
+| `Master.NodeSelector`             | Node labels for pod assignment       | `{}`                                                                         |
+| `Master.Affinity`                 | Affinity settings                    | `{}`                                                                         |
+| `Master.Tolerations`              | Toleration labels for pod assignment | `{}`                                                                         |
+| `NetworkPolicy.Enabled`           | Enable creation of NetworkPolicy resources. | `false`                                                               |
+| `NetworkPolicy.ApiVersion`        | NetworkPolicy ApiVersion             | `extensions/v1beta1`                                                         |
+| `rbac.install`                    | Create service account and ClusterRoleBinding for Kubernetes plugin | `false`                                       |
+| `rbac.apiVersion`                 | RBAC API version                     | `v1beta1`                                                                    |
+| `rbac.roleRef`                    | Cluster role name to bind to         | `cluster-admin`                                                              |
 
 ### Jenkins Agent
 
