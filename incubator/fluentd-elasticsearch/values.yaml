@@ -17,12 +17,6 @@ resources:
     cpu: 100m
     memory: 200Mi
 
-## Add tolerations if specified
-# tolerations:
-#   - key: node-role.kubernetes.io/master
-#     operator: Exists
-#     effect: NoSchedule
-
 elasticsearch:
   host: 'elasticsearch-client'
   port: 9200
@@ -31,6 +25,15 @@ elasticsearch:
 
 rbac:
   create: true
+
+annotations: {}
+  # prometheus.io/scrape: "true"
+  # prometheus.io/port: "24231"
+
+tolerations: {}
+  # - key: node-role.kubernetes.io/master
+  #   operator: Exists
+  #   effect: NoSchedule
 
 configMaps:
   output.conf: |

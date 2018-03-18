@@ -10,7 +10,7 @@ $ helm install incubator/fluentd-elasticsearch
 
 ## Introduction
 
-This chart bootstraps a [Fluentd](https://www.fluentd.org/) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
+This chart bootstraps a [Fluentd](https://www.fluentd.org/) daemonset on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
 ## Prerequisites
 
@@ -40,15 +40,25 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following table lists the configurable parameters of the Fluentd elasticsearch chart and their default values.
 
-| Parameter                       | Description                                | Default                                                    |
-| ------------------------------- | ------------------------------------------ | ---------------------------------------------------------- |
-| `image`                         | Image                                      | `gcr.io/google-containers/fluentd-elasticsearch`           |
-| `imageTag`                      | Image tag                                  | `v2.0.3                                                    |
-| `imagePullPolicy`               | Image pull policy                          | `Always` if `imageTag` is `imagePullPolicy`                |
-| `resources.limits.cpu`          | CPU limit                                  | `100m`                                                     |
-| `resources.limits.memory`       | Memory limit                               | `500Mi`                                                    |
-| `resources.requests.cpu`        | CPU request                                | `100m`                                                     |
-| `resources.requests.memory`     | Memory request                             | `200Mi`                                                    |
+| Parameter                          | Description                                | Default                                                    |
+| ---------------------------------- | ------------------------------------------ | ---------------------------------------------------------- |
+| `annotations`                      | Optional deamon set annotations            | `NULL`                                                     |
+| `configMaps`                       | Fluentd configmaps                         | `output.conf`                                              |
+| `elasticsearch.host`               | Elstaicsearch Host                         | `elasticsearch-client`                                     |
+| `elasticsearch.port`               | Elasticsearch Port                         | `9200`                                                     |
+| `elasticsearch.buffer_chunk_limit` | Elasticsearch buffer chunk limit           | `2M`                                                       |
+| `elasticsearch.buffer_queue_limit` | Elasticsearch buffer queue limit           | `8`                                                        |
+| `fluentdcustomconfig`              | Optional custom configmaps                 | `NULL`                                                     |
+| `image`                            | Image                                      | `gcr.io/google-containers/fluentd-elasticsearch`           |
+| `imageTag`                         | Image tag                                  | `v2.0.4                                                    |
+| `imagePullPolicy`                  | Image pull policy                          | `Always` if `imageTag` is `imagePullPolicy`                |
+| `rbac.create`                      | RBAC                                       | `true`                                                     |
+| `resources.limits.cpu`             | CPU limit                                  | `100m`                                                     |
+| `resources.limits.memory`          | Memory limit                               | `500Mi`                                                    |
+| `resources.requests.cpu`           | CPU request                                | `100m`                                                     |
+| `resources.requests.memory`        | Memory request                             | `200Mi`                                                    |
+| `tolerations`                      | Optional daemonset tolerations             | `NULL`                                                     |
+
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
