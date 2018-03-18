@@ -50,6 +50,10 @@ spec:
           image: "{{ .Values.Master.Image }}:{{ .Values.Master.ImageTag }}"
           imagePullPolicy: "{{ .Values.Master.ImagePullPolicy }}"
           command: [ "sh", "/var/jenkins_config/apply_config.sh" ]
+          {{- if .Values.Master.InitContainerEnv }}
+          env:
+{{ toYaml .Values.Master.InitContainerEnv | indent 12 }}
+          {{- end }}
           volumeMounts:
             -
               mountPath: /var/jenkins_home
@@ -104,6 +108,9 @@ spec:
                 secretKeyRef:
                   name: {{ template "jenkins.fullname" . }}
                   key: jenkins-admin-user
+            {{- end }}
+            {{- if .Values.Master.ContainerEnv }}
+{{ toYaml .Values.Master.ContainerEnv | indent 12 }}
             {{- end }}
           ports:
             - containerPort: {{ .Values.Master.ContainerPort }}
