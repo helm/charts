@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "filebeat.fullname" . }}-prospectors
+  labels:
+    app: {{ template "filebeat.name" . }}
+    chart: {{ template "filebeat.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}   
+data:
+  kubernetes.yml: |-
+    - type: docker
+      containers.ids:
+      - "*"
+      processors:
+        - add_kubernetes_metadata:
+            in_cluster: true
