@@ -1,3 +1,4 @@
+{{- if or .Values.mariadb.enabled .Values.externalDatabase.host -}}
 
 ** Please be patient while the chart is being deployed **
 
@@ -27,3 +28,19 @@
 
   echo Username: {{ .Values.orangehrmUsername }}
   echo Password: $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "orangehrm.fullname" . }} -o jsonpath="{.data.orangehrm-password}" | base64 --decode)
+
+{{- else -}}
+
+########################################################################################
+### ERROR: You did not provide an external database host in your 'helm install' call ###
+########################################################################################
+
+This deployment will be incomplete until you configure OrangeHRM with a resolvable database
+host. To configure OrangeHRM to use and external database host:
+
+
+1. Complete your OrangeHRM deployment by running:
+
+  helm upgrade {{ .Release.Name }} --set serviceType={{ .Values.serviceType }},mariadb.enabled=false,externalDatabase.host=YOUR_EXTERNAL_DATABASE_HOST stable/orangehrm
+
+{{- end }}
