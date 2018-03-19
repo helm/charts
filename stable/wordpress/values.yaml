@@ -126,6 +126,10 @@ serviceType: LoadBalancer
 nodePorts:
   http: ""
   https: ""
+## Enable client source IP preservation
+## ref http://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/#preserving-the-client-source-ip
+##
+serviceExternalTrafficPolicy: Local
 
 ## Allow health checks to be pointed at the https port
 healthcheckHttps: false
@@ -190,11 +194,6 @@ ingress:
   # - name: wordpress.local-tls
   #   key:
   #   certificate:
-
-## Enable client source IP preservation
-## ref http://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/#preserving-the-client-source-ip
-##
-serviceExternalTrafficPolicy: Local
 
 ## Enable persistence using Persistent Volume Claims
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
