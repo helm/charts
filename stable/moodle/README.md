@@ -69,7 +69,17 @@ The following tables lists the configurable parameters of the Moodle chart and t
 | `persistence.accessMode`            | PVC Access Mode for Moodle volume       | `ReadWriteOnce`                             |
 | `persistence.size`                  | PVC Storage Request for Moodle volume   | `8Gi`                                       |
 | `persistence.existingClaim`         | If PVC exists&bounded for Moodle        | `nil` (when nil, new one is requested)      |
-| `mariadb.mariadbRootPassword`       | MariaDB admin password                  | `nil` (uses alpha storage class annotation) |
+| `allowEmptyPassword`                | Allow DB blank passwords                | `yes`                                       |
+| `externalDatabase.host`             | Host of the external database           | `nil`                                       |
+| `externalDatabase.port`             | Port of the external database           | `3306`                                      |
+| `externalDatabase.user`             | Existing username in the external db    | `bn_moodle`                                 |
+| `externalDatabase.password`         | Password for the above username         | `nil`                                       |
+| `externalDatabase.database`         | Name of the existing databse            | `bitnami_moodle`                            |
+| `mariadb.enabled`                   | Wheter to use or not the mariadb chart  | `true`                                      |
+| `mariadb.mariadbDatabase`           | Database name to create                 | `bitnami_moodle`                            |
+| `mariadb.mariadbUser`               | Database user to create                 | `bn_moodle`                                 |
+| `mariadb.mariadbPassword`           | Password for the database               | `nil`                                       |
+| `mariadb.mariadbRootPassword`       | MariaDB admin password                  | `nil`                                       |
 | `mariadb.persistence.enabled`       | Enable MariaDB persistence using PVC    | `true`                                      |
 | `mariadb.persistence.storageClass`  | PVC Storage Class for MariaDB volume    | `generic`                                   |
 | `mariadb.persistence.accessMode`    | PVC Access Mode for MariaDB volume      | `ReadWriteOnce`                             |
