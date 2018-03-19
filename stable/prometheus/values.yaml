@@ -418,6 +418,14 @@ server:
     #   configMap: certs-configmap
     #   readOnly: true
 
+  ## Additional Prometheus server Secret mounts
+  # Defines additional mounts with secrets. Secrets must be manually created in the namespace.
+  extraSecretMounts: []
+    # - name: secret-files
+    #   mountPath: /etc/secrets
+    #   secretName: prom-secret-files
+    #   readOnly: true
+
   ## ConfigMap override where fullname is {{.Release.Name}}-{{.Values.server.configMapOverrideName}}
   ## Defining configMapOverrideName will cause templates/server-configmap.yaml
   ## to NOT generate a ConfigMap resource
