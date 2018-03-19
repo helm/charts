@@ -1,5 +1,5 @@
 name: oauth-proxy
-version: 0.1.7
+version: 0.1.8
 appVersion: 2.2
 deprecated: true  # moved to stable
 description: A reverse proxy that provides authentication with Google, Github or other providers
