@@ -14,7 +14,7 @@ This chart bootstraps a [Sentry](https://sentry.io/) deployment on a [Kubernetes
 
 It also packages the [PostgreSQL](https://github.com/kubernetes/charts/tree/master/stable/postgresql) and [Redis](https://github.com/kubernetes/charts/tree/master/stable/redis) which are required for Sentry.
 
-> **Warning**: This chart does not yet allow for you to specify your own database host or redis host.
+> **Warning**: This chart does not yet allow for you to specify your own redis host.
 
 ## Prerequisites
 
@@ -69,6 +69,11 @@ The following tables lists the configurable parameters of the Sentry chart and t
 | `email.password`                     | SMTP password                              | `nil`                                                      |
 | `email.use_tls`                      | SMTP TLS for security                      | `false`                                                    |
 | `email.enable_replies`               | Allow email replies                        | `false`                                                    |
+| `postgresql.enabled`                 | Enable PostgreSQL as a chart dependency    | `true`                                                     |
+| `externalDatabase.host`              | Host of the external database              | `nil`                                                      |
+| `externalDatabase.user`              | Existing username in the external db       | `sentry`                                                   |
+| `externalDatabase.password`          | Password for the above username            | `nil`                                                      |
+| `externalDatabase.database`          | Name of the existing database              | `nil`                                                      |
 | `service.type`                       | Kubernetes service type                    | `LoadBalancer`                                             |
 | `service.name`                       | Kubernetes service name                    | `sentry`                                                   |
 | `service.externalPort`               | Kubernetes external service port           | `9000`                                                     |

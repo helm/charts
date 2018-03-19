@@ -32,16 +32,33 @@ spec:
               name: {{ template "fullname" . }}
               key: sentry-secret
         - name: SENTRY_DB_USER
+        {{- if .Values.postgresql.enabled }}
           value: {{ default "sentry" .Values.postgresUser | quote }}
+        {{- else }}
+          value: {{ .Values.externalDatabase.user | quote }}
+        {{- end }}
         - name: SENTRY_DB_NAME
+        {{- if .Values.postgresql.enabled }}
           value: {{ default "sentry" .Values.postgresDatabase | quote }}
+        {{- else }}
+          value: {{ .Values.externalDatabase.database | quote }}
+        {{- end }}
         - name: SENTRY_DB_PASSWORD
           valueFrom:
             secretKeyRef:
+              {{- if .Values.postgresql.enabled }}
               name: {{ template "postgresql.fullname" . }}
               key: postgres-password
+              {{- else }}
+              name: {{ printf "%s-%s" .Release.Name "externaldb" }}
+              key: db-password
+              {{- end }}
         - name: SENTRY_POSTGRES_HOST
+        {{- if .Values.postgresql.enabled }}
           value: {{ template "postgresql.fullname" . }}
+        {{- else }}
+          value: {{ .Values.externalDatabase.host | quote }}
+        {{- end }}
         - name: SENTRY_POSTGRES_PORT
           value: "5432"
         - name: SENTRY_REDIS_PASSWORD
