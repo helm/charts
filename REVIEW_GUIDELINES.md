@@ -80,23 +80,7 @@ image:
 
 * Persistence should be turned off by default
 * PVCs should support specifying an existing claim
-* Use multi-attach PVCs instead of several small pvcs
-
-
-```yaml
-volumeMounts:
-  - mountPath: /opt/sonarqube/conf
-    name: sonarqube
-    subPath: conf
-  - mountPath: /opt/sonarqube/data
-    name: sonarqube
-    subPath: data
-  - mountPath: /opt/sonarqube/extensions
-    name: sonarqube
-    subPath: extensions
-```
-
-* Storage class should not be overriden by default
+* Storage class should be empty by default
 * All options should be shown in README.md
 * Example persistence section in values.yaml:
 
@@ -109,9 +93,9 @@ persistence:
   ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
   ##   GKE, AWS & OpenStack)
   ##
-  # storageClass: "-"
-  # accessMode: ReadWriteOnce
-  # size: 10Gi
+  storageClass: ""
+  accessMode: ReadWriteOnce
+  size: 10Gi
   # existingClaim: ""
 ```
 
