@@ -206,3 +206,8 @@ readinessProbe:
     path: /user/login
     port: http
   initialDelaySeconds: 30
+
+## Additional containers to be added to the Drupal pod.
+# sidecarContainers:
+# - name: my-sidecar
+#   image: nginx:latest
