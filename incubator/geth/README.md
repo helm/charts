@@ -8,7 +8,7 @@ This chart bootstraps a single Ethereum node deployment on a [Kubernetes](http:/
 
 ## Prerequisites
 
-- Kubernetes 1.7+ with Beta APIs enabled
+- Kubernetes 1.8+
 - PV provisioner support in the underlying infrastructure
 
 ## Installing the Chart
@@ -38,23 +38,23 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following tables lists the configurable parameters of the geth chart and their default values.
 
-| Parameter                  | Description                        | Default                                                    |
-| -----------------------    | ---------------------------------- | ---------------------------------------------------------- |
-| `imageTag`                 | `geth` image tag.                  | Most recent release                                        |
-| `imagePullPolicy`          | Image pull policy                  | `IfNotPresent`                                             |                                               |
-| `persistence.enabled`      | Create a volume to store data      | true                                                       |
-| `persistence.size`         | Size of persistent volume claim    | 300Gi RW                                                    |
-| `persistence.storageClass` | Type of persistent volume claim    | nil  (uses alpha storage class annotation)                 |
-| `persistence.accessMode`   | ReadWriteOnce or ReadOnly          | ReadWriteOnce                                              |
-| `persistence.existingClaim`| Name of existing persistent volume | `nil`                                                      |
-| `resources`                | CPU/Memory resource requests/limits| Memory: `512Mi`, CPU: `300m`                               |
-| `rpcPort`                  | HTTP-RPC server listening port     | `8545`                                                     |
-| `wsPort`                   | WS-RPC server listening port       | `8546`                                                     |
-| `rpcApi`                   | API's offered over the HTTP-RPC interface | `net,eth,personal,web3`                             |
-| `wsApi`                    | API's offered over the WS-RPC interface   | `net,eth,personal,web3`                             |
-| `wsOrigins`                | Origins from which to accept websockets requests   | `*`                                        |
-| `networkId`                | Network identifier (integer, 1=Frontier, 2=Morden (disused), 3=Ropsten, 4=Rinkeby) | `1`       |
-| `syncMode`                 | Blockchain sync mode ("fast", "full", or "light")     | `fast`                                  |
+  Parameter                | Description                                                                         | Default
+---------------------------|-------------------------------------------------------------------------------------|--------
+`image.repository`         | Image source repository name                                                        |`ethereum/client-go`
+`imageTag`                 | `geth` image tag.                                                                   | `alpine`
+`imagePullPolicy`          | Image pull policy                                                                   | `IfNotPresent`
+`rpcPort`                  | HTTP-RPC server listening port                                                      | `8545`
+`wsPort`                   | WS-RPC server listening port                                                        | `8546`
+`rpcApi`                   | API's offered over the HTTP-RPC interface                                           | `net,eth,personal,web3`
+`wsApi`                    | API's offered over the WS-RPC interface                                             | `net,eth,personal,web3`
+`wsOrigins`                | Origins from which to accept websockets requests                                    | `*`
+`networkId`                | Network identifier (integer, 1=Frontier, 2=Morden (disused), 3=Ropsten, 4=Rinkeby)  | `1`
+`syncMode`                 | Blockchain sync mode ("fast", "full", or "light")                                   | `fast`
+`persistence.enabled`      | Create a volume to store data                                                       | `true`
+`persistence.accessMode`   | ReadWriteOnce or ReadOnly                                                           | `ReadWriteOnce`
+`persistence.size`         | Size of persistent volume claim                                                     | `300Gi`
+`resources`                | CPU/Memory resource requests/limits                                                 | `{}`
+
 
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
