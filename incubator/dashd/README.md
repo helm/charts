@@ -41,7 +41,7 @@ The following tables lists the configurable parameters of the dashd chart and th
 Parameter                  | Description                        | Default
 -----------------------    | ---------------------------------- | ----------------------------------------------------------
 `image.repository`         | Image source repository name       | `dashpay/dashd`
-`imageTag`                 | `dashd` image tag.                 | ``
+`imageTag`                 | `dashd` image tag.                 | `latest`
 `imagePullPolicy`          | Image pull policy                  | `IfNotPresent`
 `service.rpcPort`          | RPC port                           | `9998`
 `service.p2pPort`          | P2P port                           | `9999`
