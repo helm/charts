@@ -54,7 +54,7 @@ $ helm install --name my-release -f values.yaml incubator/schema-registry
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
 ### Parameters
-The following tables lists the configurable parameters of the SchemaRegistry chart and their default values.
+The following table lists the configurable parameters of the SchemaRegistry chart and their default values.
 
 | Parameter | Description | Default |
 | --------- | ----------- | ------- |
