@@ -71,11 +71,11 @@ validate_chart_yaml() {
 # include the semvercompare function
 curDir="$(dirname "$0")"
 source "$curDir/../semvercompare.sh"
-#git remote add k8s https://github.com/kubernetes/charts
+git remote add k8s https://github.com/kubernetes/charts
 git fetch k8s master
 CHANGED_FOLDERS=`git diff --find-renames --name-only $(git merge-base k8s/master HEAD) stable/ incubator/ | awk -F/ '{print $1"/"$2}' | uniq`
 
-Exit early if no charts have changed
+#Exit early if no charts have changed
 if [ -z "$CHANGED_FOLDERS" ]; then
   echo "No changes to charts found"
   exit 0
