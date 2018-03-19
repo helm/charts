@@ -43,7 +43,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the ownCloud chart and their default values.
+The following table lists the configurable parameters of the ownCloud chart and their default values.
 
 |              Parameter              |                Description                |                   Default                   |
 |-------------------------------------|-------------------------------------------|---------------------------------------------|
@@ -83,7 +83,6 @@ The following tables lists the configurable parameters of the ownCloud chart and
 | `persistence.owncloud.size`         | PVC Storage Request for ownCloud volume   | `8Gi`                                       |
 | `resources`                         | CPU/Memory resource requests/limits       | Memory: `512Mi`, CPU: `300m`                |
 
-
 The above parameters map to the env variables defined in [bitnami/owncloud](http://github.com/bitnami/bitnami-docker-owncloud). For more information please refer to the [bitnami/owncloud](http://github.com/bitnami/bitnami-docker-owncloud) image documentation.
 
 > **Note**:
@@ -108,7 +107,7 @@ $ helm install --name my-release \
     stable/owncloud
 ```
 
-The above command sets the ownCloud administrator account username and password to `admin` and `password` respectively. Additionally it sets the MariaDB `root` user password to `secretpassword`.
+The above command sets the ownCloud administrator account username and password to `admin` and `password` respectively. Additionally, it sets the MariaDB `root` user password to `secretpassword`.
 
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 
