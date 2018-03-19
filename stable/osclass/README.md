@@ -1,6 +1,6 @@
 # Osclass
 
-[Osclass](https://osclass.org/) is a php script that allows you to quickly create and manage your own free classifieds site. Using this script, you can provide free advertising for items for sale, real estate, jobs, cars... Hundreds of free classified advertising sites are using Osclass.
+[Osclass](https://osclass.org/) is a PHP script that allows you to quickly create and manage your own free classifieds site. Using this script, you can provide free advertising for items for sale, real estate, jobs, cars... Hundreds of free classified advertising sites are using Osclass.
 
 ## TL;DR;
 
@@ -43,7 +43,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the Osclass chart and their default values.
+The following table lists the configurable parameters of the Osclass chart and their default values.
 
 |             Parameter              |               Description                |                   Default                   |
 |------------------------------------|------------------------------------------|---------------------------------------------|
@@ -111,7 +111,7 @@ $ helm install --name my-release \
     stable/osclass
 ```
 
-The above command sets the Osclass administrator account username and password to `admin` and `password` respectively. Additionally it sets the MariaDB `root` user password to `secretpassword`.
+The above command sets the Osclass administrator account username and password to `admin` and `password` respectively. Additionally, it sets the MariaDB `root` user password to `secretpassword`.
 
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 
