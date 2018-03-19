@@ -388,7 +388,7 @@ server:
   ##
   image:
     repository: prom/prometheus
-    tag: v2.1.0
+    tag: v2.2.1
     pullPolicy: IfNotPresent
 
   ## The URL prefix at which the container can be accessed. Useful in the case the '-web.external-url' includes a slug
