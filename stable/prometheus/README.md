@@ -65,6 +65,8 @@ Assuming you have an existing release of the prometheus chart, named `prometheus
 	  enabled: false
 	pushgateway:
 	  enabled: false
+	blackboxExporter:
+	  enabled: false
 	server:
 	  extraArgs:
 	    storage.local.retention: 720h
@@ -200,6 +202,27 @@ Parameter | Description | Default
 `pushgateway.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
 `pushgateway.service.servicePort` | pushgateway service port | `9091`
 `pushgateway.service.type` | type of pushgateway service to create | `ClusterIP`
+`blackboxExporter.enabled` | If true, create blackbox exporter | `true`
+`blackboxExporter.name` | blackbox exporter container name | `blackbox-exporter`
+`blackboxExporter.image.repository` | blackbox exporter container image repository | `prom/blackbox-exporter`
+`blackboxExporter.image.tag` | blackbox exporter container image tag | `v0.12.0`
+`blackboxExporter.image.pullPolicy` | blackbox exporter container image pull policy | `IfNotPresent`
+`blackboxExporter.extraArgs` | Additional blackbox exporter container arguments | `{}`
+`blackboxExporter.ingress.enabled` | If true, blackbox exporter Ingress will be created | `false`
+`blackboxExporter.ingress.annotations` | blackbox exporter Ingress annotations | `{}`
+`blackboxExporter.ingress.hosts` | blackbox exporter Ingress hostnames | `[]`
+`blackboxExporter.ingress.tls` | blackbox exporter Ingress TLS configuration (YAML) | `[]`
+`blackboxExporter.nodeSelector` | node labels for blackbox exporter pod assignment | `{}`
+`blackboxExporter.podAnnotations` | annotations to be added to blackbox exporter pods | `{}`
+`blackboxExporter.tolerations` | node taints to tolerate (requires Kubernetes >=1.6) | `[]`
+`blackboxExporter.replicaCount` | desired number of blackbox exporter pods | `1`
+`blackboxExporter.resources` | blackbox exporter pod resource requests & limits | `{}`
+`blackboxExporter.service.annotations` | annotations for blackbox exporter service | `{}`
+`blackboxExporter.service.clusterIP` | internal blackbox exporter cluster service IP | `""`
+`blackboxExporter.service.externalIPs` | blackbox exporter service external IP addresses | `[]`
+`blackboxExporter.service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
+`blackboxExporter.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
+`blackboxExporter.service.type` | type of blackbox exporter service to create | `ClusterIP`
 `rbac.create` | If true, create & use RBAC resources | `true`
 `server.name` | Prometheus server container name | `server`
 `server.image.repository` | Prometheus server container image repository | `prom/prometheus`
@@ -315,3 +338,19 @@ implements the Kubernetes NetworkPolicy spec, and set `networkPolicy.enabled` to
 
 If NetworkPolicy is enabled for Prometheus' scrape targets, you may also need
 to manually create a networkpolicy which allows it.
+
+### Blackbox exporter configuration
+
+Blackbox expoorter, if it's enabled, deployed with static URL within cluster http://blackbox:9115, this was done because it should be known by different services.
+
+In order to enable probe for your service using blackbox exporter simply add `prometheus.io/probe: true` annotation. By default it will use service fqdn and port `80` to execute probe. Probe port can be specified by `prometheus.io/probe_port: 8080` service annotation.
+#### Example
+
+Following annotations specified for Node Exporter
+```
+metadata:
+  annotations:
+    prometheus.io/probe: "true"
+    prometheus.io/probe_port: "9100"
+```
+will be translated to `http://blackbox:9115/probe?module=http_2xx&target=prometheus-node-exporter.default.svc:9100` after relabling
