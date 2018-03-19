@@ -47,7 +47,11 @@ function cleanup {
       # created for this PR test run
       kubectl get pods --show-all --no-headers --namespace ${NAMESPACE} | awk '{ print $1 }' | while read line; do
         if [[ $line != "" ]]; then
-            echo "===Logs from pod $line:==="
+            echo "===Details from pod $line:==="
+
+            echo "...Description of pod $line:..."
+            kubectl describe pod --namespace ${NAMESPACE} ${line} || true
+            echo "...End of description for pod $line...\n"
 
             # There can be multiple containers within a pod. We need to iterate
             # over each of those
@@ -58,7 +62,7 @@ function cleanup {
                 echo "---End of logs for container $cname in pod $line---\n"
             done
 
-            echo "===End of logs for pod $line===\n"
+            echo "===End of details for pod $line===\n"
         fi
       done
 
