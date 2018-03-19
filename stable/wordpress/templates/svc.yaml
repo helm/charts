@@ -9,6 +9,7 @@ metadata:
     heritage: "{{ .Release.Service }}"
 spec:
   type: {{ .Values.serviceType }}
+  externalTrafficPolicy: {{ .Values.serviceExternalTrafficPolicy | quote }}
   ports:
     - name: http
       port: 80
