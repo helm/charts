@@ -51,7 +51,7 @@ helm install --name my-release stable/redmine --set databaseType.mariadb=false,d
 
 ## Configuration
 
-The following tables list the configurable parameters of the Redmine chart and their default values.
+The following table lists the configurable parameters of the Redmine chart and their default values.
 
 | Parameter | Description | Default |
 | --------- | ----------- | ------- |
