@@ -5,7 +5,8 @@ To connect to geth RPC:
 
 1. Forward the port for the node:
 
-  $ kubectl port-forward --namespace {{ .Release.Namespace }} $(kubectl get pods --namespace {{ .Release.Namespace }} -l app={{ template "geth.name" . }} -o jsonpath='{ .items[0].metadata.name }') {{ .Values.rpcPort }}
+  $ kubectl port-forward --namespace {{ .Release.Namespace }} $(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "geth.name" . }},release={{ .Release.Name }}" -o jsonpath='{ .items[0].metadata.name }') {{ .Values.rpcPort }}
 
 2. Connect using the geth cli:
+
   $ geth attach http://{{ template "geth.fullname" . }}:{{ .Values.rpcPort }}

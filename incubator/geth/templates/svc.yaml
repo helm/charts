@@ -5,8 +5,8 @@ metadata:
   labels:
     app: {{ template "geth.name" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 spec:
   ports:
     - name: rpc
@@ -17,4 +17,4 @@ spec:
       targetPort: ws
   selector:
     app: {{ template "geth.name" . }}
-    release: "{{ .Release.Name }}"
+    release: {{ .Release.Name }}
