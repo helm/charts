@@ -92,3 +92,10 @@ resources:
   requests:
     memory: 256Mi
     cpu: 250m
+
+## Discretionary Access Controls
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+##
+securitySettings:
+  runAsUser: 1001
+  fsGroup: 1001

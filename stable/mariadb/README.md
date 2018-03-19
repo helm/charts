@@ -45,30 +45,32 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following table lists the configurable parameters of the MariaDB chart and their default values.
 
-|          Parameter          |                Description                 |                   Default                   |
-| --------------------------- | ------------------------------------------ | ------------------------------------------- |
-| `image`                     | MariaDB image                              | `bitnami/mariadb:{VERSION}`                 |
-| `service.type`              | Kubernetes service type to expose          | `ClusterIP`                                 |
-| `service.nodePort`          | Port to bind to for NodePort service type  | `nil`                                       |
-| `service.annotations`       | Additional annotations to add to service   | `nil`                                       |
-| `imagePullPolicy`           | Image pull policy.                         | `IfNotPresent`                              |
-| `usePassword`               | Enable password authentication             | `true`                                      |
-| `mariadbRootPassword`       | Password for the `root` user.              | Randomly generated                          |
-| `mariadbUser`               | Username of new user to create.            | `nil`                                       |
-| `mariadbPassword`           | Password for the new user.                 | `nil`                                       |
-| `mariadbDatabase`           | Name for new database to create.           | `nil`                                       |
-| `persistence.enabled`       | Use a PVC to persist data                  | `true`                                      |
-| `persistence.existingClaim` | Use an existing PVC                        | `nil`                                       |
-| `persistence.storageClass`  | Storage class of backing PVC               | `nil` (uses alpha storage class annotation) |
-| `persistence.accessMode`    | Use volume as ReadOnly or ReadWrite        | `ReadWriteOnce`                             |
-| `persistence.size`          | Size of data volume                        | `8Gi`                                       |
-| `resources`                 | CPU/Memory resource requests/limits        | Memory: `256Mi`, CPU: `250m`                |
-| `config`                    | Multi-line string for my.cnf configuration | `nil`                                       |
-| `metrics.enabled`           | Start a side-car prometheus exporter       | `false`                                     |
-| `metrics.image`             | Exporter image                             | `prom/mysqld-exporter`                      |
-| `metrics.imageTag`          | Exporter image                             | `v0.10.0`                                   |
-| `metrics.imagePullPolicy`   | Exporter image pull policy                 | `IfNotPresent`                              |
-| `metrics.resources`         | Exporter resource requests/limit           | `nil`                                       |
+|          Parameter           |                Description                 |                   Default                   |
+| ---------------------------- | ------------------------------------------ | ------------------------------------------- |
+| `image`                      | MariaDB image                              | `bitnami/mariadb:{VERSION}`                 |
+| `service.type`               | Kubernetes service type to expose          | `ClusterIP`                                 |
+| `service.nodePort`           | Port to bind to for NodePort service type  | `nil`                                       |
+| `service.annotations`        | Additional annotations to add to service   | `nil`                                       |
+| `imagePullPolicy`            | Image pull policy.                         | `IfNotPresent`                              |
+| `usePassword`                | Enable password authentication             | `true`                                      |
+| `mariadbRootPassword`        | Password for the `root` user.              | Randomly generated                          |
+| `mariadbUser`                | Username of new user to create.            | `nil`                                       |
+| `mariadbPassword`            | Password for the new user.                 | `nil`                                       |
+| `mariadbDatabase`            | Name for new database to create.           | `nil`                                       |
+| `persistence.enabled`        | Use a PVC to persist data                  | `true`                                      |
+| `persistence.existingClaim`  | Use an existing PVC                        | `nil`                                       |
+| `persistence.storageClass`   | Storage class of backing PVC               | `nil` (uses alpha storage class annotation) |
+| `persistence.accessMode`     | Use volume as ReadOnly or ReadWrite        | `ReadWriteOnce`                             |
+| `persistence.size`           | Size of data volume                        | `8Gi`                                       |
+| `resources`                  | CPU/Memory resource requests/limits        | Memory: `256Mi`, CPU: `250m`                |
+| `config`                     | Multi-line string for my.cnf configuration | `nil`                                       |
+| `metrics.enabled`            | Start a side-car prometheus exporter       | `false`                                     |
+| `metrics.image`              | Exporter image                             | `prom/mysqld-exporter`                      |
+| `metrics.imageTag`           | Exporter image                             | `v0.10.0`                                   |
+| `metrics.imagePullPolicy`    | Exporter image pull policy                 | `IfNotPresent`                              |
+| `metrics.resources`          | Exporter resource requests/limit           | `nil`                                       |
+| `securitySettings.runAsUser` | DAC UID for containers in this Deployment  | `1001`                                      |
+| `securitySettings.fsGroup`   | DAC GID for containers in this Deployment  | `1001`                                      |
 
 The above parameters map to the env variables defined in [bitnami/mariadb](http://github.com/bitnami/bitnami-docker-mariadb). For more information please refer to the [bitnami/mariadb](http://github.com/bitnami/bitnami-docker-mariadb) image documentation.
 
