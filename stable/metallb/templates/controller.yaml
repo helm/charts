@@ -40,7 +40,6 @@ spec:
         imagePullPolicy: {{ .Values.controller.image.pullPolicy }}
         args:
         - --port=7472
-        - --config-ns={{ .Release.Namespace }}
         - --config={{ template "metallb.fullname" . }}
         ports:
         - name: monitoring
