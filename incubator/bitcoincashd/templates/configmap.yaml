@@ -3,6 +3,9 @@ kind: ConfigMap
 metadata:
   name: {{ template "bitcoincashd.fullname" . }}
   labels:
-{{ include "bitcoincashd.labels.standard" . | indent 4 }}
+    app: {{ template "bitcoincashd.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 data:
 {{ toYaml .Values.configurationFile | indent 2 }}

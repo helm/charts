@@ -8,7 +8,7 @@ This chart bootstraps a single node BitcoinCash deployment on a [Kubernetes](htt
 
 ## Prerequisites
 
-- Kubernetes 1.7+ with Beta APIs enabled
+- Kubernetes 1.8+
 - PV provisioner support in the underlying infrastructure
 
 ## Installing the Chart
@@ -40,12 +40,12 @@ The following tables lists the configurable parameters of the bitcoincashd chart
 
 Parameter                  | Description                        | Default                                                   
 -----------------------    | ---------------------------------- | ----------------------------------------------------------
-`imageTag`                 | `bitcoincashd` image tag.          | Most recent release
+`image.repository`         | Image source repository name       | `kuberstack/bitcoincashd`
+`imageTag`                 | `bitcoincashd` release tag.        | `1.0`
 `imagePullPolicy`          | Image pull policy                  | `IfNotPresent`
 `service.rpcPort`          | RPC port                           | `8332`
 `service.p2pPort`          | P2P port                           | `8333`
 `service.testnetPort`      | Testnet port                       | `18332`
-`service.selector`         | Node selector                      | `tx-broadcast-svc`
 `persistence.enabled`      | Create a volume to store data      | `true`
 `persistence.accessMode`   | ReadWriteOnce or ReadOnly          | `ReadWriteOnce`
 `persistence.size`         | Size of persistent volume claim    | `300Gi`

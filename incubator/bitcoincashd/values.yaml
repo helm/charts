@@ -7,7 +7,6 @@ service:
   rpcPort: 8332
   p2pPort: 8333
   testnetPort: 18332
-  selector: tx-broadcast-svc
 
 persistence:
   enabled: true
