@@ -50,7 +50,11 @@ cleanup_release() {
         # created for this PR test run
         kubectl get pods --show-all --no-headers --namespace "$NAMESPACE" | awk '{ print $1 }' | while read -r pod; do
             if [[ -n "$pod" ]]; then
-                printf '===Logs from pod %s:===\n' "$pod"
+                printf '===Details from pod %s:===\n' "$pod"
+
+                printf '...Description of pod %s:...\n' "$pod"
+                kubectl describe pod --namespace "$NAMESPACE" "$pod" || true
+                printf '...End of description for pod %s...\n\n' "$pod"
 
                 # There can be multiple containers within a pod. We need to iterate
                 # over each of those
@@ -61,7 +65,7 @@ cleanup_release() {
                     printf -- '---End of logs for container %s in pod %s---\n\n' "$container" "$pod"
                 done
 
-                printf '===End of logs for pod %s===\n' "$pod"
+                printf '===End of details for pod %s===\n' "$pod"
             fi
         done
 
