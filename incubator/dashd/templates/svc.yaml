@@ -5,8 +5,8 @@ metadata:
   labels:
     app: {{ template "dashd.name" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 spec:
   ports:
     - name: rpc
@@ -20,4 +20,3 @@ spec:
   selector:
     app: {{ template "dashd.name" . }}
     release: "{{ .Release.Name }}"
-    dashd-rotation: {{ .Values.service.selector }}

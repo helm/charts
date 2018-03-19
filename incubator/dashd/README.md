@@ -8,7 +8,7 @@ This chart bootstraps a single node Dash deployment on a [Kubernetes](http://kub
 
 ## Prerequisites
 
-- Kubernetes 1.7+ with Beta APIs enabled
+- Kubernetes 1.8+
 - PV provisioner support in the underlying infrastructure
 
 ## Installing the Chart
@@ -40,12 +40,12 @@ The following tables lists the configurable parameters of the dashd chart and th
 
 Parameter                  | Description                        | Default
 -----------------------    | ---------------------------------- | ----------------------------------------------------------
-`imageTag`                 | `bitcoind` image tag.              | Most recent release
+`image.repository`         | Image source repository name       | `dashpay/dashd`
+`imageTag`                 | `dashd` image tag.                 | ``
 `imagePullPolicy`          | Image pull policy                  | `IfNotPresent`
 `service.rpcPort`          | RPC port                           | `9998`
 `service.p2pPort`          | P2P port                           | `9999`
 `service.testnetPort`      | Testnet port                       | `19998`
-`service.selector`         | Node selector                      | `tx-broadcast-svc`
 `persistence.enabled`      | Create a volume to store data      | `true`
 `persistence.accessMode`   | ReadWriteOnce or ReadOnly          | `ReadWriteOnce`
 `persistence.size`         | Size of persistent volume claim    | `300Gi`

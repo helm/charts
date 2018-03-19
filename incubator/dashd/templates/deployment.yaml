@@ -5,14 +5,18 @@ metadata:
   labels:
     app: {{ template "dashd.name" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 spec:
+  selector:
+    matchLabels:
+      app: {{ template "dashd.name" . }}
+      release: {{ .Release.Name }}
   template:
     metadata:
       labels:
         app: {{ template "dashd.name" . }}
-        release: "{{ .Release.Name }}"
+        release: {{ .Release.Name }}
     spec:
       containers:
         - name: {{ template "dashd.fullname" . }}

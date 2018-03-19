@@ -3,6 +3,9 @@ kind: ConfigMap
 metadata:
   name: {{ template "dashd.fullname" . }}
   labels:
-{{ include "dashd.labels.standard" . | indent 4 }}
+    app: {{ template "dashd.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 data:
 {{ toYaml .Values.configurationFile | indent 2 }}
