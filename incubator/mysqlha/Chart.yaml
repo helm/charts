@@ -1,5 +1,5 @@
 name: mysqlha
-version: 0.1.1
+version: 0.1.2
 description: MySQL cluster with a single master and zero or more slave replicas
 keywords:
   - mysql
