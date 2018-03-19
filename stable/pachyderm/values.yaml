@@ -80,3 +80,16 @@ etcd:
   requests:
    cpu: 250m
    memory: 256M
+
+## Set default image settings and persistence settings of the dashboard and grpc-proxy
+dash:
+  image:
+    repository: pachyderm/dash
+    tag: latest
+    pullPolicy: Always
+
+grpc-proxy:
+  image:
+    repository: pachyderm/grpc-proxy
+    tag: latest
+    pullPolicy: Always
