@@ -12,10 +12,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+FROM golang
+
+RUN git clone https://github.com/kubernetes/contrib.git \
+ && cd contrib/peer-finder \
+ && go get k8s.io/apimachinery/pkg/util/sets \
+ && make server
+
 FROM alpine:3.4
 MAINTAINER Anirudh Ramanathan <foxish@google.com>
 
-RUN apk update && apk add bash openssl && wget -qO /peer-finder http://storage.googleapis.com/kubernetes-release/pets/peer-finder 
+RUN apk update && apk add bash openssl
+
+COPY --from=0 /go/contrib/peer-finder/peer-finder /peer-finder
 
 ENTRYPOINT ["/install.sh"]
 
