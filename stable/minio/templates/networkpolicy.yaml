@@ -4,21 +4,22 @@ apiVersion: {{ template "minio.networkPolicy.apiVersion" . }}
 metadata:
   name: {{ template "minio.fullname" . }}
   labels:
-    app: {{ template "minio.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    app: {{ template "minio.name" . }}
+    chart: {{ template "minio.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 spec:
   podSelector:
     matchLabels:
-      app: {{ template "minio.fullname" . }}
+      app: {{ template "minio.name" . }}
+      release: {{ .Release.Name }}
   ingress:
     - ports:
-        - port: {{ .Values.servicePort }}
+        - port: {{ .Values.service.port }}
       {{- if not .Values.networkPolicy.allowExternal }}
       from:
         - podSelector:
             matchLabels:
-              {{ template "minio.fullname" . }}-client: "true"
+              {{ template "minio.name" . }}-client: "true"
       {{- end }}
 {{- end }}

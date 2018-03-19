@@ -1,65 +1,32 @@
 {{- if eq .Values.mode "standalone" "shared" }}
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
   name: {{ template "minio.fullname" . }}
   labels:
-    app: {{ template "minio.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    app: {{ template "minio.name" . }}
+    chart: {{ template "minio.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 spec:
   {{- if eq .Values.mode "shared" }}
   replicas: {{ .Values.replicas }}
   {{- end }}
   selector:
     matchLabels:
-      app: {{ template "minio.fullname" . }}
+      app: {{ template "minio.name" . }}
+      release: {{ .Release.Name }}
   template:
     metadata:
       name: {{ template "minio.fullname" . }}
       labels:
-        app: {{ template "minio.fullname" . }}
-        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-        release: "{{ .Release.Name }}"
-        heritage: "{{ .Release.Service }}"
+        app: {{ template "minio.name" . }}
+        release: {{ .Release.Name }}
     spec:
-{{- if .Values.nodeSelector }}
-      nodeSelector:
-{{ toYaml .Values.nodeSelector | indent 8 }}
-{{- end }}
-{{- if .Values.affinity }}
-      affinity:
-{{ toYaml .Values.affinity | indent 8 }}
-{{- end }}
-{{- if .Values.tolerations }}
-      tolerations:
-{{ toYaml .Values.tolerations | indent 8 }}
-{{- end }}
-      volumes:
-        - name: podinfo
-          downwardAPI:
-            items:
-              - path: "labels"
-                fieldRef:
-                  fieldPath: metadata.labels
-        - name: export
-        {{- if .Values.persistence.enabled }}
-          persistentVolumeClaim:
-            claimName: {{ .Values.persistence.existingClaim | default (include "minio.fullname" .) }}
-        {{- else }}
-          emptyDir: {}
-        {{- end }}
-        - name: minio-server-config
-          configMap:
-            name: {{ template "minio.fullname" . }}-config-cm
-        - name: minio-user
-          secret:
-            secretName: {{ template "minio.fullname" . }}-user
       containers:
-        - name: minio
-          image: {{ .Values.image }}:{{ .Values.imageTag }}
-          imagePullPolicy: {{ .Values.imagePullPolicy }}
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           {{- if .Values.azuregateway.enabled }}
           args: ["gateway", "azure"]
           {{- else }}
@@ -87,12 +54,12 @@ spec:
             - name: MINIO_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "minio.fullname" . }}-user
+                  name: {{ template "minio.fullname" . }}
                   key: accesskey
             - name: MINIO_SECRET_KEY
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "minio.fullname" . }}-user
+                  name: {{ template "minio.fullname" . }}
                   key: secretkey
           livenessProbe:
             tcpSocket:
@@ -100,4 +67,36 @@ spec:
             timeoutSeconds: 1
           resources:
 {{ toYaml .Values.resources | indent 12 }}
+{{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+{{- end }}
+{{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+{{- end }}
+      volumes:
+        - name: podinfo
+          downwardAPI:
+            items:
+              - path: "labels"
+                fieldRef:
+                  fieldPath: metadata.labels
+        - name: export
+        {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.existingClaim | default (include "minio.fullname" .) }}
+        {{- else }}
+          emptyDir: {}
+        {{- end }}
+        - name: minio-server-config
+          configMap:
+            name: {{ template "minio.fullname" . }}
+        - name: minio-user
+          secret:
+            secretName: {{ template "minio.fullname" . }}
 {{- end }}
