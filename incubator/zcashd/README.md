@@ -8,7 +8,7 @@ This chart bootstraps a single node Zcash deployment on a [Kubernetes](http://ku
 
 ## Prerequisites
 
-- Kubernetes 1.7+ with Beta APIs enabled
+- Kubernetes 1.8+
 - PV provisioner support in the underlying infrastructure
 
 ## Installing the Chart
@@ -40,12 +40,11 @@ The following tables lists the configurable parameters of the zcashd chart and t
 
 Parameter                  | Description                        | Default
 -----------------------    | ---------------------------------- | ----------------------------------------------------------
-`imageTag`                 | image tag                          | Most recent release
+`imageTag`                 | image tag                          | `1.0`
 `imagePullPolicy`          | Image pull policy                  | `IfNotPresent`
 `service.rpcPort`          | RPC port                           | `8232`
 `service.p2pPort`          | P2P port                           | `8233`
 `service.testnetPort`      | Testnet port                       | `18232`
-`service.selector`         | Node selector                      | `tx-broadcast-svc`
 `persistence.enabled`      | Create a volume to store data      | `true`
 `persistence.accessMode`   | ReadWriteOnce or ReadOnly          | `ReadWriteOnce`
 `persistence.size`         | Size of persistent volume claim    | `300Gi`
