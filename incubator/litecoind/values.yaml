@@ -1,13 +1,12 @@
 image:
   repository: "uphold/litecoin-core"
-  tag: "latest"
+  tag: "0.15"
   pullPolicy: IfNotPresent
 
 service:
   rpcPort: 9332
   p2pPort: 9338
   testnetPort: 19333
-  selector: tx-broadcast-svc
 
 persistence:
   enabled: true

@@ -5,8 +5,8 @@ metadata:
   labels:
     app: {{ template "litecoind.name" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 spec:
   ports:
     - name: rpc
@@ -19,5 +19,4 @@ spec:
       port: {{ .Values.service.testnetPort }}
   selector:
     app: {{ template "litecoind.name" . }}
-    release: "{{ .Release.Name }}"
-    litecoind-rotation: {{ .Values.service.selector }}
+    release: {{ .Release.Name }}

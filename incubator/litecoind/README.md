@@ -8,7 +8,7 @@ This chart bootstraps a single node Litecoin deployment on a [Kubernetes](http:/
 
 ## Prerequisites
 
-- Kubernetes 1.7+ with Beta APIs enabled
+- Kubernetes 1.8+
 - PV provisioner support in the underlying infrastructure
 
 ## Installing the Chart
@@ -38,19 +38,19 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following tables lists the configurable parameters of the litecoind chart and their default values.
 
-Parameter                  | Description                        | Default
------------------------    | ---------------------------------- | ----------------------------------------------------------
-`imageTag`                 | `bitcoind` image tag.              | Most recent release
-`imagePullPolicy`          | Image pull policy                  | `IfNotPresent`
-`service.rpcPort`          | RPC port                           | `8332`
-`service.p2pPort`          | P2P port                           | `8333`
-`service.testnetPort`      | Testnet port                       | `18332`
-`service.selector`         | Node selector                      | `tx-broadcast-svc`
-`persistence.enabled`      | Create a volume to store data      | `true`
-`persistence.accessMode`   | ReadWriteOnce or ReadOnly          | `ReadWriteOnce`
-`persistence.size`         | Size of persistent volume claim    | `300Gi`
-`resources`                | CPU/Memory resource requests/limits| `{}`
-`configurationFile`        | Config file ConfigMap entry        |
+Parameter                  | Description                         | Default
+-----------------------    | ----------------------------------- | ----------------------------------------------------------
+`image.repository`         | Image source repository name        | `uphold/litecoin-core`
+`imageTag`                 | `litecoind` image tag.              | `0.15`
+`imagePullPolicy`          | Image pull policy                   | `IfNotPresent`
+`service.rpcPort`          | RPC port                            | `8332`
+`service.p2pPort`          | P2P port                            | `8333`
+`service.testnetPort`      | Testnet port                        | `18332`
+`persistence.enabled`      | Create a volume to store data       | `true`
+`persistence.accessMode`   | ReadWriteOnce or ReadOnly           | `ReadWriteOnce`
+`persistence.size`         | Size of persistent volume claim     | `300Gi`
+`resources`                | CPU/Memory resource requests/limits | `{}`
+`configurationFile`        | Config file ConfigMap entry         |
 
 
 Litecoin is Bitcoin fork. For more information about Litecoin configuration please see example [bitcoin.conf](https://github.com/litecoin-project/litecoin/blob/master/contrib/debian/examples/bitcoin.conf).

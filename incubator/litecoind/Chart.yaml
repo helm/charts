@@ -1,6 +1,6 @@
 name: litecoind
 version: 0.1.0
-appVersion: 0.14
+appVersion: 0.15
 description: litecoin is an innovative payment network and a new kind of money.
 keywords:
   - litecoind
