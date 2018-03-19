@@ -173,6 +173,13 @@ spec:
       name: volume
     spec:
       accessModes: [ "ReadWriteOnce" ]
+      {{- if .Values.artifactory.persistence.storageClass }}
+      {{- if (eq "-" .Values.artifactory.persistence.storageClass) }}
+      storageClassName: ""
+      {{- else }}
+      storageClassName: "{{ .Values.artifactory.persistence.storageClass }}"
+      {{- end }}
+      {{- end }}
       resources:
         requests:
           storage: {{ .Values.artifactory.persistence.size }}
