@@ -12,7 +12,6 @@ service:
   p2pPort: 8333
   testnetPort: 18332
   testnetP2pPort: 18333
-  selector: tx-broadcast-svc
 
 persistence:
   enabled: true
