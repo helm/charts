@@ -28,7 +28,7 @@ If you are using a cluster that does not have a load balancer (like Minikube) th
 
 ```bash
 $ helm install --name my-release --set server.service.type=NodePort incubator/spring-cloud-data-flow
-````
+```
 
 Note that this chart pulls in many different Docker images so can take a while to fully install. 
 
@@ -64,7 +64,7 @@ The following tables list the configurable parameters and their default values.
 
 | Parameter                         | Description                                        | Default          |
 | --------------------------------- | -------------------------------------------------- | ---------------- |
-| server.version                    | The version/tag of the Data Flow server            | 1.3.0.RELEASE
+| server.version                    | The version/tag of the Data Flow server            | 1.4.0.RELEASE
 | server.imagePullPolicy            | The imagePullPolicy of the Data Flow server        | IfNotPresent
 | server.service.type               | The service type for the Data Flow server          | LoadBalancer
 | server.service.externalPort       | The external port for the Data Flow server         | 80
