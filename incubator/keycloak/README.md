@@ -38,7 +38,7 @@ $ helm delete keycloak
 
 ## Configuration
 
-The following tables lists the configurable parameters of the Keycloak chart and their default values.
+The following table lists the configurable parameters of the Keycloak chart and their default values.
 
 Parameter | Description | Default
 --- | --- | ---
