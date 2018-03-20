@@ -105,6 +105,7 @@ The following tables lists the configurable parameters of the Traefik chart and 
 | `debug.enabled`                 | Turn on/off Traefik's debug mode. Enabling it will override the logLevel to `DEBUG` and provide `/debug/vars` endpoint that allows Go runtime stats to be inspected, such as number of Goroutines and memory stats | `false`                                   |
 | `ssl.enabled`                   | Whether to enable HTTPS                                              | `false`                                   |
 | `ssl.enforced`                  | Whether to redirect HTTP requests to HTTPS                           | `false`                                   |
+| `ssl.insecureSkipVerify`        | Whether to verify certs on SSL connections                           | `false`                                   |
 | `ssl.defaultCert`               | Base64 encoded default certificate                                    | A self-signed certificate                 |
 | `ssl.defaultKey`                | Base64 encoded private key for the certificate above                 | The private key for the certificate above |
 | `acme.enabled`                  | Whether to use Let's Encrypt to obtain certificates                  | `false`                                   |
