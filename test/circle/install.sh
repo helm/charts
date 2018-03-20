@@ -36,10 +36,6 @@ sudo pip install yamllint==1.8.1
 # Pinning to a version for consistency
 sudo pip install yamale==1.7.0
 
-# Install a yq bash yaml cli tool
-# Pinning to a version for consistency
-sudo pip install yq==2.1.1
-
 # Install YAML Command line reader
 wget https://github.com/mikefarah/yaml/releases/download/1.13.1/yaml_linux_amd64
 chmod +x yaml_linux_amd64
