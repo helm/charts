@@ -1,0 +1,2 @@
+envs:
+- "{ name: NODE_NAME, valueFrom: { fieldRef: { fieldPath: spec.nodeName } } }"

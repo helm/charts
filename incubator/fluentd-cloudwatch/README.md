@@ -62,7 +62,7 @@ The following tables lists the configurable parameters of the Fluentd Cloudwatch
 | `rbac.create`                   | If true, create & use RBAC resources       | `false`                                                    |
 | `rbac.serviceAccountName`       | existing ServiceAccount to use (ignored if rbac.create=true) | `default`                                |
 | `tolerations`                   | Add tolerations                            | `[]`                                                       |
-| `envs`                          | Add pod environment variables              | `[]`
+| `envs`                          | Add pod environment variables (must be specified as a single line object)             | `[]`
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
