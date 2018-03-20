@@ -17,12 +17,6 @@ resources:
     cpu: 100m
     memory: 200Mi
 
-## Add tolerations if specified
-# tolerations:
-#   - key: node-role.kubernetes.io/master
-#     operator: Exists
-#     effect: NoSchedule
-
 elasticsearch:
   host: 'elasticsearch-client'
   port: 9200
@@ -38,6 +32,15 @@ serviceAccount:
   # The name of the ServiceAccount to use.
   # If not set and create is true, a name is generated using the fullname template
   name:
+  
+annotations: {}
+  # prometheus.io/scrape: "true"
+  # prometheus.io/port: "24231"
+
+tolerations: {}
+  # - key: node-role.kubernetes.io/master
+  #   operator: Exists
+  #   effect: NoSchedule
 
 configMaps:
   output.conf: |
