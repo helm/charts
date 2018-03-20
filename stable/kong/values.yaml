@@ -73,7 +73,7 @@ livenessProbe:
     scheme: HTTPS
   initialDelaySeconds: 180
   timeoutSeconds: 5
-  periodSeconds: 5
+  periodSeconds: 30
   successThreshold: 1
   failureThreshold: 5
 
