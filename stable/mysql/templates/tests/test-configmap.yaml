@@ -11,7 +11,7 @@ data:
   run.sh: |-
     {{- if .Values.ssl.enabled }}
     @test "Testing SSL MySQL Connection" {
-      mysql --host={{ template "mysql.fullname" . }} --port={{ .Values.service.port }} --ssl-ca=/ssl/ca.pem --ssl-cert=/ssl/server-cert.pem --ssl-key=ssl/server-key.pem -u root -p{{ .Values.mysqlRootPassword }}
+      mysql --host={{ template "mysql.fullname" . }} --port={{ .Values.service.port }} --ssl-cert=/ssl/server-cert.pem --ssl-key=ssl/server-key.pem -u root -p{{ .Values.mysqlRootPassword }}
     }
     {{- else }}
     @test "Testing MySQL Connection" {
