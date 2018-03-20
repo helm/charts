@@ -177,7 +177,8 @@ Include the secret's name, along with the desired hostnames, in the Artifactory 
     ##
     hosts:
       - artifactory.domain.com
-
+    annotations:
+      kubernetes.io/tls-acme: "true"
     ## Artifactory Ingress TLS configuration
     ## Secrets must be manually created in the namespace
     ##
