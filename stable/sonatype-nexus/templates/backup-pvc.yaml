@@ -5,6 +5,10 @@ metadata:
   name: {{ template "nexus.fullname" . }}-backup
   labels:
 {{ include "nexus.labels" . | indent 4 }}
+{{- if .Values.nexusBackup.persistence.annotations }}
+  annotations:
+{{ toYaml .Values.nexusBackup.persistence.annotations | indent 4 }}
+{{- end }}
 spec:
   accessModes:
     - {{ .Values.nexusBackup.persistence.accessMode }}

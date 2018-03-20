@@ -53,6 +53,8 @@ persistence:
   ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
   ##   GKE, AWS & OpenStack)
   ##
+  # annotations:
+  #  "helm.sh/resource-policy": keep
   # storageClass: "-"
   storageSize: 8Gi
 
@@ -65,6 +67,8 @@ nexusBackup:
   nexusAdminPassword: "admin123"
   persistence:
     enabled: true
+    # annotations:
+    #  "helm.sh/resource-policy": keep
     accessMode: ReadWriteOnce
     # See comment above for information on setting the backup storageClass
     # storageClass: "-"

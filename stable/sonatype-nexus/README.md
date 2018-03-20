@@ -83,6 +83,7 @@ The following table lists the configurable parameters of the Nexus chart and the
 | `persistence.accessMode`                    | ReadWriteOnce or ReadOnly           | `ReadWriteOnce`                         |
 | `persistence.storageClass`                  | Storage class of Nexus PVC          | `nil`                                   |
 | `persistence.storageSize`                   | Size of Nexus data volume           | `8Gi`                                   |
+| `persistence.annotations`                   | Persistent Volume annotations       | `{}`
 | `nexusBackup.imageName`                     | Nexus backup image                  | `quay.io/travelaudience/docker-nexus-backup` |
 | `nexusBackup.imageTag`                      | Nexus backup image version          | `1.2.0`                                 |
 | `nexusBackup.imagePullPolicy`               | Backup image pull policy            | `IfNotPresent`                          |
@@ -92,6 +93,7 @@ The following table lists the configurable parameters of the Nexus chart and the
 | `nexusBackup.persistence.accessMode`        | ReadWriteOnce or ReadOnly           | `ReadWriteOnce`                         |
 | `nexusBackup.persistence.storageClass`      | Storage class of Nexus backup PVC   | `nil`                                   |
 | `nexusBackup.persistence.storageSize`       | Size of Nexus backup data volume    | `8Gi`                                   |
+| `nexusBackup.persistence.annotations`       | PV annotations for backup.          | `{}`
 | `ingress.enabled`                           | Create an ingress for Nexus         | `true`                                  |
 | `ingress.annotations`                       | Annotations to enhance ingress configuration  | `{}`                          |
 | `ingress.tls.enabled`                       | Enable TLS                          | `false`                                 |
