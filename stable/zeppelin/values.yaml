@@ -14,4 +14,3 @@ spark:
   driverMemory: 1g
   executorMemory: 1g
   numExecutors: 2
-  
