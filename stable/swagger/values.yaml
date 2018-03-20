@@ -9,8 +9,6 @@ env:
 # External dependencies, used for enhanced authentication
 nginx-ingress:
   enabled: true
-cert-manager:
-  enabled: true
 oauth2-proxy:
   enabled: true
 

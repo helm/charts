@@ -30,7 +30,6 @@ The following tables lists the configurable parameters of the Swagger UI chart a
 |------------------------------------------|---------------------------------------------|---------------------------------|
 | `env.API_URL`                            | URL to fetch configuration document from.   | `nil`                           |
 | `nginx-ingress.enabled`                  | Install dependency: nginx-ingress           | `false`                         |
-| `cert-manager.enabled`                   | Install dependency: cert-manager            | `false`                         |
 | `oauth2-proxy.enabled`                   | Install dependency: oauth2-proxy            | `false`                         |
 | `image.repository`                       | Swagger ui image                            | `swaggerapi/swagger-ui`         |
 | `image.tag`                              | Swagger ui image tag                        | `v3.9.3`                        |
@@ -71,7 +70,6 @@ nginx-ingress:
   enabled: true
 
 cert-manager:
-  enabled: true
   ingressShim:
     extraArgs:
     - --default-issuer-name=letsencrypt-prod
@@ -98,9 +96,6 @@ ingress:
 
 nginx-ingress:
   enabled: true
-
-cert-manager:
-  enabled: true
 ```
 
 **Oauth**
@@ -114,9 +109,6 @@ ingress:
     enabled: true
 
 nginx-ingress:
-  enabled: true
-
-cert-manager:
   enabled: true
 
 oauth2-proxy:
