@@ -15,6 +15,9 @@ metadata:
       {{ $key }}: {{ $value | quote }}
     {{- end }}
 spec:
+  backend:
+    serviceName: {{ $serviceName }}
+    servicePort: {{ $servicePort }}
 {{- if .Values.ingress.hosts }}
   rules:
   {{- range $host := .Values.ingress.hosts }}
@@ -26,11 +29,7 @@ spec:
             serviceName: {{ $serviceName }}
             servicePort: {{ $servicePort }}
   {{- end -}}
-{{- else }}
-  backend:
-    serviceName: {{ $serviceName }}
-    servicePort: {{ $servicePort }}
-  {{- end -}}
+{{- end -}}
   {{- if .Values.ingress.tls }}
   tls:
 {{ toYaml .Values.ingress.tls | indent 4 }}

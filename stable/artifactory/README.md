@@ -151,6 +151,9 @@ To get Helm to create an ingress object with a hostname, add these two lines to 
 helm install --name artifactory \
   --set ingress.enabled=true \
   --set ingress.hosts[0]="artifactory.company.com" \
+  --set artifactory.service.type=NodePort \
+  --set nginx.enabled=false \
+  stable/artifactory
 ```
 
 If your cluster allows automatic creation/retrieval of TLS certificates (e.g. [kube-lego](https://github.com/jetstack/kube-lego)), please refer to the documentation for that mechanism.
