@@ -3,7 +3,7 @@
 Swagger UI is a collection of HTML, Javascript, and CSS assets that dynamically generate beautiful documentation from a Swagger-compliant API.
 
 
-This chart allows for setting the Swagger UI behind basic auth or oauth, by taking advantage of the [`nginx-ingress`](https://github.com/kubernetes/charts/tree/master/stable/nginx-ingress) and [`oath-proxy`](https://github.com/kubernetes/charts/tree/master/incubator/oauth-proxy) charts.
+This chart allows for setting the Swagger UI behind basic auth or oauth, by taking advantage of the [`nginx-ingress`](https://github.com/kubernetes/charts/tree/master/stable/nginx-ingress) and [`oauth2-proxy`](https://github.com/kubernetes/charts/tree/master/stable/oauth2-proxy) charts.
 
 
 ### Prerequisites
@@ -31,7 +31,7 @@ The following tables lists the configurable parameters of the Swagger UI chart a
 | `env.API_URL`                            | URL to fetch configuration document from.   | `nil`                           |
 | `nginx-ingress.enabled`                  | Install dependency: nginx-ingress           | `false`                         |
 | `cert-manager.enabled`                   | Install dependency: cert-manager            | `false`                         |
-| `oauth-proxy.enabled`                    | Install dependency: oauth-proxy             | `false`                         |
+| `oauth2-proxy.enabled`                   | Install dependency: oauth2-proxy            | `false`                         |
 | `image.repository`                       | Swagger ui image                            | `swaggerapi/swagger-ui`         |
 | `image.tag`                              | Swagger ui image tag                        | `v3.9.3`                        |
 | `image.pullPolicy`                       | Image pull policy                           | `IfNotPresent`                  |
@@ -119,7 +119,7 @@ nginx-ingress:
 cert-manager:
   enabled: true
 
-oauth-proxy:
+oauth2-proxy:
   enabled: true
   config:
     # OAuth client ID

@@ -11,7 +11,7 @@ nginx-ingress:
   enabled: true
 cert-manager:
   enabled: true
-oauth-proxy:
+oauth2-proxy:
   enabled: true
 
 image:
@@ -55,7 +55,7 @@ ingress:
       nginx.ingress.kubernetes.io/auth-realm: "Authentication Required"
 
 
-  ##  When using nginx-ingress & cert-manager & oauth-proxy, use these values
+  ##  When using nginx-ingress & cert-manager & oauth2-proxy, use these values
   oauth:
     enabled: false
     oauthAnnotations:
