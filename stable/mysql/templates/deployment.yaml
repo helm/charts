@@ -99,11 +99,20 @@ spec:
         - name: configurations
           mountPath: /etc/mysql/conf.d
         {{- end }}
+        {{- if .Values.ssl.enabled }}
+        - name: certs
+          mountPath: /ssl
+        {{- end }}
       volumes:
       {{- if .Values.configurationFiles }}
       - name: configurations
         configMap:
           name: {{ template "mysql.fullname" . }}
+      {{- end }}
+      {{- if .Values.ssl.enabled }}
+      - name: certs
+        secret:
+          secretName: {{ template "mysql.fullname" . }}-certs
       {{- end }}
       - name: data
       {{- if .Values.persistence.enabled }}
