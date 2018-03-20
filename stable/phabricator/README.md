@@ -1,6 +1,6 @@
 # Phabricator
 
-[Phabricator](https://www.phacility.com) is a collection of open source web applications that help software companies build better software. Phabricator is built by developers for developers. Every feature is optimized around developer efficiency for however you like to work. Code Quality starts with effective collaboration between team members.
+[Phabricator](https://www.phacility.com) is a collection of open source web applications that help software companies build better software. Phabricator is built by developers for developers. Every feature is optimized around developer efficiency for however you like to work. Code Quality starts with an effective collaboration between team members.
 
 ## TL;DR;
 
@@ -43,7 +43,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the Phabricator chart and their default values.
+The following table lists the configurable parameters of the Phabricator chart and their default values.
 
 |               Parameter                |                 Description                  |                         Default                          |
 |----------------------------------------|----------------------------------------------|----------------------------------------------------------|
@@ -78,8 +78,6 @@ The following tables lists the configurable parameters of the Phabricator chart 
 | `ingress.tls.secretName`               | tls secret name                              | `nil`                                                    |
 | `ingress.tls.hosts`                    | hostnames the secret applies to              | `nil`                                                    |
 
-
-
 The above parameters map to the env variables defined in [bitnami/phabricator](http://github.com/bitnami/bitnami-docker-phabricator). For more information please refer to the [bitnami/phabricator](http://github.com/bitnami/bitnami-docker-phabricator) image documentation.
 
 > **Note**:
@@ -104,7 +102,7 @@ $ helm install --name my-release \
     stable/phabricator
 ```
 
-The above command sets the Phabricator administrator account username and password to `admin` and `password` respectively. Additionally it sets the MariaDB `root` user password to `secretpassword`.
+The above command sets the Phabricator administrator account username and password to `admin` and `password` respectively. Additionally, it sets the MariaDB `root` user password to `secretpassword`.
 
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 
@@ -123,7 +121,7 @@ See the [Configuration](#configuration) section to configure the PVC or to disab
 
 ## Ingress With Reverse Proxy And Kube Lego
 
-You can define a custom ingress following the example config in values.yaml 
+You can define a custom ingress following the example config in values.yaml
 
 `helm install stable/phabricator/ --name my-release --set phabricatorHost=example.com`
 
@@ -133,4 +131,3 @@ Everything looks great but requests over https will cause asset requests to fail
 export POD_NAME=$(kubectl get pods -l "app=my-release-phabricator" -o jsonpath="{.items[0].metadata.name}")
 kubectl exec $POD_NAME /opt/bitnami/phabricator/bin/config set phabricator.base-uri https://example.com
 ```
-

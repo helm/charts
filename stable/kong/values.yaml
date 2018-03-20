@@ -3,7 +3,7 @@
 
 image:
   repository: kong
-  tag: 0.12.2
+  tag: 0.12.3
   pullPolicy: IfNotPresent
 
 # Specify Kong admin and proxy services configurations
@@ -59,9 +59,9 @@ readinessProbe:
     path: "/status"
     port: admin
     scheme: HTTPS
-  initialDelaySeconds: 300
-  timeoutSeconds: 60
-  periodSeconds: 60
+  initialDelaySeconds: 120
+  timeoutSeconds: 1
+  periodSeconds: 10
   successThreshold: 1
   failureThreshold: 5
 
@@ -71,9 +71,9 @@ livenessProbe:
     path: "/status"
     port: admin
     scheme: HTTPS
-  initialDelaySeconds: 300
-  timeoutSeconds: 60
-  periodSeconds: 60
+  initialDelaySeconds: 180
+  timeoutSeconds: 5
+  periodSeconds: 30
   successThreshold: 1
   failureThreshold: 5
 
