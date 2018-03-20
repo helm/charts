@@ -71,6 +71,10 @@ The following table lists the configurable parameters of the MySQL chart and the
 | `persistence.subPath`                | Subdirectory of the volume to mount       | `nil`                                                |
 | `resources`                          | CPU/Memory resource requests/limits       | Memory: `256Mi`, CPU: `100m`                         |
 | `configurationFiles`                 | List of mysql configuration files         | `nil`                                                |
+| `ssl.enabled`                        | Setup and use SSL for MySQL connections   | `false`                                              |
+| `ssl.ca`                             | CA certificate                            | `nil`                                                |
+| `ssl.cert`                           | Server certificate (public key)           | `nil`                                                |
+| `ssl.key`                            | Server key (private key)                  | `nil`                                                |
 
 Some of the parameters above map to the env variables defined in the [MySQL DockerHub image](https://hub.docker.com/_/mysql/).
 
