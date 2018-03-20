@@ -16,7 +16,7 @@ Learn more: https://github.com/frodenas/stackdriver_exporter
 ## TL;DR;
 
 ```bash
-$ helm install stable/stackdriver-exporter --set stackdriver.project_id=google-project-name
+$ helm install stable/stackdriver-exporter --set stackdriver.projectId=google-project-name
 ```
 
 ## Introduction
@@ -34,7 +34,7 @@ package manager.
 To install the chart with the release name `my-release`:
 
 ```bash
-$ helm install --name my-release stable/stackdriver-exporter --set stackdriver.project_id=google-project-name
+$ helm install --name my-release stable/stackdriver-exporter --set stackdriver.projectId=google-project-name
 ```
 
 The command deploys Stackdriver-Exporter on the Kubernetes cluster using the
@@ -66,11 +66,11 @@ Parameter                           | Description                          | Def
 `resources`                         | resource requests & limits           | `{}`
 `service.type`                      | type of service to create            | `ClusterIP`
 `service.httpPort`                  | port for the http service            | `9255`
-`stackdriver.project_id`            | GCP Project ID                       | ``
-`stackdriver.metrics.type_prefixes` | Comma separated Metric Type prefixes | ``
+`stackdriver.projectId`             | GCP Project ID                       | ``
+`stackdriver.metrics.typePrefixes`  | Comma separated Metric Type prefixes | ``
 `stackdriver.metrics.interval`      | Metrics interval to request from GCP | `5m`
 `stackdriver.metrics.offset`        | Offset (into the past) to request    | `0s`
-`web.listen_address`                | Port to listen on                    | `9255`
+`web.listenAddress`                 | Port to listen on                    | `9255`
 `web.path`                          | Path under which to expose metrics   | `/metrics`
 
 Specify each parameter using the `--set key=value[,key=value]` argument to
@@ -91,7 +91,7 @@ provided while installing the chart. For example,
 $ helm install --name my-release -f values.yaml stable/stackdriver-exporter
 ```
 
-> **Tip**: You can use the default [values.yaml](values.yaml), as long as you provide a value for stackdriver.project_id
+> **Tip**: You can use the default [values.yaml](values.yaml), as long as you provide a value for stackdriver.projectId
 
 ## Google Storage Metrics
 

@@ -1,13 +1,13 @@
-{{- if eq (printf "%s" .Values.stackdriver.project_id) "FALSE" }}
+{{- if eq (printf "%s" .Values.stackdriver.projectId) "FALSE" }}
 ######################################################################################
-####   ERROR: You did not set stackdriver.project_id in your `helm install' call. ####
+####   ERROR: You did not set stackdriver.projectId in your `helm install' call. ####
 ######################################################################################
 
 This deployment will be incomplete until you set an appropriate Google Cloud
 Project ID so we know where to gather metrics from.  You can do this by:
 
     helm upgrade {{ .Release.Name }} \
-        --set stackdriver.project_id=project-id stable/stackdriver-exporter
+        --set stackdriver.projectId=project-id stable/stackdriver-exporter
 {{- end }}
 
 1. Get the application URL by running these commands:

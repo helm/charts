@@ -32,15 +32,15 @@ spec:
           command: ["stackdriver_exporter"]
           env:
             - name: STACKDRIVER_EXPORTER_GOOGLE_PROJECT_ID
-              value: {{ .Values.stackdriver.project_id | quote }}
+              value: {{ .Values.stackdriver.projectId | quote }}
             - name: STACKDRIVER_EXPORTER_MONITORING_METRICS_TYPE_PREFIXES
-              value: {{ .Values.stackdriver.metrics.type_prefixes | quote }}
+              value: {{ .Values.stackdriver.metrics.typePrefixes | quote }}
             - name: STACKDRIVER_EXPORTER_MONITORING_METRICS_INTERVAL
               value: {{ .Values.stackdriver.metrics.interval | quote }}
             - name: STACKDRIVER_EXPORTER_MONITORING_METRICS_OFFSET
               value: {{ .Values.stackdriver.metrics.offset | quote }}
             - name: STACKDRIVER_EXPORTER_WEB_LISTEN_ADDRESS
-              value: {{ .Values.web.listen_address | quote }}
+              value: {{ .Values.web.listenAddress | quote }}
             - name: STACKDRIVER_EXPORTER_WEB_TELEMETRY_PATH
               value: {{ .Values.web.path | quote }}
           resources:
