@@ -11,7 +11,7 @@ These are contained within `roles/monitoring.viewer`.  If you're using legacy
 access scopes, then you must have
 `https://www.googleapis.com/auth/monitoring.read`.
 
-Learn more: https://github.com/justwatchcom/stackdriver_exporter 
+Learn more: https://github.com/frodenas/stackdriver_exporter
 
 ## TL;DR;
 
