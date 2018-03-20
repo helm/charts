@@ -45,7 +45,7 @@ artifactory:
   name: artifactory-ha
   image:
     repository: "docker.bintray.io/jfrog/artifactory-pro"
-    version: 5.8.4
+    version: 5.9.1
     pullPolicy: IfNotPresent
   ## Artifactory requires a unique master key
   ## You can generate one with the command:
@@ -71,6 +71,14 @@ artifactory:
     enabled: true
     accessMode: ReadWriteOnce
     size: 200Gi
+    ## artifactory data Persistent Volume Storage Class
+    ## If defined, storageClassName: <storageClass>
+    ## If set to "-", storageClassName: "", which disables dynamic provisioning
+    ## If undefined (the default) or set to null, no storageClassName spec is
+    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+    ##   GKE, AWS & OpenStack)
+    ##
+    # storageClass: "-"
 
     ## Set the persistence storage type. This will apply the matching binarystore.xml to Artifactory config
     ## Supported types are:
@@ -164,7 +172,7 @@ nginx:
   replicaCount: 1
   image:
     repository: "docker.bintray.io/jfrog/nginx-artifactory-pro"
-    version: 5.8.4
+    version: 5.9.1
     pullPolicy: IfNotPresent
   service:
     ## For minikube, set this to NodePort, elsewhere use LoadBalancer

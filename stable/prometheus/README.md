@@ -132,6 +132,7 @@ Parameter | Description | Default
 `configmapReload.image.tag` | configmap-reload container image tag | `v0.1`
 `configmapReload.image.pullPolicy` | configmap-reload container image pull policy | `IfNotPresent`
 `configmapReload.resources` | configmap-reload pod resource requests & limits | `{}`
+`initChownData.enabled  | If false, don't reset data ownership at startup | true
 `initChownData.name` | init-chown-data container name | `init-chown-data`
 `initChownData.image.repository` | init-chown-data container image repository | `busybox`
 `initChownData.image.tag` | init-chown-data container image tag | `latest`
@@ -209,6 +210,7 @@ Parameter | Description | Default
 `server.baseURL` | The external url at which the server can be accessed | ``
 `server.extraHostPathMounts` | Additional Prometheus server hostPath mounts | `[]`
 `server.extraConfigmapMounts` | Additional Prometheus server configMap mounts | `[]`
+`server.extraSecretMounts` | Additional Prometheus server Secret mounts | `[]`
 `server.configMapOverrideName` | Prometheus server ConfigMap override where full-name is `{{.Release.Name}}-{{.Values.server.configMapOverrideName}}` and setting this value will prevent the default server ConfigMap from being generated | `""`
 `server.ingress.enabled` | If true, Prometheus server Ingress will be created | `false`
 `server.ingress.annotations` | Prometheus server Ingress annotations | `[]`

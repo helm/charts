@@ -31,3 +31,5 @@ ClusterDomain: "cluster.local"
 NetworkPolicy:
   Enabled: false
   AllowExternal: true
+Service:
+  type: ClusterIP
