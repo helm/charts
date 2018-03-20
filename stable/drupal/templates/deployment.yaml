@@ -84,6 +84,9 @@ spec:
         - name: apache-data
           mountPath: {{ .Values.volumeMounts.apache.mountPath }}
         {{- end }}
+{{- if .Values.sidecarContainers }}
+{{ toYaml .Values.sidecarContainers | indent 6}}
+{{- end }}
       {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
 {{ toYaml .Values.imagePullSecrets | indent 8 }}
