@@ -39,6 +39,16 @@ persistence:
   accessMode: ReadWriteOnce
   size: 10Gi
 
+metrics:
+  enabled: false
+  image: prom/mysqld-exporter
+  imageTag: v0.10.0
+  imagePullPolicy: IfNotPresent
+  resources: {}
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "9104"
+
 resources:
   requests:
     cpu: 100m
