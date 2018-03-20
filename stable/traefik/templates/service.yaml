@@ -20,6 +20,9 @@ metadata:
   {{- end }}
 spec:
   type: {{ .Values.serviceType }}
+  {{- if .Values.externalTrafficPolicy }}
+  externalTrafficPolicy: {{ .Values.externalTrafficPolicy }}
+  {{- end }}
   {{- if .Values.loadBalancerIP }}
   loadBalancerIP: {{ .Values.loadBalancerIP }}
   {{- end }}
