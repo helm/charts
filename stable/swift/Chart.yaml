@@ -1,7 +1,7 @@
 apiVersion: v1
 description: 'swift by AppsCode - Ajax friendly Helm Tiller Proxy'
 name: swift
-version: 0.6.0
+version: 0.6.1
 appVersion: 0.7.3
 home: https://github.com/appscode/swift
 icon: https://cdn.appscode.com/images/icon/swift.png
