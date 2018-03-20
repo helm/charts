@@ -87,6 +87,8 @@ nginx:
     ## Example: helm install ... --set nginx.service.loadBalancerSourceRanges='{10.10.10.5/32,10.11.10.5/32}'
     loadBalancerSourceRanges: []
     annotations: {}
+    #Provide static ip address
+    loadBalancerIP:
   externalPortHttp: 80
   internalPortHttp: 80
   externalPortHttps: 443
