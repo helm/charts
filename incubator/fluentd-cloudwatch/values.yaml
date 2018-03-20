@@ -38,7 +38,12 @@ rbac:
 
   ## Ignored if rbac.create is true
   serviceAccountName: default
-
+# Add extra environment variables if specified
+env: []
+# - name: NODE_NAME
+#   valueFrom:
+#     fieldRef:
+#       fieldPath: spec.nodeName
 fluentdConfig: |
   <match fluent.**>
     type null

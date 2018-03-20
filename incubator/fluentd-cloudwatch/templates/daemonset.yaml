@@ -30,6 +30,7 @@ spec:
           value: {{ .Values.awsRegion }}
         - name: LOG_GROUP_NAME
           value: {{ .Values.logGroupName }}
+{{ toYaml .Values.envs | indent 10 }}
 {{- if not .Values.awsRole }}
         - name: AWS_ACCESS_KEY_ID
           valueFrom:
