@@ -30,7 +30,7 @@ spec:
         {{- end }}
       - name: pachyderm-storage-secret
         secret:
-          secretName: {{ template "pachd.fullname" . }}-storage
+          secretName: pachyderm-storage-secret
       containers:
       - name: {{ template "pachd.fullname" . }}
         image: '{{ .Values.pachd.image.repository }}:{{ .Values.pachd.image.tag }}'
