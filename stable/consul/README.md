@@ -22,7 +22,7 @@ $ helm install --name my-release stable/consul
 
 ## Configuration
 
-The following tables lists the configurable parameters of the consul chart and their default values.
+The following table lists the configurable parameters of the consul chart and their default values.
 
 | Parameter               | Description                           | Default                                                    |
 | ----------------------- | ----------------------------------    | ---------------------------------------------------------- |
