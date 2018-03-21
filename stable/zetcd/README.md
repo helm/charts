@@ -43,7 +43,7 @@ Work around options are documented [here](https://github.com/coreos/etcd-operato
 
 ## Configuration
 
-The following tables lists the configurable parameters of the zetcd chart and their default values. Check the etcd-operator chart for additional configuration options
+The following table lists the configurable parameters of the zetcd chart and their default values. Check the etcd-operator chart for additional configuration options
 
 | Parameter                                         | Description                                                          | Default                                        |
 | ------------------------------------------------- | -------------------------------------------------------------------- | ---------------------------------------------- |
