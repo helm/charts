@@ -20,4 +20,4 @@ To connect to your database:
     kubectl run {{ template "mariadb.fullname" . }}-client --rm --tty -i {{ if .Values.usePassword }}--env MARIADB_ROOT_PASSWORD=$MARIADB_ROOT_PASSWORD{{ end }} --image bitnami/mariadb --command -- bash
 
 2. Connect using the mysql cli, then provide your password:
-    mysql -h {{ template "mariadb.fullname" . }} {{- if .Values.usePassword }} -p$MARIADB_ROOT_PASSWORD{{ end }}
+    mysql -h {{ template "mariadb.fullname" . }} -uroot {{- if .Values.usePassword }} -p$MARIADB_ROOT_PASSWORD{{ end }}

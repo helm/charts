@@ -47,7 +47,7 @@ serviceAccounts:
 controller:
   image:
     repository: metallb/controller
-    tag: v0.4.3
+    tag: v0.4.6
     pullPolicy: IfNotPresent
   resources:
     # limits:
@@ -59,7 +59,7 @@ controller:
 speaker:
   image:
     repository: metallb/speaker
-    tag: v0.4.3
+    tag: v0.4.6
     pullPolicy: IfNotPresent
   resources:
     # limits:
