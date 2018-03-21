@@ -1,3 +1,4 @@
+{{- if .Values.nginx.enabled -}}
 {{- $serviceName := include "artifactory-ha.fullname" . -}}
 {{- $servicePort := .Values.artifactory.externalPort -}}
 apiVersion: apps/v1beta2
@@ -54,3 +55,4 @@ spec:
         - containerPort: 443
         resources:
 {{ toYaml .Values.nginx.resources | indent 10 }}
+{{- end }}

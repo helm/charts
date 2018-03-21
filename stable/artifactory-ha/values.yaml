@@ -9,6 +9,20 @@ initContainerImage: "alpine:3.6"
 # For supporting pulling from private registries
 imagePullSecrets:
 
+ingress:
+  enabled: false
+  # Used to create an Ingress record.
+  hosts:
+    - artifactory.domain.example
+  annotations:
+  # kubernetes.io/ingress.class: nginx
+  # kubernetes.io/tls-acme: "true"
+  tls:
+  # Secrets must be manually created in the namespace.
+  # - secretName: chart-example-tls
+  #   hosts:
+  #     - artifactory.domain.example
+
 # Database
 ## Configuration values for the postgresql dependency
 ## ref: https://github.com/kubernetes/charts/blob/master/stable/postgressql/README.md
@@ -168,6 +182,7 @@ artifactory:
 
 # Nginx
 nginx:
+  enabled: true
   name: nginx
   replicaCount: 1
   image:
