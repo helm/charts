@@ -77,7 +77,7 @@ Assuming you have an existing release of the prometheus chart, named `prometheus
 1. Deploy a new release of the chart with version 5.0+ using prometheus 2.x. In the values.yaml set the scrape config as usual, and also add the `prometheus-old` instance as a remote-read target.
 
    ```
-	  prometheus.yml: |
+	  prometheus.yml:
 	    ...
 	    remote_read:
 	    - url: http://prometheus-old/api/v1/read
@@ -109,7 +109,7 @@ Parameter | Description | Default
 `alertmanager.tolerations` | node taints to tolerate (requires Kubernetes >=1.6) | `[]`
 `alertmanager.persistentVolume.enabled` | If true, alertmanager will create a Persistent Volume Claim | `true`
 `alertmanager.persistentVolume.accessModes` | alertmanager data Persistent Volume access modes | `[ReadWriteOnce]`
-`alertmanager.persistentVolume.annotations` | Annotations for alertmanager Persistent Volume Claim` | `{}`
+`alertmanager.persistentVolume.annotations` | Annotations for alertmanager Persistent Volume Claim | `{}`
 `alertmanager.persistentVolume.existingClaim` | alertmanager data Persistent Volume existing claim name | `""`
 `alertmanager.persistentVolume.mountPath` | alertmanager data Persistent Volume mount root path | `/data`
 `alertmanager.persistentVolume.size` | alertmanager data Persistent Volume size | `2Gi`
@@ -126,12 +126,13 @@ Parameter | Description | Default
 `alertmanager.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
 `alertmanager.service.servicePort` | alertmanager service port | `80`
 `alertmanager.service.type` | type of alertmanager service to create | `ClusterIP`
-`alertmanagerFiles` | alertmanager ConfigMap entries | `alertmanager.yml`
+`alertmanagerFiles.alertmanager.yml` | Prometheus alertmanager configuration | example configuration
 `configmapReload.name` | configmap-reload container name | `configmap-reload`
 `configmapReload.image.repository` | configmap-reload container image repository | `jimmidyson/configmap-reload`
 `configmapReload.image.tag` | configmap-reload container image tag | `v0.1`
 `configmapReload.image.pullPolicy` | configmap-reload container image pull policy | `IfNotPresent`
 `configmapReload.resources` | configmap-reload pod resource requests & limits | `{}`
+`initChownData.enabled`  | If false, don't reset data ownership at startup | true
 `initChownData.name` | init-chown-data container name | `init-chown-data`
 `initChownData.image.repository` | init-chown-data container image repository | `busybox`
 `initChownData.image.tag` | init-chown-data container image tag | `latest`
@@ -199,7 +200,7 @@ Parameter | Description | Default
 `pushgateway.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
 `pushgateway.service.servicePort` | pushgateway service port | `9091`
 `pushgateway.service.type` | type of pushgateway service to create | `ClusterIP`
-`rbac.create` | If true, create & use RBAC resources | `false`
+`rbac.create` | If true, create & use RBAC resources | `true`
 `server.name` | Prometheus server container name | `server`
 `server.image.repository` | Prometheus server container image repository | `prom/prometheus`
 `server.image.tag` | Prometheus server container image tag | `v2.1.0`
@@ -209,6 +210,7 @@ Parameter | Description | Default
 `server.baseURL` | The external url at which the server can be accessed | ``
 `server.extraHostPathMounts` | Additional Prometheus server hostPath mounts | `[]`
 `server.extraConfigmapMounts` | Additional Prometheus server configMap mounts | `[]`
+`server.extraSecretMounts` | Additional Prometheus server Secret mounts | `[]`
 `server.configMapOverrideName` | Prometheus server ConfigMap override where full-name is `{{.Release.Name}}-{{.Values.server.configMapOverrideName}}` and setting this value will prevent the default server ConfigMap from being generated | `""`
 `server.ingress.enabled` | If true, Prometheus server Ingress will be created | `false`
 `server.ingress.annotations` | Prometheus server Ingress annotations | `[]`
@@ -258,6 +260,13 @@ $ helm install stable/prometheus --name my-release -f values.yaml
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
+### RBAC Configuration
+Roles and RoleBindings resources will be created automatically for each service
+
+To manually setup RBAC you need to set the parameter `rbac.create=false` and specify the service account to be used for each service by setting the parameters: `alertmanager.serviceAccountName`, `kubeStateMetrics.serviceAccountName`, `nodeExporter.serviceAccountName`, `server.serviceAccountName`.
+
+> **Tip**: You can refer to the default `*-clusterrole.yaml` and `*-clusterrolebinding.yaml` files in [templates](templates/) to customize your own.
+
 ### ConfigMap Files
 AlertManager is configured through [alertmanager.yml](https://prometheus.io/docs/alerting/configuration/). This file (and any others listed in `alertmanagerFiles`) will be mounted into the `alertmanager` pod.
 
@@ -274,7 +283,7 @@ kubectl create secret tls prometheus-server-tls --cert=path/to/tls.cert --key=pa
 
 Include the secret's name, along with the desired hostnames, in the alertmanager/server Ingress TLS section of your custom `values.yaml` file:
 
-```
+```yaml
 server:
   ingress:
     ## If true, Prometheus server Ingress will be created

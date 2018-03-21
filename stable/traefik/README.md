@@ -81,12 +81,13 @@ release.
 
 ## Configuration
 
-The following tables lists the configurable parameters of the Traefik chart and their default values.
+The following table lists the configurable parameters of the Traefik chart and their default values.
 
 | Parameter                       | Description                                                          | Default                                   |
 | ------------------------------- | -------------------------------------------------------------------- | ----------------------------------------- |
+| `fullnameOverride`              | Override the full resource names                                     | `{release-name}-traefik (or traefik if release-name is traefik`|
 | `image`                         | Traefik image name                                                   | `traefik`                                 |
-| `imageTag`                      | The version of the official Traefik image to use                     | `1.4.5`                                  |
+| `imageTag`                      | The version of the official Traefik image to use                     | `1.5.4`                                  |
 | `serviceType`                   | A valid Kubernetes service type                                      | `LoadBalancer`                            |
 | `loadBalancerIP`                | An available static IP you have reserved on your cloud platform      | None                                      |
 | `loadBalancerSourceRanges`      | list of IP CIDRs allowed access to load balancer (if supported)      | None                                      |
@@ -97,16 +98,18 @@ The following tables lists the configurable parameters of the Traefik chart and 
 | `memoryLimit`                   | Memory limit per Traefik pod                                         | `30Mi`                                    |
 | `rbac.enabled`                  | Whether to enable RBAC with a specific cluster role and binding for Traefik | `false`                            |
 | `nodeSelector`                  | Node labels for pod assignment                                       | `{}`                                      |
+| `affinity`                      | Affinity settings                                                    | `{}`                                      |
 | `tolerations`                   | List of node taints to tolerate                                      | `[]`                                      |
 | `proxyProtocol.enabled`         | Enable PROXY protocol support.                                       | `false`                                   |
 | `proxyProtocol.trustedIPs`      | List of proxy IPs (CIDR ranges) trusted to accurately convey the end-user IP. | `[]`                              |
 | `debug.enabled`                 | Turn on/off Traefik's debug mode. Enabling it will override the logLevel to `DEBUG` and provide `/debug/vars` endpoint that allows Go runtime stats to be inspected, such as number of Goroutines and memory stats | `false`                                   |
 | `ssl.enabled`                   | Whether to enable HTTPS                                              | `false`                                   |
 | `ssl.enforced`                  | Whether to redirect HTTP requests to HTTPS                           | `false`                                   |
+| `ssl.insecureSkipVerify`        | Whether to verify certs on SSL connections                           | `false`                                   |
 | `ssl.defaultCert`               | Base64 encoded default certificate                                    | A self-signed certificate                 |
 | `ssl.defaultKey`                | Base64 encoded private key for the certificate above                 | The private key for the certificate above |
 | `acme.enabled`                  | Whether to use Let's Encrypt to obtain certificates                  | `false`                                   |
-| `acme.challengeType`            | Type of ACME challenge to perform domain validation. `tls-sni-01` or `dns-01` | `tls-sni-01`                     |
+| `acme.challengeType`            | Type of ACME challenge to perform domain validation. `tls-sni-01`, `http-01` or `dns-01` | `tls-sni-01`                     |
 | `acme.dnsProvider.name`         | Which DNS provider to use. See [here](https://github.com/xenolf/lego/tree/master/providers/dns) for the list of possible values. | `nil`                                     |
 | `acme.dnsProvider.$name`        | The configuration environment variables (encoded as a secret) needed for the DNS provider to do DNS challenge. See [here](#example-aws-route-53). | `{}`                     |
 | `acme.email`                    | Email address to be used in certificates obtained from Let's Encrypt | `admin@example.com`                       |
@@ -115,6 +118,7 @@ The following tables lists the configurable parameters of the Traefik chart and 
 | `acme.persistence.enabled`      | Create a volume to store ACME certs (if ACME is enabled)             | `true`                                    |
 | `acme.persistence.storageClass` | Type of `StorageClass` to request-- will be cluster-specific         | `nil` (uses alpha storage class annotation) |
 | `acme.persistence.accessMode`   | `ReadWriteOnce` or `ReadOnly`                                        | `ReadWriteOnce`                           |
+| `acme.persistence.existingClaim`| An Existing PVC name                                                 | `nil`                                     |
 | `acme.persistence.size`         | Minimum size of the volume requested                                 | `1Gi`                                     |
 | `dashboard.enabled`             | Whether to enable the Traefik dashboard                              | `false`                                   |
 | `dashboard.domain`              | Domain for the Traefik dashboard                                     | `traefik.example.com`                     |
@@ -145,6 +149,7 @@ The following tables lists the configurable parameters of the Traefik chart and 
 | `deployment.hostPort.httpEnabled`      | Whether to enable hostPort binding to host for http.          | `false`                                   |
 | `deployment.hostPort.httpsEnabled`     | Whether to enable hostPort binding to host for https.         | `false`                                   |
 | `deployment.hostPort.dashboardEnabled` | Whether to enable hostPort binding to host for dashboard.     | `false`                                   |
+| `sendAnonymousUsage`            | Send anonymous usage statistics.                                     | `false`                                   |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
 

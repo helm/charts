@@ -75,8 +75,8 @@ The following tables lists the configurable parameters of the Minio chart and th
 | Parameter                  | Description                         | Default                                                 |
 |----------------------------|-------------------------------------|---------------------------------------------------------|
 | `image`                    | Minio image name                    | `minio/minio`                                           |
-| `imageTag`                 | Minio image tag. Possible values listed [here](https://hub.docker.com/r/minio/minio/tags/).| `RELEASE.2018-01-18T20-33-21Z`|
-| `imagePullPolicy`          | Image pull policy                   | `Always`                                                |
+| `imageTag`                 | Minio image tag. Possible values listed [here](https://hub.docker.com/r/minio/minio/tags/).| `RELEASE.2018-03-12T21-25-28Z`|
+| `imagePullPolicy`          | Image pull policy                   | `IfNotPresent`                                          |
 | `mode`                     | Minio server mode (`standalone`, `shared` or `distributed`)| `standalone`                     |
 | `replicas`                 | Number of nodes (applicable only for Minio distributed mode). Should be 4 <= x <= 16 | `4`    |
 | `accessKey`                | Default access key (5 to 20 characters) | `AKIAIOSFODNN7EXAMPLE`                              |
@@ -98,7 +98,8 @@ The following tables lists the configurable parameters of the Minio chart and th
 | `defaultBucket.enabled`    | If set to true, a bucket will be created after minio install | `false`                        |
 | `defaultBucket.name`       | Bucket name                         | `bucket`                                                |
 | `defaultBucket.policy`     | Bucket policy                       | `none`                                                  |
-| `defaultBucket.purge`      | Purge the bucket if already exists  | `false`                                                  |
+| `defaultBucket.purge`      | Purge the bucket if already exists  | `false`                                                 |
+| `azuregateway.enabled`     | Use minio as an [azure gateway](https://docs.minio.io/docs/minio-gateway-for-azure)| `false`  |
 
 Some of the parameters above map to the env variables defined in the [Minio DockerHub image](https://hub.docker.com/r/minio/minio/).
 
