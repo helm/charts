@@ -1,5 +1,4 @@
 {{ $user := .Values.securityContext.runAsUser }}
-{{ $group := .Values.securityContext.runAsGroup }}
 apiVersion: apps/v1beta2
 kind: StatefulSet
 metadata:
@@ -89,12 +88,14 @@ spec:
             - "sh"
           args:
             - "-c"
-            - "chown -R '{{ $user }}:{{ $group }}' /work-dir /data{{ if .Values.tls.enabled }} /ca{{ end }}{{ if .Values.auth.enabled }} /keydir{{ end }}"
+            - "chown -R '{{ $user }}:{{ $user }}' /work-dir /data{{ if .Values.tls.enabled }} /ca{{ end }}{{ if .Values.auth.enabled }} /keydir{{ end }}"
           volumeMounts:
             - name: workdir
               mountPath: /work-dir
             - name: datadir
-              mountPath: /data
+              mountPath: /data/db
+            - name: config
+              mountPath: /data/configdb
           {{- if .Values.tls.enabled }}
             - name: ca
               mountPath: /ca
@@ -109,7 +110,6 @@ spec:
           imagePullPolicy: "{{ .Values.image.pullPolicy }}"
           securityContext:
             runAsUser: {{ $user }}
-            runAsGroup: {{ $group }}
             allowPrivilegeEscalation: false
           ports:
             - name: peer
