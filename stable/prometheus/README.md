@@ -109,7 +109,7 @@ Parameter | Description | Default
 `alertmanager.tolerations` | node taints to tolerate (requires Kubernetes >=1.6) | `[]`
 `alertmanager.persistentVolume.enabled` | If true, alertmanager will create a Persistent Volume Claim | `true`
 `alertmanager.persistentVolume.accessModes` | alertmanager data Persistent Volume access modes | `[ReadWriteOnce]`
-`alertmanager.persistentVolume.annotations` | Annotations for alertmanager Persistent Volume Claim` | `{}`
+`alertmanager.persistentVolume.annotations` | Annotations for alertmanager Persistent Volume Claim | `{}`
 `alertmanager.persistentVolume.existingClaim` | alertmanager data Persistent Volume existing claim name | `""`
 `alertmanager.persistentVolume.mountPath` | alertmanager data Persistent Volume mount root path | `/data`
 `alertmanager.persistentVolume.size` | alertmanager data Persistent Volume size | `2Gi`
@@ -132,7 +132,7 @@ Parameter | Description | Default
 `configmapReload.image.tag` | configmap-reload container image tag | `v0.1`
 `configmapReload.image.pullPolicy` | configmap-reload container image pull policy | `IfNotPresent`
 `configmapReload.resources` | configmap-reload pod resource requests & limits | `{}`
-`initChownData.enabled  | If false, don't reset data ownership at startup | true
+`initChownData.enabled`  | If false, don't reset data ownership at startup | true
 `initChownData.name` | init-chown-data container name | `init-chown-data`
 `initChownData.image.repository` | init-chown-data container image repository | `busybox`
 `initChownData.image.tag` | init-chown-data container image tag | `latest`
@@ -283,7 +283,7 @@ kubectl create secret tls prometheus-server-tls --cert=path/to/tls.cert --key=pa
 
 Include the secret's name, along with the desired hostnames, in the alertmanager/server Ingress TLS section of your custom `values.yaml` file:
 
-```
+```yaml
 server:
   ingress:
     ## If true, Prometheus server Ingress will be created
