@@ -59,5 +59,9 @@ data:
         Proxy {{ .Values.backend.http.proxy }}
 {{- end }}
         Format {{ .Values.backend.http.format }}
+{{ else if eq .Values.backend.type "stdout" }}
+    [OUTPUT]
+        Name  stdout
+        Match *
 {{- end }}
 {{- end -}}
