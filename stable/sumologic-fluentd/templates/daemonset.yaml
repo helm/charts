@@ -1,5 +1,4 @@
 # Sumologic collector URL is required
-{{- if .Values.sumologic.collectorUrl -}}
 apiVersion: extensions/v1beta1
 kind: DaemonSet
 metadata:
@@ -175,4 +174,3 @@ spec:
     {{- end }}
   updateStrategy:
     type: "{{ .Values.updateStrategy }}"
-{{- end }}
