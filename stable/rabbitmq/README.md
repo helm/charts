@@ -41,7 +41,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the RabbitMQ chart and their default values.
+The following table lists the configurable parameters of the RabbitMQ chart and their default values.
 
 |          Parameter          |                       Description                       |                         Default                          |
 |-----------------------------|---------------------------------------------------------|----------------------------------------------------------|
@@ -77,7 +77,7 @@ $ helm install --name my-release \
     stable/rabbitmq
 ```
 
-The above command sets the RabbitMQ admin username and password to `admin` and `secretpassword` respectively. Additionally the secure erlang cookie is set to `secretcookie`.
+The above command sets the RabbitMQ admin username and password to `admin` and `secretpassword` respectively. Additionally, the secure erlang cookie is set to `secretcookie`.
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
@@ -93,12 +93,12 @@ The [Bitnami RabbitMQ](https://github.com/bitnami/bitnami-docker-rabbitmq) image
 
 The chart mounts a [Persistent Volume](http://kubernetes.io/docs/user-guide/persistent-volumes/) volume at this location. By default, the volume is created using dynamic volume provisioning. An existing PersistentVolumeClaim can also be defined.
 
-
 ### Existing PersistentVolumeClaims
 
 1. Create the PersistentVolume
 1. Create the PersistentVolumeClaim
 1. Install the chart
+
 ```bash
 $ helm install --set persistence.existingClaim=PVC_NAME rabbitmq
 ```

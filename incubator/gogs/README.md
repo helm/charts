@@ -38,7 +38,7 @@ chart and deletes the release.
 
 ## Configuration
 
-The following tables lists some of the configurable parameters of the Gogs
+The following table lists some of the configurable parameters of the Gogs
 chart and their default values.
 
 | Parameter                        | Description                                                  | Default                                                    |

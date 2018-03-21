@@ -18,8 +18,8 @@ replica_set=$REPLICA_SET
 script_name=${0##*/}
 
 if [[ "$AUTH" == "true" ]]; then
-    admin_user="$ADMIN_USER"
-    admin_password="$ADMIN_PASSWORD"
+    admin_user="$MONGO_INITDB_ROOT_USERNAME"
+    admin_password="$MONGO_INITDB_ROOT_PASSWORD"
     admin_auth=(-u "$admin_user" -p "$admin_password")
 fi
 

@@ -21,7 +21,7 @@ set -o xtrace
 git remote add k8s https://github.com/kubernetes/charts
 git fetch k8s master
 
-NAMESPACE="pr-${PULL_NUMBER}-${BUILD_NUMBER}"
+NAMESPACE="${JOB_TYPE}-${PULL_INFO}-${BUILD_ID}"
 CHANGED_FOLDERS=`git diff --find-renames --name-only $(git merge-base k8s/master HEAD) stable/ incubator/ | awk -F/ '{print $1"/"$2}' | uniq`
 CURRENT_RELEASE=""
 
@@ -41,24 +41,28 @@ function cleanup {
 
       # Before reporting the logs from all pods provide a helm status for
       # the release
-      helm status ${CURRENT_RELEASE}
+      helm status ${CURRENT_RELEASE} || true
 
       # List all logs for all containers in all pods for the namespace which was
       # created for this PR test run
       kubectl get pods --show-all --no-headers --namespace ${NAMESPACE} | awk '{ print $1 }' | while read line; do
         if [[ $line != "" ]]; then
-            echo "===Logs from pod $line:==="
+            echo "===Details from pod $line:==="
+
+            echo "...Description of pod $line:..."
+            kubectl describe pod --namespace ${NAMESPACE} ${line} || true
+            echo "...End of description for pod $line...\n"
 
             # There can be multiple containers within a pod. We need to iterate
             # over each of those
             containers=`kubectl get pods --show-all -o jsonpath="{.spec.containers[*].name}" --namespace ${NAMESPACE} $line`
             for cname in ${containers}; do
                 echo "---Logs from container $cname in pod $line:---"
-                kubectl logs --namespace ${NAMESPACE} -c ${cname} ${line}
+                kubectl logs --namespace ${NAMESPACE} -c ${cname} ${line} || true
                 echo "---End of logs for container $cname in pod $line---\n"
             done
 
-            echo "===End of logs for pod $line===\n"
+            echo "===End of details for pod $line===\n"
         fi
       done
 
@@ -90,7 +94,7 @@ fi
 
 # Install and initialize helm/tiller
 HELM_URL=https://storage.googleapis.com/kubernetes-helm
-HELM_TARBALL=helm-v2.7.2-linux-amd64.tar.gz
+HELM_TARBALL=helm-v2.8.2-linux-amd64.tar.gz
 INCUBATOR_REPO_URL=https://kubernetes-charts-incubator.storage.googleapis.com/
 pushd /opt
   wget -q ${HELM_URL}/${HELM_TARBALL}
@@ -127,7 +131,7 @@ for directory in ${CHANGED_FOLDERS}; do
     # re-run right before the bot merges a PR so we can make sure the chart
     # version is always incremented.
     dosemvercompare ${directory}
-    RELEASE_NAME="${CHART_NAME:0:7}-${BUILD_NUMBER}"
+    RELEASE_NAME="${CHART_NAME:0:7}-${BUILD_ID}"
     CURRENT_RELEASE=${RELEASE_NAME}
     helm dep build ${directory}
     helm install --timeout 600 --name ${RELEASE_NAME} --namespace ${NAMESPACE} ${directory} | tee install_output

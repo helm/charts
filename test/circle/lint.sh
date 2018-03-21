@@ -81,7 +81,7 @@ for directory in ${CHANGED_FOLDERS}; do
 
     semvercompare ${directory}
 
-    # Check for the existance of the NOTES.txt file. This is required for charts
+    # Check for the existence of the NOTES.txt file. This is required for charts
     # in this repo.
     if [ ! -f ${directory}/templates/NOTES.txt ]; then
       echo "Error NOTES.txt template not found. Please create one."
@@ -93,3 +93,4 @@ for directory in ${CHANGED_FOLDERS}; do
 done
 
 exit $exitCode
+

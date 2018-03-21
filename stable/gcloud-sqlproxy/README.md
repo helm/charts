@@ -21,11 +21,15 @@ You need to enable Cloud SQL Administration API and create a service account for
 
 ## Installing the Chart
 
-Install from remote URL with the release name `pg-sqlproxy` into namespace `sqlproxy`, set GCP service account and SQL instance and port:
+Install from remote URL with the release name `pg-sqlproxy` into namespace `sqlproxy`, set GCP service account and SQL instances and ports:
 
 ```console
 $ helm upgrade pg-sqlproxy stable/gcloud-sqlproxy --namespace sqlproxy \
-  --set serviceAccountKey="$(cat service-account.json | base64)",cloudsql.instance="PROJECT:REGION:INSTANCE",cloudsql.port="5432" -i
+    --set serviceAccountKey="$(cat service-account.json | base64)" \
+    --set cloudsql.instances[0].instance=INSTANCE \
+    --set cloudsql.instances[0].project=PROJECT \
+    --set cloudsql.instances[0].region=REGION \
+    --set cloudsql.instances[0].port=5432 -i
 ```
 
 Replace Postgres/MySQL host with: if access is from the same namespace with `pg-sqlproxy-gcloud-sqlproxy` or if it is from a different namespace with `pg-sqlproxy-gcloud-sqlproxy.sqlproxy`, the rest database connections settings do not have to be changed.
@@ -46,7 +50,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the Drupal chart and their default values.
+The following table lists the configurable parameters of the Drupal chart and their default values.
 
 | Parameter                         | Description                            | Default                                                   |
 | --------------------------------- | -------------------------------------- | --------------------------------------------------------- |
@@ -55,8 +59,7 @@ The following tables lists the configurable parameters of the Drupal chart and t
 | `imagePullPolicy`                 | Image pull policy                      | `IfNotPresent`                                            |
 | `replicasCount`                   | Replicas count                         | `1`                                                       |
 | `serviceAccountKey`               | Service account key JSON file          | Must be provided and base64 encoded                       |
-| `cloudsql.instance`               | PostgreSQL/MySQL instance name         | `project:region:instance` must be provided                |
-| `cloudsql.port`                   | PostgreSQL/MySQL instance port         | `5432`                                                    |
+| `cloudsql.instances`              | List of PostgreSQL/MySQL instances     | [{instance: `instance`, project: `project`, region: `region`, port: 5432}] must be provided                |
 | `resources`                       | CPU/Memory resource requests/limits    | Memory: `100/150Mi`, CPU: `100/150m`                      |
 | `nodeSelector`                    | Node Selector                          |                                                           |
 

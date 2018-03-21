@@ -1,6 +1,6 @@
 # PrestaShop
 
-[PrestaShop](https://prestashop.com/) is a popular open source ecommerce solution. Professional tools are easily accessible to increase online sales including instant guest checkout, abandoned cart reminders and automated Email marketing.
+[PrestaShop](https://prestashop.com/) is a popular open source e-commerce solution. Professional tools are easily accessible to increase online sales including instant guest checkout, abandoned cart reminders and automated Email marketing.
 
 ## TL;DR;
 
@@ -43,7 +43,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the PrestaShop chart and their default values.
+The following table lists the configurable parameters of the PrestaShop chart and their default values.
 
 |               Parameter               |                 Description                 |                         Default                          |
 |---------------------------------------|---------------------------------------------|----------------------------------------------------------|
@@ -61,6 +61,16 @@ The following tables lists the configurable parameters of the PrestaShop chart a
 | `smtpUser`                            | SMTP user                                   | `nil`                                                    |
 | `smtpPassword`                        | SMTP password                               | `nil`                                                    |
 | `smtpProtocol`                        | SMTP protocol [`ssl`, `tls`]                | `nil`                                                    |
+| `allowEmptyPassword`                  | Allow DB blank passwords                    | `yes`                                                    |
+| `externalDatabase.host`               | Host of the external database               | `nil`                                                    |
+| `externalDatabase.port`               | SMTP protocol [`ssl`, `none`]               | `3306`                                                   |
+| `externalDatabase.user`               | Existing username in the external db        | `bn_prestashop`                                          |
+| `externalDatabase.password`           | Password for the above username             | `nil`                                                    |
+| `externalDatabase.database`           | Name of the existing databse                | `bitnami_prestashop`                                     |
+| `mariadb.enabled`                     | Wheter to use or not the mariadb chart      | `true`                                                   |
+| `mariadb.mariadbDatabase`             | Database name to create                     | `bitnami_prestashop`                                     |
+| `mariadb.mariadbUser`                 | Database user to create                     | `bn_prestashop`                                          |
+| `mariadb.mariadbPassword`             | Password for the database                   | `nil`                                                    |
 | `mariadb.mariadbRootPassword`         | MariaDB admin password                      | `nil`                                                    |
 | `serviceType`                         | Kubernetes Service type                     | `LoadBalancer`                                           |
 | `persistence.enabled`                 | Enable persistence using PVC                | `true`                                                   |
@@ -96,7 +106,7 @@ $ helm install --name my-release \
     stable/prestashop
 ```
 
-The above command sets the PrestaShop administrator account username and password to `admin` and `password` respectively. Additionally it sets the MariaDB `root` user password to `secretpassword`.
+The above command sets the PrestaShop administrator account username and password to `admin` and `password` respectively. Additionally, it sets the MariaDB `root` user password to `secretpassword`.
 
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 

@@ -24,19 +24,18 @@ This chart will do the following:
 To install the chart with the release name `my-release`:
 
 ```shell
-helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
-helm install --name my-release incubator/cockroachdb
+helm install --name my-release stable/cockroachdb
 ```
 
 ## Configuration
 
-The following tables lists the configurable parameters of the CockroachDB chart and their default values.
+The following table lists the configurable parameters of the CockroachDB chart and their default values.
 
 | Parameter                     | Description                                | Default                                      |
 | ----------------------------- | ------------------------------------------ | -------------------------------------------- |
 | `Name`                        | Chart name                                 | `cockroachdb`                                |
 | `Image`                       | Container image name                       | `cockroachdb/cockroach`                      |
-| `ImageTag`                    | Container image tag                        | `v1.1.4`                                     |
+| `ImageTag`                    | Container image tag                        | `v1.1.5`                                     |
 | `ImagePullPolicy`             | Container pull policy                      | `Always`                                     |
 | `Replicas`                    | k8s statefulset replicas                   | `3`                                          |
 | `MaxUnavailable`              | k8s PodDisruptionBudget parameter          | `1`                                          |
@@ -52,13 +51,14 @@ The following tables lists the configurable parameters of the CockroachDB chart 
 | `ClusterDomain`               | Cluster's default DNS domain               | `cluster.local`                              |
 | `NetworkPolicy.Enabled`       | Enable NetworkPolicy                       | `false`                                      |
 | `NetworkPolicy.AllowExternal` | Don't require client label for connections | `true`                                       |
+| `Service.Type`                | Public service type                        | `ClusterIP`                                  |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
 ```shell
-helm install --name my-release -f values.yaml incubator/cockroachdb
+helm install --name my-release -f values.yaml stable/cockroachdb
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
