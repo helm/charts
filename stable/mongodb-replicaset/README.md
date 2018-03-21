@@ -96,17 +96,16 @@ These sections are outlined below:
 
 ### 1. auth
 Authentication can be enabled using the parameter `auth.enabled`. Once enabled, keyfile access control is set up and an
-Once enabled, keyfile access control is set up and an admin user with root privileges is created. 
-User credentials and keyfile may be specified directly. Alternatively, existing secrets may be provided. 
-The secret for the admin user must contain the keys `user` and `password`, that for the key file must contain `key.txt`.  
-The user is created with full `root` permissions but is restricted to the `admin` database for security purposes. It can be
+admin user with root privileges is created. User credentials and keyfile may be specified directly.
+Alternatively, existing secrets may be provided.  The secret for the admin user must contain the
+keys `user` and `password`, that for the key file must contain `key.txt`.  The user is created with
+full `root` permissions but is restricted to the `admin` database for security purposes. It can be
 used to create additional users with more specific permissions.
 
 ### 2. security
 Towards the bottom of `values.yaml`, you must uncomment and potentially update the `security` section.
 - `security.authorization` must be set to `enabled`, and
 - `security.keyFile` path must be specified
-
 
 **Warning**
 
