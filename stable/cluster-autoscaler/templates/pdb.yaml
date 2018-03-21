@@ -1,0 +1,9 @@
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ template "cluster-autoscaler.fullname" . }}
+spec:
+  maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: {{ template "cluster-autoscaler.name" . }}
