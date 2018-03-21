@@ -25,7 +25,7 @@ $ helm install --name my-release stable/dask
 
 ## Configuration
 
-The following tables lists the configurable parameters of the Dask chart and their default values.
+The following tables list the configurable parameters of the Dask chart and their default values.
 
 ### Dask scheduler
 
