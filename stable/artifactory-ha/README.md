@@ -238,7 +238,7 @@ $ helm install --name artifactory-ha --set imagePullSecrets=regsecret stable/art
 
 ## Configuration
 
-The following tables lists the configurable parameters of the artifactory chart and their default values.
+The following table lists the configurable parameters of the artifactory chart and their default values.
 
 |         Parameter            |           Description             |                         Default                       |
 |------------------------------|-----------------------------------|-------------------------------------------------------|
