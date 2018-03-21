@@ -87,7 +87,7 @@ The following tables lists the configurable parameters of the patroni chart and 
 | `resources`                       | Any resources you wish to assign to the pod | `{}`                                                |
 | `nodeSelector`                    | Node label to use for scheduling            | `{}`                                                |
 | `tolerations`                     | List of node taints to tolerate             | `[]`                                                |
-| `affinity`                        | Affinity or anti-affinity rules             | `{}`                                                |
+| `antiAffinity`                    | Pod anti-affinity, `hard` or `soft`         | `soft`                                              |
 | `persistentVolume.accessModes`    | Persistent Volume access modes              | `[ReadWriteOnce]`                                   |
 | `persistentVolume.annotations`    | Annotations for Persistent Volume Claim`    | `{}`                                                |
 | `persistentVolume.mountPath`      | Persistent Volume mount root path           | `/home/postgres/pgdata`                             |

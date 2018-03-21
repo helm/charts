@@ -22,6 +22,25 @@ spec:
         release: {{ .Release.Name }}
     spec:
       serviceAccountName: {{ template "patroni.serviceAccountName" . }}
+      affinity:
+        podAntiAffinity:
+        {{- if eq .Values.antiAffinity "hard" }}
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - topologyKey: "kubernetes.io/hostname"
+            labelSelector:
+              matchLabels:
+                app:  {{ template "patroni.name" . }}
+                release: {{ .Release.Name | quote }}
+        {{- else if eq .Values.antiAffinity "soft" }}
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 5
+            podAffinityTerm:
+              topologyKey: "kubernetes.io/hostname"
+              labelSelector:
+                matchLabels:
+                  app:  {{ template "patroni.name" . }}
+                  release: {{ .Release.Name | quote }}
+        {{- end }}
       containers:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -123,10 +142,6 @@ spec:
 {{ toYaml .Values.resources | indent 10 }}
     {{- with .Values.nodeSelector }}
       nodeSelector:
-{{ toYaml . | indent 8 }}
-    {{- end }}
-    {{- with .Values.affinity }}
-      affinity:
 {{ toYaml . | indent 8 }}
     {{- end }}
     {{- with .Values.tolerations }}

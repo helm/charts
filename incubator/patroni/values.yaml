@@ -33,7 +33,7 @@ zooKeeper:
   hosts:
 
 walE:
-  # Specificies whether Wal-E should be enabled
+  # Specifies whether Wal-E should be enabled
   enable: false
   # Cron schedule for doing base backups
   scheduleCronJob: 00 01 * * *
@@ -77,7 +77,7 @@ nodeSelector: {}
 tolerations: []
 
 # https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
-affinity: {}
+antiAffinity: "soft"
 
 rbac:
   # Specifies whether RBAC resources should be created
