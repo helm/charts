@@ -134,5 +134,5 @@ spec:
 {{- if .Values.tlsSecretName }}
         - name: tls-cert
           secret:
-            secretName: {{ .Values.tlsSecretName }}.tls
+            secretName: {{ .Values.tlsSecretName }}
 {{- end }}
