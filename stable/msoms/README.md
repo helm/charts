@@ -29,7 +29,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the MSOMS chart and their default values.
+The following table lists the configurable parameters of the MSOMS chart and their default values.
 
 | Parameter                  | Description                        | Default                                                                          |
 | -----------------------    | ---------------------------------- | -------------------------------------------------------------------------------- |
