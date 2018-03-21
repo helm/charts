@@ -18,7 +18,7 @@ $ helm install --name my-release stable/external-dns
 
 ## Configuration
 
-The following tables lists the configurable parameters of the external-dns chart and their default values.
+The following table lists the configurable parameters of the external-dns chart and their default values.
 
 
 | Parameter                          | Description                                                                                                                | Default                                            |

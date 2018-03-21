@@ -43,7 +43,7 @@ vault:
 
 ## Configuration
 
-The following tables lists the configurable parameters of the vault chart and their default values.
+The following table lists the configurable parameters of the vault chart and their default values.
 
 |       Parameter         |           Description               |                         Default                     |
 |-------------------------|-------------------------------------|-----------------------------------------------------|
