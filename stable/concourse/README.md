@@ -63,7 +63,7 @@ The worker's Liveness Probe will trigger a restart of the worker if it detects u
 
 ## Configuration
 
-The following tables lists the configurable parameters of the Concourse chart and their default values.
+The following table lists the configurable parameters of the Concourse chart and their default values.
 
 | Parameter               | Description                           | Default                                                    |
 | ----------------------- | ----------------------------------    | ---------------------------------------------------------- |
