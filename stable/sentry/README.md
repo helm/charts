@@ -53,7 +53,7 @@ $ kubectl delete job/sentry-db-init job/sentry-user-create
 
 ## Configuration
 
-The following tables lists the configurable parameters of the Sentry chart and their default values.
+The following table lists the configurable parameters of the Sentry chart and their default values.
 
 | Parameter                            | Description                                | Default                                                    |
 | -------------------------------      | -------------------------------            | ---------------------------------------------------------- |
