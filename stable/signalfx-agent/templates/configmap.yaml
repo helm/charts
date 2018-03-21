@@ -77,8 +77,6 @@ data:
         container_image: inspect:Config.Image
         container_id: inspect:Id
         container_spec_name: inspect:Config.Labels['io.kubernetes.container.name']
-        # Duplicated for backwards compatibility
-        container_name: inspect:Config.Labels['io.kubernetes.container.name']
         kubernetes_pod_name: inspect:Config.Labels['io.kubernetes.pod.name']
         kubernetes_pod_uid: inspect:Config.Labels['io.kubernetes.pod.uid']
         kubernetes_namespace: inspect:Config.Labels['io.kubernetes.pod.namespace']
