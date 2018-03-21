@@ -183,7 +183,7 @@ nginx:
     ## or pass from helm command line
     ## Example: helm install ... --set nginx.service.loadBalancerSourceRanges='{10.10.10.5/32,10.11.10.5/32}'
     loadBalancerSourceRanges: []
-    #Provide static ip address
+    ## Provide static ip address
     loadBalancerIP:
   env:
     ssl: true
