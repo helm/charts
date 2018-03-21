@@ -18,6 +18,9 @@ spec:
       protocol: TCP
       name: {{ .Values.service.name }}
       targetPort: {{ .Values.service.port }}
+{{- if (and (eq .Values.service.type "NodePort") (not (empty .Values.service.nodePort))) }}
+      nodePort: {{ .Values.service.nodePort }}
+{{- end }}
   selector:
     app: {{ template "docker-registry.name" . }}
     release: {{ .Release.Name }}

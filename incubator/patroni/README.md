@@ -49,7 +49,7 @@ postgres=>
 
 ## Configuration
 
-The following tables lists the configurable parameters of the patroni chart and their default values.
+The following table lists the configurable parameters of the patroni chart and their default values.
 
 |       Parameter         |           Description               |                         Default                     |
 |-------------------------|-------------------------------------|-----------------------------------------------------|
@@ -63,7 +63,6 @@ The following tables lists the configurable parameters of the patroni chart and 
 | `Resources.Cpu`         | container requested cpu             | `100m`                                              |
 | `Resources.Memory`      | container requested memory          | `512Mi`                                             |
 | `Credentials.Superuser` | password for the superuser          | `tea`                                               |
-| `Credentials.Admin`     | password for the admin user         | `cola`                                              |
 | `Credentials.Standby`   | password for the replication user   | `pinacolada`                                        |
 | `Etcd.Enable`           | using etcd as DCS                   | `true`                                              |
 | `Etcd.DeployChart`      | deploy etcd chart                   | `true`                                              |
@@ -86,6 +85,9 @@ The following tables lists the configurable parameters of the patroni chart and 
 | `persistentVolume.size` | Persistent Volume size | `2Gi` |
 | `persistentVolume.storageClass` | Persistent Volume Storage Class | `volume.alpha.kubernetes.io/storage-class: default` |
 | `persistentVolume.subPath` | Subdirectory of Persistent Volume to mount | `""` |
+| `rbac.create` | create required role and rolebindings | `true` |
+| `serviceAccount.create` | If true, create a new service account	| `true`
+| `serviceAccount.name` | Service account to be used. If not set and serviceAccount.create is `true`, a name is generated using the fullname template | ``  
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 

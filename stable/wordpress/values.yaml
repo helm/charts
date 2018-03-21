@@ -1,9 +1,9 @@
 ## Bitnami WordPress image version
 ## ref: https://hub.docker.com/r/bitnami/wordpress/tags/
 ##
-image: bitnami/wordpress:4.9.4-r2
+image: bitnami/wordpress:4.9.4-r5
 
-## Specify a imagePullPolicy
+## Specify an imagePullPolicy
 ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
 ##
 imagePullPolicy: IfNotPresent
@@ -58,14 +58,11 @@ externalDatabase:
   ## Database host
   host: localhost
 
-  ## Database Root User (so wordpress can create the db schema etc)
-  # rootPassword:
-
   ## non-root Username for Wordpress Database
   user: bn_wordpress
 
   ## Database password
-  # password:
+  password: ""
 
   ## Database name
   database: bitnami_wordpress
@@ -78,7 +75,7 @@ externalDatabase:
 ##
 mariadb:
   ## Whether to use the database specified as a requirement or not.
-  ## If you want to use an external database set this to false and supply details to externalDatabase above
+  ## If you want to use an external database, set this to false and supply details to externalDatabase above
   enabled: true
 
   ## MariaDB admin password
@@ -121,6 +118,18 @@ mariadb:
 ## For minikube, set this to NodePort, elsewhere use LoadBalancer
 ##
 serviceType: LoadBalancer
+##
+## serviceType: NodePort
+## nodePorts:
+##   http: <to set explicitly, choose port between 30000-32767>
+##   https: <to set explicitly, choose port between 30000-32767>
+nodePorts:
+  http: ""
+  https: ""
+## Enable client source IP preservation
+## ref http://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/#preserving-the-client-source-ip
+##
+serviceExternalTrafficPolicy: Local
 
 ## Allow health checks to be pointed at the https port
 healthcheckHttps: false
@@ -140,8 +149,8 @@ readinessProbe:
   failureThreshold: 6
   successThreshold: 1
 
-## Configure ingress resource that allow you to access the
-## Wordpress instalation. Set up the URL
+## Configure the ingress resource that allows you to access the
+## Wordpress installation. Set up the URL
 ## ref: http://kubernetes.io/docs/user-guide/ingress/
 ##
 ingress:
