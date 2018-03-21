@@ -6,9 +6,9 @@ dockerRegistry: appscode
 ## Tags for Docker images
 imageTags:
   ## Docker image tag containing Voyager
-  voyager: 6.0.0-rc.0
+  voyager: 6.0.0
   ## Docker image tag containing HAProxy binary
-  haproxy: 1.7.9-6.0.0-rc.0
+  haproxy: 1.7.10-6.0.0
 ## Optionally specify an array of imagePullSecrets.
 ## Secrets must be manually created in the namespace.
 ## ref: https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
@@ -40,10 +40,15 @@ nodeSelector: {}
 
 ## Install Default RBAC roles and bindings
 rbac:
-  ## If true, create & use RBAC resources
-  create: false
-  ## Ignored if rbac.create is true
-  serviceAccountName: default
+  # Specifies whether RBAC resources should be created
+  create: true
+
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
 
 # this flag can be set to 'voyager' to handle only ingress
 # with annotation kubernetes.io/ingress.class=voyager.

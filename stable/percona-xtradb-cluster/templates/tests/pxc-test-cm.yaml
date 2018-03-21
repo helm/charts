@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "percona-xtradb-cluster.fullname" . }}-tests
+data:
+  run.sh: |-
+    echo "Testing Percona XtraDB Cluster"
+    creds="-uroot -p${MYSQL_ROOT_PASSWORD} -h {{ template "percona-xtradb-cluster.fullname" . }}"
+    echo "==> basic mysql ping"
+    mysqladmin $creds ping
+    [[ $? != "0" ]] && exit $?
+    echo "==> test basic query"
+    mysql $creds -e "select now() \G"
+    [[ $? != "0" ]] && exit $?
+    echo "==> checking if cluster is ready"
+    mysql $creds -e "SHOW GLOBAL STATUS LIKE 'wsrep_ready' \G" | grep Value | awk '{ print $2}' | grep ON
+    [[ $? != "0" ]] && exit $?
+    echo "==> checking if cluster size matches replica count"
+    cluster_size=$(mysql $creds -e "SHOW GLOBAL STATUS LIKE 'wsrep_cluster_size' \G" | grep Value | awk '{ print $2}')
+    [[ $? != "0" ]] && exit $?
+    [[ "${cluster_size}" == "{{ .Values.replicas }}" ]] || exit 1
+    echo "SUCCESS"
+    exit 0

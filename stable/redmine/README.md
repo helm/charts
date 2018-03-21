@@ -51,7 +51,7 @@ helm install --name my-release stable/redmine --set databaseType.mariadb=false,d
 
 ## Configuration
 
-The following tables lists the configurable parameters of the Redmine chart and their default values.
+The following table lists the configurable parameters of the Redmine chart and their default values.
 
 | Parameter | Description | Default |
 | --------- | ----------- | ------- |
@@ -95,7 +95,7 @@ $ helm install --name my-release \
     stable/redmine
 ```
 
-The above command sets the Redmine administrator account username and password to `admin` and `password` respectively. Additionally it sets the MariaDB `root` user password to `secretpassword`.
+The above command sets the Redmine administrator account username and password to `admin` and `password` respectively. Additionally, it sets the MariaDB `root` user password to `secretpassword`.
 
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 
@@ -113,16 +113,15 @@ Persistent Volume Claims are used to keep the data across deployments. This is k
 
 See the [Configuration](#configuration) section to configure the PVC or to disable persistence.
 
-
 ### Existing PersistentVolumeClaims
 
-The following example includes two PVCs, one for redmine and another for Maria DB.
+The following example includes two PVCs, one for Redmine and another for MariaDB.
 
 1. Create the PersistentVolume
 1. Create the PersistentVolumeClaim
 1. Create the directory, on a worker
 1. Install the chart
+
 ```bash
 $ helm install --name test --set persistence.existingClaim=PVC_REDMINE,mariadb.persistence.existingClaim=PVC_MARIADB  redmine
 ```
-
