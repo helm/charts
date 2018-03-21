@@ -58,6 +58,7 @@ spec:
           name: config
         - mountPath: /etc/machine-id
           name: machine-id
+          readOnly: true
         - mountPath: /hostfs
           name: hostfs
           readOnly: true
