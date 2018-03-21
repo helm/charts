@@ -30,7 +30,7 @@ spec:
         imagePullPolicy: "{{ .Values.external.init.imagePullPolicy }}"
         command:
           - sh
-          - -exc
+          - -euxc
           - "kubectl label pods ${POD_NAME} --namespace ${POD_NAMESPACE} pod=${POD_NAME}"
         env:
           - name: POD_NAME
