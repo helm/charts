@@ -26,7 +26,7 @@ $ helm install --name my-release stable/mongodb-replicaset
 
 ## Configuration
 
-The following tables lists the configurable parameters of the mongodb chart and their default values.
+The following table lists the configurable parameters of the mongodb chart and their default values.
 
 | Parameter                       | Description                                                               | Default                                             |
 | ------------------------------- | ------------------------------------------------------------------------- | --------------------------------------------------- |
