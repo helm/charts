@@ -23,8 +23,11 @@ data:
         Skip_Long_Lines  On
 
     [FILTER]
-        Name   kubernetes
-        Match  kube.*
+        Name             kubernetes
+        Match            kube.*
+        Kube_URL         {{ .Values.filter.KubeURL }}
+        Kube_CA_File     {{ .Values.filter.KubeCAFile }}
+        Kube_Token_File  {{ .Values.filter.KubeTokenFile }}
 {{- if .Values.filter.mergeJSONLog }}
         Merge_JSON_Log   On
 {{- end }}
