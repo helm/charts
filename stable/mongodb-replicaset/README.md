@@ -64,7 +64,7 @@ The following table lists the configurable parameters of the mongodb chart and t
 
 *MongoDB config file*
 
-The MongoDB config file `mongod.conf` is configured via the `configmap` configuration value. The defaults from 
+The MongoDB config file `mongod.conf` is configured via the `configmap` configuration value. The defaults from
 `values.yaml` are the following:
 
 ```yaml
@@ -90,14 +90,27 @@ $ helm install --name my-release -f values.yaml stable/mongodb-replicaset
 Once you have all 3 nodes in running, you can run the "test.sh" script in this directory, which will insert a key into the primary and check the secondaries for output. This script requires that the `$RELEASE_NAME` environment variable be set, in order to access the pods.
 
 ## Authentication
+By default, this chart creates a MongoDB replica set without authentication. 
+To enable authentication, you must update **TWO** different sections in `values.yaml` or authentication will not be properly enabled. 
+These sections are outlined below:
 
-By default, this chart creates a MongoDB replica set without authentication. Authentication can be
-enabled using the parameter `auth.enabled`. Once enabled, keyfile access control is set up and an
+### 1. auth
+Authentication can be enabled using the parameter `auth.enabled`. Once enabled, keyfile access control is set up and an
 admin user with root privileges is created. User credentials and keyfile may be specified directly.
 Alternatively, existing secrets may be provided.  The secret for the admin user must contain the
 keys `user` and `password`, that for the key file must contain `key.txt`.  The user is created with
 full `root` permissions but is restricted to the `admin` database for security purposes. It can be
 used to create additional users with more specific permissions.
+
+### 2. security
+Towards the bottom of `values.yaml`, you must uncomment and potentially update the `security` section.
+- `security.authorization` must be set to `enabled`, and
+- `security.keyFile` path must be specified
+
+**Warning**
+
+Without enabling authentication in both the `auth` and `security` sections of `values.yaml`, your database 
+will not be properly protected, and initialization may fail silently.
 
 ## TLS support
 
