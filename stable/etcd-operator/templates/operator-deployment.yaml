@@ -24,7 +24,7 @@ spec:
         image: "{{ .Values.etcdOperator.image.repository }}:{{ .Values.etcdOperator.image.tag }}"
         imagePullPolicy: {{ .Values.etcdOperator.image.pullPolicy }}
         command:
-         - etcd-operator
+        - etcd-operator
 {{- range $key, $value := .Values.etcdOperator.commandArgs }}
         - "--{{ $key }}={{ $value }}"
 {{- end }}
@@ -47,5 +47,9 @@ spec:
     {{- if .Values.etcdOperator.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.etcdOperator.nodeSelector | indent 8 }}
+    {{- end }}
+    {{- if .Values.etcdOperator.tolerations }}
+      tolerations:
+{{ toYaml .Values.etcdOperator.tolerations | indent 8 }}
     {{- end }}
 {{- end }}
