@@ -10,7 +10,7 @@ $ helm install stable/postgresql
 
 ## Introduction
 
-This chart either:
+This chart can function in two different modes.
 * bootstraps a [PostgreSQL](https://github.com/docker-library/postgres) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 * creates a Service with an Endpoint to a [PostgreSQL](https://github.com/docker-library/postgres) instance outside the [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
