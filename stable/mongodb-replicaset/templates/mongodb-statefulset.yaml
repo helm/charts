@@ -51,7 +51,7 @@ spec:
                   apiVersion: v1
                   fieldPath: metadata.namespace
             - name: REPLICA_SET
-              value: {{ required "'configmap.replication.replSetName' is required!" .Values.configmap.replication.replSetName }}
+              value: {{ .Values.replicaSetName }}
           {{- if .Values.auth.enabled }}
             - name: AUTH
               value: "true"
@@ -118,26 +118,26 @@ spec:
 {{ toYaml .Values.resources | indent 12 }}
           command:
             - mongod
+          args:
             - --config=/data/configdb/mongod.conf
+            - --dbpath=/data/db
+            - --replSet={{ .Values.replicaSetName }}
+            - --port=27017
+            - --bind_ip_all
           {{- if .Values.auth.enabled }}
-          env:
-            - name: AUTH
-              value: "true"
-            - name: ADMIN_USER
-              valueFrom:
-                secretKeyRef:
-                  name: "{{ template "mongodb-replicaset.adminSecret" . }}"
-                  key: user
-            - name: ADMIN_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: "{{ template "mongodb-replicaset.adminSecret" . }}"
-                  key: password
+            - --auth
+            - --keyFile=/keydir/key.txt
+          {{- end }}
+          {{- if .Values.tls.enabled }}
+            - --ssl
+            - --sslCAFile=/ca/tls.crt
+            - --sslPEMKeyFile=/work-dir/mongo.pem
           {{- end }}
           livenessProbe:
             exec:
               command:
                 - mongo
+              args:
               {{- if .Values.tls.enabled }}
                 - --ssl
                 - --sslCAFile=/ca/tls.crt

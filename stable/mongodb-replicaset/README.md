@@ -26,11 +26,12 @@ $ helm install --name my-release stable/mongodb-replicaset
 
 ## Configuration
 
-The following table lists the configurable parameters of the mongodb chart and their default values.
+The following tables lists the configurable parameters of the mongodb chart and their default values.
 
 | Parameter                           | Description                                                               | Default                                             |
 | ----------------------------------- | ------------------------------------------------------------------------- | --------------------------------------------------- |
 | `replicas`                          | Number of replicas in the replica set                                     | 3                                                   |
+| `replicaSetName`                    | The name of the replica set                                               | rs0                                                 |
 | `minAvailable`                      | Minimum number of available pods for PodDisruptionBudget                  | 1                                                   |
 | `port`                              | MongoDB port                                                              | 27017                                               |
 | `installImage.name`                 | Image name for the init container that establishes the replica set        | k8s.gcr.io/mongodb-install                          |
@@ -50,32 +51,21 @@ The following table lists the configurable parameters of the mongodb chart and t
 | `tls.cacert`                        | The CA certificate used for the members                                   | Our self signed CA certificate                      |
 | `tls.cakey`                         | The CA key used for the members                                           | Our key for the self signed CA certificate          |
 | `auth.enabled`                      | If `true`, keyfile access control is enabled                              | `false`                                             |
-| `auth.key`                          | Key for internal authentication                                           |                                                     |
-| `auth.existingKeySecret`            | If set, an existing secret with this name for the key is used             |                                                     |
-| `auth.adminUser`                    | MongoDB admin user                                                        |                                                     |
-| `auth.adminPassword`                | MongoDB admin password                                                    |                                                     |
-| `auth.existingAdminSecret`          | If set, and existing secret with this name is used for the admin user     |                                                     |
+| `auth.key`                          | Key for internal authentication                                           | ``                                                  |
+| `auth.existingKeySecret`            | If set, an existing secret with this name for the key is used             | ``                                                  |
+| `auth.adminUser`                    | MongoDB admin user                                                        | ``                                                  |
+| `auth.adminPassword`                | MongoDB admin password                                                    | ``                                                  |
+| `auth.existingAdminSecret`          | If set, and existing secret with this name is used for the admin user     | ``                                                  |
 | `serviceAnnotations`                | Annotations to be added to the service                                    | {}                                                  |
-| `configmap`                         | Content of the MongoDB config file                                        | See below                                           |
-| `configmap.replication.replSetName` | Name of the replica set                                                   | rs0                                                 |
+| `configmap`                         | Content of the MongoDB config file                                        | ``                                                  |
 | `nodeSelector`                      | Node labels for pod assignment                                            | {}                                                  |
 | `affinity`                          | Node/pod affinities                                                       | {}                                                  |
 | `tolerations`                       | List of node taints to tolerate                                           | []                                                  |
 
 *MongoDB config file*
 
-The MongoDB config file `mongod.conf` is configured via the `configmap` configuration value. The defaults from
-`values.yaml` are the following:
-
-```yaml
-configmap:
-  storage:
-    dbPath: /data/db
-  net:
-    port: 27017
-  replication:
-    replSetName: rs0
-```
+All options that depended on the chart configuration are supplied as command-line arguments to `mongod`. By default, 
+the chart creates an empty config file. Entries may be added via  the `configmap` configuration value. 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
@@ -87,14 +77,16 @@ $ helm install --name my-release -f values.yaml stable/mongodb-replicaset
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
-Once you have all 3 nodes in running, you can run the "test.sh" script in this directory, which will insert a key into the primary and check the secondaries for output. This script requires that the `$RELEASE_NAME` environment variable be set, in order to access the pods.
+Once you have all 3 nodes in running, you can run the "test.sh" script in this directory, which will insert a key into 
+the primary and check the secondaries for output. This script requires that the `$RELEASE_NAME` environment variable 
+be set, in order to access the pods.
 
 ## Authentication
 
 By default, this chart creates a MongoDB replica set without authentication. Authentication can be
 enabled using the parameter `auth.enabled`. Once enabled, keyfile access control is set up and an
 admin user with root privileges is created. User credentials and keyfile may be specified directly.
-Alternatively, existing secrets may be provided.  The secret for the admin user must contain the
+Alternatively, existing secrets may be provided. The secret for the admin user must contain the
 keys `user` and `password`, that for the key file must contain `key.txt`.  The user is created with
 full `root` permissions but is restricted to the `admin` database for security purposes. It can be
 used to create additional users with more specific permissions.
@@ -167,7 +159,8 @@ $ mongo --ssl --sslCAFile=ca.crt --sslPEMKeyFile=mongo.pem --eval "db.adminComma
 ## Deep dive
 
 Because the pod names are dependent on the name chosen for it, the following examples use the
-environment variable `RELEASENAME`. For example, if the helm release name is `messy-hydra`, one would need to set the following before proceeding. The example scripts below assume 3 pods only.
+environment variable `RELEASENAME`. For example, if the helm release name is `messy-hydra`, one would need to set the 
+following before proceeding. The example scripts below assume 3 pods only.
 
 ```console
 export RELEASE_NAME=messy-hydra
@@ -185,9 +178,9 @@ One can check the roles being played by each node by using the following:
 ```console
 $ for i in 0 1 2; do kubectl exec $RELEASE_NAME-mongodb-replicaset-$i -- sh -c 'mongo --eval="printjson(rs.isMaster())"'; done
 
-MongoDB shell version: 3.4.5
+MongoDB shell version: 3.6.3
 connecting to: mongodb://127.0.0.1:27017
-MongoDB server version: 3.4.5
+MongoDB server version: 3.6.3
 {
 	"hosts" : [
 		"messy-hydra-mongodb-0.messy-hydra-mongodb.default.svc.cluster.local:27017",
@@ -218,14 +211,14 @@ Let us now test persistence and failover. First, we insert a key (in the below e
 ```console
 $ kubectl exec $RELEASE_NAME-mongodb-replicaset-0 -- mongo --eval="printjson(db.test.insert({key1: 'value1'}))"
 
-MongoDB shell version: 3.4.5
+MongoDB shell version: 3.6.3
 connecting to: mongodb://127.0.0.1:27017
 { "nInserted" : 1 }
 ```
 
 Watch existing members:
 ```console
-$ kubectl run --attach bbox --image=mongo:3.4 --restart=Never --env="RELEASE_NAME=$RELEASE_NAME" -- sh -c 'while true; do for i in 0 1 2; do echo $RELEASE_NAME-mongodb-replicaset-$i $(mongo --host=$RELEASE_NAME-mongodb-replicaset-$i.$RELEASE_NAME-mongodb-replicaset --eval="printjson(rs.isMaster())" | grep primary); sleep 1; done; done';
+$ kubectl run --attach bbox --image=mongo:3.6 --restart=Never --env="RELEASE_NAME=$RELEASE_NAME" -- sh -c 'while true; do for i in 0 1 2; do echo $RELEASE_NAME-mongodb-replicaset-$i $(mongo --host=$RELEASE_NAME-mongodb-replicaset-$i.$RELEASE_NAME-mongodb-replicaset --eval="printjson(rs.isMaster())" | grep primary); sleep 1; done; done';
 
 Waiting for pod default/bbox2 to be running, status is Pending, pod ready: false
 If you don't see a command prompt, try pressing enter.
@@ -286,7 +279,7 @@ Check the previously inserted key:
 ```console
 $ kubectl exec $RELEASE_NAME-mongodb-replicaset-1 -- mongo --eval="rs.slaveOk(); db.test.find({key1:{\$exists:true}}).forEach(printjson)"
 
-MongoDB shell version: 3.4.5
+MongoDB shell version: 3.6.3
 connecting to: mongodb://127.0.0.1:27017
 { "_id" : ObjectId("57b180b1a7311d08f2bfb617"), "key1" : "value1" }
 ```

@@ -21,6 +21,7 @@ if [[ "$AUTH" == "true" ]]; then
     admin_user="$ADMIN_USER"
     admin_password="$ADMIN_PASSWORD"
     admin_auth=(-u "$admin_user" -p "$admin_password")
+    key_arg=(--keyFile=/keydir/key.txt)
 fi
 
 function log() {
@@ -93,7 +94,7 @@ fi
 log "Peers: ${peers[*]}"
 
 log "Starting a MongoDB instance..."
-mongod --config /data/configdb/mongod.conf >> /work-dir/log.txt 2>&1 &
+mongod --config /data/configdb/mongod.conf --replSet="$replica_set" --port=27017 "${key_arg[@]}" --bind_ip_all >> /work-dir/log.txt 2>&1 &
 
 log "Waiting for MongoDB to be ready..."
 until mongo "${ssl_args[@]}" --eval "db.adminCommand('ping')"; do

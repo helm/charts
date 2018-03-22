@@ -2,6 +2,8 @@ replicas: 3
 minAvailable: 1
 port: 27017
 
+replicaSetName: rs0
+
 auth:
   enabled: false
   # adminUser: username
@@ -75,20 +77,3 @@ tls:
 
 # Entries for the MongoDB config file
 configmap:
-  storage:
-    dbPath: /data/db
-  net:
-    port: 27017
-    # For Mongo 3.6 we also need to bind to outside world
-    bindIpAll: true
-    # Uncomment for TLS support
-    # ssl:
-    #   mode: requireSSL
-    #   CAFile: /ca/tls.crt
-    #   PEMKeyFile: /work-dir/mongo.pem
-  replication:
-    replSetName: rs0
-  # Uncomment for TLS support or keyfile access control without TLS
-  # security:
-  #   authorization: enabled
-  #   keyFile: /keydir/key.txt
