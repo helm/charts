@@ -27,12 +27,12 @@ config:
     containers.ids:
     - "*"
     processors:
-      - add_kubernetes_metadata:
-          in_cluster: true
-      - drop_event:
-          when:
-            equals:
-              kubernetes.container.name: "filebeat"        
+    - add_kubernetes_metadata:
+        in_cluster: true
+    - drop_event:
+        when:
+          equals:
+            kubernetes.container.name: "filebeat"
 
   output.file:
     path: "/usr/share/filebeat/data"
