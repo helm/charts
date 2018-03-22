@@ -36,15 +36,15 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the Searchlight chart and their default values.
+The following table lists the configurable parameters of the Searchlight chart and their default values.
 
 
 | Parameter                 | Description                                                       | Default                |
 |---------------------------|-------------------------------------------------------------------|------------------------|
 | `operator.image`          | operator container image                                          | `appscode/searchlight` |
-| `operator.tag`            | operator image tag                                                | `4.0.0`                |
+| `operator.tag`            | operator image tag                                                | `5.0.0`                |
 | `icinga.image`            | icinga container image                                            | `appscode/icinga`      |
-| `icinga.tag`              | icinga container image tag                                        | `4.0.0-k8s`            |
+| `icinga.tag`              | icinga container image tag                                        | `5.0.0-k8s`            |
 | `ido.image`               | ido container image                                               | `appscode/postgress`   |
 | `ido.tag`                 | ido container image tag                                           | `9.5-alpine`           |
 | `imagePullSecrets`        | Specify image pull secrets                                        | `nil` (does not add image pull secrets to deployed pods) |

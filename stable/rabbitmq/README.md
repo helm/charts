@@ -41,7 +41,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the RabbitMQ chart and their default values.
+The following table lists the configurable parameters of the RabbitMQ chart and their default values.
 
 |          Parameter          |                       Description                       |                         Default                          |
 |-----------------------------|---------------------------------------------------------|----------------------------------------------------------|
@@ -56,13 +56,16 @@ The following tables lists the configurable parameters of the RabbitMQ chart and
 | `rabbitmqClusterNodeName`   | Node name to cluster with. e.g.: `clusternode@hostname` | `nil`                                                    |
 | `rabbitmqVhost`             | RabbitMQ application vhost                              | `/`                                                      |
 | `rabbitmqManagerPort`       | RabbitMQ Manager port                                   | `15672`                                                  |
-| `rabbitmqDiskFreeLimit`     | Disk free limit                                         | `"8GiB"`                                    |
+| `rabbitmqDiskFreeLimit`     | Disk free limit                                         | `"6GiB"`                                                 |
 | `serviceType`               | Kubernetes Service type                                 | `ClusterIP`                                              |
 | `persistence.enabled`       | Use a PVC to persist data                               | `true`                                                   |
 | `persistence.existingClaim` | Use an existing PVC to persist data                     | `nil`                                                    |
 | `persistence.storageClass`  | Storage class of backing PVC                            | `nil` (uses alpha storage class annotation)              |
 | `persistence.accessMode`    | Use volume as ReadOnly or ReadWrite                     | `ReadWriteOnce`                                          |
 | `persistence.size`          | Size of data volume                                     | `8Gi`                                                    |
+| `nodeSelector`              | Node labels for pod assignment                          | {}                                                       |
+| `affinity`                  | Affinity settings for pod assignment                    | {}                                                       |
+| `tolerations`               | Toleration labels for pod assignment                    | []                                                       |
 
 The above parameters map to the env variables defined in [bitnami/rabbitmq](http://github.com/bitnami/bitnami-docker-rabbitmq). For more information please refer to the [bitnami/rabbitmq](http://github.com/bitnami/bitnami-docker-rabbitmq) image documentation.
 
@@ -74,7 +77,7 @@ $ helm install --name my-release \
     stable/rabbitmq
 ```
 
-The above command sets the RabbitMQ admin username and password to `admin` and `secretpassword` respectively. Additionally the secure erlang cookie is set to `secretcookie`.
+The above command sets the RabbitMQ admin username and password to `admin` and `secretpassword` respectively. Additionally, the secure erlang cookie is set to `secretcookie`.
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
@@ -90,12 +93,12 @@ The [Bitnami RabbitMQ](https://github.com/bitnami/bitnami-docker-rabbitmq) image
 
 The chart mounts a [Persistent Volume](http://kubernetes.io/docs/user-guide/persistent-volumes/) volume at this location. By default, the volume is created using dynamic volume provisioning. An existing PersistentVolumeClaim can also be defined.
 
-
 ### Existing PersistentVolumeClaims
 
 1. Create the PersistentVolume
 1. Create the PersistentVolumeClaim
 1. Install the chart
+
 ```bash
 $ helm install --set persistence.existingClaim=PVC_NAME rabbitmq
 ```

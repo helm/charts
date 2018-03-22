@@ -53,7 +53,7 @@ spec:
       - name: certs
         {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ template "openvpn.fullname" . }}
+          claimName: {{ if .Values.persistence.existingClaim }}{{ .Values.persistence.existingClaim }}{{- else }}{{ template "openvpn.fullname" . }}{{- end }}
         {{- else }}
         emptyDir: {}
         {{- end -}}

@@ -47,14 +47,15 @@ deletes the release.
 
 ## Configuration
 
-The following tables lists the configurable parameters of the Verdaccio chart
+The following table lists the configurable parameters of the Verdaccio chart
 and their default values.
 
 | Parameter                          | Description                                                     | Default                                                  |
 | ---------------------------------- | --------------------------------------------------------------- | -------------------------------------------------------- |
 | `customConfigMap`                  | Use a custom ConfigMap                                          | `false`                                                  |
 | `image.pullPolicy`                 | Image pull policy                                               | `Always` if `image` tag is `latest`, else `IfNotPresent` |
-| `image.repository`                 | Verdaccio image                                                 | `verdaccio/verdaccio:{VERSION}`                          |
+| `image.repository`                 | Verdaccio container image repository                            | `verdaccio/verdaccio`                                    |
+| `image.tag`                        | Verdaccio container image tag                                   | `2.7.1`                                                  |
 | `nodeSelector`                     | Node labels for pod assignment                                  | `{}`                                                     |
 | `persistence.accessMode`           | PVC Access Mode for Verdaccio volume                            | `ReadWriteOnce`                                          |
 | `persistence.enabled`              | Enable persistence using PVC                                    | `true`                                                   |

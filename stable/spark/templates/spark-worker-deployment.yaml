@@ -25,7 +25,7 @@ spec:
       containers:
         - name: {{ template "worker-fullname" . }}
           image: "{{ .Values.Worker.Image }}:{{ .Values.Worker.ImageTag }}"
-          command: ["/opt/spark/bin/spark-class", "org.apache.spark.deploy.worker.Worker", "spark://{{ template "master-fullname" . }}:{{ .Values.Master.ServicePort }}", "--webui-port", "{{ .Values.Worker.ContainerPort }}"]
+          command: ["{{ .Values.Spark.Path }}/bin/spark-class", "org.apache.spark.deploy.worker.Worker", "spark://{{ template "master-fullname" . }}:{{ .Values.Master.ServicePort }}"]
           ports:
             - containerPort: {{ .Values.Worker.ContainerPort }}
           resources:
@@ -37,3 +37,5 @@ spec:
             value: {{ default "1g" .Values.Worker.DaemonMemory | quote }}
           - name: SPARK_WORKER_MEMORY
             value: {{ default "1g" .Values.Worker.ExecutorMemory | quote }}
+          - name: SPARK_WORKER_WEBUI_PORT
+            value: {{ .Values.WebUi.ContainerPort | quote }}

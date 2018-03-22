@@ -43,7 +43,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the WordPress chart and their default values.
+The following table lists the configurable parameters of the WordPress chart and their default values.
 
 | Parameter                            | Description                                | Default                                                    |
 | -------------------------------      | -------------------------------            | ---------------------------------------------------------- |
@@ -55,21 +55,30 @@ The following tables lists the configurable parameters of the WordPress chart an
 | `wordpressFirstName`                 | First name                                 | `FirstName`                                                |
 | `wordpressLastName`                  | Last name                                  | `LastName`                                                 |
 | `wordpressBlogName`                  | Blog name                                  | `User's Blog!`                                             |
-| `allowEmptyPassword`                 | Allow DB blank passwords                   | `yes`                                          |
+| `allowEmptyPassword`                 | Allow DB blank passwords                   | `yes`                                                      |
 | `smtpHost`                           | SMTP host                                  | `nil`                                                      |
 | `smtpPort`                           | SMTP port                                  | `nil`                                                      |
 | `smtpUser`                           | SMTP user                                  | `nil`                                                      |
 | `smtpPassword`                       | SMTP password                              | `nil`                                                      |
 | `smtpUsername`                       | User name for SMTP emails                  | `nil`                                                      |
 | `smtpProtocol`                       | SMTP protocol [`tls`, `ssl`]               | `nil`                                                      |
+| `mariadb.enabled`                    | Deploy MariaDB container(s)                | `true`                                                     |
 | `mariadb.mariadbRootPassword`        | MariaDB admin password                     | `nil`                                                      |
-| `mariadb.mariadbDatabase`            | Database name to create                    | `bitnami_wordpress`                            |
-| `mariadb.mariadbUser`                | Database user to create                    | `bn_wordpress`                                 |
-| `mariadb.mariadbPassword`            | Password for the database                  | _random 10 character long alphanumeric string_ |
+| `mariadb.mariadbDatabase`            | Database name to create                    | `bitnami_wordpress`                                        |
+| `mariadb.mariadbUser`                | Database user to create                    | `bn_wordpress`                                             |
+| `mariadb.mariadbPassword`            | Password for the database                  | _random 10 character long alphanumeric string_             |
+| `externalDatabase.host`              | Host of the external database              | `localhost`                                                |
+| `externalDatabase.user`              | Existing username in the external db       | `bn_wordpress`                                             |
+| `externalDatabase.password`          | Password for the above username            | `nil`                                                      |
+| `externalDatabase.database`          | Name of the existing database              | `bitnami_wordpress`                                        |
+| `externalDatabase.port`              | Database port number                       | `3306`                                        |
 | `serviceType`                        | Kubernetes Service type                    | `LoadBalancer`                                             |
-| `healthcheckHttps`                   | Use https for liveliness and readiness     | `false`                                             |
+| `nodePorts.http`                     | Kubernetes http node port                  | `""`                                                       |
+| `nodePorts.https`                    | Kubernetes https node port                 | `""`                                                       |
+| `healthcheckHttps`                   | Use https for liveliness and readiness     | `false`                                                    |
 | `ingress.enabled`                    | Enable ingress controller resource         | `false`                                                    |
 | `ingress.hosts[0].name`              | Hostname to your WordPress installation    | `wordpress.local`                                          |
+| `ingress.hosts[0].path`              | Path within the url structure              | `/`                                                        |
 | `ingress.hosts[0].tls`               | Utilize TLS backend in ingress             | `false`                                                    |
 | `ingress.hosts[0].tlsSecret`         | TLS Secret (certificates)                  | `wordpress.local-tls-secret`                               |
 | `ingress.hosts[0].annotations`       | Annotations for this host's ingress record | `[]`                                                       |
@@ -92,7 +101,7 @@ $ helm install --name my-release \
     stable/wordpress
 ```
 
-The above command sets the WordPress administrator account username and password to `admin` and `password` respectively. Additionally it sets the MariaDB `root` user password to `secretpassword`.
+The above command sets the WordPress administrator account username and password to `admin` and `password` respectively. Additionally, it sets the MariaDB `root` user password to `secretpassword`.
 
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 
@@ -109,6 +118,17 @@ The [Bitnami WordPress](https://github.com/bitnami/bitnami-docker-wordpress) ima
 Persistent Volume Claims are used to keep the data across deployments. This is known to work in GCE, AWS, and minikube.
 See the [Configuration](#configuration) section to configure the PVC or to disable persistence.
 
+## Using an external database
+
+Sometimes you may want to have Wordpress connect to an external database rather than installing one inside your cluster, e.g. to use a managed database service, or use run a single database server for all your applications. To do this, the chart allows you to specify credentials for an external database under the [`externalDatabase` parameter](#configuration). You should also disable the MariaDB installation with the `mariadb.enabled` option. For example:
+
+```console
+$ helm install stable/wordpress \
+    --set mariadb.enabled=false,externalDatabase.host=myexternalhost,externalDatabase.user=myuser,externalDatabase.password=mypassword,externalDatabase.database=mydatabase,externalDatabase.port=3306
+```
+
+Note also if you disable MariaDB per above you MUST supply values for the `externalDatabase` connection.
+
 ## Ingress
 
 This chart provides support for ingress resources. If you have an
@@ -119,16 +139,17 @@ the ingress controller to service your WordPress application.
 To enable ingress integration, please set `ingress.enabled` to `true`
 
 ### Hosts
+
 Most likely you will only want to have one hostname that maps to this
-WordPress installation, however it is possible to have more than one
+WordPress installation, however, it is possible to have more than one
 host.  To facilitate this, the `ingress.hosts` object is an array.
 
 For each item, please indicate a `name`, `tls`, `tlsSecret`, and any
 `annotations` that you may want the ingress controller to know about.
 
-Indicating TLS will cause WordPress to generate HTTPS urls, and
+Indicating TLS will cause WordPress to generate HTTPS URLs, and
 WordPress will be connected to at port 443.  The actual secret that
-`tlsSecret` references does not have to be generated by this chart.
+`tlsSecret` references do not have to be generated by this chart.
 However, please note that if TLS is enabled, the ingress record will not
 work until this secret exists.
 
@@ -138,12 +159,13 @@ document does a good job of indicating which annotation is supported by
 many popular ingress controllers.
 
 ### TLS Secrets
+
 This chart will facilitate the creation of TLS secrets for use with the
-ingress controller, however this is not required.  There are three
+ingress controller, however, this is not required.  There are three
 common use cases:
 
-* helm generates / manages certificate secrets
-* user generates / manages certificates separately
+* helm generates/manages certificate secrets
+* user generates/manages certificates separately
 * an additional tool (like [kube-lego](https://kubeapps.com/charts/stable/kube-lego))
 manages the secrets for the application
 

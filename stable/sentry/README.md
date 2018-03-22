@@ -30,7 +30,7 @@ To install the chart with the release name `my-release`:
 $ helm install --name my-release --wait stable/sentry
 ```
 
-> **Note**: We have to use the --wait flag for initial creation because the database creationg takes longer than the default 300 seconds
+> **Note**: We have to use the --wait flag for initial creation because the database creation takes longer than the default 300 seconds
 
 The command deploys Sentry on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
 
@@ -48,12 +48,12 @@ The command removes all the Kubernetes components associated with the chart and 
 
 > **Warning**: Jobs are not deleted automatically. They need to be manually deleted
 ```consule
-$ helm delete job/sentry-db-init job/sentry-user-create
+$ kubectl delete job/sentry-db-init job/sentry-user-create
 ```
 
 ## Configuration
 
-The following tables lists the configurable parameters of the Sentry chart and their default values.
+The following table lists the configurable parameters of the Sentry chart and their default values.
 
 | Parameter                            | Description                                | Default                                                    |
 | -------------------------------      | -------------------------------            | ---------------------------------------------------------- |

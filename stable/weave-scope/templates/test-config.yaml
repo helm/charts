@@ -1,0 +1,18 @@
+{{- $frontend := index .Values "weave-scope-frontend" -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "weave-scope.fullname" . }}-tests
+  labels:
+    {{- include "weave-scope.helm_std_labels" . | indent 4 }}
+data:
+  run.sh: |-
+{{ if $frontend.enabled }}
+    @test "Testing Weave Scope UI is accessible" {
+      curl --retry 12 --retry-delay 10 http://{{ .Values.global.service.name | default (include "toplevel.fullname" .) }}.{{ .Release.Namespace }}.svc:{{ .Values.global.service.port }}
+    }
+{{- else }}
+    @test "Null test if the frontend is not installed" {
+      true
+    }
+{{- end }}

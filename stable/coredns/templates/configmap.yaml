@@ -5,33 +5,31 @@ metadata:
 data:
   Corefile: |-
     .:53 {
-      {{- range $key, $middleware := .Values.middleware }}
-      {{- if $middleware.enabled }}
+      {{- range $key, $plugin := .Values.plugins }}
+      {{- if $plugin.enabled }}
       {{- if eq "kubernetes" $key }}
-        kubernetes {{ $middleware.clusterDomain }} {
-          cidrs {{ $middleware.clusterCidr }}
-        }
+        kubernetes {{ $plugin.clusterDomain }} {{ $plugin.clusterCidr }}
       {{- end }}
       {{- if eq "etcd" $key }}
-        etcd {{ range $middleware.zones }}{{ . }} {{ end }}{
-          {{ if $middleware.path }}path {{ $middleware.path }}{{ end }}
-          endpoint {{ $middleware.endpoint }}
+        etcd {{ range $plugin.zones }}{{ . }} {{ end }}{
+          {{ if $plugin.path }}path {{ $plugin.path }}{{ end }}
+          endpoint {{ $plugin.endpoint }}
         }
       {{- end }}
       {{- if eq "loadbalance" $key }}
-        loadbalance {{ default "round_robin" $middleware.policy }}
+        loadbalance {{ default "round_robin" $plugin.policy }}
       {{- end }}
       {{- if eq "log" $key }}
-        log {{ default "stdout" $middleware.file }}
+        log
       {{- end }}
       {{- if eq "errors" $key }}
-        errors {{ default "stderr" $middleware.file }}
+        errors
       {{- end }}
       {{- if eq "health" $key }}
         health
       {{- end }}
       {{- if eq "prometheus" $key }}
-        prometheus 0.0.0.0:{{ $middleware.port }}
+        prometheus 0.0.0.0:{{ $plugin.port }}
       {{- end }}
       {{- if eq "proxy" $key }}
         proxy . /etc/resolv.conf

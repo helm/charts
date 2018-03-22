@@ -3,15 +3,15 @@ kind: Deployment
 metadata:
   name: {{ template "fullname" . }}-sentinel
 spec:
-  replicas: {{ .Values.replicas.sentinel }}
+  replicas: {{ .Values.replicas.sentinels }}
   template:
     metadata:
       labels:
-        name: redis-sentinel
-        redis-sentinel: "true"
-        role: sentinel
+        app: "redis-ha"
+        name: {{ template "fullname" . }}-sentinel
 {{ include "labels.standard" . | indent 8 }}
     spec:
+      serviceAccountName: {{ template "redis-ha.serviceAccountName" . }}
       {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
@@ -28,5 +28,14 @@ spec:
         env:
           - name: SENTINEL
             value: "true"
+          - name: REDIS_CHART_PREFIX
+            value: {{ template "fullname" . }}-
+{{- if .Values.auth }}
+          - name: REDIS_PASS
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "fullname" . }}
+                key: auth
+{{- end }}
         ports:
           - containerPort: 26379

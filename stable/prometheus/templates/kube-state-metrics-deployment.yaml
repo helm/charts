@@ -27,6 +27,12 @@ spec:
         - name: {{ template "prometheus.name" . }}-{{ .Values.kubeStateMetrics.name }}
           image: "{{ .Values.kubeStateMetrics.image.repository }}:{{ .Values.kubeStateMetrics.image.tag }}"
           imagePullPolicy: "{{ .Values.kubeStateMetrics.image.pullPolicy }}"
+        {{- if .Values.kubeStateMetrics.args }}
+          args:
+          {{- range $key, $value := .Values.kubeStateMetrics.args }}
+            - --{{ $key }}={{ $value }}
+          {{- end }}
+        {{- end }}
           ports:
             - name: metrics
               containerPort: 8080
@@ -35,6 +41,10 @@ spec:
     {{- if .Values.kubeStateMetrics.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.kubeStateMetrics.nodeSelector | indent 8 }}
+    {{- end }}
+    {{- if .Values.kubeStateMetrics.tolerations }}
+      tolerations:
+{{ toYaml .Values.kubeStateMetrics.tolerations | indent 8 }}
     {{- end }}
     {{- if .Values.kubeStateMetrics.affinity }}
       affinity:

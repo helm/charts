@@ -42,21 +42,24 @@ spec:
           mountPath: /vault/config/
         - name: vault-root
           mountPath: /root/
+        {{- range .Values.vault.customSecrets }}
+        - name: {{ .secretName }}
+          mountPath: {{ .mountPath }}
+        {{- end }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
+      {{- if .Values.affinity }}
       affinity:
-        podAntiAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-          - weight: 100
-            podAffinityTerm:
-              topologyKey: kubernetes.io/hostname
-              labelSelector:
-                matchLabels:
-                  app: {{ template "vault.fullname" . }}
-                  release: {{ .Release.Name | quote }}
+{{ tpl .Values.affinity . | indent 8 }}
+      {{- end }}
       volumes:
         - name: vault-config
           configMap:
             name: "{{ template "vault.fullname" . }}-config-{{ .Release.Revision }}"
         - name: vault-root
           emptyDir: {}
+        {{- range .Values.vault.customSecrets }}
+        - name: {{ .secretName }}
+          secret:
+            secretName: {{ .secretName }}
+        {{- end }}

@@ -12,7 +12,11 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 */}}
 {{- define "nginx-ingress.fullname" -}}
 {{- $name := default .Chart.Name .Values.nameOverride -}}
+{{- if contains $name .Release.Name -}}
+{{- .Release.Name | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
 {{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
 {{- end -}}
 
 {{/*
@@ -21,13 +25,17 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 */}}
 {{- define "nginx-ingress.controller.fullname" -}}
 {{- $name := default .Chart.Name .Values.nameOverride -}}
+{{- if contains $name .Release.Name -}}
+{{- printf "%s-%s" .Release.Name .Values.controller.name | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
 {{- printf "%s-%s-%s" .Release.Name $name .Values.controller.name | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
 {{- end -}}
 
 {{/*
 Construct the path for the publish-service.
 
-By convention this will simply use the <namesapce>/<controller-name> to match the name of the
+By convention this will simply use the <namespace>/<controller-name> to match the name of the
 service generated.
 
 Users can provide an override for an explicit service they want bound via `.Values.controller.publishService.pathOverride`
@@ -36,7 +44,7 @@ Users can provide an override for an explicit service they want bound via `.Valu
 {{- define "nginx-ingress.controller.publishServicePath" -}}
 {{- $defServiceName := printf "%s/%s" .Release.Namespace (include "nginx-ingress.controller.fullname" .) -}}
 {{- $servicePath := default $defServiceName .Values.controller.publishService.pathOverride }}
-{{- print $servicePath | trunc 63 | trimSuffix "-" -}}
+{{- print $servicePath | trimSuffix "-" -}}
 {{- end -}}
 
 {{/*
@@ -45,5 +53,9 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 */}}
 {{- define "nginx-ingress.defaultBackend.fullname" -}}
 {{- $name := default .Chart.Name .Values.nameOverride -}}
+{{- if contains $name .Release.Name -}}
+{{- printf "%s-%s" .Release.Name .Values.defaultBackend.name | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
 {{- printf "%s-%s-%s" .Release.Name $name .Values.defaultBackend.name | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
 {{- end -}}

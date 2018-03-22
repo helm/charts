@@ -19,15 +19,41 @@ spec:
         image: "{{ .Values.image }}"
         imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
         env:
+        - name: ALLOW_EMPTY_PASSWORD
+        {{- if .Values.allowEmptyPassword }}
+          value: "yes"
+        {{- else }}
+          value: "no"
+        {{- end }}
         - name: MARIADB_HOST
+        {{- if .Values.mariadb.enabled }}
           value: {{ template "drupal.mariadb.fullname" . }}
+        {{- else }}
+          value: {{ default "" .Values.externalDatabase.host | quote }}
+        {{- end }}
         - name: MARIADB_PORT_NUMBER
           value: "3306"
-        - name: MARIADB_PASSWORD
+        - name: DRUPAL_DATABASE_NAME
+        {{- if .Values.mariadb.enabled }}
+          value: {{ default "" .Values.mariadb.mariadbDatabase | quote }}
+        {{- else }}
+          value: {{ default "" .Values.externalDatabase.database | quote }}
+        {{- end }}
+        - name: DRUPAL_DATABASE_USER
+        {{- if .Values.mariadb.enabled }}
+          value: {{ default "" .Values.mariadb.mariadbUser | quote }}
+        {{- else }}
+          value: {{ default "" .Values.externalDatabase.user | quote }}
+        {{- end }}
+        - name: DRUPAL_DATABASE_PASSWORD
+        {{- if .Values.mariadb.enabled }}
           valueFrom:
             secretKeyRef:
               name: {{ template "drupal.mariadb.fullname" . }}
-              key: mariadb-root-password
+              key: mariadb-password
+        {{- else }}
+          value: {{ default "" .Values.externalDatabase.password | quote }}
+        {{- end }}
         - name: DRUPAL_USERNAME
           value: {{ default "" .Values.drupalUsername | quote }}
         - name: DRUPAL_PASSWORD

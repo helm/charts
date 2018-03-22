@@ -22,7 +22,7 @@ $ helm install --name my-release stable/consul
 
 ## Configuration
 
-The following tables lists the configurable parameters of the consul chart and their default values.
+The following table lists the configurable parameters of the consul chart and their default values.
 
 | Parameter               | Description                           | Default                                                    |
 | ----------------------- | ----------------------------------    | ---------------------------------------------------------- |
@@ -35,6 +35,7 @@ The following tables lists the configurable parameters of the consul chart and t
 | `DatacenterName`        | Consul Datacenter Name                | `dc1` (The consul default)                                 |
 | `DisableHostNodeId`     | Disable Node Id creation (uses random)| `false`                                                    |
 | `EncryptGossip`         | Whether or not gossip is encrypted    | `true`                                                     |
+| `GossipKey`             | Gossip-key to use by all members      | `nil`                                                      |
 | `Storage`               | Persistent volume size                | `1Gi`                                                      |
 | `StorageClass`          | Persistent volume storage class       | `nil`                                                      |
 | `HttpPort`              | Consul http listening port            | `8500`                                                     |
@@ -48,8 +49,8 @@ The following tables lists the configurable parameters of the consul chart and t
 | `ConsulDnsPort`         | Container dns listening port          | `8600`                                                     |
 | `antiAffinity`          | Consul pod anti-affinity setting      | `hard`                                                     |
 | `maxUnavailable`        | Pod disruption Budget maxUnavailable  | `1`                                                        |
-| `ui.enabled`            | Enable Consul Web UI                  | `false`                                                    |
-| `uiService.enabled`     | Create dedicated Consul Web UI svc    | `false`                                                    |
+| `ui.enabled`            | Enable Consul Web UI                  | `true`                                                    |
+| `uiService.enabled`     | Create dedicated Consul Web UI svc    | `true`                                                    |
 | `uiService.type`        | Dedicate Consul Web UI svc type       | `NodePort`                                                 |
 | `test.image`            | Test container image requires kubectl + bash (used for helm test)      | `lachlanevenson/k8s-kubectl`                                                 |
 | `test.imageTag`         | Test container image tag  (used for helm test)     | `v1.4.8-bash`                                                 |

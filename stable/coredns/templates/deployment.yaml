@@ -32,12 +32,13 @@ spec:
         {{- end }}
         release: {{ .Release.Name | quote }}
       annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
         {{- if .Values.isClusterService }}
         scheduler.alpha.kubernetes.io/critical-pod: ''
         scheduler.alpha.kubernetes.io/tolerations: '[{"key":"CriticalAddonsOnly", "operator":"Exists"}]'
         {{- end }}
     spec:
-      {{- if .Values.middleware.kubernetes.enabled }}
+      {{- if .Values.plugins.kubernetes.enabled }}
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "coredns.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
       {{- end }}
       {{- if .Values.isClusterService }}
@@ -64,8 +65,8 @@ spec:
           name: dns-tcp
           protocol: TCP
         {{- end }}
-        {{- if .Values.middleware.prometheus.enabled }}
-        - containerPort: {{ .Values.middleware.prometheus.port }}
+        {{- if .Values.plugins.prometheus.enabled }}
+        - containerPort: {{ .Values.plugins.prometheus.port }}
           name: metrics
           protocol: TCP
         {{- end }}

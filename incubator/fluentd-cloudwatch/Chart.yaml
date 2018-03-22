@@ -1,5 +1,5 @@
 name: fluentd-cloudwatch
-version: 0.1.2
+version: 0.2.2
 appVersion: 0.1.1
 description: A Fluentd CloudWatch Helm chart for Kubernetes.
 icon: https://raw.githubusercontent.com/fluent/fluentd-docs/master/public/logo/Fluentd_square.png

@@ -1,28 +1,35 @@
-{{- if .Values.keycloak.ingress.enabled -}}
+{{- $ingress := .Values.keycloak.ingress -}}
+{{- if $ingress.enabled -}}
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: {{ template "keycloak.fullname" . }}
+{{- if $ingress.annotations }}
+  annotations:
+{{ toYaml $ingress.annotations | indent 4 }}
+{{- end }}
   labels:
     app: {{ template "keycloak.name" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
-{{- if .Values.keycloak.ingress.annotations }}
-  annotations:
-{{ toYaml .Values.keycloak.ingress.annotations | indent 4 }}
-{{- end }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
 spec:
-  rules:
-  - host: {{ .Values.keycloak.ingress.hostname }}
-    http:
-      paths:
-      - path: /
-        backend:
-          serviceName: {{ template "keycloak.fullname" . }}
-          servicePort: {{ .Values.keycloak.service.port }}
-{{- if .Values.keycloak.ingress.tls }}
+{{- if $ingress.tls.enabled }}
   tls:
-{{ toYaml .Values.keycloak.ingress.tls | indent 4 }}
-{{- end -}}
+    - hosts:
+      {{- range $ingress.hosts }}
+        - {{ . }}
+      {{- end }}
+      secretName: {{ template "keycloak.tlsSecret" . }}
+{{- end }}
+  rules:
+  {{- range $ingress.hosts }}
+    - host: {{ . }}
+      http:
+        paths:
+          - path: {{ $ingress.path }}
+            backend:
+              serviceName: {{ template "keycloak.fullname" $ }}-http
+              servicePort: http
+  {{- end }}
 {{- end -}}

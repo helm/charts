@@ -41,33 +41,38 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the Redis chart and their default values.
+The following table lists the configurable parameters of the Redis chart and their default values.
 
-|           Parameter           |                Description                       |           Default            |
-|-------------------------------|--------------------------------------------------|------------------------------|
-| `image`                       | Redis image                                      | `bitnami/redis:{VERSION}`    |
-| `imagePullPolicy`             | Image pull policy                                | `IfNotPresent`               |
-| `serviceType`                 | Kubernetes Service type                          | `ClusterIP`                  |
-| `usePassword`                 | Use password                                     | `true`                       |
-| `redisPassword`               | Redis password                                   | Randomly generated           |
-| `args`                        | Redis command-line args                          | []                           |
-| `persistence.enabled`         | Use a PVC to persist data                        | `true`                       |
-| `persistence.existingClaim`   | Use an existing PVC to persist data              | `nil`                        |
-| `persistence.storageClass`    | Storage class of backing PVC                     | `generic`                    |
-| `persistence.accessMode`      | Use volume as ReadOnly or ReadWrite              | `ReadWriteOnce`              |
-| `persistence.size`            | Size of data volume                              | `8Gi`                        |
-| `resources`                   | CPU/Memory resource requests/limits              | Memory: `256Mi`, CPU: `100m` |
-| `metrics.enabled`             | Start a side-car prometheus exporter             | `false`                      |
-| `metrics.image`               | Exporter image                                   | `oliver006/redis_exporter`   |
-| `metrics.imageTag`            | Exporter image                                   | `v0.11`                      |
-| `metrics.imagePullPolicy`     | Exporter image pull policy                       | `IfNotPresent`               |
-| `metrics.resources`           | Exporter resource requests/limit                 | Memory: `256Mi`, CPU: `100m` |
-| `nodeSelector`                | Node labels for pod assignment                   | {}                           |
-| `tolerations`                 | Toleration labels for pod assignment             | []                           |
-| `networkPolicy.enabled`       | Enable NetworkPolicy                             | `false`                      |
-| `networkPolicy.allowExternal` | Don't require client label for connections       | `true`                       |
-| `service.annotations`         | annotations for redis service                    | {}                           |
-| `service.loadBalancerIP`      | loadBalancerIP if service type is `LoadBalancer` | ``                           |
+|           Parameter           |                Description                        |           Default            |
+|-------------------------------|-------------------------------------------------- |------------------------------|
+| `image`                       | Redis image                                       | `bitnami/redis:{VERSION}`    |
+| `imagePullPolicy`             | Image pull policy                                 | `IfNotPresent`               |
+| `serviceType`                 | Kubernetes Service type                           | `ClusterIP`                  |
+| `usePassword`                 | Use password                                      | `true`                       |
+| `redisPassword`               | Redis password                                    | Randomly generated           |
+| `redisDisableCommands`        | Comma-separated list of Redis commands to disable | `FLUSHDB,FLUSHALL`           |
+| `args`                        | Redis command-line args                           | []                           |
+| `redisExtraFlags`             | Redis additional command line flags               | []                           |
+| `persistence.enabled`         | Use a PVC to persist data                         | `true`                       |
+| `persistence.path`            | Path to mount the volume at, to use other images  | `/bitnami`                   |
+| `persistence.subPath`         | Subdirectory of the volume to mount at            | `""`                         |
+| `persistence.existingClaim`   | Use an existing PVC to persist data               | `nil`                        |
+| `persistence.storageClass`    | Storage class of backing PVC                      | `generic`                    |
+| `persistence.accessMode`      | Use volume as ReadOnly or ReadWrite               | `ReadWriteOnce`              |
+| `persistence.size`            | Size of data volume                               | `8Gi`                        |
+| `resources`                   | CPU/Memory resource requests/limits               | Memory: `256Mi`, CPU: `100m` |
+| `metrics.enabled`             | Start a side-car prometheus exporter              | `false`                      |
+| `metrics.image`               | Exporter image                                    | `oliver006/redis_exporter`   |
+| `metrics.imageTag`            | Exporter image                                    | `v0.11`                      |
+| `metrics.imagePullPolicy`     | Exporter image pull policy                        | `IfNotPresent`               |
+| `metrics.resources`           | Exporter resource requests/limit                  | Memory: `256Mi`, CPU: `100m` |
+| `nodeSelector`                | Node labels for pod assignment                    | {}                           |
+| `tolerations`                 | Toleration labels for pod assignment              | []                           |
+| `networkPolicy.enabled`       | Enable NetworkPolicy                              | `false`                      |
+| `networkPolicy.allowExternal` | Don't require client label for connections        | `true`                       |
+| `service.annotations`         | annotations for redis service                     | {}                           |
+| `service.loadBalancerIP`      | loadBalancerIP if service type is `LoadBalancer`  | ``                           |
+| `securityContext.enabled`     | Enable security context                           | `true`                       |
 
 The above parameters map to the env variables defined in [bitnami/redis](http://github.com/bitnami/bitnami-docker-redis). For more information please refer to the [bitnami/redis](http://github.com/bitnami/bitnami-docker-redis) image documentation.
 
@@ -88,6 +93,7 @@ $ helm install --name my-release -f values.yaml stable/redis
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+> **Note for minikube users**: Current versions of minikube (v0.24.1 at the time of writing) provision `hostPath` persistent volumes that are only writable by root. Using chart defaults cause pod failure for the Redis pod as it attempts to write to the `/bitnami` directory. Consider installing Redis with `--set persistence.enabled=false`. See minikube issue [1990](https://github.com/kubernetes/minikube/issues/1990) for more information.
 
 ## NetworkPolicy
 
@@ -115,9 +121,11 @@ By default, the chart mounts a [Persistent Volume](http://kubernetes.io/docs/use
 1. Create the PersistentVolume
 1. Create the PersistentVolumeClaim
 1. Install the chart
+
 ```bash
 $ helm install --set persistence.existingClaim=PVC_NAME redis
 ```
 
 ## Metrics
-The chart optionally can start a metrics exporter for [prometheus](https://prometheus.io). The metrics endpoint (port 9121) is exposed in the service. Metrics can be scraped from within the cluster using something similar as the described in the [example Prometheus scrape configuration](https://github.com/prometheus/prometheus/blob/master/documentation/examples/prometheus-kubernetes.yml). If metrics are to be scraped from outside the cluster, the Kubenretes API proxy can be utilized to access the endpoint.
+
+The chart optionally can start a metrics exporter for [prometheus](https://prometheus.io). The metrics endpoint (port 9121) is exposed in the service. Metrics can be scraped from within the cluster using something similar as the described in the [example Prometheus scrape configuration](https://github.com/prometheus/prometheus/blob/master/documentation/examples/prometheus-kubernetes.yml). If metrics are to be scraped from outside the cluster, the Kubernetes API proxy can be utilized to access the endpoint.

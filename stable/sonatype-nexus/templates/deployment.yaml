@@ -21,6 +21,10 @@ spec:
         release: {{ .Release.Name }}
         heritage: {{ .Release.Service }}
     spec:
+     {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}    
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -43,6 +47,8 @@ spec:
             initialDelaySeconds: {{ .Values.service.readinessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.service.readinessProbe.periodSeconds }}
             failureThreshold: {{ .Values.service.readinessProbe.failureThreshold }}
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
           volumeMounts:
             - mountPath: /nexus-data
               name: nexus-data-volume

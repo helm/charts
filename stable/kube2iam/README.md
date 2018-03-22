@@ -37,7 +37,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the kube2iam chart and their default values.
+The following table lists the configurable parameters of the kube2iam chart and their default values.
 
 Parameter | Description | Default
 --- | --- | ---
@@ -55,7 +55,6 @@ Parameter | Description | Default
 `resources` | pod resource requests & limits | `{}`
 `updateStrategy` | Strategy for DaemonSet updates (requires Kubernetes 1.6+) | `OnDelete`
 `verbose` | Enable verbose output | `false`
-
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 

@@ -1,5 +1,5 @@
 name: spark
-version: 0.1.4
+version: 0.1.12
 description: Fast and general-purpose cluster computing system.
 home: http://spark.apache.org
 icon: http://spark.apache.org/images/spark-logo-trademark.png
