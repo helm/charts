@@ -67,7 +67,7 @@ tolerations: []
 ##
 nodeSelector: {}
 
-filter: 
+filter:
   KubeURL: https://kubernetes.default.svc:443
   KubeCAFILE: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
   KubeTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
