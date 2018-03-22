@@ -24,6 +24,8 @@ spec:
         env:
           - name: NEO4J_dbms_mode
             value: READ_REPLICA
+          - name: NEO4J_ACCEPT_LICENSE_AGREEMENT
+            value: "yes"
           - name: NEO4J_dbms_security_auth__enabled
             value: "{{ .Values.authEnabled }}"
           - name: NEO4J_causal__clustering_discovery__type

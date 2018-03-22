@@ -26,6 +26,8 @@ spec:
         env:
           - name: NEO4J_dbms_mode
             value: CORE
+          - name: NEO4J_ACCEPT_LICENSE_AGREEMENT
+            value: "yes"
           - name: NUMBER_OF_CORES
             value: "{{ .Values.core.numberOfServers }}"
           - name: AUTH_ENABLED
