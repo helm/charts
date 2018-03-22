@@ -9,14 +9,20 @@ metadata:
     heritage: "{{ .Release.Service }}"
 spec:
   ports:
+  # Port used to expose admission webhook apiserver
+  - name: admission
+    port: 443
+    targetPort: 8443
+  # Port used to expose Prometheus pushgateway
   - name: pushgateway
     port: 56789
     protocol: TCP
-    targetPort: pushgateway
-  - name: http
+    targetPort: 56789
+  # Port used to expose Prometheus metrics for the operator
+  - name: ops
     port: 56790
     protocol: TCP
-    targetPort: http
+    targetPort: 56790
   selector:
     app: "{{ template "stash.name" . }}"
     release: "{{ .Release.Name }}"
