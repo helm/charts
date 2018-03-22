@@ -21,8 +21,8 @@ data:
         "difficulty":  {{ .Values.geth.genesis.difficulty | quote }},
         "gasLimit": {{ .Values.geth.genesis.gasLimit | quote }},
         "alloc": {
-            {{- if .Values.geth.account.publicKey }}
-            {{ .Values.geth.account.publicKey | quote }}: {
+            {{- if .Values.geth.account.address }}
+            {{ .Values.geth.account.address | quote }}: {
                 "balance": "1000000000000000000000000"
             }
             {{- end }}

@@ -1,4 +1,4 @@
-{{- if and .Values.geth.account.publicKey .Values.geth.account.privateKey .Values.geth.account.secret }}
+{{- if and .Values.geth.account.address .Values.geth.account.privateKey .Values.geth.account.secret }}
 
   1. View the EthStats dashboard at:
 
@@ -48,7 +48,7 @@ instructions on how to create a Geth account.
 Once created, run:
 
     helm upgrade {{ .Release.Name }} \
-        --set geth.account.publicKey=YOUR-PUBLIC-KEY-HERE
+        --set geth.account.address=YOUR-ETHEREUM-ADDRESS-HERE
         --set geth.account.privateKey=YOUR-PRIVATE-KEY-HERE
         --set geth.account.secret=YOUR-SECRET-HERE
         incubator/ethereum

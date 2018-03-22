@@ -39,6 +39,6 @@ geth:
     # network will run. The Ethereum account will be used to seed
     # Ether and mined Ether will be deposited into this account.
     # ref: https://github.com/ethereum/go-ethereum/wiki/Managing-your-accounts
-    publicKey:
+    address:
     privateKey:
     secret:
