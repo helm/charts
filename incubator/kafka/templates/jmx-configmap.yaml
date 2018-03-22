@@ -13,9 +13,4 @@ data:
 {{- if .Values.metrics.jmx.kafkaConfig }}
 {{ toYaml .Values.metrics.jmx.kafkaConfig | indent 4 }}
 {{- end }}
-  jmx-zookeeper-prometheus.yaml: |+
-{{- if .Values.metrics.jmx.zookeeperConfig }}
-{{ toYaml .Values.metrics.jmx.zookeeperConfig | indent 4 }}
-{{- end }}
-
 {{- end }}
