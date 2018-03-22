@@ -4,7 +4,7 @@ Anyone is welcome to review pull requests. Besides our [technical requirements](
 
 ## Process
 
-The process to get a pull request merged is fairly simple. First, all required tests need to pass and the contributor needs to have a signed CLA. If there is a problem with some part of the test, such as a timeout issue, please contact one of the charts repository maintainers by commenting `cc @kubernetes/charts-maintainers`.
+The process to get a pull request merged is fairly simple. First, all required tests need to pass and the contributor needs to have a signed CLA. See [Charts Testing](https://github.com/kubernetes/charts/blob/master/test/README.md) for details on our CI system and how you can provide custom values for testing. If there is a problem with some part of the test, such as a timeout issue, please contact one of the charts repository maintainers by commenting `cc @kubernetes/charts-maintainers`.
 
 The charts repository uses the OWNERS files to provide merge access. If a chart has an OWNERS file, an approver listed in that file can approve the pull request. If the chart does not have an OWNERS file, an approver in the OWNERS file at the root of the repository can approve the pull request.
 
@@ -39,7 +39,7 @@ Resources and labels should follow some conventions. The standard resource metad
 name: {{ template "myapp.fullname" . }}
 labels:
   app: {{ template "myapp.name" . }}
-  chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+  chart: {{ template "myapp.chart" . }}
   release: {{ .Release.Name }}
   heritage: {{ .Release.Service }}
 ```
@@ -87,16 +87,16 @@ We officially support compatibility with the current and the previous minor vers
 ## Kubernetes Native Workloads.
 
 While reviewing Charts that contain workloads such as [Deployments](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/), [StatefulSets](https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/), [DaemonSets](https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/) and [Jobs](https://kubernetes.io/docs/concepts/workloads/controllers/jobs-run-to-completion/) the below points should be considered.  These are to be seen as best practices rather than strict enforcement.
-  
+
 1. Any workload that are stateless and long running (servers) in nature are to be created as Deployments.  Deployments in turn create ReplicaSets.
-2. Unless there is a compelling reason, ReplicaSets or ReplicationControllers should be avoided as workload types. 
+2. Unless there is a compelling reason, ReplicaSets or ReplicationControllers should be avoided as workload types.
 3. Workloads that are stateful in nature such as databases, key-value stores, message queues, in-memory caches are to be created as StatefulSets
 4. It is recommended that Deployments and StatefulSets configure their workloads with a [Pod Disruption Budget](https://kubernetes.io/docs/concepts/workloads/pods/disruptions/) for high availability.
 5. For workloads such as databases, KV stores, etc., that replicate data, it is recommended to configure interpod anti-affinity.
 6. It is recommended to have a default workload update strategy configured that is suitable for this chart.
-7. Batch workloads are to be created using Jobs. 
-8. It is best to always create workloads with the latest supported [api version](https://v1-8.docs.kubernetes.io/docs/api-reference/v1.8/) as older version are either deprecated or soon to be deprecated. 
-9. It is generally not advisable to provide hard [resource limits](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/#resource-requests-and-limits-of-pod-and-container) to workloads and leave it configurable unless the workload requires such quantity bare minimum to function. 
-10. As much as possible complex pre-app setups are configured using [init contianers](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/). 
+7. Batch workloads are to be created using Jobs.
+8. It is best to always create workloads with the latest supported [api version](https://v1-8.docs.kubernetes.io/docs/api-reference/v1.8/) as older version are either deprecated or soon to be deprecated.
+9. It is generally not advisable to provide hard [resource limits](https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/#resource-requests-and-limits-of-pod-and-container) to workloads and leave it configurable unless the workload requires such quantity bare minimum to function.
+10. As much as possible complex pre-app setups are configured using [init contianers](https://kubernetes.io/docs/concepts/workloads/pods/init-containers/).
 
-More [configuration](https://kubernetes.io/docs/concepts/configuration/overview/) best practices.  
+More [configuration](https://kubernetes.io/docs/concepts/configuration/overview/) best practices.
