@@ -70,8 +70,11 @@ spec:
               - --zookeeper
               - {{ template "zookeeper.url" . }}
               - --list
-          initialDelaySeconds: 30
-          timeoutSeconds: 5
+          initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.readinessProbe.successThreshold }}
+          failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
         ports:
         - containerPort: 9092
           name: kafka
