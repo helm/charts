@@ -69,8 +69,8 @@ external:
   firstListenerPort: 31090
   domain: cluster.local
   init:
-    image: "lachlanevenson/k8s-kubectl"
-    imageTag: "v1.9.3"
+    image: "lwolf/kubectl_deployer"
+    imageTag: "0.4"
     imagePullPolicy: "IfNotPresent"
 
 ## Configuration Overrides. Specify any Kafka settings you would like set on the StatefulSet

@@ -28,8 +28,10 @@ spec:
       - name: init-ext
         image: "{{ .Values.external.init.image }}:{{ .Values.external.init.imageTag }}"
         imagePullPolicy: "{{ .Values.external.init.imagePullPolicy }}"
-        args:
-        - -n ${POD_NAMESPACE} label pods ${POD_NAME} pod=${POD_NAME}
+        command:
+          - sh
+          - -euxc
+          - "kubectl label pods ${POD_NAME} --namespace ${POD_NAMESPACE} pod=${POD_NAME}"
         env:
           - name: POD_NAME
             valueFrom:
