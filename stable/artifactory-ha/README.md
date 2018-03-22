@@ -305,6 +305,11 @@ The following table lists the configurable parameters of the artifactory chart a
 | `nginx.service.type`        | Nginx service type                | `LoadBalancer`                                         |
 | `nginx.service.loadBalancerSourceRanges`| Nginx service array of IP CIDR ranges to whitelist (only when service type is LoadBalancer) |  |
 | `nginx.loadBalancerIP`| Provide Static IP to to configure with Nginx |  |
+| `nginx.externalPortHttp` | Nginx service external port | `80`   |
+| `nginx.internalPortHttp` | Nginx service internal port | `80`   |
+| `nginx.externalPortHttps` | Nginx service external port | `443`   |
+| `nginx.internalPortHttps` | Nginx service internal port | `443`   |
+| `nginx.tlsSecretName` |  SSL secret that will be used by the Nginx pod |    |
 | `nginx.env.ssl`                   | Nginx Environment enable ssl               | `true`                                  |
 | `nginx.resources.requests.memory` | Nginx initial memory request               | `250Mi`                                 |
 | `nginx.resources.requests.cpu`    | Nginx initial cpu request                  | `100m`                                  |

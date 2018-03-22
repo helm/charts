@@ -200,8 +200,28 @@ nginx:
     loadBalancerSourceRanges: []
     ## Provide static ip address
     loadBalancerIP:
+  externalPortHttp: 80
+  internalPortHttp: 80
+  externalPortHttps: 443
+  internalPortHttps: 443
+  ## The SSL secret that will be used by the Nginx pod
+  # tlsSecretName: chart-example-tls
   env:
     ssl: true
+#    artUrl: "http://artifactory:8081/artifactory"
+  persistence:
+    mountPath: "/var/opt/jfrog/nginx"
+    enabled: false
+    accessMode: ReadWriteOnce
+    size: 5Gi
+    ## nginx data Persistent Volume Storage Class
+    ## If defined, storageClassName: <storageClass>
+    ## If set to "-", storageClassName: "", which disables dynamic provisioning
+    ## If undefined (the default) or set to null, no storageClassName spec is
+    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+    ##   GKE, AWS & OpenStack)
+    ##
+    # storageClass: "-"
   resources: {}
   #  requests:
   #    memory: "250Mi"

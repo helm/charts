@@ -133,6 +133,7 @@ The following table lists the configurable parameters of the artifactory chart a
 | `nginx.internalPortHttp` | Nginx service internal port | `80`   |
 | `nginx.externalPortHttps` | Nginx service external port | `443`   |
 | `nginx.internalPortHttps` | Nginx service internal port | `443`   |
+| `nginx.tlsSecretName` |  SSL secret that will be used by the Nginx pod |    |
 | `nginx.env.artUrl` | Nginx Environment variable Artifactory URL | `"http://artifactory:8081/artifactory"`   |
 | `nginx.env.ssl` | Nginx Environment enable ssl | `true`   |
 | `nginx.persistence.mountPath` | Nginx persistence volume mount path | `"/var/opt/jfrog/nginx"`   |

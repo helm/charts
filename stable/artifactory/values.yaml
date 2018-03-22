@@ -93,8 +93,10 @@ nginx:
   internalPortHttp: 80
   externalPortHttps: 443
   internalPortHttps: 443
+  ## The SSL secret that will be used by the Nginx pod
+  # tlsSecretName: chart-example-tls
   env:
-    artUrl: "http://artifactory:8081/artifactory"
+#    artUrl: "http://artifactory:8081/artifactory"
     ssl: true
   persistence:
     mountPath: "/var/opt/jfrog/nginx"
