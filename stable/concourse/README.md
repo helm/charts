@@ -1,6 +1,6 @@
 # Concourse Helm Chart
 
-[Concourse](https://concourse.ci/) is a simple and scalable CI system.
+[Concourse](https://concourse-ci.org/) is a simple and scalable CI system.
 
 ## TL;DR;
 
@@ -10,7 +10,7 @@ $ helm install stable/concourse
 
 ## Introduction
 
-This chart bootstraps a [Concourse](https://concourse.ci/) deployment on a [Kubernetes](https://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
+This chart bootstraps a [Concourse](https://concourse-ci.org/) deployment on a [Kubernetes](https://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
 ## Prerequisites Details
 
@@ -63,12 +63,12 @@ The worker's Liveness Probe will trigger a restart of the worker if it detects u
 
 ## Configuration
 
-The following tables lists the configurable parameters of the Concourse chart and their default values.
+The following table lists the configurable parameters of the Concourse chart and their default values.
 
 | Parameter               | Description                           | Default                                                    |
 | ----------------------- | ----------------------------------    | ---------------------------------------------------------- |
 | `image` | Concourse image | `concourse/concourse` |
-| `imageTag` | Concourse image version | `3.8.0` |
+| `imageTag` | Concourse image version | `3.9.0` |
 | `imagePullPolicy` | Concourse image pull policy | `IfNotPresent` |
 | `concourse.externalURL` | URL used to reach any ATC from the outside world | `nil` |
 | `concourse.atcPort` | Concourse ATC listen port | `8080` |
@@ -141,7 +141,11 @@ The following tables lists the configurable parameters of the Concourse chart an
 | `credentialManager.kubernetes.enabled` | Enable Kubernetes Secrets Credential Manager | `true` |
 | `credentialManager.kubernetes.namespacePrefix` | Prefix for namespaces to look for secrets in | `.Release.Name-` |
 | `credentialManager.kubernetes.teams` | Teams to allow secret access when rbac is enabled | `["main"]` |
-| `credentialManager.vault.enabled` | Uuse Hashicorp Vault as a Credential Manager | `false` |
+| `credentialManager.ssm.enabled` | Use AWS SSM as a Credential Manager | `false` |
+| `credentialManager.ssm.region` | AWS Region to use for SSM | `nil` |
+| `credentialManager.ssm.pipelineSecretsTemplate` | Pipeline secrets template | `nil` |
+| `credentialManager.ssm.teamSecretsTemplate` | Team secrets template | `nil` |
+| `credentialManager.vault.enabled` | Use Hashicorp Vault as a Credential Manager | `false` |
 | `credentialManager.vault.url` | Vault Server URL | `nil` |
 | `credentialManager.vault.pathPrefix` | Vault path to namespace secrets | `/concourse` |
 | `credentialManager.vault.caCert` | CA public certificate when using self-signed TLS with Vault | `nil` |
@@ -158,6 +162,9 @@ The following tables lists the configurable parameters of the Concourse chart an
 | `secrets.workerKeyPub` | Concourse Worker Public Key | *See [values.yaml](values.yaml)* |
 | `secrets.encryptionKey` | current encryption key | `nil` |
 | `secrets.oldEncryptionKey` | old encryption key, used for key rotation | `nil` |
+| `secrets.awsSsmAccessKey` | AWS Access Key ID for SSM access | `nil` |
+| `secrets.awsSsmSecretKey` | AWS Secret Access Key ID for SSM access | `nil` |
+| `secrets.awsSsmSessionToken` | AWS Session Token for SSM access | `nil` |
 | `secrets.basicAuthUsername` | Concourse Basic Authentication Username | `concourse` |
 | `secrets.basicAuthPassword` | Concourse Basic Authentication Password | `concourse` |
 | `secrets.githubAuthClientId` | Application client ID for GitHub OAuth | `nil` |
@@ -305,7 +312,7 @@ The only way to completely avoid putting secrets in Helm is to bring your own Po
 
 ### Credential Management
 
-Pipelines ususally need credentials to do things. Concourse supports the use of a [Credential Manager](https://concourse.ci/creds.html) so your pipelines can contain references to secrets instead of the actual secret values. You can't use more than one credential manager at a time.
+Pipelines ususally need credentials to do things. Concourse supports the use of a [Credential Manager](https://concourse-ci.org/creds.html) so your pipelines can contain references to secrets instead of the actual secret values. You can't use more than one credential manager at a time.
 
 #### Kubernetes Secrets
 
@@ -357,7 +364,7 @@ To use Vault, set `credentialManager.kubernetes.enabled` to false, and set the f
 
 ```yaml
 ## Configuration values for the Credential Manager.
-## ref: https://concourse.ci/creds.html
+## ref: https://concourse-ci.org/creds.html
 ##
 credentialManager:
 
@@ -375,3 +382,33 @@ credentialManager:
     # pathPrefix:
 
 ```
+
+#### AWS Systems Manager Paramter Store (SSM)
+
+To use SSM, set `credentialManager.kubernetes.enabled` to false, and set `credentialManager.ssm.enabled` to true.
+
+For a given Concourse *team*, a pipeline will look for secrets in SSM using either `/concourse/{team}/{secret}` or `/concourse/{team}/{pipeline}/{secret}`; the patterns can be overridden using the `credentialManager.ssm.teamSecretTemplate` and `credentialManager.ssm.pipelineSecretTemplate` settings.
+
+Concourse requires AWS credentials which are able to read from SSM for this feature to function. Credentials can be set in the `secrets.awsSsm*` settings; if your cluster is running in a different AWS region, you may also need to set `credentialManager.ssm.region`.
+
+The minimum IAM policy you need to use SSM with Concourse is:
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": "kms:Decrypt",
+      "Resource": "<kms-key-arn>",
+      "Effect": "Allow"
+    },
+    {
+      "Action": "ssm:GetParameter*",
+      "Resource": "<...arn...>:parameter/concourse/*",
+      "Effect": "Allow"
+    }
+  ]
+}
+```
+
+Where `<kms-key-arn>` is the ARN of the KMS key used to encrypt the secrets in Paraemter Store, and the `<...arn...>` should be replaced with a correct ARN for your account and region's Parameter Store.

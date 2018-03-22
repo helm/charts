@@ -22,7 +22,7 @@ $ helm install stable/docker-registry
 
 ## Configuration
 
-The following tables lists the configurable parameters of the vault chart and
+The following table lists the configurable parameters of the docker-registry chart and
 their default values.
 
 | Parameter                   | Description                                                                              | Default         |
@@ -48,6 +48,10 @@ their default values.
 | `secrets.s3.secretKey`      | Secret Key for S3 configuration                                                          | `nil`           |
 | `haSharedSecret`            | Shared secret for Registry                                                               | `nil`           |
 | `configData`                | Configuration hash for docker                                                            | `nil`           |
+| `s3.region`                 | S3 region                                                                                | `nil`           |
+| `s3.bucket`                 | S3 bucket name                                                                           | `nil`           |
+| `s3.encrypt`                | Store images in encrypted format                                                         | `nil`           |
+| `s3.secure`                 | Use HTTPS                                                                                | `nil`           |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to
 `helm install`.

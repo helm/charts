@@ -35,11 +35,6 @@ spec:
             secretKeyRef:
               name: {{ template "patroni.fullname" . }}
               key: password-superuser
-        - name: PGPASSWORD_ADMIN
-          valueFrom:
-            secretKeyRef:
-              name: {{ template "patroni.fullname" . }}
-              key: password-admin
         - name: PGPASSWORD_STANDBY
           valueFrom:
             secretKeyRef:
