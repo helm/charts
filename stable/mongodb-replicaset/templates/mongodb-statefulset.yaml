@@ -34,14 +34,12 @@ spec:
           volumeMounts:
             - name: workdir
               mountPath: /work-dir
-            - name: config
-              mountPath: /data/configdb
         - name: bootstrap
           image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
           command:
             - /work-dir/peer-finder
           args:
-            - -on-start=/work-dir/on-start.sh
+            - -on-start=/init/on-start.sh
             - "-service={{ template "mongodb-replicaset.fullname" . }}"
           imagePullPolicy: "{{ .Values.image.pullPolicy }}"
           env:
@@ -69,14 +67,16 @@ spec:
           volumeMounts:
             - name: workdir
               mountPath: /work-dir
+            - name: init
+              mountPath: /init
             - name: config
               mountPath: /data/configdb
+            - name: datadir
+              mountPath: /data/db
           {{- if .Values.tls.enabled }}
             - name: ca
               mountPath: /ca
           {{- end }}
-            - name: datadir
-              mountPath: /data/db
           {{- if .Values.auth.enabled }}
             - name: keydir
               mountPath: /keydir
@@ -191,7 +191,11 @@ spec:
       volumes:
         - name: config
           configMap:
-            name: {{ template "mongodb-replicaset.fullname" . }}
+            name: {{ template "mongodb-replicaset.fullname" . }}-mongodb
+        - name: init
+          configMap:
+            defaultMode: 0755
+            name: {{ template "mongodb-replicaset.fullname" . }}-init
         {{- if .Values.tls.enabled }}
         - name: ca
           secret:

@@ -33,5 +33,4 @@ done
 echo Installing config scripts into "${WORKDIR_VOLUME}"
 
 mkdir -p "${WORKDIR_VOLUME}"
-cp /on-start.sh "${WORKDIR_VOLUME}"/
 cp /peer-finder "${WORKDIR_VOLUME}"/

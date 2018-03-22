@@ -15,7 +15,7 @@ auth:
 # Specs for the Docker image for the init container that establishes the replica set
 installImage:
   name: k8s.gcr.io/mongodb-install
-  tag: 0.6
+  tag: 0.5
   pullPolicy: IfNotPresent
 
 # Specs for the MongoDB image
