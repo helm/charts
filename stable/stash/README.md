@@ -12,7 +12,7 @@ This chart bootstraps a [Stash controller](https://github.com/appscode/stash) de
 
 ## Prerequisites
 
-- Kubernetes 1.5+ 
+- Kubernetes 1.8+
 
 ## Installing the Chart
 To install the chart with the release name `my-release`:
@@ -38,18 +38,24 @@ The command removes all the Kubernetes components associated with the chart and 
 The following table lists the configurable parameters of the Stash chart and their default values.
 
 
-| Parameter                 | Description                                                       | Default            |
-| --------------------------| ----------------------------------------------------------------- | ------------------ |
-| `replicaCount`            | Number of stash operator replicas to create (only 1 is supported) | `1`                |
-| `operator.image`          | operator container image                                          | `appscode/stash`   |
-| `operator.tag`            | operator container image tag                                      | `0.6.2`     |
-| `operator.pullPolicy`     | operator container image pull policy                              | `IfNotPresent`     |
-| `pushgateway.image`       | Prometheus pushgateway container image                            | `prom/pushgateway` |
-| `pushgateway.tag`         | Prometheus pushgateway container image tag                        | `v0.4.0`           |
-| `pushgateway.pullPolicy`  | Prometheus pushgateway container image pull policy                | `IfNotPresent`     |
-| `criticalAddon`           | If true, installs Stash operator as critical addon                | `false`            |
-| `rbac.create`             | install required rbac service account, roles and rolebindings     | `false`            |
-| `rbac.serviceAccountName` | ServiceAccount Stash will use (ignored if rbac.create=true)       | `default`          |
+| Parameter                           | Description                                                       | Default            |
+| ----------------------------------- | ----------------------------------------------------------------- | ------------------ |
+| `replicaCount`                      | Number of stash operator replicas to create (only 1 is supported) | `1`                |
+| `operator.image`                    | operator container image                                          | `appscode/stash`   |
+| `operator.tag`                      | operator container image tag                                      | `0.7.0-rc.1`       |
+| `operator.pullPolicy`               | operator container image pull policy                              | `IfNotPresent`     |
+| `pushgateway.image`                 | Prometheus pushgateway container image                            | `prom/pushgateway` |
+| `pushgateway.tag`                   | Prometheus pushgateway container image tag                        | `v0.4.0`           |
+| `pushgateway.pullPolicy`            | Prometheus pushgateway container image pull policy                | `IfNotPresent`     |
+| `criticalAddon`                     | If true, installs Stash operator as critical addon                | `false`            |
+| `rbac.create`                       | If `true`, create and use RBAC resources                          | `true`             |
+| `serviceAccount.create`             | If `true`, create a new service account                           | `true`             |
+| `serviceAccount.name`               | Service account to be used. If not set and `serviceAccount.create` is `true`, a name is generated using the fullname template | `` |
+| `apiserver.groupPriorityMinimum`    | The minimum priority the group should have.                       | 10000              |
+| `apiserver.versionPriority`         | The ordering of this API inside of the group.                     | 15                 |
+| `apiserver.enableValidatingWebhook` | Enable validating webhooks for Stash CRDs                         | false              |
+| `apiserver.enableMutatingWebhook`   | Enable mutating webhooks for Kubernetes workloads                 | false              |
+| `apiserver.ca`                      | CA certificate used by main Kubernetes api server                 | ``                 |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
