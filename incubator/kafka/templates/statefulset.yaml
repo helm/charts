@@ -86,6 +86,13 @@ spec:
           name: external-{{ $i }}
           {{- end }}
         {{- end }}
+        {{- if .Values.jmxPort }}
+        - containerPort: {{ .Values.jmxPort }}
+          name: jmx
+        {{- end }}
+        {{- if .Values.additionalPorts }}
+{{ toYaml .Values.additionalPorts | indent 8 }}
+        {{- end }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         env:
@@ -104,6 +111,10 @@ spec:
         {{- range $key, $value := .Values.configurationOverrides }}
         - name: {{ printf "KAFKA_%s" $key | replace "." "_" | upper | quote }}
           value: {{ $value | quote }}
+        {{- end }}
+        {{- if .Values.jmxPort }}
+        - name: KAFKA_JMX_PORT
+          value: "{{ .Values.jmxPort }}"
         {{- end }}
         # This is required because the Downward API does not yet support identification of
         # pod numbering in statefulsets. Thus, we are required to specify a command which
