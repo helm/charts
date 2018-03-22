@@ -69,7 +69,7 @@ nodeSelector: {}
 
 filter:
   KubeURL: https://kubernetes.default.svc:443
-  KubeCAFILE: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+  KubeCAFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
   KubeTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
 # If true, check to see if the log field content is a JSON string map, if so,
 # it append the map fields as part of the log structure.
