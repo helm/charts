@@ -51,6 +51,16 @@ affinity: {}
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
 nodeSelector: {}
 
+## Readiness probe config.
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/
+##
+readinessProbe:
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  timeoutSeconds: 5
+  successThreshold: 1
+  failureThreshold: 3
+
 # Tolerations for nodes that have taints on them.
 # Useful if you want to dedicate nodes to just run kafka
 # https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
