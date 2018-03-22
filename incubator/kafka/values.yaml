@@ -100,7 +100,6 @@ configurationOverrides:
 # Useful when the image exposes metrics (like prometheus, etc.) through a javaagent instead of a sidecar
 additionalPorts: {}
 
-
 ## Persistence configuration. Specify if and how to persist data to a persistent volume.
 ##
 persistence:
