@@ -24,6 +24,8 @@ nexus:
   dockerPort: 5003
   nexusPort: 8081
   serviceType: NodePort
+  # securityContext:
+  #   fsGroup: 2000
 
 nexusProxy:
   imageName: quay.io/travelaudience/docker-nexus-proxy

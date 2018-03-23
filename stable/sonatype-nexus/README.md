@@ -71,6 +71,7 @@ The following table lists the configurable parameters of the Nexus chart and the
 | `nexus.dockerPort`                          | Port to access docker               | `5003`                                  |
 | `nexus.nexusPort`                           | Internal port for Nexus service     | `8081`                                  |
 | `nexus.serviceType`                         | Service for Nexus                   | `NodePort`                              |
+| `nexus.securityContext`                     | Security Context (for enabling official image use `fsGroup: 2000`) | `{}`     |
 | `nexusProxy.port`                           | Port for exposing Nexus             | `8080`                                  |
 | `nexusProxy.imageName`                      | Proxy image                         | `quay.io/travelaudience/docker-nexus-proxy` |
 | `nexusProxy.imageTag`                       | Proxy image verion                  | `2.1.0`                                 |

@@ -121,6 +121,10 @@ spec:
               name: nexus-data
             - mountPath: /nexus-data/backup
               name: nexus-backup
+      {{- if .Values.nexus.securityContext }}
+      securityContext:
+{{ toYaml .Values.nexus.securityContext | indent 8 }}
+      {{- end }}
       volumes:
         {{- if .Values.nexusProxy.env.cloudIamAuthEnabled }}
         - name: {{ template "nexus.proxy-ks.name" . }}
