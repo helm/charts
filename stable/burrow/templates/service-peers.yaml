@@ -1,0 +1,25 @@
+{{ range (until (.Values.chain.numberOfNodes | int)) }}
+{{- $nodeNumber := printf "%03d" . }}
+---
+kind: Service
+apiVersion: v1
+metadata:
+  labels:
+    app: {{ template "burrow.name" $ }}
+    chart: {{ $.Chart.Name }}-{{ $.Chart.Version | replace "+" "_" }}
+    release: {{ $.Release.Name }}
+    heritage: {{ $.Release.Service }}
+    nodeNumber: {{ $nodeNumber | quote }}
+  name: {{ template "burrow.fullname" $ }}-peer-{{ $nodeNumber }}
+spec:
+  type: {{ $.Values.service.peer.type }}
+  ports:
+    - name: peer
+      port: {{ $.Values.service.peer.port }}
+      targetPort: peer
+      protocol: TCP
+  selector:
+    app: {{ template "burrow.name" $ }}
+    release: {{ $.Release.Name }}
+    nodeNumber: {{ $nodeNumber | quote }}
+{{- end }}
