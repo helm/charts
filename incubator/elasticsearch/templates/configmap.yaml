@@ -16,6 +16,9 @@ data:
 {{- if hasPrefix "5." .Values.appVersion }}
     node.ingest: ${NODE_INGEST:true}
 {{- end }}
+{{- if hasPrefix "6." .Values.appVersion }}
+    node.ingest: ${NODE_INGEST:true}
+{{- end }}
     node.name: ${HOSTNAME}
 
     network.host: 0.0.0.0
@@ -33,8 +36,7 @@ data:
       type: kubernetes
       zen:
         minimum_master_nodes: ${MINIMUM_MASTER_NODES:2}
-{{- end }}
-{{- if hasPrefix "5." .Values.appVersion }}
+{{- else }}
     # see https://github.com/kubernetes/kubernetes/issues/3595
     bootstrap.memory_lock: ${BOOTSTRAP_MEMORY_LOCK:false}
 
@@ -78,8 +80,7 @@ data:
         layout:
           type: consolePattern
           conversionPattern: "[%d{ISO8601}][%-5p][%-25c] %m%n"
-{{- end }}
-{{- if hasPrefix "5." .Values.image.tag }}
+{{- else }}
   log4j2.properties: |-
     status = error
     appender.console.type = Console

@@ -117,8 +117,7 @@ spec:
         - mountPath: /usr/share/elasticsearch/config/logging.yml
           name: config
           subPath: logging.yml
-{{- end }}
-{{- if hasPrefix "5." .Values.image.tag }}
+{{- else }}
         - mountPath: /usr/share/elasticsearch/config/log4j2.properties
           name: config
           subPath: log4j2.properties
@@ -130,6 +129,10 @@ spec:
           preStop:
             exec:
               command: ["/bin/bash","/pre-stop-hook.sh"]
+      {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.image.pullSecrets | indent 8 }}
+      {{- end }}
       terminationGracePeriodSeconds: {{ .Values.data.terminationGracePeriodSeconds }}
       volumes:
       - name: config
