@@ -21,7 +21,7 @@ if [[ "$AUTH" == "true" ]]; then
     admin_user="$ADMIN_USER"
     admin_password="$ADMIN_PASSWORD"
     admin_creds=(-u "$admin_user" -p "$admin_password")
-    auth_args=(--auth --keyFile=/keydir/key.txt)
+    auth_args=(--auth --keyFile=/data/configdb/key.txt)
 fi
 
 function log() {
@@ -54,10 +54,10 @@ while read -ra line; do
 done
 
 # Generate the ca cert
-ca_crt=/ca/tls.crt
+ca_crt=/data/configdb/tls.crt
 if [ -f "$ca_crt"  ]; then
     log "Generating certificate"
-    ca_key=/ca/tls.key
+    ca_key=/data/configdb/tls.key
     pem=/work-dir/mongo.pem
     ssl_args=(--ssl --sslCAFile "$ca_crt" --sslPEMKeyFile "$pem")
 
@@ -94,7 +94,7 @@ fi
 log "Peers: ${peers[*]}"
 
 log "Starting a MongoDB instance..."
-mongod --config /data/configdb/mongod.conf --replSet="$replica_set" --port=27017 "${auth_args[@]}" --bind_ip_all >> /work-dir/log.txt 2>&1 &
+mongod --config /data/configdb/mongod.conf --dbpath=/data/db --replSet="$replica_set" --port=27017 "${auth_args[@]}" --bind_ip_all >> /work-dir/log.txt 2>&1 &
 
 log "Waiting for MongoDB to be ready..."
 until mongo "${ssl_args[@]}" --eval "db.adminCommand('ping')"; do

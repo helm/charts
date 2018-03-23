@@ -26,6 +26,41 @@ spec:
       {{- end }}
     spec:
       initContainers:
+        - name: copy-config
+          image: busybox
+          command:
+            - "sh"
+          args:
+            - "-c"
+            - |
+              set -e
+              set -x
+
+              cp /configdb-readonly/mongod.conf /data/configdb/mongod.conf
+
+            {{- if .Values.tls.enabled }}
+              cp /ca-readonly/tls.key /data/configdb/tls.key
+              cp /ca-readonly/tls.crt /data/configdb/tls.crt
+            {{- end }}
+
+            {{- if .Values.auth.enabled }}
+              cp /keydir-readonly/key.txt /data/configdb/key.txt
+            {{- end }}
+          volumeMounts:
+            - name: workdir
+              mountPath: /work-dir
+            - name: config
+              mountPath: /configdb-readonly
+            - name: configdir
+              mountPath: /data/configdb
+          {{- if .Values.tls.enabled }}
+            - name: ca
+              mountPath: /ca-readonly
+          {{- end }}
+          {{- if .Values.auth.enabled }}
+            - name: keydir
+              mountPath: /keydir-readonly
+          {{- end }}
         - name: install
           image: "{{ .Values.installImage.name }}:{{ .Values.installImage.tag }}"
           args:
@@ -69,41 +104,26 @@ spec:
               mountPath: /work-dir
             - name: init
               mountPath: /init
-            - name: config
+            - name: configdir
               mountPath: /data/configdb
             - name: datadir
               mountPath: /data/db
-          {{- if .Values.tls.enabled }}
-            - name: ca
-              mountPath: /ca
-          {{- end }}
-          {{- if .Values.auth.enabled }}
-            - name: keydir
-              mountPath: /keydir
-              readOnly: true
-          {{- end }}
         - name: permissions
           image: busybox
           command:
             - "sh"
           args:
             - "-c"
-            - "chown -R '{{ $user }}:{{ $user }}' /work-dir /data{{ if .Values.tls.enabled }} /ca{{ end }}{{ if .Values.auth.enabled }} /keydir{{ end }}"
+            - |
+              set -e
+              set -x
+
+              chown -R '{{ $user }}:{{ $user }}' /data/configdb /data/db
           volumeMounts:
-            - name: workdir
-              mountPath: /work-dir
+            - name: configdir
+              mountPath: /data/configdb
             - name: datadir
               mountPath: /data/db
-            - name: config
-              mountPath: /data/configdb
-          {{- if .Values.tls.enabled }}
-            - name: ca
-              mountPath: /ca
-          {{- end }}
-          {{- if .Values.auth.enabled }}
-            - name: keydir
-              mountPath: /keydir
-          {{- end }}
       containers:
         - name: {{ template "mongodb-replicaset.name" . }}
           image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
@@ -126,11 +146,11 @@ spec:
             - --bind_ip_all
           {{- if .Values.auth.enabled }}
             - --auth
-            - --keyFile=/keydir/key.txt
+            - --keyFile=/data/configdb/key.txt
           {{- end }}
           {{- if .Values.tls.enabled }}
             - --ssl
-            - --sslCAFile=/ca/tls.crt
+            - --sslCAFile=/data/ca/tls.crt
             - --sslPEMKeyFile=/work-dir/mongo.pem
           {{- end }}
           livenessProbe:
@@ -140,7 +160,7 @@ spec:
               args:
               {{- if .Values.tls.enabled }}
                 - --ssl
-                - --sslCAFile=/ca/tls.crt
+                - --sslCAFile=/data/configdb/tls.crt
                 - --sslPEMKeyFile=/work-dir/mongo.pem
               {{- end }}
                 - --eval
@@ -153,7 +173,7 @@ spec:
                 - mongo
               {{- if .Values.tls.enabled }}
                 - --ssl
-                - --sslCAFile=/ca/tls.crt
+                - --sslCAFile=/data/configdb/tls.crt
                 - --sslPEMKeyFile=/work-dir/mongo.pem
               {{- end }}
                 - --eval
@@ -163,19 +183,8 @@ spec:
           volumeMounts:
             - name: datadir
               mountPath: /data/db
-            - name: config
+            - name: configdir
               mountPath: /data/configdb
-          {{- if .Values.tls.enabled }}
-            - name: ca
-              mountPath: /ca
-          {{- end }}
-            - name: workdir
-              mountPath: /work-dir
-          {{- if .Values.auth.enabled }}
-            - name: keydir
-              mountPath: /keydir
-              readOnly: true
-          {{- end }}
     {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
@@ -209,6 +218,8 @@ spec:
             secretName: {{ template "mongodb-replicaset.keySecret" . }}
         {{- end }}
         - name: workdir
+          emptyDir: {}
+        - name: configdir
           emptyDir: {}
 {{- if .Values.persistentVolume.enabled }}
   volumeClaimTemplates:
