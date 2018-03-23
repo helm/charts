@@ -85,6 +85,7 @@ The following table lists the configurable parameters of the Nexus chart and the
 | `persistence.storageClass`                  | Storage class of Nexus PVC          | `nil`                                   |
 | `persistence.storageSize`                   | Size of Nexus data volume           | `8Gi`                                   |
 | `persistence.annotations`                   | Persistent Volume annotations       | `{}`
+| `nexusBackup.enabled`                       | Nexus backup process                | `true`                                  |
 | `nexusBackup.imageName`                     | Nexus backup image                  | `quay.io/travelaudience/docker-nexus-backup` |
 | `nexusBackup.imageTag`                      | Nexus backup image version          | `1.2.0`                                 |
 | `nexusBackup.imagePullPolicy`               | Backup image pull policy            | `IfNotPresent`                          |

@@ -93,6 +93,7 @@ spec:
               name: {{ template "nexus.proxy-ks.name" . }}
               readOnly: true
           {{- end }}
+        {{- if .Values.nexusBackup.enabled }}
         - name: nexus-backup
           image: {{ .Values.nexusBackup.imageName }}:{{ .Values.nexusBackup.imageTag }}
           imagePullPolicy: {{ .Values.nexusBackup.imagePullPolicy }}
@@ -121,6 +122,7 @@ spec:
               name: nexus-data
             - mountPath: /nexus-data/backup
               name: nexus-backup
+        {{- end }}
       {{- if .Values.nexus.securityContext }}
       securityContext:
 {{ toYaml .Values.nexus.securityContext | indent 8 }}

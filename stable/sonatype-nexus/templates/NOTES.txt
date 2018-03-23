@@ -18,9 +18,11 @@
 
 3. Change Your password after the first login
 
+  {{- if .Values.nexusBackup.enabled }}
    Once you login you should change your admin password to match the value of `nexusBackup.env.nexusAdminPassword`
    This is important for security reasons and also because backup container needs this password set for admin user
    to access Nexus API to run backups.
+  {{- end }}
 
 4. Next steps in configuration
 
