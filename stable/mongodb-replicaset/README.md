@@ -34,10 +34,10 @@ The following tables lists the configurable parameters of the mongodb chart and 
 | `replicaSetName`                    | The name of the replica set                                               | rs0                                                 |
 | `minAvailable`                      | Minimum number of available pods for PodDisruptionBudget                  | 1                                                   |
 | `port`                              | MongoDB port                                                              | 27017                                               |
-| `installImage.name`                 | Image name for the init container that establishes the replica set        | k8s.gcr.io/mongodb-install                          |
-| `installImage.tag`                  | Image tag for the init container that establishes the replica set         | 0.6                                                 |
+| `installImage.repository`           | Image name for the install container                                      | k8s.gcr.io/mongodb-install                          |
+| `installImage.tag`                  | Image tag for the install container                                       | 0.5                                                 |
 | `installImage.pullPolicy`           | Image pull policy for the init container that establishes the replica set | IfNotPresent                                        |
-| `image.name`                        | MongoDB image name                                                        | mongo                                               |
+| `image.repository`                  | MongoDB image name                                                        | mongo                                               |
 | `image.tag`                         | MongoDB image tag                                                         | 3.6                                                 |
 | `image.pullPolicy`                  | MongoDB image pull policy                                                 | IfNotPresent                                        |
 | `podAnnotations`                    | Annotations to be added to MongoDB pods                                   | {}                                                  |

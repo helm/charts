@@ -62,7 +62,7 @@ spec:
               mountPath: /keydir-readonly
           {{- end }}
         - name: install
-          image: "{{ .Values.installImage.name }}:{{ .Values.installImage.tag }}"
+          image: "{{ .Values.installImage.repository }}:{{ .Values.installImage.tag }}"
           args:
             - --work-dir=/work-dir
           imagePullPolicy: "{{ .Values.installImage.pullPolicy }}"
@@ -70,7 +70,7 @@ spec:
             - name: workdir
               mountPath: /work-dir
         - name: bootstrap
-          image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           command:
             - /work-dir/peer-finder
           args:
@@ -126,14 +126,14 @@ spec:
               mountPath: /data/db
       containers:
         - name: {{ template "mongodb-replicaset.name" . }}
-          image: "{{ .Values.image.name }}:{{ .Values.image.tag }}"
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: "{{ .Values.image.pullPolicy }}"
           securityContext:
             runAsUser: {{ $user }}
             allowPrivilegeEscalation: false
           ports:
             - name: peer
-              containerPort: {{ .Values.port }}
+              containerPort: 27017
           resources:
 {{ toYaml .Values.resources | indent 12 }}
           command:
@@ -150,7 +150,7 @@ spec:
           {{- end }}
           {{- if .Values.tls.enabled }}
             - --ssl
-            - --sslCAFile=/data/ca/tls.crt
+            - --sslCAFile=/data/configdb/tls.crt
             - --sslPEMKeyFile=/work-dir/mongo.pem
           {{- end }}
           livenessProbe:
