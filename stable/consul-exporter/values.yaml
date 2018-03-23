@@ -1,0 +1,44 @@
+# Default values for consul-exporter.
+
+replicaCount: 1
+
+restartPolicy: Always
+
+image:
+  repository: prom/consul-exporter
+  tag: master
+  pullPolicy: IfNotPresent
+
+#Consul server host to connect to
+consulServer: localhost
+
+#Consul server port to connect to
+consulPort: 8500
+
+#Additional consul exporter options
+#Use this to add additional consul_exporter start up parameters
+#Not all options will work out of the box
+options:
+  - log.level: info
+
+service:
+  type: ClusterIP
+  httpPort: 9107
+  annotations: {}
+
+resources: {}
+  # If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+
+web:
+  # Port to listen on
+  listen_address: ':9107'
+
+  # Path under which to expose metrics.
+  path: /metrics
