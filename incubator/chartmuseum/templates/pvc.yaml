@@ -2,9 +2,9 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: {{ include "common.fullname" . }}
+  name: {{ include "chartmuseum.fullname" . }}
   labels:
-    app: {{ include "common.fullname" . }}
+    app: {{ include "chartmuseum.fullname" . }}
     release: {{ .Release.Name | quote }}
 spec:
   accessModes:

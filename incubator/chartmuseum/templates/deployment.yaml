@@ -1,11 +1,11 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ include "common.fullname" . }}
+  name: {{ include "chartmuseum.fullname" . }}
   annotations:
 {{ toYaml .Values.deployment.annotations | indent 4 }}
   labels:
-{{ include "common.labels.standard" . | indent 4 }}
+{{ include "chartmuseum.labels.standard" . | indent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   strategy:
@@ -13,11 +13,11 @@ spec:
   revisionHistoryLimit: 10
   template:
     metadata:
-      name: {{ include "common.fullname" . }}
+      name: {{ include "chartmuseum.fullname" . }}
       annotations:
 {{ toYaml .Values.replica.annotations | indent 8 }}
       labels:
-        app: {{ template "common.name" . }}
+        app: {{ template "chartmuseum.name" . }}
         release: {{ .Release.Name | quote }}
     spec:
       containers:
@@ -31,7 +31,7 @@ spec:
           value: {{ $value | quote }}
 {{- end }}
 {{- end }}
-{{- $secret_name := include "common.fullname" . }}
+{{- $secret_name := include "chartmuseum.fullname" . }}
 {{- range $name, $value := .Values.env.secret }}
 {{- if not ( empty $value) }}
         - name: {{ $name | quote }}
@@ -86,7 +86,7 @@ spec:
       - name: storage-volume
       {{- if .Values.persistence.Enabled }}
         persistentVolumeClaim:
-          claimName: {{ .Values.persistence.ExistingClaim | default (include "common.fullname" .) }}
+          claimName: {{ .Values.persistence.ExistingClaim | default (include "chartmuseum.fullname" .) }}
       {{- else }}
         emptyDir: {}
       {{- end -}}
