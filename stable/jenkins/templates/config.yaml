@@ -118,6 +118,11 @@ data:
       </views>
       <primaryView>All</primaryView>
       <slaveAgentPort>50000</slaveAgentPort>
+      <disabledAgentProtocols>
+{{- range $key, $val := .Values.Master.DisabledAgentProtocols }}
+        <string>{{ $val }}</string>
+{{- end }}
+      </disabledAgentProtocols>
       <label></label>
       <nodeProperties/>
       <globalNodeProperties/>
