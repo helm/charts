@@ -22,6 +22,7 @@ spec:
       imagePullSecrets:
       - name: {{ .Values.imagePullSecrets }}
     {{- end }}
+    {{- if .Values.nginx.persistence.enabled }}
       initContainers:
       - name: "remove-lost-found"
         image: "{{ .Values.initContainerImage }}"
@@ -33,6 +34,7 @@ spec:
         volumeMounts:
         - mountPath: {{ .Values.nginx.persistence.mountPath | quote }}
           name: nginx-volume
+    {{- end }}
       containers:
       - name: {{ .Values.nginx.name }}
         image: "{{ .Values.nginx.image.repository }}:{{ .Values.nginx.image.version }}"
