@@ -124,6 +124,13 @@ data:
 {{- end }}
       </disabledAgentProtocols>
       <label></label>
+{{- if .Values.Master.CSRF.DefaultCrumbIssuer.Enabled }}
+      <crumbIssuer class="hudson.security.csrf.DefaultCrumbIssuer">
+{{- if .Values.Master.CSRF.DefaultCrumbIssuer.ProxyCompatability }}
+        <excludeClientIPFromCrumb>true</excludeClientIPFromCrumb>
+{{- end }}
+      </crumbIssuer>
+{{- end }}
       <nodeProperties/>
       <globalNodeProperties/>
       <noUsageStatistics>true</noUsageStatistics>
