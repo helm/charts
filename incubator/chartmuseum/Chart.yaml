@@ -5,6 +5,10 @@ version: 0.4.5
 appVersion: 0.4.2
 home: https://github.com/chartmuseum/chartmuseum
 icon: https://raw.githubusercontent.com/chartmuseum/chartmuseum/master/logo.png
+keywords:
+- chartmuseum
+- helm
+- charts repo
 maintainers:
 - name: ChartMuseum
   email: chartmuseum@gmail.com
