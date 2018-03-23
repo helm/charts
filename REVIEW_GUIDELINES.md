@@ -76,6 +76,71 @@ image:
 * The use of the `default` function should be avoided if possible in favor of defaults in `values.yaml`.
 * It is usually best to not specify defaults for resources and to just provide sensible values that are commented out as a recommendation, especially when resources are rather high. This makes it easier to test charts on small clusters or Minikube. Setting resources should generally be a conscious choice of the user.
 
+## Persistence
+
+* Persistence should be enabled by default
+* PVCs should support specifying an existing claim
+* Storage class should be empty by default so that the default storage class is used
+* All options should be shown in README.md
+* Example persistence section in values.yaml:
+
+```yaml
+persistence:
+  enabled: true
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  ##
+  storageClass: ""
+  accessMode: ReadWriteOnce
+  size: 10Gi
+  # existingClaim: ""
+```
+
+* Example pod spec within a deployment:
+
+```yaml
+volumes:
+  - name: data
+  {{- if .Values.persistence.enabled }}
+    persistentVolumeClaim:
+      claimName: {{ .Values.persistence.existingClaim | default (include "fullname" .) }}
+  {{- else }}
+    emptyDir: {}
+  {{- end -}}
+```
+
+* Example pvc.yaml
+
+```yaml
+{{- if and .Values.persistence.enabled (not .Values.persistence.existingClaim) }}
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: {{ template "fullname" . }}
+  labels:
+    app: {{ template "name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  accessModes:
+    - {{ .Values.persistence.accessMode | quote }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.size | quote }}
+{{- if .Values.persistence.storageClass }}
+{{- if (eq "-" .Values.persistence.storageClass) }}
+  storageClassName: ""
+{{- else }}
+  storageClassName: "{{ .Values.persistence.storageClass }}"
+{{- end }}
+{{- end }}
+{{- end }}
+```
+
 ## Documentation
 
 `README.md` and `NOTES.txt` are mandatory. `README.md` should contain a table listing all configuration options. `NOTES.txt` should provide accurate and useful information how the chart can be used/accessed.
