@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app:  {{ template "burrow.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+  name: {{ template "burrow.fullname" . }}-api
+spec:
+  type: {{ .Values.service.api.type }}
+  sessionAffinity: ClientIP
+  ports:
+    - name: api
+      port: {{ .Values.service.api.port }}
+      targetPort: api
+      protocol: TCP
+  selector:
+    app: {{ template "burrow.name" $ }}
+    release: {{ .Release.Name }}
+  {{- if not .Values.service.api.loadBalance }}
+    nodeNumber: {{ .Values.service.api.node | quote }}
+  {{- end }}

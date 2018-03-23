@@ -1,0 +1,78 @@
+image:
+  repository: quay.io/monax/db
+  tag: 0.17.1
+  pullPolicy: IfNotPresent
+
+chain:
+  name: simpleTestChain
+  id: simpleTestChain
+  numberOfNodes: 1
+  logLevel: info
+  extraSeeds: []
+
+env: {}
+extraArgs: {}
+
+organization: myOrg
+
+service:
+  peer:
+    type: "ClusterIP"
+    port: 46656
+  rpc:
+    port: 46657
+    type: "ClusterIP"
+    loadBalance: false
+    node: "000"
+  api:
+    port: 1337
+    type: "ClusterIP"
+    loadBalance: true
+
+persistence:
+  enabled: false
+  # annotations: {}
+  # size: ""
+  # storageClass: ""
+  # accessMode: ""
+
+ingress:
+  enabled: false
+  # hosts:
+  #   - rpc.chain.example.com
+  # annotations:
+  #   kubernetes.io/ingress.class: nginx
+  # tls:
+  #   - secretName: rpc-chain-tls
+  #     hosts:
+  #       - rpc.chain.example.com
+
+resources:
+  # limits:
+  #  cpu: 500m
+  #  memory: 512Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+
+podAnnotations: {}
+podLabels: {}
+
+# Affinity for pod assignment
+# Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+# affinity: {}
+
+# Tolerations for pod assignment
+# Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+tolerations: []
+
+# Node labels for pod assignment
+# Ref: https://kubernetes.io/docs/user-guide/node-selection/
+nodeSelector: {}
+
+# The below file is used **only** for testing and quick evaluation purposes. Please see the examples.
+genesisFile: "eyJnZW5lc2lzX3RpbWUiOiIyMDE3LTEyLTA4VDEwOjEwOjQ5Ljc4MloiLCJjaGFpbl9pZCI6InNpbXBsZVRlc3RDaGFpbiIsInBhcmFtcyI6eyJnbG9iYWxfcGVybWlzc2lvbnMiOnsiYmFzZSI6eyJwZXJtcyI6MjMwMiwic2V0IjoxNjM4M30sInJvbGVzIjpbXX19LCJhY2NvdW50cyI6W3siYWRkcmVzcyI6IjgzRjBEMTk5NzhGQjFDMkFBNzc2MUUxQ0Q2QUZCOTQxNzYxRkE2NUQiLCJhbW91bnQiOjk5OTk5OTk5OTk5OTk5LCJuYW1lIjoic2ltcGxldGVzdGNoYWluX2Z1bGxfMDAwIiwicGVybWlzc2lvbnMiOnsiYmFzZSI6eyJwZXJtcyI6MTYzODMsInNldCI6MTYzODN9LCJyb2xlcyI6W119fV0sInZhbGlkYXRvcnMiOlt7InB1Yl9rZXkiOlsxLCJENEU4MTRBMjFFMjU2QkZGQTNENzkyOEI4N0Q0NDU1OUJGOTQzN0YzMzg2REI4MUMyNDk0RUM4RDVGN0QzMDkwIl0sImFtb3VudCI6OTk5OTk5OTk5OSwibmFtZSI6InNpbXBsZXRlc3RjaGFpbl9mdWxsXzAwMCIsInVuYm9uZF90byI6W3siYWRkcmVzcyI6IjgzRjBEMTk5NzhGQjFDMkFBNzc2MUUxQ0Q2QUZCOTQxNzYxRkE2NUQiLCJhbW91bnQiOjk5OTk5OTk5OTl9XX1dfQ=="
+
+# The below file is used **only** for testing and quick evaluation purposes. Please see the examples.
+keysFiles:
+  key-000: "eyJhZGRyZXNzIjoiODNGMEQxOTk3OEZCMUMyQUE3NzYxRTFDRDZBRkI5NDE3NjFGQTY1RCIsInB1Yl9rZXkiOlsxLCJENEU4MTRBMjFFMjU2QkZGQTNENzkyOEI4N0Q0NDU1OUJGOTQzN0YzMzg2REI4MUMyNDk0RUM4RDVGN0QzMDkwIl0sInByaXZfa2V5IjpbMSwiMkVGMjNDRTE0MkFGMEEwNUY0MzY1NzY3NTk5MzA4QkUzOUNBODBBODg2N0M1OTQxMzAwMjc0MjJEQjY2OTU3OUQ0RTgxNEEyMUUyNTZCRkZBM0Q3OTI4Qjg3RDQ0NTU5QkY5NDM3RjMzODZEQjgxQzI0OTRFQzhENUY3RDMwOTAiXSwibGFzdF9oZWlnaHQiOjAsImxhc3Rfcm91bmQiOjAsImxhc3Rfc3RlcCI6MH0="
