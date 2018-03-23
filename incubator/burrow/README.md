@@ -130,7 +130,7 @@ The following options are available to increase the exposure of the `rpc` port:
 
 The following options are available to increase the exposure of the `api` port:
 
-* To change from a loadBalanced api service to a non-loadBalanced servie change the `service.api.loadBalance` to `false` and add the node number to the `service.api.node` field.
+* To change from a loadBalanced api service to a non-loadBalanced service change the `service.api.loadBalance` to `false` and add the node number to the `service.api.node` field.
 * To denote the node that a non-loadBalanced api service connects to add the `service.api.node` to a node number such as `000`.
 
 ### Configuration of the `genesis.json`
