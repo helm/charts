@@ -20,7 +20,7 @@ spec:
     targetPort: {{ .Values.service.internalPort }}
 {{- end }}
     protocol: TCP
-    name: {{ .Release.Name }}
+    name: http
   selector:
     app: {{ template "common.name" . }}
     release: {{ .Release.Name | quote }}
