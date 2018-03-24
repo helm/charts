@@ -30,17 +30,18 @@ spec:
       {{- end }}
       containers:
       - name: operator
-        image: {{ .Values.operator.image }}:{{ .Values.operator.tag }}
-        imagePullPolicy: {{ .Values.imagePullPolicy  }}
+        image: {{ .Values.operator.registry }}/{{ .Values.operator.repository }}:{{ .Values.operator.tag }}
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
         args:
         - run
         - --v=3
         - --rbac={{ .Values.rbac.create }}
-        - --docker-registry={{ .Values.dockerRegistry }}
+        - --docker-registry={{ .Values.operator.registry }}
         - --secure-port=8443
         - --audit-log-path=-
         - --tls-cert-file=/var/serving-cert/tls.crt
         - --tls-private-key-file=/var/serving-cert/tls.key
+        - --enable-analytics={{ .Values.enableAnalytics }}
         ports:
         - containerPort: 8443
         - containerPort: 56790
@@ -53,7 +54,7 @@ spec:
         - mountPath: /var/serving-cert
           name: serving-cert
       - name: pushgateway
-        image: '{{ .Values.pushgateway.image }}:{{ .Values.pushgateway.tag }}'
+        image: '{{ .Values.pushgateway.registry }}/{{ .Values.pushgateway.repository }}:{{ .Values.pushgateway.tag }}'
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         args:
         - -web.listen-address=:56789

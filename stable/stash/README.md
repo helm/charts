@@ -41,12 +41,13 @@ The following table lists the configurable parameters of the Stash chart and the
 | Parameter                           | Description                                                       | Default            |
 | ----------------------------------- | ----------------------------------------------------------------- | ------------------ |
 | `replicaCount`                      | Number of stash operator replicas to create (only 1 is supported) | `1`                |
-| `operator.image`                    | operator container image                                          | `appscode/stash`   |
-| `operator.tag`                      | operator container image tag                                      | `0.7.0-rc.1`       |
-| `operator.pullPolicy`               | operator container image pull policy                              | `IfNotPresent`     |
-| `pushgateway.image`                 | Prometheus pushgateway container image                            | `prom/pushgateway` |
+| `operator.registry`                 | Docker registry used to pull operator image                       | `appscode`         |
+| `operator.repository`               | operator container image                                          | `stash`            |
+| `operator.tag`                      | operator container image tag                                      | `0.7.0-rc.3`       |
+| `pushgateway.registry`              | Docker registry used to pull Prometheus pushgateway image         | `prom`             |
+| `pushgateway.repository`            | Prometheus pushgateway container image                            | `pushgateway`      |
 | `pushgateway.tag`                   | Prometheus pushgateway container image tag                        | `v0.4.0`           |
-| `pushgateway.pullPolicy`            | Prometheus pushgateway container image pull policy                | `IfNotPresent`     |
+| `imagePullPolicy`                   | container image pull policy                                       | `IfNotPresent`     |
 | `criticalAddon`                     | If true, installs Stash operator as critical addon                | `false`            |
 | `rbac.create`                       | If `true`, create and use RBAC resources                          | `true`             |
 | `serviceAccount.create`             | If `true`, create a new service account                           | `true`             |
@@ -56,6 +57,7 @@ The following table lists the configurable parameters of the Stash chart and the
 | `apiserver.enableValidatingWebhook` | Enable validating webhooks for Stash CRDs                         | false              |
 | `apiserver.enableMutatingWebhook`   | Enable mutating webhooks for Kubernetes workloads                 | false              |
 | `apiserver.ca`                      | CA certificate used by main Kubernetes api server                 | ``                 |
+| `enableAnalytics`                   | Send usage events to Google Analytics                             | `true`             |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example:
