@@ -92,10 +92,10 @@ spec:
             podAffinityTerm:
               labelSelector:
                 matchExpressions:
-                - key: app
+                - key: component
                   operator: In
                   values:
-                  - cockroachdb
+                  - "{{ .Release.Name }}-{{ .Values.Component }}"
               topologyKey: kubernetes.io/hostname
       containers:
       - name: "{{ printf "%s-%s" .Release.Name .Values.Name | trunc 56 }}"
