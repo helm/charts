@@ -41,6 +41,7 @@ spec:
         - --audit-log-path=-
         - --tls-cert-file=/var/serving-cert/tls.crt
         - --tls-private-key-file=/var/serving-cert/tls.key
+        - --enable-analytics={{ .Values.enableAnalytics }}
         ports:
         - containerPort: 8443
         - containerPort: 56790
