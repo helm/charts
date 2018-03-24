@@ -40,9 +40,10 @@ The following table lists the configurable parameters of the Stash chart and the
 
 | Parameter                           | Description                                                       | Default            |
 | ----------------------------------- | ----------------------------------------------------------------- | ------------------ |
+| `dockerRegistry`                    | Docker registry used to pull Stash related images                 | `appscode`         |
 | `replicaCount`                      | Number of stash operator replicas to create (only 1 is supported) | `1`                |
 | `operator.image`                    | operator container image                                          | `appscode/stash`   |
-| `operator.tag`                      | operator container image tag                                      | `0.7.0-rc.1`       |
+| `operator.tag`                      | operator container image tag                                      | `0.7.0-rc.2`       |
 | `operator.pullPolicy`               | operator container image pull policy                              | `IfNotPresent`     |
 | `pushgateway.image`                 | Prometheus pushgateway container image                            | `prom/pushgateway` |
 | `pushgateway.tag`                   | Prometheus pushgateway container image tag                        | `v0.4.0`           |
