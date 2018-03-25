@@ -143,6 +143,16 @@ controller:
     configMapName: ""
     configMapKey: ""
 
+  ## Extra volumes containing additional files like ModSecurity configuration
+  ## Ref: https://kubernetes.io/docs/concepts/storage/volumes/
+  ##
+  extraVolumes: []
+
+  ## Extra volume mounts for additional configuration files
+  ## Ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-volume-storage/
+  ##
+  extraVolumeMounts: []
+
   service:
     annotations: {}
     clusterIP: ""
