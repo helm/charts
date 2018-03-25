@@ -1,0 +1,19 @@
+---
+name: "fleet"
+## The version should track the upstream version, followed by the iteration. This follows the pattern established by the
+## Debian package version.
+## See https://www.debian.org/doc/debian-policy/ch-controlfields.html#s-f-Version
+version: "1.0.6-1"
+description: "Kolide Fleet is a state of the art host monitoring platform tailored for security experts."
+keywords:
+  - "Kolide"
+  - "Fleet"
+  - "OSQuery"
+home: "https://kolide.com/fleet"
+sources:
+  - "https://github.com/kolide/fleet"
+maintainers:
+  - name: "Andrew Howden"
+    email: "hello@andrewhowden.com"
+engine: gotpl
+icon: "https://raw.githubusercontent.com/kolide/fleet/master/assets/images/rube.png"
