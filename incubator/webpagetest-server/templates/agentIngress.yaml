@@ -1,5 +1,5 @@
 {{- if .Values.agentIngress.enabled -}}
-{{- $serviceName := include "fullname" . -}}
+{{- $serviceName := include "webpagetest.fullname" . -}}
 {{- $servicePort := .Values.service.externalPort -}}
 {{- $rejectSvcName := .Values.agentIngress.rejectServiceName -}}
 {{- $rejectSvcPort := .Values.agentIngress.rejectServicePort -}}

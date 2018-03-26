@@ -10,15 +10,28 @@ metadata:
 spec:
   serviceName: {{ template "zookeeper.fullname" . }}-headless
   replicas: {{ .Values.servers }}
+  updateStrategy:
+{{ toYaml .Values.updateStrategy | indent 4 }}
   template:
     metadata:
       labels:
         app: {{ include "zookeeper.name" . | quote }}
         release: {{ .Release.Name | quote }}
     spec:
+{{- if .Values.tolerations }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}
+{{- end }}
+{{- if .Values.schedulerName }}
+      schedulerName: "{{ .Values.schedulerName }}"
+{{- end }}
 {{- if .Values.affinity }}
       affinity:
 {{ toYaml .Values.affinity | indent 8 }}
+{{- end }}
+{{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
 {{- end }}
       containers:
       - name: {{ template "zookeeper.name" . }}-server
@@ -78,11 +91,17 @@ spec:
         - name: datadir
           mountPath: /var/lib/zookeeper
           subPath: data
+      {{ if not .Values.persistence.enabled }}
+      volumes:
+      - name: datadir
+        emptyDir: {}
+      {{- end }}
       {{- if eq .Values.security.enabled true }}
       securityContext:
         runAsUser: {{ .Values.security.runAsUser }}
         fsGroup: {{ .Values.security.fsGroup }}
       {{- end }}
+  {{- if .Values.persistence.enabled }}
   volumeClaimTemplates:
   - metadata:
       name: datadir
@@ -90,7 +109,12 @@ spec:
       accessModes: [ "ReadWriteOnce" ]
       resources:
         requests:
-          storage: {{ .Values.storage }}
-      {{- if .Values.storageClass }}
-      storageClassName: {{ .Values.storageClass | quote }}
+          storage: {{ .Values.persistence.size }}
+      {{- if .Values.persistence.storageClass }}
+      {{- if (eq "-" .Values.persistence.storageClass) }}
+      storageClassName: ""
+      {{- else }}
+      storageClassName: "{{ .Values.persistence.storageClass }}"
       {{- end }}
+      {{- end }}
+  {{- end }}

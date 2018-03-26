@@ -1,6 +1,7 @@
 name: burrow
-version: 0.3.0
+version: 0.3.3
 appVersion: 0.17.1
+deprecated: true  # moved to stable
 description: Burrow is a permissionable smart contract machine
 icon: https://pbs.twimg.com/profile_images/697035383679295488/_6vl74tM_400x400.png
 keywords:
@@ -11,9 +12,6 @@ keywords:
 - ethereum
 - hyperledger
 - evm
-maintainers:
-- name: compleatang
-  email: casey@monax.io
 sources:
 - https://github.com/hyperledger/burrow
 - https://quay.io/monax/db

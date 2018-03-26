@@ -1,8 +1,8 @@
 ## Details about the image to be pulled.
 image:
   name: registry.opensource.zalan.do/teapot/external-dns
-  tag: v0.4.5
-
+  tag: v0.4.8
+  pullSecrets: []
   pullPolicy: IfNotPresent
 
 ## This controls which types of resource external-dns should 'watch' for new
@@ -21,6 +21,7 @@ provider: aws
 aws:
   secretKey: ""
   accessKey: ""
+  roleArn: ""
   region: "us-east-1"
   # Filter for zones of this type (optional, options: public, private)
   zoneType: ""
@@ -29,9 +30,18 @@ aws:
 cloudflare:
   apiKey: ""
   email: ""
+# When using the Google provider, specify the Google project (required when provider=google)
+google:
+  project: ""
+  serviceAccountSecret: ""
 
 ## Limit possible target zones by domain suffixes (optional)
 domainFilters: []
+# Filter sources managed by external-dns via annotation using label selector semantics (default: all sources)
+annotationFilter: ""
+
+# When using the TXT registry, a name that identifies this instance of ExternalDNS
+txtOwnerId: ""
 
 ## Node labels for pod assignment
 ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
@@ -69,6 +79,8 @@ rbac:
   ## If true, create & use RBAC resources
   ##
   create: false
+  # Beginning with Kubernetes 1.8, the api is stable and v1 can be used.
+  apiVersion: v1beta1
 
   ## Ignored if rbac.create is true
   ##

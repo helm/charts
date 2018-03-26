@@ -6,4 +6,7 @@ It will forward all container logs to the svc named {{ .Values.backend.forward.h
 {{- else if eq .Values.backend.type "es" }}
 
 It will forward all container logs to the svc named {{ .Values.backend.es.host }} on port: {{ .Values.backend.es.port }}
+{{- else if eq .Values.backend.type "http" }}
+
+It will forward all container logs to the svc named {{ .Values.backend.http.host }} on port: {{ .Values.backend.http.port }}
 {{- end }}

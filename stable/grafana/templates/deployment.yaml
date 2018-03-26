@@ -9,14 +9,14 @@ metadata:
     release: "{{ .Release.Name }}"
   name: {{ template "grafana.server.fullname" . }}
 spec:
-  replicas: 1
+  replicas: {{ .Values.server.replicaCount }}
   template:
     metadata:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
         checksum/dashboards-config: {{ include (print $.Template.BasePath "/dashboards-configmap.yaml") . | sha256sum }}
       {{- range $key, $value := .Values.server.annotations }}
-        {{ $key }}: {{ $value }}
+        {{ $key }}: {{ $value | quote }}
       {{- end }}
       labels:
         app: {{ template "grafana.fullname" . }}
@@ -29,6 +29,27 @@ spec:
       tolerations:
 {{ toYaml .Values.server.tolerations | indent 8 }}
   {{- end }}
+      {{- if .Values.server.antiAffinity.enabled }}
+      affinity:
+        podAntiAffinity:
+          {{- $antiAffinityType := default "hard" .Values.server.antiAffinity.type | lower }}
+          {{- if eq $antiAffinityType "hard" }}
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - topologyKey: "kubernetes.io/hostname"
+            labelSelector:
+              matchLabels:
+                app: {{ template "grafana.server.fullname" . }}
+          {{- end }}
+          {{- if eq $antiAffinityType "soft" }}
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 1
+            podAffinityTerm:
+              topologyKey: "kubernetes.io/hostname"
+              labelSelector:
+                matchLabels:
+                  app: {{ template "grafana.server.fullname" . }}
+          {{- end }}
+      {{- end }}
       containers:
         - name: {{ template "grafana.name" . }}
           image: "{{ .Values.server.image }}"
@@ -51,9 +72,8 @@ spec:
                   name: {{ template "grafana.server.fullname" . }}-config
                   key: grafana-install-plugins
             {{- end }}
-            {{- range $key, $value := .Values.server.extraEnv }}
-            - name: {{ $key | quote }}
-              value: {{ $value | quote }}
+            {{- if .Values.server.extraEnv }}
+{{ toYaml .Values.server.extraEnv | indent 12 }}
             {{- end }}
           ports:
             - containerPort: 3000

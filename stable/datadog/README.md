@@ -35,7 +35,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the Datadog chart and their default values.
+The following table lists the configurable parameters of the Datadog chart and their default values.
 
 |             Parameter       |            Description             |                    Default                |
 |-----------------------------|------------------------------------|-------------------------------------------|
@@ -122,7 +122,7 @@ datadog:
           port: 6379
 ```
 
-### leader election
+### Leader election
 
 The Datadog Agent supports built in leader election option for the Kubernetes event collector As of 5.17.
 
@@ -137,3 +137,11 @@ The `datadog.leaderLeaseDuration` is the duration for which a leader stays elect
 
 
 Make sure the `rbac.create` is enable as well to ensure the feature to work properly.
+
+### Agent6 beta
+
+The new major version of the agent is currently in beta, and this chart allows you to use it by setting a different `image.repository`.
+See `values.yaml` for supported values. Please note that not all features are available yet.
+
+Please refer to [the agent6 image documentation](https://github.com/DataDog/datadog-agent/tree/master/Dockerfiles/agent) and
+[the agent6 general documentation](https://github.com/DataDog/datadog-agent/tree/master/docs) for more information.

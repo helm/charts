@@ -1,0 +1,102 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: "{{ template "kong.fullname" . }}"
+  labels:
+    app: "{{ template "kong.name" . }}"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "kong.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+    {{- if .Values.podAnnotations }}
+      annotations:
+{{ toYaml .Values.podAnnotations | indent 8 }}
+    {{- end }}
+      labels:
+        app: {{ template "kong.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+      - name: {{ template "kong.name" . }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        env:
+        {{- if .Values.admin.useTLS }}
+        - name: KONG_ADMIN_LISTEN_SSL
+          value: 0.0.0.0:{{ .Values.admin.containerPort }}
+        - name: KONG_ADMIN_SSL
+          value: "on"
+        {{- else }}
+        - name: KONG_ADMIN_LISTEN
+          value: 0.0.0.0:{{ .Values.admin.containerPort }}
+        - name: KONG_ADMIN_SSL
+          value: "off"
+        {{- end }}
+        {{- if .Values.proxy.useTLS }}
+        - name: KONG_PROXY_LISTEN_SSL
+          value: 0.0.0.0:{{ .Values.proxy.containerPort }}
+        - name: KONG_SSL
+          value: "on"
+        {{- else }}
+        - name: KONG_PROXY_LISTEN
+          value: 0.0.0.0:{{ .Values.proxy.containerPort }}
+        - name: KONG_SSL
+          value: "off"
+        {{- end }}
+        - name: KONG_NGINX_DAEMON
+          value: "off"
+        - name: KONG_PROXY_ACCESS_LOG
+          value: "/dev/stdout"
+        - name: KONG_ADMIN_ACCESS_LOG
+          value: "/dev/stdout"
+        - name: KONG_PROXY_ERROR_LOG
+          value: "/dev/stderr"
+        - name: KONG_ADMIN_ERROR_LOG
+          value: "/dev/stderr"
+        {{- range $key, $val := .Values.env }}
+        - name: KONG_{{ $key | upper}}
+          value: {{ $val | quote }}
+        {{- end}}
+        {{- if .Values.postgresql.enabled }}
+        - name: KONG_PG_HOST
+          value: {{ template "kong.postgresql.fullname" . }}
+        - name: KONG_PG_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "kong.postgresql.fullname" . }}
+              key: postgres-password
+        {{- end }}
+        {{- if .Values.cassandra.enabled }}
+        - name: KONG_CASSANDRA_CONTACT_POINTS
+          value: {{ template "kong.cassandra.fullname" . }}
+        {{- end }}
+        ports:
+        - name: admin
+          containerPort: {{ .Values.admin.containerPort }}
+          protocol: TCP
+        - name: proxy
+          containerPort: {{ .Values.proxy.containerPort }}
+          protocol: TCP
+        readinessProbe:
+{{ toYaml .Values.readinessProbe | indent 10 }}
+        livenessProbe:
+{{ toYaml .Values.livenessProbe | indent 10 }}
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+    {{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+    {{- end }}
+    {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
+      tolerations:
+{{ toYaml .Values.tolerations | indent 8 }}

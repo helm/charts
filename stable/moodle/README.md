@@ -1,6 +1,6 @@
 # Moodle
 
-[Moodle](https://www.moodle.org) is a learning platform designed to provide educators, administrators and learners with a single robust, secure and integrated system to create personalised learning environments
+[Moodle](https://www.moodle.org) is a learning platform designed to provide educators, administrators and learners with a single robust, secure and integrated system to create personalized learning environments
 
 ## TL;DR;
 
@@ -43,7 +43,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the Moodle chart and their default values.
+The following table lists the configurable parameters of the Moodle chart and their default values.
 
 |              Parameter              |               Description               |                   Default                   |
 |-------------------------------------|-----------------------------------------|---------------------------------------------|
@@ -69,7 +69,17 @@ The following tables lists the configurable parameters of the Moodle chart and t
 | `persistence.accessMode`            | PVC Access Mode for Moodle volume       | `ReadWriteOnce`                             |
 | `persistence.size`                  | PVC Storage Request for Moodle volume   | `8Gi`                                       |
 | `persistence.existingClaim`         | If PVC exists&bounded for Moodle        | `nil` (when nil, new one is requested)      |
-| `mariadb.mariadbRootPassword`       | MariaDB admin password                  | `nil` (uses alpha storage class annotation) |
+| `allowEmptyPassword`                | Allow DB blank passwords                | `yes`                                       |
+| `externalDatabase.host`             | Host of the external database           | `nil`                                       |
+| `externalDatabase.port`             | Port of the external database           | `3306`                                      |
+| `externalDatabase.user`             | Existing username in the external db    | `bn_moodle`                                 |
+| `externalDatabase.password`         | Password for the above username         | `nil`                                       |
+| `externalDatabase.database`         | Name of the existing databse            | `bitnami_moodle`                            |
+| `mariadb.enabled`                   | Wheter to use or not the mariadb chart  | `true`                                      |
+| `mariadb.mariadbDatabase`           | Database name to create                 | `bitnami_moodle`                            |
+| `mariadb.mariadbUser`               | Database user to create                 | `bn_moodle`                                 |
+| `mariadb.mariadbPassword`           | Password for the database               | `nil`                                       |
+| `mariadb.mariadbRootPassword`       | MariaDB admin password                  | `nil`                                       |
 | `mariadb.persistence.enabled`       | Enable MariaDB persistence using PVC    | `true`                                      |
 | `mariadb.persistence.storageClass`  | PVC Storage Class for MariaDB volume    | `generic`                                   |
 | `mariadb.persistence.accessMode`    | PVC Access Mode for MariaDB volume      | `ReadWriteOnce`                             |
@@ -88,7 +98,7 @@ $ helm install --name my-release \
     stable/moodle
 ```
 
-The above command sets the Moodle administrator account username and password to `admin` and `password` respectively. Additionally it sets the MariaDB `root` user password to `secretpassword`.
+The above command sets the Moodle administrator account username and password to `admin` and `password` respectively. Additionally, it sets the MariaDB `root` user password to `secretpassword`.
 
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 
@@ -99,7 +109,9 @@ $ helm install --name my-release -f values.yaml stable/moodle
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
 ### Ingress without TLS
-For using ingress (example without tls):
+
+For using ingress (example without TLS):
+
 ```console
 $ helm install --name my-release \
   --set ingress.enabled=True,ingress.hosts[0]=moodle.domain.com,serviceType=ClusterIP,moodleUsername=admin,moodlePassword=password,mariadb.mariadbRootPassword=secretpassword stable/moodle
@@ -109,6 +121,7 @@ These are the *3 mandatory parameters* when *Ingress* is desired:
 `ingress.enabled=True,ingress.hosts[0]=moodle.domain.com,serviceType=ClusterIP`
 
 ### Ingress TLS
+
 If your cluster allows automatic creation/retrieval of TLS certificates (e.g. [kube-lego](https://github.com/jetstack/kube-lego)), please refer to the documentation for that mechanism.
 
 To manually configure TLS, first create/retrieve a key & certificate pair for the address(es) you wish to protect. Then create a TLS secret in the namespace:
@@ -152,4 +165,4 @@ The [Bitnami Moodle](https://github.com/bitnami/bitnami-docker-moodle) image sto
 
 Persistent Volume Claims are used to keep the data across deployments. This is known to work in GCE, AWS, vpshere, and minikube.
 See the [Configuration](#configuration) section to configure the PVC or to disable persistence.
-You may want to review the [PV reclaim policy](https://kubernetes.io/docs/tasks/administer-cluster/change-pv-reclaim-policy/), and update as required. By default it's set to delete, and when moodle is uninstalled, data is also removed.
+You may want to review the [PV reclaim policy](https://kubernetes.io/docs/tasks/administer-cluster/change-pv-reclaim-policy/) and update as required. By default, it's set to delete, and when Moodle is uninstalled, data is also removed.

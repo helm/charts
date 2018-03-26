@@ -3,11 +3,11 @@
 
 ## Nginx configuration
 ## ref: https://github.com/kubernetes/contrib/tree/master/ingress/controllers/nginx#automated-certificate-management-with-kube-lego
-## 
+##
 nginx:
   replicaCount: 1
   image:
-    repository: gcr.io/google_containers/nginx-ingress-controller
+    repository: k8s.gcr.io/nginx-ingress-controller
     tag: "0.8.3"
     pullPolicy: IfNotPresent
   service:
@@ -37,7 +37,7 @@ nginx:
 default:
   replicaCount: 1
   image:
-    repository: gcr.io/google_containers/defaultbackend
+    repository: k8s.gcr.io/defaultbackend
     tag: "1.0"
     pullPolicy: IfNotPresent
   resources:

@@ -42,6 +42,14 @@ spec:
           resources:
 {{ toYaml .Values.resources | indent 12 }}
           env:
+{{- if .Values.secrets.htpasswd }}
+            - name: REGISTRY_AUTH
+              value: "htpasswd"
+            - name: REGISTRY_AUTH_HTPASSWD_REALM
+              value: "Registry Realm"
+            - name: REGISTRY_AUTH_HTPASSWD_PATH
+              value: "/auth/htpasswd"
+{{- end }}
             - name: REGISTRY_HTTP_SECRET
               valueFrom:
                 secretKeyRef:
@@ -61,8 +69,21 @@ spec:
                 secretKeyRef:
                   name: {{ template "docker-registry.fullname" . }}-secret
                   key: s3SecretKey
+            - name: REGISTRY_STORAGE_S3_REGION
+              value: {{ required ".Values.s3.region is required" .Values.s3.region }}
+            - name: REGISTRY_STORAGE_S3_BUCKET
+              value: {{ required ".Values.s3.bucket is required" .Values.s3.bucket }}
+            - name: REGISTRY_STORAGE_S3_ENCRYPT
+              value: {{ .Values.s3.encrypt }}
+            - name: REGISTRY_STORAGE_S3_SECURE
+              value: {{ .Values.s3.secure }}
 {{- end }}
           volumeMounts:
+{{- if .Values.secrets.htpasswd }}
+            - name: auth
+              mountPath: /auth
+              readOnly: true
+{{- end }}
 {{- if eq .Values.storage "filesystem" }}
             - name: data
               mountPath: /var/lib/registry/
@@ -79,11 +100,19 @@ spec:
 {{ toYaml .Values.nodeSelector | indent 8 }}
 {{- end }}
       volumes:
+{{- if .Values.secrets.htpasswd }}
+        - name: auth
+          secret:
+            secretName: {{ template "docker-registry.fullname" . }}-secret
+            items:
+            - key: htpasswd
+              path: htpasswd
+{{- end }}
 {{- if eq .Values.storage "filesystem" }}
         - name: data
       {{- if .Values.persistence.enabled }}
           persistentVolumeClaim:
-            claimName: {{ template "docker-registry.fullname" . }}
+            claimName: {{ if .Values.persistence.existingClaim }}{{ .Values.persistence.existingClaim }}{{- else }}{{ template "docker-registry.fullname" . }}{{- end }}
       {{- else }}
           emptyDir: {}
       {{- end -}}
