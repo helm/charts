@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: {{ template "mariadb.fullname" . }}
   labels:
-    app: {{ template "mariadb.fullname" . }}
+    app: {{ template "mariadb.name" . }}
     chart: {{ template "mariadb.chart" . }}
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -29,4 +29,4 @@ spec:
     targetPort: metrics
 {{- end }}
   selector:
-    app: {{ template "mariadb.fullname" . }}
+    app: {{ template "mariadb.name" . }}
