@@ -43,7 +43,11 @@ spec:
               subPath: "{{ .Values.persistence.subPath }}"
               {{- end }}
             - name: minio-server-config
-              mountPath: {{ default "/root/.minio/" .Values.configPath | quote }}
+              mountPath: {{ default "/root/.minio/config.json" .Values.configPath | quote }}
+              subPath: config.json
+            - name: minio-server-config
+              mountPath: /root/.minio/initialize
+              subPath: initialize
             - name: podinfo
               mountPath: /podinfo
               readOnly: false
