@@ -89,6 +89,7 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `image`                         | Traefik image name                                                   | `traefik`                                 |
 | `imageTag`                      | The version of the official Traefik image to use                     | `1.5.4`                                  |
 | `serviceType`                   | A valid Kubernetes service type                                      | `LoadBalancer`                            |
+| `externalTrafficPolicy`         | "Local" preserves the client source IP, and "Cluster" obscures it    | None                                      |
 | `loadBalancerIP`                | An available static IP you have reserved on your cloud platform      | None                                      |
 | `loadBalancerSourceRanges`      | list of IP CIDRs allowed access to load balancer (if supported)      | None                                      |
 | `replicas`                      | The number of replicas to run; __NOTE:__ Full Traefik clustering with leader election is not yet supported, which can affect any configured Let's Encrypt setup; see Clustering section | `1` |
