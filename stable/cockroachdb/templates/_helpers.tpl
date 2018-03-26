@@ -8,3 +8,14 @@ Return the appropriate apiVersion for networkpolicy.
 {{- print "networking.k8s.io/v1" -}}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Create the name of the service account to use
+*/}}
+{{- define "cockroachdb.serviceAccountName" -}}
+{{- if .Values.Secure.ServiceAccount.Create -}}
+    {{ default (printf "%s-%s" .Release.Name .Values.Name | trunc 56) .Values.Secure.ServiceAccount.Name }}
+{{- else -}}
+    {{ default "default" .Values.Secure.ServiceAccount.Name }}
+{{- end -}}
+{{- end -}}

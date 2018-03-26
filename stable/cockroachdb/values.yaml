@@ -33,3 +33,13 @@ NetworkPolicy:
   AllowExternal: true
 Service:
   type: ClusterIP
+Secure:
+  Enabled: false
+  RequestCertsImage: "cockroachdb/cockroach-k8s-request-cert"
+  RequestCertsImageTag: "0.3"
+  ServiceAccount:
+    # Specifies whether a service account should be created.
+    Create: true
+    # The name of the service account to use.
+    # If not set and create is true, a name is generated.
+    Name:
