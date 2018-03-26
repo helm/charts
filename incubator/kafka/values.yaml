@@ -51,6 +51,16 @@ affinity: {}
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
 nodeSelector: {}
 
+## Readiness probe config.
+## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/
+##
+readinessProbe:
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  timeoutSeconds: 5
+  successThreshold: 1
+  failureThreshold: 3
+
 # Tolerations for nodes that have taints on them.
 # Useful if you want to dedicate nodes to just run kafka
 # https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
@@ -69,8 +79,8 @@ external:
   firstListenerPort: 31090
   domain: cluster.local
   init:
-    image: "lachlanevenson/k8s-kubectl"
-    imageTag: "v1.9.3"
+    image: "lwolf/kubectl_deployer"
+    imageTag: "0.4"
     imagePullPolicy: "IfNotPresent"
 
 ## Configuration Overrides. Specify any Kafka settings you would like set on the StatefulSet
@@ -92,6 +102,13 @@ configurationOverrides:
   #   EXTERNAL://kafka.cluster.local:$((31090 + ${KAFKA_BROKER_ID}))
   # "listener.security.protocol.map": |-
   #   PLAINTEXT:PLAINTEXT,EXTERNAL:PLAINTEXT
+
+## The jmx port to use for brokers.  Will expose both the port and set the KAFKA_JMX_PORT env variable
+# jmxPort: 9998
+
+## A collection of additional ports to expose on brokers (formatted as normal containerPort yaml)
+# Useful when the image exposes metrics (like prometheus, etc.) through a javaagent instead of a sidecar
+additionalPorts: {}
 
 ## Persistence configuration. Specify if and how to persist data to a persistent volume.
 ##

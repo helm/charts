@@ -1,4 +1,3 @@
-{{- $configMapName := include "kafka.configmap" . -}}
 {{- $advertisedListenersOverride := first (pluck "advertised.listeners" .Values.configurationOverrides) }}
 apiVersion: apps/v1beta1
 kind: StatefulSet
@@ -29,8 +28,10 @@ spec:
       - name: init-ext
         image: "{{ .Values.external.init.image }}:{{ .Values.external.init.imageTag }}"
         imagePullPolicy: "{{ .Values.external.init.imagePullPolicy }}"
-        args:
-        - -n ${POD_NAMESPACE} label pods ${POD_NAME} pod=${POD_NAME}
+        command:
+          - sh
+          - -euxc
+          - "kubectl label pods ${POD_NAME} --namespace ${POD_NAMESPACE} pod=${POD_NAME}"
         env:
           - name: POD_NAME
             valueFrom:
@@ -69,8 +70,11 @@ spec:
               - --zookeeper
               - {{ template "zookeeper.url" . }}
               - --list
-          initialDelaySeconds: 30
-          timeoutSeconds: 5
+          initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.readinessProbe.successThreshold }}
+          failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
         ports:
         - containerPort: 9092
           name: kafka
@@ -82,6 +86,13 @@ spec:
           name: external-{{ $i }}
           {{- end }}
         {{- end }}
+        {{- if .Values.jmxPort }}
+        - containerPort: {{ .Values.jmxPort }}
+          name: jmx
+        {{- end }}
+        {{- if .Values.additionalPorts }}
+{{ toYaml .Values.additionalPorts | indent 8 }}
+        {{- end }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         env:
@@ -89,22 +100,21 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: status.podIP
+        {{- if not (hasKey .Values.configurationOverrides "zookeeper.connect") }}
         - name: KAFKA_ZOOKEEPER_CONNECT
-          valueFrom:
-            configMapKeyRef:
-              name: "{{ $configMapName }}"
-              key: zookeeper.connect
+          value: {{ include "zookeeper.url" . | quote }}
+        {{- end }}
+        {{- if not (hasKey .Values.configurationOverrides "log.dirs") }}
         - name: KAFKA_LOG_DIRS
-          valueFrom:
-            configMapKeyRef:
-              name: "{{ $configMapName }}"
-              key: log.dirs
-        {{- range $configName := (keys .Values.configurationOverrides) }}
-        - name: KAFKA_{{ $configName | replace "." "_" | upper }}
-          valueFrom:
-            configMapKeyRef:
-              name: "{{ $configMapName }}"
-              key: {{ $configName }}
+          value: {{ printf "%s/%s" .Values.persistence.mountPath .Values.logSubPath | quote }}
+        {{- end }}
+        {{- range $key, $value := .Values.configurationOverrides }}
+        - name: {{ printf "KAFKA_%s" $key | replace "." "_" | upper | quote }}
+          value: {{ $value | quote }}
+        {{- end }}
+        {{- if .Values.jmxPort }}
+        - name: KAFKA_JMX_PORT
+          value: "{{ .Values.jmxPort }}"
         {{- end }}
         # This is required because the Downward API does not yet support identification of
         # pod numbering in statefulsets. Thus, we are required to specify a command which
