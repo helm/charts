@@ -16,6 +16,11 @@ labels: {}
 #   scheduler.alpha.kubernetes.io/critical-pod: ''
 annotations: {}
 
+## Here annotations can be added for the heapster Pod
+# podAnnotations:
+#   prometheus.io/scrape: "true"
+podAnnotations: {}
+
 ## Node labels for pod assignment
 ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
 ##
