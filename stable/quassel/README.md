@@ -41,7 +41,7 @@ deletes the release.
 
 ## Configuration
 
-The following tables lists the configurable parameters of the quassel chart and
+The following table lists the configurable parameters of the quassel chart and
 their default values.
 
 | Parameter                              | Description                                                                                      | Default                                                  |
