@@ -1,7 +1,7 @@
 ## Bitnami SuiteCRM image version
 ## ref: https://hub.docker.com/r/bitnami/suitecrm/tags/
 ##
-image: bitnami/suitecrm:7.10.2-r1
+image: bitnami/suitecrm:7.10.2-r2
 
 ## Specify a imagePullPolicy
 ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
