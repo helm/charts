@@ -22,7 +22,7 @@ image.repository | Name of the image to run, without the tag. | [raykrueger/riem
 image.tag | The image tag to use. | 0.2.14
 image.pullPolicy | The kubernetes image pull policy. | IfNotPresent
 service.type | The kubernetes service type to use. | ClusterIP
-service.ports.udp | The udp port the servie should listen on. | 5555
+service.ports.udp | The udp port the service should listen on. | 5555
 service.ports.tcp | The tcp port the service should listen on. | 5555
 service.ports.websocket | The port the service should listen on for use with websockets. | 5556
 resources | Any resource constraints to apply. | None
