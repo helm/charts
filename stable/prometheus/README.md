@@ -88,7 +88,7 @@ Assuming you have an existing release of the prometheus chart, named `prometheus
 
 ## Configuration
 
-The following tables lists the configurable parameters of the Prometheus chart and their default values.
+The following table lists the configurable parameters of the Prometheus chart and their default values.
 
 Parameter | Description | Default
 --------- | ----------- | -------
