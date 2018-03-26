@@ -1,7 +1,7 @@
 apiVersion: v1
 description: A Helm chart for Kubernetes
 name: webpagetest-agent
-version: 0.1.1
+version: 0.1.2
 home: https://www.webpagetest.org/
 icon: https://www.webpagetest.org/images/logo_wpt.png
 sources:
