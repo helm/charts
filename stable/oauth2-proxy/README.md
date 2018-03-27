@@ -55,7 +55,7 @@ Parameter | Description | Default
 `podLabels` | additional labesl to add to each pod | `{}`
 `replicaCount` | desired number of pods | `1`
 `resources` | pod resource requests & limits | `{}`
-`service.port` | port for the service | `443`
+`service.port` | port for the service | `80`
 `service.type` | type of service | `ClusterIP`
 `tolerations` | List of node taints to tolerate | `[]`
 
