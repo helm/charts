@@ -20,7 +20,7 @@ spec:
         {{ $key }}: {{ $value | quote }}
         {{- end }}
     spec:
-    {{- with .Values.nodeSelector }}
+    {{- with .Values.worker.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
     {{- end }}
