@@ -37,5 +37,5 @@ helm install \
   --set $keysFiles \
   stable/burrow
 
-unset $keysFiles
+unset keysFiles genesisFile
 ```
