@@ -44,6 +44,10 @@ spec:
         - name: {{ $key }}
           value: {{ $value }}
 {{- end }}
+        {{- if index .Values.config "http.enabled" }}
+        ports:
+          - containerPort: {{ index .Values.config "http.port" }}
+        {{- end }}
         securityContext:
           runAsUser: 0
         resources:

@@ -40,6 +40,11 @@ config:
     rotate_every_kb: 10000
     number_of_files: 5
 
+  # When a key contains a period, use this format for setting values on the command line:
+  # --set config."http\.enabled"=true
+  http.enabled: false
+  http.port: 5066
+
 # A map of additional environment variables
 extraVars: {}
   # test1: "test2"
