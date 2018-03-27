@@ -4,6 +4,7 @@ icon: https://www.elastic.co/assets/blt47799dcdcf08438d/logo-elastic-beats-lt.sv
 name: filebeat
 version: 0.2.0
 appVersion: 6.2.3
+home: https://www.elastic.co/products/beats/filebeat
 sources:
 - https://www.elastic.co/guide/en/beats/filebeat/current/index.html
 maintainers:
