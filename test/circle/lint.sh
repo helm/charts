@@ -53,13 +53,31 @@ yamllinter() {
   fi
 }
 
+# Validate the Chart.yaml
+validate_chart_yaml() {
+
+  run yamale -s test/circle/yaml-schemas/Chart.yaml ${1}/Chart.yaml
+
+  echo "Validating maintainers names"
+
+  for name in $(yaml r ${1}/Chart.yaml maintainers.[*].name|cut -d " " -f2); do
+    if [ $(curl -s -o /dev/null -w "%{http_code}\n" -If https://github.com/${name}) -ne 200 ]; then
+      echo "Error: Sorry ${name} is not a valid GitHub account. Please use a valid GitHub account to help us communicate with you in PR/issues."
+      exitCode=1
+    fi
+  done
+}
+
 # include the semvercompare function
 curDir="$(dirname "$0")"
 source "$curDir/../semvercompare.sh"
-
-git remote add k8s https://github.com/kubernetes/charts
-git fetch k8s master
-CHANGED_FOLDERS=`git diff --find-renames --name-only $(git merge-base k8s/master HEAD) stable/ incubator/ | awk -F/ '{print $1"/"$2}' | uniq`
+if [[ -z ${1} ]]; then
+  git remote add k8s https://github.com/kubernetes/charts
+  git fetch k8s master
+  CHANGED_FOLDERS=`git diff --find-renames --name-only $(git merge-base k8s/master HEAD) stable/ incubator/ | awk -F/ '{print $1"/"$2}' | uniq`
+else
+  CHANGED_FOLDERS=( ${1} "" )
+fi
 
 # Exit early if no charts have changed
 if [ -z "$CHANGED_FOLDERS" ]; then
@@ -78,6 +96,8 @@ for directory in ${CHANGED_FOLDERS}; do
     run helm lint ${directory}
 
     yamllinter ${directory}
+
+    validate_chart_yaml ${directory}
 
     semvercompare ${directory}
 
