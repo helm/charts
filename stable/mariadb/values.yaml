@@ -16,19 +16,19 @@ usePassword: true
 ## Defaults to a random 10-character alphanumeric string if not set and usePassword is true
 ## ref: https://github.com/bitnami/bitnami-docker-mariadb/blob/master/README.md#setting-the-root-password-on-first-run
 ##
-# mariadbRootPassword:
+mariadbRootPassword:
 
 ## Create a database user
 ## Password defaults to a random 10-character alphanumeric string if not set and usePassword is true
 ## ref: https://github.com/bitnami/bitnami-docker-mariadb/blob/master/README.md#creating-a-database-user-on-first-run
 ##
-# mariadbUser:
-# mariadbPassword:
+mariadbUser:
+mariadbPassword:
 
 ## Create a database
 ## ref: https://github.com/bitnami/bitnami-docker-mariadb/blob/master/README.md#creating-a-database-on-first-run
 ##
-# mariadbDatabase:
+mariadbDatabase:
 
 
 service:
@@ -64,16 +64,16 @@ persistence:
   ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
   ##   GKE, AWS & OpenStack)
   ##
-  # storageClass: "-"
+  storageClass: ""
   accessMode: ReadWriteOnce
   size: 8Gi
 
 ## Configure MariaDB with a custom my.cnf file
 ## ref: https://mariadb.com/kb/en/mariadb/configuring-mariadb-with-mycnf/#example-of-configuration-file
 ##
-# config: |-
-#   [mysqld]
-#   innodb_buffer_pool_size=2G
+config: |-
+  # [mysqld]
+  # innodb_buffer_pool_size=2G
 
 metrics:
   enabled: false
