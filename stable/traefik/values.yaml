@@ -128,6 +128,7 @@ acme:
   ## certs every time a pod (re-)starts and you WILL be rate limited!
   persistence:
     enabled: true
+    annotations: {}
     ## acme data Persistent Volume Storage Class
     ## If defined, storageClassName: <storageClass>
     ## If set to "-", storageClassName: "", which disables dynamic provisioning
