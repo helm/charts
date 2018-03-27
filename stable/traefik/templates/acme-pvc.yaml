@@ -2,6 +2,10 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
+{{- if .Values.acme.persistence.annotations }}
+  annotations:
+{{ toYaml .Values.acme.persistence.annotations | indent 4 }}
+{{- end }}
   name: {{ template "traefik.fullname" . }}-acme
   labels:
     app: {{ template "traefik.name" . }}
