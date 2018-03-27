@@ -9,6 +9,11 @@ metadata:
     heritage: {{ .Release.Service }}
 spec:
   replicas: {{ .Values.replicaCount }}
+{{- if .Values.updateStrategy }}
+  strategy:
+{{ toYaml .Values.updateStrategy | indent 4 }}
+{{- end }}
+  minReadySeconds: 5
   template:
     metadata:
       labels:
