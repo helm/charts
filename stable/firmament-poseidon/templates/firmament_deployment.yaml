@@ -1,0 +1,24 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: firmament-scheduler
+  namespace: kube-system
+  labels:
+    scheduler: firmament
+spec:
+  replicas: {{ .Values.firmamentReplicaCount }}
+  template:
+    metadata:
+      labels:
+        scheduler: firmament
+    spec:
+      containers:
+      - command: [/firmament/build/src/firmament_scheduler, --flagfile=/firmament/config/firmament_scheduler_cpu_mem.cfg]
+        image: "{{ .Values.firmamentImage.repository }}:{{ .Values.firmamentImage.tag }}"
+        name: {{.Values.extraFirmamentContainerArgs.name}}
+        ports:
+         - containerPort: 9090
+      hostNetwork: true
+      hostPID: false
+      volumes: []
+
