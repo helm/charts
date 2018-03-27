@@ -67,6 +67,11 @@ service:
   type: LoadBalancer
   externalPort: 9000
   internalPort: 9000
+  ## External IP addresses of service
+  ## Default: nil
+  ##
+  # externalIPs:
+  # - 192.168.0.1
 
 ## Enable persistence using Persistent Volume Claims
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
