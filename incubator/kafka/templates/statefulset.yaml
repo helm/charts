@@ -59,17 +59,16 @@ spec:
         image: "{{ .Values.image }}:{{ .Values.imageTag }}"
         imagePullPolicy: "{{ .Values.imagePullPolicy }}"
         livenessProbe:
-          tcpSocket:
-            port: 9092
+          exec:
+            command:
+              - sh
+              - -ec
+              - /usr/bin/jps | /bin/grep -q SupportedKafka
           initialDelaySeconds: 30
           timeoutSeconds: 5
         readinessProbe:
-          exec:
-            command:
-              - kafka-topics
-              - --zookeeper
-              - {{ template "zookeeper.url" . }}
-              - --list
+          tcpSocket:
+            port: kafka
           initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
           periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
           timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
