@@ -40,6 +40,10 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: spec.nodeName
+{{- range $key, $value := .Values.extraVars }}
+        - name: {{ $key }}
+          value: {{ $value }}
+{{- end }}
         securityContext:
           runAsUser: 0
         resources:
