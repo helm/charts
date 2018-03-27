@@ -4,7 +4,7 @@ metadata:
   name: {{ template "ethereum.fullname" . }}-ethstats
   labels:
     app: {{ template "ethereum.name" . }}
-    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    chart: {{ template "ethereum.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
     component: ethstats
