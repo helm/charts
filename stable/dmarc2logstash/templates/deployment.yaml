@@ -30,7 +30,7 @@ spec:
           emptyDir: {}
         - name: filebeat-config
           configMap:
-            name: filebeat-config
+            name: {{ template "dmarc2logstash.fullname" . }}-config
             items:
             - key: filebeat.yml
               path: filebeat.yml
@@ -50,17 +50,17 @@ spec:
             - name: POP3_SERVER
               valueFrom:
                 secretKeyRef:
-                  name: dmarc2logstash-secrets
+                  name: {{ template "dmarc2logstash.name" . }}-secrets
                   key: pop3_server
             - name: POP3_USERNAME
               valueFrom:
                 secretKeyRef:
-                  name: dmarc2logstash-secrets
+                  name: {{ template "dmarc2logstash.name" . }}-secrets
                   key: pop3_username
             - name: POP3_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: dmarc2logstash-secrets
+                  name: {{ template "dmarc2logstash.name" . }}-secrets
                   key: pop3_password
           volumeMounts:
             - name: shared-log

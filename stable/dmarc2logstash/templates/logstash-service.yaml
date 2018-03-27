@@ -2,9 +2,9 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: logstash
+  name: {{ template "dmarc2logstash.fullname" . }}
   labels:
-    app: filebeat
+    app: {{ template "dmarc2logstash.name" . }}
     chart: {{ template "dmarc2logstash.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
