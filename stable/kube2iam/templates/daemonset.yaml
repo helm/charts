@@ -86,6 +86,10 @@ spec:
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
     {{- end }}
+    {{- if .Values.affinity }}
+      affinity:
+{{ toYaml .Values.affinity | indent 8 }}
+    {{- end }}
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "kube2iam.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
