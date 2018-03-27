@@ -65,6 +65,9 @@ spec:
         - name: varlibdockercontainers
           mountPath: /var/lib/docker/containers
           readOnly: true
+{{- if .Values.extraVolumeMounts }}
+{{ toYaml .Values.extraVolumeMounts | indent 8 }}
+{{- end }}
       volumes:
       - name: varlog
         hostPath:
@@ -79,6 +82,9 @@ spec:
         hostPath:
           path: /var/lib/filebeat
           type: DirectoryOrCreate
+{{- if .Values.extraVolumes }}
+{{ toYaml .Values.extraVolumes | indent 6 }}
+{{- end }}
       terminationGracePeriodSeconds: 60
       serviceAccountName: {{ template "filebeat.serviceAccountName" . }}
       tolerations:

@@ -49,6 +49,16 @@ config:
 extraVars: {}
   # test1: "test2"
 
+# Add additional volumes and mounts, for example to read other log files on the host
+extraVolumes: []
+  # - hostPath:
+  #     path: /var/log
+  #   name: varlog
+extraVolumeMounts: []
+  # - name: varlog
+  #   mountPath: /host/var/log
+  #   readOnly: true
+
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
