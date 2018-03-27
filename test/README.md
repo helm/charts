@@ -72,3 +72,13 @@ to update the public repositories. The procedure is as follows:
    - Run `helm package` on each chart
    - Recreate the index using `helm repo index`
    - Upload the repository using `gsutil rsync`
+
+The Jenkins instance doing the syncing is running in a GCP project
+`kubernetes-charts-ci` in the default namespace of the GKE cluster named
+jenkins in us-west1-a.
+
+To access the Jenkins interface:
+```shell
+gcloud container clusters get-credentials --project kubernetes-charts-ci --zone us-west1-a jenkins
+helm status sync
+```
