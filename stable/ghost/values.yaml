@@ -1,5 +1,5 @@
 ## Bitnami Ghost image version
-## ref: https://hub.docker.com/r/bitnami/dokuwiki/tags/
+## ref: https://hub.docker.com/r/bitnami/ghost/tags/
 ##
 image:
   registry: docker.io
