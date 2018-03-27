@@ -30,6 +30,9 @@ spec:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
+        volumeMounts:
+          - mountPath: /opt/config-files
+            name: config-files
         args:
         {{- range $key, $value := .Values.extraArgs }}
           {{- if $value }}
@@ -82,3 +85,7 @@ spec:
     {{- end }}
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
+      volumes:
+        - name: config-files
+          configMap:
+            name: {{ template "oauth2-proxy.fullname" . }}

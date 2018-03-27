@@ -1,0 +1,12 @@
+{{- $fileName := .Values.config.serviceAccountJson -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "oauth2-proxy.fullname" . }}
+  labels:
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+    chart: {{ template "oauth2-proxy.chart" . }}
+    app: {{ template "oauth2-proxy.name" . }}
+data:
+{{ (.Files.Glob "config/*").AsConfig | indent 2 }}

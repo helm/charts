@@ -73,3 +73,23 @@ $ helm install stable/oauth2-proxy --name my-release -f values.yaml
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
+## Advanced configuration
+
+A 'config' folder can be added in order to provide configuration files to the binary. (For example the service account json file.) Any files that are placed in config folder will be mounted in /opt/config-files. Service account json file is needed for group based authentication. See https://github.com/bitly/oauth2_proxy for more information.
+
+```
+oauth2-proxy/
+├── Chart.yaml
+├── config <------- HERE
+├── README.md
+├── templates
+│   ├── configmap.yaml
+│   ├── deployment.yaml
+│   ├── _helpers.tpl
+│   ├── ingress.yaml
+│   ├── NOTES.txt
+│   ├── secret.yaml
+│   └── service.yaml
+└── values.yaml
+```
