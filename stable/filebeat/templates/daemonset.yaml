@@ -22,6 +22,8 @@ spec:
       labels:
         app: {{ template "filebeat.name" . }}
         release: {{ .Release.Name }}
+      annotations:
+        checksum/secret: {{ toYaml .Values.config | sha256sum }}
     spec:
       containers:
       - name: {{ .Chart.Name }}
