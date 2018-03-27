@@ -51,6 +51,6 @@ Once created, run:
         --set geth.account.address=YOUR-ETHEREUM-ADDRESS-HERE
         --set geth.account.privateKey=YOUR-PRIVATE-KEY-HERE
         --set geth.account.secret=YOUR-SECRET-HERE
-        incubator/ethereum
+        stable/ethereum
 
 {{- end }}

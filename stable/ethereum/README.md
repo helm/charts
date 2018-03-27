@@ -5,7 +5,7 @@
 ## TL;DR;
 
 ```console
-$ helm install incubator/ethereum
+$ helm install stable/ethereum
 ```
 
 ## Introduction
@@ -39,7 +39,7 @@ This chart deploys a **private** [Ethereum](https://www.ethereum.org/) network o
 2. Install the chart as follows:
 
     ```console
-    $ helm install --name my-release incubator/ethereum
+    $ helm install --name my-release stable/ethereum
         --set geth.account.address=[PUBLIC_ADDRESS]
         --set geth.account.privateKey=[PRIVATE_KEY]
         --set geth.account.secret=[SECRET]
@@ -91,12 +91,12 @@ The following tables lists the configurable parameters of the vault chart and th
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example, to configure the networkid:
 
 ```console
-$ helm install incubator/ethereum --name ethereum --set geth.genesis.networkid=98052
+$ helm install stable/ethereum --name ethereum --set geth.genesis.networkid=98052
 ```
 
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 
 ```console
-$ helm install incubator/ethereum -f values.yaml
+$ helm install stable/ethereum -f values.yaml
 ```
 
