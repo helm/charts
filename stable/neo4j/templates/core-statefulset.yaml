@@ -85,6 +85,10 @@ spec:
 {{- if .Values.core.sidecarContainers }}
 {{ toYaml .Values.core.sidecarContainers | indent 6}}
 {{- end }}
+{{- if .Values.imagePullSecret }}
+      imagePullSecrets:
+      - name: {{ .Values.imagePullSecret }}
+{{- end -}}
 {{- if .Values.core.initContainers }}
       initContainers:
 {{ toYaml .Values.core.initContainers | indent 6}}

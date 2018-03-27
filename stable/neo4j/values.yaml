@@ -9,6 +9,7 @@ name: "neo4j"
 image: "neo4j"
 imageTag: "3.2.3-enterprise"
 imagePullPolicy: "IfNotPresent"
+# imagePullSecret: registry-secret
 
 # Use password authentication
 authEnabled: true
