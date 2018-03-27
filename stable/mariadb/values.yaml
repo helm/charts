@@ -2,7 +2,7 @@
 ## ref: https://hub.docker.com/r/bitnami/mariadb/tags/
 ##
 ## Default: none
-image: bitnami/mariadb:10.1.31-r2
+image: bitnami/mariadb:10.1.32-r0
 
 ## Specify an imagePullPolicy (Required)
 ## It's recommended to change this to 'Always' if the image tag is 'latest'
