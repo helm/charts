@@ -3,8 +3,8 @@
 # Declare variables to be passed into your templates.
 replicaCount: 1
 image:
-  repository: clearent/nexus
-  tag: 3.5.1-02
+  repository: cavemandaveman/nexus
+  tag: 3.9.0-01
 
 # node labels for node selection
 # nodeSelector:
