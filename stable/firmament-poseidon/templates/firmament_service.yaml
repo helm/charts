@@ -1,0 +1,12 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: firmament-service
+  namespace: kube-system
+spec:
+  selector:
+    scheduler: firmament
+  ports:
+    - protocol: TCP
+      port: 9090
+      targetPort: 9090

@@ -1,0 +1,12 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: {{.Values.serviceAccount.name}}
+  namespace: kube-system
+spec:
+  selector:
+    poseidonservice: {{.Values.serviceAccount.name}}
+  ports:
+    - protocol: TCP
+      port: 9091
+      targetPort: 9091

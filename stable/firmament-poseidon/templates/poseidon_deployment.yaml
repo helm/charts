@@ -1,0 +1,35 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    component: {{.Values.serviceAccount.name}}
+    tier: control-plane
+    poseidonservice: {{.Values.serviceAccount.name}}
+  name: {{.Values.serviceAccount.name}}
+  namespace: kube-system
+spec:
+  replicas: {{.Values.poseidonReplicaCount}}
+  template:
+    metadata:
+      labels:
+        component: {{.Values.serviceAccount.name}}
+        tier: control-plane
+        version: first
+        poseidonservice: {{.Values.serviceAccount.name}}
+    spec:
+      serviceAccountName: {{.Values.serviceAccount.name}}
+      containers:
+      - command: [/poseidon, --logtostderr, --kubeConfig=, --kubeVersion=1.6]
+        image: "{{ .Values.poseidonImage.repository }}:{{ .Values.poseidonImage.tag }}"
+        name: {{.Values.extraPoseidonContainerArgs.name}}
+      initContainers:
+      - name: {{.Values.extraBusyBoxContainerArgs.name}}
+        image: "{{ .Values.busyboxImage.repository }}:{{ .Values.busyboxImage.tag }}"
+        command: ['sh', '-c', 'until nslookup firmament-service.kube-system; do echo waiting for firmamentservice; sleep 1; done;']
+        securityContext:
+          privileged: false
+        volumeMounts: []
+      hostNetwork: false
+      hostPID: false
+volumes: []
+
