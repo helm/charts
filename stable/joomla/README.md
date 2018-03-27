@@ -46,9 +46,12 @@ The command removes all the Kubernetes components associated with the chart and 
 The following table lists the configurable parameters of the Joomla! chart and their default values.
 
 | Parameter                         | Description                            | Default                                                   |
-| --------------------------------- | -------------------------------------  | --------------------------------------------------------- |
-| `image`                           | Joomla! image                          | `bitnami/joomla:{VERSION}`                                |
-| `imagePullPolicy`                 | Image pull policy                      | `Always` if `image` tag is `latest`, else `IfNotPresent`  |
+| --------------------------------- | -------------------------------------- | --------------------------------------------------------- |
+| `image.registry`                  | Joomla! image registry                 | `docker.io`                                               |
+| `image.repository`                | Joomla! Image name                     | `bitnami/joomla`                                          |
+| `image.tag`                       | Joomla! Image tag                      | `{VERSION}`                                               |
+| `image.pullPolicy`                | Image pull policy                      | `Always` if `imageTag` is `latest`, else `IfNotPresent`   |
+| `image.pullSecrets`               | Specify image pull secrets             | `nil`                                                     |
 | `joomlaUsername`                  | User of the application                | `user`                                                    |
 | `joomlaPassword`                  | Application password                   | Randomly generated                                        |
 | `joomlaEmail`                     | Admin email                            | `user@example.com`                                        |
