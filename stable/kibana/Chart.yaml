@@ -12,3 +12,4 @@ maintainers:
 sources:
 - https://github.com/elastic/kibana
 engine: gotpl
+home: https://www.elastic.co/products/kibana
