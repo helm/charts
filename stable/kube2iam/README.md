@@ -41,6 +41,7 @@ The following table lists the configurable parameters of the kube2iam chart and 
 
 Parameter | Description | Default
 --- | --- | ---
+`affinity` | affinity configuration for pod assignment | `{}`
 `extraArgs` | Additional container arguments | `{}`
 `host.ip` | IP address of host | `$(HOST_IP)`
 `host.iptables` | Add iptables rule | `false`
