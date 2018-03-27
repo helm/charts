@@ -1,14 +1,21 @@
 ## Bitnami Drupal image version
-## ref: https://hub.docker.com/r/bitnami/drupal/tags/
+## ref: https://hub.docker.com/r/bitnami/dokuwiki/tags/
 ##
-image: bitnami/drupal:8.5.0-r0
-
-## Optionally specify an array of imagePullSecrets.
-## Secrets must be manually created in the namespace.
-## ref: https://kubernetes.io/docs/concepts/containers/images/#specifying-imagepullsecrets-on-a-pod
-##
-# imagePullSecrets:
-#   - name: myRegistryKeySecretName
+image:
+  registry: docker.io
+  repository: bitnami/drupal
+  tag: 8.5.0-r0
+  ## Specify a imagePullPolicy
+  ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
+  ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+  ##
+  pullPolicy: IfNotPresent
+  ## Optionally specify an array of imagePullSecrets.
+  ## Secrets must be manually created in the namespace.
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+  ##
+  # pullSecrets:
+  #   - name: myRegistrKeySecretName 
 
 ## Specify a imagePullPolicy
 ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
