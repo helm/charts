@@ -20,7 +20,7 @@ spec:
     - host: {{ . }}
       http:
         paths:
-          {{- if (eq (0 | (index $.Values.ingress.annotations "kubernetes.io/ingress.class")) "gce") }}
+          {{- if (index $.Values.ingress "annotations") and (eq (default "" (index $.Values.ingress.annotations "kubernetes.io/ingress.class")) "gce") }}
           - path: /*
           {{- else }}
           - path: /

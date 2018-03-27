@@ -204,7 +204,7 @@ spec:
               value: "/concourse-vault/client.cert"
             - name: CONCOURSE_VAULT_CLIENT_KEY
               value: "/concourse-vault/client.key"
-            {{- if eq .Values.credentialManager.vault.authBackend "approle" }}
+            {{- if eq (default "" .Values.credentialManager.vault.authBackend) "approle" }}
             - name: CONCOURSE_VAULT_APPROLE_ID
               valueFrom:
                 secretKeyRef:
