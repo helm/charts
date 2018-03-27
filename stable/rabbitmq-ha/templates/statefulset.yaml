@@ -24,6 +24,15 @@ spec:
     spec:
       terminationGracePeriodSeconds: 10
       serviceAccountName: {{ template "rabbitmq-ha.serviceAccountName" . }}
+      initContainers:
+        - name: copy-rabbitmq-config
+          image: busybox
+          command: ['sh', '-c', 'cp /configmap/* /etc/rabbitmq']
+          volumeMounts:
+            - name: configmap
+              mountPath: /configmap
+            - name: config
+              mountPath: /etc/rabbitmq
       containers:
         - name: {{ .Chart.Name }}
           image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
@@ -154,6 +163,8 @@ spec:
       {{- end }}
       volumes:
         - name: config
+          emptyDir: {}
+        - name: configmap
           configMap:
             name: {{ template "rabbitmq-ha.fullname" . }}
         {{- if .Values.rabbitmqCert.enabled }}
