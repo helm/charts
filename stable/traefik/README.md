@@ -117,6 +117,7 @@ The following table lists the configurable parameters of the Traefik chart and t
 | `acme.staging`                  | Whether to get certs from Let's Encrypt's staging environment        | `true`                                    |
 | `acme.logging`                  | display debug log messages from the acme client library              | `false`                                   |
 | `acme.persistence.enabled`      | Create a volume to store ACME certs (if ACME is enabled)             | `true`                                    |
+| `acme.persistence.annotations`  | PVC annotations                                                      | `{}`                                      |
 | `acme.persistence.storageClass` | Type of `StorageClass` to request-- will be cluster-specific         | `nil` (uses alpha storage class annotation) |
 | `acme.persistence.accessMode`   | `ReadWriteOnce` or `ReadOnly`                                        | `ReadWriteOnce`                           |
 | `acme.persistence.existingClaim`| An Existing PVC name                                                 | `nil`                                     |
