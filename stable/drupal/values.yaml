@@ -1,5 +1,5 @@
 ## Bitnami Drupal image version
-## ref: https://hub.docker.com/r/bitnami/dokuwiki/tags/
+## ref: https://hub.docker.com/r/bitnami/drupal/tags/
 ##
 image:
   registry: docker.io
