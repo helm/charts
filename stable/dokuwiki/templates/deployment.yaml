@@ -13,10 +13,14 @@ spec:
       labels:
         app: {{ template "dokuwiki.fullname" . }}
     spec:
+      {{- if .Values.image.pullSecret }}
+      imagePullSecrets:
+      - name: {{ .Values.image.pullSecret }}
+      {{-  end }}
       containers:
       - name: {{ template "dokuwiki.fullname" . }}
-        image: "{{ .Values.image }}"
-        imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
+        image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         env:
         - name: DOKUWIKI_USERNAME
           value: {{ default "" .Values.dokuwikiUsername | quote }}
