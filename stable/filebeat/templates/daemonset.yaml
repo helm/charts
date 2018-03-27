@@ -6,7 +6,7 @@ metadata:
     app: {{ template "filebeat.name" . }}
     chart: {{ template "filebeat.chart" . }}
     release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}   
+    heritage: {{ .Release.Service }}
 spec:
   selector:
     matchLabels:
@@ -27,7 +27,7 @@ spec:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
-        args: 
+        args:
         - "-e"
         env:
         - name: POD_NAMESPACE
@@ -47,7 +47,7 @@ spec:
           mountPath: /usr/share/filebeat/data
         - name: varlog
           mountPath: /var/log
-          readOnly: true          
+          readOnly: true
         - name: varlibdockercontainers
           mountPath: /var/lib/docker/containers
           readOnly: true
@@ -64,7 +64,7 @@ spec:
       - name: data
         hostPath:
           path: /var/lib/filebeat
-          type: DirectoryOrCreate    
+          type: DirectoryOrCreate
       terminationGracePeriodSeconds: 60
       serviceAccountName: {{ template "filebeat.serviceAccountName" . }}
       tolerations:
