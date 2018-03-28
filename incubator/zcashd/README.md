@@ -40,7 +40,8 @@ The following tables lists the configurable parameters of the zcashd chart and t
 
 Parameter                  | Description                        | Default
 -----------------------    | ---------------------------------- | ----------------------------------------------------------
-`imageTag`                 | image tag                          | `1.0`
+`image.repository`         | Image source repository            | `arilot/zcashd`
+`image.tag`                | Image tag                          | `1.0`
 `imagePullPolicy`          | Image pull policy                  | `IfNotPresent`
 `service.rpcPort`          | RPC port                           | `8232`
 `service.p2pPort`          | P2P port                           | `8233`
