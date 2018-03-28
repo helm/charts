@@ -42,7 +42,7 @@ spec:
               key: aws_secret_access_key
               name: {{ template "fluentd-cloudwatch.fullname" . }}
 {{- end }}
-{{- range $env := .Values.envs }}
+{{- range $env := .Values.extraVars }}
         - {{ $env  }}
 {{- end }}
         resources:
