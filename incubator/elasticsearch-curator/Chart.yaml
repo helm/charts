@@ -1,8 +1,15 @@
 apiVersion: v1
-appVersion: "1.0"
+appVersion: "5.4.1"
 description: A Helm chart for Elasticseach Curator
 name: elasticsearch-curator
 version: 0.1.0
+keywords:
+- curator
+- elasticsearch
+- elasticsearch-curator
+sources:
+- https://github.com/kubernetes/charts/incubator/elasticsearch-curator
+- https://github.com/pires/docker-elasticsearch-curator
 maintainers:
-  - name: Tom Mestdagh
+  - name: tmestdagh
     email: mestdagh.tom@gmail.com
