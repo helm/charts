@@ -148,7 +148,7 @@ The following table lists the configurable parameters of the Concourse chart and
 | `credentialManager.vault.enabled` | Use Hashicorp Vault as a Credential Manager | `false` |
 | `credentialManager.vault.url` | Vault Server URL | `nil` |
 | `credentialManager.vault.pathPrefix` | Vault path to namespace secrets | `/concourse` |
-| `credentialManager.vault.caCert` | CA public certificate when using self-signed TLS with Vault | `nil` |
+| `credentialManager.vault.useCaCert` | CA public certificate when using self-signed TLS with Vault | `nil` |
 | `credentialManager.vault.authBackend` | Vault Authentication Backend to use, leave blank when using clientToken | `nil` |
 | `rbac.create` | Enables creation of RBAC resources | `true` |
 | `rbac.apiVersion` | RBAC version | `v1beta1` |

@@ -493,7 +493,7 @@ credentialManager:
     ## if the Vault server is using a self-signed certificate, set this to true,
     ## and provide a value for the cert in secrets.
     ##
-    # caCert:
+    # useCaCert:
 
     ## vault authentication backend, leave this blank if using an initial periodic token
     ## currently supported backends: token, approle, cert.
