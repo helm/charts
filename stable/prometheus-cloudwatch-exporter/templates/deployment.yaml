@@ -29,7 +29,8 @@ spec:
             - /cloudwatch_exporter.jar
             - "{{ .Values.service.targetPort }}"
             - /config/config.yaml
-{{- if not .Values.aws.role }}
+        {{- if not .Values.aws.role }}
+        {{- if and .Values.aws.secretKey .Values.aws.accessKey }}
           env:
             - name: AWS_ACCESS_KEY_ID
               valueFrom:
@@ -41,7 +42,8 @@ spec:
                 secretKeyRef:
                   key: aws_secret_access_key
                   name: {{ template "prometheus-cloudwatch-exporter.fullname" . }}
-{{- end }}
+          {{- end }}
+          {{- end }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
