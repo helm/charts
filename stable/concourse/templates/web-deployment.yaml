@@ -200,10 +200,12 @@ spec:
             - name: CONCOURSE_VAULT_CA_CERT
               value: "/concourse-vault/ca.cert"
             {{- end }}
+            {{- if eq (default "" .Values.credentialManager.vault.authBackend) "cert" }}
             - name: CONCOURSE_VAULT_CLIENT_CERT
               value: "/concourse-vault/client.cert"
             - name: CONCOURSE_VAULT_CLIENT_KEY
               value: "/concourse-vault/client.key"
+            {{- end }}
             {{- if eq (default "" .Values.credentialManager.vault.authBackend) "approle" }}
             - name: CONCOURSE_VAULT_APPROLE_ID
               valueFrom:
@@ -312,8 +314,10 @@ spec:
               - key: vault-ca-cert
                 path: ca.cert
             {{- end }}
+            {{- if eq (default "" .Values.credentialManager.vault.authBackend) "cert" }}
               - key: vault-client-cert
                 path: client.cert
               - key: vault-client-key
                 path: client.key
+            {{- end }}
         {{- end }}
