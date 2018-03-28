@@ -56,7 +56,7 @@ storage: filesystem
 # Set this to name of secret for tls certs
 # tlsSecretName: registry.docker.example.com
 secrets:
-  haSharedSecret: ""
+#  haSharedSecret: ""
   htpasswd: ""
 # Secrets for S3 access and secret keys
 #   s3:
