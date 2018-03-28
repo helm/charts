@@ -89,12 +89,11 @@ configmap:
 hook:
   ## Enable or disable helm hook support
   enabled: false
-  ## Helm hook type can be any of the valid helm hooks types:
-  ## pre-install, post-install, pre-delete, post-delete, pre-upgrade, post-upgrade, pre-rollback, post-rollback
-  #  type: post-install
-  #  weight: 1
-  #  deletePolicy: hook-failed, hook-succedded
-  #  image: docker image name
-  #  command: 'entry point command for the docker image'
-  ## Any of the imagePullPolicy valid values
-  #  imagePullPolicy: IfNotPresent
+  ## All the values supplied to the following variables must comply with
+  ## helm hook and kubernetes standards
+  # type: post-install
+  # weight: 0
+  # deletePolicy: hook-failed, hook-succeeded
+  # image: docker image name
+  # command: 'entry point command for the docker image'
+  # imagePullPolicy: IfNotPresent
