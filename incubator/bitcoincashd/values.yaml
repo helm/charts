@@ -1,5 +1,5 @@
 image:
-  repository: "kuberstack/bitcoincashd"
+  repository: "arilot/bitcoincashd"
   tag: "1.0"
   pullPolicy: IfNotPresent
 

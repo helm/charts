@@ -40,7 +40,7 @@ The following tables lists the configurable parameters of the bitcoincashd chart
 
 Parameter                  | Description                        | Default                                                   
 -----------------------    | ---------------------------------- | ----------------------------------------------------------
-`image.repository`         | Image source repository name       | `kuberstack/bitcoincashd`
+`image.repository`         | Image source repository name       | `arilot/bitcoincashd`
 `imageTag`                 | `bitcoincashd` release tag.        | `1.0`
 `imagePullPolicy`          | Image pull policy                  | `IfNotPresent`
 `service.rpcPort`          | RPC port                           | `8332`
