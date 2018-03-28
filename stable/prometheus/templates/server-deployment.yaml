@@ -155,3 +155,8 @@ spec:
           secret:
             secretName: {{ .secretName }}
       {{- end }}
+      {{- range .Values.configmapReload.extraConfigmapMounts }}
+        - name: {{ .name }}
+          configMap:
+            name: {{ .configMap }}
+      {{- end }}
