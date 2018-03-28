@@ -8,6 +8,12 @@ image: bitnami/redis:4.0.9-r0
 ##
 imagePullPolicy: IfNotPresent
 
+## Image credentials
+# imageCredentials:
+#   registry: quay.io
+#   username: someone
+#   password: sillyness
+
 ## Kubernetes service type
 serviceType: ClusterIP
 
@@ -17,39 +23,42 @@ securityContext:
   fsGroup: 1001
   runAsUser: 1001
 
-## Use password authentication
-usePassword: true
+## Redis parameters
+redis:
+  ## Use password authentication
+  usePassword: true
+  ## Redis password
+  ## Defaults to a random 10-character alphanumeric string if not set and usePassword is true
+  ## ref: https://github.com/bitnami/bitnami-docker-redis#setting-the-server-password-on-first-run
+  ##
+  password:
+  ## Redis command arguments
+  ##
+  ## Can be used to specify command line arguments, for example:
+  ##
+  ## args:
+  ##  - "redis-server"
+  ##  - "--maxmemory-policy volatile-ttl"
+  args:
+  ## Redis additional command line flags
+  ##
+  ## Can be used to specify command line flags, for example:
+  ##
+  ## redisExtraFlags:
+  ##  - "--maxmemory-policy volatile-ttl"
+  ##  - "--repl-backlog-size 1024mb"
+  extraFlags:
+  ## Comma-separated list of Redis commands to disable
+  ##
+  ## Can be used to disable Redis commands for security reasons.
+  ## ref: https://github.com/bitnami/bitnami-docker-redis#disabling-redis-commands
+  ##
+  disableCommands: "FLUSHDB,FLUSHALL"
 
-## Redis password
-## Defaults to a random 10-character alphanumeric string if not set and usePassword is true
-## ref: https://github.com/bitnami/bitnami-docker-redis#setting-the-server-password-on-first-run
-##
-# redisPassword:
-
-## Redis command arguments
-##
-## Can be used to specify command line arguments, for example:
-##
-## args:
-##  - "redis-server"
-##  - "--maxmemory-policy volatile-ttl"
-args:
-
-## Redis additional command line flags
-##
-## Can be used to specify command line flags, for example:
-##
-## redisExtraFlags:
-##  - "--maxmemory-policy volatile-ttl"
-##  - "--repl-backlog-size 1024mb"
-redisExtraFlags:
-
-## Comma-separated list of Redis commands to disable
-##
-## Can be used to disable Redis commands for security reasons.
-## ref: https://github.com/bitnami/bitnami-docker-redis#disabling-redis-commands
-##
-redisDisableCommands: "FLUSHDB,FLUSHALL"
+## Sentinel parameters
+sentinel:
+  enable: true
+  image: bitnami/redis-sentinel:4.0.9-r0
 
 ## Enable persistence using Persistent Volume Claims
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
@@ -82,9 +91,12 @@ persistence:
 
 metrics:
   enabled: false
-  image: oliver006/redis_exporter
-  imageTag: v0.11
+  image: oliver006/redis_exporter:v0.11
   imagePullPolicy: IfNotPresent
+# imageCredentials:
+#   registry: quay.io
+#   username: someone
+#   password: sillyness
   resources: {}
   annotations:
     prometheus.io/scrape: "true"
@@ -101,7 +113,7 @@ resources:
 ## Node labels and tolerations for pod assignment
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
-nodeSelector: {}
+nodeSelector: {"beta.kubernetes.io/arch": "amd64"}
 tolerations: []
 
 ## Additional pod labels
@@ -123,6 +135,23 @@ networkPolicy:
   ##
   allowExternal: true
 
+serviceType: ClusterIP
+
 service:
   annotations: {}
   loadBalancerIP:
+
+livenessProbe:
+  enabled:
+  initialDelaySeconds:
+  periodSeconds:
+  timeoutSeconds:
+  successThreshold:
+  failureThreshold:
+
+readinessProbe:
+  initialDelaySeconds:
+  periodSeconds:
+  timeoutSeconds:
+  successThreshold:
+  failureThreshold:
