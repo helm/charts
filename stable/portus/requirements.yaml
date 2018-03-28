@@ -1,6 +1,6 @@
 dependencies:
 - name: docker-registry
-  version: 1.0.0
+  version: 1.1.0
   repository: https://kubernetes-charts.storage.googleapis.com/
 - name: mariadb
   version: 2.1.1

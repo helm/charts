@@ -1,12 +1,12 @@
 dependencies:
 - name: docker-registry
   repository: https://kubernetes-charts.storage.googleapis.com/
-  version: 1.0.0
+  version: 1.1.0
 - name: mariadb
   repository: https://kubernetes-charts.storage.googleapis.com/
   version: 2.1.1
 - name: minio
   repository: https://kubernetes-charts.storage.googleapis.com/
   version: 0.1.4
-digest: sha256:eaaeeee896933d215802188132a3381ab549ca0a62310b7100ffdb9a943e03b4
-generated: 2017-12-11T08:01:13.236108-05:00
+digest: sha256:7b61ca66a20377c44936ee46a836aa968ba829c1eb612a8bca4e428fa53f7167
+generated: 2018-03-28T17:58:46.457885-04:00

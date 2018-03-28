@@ -1,7 +1,7 @@
 apiVersion: v1
 name: portus
 home: http://port.us.org/
-version: 0.1.0
+version: 0.2.0
 appVersion: 2.2
 description: Open Source Authorization Service and User Interface for Docker Registry.
 keywords:
