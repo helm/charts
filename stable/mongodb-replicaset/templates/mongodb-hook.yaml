@@ -2,11 +2,11 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: "{{.Release.Name}}"
+  name: "{{ .Release.Name }}"
   labels:
-    heritage: {{.Release.Service | quote }}
-    release: {{.Release.Name | quote }}
-    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
   annotations:
     "helm.sh/hook": {{ .Values.hook.type }}
     "helm.sh/hook-weight": "{{ .Values.hook.weight }}"
@@ -14,11 +14,11 @@ metadata:
 spec:
   template:
     metadata:
-      name: "{{.Release.Name}}"
+      name: "{{ .Release.Name }}"
       labels:
-        heritage: {{.Release.Service | quote }}
-        release: {{.Release.Name | quote }}
-        chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+        heritage: {{ .Release.Service | quote }}
+        release: {{ .Release.Name | quote }}
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     spec:
       restartPolicy: Never
       containers:
