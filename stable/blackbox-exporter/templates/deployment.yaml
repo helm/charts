@@ -7,17 +7,17 @@
 apiVersion: {{ .Values.apiVersion }}
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "blackbox-exporter.fullname" . }}
   labels:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
-    app: {{ template "name" . }}
+    app: {{ template "blackbox-exporter.name" . }}
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: {{ template "name" . }}
+      app: {{ template "blackbox-exporter.name" . }}
       release: "{{ .Release.Name }}"
   strategy:
     rollingUpdate:
@@ -27,7 +27,7 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "name" . }}
+        app: {{ template "blackbox-exporter.name" . }}
         release: "{{ .Release.Name }}"
       annotations:
 {{ toYaml .Values.annotations | indent 8 }}
@@ -89,12 +89,6 @@ spec:
               port: http
             initialDelaySeconds: 30
             timeoutSeconds: 10
-          livenessProbe:
-            httpGet:
-              path: /health
-              port: http
-            initialDelaySeconds: 10
-            timeoutSeconds: 10
 {{- end }}
           volumeMounts:
 {{- if gt (len .Values.config) 0 }}
@@ -105,10 +99,10 @@ spec:
 {{- if gt (len .Values.config) 0 }}
         - name: config
           configMap:
-            name: {{ template "fullname" . }}
+            name: {{ template "blackbox-exporter.fullname" . }}
 {{- end }}
 {{- if .Values.password}}
         - name: secret
           secret:
-            secretName: {{ template "fullname" . }}
+            secretName: {{ template "blackbox-exporter.fullname" . }}
 {{- end }}
