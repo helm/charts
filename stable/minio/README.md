@@ -74,17 +74,21 @@ The following tables lists the configurable parameters of the Minio chart and th
 
 | Parameter                  | Description                         | Default                                                 |
 |----------------------------|-------------------------------------|---------------------------------------------------------|
-| `image`                    | Minio image name                    | `minio/minio`                                           |
-| `imageTag`                 | Minio image tag. Possible values listed [here](https://hub.docker.com/r/minio/minio/tags/).| `RELEASE.2018-03-12T21-25-28Z`|
-| `imagePullPolicy`          | Image pull policy                   | `IfNotPresent`                                          |
+| `image.repository`         | Image repository                    | `minio/minio`                                           |
+| `image.tag`                | Minio image tag. Possible values listed [here](https://hub.docker.com/r/minio/minio/tags/).| `RELEASE.2018-03-12T21-25-28Z`|
+| `image.pullPolicy`         | Image pull policy                   | `IfNotPresent`                                          |
+| `ingress.enabled`          | Enables Ingress                     | `false`                                                 |
+| `ingress.annotations`      | Ingress annotations                 | `{}`                                                    |
+| `ingress.hosts`            | Ingress accepted hostnames          | `[]`                                                    |
+| `ingress.tls`              | Ingress TLS configuration           | `[]`                                                    |
 | `mode`                     | Minio server mode (`standalone`, `shared` or `distributed`)| `standalone`                     |
 | `replicas`                 | Number of nodes (applicable only for Minio distributed mode). Should be 4 <= x <= 16 | `4`    |
 | `accessKey`                | Default access key (5 to 20 characters) | `AKIAIOSFODNN7EXAMPLE`                              |
 | `secretKey`                | Default secret key (8 to 40 characters) | `wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY`          |
 | `configPath`               | Default config file location        | `~/.minio`                                              |
 | `mountPath`                | Default mount location for persistent drive| `/export`                                        |
-| `serviceType`              | Kubernetes service type             | `LoadBalancer`                                          |
-| `servicePort`              | Kubernetes port where service is exposed| `9000`                                              |
+| `service.type`             | Kubernetes service type             | `ClusterIP`                                             |
+| `service.port`             | Kubernetes port where service is exposed| `9000`                                              |
 | `persistence.enabled`      | Use persistent volume to store data | `true`                                                  |
 | `persistence.size`         | Size of persistent volume claim     | `10Gi`                                                  |
 | `persistence.existingClaim`| Use an existing PVC to persist data | `nil`                                                   |

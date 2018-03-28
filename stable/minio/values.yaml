@@ -2,10 +2,12 @@
 ## minio server mode, i.e. standalone or distributed.
 ## Distributed Minio ref: https://docs.minio.io/docs/distributed-minio-quickstart-guide
 ##
-image: "minio/minio"
-imageTag: "RELEASE.2018-03-12T21-25-28Z"
-imagePullPolicy: "IfNotPresent"
-mode: "standalone"
+image:
+  repository: minio/minio
+  tag: RELEASE.2018-03-16T22-52-12Z
+  pullPolicy: IfNotPresent
+
+mode: standalone
 
 ## Set default accesskey, secretkey, Minio config file path, volume mount path and
 ## number of nodes (only used for Minio distributed mode)
@@ -16,11 +18,6 @@ secretKey: "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
 configPath: ""
 mountPath: "/export"
 replicas: 4
-
-## loadBalancerIP for the Minio Service (optional, cloud specific)
-## ref: http://kubernetes.io/docs/user-guide/services/#type-loadbalancer
-##
-# minioLoadBalancerIP:
 
 ## Enable persistence using Persistent Volume Claims
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
@@ -53,8 +50,24 @@ subPath: ""
 ## or access it from within the cluster (ClusterIP service). Set the service type and the port to serve it.
 ## ref: http://kubernetes.io/docs/user-guide/services/
 ##
-serviceType: LoadBalancer
-servicePort: 9000
+
+service:
+  type: ClusterIP
+  clusterIP: None
+  port: 9000
+
+ingress:
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  path: /
+  hosts:
+    - chart-example.local
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
 
 ## Node labels for pod assignment
 ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
@@ -86,7 +99,6 @@ defaultBucket:
 ## https://docs.minio.io/docs/minio-gateway-for-azure
 azuregateway:
   enabled: false
-
 
 ## https://docs.minio.io/docs/minio-bucket-notification-guide
 ##

@@ -1,77 +1,32 @@
 {{- if eq .Values.mode "distributed" }}
 {{ $nodeCount := .Values.replicas | int }}
-apiVersion: v1
-kind: Service
-metadata:
-  name: {{ template "minio.fullname" . }}
-  labels:
-    app: {{ template "minio.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
-spec:
-  clusterIP: None
-  ports:
-    - name: service
-      port: 9000
-      targetPort: {{ .Values.servicePort }}
-      protocol: TCP
-  selector:
-    app: {{ template "minio.fullname" . }}
----
 apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
   name: {{ template "minio.fullname" . }}
   labels:
-    app: {{ template "minio.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    app: {{ template "minio.name" . }}
+    chart: {{ template "minio.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 spec:
   serviceName: {{ template "minio.fullname" . }}
   replicas: {{ .Values.replicas }}
   selector:
     matchLabels:
-      app: {{ template "minio.fullname" . }}
+      app: {{ template "minio.name" . }}
+      release: {{ .Release.Name }}
   template:
     metadata:
       name: {{ template "minio.fullname" . }}
       labels:
-        app: {{ template "minio.fullname" . }}
-        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
-        release: "{{ .Release.Name }}"
-        heritage: "{{ .Release.Service }}"
+        app: {{ template "minio.name" . }}
+        release: {{ .Release.Name }}
     spec:
-{{- if .Values.nodeSelector }}
-      nodeSelector:
-{{ toYaml .Values.nodeSelector | indent 8 }}
-{{- end }}
-{{- if .Values.affinity }}
-      affinity:
-{{ toYaml .Values.affinity | indent 8 }}
-{{- end }}
-{{- if .Values.tolerations }}
-      tolerations:
-{{ toYaml .Values.tolerations | indent 8 }}
-{{- end }}
-      volumes:
-        - name: minio-user
-          secret:
-            secretName: {{ template "minio.fullname" . }}-user
-        - name: minio-server-config
-          configMap:
-            name: {{ template "minio.fullname" . }}-config-cm
-        - name: podinfo
-          downwardAPI:
-            items:
-              - path: "labels"
-                fieldRef:
-                  fieldPath: metadata.labels
       containers:
-        - name: minio
-          image: {{ .Values.image }}:{{ .Values.imageTag }}
-          imagePullPolicy: {{ .Values.imagePullPolicy }}
+        - name: {{ .Chart.Name }}
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           {{- if .Values.configPath }}
           args:
             - -C {{ .Values.configPath }} server
@@ -89,7 +44,11 @@ spec:
               subPath: "{{ .Values.persistence.subPath }}"
               {{- end }}
             - name: minio-server-config
-              mountPath: {{ default "/root/.minio/" .Values.configPath | quote }}
+              mountPath: {{ default "/root/.minio/config.json" .Values.configPath | quote }}
+              subPath: config.json
+            - name: minio-server-config
+              mountPath: /root/.minio/initialize
+              subPath: initialize
             - name: podinfo
               mountPath: /podinfo
               readOnly: false
@@ -100,15 +59,40 @@ spec:
             - name: MINIO_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "minio.fullname" . }}-user
+                  name: {{ template "minio.fullname" . }}
                   key: accesskey
             - name: MINIO_SECRET_KEY
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "minio.fullname" . }}-user
+                  name: {{ template "minio.fullname" . }}
                   key: secretkey
           resources:
 {{ toYaml .Values.resources | indent 12 }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+      volumes:
+        - name: minio-user
+          secret:
+            secretName: {{ template "minio.fullname" . }}
+        - name: minio-server-config
+          configMap:
+            name: {{ template "minio.fullname" . }}
+        - name: podinfo
+          downwardAPI:
+            items:
+              - path: "labels"
+                fieldRef:
+                  fieldPath: metadata.labels
   volumeClaimTemplates:
     - metadata:
         name: export
@@ -120,4 +104,4 @@ spec:
         resources:
           requests:
             storage: {{ .Values.persistence.size }}
-  {{- end }}
+{{- end }}
