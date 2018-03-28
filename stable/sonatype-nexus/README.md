@@ -37,11 +37,12 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the Nexus chart and their default values.
+The following table lists the configurable parameters of the Nexus chart and their default values.
 
 | Parameter                                   | Description                         | Default                                    |
 | ------------------------------------------  | ----------------------------------  | -------------------------------------------|
-| `image.tag`                                 | `nexus` image tag.                  | 3.5.1-02                                   |
+| `image.repository`                          | `nexus` image repository.           | cavemandaveman/nexus                       |
+| `image.tag`                                 | `nexus` image tag.                  | 3.9.0-01                                   |
 | `image.pullPolicy`                          | Image pull policy                   | `IfNotPresent`                             |
 | `nodeSelector`                              | node labels for pod assignment      | {}                                         |
 | `ingress.enabled`                           | Flag for enabling ingress           | false                                      |

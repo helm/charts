@@ -41,7 +41,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the nginx-ingress chart and their default values.
+The following table lists the configurable parameters of the nginx-ingress chart and their default values.
 
 Parameter | Description | Default
 --- | --- | ---
@@ -145,6 +145,13 @@ Alternatively, a YAML file that specifies the values for the parameters can be p
 
 ```console
 $ helm install stable/nginx-ingress --name my-release -f values.yaml
+```
+
+A useful trick to debug issues with ingress is to increase the logLevel
+as described [here](https://github.com/kubernetes/ingress-nginx/blob/master/docs/troubleshooting.md#debug)
+
+```console
+$ helm install stable/nginx-ingress --set controller.extraArgs.v=2
 ```
 
 ## Prometheus Metrics

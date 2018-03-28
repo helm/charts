@@ -17,7 +17,7 @@ alertmanager:
   ##
   image:
     repository: prom/alertmanager
-    tag: v0.13.0
+    tag: v0.14.0
     pullPolicy: IfNotPresent
 
   ## Additional alertmanager container arguments
@@ -388,7 +388,7 @@ server:
   ##
   image:
     repository: prom/prometheus
-    tag: v2.1.0
+    tag: v2.2.1
     pullPolicy: IfNotPresent
 
   ## The URL prefix at which the container can be accessed. Useful in the case the '-web.external-url' includes a slug
@@ -416,6 +416,14 @@ server:
     # - name: certs-configmap
     #   mountPath: /prometheus
     #   configMap: certs-configmap
+    #   readOnly: true
+
+  ## Additional Prometheus server Secret mounts
+  # Defines additional mounts with secrets. Secrets must be manually created in the namespace.
+  extraSecretMounts: []
+    # - name: secret-files
+    #   mountPath: /etc/secrets
+    #   secretName: prom-secret-files
     #   readOnly: true
 
   ## ConfigMap override where fullname is {{.Release.Name}}-{{.Values.server.configMapOverrideName}}

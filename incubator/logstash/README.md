@@ -67,7 +67,7 @@ Please review the following links that expound on current best practices.
 
 ## Configuration
 
-The following tables lists the configurable parameters of the chart and its default values.
+The following table lists the configurable parameters of the chart and its default values.
 
 |              Parameter      |                    Description                     |                     Default                      |
 | --------------------------- | -------------------------------------------------- | ------------------------------------------------ |
