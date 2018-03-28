@@ -230,7 +230,7 @@ Make sure you clean up after yourself.
 
 ### Persistence
 
-This chart mounts a Persistent Volume volume for each Concourse Worker. The volume is created using dynamic volume provisioning. If you want to disable it or change the persistence properties, update the `persistence` section of your custom `values.yaml` file:
+This chart mounts a Persistent Volume for each Concourse Worker. The volume is created using dynamic volume provisioning. If you want to disable it or change the persistence properties, update the `persistence` section of your custom `values.yaml` file:
 
 ```yaml
 ## Persistent Volume Storage configuration.
