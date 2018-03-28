@@ -1,6 +1,6 @@
 image:
   repository: docker.elastic.co/beats/filebeat
-  tag: 6.2.2
+  tag: 6.2.3
   pullPolicy: IfNotPresent
 
 config:
@@ -22,10 +22,17 @@ config:
   - type: log
     enabled: true
     paths:
-    - /var/log/**
-    exclude_files:
-    - '(\.[0-9]{1,})$'
-    - templates/clusterrolebinding.yaml'.gz$'
+    - /var/log/*.log
+  - type: docker
+    containers.ids:
+    - "*"
+    processors:
+    - add_kubernetes_metadata:
+        in_cluster: true
+    - drop_event:
+        when:
+          equals:
+            kubernetes.container.name: "filebeat"
 
   output.file:
     path: "/usr/share/filebeat/data"
