@@ -118,7 +118,7 @@ Parameter | Description | Default
 `alertmanager.podAnnotations` | annotations to be added to alertmanager pods | `{}`
 `alertmanager.replicaCount` | desired number of alertmanager pods | `1`
 `alertmanager.resources` | alertmanager pod resource requests & limits | `{}`
-`alertmanager.serviceAccountName` | service account name for alertmanager to use (ignored if rbac.create=true) | `default`
+`alertmanager.serviceAccountName` | service account name for alertmanager to use | `default`
 `alertmanager.service.annotations` | annotations for alertmanager service | `{}`
 `alertmanager.service.clusterIP` | internal alertmanager cluster service IP | `""`
 `alertmanager.service.externalIPs` | alertmanager service external IP addresses | `[]`
@@ -172,7 +172,7 @@ Parameter | Description | Default
 `nodeExporter.tolerations` | node taints to tolerate (requires Kubernetes >=1.6) | `[]`
 `nodeExporter.resources` | node-exporter resource requests and limits (YAML) | `{}`
 `nodeExporter.securityContext` | securityContext for containers in pod | `{}`
-`nodeExporter.serviceAccountName` | service account name for node-exporter to use (ignored if rbac.create=true) | `default`
+`nodeExporter.serviceAccountName` | service account name for node-exporter to use | `default`
 `nodeExporter.service.annotations` | annotations for node-exporter service | `{prometheus.io/scrape: "true"}`
 `nodeExporter.service.clusterIP` | internal node-exporter cluster service IP | `None`
 `nodeExporter.service.externalIPs` | node-exporter service external IP addresses | `[]`
@@ -263,7 +263,7 @@ $ helm install stable/prometheus --name my-release -f values.yaml
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
 ### RBAC Configuration
-Roles and RoleBindings resources will be created automatically for each service
+Roles and RoleBindings resources will be created automatically for `server` and `kubeStateMetrics` services.
 
 To manually setup RBAC you need to set the parameter `rbac.create=false` and specify the service account to be used for each service by setting the parameters: `alertmanager.serviceAccountName`, `kubeStateMetrics.serviceAccountName`, `nodeExporter.serviceAccountName`, `server.serviceAccountName`.
 

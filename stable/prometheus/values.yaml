@@ -6,7 +6,8 @@ alertmanager:
   ##
   enabled: true
 
-  # Defines the serviceAccountName to use when `rbac.create=false`
+  ## Defines the serviceAccountName to use
+  ##
   serviceAccountName: default
 
   ## alertmanager container name
@@ -300,7 +301,8 @@ nodeExporter:
   ##
   enabled: true
 
-  # Defines the serviceAccountName to use when `rbac.create=false`
+  ## Defines the serviceAccountName to use
+  ##
   serviceAccountName: default
 
   ## node-exporter container name
