@@ -6,10 +6,11 @@ edition:
 # sapassword: "MyStrongPassword1234"
 image:
   repository: microsoft/mssql-server-linux
-  tag: 2017-CU3
+  tag: 2017-CU5
   pullPolicy: IfNotPresent
 service:
   type: ClusterIP
+  port: 1433
 persistence:
   enabled: false
   # existingDataClaim:
