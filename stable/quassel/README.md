@@ -98,7 +98,7 @@ stores it's configuration data, and if using SQLite, it's SQLite datbase at the
 `/config` path of the container.
 
 The chart mounts a [Persistent Volume](http://kubernetes.io/docs/user-guide/persistent-volumes/)
-volume at this location. The volume is created using dynamic volume provisioning.
+at this location. The volume is created using dynamic volume provisioning.
 If the PersistentVolumeClaim should not be managed by the chart, define
 `persistence.existingClaim` or disable persistence with `persistence.enabled`.
 
