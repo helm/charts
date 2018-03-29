@@ -52,6 +52,7 @@ persistence:
   ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
   ##   GKE, AWS & OpenStack)
   ##
+  # existingClaim: ""
   # storageClass: "-"
   # annotations:
   #  "helm.sh/resource-policy": keep
