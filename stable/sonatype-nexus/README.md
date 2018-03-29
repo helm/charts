@@ -51,6 +51,7 @@ The following table lists the configurable parameters of the Nexus chart and the
 | `persistence.storageClass`                  | Type of persistent volume claim     | nil  (uses alpha storage class annotation) |
 | `persistence.accessMode`                    | ReadWriteOnce or ReadOnly           | ReadWriteOnce                              |
 | `persistence.annotations`                   | Persistent Volume annotations       | {}                                         |
+| `persistence.existingClaim`                 | Existing persistent volume name     | ""                                         |
 | `service.type`                              | Kubernetes Service type             | `LoadBalancer`                             |
 | `service.readinessProbe.initialDelaySeconds`| ReadinessProbe initial delay        | 30                                         |
 | `service.readinessProbe.periodSeconds`      | Seconds between polls               | 30                                         |
