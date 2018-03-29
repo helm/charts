@@ -2,9 +2,21 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ template "mysql.fullname" . }}
+  name: {{ template "mysql.fullname" . }}-configuration
 data:
 {{- range $key, $val := .Values.configurationFiles }}
+  {{ $key }}: |-
+{{ $val | indent 4}}
+{{- end }}
+{{- end -}}
+---
+{{- if .Values.initializationFiles }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "mysql.fullname" . }}-initialization
+data:
+{{- range $key, $val := .Values.initializationFiles }}
   {{ $key }}: |-
 {{ $val | indent 4}}
 {{- end }}

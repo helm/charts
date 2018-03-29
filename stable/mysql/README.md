@@ -77,6 +77,7 @@ The following table lists the configurable parameters of the MySQL chart and the
 | `ssl.certificates[0].ca`             | CA certificate                            | `nil`                                                |
 | `ssl.certificates[0].cert`           | Server certificate (public key)           | `nil`                                                |
 | `ssl.certificates[0].key`            | Server key (private key)                  | `nil`                                                |
+| `initializationFiles`                | List of SQL files which are run after the container started        | `nil`                       |
 
 Some of the parameters above map to the env variables defined in the [MySQL DockerHub image](https://hub.docker.com/_/mysql/).
 
@@ -120,6 +121,20 @@ configurationFiles:
     sql-mode=STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION
   mysql_custom.cnf: |-
     [mysqld]
+```
+
+## MySQL post startup migration files
+
+The [MySQL](https://hub.docker.com/_/mysql/) image accepts SQL files at the path `/docker-entrypoint-initdb.d`. 
+If you want to use initialization SQL scripts, you can create initialization files by passing the file contents on the `initializationFiles` attribute. 
+
+
+```yaml
+initializationFiles:
+  first-db.sql: |-
+    CREATE DATABASE IF NOT EXISTS first DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;
+  second-db.sql: |-
+    CREATE DATABASE IF NOT EXISTS second DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;
 ```
 
 ## SSL
