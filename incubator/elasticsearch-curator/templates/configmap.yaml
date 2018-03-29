@@ -2,6 +2,11 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: curator-config
+  labels:
+    app: {{ template "elasticsearch-curator.name" . }}
+    chart: {{ template "elasticsearch-curator.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
 data:
   action_file.yml: {{ toYaml .Values.configMaps.action_file_yml | indent 2 }}
   {{ if .Values.configMaps.config_yml }}
