@@ -40,7 +40,7 @@ The following tables lists the configurable parameters of the geth chart and the
 
   Parameter                | Description                                                                         | Default
 ---------------------------|-------------------------------------------------------------------------------------|--------
-`image.repository`         | Image source repository name                                                        | `ethereum/client-go`
+`image.repository`         | Image source repository name                                                        | `arilot/go-ethereum`
 `imageTag`                 | `geth` image tag.                                                                   | `alpine`
 `imagePullPolicy`          | Image pull policy                                                                   | `IfNotPresent`
 `rpcPort`                  | HTTP-RPC server listening port                                                      | `8545`
