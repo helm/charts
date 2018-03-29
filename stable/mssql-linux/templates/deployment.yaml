@@ -39,7 +39,7 @@ spec:
               value: /mssql-translog/translog
           ports:
             - name: db
-              containerPort: 1433
+              containerPort: {{ .Values.service.port }}
           volumeMounts:
             - name: data
               mountPath: /mssql-data/data
