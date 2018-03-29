@@ -17,7 +17,7 @@ This chart will do the following:
 To install the chart, use the following:
 
 ```console
-$ helm install stable/elasticsearch-curator --namespace logging --name es-curator
+$ helm install stable/elasticsearch-curator
 ```
 
 ## Configuration
@@ -32,7 +32,7 @@ their default values.
 | `image.tag`                 | Container image tag to deploy                                                            | `5.4.1`                                      |
 | `cronjob.schedule`          | Schedule for the CronJob                                                                 | `0 1 * * *`                                  |
 | `config.elasticsearch.hosts`| Array of Elasticsearch hosts to curate                                                   | - CHANGEME.host                              |
-| `config.elasticsearch.port` | Elasticsearch port to connect to                                                         | 9200                                         |
+| `config.elasticsearch.port` | Elasticsearch port to connect too                                                        | 9200                                         |
 | `configMaps.action_file_yml`| Contents of the Curator action_file.yml                                                  | See values.yaml                              |
 | `configMaps.config_yml`     | Contents of the Curator config.yml (overrides config)                                    | See values.yaml                              |
 
