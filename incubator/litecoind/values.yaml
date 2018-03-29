@@ -1,5 +1,5 @@
 image:
-  repository: "uphold/litecoin-core"
+  repository: "arilot/docker-litecoin-core"
   tag: "0.15"
   pullPolicy: IfNotPresent
 

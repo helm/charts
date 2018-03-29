@@ -40,7 +40,7 @@ The following tables lists the configurable parameters of the litecoind chart an
 
 Parameter                  | Description                         | Default
 -----------------------    | ----------------------------------- | ----------------------------------------------------------
-`image.repository`         | Image source repository name        | `uphold/litecoin-core`
+`image.repository`         | Image source repository name        | `arilot/docker-litecoin-core`
 `imageTag`                 | `litecoind` image tag.              | `0.15`
 `imagePullPolicy`          | Image pull policy                   | `IfNotPresent`
 `service.rpcPort`          | RPC port                            | `8332`
