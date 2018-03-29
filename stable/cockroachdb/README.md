@@ -4,6 +4,10 @@
 * Kubernetes 1.7 (for PodDisruptionBudget `MaxUnavailable` support -- you can
   run at Kubernetes 1.5 if you don't care about the PodDisruptionBudget)
 * PV support on the underlying infrastructure
+* If you want to secure your cluster to use TLS certificates for all network
+  communication, [Helm must be installed with RBAC
+  privileges](https://github.com/kubernetes/helm/blob/master/docs/rbac.md)
+  or else you will get an "attempt to grant extra privileges" error.
 
 ## StatefulSet Details
 * http://kubernetes.io/docs/concepts/abstractions/controllers/statefulsets/
@@ -11,10 +15,8 @@
 ## StatefulSet Caveats
 * http://kubernetes.io/docs/concepts/abstractions/controllers/statefulsets/#limitations
 
-## Todo
-* Support setting up clusters with certificate-based authentication
-
 ## Chart Details
+
 This chart will do the following:
 
 * Set up a dynamically scalable CockroachDB cluster using a Kubernetes StatefulSet
@@ -26,6 +28,15 @@ To install the chart with the release name `my-release`:
 ```shell
 helm install --name my-release stable/cockroachdb
 ```
+
+If you are running in secure mode (with configuration parameter `Secure.Enabled`
+set to `true`), then you will have to manually approve the cluster's security
+certificates as the pods are created. You can see the pending
+certificate-signing requests by running `kubectl get csr`, and approve them by
+running `kubectl certificate approve <csr-name>`. You'll have to approve one
+certificate for each node (e.g.  `default.node.eerie-horse-cockroachdb-0` and
+one client certificate for the job that initializes the cluster (e.g.
+`default.node.root`).
 
 ## Configuration
 
@@ -52,6 +63,11 @@ The following table lists the configurable parameters of the CockroachDB chart a
 | `NetworkPolicy.Enabled`       | Enable NetworkPolicy                       | `false`                                      |
 | `NetworkPolicy.AllowExternal` | Don't require client label for connections | `true`                                       |
 | `Service.Type`                | Public service type                        | `ClusterIP`                                  |
+| `Secure.Enabled` | Whether to run securely using TLS certificates | `false` |
+| `Secure.RequestCertsImage` | Image to use for requesting TLS certificates | `cockroachdb/cockroach-k8s-request-cert` |
+| `Secure.RequestCertsImageTag` | Image tag to use for requesting TLS certificates | `0.3` |
+| `Secure.ServiceAccount.Create` | Whether to create a new RBAC service account | `true` |
+| `Secure.ServiceAccount.Name` | Name of RBAC service account to use | `` |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
@@ -112,6 +128,14 @@ root@my-release-cockroachdb-public:26257> \q
 Waiting for pod default/cockroach-client to terminate, status is Running
 pod "cockroach-client" deleted
 ```
+
+If you are running in secure mode, you will have to provide a client certificate
+to the cluster in order to authenticate, so the above command will not work. See
+[here](https://github.com/cockroachdb/cockroach/blob/master/cloud/kubernetes/client-secure.yaml)
+for an example of how to set up an interactive SQL shell against a secure
+cluster or
+[here](https://github.com/cockroachdb/cockroach/blob/master/cloud/kubernetes/example-app-secure.yaml)
+for an example application connecting to a secure cluster.
 
 ## Cluster health
 
@@ -209,3 +233,7 @@ as shown below:
 ```shell
 kubectl scale statefulset my-release-cockroachdb --replicas=4
 ```
+
+Note that if you are running in secure mode and increase the size of your
+cluster, you will also have to approve the certificate-signing request of each
+new node (using `kubectl get csr` and `kubectl certificate approve`).

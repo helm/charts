@@ -34,7 +34,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the kibana chart and their default values.
+The following table lists the configurable parameters of the kibana chart and their default values.
 
 Parameter | Description | Default
 --- | --- | ---
@@ -55,6 +55,7 @@ Parameter | Description | Default
 `service.internalPort` | internal port for the service | `4180`
 `service.externalIPs` | external IP addresses | None:
 `service.type` | type of service | `ClusterIP`
+`service.annotations` | Kubernetes service annotations | None:
 `tolerations` | List of node taints to tolerate | `[]`
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
