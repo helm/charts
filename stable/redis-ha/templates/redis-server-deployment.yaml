@@ -6,7 +6,7 @@ metadata:
   labels:
     release: "{{ .Release.Name }}"
     app: "redis-ha"
-    name: "redis-server"
+    name: {{ template "fullname" . }}-server
     redis-node: "true"
 {{ include "labels.standard" . | indent 4 }}
 spec:
