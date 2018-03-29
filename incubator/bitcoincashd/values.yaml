@@ -1,5 +1,5 @@
 image:
-  repository: "arilot/bitcoincashd"
+  repository: "arilot/docker-bitcoincashd"
   tag: "1.0"
   pullPolicy: IfNotPresent
 

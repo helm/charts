@@ -18,6 +18,17 @@ spec:
         app: {{ template "bitcoincashd.name" . }}
         release: {{ .Release.Name }}
     spec:
+      {{- if .Values.configurationFile }}
+      initContainers:
+        - name: copy-bitcoincashd-config
+          image: busybox
+          command: ['sh', '-c', 'cp /configmap/bitcoincash.conf /root/.bitcoin/bitcoincash.conf']
+          volumeMounts:
+            - name: configmap
+              mountPath: /configmap
+            - name: config
+              mountPath: /root/.bitcoin/
+      {{- end }}
       containers:
         - name: {{ template "bitcoincashd.fullname" . }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -42,6 +53,8 @@ spec:
       volumes:
         {{- if .Values.configurationFile }}
         - name: config
+          emptyDir: {}
+        - name: configmap
           configMap:
             name: {{ template "bitcoincashd.fullname" . }}
         {{- end }}
