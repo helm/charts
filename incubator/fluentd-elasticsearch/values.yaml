@@ -26,6 +26,13 @@ elasticsearch:
 rbac:
   create: true
 
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+
 annotations: {}
   # prometheus.io/scrape: "true"
   # prometheus.io/port: "24231"
@@ -67,3 +74,13 @@ configMaps:
 
 # fluentdcustomconfig: |
 #   # add fluentd custom configs here
+
+# extraVolumes:
+#   - name: es-certs
+#     secret:
+#       defaultMode: 420
+#       secretName: es-certs
+# extraVolumeMounts:
+#   - name: es-certs
+#     mountPath: /certs
+#     readOnly: true
