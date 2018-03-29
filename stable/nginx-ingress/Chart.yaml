@@ -9,7 +9,6 @@ keywords:
   - nginx
 sources:
   - https://github.com/kubernetes/ingress-nginx
-home: https://nginx.org/en/
 maintainers:
   - name: jackzampolin
     email: jack.zampolin@gmail.com
