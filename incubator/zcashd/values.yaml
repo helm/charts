@@ -1,5 +1,5 @@
 image:
-  repository: "arilot/zcashd"
+  repository: "arilot/docker-zcashd"
   tag: "1.0"
   pullPolicy: IfNotPresent
 

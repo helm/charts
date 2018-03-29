@@ -18,6 +18,17 @@ spec:
         app: {{ template "zcashd.name" . }}
         release: {{ .Release.Name }}
     spec:
+      {{- if .Values.configurationFile }}
+      initContainers:
+        - name: copy-bitcoind-config
+          image: busybox
+          command: ['sh', '-c', 'cp /configmap/zcash.conf /root/.zcash/zcash.conf']
+          volumeMounts:
+            - name: configmap
+              mountPath: /configmap
+            - name: config
+              mountPath: /root/.zcash/
+      {{- end }}
       containers:
         - name: {{ template "zcashd.fullname" . }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -42,6 +53,8 @@ spec:
       volumes:
         {{- if .Values.configurationFile }}
         - name: config
+          emptyDir: {}
+        - name: configmap
           configMap:
             name: {{ template "zcashd.fullname" . }}
         {{- end }}
