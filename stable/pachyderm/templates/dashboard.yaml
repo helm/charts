@@ -1,0 +1,42 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "dash.fullname" . }}
+  labels:
+    app: {{ template "dash.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+    suite: pachyderm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ template "dash.fullname" . }}
+      suite: pachyderm
+  template:
+    metadata:
+      name: {{ template "dash.fullname" . }}
+      labels:
+        app: {{ template "dash.fullname" . }}
+        suite: pachyderm
+    spec:
+      serviceAccountName: {{ template "fullname" . }}-sa
+      containers:
+        - image: '{{ .Values.dash.image.repository }}:{{ .Values.dash.image.tag }}'
+          imagePullPolicy: {{ .Values.dash.image.pullPolicy }}
+          name: {{ template "dash.fullname" . }}
+          env:
+          - name: PACHD_PORT_650_TCP_ADDR
+            value: {{ template "pachd.fullname" . }}.{{ .Release.Namespace }}.svc
+          ports:
+          - containerPort: 8080
+            name: dash-http
+            protocol: TCP
+        - image: '{{ .Values.grpc.image.repository }}:{{ .Values.grpc.image.tag }}'
+          imagePullPolicy: {{ .Values.grpc.image.pullPolicy }}
+          name: {{ template "grpc.fullname" . }}
+          ports:
+          - containerPort: 8081
+            name: grpc-proxy-http
+            protocol: TCP

@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "dash.fullname" . }}
+  labels:
+    app: {{ template "dash.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+    suite: pachyderm
+spec:
+  ports:
+  - name: dash-http
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  - name: grpc-proxy-http
+    port: 8081
+    protocol: TCP
+    targetPort: 8081
+  selector:
+    app: {{ template "dash.fullname" . }}
+  type: NodePort
