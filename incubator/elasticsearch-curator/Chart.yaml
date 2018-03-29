@@ -3,6 +3,7 @@ appVersion: "5.4.1"
 description: A Helm chart for Elasticseach Curator
 name: elasticsearch-curator
 version: 0.1.0
+home: https://github.com/elastic/curator
 keywords:
 - curator
 - elasticsearch
