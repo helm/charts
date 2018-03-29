@@ -18,6 +18,17 @@ spec:
         app: {{ template "dashd.name" . }}
         release: {{ .Release.Name }}
     spec:
+      {{- if .Values.configurationFile }}
+      initContainers:
+        - name: copy-bitcoind-config
+          image: busybox
+          command: ['sh', '-c', 'cp /configmap/dash.conf /dash/.dashcore/dash.conf']
+          volumeMounts:
+            - name: configmap
+              mountPath: /configmap
+            - name: config
+              mountPath: /dash/.dashcore/
+      {{- end }}
       containers:
         - name: {{ template "dashd.fullname" . }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -42,6 +53,8 @@ spec:
       volumes:
         {{- if .Values.configurationFile }}
         - name: config
+          emptyDir: {}
+        - name: configmap
           configMap:
             name: {{ template "dashd.fullname" . }}
         {{- end }}

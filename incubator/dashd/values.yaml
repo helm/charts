@@ -1,6 +1,6 @@
 image:
-  repository: "dashpay/dashd"
-  tag: "latest"
+  repository: "arilot/docker-dashd"
+  tag: "1.0"
   pullPolicy: IfNotPresent
 
 service:
