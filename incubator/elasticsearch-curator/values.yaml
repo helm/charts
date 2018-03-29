@@ -17,6 +17,7 @@ config:
     port: 9200
 
 configMaps:
+  # Delete indices older than 7 days
   action_file_yml: |-
     ---
     actions:
@@ -39,6 +40,7 @@ configMaps:
           stats_result:
           epoch:
           exclude: False
+  # Having config_yaml WILL override the other config
   # config_yml: |-
   #   ---
   #   client:
