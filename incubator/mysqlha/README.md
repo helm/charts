@@ -43,6 +43,8 @@ The following table lists the configurable parameters of the MySQL chart and the
 | `mysqlPassword`            | Password for the new user.           | Randomly generated                                       |
 | `mysqlReplicationUser`     | Username for replication user        | `repl`                                                   |
 | `mysqlReplicationPassword` | Password for replication user.       | Randomly generated                                       |
+| `mysqlMetricsUser`         | Username for metrics user            | `metrics`                                                |
+| `mysqlMetricsPassword`     | Password for metrics user            | Randomly generated                                       |
 | `mysqlDatabase`            | Name of the new Database to create   | `nil`                                                    |
 | `persistence.enabled`      | Create a volume to store data        | true                                                     |
 | `persistence.size`         | Size of persistent volume claim      | 10Gi                                                     |

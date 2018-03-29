@@ -16,6 +16,11 @@ mysqlha:
   mysqlReplicationUser: repl
   # mysqlReplicationPassword:
 
+  ## Username/password for MySQL metrics user
+  ##
+  mysqlMetricsUser: metrics
+  # mysqlMetricsPassword:
+
   ## Create a database user
   ##
   # mysqlUser:
