@@ -47,7 +47,7 @@ $ kubectl delete pvc -l app=${RELEASE-NAME}-worker
 
 ## Scaling the Chart
 
-Scaling should typically be managed via the `helm upgrade` command, but `StatefulSets` don't yet work with `helm upgrade`. In the meantime, until `helm upgrade` works, if you want to change the number of replicas, you can use the kubectl scale as shown below:
+Scaling should typically be managed via the `helm upgrade` command, but `StatefulSets` don't yet work with `helm upgrade`. In the meantime, until `helm upgrade` works, if you want to change the number of replicas, you can use the `kubectl scale` command as shown below:
 
 ```console
 $ kubectl scale statefulset my-release-worker --replicas=3
@@ -312,7 +312,7 @@ The only way to completely avoid putting secrets in Helm is to bring your own Po
 
 ### Credential Management
 
-Pipelines ususally need credentials to do things. Concourse supports the use of a [Credential Manager](https://concourse-ci.org/creds.html) so your pipelines can contain references to secrets instead of the actual secret values. You can't use more than one credential manager at a time.
+Pipelines usually need credentials to do things. Concourse supports the use of a [Credential Manager](https://concourse-ci.org/creds.html) so your pipelines can contain references to secrets instead of the actual secret values. You can't use more than one credential manager at a time.
 
 #### Kubernetes Secrets
 
@@ -383,7 +383,7 @@ credentialManager:
 
 ```
 
-#### AWS Systems Manager Paramter Store (SSM)
+#### AWS Systems Manager Parameter Store (SSM)
 
 To use SSM, set `credentialManager.kubernetes.enabled` to false, and set `credentialManager.ssm.enabled` to true.
 
