@@ -50,6 +50,19 @@ spec:
                   app: {{ template "grafana.server.fullname" . }}
           {{- end }}
       {{- end }}
+      initContainers:
+        - name: copy-configs
+          image: busybox
+          command: ['sh', '-c', 'cp /tmp/config-volume-configmap/* /tmp/config-volume 2>/dev/null || true; cp /tmp/dashboard-volume-configmap/* /tmp/dashboard-volume 2>/dev/null || true']
+          volumeMounts:
+            - name: config-volume-configmap
+              mountPath: /tmp/config-volume-configmap
+            - name: dashboard-volume-configmap
+              mountPath: /tmp/dashboard-volume-configmap
+            - name: config-volume
+              mountPath: /tmp/config-volume
+            - name: dashboard-volume
+              mountPath: /tmp/dashboard-volume
       containers:
         - name: {{ template "grafana.name" . }}
           image: "{{ .Values.server.image }}"
@@ -92,9 +105,13 @@ spec:
       terminationGracePeriodSeconds: {{ default 300 .Values.server.terminationGracePeriodSeconds }}
       volumes:
         - name: config-volume
+          emptyDir: {}
+        - name: dashboard-volume
+          emptyDir: {}
+        - name: config-volume-configmap
           configMap:
             name: {{ template "grafana.server.fullname" . }}-config
-        - name: dashboard-volume
+        - name: dashboard-volume-configmap
           configMap:
             name: {{ template "grafana.server.fullname" . }}-dashs
         - name: storage-volume
