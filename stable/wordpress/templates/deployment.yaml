@@ -25,16 +25,6 @@ spec:
         {{- else }}
           value: "no"
         {{- end }}
-        - name: MARIADB_ROOT_PASSWORD
-          valueFrom:
-            secretKeyRef:
-            {{- if .Values.mariadb.enabled }}
-              name: {{ template "mariadb.fullname" . }}
-              key: mariadb-root-password
-            {{- else }}
-              name: {{ printf "%s-%s" .Release.Name "externaldb" }}
-              key: db-root-password
-            {{- end }}
         - name: MARIADB_HOST
         {{- if .Values.mariadb.enabled }}
           value: {{ template "mariadb.fullname" . }}
