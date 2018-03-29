@@ -109,12 +109,14 @@ controller:
     periodSeconds: 10
     successThreshold: 1
     timeoutSeconds: 1
+    port: 10254
   readinessProbe:
     failureThreshold: 3
     initialDelaySeconds: 10
     periodSeconds: 10
     successThreshold: 1
     timeoutSeconds: 1
+    port: 10254
 
   ## Annotations to be added to controller pods
   ##
