@@ -57,10 +57,11 @@ spec:
               mountPath: /etc/config
               readOnly: true
           {{- range .Values.configmapReload.extraConfigmapMounts }}
-            - name: {{ .name }}
+            - name: {{ $.Values.configmapReload.name }}-{{ .name }}
               mountPath: {{ .mountPath }}
               readOnly: {{ .readOnly }}
           {{- end }}
+
         - name: {{ template "prometheus.name" . }}-{{ .Values.server.name }}
           image: "{{ .Values.server.image.repository }}:{{ .Values.server.image.tag }}"
           imagePullPolicy: "{{ .Values.server.image.pullPolicy }}"
@@ -107,7 +108,7 @@ spec:
               readOnly: {{ .readOnly }}
           {{- end }}
           {{- range .Values.server.extraConfigmapMounts }}
-            - name: {{ .name }}
+            - name: {{ $.Values.server.name }}-{{ .name }}
               mountPath: {{ .mountPath }}
               readOnly: {{ .readOnly }}
           {{- end }}
@@ -145,8 +146,13 @@ spec:
           hostPath:
             path: {{ .hostPath }}
       {{- end }}
+      {{- range .Values.configmapReload.extraConfigmapMounts }}
+        - name: {{ $.Values.configmapReload.name }}-{{ .name }}
+          configMap:
+            name: {{ .configMap }}
+      {{- end }}
       {{- range .Values.server.extraConfigmapMounts }}
-        - name: {{ .name }}
+        - name: {{ $.Values.server.name }}-{{ .name }}
           configMap:
             name: {{ .configMap }}
       {{- end }}
