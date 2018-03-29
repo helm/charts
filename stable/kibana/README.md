@@ -43,6 +43,8 @@ Parameter | Description | Default
 `image.pullPolicy` | Image pull policy | `IfNotPresent`
 `image.repository` | Image repository | `kibana`
 `image.tag` | Image tag | `6.0.0`
+`image.pullSecrets` |Specify image pull secrets | `nil`
+`commandline.args` | add additional commandline args | `nil`
 `ingress.enabled` | Enables Ingress | `false`
 `ingress.annotations` | Ingress annotations | None:
 `ingress.hosts` | Ingress accepted hostnames | None:
