@@ -7,7 +7,7 @@ hub:
   ## ref: https://hub.docker.com/r/selenium/hub/tags/
   tag: "3.11.0"
 
-  ## Specify a imagePullPolicy
+  ## Specify an imagePullPolicy
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
   pullPolicy: "IfNotPresent"
 
@@ -77,14 +77,14 @@ chrome:
   enabled: false
 
   ## The repository and image
-  ## ref: https://hub.docker.com/r/selenium/hub/
+  ## ref: https://hub.docker.com/r/selenium/node-chrome/
   image: "selenium/node-chrome"
 
   ## The tag for the image
-  ## ref: https://hub.docker.com/r/selenium/hub/tags/
+  ## ref: https://hub.docker.com/r/selenium/node-chrome/tags/
   tag: "3.11.0"
 
-  ## Specify a imagePullPolicy
+  ## Specify an imagePullPolicy
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
   pullPolicy: "IfNotPresent"
 
@@ -144,18 +144,18 @@ chrome:
   # timeZone: UTC
 
 chromeDebug:
-  ## Enable the creation of a node-chrome pod
+  ## Enable the creation of a node-chrome-debug pod
   enabled: false
 
   ## The repository and image
-  ## ref: https://hub.docker.com/r/selenium/hub/
+  ## ref: https://hub.docker.com/r/selenium/node-chrome-debug/
   image: "selenium/node-chrome-debug"
 
   ## The tag for the image
-  ## ref: https://hub.docker.com/r/selenium/hub/tags/
+  ## ref: https://hub.docker.com/r/selenium/node-chrome-debug/tags/
   tag: "3.11.0"
 
-  ## Specify a imagePullPolicy
+  ## Specify an imagePullPolicy
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
   pullPolicy: "IfNotPresent"
 
@@ -215,18 +215,18 @@ chromeDebug:
   # timeZone: UTC
 
 firefox:
-  ## Enable the creation of a node-chrome pod
+  ## Enable the creation of a node-firefox pod
   enabled: false
 
   ## The repository and image
-  ## ref: https://hub.docker.com/r/selenium/hub/
+  ## ref: https://hub.docker.com/r/selenium/node-firefox/
   image: "selenium/node-firefox"
 
   ## The tag for the image
-  ## ref: https://hub.docker.com/r/selenium/hub/tags/
+  ## ref: https://hub.docker.com/r/selenium/node-firefox/tags/
   tag: "3.11.0"
 
-  ## Specify a imagePullPolicy
+  ## Specify an imagePullPolicy
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
   pullPolicy: "IfNotPresent"
 
@@ -273,18 +273,18 @@ firefox:
   # timeZone: UTC
 
 firefoxDebug:
-  ## Enable the creation of a node-chrome pod
+  ## Enable the creation of a node-firefox-debug pod
   enabled: false
 
   ## The repository and image
-  ## ref: https://hub.docker.com/r/selenium/hub/
+  ## ref: https://hub.docker.com/r/selenium/node-firefox-debug/
   image: "selenium/node-firefox-debug"
 
   ## The tag for the image
-  ## ref: https://hub.docker.com/r/selenium/hub/tags/
+  ## ref: https://hub.docker.com/r/selenium/node-firefox-debug/tags/
   tag: "3.11.0"
 
-  ## Specify a imagePullPolicy
+  ## Specify an imagePullPolicy
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
   pullPolicy: "IfNotPresent"
 
