@@ -1,7 +1,7 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "artifactory.artifactory.fullname" . }}
+  name: {{ template "artifactory.fullname" . }}
   labels:
     app: {{ template "artifactory.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
@@ -37,23 +37,23 @@ spec:
         command:
         - 'sh'
         - '-c'
-        - 'until nc -z -w 2 {{ template "artifactory.database.name" . }} {{ .Values.database.externalPort }} && echo database ok; do sleep 2; done'
+        - 'until nc -z -w 2 {{ .Release.Name }}-postgresql {{ .Values.postgresql.service.port }} && echo database ok; do sleep 2; done'
       containers:
       - name: {{ .Values.artifactory.name }}
         image: "{{ .Values.artifactory.image.repository }}:{{ .Values.artifactory.image.version }}"
         imagePullPolicy: {{ .Values.artifactory.image.pullPolicy }}
         env:
         - name: DB_TYPE
-          value: {{ .Values.database.env.type }}
+          value: 'postgresql'
         - name: DB_USER
-          value: {{ .Values.database.env.user }}
+          value: {{.Values.postgresql.postgresUser | quote }}
         - name: DB_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ template "artifactory.fullname" . }}
-              key: artifactory-database-password
+              name: {{ .Release.Name }}-postgresql
+              key: postgres-password
         - name: DB_HOST
-          value: {{ template "artifactory.database.name" . }}
+          value: {{ .Release.Name }}-postgresql
         - name: EXTRA_JAVA_OPTIONS
           value: "
       {{- if .Values.artifactory.javaOpts.other }}
@@ -90,7 +90,7 @@ spec:
       - name: artifactory-volume
       {{- if .Values.artifactory.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ template "artifactory.artifactory.fullname" . }}
+          claimName: {{ .Values.artifactory.persistence.ExistingClaim | default (include "artifactory.fullname" .) }}
       {{- else }}
         emptyDir: {}
       {{- end -}}

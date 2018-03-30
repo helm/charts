@@ -1,7 +1,8 @@
+{{- if .Values.nginx.enabled -}}
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "artifactory.nginx.name" . }}
+  name: {{ template "artifactory.nginx.fullname" . }}
   labels:
     app: {{ template "artifactory.name" . }}
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
@@ -34,3 +35,4 @@ spec:
     app: {{ template "artifactory.name" . }}
     component: "{{ .Values.nginx.name }}"
     release: {{ .Release.Name }}
+{{- end }}

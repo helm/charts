@@ -1,7 +1,7 @@
 apiVersion: v1
 description: A lightweight private npm proxy registry (sinopia fork)
 name: verdaccio
-version: 0.2.0
+version: 0.2.1
 appVersion: 2.7.3
 icon: https://raw.githubusercontent.com/verdaccio/verdaccio/master/assets/bitmap/logo/logo-twitter.png
 sources:

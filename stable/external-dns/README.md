@@ -18,23 +18,28 @@ $ helm install --name my-release stable/external-dns
 
 ## Configuration
 
-The following tables lists the configurable parameters of the external-dns chart and their default values.
+The following table lists the configurable parameters of the external-dns chart and their default values.
 
 
 | Parameter                          | Description                                                                                                                | Default                                            |
 | ---------------------------------- | -------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
+| `annotationFilter`                 | Filter sources managed by external-dns via annotation using label selector semantics (default: all sources) (optional).    | `""`                                               |
 | `aws.accessKey`                    | `AWS_ACCESS_KEY_ID` to set in the environment (optional).                                                                  | `""`                                               |
 | `aws.secretKey`                    | `AWS_SECRET_ACCESS_KEY` to set in the environment (optional).                                                              | `""`                                               |
 | `aws.region`                       | `AWS_DEFAULT_REGION` to set in the environment (optional).                                                                 | `us-east-1`                                        |
+| `aws.roleArn`                      | If assume role credentials are used then is the role_arn (arn:aws:iam::....). Leave empty if not used.                          | `""`                                               |
 | `aws.zoneType`                     | Filter for zones of this type (optional, options: public, private).                                                        | `""`                                               |
 | `cloudflare.apiKey`                | `CF_API_KEY` to set in the environment (optional).                                                                         | `""`                                               |
 | `cloudflare.email`                 | `CF_API_EMAIL` to set in the environment (optional).                                                                       | `""`                                               |
 | `domainFilters`                    | Limit possible target zones by domain suffixes (optional).                                                                 | `[]`                                               |
 | `extraArgs`                        | Optional object of extra args, as `name`: `value` pairs. Where the name is the command line arg to external-dns.           | `{}`                                               |
 | `extraEnv`                         | Optional object of extra environment variables, as `name`: `value` pairs.                                                  | `{}`                                               |
+| `google.project`                   | When using the Google provider, specify the Google project (required when provider=google).                                | `""`                                               |
+| `google.serviceAccountSecret`      | When using the Google provider, optionally specify the secret which contains credentials.json if necessary.                    | `""`|
 | `image.name`                       | Container image name (Including repository name if not `hub.docker.com`).                                                  | `registry.opensource.zalan.do/teapot/external-dns` |
 | `image.pullPolicy`                 | Container pull policy.                                                                                                     | `IfNotPresent`                                     |
 | `image.tag`                        | Container image tag.                                                                                                       | `v0.4.5`                                           |
+| `image.pullSecrets`                | Array of pull secret names                                                                                                 | `[]`                                               |
 | `logLevel`                         | Verbosity of the logs (options: panic, debug, info, warn, error, fatal)                                                    | `info`                                             |
 | `nodeSelector`                     | Node labels for pod assignment                                                                                             | `{}`                                               |
 | `podAnnotations`                   | Additional annotations to apply to the pod.                                                                                | `{}`                                               |
@@ -53,6 +58,8 @@ The following tables lists the configurable parameters of the external-dns chart
 | `service.type`                     | Type of service to create                                                                                                  | `ClusterIP`                                        |
 | `sources`                          | List of resource types to monitor, possible values are fake, service or ingress.                                           | `[service, ingress]`                               |
 | `tolerations`                      | List of node taints to tolerate (requires Kubernetes >= 1.6)                                                               | `[]`                                               |
+| `txtOwnerId`                       | When using the TXT registry, a name that identifies this instance of ExternalDNS (optional)                                | `"default"`                                        |
+| `txtPrefix`                        | When using the TXT registry, a prefix for ownership records that avoids collision with CNAME entries (optional)            | `""`                                        |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.

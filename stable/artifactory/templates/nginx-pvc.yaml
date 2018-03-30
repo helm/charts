@@ -1,4 +1,4 @@
-{{- if .Values.nginx.persistence.enabled }}
+{{- if and .Values.nginx.persistence.enabled (.Values.nginx.enabled ) }}
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
