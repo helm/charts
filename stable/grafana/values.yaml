@@ -1,12 +1,16 @@
 server:
-  ## Grafana Pod annotations:
+  ## Pod annotations:
   ##
   # annotations:
   #   iam.amazonaws.com/role: grafana
 
-  ## Grafana Docker image
-  ##
-  image: "grafana/grafana:5.0.4"
+  image:
+    # Change this if you need to pull the image from a private mirror, rather than Docker Hub
+    repository: grafana
+    # The actual name of the image
+    name: grafana
+    tag: "5.0.4"
+    pullPolicy: IfNotPresent
 
   extraEnv: []
 
@@ -26,25 +30,25 @@ server:
     ##
     enabled: false
 
-    ## Grafana Ingress annotations
+    ## Ingress annotations
     ##
     # annotations:
     #   kubernetes.io/ingress.class: nginx
     #   kubernetes.io/tls-acme: 'true'
 
-    ## Grafana Ingress hostnames
+    ## Ingress hostnames
     ## Must be provided if Ingress is enabled
     ##
     # hosts:
     #   - grafana.domain.com
 
-    ## Grafana Ingress path
+    ## Ingress path
     ## Optional, allows specifying paths for more flexibility
     ## E.g. Traefik ingress likes paths
     ##
     # path: /
 
-    ## Grafana Ingress TLS configuration
+    ## Ingress TLS configuration
     ## Secrets must be manually created in the namespace
     ##
     # tls:
@@ -52,48 +56,36 @@ server:
     #     hosts:
     #       - grafana.domain.com
 
-  ## Grafana container name
-  ##
+  ## Pod container name
   name: grafana
 
   adminUser: "admin"
   # adminPassword: "admin"
 
-  ## Global imagePullPolicy
-  ## Default: 'Always' if image tag is 'latest', else 'IfNotPresent'
-  ## Ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
-  ##
-  # imagePullPolicy:
-
   # Persist data to a persitent volume
   persistentVolume:
     ## If true, Grafana will create a Persistent Volume Claim
     ## If false, use emptyDir
-    ##
     enabled: true
 
-    ## Grafana data Persistent Volume access modes
+    ## Persistent Volume access modes
     ## Must match those of existing PV or dynamic provisioner
     ## Ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
-    ##
     accessModes:
       - ReadWriteOnce
 
-    ## Grafana data Persistent Volume annotations
-    ##
+    ## Persistent Volume annotations
     annotations: {}
 
-    ## Grafana data Persistent Volume existing claim name
+    ## Persistent Volume existing claim name
     ## Requires server.persistentVolume.enabled: true
     ## If defined, PVC must be created manually before volume will be bound
     existingClaim: ""
 
-    ## Grafana data Persistent Volume size
-    ## Default: 1Gi
-    ##
+    ## Persistent Volume size
     size: 1Gi
 
-    ## grafana data Persistent Volume Storage Class
+    ## Persistent Volume Storage Class
     ## If defined, storageClassName: <storageClass>
     ## If set to "-", storageClassName: "", which disables dynamic provisioning
     ## If undefined (the default) or set to null, no storageClassName spec is
@@ -104,12 +96,10 @@ server:
 
     ## Subdirectory of data Persistent Volume to mount
     ## Useful if the volume's root directory is not empty
-    ##
     subPath: ""
 
-  ## Grafana resource requests and limits
+  ## Resource requests and limits
   ## Ref: http://kubernetes.io/docs/user-guide/compute-resources/
-  ##
   resources:
     # limits:
     #   cpu: 500m
@@ -118,9 +108,7 @@ server:
       cpu: 100m
       memory: 100Mi
 
-  ## Grafana readiness probe
   ## Ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#container-probes
-  ##
   readinessProbe:
     httpGet:
       path: /api/health
@@ -128,21 +116,18 @@ server:
     initialDelaySeconds: 30
     timeoutSeconds: 30
 
-  ## Grafana service
+  ## Service layer options
   service:
-    ## Grafana service annotations
-    ##
     annotations: {}
 
-    ## Grafana service type
-    ##
     type: ClusterIP
 
-    ## Grafana service port
-    ##
     httpPort: 80
 
-    ## ClusterIP to use for service
+    # The name of the httpPort
+    httpPortName: "http"
+
+    ## specify a custom cluster IP for the Service
     ## clusterIP: None
 
     ## Load balancer IP address
@@ -173,26 +158,8 @@ server:
     # externalIPs:
     # - 192.168.0.1
 
-
-  ## Grafana local config path
-  ## Default '/etc/grafana'
-  ##
-  # configLocalPath: /etc/grafana
-
-  ## Grafana local dashboards path
-  ## Default: '/var/lib/grafana/dashboards'
-  ##
-  # dashboardLocalPath: /var/lib/grafana/dashboards
-
-  ## Grafana local data storage path
-  ## Default: '/var/lib/grafana/data'
-  ##
-  # storageLocalPath: /var/lib/grafana/data
-
-  ## Grafana Pod termination grace period
-  ## Default: 300s (5m)
-  ##
-  # terminationGracePeriodSeconds: 300
+  ## Pod termination grace period (in seconds)
+  terminationGracePeriodSeconds: 300
 
   ## Pass the plugins you want installed as a comma separated list.
   ## This will pass each plugin name to `grafana-cli plugins install ${plugin}`.
@@ -200,70 +167,51 @@ server:
   ##
   # installPlugins:
 
-  # Set datasource in beginning
-  setDatasource:
-    ## If true, an initial Grafana Datasource will be set
-    ## Default: false
-    ##
-    enabled: false
+  # http://docs.grafana.org/administration/provisioning/#datasources
+  datasourceConfig:
+    apiVersion: 1
 
-    ## How long should it take to commit failure
-    ## Default: 300
-    ##
-    activeDeadlineSeconds: 300
+    # list of datasources that should be deleted from the database
+    deleteDatasources: []
 
-    ## Curl Docker image
-    ## Default: appropriate/curl:latest
-    ##
-    image: appropriate/curl:latest
+    # list of datasources to insert/update depending on whats available in the database
+    datasources: []
 
-    ## This assembles how curl post into Grafana
-    ## Ref1: http://docs.grafana.org/reference/http_api/#create-data-source
-    ## Ref2: https://github.com/grafana/grafana/issues/1789
-    ##
-    datasource:
-      ## The datasource name.
-      ## Default: default
-      name: default
+  # Dashboards that will automatically be installed into grafana (and its database)
+  dashboardFiles: {}
 
-      ## Type of datasource
-      ## Default: prometheus
-      ##
-      type: prometheus
+  # Configuration for provisioning dashboards
+  # http://docs.grafana.org/administration/provisioning/#dashboards
+  dashboardProvisioningConfig:
+    apiVersion: 1
 
-      ## The url of the datasource. To set correctly you need to know
-      ## the right datasource name and its port ahead. Check kubernetes
-      ## dashboard or describe the service should fulfill the requirements.
-      ## Syntax like `http://<release name>-<server name>:<port number>
-      ## Default: <empty>
-      ##
-      url:
+    providers:
+      - name: 'default'
+        orgId: 1
+        folder: ''
+        type: file
+        disableDeletion: false
+        editable: false
+        options:
+          path: /var/lib/grafana/dashboards
 
-      ## The name of the database at the datasource.
-      ## Required parameter when used with elasticsearch, which refers to the index_name
-      ## Default: <empty>
-      database:
+  #
+  # Directories. Probably best to leave these be
+  #
+  ## Location for main config directory
+  configLocalPath: /etc/grafana
 
-      ## Additional JSON data to be passed to the configuration of the datasource.
-      ## The JSON data is passed to curl, therefore it needs proper quoting and
-      ## escaping and needs to be on a single line. For example:
-      ##  '\"esVersion\": 2, \"interval\": \"Daily\", \"timeField\": \"@timestamp\"'
-      jsonData: null
+  ## Local path where provisioned dashboards are placed
+  dashboardLocalPath: /var/lib/grafana/dashboards
 
-      ## Specify if Grafana has to go thru proxy to reach datasource
-      ## Default: proxy
-      ##
-      access: proxy
+  # Where the actual "provisioning" configuration is for dashboards
+  dashboardProvisioningLocalPath: /var/lib/grafana/provisioning/dashboards
 
-      ## Specify should Grafana use this datasource as default
-      ## Default: true
-      ##
-      isDefault: true
+  # Where provisioned datasource files are placed
+  datasourcesLocalPath: /var/lib/grafana/provisioning/datasources
 
-    ## Specify the job policy
-    ## Default: OnFailure
-    ##
-    restartPolicy: OnFailure
+  ## Local data storage path
+  storageLocalPath: /var/lib/grafana/data
 
 ## Grafana config file ConfigMap entry
 ##
@@ -274,6 +222,7 @@ serverConfigFile:
     data = /var/lib/grafana/data
     logs = /var/log/grafana
     plugins = /var/lib/grafana/plugins
+    provisioning = /var/lib/grafana/provisioning
 
     [server]
     ;protocol = http
@@ -399,10 +348,6 @@ serverConfigFile:
     ;rabbitmq_url = amqp://localhost/
     ;exchange = grafana_events
 
-    [dashboards.json]
-    enabled = true
-    path = /var/lib/grafana/dashboards
-
     [metrics]
     ;enabled           = true
     ;interval_seconds  = 10
@@ -413,63 +358,3 @@ serverConfigFile:
 
     [grafana_net]
     url = https://grafana.net
-
-
-## Grafana dashboard files ConfigMap entries
-## If you'd like to preinstall prometheus dashboard on the same namespace as example, get it from:
-##
-## https://grafana.net/dashboards/2
-##
-## and add it below.
-##
-serverDashboardFiles: {}
-
-## Grafana dashboard files to import ConfigMap entries
-## The behaviuor is different then 'serverDashboardFiles' in that, this flow will create a Job to import using the API.
-## If you'd like to preinstall prometheus dashboard on the same namespace as example, get it from:
-##
-## https://grafana.net/dashboards/2
-##
-## and add it below.
-##
-dashboardImports:
-  ## If true, a Job will be created to import dashboards
-  ## Default: false
-  ##
-  enabled: false
-
-  ## How long should it take to commit failure
-  ## Default: 30
-  ##
-  activeDeadlineSeconds: 30
-
-  ## Docker image to run import process
-  ## Default: jgoclawski/wget:1.0
-  ##
-  image: jgoclawski/wget:1.0
-
-  ## Grafana dashboard files to import as ConfigMap entries
-  # files: {}
-
-  ## Grafana dashboard URL to import (this should be a JSON file, not the HTML page)
-  # Example:
-  # dashboards:
-  #   Prometheus_Stats.json: https://grafana.com/api/dashboards/2/revisions/2/download
-  #   Docker_Dashboard.json: https://grafana.com/api/dashboards/179/revisions/5/download
-  #   MyPrivateDashboard.json: http://example.com/dashboard.json
-  # dashboards: {}
-
-  ## Specify the Job policy
-  ## Default: Never
-  ##
-  restartPolicy: Never
-
-  ## Specify Pod Backoff failure policy
-  ## Default: 1
-  ##
-  backoffLimit: 1
-
-  ## Specify when Helm should run the import job
-  ## Default: post-install,post-upgrade
-  ##
-  hook: post-install,post-upgrade

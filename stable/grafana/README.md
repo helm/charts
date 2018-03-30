@@ -31,7 +31,10 @@ The command removes all the Kubernetes components associated with the chart and 
 
 | Parameter                                 | Description                         | Default                                           |
 |-------------------------------------------|-------------------------------------|---------------------------------------------------|
-| `server.image`                            | Container image to run              | grafana/grafana:5.0.4                             |
+| `server.image.repository`                 | image repository                    | grafana (in dockerhub)                            |
+| `server.image.name`                       | image name                          | grafana                                           |
+| `server.image.tag`                        | image tag (AKA version)             | 5.0.4                                             |
+| `server.image.pullPolicy`                 | image pull policy                   | IfNotPresent                                      |
 | `server.adminUser`                        | Admin user username                 | admin                                             |
 | `server.adminPassword`                    | Admin user password                 | Randomly generated                                |
 | `server.antiAffinity.enabled`             | Enable anti affinity                | false                                             |
@@ -55,5 +58,19 @@ The command removes all the Kubernetes components associated with the chart and 
 | `server.service.clusterIP`                | Custom clusterIP to use for service | null                                         |
 | `server.service.type`                     | ClusterIP, NodePort, or LoadBalancer| ClusterIP                                         |
 | `server.setDatasource.enabled`            | Creates grafana datasource with job | false                                             |
-| `server.extraEnv`                          | Extra environment variables to set in the server container. List of [EnvVar](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.9/#envvar-v1-core) values | [] |
-| `dashboardImports.enabled`                | Creates grafana dashboards with job | false |
+| `server.extraEnv`                         | Extra environment variables to set in the server container. List of [EnvVar](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.9/#envvar-v1-core) values | [] |
+| `server.datasourceConfig.datasources`     | Datasources to automatically provision | [] |
+| `server.datasourceConfig.deleteDatasources` | Datasources to automatically remove  | [] |
+| `server.dashboardFiles`                   | Dashboard files to insert/upgrade on startup  | {} |
+
+## Using `server.dashboardFiles`
+
+`server.dashboardFiles` is a dictionary of dashboard JSON files that Grafana 5 will insert (or update) on startup.
+
+As of now, you *must* remove the `id` field from exported dashboards or G5 will not import them. This likely will be fixed in version 5.1.
+
+Ticket: https://github.com/grafana/grafana/issues/11138
+
+## Using `server.datasourceConfig.datasources`
+
+See: http://docs.grafana.org/administration/provisioning/#example-datasource-config-file

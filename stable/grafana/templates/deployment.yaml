@@ -14,7 +14,6 @@ spec:
     metadata:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
-        checksum/dashboards-config: {{ include (print $.Template.BasePath "/dashboards-configmap.yaml") . | sha256sum }}
       {{- range $key, $value := .Values.server.annotations }}
         {{ $key }}: {{ $value | quote }}
       {{- end }}
@@ -32,7 +31,7 @@ spec:
       {{- if .Values.server.antiAffinity.enabled }}
       affinity:
         podAntiAffinity:
-          {{- $antiAffinityType := default "hard" .Values.server.antiAffinity.type | lower }}
+          {{- $antiAffinityType := .Values.server.antiAffinity.type | lower }}
           {{- if eq $antiAffinityType "hard" }}
           requiredDuringSchedulingIgnoredDuringExecution:
           - topologyKey: "kubernetes.io/hostname"
@@ -50,23 +49,10 @@ spec:
                   app: {{ template "grafana.server.fullname" . }}
           {{- end }}
       {{- end }}
-      initContainers:
-        - name: copy-configs
-          image: busybox
-          command: ['sh', '-c', 'cp /tmp/config-volume-configmap/* /tmp/config-volume 2>/dev/null || true; cp /tmp/dashboard-volume-configmap/* /tmp/dashboard-volume 2>/dev/null || true']
-          volumeMounts:
-            - name: config-volume-configmap
-              mountPath: /tmp/config-volume-configmap
-            - name: dashboard-volume-configmap
-              mountPath: /tmp/dashboard-volume-configmap
-            - name: config-volume
-              mountPath: /tmp/config-volume
-            - name: dashboard-volume
-              mountPath: /tmp/dashboard-volume
       containers:
         - name: {{ template "grafana.name" . }}
-          image: "{{ .Values.server.image }}"
-          imagePullPolicy: {{ default "Always" .Values.server.imagePullPolicy }}
+          image: "{{ .Values.server.image.repository }}/{{ .Values.server.image.name }}:{{ .Values.server.image.tag }}"
+          imagePullPolicy: {{ .Values.server.image.pullPolicy }}
           env:
             - name: GF_SECURITY_ADMIN_USER
               valueFrom:
@@ -96,24 +82,30 @@ spec:
 {{ toYaml .Values.server.resources | indent 12 }}
           volumeMounts:
             - name: config-volume
-              mountPath: {{ default "/etc/grafana" .Values.server.configLocalPath | quote }}
+              mountPath: {{ .Values.server.configLocalPath | quote }}
             - name: dashboard-volume
-              mountPath: {{ default "/var/lib/grafana/dashboards" .Values.server.dashboardLocalPath | quote }}
+              mountPath: {{ .Values.server.dashboardLocalPath | quote }}
+            - name: dashboard-provisioning-volume
+              mountPath: {{ .Values.server.dashboardProvisioningLocalPath | quote }}
+            - name: datasources-volume
+              mountPath: {{ .Values.server.datasourcesLocalPath | quote }}
             - name: storage-volume
-              mountPath: {{ default "/var/lib/grafana" .Values.server.storageLocalPath | quote }}
+              mountPath: {{ .Values.server.storageLocalPath | quote }}
               subPath: "{{ .Values.server.persistentVolume.subPath }}"
-      terminationGracePeriodSeconds: {{ default 300 .Values.server.terminationGracePeriodSeconds }}
+      terminationGracePeriodSeconds: {{ .Values.server.terminationGracePeriodSeconds }}
       volumes:
+        - name: datasources-volume
+          secret:
+            secretName: {{ template "grafana.server.fullname" . }}-datasources
         - name: config-volume
-          emptyDir: {}
-        - name: dashboard-volume
-          emptyDir: {}
-        - name: config-volume-configmap
           configMap:
             name: {{ template "grafana.server.fullname" . }}-config
-        - name: dashboard-volume-configmap
+        - name: dashboard-volume
           configMap:
             name: {{ template "grafana.server.fullname" . }}-dashs
+        - name: dashboard-provisioning-volume
+          configMap:
+            name: {{ template "grafana.server.fullname" . }}-dash-provisioning
         - name: storage-volume
       {{- if .Values.server.persistentVolume.enabled }}
           persistentVolumeClaim:

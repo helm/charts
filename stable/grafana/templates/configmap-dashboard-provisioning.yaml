@@ -1,4 +1,3 @@
-{{- if .Values.dashboardImports.enabled -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -8,7 +7,7 @@ metadata:
     component: "{{ .Values.server.name }}"
     heritage: "{{ .Release.Service }}"
     release: "{{ .Release.Name }}"
-  name: {{ template "grafana.server.fullname" . }}-dashboardimport
+  name: {{ template "grafana.server.fullname" . }}-dash-provisioning
 data:
-{{ toYaml .Values.dashboardImports.files | indent 2 }}
-{{- end -}}
+  dashboards.yaml: |
+{{ toYaml .Values.server.dashboardProvisioningConfig | indent 4 }}
