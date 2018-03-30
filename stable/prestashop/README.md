@@ -1,6 +1,6 @@
 # PrestaShop
 
-[PrestaShop](https://prestashop.com/) is a popular open source ecommerce solution. Professional tools are easily accessible to increase online sales including instant guest checkout, abandoned cart reminders and automated Email marketing.
+[PrestaShop](https://prestashop.com/) is a popular open source e-commerce solution. Professional tools are easily accessible to increase online sales including instant guest checkout, abandoned cart reminders and automated Email marketing.
 
 ## TL;DR;
 
@@ -43,7 +43,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the PrestaShop chart and their default values.
+The following table lists the configurable parameters of the PrestaShop chart and their default values.
 
 |               Parameter               |                 Description                 |                         Default                          |
 |---------------------------------------|---------------------------------------------|----------------------------------------------------------|
@@ -106,7 +106,7 @@ $ helm install --name my-release \
     stable/prestashop
 ```
 
-The above command sets the PrestaShop administrator account username and password to `admin` and `password` respectively. Additionally it sets the MariaDB `root` user password to `secretpassword`.
+The above command sets the PrestaShop administrator account username and password to `admin` and `password` respectively. Additionally, it sets the MariaDB `root` user password to `secretpassword`.
 
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 
