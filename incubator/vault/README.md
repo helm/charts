@@ -14,14 +14,14 @@ This chart will do the following:
 
 Please note that a backend service for Vault (for example, Consul) must
 be deployed beforehand and configured with the `vault.config` option. YAML
-provided under this option will be converted to JSON for the final vault
+provided under this option will be converted to JSON for the final Vault
 `config.json` file.
 
 > See https://www.vaultproject.io/docs/configuration/ for more information.
 
 ## Installing the Chart
 
-To install the chart, use the following, this backs vault with a Consul cluster:
+To install the chart, use the following, this backs Vault with a Consul cluster:
 
 ```console
 $ helm repo add incubator http://storage.googleapis.com/kubernetes-charts-incubator
@@ -43,7 +43,7 @@ vault:
 
 ## Configuration
 
-The following tables lists the configurable parameters of the vault chart and their default values.
+The following table lists the configurable parameters of the Vault chart and their default values.
 
 |       Parameter         |           Description               |                         Default                     |
 |-------------------------|-------------------------------------|-----------------------------------------------------|
@@ -56,6 +56,7 @@ The following tables lists the configurable parameters of the vault chart and th
 | `replicaCount`          | k8s replicas                        | `1`                                                 |
 | `resources.limits.cpu`  | Container requested CPU             | `nil`                                               |
 | `resources.limits.memory` | Container requested memory        | `nil`                                               |
+| `affinity`              | Affinity settings                   | See values.yaml                                               |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 

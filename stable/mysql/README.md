@@ -42,7 +42,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the MySQL chart and their default values.
+The following table lists the configurable parameters of the MySQL chart and their default values.
 
 | Parameter                            | Description                               | Default                                              |
 | ------------------------------------ | ----------------------------------------- | ---------------------------------------------------- |
@@ -64,6 +64,7 @@ The following tables lists the configurable parameters of the MySQL chart and th
 | `readinessProbe.failureThreshold`    | Minimum consecutive failures for the probe to be considered failed after having succeeded.   | 3 |
 | `persistence.enabled`                | Create a volume to store data             | true                                                 |
 | `persistence.size`                   | Size of persistent volume claim           | 8Gi RW                                               |
+| `nodeSelector`                       | Node labels for pod assignment            | {}                                                   |
 | `persistence.storageClass`           | Type of persistent volume claim           | nil  (uses alpha storage class annotation)           |
 | `persistence.accessMode`             | ReadWriteOnce or ReadOnly                 | ReadWriteOnce                                        |
 | `persistence.existingClaim`          | Name of existing persistent volume        | `nil`                                                |

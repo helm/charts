@@ -41,7 +41,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the nginx-ingress chart and their default values.
+The following table lists the configurable parameters of the nginx-ingress chart and their default values.
 
 Parameter | Description | Default
 --- | --- | ---
@@ -87,11 +87,13 @@ Parameter | Description | Default
 `controller.livenessProbe.timeoutSeconds` | When the probe times out | 5
 `controller.livenessProbe.successThreshold` | Minimum consecutive successes for the probe to be considered successful after having failed. | 1
 `controller.livenessProbe.failureThreshold` | Minimum consecutive failures for the probe to be considered failed after having succeeded. | 3
+`controller.livenessProbe.port` | The port number that the liveness probe will listen on. | 10254
 `controller.readinessProbe.initialDelaySeconds` | Delay before readiness probe is initiated | 10
 `controller.readinessProbe.periodSeconds` | How often to perform the probe | 10
 `controller.readinessProbe.timeoutSeconds` | When the probe times out | 1
 `controller.readinessProbe.successThreshold` | Minimum consecutive successes for the probe to be considered successful after having failed. | 1
 `controller.readinessProbe.failureThreshold` | Minimum consecutive failures for the probe to be considered failed after having succeeded. | 3
+`controller.readinessProbe.port` | The port number that the readiness probe will listen on. | 10254
 `controller.stats.enabled` | if `true`, enable "vts-status" page | `false`
 `controller.stats.service.annotations` | annotations for controller stats service | `{}`
 `controller.stats.service.clusterIP` | internal controller stats cluster service IP | `""`
@@ -145,6 +147,13 @@ Alternatively, a YAML file that specifies the values for the parameters can be p
 
 ```console
 $ helm install stable/nginx-ingress --name my-release -f values.yaml
+```
+
+A useful trick to debug issues with ingress is to increase the logLevel
+as described [here](https://github.com/kubernetes/ingress-nginx/blob/master/docs/troubleshooting.md#debug)
+
+```console
+$ helm install stable/nginx-ingress --set controller.extraArgs.v=2
 ```
 
 ## Prometheus Metrics
