@@ -18,7 +18,7 @@ data:
     {{- end }}
     for dashboard in $(ls); do
       wget \
-      "http://{{ template "grafana.fullname" . }}:{{ .Values.server.service.httpPort }}/api/dashboards/db" \
+      "http://{{ template "grafana.server.fullname" . }}:{{ .Values.server.service.httpPort }}/api/dashboards/db" \
       --user=${ADMIN_USER} \
       --password=${ADMIN_PASSWORD} \
       --auth-no-challenge \

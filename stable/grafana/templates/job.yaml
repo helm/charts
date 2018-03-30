@@ -37,7 +37,7 @@ spec:
               name: {{ template "grafana.server.fullname" . }}
               key: grafana-admin-password
         args:
-          - "http://$(ADMIN_USER):$(ADMIN_PASSWORD)@{{ template "grafana.fullname" . }}:{{ .Values.server.service.httpPort }}/api/datasources"
+          - "http://$(ADMIN_USER):$(ADMIN_PASSWORD)@{{ template "grafana.server.fullname" . }}:{{ .Values.server.service.httpPort }}/api/datasources"
           - "--max-time"
           - "10"
           - "-H"
