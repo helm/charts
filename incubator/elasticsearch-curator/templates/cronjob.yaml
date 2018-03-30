@@ -1,5 +1,4 @@
-{{- if or (.Capabilities.APIVersions.Has "batch/v1beta1") (.Capabilities.APIVersions.Has "batch/v2alpha1") -}}
-apiVersion: {{ template "cronjob.apiVersion" $ }}
+apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
   name: {{ template "elasticsearch-curator.fullname" . }}
@@ -46,4 +45,3 @@ spec:
       tolerations:
 {{ toYaml . | indent 12 }}
     {{- end }}
-{{- end -}}

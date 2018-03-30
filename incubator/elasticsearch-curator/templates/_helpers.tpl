@@ -5,13 +5,6 @@ Expand the name of the chart.
 {{/*
 Return the appropriate apiVersion for cronjob APIs.
 */}}
-{{- define "cronjob.apiVersion" -}}
-{{- if .Capabilities.APIVersions.Has "batch/v1beta1" -}}
-"batch/v1beta1"
-{{- else -}}
-"batch/v2alpha1"
-{{- end -}}
-{{- end -}}
 
 {{- define "elasticsearch-curator.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" -}}
