@@ -1,21 +1,23 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "zookeeper.fullname" . }}-headless
+  name: {{ template "zookeeper.fullname" . }}
   labels:
     app: {{ template "zookeeper.name" . }}
     chart: {{ template "zookeeper.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
-spec:
-  clusterIP: None
-  ports:
-{{- range $key, $port := .Values.ports }}
-    - name: {{ $key }}
-      port: {{ $port.containerPort }}
-      targetPort: {{ $port.name }}
-      protocol: {{ $port.protocol }}
+  annotations:
+{{- with .Values.service.annotations }}
+{{ toYaml . | indent 4 }}
 {{- end }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+  {{- range $key, $value := .Values.service.ports }}
+    - name: {{ $key }}
+{{ toYaml $value | indent 6 }}
+  {{- end }}
   selector:
     app: {{ template "zookeeper.name" . }}
     release: {{ .Release.Name }}
