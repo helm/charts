@@ -36,7 +36,7 @@ The command removes all the Kubernetes components associated with the chart and 
 ## Access control
 It is critical for the Kubernetes custer to correctly setup access control of Kubernetes Dashboard. See this [guide](https://github.com/kubernetes/dashboard/wiki/Access-control) for best practises.
 
-It is highly recommended to use RBAC with minimal privileges needed for Dashboard to run.  
+It is highly recommended to use RBAC with minimal privileges needed for Dashboard to run.
 
 ## Configuration
 
@@ -50,8 +50,8 @@ The following table lists the configurable parameters of the kubernetes-dashboar
 | `extraArgs`               | Additional container arguments                                                                                              | `[]`                                                                     |
 | `nodeSelector`            | node labels for pod assignment                                                                                              | `{}`                                                                     |
 | `tolerations`             | List of node taints to tolerate (requires Kubernetes >= 1.6)                                                                | `[]`                                                                     |
-| `service.externalPort`    | Dashboard internal port                                                                                                     | 443                                                                      |
-| `service.internalPort`    | Dashboard external port                                                                                                     | 443                                                                      |
+| `service.externalPort`    | Dashboard external port                                                                                                     | 443                                                                      |
+| `service.internalPort`    | Dashboard internal port                                                                                                     | 443                                                                      |
 | `ingress.annotations`     | Specify ingress class                                                                                                       | `kubernetes.io/ingress.class: nginx`                                     |
 | `ingress.enabled`         | Enable ingress controller resource                                                                                          | `false`                                                                  |
 | `ingress.hosts`           | Dashboard Hostnames                                                                                                         | `nil`                                                                    |
