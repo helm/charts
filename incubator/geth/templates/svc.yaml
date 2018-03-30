@@ -4,7 +4,7 @@ metadata:
   name: {{ template "geth.fullname" . }}
   labels:
     app: {{ template "geth.name" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    chart: {{ template "geth.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
