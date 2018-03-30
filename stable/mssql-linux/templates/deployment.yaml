@@ -39,6 +39,8 @@ spec:
               value: /mssql-translog/translog
             - name: MSSQL_TCP_PORT
               value: "{{ .Values.service.port }}"
+            - name: MSSQL_BACKUP_DIR
+              value: "/mssql-backup/backup"
           ports:
             - name: mssql
               containerPort: {{ .Values.service.port }}
@@ -47,6 +49,8 @@ spec:
               mountPath: /mssql-data/data
             - name: transactionlog
               mountPath: /mssql-translog/translog
+            - name: backup
+              mountPath: /mssql-backup/backup
           livenessProbe:
              tcpSocket:
                port: mssql
@@ -82,6 +86,17 @@ spec:
           claimName: {{ .Values.persistence.existingLogClaim }}
           {{- else }}
           claimName: {{ template "mssql.fullname" . }}-translog
+          {{- end }}
+      {{- else }}
+        emptyDir: {}
+      {{- end }}
+      - name: backup
+      {{- if .Values.persistence.enabled }}
+        persistentVolumeClaim:
+          {{- if .Values.persistence.existingBackupClaim }}
+          claimName: {{ .Values.persistence.existingBackupClaim }}
+          {{- else }}
+          claimName: {{ template "mssql.fullname" . }}-backup
           {{- end }}
       {{- else }}
         emptyDir: {}
