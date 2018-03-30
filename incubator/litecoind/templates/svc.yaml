@@ -4,7 +4,7 @@ metadata:
   name: {{ template "litecoind.fullname" . }}
   labels:
     app: {{ template "litecoind.name" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    chart: {{ template "litecoind.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
