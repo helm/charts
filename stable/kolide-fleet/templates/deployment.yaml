@@ -291,7 +291,7 @@ spec:
       ## - Never
       ##
       ## For more information, see http://kubernetes.io/docs/user-guide/pod-states/#restartpolicy
-      restartPolicy: "__RESTART_POLICY__"
+      restartPolicy: "Always"
       securityContext:
         ## Volumes which support ownership management are modified to be owned and writable by the GID specified in
         ## fsGroup. See the Ownership Management design document for more details.
