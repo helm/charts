@@ -1,17 +1,16 @@
 apiVersion: v1
 kind: Service
 metadata:
+  name: {{ template "redis-ha.fullname" . }}-sentinel
   labels:
-    name: {{ template "name" . }}-sentinel-svc
+    name: {{ template "redis-ha.name" . }}-sentinel-svc
     role: service
 {{ include "labels.standard" . | indent 4 }}
-  name: {{ template "fullname" . }}-sentinel
 spec:
   ports:
     - port: 26379
       targetPort: 26379
   selector:
-    redis-role: "sentinel"
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app: {{ template "redis-ha.name" . }}
     release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    redis-role: "sentinel"

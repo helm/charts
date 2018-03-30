@@ -1,7 +1,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "fullname" . }}-slave-svc
+  name: {{ template "redis-ha.fullname" . }}-slave-svc
+  labels:
+    role: service
+{{ include "labels.standard" . | indent 4 }}
   annotations:
 {{ toYaml .Values.servers.annotations | indent 4 }}
 spec:
@@ -10,8 +13,8 @@ spec:
     protocol: TCP
     targetPort: 6379
   selector:
-    app: "redis-ha"
+    app: {{ template "redis-ha.name" . }}
+    release: "{{ .Release.Name }}"
     redis-node: "true"
     redis-role: "slave"
-    release: "{{ .Release.Name }}"
   type: "{{ .Values.servers.serviceType }}"

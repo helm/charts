@@ -2,12 +2,9 @@
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: Role
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "redis-ha.fullname" . }}
   labels:
-    app: "redis-ha"
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
-    heritage: {{ .Release.Service }}
-    release: {{ .Release.Name }}
+{{ include "labels.standard" . | indent 4 }}
 rules:
 - apiGroups:
     - ""
