@@ -7,6 +7,7 @@ keywords:
 - aws
 - iam
 - security
+home: https://github.com/jtblin/kube2iam
 sources:
 - https://github.com/jtblin/kube2iam
 maintainers:
