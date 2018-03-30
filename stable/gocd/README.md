@@ -124,7 +124,7 @@ $ helm install --namespace gocd --name gocd-app -f values.yaml stable/gocd
 By default, the GoCD helm chart supports dynamic volume provisioning. This means that the standard storage class with a default provisioner provided by various cloud platforms used. 
 Refer to the [Kubernetes blog](http://blog.kubernetes.io/2017/03/dynamic-provisioning-and-storage-classes-kubernetes.html) to know more about the default provisioners across platforms.
 
-> **Note**: The recalim policy for most default volume provisioners is `delete`. This means that, the persistent volume provisioned using the default provisioner will be deleted along with the data when the PVC gets deleted.
+> **Note**: The reclaim policy for most default volume provisioners is `delete`. This means that, the persistent volume provisioned using the default provisioner will be deleted along with the data when the PVC gets deleted.
 
 One can change the storage class to be used by overriding `server.persistence.storageClass` and `agent.persistence.storageClass` like below:
 
