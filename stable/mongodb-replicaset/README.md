@@ -26,7 +26,7 @@ $ helm install --name my-release stable/mongodb-replicaset
 
 ## Configuration
 
-The following tables lists the configurable parameters of the mongodb chart and their default values.
+The following table lists the configurable parameters of the mongodb chart and their default values.
 
 | Parameter                       | Description                                                               | Default                                             |
 | ------------------------------- | ------------------------------------------------------------------------- | --------------------------------------------------- |
@@ -91,10 +91,13 @@ Once you have all 3 nodes in running, you can run the "test.sh" script in this d
 
 ## Authentication
 
-By default, this chart creates a MongoDB replica set without authentication. Authentication can be enabled using the 
-parameter `auth.enabled`. Once enabled, keyfile access control is set up and an admin user with root privileges
-is created. User credentials and keyfile may be specified directly. Alternatively, existing secrets may be provided. 
-The secret for the admin user must contain the keys `user` and `password`, that for the key file must contain `key.txt`.
+By default, this chart creates a MongoDB replica set without authentication. Authentication can be
+enabled using the parameter `auth.enabled`. Once enabled, keyfile access control is set up and an
+admin user with root privileges is created. User credentials and keyfile may be specified directly.
+Alternatively, existing secrets may be provided.  The secret for the admin user must contain the
+keys `user` and `password`, that for the key file must contain `key.txt`.  The user is created with
+full `root` permissions but is restricted to the `admin` database for security purposes. It can be
+used to create additional users with more specific permissions.
 
 ## TLS support
 

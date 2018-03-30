@@ -23,13 +23,16 @@ serviceAccountKey: ""
 ## SQL connection settings
 ##
 cloudsql:
-  ## PostgreSQL/MySQL instance:
+  ## PostgreSQL/MySQL instances:
   ## update with your GCP project, the region of your Cloud SQL instance
   ## and the name of your Cloud SQL instance
-  instance: "PROJECT:REGION:INSTANCE"
-
-  ## PostgreSQL port 5432 or MySQL port 3306, or other port you set for your SQL instance
-  port: 5432
+  ## PostgreSQL port 5432 or MySQL port 3306, or other port you set for your SQL instance.
+  ## Use different ports for different instances.
+  instances:
+  - instance: "instance"
+    project: "project"
+    region: "region"
+    port: 5432
 
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/

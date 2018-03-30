@@ -41,7 +41,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the MongoDB chart and their default values.
+The following table lists the configurable parameters of the MongoDB chart and their default values.
 
 |         Parameter                   |             Description                    |                         Default                          |
 |----------------------------         |-------------------------------------       |----------------------------------------------------------|
@@ -56,6 +56,7 @@ The following tables lists the configurable parameters of the MongoDB chart and 
 | `persistence.storageClass`          | Storage class of backing PVC               | `nil` (uses alpha storage class annotation)              |
 | `persistence.accessMode`            | Use volume as ReadOnly or ReadWrite        | `ReadWriteOnce`                                          |
 | `persistence.size`                  | Size of data volume                        | `8Gi`                                                    |
+| `nodeSelector`                      | Node labels for pod assignment             | {}                                                       |
 | `livenessProbe.initialDelaySeconds` | Delay before liveness probe is initiated   | 30                                                       |
 | `livenessProbe.periodSeconds`       | How often to perform the probe             | 10                                                       |
 | `livenessProbe.timeoutSeconds`      | When the probe times out                   | 5                                                        |
@@ -77,7 +78,7 @@ $ helm install --name my-release \
     stable/mongodb
 ```
 
-The above command sets the MongoDB `root` account password to `secretpassword`. Additionally it creates a standard database user named `my-user`, with the password `my-password`, who has access to a database named `my-database`.
+The above command sets the MongoDB `root` account password to `secretpassword`. Additionally, it creates a standard database user named `my-user`, with the password `my-password`, who has access to a database named `my-database`.
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
@@ -91,4 +92,4 @@ $ helm install --name my-release -f values.yaml stable/mongodb
 
 The [Bitnami MongoDB](https://github.com/bitnami/bitnami-docker-mongodb) image stores the MongoDB data and configurations at the `/bitnami/mongodb` path of the container.
 
-The chart mounts a [Persistent Volume](http://kubernetes.io/docs/user-guide/persistent-volumes/) volume at this location. The volume is created using dynamic volume provisioning.
+The chart mounts a [Persistent Volume](http://kubernetes.io/docs/user-guide/persistent-volumes/) at this location. The volume is created using dynamic volume provisioning.
