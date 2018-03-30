@@ -41,8 +41,8 @@ The following tables lists the configurable parameters of the bitcoincashd chart
 Parameter                  | Description                        | Default                                                   
 -----------------------    | ---------------------------------- | ----------------------------------------------------------
 `image.repository`         | Image source repository name       | `arilot/docker-bitcoincashd`
-`imageTag`                 | `bitcoincashd` release tag.        | `1.0`
-`imagePullPolicy`          | Image pull policy                  | `IfNotPresent`
+`image.tag`                | `bitcoincashd` release tag.        | `1.0`
+`image.pullPolicy`         | Image pull policy                  | `IfNotPresent`
 `service.rpcPort`          | RPC port                           | `8332`
 `service.p2pPort`          | P2P port                           | `8333`
 `service.testnetPort`      | Testnet port                       | `18332`

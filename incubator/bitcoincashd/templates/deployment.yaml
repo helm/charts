@@ -4,7 +4,7 @@ metadata:
   name: {{ template "bitcoincashd.fullname" . }}
   labels:
     app: {{ template "bitcoincashd.name" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    chart: {{ template "bitcoincashd.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
