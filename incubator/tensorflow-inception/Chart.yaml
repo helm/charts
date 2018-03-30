@@ -1,6 +1,6 @@
 name: tensorflow-inception
 home: https://github.com/kubernetes/charts
-version: 0.2.3
+version: 0.3.0
 appVersion: 1.4.0
 description: Open source software library for numerical computation using data flow
   graphs.
