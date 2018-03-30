@@ -25,7 +25,7 @@ spec:
         component: "{{ .Values.nodeExporter.name }}"
         release: {{ .Release.Name }}
     spec:
-      serviceAccountName: "{{ .Values.nodeExporter.serviceAccountName }}"
+      serviceAccountName: {{ template "prometheus.serviceAccountName.nodeExporter" . }}
       containers:
         - name: {{ template "prometheus.name" . }}-{{ .Values.nodeExporter.name }}
           image: "{{ .Values.nodeExporter.image.repository }}:{{ .Values.nodeExporter.image.tag }}"

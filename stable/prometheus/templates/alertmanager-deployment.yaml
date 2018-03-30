@@ -26,7 +26,7 @@ spec:
         component: "{{ .Values.alertmanager.name }}"
         release: {{ .Release.Name }}
     spec:
-      serviceAccountName: "{{ .Values.alertmanager.serviceAccountName }}"
+      serviceAccountName: {{ template "prometheus.serviceAccountName.alertmanager" . }}
       containers:
         - name: {{ template "prometheus.name" . }}-{{ .Values.alertmanager.name }}
           image: "{{ .Values.alertmanager.image.repository }}:{{ .Values.alertmanager.image.tag }}"

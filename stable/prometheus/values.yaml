@@ -1,14 +1,26 @@
 rbac:
   create: true
 
+## Define serviceAccount names for components. Defaults to component's fully qualified name.
+##
+serviceAccounts:
+  alertmanager:
+    create: false
+    name:
+  kubeStateMetrics:
+    create: true
+    name:
+  nodeExporter:
+    create: false
+    name:
+  server:
+    create: true
+    name:
+
 alertmanager:
   ## If false, alertmanager will not be installed
   ##
   enabled: true
-
-  ## Defines the serviceAccountName to use
-  ##
-  serviceAccountName: default
 
   ## alertmanager container name
   ##
@@ -230,9 +242,6 @@ kubeStateMetrics:
   ##
   enabled: true
 
-  # Defines the serviceAccountName to use when `rbac.create=false`
-  serviceAccountName: default
-
   ## kube-state-metrics container name
   ##
   name: kube-state-metrics
@@ -300,10 +309,6 @@ nodeExporter:
   ## If false, node-exporter will not be installed
   ##
   enabled: true
-
-  ## Defines the serviceAccountName to use
-  ##
-  serviceAccountName: default
 
   ## node-exporter container name
   ##
@@ -395,9 +400,6 @@ server:
   ## Prometheus server container name
   ##
   name: server
-
-  # Defines the serviceAccountName to use when `rbac.create=false`
-  serviceAccountName: default
 
   ## Prometheus server container image
   ##
