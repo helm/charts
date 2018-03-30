@@ -3,7 +3,7 @@ kind: PodDisruptionBudget
 metadata:
   name: {{ template "cluster-autoscaler.fullname" . }}
 spec:
-  maxUnavailable: 1
+  maxUnavailable: {{ .Values.maxUnavailable }}
   selector:
     matchLabels:
       app: {{ template "cluster-autoscaler.name" . }}
