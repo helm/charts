@@ -43,7 +43,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the TestLink chart and their default values.
+The following table lists the configurable parameters of the TestLink chart and their default values.
 
 |              Parameter              |               Description               |                         Default                         |
 |-------------------------------------|-----------------------------------------|---------------------------------------------------------|
@@ -58,6 +58,16 @@ The following tables lists the configurable parameters of the TestLink chart and
 | `smtpUser`                          | SMTP user                               | `nil`                                                   |
 | `smtpPassword`                      | SMTP password                           | `nil`                                                   |
 | `smtpConnectionMode`                | SMTP connection mode [`ssl`, `tls`]     | `nil`                                                   |
+| `allowEmptyPassword`                | Allow DB blank passwords                | `yes`                                                   |
+| `externalDatabase.host`             | Host of the external database           | `nil`                                                   |
+| `externalDatabase.port`             | Port of the external database           | `3306`                                                  |
+| `externalDatabase.user`             | Existing username in the external db    | `bn_testlink`                                           |
+| `externalDatabase.password`         | Password for the above username         | `nil`                                                   |
+| `externalDatabase.database`         | Name of the existing databse            | `bitnami_testlink`                                      |
+| `mariadb.enabled`                   | Wheter to use or not the mariadb chart  | `true`                                                  |
+| `mariadb.mariadbDatabase`           | Database name to create                 | `bitnami_testlink`                                      |
+| `mariadb.mariadbUser`               | Database user to create                 | `bn_testlink`                                           |
+| `mariadb.mariadbPassword`           | Password for the database               | `nil`                                                   |
 | `mariadb.mariadbRootPassword`       | MariaDB admin password                  | `nil`                                                   |
 | `serviceType`                       | Kubernetes Service type                 | `LoadBalancer`                                          |
 | `persistence.enabled`               | Enable persistence using PVC            | `true`                                                  |
@@ -79,7 +89,7 @@ $ helm install --name my-release \
     stable/testlink
 ```
 
-The above command sets the TestLink administrator account username and password to `admin` and `password` respectively. Additionally it sets the MariaDB `root` user password to `secretpassword`.
+The above command sets the TestLink administrator account username and password to `admin` and `password` respectively. Additionally, it sets the MariaDB `root` user password to `secretpassword`.
 
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 

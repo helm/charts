@@ -37,9 +37,11 @@ spec:
               value: /mssql-data/data
             - name: MSSQL_LOG_DIR
               value: /mssql-translog/translog
+            - name: MSSQL_TCP_PORT
+              value: "{{ .Values.service.port }}"
           ports:
-            - name: db
-              containerPort: 1433
+            - name: mssql
+              containerPort: {{ .Values.service.port }}
           volumeMounts:
             - name: data
               mountPath: /mssql-data/data
@@ -47,12 +49,12 @@ spec:
               mountPath: /mssql-translog/translog
           livenessProbe:
              tcpSocket:
-               port: db
+               port: mssql
              initialDelaySeconds: {{ .Values.livenessprobe.initialDelaySeconds }}
              periodSeconds: {{ .Values.livenessprobe.periodSeconds }}
           readinessProbe:
              tcpSocket:
-               port: db
+               port: mssql
              initialDelaySeconds: {{ .Values.readinessprobe.initialDelaySeconds }}
              periodSeconds: {{ .Values.readinessprobe.periodSeconds }}
           resources:

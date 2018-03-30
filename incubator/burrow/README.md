@@ -2,6 +2,8 @@
 
 [burrow](https://github.com/hyperledger/burrow) is a permissioned Ethereum smart-contract blockchain node. It executes Ethereum smart contract code on a permissioned virtual machine. Burrow provides transaction finality and high transaction throughput on a proof-of-stake Tendermint consensus engine.
 
+**Note - this chart has been deprecated and [moved to stable](../../stable/burrow)**.
+
 ## TL;DR;
 
 ```console
@@ -36,7 +38,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the kibana chart and their default values.
+The following table lists the configurable parameters of the kibana chart and their default values.
 
 Parameter | Description | Default
 --- | --- | ---
