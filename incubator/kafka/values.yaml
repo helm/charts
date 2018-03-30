@@ -175,7 +175,7 @@ metrics:
     image: danielqsj/kafka-exporter
 
     # The image tag to use for the metrics collector
-    imageTag: latest
+    imageTag: v1.0.1
 
 # ------------------------------------------------------------------------------
 # Zookeeper:
