@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: {{ template "mariadb.fullname" . }}
   labels:
-    app: {{ template "mariadb.fullname" . }}
+    app: {{ template "mariadb.name" . }}
     chart: {{ template "mariadb.chart" . }}
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
@@ -11,11 +11,13 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "mariadb.fullname" . }}
+        app: {{ template "mariadb.name" . }}
     spec:
+      {{- if .Values.securitySettings.enabled }}
       securityContext:
-        runAsUser: 1001
-        fsGroup: 1001
+        runAsUser: {{ .Values.securitySettings.runAsUser }}
+        fsGroup: {{ .Values.securitySettings.fsGroup }}
+      {{- end}}
       initContainers:
       - name: "copy-custom-config"
         image: "busybox"
@@ -58,15 +60,17 @@ spec:
         livenessProbe:
           exec:
             command:
-            - mysqladmin
-            - ping
+            - bash
+            - -c
+            - mysqladmin ping{{ if .Values.usePassword }} -uroot -p$MARIADB_ROOT_PASSWORD{{ end }}
           initialDelaySeconds: 30
           timeoutSeconds: 5
         readinessProbe:
           exec:
             command:
-            - mysqladmin
-            - ping
+            - bash
+            - -c
+            - mysqladmin ping{{ if .Values.usePassword }} -uroot -p$MARIADB_ROOT_PASSWORD{{ end }}
           initialDelaySeconds: 5
           timeoutSeconds: 1
         resources:
