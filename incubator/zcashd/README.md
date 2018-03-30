@@ -42,7 +42,7 @@ Parameter                  | Description                        | Default
 -----------------------    | ---------------------------------- | ----------------------------------------------------------
 `image.repository`         | Image source repository            | `arilot/docker-zcashd`
 `image.tag`                | Image tag                          | `1.0`
-`imagePullPolicy`          | Image pull policy                  | `IfNotPresent`
+`image.pullPolicy`          | Image pull policy                  | `IfNotPresent`
 `service.rpcPort`          | RPC port                           | `8232`
 `service.p2pPort`          | P2P port                           | `8233`
 `service.testnetPort`      | Testnet port                       | `18232`

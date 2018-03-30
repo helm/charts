@@ -4,7 +4,7 @@ metadata:
   name: {{ template "zcashd.fullname" . }}
   labels:
     app: {{ template "zcashd.name" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    chart: {{ template "zcashd.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
