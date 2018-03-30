@@ -28,8 +28,8 @@ spec:
               image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
               imagePullPolicy: {{ .Values.image.pullPolicy }}
               volumeMounts:
-              - name: config-volume
-                mountPath: /etc/es-curator
+                - name: config-volume
+                  mountPath: /etc/es-curator
               command: [ "curator" ]
               args: [ "--config", "/etc/es-curator/config.yml", "/etc/es-curator/action_file.yml" ]
               resources:

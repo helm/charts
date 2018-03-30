@@ -18,3 +18,4 @@ data:
         - {{ range .Values.config.elasticsearch.hosts }} {{ . }} {{ end }}
       port: {{ .Values.config.elasticsearch.port }}
   {{ end }}
+  
