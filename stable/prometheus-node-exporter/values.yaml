@@ -23,9 +23,6 @@ resources: {}
   #   cpu: 100m
   #   memory: 30Mi
 
-rbac:
-  create: true
-
 serviceAccount:
   # Specifies whether a ServiceAccount should be created
   create: true
