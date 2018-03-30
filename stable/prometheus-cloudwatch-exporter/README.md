@@ -43,26 +43,26 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following tables lists the configurable parameters of the Cloudwatch Exporter chart and their default values.
 
-| Parameter                       | Description                                | Default                                                    |
-| ------------------------------- | ------------------------------------------ | ---------------------------------------------------------- |
-| `image`                         | Image                                      | `prom/cloudwatch-exporter`                      |
-| `imageTag`                      | Image tag                                  | `latest`                                      |
-| `imagePullPolicy`               | Image pull policy                          | `IfNotPresent` |
-| `service.type`      | Service type |  `ClusterIP` | 
-| `service.port`                      | The service port                               | `80`                                     |
-| `service.targetPort`                      | The target port of the container                               | `9100`                                        |
-| `resources`          |                                  |                    `{}`                                  |
-| `aws.region`                     | AWS Cloudwatch region                      | `eu-west-1`                                                |
-| `aws.role`                       | AWS IAM Role To Use                        |                                                      |
-| `aws.aws_access_key_id`                       | AWS access key id                        |                                                       |
-| `aws.aws_secret_access_key`                       | AWS secret access key                     |                                                       |
-| `config`                 | Cloudwatch exporter configuration                      | `example configuration`                                    |
-| `rbac.create`                   | If true, create & use RBAC resources       | `false`                                                    |
-| `serviceAccount.create`         | Specifies whether a service account should be created.| `true` |
-| `serviceAccount.name`           | Name of the service account.|        |
-| `tolerations`                   | Add tolerations                            | `[]`  |
-|`nodeSelector`                    | node labels for pod assignment | `{}`  |
-|`affinity`                       |     node/pod affinities | `{}` |
+|          Parameter          |                      Description                       |          Default           |
+| --------------------------- | ------------------------------------------------------ | -------------------------- |
+| `image`                     | Image                                                  | `prom/cloudwatch-exporter` |
+| `imageTag`                  | Image tag                                              | `latest`                   |
+| `imagePullPolicy`           | Image pull policy                                      | `IfNotPresent`             |
+| `service.type`              | Service type                                           | `ClusterIP`                |
+| `service.port`              | The service port                                       | `80`                       |
+| `service.targetPort`        | The target port of the container                       | `9100`                     |
+| `resources`                 |                                                        | `{}`                       |
+| `aws.region`                | AWS Cloudwatch region                                  | `eu-west-1`                |
+| `aws.role`                  | AWS IAM Role To Use                                    |                            |
+| `aws.aws_access_key_id`     | AWS access key id                                      |                            |
+| `aws.aws_secret_access_key` | AWS secret access key                                  |                            |
+| `config`                    | Cloudwatch exporter configuration                      | `example configuration`    |
+| `rbac.create`               | If true, create & use RBAC resources                   | `false`                    |
+| `serviceAccount.create`     | Specifies whether a service account should be created. | `true`                     |
+| `serviceAccount.name`       | Name of the service account.                           |                            |
+| `tolerations`               | Add tolerations                                        | `[]`                       |
+| `nodeSelector`              | node labels for pod assignment                         | `{}`                       |
+| `affinity`                  | node/pod affinities                                    | `{}`                       |
 
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
