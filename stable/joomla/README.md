@@ -64,7 +64,7 @@ The following table lists the configurable parameters of the Joomla! chart and t
 | `externalDatabase.user`           | Existing username in the external db   | `bn_joomla`                                               |
 | `externalDatabase.password`       | Password for the above username        | `nil`                                                     |
 | `externalDatabase.database`       | Name of the existing database          | `bitnami_joomla`                                          |
-| `mariadb.enabled`                 | Whether to the MariaDB chart           | `true`                                                    |
+| `mariadb.enabled`                 | Whether to use the MariaDB chart       | `true`                                                    |
 | `mariadb.mariadbDatabase`         | Database name to create                | `bitnami_joomla`                                          |
 | `mariadb.mariadbUser`             | Database user to create                | `bn_joomla`                                               |
 | `mariadb.mariadbPassword`         | Password for the database              | `nil`                                                     |
