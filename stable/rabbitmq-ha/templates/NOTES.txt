@@ -12,7 +12,7 @@
 
 {{- if contains "NodePort" .Values.service.type }}
 
-    export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+    export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[?(@.type=='ExternalIP')].address}")    
     export NODE_PORT_AMQP=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath='{.spec.ports[?(@.name=="amqp")].nodePort}' services {{ template "rabbitmq-ha.fullname" . }})
     {{- if .Values.rabbitmqAmqpsSupport.enabled }}
     export NODE_PORT_AMQPS=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath='{.spec.ports[?(@.name=="amqps")].nodePort}' services {{ template "rabbitmq-ha.fullname" . }})
