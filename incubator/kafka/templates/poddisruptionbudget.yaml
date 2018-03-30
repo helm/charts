@@ -1,0 +1,15 @@
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ template "kafka.fullname" . }}
+  labels:
+    app: {{ template "kafka.name" . }}
+    chart: {{ template "kafka.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "kafka.name" . }}
+      release: {{ .Release.Name }}
+{{ toYaml .Values.podDisruptionBudget | indent 2 }}

@@ -1,6 +1,6 @@
 {{- if .Values.external.enabled }}
   {{- $fullName := include "kafka.fullname" . }}
-  {{- $replicas := .Values.replicas | int }}
+  {{- $replicas := .Values.replicaCount | int }}
   {{- $servicePort := .Values.external.servicePort }}
   {{- $root := . }}
   {{- range $i, $e := until $replicas }}
@@ -15,21 +15,20 @@ metadata:
     dns.alpha.kubernetes.io/internal: "{{ $root.Release.Name }}.{{ $root.Values.external.domain }}"
   name: {{ $root.Release.Name }}-{{ $i }}-external
   labels:
-    app: {{ include "kafka.name" $root }}
-    chart: {{ $root.Chart.Name }}-{{ $root.Chart.Version }}
+    app: {{ template "kafka.name" $root }}
+    chart: {{ template "kafka.chart" $root }}
     release: {{ $root.Release.Name }}
     heritage: {{ $root.Release.Service }}
-    pod: {{ $responsiblePod | quote }}
 spec:
   type: NodePort
   ports:
-    - name: external-broker
+    - name: external
       port: {{ $servicePort }}
       targetPort: {{ $externalListenerPort }}
       nodePort: {{ $externalListenerPort }}
       protocol: TCP
   selector:
-    app: {{ include "kafka.name" $root }}
+    app: {{ template "kafka.name" $root }}
     release: {{ $root.Release.Name }}
     pod: {{ $responsiblePod | quote }}
   {{- end }}
