@@ -131,6 +131,12 @@ spec:
 {{- if .Values.datadog.volumeMounts }}
 {{ toYaml .Values.datadog.volumeMounts | indent 10 }}
 {{- end }}
+        livenessProbe:
+          exec:
+            command:
+            - ./probe.sh
+          initialDelaySeconds: 15
+          periodSeconds: 5
       volumes:
         - hostPath:
             path: /var/run/docker.sock
