@@ -1,11 +1,13 @@
 name: kube2iam
-version: 0.8.3
+version: 0.8.4
+appVersion: 0.10.0
 description: Provide IAM credentials to pods based on annotations.
 keywords:
 - kube2iam
 - aws
 - iam
 - security
+home: https://github.com/jtblin/kube2iam
 sources:
 - https://github.com/jtblin/kube2iam
 maintainers:
