@@ -31,7 +31,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 | Parameter                                 | Description                         | Default                                           |
 |-------------------------------------------|-------------------------------------|---------------------------------------------------|
-| `server.image`                            | Container image to run              | grafana/grafana:4.6.3                             |
+| `server.image`                            | Container image to run              | grafana/grafana:5.0.4                             |
 | `server.adminUser`                        | Admin user username                 | admin                                             |
 | `server.adminPassword`                    | Admin user password                 | Randomly generated                                |
 | `server.antiAffinity.enabled`             | Enable anti affinity                | false                                             |

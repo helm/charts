@@ -6,7 +6,7 @@ server:
 
   ## Grafana Docker image
   ##
-  image: "grafana/grafana:4.6.3"
+  image: "grafana/grafana:5.0.4"
 
   extraEnv: []
 
@@ -453,11 +453,10 @@ dashboardImports:
 
   ## Grafana dashboard URL to import (this should be a JSON file, not the HTML page)
   # Example:
-  # dashboards: {
-  #   Prometheus_Stats.json: https://grafana.com/api/dashboards/2/revisions/2/download,
-  #   Docker_Dashboard.json: https://grafana.com/api/dashboards/179/revisions/5/download,
+  # dashboards:
+  #   Prometheus_Stats.json: https://grafana.com/api/dashboards/2/revisions/2/download
+  #   Docker_Dashboard.json: https://grafana.com/api/dashboards/179/revisions/5/download
   #   MyPrivateDashboard.json: http://example.com/dashboard.json
-  # }
   # dashboards: {}
 
   ## Specify the Job policy
