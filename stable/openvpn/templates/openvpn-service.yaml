@@ -12,6 +12,9 @@ spec:
       port: {{ .Values.service.externalPort }}
       targetPort: {{ .Values.service.internalPort }}
       protocol: {{ .Values.openvpn.OVPN_PROTO | upper }}
+{{- if and (eq "NodePort" .Values.service.type) (hasKey .Values.service "nodePort") }}
+      nodePort: {{ .Values.service.nodePort }}
+{{- end }}
   selector:
     app: {{ template "openvpn.fullname" . }}
   type: {{ .Values.service.type }}

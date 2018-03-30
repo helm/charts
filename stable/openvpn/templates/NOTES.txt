@@ -9,7 +9,9 @@ Check pod status with the command:
 LoadBalancer ingress creation can take some time as well. Check service status with the command:
 
   kubectl get svc
-
+{{ if and (eq "NodePort" .Values.service.type) (hasKey .Values.service "nodePort") }}
+You set the service type to NodePort, port {{ .Values.service.nodePort }} will be used on each node.
+{{ end }}
 Once the external IP is available and all the server certificates are generated create client key .ovpn files by pasting the following into a shell:
 
   POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l type=openvpn -o jsonpath='{ .items[0].metadata.name }')
