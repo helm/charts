@@ -15,10 +15,7 @@ spec:
       app: {{ template "fleet.fullname" . }}
       release: "{{ .Release.Name }}"
   strategy:
-    rollingUpdate:
-      maxSurge: 1
-      maxUnavailable: 1
-    type: "RollingUpdate"
+    type: "Recreate"
   template:
     metadata:
       annotations:
