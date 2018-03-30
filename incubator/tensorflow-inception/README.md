@@ -27,13 +27,13 @@ The following table lists the configurable parameters of the TensorFlow inceptio
 
 | Parameter               | Description                        | Default                                                    |
 | ----------------------- | ---------------------------------- | ---------------------------------------------------------- |
-| `Image`          | Container image name               | `quay.io/lachie83/inception_serving`                              |
-| `ImageTag`       | Container image tag                | `latest`                                                          |
-| `Replicas`       | k8s deployment replicas            | `1`                                                               |
-| `Component`      | k8s selector key                   | `tensorflow-inception`                                            |
-| `Resources`      | Set the resource to be allocated and allowed for the Pods                   | `{}`                                            |
-| `ServicePort`    | k8s service port                   | `9090`                                                            |
-| `ContainerPort`  | Container listening port           | `9090`                                                            |
+| `image`          | Container image name               | `quay.io/lachie83/inception_serving`                              |
+| `imageTag`       | Container image tag                | `latest`                                                          |
+| `replicas`       | k8s deployment replicas            | `1`                                                               |
+| `component`      | k8s selector key                   | `tensorflow-inception`                                            |
+| `resources`      | Set the resource to be allocated and allowed for the Pods                   | `{}`                                            |
+| `servicePort`    | k8s service port                   | `9090`                                                            |
+| `containerPort`  | Container listening port           | `9090`                                                            |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`.
 
