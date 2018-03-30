@@ -25,11 +25,11 @@ ingress:
   #     - chart-example.local
 
 readinessProbe:
-  initialDelaySeconds: 30
+  initialDelaySeconds: 120
   periodSeconds: 30
   failureThreshold: 6
 livenessProbe:
-  initialDelaySeconds: 30
+  initialDelaySeconds: 120
   periodSeconds: 30
 
 # Set extra env variables. Like proxy settings.

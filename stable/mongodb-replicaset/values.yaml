@@ -1,5 +1,6 @@
 replicaSet: rs0
 replicas: 3
+minAvailable: 1
 port: 27017
 
 auth:
@@ -19,13 +20,11 @@ installImage:
 # Specs for the MongoDB image
 image:
   name: mongo
-  tag: 3.4
+  tag: 3.6
   pullPolicy: IfNotPresent
 
 # Annotations to be added to MongoDB pods
 podAnnotations: {}
-
-podAntiAffinity: "soft"
 
 resources: {}
 # limits:
@@ -38,6 +37,10 @@ resources: {}
 ## Node selector
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
 nodeSelector: {}
+
+affinity: {}
+
+tolerations: []
 
 persistentVolume:
   enabled: true
@@ -74,6 +77,8 @@ configmap:
     dbPath: /data/db
   net:
     port: 27017
+    # For Mongo 3.6 we also need to bind to outside world
+    bindIpAll: true
     # Uncomment for TLS support
     # ssl:
     #   mode: requireSSL

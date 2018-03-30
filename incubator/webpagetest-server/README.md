@@ -44,14 +44,14 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the WebPageTest chart and their default values.
+The following table lists the configurable parameters of the WebPageTest chart and their default values.
 
 | Parameter                            | Description                                | Default                                                    |
 | -------------------------------      | -------------------------------            | ---------------------------------------------------------- |
 | `image`                              | WebPageTest server image                   | `webpagetest/server:{VERSION}`                              |
 | `imagePullPolicy`                    | Image pull policy                          | `IfNotPresent`                                             |
 | `ec2Locations.enabled`               | Enables use of EC2 AMI's                   | `false`                                                     |
-| `ec2Locations.customUserDataSecret`  | Controlls if this chart should use an externally created secret | `false` |
+| `ec2Locations.customUserDataSecret`  | Controls if this chart should use an externally created secret | `false` |
 | `ec2Locations.userData`              | Data Structure which is used to generate settings | sample data only                                    |
 | `ec2Locations.userData.ec2_key`      | EC2 API key with create permissions        | `nil`                                                      |
 | `ec2Locations.userData.ec2_secret`   | Secret portion of the above key            | `nil`                                                      |
@@ -98,7 +98,7 @@ To enable ingress integration, please set `ingress.enabled` to `true`
 ### Hosts
 Most likely you will only want to have one hostname that maps to this
 WebPageTest installation for scripts or end users to interact, then a
-seperate instance for the AMI's to operate on (see AgentIngress below).
+separate instance for the AMI's to operate on (see AgentIngress below).
 It is however possible to have more than one host.
 To facilitate this, the `ingress.hosts` object is an array.
 
@@ -168,7 +168,7 @@ Generally speaking WebPageTest is difficult to secure / restrict access. In crea
 a user would use the ingress listed above. The ingress above would have appropriate access restrictions using either
 whitelisted IP's, http basic auth or both.
 This however would block access to the agents without significant additional config. Agents in a remote region would
-probably need a region to region VPN to get access. Rather thn doing that we create a second host header and restrict
+probably need a region to region VPN to get access. Rather than doing that we create a second host header and restrict
 the url path to /work, /cron and /jpeginfo. The agents use /work and the server connects to itself on /cron and
 /jpeginfo. This way 3rd parties do not have access to create tests, but any host (with the correct keys) can get work
 units and post results.
