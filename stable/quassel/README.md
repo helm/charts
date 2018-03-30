@@ -41,7 +41,7 @@ deletes the release.
 
 ## Configuration
 
-The following tables lists the configurable parameters of the quassel chart and
+The following table lists the configurable parameters of the quassel chart and
 their default values.
 
 | Parameter                              | Description                                                                                      | Default                                                  |
@@ -94,11 +94,11 @@ $ helm install stable/quassel --name my-release -f values.yaml
 ## Persistence
 
 The [quassel-core](https://hub.docker.com/r/linuxserver/quassel-core) image
-stores it's configuration data, and if using SQLite, it's SQLite datbase at the
+stores it's configuration data, and if using SQLite, it's SQLite database at the
 `/config` path of the container.
 
 The chart mounts a [Persistent Volume](http://kubernetes.io/docs/user-guide/persistent-volumes/)
-volume at this location. The volume is created using dynamic volume provisioning.
+at this location. The volume is created using dynamic volume provisioning.
 If the PersistentVolumeClaim should not be managed by the chart, define
 `persistence.existingClaim` or disable persistence with `persistence.enabled`.
 
