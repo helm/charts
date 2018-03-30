@@ -4,10 +4,11 @@ icon: https://github.com/kubernetes/kubernetes/blob/master/logo/logo.png
 name: cluster-autoscaler
 version: 0.5.2
 appVersion: 1.1.0
+home: https://github.com/kubernetes/autoscaler
 sources:
 - https://github.com/kubernetes/autoscaler/tree/master/cluster-autoscaler
 - https://github.com/spotinst/kubernetes-autoscaler/tree/master/cluster-autoscaler
 maintainers:
-- name: Michael Goodness
+- name: @mgoodness
   email: mgoodness@gmail.com
 engine: gotpl
