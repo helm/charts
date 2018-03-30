@@ -4,7 +4,7 @@ metadata:
   name: {{ template "dashd.fullname" . }}
   labels:
     app: {{ template "dashd.name" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    chart: {{ template "dashd.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 data:
