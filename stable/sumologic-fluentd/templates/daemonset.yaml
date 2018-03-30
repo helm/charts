@@ -139,6 +139,10 @@ spec:
             - name: FLUENTD_OPT
               value: {{ quote .Values.sumologic.fluentdOpt }}
             {{- end }}
+            {{- if quote .Values.sumologic.timeKey }}
+            - name: TIME_KEY
+              value: {{ quote .Values.sumologic.timeKey }}
+            {{- end }}
             {{- if quote .Values.sumologic.verifySsl }}
             - name: VERIFY_SSL
               value: {{ quote .Values.sumologic.verifySsl }}
