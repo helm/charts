@@ -126,7 +126,7 @@ configurationFiles:
 ## MySQL initialization files
 
 The [MySQL](https://hub.docker.com/_/mysql/) image accepts *.sh, *.sql and *.sql.gz files at the path `/docker-entrypoint-initdb.d`. 
-These files are being run exactly once for container initialization and ignored on follwing container restarts.
+These files are being run exactly once for container initialization and ignored on following container restarts.
 If you want to use initialization scripts, you can create initialization files by passing the file contents on the `initializationFiles` attribute. 
 
 
