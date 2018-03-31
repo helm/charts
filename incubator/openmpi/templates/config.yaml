@@ -1,0 +1,20 @@
+{{- $workerNum := .Values.mpiWorker.number -}}
+{{- $openmpiName := include "openmpi.fullname" . }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "openmpi.fullname" . }}-cm
+  labels:
+    heritage: {{ .Release.Service | quote }}
+    release: {{ .Release.Name | quote }}
+    chart: {{ template "openmpi.chart" . }}
+    app: {{ template "openmpi.fullname" . }}
+data:
+  hostfile.config: |
+    {{- range $i, $none := until (int $workerNum) }}
+      {{ $openmpiName }}-{{ $i }}.{{ $openmpiName }}-svc
+    {{- end }}
+  ssh.readiness: |
+    #!/bin/bash
+    set -xev
+    ssh localhost ls

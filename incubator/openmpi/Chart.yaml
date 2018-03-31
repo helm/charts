@@ -1,0 +1,11 @@
+apiVersion: v1
+description: A High Performance Message Passing Library.
+name: openmpi
+version: 0.1.0
+appVersion: "3.1.0"
+home: https://www.open-mpi.org/
+sources:
+- https://github.com/open-mpi/ompi
+maintainers:
+- email: cheyang@163.com
+  name: cheyang

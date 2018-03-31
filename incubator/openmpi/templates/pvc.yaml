@@ -1,0 +1,24 @@
+{{- if .Values.persistence.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ template "openmpi.fullname" . }}
+  labels:
+    app: {{ template "openmpi.name" . }}
+    chart: {{ template "openmpi.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+  annotations:
+    "helm.sh/hook": pre-install
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: {{ .Values.persistence.pvc.storage }}
+{{- if .Values.persistence.pvc.matchLabels }}
+  selector:
+    matchLabels:
+{{ toYaml .Values.persistence.pvc.matchLabels | indent 12 }}
+{{- end}}
+{{- end}}

@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ template "openmpi.fullname" . }}
+  labels:
+    app: {{ template "openmpi.name" . }}
+    chart: {{ template "openmpi.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    role: mpiworker
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "openmpi.name" . }}
+      chart: {{ template "openmpi.chart" . }}
+      release: {{ .Release.Name }}
+      heritage: {{ .Release.Service }}
+      role: mpiworker
+  serviceName: {{ template "openmpi.fullname" . }}-svc
+  podManagementPolicy: {{ .Values.mpiWorker.podManagementPolicy }}
+  replicas: {{.Values.mpiWorker.number}}
+  template:
+    metadata:
+      labels:
+        app: {{ template "openmpi.name" . }}
+        chart: {{ template "openmpi.chart" . }}
+        release: {{ .Release.Name }}
+        heritage: {{ .Release.Service }}
+        role: mpiworker
+    spec:
+      volumes:
+      - name: {{ template "openmpi.fullname" . }}-cm
+        configMap:
+          name: {{ template "openmpi.fullname" . }}-cm
+          items:
+          - key: hostfile.config
+            path: hostfile
+            mode: 438
+          - key: ssh.readiness
+            path: check.sh
+            mode: 365
+{{- if .Values.mpiWorker.volumes }}
+{{ toYaml .Values.mpiWorker.volumes | indent  6 }}
+{{- end }}
+      containers:
+      - name: openmpi-worker
+        image: "{{ .Values.mpiWorker.image.repository }}:{{ .Values.mpiWorker.image.tag }}"
+        imagePullPolicy: {{ .Values.mpiWorker.image.pullPolicy }}
+        {{- if .Values.mpiWorker.env }}
+        env:
+          {{- range $key, $value := .Values.mpiWorker.env }}
+          - name: "{{ $key }}"
+            value: "{{ $value }}"
+          {{- end }}
+        {{- end }}
+{{- if .Values.mpiWorker.privileged }}
+        securityContext:
+          privileged: true
+{{- end }}
+        ports:
+        - containerPort: {{ .Values.mpiWorker.sshPort }}
+        volumeMounts:
+        - name: {{ template "openmpi.fullname" . }}-cm
+          mountPath: /openmpi/generated
+{{- if .Values.mpiWorker.volumeMounts }}
+{{ toYaml .Values.mpiWorker.volumeMounts | indent 8 }}
+{{- end }}
+        readinessProbe:
+          exec:
+            command:
+              - /openmpi/generated/check.sh
+          initialDelaySeconds: 1
+          periodSeconds: 2
+        resources:
+{{ toYaml .Values.mpiWorker.resources | indent 10 }}
