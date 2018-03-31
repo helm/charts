@@ -49,24 +49,22 @@ spec:
             name: {{ template "fleet.fullname" . }}
       containers:
         - name: fleet
-          ## Environment variables can be populated in a number of ways, including secrets, or just string values. Below
-          ## are some examples for you to copy-paste. Remember to uncomment the `env` node!
-          #
-          # env:
-          #
-          ## An example of a simple key value pair
-          #
-          # - name: "FOO"
-          #   value: "BAR"
-          #
-          ## An example of environment variables from a secret
-          #
-          # - name: "SECRET"
-          #   valueFrom:
-          #     secretKeyRef:
-          #       name: __SECRET_NAME__
-          #       key: __KEY_USED_IN_SECRET_NAME__
-          #
+          env: 
+            - name: "KOLIDE_AUTH_JWT_KEY"
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "fleet.fullname" . }}
+                  key: "fleet.auth.jwt_key"
+            - name: "KOLIDE_MYSQL_USERNAME"
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "fleet.fullname" . }}
+                  key: "fleet.mysql.username"
+            - name: "KOLIDE_MYSQL_PASSWORD"
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "fleet.fullname" . }}
+                  key: "fleet.mysql.password"
           image: {{ .Values.pod.fleet.image | quote }}
           args:
             - "fleet"

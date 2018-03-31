@@ -3,11 +3,20 @@
 ## Default: use the chart name
 # nameOverride:
 
+mysql:
+  mysqlUser: "kolide"
+  mysqlDatabase: "kolide"
+  ## (Required)
+  mysqlPassword: ""
+
+redis:
+  ## (Required)
+  redisPassword: ""
+
 ## Fleet application specific settings
 fleet:
   mysql: {}
     # address: ""
-    # username: ""
     # database: ""
     # tls_cert: ""
     # tls_key: ""
@@ -17,7 +26,9 @@ fleet:
   server: {}
     # tls: ""
     # tlsprofile: "modern"
-  auth: {}
+  auth:
+    ## (Required)
+    jwt_key: ""
     # bcrypt_cost: ""
     # salt_key_size: ""
   app: {}

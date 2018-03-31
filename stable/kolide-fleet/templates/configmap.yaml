@@ -13,10 +13,10 @@ data:
     ---
     mysql:
       address: {{ default "kolide-fleet-mysql:3306" .Values.fleet.mysql.address }}
-      username: {{ default "kolide" .Values.fleet.mysql.username }}
+      username: {{ default "kolide" .Values.mysql.mysqlUsername }}
       # Handled as a secret in an environment variable
       # password: kolide
-      database: {{ default "kolide" .Values.fleet.mysql.database }}
+      database: {{ default "kolide" .Values.mysql.mysqlDatabase }}
       tls_cert: {{ default "" .Values.fleet.mysql.tls_cert }}
       tls_key: {{ default "" .Values.fleet.mysql.tls_key }}
       tls_ca: {{ default "" .Values.fleet.mysql.tls_ca }}
