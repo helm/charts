@@ -128,3 +128,5 @@ postgresql:
   postgresDatabase: "artifactory"
   persistence:
     enabled: true
+  service:
+    port: 5432
