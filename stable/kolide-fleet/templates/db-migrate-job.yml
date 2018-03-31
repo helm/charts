@@ -1,0 +1,55 @@
+---
+apiVersion: "batch/v1"
+kind: "Job"
+metadata:
+  labels:
+    app: {{ template "fleet.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    heritage: "{{ .Release.Service }}"
+    release: "{{ .Release.Name }}"
+  name: {{ template "fleet.fullname" . }}
+spec:
+  template:
+    metadata:
+      annotations:
+        "helm.sh/hook": post-install,post-upgrade
+        "helm.sh/hook-weight": "0"
+        "helm.sh/hook-delete-policy": hook-succeeded
+      labels:
+        app: {{ template "fleet.fullname" . }}
+        release: "{{ .Release.Name }}"
+    spec:
+      volumes:
+        - name: "fleet-configuration"
+          configMap:
+            name: {{ template "fleet.fullname" . }}
+      containers:
+        - name: "fleet"
+          env: 
+            - name: "KOLIDE_AUTH_JWT_KEY"
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "fleet.fullname" . }}
+                  key: "fleet.auth.jwt_key"
+            - name: "KOLIDE_MYSQL_USERNAME"
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "fleet.fullname" . }}
+                  key: "fleet.mysql.username"
+            - name: "KOLIDE_MYSQL_PASSWORD"
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "fleet.fullname" . }}
+                  key: "fleet.mysql.password"
+          image: {{ .Values.pod.fleet.image | quote }}
+          args:
+            - "fleet"
+            - "prepare"
+            - "db"
+            - "--config"
+            - "/etc/fleet/config.yml"
+          volumeMounts:
+            - name: "fleet-configuration"
+              readOnly: true
+              mountPath: "/etc/fleet"
+      restartPolicy: "Never"
