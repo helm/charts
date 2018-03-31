@@ -83,7 +83,7 @@ helm install --name my-release -f values.yaml stable/cockroachdb
 
 ## Connecting to the CockroachDB cluster
 
-Once you've created the cluster, you can start talking to it it by connecting
+Once you've created the cluster, you can start talking to it by connecting
 to its "public" service. CockroachDB is PostgreSQL wire protocol compatible so
 there's a [wide variety of supported
 clients](https://www.cockroachlabs.com/docs/install-client-drivers.html). For
