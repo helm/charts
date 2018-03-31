@@ -16,6 +16,20 @@ backend:
   es:
     host: elasticsearch
     port: 9200
+    # Elastic Index Name
+    index: kubernetes_cluster
+    type: flb_type
+    logstash_prefix: kubernetes_cluster
+    # Optional username credential for Elastic X-Pack access
+    http_user: ""
+    # Password for user defined in HTTP_User
+    http_passwd: ""
+    tls: off
+    tls_verify: off
+    # TLS certificate for the Elastic (in PEM format). Specify if tls: on.
+    tls_ca: ""
+    tls_debug: 1
+
   ##
   ## Ref: http://fluentbit.io/documentation/current/output/http.html
   ##
