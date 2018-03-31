@@ -3,6 +3,40 @@
 ## Default: use the chart name
 # nameOverride:
 
+## Fleet application specific settings
+fleet:
+  mysql: {}
+    # address: ""
+    # username: ""
+    # database: ""
+    # tls_cert: ""
+    # tls_key: ""
+    # tls_ca: ""
+    # tls_server_name: ""
+    # tls_config: ""
+  server: {}
+    # tls: ""
+    # tlsprofile: "modern"
+  auth: {}
+    # bcrypt_cost: ""
+    # salt_key_size: ""
+  app: {}
+    # token_key_size: ""
+    # invite_token_validity_period: ""
+  session: {}
+    # key_size: ""
+    # duration: ""
+  osquery: {}
+    # node_key_size: ""
+    # label_update_interval: ""
+  logging:
+    ## Whether to enable debug logging
+    debug: false
+    ## Whether logging should be expressed in JSON
+    json: true
+    ## Whether to disable the banner as part of the logs
+    disable_banner: true
+
 pod:
   fleet:
     ## The image to use with the resource

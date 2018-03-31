@@ -9,7 +9,47 @@ metadata:
     release: "{{ .Release.Name }}"
   name: {{ template "fleet.fullname" . }}
 data:
-  # example.property.1: hello
-  # example.property.file: |-
-  #   property.1=value-1
-  #   property.2=value-2
+  config.yml: |-
+    ---
+    mysql:
+      address: {{ default "kolide-fleet-mysql:3306" .Values.fleet.mysql.address }}
+      username: {{ default "kolide" .Values.fleet.mysql.username }}
+      # Handled as a secret in an environment variable
+      # password: kolide
+      database: {{ default "kolide" .Values.fleet.mysql.database }}
+      tls_cert: {{ default "" .Values.fleet.mysql.tls_cert }}
+      tls_key: {{ default "" .Values.fleet.mysql.tls_key }}
+      tls_ca: {{ default "" .Values.fleet.mysql.tls_ca }}
+      tls_server_name: {{ default "" .Values.fleet.mysql.tls_server_name }}
+      tls_config: {{ default  "" .Values.fleet.mysql.tls_config }}
+    redis:
+      address: kolide-fleet-redis:6379
+      # Handled as a secret in an environment variable
+      # password: ""
+    server:
+      address: 0.0.0.0:8080
+      cert: /etc/pki/fleet/kolide.crt
+      key: /etc/pki/fleet/kolide.key
+      tls: {{ default true .Values.fleet.server.tls }}
+      tlsprofile: {{ default "modern" .Values.fleet.server.tlsprofile }}
+    auth:
+      # Handled as a secret in an environment variable
+      # jwt_key: ""
+      bcrypt_cost: {{ default 12 .Values.fleet.auth.bcrypt_cost }}
+      salt_key_size: {{ default 24 .Values.fleet.auth.salt_key_size }}
+    app:
+      token_key_size: {{ default 24 .Values.fleet.app.token_key_size }}
+      invite_token_validity_period: {{ default "120h0m0s" .Values.fleet.app.invite_token_validity_period }}
+    session:
+      key_size: {{ default 64 .Values.fleet.session.key_size }}
+      duration: {{ default "2160h0m0s" .Values.fleet.session.duration }}
+    osquery:
+      node_key_size: {{ default 24 .Values.fleet.osquery.node_key_size }}
+      status_log_file: /dev/stdout
+      result_log_file: /dev/stdout
+      enable_log_rotation: false
+      label_update_interval: {{ default "1h0m0s" .Values.fleet.osquery.label_update_interval }}
+    logging:
+      debug: {{ default false .Values.fleet.logging.debug }}
+      json: {{ default false .Values.fleet.logging.json }}
+      disable_banner: {{ default false .Values.fleet.logging.disable_banner }}

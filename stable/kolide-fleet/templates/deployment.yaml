@@ -42,62 +42,11 @@ spec:
         app: {{ template "fleet.fullname" . }}
         release: "{{ .Release.Name }}"
     spec:
-      ## Volumes are how Kubernetes expresses either networked storage or other metadata in the filesystem. There are
-      ## storage types, the most useful of which are illustrated below. Remember to uncomment the volumes: node if you
-      ## decide to use them!
-      ##
-      # volumes:
-      ##
-      ## EMPTY DIR - Useful for scratch space, such as for CI
-      ##
-      #   - name: "__VOLUME_NAME__"
-      #     emptyDir: {}
-      ##
-      ## HOST PATH - Useful when mounting some host proprty into hte container
-      ##
-      #   - name: "__VOLUME_NAME__"
-      #     hostPath:
-      #       path: "/path/to/your/folder"
-      ##
-      ## PERSISTENT VOLUME CLAIM - Useful to access network storage. Should be used in preference to GcePersistantDisk
-      ##                           et. al. You will need to define a persistent volume as well, for this to work.
-      ##
-      #   - name: "__VOLUME_NAME__"
-      #     persistentVolumeClaim:
-      #       claimName: {{ template "fleet.pvcName" . }}
-      ##
-      ## CONFIGMAP
-      ##
-      #   - name: "__VOLUME_NAME__"
-      #     configMap:
-      #       name: "fleet"
-      ##
-      ## Note: You can also use single files from a configmap, with a syntax called "subPath". An example is below:
-      ##
-      #   - name: "__VOLUME_NAME__"
-      #     configMap:
-      #       name: "fleet"
-      #       items:
-      #         - key: "__ITEM_KEY__"
-      #           path: "path/to/item"
-      ##
-      ## SECRET
-      ##
-      #   - name: "__VOLUME_NAME__"
-      #     secret:
-      #       secretName: "__SECRET_NAME__"
-      ##
-      ## DOWNWARD API
-      ##
-      #   - name: "__VOLUME_NAME__"
-      #     downwardAPI:
-      #       items:
-      #         - path: "labels"
-      #           fieldRef:
-      #             fieldPath: metadata.labels
-      #         - path: "annotations"
-      #           fieldRef:
-      #             fieldPath: metadata.annotations
+      volumes:
+          # The name comes from the configmap. It's also shown earlier
+        - name: "fleet-configuration"
+          configMap:
+            name: {{ template "fleet.fullname" . }}
       containers:
         - name: fleet
           ## Environment variables can be populated in a number of ways, including secrets, or just string values. Below
@@ -119,10 +68,11 @@ spec:
           #       key: __KEY_USED_IN_SECRET_NAME__
           #
           image: {{ .Values.pod.fleet.image | quote }}
-          # args:
-          #   - "command"
-          #   - "line"
-          #   - "arguments"
+          args:
+            - "fleet"
+            - "serve"
+            - "--config"
+            - "/etc/fleet/config.yml"
           resources:
 {{ toYaml .Values.resources | indent 12 }}
           securityContext:
@@ -179,13 +129,10 @@ spec:
               ## What designation to give the port. Useful later, so we can reference the port by name in the health
               ## check.
               name: "http"
-          # volumeMounts:
-          #   - name: "webserver-etc-conf-d"
-          #     readOnly: true
-          #     mountPath: "/etc/webserver/conf.d"
-          #   - name: "webserver-data
-          #     readOnly: false
-          #     mountPath: "/data"
+          volumeMounts:
+            - name: "fleet-configuration"
+              readOnly: true
+              mountPath: "/etc/fleet"
           ## There are three types or readiness probes:
           ##
           ## More generally, a liveness probe is used to determine whether the application is "healthy" and should
