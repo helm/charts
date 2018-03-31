@@ -12,6 +12,10 @@ server:
     tag: "5.0.4"
     pullPolicy: IfNotPresent
 
+  # Extra environmental configuration. Example:
+  #  extraEnv:
+  #    - name: MY_VAR
+  #      value: "myval"
   extraEnv: []
 
   nodeSelector: {}
