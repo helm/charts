@@ -47,12 +47,20 @@ spec:
           args:
             - --volume-dir=/etc/config
             - --webhook-url=http://localhost:9090{{ .Values.server.prefixURL }}/-/reload
+          {{- range $key, $value := .Values.configmapReload.extraArgs }}
+            - --{{ $key }}={{ $value }}
+          {{- end }}
           resources:
 {{ toYaml .Values.configmapReload.resources | indent 12 }}
           volumeMounts:
             - name: config-volume
               mountPath: /etc/config
               readOnly: true
+          {{- range .Values.configmapReload.extraConfigmapMounts }}
+            - name: {{ $.Values.configmapReload.name }}-{{ .name }}
+              mountPath: {{ .mountPath }}
+              readOnly: {{ .readOnly }}
+          {{- end }}
 
         - name: {{ template "prometheus.name" . }}-{{ .Values.server.name }}
           image: "{{ .Values.server.image.repository }}:{{ .Values.server.image.tag }}"
@@ -100,7 +108,7 @@ spec:
               readOnly: {{ .readOnly }}
           {{- end }}
           {{- range .Values.server.extraConfigmapMounts }}
-            - name: {{ .name }}
+            - name: {{ $.Values.server.name }}-{{ .name }}
               mountPath: {{ .mountPath }}
               readOnly: {{ .readOnly }}
           {{- end }}
@@ -138,8 +146,13 @@ spec:
           hostPath:
             path: {{ .hostPath }}
       {{- end }}
+      {{- range .Values.configmapReload.extraConfigmapMounts }}
+        - name: {{ $.Values.configmapReload.name }}-{{ .name }}
+          configMap:
+            name: {{ .configMap }}
+      {{- end }}
       {{- range .Values.server.extraConfigmapMounts }}
-        - name: {{ .name }}
+        - name: {{ $.Values.server.name }}-{{ .name }}
           configMap:
             name: {{ .configMap }}
       {{- end }}
@@ -147,4 +160,9 @@ spec:
         - name: {{ .name }}
           secret:
             secretName: {{ .secretName }}
+      {{- end }}
+      {{- range .Values.configmapReload.extraConfigmapMounts }}
+        - name: {{ .name }}
+          configMap:
+            name: {{ .configMap }}
       {{- end }}
