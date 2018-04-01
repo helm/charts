@@ -28,6 +28,7 @@ backend:
     tls_verify: off
     # TLS certificate for the Elastic (in PEM format). Specify if tls: on.
     tls_ca: ""
+    # TLS debugging levels = 1-5
     tls_debug: 1
 
   ##
