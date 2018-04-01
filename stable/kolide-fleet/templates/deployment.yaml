@@ -47,6 +47,9 @@ spec:
         - name: "fleet-configuration"
           configMap:
             name: {{ template "fleet.fullname" . }}
+        - name: "fleet-tls"
+          secret:
+            secretName: {{ template "fleet.fullname" . }}-tls
       containers:
         - name: fleet
           env: 
@@ -131,6 +134,9 @@ spec:
             - name: "fleet-configuration"
               readOnly: true
               mountPath: "/etc/fleet"
+            - name: "fleet-tls"
+              readOnly: true
+              mountPath: "/etc/pki/fleet"
           ## There are three types or readiness probes:
           ##
           ## More generally, a liveness probe is used to determine whether the application is "healthy" and should

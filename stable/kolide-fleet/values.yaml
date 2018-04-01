@@ -13,6 +13,11 @@ redis:
   ## (Required)
   redisPassword: ""
 
+tls:
+  # Whether to generate TLS certificates during installation. Enable this if you're testing to create a self signed
+  # certificate during installation.
+  generate: false
+
 ## Fleet application specific settings
 fleet:
   mysql: {}

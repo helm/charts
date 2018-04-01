@@ -28,8 +28,8 @@ data:
       # password: ""
     server:
       address: 0.0.0.0:8080
-      cert: /etc/pki/fleet/kolide.crt
-      key: /etc/pki/fleet/kolide.key
+      cert: /etc/pki/fleet/tls.crt
+      key: /etc/pki/fleet/tls.key
       tls: {{ default true .Values.fleet.server.tls }}
       tlsprofile: {{ default "modern" .Values.fleet.server.tlsprofile }}
     auth:
