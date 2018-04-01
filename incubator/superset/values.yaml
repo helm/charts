@@ -7,20 +7,24 @@ replicaCount: 1
 
 ## Set default image, imageTag, and imagePullPolicy.
 image:
-  repository: "alitari/superset"
-  tag: "v0.23.3"
+  repository: "amancevice/superset"
+  tag: "0.23.3"
   pullPolicy: "Always"
 
-containerPort: 9000
+containerPort: 8088
+
+initFile: |-
+  /usr/local/bin/superset-init --username admin --firstname admin --lastname user --email admin@fab.org --password admin
+  superset runserver
 
 configFile: |-
   #---------------------------------------------------------
   # Superset specific config
   #---------------------------------------------------------
   ROW_LIMIT = 5000
-  SUPERSET_WORKERS = 4
+  SUPERSET_WORKERS = 2
 
-  SUPERSET_WEBSERVER_PORT = 9000
+  SUPERSET_WEBSERVER_PORT = 8088
   #---------------------------------------------------------
 
   #---------------------------------------------------------
@@ -34,7 +38,7 @@ configFile: |-
   # superset metadata (slices, connections, tables, dashboards, ...).
   # Note that the connection information to connect to the datasources
   # you want to explore are managed directly in the web UI
-  SQLALCHEMY_DATABASE_URI = 'sqlite:////etc/superset-db/superset.db'
+  SQLALCHEMY_DATABASE_URI = 'sqlite:////var/lib/superset/superset.db'
 
 
   # Flask-WTF flag for CSRF
@@ -147,7 +151,7 @@ livenessProbe:
   httpGet:
     path: /
     port: http
-  initialDelaySeconds: 40
+  initialDelaySeconds: 80
   timeoutSeconds: 5
   periodSeconds: 10
   failureThreshold: 2
@@ -155,7 +159,7 @@ readinessProbe:
   httpGet:
     path: /
     port: http
-  initialDelaySeconds: 20
+  initialDelaySeconds: 60
   timeoutSeconds: 5
   periodSeconds: 10
   failureThreshold: 2
