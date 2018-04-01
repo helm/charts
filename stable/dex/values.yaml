@@ -15,9 +15,11 @@ externalIPs: []
 
 replicas: 1
 
-httpsPort: 5556
 
-serviceType: ClusterIP
+service:
+  type: ClusterIP
+  port: 5556
+  # externalIPs:
 
 resources:
   limits:
