@@ -80,3 +80,19 @@ tls:
 
 # Entries for the MongoDB config file
 configmap:
+
+# Readiness probe
+readinessProbe:
+  initialDelaySeconds: 5
+  timeoutSeconds: 1
+  failureThreshold: 3
+  periodSeconds: 10
+  successThreshold: 1
+
+# Liveness probe
+livenessProbe:
+  initialDelaySeconds: 30
+  timeoutSeconds: 5
+  failureThreshold: 3
+  periodSeconds: 10
+  successThreshold: 1
