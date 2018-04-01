@@ -1,5 +1,5 @@
 {{- if .Values.selfSigned.create }}
-{{ $fullname := include "fullname" . }}
+{{ $fullname := include "dex.fullname" . }}
 {{ $tlsBuiltName := printf "%s-tls" $fullname }}
 {{ $tlsSecretName := default $tlsBuiltName .Values.secret.tlsName }}
 {{ $caBuiltName := printf "%s-ca" $fullname }}
@@ -8,18 +8,18 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "dex.fullname" . }}
   labels:
-    app: {{ template "name" . }}
+    app: {{ template "dex.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     heritage: "{{ .Release.Service }}"
     release: "{{ .Release.Name }}"
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
 spec:
   template:
     metadata:
       name: temp
     spec:
-      serviceAccountName: {{ if .Values.rbac.create }}{{ template "fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
+      serviceAccountName: {{ if .Values.rbac.create }}{{ template "dex.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
       restartPolicy: OnFailure
       containers:
       - name: main
@@ -33,14 +33,14 @@ spec:
           [req]
           req_extensions = v3_req
           distinguished_name = req_distinguished_name
-          
+
           [req_distinguished_name]
-          
+
           [ v3_req ]
           basicConstraints = CA:FALSE
           keyUsage = nonRepudiation, digitalSignature, keyEncipherment
           subjectAltName = @alt_names
-          
+
           [alt_names]
           {{- $_ := set $local "i" 1 }}
           {{- range .Values.selfSigned.altNames }}
@@ -53,10 +53,10 @@ spec:
           {{- $_ := set $local "i" ( add1 $local.i ) }}
           {{- end }}
           EOF
-          
+
           openssl genrsa -out ca-key.pem 2048;
           openssl req -x509 -new -nodes -key ca-key.pem -days {{ .Values.selfSigned.caDays }} -out ca.pem -subj "/CN=dex-ca";
-          
+
           openssl genrsa -out key.pem 2048;
           openssl req -new -key key.pem -out csr.pem -subj "/CN=dex" -config req.cnf;
           openssl x509 -req -in csr.pem -CA ca.pem -CAkey ca-key.pem -CAcreateserial -out cert.pem -days {{ .Values.selfSigned.certDays }} -extensions v3_req -extfile req.cnf;

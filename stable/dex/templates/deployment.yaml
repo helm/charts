@@ -1,15 +1,15 @@
-{{ $fullname := include "fullname" . }}
+{{ $fullname := include "dex.fullname" . }}
 {{ $tlsBuiltName := printf "%s-tls" $fullname }}
 {{ $tlsSecretName := default $tlsBuiltName .Values.secret.tlsName }}
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}
+  name: {{ template "dex.fullname" . }}
   labels:
-    app: {{ template "name" . }}
+    app: {{ template "dex.name" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     heritage: "{{ .Release.Service }}"
     release: "{{ .Release.Name }}"
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
 spec:
   replicas: {{ .Values.replicas }}
   strategy:
@@ -20,12 +20,10 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ template "name" . }}
-        heritage: "{{ .Release.Service }}"
+        app: {{ template "dex.name" . }}
         release: "{{ .Release.Name }}"
-        chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     spec:
-      serviceAccountName: {{ if .Values.rbac.create }}{{ template "fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
+      serviceAccountName: {{ if .Values.rbac.create }}{{ template "dex.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 10 }}
       containers:
@@ -58,7 +56,7 @@ spec:
           items:
           - key: config.yaml
             path: config.yaml
-          secretName: {{ template "fullname" . }}
+          secretName: {{ template "dex.fullname" . }}
         name: config
       - name: tls
         secret:

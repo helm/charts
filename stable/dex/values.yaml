@@ -4,7 +4,7 @@
 # name: value
 
 image: quay.io/coreos/dex
-imageTag: "v2.7.1"
+imageTag: "v2.10.0"
 imagePullPolicy: "IfNotPresent"
 
 inMiniKube: false
@@ -81,14 +81,14 @@ config:
 #      org: kubernetes
   oauth2:
     skipApprovalScreen: true
-  
+
 #  staticClients:
 #  - id: example-app
 #    redirectURIs:
 #    - 'http://192.168.42.219:31850/oauth2/callback'
 #    name: 'Example App'
 #    secret: ZXhhbXBsZS1hcHAtc2VjcmV0
-  
+
   enablePasswordDB: true
 #  staticPasswords:
 #  - email: "admin@example.com"
