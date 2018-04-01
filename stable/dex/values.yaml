@@ -11,10 +11,7 @@ inMiniKube: false
 
 nodeSelector: {}
 
-externalIPs: []
-
 replicas: 1
-
 
 service:
   type: ClusterIP
@@ -22,12 +19,13 @@ service:
   # externalIPs:
 
 resources:
-  limits:
-    cpu: 100m
-    memory: 50Mi
-  requests:
-    cpu: 100m
-    memory: 50Mi
+  # Normal resource usage of dex server
+  # limits:
+  #   cpu: 100m
+  #   memory: 50Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 50Mi
 
 extraVolumes: []
 extraVolumeMounts: []
