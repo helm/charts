@@ -131,6 +131,8 @@ Parameter | Description | Default
 `configmapReload.image.repository` | configmap-reload container image repository | `jimmidyson/configmap-reload`
 `configmapReload.image.tag` | configmap-reload container image tag | `v0.1`
 `configmapReload.image.pullPolicy` | configmap-reload container image pull policy | `IfNotPresent`
+`configmapReload.extraArgs` | Additional configmap-reload container arguments | `{}`
+`configmapReload.extraConfigmapMounts` | Additional configmap-reload configMap mounts | `[]`
 `configmapReload.resources` | configmap-reload pod resource requests & limits | `{}`
 `initChownData.enabled`  | If false, don't reset data ownership at startup | true
 `initChownData.name` | init-chown-data container name | `init-chown-data`
