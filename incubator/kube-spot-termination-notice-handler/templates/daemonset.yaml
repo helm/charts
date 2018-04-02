@@ -29,6 +29,8 @@ spec:
             {{- end }}
             - name: POLL_INTERVAL
               value: {{ .Values.pollInterval | quote }}
+            - name: CLUSTER
+              value: {{ .Values.clusterName | quote }}
             - name: POD_NAME
               valueFrom:
                 fieldRef:

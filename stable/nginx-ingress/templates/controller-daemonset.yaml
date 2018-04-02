@@ -29,6 +29,7 @@ spec:
 {{ toYaml .Values.controller.podLabels | indent 8}}
         {{- end }}
     spec:
+      dnsPolicy: {{ .Values.controller.dnsPolicy }}
       containers:
         - name: {{ template "nginx-ingress.name" . }}-{{ .Values.controller.name }}
           image: "{{ .Values.controller.image.repository }}:{{ .Values.controller.image.tag }}"
@@ -86,27 +87,35 @@ spec:
           livenessProbe:
             httpGet:
               path: /healthz
-              port: 10254
+              port: {{ .Values.controller.livenessProbe.port }}
               scheme: HTTP
-            initialDelaySeconds: 10
-            timeoutSeconds: 1
+            initialDelaySeconds: {{ .Values.controller.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.controller.livenessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.controller.livenessProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.controller.livenessProbe.successThreshold }}
+            failureThreshold: {{ .Values.controller.livenessProbe.failureThreshold }}
           ports:
             - name: http
               containerPort: 80
               protocol: TCP
-              {{- if .Values.controller.daemonset.useHostPorts }}
+              {{- if .Values.controller.daemonset.useHostPort }}
               hostPort: 80
               {{- end }}
             - name: https
               containerPort: 443
               protocol: TCP
-              {{- if .Values.controller.daemonset.useHostPorts }}
+              {{- if .Values.controller.daemonset.useHostPort }}
               hostPort: 443
               {{- end }}
           {{- if .Values.controller.stats.enabled }}
             - name: stats
               containerPort: 18080
               protocol: TCP
+            {{- if .Values.controller.metrics.enabled }}
+            - name: metrics
+              containerPort: 10254
+              protocol: TCP
+            {{- end }}
           {{- end }}
           {{- range $key, $value := .Values.tcp }}
             - name: "{{ $key }}-tcp"
@@ -121,8 +130,13 @@ spec:
           readinessProbe:
             httpGet:
               path: /healthz
-              port: 10254
+              port: {{ .Values.controller.readinessProbe.port }}
               scheme: HTTP
+            initialDelaySeconds: {{ .Values.controller.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.controller.readinessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.controller.readinessProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.controller.readinessProbe.successThreshold }}
+            failureThreshold: {{ .Values.controller.readinessProbe.failureThreshold }}
 {{- if .Values.controller.customTemplate.configMapName }}
           volumeMounts:
             - mountPath: /etc/nginx/template
@@ -131,26 +145,6 @@ spec:
 {{- end }}
           resources:
 {{ toYaml .Values.controller.resources | indent 12 }}
-      {{- if .Values.controller.stats.enabled }}
-        - name: {{ template "nginx-ingress.name" . }}-{{ .Values.statsExporter.name }}
-          image: "{{ .Values.statsExporter.image.repository }}:{{ .Values.statsExporter.image.tag }}"
-          imagePullPolicy: "{{ .Values.statsExporter.image.pullPolicy }}"
-          env:
-            - name: METRICS_ADDR
-              value: ":9913"
-            - name: METRICS_ENDPOINT
-              value: "{{ .Values.statsExporter.endpoint }}"
-            - name: METRICS_NS
-              value: "{{ .Values.statsExporter.metricsNamespace }}"
-            - name: NGINX_STATUS
-              value: "{{ .Values.statsExporter.statusPage }}"
-          ports:
-            - name: metrics
-              containerPort: 9913
-              protocol: TCP
-          resources:
-{{ toYaml .Values.statsExporter.resources | indent 12 }}
-      {{- end }}
       hostNetwork: {{ .Values.controller.hostNetwork }}
     {{- if .Values.controller.nodeSelector }}
       nodeSelector:
@@ -159,6 +153,10 @@ spec:
     {{- if .Values.controller.tolerations }}
       tolerations:
 {{ toYaml .Values.controller.tolerations | indent 8 }}
+    {{- end }}
+    {{- if .Values.controller.affinity }}
+      affinity:
+{{ toYaml .Values.controller.affinity | indent 8 }}
     {{- end }}
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "nginx-ingress.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
       terminationGracePeriodSeconds: 60

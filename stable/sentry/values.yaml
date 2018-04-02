@@ -67,6 +67,11 @@ service:
   type: LoadBalancer
   externalPort: 9000
   internalPort: 9000
+  ## External IP addresses of service
+  ## Default: nil
+  ##
+  # externalIPs:
+  # - 192.168.0.1
 
 ## Enable persistence using Persistent Volume Claims
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
@@ -89,7 +94,7 @@ persistence:
   filestore_dir: /var/lib/sentry/files
 
 ## Configure ingress resource that allow you to access the
-## Sentry instalation. Set up the URL
+## Sentry installation. Set up the URL
 ## ref: http://kubernetes.io/docs/user-guide/ingress/
 ##
 ingress:
