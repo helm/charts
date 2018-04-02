@@ -16,7 +16,9 @@ spec:
     spec:
       {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
-{{ toYaml .Values.image.pullSecrets | indent 8 }}
+      {{- range .Values.image.pullSecrets }}
+        - name: {{ . }}
+      {{- end}}
       {{- end }}
       containers:
       - name: {{ template "redmine.fullname" . }}
