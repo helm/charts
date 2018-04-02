@@ -6,17 +6,20 @@ autoDiscovery:
 autoscalingGroups: []
 # At least one element is required if not using autoDiscovery
   # - name: asg1
-  #   maxSize: 1
-  #   minSize: 2
+  #   maxSize: 2
+  #   minSize: 1
   # - name: asg2
-  #   maxSize: 1
-  #   minSize: 2
+  #   maxSize: 2
+  #   minSize: 1
 
-autoscalingGroupsnamePrefix:
+autoscalingGroupsnamePrefix: []
 # At least one element is required if not using autoDiscovery
-  - name: k8s-worker
-    maxSize: 10
-    minSize: 0
+  # - name: ig01
+  #   maxSize: 10
+  #   minSize: 0
+  # - name: ig02
+  #   maxSize: 10
+  #   minSize: 0
 
 # Required if cloudProvider=aws
 awsRegion: us-east-1
@@ -40,7 +43,7 @@ extraArgs:
   v: 4
   stderrthreshold: info
   logtostderr: true
-  write-status-configmap: true
+  # write-status-configmap: true
   # leader-elect: true
   # skip-nodes-with-local-storage: false
   # expander: least-waste

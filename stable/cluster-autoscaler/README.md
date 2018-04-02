@@ -31,6 +31,8 @@ To install the chart with the release name `my-release`:
 
 ### Using auto-discovery of tagged instance groups
 
+#### AWS
+
 Auto-discovery finds ASGs tags as below and automatically manages them based on the min and max size specified in the ASG. `cloudProvider=aws` only.
 
 1) tag the ASGs with _key_ `k8s.io/cluster-autoscaler/enabled` and _key_ `kubernetes.io/cluster/<YOUR CLUSTER NAME>`
@@ -42,6 +44,14 @@ $ helm install stable/cluster-autoscaler --name my-release --set autoDiscovery.c
 ```
 
 The [auto-discovery](#auto-discovery) section provides more details and examples
+
+#### GCE
+
+1)  Either provide a yaml file setting `autoscalingGroupsnamePrefix` (see values.yaml) or use `--set` e.g.:
+
+```console
+$ helm install stable/cluster-autoscaler --name my-release --set autoDiscovery.clusterName=<CLUSTER NAME> --set cloudProvider=gce  --set "autoscalingGroupsnamePrefix[0].name=your-ig-prefix,autoscalingGroupsnamePrefix[0].maxSize=10,autoscalingGroupsnamePrefix[0].minSize=1"
+```
 
 ### Specifying groups manually
 
