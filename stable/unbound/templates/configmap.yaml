@@ -3,10 +3,10 @@ kind: ConfigMap
 metadata:
   name: {{ template "unbound.fullname" . }}
   labels:
-    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     app: {{ template "unbound.name" . }}
-    heritage: {{ .Release.Service }}
+    chart: {{ template "unbound.chart" . }}
     release: {{ .Release.Name  }}
+    heritage: {{ .Release.Service }}
 data:
   unbound.conf: |-
     server:
