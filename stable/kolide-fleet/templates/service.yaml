@@ -27,7 +27,8 @@ spec:
   ports:
     - protocol: "TCP"
       name: "http"
-      port: 8080
+      port: 443
+      targetPort: "http"
   type: {{ default "ClusterIP" .Values.service.type }}
   {{ if eq .Values.service.type "LoadBalancer" -}}
   {{ if .Values.service.loadBalancer.publicIp -}}

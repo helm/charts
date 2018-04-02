@@ -68,6 +68,11 @@ spec:
                 secretKeyRef:
                   name: {{ template "fleet.fullname" . }}
                   key: "fleet.mysql.password"
+            - name: "KOLIDE_REDIS_PASSWORD"
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "fleet.fullname" . }}
+                  key: "fleet.redis.password"
           image: {{ .Values.pod.fleet.image | quote }}
           args:
             - "fleet"
