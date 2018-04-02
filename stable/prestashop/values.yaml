@@ -4,7 +4,7 @@
 image:
   registry: docker.io
   repository: bitnami/prestashop
-  tag: 1.7.3-0-r1
+  tag: 1.7.3-0
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -15,7 +15,7 @@ image:
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
   ##
   # pullSecrets:
-  #   - name: myRegistrKeySecretName 
+  #   - myRegistrKeySecretName 
 
 ## PrestaShop host to create application URLs
 ## ref: https://github.com/bitnami/bitnami-docker-prestashop#configuration
