@@ -74,6 +74,8 @@ spec:
           value: {{ default "" .Values.wordpressLastName | quote }}
         - name: WORDPRESS_BLOG_NAME
           value: {{ default "" .Values.wordpressBlogName | quote }}
+        - name: WORDPRESS_TABLE_PREFIX
+          value: {{ default "" .Values.wordpressTablePrefix | quote }}
         - name: SMTP_HOST
           value: {{ default "" .Values.smtpHost | quote }}
         - name: SMTP_PORT
