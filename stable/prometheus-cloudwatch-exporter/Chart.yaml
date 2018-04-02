@@ -3,6 +3,7 @@ appVersion: "0.1.0"
 description: A Helm chart for prometheus cloudwatch-exporter
 name: prometheus-cloudwatch-exporter
 version: 0.1.1
+home: https://prometheus.io
 sources:
 - https://github.com/prometheus/cloudwatch_exporter
 keywords:
