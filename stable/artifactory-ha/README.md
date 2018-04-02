@@ -157,7 +157,7 @@ $ helm install --name artifactory-ha --set artifactory.license.secret=artifactor
 **NOTE:** You have to keep passing the license secret parameters as `--set artifactory.license.secret=artifactory-cluster-license,artifactory.license.dataKey=art.lic` on all future calls to `helm install` and `helm upgrade`!
 
 #### Scaling your Artifactory cluster
-A key feature in Artifactory HA ia the ability to set an initial cluster size with `--set artifactory.node.replicaCount=${CLUSTER_SIZE}` and if needed, resize it.
+A key feature in Artifactory HA is the ability to set an initial cluster size with `--set artifactory.node.replicaCount=${CLUSTER_SIZE}` and if needed, resize it.
 
 ##### Before scaling
 **IMPORTANT:** When scaling, you need to explicitly pass the database password if it's an auto generated one (this is the default with the enclosed PostgreSQL helm chart).
