@@ -21,6 +21,8 @@ serviceAccount:
 server:
   # server.enabled is the toggle to run GoCD Server. Change to false for Agent Only Deployment.
   enabled: true
+  # server.env.shouldPreconfigure is used to invoke a script to pre configure the elastic agent profile and the plugin settings in the GoCD server.
+  shouldPreconfigure: true
   image:
     # server.image.repository is the GoCD Server image name
     repository: "gocd/gocd-server"

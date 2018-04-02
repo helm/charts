@@ -1,0 +1,82 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "gocd.fullname" . }}
+  labels:
+    app: {{ template "gocd.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+data:
+  preconfigure_server.sh: |-
+    #!/bin/bash
+
+    SERVICE_ACCOUNT_PATH=/var/run/secrets/kubernetes.io/serviceaccount
+    KUBE_TOKEN=$(<${SERVICE_ACCOUNT_PATH}/token)
+
+    while true
+    do
+      status_code=$(curl 'http://localhost:8153/go/api/v1/health' -o /dev/null -w "%{http_code}")
+      if [ $status_code == 200 ]; then
+        break
+      fi
+    done
+    echo "Creating an elastic profile now."
+
+    $(curl 'http://localhost:8153/go/api/elastic/profiles' \
+      -H 'Accept: application/vnd.go.cd.v1+json' \
+      -H 'Content-Type: application/json' \
+      -X POST -d '{
+        "id": "demo-app",
+        "plugin_id": "cd.go.contrib.elasticagent.kubernetes",
+        "properties": [
+          {
+            "key": "Image",
+            "value": "gocd/gocd-agent-docker-dind:v18.2.0"
+          },
+          {
+            "key": "PodConfiguration",
+            "value": "apiVersion: v1\nkind: Pod\nmetadata:\n  name: pod-name-prefix-{\{ POD_POSTFIX }\}\n  labels:\n    app: web\nspec:\n  containers:\n    - name: gocd-agent-container-{\{ CONTAINER_POSTFIX }\}\n      image: {\{ GOCD_AGENT_IMAGE }\}:{\{ LATEST_VERSION }\}\n      securityContext:\n        privileged: true"
+          },
+          {
+            "key": "SpecifiedUsingPodConfiguration",
+            "value": "false"
+          },
+          {
+            "key": "Privileged",
+            "value": "true"
+          }
+        ]
+      }')
+
+    echo "Done creating the elastic profile."
+
+    echo "Configuring plugin settings."
+
+    $(curl 'http://localhost:8153/go/api/admin/plugin_settings' \
+      -H 'Accept: application/vnd.go.cd.v1+json' \
+      -H 'Content-Type: application/json' \
+      -X POST -d '{
+        "plugin_id": "cd.go.contrib.elasticagent.kubernetes",
+        "configuration": [
+          {
+            "key": "go_server_url",
+            "value": "https://{{ template "gocd.fullname" . }}-server:{{ .Values.server.service.httpsPort }}/go"
+          },
+          {
+            "key": "kubernetes_cluster_url",
+            "value": "https://'$KUBERNETES_SERVICE_HOST':'$KUBERNETES_SERVICE_PORT_HTTPS'"
+          },
+          {
+            "key": "namespace",
+            "value": "{{ .Release.Namespace }}"
+          },
+          {
+            "key": "security_token",
+            "value": "'$KUBE_TOKEN'"
+          }
+        ]
+      }')
+
+    echo "Done configuring plugin settings."
+
