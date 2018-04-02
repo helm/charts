@@ -75,7 +75,7 @@ The following table lists the configurable parameters of the Moodle chart and th
 | `externalDatabase.user`             | Existing username in the external db    | `bn_moodle`                                 |
 | `externalDatabase.password`         | Password for the above username         | `nil`                                       |
 | `externalDatabase.database`         | Name of the existing database            | `bitnami_moodle`                            |
-| `mariadb.enabled`                   | Wheter to use or not the mariadb chart  | `true`                                      |
+| `mariadb.enabled`                   | Whether to install the mariadb chart    | `true`                                      |
 | `mariadb.mariadbDatabase`           | Database name to create                 | `bitnami_moodle`                            |
 | `mariadb.mariadbUser`               | Database user to create                 | `bn_moodle`                                 |
 | `mariadb.mariadbPassword`           | Password for the database               | `nil`                                       |
