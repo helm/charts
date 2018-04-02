@@ -14,5 +14,5 @@ spec:
   ports:
     - name: dns-udp
       protocol: UDP
-      port: {{ .Values.serverPort }}
+      port: {{ .Values.unbound.serverPort }}
       targetPort: dns-udp

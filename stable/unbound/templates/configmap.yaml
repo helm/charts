@@ -11,17 +11,17 @@ data:
   unbound.conf: |-
     server:
         chroot: ""
-        num-threads: {{ .Values.numThreads }}
+        num-threads: {{ .Values.unbound.numThreads }}
         directory: "/etc/unbound"
-        port: {{ .Values.serverPort }}
+        port: {{ .Values.unbound.serverPort }}
         so-reuseport: yes
         do-daemonize: no
         logfile: ""
         use-syslog: no
         auto-trust-anchor-file: "/var/lib/unbound/root.key"
-        verbosity: {{ .Values.verbosity }}
-        statistics-interval: {{ .Values.statsInterval }}
-        statistics-cumulative: {{ .Values.statsCumulative }}
+        verbosity: {{ .Values.unbound.verbosity }}
+        statistics-interval: {{ .Values.unbound.statsInterval }}
+        statistics-cumulative: {{ .Values.unbound.statsCumulative }}
 
         interface: 127.0.0.1
         interface: 0.0.0.0

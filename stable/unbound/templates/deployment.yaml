@@ -8,7 +8,7 @@ metadata:
     release: {{ .Release.Name  }}
     heritage: {{ .Release.Service }}
 spec:
-  replicas: {{ .Values.replicas }}
+  replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
       app: {{ template "unbound.name" . }}
@@ -30,18 +30,13 @@ spec:
     spec:
       containers:
       - name: "unbound"
-        image: {{ .Values.unboundImageRepo }}:{{ .Values.unboundImageTag }}
-        imagePullPolicy: {{ .Values.unboundImagePullPolicy | quote }}
+        image: {{ .Values.unbound.image.repository }}:{{ .Values.unbound.image.tag }}
+        imagePullPolicy: {{ .Values.unbound.image.pullPolicy | quote }}
         resources:
-          requests:
-            memory: {{ .Values.memRequest | quote }}
-            cpu: {{ .Values.cpuRequest | quote }}
-          limits:
-            memory: {{ .Values.memLimit | quote }}
-            cpu: {{  .Values.cpuLimit | quote }}
+{{ toYaml .Values.resources | indent 12 }}
         ports:
         - name: "dns-udp"
-          containerPort: {{ .Values.serverPort }}
+          containerPort: {{ .Values.unbound.serverPort }}
           protocol: "UDP"
         volumeMounts:
         - name: "unbound-conf"
@@ -61,10 +56,10 @@ spec:
           initialDelaySeconds: 5
           timeoutSeconds: 2
       - name: "healthz"
-        image: {{ .Values.healthzImageRepo }}:{{ .Values.healthzImageTag }}
-        imagePullPolicy: {{ .Values.healthzImagePullPolicy | quote }}
+        image: {{ .Values.healthz.image.repository }}:{{ .Values.healthz.image.tag }}
+        imagePullPolicy: {{ .Values.healthz.image.pullPolicy | quote }}
         args:
-          - "-cmd=nslookup health.check.unbound 127.0.0.1:{{ .Values.serverPort }} > /dev/null"
+          - "-cmd=nslookup health.check.unbound 127.0.0.1:{{ .Values.unbound.serverPort }} > /dev/null"
         ports:
         - name: healthz
           containerPort: 8080
@@ -73,3 +68,16 @@ spec:
       - name: "unbound-conf"
         configMap:
           name: {{ template "unbound.fullname" . }}
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+
