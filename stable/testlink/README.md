@@ -63,7 +63,7 @@ The following table lists the configurable parameters of the TestLink chart and 
 | `externalDatabase.port`             | Port of the external database           | `3306`                                                  |
 | `externalDatabase.user`             | Existing username in the external db    | `bn_testlink`                                           |
 | `externalDatabase.password`         | Password for the above username         | `nil`                                                   |
-| `externalDatabase.database`         | Name of the existing databse            | `bitnami_testlink`                                      |
+| `externalDatabase.database`         | Name of the existing database            | `bitnami_testlink`                                      |
 | `mariadb.enabled`                   | Wheter to use or not the mariadb chart  | `true`                                                  |
 | `mariadb.mariadbDatabase`           | Database name to create                 | `bitnami_testlink`                                      |
 | `mariadb.mariadbUser`               | Database user to create                 | `bn_testlink`                                           |
