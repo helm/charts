@@ -8,16 +8,24 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
+  annotations:
+    "helm.sh/hook": post-install
+    "helm.sh/hook-delete-policy": hook-succeeded
   name: {{ template "dex.fullname" . }}
   labels:
     app: {{ template "dex.name" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     heritage: "{{ .Release.Service }}"
     release: "{{ .Release.Name }}"
+    component: "job"
 spec:
+  activeDeadlineSeconds: {{ .Values.selfSigned.activeDeadlineSeconds }}
   template:
     metadata:
-      name: temp
+      labels:
+        app: {{ template "dex.name" . }}
+        release: "{{ .Release.Name }}"
+        component: "job"
     spec:
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "dex.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
       restartPolicy: OnFailure
@@ -60,6 +68,9 @@ spec:
           openssl genrsa -out key.pem 2048;
           openssl req -new -key key.pem -out csr.pem -subj "/CN=dex" -config req.cnf;
           openssl x509 -req -in csr.pem -CA ca.pem -CAkey ca-key.pem -CAcreateserial -out cert.pem -days {{ .Values.selfSigned.certDays }} -extensions v3_req -extfile req.cnf;
+
+          kubectl delete configmap {{ $caName | quote }} --namespace {{ .Release.Namespace }} || true
+          kubectl delete secret {{ $caName | quote }} {{ $tlsSecretName }} --namespace {{ .Release.Namespace }} || true
 
           kubectl create configmap {{ $caName | quote }} --namespace {{ .Release.Namespace }} --from-file dex-ca.pem=ca.pem;
           kubectl create secret tls {{ $caName | quote }} --namespace {{ .Release.Namespace }} --cert=ca.pem --key=ca-key.pem;
