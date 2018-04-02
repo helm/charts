@@ -10,7 +10,7 @@ unbound:
   verbosity: 1
   numThreads: 1
   statsInterval: 0
-  statsCumulative: "no"
+  statsCumulative: no
   serverPort: 53
 
 # values that pertain to the exechealthz container, for more information see
