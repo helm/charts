@@ -4,7 +4,7 @@ description: A Helm chart of firmament-poseidon for Kubernetes
 name: firmament-poseidon
 version: 0.1.0
 home: https://github.com/kubernetes-sigs/poseidon
-maintainers: 
+maintainers:
 - name: dhilipkumars
   email: dhilip.kumar.s@huawei.com
 - name: nikita15p
