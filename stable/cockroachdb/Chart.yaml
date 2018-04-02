@@ -7,5 +7,5 @@ icon: https://raw.githubusercontent.com/cockroachdb/cockroach/master/docs/media/
 sources:
 - https://github.com/cockroachdb/cockroach
 maintainers:
-- name: Alex Robinson
+- name: a-robinson
   email: alex@cockroachlabs.com
