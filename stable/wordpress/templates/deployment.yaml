@@ -17,7 +17,7 @@ spec:
       containers:
       - name: {{ template "fullname" . }}
         image: "{{ .Values.image }}"
-        imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
+        imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
         env:
         - name: ALLOW_EMPTY_PASSWORD
         {{- if .Values.allowEmptyPassword }}
@@ -60,35 +60,37 @@ spec:
               key: db-password
             {{- end }}
         - name: WORDPRESS_USERNAME
-          value: {{ default "" .Values.wordpressUsername | quote }}
+          value: {{ .Values.wordpressUsername | quote }}
         - name: WORDPRESS_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ template "fullname" . }}
               key: wordpress-password
         - name: WORDPRESS_EMAIL
-          value: {{ default "" .Values.wordpressEmail | quote }}
+          value: {{ .Values.wordpressEmail | quote }}
         - name: WORDPRESS_FIRST_NAME
-          value: {{ default "" .Values.wordpressFirstName | quote }}
+          value: {{ .Values.wordpressFirstName | quote }}
         - name: WORDPRESS_LAST_NAME
-          value: {{ default "" .Values.wordpressLastName | quote }}
+          value: {{ .Values.wordpressLastName | quote }}
         - name: WORDPRESS_BLOG_NAME
-          value: {{ default "" .Values.wordpressBlogName | quote }}
+          value: {{ .Values.wordpressBlogName | quote }}
+        - name: WORDPRESS_TABLE_PREFIX
+          value: {{ .Values.wordpressTablePrefix | quote }}
         - name: SMTP_HOST
-          value: {{ default "" .Values.smtpHost | quote }}
+          value: {{ .Values.smtpHost | quote }}
         - name: SMTP_PORT
-          value: {{ default "" .Values.smtpPort | quote }}
+          value: {{ .Values.smtpPort | quote }}
         - name: SMTP_USER
-          value: {{ default "" .Values.smtpUser | quote }}
+          value: {{ .Values.smtpUser | quote }}
         - name: SMTP_PASSWORD
           valueFrom:
             secretKeyRef:
               name: {{ template "fullname" . }}
               key: smtp-password
         - name: SMTP_USERNAME
-          value: {{ default "" .Values.smtpUsername | quote }}
+          value: {{ .Values.smtpUsername | quote }}
         - name: SMTP_PROTOCOL
-          value: {{ default "" .Values.smtpProtocol | quote }}
+          value: {{ .Values.smtpProtocol | quote }}
         ports:
         - name: http
           containerPort: 80
