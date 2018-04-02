@@ -1,16 +1,27 @@
-replicas: 2
-unboundImageRepo: "markbnj/unbound-docker"
-unboundImageTag: "0.1.0"
-unboundImagePullPolicy: "IfNotPresent"
-healthzImageRepo: "googlecontainer/exechealthz"
-healthzImageTag: "1.2"
-healthzImagePullPolicy: "IfNotPresent"
-memRequest: "32Mi"
-memLimit: "64Mi"
-cpuRequest: "100m"
-cpuLimit: "500m"
-verbosity: 1
-numThreads: 1
-statsInterval: 0
-statsCumulative: "no"
-serverPort: 53
+replicaCount: 1
+
+unbound:
+  image:
+    repository: markbnj/unbound-docker
+    tag: 0.1.0
+    pullPolicy: IfNotPresent
+  verbosity: 1
+  numThreads: 1
+  statsInterval: 0
+  statsCumulative: "no"
+  serverPort: 53
+
+healthz:
+  image:
+    repository: googlecontainer/exechealthz
+    tag: 1.2
+    pullPolicy: IfNotPresent
+
+resources: {}
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
