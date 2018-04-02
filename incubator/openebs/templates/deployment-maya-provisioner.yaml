@@ -55,17 +55,14 @@ spec:
         #  value: "{{ .Values.provisioner.monitorVolumeKey }}"
         #- name: MAYA_PORTAL_URL
         #  value: "{{ .Values.provisioner.mayaPortalUrl }}"
-
 {{- if .Values.provisioner.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.provisioner.nodeSelector | indent 8 }}
 {{- end }}
-
 {{- if .Values.provisioner.tolerations }}
       tolerations:
 {{ toYaml .Values.provisioner.tolerations | indent 8 }}
 {{- end }}
-
 {{- if .Values.provisioner.affinity }}
       tolerations:
 {{ toYaml .Values.provisioner.affinity | indent 8 }}

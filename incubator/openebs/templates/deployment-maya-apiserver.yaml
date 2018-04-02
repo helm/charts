@@ -43,17 +43,14 @@ spec:
           value: "{{ .Values.policies.monitoring.image }}:{{ .Values.policies.monitoring.imageTag }}"
         - name: OPENEBS_IO_JIVA_REPLICA_COUNT
           value: "{{ .Values.jiva.replicas }}"
-
 {{- if .Values.apiserver.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.apiserver.nodeSelector | indent 8 }}
 {{- end }}
-
 {{- if .Values.apiserver.tolerations }}
       tolerations:
 {{ toYaml .Values.apiserver.tolerations | indent 8 }}
 {{- end }}
-
 {{- if .Values.apiserver.affinity }}
       affinity:
 {{ toYaml .Values.apiserver.affinity | indent 8 }}
