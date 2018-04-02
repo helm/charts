@@ -41,13 +41,13 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the nginx-ingress chart and their default values.
+The following table lists the configurable parameters of the nginx-ingress chart and their default values.
 
 Parameter | Description | Default
 --- | --- | ---
 `controller.name` | name of the controller component | `controller`
 `controller.image.repository` | controller container image repository | `quay.io/kubernetes-ingress-controller/nginx-ingress-controller`
-`controller.image.tag` | controller container image tag | `0.10.2`
+`controller.image.tag` | controller container image tag | `0.11.0`
 `controller.image.pullPolicy` | controller container image pull policy | `IfNotPresent`
 `controller.config` | nginx ConfigMap entries | none
 `controller.hostNetwork` | If the nginx deployment / daemonset should run on the host's network namespace. Do not set this when `controller.service.externalIPs` is set and `kube-proxy` is used as there will be a port-conflict for port `80` | false
@@ -87,18 +87,29 @@ Parameter | Description | Default
 `controller.livenessProbe.timeoutSeconds` | When the probe times out | 5
 `controller.livenessProbe.successThreshold` | Minimum consecutive successes for the probe to be considered successful after having failed. | 1
 `controller.livenessProbe.failureThreshold` | Minimum consecutive failures for the probe to be considered failed after having succeeded. | 3
+`controller.livenessProbe.port` | The port number that the liveness probe will listen on. | 10254
 `controller.readinessProbe.initialDelaySeconds` | Delay before readiness probe is initiated | 10
 `controller.readinessProbe.periodSeconds` | How often to perform the probe | 10
 `controller.readinessProbe.timeoutSeconds` | When the probe times out | 1
 `controller.readinessProbe.successThreshold` | Minimum consecutive successes for the probe to be considered successful after having failed. | 1
 `controller.readinessProbe.failureThreshold` | Minimum consecutive failures for the probe to be considered failed after having succeeded. | 3
-`controller.stats.enabled` | if true, enable "vts-status" page & Prometheus metrics | `false`
+`controller.readinessProbe.port` | The port number that the readiness probe will listen on. | 10254
+`controller.stats.enabled` | if `true`, enable "vts-status" page | `false`
 `controller.stats.service.annotations` | annotations for controller stats service | `{}`
 `controller.stats.service.clusterIP` | internal controller stats cluster service IP | `""`
 `controller.stats.service.externalIPs` | controller service stats external IP addresses | `[]`
 `controller.stats.service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
 `controller.stats.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
 `controller.stats.service.type` | type of controller stats service to create | `ClusterIP`
+`controller.metrics.enabled` | if `true`, enable Prometheus metrics (`controller.stats.enabled` must be `true` as well) | `false`
+`controller.metrics.service.annotations` | annotations for Prometheus metrics service | `{}`
+`controller.metrics.service.clusterIP` | cluster IP address to assign to service | `""`
+`controller.metrics.service.externalIPs` | Prometheus metrics service external IP addresses | `[]`
+`controller.metrics.service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
+`controller.metrics.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
+`controller.metrics.service.servicePort` | Prometheus metrics service port | `9913`
+`controller.metrics.service.targetPort` | Prometheus metrics target port | `10254`
+`controller.metrics.service.type` | type of Prometheus metrics service to create | `ClusterIP`
 `controller.customTemplate.configMapName` | configMap containing a custom nginx template | `""`
 `controller.customTemplate.configMapKey` | configMap key containing the nginx template | `""`
 `controller.headers` | configMap key:value pairs containing the [custom headers](https://github.com/kubernetes/ingress-nginx/tree/master/docs/examples/customization/custom-headers) for Nginx | `{}`
@@ -124,23 +135,6 @@ Parameter | Description | Default
 `rbac.create` | If true, create & use RBAC resources | `false`
 `rbac.serviceAccountName` | ServiceAccount to be used (ignored if rbac.create=true) | `default`
 `revisionHistoryLimit` | The number of old history to retain to allow rollback. | `10`
-`statsExporter.name` | name of the Prometheus metrics exporter component | `stats-exporter`
-`statsExporter.image.repository` | Prometheus metrics exporter container image repository | `sophos/nginx-vts-exporter`
-`statsExporter.image.tag` | Prometheus metrics exporter image tag | `v0.6`
-`statsExporter.image.pullPolicy` | Prometheus metrics exporter image pull policy | `IfNotPresent`
-`statsExporter.endpoint` | path at which Prometheus metrics are exposed | `/metrics`
-`statsExporter.extraArgs` | Additional Prometheus metrics exporter container arguments | `{}`
-`statsExporter.metricsNamespace` | namespace used for metrics labeling | `nginx`
-`statsExporter.statusPage` | URL of "vts-stats" page exposed by controller | `http://localhost:18080/nginx_status/format/json`
-`statsExporter.resources` | Prometheus metrics exporter resource requests & limits | `{}`
-`statsExporter.service.annotations` | annotations for Prometheus metrics exporter service | `{}`
-`statsExporter.service.clusterIP` | cluster IP address to assign to service | `""`
-`statsExporter.service.externalIPs` | Prometheus metrics exporter service external IP addresses | `[]`
-`statsExporter.service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
-`statsExporter.service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
-`statsExporter.service.servicePort` | Prometheus metrics exporter service port | `9913`
-`statsExporter.service.targetPort` | Prometheus metrics exporter target port | `9913`
-`statsExporter.service.type` | type of Prometheus metrics exporter service to create | `ClusterIP`
 `tcp` | TCP service key:value pairs | `{}`
 `udp` | UDP service key:value pairs | `{}`
 
@@ -155,4 +149,41 @@ Alternatively, a YAML file that specifies the values for the parameters can be p
 $ helm install stable/nginx-ingress --name my-release -f values.yaml
 ```
 
+A useful trick to debug issues with ingress is to increase the logLevel
+as described [here](https://github.com/kubernetes/ingress-nginx/blob/master/docs/troubleshooting.md#debug)
+
+```console
+$ helm install stable/nginx-ingress --set controller.extraArgs.v=2
+```
+
+## Prometheus Metrics
+
+The Nginx ingress controller can export Prometheus metrics. In order for this to work, the VTS dashboard must be enabled as well.
+
+```console
+$ helm install stable/nginx-ingress --name my-release \
+    --set controller.stats.enabled=true \
+    --set controller.metrics.enabled=true
+```
+
+You can add Prometheus annotations to the metrics service using `controller.metrics.service.annotations`. Alternatively, if you use the Prometheus Operator, you need to create a ServiceMonitor as follows:
+
+```yaml
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: nginx-ingress-service-monitor
+spec:
+  jobLabel: nginx-ingress
+  selector:
+    matchLabels:
+      app: nginx-ingress
+      release: <RELEASE>
+  namespaceSelector:
+    matchNames:
+      - <RELEASE_NAMESPACE>
+  endpoints:
+    - port: metrics
+      interval: 30s
+```
 > **Tip**: You can use the default [values.yaml](values.yaml)

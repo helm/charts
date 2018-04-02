@@ -81,16 +81,17 @@ release.
 
 ## Configuration
 
-The following tables lists the configurable parameters of the Traefik chart and their default values.
+The following table lists the configurable parameters of the Traefik chart and their default values.
 
 | Parameter                       | Description                                                          | Default                                   |
 | ------------------------------- | -------------------------------------------------------------------- | ----------------------------------------- |
 | `fullnameOverride`              | Override the full resource names                                     | `{release-name}-traefik (or traefik if release-name is traefik`|
 | `image`                         | Traefik image name                                                   | `traefik`                                 |
-| `imageTag`                      | The version of the official Traefik image to use                     | `1.5.3`                                  |
+| `imageTag`                      | The version of the official Traefik image to use                     | `1.5.4`                                  |
 | `serviceType`                   | A valid Kubernetes service type                                      | `LoadBalancer`                            |
 | `loadBalancerIP`                | An available static IP you have reserved on your cloud platform      | None                                      |
 | `loadBalancerSourceRanges`      | list of IP CIDRs allowed access to load balancer (if supported)      | None                                      |
+| `externalTrafficPolicy`         | Set the externalTrafficPolicy in the Service to either Cluster or Local | `Cluster`                              |
 | `replicas`                      | The number of replicas to run; __NOTE:__ Full Traefik clustering with leader election is not yet supported, which can affect any configured Let's Encrypt setup; see Clustering section | `1` |
 | `cpuRequest`                    | Initial share of CPU requested per Traefik pod                       | `100m`                                    |
 | `memoryRequest`                 | Initial share of memory requested per Traefik pod                    | `20Mi`                                    |
@@ -105,6 +106,7 @@ The following tables lists the configurable parameters of the Traefik chart and 
 | `debug.enabled`                 | Turn on/off Traefik's debug mode. Enabling it will override the logLevel to `DEBUG` and provide `/debug/vars` endpoint that allows Go runtime stats to be inspected, such as number of Goroutines and memory stats | `false`                                   |
 | `ssl.enabled`                   | Whether to enable HTTPS                                              | `false`                                   |
 | `ssl.enforced`                  | Whether to redirect HTTP requests to HTTPS                           | `false`                                   |
+| `ssl.insecureSkipVerify`        | Whether to verify certs on SSL connections                           | `false`                                   |
 | `ssl.defaultCert`               | Base64 encoded default certificate                                    | A self-signed certificate                 |
 | `ssl.defaultKey`                | Base64 encoded private key for the certificate above                 | The private key for the certificate above |
 | `acme.enabled`                  | Whether to use Let's Encrypt to obtain certificates                  | `false`                                   |
@@ -115,6 +117,7 @@ The following tables lists the configurable parameters of the Traefik chart and 
 | `acme.staging`                  | Whether to get certs from Let's Encrypt's staging environment        | `true`                                    |
 | `acme.logging`                  | display debug log messages from the acme client library              | `false`                                   |
 | `acme.persistence.enabled`      | Create a volume to store ACME certs (if ACME is enabled)             | `true`                                    |
+| `acme.persistence.annotations`  | PVC annotations                                                      | `{}`                                      |
 | `acme.persistence.storageClass` | Type of `StorageClass` to request-- will be cluster-specific         | `nil` (uses alpha storage class annotation) |
 | `acme.persistence.accessMode`   | `ReadWriteOnce` or `ReadOnly`                                        | `ReadWriteOnce`                           |
 | `acme.persistence.existingClaim`| An Existing PVC name                                                 | `nil`                                     |
