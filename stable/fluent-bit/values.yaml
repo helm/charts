@@ -21,12 +21,13 @@ backend:
     type: flb_type
     logstash_prefix: kubernetes_cluster
     # Optional username credential for Elastic X-Pack access
-    http_user: ""
+    http_user:
     # Password for user defined in HTTP_User
-    http_passwd: ""
+    http_passwd:
+    # Optional TLS encryption to ElasticSeaarch instance
     tls: off
-    tls_verify: off
-    # TLS certificate for the Elastic (in PEM format). Specify if tls: on.
+    tls_verify: on
+    # TLS certificate for the Elastic (in PEM format). Use if tls=on and tls_verify=on.
     tls_ca: ""
     # TLS debugging levels = 1-5
     tls_debug: 1
@@ -93,6 +94,6 @@ filter:
 ## Install Default RBAC roles and bindings
 rbac:
   ## If true, create & use RBAC resources
-  create: false
+  create: true
   ## Ignored if rbac.create is true
   serviceAccountName: default
