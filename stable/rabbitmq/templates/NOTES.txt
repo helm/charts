@@ -3,11 +3,11 @@
 
   Credentials:
 
-    echo Username      : {{ .Values.rabbitmqUsername }}
+    echo Username      : {{ .Values.rabbitmq.username }}
     echo Password      : $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "rabbitmq.fullname" . }} -o jsonpath="{.data.rabbitmq-password}" | base64 --decode)
     echo ErLang Cookie : $(kubectl get secret --namespace {{ .Release.Namespace }} {{ template "rabbitmq.fullname" . }} -o jsonpath="{.data.rabbitmq-erlang-cookie}" | base64 --decode)
 
-  RabbitMQ can be accessed within the cluster on port {{ .Values.rabbitmqNodePort }} at {{ template "rabbitmq.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
+  RabbitMQ can be accessed within the cluster on port {{ .Values.rabbitmq.nodePort }} at {{ template "rabbitmq.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
 
   To access for outside the cluster execute the following commands:
 
@@ -34,22 +34,21 @@
 
   To Access the RabbitMQ AMQP port:
 
-    echo amqp://$SERVICE_IP:{{ .Values.rabbitmqNodePort }}/
+    echo amqp://$SERVICE_IP:{{ .Values.rabbitmq.nodePort }}/
 
   To Access the RabbitMQ Management interface:
 
-    echo http://$SERVICE_IP:{{ .Values.rabbitmqManagerPort }}/
+    echo http://$SERVICE_IP:{{ .Values.rabbitmq.managerPort }}/
 
 {{- else if contains "ClusterIP"  .Values.serviceType }}
 
-    export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "rabbitmq.fullname" . }}" -o jsonpath="{.items[0].metadata.name}")
-    kubectl port-forward $POD_NAME {{ .Values.rabbitmqNodePort }}:{{ .Values.rabbitmqNodePort }} {{ .Values.rabbitmqManagerPort }}:{{ .Values.rabbitmqManagerPort }}
+   kubectl port-forward {{ template "rabbitmq.fullname" . }}-0  --namespace {{ .Release.Namespace }} {{ .Values.rabbitmq.nodePort }}:{{ .Values.rabbitmq.nodePort }} {{ .Values.rabbitmq.managerPort }}:{{ .Values.rabbitmq.managerPort }}
 
   To Access the RabbitMQ AMQP port:
 
-    echo amqp://127.0.0.1:{{ .Values.rabbitmqNodePort }}/
+    echo amqp://127.0.0.1:{{ .Values.rabbitmq.nodePort }}/
 
   To Access the RabbitMQ Management interface:
 
-    echo URL : http://127.0.0.1:{{ .Values.rabbitmqManagerPort }}
+    echo URL : http://127.0.0.1:{{ .Values.rabbitmq.managerPort }}
 {{- end }}
