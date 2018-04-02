@@ -58,16 +58,29 @@ unbound.statsCumulative: no
 unbound.serverPort: 53
 ```
 
-The following properties in values.yaml affect the behavior of the deployment and pods. These are mostly self-explanatory.
+### All configurable properties
 
-```
-unbound.image.repository: markbnj/unbound-docker
-unbound.image.tag: 0.1.0
-unbound.image.pullPolicy: IfNotPresent
-healthz.image.repository: googlecontainer/exechealthz
-healthz.image.tag: 1.2
-healthz.image.pullPolicy: IfNotPresent
-```
+| Property                 | Default value               |
+| ------------------------ | --------------------------- |
+| replicaCount             | 1                           |
+| unbound.image.repository | markbnj/unbound-docker      |
+| unbound.image.tag        | 0.1.0                       |
+| unbound.image.pullPolicy | IfNotPresent                |
+| unbound.verbosity        | 1                           |
+| unbound.numThreads       | 1                           |
+| unbound.statsInterval    | 0                           |
+| unbound.statsCumulative  | no                          |
+| unbound.serverPort       | 53                          |
+| healthz.image.repository | googlecontainer/exechealthz |
+| healthz.image.tag        | 1.2                         |
+| healthz.image.pullPolicy | IfNotPresent                |
+| resources                | {}                          |
+| nodeSelector             | {}                          |
+| tolerations              | []                          |
+| affinity                 | {}                          |
+| allowedIpRanges          | []                          |
+| forwardZones             | []                          |
+| localRecords             | []                          |
 
 ### Configuration changes
 
