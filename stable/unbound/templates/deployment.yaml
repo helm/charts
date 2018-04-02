@@ -33,7 +33,7 @@ spec:
         image: {{ .Values.unbound.image.repository }}:{{ .Values.unbound.image.tag }}
         imagePullPolicy: {{ .Values.unbound.image.pullPolicy | quote }}
         resources:
-{{ toYaml .Values.resources | indent 12 }}
+{{ toYaml .Values.resources | indent 10 }}
         ports:
         - name: "dns-udp"
           containerPort: {{ .Values.unbound.serverPort }}
