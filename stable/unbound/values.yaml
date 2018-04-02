@@ -5,12 +5,12 @@ replicaCount: 1
 unbound:
   image:
     repository: markbnj/unbound-docker
-    tag: 0.1.0
+    tag: "0.1.0"
     pullPolicy: IfNotPresent
   verbosity: 1
   numThreads: 1
   statsInterval: 0
-  statsCumulative: no
+  statsCumulative: "no"
   serverPort: 53
 
 # values that pertain to the exechealthz container, for more information see
@@ -18,7 +18,7 @@ unbound:
 healthz:
   image:
     repository: googlecontainer/exechealthz
-    tag: 1.2
+    tag: "1.2"
     pullPolicy: IfNotPresent
 
 resources: {}
