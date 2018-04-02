@@ -19,7 +19,9 @@ spec:
     spec:
       {{- if .Values.server.image.pullSecrets }}
       imagePullSecrets:
-{{ toYaml .Values.server.image.pullSecrets | indent 8 }}
+      {{- range .Values.server.image.pullSecrets }}
+        - name: {{ . }}
+      {{- end}}
       {{- end }}
       containers:
       - name: {{ template "parse.fullname" . }}
