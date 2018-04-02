@@ -55,6 +55,7 @@ The following table lists the configurable parameters of the WordPress chart and
 | `wordpressFirstName`                 | First name                                 | `FirstName`                                                |
 | `wordpressLastName`                  | Last name                                  | `LastName`                                                 |
 | `wordpressBlogName`                  | Blog name                                  | `User's Blog!`                                             |
+| `wordpressTablePrefix`               | Table prefix                               | `wp_`                                                      |
 | `allowEmptyPassword`                 | Allow DB blank passwords                   | `yes`                                                      |
 | `smtpHost`                           | SMTP host                                  | `nil`                                                      |
 | `smtpPort`                           | SMTP port                                  | `nil`                                                      |
