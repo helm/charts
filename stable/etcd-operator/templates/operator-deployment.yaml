@@ -44,6 +44,14 @@ spec:
           requests:
             cpu: {{ .Values.etcdOperator.resources.cpu }}
             memory: {{ .Values.etcdOperator.resources.memory }}
+        livenessProbe:
+          httpGet:
+            path: /readyz
+            port: 8080
+        readinessProbe:
+          httpGet:
+            path: /readyz
+            port: 8080
     {{- if .Values.etcdOperator.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.etcdOperator.nodeSelector | indent 8 }}
