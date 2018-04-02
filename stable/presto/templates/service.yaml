@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "presto.fullname" . }}
+  labels:
+    app: {{ template "presto.name" . }}
+    chart: {{ template "presto.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.server.config.http.port }}
+      targetPort: http-coord
+      protocol: TCP
+      name: http-coord
+  selector:
+    app: {{ template "presto.name" . }}
+    release: {{ .Release.Name }}
+    component: coordinator
