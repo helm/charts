@@ -62,6 +62,9 @@ secrets:
 #   s3:
 #     accessKey: ""
 #     secretKey: ""
+# Secrets for gcs service account file json
+#   gcs:
+#     keyfile: "example.json" # A private service account key file in JSON format. (optional)
 
 # Options for s3 storage type:
 # s3:
@@ -69,6 +72,11 @@ secrets:
 #  bucket: my-bucket
 #  encrypt: false
 #  secure: true
+# Options for gcs storage type:
+# gcs:
+#  bucket: my-bucket # Storage bucket name (required if using gcs storage)
+#  rootdirectory: /repo1 # This is a prefix that is applied to all GCS keys to allow you to segment data. (optional)
+#  chunksize: 5242880 # This is the chunk size used for uploading large blobs, must be a multiple of 256*1024. (optional)
 
 configData:
   version: 0.1

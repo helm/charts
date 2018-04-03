@@ -42,7 +42,7 @@ their default values.
 | `updateStrategy`            | update strategy for deployment                                                           | `{}`            |
 | `resources.limits.cpu`      | Container requested CPU                                                                  | `nil`           |
 | `resources.limits.memory`   | Container requested memory                                                               | `nil`           |
-| `storage`                   | Storage system to use                                                                    | `fileststem`    |
+| `storage`                   | Storage system to use (i.e. filesystem, s3, gcs)                                         | `filesystem`    |
 | `tlsSecretName`             | Name of secret for TLS certs                                                             | `nil`           |
 | `secrets.htpasswd`          | Htpasswd authentication                                                                  | `nil`           |
 | `secrets.s3.accessKey`      | Access Key for S3 configuration                                                          | `nil`           |
@@ -53,6 +53,10 @@ their default values.
 | `s3.bucket`                 | S3 bucket name                                                                           | `nil`           |
 | `s3.encrypt`                | Store images in encrypted format                                                         | `nil`           |
 | `s3.secure`                 | Use HTTPS                                                                                | `nil`           |
+| `gcs.bucket`                | Storage bucket name (required if using gcs storage)                                      | `nil`           |
+| `gcs.keyfile`               | A private service account key file in JSON format.                                       | `nil`           |
+| `gcs.rootdirectory`         | This is a prefix that is applied to all GCS keys to allow you to segment data.           | `/`             |
+| `gcs.chunksize`             | This is the chunk size used for uploading large blobs, must be a multiple of 256*1024.   | `5242880`       |
 
 Specify each parameter using the `--set key=value[,key=value]` argument to
 `helm install`.

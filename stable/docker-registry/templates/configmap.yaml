@@ -7,6 +7,24 @@ metadata:
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
+{{ if eq .Values.storage "gcs" -}}
+{{ $_ := required ".Values.gcs required" .Values.gcs -}}
+{{ $_ := required ".Values.gcs.bucket required" .Values.gcs.bucket -}}
+{{ $gcs := dict "bucket" .Values.gcs.bucket -}}
+{{ if .Values.secrets.gcs -}}
+{{ if .Values.secrets.gcs.keyfile -}}
+{{ $keyfile := print "/var/run/secrets/" .Chart.Name "/gcsKeyfile" -}}
+{{ $gcs := set $gcs "keyfile" $keyfile -}}
+{{ end -}}
+{{ end -}}
+{{ if .Values.gcs.rootdirectory -}}
+{{ $gcs := set $gcs "rootdirectory" .Values.gcs.rootdirectory -}}
+{{ end -}}
+{{ if .Values.gcs.chunksize -}}
+{{ $gcs := set $gcs "chunksize" .Values.gcs.chunksize -}}
+{{ end -}}
+{{ $_ := set .Values.configData.storage "gcs" $gcs -}}
+{{ end -}}
 data:
   config.yml: |-
 {{ toYaml .Values.configData | indent 4 }}
