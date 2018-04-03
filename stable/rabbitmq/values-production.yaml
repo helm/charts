@@ -4,31 +4,32 @@
 image:
   registry: docker.io
   repository: bitnami/rabbitmq
-  tag: 3.7.4
-
-  ## set to true if you would like to see extra information on logs
-  ## it turns BASH and NAMI debugging in minideb
-  ## ref:  https://github.com/bitnami/minideb-extras/#turn-on-bash-debugging
-  debug: false
-
+  tag: 3.7.4-r1
   ## Specify a imagePullPolicy
   ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
   ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
   ##
   pullPolicy: IfNotPresent
+  
+  ## set to true if you would like to see extra information on logs
+  ## it turns BASH and NAMI debugging in minideb
+  ## ref:  https://github.com/bitnami/minideb-extras/#turn-on-bash-debugging 
+  debug: false
+  
   ## Optionally specify an array of imagePullSecrets.
   ## Secrets must be manually created in the namespace.
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
   ##
   # pullSecrets:
-  #   - myRegistrKeySecretName
+  #   - myRegistrKeySecretName 
 
-## does your cluster have rbac enabled? assume no by default
-rbacEnabled: false
+
+## does your cluster have rbac enabled?
+rbacEnabled: true
 
 ## section of specific values for rabbitmq
 rabbitmq:
-   ## RabbitMQ application username
+  ## RabbitMQ application username
   ## ref: https://github.com/bitnami/bitnami-docker-rabbitmq/blob/master/README.md#creating-a-database-user-on-first-run
   ##
   username: user
@@ -63,11 +64,11 @@ rabbitmq:
   ## ref: https://www.rabbitmq.com/disk-alarms.html
   ##
   diskFreeLimit: '"6GiB"'
-
+  
   ## Plugins to enable
   plugins: |-
       [rabbitmq_management,rabbitmq_peer_discovery_k8s].
-
+  
   ## Configution file content
   configuration: |-
       ## Clustering
@@ -77,16 +78,15 @@ rabbitmq:
       cluster_formation.node_cleanup.interval = 10
       cluster_formation.node_cleanup.only_log_warning = false
       cluster_partition_handling = autoheal
-      ## queue master locator
+      ## queue master locator 
       queue_master_locator=min-masters
-      ## enable guest user
+      ## enable guest user  
       loopback_users.guest = false
-
 ## Kubernetes service type
 serviceType: ClusterIP
 
 persistence:
-  enabled: false
+  enabled: true
 
   ## A manually managed Persistent Volume and Claim
   ## Requires persistence.enabled: true
@@ -109,18 +109,21 @@ persistence:
 ## Configure resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
 ##
-resources: {}
+resources:
+  requests:
+    memory: 256Mi
+    cpu: 100m
 
-## Replica count, set to 1 to provide a default available cluster
-replicas: 1
+## Replica count, set to 3 to provide a default available cluster
+replicas: 3
 
 ## Node labels and tolerations for pod assignment
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
-nodeSelector: {}
+nodeSelector: 
+  beta.kubernetes.io/arch: amd64
 tolerations: []
 affinity: {}
-
 
 ## Configure the ingress resource that allows you to access the
 ## Wordpress installation. Set up the URL
@@ -136,7 +139,7 @@ ingress:
 
   ## Set this to true in order to enable TLS on the ingress record
   ## A side effect of this will be that the backend wordpress service will be connected at port 443
-  tls: false
+  tls: true
 
   ## If TLS is set to true, you must declare what secret will store the key/certificate for TLS
   tlsSecret: myTlsSecret
@@ -153,7 +156,7 @@ ingress:
   #  kubernetes.io/ingress.class: nginx
   #  kubernetes.io/tls-acme: true
 
-## The following settings are to configure the frequency of the lifeness and readiness probes
+  #The following settings are to configure the frequency of the lifeness and readiness probes
 livenessProbe:
   enabled: true
   initialDelaySeconds: 120
