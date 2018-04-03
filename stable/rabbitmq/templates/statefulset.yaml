@@ -59,11 +59,12 @@ spec:
             chmod 400 /root/.erlang.cookie
             chmod 400 /opt/bitnami/rabbitmq/var/lib/rabbitmq/.erlang.cookie
 
-            #replace the default password that is generated
-            sed -i "s/CHANGEME/$RABBITMQ_PASSWORD/g" /opt/bitnami/rabbitmq/conf/rabbitmq.conf
-
             #copy the mounted configuration to both places
             cp  /opt/bitnami/rabbitmq/conf/* /opt/bitnami/rabbitmq/etc/rabbitmq
+
+            #replace the default password that is generated
+            sed -i "s/CHANGEME/$RABBITMQ_PASSWORD/g" /opt/bitnami/rabbitmq/etc/rabbitmq/rabbitmq.conf
+
             exec rabbitmq-server
         {{- if .Values.resources }}
         resources:
