@@ -45,27 +45,43 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 
 |          Parameter          |                       Description                       |                         Default                          |
 |-----------------------------|---------------------------------------------------------|----------------------------------------------------------|
-| `image`                     | RabbitMQ image                                          | `bitnami/rabbitmq:{VERSION}`                             |
-| `imagePullPolicy`           | Image pull policy                                       | `Always` if `imageTag` is `latest`, else `IfNotPresent`. |
-| `rabbitmqUsername`          | RabbitMQ application username                           | `user`                                                   |
-| `rabbitmqPassword`          | RabbitMQ application password                           | _random 10 character long alphanumeric string_           |
-| `rabbitmqErlangCookie`      | Erlang cookie                                           | _random 32 character long alphanumeric string_           |
-| `rabbitmqNodePort`          | Node port                                               | `5672`                                                   |
-| `rabbitmqNodeType`          | Node type                                               | `stats`                                                  |
-| `rabbitmqNodeName`          | Node name                                               | `rabbit`                                                 |
-| `rabbitmqClusterNodeName`   | Node name to cluster with. e.g.: `clusternode@hostname` | `nil`                                                    |
-| `rabbitmqVhost`             | RabbitMQ application vhost                              | `/`                                                      |
-| `rabbitmqManagerPort`       | RabbitMQ Manager port                                   | `15672`                                                  |
-| `rabbitmqDiskFreeLimit`     | Disk free limit                                         | `"6GiB"`                                                 |
+| `image.registry`            | Rabbitmq Image registry                                 | `docker.io`                                              |
+| `image.repository`          | Rabbitmq Image name                                     | `bitnami/rabbitmq`                                       |
+| `image.tag`                 | Rabbitmq Image tag                                      | `{VERSION}`                                              |
+| `image.pullPolicy`          | Image pull policy                                       | `Always` if `imageTag` is `latest`, else `IfNotPresent`  |
+| `image.pullSecrets`         | Specify docker-ragistry secret names as an array        | `nil`                                                    |
+| `image.debug`               | Specify if debug values should be set                   | `false`                                                  |
+| `rbacEnabled`               | Specify if rbac is enabled in your cluster              | `false`                                                  |
+| `rabbitmq.username`         | RabbitMQ application username                           | `user`                                                   |
+| `rabbitmq.password`         | RabbitMQ application password                           | _random 10 character long alphanumeric string_           |
+| `rabbitmq.erlangCookie`     | Erlang cookie                                           | _random 32 character long alphanumeric string_           |
+| `rabbitmq.nodePort`         | Node port                                               | `5672`                                                   |
+| `rabbitmq.managerPort`      | RabbitMQ Manager port                                   | `15672`                                                  |
+| `rabbitmq.diskFreeLimit`    | Disk free limit                                         | `"6GiB"`                                                 |
+| `rabbitmq.plugins`         | configuration file for plugins to enable                 | `[rabbitmq_management,rabbitmq_peer_discovery_k8s].`  |
+| `rabbitmq.configuration`    | rabbitmq.conf content                                   | see values.yaml                                                 |
 | `serviceType`               | Kubernetes Service type                                 | `ClusterIP`                                              |
 | `persistence.enabled`       | Use a PVC to persist data                               | `true`                                                   |
 | `persistence.existingClaim` | Use an existing PVC to persist data                     | `nil`                                                    |
 | `persistence.storageClass`  | Storage class of backing PVC                            | `nil` (uses alpha storage class annotation)              |
 | `persistence.accessMode`    | Use volume as ReadOnly or ReadWrite                     | `ReadWriteOnce`                                          |
 | `persistence.size`          | Size of data volume                                     | `8Gi`                                                    |
+| `resources`                  | resource needs and limits to apply to the pod           | {}                                                       |
 | `nodeSelector`              | Node labels for pod assignment                          | {}                                                       |
 | `affinity`                  | Affinity settings for pod assignment                    | {}                                                       |
 | `tolerations`               | Toleration labels for pod assignment                    | []                                                       |
+| `ingress.enabled`           | enable ingress for management console                   | `false`                                                  |
+| `ingress.tls`               | enable ingress with tls                                 | `false`                                                  |
+| `ingress.tlsSecret`         | tls type secret to be used                              | `myTlsSecret`                                            |
+| `ingress.annotations`       | ingress annotations as an array                         |  []                                                      |
+| `livenessProbe.enabled`               | would you like a livessProbed to be enabled             |  `true`                                        |
+| `livenessProbe.initialDelaySeconds`   | number of seconds                                       |  120                                           |
+| `livenessProbe.timeoutSeconds`        | number of seconds                                       |  5                                             |
+| `livenessProbe.failureThreshold`      | number of faliures                                      |  6                                             |
+| `readinessProbe.enabled`              | would you like a readinessProbe to be enabled           |  `true`                                        |
+| `readinessProbe.initialDelaySeconds`  | number of seconds                                       |  10                                            |
+| `readinessProbe.timeoutSeconds`       | number of seconds                                       |  3                                             |
+| `readinessProbe.periodSeconds   `     | number of seconds                                       |  5                                             |
 
 The above parameters map to the env variables defined in [bitnami/rabbitmq](http://github.com/bitnami/bitnami-docker-rabbitmq). For more information please refer to the [bitnami/rabbitmq](http://github.com/bitnami/bitnami-docker-rabbitmq) image documentation.
 
@@ -73,11 +89,11 @@ Specify each parameter using the `--set key=value[,key=value]` argument to `helm
 
 ```bash
 $ helm install --name my-release \
-  --set rabbitmqUsername=admin,rabbitmqPassword=secretpassword,rabbitmqErlangCookie=secretcookie \
+  --set rabbitmq.username=admin,rabbitmq.password=secretpassword,rabbitmq.erlangCookie=secretcookie \
     stable/rabbitmq
 ```
 
-The above command sets the RabbitMQ admin username and password to `admin` and `secretpassword` respectively. Additionally, the secure erlang cookie is set to `secretcookie`.
+The above command sets the RabbitMQ admin username and password to `admin` and `secretpassword` respectively. Additionally the secure erlang cookie is set to `secretcookie`.
 
 Alternatively, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
 
@@ -86,6 +102,12 @@ $ helm install --name my-release -f values.yaml stable/rabbitmq
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
+## Production configuration
+A standard configuration is provided by default that will run on most development environments. To operate this chart in a production environment, we recommend you use the alternative file values-production.yaml provided in this repository.
+```bash
+$ helm install --name my-release -f values-production.yaml stable/rabbitmq
+```
 
 ## Persistence
 

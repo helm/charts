@@ -3,8 +3,8 @@ kind: Service
 metadata:
   name: {{ template "rabbitmq.fullname" . }}
   labels:
-    app: {{ template "rabbitmq.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app: {{ template "rabbitmq.name" . }}
+    chart: {{ template "rabbitmq.chart" .  }}
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
@@ -14,13 +14,13 @@ spec:
     port: 4369
     targetPort: epmd
   - name: amqp
-    port: {{ default "5672" .Values.rabbitmqNodePort }}
+    port: {{ .Values.rabbitmq.nodePort }}
     targetPort: amqp
   - name: dist
-    port: {{ default "5672" .Values.rabbitmqNodePort | add 20000 }}
+    port: {{ .Values.rabbitmq.nodePort | add 20000 }}
     targetPort: dist
   - name: stats
-    port: {{ default "15672" .Values.rabbitmqManagerPort }}
+    port: {{ .Values.rabbitmq.managerPort }}
     targetPort: stats
   selector:
-    app: {{ template "rabbitmq.fullname" . }}
+    app: {{ template "rabbitmq.name" . }}
