@@ -51,16 +51,27 @@ spec:
       serviceAccountName: {{ .Release.Name }}
 {{- end }}
 {{- if .Values.external.enabled }}
+
       ## ref: https://github.com/Yolean/kubernetes-kafka/blob/master/kafka/50kafka.yml
       initContainers:
-        - name: init-ext
-          image: "{{ .Values.external.init.image }}:{{ .Values.external.init.imageTag }}"
-          imagePullPolicy: "{{ .Values.external.init.imagePullPolicy }}"
+        - name: init
+          image: "{{ .Values.init.image }}:{{ .Values.init.imageTag }}"
+          imagePullPolicy: "{{ .Values.init.imagePullPolicy }}"
           command:
             - sh
             - -euxc
-            - "kubectl label pods ${POD_NAME} --namespace ${POD_NAMESPACE} pod=${POD_NAME}"
+            - >
+              kubectl label pods ${POD_NAME} --namespace ${POD_NAMESPACE} pod=${POD_NAME};
+            {{- if .Values.rackAwareness.enabled }}
+              ZONE=$(kubectl get node ${NODE_NAME} -o go-template=$'{{"{{"}}index .metadata.labels "failure-domain.beta.kubernetes.io/zone"{{"}}"}}\n');
+              kubectl label pods ${POD_NAME} --namespace ${POD_NAMESPACE} zone=${ZONE};
+            {{- end }}
+              sleep 5  ## Give time for new labels to settle before starting non-init containers that depend on them.
           env:
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
             - name: POD_NAME
               valueFrom:
                 fieldRef:
@@ -135,6 +146,12 @@ spec:
             {{- range $key, $value := .Values.configurationOverrides }}
             - name: {{ printf "KAFKA_%s" $key | replace "." "_" | upper | quote }}
               value: {{ $value | quote }}
+            {{- end }}
+            {{- if .Values.rackAwareness.enabled }}
+            - name: KAFKA_BROKER_RACK
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.labels['zone']
             {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}

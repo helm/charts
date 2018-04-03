@@ -64,8 +64,16 @@ rbac:
 ## By default we don't set affinity
 affinity: {}
   # podAntiAffinity:
+  #   preferredDuringSchedulingIgnoredDuringExecution:
+  #     - weight: 50
+  #       podAffinityTerm:
+  #         topologyKey: failure-domain.beta.kubernetes.io/zone
+  #         labelSelector:
+  #           matchLabels:
+  #             release: kafka
   #   requiredDuringSchedulingIgnoredDuringExecution:
-  #     - topologyKey: "kubernetes.io/hostname"
+  #     - weight: 40
+  #       topologyKey: "kubernetes.io/hostname"
   #       labelSelector:
   #         matchLabels:
   #           release: kafka
@@ -163,10 +171,23 @@ external:
   servicePort: 19092
   firstListenerPort: 31090
   domain: cluster.local
-  init:
-    image: "lwolf/kubectl_deployer"
-    imageTag: "0.4"
-    imagePullPolicy: "IfNotPresent"
+
+## Init container. Adds pod labels.
+##
+init:
+  image: "lwolf/kubectl_deployer"
+  imageTag: "0.4"
+  imagePullPolicy: "IfNotPresent"
+
+## rackAwareness requires at least Kubernetes 1.9.
+## refs:
+## - https://github.com/Yolean/kubernetes-kafka/pull/41
+## - https://github.com/kubernetes/kubernetes/issues/19367#issuecomment-371278421
+## - https://github.com/kubernetes/kubernetes/issues/31984#issuecomment-253682845
+## - https://github.com/kubernetes/kubernetes/issues/62078
+## - https://issues.apache.org/jira/browse/KAFKA-1215
+rackAwareness:
+  enabled: false
 
 ## Configuration Overrides. Specify any Kafka settings you would like set on the StatefulSet
 ## here in map format, as defined in the official docs.
