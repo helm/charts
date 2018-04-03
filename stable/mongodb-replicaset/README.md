@@ -164,6 +164,27 @@ mongodb with your `mongo.pem` certificate:
 $ mongo --ssl --sslCAFile=ca.crt --sslPEMKeyFile=mongo.pem --eval "db.adminCommand('ping')"
 ```
 
+## Helm Hook support
+Enabling it will spawn a kubernetes job at different stages of installing, upgrading, deleting or rolling-back a mongodb-replicaset helm. This will allow the automation of some tasks which in a way are directly related to the replica set helm deployment stages. Examples of the tasks that can be automated: adding databases, collections and users to the a newly instaled replica, backup the entire database before deleting the replica.
+
+To customization can be done by modifying the hook section in 'values.yaml':
+
+```yml
+hook:
+  ## Enable or disable helm hook support
+  enabled: false
+  ## All the values supplied to the following variables must comply with
+  ## helm hook and kubernetes standards
+  type: post-install
+  weight: 0
+  deletePolicy: hook-failed, hook-succeeded
+  image: docker-database-generator
+  command: 'entry point command for the docker image'
+  imagePullPolicy: IfNotPresent
+```
+
+More information on the concept and possible values can be found here: https://github.com/kubernetes/helm/blob/master/docs/charts_hooks.md
+
 ## Deep dive
 
 Because the pod names are dependent on the name chosen for it, the following examples use the

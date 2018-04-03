@@ -90,3 +90,15 @@ configmap:
   # security:
   #   authorization: enabled
   #   keyFile: /keydir/key.txt
+
+hook:
+  ## Enable or disable helm hook support
+  enabled: false
+  ## All the values supplied to the following variables must comply with
+  ## helm hook and kubernetes standards
+  # type: post-install
+  # weight: 0
+  # deletePolicy: hook-failed, hook-succeeded
+  # image: docker image name
+  # command: 'entry point command for the docker image'
+  # imagePullPolicy: IfNotPresent
