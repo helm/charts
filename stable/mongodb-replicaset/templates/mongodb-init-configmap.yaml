@@ -1,14 +1,12 @@
-{{- if and (.Values.auth.enabled) (not .Values.auth.existingKeySecret) -}}
 apiVersion: v1
-kind: Secret
+kind: ConfigMap
 metadata:
   labels:
     app: {{ template "mongodb-replicaset.name" . }}
     chart: {{ template "mongodb-replicaset.chart" . }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-  name: {{ template "mongodb-replicaset.keySecret" . }}
-type: Opaque
+  name: {{ template "mongodb-replicaset.fullname" . }}-init
 data:
-  key.txt: {{ .Values.auth.key | b64enc }}
-{{- end -}}
+  on-start.sh: |
+{{ .Files.Get "init/on-start.sh" | indent 4 }}

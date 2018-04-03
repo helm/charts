@@ -1,3 +1,4 @@
+{{- if .Values.podDisruptionBudget -}}
 apiVersion: policy/v1beta1
 kind: PodDisruptionBudget
 metadata:
@@ -12,4 +13,5 @@ spec:
     matchLabels:
       app: {{ template "mongodb-replicaset.name" . }}
       release: {{ .Release.Name }}
-  minAvailable: {{ .Values.minAvailable }}
+{{ toYaml .Values.podDisruptionBudget | indent 2 }}
+{{- end -}}

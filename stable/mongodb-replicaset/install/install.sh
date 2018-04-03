@@ -18,24 +18,19 @@
 # init container. It contains on-start/change configuration scripts.
 WORKDIR_VOLUME="/work-dir"
 
-for i in "$@"
-do
-case $i in
-    -c=*|--config=*)
-    CONFIG_VOLUME="${i#*=}"
-    shift
-    ;;
-    -w=*|--work-dir=*)
-    WORKDIR_VOLUME="${i#*=}"
-    shift
-    ;;
-    *)
-    # unknown option
-    ;;
-esac
+for i in "$@"; do
+    case "$i" in
+        -w=*|--work-dir=*)
+            WORKDIR_VOLUME="${i#*=}"
+            shift
+            ;;
+        *)
+            # unknown option
+            ;;
+    esac
 done
 
-echo installing config scripts into "${WORKDIR_VOLUME}"
+echo Installing config scripts into "${WORKDIR_VOLUME}"
+
 mkdir -p "${WORKDIR_VOLUME}"
-cp /on-start.sh "${WORKDIR_VOLUME}"/
 cp /peer-finder "${WORKDIR_VOLUME}"/

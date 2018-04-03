@@ -1,15 +1,12 @@
-{{- if and (.Values.tls.enabled) -}}
 apiVersion: v1
-kind: Secret
-type: kubernetes.io/tls
+kind: ConfigMap
 metadata:
   labels:
     app: {{ template "mongodb-replicaset.name" . }}
     chart: {{ template "mongodb-replicaset.chart" . }}
     heritage: {{ .Release.Service }}
     release: {{ .Release.Name }}
-  name: {{ template "mongodb-replicaset.fullname" . }}-ca
+  name: {{ template "mongodb-replicaset.fullname" . }}-mongodb
 data:
-  tls.key: {{ .Values.tls.cakey }}
-  tls.crt: {{ .Values.tls.cacert }}
-{{- end -}}
+  mongod.conf: |
+{{ toYaml .Values.configmap | indent 4 }}
