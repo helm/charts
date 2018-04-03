@@ -1,6 +1,6 @@
 # Osclass
 
-[Osclass](https://osclass.org/) is a php script that allows you to quickly create and manage your own free classifieds site. Using this script, you can provide free advertising for items for sale, real estate, jobs, cars... Hundreds of free classified advertising sites are using Osclass.
+[Osclass](https://osclass.org/) is a PHP script that allows you to quickly create and manage your own free classifieds site. Using this script, you can provide free advertising for items for sale, real estate, jobs, cars... Hundreds of free classified advertising sites are using Osclass.
 
 ## TL;DR;
 
@@ -43,7 +43,7 @@ The command removes all the Kubernetes components associated with the chart and 
 
 ## Configuration
 
-The following tables lists the configurable parameters of the Osclass chart and their default values.
+The following table lists the configurable parameters of the Osclass chart and their default values.
 
 |             Parameter              |               Description                |                   Default                   |
 |------------------------------------|------------------------------------------|---------------------------------------------|
@@ -71,6 +71,16 @@ The following tables lists the configurable parameters of the Osclass chart and 
 | `persistence.moodle.storageClass`  | PVC Storage Class for OSClass volume     | `nil` (uses alpha storage class annotation) |
 | `persistence.moodle.accessMode`    | PVC Access Mode for OSClass volume       | `ReadWriteOnce`                             |
 | `persistence.moodle.size`          | PVC Storage Request for OSClass volume   | `8Gi`                                       |
+| `allowEmptyPassword`               | Allow DB blank passwords                 | `yes`                                       |
+| `externalDatabase.host`            | Host of the external database            | `nil`                                       |
+| `externalDatabase.port`            | Port of the external database            | `3306`                                      |
+| `externalDatabase.user`            | Existing username in the external db     | `bn_osclass`                                |
+| `externalDatabase.password`        | Password for the above username          | `nil`                                       |
+| `externalDatabase.database`        | Name of the existing databse             | `bitnami_osclass`                           |
+| `mariadb.enabled`                  | Wheter to use or not the mariadb chart   | `true`                                      |
+| `mariadb.mariadbDatabase`          | Database name to create                  | `bitnami_osclass`                           |
+| `mariadb.mariadbUser`              | Database user to create                  | `bn_osclass`                                |
+| `mariadb.mariadbPassword`          | Password for the database                | `nil`                                       |
 | `mariadb.mariadbRootPassword`      | MariaDB admin password                   | `nil`                                       |
 | `mariadb.persistence.enabled`      | Enable MariaDB persistence using PVC     | `true`                                      |
 | `mariadb.persistence.storageClass` | PVC Storage Class for MariaDB volume     | `generic`                                   |
@@ -101,7 +111,7 @@ $ helm install --name my-release \
     stable/osclass
 ```
 
-The above command sets the Osclass administrator account username and password to `admin` and `password` respectively. Additionally it sets the MariaDB `root` user password to `secretpassword`.
+The above command sets the Osclass administrator account username and password to `admin` and `password` respectively. Additionally, it sets the MariaDB `root` user password to `secretpassword`.
 
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 

@@ -3,7 +3,7 @@
 ##
 image: bitnami/wordpress:4.9.4-r5
 
-## Specify a imagePullPolicy
+## Specify an imagePullPolicy
 ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
 ##
 imagePullPolicy: IfNotPresent
@@ -38,6 +38,11 @@ wordpressLastName: LastName
 ## ref: https://github.com/bitnami/bitnami-docker-wordpress#environment-variables
 ##
 wordpressBlogName: User's Blog!
+
+## Table prefix
+## ref: https://github.com/bitnami/bitnami-docker-wordpress#environment-variables
+##
+wordpressTablePrefix: wp_
 
 ## Set to `yes` to allow the container to be started with blank passwords
 ## ref: https://github.com/bitnami/bitnami-docker-wordpress#environment-variables
@@ -75,7 +80,7 @@ externalDatabase:
 ##
 mariadb:
   ## Whether to use the database specified as a requirement or not.
-  ## If you want to use an external database set this to false and supply details to externalDatabase above
+  ## If you want to use an external database, set this to false and supply details to externalDatabase above
   enabled: true
 
   ## MariaDB admin password
@@ -126,6 +131,10 @@ serviceType: LoadBalancer
 nodePorts:
   http: ""
   https: ""
+## Enable client source IP preservation
+## ref http://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/#preserving-the-client-source-ip
+##
+serviceExternalTrafficPolicy: Local
 
 ## Allow health checks to be pointed at the https port
 healthcheckHttps: false
@@ -145,8 +154,8 @@ readinessProbe:
   failureThreshold: 6
   successThreshold: 1
 
-## Configure ingress resource that allow you to access the
-## Wordpress instalation. Set up the URL
+## Configure the ingress resource that allows you to access the
+## Wordpress installation. Set up the URL
 ## ref: http://kubernetes.io/docs/user-guide/ingress/
 ##
 ingress:

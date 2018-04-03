@@ -28,7 +28,7 @@ SumoLogic.
 
 ## Prerequisites
 
-- Kubernetes 1.2+ with Beta APIs enabled
+- Kubernetes 1.2+ with Beta APIs enabled. However, certain configuration parameters may require a more recent version of Kubernetes. Such parameters will specifiy the minimum Kubernetes version required in the parameter description.
 
 ## Installing the Chart
 
@@ -91,8 +91,9 @@ The following tables lists the configurable parameters of the sumologic-fluentd 
 | `image.name` | The image repository and name to pull from | `sumologic/fluentd-kubernetes-sumologic` |
 | `image.tag` | The image tag to pull | `v1.6` |
 | `imagePullPolicy` | Image pull policy | `IfNotPresent` |
-| `persistence.enabled` | Boolean value, used to turn on or off fluentd position file persistence, on nodes | `false` |
-| `persistence.hostPath` | The path, on each node, to a directory for fluentd pos files. You must create the directory on each node first. | `/var/run/fluentd-pos` |
+| `persistence.enabled` | Boolean value, used to turn on or off fluentd position file persistence, on nodes (requires Kubernetes >= 1.8) | `false` |
+| `persistence.hostPath` | The path, on each node, to a directory for fluentd pos files. You must create the directory on each node first or set `persistence.createPath` (requires Kubernetes >= 1.8) | `/var/run/fluentd-pos` |
+| `persistence.createPath` | Whether to create the directory on the host for you (requires Kubernetes >= 1.8) | `false` |
 | `resources.requests.cpu` | CPU resource requests | 100m |
 | `resources.limits.cpu` | CPU resource limits | 256m |
 | `resources.requests.memory` | Memory resource requests | 128Mi |
