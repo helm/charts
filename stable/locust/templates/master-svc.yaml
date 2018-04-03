@@ -5,9 +5,9 @@ metadata:
   labels:
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
     app: {{ template "locust.fullname" . }}
-    component: "master"
+    component: master
 spec:
   type: {{ .Values.service.type }}
   ports:
@@ -26,5 +26,5 @@ spec:
     targetPort: 5558
   selector:
     app: {{ template "locust.fullname" . }}
-    component: "master"
+    component: master
   sessionAffinity: None
