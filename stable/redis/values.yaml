@@ -72,6 +72,7 @@ password:
 master:
   ## Use password authentication
   port: 6379
+  password: bitnami
   ## Redis command arguments
   ##
   ## Can be used to specify command line arguments, for example:
@@ -193,9 +194,9 @@ slave:
   ## Redis slave Liveness Probe
   # livenessProbe:
   #   enabled: true
-  #   initialDelaySeconds: 30
+  #   initialDelaySeconds: 5
   #   periodSeconds: 10
-  #   timeoutSeconds: 5
+  #   timeoutSeconds: 10
   #   successThreshold: 1
   #   failureThreshold: 5
 
