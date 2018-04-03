@@ -58,13 +58,15 @@ The following table lists the configurable parameters of the RabbitMQ chart and 
 | `rabbitmq.nodePort`         | Node port                                               | `5672`                                                   |
 | `rabbitmq.managerPort`      | RabbitMQ Manager port                                   | `15672`                                                  |
 | `rabbitmq.diskFreeLimit`    | Disk free limit                                         | `"6GiB"`                                                 |
+| `rabbitmq.plugins`         | configuration file for plugins to enable                 | `[rabbitmq_management,rabbitmq_peer_discovery_k8s].`  |
+| `rabbitmq.configuration`    | rabbitmq.conf content                                   | see values.yaml                                                 |
 | `serviceType`               | Kubernetes Service type                                 | `ClusterIP`                                              |
 | `persistence.enabled`       | Use a PVC to persist data                               | `true`                                                   |
 | `persistence.existingClaim` | Use an existing PVC to persist data                     | `nil`                                                    |
 | `persistence.storageClass`  | Storage class of backing PVC                            | `nil` (uses alpha storage class annotation)              |
 | `persistence.accessMode`    | Use volume as ReadOnly or ReadWrite                     | `ReadWriteOnce`                                          |
 | `persistence.size`          | Size of data volume                                     | `8Gi`                                                    |
-| `resources                  | resource needs and limits to apply to the pod           | {}                                                       |
+| `resources`                  | resource needs and limits to apply to the pod           | {}                                                       |
 | `nodeSelector`              | Node labels for pod assignment                          | {}                                                       |
 | `affinity`                  | Affinity settings for pod assignment                    | {}                                                       |
 | `tolerations`               | Toleration labels for pod assignment                    | []                                                       |

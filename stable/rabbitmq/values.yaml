@@ -7,7 +7,7 @@ image:
   tag: 3.7.4-r1
 
   ## set to true if you would like to see extra information on logs
-  ## it turns BASH and NAMI debuggin in minideb
+  ## it turns BASH and NAMI debugging in minideb
   ## ref:  https://github.com/bitnami/minideb-extras/#turn-on-bash-debugging
   debug: false
 
@@ -64,6 +64,24 @@ rabbitmq:
   ##
   diskFreeLimit: '"6GiB"'
 
+  ## Plugins to enable
+  plugins: |-
+      [rabbitmq_management,rabbitmq_peer_discovery_k8s].
+  
+  ## Configution file content
+  configuration: |-
+      ## Clustering
+      cluster_formation.peer_discovery_backend  = rabbit_peer_discovery_k8s
+      cluster_formation.k8s.host = kubernetes.default.svc.cluster.local
+      cluster_formation.k8s.address_type = ip
+      cluster_formation.node_cleanup.interval = 10
+      cluster_formation.node_cleanup.only_log_warning = false
+      cluster_partition_handling = autoheal
+      ## queue master locator 
+      queue_master_locator=min-masters
+      ## enable guest user  
+      loopback_users.guest = false
+
 ## Kubernetes service type
 serviceType: ClusterIP
 
@@ -93,7 +111,7 @@ persistence:
 ##
 resources: {}
 
-## Replica count, set to 3 to provide a default available cluster
+## Replica count, set to 1 to provide a default available cluster
 replicas: 1
 
 ## Node labels and tolerations for pod assignment
