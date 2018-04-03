@@ -3,8 +3,8 @@ kind: StatefulSet
 metadata:
   name: {{ template "rabbitmq.fullname" . }}
   labels:
-    app: {{ template "rabbitmq.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app: {{ template "rabbitmq.name" . }}
+    chart: {{ template "rabbitmq.chart" .  }}
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
@@ -12,11 +12,11 @@ spec:
   replicas: {{ .Values.replicas }}
   selector:
     matchLabels:
-      app: {{ template "rabbitmq.fullname" . }}
+      app: {{ template "rabbitmq.name" . }}
   template:
     metadata:
       labels:
-        app: {{ template "rabbitmq.fullname" . }}
+        app: {{ template "rabbitmq.name" . }}
     spec:
       {{- if .Values.image.pullSecrets }}
       imagePullSecrets:
@@ -43,7 +43,7 @@ spec:
       containers:        
       - name: {{ template "rabbitmq.fullname" . }}
         image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-        imagePullPolicy: {{ default "" .Values.image.pullPolicy | quote }}
+        imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         command:
          - bash
          - -ec
@@ -78,20 +78,20 @@ spec:
         - name: epmd
           containerPort: 4369
         - name: amqp
-          containerPort: {{ default "5672" .Values.rabbitmq.nodePort }}
+          containerPort: {{ .Values.rabbitmq.nodePort }}
         - name: dist
-          containerPort: {{ default "5672" .Values.rabbitmq.nodePort | add 20000 }}
+          containerPort: {{ .Values.rabbitmq.nodePort | add 20000 }}
         - name: stats
-          containerPort: {{ default "15672" .Values.rabbitmq.managerPort }}
+          containerPort: {{ .Values.rabbitmq.managerPort }}
         {{- if .Values.livenessProbe.enabled }}
         livenessProbe:
           exec:
             command:
             - rabbitmqctl
             - status
-          initialDelaySeconds: {{ default 120 .Values.livenessProbe.initialDelaySeconds }}
-          timeoutSeconds: {{ default 5 .Values.livenessProbe.timeoutSeconds }}
-          failureThreshold: {{ default 6 .Values.livenessProbe.failureThreshold }}
+          initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+          timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+          failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
         {{- end }}
         {{- if .Values.readinessProbe.enabled }}
         readinessProbe:
@@ -99,9 +99,9 @@ spec:
             command:
             - rabbitmqctl
             - status
-          initialDelaySeconds: {{ default 10 .Values.readinessProbe.initialDelaySeconds }}
-          timeoutSeconds: {{ default 3 .Values.readinessProbe.timeoutSeconds }}
-          periodSeconds: {{ default 5 .Values.readinessProbe.periodSeconds }}
+          initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+          timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+          periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
         {{- end }}
         env:
         {{- if .Values.image.debug}}

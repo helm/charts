@@ -4,8 +4,8 @@ kind: Ingress
 metadata:
   name: "{{ template "rabbitmq.fullname" . }}"
   labels:
-    app: {{ template "rabbitmq.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app: {{ template "rabbitmq.name" . }}
+    chart: {{ template "rabbitmq.chart" .  }}
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
   annotations:
