@@ -25,7 +25,7 @@ spec:
         release: {{ .Release.Name | quote }}
         component: server
     spec:
-      serviceAccountName: {{ .Values.serviceAccount.name | default (printf "%s" (include "gocd.fullname" .)) }}
+      serviceAccountName: {{ template "gocd.serviceAccountName" . }}
       {{- if .Values.server.persistence.enabled }}
       volumes:
         - name: goserver-vol
