@@ -204,9 +204,9 @@ slave:
   ## Redis slave Liveness Probe
   # livenessProbe:
   #   enabled: true
-  #   initialDelaySeconds: 5
+  #   initialDelaySeconds: 30
   #   periodSeconds: 10
-  #   timeoutSeconds: 10
+  #   timeoutSeconds: 5
   #   successThreshold: 1
   #   failureThreshold: 5
 

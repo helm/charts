@@ -50,7 +50,7 @@ spec:
         env:
         - name: REDIS_REPLICATION_MODE
           value: master
-        {{- if .Values.redis.usePassword }}
+        {{- if .Values.master.usePassword }}
         - name: REDIS_PASSWORD
           valueFrom:
             secretKeyRef:
@@ -60,17 +60,17 @@ spec:
         - name: ALLOW_EMPTY_PASSWORD
           value: "yes"
         - name: REDIS_PORT
-          value: {{ .Values.redis.port | quote }}
+          value: {{ .Values.master.port | quote }}
         {{- end }}
         - name: REDIS_DISABLE_COMMANDS
-          value: {{ .Values.redis.disableCommands }}
-        {{- if .Values.redis.extraFlags }}
+          value: {{ .Values.master.disableCommands }}
+        {{- if .Values.master.extraFlags }}
         - name: REDIS_EXTRA_FLAGS
-          value: {{ .Values.redis.extraFlags | join " " }}
+          value: {{ .Values.master.extraFlags | join " " }}
         {{- end }}
         ports:
         - name: redis
-          containerPort: {{ .Values.redis.port }}
+          containerPort: {{ .Values.master.port }}
         {{- if .Values.livenessProbe.enabled }}
         livenessProbe:
           initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
@@ -108,7 +108,7 @@ spec:
         env:
         - name: REDIS_ALIAS
           value: {{ template "redis.fullname" . }}
-        {{- if .Values.redis.usePassword }}
+        {{- if .Values.master.usePassword }}
         - name: REDIS_PASSWORD
           valueFrom:
             secretKeyRef:
