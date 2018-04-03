@@ -80,11 +80,11 @@ readinessProbe:
 {{- end -}}
 {{- end -}}
 
-{{/* 
+{{/*
 Return slave liveness probe
 */}}
 {{- define "redis.slave.livenessProbe" -}}
-{{- $livenessProbe := .Values.slave.readinessProbe | default .Values.livenessProbe -}}
+{{- $livenessProbe := .Values.slave.livenessProbe | default .Values.livenessProbe -}}
 {{- if $livenessProbe }}
 {{- if $livenessProbe.enabled }}
 livenessProbe:

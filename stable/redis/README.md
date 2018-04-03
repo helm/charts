@@ -5,7 +5,13 @@
 ## TL;DR;
 
 ```bash
+# Testing configuration
 $ helm install stable/redis
+```
+
+```bash
+# Production configuration
+$ helm install stable/redis --values values-production.yaml 
 ```
 
 ## Introduction
