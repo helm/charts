@@ -67,7 +67,7 @@ rabbitmq:
   ## Plugins to enable
   plugins: |-
       [rabbitmq_management,rabbitmq_peer_discovery_k8s].
-  
+
   ## Configution file content
   configuration: |-
       ## Clustering
@@ -77,9 +77,9 @@ rabbitmq:
       cluster_formation.node_cleanup.interval = 10
       cluster_formation.node_cleanup.only_log_warning = false
       cluster_partition_handling = autoheal
-      ## queue master locator 
+      ## queue master locator
       queue_master_locator=min-masters
-      ## enable guest user  
+      ## enable guest user
       loopback_users.guest = false
 
 ## Kubernetes service type
