@@ -3,6 +3,7 @@ description: Stackdriver exporter for Prometheus
 name: stackdriver-exporter
 version: 0.0.1
 appVersion: 0.5.1
+home: https://www.stackdriver.com/
 sources:
   - https://github.com/frodenas/stackdriver_exporter/releases
 keywords:
