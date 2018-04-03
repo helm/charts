@@ -11,6 +11,8 @@ server:
     name: grafana
     tag: "5.0.4"
     pullPolicy: IfNotPresent
+    # When pulling from a private docker registry, you can set this to use a pull secret
+    # pullSecret: my-secret-name
 
   # Extra environmental configuration. Example:
   #  extraEnv:

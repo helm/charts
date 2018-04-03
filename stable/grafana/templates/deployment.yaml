@@ -53,6 +53,10 @@ spec:
         - name: {{ template "grafana.name" . }}
           image: "{{ .Values.server.image.repository }}/{{ .Values.server.image.name }}:{{ .Values.server.image.tag }}"
           imagePullPolicy: {{ .Values.server.image.pullPolicy }}
+          {{- if .Values.server.image.pullSecret }}
+          imagePullSecrets:
+            - name: {{ .Values.server.image.pullSecret }}
+          {{- end }}
           env:
             - name: GF_SECURITY_ADMIN_USER
               valueFrom:
