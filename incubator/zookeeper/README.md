@@ -1,4 +1,4 @@
-# Zookeeper Helm Chart
+# ZooKeeper Helm Chart
  This helm chart provides an implementation of the ZooKeeper [StatefulSet](http://kubernetes.io/docs/concepts/abstractions/controllers/statefulsets/) found in Kubernetes Contrib [Zookeeper StatefulSet](https://github.com/kubernetes/contrib/tree/master/statefulsets/zookeeper).
 
 ## Prerequisites

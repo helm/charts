@@ -87,7 +87,7 @@ spec:
           livenessProbe:
             httpGet:
               path: /healthz
-              port: 10254
+              port: {{ .Values.controller.livenessProbe.port }}
               scheme: HTTP
             initialDelaySeconds: {{ .Values.controller.livenessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.controller.livenessProbe.periodSeconds }}
@@ -130,7 +130,7 @@ spec:
           readinessProbe:
             httpGet:
               path: /healthz
-              port: 10254
+              port: {{ .Values.controller.readinessProbe.port }}
               scheme: HTTP
             initialDelaySeconds: {{ .Values.controller.readinessProbe.initialDelaySeconds }}
             periodSeconds: {{ .Values.controller.readinessProbe.periodSeconds }}

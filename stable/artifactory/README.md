@@ -74,7 +74,7 @@ You can customise other parameters in the same way, by passing them on `helm ins
 $ helm delete --purge artifactory
 ```
 This will completely delete your Artifactory Pro deployment.  
-**IMPORTANT:** This will also delete your data volumes. You will loose all data!
+**IMPORTANT:** This will also delete your data volumes. You will lose all data!
 
 
 ### Custom Docker registry for your images
@@ -91,7 +91,7 @@ $ helm install --name artifactory --set imagePullSecrets=regsecret stable/artifa
 
 ## Configuration
 
-The following tables lists the configurable parameters of the artifactory chart and their default values.
+The following table lists the configurable parameters of the artifactory chart and their default values.
 
 |         Parameter         |           Description             |                         Default                          |
 |---------------------------|-----------------------------------|----------------------------------------------------------|

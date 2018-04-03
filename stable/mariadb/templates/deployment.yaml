@@ -13,9 +13,11 @@ spec:
       labels:
         app: {{ template "mariadb.name" . }}
     spec:
+      {{- if .Values.securitySettings.enabled }}
       securityContext:
-        runAsUser: 1001
-        fsGroup: 1001
+        runAsUser: {{ .Values.securitySettings.runAsUser }}
+        fsGroup: {{ .Values.securitySettings.fsGroup }}
+      {{- end}}
       initContainers:
       - name: "copy-custom-config"
         image: "busybox"
