@@ -3,62 +3,54 @@ kind: StatefulSet
 metadata:
   name: {{ template "redis.fullname" . }}
   labels:
-    app: {{ template "redis.name" . }}
-    chart: {{ template "redis.chart" . }}
+    app: {{ template "redis.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
   selector:
     matchLabels:
-      release: "{{ .Release.Name }}"
       role: master
-      app: {{ template "redis.name" . }}
+      app: {{ template "redis.fullname" . }}
   serviceName: "redis-master"  
   template:
     metadata:
       labels:
-        release: "{{ .Release.Name }}"
         role: master
-        app: {{ template "redis.name" . }}
-{{- if .Values.master.podLabels }}
-{{ toYaml .Values.master.podLabels | indent 8 }}
+        app: {{ template "redis.fullname" . }}
+{{- if .Values.podLabels }}
+{{ toYaml .Values.podLabels | indent 8 }}
 {{- end }}
-      {{- if .Values.master.podAnnotations }}
+      {{- if .Values.podAnnotations }}
       annotations:
-{{ toYaml .Values.master.podAnnotations | indent 8 }}
+{{ toYaml .Values.podAnnotations | indent 8 }}
       {{- end }}
     spec:
-      {{- if .Values.image.pullSecrets }}
-      imagePullSecrets:
-        {{- range .Values.image.pullSecrets }}
-        - name: {{ . }}
-        {{- end}}
-      {{- end}}
-      {{- if .Values.master.securityContext.enabled }}
+      {{- if .Values.securityContext.enabled }}
       securityContext:
-        fsGroup: {{ .Values.master.securityContext.fsGroup }}
-        runAsUser: {{ .Values.master.securityContext.runAsUser }}
+        fsGroup: {{ .Values.securityContext.fsGroup }}
+        runAsUser: {{ .Values.securityContext.runAsUser }}
       {{- end }}
-      {{- if .Values.master.nodeSelector }}
+      {{- if .Values.nodeSelector }}
       nodeSelector:
-{{ toYaml .Values.master.nodeSelector | indent 8 }}
+{{ toYaml .Values.nodeSelector | indent 8 }}
       {{- end }}
-      {{- if .Values.master.tolerations }}
+      {{- if .Values.tolerations }}
       tolerations:
-{{ toYaml .Values.master.tolerations | indent 8 }}
+{{ toYaml .Values.tolerations | indent 8 }}
       {{- end }}
       containers:
       - name: {{ template "redis.fullname" . }}
-        image: "{{ template "redis.image" . }}"
-        imagePullPolicy: {{ default "" .Values.image.pullPolicy | quote }}
-        {{- if .Values.master.args }}
+        image: "{{ .Values.image }}"
+        imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
+        {{- if .Values.args }}
         args:
-{{ toYaml .Values.master.args | indent 10 }}
+{{ toYaml .Values.args | indent 10 }}
         {{- end }}
         env:
         - name: REDIS_REPLICATION_MODE
           value: master
-        {{- if .Values.usePassword }}
+        {{- if .Values.redis.usePassword }}
         - name: REDIS_PASSWORD
           valueFrom:
             secretKeyRef:
@@ -68,52 +60,72 @@ spec:
         - name: ALLOW_EMPTY_PASSWORD
           value: "yes"
         - name: REDIS_PORT
-          value: {{ .Values.master.port | quote }}
+          value: {{ .Values.redis.port | quote }}
         {{- end }}
         - name: REDIS_DISABLE_COMMANDS
-          value: {{ .Values.master.disableCommands }}
-        {{- if .Values.master.extraFlags }}
+          value: {{ .Values.redis.disableCommands }}
+        {{- if .Values.redis.extraFlags }}
         - name: REDIS_EXTRA_FLAGS
-          value: {{ .Values.master.extraFlags | join " " }}
+          value: {{ .Values.redis.extraFlags | join " " }}
         {{- end }}
         ports:
         - name: redis
-          containerPort: {{ .Values.master.port }}
-        {{- if .Values.master.livenessProbe.enabled }}
+          containerPort: {{ .Values.redis.port }}
+        {{- if .Values.livenessProbe.enabled }}
         livenessProbe:
-          initialDelaySeconds: {{ .Values.master.livenessProbe.initialDelaySeconds }}
-          periodSeconds: {{ .Values.master.livenessProbe.periodSeconds }}
-          timeoutSeconds: {{ .Values.master.livenessProbe.timeoutSeconds }}
-          successThreshold: {{ .Values.master.livenessProbe.successThreshold }}
-          failureThreshold: {{ .Values.master.livenessProbe.failureThreshold }}
+          initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.livenessProbe.successThreshold }}
+          failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
           exec:
             command:
             - redis-cli
             - ping
         {{- end }}
-        {{- if .Values.master.readinessProbe.enabled}}
+        {{- if .Values.readinessProbe.enabled}}
         readinessProbe:
-          initialDelaySeconds: {{ .Values.master.readinessProbe.initialDelaySeconds }}
-          periodSeconds: {{ .Values.master.readinessProbe.periodSeconds }}
-          timeoutSeconds: {{ .Values.master.readinessProbe.timeoutSeconds }}
-          successThreshold: {{ .Values.master.readinessProbe.successThreshold }}
-          failureThreshold: {{ .Values.master.readinessProbe.failureThreshold }}
+          initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.readinessProbe.successThreshold }}
+          failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
           exec:
             command:
             - redis-cli
             - ping
         {{- end }}
         resources:
-{{ toYaml .Values.master.resources | indent 10 }}
+{{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
         - name: redis-data
-          mountPath: {{ .Values.master.persistence.path }}
-          subPath: {{ .Values.master.persistence.subPath }}
+          mountPath: {{ .Values.persistence.path }}
+          subPath: {{ .Values.persistence.subPath }}
+{{- if .Values.metrics.enabled }}
+      - name: metrics
+        image: "{{ .Values.metrics.image }}:{{ .Values.metrics.imageTag }}"
+        imagePullPolicy: {{ .Values.metrics.imagePullPolicy | quote }}
+        env:
+        - name: REDIS_ALIAS
+          value: {{ template "redis.fullname" . }}
+        {{- if .Values.redis.usePassword }}
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "redis.fullname" . }}
+              key: redis-password
+        {{- end }}
+        ports:
+        - name: metrics
+          containerPort: 9121
+        resources:
+{{ toYaml .Values.metrics.resources | indent 10 }}
+{{- end }}
       volumes:
       - name: redis-data
-      {{- if .Values.master.persistence.enabled }}
+      {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ .Values.master.persistence.existingClaim | default (include "redis.fullname" .) }}
+          claimName: {{ .Values.persistence.existingClaim | default (include "redis.fullname" .) }}
       {{- else }}
         emptyDir: {}
       {{- end }}
