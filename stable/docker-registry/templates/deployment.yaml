@@ -19,6 +19,13 @@ spec:
       labels:
         app: {{ template "docker-registry.name" . }}
         release: {{ .Release.Name }}
+        annotations:
+          sha256/configmap: {{- include (print $.Template.BasePath "/configmap.yaml") . | sha256sum | quote }}
+{{- if .Values.secrets.gcs }}
+{{- if .Values.secrets.gcs.keyfile }}
+          sha256/gcsKeyfile: {{- .Files.Get .Values.secrets.gcs.keyfile | sha256sum | quote }}
+{{- end }}
+{{- end }}
     spec:
       containers:
         - name: {{ .Chart.Name }}
@@ -88,6 +95,11 @@ spec:
               value: {{ .Values.s3.encrypt }}
             - name: REGISTRY_STORAGE_S3_SECURE
               value: {{ .Values.s3.secure }}
+{{- else if .Values.secrets.gcs }}
+{{- if .Values.secrets.gcs.keyfile }}
+            - name: GOOGLE_APPLICATION_CREDENTIALS
+              value: "/var/run/secrets/{{ .Chart.Name }}/gcsKeyfile"
+{{- end }}
 {{- end }}
           volumeMounts:
 {{- if .Values.secrets.htpasswd }}
@@ -106,6 +118,13 @@ spec:
               name: tls-cert
               readOnly: true
 {{- end }}
+{{- if .Values.secrets.gcs }}
+{{- if .Values.secrets.gcs.keyfile }}
+            - name: "{{ template "docker-registry.fullname" . }}-gcsKeyfile"
+              mountPath: /var/run/secrets/{{ .Chart.Name }}
+              readOnly: true
+{{- end }}
+{{- end }}
 {{- if .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 8 }}
@@ -118,6 +137,16 @@ spec:
             items:
             - key: htpasswd
               path: htpasswd
+{{- end }}
+{{- if .Values.secrets.gcs }}
+{{- if .Values.secrets.gcs.keyfile }}
+        - name: "{{ template "docker-registry.fullname" . }}-gcsKeyfile"
+          secret:
+            secretName: {{ template "docker-registry.fullname" . }}-secret
+            items:
+            - key: gcsKeyfile
+              path: gcsKeyfile
+{{- end }}
 {{- end }}
 {{- if eq .Values.storage "filesystem" }}
         - name: data
