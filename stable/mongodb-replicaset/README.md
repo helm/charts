@@ -30,23 +30,23 @@ The following tables lists the configurable parameters of the mongodb chart and 
 
 | Parameter                           | Description                                                               | Default                                             |
 | ----------------------------------- | ------------------------------------------------------------------------- | --------------------------------------------------- |
-| `replicas`                          | Number of replicas in the replica set                                     | 3                                                   |
-| `replicaSetName`                    | The name of the replica set                                               | rs0                                                 |
-| `minAvailable`                      | Minimum number of available pods for PodDisruptionBudget                  | 1                                                   |
-| `port`                              | MongoDB port                                                              | 27017                                               |
-| `installImage.repository`           | Image name for the install container                                      | k8s.gcr.io/mongodb-install                          |
-| `installImage.tag`                  | Image tag for the install container                                       | 0.5                                                 |
-| `installImage.pullPolicy`           | Image pull policy for the init container that establishes the replica set | IfNotPresent                                        |
-| `image.repository`                  | MongoDB image name                                                        | mongo                                               |
-| `image.tag`                         | MongoDB image tag                                                         | 3.6                                                 |
-| `image.pullPolicy`                  | MongoDB image pull policy                                                 | IfNotPresent                                        |
-| `podAnnotations`                    | Annotations to be added to MongoDB pods                                   | {}                                                  |
-| `resources`                         | Pod resource requests and limits                                          | {}                                                  |
+| `replicas`                          | Number of replicas in the replica set                                     | `3`                                                 |
+| `replicaSetName`                    | The name of the replica set                                               | `rs0`                                               |
+| `podDisruptionBudget`               | Pod disruption budget                                                     | `{}`                                 |
+| `port`                              | MongoDB port                                                              | `27017`                                             |
+| `installImage.repository`           | Image name for the install container                                      | `k8s.gcr.io/mongodb-install`                        |
+| `installImage.tag`                  | Image tag for the install container                                       | `0.5`                                               |
+| `installImage.pullPolicy`           | Image pull policy for the init container that establishes the replica set | `IfNotPresent`                                      |
+| `image.repository`                  | MongoDB image name                                                        | `mongo`                                             |
+| `image.tag`                         | MongoDB image tag                                                         | `3.6`                                               |
+| `image.pullPolicy`                  | MongoDB image pull policy                                                 | `IfNotPresent`                                      |
+| `podAnnotations`                    | Annotations to be added to MongoDB pods                                   | `{}`                                                |
+| `resources`                         | Pod resource requests and limits                                          | `{}`                                                |
 | `persistentVolume.enabled`          | If `true`, persistent volume claims are created                           | `true`                                              |
 | `persistentVolume.storageClass`     | Persistent volume storage class                                           | ``                                                  |
-| `persistentVolume.accessMode`       | Persistent volume access modes                                            | [ReadWriteOnce]                                     |
-| `persistentVolume.size`             | Persistent volume size                                                    | 10Gi                                                |
-| `persistentVolume.annotations`      | Persistent volume annotations                                             | {}                                                  |
+| `persistentVolume.accessMode`       | Persistent volume access modes                                            | `[ReadWriteOnce]`                                   |
+| `persistentVolume.size`             | Persistent volume size                                                    | `10Gi`                                              |
+| `persistentVolume.annotations`      | Persistent volume annotations                                             | `{}`                                                |
 | `tls.enabled`                       | Enable MongoDB TLS support including authentication                       | `false`                                             |
 | `tls.cacert`                        | The CA certificate used for the members                                   | Our self signed CA certificate                      |
 | `tls.cakey`                         | The CA key used for the members                                           | Our key for the self signed CA certificate          |
@@ -56,11 +56,11 @@ The following tables lists the configurable parameters of the mongodb chart and 
 | `auth.adminUser`                    | MongoDB admin user                                                        | ``                                                  |
 | `auth.adminPassword`                | MongoDB admin password                                                    | ``                                                  |
 | `auth.existingAdminSecret`          | If set, and existing secret with this name is used for the admin user     | ``                                                  |
-| `serviceAnnotations`                | Annotations to be added to the service                                    | {}                                                  |
+| `serviceAnnotations`                | Annotations to be added to the service                                    | `{}`                                                |
 | `configmap`                         | Content of the MongoDB config file                                        | ``                                                  |
-| `nodeSelector`                      | Node labels for pod assignment                                            | {}                                                  |
-| `affinity`                          | Node/pod affinities                                                       | {}                                                  |
-| `tolerations`                       | List of node taints to tolerate                                           | []                                                  |
+| `nodeSelector`                      | Node labels for pod assignment                                            | `{}`                                                |
+| `affinity`                          | Node/pod affinities                                                       | `{}`                                                |
+| `tolerations`                       | List of node taints to tolerate                                           | `[]`                                                |
 
 *MongoDB config file*
 
