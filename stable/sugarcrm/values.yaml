@@ -15,7 +15,7 @@ image:
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
   ##
   # pullSecrets:
-  #   - myRegistrKeySecretName 
+  #   - myRegistrKeySecretName
 
 ## SugarCRM host to create application URLs
 ## ref: https://github.com/bitnami/bitnami-docker-sugarcrm#configuration
