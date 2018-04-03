@@ -43,7 +43,7 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 Return the appropriate apiVersion for RBAC APIs.
 */}}
 {{- define "rbac.apiVersion" -}}
-{{- if semverCompare "^1.8" .Capabilities.KubeVersion.GitVersion -}}
+{{- if semverCompare "^1.8-0" .Capabilities.KubeVersion.GitVersion -}}
 "rbac.authorization.k8s.io/v1"
 {{- else -}}
 "rbac.authorization.k8s.io/v1beta1"
