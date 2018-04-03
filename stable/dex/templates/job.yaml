@@ -27,7 +27,7 @@ spec:
         release: "{{ .Release.Name }}"
         component: "job"
     spec:
-      serviceAccountName: {{ if .Values.rbac.create }}{{ template "dex.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
+      serviceAccountName: {{ template "dex.serviceAccountName" . }}
       restartPolicy: OnFailure
       containers:
       - name: main

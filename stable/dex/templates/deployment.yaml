@@ -23,7 +23,7 @@ spec:
         app: {{ template "dex.name" . }}
         release: "{{ .Release.Name }}"
     spec:
-      serviceAccountName: {{ if .Values.rbac.create }}{{ template "dex.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
+      serviceAccountName: {{ template "dex.serviceAccountName" . }}
       nodeSelector:
 {{ toYaml .Values.nodeSelector | indent 10 }}
       containers:
