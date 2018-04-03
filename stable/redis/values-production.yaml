@@ -17,8 +17,8 @@ imagePullPolicy: IfNotPresent
 
 ## Cluster settings
 cluster:
-  enabled: false
-  slaveCount: 1
+  enabled: true
+  slaveCount: 3
 
 ## Use existing secret (ignores previous password)
 # existingSecret:
@@ -53,30 +53,30 @@ persistence:
   size: 8Gi
 
 metrics:
-  enabled: false
-#  image: oliver006/redis_exporter
-#  imagePullPolicy: IfNotPresent
-#  imageTag: v0.11
+  enabled: true
+  image: oliver006/redis_exporter
+  imagePullPolicy: IfNotPresent
+  imageTag: v0.11
   # imageCredentials:
   #   registry: docker.io
   #   username:
   #   password:
-  # resources: {}
-  # annotations:
-  #   prometheus.io/scrape: "true"
-  #   prometheus.io/port: "9121"
+  resources: {}
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "9121"
 
 networkPolicy:
   ## Enable creation of NetworkPolicy resources.
   ##
-  enabled: false
+  enabled: true
 
   ## The Policy model to apply. When set to false, only pods with the correct
   ## client label will have network access to the port Redis is listening
   ## on. When true, Redis will accept connections from any source
   ## (with the correct destination port).
   ##
-  # allowExternal: true
+  allowExternal: true
 
 ##
 ## Redis Master parameters
@@ -124,11 +124,11 @@ master:
 ## Redis Master Node labels and tolerations for pod assignment
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
 ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#taints-and-tolerations-beta-feature
-# nodeSelector: {"beta.kubernetes.io/arch": "amd64"}
-# tolerations: []
+nodeSelector: {"beta.kubernetes.io/arch": "amd64"}
+tolerations: []
 
 ## Redis Master Service properties
-serviceType: LoadBalancer
+serviceType: ClusterIP
 service:
   annotations: {}
   loadBalancerIP:
@@ -141,43 +141,43 @@ securityContext:
 
 ## Redis Master resource requests and limits
 ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
-# resources:
-#   requests:
-#     memory: 256Mi
-#     cpu: 100m
+resources:
+  requests:
+    memory: 256Mi
+    cpu: 100m
 
 ## Redis Master Liveness Probe
 livenessProbe:
-  enabled: false
-#   initialDelaySeconds: 30
-#   periodSeconds: 10
-#   timeoutSeconds: 5
-#   successThreshold: 1
-#   failureThreshold: 5
+  enabled: true
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  timeoutSeconds: 5
+  successThreshold: 1
+  failureThreshold: 5
 
 ## Redis Master Readiness Probe
 readinessProbe:
-  enabled: false
-#   initialDelaySeconds: 5
-#   periodSeconds: 10
-#   timeoutSeconds: 1
-#   successThreshold: 1
-#   failureThreshold: 5
+  enabled: true
+  initialDelaySeconds: 5
+  periodSeconds: 10
+  timeoutSeconds: 1
+  successThreshold: 1
+  failureThreshold: 5
 
 ##
 ## Redis Slave properties
 ## Note: serviceType, service and usePassword are mandatory parameters
 ## The rest of the parameters, if undefined, will inherit those declared in Redis Master
 ##
-# slave:
+slave:
   ## Slave Service properties
-  # serviceType: LoadBalancer
-  # service:
-    # annotations: {}
-    # loadBalancerIP:
+  serviceType: ClusterIP
+  service:
+    annotations: {}
+    loadBalancerIP:
 
   ## Redis slave server properties
-  # usePassword: true
+  usePassword: true
 
   ## Redis slave optional overrides
 
