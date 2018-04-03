@@ -24,7 +24,7 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
             - name: "ACCEPT_EULA"
-              value: {{- .Values.acceptEULA }}
+              value: {{ .Values.acceptEULA }}
           ports:
             - name: ingestion
               containerPort: 5341
