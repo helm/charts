@@ -65,6 +65,7 @@ spec:
           {{- end }}
           ports:
             - containerPort: {{ .Values.host.port }}
+        {{- if .Values.probe }}
           livenessProbe:
             httpGet:
               path: /healthz
@@ -75,6 +76,7 @@ spec:
             successThreshold: 1
             failureThreshold: 3
             timeoutSeconds: 1
+        {{- end }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
         {{- if .Values.host.iptables }}
