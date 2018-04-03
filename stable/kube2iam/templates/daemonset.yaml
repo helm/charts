@@ -93,7 +93,7 @@ spec:
       serviceAccountName: {{ if .Values.rbac.create }}{{ template "kube2iam.fullname" . }}{{ else }}"{{ .Values.rbac.serviceAccountName }}"{{ end }}
       tolerations:
 {{ toYaml .Values.tolerations | indent 8 }}
-{{- if and (eq .Capabilities.KubeVersion.Major "1") (gt .Capabilities.KubeVersion.Minor "5") }}
+{{- if semverCompare "^1.6-0" .Capabilities.KubeVersion.GitVersion }}
   updateStrategy:
     type: {{ .Values.updateStrategy }}
 {{- end }}
