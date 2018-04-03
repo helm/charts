@@ -1,6 +1,6 @@
 name: odoo
-version: 0.7.6
-appVersion: 11.0.20180215
+version: 0.7.7
+appVersion: 11.0.20180315
 description: A suite of web based open source business apps.
 keywords:
 - odoo
