@@ -1,7 +1,11 @@
 apiVersion: v1
 kind: Service
 metadata:
+  {{- if .Values.cluster.enabled }}
   name: {{ template "redis.fullname" . }}-master
+  {{- else }}
+  name: {{ template "redis.fullname" . }}
+  {{- end }}
   labels:
     app: {{ template "redis.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
@@ -31,4 +35,6 @@ spec:
   {{- end }}
   selector:
     app: {{ template "redis.fullname" . }}
+    {{- if .Values.cluster.enabled }}
     role: master
+    {{- end }}

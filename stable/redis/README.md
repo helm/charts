@@ -5,7 +5,13 @@
 ## TL;DR;
 
 ```bash
+# Testing configuration
 $ helm install stable/redis
+```
+
+```bash
+# Production configuration
+$ helm install stable/redis --values values-production.yaml 
 ```
 
 ## Introduction
@@ -45,34 +51,84 @@ The following table lists the configurable parameters of the Redis chart and the
 
 |           Parameter           |                Description                        |           Default            |
 |-------------------------------|-------------------------------------------------- |------------------------------|
-| `image`                       | Redis image                                       | `bitnami/redis:{VERSION}`    |
+| `image`                       | Redis image                                       | `bitnami/redis`    |
 | `imagePullPolicy`             | Image pull policy                                 | `IfNotPresent`               |
-| `serviceType`                 | Kubernetes Service type                           | `ClusterIP`                  |
-| `usePassword`                 | Use password                                      | `true`                       |
-| `redisPassword`               | Redis password                                    | Randomly generated           |
-| `redisDisableCommands`        | Comma-separated list of Redis commands to disable | `FLUSHDB,FLUSHALL`           |
-| `args`                        | Redis command-line args                           | []                           |
-| `redisExtraFlags`             | Redis additional command line flags               | []                           |
-| `persistence.enabled`         | Use a PVC to persist data                         | `true`                       |
+| `imageTag`                    | Image tag                                 | `{VERSION}`               |
+| `imageCredentials.registry`                 | Registry where the image is located                           | `docker.io`                  |
+| `imageCredentials.username`                 | Username for accessing the image registry                           | `nil`                  |
+| `imageCredentials.password`                 | Password for accessing the image registry                           | `nil`                  |
+| `cluster.enabled`                 | Use master-slave topology                           | `false`                  |
+| `cluster.slaveCount`                 | Number of slaves                           | 1                  |
+| `existingSecret`                 | Name of existing secret object (for passward authentication)                           | `nil`                  |
+| `persistence.enabled`         | Use a PVC to persist data (master node)           | `true`                       |
 | `persistence.path`            | Path to mount the volume at, to use other images  | `/bitnami`                   |
 | `persistence.subPath`         | Subdirectory of the volume to mount at            | `""`                         |
 | `persistence.existingClaim`   | Use an existing PVC to persist data               | `nil`                        |
 | `persistence.storageClass`    | Storage class of backing PVC                      | `generic`                    |
 | `persistence.accessMode`      | Use volume as ReadOnly or ReadWrite               | `ReadWriteOnce`              |
 | `persistence.size`            | Size of data volume                               | `8Gi`                        |
-| `resources`                   | CPU/Memory resource requests/limits               | Memory: `256Mi`, CPU: `100m` |
 | `metrics.enabled`             | Start a side-car prometheus exporter              | `false`                      |
 | `metrics.image`               | Exporter image                                    | `oliver006/redis_exporter`   |
 | `metrics.imageTag`            | Exporter image                                    | `v0.11`                      |
 | `metrics.imagePullPolicy`     | Exporter image pull policy                        | `IfNotPresent`               |
 | `metrics.resources`           | Exporter resource requests/limit                  | Memory: `256Mi`, CPU: `100m` |
-| `nodeSelector`                | Node labels for pod assignment                    | {}                           |
-| `tolerations`                 | Toleration labels for pod assignment              | []                           |
 | `networkPolicy.enabled`       | Enable NetworkPolicy                              | `false`                      |
 | `networkPolicy.allowExternal` | Don't require client label for connections        | `true`                       |
-| `service.annotations`         | annotations for redis service                     | {}                           |
-| `service.loadBalancerIP`      | loadBalancerIP if service type is `LoadBalancer`  | ``                           |
-| `securityContext.enabled`     | Enable security context                           | `true`                       |
+| `podLabels` | Additional labels for Redis master pod       | {}                       |
+| `podAnnotations` | Additional annotations for Redis master pod       | {}                       |
+| `master.usePassword`          | Use password (Redis master)                                      | `true`                       |
+| `master.password`               | Redis password (ignored if existingSecret set)         | Randomly generated           |
+| `master.port`               | Redis master port                                    | 6379           |
+| `master.args`                        | Redis master command-line args                           | []                           |
+| `master.disableCommands`        | Comma-separated list of Redis commands to disable (master) | `FLUSHDB,FLUSHALL`           |
+| `master.extraFlags`             | Redis master additional command line flags               | []                           |
+| `nodeSelector`                | Redis master Node labels for pod assignment                    | {"beta.kubernetes.io/arch": "amd64"}                           |
+| `tolerations`                 | Toleration labels for Redis master pod assignment              | []                           |
+| `serviceType`                        | Kubernetes Service type (redis master)                   | `LoadBalancer`                                             |
+| `service.annotations`         | annotations for redis master service                     | {}                           |
+| `service.loadBalancerIP`      | loadBalancerIP if redis master service type is `LoadBalancer`  | `nil`                           |
+| `securityContext.enabled`     | Enable security context (redis master pod)                      | `true`                       |
+| `securityContext.fsGroup`     | Group ID for the container (redis master pod)                      | `1001`                       |
+| `securityContext.runAsUser`   | User ID for the container (redis master pod)                      | `1001`                       |
+| `resources`                   | Redis master CPU/Memory resource requests/limits                | Memory: `256Mi`, CPU: `100m` |
+| `livenessProbe.enabled`                   | Turn on and off liveness probe (redis master pod)            | `true` |
+| `livenessProbe.initialDelaySeconds`       | Delay before liveness probe is initiated (redis master pod)            | `30` |
+| `livenessProbe.periodSeconds`       |  How often to perform the probe (redis master pod) | `30` |
+| `livenessProbe.timeoutSeconds`       |  When the probe times out (redis master pod) | `5` |
+| `livenessProbe.successThreshold`       |  Minimum consecutive successes for the probe to be considered successful after having failed (redis master pod) | `1` |
+| `livenessProbe.failureThreshold`       | Minimum consecutive failures for the probe to be considered failed after having succeeded.  | `5` |
+| `readinessProbe.enabled`                   | Turn on and off readiness probe (redis master pod)            | `true` |
+| `readinessProbe.initialDelaySeconds`       | Delay before readiness probe is initiated (redis master pod)            | `5` |
+| `readinessProbe.periodSeconds`       |  How often to perform the probe (redis master pod) | `10` |
+| `readinessProbe.timeoutSeconds`       |  When the probe times out (redis master pod) | `1` |
+| `readinessProbe.successThreshold`       |  Minimum consecutive successes for the probe to be considered successful after having failed (redis master pod) | `1` |
+| `readinessProbe.failureThreshold`       | Minimum consecutive failures for the probe to be considered failed after having succeeded.  | `5` |
+| `slave.serviceType`                        | Kubernetes Service type (redis slave)                   | `LoadBalancer`                                             |
+| `slave.service.annotations`         | annotations for redis slave service                     | {}                           |
+| `slave.service.loadBalancerIP`      | loadBalancerIP if redis slave service type is `LoadBalancer`  | `nil`                           |
+| `slave.usePassword`          | Use password (Redis slave)                                      | `master.usePassword`                       |
+| `slave.port`               | Redis slave port                                    | 6379           | `master.port`
+| `slave.args`                        | Redis slave command-line args                           | `master.args`                           |
+| `slave.disableCommands`        | Comma-separated list of Redis commands to disable (slave) | `master.disableCommands`           |
+| `slave.extraFlags`             | Redis slave additional command line flags               | `master.extraFlags`                           |
+| `slave.livenessProbe.enabled`                   | Turn on and off liveness probe (redis slave pod)            | `livenessProbe.enabled` |
+| `slave.livenessProbe.initialDelaySeconds`       | Delay before liveness probe is initiated (redis slave pod)            | `livenessProbe.initialDelaySeconds` |
+| `slave.livenessProbe.periodSeconds`       |  How often to perform the probe (redis slave pod) | `livenessProbe.periodSeconds` |
+| `slave.livenessProbe.timeoutSeconds`       |  When the probe times out (redis slave pod) | `livenessProbe.timeoutSeconds` |
+| `slave.livenessProbe.successThreshold`       |  Minimum consecutive successes for the probe to be considered successful after having failed (redis slave pod) | `livenessProbe.successThreshold` |
+| `slave.livenessProbe.failureThreshold`       | Minimum consecutive failures for the probe to be considered failed after having succeeded.  | `livenessProbe.failureThreshold` |
+| `slave.readinessProbe.enabled`                   | Turn on and off slave.readiness probe (redis slave pod)            | `readinessProbe.enabled` |
+| `slave.readinessProbe.initialDelaySeconds`       | Delay before slave.readiness probe is initiated (redis slave pod)            | `readinessProbe.initialDelaySeconds` |
+| `slave.readinessProbe.periodSeconds`       |  How often to perform the probe (redis slave pod) | `readinessProbe.periodSeconds` |
+| `slave.readinessProbe.timeoutSeconds`       |  When the probe times out (redis slave pod) | `readinessProbe.timeoutSeconds` |
+| `slave.readinessProbe.successThreshold`       |  Minimum consecutive successes for the probe to be considered successful after having failed (redis slave pod) | `readinessProbe.successThreshold` |
+| `slave.readinessProbe.failureThreshold`       | Minimum consecutive failures for the probe to be considered failed after having succeeded. (redis slave pod) | `readinessProbe.failureThreshold` |
+| `slave.podLabels` | Additional labels for Redis slave pod       | `podLabels`                       |
+| `slave.podAnnotations` | Additional annotations for Redis slave pod       | `podAnnotations`                       |
+| `slave.securityContext.enabled`     | Enable security context (redis slave pod)                      | `securityContext.enabled`                       |
+| `slave.securityContext.fsGroup`     | Group ID for the container (redis slave pod)                      | `securityContext.fsGroup`                       |
+| `slave.securityContext.runAsUser`   | User ID for the container (redis slave pod)                      | `securityContext.runAsUser`                       |
+| `slave.resources`                   | Redis slave CPU/Memory resource requests/limits                | `resources` |
 
 The above parameters map to the env variables defined in [bitnami/redis](http://github.com/bitnami/bitnami-docker-redis). For more information please refer to the [bitnami/redis](http://github.com/bitnami/bitnami-docker-redis) image documentation.
 
