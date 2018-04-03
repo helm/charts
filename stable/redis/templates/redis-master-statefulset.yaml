@@ -1,5 +1,5 @@
-apiVersion: extensions/v1beta1
-kind: Deployment
+apiVersion: apps/v1beta2
+kind: StatefulSet
 metadata:
   name: {{ template "redis.fullname" . }}
   labels:
@@ -8,9 +8,15 @@ metadata:
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
+  selector:
+    matchLabels:
+      role: master
+      app: {{ template "redis.fullname" . }}
+  serviceName: "redis-master"  
   template:
     metadata:
       labels:
+        role: master
         app: {{ template "redis.fullname" . }}
 {{- if .Values.podLabels }}
 {{ toYaml .Values.podLabels | indent 8 }}
@@ -42,7 +48,9 @@ spec:
 {{ toYaml .Values.args | indent 10 }}
         {{- end }}
         env:
-        {{- if .Values.usePassword }}
+        - name: REDIS_REPLICATION_MODE
+          value: master
+        {{- if .Values.redis.usePassword }}
         - name: REDIS_PASSWORD
           valueFrom:
             secretKeyRef:
@@ -51,30 +59,42 @@ spec:
         {{- else }}
         - name: ALLOW_EMPTY_PASSWORD
           value: "yes"
+        - name: REDIS_PORT
+          value: {{ .Values.redis.port | quote }}
         {{- end }}
         - name: REDIS_DISABLE_COMMANDS
-          value: {{ .Values.redisDisableCommands }}
-        {{- if .Values.redisExtraFlags }}
+          value: {{ .Values.redis.disableCommands }}
+        {{- if .Values.redis.extraFlags }}
         - name: REDIS_EXTRA_FLAGS
-          value: {{ .Values.redisExtraFlags | join " " }}
+          value: {{ .Values.redis.extraFlags | join " " }}
         {{- end }}
         ports:
         - name: redis
-          containerPort: 6379
+          containerPort: {{ .Values.redis.port }}
+        {{- if .Values.livenessProbe.enabled }}
         livenessProbe:
+          initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.livenessProbe.successThreshold }}
+          failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
           exec:
             command:
             - redis-cli
             - ping
-          initialDelaySeconds: 30
-          timeoutSeconds: 5
+        {{- end }}
+        {{- if .Values.readinessProbe.enabled}}
         readinessProbe:
+          initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.readinessProbe.successThreshold }}
+          failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
           exec:
             command:
             - redis-cli
             - ping
-          initialDelaySeconds: 5
-          timeoutSeconds: 1
+        {{- end }}
         resources:
 {{ toYaml .Values.resources | indent 10 }}
         volumeMounts:
@@ -88,7 +108,7 @@ spec:
         env:
         - name: REDIS_ALIAS
           value: {{ template "redis.fullname" . }}
-        {{- if .Values.usePassword }}
+        {{- if .Values.redis.usePassword }}
         - name: REDIS_PASSWORD
           valueFrom:
             secretKeyRef:
@@ -108,4 +128,4 @@ spec:
           claimName: {{ .Values.persistence.existingClaim | default (include "redis.fullname" .) }}
       {{- else }}
         emptyDir: {}
-      {{- end -}}
+      {{- end }}
