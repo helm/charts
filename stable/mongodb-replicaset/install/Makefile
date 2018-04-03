@@ -12,13 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM alpine:3.4
-MAINTAINER Anirudh Ramanathan <foxish@google.com>
+all: push
 
-RUN apk update && apk add bash openssl && wget -qO /peer-finder http://storage.googleapis.com/kubernetes-release/pets/peer-finder 
+TAG = 0.6
+PREFIX = staging-k8s.gcr.io/mongodb-install
 
-ENTRYPOINT ["/install.sh"]
+container:
+	docker build -t $(PREFIX):$(TAG) .
 
-ADD files/* /
+push: container
+	gcloud docker -- push $(PREFIX):$(TAG)
 
-RUN chmod -c 755 /install.sh /on-start.sh /peer-finder
+clean:
+	docker rmi $(PREFIX):$(TAG)
