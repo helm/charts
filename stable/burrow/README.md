@@ -48,7 +48,7 @@ Parameter | Description | Default
 `chain.numberOfNodes` | number of nodes for the blockchain network | `1`
 `env` | Environment variables to configure burrow | `{}`
 `extraArgs` | extra arguments to give to the build in `burrow serve` command | `{}`
-`genesisFile` | base64 encoded string for the genesis.json file | See values.yaml
+`genesisFile` | base64 encoded string for the genesis.json file | `""`
 `image.pullPolicy` | Image pull policy | `IfNotPresent`
 `image.repository` | Image repository | `quay.io/monax/db`
 `image.tag` | Image tag | `0.17.1`
@@ -56,7 +56,7 @@ Parameter | Description | Default
 `ingress.enabled` | Enables Ingress | `false`
 `ingress.hosts` | Ingress accepted hostnames | None
 `ingress.tls` | Ingress TLS configuration | None
-`keysFiles` | base64 encoded strings for the priv_validator.json files | See values.yaml
+`keysFiles` | base64 encoded strings for the priv_validator.json files | `{}`
 `nodeSelector` | node labels for pod assignment | `{}`
 `organization` | name of the organization running these nodes (used in the peer's moniker) | `myOrg`
 `persistence.accessMode` | access mode for the chain data pvc | None
