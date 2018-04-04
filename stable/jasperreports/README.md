@@ -47,8 +47,11 @@ The following table lists the configurable parameters of the JasperReports chart
 
 |           Parameter           |                 Description                  |                         Default                          |
 |-------------------------------|----------------------------------------------|----------------------------------------------------------|
-| `image`                       | JasperReports image                          | `bitnami/jasperreports:{VERSION}`                        |
-| `imagePullPolicy`             | Image pull policy                            | `IfNotPresent`                                           |
+| `image.registry`              | JasperReports image registry                 | `docker.io`                                              |
+| `image.repository`            | JasperReports Image name                     | `bitnami/jasperreports`                                  |
+| `image.tag`                   | JasperReports Image tag                      | `{VERSION}`                                              |
+| `image.pullPolicy`            | Image pull policy                            | `Always` if `imageTag` is `latest`, else `IfNotPresent`  |
+| `image.pullSecrets`           | Specify image pull secrets                   | `nil`                                                    |
 | `jasperreportsUsername`       | User of the application                      | `user`                                                   |
 | `jasperreportsPassword`       | Application password                         | _random 10 character long alphanumeric string_           |
 | `jasperreportsEmail`          | User email                                   | `user@example.com`                                       |
