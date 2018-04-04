@@ -47,9 +47,11 @@ The following table lists the configurable parameters of the Drupal chart and th
 
 | Parameter                         | Description                           | Default                                                   |
 | --------------------------------- | ------------------------------------- | --------------------------------------------------------- |
-| `image`                           | Drupal image                          | `bitnami/drupal:{VERSION}`                                |
-| `imagePullSecrets`                | Specify image pull secrets            | `nil` (does not add image pull secrets to deployed pods)  |
-| `imagePullPolicy`                 | Image pull policy                     | `IfNotPresent`                                            |
+| `image.registry`                  | Drupal image registry                 | `docker.io`                                               |
+| `image.repository`                | Drupal Image name                     | `bitnami/drupal`                                          |
+| `image.tag`                       | Drupal Image tag                      | `{VERSION}`                                               |
+| `image.pullPolicy`                | Drupal image pull policy              | `Always` if `imageTag` is `latest`, else `IfNotPresent`   |
+| `image.pullSecrets`               | Specify image pull secrets            | `nil` (does not add image pull secrets to deployed pods)  |
 | `drupalUsername`                  | User of the application               | `user`                                                    |
 | `drupalPassword`                  | Application password                  | _random 10 character long alphanumeric string_            |
 | `drupalEmail`                     | Admin email                           | `user@example.com`                                        |
