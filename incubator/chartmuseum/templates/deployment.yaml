@@ -42,24 +42,23 @@ spec:
 {{- end }}
 {{- end }}
         args:
-        - --port={{ .Values.service.internalPort }}
+        - --port=8080
 {{- if eq .Values.env.open.STORAGE "local" }}
         - --storage-local-rootdir=/storage
 {{- end }}
         ports:
-        - containerPort: {{ .Values.service.internalPort }}
+        - name: http
+          containerPort: 8080
         livenessProbe:
           httpGet:
             path: {{ .Values.env.open.CONTEXT_PATH }}/health
-            port: {{ .Values.service.internalPort }}
-          initialDelaySeconds: 5
-          periodSeconds: 10
+            port: http
+{{ toYaml .Values.probes.liveness | indent 10 }}
         readinessProbe:
           httpGet:
             path: {{ .Values.env.open.CONTEXT_PATH }}/health
-            port: {{ .Values.service.internalPort }}
-          initialDelaySeconds: 5
-          periodSeconds: 10
+            port: http
+{{ toYaml .Values.probes.readiness | indent 10 }}
 {{- if eq .Values.env.open.STORAGE "local" }}
         volumeMounts:
         - mountPath: /storage
@@ -84,9 +83,9 @@ spec:
 
       volumes:
       - name: storage-volume
-      {{- if .Values.persistence.Enabled }}
+      {{- if .Values.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ .Values.persistence.ExistingClaim | default (include "chartmuseum.fullname" .) }}
+          claimName: {{ .Values.persistence.existingClaim | default (include "chartmuseum.fullname" .) }}
       {{- else }}
         emptyDir: {}
       {{- end -}}
