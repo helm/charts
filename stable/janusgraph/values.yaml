@@ -20,7 +20,7 @@ service:
   port: 8182
   serviceAnnotations:
     # the following line is ignored unless unless using a LoadBalancer with GCP
-    cloud.google.com/load-balancer-type: "Internal"
+    # cloud.google.com/load-balancer-type: "Internal"
 
 ## This chart can deploy the Elasticsearch as a dependency.
 ## Use this section to provide elasticsearch chart specific values
