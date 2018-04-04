@@ -14,6 +14,12 @@ spec:
       labels:
         app: {{ template "osclass.fullname" . }}
     spec:
+      {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.image.pullSecrets }}
+        - name: {{ . }}
+      {{- end}}
+      {{- end }}
       containers:
       - name: {{ template "osclass.fullname" . }}
         image: "{{ .Values.image }}"
