@@ -41,8 +41,8 @@ spec:
       {{- end }}
       containers:
       - name: {{ template "redis.fullname" . }}
-        image: "{{ .Values.image }}"
-        imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
+        image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         {{- if .Values.args }}
         args:
 {{ toYaml .Values.args | indent 10 }}
