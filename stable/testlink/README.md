@@ -47,8 +47,11 @@ The following table lists the configurable parameters of the TestLink chart and 
 
 |              Parameter              |               Description               |                         Default                         |
 |-------------------------------------|-----------------------------------------|---------------------------------------------------------|
-| `image`                             | TestLink image                          | `bitnami/testlink:{VERSION}`                            |
-| `imagePullPolicy`                   | Image pull policy                       | `Always` if `imageTag` is `latest`, else `IfNotPresent` |
+| `image.registry`                    | TestLink image registry                 | `docker.io`                                             |
+| `image.repository`                  | TestLink Image name                     | `bitnami/testlink`                                      |
+| `image.tag`                         | TestLink Image tag                      | `{VERSION}`                                             |
+| `image.pullPolicy`                  | Image pull policy                       | `Always` if `imageTag` is `latest`, else `IfNotPresent` |
+| `image.pullSecrets`                 | Specify image pull secrets              | `nil`                                                   |
 | `testlinkUsername`                  | Admin username                          | `user`                                                  |
 | `testlinkPassword`                  | Admin user password                     | _random 10 character long alphanumeric string_          |
 | `testlinkEmail`                     | Admin user email                        | `user@example.com`                                      |
