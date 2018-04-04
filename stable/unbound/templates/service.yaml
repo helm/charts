@@ -12,7 +12,7 @@ spec:
     app: {{ template "unbound.name" . }}
     release: {{ .Release.Name }}
   ports:
-    - name: dns-udp
-      protocol: UDP
-      port: {{ .Values.unbound.serverPort }}
-      targetPort: dns-udp
+  - name: dns-udp
+    protocol: UDP
+    port: {{ .Values.unbound.serverPort }}
+    targetPort: dns-udp
