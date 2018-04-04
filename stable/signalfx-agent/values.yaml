@@ -107,7 +107,6 @@ gatherDockerMetrics: true
 metricNamesToExclude:
   - container_cpu_user_seconds_total
   - container_cpu_system_seconds_total
-  - container_cpu_usage_seconds_total
   - container_cpu_utilization_per_core
   - container_fs_reads_total
   - container_fs_sector_reads_total
