@@ -93,10 +93,11 @@ containerStatsIntervalSeconds:
 # instance should send the metrics so that they are only sent once.
 gatherClusterMetrics: true
 
-# Enables the collectd/docker plugin with some specific config that causes it
-# to send container stats from Docker with certain dimensions from container
-# labels that makes it easy to correlate metrics between cadvisor and docker.
-# Note that docker metrics are not sent for pause containers.
+# Enables the docker-container-stats monitor with some specific config that
+# causes it to send container stats from Docker with certain dimensions from
+# container labels that makes it easy to correlate metrics between cadvisor and
+# docker. Note that docker metrics are not sent for pause containers by
+# default.
 gatherDockerMetrics: true
 
 # A list of metric names that are collected by monitors but are not to be sent

@@ -69,17 +69,23 @@ data:
     {{- end }}
 
     {{ if .Values.gatherDockerMetrics -}}
-    - type: collectd/docker
+    - type: docker-container-stats
       dockerURL: unix:///var/run/docker.sock
       excludedImages:
-        - ".*pause-amd64.*"
-      dimensions:
-        container_image: inspect:Config.Image
-        container_id: inspect:Id
-        container_spec_name: inspect:Config.Labels['io.kubernetes.container.name']
-        kubernetes_pod_name: inspect:Config.Labels['io.kubernetes.pod.name']
-        kubernetes_pod_uid: inspect:Config.Labels['io.kubernetes.pod.uid']
-        kubernetes_namespace: inspect:Config.Labels['io.kubernetes.pod.namespace']
+       - '*pause-amd64*'
+      labelsToDimensions:
+        io.kubernetes.container.name: container_spec_name
+        io.kubernetes.pod.name: kubernetes_pod_name
+        io.kubernetes.pod.uid: kubernetes_pod_uid
+        io.kubernetes.pod.namespace: kubernetes_namespace
+      metricsToExclude:
+       - metricNames:
+         - 'cpu.usage*'
+         - 'cpu.percent'
+         - 'memory.usage*'
+         - 'memory.percent'
+         - 'blkio.io_service_bytes_recursive.*'
+         negated: true
     {{- end }}
 
     {{ range .Values.monitors -}}
