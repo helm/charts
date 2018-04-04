@@ -47,8 +47,11 @@ The following table lists the configurable parameters of the OpenCart chart and 
 
 |              Parameter              |                Description                |                         Default                          |
 |-------------------------------------|-------------------------------------------|----------------------------------------------------------|
-| `image`                             | OpenCart image                            | `bitnami/opencart:{VERSION}`                             |
-| `imagePullPolicy`                   | Image pull policy                         | `Always` if `image` tag is `latest`, else `IfNotPresent` |
+| `image.registry`                    | OpenCart image registry                   | `docker.io`                                              |
+| `image.repository`                  | OpenCart Image name                       | `bitnami/opencart`                                       |
+| `image.tag`                         | OpenCart Image tag                        | `{VERSION}`                                              |
+| `image.pullPolicy`                  | Image pull policy                         | `Always` if `imageTag` is `latest`, else `IfNotPresent`  |
+| `image.pullSecrets`                 | Specify image pull secrets                | `nil`                                                    |
 | `opencartHost`                      | OpenCart host to create application URLs  | `nil`                                                    |
 | `opencartLoadBalancerIP`            | `loadBalancerIP` for the OpenCart Service | `nil`                                                    |
 | `opencartUsername`                  | User of the application                   | `user`                                                   |
