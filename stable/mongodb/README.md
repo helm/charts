@@ -45,8 +45,11 @@ The following table lists the configurable parameters of the MongoDB chart and t
 
 |         Parameter                   |             Description                    |                         Default                          |
 |----------------------------         |-------------------------------------       |----------------------------------------------------------|
-| `image`                             | MongoDB image                              | `bitnami/mongodb:{VERSION}`                              |
-| `imagePullPolicy`                   | Image pull policy                          | `Always` if `imageTag` is `latest`, else `IfNotPresent`. |
+| `image.registry`                    | MongoDB image registry                     | `docker.io`                                              |
+| `image.repository`                  | MongoDB Image name                         | `bitnami/mongodb`                                        |
+| `image.tag`                         | MongoDB Image tag                          | `{VERSION}`                                              |
+| `image.pullPolicy`                  | Image pull policy                          | `Always` if `imageTag` is `latest`, else `IfNotPresent`  |
+| `image.pullSecrets`                 | Specify image pull secrets                 | `nil`                                                    |
 | `mongodbRootPassword`               | MongoDB admin password                     | `random alhpanumeric string (10)`                        |
 | `mongodbUsername`                   | MongoDB custom user                        | `nil`                                                    |
 | `mongodbPassword`                   | MongoDB custom user password               | `random alhpanumeric string (10)`                        |
