@@ -23,7 +23,7 @@ $ helm install --name my-release stable/jenkins
 
 ## Configuration
 
-The following tables lists the configurable parameters of the Jenkins chart and their default values.
+The following tables list the configurable parameters of the Jenkins chart and their default values.
 
 ### Jenkins Master
 | Parameter                         | Description                          | Default                                                                      |
