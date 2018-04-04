@@ -1,11 +1,8 @@
 {{/* vim: set filetype=mustache: */}}
+
 {{/*
 Expand the name of the chart.
 */}}
-{{/*
-Return the appropriate apiVersion for cronjob APIs.
-*/}}
-
 {{- define "elasticsearch-curator.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
