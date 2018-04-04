@@ -17,7 +17,7 @@ spec:
 {{- if (and (eq .Values.service.type "NodePort") (not (empty .Values.service.nodePort))) }}
     nodePort: {{.Values.service.nodePort}}
 {{- else }}
-    targetPort: {{ .Values.service.internalPort }}
+    targetPort: http
 {{- end }}
     protocol: TCP
     name: http

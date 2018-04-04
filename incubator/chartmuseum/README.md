@@ -82,6 +82,7 @@ their default values. See values.yaml for all available options.
 | `env.open.STORAGE_MICROSOFT_PREFIX`    | Prefix to store charts under for MS         | ``                                                  |
 | `env.open.CHART_POST_FORM_FIELD_NAME`  | Form field to query for chart file content  | ``                                                  |
 | `env.open.PROV_POST_FORM_FIELD_NAME`   | Form field to query for chart provenance    | ``                                                  |
+| `env.open.DEPTH`                       | levels of nested repos for multitenancy.    | `0`                                                 |
 | `env.open.DEBUG`                       | Show debug messages                         | `false`                                             |
 | `env.open.LOG_JSON`                    | Output structured logs in JSON              | `true`                                              |
 | `env.open.DISABLE_METRICS`             | Disable Prometheus metrics                  | `true`                                              |
@@ -296,13 +297,13 @@ env:
   open:
     STORAGE: local
 persistence:
-  Enabled: true
-  AccessMode: ReadWriteOnce
-  Size: 8Gi
+  enabled: true
+  accessMode: ReadWriteOnce
+  size: 8Gi
   ## A manually managed Persistent Volume and Claim
-  ## Requires Persistence.Enabled: true
+  ## Requires Persistence.enabled: true
   ## If defined, PVC must be created manually before volume will be bound
-  # ExistingClaim:
+  # existingClaim:
 
   ## Chartmuseum data Persistent Volume Storage Class
   ## If defined, storageClassName: <storageClass>
@@ -311,7 +312,7 @@ persistence:
   ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
   ##   GKE, AWS & OpenStack)
   ##
-  # StorageClass: "-"
+  # storageClass: "-"
 ```
 
 Run command to install
@@ -353,5 +354,3 @@ To delete the deployment and its history:
 ```shell
 helm delete --purge my-chartmuseum
 ```
-
-
