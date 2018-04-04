@@ -47,7 +47,7 @@ Work around options are documented [here](https://github.com/coreos/etcd-operato
 
 ## Configuration
 
-The following tables lists the configurable parameters of the etcd-operator chart and their default values.
+The following table lists the configurable parameters of the etcd-operator chart and their default values.
 
 | Parameter                                         | Description                                                          | Default                                        |
 | ------------------------------------------------- | -------------------------------------------------------------------- | ---------------------------------------------- |

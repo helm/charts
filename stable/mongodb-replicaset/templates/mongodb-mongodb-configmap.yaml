@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app: {{ template "mongodb-replicaset.name" . }}
+    chart: {{ template "mongodb-replicaset.chart" . }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: {{ template "mongodb-replicaset.fullname" . }}-mongodb
+data:
+  mongod.conf: |
+{{ toYaml .Values.configmap | indent 4 }}

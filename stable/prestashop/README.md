@@ -66,7 +66,7 @@ The following table lists the configurable parameters of the PrestaShop chart an
 | `externalDatabase.port`               | SMTP protocol [`ssl`, `none`]               | `3306`                                                   |
 | `externalDatabase.user`               | Existing username in the external db        | `bn_prestashop`                                          |
 | `externalDatabase.password`           | Password for the above username             | `nil`                                                    |
-| `externalDatabase.database`           | Name of the existing databse                | `bitnami_prestashop`                                     |
+| `externalDatabase.database`           | Name of the existing database                | `bitnami_prestashop`                                     |
 | `mariadb.enabled`                     | Wheter to use or not the mariadb chart      | `true`                                                   |
 | `mariadb.mariadbDatabase`             | Database name to create                     | `bitnami_prestashop`                                     |
 | `mariadb.mariadbUser`                 | Database user to create                     | `bn_prestashop`                                          |

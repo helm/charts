@@ -1,7 +1,11 @@
-replicaSet: rs0
 replicas: 3
-minAvailable: 1
 port: 27017
+
+replicaSetName: rs0
+
+podDisruptionBudget: {}
+  # maxUnavailable: 1
+  # minAvailable: 2
 
 auth:
   enabled: false
@@ -13,18 +17,21 @@ auth:
 
 # Specs for the Docker image for the init container that establishes the replica set
 installImage:
-  name: k8s.gcr.io/mongodb-install
-  tag: 0.5
+  repository: k8s.gcr.io/mongodb-install
+  tag: 0.6
   pullPolicy: IfNotPresent
 
 # Specs for the MongoDB image
 image:
-  name: mongo
+  repository: mongo
   tag: 3.6
   pullPolicy: IfNotPresent
 
 # Annotations to be added to MongoDB pods
 podAnnotations: {}
+
+securityContext:
+  runAsUser: 999
 
 resources: {}
 # limits:
@@ -73,20 +80,3 @@ tls:
 
 # Entries for the MongoDB config file
 configmap:
-  storage:
-    dbPath: /data/db
-  net:
-    port: 27017
-    # For Mongo 3.6 we also need to bind to outside world
-    bindIpAll: true
-    # Uncomment for TLS support
-    # ssl:
-    #   mode: requireSSL
-    #   CAFile: /ca/tls.crt
-    #   PEMKeyFile: /work-dir/mongo.pem
-  replication:
-    replSetName: rs0
-  # Uncomment for TLS support or keyfile access control without TLS
-  # security:
-  #   authorization: enabled
-  #   keyFile: /keydir/key.txt
