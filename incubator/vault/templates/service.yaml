@@ -16,13 +16,13 @@ metadata:
 spec:
   type: {{ .Values.service.type }}
   {{- if .Values.service.clusterIP }}
-  clusterIP: {{ .Values.service.clusterIP }} 
+  clusterIP: {{ .Values.service.clusterIP }}
   {{- end }}
   ports:
   - port: {{ .Values.service.externalPort }}
     protocol: TCP
     targetPort: {{ .Values.service.port }}
-    name: {{ .Values.service.name }}
+    name: api
   selector:
     app: {{ template "vault.name" . }}
     release: {{ .Release.Name }}
