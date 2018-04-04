@@ -5,7 +5,7 @@
 image:
   repository: gcr.io/cloud-solutions-images/janusgraph
   tag: v1
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
 
 ## The default configuration provided here uses attached storage for db and indexing
 ## For a distributed deployment, increase the number of replicas and choose
