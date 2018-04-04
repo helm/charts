@@ -45,48 +45,51 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following table lists the configurable parameters of the Moodle chart and their default values.
 
-|              Parameter              |               Description               |                   Default                   |
-|-------------------------------------|-----------------------------------------|---------------------------------------------|
-| `image`                             | Moodle image                            | `bitnami/moodle:{VERSION}`                  |
-| `imagePullPolicy`                   | Image pull policy                       | `IfNotPresent`                              |
-| `moodleUsername`                    | User of the application                 | `user`                                      |
-| `moodlePassword`                    | Application password                    | _random 10 character alphanumeric string_   |
-| `moodleEmail`                       | Admin email                             | `user@example.com`                          |
-| `smtpHost`                          | SMTP host                               | `nil`                                       |
-| `smtpPort`                          | SMTP port                               | `nil` (but moodle internal default is 25)   |
-| `smtpProtocol`                      | SMTP Protocol (options: ssl,tls, nil)   | `nil`                                       |
-| `smtpUser`                          | SMTP user                               | `nil`                                       |
-| `smtpPassword`                      | SMTP password                           | `nil`                                       |
-| `serviceType`                       | Kubernetes Service type                 | `LoadBalancer`                              |
-| `ingress.enabled`                   | If ingress should be created            | `false`                                     |
-| `ingress.annotations`               | Any ingress annotations                 | `nil`                                       |
-| `ingress.hosts`                     | List of Ingress hosts                   | `nil`                                       |
-| `ingress.tls`                       | List of certs. If defined, https is set | `nil`                                       |
-| `affinity`                          | Set affinity for the moodle pods        | `nil`                                       |
-| `resources`                         | CPU/Memory resource requests/limits     | Memory: `512Mi`, CPU: `300m`                |
-| `persistence.enabled`               | Enable persistence using PVC            | `true`                                      |
-| `persistence.storageClass`          | PVC Storage Class for Moodle volume     | `nil` (uses alpha storage class annotation) |
-| `persistence.accessMode`            | PVC Access Mode for Moodle volume       | `ReadWriteOnce`                             |
-| `persistence.size`                  | PVC Storage Request for Moodle volume   | `8Gi`                                       |
-| `persistence.existingClaim`         | If PVC exists&bounded for Moodle        | `nil` (when nil, new one is requested)      |
-| `allowEmptyPassword`                | Allow DB blank passwords                | `yes`                                       |
-| `externalDatabase.host`             | Host of the external database           | `nil`                                       |
-| `externalDatabase.port`             | Port of the external database           | `3306`                                      |
-| `externalDatabase.user`             | Existing username in the external db    | `bn_moodle`                                 |
-| `externalDatabase.password`         | Password for the above username         | `nil`                                       |
-| `externalDatabase.database`         | Name of the existing database            | `bitnami_moodle`                            |
-| `mariadb.enabled`                   | Whether to install the mariadb chart    | `true`                                      |
-| `mariadb.mariadbDatabase`           | Database name to create                 | `bitnami_moodle`                            |
-| `mariadb.mariadbUser`               | Database user to create                 | `bn_moodle`                                 |
-| `mariadb.mariadbPassword`           | Password for the database               | `nil`                                       |
-| `mariadb.mariadbRootPassword`       | MariaDB admin password                  | `nil`                                       |
-| `mariadb.persistence.enabled`       | Enable MariaDB persistence using PVC    | `true`                                      |
-| `mariadb.persistence.storageClass`  | PVC Storage Class for MariaDB volume    | `generic`                                   |
-| `mariadb.persistence.accessMode`    | PVC Access Mode for MariaDB volume      | `ReadWriteOnce`                             |
-| `mariadb.persistence.size`          | PVC Storage Request for MariaDB volume  | `8Gi`                                       |
-| `mariadb.persistence.existingClaim` | If PVC exists&bounded for MariaDB       | `nil` (when nil, new one is requested)      |
-| `mariadb.affinity`                  | Set affinity for the MariaDB pods       | `nil`                                       |
-| `mariadb.resources`                 | CPU/Memory resource requests/limits     | Memory: `256Mi`, CPU: `250m`                |
+|              Parameter              |               Description               |                   Default                               |
+|-------------------------------------|-----------------------------------------|-------------------------------------------------------- |
+| `image.registry`                    | Moodle image registry                   | `docker.io`                                             |
+| `image.repository`                  | Moodle Image name                       | `bitnami/moodle`                                        |
+| `image.tag`                         | Moodle Image tag                        | `{VERSION}`                                             |
+| `image.pullPolicy`                  | Image pull policy                       | `Always` if `imageTag` is `latest`, else `IfNotPresent` |
+| `image.pullSecrets`                 | Specify image pull secrets              | `nil`                                                   |
+| `moodleUsername`                    | User of the application                 | `user`                                                  |
+| `moodlePassword`                    | Application password                    | _random 10 character alphanumeric string_               |
+| `moodleEmail`                       | Admin email                             | `user@example.com`                                      |
+| `smtpHost`                          | SMTP host                               | `nil`                                                   |
+| `smtpPort`                          | SMTP port                               | `nil` (but moodle internal default is 25)               |
+| `smtpProtocol`                      | SMTP Protocol (options: ssl,tls, nil)   | `nil`                                                   |
+| `smtpUser`                          | SMTP user                               | `nil`                                                   |
+| `smtpPassword`                      | SMTP password                           | `nil`                                                   |
+| `serviceType`                       | Kubernetes Service type                 | `LoadBalancer`                                          |
+| `ingress.enabled`                   | If ingress should be created            | `false`                                                 |
+| `ingress.annotations`               | Any ingress annotations                 | `nil`                                                   |
+| `ingress.hosts`                     | List of Ingress hosts                   | `nil`                                                   |
+| `ingress.tls`                       | List of certs. If defined, https is set | `nil`                                                   |
+| `affinity`                          | Set affinity for the moodle pods        | `nil`                                                   |
+| `resources`                         | CPU/Memory resource requests/limits     | Memory: `512Mi`, CPU: `300m`                            |
+| `persistence.enabled`               | Enable persistence using PVC            | `true`                                                  |
+| `persistence.storageClass`          | PVC Storage Class for Moodle volume     | `nil` (uses alpha storage class annotation)             |
+| `persistence.accessMode`            | PVC Access Mode for Moodle volume       | `ReadWriteOnce`                                         |
+| `persistence.size`                  | PVC Storage Request for Moodle volume   | `8Gi`                                                   |
+| `persistence.existingClaim`         | If PVC exists&bounded for Moodle        | `nil` (when nil, new one is requested)                  |
+| `allowEmptyPassword`                | Allow DB blank passwords                | `yes`                                                   |
+| `externalDatabase.host`             | Host of the external database           | `nil`                                                   |
+| `externalDatabase.port`             | Port of the external database           | `3306`                                                  |
+| `externalDatabase.user`             | Existing username in the external db    | `bn_moodle`                                             |
+| `externalDatabase.password`         | Password for the above username         | `nil`                                                   |
+| `externalDatabase.database`         | Name of the existing database           | `bitnami_moodle`                                        |
+| `mariadb.enabled`                   | Whether to install the mariadb char     | `true`                                                  |
+| `mariadb.mariadbDatabase`           | Database name to create                 | `bitnami_moodle`                                        |
+| `mariadb.mariadbUser`               | Database user to create                 | `bn_moodle`                                             |
+| `mariadb.mariadbPassword`           | Password for the database               | `nil`                                                   |
+| `mariadb.mariadbRootPassword`       | MariaDB admin password                  | `nil`                                                   |
+| `mariadb.persistence.enabled`       | Enable MariaDB persistence using PVC    | `true`                                                  |
+| `mariadb.persistence.storageClass`  | PVC Storage Class for MariaDB volume    | `generic`                                               |
+| `mariadb.persistence.accessMode`    | PVC Access Mode for MariaDB volume      | `ReadWriteOnce`                                         |
+| `mariadb.persistence.size`          | PVC Storage Request for MariaDB volume  | `8Gi`                                                   |
+| `mariadb.persistence.existingClaim` | If PVC exists&bounded for MariaDB       | `nil` (when nil, new one is requested)                  |
+| `mariadb.affinity`                  | Set affinity for the MariaDB pods       | `nil`                                                   |
+| `mariadb.resources`                 | CPU/Memory resource requests/limits     | Memory: `256Mi`, CPU: `250m`                            |
 
 The above parameters map to the env variables defined in [bitnami/moodle](http://github.com/bitnami/bitnami-docker-moodle). For more information please refer to the [bitnami/moodle](http://github.com/bitnami/bitnami-docker-moodle) image documentation.
 
