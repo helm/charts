@@ -7,7 +7,7 @@ metadata:
     app: {{ template "filebeat.name" . }}
     chart: {{ template "filebeat.chart" . }}
     release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}   
+    heritage: {{ .Release.Service }}
 rules:
 - apiGroups: [""]
   resources:
