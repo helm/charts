@@ -5,10 +5,10 @@ name: redis-exporter
 version: 0.1.0
 home: https://github.com/oliver006/redis_exporter
 sources:
- - https://github.com/oliver006/redis_exporter
+  - https://github.com/oliver006/redis_exporter
 keywords:
-- prometheus
-- redis
+  - prometheus
+  - redis
 maintainers:
-- name: acondrat
-  email: arcadie.condrat@gmail.com
+  - name: acondrat
+    email: arcadie.condrat@gmail.com
