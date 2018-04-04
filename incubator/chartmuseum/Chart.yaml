@@ -10,7 +10,10 @@ keywords:
 - helm
 - charts repo
 maintainers:
-- name: ChartMuseum
-  email: chartmuseum@gmail.com
-- name: Cloud Posse
+- name: codefresh-io
+  email: opensource@codefresh.io
+- name: cloudposse
   email: hello@cloudposse.com
+- name: chartmuseum
+  email: chartmuseum@gmail.com
+
