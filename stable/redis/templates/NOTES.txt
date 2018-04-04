@@ -8,6 +8,7 @@ Redis can be accessed via port {{ .Values.master.port }} on the following DNS na
 Redis can be accessed via port {{ .Values.master.port }} on the following DNS name from within your cluster:
 
 {{ template "redis.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local
+
 {{- end }}
 
 

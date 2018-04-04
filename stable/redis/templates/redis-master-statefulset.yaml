@@ -10,12 +10,14 @@ metadata:
 spec:
   selector:
     matchLabels:
+      release: "{{ .Release.Name }}"
       role: master
       app: {{ template "redis.fullname" . }}
   serviceName: "redis-master"  
   template:
     metadata:
       labels:
+        release: "{{ .Release.Name }}"
         role: master
         app: {{ template "redis.fullname" . }}
 {{- if .Values.podLabels }}
