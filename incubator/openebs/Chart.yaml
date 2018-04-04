@@ -12,3 +12,6 @@ keywords:
   - storage
 sources:
   - https://github.com/openebs/openebs
+maintainers:
+  - name: kmova
+    email: kiran.mova@openebs.io
