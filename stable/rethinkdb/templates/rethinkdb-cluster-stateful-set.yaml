@@ -102,6 +102,11 @@ spec:
       resources:
         requests:
           storage: {{ .Values.cluster.persistentVolume.size | quote }}
+{{- if (eq "-" .Values.cluster.persistentVolume.storageClass) }}   
+      storageClassName: ""
+{{- else }}
+      storageClassName: {{ .Values.cluster.persistentVolume.storageClass | quote }}
+{{- end }}
 {{- else }}
       volumes:
         - name: datadir
