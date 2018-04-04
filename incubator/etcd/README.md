@@ -39,7 +39,7 @@ The following table lists the configurable parameters of the etcd chart and thei
 | `image.repository`              | Etcd container image repository      | `k8s.gcr.io/etcd-amd64`                                |
 | `image.tag`                     | Etcd container image tag             | `3.2.14`                                               |
 | `etcd.peerTLS`                  | Encrypt peer traffic                 | `false`                                                |
-| `resources`                     | CPU/memory resource requests/limits	 | `{}`                                                   |
+| `resources`                     | CPU/memory resource requests/limits  | `{}`                                                   |
 | `persistentVolume.size`         | Persistent volume size               | `1Gi`                                                  |
 | `persistentVolume.storageClass` | Persistent volume storage class      | `""`                                                   |
 | `persistentVolume.annotations`  | Persistent volume annotations        | `{}`                                                   |
@@ -168,14 +168,13 @@ Scaling-down is similar. For instance, changing the number of replicas to ``4``:
 
 ```shell
 $ helm upgrade <release-name> --set replicaCount=4 incubator/etcd
-statefulset "etcd" edited
 
-$ kubectl get pods -l "component=${RELEASE-NAME}-etcd"
-NAME      READY     STATUS    RESTARTS   AGE
-etcd-0    1/1       Running   0          8m
-etcd-1    1/1       Running   0          8m
-etcd-2    1/1       Running   0          8m
-etcd-3    1/1       Running   0          4s
+$ kubectl get pods -l app=etcd,release=${RELEASE-NAME}
+NAME               READY  STATUS             RESTARTS  AGE
+my-release-etcd-0  1/1    Running            0         9m
+my-release-etcd-1  1/1    Running            0         9m
+my-release-etcd-2  1/1    Running            0         9m
+my-release-etcd-3  1/1    Running            0         1m
 ```
 
 Once a replica is terminated (either by running `kubectl delete pod my-release-etcd-${ID}`
