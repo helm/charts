@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "ethereum.fullname" . }}-geth-config
+  labels:
+    app: {{ template "ethereum.name" . }}
+    chart: {{ template "ethereum.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+  networkid: "{{ .Values.geth.genesis.networkId }}"
+  genesis.json: |-
+    {
+        "config": {
+            "chainId": {{ .Values.geth.genesis.networkId }},
+            "homesteadBlock": 0,
+            "eip150Block": 0,
+            "eip155Block": 0,
+            "eip158Block": 0
+        },
+        "difficulty":  {{ .Values.geth.genesis.difficulty | quote }},
+        "gasLimit": {{ .Values.geth.genesis.gasLimit | quote }},
+        "alloc": {
+            {{- if .Values.geth.account.address }}
+            {{ .Values.geth.account.address | quote }}: {
+                "balance": "1000000000000000000000000"
+            }
+            {{- end }}
+        }
+    }
