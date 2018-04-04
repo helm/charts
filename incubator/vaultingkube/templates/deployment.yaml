@@ -1,3 +1,4 @@
+{{- if and .Values.vaultAddress .Values.vaultToken .Values.vaultRootMountPath }}
 apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
@@ -54,3 +55,4 @@ spec:
 {{ toYaml . | indent 8 }}
     {{- end }}
       serviceAccountName: {{ template "vaultingkube.serviceAccountName" . }}
+{{- end }}
