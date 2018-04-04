@@ -1,0 +1,1 @@
+Unbound release has been installed or upgraded. For information on configuring unbound as an upstream resolver for kube-dns see the readme.
