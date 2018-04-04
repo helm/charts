@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-config
+data:
+  janusgraph.properties: |-
+    gremlin.graph=org.janusgraph.core.JanusGraphFactory
+
+    {{- $eshostname := (index .Values.properties "index.search.hostname") | default (printf "%s-elasticsearch-client" .Release.Name | trunc 63 | trimSuffix "-")}}
+    {{- range $key, $val := .Values.properties }}
+    {{- if ne $key "index.search.hostname" }}
+    {{ $key }}={{ $val }}
+    {{- end -}}
+    {{ end }}
+
+    {{- if eq (index .Values.properties "index.search.backend") "elasticsearch" "es"}}
+    index.search.hostname={{ $eshostname }}
+    {{- end -}}
+
+
