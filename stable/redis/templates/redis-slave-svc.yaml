@@ -32,5 +32,6 @@ spec:
   {{- end }}
   selector:
     app: {{ template "redis.fullname" . }}
+    release: "{{ .Release.Name }}"
     role: slave
 {{- end}}

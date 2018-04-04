@@ -39,7 +39,7 @@ persistence:
 
   ## The path the volume will be mounted at, useful when using different
   ## Redis images.
-  path: /bitnami
+  path: /bitnami/redis/data
 
   ## The subdirectory of the volume to mount to, useful in dev environments and one PV for multiple services.
   subPath: ""
