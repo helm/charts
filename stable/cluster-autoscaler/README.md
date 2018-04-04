@@ -96,6 +96,7 @@ Parameter | Description | Default
 `service.loadBalancerIP` | IP address to assign to load balancer (if supported) | `""`
 `service.loadBalancerSourceRanges` | list of IP CIDRs allowed access to load balancer (if supported) | `[]`
 `service.servicePort` | service port to expose | `8085`
+`service.portName` | name for service port | `http`
 `service.type` | type of service to create | `ClusterIP`
 `spotinst.account` | Spotinst Account ID (required if `cloudprovider=spotinst`) | `""`
 `spotinst.token` | Spotinst API token (required if `cloudprovider=spotinst`) | `""`

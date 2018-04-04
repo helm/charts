@@ -53,7 +53,7 @@ spec:
         - name: OUTPUT_BUFFER_QUEUE_LIMIT
           value: {{ .Values.elasticsearch.buffer_queue_limit | quote }}
         resources:
-{{ toYaml .Values.resources | indent 10 }}
+{{ toYaml .Values.resources | indent 8 }}
         volumeMounts:
         - name: varlog
           mountPath: /var/log
@@ -65,6 +65,9 @@ spec:
           readOnly: true
         - name: config-volume-{{ template "fluentd-elasticsearch.fullname" . }}
           mountPath: /etc/fluent/config.d
+{{- if .Values.extraVolumeMounts }}          
+{{ toYaml .Values.extraVolumeMounts | indent 8 }}
+{{- end }}
       terminationGracePeriodSeconds: 30
       volumes:
       - name: varlog
@@ -80,6 +83,9 @@ spec:
       - name: config-volume-{{ template "fluentd-elasticsearch.fullname" . }}
         configMap:
           name: {{ template "fluentd-elasticsearch.fullname" . }}
+{{- if .Values.extraVolumes }}          
+{{ toYaml .Values.extraVolumes | indent 6 }}
+{{- end }}
 {{- if .Values.tolerations }}
       tolerations:
 {{ toYaml .Values.tolerations | indent 6 }}
