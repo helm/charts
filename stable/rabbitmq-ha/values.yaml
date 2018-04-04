@@ -210,8 +210,7 @@ customConfigMap: false
 
 ## Add additional labels to all resources
 ##
-extraLabels:
-  maintainer: kumina
+extraLabels: {}
 
 ## Role Based Access
 ## Ref: https://kubernetes.io/docs/admin/authorization/rbac/
