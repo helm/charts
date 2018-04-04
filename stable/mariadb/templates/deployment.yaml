@@ -13,6 +13,12 @@ spec:
       labels:
         app: {{ template "mariadb.name" . }}
     spec:
+      {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.image.pullSecrets }}
+        - name: {{ . }}
+      {{- end}}
+      {{- end }}
       {{- if .Values.securitySettings.enabled }}
       securityContext:
         runAsUser: {{ .Values.securitySettings.runAsUser }}
@@ -30,8 +36,8 @@ spec:
           mountPath: /bitnami/mariadb
       containers:
       - name: mariadb
-        image: "{{ .Values.image }}"
-        imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
+        image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         env:
         {{- if .Values.usePassword }}
         - name: MARIADB_ROOT_PASSWORD
