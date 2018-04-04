@@ -47,8 +47,11 @@ The following table lists the configurable parameters of the Magento chart and t
 
 |             Parameter              |               Description                |                         Default                          |
 |------------------------------------|------------------------------------------|----------------------------------------------------------|
-| `image`                            | Magento image                            | `bitnami/magento:{VERSION}`                              |
-| `imagePullPolicy`                  | Image pull policy                        | `Always` if `image` tag is `latest`, else `IfNotPresent` |
+| `image.registry`                   | Magento image registry                   | `docker.io`                                              |
+| `image.repository`                 | Magento Image name                       | `bitnami/magento`                                        |
+| `image.tag`                        | Magento Image tag                        | `{VERSION}`                                              |
+| `image.pullPolicy`                 | Image pull policy                        | `Always` if `imageTag` is `latest`, else `IfNotPresent`  |
+| `image.pullSecrets`                | Specify image pull secrets               | `nil`                                                    |
 | `magentoHost`                      | Magento host to create application URLs  | `nil`                                                    |
 | `magentoLoadBalancerIP`            | `loadBalancerIP` for the magento Service | `nil`                                                    |
 | `magentoUsername`                  | User of the application                  | `user`                                                   |
