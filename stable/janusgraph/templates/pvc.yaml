@@ -5,7 +5,7 @@ metadata:
   name: {{ template "janusgraph.fullname" . }}
   labels:
     app: {{ template "janusgraph.name" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    chart: {{ template "janusgraph.chart" . }}
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
