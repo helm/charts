@@ -153,7 +153,7 @@ spec:
         - name: concourse-work-dir
           emptyDir: {}
   {{- end }}
-{{- if and (eq .Capabilities.KubeVersion.Major "1") (ge .Capabilities.KubeVersion.Minor "7") }}
+{{- if semverCompare "^1.7-0" .Capabilities.KubeVersion.GitVersion }}
   updateStrategy:
     type: {{ .Values.worker.updateStrategy }}
 {{- end }}

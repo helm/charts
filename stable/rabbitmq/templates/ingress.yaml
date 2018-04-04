@@ -1,0 +1,41 @@
+{{- if .Values.ingress.enabled }}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: "{{ template "rabbitmq.fullname" . }}"
+  labels:
+    app: {{ template "rabbitmq.name" . }}
+    chart: {{ template "rabbitmq.chart" .  }}
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+  annotations:
+    {{- if .Values.ingress.tls }}
+    ingress.kubernetes.io/secure-backends: "true"
+    {{- end }}
+    {{- range $key, $value := .Values.ingress.annotations }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
+spec:
+  rules:
+  {{- if .Values.ingress.hostName }}
+  - host: {{ .Values.ingress.hostName }}
+    http:
+  {{- else }}
+  - http:
+  {{- end }}
+      paths:
+        - path: {{ default "/" .path }}
+          backend:
+            serviceName: {{ template "rabbitmq.fullname" . }}
+            servicePort: {{ .Values.rabbitmq.managerPort }}
+{{- if .Values.ingress.tls }}
+  tls:
+  - hosts:
+    {{- if  .Values.ingress.hostName }}
+    - {{ .Values.ingress.hostName }}
+    secretName: {{  .Values.ingress.tlsSecret }}
+    {{- else}}
+    - secretName: {{  .Values.ingress.tlsSecret }}
+    {{- end }}
+{{- end }}
+{{- end }}
