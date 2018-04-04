@@ -60,7 +60,7 @@ their default values.
 | `persistence.existingClaim`            | Name of an existing PVC to use for config                                                        | `nil`                                                    |
 | `persistence.accessMode`               | PVC Access Mode for config volume                                                                | `ReadWriteOnce`                                          |
 | `persistence.size`                     | PVC Storage Request for config volume                                                            | `1Gi`                                                    |
-| `resources`                            | Resoure limits for Quassel pod                                                                   | `{}`                                                     |
+| `resources`                            | Resource limits for Quassel pod                                                                   | `{}`                                                     |
 | `nodeSelector`                         | Map of node labels for pod assignment                                                            | `{}`                                                     |
 | `tolerations`                          | List of node taints to tolerate                                                                  | `[]`                                                     |
 | `affinity`                             | Map of node/pod affinities                                                                       | `{}`                                                     |
