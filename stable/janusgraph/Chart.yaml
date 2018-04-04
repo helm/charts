@@ -4,6 +4,7 @@ description: Open source, scalable graph database.
 name: janusgraph
 version: 0.1.0
 home: http://janusgraph.org
+icon: https://raw.githubusercontent.com/JanusGraph/janusgraph/master/janusgraph.png
 sources:
 - https://github.com/JanusGraph/janusgraph
 maintainers:
