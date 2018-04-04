@@ -45,47 +45,50 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following table lists the configurable parameters of the Osclass chart and their default values.
 
-|             Parameter              |               Description                |                   Default                   |
-|------------------------------------|------------------------------------------|---------------------------------------------|
-| `imageTag`                         | `bitnami/osclass` image tag.             | Osclass image version                       |
-| `imagePullPolicy`                  | Image pull policy.                       | `IfNotPresent`.                             |
-| `osclassHost`                      | Osclass host to create application URLs  | `nil`                                       |
-| `osclassLoadBalancerIP`            | `loadBalancerIP` for the Osclass Service | `nil`                                       |
-| `osclassUsername`                  | User of the application                  | `user`                                      |
-| `osclassPassword`                  | Application password                     | `bitnami`                                   |
-| `osclassEmail`                     | Admin email                              | `user@example.com`                          |
-| `osclassWebTitle`                  | Application tittle                       | `Sample Web Page`                           |
-| `osclassPingEngines`               | Allow site to appear in search engines   | `1`                                         |
-| `osclassSaveStats`                 | Send statistics and reports to Osclass   | `1`                                         |
-| `smtpHost`                         | SMTP host                                | `nil`                                       |
-| `smtpPort`                         | SMTP port                                | `nil`                                       |
-| `smtpUser`                         | SMTP user                                | `nil`                                       |
-| `smtpPassword`                     | SMTP password                            | `nil`                                       |
-| `smtpProtocol`                     | SMTP protocol [`ssl`, `tls`]             | `nil`                                       |
-| `serviceType`                      | Kubernetes Service type                  | `LoadBalancer`                              |
-| `resources`                        | CPU/Memory resource requests/limits      | Memory: `512Mi`, CPU: `300m`                |
-| `persistence.enabled`              | Enable persistence using PVC             | `true`                                      |
-| `persistence.apache.storageClass`  | PVC Storage Class for Apache volume      | `nil` (uses alpha storage class annotation) |
-| `persistence.apache.accessMode`    | PVC Access Mode for Apache volume        | `ReadWriteOnce`                             |
-| `persistence.apache.size`          | PVC Storage Request for Apache volume    | `1Gi`                                       |
-| `persistence.moodle.storageClass`  | PVC Storage Class for OSClass volume     | `nil` (uses alpha storage class annotation) |
-| `persistence.moodle.accessMode`    | PVC Access Mode for OSClass volume       | `ReadWriteOnce`                             |
-| `persistence.moodle.size`          | PVC Storage Request for OSClass volume   | `8Gi`                                       |
-| `allowEmptyPassword`               | Allow DB blank passwords                 | `yes`                                       |
-| `externalDatabase.host`            | Host of the external database            | `nil`                                       |
-| `externalDatabase.port`            | Port of the external database            | `3306`                                      |
-| `externalDatabase.user`            | Existing username in the external db     | `bn_osclass`                                |
-| `externalDatabase.password`        | Password for the above username          | `nil`                                       |
-| `externalDatabase.database`        | Name of the existing databse             | `bitnami_osclass`                           |
-| `mariadb.enabled`                  | Wheter to use or not the mariadb chart   | `true`                                      |
-| `mariadb.mariadbDatabase`          | Database name to create                  | `bitnami_osclass`                           |
-| `mariadb.mariadbUser`              | Database user to create                  | `bn_osclass`                                |
-| `mariadb.mariadbPassword`          | Password for the database                | `nil`                                       |
-| `mariadb.mariadbRootPassword`      | MariaDB admin password                   | `nil`                                       |
-| `mariadb.persistence.enabled`      | Enable MariaDB persistence using PVC     | `true`                                      |
-| `mariadb.persistence.storageClass` | PVC Storage Class for MariaDB volume     | `generic`                                   |
-| `mariadb.persistence.accessMode`   | PVC Access Mode for MariaDB volume       | `ReadWriteOnce`                             |
-| `mariadb.persistence.size`         | PVC Storage Request for MariaDB volume   | `8Gi`                                       |
+|             Parameter              |               Description                |                   Default                               |
+|------------------------------------|------------------------------------------|-------------------------------------------------------- |
+| `image.registry`                   | Osclass image registry                   | `docker.io`                                             |
+| `image.repository`                 | Osclass Image name                       | `bitnami/osclass`                                       |
+| `image.tag`                        | Osclass Image tag                        | `{VERSION}`                                             |
+| `image.pullPolicy`                 | Image pull policy                        | `Always` if `imageTag` is `latest`, else `IfNotPresent` |
+| `image.pullSecrets`                | Specify image pull secrets               | `nil`                                                   |
+| `osclassHost`                      | Osclass host to create application URLs  | `nil`                                                   |
+| `osclassLoadBalancerIP`            | `loadBalancerIP` for the Osclass Service | `nil`                                                   |
+| `osclassUsername`                  | User of the application                  | `user`                                                  |
+| `osclassPassword`                  | Application password                     | `bitnami`                                               |
+| `osclassEmail`                     | Admin email                              | `user@example.com`                                      |
+| `osclassWebTitle`                  | Application tittle                       | `Sample Web Page`                                       |
+| `osclassPingEngines`               | Allow site to appear in search engines   | `1`                                                     |
+| `osclassSaveStats`                 | Send statistics and reports to Osclass   | `1`                                                     |
+| `smtpHost`                         | SMTP host                                | `nil`                                                   |
+| `smtpPort`                         | SMTP port                                | `nil`                                                   |
+| `smtpUser`                         | SMTP user                                | `nil`                                                   |
+| `smtpPassword`                     | SMTP password                            | `nil`                                                   |
+| `smtpProtocol`                     | SMTP protocol [`ssl`, `tls`]             | `nil`                                                   |
+| `serviceType`                      | Kubernetes Service type                  | `LoadBalancer`                                          |
+| `resources`                        | CPU/Memory resource requests/limits      | Memory: `512Mi`, CPU: `300m`                            |
+| `persistence.enabled`              | Enable persistence using PVC             | `true`                                                  |
+| `persistence.apache.storageClass`  | PVC Storage Class for Apache volume      | `nil` (uses alpha storage class annotation)             |
+| `persistence.apache.accessMode`    | PVC Access Mode for Apache volume        | `ReadWriteOnce`                                         |
+| `persistence.apache.size`          | PVC Storage Request for Apache volume    | `1Gi`                                                   |
+| `persistence.moodle.storageClass`  | PVC Storage Class for OSClass volume     | `nil` (uses alpha storage class annotation)             |
+| `persistence.moodle.accessMode`    | PVC Access Mode for OSClass volume       | `ReadWriteOnce`                                         |
+| `persistence.moodle.size`          | PVC Storage Request for OSClass volume   | `8Gi`                                                   |
+| `allowEmptyPassword`               | Allow DB blank passwords                 | `yes`                                                   |
+| `externalDatabase.host`            | Host of the external database            | `nil`                                                   |
+| `externalDatabase.port`            | Port of the external database            | `3306`                                                  |
+| `externalDatabase.user`            | Existing username in the external db     | `bn_osclass`                                            |
+| `externalDatabase.password`        | Password for the above username          | `nil`                                                   |
+| `externalDatabase.database`        | Name of the existing databse             | `bitnami_osclass`                                       |
+| `mariadb.enabled`                  | Wheter to use or not the mariadb chart   | `true`                                                  |
+| `mariadb.mariadbDatabase`          | Database name to create                  | `bitnami_osclass`                                       |
+| `mariadb.mariadbUser`              | Database user to create                  | `bn_osclass`                                            |
+| `mariadb.mariadbPassword`          | Password for the database                | `nil`                                                   |
+| `mariadb.mariadbRootPassword`      | MariaDB admin password                   | `nil`                                                   |
+| `mariadb.persistence.enabled`      | Enable MariaDB persistence using PVC     | `true`                                                  |
+| `mariadb.persistence.storageClass` | PVC Storage Class for MariaDB volume     | `generic`                                               |
+| `mariadb.persistence.accessMode`   | PVC Access Mode for MariaDB volume       | `ReadWriteOnce`                                         |
+| `mariadb.persistence.size`         | PVC Storage Request for MariaDB volume   | `8Gi`                                                   |
 
 The above parameters map to the env variables defined in [bitnami/osclass](http://github.com/bitnami/bitnami-docker-osclass). For more information please refer to the [bitnami/osclass](http://github.com/bitnami/bitnami-docker-osclass) image documentation.
 
