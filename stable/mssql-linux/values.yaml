@@ -16,6 +16,7 @@ persistence:
   # existingDataClaim:
   # existingTransactionLogClaim:
   # existingBackupClaim:
+  # existingMasterClaim:
   # storageClass: "-"
   dataAccessMode: ReadWriteOnce
   dataSize: 1Gi
@@ -23,6 +24,8 @@ persistence:
   transactionLogSize: 1Gi
   backupAccessMode: ReadWriteOnce
   backupSize: 1Gi
+  masterAccessMode: ReadWriteOnce
+  masterSize: 1Gi
 livenessprobe:
   initialDelaySeconds: 15
   periodSeconds: 20
