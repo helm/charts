@@ -1,7 +1,21 @@
 ## Bitnami Ghost image version
 ## ref: https://hub.docker.com/r/bitnami/ghost/tags/
 ##
-image: bitnami/ghost:1.22.1-r0
+image:
+  registry: docker.io
+  repository: bitnami/ghost
+  tag: 1.22.1
+  ## Specify a imagePullPolicy
+  ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
+  ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+  ##
+  pullPolicy: IfNotPresent
+  ## Optionally specify an array of imagePullSecrets.
+  ## Secrets must be manually created in the namespace.
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+  ##
+  # pullSecrets:
+  #   - myRegistrKeySecretName
 
 ## Busybox image used to configure volume permissions
 ##
@@ -10,12 +24,6 @@ volumePermissions:
     name: busybox
     tag: 1.27.1
 #    pullPolicy:
-
-## Specify a imagePullPolicy
-## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
-## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
-##
-# imagePullPolicy:
 
 ## Ghost host to create application URLs
 ## ref: https://github.com/bitnami/bitnami-docker-ghost#configuration
@@ -55,7 +63,7 @@ ghostBlogTitle: User's Blog
 
 ## Set to `yes` to allow the container to be started with blank passwords
 ## ref: https://github.com/bitnami/bitnami-docker-wordpress#environment-variables
-allowEmptyPassword: yes
+allowEmptyPassword: "yes"
 
 ## SMTP mail delivery configuration
 ## ref: https://github.com/bitnami/bitnami-docker-redmine/#smtp-configuration
