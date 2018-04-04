@@ -208,6 +208,11 @@ podAntiAffinity: soft
 ##
 customConfigMap: false
 
+## Add additional labels to all resources
+##
+extraLabels:
+  maintainer: kumina
+
 ## Role Based Access
 ## Ref: https://kubernetes.io/docs/admin/authorization/rbac/
 ##
