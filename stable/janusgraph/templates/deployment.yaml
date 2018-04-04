@@ -29,10 +29,10 @@ spec:
             - containerPort: 8182
               protocol: TCP
           volumeMounts:
-          - name: janusgraph-config
-            mountPath: /janusgraph-config
-          - name: local-db
-            mountPath: {{ .Values.persistence.path }}
+            - name: janusgraph-config
+              mountPath: /janusgraph-config
+            - name: local-db
+              mountPath: {{ .Values.persistence.path }}
           resources:
 {{ toYaml .Values.resources | indent 12 }}
       volumes:
