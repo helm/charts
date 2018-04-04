@@ -1,12 +1,21 @@
 ## Bitnami ownCloud image version
 ## ref: https://hub.docker.com/r/bitnami/owncloud/tags/
 ##
-image: bitnami/owncloud:10.0.7-r4
-
-## Specify a imagePullPolicy
-## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
-##
-imagePullPolicy: IfNotPresent
+image:
+  registry: docker.io
+  repository: bitnami/owncloud
+  tag: 10.0.7
+  ## Specify a imagePullPolicy
+  ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
+  ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
+  ##
+  pullPolicy: IfNotPresent
+  ## Optionally specify an array of imagePullSecrets.
+  ## Secrets must be manually created in the namespace.
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
+  ##
+  # pullSecrets:
+  #   - myRegistrKeySecretName
 
 ## For Kubernetes v1.4, v1.5 and v1.6, use 'extensions/v1beta1'
 ## For Kubernetes v1.7, use 'networking.k8s.io/v1'
