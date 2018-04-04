@@ -29,26 +29,18 @@ spec:
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         env:
         {{- if .Values.admin.useTLS }}
-        - name: KONG_ADMIN_LISTEN_SSL
-          value: 0.0.0.0:{{ .Values.admin.containerPort }}
-        - name: KONG_ADMIN_SSL
-          value: "on"
+        - name: KONG_ADMIN_LISTEN
+          value: "0.0.0.0:{{ .Values.admin.containerPort }} ssl"
         {{- else }}
         - name: KONG_ADMIN_LISTEN
           value: 0.0.0.0:{{ .Values.admin.containerPort }}
-        - name: KONG_ADMIN_SSL
-          value: "off"
         {{- end }}
         {{- if .Values.proxy.useTLS }}
-        - name: KONG_PROXY_LISTEN_SSL
-          value: 0.0.0.0:{{ .Values.proxy.containerPort }}
-        - name: KONG_SSL
-          value: "on"
+        - name: KONG_PROXY_LISTEN
+          value: "0.0.0.0:{{ .Values.proxy.containerPort }} ssl"
         {{- else }}
         - name: KONG_PROXY_LISTEN
           value: 0.0.0.0:{{ .Values.proxy.containerPort }}
-        - name: KONG_SSL
-          value: "off"
         {{- end }}
         - name: KONG_NGINX_DAEMON
           value: "off"
