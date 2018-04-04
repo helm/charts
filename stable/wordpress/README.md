@@ -75,7 +75,7 @@ The following table lists the configurable parameters of the WordPress chart and
 | `externalDatabase.user`              | Existing username in the external db       | `bn_wordpress`                                             |
 | `externalDatabase.password`          | Password for the above username            | `nil`                                                      |
 | `externalDatabase.database`          | Name of the existing database              | `bitnami_wordpress`                                        |
-| `externalDatabase.port`              | Database port number                       | `3306`                                        |
+| `externalDatabase.port`              | Database port number                       | `3306`                                                     |
 | `serviceType`                        | Kubernetes Service type                    | `LoadBalancer`                                             |
 | `nodePorts.http`                     | Kubernetes http node port                  | `""`                                                       |
 | `nodePorts.https`                    | Kubernetes https node port                 | `""`                                                       |
