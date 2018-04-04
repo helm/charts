@@ -30,7 +30,6 @@ elasticsearch:
     create: true  # required for kubernetes >1.7
 
 
-
 properties:
   ## use this section to add or adjust JanusGraph properties as needed
   ## all uncommented values in this section will be placed in the janusgraph.properties file
