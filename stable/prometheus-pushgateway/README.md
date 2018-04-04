@@ -50,8 +50,8 @@ The following table lists the configurable parameters of the pushgateway chart a
 | `resources`             | CPU/Memory resource requests/limits                                                                                           | `{}`               |
 | `replicaCount`          | Number of replicas                                                                                                            | `1`                |
 | `service.type`          | Service type                                                                                                                  | `ClusterIP`        |
-| `service.port`          | The service port                                                                                                              | `9100`             |
-| `service.targetPort`    | The target port of the container                                                                                              | `9100`             |
+| `service.port`          | The service port                                                                                                              | `9091`             |
+| `service.targetPort`    | The target port of the container                                                                                              | `9091`             |
 | `serviceAccount.create` | Specifies whether a service account should be created.                                                                        | `true`             |
 | `serviceAccount.name`   | Service account to be used. If not set and `serviceAccount.create` is `true`, a name is generated using the fullname template |                    |
 | `tolerations`           | List of node taints to tolerate                                                                                               | `{}`               |
