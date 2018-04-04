@@ -47,8 +47,11 @@ The following table lists the configurable parameters of the PrestaShop chart an
 
 |               Parameter               |                 Description                 |                         Default                          |
 |---------------------------------------|---------------------------------------------|----------------------------------------------------------|
-| `image`                               | PrestaShop image                            | `bitnami/prestashop:{VERSION}`                           |
-| `imagePullPolicy`                     | Image pull policy                           | `Always` if `image` tag is `latest`, else `IfNotPresent` |
+| `image.registry`                      | PrestaShop image registry                   | `docker.io`                                              |
+| `image.repository`                    | PrestaShop image name                       | `bitnami/prestashop`                                     |
+| `image.tag`                           | PrestaShop image tag                        | `{VERSION}`                                              |
+| `image.pullPolicy`                    | Image pull policy                           | `Always` if `imageTag` is `latest`, else `IfNotPresent`  |
+| `image.pullSecrets`                   | Specify image pull secrets                  | `nil`                                                    |
 | `prestashopHost`                      | PrestaShop host to create application URLs  | `nil`                                                    |
 | `prestashopLoadBalancerIP`            | `loadBalancerIP` for the PrestaShop Service | `nil`                                                    |
 | `prestashopUsername`                  | User of the application                     | `user@example.com`                                       |
