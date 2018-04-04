@@ -42,6 +42,8 @@ env:
     CHART_POST_FORM_FIELD_NAME: chart
     # form field which will be queried for the provenance file content
     PROV_POST_FORM_FIELD_NAME: prov
+    # levels of nested repos for multitenancy. The default depth is 0 (singletenant server)
+    DEPTH: 0
     # show debug messages
     DEBUG: false
     # output structured logs as json
@@ -77,17 +79,31 @@ replica:
 service:
   type: ClusterIP
   externalPort: 8080
-  internalPort: 8080
   nodePort:
   annotations: {}
 
-resources:
-  limits:
-    cpu: 100m
-    memory: 128Mi
-  requests:
-    cpu: 80m
-    memory: 64Mi
+resources: {}
+#  limits:
+#    cpu: 100m
+#    memory: 128Mi
+#  requests:
+#    cpu: 80m
+#    memory: 64Mi
+
+probes:
+  liveness:
+    initialDelaySeconds: 5
+    periodSeconds: 10
+    timeoutSeconds: 1
+    successThreshold: 1
+    failureThreshold: 3
+  readiness:
+    initialDelaySeconds: 5
+    periodSeconds: 10
+    timeoutSeconds: 1
+    successThreshold: 1
+    failureThreshold: 3
+
 
 nodeSelector: {}
 
@@ -96,13 +112,13 @@ tolerations: []
 affinity: {}
 
 persistence:
-  Enabled: false
-  AccessMode: ReadWriteOnce
-  Size: 8Gi
+  enabled: false
+  accessMode: ReadWriteOnce
+  size: 8Gi
   ## A manually managed Persistent Volume and Claim
-  ## Requires Persistence.Enabled: true
+  ## Requires persistence.enabled: true
   ## If defined, PVC must be created manually before volume will be bound
-  # ExistingClaim:
+  # existingClaim:
 
   ## Chartmuseum data Persistent Volume Storage Class
   ## If defined, storageClassName: <storageClass>
@@ -111,7 +127,7 @@ persistence:
   ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
   ##   GKE, AWS & OpenStack)
   ##
-  # StorageClass: "-"
+  # storageClass: "-"
 
 ## Ingress for load balancer
 ingress:
