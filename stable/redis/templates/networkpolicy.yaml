@@ -4,14 +4,14 @@ apiVersion: {{ template "networkPolicy.apiVersion" . }}
 metadata:
   name: "{{ template "redis.fullname" . }}"
   labels:
-    app: {{ template "redis.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app: {{ template "redis.name" . }}
+    chart: {{ template "redis.chart" . }}
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
   podSelector:
     matchLabels:
-      app: {{ template "redis.fullname" . }}
+      app: {{ template "redis.name" . }}
   ingress:
     # Allow inbound connections
     - ports:

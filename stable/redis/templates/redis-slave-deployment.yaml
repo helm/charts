@@ -4,8 +4,8 @@ kind: Deployment
 metadata:
   name: {{ template "redis.fullname" . }}-slave
   labels:
-    app: {{ template "redis.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app: {{ template "redis.name" . }}
+    chart: {{ template "redis.chart" . }}
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
@@ -17,29 +17,35 @@ spec:
       labels:
         release: "{{ .Release.Name }}"
         role: slave
-        app: {{ template "redis.fullname" . }}
-      {{- if (.Values.slave.podLabels | default .Values.podLabels) }}
-{{ toYaml (.Values.slave.podLabels | default .Values.podLabels) | indent 8 }}
+        app: {{ template "redis.name" . }}
+      {{- if (.Values.slave.podLabels | default .Values.master.podLabels) }}
+{{ toYaml (.Values.slave.podLabels | default .Values.master.podLabels) | indent 8 }}
       {{- end }}
-      {{- if (.Values.slave.podAnnotations | default .Values.podAnnotations) }}
+      {{- if (.Values.slave.podAnnotations | default .Values.master.podAnnotations) }}
       annotations:
-{{ toYaml (.Values.slave.podAnnotations | default .Values.podAnnotations) | indent 8 }}
+{{ toYaml (.Values.slave.podAnnotations | default .Values.master.podAnnotations) | indent 8 }}
       {{- end }}
     spec:
+      {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+        {{- range .Values.image.pullSecrets }}
+        - name: {{ . }}
+        {{- end}}
+      {{- end}}
       {{- /* Include master securityContext if slave securityContext not defined */ -}}
       {{ include "redis.slave.securityContext" . | indent 6 }}  
-      {{- if (.Values.slave.nodeSelector | default .Values.nodeSelector) }}
+      {{- if (.Values.slave.nodeSelector | default .Values.master.nodeSelector) }}
       nodeSelector:
-{{ toYaml (.Values.slave.nodeSelector | default .Values.nodeSelector) | indent 8 }}
+{{ toYaml (.Values.slave.nodeSelector | default .Values.master.nodeSelector) | indent 8 }}
       {{- end }}
-      {{- if (.Values.slave.tolerations | default .Values.tolerations) }}
+      {{- if (.Values.slave.tolerations | default .Values.master.tolerations) }}
       tolerations:
-{{ toYaml (.Values.slave.tolerations | default .Values.tolerations) | indent 8 }}
+{{ toYaml (.Values.slave.tolerations | default .Values.master.tolerations) | indent 8 }}
       {{- end }}
       containers:
       - name: {{ template "redis.fullname" . }}
         image: {{ template "redis.image" . }}
-        imagePullPolicy: {{ .Values.imagePullPolicy | default "" | quote }}
+        image.pullPolicy: {{ .Values.image.pullPolicy | default "" | quote }}
         {{- if (.Values.slave.args | default .Values.master.args) }}
         args:
 {{ toYaml (.Values.slave.args | default .Values.master.args) | indent 10 }}
@@ -90,11 +96,11 @@ spec:
         {{- /* Include master readinessProbe if slave readinessProbe not defined */ -}}
         {{ include "redis.slave.readinessProbe" . | indent 8 }}  
         resources:
-{{ toYaml (.Values.slave.resources | default .Values.resources) | indent 10 }}
+{{ toYaml (.Values.slave.resources | default .Values.master.resources) | indent 10 }}
   {{- if .Values.metrics.enabled }}
       - name: metrics
-        image: "{{ .Values.metrics.image }}:{{ .Values.metrics.imageTag }}"
-        imagePullPolicy: {{ .Values.metrics.imagePullPolicy | quote }}
+        image: {{ template "metrics.image" . }}
+        image.pullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
         env:
         - name: REDIS_ALIAS
           value: {{ template "redis.fullname" . }}
