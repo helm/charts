@@ -4,13 +4,13 @@ kind: Service
 metadata:
   name: {{ template "redis.fullname" . }}-slave
   labels:
-    app: {{ template "redis.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app: {{ template "redis.name" . }}
+    chart: {{ template "redis.chart" . }}
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
   annotations:
-{{- if .Values.service.annotations }}
-{{ toYaml .Values.service.annotations | indent 4 }}
+{{- if .Values.master.service.annotations }}
+{{ toYaml .Values.master.service.annotations | indent 4 }}
 {{- end }}
 {{- if .Values.metrics.enabled }}
 {{ toYaml .Values.metrics.annotations | indent 4 }}
@@ -31,7 +31,7 @@ spec:
     targetPort: metrics
   {{- end }}
   selector:
-    app: {{ template "redis.fullname" . }}
+    app: {{ template "redis.name" . }}
     release: "{{ .Release.Name }}"
     role: slave
 {{- end}}
