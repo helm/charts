@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: extensions/v1
 kind: Deployment
 metadata:
   name: {{ template "airflow.fullname" . }}-flower
@@ -8,7 +8,7 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 spec:
-  replicas: {{ .Values.airflow.flower_replicas }}
+  replicas: 1
   minReadySeconds: 10
   strategy:
     type: RollingUpdate

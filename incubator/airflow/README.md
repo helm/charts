@@ -1,6 +1,7 @@
-# Airflow
+# Airflow / Celery
 
-Airflow is a platform to programmatically author, schedule and monitor workflows.
+[Airflow](https://airflow.apache.org/) is a platform to programmatically author, schedule and
+monitor workflows.
 
 
 ## Install Chart
@@ -23,15 +24,11 @@ If you want to delete your Chart, use this command:
 helm delete  --purge "airflow"
 ```
 
-The deployment uses the
-[Helm's Trick decribed here](https://github.com/kubernetes/helm/blob/master/docs/charts_tips_and_tricks.md#automatically-roll-deployments-when-configmaps-or-secrets-change)
-to force reployment when the configmap template file change.
-
 ### Helm ingresses
 
 The Chart provides ingress configuration to allow customization the installation by adapting
 the `config.yaml` depending on your setup. Please read the comments in the value.yaml file for more
-detail on how to configure your reverse proxy.
+detail on how to configure your reverse proxy or load balancer.
 
 ### Prefix
 
@@ -52,14 +49,19 @@ http://mycompany.com/airflow/flower
 ```
 
 NOTE: Mounting the Airflow UI under a subpath requires an airflow version > 1.9.x. For the moment
-(March 2018) this is **not** available on official package, you will have to use an image where 
-airflow has been updated to its current HEAD. You can use the following one: 
+(March 2018) this is **not** available on official package, you will have to use an image where
+airflow has been updated to its current HEAD. You can use the following one:
 `stibbons31/docker-airflow-dev:2.0dev`
 
 Please also note than Airflow UI and Flower do not behave the same:
 
-- Airflow Web UI behave transparently, to configure it one just need to specify the `ingress.web.path` value.
-- Flower cannot handle this scheme directly and requires to use an URL rewrite mechanism in front of it. In short, it is able to generate the right URLs in the returned HTML file but cannot respond to these URL. It is commonly found in software that wasn't intended to work under something else than a root URL or localhost port. To use it, see the `value.yaml` in detail on how to configure your ingress controller to rewrite the URL (or "strip" the prefix path)
+- Airflow Web UI behave transparently, to configure it one just need to specify the
+  `ingress.web.path` value.
+- Flower cannot handle this scheme directly and requires to use an URL rewrite mechanism in front
+  of it. In short, it is able to generate the right URLs in the returned HTML file but cannot
+  respond to these URL. It is commonly found in software that wasn't intended to work under
+  something else than a root URL or localhost port. To use it, see the `value.yaml` in detail on how
+  to configure your ingress controller to rewrite the URL (or "strip" the prefix path).
 
 ### Airflow configuration
 
@@ -70,9 +72,6 @@ See the
 [Airflow documentation for more information](http://airflow.readthedocs.io/en/latest/configuration.html?highlight=__CORE__#setting-configuration-options)
 
 This helm chart allows you to add these additional settings with the value key `airflow.config`.
-But beware changing these values won't trigger a redeployment automatically (see the section above
-"Helm Deployment"). You may need to force the redeployment in this case (`--recreate-pods`) or
-use the [Configmap Controller](https://github.com/fabric8io/configmapcontroller/).
 
 ### Worker Statefulset
 
@@ -81,6 +80,21 @@ It is used to freeze their DNS using a Kubernetes Headless Service, and allow th
 requests the logs from each workers individually.
 This requires to expose a port (8793) and ensure the pod DNS is accessible to the web server pod,
 which is why StatefulSet is for.
+
+## DAGs Deployment
+
+### Mount a Persistent Volume
+
+You can store your DAG files on an external volume, and mount this volume into the relevant Pods
+(scheduler, web, worker). In this scenario, your CI/CD pipeline should update the DAG files in the 
+PV.
+Since all Pods should have the same collection of DAG files, it is recommended to create just one PV
+that is shared. This ensures that the Pods are always in sync about the DagBag. 
+
+To share a PV with multiple Pods, the PV needs to have accessMode 'ReadOnlyMany' or 'ReadWriteMany'.
+If you are on AWS, you can use [Elastic File System (EFS)](https://aws.amazon.com/efs/). 
+If you are on Azure, you can use [Azure File Storage (AFS)](https://docs.microsoft.com/en-us/azure/aks/azure-files-dynamic-pv).
+
 
 ### Embedded DAGs
 
@@ -110,4 +124,4 @@ more information.
 
 ## Helm chart Configuration
 
-Full documentation can be found the comments in the `values.yaml` file.
+Full and up-to-date documentation can be found in the comments of the `values.yaml` file.
