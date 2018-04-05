@@ -45,7 +45,7 @@ chart and deletes the release.
 
 ### General Configuration Parameters
 
-The following tables lists the configurable parameters of the Kong chart
+The following table lists the configurable parameters of the Kong chart
 and their default values.
 
 | Parameter                         | Description                                                            | Default               |
