@@ -66,7 +66,7 @@ The following table lists the configurable parameters of the ownCloud chart and 
 | `allowEmptyPassword`                | Allow DB blank passwords                  | `yes`                                                   |
 | `externalDatabase.host`             | Host of the external database             | `nil`                                                   |
 | `externalDatabase.port`             | Port of the external database             | `3306`                                                  |
-| `externalDatabase.database`         | Name of the existing databse              | `bitnami_owncloud`                                      |
+| `externalDatabase.database`         | Name of the existing database              | `bitnami_owncloud`                                      |
 | `externalDatabase.user`             | Existing username in the external db      | `bn_owncloud`                                           |
 | `externalDatabase.password`         | Password for the above username           | `nil`                                                   |
 | `mariadb.mariadbDatabase`           | Database name to create                   | `bitnami_owncloud`                                      |
