@@ -119,29 +119,27 @@ You can check state of re-joining from ``my-release-etcd-1``'s logs:
 $ kubectl logs my-release-etcd-1
 + hostname
 + HOSTNAME=my-release-etcd-1
-+ export 'ETCD_DATA_DIR=/etcd/default.etcd'
-+ ip+  r get 1
++ ip r+  get 1
 awk '{print $NF;exit}'
-+ IP=172.17.0.6
-+ PROTO=http
-+ SET_ID=1
++ IP=172.17.0.8
++ PROTO=https
++ SET_ID=3
 + '[' -e /etcd/member_id ]
-Adding an extra member..
-+ '[' 1 -ge 1 ]
-+ echo 'Adding an extra member..'
-+ wait_member my-release-etcd-1.my-release-etcd.default
-+ echo -n 'Waiting for my-release-etcd-1.my-release-etcd.default to come up '
++ '[' 3 -ge 1 ]
++ await_host my-release-etcd-1.my-release-etcd.default
++ echo 'Waiting for [my-release-etcd-1.my-release-etcd.default] to come up '
 + true
 + echo -n .
 + ping -W 1 -c 1 my-release-etcd-1.my-release-etcd.default
+Waiting for [my-release-etcd-1.my-release-etcd.default] to come up
 ping: bad address 'my-release-etcd-1.my-release-etcd.default'
 + sleep 1s
 + true
 + echo -n .
 + ping -W 1 -c 1 my-release-etcd-1.my-release-etcd.default
 + break
-+ echo ' done'
-+ add_to_cluster
++ echo -n ' done'
++ add_member
 ...
 ```
 
