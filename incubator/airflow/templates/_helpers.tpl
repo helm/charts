@@ -38,3 +38,14 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 {{- $name := default "redis" .Values.redis.nameOverride -}}
 {{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
+
+{{/*
+Create a random string if the supplied key does not exist
+*/}}
+{{- define "airflow.defaultsecret" -}}
+{{- if . -}}
+{{- . | b64enc | quote -}}
+{{- else -}}
+{{- randAlphaNum 10 | b64enc | quote -}}
+{{- end -}}
+{{- end -}}

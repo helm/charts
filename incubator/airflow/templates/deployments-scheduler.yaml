@@ -31,6 +31,22 @@ spec:
           envFrom:
             - configMapRef:
                 name: "{{ template "airflow.fullname" . }}-env"
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "AIRFLOW.fullname" . }}
+                  key: postgresUser
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "AIRFLOW.fullname" . }}
+                  key: postgresPassword
+                name: {{ template "airflow.fullname" . }}
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "AIRFLOW.fullname" . }}
+                  key: RedisPassword
           {{- if .Values.persistence.enabled }}
           volumeMounts:
             - name: dags-data

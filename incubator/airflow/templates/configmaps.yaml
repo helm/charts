@@ -8,9 +8,6 @@ data:
   ## Postgres DB configuration
   POSTGRES_HOST: "{{ template "airflow.postgresql.fullname" . }}"
   POSTGRES_DB: "{{ .Values.postgresql.postgresDatabase }}"
-  POSTGRES_USER: "{{ .Values.postgresql.postgresUser }}"
-  POSTGRES_PASSWORD: "{{ .Values.postgresql.postgresPassword }}"
-  REDIS_PASSWORD: "{{ .Values.redis.redisPassword }}"
   ## Redis DB configuration
   REDIS_HOST: "{{ template "airflow.redis.fullname" . }}"
   ## Flower PORT

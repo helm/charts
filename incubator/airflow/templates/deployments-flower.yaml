@@ -32,6 +32,23 @@ spec:
           envFrom:
             - configMapRef:
                 name: "{{ template "airflow.fullname" . }}-env"
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "AIRFLOW.fullname" . }}
+                  key: postgresUser
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "AIRFLOW.fullname" . }}
+                  key: postgresPassword
+                name: {{ template "airflow.fullname" . }}
+                  key: redisUser
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "AIRFLOW.fullname" . }}
+                  key: RedisPassword
           ports:
             - name: flower
               containerPort: 5555

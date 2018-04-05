@@ -1,5 +1,6 @@
 # Duplicate this file and put your customization here
 
+
 ##
 ## common settings and setting for the webserver
 airflow:
@@ -59,12 +60,14 @@ airflow:
   pod_disruption_budget:
     maxUnavailable: 1
 
+
 ##
 ## Configuration for celery workers
 celery:
   ##
   ## Number of celery workers to initialize
   num_workers: 1
+
 
 ##
 ## Ingress configuration
@@ -148,6 +151,7 @@ ingress:
       # traefik.frontend.rule.type: PathPrefixStrip
       # kubernetes.io/ingress.class: traefik
 
+
 ##
 ## Storage configuration
 persistence:
@@ -166,6 +170,7 @@ persistence:
   ##
   ## Persistant storage size request
   size: 1Gi
+
 
 ##
 ## Configure DAGs deployment and update
@@ -202,9 +207,10 @@ dags:
   ## print debug logs
   git_sync_debug: false
 
+
+##
 ## Configuration values for the postgresql dependency.
 ## ref: https://github.com/kubernetes/charts/blob/master/stable/postgresql/README.md
-##
 postgresql:
   ##
   ## Use the PostgreSQL chart dependency.
@@ -231,6 +237,7 @@ postgresql:
     ##
     ## Enable PostgreSQL persistence using Persistent Volume Claims.
     enabled: true
+
 
 ## Configuration values for the postgresql dependency.
 ## ref: https://github.com/kubernetes/charts/blob/master/stable/redis/README.md
