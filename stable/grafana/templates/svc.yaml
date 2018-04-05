@@ -14,7 +14,7 @@ metadata:
   name: {{ template "grafana.server.fullname" . }}
 spec:
   ports:
-    - name: {{ default "http" .Values.server.service.httpPortName | quote }}
+    - name: {{ .Values.server.service.httpPortName | quote }}
       port: {{ .Values.server.service.httpPort }}
       protocol: TCP
       targetPort: 3000
