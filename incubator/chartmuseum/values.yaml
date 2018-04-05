@@ -5,7 +5,7 @@ strategy:
     maxUnavailable: 0
 image:
   repository: chartmuseum/chartmuseum
-  tag: v0.4.2
+  tag: v0.5.1
   pullPolicy: IfNotPresent
 env:
   open:
