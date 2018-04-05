@@ -34,19 +34,19 @@ spec:
             - name: POSTGRES_USER
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "AIRFLOW.fullname" . }}
+                  name: {{ template "airflow.fullname" . }}
                   key: postgresUser
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "AIRFLOW.fullname" . }}
+                  name: {{ template "airflow.fullname" . }}
                   key: postgresPassword
                 name: {{ template "airflow.fullname" . }}
             - name: REDIS_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "AIRFLOW.fullname" . }}
-                  key: RedisPassword
+                  name: {{ template "airflow.fullname" . }}
+                  key: redisPassword
           {{- if .Values.persistence.enabled }}
           volumeMounts:
             - name: dags-data
