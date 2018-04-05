@@ -1,5 +1,5 @@
 name: kube2iam
-version: 0.8.4
+version: 0.8.5
 appVersion: 0.10.0
 description: Provide IAM credentials to pods based on annotations.
 keywords:
@@ -11,10 +11,10 @@ home: https://github.com/jtblin/kube2iam
 sources:
 - https://github.com/jtblin/kube2iam
 maintainers:
-- name: Josh Carp
+- name: jmcarp
   email: jm.carp@gmail.com
-- name: Michael Haselton
+- name: icereval
   email: michael.haselton@gmail.com
-- name: Michael Goodness
+- name: mgoodness
   email: mgoodness@gmail.com
 engine: gotpl
