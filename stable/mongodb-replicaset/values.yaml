@@ -49,6 +49,8 @@ affinity: {}
 
 tolerations: []
 
+extraLabels: {}
+
 persistentVolume:
   enabled: true
   ## mongodb-replicaset data Persistent Volume Storage Class

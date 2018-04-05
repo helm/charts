@@ -61,6 +61,7 @@ The following tables lists the configurable parameters of the mongodb chart and 
 | `nodeSelector`                      | Node labels for pod assignment                                            | `{}`                                                |
 | `affinity`                          | Node/pod affinities                                                       | `{}`                                                |
 | `tolerations`                       | List of node taints to tolerate                                           | `[]`                                                |
+| `extraLabels`                       | Additional labels to add to resources                                     | `{}`                                                |
 
 *MongoDB config file*
 
