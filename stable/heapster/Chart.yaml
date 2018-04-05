@@ -3,7 +3,7 @@ description: Heapster enables Container Cluster Monitoring and Performance Analy
 name: heapster
 version: 0.2.9
 appVersion: 1.3.0
-home: https://www.heapster.net/
+home: https://github.com/kubernetes/heapster
 sources:
 - https://github.com/kubernetes/heapster
 - https://github.com/kubernetes/contrib/tree/master/addon-resizer
