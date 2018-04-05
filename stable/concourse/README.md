@@ -80,7 +80,7 @@ The following table lists the configurable parameters of the Concourse chart and
 | `concourse.resourceCacheCleanupInterval` | The interval on which to check for and release old caches of resource versions | `30s` |
 | `concourse.baggageclaimDriver` | The filesystem driver used by baggageclaim | `naive` |
 | `concourse.containerPlacementStrategy` | The selection strategy for placing containers onto workers | `random` |
-| `concourse.dockerRegistry` | An URL pointing to the Docker registry to use to fetch Docker images | `nil` |
+| `concourse.dockerRegistry` | A URL pointing to the Docker registry to use to fetch Docker images | `nil` |
 | `concourse.insecureDockerRegistry` | Docker registry(ies) (comma separated) to allow connecting to even if not secure | `nil` |
 | `concourse.encryption.enabled` | Enable encryption of pipeline configuration | `false` |
 | `concourse.basicAuth.enabled` | Enable basic auth for the "main" Concourse team| `true` |
