@@ -55,15 +55,9 @@ spec:
       {{- end }}
       containers:
       - name: {{ template "redis.fullname" . }}
-<<<<<<< HEAD
-        image: "{{ .Values.image.registry }}/{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-        imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
-        {{- if .Values.args }}
-=======
         image: "{{ template "redis.image" . }}"
         image.pullPolicy: {{ default "" .Values.image.pullPolicy | quote }}
         {{- if .Values.master.args }}
->>>>>>> Apply suggestions from @sameersbn and @tompizmor
         args:
 {{ toYaml .Values.master.args | indent 10 }}
         {{- end }}
