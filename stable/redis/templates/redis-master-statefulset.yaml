@@ -3,8 +3,8 @@ kind: StatefulSet
 metadata:
   name: {{ template "redis.fullname" . }}
   labels:
-    app: {{ template "redis.fullname" . }}
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    app: {{ template "redis.name" . }}
+    chart: {{ template "redis.chart" . }}
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
 spec:
@@ -12,42 +12,48 @@ spec:
     matchLabels:
       release: "{{ .Release.Name }}"
       role: master
-      app: {{ template "redis.fullname" . }}
+      app: {{ template "redis.name" . }}
   serviceName: "redis-master"  
   template:
     metadata:
       labels:
         release: "{{ .Release.Name }}"
         role: master
-        app: {{ template "redis.fullname" . }}
-{{- if .Values.podLabels }}
-{{ toYaml .Values.podLabels | indent 8 }}
+        app: {{ template "redis.name" . }}
+{{- if .Values.master.podLabels }}
+{{ toYaml .Values.master.podLabels | indent 8 }}
 {{- end }}
-      {{- if .Values.podAnnotations }}
+      {{- if .Values.master.podAnnotations }}
       annotations:
-{{ toYaml .Values.podAnnotations | indent 8 }}
+{{ toYaml .Values.master.podAnnotations | indent 8 }}
       {{- end }}
     spec:
-      {{- if .Values.securityContext.enabled }}
+      {{- if .Values.image.pullSecrets }}
+      imagePullSecrets:
+        {{- range .Values.image.pullSecrets }}
+        - name: {{ . }}
+        {{- end}}
+      {{- end}}
+      {{- if .Values.master.securityContext.enabled }}
       securityContext:
-        fsGroup: {{ .Values.securityContext.fsGroup }}
-        runAsUser: {{ .Values.securityContext.runAsUser }}
+        fsGroup: {{ .Values.master.securityContext.fsGroup }}
+        runAsUser: {{ .Values.master.securityContext.runAsUser }}
       {{- end }}
-      {{- if .Values.nodeSelector }}
+      {{- if .Values.master.nodeSelector }}
       nodeSelector:
-{{ toYaml .Values.nodeSelector | indent 8 }}
+{{ toYaml .Values.master.nodeSelector | indent 8 }}
       {{- end }}
-      {{- if .Values.tolerations }}
+      {{- if .Values.master.tolerations }}
       tolerations:
-{{ toYaml .Values.tolerations | indent 8 }}
+{{ toYaml .Values.master.tolerations | indent 8 }}
       {{- end }}
       containers:
       - name: {{ template "redis.fullname" . }}
-        image: "{{ .Values.image }}"
-        imagePullPolicy: {{ default "" .Values.imagePullPolicy | quote }}
-        {{- if .Values.args }}
+        image: "{{ template "redis.image" . }}"
+        image.pullPolicy: {{ default "" .Values.image.pullPolicy | quote }}
+        {{- if .Values.master.args }}
         args:
-{{ toYaml .Values.args | indent 10 }}
+{{ toYaml .Values.master.args | indent 10 }}
         {{- end }}
         env:
         - name: REDIS_REPLICATION_MODE
@@ -73,40 +79,40 @@ spec:
         ports:
         - name: redis
           containerPort: {{ .Values.master.port }}
-        {{- if .Values.livenessProbe.enabled }}
+        {{- if .Values.master.livenessProbe.enabled }}
         livenessProbe:
-          initialDelaySeconds: {{ .Values.livenessProbe.initialDelaySeconds }}
-          periodSeconds: {{ .Values.livenessProbe.periodSeconds }}
-          timeoutSeconds: {{ .Values.livenessProbe.timeoutSeconds }}
-          successThreshold: {{ .Values.livenessProbe.successThreshold }}
-          failureThreshold: {{ .Values.livenessProbe.failureThreshold }}
+          initialDelaySeconds: {{ .Values.master.livenessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.master.livenessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.master.livenessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.master.livenessProbe.successThreshold }}
+          failureThreshold: {{ .Values.master.livenessProbe.failureThreshold }}
           exec:
             command:
             - redis-cli
             - ping
         {{- end }}
-        {{- if .Values.readinessProbe.enabled}}
+        {{- if .Values.master.readinessProbe.enabled}}
         readinessProbe:
-          initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
-          periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
-          timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
-          successThreshold: {{ .Values.readinessProbe.successThreshold }}
-          failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
+          initialDelaySeconds: {{ .Values.master.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ .Values.master.readinessProbe.periodSeconds }}
+          timeoutSeconds: {{ .Values.master.readinessProbe.timeoutSeconds }}
+          successThreshold: {{ .Values.master.readinessProbe.successThreshold }}
+          failureThreshold: {{ .Values.master.readinessProbe.failureThreshold }}
           exec:
             command:
             - redis-cli
             - ping
         {{- end }}
         resources:
-{{ toYaml .Values.resources | indent 10 }}
+{{ toYaml .Values.master.resources | indent 10 }}
         volumeMounts:
         - name: redis-data
-          mountPath: {{ .Values.persistence.path }}
-          subPath: {{ .Values.persistence.subPath }}
+          mountPath: {{ .Values.master.persistence.path }}
+          subPath: {{ .Values.master.persistence.subPath }}
 {{- if .Values.metrics.enabled }}
       - name: metrics
-        image: "{{ .Values.metrics.image }}:{{ .Values.metrics.imageTag }}"
-        imagePullPolicy: {{ .Values.metrics.imagePullPolicy | quote }}
+        image: {{ template "metrics.image" . }}
+        image.pullPolicy: {{ .Values.metrics.image.pullPolicy | quote }}
         env:
         - name: REDIS_ALIAS
           value: {{ template "redis.fullname" . }}
@@ -125,9 +131,9 @@ spec:
 {{- end }}
       volumes:
       - name: redis-data
-      {{- if .Values.persistence.enabled }}
+      {{- if .Values.master.persistence.enabled }}
         persistentVolumeClaim:
-          claimName: {{ .Values.persistence.existingClaim | default (include "redis.fullname" .) }}
+          claimName: {{ .Values.master.persistence.existingClaim | default (include "redis.fullname" .) }}
       {{- else }}
         emptyDir: {}
       {{- end }}
