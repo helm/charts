@@ -70,12 +70,12 @@ their default values. See values.yaml for all available options.
 | `env.open.ALIBABA_BUCKET`              | Bucket to store charts in for Alibaba       | ``                                                  |
 | `env.open.ALIBABA_PREFIX`              | Prefix to store charts under for Alibaba    | ``                                                  |
 | `env.open.ALIBABA_ENDPOINT`            | Alternative Alibaba endpoint                | ``                                                  |
-| `env.open.ALIBABA_SSE`                 | Server side encryption algoritm to use      | ``                                                  |
+| `env.open.ALIBABA_SSE`                 | Server side encryption algorithm to use      | ``                                                  |
 | `env.open.AMAZON_BUCKET`               | Bucket to store charts in for AWS           | ``                                                  |
 | `env.open.AMAZON_ENDPOINT`             | Alternative AWS endpoint                    | ``                                                  |
 | `env.open.AMAZON_PREFIX`               | Prefix to store charts under for AWS        | ``                                                  |
 | `env.open.AMAZON_REGION`               | Region to use for bucket access for AWS     | ``                                                  |
-| `env.open.AMAZON_SSE`                  | Server side encryption algoritm to use      | ``                                                  |
+| `env.open.AMAZON_SSE`                  | Server side encryption algorithm to use      | ``                                                  |
 | `env.open.GOOGLE_BUCKET`               | Bucket to store charts in for GCP           | ``                                                  |
 | `env.open.GOOGLE_PREFIX`               | Prefix to store charts under for GCP        | ``                                                  |
 | `env.open.STORAGE_MICROSOFT_CONTAINER` | Container to store charts under for MS      | ``                                                  |
