@@ -36,6 +36,11 @@ spec:
           envFrom:
             - configMapRef:
                 name: "{{ template "airflow.fullname" . }}-env"
+          {{- if .Values.persistence.enabled }}
+          volumeMounts:
+            - name: dags-data
+              mountPath: {{ .Values.airflow.dag_path }}
+          {{- end }}
           args: ["webserver"]
           livenessProbe:
             httpGet:
@@ -47,3 +52,11 @@ spec:
             timeoutSeconds: 1
             successThreshold: 1
             failureThreshold: 5
+      volumes:
+        - name: dags-data
+        {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+              claimName: {{ .Values.persistence.existingClaim | default (include "airflow.fullname" .) }}
+        {{- else }}
+          emptyDir: {}
+        {{- end }}
