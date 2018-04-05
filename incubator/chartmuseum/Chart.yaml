@@ -9,11 +9,4 @@ keywords:
 - chartmuseum
 - helm
 - charts repo
-maintainers:
-- name: codefresh-io
-  email: opensource@codefresh.io
-- name: cloudposse
-  email: hello@cloudposse.com
-- name: chartmuseum
-  email: chartmuseum@gmail.com
 deprecated: true
