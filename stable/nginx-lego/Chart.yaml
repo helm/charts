@@ -13,4 +13,6 @@ sources:
 maintainers:
 - name: Jack Zampolin
   email: jack.zampolin@gmail.com
+- name: Shang Chengfei
+  email: cfshang@alauda.io
 engine: gotpl
