@@ -79,7 +79,7 @@ The following table lists the configurable parameters of the Osclass chart and t
 | `externalDatabase.port`            | Port of the external database            | `3306`                                                  |
 | `externalDatabase.user`            | Existing username in the external db     | `bn_osclass`                                            |
 | `externalDatabase.password`        | Password for the above username          | `nil`                                                   |
-| `externalDatabase.database`        | Name of the existing databse             | `bitnami_osclass`                                       |
+| `externalDatabase.database`        | Name of the existing database             | `bitnami_osclass`                                       |
 | `mariadb.enabled`                  | Wheter to use or not the mariadb chart   | `true`                                                  |
 | `mariadb.mariadbDatabase`          | Database name to create                  | `bitnami_osclass`                                       |
 | `mariadb.mariadbUser`              | Database user to create                  | `bn_osclass`                                            |
